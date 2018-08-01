@@ -1,0 +1,1174 @@
+{
+    "AboutController_GetLdoDSession": [
+        "LdoD",
+        "VirtualEdition"
+    ],
+    "AdminController_ActiveUser": [
+        "LdoDUser"
+    ],
+    "AdminController_DeleteAllFragments": [
+        "LdoD",
+        "Fragment",
+        "TextPortion",
+        "VirtualEditionInter",
+        "FragInter",
+        "Source",
+        "RefText",
+        "PhysNote",
+        "Rend",
+        "Section",
+        "Tag",
+        "Annotation",
+        "Heteronym",
+        "LdoDDate",
+        "RdgText",
+        "LbText",
+        "PbText",
+        "AnnexNote",
+        "Facsimile",
+        "SourceInter",
+        "Surface",
+        "Category",
+        "Taxonomy",
+        "LdoDUser",
+        "SimpleText",
+        "Range",
+        "NoteText"
+    ],
+    "AdminController_DeleteFragment": [
+        "LdoD",
+        "Fragment",
+        "TextPortion",
+        "VirtualEditionInter",
+        "FragInter",
+        "Source",
+        "RefText",
+        "PhysNote",
+        "Rend",
+        "Section",
+        "Tag",
+        "Annotation",
+        "Heteronym",
+        "LdoDDate",
+        "RdgText",
+        "LbText",
+        "PbText",
+        "AnnexNote",
+        "Facsimile",
+        "SourceInter",
+        "Surface",
+        "Category",
+        "Taxonomy",
+        "LdoDUser",
+        "SimpleText",
+        "Range",
+        "NoteText"
+    ],
+    "AdminController_DeleteFragmentsList": [
+        "LdoD",
+        "Fragment"
+    ],
+    "AdminController_DeleteUserSessons": [
+        "LdoDUser"
+    ],
+    "AdminController_DeleteVirtualEdition": [
+        "VirtualEdition",
+        "LdoD",
+        "Taxonomy",
+        "LdoDUser",
+        "Section",
+        "VirtualEditionInter",
+        "RecommendationWeights",
+        "Category",
+        "FragInter",
+        "Fragment",
+        "Tag",
+        "Annotation",
+        "SimpleText",
+        "Range",
+        "Member"
+    ],
+    "AdminController_EditUser": [
+        "LdoD",
+        "LdoDUser",
+        "Role",
+        "UserConnection"
+    ],
+    "AdminController_EditUserForm": [
+        "LdoDUser",
+        "Role",
+        "LdoD"
+    ],
+    "AdminController_ExportAll": [
+        "LdoD",
+        "Fragment",
+        "FragInter",
+        "Element",
+        "Source",
+        "AppText",
+        "RdgText",
+        "ManuscriptSource",
+        "LdoDDate",
+        "SourceInter",
+        "ExpertEditionInter",
+        "Edition",
+        "Heteronym",
+        "NullHeteronym",
+        "Facsimile",
+        "Surface",
+        "TextPortion",
+        "RdgGrpText",
+        "SegText",
+        "Rend",
+        "SimpleText",
+        "LbText",
+        "PbText",
+        "SpaceText",
+        "AddText",
+        "DelText",
+        "GapText",
+        "UnclearText",
+        "AltText",
+        "AltTextWeight",
+        "NoteText",
+        "RefText"
+    ],
+    "AdminController_ExportRandom": [
+        "LdoD",
+        "Fragment",
+        "FragInter",
+        "Element",
+        "Source",
+        "AppText",
+        "RdgText",
+        "ManuscriptSource",
+        "LdoDDate",
+        "SourceInter",
+        "ExpertEditionInter",
+        "Edition",
+        "Heteronym",
+        "NullHeteronym",
+        "Facsimile",
+        "Surface",
+        "TextPortion",
+        "RdgGrpText",
+        "SegText",
+        "Rend",
+        "SimpleText",
+        "LbText",
+        "PbText",
+        "SpaceText",
+        "AddText",
+        "DelText",
+        "GapText",
+        "UnclearText",
+        "AltText",
+        "AltTextWeight",
+        "NoteText",
+        "RefText"
+    ],
+    "AdminController_ExportSearch": [
+        "LdoD",
+        "Fragment"
+    ],
+    "AdminController_ExportSearchResult": [
+        "LdoD",
+        "Fragment",
+        "FragInter",
+        "Element",
+        "Source",
+        "AppText",
+        "RdgText",
+        "ManuscriptSource",
+        "LdoDDate",
+        "SourceInter",
+        "ExpertEditionInter",
+        "Edition",
+        "Heteronym",
+        "NullHeteronym",
+        "Facsimile",
+        "Surface",
+        "TextPortion",
+        "RdgGrpText",
+        "SegText",
+        "Rend",
+        "SimpleText",
+        "LbText",
+        "PbText",
+        "SpaceText",
+        "AddText",
+        "DelText",
+        "GapText",
+        "UnclearText",
+        "AltText",
+        "AltTextWeight",
+        "NoteText",
+        "RefText"
+    ],
+    "AdminController_ExportUsers": [
+        "LdoD",
+        "LdoDUser",
+        "UserConnection",
+        "RegistrationToken",
+        "Role"
+    ],
+    "AdminController_ExportVirtualEditions": [
+        "LdoD",
+        "Fragment",
+        "VirtualEdition",
+        "VirtualEditionInter",
+        "LdoDUser",
+        "UserConnection",
+        "RegistrationToken",
+        "Taxonomy",
+        "Category",
+        "FragInter",
+        "Tag",
+        "Edition",
+        "Annotation",
+        "Range",
+        "Member",
+        "Section",
+        "Role"
+    ],
+    "AdminController_ListUser": [
+        "LdoD",
+        "LdoDUser"
+    ],
+    "AdminController_LoadTEICorpus": [
+        "LdoD",
+        "ExpertEdition",
+        "Heteronym",
+        "Edition"
+    ],
+    "AdminController_LoadTEIFragmentsAtOnce": [
+        "LdoD",
+        "Fragment",
+        "ExpertEdition",
+        "Heteronym",
+        "FragInter",
+        "VirtualEdition",
+        "TextPortion",
+        "VirtualEditionInter",
+        "Source",
+        "RefText",
+        "ManuscriptSource",
+        "PrintedSource",
+        "LdoDDate",
+        "SourceInter",
+        "ExpertEditionInter",
+        "NullHeteronym",
+        "Facsimile",
+        "AppText",
+        "RdgText",
+        "Section",        
+        "PhysNote",
+        "Rend",
+        "Tag",
+        "Annotation",
+        "LbText",
+        "PbText",
+        "AnnexNote",
+        "Surface",
+        "Element",
+        "NoteText",
+        "Edition",
+        "Category",
+        "Taxonomy",
+        "LdoDUser",
+        "SimpleText",
+        "Range",
+        "Dimensions",
+        "HandNote",
+        "TypeNote",
+        "ParagraphText",
+        "SpaceText",
+        "SegText",
+        "AddText",
+        "DelText",
+        "SubstText",
+        "GapText",
+        "UnclearText",
+        "AltText",
+        "RdgGrpText",
+        "AltTextWeight"
+    ],
+    "AdminController_LoadTEIFragmentsStepByStep": [
+        "LdoD",
+        "Fragment",
+        "ExpertEdition",
+        "Heteronym",
+        "FragInter",
+        "VirtualEdition",
+        "ManuscriptSource",
+        "PrintedSource",
+        "LdoDDate",
+        "SourceInter",
+        "ExpertEditionInter",
+        "RefText",
+        "NullHeteronym",
+        "Source",
+        "Facsimile",
+        "AppText",
+        "RdgText",
+        "Section",
+        
+        "VirtualEditionInter",
+        "Element",
+        "AnnexNote",
+        "NoteText",
+        "TextPortion",
+        "Surface",
+        "Edition",
+        "Dimensions",
+        "HandNote",
+        "TypeNote",
+        "SimpleText",
+        "ParagraphText",
+        "PhysNote",
+        "LbText",
+        "PbText",
+        "SpaceText",
+        "SegText",
+        "AddText",
+        "DelText",
+        "SubstText",
+        "GapText",
+        "UnclearText",
+        "AltText",
+        "RdgGrpText",
+        "Rend",
+        "AltTextWeight"
+    ],
+    "AdminController_LoadUsersXML": [
+        "LdoD",
+        "LdoDUser",
+        "Role",
+        "UserConnection",
+        "RegistrationToken"
+    ],
+    "AdminController_LoadVirtualCorpus": [
+        "LdoD",
+        "VirtualEdition",
+        "LdoDUser",
+        "Member",
+        "Taxonomy",
+        "Category",
+        "Section",
+        "VirtualEditionInter",
+        "RecommendationWeights",
+        "FragInter",
+        "Fragment",
+        "Tag",
+        "Annotation",
+        "Edition",
+        "SimpleText",
+        "Range",
+        
+        "ExpertEditionInter",
+        "Heteronym",
+        "LdoDDate"
+    ],
+    "AdminController_LoadVirtualFragments": [
+        "LdoD",
+        "Fragment",
+        
+        "VirtualEdition",
+        "VirtualEditionInter",
+        "FragInter",
+        "Section",
+        "Taxonomy",
+        "ExpertEditionInter",
+        "Edition",
+        "Heteronym",
+        "LdoDDate",
+        "LdoDUser",
+        "Tag",
+        "Range",
+        "Annotation",
+        "Category"
+    ],
+    "AdminController_ManageVirtualEditions": [
+        "LdoD",
+        "VirtualEdition"
+    ],
+    "AdminController_RemoveUser": [
+        "LdoDUser",
+        "LdoD",
+        "RegistrationToken",
+        "VirtualEdition",
+        "Tag",
+        "UserConnection",
+        "Member",
+        "VirtualEditionInter",
+        "Category",
+        "Taxonomy",
+        "Annotation",
+        "SimpleText",
+        "Range",
+        "RecommendationWeights",
+        "Role"
+    ],
+    "AdminController_SwitchAdminMode": [
+        "LdoD"
+    ],
+    "EditionController_GetCategoryTableOfContents": [
+        "LdoD",
+        "VirtualEdition",
+        "ExpertEdition",
+        "Taxonomy",
+        "Edition",
+        "Category"
+    ],
+    "EditionController_GetEditionTableOfContents4Heteronym": [
+        "ExpertEdition",
+        "Heteronym"
+    ],
+    "EditionController_GetEditionTableOfContentsByAcronym": [
+        "LdoD",
+        "Edition",
+        "VirtualEdition",
+        "ExpertEdition"
+    ],
+    "EditionController_GetEditionTableOfContentsById": [
+        "Edition"
+    ],
+    "EditionController_GetLdoDSession": [
+        "LdoD",
+        "VirtualEdition"
+    ],
+    "EditionController_GetTaxonomyTableOfContents": [
+        "LdoD",
+        "VirtualEdition",
+        "Taxonomy"
+    ],
+    "EditionController_GetUserContributions": [
+        "LdoD",
+        "LdoDUser"
+    ],
+    "FragmentController_CreateAnnotation": [
+        "VirtualEditionInter",
+        "LdoDUser",
+        "Annotation",
+        "VirtualEdition",
+        "Taxonomy",
+        "Range",
+        "Tag",
+        "Category",
+        "Section",
+        "LdoD",
+        "Edition",
+        "SimpleText"
+    ],
+    "FragmentController_DeleteAnnotation": [
+        "LdoDUser",
+        "Annotation",
+        "VirtualEditionInter",
+        "SimpleText",
+        "Range",
+        "Tag",
+        "Category",
+        "Taxonomy"
+    ],
+    "FragmentController_GetAnnotation": [
+        "Annotation",
+        "VirtualEditionInter",
+        "Tag",
+        "VirtualEdition",
+        "Category",
+        "Range",
+        "LdoDUser",
+        "Section",
+        "Taxonomy"
+    ],
+    "FragmentController_GetAnnotationInter": [
+        "Annotation",
+        "VirtualEditionInter",
+        "Category",
+        "Section",
+        "Taxonomy",
+        "VirtualEdition",
+        "Tag"
+    ],
+    "FragmentController_GetFragment": [
+        "LdoD",
+        "LdoDUser",
+        "Fragment",
+        "FragInter"
+    ],
+    "FragmentController_GetFragmentWithInter": [
+        "FragInter",
+        "Fragment"
+    ],
+    "FragmentController_GetFragmentWithInterForUrlId": [
+        "LdoD",
+        "Fragment",
+        "FragInter",
+        "LdoDUser",
+        "VirtualEdition",
+        "SourceInter",
+        "TextPortion",
+        "RdgGrpText",
+        "RdgText",
+        "SegText",
+        "AltTextWeight",
+        "AltText",
+        "SimpleText",
+        "LbText",
+        "PbText",
+        "SpaceText",
+        "AddText",
+        "DelText",
+        "SubstText",
+        "GapText",
+        "UnclearText",
+        "NoteText",
+        "AnnexNote",
+        "Rend"
+    ],
+    "FragmentController_GetFragmentsList": [
+        "LdoD",
+        "Fragment",
+        "ExpertEdition"
+    ],
+    "FragmentController_GetInter": [
+        "LdoD",
+        "LdoDUser",
+        "FragInter",
+        "Fragment",
+        "TextPortion",
+        "SourceInter",
+        "RdgGrpText",
+        "RdgText",
+        "SegText",
+        "AltTextWeight",
+        "AltText",
+        "SimpleText",
+        "LbText",
+        "PbText",
+        "SpaceText",
+        "AddText",
+        "DelText",
+        "SubstText",
+        "GapText",
+        "UnclearText",
+        "NoteText",
+        "AnnexNote",
+        "AppText",
+        "Rend"
+    ],
+    "FragmentController_GetInterAuthorial": [
+        "SourceInter",
+        "Source",
+        "Facsimile",
+        "PbText",
+        "FragInter",
+        "Fragment",
+        "TextPortion",
+        "RdgGrpText",
+        "RdgText",
+        "SegText",
+        "AltTextWeight",
+        "AltText",
+        "SimpleText",
+        "LbText",
+        "SpaceText",
+        "AddText",
+        "DelText",
+        "SubstText",
+        "GapText",
+        "UnclearText",
+        "NoteText",
+        "AnnexNote",
+        "Rend",
+        "Surface"
+    ],
+    "FragmentController_GetInterCompare": [
+        "FragInter",
+        "Fragment",
+        "AppText",
+        "TextPortion",
+        "RdgText",
+        "SegText",
+        "SimpleText",
+        "AddText",
+        "DelText",
+        "GapText",
+        "UnclearText"
+    ],
+    "FragmentController_GetInterEditorial": [
+        "FragInter",
+        "Fragment",
+        "SourceInter",
+        "TextPortion",
+        "RdgGrpText",
+        "RdgText",
+        "SegText",
+        "AltTextWeight",
+        "AltText",
+        "SimpleText",
+        "LbText",
+        "PbText",
+        "SpaceText",
+        "AddText",
+        "DelText",
+        "SubstText",
+        "GapText",
+        "UnclearText",
+        "NoteText",
+        "AnnexNote",
+        "Rend"
+    ],
+    "FragmentController_GetLdoDSession": [
+        "LdoD",
+        "VirtualEdition"
+    ],
+    "FragmentController_GetNextFragmentWithInter": [
+        "LdoD",
+        "Fragment",
+        "FragInter",
+        "Edition"
+    ],
+    "FragmentController_GetPrevFragmentWithInter": [
+        "LdoD",
+        "Fragment",
+        "FragInter",
+        "Edition"
+    ],
+    "FragmentController_GetTaxonomy": [
+        "VirtualEditionInter",
+        "LdoDUser",
+        "VirtualEdition",
+        "LdoD",
+        "Section",
+        "FragInter"
+    ],
+    "FragmentController_SearchAnnotations": [
+        "VirtualEditionInter",
+        "VirtualEdition",
+        "FragInter",
+        "Annotation",
+        "Tag",
+        "Category",
+        "Range",
+        "LdoDUser",
+        "Section",
+        "Taxonomy"
+    ],
+    "FragmentController_UpdateAnnotation": [
+        "LdoDUser",
+        "Annotation",
+        "VirtualEditionInter",
+        "VirtualEdition",
+        "Tag",
+        "Category",
+        "Range",
+        "Section",
+        "Taxonomy",
+        "LdoD",
+        "Edition"
+    ],
+    "HomeController_GetLdoDSession": [
+        "LdoD",
+        "VirtualEdition"
+    ],
+    "LdoDExceptionHandler_HandleLdoDCreateVirtualEditionException": [
+        "LdoD",
+        "VirtualEdition",
+        "LdoDUser"
+    ],
+    "LdoDExceptionHandler_HandleLdoDEditVirtualEditionException": [
+        "LdoDUser",
+        "VirtualEdition"
+    ],
+    "ReadingController_GetLdoDSession": [
+        "LdoD",
+        "VirtualEdition"
+    ],
+    "ReadingController_ReadInterpretation": [
+        "LdoD",
+        "Fragment",
+        "ExpertEditionInter",
+        "FragInter",
+        "SourceInter",
+        "VirtualEdition",
+        "TextPortion",
+        "RdgGrpText",
+        "RdgText",
+        "SegText",
+        "AltTextWeight",
+        "AltText",
+        "SimpleText",
+        "LbText",
+        "PbText",
+        "SpaceText",
+        "AddText",
+        "DelText",
+        "SubstText",
+        "GapText",
+        "UnclearText",
+        "NoteText",
+        "AnnexNote",
+        "Taxonomy",
+        "Rend",
+        "Edition"
+    ],
+    "ReadingController_ReadNextInterpretation": [
+        "LdoD",
+        "Fragment",
+        "ExpertEditionInter",
+        "Edition",
+        "FragInter"
+    ],
+    "ReadingController_ReadPrevInterpretation": [
+        "LdoD",
+        "Fragment",
+        "ExpertEditionInter",
+        "Edition",
+        "FragInter"
+    ],
+    "ReadingController_ReadPreviousRecommendedFragment": [
+        "ExpertEditionInter",
+        "Fragment"
+    ],
+    "ReadingController_ResetPreviousRecommendedFragments": [
+        "ExpertEditionInter",
+        "Fragment"
+    ],
+    "ReadingController_StartReading": [
+        "LdoD"
+    ],
+    "ReadingController_StartReadingEdition": [
+        "LdoD",
+        "ExpertEdition",
+        "ExpertEditionInter",
+        "Fragment",
+        "Edition",
+        "VirtualEdition"
+    ],
+    "ReadingController_StartReadingFromInter": [
+        "LdoD",
+        "Fragment",
+        "ExpertEditionInter",
+        "FragInter"
+    ],
+    "RecommendationController_CreateLinearVirtualEdition": [
+        "LdoD",
+        "LdoDUser",
+        "VirtualEdition",
+        "FragInter",
+        "Section",        
+        "VirtualEditionInter",
+        "Member",
+        "Taxonomy",
+        "Edition",
+        "Fragment",
+        "ExpertEditionInter",
+        "Heteronym",
+        "LdoDDate"
+    ],
+    "RecommendationController_CreateSectionVirtualEdition": [
+        "LdoDUser",
+        "LdoD",
+        "VirtualEdition",
+        "Section",
+        "RecommendationWeights",
+        "FragInter",
+        "VirtualEditionInter",
+        "Member",
+        "Taxonomy",
+        "Edition",
+        "Fragment",
+        "ExpertEditionInter",
+        "Heteronym",
+        "LdoDDate",
+        "Tag",
+        "Annotation",
+        "Category",
+        "SimpleText",
+        "Range"
+    ],
+    "RecommendationController_PresentEditionWithRecommendation": [
+        "LdoDUser",
+        "RecommendationWeights",
+        "VirtualEdition",
+        "VirtualEditionInter",
+        "LdoD",
+        "Section",
+        "Taxonomy",
+        "Edition"
+    ],
+    "RecommendationController_SaveLinearVirtualEdition": [
+        "LdoD",
+        "VirtualEdition",
+        "Section",
+        "Edition",
+        "VirtualEditionInter",
+        "FragInter",
+        "Fragment",
+        "Tag",
+        "Annotation",
+        "Category",
+        "Taxonomy",
+        "LdoDUser",
+        "SimpleText",
+        "Range"
+    ],
+    "RecommendationController_SaveSectionVirtualEdition": [
+        "LdoD",
+        "VirtualEdition",
+        "Edition"
+    ],
+    "RecommendationController_SetLinearVirtualEdition": [
+        "LdoD",
+        "LdoDUser",
+        "VirtualEdition",
+        "VirtualEditionInter",
+        "RecommendationWeights",
+        "Edition",
+        "Section",
+        "Taxonomy"
+    ],
+    "SearchController_AdvancedSearchResultNew": [
+        "LdoD",
+        "FragInter",
+        "Fragment"
+    ],
+    "SearchController_GetAuthoralDates": [
+        "LdoD",
+        "Fragment",
+        "FragInter",
+        "SourceInter",
+        "Source",
+        "ManuscriptSource",
+        "LdoDDate",
+        "TypeNote"
+    ],
+    "SearchController_GetDates": [
+        "LdoD",
+        "Fragment",
+        "FragInter",
+        "LdoDDate",
+        "Source"
+    ],
+    "SearchController_GetDatiloscript": [
+        "LdoD",
+        "Fragment",
+        "FragInter",
+        "SourceInter",
+        "Source",
+        "ManuscriptSource",
+        "LdoDDate",
+        "TypeNote"
+    ],
+    "SearchController_GetEdition": [
+        "LdoD",
+        "Edition",
+        "FragInter",
+        "Heteronym",
+        "LdoDDate",
+        "VirtualEdition",
+        "NullEdition"
+    ],
+    "SearchController_GetEditions": [
+        "LdoD",
+        "ExpertEdition"
+    ],
+    "SearchController_GetHeteronyms": [
+        "LdoD",
+        "Heteronym"
+    ],
+    "SearchController_GetLdoDSession": [
+        "LdoD",
+        "VirtualEdition"
+    ],
+    "SearchController_GetManuscript": [
+        "LdoD",
+        "Fragment",
+        "FragInter",
+        "SourceInter",
+        "Source",
+        "ManuscriptSource",
+        "LdoDDate",
+        "TypeNote"
+    ],
+    "SearchController_GetPublicationsDates": [
+        "LdoD",
+        "Fragment",
+        "Source",
+        "LdoDDate"
+    ],
+    "SearchController_GetVirtualEditions": [
+        "LdoDUser",
+        "VirtualEdition"
+    ],
+    "SearchController_SimpleSearchResult": [
+        "FragInter",
+        "Fragment"
+    ],
+    "SignupController_AuthorizeRegistration": [
+        "LdoD",
+        "RegistrationToken",
+        "LdoDUser"
+    ],
+    "SignupController_ConfirmRegistration": [
+        "LdoD",
+        "RegistrationToken",
+        "LdoDUser"
+    ],
+    "SignupController_Signup": [
+        "LdoD",
+        "LdoDUser",
+        "RegistrationToken",
+        "Role"
+    ],
+    "SourceController_GetLdoDSession": [
+        "LdoD",
+        "VirtualEdition"
+    ],
+    "SourceController_GetListOfSources": [
+        "LdoD",
+        "Fragment",
+        "Source"
+    ],
+    "UserController_ChangePassword": [
+        "LdoD",
+        "LdoDUser"
+    ],
+    "VirtualEditionController_AddInter": [
+        "VirtualEdition",
+        "FragInter",
+        "Section",
+        
+        "VirtualEditionInter",
+        "Fragment",
+        "ExpertEditionInter",
+        "Edition",
+        "Heteronym",
+        "LdoDDate"
+    ],
+    "VirtualEditionController_AddParticipant": [
+        "LdoD",
+        "VirtualEdition",
+        "LdoDUser",
+        "Member"
+    ],
+    "VirtualEditionController_ApproveParticipant": [
+        "LdoD",
+        "VirtualEdition",
+        "LdoDUser",
+        "Member"
+    ],
+    "VirtualEditionController_AssociateCategory": [
+        "LdoDUser",
+        "VirtualEditionInter",
+        "LdoD",
+        "VirtualEdition",
+        "Taxonomy",
+        "FragInter",
+        "Edition",
+        "Category",
+        "Tag",
+        "Section",
+        "Annotation",
+        "Range",
+        "SimpleText"
+    ],
+    "VirtualEditionController_CancelParticipationSubmission": [
+        "LdoDUser",
+        "VirtualEdition",
+        "Member"
+    ],
+    "VirtualEditionController_CreateCategory": [
+        "VirtualEdition",
+        "Taxonomy",
+        "Category"
+    ],
+    "VirtualEditionController_CreateTopicModelling": [
+        "VirtualEdition",
+        "Taxonomy",
+        "LdoD",
+        "Category",
+        "Tag",
+        "LdoDUser",
+        "VirtualEditionInter",
+        "Annotation"
+    ],
+    "VirtualEditionController_CreateVirtualEdition": [
+        "LdoD",
+        "LdoDUser",
+        "VirtualEdition",
+        "Member",
+        "Taxonomy",
+        "Edition",
+        "FragInter",
+        "Section",        
+        "VirtualEditionInter",
+        "Fragment",
+        "ExpertEditionInter",
+        "Heteronym",
+        "LdoDDate"
+    ],
+    "VirtualEditionController_DeleteCategory": [
+        "Category",
+        "Taxonomy",
+        "VirtualEdition",
+        "Tag",
+        "VirtualEditionInter",
+        "LdoDUser",
+        "Annotation"
+    ],
+    "VirtualEditionController_DeleteTaxonomy": [
+        "Taxonomy",
+        "VirtualEdition",
+        "Category",
+        "Tag",
+        "VirtualEditionInter",
+        "LdoDUser",
+        "Annotation"
+    ],
+    "VirtualEditionController_DeleteVirtualEdition": [
+        "VirtualEdition",
+        "LdoD",
+        "Taxonomy",
+        "LdoDUser",
+        "Section",
+        "VirtualEditionInter",
+        "RecommendationWeights",
+        "Category",
+        "FragInter",
+        "Fragment",
+        "Tag",
+        "Annotation",
+        "SimpleText",
+        "Range",
+        "Member"
+    ],
+    "VirtualEditionController_Dissociate": [
+        "LdoDUser",
+        "VirtualEditionInter",
+        "Tag",
+        "Annotation",
+        "Category",
+        "Taxonomy",
+        "SimpleText",
+        "Range"
+    ],
+    "VirtualEditionController_EditTaxonomy": [
+        "VirtualEdition",
+        "Taxonomy"
+    ],
+    "VirtualEditionController_EditVirtualEdition": [
+        "VirtualEdition",
+        "Taxonomy"
+    ],
+    "VirtualEditionController_ExtractCategory": [
+        "Category",
+        "Taxonomy",
+        "VirtualEditionInter",
+        "Tag"
+    ],
+    "VirtualEditionController_GenerateTopicModelling": [
+        "LdoDUser",
+        "VirtualEdition",
+        "Taxonomy",
+        "VirtualEditionInter",
+        "Fragment",
+        "SourceInter",
+        "Category",
+        "Section",
+        "FragInter"
+    ],
+    "VirtualEditionController_GetFragments": [
+        "LdoD",
+        "VirtualEdition",
+        "FragInter",
+        "Fragment",
+        "Section",
+        "NullEdition"
+    ],
+    "VirtualEditionController_GetLdoDSession": [
+        "LdoD",
+        "VirtualEdition"
+    ],
+    "VirtualEditionController_GetTranscriptions": [
+        "LdoD",
+        "VirtualEdition",
+        "FragInter",
+        "Section",
+        "NullEdition"
+    ],
+    "VirtualEditionController_GetTranscriptionsTag": [
+        "LdoD",
+        "VirtualEdition",
+        "Taxonomy",
+        "Category",
+        "Tag",
+        "VirtualEditionInter",
+        "Annotation",
+        "FragInter"
+    ],
+    "VirtualEditionController_ListVirtualEdition": [
+        "LdoD",
+        "LdoDUser",
+        "VirtualEdition",
+        "ExpertEdition"
+    ],
+    "VirtualEditionController_ManageVirtualEdition": [
+        "LdoDUser"
+    ],
+    "VirtualEditionController_MergeCategories": [
+        "Taxonomy",
+        "VirtualEdition",
+        "Category",
+        "Tag",
+        "VirtualEditionInter",
+        "Annotation"
+    ],
+    "VirtualEditionController_RemoveParticipant": [
+        "LdoDUser",
+        "VirtualEdition"
+    ],
+    "VirtualEditionController_ReorderVirtualEdition": [
+        "VirtualEdition",
+        "FragInter",
+        "VirtualEditionInter",
+        "Section",
+        "Fragment",
+        "Tag",
+        "Annotation",        
+        "Category",
+        "Taxonomy",
+        "LdoDUser",
+        "SimpleText",
+        "Range",
+        "ExpertEditionInter",
+        "Edition",
+        "Heteronym",
+        "LdoDDate"
+    ],
+    "VirtualEditionController_ShowEditVirtualEdition": [
+        "VirtualEdition",
+        "Section",
+        "NullEdition"
+    ],
+    "VirtualEditionController_SubmitParticipation": [
+        "LdoDUser",
+        "VirtualEdition",
+        "Member"
+    ],
+    "VirtualEditionController_SwitchRole": [
+        "LdoD",
+        "LdoDUser",
+        "VirtualEdition",
+        "Member"
+    ],
+    "VirtualEditionController_ToggleSelectedVirtualEdition": [
+        "LdoDUser",
+        "VirtualEdition"
+    ],
+    "VirtualEditionController_UpdateCategoryName": [
+        "Category",
+        "Taxonomy"
+    ]
+}
