@@ -2,7 +2,7 @@
 
 This repository contains the code regarding the implementation for my Master Thesis at IST with the topic of "From a Monolithic to a Microservices Architecture".
 
-The final product of this method is to transform a web application that is not divided into a microservices architecture and by of the controllers with the domain classes, cluster those classes into groups that could work as services, paired up with visualization capabilities.
+The final product of this method is to separate the different contexts of a web application that is not yet divided into a microservices architecture. This is done through the relatinship of the controllers with the domain classes, clustering those classes into groups that could work as services, paired up with visualization capabilities.
 
 To do so, follow the subsequent workflow:
   1. Use Java-CallGraph to generate the files of the web application (https://github.com/gousiosg/java-callgraph)
