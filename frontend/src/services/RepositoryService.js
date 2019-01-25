@@ -30,6 +30,15 @@ export class RepositoryService {
             });
     }
 
+    createDendrogram(dataFile) {
+        const config = {
+            headers: {
+                'content-type': 'multipart/form-data'
+            }
+        }
+        return this.axios.post("/createDendrogram", dataFile, config);
+    }
+
     deleteGraph(name) {
         return this.axios.delete(name);
     }
