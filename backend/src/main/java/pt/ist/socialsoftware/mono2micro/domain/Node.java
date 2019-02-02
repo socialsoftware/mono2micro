@@ -6,15 +6,15 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class Node {
 	private String id;
 	private String label;
-	private String title;
+	private float level;
 
 	public Node() {
 	}
 
-	public Node(String id, String label, String title) {
+	public Node(String id, float level) {
 		this.id = id;
-		this.label = label;
-		this.title = title;
+		this.label = id;
+		this.level = level;
 	}
 
 	public String getId() {
@@ -33,12 +33,12 @@ public class Node {
 		this.label = label;
 	}
 
-	public String getTitle() {
-		return this.title;
+	public float getLevel() {
+		return this.level;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public void setLevel(float level) {
+		this.level = level;
 	}
 
 }

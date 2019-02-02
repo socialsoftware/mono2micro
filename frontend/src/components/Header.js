@@ -42,8 +42,8 @@ export class Header extends React.Component {
                 <Navbar.Collapse>
                     <Nav>
                         <NavDropdown eventKey={1} title="Manage Clusters" id="basic-nav-dropdown">
-                            <LinkContainer to='/dendrogram/load'>
-                                <MenuItem eventKey={1.1} >Load Dendrogram</MenuItem>
+                            <LinkContainer to='/dendrogram/create'>
+                                <MenuItem eventKey={1.1} >Create Dendrogram</MenuItem>
                             </LinkContainer>
                             <LinkContainer to='/dendrogram/cut'>
                                 <MenuItem eventKey={1.1} >Dendrogram Cut</MenuItem>

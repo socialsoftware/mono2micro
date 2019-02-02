@@ -9,7 +9,7 @@ export class RepositoryService {
 
         this.axios = axios.create({
             baseURL: URL,
-            timeout: 1000,
+            timeout: 10000,
             headers: headers,
         });
     }
@@ -41,6 +41,10 @@ export class RepositoryService {
 
     deleteGraph(name) {
         return this.axios.delete(name);
+    }
+
+    loadDendrogram() {
+        return this.axios.get("/loadDendrogram");
     }
 
  }

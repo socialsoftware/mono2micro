@@ -3,7 +3,7 @@ import { RepositoryService } from '../../services/RepositoryService';
 
 var HttpStatus = require('http-status-codes');
 
-export class DendrogramLoad extends React.Component {
+export class DendrogramCreate extends React.Component {
     constructor(props) {
         super(props);
         this.state = { selectedFile: null, isUploaded: "" };
@@ -41,7 +41,8 @@ export class DendrogramLoad extends React.Component {
     render() {
         return (
             <form onSubmit={this.handleUpload}>
-                <h1>Load Dendrogram</h1>
+                <h1>Create Dendrogram</h1>
+                <h2>Upload data file from Callgraph Eclipse Plugin to create the dendrogram.</h2>
                 <input type="file" onChange={this.handleSelectedFile} />
                 <button type="submit">Upload</button>
                 <div>{this.state.isUploaded}</div>

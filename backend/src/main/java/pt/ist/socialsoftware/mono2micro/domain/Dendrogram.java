@@ -1,24 +1,41 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Dendrogram {
-	private String name;
-	private File datafile;
+	private ArrayList<Node> nodes = new ArrayList<>();
+	private ArrayList<Edge> edges = new ArrayList<>();
 
-	public Dendrogram(String name, File datafile) {
-        this.name = name;
-        this.datafile = datafile;
+    private static Dendrogram instance = null; 
+
+	public Dendrogram() {
 	}
 
-	public String getName() {
-		return this.name;
+	public static Dendrogram getInstance() { 
+        if (instance == null) 
+            instance = new Dendrogram(); 
+
+        return instance; 
+	}
+	
+	public void destroy() {
+		instance = null;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public ArrayList<Node> getNodes() {
+		return this.nodes;
+	}
+
+	public void addNode(Node node) {
+		this.nodes.add(node);
+	}
+
+	public ArrayList<Edge> getEdges() {
+		return this.edges;
+	}
+
+	public void addEdge(Edge edge) {
+		this.edges.add(edge);
 	}
 
 }
