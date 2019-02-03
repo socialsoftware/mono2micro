@@ -5,8 +5,7 @@ import java.util.List;
 
 public class Graph {
 	private String name;
-	private List<Node> nodes;
-	private List<Edge> edges;
+	private List<Cluster> clusters;
 
 	public Graph() {
 
@@ -14,8 +13,7 @@ public class Graph {
 
 	public Graph(String name) {
 		this.name = name;
-		this.nodes = new ArrayList<>();
-		this.edges = new ArrayList<>();
+		this.clusters = new ArrayList<>();
 	}
 
 	public String getName() {
@@ -26,20 +24,12 @@ public class Graph {
 		this.name = name;
 	}
 
-	public List<Node> getNodes() {
-		return this.nodes;
+	public List<Cluster> getClusters() {
+		return this.clusters;
 	}
 
-	public void setNodes(List<Node> nodes) {
-		this.nodes = nodes;
-	}
-
-	public List<Edge> getEdges() {
-		return this.edges;
-	}
-
-	public void setEdges(List<Edge> edges) {
-		this.edges = edges;
+	public void addCluster(Cluster cluster) {
+		this.clusters.add(cluster);
 	}
 
 }

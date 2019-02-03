@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Dendrogram {
 	private ArrayList<Node> nodes = new ArrayList<>();
 	private ArrayList<Edge> edges = new ArrayList<>();
+	private ArrayList<Graph> graphs = new ArrayList<>();
 
     private static Dendrogram instance = null; 
 
@@ -36,6 +37,14 @@ public class Dendrogram {
 
 	public void addEdge(Edge edge) {
 		this.edges.add(edge);
+	}
+
+	public ArrayList<Graph> getGraphs() {
+		return this.graphs;
+	}
+
+	public void addGraph(Graph graph) {
+		this.graphs.add(graph);
 	}
 
 }

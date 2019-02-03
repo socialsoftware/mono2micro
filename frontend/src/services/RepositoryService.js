@@ -16,11 +16,11 @@ export class RepositoryService {
 
     // Graphs
     getGraphs() {
-        return this.axios.get();
+        return this.axios.get("/graphs");
     }
 
     getGraph(name) {
-        return this.axios.get(name);
+        return this.axios.get("/graph/" + name);
     }
 
     loadGraph(name) {
@@ -47,4 +47,12 @@ export class RepositoryService {
         return this.axios.get("/loadDendrogram");
     }
 
+    cutDendrogram(cutValue) {
+        return this.axios.get("/cutDendrogram", 
+            {
+                params: {
+                    "cutValue" : cutValue
+                }
+            });
+    }
  }

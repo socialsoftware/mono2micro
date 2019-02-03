@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.domain.Edge;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
@@ -32,25 +34,31 @@ public class Mono2MicroController {
 
 	private static String fileUploadPath = "src/main/resources/";
 
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(value = "/graphs", method = RequestMethod.GET)
 	public ResponseEntity<String[]> getGraphs() {
 		logger.debug("getGraphs");
 
-		String[] graphs = new String[3];
-		for (int i = 0; i < 3; i++) {
-			graphs[i] = "Graph" + i;
+		Dendrogram dend = Dendrogram.getInstance();
+		List<Graph> graphs = dend.getGraphs();
+		String[] graphs_names = new String[graphs.size()];
+		for(int i = 0; i < graphs.size(); i++) {
+			graphs_names[i] = graphs.get(i).getName();
 		}
 
-		return new ResponseEntity<>(graphs, HttpStatus.OK);
+		return new ResponseEntity<>(graphs_names, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/{name}", method = RequestMethod.GET)
+	@RequestMapping(value = "/graph/{name}", method = RequestMethod.GET)
 	public ResponseEntity<Graph> getGraph(@PathVariable("name") String name) {
-		logger.debug("getGraph");
+		logger.debug("getGraph: {}", name);
 
-		Graph graph = new Graph(name);
+		Dendrogram dend = Dendrogram.getInstance();
+		List<Graph> graphs = dend.getGraphs();
+		for (Graph graph : graphs)
+			if (graph.getName().equals(name))
+				return new ResponseEntity<>(graph, HttpStatus.OK);
 
-		return new ResponseEntity<>(graph, HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
 
 	@RequestMapping(value = "/load", method = RequestMethod.POST)
@@ -132,6 +140,8 @@ public class Mono2MicroController {
 
 	@RequestMapping(value = "/dendrogram-image", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getImage() {
+		logger.debug("load dendrogram image");
+
 		File f = new File(fileUploadPath + "dend.png");
 		try {
 			return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(Files.readAllBytes(f.toPath()));
@@ -139,5 +149,43 @@ public class Mono2MicroController {
 			System.err.println(e.getMessage());
 		}
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	}
+
+	@RequestMapping(value = "/cutDendrogram", method = RequestMethod.GET)
+	public ResponseEntity<Graph> getCutDendrogram(@RequestParam("cutValue") String cutValue) {
+		logger.debug("getCutDendrogram");
+		
+		try{
+			Runtime r = Runtime.getRuntime();
+			String pythonScriptPath = fileUploadPath + "cutDendrogram.py";
+			String[] cmd = new String[3];
+			cmd[0] = "python";
+			cmd[1] = pythonScriptPath;
+			cmd[2] = cutValue;
+			Process p = r.exec(cmd);
+
+			p.waitFor();
+			
+			BufferedReader bre = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			String line = "";
+			Graph graph = new Graph("Graph" + cutValue);
+			while ((line = bre.readLine()) != null) {
+				String[] parts = line.split(" ");
+				String clusterName = parts[0];
+				String entities = parts[1];
+				Cluster cluster = new Cluster("Cluster" + clusterName);
+				for (String entity : entities.split(",")) {
+					cluster.addEntity(entity);
+				}
+				graph.addCluster(cluster);
+			}
+			Dendrogram dend = Dendrogram.getInstance();
+			dend.addGraph(graph);
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
