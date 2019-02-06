@@ -5,7 +5,6 @@ import { LinkContainer } from 'react-router-bootstrap';
 
 import { RepositoryService } from '../services/RepositoryService';
 
-
 export class Header extends React.Component {
     constructor(props) {
         super(props);
@@ -13,15 +12,21 @@ export class Header extends React.Component {
         this.state = {
             graphs : [],
         };
+
+        this.handleGetGraphs = this.handleGetGraphs.bind(this);
     }
 
     componentDidMount() {
+         this.handleGetGraphs();
+    }
+
+    handleGetGraphs() {
         const service = new RepositoryService();
         service.getGraphs().then(response => {
             this.setState({
                 graphs : response.data
             });
-        });   
+        });  
     }
 
     render() {
@@ -45,7 +50,7 @@ export class Header extends React.Component {
                             <LinkContainer to='/dendrogram/create'>
                                 <MenuItem eventKey={1.1} >Create Dendrogram</MenuItem>
                             </LinkContainer>
-                            <LinkContainer to='/dendrogram/cut'>
+                            <LinkContainer to={{ pathname: '/dendrogram/cut', headerFunction: { handleGetGraphsFunction: this.handleGetGraphs} }} >
                                 <MenuItem eventKey={1.1} >Dendrogram Cut</MenuItem>
                             </LinkContainer>
                             <MenuItem divider />

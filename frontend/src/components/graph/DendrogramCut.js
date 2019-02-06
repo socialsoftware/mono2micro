@@ -33,6 +33,7 @@ export class DendrogramCut extends React.Component {
         const service = new RepositoryService();
         service.cutDendrogram(this.state.cutValue).then(response => {
             if (response.status == HttpStatus.OK) {
+                this.props.location.headerFunction.handleGetGraphsFunction();
                 alert("Dendrogram cut successful.");
             } else {
                 alert("Failed to cut dendrogram.");
