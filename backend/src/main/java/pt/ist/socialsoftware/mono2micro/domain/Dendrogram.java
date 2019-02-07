@@ -1,6 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Dendrogram {
 	private ArrayList<Node> nodes = new ArrayList<>();
@@ -43,6 +44,13 @@ public class Dendrogram {
 		return this.graphs;
 	}
 
+	public List<String> getGraphsNames() {
+		List<String> graphsNames = new ArrayList<>();
+		for (Graph graph : this.graphs)
+			graphsNames.add(graph.getName());
+		return graphsNames;
+	}
+
 	public void addGraph(Graph graph) {
 		this.graphs.add(graph);
 	}
@@ -51,6 +59,14 @@ public class Dendrogram {
 		for (int i = 0; i < graphs.size(); i++) {
 			if (graphs.get(i).getName().equals(graphName)) {
 				graphs.get(i).mergeClusters(cluster1, cluster2);
+			}
+		}
+	}
+
+	public void renameCluster(String graphName, String clusterName, String newName) {
+		for (int i = 0; i < graphs.size(); i++) {
+			if (graphs.get(i).getName().equals(graphName)) {
+				graphs.get(i).renameCluster(clusterName, newName);
 			}
 		}
 	}

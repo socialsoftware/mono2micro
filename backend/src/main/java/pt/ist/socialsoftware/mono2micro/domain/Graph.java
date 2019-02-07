@@ -50,4 +50,12 @@ public class Graph {
 			}
 		}
 	}
+
+	public void renameCluster(String clusterName, String newName) {
+		for (int i = 0; i < clusters.size(); i++) {
+			if (clusters.get(i).getName().equals(clusterName)) {
+				clusters.get(i).setName(newName);
+			}
+		}
+	}
 }

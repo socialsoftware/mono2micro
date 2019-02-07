@@ -66,4 +66,15 @@ export class RepositoryService {
                 }
             });
     }
+
+    renameCluster(graphName, clusterName, newName) {
+        return this.axios.get("/renameCluster", 
+            {
+                params: {
+                    "graphName" : graphName,
+                    "clusterName" : clusterName,
+                    "newName" : newName
+                }
+            });
+    }
  }

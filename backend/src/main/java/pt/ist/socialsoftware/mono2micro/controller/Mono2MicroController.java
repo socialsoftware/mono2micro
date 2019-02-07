@@ -166,9 +166,20 @@ public class Mono2MicroController {
 
 			p.waitFor();
 			
+			Dendrogram dend = Dendrogram.getInstance();
+			Graph graph;
+			if (dend.getGraphsNames().contains("Graph_" + cutValue)) {
+				int i = 2;
+				while (dend.getGraphsNames().contains("Graph_" + cutValue + "(" + i + ")")) {
+					i++;
+				}
+				graph = new Graph("Graph_" + cutValue + "(" + i + ")");
+			} else {
+				graph = new Graph("Graph_" + cutValue);
+			}
+
 			BufferedReader bre = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			String line = "";
-			Graph graph = new Graph("Graph" + cutValue);
 			while ((line = bre.readLine()) != null) {
 				String[] parts = line.split(" ");
 				String clusterName = parts[0];
@@ -179,7 +190,6 @@ public class Mono2MicroController {
 				}
 				graph.addCluster(cluster);
 			}
-			Dendrogram dend = Dendrogram.getInstance();
 			dend.addGraph(graph);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
@@ -194,6 +204,13 @@ public class Mono2MicroController {
 	public ResponseEntity<Dendrogram> mergeClusters(@RequestParam("graphName") String graphName, @RequestParam("cluster1") String cluster1, @RequestParam("cluster2") String cluster2) {
 		Dendrogram dend = Dendrogram.getInstance();
 		dend.mergeClusters(graphName, cluster1, cluster2);
-		return new ResponseEntity<>(dend, HttpStatus.OK);
+		return new ResponseEntity<Dendrogram>(dend, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/renameCluster", method = RequestMethod.GET)
+	public ResponseEntity<Dendrogram> renameCluster(@RequestParam("graphName") String graphName, @RequestParam("clusterName") String clusterName, @RequestParam("newName") String newName) {
+		Dendrogram dend = Dendrogram.getInstance();
+		dend.renameCluster(graphName, clusterName, newName);
+		return new ResponseEntity<Dendrogram>(dend, HttpStatus.OK);
 	}
 }

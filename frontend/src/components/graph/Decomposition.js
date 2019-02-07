@@ -6,15 +6,24 @@ export class Decomposition extends React.Component {
     constructor(props) {
         super(props);
         this.state = { graphName: this.props.match.params.name, graph: [], loaded: false };
+        this.getGraph = this.getGraph.bind(this);
+        this.getGraph(this.state.graphName);
+    }
+
+    getGraph(name) {
         const service = new RepositoryService();
-        service.getGraph(this.state.graphName).then(response => {
+        service.getGraph(name).then(response => {
             const graph = response.data;
-                this.setState({
-                    graph: graph,
-                    loaded: true
-                });
-            console.log(response);
+            this.setState({
+                graph: graph,
+                loaded: true
+            });
         });
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({ graphName: nextProps.match.params.name });
+        this.getGraph(nextProps.match.params.name);
     }
 
     render() {

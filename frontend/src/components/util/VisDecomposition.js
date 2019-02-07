@@ -46,14 +46,25 @@ const options = {
 
 class VisDecomposition extends Component {
   
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    this.graph = this.props.graph;
+    this.clusterNames = [];
     this.network = {};
     this.appRef = createRef();
+    this.loadGraph = this.loadGraph.bind(this);
   }
 
   componentDidMount() {
-    this.graph = this.props.graph;
+    this.loadGraph();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.graph = nextProps.graph;
+    this.loadGraph();
+  }
+
+  loadGraph() {
     this.clusterNames = [];
     this.graph.clusters.map((cluster) =>
       {this.clusterNames.push({id: cluster.name, label: cluster.name})}
@@ -66,7 +77,7 @@ class VisDecomposition extends Component {
     this.network.on("click", function (params) {
       //params.event = "[original event]";
       console.log('click event, getNodeAt returns: ' + this.getNodeAt(params.pointer.DOM));
-  });
+    });
   }
 
   render() {
