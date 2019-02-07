@@ -210,7 +210,22 @@ public class Mono2MicroController {
 	@RequestMapping(value = "/renameCluster", method = RequestMethod.GET)
 	public ResponseEntity<Dendrogram> renameCluster(@RequestParam("graphName") String graphName, @RequestParam("clusterName") String clusterName, @RequestParam("newName") String newName) {
 		Dendrogram dend = Dendrogram.getInstance();
-		dend.renameCluster(graphName, clusterName, newName);
-		return new ResponseEntity<Dendrogram>(dend, HttpStatus.OK);
+		boolean success = dend.renameCluster(graphName, clusterName, newName);
+		if (success) {
+			return new ResponseEntity<Dendrogram>(dend, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<Dendrogram>(dend, HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@RequestMapping(value = "/renameGraph", method = RequestMethod.GET)
+	public ResponseEntity<Dendrogram> renameGraph(@RequestParam("graphName") String graphName, @RequestParam("newName") String newName) {
+		Dendrogram dend = Dendrogram.getInstance();
+		boolean success = dend.renameGraph(graphName, newName);
+		if (success) {
+			return new ResponseEntity<Dendrogram>(dend, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<Dendrogram>(dend, HttpStatus.BAD_REQUEST);
+		}
 	}
 }

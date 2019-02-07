@@ -63,12 +63,25 @@ public class Dendrogram {
 		}
 	}
 
-	public void renameCluster(String graphName, String clusterName, String newName) {
+	public boolean renameCluster(String graphName, String clusterName, String newName) {
+		boolean success = true;
 		for (int i = 0; i < graphs.size(); i++) {
 			if (graphs.get(i).getName().equals(graphName)) {
-				graphs.get(i).renameCluster(clusterName, newName);
+				success = graphs.get(i).renameCluster(clusterName, newName);
 			}
 		}
+		return success;
+	}
+
+	public boolean renameGraph(String graphName, String newName) {
+		if (this.getGraphsNames().contains(newName))
+			return false;
+		for (int i = 0; i < graphs.size(); i++) {
+			if (graphs.get(i).getName().equals(graphName)) {
+				graphs.get(i).setName(newName);
+			}
+		}
+		return true;
 	}
 
 }

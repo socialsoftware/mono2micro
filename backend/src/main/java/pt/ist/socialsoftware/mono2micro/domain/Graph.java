@@ -51,11 +51,21 @@ public class Graph {
 		}
 	}
 
-	public void renameCluster(String clusterName, String newName) {
+	public boolean renameCluster(String clusterName, String newName) {
+		if (this.getClustersNames().contains(newName))
+			return false;
 		for (int i = 0; i < clusters.size(); i++) {
 			if (clusters.get(i).getName().equals(clusterName)) {
 				clusters.get(i).setName(newName);
 			}
 		}
+		return true;
+	}
+
+	public List<String> getClustersNames() {
+		List<String> clustersNames = new ArrayList<>();
+		for (Cluster cluster : this.clusters)
+			clustersNames.add(cluster.getName());
+		return clustersNames;
 	}
 }

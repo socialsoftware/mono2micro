@@ -77,4 +77,14 @@ export class RepositoryService {
                 }
             });
     }
+
+    renameGraph(graphName, newName) {
+        return this.axios.get("/renameGraph", 
+            {
+                params: {
+                    "graphName" : graphName,
+                    "newName" : newName
+                }
+            });
+    }
  }
