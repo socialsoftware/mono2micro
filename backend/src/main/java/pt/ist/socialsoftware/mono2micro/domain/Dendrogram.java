@@ -55,10 +55,10 @@ public class Dendrogram {
 		this.graphs.add(graph);
 	}
 
-	public void mergeClusters(String graphName, String cluster1, String cluster2) {
+	public void mergeClusters(String graphName, String cluster1, String cluster2, String newName) {
 		for (int i = 0; i < graphs.size(); i++) {
 			if (graphs.get(i).getName().equals(graphName)) {
-				graphs.get(i).mergeClusters(cluster1, cluster2);
+				graphs.get(i).mergeClusters(cluster1, cluster2, newName);
 			}
 		}
 	}

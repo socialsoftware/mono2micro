@@ -8,7 +8,7 @@ import { DataSet } from 'vis';
 
 const tooltip = (
     <Tooltip id="tooltip">
-      Select node for conditions and<br /> double click them apply an operation
+      Select node for conditions and<br /> double click them to apply an operation
     </Tooltip>
 );
 
@@ -171,7 +171,7 @@ export class GraphDiagram extends React.Component {
                 break;
             case operations.MERGE:
                 service.mergeClusters(this.props.name, this.state.selectedCluster.name, 
-                    this.state.mergeWithCluster.name)
+                    this.state.mergeWithCluster.name, inputValue)
                 .then(() => {
                     this.loadGraph();        
                 }).catch((err) => {
@@ -218,7 +218,7 @@ export class GraphDiagram extends React.Component {
         return (
             <div>
                 <OverlayTrigger placement="bottom" overlay={tooltip}>
-                    <h3>{this.props.name}: Graph Diagram</h3>
+                    <h3>{this.props.name}</h3>
                 </OverlayTrigger><br /><br />
                 
                 {this.state.error && 

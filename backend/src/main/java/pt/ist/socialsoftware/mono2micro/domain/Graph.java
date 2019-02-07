@@ -32,8 +32,8 @@ public class Graph {
 		this.clusters.add(cluster);
 	}
 
-	public void mergeClusters(String cluster1, String cluster2) {
-		Cluster mergedCluster = new Cluster(cluster1 + "+" + cluster2);
+	public void mergeClusters(String cluster1, String cluster2, String newName) {
+		Cluster mergedCluster = new Cluster(newName);
 		this.addCluster(mergedCluster);
 		for (int i = 0; i < clusters.size(); i++) {
 			if (clusters.get(i).getName().equals(cluster1)) {

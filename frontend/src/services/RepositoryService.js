@@ -56,13 +56,14 @@ export class RepositoryService {
             });
     }
 
-    mergeClusters(graphName, cluster1, cluster2) {
+    mergeClusters(graphName, cluster1, cluster2, newName) {
         return this.axios.get("/mergeClusters", 
             {
                 params: {
                     "graphName" : graphName,
                     "cluster1" : cluster1,
-                    "cluster2" : cluster2
+                    "cluster2" : cluster2,
+                    "newName" : newName
                 }
             });
     }

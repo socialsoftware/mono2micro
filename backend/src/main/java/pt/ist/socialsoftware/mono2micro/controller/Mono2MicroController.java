@@ -66,17 +66,8 @@ public class Mono2MicroController {
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
 
-	@RequestMapping(value = "/load", method = RequestMethod.POST)
-	public ResponseEntity<Graph> loadGraph(@RequestBody Graph graph) {
-		logger.debug("loadGraph name:{}", graph.getName());
-
-		// TO DO:
-
-		return new ResponseEntity<>(graph, HttpStatus.CREATED);
-	}
-
-	@RequestMapping(value = "/{name}", method = RequestMethod.DELETE)
-	public ResponseEntity<String> deleteGraph(@PathVariable("name") String name) {
+	@RequestMapping(value = "/graph/{name}", method = RequestMethod.DELETE)
+	public ResponseEntity<Dendrogram> deleteGraph(@PathVariable("name") String name) {
 		logger.debug("deleteGraph name:{}", name);
 
 		// TO DO:
@@ -159,7 +150,7 @@ public class Mono2MicroController {
 
 	@RequestMapping(value = "/cutDendrogram", method = RequestMethod.GET)
 	public ResponseEntity<Graph> getCutDendrogram(@RequestParam("cutValue") String cutValue) {
-		logger.debug("getCutDendrogram");
+		logger.debug("cutDendrogram with value: {}", cutValue);
 
 		try {
 			Runtime r = Runtime.getRuntime();
@@ -207,15 +198,20 @@ public class Mono2MicroController {
 
 	@RequestMapping(value = "/mergeClusters", method = RequestMethod.GET)
 	public ResponseEntity<Dendrogram> mergeClusters(@RequestParam("graphName") String graphName,
-			@RequestParam("cluster1") String cluster1, @RequestParam("cluster2") String cluster2) {
+			@RequestParam("cluster1") String cluster1, @RequestParam("cluster2") String cluster2,
+			@RequestParam("newName") String newName) {
+		logger.debug("mergeClusters {} with {}", cluster1, cluster2);
+
 		Dendrogram dend = Dendrogram.getInstance();
-		dend.mergeClusters(graphName, cluster1, cluster2);
+		dend.mergeClusters(graphName, cluster1, cluster2, newName);
 		return new ResponseEntity<Dendrogram>(dend, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/renameCluster", method = RequestMethod.GET)
 	public ResponseEntity<Dendrogram> renameCluster(@RequestParam("graphName") String graphName,
 			@RequestParam("clusterName") String clusterName, @RequestParam("newName") String newName) {
+		logger.debug("renameCluster {}", clusterName);
+		
 		Dendrogram dend = Dendrogram.getInstance();
 		boolean success = dend.renameCluster(graphName, clusterName, newName);
 		if (success) {
@@ -228,6 +224,8 @@ public class Mono2MicroController {
 	@RequestMapping(value = "/renameGraph", method = RequestMethod.GET)
 	public ResponseEntity<Dendrogram> renameGraph(@RequestParam("graphName") String graphName,
 			@RequestParam("newName") String newName) {
+		logger.debug("renameGraph {}", graphName);
+
 		Dendrogram dend = Dendrogram.getInstance();
 		boolean success = dend.renameGraph(graphName, newName);
 		if (success) {
