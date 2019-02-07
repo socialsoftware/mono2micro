@@ -188,4 +188,12 @@ public class Mono2MicroController {
 
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
+
+
+	@RequestMapping(value = "/mergeClusters", method = RequestMethod.GET)
+	public ResponseEntity<Dendrogram> mergeClusters(@RequestParam("graphName") String graphName, @RequestParam("cluster1") String cluster1, @RequestParam("cluster2") String cluster2) {
+		Dendrogram dend = Dendrogram.getInstance();
+		dend.mergeClusters(graphName, cluster1, cluster2);
+		return new ResponseEntity<>(dend, HttpStatus.OK);
+	}
 }

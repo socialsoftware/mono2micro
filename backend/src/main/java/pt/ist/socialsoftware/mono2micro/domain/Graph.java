@@ -32,4 +32,22 @@ public class Graph {
 		this.clusters.add(cluster);
 	}
 
+	public void mergeClusters(String cluster1, String cluster2) {
+		Cluster mergedCluster = new Cluster(cluster1 + "+" + cluster2);
+		this.addCluster(mergedCluster);
+		for (int i = 0; i < clusters.size(); i++) {
+			if (clusters.get(i).getName().equals(cluster1)) {
+				for (String entity : clusters.get(i).getEntities())
+					mergedCluster.addEntity(entity);
+				clusters.remove(i);
+			}
+		}
+		for (int i = 0; i < clusters.size(); i++) {
+			if (clusters.get(i).getName().equals(cluster2)) {
+				for (String entity : clusters.get(i).getEntities())
+					mergedCluster.addEntity(entity);
+				clusters.remove(i);
+			}
+		}
+	}
 }

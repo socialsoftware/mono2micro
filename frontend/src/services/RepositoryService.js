@@ -55,4 +55,15 @@ export class RepositoryService {
                 }
             });
     }
+
+    mergeClusters(graphName, cluster1, cluster2) {
+        return this.axios.get("/mergeClusters", 
+            {
+                params: {
+                    "graphName" : graphName,
+                    "cluster1" : cluster1,
+                    "cluster2" : cluster2
+                }
+            });
+    }
  }

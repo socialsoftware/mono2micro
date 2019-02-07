@@ -47,4 +47,12 @@ public class Dendrogram {
 		this.graphs.add(graph);
 	}
 
+	public void mergeClusters(String graphName, String cluster1, String cluster2) {
+		for (int i = 0; i < graphs.size(); i++) {
+			if (graphs.get(i).getName().equals(graphName)) {
+				graphs.get(i).mergeClusters(cluster1, cluster2);
+			}
+		}
+	}
+
 }
