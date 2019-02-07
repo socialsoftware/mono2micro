@@ -26,10 +26,13 @@ import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.domain.Edge;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.domain.Node;
+import pt.ist.socialsoftware.mono2micro.utils.PropertiesManager;
 
 @RestController
 @RequestMapping(value = "/mono2micro/")
 public class Mono2MicroController {
+	private static final String PYTHON = PropertiesManager.getProperties().getProperty("python");
+
 	private static Logger logger = LoggerFactory.getLogger(Mono2MicroController.class);
 
 	private static String fileUploadPath = "src/main/resources/";
@@ -41,7 +44,7 @@ public class Mono2MicroController {
 		Dendrogram dend = Dendrogram.getInstance();
 		List<Graph> graphs = dend.getGraphs();
 		String[] graphs_names = new String[graphs.size()];
-		for(int i = 0; i < graphs.size(); i++) {
+		for (int i = 0; i < graphs.size(); i++) {
 			graphs_names[i] = graphs.get(i).getName();
 		}
 
@@ -54,9 +57,11 @@ public class Mono2MicroController {
 
 		Dendrogram dend = Dendrogram.getInstance();
 		List<Graph> graphs = dend.getGraphs();
-		for (Graph graph : graphs)
-			if (graph.getName().equals(name))
+		for (Graph graph : graphs) {
+			if (graph.getName().equals(name)) {
 				return new ResponseEntity<>(graph, HttpStatus.OK);
+			}
+		}
 
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
@@ -82,8 +87,8 @@ public class Mono2MicroController {
 	@RequestMapping(value = "/createDendrogram", method = RequestMethod.POST)
 	public ResponseEntity<Dendrogram> createDendrogram(@RequestParam("file") MultipartFile datafile) {
 		logger.debug("createDendrogram filename: {}", datafile.getOriginalFilename());
-		
-		//save datafile
+
+		// save datafile
 		try {
 			FileOutputStream outputStream = new FileOutputStream(fileUploadPath + "datafile.txt");
 			outputStream.write(datafile.getBytes());
@@ -92,21 +97,21 @@ public class Mono2MicroController {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		
+
 		try {
-			//run python script with clustering algorithm
+			// run python script with clustering algorithm
 			Runtime r = Runtime.getRuntime();
 			String pythonScriptPath = fileUploadPath + "dendrogram.py";
 			String[] cmd = new String[3];
-			cmd[0] = "python";
+			cmd[0] = PYTHON;
 			cmd[1] = pythonScriptPath;
 			cmd[2] = fileUploadPath;
-            Process p = r.exec(cmd);
+			Process p = r.exec(cmd);
 
-            p.waitFor();
-			
-			//retrieve dendrogram information returned by the python script
-            BufferedReader bre = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			p.waitFor();
+
+			// retrieve dendrogram information returned by the python script
+			BufferedReader bre = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			String line = "";
 			Dendrogram.getInstance().destroy();
 			Dendrogram dend = Dendrogram.getInstance();
@@ -117,19 +122,20 @@ public class Mono2MicroController {
 				String right = parts[2];
 				float dist = new Float(parts[3]);
 				dend.addNode(new Node(node, dist));
-				if (!left.equals("null"))
-					dend.addEdge(new Edge(node,left));
-				if (!right.equals("null"))
-					dend.addEdge(new Edge(node,right));
+				if (!left.equals("null")) {
+					dend.addEdge(new Edge(node, left));
+				}
+				if (!right.equals("null")) {
+					dend.addEdge(new Edge(node, right));
+				}
 			}
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		
+
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
-
 
 	@RequestMapping(value = "/loadDendrogram", method = RequestMethod.GET)
 	public ResponseEntity<Dendrogram> loadDendrogram() {
@@ -154,18 +160,18 @@ public class Mono2MicroController {
 	@RequestMapping(value = "/cutDendrogram", method = RequestMethod.GET)
 	public ResponseEntity<Graph> getCutDendrogram(@RequestParam("cutValue") String cutValue) {
 		logger.debug("getCutDendrogram");
-		
-		try{
+
+		try {
 			Runtime r = Runtime.getRuntime();
 			String pythonScriptPath = fileUploadPath + "cutDendrogram.py";
 			String[] cmd = new String[3];
-			cmd[0] = "python";
+			cmd[0] = PYTHON;
 			cmd[1] = pythonScriptPath;
 			cmd[2] = cutValue;
 			Process p = r.exec(cmd);
 
 			p.waitFor();
-			
+
 			Dendrogram dend = Dendrogram.getInstance();
 			Graph graph;
 			if (dend.getGraphsNames().contains("Graph_" + cutValue)) {
@@ -199,16 +205,17 @@ public class Mono2MicroController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-
 	@RequestMapping(value = "/mergeClusters", method = RequestMethod.GET)
-	public ResponseEntity<Dendrogram> mergeClusters(@RequestParam("graphName") String graphName, @RequestParam("cluster1") String cluster1, @RequestParam("cluster2") String cluster2) {
+	public ResponseEntity<Dendrogram> mergeClusters(@RequestParam("graphName") String graphName,
+			@RequestParam("cluster1") String cluster1, @RequestParam("cluster2") String cluster2) {
 		Dendrogram dend = Dendrogram.getInstance();
 		dend.mergeClusters(graphName, cluster1, cluster2);
 		return new ResponseEntity<Dendrogram>(dend, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/renameCluster", method = RequestMethod.GET)
-	public ResponseEntity<Dendrogram> renameCluster(@RequestParam("graphName") String graphName, @RequestParam("clusterName") String clusterName, @RequestParam("newName") String newName) {
+	public ResponseEntity<Dendrogram> renameCluster(@RequestParam("graphName") String graphName,
+			@RequestParam("clusterName") String clusterName, @RequestParam("newName") String newName) {
 		Dendrogram dend = Dendrogram.getInstance();
 		boolean success = dend.renameCluster(graphName, clusterName, newName);
 		if (success) {
@@ -219,7 +226,8 @@ public class Mono2MicroController {
 	}
 
 	@RequestMapping(value = "/renameGraph", method = RequestMethod.GET)
-	public ResponseEntity<Dendrogram> renameGraph(@RequestParam("graphName") String graphName, @RequestParam("newName") String newName) {
+	public ResponseEntity<Dendrogram> renameGraph(@RequestParam("graphName") String graphName,
+			@RequestParam("newName") String newName) {
 		Dendrogram dend = Dendrogram.getInstance();
 		boolean success = dend.renameGraph(graphName, newName);
 		if (success) {

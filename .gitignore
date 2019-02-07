@@ -34,3 +34,5 @@ yarn-error.log*
 .idea
 /target/
 
+backend/src/main/resources/datafile.txt
+backend/src/main/resources/dend.png

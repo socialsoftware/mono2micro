@@ -5,9 +5,12 @@ import VisDecomposition from './../util/VisDecomposition';
 export class Decomposition extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = { graphName: this.props.match.params.name, graph: [], loaded: false };
-        this.getGraph = this.getGraph.bind(this);
+
         this.getGraph(this.state.graphName);
+
+        this.getGraph = this.getGraph.bind(this);
     }
 
     getGraph(name) {

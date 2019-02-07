@@ -10,7 +10,7 @@ export class Graph extends React.Component {
         return (
             <div>
                 <h5>Graph of {this.props.match.params.name}</h5>
-                <GraphDiagram spec={this.props.match.params.name} />
+                <GraphDiagram name={this.props.match.params.name} />
             </div>
         );
     }

@@ -10,11 +10,11 @@ export class VisNetwork extends Component {
 
         this.state = {
             showConditions: false,
-            conditions: '',
+            entities: '',
         };
 
         this.handleDoubleClick = this.handleDoubleClick.bind(this);
-        this.handleCloseConditionsModal = this.handleCloseConditionsModal.bind(this);
+        this.handleCloseEntitiesModal = this.handleCloseEntitiesModal.bind(this);
         this.handleSelectNode = this.handleSelectNode.bind(this);
     }
 
@@ -22,10 +22,10 @@ export class VisNetwork extends Component {
         this.props.onSelection(event.nodes[0]);
     }
 
-    handleCloseConditionsModal() {
+    handleCloseEntitiesModal() {
         this.setState({
             showConditions: false,
-            conditions: ''
+            entities: ''
         });
     }
 
@@ -34,7 +34,7 @@ export class VisNetwork extends Component {
         if (nodeId) {
             this.setState({
                 showConditions: true,
-                conditions: this.props.graph.nodes.filter(n => n.id === nodeId)[0].title
+                entities: this.props.clusters.filter(c => c.name === nodeId)[0].entities.join('<br />')
             });
         }
     }
@@ -50,7 +50,7 @@ export class VisNetwork extends Component {
     render() {
         return ( 
             <div>
-                {this.state.showConditions && <ModalMessage title='Conditions' message={this.state.conditions} onClose={this.handleCloseConditionsModal} />}
+                {this.state.showConditions && <ModalMessage title='Entities' message={this.state.entities} onClose={this.handleCloseEntitiesModal} />}
                 <div ref = {this.appRef}/>
             </div>
         );

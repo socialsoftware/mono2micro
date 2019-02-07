@@ -50,8 +50,8 @@ export class OperationsMenu extends React.Component {
     render() {
        return (
            <Form inline>
-                {this.props.selectedGoal.name && <span>
-                <Button id='1'>{this.props.selectedGoal.name}</Button>
+                {this.props.selectedCluster.name && <span>
+                <Button id='1'>{this.props.selectedCluster.name}</Button>
                 <span> </span>
                 <DropdownButton 
                     bsStyle='primary'
@@ -62,29 +62,26 @@ export class OperationsMenu extends React.Component {
                     <MenuItem eventKey="3" onClick={() => this.setOperation(operations.SPLIT)}>{operations.SPLIT}</MenuItem>
                 </DropdownButton></span>}{' '}
 
-                {this.props.mergeWithGoal.name && <span>
-                <Button id='3'>{this.props.mergeWithGoal.name}</Button></span>}
+                {this.props.mergeWithCluster.name && <span>
+                <Button id='3'>{this.props.mergeWithCluster.name}</Button></span>}
 
-                {this.state.operation === operations.SPLIT && this.props.goalConditions &&
+                {this.state.operation === operations.SPLIT && this.props.clusterEntities &&
                 <DropdownButton 
                     bsStyle='default'
-                    title={'conditions'}
+                    title={'entities'}
                     id='4'>
-                    {this.props.selectedGoal.type === 'ProductGoal' &&
-                    this.props.goalConditions.map(c => <MenuItem 
-                        eventKey={c.path} 
-                        onSelect={() => this.props.handleSelectCondition(c.path)}
-                        active={c.active}>{c.path}</MenuItem>)}
-                    {this.props.selectedGoal.type === 'AssociationGoal' &&
-                    this.props.goalConditions.map(c => <MenuItem 
-                        eventKey={c.name} 
-                        onSelect={() => this.props.handleSelectCondition(c.name)}
-                        active={c.active}>{c.name}</MenuItem>)}
-                </DropdownButton>}            
+                    {this.props.clusterEntities.map(e => <MenuItem 
+                        key={e.name}
+                        eventKey={e.name} 
+                        onSelect={() => this.props.handleSelectEntity(e.name)}
+                        active={e.active}>{e.name}</MenuItem>)}
+                </DropdownButton>} 
                 
-                {(this.state.operation === operations.RENAME || this.props.mergeWithGoal.name || 
-                (this.props.goalConditions.reduce((a, c) => c.active ? ++a : a, 0) > 0 && 
-                this.props.goalConditions.reduce((a, c) => c.active ? ++a : a, 0) < this.props.goalConditions.length)) &&
+                {(this.state.operation === operations.RENAME || this.props.mergeWithCluster.name || 
+                 (this.props.clusterEntities &&
+                    this.props.clusterEntities.reduce((a, e) => e.active ? ++a : a, 0) > 0 && 
+                    this.props.clusterEntities.reduce((a, e) => e.active ? ++a : a, 0) < this.props.clusterEntities.length))
+                 &&
                 <FormControl
                     id="5"
                     type="text"

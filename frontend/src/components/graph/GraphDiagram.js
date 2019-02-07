@@ -4,6 +4,7 @@ import { OperationsMenu, operations } from './OperationsMenu';
 import { VisNetwork } from '../util/VisNetwork';
 import { ModalMessage } from '../util/ModalMessage';
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
+import { DataSet } from 'vis';
 
 const tooltip = (
     <Tooltip id="tooltip">
@@ -39,22 +40,24 @@ export class GraphDiagram extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
+         this.state = {
             graph: {},
+            clusters: [],
             showMenu: false,
-            selectedGoal: {},
-            mergeWithGoal: {},
-            goalConditions: [],
+            selectedCluster: {},
+            mergeWithCluster: {},
+            clusterEntities: [],
             error: false,
             errorMessage: '',
             operation: operations.NONE
         };
 
         this.loadGraph = this.loadGraph.bind(this);
-        this.setGoalConditions = this.setGoalConditions.bind(this);
+        this.convertClusterToNode = this.convertClusterToNode.bind(this);
+        this.setClusterEntities = this.setClusterEntities.bind(this);
         this.handleSelectOperation = this.handleSelectOperation.bind(this);
-        this.handleSelectGoal = this.handleSelectGoal.bind(this);
-        this.handleSelectCondition = this.handleSelectCondition.bind(this);
+        this.handleSelectCluster = this.handleSelectCluster.bind(this);
+        this.handleSelectEntity = this.handleSelectEntity.bind(this);
         this.handleOperationSubmit = this.handleOperationSubmit.bind(this);
         this.handleOperationCancel = this.handleOperationCancel.bind(this);
         this.closeErrorMessageModal = this.closeErrorMessageModal.bind(this);
@@ -63,42 +66,36 @@ export class GraphDiagram extends React.Component {
     loadGraph() {
         const service = new RepositoryService();
         service.getGraph(this.props.name).then(response => {
-            const graph = response.data;
-                this.setState({
-                    graph: graph,
-                    showMenu: false,
-                    selectedGoal: {},
-                    mergeWithGoal: {},
-                    goalCondtions: [],
-                    operation: operations.NONE
-                });
+
+            const graph = {
+              nodes: new DataSet(response.data.clusters.map(cluster => this.convertClusterToNode(cluster))),
+              edges: new DataSet([])
+            };
+
+            this.setState({
+                graph: graph,
+                clusters: response.data.clusters,
+                showMenu: false,
+                selectedCluster: {},
+                mergeWithCluster: {},
+                clusterEntities: [],
+                operation: operations.NONE
+            });
         });
+
     }
 
-    setGoalConditions(selectedGoal) {
-        const service = new RepositoryService();
-        if (selectedGoal.type === 'ProductGoal') {
-            service.getGoalEntitySuccessConditions(this.props.spec.specId, selectedGoal.name).then(response => {
-                const entConditions = response.data.map(c => ({...c, active: false}));
-                service.getGoalAttributeSuccessConditions(this.props.spec.specId, selectedGoal.name).then(response => {
-                    this.setState({
-                        selectedGoal: selectedGoal,
-                        mergeWithGoal: {},
-                        goalConditions: entConditions.concat(response.data.map(c => ({...c, active: false}))),
-                        operation: operations.SPLIT
-                    });
-                });    
-            });    
-        } else if (selectedGoal.type === 'AssociationGoal') {
-            service.getGoalRelations(this.props.spec.specId, selectedGoal.name).then(response => {
-                this.setState({
-                    selectedGoal: selectedGoal,
-                    mergeWithGoal: {},
-                    goalConditions: response.data.map(c => ({...c, active: false})),
-                    operation: operations.SPLIT
-                });
-            });    
-        }
+    convertClusterToNode(cluster) {
+        return {id: cluster.name, label: cluster.name};
+    };
+
+    setClusterEntities(selectedCluster) {
+        this.setState({
+            selectedCluster: selectedCluster,
+            mergeWithCluster: {},
+            clusterEntities: selectedCluster.entities.map(e => ({name: e, active: false})),
+            operation: operations.SPLIT
+        });
     }
 
     componentDidMount() {
@@ -107,55 +104,54 @@ export class GraphDiagram extends React.Component {
 
     handleSelectOperation(operation) {
         if (operation === operations.SPLIT) {
-            this.setGoalConditions(this.state.selectedGoal);
+            this.setClusterEntities(this.state.selectedCluster);
         } else {
             this.setState({ 
-                mergeWithGoal: {},
-                goalConditions: [],
+                mergeWithCluster: {},
+                clusterEntities: [],
                 operation: operation 
             });
         }
     }
 
-    handleSelectGoal(externalId) {
+    handleSelectCluster(nodeId) {
         if (this.state.operation === operations.NONE ||
             this.state.operation === operations.RENAME) {
             this.setState({
                 showMenu: true,
-                selectedGoal: this.state.goalModel.find(goal => goal.extId === externalId)
+                selectedCluster: this.state.clusters.find(c => c.name === nodeId)
             });
         }
 
         if (this.state.operation === operations.MERGE) {
-            const mergeWithGoal = this.state.goalModel.find(goal => goal.extId === externalId);
-            if (this.state.selectedGoal.type !== mergeWithGoal.type ||
-                this.state.selectedGoal === mergeWithGoal) {
+            const mergeWithCluster = this.state.clusters.find(c => c.name === nodeId);
+            if (this.state.selectedCluster === mergeWithCluster) {
                 this.setState({
                     error: true,
-                    errorMessage: 'The goals are not of the same type or are equal: ' + this.state.selectedGoal.type + " <> " + mergeWithGoal.type
+                    errorMessage: 'Cannot merge a cluster with itself'
                 });
             } else {
                 this.setState({
-                    mergeWithGoal: mergeWithGoal
+                    mergeWithCluster: mergeWithCluster
                 });
             }
         }
 
         if (this.state.operation === operations.SPLIT) {
-            this.setGoalConditions(this.state.goalModel.find(goal => goal.extId === externalId));
+            this.setClusterEntities(this.state.clusters.find(c => c.name  === nodeId));
         }
     }
 
-    handleSelectCondition(conditionKey) {
-        const goalConditions = this.state.goalConditions.map(c => {
-            if (c.path === conditionKey || c.name === conditionKey) {
-                return {...c, active: !c.active};
+    handleSelectEntity(entityName) {
+        const clusterEntities = this.state.clusterEntities.map(e => {
+            if (e.name === entityName) {
+                return {...e, active: !e.active};
             } else {
-                return c;
+                return e;
             }
         });
         this.setState({
-            goalConditions: goalConditions
+            clusterEntities: clusterEntities
         });
     }
 
@@ -163,9 +159,9 @@ export class GraphDiagram extends React.Component {
         const service = new RepositoryService();
         switch (operation) {
             case operations.RENAME:
-                service.renameGoal(this.props.spec.specId, this.state.selectedGoal.name, inputValue)
+                service.renameCluster(this.props.name, this.state.selectedCluster.name, inputValue)
                 .then(() => {
-                    this.loadModel();        
+                    this.loadGraph();        
                 }).catch((err) => {
                     this.setState({
                         error: true,
@@ -174,10 +170,10 @@ export class GraphDiagram extends React.Component {
                 });
                 break;
             case operations.MERGE:
-                service.mergeGoals(this.props.spec.specId, this.state.selectedGoal, 
-                    this.state.mergeWithGoal, inputValue)
+                service.mergeClusters(this.props.name, this.state.selectedCluster.name, 
+                    this.state.mergeWithCluster.name)
                 .then(() => {
-                    this.loadModel();        
+                    this.loadGraph();        
                 }).catch((err) => {
                     this.setState({
                         error: true,
@@ -186,13 +182,10 @@ export class GraphDiagram extends React.Component {
                 });
                 break;
             case operations.SPLIT:
-                const goalConditions = this.state.goalConditions.filter(c => c.active);
-                const sucConditions = this.state.selectedGoal.type === 'ProductGoal' ? goalConditions : null;
-                const relations = this.state.selectedGoal.type === 'AssociationGoal' ? goalConditions : null;
-                service.splitGoal(this.props.spec.specId, this.state.selectedGoal, 
-                    sucConditions, relations, inputValue)
+                const activeClusterEntities = this.state.clusterEntities.filter(e => e.active);
+                service.splitCluster(this.props.name, this.state.selectedCluster, activeClusterEntities)
                 .then(() => {
-                    this.loadModel();        
+                    this.loadGraph();        
                 }).catch((err) => {
                     this.setState({
                         error: true,
@@ -207,9 +200,9 @@ export class GraphDiagram extends React.Component {
     handleOperationCancel() {
         this.setState({ 
             showMenu: false,
-            selectedGoal: {},
-            mergeWithGoal: {},
-            goalConditions: [],
+            selectedCluster: {},
+            mergeWithCluster: {},
+            clusterEntities: [],
             operation: operations.NONE 
         });
     }
@@ -236,21 +229,21 @@ export class GraphDiagram extends React.Component {
 
                 {this.state.showMenu &&
                 <OperationsMenu
-                    selectedGoal={this.state.selectedGoal}
-                    mergeWithGoal={this.state.mergeWithGoal}
-                    goalConditions={this.state.goalConditions}
-                    goalConditionKeys={this.state.goalConditionKeys}
+                    selectedCluster={this.state.selectedCluster}
+                    mergeWithCluster={this.state.mergeWithCluster}
+                    clusterEntities={this.state.clusterEntities}
                     handleSelectOperation={this.handleSelectOperation}
-                    handleSelectCondition={this.handleSelectCondition}
+                    handleSelectEntity={this.handleSelectEntity}
                     handleSubmit={this.handleOperationSubmit}
                     handleCancel={this.handleOperationCancel}
-                    goalModel={this.state.goalModel}/>}
+                    />}
 
                 <div style={{width:'1000px' , height: '700px'}}>
                     <VisNetwork 
                         graph={this.state.graph} 
+                        clusters={this.state.clusters} 
                         options={options} 
-                        onSelection={this.handleSelectGoal} />
+                        onSelection={this.handleSelectCluster} />
                 </div>
             </div>
         );
