@@ -13,7 +13,7 @@ const tooltip = (
 );
 
 const options = {
-    height: 700,
+    height: "700",
     layout: {
         hierarchical: false
     },
@@ -182,8 +182,8 @@ export class GraphDiagram extends React.Component {
                 });
                 break;
             case operations.SPLIT:
-                const activeClusterEntities = this.state.clusterEntities.filter(e => e.active);
-                service.splitCluster(this.props.name, this.state.selectedCluster, activeClusterEntities)
+                const activeClusterEntities = this.state.clusterEntities.filter(e => e.active).map(e => e.name).toString();
+                service.splitCluster(this.props.name, this.state.selectedCluster.name, inputValue, activeClusterEntities)
                 .then(() => {
                     this.loadGraph();        
                 }).catch((err) => {

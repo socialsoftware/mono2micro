@@ -68,4 +68,18 @@ public class Graph {
 			clustersNames.add(cluster.getName());
 		return clustersNames;
 	}
+
+	public void splitCluster(String clusterName, String newName, String[] entities) {
+		Cluster newCluster = new Cluster(newName);
+		for (String entity : entities)
+			newCluster.addEntity(entity);
+		this.addCluster(newCluster);
+
+		for (int i = 0; i < clusters.size(); i++) {
+			if (clusters.get(i).getName().equals(clusterName)) {
+				for (String entity : entities)
+					clusters.get(i).getEntities().remove(entity);
+			}
+		}
+	}
 }

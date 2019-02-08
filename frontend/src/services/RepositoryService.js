@@ -88,4 +88,16 @@ export class RepositoryService {
                 }
             });
     }
+
+    splitCluster(graphName, clusterName, newName, entitiesToExtract) {
+        return this.axios.get("/splitCluster", 
+            {
+                params: {
+                    "graphName" : graphName,
+                    "clusterName" : clusterName,
+                    "newName" : newName,
+                    "entities" : entitiesToExtract
+                }
+            });
+    }
  }

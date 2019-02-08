@@ -28,6 +28,10 @@ public class Cluster {
 		return this.entities;
 	}
 
+	public void setEntities(List<String> entities) {
+		this.entities = entities;
+	}
+
 	public void addEntity(String entity) {
 		this.entities.add(entity);
 	}

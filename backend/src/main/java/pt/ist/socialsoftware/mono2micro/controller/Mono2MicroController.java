@@ -234,4 +234,15 @@ public class Mono2MicroController {
 			return new ResponseEntity<Dendrogram>(dend, HttpStatus.BAD_REQUEST);
 		}
 	}
+
+	@RequestMapping(value = "/splitCluster", method = RequestMethod.GET)
+	public ResponseEntity<Dendrogram> splitCluster(@RequestParam("graphName") String graphName,
+			@RequestParam("clusterName") String clusterName, @RequestParam("newName") String newName, 
+			@RequestParam("entities") String entities) {
+		logger.debug("splitCluster: {}", clusterName);
+
+		Dendrogram dend = Dendrogram.getInstance();
+		dend.splitCluster(graphName, clusterName, newName, entities.split(","));
+		return new ResponseEntity<Dendrogram>(dend, HttpStatus.OK);
+	}
 }

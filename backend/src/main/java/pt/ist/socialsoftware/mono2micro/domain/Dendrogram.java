@@ -84,4 +84,12 @@ public class Dendrogram {
 		return true;
 	}
 
+	public void splitCluster(String graphName, String clusterName, String newName, String[] entities) {
+		for (int i = 0; i < graphs.size(); i++) {
+			if (graphs.get(i).getName().equals(graphName)) {
+				graphs.get(i).splitCluster(clusterName, newName, entities);
+			}
+		}
+	}
+
 }

@@ -32,7 +32,7 @@ export class DendrogramCut extends React.Component {
         event.preventDefault();
         const service = new RepositoryService();
         service.cutDendrogram(this.state.cutValue).then(response => {
-            if (response.status == HttpStatus.OK) {
+            if (response.status === HttpStatus.OK) {
                 this.props.location.headerFunction.handleGetGraphsFunction();
                 alert("Dendrogram cut successful.");
             } else {
@@ -53,7 +53,7 @@ export class DendrogramCut extends React.Component {
                     <input type="submit" value="Submit" />
                 </form>
                 {this.state.loaded ? <VisDendrogram nodes={this.state.nodes} edges={this.state.edges} /> : "Loading"}
-                <img src={DENDROGRAM_URL + "?" + new Date().getTime()} />
+                <img src={DENDROGRAM_URL + "?" + new Date().getTime()} alt="Dendrogram" />
                 
             </div>
         );
