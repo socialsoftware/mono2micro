@@ -23,9 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
-import pt.ist.socialsoftware.mono2micro.domain.Edge;
+import pt.ist.socialsoftware.mono2micro.domain.Entity;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
-import pt.ist.socialsoftware.mono2micro.domain.Node;
 import pt.ist.socialsoftware.mono2micro.utils.PropertiesManager;
 
 @RestController
@@ -66,15 +65,6 @@ public class Mono2MicroController {
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
 
-	@RequestMapping(value = "/graph/{name}", method = RequestMethod.DELETE)
-	public ResponseEntity<Dendrogram> deleteGraph(@PathVariable("name") String name) {
-		logger.debug("deleteGraph name:{}", name);
-
-		// TO DO:
-
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
-
 	@RequestMapping(value = "/createDendrogram", method = RequestMethod.POST)
 	public ResponseEntity<Dendrogram> createDendrogram(@RequestParam("file") MultipartFile datafile) {
 		logger.debug("createDendrogram filename: {}", datafile.getOriginalFilename());
@@ -107,18 +97,6 @@ public class Mono2MicroController {
 			Dendrogram.getInstance().destroy();
 			Dendrogram dend = Dendrogram.getInstance();
 			while ((line = bre.readLine()) != null) {
-				String[] parts = line.split(":");
-				String node = parts[0];
-				String left = parts[1];
-				String right = parts[2];
-				float dist = new Float(parts[3]);
-				dend.addNode(new Node(node, dist));
-				if (!left.equals("null")) {
-					dend.addEdge(new Edge(node, left));
-				}
-				if (!right.equals("null")) {
-					dend.addEdge(new Edge(node, right));
-				}
 			}
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
@@ -164,16 +142,7 @@ public class Mono2MicroController {
 			p.waitFor();
 
 			Dendrogram dend = Dendrogram.getInstance();
-			Graph graph;
-			if (dend.getGraphsNames().contains("Graph_" + cutValue)) {
-				int i = 2;
-				while (dend.getGraphsNames().contains("Graph_" + cutValue + "(" + i + ")")) {
-					i++;
-				}
-				graph = new Graph("Graph_" + cutValue + "(" + i + ")");
-			} else {
-				graph = new Graph("Graph_" + cutValue);
-			}
+			Graph graph = new Graph(cutValue);
 
 			BufferedReader bre = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			String line = "";
@@ -182,7 +151,9 @@ public class Mono2MicroController {
 				String clusterName = parts[0];
 				String entities = parts[1];
 				Cluster cluster = new Cluster("Cluster" + clusterName);
-				for (String entity : entities.split(",")) {
+				for (String entityName : entities.split(",")) {
+					Entity entity = new Entity(entityName);
+					// TODO: entity.addControllers
 					cluster.addEntity(entity);
 				}
 				graph.addCluster(cluster);

@@ -5,15 +5,30 @@ import java.util.List;
 
 public class Graph {
 	private String name;
+	private String cutValue;
 	private List<Cluster> clusters;
 
 	public Graph() {
 
 	}
 
-	public Graph(String name) {
-		this.name = name;
+	public Graph(String cutValue) {
+		this.name = assignName(cutValue);
+		this.cutValue = cutValue;
 		this.clusters = new ArrayList<>();
+	}
+
+	public String assignName(String cutValue) {
+		Dendrogram dend = Dendrogram.getInstance();
+		if (dend.getGraphsNames().contains("Graph_" + cutValue)) {
+			int i = 2;
+			while (dend.getGraphsNames().contains("Graph_" + cutValue + "(" + i + ")")) {
+				i++;
+			}
+			return "Graph_" + cutValue + "(" + i + ")";
+		} else {
+			return "Graph_" + cutValue;
+		}
 	}
 
 	public String getName() {
@@ -22,6 +37,14 @@ public class Graph {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getCutValue() {
+		return this.cutValue;
+	}
+
+	public void setCutValue(String cutValue) {
+		this.cutValue = cutValue;
 	}
 
 	public List<Cluster> getClusters() {
@@ -37,14 +60,14 @@ public class Graph {
 		this.addCluster(mergedCluster);
 		for (int i = 0; i < clusters.size(); i++) {
 			if (clusters.get(i).getName().equals(cluster1)) {
-				for (String entity : clusters.get(i).getEntities())
+				for (Entity entity : clusters.get(i).getEntities())
 					mergedCluster.addEntity(entity);
 				clusters.remove(i);
 			}
 		}
 		for (int i = 0; i < clusters.size(); i++) {
 			if (clusters.get(i).getName().equals(cluster2)) {
-				for (String entity : clusters.get(i).getEntities())
+				for (Entity entity : clusters.get(i).getEntities())
 					mergedCluster.addEntity(entity);
 				clusters.remove(i);
 			}
@@ -69,17 +92,20 @@ public class Graph {
 		return clustersNames;
 	}
 
-	public void splitCluster(String clusterName, String newName, String[] entities) {
-		Cluster newCluster = new Cluster(newName);
-		for (String entity : entities)
-			newCluster.addEntity(entity);
-		this.addCluster(newCluster);
+	public Cluster getCluster(String clusterName) {
+		for (Cluster cluster : this.clusters)
+			if (cluster.getName().equals(clusterName))
+				return cluster;
+		return null;
+	}
 
-		for (int i = 0; i < clusters.size(); i++) {
-			if (clusters.get(i).getName().equals(clusterName)) {
-				for (String entity : entities)
-					clusters.get(i).getEntities().remove(entity);
-			}
+	public void splitCluster(String clusterName, String newName, String[] entities) {
+		Cluster currentCluster = this.getCluster(clusterName);
+		Cluster newCluster = new Cluster(newName);
+		for (String entityName : entities) {
+			newCluster.addEntity(currentCluster.getEntity(entityName));
+			currentCluster.removeEntity(entityName);
 		}
+		this.addCluster(newCluster);
 	}
 }

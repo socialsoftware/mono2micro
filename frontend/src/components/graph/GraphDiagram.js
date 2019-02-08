@@ -29,10 +29,20 @@ const options = {
         }
     },
     nodes: {
-        shape: 'ellipse'
+        shape: 'ellipse',
+        scaling: {
+            label: {
+                enabled: true
+            },
+        }
     },
     interaction: {
         hover: true
+    },
+    physics: {
+        barnesHut: {
+            avoidOverlap: 1
+        }
     }
 };
 
@@ -86,14 +96,14 @@ export class GraphDiagram extends React.Component {
     }
 
     convertClusterToNode(cluster) {
-        return {id: cluster.name, label: cluster.name};
+        return {id: cluster.name, label: cluster.name, value: cluster.entities.length};
     };
 
     setClusterEntities(selectedCluster) {
         this.setState({
             selectedCluster: selectedCluster,
             mergeWithCluster: {},
-            clusterEntities: selectedCluster.entities.map(e => ({name: e, active: false})),
+            clusterEntities: selectedCluster.entities.map(e => ({name: e.name, active: false})),
             operation: operations.SPLIT
         });
     }

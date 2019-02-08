@@ -3,15 +3,15 @@ package pt.ist.socialsoftware.mono2micro.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cluster {
+public class Controller {
 	private String name;
 	private List<Entity> entities;
 
-	public Cluster() {
+	public Controller() {
 
 	}
 
-	public Cluster(String name) {
+	public Controller(String name) {
         this.name = name;
         this.entities = new ArrayList<>();
 	}
@@ -34,22 +34,6 @@ public class Cluster {
 
 	public void addEntity(Entity entity) {
 		this.entities.add(entity);
-	}
-
-	public Entity getEntity(String entityName) {
-		for (Entity entity : this.entities)
-			if (entity.getName().equals(entityName))
-				return entity;
-		return null;
-	}
-
-	public void removeEntity(String entityName) {
-		for (Entity entity : this.entities) {
-			if (entity.getName().equals(entityName)) {
-				this.entities.remove(entity);
-				break;
-			}
-		}
 	}
 
 }

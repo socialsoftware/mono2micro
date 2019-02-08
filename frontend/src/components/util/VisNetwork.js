@@ -13,13 +13,10 @@ export class VisNetwork extends Component {
             entities: '',
         };
 
-        this.handleDoubleClick = this.handleDoubleClick.bind(this);
         this.handleCloseEntitiesModal = this.handleCloseEntitiesModal.bind(this);
         this.handleSelectNode = this.handleSelectNode.bind(this);
-    }
-
-    handleDoubleClick(event) {
-        this.props.onSelection(event.nodes[0]);
+        this.handleHoverNode = this.handleHoverNode.bind(this);
+        this.handleBlurNode = this.handleBlurNode.bind(this);
     }
 
     handleCloseEntitiesModal() {
@@ -30,20 +27,23 @@ export class VisNetwork extends Component {
     }
 
     handleSelectNode(event) {
-        const nodeId = event.nodes[0];
-        if (nodeId) {
-            this.setState({
-                showConditions: true,
-                entities: this.props.clusters.filter(c => c.name === nodeId)[0].entities.join('<br />')
-            });
-        }
+        this.props.onSelection(event.nodes[0]);
+    }
+
+    handleHoverNode(event) {
+        this.props.graph.nodes.update({id: event.node, label: this.props.clusters.filter(c => c.name === event.node)[0].entities.map(e => e.name).join('\n')});
+    }
+
+    handleBlurNode(event) {
+        this.props.graph.nodes.update({id: event.node, label: event.node});
     }
 
     componentDidUpdate(prevProps) {
         if (this.props.graph !== prevProps.graph) {
             this.network = new Network(this.appRef.current, this.props.graph, this.props.options);
             this.network.on("selectNode", this.handleSelectNode);
-            this.network.on("doubleClick", this.handleDoubleClick);
+            this.network.on("hoverNode", this.handleHoverNode);
+            this.network.on("blurNode", this.handleBlurNode);
         }
     }
 

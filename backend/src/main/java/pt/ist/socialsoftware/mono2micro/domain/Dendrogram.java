@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Dendrogram {
-	private ArrayList<Node> nodes = new ArrayList<>();
-	private ArrayList<Edge> edges = new ArrayList<>();
 	private ArrayList<Graph> graphs = new ArrayList<>();
 
     private static Dendrogram instance = null; 
@@ -22,22 +20,6 @@ public class Dendrogram {
 	
 	public void destroy() {
 		instance = null;
-	}
-
-	public ArrayList<Node> getNodes() {
-		return this.nodes;
-	}
-
-	public void addNode(Node node) {
-		this.nodes.add(node);
-	}
-
-	public ArrayList<Edge> getEdges() {
-		return this.edges;
-	}
-
-	public void addEdge(Edge edge) {
-		this.edges.add(edge);
 	}
 
 	public ArrayList<Graph> getGraphs() {

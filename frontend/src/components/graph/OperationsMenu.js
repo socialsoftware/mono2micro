@@ -91,11 +91,10 @@ export class OperationsMenu extends React.Component {
                     onChange={this.handleInputValueChange}
                 />}{' '}
                 
-                {this.state.inputValue.length > 0 && <span>
-                <Button id='6' bsStyle='primary' onClick={this.handleSubmit}>Submit</Button> 
-                <span> </span>
-                <Button id='7' onClick={this.handleClose}>Cancel</Button> </span>}
+                {this.state.inputValue.length > 0 &&
+                <Button id='6' bsStyle='primary' onClick={this.handleSubmit}>Submit</Button>}
 
+                <Button id='7' onClick={this.handleClose}>Cancel</Button>
             </Form>
        );
     }

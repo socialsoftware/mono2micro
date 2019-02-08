@@ -1,6 +1,5 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
-import VisDendrogram from './../util/VisDendrogram';
 import { DENDROGRAM_URL } from '../../constants/constants';
 
 var HttpStatus = require('http-status-codes');
@@ -9,16 +8,7 @@ var HttpStatus = require('http-status-codes');
 export class DendrogramCut extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { nodes: null, edges: null, loaded: false, cutValue: "" };
-
-        const service = new RepositoryService();
-        service.loadDendrogram().then(response => {
-            this.setState({
-                nodes: response.data.nodes,
-                edges: response.data.edges,
-                loaded: true
-            });
-        });
+        this.state = { cutValue: "" };
 
         this.handleCutValueChange = this.handleCutValueChange.bind(this);
         this.handleCutSubmit = this.handleCutSubmit.bind(this);
@@ -52,7 +42,6 @@ export class DendrogramCut extends React.Component {
                     </label>
                     <input type="submit" value="Submit" />
                 </form>
-                {this.state.loaded ? <VisDendrogram nodes={this.state.nodes} edges={this.state.edges} /> : "Loading"}
                 <img src={DENDROGRAM_URL + "?" + new Date().getTime()} alt="Dendrogram" />
                 
             </div>
