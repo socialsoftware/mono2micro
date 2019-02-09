@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Controller {
 	private String name;
-	private List<Entity> entities;
+	private List<String> entities;
 
 	public Controller() {
 
@@ -24,15 +24,15 @@ public class Controller {
 		this.name = name;
 	}
 
-	public List<Entity> getEntities() {
+	public List<String> getEntities() {
 		return this.entities;
 	}
 
-	public void setEntities(List<Entity> entities) {
+	public void setEntities(List<String> entities) {
 		this.entities = entities;
 	}
 
-	public void addEntity(Entity entity) {
+	public void addEntity(String entity) {
 		this.entities.add(entity);
 	}
 

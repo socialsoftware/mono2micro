@@ -4,9 +4,10 @@ import matplotlib.pyplot as plt
 import matplotlib.pylab as plab
 import sys
 
-cutValue = float(sys.argv[1])
+datafilePath = str(sys.argv[1])
+cutValue = float(sys.argv[2])
 
-fp = open("src/main/resources/datafile.txt")
+fp = open(datafilePath + "datafile.txt")
 datafile = fp.read()
 
 data_dictionary = {}

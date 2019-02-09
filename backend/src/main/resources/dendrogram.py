@@ -46,41 +46,5 @@ linkage_type = 'single'
 
 hierarc = hierarchy.linkage(y=similarity_matrix, method=linkage_type)
 
-tree = hierarchy.to_tree(hierarc)
-
-leaves = hierarchy.leaves_list(hierarc)
-
-result = []
-not_processed = [tree]
-
-while not_processed != []:
-    processing = not_processed[0]
-    del(not_processed[0])
-
-    line = ""
-
-    if processing.id in leaves:
-        line += base_classes[processing.id] + ":"
-        line += "null:null"
-        line += ":" + str(processing.dist * -1)
-    else:
-        line += str(processing.id) + ":"
-        if processing.left.id in leaves:
-            line += base_classes[processing.left.id] + ":"
-        else:
-            line += str(processing.left.id) + ":"
-        if processing.right.id in leaves:
-            line += base_classes[processing.right.id]
-        else:
-            line += str(processing.right.id)
-        line += ":" + str(processing.dist * -1)
-        not_processed += [processing.left, processing.right]
-
-    result += [line]
-
-for l in result:
-    print(l)
-
 dend = hierarchy.dendrogram(hierarc, labels=base_classes, distance_sort='descending')
 plab.savefig(datafilePath + "dend.png", format="png", bbox_inches='tight')
-#plt.show()

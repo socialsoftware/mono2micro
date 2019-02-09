@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Dendrogram {
-	private ArrayList<Graph> graphs = new ArrayList<>();
+	private List<Graph> graphs = new ArrayList<>();
+	private List<Controller> controllers = new ArrayList<>();
+	private List<Entity> entities = new ArrayList<>();
 
     private static Dendrogram instance = null; 
 
@@ -22,7 +24,7 @@ public class Dendrogram {
 		instance = null;
 	}
 
-	public ArrayList<Graph> getGraphs() {
+	public List<Graph> getGraphs() {
 		return this.graphs;
 	}
 
@@ -72,6 +74,57 @@ public class Dendrogram {
 				graphs.get(i).splitCluster(clusterName, newName, entities);
 			}
 		}
+	}
+
+	public List<Entity> getEntities() {
+		return this.entities;
+	}
+
+
+	public void addEntity(Entity entity) {
+		this.entities.add(entity);
+	}
+
+	public Entity getEntity(String entityName) {
+		for (Entity entity : this.entities) {
+			if (entity.getName().equals(entityName))
+				return entity;
+		}
+		return null;
+	}
+
+	public boolean containsEntity(String entityName) {
+		for (Entity entity : this.entities) {
+			if (entity.getName().equals(entityName))
+				return true;
+		}
+		return false;
+	}
+
+
+	public List<Controller> getControllers() {
+		return this.controllers;
+	}
+
+
+	public void addController(Controller controller) {
+		this.controllers.add(controller);
+	}
+
+	public Controller getController(String controllerName) {
+		for (Controller controller : this.controllers) {
+			if (controller.getName().equals(controllerName))
+				return controller;
+		}
+		return null;
+	}
+
+	public boolean containsController(String controllerName) {
+		for (Controller controller : this.controllers) {
+			if (controller.getName().equals(controllerName))
+				return true;
+		}
+		return false;
 	}
 
 }

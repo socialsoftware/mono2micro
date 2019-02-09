@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
+import pt.ist.socialsoftware.mono2micro.domain.Controller;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.domain.Entity;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
@@ -69,11 +71,39 @@ public class Mono2MicroController {
 	public ResponseEntity<Dendrogram> createDendrogram(@RequestParam("file") MultipartFile datafile) {
 		logger.debug("createDendrogram filename: {}", datafile.getOriginalFilename());
 
+		Dendrogram.getInstance().destroy();
+		Dendrogram dend = Dendrogram.getInstance();
+
 		// save datafile
 		try {
 			FileOutputStream outputStream = new FileOutputStream(fileUploadPath + "datafile.txt");
 			outputStream.write(datafile.getBytes());
 			outputStream.close();
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
+		BufferedReader br;
+		try {
+			String line;
+			InputStream is = datafile.getInputStream();
+			br = new BufferedReader(new InputStreamReader(is));
+			while ((line = br.readLine()) != null) {
+				String[] parts = line.split(":");
+				String controller = parts[0];
+				String entity = parts[1];
+
+				if (!dend.containsEntity(entity))
+					dend.addEntity(new Entity(entity));
+				if (!dend.getEntity(entity).getControllers().contains(controller))
+					dend.getEntity(entity).addController(controller);
+
+				if (!dend.containsController(controller))
+					dend.addController(new Controller(controller));
+				if (!dend.getController(controller).getEntities().contains(entity))
+					dend.getController(controller).addEntity(entity);
+			}
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -91,13 +121,7 @@ public class Mono2MicroController {
 
 			p.waitFor();
 
-			// retrieve dendrogram information returned by the python script
-			BufferedReader bre = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			String line = "";
-			Dendrogram.getInstance().destroy();
-			Dendrogram dend = Dendrogram.getInstance();
-			while ((line = bre.readLine()) != null) {
-			}
+			
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -133,10 +157,11 @@ public class Mono2MicroController {
 		try {
 			Runtime r = Runtime.getRuntime();
 			String pythonScriptPath = fileUploadPath + "cutDendrogram.py";
-			String[] cmd = new String[3];
+			String[] cmd = new String[4];
 			cmd[0] = PYTHON;
 			cmd[1] = pythonScriptPath;
-			cmd[2] = cutValue;
+			cmd[2] = fileUploadPath;
+			cmd[3] = cutValue;
 			Process p = r.exec(cmd);
 
 			p.waitFor();
@@ -153,7 +178,8 @@ public class Mono2MicroController {
 				Cluster cluster = new Cluster("Cluster" + clusterName);
 				for (String entityName : entities.split(",")) {
 					Entity entity = new Entity(entityName);
-					// TODO: entity.addControllers
+					for (String controller : dend.getEntity(entityName).getControllers())
+						entity.addController(controller);
 					cluster.addEntity(entity);
 				}
 				graph.addCluster(cluster);
