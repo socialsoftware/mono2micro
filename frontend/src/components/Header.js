@@ -47,11 +47,11 @@ export class Header extends React.Component {
                 <Navbar.Collapse>
                     <Nav>
                         <NavDropdown eventKey={1} title="Manage Clusters" id="basic-nav-dropdown">
-                            <LinkContainer to='/dendrogram/create'>
+                            <LinkContainer to={{ pathname: '/dendrogram/create', headerFunction: { handleGetGraphsFunction: this.handleGetGraphs} }}>
                                 <MenuItem eventKey={1.1} >Create Dendrogram</MenuItem>
                             </LinkContainer>
                             <LinkContainer to={{ pathname: '/dendrogram/cut', headerFunction: { handleGetGraphsFunction: this.handleGetGraphs} }} >
-                                <MenuItem eventKey={1.1} >Dendrogram Cut</MenuItem>
+                                <MenuItem eventKey={1.2} >Dendrogram Cut</MenuItem>
                             </LinkContainer>
                             <MenuItem divider />
                             {graphs}

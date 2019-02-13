@@ -8,7 +8,9 @@ import { DataSet } from 'vis';
 
 const tooltip = (
     <Tooltip id="tooltip">
-      Select node for conditions and<br /> double click them to apply an operation
+      Hover cluster to see entities inside.<br />
+      Hover edge to see controllers in common.<br />
+      Select cluster or edge for highlight and to open operation menu.
     </Tooltip>
 );
 
@@ -19,13 +21,22 @@ const options = {
     },
     edges: {
         smooth: false,
-        color: '#000000',
         width: 0.5,
         arrows: {
           from: {
-            enabled: true,
+            enabled: false,
             scaleFactor: 0.5
           }
+        },
+        scaling: {
+            label: {
+                enabled: true
+            },
+        },
+        color: {
+            color: "#2B7CE9",
+            hover: "#2B7CE9",
+            highlight: "#FFA500"
         }
     },
     nodes: {
@@ -34,16 +45,30 @@ const options = {
             label: {
                 enabled: true
             },
+        },
+        color: {
+            border: "#2B7CE9",
+            background: "#D2E5FF",
+            highlight: {
+                background: "#FFA500",
+                border: "#FFA500"
+            }
         }
     },
     interaction: {
         hover: true
     },
     physics: {
-        barnesHut: {
-            avoidOverlap: 1
-        }
-    }
+        enabled: true,
+        hierarchicalRepulsion: {
+            centralGravity: 0.0,
+            springLength: 500,
+            springConstant: 0.01,
+            nodeDistance: 100,
+            damping: 0.09
+        },
+        solver: 'hierarchicalRepulsion'
+    },
 };
 
 export class GraphDiagram extends React.Component {
@@ -51,6 +76,7 @@ export class GraphDiagram extends React.Component {
         super(props);
 
          this.state = {
+            graphName: this.props.name,
             graph: {},
             clusters: [],
             showMenu: false,
@@ -64,6 +90,7 @@ export class GraphDiagram extends React.Component {
 
         this.loadGraph = this.loadGraph.bind(this);
         this.convertClusterToNode = this.convertClusterToNode.bind(this);
+        this.createEdges = this.createEdges.bind(this);
         this.setClusterEntities = this.setClusterEntities.bind(this);
         this.handleSelectOperation = this.handleSelectOperation.bind(this);
         this.handleSelectCluster = this.handleSelectCluster.bind(this);
@@ -73,13 +100,13 @@ export class GraphDiagram extends React.Component {
         this.closeErrorMessageModal = this.closeErrorMessageModal.bind(this);
     }
 
-    loadGraph() {
+    loadGraph(graphName) {
         const service = new RepositoryService();
-        service.getGraph(this.props.name).then(response => {
+        service.getGraph(graphName).then(response => {
 
             const graph = {
               nodes: new DataSet(response.data.clusters.map(cluster => this.convertClusterToNode(cluster))),
-              edges: new DataSet([])
+              edges: new DataSet(this.createEdges(response.data.clusters))
             };
 
             this.setState({
@@ -95,8 +122,35 @@ export class GraphDiagram extends React.Component {
 
     }
 
+    componentWillReceiveProps(nextProps) {
+        this.setState({graphName: nextProps.name});
+        this.loadGraph(nextProps.name);
+    }
+
+    createEdges(clusters) {
+        let edges = [];
+        let edgeLengthFactor = 1000;
+        for (var i = 0; i < clusters.length; i++) { 
+            for (var j = i+1; j < clusters.length; j++) {
+                let cluster1Controllers = [...new Set(clusters[i].entities.map(e => e.controllers).flat())];
+                let cluster2Controllers = [...new Set(clusters[j].entities.map(e => e.controllers).flat())];
+                let ControllersInCommon = cluster1Controllers.filter(value => -1 !== cluster2Controllers.indexOf(value))
+                let edgeTitle = clusters[i].name + " -- " + clusters[j].name + "<br>";
+                let edgeLength = (1/ControllersInCommon.length)*edgeLengthFactor;
+                if (edgeLength < 100) edgeLength = 300;
+                else if (edgeLength > 500) edgeLength = 500;
+                if (ControllersInCommon.length > 0)
+                    //edges.push({from: clusters[i].name, to: clusters[j].name, value: ControllersInCommon.length, label: ControllersInCommon.length.toString(), title: edgeTitle + ControllersInCommon.join('<br>')});
+                    edges.push({from: clusters[i].name, to: clusters[j].name, length:edgeLength, value: ControllersInCommon.length, label: ControllersInCommon.length.toString(), title: edgeTitle + ControllersInCommon.join('<br>')});
+                //else
+                    //edges.push({from: clusters[i].name, to: clusters[j].name, length:(1/0.5)*edgeLengthFactor, hidden: true});
+            }
+        }
+        return edges;
+    }
+
     convertClusterToNode(cluster) {
-        return {id: cluster.name, label: cluster.name, value: cluster.entities.length};
+        return {id: cluster.name, title: cluster.entities.map(e => e.name).join('<br>'), label: cluster.name, value: cluster.entities.length};
     };
 
     setClusterEntities(selectedCluster) {
@@ -109,7 +163,7 @@ export class GraphDiagram extends React.Component {
     }
 
     componentDidMount() {
-        this.loadGraph();
+        this.loadGraph(this.state.graphName);
     }
 
     handleSelectOperation(operation) {
@@ -169,9 +223,9 @@ export class GraphDiagram extends React.Component {
         const service = new RepositoryService();
         switch (operation) {
             case operations.RENAME:
-                service.renameCluster(this.props.name, this.state.selectedCluster.name, inputValue)
+                service.renameCluster(this.state.graphName, this.state.selectedCluster.name, inputValue)
                 .then(() => {
-                    this.loadGraph();        
+                    this.loadGraph(this.state.graphName);        
                 }).catch((err) => {
                     this.setState({
                         error: true,
@@ -180,10 +234,10 @@ export class GraphDiagram extends React.Component {
                 });
                 break;
             case operations.MERGE:
-                service.mergeClusters(this.props.name, this.state.selectedCluster.name, 
+                service.mergeClusters(this.state.graphName, this.state.selectedCluster.name, 
                     this.state.mergeWithCluster.name, inputValue)
                 .then(() => {
-                    this.loadGraph();        
+                    this.loadGraph(this.state.graphName);        
                 }).catch((err) => {
                     this.setState({
                         error: true,
@@ -193,9 +247,9 @@ export class GraphDiagram extends React.Component {
                 break;
             case operations.SPLIT:
                 const activeClusterEntities = this.state.clusterEntities.filter(e => e.active).map(e => e.name).toString();
-                service.splitCluster(this.props.name, this.state.selectedCluster.name, inputValue, activeClusterEntities)
+                service.splitCluster(this.state.graphName, this.state.selectedCluster.name, inputValue, activeClusterEntities)
                 .then(() => {
-                    this.loadGraph();        
+                    this.loadGraph(this.state.graphName);        
                 }).catch((err) => {
                     this.setState({
                         error: true,
@@ -228,7 +282,7 @@ export class GraphDiagram extends React.Component {
         return (
             <div>
                 <OverlayTrigger placement="bottom" overlay={tooltip}>
-                    <h3>{this.props.name}</h3>
+                    <h3>{this.state.graphName}</h3>
                 </OverlayTrigger><br /><br />
                 
                 {this.state.error && 

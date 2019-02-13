@@ -24,9 +24,14 @@ export class DendrogramCreate extends React.Component {
         const service = new RepositoryService();
         var data = new FormData();
         data.append('file', this.state.selectedFile);
+
+        this.setState({
+            isUploaded: "Uploading..."
+        });
         
         service.createDendrogram(data).then(response => {
             if (response.status === HttpStatus.CREATED) {
+                this.props.location.headerFunction.handleGetGraphsFunction();
                 this.setState({
                     isUploaded: "Upload completed successfully."
                 });
