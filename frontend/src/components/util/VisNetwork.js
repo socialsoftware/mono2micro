@@ -9,21 +9,24 @@ export class VisNetwork extends Component {
         this.appRef = createRef();
 
         this.state = {
-            showConditions: false,
-            entities: '',
+            showModalMessage: false,
+            ModalMessageTitle: '',
+            ModalMessageText: ''
         };
 
-        this.handleCloseEntitiesModal = this.handleCloseEntitiesModal.bind(this);
+        this.handleCloseModal = this.handleCloseModal.bind(this);
         this.handleSelectNode = this.handleSelectNode.bind(this);
         this.handleSelectEdge = this.handleSelectEdge.bind(this);
         this.handleDeselectEdge = this.handleDeselectEdge.bind(this);
         this.handleStabilization = this.handleStabilization.bind(this);
+        this.handleDoubleClick = this.handleDoubleClick.bind(this);
     }
 
-    handleCloseEntitiesModal() {
+    handleCloseModal() {
         this.setState({
-            showConditions: false,
-            entities: ''
+            showModalMessage: false,
+            ModalMessageTitle: '',
+            ModalMessageText: ''
         });
     }
 
@@ -33,34 +36,43 @@ export class VisNetwork extends Component {
 
     handleSelectEdge(event) {
         if (event.nodes.length === 0) {  //edge selected
-            let from = this.props.graph.edges.get(event.edges[0]).from;
-            let to = this.props.graph.edges.get(event.edges[0]).to;
-            this.props.graph.nodes.update({id: from, color: {border: "#24CC48", background: "#24CC48"} });
-            this.props.graph.nodes.update({id: to, color: {border: "#24CC48", background: "#24CC48"} });
+            this.props.graph.nodes.update([{id: this.props.graph.edges.get(event.edges[0]).from, 
+                                            color: {border: "#24CC48", background: "#24CC48"}},
+                                           {id: this.props.graph.edges.get(event.edges[0]).to,
+                                            color: {border: "#24CC48", background: "#24CC48"}}
+                                          ]);
         } else {  //node selected
-            let edges = event.edges.map(e => this.props.graph.edges.get(e));
-            for (var i = 0; i < edges.length; i++) {
-                if (edges[i].from === event.nodes[0]) {
-                    this.props.graph.nodes.update({id: edges[i].to, color: {border: "#24CC48", background: "#24CC48"} });
-                } else {
-                    this.props.graph.nodes.update({id: edges[i].from, color: {border: "#24CC48", background: "#24CC48"} });
-                }
-            }
+            let touchedNodes = event.edges.map(e => {
+                if (this.props.graph.edges.get(e).from === event.nodes[0])
+                    return {id: this.props.graph.edges.get(e).to, color: {border: "#24CC48", background: "#24CC48"}};
+                else
+                    return {id: this.props.graph.edges.get(e).from, color: {border: "#24CC48", background: "#24CC48"}};
+            });
+            this.props.graph.nodes.update(touchedNodes);
         }
     }
 
     handleDeselectEdge(event) {
         if (event.previousSelection.nodes.length === 0) {  //edge selected
-            let from = this.props.graph.edges.get(event.previousSelection.edges[0]).from;
-            let to = this.props.graph.edges.get(event.previousSelection.edges[0]).to;
-            this.props.graph.nodes.update({id: from, color: {border: "#2B7CE9", background: "#D2E5FF"} });
-            this.props.graph.nodes.update({id: to, color: {border: "#2B7CE9", background: "#D2E5FF"} });
+            this.props.graph.nodes.update([{id: this.props.graph.edges.get(event.previousSelection.edges[0]).from, 
+                                            color: {border: "#2B7CE9", background: "#D2E5FF"}},
+                                           {id: this.props.graph.edges.get(event.previousSelection.edges[0]).to,
+                                            color: {border: "#2B7CE9", background: "#D2E5FF"}}
+                                          ]);
         } else {  //node selected
-            let edges = event.previousSelection.edges.map(e => this.props.graph.edges.get(e));
-            for (var i = 0; i < edges.length; i++) {
-                this.props.graph.nodes.update({id: edges[i].from, color: {border: "#2B7CE9", background: "#D2E5FF"} });
-                this.props.graph.nodes.update({id: edges[i].to, color: {border: "#2B7CE9", background: "#D2E5FF"} });
-            }
+            let touchedNodes = event.previousSelection.edges.map(e => {
+                    return [{id: this.props.graph.edges.get(e).to, color: {border: "#2B7CE9", background: "#D2E5FF"}}, 
+                           {id: this.props.graph.edges.get(e).from, color: {border: "#2B7CE9", background: "#D2E5FF"}}];
+            });
+            this.props.graph.nodes.update(touchedNodes.flat());
+        }
+
+        if (event.edges.length === 1) {
+            this.props.graph.nodes.update([{id: this.props.graph.edges.get(event.edges[0]).from, 
+                                            color: {border: "#24CC48", background: "#24CC48"}},
+                                           {id: this.props.graph.edges.get(event.edges[0]).to,
+                                            color: {border: "#24CC48", background: "#24CC48"}}
+                                          ]);
         }
     }
 
@@ -68,9 +80,26 @@ export class VisNetwork extends Component {
         this.network.setOptions( { physics: false } );
     }
 
+    handleDoubleClick(event) {
+        if (event.nodes.length === 0) {  //edge double click
+            this.setState({
+                showModalMessage: true,
+                ModalMessageTitle: 'Controllers in common',
+                ModalMessageText: this.props.graph.edges.get(event.edges[0]).title
+            });
+        } else {  //node double click
+            this.setState({
+                showModalMessage: true,
+                ModalMessageTitle: 'Entities of ' + event.nodes[0],
+                ModalMessageText: this.props.graph.nodes.get(event.nodes[0]).title
+            });
+        }
+    }
+
     componentDidUpdate(prevProps) {
         if (this.props.graph !== prevProps.graph) {
             this.network = new Network(this.appRef.current, this.props.graph, this.props.options);
+            this.network.on("doubleClick", this.handleDoubleClick);
             this.network.on("selectNode", this.handleSelectNode);
             this.network.on("selectEdge", this.handleSelectEdge);
             this.network.on("deselectEdge", this.handleDeselectEdge);
@@ -81,7 +110,7 @@ export class VisNetwork extends Component {
     render() {
         return ( 
             <div>
-                {this.state.showConditions && <ModalMessage title='Entities' message={this.state.entities} onClose={this.handleCloseEntitiesModal} />}
+                {this.state.showModalMessage && <ModalMessage title={this.state.ModalMessageTitle} message={this.state.ModalMessageText} onClose={this.handleCloseModal} />}
                 <div ref = {this.appRef}/>
             </div>
         );
