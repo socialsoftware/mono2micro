@@ -1,6 +1,6 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
-import { OperationsMenu, operations } from './OperationsMenu';
+import { ClusterOperationsMenu, operations } from './ClusterOperationsMenu';
 import { VisNetwork } from '../util/VisNetwork';
 import { ModalMessage } from '../util/ModalMessage';
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
@@ -8,8 +8,8 @@ import { DataSet } from 'vis';
 
 const tooltip = (
     <Tooltip id="tooltip">
-      Hover cluster to see entities inside.<br />
-      Hover edge to see controllers in common.<br />
+      Hover or double click cluster to see entities inside.<br />
+      Hover or double click edge to see controllers in common.<br />
       Select cluster or edge for highlight and to open operation menu.
     </Tooltip>
 );
@@ -71,7 +71,7 @@ const options = {
     },
 };
 
-export class GraphDiagram extends React.Component {
+export class ClusterView extends React.Component {
     constructor(props) {
         super(props);
 
@@ -119,7 +119,6 @@ export class GraphDiagram extends React.Component {
                 operation: operations.NONE
             });
         });
-
     }
 
     componentWillReceiveProps(nextProps) {
@@ -229,7 +228,7 @@ export class GraphDiagram extends React.Component {
                 }).catch((err) => {
                     this.setState({
                         error: true,
-                        errorMessage: 'ERROR: '+ err.response.data.type + ' - ' + err.response.data.value
+                        errorMessage: 'ERROR: rename cluster failed.'
                     });
                 });
                 break;
@@ -241,7 +240,7 @@ export class GraphDiagram extends React.Component {
                 }).catch((err) => {
                     this.setState({
                         error: true,
-                        errorMessage: 'ERROR: '+ err.response.data.type + ' - ' + err.response.data.value
+                        errorMessage: 'ERROR: merge clusters failed.'
                     });
                 });
                 break;
@@ -253,7 +252,7 @@ export class GraphDiagram extends React.Component {
                 }).catch((err) => {
                     this.setState({
                         error: true,
-                        errorMessage: 'ERROR: '+ err.response.data.type + ' - ' + err.response.data.value
+                        errorMessage: 'ERROR: split cluster failed.'
                     });
                 });
                 break;
@@ -283,16 +282,16 @@ export class GraphDiagram extends React.Component {
             <div>
                 <OverlayTrigger placement="bottom" overlay={tooltip}>
                     <h3>{this.state.graphName}</h3>
-                </OverlayTrigger><br /><br />
+                </OverlayTrigger><br />
                 
                 {this.state.error && 
-                <ModalMessage 
+                <ModalMessage
                     title='Error Message' 
                     message={this.state.errorMessage} 
                     onClose={this.closeErrorMessageModal} />}
 
                 {this.state.showMenu &&
-                <OperationsMenu
+                <ClusterOperationsMenu
                     selectedCluster={this.state.selectedCluster}
                     mergeWithCluster={this.state.mergeWithCluster}
                     clusterEntities={this.state.clusterEntities}
@@ -300,7 +299,7 @@ export class GraphDiagram extends React.Component {
                     handleSelectEntity={this.handleSelectEntity}
                     handleSubmit={this.handleOperationSubmit}
                     handleCancel={this.handleOperationCancel}
-                    />}
+                />}
 
                 <div style={{width:'1000px' , height: '700px'}}>
                     <VisNetwork 

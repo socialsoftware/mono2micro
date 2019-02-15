@@ -8,7 +8,7 @@ export const operations = {
     SPLIT: 'split by'
 };
 
-export class OperationsMenu extends React.Component {
+export class ClusterOperationsMenu extends React.Component {
     constructor(props) {
         super(props);
 

@@ -100,4 +100,18 @@ export class RepositoryService {
                 }
             });
     }
+
+    getControllerClusters(graphName, controllerName) {
+        return this.axios.get("/getControllerClusters", 
+            {
+                params: {
+                    "graphName" : graphName,
+                    "controllerName" : controllerName
+                }
+            });
+    }
+
+    getControllers() {
+        return this.axios.get("/getControllers");
+    }
  }

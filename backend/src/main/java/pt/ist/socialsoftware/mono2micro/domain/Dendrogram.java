@@ -35,6 +35,14 @@ public class Dendrogram {
 		return graphsNames;
 	}
 
+	public Graph getGraph(String graphName) {
+		for (Graph graph : this.graphs) {
+			if (graph.getName().equals(graphName))
+				return graph;
+		}
+		return null;
+	}
+
 	public void addGraph(Graph graph) {
 		this.graphs.add(graph);
 	}
@@ -125,6 +133,22 @@ public class Dendrogram {
 				return true;
 		}
 		return false;
+	}
+
+	public List<Cluster> getControllerClusters(String graphName, String controllerName) {
+		List<Cluster> result = new ArrayList<>();
+
+		Graph graph = getGraph(graphName);
+		Controller controller = getController(controllerName);
+
+		for (String entity : controller.getEntities()) {
+			for (Cluster cluster : graph.getClusters()) {
+				if (!result.contains(cluster) && cluster.containsEntity(entity)) {
+					result.add(cluster);
+				}
+			}
+		}
+		return result;
 	}
 
 }

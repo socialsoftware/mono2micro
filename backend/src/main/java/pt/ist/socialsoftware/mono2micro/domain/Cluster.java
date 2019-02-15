@@ -52,4 +52,11 @@ public class Cluster {
 		}
 	}
 
+	public boolean containsEntity(String entityName) {
+		for (Entity entity : this.entities)
+			if (entity.getName().equals(entityName))
+				return true;
+		return false;
+	}
+
 }

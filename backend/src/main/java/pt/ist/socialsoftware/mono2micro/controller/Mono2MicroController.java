@@ -242,4 +242,22 @@ public class Mono2MicroController {
 		dend.splitCluster(graphName, clusterName, newName, entities.split(","));
 		return new ResponseEntity<Dendrogram>(dend, HttpStatus.OK);
 	}
+
+	@RequestMapping(value = "/getControllerClusters", method = RequestMethod.GET)
+	public ResponseEntity<List<Cluster>> getControllerClusters(@RequestParam("graphName") String graphName,
+			@RequestParam("controllerName") String controllerName) {
+		logger.debug("getControllerClusters: controller {} in graph {}", controllerName, graphName);
+
+		Dendrogram dend = Dendrogram.getInstance();
+		List<Cluster> touchedClusters = dend.getControllerClusters(graphName, controllerName);
+		return new ResponseEntity<List<Cluster>>(touchedClusters, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/getControllers", method = RequestMethod.GET)
+	public ResponseEntity<List<Controller>> getControllers() {
+		logger.debug("getControllers");
+
+		Dendrogram dend = Dendrogram.getInstance();
+		return new ResponseEntity<List<Controller>>(dend.getControllers(), HttpStatus.OK);
+	}
 }
