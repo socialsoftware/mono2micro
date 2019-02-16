@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, DropdownButton, MenuItem, Form, FormControl } from 'react-bootstrap';
+import { Button, DropdownButton, Dropdown, Form, FormControl } from 'react-bootstrap';
 
 export const views = {
     NONE: 'View',
@@ -33,9 +33,9 @@ export class ViewsMenu extends React.Component {
                     bsStyle='primary'
                     title={this.state.view}
                     id='0'>
-                    <MenuItem eventKey="1" onClick={() => this.setView(views.CLUSTERS)}>{views.CLUSTERS}</MenuItem>
-                    <MenuItem eventKey="2" onClick={() => this.setView(views.TRANSACTION)}>{views.TRANSACTION}</MenuItem>
-                    <MenuItem eventKey="3" onClick={() => this.setView(views.ENTITY)}>{views.ENTITY}</MenuItem>
+                    <Dropdown.Item eventKey="1" onClick={() => this.setView(views.CLUSTERS)}>{views.CLUSTERS}</Dropdown.Item>
+                    <Dropdown.Item eventKey="2" onClick={() => this.setView(views.TRANSACTION)}>{views.TRANSACTION}</Dropdown.Item>
+                    <Dropdown.Item eventKey="3" onClick={() => this.setView(views.ENTITY)}>{views.ENTITY}</Dropdown.Item>
                 </DropdownButton>
             </Form>
        );

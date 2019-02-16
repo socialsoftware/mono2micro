@@ -1,5 +1,6 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
+import { Button, DropdownButton, MenuItem, Form, FormControl, FormGroup} from 'react-bootstrap';
 
 var HttpStatus = require('http-status-codes');
 
@@ -45,13 +46,18 @@ export class DendrogramCreate extends React.Component {
 
     render() {
         return (
-            <form onSubmit={this.handleUpload}>
-                <h1>Create Dendrogram</h1>
-                <h2>Upload data file from Callgraph Eclipse Plugin to create the dendrogram.</h2>
-                <input type="file" onChange={this.handleSelectedFile} />
-                <button type="submit">Upload</button>
-                <div>{this.state.isUploaded}</div>
-            </form>
+            <Form onSubmit={this.handleUpload}>
+                <h2>Create Dendrogram</h2>
+                <h3>Upload data file from Callgraph Eclipse Plugin to create the dendrogram.</h3>
+                <Form.Group controlId="formBasicEmail">
+                    <Form.Control type="file" onChange={this.handleSelectedFile} />
+                </Form.Group>
+                <Button variant="primary" type="submit">
+                    Submit
+                </Button>
+                <br />
+                {this.state.isUploaded}
+            </Form>
         )
     }
 }

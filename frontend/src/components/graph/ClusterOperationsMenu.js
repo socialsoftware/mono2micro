@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, DropdownButton, MenuItem, Form, FormControl } from 'react-bootstrap';
+import { Button, DropdownButton, Dropdown, Form, FormControl } from 'react-bootstrap';
 
 export const operations = {
     NONE: 'operation',
@@ -57,9 +57,9 @@ export class ClusterOperationsMenu extends React.Component {
                     bsStyle='primary'
                     title={this.state.operation}
                     id='2'>
-                    <MenuItem eventKey="1" onClick={() => this.setOperation(operations.RENAME)}>{operations.RENAME}</MenuItem>
-                    <MenuItem eventKey="2" onClick={() => this.setOperation(operations.MERGE)}>{operations.MERGE}</MenuItem>
-                    <MenuItem eventKey="3" onClick={() => this.setOperation(operations.SPLIT)}>{operations.SPLIT}</MenuItem>
+                    <Dropdown.Item eventKey="1" onClick={() => this.setOperation(operations.RENAME)}>{operations.RENAME}</Dropdown.Item>
+                    <Dropdown.Item eventKey="2" onClick={() => this.setOperation(operations.MERGE)}>{operations.MERGE}</Dropdown.Item>
+                    <Dropdown.Item eventKey="3" onClick={() => this.setOperation(operations.SPLIT)}>{operations.SPLIT}</Dropdown.Item>
                 </DropdownButton></span>}{' '}
 
                 {this.props.mergeWithCluster.name && <span>
@@ -70,11 +70,11 @@ export class ClusterOperationsMenu extends React.Component {
                     bsStyle='default'
                     title={'entities'}
                     id='4'>
-                    {this.props.clusterEntities.map(e => <MenuItem 
+                    {this.props.clusterEntities.map(e => <Dropdown.Item 
                         key={e.name}
                         eventKey={e.name} 
                         onSelect={() => this.props.handleSelectEntity(e.name)}
-                        active={e.active}>{e.name}</MenuItem>)}
+                        active={e.active}>{e.name}</Dropdown.Item>)}
                 </DropdownButton>} 
                 
                 {(this.state.operation === operations.RENAME || this.props.mergeWithCluster.name || 

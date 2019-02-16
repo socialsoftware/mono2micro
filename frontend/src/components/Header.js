@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Navbar, Nav, NavDropdown, MenuItem } from 'react-bootstrap';
+import { Form, FormControl, Button, Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 import { RepositoryService } from '../services/RepositoryService';
@@ -31,33 +31,31 @@ export class Header extends React.Component {
 
     render() {
         const graphs = this.state.graphs.map( name =>
-            <LinkContainer key={name} to={`/graphs/name/${name}`}>
-                <MenuItem eventKey={name}>{name}</MenuItem>
+            <LinkContainer to={`/graphs/name/${name}`}>
+                <NavDropdown.Item>{name}</NavDropdown.Item>
             </LinkContainer>
         );
 
         return (
-            <Navbar inverse collapseOnSelect>
-                <Navbar.Header>
-                    <Navbar.Brand>
-                        <Link to='/'>mono2micro</Link>
-                    </Navbar.Brand>
-                    <Navbar.Toggle />
-                </Navbar.Header>
+            <Navbar bg="dark" variant="dark">
+                <Navbar.Brand>
+                    <Link to='/'>Mono2Micro</Link>
+                </Navbar.Brand>
+                <Navbar.Toggle />
                 <Navbar.Collapse>
                     <Nav>
-                        <NavDropdown eventKey={1} title="Manage Clusters" id="basic-nav-dropdown">
+                        <NavDropdown title="Manage Clusters" id="basic-nav-dropdown">
                             <LinkContainer to={{ pathname: '/dendrogram/create', headerFunction: { handleGetGraphsFunction: this.handleGetGraphs} }}>
-                                <MenuItem eventKey={1.1} >Create Dendrogram</MenuItem>
+                                <NavDropdown.Item >Create Dendrogram</NavDropdown.Item>
                             </LinkContainer>
                             <LinkContainer to={{ pathname: '/dendrogram/cut', headerFunction: { handleGetGraphsFunction: this.handleGetGraphs} }} >
-                                <MenuItem eventKey={1.2} >Dendrogram Cut</MenuItem>
+                                <NavDropdown.Item >Dendrogram Cut</NavDropdown.Item>
                             </LinkContainer>
-                            <MenuItem divider />
+                            <NavDropdown.Divider />
                             {graphs}
                         </NavDropdown>
                     </Nav>
-              </Navbar.Collapse>
+                </Navbar.Collapse>
             </Navbar>
         );
     }

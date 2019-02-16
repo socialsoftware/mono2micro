@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, DropdownButton, MenuItem, Form, FormControl } from 'react-bootstrap';
+import { Button, DropdownButton, Dropdown, Form, FormControl } from 'react-bootstrap';
 
 export class TransactionOperationsMenu extends React.Component {
     constructor(props) {
@@ -27,7 +27,7 @@ export class TransactionOperationsMenu extends React.Component {
 
     render() {
         const controllersList = this.props.controllers.map(c =>
-            <MenuItem key={c.name} onClick={() => this.setController(c.name)}>{c.name}</MenuItem>
+            <Dropdown.Item key={c.name} onClick={() => this.setController(c.name)}>{c.name}</Dropdown.Item>
         );
        return (
            <Form inline>

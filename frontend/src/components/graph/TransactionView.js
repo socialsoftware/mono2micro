@@ -8,8 +8,8 @@ import { DataSet } from 'vis';
 const tooltip = (
     <Tooltip id="tooltip">
       Hover or double click cluster to see entities inside.<br />
-      Hover or double click edge to see controllers in common.<br />
-      Select cluster or edge for highlight and to open operation menu.
+      Hover or double click edge to see entities accessed.<br />
+      Select cluster or edge for highlight.
     </Tooltip>
 );
 
@@ -22,11 +22,9 @@ const options = {
     },
     edges: {
         smooth: false,
-        width: 0.5,
         arrows: {
-          from: {
-            enabled: false,
-            scaleFactor: 0.5
+          to: {
+            enabled: true,
           }
         },
         scaling: {
@@ -59,17 +57,12 @@ const options = {
     interaction: {
         hover: true
     },
-    /*physics: {
-        enabled: true,
+    physics: {
         hierarchicalRepulsion: {
-            centralGravity: 0.0,
-            springLength: 500,
-            springConstant: 0.01,
-            nodeDistance: 100,
-            damping: 0.09
+            springLength: 70,
+            nodeDistance: 110
         },
-        solver: 'hierarchicalRepulsion'
-    },*/
+    }
 };
 
 export class TransactionView extends React.Component {
@@ -122,7 +115,7 @@ export class TransactionView extends React.Component {
             edges: new DataSet(this.state.controllerClusters.map(c => this.createEdge(c)))
         };
 
-        graph.nodes.add({id: this.state.controller, label: this.state.controller, level: 0});
+        graph.nodes.add({id: this.state.controller, label: this.state.controller, level: 0, value: 1});
 
         this.setState({
             graph: graph
