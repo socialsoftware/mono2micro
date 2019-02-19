@@ -140,11 +140,13 @@ export class TransactionView extends React.Component {
             <div>
                 <OverlayTrigger placement="bottom" overlay={tooltip}>
                     <h3>{this.state.graphName}</h3>
-                </OverlayTrigger>
+                </OverlayTrigger><br />
+
                 <TransactionOperationsMenu
                     handleControllerSubmit={this.handleControllerSubmit}
                     controllers={this.state.controllers}
                 />
+                
                 <div style={{width:'1000px' , height: '700px'}}>
                     <VisNetwork 
                         graph={this.state.graph}

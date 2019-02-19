@@ -41,6 +41,12 @@ export class DendrogramCreate extends React.Component {
                     isUploaded: "Upload failed."
                 });
             }
+        })
+        .catch(error => {
+            console.log(error);
+            this.setState({
+                isUploaded: "Upload failed."
+            });
         });
     }
 
@@ -49,7 +55,7 @@ export class DendrogramCreate extends React.Component {
             <Form onSubmit={this.handleUpload}>
                 <h2>Create Dendrogram</h2>
                 <h3>Upload data file from Callgraph Eclipse Plugin to create the dendrogram.</h3>
-                <Form.Group controlId="formBasicEmail">
+                <Form.Group controlId="formDendrogramCreate">
                     <Form.Control type="file" onChange={this.handleSelectedFile} />
                 </Form.Group>
                 <Button variant="primary" type="submit">

@@ -31,7 +31,7 @@ export class Header extends React.Component {
 
     render() {
         const graphs = this.state.graphs.map( name =>
-            <LinkContainer to={`/graphs/name/${name}`}>
+            <LinkContainer key={name} to={`/graphs/name/${name}`}>
                 <NavDropdown.Item>{name}</NavDropdown.Item>
             </LinkContainer>
         );

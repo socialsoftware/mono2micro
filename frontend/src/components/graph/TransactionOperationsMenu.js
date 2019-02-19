@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, DropdownButton, Dropdown, Form, FormControl } from 'react-bootstrap';
+import { Button, DropdownButton, Dropdown, Form, FormControl, ButtonToolbar, ButtonGroup } from 'react-bootstrap';
 
 export class TransactionOperationsMenu extends React.Component {
     constructor(props) {
@@ -30,19 +30,16 @@ export class TransactionOperationsMenu extends React.Component {
             <Dropdown.Item key={c.name} onClick={() => this.setController(c.name)}>{c.name}</Dropdown.Item>
         );
        return (
-           <Form inline>
-                <br />
-                <DropdownButton 
-                    bsStyle='primary'
-                    title={this.state.controller}
-                    id='1'>
+            <ButtonToolbar>
+                <DropdownButton className="mr-1" as={ButtonGroup}
+                    title={this.state.controller}>
                     {controllersList}
                 </DropdownButton>
-                <span> </span>
+
                 {this.state.showSubmit &&
-                    <Button id='2' bsStyle='primary' onClick={this.handleSubmit}>Create View</Button>
+                    <Button onClick={this.handleSubmit}>Create View</Button>
                 }
-            </Form>
+            </ButtonToolbar>
        );
     }
 }

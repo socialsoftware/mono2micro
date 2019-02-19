@@ -28,16 +28,12 @@ export class ViewsMenu extends React.Component {
 
     render() {
        return (
-           <Form inline>
-                <DropdownButton 
-                    bsStyle='primary'
-                    title={this.state.view}
-                    id='0'>
-                    <Dropdown.Item eventKey="1" onClick={() => this.setView(views.CLUSTERS)}>{views.CLUSTERS}</Dropdown.Item>
-                    <Dropdown.Item eventKey="2" onClick={() => this.setView(views.TRANSACTION)}>{views.TRANSACTION}</Dropdown.Item>
-                    <Dropdown.Item eventKey="3" onClick={() => this.setView(views.ENTITY)}>{views.ENTITY}</Dropdown.Item>
-                </DropdownButton>
-            </Form>
+            <DropdownButton className="mb-2"
+                title={this.state.view}>
+                <Dropdown.Item eventKey="1" onClick={() => this.setView(views.CLUSTERS)}>{views.CLUSTERS}</Dropdown.Item>
+                <Dropdown.Item eventKey="2" onClick={() => this.setView(views.TRANSACTION)}>{views.TRANSACTION}</Dropdown.Item>
+                <Dropdown.Item eventKey="3" onClick={() => this.setView(views.ENTITY)}>{views.ENTITY}</Dropdown.Item>
+            </DropdownButton>
        );
     }
 }
