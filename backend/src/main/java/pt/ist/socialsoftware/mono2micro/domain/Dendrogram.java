@@ -151,4 +151,8 @@ public class Dendrogram {
 		return result;
 	}
 
+	public void transferEntities(String graphName, String fromCluster, String toCluster, String[] entities) {
+		this.getGraph(graphName).transferEntities(fromCluster, toCluster, entities);
+	}
+
 }

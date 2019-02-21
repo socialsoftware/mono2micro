@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, DropdownButton, Dropdown, Form, FormControl, ButtonToolbar, ButtonGroup } from 'react-bootstrap';
+import { Button, DropdownButton, Dropdown, FormControl, ButtonToolbar, ButtonGroup } from 'react-bootstrap';
 
 export class TransactionOperationsMenu extends React.Component {
     constructor(props) {
@@ -33,7 +33,10 @@ export class TransactionOperationsMenu extends React.Component {
             <ButtonToolbar>
                 <DropdownButton className="mr-1" as={ButtonGroup}
                     title={this.state.controller}>
-                    {controllersList}
+                    <Dropdown.Menu as={CustomSearchMenu}>
+                        {controllersList}
+                    </Dropdown.Menu>
+                    
                 </DropdownButton>
 
                 {this.state.showSubmit &&
@@ -41,5 +44,48 @@ export class TransactionOperationsMenu extends React.Component {
                 }
             </ButtonToolbar>
        );
+    }
+}
+
+class CustomSearchMenu extends React.Component {
+    constructor(props, context) {
+      super(props, context);
+  
+      this.handleChange = this.handleChange.bind(this);
+  
+      this.state = { value: '' };
+    }
+  
+    handleChange(e) {
+      this.setState({ value: e.target.value.toLowerCase().trim() });
+    }
+  
+    render() {
+      const {
+        children,
+        style,
+        className,
+        'aria-labelledby': labeledBy,
+      } = this.props;
+
+      const { value } = this.state;
+  
+      return (
+        <div style={style} className={className} aria-labelledby={labeledBy}>
+          <FormControl
+            autoFocus
+            className="mx-3 my-2 w-auto"
+            placeholder="Type to filter..."
+            onChange={this.handleChange}
+            value={value}
+          />
+          <ul className="list-unstyled">
+            {React.Children.toArray(children).filter(
+              child =>
+                !value || child.props.children.toLowerCase().startsWith(value),
+            )}
+          </ul>
+        </div>
+      );
     }
 }

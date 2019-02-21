@@ -114,4 +114,16 @@ export class RepositoryService {
     getControllers() {
         return this.axios.get("/getControllers");
     }
+
+    transferEntities(graphName, fromCluster, toCluster, entities) {
+        return this.axios.get("/transferEntities", 
+            {
+                params: {
+                    "graphName" : graphName,
+                    "fromCluster" : fromCluster,
+                    "toCluster" : toCluster,
+                    "entities" : entities
+                }
+            });
+    }
  }

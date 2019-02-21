@@ -1,6 +1,7 @@
 import { Network } from 'vis';
 import React, { Component, createRef } from 'react';
 import { ModalMessage } from './ModalMessage';
+import { views, types } from '../graph/ViewsMenu'
 
 export class VisNetwork extends Component {
     constructor(props) {
@@ -81,18 +82,44 @@ export class VisNetwork extends Component {
     }
 
     handleDoubleClick(event) {
-        if (event.nodes.length === 0) {  //edge double click
-            this.setState({
-                showModalMessage: true,
-                ModalMessageTitle: 'Controllers in common',
-                ModalMessageText: this.props.graph.edges.get(event.edges[0]).title
-            });
-        } else {  //node double click
-            this.setState({
-                showModalMessage: true,
-                ModalMessageTitle: 'Entities of ' + event.nodes[0],
-                ModalMessageText: this.props.graph.nodes.get(event.nodes[0]).title
-            });
+        if (event.nodes.length === 0 && event.edges.length > 0) {  //edge double click
+            if (this.props.view === views.CLUSTERS) {
+                this.setState({
+                    showModalMessage: true,
+                    ModalMessageTitle: 'Controllers in common',
+                    ModalMessageText: this.props.graph.edges.get(event.edges[0]).title
+                });
+            } else if (this.props.view === views.TRANSACTION) {
+                let from = this.props.graph.edges.get(event.edges[0]).from;
+                let to = this.props.graph.edges.get(event.edges[0]).to;
+                this.setState({
+                    showModalMessage: true,
+                    ModalMessageTitle: 'Entities of ' + to + ' accessed by controller ' + from,
+                    ModalMessageText: this.props.graph.edges.get(event.edges[0]).title
+                });
+            }
+        } else if (event.nodes.length > 0) {  //node double click
+            if (this.props.view === views.CLUSTERS) {
+                this.setState({
+                    showModalMessage: true,
+                    ModalMessageTitle: 'Entities of ' + event.nodes[0],
+                    ModalMessageText: this.props.graph.nodes.get(event.nodes[0]).title
+                });
+            } else if (this.props.view === views.TRANSACTION) {
+                if (this.props.graph.nodes.get(event.nodes[0]).type === types.CLUSTER) {
+                    this.setState({
+                        showModalMessage: true,
+                        ModalMessageTitle: 'Entities of ' + event.nodes[0],
+                        ModalMessageText: this.props.graph.nodes.get(event.nodes[0]).title
+                    });
+                } else if (this.props.graph.nodes.get(event.nodes[0]).type === types.CONTROLLER) {
+                    this.setState({
+                        showModalMessage: true,
+                        ModalMessageTitle: 'Entities accessed by controller ' + event.nodes[0],
+                        ModalMessageText: this.props.graph.nodes.get(event.nodes[0]).title
+                    });
+                }
+            }
         }
     }
 

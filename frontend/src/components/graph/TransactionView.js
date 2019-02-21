@@ -4,6 +4,7 @@ import { RepositoryService } from './../../services/RepositoryService';
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { VisNetwork } from '../util/VisNetwork';
 import { DataSet } from 'vis';
+import { views, types } from './ViewsMenu';
 
 const tooltip = (
     <Tooltip id="tooltip">
@@ -72,10 +73,9 @@ export class TransactionView extends React.Component {
         this.state = {
             graphName: this.props.name,
             graph: {},
-            controller: '',
+            controller: [],
             controllers: [],
             controllerClusters: [],
-            controllerEntities: [],
             showGraph: false
         }
 
@@ -97,7 +97,7 @@ export class TransactionView extends React.Component {
 
     handleControllerSubmit(value) {
         this.setState({
-            controller: value
+            controller: this.state.controllers.filter(c => c.name === value)[0]
         });
         const service = new RepositoryService();
         service.getControllerClusters(this.state.graphName, value).then(response => {
@@ -114,8 +114,7 @@ export class TransactionView extends React.Component {
             nodes: new DataSet(this.state.controllerClusters.map(c => this.createNode(c))),
             edges: new DataSet(this.state.controllerClusters.map(c => this.createEdge(c)))
         };
-
-        graph.nodes.add({id: this.state.controller, label: this.state.controller, level: 0, value: 1});
+        graph.nodes.add({id: this.state.controller.name, title: this.state.controller.entities.join('<br>'), label: this.state.controller.name, level: 0, value: 1, type: types.CONTROLLER});
 
         this.setState({
             graph: graph
@@ -123,12 +122,13 @@ export class TransactionView extends React.Component {
     }
 
     createNode(cluster) {
-        return {id: cluster.name, title: cluster.entities.map(e => e.name).join('<br>'), label: cluster.name, value: cluster.entities.length, level: 1};
+        return {id: cluster.name, title: cluster.entities.map(e => e.name).join('<br>'), label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER};
     }
 
 
     createEdge(cluster) {
-        return {from: this.state.controller, to: cluster.name};
+        let entitiesTouched = cluster.entities.map(e => e.name).filter(e => this.state.controller.entities.includes(e));
+        return {from: this.state.controller.name, to: cluster.name, label: entitiesTouched.length.toString(), title: entitiesTouched.join('<br>')};
     }
 
     handleSelectNode(nodeId) {
@@ -151,7 +151,8 @@ export class TransactionView extends React.Component {
                     <VisNetwork 
                         graph={this.state.graph}
                         options={options}
-                        onSelection={this.handleSelectNode} />
+                        onSelection={this.handleSelectNode}
+                        view={views.TRANSACTION} />
                 </div>
             </div>
         );

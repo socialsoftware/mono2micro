@@ -1,6 +1,6 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
-import { Button, DropdownButton, MenuItem, Form, FormControl, FormGroup} from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 
 var HttpStatus = require('http-status-codes');
 

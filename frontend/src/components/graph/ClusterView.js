@@ -5,6 +5,7 @@ import { VisNetwork } from '../util/VisNetwork';
 import { ModalMessage } from '../util/ModalMessage';
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { DataSet } from 'vis';
+import { views, types } from './ViewsMenu';
 
 const tooltip = (
     <Tooltip id="tooltip">
@@ -82,6 +83,7 @@ export class ClusterView extends React.Component {
             showMenu: false,
             selectedCluster: {},
             mergeWithCluster: {},
+            transferToCluster: {},
             clusterEntities: [],
             error: false,
             errorMessage: '',
@@ -115,6 +117,7 @@ export class ClusterView extends React.Component {
                 showMenu: false,
                 selectedCluster: {},
                 mergeWithCluster: {},
+                transferToCluster: {},
                 clusterEntities: [],
                 operation: operations.NONE
             });
@@ -149,7 +152,7 @@ export class ClusterView extends React.Component {
     }
 
     convertClusterToNode(cluster) {
-        return {id: cluster.name, title: cluster.entities.map(e => e.name).join('<br>'), label: cluster.name, value: cluster.entities.length};
+        return {id: cluster.name, title: cluster.entities.map(e => e.name).join('<br>'), label: cluster.name, value: cluster.entities.length, type: types.CLUSTER};
     };
 
     setClusterEntities(selectedCluster) {
@@ -157,7 +160,6 @@ export class ClusterView extends React.Component {
             selectedCluster: selectedCluster,
             mergeWithCluster: {},
             clusterEntities: selectedCluster.entities.map(e => ({name: e.name, active: false})),
-            operation: operations.SPLIT
         });
     }
 
@@ -166,11 +168,15 @@ export class ClusterView extends React.Component {
     }
 
     handleSelectOperation(operation) {
-        if (operation === operations.SPLIT) {
+        if (operation === operations.SPLIT || operation === operations.TRANSFER) {
             this.setClusterEntities(this.state.selectedCluster);
+            this.setState({
+                operation: operation
+            });
         } else {
             this.setState({ 
                 mergeWithCluster: {},
+                transferToCluster: {},
                 clusterEntities: [],
                 operation: operation 
             });
@@ -196,6 +202,20 @@ export class ClusterView extends React.Component {
             } else {
                 this.setState({
                     mergeWithCluster: mergeWithCluster
+                });
+            }
+        }
+
+        if (this.state.operation === operations.TRANSFER) {
+            const transferToCluster = this.state.clusters.find(c => c.name === nodeId);
+            if (this.state.selectedCluster === transferToCluster) {
+                this.setState({
+                    error: true,
+                    errorMessage: 'Cannot transfer entities to the same cluster'
+                });
+            } else {
+                this.setState({
+                    transferToCluster: transferToCluster
                 });
             }
         }
@@ -245,14 +265,27 @@ export class ClusterView extends React.Component {
                 });
                 break;
             case operations.SPLIT:
-                const activeClusterEntities = this.state.clusterEntities.filter(e => e.active).map(e => e.name).toString();
-                service.splitCluster(this.state.graphName, this.state.selectedCluster.name, inputValue, activeClusterEntities)
+                let activeClusterEntitiesSplit = this.state.clusterEntities.filter(e => e.active).map(e => e.name).toString();
+                service.splitCluster(this.state.graphName, this.state.selectedCluster.name, inputValue, activeClusterEntitiesSplit)
                 .then(() => {
                     this.loadGraph(this.state.graphName);        
                 }).catch((err) => {
                     this.setState({
                         error: true,
                         errorMessage: 'ERROR: split cluster failed.'
+                    });
+                });
+                break;
+            case operations.TRANSFER:
+                let activeClusterEntitiesTransfer = this.state.clusterEntities.filter(e => e.active).map(e => e.name).toString();
+                service.transferEntities(this.state.graphName, this.state.selectedCluster.name, 
+                    this.state.transferToCluster.name, activeClusterEntitiesTransfer)
+                .then(() => {
+                    this.loadGraph(this.state.graphName);        
+                }).catch((err) => {
+                    this.setState({
+                        error: true,
+                        errorMessage: 'ERROR: transfer entities failed.'
                     });
                 });
                 break;
@@ -265,6 +298,7 @@ export class ClusterView extends React.Component {
             showMenu: false,
             selectedCluster: {},
             mergeWithCluster: {},
+            transferToCluster: {},
             clusterEntities: [],
             operation: operations.NONE 
         });
@@ -294,6 +328,7 @@ export class ClusterView extends React.Component {
                 <ClusterOperationsMenu
                     selectedCluster={this.state.selectedCluster}
                     mergeWithCluster={this.state.mergeWithCluster}
+                    transferToCluster={this.state.transferToCluster}
                     clusterEntities={this.state.clusterEntities}
                     handleSelectOperation={this.handleSelectOperation}
                     handleSelectEntity={this.handleSelectEntity}
@@ -306,7 +341,8 @@ export class ClusterView extends React.Component {
                         graph={this.state.graph} 
                         clusters={this.state.clusters} 
                         options={options} 
-                        onSelection={this.handleSelectCluster} />
+                        onSelection={this.handleSelectCluster} 
+                        view={views.CLUSTERS} />
                 </div>
             </div>
         );

@@ -1,11 +1,12 @@
 import React from 'react';
-import { Button, DropdownButton, Dropdown, Form, FormControl, ButtonGroup, ButtonToolbar, InputGroup} from 'react-bootstrap';
+import { Button, DropdownButton, Dropdown, FormControl, ButtonGroup, ButtonToolbar, InputGroup} from 'react-bootstrap';
 
 export const operations = {
     NONE: 'operation',
     RENAME: 'rename by',
     MERGE: 'merge with',
-    SPLIT: 'split by'
+    SPLIT: 'split by',
+    TRANSFER: 'transfer to'
 };
 
 export class ClusterOperationsMenu extends React.Component {
@@ -59,26 +60,31 @@ export class ClusterOperationsMenu extends React.Component {
                     <Dropdown.Item eventKey="1" onClick={() => this.setOperation(operations.RENAME)}>{operations.RENAME}</Dropdown.Item>
                     <Dropdown.Item eventKey="2" onClick={() => this.setOperation(operations.MERGE)}>{operations.MERGE}</Dropdown.Item>
                     <Dropdown.Item eventKey="3" onClick={() => this.setOperation(operations.SPLIT)}>{operations.SPLIT}</Dropdown.Item>
+                    <Dropdown.Item eventKey="4" onClick={() => this.setOperation(operations.TRANSFER)}>{operations.TRANSFER}</Dropdown.Item>
                 </DropdownButton></span>}
 
                 {this.props.mergeWithCluster.name &&
                 <Button className="mr-1">{this.props.mergeWithCluster.name}</Button>}
 
-                {this.state.operation === operations.SPLIT && this.props.clusterEntities &&
+                {this.props.transferToCluster.name &&
+                <Button className="mr-1">{this.props.transferToCluster.name}</Button>}
+
+                {((this.state.operation === operations.SPLIT && this.props.clusterEntities) ||
+                 (this.state.operation === operations.TRANSFER && this.props.transferToCluster.name)) &&
                 <DropdownButton className="mr-1" as={ButtonGroup}
                     title={'entities'}>
                     {this.props.clusterEntities.map(e => <Dropdown.Item 
                         key={e.name}
-                        eventKey={e.name} 
+                        eventKey={e.name}
                         onSelect={() => this.props.handleSelectEntity(e.name)}
                         active={e.active}>{e.name}</Dropdown.Item>)}
-                </DropdownButton>} 
+                </DropdownButton>}
                 
                 {(this.state.operation === operations.RENAME || this.props.mergeWithCluster.name || 
                 (this.props.clusterEntities &&
                     this.props.clusterEntities.reduce((a, e) => e.active ? ++a : a, 0) > 0 && 
                     this.props.clusterEntities.reduce((a, e) => e.active ? ++a : a, 0) < this.props.clusterEntities.length))
-                &&
+                && this.state.operation !== operations.TRANSFER &&
                 <InputGroup className="mr-1">
                     <FormControl
                         type="text"
@@ -88,7 +94,9 @@ export class ClusterOperationsMenu extends React.Component {
                         onChange={this.handleInputValueChange}/>
                 </InputGroup>}
                 
-                {this.state.inputValue.length > 0 &&
+                {(this.state.inputValue.length > 0 || (this.state.operation === operations.TRANSFER && (this.props.clusterEntities &&
+                    this.props.clusterEntities.reduce((a, e) => e.active ? ++a : a, 0) > 0 && 
+                    this.props.clusterEntities.reduce((a, e) => e.active ? ++a : a, 0) < this.props.clusterEntities.length))) &&
                 <Button className="mr-1" onClick={this.handleSubmit}>Submit</Button>}
 
                 <Button onClick={this.handleClose}>Cancel</Button>

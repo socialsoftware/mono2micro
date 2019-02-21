@@ -108,4 +108,13 @@ public class Graph {
 		}
 		this.addCluster(newCluster);
 	}
+
+	public void transferEntities(String fromCluster, String toCluster, String[] entities) {
+		Cluster c1 = this.getCluster(fromCluster);
+		Cluster c2 = this.getCluster(toCluster);
+		for (String entityName : entities) {
+			c2.addEntity(c1.getEntity(entityName));
+			c1.removeEntity(entityName);
+		}
+	}
 }

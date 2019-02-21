@@ -1,11 +1,16 @@
 import React from 'react';
-import { Button, DropdownButton, Dropdown, Form, FormControl } from 'react-bootstrap';
+import { DropdownButton, Dropdown } from 'react-bootstrap';
 
 export const views = {
     NONE: 'View',
     CLUSTERS: 'Clusters View',
     TRANSACTION: 'Transaction View',
     ENTITY: 'Entity View'
+};
+
+export const types = {
+    CLUSTER: 0,
+    CONTROLLER: 1
 };
 
 export class ViewsMenu extends React.Component {
