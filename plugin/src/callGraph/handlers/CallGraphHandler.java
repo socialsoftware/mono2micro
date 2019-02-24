@@ -1,11 +1,10 @@
 package callGraph.handlers;
 
-import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -15,11 +14,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.IAnnotation;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
@@ -33,23 +28,22 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.corext.callhierarchy.CallHierarchy;
 import org.eclipse.jdt.internal.corext.callhierarchy.MethodWrapper;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.dialogs.ProgressIndicator;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.ProgressBar;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.handlers.HandlerUtil;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class CallGraphHandler extends AbstractHandler {
+	
+	JSONObject callgraph;
+	Set<String> entitiesSet;
+	Set<IType> controllersSet;
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -63,28 +57,32 @@ public class CallGraphHandler extends AbstractHandler {
 				}
 			}
 		};
-		InputDialog dialog = new InputDialog(window.getShell(), "CallGraph", "Please enter project name:", "", validator);
-		if (dialog.open() == Window.OK) {
-		    String projectName = dialog.getValue();		
+		InputDialog inputDialog = new InputDialog(window.getShell(), "CallGraph", "Please enter project name:", "", validator);
+		if (inputDialog.open() == Window.OK) {
+			String projectName = inputDialog.getValue();		
 			IProject project = getProject(projectName);
-			File f = new File("callgraph.txt");
-			if(f.exists() && !f.isDirectory()) { 
-				f.delete();
-			}
-			try {
-				processRootDirectory(project);
-			} catch (JavaModelException e) {
+						
+			callgraph = new JSONObject();
+			entitiesSet = new HashSet<String>();
+			controllersSet = new HashSet<IType>();
+			
+			collectControllersAndEntities(project);
+			
+			for (IType controller : controllersSet)
+				processController(controller);
+			
+			//prompt for file location
+			FileDialog fileDialog = new FileDialog(window.getShell(), SWT.OPEN);
+			fileDialog.setFilterExtensions(new String [] {"*.json"});
+			fileDialog.setFileName(projectName + "_callgraph.json");
+			String filepath = fileDialog.open();
+			
+			//file store
+			try (FileWriter file = new FileWriter(filepath)) {
+				file.write(callgraph.toString(4));
+			} catch (IOException | JSONException e) {
 				e.printStackTrace();
-			} catch (CoreException e) {
-				e.printStackTrace();
 			}
-		}
-		
-		try {
-			Runtime.getRuntime().exec("cmd.exe /C start /min python UserInterface.py callgraph.txt");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 
 		System.out.println("Done");
@@ -104,47 +102,52 @@ public class CallGraphHandler extends AbstractHandler {
 		return null;
 	}
 	
-	private void processRootDirectory(IProject project) throws JavaModelException, CoreException {
-		System.out.println("Project: " + project.getName());
-		if (project.isNatureEnabled("org.eclipse.jdt.core.javanature")) {
-			IJavaProject javaProject = JavaCore.create(project);
-			IPackageFragment[] packages = javaProject.getPackageFragments();
-
-			// process each package
-			for (IPackageFragment aPackage : packages) {
 	
-				// We will only look at the package from the source folder
-				if (aPackage.getKind() == IPackageFragmentRoot.K_SOURCE) {
-	
-					for (ICompilationUnit unit : aPackage.getCompilationUnits()) {						
-	
-						IType[] allTypes = unit.getAllTypes();
-						for (IType type : allTypes) {
+	private void collectControllersAndEntities(IProject project) {
+		try {
+			if (project.isNatureEnabled("org.eclipse.jdt.core.javanature")) {
+				IJavaProject javaProject = JavaCore.create(project);
+				IPackageFragment[] packages = javaProject.getPackageFragments();
+				
+				for (IPackageFragment aPackage : packages) {
+					
+					// We will only look at the package from the source folder
+					if (aPackage.getKind() == IPackageFragmentRoot.K_SOURCE) {
+						
+						for (ICompilationUnit unit : aPackage.getCompilationUnits()) {
 							
-							for (IAnnotation a : type.getAnnotations()) {
-								if (a.getElementName().equals("Controller") || a.getElementName().equals("RestController")) {
-									processController(type);
+							for (IType type : unit.getTypes()) {
+								
+								for (IAnnotation a : type.getAnnotations()) {
+									if (a.getElementName().equals("Controller") || a.getElementName().equals("RestController")) {
+										controllersSet.add(type);
+									}
 								}
+								entitiesSet.add(type.getElementName());
 							}
 						}
 					}
 				}
 			}
+		} catch (JavaModelException e) {
+			e.printStackTrace();
+		} catch (CoreException e) {
+			e.printStackTrace();
 		}
-	}  
-
+	}
 	
 
-	public void processController(IType type) {
-		System.out.println("Processing Controller: " + type.getElementName());
-		String output = "";
+	public void processController(IType controller) {
+		System.out.println("Processing Controller: " + controller.getElementName());
 
 		try {
-			for (IMethod controller_method : type.getMethods()) {
+			for (IMethod controllerMethod : controller.getMethods()) {
+				JSONArray entities = new JSONArray();
+				ArrayList<String> entitiesDescription = new ArrayList<String>();
 				ArrayList<IMethod> methodPool = new ArrayList<>();
-				String controller_description = controller_method.getParent().getElementName() + "." + controller_method.getElementName();
-				for (IMethod controller_calls : getCalleesOf(controller_method)) {
-					methodPool.add(controller_calls);
+				String controllerDescription = controllerMethod.getParent().getElementName() + "." + controllerMethod.getElementName();
+				for (IMethod controllerCall : getCalleesOf(controllerMethod)) {
+					methodPool.add(controllerCall);
 				}
 				
 				int i = 0;
@@ -164,52 +167,62 @@ public class CallGraphHandler extends AbstractHandler {
 					i++;
 				}
 
-				//only _Base classes
-				ArrayList<String> completeDescriptions = new ArrayList<>();
 				for (IMethod method : methodPool) {
-					String classname = method.getParent().getElementName();
-					String methodname = method.getElementName();
-					if (classname.endsWith("_Base")) {
-						classname = classname.substring(0, classname.length()-5);
+					String className = method.getParent().getElementName();
+					String methodName = method.getElementName();
+					if (className.endsWith("_Base")) {
+						className = className.substring(0, className.length()-5);
 						String mode = "";
-						if (methodname.startsWith("get"))
+						if (methodName.startsWith("get"))
 							mode = "R";
-						if (methodname.startsWith("set"))
+						if (methodName.startsWith("set"))
 							mode = "W";
-						if (methodname.startsWith("add"))
+						if (methodName.startsWith("add"))
 							mode = "W";
-						if (methodname.startsWith("remove"))
+						if (methodName.startsWith("remove"))
 							mode = "W";
-						String complete_description = controller_description + ":" + classname + ":" + mode;
-						if (!completeDescriptions.contains(complete_description) && !classname.equals("DomainRoot"))
-							completeDescriptions.add(complete_description);
+						
+						String entityDescription = className + ":" + mode;
+						if (!entitiesDescription.contains(entityDescription) && !className.equals("DomainRoot")) {
+							entitiesDescription.add(entityDescription);
+							
+							JSONArray entity = new JSONArray();
+							entity.put(className);
+							entity.put(mode);
+							
+							entities.put(entity);
+						}
+						
+						for (String entityName : entitiesSet) {
+							if (method.getSignature().contains(entityName)) {
+								entityDescription = entityName + ":" + mode;
+								if (!entitiesDescription.contains(entityDescription) && !entityName.equals("DomainRoot")) {
+									entitiesDescription.add(entityDescription);
+									
+									JSONArray entity = new JSONArray();
+									entity.put(entityName);
+									entity.put(mode);
+									
+									entities.put(entity);
+								}
+							}
+						}
 					}
 				}
 				
-				for (String a : completeDescriptions)
-					output += a + "\n";
+				if (entities.length() > 0) {
+					try {
+						callgraph.put(controllerDescription, entities);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
 			}
-			
-			
-			
-			writeToFile(output);
-
 		} catch (JavaModelException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	
-	
-	public void writeToFile(String text) {
-		try {
-	    	BufferedWriter writer = new BufferedWriter(new FileWriter("callgraph.txt",true));
-			writer.append(text);
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 
 	public HashSet<IMethod> getCalleesOf(IMethod m) {
 		 

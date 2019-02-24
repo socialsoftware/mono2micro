@@ -3,23 +3,23 @@ from scipy.cluster import hierarchy
 import matplotlib.pyplot as plt
 import matplotlib.pylab as plab
 import sys
+import json
 
 datafilePath = str(sys.argv[1])
 
-fp = open(datafilePath + "datafile.txt")
-datafile = fp.read()
+with open(datafilePath + "datafile.txt") as f:
+    datafile = json.load(f)
 
 data_dictionary = {}
 
-for line in datafile.strip().split("\n"):
-    line_split = line.split(":")
-    controller = line_split[0]
-    base_class = line_split[1]
-    mode = line_split[2].rstrip()
-    if base_class in data_dictionary:
-        data_dictionary[base_class] += [controller]
-    else:
-        data_dictionary[base_class] = [controller]
+for controller in datafile:
+    for entityArray in datafile[controller]:
+        entity = entityArray[0]
+        mode = entityArray[1]
+        if entity in data_dictionary:
+            data_dictionary[entity] += [controller]
+        else:
+            data_dictionary[entity] = [controller]
 
 base_classes = list(data_dictionary.keys())
 
@@ -42,7 +42,7 @@ for index, value in np.ndenumerate(similarity_matrix):
 
 
 # Get clustering linkage type
-linkage_type = 'single'
+linkage_type = 'average'
 
 hierarc = hierarchy.linkage(y=similarity_matrix, method=linkage_type)
 

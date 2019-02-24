@@ -2,13 +2,20 @@ package pt.ist.socialsoftware.mono2micro.controller;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
+import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -84,27 +91,33 @@ public class Mono2MicroController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
-		BufferedReader br;
 		try {
-			String line;
-			InputStream is = datafile.getInputStream();
-			br = new BufferedReader(new InputStreamReader(is));
-			while ((line = br.readLine()) != null) {
-				String[] parts = line.split(":");
-				String controller = parts[0];
-				String entity = parts[1];
+			InputStream is = new FileInputStream(fileUploadPath + "datafile.txt");
+			String jsonTxt = IOUtils.toString(is, "UTF-8");
+			JSONObject json = new JSONObject(jsonTxt);
 
-				if (!dend.containsEntity(entity))
-					dend.addEntity(new Entity(entity));
-				if (!dend.getEntity(entity).getControllers().contains(controller))
-					dend.getEntity(entity).addController(controller);
+			Iterator<String> controllers = json.sortedKeys();
 
-				if (!dend.containsController(controller))
-					dend.addController(new Controller(controller));
-				if (!dend.getController(controller).getEntities().contains(entity))
-					dend.getController(controller).addEntity(entity);
+			while(controllers.hasNext()) {
+				String controller = controllers.next();
+				JSONArray entities = (JSONArray) json.get(controller);
+				for (int i = 0; i < entities.length(); i++) {
+					JSONArray entityArray = (JSONArray) entities.getJSONArray(i);
+					String entity = (String) entityArray.get(0);
+					String type = (String) entityArray.get(1);
+
+					if (!dend.containsEntity(entity))
+						dend.addEntity(new Entity(entity));
+					if (!dend.getEntity(entity).getControllers().contains(controller))
+						dend.getEntity(entity).addController(controller);
+
+					if (!dend.containsController(controller))
+						dend.addController(new Controller(controller));
+					if (!dend.getController(controller).getEntities().contains(entity))
+						dend.getController(controller).addEntity(entity);
+				}
 			}
-		} catch (IOException e) {
+		} catch (JSONException | IOException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
@@ -120,7 +133,6 @@ public class Mono2MicroController {
 			Process p = r.exec(cmd);
 
 			p.waitFor();
-
 			
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
