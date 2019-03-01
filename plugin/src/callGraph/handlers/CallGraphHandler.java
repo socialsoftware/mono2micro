@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -26,6 +27,14 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.internal.corext.callhierarchy.CallHierarchy;
 import org.eclipse.jdt.internal.corext.callhierarchy.MethodWrapper;
 import org.eclipse.jface.dialogs.IInputValidator;
@@ -116,15 +125,41 @@ public class CallGraphHandler extends AbstractHandler {
 						
 						for (ICompilationUnit unit : aPackage.getCompilationUnits()) {
 							
-							for (IType type : unit.getTypes()) {
+							if (unit.getElementName().equals("EditionController.java")) {
+								ASTParser parser = ASTParser.newParser(AST.JLS3);
+				                parser.setKind(ASTParser.K_COMPILATION_UNIT);
+				                parser.setSource(unit);
+				                parser.setResolveBindings(true);
+				                CompilationUnit cu = (CompilationUnit) parser.createAST(null); // parse
+				                
+				                cu.accept(new ASTVisitor() {
+				                	public boolean visit(MethodDeclaration node) {
+				                		List<Object> s = node.getBody().statements();
+				                		for (Object o : s)
+				                			System.out.println(o instanceof MethodInvocation);
+				                		return false;
+				                	}
+				                	
+				        			public boolean visit(MethodInvocation node) {
+				        				System.out.println(node.resolveTypeBinding().getName());
+				        				SimpleName name = node.getName();
+				        				System.out.println("Declaration of '"+name+"' at line"+cu.getLineNumber(name.getStartPosition()));
+				        				return false; // do not continue to avoid usage info
+				        			}
+				         
+				        		});
+							
+							}
+							
+							/*for (IType type : unit.getTypes()) {
 								
 								for (IAnnotation a : type.getAnnotations()) {
-									if (a.getElementName().equals("Controller") || a.getElementName().equals("RestController")) {
+									if (a.getElementName().equals("Controller")) {// || a.getElementName().equals("RestController")) {
 										controllersSet.add(type);
 									}
 								}
 								entitiesSet.add(type.getElementName());
-							}
+							}*/
 						}
 					}
 				}
@@ -165,6 +200,15 @@ public class CallGraphHandler extends AbstractHandler {
 						}
 					}
 					i++;
+				}
+				
+				if (controllerMethod.getElementName().equals("getEditionTableOfContentsbyId")) {
+					for (IMethod s : methodPool) {
+						if (s.getElementName().equals("getDomainObject")) {
+							System.out.println(s.getSignature());
+							System.out.println(s.getReturnType());
+						}
+					}
 				}
 
 				for (IMethod method : methodPool) {
