@@ -3,8 +3,11 @@ package callGraph.handlers;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -31,9 +34,11 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.internal.corext.callhierarchy.CallHierarchy;
 import org.eclipse.jdt.internal.corext.callhierarchy.MethodWrapper;
@@ -53,6 +58,9 @@ public class CallGraphHandler extends AbstractHandler {
 	JSONObject callgraph;
 	Set<String> entitiesSet;
 	Set<IType> controllersSet;
+	ASTParser parser;
+	int start;
+	int end;
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -74,11 +82,15 @@ public class CallGraphHandler extends AbstractHandler {
 			callgraph = new JSONObject();
 			entitiesSet = new HashSet<String>();
 			controllersSet = new HashSet<IType>();
+			parser = ASTParser.newParser(AST.JLS11);
+			parser.setKind(ASTParser.K_COMPILATION_UNIT);
 			
 			collectControllersAndEntities(project);
 			
-			for (IType controller : controllersSet)
+			for (IType controller : controllersSet) {
 				processController(controller);
+			}
+				
 			
 			//prompt for file location
 			FileDialog fileDialog = new FileDialog(window.getShell(), SWT.OPEN);
@@ -125,41 +137,15 @@ public class CallGraphHandler extends AbstractHandler {
 						
 						for (ICompilationUnit unit : aPackage.getCompilationUnits()) {
 							
-							if (unit.getElementName().equals("EditionController.java")) {
-								ASTParser parser = ASTParser.newParser(AST.JLS3);
-				                parser.setKind(ASTParser.K_COMPILATION_UNIT);
-				                parser.setSource(unit);
-				                parser.setResolveBindings(true);
-				                CompilationUnit cu = (CompilationUnit) parser.createAST(null); // parse
-				                
-				                cu.accept(new ASTVisitor() {
-				                	public boolean visit(MethodDeclaration node) {
-				                		List<Object> s = node.getBody().statements();
-				                		for (Object o : s)
-				                			System.out.println(o instanceof MethodInvocation);
-				                		return false;
-				                	}
-				                	
-				        			public boolean visit(MethodInvocation node) {
-				        				System.out.println(node.resolveTypeBinding().getName());
-				        				SimpleName name = node.getName();
-				        				System.out.println("Declaration of '"+name+"' at line"+cu.getLineNumber(name.getStartPosition()));
-				        				return false; // do not continue to avoid usage info
-				        			}
-				         
-				        		});
-							
-							}
-							
-							/*for (IType type : unit.getTypes()) {
+							for (IType type : unit.getTypes()) {
 								
 								for (IAnnotation a : type.getAnnotations()) {
-									if (a.getElementName().equals("Controller")) {// || a.getElementName().equals("RestController")) {
+									if (a.getElementName().equals("Controller")) { // || a.getElementName().equals("RestController")) {
 										controllersSet.add(type);
 									}
 								}
 								entitiesSet.add(type.getElementName());
-							}*/
+							}
 						}
 					}
 				}
@@ -177,86 +163,37 @@ public class CallGraphHandler extends AbstractHandler {
 
 		try {
 			for (IMethod controllerMethod : controller.getMethods()) {
-				JSONArray entities = new JSONArray();
-				ArrayList<String> entitiesDescription = new ArrayList<String>();
+				JSONObject entities = new JSONObject();
 				ArrayList<IMethod> methodPool = new ArrayList<>();
-				String controllerDescription = controllerMethod.getParent().getElementName() + "." + controllerMethod.getElementName();
-				for (IMethod controllerCall : getCalleesOf(controllerMethod)) {
-					methodPool.add(controllerCall);
-				}
+				methodPool.add(controllerMethod);
 				
 				int i = 0;
 				while (i < methodPool.size()) {
 					for (IMethod callee : getCalleesOf(methodPool.get(i))) {
-						boolean similar = false;
-						for (IMethod method : methodPool) {
-							if (method.isSimilar(callee) && method.getParent().getElementName().equals(callee.getParent().getElementName())) {
-								similar = true;
-								break;
+						if (callee.getParent().getElementName().endsWith("_Base")) {
+							registerBaseClass(callee, entities);
+						} else if (callee.getElementName().equals("getDomainObject")) {
+							registerDomainObject(methodPool.get(i), entities);
+						} else {
+							boolean similar = false;
+							for (IMethod method : methodPool) {
+								if (method.isSimilar(callee) && method.getParent().getElementName().equals(callee.getParent().getElementName())) {
+									similar = true;
+									break;
+								}
 							}
-						}
-						if (!similar) {
-							methodPool.add(callee);
+							if (!similar) {
+								methodPool.add(callee);
+							}
 						}
 					}
 					i++;
 				}
-				
-				if (controllerMethod.getElementName().equals("getEditionTableOfContentsbyId")) {
-					for (IMethod s : methodPool) {
-						if (s.getElementName().equals("getDomainObject")) {
-							System.out.println(s.getSignature());
-							System.out.println(s.getReturnType());
-						}
-					}
-				}
-
-				for (IMethod method : methodPool) {
-					String className = method.getParent().getElementName();
-					String methodName = method.getElementName();
-					if (className.endsWith("_Base")) {
-						className = className.substring(0, className.length()-5);
-						String mode = "";
-						if (methodName.startsWith("get"))
-							mode = "R";
-						if (methodName.startsWith("set"))
-							mode = "W";
-						if (methodName.startsWith("add"))
-							mode = "W";
-						if (methodName.startsWith("remove"))
-							mode = "W";
-						
-						String entityDescription = className + ":" + mode;
-						if (!entitiesDescription.contains(entityDescription) && !className.equals("DomainRoot")) {
-							entitiesDescription.add(entityDescription);
-							
-							JSONArray entity = new JSONArray();
-							entity.put(className);
-							entity.put(mode);
-							
-							entities.put(entity);
-						}
-						
-						for (String entityName : entitiesSet) {
-							if (method.getSignature().contains(entityName)) {
-								entityDescription = entityName + ":" + mode;
-								if (!entitiesDescription.contains(entityDescription) && !entityName.equals("DomainRoot")) {
-									entitiesDescription.add(entityDescription);
-									
-									JSONArray entity = new JSONArray();
-									entity.put(entityName);
-									entity.put(mode);
-									
-									entities.put(entity);
-								}
-							}
-						}
-					}
-				}
+				System.out.println(methodPool.size());
 				
 				if (entities.length() > 0) {
 					try {
-						callgraph.put(controllerDescription, entities);
+						callgraph.put(controllerMethod.getParent().getElementName() + "." + controllerMethod.getElementName(), entities);
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
@@ -267,6 +204,112 @@ public class CallGraphHandler extends AbstractHandler {
 		}
 	}
 	
+
+	private void registerDomainObject(IMethod caller, JSONObject entities) {
+		
+		String mode = "R";
+		Map<Integer, String> domainObjectInvocations = new HashMap<>();
+
+        parser.setSource(caller.getCompilationUnit());
+        parser.setResolveBindings(true);
+        CompilationUnit cu = (CompilationUnit) parser.createAST(null); // parse
+       
+        cu.accept(new ASTVisitor() {
+        	
+			public boolean visit(MethodInvocation node) {
+				if (node.getName().toString().equals("getDomainObject")) {
+					domainObjectInvocations.put(node.getStartPosition(), node.resolveTypeBinding().getName());
+				}
+				return true;
+			}
+			
+			public boolean visit(MethodDeclaration node) {
+				if (node.getName().toString().equals(caller.getElementName())) {
+					start = node.getStartPosition();
+					end = start + node.getLength();
+				}
+				return true;
+			}
+ 
+		});
+        
+        
+        for (Map.Entry<Integer, String> entry : domainObjectInvocations.entrySet()) {
+            if (entry.getKey() >= start && entry.getKey() <= end) {
+            	try {
+        			if (!entry.getValue().equals("DomainRoot")) {
+        				if (entities.has(entry.getValue())) {
+        					JSONArray entityModes = entities.getJSONArray(entry.getValue());
+        					if(!entityModes.join(":").contains(mode)) {
+        						entityModes.put(mode);
+        					}
+        				} else {
+        					JSONArray entityModes = new JSONArray();
+        					entityModes.put(mode);
+        					entities.put(entry.getValue(), entityModes);
+        				}
+        			}
+        		} catch (JSONException e) {
+        			e.printStackTrace();
+        		}
+            }
+        }
+	}
+
+
+	private void registerBaseClass(IMethod method, JSONObject entities) {
+		String className = method.getParent().getElementName();
+		className = className.substring(0, className.length()-5);
+		String methodName = method.getElementName();
+		String mode = "";
+		if (methodName.startsWith("get"))
+			mode = "R";
+		if (methodName.startsWith("set"))
+			mode = "W";
+		if (methodName.startsWith("add"))
+			mode = "W";
+		if (methodName.startsWith("remove"))
+			mode = "W";
+		
+		try {
+			if (!className.equals("DomainRoot")) {
+				if (entities.has(className)) {
+					JSONArray entityModes = entities.getJSONArray(className);
+					if(!entityModes.join(":").contains(mode)) {
+						entityModes.put(mode);
+					}
+				} else {
+					JSONArray entityModes = new JSONArray();
+					entityModes.put(mode);
+					entities.put(className, entityModes);
+				}
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			for (String entityName : entitiesSet) {
+				if (method.getSignature().contains(entityName)) {
+					if (!entityName.equals("DomainRoot")) {
+						if (entities.has(entityName)) {
+							JSONArray entityModes = entities.getJSONArray(entityName);
+							if(!entityModes.join(":").contains(mode)) {
+								entityModes.put(mode);
+							}
+						} else {
+							JSONArray entityModes = new JSONArray();
+							entityModes.put(mode);
+							entities.put(entityName, entityModes);
+						}
+					}
+				}
+			}
+		} catch (JSONException | JavaModelException e) {
+			e.printStackTrace();
+		}
+	}
+
 
 	public HashSet<IMethod> getCalleesOf(IMethod m) {
 		 
