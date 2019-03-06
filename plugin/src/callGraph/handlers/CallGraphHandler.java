@@ -3,12 +3,16 @@ package callGraph.handlers;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -19,6 +23,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.IAnnotation;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
@@ -56,8 +61,9 @@ import org.json.JSONObject;
 public class CallGraphHandler extends AbstractHandler {
 	
 	JSONObject callgraph;
-	Set<String> entitiesSet;
+	List<String> entitiesList;
 	Set<IType> controllersSet;
+	Set<String> abstractEntitiesSet;
 	ASTParser parser;
 	int start;
 	int end;
@@ -76,12 +82,14 @@ public class CallGraphHandler extends AbstractHandler {
 		};
 		InputDialog inputDialog = new InputDialog(window.getShell(), "CallGraph", "Please enter project name:", "", validator);
 		if (inputDialog.open() == Window.OK) {
-			String projectName = inputDialog.getValue();		
+			String projectName = inputDialog.getValue();
+			long startTime = System.currentTimeMillis();
 			IProject project = getProject(projectName);
-						
+
 			callgraph = new JSONObject();
-			entitiesSet = new HashSet<String>();
+			entitiesList = new ArrayList<String>();
 			controllersSet = new HashSet<IType>();
+			abstractEntitiesSet = new HashSet<String>();
 			parser = ASTParser.newParser(AST.JLS11);
 			parser.setKind(ASTParser.K_COMPILATION_UNIT);
 			
@@ -90,7 +98,10 @@ public class CallGraphHandler extends AbstractHandler {
 			for (IType controller : controllersSet) {
 				processController(controller);
 			}
-				
+			
+			long elapsedTimeMillis = System.currentTimeMillis() - startTime;
+			float elapsedTimeSec = elapsedTimeMillis/1000F;
+			System.out.println("Complete. Elapsed time: " + elapsedTimeSec + " seconds");
 			
 			//prompt for file location
 			FileDialog fileDialog = new FileDialog(window.getShell(), SWT.OPEN);
@@ -99,14 +110,14 @@ public class CallGraphHandler extends AbstractHandler {
 			String filepath = fileDialog.open();
 			
 			//file store
-			try (FileWriter file = new FileWriter(filepath)) {
-				file.write(callgraph.toString(4));
-			} catch (IOException | JSONException e) {
-				e.printStackTrace();
+			if (filepath != null) {
+				try (FileWriter file = new FileWriter(filepath)) {
+					file.write(callgraph.toString(4));
+				} catch (IOException | JSONException e) {
+					e.printStackTrace();
+				}
 			}
 		}
-
-		System.out.println("Done");
 
 		return null;
 	}
@@ -144,11 +155,15 @@ public class CallGraphHandler extends AbstractHandler {
 										controllersSet.add(type);
 									}
 								}
-								entitiesSet.add(type.getElementName());
+								entitiesList.add(type.getElementName());
+								if (Flags.isAbstract(type.getFlags()) && !type.getElementName().endsWith("_Base")) {
+									abstractEntitiesSet.add(type.getElementName());
+								}
 							}
 						}
 					}
-				}
+				}		
+				Collections.sort(entitiesList, (string1, string2) -> Integer.compare(string2.length(), string1.length()));
 			}
 		} catch (JavaModelException e) {
 			e.printStackTrace();
@@ -174,7 +189,7 @@ public class CallGraphHandler extends AbstractHandler {
 							registerBaseClass(callee, entities);
 						} else if (callee.getElementName().equals("getDomainObject")) {
 							registerDomainObject(methodPool.get(i), entities);
-						} else {
+						} else if (entitiesList.contains(callee.getParent().getElementName())) {
 							boolean similar = false;
 							for (IMethod method : methodPool) {
 								if (method.isSimilar(callee) && method.getParent().getElementName().equals(callee.getParent().getElementName())) {
@@ -243,7 +258,7 @@ public class CallGraphHandler extends AbstractHandler {
         					if(!entityModes.join(":").contains(mode)) {
         						entityModes.put(mode);
         					}
-        				} else {
+        				} else if (!abstractEntitiesSet.contains(entry.getValue())){
         					JSONArray entityModes = new JSONArray();
         					entityModes.put(mode);
         					entities.put(entry.getValue(), entityModes);
@@ -278,7 +293,7 @@ public class CallGraphHandler extends AbstractHandler {
 					if(!entityModes.join(":").contains(mode)) {
 						entityModes.put(mode);
 					}
-				} else {
+				} else if (!abstractEntitiesSet.contains(className)) {
 					JSONArray entityModes = new JSONArray();
 					entityModes.put(mode);
 					entities.put(className, entityModes);
@@ -289,7 +304,7 @@ public class CallGraphHandler extends AbstractHandler {
 		}
 		
 		try {
-			for (String entityName : entitiesSet) {
+			for (String entityName : entitiesList) {
 				if (method.getSignature().contains(entityName)) {
 					if (!entityName.equals("DomainRoot")) {
 						if (entities.has(entityName)) {
@@ -297,12 +312,13 @@ public class CallGraphHandler extends AbstractHandler {
 							if(!entityModes.join(":").contains(mode)) {
 								entityModes.put(mode);
 							}
-						} else {
+						} else if (!abstractEntitiesSet.contains(entityName)){
 							JSONArray entityModes = new JSONArray();
 							entityModes.put(mode);
 							entities.put(entityName, entityModes);
 						}
 					}
+					break;
 				}
 			}
 		} catch (JSONException | JavaModelException e) {
