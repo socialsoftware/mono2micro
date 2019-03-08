@@ -3,10 +3,10 @@ import { Button, DropdownButton, Dropdown, FormControl, ButtonGroup, ButtonToolb
 
 export const operations = {
     NONE: 'operation',
-    RENAME: 'rename by',
-    MERGE: 'merge with',
-    SPLIT: 'split by',
-    TRANSFER: 'transfer to'
+    RENAME: 'rename',
+    MERGE: 'merge',
+    SPLIT: 'split',
+    TRANSFER: 'transfer'
 };
 
 export class ClusterOperationsMenu extends React.Component {
