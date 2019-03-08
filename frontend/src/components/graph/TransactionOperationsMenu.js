@@ -7,11 +7,19 @@ export class TransactionOperationsMenu extends React.Component {
 
         this.state = {
             showSubmit: false,
-            controller: 'Select Controller'
+            controllerList: [],
+            controller: 'Select Controller',
+            controllerAmount: "All"
         }
 
         this.setController = this.setController.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
+      this.setState({
+        controllerList: Object.keys(nextProps.controllerClusters).sort()
+      });
     }
 
     setController(value) {
@@ -20,30 +28,54 @@ export class TransactionOperationsMenu extends React.Component {
             controller: value
         });
     }
+
+    setControllerAmount(value) {
+      this.setState({
+        controllerAmount: value
+      });
+      if (value === "All") {
+        this.setState({
+          controllerList: Object.keys(this.props.controllerClusters).sort()
+        });
+      } else {
+        this.setState({
+          controllerList: Object.keys(this.props.controllerClusters).filter(key => this.props.controllerClusters[key].length === value).sort()
+        });
+      }
+    }
     
     handleSubmit() {
         this.props.handleControllerSubmit(this.state.controller);
     }
 
     render() {
-        const controllersList = this.props.controllers.map(c =>
-            <Dropdown.Item key={c.name} onClick={() => this.setController(c.name)}>{c.name}</Dropdown.Item>
-        );
-       return (
-            <ButtonToolbar>
-                <DropdownButton className="mr-1" as={ButtonGroup}
-                    title={this.state.controller}>
-                    <Dropdown.Menu as={CustomSearchMenu}>
-                        {controllersList}
-                    </Dropdown.Menu>
-                    
-                </DropdownButton>
+      const controllerAmountList = [...new Set(Object.keys(this.props.controllerClusters).map(key => this.props.controllerClusters[key].length))].sort().map(amount =>
+        <Dropdown.Item key={amount} onClick={() => this.setControllerAmount(amount)}>{amount}</Dropdown.Item>  
+      );
+        
+      const controllersListDropdown = this.state.controllerList.map(c =>
+          <Dropdown.Item key={c} onClick={() => this.setController(c)}>{c}</Dropdown.Item>
+      );
 
-                {this.state.showSubmit &&
-                    <Button onClick={this.handleSubmit}>Create View</Button>
-                }
-            </ButtonToolbar>
-       );
+      return (
+          <ButtonToolbar>
+              <DropdownButton className="mr-1" as={ButtonGroup} title={this.state.controllerAmount}>
+                <Dropdown.Item key={"All"} onClick={() => this.setControllerAmount("All")}>{"All"}</Dropdown.Item>
+                {controllerAmountList}
+              </DropdownButton>
+
+              <Dropdown className="mr-1" as={ButtonGroup}>
+                <Dropdown.Toggle>{this.state.controller}</Dropdown.Toggle>
+                <Dropdown.Menu as={CustomSearchMenu}>
+                  {controllersListDropdown}
+                </Dropdown.Menu>
+              </Dropdown>
+
+              {this.state.showSubmit &&
+                  <Button onClick={this.handleSubmit}>Create View</Button>
+              }
+          </ButtonToolbar>
+      );
     }
 }
 

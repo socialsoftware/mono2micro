@@ -7,19 +7,28 @@ import json
 
 datafilePath = str(sys.argv[1])
 
+#with open(datafilePath + "datafile.txt") as f:
 with open(datafilePath + "datafile.txt") as f:
     datafile = json.load(f)
 
 data_dictionary = {}
 
+#luis
 for controller in datafile:
-    for entityArray in datafile[controller]:
-        entity = entityArray[0]
-        mode = entityArray[1]
+    for entity in datafile[controller]:
         if entity in data_dictionary:
             data_dictionary[entity] += [controller]
         else:
             data_dictionary[entity] = [controller]
+
+#eu
+"""for controller in datafile:
+    for entity in datafile[controller]:
+        modes = datafile[controller][entity]
+        if entity in data_dictionary:
+            data_dictionary[entity] += [controller]
+        else:
+            data_dictionary[entity] = [controller]"""
 
 base_classes = list(data_dictionary.keys())
 
@@ -40,6 +49,7 @@ for index, value in np.ndenumerate(similarity_matrix):
 
         similarity_matrix[index] = similarity_measure
 
+#print(similarity_matrix)
 
 # Get clustering linkage type
 linkage_type = 'average'
@@ -48,3 +58,4 @@ hierarc = hierarchy.linkage(y=similarity_matrix, method=linkage_type)
 
 dend = hierarchy.dendrogram(hierarc, labels=base_classes, distance_sort='descending')
 plab.savefig(datafilePath + "dend.png", format="png", bbox_inches='tight')
+#plt.show()

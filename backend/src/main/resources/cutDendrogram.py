@@ -13,14 +13,22 @@ with open(datafilePath + "datafile.txt") as f:
 
 data_dictionary = {}
 
+#luis
 for controller in datafile:
-    for entityArray in datafile[controller]:
-        entity = entityArray[0]
-        mode = entityArray[1]
+    for entity in datafile[controller]:
         if entity in data_dictionary:
             data_dictionary[entity] += [controller]
         else:
             data_dictionary[entity] = [controller]
+
+#eu
+"""for controller in datafile:
+    for entity in datafile[controller]:
+        modes = datafile[controller][entity]
+        if entity in data_dictionary:
+            data_dictionary[entity] += [controller]
+        else:
+            data_dictionary[entity] = [controller]"""
 
 base_classes = list(data_dictionary.keys())
 

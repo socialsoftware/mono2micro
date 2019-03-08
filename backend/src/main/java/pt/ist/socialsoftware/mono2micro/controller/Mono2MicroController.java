@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -100,11 +101,11 @@ public class Mono2MicroController {
 
 			while(controllers.hasNext()) {
 				String controller = controllers.next();
+
+				//luis
 				JSONArray entities = (JSONArray) json.get(controller);
 				for (int i = 0; i < entities.length(); i++) {
-					JSONArray entityArray = (JSONArray) entities.getJSONArray(i);
-					String entity = (String) entityArray.get(0);
-					String type = (String) entityArray.get(1);
+					String entity = (String) entities.getString(i);
 
 					if (!dend.containsEntity(entity))
 						dend.addEntity(new Entity(entity));
@@ -116,6 +117,26 @@ public class Mono2MicroController {
 					if (!dend.getController(controller).getEntities().contains(entity))
 						dend.getController(controller).addEntity(entity);
 				}
+
+
+				//eu
+				/*JSONObject entitiesObject = (JSONObject) json.get(controller);
+				Iterator<String> entities = entitiesObject.sortedKeys();
+
+				while(entities.hasNext()) {
+					String entity = entities.next();
+					JSONArray modes = (JSONArray) entitiesObject.get(entity);
+
+					if (!dend.containsEntity(entity))
+						dend.addEntity(new Entity(entity));
+					if (!dend.getEntity(entity).getControllers().contains(controller))
+						dend.getEntity(entity).addController(controller);
+
+					if (!dend.containsController(controller))
+						dend.addController(new Controller(controller));
+					if (!dend.getController(controller).getEntities().contains(entity))
+						dend.getController(controller).addEntity(entity);
+				}*/
 			}
 		} catch (JSONException | IOException e) {
 			System.err.println(e.getMessage());
@@ -256,19 +277,16 @@ public class Mono2MicroController {
 	}
 
 	@RequestMapping(value = "/getControllerClusters", method = RequestMethod.GET)
-	public ResponseEntity<List<Cluster>> getControllerClusters(@RequestParam("graphName") String graphName,
-			@RequestParam("controllerName") String controllerName) {
-		logger.debug("getControllerClusters: controller {} in graph {}", controllerName, graphName);
+	public ResponseEntity<Map<String,List<Cluster>>> getControllerClusters(@RequestParam("graphName") String graphName) {
+		logger.debug("getControllerClusters: in graph {}", graphName);
 
 		Dendrogram dend = Dendrogram.getInstance();
-		List<Cluster> touchedClusters = dend.getControllerClusters(graphName, controllerName);
-		return new ResponseEntity<List<Cluster>>(touchedClusters, HttpStatus.OK);
+		return new ResponseEntity<Map<String,List<Cluster>>>(dend.getControllerClusters(graphName), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/getControllers", method = RequestMethod.GET)
 	public ResponseEntity<List<Controller>> getControllers() {
 		logger.debug("getControllers");
-
 		Dendrogram dend = Dendrogram.getInstance();
 		return new ResponseEntity<List<Controller>>(dend.getControllers(), HttpStatus.OK);
 	}

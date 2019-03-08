@@ -1,7 +1,9 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Dendrogram {
 	private List<Graph> graphs = new ArrayList<>();
@@ -135,18 +137,20 @@ public class Dendrogram {
 		return false;
 	}
 
-	public List<Cluster> getControllerClusters(String graphName, String controllerName) {
-		List<Cluster> result = new ArrayList<>();
+	public Map<String,List<Cluster>> getControllerClusters(String graphName) {
+		Map<String,List<Cluster>> result = new HashMap<>();
 
 		Graph graph = getGraph(graphName);
-		Controller controller = getController(controllerName);
-
-		for (String entity : controller.getEntities()) {
-			for (Cluster cluster : graph.getClusters()) {
-				if (!result.contains(cluster) && cluster.containsEntity(entity)) {
-					result.add(cluster);
+		for (Controller controller : this.controllers) {
+			List<Cluster> touchedClusters = new ArrayList<>();
+			for (String entity : controller.getEntities()) {
+				for (Cluster cluster : graph.getClusters()) {
+					if (!touchedClusters.contains(cluster) && cluster.containsEntity(entity)) {
+						touchedClusters.add(cluster);
+					}
 				}
 			}
+			result.put(controller.getName(), touchedClusters);
 		}
 		return result;
 	}

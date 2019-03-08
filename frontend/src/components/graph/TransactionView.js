@@ -73,7 +73,7 @@ export class TransactionView extends React.Component {
         this.state = {
             graphName: this.props.name,
             graph: {},
-            controller: [],
+            controller: {},
             controllers: [],
             controllerClusters: [],
             showGraph: false
@@ -91,28 +91,29 @@ export class TransactionView extends React.Component {
         service.getControllers().then(response => {
             this.setState({
                 controllers: response.data
-            })
+            });
+        });
+        service.getControllerClusters(this.props.name).then(response => {
+            this.setState({
+                controllerClusters: response.data
+            });
         });
     }
 
     handleControllerSubmit(value) {
         this.setState({
-            controller: this.state.controllers.filter(c => c.name === value)[0]
-        });
-        const service = new RepositoryService();
-        service.getControllerClusters(this.state.graphName, value).then(response => {
-            this.setState({
-                controllerClusters: response.data,
-                showGraph: true
-            });
+            controller: this.state.controllers.filter(c => c.name === value)[0],
+            showGraph: true
+        }, () => {
             this.loadGraph();
-        });
+            }
+        );
     }
 
     loadGraph() {
         const graph = {
-            nodes: new DataSet(this.state.controllerClusters.map(c => this.createNode(c))),
-            edges: new DataSet(this.state.controllerClusters.map(c => this.createEdge(c)))
+            nodes: new DataSet(this.state.controllerClusters[this.state.controller.name].map(c => this.createNode(c))),
+            edges: new DataSet(this.state.controllerClusters[this.state.controller.name].map(c => this.createEdge(c)))
         };
         graph.nodes.add({id: this.state.controller.name, title: this.state.controller.entities.join('<br>'), label: this.state.controller.name, level: 0, value: 1, type: types.CONTROLLER});
 
@@ -145,6 +146,7 @@ export class TransactionView extends React.Component {
                 <TransactionOperationsMenu
                     handleControllerSubmit={this.handleControllerSubmit}
                     controllers={this.state.controllers}
+                    controllerClusters={this.state.controllerClusters}
                 />
                 
                 <div style={{width:'1000px' , height: '700px'}}>

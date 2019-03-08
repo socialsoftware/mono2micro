@@ -101,12 +101,11 @@ export class RepositoryService {
             });
     }
 
-    getControllerClusters(graphName, controllerName) {
+    getControllerClusters(graphName) {
         return this.axios.get("/getControllerClusters", 
             {
                 params: {
-                    "graphName" : graphName,
-                    "controllerName" : controllerName
+                    "graphName" : graphName
                 }
             });
     }
