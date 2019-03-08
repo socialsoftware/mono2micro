@@ -17,9 +17,11 @@ export class TransactionOperationsMenu extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-      this.setState({
-        controllerList: Object.keys(nextProps.controllerClusters).sort()
-      });
+      if (this.state.controllerAmount === "All") {
+        this.setState({
+          controllerList: Object.keys(nextProps.controllerClusters).sort()
+        });
+      }
     }
 
     setController(value) {
@@ -31,7 +33,9 @@ export class TransactionOperationsMenu extends React.Component {
 
     setControllerAmount(value) {
       this.setState({
-        controllerAmount: value
+        controllerAmount: value,
+        showSubmit: false,
+        controller: "Select Controller"
       });
       if (value === "All") {
         this.setState({
