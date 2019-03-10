@@ -131,6 +131,7 @@ export class VisNetwork extends Component {
             this.network.on("selectEdge", this.handleSelectEdge);
             this.network.on("deselectEdge", this.handleDeselectEdge);
             this.network.on("stabilizationIterationsDone", this.handleStabilization);
+            this.network.storePositions();
         }
     }
 

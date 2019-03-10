@@ -57,12 +57,12 @@ public class Graph {
 
 	public void mergeClusters(String cluster1, String cluster2, String newName) {
 		Cluster mergedCluster = new Cluster(newName);
-		this.addCluster(mergedCluster);
 		for (int i = 0; i < clusters.size(); i++) {
 			if (clusters.get(i).getName().equals(cluster1)) {
 				for (Entity entity : clusters.get(i).getEntities())
 					mergedCluster.addEntity(entity);
 				clusters.remove(i);
+				break;
 			}
 		}
 		for (int i = 0; i < clusters.size(); i++) {
@@ -70,8 +70,10 @@ public class Graph {
 				for (Entity entity : clusters.get(i).getEntities())
 					mergedCluster.addEntity(entity);
 				clusters.remove(i);
+				break;
 			}
 		}
+		this.addCluster(mergedCluster);
 	}
 
 	public boolean renameCluster(String clusterName, String newName) {

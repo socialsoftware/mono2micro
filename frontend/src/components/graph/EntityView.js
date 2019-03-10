@@ -1,13 +1,13 @@
 import React from 'react';
-import { TransactionOperationsMenu } from './TransactionOperationsMenu';
+import { EntityOperationsMenu } from './EntityOperationsMenu';
 import { RepositoryService } from './../../services/RepositoryService';
 import { Tooltip } from 'react-bootstrap';
 import { VisNetwork } from '../util/VisNetwork';
 import { DataSet } from 'vis';
 import { views, types } from './ViewsMenu';
 
-export const transaction_tooltip = (
-    <Tooltip id="transaction_tooltip">
+export const entity_tooltip = (
+    <Tooltip id="entity_tooltip">
       Hover or double click cluster to see entities inside.<br />
       Hover or double click edge to see entities accessed.<br />
       Select cluster or edge for highlight.
@@ -66,7 +66,7 @@ const options = {
     }
 };
 
-export class TransactionView extends React.Component {
+export class EntityView extends React.Component {
     constructor(props) {
         super(props);
 
@@ -139,7 +139,7 @@ export class TransactionView extends React.Component {
     render() {
         return (
             <div>
-                <TransactionOperationsMenu
+                <EntityOperationsMenu
                     handleControllerSubmit={this.handleControllerSubmit}
                     controllers={this.state.controllers}
                     controllerClusters={this.state.controllerClusters}

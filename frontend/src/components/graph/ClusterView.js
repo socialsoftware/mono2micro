@@ -3,12 +3,12 @@ import { RepositoryService } from '../../services/RepositoryService';
 import { ClusterOperationsMenu, operations } from './ClusterOperationsMenu';
 import { VisNetwork } from '../util/VisNetwork';
 import { ModalMessage } from '../util/ModalMessage';
-import { Tooltip, OverlayTrigger } from 'react-bootstrap';
+import { Tooltip } from 'react-bootstrap';
 import { DataSet } from 'vis';
 import { views, types } from './ViewsMenu';
 
-const tooltip = (
-    <Tooltip id="tooltip">
+export const cluster_tooltip = (
+    <Tooltip id="cluster_tooltip">
       Hover or double click cluster to see entities inside.<br />
       Hover or double click edge to see controllers in common.<br />
       Select cluster or edge for highlight and to open operation menu.
@@ -18,7 +18,8 @@ const tooltip = (
 const options = {
     height: "700",
     layout: {
-        hierarchical: false
+        hierarchical: false,
+        //randomSeed: 10
     },
     edges: {
         smooth: false,
@@ -313,11 +314,7 @@ export class ClusterView extends React.Component {
 
     render() {
         return (
-            <div>
-                <OverlayTrigger placement="bottom" overlay={tooltip}>
-                    <h3>{this.state.graphName}</h3>
-                </OverlayTrigger><br />
-                
+            <div>                
                 {this.state.error && 
                 <ModalMessage
                     title='Error Message' 
