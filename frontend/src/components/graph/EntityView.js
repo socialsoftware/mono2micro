@@ -17,9 +17,7 @@ export const entity_tooltip = (
 const options = {
     height: "700",
     layout: {
-        hierarchical: {
-            direction: 'UD'
-        }
+        hierarchical: false
     },
     edges: {
         smooth: false,
@@ -59,10 +57,15 @@ const options = {
         hover: true
     },
     physics: {
-        hierarchicalRepulsion: {
-            springLength: 70,
-            nodeDistance: 110
-        },
+        enabled: true,
+        barnesHut: {
+            gravitationalConstant: -2000,
+            centralGravity: 0.3,
+            springLength: 95,
+            springConstant: 0.04,
+            damping: 0.09,
+            avoidOverlap: 1
+          },
     }
 };
 
@@ -73,13 +76,12 @@ export class EntityView extends React.Component {
         this.state = {
             graphName: this.props.name,
             graph: {},
-            controller: {},
-            controllers: [],
-            controllerClusters: [],
+            entity: {},
+            entities: [],
             showGraph: false
         }
 
-        this.handleControllerSubmit = this.handleControllerSubmit.bind(this);
+        this.handleEntitySubmit = this.handleEntitySubmit.bind(this);
         this.loadGraph = this.loadGraph.bind(this);
         this.createNode = this.createNode.bind(this);
         this.createEdge = this.createEdge.bind(this);
@@ -88,21 +90,16 @@ export class EntityView extends React.Component {
 
     componentDidMount() {
         const service = new RepositoryService();
-        service.getControllers().then(response => {
+        service.getEntities().then(response => {
             this.setState({
-                controllers: response.data
-            });
-        });
-        service.getControllerClusters(this.props.name).then(response => {
-            this.setState({
-                controllerClusters: response.data
+                entities: response.data
             });
         });
     }
 
-    handleControllerSubmit(value) {
+    handleEntitySubmit(value) {
         this.setState({
-            controller: this.state.controllers.filter(c => c.name === value)[0],
+            entity: this.state.entities.filter(e => e.name === value)[0],
             showGraph: true
         }, () => {
             this.loadGraph();
@@ -112,24 +109,23 @@ export class EntityView extends React.Component {
 
     loadGraph() {
         const graph = {
-            nodes: new DataSet(this.state.controllerClusters[this.state.controller.name].map(c => this.createNode(c))),
-            edges: new DataSet(this.state.controllerClusters[this.state.controller.name].map(c => this.createEdge(c)))
+            nodes: new DataSet(this.state.entity.controllers.map(c => this.createNode(c))),
+            edges: new DataSet(this.state.entity.controllers.map(c => this.createEdge(c)))
         };
-        graph.nodes.add({id: this.state.controller.name, title: this.state.controller.entities.join('<br>'), label: this.state.controller.name, level: 0, value: 1, type: types.CONTROLLER});
+        graph.nodes.add({id: this.state.entity.name, label: this.state.entity.name, value: 2, type: types.ENTITY});
 
         this.setState({
             graph: graph
         });
     }
 
-    createNode(cluster) {
-        return {id: cluster.name, title: cluster.entities.map(e => e.name).join('<br>'), label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER};
+    createNode(controller) {
+        return {id: controller, label: controller, value: 1, type: types.CONTROLLER};
     }
 
 
-    createEdge(cluster) {
-        let entitiesTouched = cluster.entities.map(e => e.name).filter(e => this.state.controller.entities.includes(e));
-        return {from: this.state.controller.name, to: cluster.name, label: entitiesTouched.length.toString(), title: entitiesTouched.join('<br>')};
+    createEdge(controller) {
+        return {from: controller, to: this.state.entity.name};
     }
 
     handleSelectNode(nodeId) {
@@ -140,9 +136,8 @@ export class EntityView extends React.Component {
         return (
             <div>
                 <EntityOperationsMenu
-                    handleControllerSubmit={this.handleControllerSubmit}
-                    controllers={this.state.controllers}
-                    controllerClusters={this.state.controllerClusters}
+                    handleEntitySubmit={this.handleEntitySubmit}
+                    entities={this.state.entities}
                 />
                 
                 <div style={{width:'1000px' , height: '700px'}}>
@@ -150,7 +145,7 @@ export class EntityView extends React.Component {
                         graph={this.state.graph}
                         options={options}
                         onSelection={this.handleSelectNode}
-                        view={views.TRANSACTION} />
+                        view={views.ENTITY} />
                 </div>
             </div>
         );

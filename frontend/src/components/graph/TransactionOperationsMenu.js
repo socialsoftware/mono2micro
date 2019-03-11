@@ -53,7 +53,7 @@ export class TransactionOperationsMenu extends React.Component {
     }
 
     render() {
-      const controllerAmountList = [...new Set(Object.keys(this.props.controllerClusters).map(key => this.props.controllerClusters[key].length))].sort().map(amount =>
+      const controllerAmountList = [...new Set(Object.keys(this.props.controllerClusters).map(key => this.props.controllerClusters[key].length))].sort((a, b) => a - b).map(amount =>
         <Dropdown.Item key={amount} onClick={() => this.setControllerAmount(amount)}>{amount}</Dropdown.Item>  
       );
         

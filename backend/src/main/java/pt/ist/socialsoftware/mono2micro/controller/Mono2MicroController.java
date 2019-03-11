@@ -291,6 +291,13 @@ public class Mono2MicroController {
 		return new ResponseEntity<List<Controller>>(dend.getControllers(), HttpStatus.OK);
 	}
 
+	@RequestMapping(value = "/getEntities", method = RequestMethod.GET)
+	public ResponseEntity<List<Entity>> getEntities() {
+		logger.debug("getEntities");
+		Dendrogram dend = Dendrogram.getInstance();
+		return new ResponseEntity<List<Entity>>(dend.getEntities(), HttpStatus.OK);
+	}
+
 	@RequestMapping(value = "/transferEntities", method = RequestMethod.GET)
 	public ResponseEntity<Dendrogram> transferEntities(@RequestParam("graphName") String graphName,
 			@RequestParam("fromCluster") String fromCluster, @RequestParam("toCluster") String toCluster, 

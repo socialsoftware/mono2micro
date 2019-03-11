@@ -7,71 +7,71 @@ export class EntityOperationsMenu extends React.Component {
 
         this.state = {
             showSubmit: false,
-            controllerList: [],
-            controller: 'Select Controller',
-            controllerAmount: "All"
+            entityList: this.props.entities.map(e => e.name).sort(),
+            entity: 'Select Entity',
+            entityAmount: "All"
         }
 
-        this.setController = this.setController.bind(this);
+        this.setEntity = this.setEntity.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
-      if (this.state.controllerAmount === "All") {
+      if (this.state.entityAmount === "All") {
         this.setState({
-          controllerList: Object.keys(nextProps.controllerClusters).sort()
+          entityList: nextProps.entities.map(e => e.name).sort()
         });
       }
     }
 
-    setController(value) {
+    setEntity(value) {
         this.setState({
             showSubmit: true,
-            controller: value
+            entity: value
         });
     }
 
-    setControllerAmount(value) {
+    setEntityAmount(value) {
       this.setState({
-        controllerAmount: value,
+        entityAmount: value,
         showSubmit: false,
-        controller: "Select Controller"
+        entity: "Select Entity"
       });
       if (value === "All") {
         this.setState({
-          controllerList: Object.keys(this.props.controllerClusters).sort()
+          entityList: this.props.entities.map(e => e.name).sort()
         });
       } else {
         this.setState({
-          controllerList: Object.keys(this.props.controllerClusters).filter(key => this.props.controllerClusters[key].length === value).sort()
+          entityList: this.props.entities.filter(e => e.controllers.length === value).map(e => e.name).sort()
         });
       }
     }
-    
+
     handleSubmit() {
-        this.props.handleControllerSubmit(this.state.controller);
+        this.props.handleEntitySubmit(this.state.entity);
     }
 
     render() {
-      const controllerAmountList = [...new Set(Object.keys(this.props.controllerClusters).map(key => this.props.controllerClusters[key].length))].sort().map(amount =>
-        <Dropdown.Item key={amount} onClick={() => this.setControllerAmount(amount)}>{amount}</Dropdown.Item>  
+      const entityAmountList = [...new Set(this.props.entities.map(e => e.controllers.length))].sort((a, b) => a - b).map(amount =>
+        <Dropdown.Item key={amount} onClick={() => this.setEntityAmount(amount)}>{amount}</Dropdown.Item>  
       );
-        
-      const controllersListDropdown = this.state.controllerList.map(c =>
-          <Dropdown.Item key={c} onClick={() => this.setController(c)}>{c}</Dropdown.Item>
+
+      const entitiesListDropdown = this.state.entityList.map(e =>
+          <Dropdown.Item key={e} onClick={() => this.setEntity(e)}>{e}</Dropdown.Item>
       );
 
       return (
           <ButtonToolbar>
-              <DropdownButton className="mr-1" as={ButtonGroup} title={this.state.controllerAmount}>
-                <Dropdown.Item key={"All"} onClick={() => this.setControllerAmount("All")}>{"All"}</Dropdown.Item>
-                {controllerAmountList}
+              <DropdownButton className="mr-1" as={ButtonGroup} title={this.state.entityAmount}>
+                <Dropdown.Item key={"All"} onClick={() => this.setEntityAmount("All")}>{"All"}</Dropdown.Item>
+                {entityAmountList}
               </DropdownButton>
 
               <Dropdown className="mr-1" as={ButtonGroup}>
-                <Dropdown.Toggle>{this.state.controller}</Dropdown.Toggle>
+                <Dropdown.Toggle>{this.state.entity}</Dropdown.Toggle>
                 <Dropdown.Menu as={CustomSearchMenu}>
-                  {controllersListDropdown}
+                  {entitiesListDropdown}
                 </Dropdown.Menu>
               </Dropdown>
 
