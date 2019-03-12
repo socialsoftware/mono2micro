@@ -17,6 +17,7 @@ export class VisNetwork extends Component {
 
         this.handleCloseModal = this.handleCloseModal.bind(this);
         this.handleSelectNode = this.handleSelectNode.bind(this);
+        this.handleDeselectNode = this.handleDeselectNode.bind(this);
         this.handleSelectEdge = this.handleSelectEdge.bind(this);
         this.handleDeselectEdge = this.handleDeselectEdge.bind(this);
         this.handleStabilization = this.handleStabilization.bind(this);
@@ -33,6 +34,10 @@ export class VisNetwork extends Component {
 
     handleSelectNode(event) {
         this.props.onSelection(event.nodes[0]);
+    }
+
+    handleDeselectNode(event) {
+        this.props.onDeselection(event.previousSelection.nodes[0]);
     }
 
     handleSelectEdge(event) {
@@ -128,6 +133,7 @@ export class VisNetwork extends Component {
             this.network = new Network(this.appRef.current, this.props.graph, this.props.options);
             this.network.on("doubleClick", this.handleDoubleClick);
             this.network.on("selectNode", this.handleSelectNode);
+            this.network.on("deselectNode", this.handleDeselectNode);
             this.network.on("selectEdge", this.handleSelectEdge);
             this.network.on("deselectEdge", this.handleDeselectEdge);
             this.network.on("stabilizationIterationsDone", this.handleStabilization);

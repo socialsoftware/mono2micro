@@ -10,7 +10,8 @@ export const views = {
 
 export const types = {
     CLUSTER: 0,
-    CONTROLLER: 1
+    CONTROLLER: 1,
+    ENTITY: 2
 };
 
 export class ViewsMenu extends React.Component {

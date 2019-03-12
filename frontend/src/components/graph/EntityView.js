@@ -17,7 +17,10 @@ export const entity_tooltip = (
 const options = {
     height: "700",
     layout: {
-        hierarchical: false
+        hierarchical: {
+            direction: 'LR',
+            nodeSpacing: 30
+        }
     },
     edges: {
         smooth: false,
@@ -57,15 +60,7 @@ const options = {
         hover: true
     },
     physics: {
-        enabled: true,
-        barnesHut: {
-            gravitationalConstant: -2000,
-            centralGravity: 0.3,
-            springLength: 95,
-            springConstant: 0.04,
-            damping: 0.09,
-            avoidOverlap: 1
-          },
+        enabled: false
     }
 };
 
@@ -74,10 +69,12 @@ export class EntityView extends React.Component {
         super(props);
 
         this.state = {
-            graphName: this.props.name,
             graph: {},
+            visGraph: {},
             entity: {},
             entities: [],
+            controllers: [],
+            controllerClusters: {},
             showGraph: false
         }
 
@@ -86,14 +83,29 @@ export class EntityView extends React.Component {
         this.createNode = this.createNode.bind(this);
         this.createEdge = this.createEdge.bind(this);
         this.handleSelectNode = this.handleSelectNode.bind(this);
+        this.handleDeselectNode = this.handleDeselectNode.bind(this);
     }
 
     componentDidMount() {
         const service = new RepositoryService();
-        service.getEntities().then(response => {
+        service.loadDendrogram().then(response => {
             this.setState({
-                entities: response.data
+                entities: response.data.entities,
+                controllers: response.data.controllers,
+                graph: response.data.graphs.filter(g => g.name === this.props.name)[0]
             });
+        });
+
+        service.getControllerClusters(this.props.name).then(response => {
+            this.setState({
+                controllerClusters: response.data
+            });
+        });
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            graph: {...this.state.graph, name: nextProps.name}
         });
     }
 
@@ -108,19 +120,33 @@ export class EntityView extends React.Component {
     }
 
     loadGraph() {
-        const graph = {
+        const visGraph = {
             nodes: new DataSet(this.state.entity.controllers.map(c => this.createNode(c))),
             edges: new DataSet(this.state.entity.controllers.map(c => this.createEdge(c)))
         };
-        graph.nodes.add({id: this.state.entity.name, label: this.state.entity.name, value: 2, type: types.ENTITY});
+        
+        visGraph.nodes.add({id: this.state.entity.name, label: this.state.entity.name, value: 2, level: 0, type: types.ENTITY});
 
+        visGraph.nodes.add(this.state.graph.clusters.map(cluster => this.createClusterNode(cluster.name)));
+        
+        for (var i = 0; i < this.state.controllers.length; i++) {
+            visGraph.edges.add(this.state.controllerClusters[this.state.controllers[i].name].map(cluster => this.createClusterEdge(this.state.controllers[i].name, cluster.name)));
+        }
+        /*this.state.controllers.forEach(function(controller){
+            visGraph.edges.add(this.state.controllerClusters[controller.name].map(cluster => this.createClusterEdge(controller.name, cluster.name)));
+        });*/
+        
         this.setState({
-            graph: graph
+            visGraph: visGraph
         });
     }
 
     createNode(controller) {
-        return {id: controller, label: controller, value: 1, type: types.CONTROLLER};
+        return {id: controller, label: controller, value: 1, level: 2, type: types.CONTROLLER};
+    }
+
+    createClusterNode(cluster) {
+        return {id: cluster, label: cluster, value: 1, level: 4, type: types.CLUSTER, hidden: true};
     }
 
 
@@ -128,8 +154,24 @@ export class EntityView extends React.Component {
         return {from: controller, to: this.state.entity.name};
     }
 
-    handleSelectNode(nodeId) {
+    createClusterEdge(nodeId, cluster) {
+        return {from: nodeId, to: cluster, hidden: true};
+    }
 
+    handleSelectNode(nodeId) {
+        let node = this.state.visGraph.nodes.get(nodeId);
+        if (node.type === types.CONTROLLER) {
+            this.state.visGraph.nodes.update(this.state.controllerClusters[node.id].map(c => ({id: c.name, hidden: false})));
+            this.state.visGraph.edges.update(this.state.visGraph.edges.map(e=>e).filter(e => e.from === nodeId && !this.state.entities.map(e => e.name).includes(e.to)).map(e => ({id: e.id, hidden: false})));
+        }
+    }
+
+    handleDeselectNode(nodeId) {
+        let node = this.state.visGraph.nodes.get(nodeId);
+        if (node.type === types.CONTROLLER) {
+            this.state.visGraph.nodes.update(this.state.controllerClusters[node.id].map(c => ({id: c.name, hidden: true})));
+            this.state.visGraph.edges.update(this.state.visGraph.edges.map(e=>e).filter(e => e.from === nodeId && !this.state.entities.map(e => e.name).includes(e.to)).map(e => ({id: e.id, hidden: true})));
+        }
     }
 
     render() {
@@ -142,9 +184,10 @@ export class EntityView extends React.Component {
                 
                 <div style={{width:'1000px' , height: '700px'}}>
                     <VisNetwork 
-                        graph={this.state.graph}
+                        graph={this.state.visGraph}
                         options={options}
                         onSelection={this.handleSelectNode}
+                        onDeselection={this.handleDeselectNode}
                         view={views.ENTITY} />
                 </div>
             </div>

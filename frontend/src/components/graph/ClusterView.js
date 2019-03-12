@@ -312,6 +312,10 @@ export class ClusterView extends React.Component {
         });
     }
 
+    handleDeselectNode(nodeId) {
+
+    }
+
     render() {
         return (
             <div>                
@@ -338,7 +342,8 @@ export class ClusterView extends React.Component {
                         graph={this.state.graph} 
                         clusters={this.state.clusters} 
                         options={options} 
-                        onSelection={this.handleSelectCluster} 
+                        onSelection={this.handleSelectCluster}
+                        onDeselection={this.handleDeselectNode}
                         view={views.CLUSTERS} />
                 </div>
             </div>

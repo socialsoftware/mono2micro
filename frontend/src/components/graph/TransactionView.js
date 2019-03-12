@@ -136,6 +136,10 @@ export class TransactionView extends React.Component {
 
     }
 
+    handleDeselectNode(nodeId) {
+
+    }
+
     render() {
         return (
             <div>
@@ -150,6 +154,7 @@ export class TransactionView extends React.Component {
                         graph={this.state.graph}
                         options={options}
                         onSelection={this.handleSelectNode}
+                        onDeselection={this.handleDeselectNode}
                         view={views.TRANSACTION} />
                 </div>
             </div>
