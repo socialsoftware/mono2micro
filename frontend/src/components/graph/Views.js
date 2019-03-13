@@ -1,9 +1,9 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
 import { ViewsMenu, views } from './ViewsMenu';
-import { ClusterView, cluster_tooltip } from './ClusterView';
-import { TransactionView, transaction_tooltip } from './TransactionView';
-import { EntityView, entity_tooltip } from './EntityView';
+import { ClusterView, clusterViewHelp } from './ClusterView';
+import { TransactionView, transactionViewHelp } from './TransactionView';
+import { EntityView, entityViewHelp } from './EntityView';
 import { OverlayTrigger, Button, InputGroup, FormControl, ButtonToolbar, Popover } from 'react-bootstrap';
 
 var HttpStatus = require('http-status-codes');
@@ -17,11 +17,11 @@ export class Views extends React.Component {
             inputValue: this.props.match.params.name,
             renameGraphMode: false,
             view: views.CLUSTERS,
-            tooltip: cluster_tooltip
+            help: clusterViewHelp
         }
 
         this.handleSelectView = this.handleSelectView.bind(this);
-        this.getTooltip = this.getTooltip.bind(this);
+        this.getHelpText = this.getHelpText.bind(this);
         this.handleDoubleClick = this.handleDoubleClick.bind(this);
         this.handleRenameGraph = this.handleRenameGraph.bind(this);
         this.handleRenameGraphSubmit = this.handleRenameGraphSubmit.bind(this);
@@ -38,18 +38,18 @@ export class Views extends React.Component {
     handleSelectView(value) {
         this.setState({
             view: value,
-            tooltip: this.getTooltip(value)
+            help: this.getHelpText(value)
         });
     }
 
-    getTooltip(view) {
+    getHelpText(view) {
         switch(view) {
             case views.CLUSTERS:
-                return cluster_tooltip;
+                return clusterViewHelp;
             case views.TRANSACTION:
-                return transaction_tooltip;
+                return transactionViewHelp;
             case views.ENTITY:
-                return entity_tooltip;
+                return entityViewHelp;
             default:
                 return null;
         }
@@ -98,9 +98,9 @@ export class Views extends React.Component {
     }
 
     render() {
-        const popover = (
+        const helpPopover = (
             <Popover id="popover-basic" title={this.state.view}>
-              {this.getTooltip(this.state.view)}
+              {this.getHelpText(this.state.view)}
             </Popover>
         );
 
@@ -127,7 +127,7 @@ export class Views extends React.Component {
                 <ViewsMenu
                     handleSelectView={this.handleSelectView}
                 />
-                <OverlayTrigger trigger="click" placement="right" overlay={popover}>
+                <OverlayTrigger trigger="click" placement="right" overlay={helpPopover}>
                     <Button className="mb-2" variant="success">Help</Button>
                 </OverlayTrigger>
                 {this.state.view === views.CLUSTERS &&

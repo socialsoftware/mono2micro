@@ -6,7 +6,7 @@ import { VisNetwork } from '../util/VisNetwork';
 import { DataSet } from 'vis';
 import { views, types } from './ViewsMenu';
 
-export const transaction_tooltip = (<div>
+export const transactionViewHelp = (<div>
     Hover or double click cluster to see entities inside.<br />
     Hover or double click edge to see entities accessed.<br />
     Select cluster or edge for highlight.
@@ -16,8 +16,8 @@ const options = {
     height: "700",
     layout: {
         hierarchical: {
-            direction: 'LR',
-            nodeSpacing: 60
+            direction: 'UD',
+            nodeSpacing: 120
         }
     },
     edges: {
@@ -57,13 +57,9 @@ const options = {
     interaction: {
         hover: true
     },
-    physics: false
-    /*physics: {
-        hierarchicalRepulsion: {
-            springLength: 70,
-            nodeDistance: 110
-        },
-    }*/
+    physics: {
+        enabled: false
+    }
 };
 
 export class TransactionView extends React.Component {
@@ -123,7 +119,7 @@ export class TransactionView extends React.Component {
     }
 
     createNode(cluster) {
-        return {id: cluster.name, title: cluster.entities.map(e => e.name).join('<br>'), label: cluster.name, value: cluster.entities.length, level: 2, type: types.CLUSTER};
+        return {id: cluster.name, title: cluster.entities.map(e => e.name).join('<br>'), label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER};
     }
 
 

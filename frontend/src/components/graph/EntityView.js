@@ -6,7 +6,7 @@ import { VisNetwork } from '../util/VisNetwork';
 import { DataSet } from 'vis';
 import { views, types } from './ViewsMenu';
 
-export const entity_tooltip = (<div>
+export const entityViewHelp = (<div>
     Hover or double click cluster to see entities inside.<br />
     Hover or double click edge to see entities accessed.<br />
     Select cluster or edge for highlight.
@@ -16,8 +16,8 @@ const options = {
     height: "700",
     layout: {
         hierarchical: {
-            direction: 'LR',
-            nodeSpacing: 60
+            direction: 'UD',
+            nodeSpacing: 120
         }
     },
     edges: {
@@ -130,7 +130,7 @@ export class EntityView extends React.Component {
                 let commonControllers = entityControllers.filter(value => clusterControllers.includes(value));
                 
                 if (commonControllers.length > 0) {
-                    nodes.push({id: cluster.name, label: cluster.name, value: cluster.entities.length, level: 2, type: types.CLUSTER, title: cluster.entities.map(e => e.name).join('<br>')});
+                    nodes.push({id: cluster.name, label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER, title: cluster.entities.map(e => e.name).join('<br>')});
                     edges.push({from: this.state.entity.name, to: cluster.name, label: commonControllers.length.toString(), title: commonControllers.join('<br>')})
                 }
             }
