@@ -6,27 +6,25 @@ import { VisNetwork } from '../util/VisNetwork';
 import { DataSet } from 'vis';
 import { views, types } from './ViewsMenu';
 
-export const entity_tooltip = (
-    <Tooltip id="entity_tooltip">
-      Hover or double click cluster to see entities inside.<br />
-      Hover or double click edge to see entities accessed.<br />
-      Select cluster or edge for highlight.
-    </Tooltip>
-);
+export const entity_tooltip = (<div>
+    Hover or double click cluster to see entities inside.<br />
+    Hover or double click edge to see entities accessed.<br />
+    Select cluster or edge for highlight.
+    </div>);
 
 const options = {
     height: "700",
     layout: {
         hierarchical: {
             direction: 'LR',
-            nodeSpacing: 30
+            nodeSpacing: 60
         }
     },
     edges: {
         smooth: false,
         arrows: {
           to: {
-            enabled: true,
+            enabled: false,
           }
         },
         scaling: {
@@ -80,8 +78,6 @@ export class EntityView extends React.Component {
 
         this.handleEntitySubmit = this.handleEntitySubmit.bind(this);
         this.loadGraph = this.loadGraph.bind(this);
-        this.createNode = this.createNode.bind(this);
-        this.createEdge = this.createEdge.bind(this);
         this.handleSelectNode = this.handleSelectNode.bind(this);
         this.handleDeselectNode = this.handleDeselectNode.bind(this);
     }
@@ -112,6 +108,7 @@ export class EntityView extends React.Component {
     handleEntitySubmit(value) {
         this.setState({
             entity: this.state.entities.filter(e => e.name === value)[0],
+            entityCluster: this.state.graph.clusters.filter(c => c.entities.map(e => e.name).includes(value))[0],
             showGraph: true
         }, () => {
             this.loadGraph();
@@ -120,58 +117,41 @@ export class EntityView extends React.Component {
     }
 
     loadGraph() {
-        const visGraph = {
-            nodes: new DataSet(this.state.entity.controllers.map(c => this.createNode(c))),
-            edges: new DataSet(this.state.entity.controllers.map(c => this.createEdge(c)))
-        };
-        
-        visGraph.nodes.add({id: this.state.entity.name, label: this.state.entity.name, value: 2, level: 0, type: types.ENTITY});
+        let nodes = [];
+        let edges = [];
 
-        visGraph.nodes.add(this.state.graph.clusters.map(cluster => this.createClusterNode(cluster.name)));
+        nodes.push({id: this.state.entity.name, label: this.state.entity.name, value: 1, level: 0, type: types.ENTITY, title: this.state.entity.controllers.join('<br>')});
         
-        for (var i = 0; i < this.state.controllers.length; i++) {
-            visGraph.edges.add(this.state.controllerClusters[this.state.controllers[i].name].map(cluster => this.createClusterEdge(this.state.controllers[i].name, cluster.name)));
+        for (var i = 0; i < this.state.graph.clusters.length; i++) {
+            let cluster = this.state.graph.clusters[i];
+            if (cluster.name !== this.state.entityCluster.name) {
+                let entityControllers = this.state.entity.controllers;
+                let clusterControllers = [...new Set(cluster.entities.map(e => e.controllers).flat())];
+                let commonControllers = entityControllers.filter(value => clusterControllers.includes(value));
+                
+                if (commonControllers.length > 0) {
+                    nodes.push({id: cluster.name, label: cluster.name, value: cluster.entities.length, level: 2, type: types.CLUSTER, title: cluster.entities.map(e => e.name).join('<br>')});
+                    edges.push({from: this.state.entity.name, to: cluster.name, label: commonControllers.length.toString(), title: commonControllers.join('<br>')})
+                }
+            }
         }
-        /*this.state.controllers.forEach(function(controller){
-            visGraph.edges.add(this.state.controllerClusters[controller.name].map(cluster => this.createClusterEdge(controller.name, cluster.name)));
-        });*/
+
+        const visGraph = {
+            nodes: new DataSet(nodes),
+            edges: new DataSet(edges)
+        };
         
         this.setState({
             visGraph: visGraph
         });
     }
 
-    createNode(controller) {
-        return {id: controller, label: controller, value: 1, level: 2, type: types.CONTROLLER};
-    }
-
-    createClusterNode(cluster) {
-        return {id: cluster, label: cluster, value: 1, level: 4, type: types.CLUSTER, hidden: true};
-    }
-
-
-    createEdge(controller) {
-        return {from: controller, to: this.state.entity.name};
-    }
-
-    createClusterEdge(nodeId, cluster) {
-        return {from: nodeId, to: cluster, hidden: true};
-    }
-
     handleSelectNode(nodeId) {
-        let node = this.state.visGraph.nodes.get(nodeId);
-        if (node.type === types.CONTROLLER) {
-            this.state.visGraph.nodes.update(this.state.controllerClusters[node.id].map(c => ({id: c.name, hidden: false})));
-            this.state.visGraph.edges.update(this.state.visGraph.edges.map(e=>e).filter(e => e.from === nodeId && !this.state.entities.map(e => e.name).includes(e.to)).map(e => ({id: e.id, hidden: false})));
-        }
+
     }
 
     handleDeselectNode(nodeId) {
-        let node = this.state.visGraph.nodes.get(nodeId);
-        if (node.type === types.CONTROLLER) {
-            this.state.visGraph.nodes.update(this.state.controllerClusters[node.id].map(c => ({id: c.name, hidden: true})));
-            this.state.visGraph.edges.update(this.state.visGraph.edges.map(e=>e).filter(e => e.from === nodeId && !this.state.entities.map(e => e.name).includes(e.to)).map(e => ({id: e.id, hidden: true})));
-        }
+
     }
 
     render() {

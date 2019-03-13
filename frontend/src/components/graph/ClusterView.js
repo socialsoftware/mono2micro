@@ -7,13 +7,11 @@ import { Tooltip } from 'react-bootstrap';
 import { DataSet } from 'vis';
 import { views, types } from './ViewsMenu';
 
-export const cluster_tooltip = (
-    <Tooltip id="cluster_tooltip">
-      Hover or double click cluster to see entities inside.<br />
-      Hover or double click edge to see controllers in common.<br />
-      Select cluster or edge for highlight and to open operation menu.
-    </Tooltip>
-);
+export const cluster_tooltip = (<div>
+    Hover or double click cluster to see entities inside.<br />
+    Hover or double click edge to see controllers in common.<br />
+    Select cluster or edge for highlight and to open operation menu.
+    </div>);
 
 const options = {
     height: "700",

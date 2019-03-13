@@ -4,7 +4,7 @@ import { ViewsMenu, views } from './ViewsMenu';
 import { ClusterView, cluster_tooltip } from './ClusterView';
 import { TransactionView, transaction_tooltip } from './TransactionView';
 import { EntityView, entity_tooltip } from './EntityView';
-import { OverlayTrigger, Button, InputGroup, FormControl, ButtonToolbar } from 'react-bootstrap';
+import { OverlayTrigger, Button, InputGroup, FormControl, ButtonToolbar, Popover } from 'react-bootstrap';
 
 var HttpStatus = require('http-status-codes');
 
@@ -98,10 +98,13 @@ export class Views extends React.Component {
     }
 
     render() {
-        const showGraphName = (
-            <OverlayTrigger placement="bottom" overlay={this.state.tooltip}>
-                <h3>{this.state.graphName}</h3>
-            </OverlayTrigger>);
+        const popover = (
+            <Popover id="popover-basic" title={this.state.view}>
+              {this.getTooltip(this.state.view)}
+            </Popover>
+        );
+
+        const showGraphName = (<h3>{this.state.graphName}</h3>);
         
         const editGraphName = (
             <ButtonToolbar>
@@ -124,6 +127,9 @@ export class Views extends React.Component {
                 <ViewsMenu
                     handleSelectView={this.handleSelectView}
                 />
+                <OverlayTrigger trigger="click" placement="right" overlay={popover}>
+                    <Button className="mb-2" variant="success">Help</Button>
+                </OverlayTrigger>
                 {this.state.view === views.CLUSTERS &&
                     <ClusterView name={this.state.graphName} />
                 }

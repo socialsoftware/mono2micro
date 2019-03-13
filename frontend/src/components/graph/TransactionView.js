@@ -6,13 +6,11 @@ import { VisNetwork } from '../util/VisNetwork';
 import { DataSet } from 'vis';
 import { views, types } from './ViewsMenu';
 
-export const transaction_tooltip = (
-    <Tooltip id="transaction_tooltip">
-      Hover or double click cluster to see entities inside.<br />
-      Hover or double click edge to see entities accessed.<br />
-      Select cluster or edge for highlight.
-    </Tooltip>
-);
+export const transaction_tooltip = (<div>
+    Hover or double click cluster to see entities inside.<br />
+    Hover or double click edge to see entities accessed.<br />
+    Select cluster or edge for highlight.
+    </div>);
 
 const options = {
     height: "700",
