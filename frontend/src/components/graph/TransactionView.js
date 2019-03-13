@@ -16,7 +16,8 @@ const options = {
     height: "700",
     layout: {
         hierarchical: {
-            direction: 'UD'
+            direction: 'LR',
+            nodeSpacing: 60
         }
     },
     edges: {
@@ -56,12 +57,13 @@ const options = {
     interaction: {
         hover: true
     },
-    physics: {
+    physics: false
+    /*physics: {
         hierarchicalRepulsion: {
             springLength: 70,
             nodeDistance: 110
         },
-    }
+    }*/
 };
 
 export class TransactionView extends React.Component {
@@ -121,7 +123,7 @@ export class TransactionView extends React.Component {
     }
 
     createNode(cluster) {
-        return {id: cluster.name, title: cluster.entities.map(e => e.name).join('<br>'), label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER};
+        return {id: cluster.name, title: cluster.entities.map(e => e.name).join('<br>'), label: cluster.name, value: cluster.entities.length, level: 2, type: types.CLUSTER};
     }
 
 
