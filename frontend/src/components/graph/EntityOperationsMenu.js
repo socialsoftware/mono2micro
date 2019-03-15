@@ -43,7 +43,7 @@ export class EntityOperationsMenu extends React.Component {
         });
       } else {
         this.setState({
-          entityList: this.props.entities.filter(e => e.controllers.length === value).map(e => e.name).sort()
+          entityList: this.props.entities.filter(e => this.props.amountList[e.name] === value).map(e => e.name).sort()
         });
       }
     }
@@ -52,8 +52,9 @@ export class EntityOperationsMenu extends React.Component {
         this.props.handleEntitySubmit(this.state.entity);
     }
 
+
     render() {
-      const entityAmountList = [...new Set(this.props.entities.map(e => e.controllers.length))].sort((a, b) => a - b).map(amount =>
+      const entityAmountList = [...new Set(Object.values(this.props.amountList))].sort((a, b) => a - b).map(amount =>
         <Dropdown.Item key={amount} onClick={() => this.setEntityAmount(amount)}>{amount}</Dropdown.Item>  
       );
 
@@ -63,6 +64,14 @@ export class EntityOperationsMenu extends React.Component {
 
       return (
           <ButtonToolbar>
+              <DropdownButton className="mr-1" as={ButtonGroup} title={'Exclude Controllers'}>
+                {this.props.controllers.map(c => <Dropdown.Item 
+                    key={c.name}
+                    eventKey={c.name}
+                    onSelect={() => this.props.handleExcludeController(c.name)}
+                    active={this.props.excludeControllerList.includes(c.name)}>{c.name}</Dropdown.Item>)}
+              </DropdownButton>
+
               <DropdownButton className="mr-1" as={ButtonGroup} title={this.state.entityAmount}>
                 <Dropdown.Item key={"All"} onClick={() => this.setEntityAmount("All")}>{"All"}</Dropdown.Item>
                 {entityAmountList}

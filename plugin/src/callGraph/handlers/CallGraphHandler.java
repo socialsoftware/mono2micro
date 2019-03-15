@@ -67,6 +67,8 @@ public class CallGraphHandler extends AbstractHandler {
 	ASTParser parser;
 	int start;
 	int end;
+	int a = 0;
+	int b = 0;
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -102,6 +104,9 @@ public class CallGraphHandler extends AbstractHandler {
 			long elapsedTimeMillis = System.currentTimeMillis() - startTime;
 			float elapsedTimeSec = elapsedTimeMillis/1000F;
 			System.out.println("Complete. Elapsed time: " + elapsedTimeSec + " seconds");
+			
+			System.out.println(a);
+			System.out.println(b);
 			
 			//prompt for file location
 			FileDialog fileDialog = new FileDialog(window.getShell(), SWT.OPEN);
@@ -178,6 +183,7 @@ public class CallGraphHandler extends AbstractHandler {
 
 		try {
 			for (IMethod controllerMethod : controller.getMethods()) {
+				a+=1;
 				JSONObject entities = new JSONObject();
 				ArrayList<IMethod> methodPool = new ArrayList<>();
 				methodPool.add(controllerMethod);
@@ -207,6 +213,7 @@ public class CallGraphHandler extends AbstractHandler {
 				System.out.println(methodPool.size());
 				
 				if (entities.length() > 0) {
+					b+=1;
 					try {
 						callgraph.put(controllerMethod.getParent().getElementName() + "." + controllerMethod.getElementName(), entities);
 					} catch (JSONException e) {

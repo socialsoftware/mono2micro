@@ -4,7 +4,7 @@ import { ViewsMenu, views } from './ViewsMenu';
 import { ClusterView, clusterViewHelp } from './ClusterView';
 import { TransactionView, transactionViewHelp } from './TransactionView';
 import { EntityView, entityViewHelp } from './EntityView';
-import { OverlayTrigger, Button, InputGroup, FormControl, ButtonToolbar, Popover } from 'react-bootstrap';
+import { OverlayTrigger, Button, InputGroup, FormControl, ButtonToolbar, Popover, Container, Row, Col } from 'react-bootstrap';
 
 var HttpStatus = require('http-status-codes');
 
@@ -120,26 +120,40 @@ export class Views extends React.Component {
             </ButtonToolbar>);
 
         return (
-            <div>
-                <div onDoubleClick={this.handleDoubleClick}>
-                    {this.state.renameGraphMode ? editGraphName : showGraphName}
-                </div><br />
-                <ViewsMenu
-                    handleSelectView={this.handleSelectView}
-                />
-                <OverlayTrigger trigger="click" placement="right" overlay={helpPopover}>
-                    <Button className="mb-2" variant="success">Help</Button>
-                </OverlayTrigger>
-                {this.state.view === views.CLUSTERS &&
-                    <ClusterView name={this.state.graphName} />
-                }
-                {this.state.view === views.TRANSACTION &&
-                    <TransactionView name={this.state.graphName} />
-                }
-                {this.state.view === views.ENTITY &&
-                    <EntityView name={this.state.graphName} />
-                }
-            </div>
+            <Container>
+                <Row>
+                    <Col>
+                        <div onDoubleClick={this.handleDoubleClick}>
+                            {this.state.renameGraphMode ? editGraphName : showGraphName}
+                        </div><br />
+                    </Col>
+                    <Col>
+                        <OverlayTrigger trigger="click" placement="left" overlay={helpPopover}>
+                            <Button className="float-right" variant="success">Help</Button>
+                        </OverlayTrigger>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <ViewsMenu
+                            handleSelectView={this.handleSelectView}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        {this.state.view === views.CLUSTERS &&
+                            <ClusterView name={this.state.graphName} />
+                        }
+                        {this.state.view === views.TRANSACTION &&
+                            <TransactionView name={this.state.graphName} />
+                        }
+                        {this.state.view === views.ENTITY &&
+                            <EntityView name={this.state.graphName} />
+                        }
+                    </Col>
+                </Row>
+            </Container>
         );
     }
 }

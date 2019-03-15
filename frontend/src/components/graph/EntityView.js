@@ -73,13 +73,16 @@ export class EntityView extends React.Component {
             entities: [],
             controllers: [],
             controllerClusters: {},
-            showGraph: false
+            showGraph: false,
+            amountList: [],
+            excludeControllerList: []
         }
 
         this.handleEntitySubmit = this.handleEntitySubmit.bind(this);
         this.loadGraph = this.loadGraph.bind(this);
         this.handleSelectNode = this.handleSelectNode.bind(this);
         this.handleDeselectNode = this.handleDeselectNode.bind(this);
+        this.handleExcludeController = this.handleExcludeController.bind(this);
     }
 
     componentDidMount() {
@@ -89,7 +92,30 @@ export class EntityView extends React.Component {
                 entities: response.data.entities,
                 controllers: response.data.controllers,
                 graph: response.data.graphs.filter(g => g.name === this.props.name)[0]
-            });
+            }, () => {
+                let amountList = {};
+                for (var j = 0; j < this.state.entities.length; j++) {
+                    let amount = 0;
+                    let entity = this.state.entities[j];
+                    let entityCluster = this.state.graph.clusters.filter(c => c.entities.map(e => e.name).includes(entity.name))[0];
+                    for (var i = 0; i < this.state.graph.clusters.length; i++) {
+                        let cluster = this.state.graph.clusters[i];
+                        if (cluster.name !== entityCluster.name) {
+                            let entityControllers = entity.controllers;
+                            let clusterControllers = [...new Set(cluster.entities.map(e => e.controllers).flat())];
+                            let commonControllers = entityControllers.filter(value => clusterControllers.includes(value));
+                            
+                            if (commonControllers.length > 0) {
+                                amount += 1;
+                            }
+                        }
+                    }
+                    amountList[this.state.entities[j].name] = amount;
+                }
+                this.setState({
+                    amountList: amountList
+                });
+                });
         });
 
         service.getControllerClusters(this.props.name).then(response => {
@@ -129,6 +155,8 @@ export class EntityView extends React.Component {
                 let clusterControllers = [...new Set(cluster.entities.map(e => e.controllers).flat())];
                 let commonControllers = entityControllers.filter(value => clusterControllers.includes(value));
                 
+                commonControllers = commonControllers.filter(c => !this.state.excludeControllerList.includes(c));
+                
                 if (commonControllers.length > 0) {
                     nodes.push({id: cluster.name, label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER, title: cluster.entities.map(e => e.name).join('<br>')});
                     edges.push({from: this.state.entity.name, to: cluster.name, label: commonControllers.length.toString(), title: commonControllers.join('<br>')})
@@ -154,12 +182,23 @@ export class EntityView extends React.Component {
 
     }
 
+    handleExcludeController(controller) {
+        this.state.excludeControllerList.push(controller)
+        this.setState({
+          excludeControllerList: this.state.excludeControllerList
+        });
+    }
+
     render() {
         return (
             <div>
                 <EntityOperationsMenu
                     handleEntitySubmit={this.handleEntitySubmit}
+                    handleExcludeController={this.handleExcludeController}
                     entities={this.state.entities}
+                    amountList={this.state.amountList}
+                    controllers={this.state.controllers}
+                    excludeControllerList={this.state.excludeControllerList}
                 />
                 
                 <div style={{width:'1000px' , height: '700px'}}>
