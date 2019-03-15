@@ -183,7 +183,12 @@ export class EntityView extends React.Component {
     }
 
     handleExcludeController(controller) {
-        this.state.excludeControllerList.push(controller)
+        if (this.state.excludeControllerList.includes(controller)) {
+            this.state.excludeControllerList.splice(this.state.excludeControllerList.indexOf(controller), 1);
+        } else {
+            this.state.excludeControllerList.push(controller);
+        }
+        console.log(this.state.excludeControllerList);
         this.setState({
           excludeControllerList: this.state.excludeControllerList
         });

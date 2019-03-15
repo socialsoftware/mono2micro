@@ -15,4 +15,5 @@ To run the backend:
 To run the frontend:
 	
 	cd frontend/
+	npm install
 	npm start
