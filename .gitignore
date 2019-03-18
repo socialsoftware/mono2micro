@@ -35,6 +35,4 @@ yarn-error.log*
 /target/
 
 backend/src/main/resources/specific.properties
-backend/src/main/resources/datafile.txt
-backend/src/main/resources/dend.png
 backend/src/main/resources/dendrograms/
