@@ -122,6 +122,10 @@ public class Mono2MicroController {
 			@RequestParam("file") MultipartFile datafile) {
 		logger.debug("createDendrogram filename: {}", datafile.getOriginalFilename());
 
+		File directory = new File(dendrogramsFolder);
+		if (!directory.exists())
+			directory.mkdir();
+
 		if (dendrogramManager.getDendrogramNames().contains(dendrogramName)) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
