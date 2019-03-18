@@ -6,9 +6,11 @@ import sys
 import json
 
 datafilePath = str(sys.argv[1])
-cutValue = float(sys.argv[2])
+dendrogramName = str(sys.argv[2])
+linkageType = str(sys.argv[3])
+cutValue = float(sys.argv[4])
 
-with open(datafilePath + "datafile.txt") as f:
+with open(datafilePath + dendrogramName + ".txt") as f:
     datafile = json.load(f)
 
 data_dictionary = {}
@@ -49,11 +51,7 @@ for index, value in np.ndenumerate(similarity_matrix):
 
         similarity_matrix[index] = similarity_measure
 
-
-# Get clustering linkage type
-linkage_type = 'average'
-
-hierarc = hierarchy.linkage(y=similarity_matrix, method=linkage_type)
+hierarc = hierarchy.linkage(y=similarity_matrix, method=linkageType)
 
 cut = hierarchy.cut_tree(hierarc, height=cutValue)
 

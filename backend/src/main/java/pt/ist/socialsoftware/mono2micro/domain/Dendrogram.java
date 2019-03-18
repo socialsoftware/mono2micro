@@ -10,24 +10,21 @@ public class Dendrogram {
 	private List<Controller> controllers = new ArrayList<>();
 	private List<Entity> entities = new ArrayList<>();
 
-    private static Dendrogram instance = null; 
-
 	public Dendrogram() {
-	}
-
-	public static Dendrogram getInstance() { 
-        if (instance == null) 
-            instance = new Dendrogram(); 
-
-        return instance; 
-	}
-	
-	public void destroy() {
-		instance = null;
 	}
 
 	public List<Graph> getGraphs() {
 		return this.graphs;
+	}
+
+	public boolean deleteGraph(String graphName) {
+		for (int i = 0; i < this.graphs.size(); i++) {
+			if (this.graphs.get(i).getName().equals(graphName)) {
+				this.graphs.remove(i);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public List<String> getGraphsNames() {

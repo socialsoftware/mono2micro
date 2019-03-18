@@ -4,7 +4,7 @@ import { ViewsMenu, views } from './ViewsMenu';
 import { ClusterView, clusterViewHelp } from './ClusterView';
 import { TransactionView, transactionViewHelp } from './TransactionView';
 import { EntityView, entityViewHelp } from './EntityView';
-import { OverlayTrigger, Button, InputGroup, FormControl, ButtonToolbar, Popover, Container, Row, Col } from 'react-bootstrap';
+import { OverlayTrigger, Button, InputGroup, FormControl, ButtonToolbar, Popover, Container, Row, Col, Breadcrumb, BreadcrumbItem } from 'react-bootstrap';
 
 var HttpStatus = require('http-status-codes');
 
@@ -13,8 +13,9 @@ export class Views extends React.Component {
         super(props);
 
         this.state = {
-            graphName: this.props.match.params.name,
-            inputValue: this.props.match.params.name,
+            graphName: this.props.match.params.graphName,
+            inputValue: this.props.match.params.graphName,
+            dendrogramName: this.props.match.params.dendrogramName,
             renameGraphMode: false,
             view: views.CLUSTERS,
             help: clusterViewHelp
@@ -30,6 +31,7 @@ export class Views extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         this.setState({
+            dendrogramName: nextProps.match.params.dendrogramName,
             graphName: nextProps.match.params.name,
             inputValue: nextProps.match.params.name
         });
@@ -69,9 +71,8 @@ export class Views extends React.Component {
 
     handleRenameGraphSubmit() {
         const service = new RepositoryService();
-        service.renameGraph(this.state.graphName, this.state.inputValue).then(response => {
+        service.renameGraph(this.state.dendrogramName, this.state.graphName, this.state.inputValue).then(response => {
             if (response.status === HttpStatus.OK) {
-                this.props.location.headerFunction.handleGetGraphsFunction();
                 this.setState({
                     renameGraphMode: false,
                     graphName: this.state.inputValue
@@ -98,6 +99,19 @@ export class Views extends React.Component {
     }
 
     render() {
+        const BreadCrumbs = () => {
+            return (
+              <div>
+                <Breadcrumb style={{ backgroundColor: '#a32a2a' }}>
+                  <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+                  <Breadcrumb.Item href="/dendrograms">Dendrograms</Breadcrumb.Item>
+                  <Breadcrumb.Item href={`/dendrogram/${this.state.dendrogramName}`}>{this.state.dendrogramName}</Breadcrumb.Item>
+                  <BreadcrumbItem active>{this.state.graphName}</BreadcrumbItem>
+                </Breadcrumb>
+              </div>
+            );
+        };
+
         const helpPopover = (
             <Popover id="popover-basic" title={this.state.view}>
               {this.getHelpText(this.state.view)}
@@ -121,6 +135,7 @@ export class Views extends React.Component {
 
         return (
             <Container>
+                <BreadCrumbs />
                 <Row>
                     <Col>
                         <div onDoubleClick={this.handleDoubleClick}>
@@ -143,13 +158,19 @@ export class Views extends React.Component {
                 <Row>
                     <Col>
                         {this.state.view === views.CLUSTERS &&
-                            <ClusterView name={this.state.graphName} />
+                            <ClusterView 
+                                dendrogramName={this.state.dendrogramName} 
+                                graphName={this.state.graphName} />
                         }
                         {this.state.view === views.TRANSACTION &&
-                            <TransactionView name={this.state.graphName} />
+                            <TransactionView 
+                                dendrogramName={this.state.dendrogramName} 
+                                graphName={this.state.graphName} />
                         }
                         {this.state.view === views.ENTITY &&
-                            <EntityView name={this.state.graphName} />
+                            <EntityView 
+                                dendrogramName={this.state.dendrogramName} 
+                                graphName={this.state.graphName} />
                         }
                     </Col>
                 </Row>

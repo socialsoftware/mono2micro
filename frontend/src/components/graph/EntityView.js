@@ -1,7 +1,6 @@
 import React from 'react';
 import { EntityOperationsMenu } from './EntityOperationsMenu';
 import { RepositoryService } from './../../services/RepositoryService';
-import { Tooltip } from 'react-bootstrap';
 import { VisNetwork } from '../util/VisNetwork';
 import { DataSet } from 'vis';
 import { views, types } from './ViewsMenu';
@@ -67,6 +66,8 @@ export class EntityView extends React.Component {
         super(props);
 
         this.state = {
+            dendrogramName: this.props.dendrogramName,
+            graphName: this.props.graphName,
             graph: {},
             visGraph: {},
             entity: {},
@@ -87,11 +88,11 @@ export class EntityView extends React.Component {
 
     componentDidMount() {
         const service = new RepositoryService();
-        service.loadDendrogram().then(response => {
+        service.loadDendrogram(this.state.dendrogramName).then(response => {
             this.setState({
                 entities: response.data.entities,
                 controllers: response.data.controllers,
-                graph: response.data.graphs.filter(g => g.name === this.props.name)[0]
+                graph: response.data.graphs.filter(g => g.name === this.props.graphName)[0]
             }, () => {
                 let amountList = {};
                 for (var j = 0; j < this.state.entities.length; j++) {
@@ -118,7 +119,7 @@ export class EntityView extends React.Component {
                 });
         });
 
-        service.getControllerClusters(this.props.name).then(response => {
+        service.getControllerClusters(this.state.dendrogramName, this.props.graphName).then(response => {
             this.setState({
                 controllerClusters: response.data
             });
@@ -188,7 +189,6 @@ export class EntityView extends React.Component {
         } else {
             this.state.excludeControllerList.push(controller);
         }
-        console.log(this.state.excludeControllerList);
         this.setState({
           excludeControllerList: this.state.excludeControllerList
         });

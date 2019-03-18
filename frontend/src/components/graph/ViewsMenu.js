@@ -1,5 +1,5 @@
 import React from 'react';
-import { DropdownButton, Dropdown, OverlayTrigger, Popover, Button } from 'react-bootstrap';
+import { DropdownButton, Dropdown } from 'react-bootstrap';
 
 export const views = {
     NONE: 'View',

@@ -12,23 +12,10 @@ public class Graph {
 
 	}
 
-	public Graph(String cutValue) {
-		this.name = assignName(cutValue);
+	public Graph(String name, String cutValue) {
+		this.name = name;
 		this.cutValue = cutValue;
 		this.clusters = new ArrayList<>();
-	}
-
-	public String assignName(String cutValue) {
-		Dendrogram dend = Dendrogram.getInstance();
-		if (dend.getGraphsNames().contains("Graph_" + cutValue)) {
-			int i = 2;
-			while (dend.getGraphsNames().contains("Graph_" + cutValue + "(" + i + ")")) {
-				i++;
-			}
-			return "Graph_" + cutValue + "(" + i + ")";
-		} else {
-			return "Graph_" + cutValue;
-		}
 	}
 
 	public String getName() {

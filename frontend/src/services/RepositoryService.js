@@ -14,19 +14,46 @@ export class RepositoryService {
         });
     }
 
-    // Graphs
-    getGraphs() {
-        return this.axios.get("/graphs");
+    getDendrograms() {
+        return this.axios.get("/dendrograms");
     }
 
-    getGraph(name) {
-        return this.axios.get("/graph/" + name);
-    }
-
-    loadGraph(name) {
-        return this.axios.post("/load", 
+    deleteDendrogram(dendrogramName) {
+        return this.axios.delete("/deleteDendrogram", 
             {
-                "name" : name
+                params: {
+                    "dendrogramName" : dendrogramName
+                }
+            });
+    }
+
+    deleteGraph(dendrogramName, graphName) {
+        return this.axios.delete("/deleteGraph", 
+            {
+                params: {
+                    "dendrogramName" : dendrogramName,
+                    "graphName" : graphName
+                }
+            });
+    }
+
+    // Graphs
+    getGraphs(dendrogramName) {
+        return this.axios.get("/graphs", 
+            {
+                params: {
+                    "dendrogramName" : dendrogramName
+                }
+            });
+    }
+
+    getGraph(dendrogramName, graphName) {
+        return this.axios.get("/graph/", 
+            {
+                params: {
+                    "dendrogramName" : dendrogramName,
+                    "graphName" : graphName
+                }
             });
     }
 
@@ -39,27 +66,30 @@ export class RepositoryService {
         return this.axios.post("/createDendrogram", dataFile, config);
     }
 
-    deleteGraph(name) {
-        return this.axios.delete(name);
+    loadDendrogram(dendrogramName) {
+        return this.axios.get("/loadDendrogram", 
+            {
+                params: {
+                    "dendrogramName" : dendrogramName
+                }
+            });
     }
 
-    loadDendrogram() {
-        return this.axios.get("/loadDendrogram");
-    }
-
-    cutDendrogram(cutValue) {
+    cutDendrogram(dendrogramName, cutValue) {
         return this.axios.get("/cutDendrogram", 
             {
                 params: {
+                    "dendrogramName" : dendrogramName,
                     "cutValue" : cutValue
                 }
             });
     }
 
-    mergeClusters(graphName, cluster1, cluster2, newName) {
+    mergeClusters(dendrogramName, graphName, cluster1, cluster2, newName) {
         return this.axios.get("/mergeClusters", 
             {
                 params: {
+                    "dendrogramName" : dendrogramName,
                     "graphName" : graphName,
                     "cluster1" : cluster1,
                     "cluster2" : cluster2,
@@ -68,10 +98,11 @@ export class RepositoryService {
             });
     }
 
-    renameCluster(graphName, clusterName, newName) {
+    renameCluster(dendrogramName, graphName, clusterName, newName) {
         return this.axios.get("/renameCluster", 
             {
                 params: {
+                    "dendrogramName" : dendrogramName,
                     "graphName" : graphName,
                     "clusterName" : clusterName,
                     "newName" : newName
@@ -79,20 +110,22 @@ export class RepositoryService {
             });
     }
 
-    renameGraph(graphName, newName) {
+    renameGraph(dendrogramName, graphName, newName) {
         return this.axios.get("/renameGraph", 
             {
                 params: {
+                    "dendrogramName" : dendrogramName,
                     "graphName" : graphName,
                     "newName" : newName
                 }
             });
     }
 
-    splitCluster(graphName, clusterName, newName, entitiesToExtract) {
+    splitCluster(dendrogramName, graphName, clusterName, newName, entitiesToExtract) {
         return this.axios.get("/splitCluster", 
             {
                 params: {
+                    "dendrogramName" : dendrogramName,
                     "graphName" : graphName,
                     "clusterName" : clusterName,
                     "newName" : newName,
@@ -101,27 +134,39 @@ export class RepositoryService {
             });
     }
 
-    getControllerClusters(graphName) {
+    getControllerClusters(dendrogramName, graphName) {
         return this.axios.get("/getControllerClusters", 
             {
                 params: {
+                    "dendrogramName" : dendrogramName,
                     "graphName" : graphName
                 }
             });
     }
 
-    getControllers() {
-        return this.axios.get("/getControllers");
+    getControllers(dendrogramName) {
+        return this.axios.get("/getControllers", 
+            {
+                params: {
+                    "dendrogramName" : dendrogramName
+                }
+            });
     }
 
-    getEntities() {
-        return this.axios.get("/getEntities");
+    getEntities(dendrogramName) {
+        return this.axios.get("/getEntities", 
+            {
+                params: {
+                    "dendrogramName" : dendrogramName
+                }
+            });
     }
 
-    transferEntities(graphName, fromCluster, toCluster, entities) {
+    transferEntities(dendrogramName, graphName, fromCluster, toCluster, entities) {
         return this.axios.get("/transferEntities", 
             {
                 params: {
+                    "dendrogramName" : dendrogramName,
                     "graphName" : graphName,
                     "fromCluster" : fromCluster,
                     "toCluster" : toCluster,

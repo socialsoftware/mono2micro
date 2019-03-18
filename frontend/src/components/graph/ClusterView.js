@@ -3,7 +3,6 @@ import { RepositoryService } from '../../services/RepositoryService';
 import { ClusterOperationsMenu, operations } from './ClusterOperationsMenu';
 import { VisNetwork } from '../util/VisNetwork';
 import { ModalMessage } from '../util/ModalMessage';
-import { Tooltip } from 'react-bootstrap';
 import { DataSet } from 'vis';
 import { views, types } from './ViewsMenu';
 
@@ -76,7 +75,8 @@ export class ClusterView extends React.Component {
         super(props);
 
          this.state = {
-            graphName: this.props.name,
+            dendrogramName: this.props.dendrogramName,
+            graphName: this.props.graphName,
             graph: {},
             clusters: [],
             showMenu: false,
@@ -103,7 +103,7 @@ export class ClusterView extends React.Component {
 
     loadGraph(graphName) {
         const service = new RepositoryService();
-        service.getGraph(graphName).then(response => {
+        service.getGraph(this.state.dendrogramName, graphName).then(response => {
 
             const graph = {
               nodes: new DataSet(response.data.clusters.map(cluster => this.convertClusterToNode(cluster))),
@@ -241,7 +241,7 @@ export class ClusterView extends React.Component {
         const service = new RepositoryService();
         switch (operation) {
             case operations.RENAME:
-                service.renameCluster(this.state.graphName, this.state.selectedCluster.name, inputValue)
+                service.renameCluster(this.state.dendrogramName, this.state.graphName, this.state.selectedCluster.name, inputValue)
                 .then(() => {
                     this.loadGraph(this.state.graphName);        
                 }).catch((err) => {
@@ -252,7 +252,7 @@ export class ClusterView extends React.Component {
                 });
                 break;
             case operations.MERGE:
-                service.mergeClusters(this.state.graphName, this.state.selectedCluster.name, 
+                service.mergeClusters(this.state.dendrogramName, this.state.graphName, this.state.selectedCluster.name, 
                     this.state.mergeWithCluster.name, inputValue)
                 .then(() => {
                     this.loadGraph(this.state.graphName);        
@@ -265,7 +265,7 @@ export class ClusterView extends React.Component {
                 break;
             case operations.SPLIT:
                 let activeClusterEntitiesSplit = this.state.clusterEntities.filter(e => e.active).map(e => e.name).toString();
-                service.splitCluster(this.state.graphName, this.state.selectedCluster.name, inputValue, activeClusterEntitiesSplit)
+                service.splitCluster(this.state.dendrogramName, this.state.graphName, this.state.selectedCluster.name, inputValue, activeClusterEntitiesSplit)
                 .then(() => {
                     this.loadGraph(this.state.graphName);        
                 }).catch((err) => {
@@ -277,7 +277,7 @@ export class ClusterView extends React.Component {
                 break;
             case operations.TRANSFER:
                 let activeClusterEntitiesTransfer = this.state.clusterEntities.filter(e => e.active).map(e => e.name).toString();
-                service.transferEntities(this.state.graphName, this.state.selectedCluster.name, 
+                service.transferEntities(this.state.dendrogramName, this.state.graphName, this.state.selectedCluster.name, 
                     this.state.transferToCluster.name, activeClusterEntitiesTransfer)
                 .then(() => {
                     this.loadGraph(this.state.graphName);        

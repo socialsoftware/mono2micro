@@ -5,10 +5,12 @@ import matplotlib.pylab as plab
 import sys
 import json
 
-datafilePath = str(sys.argv[1])
 
-#with open(datafilePath + "datafile.txt") as f:
-with open(datafilePath + "datafile.txt") as f:
+datafilePath = str(sys.argv[1])
+dendrogramName = str(sys.argv[2])
+linkageType = str(sys.argv[3])
+
+with open(datafilePath + dendrogramName + ".txt") as f:
     datafile = json.load(f)
 
 data_dictionary = {}
@@ -49,13 +51,8 @@ for index, value in np.ndenumerate(similarity_matrix):
 
         similarity_matrix[index] = similarity_measure
 
-#print(similarity_matrix)
-
-# Get clustering linkage type
-linkage_type = 'average'
-
-hierarc = hierarchy.linkage(y=similarity_matrix, method=linkage_type)
+hierarc = hierarchy.linkage(y=similarity_matrix, method=linkageType)
 
 dend = hierarchy.dendrogram(hierarc, labels=base_classes, distance_sort='descending')
-plab.savefig(datafilePath + "dend.png", format="png", bbox_inches='tight')
+plab.savefig(datafilePath + dendrogramName + ".png", format="png", bbox_inches='tight')
 #plt.show()

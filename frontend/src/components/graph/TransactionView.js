@@ -1,7 +1,6 @@
 import React from 'react';
 import { TransactionOperationsMenu } from './TransactionOperationsMenu';
 import { RepositoryService } from './../../services/RepositoryService';
-import { Tooltip } from 'react-bootstrap';
 import { VisNetwork } from '../util/VisNetwork';
 import { DataSet } from 'vis';
 import { views, types } from './ViewsMenu';
@@ -67,7 +66,8 @@ export class TransactionView extends React.Component {
         super(props);
 
         this.state = {
-            graphName: this.props.name,
+            dendrogramName: this.props.dendrogramName,
+            graphName: this.props.graphName,
             graph: {},
             controller: {},
             controllers: [],
@@ -84,12 +84,12 @@ export class TransactionView extends React.Component {
 
     componentDidMount() {
         const service = new RepositoryService();
-        service.getControllers().then(response => {
+        service.getControllers(this.state.dendrogramName).then(response => {
             this.setState({
                 controllers: response.data
             });
         });
-        service.getControllerClusters(this.props.name).then(response => {
+        service.getControllerClusters(this.state.dendrogramName, this.props.graphName).then(response => {
             this.setState({
                 controllerClusters: response.data
             });
