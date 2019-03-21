@@ -119,7 +119,7 @@ public class Mono2MicroController {
 
 	@RequestMapping(value = "/createDendrogram", method = RequestMethod.POST)
 	public ResponseEntity<Dendrogram> createDendrogram(@RequestParam("dendrogramName") String dendrogramName,
-			@RequestParam("file") MultipartFile datafile) {
+			@RequestParam("file") MultipartFile datafile, @RequestParam("linkageType") String linkageType) {
 		logger.debug("createDendrogram filename: {}", datafile.getOriginalFilename());
 
 		File directory = new File(dendrogramsFolder);
@@ -131,6 +131,7 @@ public class Mono2MicroController {
 		}
 
 		Dendrogram dend = new Dendrogram();
+		dend.setLinkageType(linkageType);
 
 		// save datafile
 		try {
@@ -203,7 +204,7 @@ public class Mono2MicroController {
 			cmd[1] = pythonScriptPath;
 			cmd[2] = dendrogramsFolder;
 			cmd[3] = dendrogramName;
-			cmd[4] = "average";
+			cmd[4] = linkageType;
 			Process p = r.exec(cmd);
 
 			p.waitFor();
@@ -245,6 +246,8 @@ public class Mono2MicroController {
 		logger.debug("cutDendrogram with value: {}", cutValue);
 
 		try {
+			Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
+
 			Runtime r = Runtime.getRuntime();
 			String pythonScriptPath = fileUploadPath + "cutDendrogram.py";
 			String[] cmd = new String[6];
@@ -252,13 +255,13 @@ public class Mono2MicroController {
 			cmd[1] = pythonScriptPath;
 			cmd[2] = dendrogramsFolder;
 			cmd[3] = dendrogramName;
-			cmd[4] = "average";
+			cmd[4] = dend.getLinkageType();
 			cmd[5] = cutValue;
 			Process p = r.exec(cmd);
 
 			p.waitFor();
 
-			Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
+			
 			Graph graph;
 			if (dend.getGraphsNames().contains("Graph_" + cutValue)) {
 				int i = 2;

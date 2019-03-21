@@ -22,12 +22,14 @@ export class DendrogramCreate extends React.Component {
         this.state = { 
             selectedFile: null, 
             isUploaded: "",
-            dendrogramName: ""
+            dendrogramName: "",
+            linkageType: ""
         };
 
         this.handleSelectedFile = this.handleSelectedFile.bind(this);
         this.handleUpload= this.handleUpload.bind(this);
         this.handleChangeDendrogramName = this.handleChangeDendrogramName.bind(this);
+        this.handleLinkageType = this.handleLinkageType.bind(this);
     }
 
     handleSelectedFile(event) {
@@ -43,6 +45,7 @@ export class DendrogramCreate extends React.Component {
         var data = new FormData();
         data.append('file', this.state.selectedFile);
         data.append('dendrogramName', this.state.dendrogramName);
+        data.append('linkageType', this.state.linkageType);
 
         this.setState({
             isUploaded: "Uploading..."
@@ -73,6 +76,12 @@ export class DendrogramCreate extends React.Component {
         });
     }
 
+    handleLinkageType(event) {
+        this.setState({
+            linkageType: event.target.id
+        })
+    }
+
     render() {
         return (
             <Form onSubmit={this.handleUpload}>
@@ -93,8 +102,15 @@ export class DendrogramCreate extends React.Component {
                 <Form.Group controlId="formDendrogramCreate">
                     <Form.Control type="file" onChange={this.handleSelectedFile} />
                 </Form.Group>
+
+                <div key={`inline-radio`} className="mb-3">
+                    <span className="mr-3">Linkage Type:</span>
+                    <Form.Check inline onClick={this.handleLinkageType} name="formHorizontalRadios" label="Average" type="radio" id="average" />
+                    <Form.Check inline onClick={this.handleLinkageType} name="formHorizontalRadios" label="Single" type="radio" id="single" />
+                    <Form.Check inline onClick={this.handleLinkageType} name="formHorizontalRadios" label="Complete" type="radio" id="complete" />
+                </div>
                 
-                <Button variant="primary" type="submit" disabled={this.state.dendrogramName === "" || this.state.selectedFile === null}>
+                <Button variant="primary" type="submit" disabled={this.state.dendrogramName === "" || this.state.linkageType === "" || this.state.selectedFile === null}>
                     Submit
                 </Button>
                 <br />

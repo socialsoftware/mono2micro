@@ -9,8 +9,17 @@ public class Dendrogram {
 	private List<Graph> graphs = new ArrayList<>();
 	private List<Controller> controllers = new ArrayList<>();
 	private List<Entity> entities = new ArrayList<>();
+	private String linkageType;
 
 	public Dendrogram() {
+	}
+
+	public void setLinkageType(String linkageType) {
+		this.linkageType = linkageType;
+	}
+
+	public String getLinkageType() {
+		return this.linkageType;
 	}
 
 	public List<Graph> getGraphs() {
