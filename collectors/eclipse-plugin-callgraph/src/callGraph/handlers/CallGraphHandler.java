@@ -3,16 +3,12 @@ package callGraph.handlers;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -36,15 +32,13 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.CastExpression;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.Statement;
-import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.internal.corext.callhierarchy.CallHierarchy;
 import org.eclipse.jdt.internal.corext.callhierarchy.MethodWrapper;
 import org.eclipse.jface.dialogs.IInputValidator;
@@ -59,7 +53,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class CallGraphHandler extends AbstractHandler {
-	
+
 	JSONObject callgraph;
 	List<String> entitiesList;
 	Set<IType> controllersSet;
@@ -67,8 +61,6 @@ public class CallGraphHandler extends AbstractHandler {
 	ASTParser parser;
 	int start;
 	int end;
-	int a = 0;
-	int b = 0;
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -105,8 +97,6 @@ public class CallGraphHandler extends AbstractHandler {
 			float elapsedTimeSec = elapsedTimeMillis/1000F;
 			System.out.println("Complete. Elapsed time: " + elapsedTimeSec + " seconds");
 			
-			System.out.println(a);
-			System.out.println(b);
 			
 			//prompt for file location
 			FileDialog fileDialog = new FileDialog(window.getShell(), SWT.OPEN);
@@ -179,11 +169,10 @@ public class CallGraphHandler extends AbstractHandler {
 	
 
 	public void processController(IType controller) {
-		System.out.println("Processing Controller: " + controller.getElementName());
-
 		try {
 			for (IMethod controllerMethod : controller.getMethods()) {
-				a+=1;
+				String controllerFullName = controllerMethod.getParent().getElementName() + "." + controllerMethod.getElementName();
+				System.out.println("Processing Controller: " + controllerFullName);
 				JSONObject entities = new JSONObject();
 				ArrayList<IMethod> methodPool = new ArrayList<>();
 				methodPool.add(controllerMethod);
@@ -191,8 +180,53 @@ public class CallGraphHandler extends AbstractHandler {
 				int i = 0;
 				while (i < methodPool.size()) {
 					for (IMethod callee : getCalleesOf(methodPool.get(i))) {
+						
 						if (callee.getParent().getElementName().endsWith("_Base")) {
-							registerBaseClass(callee, entities);
+							
+							String className = callee.getParent().getElementName();
+							className = className.substring(0, className.length()-5);
+							if (abstractEntitiesSet.contains(className)) {
+								IMethod caller = methodPool.get(i);
+								parser.setSource(methodPool.get(i).getCompilationUnit());
+						        parser.setResolveBindings(true);
+						        CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+						       
+						        cu.accept(new ASTVisitor() {
+						        	boolean foundMethod = false;
+						        	
+						        	public boolean visit(MethodDeclaration node) {
+										if (node.getName().toString().equals(caller.getElementName())) {
+											foundMethod = true;
+										} else { 
+											foundMethod = false;
+										}
+										return true;
+									}
+						        	
+									public boolean visit(MethodInvocation node) {
+										if (foundMethod) {
+											if (callee.getElementName().equals(node.getName().toString())) {
+												
+												try {
+													String className = callee.getParent().getElementName();
+													className = className.substring(0, className.length()-5);
+													if (!node.getExpression().resolveTypeBinding().getName().equals(className)) {
+														registerBaseClass(callee, entities, node.getExpression().resolveTypeBinding().getName());
+													}
+												} catch (Exception e) {
+													registerBaseClass(callee, entities, "");
+												}
+											}
+										}
+										
+										return true;
+									}
+						 
+								});
+							} else {
+								registerBaseClass(callee, entities, "");
+							}
+							
 						} else if (callee.getElementName().equals("getDomainObject")) {
 							registerDomainObject(methodPool.get(i), entities);
 						} else if (entitiesList.contains(callee.getParent().getElementName())) {
@@ -210,16 +244,14 @@ public class CallGraphHandler extends AbstractHandler {
 					}
 					i++;
 				}
-				System.out.println(methodPool.size());
-				
 				if (entities.length() > 0) {
-					b+=1;
 					try {
-						callgraph.put(controllerMethod.getParent().getElementName() + "." + controllerMethod.getElementName(), entities);
+						callgraph.put(controllerFullName, entities);
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
 				}
+				
 			}
 		} catch (JavaModelException e) {
 			e.printStackTrace();
@@ -240,7 +272,12 @@ public class CallGraphHandler extends AbstractHandler {
         	
 			public boolean visit(MethodInvocation node) {
 				if (node.getName().toString().equals("getDomainObject")) {
-					domainObjectInvocations.put(node.getStartPosition(), node.resolveTypeBinding().getName());
+					if (node.getParent().getNodeType() == ASTNode.CAST_EXPRESSION) {
+						CastExpression castExpression = (CastExpression) node.getParent();
+						domainObjectInvocations.put(node.getStartPosition(), castExpression.getType().toString());
+					} else {
+						domainObjectInvocations.put(node.getStartPosition(), node.resolveTypeBinding().getName());
+					}
 				}
 				return true;
 			}
@@ -265,7 +302,7 @@ public class CallGraphHandler extends AbstractHandler {
         					if(!entityModes.join(":").contains(mode)) {
         						entityModes.put(mode);
         					}
-        				} else if (!abstractEntitiesSet.contains(entry.getValue())){
+        				} else {
         					JSONArray entityModes = new JSONArray();
         					entityModes.put(mode);
         					entities.put(entry.getValue(), entityModes);
@@ -279,9 +316,12 @@ public class CallGraphHandler extends AbstractHandler {
 	}
 
 
-	private void registerBaseClass(IMethod method, JSONObject entities) {
+	private void registerBaseClass(IMethod method, JSONObject entities, String actualClass) {
 		String className = method.getParent().getElementName();
-		className = className.substring(0, className.length()-5);
+		if (actualClass.equals(""))
+			className = className.substring(0, className.length()-5);
+		else
+			className = actualClass;
 		String methodName = method.getElementName();
 		String mode = "";
 		if (methodName.startsWith("get"))
@@ -300,7 +340,7 @@ public class CallGraphHandler extends AbstractHandler {
 					if(!entityModes.join(":").contains(mode)) {
 						entityModes.put(mode);
 					}
-				} else if (!abstractEntitiesSet.contains(className)) {
+				} else {
 					JSONArray entityModes = new JSONArray();
 					entityModes.put(mode);
 					entities.put(className, entityModes);
@@ -319,7 +359,7 @@ public class CallGraphHandler extends AbstractHandler {
 							if(!entityModes.join(":").contains(mode)) {
 								entityModes.put(mode);
 							}
-						} else if (!abstractEntitiesSet.contains(entityName)){
+						} else {
 							JSONArray entityModes = new JSONArray();
 							entityModes.put(mode);
 							entities.put(entityName, entityModes);
