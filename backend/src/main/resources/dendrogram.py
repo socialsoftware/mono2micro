@@ -5,7 +5,6 @@ import matplotlib.pylab as plab
 import sys
 import json
 
-
 datafilePath = str(sys.argv[1])
 dendrogramName = str(sys.argv[2])
 linkageType = str(sys.argv[3])
@@ -15,22 +14,14 @@ with open(datafilePath + dendrogramName + ".txt") as f:
 
 data_dictionary = {}
 
-#luis
 for controller in datafile:
     for entity in datafile[controller]:
+        if isinstance(datafile[controller], dict):
+            modes = datafile[controller][entity] 
         if entity in data_dictionary:
             data_dictionary[entity] += [controller]
         else:
             data_dictionary[entity] = [controller]
-
-#eu
-"""for controller in datafile:
-    for entity in datafile[controller]:
-        modes = datafile[controller][entity]
-        if entity in data_dictionary:
-            data_dictionary[entity] += [controller]
-        else:
-            data_dictionary[entity] = [controller]"""
 
 base_classes = list(data_dictionary.keys())
 

@@ -86,7 +86,10 @@ export class ClusterView extends React.Component {
             clusterEntities: [],
             error: false,
             errorMessage: '',
-            operation: operations.NONE
+            operation: operations.NONE,
+            entities: [],
+            controllers: [],
+            silhouetteScore: '---'
         };
 
         this.loadGraph = this.loadGraph.bind(this);
@@ -118,7 +121,15 @@ export class ClusterView extends React.Component {
                 mergeWithCluster: {},
                 transferToCluster: {},
                 clusterEntities: [],
-                operation: operations.NONE
+                operation: operations.NONE,
+                silhouetteScore: response.data.silhouetteScore
+            });
+        });
+
+        service.loadDendrogram(this.state.dendrogramName).then(response => {
+            this.setState({
+                entities: response.data.entities,
+                controllers: response.data.controllers
             });
         });
     }
@@ -343,6 +354,14 @@ export class ClusterView extends React.Component {
                         onSelection={this.handleSelectCluster}
                         onDeselection={this.handleDeselectNode}
                         view={views.CLUSTERS} />
+                </div>
+                <div>
+                    Number of Retrieved Controllers : {this.state.controllers.length}< br/>
+                    Number of Retrieved Entities (domain classes) : {this.state.entities.length}< br/>
+                    Number of Retrieved Clusters (NRC) : {this.state.clusters.length}< br/>
+                    Number of Singleton Clusters (NSC) : {this.state.clusters.filter(c => c.entities.length === 1).length}< br/>
+                    Maximum Cluster Size (MCS) : {Math.max(...this.state.clusters.map(c => c.entities.length))}< br/>
+                    Silhouette Score (SS) : {this.state.silhouetteScore}< br/>
                 </div>
             </div>
         );

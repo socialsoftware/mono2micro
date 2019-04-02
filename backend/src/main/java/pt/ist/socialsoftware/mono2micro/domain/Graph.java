@@ -6,15 +6,17 @@ import java.util.List;
 public class Graph {
 	private String name;
 	private String cutValue;
+	private float silhouetteScore;
 	private List<Cluster> clusters;
 
 	public Graph() {
 
 	}
 
-	public Graph(String name, String cutValue) {
+	public Graph(String name, String cutValue, float silhouetteScore) {
 		this.name = name;
 		this.cutValue = cutValue;
+		this.silhouetteScore = silhouetteScore;
 		this.clusters = new ArrayList<>();
 	}
 
@@ -32,6 +34,14 @@ public class Graph {
 
 	public void setCutValue(String cutValue) {
 		this.cutValue = cutValue;
+	}
+
+	public float getSilhouetteScore() {
+		return this.silhouetteScore;
+	}
+
+	public void setSilhouetteScore(float silhouetteScore) {
+		this.silhouetteScore = silhouetteScore;
 	}
 
 	public List<Cluster> getClusters() {

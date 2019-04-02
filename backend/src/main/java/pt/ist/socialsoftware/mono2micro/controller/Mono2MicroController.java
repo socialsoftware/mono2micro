@@ -152,42 +152,44 @@ public class Mono2MicroController {
 
 			while(controllers.hasNext()) {
 				String controller = controllers.next();
+				
+				Object o = json.get(controller);
+				if (o instanceof JSONArray) {
+					//luis
+					JSONArray entities = (JSONArray) json.get(controller);
+					for (int i = 0; i < entities.length(); i++) {
+						String entity = (String) entities.getString(i);
 
-				//luis
-				JSONArray entities = (JSONArray) json.get(controller);
-				for (int i = 0; i < entities.length(); i++) {
-					String entity = (String) entities.getString(i);
+						if (!dend.containsEntity(entity))
+							dend.addEntity(new Entity(entity));
+						if (!dend.getEntity(entity).getControllers().contains(controller))
+							dend.getEntity(entity).addController(controller);
 
-					if (!dend.containsEntity(entity))
-						dend.addEntity(new Entity(entity));
-					if (!dend.getEntity(entity).getControllers().contains(controller))
-						dend.getEntity(entity).addController(controller);
+						if (!dend.containsController(controller))
+							dend.addController(new Controller(controller));
+						if (!dend.getController(controller).getEntities().contains(entity))
+							dend.getController(controller).addEntity(entity);
+					}
+				} else {
+					//eu
+					JSONObject entitiesObject = (JSONObject) json.get(controller);
+					Iterator<String> entities = entitiesObject.sortedKeys();
 
-					if (!dend.containsController(controller))
-						dend.addController(new Controller(controller));
-					if (!dend.getController(controller).getEntities().contains(entity))
-						dend.getController(controller).addEntity(entity);
+					while(entities.hasNext()) {
+						String entity = entities.next();
+						JSONArray modes = (JSONArray) entitiesObject.get(entity);
+
+						if (!dend.containsEntity(entity))
+							dend.addEntity(new Entity(entity));
+						if (!dend.getEntity(entity).getControllers().contains(controller))
+							dend.getEntity(entity).addController(controller);
+
+						if (!dend.containsController(controller))
+							dend.addController(new Controller(controller));
+						if (!dend.getController(controller).getEntities().contains(entity))
+							dend.getController(controller).addEntity(entity);
+					}
 				}
-
-
-				//eu
-				/*JSONObject entitiesObject = (JSONObject) json.get(controller);
-				Iterator<String> entities = entitiesObject.sortedKeys();
-
-				while(entities.hasNext()) {
-					String entity = entities.next();
-					JSONArray modes = (JSONArray) entitiesObject.get(entity);
-
-					if (!dend.containsEntity(entity))
-						dend.addEntity(new Entity(entity));
-					if (!dend.getEntity(entity).getControllers().contains(controller))
-						dend.getEntity(entity).addController(controller);
-
-					if (!dend.containsController(controller))
-						dend.addController(new Controller(controller));
-					if (!dend.getController(controller).getEntities().contains(entity))
-						dend.getController(controller).addEntity(entity);
-				}*/
 			}
 			is.close();
 		} catch (JSONException | IOException e) {
@@ -261,6 +263,8 @@ public class Mono2MicroController {
 
 			p.waitFor();
 
+			BufferedReader bre = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			float silhouetteScore = Float.parseFloat(bre.readLine());
 			
 			Graph graph;
 			if (dend.getGraphsNames().contains("Graph_" + cutValue)) {
@@ -268,12 +272,12 @@ public class Mono2MicroController {
 				while (dend.getGraphsNames().contains("Graph_" + cutValue + "(" + i + ")")) {
 					i++;
 				}
-				graph = new Graph("Graph_" + cutValue + "(" + i + ")", cutValue);
+				graph = new Graph("Graph_" + cutValue + "(" + i + ")", cutValue, silhouetteScore);
 			} else {
-				graph = new Graph("Graph_" + cutValue, cutValue);
+				graph = new Graph("Graph_" + cutValue, cutValue, silhouetteScore);
 			}
 
-			BufferedReader bre = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			
 			String line = "";
 			while ((line = bre.readLine()) != null) {
 				String[] parts = line.split(" ");
