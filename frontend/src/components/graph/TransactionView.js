@@ -137,6 +137,9 @@ export class TransactionView extends React.Component {
     }
 
     render() {
+        let controllerClustersMap = Object.keys(this.state.controllerClusters).map(key => this.state.controllerClusters[key].length);
+        let averageClustersAccessed = controllerClustersMap.reduce((a,b) => a + b, 0) / controllerClustersMap.length;
+
         return (
             <div>
                 <TransactionOperationsMenu
@@ -152,6 +155,13 @@ export class TransactionView extends React.Component {
                         onSelection={this.handleSelectNode}
                         onDeselection={this.handleDeselectNode}
                         view={views.TRANSACTION} />
+                </div>
+
+                <div>
+                    Number of Retrieved Controllers : {this.state.controllers.length}< br/>
+                    Number of Controllers that access a single Cluster : {Object.keys(this.state.controllerClusters).filter(key => this.state.controllerClusters[key].length === 1).length}< br/>
+                    Maximum number of Clusters accessed by a single Controller : {Math.max(...Object.keys(this.state.controllerClusters).map(key => this.state.controllerClusters[key].length))}< br/>
+                    Average Number of Clusters accessed (Average number of microservices accessed during a transaction) : {averageClustersAccessed}
                 </div>
             </div>
         );
