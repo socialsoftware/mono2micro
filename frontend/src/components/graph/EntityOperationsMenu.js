@@ -7,7 +7,7 @@ export class EntityOperationsMenu extends React.Component {
 
         this.state = {
             showSubmit: false,
-            entityList: this.props.entities.map(e => e.name).sort(),
+            entityList: this.props.entities.sort(),
             entity: 'Select Entity',
             entityAmount: "All"
         }
@@ -19,7 +19,7 @@ export class EntityOperationsMenu extends React.Component {
     componentWillReceiveProps(nextProps) {
       if (this.state.entityAmount === "All") {
         this.setState({
-          entityList: nextProps.entities.map(e => e.name).sort()
+          entityList: nextProps.entities.sort()
         });
       }
     }
@@ -39,11 +39,11 @@ export class EntityOperationsMenu extends React.Component {
       });
       if (value === "All") {
         this.setState({
-          entityList: this.props.entities.map(e => e.name).sort()
+          entityList: this.props.entities.sort()
         });
       } else {
         this.setState({
-          entityList: this.props.entities.filter(e => this.props.amountList[e.name] === value).map(e => e.name).sort()
+          entityList: this.props.entities.filter(e => this.props.amountList[e] === value).sort()
         });
       }
     }

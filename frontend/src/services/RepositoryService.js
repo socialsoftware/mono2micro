@@ -144,6 +144,16 @@ export class RepositoryService {
             });
     }
 
+    getClusterControllers(dendrogramName, graphName) {
+        return this.axios.get("/getClusterControllers", 
+            {
+                params: {
+                    "dendrogramName" : dendrogramName,
+                    "graphName" : graphName
+                }
+            });
+    }
+
     getControllers(dendrogramName) {
         return this.axios.get("/getControllers", 
             {
@@ -153,11 +163,12 @@ export class RepositoryService {
             });
     }
 
-    getEntities(dendrogramName) {
-        return this.axios.get("/getEntities", 
+    getController(dendrogramName, controllerName) {
+        return this.axios.get("/getController", 
             {
                 params: {
-                    "dendrogramName" : dendrogramName
+                    "dendrogramName" : dendrogramName,
+                    "controllerName" : controllerName
                 }
             });
     }

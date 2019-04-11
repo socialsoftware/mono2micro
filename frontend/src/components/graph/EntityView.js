@@ -6,9 +6,9 @@ import { DataSet } from 'vis';
 import { views, types } from './ViewsMenu';
 
 export const entityViewHelp = (<div>
-    Hover or double click cluster to see entities inside.<br />
-    Hover or double click edge to see entities accessed.<br />
-    Select cluster or edge for highlight.
+    Hover entity to see controllers that access it.< br/>
+    Hover edge to see controllers that access the entity and the cluster.< br/>
+    Hover cluster to see entities inside.< br/>
     </div>);
 
 const options = {
@@ -66,14 +66,13 @@ export class EntityView extends React.Component {
         super(props);
 
         this.state = {
-            dendrogramName: this.props.dendrogramName,
-            graphName: this.props.graphName,
             graph: {},
             visGraph: {},
-            entity: {},
+            entity: "",
             entities: [],
+            clusters: [],
             controllers: [],
-            controllerClusters: {},
+            clusterControllers: {},
             showGraph: false,
             amountList: [],
             excludeControllerList: []
@@ -84,83 +83,85 @@ export class EntityView extends React.Component {
         this.handleSelectNode = this.handleSelectNode.bind(this);
         this.handleDeselectNode = this.handleDeselectNode.bind(this);
         this.handleExcludeController = this.handleExcludeController.bind(this);
+        this.getCommonControllers = this.getCommonControllers.bind(this);
     }
 
     componentDidMount() {
         const service = new RepositoryService();
-        service.loadDendrogram(this.state.dendrogramName).then(response => {
-            this.setState({
-                entities: response.data.entities,
-                controllers: response.data.controllers,
-                graph: response.data.graphs.filter(g => g.name === this.props.graphName)[0]
-            }, () => {
-                let amountList = {};
-                for (var j = 0; j < this.state.entities.length; j++) {
-                    let amount = 0;
-                    let entity = this.state.entities[j];
-                    let entityCluster = this.state.graph.clusters.filter(c => c.entities.map(e => e.name).includes(entity.name))[0];
-                    for (var i = 0; i < this.state.graph.clusters.length; i++) {
-                        let cluster = this.state.graph.clusters[i];
-                        if (cluster.name !== entityCluster.name) {
-                            let entityControllers = entity.controllers;
-                            let clusterControllers = [...new Set(cluster.entities.map(e => e.controllers).flat())];
-                            let commonControllers = entityControllers.filter(value => clusterControllers.includes(value));
-                            
-                            if (commonControllers.length > 0) {
-                                amount += 1;
+        service.getGraph(this.props.dendrogramName, this.props.graphName).then(response1 => {
+            service.getControllers(this.props.dendrogramName, this.props.graphName).then(response2 => {
+                service.getClusterControllers(this.props.dendrogramName, this.props.graphName).then(response3 => {
+                    this.setState({
+                        graph: response1.data,
+                        clusters: response1.data.clusters,
+                        entities: response1.data.clusters.map(c => c.entities).flat(),
+                        controllers: response2.data,
+                        clusterControllers: response3.data
+                    }, () => {
+                        let amountList = {};
+                        for (var i = 0; i < this.state.entities.length; i++) {
+                            let amount = 0;
+                            let entity = this.state.entities[i];
+                            let entityCluster = this.state.clusters.filter(c => c.entities.includes(entity))[0];
+                            for (var j = 0; j < this.state.clusters.length; j++) {
+                                let cluster = this.state.clusters[j];
+                                let commonControllers = this.getCommonControllers(entity, cluster);
+                                
+                                if (cluster.name !== entityCluster.name && commonControllers.length > 0) {
+                                    amount += 1;
+                                }
                             }
+                            amountList[this.state.entities[i]] = amount;
                         }
-                    }
-                    amountList[this.state.entities[j].name] = amount;
-                }
-                this.setState({
-                    amountList: amountList
+                        this.setState({
+                            amountList: amountList
+                        });
+                    });
                 });
-                });
-        });
-
-        service.getControllerClusters(this.state.dendrogramName, this.props.graphName).then(response => {
-            this.setState({
-                controllerClusters: response.data
             });
         });
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({
-            graph: {...this.state.graph, name: nextProps.name}
+            graph: {...this.state.graph, name: nextProps.graphName}
         });
     }
 
     handleEntitySubmit(value) {
         this.setState({
-            entity: this.state.entities.filter(e => e.name === value)[0],
-            entityCluster: this.state.graph.clusters.filter(c => c.entities.map(e => e.name).includes(value))[0],
+            entity: value,
+            entityCluster: this.state.clusters.filter(c => c.entities.includes(value))[0],
             showGraph: true
         }, () => {
             this.loadGraph();
-            }
-        );
+        });
+    }
+
+    //get controllers that access both an entity and another cluster
+    getCommonControllers(entity, cluster) {
+        let entityControllers = this.state.controllers.filter(controller => controller.entities.includes(entity)).map(c => c.name);
+        let clusterControllers = this.state.clusterControllers[cluster.name].map(c => c.name);
+        return entityControllers.filter(c => clusterControllers.includes(c));
     }
 
     loadGraph() {
         let nodes = [];
         let edges = [];
+        let entityControllers = this.state.controllers.filter(controller => controller.entities.includes(this.state.entity)).map(c => c.name);
 
-        nodes.push({id: this.state.entity.name, label: this.state.entity.name, value: 1, level: 0, type: types.ENTITY, title: this.state.entity.controllers.join('<br>')});
+        nodes.push({id: this.state.entity, label: this.state.entity, value: 1, level: 0, type: types.ENTITY, title: entityControllers.join('<br>')});
         
-        for (var i = 0; i < this.state.graph.clusters.length; i++) {
-            let cluster = this.state.graph.clusters[i];
+        for (var i = 0; i < this.state.clusters.length; i++) {
+            let cluster = this.state.clusters[i];
             if (cluster.name !== this.state.entityCluster.name) {
-                let entityControllers = this.state.entity.controllers;
-                let clusterControllers = [...new Set(cluster.entities.map(e => e.controllers).flat())];
-                let commonControllers = entityControllers.filter(value => clusterControllers.includes(value));
+                let commonControllers = this.getCommonControllers(this.state.entity, cluster);
                 
                 commonControllers = commonControllers.filter(c => !this.state.excludeControllerList.includes(c));
                 
                 if (commonControllers.length > 0) {
-                    nodes.push({id: cluster.name, label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER, title: cluster.entities.map(e => e.name).join('<br>')});
-                    edges.push({from: this.state.entity.name, to: cluster.name, label: commonControllers.length.toString(), title: commonControllers.join('<br>')})
+                    nodes.push({id: cluster.name, label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER, title: cluster.entities.join('<br>')});
+                    edges.push({from: this.state.entity, to: cluster.name, label: commonControllers.length.toString(), title: commonControllers.join('<br>')})
                 }
             }
         }
@@ -208,7 +209,7 @@ export class EntityView extends React.Component {
                 
                 <div style={{width:'1000px' , height: '700px'}}>
                     <VisNetwork 
-                        graph={this.state.visGraph}
+                        visGraph={this.state.visGraph}
                         options={options}
                         onSelection={this.handleSelectNode}
                         onDeselection={this.handleDeselectNode}

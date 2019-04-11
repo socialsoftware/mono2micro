@@ -41,7 +41,6 @@ import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.domain.DendrogramManager;
-import pt.ist.socialsoftware.mono2micro.domain.Entity;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.utils.PropertiesManager;
 
@@ -89,17 +88,11 @@ public class Mono2MicroController {
 	}
 
 	@RequestMapping(value = "/graphs", method = RequestMethod.GET)
-	public ResponseEntity<String[]> getGraphs(@RequestParam("dendrogramName") String dendrogramName) {
+	public ResponseEntity<List<Graph>> getGraphs(@RequestParam("dendrogramName") String dendrogramName) {
 		logger.debug("getGraphs");
 
 		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-		List<Graph> graphs = dend.getGraphs();
-		String[] graphs_names = new String[graphs.size()];
-		for (int i = 0; i < graphs.size(); i++) {
-			graphs_names[i] = graphs.get(i).getName();
-		}
-
-		return new ResponseEntity<>(graphs_names, HttpStatus.OK);
+		return new ResponseEntity<>(dend.getGraphs(), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/graph/", method = RequestMethod.GET)
@@ -160,11 +153,6 @@ public class Mono2MicroController {
 					for (int i = 0; i < entities.length(); i++) {
 						String entity = (String) entities.getString(i);
 
-						if (!dend.containsEntity(entity))
-							dend.addEntity(new Entity(entity));
-						if (!dend.getEntity(entity).getControllers().contains(controller))
-							dend.getEntity(entity).addController(controller);
-
 						if (!dend.containsController(controller))
 							dend.addController(new Controller(controller));
 						if (!dend.getController(controller).getEntities().contains(entity))
@@ -178,11 +166,6 @@ public class Mono2MicroController {
 					while(entities.hasNext()) {
 						String entity = entities.next();
 						JSONArray modes = (JSONArray) entitiesObject.get(entity);
-
-						if (!dend.containsEntity(entity))
-							dend.addEntity(new Entity(entity));
-						if (!dend.getEntity(entity).getControllers().contains(controller))
-							dend.getEntity(entity).addController(controller);
 
 						if (!dend.containsController(controller))
 							dend.addController(new Controller(controller));
@@ -284,10 +267,7 @@ public class Mono2MicroController {
 				String clusterName = parts[0];
 				String entities = parts[1];
 				Cluster cluster = new Cluster("Cluster" + clusterName);
-				for (String entityName : entities.split(",")) {
-					Entity entity = new Entity(entityName);
-					for (String controller : dend.getEntity(entityName).getControllers())
-						entity.addController(controller);
+				for (String entity : entities.split(",")) {
 					cluster.addEntity(entity);
 				}
 				graph.addCluster(cluster);
@@ -365,6 +345,14 @@ public class Mono2MicroController {
 		return new ResponseEntity<Map<String,List<Cluster>>>(dend.getControllerClusters(graphName), HttpStatus.OK);
 	}
 
+	@RequestMapping(value = "/getClusterControllers", method = RequestMethod.GET)
+	public ResponseEntity<Map<String,List<Controller>>> getClusterControllers(@RequestParam("dendrogramName") String dendrogramName, @RequestParam("graphName") String graphName) {
+		logger.debug("getClusterControllers: in graph {}", graphName);
+
+		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
+		return new ResponseEntity<Map<String,List<Controller>>>(dend.getClusterControllers(graphName), HttpStatus.OK);
+	}
+
 	@RequestMapping(value = "/getControllers", method = RequestMethod.GET)
 	public ResponseEntity<List<Controller>> getControllers(@RequestParam("dendrogramName") String dendrogramName) {
 		logger.debug("getControllers");
@@ -372,11 +360,11 @@ public class Mono2MicroController {
 		return new ResponseEntity<List<Controller>>(dend.getControllers(), HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/getEntities", method = RequestMethod.GET)
-	public ResponseEntity<List<Entity>> getEntities(@RequestParam("dendrogramName") String dendrogramName) {
-		logger.debug("getEntities");
+	@RequestMapping(value = "/getController", method = RequestMethod.GET)
+	public ResponseEntity<Controller> getController(@RequestParam("dendrogramName") String dendrogramName, @RequestParam("controllerName") String controllerName) {
+		logger.debug("getController");
 		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-		return new ResponseEntity<List<Entity>>(dend.getEntities(), HttpStatus.OK);
+		return new ResponseEntity<Controller>(dend.getController(controllerName), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/transferEntities", method = RequestMethod.GET)

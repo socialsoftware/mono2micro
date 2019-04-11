@@ -5,6 +5,7 @@ import { VisNetwork } from '../util/VisNetwork';
 import { ModalMessage } from '../util/ModalMessage';
 import { DataSet } from 'vis';
 import { views, types } from './ViewsMenu';
+import { Table } from 'react-bootstrap';
 
 export const clusterViewHelp = (<div>
     Hover or double click cluster to see entities inside.<br />
@@ -15,8 +16,7 @@ export const clusterViewHelp = (<div>
 const options = {
     height: "700",
     layout: {
-        hierarchical: false,
-        //randomSeed: 10
+        hierarchical: false
     },
     edges: {
         smooth: false,
@@ -75,9 +75,7 @@ export class ClusterView extends React.Component {
         super(props);
 
          this.state = {
-            dendrogramName: this.props.dendrogramName,
-            graphName: this.props.graphName,
-            graph: {},
+            visGraph: {},
             clusters: [],
             showMenu: false,
             selectedCluster: {},
@@ -86,10 +84,7 @@ export class ClusterView extends React.Component {
             clusterEntities: [],
             error: false,
             errorMessage: '',
-            operation: operations.NONE,
-            entities: [],
-            controllers: [],
-            silhouetteScore: '---'
+            operation: operations.NONE
         };
 
         this.loadGraph = this.loadGraph.bind(this);
@@ -102,58 +97,50 @@ export class ClusterView extends React.Component {
         this.handleOperationSubmit = this.handleOperationSubmit.bind(this);
         this.handleOperationCancel = this.handleOperationCancel.bind(this);
         this.closeErrorMessageModal = this.closeErrorMessageModal.bind(this);
+
     }
 
-    loadGraph(graphName) {
+    loadGraph() {
         const service = new RepositoryService();
-        service.getGraph(this.state.dendrogramName, graphName).then(response => {
+        service.getClusterControllers(this.props.dendrogramName, this.props.graphName).then(response1 => {
+            service.getGraph(this.props.dendrogramName, this.props.graphName).then(response2 => {
 
-            const graph = {
-              nodes: new DataSet(response.data.clusters.map(cluster => this.convertClusterToNode(cluster))),
-              edges: new DataSet(this.createEdges(response.data.clusters))
-            };
+                const visGraph = {
+                    nodes: new DataSet(response2.data.clusters.map(cluster => this.convertClusterToNode(cluster))),
+                    edges: new DataSet(this.createEdges(response2.data.clusters, response1.data))
+                };
 
-            this.setState({
-                graph: graph,
-                clusters: response.data.clusters,
-                showMenu: false,
-                selectedCluster: {},
-                mergeWithCluster: {},
-                transferToCluster: {},
-                clusterEntities: [],
-                operation: operations.NONE,
-                silhouetteScore: response.data.silhouetteScore
-            });
-        });
-
-        service.loadDendrogram(this.state.dendrogramName).then(response => {
-            this.setState({
-                entities: response.data.entities,
-                controllers: response.data.controllers
+                this.setState({
+                    visGraph: visGraph,
+                    clusters: response2.data.clusters,
+                    showMenu: false,
+                    selectedCluster: {},
+                    mergeWithCluster: {},
+                    transferToCluster: {},
+                    clusterEntities: [],
+                    operation: operations.NONE
+                });
             });
         });
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState({graphName: nextProps.name});
-        this.loadGraph(nextProps.name);
-    }
-
-    createEdges(clusters) {
+    createEdges(clusters, clusterControllers) {
         let edges = [];
         let edgeLengthFactor = 1000;
+
         for (var i = 0; i < clusters.length; i++) { 
+            let cluster1Controllers = clusterControllers[clusters[i].name].map(c => c.name);
             for (var j = i+1; j < clusters.length; j++) {
-                let cluster1Controllers = [...new Set(clusters[i].entities.map(e => e.controllers).flat())];
-                let cluster2Controllers = [...new Set(clusters[j].entities.map(e => e.controllers).flat())];
-                let ControllersInCommon = cluster1Controllers.filter(value => -1 !== cluster2Controllers.indexOf(value))
+                let cluster2Controllers = clusterControllers[clusters[j].name].map(c => c.name);
+                let controllersInCommon = cluster1Controllers.filter(value => -1 !== cluster2Controllers.indexOf(value))
+
                 let edgeTitle = clusters[i].name + " -- " + clusters[j].name + "<br>";
-                let edgeLength = (1/ControllersInCommon.length)*edgeLengthFactor;
+                let edgeLength = (1/controllersInCommon.length)*edgeLengthFactor;
                 if (edgeLength < 100) edgeLength = 300;
                 else if (edgeLength > 500) edgeLength = 500;
-                if (ControllersInCommon.length > 0)
+                if (controllersInCommon.length > 0)
                     //edges.push({from: clusters[i].name, to: clusters[j].name, value: ControllersInCommon.length, label: ControllersInCommon.length.toString(), title: edgeTitle + ControllersInCommon.join('<br>')});
-                    edges.push({from: clusters[i].name, to: clusters[j].name, length:edgeLength, value: ControllersInCommon.length, label: ControllersInCommon.length.toString(), title: edgeTitle + ControllersInCommon.join('<br>')});
+                    edges.push({from: clusters[i].name, to: clusters[j].name, length:edgeLength, value: controllersInCommon.length, label: controllersInCommon.length.toString(), title: edgeTitle + controllersInCommon.join('<br>')});
                 //else
                     //edges.push({from: clusters[i].name, to: clusters[j].name, length:(1/0.5)*edgeLengthFactor, hidden: true});
             }
@@ -162,19 +149,19 @@ export class ClusterView extends React.Component {
     }
 
     convertClusterToNode(cluster) {
-        return {id: cluster.name, title: cluster.entities.map(e => e.name).join('<br>'), label: cluster.name, value: cluster.entities.length, type: types.CLUSTER};
+        return {id: cluster.name, title: cluster.entities.join('<br>'), label: cluster.name, value: cluster.entities.length, type: types.CLUSTER};
     };
 
     setClusterEntities(selectedCluster) {
         this.setState({
             selectedCluster: selectedCluster,
             mergeWithCluster: {},
-            clusterEntities: selectedCluster.entities.map(e => ({name: e.name, active: false})),
+            clusterEntities: selectedCluster.entities.map(e => ({name: e, active: false})),
         });
     }
 
     componentDidMount() {
-        this.loadGraph(this.state.graphName);
+        this.loadGraph();
     }
 
     handleSelectOperation(operation) {
@@ -252,9 +239,9 @@ export class ClusterView extends React.Component {
         const service = new RepositoryService();
         switch (operation) {
             case operations.RENAME:
-                service.renameCluster(this.state.dendrogramName, this.state.graphName, this.state.selectedCluster.name, inputValue)
+                service.renameCluster(this.props.dendrogramName, this.props.graphName, this.state.selectedCluster.name, inputValue)
                 .then(() => {
-                    this.loadGraph(this.state.graphName);        
+                    this.loadGraph();        
                 }).catch((err) => {
                     this.setState({
                         error: true,
@@ -263,10 +250,10 @@ export class ClusterView extends React.Component {
                 });
                 break;
             case operations.MERGE:
-                service.mergeClusters(this.state.dendrogramName, this.state.graphName, this.state.selectedCluster.name, 
+                service.mergeClusters(this.props.dendrogramName, this.props.graphName, this.state.selectedCluster.name, 
                     this.state.mergeWithCluster.name, inputValue)
                 .then(() => {
-                    this.loadGraph(this.state.graphName);        
+                    this.loadGraph();        
                 }).catch((err) => {
                     this.setState({
                         error: true,
@@ -276,9 +263,9 @@ export class ClusterView extends React.Component {
                 break;
             case operations.SPLIT:
                 let activeClusterEntitiesSplit = this.state.clusterEntities.filter(e => e.active).map(e => e.name).toString();
-                service.splitCluster(this.state.dendrogramName, this.state.graphName, this.state.selectedCluster.name, inputValue, activeClusterEntitiesSplit)
+                service.splitCluster(this.props.dendrogramName, this.props.graphName, this.state.selectedCluster.name, inputValue, activeClusterEntitiesSplit)
                 .then(() => {
-                    this.loadGraph(this.state.graphName);        
+                    this.loadGraph();        
                 }).catch((err) => {
                     this.setState({
                         error: true,
@@ -288,10 +275,10 @@ export class ClusterView extends React.Component {
                 break;
             case operations.TRANSFER:
                 let activeClusterEntitiesTransfer = this.state.clusterEntities.filter(e => e.active).map(e => e.name).toString();
-                service.transferEntities(this.state.dendrogramName, this.state.graphName, this.state.selectedCluster.name, 
+                service.transferEntities(this.props.dendrogramName, this.props.graphName, this.state.selectedCluster.name, 
                     this.state.transferToCluster.name, activeClusterEntitiesTransfer)
                 .then(() => {
-                    this.loadGraph(this.state.graphName);        
+                    this.loadGraph();        
                 }).catch((err) => {
                     this.setState({
                         error: true,
@@ -326,6 +313,15 @@ export class ClusterView extends React.Component {
     }
 
     render() {
+        const rows = this.state.clusters.map(c => 
+            <tr key={c.name}>
+                <td>{c.name}</td>
+                <td>{c.complexity}</td>
+                <td>{c.cohesion}</td>
+                <td>{c.coupling}</td>
+            </tr>
+        );
+
         return (
             <div>                
                 {this.state.error && 
@@ -348,21 +344,27 @@ export class ClusterView extends React.Component {
 
                 <div style={{width:'1000px' , height: '700px'}}>
                     <VisNetwork 
-                        graph={this.state.graph} 
+                        visGraph={this.state.visGraph} 
                         clusters={this.state.clusters} 
                         options={options} 
                         onSelection={this.handleSelectCluster}
                         onDeselection={this.handleDeselectNode}
                         view={views.CLUSTERS} />
                 </div>
-                <div>
-                    Number of Retrieved Controllers : {this.state.controllers.length}< br/>
-                    Number of Retrieved Entities (domain classes) : {this.state.entities.length}< br/>
-                    Number of Retrieved Clusters (NRC) : {this.state.clusters.length}< br/>
-                    Number of Singleton Clusters (NSC) : {this.state.clusters.filter(c => c.entities.length === 1).length}< br/>
-                    Maximum Cluster Size (MCS) : {Math.max(...this.state.clusters.map(c => c.entities.length))}< br/>
-                    Silhouette Score (SS) : {this.state.silhouetteScore}< br/>
-                </div>
+
+                <Table striped bordered hover>
+                    <thead>
+                        <tr>
+                            <th>Cluster</th>
+                            <th>Complexity</th>
+                            <th>Cohesion</th>
+                            <th>Coupling</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {rows}
+                    </tbody>
+                </Table>
             </div>
         );
     }

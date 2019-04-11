@@ -42,41 +42,41 @@ export class VisNetwork extends Component {
 
     handleSelectEdge(event) {
         if (event.nodes.length === 0) {  //edge selected
-            this.props.graph.nodes.update([{id: this.props.graph.edges.get(event.edges[0]).from, 
+            this.props.visGraph.nodes.update([{id: this.props.visGraph.edges.get(event.edges[0]).from, 
                                             color: {border: "#24CC48", background: "#24CC48"}},
-                                           {id: this.props.graph.edges.get(event.edges[0]).to,
+                                           {id: this.props.visGraph.edges.get(event.edges[0]).to,
                                             color: {border: "#24CC48", background: "#24CC48"}}
                                           ]);
         } else {  //node selected
             let touchedNodes = event.edges.map(e => {
-                if (this.props.graph.edges.get(e).from === event.nodes[0])
-                    return {id: this.props.graph.edges.get(e).to, color: {border: "#24CC48", background: "#24CC48"}};
+                if (this.props.visGraph.edges.get(e).from === event.nodes[0])
+                    return {id: this.props.visGraph.edges.get(e).to, color: {border: "#24CC48", background: "#24CC48"}};
                 else
-                    return {id: this.props.graph.edges.get(e).from, color: {border: "#24CC48", background: "#24CC48"}};
+                    return {id: this.props.visGraph.edges.get(e).from, color: {border: "#24CC48", background: "#24CC48"}};
             });
-            this.props.graph.nodes.update(touchedNodes);
+            this.props.visGraph.nodes.update(touchedNodes);
         }
     }
 
     handleDeselectEdge(event) {
         if (event.previousSelection.nodes.length === 0) {  //edge selected
-            this.props.graph.nodes.update([{id: this.props.graph.edges.get(event.previousSelection.edges[0]).from, 
+            this.props.visGraph.nodes.update([{id: this.props.visGraph.edges.get(event.previousSelection.edges[0]).from, 
                                             color: {border: "#2B7CE9", background: "#D2E5FF"}},
-                                           {id: this.props.graph.edges.get(event.previousSelection.edges[0]).to,
+                                           {id: this.props.visGraph.edges.get(event.previousSelection.edges[0]).to,
                                             color: {border: "#2B7CE9", background: "#D2E5FF"}}
                                           ]);
         } else {  //node selected
             let touchedNodes = event.previousSelection.edges.map(e => {
-                    return [{id: this.props.graph.edges.get(e).to, color: {border: "#2B7CE9", background: "#D2E5FF"}}, 
-                           {id: this.props.graph.edges.get(e).from, color: {border: "#2B7CE9", background: "#D2E5FF"}}];
+                    return [{id: this.props.visGraph.edges.get(e).to, color: {border: "#2B7CE9", background: "#D2E5FF"}}, 
+                           {id: this.props.visGraph.edges.get(e).from, color: {border: "#2B7CE9", background: "#D2E5FF"}}];
             });
-            this.props.graph.nodes.update(touchedNodes.flat());
+            this.props.visGraph.nodes.update(touchedNodes.flat());
         }
 
         if (event.edges.length === 1) {
-            this.props.graph.nodes.update([{id: this.props.graph.edges.get(event.edges[0]).from, 
+            this.props.visGraph.nodes.update([{id: this.props.visGraph.edges.get(event.edges[0]).from, 
                                             color: {border: "#24CC48", background: "#24CC48"}},
-                                           {id: this.props.graph.edges.get(event.edges[0]).to,
+                                           {id: this.props.visGraph.edges.get(event.edges[0]).to,
                                             color: {border: "#24CC48", background: "#24CC48"}}
                                           ]);
         }
@@ -92,15 +92,15 @@ export class VisNetwork extends Component {
                 this.setState({
                     showModalMessage: true,
                     ModalMessageTitle: 'Controllers in common',
-                    ModalMessageText: this.props.graph.edges.get(event.edges[0]).title
+                    ModalMessageText: this.props.visGraph.edges.get(event.edges[0]).title
                 });
             } else if (this.props.view === views.TRANSACTION) {
-                let from = this.props.graph.edges.get(event.edges[0]).from;
-                let to = this.props.graph.edges.get(event.edges[0]).to;
+                let from = this.props.visGraph.edges.get(event.edges[0]).from;
+                let to = this.props.visGraph.edges.get(event.edges[0]).to;
                 this.setState({
                     showModalMessage: true,
                     ModalMessageTitle: 'Entities of ' + to + ' accessed by controller ' + from,
-                    ModalMessageText: this.props.graph.edges.get(event.edges[0]).title
+                    ModalMessageText: this.props.visGraph.edges.get(event.edges[0]).title
                 });
             }
         } else if (event.nodes.length > 0) {  //node double click
@@ -108,20 +108,20 @@ export class VisNetwork extends Component {
                 this.setState({
                     showModalMessage: true,
                     ModalMessageTitle: 'Entities of ' + event.nodes[0],
-                    ModalMessageText: this.props.graph.nodes.get(event.nodes[0]).title
+                    ModalMessageText: this.props.visGraph.nodes.get(event.nodes[0]).title
                 });
             } else if (this.props.view === views.TRANSACTION) {
-                if (this.props.graph.nodes.get(event.nodes[0]).type === types.CLUSTER) {
+                if (this.props.visGraph.nodes.get(event.nodes[0]).type === types.CLUSTER) {
                     this.setState({
                         showModalMessage: true,
                         ModalMessageTitle: 'Entities of ' + event.nodes[0],
-                        ModalMessageText: this.props.graph.nodes.get(event.nodes[0]).title
+                        ModalMessageText: this.props.visGraph.nodes.get(event.nodes[0]).title
                     });
-                } else if (this.props.graph.nodes.get(event.nodes[0]).type === types.CONTROLLER) {
+                } else if (this.props.visGraph.nodes.get(event.nodes[0]).type === types.CONTROLLER) {
                     this.setState({
                         showModalMessage: true,
                         ModalMessageTitle: 'Entities accessed by controller ' + event.nodes[0],
-                        ModalMessageText: this.props.graph.nodes.get(event.nodes[0]).title
+                        ModalMessageText: this.props.visGraph.nodes.get(event.nodes[0]).title
                     });
                 }
             }
@@ -129,8 +129,8 @@ export class VisNetwork extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.graph !== prevProps.graph) {
-            this.network = new Network(this.appRef.current, this.props.graph, this.props.options);
+        if (this.props.visGraph !== prevProps.visGraph) {
+            this.network = new Network(this.appRef.current, this.props.visGraph, this.props.options);
             this.network.on("doubleClick", this.handleDoubleClick);
             this.network.on("selectNode", this.handleSelectNode);
             this.network.on("deselectNode", this.handleDeselectNode);
@@ -142,7 +142,7 @@ export class VisNetwork extends Component {
     }
 
     render() {
-        return ( 
+        return (
             <div>
                 {this.state.showModalMessage && <ModalMessage title={this.state.ModalMessageTitle} message={this.state.ModalMessageText} onClose={this.handleCloseModal} />}
                 <div ref = {this.appRef}/>

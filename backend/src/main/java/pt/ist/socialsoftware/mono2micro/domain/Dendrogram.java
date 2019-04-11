@@ -8,7 +8,6 @@ import java.util.Map;
 public class Dendrogram {
 	private List<Graph> graphs = new ArrayList<>();
 	private List<Controller> controllers = new ArrayList<>();
-	private List<Entity> entities = new ArrayList<>();
 	private String linkageType;
 
 	public Dendrogram() {
@@ -53,75 +52,33 @@ public class Dendrogram {
 
 	public void addGraph(Graph graph) {
 		this.graphs.add(graph);
+		calculateMetrics(graph.getName());
 	}
 
 	public void mergeClusters(String graphName, String cluster1, String cluster2, String newName) {
-		for (int i = 0; i < graphs.size(); i++) {
-			if (graphs.get(i).getName().equals(graphName)) {
-				graphs.get(i).mergeClusters(cluster1, cluster2, newName);
-			}
-		}
+		getGraph(graphName).mergeClusters(cluster1, cluster2, newName);
+		calculateMetrics(graphName);
 	}
 
 	public boolean renameCluster(String graphName, String clusterName, String newName) {
-		boolean success = true;
-		for (int i = 0; i < graphs.size(); i++) {
-			if (graphs.get(i).getName().equals(graphName)) {
-				success = graphs.get(i).renameCluster(clusterName, newName);
-			}
-		}
-		return success;
+		return getGraph(graphName).renameCluster(clusterName, newName);
 	}
 
 	public boolean renameGraph(String graphName, String newName) {
-		if (this.getGraphsNames().contains(newName))
+		if (getGraphsNames().contains(newName))
 			return false;
-		for (int i = 0; i < graphs.size(); i++) {
-			if (graphs.get(i).getName().equals(graphName)) {
-				graphs.get(i).setName(newName);
-			}
-		}
+		getGraph(graphName).setName(newName);
 		return true;
 	}
 
 	public void splitCluster(String graphName, String clusterName, String newName, String[] entities) {
-		for (int i = 0; i < graphs.size(); i++) {
-			if (graphs.get(i).getName().equals(graphName)) {
-				graphs.get(i).splitCluster(clusterName, newName, entities);
-			}
-		}
+		getGraph(graphName).splitCluster(clusterName, newName, entities);
+		calculateMetrics(graphName);
 	}
-
-	public List<Entity> getEntities() {
-		return this.entities;
-	}
-
-
-	public void addEntity(Entity entity) {
-		this.entities.add(entity);
-	}
-
-	public Entity getEntity(String entityName) {
-		for (Entity entity : this.entities) {
-			if (entity.getName().equals(entityName))
-				return entity;
-		}
-		return null;
-	}
-
-	public boolean containsEntity(String entityName) {
-		for (Entity entity : this.entities) {
-			if (entity.getName().equals(entityName))
-				return true;
-		}
-		return false;
-	}
-
 
 	public List<Controller> getControllers() {
 		return this.controllers;
 	}
-
 
 	public void addController(Controller controller) {
 		this.controllers.add(controller);
@@ -136,11 +93,9 @@ public class Dendrogram {
 	}
 
 	public boolean containsController(String controllerName) {
-		for (Controller controller : this.controllers) {
-			if (controller.getName().equals(controllerName))
-				return true;
-		}
-		return false;
+		if (getController(controllerName) == null)
+			return false;
+		return true;
 	}
 
 	public Map<String,List<Cluster>> getControllerClusters(String graphName) {
@@ -161,8 +116,31 @@ public class Dendrogram {
 		return result;
 	}
 
+	public Map<String,List<Controller>> getClusterControllers(String graphName) {
+		Map<String,List<Controller>> result = new HashMap<>();
+
+		Graph graph = getGraph(graphName);
+		for (Cluster cluster : graph.getClusters()) {
+			List<Controller> touchedControllers = new ArrayList<>();
+			for (String clusterEntity : cluster.getEntities()) {
+				for (Controller controller : this.controllers) {
+					if (!touchedControllers.contains(controller) && controller.getEntities().contains(clusterEntity)) {
+						touchedControllers.add(controller);
+					}
+				}
+			}
+			result.put(cluster.getName(), touchedControllers);
+		}
+		return result;
+	}
+
 	public void transferEntities(String graphName, String fromCluster, String toCluster, String[] entities) {
-		this.getGraph(graphName).transferEntities(fromCluster, toCluster, entities);
+		getGraph(graphName).transferEntities(fromCluster, toCluster, entities);
+		calculateMetrics(graphName);
+	}
+
+	public void calculateMetrics(String graphName) {
+		getGraph(graphName).calculateMetrics(this.controllers);
 	}
 
 }

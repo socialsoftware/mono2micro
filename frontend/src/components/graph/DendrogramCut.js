@@ -1,12 +1,9 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
 import { DENDROGRAM_URL } from '../../constants/constants';
-import { Button, Form, Card, CardDeck, Breadcrumb, BreadcrumbItem } from 'react-bootstrap';
+import { Button, Form, Card, CardDeck, Breadcrumb, BreadcrumbItem, Table } from 'react-bootstrap';
 
 var HttpStatus = require('http-status-codes');
-
-
-
 
 export class DendrogramCut extends React.Component {
     constructor(props) {
@@ -82,14 +79,25 @@ export class DendrogramCut extends React.Component {
             );
         };
 
-        const graphs = this.state.graphs.map( name =>
-            <Card key={name} style={{ width: '18rem' }}>
+        const graphs = this.state.graphs.map( graph =>
+            <Card key={graph.name} style={{ width: '18rem' }}>
                 <Card.Body>
-                    <Card.Title>{name}</Card.Title>
-                    <Button href={`/dendrogram/${this.state.dendrogramName}/graph/${name}`} className="mr-4" variant="primary">See Graph</Button>
-                    <Button onClick={() => this.handleDeleteGraph(name)} variant="danger">Delete</Button>
+                    <Card.Title>{graph.name}</Card.Title>
+                    <Button href={`/dendrogram/${this.state.dendrogramName}/graph/${graph.name}`} className="mr-4" variant="primary">See Graph</Button>
+                    <Button onClick={() => this.handleDeleteGraph(graph.name)} variant="danger">Delete</Button>
                 </Card.Body>
             </Card>
+        );
+
+        const rows = this.state.graphs.map(graph => 
+            <tr key={graph.name}>
+                <td>{graph.name}</td>
+                <td>{graph.cutValue}</td>
+                <td>{graph.clusters.length}</td>
+                <td>{graph.clusters.filter(c => c.entities.length === 1).length}</td>
+                <td>{Math.max(...graph.clusters.map(c => c.entities.length))}</td>
+                <td>{graph.silhouetteScore}</td>
+            </tr>
         );
 
         return (
@@ -113,6 +121,22 @@ export class DendrogramCut extends React.Component {
                 <CardDeck>
                     {graphs}
                 </CardDeck>
+
+                <Table striped bordered hover>
+                    <thead>
+                        <tr>
+                            <th>Graph</th>
+                            <th>Cut</th>
+                            <th>Number of Retrieved Clusters</th>
+                            <th>Number of Singleton Clusters</th>
+                            <th>Maximum Cluster Size</th>
+                            <th>Silhouette Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {rows}
+                    </tbody>
+                </Table>
             </div>
         );
     };
