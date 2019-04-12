@@ -68,9 +68,11 @@ export class TransactionView extends React.Component {
 
         this.state = {
             visGraph: {},
+            graph: {},
             controller: {},
             controllers: [],
             controllerClusters: [],
+            controllersComplexity: {},
             showGraph: false
         }
 
@@ -92,6 +94,18 @@ export class TransactionView extends React.Component {
             this.setState({
                 controllers: response.data
             });
+        });
+        service.getGraph(this.props.dendrogramName, this.props.graphName).then(response => {
+            this.setState({
+                graph: response.data,
+                controllersComplexity: response.data.controllersComplexity
+            });
+        });
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            graph: {...this.state.graph, name: nextProps.graphName}
         });
     }
 
@@ -135,10 +149,10 @@ export class TransactionView extends React.Component {
     }
 
     render() {
-        const rows = this.state.controllers.map(c => 
-            <tr key={c.name}>
-                <td>{c.name}</td>
-                <td>{c.complexity}</td>
+        const rows = Object.keys(this.state.controllersComplexity).sort().map(c => 
+            <tr key={c}>
+                <td>{c}</td>
+                <td>{this.state.controllersComplexity[c]}</td>
             </tr>
         );
 

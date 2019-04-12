@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class Graph {
 	private String name;
 	private String cutValue;
 	private float silhouetteScore;
 	private List<Cluster> clusters;
+	private Map<String,Float> controllersComplexity;
 
 	public Graph() {
 
@@ -21,6 +21,7 @@ public class Graph {
 		this.cutValue = cutValue;
 		this.silhouetteScore = silhouetteScore;
 		this.clusters = new ArrayList<>();
+		this.controllersComplexity = new HashMap<>();
 	}
 
 	public void calculateMetrics(List<Controller> controllers) {
@@ -58,6 +59,7 @@ public class Graph {
 			c1.setCoupling(coupling);
 		}
 
+		this.controllersComplexity = new HashMap<>();
 		for (int i = 0; i < controllers.size(); i++) {
 			Controller controller = controllers.get(i);
 			float complexity = 0;
@@ -70,7 +72,7 @@ public class Graph {
 				}
 			}
 			complexity /= this.clusters.size();
-			controller.setComplexity(complexity);
+			this.controllersComplexity.put(controller.getName(), complexity);
 		}
 	}
 
@@ -96,6 +98,10 @@ public class Graph {
 
 	public void setSilhouetteScore(float silhouetteScore) {
 		this.silhouetteScore = silhouetteScore;
+	}
+
+	public Map<String,Float> getControllersComplexity() {
+		return this.controllersComplexity;
 	}
 
 	public List<Cluster> getClusters() {

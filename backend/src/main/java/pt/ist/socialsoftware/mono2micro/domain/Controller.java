@@ -6,7 +6,6 @@ import java.util.List;
 public class Controller {
 	private String name;
 	private List<String> entities;
-	private float complexity;
 
 	public Controller() {
 
@@ -23,14 +22,6 @@ public class Controller {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public float getComplexity() {
-		return this.complexity;
-	}
-
-	public void setComplexity(float complexity) {
-		this.complexity = complexity;
 	}
 
 	public List<String> getEntities() {
