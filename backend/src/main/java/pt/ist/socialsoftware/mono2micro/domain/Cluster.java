@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Cluster {
 	private String name;
-	private List<String> entities;
+	private List<Entity> entities;
 	private float complexity;
 	private float cohesion;
 	private float coupling;
@@ -27,11 +27,11 @@ public class Cluster {
 		this.name = name;
 	}
 
-	public List<String> getEntities() {
+	public List<Entity> getEntities() {
 		return this.entities;
 	}
 
-	public void setEntities(List<String> entities) {
+	public void setEntities(List<Entity> entities) {
 		this.entities = entities;
 	}
 
@@ -60,15 +60,24 @@ public class Cluster {
 	}
 
 	public void addEntity(String entity) {
-		this.entities.add(entity);
+		this.entities.add(new Entity(entity));
 	}
 
-	public void removeEntity(String entity) {
-		this.entities.remove(entity);
+	public boolean removeEntity(String entityName) {
+		for (int i = 0; i < this.entities.size(); i++) {
+			if (this.entities.get(i).getName().equals(entityName)) {
+				this.entities.remove(i);
+				return true;
+			}
+		}
+		return false;
 	}
 
-	public boolean containsEntity(String entity) {
-		return this.entities.contains(entity);
+	public boolean containsEntity(String entityName) {
+		for (Entity entity : this.entities)
+			if (entity.getName().equals(entityName))
+				return true;
+		return false;
 	}
 
 	public void calculateComplexity(List<Controller> controllers) {
@@ -77,8 +86,8 @@ public class Cluster {
 		for (Controller controller : controllers) {
 			boolean localAccess = false;
 			boolean globalAccess = false;
-			for (String controllerEntity : controller.getEntities()) {
-				if (this.entities.contains(controllerEntity))
+			for (Entity controllerEntity : controller.getEntities()) {
+				if (this.containsEntity(controllerEntity.getName()))
 					localAccess = true;
 				else
 					globalAccess = true;
@@ -97,8 +106,8 @@ public class Cluster {
 		int totalControllers = 0;
 		for (Controller controller : controllers) {
 			int numberEntitiesTouched = 0;
-			for (String controllerEntity : controller.getEntities()) {
-				if (this.entities.contains(controllerEntity))
+			for (Entity controllerEntity : controller.getEntities()) {
+				if (this.containsEntity(controllerEntity.getName()))
 					numberEntitiesTouched++;
 			}
 			if (numberEntitiesTouched > 0) {

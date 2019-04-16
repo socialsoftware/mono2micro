@@ -31,6 +31,7 @@ import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.domain.DendrogramManager;
+import pt.ist.socialsoftware.mono2micro.domain.Entity;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.utils.PropertiesManager;
 
@@ -102,7 +103,7 @@ public class Mono2MicroController {
 
 	@RequestMapping(value = "/createDendrogram", method = RequestMethod.POST)
 	public ResponseEntity<Dendrogram> createDendrogram(@RequestParam("dendrogramName") String dendrogramName,
-			@RequestParam("file") MultipartFile datafile, @RequestParam("linkageType") String linkageType) {
+			@RequestParam("file") MultipartFile datafile, @RequestParam("linkageType") String linkageType, @RequestParam("accessMetricWeight") String accessMetricWeight, @RequestParam("readWriteMetricWeight") String readWriteMetricWeight) {
 		logger.debug("createDendrogram filename: {}", datafile.getOriginalFilename());
 
 		File directory = new File(dendrogramsFolder);
@@ -115,6 +116,7 @@ public class Mono2MicroController {
 
 		Dendrogram dend = new Dendrogram();
 		dend.setLinkageType(linkageType);
+		dend.setClusteringMetricWeight(accessMetricWeight, readWriteMetricWeight);
 
 		// save datafile
 		try {
@@ -174,12 +176,14 @@ public class Mono2MicroController {
 			// run python script with clustering algorithm
 			Runtime r = Runtime.getRuntime();
 			String pythonScriptPath = fileUploadPath + "dendrogram.py";
-			String[] cmd = new String[5];
+			String[] cmd = new String[7];
 			cmd[0] = PYTHON;
 			cmd[1] = pythonScriptPath;
 			cmd[2] = dendrogramsFolder;
 			cmd[3] = dendrogramName;
 			cmd[4] = linkageType;
+			cmd[5] = accessMetricWeight;
+			cmd[6] = readWriteMetricWeight;
 			Process p = r.exec(cmd);
 
 			p.waitFor();
@@ -225,13 +229,15 @@ public class Mono2MicroController {
 
 			Runtime r = Runtime.getRuntime();
 			String pythonScriptPath = fileUploadPath + "cutDendrogram.py";
-			String[] cmd = new String[6];
+			String[] cmd = new String[8];
 			cmd[0] = PYTHON;
 			cmd[1] = pythonScriptPath;
 			cmd[2] = dendrogramsFolder;
 			cmd[3] = dendrogramName;
 			cmd[4] = dend.getLinkageType();
 			cmd[5] = cutValue;
+			cmd[6] = dend.getAccessMetricWeight();
+			cmd[7] = dend.getReadWriteMetricWeight();
 			Process p = r.exec(cmd);
 
 			p.waitFor();
@@ -257,8 +263,8 @@ public class Mono2MicroController {
 				String clusterName = parts[0];
 				String entities = parts[1];
 				Cluster cluster = new Cluster("Cluster" + clusterName);
-				for (String entity : entities.split(",")) {
-					cluster.addEntity(entity);
+				for (String entityName : entities.split(",")) {
+					cluster.addEntity(entityName);
 				}
 				graph.addCluster(cluster);
 			}

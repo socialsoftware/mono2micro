@@ -23,13 +23,17 @@ export class DendrogramCreate extends React.Component {
             selectedFile: null, 
             isUploaded: "",
             dendrogramName: "",
-            linkageType: ""
+            linkageType: "",
+            accessMetricWeight: "",
+            readWriteMetricWeight: "",
         };
 
         this.handleSelectedFile = this.handleSelectedFile.bind(this);
         this.handleUpload= this.handleUpload.bind(this);
         this.handleChangeDendrogramName = this.handleChangeDendrogramName.bind(this);
         this.handleLinkageType = this.handleLinkageType.bind(this);
+        this.handleChangeAccessMetricWeight = this.handleChangeAccessMetricWeight.bind(this);
+        this.handleChangeReadWriteMetricWeight = this.handleChangeReadWriteMetricWeight.bind(this);
     }
 
     handleSelectedFile(event) {
@@ -46,6 +50,8 @@ export class DendrogramCreate extends React.Component {
         data.append('file', this.state.selectedFile);
         data.append('dendrogramName', this.state.dendrogramName);
         data.append('linkageType', this.state.linkageType);
+        data.append('accessMetricWeight', this.state.accessMetricWeight);
+        data.append('readWriteMetricWeight', this.state.readWriteMetricWeight);
 
         this.setState({
             isUploaded: "Uploading..."
@@ -79,7 +85,19 @@ export class DendrogramCreate extends React.Component {
     handleLinkageType(event) {
         this.setState({
             linkageType: event.target.id
-        })
+        });
+    }
+
+    handleChangeAccessMetricWeight(event) {
+        this.setState({
+            accessMetricWeight: event.target.value
+        });
+    }
+
+    handleChangeReadWriteMetricWeight(event) {
+        this.setState({
+            readWriteMetricWeight: event.target.value
+        });
     }
 
     render() {
@@ -103,14 +121,34 @@ export class DendrogramCreate extends React.Component {
                     <Form.Control type="file" onChange={this.handleSelectedFile} />
                 </Form.Group>
 
-                <div key={`inline-radio`} className="mb-3">
+                <div key={`linkage-type`} className="mb-3">
                     <span className="mr-3">Linkage Type:</span>
                     <Form.Check inline onClick={this.handleLinkageType} name="formHorizontalRadios" label="Average" type="radio" id="average" />
                     <Form.Check inline onClick={this.handleLinkageType} name="formHorizontalRadios" label="Single" type="radio" id="single" />
                     <Form.Check inline onClick={this.handleLinkageType} name="formHorizontalRadios" label="Complete" type="radio" id="complete" />
                 </div>
+
+                <InputGroup className="mb-3">
+                <InputGroup.Prepend>
+                    <InputGroup.Text id="basic-addon2">Undistinct Access Metric Weight: </InputGroup.Text>
+                </InputGroup.Prepend>
+                    <FormControl 
+                        type="number"
+                        value={this.state.accessMetricWeight}
+                        onChange={this.handleChangeAccessMetricWeight}/>
+                </InputGroup>
+
+                <InputGroup className="mb-3">
+                <InputGroup.Prepend>
+                    <InputGroup.Text id="basic-addon3">Read/Write Access Metric Weight: </InputGroup.Text>
+                </InputGroup.Prepend>
+                    <FormControl 
+                        type="number"
+                        value={this.state.readWriteMetricWeight}
+                        onChange={this.handleChangeReadWriteMetricWeight}/>
+                </InputGroup>
                 
-                <Button variant="primary" type="submit" disabled={this.state.dendrogramName === "" || this.state.linkageType === "" || this.state.selectedFile === null}>
+                <Button variant="primary" type="submit" disabled={this.state.dendrogramName === "" || this.state.linkageType === "" || parseFloat(this.state.accessMetricWeight) + parseFloat(this.state.readWriteMetricWeight) !== 1 || this.state.selectedFile === null}>
                     Submit
                 </Button>
                 <br />

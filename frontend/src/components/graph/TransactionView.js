@@ -123,7 +123,7 @@ export class TransactionView extends React.Component {
             nodes: new DataSet(this.state.controllerClusters[this.state.controller.name].map(c => this.createNode(c))),
             edges: new DataSet(this.state.controllerClusters[this.state.controller.name].map(c => this.createEdge(c)))
         };
-        visGraph.nodes.add({id: this.state.controller.name, title: this.state.controller.entities.join('<br>'), label: this.state.controller.name, level: 0, value: 1, type: types.CONTROLLER});
+        visGraph.nodes.add({id: this.state.controller.name, title: this.state.controller.entities.map(e => e.name).join('<br>'), label: this.state.controller.name, level: 0, value: 1, type: types.CONTROLLER});
 
         this.setState({
             visGraph: visGraph
@@ -131,12 +131,12 @@ export class TransactionView extends React.Component {
     }
 
     createNode(cluster) {
-        return {id: cluster.name, title: cluster.entities.join('<br>'), label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER};
+        return {id: cluster.name, title: cluster.entities.map(e => e.name).join('<br>'), label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER};
     }
 
 
     createEdge(cluster) {
-        let entitiesTouched = cluster.entities.filter(e => this.state.controller.entities.includes(e));
+        let entitiesTouched = cluster.entities.map(e => e.name).filter(e => this.state.controller.entities.map(e => e.name).includes(e));
         return {from: this.state.controller.name, to: cluster.name, label: entitiesTouched.length.toString(), title: entitiesTouched.join('<br>')};
     }
 

@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Controller {
 	private String name;
-	private List<String> entities;
+	private List<Entity> entities;
 
 	public Controller() {
 
@@ -24,16 +24,23 @@ public class Controller {
 		this.name = name;
 	}
 
-	public List<String> getEntities() {
+	public List<Entity> getEntities() {
 		return this.entities;
 	}
 
-	public void setEntities(List<String> entities) {
+	public void setEntities(List<Entity> entities) {
 		this.entities = entities;
 	}
 
 	public void addEntity(String entity) {
-		this.entities.add(entity);
+		this.entities.add(new Entity(entity));
+	}
+
+	public boolean containsEntity(String entityName) {
+		for (Entity entity : this.entities)
+			if (entity.getName().equals(entityName))
+				return true;
+		return false;
 	}
 
 }

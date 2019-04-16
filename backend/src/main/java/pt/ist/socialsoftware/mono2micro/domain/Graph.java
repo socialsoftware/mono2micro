@@ -39,12 +39,12 @@ public class Graph {
 					for (Controller c : controllers) {
 						boolean touchedC1 = false;
 						boolean touchedC2 = false;
-						for (String entity : c.getEntities()) {
-							if (c1.containsEntity(entity)) {
+						for (Entity entity : c.getEntities()) {
+							if (c1.containsEntity(entity.getName())) {
 								touchedC1 = true;
 							}
 								
-							if (c2.containsEntity(entity))
+							if (c2.containsEntity(entity.getName()))
 								touchedC2 = true;
 						}
 						if (touchedC1)
@@ -64,8 +64,8 @@ public class Graph {
 			Controller controller = controllers.get(i);
 			float complexity = 0;
 			for (Cluster cluster : this.clusters) {
-				for (String entity : cluster.getEntities()) {
-					if (controller.getEntities().contains(entity)) {
+				for (Entity entity : cluster.getEntities()) {
+					if (controller.containsEntity(entity.getName())) {
 						complexity++;
 						break;
 					}
@@ -116,16 +116,16 @@ public class Graph {
 		Cluster mergedCluster = new Cluster(newName);
 		for (int i = 0; i < clusters.size(); i++) {
 			if (clusters.get(i).getName().equals(cluster1)) {
-				for (String entity : clusters.get(i).getEntities())
-					mergedCluster.addEntity(entity);
+				for (Entity entity : clusters.get(i).getEntities())
+					mergedCluster.addEntity(entity.getName());
 				clusters.remove(i);
 				break;
 			}
 		}
 		for (int i = 0; i < clusters.size(); i++) {
 			if (clusters.get(i).getName().equals(cluster2)) {
-				for (String entity : clusters.get(i).getEntities())
-					mergedCluster.addEntity(entity);
+				for (Entity entity : clusters.get(i).getEntities())
+					mergedCluster.addEntity(entity.getName());
 				clusters.remove(i);
 				break;
 			}

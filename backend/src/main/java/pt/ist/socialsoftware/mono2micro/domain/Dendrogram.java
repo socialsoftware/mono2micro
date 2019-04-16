@@ -9,6 +9,8 @@ public class Dendrogram {
 	private List<Graph> graphs = new ArrayList<>();
 	private List<Controller> controllers = new ArrayList<>();
 	private String linkageType;
+	private String accessMetricWeight;
+	private String readWriteMetricWeight;
 
 	public Dendrogram() {
 	}
@@ -19,6 +21,19 @@ public class Dendrogram {
 
 	public String getLinkageType() {
 		return this.linkageType;
+	}
+
+	public void setClusteringMetricWeight(String accessMetricWeight, String readWriteMetricWeight) {
+		this.accessMetricWeight = accessMetricWeight;
+		this.readWriteMetricWeight = readWriteMetricWeight;
+	}
+
+	public String getAccessMetricWeight() {
+		return this.accessMetricWeight;
+	}
+
+	public String getReadWriteMetricWeight() {
+		return this.readWriteMetricWeight;
 	}
 
 	public List<Graph> getGraphs() {
@@ -104,9 +119,9 @@ public class Dendrogram {
 		Graph graph = getGraph(graphName);
 		for (Controller controller : this.controllers) {
 			List<Cluster> touchedClusters = new ArrayList<>();
-			for (String entity : controller.getEntities()) {
+			for (Entity entity : controller.getEntities()) {
 				for (Cluster cluster : graph.getClusters()) {
-					if (!touchedClusters.contains(cluster) && cluster.containsEntity(entity)) {
+					if (!touchedClusters.contains(cluster) && cluster.containsEntity(entity.getName())) {
 						touchedClusters.add(cluster);
 					}
 				}
@@ -122,9 +137,9 @@ public class Dendrogram {
 		Graph graph = getGraph(graphName);
 		for (Cluster cluster : graph.getClusters()) {
 			List<Controller> touchedControllers = new ArrayList<>();
-			for (String clusterEntity : cluster.getEntities()) {
+			for (Entity clusterEntity : cluster.getEntities()) {
 				for (Controller controller : this.controllers) {
-					if (!touchedControllers.contains(controller) && controller.getEntities().contains(clusterEntity)) {
+					if (!touchedControllers.contains(controller) && controller.containsEntity(clusterEntity.getName())) {
 						touchedControllers.add(controller);
 					}
 				}
