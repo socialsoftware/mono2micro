@@ -2,6 +2,7 @@ import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
 import { DENDROGRAM_URL } from '../../constants/constants';
 import { Button, Form, Card, CardDeck, Breadcrumb, BreadcrumbItem, Table } from 'react-bootstrap';
+import BootstrapTable from 'react-bootstrap-table-next';
 
 var HttpStatus = require('http-status-codes');
 
@@ -89,16 +90,42 @@ export class DendrogramCut extends React.Component {
             </Card>
         );
 
-        const rows = this.state.graphs.map(graph => 
-            <tr key={graph.name}>
-                <td>{graph.name}</td>
-                <td>{graph.cutValue}</td>
-                <td>{graph.clusters.length}</td>
-                <td>{graph.clusters.filter(c => c.entities.length === 1).length}</td>
-                <td>{Math.max(...graph.clusters.map(c => c.entities.length))}</td>
-                <td>{graph.silhouetteScore}</td>
-            </tr>
-        );
+        const rows = this.state.graphs.map(graph => {
+            return {
+                graph: graph.name,
+                cut: graph.cutValue,
+                clusters: graph.clusters.length,
+                singleton: graph.clusters.filter(c => c.entities.length === 1).length,
+                max_cluster_size: Math.max(...graph.clusters.map(c => c.entities.length)),
+                ss: graph.silhouetteScore
+            } 
+        });
+
+        const columns = [{
+            dataField: 'graph',
+            text: 'Graph',
+            sort: true
+        }, {
+            dataField: 'cut',
+            text: 'Cut',
+            sort: true
+        }, {
+            dataField: 'clusters',
+            text: 'Number of Retrieved Clusters',
+            sort: true
+        }, {
+            dataField: 'singleton',
+            text: 'Number of Singleton Clusters',
+            sort: true
+        }, {
+            dataField: 'max_cluster_size',
+            text: 'Maximum Cluster Size',
+            sort: true
+        }, {
+            dataField: 'ss',
+            text: 'Silhouette Score',
+            sort: true
+        }];
 
         return (
             <div>
@@ -122,21 +149,9 @@ export class DendrogramCut extends React.Component {
                     {graphs}
                 </CardDeck>
 
-                <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                            <th>Graph</th>
-                            <th>Cut</th>
-                            <th>Number of Retrieved Clusters</th>
-                            <th>Number of Singleton Clusters</th>
-                            <th>Maximum Cluster Size</th>
-                            <th>Silhouette Score</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rows}
-                    </tbody>
-                </Table>
+                {this.state.graphs.length > 0 &&
+                    <BootstrapTable bootstrap4 keyField='graph' data={ rows } columns={ columns } />
+                }
             </div>
         );
     };

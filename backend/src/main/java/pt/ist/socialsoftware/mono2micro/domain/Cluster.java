@@ -7,6 +7,7 @@ public class Cluster {
 	private String name;
 	private List<Entity> entities;
 	private float complexity;
+	private float complexityRW;
 	private float cohesion;
 	private float coupling;
 
@@ -41,6 +42,14 @@ public class Cluster {
 
 	public void setComplexity(float complexity) {
 		this.complexity = complexity;
+	}
+
+	public float getComplexityRW() {
+		return complexityRW;
+	}
+
+	public void setComplexityRW(float complexityRW) {
+		this.complexityRW = complexityRW;
 	}
 
 	public float getCohesion() {
@@ -86,6 +95,7 @@ public class Cluster {
 		for (Controller controller : controllers) {
 			boolean localAccess = false;
 			boolean globalAccess = false;
+			int accessAmount = 0;
 			for (Entity controllerEntity : controller.getEntities()) {
 				if (this.containsEntity(controllerEntity.getName()))
 					localAccess = true;

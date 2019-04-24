@@ -5,7 +5,7 @@ import { VisNetwork } from '../util/VisNetwork';
 import { ModalMessage } from '../util/ModalMessage';
 import { DataSet } from 'vis';
 import { views, types } from './ViewsMenu';
-import { Table } from 'react-bootstrap';
+import BootstrapTable from 'react-bootstrap-table-next';
 
 export const clusterViewHelp = (<div>
     Hover or double click cluster to see entities inside.<br />
@@ -77,6 +77,7 @@ export class ClusterView extends React.Component {
          this.state = {
             visGraph: {},
             clusters: [],
+            clusterControllers: {},
             showMenu: false,
             selectedCluster: {},
             mergeWithCluster: {},
@@ -113,6 +114,7 @@ export class ClusterView extends React.Component {
                 this.setState({
                     visGraph: visGraph,
                     clusters: response2.data.clusters,
+                    clusterControllers: response1.data,
                     showMenu: false,
                     selectedCluster: {},
                     mergeWithCluster: {},
@@ -134,7 +136,13 @@ export class ClusterView extends React.Component {
                 let cluster2Controllers = clusterControllers[clusters[j].name].map(c => c.name);
                 let controllersInCommon = cluster1Controllers.filter(value => -1 !== cluster2Controllers.indexOf(value))
 
+                let couplingC1C2 = controllersInCommon.length / cluster1Controllers.length;
+                let couplingC2C1 = controllersInCommon.length / cluster2Controllers.length;
+
                 let edgeTitle = clusters[i].name + " -- " + clusters[j].name + "<br>";
+                edgeTitle += "Coupling: " + couplingC1C2 + "<br>";
+                edgeTitle += clusters[j].name + " -- " + clusters[i].name + "<br>";
+                edgeTitle += "Coupling: " + couplingC2C1 + "<br>";
                 let edgeLength = (1/controllersInCommon.length)*edgeLengthFactor;
                 if (edgeLength < 100) edgeLength = 300;
                 else if (edgeLength > 500) edgeLength = 500;
@@ -313,17 +321,49 @@ export class ClusterView extends React.Component {
     }
 
     render() {
-        const rows = this.state.clusters.map(c => 
-            <tr key={c.name}>
-                <td>{c.name}</td>
-                <td>{c.complexity}</td>
-                <td>{c.cohesion}</td>
-                <td>{c.coupling}</td>
-            </tr>
-        );
+        const rows = this.state.clusters.map(cluster => {
+            return {
+                cluster: cluster.name,
+                controllers: this.state.clusterControllers[cluster.name].length,
+                entities: cluster.entities.length,
+                complexity: cluster.complexity,
+                complexityrw: cluster.complexityRW,
+                cohesion: cluster.cohesion,
+                coupling: cluster.coupling
+            } 
+        });
+
+        const columns = [{
+            dataField: 'cluster',
+            text: 'Cluster'
+        }, {
+            dataField: 'controllers',
+            text: 'Controllers',
+            sort: true
+        }, {
+            dataField: 'entities',
+            text: 'Entities',
+            sort: true
+        }, {
+            dataField: 'complexity',
+            text: 'Complexity',
+            sort: true
+        }, {
+            dataField: 'complexityrw',
+            text: 'Complexity RW',
+            sort: true
+        }, {
+            dataField: 'cohesion',
+            text: 'Cohesion',
+            sort: true
+        }, {
+            dataField: 'coupling',
+            text: 'Coupling',
+            sort: true
+        }];
 
         return (
-            <div>                
+            <div>
                 {this.state.error && 
                 <ModalMessage
                     title='Error Message' 
@@ -352,19 +392,7 @@ export class ClusterView extends React.Component {
                         view={views.CLUSTERS} />
                 </div>
 
-                <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                            <th>Cluster</th>
-                            <th>Complexity</th>
-                            <th>Cohesion</th>
-                            <th>Coupling</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rows}
-                    </tbody>
-                </Table>
+                <BootstrapTable bootstrap4 keyField='cluster' data={ rows } columns={ columns } />
             </div>
         );
     }

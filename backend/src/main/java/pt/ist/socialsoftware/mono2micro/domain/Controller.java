@@ -6,6 +6,7 @@ import java.util.List;
 public class Controller {
 	private String name;
 	private List<Entity> entities;
+	private List<Pair<Entity,String>> entitiesRW;
 
 	public Controller() {
 
@@ -13,7 +14,8 @@ public class Controller {
 
 	public Controller(String name) {
         this.name = name;
-        this.entities = new ArrayList<>();
+		this.entities = new ArrayList<>();
+		this.entitiesRW = new ArrayList<>();
 	}
 
 	public String getName() {
@@ -22,6 +24,19 @@ public class Controller {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public List<Pair<Entity,String>> getEntitiesRW() {
+		return this.entitiesRW;
+	}
+
+	public void setEntitiesRW(List<Pair<Entity,String>> entitiesRW) {
+		this.entitiesRW = entitiesRW;
+	}
+
+	public void addEntityRW(String entity, String mode) {
+		Pair<Entity,String> newEntity = new Pair<>(new Entity(entity), mode);
+		this.entitiesRW.add(newEntity);
 	}
 
 	public List<Entity> getEntities() {

@@ -147,7 +147,7 @@ public class Mono2MicroController {
 
 						if (!dend.containsController(controller))
 							dend.addController(new Controller(controller));
-						if (!dend.getController(controller).getEntities().contains(entity))
+						if (!dend.getController(controller).containsEntity(entity))
 							dend.getController(controller).addEntity(entity);
 					}
 				} else {
@@ -161,8 +161,10 @@ public class Mono2MicroController {
 
 						if (!dend.containsController(controller))
 							dend.addController(new Controller(controller));
-						if (!dend.getController(controller).getEntities().contains(entity))
+						if (!dend.getController(controller).containsEntity(entity)) {
 							dend.getController(controller).addEntity(entity);
+							dend.getController(controller).addEntityRW(entity, modes.join(""));
+						}
 					}
 				}
 			}
@@ -251,9 +253,9 @@ public class Mono2MicroController {
 				while (dend.getGraphsNames().contains("Graph_" + cutValue + "(" + i + ")")) {
 					i++;
 				}
-				graph = new Graph("Graph_" + cutValue + "(" + i + ")", cutValue, silhouetteScore);
+				graph = new Graph("Graph_" + cutValue + "(" + i + ")", cutValue, silhouetteScore, dendrogramName);
 			} else {
-				graph = new Graph("Graph_" + cutValue, cutValue, silhouetteScore);
+				graph = new Graph("Graph_" + cutValue, cutValue, silhouetteScore, dendrogramName);
 			}
 
 			

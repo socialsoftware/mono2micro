@@ -4,7 +4,8 @@ import { RepositoryService } from './../../services/RepositoryService';
 import { VisNetwork } from '../util/VisNetwork';
 import { DataSet } from 'vis';
 import { views, types } from './ViewsMenu';
-import { Table } from 'react-bootstrap';
+import BootstrapTable from 'react-bootstrap-table-next';
+
 
 export const transactionViewHelp = (<div>
     Hover or double click cluster to see entities inside.<br />
@@ -69,10 +70,12 @@ export class TransactionView extends React.Component {
         this.state = {
             visGraph: {},
             graph: {},
+            clusters: [],
             controller: {},
             controllers: [],
             controllerClusters: [],
             controllersComplexity: {},
+            controllersComplexityRW: {},
             showGraph: false
         }
 
@@ -98,7 +101,9 @@ export class TransactionView extends React.Component {
         service.getGraph(this.props.dendrogramName, this.props.graphName).then(response => {
             this.setState({
                 graph: response.data,
-                controllersComplexity: response.data.controllersComplexity
+                clusters: response.data.clusters,
+                controllersComplexity: response.data.controllersComplexity,
+                controllersComplexityRW: response.data.controllersComplexityRW
             });
         });
     }
@@ -149,12 +154,32 @@ export class TransactionView extends React.Component {
     }
 
     render() {
-        const rows = Object.keys(this.state.controllersComplexity).sort().map(c => 
-            <tr key={c}>
-                <td>{c}</td>
-                <td>{this.state.controllersComplexity[c]}</td>
-            </tr>
-        );
+        const rows = Object.keys(this.state.controllersComplexity).sort().map(controller => {
+            return {
+                controller: controller,
+                clusters: this.state.controllerClusters[controller] === undefined ? 0 : this.state.controllerClusters[controller].length,
+                complexity: this.state.controllersComplexity[controller],
+                complexityrw: this.state.controllersComplexityRW[controller]
+            } 
+        });
+
+        const columns = [{
+            dataField: 'controller',
+            text: 'Controller',
+            sort: true
+        }, {
+            dataField: 'clusters',
+            text: '# of Clusters Accessed',
+            sort: true
+        }, {
+            dataField: 'complexity',
+            text: 'Complexity',
+            sort: true
+        }, {
+            dataField: 'complexityrw',
+            text: 'Complexity RW',
+            sort: true
+        }];
 
         let controllerClustersMap = Object.keys(this.state.controllerClusters).map(key => this.state.controllerClusters[key].length);
         let averageClustersAccessed = controllerClustersMap.reduce((a,b) => a + b, 0) / controllerClustersMap.length;
@@ -176,22 +201,13 @@ export class TransactionView extends React.Component {
                 </div>
 
                 <div>
+                    Number of Clusters : {this.state.clusters.length}< br/>
                     Number of Controllers that access a single Cluster : {Object.keys(this.state.controllerClusters).filter(key => this.state.controllerClusters[key].length === 1).length}< br/>
                     Maximum number of Clusters accessed by a single Controller : {Math.max(...Object.keys(this.state.controllerClusters).map(key => this.state.controllerClusters[key].length))}< br/>
                     Average Number of Clusters accessed (Average number of microservices accessed during a transaction) : {averageClustersAccessed}
                 </div>
 
-                <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                            <th>Controller</th>
-                            <th>Complexity</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rows}
-                    </tbody>
-                </Table>
+                <BootstrapTable bootstrap4 keyField='controller' data={ rows } columns={ columns } />
             </div>
         );
     }

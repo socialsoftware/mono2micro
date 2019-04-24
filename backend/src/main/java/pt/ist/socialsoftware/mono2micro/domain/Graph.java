@@ -7,28 +7,73 @@ import java.util.Map;
 
 public class Graph {
 	private String name;
+	private String dendrogramName;
 	private String cutValue;
 	private float silhouetteScore;
 	private List<Cluster> clusters;
 	private Map<String,Float> controllersComplexity;
+	private Map<String,Float> controllersComplexityRW;
 
 	public Graph() {
 
 	}
 
-	public Graph(String name, String cutValue, float silhouetteScore) {
+	public Graph(String name, String cutValue, float silhouetteScore, String dendrogramName) {
 		this.name = name;
 		this.cutValue = cutValue;
 		this.silhouetteScore = silhouetteScore;
+		this.dendrogramName = dendrogramName;
 		this.clusters = new ArrayList<>();
 		this.controllersComplexity = new HashMap<>();
+		this.controllersComplexityRW = new HashMap<>();
 	}
 
-	public void calculateMetrics(List<Controller> controllers) {
+	public void calculateMetrics(List<Controller> controllers, Map<String,List<Cluster>> controllerClusters) {
 		for (int i = 0; i < clusters.size(); i++) {
 			Cluster c1 = this.clusters.get(i);
-			c1.calculateComplexity(controllers);
+			//c1.calculateComplexity(controllers);
 			c1.calculateCohesion(controllers);
+
+			float complexity = 0;
+			float complexityRW = 0;
+			int totalControllers = 0;
+			for (Controller controller : controllers) {
+				for (Cluster c : controllerClusters.get(controller.getName())) {
+					if (c.getName().equals(c1.getName())) {
+						if (controllerClusters.get(controller.getName()).size() > 1)
+							totalControllers++;
+						
+						float complexityRWaux = 0;
+						for (Cluster c2 : controllerClusters.get(controller.getName())) {
+							if (!c2.getName().equals(c1.getName())) {
+								boolean write = false;
+								for (Pair<Entity,String> pair : controller.getEntitiesRW()) {
+									if (c2.containsEntity(pair.getFirst().getName())) {
+										if (pair.getSecond().contains("W")) {
+											write = true;
+										}
+									}
+								}
+								if (write)
+									complexityRWaux += 1.0;
+								else
+									complexityRWaux += 0.5;
+							}
+						}
+						
+						complexityRW += complexityRWaux / (this.clusters.size() - 1);
+
+						complexity += ((float) controllerClusters.get(controller.getName()).size() - 1) / (this.clusters.size() - 1);
+						break;
+					}
+				}
+			}
+			complexity /= totalControllers;
+			complexityRW /= totalControllers;
+			c1.setComplexity(complexity);
+			c1.setComplexityRW(complexityRW);
+
+
 			
 			float coupling = 0;
 			for (int j = 0; j < clusters.size(); j++) {
@@ -60,19 +105,37 @@ public class Graph {
 		}
 
 		this.controllersComplexity = new HashMap<>();
+		this.controllersComplexityRW = new HashMap<>();
 		for (int i = 0; i < controllers.size(); i++) {
 			Controller controller = controllers.get(i);
 			float complexity = 0;
+			float complexityRW = 0;
 			for (Cluster cluster : this.clusters) {
 				for (Entity entity : cluster.getEntities()) {
 					if (controller.containsEntity(entity.getName())) {
 						complexity++;
+
+						boolean write = false;
+						for (Pair<Entity,String> pair : controller.getEntitiesRW()) {
+							if (cluster.containsEntity(pair.getFirst().getName())) {
+								if (pair.getSecond().contains("W"))
+									write = true;
+							}
+						}
+
+						if (write)
+							complexityRW += 1;
+						else
+							complexityRW += 0.5;
+
 						break;
 					}
 				}
 			}
 			complexity /= this.clusters.size();
+			complexityRW /= (float)this.clusters.size();
 			this.controllersComplexity.put(controller.getName(), complexity);
+			this.controllersComplexityRW.put(controller.getName(), complexityRW);
 		}
 	}
 
@@ -82,6 +145,14 @@ public class Graph {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getDendrogramName() {
+		return this.dendrogramName;
+	}
+
+	public void setDendrogramName(String dendrogramName) {
+		this.dendrogramName = dendrogramName;
 	}
 
 	public String getCutValue() {
@@ -102,6 +173,10 @@ public class Graph {
 
 	public Map<String,Float> getControllersComplexity() {
 		return this.controllersComplexity;
+	}
+
+	public Map<String,Float> getControllersComplexityRW() {
+		return this.controllersComplexityRW;
 	}
 
 	public List<Cluster> getClusters() {

@@ -118,7 +118,7 @@ export class Views extends React.Component {
             </Popover>
         );
 
-        const showGraphName = (<h3>{this.state.graphName}</h3>);
+        const showGraphName = (<span><span style={{fontSize: '30px', fontWeight: 'bold'}}>{this.state.graphName}</span><span style={{fontSize: '12px', fontWeight: 'lighter'}}>(double click to rename)</span></span>);
         
         const editGraphName = (
             <ButtonToolbar>

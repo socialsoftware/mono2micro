@@ -91,6 +91,7 @@ export class EntityView extends React.Component {
         service.getGraph(this.props.dendrogramName, this.props.graphName).then(response1 => {
             service.getControllers(this.props.dendrogramName, this.props.graphName).then(response2 => {
                 service.getClusterControllers(this.props.dendrogramName, this.props.graphName).then(response3 => {
+                    console.log(response2.data);
                     this.setState({
                         graph: response1.data,
                         clusters: response1.data.clusters,

@@ -155,7 +155,7 @@ public class Dendrogram {
 	}
 
 	public void calculateMetrics(String graphName) {
-		getGraph(graphName).calculateMetrics(this.controllers);
+		getGraph(graphName).calculateMetrics(this.controllers, getControllerClusters(graphName));
 	}
 
 }
