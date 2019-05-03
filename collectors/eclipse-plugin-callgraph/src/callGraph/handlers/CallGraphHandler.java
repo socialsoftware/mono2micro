@@ -56,9 +56,10 @@ import org.json.JSONObject;
 public class CallGraphHandler extends AbstractHandler {
 
 	JSONObject callgraph;
-	List<String> entitiesList;
-	Set<IType> controllersSet;
-	Set<String> abstractEntitiesSet;
+	JSONObject callgraph2;
+	List<String> allEntities;
+	Set<IType> controllers;
+	Set<String> abstractEntities;
 	ASTParser parser;
 	Map<String,List<String>> subclasses;
 
@@ -79,18 +80,21 @@ public class CallGraphHandler extends AbstractHandler {
 			String projectName = inputDialog.getValue();
 			long startTime = System.currentTimeMillis();
 			IProject project = getProject(projectName);
+			
+			if (project == null) return null;
 
 			subclasses = new HashMap<>();
 			callgraph = new JSONObject();
-			entitiesList = new ArrayList<String>();
-			controllersSet = new HashSet<IType>();
-			abstractEntitiesSet = new HashSet<String>();
+			callgraph2 = new JSONObject();
+			allEntities = new ArrayList<String>();
+			controllers = new HashSet<IType>();
+			abstractEntities = new HashSet<String>();
 			parser = ASTParser.newParser(AST.JLS11);
 			parser.setKind(ASTParser.K_COMPILATION_UNIT);
 			
 			collectControllersAndEntities(project);
 			
-			for (IType controller : controllersSet) {
+			for (IType controller : controllers) {
 				processController(controller);
 			}
 			
@@ -108,7 +112,7 @@ public class CallGraphHandler extends AbstractHandler {
 			//file store
 			if (filepath != null) {
 				try (FileWriter file = new FileWriter(filepath)) {
-					file.write(callgraph.toString(4));
+					file.write(callgraph2.toString(4));
 				} catch (IOException | JSONException e) {
 					e.printStackTrace();
 				}
@@ -129,8 +133,8 @@ public class CallGraphHandler extends AbstractHandler {
 		}
 		return null;
 	}
-	
-	
+
+
 	private void collectControllersAndEntities(IProject project) {
 		try {
 			if (project.isNatureEnabled("org.eclipse.jdt.core.javanature")) {
@@ -147,11 +151,11 @@ public class CallGraphHandler extends AbstractHandler {
 							for (IType type : unit.getTypes()) {
 
 								if (type.getAnnotation("Controller").exists()) {
-									controllersSet.add(type);
-									entitiesList.add(type.getElementName());
+									controllers.add(type);
+									allEntities.add(type.getElementName());
 								} else if (!type.getElementName().endsWith("_Base")) {
 									if (Flags.isAbstract(type.getFlags())) {
-										abstractEntitiesSet.add(type.getElementName());
+										abstractEntities.add(type.getElementName());
 										
 										ITypeHierarchy th= type.newTypeHierarchy(null);
 										ArrayList<String> subclassesTemp = new ArrayList<>();
@@ -162,13 +166,13 @@ public class CallGraphHandler extends AbstractHandler {
 										}
 										subclasses.put(type.getElementName(), subclassesTemp);
 									}
-									entitiesList.add(type.getElementName());
+									allEntities.add(type.getElementName());
 								}
 							}
 						}
 					}
 				}
-				Collections.sort(entitiesList, (string1, string2) -> Integer.compare(string2.length(), string1.length()));
+				Collections.sort(allEntities, (string1, string2) -> Integer.compare(string2.length(), string1.length()));
 			}
 		} catch (JavaModelException e) {
 			e.printStackTrace();
@@ -189,6 +193,7 @@ public class CallGraphHandler extends AbstractHandler {
 				String controllerFullName = controllerMethod.getParent().getElementName() + "." + controllerMethod.getElementName();
 				System.out.println("Processing Controller: " + controllerFullName);
 				JSONObject entities = new JSONObject();
+				JSONArray entities2 = new JSONArray();
 				ArrayList<IMethod> methodPool = new ArrayList<>();
 				methodPool.add(controllerMethod);
 					
@@ -201,12 +206,12 @@ public class CallGraphHandler extends AbstractHandler {
 							
 							String className = callee.getParent().getElementName();
 							className = className.substring(0, className.length()-5);
-							if (abstractEntitiesSet.contains(className)) {
+							if (abstractEntities.contains(className)) {
 								IMethod caller = methodPool.get(i);
 								parser.setSource(methodPool.get(i).getCompilationUnit());
 						        parser.setResolveBindings(true);
 						        CompilationUnit cu = (CompilationUnit) parser.createAST(null);
-						       
+						        
 						        cu.accept(new ASTVisitor() {
 						        	boolean foundMethod = false;
 						        	
@@ -228,14 +233,14 @@ public class CallGraphHandler extends AbstractHandler {
 													String className = callee.getParent().getElementName();
 													className = className.substring(0, className.length()-5);
 													
-													
 													if (!node.getExpression().resolveTypeBinding().getName().equals(className)) {
-														registerBaseClass(callee, entities, node.getExpression().resolveTypeBinding().getName());
+														registerBaseClass(callee, entities, node.getExpression().resolveTypeBinding().getName(), entities2);
 													} else {
-														registerBaseClass(callee, entities, "");
+														
+														registerBaseClass(callee, entities, "", entities2);
 													}
 												} catch (Exception e) {
-													registerBaseClass(callee, entities, "");
+													registerBaseClass(callee, entities, "", entities2);
 												}
 											}
 										}
@@ -245,12 +250,12 @@ public class CallGraphHandler extends AbstractHandler {
 						 
 								});
 							} else {
-								registerBaseClass(callee, entities, "");
+								registerBaseClass(callee, entities, "", entities2);
 							}
 							
 						} else if (callee.getElementName().equals("getDomainObject")) {
-							registerDomainObject(methodPool.get(i), entities);
-						} else if (entitiesList.contains(callee.getParent().getElementName())) {
+							registerDomainObject(methodPool.get(i), entities, entities2);
+						} else if (allEntities.contains(callee.getParent().getElementName())) {
 							boolean similar = false;
 							for (IMethod method : methodPool) {
 								if (method.isSimilar(callee) && method.getParent().getElementName().equals(callee.getParent().getElementName())) {
@@ -270,7 +275,7 @@ public class CallGraphHandler extends AbstractHandler {
 				Iterator<String> entitiesKeys = entities.keys();
 				while (entitiesKeys.hasNext()) {
 					String entity = entitiesKeys.next();
-					if (abstractEntitiesSet.contains(entity)) {
+					if (abstractEntities.contains(entity)) {
 						for (String subclass : subclasses.get(entity)) {
 							try {
 								entities.get(subclass);
@@ -291,9 +296,42 @@ public class CallGraphHandler extends AbstractHandler {
 					}
 				}
 				
+				JSONArray newEntities2 = new JSONArray();
+				for (int e = 0; e < entities2.length(); e++) {
+					try {
+						JSONArray entityArray = (JSONArray) entities2.get(e);
+						String entity = (String) entityArray.get(0);
+						String mode = (String) entityArray.get(1);
+						
+						
+						if (abstractEntities.contains(entity)) {
+							for (String subclass : subclasses.get(entity)) {
+								JSONArray newEntity = new JSONArray();
+								newEntity.put(subclass);
+								newEntity.put(mode);
+								newEntities2.put(newEntity);
+							}
+						} else {
+							JSONArray newEntity = new JSONArray();
+							newEntity.put(entity);
+							newEntity.put(mode);
+							newEntities2.put(newEntity);
+						}
+					} catch (JSONException e1) {
+						e1.printStackTrace();
+					}
+				}
+				
 				if (newEntities.length() > 0) {
 					try {
 						callgraph.put(controllerFullName, newEntities);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
+				if (newEntities2.length() > 0) {
+					try {
+						callgraph2.put(controllerFullName, newEntities2);
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
@@ -305,7 +343,7 @@ public class CallGraphHandler extends AbstractHandler {
 	}
 
 
-	private void registerDomainObject(IMethod caller, JSONObject entities) {
+	private void registerDomainObject(IMethod caller, JSONObject entities, JSONArray entities2) {
 		
 		String mode = "R";
 
@@ -319,7 +357,7 @@ public class CallGraphHandler extends AbstractHandler {
         	public boolean visit(MethodDeclaration node) {
 				if (node.getName().toString().equals(caller.getElementName())) {
 					foundMethod = true;
-				} else { 
+				} else {
 					foundMethod = false;
 				}
 				return true;
@@ -337,7 +375,7 @@ public class CallGraphHandler extends AbstractHandler {
 						}
 						
 						try {
-							if (entitiesList.contains(resolvedType)) {
+							if (allEntities.contains(resolvedType)) {
 								if (entities.has(resolvedType)) {
 		        					JSONArray entityModes = entities.getJSONArray(resolvedType);
 		        					if(!entityModes.join(":").contains(mode)) {
@@ -348,6 +386,10 @@ public class CallGraphHandler extends AbstractHandler {
 		        					entityModes.put(mode);
 		        					entities.put(resolvedType, entityModes);
 		        				}
+								JSONArray entityAccess = new JSONArray();
+								entityAccess.put(resolvedType);
+								entityAccess.put(mode);
+								entities2.put(entityAccess);
 							}
 						} catch (JSONException e) {
 		        			e.printStackTrace();
@@ -360,7 +402,8 @@ public class CallGraphHandler extends AbstractHandler {
 	}
 
 
-	private void registerBaseClass(IMethod method, JSONObject entities, String actualClass) {
+	private void registerBaseClass(IMethod method, JSONObject entities, String actualClass, JSONArray entities2) {
+		
 		String className = method.getParent().getElementName();
 		if (actualClass.equals(""))
 			className = className.substring(0, className.length()-5);
@@ -378,7 +421,7 @@ public class CallGraphHandler extends AbstractHandler {
 			mode = "W";
 		
 		try {
-			if (entitiesList.contains(className)) {
+			if (allEntities.contains(className)) {
 				if (entities.has(className)) {
 					JSONArray entityModes = entities.getJSONArray(className);
 					if(!entityModes.join(":").contains(mode)) {
@@ -389,13 +432,17 @@ public class CallGraphHandler extends AbstractHandler {
 					entityModes.put(mode);
 					entities.put(className, entityModes);
 				}
+				JSONArray entityAccess = new JSONArray();
+				entityAccess.put(className);
+				entityAccess.put(mode);
+				if (!mode.equals("")) entities2.put(entityAccess);
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		
 		try {
-			for (String entityName : entitiesList) {
+			for (String entityName : allEntities) {
 				if (method.getSignature().contains(entityName)) {
 					if (entities.has(entityName)) {
 						JSONArray entityModes = entities.getJSONArray(entityName);
@@ -407,6 +454,10 @@ public class CallGraphHandler extends AbstractHandler {
 						entityModes.put(mode);
 						entities.put(entityName, entityModes);
 					}
+					JSONArray entityAccess = new JSONArray();
+					entityAccess.put(entityName);
+					entityAccess.put(mode);
+					if (!mode.equals("")) entities2.put(entityAccess);
 					break;
 				}
 			}

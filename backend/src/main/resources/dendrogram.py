@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 import matplotlib.pylab as plab
 import sys
 import json
+import time
+
+start_time = time.time()
 
 datafilePath = str(sys.argv[1])
 dendrogramName = str(sys.argv[2])
@@ -15,14 +18,21 @@ data_dictionary = {}
 
 def processDatafile(data_dictionary, datafile):
     for controller in datafile:
-        for entity in datafile[controller]:
-            modes = []
-            if isinstance(datafile[controller], dict):
-                modes = datafile[controller][entity] 
+        for entityArray in datafile[controller]:
+            entity = entityArray[0]
+            mode = entityArray[1]
             if entity in data_dictionary:
-                data_dictionary[entity] += [[controller, modes]]
+                if controller in [c[0] for c in data_dictionary[entity]]:
+                    for i in range(len(data_dictionary[entity])):
+                        if data_dictionary[entity][i][0] == controller:
+                            if mode not in data_dictionary[entity][i][1]:
+                                data_dictionary[entity][i][1] += [mode]
+                            break
+                else:
+                    data_dictionary[entity] += [[controller, [mode]]]
             else:
-                data_dictionary[entity] = [[controller, modes]]
+                data_dictionary[entity] = [[controller, [mode]]]
+                 
 
 def createSimilarityMatrix(data_dictionary, base_classes, accessMetricWeight, readWriteMetricWeight):
     similarity_matrix = np.zeros((len(data_dictionary.keys()), len(data_dictionary.keys())))
@@ -65,3 +75,6 @@ hierarc = hierarchy.linkage(y=similarityMatrix, method=linkageType)
 dend = hierarchy.dendrogram(hierarc, labels=base_classes, distance_sort='descending')
 plab.savefig(datafilePath + dendrogramName + ".png", format="png", bbox_inches='tight')
 #plt.show()
+
+elapsed_time = time.time() - start_time
+print(str(elapsed_time))

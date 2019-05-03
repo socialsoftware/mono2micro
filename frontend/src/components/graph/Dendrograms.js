@@ -18,8 +18,8 @@ const BreadCrumbs = () => {
 export class Dendrograms extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { 
-            dendrogramNames: [],
+        this.state = {
+            dendrograms: [],
             dendrogramGraphs: []
         };
     }
@@ -32,22 +32,9 @@ export class Dendrograms extends React.Component {
         const service = new RepositoryService();
         service.getDendrograms().then(response => {
             this.setState({
-                dendrogramNames: response.data
+                dendrograms: response.data,
+                dendrogramGraphs: response.data.map(d => d.graphs).flat()
             });
-
-            var i;
-            this.setState({
-                dendrogramGraphs: []
-            });
-            for (i = 0; i < response.data.length; i++) { 
-                service.getGraphs(response.data[i]).then(response2 => {
-                    if (response2.data.length > 0)
-                        this.state.dendrogramGraphs.push(response2.data);
-                    this.setState({
-                        dendrogramGraphs: this.state.dendrogramGraphs
-                    });
-                });
-            }
         });
     }
 
@@ -59,13 +46,20 @@ export class Dendrograms extends React.Component {
     }
 
     render() {
-        const dendrograms = this.state.dendrogramNames.map( name =>
-            <Card key={name} style={{ width: '18rem' }}>
-                <Card.Img variant="top" src={DENDROGRAM_URL + "?dendrogramName=" + name + "&&" + new Date().getTime()} />
+        const dendrograms = this.state.dendrograms.map( d =>
+            <Card key={d.name} style={{ width: '18rem' }}>
+                <Card.Img variant="top" src={DENDROGRAM_URL + "?dendrogramName=" + d.name + "&&" + new Date().getTime()} />
                 <Card.Body>
-                    <Card.Title>{name}</Card.Title>
-                    <Button href={`/dendrogram/${name}`} className="mr-4" variant="primary">See Dendrogram</Button>
-                    <Button onClick={() => this.handleDeleteDendrogram(name)} variant="danger">Delete</Button>
+                    <Card.Title>
+                        {d.name}
+                    </Card.Title>
+                    <Card.Text>
+                        Linkage Type: {d.linkageType}< br/>
+                        Undistinct Access Metric Weight: {d.accessMetricWeight}< br/>
+	                    Read/Write Access Metric Weight: {d.readWriteMetricWeight}
+                    </Card.Text>
+                    <Button href={`/dendrogram/${d.name}`} className="mr-4" variant="primary">See Dendrogram</Button>
+                    <Button onClick={() => this.handleDeleteDendrogram(d.name)} variant="danger">Delete</Button>
                 </Card.Body>
             </Card>
         );

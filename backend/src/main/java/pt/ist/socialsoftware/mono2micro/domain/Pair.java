@@ -21,4 +21,8 @@ public class Pair<F, S> {
     public S getSecond() {
         return this.second;
     }
+
+    public void setSecond(S second) {
+        this.second = second;
+    }
 }

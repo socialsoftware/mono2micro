@@ -62,6 +62,7 @@ export class DendrogramCreate extends React.Component {
                 this.setState({
                     isUploaded: "Upload completed successfully."
                 });
+                this.props.history.push('/dendrograms');
             } else {
                 this.setState({
                     isUploaded: "Upload failed."
@@ -69,10 +70,15 @@ export class DendrogramCreate extends React.Component {
             }
         })
         .catch(error => {
-            console.log(error);
-            this.setState({
-                isUploaded: "Upload failed."
-            });
+            if (error.response !== undefined && error.response.status === HttpStatus.UNAUTHORIZED) {
+                this.setState({
+                    isUploaded: "Upload failed. Dendrogram Name already exists."
+                });
+            } else {
+                this.setState({
+                    isUploaded: "Upload failed."
+                });
+            }
         });
     }
 
@@ -148,7 +154,7 @@ export class DendrogramCreate extends React.Component {
                         onChange={this.handleChangeReadWriteMetricWeight}/>
                 </InputGroup>
                 
-                <Button variant="primary" type="submit" disabled={this.state.dendrogramName === "" || this.state.linkageType === "" || parseFloat(this.state.accessMetricWeight) + parseFloat(this.state.readWriteMetricWeight) !== 1 || this.state.selectedFile === null}>
+                <Button variant="primary" type="submit" disabled={this.state.isUploaded === "Uploading..." || this.state.dendrogramName === "" || this.state.linkageType === "" || parseFloat(this.state.accessMetricWeight) + parseFloat(this.state.readWriteMetricWeight) !== 1 || this.state.selectedFile === null}>
                     Submit
                 </Button>
                 <br />

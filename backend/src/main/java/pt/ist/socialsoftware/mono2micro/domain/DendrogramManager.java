@@ -35,6 +35,16 @@ public class DendrogramManager {
 		return null;
 	}
 
+	public List<Dendrogram> getDendrograms() {
+		List<Dendrogram> dendrograms = new ArrayList<>();
+		File file = new File(dendrogramsFolder);
+		for (String filename : file.list()) {
+			if (filename.endsWith(".json"))
+				dendrograms.add(getDendrogram(filename.substring(0, filename.length()-5)));
+		}
+        return dendrograms;
+	}
+
 	public List<String> getDendrogramNames() {
 		List<String> dendrogramNames = new ArrayList<>();
 		File file = new File(dendrogramsFolder);

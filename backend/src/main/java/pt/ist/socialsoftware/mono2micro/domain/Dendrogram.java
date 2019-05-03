@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Dendrogram {
+	private String name;
 	private List<Graph> graphs = new ArrayList<>();
 	private List<Controller> controllers = new ArrayList<>();
 	private String linkageType;
@@ -13,6 +14,18 @@ public class Dendrogram {
 	private String readWriteMetricWeight;
 
 	public Dendrogram() {
+	}
+
+	public Dendrogram(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public void setLinkageType(String linkageType) {

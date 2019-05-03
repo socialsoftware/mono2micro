@@ -40,6 +40,9 @@ export class DendrogramCut extends React.Component {
     handleCutSubmit(event) {
         event.preventDefault();
         const service = new RepositoryService();
+        this.setState({
+            cutSuccess: "Processing..."
+        });
         service.cutDendrogram(this.state.dendrogramName, this.state.cutValue).then(response => {
             if (response.status === HttpStatus.OK) {
                 this.loadGraphs();
@@ -53,7 +56,6 @@ export class DendrogramCut extends React.Component {
             }
         })
         .catch(error => {
-            console.log(error);
             this.setState({
                 cutSuccess: "Failed to cut dendrogram."
             });
@@ -135,7 +137,7 @@ export class DendrogramCut extends React.Component {
                     <Form.Group controlId="formDendrogramCut">
                         <Form.Control type="number" value={this.state.cutValue} onChange={this.handleCutValueChange} />
                     </Form.Group>
-                    <Button variant="primary" type="submit">
+                    <Button variant="primary" type="submit" disabled={this.state.cutSuccess === "Processing..."}>
                         Submit
                     </Button>
                 </Form>

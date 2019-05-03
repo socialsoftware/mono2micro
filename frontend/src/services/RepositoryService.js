@@ -9,9 +9,13 @@ export class RepositoryService {
 
         this.axios = axios.create({
             baseURL: URL,
-            timeout: 10000,
+            timeout: 30000,
             headers: headers,
         });
+    }
+
+    getDendrogramNames() {
+        return this.axios.get("/dendrogramNames");
     }
 
     getDendrograms() {

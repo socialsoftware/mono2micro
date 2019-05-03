@@ -48,11 +48,18 @@ public class Mono2MicroController {
 
 	private DendrogramManager dendrogramManager = new DendrogramManager();
 
-	@RequestMapping(value = "/dendrograms", method = RequestMethod.GET)
-	public ResponseEntity<List<String>> getDendrograms() {
-		logger.debug("getDendrograms");
+	@RequestMapping(value = "/dendrogramNames", method = RequestMethod.GET)
+	public ResponseEntity<List<String>> getDendrogramNames() {
+		logger.debug("getDendrogramNames");
 
 		return new ResponseEntity<>(dendrogramManager.getDendrogramNames(), HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/dendrograms", method = RequestMethod.GET)
+	public ResponseEntity<List<Dendrogram>> getDendrograms() {
+		logger.debug("getDendrograms");
+
+		return new ResponseEntity<>(dendrogramManager.getDendrograms(), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/deleteDendrogram", method = RequestMethod.DELETE)
@@ -106,15 +113,17 @@ public class Mono2MicroController {
 			@RequestParam("file") MultipartFile datafile, @RequestParam("linkageType") String linkageType, @RequestParam("accessMetricWeight") String accessMetricWeight, @RequestParam("readWriteMetricWeight") String readWriteMetricWeight) {
 		logger.debug("createDendrogram filename: {}", datafile.getOriginalFilename());
 
+		long startTime = System.currentTimeMillis();
+
 		File directory = new File(dendrogramsFolder);
 		if (!directory.exists())
 			directory.mkdir();
 
 		if (dendrogramManager.getDendrogramNames().contains(dendrogramName)) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
-		Dendrogram dend = new Dendrogram();
+		Dendrogram dend = new Dendrogram(dendrogramName);
 		dend.setLinkageType(linkageType);
 		dend.setClusteringMetricWeight(accessMetricWeight, readWriteMetricWeight);
 
@@ -128,44 +137,27 @@ public class Mono2MicroController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
+		// save data to persistent dendrogram
 		try {
 			InputStream is = new FileInputStream(dendrogramsFolder + dendrogramName + ".txt");
-			String jsonTxt = IOUtils.toString(is, "UTF-8");
-			JSONObject json = new JSONObject(jsonTxt);
+			JSONObject json = new JSONObject(IOUtils.toString(is, "UTF-8"));
 
 			Iterator<String> controllers = json.sortedKeys();
 
 			while(controllers.hasNext()) {
 				String controller = controllers.next();
-				
-				Object o = json.get(controller);
-				if (o instanceof JSONArray) {
-					//luis
-					JSONArray entities = (JSONArray) json.get(controller);
-					for (int i = 0; i < entities.length(); i++) {
-						String entity = (String) entities.getString(i);
 
-						if (!dend.containsController(controller))
-							dend.addController(new Controller(controller));
-						if (!dend.getController(controller).containsEntity(entity))
-							dend.getController(controller).addEntity(entity);
-					}
-				} else {
-					//eu
-					JSONObject entitiesObject = (JSONObject) json.get(controller);
-					Iterator<String> entities = entitiesObject.sortedKeys();
-
-					while(entities.hasNext()) {
-						String entity = entities.next();
-						JSONArray modes = (JSONArray) entitiesObject.get(entity);
-
-						if (!dend.containsController(controller))
-							dend.addController(new Controller(controller));
-						if (!dend.getController(controller).containsEntity(entity)) {
-							dend.getController(controller).addEntity(entity);
-							dend.getController(controller).addEntityRW(entity, modes.join(""));
-						}
-					}
+				JSONArray entities = json.getJSONArray(controller);
+				for (int i = 0; i < entities.length(); i++) {
+					JSONArray entityArray = entities.getJSONArray(i);
+					String entity = entityArray.getString(0);
+					String mode = entityArray.getString(1);
+					if (!dend.containsController(controller))
+						dend.addController(new Controller(controller));
+					if (!dend.getController(controller).containsEntity(entity))
+						dend.getController(controller).addEntity(entity);
+					dend.getController(controller).addEntityRW(entity, mode);
+					dend.getController(controller).addEntityRWseq(entity, mode);
 				}
 			}
 			is.close();
@@ -174,8 +166,8 @@ public class Mono2MicroController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
+		// run python script with clustering algorithm
 		try {
-			// run python script with clustering algorithm
 			Runtime r = Runtime.getRuntime();
 			String pythonScriptPath = fileUploadPath + "dendrogram.py";
 			String[] cmd = new String[7];
@@ -186,16 +178,27 @@ public class Mono2MicroController {
 			cmd[4] = linkageType;
 			cmd[5] = accessMetricWeight;
 			cmd[6] = readWriteMetricWeight;
+			
 			Process p = r.exec(cmd);
 
+			BufferedReader bre = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			String line;
+			while ((line = bre.readLine()) != null) {
+				System.out.println("Inside Elapsed time: " + line + " seconds");
+          	}
+
 			p.waitFor();
-			
+
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
 		dendrogramManager.writeDendrogram(dendrogramName, dend);
+
+		long elapsedTimeMillis = System.currentTimeMillis() - startTime;
+		float elapsedTimeSec = elapsedTimeMillis/1000F;
+		System.out.println("Complete. Elapsed time: " + elapsedTimeSec + " seconds");
 
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
