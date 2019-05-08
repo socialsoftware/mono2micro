@@ -85,7 +85,8 @@ export class ClusterView extends React.Component {
             clusterEntities: [],
             error: false,
             errorMessage: '',
-            operation: operations.NONE
+            operation: operations.NONE,
+            couplingValues: {}
         };
 
         this.loadGraph = this.loadGraph.bind(this);
@@ -131,6 +132,11 @@ export class ClusterView extends React.Component {
         let edgeLengthFactor = 1000;
 
         for (var i = 0; i < clusters.length; i++) { 
+            this.state.couplingValues[clusters[i].name] = {};
+            this.state.couplingValues[clusters[i].name][clusters[i].name] = 1;
+        }
+
+        for (var i = 0; i < clusters.length; i++) { 
             let cluster1Controllers = clusterControllers[clusters[i].name].map(c => c.name);
             for (var j = i+1; j < clusters.length; j++) {
                 let cluster2Controllers = clusterControllers[clusters[j].name].map(c => c.name);
@@ -138,6 +144,9 @@ export class ClusterView extends React.Component {
 
                 let couplingC1C2 = controllersInCommon.length / cluster1Controllers.length;
                 let couplingC2C1 = controllersInCommon.length / cluster2Controllers.length;
+
+                this.state.couplingValues[clusters[i].name][clusters[j].name] = couplingC1C2;
+                this.state.couplingValues[clusters[j].name][clusters[i].name] = couplingC2C1;
 
                 let edgeTitle = clusters[i].name + " -- " + clusters[j].name + "<br>";
                 edgeTitle += "Coupling: " + couplingC1C2 + "<br>";
@@ -153,6 +162,7 @@ export class ClusterView extends React.Component {
                     //edges.push({from: clusters[i].name, to: clusters[j].name, length:(1/0.5)*edgeLengthFactor, hidden: true});
             }
         }
+        console.log(this.state.couplingValues);
         return edges;
     }
 
@@ -362,6 +372,23 @@ export class ClusterView extends React.Component {
             sort: true
         }];
 
+        const couplingRows = this.state.clusters.map(c1 => {
+            return Object.assign({id: c1.name}, ...this.state.clusters.map(c2 => {
+                let couplingC1C2 = this.state.couplingValues[c1.name][c2.name];
+                return {
+                    [c2.name]: couplingC1C2 % 1 === 0 ? couplingC1C2 : couplingC1C2.toFixed(2)
+                }
+            }))
+        });
+
+        const couplingColumns = [{dataField: 'id', text: '', style: {fontWeight: 'bold'}}]
+            .concat(this.state.clusters.map(c => {
+                return {
+                    dataField: c.name,
+                    text: c.name
+                }
+            }));
+
         return (
             <div>
                 {this.state.error && 
@@ -393,6 +420,9 @@ export class ClusterView extends React.Component {
                 </div>
 
                 <BootstrapTable bootstrap4 keyField='cluster' data={ rows } columns={ columns } />
+                
+                <h4>Coupling Matrix:</h4>
+                <BootstrapTable bootstrap4 keyField='id' data={ couplingRows } columns={ couplingColumns } />
             </div>
         );
     }
