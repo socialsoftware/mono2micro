@@ -1,13 +1,13 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
-import { Button, Card, CardDeck, Breadcrumb, BreadcrumbItem, Table } from 'react-bootstrap';
+import { Nav, ButtonGroup, Button, Card, CardDeck, CardGroup, Breadcrumb, BreadcrumbItem, Table } from 'react-bootstrap';
 import { DENDROGRAM_URL } from '../../constants/constants';
 import BootstrapTable from 'react-bootstrap-table-next';
 
 const BreadCrumbs = () => {
     return (
       <div>
-        <Breadcrumb style={{ backgroundColor: '#a32a2a' }}>
+        <Breadcrumb>
           <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
           <BreadcrumbItem active>Dendrograms</BreadcrumbItem>
         </Breadcrumb>
@@ -19,6 +19,7 @@ export class Dendrograms extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            dendrogram: {},
             dendrograms: [],
             dendrogramGraphs: []
         };
@@ -32,6 +33,7 @@ export class Dendrograms extends React.Component {
         const service = new RepositoryService();
         service.getDendrograms().then(response => {
             this.setState({
+                dendrogram: response.data === [] ? {} : response.data[0],
                 dendrograms: response.data,
                 dendrogramGraphs: response.data.map(d => d.graphs).flat()
             });
@@ -45,23 +47,15 @@ export class Dendrograms extends React.Component {
         });
     }
 
+    changeDendrogram(value) {
+        this.setState({
+            dendrogram: this.state.dendrograms.filter(d => d.name === value)[0]
+        });
+    }
+
     render() {
-        const dendrograms = this.state.dendrograms.map( d =>
-            <Card key={d.name} style={{ width: '18rem' }}>
-                <Card.Img variant="top" src={DENDROGRAM_URL + "?dendrogramName=" + d.name + "&&" + new Date().getTime()} />
-                <Card.Body>
-                    <Card.Title>
-                        {d.name}
-                    </Card.Title>
-                    <Card.Text>
-                        Linkage Type: {d.linkageType}< br/>
-                        Undistinct Access Metric Weight: {d.accessMetricWeight}< br/>
-	                    Read/Write Access Metric Weight: {d.readWriteMetricWeight}
-                    </Card.Text>
-                    <Button href={`/dendrogram/${d.name}`} className="mr-4" variant="primary">See Dendrogram</Button>
-                    <Button onClick={() => this.handleDeleteDendrogram(d.name)} variant="danger">Delete</Button>
-                </Card.Body>
-            </Card>
+        const dendrograms = this.state.dendrograms.map(d =>
+            <Button active={this.state.dendrogram.name === d.name} onClick={() => this.changeDendrogram(d.name)}>{d.name}</Button>
         );
 
         const rows = this.state.dendrogramGraphs.flat().map(graph => {
@@ -111,16 +105,38 @@ export class Dendrograms extends React.Component {
             <div>
                 <BreadCrumbs />
                 <h2 className="mb-3">Dendrograms</h2>
-                <Button className="mb-3" href="/dendrogram/create">Create New Dendrogram</Button>
-                <CardDeck>
-                    {dendrograms}
-                </CardDeck>
+                <Button className="mb-3" href="/dendrogram/create">Create New Dendrogram</Button>                
 
-                {this.state.dendrogramGraphs.length > 0 &&
-                    <BootstrapTable bootstrap4 keyField='id' data={ rows } columns={ columns } />
+                {dendrograms.length !== 0 &&
+                    <div>
+                    <ButtonGroup className="mb-3">
+                        {dendrograms}
+                    </ButtonGroup>
+
+                    <Card className="mb-5" key={this.state.dendrogram.name} style={{ width: '20rem' }}>
+                    <Card.Img variant="top" src={DENDROGRAM_URL + "?dendrogramName=" + this.state.dendrogram.name + "&&" + new Date().getTime()} />
+                    <Card.Body>
+                        <Card.Title>
+                            {this.state.dendrogram.name}
+                        </Card.Title>
+                        <Card.Text>
+                            Linkage Type: {this.state.dendrogram.linkageType}< br/>
+                            Undistinct Access Metric Weight: {this.state.dendrogram.accessMetricWeight}< br/>
+                            Read/Write Access Metric Weight: {this.state.dendrogram.readWriteMetricWeight}
+                        </Card.Text>
+                        <Button href={`/dendrogram/${this.state.dendrogram.name}`} className="mr-4" variant="primary">See Dendrogram</Button>
+                        <Button onClick={() => this.handleDeleteDendrogram(this.state.dendrogram.name)} variant="danger">Delete</Button>
+                    </Card.Body>
+                    </Card>
+                    </div>
                 }
 
-                
+                {this.state.dendrogramGraphs.length > 0 &&
+                    <span>
+                    <h5>Metrics</h5>
+                    <BootstrapTable bootstrap4 keyField='id' data={ rows } columns={ columns } />
+                    </span>
+                }
             </div>
         )
     }

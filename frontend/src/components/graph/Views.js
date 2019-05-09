@@ -102,7 +102,7 @@ export class Views extends React.Component {
         const BreadCrumbs = () => {
             return (
               <div>
-                <Breadcrumb style={{ backgroundColor: '#a32a2a' }}>
+                <Breadcrumb>
                   <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
                   <Breadcrumb.Item href="/dendrograms">Dendrograms</Breadcrumb.Item>
                   <Breadcrumb.Item href={`/dendrogram/${this.state.dendrogramName}`}>{this.state.dendrogramName}</Breadcrumb.Item>

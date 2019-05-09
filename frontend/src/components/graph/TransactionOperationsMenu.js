@@ -16,6 +16,14 @@ export class TransactionOperationsMenu extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    componentDidMount() {
+      if (this.state.controllerAmount === "All") {
+        this.setState({
+          controllerList: Object.keys(this.props.controllerClusters).sort()
+        });
+      }
+    }
+
     componentWillReceiveProps(nextProps) {
       if (this.state.controllerAmount === "All") {
         this.setState({

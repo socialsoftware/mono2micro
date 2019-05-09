@@ -5,6 +5,7 @@ import { VisNetwork } from '../util/VisNetwork';
 import { DataSet } from 'vis';
 import { views, types } from './ViewsMenu';
 import BootstrapTable from 'react-bootstrap-table-next';
+import { Button, DropdownButton, Dropdown, FormControl, ButtonGroup, ButtonToolbar, InputGroup} from 'react-bootstrap';
 
 
 export const transactionViewHelp = (<div>
@@ -128,7 +129,8 @@ export class TransactionView extends React.Component {
             controllersComplexity: {},
             controllersComplexityRW: {},
             showGraph: false,
-            clusterSequence: []
+            clusterSequence: [],
+            currentSubView: "Graph"
         }
 
         this.handleControllerSubmit = this.handleControllerSubmit.bind(this);
@@ -270,6 +272,12 @@ export class TransactionView extends React.Component {
 
     }
 
+    changeSubView(value) {
+        this.setState({
+            currentSubView: value
+        });
+    }
+
     render() {
         const rows = Object.keys(this.state.controllersComplexity).sort().map(controller => {
             return {
@@ -315,41 +323,56 @@ export class TransactionView extends React.Component {
 
         return (
             <div>
-                <TransactionOperationsMenu
-                    handleControllerSubmit={this.handleControllerSubmit}
-                    controllerClusters={this.state.controllerClusters}
-                />
+                <ButtonGroup className="mb-2">
+                    <Button disabled={this.state.currentSubView === "Graph"} onClick={() => this.changeSubView("Graph")}>Graph</Button>
+                    <Button disabled={this.state.currentSubView === "Sequence Graph"} onClick={() => this.changeSubView("Sequence Graph")}>Sequence Graph</Button>
+                    <Button disabled={this.state.currentSubView === "Metrics"} onClick={() => this.changeSubView("Metrics")}>Metrics</Button>
+                    <Button disabled={this.state.currentSubView === "Sequence Table"} onClick={() => this.changeSubView("Sequence Table")}>Sequence Table</Button>
+                </ButtonGroup>
                 
-                <div style={{width:'1000px' , height: '700px'}}>
-                    <VisNetwork 
-                        visGraph={this.state.visGraph}
-                        options={options}
-                        onSelection={this.handleSelectNode}
-                        onDeselection={this.handleDeselectNode}
-                        view={views.TRANSACTION} />
-                </div>
+                {this.state.currentSubView === "Graph" &&
+                    <span>
+                    <TransactionOperationsMenu
+                        handleControllerSubmit={this.handleControllerSubmit}
+                        controllerClusters={this.state.controllerClusters}
+                    />
+                    <div style={{width:'1000px' , height: '700px'}}>
+                        <VisNetwork 
+                            visGraph={this.state.visGraph}
+                            options={options}
+                            onSelection={this.handleSelectNode}
+                            onDeselection={this.handleDeselectNode}
+                            view={views.TRANSACTION} />
+                    </div>  
+                    </span>
+                }
 
-                <div style={{width:'1000px' , height: '700px'}}>
-                    <VisNetwork
-                        visGraph={this.state.visGraphSeq}
-                        options={optionsSeq}
-                        onSelection={this.handleSelectNode}
-                        onDeselection={this.handleDeselectNode}
-                        view={views.TRANSACTION} />
-                </div>
+                {this.state.currentSubView === "Sequence Graph" &&
+                    <div style={{width:'1000px' , height: '700px'}}>
+                        <VisNetwork
+                            visGraph={this.state.visGraphSeq}
+                            options={optionsSeq}
+                            onSelection={this.handleSelectNode}
+                            onDeselection={this.handleDeselectNode}
+                            view={views.TRANSACTION} />
+                    </div>
+                }
 
-                <div>
-                    Number of Clusters : {this.state.clusters.length}< br/>
-                    Number of Controllers that access a single Cluster : {Object.keys(this.state.controllerClusters).filter(key => this.state.controllerClusters[key].length === 1).length}< br/>
-                    Maximum number of Clusters accessed by a single Controller : {Math.max(...Object.keys(this.state.controllerClusters).map(key => this.state.controllerClusters[key].length))}< br/>
-                    Average Number of Clusters accessed (Average number of microservices accessed during a transaction) : {averageClustersAccessed}
-                </div>
+                {this.state.currentSubView === "Metrics" &&
+                    <div>
+                        Number of Clusters : {this.state.clusters.length}< br/>
+                        Number of Controllers that access a single Cluster : {Object.keys(this.state.controllerClusters).filter(key => this.state.controllerClusters[key].length === 1).length}< br/>
+                        Maximum number of Clusters accessed by a single Controller : {Math.max(...Object.keys(this.state.controllerClusters).map(key => this.state.controllerClusters[key].length))}< br/>
+                        Average Number of Clusters accessed (Average number of microservices accessed during a transaction) : {averageClustersAccessed}
+                        <BootstrapTable bootstrap4 keyField='controller' data={ rows } columns={ columns } />
+                    </div>
+                }
 
-                <BootstrapTable bootstrap4 keyField='controller' data={ rows } columns={ columns } />
-
-
-                {this.state.showGraph &&
-                    <BootstrapTable bootstrap4 keyField='id' data={ this.state.clusterSequence } columns={ columnsSeq } />
+                {this.state.showGraph && this.state.currentSubView === "Sequence Table" &&
+                    <div>
+                        <h4>{this.state.controller.name}</h4>
+                        <BootstrapTable bootstrap4 keyField='id' data={ this.state.clusterSequence } columns={ columnsSeq } />
+                    </div>
                 }
             </div>
         );

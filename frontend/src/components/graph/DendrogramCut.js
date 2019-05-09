@@ -1,7 +1,7 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
 import { DENDROGRAM_URL } from '../../constants/constants';
-import { Button, Form, Card, CardDeck, Breadcrumb, BreadcrumbItem, Table } from 'react-bootstrap';
+import { Button, ButtonGroup, Form, Card, CardDeck, Breadcrumb, BreadcrumbItem, Table } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 
 var HttpStatus = require('http-status-codes');
@@ -13,7 +13,8 @@ export class DendrogramCut extends React.Component {
             cutValue: "",
             cutSuccess: "",
             dendrogramName: this.props.match.params.dendrogramName,
-            graphs: []
+            graphs: [],
+            graph: {}
         };
 
         this.handleCutValueChange = this.handleCutValueChange.bind(this);
@@ -28,7 +29,8 @@ export class DendrogramCut extends React.Component {
         const service = new RepositoryService();
         service.getGraphs(this.state.dendrogramName).then(response => {
             this.setState({
-                graphs: response.data
+                graphs: response.data,
+                graph: response.data === [] ? {} : response.data[0]
             });
         });
     }
@@ -69,11 +71,17 @@ export class DendrogramCut extends React.Component {
         });
     }
 
+    changeGraph(value) {
+        this.setState({
+            graph: this.state.graphs.filter(graph => graph.name === value)[0]
+        });
+    }
+
     render() {
         const BreadCrumbs = () => {
             return (
               <div>
-                <Breadcrumb style={{ backgroundColor: '#a32a2a' }}>
+                <Breadcrumb>
                   <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
                   <Breadcrumb.Item href="/dendrograms">Dendrograms</Breadcrumb.Item>
                   <BreadcrumbItem active>{this.state.dendrogramName}</BreadcrumbItem>
@@ -82,14 +90,8 @@ export class DendrogramCut extends React.Component {
             );
         };
 
-        const graphs = this.state.graphs.map( graph =>
-            <Card key={graph.name} style={{ width: '18rem' }}>
-                <Card.Body>
-                    <Card.Title>{graph.name}</Card.Title>
-                    <Button href={`/dendrogram/${this.state.dendrogramName}/graph/${graph.name}`} className="mr-4" variant="primary">See Graph</Button>
-                    <Button onClick={() => this.handleDeleteGraph(graph.name)} variant="danger">Delete</Button>
-                </Card.Body>
-            </Card>
+        const graphs = this.state.graphs.map(graph =>
+            <Button active={this.state.graph.name === graph.name} onClick={() => this.changeGraph(graph.name)}>{graph.name}</Button>
         );
 
         const rows = this.state.graphs.map(graph => {
@@ -145,14 +147,29 @@ export class DendrogramCut extends React.Component {
                 {this.state.cutSuccess}
                 <br />
                 <br />
-                <img src={DENDROGRAM_URL + "?dendrogramName=" + this.state.dendrogramName + "&&" + new Date().getTime()} alt="Dendrogram" />
-            
-                <CardDeck>
-                    {graphs}
-                </CardDeck>
+                <img className="mb-5" src={DENDROGRAM_URL + "?dendrogramName=" + this.state.dendrogramName + "&&" + new Date().getTime()} alt="Dendrogram" />
+
+                {graphs.length !== 0 &&
+                    <div>
+                    <ButtonGroup className="mb-3">
+                        {graphs}
+                    </ButtonGroup>
+
+                    <Card className="mb-5" key={this.state.graph.name} style={{ width: '15rem' }}>
+                        <Card.Body>
+                            <Card.Title>{this.state.graph.name}</Card.Title>
+                            <Button href={`/dendrogram/${this.state.dendrogramName}/graph/${this.state.graph.name}`} className="mr-4" variant="primary">See Graph</Button>
+                            <Button onClick={() => this.handleDeleteGraph(this.state.graph.name)} variant="danger">Delete</Button>
+                        </Card.Body>
+                    </Card>
+                    </div>
+                }
 
                 {this.state.graphs.length > 0 &&
+                    <span>
+                    <h5>Metrics</h5>
                     <BootstrapTable bootstrap4 keyField='graph' data={ rows } columns={ columns } />
+                    </span>
                 }
             </div>
         );

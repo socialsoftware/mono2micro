@@ -128,6 +128,17 @@ export class VisNetwork extends Component {
         }
     }
 
+    componentDidMount(){
+        this.network = new Network(this.appRef.current, this.props.visGraph, this.props.options);
+        this.network.on("doubleClick", this.handleDoubleClick);
+        this.network.on("selectNode", this.handleSelectNode);
+        this.network.on("deselectNode", this.handleDeselectNode);
+        this.network.on("selectEdge", this.handleSelectEdge);
+        this.network.on("deselectEdge", this.handleDeselectEdge);
+        this.network.on("stabilizationIterationsDone", this.handleStabilization);
+        this.network.storePositions();
+    }
+
     componentDidUpdate(prevProps) {
         if (this.props.visGraph !== prevProps.visGraph) {
             this.network = new Network(this.appRef.current, this.props.visGraph, this.props.options);

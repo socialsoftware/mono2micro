@@ -6,6 +6,7 @@ import { ModalMessage } from '../util/ModalMessage';
 import { DataSet } from 'vis';
 import { views, types } from './ViewsMenu';
 import BootstrapTable from 'react-bootstrap-table-next';
+import { Button, DropdownButton, Dropdown, FormControl, ButtonGroup, ButtonToolbar, InputGroup} from 'react-bootstrap';
 
 export const clusterViewHelp = (<div>
     Hover or double click cluster to see entities inside.<br />
@@ -86,7 +87,8 @@ export class ClusterView extends React.Component {
             error: false,
             errorMessage: '',
             operation: operations.NONE,
-            couplingValues: {}
+            couplingValues: {},
+            currentSubView: 'Graph'
         };
 
         this.loadGraph = this.loadGraph.bind(this);
@@ -162,7 +164,6 @@ export class ClusterView extends React.Component {
                     //edges.push({from: clusters[i].name, to: clusters[j].name, length:(1/0.5)*edgeLengthFactor, hidden: true});
             }
         }
-        console.log(this.state.couplingValues);
         return edges;
     }
 
@@ -330,6 +331,12 @@ export class ClusterView extends React.Component {
 
     }
 
+    changeSubView(value) {
+        this.setState({
+            currentSubView: value
+        });
+    }
+
     render() {
         const rows = this.state.clusters.map(cluster => {
             return {
@@ -397,32 +404,49 @@ export class ClusterView extends React.Component {
                     message={this.state.errorMessage} 
                     onClose={this.closeErrorMessageModal} />}
 
-                {this.state.showMenu &&
-                <ClusterOperationsMenu
-                    selectedCluster={this.state.selectedCluster}
-                    mergeWithCluster={this.state.mergeWithCluster}
-                    transferToCluster={this.state.transferToCluster}
-                    clusterEntities={this.state.clusterEntities}
-                    handleSelectOperation={this.handleSelectOperation}
-                    handleSelectEntity={this.handleSelectEntity}
-                    handleSubmit={this.handleOperationSubmit}
-                    handleCancel={this.handleOperationCancel}
-                />}
+                <ButtonGroup className="mb-2">
+                    <Button disabled={this.state.currentSubView === "Graph"} onClick={() => this.changeSubView("Graph")}>Graph</Button>
+                    <Button disabled={this.state.currentSubView === "Metrics"} onClick={() => this.changeSubView("Metrics")}>Metrics</Button>
+                    <Button disabled={this.state.currentSubView === "Coupling Matrix"} onClick={() => this.changeSubView("Coupling Matrix")}>Coupling Matrix</Button>
+                </ButtonGroup>
 
-                <div style={{width:'1000px' , height: '700px'}}>
-                    <VisNetwork 
-                        visGraph={this.state.visGraph} 
-                        clusters={this.state.clusters} 
-                        options={options} 
+                {this.state.currentSubView === "Graph" &&
+                    <span>
+                    {this.state.showMenu &&
+                    <ClusterOperationsMenu
+                        selectedCluster={this.state.selectedCluster}
+                        mergeWithCluster={this.state.mergeWithCluster}
+                        transferToCluster={this.state.transferToCluster}
+                        clusterEntities={this.state.clusterEntities}
+                        handleSelectOperation={this.handleSelectOperation}
+                        handleSelectEntity={this.handleSelectEntity}
+                        handleSubmit={this.handleOperationSubmit}
+                        handleCancel={this.handleOperationCancel}
+                    />}
+
+                    <div style={{width:'1000px' , height: '700px'}}>
+                    <VisNetwork
+                        visGraph={this.state.visGraph}
+                        clusters={this.state.clusters}
+                        options={options}
                         onSelection={this.handleSelectCluster}
                         onDeselection={this.handleDeselectNode}
                         view={views.CLUSTERS} />
-                </div>
+                    </div>
+                    </span>
+                }
 
-                <BootstrapTable bootstrap4 keyField='cluster' data={ rows } columns={ columns } />
+                {this.state.currentSubView === "Metrics" &&
+                    <div style={{overflow:"auto"}}>
+                        <BootstrapTable bootstrap4 keyField='cluster' data={ rows } columns={ columns } />
+                    </div>
+                }
                 
-                <h4>Coupling Matrix:</h4>
-                <BootstrapTable bootstrap4 keyField='id' data={ couplingRows } columns={ couplingColumns } />
+                {this.state.currentSubView === "Coupling Matrix" &&
+                    <div style={{overflow:"auto"}}>
+                        <BootstrapTable bootstrap4 keyField='id' data={ couplingRows } columns={ couplingColumns } />
+                    </div>
+                }
             </div>
         );
     }

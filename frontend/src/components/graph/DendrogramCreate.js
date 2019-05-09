@@ -7,7 +7,7 @@ var HttpStatus = require('http-status-codes');
 const BreadCrumbs = () => {
     return (
       <div>
-        <Breadcrumb style={{ backgroundColor: '#a32a2a' }}>
+        <Breadcrumb>
           <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
           <Breadcrumb.Item href="/dendrograms">Dendrograms</Breadcrumb.Item>
           <BreadcrumbItem active>Create</BreadcrumbItem>
@@ -119,6 +119,7 @@ export class DendrogramCreate extends React.Component {
                 </InputGroup.Prepend>
                     <FormControl 
                         type="text"
+                        maxLength="18"
                         value={this.state.dendrogramName}
                         onChange={this.handleChangeDendrogramName}/>
                 </InputGroup>
