@@ -279,6 +279,16 @@ export class TransactionView extends React.Component {
     }
 
     render() {
+        const products = [{
+            id: 1,
+            name: "Product1",
+            price: 120
+        }, {
+            id: 2,
+            name: "Product2",
+            price: 80
+        }];
+        
         const rows = Object.keys(this.state.controllersComplexity).sort().map(controller => {
             return {
                 controller: controller,

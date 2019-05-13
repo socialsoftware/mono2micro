@@ -437,15 +437,11 @@ export class ClusterView extends React.Component {
                 }
 
                 {this.state.currentSubView === "Metrics" &&
-                    <div style={{overflow:"auto"}}>
-                        <BootstrapTable bootstrap4 keyField='cluster' data={ rows } columns={ columns } />
-                    </div>
+                    <BootstrapTable bootstrap4 keyField='cluster' data={ rows } columns={ columns } />
                 }
                 
                 {this.state.currentSubView === "Coupling Matrix" &&
-                    <div style={{overflow:"auto"}}>
-                        <BootstrapTable bootstrap4 keyField='id' data={ couplingRows } columns={ couplingColumns } />
-                    </div>
+                    <BootstrapTable bootstrap4 keyField='id' data={ couplingRows } columns={ couplingColumns } />
                 }
             </div>
         );
