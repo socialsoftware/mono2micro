@@ -67,7 +67,7 @@ export class Dendrograms extends React.Component {
                 clusters: graph.clusters.length,
                 singleton: graph.clusters.filter(c => c.entities.length === 1).length,
                 max_cluster_size: Math.max(...graph.clusters.map(c => c.entities.length)),
-                ss: graph.silhouetteScore
+                ss: Number(graph.silhouetteScore.toFixed(2)).toString()
             } 
         });
 
@@ -122,7 +122,8 @@ export class Dendrograms extends React.Component {
                         <Card.Text>
                             Linkage Type: {this.state.dendrogram.linkageType}< br/>
                             Undistinct Access Metric Weight: {this.state.dendrogram.accessMetricWeight}< br/>
-                            Read/Write Access Metric Weight: {this.state.dendrogram.readWriteMetricWeight}
+                            Read/Write Access Metric Weight: {this.state.dendrogram.readWriteMetricWeight}< br/>
+                            Sequence Access Metric Weight: {this.state.dendrogram.sequenceMetricWeight}
                         </Card.Text>
                         <Button href={`/dendrogram/${this.state.dendrogram.name}`} className="mr-4" variant="primary">See Dendrogram</Button>
                         <Button onClick={() => this.handleDeleteDendrogram(this.state.dendrogram.name)} variant="danger">Delete</Button>

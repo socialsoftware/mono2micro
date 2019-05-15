@@ -26,6 +26,7 @@ export class DendrogramCreate extends React.Component {
             linkageType: "",
             accessMetricWeight: "",
             readWriteMetricWeight: "",
+            sequenceMetricWeight: "",
         };
 
         this.handleSelectedFile = this.handleSelectedFile.bind(this);
@@ -34,6 +35,7 @@ export class DendrogramCreate extends React.Component {
         this.handleLinkageType = this.handleLinkageType.bind(this);
         this.handleChangeAccessMetricWeight = this.handleChangeAccessMetricWeight.bind(this);
         this.handleChangeReadWriteMetricWeight = this.handleChangeReadWriteMetricWeight.bind(this);
+        this.handleChangeSequenceMetricWeight = this.handleChangeSequenceMetricWeight.bind(this);
     }
 
     handleSelectedFile(event) {
@@ -52,6 +54,7 @@ export class DendrogramCreate extends React.Component {
         data.append('linkageType', this.state.linkageType);
         data.append('accessMetricWeight', this.state.accessMetricWeight);
         data.append('readWriteMetricWeight', this.state.readWriteMetricWeight);
+        data.append('sequenceMetricWeight', this.state.sequenceMetricWeight);
 
         this.setState({
             isUploaded: "Uploading..."
@@ -106,6 +109,12 @@ export class DendrogramCreate extends React.Component {
         });
     }
 
+    handleChangeSequenceMetricWeight(event) {
+        this.setState({
+           sequenceMetricWeight: event.target.value
+        });
+    }
+
     render() {
         return (
             <Form onSubmit={this.handleUpload}>
@@ -154,8 +163,18 @@ export class DendrogramCreate extends React.Component {
                         value={this.state.readWriteMetricWeight}
                         onChange={this.handleChangeReadWriteMetricWeight}/>
                 </InputGroup>
+
+                <InputGroup className="mb-3">
+                <InputGroup.Prepend>
+                    <InputGroup.Text id="basic-addon4">Sequence Access Metric Weight: </InputGroup.Text>
+                </InputGroup.Prepend>
+                    <FormControl 
+                        type="number"
+                        value={this.state.sequenceMetricWeight}
+                        onChange={this.handleChangeSequenceMetricWeight}/>
+                </InputGroup>
                 
-                <Button variant="primary" type="submit" disabled={this.state.isUploaded === "Uploading..." || this.state.dendrogramName === "" || this.state.linkageType === "" || parseFloat(this.state.accessMetricWeight) + parseFloat(this.state.readWriteMetricWeight) !== 1 || this.state.selectedFile === null}>
+                <Button variant="primary" type="submit" disabled={this.state.isUploaded === "Uploading..." || this.state.dendrogramName === "" || this.state.linkageType === "" || parseFloat(this.state.accessMetricWeight) + parseFloat(this.state.readWriteMetricWeight) + parseFloat(this.state.sequenceMetricWeight) !== 1 || this.state.selectedFile === null}>
                     Submit
                 </Button>
                 <br />

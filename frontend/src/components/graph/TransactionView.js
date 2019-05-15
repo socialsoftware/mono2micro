@@ -279,22 +279,12 @@ export class TransactionView extends React.Component {
     }
 
     render() {
-        const products = [{
-            id: 1,
-            name: "Product1",
-            price: 120
-        }, {
-            id: 2,
-            name: "Product2",
-            price: 80
-        }];
-        
         const rows = Object.keys(this.state.controllersComplexity).sort().map(controller => {
             return {
                 controller: controller,
                 clusters: this.state.controllerClusters[controller] === undefined ? 0 : this.state.controllerClusters[controller].length,
-                complexity: this.state.controllersComplexity[controller],
-                complexityrw: this.state.controllersComplexityRW[controller]
+                complexity: Number(this.state.controllersComplexity[controller].toFixed(2)).toString(),
+                complexityrw: Number(this.state.controllersComplexityRW[controller].toFixed(2)).toString()
             } 
         });
 
@@ -318,8 +308,7 @@ export class TransactionView extends React.Component {
 
         const columnsSeq = [{
             dataField: 'id',
-            text: 'Order',
-            sort: true
+            text: 'Order'
         }, {
             dataField: 'cluster',
             text: 'Cluster Accessed'
@@ -373,7 +362,7 @@ export class TransactionView extends React.Component {
                         Number of Clusters : {this.state.clusters.length}< br/>
                         Number of Controllers that access a single Cluster : {Object.keys(this.state.controllerClusters).filter(key => this.state.controllerClusters[key].length === 1).length}< br/>
                         Maximum number of Clusters accessed by a single Controller : {Math.max(...Object.keys(this.state.controllerClusters).map(key => this.state.controllerClusters[key].length))}< br/>
-                        Average Number of Clusters accessed (Average number of microservices accessed during a transaction) : {averageClustersAccessed}
+                        Average Number of Clusters accessed (Average number of microservices accessed during a transaction) : {Number(averageClustersAccessed.toFixed(2)).toString()}
                         <BootstrapTable bootstrap4 keyField='controller' data={ rows } columns={ columns } />
                     </div>
                 }

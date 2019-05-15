@@ -101,7 +101,7 @@ export class DendrogramCut extends React.Component {
                 clusters: graph.clusters.length,
                 singleton: graph.clusters.filter(c => c.entities.length === 1).length,
                 max_cluster_size: Math.max(...graph.clusters.map(c => c.entities.length)),
-                ss: graph.silhouetteScore
+                ss: Number(graph.silhouetteScore.toFixed(2)).toString()
             } 
         });
 

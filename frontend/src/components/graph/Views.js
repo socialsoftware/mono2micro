@@ -125,6 +125,7 @@ export class Views extends React.Component {
                 <InputGroup className="mr-1">
                     <FormControl 
                         type="text"
+                        maxLength="18"
                         placeholder="Rename Graph"
                         value={this.state.inputValue}
                         onChange={this.handleRenameGraph}/>

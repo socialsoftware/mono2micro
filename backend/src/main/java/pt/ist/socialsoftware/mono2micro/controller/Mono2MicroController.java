@@ -110,7 +110,7 @@ public class Mono2MicroController {
 
 	@RequestMapping(value = "/createDendrogram", method = RequestMethod.POST)
 	public ResponseEntity<Dendrogram> createDendrogram(@RequestParam("dendrogramName") String dendrogramName,
-			@RequestParam("file") MultipartFile datafile, @RequestParam("linkageType") String linkageType, @RequestParam("accessMetricWeight") String accessMetricWeight, @RequestParam("readWriteMetricWeight") String readWriteMetricWeight) {
+			@RequestParam("file") MultipartFile datafile, @RequestParam("linkageType") String linkageType, @RequestParam("accessMetricWeight") String accessMetricWeight, @RequestParam("readWriteMetricWeight") String readWriteMetricWeight, @RequestParam("sequenceMetricWeight") String sequenceMetricWeight) {
 		logger.debug("createDendrogram filename: {}", datafile.getOriginalFilename());
 
 		long startTime = System.currentTimeMillis();
@@ -125,7 +125,7 @@ public class Mono2MicroController {
 
 		Dendrogram dend = new Dendrogram(dendrogramName);
 		dend.setLinkageType(linkageType);
-		dend.setClusteringMetricWeight(accessMetricWeight, readWriteMetricWeight);
+		dend.setClusteringMetricWeight(accessMetricWeight, readWriteMetricWeight, sequenceMetricWeight);
 
 		// save datafile
 		try {
@@ -170,7 +170,7 @@ public class Mono2MicroController {
 		try {
 			Runtime r = Runtime.getRuntime();
 			String pythonScriptPath = fileUploadPath + "dendrogram.py";
-			String[] cmd = new String[7];
+			String[] cmd = new String[8];
 			cmd[0] = PYTHON;
 			cmd[1] = pythonScriptPath;
 			cmd[2] = dendrogramsFolder;
@@ -178,6 +178,7 @@ public class Mono2MicroController {
 			cmd[4] = linkageType;
 			cmd[5] = accessMetricWeight;
 			cmd[6] = readWriteMetricWeight;
+			cmd[7] = sequenceMetricWeight;
 			
 			Process p = r.exec(cmd);
 
@@ -234,7 +235,7 @@ public class Mono2MicroController {
 
 			Runtime r = Runtime.getRuntime();
 			String pythonScriptPath = fileUploadPath + "cutDendrogram.py";
-			String[] cmd = new String[8];
+			String[] cmd = new String[9];
 			cmd[0] = PYTHON;
 			cmd[1] = pythonScriptPath;
 			cmd[2] = dendrogramsFolder;
@@ -243,6 +244,7 @@ public class Mono2MicroController {
 			cmd[5] = cutValue;
 			cmd[6] = dend.getAccessMetricWeight();
 			cmd[7] = dend.getReadWriteMetricWeight();
+			cmd[8] = dend.getSequenceMetricWeight();
 			Process p = r.exec(cmd);
 
 			p.waitFor();

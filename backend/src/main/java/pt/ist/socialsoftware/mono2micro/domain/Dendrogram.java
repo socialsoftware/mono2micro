@@ -12,6 +12,7 @@ public class Dendrogram {
 	private String linkageType;
 	private String accessMetricWeight;
 	private String readWriteMetricWeight;
+	private String sequenceMetricWeight;
 
 	public Dendrogram() {
 	}
@@ -36,9 +37,10 @@ public class Dendrogram {
 		return this.linkageType;
 	}
 
-	public void setClusteringMetricWeight(String accessMetricWeight, String readWriteMetricWeight) {
+	public void setClusteringMetricWeight(String accessMetricWeight, String readWriteMetricWeight, String sequenceMetricWeight) {
 		this.accessMetricWeight = accessMetricWeight;
 		this.readWriteMetricWeight = readWriteMetricWeight;
+		this.sequenceMetricWeight = sequenceMetricWeight;
 	}
 
 	public String getAccessMetricWeight() {
@@ -47,6 +49,10 @@ public class Dendrogram {
 
 	public String getReadWriteMetricWeight() {
 		return this.readWriteMetricWeight;
+	}
+
+	public String getSequenceMetricWeight() {
+		return this.sequenceMetricWeight;
 	}
 
 	public List<Graph> getGraphs() {

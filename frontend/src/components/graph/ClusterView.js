@@ -151,9 +151,9 @@ export class ClusterView extends React.Component {
                 this.state.couplingValues[clusters[j].name][clusters[i].name] = couplingC2C1;
 
                 let edgeTitle = clusters[i].name + " -- " + clusters[j].name + "<br>";
-                edgeTitle += "Coupling: " + couplingC1C2 + "<br>";
+                edgeTitle += "Coupling: " + Number(couplingC1C2.toFixed(2)).toString() + "<br>";
                 edgeTitle += clusters[j].name + " -- " + clusters[i].name + "<br>";
-                edgeTitle += "Coupling: " + couplingC2C1 + "<br>";
+                edgeTitle += "Coupling: " + Number(couplingC2C1.toFixed(2)).toString() + "<br>";
                 let edgeLength = (1/controllersInCommon.length)*edgeLengthFactor;
                 if (edgeLength < 100) edgeLength = 300;
                 else if (edgeLength > 500) edgeLength = 500;
@@ -343,11 +343,11 @@ export class ClusterView extends React.Component {
                 cluster: cluster.name,
                 controllers: this.state.clusterControllers[cluster.name].length,
                 entities: cluster.entities.length,
-                complexity: cluster.complexity,
-                complexityrw: cluster.complexityRW,
-                cohesion: cluster.cohesion,
-                coupling: cluster.coupling
-            } 
+                complexity: Number(cluster.complexity.toFixed(2)).toString(),
+                complexityrw: Number(cluster.complexityRW.toFixed(2)).toString(),
+                cohesion: Number(cluster.cohesion.toFixed(2)).toString(),
+                coupling: Number(cluster.coupling.toFixed(2)).toString()
+            }
         });
 
         const columns = [{
@@ -383,7 +383,7 @@ export class ClusterView extends React.Component {
             return Object.assign({id: c1.name}, ...this.state.clusters.map(c2 => {
                 let couplingC1C2 = this.state.couplingValues[c1.name][c2.name];
                 return {
-                    [c2.name]: couplingC1C2 % 1 === 0 ? couplingC1C2 : couplingC1C2.toFixed(2)
+                    [c2.name]: Number(couplingC1C2.toFixed(2)).toString()
                 }
             }))
         });

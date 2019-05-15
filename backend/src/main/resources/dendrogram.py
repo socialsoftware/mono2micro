@@ -13,6 +13,7 @@ dendrogramName = str(sys.argv[2])
 linkageType = str(sys.argv[3])
 accessMetricWeight = float(sys.argv[4])
 readWriteMetricWeight = float(sys.argv[5])
+sequenceMetricWeight = float(sys.argv[6])
 
 data_dictionary = {}
 
@@ -52,10 +53,25 @@ def createSimilarityMatrix(data_dictionary, base_classes, accessMetricWeight, re
                     if c1[0] == c2[0] and 'W' in c1[1] and 'W' in c2[1]:
                         in_common_writes += 1
 
+            entitiesSequenceCount = 0
+            sequenceControllerCount = 0
+            for controller in datafile:
+                hit = False
+                for i in range(len(datafile[controller])-1):
+                    if datafile[controller][i][0] == base_classes[index[0]] and datafile[controller][i+1][0] == base_classes[index[1]]:
+                        entitiesSequenceCount += 1
+                        hit = True
+                if hit:
+                    sequenceControllerCount += len(datafile[controller])-1
+
             accessMetric = in_common / len(data_dictionary[base_classes[index[0]]])
             readWriteMetric = in_common_writes / len(data_dictionary[base_classes[index[0]]])
+            if sequenceControllerCount == 0:
+                sequenceMetric = 0
+            else:
+                sequenceMetric = entitiesSequenceCount / sequenceControllerCount
 
-            similarity_measure = accessMetric * accessMetricWeight + readWriteMetric * readWriteMetricWeight
+            similarity_measure = accessMetric * accessMetricWeight + readWriteMetric * readWriteMetricWeight + sequenceMetric * sequenceMetricWeight
 
             similarity_matrix[index] = similarity_measure
     return similarity_matrix
