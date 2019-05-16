@@ -78,6 +78,7 @@ public class CallGraphHandler extends AbstractHandler {
 		InputDialog inputDialog = new InputDialog(window.getShell(), "CallGraph", "Please enter project name:", "", validator);
 		if (inputDialog.open() == Window.OK) {
 			String projectName = inputDialog.getValue();
+			System.out.println("Processing Project: " + projectName);
 			long startTime = System.currentTimeMillis();
 			IProject project = getProject(projectName);
 			
@@ -112,8 +113,8 @@ public class CallGraphHandler extends AbstractHandler {
 			//file store
 			if (filepath != null) {
 				try (FileWriter file = new FileWriter(filepath)) {
-					file.write(callgraph2.toString(4));
-				} catch (IOException | JSONException e) {
+					file.write(callgraph2.toString());//.toString(4));
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}

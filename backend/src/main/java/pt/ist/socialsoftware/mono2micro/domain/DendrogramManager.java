@@ -60,6 +60,7 @@ public class DendrogramManager {
 			Files.deleteIfExists(Paths.get(dendrogramsFolder + name + ".json"));
 			Files.deleteIfExists(Paths.get(dendrogramsFolder + name + ".png"));
 			Files.deleteIfExists(Paths.get(dendrogramsFolder + name + ".txt"));
+			Files.deleteIfExists(Paths.get(dendrogramsFolder + name + ".npy"));
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();

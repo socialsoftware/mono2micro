@@ -1,6 +1,5 @@
 import numpy as np
 from scipy.cluster import hierarchy
-import matplotlib.pyplot as plt
 import matplotlib.pylab as plab
 import sys
 import json
@@ -35,7 +34,7 @@ def processDatafile(data_dictionary, datafile):
                 data_dictionary[entity] = [[controller, [mode]]]
                  
 
-def createSimilarityMatrix(data_dictionary, base_classes, accessMetricWeight, readWriteMetricWeight):
+def createSimilarityMatrix(data_dictionary, base_classes):
     similarity_matrix = np.zeros((len(data_dictionary.keys()), len(data_dictionary.keys())))
 
     for index, value in np.ndenumerate(similarity_matrix):
@@ -55,14 +54,14 @@ def createSimilarityMatrix(data_dictionary, base_classes, accessMetricWeight, re
 
             entitiesSequenceCount = 0
             sequenceControllerCount = 0
-            for controller in datafile:
+            """for controller in datafile:
                 hit = False
                 for i in range(len(datafile[controller])-1):
                     if datafile[controller][i][0] == base_classes[index[0]] and datafile[controller][i+1][0] == base_classes[index[1]]:
                         entitiesSequenceCount += 1
                         hit = True
                 if hit:
-                    sequenceControllerCount += len(datafile[controller])-1
+                    sequenceControllerCount += len(datafile[controller])-1"""
 
             accessMetric = in_common / len(data_dictionary[base_classes[index[0]]])
             readWriteMetric = in_common_writes / len(data_dictionary[base_classes[index[0]]])
@@ -82,15 +81,16 @@ with open(datafilePath + dendrogramName + ".txt") as f:
 
 processDatafile(data_dictionary, datafile)
 
-base_classes = list(data_dictionary.keys())
+base_classes = sorted(list(data_dictionary.keys()))
 
-similarityMatrix = createSimilarityMatrix(data_dictionary, base_classes, accessMetricWeight, readWriteMetricWeight)
+similarityMatrix = createSimilarityMatrix(data_dictionary, base_classes)
+
+np.save(datafilePath + dendrogramName + ".npy", similarityMatrix)
 
 hierarc = hierarchy.linkage(y=similarityMatrix, method=linkageType)
 
 dend = hierarchy.dendrogram(hierarc, labels=base_classes, distance_sort='descending')
 plab.savefig(datafilePath + dendrogramName + ".png", format="png", bbox_inches='tight')
-#plt.show()
 
 elapsed_time = time.time() - start_time
 print(str(elapsed_time))

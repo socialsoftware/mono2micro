@@ -89,28 +89,6 @@ public class Cluster {
 		return false;
 	}
 
-	public void calculateComplexity(List<Controller> controllers) {
-		float complexity = 0;
-		int totalControllers = 0;
-		for (Controller controller : controllers) {
-			boolean localAccess = false;
-			boolean globalAccess = false;
-			int accessAmount = 0;
-			for (Entity controllerEntity : controller.getEntities()) {
-				if (this.containsEntity(controllerEntity.getName()))
-					localAccess = true;
-				else
-					globalAccess = true;
-			}
-			if (localAccess)
-				totalControllers++;
-			if (localAccess && globalAccess)
-				complexity++;
-		}
-		complexity /= totalControllers;
-		this.setComplexity(complexity);
-	}
-
 	public void calculateCohesion(List<Controller> controllers) {
 		float cohesion = 0;
 		int totalControllers = 0;

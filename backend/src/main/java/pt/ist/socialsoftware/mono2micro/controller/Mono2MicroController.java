@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -165,7 +166,7 @@ public class Mono2MicroController {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-
+		
 		// run python script with clustering algorithm
 		try {
 			Runtime r = Runtime.getRuntime();
@@ -182,16 +183,16 @@ public class Mono2MicroController {
 			
 			Process p = r.exec(cmd);
 
+			p.waitFor();
+
 			BufferedReader bre = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			String line;
 			while ((line = bre.readLine()) != null) {
 				System.out.println("Inside Elapsed time: " + line + " seconds");
-          	}
-
-			p.waitFor();
+			}
 
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
@@ -235,16 +236,13 @@ public class Mono2MicroController {
 
 			Runtime r = Runtime.getRuntime();
 			String pythonScriptPath = fileUploadPath + "cutDendrogram.py";
-			String[] cmd = new String[9];
+			String[] cmd = new String[6];
 			cmd[0] = PYTHON;
 			cmd[1] = pythonScriptPath;
 			cmd[2] = dendrogramsFolder;
 			cmd[3] = dendrogramName;
 			cmd[4] = dend.getLinkageType();
 			cmd[5] = cutValue;
-			cmd[6] = dend.getAccessMetricWeight();
-			cmd[7] = dend.getReadWriteMetricWeight();
-			cmd[8] = dend.getSequenceMetricWeight();
 			Process p = r.exec(cmd);
 
 			p.waitFor();
@@ -263,23 +261,28 @@ public class Mono2MicroController {
 				graph = new Graph("Graph_" + cutValue, cutValue, silhouetteScore, dendrogramName);
 			}
 
-			
-			String line = "";
-			while ((line = bre.readLine()) != null) {
-				String[] parts = line.split(" ");
-				String clusterName = parts[0];
-				String entities = parts[1];
-				Cluster cluster = new Cluster("Cluster" + clusterName);
-				for (String entityName : entities.split(",")) {
-					cluster.addEntity(entityName);
+			InputStream is = new FileInputStream("temp_clusters.txt");
+			JSONObject json = new JSONObject(IOUtils.toString(is, "UTF-8"));
+
+			Iterator<String> clusters = json.sortedKeys();
+
+			while(clusters.hasNext()) {
+				String clusterName = clusters.next();
+				JSONArray entities = json.getJSONArray(clusterName);
+				Cluster cluster = new Cluster(clusterName);
+				for (int i = 0; i < entities.length(); i++) {
+					String entity = entities.getString(i);
+					cluster.addEntity(entity);
 				}
 				graph.addCluster(cluster);
 			}
+			is.close();
+			Files.deleteIfExists(Paths.get("temp_clusters.txt"));
 			dend.addGraph(graph);
 
 			dendrogramManager.writeDendrogram(dendrogramName, dend);
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 

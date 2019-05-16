@@ -151,9 +151,11 @@ export class DendrogramCut extends React.Component {
 
                 {graphs.length !== 0 &&
                     <div>
-                    <ButtonGroup className="mb-3">
+                    <div style={{overflow: "auto"}} className="mb-3">
+                    <ButtonGroup>
                         {graphs}
                     </ButtonGroup>
+                    </div>
 
                     <Card className="mb-5" key={this.state.graph.name} style={{ width: '15rem' }}>
                         <Card.Body>

@@ -28,117 +28,6 @@ public class Graph {
 		this.controllersComplexityRW = new HashMap<>();
 	}
 
-	public void calculateMetrics(List<Controller> controllers, Map<String,List<Cluster>> controllerClusters) {
-		for (int i = 0; i < clusters.size(); i++) {
-			Cluster c1 = this.clusters.get(i);
-			//c1.calculateComplexity(controllers);
-			c1.calculateCohesion(controllers);
-
-			float complexity = 0;
-			float complexityRW = 0;
-			int totalControllers = 0;
-			for (Controller controller : controllers) {
-				for (Cluster c : controllerClusters.get(controller.getName())) {
-					if (c.getName().equals(c1.getName())) {
-						if (controllerClusters.get(controller.getName()).size() > 1)
-							totalControllers++;
-						
-						float complexityRWaux = 0;
-						for (Cluster c2 : controllerClusters.get(controller.getName())) {
-							if (!c2.getName().equals(c1.getName())) {
-								boolean write = false;
-								for (Pair<Entity,String> pair : controller.getEntitiesRW()) {
-									if (c2.containsEntity(pair.getFirst().getName())) {
-										if (pair.getSecond().contains("W")) {
-											write = true;
-										}
-									}
-								}
-								if (write)
-									complexityRWaux += 1.0;
-								else
-									complexityRWaux += 0.5;
-							}
-						}
-						
-						complexityRW += complexityRWaux / (this.clusters.size() - 1);
-
-						complexity += ((float) controllerClusters.get(controller.getName()).size() - 1) / (this.clusters.size() - 1);
-						break;
-					}
-				}
-			}
-			complexity /= totalControllers;
-			complexityRW /= totalControllers;
-			c1.setComplexity(complexity);
-			c1.setComplexityRW(complexityRW);
-
-
-			
-			float coupling = 0;
-			for (int j = 0; j < clusters.size(); j++) {
-				if (i != j) {
-					Cluster c2 = this.clusters.get(j);
-					int commonControllers = 0;
-					int controllersC1 = 0;
-					for (Controller c : controllers) {
-						boolean touchedC1 = false;
-						boolean touchedC2 = false;
-						for (Entity entity : c.getEntities()) {
-							if (c1.containsEntity(entity.getName())) {
-								touchedC1 = true;
-							}
-								
-							if (c2.containsEntity(entity.getName()))
-								touchedC2 = true;
-						}
-						if (touchedC1)
-							controllersC1++;
-						if (touchedC1 && touchedC2)
-							commonControllers++;
-					}
-					coupling = coupling + ((float)commonControllers / controllersC1);
-				}
-			}
-			coupling = coupling / (this.clusters.size() - 1);
-			c1.setCoupling(coupling);
-		}
-
-		this.controllersComplexity = new HashMap<>();
-		this.controllersComplexityRW = new HashMap<>();
-		for (int i = 0; i < controllers.size(); i++) {
-			Controller controller = controllers.get(i);
-			float complexity = 0;
-			float complexityRW = 0;
-			for (Cluster cluster : this.clusters) {
-				for (Entity entity : cluster.getEntities()) {
-					if (controller.containsEntity(entity.getName())) {
-						complexity++;
-
-						boolean write = false;
-						for (Pair<Entity,String> pair : controller.getEntitiesRW()) {
-							if (cluster.containsEntity(pair.getFirst().getName())) {
-								if (pair.getSecond().contains("W"))
-									write = true;
-							}
-						}
-
-						if (write)
-							complexityRW += 1;
-						else
-							complexityRW += 0.5;
-
-						break;
-					}
-				}
-			}
-			complexity /= this.clusters.size();
-			complexityRW /= (float)this.clusters.size();
-			this.controllersComplexity.put(controller.getName(), complexity);
-			this.controllersComplexityRW.put(controller.getName(), complexityRW);
-		}
-	}
-
 	public String getName() {
 		return this.name;
 	}
@@ -250,5 +139,126 @@ public class Graph {
 			c2.addEntity(entity);
 			c1.removeEntity(entity);
 		}
+	}
+
+	public void calculateMetrics(List<Controller> controllers, Map<String,List<Cluster>> controllerClusters) {
+		for (int i = 0; i < clusters.size(); i++) {
+			Cluster cluster = this.clusters.get(i);
+
+			calculateClusterComplexity(cluster, controllers, controllerClusters);
+
+			cluster.calculateCohesion(controllers);
+
+			calculateClusterCoupling(cluster, i, controllers, controllerClusters);
+		}
+
+		this.controllersComplexity = new HashMap<>();
+		this.controllersComplexityRW = new HashMap<>();
+		for (int i = 0; i < controllers.size(); i++) {
+			Controller controller = controllers.get(i);
+			calculateControllerComplexity(controller);
+		}
+	}
+
+	public void calculateClusterComplexity(Cluster cluster, List<Controller> controllers, Map<String,List<Cluster>> controllerClusters) {
+		float complexity = 0;
+		float complexityRW = 0;
+		int totalControllers = 0;
+		for (Controller controller : controllers) {
+			for (Cluster c : controllerClusters.get(controller.getName())) {
+				if (c.getName().equals(cluster.getName())) {
+					if (controllerClusters.get(controller.getName()).size() > 1)
+						totalControllers++;
+					
+					float complexityRWaux = 0;
+					for (Cluster c2 : controllerClusters.get(controller.getName())) {
+						if (!c2.getName().equals(cluster.getName())) {
+							boolean write = false;
+							for (Pair<Entity,String> pair : controller.getEntitiesRW()) {
+								if (c2.containsEntity(pair.getFirst().getName())) {
+									if (pair.getSecond().contains("W")) {
+										write = true;
+									}
+								}
+							}
+							if (write)
+								complexityRWaux += 1.0;
+							else
+								complexityRWaux += 0.5;
+						}
+					}
+					
+					complexityRW += complexityRWaux / (this.clusters.size() - 1);
+
+					complexity += ((float) controllerClusters.get(controller.getName()).size() - 1) / (this.clusters.size() - 1);
+					break;
+				}
+			}
+		}
+		complexity /= totalControllers;
+		complexityRW /= totalControllers;
+		cluster.setComplexity(complexity);
+		cluster.setComplexityRW(complexityRW);
+	}
+
+	public void calculateClusterCoupling(Cluster cluster, int i, List<Controller> controllers, Map<String,List<Cluster>> controllerClusters) {
+		float coupling = 0;
+		for (int j = 0; j < clusters.size(); j++) {
+			if (i != j) {
+				Cluster c2 = this.clusters.get(j);
+				int commonControllers = 0;
+				int controllersC1 = 0;
+				for (Controller c : controllers) {
+					boolean touchedC1 = false;
+					boolean touchedC2 = false;
+					for (Entity entity : c.getEntities()) {
+						if (cluster.containsEntity(entity.getName())) {
+							touchedC1 = true;
+						}
+							
+						if (c2.containsEntity(entity.getName()))
+							touchedC2 = true;
+					}
+					if (touchedC1)
+						controllersC1++;
+					if (touchedC1 && touchedC2)
+						commonControllers++;
+				}
+				coupling = coupling + ((float)commonControllers / controllersC1);
+			}
+		}
+		coupling = coupling / (this.clusters.size() - 1);
+		cluster.setCoupling(coupling);
+	}
+
+	public void calculateControllerComplexity(Controller controller) {
+		float complexity = 0;
+		float complexityRW = 0;
+		for (Cluster cluster : this.clusters) {
+			for (Entity entity : cluster.getEntities()) {
+				if (controller.containsEntity(entity.getName())) {
+					complexity++;
+
+					boolean write = false;
+					for (Pair<Entity,String> pair : controller.getEntitiesRW()) {
+						if (cluster.containsEntity(pair.getFirst().getName())) {
+							if (pair.getSecond().contains("W"))
+								write = true;
+						}
+					}
+
+					if (write)
+						complexityRW += 1;
+					else
+						complexityRW += 0.5;
+
+					break;
+				}
+			}
+		}
+		complexity /= this.clusters.size();
+		complexityRW /= (float)this.clusters.size();
+		this.controllersComplexity.put(controller.getName(), complexity);
+		this.controllersComplexityRW.put(controller.getName(), complexityRW);
 	}
 }

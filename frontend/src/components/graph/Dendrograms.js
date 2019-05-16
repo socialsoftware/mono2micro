@@ -98,8 +98,18 @@ export class Dendrograms extends React.Component {
         }, {
             dataField: 'ss',
             text: 'Silhouette Score',
-            sort: true
+            sort: true,
+            headerFormatter: columnHelp
         }];
+
+        function columnHelp(column, colIndex) {
+            return (
+                <div>
+                    {column.text}
+                    <img width="10px" height="10px" src="https://cdn4.iconfinder.com/data/icons/symbols-2-1/32/11_questionmark_ask_circle_round-512.png"/>
+                </div>
+            );
+        }
 
         return (
             <div>
@@ -109,9 +119,11 @@ export class Dendrograms extends React.Component {
 
                 {dendrograms.length !== 0 &&
                     <div>
-                    <ButtonGroup className="mb-3">
+                    <div style={{overflow: "auto"}} className="mb-3">
+                    <ButtonGroup>
                         {dendrograms}
                     </ButtonGroup>
+                    </div>
 
                     <Card className="mb-5" key={this.state.dendrogram.name} style={{ width: '20rem' }}>
                     <Card.Img variant="top" src={DENDROGRAM_URL + "?dendrogramName=" + this.state.dendrogram.name + "&&" + new Date().getTime()} />
