@@ -38,6 +38,8 @@ public class DendrogramManager {
 	public List<Dendrogram> getDendrograms() {
 		List<Dendrogram> dendrograms = new ArrayList<>();
 		File file = new File(dendrogramsFolder);
+		if (!file.exists())
+			file.mkdir();
 		for (String filename : file.list()) {
 			if (filename.endsWith(".json"))
 				dendrograms.add(getDendrogram(filename.substring(0, filename.length()-5)));
@@ -60,7 +62,6 @@ public class DendrogramManager {
 			Files.deleteIfExists(Paths.get(dendrogramsFolder + name + ".json"));
 			Files.deleteIfExists(Paths.get(dendrogramsFolder + name + ".png"));
 			Files.deleteIfExists(Paths.get(dendrogramsFolder + name + ".txt"));
-			Files.deleteIfExists(Paths.get(dendrogramsFolder + name + ".npy"));
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();

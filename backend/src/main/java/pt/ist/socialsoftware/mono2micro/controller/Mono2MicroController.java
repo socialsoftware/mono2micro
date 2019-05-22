@@ -1,14 +1,19 @@
 package pt.ist.socialsoftware.mono2micro.controller;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +22,7 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -34,6 +40,7 @@ import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.domain.DendrogramManager;
 import pt.ist.socialsoftware.mono2micro.domain.Entity;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.domain.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.PropertiesManager;
 
 @RestController
@@ -43,7 +50,7 @@ public class Mono2MicroController {
 
 	private static Logger logger = LoggerFactory.getLogger(Mono2MicroController.class);
 
-	private String fileUploadPath = "src/main/resources/";
+	private String resourcesPath = "src/main/resources/";
 
 	private String dendrogramsFolder = "src/main/resources/dendrograms/";
 
@@ -127,20 +134,15 @@ public class Mono2MicroController {
 		Dendrogram dend = new Dendrogram(dendrogramName);
 		dend.setLinkageType(linkageType);
 		dend.setClusteringMetricWeight(accessMetricWeight, readWriteMetricWeight, sequenceMetricWeight);
-
-		// save datafile
+		
 		try {
-			FileOutputStream outputStream = new FileOutputStream(dendrogramsFolder + dendrogramName + ".txt");
-			outputStream.write(datafile.getBytes());
-			outputStream.close();
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
+			// save data to persistent dendrogram
+			Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
+			List<String> entitiesList = new ArrayList<>();
+			JSONArray matrix = new JSONArray();
+			JSONObject dendrogramData = new JSONObject();
 
-		// save data to persistent dendrogram
-		try {
-			InputStream is = new FileInputStream(dendrogramsFolder + dendrogramName + ".txt");
+			InputStream is =  new BufferedInputStream(datafile.getInputStream());
 			JSONObject json = new JSONObject(IOUtils.toString(is, "UTF-8"));
 
 			Iterator<String> controllers = json.sortedKeys();
@@ -159,27 +161,102 @@ public class Mono2MicroController {
 						dend.getController(controller).addEntity(entity);
 					dend.getController(controller).addEntityRW(entity, mode);
 					dend.getController(controller).addEntityRWseq(entity, mode);
+
+					if (entityControllers.containsKey(entity)) {
+						boolean containsController = false;
+						for (Pair<String,String> p : entityControllers.get(entity)) {
+							if (p.getFirst().equals(controller)) {
+								containsController = true;
+								if (p.getSecond().equals("R") && mode.equals("W")) p.setSecond("RW");
+								if (p.getSecond().equals("W") && mode.equals("R")) p.setSecond("RW");
+							}
+						}
+						if (!containsController) {
+							entityControllers.get(entity).add(new Pair<String,String>(controller,mode));
+						}
+					} else {
+						List<Pair<String,String>> controllersPairs = new ArrayList<>();
+						controllersPairs.add(new Pair<String,String>(controller,mode));
+						entityControllers.put(entity, controllersPairs);
+					}
+
+					if (!entitiesList.contains(entity)) entitiesList.add(entity);
 				}
 			}
 			is.close();
-		} catch (JSONException | IOException e) {
-			System.err.println(e.getMessage());
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
-		
-		// run python script with clustering algorithm
-		try {
+
+			Collections.sort(entitiesList);
+
+			for (String e1 : entitiesList) {
+				JSONArray matrixAux = new JSONArray();
+				for (String e2 : entitiesList) {
+					if (e1.equals(e2)) {
+						matrixAux.put(1);
+					} else {
+						float inCommon = 0;
+						float inCommonW = 0;
+						for (Pair<String,String> p1 : entityControllers.get(e1)) {
+							for (Pair<String,String> p2 : entityControllers.get(e2)) {
+								if (p1.getFirst().equals(p2.getFirst()))
+									inCommon++;
+								if (p1.getFirst().equals(p2.getFirst()) && p1.getSecond().contains("W") && p2.getSecond().contains("W"))
+									inCommonW++;
+							}
+						}
+
+						float entitiesSequenceCount = 0;
+						float totalSequenceCount = 0;
+						controllers = json.sortedKeys();
+						while(controllers.hasNext()) {
+							String controller = controllers.next();
+			
+							JSONArray entities = json.getJSONArray(controller);
+							boolean matched = false;
+							for (int i = 0; i < entities.length() - 1; i++) {
+								JSONArray e1ArrayCandidate = entities.getJSONArray(i);
+								JSONArray e2ArrayCandidate = entities.getJSONArray(i+1);
+								String e1Candidate = e1ArrayCandidate.getString(0);
+								String e2Candidate = e2ArrayCandidate.getString(0);
+								if (e1.equals(e1Candidate) && e2.equals(e2Candidate)) {
+									entitiesSequenceCount++;
+									matched = true;
+								}
+							}
+							if (matched) {
+								totalSequenceCount += entities.length() - 1;
+							}
+						}
+
+
+						float accessMetric = inCommon / entityControllers.get(e1).size();
+						float readWriteMetric = inCommonW / entityControllers.get(e1).size();
+						float sequenceMetric = totalSequenceCount == 0 ? 0 : entitiesSequenceCount / totalSequenceCount;
+						float metric = accessMetric * Float.parseFloat(accessMetricWeight) + 
+									   readWriteMetric * Float.parseFloat(readWriteMetricWeight) +
+									   sequenceMetric * Float.parseFloat(sequenceMetricWeight);
+						matrixAux.put(metric);
+					}
+				}
+				matrix.put(matrixAux);
+			}
+			dendrogramData.put("matrix", matrix);
+			dendrogramData.put("entities", entitiesList);
+
+			try (FileWriter file = new FileWriter(dendrogramsFolder + dendrogramName + ".txt")){
+				file.write(dendrogramData.toString());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			// run python script with clustering algorithm
 			Runtime r = Runtime.getRuntime();
-			String pythonScriptPath = fileUploadPath + "dendrogram.py";
-			String[] cmd = new String[8];
+			String pythonScriptPath = resourcesPath + "dendrogram.py";
+			String[] cmd = new String[5];
 			cmd[0] = PYTHON;
 			cmd[1] = pythonScriptPath;
 			cmd[2] = dendrogramsFolder;
 			cmd[3] = dendrogramName;
 			cmd[4] = linkageType;
-			cmd[5] = accessMetricWeight;
-			cmd[6] = readWriteMetricWeight;
-			cmd[7] = sequenceMetricWeight;
 			
 			Process p = r.exec(cmd);
 
@@ -190,7 +267,6 @@ public class Mono2MicroController {
 			while ((line = bre.readLine()) != null) {
 				System.out.println("Inside Elapsed time: " + line + " seconds");
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -235,7 +311,7 @@ public class Mono2MicroController {
 			Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
 
 			Runtime r = Runtime.getRuntime();
-			String pythonScriptPath = fileUploadPath + "cutDendrogram.py";
+			String pythonScriptPath = resourcesPath + "cutDendrogram.py";
 			String[] cmd = new String[6];
 			cmd[0] = PYTHON;
 			cmd[1] = pythonScriptPath;
@@ -249,7 +325,7 @@ public class Mono2MicroController {
 
 			BufferedReader bre = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			float silhouetteScore = Float.parseFloat(bre.readLine());
-			
+
 			Graph graph;
 			if (dend.getGraphsNames().contains("Graph_" + cutValue)) {
 				int i = 2;
@@ -265,11 +341,16 @@ public class Mono2MicroController {
 			JSONObject json = new JSONObject(IOUtils.toString(is, "UTF-8"));
 
 			Iterator<String> clusters = json.sortedKeys();
+			ArrayList<Integer> clusterIds = new ArrayList<>();
 
 			while(clusters.hasNext()) {
-				String clusterName = clusters.next();
-				JSONArray entities = json.getJSONArray(clusterName);
-				Cluster cluster = new Cluster(clusterName);
+				clusterIds.add(Integer.parseInt(clusters.next()));
+			}
+			Collections.sort(clusterIds);
+			for (Integer id : clusterIds) {
+				String clusterId = String.valueOf(id);
+				JSONArray entities = json.getJSONArray(clusterId);
+				Cluster cluster = new Cluster("Cluster" + clusterId);
 				for (int i = 0; i < entities.length(); i++) {
 					String entity = entities.getString(i);
 					cluster.addEntity(entity);

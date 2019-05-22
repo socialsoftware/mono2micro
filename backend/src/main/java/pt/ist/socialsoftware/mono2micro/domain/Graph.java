@@ -232,12 +232,13 @@ public class Graph {
 	}
 
 	public void calculateControllerComplexity(Controller controller) {
-		float complexity = 0;
-		float complexityRW = 0;
+		float complexity, complexityRW;
+		float clusterAccessed = 0;
+		float clusterAccessedRW = 0;
 		for (Cluster cluster : this.clusters) {
 			for (Entity entity : cluster.getEntities()) {
 				if (controller.containsEntity(entity.getName())) {
-					complexity++;
+					clusterAccessed++;
 
 					boolean write = false;
 					for (Pair<Entity,String> pair : controller.getEntitiesRW()) {
@@ -248,16 +249,20 @@ public class Graph {
 					}
 
 					if (write)
-						complexityRW += 1;
+						clusterAccessedRW += 1;
 					else
-						complexityRW += 0.5;
-
+						clusterAccessedRW += 0.5;
 					break;
 				}
 			}
 		}
-		complexity /= this.clusters.size();
-		complexityRW /= (float)this.clusters.size();
+		if (clusterAccessed == 1) {
+			complexity = 0;
+			complexityRW = 0;
+		} else {
+			complexity = clusterAccessed / this.clusters.size();
+			complexityRW = clusterAccessedRW / this.clusters.size();
+		}
 		this.controllersComplexity.put(controller.getName(), complexity);
 		this.controllersComplexityRW.put(controller.getName(), complexityRW);
 	}
