@@ -163,40 +163,42 @@ public class Graph {
 	public void calculateClusterComplexity(Cluster cluster, List<Controller> controllers, Map<String,List<Cluster>> controllerClusters) {
 		float complexity = 0;
 		float complexityRW = 0;
-		int totalControllers = 0;
-		for (Controller controller : controllers) {
-			for (Cluster c : controllerClusters.get(controller.getName())) {
-				if (c.getName().equals(cluster.getName())) {
-					if (controllerClusters.get(controller.getName()).size() > 1)
-						totalControllers++;
-					
-					float complexityRWaux = 0;
-					for (Cluster c2 : controllerClusters.get(controller.getName())) {
-						if (!c2.getName().equals(cluster.getName())) {
-							boolean write = false;
-							for (Pair<Entity,String> pair : controller.getEntitiesRW()) {
-								if (c2.containsEntity(pair.getFirst().getName())) {
-									if (pair.getSecond().contains("W")) {
-										write = true;
+		if (this.clusters.size() > 1) {
+			int totalControllers = 0;
+			for (Controller controller : controllers) {
+				for (Cluster c : controllerClusters.get(controller.getName())) {
+					if (c.getName().equals(cluster.getName())) {
+						if (controllerClusters.get(controller.getName()).size() > 1)
+							totalControllers++;
+						
+						float complexityRWaux = 0;
+						for (Cluster c2 : controllerClusters.get(controller.getName())) {
+							if (!c2.getName().equals(cluster.getName())) {
+								boolean write = false;
+								for (Pair<Entity,String> pair : controller.getEntitiesRW()) {
+									if (c2.containsEntity(pair.getFirst().getName())) {
+										if (pair.getSecond().contains("W")) {
+											write = true;
+										}
 									}
 								}
+								if (write)
+									complexityRWaux += 1.0;
+								else
+									complexityRWaux += 0.5;
 							}
-							if (write)
-								complexityRWaux += 1.0;
-							else
-								complexityRWaux += 0.5;
 						}
-					}
-					
-					complexityRW += complexityRWaux / (this.clusters.size() - 1);
+						
+						complexityRW += complexityRWaux / (this.clusters.size() - 1);
 
-					complexity += ((float) controllerClusters.get(controller.getName()).size() - 1) / (this.clusters.size() - 1);
-					break;
+						complexity += ((float) controllerClusters.get(controller.getName()).size() - 1) / (this.clusters.size() - 1);
+						break;
+					}
 				}
 			}
+			complexity /= totalControllers;
+			complexityRW /= totalControllers;
 		}
-		complexity /= totalControllers;
-		complexityRW /= totalControllers;
 		cluster.setComplexity(complexity);
 		cluster.setComplexityRW(complexityRW);
 	}

@@ -127,8 +127,9 @@ public class Mono2MicroController {
 		if (!directory.exists())
 			directory.mkdir();
 
-		if (dendrogramManager.getDendrogramNames().contains(dendrogramName)) {
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		for (String name : dendrogramManager.getDendrogramNames()) {
+			if (name.toUpperCase().equals(dendrogramName.toUpperCase()))
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
 		Dendrogram dend = new Dendrogram(dendrogramName);
@@ -138,12 +139,15 @@ public class Mono2MicroController {
 		try {
 			// save data to persistent dendrogram
 			Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
+			Map<String,Integer> sequenceCount = new HashMap<>();
+			int totalSequenceCount = 0;
 			List<String> entitiesList = new ArrayList<>();
 			JSONArray matrix = new JSONArray();
 			JSONObject dendrogramData = new JSONObject();
 
 			InputStream is =  new BufferedInputStream(datafile.getInputStream());
 			JSONObject json = new JSONObject(IOUtils.toString(is, "UTF-8"));
+			is.close();
 
 			Iterator<String> controllers = json.sortedKeys();
 
@@ -181,9 +185,18 @@ public class Mono2MicroController {
 					}
 
 					if (!entitiesList.contains(entity)) entitiesList.add(entity);
+
+					if (i < entities.length() - 1) {
+						JSONArray nextEntityArray = entities.getJSONArray(i+1);
+						String nextEntity = nextEntityArray.getString(0);
+						String e1e2 = entity + "->" + nextEntity;
+						
+						int count = sequenceCount.containsKey(e1e2) ? sequenceCount.get(e1e2) : 0;
+						sequenceCount.put(e1e2, count + 1);
+					}
 				}
+				totalSequenceCount += entities.length() - 1;
 			}
-			is.close();
 
 			Collections.sort(entitiesList);
 
@@ -204,33 +217,14 @@ public class Mono2MicroController {
 							}
 						}
 
-						float entitiesSequenceCount = 0;
-						float totalSequenceCount = 0;
-						controllers = json.sortedKeys();
-						while(controllers.hasNext()) {
-							String controller = controllers.next();
-			
-							JSONArray entities = json.getJSONArray(controller);
-							boolean matched = false;
-							for (int i = 0; i < entities.length() - 1; i++) {
-								JSONArray e1ArrayCandidate = entities.getJSONArray(i);
-								JSONArray e2ArrayCandidate = entities.getJSONArray(i+1);
-								String e1Candidate = e1ArrayCandidate.getString(0);
-								String e2Candidate = e2ArrayCandidate.getString(0);
-								if (e1.equals(e1Candidate) && e2.equals(e2Candidate)) {
-									entitiesSequenceCount++;
-									matched = true;
-								}
-							}
-							if (matched) {
-								totalSequenceCount += entities.length() - 1;
-							}
-						}
-
+						String e1e2 = e1 + "->" + e2;
+						String e2e1 = e2 + "->" + e1;
+						float e1e2Count = sequenceCount.containsKey(e1e2) ? sequenceCount.get(e1e2) : 0;
+						float e2e1Count = sequenceCount.containsKey(e2e1) ? sequenceCount.get(e2e1) : 0;
 
 						float accessMetric = inCommon / entityControllers.get(e1).size();
 						float readWriteMetric = inCommonW / entityControllers.get(e1).size();
-						float sequenceMetric = totalSequenceCount == 0 ? 0 : entitiesSequenceCount / totalSequenceCount;
+						float sequenceMetric = (e1e2Count + e2e1Count) / totalSequenceCount;
 						float metric = accessMetric * Float.parseFloat(accessMetricWeight) + 
 									   readWriteMetric * Float.parseFloat(readWriteMetricWeight) +
 									   sequenceMetric * Float.parseFloat(sequenceMetricWeight);

@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,10 +39,16 @@ public class DendrogramManager {
 
 	public List<Dendrogram> getDendrograms() {
 		List<Dendrogram> dendrograms = new ArrayList<>();
-		File file = new File(dendrogramsFolder);
-		if (!file.exists())
-			file.mkdir();
-		for (String filename : file.list()) {
+		File dendFolder = new File(dendrogramsFolder);
+		if (!dendFolder.exists()) {
+			dendFolder.mkdir();
+			return dendrograms;
+		}
+
+		File[] files = dendFolder.listFiles();
+		Arrays.sort(files, Comparator.comparingLong(File::lastModified));
+		for (File file : files) {
+			String filename = file.getName();
 			if (filename.endsWith(".json"))
 				dendrograms.add(getDendrogram(filename.substring(0, filename.length()-5)));
 		}
@@ -49,8 +57,17 @@ public class DendrogramManager {
 
 	public List<String> getDendrogramNames() {
 		List<String> dendrogramNames = new ArrayList<>();
-		File file = new File(dendrogramsFolder);
-		for (String filename : file.list()) {
+		File dendFolder = new File(dendrogramsFolder);
+		if (!dendFolder.exists()) {
+			dendFolder.mkdir();
+			return dendrogramNames;
+		}
+
+		File[] files = dendFolder.listFiles();
+		Arrays.sort(files, Comparator.comparingLong(File::lastModified));
+		
+		for (File file : files) {
+			String filename = file.getName();
 			if (filename.endsWith(".json"))
 				dendrogramNames.add(filename.substring(0, filename.length()-5));
 		}

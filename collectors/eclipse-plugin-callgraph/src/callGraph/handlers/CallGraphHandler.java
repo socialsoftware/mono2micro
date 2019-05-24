@@ -330,9 +330,9 @@ public class CallGraphHandler extends AbstractHandler {
 						e.printStackTrace();
 					}
 				}
-				if (newEntities2.length() > 0) {
+				if (entities2.length() > 0) {
 					try {
-						callgraph2.put(controllerFullName, newEntities2);
+						callgraph2.put(controllerFullName, entities2);
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}

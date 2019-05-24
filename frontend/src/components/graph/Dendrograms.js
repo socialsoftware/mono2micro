@@ -33,7 +33,7 @@ export class Dendrograms extends React.Component {
         const service = new RepositoryService();
         service.getDendrograms().then(response => {
             this.setState({
-                dendrogram: response.data === [] ? {} : response.data[0],
+                dendrogram: response.data === [] ? {} : response.data[response.data.length - 1],
                 dendrograms: response.data,
                 dendrogramGraphs: response.data.map(d => d.graphs).flat()
             });
