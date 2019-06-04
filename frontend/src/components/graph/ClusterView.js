@@ -6,7 +6,7 @@ import { ModalMessage } from '../util/ModalMessage';
 import { DataSet } from 'vis';
 import { views, types } from './ViewsMenu';
 import BootstrapTable from 'react-bootstrap-table-next';
-import { Button, DropdownButton, Dropdown, FormControl, ButtonGroup, ButtonToolbar, InputGroup} from 'react-bootstrap';
+import { Button, ButtonGroup } from 'react-bootstrap';
 
 export const clusterViewHelp = (<div>
     Hover or double click cluster to see entities inside.<br />
@@ -138,7 +138,7 @@ export class ClusterView extends React.Component {
             this.state.couplingValues[clusters[i].name][clusters[i].name] = 1;
         }
 
-        for (var i = 0; i < clusters.length; i++) { 
+        for (i = 0; i < clusters.length; i++) { 
             let cluster1Controllers = clusterControllers[clusters[i].name].map(c => c.name);
             for (var j = i+1; j < clusters.length; j++) {
                 let cluster2Controllers = clusterControllers[clusters[j].name].map(c => c.name);
@@ -338,19 +338,22 @@ export class ClusterView extends React.Component {
     }
 
     render() {
-        const rows = this.state.clusters.map(cluster => {
+        const metricsRows = this.state.clusters.map(cluster => {
             return {
                 cluster: cluster.name,
                 controllers: this.state.clusterControllers[cluster.name].length,
                 entities: cluster.entities.length,
-                complexity: Number(cluster.complexity.toFixed(2)).toString(),
-                complexityrw: Number(cluster.complexityRW.toFixed(2)).toString(),
-                cohesion: Number(cluster.cohesion.toFixed(2)).toString(),
-                coupling: Number(cluster.coupling.toFixed(2)).toString()
+                complexity: Number(cluster.complexity.toFixed(2)),
+                complexityrw: Number(cluster.complexityRW.toFixed(2)),
+                complexityseq: Number(cluster.complexitySeq.toFixed(2)),
+                cohesion: Number(cluster.cohesion.toFixed(2)),
+                coupling: Number(((Object.values(cluster.coupling).reduce((a,b) => a + b, 0) - 1) / (Object.keys(cluster.coupling).length - 1)).toFixed(2)),
+                couplingrw: Number(((Object.values(cluster.couplingRW).reduce((a,b) => a + b, 0) - 1) / (Object.keys(cluster.couplingRW).length - 1)).toFixed(2)),
+                couplingseq: Number(((Object.values(cluster.couplingSeq).reduce((a,b) => a + b, 0) - 1) / (Object.keys(cluster.couplingSeq).length - 1)).toFixed(2))
             }
         });
 
-        const columns = [{
+        const metricsColumns = [{
             dataField: 'cluster',
             text: 'Cluster'
         }, {
@@ -370,6 +373,10 @@ export class ClusterView extends React.Component {
             text: 'Complexity RW',
             sort: true
         }, {
+            dataField: 'complexityseq',
+            text: 'Complexity Seq',
+            sort: true
+        }, {
             dataField: 'cohesion',
             text: 'Cohesion',
             sort: true
@@ -377,13 +384,23 @@ export class ClusterView extends React.Component {
             dataField: 'coupling',
             text: 'Coupling',
             sort: true
+        }, {
+            dataField: 'couplingrw',
+            text: 'Coupling RW',
+            sort: true
+        }, {
+            dataField: 'couplingseq',
+            text: 'Coupling Seq',
+            sort: true
         }];
 
         const couplingRows = this.state.clusters.map(c1 => {
             return Object.assign({id: c1.name}, ...this.state.clusters.map(c2 => {
-                let couplingC1C2 = this.state.couplingValues[c1.name][c2.name];
+                let couplingC1C2 = Number(c1.coupling[c2.name].toFixed(2)).toString();
+                let couplingRWC1C2 = Number(c1.couplingRW[c2.name].toFixed(2)).toString();
+                let couplingSeqC1C2 = Number(c1.couplingSeq[c2.name].toFixed(2)).toString();
                 return {
-                    [c2.name]: Number(couplingC1C2.toFixed(2)).toString()
+                    [c2.name]: <pre>{couplingC1C2 + "\n" + couplingRWC1C2 + "\n" + couplingSeqC1C2}</pre>
                 }
             }))
         });
@@ -437,7 +454,7 @@ export class ClusterView extends React.Component {
                 }
 
                 {this.state.currentSubView === "Metrics" &&
-                    <BootstrapTable bootstrap4 keyField='cluster' data={ rows } columns={ columns } />
+                    <BootstrapTable bootstrap4 keyField='cluster' data={ metricsRows } columns={ metricsColumns } />
                 }
                 
                 {this.state.currentSubView === "Coupling Matrix" &&

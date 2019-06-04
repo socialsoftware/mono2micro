@@ -4,7 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,9 +19,7 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -44,17 +41,19 @@ import pt.ist.socialsoftware.mono2micro.domain.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.PropertiesManager;
 
 @RestController
-@RequestMapping(value = "/mono2micro/")
-public class Mono2MicroController {
+@RequestMapping(value = "/mono2micro")
+public class DendrogramController {
+
 	private static final String PYTHON = PropertiesManager.getProperties().getProperty("python");
 
-	private static Logger logger = LoggerFactory.getLogger(Mono2MicroController.class);
+	private static Logger logger = LoggerFactory.getLogger(DendrogramController.class);
 
 	private String resourcesPath = "src/main/resources/";
 
 	private String dendrogramsFolder = "src/main/resources/dendrograms/";
 
 	private DendrogramManager dendrogramManager = new DendrogramManager();
+
 
 	@RequestMapping(value = "/dendrogramNames", method = RequestMethod.GET)
 	public ResponseEntity<List<String>> getDendrogramNames() {
@@ -63,6 +62,7 @@ public class Mono2MicroController {
 		return new ResponseEntity<>(dendrogramManager.getDendrogramNames(), HttpStatus.OK);
 	}
 
+
 	@RequestMapping(value = "/dendrograms", method = RequestMethod.GET)
 	public ResponseEntity<List<Dendrogram>> getDendrograms() {
 		logger.debug("getDendrograms");
@@ -70,51 +70,40 @@ public class Mono2MicroController {
 		return new ResponseEntity<>(dendrogramManager.getDendrograms(), HttpStatus.OK);
 	}
 
+
+	@RequestMapping(value = "/dendrogram", method = RequestMethod.GET)
+	public ResponseEntity<Dendrogram> getDendrogram(@RequestParam("dendrogramName") String dendrogramName) {
+		logger.debug("getDendrogram");
+
+		return new ResponseEntity<Dendrogram>(dendrogramManager.getDendrogram(dendrogramName), HttpStatus.OK);
+	}
+
+
+	@RequestMapping(value = "/dendrogramImage", method = RequestMethod.GET)
+	public ResponseEntity<byte[]> getDendrogramImage(@RequestParam("dendrogramName") String dendrogramName) {
+		logger.debug("getDendrogramImage");
+
+		File f = new File(dendrogramsFolder + dendrogramName + ".png");
+		try {
+			return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(Files.readAllBytes(f.toPath()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	}
+
+
 	@RequestMapping(value = "/deleteDendrogram", method = RequestMethod.DELETE)
 	public ResponseEntity<HttpStatus> deleteDendrogram(@RequestParam("dendrogramName") String dendrogramName) {
 		logger.debug("deleteDendrogram");
 
-		dendrogramManager.deleteDendrogram(dendrogramName);
-
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
-
-	@RequestMapping(value = "/deleteGraph", method = RequestMethod.DELETE)
-	public ResponseEntity<HttpStatus> deleteGraph(@RequestParam("dendrogramName") String dendrogramName, @RequestParam("graphName") String graphName) {
-		logger.debug("deleteGraph");
-
-		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-		boolean success = dend.deleteGraph(graphName);
-		if (success) {
-			dendrogramManager.writeDendrogram(dendrogramName, dend);
+		boolean deleted = dendrogramManager.deleteDendrogram(dendrogramName);
+		if (deleted)
 			return new ResponseEntity<>(HttpStatus.OK);
-		} else {
+		else
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
 	}
 
-	@RequestMapping(value = "/graphs", method = RequestMethod.GET)
-	public ResponseEntity<List<Graph>> getGraphs(@RequestParam("dendrogramName") String dendrogramName) {
-		logger.debug("getGraphs");
-
-		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-		return new ResponseEntity<>(dend.getGraphs(), HttpStatus.OK);
-	}
-
-	@RequestMapping(value = "/graph/", method = RequestMethod.GET)
-	public ResponseEntity<Graph> getGraph(@RequestParam("dendrogramName") String dendrogramName, @RequestParam("graphName") String graphName) {
-		logger.debug("getGraph: {}", graphName);
-
-		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-		List<Graph> graphs = dend.getGraphs();
-		for (Graph graph : graphs) {
-			if (graph.getName().equals(graphName)) {
-				return new ResponseEntity<>(graph, HttpStatus.OK);
-			}
-		}
-
-		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-	}
 
 	@RequestMapping(value = "/createDendrogram", method = RequestMethod.POST)
 	public ResponseEntity<Dendrogram> createDendrogram(@RequestParam("dendrogramName") String dendrogramName,
@@ -164,7 +153,10 @@ public class Mono2MicroController {
 					if (!dend.getController(controller).containsEntity(entity))
 						dend.getController(controller).addEntity(entity);
 					dend.getController(controller).addEntityRW(entity, mode);
-					dend.getController(controller).addEntityRWseq(entity, mode);
+					dend.getController(controller).addEntitySeq(entity, mode);
+
+					if (!dend.containsEntity(entity))
+						dend.addEntity(new Entity(entity));
 
 					if (entityControllers.containsKey(entity)) {
 						boolean containsController = false;
@@ -232,6 +224,13 @@ public class Mono2MicroController {
 					}
 				}
 				matrix.put(matrixAux);
+
+				float immutability = 0;
+				for (Pair<String,String> controllerPair : entityControllers.get(e1)) {
+					if (controllerPair.getSecond().equals("R"))
+						immutability++;
+				}
+				dend.getEntity(e1).setImmutability(immutability / entityControllers.get(e1).size());
 			}
 			dendrogramData.put("matrix", matrix);
 			dendrogramData.put("entities", entitiesList);
@@ -275,30 +274,9 @@ public class Mono2MicroController {
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
-	@RequestMapping(value = "/loadDendrogram", method = RequestMethod.GET)
-	public ResponseEntity<Dendrogram> loadDendrogram(@RequestParam("dendrogramName") String dendrogramName) {
-		logger.debug("loadDendrogram");
-
-		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-
-		return new ResponseEntity<Dendrogram>(dend, HttpStatus.OK);
-	}
-
-	@RequestMapping(value = "/dendrogram-image", method = RequestMethod.GET)
-	public ResponseEntity<byte[]> getImage(@RequestParam("dendrogramName") String dendrogramName) {
-		logger.debug("load dendrogram image");
-
-		File f = new File(dendrogramsFolder + dendrogramName + ".png");
-		try {
-			return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(Files.readAllBytes(f.toPath()));
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-		}
-		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-	}
 
 	@RequestMapping(value = "/cutDendrogram", method = RequestMethod.GET)
-	public ResponseEntity<Graph> getCutDendrogram(@RequestParam("dendrogramName") String dendrogramName, @RequestParam("cutValue") String cutValue) {
+	public ResponseEntity<Graph> cutDendrogram(@RequestParam("dendrogramName") String dendrogramName, @RequestParam("cutValue") String cutValue) {
 		logger.debug("cutDendrogram with value: {}", cutValue);
 
 		try {
@@ -362,101 +340,5 @@ public class Mono2MicroController {
 		}
 
 		return new ResponseEntity<>(HttpStatus.OK);
-	}
-
-	@RequestMapping(value = "/mergeClusters", method = RequestMethod.GET)
-	public ResponseEntity<Dendrogram> mergeClusters(@RequestParam("dendrogramName") String dendrogramName, @RequestParam("graphName") String graphName,
-			@RequestParam("cluster1") String cluster1, @RequestParam("cluster2") String cluster2,
-			@RequestParam("newName") String newName) {
-		logger.debug("mergeClusters {} with {}", cluster1, cluster2);
-
-		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-		dend.mergeClusters(graphName, cluster1, cluster2, newName);
-		dendrogramManager.writeDendrogram(dendrogramName, dend);
-		return new ResponseEntity<Dendrogram>(dend, HttpStatus.OK);
-	}
-
-	@RequestMapping(value = "/renameCluster", method = RequestMethod.GET)
-	public ResponseEntity<Dendrogram> renameCluster(@RequestParam("dendrogramName") String dendrogramName, @RequestParam("graphName") String graphName,
-			@RequestParam("clusterName") String clusterName, @RequestParam("newName") String newName) {
-		logger.debug("renameCluster {}", clusterName);
-		
-		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-		boolean success = dend.renameCluster(graphName, clusterName, newName);
-		if (success) {
-			dendrogramManager.writeDendrogram(dendrogramName, dend);
-			return new ResponseEntity<Dendrogram>(dend, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<Dendrogram>(dend, HttpStatus.BAD_REQUEST);
-		}
-	}
-
-	@RequestMapping(value = "/renameGraph", method = RequestMethod.GET)
-	public ResponseEntity<Dendrogram> renameGraph(@RequestParam("dendrogramName") String dendrogramName, @RequestParam("graphName") String graphName,
-			@RequestParam("newName") String newName) {
-		logger.debug("renameGraph {}", graphName);
-
-		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-		boolean success = dend.renameGraph(graphName, newName);
-		if (success) {
-			dendrogramManager.writeDendrogram(dendrogramName, dend);
-			return new ResponseEntity<Dendrogram>(dend, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<Dendrogram>(dend, HttpStatus.BAD_REQUEST);
-		}
-	}
-
-	@RequestMapping(value = "/splitCluster", method = RequestMethod.GET)
-	public ResponseEntity<Dendrogram> splitCluster(@RequestParam("dendrogramName") String dendrogramName, @RequestParam("graphName") String graphName,
-			@RequestParam("clusterName") String clusterName, @RequestParam("newName") String newName, 
-			@RequestParam("entities") String entities) {
-		logger.debug("splitCluster: {}", clusterName);
-
-		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-		dend.splitCluster(graphName, clusterName, newName, entities.split(","));
-		dendrogramManager.writeDendrogram(dendrogramName, dend);
-		return new ResponseEntity<Dendrogram>(dend, HttpStatus.OK);
-	}
-
-	@RequestMapping(value = "/getControllerClusters", method = RequestMethod.GET)
-	public ResponseEntity<Map<String,List<Cluster>>> getControllerClusters(@RequestParam("dendrogramName") String dendrogramName, @RequestParam("graphName") String graphName) {
-		logger.debug("getControllerClusters: in graph {}", graphName);
-
-		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-		return new ResponseEntity<Map<String,List<Cluster>>>(dend.getControllerClusters(graphName), HttpStatus.OK);
-	}
-
-	@RequestMapping(value = "/getClusterControllers", method = RequestMethod.GET)
-	public ResponseEntity<Map<String,List<Controller>>> getClusterControllers(@RequestParam("dendrogramName") String dendrogramName, @RequestParam("graphName") String graphName) {
-		logger.debug("getClusterControllers: in graph {}", graphName);
-
-		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-		return new ResponseEntity<Map<String,List<Controller>>>(dend.getClusterControllers(graphName), HttpStatus.OK);
-	}
-
-	@RequestMapping(value = "/getControllers", method = RequestMethod.GET)
-	public ResponseEntity<List<Controller>> getControllers(@RequestParam("dendrogramName") String dendrogramName) {
-		logger.debug("getControllers");
-		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-		return new ResponseEntity<List<Controller>>(dend.getControllers(), HttpStatus.OK);
-	}
-
-	@RequestMapping(value = "/getController", method = RequestMethod.GET)
-	public ResponseEntity<Controller> getController(@RequestParam("dendrogramName") String dendrogramName, @RequestParam("controllerName") String controllerName) {
-		logger.debug("getController");
-		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-		return new ResponseEntity<Controller>(dend.getController(controllerName), HttpStatus.OK);
-	}
-
-	@RequestMapping(value = "/transferEntities", method = RequestMethod.GET)
-	public ResponseEntity<Dendrogram> transferEntities(@RequestParam("dendrogramName") String dendrogramName, @RequestParam("graphName") String graphName,
-			@RequestParam("fromCluster") String fromCluster, @RequestParam("toCluster") String toCluster, 
-			@RequestParam("entities") String entities) {
-		logger.debug("transferEntities: {}", fromCluster);
-
-		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-		dend.transferEntities(graphName, fromCluster, toCluster, entities.split(","));
-		dendrogramManager.writeDendrogram(dendrogramName, dend);
-		return new ResponseEntity<Dendrogram>(dend, HttpStatus.OK);
 	}
 }

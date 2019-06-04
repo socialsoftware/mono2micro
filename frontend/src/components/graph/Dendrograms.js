@@ -1,6 +1,6 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
-import { Nav, ButtonGroup, Button, Card, CardDeck, CardGroup, Breadcrumb, BreadcrumbItem, Table } from 'react-bootstrap';
+import { ButtonGroup, Button, Card, Breadcrumb, BreadcrumbItem } from 'react-bootstrap';
 import { DENDROGRAM_URL } from '../../constants/constants';
 import BootstrapTable from 'react-bootstrap-table-next';
 
@@ -98,18 +98,8 @@ export class Dendrograms extends React.Component {
         }, {
             dataField: 'ss',
             text: 'Silhouette Score',
-            sort: true,
-            headerFormatter: columnHelp
+            sort: true
         }];
-
-        function columnHelp(column, colIndex) {
-            return (
-                <div>
-                    {column.text}
-                    <img width="10px" height="10px" src="https://cdn4.iconfinder.com/data/icons/symbols-2-1/32/11_questionmark_ask_circle_round-512.png"/>
-                </div>
-            );
-        }
 
         return (
             <div>

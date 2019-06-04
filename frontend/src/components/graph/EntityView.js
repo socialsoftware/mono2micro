@@ -4,6 +4,8 @@ import { RepositoryService } from './../../services/RepositoryService';
 import { VisNetwork } from '../util/VisNetwork';
 import { DataSet } from 'vis';
 import { views, types } from './ViewsMenu';
+import BootstrapTable from 'react-bootstrap-table-next';
+import { Button, ButtonGroup} from 'react-bootstrap';
 
 export const entityViewHelp = (<div>
     Hover entity to see controllers that access it.< br/>
@@ -75,7 +77,8 @@ export class EntityView extends React.Component {
             clusterControllers: {},
             showGraph: false,
             amountList: [],
-            excludeControllerList: []
+            excludeControllerList: [],
+            currentSubView: "Graph"
         }
 
         this.handleEntitySubmit = this.handleEntitySubmit.bind(this);
@@ -88,35 +91,31 @@ export class EntityView extends React.Component {
 
     componentDidMount() {
         const service = new RepositoryService();
-        service.getGraph(this.props.dendrogramName, this.props.graphName).then(response1 => {
-            service.getControllers(this.props.dendrogramName, this.props.graphName).then(response2 => {
-                service.getClusterControllers(this.props.dendrogramName, this.props.graphName).then(response3 => {
-                    console.log(response2.data);
-                    this.setState({
-                        graph: response1.data,
-                        clusters: response1.data.clusters,
-                        entities: response1.data.clusters.map(c => c.entities).flat(),
-                        controllers: response2.data,
-                        clusterControllers: response3.data
-                    }, () => {
-                        let amountList = {};
-                        for (var i = 0; i < this.state.entities.length; i++) {
-                            let amount = 0;
-                            let entity = this.state.entities[i];
-                            let entityCluster = this.state.clusters.filter(c => c.entities.map(e => e.name).includes(entity.name))[0];
-                            for (var j = 0; j < this.state.clusters.length; j++) {
-                                let cluster = this.state.clusters[j];
-                                let commonControllers = this.getCommonControllers(entity.name, cluster);
-                                
-                                if (cluster.name !== entityCluster.name && commonControllers.length > 0) {
-                                    amount += 1;
-                                }
+        service.getDendrogram(this.props.dendrogramName).then(response => {
+            service.getClusterControllers(this.props.dendrogramName, this.props.graphName).then(response2 => {
+                this.setState({
+                    graph: response.data.graphs.filter(graph => graph.name === this.props.graphName)[0],
+                    clusters: response.data.graphs.filter(graph => graph.name === this.props.graphName)[0].clusters,
+                    entities: response.data.entities,
+                    controllers: response.data.controllers,
+                    clusterControllers: response2.data
+                }, () => {
+                    let amountList = {};
+                    for (var i = 0; i < this.state.entities.length; i++) {
+                        let amount = 0;
+                        let entity = this.state.entities[i];
+                        let entityCluster = this.state.clusters.filter(c => c.entities.map(e => e.name).includes(entity.name))[0];
+                        for (var j = 0; j < this.state.clusters.length; j++) {
+                            let cluster = this.state.clusters[j];
+                            let commonControllers = this.getCommonControllers(entity.name, cluster);
+                            if (cluster.name !== entityCluster.name && commonControllers.length > 0) {
+                                amount += 1;
                             }
-                            amountList[entity.name] = amount;
                         }
-                        this.setState({
-                            amountList: amountList
-                        });
+                        amountList[entity.name] = amount;
+                    }
+                    this.setState({
+                        amountList: amountList
                     });
                 });
             });
@@ -196,26 +195,64 @@ export class EntityView extends React.Component {
         });
     }
 
+    changeSubView(value) {
+        this.setState({
+            currentSubView: value
+        });
+    }
+
     render() {
+        const metricsRows = this.state.entities.map(e => {
+            return {
+                entity: e.name,
+                immutability: Number(e.immutability.toFixed(2))
+            }
+        });
+
+        const metricsColumns = [{
+            dataField: 'entity',
+            text: 'Entity',
+            sort: true
+        }, {
+            dataField: 'immutability',
+            text: 'Immutability',
+            sort: true
+        }];
+
         return (
             <div>
-                <EntityOperationsMenu
-                    handleEntitySubmit={this.handleEntitySubmit}
-                    handleExcludeController={this.handleExcludeController}
-                    entities={this.state.entities}
-                    amountList={this.state.amountList}
-                    controllers={this.state.controllers}
-                    excludeControllerList={this.state.excludeControllerList}
-                />
-                
-                <div style={{width:'1000px' , height: '700px'}}>
-                    <VisNetwork 
-                        visGraph={this.state.visGraph}
-                        options={options}
-                        onSelection={this.handleSelectNode}
-                        onDeselection={this.handleDeselectNode}
-                        view={views.ENTITY} />
-                </div>
+                <ButtonGroup className="mb-2">
+                    <Button disabled={this.state.currentSubView === "Graph"} onClick={() => this.changeSubView("Graph")}>Graph</Button>
+                    <Button disabled={this.state.currentSubView === "Metrics"} onClick={() => this.changeSubView("Metrics")}>Metrics</Button>
+                </ButtonGroup>
+
+                {this.state.currentSubView === "Graph" &&
+                    <span>
+                    <EntityOperationsMenu
+                        handleEntitySubmit={this.handleEntitySubmit}
+                        handleExcludeController={this.handleExcludeController}
+                        entities={this.state.entities}
+                        amountList={this.state.amountList}
+                        controllers={this.state.controllers}
+                        excludeControllerList={this.state.excludeControllerList}
+                    />
+                    
+                    <div style={{width:'1000px' , height: '700px'}}>
+                        <VisNetwork 
+                            visGraph={this.state.visGraph}
+                            options={options}
+                            onSelection={this.handleSelectNode}
+                            onDeselection={this.handleDeselectNode}
+                            view={views.ENTITY} />
+                    </div>
+                    </span>
+                }
+
+                {this.state.currentSubView === "Metrics" &&
+                    <div>
+                        <BootstrapTable bootstrap4 keyField='entity' data={ metricsRows } columns={ metricsColumns } />
+                    </div>
+                }
             </div>
         );
     }

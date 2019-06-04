@@ -9,6 +9,7 @@ public class Dendrogram {
 	private String name;
 	private List<Graph> graphs = new ArrayList<>();
 	private List<Controller> controllers = new ArrayList<>();
+	private List<Entity> entities = new ArrayList<>();
 	private String linkageType;
 	private String accessMetricWeight;
 	private String readWriteMetricWeight;
@@ -29,18 +30,12 @@ public class Dendrogram {
 		this.name = name;
 	}
 
-	public void setLinkageType(String linkageType) {
-		this.linkageType = linkageType;
-	}
-
 	public String getLinkageType() {
 		return this.linkageType;
 	}
 
-	public void setClusteringMetricWeight(String accessMetricWeight, String readWriteMetricWeight, String sequenceMetricWeight) {
-		this.accessMetricWeight = accessMetricWeight;
-		this.readWriteMetricWeight = readWriteMetricWeight;
-		this.sequenceMetricWeight = sequenceMetricWeight;
+	public void setLinkageType(String linkageType) {
+		this.linkageType = linkageType;
 	}
 
 	public String getAccessMetricWeight() {
@@ -53,6 +48,12 @@ public class Dendrogram {
 
 	public String getSequenceMetricWeight() {
 		return this.sequenceMetricWeight;
+	}
+
+	public void setClusteringMetricWeight(String accessMetricWeight, String readWriteMetricWeight, String sequenceMetricWeight) {
+		this.accessMetricWeight = accessMetricWeight;
+		this.readWriteMetricWeight = readWriteMetricWeight;
+		this.sequenceMetricWeight = sequenceMetricWeight;
 	}
 
 	public List<Graph> getGraphs() {
@@ -110,6 +111,11 @@ public class Dendrogram {
 		calculateMetrics(graphName);
 	}
 
+	public void transferEntities(String graphName, String fromCluster, String toCluster, String[] entities) {
+		getGraph(graphName).transferEntities(fromCluster, toCluster, entities);
+		calculateMetrics(graphName);
+	}
+
 	public List<Controller> getControllers() {
 		return this.controllers;
 	}
@@ -132,49 +138,96 @@ public class Dendrogram {
 		return true;
 	}
 
-	public Map<String,List<Cluster>> getControllerClusters(String graphName) {
-		Map<String,List<Cluster>> result = new HashMap<>();
+	public List<Entity> getEntities() {
+		return this.entities;
+	}
 
-		Graph graph = getGraph(graphName);
-		for (Controller controller : this.controllers) {
-			List<Cluster> touchedClusters = new ArrayList<>();
-			for (Entity entity : controller.getEntities()) {
-				for (Cluster cluster : graph.getClusters()) {
-					if (!touchedClusters.contains(cluster) && cluster.containsEntity(entity.getName())) {
-						touchedClusters.add(cluster);
-					}
-				}
-			}
-			result.put(controller.getName(), touchedClusters);
+	public void addEntity(Entity entity) {
+		this.entities.add(entity);
+	}
+
+	public Entity getEntity(String entityName) {
+		for (Entity entity : this.entities) {
+			if (entity.getName().equals(entityName))
+				return entity;
 		}
-		return result;
+		return null;
+	}
+
+	public boolean containsEntity(String entityName) {
+		if (getEntity(entityName) == null)
+			return false;
+		return true;
 	}
 
 	public Map<String,List<Controller>> getClusterControllers(String graphName) {
-		Map<String,List<Controller>> result = new HashMap<>();
+		Map<String,List<Controller>> clusterControllers = new HashMap<>();
 
 		Graph graph = getGraph(graphName);
 		for (Cluster cluster : graph.getClusters()) {
 			List<Controller> touchedControllers = new ArrayList<>();
-			for (Entity clusterEntity : cluster.getEntities()) {
-				for (Controller controller : this.controllers) {
-					if (!touchedControllers.contains(controller) && controller.containsEntity(clusterEntity.getName())) {
+			for (Controller controller : this.controllers) {
+				for (Entity controllerEntity : controller.getEntities()) {
+					if (cluster.containsEntity(controllerEntity.getName())) {
 						touchedControllers.add(controller);
+						break;
 					}
 				}
 			}
-			result.put(cluster.getName(), touchedControllers);
+			clusterControllers.put(cluster.getName(), touchedControllers);
 		}
-		return result;
+		return clusterControllers;
 	}
 
-	public void transferEntities(String graphName, String fromCluster, String toCluster, String[] entities) {
-		getGraph(graphName).transferEntities(fromCluster, toCluster, entities);
-		calculateMetrics(graphName);
+	public Map<String,List<Cluster>> getControllerClusters(String graphName) {
+		Map<String,List<Cluster>> controllerClusters = new HashMap<>();
+
+		Graph graph = getGraph(graphName);
+		for (Controller controller : this.controllers) {
+			List<Cluster> touchedClusters = new ArrayList<>();
+			for (Cluster cluster : graph.getClusters()) {
+				for (Entity clusterEntity : cluster.getEntities()) {
+					if (controller.containsEntity(clusterEntity.getName())) {
+						touchedClusters.add(cluster);
+						break;
+					}
+				}
+			}
+			controllerClusters.put(controller.getName(), touchedClusters);
+		}
+		return controllerClusters;
+	}
+
+	public Map<String,List<Pair<Cluster,String>>> getControllerClustersSeq(String graphName) {
+		Map<String,List<Pair<Cluster,String>>> controllerClustersSeq = new HashMap<>();
+
+		Graph graph = getGraph(graphName);
+		for (Controller controller : this.controllers) {
+			List<Pair<Cluster,String>> touchedClusters = new ArrayList<>();
+			Pair<Cluster,String> lastCluster = null;
+			for (Pair<Entity,String> entityPair : controller.getEntitiesSeq()) {
+				String entityName = entityPair.getFirst().getName();
+				String mode = entityPair.getSecond();
+				Cluster clusterAccessed = graph.getClusterWithEntity(entityName);
+				if (lastCluster == null){
+					lastCluster = new Pair<Cluster,String>(clusterAccessed, mode);
+					touchedClusters.add(new Pair<Cluster,String>(clusterAccessed, mode));
+				} else if (lastCluster.getFirst().getName().equals(clusterAccessed.getName())) {
+					if (!lastCluster.getSecond().contains(mode)) {
+						lastCluster.setSecond("RW");
+						touchedClusters.get(touchedClusters.size() - 1).setSecond("RW");
+					}
+				} else {
+					lastCluster = new Pair<Cluster,String>(clusterAccessed, mode);
+					touchedClusters.add(new Pair<Cluster,String>(clusterAccessed, mode));
+				}
+			}
+			controllerClustersSeq.put(controller.getName(), touchedClusters);
+		}
+		return controllerClustersSeq;
 	}
 
 	public void calculateMetrics(String graphName) {
-		getGraph(graphName).calculateMetrics(this.controllers, getControllerClusters(graphName));
+		getGraph(graphName).calculateMetrics(getClusterControllers(graphName), getControllerClustersSeq(graphName));
 	}
-
 }

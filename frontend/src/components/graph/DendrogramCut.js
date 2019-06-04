@@ -1,7 +1,7 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
 import { DENDROGRAM_URL } from '../../constants/constants';
-import { Button, ButtonGroup, Form, Card, CardDeck, Breadcrumb, BreadcrumbItem, Table } from 'react-bootstrap';
+import { Button, ButtonGroup, Form, Card, Breadcrumb, BreadcrumbItem } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 
 var HttpStatus = require('http-status-codes');

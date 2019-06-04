@@ -7,7 +7,7 @@ public class Controller {
 	private String name;
 	private List<Entity> entities;
 	private List<Pair<Entity,String>> entitiesRW;
-	private List<Pair<Entity,String>> entitiesRWseq;
+	private List<Pair<Entity,String>> entitiesSeq;
 
 	public Controller() {
 
@@ -17,7 +17,7 @@ public class Controller {
         this.name = name;
 		this.entities = new ArrayList<>();
 		this.entitiesRW = new ArrayList<>();
-		this.entitiesRWseq = new ArrayList<>();
+		this.entitiesSeq = new ArrayList<>();
 	}
 
 	public String getName() {
@@ -26,44 +26,6 @@ public class Controller {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public List<Pair<Entity,String>> getEntitiesRW() {
-		return this.entitiesRW;
-	}
-
-	public void setEntitiesRW(List<Pair<Entity,String>> entitiesRW) {
-		this.entitiesRW = entitiesRW;
-	}
-
-	public void addEntityRW(String entity, String mode) {
-		boolean containsEntity = false;
-		for (Pair<Entity,String> p : this.entitiesRW) {
-			if (p.getFirst().getName().equals(entity)) {
-				containsEntity = true;
-				if (p.getSecond().equals("R") && mode.equals("W")) p.setSecond("RW");
-				if (p.getSecond().equals("W") && mode.equals("R")) p.setSecond("RW");
-				break;
-			}
-		}
-
-		if (!containsEntity) {
-			Pair<Entity,String> newEntity = new Pair<>(new Entity(entity), mode);
-			this.entitiesRW.add(newEntity);
-		}
-	}
-
-	public List<Pair<Entity,String>> getEntitiesRWseq() {
-		return this.entitiesRWseq;
-	}
-
-	public void setEntitiesRWseq(List<Pair<Entity,String>> entitiesRWseq) {
-		this.entitiesRWseq = entitiesRWseq;
-	}
-
-	public void addEntityRWseq(String entity, String mode) {
-		Pair<Entity,String> newEntity = new Pair<>(new Entity(entity), mode);
-		this.entitiesRWseq.add(newEntity);
 	}
 
 	public List<Entity> getEntities() {
@@ -85,4 +47,36 @@ public class Controller {
 		return false;
 	}
 
+	public List<Pair<Entity,String>> getEntitiesRW() {
+		return this.entitiesRW;
+	}
+
+	public void setEntitiesRW(List<Pair<Entity,String>> entitiesRW) {
+		this.entitiesRW = entitiesRW;
+	}
+
+	public void addEntityRW(String entity, String mode) {
+		for (Pair<Entity,String> entityPair : this.entitiesRW) {
+			if (entityPair.getFirst().getName().equals(entity) && !entityPair.getSecond().contains(mode)) {
+				entityPair.setSecond("RW");
+				return;
+			}
+		}
+
+		Pair<Entity,String> newEntity = new Pair<>(new Entity(entity), mode);
+		this.entitiesRW.add(newEntity);
+	}
+
+	public List<Pair<Entity,String>> getEntitiesSeq() {
+		return this.entitiesSeq;
+	}
+
+	public void setEntitiesSeq(List<Pair<Entity,String>> entitiesSeq) {
+		this.entitiesSeq = entitiesSeq;
+	}
+
+	public void addEntitySeq(String entity, String mode) {
+		Pair<Entity,String> newEntity = new Pair<>(new Entity(entity), mode);
+		this.entitiesSeq.add(newEntity);
+	}
 }
