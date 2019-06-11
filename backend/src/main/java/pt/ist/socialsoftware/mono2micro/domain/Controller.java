@@ -1,13 +1,14 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Controller {
 	private String name;
-	private List<Entity> entities;
-	private List<Pair<Entity,String>> entitiesRW;
-	private List<Pair<Entity,String>> entitiesSeq;
+	private Map<String,String> entities;
+	private List<Pair<String,String>> entitiesSeq;
 
 	public Controller() {
 
@@ -15,8 +16,7 @@ public class Controller {
 
 	public Controller(String name) {
         this.name = name;
-		this.entities = new ArrayList<>();
-		this.entitiesRW = new ArrayList<>();
+		this.entities = new HashMap<>();
 		this.entitiesSeq = new ArrayList<>();
 	}
 
@@ -28,55 +28,36 @@ public class Controller {
 		this.name = name;
 	}
 
-	public List<Entity> getEntities() {
+	public Map<String,String> getEntities() {
 		return this.entities;
 	}
 
-	public void setEntities(List<Entity> entities) {
+	public void setEntities(Map<String,String> entities) {
 		this.entities = entities;
 	}
 
-	public void addEntity(String entity) {
-		this.entities.add(new Entity(entity));
-	}
-
-	public boolean containsEntity(String entityName) {
-		for (Entity entity : this.entities)
-			if (entity.getName().equals(entityName))
-				return true;
-		return false;
-	}
-
-	public List<Pair<Entity,String>> getEntitiesRW() {
-		return this.entitiesRW;
-	}
-
-	public void setEntitiesRW(List<Pair<Entity,String>> entitiesRW) {
-		this.entitiesRW = entitiesRW;
-	}
-
-	public void addEntityRW(String entity, String mode) {
-		for (Pair<Entity,String> entityPair : this.entitiesRW) {
-			if (entityPair.getFirst().getName().equals(entity) && !entityPair.getSecond().contains(mode)) {
-				entityPair.setSecond("RW");
-				return;
-			}
+	public void addEntity(String entity, String mode) {
+		if (this.entities.containsKey(entity)) {
+			if (!this.entities.get(entity).contains(mode)) 
+				this.entities.put(entity, "RW");
+		} else {
+			this.entities.put(entity, mode);
 		}
-
-		Pair<Entity,String> newEntity = new Pair<>(new Entity(entity), mode);
-		this.entitiesRW.add(newEntity);
 	}
 
-	public List<Pair<Entity,String>> getEntitiesSeq() {
+	public boolean containsEntity(String entity) {
+		return this.entities.containsKey(entity);
+	}
+
+	public List<Pair<String,String>> getEntitiesSeq() {
 		return this.entitiesSeq;
 	}
 
-	public void setEntitiesSeq(List<Pair<Entity,String>> entitiesSeq) {
+	public void setEntitiesSeq(List<Pair<String,String>> entitiesSeq) {
 		this.entitiesSeq = entitiesSeq;
 	}
 
 	public void addEntitySeq(String entity, String mode) {
-		Pair<Entity,String> newEntity = new Pair<>(new Entity(entity), mode);
-		this.entitiesSeq.add(newEntity);
+		this.entitiesSeq.add(new Pair<>(entity, mode));
 	}
 }

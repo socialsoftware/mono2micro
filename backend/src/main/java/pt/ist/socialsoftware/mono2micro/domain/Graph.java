@@ -83,16 +83,16 @@ public class Graph {
 		Cluster mergedCluster = new Cluster(newName);
 		for (int i = 0; i < clusters.size(); i++) {
 			if (clusters.get(i).getName().equals(cluster1)) {
-				for (Entity entity : clusters.get(i).getEntities())
-					mergedCluster.addEntity(entity.getName());
+				for (String entity : clusters.get(i).getEntities())
+					mergedCluster.addEntity(entity);
 				clusters.remove(i);
 				break;
 			}
 		}
 		for (int i = 0; i < clusters.size(); i++) {
 			if (clusters.get(i).getName().equals(cluster2)) {
-				for (Entity entity : clusters.get(i).getEntities())
-					mergedCluster.addEntity(entity.getName());
+				for (String entity : clusters.get(i).getEntities())
+					mergedCluster.addEntity(entity);
 				clusters.remove(i);
 				break;
 			}

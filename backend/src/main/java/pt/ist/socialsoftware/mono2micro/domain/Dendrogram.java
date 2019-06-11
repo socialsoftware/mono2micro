@@ -18,8 +18,9 @@ public class Dendrogram {
 	public Dendrogram() {
 	}
 
-	public Dendrogram(String name) {
+	public Dendrogram(String name, String linkageType) {
 		this.name = name;
+		this.linkageType = linkageType;
 	}
 
 	public String getName() {
@@ -133,9 +134,7 @@ public class Dendrogram {
 	}
 
 	public boolean containsController(String controllerName) {
-		if (getController(controllerName) == null)
-			return false;
-		return true;
+		return getController(controllerName) != null;
 	}
 
 	public List<Entity> getEntities() {
@@ -155,9 +154,7 @@ public class Dendrogram {
 	}
 
 	public boolean containsEntity(String entityName) {
-		if (getEntity(entityName) == null)
-			return false;
-		return true;
+		return getEntity(entityName) != null;
 	}
 
 	public Map<String,List<Controller>> getClusterControllers(String graphName) {
@@ -167,8 +164,8 @@ public class Dendrogram {
 		for (Cluster cluster : graph.getClusters()) {
 			List<Controller> touchedControllers = new ArrayList<>();
 			for (Controller controller : this.controllers) {
-				for (Entity controllerEntity : controller.getEntities()) {
-					if (cluster.containsEntity(controllerEntity.getName())) {
+				for (String controllerEntity : controller.getEntities().keySet()) {
+					if (cluster.containsEntity(controllerEntity)) {
 						touchedControllers.add(controller);
 						break;
 					}
@@ -186,8 +183,8 @@ public class Dendrogram {
 		for (Controller controller : this.controllers) {
 			List<Cluster> touchedClusters = new ArrayList<>();
 			for (Cluster cluster : graph.getClusters()) {
-				for (Entity clusterEntity : cluster.getEntities()) {
-					if (controller.containsEntity(clusterEntity.getName())) {
+				for (String clusterEntity : cluster.getEntities()) {
+					if (controller.containsEntity(clusterEntity)) {
 						touchedClusters.add(cluster);
 						break;
 					}
@@ -205,8 +202,8 @@ public class Dendrogram {
 		for (Controller controller : this.controllers) {
 			List<Pair<Cluster,String>> touchedClusters = new ArrayList<>();
 			Pair<Cluster,String> lastCluster = null;
-			for (Pair<Entity,String> entityPair : controller.getEntitiesSeq()) {
-				String entityName = entityPair.getFirst().getName();
+			for (Pair<String,String> entityPair : controller.getEntitiesSeq()) {
+				String entityName = entityPair.getFirst();
 				String mode = entityPair.getSecond();
 				Cluster clusterAccessed = graph.getClusterWithEntity(entityName);
 				if (lastCluster == null){

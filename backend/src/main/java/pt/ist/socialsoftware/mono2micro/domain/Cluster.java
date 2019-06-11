@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class Cluster {
 	private String name;
-	private List<Entity> entities;
+	private List<String> entities;
 	private float complexity;
 	private float complexityRW;
 	private float complexitySeq;
@@ -88,41 +88,32 @@ public class Cluster {
 		this.couplingSeq = couplingSeq;
 	}
 
-	public List<Entity> getEntities() {
+	public List<String> getEntities() {
 		return this.entities;
 	}
 
-	public void setEntities(List<Entity> entities) {
+	public void setEntities(List<String> entities) {
 		this.entities = entities;
 	}
 
 	public void addEntity(String entity) {
-		this.entities.add(new Entity(entity));
+		this.entities.add(entity);
 	}
 
-	public boolean removeEntity(String entityName) {
-		for (int i = 0; i < this.entities.size(); i++) {
-			if (this.entities.get(i).getName().equals(entityName)) {
-				this.entities.remove(i);
-				return true;
-			}
-		}
-		return false;
+	public boolean removeEntity(String entity) {
+		return this.entities.remove(entity);
 	}
 
-	public boolean containsEntity(String entityName) {
-		for (Entity entity : this.entities)
-			if (entity.getName().equals(entityName))
-				return true;
-		return false;
+	public boolean containsEntity(String entity) {
+		return this.entities.contains(entity);
 	}
 
 	public void calculateCohesion(Map<String,List<Controller>> clusterControllers) {
 		float cohesion = 0;
 		for (Controller controller : clusterControllers.get(this.name)) {
 			float numberEntitiesTouched = 0;
-			for (Entity controllerEntity : controller.getEntities()) {
-				if (this.containsEntity(controllerEntity.getName()))
+			for (String controllerEntity : controller.getEntities().keySet()) {
+				if (this.containsEntity(controllerEntity))
 					numberEntitiesTouched++;
 			}
 			cohesion = cohesion + (numberEntitiesTouched / this.entities.size());

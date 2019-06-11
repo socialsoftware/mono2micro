@@ -179,7 +179,7 @@ export class TransactionView extends React.Component {
             nodes: new DataSet(this.state.controllerClusters[this.state.controller.name].map(c => this.createNode(c))),
             edges: new DataSet(this.state.controllerClusters[this.state.controller.name].map(c => this.createEdge(c)))
         };
-        visGraph.nodes.add({id: this.state.controller.name, title: this.state.controller.entities.map(e => e.name).join('<br>'), label: this.state.controller.name, level: 0, value: 1, type: types.CONTROLLER});
+        visGraph.nodes.add({id: this.state.controller.name, title: Object.entries(this.state.controller.entities).map(e => e[0] + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(this.state.controller.entities).length, label: this.state.controller.name, level: 0, value: 1, type: types.CONTROLLER});
 
         this.setState({
             visGraph: visGraph
@@ -187,11 +187,11 @@ export class TransactionView extends React.Component {
     }
 
     createNode(cluster) {
-        return {id: cluster.name, title: cluster.entities.map(e => e.name).join('<br>'), label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER};
+        return {id: cluster.name, title: cluster.entities.join('<br>') + "<br>Total: " + cluster.entities.length, label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER};
     }
 
     createEdge(cluster) {
-        let entitiesTouched = cluster.entities.map(e => e.name).filter(e => this.state.controller.entities.map(e => e.name).includes(e));
+        let entitiesTouched = Object.entries(this.state.controller.entities).filter(e => cluster.entities.includes(e[0])).map(e => e[0] + " " + e[1]);
         return {from: this.state.controller.name, to: cluster.name, label: entitiesTouched.length.toString(), title: entitiesTouched.join('<br>')};
     }
 
@@ -205,9 +205,9 @@ export class TransactionView extends React.Component {
         let entitiesAux = [];
 
         for (var i = 0; i < this.state.controller.entitiesSeq.length; i++) {
-            let entityName = this.state.controller.entitiesSeq[i].first.name;
-            let entityDescription = this.state.controller.entitiesSeq[i].first.name + " " + this.state.controller.entitiesSeq[i].second;
-            let clusterAccessed = this.state.graph.clusters.filter(c => c.entities.map(e => e.name).includes(entityName))[0];
+            let entityName = this.state.controller.entitiesSeq[i].first;
+            let entityDescription = this.state.controller.entitiesSeq[i].first + " " + this.state.controller.entitiesSeq[i].second;
+            let clusterAccessed = this.state.graph.clusters.filter(c => c.entities.includes(entityName))[0];
 
             if (i === 0) {
                 lastCluster = clusterAccessed;
@@ -226,13 +226,13 @@ export class TransactionView extends React.Component {
         }
         entities.push(entitiesAux);
         
-        nodes.push({id: 0, title: this.state.controller.entities.map(e => e.name).join('<br>'), label: this.state.controller.name, level: 0, value: 1, type: types.CONTROLLER});
+        nodes.push({id: 0, title: Object.entries(this.state.controller.entities).map(e => e[0] + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(this.state.controller.entities).length, label: this.state.controller.name, level: 0, value: 1, type: types.CONTROLLER});
 
         for (i = 0; i < clusterNodesSequence.length; i++) {
             let nodeId = i+1;
             let cluster = clusterNodesSequence[i];
             let entitiesCount = [...new Set(entities[i].map(e => e.split(" ")[0]))].length.toString();
-            nodes.push({id: nodeId, title: cluster.entities.map(e => e.name).join('<br>'), label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER});
+            nodes.push({id: nodeId, title: cluster.entities.join('<br>') + "<br>Total: " + cluster.entities.length, label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER});
             if (i === 0) {
                 edges.push({from: 0, to: nodeId, title: entities[i].join('<br>'), label: entitiesCount});
             } else {
@@ -289,7 +289,7 @@ export class TransactionView extends React.Component {
             sort: true
         }, {
             dataField: 'complexity',
-            text: 'Complexity',
+            text: 'Complexity Access',
             sort: true
         }, {
             dataField: 'complexityrw',

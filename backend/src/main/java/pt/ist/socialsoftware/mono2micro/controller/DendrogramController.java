@@ -106,8 +106,14 @@ public class DendrogramController {
 
 
 	@RequestMapping(value = "/createDendrogram", method = RequestMethod.POST)
-	public ResponseEntity<Dendrogram> createDendrogram(@RequestParam("dendrogramName") String dendrogramName,
-			@RequestParam("file") MultipartFile datafile, @RequestParam("linkageType") String linkageType, @RequestParam("accessMetricWeight") String accessMetricWeight, @RequestParam("readWriteMetricWeight") String readWriteMetricWeight, @RequestParam("sequenceMetricWeight") String sequenceMetricWeight) {
+	public ResponseEntity<Dendrogram> createDendrogram(
+			@RequestParam("dendrogramName") String dendrogramName,
+			@RequestParam("file") MultipartFile datafile,
+			@RequestParam("linkageType") String linkageType,
+			@RequestParam("accessMetricWeight") String accessMetricWeight,
+			@RequestParam("readWriteMetricWeight") String readWriteMetricWeight,
+			@RequestParam("sequenceMetricWeight") String sequenceMetricWeight) {
+
 		logger.debug("createDendrogram filename: {}", datafile.getOriginalFilename());
 
 		long startTime = System.currentTimeMillis();
@@ -121,75 +127,73 @@ public class DendrogramController {
 				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
-		Dendrogram dend = new Dendrogram(dendrogramName);
-		dend.setLinkageType(linkageType);
+		Dendrogram dend = new Dendrogram(dendrogramName, linkageType);
 		dend.setClusteringMetricWeight(accessMetricWeight, readWriteMetricWeight, sequenceMetricWeight);
 		
 		try {
-			// save data to persistent dendrogram
 			Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
-			Map<String,Integer> sequenceCount = new HashMap<>();
-			int totalSequenceCount = 0;
-			List<String> entitiesList = new ArrayList<>();
-			JSONArray matrix = new JSONArray();
+			Map<String,Integer> e1e2PairCount = new HashMap<>();
+			int totalSequencePairsCount = 0;
+			JSONArray similarityMatrix = new JSONArray();
 			JSONObject dendrogramData = new JSONObject();
 
+
+			//read datafile
 			InputStream is =  new BufferedInputStream(datafile.getInputStream());
-			JSONObject json = new JSONObject(IOUtils.toString(is, "UTF-8"));
+			JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
 			is.close();
 
-			Iterator<String> controllers = json.sortedKeys();
+			Iterator<String> controllers = datafileJSON.sortedKeys();
 
 			while(controllers.hasNext()) {
-				String controller = controllers.next();
+				String controllerName = controllers.next();
+				Controller controller = new Controller(controllerName);
+				dend.addController(controller);
 
-				JSONArray entities = json.getJSONArray(controller);
+				JSONArray entities = datafileJSON.getJSONArray(controllerName);
 				for (int i = 0; i < entities.length(); i++) {
 					JSONArray entityArray = entities.getJSONArray(i);
 					String entity = entityArray.getString(0);
 					String mode = entityArray.getString(1);
-					if (!dend.containsController(controller))
-						dend.addController(new Controller(controller));
-					if (!dend.getController(controller).containsEntity(entity))
-						dend.getController(controller).addEntity(entity);
-					dend.getController(controller).addEntityRW(entity, mode);
-					dend.getController(controller).addEntitySeq(entity, mode);
+					
+					controller.addEntity(entity, mode);
+					controller.addEntitySeq(entity, mode);
 
 					if (!dend.containsEntity(entity))
 						dend.addEntity(new Entity(entity));
 
 					if (entityControllers.containsKey(entity)) {
 						boolean containsController = false;
-						for (Pair<String,String> p : entityControllers.get(entity)) {
-							if (p.getFirst().equals(controller)) {
+						for (Pair<String,String> controllerPair : entityControllers.get(entity)) {
+							if (controllerPair.getFirst().equals(controllerName)) {
 								containsController = true;
-								if (p.getSecond().equals("R") && mode.equals("W")) p.setSecond("RW");
-								if (p.getSecond().equals("W") && mode.equals("R")) p.setSecond("RW");
+								if (!controllerPair.getSecond().contains(mode))
+									controllerPair.setSecond("RW");
+								break;
 							}
 						}
 						if (!containsController) {
-							entityControllers.get(entity).add(new Pair<String,String>(controller,mode));
+							entityControllers.get(entity).add(new Pair<String,String>(controllerName,mode));
 						}
 					} else {
 						List<Pair<String,String>> controllersPairs = new ArrayList<>();
-						controllersPairs.add(new Pair<String,String>(controller,mode));
+						controllersPairs.add(new Pair<String,String>(controllerName,mode));
 						entityControllers.put(entity, controllersPairs);
 					}
-
-					if (!entitiesList.contains(entity)) entitiesList.add(entity);
 
 					if (i < entities.length() - 1) {
 						JSONArray nextEntityArray = entities.getJSONArray(i+1);
 						String nextEntity = nextEntityArray.getString(0);
 						String e1e2 = entity + "->" + nextEntity;
 						
-						int count = sequenceCount.containsKey(e1e2) ? sequenceCount.get(e1e2) : 0;
-						sequenceCount.put(e1e2, count + 1);
+						int count = e1e2PairCount.containsKey(e1e2) ? e1e2PairCount.get(e1e2) : 0;
+						e1e2PairCount.put(e1e2, count + 1);
 					}
 				}
-				totalSequenceCount += entities.length() - 1;
+				totalSequencePairsCount += entities.length() - 1;
 			}
 
+			List<String> entitiesList = new ArrayList<String>(entityControllers.keySet());
 			Collections.sort(entitiesList);
 
 			for (String e1 : entitiesList) {
@@ -211,19 +215,19 @@ public class DendrogramController {
 
 						String e1e2 = e1 + "->" + e2;
 						String e2e1 = e2 + "->" + e1;
-						float e1e2Count = sequenceCount.containsKey(e1e2) ? sequenceCount.get(e1e2) : 0;
-						float e2e1Count = sequenceCount.containsKey(e2e1) ? sequenceCount.get(e2e1) : 0;
+						float e1e2Count = e1e2PairCount.containsKey(e1e2) ? e1e2PairCount.get(e1e2) : 0;
+						float e2e1Count = e1e2PairCount.containsKey(e2e1) ? e1e2PairCount.get(e2e1) : 0;
 
 						float accessMetric = inCommon / entityControllers.get(e1).size();
 						float readWriteMetric = inCommonW / entityControllers.get(e1).size();
-						float sequenceMetric = (e1e2Count + e2e1Count) / totalSequenceCount;
+						float sequenceMetric = (e1e2Count + e2e1Count) / totalSequencePairsCount;
 						float metric = accessMetric * Float.parseFloat(accessMetricWeight) + 
 									   readWriteMetric * Float.parseFloat(readWriteMetricWeight) +
 									   sequenceMetric * Float.parseFloat(sequenceMetricWeight);
 						matrixAux.put(metric);
 					}
 				}
-				matrix.put(matrixAux);
+				similarityMatrix.put(matrixAux);
 
 				float immutability = 0;
 				for (Pair<String,String> controllerPair : entityControllers.get(e1)) {
@@ -232,7 +236,7 @@ public class DendrogramController {
 				}
 				dend.getEntity(e1).setImmutability(immutability / entityControllers.get(e1).size());
 			}
-			dendrogramData.put("matrix", matrix);
+			dendrogramData.put("matrix", similarityMatrix);
 			dendrogramData.put("entities", entitiesList);
 
 			try (FileWriter file = new FileWriter(dendrogramsFolder + dendrogramName + ".txt")){
@@ -260,13 +264,13 @@ public class DendrogramController {
 			while ((line = bre.readLine()) != null) {
 				System.out.println("Inside Elapsed time: " + line + " seconds");
 			}
+
+			dendrogramManager.writeDendrogram(dendrogramName, dend);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-
-		dendrogramManager.writeDendrogram(dendrogramName, dend);
-
+		
 		long elapsedTimeMillis = System.currentTimeMillis() - startTime;
 		float elapsedTimeSec = elapsedTimeMillis/1000F;
 		System.out.println("Complete. Elapsed time: " + elapsedTimeSec + " seconds");

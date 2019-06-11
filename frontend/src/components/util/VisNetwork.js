@@ -107,20 +107,20 @@ export class VisNetwork extends Component {
             if (this.props.view === views.CLUSTERS) {
                 this.setState({
                     showModalMessage: true,
-                    ModalMessageTitle: 'Entities of ' + event.nodes[0],
+                    ModalMessageTitle: 'Entities of ' + this.props.visGraph.nodes.get(event.nodes[0]).label,
                     ModalMessageText: this.props.visGraph.nodes.get(event.nodes[0]).title
                 });
             } else if (this.props.view === views.TRANSACTION) {
                 if (this.props.visGraph.nodes.get(event.nodes[0]).type === types.CLUSTER) {
                     this.setState({
                         showModalMessage: true,
-                        ModalMessageTitle: 'Entities of ' + event.nodes[0],
+                        ModalMessageTitle: 'Entities of ' + this.props.visGraph.nodes.get(event.nodes[0]).label,
                         ModalMessageText: this.props.visGraph.nodes.get(event.nodes[0]).title
                     });
                 } else if (this.props.visGraph.nodes.get(event.nodes[0]).type === types.CONTROLLER) {
                     this.setState({
                         showModalMessage: true,
-                        ModalMessageTitle: 'Entities accessed by controller ' + event.nodes[0],
+                        ModalMessageTitle: 'Entities accessed by controller ' + this.props.visGraph.nodes.get(event.nodes[0]).label,
                         ModalMessageText: this.props.visGraph.nodes.get(event.nodes[0]).title
                     });
                 }

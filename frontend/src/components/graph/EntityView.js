@@ -104,7 +104,7 @@ export class EntityView extends React.Component {
                     for (var i = 0; i < this.state.entities.length; i++) {
                         let amount = 0;
                         let entity = this.state.entities[i];
-                        let entityCluster = this.state.clusters.filter(c => c.entities.map(e => e.name).includes(entity.name))[0];
+                        let entityCluster = this.state.clusters.filter(c => c.entities.includes(entity.name))[0];
                         for (var j = 0; j < this.state.clusters.length; j++) {
                             let cluster = this.state.clusters[j];
                             let commonControllers = this.getCommonControllers(entity.name, cluster);
@@ -131,7 +131,7 @@ export class EntityView extends React.Component {
     handleEntitySubmit(value) {
         this.setState({
             entity: value,
-            entityCluster: this.state.clusters.filter(c => c.entities.map(e => e.name).includes(value))[0],
+            entityCluster: this.state.clusters.filter(c => c.entities.includes(value))[0],
             showGraph: true
         }, () => {
             this.loadGraph();
@@ -140,7 +140,7 @@ export class EntityView extends React.Component {
 
     //get controllers that access both an entity and another cluster
     getCommonControllers(entityName, cluster) {
-        let entityControllers = this.state.controllers.filter(controller => controller.entities.map(e => e.name).includes(entityName)).map(c => c.name);
+        let entityControllers = this.state.controllers.filter(controller => Object.keys(controller.entities).includes(entityName)).map(c => c.name);
         let clusterControllers = this.state.clusterControllers[cluster.name].map(c => c.name);
         return entityControllers.filter(c => clusterControllers.includes(c));
     }
@@ -148,7 +148,7 @@ export class EntityView extends React.Component {
     loadGraph() {
         let nodes = [];
         let edges = [];
-        let entityControllers = this.state.controllers.filter(controller => controller.entities.map(e => e.name).includes(this.state.entity)).map(c => c.name);
+        let entityControllers = this.state.controllers.filter(controller => Object.keys(controller.entities).includes(this.state.entity)).map(c => c.name + " " + c.entities[this.state.entity]);
 
         nodes.push({id: this.state.entity, label: this.state.entity, value: 1, level: 0, type: types.ENTITY, title: entityControllers.join('<br>')});
         
@@ -160,7 +160,7 @@ export class EntityView extends React.Component {
                 commonControllers = commonControllers.filter(c => !this.state.excludeControllerList.includes(c));
                 
                 if (commonControllers.length > 0) {
-                    nodes.push({id: cluster.name, label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER, title: cluster.entities.map(e => e.name).join('<br>')});
+                    nodes.push({id: cluster.name, label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER, title: cluster.entities.join('<br>') + "<br>Total: " + cluster.entities.length});
                     edges.push({from: this.state.entity, to: cluster.name, label: commonControllers.length.toString(), title: commonControllers.join('<br>')})
                 }
             }
@@ -238,7 +238,7 @@ export class EntityView extends React.Component {
                     />
                     
                     <div style={{width:'1000px' , height: '700px'}}>
-                        <VisNetwork 
+                        <VisNetwork
                             visGraph={this.state.visGraph}
                             options={options}
                             onSelection={this.handleSelectNode}

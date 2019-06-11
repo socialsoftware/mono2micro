@@ -55,7 +55,7 @@ export class Dendrograms extends React.Component {
 
     render() {
         const dendrograms = this.state.dendrograms.map(d =>
-            <Button active={this.state.dendrogram.name === d.name} onClick={() => this.changeDendrogram(d.name)}>{d.name}</Button>
+            <Button key={d.name} active={this.state.dendrogram.name === d.name} onClick={() => this.changeDendrogram(d.name)}>{d.name}</Button>
         );
 
         const rows = this.state.dendrogramGraphs.flat().map(graph => {
@@ -127,7 +127,7 @@ export class Dendrograms extends React.Component {
                             Read/Write Access Metric Weight: {this.state.dendrogram.readWriteMetricWeight}< br/>
                             Sequence Access Metric Weight: {this.state.dendrogram.sequenceMetricWeight}< br/>
                             # of Controllers: {this.state.dendrogram.controllers.length}< br/>
-                            # of Entities: {[...new Set(this.state.dendrogram.controllers.map(c => c.entities).flat().map(e => e.name))].length}
+                            # of Entities: {this.state.dendrogram.entities.length}
                         </Card.Text>
                         <Button href={`/dendrogram/${this.state.dendrogram.name}`} className="mr-4" variant="primary">See Dendrogram</Button>
                         <Button onClick={() => this.handleDeleteDendrogram(this.state.dendrogram.name)} variant="danger">Delete</Button>

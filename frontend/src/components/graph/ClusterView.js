@@ -87,13 +87,9 @@ export class ClusterView extends React.Component {
             error: false,
             errorMessage: '',
             operation: operations.NONE,
-            couplingValues: {},
             currentSubView: 'Graph'
         };
 
-        this.loadGraph = this.loadGraph.bind(this);
-        this.convertClusterToNode = this.convertClusterToNode.bind(this);
-        this.createEdges = this.createEdges.bind(this);
         this.setClusterEntities = this.setClusterEntities.bind(this);
         this.handleSelectOperation = this.handleSelectOperation.bind(this);
         this.handleSelectCluster = this.handleSelectCluster.bind(this);
@@ -101,7 +97,10 @@ export class ClusterView extends React.Component {
         this.handleOperationSubmit = this.handleOperationSubmit.bind(this);
         this.handleOperationCancel = this.handleOperationCancel.bind(this);
         this.closeErrorMessageModal = this.closeErrorMessageModal.bind(this);
+    }
 
+    componentDidMount() {
+        this.loadGraph();
     }
 
     loadGraph() {
@@ -129,58 +128,49 @@ export class ClusterView extends React.Component {
         });
     }
 
+    convertClusterToNode(cluster) {
+        return {id: cluster.name, title: cluster.entities.join('<br>') + "<br>Total: " + cluster.entities.length, label: cluster.name, value: cluster.entities.length, type: types.CLUSTER};
+    };
+
     createEdges(clusters, clusterControllers) {
         let edges = [];
         let edgeLengthFactor = 1000;
 
         for (var i = 0; i < clusters.length; i++) { 
-            this.state.couplingValues[clusters[i].name] = {};
-            this.state.couplingValues[clusters[i].name][clusters[i].name] = 1;
-        }
-
-        for (i = 0; i < clusters.length; i++) { 
             let cluster1Controllers = clusterControllers[clusters[i].name].map(c => c.name);
             for (var j = i+1; j < clusters.length; j++) {
                 let cluster2Controllers = clusterControllers[clusters[j].name].map(c => c.name);
                 let controllersInCommon = cluster1Controllers.filter(value => -1 !== cluster2Controllers.indexOf(value))
 
-                let couplingC1C2 = controllersInCommon.length / cluster1Controllers.length;
-                let couplingC2C1 = controllersInCommon.length / cluster2Controllers.length;
+                let couplingC1C2 = clusters[i].coupling[clusters[j].name];
+                let couplingC2C1 = clusters[j].coupling[clusters[i].name];
+                let couplingRWC1C2 = clusters[i].couplingRW[clusters[j].name];
+                let couplingRWC2C1 = clusters[j].couplingRW[clusters[i].name];
+                let couplingSeqC1C2 = clusters[i].couplingSeq[clusters[j].name];
+                let couplingSeqC2C1 = clusters[j].couplingSeq[clusters[i].name];
 
-                this.state.couplingValues[clusters[i].name][clusters[j].name] = couplingC1C2;
-                this.state.couplingValues[clusters[j].name][clusters[i].name] = couplingC2C1;
 
-                let edgeTitle = clusters[i].name + " -- " + clusters[j].name + "<br>";
-                edgeTitle += "Coupling: " + Number(couplingC1C2.toFixed(2)).toString() + "<br>";
-                edgeTitle += clusters[j].name + " -- " + clusters[i].name + "<br>";
-                edgeTitle += "Coupling: " + Number(couplingC2C1.toFixed(2)).toString() + "<br>";
+                let edgeTitle = clusters[i].name + " -> " + clusters[j].name + " , Coupling: A(" + Number(couplingC1C2.toFixed(2)) + "), RW(" + Number(couplingRWC1C2.toFixed(2)) + "), Seq(" + Number(couplingSeqC1C2.toFixed(2)) + ")<br>";
+                edgeTitle += clusters[j].name + " -> " + clusters[i].name + " , Coupling: A(" + Number(couplingC2C1.toFixed(2)) + "), RW(" + Number(couplingRWC2C1.toFixed(2)) + "), Seq(" + Number(couplingSeqC2C1.toFixed(2)) + ")<br>";
+                edgeTitle += "Controllers in common:<br>"
+
                 let edgeLength = (1/controllersInCommon.length)*edgeLengthFactor;
                 if (edgeLength < 100) edgeLength = 300;
                 else if (edgeLength > 500) edgeLength = 500;
+                
                 if (controllersInCommon.length > 0)
-                    //edges.push({from: clusters[i].name, to: clusters[j].name, value: ControllersInCommon.length, label: ControllersInCommon.length.toString(), title: edgeTitle + ControllersInCommon.join('<br>')});
                     edges.push({from: clusters[i].name, to: clusters[j].name, length:edgeLength, value: controllersInCommon.length, label: controllersInCommon.length.toString(), title: edgeTitle + controllersInCommon.join('<br>')});
-                //else
-                    //edges.push({from: clusters[i].name, to: clusters[j].name, length:(1/0.5)*edgeLengthFactor, hidden: true});
             }
         }
         return edges;
     }
 
-    convertClusterToNode(cluster) {
-        return {id: cluster.name, title: cluster.entities.map(e => e.name).join('<br>'), label: cluster.name, value: cluster.entities.length, type: types.CLUSTER};
-    };
-
     setClusterEntities(selectedCluster) {
         this.setState({
             selectedCluster: selectedCluster,
             mergeWithCluster: {},
-            clusterEntities: selectedCluster.entities.map(e => ({name: e.name, active: false})),
+            clusterEntities: selectedCluster.entities.map(e => ({name: e, active: false})),
         });
-    }
-
-    componentDidMount() {
-        this.loadGraph();
     }
 
     handleSelectOperation(operation) {
@@ -366,7 +356,7 @@ export class ClusterView extends React.Component {
             sort: true
         }, {
             dataField: 'complexity',
-            text: 'Complexity',
+            text: 'Complexity Access',
             sort: true
         }, {
             dataField: 'complexityrw',
@@ -382,7 +372,7 @@ export class ClusterView extends React.Component {
             sort: true
         }, {
             dataField: 'coupling',
-            text: 'Coupling',
+            text: 'Coupling Access',
             sort: true
         }, {
             dataField: 'couplingrw',
@@ -396,11 +386,11 @@ export class ClusterView extends React.Component {
 
         const couplingRows = this.state.clusters.map(c1 => {
             return Object.assign({id: c1.name}, ...this.state.clusters.map(c2 => {
-                let couplingC1C2 = Number(c1.coupling[c2.name].toFixed(2)).toString();
-                let couplingRWC1C2 = Number(c1.couplingRW[c2.name].toFixed(2)).toString();
-                let couplingSeqC1C2 = Number(c1.couplingSeq[c2.name].toFixed(2)).toString();
+                let couplingC1C2 = Number(c1.coupling[c2.name].toFixed(2));
+                let couplingRWC1C2 = Number(c1.couplingRW[c2.name].toFixed(2));
+                let couplingSeqC1C2 = Number(c1.couplingSeq[c2.name].toFixed(2));
                 return {
-                    [c2.name]: <pre>{couplingC1C2 + "\n" + couplingRWC1C2 + "\n" + couplingSeqC1C2}</pre>
+                    [c2.name]: "A(" + couplingC1C2 + "), RW(" + couplingRWC1C2 + "), Seq(" + couplingSeqC1C2 + ")"
                 }
             }))
         });
@@ -444,7 +434,6 @@ export class ClusterView extends React.Component {
                     <div style={{width:'1000px' , height: '700px'}}>
                     <VisNetwork
                         visGraph={this.state.visGraph}
-                        clusters={this.state.clusters}
                         options={options}
                         onSelection={this.handleSelectCluster}
                         onDeselection={this.handleDeselectNode}
