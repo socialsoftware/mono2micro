@@ -36,3 +36,4 @@ yarn-error.log*
 
 backend/src/main/resources/specific.properties
 backend/src/main/resources/dendrograms/
+backend/src/main/resources/profiles/
