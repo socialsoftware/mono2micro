@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
-import pt.ist.socialsoftware.mono2micro.domain.DendrogramManager;
+import pt.ist.socialsoftware.mono2micro.manager.DendrogramManager;
 
 @RestController
 @RequestMapping(value = "/mono2micro")

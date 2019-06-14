@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import pt.ist.socialsoftware.mono2micro.utils.Pair;
+
 public class Graph {
 	private String name;
 	private String dendrogramName;

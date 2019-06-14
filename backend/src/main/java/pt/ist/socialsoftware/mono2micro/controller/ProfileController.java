@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import pt.ist.socialsoftware.mono2micro.domain.ProfileGroup;
-import pt.ist.socialsoftware.mono2micro.domain.ProfileManager;
+import pt.ist.socialsoftware.mono2micro.manager.ProfileManager;
 
 @RestController
 @RequestMapping(value = "/mono2micro")

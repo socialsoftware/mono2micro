@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.domain;
+package pt.ist.socialsoftware.mono2micro.utils;
 
 public class Pair<F, S> {
 

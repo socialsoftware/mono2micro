@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.domain;
+package pt.ist.socialsoftware.mono2micro.manager;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +10,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
 
 public class DendrogramManager {
 

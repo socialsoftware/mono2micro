@@ -64,7 +64,7 @@ export class DendrogramCreate extends React.Component {
             isUploaded: "Uploading..."
         });
         
-        service.createDendrogram(this.state.dendrogramName, this.state.linkageType, this.state.accessMetricWeight, this.state.readWriteMetricWeight, this.state.sequenceMetricWeight, this.state.profileGroup.name, this.state.selectedProfiles.join()).then(response => {
+        service.createDendrogram(this.state.dendrogramName, this.state.linkageType, this.state.accessMetricWeight, this.state.readWriteMetricWeight, this.state.sequenceMetricWeight, this.state.profileGroup.name, this.state.selectedProfiles).then(response => {
             if (response.status === HttpStatus.CREATED) {
                 this.setState({
                     isUploaded: "Upload completed successfully."
@@ -134,10 +134,11 @@ export class DendrogramCreate extends React.Component {
         this.setState({
             selectedProfiles: this.state.selectedProfiles
         });
-        console.log(this.state.selectedProfiles);
     }
 
     render() {
+        console.log((Number(this.state.accessMetricWeight) + Number(this.state.readWriteMetricWeight) + Number(this.state.sequenceMetricWeight)))
+        
         return (
             <Form onSubmit={this.handleUpload}>
                 <BreadCrumbs />
@@ -188,7 +189,7 @@ export class DendrogramCreate extends React.Component {
 
                 <InputGroup className="mb-3">
                 <InputGroup.Prepend>
-                    <InputGroup.Text id="basic-addon2">Undistinct Access Metric Weight: </InputGroup.Text>
+                    <InputGroup.Text id="basic-addon2">Undistinct Access Metric Weight (%): </InputGroup.Text>
                 </InputGroup.Prepend>
                     <FormControl 
                         type="number"
@@ -198,7 +199,7 @@ export class DendrogramCreate extends React.Component {
 
                 <InputGroup className="mb-3">
                 <InputGroup.Prepend>
-                    <InputGroup.Text id="basic-addon3">Read/Write Access Metric Weight: </InputGroup.Text>
+                    <InputGroup.Text id="basic-addon3">Read/Write Access Metric Weight (%): </InputGroup.Text>
                 </InputGroup.Prepend>
                     <FormControl 
                         type="number"
@@ -208,7 +209,7 @@ export class DendrogramCreate extends React.Component {
 
                 <InputGroup className="mb-3">
                 <InputGroup.Prepend>
-                    <InputGroup.Text id="basic-addon4">Sequence Access Metric Weight: </InputGroup.Text>
+                    <InputGroup.Text id="basic-addon4">Sequence Access Metric Weight (%): </InputGroup.Text>
                 </InputGroup.Prepend>
                     <FormControl 
                         type="number"
@@ -216,7 +217,17 @@ export class DendrogramCreate extends React.Component {
                         onChange={this.handleChangeSequenceMetricWeight}/>
                 </InputGroup>
                 
-                <Button variant="primary" type="submit" disabled={this.state.isUploaded === "Uploading..." || this.state.dendrogramName === "" || this.state.linkageType === "" || parseFloat(this.state.accessMetricWeight) + parseFloat(this.state.readWriteMetricWeight) + parseFloat(this.state.sequenceMetricWeight) !== 1 || Object.keys(this.state.profileGroup).length === 0 || this.state.selectedProfiles.length === 0}>
+                <Button variant="primary" 
+                        type="submit" 
+                        disabled={this.state.isUploaded === "Uploading..." || 
+                                  this.state.dendrogramName === "" || 
+                                  this.state.linkageType === "" || 
+                                  this.state.accessMetricWeight === "" || 
+                                  this.state.readWriteMetricWeight === "" || 
+                                  this.state.sequenceMetricWeight === "" || 
+                                  Number(this.state.accessMetricWeight) + Number(this.state.readWriteMetricWeight) + Number(this.state.sequenceMetricWeight) !== 100 || 
+                                  Object.keys(this.state.profileGroup).length === 0 || 
+                                  this.state.selectedProfiles.length === 0}>
                     Submit
                 </Button>
                 <br />

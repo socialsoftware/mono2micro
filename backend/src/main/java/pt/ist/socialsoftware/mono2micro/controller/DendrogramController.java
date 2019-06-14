@@ -34,12 +34,12 @@ import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
-import pt.ist.socialsoftware.mono2micro.domain.DendrogramManager;
+import pt.ist.socialsoftware.mono2micro.manager.DendrogramManager;
 import pt.ist.socialsoftware.mono2micro.domain.Entity;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
-import pt.ist.socialsoftware.mono2micro.domain.Pair;
+import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.domain.ProfileGroup;
-import pt.ist.socialsoftware.mono2micro.domain.ProfileManager;
+import pt.ist.socialsoftware.mono2micro.manager.ProfileManager;
 import pt.ist.socialsoftware.mono2micro.utils.PropertiesManager;
 
 @RestController
@@ -119,11 +119,14 @@ public class DendrogramController {
 			@RequestParam("readWriteMetricWeight") String readWriteMetricWeight,
 			@RequestParam("sequenceMetricWeight") String sequenceMetricWeight,
 			@RequestParam("profileGroupName") String profileGroupName,
-			@RequestParam("profiles") String profiles) {
+			@RequestParam("profiles") String[] profiles) {
 
 		logger.debug("createDendrogram");
 
-		long startTime = System.currentTimeMillis();
+		for (String ee : profiles)
+		System.out.println(ee);
+
+		/*long startTime = System.currentTimeMillis();
 
 		File directory = new File(dendrogramsFolder);
 		if (!directory.exists())
@@ -280,7 +283,7 @@ public class DendrogramController {
 		
 		long elapsedTimeMillis = System.currentTimeMillis() - startTime;
 		float elapsedTimeSec = elapsedTimeMillis/1000F;
-		System.out.println("Complete. Elapsed time: " + elapsedTimeSec + " seconds");
+		System.out.println("Complete. Elapsed time: " + elapsedTimeSec + " seconds");*/
 
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}

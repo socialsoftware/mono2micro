@@ -1,14 +1,5 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
-# dependencies
-/node_modules
-
-# testing
-/coverage
-
-# production
-/build
-
 # misc
 .DS_Store
 .env.local
@@ -20,9 +11,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-.package-lock.json
-.package.json
-
 # Visual Studio Code
 .jshintrc
 .vscode/
@@ -33,7 +21,3 @@ yarn-error.log*
 .settings
 .idea
 /target/
-
-backend/src/main/resources/specific.properties
-backend/src/main/resources/dendrograms/
-backend/src/main/resources/profiles/
