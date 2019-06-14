@@ -1,6 +1,6 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
-import { ButtonGroup, Card, Button, Form, InputGroup, FormControl, Breadcrumb, BreadcrumbItem, FormGroup, Dropdown, DropdownButton } from 'react-bootstrap';
+import { ButtonGroup, Card, Button, Form, InputGroup, FormControl, Breadcrumb, BreadcrumbItem, FormGroup, Dropdown, DropdownButton, ButtonToolbar } from 'react-bootstrap';
 import { Dendrograms } from './Dendrograms';
 
 var HttpStatus = require('http-status-codes');
@@ -119,6 +119,7 @@ export class Profiles extends React.Component {
                 <BreadCrumbs />
                 <h2 className="mb-4">Profiles Manager</h2>
                 <Form onSubmit={this.handleUpload}>
+                    <ButtonToolbar>
                     <InputGroup className="mb-3">
                     <InputGroup.Prepend>
                         <InputGroup.Text id="profile-group">Profile Group Name</InputGroup.Text>
@@ -129,13 +130,14 @@ export class Profiles extends React.Component {
                             value={this.state.profileGroupName}
                             onChange={this.handleChangeProfileGroupName}/>
                     </InputGroup>
+                    </ButtonToolbar>
 
                     <InputGroup className="mb-3">
                     <InputGroup.Prepend>
                         <InputGroup.Text id="datafile">Data Collection File</InputGroup.Text>
                     </InputGroup.Prepend>
                         <FormGroup>
-                            <FormControl 
+                            <FormControl
                                 type="file"
                                 onChange={this.handleSelectedFile}/>
                         </FormGroup>

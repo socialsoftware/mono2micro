@@ -216,7 +216,7 @@ export class DendrogramCreate extends React.Component {
                         onChange={this.handleChangeSequenceMetricWeight}/>
                 </InputGroup>
                 
-                <Button variant="primary" type="submit" disabled={this.state.isUploaded === "Uploading..." || this.state.dendrogramName === "" || this.state.linkageType === "" || parseFloat(this.state.accessMetricWeight) + parseFloat(this.state.readWriteMetricWeight) + parseFloat(this.state.sequenceMetricWeight) !== 1 || this.state.selectedFile === null}>
+                <Button variant="primary" type="submit" disabled={this.state.isUploaded === "Uploading..." || this.state.dendrogramName === "" || this.state.linkageType === "" || parseFloat(this.state.accessMetricWeight) + parseFloat(this.state.readWriteMetricWeight) + parseFloat(this.state.sequenceMetricWeight) !== 1 || Object.keys(this.state.profileGroup).length === 0 || this.state.selectedProfiles.length === 0}>
                     Submit
                 </Button>
                 <br />
