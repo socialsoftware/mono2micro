@@ -38,6 +38,8 @@ import pt.ist.socialsoftware.mono2micro.domain.DendrogramManager;
 import pt.ist.socialsoftware.mono2micro.domain.Entity;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.domain.Pair;
+import pt.ist.socialsoftware.mono2micro.domain.ProfileGroup;
+import pt.ist.socialsoftware.mono2micro.domain.ProfileManager;
 import pt.ist.socialsoftware.mono2micro.utils.PropertiesManager;
 
 @RestController
@@ -52,7 +54,11 @@ public class DendrogramController {
 
 	private String dendrogramsFolder = "src/main/resources/dendrograms/";
 
+	private String profilesFolder = "src/main/resources/profiles/";
+
 	private DendrogramManager dendrogramManager = new DendrogramManager();
+
+	private ProfileManager profileManager = new ProfileManager();
 
 
 	@RequestMapping(value = "/dendrogramNames", method = RequestMethod.GET)
@@ -105,16 +111,17 @@ public class DendrogramController {
 	}
 
 
-	@RequestMapping(value = "/createDendrogram", method = RequestMethod.POST)
+	@RequestMapping(value = "/createDendrogram", method = RequestMethod.GET)
 	public ResponseEntity<Dendrogram> createDendrogram(
 			@RequestParam("dendrogramName") String dendrogramName,
-			@RequestParam("file") MultipartFile datafile,
 			@RequestParam("linkageType") String linkageType,
 			@RequestParam("accessMetricWeight") String accessMetricWeight,
 			@RequestParam("readWriteMetricWeight") String readWriteMetricWeight,
-			@RequestParam("sequenceMetricWeight") String sequenceMetricWeight) {
+			@RequestParam("sequenceMetricWeight") String sequenceMetricWeight,
+			@RequestParam("profileGroupName") String profileGroupName,
+			@RequestParam("profiles") String profiles) {
 
-		logger.debug("createDendrogram filename: {}", datafile.getOriginalFilename());
+		logger.debug("createDendrogram");
 
 		long startTime = System.currentTimeMillis();
 
@@ -136,61 +143,61 @@ public class DendrogramController {
 			int totalSequencePairsCount = 0;
 			JSONArray similarityMatrix = new JSONArray();
 			JSONObject dendrogramData = new JSONObject();
+			ProfileGroup profileGroup = profileManager.getProfileGroup(profileGroupName);
 
 
 			//read datafile
-			InputStream is =  new BufferedInputStream(datafile.getInputStream());
+			InputStream is = new FileInputStream(profilesFolder + profileGroupName + ".txt");
 			JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
 			is.close();
 
-			Iterator<String> controllers = datafileJSON.sortedKeys();
+			for (String profile : profiles.split(",")) {
+				for (String controllerName : profileGroup.getProfile(profile)) {
+					Controller controller = new Controller(controllerName);
+					dend.addController(controller);
 
-			while(controllers.hasNext()) {
-				String controllerName = controllers.next();
-				Controller controller = new Controller(controllerName);
-				dend.addController(controller);
-
-				JSONArray entities = datafileJSON.getJSONArray(controllerName);
-				for (int i = 0; i < entities.length(); i++) {
-					JSONArray entityArray = entities.getJSONArray(i);
-					String entity = entityArray.getString(0);
-					String mode = entityArray.getString(1);
-					
-					controller.addEntity(entity, mode);
-					controller.addEntitySeq(entity, mode);
-
-					if (!dend.containsEntity(entity))
-						dend.addEntity(new Entity(entity));
-
-					if (entityControllers.containsKey(entity)) {
-						boolean containsController = false;
-						for (Pair<String,String> controllerPair : entityControllers.get(entity)) {
-							if (controllerPair.getFirst().equals(controllerName)) {
-								containsController = true;
-								if (!controllerPair.getSecond().contains(mode))
-									controllerPair.setSecond("RW");
-								break;
-							}
-						}
-						if (!containsController) {
-							entityControllers.get(entity).add(new Pair<String,String>(controllerName,mode));
-						}
-					} else {
-						List<Pair<String,String>> controllersPairs = new ArrayList<>();
-						controllersPairs.add(new Pair<String,String>(controllerName,mode));
-						entityControllers.put(entity, controllersPairs);
-					}
-
-					if (i < entities.length() - 1) {
-						JSONArray nextEntityArray = entities.getJSONArray(i+1);
-						String nextEntity = nextEntityArray.getString(0);
-						String e1e2 = entity + "->" + nextEntity;
+					JSONArray entities = datafileJSON.getJSONArray(controllerName);
+					for (int i = 0; i < entities.length(); i++) {
+						JSONArray entityArray = entities.getJSONArray(i);
+						String entity = entityArray.getString(0);
+						String mode = entityArray.getString(1);
 						
-						int count = e1e2PairCount.containsKey(e1e2) ? e1e2PairCount.get(e1e2) : 0;
-						e1e2PairCount.put(e1e2, count + 1);
+						controller.addEntity(entity, mode);
+						controller.addEntitySeq(entity, mode);
+
+						if (!dend.containsEntity(entity))
+							dend.addEntity(new Entity(entity));
+
+						if (entityControllers.containsKey(entity)) {
+							boolean containsController = false;
+							for (Pair<String,String> controllerPair : entityControllers.get(entity)) {
+								if (controllerPair.getFirst().equals(controllerName)) {
+									containsController = true;
+									if (!controllerPair.getSecond().contains(mode))
+										controllerPair.setSecond("RW");
+									break;
+								}
+							}
+							if (!containsController) {
+								entityControllers.get(entity).add(new Pair<String,String>(controllerName,mode));
+							}
+						} else {
+							List<Pair<String,String>> controllersPairs = new ArrayList<>();
+							controllersPairs.add(new Pair<String,String>(controllerName,mode));
+							entityControllers.put(entity, controllersPairs);
+						}
+
+						if (i < entities.length() - 1) {
+							JSONArray nextEntityArray = entities.getJSONArray(i+1);
+							String nextEntity = nextEntityArray.getString(0);
+							String e1e2 = entity + "->" + nextEntity;
+							
+							int count = e1e2PairCount.containsKey(e1e2) ? e1e2PairCount.get(e1e2) : 0;
+							e1e2PairCount.put(e1e2, count + 1);
+						}
 					}
+					totalSequencePairsCount += entities.length() - 1;
 				}
-				totalSequencePairsCount += entities.length() - 1;
 			}
 
 			List<String> entitiesList = new ArrayList<String>(entityControllers.keySet());

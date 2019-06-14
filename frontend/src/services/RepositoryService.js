@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { URL } from '../constants/constants';
+import { ProfileGroup } from './../components/graph/ProfileGroup';
 
 export class RepositoryService {
     constructor() {
@@ -14,6 +15,78 @@ export class RepositoryService {
         });
     }
 
+    //Profile Groups
+    createProfileGroup(dataFile) {
+        const config = {
+            headers: {
+                'content-type': 'multipart/form-data'
+            }
+        }
+        return this.axios.post("/createProfileGroup", dataFile, config);
+    }
+
+    getProfileGroupNames() {
+        return this.axios.get("/profileGroupNames");
+    }
+
+    getProfileGroups() {
+        return this.axios.get("/profileGroups");
+    }
+
+    getProfileGroup(profileGroupName) {
+        return this.axios.get("/profileGroup", 
+            {
+                params: {
+                    "profileGroupName" : profileGroupName
+                }
+            });
+    }
+
+    deleteProfileGroup(profileGroupName) {
+        return this.axios.delete("/deleteProfileGroup", 
+            {
+                params: {
+                    "profileGroupName" : profileGroupName
+                }
+            });
+    }
+
+
+    //Profile
+    addProfile(profileGroupName, profile) {
+        return this.axios.get("/addProfile", 
+            {
+                params: {
+                    "profileGroupName" : profileGroupName,
+                    "profile" : profile
+                }
+            });
+    }
+
+    moveController(profileGroupName, moveController, moveToProfile) {
+        return this.axios.get("/moveController", 
+            {
+                params: {
+                    "profileGroupName" : profileGroupName,
+                    "moveController" : moveController,
+                    "moveToProfile" : moveToProfile
+                }
+            });
+    }
+
+    deleteProfile(profileGroupName, profileName) {
+        return this.axios.delete("/deleteProfile", 
+            {
+                params: {
+                    "profileGroupName" : profileGroupName,
+                    "profileName" : profileName
+                }
+            });
+    }
+
+
+
+    //Dendrogram
     getDendrogramNames() {
         return this.axios.get("/dendrogramNames");
     }
@@ -30,7 +103,44 @@ export class RepositoryService {
                 }
             });
     }
+    
+    createDendrogram(dendrogramName, linkageType, accessMetricWeight, readWriteMetricWeight, sequenceMetricWeight, profileGroupName, profiles) {
+        return this.axios.get("/createDendrogram", 
+            {
+                params: {
+                    "dendrogramName" : dendrogramName,
+                    "linkageType" : linkageType,
+                    "accessMetricWeight" : accessMetricWeight,
+                    "readWriteMetricWeight" : readWriteMetricWeight,
+                    "sequenceMetricWeight" : sequenceMetricWeight,
+                    "profileGroupName" : profileGroupName,
+                    "profiles" : profiles
+                }
+            });
+    }
 
+    getDendrogram(dendrogramName) {
+        return this.axios.get("/dendrogram", 
+            {
+                params: {
+                    "dendrogramName" : dendrogramName
+                }
+            });
+    }
+
+    cutDendrogram(dendrogramName, cutValue) {
+        return this.axios.get("/cutDendrogram",
+            {
+                params: {
+                    "dendrogramName" : dendrogramName,
+                    "cutValue" : cutValue
+                }
+            });
+    }
+
+
+
+    //Graph
     deleteGraph(dendrogramName, graphName) {
         return this.axios.delete("/deleteGraph", 
             {
@@ -60,34 +170,20 @@ export class RepositoryService {
             });
     }
 
-    createDendrogram(dataFile) {
-        const config = {
-            headers: {
-                'content-type': 'multipart/form-data'
-            }
-        }
-        return this.axios.post("/createDendrogram", dataFile, config);
-    }
-
-    getDendrogram(dendrogramName) {
-        return this.axios.get("/dendrogram", 
-            {
-                params: {
-                    "dendrogramName" : dendrogramName
-                }
-            });
-    }
-
-    cutDendrogram(dendrogramName, cutValue) {
-        return this.axios.get("/cutDendrogram", 
+    renameGraph(dendrogramName, graphName, newName) {
+        return this.axios.get("/renameGraph", 
             {
                 params: {
                     "dendrogramName" : dendrogramName,
-                    "cutValue" : cutValue
+                    "graphName" : graphName,
+                    "newName" : newName
                 }
             });
     }
 
+
+
+    //Cluster
     mergeClusters(dendrogramName, graphName, cluster1, cluster2, newName) {
         return this.axios.get("/mergeClusters", 
             {
@@ -108,17 +204,6 @@ export class RepositoryService {
                     "dendrogramName" : dendrogramName,
                     "graphName" : graphName,
                     "clusterName" : clusterName,
-                    "newName" : newName
-                }
-            });
-    }
-
-    renameGraph(dendrogramName, graphName, newName) {
-        return this.axios.get("/renameGraph", 
-            {
-                params: {
-                    "dendrogramName" : dendrogramName,
-                    "graphName" : graphName,
                     "newName" : newName
                 }
             });
@@ -170,6 +255,9 @@ export class RepositoryService {
             });
     }
 
+
+
+    //Controller
     getControllers(dendrogramName) {
         return this.axios.get("/controllers", 
             {

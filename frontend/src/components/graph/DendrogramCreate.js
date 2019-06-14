@@ -1,6 +1,7 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
-import { Button, Form, InputGroup, FormControl, Breadcrumb, BreadcrumbItem } from 'react-bootstrap';
+import { Button, Form, InputGroup, FormControl, Breadcrumb, BreadcrumbItem, FormGroup, Dropdown, DropdownButton } from 'react-bootstrap';
+import { Dendrograms } from './Dendrograms';
 
 var HttpStatus = require('http-status-codes');
 
@@ -19,17 +20,19 @@ const BreadCrumbs = () => {
 export class DendrogramCreate extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { 
-            selectedFile: null, 
+        this.state = {
             isUploaded: "",
             dendrogramName: "",
             linkageType: "",
             accessMetricWeight: "",
             readWriteMetricWeight: "",
             sequenceMetricWeight: "",
+            dendrogramNames: [],
+            profileGroups: [],
+            profileGroup: {},
+            selectedProfiles: []
         };
 
-        this.handleSelectedFile = this.handleSelectedFile.bind(this);
         this.handleUpload= this.handleUpload.bind(this);
         this.handleChangeDendrogramName = this.handleChangeDendrogramName.bind(this);
         this.handleLinkageType = this.handleLinkageType.bind(this);
@@ -38,29 +41,30 @@ export class DendrogramCreate extends React.Component {
         this.handleChangeSequenceMetricWeight = this.handleChangeSequenceMetricWeight.bind(this);
     }
 
-    handleSelectedFile(event) {
-        this.setState({
-            selectedFile: event.target.files[0],
-            isUploaded: ""
+    componentDidMount() {
+        const service = new RepositoryService();
+        service.getDendrogramNames().then(response => {
+            this.setState({
+                dendrogramNames: response.data
+            });
+        });
+
+        service.getProfileGroups().then(response => {
+            this.setState({
+                profileGroups: response.data
+            });
         });
     }
 
     handleUpload(event){
         event.preventDefault()
         const service = new RepositoryService();
-        var data = new FormData();
-        data.append('file', this.state.selectedFile);
-        data.append('dendrogramName', this.state.dendrogramName);
-        data.append('linkageType', this.state.linkageType);
-        data.append('accessMetricWeight', this.state.accessMetricWeight);
-        data.append('readWriteMetricWeight', this.state.readWriteMetricWeight);
-        data.append('sequenceMetricWeight', this.state.sequenceMetricWeight);
 
         this.setState({
             isUploaded: "Uploading..."
         });
         
-        service.createDendrogram(data).then(response => {
+        service.createDendrogram(this.state.dendrogramName, this.state.linkageType, this.state.accessMetricWeight, this.state.readWriteMetricWeight, this.state.sequenceMetricWeight, this.state.profileGroup.name, this.state.selectedProfiles.join()).then(response => {
             if (response.status === HttpStatus.CREATED) {
                 this.setState({
                     isUploaded: "Upload completed successfully."
@@ -115,12 +119,29 @@ export class DendrogramCreate extends React.Component {
         });
     }
 
+    setProfileGroup(profileGroup) {
+        this.setState({
+            profileGroup: profileGroup
+        })
+    }
+
+    selectProfile(profile) {
+        if (this.state.selectedProfiles.includes(profile)) {
+            this.state.selectedProfiles.splice(this.state.selectedProfiles.indexOf(profile), 1);
+        } else {
+            this.state.selectedProfiles.push(profile);
+        }
+        this.setState({
+            selectedProfiles: this.state.selectedProfiles
+        });
+        console.log(this.state.selectedProfiles);
+    }
+
     render() {
         return (
             <Form onSubmit={this.handleUpload}>
                 <BreadCrumbs />
-                <h2>Create Dendrogram</h2>
-                <h3 className="mb-4">Upload data file from Callgraph Eclipse Plugin to create the dendrogram.</h3>
+                <h2 className="mb-4">Create Dendrogram</h2>
                 
                 <InputGroup className="mb-3">
                 <InputGroup.Prepend>
@@ -132,10 +153,31 @@ export class DendrogramCreate extends React.Component {
                         value={this.state.dendrogramName}
                         onChange={this.handleChangeDendrogramName}/>
                 </InputGroup>
-                
-                <Form.Group controlId="formDendrogramCreate">
-                    <Form.Control type="file" onChange={this.handleSelectedFile} />
-                </Form.Group>
+
+                <InputGroup className="mb-3">
+                <InputGroup.Prepend>
+                    <InputGroup.Text id="basic-addon-2">Select Profile Group</InputGroup.Text>
+                </InputGroup.Prepend>
+                    <DropdownButton
+                        title={Object.keys(this.state.profileGroup).length === 0 ? "Profile Group" : this.state.profileGroup.name}
+                        id="input-group-dropdown-1"
+                        >
+                        {this.state.profileGroups.map(profileGroup => <Dropdown.Item onClick={() => this.setProfileGroup(profileGroup)}>{profileGroup.name}</Dropdown.Item>)}
+                    </DropdownButton>
+                </InputGroup>
+
+                <InputGroup className="mb-3">
+                <InputGroup.Prepend>
+                    <InputGroup.Text id="basic-addon--2">Select Profiles</InputGroup.Text>
+                </InputGroup.Prepend>
+                    <DropdownButton title={'Profiles'}>
+                        {Object.keys(this.state.profileGroup).length === 0 ? [] : Object.keys(this.state.profileGroup.profiles).map(profile => <Dropdown.Item 
+                            key={profile}
+                            eventKey={profile}
+                            onSelect={() => this.selectProfile(profile)}
+                            active={this.state.selectedProfiles.includes(profile)}>{profile}</Dropdown.Item>)}
+                    </DropdownButton>
+                </InputGroup>
 
                 <div key={`linkage-type`} className="mb-3">
                     <span className="mr-3">Linkage Type:</span>

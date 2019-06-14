@@ -12,6 +12,7 @@ export class Header extends React.Component {
                 <Navbar.Toggle />
                 <Navbar.Collapse>
                     <Nav>
+                        <Nav.Link href="/profiles">Profiles</Nav.Link>
                         <Nav.Link href="/dendrograms">Dendrograms</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
