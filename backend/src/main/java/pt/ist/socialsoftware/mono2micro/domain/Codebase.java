@@ -4,15 +4,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ProfileGroup {
+public class Codebase {
 	private String name;
 	private Map<String,List<String>> profiles;
 
-	public ProfileGroup() {
+	public Codebase() {
 
 	}
 
-	public ProfileGroup(String name) {
+	public Codebase(String name) {
         this.name = name;
 		this.profiles = new HashMap<>();
 	}

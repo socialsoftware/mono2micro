@@ -1,6 +1,6 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
-import { DENDROGRAM_URL } from '../../constants/constants';
+import { URL } from '../../constants/constants';
 import { Button, ButtonGroup, Form, Card, Breadcrumb, BreadcrumbItem } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 
@@ -147,7 +147,7 @@ export class DendrogramCut extends React.Component {
                 {this.state.cutSuccess}
                 <br />
                 <br />
-                <img className="mb-5" src={DENDROGRAM_URL + "?dendrogramName=" + this.state.dendrogramName + "&&" + new Date().getTime()} alt="Dendrogram" />
+                <img className="mb-5" src={URL + "dendrogram/" + this.state.dendrogram.name + "/image?" + new Date().getTime()} alt="Dendrogram" />
 
                 {graphs.length !== 0 &&
                     <div>

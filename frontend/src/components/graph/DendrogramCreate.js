@@ -1,7 +1,6 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
-import { Button, Form, InputGroup, FormControl, Breadcrumb, BreadcrumbItem, FormGroup, Dropdown, DropdownButton } from 'react-bootstrap';
-import { Dendrograms } from './Dendrograms';
+import { Button, Form, InputGroup, FormControl, Breadcrumb, BreadcrumbItem, Dropdown, DropdownButton } from 'react-bootstrap';
 
 var HttpStatus = require('http-status-codes');
 
@@ -28,8 +27,8 @@ export class DendrogramCreate extends React.Component {
             readWriteMetricWeight: "",
             sequenceMetricWeight: "",
             dendrogramNames: [],
-            profileGroups: [],
-            profileGroup: {},
+            codebases: [],
+            codebase: {},
             selectedProfiles: []
         };
 
@@ -49,9 +48,9 @@ export class DendrogramCreate extends React.Component {
             });
         });
 
-        service.getProfileGroups().then(response => {
+        service.getCodebases().then(response => {
             this.setState({
-                profileGroups: response.data
+                codebases: response.data
             });
         });
     }
@@ -64,7 +63,7 @@ export class DendrogramCreate extends React.Component {
             isUploaded: "Uploading..."
         });
         
-        service.createDendrogram(this.state.dendrogramName, this.state.linkageType, this.state.accessMetricWeight, this.state.readWriteMetricWeight, this.state.sequenceMetricWeight, this.state.profileGroup.name, this.state.selectedProfiles).then(response => {
+        service.createDendrogram(this.state.dendrogramName, this.state.linkageType, this.state.accessMetricWeight, this.state.readWriteMetricWeight, this.state.sequenceMetricWeight, this.state.codebase.name, this.state.selectedProfiles).then(response => {
             if (response.status === HttpStatus.CREATED) {
                 this.setState({
                     isUploaded: "Upload completed successfully."
@@ -79,7 +78,7 @@ export class DendrogramCreate extends React.Component {
         .catch(error => {
             if (error.response !== undefined && error.response.status === HttpStatus.UNAUTHORIZED) {
                 this.setState({
-                    isUploaded: "Upload failed. Dendrogram Name already exists."
+                    isUploaded: "Upload failed. Dendrogram name already exists."
                 });
             } else {
                 this.setState({
@@ -119,9 +118,9 @@ export class DendrogramCreate extends React.Component {
         });
     }
 
-    setProfileGroup(profileGroup) {
+    setCodebase(codebase) {
         this.setState({
-            profileGroup: profileGroup
+            codebase: codebase
         })
     }
 
@@ -137,8 +136,6 @@ export class DendrogramCreate extends React.Component {
     }
 
     render() {
-        console.log((Number(this.state.accessMetricWeight) + Number(this.state.readWriteMetricWeight) + Number(this.state.sequenceMetricWeight)))
-        
         return (
             <Form onSubmit={this.handleUpload}>
                 <BreadCrumbs />
@@ -157,13 +154,13 @@ export class DendrogramCreate extends React.Component {
 
                 <InputGroup className="mb-3">
                 <InputGroup.Prepend>
-                    <InputGroup.Text id="basic-addon-2">Select Profile Group</InputGroup.Text>
+                    <InputGroup.Text id="basic-addon-2">Select Codebase</InputGroup.Text>
                 </InputGroup.Prepend>
                     <DropdownButton
-                        title={Object.keys(this.state.profileGroup).length === 0 ? "Profile Group" : this.state.profileGroup.name}
+                        title={Object.keys(this.state.codebase).length === 0 ? "Codebase" : this.state.codebase.name}
                         id="input-group-dropdown-1"
                         >
-                        {this.state.profileGroups.map(profileGroup => <Dropdown.Item onClick={() => this.setProfileGroup(profileGroup)}>{profileGroup.name}</Dropdown.Item>)}
+                        {this.state.codebases.map(codebase => <Dropdown.Item onClick={() => this.setCodebase(codebase)}>{codebase.name}</Dropdown.Item>)}
                     </DropdownButton>
                 </InputGroup>
 
@@ -172,7 +169,7 @@ export class DendrogramCreate extends React.Component {
                     <InputGroup.Text id="basic-addon--2">Select Profiles</InputGroup.Text>
                 </InputGroup.Prepend>
                     <DropdownButton title={'Profiles'}>
-                        {Object.keys(this.state.profileGroup).length === 0 ? [] : Object.keys(this.state.profileGroup.profiles).map(profile => <Dropdown.Item 
+                        {Object.keys(this.state.codebase).length === 0 ? [] : Object.keys(this.state.codebase.profiles).map(profile => <Dropdown.Item 
                             key={profile}
                             eventKey={profile}
                             onSelect={() => this.selectProfile(profile)}
@@ -226,7 +223,7 @@ export class DendrogramCreate extends React.Component {
                                   this.state.readWriteMetricWeight === "" || 
                                   this.state.sequenceMetricWeight === "" || 
                                   Number(this.state.accessMetricWeight) + Number(this.state.readWriteMetricWeight) + Number(this.state.sequenceMetricWeight) !== 100 || 
-                                  Object.keys(this.state.profileGroup).length === 0 || 
+                                  Object.keys(this.state.codebase).length === 0 || 
                                   this.state.selectedProfiles.length === 0}>
                     Submit
                 </Button>

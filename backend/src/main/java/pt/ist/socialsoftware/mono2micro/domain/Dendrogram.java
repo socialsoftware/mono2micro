@@ -13,16 +13,13 @@ public class Dendrogram {
 	private List<Controller> controllers = new ArrayList<>();
 	private List<Entity> entities = new ArrayList<>();
 	private String linkageType;
-	private String accessMetricWeight;
-	private String readWriteMetricWeight;
-	private String sequenceMetricWeight;
+	private float accessMetricWeight;
+	private float readWriteMetricWeight;
+	private float sequenceMetricWeight;
+	private String codebase;
+	private List<String> profiles;
 
 	public Dendrogram() {
-	}
-
-	public Dendrogram(String name, String linkageType) {
-		this.name = name;
-		this.linkageType = linkageType;
 	}
 
 	public String getName() {
@@ -41,23 +38,46 @@ public class Dendrogram {
 		this.linkageType = linkageType;
 	}
 
-	public String getAccessMetricWeight() {
+	public float getAccessMetricWeight() {
 		return this.accessMetricWeight;
 	}
 
-	public String getReadWriteMetricWeight() {
+	public float getReadWriteMetricWeight() {
 		return this.readWriteMetricWeight;
 	}
 
-	public String getSequenceMetricWeight() {
+	public float getSequenceMetricWeight() {
 		return this.sequenceMetricWeight;
 	}
 
-	public void setClusteringMetricWeight(String accessMetricWeight, String readWriteMetricWeight, String sequenceMetricWeight) {
+	public void setAccessMetricWeight(float accessMetricWeight) {
 		this.accessMetricWeight = accessMetricWeight;
-		this.readWriteMetricWeight = readWriteMetricWeight;
+	}
+
+	public void setReadWriteMetricWeight(float readWriteMetricWeigh) {
+		this.readWriteMetricWeight = readWriteMetricWeigh;
+	}
+
+	public void setSequenceMetricWeight(float sequenceMetricWeight) {
 		this.sequenceMetricWeight = sequenceMetricWeight;
 	}
+
+	public String getCodebase() {
+		return this.codebase;
+	}
+
+	public void setCodebase(String codebase) {
+		this.codebase = codebase;
+	}
+
+	public List<String> getProfiles() {
+		return profiles;
+	}
+
+	public void setProfiles(List<String> profiles) {
+		this.profiles = profiles;
+	}
+
 
 	public List<Graph> getGraphs() {
 		return this.graphs;

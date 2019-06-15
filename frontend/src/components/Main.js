@@ -5,8 +5,8 @@ import { DendrogramCreate } from './graph/DendrogramCreate';
 import { DendrogramCut } from './graph/DendrogramCut';
 import { Views } from './graph/Views';
 import { Dendrograms } from './graph/Dendrograms'
-import { Profiles } from './graph/Profiles'
-import { ProfileGroup } from './graph/ProfileGroup'
+import { Codebases } from './graph/Codebases';
+import { Codebase } from './graph/Codebase';
 
 export const Main = () => (
   <main>
@@ -16,8 +16,8 @@ export const Main = () => (
       <Route exact path='/dendrograms' component={Dendrograms} />
       <Route exact path='/dendrogram/:dendrogramName' component={DendrogramCut} />
       <Route exact path='/dendrogram/:dendrogramName/graph/:graphName' component={Views} />
-      <Route exact path='/profiles' component={Profiles} />
-      <Route exact path='/profile/:profileGroupName' component={ProfileGroup} />
+      <Route exact path='/codebases' component={Codebases} />
+      <Route exact path='/codebase/:codebaseName' component={Codebase} />
     </Switch>
   </main>
 )

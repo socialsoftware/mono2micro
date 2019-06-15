@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,7 +17,7 @@ import pt.ist.socialsoftware.mono2micro.manager.DendrogramManager;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
 
 @RestController
-@RequestMapping(value = "/mono2micro")
+@RequestMapping(value = "/mono2micro/dendrogram/{dendrogramName}")
 public class GraphController {
 
 	private static Logger logger = LoggerFactory.getLogger(GraphController.class);
@@ -26,7 +26,7 @@ public class GraphController {
 
 
 	@RequestMapping(value = "/graphs", method = RequestMethod.GET)
-	public ResponseEntity<List<Graph>> getGraphs(@RequestParam("dendrogramName") String dendrogramName) {
+	public ResponseEntity<List<Graph>> getGraphs(@PathVariable String dendrogramName) {
 		logger.debug("getGraphs");
 
 		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
@@ -34,8 +34,8 @@ public class GraphController {
 	}
 
 
-	@RequestMapping(value = "/graph", method = RequestMethod.GET)
-	public ResponseEntity<Graph> getGraph(@RequestParam("dendrogramName") String dendrogramName, @RequestParam("graphName") String graphName) {
+	@RequestMapping(value = "/graph/{graphName}", method = RequestMethod.GET)
+	public ResponseEntity<Graph> getGraph(@PathVariable String dendrogramName, @PathVariable String graphName) {
 		logger.debug("getGraph: {}", graphName);
 		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
 		List<Graph> graphs = dend.getGraphs();
@@ -50,24 +50,23 @@ public class GraphController {
 	
 
 
-	@RequestMapping(value = "/renameGraph", method = RequestMethod.GET)
-	public ResponseEntity<Dendrogram> renameGraph(@RequestParam("dendrogramName") String dendrogramName, @RequestParam("graphName") String graphName,
-			@RequestParam("newName") String newName) {
+	@RequestMapping(value = "/graph/{graphName}/rename", method = RequestMethod.GET)
+	public ResponseEntity<HttpStatus> renameGraph(@PathVariable String dendrogramName, @PathVariable String graphName, @RequestParam String newName) {
 		logger.debug("renameGraph {}", graphName);
 
 		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
 		boolean success = dend.renameGraph(graphName, newName);
 		if (success) {
 			dendrogramManager.writeDendrogram(dendrogramName, dend);
-			return new ResponseEntity<Dendrogram>(dend, HttpStatus.OK);
+			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
-			return new ResponseEntity<Dendrogram>(dend, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 
 
-	@RequestMapping(value = "/deleteGraph", method = RequestMethod.DELETE)
-	public ResponseEntity<HttpStatus> deleteGraph(@RequestParam("dendrogramName") String dendrogramName, @RequestParam("graphName") String graphName) {
+	@RequestMapping(value = "/graph/{graphName}/delete", method = RequestMethod.DELETE)
+	public ResponseEntity<HttpStatus> deleteGraph(@PathVariable String dendrogramName, @PathVariable String graphName) {
 		logger.debug("deleteGraph");
 
 		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);

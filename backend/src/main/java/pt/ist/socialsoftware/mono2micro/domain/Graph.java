@@ -21,14 +21,6 @@ public class Graph {
 
 	}
 
-	public Graph(String name, String cutValue, float silhouetteScore, String dendrogramName) {
-		this.name = name;
-		this.cutValue = cutValue;
-		this.silhouetteScore = silhouetteScore;
-		this.dendrogramName = dendrogramName;
-		this.clusters = new ArrayList<>();
-	}
-
 	public String getName() {
 		return this.name;
 	}

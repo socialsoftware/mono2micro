@@ -1,16 +1,14 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
-import { ButtonGroup, Button, Form, InputGroup, FormControl, Breadcrumb, BreadcrumbItem, FormGroup, Dropdown, DropdownButton, ButtonToolbar } from 'react-bootstrap';
-import { Dendrograms } from './Dendrograms';
+import { ButtonGroup, Button, InputGroup, FormControl, Breadcrumb, BreadcrumbItem, Dropdown, DropdownButton, ButtonToolbar } from 'react-bootstrap';
 
-var HttpStatus = require('http-status-codes');
 
-export class ProfileGroup extends React.Component {
+export class Codebase extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            profileGroupName: this.props.match.params.profileGroupName,
-            profileGroup: {},
+            codebaseName: this.props.match.params.codebaseName,
+            codebase: {},
             newProfileName: "",
             moveController: "",
             moveToProfile: "",
@@ -22,14 +20,14 @@ export class ProfileGroup extends React.Component {
     }
 
     componentDidMount() {
-        this.loadProfileGroup();
+        this.loadCodebase();
     }
 
-    loadProfileGroup() {
+    loadCodebase() {
         const service = new RepositoryService();
-        service.getProfileGroup(this.state.profileGroupName).then(response => {
+        service.getCodebase(this.state.codebaseName).then(response => {
             this.setState({
-                profileGroup: response.data
+                codebase: response.data
             });
         });
     }
@@ -42,8 +40,8 @@ export class ProfileGroup extends React.Component {
 
     handleNewProfileSubmit() {
         const service = new RepositoryService();
-        service.addProfile(this.state.profileGroupName, this.state.newProfileName).then(response => {
-            this.loadProfileGroup();
+        service.addProfile(this.state.codebaseName, this.state.newProfileName).then(response => {
+            this.loadCodebase();
         });
     }
 
@@ -61,15 +59,15 @@ export class ProfileGroup extends React.Component {
 
     handleMoveControllerSubmit() {
         const service = new RepositoryService();
-        service.moveController(this.state.profileGroupName, this.state.moveController, this.state.moveToProfile).then(response => {
-            this.loadProfileGroup();
+        service.moveController(this.state.codebaseName, this.state.moveController, this.state.moveToProfile).then(response => {
+            this.loadCodebase();
         });
     }
 
     handleDeleteProfile(profile) {
         const service = new RepositoryService();
-        service.deleteProfile(this.state.profileGroupName, profile).then(response => {
-            this.loadProfileGroup();
+        service.deleteProfile(this.state.codebaseName, profile).then(response => {
+            this.loadCodebase();
         });
     }
 
@@ -79,8 +77,8 @@ export class ProfileGroup extends React.Component {
               <div>
                 <Breadcrumb>
                   <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-                  <Breadcrumb.Item href="/profiles">Profiles</Breadcrumb.Item>
-                  <BreadcrumbItem active>{this.state.profileGroupName}</BreadcrumbItem>
+                  <Breadcrumb.Item href="/codebases">Codebases</Breadcrumb.Item>
+                  <BreadcrumbItem active>{this.state.codebaseName}</BreadcrumbItem>
                 </Breadcrumb>
               </div>
             );
@@ -104,13 +102,13 @@ export class ProfileGroup extends React.Component {
                 <Button className="mr-1" onClick={this.handleNewProfileSubmit}>Submit</Button>
                 </ButtonToolbar>
 
-                {Object.keys(this.state.profileGroup).length !== 0 &&
+                {Object.keys(this.state.codebase).length !== 0 &&
                     <span>
                     <div>
                     <Button className="mr-1 mt-2">Move</Button>
 
                     <DropdownButton as={ButtonGroup} title={this.state.moveController} className="mr-1 mt-2">
-                        {Object.values(this.state.profileGroup.profiles).flat().map(controller => <Dropdown.Item 
+                        {Object.values(this.state.codebase.profiles).flat().map(controller => <Dropdown.Item 
                             key={controller}
                             eventKey={controller}
                             onSelect={() => this.handleMoveController(controller)}>{controller}</Dropdown.Item>)}
@@ -119,7 +117,7 @@ export class ProfileGroup extends React.Component {
                     <Button className="mr-1 mt-2">To</Button>
 
                     <DropdownButton as={ButtonGroup} title={this.state.moveToProfile} className="mr-1 mt-2">
-                        {Object.keys(this.state.profileGroup.profiles).map(p => <Dropdown.Item 
+                        {Object.keys(this.state.codebase.profiles).map(p => <Dropdown.Item 
                             key={p}
                             eventKey={p}
                             onSelect={() => this.handleMoveToProfile(p)}>{p}</Dropdown.Item>)}
@@ -128,14 +126,14 @@ export class ProfileGroup extends React.Component {
                     <Button className="mt-2" onClick={this.handleMoveControllerSubmit}>Submit</Button>
                     </div>
 
-                    {Object.keys(this.state.profileGroup.profiles).map(profile =>
+                    {Object.keys(this.state.codebase.profiles).map(profile =>
                         <span>
                         <span style={{fontSize: '30px', fontWeight: 'bold'}}>{profile}</span>
 
                         <Button onClick={() => this.handleDeleteProfile(profile)} className="mr-4" variant="danger" size="sm">-</Button>
 
                         <ul>
-                            {this.state.profileGroup.profiles[profile].map(controller =>
+                            {this.state.codebase.profiles[profile].map(controller =>
                                 <li>{controller}</li>
                             )}
                         </ul> 

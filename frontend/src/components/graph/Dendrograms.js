@@ -1,7 +1,7 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
 import { ButtonGroup, Button, Card, Breadcrumb, BreadcrumbItem } from 'react-bootstrap';
-import { DENDROGRAM_URL } from '../../constants/constants';
+import { URL } from '../../constants/constants';
 import BootstrapTable from 'react-bootstrap-table-next';
 
 const BreadCrumbs = () => {
@@ -116,16 +116,16 @@ export class Dendrograms extends React.Component {
                     </div>
 
                     <Card className="mb-5" key={this.state.dendrogram.name} style={{ width: '20rem' }}>
-                    <Card.Img variant="top" src={DENDROGRAM_URL + "?dendrogramName=" + this.state.dendrogram.name + "&&" + new Date().getTime()} />
+                    <Card.Img variant="top" src={URL + "dendrogram/" + this.state.dendrogram.name + "/image?" + new Date().getTime()} />
                     <Card.Body>
                         <Card.Title>
                             {this.state.dendrogram.name}
                         </Card.Title>
                         <Card.Text>
                             Linkage Type: {this.state.dendrogram.linkageType}< br/>
-                            Undistinct Access Metric Weight: {this.state.dendrogram.accessMetricWeight}< br/>
-                            Read/Write Access Metric Weight: {this.state.dendrogram.readWriteMetricWeight}< br/>
-                            Sequence Access Metric Weight: {this.state.dendrogram.sequenceMetricWeight}< br/>
+                            Undistinct Access Metric Weight: {this.state.dendrogram.accessMetricWeight}%< br/>
+                            Read/Write Access Metric Weight: {this.state.dendrogram.readWriteMetricWeight}%< br/>
+                            Sequence Access Metric Weight: {this.state.dendrogram.sequenceMetricWeight}%< br/>
                             # of Controllers: {this.state.dendrogram.controllers.length}< br/>
                             # of Entities: {this.state.dendrogram.entities.length}
                         </Card.Text>

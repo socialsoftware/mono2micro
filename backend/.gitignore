@@ -12,4 +12,4 @@ buildNumber.properties
 
 src/main/resources/specific.properties
 src/main/resources/dendrograms/
-src/main/resources/profiles/
+src/main/resources/codebases/
