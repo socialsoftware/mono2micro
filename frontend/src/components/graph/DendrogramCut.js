@@ -45,7 +45,7 @@ export class DendrogramCut extends React.Component {
         this.setState({
             cutSuccess: "Processing..."
         });
-        service.cutDendrogram(this.state.dendrogramName, this.state.cutValue).then(response => {
+        service.cutDendrogram(this.state.dendrogramName, Number(this.state.cutValue)).then(response => {
             if (response.status === HttpStatus.OK) {
                 this.loadGraphs();
                 this.setState({
@@ -147,7 +147,7 @@ export class DendrogramCut extends React.Component {
                 {this.state.cutSuccess}
                 <br />
                 <br />
-                <img className="mb-5" src={URL + "dendrogram/" + this.state.dendrogram.name + "/image?" + new Date().getTime()} alt="Dendrogram" />
+                <img className="mb-5" src={URL + "dendrogram/" + this.state.dendrogramName + "/image?" + new Date().getTime()} alt="Dendrogram" />
 
                 {graphs.length !== 0 &&
                     <div>

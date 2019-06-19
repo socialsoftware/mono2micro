@@ -10,15 +10,14 @@ import pt.ist.socialsoftware.mono2micro.utils.Pair;
 public class Graph {
 	private String name;
 	private String dendrogramName;
-	private String cutValue;
+	private float cutValue;
 	private float silhouetteScore;
-	private List<Cluster> clusters;
+	private List<Cluster> clusters = new ArrayList<>();
 	private Map<String,Float> controllersComplexity;
 	private Map<String,Float> controllersComplexityRW;
 	private Map<String,Float> controllersComplexitySeq;
 
 	public Graph() {
-
 	}
 
 	public String getName() {
@@ -37,11 +36,11 @@ public class Graph {
 		this.dendrogramName = dendrogramName;
 	}
 
-	public String getCutValue() {
+	public float getCutValue() {
 		return this.cutValue;
 	}
 
-	public void setCutValue(String cutValue) {
+	public void setCutValue(float cutValue) {
 		this.cutValue = cutValue;
 	}
 

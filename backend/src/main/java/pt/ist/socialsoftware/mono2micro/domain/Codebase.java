@@ -6,15 +6,13 @@ import java.util.Map;
 
 public class Codebase {
 	private String name;
-	private Map<String,List<String>> profiles;
+	private Map<String,List<String>> profiles = new HashMap<>();
 
 	public Codebase() {
-
 	}
 
 	public Codebase(String name) {
         this.name = name;
-		this.profiles = new HashMap<>();
 	}
 
 	public String getName() {
@@ -42,14 +40,16 @@ public class Codebase {
             this.profiles.put(name, controllers);
     }
 
-	public void moveController(String moveController, String moveToProfile) {
-        for (String profileName : this.profiles.keySet()) {
-            if (this.profiles.get(profileName).contains(moveController)) {
-                this.profiles.get(profileName).remove(moveController);
-                break;
-            }
-        }
-        this.profiles.get(moveToProfile).add(moveController);
+	public void moveControllers(String[] controllers, String targetProfile) {
+        for (String profile : this.profiles.keySet()) {
+			for (String controller : controllers) {
+				if (this.profiles.get(profile).contains(controller)) {
+					this.profiles.get(profile).remove(controller);
+				}
+			}
+		}
+		for (String controller : controllers)
+        	this.profiles.get(targetProfile).add(controller);
 	}
 
 	public void deleteProfile(String profileName) {

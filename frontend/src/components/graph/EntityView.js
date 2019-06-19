@@ -77,7 +77,6 @@ export class EntityView extends React.Component {
             clusterControllers: {},
             showGraph: false,
             amountList: [],
-            excludeControllerList: [],
             currentSubView: "Graph"
         }
 
@@ -85,7 +84,6 @@ export class EntityView extends React.Component {
         this.loadGraph = this.loadGraph.bind(this);
         this.handleSelectNode = this.handleSelectNode.bind(this);
         this.handleDeselectNode = this.handleDeselectNode.bind(this);
-        this.handleExcludeController = this.handleExcludeController.bind(this);
         this.getCommonControllers = this.getCommonControllers.bind(this);
     }
 
@@ -157,8 +155,6 @@ export class EntityView extends React.Component {
             if (cluster.name !== this.state.entityCluster.name) {
                 let commonControllers = this.getCommonControllers(this.state.entity, cluster);
                 
-                commonControllers = commonControllers.filter(c => !this.state.excludeControllerList.includes(c));
-                
                 if (commonControllers.length > 0) {
                     nodes.push({id: cluster.name, label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER, title: cluster.entities.join('<br>') + "<br>Total: " + cluster.entities.length});
                     edges.push({from: this.state.entity, to: cluster.name, label: commonControllers.length.toString(), title: commonControllers.join('<br>')})
@@ -182,17 +178,6 @@ export class EntityView extends React.Component {
 
     handleDeselectNode(nodeId) {
 
-    }
-
-    handleExcludeController(controller) {
-        if (this.state.excludeControllerList.includes(controller)) {
-            this.state.excludeControllerList.splice(this.state.excludeControllerList.indexOf(controller), 1);
-        } else {
-            this.state.excludeControllerList.push(controller);
-        }
-        this.setState({
-          excludeControllerList: this.state.excludeControllerList
-        });
     }
 
     changeSubView(value) {
@@ -230,11 +215,8 @@ export class EntityView extends React.Component {
                     <span>
                     <EntityOperationsMenu
                         handleEntitySubmit={this.handleEntitySubmit}
-                        handleExcludeController={this.handleExcludeController}
                         entities={this.state.entities}
                         amountList={this.state.amountList}
-                        controllers={this.state.controllers}
-                        excludeControllerList={this.state.excludeControllerList}
                     />
                     
                     <div style={{width:'1000px' , height: '700px'}}>

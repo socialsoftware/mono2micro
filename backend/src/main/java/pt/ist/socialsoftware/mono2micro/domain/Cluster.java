@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class Cluster {
 	private String name;
-	private List<String> entities;
+	private List<String> entities = new ArrayList<>();
 	private float complexity;
 	private float complexityRW;
 	private float complexitySeq;
@@ -16,12 +16,10 @@ public class Cluster {
 	private Map<String,Float> couplingSeq;
 
 	public Cluster() {
-
 	}
 
 	public Cluster(String name) {
         this.name = name;
-		this.entities = new ArrayList<>();
 	}
 
 	public String getName() {

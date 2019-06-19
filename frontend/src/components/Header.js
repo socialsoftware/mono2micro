@@ -14,6 +14,8 @@ export class Header extends React.Component {
                     <Nav>
                         <Nav.Link href="/codebases">Codebases</Nav.Link>
                         <Nav.Link href="/dendrograms">Dendrograms</Nav.Link>
+                        <Nav.Link href="/analysis">Microservice Analysis</Nav.Link>
+                        <Nav.Link href="/experts">Experts</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>

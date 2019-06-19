@@ -17,7 +17,7 @@ public class Dendrogram {
 	private float readWriteMetricWeight;
 	private float sequenceMetricWeight;
 	private String codebase;
-	private List<String> profiles;
+	private List<String> profiles = new ArrayList<>();
 
 	public Dendrogram() {
 	}

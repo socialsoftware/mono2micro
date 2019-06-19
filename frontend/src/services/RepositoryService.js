@@ -14,6 +14,58 @@ export class RepositoryService {
         });
     }
 
+    //Experts
+    getExpertNames() {
+        return this.axios.get("/expertNames");
+    }
+
+    getExperts() {
+        return this.axios.get("/experts");
+    }
+
+    getExpert(name) {
+        return this.axios.get("/expert/" + name);
+    }
+
+    deleteExpert(name) {
+        return this.axios.delete("/expert/" + name + "/delete");
+    }
+
+    addCluster(expertName, cluster) {
+        return this.axios.get("/expert/" + expertName + "/addCluster", 
+            {
+                params: {
+                    "cluster" : cluster
+                }
+            });
+    }
+
+    moveEntities(expertName, entities, cluster) {
+        return this.axios.post("/expert/" + expertName + "/moveEntities?cluster=" + cluster , 
+            entities
+        );
+    }
+
+    deleteCluster(expertName, cluster) {
+        return this.axios.delete("/expert/" + expertName + "/deleteCluster", 
+            {
+                params: {
+                    "cluster" : cluster
+                }
+            });
+    }
+
+    createExpert(name, codebase) {
+        return this.axios.post("/expert/create", {
+            name: name,
+            codebase: codebase
+        });
+    }
+
+
+
+
+
     //Codebases
     getCodebaseNames() {
         return this.axios.get("/codebaseNames");
@@ -28,7 +80,7 @@ export class RepositoryService {
     }
 
     deleteCodebase(name) {
-        return this.axios.get("/codebase/" + name + "/delete");
+        return this.axios.delete("/codebase/" + name + "/delete");
     }
 
     addProfile(codebaseName, profile) {
@@ -40,14 +92,10 @@ export class RepositoryService {
             });
     }
 
-    moveController(codebaseName, controller, profile) {
-        return this.axios.get("/codebase/" + codebaseName + "/moveController", 
-            {
-                params: {
-                    "controller" : controller,
-                    "profile" : profile
-                }
-            });
+    moveControllers(codebaseName, controllers, profile) {
+        return this.axios.post("/codebase/" + codebaseName + "/moveControllers?profile=" + profile , 
+            controllers
+        );
     }
 
     deleteProfile(codebaseName, profile) {
@@ -91,7 +139,7 @@ export class RepositoryService {
     }
 
     deleteDendrogram(name) {
-        return this.axios.get("/dendrogram/" + name + "/delete");
+        return this.axios.delete("/dendrogram/" + name + "/delete");
     }
     
     createDendrogram(name, linkageType, accessMetricWeight, readWriteMetricWeight, sequenceMetricWeight, codebase, profiles) {
@@ -110,6 +158,7 @@ export class RepositoryService {
 
     cutDendrogram(dendrogramName, cutValue) {
         const graphData = {
+            dendrogramName: dendrogramName,
             cutValue: cutValue
         };
         return this.axios.post("/dendrogram/" + dendrogramName + "/cut", graphData);
@@ -139,7 +188,7 @@ export class RepositoryService {
     }
 
     deleteGraph(dendrogramName, graphName) {
-        return this.axios.get("/dendrogram/" + dendrogramName + "/graph/" + graphName + "/delete");
+        return this.axios.delete("/dendrogram/" + dendrogramName + "/graph/" + graphName + "/delete");
     }
 
     

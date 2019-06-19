@@ -63,7 +63,7 @@ export class DendrogramCreate extends React.Component {
             isUploaded: "Uploading..."
         });
         
-        service.createDendrogram(this.state.dendrogramName, this.state.linkageType, this.state.accessMetricWeight, this.state.readWriteMetricWeight, this.state.sequenceMetricWeight, this.state.codebase.name, this.state.selectedProfiles).then(response => {
+        service.createDendrogram(this.state.dendrogramName, this.state.linkageType, Number(this.state.accessMetricWeight), Number(this.state.readWriteMetricWeight), Number(this.state.sequenceMetricWeight), this.state.codebase.name, this.state.selectedProfiles).then(response => {
             if (response.status === HttpStatus.CREATED) {
                 this.setState({
                     isUploaded: "Upload completed successfully."

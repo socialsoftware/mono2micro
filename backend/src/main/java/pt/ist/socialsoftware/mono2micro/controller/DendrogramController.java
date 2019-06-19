@@ -233,9 +233,9 @@ public class DendrogramController {
 						float accessMetric = inCommon / entityControllers.get(e1).size();
 						float readWriteMetric = inCommonW / entityControllers.get(e1).size();
 						float sequenceMetric = (e1e2Count + e2e1Count) / totalSequencePairsCount;
-						float metric = accessMetric * dendrogram.getAccessMetricWeight() + 
-									   readWriteMetric * dendrogram.getReadWriteMetricWeight() +
-									   sequenceMetric * dendrogram.getSequenceMetricWeight();
+						float metric = accessMetric * dendrogram.getAccessMetricWeight() / 100 + 
+									   readWriteMetric * dendrogram.getReadWriteMetricWeight() / 100 +
+									   sequenceMetric * dendrogram.getSequenceMetricWeight() / 100;
 						matrixAux.put(metric);
 					}
 				}
@@ -306,7 +306,7 @@ public class DendrogramController {
 			cmd[2] = dendrogramsFolder;
 			cmd[3] = name;
 			cmd[4] = dend.getLinkageType();
-			cmd[5] = graph.getCutValue();
+			cmd[5] = Float.toString(graph.getCutValue());
 			Process p = r.exec(cmd);
 
 			p.waitFor();

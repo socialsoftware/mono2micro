@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -84,12 +85,12 @@ public class CodebaseController {
     }
 
 
-    @RequestMapping(value = "/codebase/{name}/moveController", method = RequestMethod.GET)
-	public ResponseEntity<HttpStatus> moveController(@PathVariable String name, @RequestParam String controller, @RequestParam String profile) {
-		logger.debug("moveController");
+    @RequestMapping(value = "/codebase/{name}/moveControllers", method = RequestMethod.POST)
+	public ResponseEntity<HttpStatus> moveControllers(@PathVariable String name, @RequestBody String[] controllers, @RequestParam String profile) {
+		logger.debug("moveControllers");
 
         Codebase codebase = codebaseManager.getCodebase(name);
-        codebase.moveController(controller, profile);
+        codebase.moveControllers(controllers, profile);
         codebaseManager.writeCodebase(name, codebase);
 		return new ResponseEntity<>(HttpStatus.OK);
     }

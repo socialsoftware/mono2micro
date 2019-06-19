@@ -64,14 +64,6 @@ export class EntityOperationsMenu extends React.Component {
 
       return (
           <ButtonToolbar>
-              <DropdownButton className="mr-1" as={ButtonGroup} title={'Exclude Controllers'}>
-                {this.props.controllers.map(c => <Dropdown.Item 
-                    key={c.name}
-                    eventKey={c.name}
-                    onSelect={() => this.props.handleExcludeController(c.name)}
-                    active={this.props.excludeControllerList.includes(c.name)}>{c.name}</Dropdown.Item>)}
-              </DropdownButton>
-
               <DropdownButton className="mr-1" as={ButtonGroup} title={this.state.entityAmount}>
                 <Dropdown.Item key={"All"} onClick={() => this.setEntityAmount("All")}>{"All"}</Dropdown.Item>
                 {entityAmountList}

@@ -155,7 +155,7 @@ export class Codebases extends React.Component {
                     </ButtonGroup>
                     </div>
 
-                    <Card className="mb-5" key={this.state.codebase} style={{ width: '15rem' }}>
+                    <Card className="mb-5" key={this.state.codebase} style={{ width: '17rem' }}>
                         <Card.Body>
                             <Card.Title>{this.state.codebase}</Card.Title>
                             <Button href={`/codebase/${this.state.codebase}`} className="mr-4" variant="primary">See Codebase</Button>

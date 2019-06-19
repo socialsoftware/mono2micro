@@ -9,17 +9,14 @@ import pt.ist.socialsoftware.mono2micro.utils.Pair;
 
 public class Controller {
 	private String name;
-	private Map<String,String> entities;
-	private List<Pair<String,String>> entitiesSeq;
+	private Map<String,String> entities = new HashMap<>();
+	private List<Pair<String,String>> entitiesSeq = new ArrayList<>();
 
 	public Controller() {
-
 	}
 
 	public Controller(String name) {
         this.name = name;
-		this.entities = new HashMap<>();
-		this.entitiesSeq = new ArrayList<>();
 	}
 
 	public String getName() {

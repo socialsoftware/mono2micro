@@ -7,6 +7,9 @@ import { Views } from './graph/Views';
 import { Dendrograms } from './graph/Dendrograms'
 import { Codebases } from './graph/Codebases';
 import { Codebase } from './graph/Codebase';
+import { Analysis } from './graph/Analysis';
+import { Experts } from './graph/Experts';
+import { Expert } from './graph/Expert';
 
 export const Main = () => (
   <main>
@@ -18,6 +21,9 @@ export const Main = () => (
       <Route exact path='/dendrogram/:dendrogramName/graph/:graphName' component={Views} />
       <Route exact path='/codebases' component={Codebases} />
       <Route exact path='/codebase/:codebaseName' component={Codebase} />
+      <Route exact path='/analysis' component={Analysis} />
+      <Route exact path='/experts' component={Experts} />
+      <Route exact path='/expert/:expertName' component={Expert} />
     </Switch>
   </main>
 )

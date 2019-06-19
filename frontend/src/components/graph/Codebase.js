@@ -1,6 +1,6 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
-import { ButtonGroup, Button, InputGroup, FormControl, Breadcrumb, BreadcrumbItem, Dropdown, DropdownButton, ButtonToolbar } from 'react-bootstrap';
+import { Form, ButtonGroup, Button, InputGroup, FormControl, Breadcrumb, BreadcrumbItem, Dropdown, DropdownButton, ButtonToolbar } from 'react-bootstrap';
 
 
 export class Codebase extends React.Component {
@@ -10,13 +10,14 @@ export class Codebase extends React.Component {
             codebaseName: this.props.match.params.codebaseName,
             codebase: {},
             newProfileName: "",
-            moveController: "",
             moveToProfile: "",
+            selectedControllers: []
         };
 
         this.handleChangeNewProfileName = this.handleChangeNewProfileName.bind(this);
         this.handleNewProfileSubmit = this.handleNewProfileSubmit.bind(this);
-        this.handleMoveControllerSubmit = this.handleMoveControllerSubmit.bind(this);
+        this.handleMoveControllersSubmit = this.handleMoveControllersSubmit.bind(this);
+        this.handleSelectProfile = this.handleSelectProfile.bind(this);
     }
 
     componentDidMount() {
@@ -45,21 +46,18 @@ export class Codebase extends React.Component {
         });
     }
 
-    handleMoveController(controller) {
-        this.setState({
-            moveController: controller
-        });
-    }
-
     handleMoveToProfile(profile) {
         this.setState({
             moveToProfile: profile
         });
     }
 
-    handleMoveControllerSubmit() {
+    handleMoveControllersSubmit() {
         const service = new RepositoryService();
-        service.moveController(this.state.codebaseName, this.state.moveController, this.state.moveToProfile).then(response => {
+        service.moveControllers(this.state.codebaseName, this.state.selectedControllers, this.state.moveToProfile).then(response => {
+            this.setState({
+                selectedControllers: []
+            })
             this.loadCodebase();
         });
     }
@@ -69,6 +67,19 @@ export class Codebase extends React.Component {
         service.deleteProfile(this.state.codebaseName, profile).then(response => {
             this.loadCodebase();
         });
+    }
+
+    handleSelectProfile(event) {
+        if (this.state.selectedControllers.includes(event.target.id)) {
+            let filteredArray = this.state.selectedControllers.filter(c => c !== event.target.id);
+            this.setState({
+                selectedControllers: filteredArray
+            });
+        } else {
+            this.setState({
+                selectedControllers: [...this.state.selectedControllers, event.target.id]
+            });
+        }
     }
 
     render() {
@@ -105,38 +116,29 @@ export class Codebase extends React.Component {
                 {Object.keys(this.state.codebase).length !== 0 &&
                     <span>
                     <div>
-                    <Button className="mr-1 mt-2">Move</Button>
+                    <Button className="mr-1 mt-2">Move selected controllers to</Button>
 
-                    <DropdownButton as={ButtonGroup} title={this.state.moveController} className="mr-1 mt-2">
-                        {Object.values(this.state.codebase.profiles).flat().map(controller => <Dropdown.Item 
-                            key={controller}
-                            eventKey={controller}
-                            onSelect={() => this.handleMoveController(controller)}>{controller}</Dropdown.Item>)}
-                    </DropdownButton>
-
-                    <Button className="mr-1 mt-2">To</Button>
-
-                    <DropdownButton as={ButtonGroup} title={this.state.moveToProfile} className="mr-1 mt-2">
+                    <DropdownButton as={ButtonGroup} title={this.state.moveToProfile === "" ? "Profile" : this.state.moveToProfile} className="mr-1 mt-2">
                         {Object.keys(this.state.codebase.profiles).map(p => <Dropdown.Item 
                             key={p}
                             eventKey={p}
                             onSelect={() => this.handleMoveToProfile(p)}>{p}</Dropdown.Item>)}
                     </DropdownButton>
 
-                    <Button className="mt-2" onClick={this.handleMoveControllerSubmit}>Submit</Button>
+                    <Button disabled={this.state.selectedControllers.length === 0 || this.state.moveToProfile === ""} className="mt-2" onClick={this.handleMoveControllersSubmit}>Submit</Button>
                     </div>
 
                     {Object.keys(this.state.codebase.profiles).map(profile =>
                         <span>
-                        <span style={{fontSize: '30px', fontWeight: 'bold'}}>{profile}</span>
+                        <span style={{fontSize: '30px', fontWeight: 'bold'}}>{profile}
 
-                        <Button onClick={() => this.handleDeleteProfile(profile)} className="mr-4" variant="danger" size="sm">-</Button>
-
-                        <ul>
+                        {this.state.codebase.profiles[profile].length === 0 && <Button onClick={() => this.handleDeleteProfile(profile)} className="mr-4" variant="danger" size="sm">-</Button>}
+                        </span>
+                        
                             {this.state.codebase.profiles[profile].map(controller =>
-                                <li>{controller}</li>
+                                <Form.Check checked={this.state.selectedControllers.includes(controller)} style={{ paddingLeft: "3em" }} onClick={this.handleSelectProfile} label={controller} type="checkbox" id={controller} />
                             )}
-                        </ul> 
+                         
                         </span>
                     )}
                     </span>
