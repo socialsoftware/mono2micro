@@ -35,9 +35,12 @@ import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.domain.Entity;
+import pt.ist.socialsoftware.mono2micro.domain.Expert;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.dto.AnalysisDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.manager.DendrogramManager;
+import pt.ist.socialsoftware.mono2micro.manager.ExpertManager;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.PropertiesManager;
 
@@ -58,6 +61,91 @@ public class DendrogramController {
 	private DendrogramManager dendrogramManager = new DendrogramManager();
 
 	private CodebaseManager codebaseManager = new CodebaseManager();
+
+	private ExpertManager expertManager = new ExpertManager();
+
+
+	@RequestMapping(value = "/analysis", method = RequestMethod.POST)
+	public ResponseEntity<AnalysisDto> getAnalysis(@RequestBody AnalysisDto analysis) {
+		logger.debug("getAnalysis");
+
+		Map<String,List<String>> graph1 = new HashMap<>();
+		if (analysis.getDendrogramName1() == null) {
+			Expert expert = expertManager.getExpert(analysis.getGraphName1());
+			graph1 = expert.getClusters();
+		} else {
+			Dendrogram dendrogram = dendrogramManager.getDendrogram(analysis.getDendrogramName1());
+			Graph graph = dendrogram.getGraph(analysis.getGraphName1());
+			for (Cluster c : graph.getClusters()) {
+				graph1.put(c.getName(), c.getEntities());
+			}
+		}
+
+		Map<String,List<String>> graph2 = new HashMap<>();
+		if (analysis.getDendrogramName2() == null) {
+			Expert expert = expertManager.getExpert(analysis.getGraphName2());
+			graph2 = expert.getClusters();
+		} else {
+			Dendrogram dendrogram = dendrogramManager.getDendrogram(analysis.getDendrogramName2());
+			Graph graph = dendrogram.getGraph(analysis.getGraphName2());
+			for (Cluster c : graph.getClusters()) {
+				graph2.put(c.getName(), c.getEntities());
+			}
+		}
+
+		List<String> entities = new ArrayList<>();
+		for (List<String> l : graph1.values()) {
+			for (String s : l)
+				entities.add(s);
+		}
+
+		int truePositive = 0;
+		int falsePositive = 0;
+		int trueNegative = 0;
+		int falseNegative = 0;
+
+		for (int i = 0; i < entities.size(); i++) {
+			for (int j = i+1; j < entities.size(); j++) {
+				String entity1 = entities.get(i);
+				String entity2 = entities.get(j);
+				
+				boolean sameClusterInGraph1 = false;
+				for (List<String> l : graph1.values()) {
+					if (l.contains(entity1) && l.contains(entity2))
+						sameClusterInGraph1 = true;
+				}
+
+				boolean sameClusterInGraph2 = false;
+				for (List<String> l : graph2.values()) {
+					if (l.contains(entity1) && l.contains(entity2))
+						sameClusterInGraph2 = true;
+				}
+
+				if (sameClusterInGraph1 && sameClusterInGraph2)
+					truePositive++;
+				if (sameClusterInGraph1 && !sameClusterInGraph2)
+					falseNegative++;
+				if (!sameClusterInGraph1 && sameClusterInGraph2)
+					falsePositive++;
+				if (!sameClusterInGraph1 && !sameClusterInGraph2)
+					trueNegative++;
+			}
+		}
+
+		analysis.setTruePositive(truePositive);
+		analysis.setTrueNegative(trueNegative);
+		analysis.setFalsePositive(falsePositive);
+		analysis.setFalseNegative(falseNegative);
+
+		float precision = (float)truePositive / (truePositive + falsePositive);
+		float recall = (float)truePositive / (truePositive + falseNegative);
+		float fmeasure = 2*precision*recall / (precision + recall);
+		analysis.setPrecision(precision);
+		analysis.setRecall(recall);
+		analysis.setFmeasure(fmeasure);
+		
+		return new ResponseEntity<>(analysis, HttpStatus.OK);
+	}
 
 
 	@RequestMapping(value = "/dendrogramNames", method = RequestMethod.GET)

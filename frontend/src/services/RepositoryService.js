@@ -14,6 +14,13 @@ export class RepositoryService {
         });
     }
 
+
+    //Analysis
+    getAnalysis(data) {
+        return this.axios.post("/analysis", data);
+    }
+
+
     //Experts
     getExpertNames() {
         return this.axios.get("/expertNames");

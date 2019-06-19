@@ -24,7 +24,8 @@ export class Analysis extends React.Component {
             dendrograms: [],
             experts: [],
             graph1: {},
-            graph2: {}
+            graph2: {},
+            result: {}
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -76,6 +77,20 @@ export class Analysis extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
+        let requestData = {};
+        requestData["graphName1"] = this.state.graph1.name;
+        requestData["graphName2"] = this.state.graph2.name;
+        if (this.state.graph1.dendrogramName !== undefined)
+            requestData["dendrogramName1"] = this.state.graph1.dendrogramName;
+        if (this.state.graph2.dendrogramName !== undefined)
+            requestData["dendrogramName2"] = this.state.graph2.dendrogramName;
+
+        const service = new RepositoryService();
+        service.getAnalysis(requestData).then(response => {
+            this.setState({
+                result: response.data
+            })
+        });
     }
 
     render() {
@@ -102,7 +117,7 @@ export class Analysis extends React.Component {
                     <InputGroup.Text id="basic-addon1">Source of Truth</InputGroup.Text>
                 </InputGroup.Prepend>
                     <DropdownButton
-                        title={Object.keys(this.state.graph1).length === 0 ? "Select Cut" : this.state.graph1.name + " from " + this.state.graph1.dendrogramName}
+                        title={Object.keys(this.state.graph1).length === 0 ? "Select Cut" : this.state.graph1.dendrogramName === undefined ? "Expert: " + this.state.graph1.name : this.state.graph1.name + " from " + this.state.graph1.dendrogramName}
                         id="input-group-dropdown-1"
                         >
                         {this.state.experts.filter(expert => expert.codebase === this.state.codebase).map(expert => <Dropdown.Item onClick={() => this.setGraph1(expert)}>{"Expert: " + expert.name}</Dropdown.Item>)}
@@ -116,7 +131,7 @@ export class Analysis extends React.Component {
                     <InputGroup.Text id="basic-addon1">Compare to Cut</InputGroup.Text>
                 </InputGroup.Prepend>
                     <DropdownButton
-                        title={Object.keys(this.state.graph2).length === 0 ? "Select Cut" : this.state.graph2.name + " from " + this.state.graph2.dendrogramName}
+                        title={Object.keys(this.state.graph2).length === 0 ? "Select Cut" : this.state.graph2.dendrogramName === undefined ? "Expert: " + this.state.graph2.name : this.state.graph2.name + " from " + this.state.graph2.dendrogramName}
                         id="input-group-dropdown-1"
                         >
                         {this.state.experts.filter(expert => expert.codebase === this.state.codebase).map(expert => <Dropdown.Item onClick={() => this.setGraph2(expert)}>{"Expert: " + expert.name}</Dropdown.Item>)}
@@ -125,7 +140,7 @@ export class Analysis extends React.Component {
                     </DropdownButton>
                 </InputGroup>
 
-                <Button variant="primary" 
+                <Button className="mb-4" variant="primary" 
                         type="submit" 
                         disabled={this.state.codebase === "" || 
                                   Object.keys(this.state.graph1).length === 0 || 
@@ -133,6 +148,18 @@ export class Analysis extends React.Component {
                     Submit
                 </Button>
                 </Form>
+
+                {Object.keys(this.state.result).length !== 0 &&
+                    <div>
+                        TP : {this.state.result.truePositive}< br/>
+                        TN : {this.state.result.trueNegative}< br/>
+                        FP : {this.state.result.falsePositive}< br/>
+                        FN : {this.state.result.falseNegative}< br/>
+                        Precision : {this.state.result.precision}< br/>
+                        Recall : {this.state.result.recall}< br/>
+                        F-Score : {this.state.result.fmeasure}< br/>
+                    </div>
+                }
             </div>
         )
     }
