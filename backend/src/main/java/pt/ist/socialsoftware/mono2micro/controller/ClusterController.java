@@ -14,38 +14,40 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
+import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
+import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.manager.DendrogramManager;
 
 @RestController
-@RequestMapping(value = "/mono2micro/dendrogram/{dendrogramName}/graph/{graphName}")
+@RequestMapping(value = "/mono2micro/codebase/{codebaseName}/dendrogram/{dendrogramName}/graph/{graphName}")
 public class ClusterController {
 
 	private static Logger logger = LoggerFactory.getLogger(ClusterController.class);
 
-	private DendrogramManager dendrogramManager = new DendrogramManager();
+	private CodebaseManager codebaseManager = new CodebaseManager();
 
 
 	@RequestMapping(value = "/cluster/{clusterName}/merge", method = RequestMethod.GET)
-	public ResponseEntity<HttpStatus> mergeClusters(@PathVariable String dendrogramName, @PathVariable String graphName, @PathVariable String clusterName, @RequestParam String otherCluster, @RequestParam String newName) {
+	public ResponseEntity<HttpStatus> mergeClusters(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName, @PathVariable String clusterName, @RequestParam String otherCluster, @RequestParam String newName) {
 		logger.debug("mergeClusters {} with {}", clusterName, otherCluster);
 
-		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-		dend.mergeClusters(graphName, clusterName, otherCluster, newName);
-		dendrogramManager.writeDendrogram(dendrogramName, dend);
+		Codebase codebase = codebaseManager.getCodebase(codebaseName);
+		codebase.getDendrogram(dendrogramName).mergeClusters(graphName, clusterName, otherCluster, newName);
+		codebaseManager.writeCodebase(codebaseName, codebase);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 
 	@RequestMapping(value = "/cluster/{clusterName}/rename", method = RequestMethod.GET)
-	public ResponseEntity<HttpStatus> renameCluster(@PathVariable String dendrogramName, @PathVariable String graphName, @PathVariable String clusterName, @RequestParam String newName) {
+	public ResponseEntity<HttpStatus> renameCluster(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName, @PathVariable String clusterName, @RequestParam String newName) {
 		logger.debug("renameCluster {}", clusterName);
-		
-		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-		boolean success = dend.renameCluster(graphName, clusterName, newName);
+
+		Codebase codebase = codebaseManager.getCodebase(codebaseName);
+		boolean success = codebase.getDendrogram(dendrogramName).renameCluster(graphName, clusterName, newName);
 		if (success) {
-			dendrogramManager.writeDendrogram(dendrogramName, dend);
+			codebaseManager.writeCodebase(codebaseName, codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -54,41 +56,41 @@ public class ClusterController {
 
 
 	@RequestMapping(value = "/cluster/{clusterName}/split", method = RequestMethod.GET)
-	public ResponseEntity<HttpStatus> splitCluster(@PathVariable String dendrogramName, @PathVariable String graphName, @PathVariable String clusterName, @RequestParam String newName, @RequestParam String entities) {
+	public ResponseEntity<HttpStatus> splitCluster(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName, @PathVariable String clusterName, @RequestParam String newName, @RequestParam String entities) {
 		logger.debug("splitCluster: {}", clusterName);
 
-		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-		dend.splitCluster(graphName, clusterName, newName, entities.split(","));
-		dendrogramManager.writeDendrogram(dendrogramName, dend);
+		Codebase codebase = codebaseManager.getCodebase(codebaseName);
+		codebase.getDendrogram(dendrogramName).splitCluster(graphName, clusterName, newName, entities.split(","));
+		codebaseManager.writeCodebase(codebaseName, codebase);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 
 	@RequestMapping(value = "/cluster/{clusterName}/transferEntities", method = RequestMethod.GET)
-	public ResponseEntity<HttpStatus> transferEntities(@PathVariable String dendrogramName, @PathVariable String graphName, @PathVariable String clusterName, @RequestParam String toCluster, @RequestParam String entities) {
+	public ResponseEntity<HttpStatus> transferEntities(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName, @PathVariable String clusterName, @RequestParam String toCluster, @RequestParam String entities) {
 		logger.debug("transferEntities: {}", clusterName);
 
-		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-		dend.transferEntities(graphName, clusterName, toCluster, entities.split(","));
-		dendrogramManager.writeDendrogram(dendrogramName, dend);
+		Codebase codebase = codebaseManager.getCodebase(codebaseName);
+		codebase.getDendrogram(dendrogramName).transferEntities(graphName, clusterName, toCluster, entities.split(","));
+		codebaseManager.writeCodebase(codebaseName, codebase);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 
 	@RequestMapping(value = "/controllerClusters", method = RequestMethod.GET)
-	public ResponseEntity<Map<String,List<Cluster>>> getControllerClusters(@PathVariable String dendrogramName, @PathVariable String graphName) {
+	public ResponseEntity<Map<String,List<Cluster>>> getControllerClusters(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName) {
 		logger.debug("getControllerClusters: in graph {}", graphName);
 
-		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-		return new ResponseEntity<Map<String,List<Cluster>>>(dend.getControllerClusters(graphName), HttpStatus.OK);
+		Codebase codebase = codebaseManager.getCodebase(codebaseName);
+		return new ResponseEntity<Map<String,List<Cluster>>>(codebase.getDendrogram(dendrogramName).getControllerClusters(graphName), HttpStatus.OK);
 	}
 
 
 	@RequestMapping(value = "/clusterControllers", method = RequestMethod.GET)
-	public ResponseEntity<Map<String,List<Controller>>> getClusterControllers(@PathVariable String dendrogramName, @PathVariable String graphName) {
+	public ResponseEntity<Map<String,List<Controller>>> getClusterControllers(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName) {
 		logger.debug("getClusterControllers: in graph {}", graphName);
 
-		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-		return new ResponseEntity<Map<String,List<Controller>>>(dend.getClusterControllers(graphName), HttpStatus.OK);
+		Codebase codebase = codebaseManager.getCodebase(codebaseName);
+		return new ResponseEntity<Map<String,List<Controller>>>(codebase.getDendrogram(dendrogramName).getClusterControllers(graphName), HttpStatus.OK);
 	}
 }

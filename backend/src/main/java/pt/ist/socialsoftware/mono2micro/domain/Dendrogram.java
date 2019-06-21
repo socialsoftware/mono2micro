@@ -8,6 +8,7 @@ import java.util.Map;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 
 public class Dendrogram {
+	private String codebaseName;
 	private String name;
 	private List<Graph> graphs = new ArrayList<>();
 	private List<Controller> controllers = new ArrayList<>();
@@ -16,7 +17,6 @@ public class Dendrogram {
 	private float accessMetricWeight;
 	private float readWriteMetricWeight;
 	private float sequenceMetricWeight;
-	private String codebase;
 	private List<String> profiles = new ArrayList<>();
 
 	public Dendrogram() {
@@ -62,12 +62,12 @@ public class Dendrogram {
 		this.sequenceMetricWeight = sequenceMetricWeight;
 	}
 
-	public String getCodebase() {
-		return this.codebase;
+	public String getCodebaseName() {
+		return this.codebaseName;
 	}
 
-	public void setCodebase(String codebase) {
-		this.codebase = codebase;
+	public void setCodebaseName(String codebaseName) {
+		this.codebaseName = codebaseName;
 	}
 
 	public List<String> getProfiles() {

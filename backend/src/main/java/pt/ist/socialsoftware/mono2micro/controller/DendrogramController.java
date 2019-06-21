@@ -45,7 +45,7 @@ import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.PropertiesManager;
 
 @RestController
-@RequestMapping(value = "/mono2micro")
+@RequestMapping(value = "/mono2micro/codebase/{codebaseName}")
 public class DendrogramController {
 
 	private static final String PYTHON = PropertiesManager.getProperties().getProperty("python");
@@ -54,27 +54,23 @@ public class DendrogramController {
 
 	private String resourcesPath = "src/main/resources/";
 
-	private String dendrogramsFolder = "src/main/resources/dendrograms/";
-
 	private String codebaseFolder = "src/main/resources/codebases/";
 
-	private DendrogramManager dendrogramManager = new DendrogramManager();
-
 	private CodebaseManager codebaseManager = new CodebaseManager();
-
-	private ExpertManager expertManager = new ExpertManager();
 
 
 	@RequestMapping(value = "/analysis", method = RequestMethod.POST)
 	public ResponseEntity<AnalysisDto> getAnalysis(@RequestBody AnalysisDto analysis) {
 		logger.debug("getAnalysis");
 
+		Codebase codebase = codebaseManager.getCodebase(analysis.getCodebaseName());
+
 		Map<String,List<String>> graph1 = new HashMap<>();
 		if (analysis.getDendrogramName1() == null) {
-			Expert expert = expertManager.getExpert(analysis.getGraphName1());
+			Expert expert = codebase.getExpert(analysis.getGraphName1());
 			graph1 = expert.getClusters();
 		} else {
-			Dendrogram dendrogram = dendrogramManager.getDendrogram(analysis.getDendrogramName1());
+			Dendrogram dendrogram = codebase.getDendrogram(analysis.getDendrogramName1());
 			Graph graph = dendrogram.getGraph(analysis.getGraphName1());
 			for (Cluster c : graph.getClusters()) {
 				graph1.put(c.getName(), c.getEntities());
@@ -83,10 +79,10 @@ public class DendrogramController {
 
 		Map<String,List<String>> graph2 = new HashMap<>();
 		if (analysis.getDendrogramName2() == null) {
-			Expert expert = expertManager.getExpert(analysis.getGraphName2());
+			Expert expert = codebase.getExpert(analysis.getGraphName2());
 			graph2 = expert.getClusters();
 		} else {
-			Dendrogram dendrogram = dendrogramManager.getDendrogram(analysis.getDendrogramName2());
+			Dendrogram dendrogram = codebase.getDendrogram(analysis.getDendrogramName2());
 			Graph graph = dendrogram.getGraph(analysis.getGraphName2());
 			for (Cluster c : graph.getClusters()) {
 				graph2.put(c.getName(), c.getEntities());
@@ -94,9 +90,18 @@ public class DendrogramController {
 		}
 
 		List<String> entities = new ArrayList<>();
-		for (List<String> l : graph1.values()) {
-			for (String s : l)
-				entities.add(s);
+		for (List<String> l1 : graph1.values()) {
+			for (String e1 : l1) {
+				boolean inBoth = false;
+				for (List<String> l2 : graph2.values()) {
+					if (l2.contains(e1)) {
+						inBoth = true;
+						break;
+					}
+				}
+				if (inBoth)
+					entities.add(e1);
+			}				
 		}
 
 		int truePositive = 0;
@@ -149,34 +154,34 @@ public class DendrogramController {
 
 
 	@RequestMapping(value = "/dendrogramNames", method = RequestMethod.GET)
-	public ResponseEntity<List<String>> getDendrogramNames() {
+	public ResponseEntity<List<String>> getDendrogramNames(@PathVariable String codebaseName) {
 		logger.debug("getDendrogramNames");
 
-		return new ResponseEntity<>(dendrogramManager.getDendrogramNames(), HttpStatus.OK);
+		return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getDendrogramNames(), HttpStatus.OK);
 	}
 
 
 	@RequestMapping(value = "/dendrograms", method = RequestMethod.GET)
-	public ResponseEntity<List<Dendrogram>> getDendrograms() {
+	public ResponseEntity<List<Dendrogram>> getDendrograms(@PathVariable String codebaseName) {
 		logger.debug("getDendrograms");
 
-		return new ResponseEntity<>(dendrogramManager.getDendrograms(), HttpStatus.OK);
+		return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getDendrograms(), HttpStatus.OK);
 	}
 
 
-	@RequestMapping(value = "/dendrogram/{name}", method = RequestMethod.GET)
-	public ResponseEntity<Dendrogram> getDendrogram(@PathVariable String name) {
+	@RequestMapping(value = "/dendrogram/{dendrogramName}", method = RequestMethod.GET)
+	public ResponseEntity<Dendrogram> getDendrogram(@PathVariable String codebaseName, @PathVariable String dendrogramName) {
 		logger.debug("getDendrogram");
 
-		return new ResponseEntity<>(dendrogramManager.getDendrogram(name), HttpStatus.OK);
+		return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getDendrogram(dendrogramName), HttpStatus.OK);
 	}
 
 
-	@RequestMapping(value = "/dendrogram/{name}/image", method = RequestMethod.GET)
-	public ResponseEntity<byte[]> getDendrogramImage(@PathVariable String name) {
+	@RequestMapping(value = "/dendrogram/{dendrogramName}/image", method = RequestMethod.GET)
+	public ResponseEntity<byte[]> getDendrogramImage(@PathVariable String codebaseName, @PathVariable String dendrogramName) {
 		logger.debug("getDendrogramImage");
 
-		File f = new File(dendrogramsFolder + name + ".png");
+		File f = new File(codebaseFolder + codebaseName + "/" + dendrogramName + ".png");
 		try {
 			return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(Files.readAllBytes(f.toPath()));
 		} catch (IOException e) {
@@ -186,31 +191,34 @@ public class DendrogramController {
 	}
 
 
-	@RequestMapping(value = "/dendrogram/{name}/delete", method = RequestMethod.DELETE)
-	public ResponseEntity<HttpStatus> deleteDendrogram(@PathVariable String name) {
+	@RequestMapping(value = "/dendrogram/{dendrogramName}/delete", method = RequestMethod.DELETE)
+	public ResponseEntity<HttpStatus> deleteDendrogram(@PathVariable String codebaseName, @PathVariable String dendrogramName) {
 		logger.debug("deleteDendrogram");
 
-		boolean deleted = dendrogramManager.deleteDendrogram(name);
-		if (deleted)
+		Codebase codebase = codebaseManager.getCodebase(codebaseName);
+		boolean deleted = codebase.deleteDendrogram(dendrogramName);
+		if (deleted) {
+            codebaseManager.writeCodebase(codebaseName, codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
-		else
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 	}
 
 
-	@RequestMapping(value = "/dendrogram/{name}/controllers", method = RequestMethod.GET)
-	public ResponseEntity<List<Controller>> getControllers(@PathVariable String name) {
+	@RequestMapping(value = "/dendrogram/{dendrogramName}/controllers", method = RequestMethod.GET)
+	public ResponseEntity<List<Controller>> getControllers(@PathVariable String codebaseName, @PathVariable String dendrogramName) {
 		logger.debug("getControllers");
-		Dendrogram dend = dendrogramManager.getDendrogram(name);
-		return new ResponseEntity<>(dend.getControllers(), HttpStatus.OK);
+		
+		return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getDendrogram(dendrogramName).getControllers(), HttpStatus.OK);
 	}
 
 
-	@RequestMapping(value = "/dendrogram/{name}/controller/{controllerName}", method = RequestMethod.GET)
-	public ResponseEntity<Controller> getController(@PathVariable String name, @PathVariable String controllerName) {
+	@RequestMapping(value = "/dendrogram/{dendrogramName}/controller/{controllerName}", method = RequestMethod.GET)
+	public ResponseEntity<Controller> getController(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String controllerName) {
 		logger.debug("getController");
-		Dendrogram dend = dendrogramManager.getDendrogram(name);
-		return new ResponseEntity<>(dend.getController(controllerName), HttpStatus.OK);
+
+		return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getDendrogram(dendrogramName).getController(controllerName), HttpStatus.OK);
 	}
 
 
@@ -221,11 +229,9 @@ public class DendrogramController {
 
 		long startTime = System.currentTimeMillis();
 
-		File directory = new File(dendrogramsFolder);
-		if (!directory.exists())
-			directory.mkdir();
+		Codebase codebase = codebaseManager.getCodebase(dendrogram.getCodebaseName());
 
-		for (String dendrogramName : dendrogramManager.getDendrogramNames()) {
+		for (String dendrogramName : codebase.getDendrogramNames()) {
 			if (dendrogram.getName().toUpperCase().equals(dendrogramName.toUpperCase()))
 				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
@@ -236,11 +242,10 @@ public class DendrogramController {
 			int totalSequencePairsCount = 0;
 			JSONArray similarityMatrix = new JSONArray();
 			JSONObject dendrogramData = new JSONObject();
-			Codebase codebase = codebaseManager.getCodebase(dendrogram.getCodebase());
 
 
 			//read datafile
-			InputStream is = new FileInputStream(codebaseFolder + dendrogram.getCodebase() + ".txt");
+			InputStream is = new FileInputStream(codebaseFolder + codebase.getName() + "/" + codebase.getName() + ".txt");
 			JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
 			is.close();
 
@@ -339,7 +344,7 @@ public class DendrogramController {
 			dendrogramData.put("matrix", similarityMatrix);
 			dendrogramData.put("entities", entitiesList);
 
-			try (FileWriter file = new FileWriter(dendrogramsFolder + dendrogram.getName() + ".txt")){
+			try (FileWriter file = new FileWriter(codebaseFolder + codebase.getName() + "/" + dendrogram.getName() + ".txt")){
 				file.write(dendrogramData.toString());
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -348,12 +353,13 @@ public class DendrogramController {
 			// run python script with clustering algorithm
 			Runtime r = Runtime.getRuntime();
 			String pythonScriptPath = resourcesPath + "dendrogram.py";
-			String[] cmd = new String[5];
+			String[] cmd = new String[6];
 			cmd[0] = PYTHON;
 			cmd[1] = pythonScriptPath;
-			cmd[2] = dendrogramsFolder;
-			cmd[3] = dendrogram.getName();
-			cmd[4] = dendrogram.getLinkageType();
+			cmd[2] = codebaseFolder;
+			cmd[3] = codebase.getName();
+			cmd[4] = dendrogram.getName();
+			cmd[5] = dendrogram.getLinkageType();
 			
 			Process p = r.exec(cmd);
 
@@ -365,7 +371,8 @@ public class DendrogramController {
 				System.out.println("Inside Elapsed time: " + line + " seconds");
 			}
 
-			dendrogramManager.writeDendrogram(dendrogram.getName(), dendrogram);
+			codebase.addDendrogram(dendrogram);
+			codebaseManager.writeCodebase(codebase.getName(), codebase);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -379,22 +386,25 @@ public class DendrogramController {
 	}
 
 
-	@RequestMapping(value = "/dendrogram/{name}/cut", method = RequestMethod.POST)
-	public ResponseEntity<HttpStatus> cutDendrogram(@PathVariable String name, @RequestBody Graph graph) {
+	@RequestMapping(value = "/dendrogram/{dendrogramName}/cut", method = RequestMethod.POST)
+	public ResponseEntity<HttpStatus> cutDendrogram(@PathVariable String codebaseName, @PathVariable String dendrogramName, @RequestBody Graph graph) {
 		logger.debug("cutDendrogram");
 
 		try {
-			Dendrogram dend = dendrogramManager.getDendrogram(name);
+			Codebase codebase = codebaseManager.getCodebase(codebaseName);
+			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
 
 			Runtime r = Runtime.getRuntime();
 			String pythonScriptPath = resourcesPath + "cutDendrogram.py";
-			String[] cmd = new String[6];
+			String[] cmd = new String[8];
 			cmd[0] = PYTHON;
 			cmd[1] = pythonScriptPath;
-			cmd[2] = dendrogramsFolder;
-			cmd[3] = name;
-			cmd[4] = dend.getLinkageType();
-			cmd[5] = Float.toString(graph.getCutValue());
+			cmd[2] = codebaseFolder;
+			cmd[3] = codebaseName;
+			cmd[4] = dendrogramName;
+			cmd[5] = dendrogram.getLinkageType();
+			cmd[6] = Float.toString(graph.getCutValue());
+			cmd[7] = graph.getCutType();
 			Process p = r.exec(cmd);
 
 			p.waitFor();
@@ -403,14 +413,15 @@ public class DendrogramController {
 			float silhouetteScore = Float.parseFloat(bre.readLine());
 			graph.setSilhouetteScore(silhouetteScore);
 
-			if (dend.getGraphsNames().contains("Graph_" + graph.getCutValue())) {
+			String cutValue = new Float(graph.getCutValue()).toString().replaceAll("\\.?0*$", "");
+			if (dendrogram.getGraphsNames().contains("Graph_" + graph.getCutType() + "_" + cutValue)) {
 				int i = 2;
-				while (dend.getGraphsNames().contains("Graph_" + graph.getCutValue() + "(" + i + ")")) {
+				while (dendrogram.getGraphsNames().contains("Graph_" + graph.getCutType() + "_" + cutValue + "(" + i + ")")) {
 					i++;
 				}
-				graph.setName("Graph_" + graph.getCutValue() + "(" + i + ")");
+				graph.setName("Graph_" + graph.getCutType() + "_" + cutValue + "(" + i + ")");
 			} else {
-				graph.setName("Graph_" + graph.getCutValue());
+				graph.setName("Graph_" + graph.getCutType() + "_" + cutValue);
 			}
 
 			InputStream is = new FileInputStream("temp_clusters.txt");
@@ -435,9 +446,9 @@ public class DendrogramController {
 			}
 			is.close();
 			Files.deleteIfExists(Paths.get("temp_clusters.txt"));
-			dend.addGraph(graph);
+			dendrogram.addGraph(graph);
 
-			dendrogramManager.writeDendrogram(name, dend);
+			codebaseManager.writeCodebase(codebaseName, codebase);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

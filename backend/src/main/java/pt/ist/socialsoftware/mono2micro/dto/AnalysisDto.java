@@ -1,7 +1,11 @@
 package pt.ist.socialsoftware.mono2micro.dto;
 
 public class AnalysisDto {
-    private String codebase;
+    private String codebaseName;
+    private String dendrogramName1;
+    private String graphName1;
+    private String dendrogramName2;
+    private String graphName2;
     private int truePositive;
     private int trueNegative;
     private int falsePositive;
@@ -9,13 +13,17 @@ public class AnalysisDto {
     private float precision;
     private float recall;
     private float fmeasure;
-    private String dendrogramName1;
-    private String graphName1;
-    private String dendrogramName2;
-    private String graphName2;
 
     public float getPrecision() {
         return precision;
+    }
+
+    public String getCodebaseName() {
+        return codebaseName;
+    }
+
+    public void setCodebaseName(String codebaseName) {
+        this.codebaseName = codebaseName;
     }
 
     public int getFalseNegative() {

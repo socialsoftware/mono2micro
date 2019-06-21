@@ -125,7 +125,7 @@ public class CodebaseController {
         
         try {
             //store datafile
-            FileOutputStream outputStream = new FileOutputStream(codebaseFolder + codebase.getName() + ".txt");
+            FileOutputStream outputStream = new FileOutputStream(codebaseFolder + codebase.getName() + "/" + codebase.getName() + ".txt");
 			outputStream.write(datafile.getBytes());
 			outputStream.close();
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { TransactionOperationsMenu } from './TransactionOperationsMenu';
-import { RepositoryService } from './../../services/RepositoryService';
+import { RepositoryService } from '../../services/RepositoryService';
 import { VisNetwork } from '../util/VisNetwork';
 import { DataSet } from 'vis';
 import { views, types } from './ViewsMenu';

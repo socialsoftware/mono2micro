@@ -1,7 +1,7 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
 import { URL } from '../../constants/constants';
-import { Button, ButtonGroup, Form, Card, Breadcrumb, BreadcrumbItem } from 'react-bootstrap';
+import { InputGroup, Button, ButtonGroup, Form, Card, Breadcrumb, BreadcrumbItem, ButtonToolbar } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 
 var HttpStatus = require('http-status-codes');
@@ -10,14 +10,16 @@ export class DendrogramCut extends React.Component {
     constructor(props) {
         super(props);
         this.state = { 
-            cutValue: "",
+            height: "",
+            numberClusters: "",
             cutSuccess: "",
             dendrogramName: this.props.match.params.dendrogramName,
             graphs: [],
             graph: {}
         };
 
-        this.handleCutValueChange = this.handleCutValueChange.bind(this);
+        this.handleHeightChange = this.handleHeightChange.bind(this);
+        this.handleNumberClustersChange = this.handleNumberClustersChange.bind(this);
         this.handleCutSubmit = this.handleCutSubmit.bind(this);
     }
 
@@ -35,17 +37,33 @@ export class DendrogramCut extends React.Component {
         });
     }
 
-    handleCutValueChange(event) {
-        this.setState({cutValue: event.target.value});
+    handleHeightChange(event) {
+        this.setState({height: event.target.value});
+    }
+
+    handleNumberClustersChange(event) {
+        this.setState({numberClusters: event.target.value});
     }
     
     handleCutSubmit(event) {
         event.preventDefault();
-        const service = new RepositoryService();
+        
         this.setState({
             cutSuccess: "Processing..."
         });
-        service.cutDendrogram(this.state.dendrogramName, Number(this.state.cutValue)).then(response => {
+
+        let cutType;
+        let cutValue;
+        if (this.state.height !== "") {
+            cutType = "h";
+            cutValue = Number(this.state.height);
+        } else {
+            cutType = "n";
+            cutValue = Number(this.state.numberClusters).toFixed(0);
+        }
+
+        const service = new RepositoryService();
+        service.cutDendrogram(this.state.dendrogramName, cutValue, cutType).then(response => {
             if (response.status === HttpStatus.OK) {
                 this.loadGraphs();
                 this.setState({
@@ -101,7 +119,7 @@ export class DendrogramCut extends React.Component {
                 clusters: graph.clusters.length,
                 singleton: graph.clusters.filter(c => c.entities.length === 1).length,
                 max_cluster_size: Math.max(...graph.clusters.map(c => c.entities.length)),
-                ss: Number(graph.silhouetteScore.toFixed(2)).toString()
+                ss: Number(graph.silhouetteScore.toFixed(2))
             } 
         });
 
@@ -135,14 +153,32 @@ export class DendrogramCut extends React.Component {
             <div>
                 <BreadCrumbs />
                 <h2>Cut Dendrogram</h2>
+                <ButtonToolbar>
                 <Form onSubmit={this.handleCutSubmit}>
-                    <Form.Group controlId="formDendrogramCut">
-                        <Form.Control type="number" value={this.state.cutValue} onChange={this.handleCutValueChange} />
-                    </Form.Group>
-                    <Button variant="primary" type="submit" disabled={this.state.cutSuccess === "Processing..."}>
-                        Submit
-                    </Button>
+                    <InputGroup className="mt-3 mb-2">
+                    <InputGroup.Prepend>
+                        <InputGroup.Text id="basic-addon1">Height</InputGroup.Text>
+                    </InputGroup.Prepend>
+                        <Form.Control type="number" value={this.state.height} onChange={this.handleHeightChange} />
+                    </InputGroup>
+
+                    OR
+
+                    <InputGroup className="mt-2 mb-3">
+                    <InputGroup.Prepend>
+                        <InputGroup.Text id="basic-addon1">Number of Clusters</InputGroup.Text>
+                    </InputGroup.Prepend>
+                        <Form.Control type="number" value={this.state.numberClusters} onChange={this.handleNumberClustersChange} />
+                    </InputGroup>
+                    
+                    <Button variant="primary" 
+                        type="submit" 
+                        disabled={(this.state.height !== "" && this.state.numberClusters !== "") || 
+                        (this.state.height === "" && this.state.numberClusters === "")}>
+                    Submit
+                </Button>
                 </Form>
+                </ButtonToolbar>
                 <br />
                 {this.state.cutSuccess}
                 <br />

@@ -17,7 +17,7 @@ import pt.ist.socialsoftware.mono2micro.manager.DendrogramManager;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
 
 @RestController
-@RequestMapping(value = "/mono2micro/dendrogram/{dendrogramName}")
+@RequestMapping(value = "/mono2micro/codebase/{codebaseName}/dendrogram/{dendrogramName}")
 public class GraphController {
 
 	private static Logger logger = LoggerFactory.getLogger(GraphController.class);

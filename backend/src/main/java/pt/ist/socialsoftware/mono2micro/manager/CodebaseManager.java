@@ -24,7 +24,7 @@ public class CodebaseManager {
     
     public void writeCodebase(String name, Codebase codebase) {
 		try {
-			objectMapper.writeValue(new File(codebaseFolder + name + ".json"), codebase);
+			objectMapper.writeValue(new File(codebaseFolder + name + "/" + name + ".json"), codebase);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -32,7 +32,7 @@ public class CodebaseManager {
 
 	public Codebase getCodebase(String name) {
 		try {
-			return objectMapper.readValue(new File(codebaseFolder + name + ".json"), Codebase.class);
+			return objectMapper.readValue(new File(codebaseFolder + name + "/" + name + ".json"), Codebase.class);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

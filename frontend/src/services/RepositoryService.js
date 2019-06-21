@@ -22,24 +22,24 @@ export class RepositoryService {
 
 
     //Experts
-    getExpertNames() {
-        return this.axios.get("/expertNames");
+    getExpertNames(codebaseName) {
+        return this.axios.get("/codebase/" + codebaseName + "/expertNames");
     }
 
-    getExperts() {
-        return this.axios.get("/experts");
+    getExperts(codebaseName) {
+        return this.axios.get("/codebase/" + codebaseName + "/experts");
     }
 
-    getExpert(name) {
-        return this.axios.get("/expert/" + name);
+    getExpert(codebaseName, expertName) {
+        return this.axios.get("/codebase/" + codebaseName + "/expert/" + expertName);
     }
 
-    deleteExpert(name) {
-        return this.axios.delete("/expert/" + name + "/delete");
+    deleteExpert(codebaseName, expertName) {
+        return this.axios.delete("/codebase/" + codebaseName + "/expert/" + expertName + "/delete");
     }
 
-    addCluster(expertName, cluster) {
-        return this.axios.get("/expert/" + expertName + "/addCluster", 
+    addCluster(codebaseName, expertName, cluster) {
+        return this.axios.get("/codebase/" + codebaseName + "/expert/" + expertName + "/addCluster", 
             {
                 params: {
                     "cluster" : cluster
@@ -47,14 +47,14 @@ export class RepositoryService {
             });
     }
 
-    moveEntities(expertName, entities, cluster) {
-        return this.axios.post("/expert/" + expertName + "/moveEntities?cluster=" + cluster , 
+    moveEntities(codebaseName, expertName, entities, cluster) {
+        return this.axios.post("/codebase/" + codebaseName + "/expert/" + expertName + "/moveEntities?cluster=" + cluster , 
             entities
         );
     }
 
-    deleteCluster(expertName, cluster) {
-        return this.axios.delete("/expert/" + expertName + "/deleteCluster", 
+    deleteCluster(codebaseName, expertName, cluster) {
+        return this.axios.delete("/codebase/" + codebaseName + "/expert/" + expertName + "/deleteCluster", 
             {
                 params: {
                     "cluster" : cluster
@@ -62,10 +62,10 @@ export class RepositoryService {
             });
     }
 
-    createExpert(name, codebase) {
-        return this.axios.post("/expert/create", {
-            name: name,
-            codebase: codebase
+    createExpert(codebaseName, expertName) {
+        return this.axios.post("/codebase/" + codebaseName + "/expert/create", {
+            codebaseName: codebaseName,
+            name: expertName
         });
     }
 
@@ -133,42 +133,43 @@ export class RepositoryService {
 
 
     //Dendrograms
-    getDendrogramNames() {
-        return this.axios.get("/dendrogramNames");
+    getDendrogramNames(codebaseName) {
+        return this.axios.get("/codebase/" + codebaseName + "/dendrogramNames");
     }
 
-    getDendrograms() {
-        return this.axios.get("/dendrograms");
+    getDendrograms(codebaseName) {
+        return this.axios.get("/codebase/" + codebaseName + "/dendrograms");
     }
 
-    getDendrogram(name) {
-        return this.axios.get("/dendrogram/" + name);
+    getDendrogram(codebaseName, dendrogramName) {
+        return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName);
     }
 
-    deleteDendrogram(name) {
-        return this.axios.delete("/dendrogram/" + name + "/delete");
+    deleteDendrogram(codebaseName, dendrogramName) {
+        return this.axios.delete("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/delete");
     }
     
-    createDendrogram(name, linkageType, accessMetricWeight, readWriteMetricWeight, sequenceMetricWeight, codebase, profiles) {
+    createDendrogram(codebaseName, dendrogramName, linkageType, accessMetricWeight, readWriteMetricWeight, sequenceMetricWeight, profiles) {
         const dendrogramData = {
-            name: name,
+            codebaseName: codebaseName,
+            name: dendrogramName,
             linkageType: linkageType,
             accessMetricWeight: accessMetricWeight,
             readWriteMetricWeight: readWriteMetricWeight,
             sequenceMetricWeight: sequenceMetricWeight,
-            codebase: codebase,
             profiles: profiles
         };
         
-        return this.axios.post("/dendrogram/create", dendrogramData);
+        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/create", dendrogramData);
     }
 
-    cutDendrogram(dendrogramName, cutValue) {
+    cutDendrogram(codebaseName, dendrogramName, cutValue, cutType) {
         const graphData = {
             dendrogramName: dendrogramName,
-            cutValue: cutValue
+            cutValue: cutValue,
+            cutType: cutType
         };
-        return this.axios.post("/dendrogram/" + dendrogramName + "/cut", graphData);
+        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/cut", graphData);
     }
 
 
@@ -177,16 +178,16 @@ export class RepositoryService {
 
 
     //Graph
-    getGraphs(dendrogramName) {
-        return this.axios.get("/dendrogram/" + dendrogramName + "/graphs");
+    getGraphs(codebaseName, dendrogramName) {
+        return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graphs");
     }
 
-    getGraph(dendrogramName, graphName) {
-        return this.axios.get("/dendrogram/" + dendrogramName + "/graph/" + graphName);
+    getGraph(codebaseName, dendrogramName, graphName) {
+        return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName);
     }
 
-    renameGraph(dendrogramName, graphName, newName) {
-        return this.axios.get("/dendrogram/" + dendrogramName + "/graph/" + graphName + "/rename", 
+    renameGraph(codebaseName, dendrogramName, graphName, newName) {
+        return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/rename", 
             {
                 params: {
                     "newName" : newName
@@ -194,8 +195,8 @@ export class RepositoryService {
             });
     }
 
-    deleteGraph(dendrogramName, graphName) {
-        return this.axios.delete("/dendrogram/" + dendrogramName + "/graph/" + graphName + "/delete");
+    deleteGraph(codebaseName, dendrogramName, graphName) {
+        return this.axios.delete("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/delete");
     }
 
     
@@ -207,8 +208,8 @@ export class RepositoryService {
 
 
     //Cluster
-    mergeClusters(dendrogramName, graphName, clusterName, otherCluster, newName) {
-        return this.axios.get("/dendrogram/" + dendrogramName + "/graph/" + graphName + "/cluster/" + clusterName + "/merge", 
+    mergeClusters(codebaseName, dendrogramName, graphName, clusterName, otherCluster, newName) {
+        return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/cluster/" + clusterName + "/merge", 
             {
                 params: {
                     "otherCluster" : otherCluster,
@@ -217,8 +218,8 @@ export class RepositoryService {
             });
     }
 
-    renameCluster(dendrogramName, graphName, clusterName, newName) {
-        return this.axios.get("/dendrogram/" + dendrogramName + "/graph/" + graphName + "/cluster/" + clusterName + "/rename", 
+    renameCluster(codebaseName, dendrogramName, graphName, clusterName, newName) {
+        return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/cluster/" + clusterName + "/rename", 
             {
                 params: {
                     "newName" : newName
@@ -226,8 +227,8 @@ export class RepositoryService {
             });
     }
 
-    splitCluster(dendrogramName, graphName, clusterName, newName, entities) {
-        return this.axios.get("/dendrogram/" + dendrogramName + "/graph/" + graphName + "/cluster/" + clusterName + "/split", 
+    splitCluster(codebaseName, dendrogramName, graphName, clusterName, newName, entities) {
+        return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/cluster/" + clusterName + "/split", 
             {
                 params: {
                     "newName" : newName,
@@ -236,8 +237,8 @@ export class RepositoryService {
             });
     }
 
-    transferEntities(dendrogramName, graphName, clusterName, toCluster, entities) {
-        return this.axios.get("/dendrogram/" + dendrogramName + "/graph/" + graphName + "/cluster/" + clusterName + "/transferEntities", 
+    transferEntities(codebaseName, dendrogramName, graphName, clusterName, toCluster, entities) {
+        return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/cluster/" + clusterName + "/transferEntities", 
             {
                 params: {
                     "toCluster" : toCluster,
@@ -246,22 +247,22 @@ export class RepositoryService {
             });
     }
 
-    getControllerClusters(dendrogramName, graphName) {
-        return this.axios.get("/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controllerClusters");
+    getControllerClusters(codebaseName, dendrogramName, graphName) {
+        return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controllerClusters");
     }
 
-    getClusterControllers(dendrogramName, graphName) {
-        return this.axios.get("/dendrogram/" + dendrogramName + "/graph/" + graphName + "/clusterControllers");
+    getClusterControllers(codebaseName, dendrogramName, graphName) {
+        return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/clusterControllers");
     }
 
 
 
     //Controller
-    getControllers(dendrogramName) {
-        return this.axios.get("/dendrogram/" + dendrogramName + "/controllers");
+    getControllers(codebaseName, dendrogramName) {
+        return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/controllers");
     }
 
-    getController(dendrogramName, controllerName) {
-        return this.axios.get("/dendrogram/" + dendrogramName + "/controller/" + controllerName);
+    getController(codebaseName, dendrogramName, controllerName) {
+        return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/controller/" + controllerName);
     }
 }

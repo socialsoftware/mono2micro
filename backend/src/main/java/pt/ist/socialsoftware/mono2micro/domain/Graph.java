@@ -11,11 +11,12 @@ public class Graph {
 	private String name;
 	private String dendrogramName;
 	private float cutValue;
+	private String cutType;
 	private float silhouetteScore;
 	private List<Cluster> clusters = new ArrayList<>();
-	private Map<String,Float> controllersComplexity;
-	private Map<String,Float> controllersComplexityRW;
-	private Map<String,Float> controllersComplexitySeq;
+	private Map<String, Float> controllersComplexity;
+	private Map<String, Float> controllersComplexityRW;
+	private Map<String, Float> controllersComplexitySeq;
 
 	public Graph() {
 	}
@@ -42,6 +43,14 @@ public class Graph {
 
 	public void setCutValue(float cutValue) {
 		this.cutValue = cutValue;
+	}
+
+	public String getCutType() {
+		return cutType;
+	}
+
+	public void setCutType(String cutType) {
+		this.cutType = cutType;
 	}
 
 	public float getSilhouetteScore() {

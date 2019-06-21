@@ -8,6 +8,7 @@ datafilePath = str(sys.argv[1])
 dendrogramName = str(sys.argv[2])
 linkageType = str(sys.argv[3])
 cutValue = float(sys.argv[4])
+cutType = str(sys.argv[5])
 
 with open(datafilePath + dendrogramName + ".txt") as f:
     dendrogramData = json.load(f)
@@ -16,7 +17,10 @@ entities = dendrogramData["entities"]
 matrix = np.array(dendrogramData["matrix"])
 hierarc = hierarchy.linkage(y=matrix, method=linkageType)
 
-cut = hierarchy.cut_tree(hierarc, height=cutValue)
+if cutType == "h":
+    cut = hierarchy.cut_tree(hierarc, height=cutValue)
+elif cutType == "n":
+    cut = hierarchy.cut_tree(hierarc, n_clusters=cutValue)
 
 clusters = {}
 for i in range(len(cut)):

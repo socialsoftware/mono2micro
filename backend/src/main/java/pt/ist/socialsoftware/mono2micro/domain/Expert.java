@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Expert {
+	private String codebaseName;
 	private String name;
-	private String codebase;
 	private Map<String,List<String>> clusters = new HashMap<>();
 
 	public Expert() {
@@ -20,12 +20,12 @@ public class Expert {
 		this.name = name;
 	}
 
-	public String getCodebase() {
-		return this.codebase;
+	public String getCodebaseName() {
+		return this.codebaseName;
 	}
 
-	public void setCodebase(String codebase) {
-		this.codebase = codebase;
+	public void setCodebaseName(String codebaseName) {
+		this.codebaseName = codebaseName;
 	}
 
 	public Map<String,List<String>> getClusters() {

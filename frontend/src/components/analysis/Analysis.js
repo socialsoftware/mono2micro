@@ -155,9 +155,9 @@ export class Analysis extends React.Component {
                         TN : {this.state.result.trueNegative}< br/>
                         FP : {this.state.result.falsePositive}< br/>
                         FN : {this.state.result.falseNegative}< br/>
-                        Precision : {this.state.result.precision}< br/>
-                        Recall : {this.state.result.recall}< br/>
-                        F-Score : {this.state.result.fmeasure}< br/>
+                        Precision : {this.state.result.precision.toFixed(2)}< br/>
+                        Recall : {this.state.result.recall.toFixed(2)}< br/>
+                        F-Score : {this.state.result.fmeasure.toFixed(2)}< br/>
                     </div>
                 }
             </div>

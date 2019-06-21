@@ -32,97 +32,96 @@ import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.manager.ExpertManager;
 
 @RestController
-@RequestMapping(value = "/mono2micro")
+@RequestMapping(value = "/mono2micro/codebase/{codebaseName}")
 public class ExpertController {
 
     private static Logger logger = LoggerFactory.getLogger(ExpertController.class);
 
-    private String expertFolder = "src/main/resources/experts/";
-
     private String codebaseFolder = "src/main/resources/codebases/";
 
-    private ExpertManager expertManager = new ExpertManager();
+    private CodebaseManager codebaseManager = new CodebaseManager();
 
 
     @RequestMapping(value = "/expertNames", method = RequestMethod.GET)
-	public ResponseEntity<List<String>> getExpertNames() {
+	public ResponseEntity<List<String>> getExpertNames(@PathVariable String codebaseName) {
 		logger.debug("getExpertNames");
 
-		return new ResponseEntity<>(expertManager.getExpertNames(), HttpStatus.OK);
+		return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getExpertNames(), HttpStatus.OK);
 	}
 
 
 	@RequestMapping(value = "/experts", method = RequestMethod.GET)
-	public ResponseEntity<List<Expert>> getExperts() {
+	public ResponseEntity<List<Expert>> getExperts(@PathVariable String codebaseName) {
 		logger.debug("getExperts");
 
-		return new ResponseEntity<>(expertManager.getExperts(), HttpStatus.OK);
+		return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getExperts(), HttpStatus.OK);
 	}
 
 
-	@RequestMapping(value = "/expert/{name}", method = RequestMethod.GET)
-	public ResponseEntity<Expert> getExpert(@PathVariable String name) {
+	@RequestMapping(value = "/expert/{expertName}", method = RequestMethod.GET)
+	public ResponseEntity<Expert> getExpert(@PathVariable String codebaseName, @PathVariable String expertName) {
 		logger.debug("getExpert");
 
-		return new ResponseEntity<>(expertManager.getExpert(name), HttpStatus.OK);
+		return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getExpert(expertName), HttpStatus.OK);
     }
     
 
-    @RequestMapping(value = "/expert/{name}/delete", method = RequestMethod.DELETE)
-	public ResponseEntity<HttpStatus> deleteExpert(@PathVariable String name) {
+    @RequestMapping(value = "/expert/{expertName}/delete", method = RequestMethod.DELETE)
+	public ResponseEntity<HttpStatus> deleteExpert(@PathVariable String codebaseName, @PathVariable String expertName) {
 		logger.debug("deleteExpert");
 
-		boolean deleted = expertManager.deleteExpert(name);
-		if (deleted)
+		Codebase codebase = codebaseManager.getCodebase(codebaseName);
+		boolean deleted = codebase.deleteExpert(expertName);
+		if (deleted) {
+            codebaseManager.writeCodebase(codebaseName, codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
-		else
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
     
 
-    @RequestMapping(value = "/expert/{name}/addCluster", method = RequestMethod.GET)
-	public ResponseEntity<HttpStatus> addCluster(@PathVariable String name, @RequestParam String cluster) {
+    @RequestMapping(value = "/expert/{expertName}/addCluster", method = RequestMethod.GET)
+	public ResponseEntity<HttpStatus> addCluster(@PathVariable String codebaseName, @PathVariable String expertName, @RequestParam String cluster) {
 		logger.debug("addCluster");
 
-        Expert expert = expertManager.getExpert(name);
-        expert.addCluster(cluster, new ArrayList<>());
-        expertManager.writeExpert(name, expert);
+        Codebase codebase = codebaseManager.getCodebase(codebaseName);
+        codebase.getExpert(expertName).addCluster(cluster, new ArrayList<>());
+        codebaseManager.writeCodebase(codebaseName, codebase);
 		return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
-    @RequestMapping(value = "/expert/{name}/moveEntities", method = RequestMethod.POST)
-	public ResponseEntity<HttpStatus> moveEntities(@PathVariable String name, @RequestBody String[] entities, @RequestParam String cluster) {
+    @RequestMapping(value = "/expert/{expertName}/moveEntities", method = RequestMethod.POST)
+	public ResponseEntity<HttpStatus> moveEntities(@PathVariable String codebaseName, @PathVariable String expertName, @RequestBody String[] entities, @RequestParam String cluster) {
 		logger.debug("moveEntities");
 
-        Expert expert = expertManager.getExpert(name);
-        expert.moveEntities(entities, cluster);
-        expertManager.writeExpert(name, expert);
+        Codebase codebase = codebaseManager.getCodebase(codebaseName);
+        codebase.getExpert(expertName).moveEntities(entities, cluster);
+        codebaseManager.writeCodebase(codebaseName, codebase);
 		return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
-    @RequestMapping(value = "/expert/{name}/deleteCluster", method = RequestMethod.DELETE)
-	public ResponseEntity<HttpStatus> deleteCluster(@PathVariable String name, @RequestParam String cluster) {
+    @RequestMapping(value = "/expert/{expertName}/deleteCluster", method = RequestMethod.DELETE)
+	public ResponseEntity<HttpStatus> deleteCluster(@PathVariable String codebaseName, @PathVariable String expertName, @RequestParam String cluster) {
 		logger.debug("deleteCluster");
 
-        Expert expert = expertManager.getExpert(name);
-        expert.deleteCluster(cluster);
-        expertManager.writeExpert(name, expert);
+        Codebase codebase = codebaseManager.getCodebase(codebaseName);
+        codebase.getExpert(expertName).deleteCluster(cluster);
+        codebaseManager.writeCodebase(codebaseName, codebase);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
     @RequestMapping(value = "/expert/create", method = RequestMethod.POST)
-    public ResponseEntity<HttpStatus> createExpert(@RequestBody Expert expert) {
+    public ResponseEntity<HttpStatus> createExpert(@PathVariable String codebaseName, @RequestBody Expert expert) {
 
         logger.debug("createExpert");
 
-        File directory = new File(expertFolder);
-        if (!directory.exists())
-            directory.mkdir();
+        Codebase codebase = codebaseManager.getCodebase(codebaseName);
 
-        for (String expertName : expertManager.getExpertNames()) {
+        for (String expertName : codebase.getExpertNames()) {
             if (expert.getName().toUpperCase().equals(expertName.toUpperCase()))
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
@@ -130,7 +129,7 @@ public class ExpertController {
         try {
 
             // read datafile
-            InputStream is = new FileInputStream(codebaseFolder + expert.getCodebase() + ".txt");
+            InputStream is = new FileInputStream(codebaseFolder + codebaseName + "/" + codebaseName + ".txt");
             JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
             is.close();
 
@@ -147,7 +146,8 @@ public class ExpertController {
             }
             expert.addCluster("Generic", entities);
 
-            expertManager.writeExpert(expert.getName(), expert);
+            codebase.addExpert(expert);
+            codebaseManager.writeCodebase(codebaseName, codebase);
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
