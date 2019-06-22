@@ -39,8 +39,6 @@ import pt.ist.socialsoftware.mono2micro.domain.Expert;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.dto.AnalysisDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
-import pt.ist.socialsoftware.mono2micro.manager.DendrogramManager;
-import pt.ist.socialsoftware.mono2micro.manager.ExpertManager;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.PropertiesManager;
 
@@ -195,10 +193,8 @@ public class DendrogramController {
 	public ResponseEntity<HttpStatus> deleteDendrogram(@PathVariable String codebaseName, @PathVariable String dendrogramName) {
 		logger.debug("deleteDendrogram");
 
-		Codebase codebase = codebaseManager.getCodebase(codebaseName);
-		boolean deleted = codebase.deleteDendrogram(dendrogramName);
+		boolean deleted = codebaseManager.deleteDendrogram(codebaseName, dendrogramName);
 		if (deleted) {
-            codebaseManager.writeCodebase(codebaseName, codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -245,7 +241,7 @@ public class DendrogramController {
 
 
 			//read datafile
-			InputStream is = new FileInputStream(codebaseFolder + codebase.getName() + "/" + codebase.getName() + ".txt");
+			InputStream is = new FileInputStream(codebaseFolder + codebase.getName() + ".txt");
 			JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
 			is.close();
 

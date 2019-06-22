@@ -11,6 +11,4 @@ buildNumber.properties
 .mvn/wrapper/maven-wrapper.jar
 
 src/main/resources/specific.properties
-src/main/resources/dendrograms/
 src/main/resources/codebases/
-src/main/resources/experts/

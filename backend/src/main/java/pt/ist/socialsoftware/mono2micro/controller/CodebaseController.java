@@ -72,7 +72,7 @@ public class CodebaseController {
 		else
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    
+
 
     @RequestMapping(value = "/codebase/{name}/addProfile", method = RequestMethod.GET)
 	public ResponseEntity<HttpStatus> addProfile(@PathVariable String name, @RequestParam String profile) {
@@ -112,20 +112,20 @@ public class CodebaseController {
 
         logger.debug("createCodebase filename: {}", datafile.getOriginalFilename());
 
-        File directory = new File(codebaseFolder);
-        if (!directory.exists())
-            directory.mkdir();
-
         for (String codebaseName : codebaseManager.getCodebaseNames()) {
             if (name.toUpperCase().equals(codebaseName.toUpperCase()))
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
+        File codebaseDir = new File(codebaseFolder + name);
+        if (!codebaseDir.exists())
+            codebaseDir.mkdir();
+
         Codebase codebase = new Codebase(name);
         
         try {
             //store datafile
-            FileOutputStream outputStream = new FileOutputStream(codebaseFolder + codebase.getName() + "/" + codebase.getName() + ".txt");
+            FileOutputStream outputStream = new FileOutputStream(codebaseFolder + name + ".txt");
 			outputStream.write(datafile.getBytes());
 			outputStream.close();
 
@@ -141,7 +141,7 @@ public class CodebaseController {
             }
             codebase.addProfile("Generic", controllers);
 
-            codebaseManager.writeCodebase(codebase.getName(), codebase);
+            codebaseManager.writeCodebase(name, codebase);
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }

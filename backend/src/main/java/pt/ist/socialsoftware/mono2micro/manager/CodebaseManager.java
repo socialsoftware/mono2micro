@@ -24,7 +24,7 @@ public class CodebaseManager {
     
     public void writeCodebase(String name, Codebase codebase) {
 		try {
-			objectMapper.writeValue(new File(codebaseFolder + name + "/" + name + ".json"), codebase);
+			objectMapper.writeValue(new File(codebaseFolder + name + ".json"), codebase);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -32,7 +32,7 @@ public class CodebaseManager {
 
 	public Codebase getCodebase(String name) {
 		try {
-			return objectMapper.readValue(new File(codebaseFolder + name + "/" + name + ".json"), Codebase.class);
+			return objectMapper.readValue(new File(codebaseFolder + name + ".json"), Codebase.class);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -67,7 +67,6 @@ public class CodebaseManager {
 
 		File[] files = codeFolder.listFiles();
 		Arrays.sort(files, Comparator.comparingLong(File::lastModified));
-		
 		for (File file : files) {
 			String filename = file.getName();
 			if (filename.endsWith(".json"))
@@ -80,7 +79,26 @@ public class CodebaseManager {
 		try {
 			Files.deleteIfExists(Paths.get(codebaseFolder + name + ".json"));
 			Files.deleteIfExists(Paths.get(codebaseFolder + name + ".txt"));
+			Files.deleteIfExists(Paths.get(codebaseFolder + name));
 			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean deleteDendrogram(String codebaseName, String dendrogramName) {
+		try {
+			Codebase codebase = getCodebase(codebaseName);
+			Files.deleteIfExists(Paths.get(codebaseFolder + codebaseName + "/" + dendrogramName + ".png"));
+			Files.deleteIfExists(Paths.get(codebaseFolder + codebaseName + "/" + dendrogramName + ".txt"));
+			boolean deleted = codebase.deleteDendrogram(dendrogramName);
+			if (deleted) {
+				writeCodebase(codebaseName, codebase);
+				return true;
+			} else {
+				return false;
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

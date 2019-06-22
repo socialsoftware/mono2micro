@@ -9,11 +9,12 @@ var HttpStatus = require('http-status-codes');
 export class DendrogramCut extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { 
+        this.state = {
+            codebaseName: this.props.match.params.codebaseName,
+            dendrogramName: this.props.match.params.dendrogramName,
             height: "",
             numberClusters: "",
             cutSuccess: "",
-            dendrogramName: this.props.match.params.dendrogramName,
             graphs: [],
             graph: {}
         };
@@ -183,7 +184,7 @@ export class DendrogramCut extends React.Component {
                 {this.state.cutSuccess}
                 <br />
                 <br />
-                <img className="mb-5" src={URL + "dendrogram/" + this.state.dendrogramName + "/image?" + new Date().getTime()} alt="Dendrogram" />
+                <img className="mb-5" src={URL + "codebase/" + this.state.codebaseName + "/dendrogram/" + this.state.dendrogramName + "/image?" + new Date().getTime()} alt="Dendrogram" />
 
                 {graphs.length !== 0 &&
                     <div>

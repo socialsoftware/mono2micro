@@ -1,9 +1,10 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
-import { ButtonGroup, Button, Card, Breadcrumb, BreadcrumbItem } from 'react-bootstrap';
+import { Form, Row, Col, FormControl, Dropdown, DropdownButton, ButtonGroup, Button, Card, Breadcrumb, BreadcrumbItem } from 'react-bootstrap';
 import { URL } from '../../constants/constants';
 import BootstrapTable from 'react-bootstrap-table-next';
 
+var HttpStatus = require('http-status-codes');
 
 export class Dendrograms extends React.Component {
     constructor(props) {
@@ -62,8 +63,9 @@ export class Dendrograms extends React.Component {
             isUploaded: "Uploading..."
         });
         
-        service.createDendrogram(this.state.codebaseName, this.state.dendrogramName, this.state.linkageType, Number(this.state.accessMetricWeight), Number(this.state.readWriteMetricWeight), Number(this.state.sequenceMetricWeight), this.state.selectedProfiles).then(response => {
+        service.createDendrogram(this.state.codebaseName, this.state.newDendrogramName, this.state.linkageType, Number(this.state.accessMetricWeight), Number(this.state.readWriteMetricWeight), Number(this.state.sequenceMetricWeight), this.state.selectedProfiles).then(response => {
             if (response.status === HttpStatus.CREATED) {
+                this.loadDendrograms();
                 this.setState({
                     isUploaded: "Upload completed successfully."
                 });
@@ -329,7 +331,7 @@ export class Dendrograms extends React.Component {
                         </div>
 
                         <Card key={this.state.dendrogram.name} style={{ width: '20rem' }}>
-                            <Card.Img variant="top" src={URL + "dendrogram/" + this.state.dendrogram.name + "/image?" + new Date().getTime()}/>
+                            <Card.Img variant="top" src={URL + "codebase/" + this.state.codebaseName + "/dendrogram/" + this.state.dendrogram.name + "/image?" + new Date().getTime()}/>
                             <Card.Body>
                                 <Card.Title>{this.state.dendrogram.name}</Card.Title>
                                 <Card.Text>
@@ -340,7 +342,7 @@ export class Dendrograms extends React.Component {
                                     # of Controllers: {this.state.dendrogram.controllers.length}< br/>
                                     # of Entities: {this.state.dendrogram.entities.length}
                                 </Card.Text>
-                                <Button href={`/codebase/${this.state.codebaseName}/dendrogram/${this.state.dendrogram.name}`} className="mb-2">See Dendrogram</Button>
+                                <Button href={`/codebase/${this.state.codebaseName}/dendrogram/${this.state.dendrogram.name}`} className="mb-2">See Dendrogram</Button><br/>
                                 <Button onClick={this.handleDeleteDendrogram} variant="danger">Delete</Button>
                             </Card.Body>
                         </Card>

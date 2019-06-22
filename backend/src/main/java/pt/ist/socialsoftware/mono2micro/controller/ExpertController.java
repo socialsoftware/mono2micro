@@ -1,9 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.controller;
 
-import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -24,12 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Expert;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
-import pt.ist.socialsoftware.mono2micro.manager.ExpertManager;
 
 @RestController
 @RequestMapping(value = "/mono2micro/codebase/{codebaseName}")
@@ -129,7 +124,7 @@ public class ExpertController {
         try {
 
             // read datafile
-            InputStream is = new FileInputStream(codebaseFolder + codebaseName + "/" + codebaseName + ".txt");
+            InputStream is = new FileInputStream(codebaseFolder + codebaseName + ".txt");
             JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
             is.close();
 

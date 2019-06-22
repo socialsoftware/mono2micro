@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
-import pt.ist.socialsoftware.mono2micro.manager.DendrogramManager;
+import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 
 @RestController
 @RequestMapping(value = "/mono2micro/codebase/{codebaseName}/dendrogram/{dendrogramName}")
@@ -22,42 +22,33 @@ public class GraphController {
 
 	private static Logger logger = LoggerFactory.getLogger(GraphController.class);
 
-	private DendrogramManager dendrogramManager = new DendrogramManager();
+    private CodebaseManager codebaseManager = new CodebaseManager();
 
 
 	@RequestMapping(value = "/graphs", method = RequestMethod.GET)
-	public ResponseEntity<List<Graph>> getGraphs(@PathVariable String dendrogramName) {
+	public ResponseEntity<List<Graph>> getGraphs(@PathVariable String codebaseName, @PathVariable String dendrogramName) {
 		logger.debug("getGraphs");
 
-		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-		return new ResponseEntity<>(dend.getGraphs(), HttpStatus.OK);
+		return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getDendrogram(dendrogramName).getGraphs(), HttpStatus.OK);
 	}
 
 
 	@RequestMapping(value = "/graph/{graphName}", method = RequestMethod.GET)
-	public ResponseEntity<Graph> getGraph(@PathVariable String dendrogramName, @PathVariable String graphName) {
+	public ResponseEntity<Graph> getGraph(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName) {
 		logger.debug("getGraph: {}", graphName);
-		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-		List<Graph> graphs = dend.getGraphs();
-		for (Graph graph : graphs) {
-			if (graph.getName().equals(graphName)) {
-				return new ResponseEntity<>(graph, HttpStatus.OK);
-			}
-		}
-
-		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		
+		return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getDendrogram(dendrogramName).getGraph(graphName), HttpStatus.OK);
 	}
-	
 
 
 	@RequestMapping(value = "/graph/{graphName}/rename", method = RequestMethod.GET)
-	public ResponseEntity<HttpStatus> renameGraph(@PathVariable String dendrogramName, @PathVariable String graphName, @RequestParam String newName) {
+	public ResponseEntity<HttpStatus> renameGraph(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName, @RequestParam String newName) {
 		logger.debug("renameGraph {}", graphName);
 
-		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-		boolean success = dend.renameGraph(graphName, newName);
+		Codebase codebase = codebaseManager.getCodebase(codebaseName);
+		boolean success = codebase.getDendrogram(dendrogramName).renameGraph(graphName, newName);
 		if (success) {
-			dendrogramManager.writeDendrogram(dendrogramName, dend);
+			codebaseManager.writeCodebase(codebaseName, codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -66,13 +57,13 @@ public class GraphController {
 
 
 	@RequestMapping(value = "/graph/{graphName}/delete", method = RequestMethod.DELETE)
-	public ResponseEntity<HttpStatus> deleteGraph(@PathVariable String dendrogramName, @PathVariable String graphName) {
+	public ResponseEntity<HttpStatus> deleteGraph(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName) {
 		logger.debug("deleteGraph");
 
-		Dendrogram dend = dendrogramManager.getDendrogram(dendrogramName);
-		boolean success = dend.deleteGraph(graphName);
+		Codebase codebase = codebaseManager.getCodebase(codebaseName);
+		boolean success = codebase.getDendrogram(dendrogramName).deleteGraph(graphName);
 		if (success) {
-			dendrogramManager.writeDendrogram(dendrogramName, dend);
+			codebaseManager.writeCodebase(codebaseName, codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

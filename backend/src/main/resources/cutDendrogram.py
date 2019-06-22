@@ -4,13 +4,14 @@ from sklearn import metrics
 import sys
 import json
 
-datafilePath = str(sys.argv[1])
-dendrogramName = str(sys.argv[2])
-linkageType = str(sys.argv[3])
-cutValue = float(sys.argv[4])
-cutType = str(sys.argv[5])
+codebaseFolder = str(sys.argv[1])
+codebaseName = str(sys.argv[2])
+dendrogramName = str(sys.argv[3])
+linkageType = str(sys.argv[4])
+cutValue = float(sys.argv[5])
+cutType = str(sys.argv[6])
 
-with open(datafilePath + dendrogramName + ".txt") as f:
+with open(codebaseFolder + codebaseName + "/" + dendrogramName + ".txt") as f:
     dendrogramData = json.load(f)
 
 entities = dendrogramData["entities"]
