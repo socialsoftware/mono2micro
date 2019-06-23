@@ -16,8 +16,8 @@ export class RepositoryService {
 
 
     //Analysis
-    getAnalysis(data) {
-        return this.axios.post("/analysis", data);
+    getAnalysis(codebaseName, data) {
+        return this.axios.post("/codebase/" + codebaseName + "/analysis", data);
     }
 
 

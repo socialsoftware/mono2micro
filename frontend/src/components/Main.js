@@ -1,7 +1,6 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { Home } from './Home';
-import { DendrogramCreate } from './dendrogram/DendrogramCreate';
 import { DendrogramCut } from './dendrogram/DendrogramCut';
 import { Views } from './view/Views';
 import { Dendrograms } from './dendrogram/Dendrograms'
@@ -15,7 +14,6 @@ export const Main = () => (
   <main>
     <Switch>
       <Route exact path='/' component={Home}/>
-      <Route exact path='/dendrogram/create' component={DendrogramCreate} />
 
       <Route exact path='/codebases' component={Codebases} />
       <Route exact path='/codebase/:codebaseName' component={Codebase} />

@@ -1,6 +1,6 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
-import { Form, Row, Col, FormControl, Dropdown, DropdownButton, ButtonGroup, Button, Card, Breadcrumb, BreadcrumbItem } from 'react-bootstrap';
+import { Form, Row, Col, FormControl, Dropdown, DropdownButton, ButtonGroup, Button, Card, Breadcrumb } from 'react-bootstrap';
 import { URL } from '../../constants/constants';
 import BootstrapTable from 'react-bootstrap-table-next';
 
@@ -330,7 +330,7 @@ export class Dendrograms extends React.Component {
                             </ButtonGroup>
                         </div>
 
-                        <Card key={this.state.dendrogram.name} style={{ width: '20rem' }}>
+                        <Card className="mb-4" key={this.state.dendrogram.name} style={{ width: '20rem' }}>
                             <Card.Img variant="top" src={URL + "codebase/" + this.state.codebaseName + "/dendrogram/" + this.state.dendrogram.name + "/image?" + new Date().getTime()}/>
                             <Card.Body>
                                 <Card.Title>{this.state.dendrogram.name}</Card.Title>

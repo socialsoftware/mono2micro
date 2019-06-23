@@ -4,7 +4,7 @@ import { ViewsMenu, views } from './ViewsMenu';
 import { ClusterView, clusterViewHelp } from './ClusterView';
 import { TransactionView, transactionViewHelp } from './TransactionView';
 import { EntityView, entityViewHelp } from './EntityView';
-import { OverlayTrigger, Button, InputGroup, FormControl, ButtonToolbar, Popover, Container, Row, Col, Breadcrumb, BreadcrumbItem } from 'react-bootstrap';
+import { OverlayTrigger, Button, InputGroup, FormControl, ButtonToolbar, Popover, Container, Row, Col, Breadcrumb} from 'react-bootstrap';
 
 var HttpStatus = require('http-status-codes');
 
@@ -13,9 +13,10 @@ export class Views extends React.Component {
         super(props);
 
         this.state = {
+            codebaseName: this.props.match.params.codebaseName,
+            dendrogramName: this.props.match.params.dendrogramName,
             graphName: this.props.match.params.graphName,
             inputValue: this.props.match.params.graphName,
-            dendrogramName: this.props.match.params.dendrogramName,
             renameGraphMode: false,
             view: views.CLUSTERS,
             help: clusterViewHelp
@@ -31,6 +32,7 @@ export class Views extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         this.setState({
+            codebaseName: nextProps.match.params.codebaseName,
             dendrogramName: nextProps.match.params.dendrogramName,
             graphName: nextProps.match.params.name,
             inputValue: nextProps.match.params.name
@@ -71,7 +73,7 @@ export class Views extends React.Component {
 
     handleRenameGraphSubmit() {
         const service = new RepositoryService();
-        service.renameGraph(this.state.dendrogramName, this.state.graphName, this.state.inputValue).then(response => {
+        service.renameGraph(this.state.codebaseName, this.state.dendrogramName, this.state.graphName, this.state.inputValue).then(response => {
             if (response.status === HttpStatus.OK) {
                 this.setState({
                     renameGraphMode: false,
@@ -100,20 +102,22 @@ export class Views extends React.Component {
     render() {
         const BreadCrumbs = () => {
             return (
-              <div>
-                <Breadcrumb>
-                  <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-                  <Breadcrumb.Item href="/dendrograms">Dendrograms</Breadcrumb.Item>
-                  <Breadcrumb.Item href={`/dendrogram/${this.state.dendrogramName}`}>{this.state.dendrogramName}</Breadcrumb.Item>
-                  <BreadcrumbItem active>{this.state.graphName}</BreadcrumbItem>
-                </Breadcrumb>
-              </div>
+                <div>
+                    <Breadcrumb>
+                        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+                        <Breadcrumb.Item href="/codebases">Codebases</Breadcrumb.Item>
+                        <Breadcrumb.Item href={`/codebase/${this.state.codebaseName}`}>{this.state.codebaseName}</Breadcrumb.Item>
+                        <Breadcrumb.Item href={`/codebase/${this.state.codebaseName}/dendrograms`}>Dendrograms</Breadcrumb.Item>
+                        <Breadcrumb.Item href={`/codebase/${this.state.codebaseName}/dendrogram/${this.state.dendrogramName}`}>{this.state.dendrogramName}</Breadcrumb.Item>
+                        <Breadcrumb.Item active>{this.state.graphName}</Breadcrumb.Item>
+                    </Breadcrumb>
+                </div>
             );
         };
 
         const helpPopover = (
             <Popover id="popover-basic" title={this.state.view}>
-              {this.getHelpText(this.state.view)}
+                {this.getHelpText(this.state.view)}
             </Popover>
         );
 
@@ -124,7 +128,7 @@ export class Views extends React.Component {
                 <InputGroup className="mr-1">
                     <FormControl 
                         type="text"
-                        maxLength="18"
+                        maxLength="30"
                         placeholder="Rename Graph"
                         value={this.state.inputValue}
                         onChange={this.handleRenameGraph}/>
@@ -158,17 +162,20 @@ export class Views extends React.Component {
                 <Row>
                     <Col>
                         {this.state.view === views.CLUSTERS &&
-                            <ClusterView 
+                            <ClusterView
+                                codebaseName={this.state.codebaseName}
                                 dendrogramName={this.state.dendrogramName} 
                                 graphName={this.state.graphName} />
                         }
                         {this.state.view === views.TRANSACTION &&
-                            <TransactionView 
+                            <TransactionView
+                                codebaseName={this.state.codebaseName}
                                 dendrogramName={this.state.dendrogramName} 
                                 graphName={this.state.graphName} />
                         }
                         {this.state.view === views.ENTITY &&
-                            <EntityView 
+                            <EntityView
+                                codebaseName={this.state.codebaseName}
                                 dendrogramName={this.state.dendrogramName} 
                                 graphName={this.state.graphName} />
                         }

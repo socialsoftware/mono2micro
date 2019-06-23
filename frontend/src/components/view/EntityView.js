@@ -89,8 +89,8 @@ export class EntityView extends React.Component {
 
     componentDidMount() {
         const service = new RepositoryService();
-        service.getDendrogram(this.props.dendrogramName).then(response => {
-            service.getClusterControllers(this.props.dendrogramName, this.props.graphName).then(response2 => {
+        service.getDendrogram(this.props.codebaseName, this.props.dendrogramName).then(response => {
+            service.getClusterControllers(this.props.codebaseName, this.props.dendrogramName, this.props.graphName).then(response2 => {
                 this.setState({
                     graph: response.data.graphs.filter(graph => graph.name === this.props.graphName)[0],
                     clusters: response.data.graphs.filter(graph => graph.name === this.props.graphName)[0].clusters,

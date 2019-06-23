@@ -135,17 +135,17 @@ export class TransactionView extends React.Component {
 
     componentDidMount() {
         const service = new RepositoryService();
-        service.getControllerClusters(this.props.dendrogramName, this.props.graphName).then(response => {
+        service.getControllerClusters(this.props.codebaseName, this.props.dendrogramName, this.props.graphName).then(response => {
             this.setState({
                 controllerClusters: response.data
             });
         });
-        service.getControllers(this.props.dendrogramName).then(response => {
+        service.getControllers(this.props.codebaseName, this.props.dendrogramName).then(response => {
             this.setState({
                 controllers: response.data
             });
         });
-        service.getGraph(this.props.dendrogramName, this.props.graphName).then(response => {
+        service.getGraph(this.props.codebaseName, this.props.dendrogramName, this.props.graphName).then(response => {
             this.setState({
                 graph: response.data
             });

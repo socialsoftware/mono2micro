@@ -166,9 +166,9 @@ export class Codebases extends React.Component {
                         <Card key={this.state.codebase} style={{ width: '20rem' }}>
                             <Card.Body>
                                 <Card.Title>Codebase: {this.state.codebase}</Card.Title>
-                                <Button href={`/codebase/${this.state.codebase}`} className="mb-2">Change Profiles</Button><br/>
-                                <Button href={`/codebase/${this.state.codebase}/dendrograms`} className="mb-2">See Dendrograms</Button><br/>
-                                <Button href={`/codebase/${this.state.codebase}/experts`} className="mb-2">See Expert Cuts</Button><br/>
+                                <Button href={`/codebase/${this.state.codebase}`} className="mb-2">Change Controller Profiles</Button><br/>
+                                <Button href={`/codebase/${this.state.codebase}/dendrograms`} className="mb-2">Go to Dendrograms</Button><br/>
+                                <Button href={`/codebase/${this.state.codebase}/experts`} className="mb-2">Go to Expert Cuts</Button><br/>
                                 <Button onClick={this.handleDeleteCodebase} variant="danger">Delete</Button>
                             </Card.Body>
                         </Card>
