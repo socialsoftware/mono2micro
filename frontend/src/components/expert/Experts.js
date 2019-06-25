@@ -148,7 +148,7 @@ export class Experts extends React.Component {
                         <Card key={this.state.expert} style={{ width: '20rem' }}>
                             <Card.Body>
                                 <Card.Title>Expert: {this.state.expert}</Card.Title>
-                                <Button href={`/codebase/${this.state.codebaseName}/expert/${this.state.expert}`} className="mb-2">See Expert</Button><br/>
+                                <Button href={`/codebase/${this.state.codebaseName}/expert/${this.state.expert}`} className="mb-2">Go to Expert</Button><br/>
                                 <Button onClick={this.handleDeleteExpert} variant="danger">Delete</Button>
                             </Card.Body>
                         </Card>

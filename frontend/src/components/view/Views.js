@@ -4,7 +4,7 @@ import { ViewsMenu, views } from './ViewsMenu';
 import { ClusterView, clusterViewHelp } from './ClusterView';
 import { TransactionView, transactionViewHelp } from './TransactionView';
 import { EntityView, entityViewHelp } from './EntityView';
-import { OverlayTrigger, Button, InputGroup, FormControl, ButtonToolbar, Popover, Container, Row, Col, Breadcrumb} from 'react-bootstrap';
+import { Form, OverlayTrigger, Button, FormControl, Popover, Container, Row, Col, Breadcrumb} from 'react-bootstrap';
 
 var HttpStatus = require('http-status-codes');
 
@@ -16,7 +16,7 @@ export class Views extends React.Component {
             codebaseName: this.props.match.params.codebaseName,
             dendrogramName: this.props.match.params.dendrogramName,
             graphName: this.props.match.params.graphName,
-            inputValue: this.props.match.params.graphName,
+            newGraphName: this.props.match.params.graphName,
             renameGraphMode: false,
             view: views.CLUSTERS,
             help: clusterViewHelp
@@ -25,9 +25,9 @@ export class Views extends React.Component {
         this.handleSelectView = this.handleSelectView.bind(this);
         this.getHelpText = this.getHelpText.bind(this);
         this.handleDoubleClick = this.handleDoubleClick.bind(this);
-        this.handleRenameGraph = this.handleRenameGraph.bind(this);
+        this.handleChangeNewGraphName = this.handleChangeNewGraphName.bind(this);
         this.handleRenameGraphSubmit = this.handleRenameGraphSubmit.bind(this);
-        this.handleClose = this.handleClose.bind(this);
+        this.handleRenameGraphClose = this.handleRenameGraphClose.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -35,7 +35,7 @@ export class Views extends React.Component {
             codebaseName: nextProps.match.params.codebaseName,
             dendrogramName: nextProps.match.params.dendrogramName,
             graphName: nextProps.match.params.name,
-            inputValue: nextProps.match.params.name
+            newGraphName: nextProps.match.params.name
         });
     }
 
@@ -65,19 +65,20 @@ export class Views extends React.Component {
         });
     }
 
-    handleRenameGraph(event) {
+    handleChangeNewGraphName(event) {
         this.setState({ 
-            inputValue: event.target.value 
+            newGraphName: event.target.value 
         });
     }
 
-    handleRenameGraphSubmit() {
+    handleRenameGraphSubmit(event) {
+        event.preventDefault();
         const service = new RepositoryService();
-        service.renameGraph(this.state.codebaseName, this.state.dendrogramName, this.state.graphName, this.state.inputValue).then(response => {
+        service.renameGraph(this.state.codebaseName, this.state.dendrogramName, this.state.graphName, this.state.newGraphName).then(response => {
             if (response.status === HttpStatus.OK) {
                 this.setState({
                     renameGraphMode: false,
-                    graphName: this.state.inputValue
+                    graphName: this.state.newGraphName
                 });
             } else {
                 this.setState({
@@ -92,10 +93,10 @@ export class Views extends React.Component {
         });
     }
 
-    handleClose() {
+    handleRenameGraphClose() {
         this.setState({
             renameGraphMode: false,
-            inputValue: this.state.graphName
+            newGraphName: this.state.graphName
         });
     }
 
@@ -121,10 +122,44 @@ export class Views extends React.Component {
             </Popover>
         );
 
-        const showGraphName = (<span><span style={{fontSize: '30px', fontWeight: 'bold'}}>{this.state.graphName}</span><span style={{fontSize: '12px', fontWeight: 'lighter'}}>(double click to rename)</span></span>);
+        const showGraphName = (
+            <span>
+                <span style={{fontSize: '30px', fontWeight: 'bold'}}>
+                    Graph: {this.state.graphName}
+                </span>
+                <span style={{fontSize: '12px', fontWeight: 'lighter'}}>
+                    (double click to rename)
+                </span>
+            </span>);
         
         const editGraphName = (
-            <ButtonToolbar>
+            <Form inline onSubmit={this.handleRenameGraphSubmit}>
+                <Form.Group as={Row} controlId="newGraphName">
+                    <Form.Label className="mr-2">
+                        Graph Name
+                    </Form.Label>
+                    
+                    <FormControl
+                        className="mr-2"
+                        type="text"
+                        maxLength="30"
+                        placeholder="Graph Name"
+                        value={this.state.newGraphName}
+                        onChange={this.handleChangeNewGraphName}/>
+
+                    <Button className="mr-2" 
+                            type="submit"
+                            disabled={this.state.newGraphName === ""}>
+                        Rename Graph
+                    </Button>                
+                
+                    <Button onClick={this.handleRenameGraphClose}>
+                        Cancel
+                    </Button>
+                </Form.Group>
+            </Form>
+
+            /*<ButtonToolbar>
                 <InputGroup className="mr-1">
                     <FormControl 
                         type="text"
@@ -135,7 +170,7 @@ export class Views extends React.Component {
                 </InputGroup>
                 <Button className="mr-1" onClick={this.handleRenameGraphSubmit}>Rename</Button>
                 <Button onClick={this.handleClose}>Cancel</Button>
-            </ButtonToolbar>);
+            </ButtonToolbar>*/);
 
         return (
             <Container>

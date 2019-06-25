@@ -12,6 +12,16 @@ codebaseName = str(sys.argv[2])
 dendrogramName = str(sys.argv[3])
 linkageType = str(sys.argv[4])
 
+with open(codebaseFolder + codebaseName + ".json") as f2:
+    codebase = json.load(f2)
+
+for dend in codebase["dendrograms"]:
+    if dend["name"] == dendrogramName:
+        dend["linkageType"] = "a"
+
+with open(codebaseFolder + codebaseName + ".json", 'w') as outfile:  
+    json.dump(codebase, outfile)
+
 with open(codebaseFolder + codebaseName + "/" + dendrogramName + ".txt") as f:
     dendrogramData = json.load(f)
 

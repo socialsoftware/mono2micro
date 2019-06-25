@@ -15,7 +15,7 @@ public class Dendrogram {
 	private List<Entity> entities = new ArrayList<>();
 	private String linkageType;
 	private float accessMetricWeight;
-	private float readWriteMetricWeight;
+	private float writeMetricWeight;
 	private float sequenceMetricWeight;
 	private List<String> profiles = new ArrayList<>();
 
@@ -42,8 +42,8 @@ public class Dendrogram {
 		return this.accessMetricWeight;
 	}
 
-	public float getReadWriteMetricWeight() {
-		return this.readWriteMetricWeight;
+	public float getWriteMetricWeight() {
+		return this.writeMetricWeight;
 	}
 
 	public float getSequenceMetricWeight() {
@@ -54,8 +54,8 @@ public class Dendrogram {
 		this.accessMetricWeight = accessMetricWeight;
 	}
 
-	public void setReadWriteMetricWeight(float readWriteMetricWeigh) {
-		this.readWriteMetricWeight = readWriteMetricWeigh;
+	public void setWriteMetricWeight(float writeMetricWeigh) {
+		this.writeMetricWeight = writeMetricWeigh;
 	}
 
 	public void setSequenceMetricWeight(float sequenceMetricWeight) {

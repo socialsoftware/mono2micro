@@ -124,7 +124,7 @@ export class Codebase extends React.Component {
                 <Form onSubmit={this.handleNewProfileSubmit}>
                     <Form.Group as={Row} controlId="newProfileName">
                         <Form.Label column sm={2}>
-                            New Profile
+                            Profile Name
                         </Form.Label>
                         <Col sm={5}>
                             <FormControl 
@@ -155,7 +155,7 @@ export class Codebase extends React.Component {
                         <ButtonToolbar>
                             <Button className="mr-1">Move selected controllers to</Button>
 
-                            <DropdownButton as={ButtonGroup} title={this.state.moveToProfile === "" ? "Profile" : this.state.moveToProfile} className="mr-1">
+                            <DropdownButton as={ButtonGroup} title={this.state.moveToProfile === "" ? "Controller Profile" : this.state.moveToProfile} className="mr-1">
                                 {Object.keys(this.state.codebase.profiles).map(p => <Dropdown.Item 
                                     key={p}
                                     onSelect={() => this.handleMoveToProfile(p)}>{p}</Dropdown.Item>)}

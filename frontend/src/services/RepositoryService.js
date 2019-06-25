@@ -149,13 +149,13 @@ export class RepositoryService {
         return this.axios.delete("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/delete");
     }
     
-    createDendrogram(codebaseName, dendrogramName, linkageType, accessMetricWeight, readWriteMetricWeight, sequenceMetricWeight, profiles) {
+    createDendrogram(codebaseName, dendrogramName, linkageType, accessMetricWeight, writeMetricWeight, sequenceMetricWeight, profiles) {
         const dendrogramData = {
             codebaseName: codebaseName,
             name: dendrogramName,
             linkageType: linkageType,
             accessMetricWeight: accessMetricWeight,
-            readWriteMetricWeight: readWriteMetricWeight,
+            writeMetricWeight: writeMetricWeight,
             sequenceMetricWeight: sequenceMetricWeight,
             profiles: profiles
         };

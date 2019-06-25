@@ -361,7 +361,7 @@ public class DendrogramController {
 					float readWriteMetric = inCommonW / e1ControllersW;
 					float sequenceMetric = (float) seqSimilarityMatrix.getJSONArray(i).get(j);
 					float metric = accessMetric * dendrogram.getAccessMetricWeight() / 100 + 
-									readWriteMetric * dendrogram.getReadWriteMetricWeight() / 100 +
+									readWriteMetric * dendrogram.getWriteMetricWeight() / 100 +
 									sequenceMetric * dendrogram.getSequenceMetricWeight() / 100;
 					matrixAux.put(metric);
 				}
@@ -383,6 +383,9 @@ public class DendrogramController {
 				e.printStackTrace();
 			}
 
+			codebase.addDendrogram(dendrogram);
+			codebaseManager.writeCodebase(codebase.getName(), codebase);
+
 			// run python script with clustering algorithm
 			Runtime r = Runtime.getRuntime();
 			String pythonScriptPath = resourcesPath + "dendrogram.py";
@@ -403,9 +406,6 @@ public class DendrogramController {
 			while ((line = bre.readLine()) != null) {
 				System.out.println("Inside Elapsed time: " + line + " seconds");
 			}
-
-			codebase.addDendrogram(dendrogram);
-			codebaseManager.writeCodebase(codebase.getName(), codebase);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -447,14 +447,14 @@ public class DendrogramController {
 			graph.setSilhouetteScore(silhouetteScore);
 
 			String cutValue = new Float(graph.getCutValue()).toString().replaceAll("\\.?0*$", "");
-			if (dendrogram.getGraphsNames().contains("Graph_" + graph.getCutType() + "_" + cutValue)) {
+			if (dendrogram.getGraphsNames().contains(graph.getCutType() + cutValue)) {
 				int i = 2;
-				while (dendrogram.getGraphsNames().contains("Graph_" + graph.getCutType() + "_" + cutValue + "(" + i + ")")) {
+				while (dendrogram.getGraphsNames().contains(graph.getCutType() + cutValue + "(" + i + ")")) {
 					i++;
 				}
-				graph.setName("Graph_" + graph.getCutType() + "_" + cutValue + "(" + i + ")");
+				graph.setName(graph.getCutType() + cutValue + "(" + i + ")");
 			} else {
-				graph.setName("Graph_" + graph.getCutType() + "_" + cutValue);
+				graph.setName(graph.getCutType() + cutValue);
 			}
 
 			InputStream is = new FileInputStream("temp_clusters.txt");

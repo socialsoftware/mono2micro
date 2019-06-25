@@ -127,7 +127,7 @@ export class Expert extends React.Component {
                 <Form onSubmit={this.handleNewClusterSubmit}>
                     <Form.Group as={Row} controlId="newClusterName">
                         <Form.Label column sm={2}>
-                            New Cluster
+                            Cluster Name
                         </Form.Label>
                         <Col sm={5}>
                             <FormControl 

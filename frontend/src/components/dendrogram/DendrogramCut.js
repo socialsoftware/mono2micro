@@ -57,10 +57,10 @@ export class DendrogramCut extends React.Component {
         let cutType;
         let cutValue;
         if (this.state.height !== "") {
-            cutType = "h";
+            cutType = "H";
             cutValue = Number(this.state.height);
         } else {
-            cutType = "n";
+            cutType = "N";
             cutValue = Number(this.state.numberClusters).toFixed(0);
         }
 
@@ -119,7 +119,6 @@ export class DendrogramCut extends React.Component {
         const metricRows = this.state.graphs.map(graph => {
             return {
                 graph: graph.name,
-                cut: graph.cutValue,
                 clusters: graph.clusters.length,
                 singleton: graph.clusters.filter(c => c.entities.length === 1).length,
                 max_cluster_size: Math.max(...graph.clusters.map(c => c.entities.length)),
@@ -130,10 +129,6 @@ export class DendrogramCut extends React.Component {
         const metricColumns = [{
             dataField: 'graph',
             text: 'Graph',
-            sort: true
-        }, {
-            dataField: 'cut',
-            text: 'Cut',
             sort: true
         }, {
             dataField: 'clusters',
@@ -169,6 +164,12 @@ export class DendrogramCut extends React.Component {
                                 value={this.state.height}
                                 onChange={this.handleHeightChange}/>
                         </Col>
+                    </Form.Group>
+
+                    <Form.Group as={Row} controlId="or">
+                        <Form.Label column sm={2}>
+                            OR
+                        </Form.Label>
                     </Form.Group>
 
                     <Form.Group as={Row} controlId="numberOfClusters">
@@ -210,8 +211,8 @@ export class DendrogramCut extends React.Component {
 
                         <Card className="mb-4" key={this.state.graph.name} style={{ width: '20rem' }}>
                             <Card.Body>
-                                <Card.Title>{this.state.graph.name}</Card.Title>
-                                <Button href={`/codebase/${this.state.codebaseName}/dendrogram/${this.state.dendrogramName}/graph/${this.state.graph.name}`} className="mb-2">See Graph</Button><br/>
+                                <Card.Title>Graph: {this.state.graph.name}</Card.Title>
+                                <Button href={`/codebase/${this.state.codebaseName}/dendrogram/${this.state.dendrogramName}/graph/${this.state.graph.name}`} className="mb-2">Go to Graph</Button><br/>
                                 <Button onClick={this.handleDeleteGraph} variant="danger">Delete</Button>
                             </Card.Body>
                         </Card>

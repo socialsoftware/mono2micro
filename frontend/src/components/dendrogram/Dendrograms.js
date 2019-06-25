@@ -19,7 +19,7 @@ export class Dendrograms extends React.Component {
             newDendrogramName: "",
             linkageType: "",
             accessMetricWeight: "",
-            readWriteMetricWeight: "",
+            writeMetricWeight: "",
             sequenceMetricWeight: "",
             selectedProfiles: []
         };
@@ -29,7 +29,7 @@ export class Dendrograms extends React.Component {
         this.handleChangeNewDendrogramName = this.handleChangeNewDendrogramName.bind(this);
         this.handleLinkageType = this.handleLinkageType.bind(this);
         this.handleChangeAccessMetricWeight = this.handleChangeAccessMetricWeight.bind(this);
-        this.handleChangeReadWriteMetricWeight = this.handleChangeReadWriteMetricWeight.bind(this);
+        this.handleChangeWriteMetricWeight = this.handleChangeWriteMetricWeight.bind(this);
         this.handleChangeSequenceMetricWeight = this.handleChangeSequenceMetricWeight.bind(this);
     }
 
@@ -63,7 +63,7 @@ export class Dendrograms extends React.Component {
             isUploaded: "Uploading..."
         });
         
-        service.createDendrogram(this.state.codebaseName, this.state.newDendrogramName, this.state.linkageType, Number(this.state.accessMetricWeight), Number(this.state.readWriteMetricWeight), Number(this.state.sequenceMetricWeight), this.state.selectedProfiles).then(response => {
+        service.createDendrogram(this.state.codebaseName, this.state.newDendrogramName, this.state.linkageType, Number(this.state.accessMetricWeight), Number(this.state.writeMetricWeight), Number(this.state.sequenceMetricWeight), this.state.selectedProfiles).then(response => {
             if (response.status === HttpStatus.CREATED) {
                 this.loadDendrograms();
                 this.setState({
@@ -106,9 +106,9 @@ export class Dendrograms extends React.Component {
         });
     }
 
-    handleChangeReadWriteMetricWeight(event) {
+    handleChangeWriteMetricWeight(event) {
         this.setState({
-            readWriteMetricWeight: event.target.value
+            writeMetricWeight: event.target.value
         });
     }
 
@@ -165,7 +165,6 @@ export class Dendrograms extends React.Component {
                 id: graph.dendrogramName + graph.name,
                 dendrogram: graph.dendrogramName,
                 graph: graph.name,
-                cut: graph.cutValue,
                 clusters: graph.clusters.length,
                 singleton: graph.clusters.filter(c => c.entities.length === 1).length,
                 max_cluster_size: Math.max(...graph.clusters.map(c => c.entities.length)),
@@ -180,10 +179,6 @@ export class Dendrograms extends React.Component {
         }, {
             dataField: 'graph',
             text: 'Graph',
-            sort: true
-        }, {
-            dataField: 'cut',
-            text: 'Cut',
             sort: true
         }, {
             dataField: 'clusters',
@@ -210,7 +205,7 @@ export class Dendrograms extends React.Component {
 
                 <Form onSubmit={this.handleSubmit}>
                     <Form.Group as={Row} controlId="newDendrogramName">
-                        <Form.Label column sm={2}>
+                        <Form.Label column sm={3}>
                             Dendrogram Name
                         </Form.Label>
                         <Col sm={5}>
@@ -223,12 +218,12 @@ export class Dendrograms extends React.Component {
                         </Col>
                     </Form.Group>
 
-                    <Form.Group as={Row} controlId="selectProfiles">
-                        <Form.Label column sm={2}>
-                            Select Profiles
+                    <Form.Group as={Row} controlId="selectControllerProfiles">
+                        <Form.Label column sm={3}>
+                            Select Controller Profiles
                         </Form.Label>
                         <Col sm={5}>
-                            <DropdownButton title={'Profiles'}>
+                            <DropdownButton title={'Controller Profiles'}>
                                 {Object.keys(this.state.codebase).length === 0 ? [] : Object.keys(this.state.codebase.profiles).map(profile =>
                                     <Dropdown.Item
                                         key={profile}
@@ -240,7 +235,7 @@ export class Dendrograms extends React.Component {
 
                     <fieldset>
                         <Form.Group as={Row}>
-                            <Form.Label as="legend" column sm={2}>
+                            <Form.Label as="legend" column sm={3}>
                                 Linkage Type
                             </Form.Label>
                             <Col sm={5}>
@@ -267,51 +262,54 @@ export class Dendrograms extends React.Component {
                     </fieldset>
 
                     <Form.Group as={Row} controlId="access">
-                        <Form.Label column sm={2}>
-                            Undistinct Access Metric Weight (%)
+                        <Form.Label column sm={3}>
+                            Access Metric Weight (%)
                         </Form.Label>
                         <Col sm={5}>
                             <FormControl 
                                 type="number"
+                                placeholder="0-100"
                                 value={this.state.accessMetricWeight}
                                 onChange={this.handleChangeAccessMetricWeight}/>
                         </Col>
                     </Form.Group>
 
                     <Form.Group as={Row} controlId="readWrite">
-                        <Form.Label column sm={2}>
-                            Read/Write Access Metric Weight (%)
+                        <Form.Label column sm={3}>
+                            Write Metric Weight (%)
                         </Form.Label>
                         <Col sm={5}>
                             <FormControl 
                                 type="number"
-                                value={this.state.readWriteMetricWeight}
-                                onChange={this.handleChangeReadWriteMetricWeight}/>
+                                placeholder="0-100"
+                                value={this.state.writeMetricWeight}
+                                onChange={this.handleChangeWriteMetricWeight}/>
                         </Col>
                     </Form.Group>
 
                     <Form.Group as={Row} controlId="sequence">
-                        <Form.Label column sm={2}>
-                            Sequence Access Metric Weight (%)
+                        <Form.Label column sm={3}>
+                            Sequence Metric Weight (%)
                         </Form.Label>
                         <Col sm={5}>
                             <FormControl 
                                 type="number"
+                                placeholder="0-100"
                                 value={this.state.sequenceMetricWeight}
                                 onChange={this.handleChangeSequenceMetricWeight}/>
                         </Col>
                     </Form.Group>
 
                     <Form.Group as={Row}>
-                        <Col sm={{ span: 5, offset: 2 }}>
+                        <Col sm={{ span: 5, offset: 3 }}>
                             <Button type="submit"
                                     disabled={this.state.isUploaded === "Uploading..." || 
                                             this.state.newDendrogramName === "" || 
                                             this.state.linkageType === "" || 
                                             this.state.accessMetricWeight === "" || 
-                                            this.state.readWriteMetricWeight === "" || 
+                                            this.state.writeMetricWeight === "" || 
                                             this.state.sequenceMetricWeight === "" || 
-                                            Number(this.state.accessMetricWeight) + Number(this.state.readWriteMetricWeight) + Number(this.state.sequenceMetricWeight) !== 100 || 
+                                            Number(this.state.accessMetricWeight) + Number(this.state.writeMetricWeight) + Number(this.state.sequenceMetricWeight) !== 100 || 
                                             this.state.selectedProfiles.length === 0}>
                                 Create Dendrogram
                             </Button>
@@ -333,16 +331,16 @@ export class Dendrograms extends React.Component {
                         <Card className="mb-4" key={this.state.dendrogram.name} style={{ width: '20rem' }}>
                             <Card.Img variant="top" src={URL + "codebase/" + this.state.codebaseName + "/dendrogram/" + this.state.dendrogram.name + "/image?" + new Date().getTime()}/>
                             <Card.Body>
-                                <Card.Title>{this.state.dendrogram.name}</Card.Title>
+                                <Card.Title>Dendrogram: {this.state.dendrogram.name}</Card.Title>
                                 <Card.Text>
                                     Linkage Type: {this.state.dendrogram.linkageType}< br/>
-                                    Undistinct Access Metric Weight: {this.state.dendrogram.accessMetricWeight}%< br/>
-                                    Read/Write Access Metric Weight: {this.state.dendrogram.readWriteMetricWeight}%< br/>
-                                    Sequence Access Metric Weight: {this.state.dendrogram.sequenceMetricWeight}%< br/>
+                                    Access Metric Weight: {this.state.dendrogram.accessMetricWeight}%< br/>
+                                    Write Metric Weight: {this.state.dendrogram.writeMetricWeight}%< br/>
+                                    Sequence Metric Weight: {this.state.dendrogram.sequenceMetricWeight}%< br/>
                                     # of Controllers: {this.state.dendrogram.controllers.length}< br/>
                                     # of Entities: {this.state.dendrogram.entities.length}
                                 </Card.Text>
-                                <Button href={`/codebase/${this.state.codebaseName}/dendrogram/${this.state.dendrogram.name}`} className="mb-2">See Dendrogram</Button><br/>
+                                <Button href={`/codebase/${this.state.codebaseName}/dendrogram/${this.state.dendrogram.name}`} className="mb-2">Go to Dendrogram</Button><br/>
                                 <Button onClick={this.handleDeleteDendrogram} variant="danger">Delete</Button>
                             </Card.Body>
                         </Card>

@@ -18,9 +18,9 @@ entities = dendrogramData["entities"]
 matrix = np.array(dendrogramData["matrix"])
 hierarc = hierarchy.linkage(y=matrix, method=linkageType)
 
-if cutType == "h":
+if cutType == "H":
     cut = hierarchy.cut_tree(hierarc, height=cutValue)
-elif cutType == "n":
+elif cutType == "N":
     cut = hierarchy.cut_tree(hierarc, n_clusters=cutValue)
 
 clusters = {}
