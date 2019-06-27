@@ -42,7 +42,8 @@ export class Expert extends React.Component {
         });
     }
 
-    handleNewClusterSubmit() {
+    handleNewClusterSubmit(event) {
+        event.preventDefault();
         const service = new RepositoryService();
         service.addCluster(this.state.codebaseName, this.state.expertName, this.state.newClusterName).then(response => {
             if (response.status === HttpStatus.CREATED) {

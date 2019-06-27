@@ -41,7 +41,8 @@ export class Codebase extends React.Component {
         });
     }
 
-    handleNewProfileSubmit() {
+    handleNewProfileSubmit(event) {
+        event.preventDefault();
         const service = new RepositoryService();
         service.addProfile(this.state.codebaseName, this.state.newProfileName).then(response => {
             if (response.status === HttpStatus.CREATED) {

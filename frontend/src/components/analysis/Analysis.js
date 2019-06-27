@@ -1,6 +1,7 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
 import { Row, Col, Form, DropdownButton, Dropdown, Button, Breadcrumb } from 'react-bootstrap';
+import BootstrapTable from 'react-bootstrap-table-next';
 
 var HttpStatus = require('http-status-codes');
 
@@ -15,7 +16,8 @@ export class Analysis extends React.Component {
             isUploaded: "",
             graph1: {},
             graph2: {},
-            result: {}
+            result: {},
+            falsePairs: []
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -76,6 +78,7 @@ export class Analysis extends React.Component {
             if (response.status === HttpStatus.OK) {
                 this.setState({
                     result: response.data,
+                    falsePairs: response.data.falsePairs,
                     isUploaded: "Upload completed successfully."
                 });
             } else {
@@ -102,6 +105,44 @@ export class Analysis extends React.Component {
                 </div>
             );
         };
+
+        const falsePairRows = this.state.falsePairs.map(falsePair => {
+            return {
+                id: falsePair[0] + falsePair[3],
+                e1: falsePair[0],
+                e1g1: falsePair[1],
+                e1g2: falsePair[2],
+                e2: falsePair[3],
+                e2g1: falsePair[4],
+                e2g2: falsePair[5]
+            } 
+        });
+
+        const falsePairColumns = [{
+            dataField: 'e1',
+            text: 'Entity',
+            sort: true
+        }, {
+            dataField: 'e1g1',
+            text: 'SoT Cluster',
+            sort: true
+        }, {
+            dataField: 'e1g2',
+            text: 'Compared Cluster',
+            sort: true
+        }, {
+            dataField: 'e2',
+            text: 'Entity',
+            sort: true
+        }, {
+            dataField: 'e2g1',
+            text: 'SoT Cluster',
+            sort: true
+        }, {
+            dataField: 'e2g2',
+            text: 'Compared Cluster',
+            sort: true
+        }];
 
         return (
             <div>
@@ -184,7 +225,10 @@ export class Analysis extends React.Component {
                         FN : {this.state.result.falseNegative}< br/>
                         Precision : {this.state.result.precision.toFixed(2)}< br/>
                         Recall : {this.state.result.recall.toFixed(2)}< br/>
-                        F-Score : {this.state.result.fmeasure.toFixed(2)}< br/>
+                        F-Score : {this.state.result.fmeasure.toFixed(2)}
+
+                        <h5 className="mt-3">False Pairs</h5>
+                        <BootstrapTable bootstrap4 keyField='id' data={ falsePairRows } columns={ falsePairColumns } />
                     </div>
                 }
             </div>

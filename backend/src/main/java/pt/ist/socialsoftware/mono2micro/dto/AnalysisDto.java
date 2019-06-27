@@ -1,5 +1,8 @@
 package pt.ist.socialsoftware.mono2micro.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AnalysisDto {
     private String dendrogramName1;
     private String graphName1;
@@ -9,12 +12,25 @@ public class AnalysisDto {
     private int trueNegative;
     private int falsePositive;
     private int falseNegative;
+    private List<String[]> falsePairs = new ArrayList<>();
     private float precision;
     private float recall;
     private float fmeasure;
 
     public float getPrecision() {
         return precision;
+    }
+
+    public List<String[]> getFalsePairs() {
+        return falsePairs;
+    }
+
+    public void setFalsePairs(List<String[]> falsePairs) {
+        this.falsePairs = falsePairs;
+    }
+
+    public void addFalsePair(String[] falsePair) {
+        this.falsePairs.add(falsePair);
     }
 
     public int getFalseNegative() {

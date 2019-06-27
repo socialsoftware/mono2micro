@@ -83,7 +83,7 @@ public class ExpertController {
         Codebase codebase = codebaseManager.getCodebase(codebaseName);
         codebase.getExpert(expertName).addCluster(cluster, new ArrayList<>());
         codebaseManager.writeCodebase(codebaseName, codebase);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 

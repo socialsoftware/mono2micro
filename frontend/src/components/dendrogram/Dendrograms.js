@@ -20,7 +20,10 @@ export class Dendrograms extends React.Component {
             linkageType: "",
             accessMetricWeight: "",
             writeMetricWeight: "",
-            sequenceMetricWeight: "",
+            readMetricWeight: "",
+            sequenceMetric1Weight: "",
+            sequenceMetric2Weight: "",
+            sequenceMetric3Weight: "",
             selectedProfiles: []
         };
 
@@ -30,7 +33,10 @@ export class Dendrograms extends React.Component {
         this.handleLinkageType = this.handleLinkageType.bind(this);
         this.handleChangeAccessMetricWeight = this.handleChangeAccessMetricWeight.bind(this);
         this.handleChangeWriteMetricWeight = this.handleChangeWriteMetricWeight.bind(this);
-        this.handleChangeSequenceMetricWeight = this.handleChangeSequenceMetricWeight.bind(this);
+        this.handleChangeReadMetricWeight = this.handleChangeReadMetricWeight.bind(this);
+        this.handleChangeSequenceMetric1Weight = this.handleChangeSequenceMetric1Weight.bind(this);
+        this.handleChangeSequenceMetric2Weight = this.handleChangeSequenceMetric2Weight.bind(this);
+        this.handleChangeSequenceMetric3Weight = this.handleChangeSequenceMetric3Weight.bind(this);
     }
 
     componentDidMount() {
@@ -63,7 +69,7 @@ export class Dendrograms extends React.Component {
             isUploaded: "Uploading..."
         });
         
-        service.createDendrogram(this.state.codebaseName, this.state.newDendrogramName, this.state.linkageType, Number(this.state.accessMetricWeight), Number(this.state.writeMetricWeight), Number(this.state.sequenceMetricWeight), this.state.selectedProfiles).then(response => {
+        service.createDendrogram(this.state.codebaseName, this.state.newDendrogramName, this.state.linkageType, Number(this.state.accessMetricWeight), Number(this.state.writeMetricWeight), Number(this.state.readMetricWeight), Number(this.state.sequenceMetric1Weight), Number(this.state.sequenceMetric2Weight), Number(this.state.sequenceMetric3Weight), this.state.selectedProfiles).then(response => {
             if (response.status === HttpStatus.CREATED) {
                 this.loadDendrograms();
                 this.setState({
@@ -112,9 +118,27 @@ export class Dendrograms extends React.Component {
         });
     }
 
-    handleChangeSequenceMetricWeight(event) {
+    handleChangeReadMetricWeight(event) {
         this.setState({
-           sequenceMetricWeight: event.target.value
+            readMetricWeight: event.target.value
+        });
+    }
+
+    handleChangeSequenceMetric1Weight(event) {
+        this.setState({
+           sequenceMetric1Weight: event.target.value
+        });
+    }
+
+    handleChangeSequenceMetric2Weight(event) {
+        this.setState({
+           sequenceMetric2Weight: event.target.value
+        });
+    }
+
+    handleChangeSequenceMetric3Weight(event) {
+        this.setState({
+           sequenceMetric3Weight: event.target.value
         });
     }
 
@@ -274,7 +298,7 @@ export class Dendrograms extends React.Component {
                         </Col>
                     </Form.Group>
 
-                    <Form.Group as={Row} controlId="readWrite">
+                    <Form.Group as={Row} controlId="write">
                         <Form.Label column sm={3}>
                             Write Metric Weight (%)
                         </Form.Label>
@@ -287,16 +311,55 @@ export class Dendrograms extends React.Component {
                         </Col>
                     </Form.Group>
 
-                    <Form.Group as={Row} controlId="sequence">
+                    <Form.Group as={Row} controlId="read">
                         <Form.Label column sm={3}>
-                            Sequence Metric Weight (%)
+                            Read Metric Weight (%)
                         </Form.Label>
                         <Col sm={5}>
                             <FormControl 
                                 type="number"
                                 placeholder="0-100"
-                                value={this.state.sequenceMetricWeight}
-                                onChange={this.handleChangeSequenceMetricWeight}/>
+                                value={this.state.readMetricWeight}
+                                onChange={this.handleChangeReadMetricWeight}/>
+                        </Col>
+                    </Form.Group>
+
+                    <Form.Group as={Row} controlId="sequence1">
+                        <Form.Label column sm={3}>
+                            Sequence Metric 1 Weight (%)
+                        </Form.Label>
+                        <Col sm={5}>
+                            <FormControl 
+                                type="number"
+                                placeholder="0-100"
+                                value={this.state.sequenceMetric1Weight}
+                                onChange={this.handleChangeSequenceMetric1Weight}/>
+                        </Col>
+                    </Form.Group>
+
+                    <Form.Group as={Row} controlId="sequence2">
+                        <Form.Label column sm={3}>
+                            Sequence Metric 2 Weight (%)
+                        </Form.Label>
+                        <Col sm={5}>
+                            <FormControl 
+                                type="number"
+                                placeholder="0-100"
+                                value={this.state.sequenceMetric2Weight}
+                                onChange={this.handleChangeSequenceMetric2Weight}/>
+                        </Col>
+                    </Form.Group>
+
+                    <Form.Group as={Row} controlId="sequence3">
+                        <Form.Label column sm={3}>
+                            Sequence Metric 3 Weight (%)
+                        </Form.Label>
+                        <Col sm={5}>
+                            <FormControl 
+                                type="number"
+                                placeholder="0-100"
+                                value={this.state.sequenceMetric3Weight}
+                                onChange={this.handleChangeSequenceMetric3Weight}/>
                         </Col>
                     </Form.Group>
 
@@ -307,9 +370,12 @@ export class Dendrograms extends React.Component {
                                             this.state.newDendrogramName === "" || 
                                             this.state.linkageType === "" || 
                                             this.state.accessMetricWeight === "" || 
-                                            this.state.writeMetricWeight === "" || 
-                                            this.state.sequenceMetricWeight === "" || 
-                                            Number(this.state.accessMetricWeight) + Number(this.state.writeMetricWeight) + Number(this.state.sequenceMetricWeight) !== 100 || 
+                                            this.state.writeMetricWeight === "" ||
+                                            this.state.readMetricWeight === "" || 
+                                            this.state.sequenceMetric1Weight === "" || 
+                                            this.state.sequenceMetric2Weight === "" || 
+                                            this.state.sequenceMetric3Weight === "" || 
+                                            Number(this.state.accessMetricWeight) + Number(this.state.writeMetricWeight) + Number(this.state.readMetricWeight) + Number(this.state.sequenceMetric1Weight) + Number(this.state.sequenceMetric2Weight) + Number(this.state.sequenceMetric3Weight) !== 100 || 
                                             this.state.selectedProfiles.length === 0}>
                                 Create Dendrogram
                             </Button>
@@ -336,7 +402,10 @@ export class Dendrograms extends React.Component {
                                     Linkage Type: {this.state.dendrogram.linkageType}< br/>
                                     Access Metric Weight: {this.state.dendrogram.accessMetricWeight}%< br/>
                                     Write Metric Weight: {this.state.dendrogram.writeMetricWeight}%< br/>
-                                    Sequence Metric Weight: {this.state.dendrogram.sequenceMetricWeight}%< br/>
+                                    Read Metric Weight: {this.state.dendrogram.readMetricWeight}%< br/>
+                                    Sequence Metric 1 Weight: {this.state.dendrogram.sequenceMetric1Weight}%< br/>
+                                    Sequence Metric 2 Weight: {this.state.dendrogram.sequenceMetric2Weight}%< br/>
+                                    Sequence Metric 3 Weight: {this.state.dendrogram.sequenceMetric3Weight}%< br/>
                                     # of Controllers: {this.state.dendrogram.controllers.length}< br/>
                                     # of Entities: {this.state.dendrogram.entities.length}
                                 </Card.Text>

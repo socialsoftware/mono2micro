@@ -81,7 +81,7 @@ public class CodebaseController {
         Codebase codebase = codebaseManager.getCodebase(name);
         codebase.addProfile(profile, new ArrayList<>());
         codebaseManager.writeCodebase(name, codebase);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 

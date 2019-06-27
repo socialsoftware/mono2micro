@@ -157,20 +157,7 @@ export class Views extends React.Component {
                         Cancel
                     </Button>
                 </Form.Group>
-            </Form>
-
-            /*<ButtonToolbar>
-                <InputGroup className="mr-1">
-                    <FormControl 
-                        type="text"
-                        maxLength="30"
-                        placeholder="Rename Graph"
-                        value={this.state.inputValue}
-                        onChange={this.handleRenameGraph}/>
-                </InputGroup>
-                <Button className="mr-1" onClick={this.handleRenameGraphSubmit}>Rename</Button>
-                <Button onClick={this.handleClose}>Cancel</Button>
-            </ButtonToolbar>*/);
+            </Form>);
 
         return (
             <Container>
