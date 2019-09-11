@@ -1,7 +1,5 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +12,10 @@ public class Codebase {
 	private List<Expert> experts = new ArrayList<>();
 
 	public Codebase() {
+	}
+
+	public Codebase(String name) {
+        this.name = name;
 	}
 
 	public List<Expert> getExperts() {
@@ -30,10 +32,6 @@ public class Codebase {
 
 	public void setDendrograms(List<Dendrogram> dendrograms) {
 		this.dendrograms = dendrograms;
-	}
-
-	public Codebase(String name) {
-        this.name = name;
 	}
 
 	public String getName() {

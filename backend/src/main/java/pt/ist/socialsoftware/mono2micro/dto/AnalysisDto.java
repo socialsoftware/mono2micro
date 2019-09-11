@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AnalysisDto {
+    private String codebaseName;
     private String dendrogramName1;
     private String graphName1;
     private String dendrogramName2;
@@ -13,12 +14,38 @@ public class AnalysisDto {
     private int falsePositive;
     private int falseNegative;
     private List<String[]> falsePairs = new ArrayList<>();
+    private float accuracy;
     private float precision;
     private float recall;
+    private float specificity;
     private float fmeasure;
 
     public float getPrecision() {
         return precision;
+    }
+
+    public String getCodebaseName() {
+        return codebaseName;
+    }
+
+    public void setCodebaseName(String codebaseName) {
+        this.codebaseName = codebaseName;
+    }
+
+    public float getSpecificity() {
+        return specificity;
+    }
+
+    public void setSpecificity(float specificity) {
+        this.specificity = specificity;
+    }
+
+    public float getAccuracy() {
+        return accuracy;
+    }
+
+    public void setAccuracy(float accuracy) {
+        this.accuracy = accuracy;
     }
 
     public List<String[]> getFalsePairs() {

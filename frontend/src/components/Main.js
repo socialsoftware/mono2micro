@@ -9,6 +9,7 @@ import { Codebase } from './codebase/Codebase';
 import { Analysis } from './analysis/Analysis';
 import { Experts } from './expert/Experts';
 import { Expert } from './expert/Expert';
+import { Analyser } from './analysis/Analyser';
 
 export const Main = () => (
   <main>
@@ -25,6 +26,7 @@ export const Main = () => (
       <Route exact path='/codebase/:codebaseName/expert/:expertName' component={Expert} />
 
       <Route exact path='/analysis' component={Analysis} />
+      <Route exact path='/analyser' component={Analyser} />
     </Switch>
   </main>
 )

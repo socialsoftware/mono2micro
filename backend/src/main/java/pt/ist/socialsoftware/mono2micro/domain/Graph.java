@@ -8,15 +8,13 @@ import java.util.Map;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 
 public class Graph {
-	private String name;
 	private String dendrogramName;
+	private String name;
 	private float cutValue;
 	private String cutType;
 	private float silhouetteScore;
 	private List<Cluster> clusters = new ArrayList<>();
-	private Map<String, Float> controllersComplexity;
-	private Map<String, Float> controllersComplexityRW;
-	private Map<String, Float> controllersComplexitySeq;
+	private List<Controller> controllers = new ArrayList<>();
 
 	public Graph() {
 	}
@@ -61,16 +59,12 @@ public class Graph {
 		this.silhouetteScore = silhouetteScore;
 	}
 
-	public Map<String,Float> getControllersComplexity() {
-		return this.controllersComplexity;
+	public List<Controller> getControllers() {
+		return this.controllers;
 	}
 
-	public Map<String,Float> getControllersComplexityRW() {
-		return this.controllersComplexityRW;
-	}
-
-	public Map<String,Float> getControllersComplexitySeq() {
-		return this.controllersComplexitySeq;
+	public void addController(Controller controller) {
+		this.controllers.add(controller);
 	}
 
 	public List<Cluster> getClusters() {
@@ -85,7 +79,7 @@ public class Graph {
 		Cluster mergedCluster = new Cluster(newName);
 		for (int i = 0; i < clusters.size(); i++) {
 			if (clusters.get(i).getName().equals(cluster1)) {
-				for (String entity : clusters.get(i).getEntities())
+				for (Entity entity : clusters.get(i).getEntities())
 					mergedCluster.addEntity(entity);
 				clusters.remove(i);
 				break;
@@ -93,7 +87,7 @@ public class Graph {
 		}
 		for (int i = 0; i < clusters.size(); i++) {
 			if (clusters.get(i).getName().equals(cluster2)) {
-				for (String entity : clusters.get(i).getEntities())
+				for (Entity entity : clusters.get(i).getEntities())
 					mergedCluster.addEntity(entity);
 				clusters.remove(i);
 				break;
@@ -139,7 +133,7 @@ public class Graph {
 		Cluster currentCluster = this.getCluster(clusterName);
 		Cluster newCluster = new Cluster(newName);
 		for (String entity : entities) {
-			newCluster.addEntity(entity);
+			newCluster.addEntity(currentCluster.getEntity(entity));
 			currentCluster.removeEntity(entity);
 		}
 		this.addCluster(newCluster);
@@ -149,12 +143,14 @@ public class Graph {
 		Cluster c1 = this.getCluster(fromCluster);
 		Cluster c2 = this.getCluster(toCluster);
 		for (String entity : entities) {
-			c2.addEntity(entity);
+			c2.addEntity(c1.getEntity(entity));
 			c1.removeEntity(entity);
 		}
 	}
 
-	public void calculateMetrics(Map<String,List<Controller>> clusterControllers, Map<String,List<Pair<Cluster,String>>> controllerClustersSeq) {
+	public void calculateMetrics() {
+		Map<String,List<Controller>> clusterControllers = this.getClusterControllers();
+		Map<String,List<Pair<Cluster,String>>> controllerClustersSeq = this.getControllerClustersSeq();
 		float maximumSeqLength = 0;
 		float totalSequenceLength = 0;
 		for (String ctr : controllerClustersSeq.keySet()) {
@@ -163,26 +159,23 @@ public class Graph {
 				maximumSeqLength = controllerClustersSeq.get(ctr).size();
 		}
 		
-		this.controllersComplexity = new HashMap<>();
-		this.controllersComplexityRW = new HashMap<>();
-		this.controllersComplexitySeq = new HashMap<>();
-		for (String controllerName : controllerClustersSeq.keySet())
-			calculateControllerComplexity(controllerName, controllerClustersSeq, maximumSeqLength);
+		for (Controller controller : this.controllers)
+			calculateControllerComplexity(controller, controllerClustersSeq, maximumSeqLength);
 		
 		for (Cluster cluster : this.clusters) {
 			calculateClusterComplexity(cluster, clusterControllers);
 
-			cluster.calculateCohesion(clusterControllers);
+			cluster.calculateCohesion(clusterControllers.get(cluster.getName()));
 
 			calculateClusterCoupling(cluster, clusterControllers, controllerClustersSeq, totalSequenceLength);
 		}
 	}
 
-	public void calculateControllerComplexity(String controllerName, Map<String, List<Pair<Cluster, String>>> controllerClustersSeq, float maximumSeqLength) {
+	public void calculateControllerComplexity(Controller controller, Map<String, List<Pair<Cluster, String>>> controllerClustersSeq, float maximumSeqLength) {
 		float complexity, complexityRW, complexitySeq;
 		Map<String,String> clusterAccessed = new HashMap<>();
 		
-		for(Pair<Cluster,String> clusterPair : controllerClustersSeq.get(controllerName)) {
+		for(Pair<Cluster,String> clusterPair : controllerClustersSeq.get(controller.getName())) {
 			String clusterName = clusterPair.getFirst().getName();
 			String mode = clusterPair.getSecond();
 			if (clusterAccessed.keySet().contains(clusterName)) {
@@ -209,20 +202,20 @@ public class Graph {
 		} else {
 			complexity = clusterAccessedAmount / this.clusters.size();
 			complexityRW = clusterAccessedRW / this.clusters.size();
-			complexitySeq = controllerClustersSeq.get(controllerName).size() / maximumSeqLength;
+			complexitySeq = controllerClustersSeq.get(controller.getName()).size() / maximumSeqLength;
 		}
-		this.controllersComplexity.put(controllerName, complexity);
-		this.controllersComplexityRW.put(controllerName, complexityRW);
-		this.controllersComplexitySeq.put(controllerName, complexitySeq);
+		controller.setComplexity(complexity);
+		controller.setComplexityRW(complexityRW);
+		controller.setComplexitySeq(complexitySeq);
 	}
 
 	public void calculateClusterComplexity(Cluster cluster, Map<String,List<Controller>> clusterControllers) {
 		float complexity = 0, complexityRW = 0, complexitySeq = 0;
 		if (this.clusters.size() > 1) {
 			for (Controller ctr : clusterControllers.get(cluster.getName())) {
-				complexity += this.controllersComplexity.get(ctr.getName());
-				complexityRW += this.controllersComplexityRW.get(ctr.getName());
-				complexitySeq += this.controllersComplexitySeq.get(ctr.getName());
+				complexity += ctr.getComplexity();
+				complexityRW += ctr.getComplexityRW();
+				complexitySeq += ctr.getComplexitySeq();
 			}
 			complexity /= clusterControllers.get(cluster.getName()).size();
 			complexityRW /= clusterControllers.get(cluster.getName()).size();
@@ -289,5 +282,69 @@ public class Graph {
 		c1.setCoupling(coupling);
 		c1.setCouplingRW(couplingRW);
 		c1.setCouplingSeq(couplingSeq);
+	}
+
+	public Map<String,List<Controller>> getClusterControllers() {
+		Map<String,List<Controller>> clusterControllers = new HashMap<>();
+
+		for (Cluster cluster : this.clusters) {
+			List<Controller> touchedControllers = new ArrayList<>();
+			for (Controller controller : this.controllers) {
+				for (String controllerEntity : controller.getEntities().keySet()) {
+					if (cluster.containsEntity(controllerEntity)) {
+						touchedControllers.add(controller);
+						break;
+					}
+				}
+			}
+			clusterControllers.put(cluster.getName(), touchedControllers);
+		}
+		return clusterControllers;
+	}
+
+	public Map<String,List<Cluster>> getControllerClusters() {
+		Map<String,List<Cluster>> controllerClusters = new HashMap<>();
+
+		for (Controller controller : this.controllers) {
+			List<Cluster> touchedClusters = new ArrayList<>();
+			for (Cluster cluster : this.clusters) {
+				for (Entity clusterEntity : cluster.getEntities()) {
+					if (controller.containsEntity(clusterEntity.getName())) {
+						touchedClusters.add(cluster);
+						break;
+					}
+				}
+			}
+			controllerClusters.put(controller.getName(), touchedClusters);
+		}
+		return controllerClusters;
+	}
+
+	public Map<String,List<Pair<Cluster,String>>> getControllerClustersSeq() {
+		Map<String,List<Pair<Cluster,String>>> controllerClustersSeq = new HashMap<>();
+
+		for (Controller controller : this.controllers) {
+			List<Pair<Cluster,String>> touchedClusters = new ArrayList<>();
+			Pair<Cluster,String> lastCluster = null;
+			for (Pair<String,String> entityPair : controller.getEntitiesSeq()) {
+				String entityName = entityPair.getFirst();
+				String mode = entityPair.getSecond();
+				Cluster clusterAccessed = getClusterWithEntity(entityName);
+				if (lastCluster == null){
+					lastCluster = new Pair<Cluster,String>(clusterAccessed, mode);
+					touchedClusters.add(new Pair<Cluster,String>(clusterAccessed, mode));
+				} else if (lastCluster.getFirst().getName().equals(clusterAccessed.getName())) {
+					if (!lastCluster.getSecond().contains(mode)) {
+						lastCluster.setSecond("RW");
+						touchedClusters.get(touchedClusters.size() - 1).setSecond("RW");
+					}
+				} else {
+					lastCluster = new Pair<Cluster,String>(clusterAccessed, mode);
+					touchedClusters.add(new Pair<Cluster,String>(clusterAccessed, mode));
+				}
+			}
+			controllerClustersSeq.put(controller.getName(), touchedClusters);
+		}
+		return controllerClustersSeq;
 	}
 }

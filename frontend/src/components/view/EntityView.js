@@ -89,20 +89,22 @@ export class EntityView extends React.Component {
 
     componentDidMount() {
         const service = new RepositoryService();
-        service.getDendrogram(this.props.codebaseName, this.props.dendrogramName).then(response => {
+        service.getGraph(this.props.codebaseName, this.props.dendrogramName, this.props.graphName).then(response => {
             service.getClusterControllers(this.props.codebaseName, this.props.dendrogramName, this.props.graphName).then(response2 => {
+                
                 this.setState({
-                    graph: response.data.graphs.filter(graph => graph.name === this.props.graphName)[0],
-                    clusters: response.data.graphs.filter(graph => graph.name === this.props.graphName)[0].clusters,
-                    entities: response.data.entities,
-                    controllers: response.data.controllers,
-                    clusterControllers: response2.data
+                    graph: response.data,
+                    clusters: response.data.clusters,
+                    entities: response.data.clusters.map(c => c.entities).flat(),
+                    clusterControllers: response2.data,
+                    controllers: response.data.controllers
                 }, () => {
+                    console.log(this.state)
                     let amountList = {};
                     for (var i = 0; i < this.state.entities.length; i++) {
                         let amount = 0;
                         let entity = this.state.entities[i];
-                        let entityCluster = this.state.clusters.filter(c => c.entities.includes(entity.name))[0];
+                        let entityCluster = this.state.clusters.filter(c => c.entities.map(e => e.name).includes(entity.name))[0];
                         for (var j = 0; j < this.state.clusters.length; j++) {
                             let cluster = this.state.clusters[j];
                             let commonControllers = this.getCommonControllers(entity.name, cluster);
@@ -129,7 +131,7 @@ export class EntityView extends React.Component {
     handleEntitySubmit(value) {
         this.setState({
             entity: value,
-            entityCluster: this.state.clusters.filter(c => c.entities.includes(value))[0],
+            entityCluster: this.state.clusters.filter(c => c.entities.map(e => e.name).includes(value))[0],
             showGraph: true
         }, () => {
             this.loadGraph();
@@ -156,7 +158,7 @@ export class EntityView extends React.Component {
                 let commonControllers = this.getCommonControllers(this.state.entity, cluster);
                 
                 if (commonControllers.length > 0) {
-                    nodes.push({id: cluster.name, label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER, title: cluster.entities.join('<br>') + "<br>Total: " + cluster.entities.length});
+                    nodes.push({id: cluster.name, label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER, title: cluster.entities.map(e => e.name).join('<br>') + "<br>Total: " + cluster.entities.length});
                     edges.push({from: this.state.entity, to: cluster.name, label: commonControllers.length.toString(), title: commonControllers.join('<br>')})
                 }
             }

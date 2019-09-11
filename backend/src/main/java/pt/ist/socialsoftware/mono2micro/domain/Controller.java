@@ -11,12 +11,39 @@ public class Controller {
 	private String name;
 	private Map<String,String> entities = new HashMap<>();
 	private List<Pair<String,String>> entitiesSeq = new ArrayList<>();
+	private float complexity;
+	private float complexityRW;
+	private float complexitySeq;
 
 	public Controller() {
 	}
 
 	public Controller(String name) {
         this.name = name;
+	}
+
+	public float getComplexitySeq() {
+		return complexitySeq;
+	}
+
+	public void setComplexitySeq(float complexitySeq) {
+		this.complexitySeq = complexitySeq;
+	}
+
+	public float getComplexityRW() {
+		return complexityRW;
+	}
+
+	public void setComplexityRW(float complexityRW) {
+		this.complexityRW = complexityRW;
+	}
+
+	public float getComplexity() {
+		return complexity;
+	}
+
+	public void setComplexity(float complexity) {
+		this.complexity = complexity;
 	}
 
 	public String getName() {

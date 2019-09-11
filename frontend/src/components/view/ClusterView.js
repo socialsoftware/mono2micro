@@ -333,10 +333,10 @@ export class ClusterView extends React.Component {
                 cluster: cluster.name,
                 controllers: this.state.clusterControllers[cluster.name].length,
                 entities: cluster.entities.length,
+                cohesion: Number(cluster.cohesion.toFixed(2)),
                 complexity: Number(cluster.complexity.toFixed(2)),
                 complexityrw: Number(cluster.complexityRW.toFixed(2)),
                 complexityseq: Number(cluster.complexitySeq.toFixed(2)),
-                cohesion: Number(cluster.cohesion.toFixed(2)),
                 coupling: Number(((Object.values(cluster.coupling).reduce((a,b) => a + b, 0) - 1) / (Object.keys(cluster.coupling).length - 1)).toFixed(2)),
                 couplingrw: Number(((Object.values(cluster.couplingRW).reduce((a,b) => a + b, 0) - 1) / (Object.keys(cluster.couplingRW).length - 1)).toFixed(2)),
                 couplingseq: Number(((Object.values(cluster.couplingSeq).reduce((a,b) => a + b, 0) - 1) / (Object.keys(cluster.couplingSeq).length - 1)).toFixed(2))
@@ -355,6 +355,10 @@ export class ClusterView extends React.Component {
             text: 'Entities',
             sort: true
         }, {
+            dataField: 'cohesion',
+            text: 'Cohesion',
+            sort: true
+        }, {
             dataField: 'complexity',
             text: 'Complexity Access',
             sort: true
@@ -365,10 +369,6 @@ export class ClusterView extends React.Component {
         }, {
             dataField: 'complexityseq',
             text: 'Complexity Seq',
-            sort: true
-        }, {
-            dataField: 'cohesion',
-            text: 'Cohesion',
             sort: true
         }, {
             dataField: 'coupling',
