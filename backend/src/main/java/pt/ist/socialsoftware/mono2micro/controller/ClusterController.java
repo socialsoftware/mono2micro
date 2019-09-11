@@ -32,7 +32,7 @@ public class ClusterController {
 		logger.debug("mergeClusters {} with {}", clusterName, otherCluster);
 
 		Codebase codebase = codebaseManager.getCodebase(codebaseName);
-		codebase.getDendrogram(dendrogramName).mergeClusters(graphName, clusterName, otherCluster, newName);
+		codebase.getDendrogram(dendrogramName).getGraph(graphName).mergeClusters(clusterName, otherCluster, newName);
 		codebaseManager.writeCodebase(codebaseName, codebase);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -43,7 +43,7 @@ public class ClusterController {
 		logger.debug("renameCluster {}", clusterName);
 
 		Codebase codebase = codebaseManager.getCodebase(codebaseName);
-		boolean success = codebase.getDendrogram(dendrogramName).renameCluster(graphName, clusterName, newName);
+		boolean success = codebase.getDendrogram(dendrogramName).getGraph(graphName).renameCluster(clusterName, newName);
 		if (success) {
 			codebaseManager.writeCodebase(codebaseName, codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -58,7 +58,7 @@ public class ClusterController {
 		logger.debug("splitCluster: {}", clusterName);
 
 		Codebase codebase = codebaseManager.getCodebase(codebaseName);
-		codebase.getDendrogram(dendrogramName).splitCluster(graphName, clusterName, newName, entities.split(","));
+		codebase.getDendrogram(dendrogramName).getGraph(graphName).splitCluster(clusterName, newName, entities.split(","));
 		codebaseManager.writeCodebase(codebaseName, codebase);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -69,7 +69,7 @@ public class ClusterController {
 		logger.debug("transferEntities: {}", clusterName);
 
 		Codebase codebase = codebaseManager.getCodebase(codebaseName);
-		codebase.getDendrogram(dendrogramName).transferEntities(graphName, clusterName, toCluster, entities.split(","));
+		codebase.getDendrogram(dendrogramName).getGraph(graphName).transferEntities(clusterName, toCluster, entities.split(","));
 		codebaseManager.writeCodebase(codebaseName, codebase);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -79,8 +79,7 @@ public class ClusterController {
 	public ResponseEntity<Map<String,List<Cluster>>> getControllerClusters(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName) {
 		logger.debug("getControllerClusters: in graph {}", graphName);
 
-		Codebase codebase = codebaseManager.getCodebase(codebaseName);
-		return new ResponseEntity<Map<String,List<Cluster>>>(codebase.getDendrogram(dendrogramName).getControllerClusters(graphName), HttpStatus.OK);
+		return new ResponseEntity<Map<String,List<Cluster>>>(codebaseManager.getCodebase(codebaseName).getDendrogram(dendrogramName).getGraph(graphName).getControllerClusters(), HttpStatus.OK);
 	}
 
 
@@ -88,7 +87,6 @@ public class ClusterController {
 	public ResponseEntity<Map<String,List<Controller>>> getClusterControllers(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName) {
 		logger.debug("getClusterControllers: in graph {}", graphName);
 
-		Codebase codebase = codebaseManager.getCodebase(codebaseName);
-		return new ResponseEntity<Map<String,List<Controller>>>(codebase.getDendrogram(dendrogramName).getClusterControllers(graphName), HttpStatus.OK);
+		return new ResponseEntity<Map<String,List<Controller>>>(codebaseManager.getCodebase(codebaseName).getDendrogram(dendrogramName).getGraph(graphName).getClusterControllers(), HttpStatus.OK);
 	}
 }

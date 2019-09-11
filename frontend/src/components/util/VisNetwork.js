@@ -102,6 +102,14 @@ export class VisNetwork extends Component {
                     ModalMessageTitle: 'Entities of ' + to + ' accessed by controller ' + from,
                     ModalMessageText: this.props.visGraph.edges.get(event.edges[0]).title
                 });
+            } else if (this.props.view === views.ENTITY) {
+                let from = this.props.visGraph.edges.get(event.edges[0]).from;
+                let to = this.props.visGraph.edges.get(event.edges[0]).to;
+                this.setState({
+                    showModalMessage: true,
+                    ModalMessageTitle: 'Controllers that access ' + from + ' and ' + to,
+                    ModalMessageText: this.props.visGraph.edges.get(event.edges[0]).title
+                });
             }
         } else if (event.nodes.length > 0) {  //node double click
             if (this.props.view === views.CLUSTERS) {
@@ -121,6 +129,20 @@ export class VisNetwork extends Component {
                     this.setState({
                         showModalMessage: true,
                         ModalMessageTitle: 'Entities accessed by controller ' + this.props.visGraph.nodes.get(event.nodes[0]).label,
+                        ModalMessageText: this.props.visGraph.nodes.get(event.nodes[0]).title
+                    });
+                }
+            } else if (this.props.view === views.ENTITY) {
+                if (this.props.visGraph.nodes.get(event.nodes[0]).type === types.ENTITY) {
+                    this.setState({
+                        showModalMessage: true,
+                        ModalMessageTitle: 'Controllers that access ' + this.props.visGraph.nodes.get(event.nodes[0]).label,
+                        ModalMessageText: this.props.visGraph.nodes.get(event.nodes[0]).title
+                    });
+                } else if (this.props.visGraph.nodes.get(event.nodes[0]).type === types.CLUSTER) {
+                    this.setState({
+                        showModalMessage: true,
+                        ModalMessageTitle: 'Entities of ' + this.props.visGraph.nodes.get(event.nodes[0]).label,
                         ModalMessageText: this.props.visGraph.nodes.get(event.nodes[0]).title
                     });
                 }

@@ -140,14 +140,11 @@ export class TransactionView extends React.Component {
                 controllerClusters: response.data
             });
         });
-        service.getControllers(this.props.codebaseName, this.props.dendrogramName).then(response => {
-            this.setState({
-                controllers: response.data
-            });
-        });
         service.getGraph(this.props.codebaseName, this.props.dendrogramName, this.props.graphName).then(response => {
+            console.log(response.data)
             this.setState({
-                graph: response.data
+                graph: response.data,
+                controllers: response.data.controllers
             });
         });
     }
@@ -207,7 +204,7 @@ export class TransactionView extends React.Component {
         for (var i = 0; i < this.state.controller.entitiesSeq.length; i++) {
             let entityName = this.state.controller.entitiesSeq[i].first;
             let entityDescription = this.state.controller.entitiesSeq[i].first + " " + this.state.controller.entitiesSeq[i].second;
-            let clusterAccessed = this.state.graph.clusters.filter(c => c.entities.includes(entityName))[0];
+            let clusterAccessed = this.state.graph.clusters.filter(c => c.entities.map(e => e.name).includes(entityName))[0];
 
             if (i === 0) {
                 lastCluster = clusterAccessed;
@@ -268,14 +265,14 @@ export class TransactionView extends React.Component {
     }
 
     render() {
-        const metricsRows = this.state.graph.controllersComplexity === undefined ? [] : 
-            Object.keys(this.state.graph.controllersComplexity).sort().map(controller => {
+        const metricsRows = this.state.controllers === undefined ? [] : 
+            this.state.controllers.map(controller => {
                 return {
-                    controller: controller,
-                    clusters: this.state.controllerClusters[controller] === undefined ? 0 : this.state.controllerClusters[controller].length,
-                    complexity: Number(this.state.graph.controllersComplexity[controller].toFixed(2)),
-                    complexityrw: Number(this.state.graph.controllersComplexityRW[controller].toFixed(2)),
-                    complexityseq: Number(this.state.graph.controllersComplexitySeq[controller].toFixed(2))
+                    controller: controller.name,
+                    clusters: this.state.controllerClusters[controller.name] === undefined ? 0 : this.state.controllerClusters[controller.name].length,
+                    complexity: Number(controller.complexity.toFixed(2)),
+                    complexityrw: Number(controller.complexityRW.toFixed(2)),
+                    complexityseq: Number(controller.complexitySeq.toFixed(2))
                 }
             });
 

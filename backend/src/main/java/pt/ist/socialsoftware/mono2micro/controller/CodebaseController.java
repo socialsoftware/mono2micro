@@ -55,18 +55,18 @@ public class CodebaseController {
 
 
 	@RequestMapping(value = "/codebase/{name}", method = RequestMethod.GET)
-	public ResponseEntity<Codebase> getCodebase(@PathVariable String name) {
+	public ResponseEntity<Codebase> getCodebase(@PathVariable String codebaseName) {
 		logger.debug("getCodebase");
 
-		return new ResponseEntity<>(codebaseManager.getCodebase(name), HttpStatus.OK);
+		return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName), HttpStatus.OK);
     }
     
 
     @RequestMapping(value = "/codebase/{name}/delete", method = RequestMethod.DELETE)
-	public ResponseEntity<HttpStatus> deleteCodebase(@PathVariable String name) {
+	public ResponseEntity<HttpStatus> deleteCodebase(@PathVariable String codebaseName) {
 		logger.debug("deleteCodebase");
 
-		boolean deleted = codebaseManager.deleteCodebase(name);
+		boolean deleted = codebaseManager.deleteCodebase(codebaseName);
 		if (deleted)
 			return new ResponseEntity<>(HttpStatus.OK);
 		else
@@ -75,57 +75,58 @@ public class CodebaseController {
 
 
     @RequestMapping(value = "/codebase/{name}/addProfile", method = RequestMethod.GET)
-	public ResponseEntity<HttpStatus> addProfile(@PathVariable String name, @RequestParam String profile) {
+	public ResponseEntity<HttpStatus> addProfile(@PathVariable String codebaseName, @RequestParam String profile) {
 		logger.debug("addProfile");
 
-        Codebase codebase = codebaseManager.getCodebase(name);
+        Codebase codebase = codebaseManager.getCodebase(codebaseName);
         codebase.addProfile(profile, new ArrayList<>());
-        codebaseManager.writeCodebase(name, codebase);
+        codebaseManager.writeCodebase(codebaseName, codebase);
 		return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 
     @RequestMapping(value = "/codebase/{name}/moveControllers", method = RequestMethod.POST)
-	public ResponseEntity<HttpStatus> moveControllers(@PathVariable String name, @RequestBody String[] controllers, @RequestParam String profile) {
+	public ResponseEntity<HttpStatus> moveControllers(@PathVariable String codebaseName, @RequestBody String[] controllers, @RequestParam String toProfile) {
 		logger.debug("moveControllers");
 
-        Codebase codebase = codebaseManager.getCodebase(name);
-        codebase.moveControllers(controllers, profile);
-        codebaseManager.writeCodebase(name, codebase);
+        Codebase codebase = codebaseManager.getCodebase(codebaseName);
+        codebase.moveControllers(controllers, toProfile);
+        codebaseManager.writeCodebase(codebaseName, codebase);
 		return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
     @RequestMapping(value = "/codebase/{name}/deleteProfile", method = RequestMethod.DELETE)
-	public ResponseEntity<HttpStatus> deleteProfile(@PathVariable String name, @RequestParam String profile) {
+	public ResponseEntity<HttpStatus> deleteProfile(@PathVariable String codebaseName, @RequestParam String profile) {
 		logger.debug("deleteProfile");
 
-        Codebase codebase = codebaseManager.getCodebase(name);
+        Codebase codebase = codebaseManager.getCodebase(codebaseName);
         codebase.deleteProfile(profile);
-        codebaseManager.writeCodebase(name, codebase);
+        codebaseManager.writeCodebase(codebaseName, codebase);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
     @RequestMapping(value = "/codebase/create", method = RequestMethod.POST)
-    public ResponseEntity<HttpStatus> createCodebase(@RequestParam String name, @RequestParam MultipartFile datafile) {
+    public ResponseEntity<HttpStatus> createCodebase(@RequestParam String codebaseName, @RequestParam MultipartFile datafile) {
+        logger.debug("createCodebase");
 
-        logger.debug("createCodebase filename: {}", datafile.getOriginalFilename());
-
-        for (String codebaseName : codebaseManager.getCodebaseNames()) {
-            if (name.toUpperCase().equals(codebaseName.toUpperCase()))
+        //check for an existent codebase with the same name
+        for (String existentCodebaseName : codebaseManager.getCodebaseNames()) {
+            if (codebaseName.toUpperCase().equals(existentCodebaseName.toUpperCase()))
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        File codebaseDir = new File(codebaseFolder + name);
+        //create codebase directory if it doesnt exist
+        File codebaseDir = new File(codebaseFolder + codebaseName);
         if (!codebaseDir.exists())
             codebaseDir.mkdir();
 
-        Codebase codebase = new Codebase(name);
+        Codebase codebase = new Codebase(codebaseName);
         
         try {
             //store datafile
-            FileOutputStream outputStream = new FileOutputStream(codebaseFolder + name + ".txt");
+            FileOutputStream outputStream = new FileOutputStream(codebaseFolder + codebaseName + ".txt");
 			outputStream.write(datafile.getBytes());
 			outputStream.close();
 
@@ -141,7 +142,7 @@ public class CodebaseController {
             }
             codebase.addProfile("Generic", controllers);
 
-            codebaseManager.writeCodebase(name, codebase);
+            codebaseManager.writeCodebase(codebaseName, codebase);
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }

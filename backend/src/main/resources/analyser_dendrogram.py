@@ -4,9 +4,10 @@ from sklearn import metrics
 import sys
 import json
 
-cutValue = float(sys.argv[1])
+filename = str(sys.argv[1])
+cutValue = float(sys.argv[2])
 
-with open("temp_matrix.json") as f:
+with open(filename) as f:
     dendrogramData = json.load(f)
 
 entities = dendrogramData["entities"]
@@ -22,5 +23,6 @@ for i in range(len(cut)):
     else:
         clusters[str(cut[i][0])] = [entities[i]]
 
-with open("temp_clusters.txt", 'w') as outfile:  
+
+with open("cluster" + filename[6:-5] + ".txt", 'w') as outfile:  
     outfile.write(json.dumps(clusters))

@@ -9,15 +9,19 @@ export class RepositoryService {
 
         this.axios = axios.create({
             baseURL: URL,
-            timeout: 30000,
+            timeout: 60000,
             headers: headers,
         });
     }
 
 
     //Analysis
-    getAnalysis(codebaseName, data) {
-        return this.axios.post("/codebase/" + codebaseName + "/analysis", data);
+    analysis(data) {
+        return this.axios.post("/analysis", data);
+    }
+
+    analyser(data) {
+        return this.axios.post("/analyser", data);
     }
 
 
@@ -149,7 +153,7 @@ export class RepositoryService {
         return this.axios.delete("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/delete");
     }
     
-    createDendrogram(codebaseName, dendrogramName, linkageType, accessMetricWeight, writeMetricWeight, readMetricWeight, sequenceMetric1Weight, sequenceMetric2Weight, sequenceMetric3Weight, profiles) {
+    createDendrogram(codebaseName, dendrogramName, linkageType, accessMetricWeight, writeMetricWeight, readMetricWeight, sequenceMetric1Weight, sequenceMetric2Weight, profiles) {
         const dendrogramData = {
             codebaseName: codebaseName,
             name: dendrogramName,
@@ -159,7 +163,6 @@ export class RepositoryService {
             readMetricWeight: readMetricWeight,
             sequenceMetric1Weight: sequenceMetric1Weight,
             sequenceMetric2Weight: sequenceMetric2Weight,
-            sequenceMetric3Weight: sequenceMetric3Weight,
             profiles: profiles
         };
         

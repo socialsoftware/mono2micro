@@ -2,6 +2,7 @@ import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
 import { Row, Col, Form, DropdownButton, Dropdown, Button, Breadcrumb } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
+import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 
 var HttpStatus = require('http-status-codes');
 
@@ -64,6 +65,7 @@ export class Analysis extends React.Component {
         });
 
         let requestData = {};
+        requestData["codebaseName"] = this.state.codebase.name;
         requestData["graphName1"] = this.state.graph1.name;
         requestData["graphName2"] = this.state.graph2.name;
         if (this.state.graph1.dendrogramName !== undefined)
@@ -74,7 +76,7 @@ export class Analysis extends React.Component {
         
 
         const service = new RepositoryService();
-        service.getAnalysis(this.state.codebase.name, requestData).then(response => {
+        service.analysis(requestData).then(response => {
             if (response.status === HttpStatus.OK) {
                 this.setState({
                     result: response.data,
@@ -118,29 +120,34 @@ export class Analysis extends React.Component {
             } 
         });
 
+        const { SearchBar } = Search;
+
         const falsePairColumns = [{
             dataField: 'e1',
-            text: 'Entity',
+            text: 'Entity 1',
             sort: true
         }, {
             dataField: 'e1g1',
-            text: 'SoT Cluster',
+            text: this.state.graph1.name,
             sort: true
         }, {
             dataField: 'e1g2',
-            text: 'Compared Cluster',
+            text: this.state.graph2.name,
             sort: true
         }, {
+            dataField: 'space',
+            text: ''
+        }, {
             dataField: 'e2',
-            text: 'Entity',
+            text: 'Entity 2',
             sort: true
         }, {
             dataField: 'e2g1',
-            text: 'SoT Cluster',
+            text: this.state.graph1.name,
             sort: true
         }, {
             dataField: 'e2g2',
-            text: 'Compared Cluster',
+            text: this.state.graph2.name,
             sort: true
         }];
 
@@ -223,12 +230,35 @@ export class Analysis extends React.Component {
                         TN : {this.state.result.trueNegative}< br/>
                         FP : {this.state.result.falsePositive}< br/>
                         FN : {this.state.result.falseNegative}< br/>
-                        Precision : {this.state.result.precision.toFixed(2)}< br/>
-                        Recall : {this.state.result.recall.toFixed(2)}< br/>
-                        F-Score : {this.state.result.fmeasure.toFixed(2)}
+                        Accuracy : {this.state.result.accuracy === "NaN" ? this.state.result.accuracy : this.state.result.accuracy.toFixed(2)}< br/>
+                        Precision : {this.state.result.precision === "NaN" ? this.state.result.precision : this.state.result.precision.toFixed(2)}< br/>
+                        Recall : {this.state.result.recall === "NaN" ? this.state.result.recall : this.state.result.recall.toFixed(2)}< br/>
+                        Specificity : {this.state.result.specificity === "NaN" ? this.state.result.specificity : this.state.result.specificity.toFixed(2)}< br/>
+                        F-Score : {this.state.result.fmeasure === "NaN" ? this.state.result.fmeasure : this.state.result.fmeasure.toFixed(2)}
 
-                        <h5 className="mt-3">False Pairs</h5>
-                        <BootstrapTable bootstrap4 keyField='id' data={ falsePairRows } columns={ falsePairColumns } />
+                        {this.state.result.falsePairs.length > 0 &&
+                            <span>
+                                <hr />
+                                <h3>False Pairs</h3>
+
+                                <ToolkitProvider
+                                    bootstrap4
+                                    keyField="id"
+                                    data={ falsePairRows }
+                                    columns={ falsePairColumns }
+                                    search>
+                                    {
+                                        props => (
+                                            <div>
+                                                <h5>Search:</h5>
+                                                <SearchBar { ...props.searchProps } />
+                                                <BootstrapTable { ...props.baseProps } />
+                                            </div>
+                                        )
+                                    }
+                                </ToolkitProvider>
+                            </span>
+                        }
                     </div>
                 }
             </div>

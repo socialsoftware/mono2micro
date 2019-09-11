@@ -41,21 +41,6 @@ public class GraphController {
 	}
 
 
-	@RequestMapping(value = "/graph/{graphName}/rename", method = RequestMethod.GET)
-	public ResponseEntity<HttpStatus> renameGraph(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName, @RequestParam String newName) {
-		logger.debug("renameGraph {}", graphName);
-
-		Codebase codebase = codebaseManager.getCodebase(codebaseName);
-		boolean success = codebase.getDendrogram(dendrogramName).renameGraph(graphName, newName);
-		if (success) {
-			codebaseManager.writeCodebase(codebaseName, codebase);
-			return new ResponseEntity<>(HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
-	}
-
-
 	@RequestMapping(value = "/graph/{graphName}/delete", method = RequestMethod.DELETE)
 	public ResponseEntity<HttpStatus> deleteGraph(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName) {
 		logger.debug("deleteGraph");
