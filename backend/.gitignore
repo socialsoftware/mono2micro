@@ -12,3 +12,5 @@ buildNumber.properties
 
 src/main/resources/specific.properties
 src/main/resources/codebases/
+
+.sts4-cache/
