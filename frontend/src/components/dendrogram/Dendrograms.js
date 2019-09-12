@@ -41,7 +41,7 @@ export class Dendrograms extends React.Component {
         const service = new RepositoryService();
         service.getCodebase(this.state.codebaseName).then(response => {
             this.setState({
-                codebase: response.data
+                codebase: response.data === null ? {} : response.data
             });
         });
 

@@ -1,9 +1,16 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.management.openmbean.KeyAlreadyExistsException;
+
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_FOLDER;
 
 public class Codebase {
 	private String name;
@@ -18,21 +25,6 @@ public class Codebase {
         this.name = name;
 	}
 
-	public List<Expert> getExperts() {
-		return experts;
-	}
-
-	public void setExperts(List<Expert> experts) {
-		this.experts = experts;
-	}
-
-	public List<Dendrogram> getDendrograms() {
-		return dendrograms;
-	}
-
-	public void setDendrograms(List<Dendrogram> dendrograms) {
-		this.dendrograms = dendrograms;
-	}
 
 	public String getName() {
 		return this.name;
@@ -41,6 +33,7 @@ public class Codebase {
 	public void setName(String name) {
 		this.name = name;
 	}
+
 
 	public Map<String,List<String>> getProfiles() {
 		return this.profiles;
@@ -52,12 +45,18 @@ public class Codebase {
 
 	public void setProfiles(Map<String,List<String>> profiles) {
 		this.profiles = profiles;
-    }
-    
-    public void addProfile(String name, List<String> controllers) {
-        if (!this.profiles.containsKey(name))
-            this.profiles.put(name, controllers);
-    }
+	}
+	
+	public void addProfile(String name, List<String> controllers) {
+		if (this.profiles.containsKey(name)) {
+			throw new KeyAlreadyExistsException();
+		}
+		this.profiles.put(name, controllers);
+	}
+	
+	public void deleteProfile(String profileName) {
+        this.profiles.remove(profileName);
+	}
 
 	public void moveControllers(String[] controllers, String targetProfile) {
         for (String profile : this.profiles.keySet()) {
@@ -71,8 +70,13 @@ public class Codebase {
         	this.profiles.get(targetProfile).add(controller);
 	}
 
-	public void deleteProfile(String profileName) {
-        this.profiles.remove(profileName);
+
+	public List<Dendrogram> getDendrograms() {
+		return dendrograms;
+	}
+
+	public void setDendrograms(List<Dendrogram> dendrograms) {
+		this.dendrograms = dendrograms;
 	}
 
 	public Dendrogram getDendrogram(String dendrogramName) {
@@ -82,14 +86,15 @@ public class Codebase {
 		return null;
 	}
 
-	public boolean deleteDendrogram(String dendrogramName) {
+	public void deleteDendrogram(String dendrogramName) throws IOException {
 		for (int i = 0; i < dendrograms.size(); i++) {
 			if (dendrograms.get(i).getName().equals(dendrogramName)) {
 				dendrograms.remove(i);
-				return true;
+				break;
 			}
 		}
-		return false;
+		Files.deleteIfExists(Paths.get(CODEBASES_FOLDER + this.name + "/" + dendrogramName + ".png"));
+		Files.deleteIfExists(Paths.get(CODEBASES_FOLDER + this.name + "/" + dendrogramName + ".txt"));
 	}
 
 	public List<String> getDendrogramNames() {
@@ -103,6 +108,15 @@ public class Codebase {
 		this.dendrograms.add(dendrogram);
 	}
 
+	
+	public List<Expert> getExperts() {
+		return experts;
+	}
+
+	public void setExperts(List<Expert> experts) {
+		this.experts = experts;
+	}
+
 	public Expert getExpert(String expertName) {
 		for (Expert expert : this.experts)
 			if (expert.getName().equals(expertName))
@@ -110,14 +124,13 @@ public class Codebase {
 		return null;
 	}
 
-	public boolean deleteExpert(String expertName) {
+	public void deleteExpert(String expertName) {
 		for (int i = 0; i < experts.size(); i++) {
 			if (experts.get(i).getName().equals(expertName)) {
 				experts.remove(i);
-				return true;
+				break;
 			}
 		}
-		return false;
 	}
 
 	public List<String> getExpertNames() {

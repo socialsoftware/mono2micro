@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.management.openmbean.KeyAlreadyExistsException;
+
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Expert;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_FOLDER;
 
 @RestController
 @RequestMapping(value = "/mono2micro/codebase/{codebaseName}")
@@ -32,9 +35,7 @@ public class ExpertController {
 
     private static Logger logger = LoggerFactory.getLogger(ExpertController.class);
 
-    private String codebaseFolder = "src/main/resources/codebases/";
-
-    private CodebaseManager codebaseManager = new CodebaseManager();
+    private CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
 
     @RequestMapping(value = "/expertNames", method = RequestMethod.GET)
@@ -65,25 +66,31 @@ public class ExpertController {
 	public ResponseEntity<HttpStatus> deleteExpert(@PathVariable String codebaseName, @PathVariable String expertName) {
 		logger.debug("deleteExpert");
 
-		Codebase codebase = codebaseManager.getCodebase(codebaseName);
-		boolean deleted = codebase.deleteExpert(expertName);
-		if (deleted) {
-            codebaseManager.writeCodebase(codebaseName, codebase);
+        try {
+			Codebase codebase = codebaseManager.getCodebase(codebaseName);
+			codebase.deleteExpert(expertName);
+			codebaseManager.writeCodebase(codebaseName, codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+		} catch (IOException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
     }
     
 
-    @RequestMapping(value = "/expert/{expertName}/addCluster", method = RequestMethod.GET)
+    @RequestMapping(value = "/expert/{expertName}/addCluster", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> addCluster(@PathVariable String codebaseName, @PathVariable String expertName, @RequestParam String cluster) {
 		logger.debug("addCluster");
 
-        Codebase codebase = codebaseManager.getCodebase(codebaseName);
-        codebase.getExpert(expertName).addCluster(cluster, new ArrayList<>());
-        codebaseManager.writeCodebase(codebaseName, codebase);
-		return new ResponseEntity<>(HttpStatus.CREATED);
+        try {
+            Codebase codebase = codebaseManager.getCodebase(codebaseName);
+            codebase.getExpert(expertName).addCluster(cluster, new ArrayList<>());
+            codebaseManager.writeCodebase(codebaseName, codebase);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+		} catch (KeyAlreadyExistsException e) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		} catch (IOException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
     }
 
 
@@ -91,10 +98,14 @@ public class ExpertController {
 	public ResponseEntity<HttpStatus> moveEntities(@PathVariable String codebaseName, @PathVariable String expertName, @RequestBody String[] entities, @RequestParam String cluster) {
 		logger.debug("moveEntities");
 
-        Codebase codebase = codebaseManager.getCodebase(codebaseName);
-        codebase.getExpert(expertName).moveEntities(entities, cluster);
-        codebaseManager.writeCodebase(codebaseName, codebase);
-		return new ResponseEntity<>(HttpStatus.OK);
+        try {
+            Codebase codebase = codebaseManager.getCodebase(codebaseName);
+            codebase.getExpert(expertName).moveEntities(entities, cluster);
+            codebaseManager.writeCodebase(codebaseName, codebase);
+            return new ResponseEntity<>(HttpStatus.OK);
+		} catch (IOException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
     }
 
 
@@ -102,16 +113,19 @@ public class ExpertController {
 	public ResponseEntity<HttpStatus> deleteCluster(@PathVariable String codebaseName, @PathVariable String expertName, @RequestParam String cluster) {
 		logger.debug("deleteCluster");
 
-        Codebase codebase = codebaseManager.getCodebase(codebaseName);
-        codebase.getExpert(expertName).deleteCluster(cluster);
-        codebaseManager.writeCodebase(codebaseName, codebase);
-        return new ResponseEntity<>(HttpStatus.OK);
+        try {
+            Codebase codebase = codebaseManager.getCodebase(codebaseName);
+            codebase.getExpert(expertName).deleteCluster(cluster);
+            codebaseManager.writeCodebase(codebaseName, codebase);
+            return new ResponseEntity<>(HttpStatus.OK);
+		} catch (IOException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
     }
 
 
     @RequestMapping(value = "/expert/create", method = RequestMethod.POST)
     public ResponseEntity<HttpStatus> createExpert(@PathVariable String codebaseName, @RequestBody Expert expert) {
-
         logger.debug("createExpert");
 
         Codebase codebase = codebaseManager.getCodebase(codebaseName);
@@ -124,7 +138,7 @@ public class ExpertController {
         try {
 
             // read datafile
-            InputStream is = new FileInputStream(codebaseFolder + codebaseName + ".txt");
+            InputStream is = new FileInputStream(CODEBASES_FOLDER + codebaseName + ".txt");
             JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
             is.close();
 

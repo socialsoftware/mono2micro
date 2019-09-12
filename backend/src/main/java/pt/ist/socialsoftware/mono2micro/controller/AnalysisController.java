@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,6 +35,8 @@ import pt.ist.socialsoftware.mono2micro.dto.AnalysisDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.PropertiesManager;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_FOLDER;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.RESOURCES_PATH;
 
 @RestController
 @RequestMapping(value = "/mono2micro")
@@ -45,11 +46,7 @@ public class AnalysisController {
     
     private static final String PYTHON = PropertiesManager.getProperties().getProperty("python");
 
-	private String resourcesPath = "src/main/resources/";
-
-    private String codebaseFolder = "src/main/resources/codebases/";
-
-    private CodebaseManager codebaseManager = new CodebaseManager();
+    private CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
 
 
@@ -67,7 +64,7 @@ public class AnalysisController {
 
 
 			//read datafile
-			InputStream is = new FileInputStream(codebaseFolder + codebase.getName() + ".txt");
+			InputStream is = new FileInputStream(CODEBASES_FOLDER + codebase.getName() + ".txt");
 			JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
 			is.close();
 
@@ -220,7 +217,7 @@ public class AnalysisController {
 
 			// run python script with clustering algorithm
 			Runtime r = Runtime.getRuntime();
-			String pythonScriptPath = resourcesPath + "analyser_dendrogram.py";
+			String pythonScriptPath = RESOURCES_PATH + "analyser_dendrogram.py";
 			String[] cmd = new String[4];
 			cmd[0] = PYTHON;
 			cmd[1] = pythonScriptPath;

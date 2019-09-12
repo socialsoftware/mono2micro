@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.management.openmbean.KeyAlreadyExistsException;
+
 public class Expert {
 	private String codebaseName;
 	private String name;
@@ -30,19 +32,21 @@ public class Expert {
 
 	public Map<String,List<String>> getClusters() {
 		return this.clusters;
+	}
+	
+	public void setClusters(Map<String,List<String>> clusters) {
+		this.clusters = clusters;
     }
     
     public List<String> getCluster(String cluster) {
         return this.clusters.get(cluster);
     }
-
-	public void setClusters(Map<String,List<String>> clusters) {
-		this.clusters = clusters;
-    }
     
     public void addCluster(String name, List<String> entities) {
-        if (!this.clusters.containsKey(name))
-            this.clusters.put(name, entities);
+        if (this.clusters.containsKey(name)) {
+			throw new KeyAlreadyExistsException();
+		}
+        this.clusters.put(name, entities);
     }
 
 	public void moveEntities(String[] entities, String targetCluster) {

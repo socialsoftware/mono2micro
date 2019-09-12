@@ -1,53 +1,71 @@
 package pt.ist.socialsoftware.mono2micro.manager;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.apache.commons.io.IOUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
+
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_FOLDER;
 
 public class CodebaseManager {
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+	private static CodebaseManager instance = null; 
 
-    private String codebaseFolder = "src/main/resources/codebases/";
+    private ObjectMapper objectMapper;
 
-	public CodebaseManager() {
-    }
-    
-    public void writeCodebase(String name, Codebase codebase) {
-		try {
-			objectMapper.writeValue(new File(codebaseFolder + name + ".json"), codebase);
-		} catch (IOException e) {
-			e.printStackTrace();
+	private CodebaseManager() {
+		objectMapper = new ObjectMapper();
+
+		File codebasesFolder = new File(CODEBASES_FOLDER);
+		if (!codebasesFolder.exists()) {
+			codebasesFolder.mkdir();
 		}
+	}
+	
+	public static CodebaseManager getInstance() { 
+        if (instance == null) 
+        	instance = new CodebaseManager(); 
+        return instance; 
+    } 
+    
+    public void writeCodebase(String name, Codebase codebase) throws IOException {
+		objectMapper.writeValue(new File(CODEBASES_FOLDER + name + ".json"), codebase);
 	}
 
 	public Codebase getCodebase(String name) {
 		try {
-			return objectMapper.readValue(new File(codebaseFolder + name + ".json"), Codebase.class);
+			return objectMapper.readValue(new File(CODEBASES_FOLDER + name + ".json"), Codebase.class);
 		} catch (IOException e) {
-			e.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 
 	public List<Codebase> getCodebases() {
 		List<Codebase> codebases = new ArrayList<>();
-		File codeFolder = new File(codebaseFolder);
-		if (!codeFolder.exists()) {
-			codeFolder.mkdir();
-			return codebases;
+		File codebasesFolder = new File(CODEBASES_FOLDER);
+		if (!codebasesFolder.exists()) {
+			codebasesFolder.mkdir();
 		}
 
-		File[] files = codeFolder.listFiles();
+		File[] files = codebasesFolder.listFiles();
 		Arrays.sort(files, Comparator.comparingLong(File::lastModified));
 		for (File file : files) {
 			String filename = file.getName();
@@ -59,13 +77,12 @@ public class CodebaseManager {
 
 	public List<String> getCodebaseNames() {
 		List<String> codebaseNames = new ArrayList<>();
-		File codeFolder = new File(codebaseFolder);
-		if (!codeFolder.exists()) {
-			codeFolder.mkdir();
-			return codebaseNames;
+		File codebasesFolder = new File(CODEBASES_FOLDER);
+		if (!codebasesFolder.exists()) {
+			codebasesFolder.mkdir();
 		}
 
-		File[] files = codeFolder.listFiles();
+		File[] files = codebasesFolder.listFiles();
 		Arrays.sort(files, Comparator.comparingLong(File::lastModified));
 		for (File file : files) {
 			String filename = file.getName();
@@ -75,33 +92,52 @@ public class CodebaseManager {
         return codebaseNames;
 	}
 
-	public boolean deleteCodebase(String name) {
-		try {
-			Files.deleteIfExists(Paths.get(codebaseFolder + name + ".json"));
-			Files.deleteIfExists(Paths.get(codebaseFolder + name + ".txt"));
-			Files.deleteIfExists(Paths.get(codebaseFolder + name));
-			return true;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return false;
+	public void deleteCodebase(String name) throws IOException {
+		Files.deleteIfExists(Paths.get(CODEBASES_FOLDER + name + ".json"));
+		Files.deleteIfExists(Paths.get(CODEBASES_FOLDER + name + ".txt"));
+		Files.deleteIfExists(Paths.get(CODEBASES_FOLDER + name));
 	}
 
-	public boolean deleteDendrogram(String codebaseName, String dendrogramName) {
-		try {
-			Codebase codebase = getCodebase(codebaseName);
-			Files.deleteIfExists(Paths.get(codebaseFolder + codebaseName + "/" + dendrogramName + ".png"));
-			Files.deleteIfExists(Paths.get(codebaseFolder + codebaseName + "/" + dendrogramName + ".txt"));
-			boolean deleted = codebase.deleteDendrogram(dendrogramName);
-			if (deleted) {
-				writeCodebase(codebaseName, codebase);
-				return true;
-			} else {
-				return false;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+	public ResponseEntity<HttpStatus> createCodebase(String codebaseName, MultipartFile datafile) {
+		
+		if (getCodebase(codebaseName) != null)
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+		File codebasesFolder = new File(CODEBASES_FOLDER);
+		if (!codebasesFolder.exists()) {
+			codebasesFolder.mkdir();
 		}
-		return false;
-	} 
+
+		File codebaseFolder = new File(CODEBASES_FOLDER + codebaseName);
+		if (!codebaseFolder.exists()) {
+			codebaseFolder.mkdir();
+		}
+
+		Codebase codebase = new Codebase(codebaseName);
+
+		try {
+			//store datafile, needs to be read again when dendrogram is created
+			FileOutputStream outputStream = new FileOutputStream(CODEBASES_FOLDER + codebaseName + ".txt");
+			outputStream.write(datafile.getBytes());
+			outputStream.close();
+
+			// read datafile
+			InputStream is = new BufferedInputStream(datafile.getInputStream());
+			JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
+			is.close();
+
+			Iterator<String> controllerNames = datafileJSON.sortedKeys();
+			List<String> controllers = new ArrayList<>();
+			while (controllerNames.hasNext()) {
+				controllers.add(controllerNames.next());
+			}
+			codebase.addProfile("Generic", controllers);
+
+			this.writeCodebase(codebaseName, codebase);
+
+			return new ResponseEntity<>(HttpStatus.CREATED);
+		} catch (IOException | JSONException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
 }

@@ -39,6 +39,8 @@ import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.PropertiesManager;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_FOLDER;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.RESOURCES_PATH;
 
 @RestController
 @RequestMapping(value = "/mono2micro/codebase/{codebaseName}")
@@ -48,11 +50,7 @@ public class DendrogramController {
 
 	private static Logger logger = LoggerFactory.getLogger(DendrogramController.class);
 
-	private String resourcesPath = "src/main/resources/";
-
-	private String codebaseFolder = "src/main/resources/codebases/";
-
-	private CodebaseManager codebaseManager = new CodebaseManager();
+	private CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
 
 
@@ -76,9 +74,9 @@ public class DendrogramController {
 	public ResponseEntity<byte[]> getDendrogramImage(@PathVariable String codebaseName, @PathVariable String dendrogramName) {
 		logger.debug("getDendrogramImage");
 
-		File f = new File(codebaseFolder + codebaseName + "/" + dendrogramName + ".png");
 		try {
-			return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(Files.readAllBytes(f.toPath()));
+			File dendrogramImage = new File(CODEBASES_FOLDER + codebaseName + "/" + dendrogramName + ".png");
+			return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(Files.readAllBytes(dendrogramImage.toPath()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -89,11 +87,13 @@ public class DendrogramController {
 	@RequestMapping(value = "/dendrogram/{dendrogramName}/delete", method = RequestMethod.DELETE)
 	public ResponseEntity<HttpStatus> deleteDendrogram(@PathVariable String codebaseName, @PathVariable String dendrogramName) {
 		logger.debug("deleteDendrogram");
-
-		boolean deleted = codebaseManager.deleteDendrogram(codebaseName, dendrogramName);
-		if (deleted) {
-			return new ResponseEntity<>(HttpStatus.OK);
-        } else {
+		
+		try {
+			Codebase codebase = codebaseManager.getCodebase(codebaseName);
+			codebase.deleteDendrogram(dendrogramName);
+			codebaseManager.writeCodebase(codebaseName, codebase);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 	}
@@ -119,7 +119,7 @@ public class DendrogramController {
 
 
 			//read datafile
-			InputStream is = new FileInputStream(codebaseFolder + codebase.getName() + ".txt");
+			InputStream is = new FileInputStream(CODEBASES_FOLDER + codebase.getName() + ".txt");
 			JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
 			is.close();
 
@@ -257,7 +257,7 @@ public class DendrogramController {
 			dendrogramData.put("matrix", similarityMatrix);
 			dendrogramData.put("entities", entitiesList);
 
-			try (FileWriter file = new FileWriter(codebaseFolder + codebase.getName() + "/" + dendrogram.getName() + ".txt")){
+			try (FileWriter file = new FileWriter(CODEBASES_FOLDER + codebase.getName() + "/" + dendrogram.getName() + ".txt")){
 				file.write(dendrogramData.toString());
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -268,11 +268,11 @@ public class DendrogramController {
 
 			// run python script with clustering algorithm
 			Runtime r = Runtime.getRuntime();
-			String pythonScriptPath = resourcesPath + "dendrogram.py";
+			String pythonScriptPath = RESOURCES_PATH + "dendrogram.py";
 			String[] cmd = new String[6];
 			cmd[0] = PYTHON;
 			cmd[1] = pythonScriptPath;
-			cmd[2] = codebaseFolder;
+			cmd[2] = CODEBASES_FOLDER;
 			cmd[3] = codebase.getName();
 			cmd[4] = dendrogram.getName();
 			cmd[5] = dendrogram.getLinkageType();
@@ -301,7 +301,7 @@ public class DendrogramController {
 			Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 
 			//read datafile
-			InputStream is = new FileInputStream(codebaseFolder + codebase.getName() + ".txt");
+			InputStream is = new FileInputStream(CODEBASES_FOLDER + codebase.getName() + ".txt");
 			JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
 			is.close();
 
@@ -345,11 +345,11 @@ public class DendrogramController {
 
 
 			Runtime r = Runtime.getRuntime();
-			String pythonScriptPath = resourcesPath + "cutDendrogram.py";
+			String pythonScriptPath = RESOURCES_PATH + "cutDendrogram.py";
 			String[] cmd = new String[8];
 			cmd[0] = PYTHON;
 			cmd[1] = pythonScriptPath;
-			cmd[2] = codebaseFolder;
+			cmd[2] = CODEBASES_FOLDER;
 			cmd[3] = codebaseName;
 			cmd[4] = dendrogramName;
 			cmd[5] = dendrogram.getLinkageType();

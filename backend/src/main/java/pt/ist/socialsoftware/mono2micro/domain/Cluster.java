@@ -6,7 +6,6 @@ import java.util.Map;
 
 public class Cluster {
 	private String name;
-	private List<Entity> entities = new ArrayList<>();
 	private float complexity;
 	private float complexityRW;
 	private float complexitySeq;
@@ -14,6 +13,7 @@ public class Cluster {
 	private Map<String,Float> coupling;
 	private Map<String,Float> couplingRW;
 	private Map<String,Float> couplingSeq;
+	private List<Entity> entities = new ArrayList<>();
 
 	public Cluster() {
 	}
@@ -90,6 +90,10 @@ public class Cluster {
 		return this.entities;
 	}
 
+	public void setEntities(List<Entity> entities) {
+		this.entities = entities;
+	}
+
 	public List<String> getEntityNames() {
 		List<String> entityNames = new ArrayList<>();
 		for (Entity entity : this.entities)
@@ -97,22 +101,17 @@ public class Cluster {
 		return entityNames;
 	}
 
-	public void setEntities(List<Entity> entities) {
-		this.entities = entities;
-	}
-
 	public void addEntity(Entity entity) {
 		this.entities.add(entity);
 	}
 
-	public boolean removeEntity(String entityName) {
+	public void removeEntity(String entityName) {
 		for (int i = 0; i < this.entities.size(); i++) {
 			if (this.entities.get(i).getName().equals(entityName)) {
 				this.entities.remove(i);
-				return true;
+				break;
 			}
 		}
-		return false;
 	}
 
 	public boolean containsEntity(String entityName) {

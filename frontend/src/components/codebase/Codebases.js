@@ -8,16 +8,16 @@ export class Codebases extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            newCodebase: "",
+            newCodebaseName: "",
             selectedFile: null, 
             isUploaded: "",
             codebases: [],
-            codebase: ""
+            codebase: {}
         };
 
         this.handleSelectedFile = this.handleSelectedFile.bind(this);
         this.handleSubmit= this.handleSubmit.bind(this);
-        this.handleChangeNewCodebase = this.handleChangeNewCodebase.bind(this);
+        this.handleChangeNewCodebaseName = this.handleChangeNewCodebaseName.bind(this);
         this.handleDeleteCodebase = this.handleDeleteCodebase.bind(this);
     }
 
@@ -27,7 +27,7 @@ export class Codebases extends React.Component {
 
     loadCodebases() {
         const service = new RepositoryService();
-        service.getCodebaseNames().then(response => {
+        service.getCodebases().then(response => {
             this.setState({
                 codebases: response.data,
                 codebase: response.data[0]
@@ -49,7 +49,7 @@ export class Codebases extends React.Component {
         });
         
         const service = new RepositoryService();
-        service.createCodebase(this.state.newCodebase, this.state.selectedFile).then(response => {
+        service.createCodebase(this.state.newCodebaseName, this.state.selectedFile).then(response => {
             if (response.status === HttpStatus.CREATED) {
                 this.loadCodebases();
                 this.setState({
@@ -74,15 +74,15 @@ export class Codebases extends React.Component {
         });
     }
 
-    handleChangeNewCodebase(event) {
+    handleChangeNewCodebaseName(event) {
         this.setState({ 
-            newCodebase: event.target.value 
+            newCodebaseName: event.target.value 
         });
     }
 
     handleDeleteCodebase() {
         const service = new RepositoryService();
-        service.deleteCodebase(this.state.codebase).then(response => {
+        service.deleteCodebase(this.state.codebase.name).then(response => {
             this.loadCodebases();
         });
     }
@@ -106,7 +106,7 @@ export class Codebases extends React.Component {
         };
 
         const codebases = this.state.codebases.map(codebase =>
-            <Button active={this.state.codebase === codebase} onClick={() => this.changeCodebase(codebase)}>{codebase}</Button>
+            <Button key={codebase.name} active={this.state.codebase === codebase} onClick={() => this.changeCodebase(codebase)}>{codebase.name}</Button>
         );
 
         return (
@@ -123,8 +123,8 @@ export class Codebases extends React.Component {
                                 type="text"
                                 maxLength="30"
                                 placeholder="Codebase Name"
-                                value={this.state.newCodebase}
-                                onChange={this.handleChangeNewCodebase}/>
+                                value={this.state.newCodebaseName}
+                                onChange={this.handleChangeNewCodebaseName}/>
                         </Col>
                     </Form.Group>
 
@@ -143,7 +143,7 @@ export class Codebases extends React.Component {
                         <Col sm={{ span: 5, offset: 2 }}>
                             <Button type="submit"
                                     disabled={this.state.isUploaded === "Uploading..." ||
-                                              this.state.newCodebase === "" ||
+                                              this.state.newCodebaseName === "" ||
                                               this.state.selectedFile === null}>
                                 Create Codebase
                             </Button>
@@ -163,12 +163,12 @@ export class Codebases extends React.Component {
                             </ButtonGroup>
                         </div>
 
-                        <Card key={this.state.codebase} style={{ width: '20rem' }}>
+                        <Card key={this.state.codebase.name} style={{ width: '20rem' }}>
                             <Card.Body>
-                                <Card.Title>Codebase: {this.state.codebase}</Card.Title>
-                                <Button href={`/codebase/${this.state.codebase}`} className="mb-2">Change Controller Profiles</Button><br/>
-                                <Button href={`/codebase/${this.state.codebase}/dendrograms`} className="mb-2">Go to Dendrograms</Button><br/>
-                                <Button href={`/codebase/${this.state.codebase}/experts`} className="mb-2">Go to Expert Cuts</Button><br/>
+                                <Card.Title>Codebase: {this.state.codebase.name}</Card.Title>
+                                <Button href={`/codebase/${this.state.codebase.name}`} className="mb-2">Change Controller Profiles</Button><br/>
+                                <Button href={`/codebase/${this.state.codebase.name}/dendrograms`} className="mb-2">Go to Dendrograms</Button><br/>
+                                <Button href={`/codebase/${this.state.codebase.name}/experts`} className="mb-2">Go to Expert Cuts</Button><br/>
                                 <Button onClick={this.handleDeleteCodebase} variant="danger">Delete</Button>
                             </Card.Body>
                         </Card>

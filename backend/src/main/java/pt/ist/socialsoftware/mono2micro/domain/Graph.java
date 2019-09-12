@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.management.openmbean.KeyAlreadyExistsException;
+
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 
 public class Graph {
@@ -13,18 +15,10 @@ public class Graph {
 	private float cutValue;
 	private String cutType;
 	private float silhouetteScore;
-	private List<Cluster> clusters = new ArrayList<>();
 	private List<Controller> controllers = new ArrayList<>();
+	private List<Cluster> clusters = new ArrayList<>();
 
 	public Graph() {
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public String getDendrogramName() {
@@ -33,6 +27,14 @@ public class Graph {
 
 	public void setDendrogramName(String dendrogramName) {
 		this.dendrogramName = dendrogramName;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public float getCutValue() {
@@ -96,15 +98,16 @@ public class Graph {
 		this.addCluster(mergedCluster);
 	}
 
-	public boolean renameCluster(String clusterName, String newName) {
-		if (this.getClustersNames().contains(newName))
-			return false;
+	public void renameCluster(String clusterName, String newName) {
+		if (this.getClustersNames().contains(newName)) {
+			throw new KeyAlreadyExistsException();
+		}
 		for (int i = 0; i < clusters.size(); i++) {
 			if (clusters.get(i).getName().equals(clusterName)) {
 				clusters.get(i).setName(newName);
+				break;
 			}
 		}
-		return true;
 	}
 
 	public List<String> getClustersNames() {
@@ -146,6 +149,70 @@ public class Graph {
 			c2.addEntity(c1.getEntity(entity));
 			c1.removeEntity(entity);
 		}
+	}
+
+	public Map<String,List<Controller>> getClusterControllers() {
+		Map<String,List<Controller>> clusterControllers = new HashMap<>();
+
+		for (Cluster cluster : this.clusters) {
+			List<Controller> touchedControllers = new ArrayList<>();
+			for (Controller controller : this.controllers) {
+				for (String controllerEntity : controller.getEntities().keySet()) {
+					if (cluster.containsEntity(controllerEntity)) {
+						touchedControllers.add(controller);
+						break;
+					}
+				}
+			}
+			clusterControllers.put(cluster.getName(), touchedControllers);
+		}
+		return clusterControllers;
+	}
+
+	public Map<String,List<Cluster>> getControllerClusters() {
+		Map<String,List<Cluster>> controllerClusters = new HashMap<>();
+
+		for (Controller controller : this.controllers) {
+			List<Cluster> touchedClusters = new ArrayList<>();
+			for (Cluster cluster : this.clusters) {
+				for (Entity clusterEntity : cluster.getEntities()) {
+					if (controller.containsEntity(clusterEntity.getName())) {
+						touchedClusters.add(cluster);
+						break;
+					}
+				}
+			}
+			controllerClusters.put(controller.getName(), touchedClusters);
+		}
+		return controllerClusters;
+	}
+
+	public Map<String,List<Pair<Cluster,String>>> getControllerClustersSeq() {
+		Map<String,List<Pair<Cluster,String>>> controllerClustersSeq = new HashMap<>();
+
+		for (Controller controller : this.controllers) {
+			List<Pair<Cluster,String>> touchedClusters = new ArrayList<>();
+			Pair<Cluster,String> lastCluster = null;
+			for (Pair<String,String> entityPair : controller.getEntitiesSeq()) {
+				String entityName = entityPair.getFirst();
+				String mode = entityPair.getSecond();
+				Cluster clusterAccessed = getClusterWithEntity(entityName);
+				if (lastCluster == null){
+					lastCluster = new Pair<Cluster,String>(clusterAccessed, mode);
+					touchedClusters.add(new Pair<Cluster,String>(clusterAccessed, mode));
+				} else if (lastCluster.getFirst().getName().equals(clusterAccessed.getName())) {
+					if (!lastCluster.getSecond().contains(mode)) {
+						lastCluster.setSecond("RW");
+						touchedClusters.get(touchedClusters.size() - 1).setSecond("RW");
+					}
+				} else {
+					lastCluster = new Pair<Cluster,String>(clusterAccessed, mode);
+					touchedClusters.add(new Pair<Cluster,String>(clusterAccessed, mode));
+				}
+			}
+			controllerClustersSeq.put(controller.getName(), touchedClusters);
+		}
+		return controllerClustersSeq;
 	}
 
 	public void calculateMetrics() {
@@ -282,69 +349,5 @@ public class Graph {
 		c1.setCoupling(coupling);
 		c1.setCouplingRW(couplingRW);
 		c1.setCouplingSeq(couplingSeq);
-	}
-
-	public Map<String,List<Controller>> getClusterControllers() {
-		Map<String,List<Controller>> clusterControllers = new HashMap<>();
-
-		for (Cluster cluster : this.clusters) {
-			List<Controller> touchedControllers = new ArrayList<>();
-			for (Controller controller : this.controllers) {
-				for (String controllerEntity : controller.getEntities().keySet()) {
-					if (cluster.containsEntity(controllerEntity)) {
-						touchedControllers.add(controller);
-						break;
-					}
-				}
-			}
-			clusterControllers.put(cluster.getName(), touchedControllers);
-		}
-		return clusterControllers;
-	}
-
-	public Map<String,List<Cluster>> getControllerClusters() {
-		Map<String,List<Cluster>> controllerClusters = new HashMap<>();
-
-		for (Controller controller : this.controllers) {
-			List<Cluster> touchedClusters = new ArrayList<>();
-			for (Cluster cluster : this.clusters) {
-				for (Entity clusterEntity : cluster.getEntities()) {
-					if (controller.containsEntity(clusterEntity.getName())) {
-						touchedClusters.add(cluster);
-						break;
-					}
-				}
-			}
-			controllerClusters.put(controller.getName(), touchedClusters);
-		}
-		return controllerClusters;
-	}
-
-	public Map<String,List<Pair<Cluster,String>>> getControllerClustersSeq() {
-		Map<String,List<Pair<Cluster,String>>> controllerClustersSeq = new HashMap<>();
-
-		for (Controller controller : this.controllers) {
-			List<Pair<Cluster,String>> touchedClusters = new ArrayList<>();
-			Pair<Cluster,String> lastCluster = null;
-			for (Pair<String,String> entityPair : controller.getEntitiesSeq()) {
-				String entityName = entityPair.getFirst();
-				String mode = entityPair.getSecond();
-				Cluster clusterAccessed = getClusterWithEntity(entityName);
-				if (lastCluster == null){
-					lastCluster = new Pair<Cluster,String>(clusterAccessed, mode);
-					touchedClusters.add(new Pair<Cluster,String>(clusterAccessed, mode));
-				} else if (lastCluster.getFirst().getName().equals(clusterAccessed.getName())) {
-					if (!lastCluster.getSecond().contains(mode)) {
-						lastCluster.setSecond("RW");
-						touchedClusters.get(touchedClusters.size() - 1).setSecond("RW");
-					}
-				} else {
-					lastCluster = new Pair<Cluster,String>(clusterAccessed, mode);
-					touchedClusters.add(new Pair<Cluster,String>(clusterAccessed, mode));
-				}
-			}
-			controllerClustersSeq.put(controller.getName(), touchedClusters);
-		}
-		return controllerClustersSeq;
 	}
 }

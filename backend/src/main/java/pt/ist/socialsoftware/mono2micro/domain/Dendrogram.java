@@ -3,10 +3,11 @@ package pt.ist.socialsoftware.mono2micro.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.management.openmbean.KeyAlreadyExistsException;
+
 public class Dendrogram {
 	private String codebaseName;
 	private String name;
-	private List<Graph> graphs = new ArrayList<>();
 	private String linkageType;
 	private float accessMetricWeight;
 	private float writeMetricWeight;
@@ -14,32 +15,9 @@ public class Dendrogram {
 	private float sequenceMetric1Weight;
 	private float sequenceMetric2Weight;
 	private List<String> profiles = new ArrayList<>();
+	private List<Graph> graphs = new ArrayList<>();
 
 	public Dendrogram() {
-	}
-
-	public float getSequenceMetric2Weight() {
-		return sequenceMetric2Weight;
-	}
-
-	public void setSequenceMetric2Weight(float sequenceMetric2Weight) {
-		this.sequenceMetric2Weight = sequenceMetric2Weight;
-	}
-
-	public float getSequenceMetric1Weight() {
-		return sequenceMetric1Weight;
-	}
-
-	public void setSequenceMetric1Weight(float sequenceMetric1Weight) {
-		this.sequenceMetric1Weight = sequenceMetric1Weight;
-	}
-
-	public float getReadMetricWeight() {
-		return readMetricWeight;
-	}
-
-	public void setReadMetricWeight(float readMetricWeight) {
-		this.readMetricWeight = readMetricWeight;
 	}
 
 	public String getName() {
@@ -48,6 +26,14 @@ public class Dendrogram {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getCodebaseName() {
+		return this.codebaseName;
+	}
+
+	public void setCodebaseName(String codebaseName) {
+		this.codebaseName = codebaseName;
 	}
 
 	public String getLinkageType() {
@@ -62,24 +48,40 @@ public class Dendrogram {
 		return this.accessMetricWeight;
 	}
 
-	public float getWriteMetricWeight() {
-		return this.writeMetricWeight;
-	}
-
 	public void setAccessMetricWeight(float accessMetricWeight) {
 		this.accessMetricWeight = accessMetricWeight;
+	}
+
+	public float getWriteMetricWeight() {
+		return this.writeMetricWeight;
 	}
 
 	public void setWriteMetricWeight(float writeMetricWeigh) {
 		this.writeMetricWeight = writeMetricWeigh;
 	}
 
-	public String getCodebaseName() {
-		return this.codebaseName;
+	public float getReadMetricWeight() {
+		return readMetricWeight;
 	}
 
-	public void setCodebaseName(String codebaseName) {
-		this.codebaseName = codebaseName;
+	public void setReadMetricWeight(float readMetricWeight) {
+		this.readMetricWeight = readMetricWeight;
+	}
+
+	public float getSequenceMetric1Weight() {
+		return sequenceMetric1Weight;
+	}
+
+	public void setSequenceMetric1Weight(float sequenceMetric1Weight) {
+		this.sequenceMetric1Weight = sequenceMetric1Weight;
+	}
+
+	public float getSequenceMetric2Weight() {
+		return sequenceMetric2Weight;
+	}
+
+	public void setSequenceMetric2Weight(float sequenceMetric2Weight) {
+		this.sequenceMetric2Weight = sequenceMetric2Weight;
 	}
 
 	public List<String> getProfiles() {
@@ -90,19 +92,15 @@ public class Dendrogram {
 		this.profiles = profiles;
 	}
 
-
 	public List<Graph> getGraphs() {
 		return this.graphs;
 	}
 
-	public boolean deleteGraph(String graphName) {
-		for (int i = 0; i < this.graphs.size(); i++) {
-			if (this.graphs.get(i).getName().equals(graphName)) {
-				this.graphs.remove(i);
-				return true;
-			}
-		}
-		return false;
+	public List<String> getGraphNames() {
+		List<String> graphNames = new ArrayList<>();
+		for (Graph graph : this.graphs)
+			graphNames.add(graph.getName());
+		return graphNames;
 	}
 
 	public Graph getGraph(String graphName) {
@@ -118,10 +116,24 @@ public class Dendrogram {
 		graph.calculateMetrics();
 	}
 
-	public List<String> getGraphNames() {
-		List<String> graphNames = new ArrayList<>();
-		for (Graph graph : this.graphs)
-			graphNames.add(graph.getName());
-		return graphNames;
+	public void deleteGraph(String graphName) {
+		for (int i = 0; i < this.graphs.size(); i++) {
+			if (this.graphs.get(i).getName().equals(graphName)) {
+				this.graphs.remove(i);
+				break;
+			}
+		}
+	}
+
+	public void renameGraph(String graphName, String newName) {
+		if (this.getGraphNames().contains(newName)) {
+			throw new KeyAlreadyExistsException();
+		}
+		for (int i = 0; i < graphs.size(); i++) {
+			if (graphs.get(i).getName().equals(graphName)) {
+				graphs.get(i).setName(newName);
+				break;
+			}
+		}
 	}
 }

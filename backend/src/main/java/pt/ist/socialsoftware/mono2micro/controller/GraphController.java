@@ -1,6 +1,9 @@
 package pt.ist.socialsoftware.mono2micro.controller;
 
+import java.io.IOException;
 import java.util.List;
+
+import javax.management.openmbean.KeyAlreadyExistsException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +25,7 @@ public class GraphController {
 
 	private static Logger logger = LoggerFactory.getLogger(GraphController.class);
 
-    private CodebaseManager codebaseManager = new CodebaseManager();
+    private CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
 
 	@RequestMapping(value = "/graphs", method = RequestMethod.GET)
@@ -35,7 +38,7 @@ public class GraphController {
 
 	@RequestMapping(value = "/graph/{graphName}", method = RequestMethod.GET)
 	public ResponseEntity<Graph> getGraph(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName) {
-		logger.debug("getGraph: {}", graphName);
+		logger.debug("getGraph");
 		
 		return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getDendrogram(dendrogramName).getGraph(graphName), HttpStatus.OK);
 	}
@@ -45,12 +48,28 @@ public class GraphController {
 	public ResponseEntity<HttpStatus> deleteGraph(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName) {
 		logger.debug("deleteGraph");
 
-		Codebase codebase = codebaseManager.getCodebase(codebaseName);
-		boolean success = codebase.getDendrogram(dendrogramName).deleteGraph(graphName);
-		if (success) {
+		try {
+			Codebase codebase = codebaseManager.getCodebase(codebaseName);
+			codebase.getDendrogram(dendrogramName).deleteGraph(graphName);
 			codebaseManager.writeCodebase(codebaseName, codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
-		} else {
+		} catch (IOException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@RequestMapping(value = "/graph/{graphName}/rename", method = RequestMethod.POST)
+	public ResponseEntity<HttpStatus> renameGraph(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName, @RequestParam String newName) {
+		logger.debug("renameGraph");
+
+		try {
+			Codebase codebase = codebaseManager.getCodebase(codebaseName);
+			codebase.getDendrogram(dendrogramName).renameGraph(graphName, newName);
+			codebaseManager.writeCodebase(codebaseName, codebase);
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (KeyAlreadyExistsException e) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		} catch (IOException e) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}

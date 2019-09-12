@@ -9,11 +9,11 @@ import pt.ist.socialsoftware.mono2micro.utils.Pair;
 
 public class Controller {
 	private String name;
-	private Map<String,String> entities = new HashMap<>();
-	private List<Pair<String,String>> entitiesSeq = new ArrayList<>();
 	private float complexity;
 	private float complexityRW;
 	private float complexitySeq;
+	private Map<String,String> entities = new HashMap<>();
+	private List<Pair<String,String>> entitiesSeq = new ArrayList<>();
 
 	public Controller() {
 	}
@@ -22,20 +22,12 @@ public class Controller {
         this.name = name;
 	}
 
-	public float getComplexitySeq() {
-		return complexitySeq;
+	public String getName() {
+		return this.name;
 	}
 
-	public void setComplexitySeq(float complexitySeq) {
-		this.complexitySeq = complexitySeq;
-	}
-
-	public float getComplexityRW() {
-		return complexityRW;
-	}
-
-	public void setComplexityRW(float complexityRW) {
-		this.complexityRW = complexityRW;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public float getComplexity() {
@@ -46,12 +38,20 @@ public class Controller {
 		this.complexity = complexity;
 	}
 
-	public String getName() {
-		return this.name;
+	public float getComplexityRW() {
+		return complexityRW;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setComplexityRW(float complexityRW) {
+		this.complexityRW = complexityRW;
+	}
+
+	public float getComplexitySeq() {
+		return complexitySeq;
+	}
+
+	public void setComplexitySeq(float complexitySeq) {
+		this.complexitySeq = complexitySeq;
 	}
 
 	public Map<String,String> getEntities() {

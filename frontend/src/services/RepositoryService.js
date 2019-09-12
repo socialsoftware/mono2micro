@@ -43,7 +43,7 @@ export class RepositoryService {
     }
 
     addCluster(codebaseName, expertName, cluster) {
-        return this.axios.get("/codebase/" + codebaseName + "/expert/" + expertName + "/addCluster", 
+        return this.axios.post("/codebase/" + codebaseName + "/expert/" + expertName + "/addCluster", null,
             {
                 params: {
                     "cluster" : cluster
@@ -52,8 +52,13 @@ export class RepositoryService {
     }
 
     moveEntities(codebaseName, expertName, entities, cluster) {
-        return this.axios.post("/codebase/" + codebaseName + "/expert/" + expertName + "/moveEntities?cluster=" + cluster , 
-            entities
+        return this.axios.post("/codebase/" + codebaseName + "/expert/" + expertName + "/moveEntities", 
+            entities,
+            {
+                params: {
+                    "cluster" : cluster
+                }
+            }
         );
     }
 
@@ -95,7 +100,7 @@ export class RepositoryService {
     }
 
     addProfile(codebaseName, profile) {
-        return this.axios.get("/codebase/" + codebaseName + "/addProfile", 
+        return this.axios.post("/codebase/" + codebaseName + "/addProfile", null,
             {
                 params: {
                     "profile" : profile
@@ -103,10 +108,14 @@ export class RepositoryService {
             });
     }
 
-    moveControllers(codebaseName, controllers, profile) {
-        return this.axios.post("/codebase/" + codebaseName + "/moveControllers?profile=" + profile , 
-            controllers
-        );
+    moveControllers(codebaseName, controllers, targetProfile) {
+        return this.axios.post("/codebase/" + codebaseName + "/moveControllers", 
+            controllers,
+            {
+                params: {
+                    "targetProfile" : targetProfile
+                }
+            });
     }
 
     deleteProfile(codebaseName, profile) {
@@ -125,7 +134,7 @@ export class RepositoryService {
             }
         }
         var data = new FormData();
-        data.append('name', name);
+        data.append('codebaseName', name);
         data.append('datafile', datafile);
         
         return this.axios.post("/codebase/create", data, config);
@@ -193,7 +202,7 @@ export class RepositoryService {
     }
 
     renameGraph(codebaseName, dendrogramName, graphName, newName) {
-        return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/rename", 
+        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/rename", null,
             {
                 params: {
                     "newName" : newName
@@ -215,7 +224,7 @@ export class RepositoryService {
 
     //Cluster
     mergeClusters(codebaseName, dendrogramName, graphName, clusterName, otherCluster, newName) {
-        return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/cluster/" + clusterName + "/merge", 
+        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/cluster/" + clusterName + "/merge", null,
             {
                 params: {
                     "otherCluster" : otherCluster,
@@ -225,7 +234,7 @@ export class RepositoryService {
     }
 
     renameCluster(codebaseName, dendrogramName, graphName, clusterName, newName) {
-        return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/cluster/" + clusterName + "/rename", 
+        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/cluster/" + clusterName + "/rename", null,
             {
                 params: {
                     "newName" : newName
@@ -234,7 +243,7 @@ export class RepositoryService {
     }
 
     splitCluster(codebaseName, dendrogramName, graphName, clusterName, newName, entities) {
-        return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/cluster/" + clusterName + "/split", 
+        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/cluster/" + clusterName + "/split", null,
             {
                 params: {
                     "newName" : newName,
@@ -244,7 +253,7 @@ export class RepositoryService {
     }
 
     transferEntities(codebaseName, dendrogramName, graphName, clusterName, toCluster, entities) {
-        return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/cluster/" + clusterName + "/transferEntities", 
+        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/cluster/" + clusterName + "/transferEntities", null,
             {
                 params: {
                     "toCluster" : toCluster,
@@ -253,22 +262,12 @@ export class RepositoryService {
             });
     }
 
+
     getControllerClusters(codebaseName, dendrogramName, graphName) {
         return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controllerClusters");
     }
 
     getClusterControllers(codebaseName, dendrogramName, graphName) {
         return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/clusterControllers");
-    }
-
-
-
-    //Controller
-    getControllers(codebaseName, dendrogramName) {
-        return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/controllers");
-    }
-
-    getController(codebaseName, dendrogramName, controllerName) {
-        return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/controller/" + controllerName);
     }
 }

@@ -30,7 +30,7 @@ export class Codebase extends React.Component {
         const service = new RepositoryService();
         service.getCodebase(this.state.codebaseName).then(response => {
             this.setState({
-                codebase: response.data
+                codebase: response.data === null ? {} : response.data
             });
         });
     }
@@ -43,9 +43,10 @@ export class Codebase extends React.Component {
 
     handleNewProfileSubmit(event) {
         event.preventDefault();
+
         const service = new RepositoryService();
         service.addProfile(this.state.codebaseName, this.state.newProfileName).then(response => {
-            if (response.status === HttpStatus.CREATED) {
+            if (response.status === HttpStatus.OK) {
                 this.loadCodebase();
                 this.setState({
                     isUploaded: "Upload completed successfully."

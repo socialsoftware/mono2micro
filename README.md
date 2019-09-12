@@ -4,6 +4,14 @@ Tools to migrate a monolith to a microservices architecture, focusing on microse
 
 Currently implemented for systems that use the FénixFramework ORM and Spring-Boot, but can be generalized for any monolith technology.
 
+### Pre-Requisites
+
+- java 8+
+- nodejs 10+
+- npm 6+
+- python 3+
+- Install the following python libraries: numpy, scipy, matplotlib, sklearn
+
 ### Run
 
 To run the backend:
