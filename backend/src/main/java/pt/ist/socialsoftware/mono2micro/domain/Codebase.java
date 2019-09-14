@@ -1,22 +1,32 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 
+import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_FOLDER;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.RESOURCES_PATH;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.PYTHON;
 
 public class Codebase {
 	private String name;
 	private Map<String,List<String>> profiles = new HashMap<>();
 	private List<Dendrogram> dendrograms = new ArrayList<>();
-	private List<Expert> experts = new ArrayList<>();
+	private List<Graph> experts = new ArrayList<>();
 
 	public Codebase() {
 	}
@@ -39,35 +49,37 @@ public class Codebase {
 		return this.profiles;
     }
     
-    public List<String> getProfile(String profile) {
-        return this.profiles.get(profile);
+    public List<String> getProfile(String profileName) {
+		return this.profiles.get(profileName);
     }
 
 	public void setProfiles(Map<String,List<String>> profiles) {
 		this.profiles = profiles;
 	}
 	
-	public void addProfile(String name, List<String> controllers) {
-		if (this.profiles.containsKey(name)) {
+	public void addProfile(String profileName, List<String> controllers) {
+		if (this.getProfile(profileName) != null) {
 			throw new KeyAlreadyExistsException();
 		}
-		this.profiles.put(name, controllers);
+		this.profiles.put(profileName, controllers);
 	}
 	
 	public void deleteProfile(String profileName) {
-        this.profiles.remove(profileName);
+		this.profiles.remove(profileName);
 	}
 
 	public void moveControllers(String[] controllers, String targetProfile) {
+		List<String> removedControllers = new ArrayList<>();
         for (String profile : this.profiles.keySet()) {
 			for (String controller : controllers) {
-				if (this.profiles.get(profile).contains(controller)) {
+				if (this.profiles.get(profile).contains(controller) && !profile.equals(targetProfile)) {
 					this.profiles.get(profile).remove(controller);
+					removedControllers.add(controller);
 				}
 			}
 		}
-		for (String controller : controllers)
-        	this.profiles.get(targetProfile).add(controller);
+		for (String controller : removedControllers)
+			this.profiles.get(targetProfile).add(controller);
 	}
 
 
@@ -109,16 +121,16 @@ public class Codebase {
 	}
 
 	
-	public List<Expert> getExperts() {
+	public List<Graph> getExperts() {
 		return experts;
 	}
 
-	public void setExperts(List<Expert> experts) {
+	public void setExperts(List<Graph> experts) {
 		this.experts = experts;
 	}
 
-	public Expert getExpert(String expertName) {
-		for (Expert expert : this.experts)
+	public Graph getExpert(String expertName) {
+		for (Graph expert : this.experts)
 			if (expert.getName().equals(expertName))
 				return expert;
 		return null;
@@ -135,12 +147,59 @@ public class Codebase {
 
 	public List<String> getExpertNames() {
 		List<String> expertNames = new ArrayList<>();
-		for (Expert expert : this.experts)
+		for (Graph expert : this.experts)
 			expertNames.add(expert.getName());
 		return expertNames;
 	}
 
-	public void addExpert(Expert expert) {
+	public void addExpert(Graph expert) {
 		this.experts.add(expert);
+	}
+
+	public void createDendrogram(Dendrogram dendrogram) throws Exception {
+		if (getDendrogram(dendrogram.getName()) != null)
+			throw new KeyAlreadyExistsException();
+		
+		dendrogram.calculateSimilarityMatrix(this.profiles);
+
+		this.addDendrogram(dendrogram);
+
+		//run python script to generate dendrogram image
+		Runtime r = Runtime.getRuntime();
+		String pythonScriptPath = RESOURCES_PATH + "createDendrogram.py";
+		String[] cmd = new String[6];
+		cmd[0] = PYTHON;
+		cmd[1] = pythonScriptPath;
+		cmd[2] = CODEBASES_FOLDER;
+		cmd[3] = this.name;
+		cmd[4] = dendrogram.getName();
+		cmd[5] = dendrogram.getLinkageType();
+		
+		Process p = r.exec(cmd);
+		p.waitFor();
+	}
+
+	public void createExpert(Graph expert) throws IOException, JSONException {
+		if (getExpert(expert.getName()) != null)
+			throw new KeyAlreadyExistsException();
+
+		InputStream is = new FileInputStream(CODEBASES_FOLDER + this.name + ".txt");
+		JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
+		is.close();
+
+		Iterator<String> controllers = datafileJSON.sortedKeys();
+		Cluster cluster = new Cluster("Generic");
+		while (controllers.hasNext()) {
+			JSONArray entitiesArray = datafileJSON.getJSONArray(controllers.next());
+			for (int i = 0; i < entitiesArray.length(); i++) {
+				JSONArray entityArray = entitiesArray.getJSONArray(i);
+				String entity = entityArray.getString(0);
+				if (!cluster.containsEntity(entity))
+					cluster.addEntity(new Entity(entity));
+			}
+		}
+		expert.addCluster(cluster);
+
+		this.addExpert(expert);
 	}
 }

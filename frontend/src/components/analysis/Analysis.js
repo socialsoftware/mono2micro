@@ -65,15 +65,8 @@ export class Analysis extends React.Component {
         });
 
         let requestData = {};
-        requestData["codebaseName"] = this.state.codebase.name;
-        requestData["graphName1"] = this.state.graph1.name;
-        requestData["graphName2"] = this.state.graph2.name;
-        if (this.state.graph1.dendrogramName !== undefined)
-            requestData["dendrogramName1"] = this.state.graph1.dendrogramName;
-        if (this.state.graph2.dendrogramName !== undefined)
-            requestData["dendrogramName2"] = this.state.graph2.dendrogramName;
-        
-        
+        requestData["graph1"] = this.state.graph1;
+        requestData["graph2"] = this.state.graph2;
 
         const service = new RepositoryService();
         service.analysis(requestData).then(response => {
@@ -97,6 +90,7 @@ export class Analysis extends React.Component {
     }
 
     render() {
+        console.log(this.state.graph1.expert);
         const BreadCrumbs = () => {
             return (
                 <div>
@@ -176,7 +170,7 @@ export class Analysis extends React.Component {
                             Source of Truth
                         </Form.Label>
                         <Col sm={5}>
-                            <DropdownButton title={Object.keys(this.state.graph1).length === 0 ? "Select Cut" : this.state.graph1.dendrogramName === undefined ? "Expert: " + this.state.graph1.name : this.state.graph1.name + " from " + this.state.graph1.dendrogramName}>
+                            <DropdownButton title={Object.keys(this.state.graph1).length === 0 ? "Select Cut" : this.state.graph1.expert ? "Expert: " + this.state.graph1.name : this.state.graph1.name + " from " + this.state.graph1.dendrogramName}>
                                 {this.state.experts.map(expert =>
                                     <Dropdown.Item
                                         key={expert.name}
@@ -195,7 +189,7 @@ export class Analysis extends React.Component {
                             Compare to Cut
                         </Form.Label>
                         <Col sm={5}>
-                            <DropdownButton title={Object.keys(this.state.graph2).length === 0 ? "Select Cut" : this.state.graph2.dendrogramName === undefined ? "Expert: " + this.state.graph2.name : this.state.graph2.name + " from " + this.state.graph2.dendrogramName}>
+                            <DropdownButton title={Object.keys(this.state.graph2).length === 0 ? "Select Cut" : this.state.graph2.expert ? "Expert: " + this.state.graph2.name : this.state.graph2.name + " from " + this.state.graph2.dendrogramName}>
                                 {this.state.experts.map(expert =>
                                     <Dropdown.Item
                                         key={expert.name}

@@ -129,7 +129,7 @@ export class ClusterView extends React.Component {
     }
 
     convertClusterToNode(cluster) {
-        return {id: cluster.name, title: cluster.entities.join('<br>') + "<br>Total: " + cluster.entities.length, label: cluster.name, value: cluster.entities.length, type: types.CLUSTER};
+        return {id: cluster.name, title: cluster.entities.map(e => e.name).join('<br>') + "<br>Total: " + cluster.entities.length, label: cluster.name, value: cluster.entities.length, type: types.CLUSTER};
     };
 
     createEdges(clusters, clusterControllers) {
@@ -169,7 +169,7 @@ export class ClusterView extends React.Component {
         this.setState({
             selectedCluster: selectedCluster,
             mergeWithCluster: {},
-            clusterEntities: selectedCluster.entities.map(e => ({name: e, active: false})),
+            clusterEntities: selectedCluster.entities.map(e => ({name: e.name, active: false})),
         });
     }
 

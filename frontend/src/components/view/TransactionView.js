@@ -184,11 +184,11 @@ export class TransactionView extends React.Component {
     }
 
     createNode(cluster) {
-        return {id: cluster.name, title: cluster.entities.join('<br>') + "<br>Total: " + cluster.entities.length, label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER};
+        return {id: cluster.name, title: cluster.entities.map(e => e.name).join('<br>') + "<br>Total: " + cluster.entities.length, label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER};
     }
 
     createEdge(cluster) {
-        let entitiesTouched = Object.entries(this.state.controller.entities).filter(e => cluster.entities.includes(e[0])).map(e => e[0] + " " + e[1]);
+        let entitiesTouched = Object.entries(this.state.controller.entities).filter(e => cluster.entities.map(e => e.name).includes(e[0])).map(e => e[0] + " " + e[1]);
         return {from: this.state.controller.name, to: cluster.name, label: entitiesTouched.length.toString(), title: entitiesTouched.join('<br>')};
     }
 
@@ -229,7 +229,7 @@ export class TransactionView extends React.Component {
             let nodeId = i+1;
             let cluster = clusterNodesSequence[i];
             let entitiesCount = [...new Set(entities[i].map(e => e.split(" ")[0]))].length.toString();
-            nodes.push({id: nodeId, title: cluster.entities.join('<br>') + "<br>Total: " + cluster.entities.length, label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER});
+            nodes.push({id: nodeId, title: cluster.entities.map(e => e.name).join('<br>') + "<br>Total: " + cluster.entities.length, label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER});
             if (i === 0) {
                 edges.push({from: 0, to: nodeId, title: entities[i].join('<br>'), label: entitiesCount});
             } else {

@@ -10,8 +10,10 @@ import javax.management.openmbean.KeyAlreadyExistsException;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 
 public class Graph {
+	private String codebaseName;
 	private String dendrogramName;
 	private String name;
+	private boolean expert;
 	private float cutValue;
 	private String cutType;
 	private float silhouetteScore;
@@ -19,6 +21,14 @@ public class Graph {
 	private List<Cluster> clusters = new ArrayList<>();
 
 	public Graph() {
+	}
+
+	public String getCodebaseName() {
+		return this.codebaseName;
+	}
+
+	public void setCodebaseName(String codebaseName) {
+		this.codebaseName = codebaseName;
 	}
 
 	public String getDendrogramName() {
@@ -35,6 +45,14 @@ public class Graph {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public boolean isExpert() {
+		return expert;
+	}
+
+	public void setExpert(boolean expert) {
+		this.expert = expert;
 	}
 
 	public float getCutValue() {
@@ -75,6 +93,15 @@ public class Graph {
 
 	public void addCluster(Cluster cluster) {
 		this.clusters.add(cluster);
+	}
+
+	public void deleteCluster(String clusterName) {
+		for (int i = 0; i < this.clusters.size(); i++) {
+			if (this.clusters.get(i).getName().equals(clusterName)) {
+				this.clusters.remove(i);
+				break;
+			}
+		}
 	}
 
 	public void mergeClusters(String cluster1, String cluster2, String newName) {
@@ -149,6 +176,20 @@ public class Graph {
 			c2.addEntity(c1.getEntity(entity));
 			c1.removeEntity(entity);
 		}
+	}
+
+	public void moveEntities(String[] entities, String targetCluster) {
+		List<String> removedEntities = new ArrayList<>();
+        for (Cluster cluster : this.clusters) {
+			for (String entity : entities) {
+				if (cluster.containsEntity(entity) && !cluster.getName().equals(targetCluster)) {
+					cluster.removeEntity(entity);
+					removedEntities.add(entity);
+				}
+			}
+		}
+		for (String entity : removedEntities)
+			this.getCluster(targetCluster).addEntity(new Entity(entity));
 	}
 
 	public Map<String,List<Controller>> getClusterControllers() {

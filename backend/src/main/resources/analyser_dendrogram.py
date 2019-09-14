@@ -1,6 +1,5 @@
 import numpy as np
 from scipy.cluster import hierarchy
-from sklearn import metrics
 import sys
 import json
 
@@ -22,7 +21,6 @@ for i in range(len(cut)):
         clusters[str(cut[i][0])] += [entities[i]]
     else:
         clusters[str(cut[i][0])] = [entities[i]]
-
 
 with open("cluster" + filename[6:-5] + ".txt", 'w') as outfile:  
     outfile.write(json.dumps(clusters))

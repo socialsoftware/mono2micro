@@ -28,23 +28,20 @@ import org.springframework.web.bind.annotation.RestController;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
-import pt.ist.socialsoftware.mono2micro.domain.Expert;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.dto.AnalyserDto;
 import pt.ist.socialsoftware.mono2micro.dto.AnalysisDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
-import pt.ist.socialsoftware.mono2micro.utils.PropertiesManager;
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_FOLDER;
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.RESOURCES_PATH;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.PYTHON;
 
 @RestController
 @RequestMapping(value = "/mono2micro")
 public class AnalysisController {
 
     private static Logger logger = LoggerFactory.getLogger(AnalysisController.class);
-    
-    private static final String PYTHON = PropertiesManager.getProperties().getProperty("python");
 
     private CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
@@ -252,10 +249,11 @@ public class AnalysisController {
 			is.close();
 			Files.deleteIfExists(Paths.get(matrixFilename));
 			Files.deleteIfExists(Paths.get(clusterFilename));
-			
 
 			Map<String,List<String>> graph1 = new HashMap<>();
-			graph1 = codebase.getExpert(analyser.getExpertName()).getClusters();
+			for (Cluster c : analyser.getExpert().getClusters()) {
+				graph1.put(c.getName(), c.getEntityNames());
+			}
 
 
 
@@ -348,32 +346,16 @@ public class AnalysisController {
 
 	@RequestMapping(value = "/analysis", method = RequestMethod.POST)
 	public ResponseEntity<AnalysisDto> getAnalysis(@RequestBody AnalysisDto analysis) {
-        logger.debug("getAnalysis");
-
-		Codebase codebase = codebaseManager.getCodebase(analysis.getCodebaseName());
-
+		logger.debug("getAnalysis");
+		
 		Map<String,List<String>> graph1 = new HashMap<>();
-		if (analysis.getDendrogramName1() == null) {
-			Expert expert = codebase.getExpert(analysis.getGraphName1());
-			graph1 = expert.getClusters();
-		} else {
-			Dendrogram dendrogram = codebase.getDendrogram(analysis.getDendrogramName1());
-			Graph graph = dendrogram.getGraph(analysis.getGraphName1());
-			for (Cluster c : graph.getClusters()) {
-				graph1.put(c.getName(), c.getEntityNames());
-			}
+		for (Cluster c : analysis.getGraph1().getClusters()) {
+			graph1.put(c.getName(), c.getEntityNames());
 		}
 
 		Map<String,List<String>> graph2 = new HashMap<>();
-		if (analysis.getDendrogramName2() == null) {
-			Expert expert = codebase.getExpert(analysis.getGraphName2());
-			graph2 = expert.getClusters();
-		} else {
-			Dendrogram dendrogram = codebase.getDendrogram(analysis.getDendrogramName2());
-			Graph graph = dendrogram.getGraph(analysis.getGraphName2());
-			for (Cluster c : graph.getClusters()) {
-				graph2.put(c.getName(), c.getEntityNames());
-			}
+		for (Cluster c : analysis.getGraph2().getClusters()) {
+			graph2.put(c.getName(), c.getEntityNames());
 		}
 
 		List<String> entities = new ArrayList<>();

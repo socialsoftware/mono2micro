@@ -19,7 +19,7 @@ export class Analyser extends React.Component {
             codebases: [],
             codebase: {},
             experts: [],
-            expert: "",
+            expert: {},
             allData: []
         };
 
@@ -64,7 +64,7 @@ export class Analyser extends React.Component {
         for (var n = minClusters; n < maxClusters; n++) {
             let requestData = {};
             requestData["codebaseName"] = this.state.codebase.name;
-            requestData["expertName"] = this.state.expert;
+            requestData["expert"] = this.state.expert;
             requestData["accessWeight"] = a;
             requestData["writeWeight"] = w;
             requestData["readWeight"] = r;
@@ -231,11 +231,11 @@ export class Analyser extends React.Component {
                             Expert
                         </Form.Label>
                         <Col sm={5}>
-                            <DropdownButton title={this.state.expert === "" ? "Select Expert Cut" : this.state.expert}>
+                            <DropdownButton title={Object.keys(this.state.expert).length === 0 ? "Select Expert Cut" : this.state.expert.name}>
                                 {this.state.experts.map(expert => 
                                     <Dropdown.Item 
                                         key={expert.name}
-                                        onClick={() => this.setExpert(expert.name)}>{expert.name}</Dropdown.Item>)}
+                                        onClick={() => this.setExpert(expert)}>{expert.name}</Dropdown.Item>)}
                             </DropdownButton>
                         </Col>
                     </Form.Group>
@@ -244,7 +244,7 @@ export class Analyser extends React.Component {
                         <Col sm={{ span: 5, offset: 2 }}>
                             <Button type="submit"
                                     disabled={Object.keys(this.state.codebase).length === 0 || 
-                                            this.state.expert === ""}>
+                                            Object.keys(this.state.expert).length === 0}>
                                 Submit
                             </Button>
                             <Form.Text>

@@ -24,8 +24,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
-import pt.ist.socialsoftware.mono2micro.domain.Expert;
+import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_FOLDER;
 
@@ -47,7 +48,7 @@ public class ExpertController {
 
 
 	@RequestMapping(value = "/experts", method = RequestMethod.GET)
-	public ResponseEntity<List<Expert>> getExperts(@PathVariable String codebaseName) {
+	public ResponseEntity<List<Graph>> getExperts(@PathVariable String codebaseName) {
 		logger.debug("getExperts");
 
 		return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getExperts(), HttpStatus.OK);
@@ -55,7 +56,7 @@ public class ExpertController {
 
 
 	@RequestMapping(value = "/expert/{expertName}", method = RequestMethod.GET)
-	public ResponseEntity<Expert> getExpert(@PathVariable String codebaseName, @PathVariable String expertName) {
+	public ResponseEntity<Graph> getExpert(@PathVariable String codebaseName, @PathVariable String expertName) {
 		logger.debug("getExpert");
 
 		return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getExpert(expertName), HttpStatus.OK);
@@ -83,9 +84,9 @@ public class ExpertController {
 
         try {
             Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            codebase.getExpert(expertName).addCluster(cluster, new ArrayList<>());
+            codebase.getExpert(expertName).addCluster(new Cluster(cluster));
             codebaseManager.writeCodebase(codebaseName, codebase);
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            return new ResponseEntity<>(HttpStatus.OK);
 		} catch (KeyAlreadyExistsException e) {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		} catch (IOException e) {
@@ -125,42 +126,18 @@ public class ExpertController {
 
 
     @RequestMapping(value = "/expert/create", method = RequestMethod.POST)
-    public ResponseEntity<HttpStatus> createExpert(@PathVariable String codebaseName, @RequestBody Expert expert) {
+    public ResponseEntity<HttpStatus> createExpert(@PathVariable String codebaseName, @RequestBody Graph expert) {
         logger.debug("createExpert");
 
-        Codebase codebase = codebaseManager.getCodebase(codebaseName);
-
-        for (String expertName : codebase.getExpertNames()) {
-            if (expert.getName().toUpperCase().equals(expertName.toUpperCase()))
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-        
         try {
-
-            // read datafile
-            InputStream is = new FileInputStream(CODEBASES_FOLDER + codebaseName + ".txt");
-            JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
-            is.close();
-
-            Iterator<String> controllers = datafileJSON.sortedKeys();
-            List<String> entities = new ArrayList<>();
-            while (controllers.hasNext()) {
-                JSONArray entitieArrays = datafileJSON.getJSONArray(controllers.next());
-                for (int i = 0; i < entitieArrays.length(); i++) {
-                    JSONArray entityArray = entitieArrays.getJSONArray(i);
-                    String entity = entityArray.getString(0);
-                    if (!entities.contains(entity))
-                        entities.add(entity);
-                }
-            }
-            expert.addCluster("Generic", entities);
-
-            codebase.addExpert(expert);
+			Codebase codebase = codebaseManager.getCodebase(codebaseName);
+            codebase.createExpert(expert);
             codebaseManager.writeCodebase(codebaseName, codebase);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (KeyAlreadyExistsException e) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (IOException | JSONException e) {
-            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
-        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

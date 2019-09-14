@@ -74,7 +74,8 @@ export class RepositoryService {
     createExpert(codebaseName, expertName) {
         return this.axios.post("/codebase/" + codebaseName + "/expert/create", {
             codebaseName: codebaseName,
-            name: expertName
+            name: expertName,
+            expert: true
         });
     }
 
@@ -180,7 +181,9 @@ export class RepositoryService {
 
     cutDendrogram(codebaseName, dendrogramName, cutValue, cutType) {
         const graphData = {
+            codebaseName: codebaseName,
             dendrogramName: dendrogramName,
+            expert: false,
             cutValue: cutValue,
             cutType: cutType
         };

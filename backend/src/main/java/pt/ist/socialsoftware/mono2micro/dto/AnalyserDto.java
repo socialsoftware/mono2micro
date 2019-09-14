@@ -1,8 +1,10 @@
 package pt.ist.socialsoftware.mono2micro.dto;
 
+import pt.ist.socialsoftware.mono2micro.domain.Graph;
+
 public class AnalyserDto {
     private String codebaseName;
-    private String expertName;
+    private Graph expert;
     private float accessWeight;
     private float writeWeight;
     private float readWeight;
@@ -19,12 +21,12 @@ public class AnalyserDto {
         return precision;
     }
 
-    public String getExpertName() {
-        return expertName;
+    public Graph getExpert() {
+        return expert;
     }
 
-    public void setExpertName(String expertName) {
-        this.expertName = expertName;
+    public void setExpert(Graph expert) {
+        this.expert = expert;
     }
 
     public String getCodebaseName() {

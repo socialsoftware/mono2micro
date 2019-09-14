@@ -46,7 +46,7 @@ export class Expert extends React.Component {
         event.preventDefault();
         const service = new RepositoryService();
         service.addCluster(this.state.codebaseName, this.state.expertName, this.state.newClusterName).then(response => {
-            if (response.status === HttpStatus.CREATED) {
+            if (response.status === HttpStatus.OK) {
                 this.loadExpert();
                 this.setState({
                     isUploaded: "Upload completed successfully."
@@ -160,23 +160,23 @@ export class Expert extends React.Component {
                             <Button className="mr-1">Move selected entities to</Button>
 
                             <DropdownButton as={ButtonGroup} title={this.state.moveToCluster === "" ? "Cluster" : this.state.moveToCluster} className="mr-1">
-                                {Object.keys(this.state.expert.clusters).map(c => <Dropdown.Item 
-                                    key={c}
-                                    onSelect={() => this.handleMoveToCluster(c)}>{c}</Dropdown.Item>)}
+                                {this.state.expert.clusters.map(c => <Dropdown.Item 
+                                    key={c.name}
+                                    onSelect={() => this.handleMoveToCluster(c.name)}>{c.name}</Dropdown.Item>)}
                             </DropdownButton>
 
                             <Button disabled={this.state.selectedEntities.length === 0 || this.state.moveToCluster === ""} onClick={this.handleMoveEntitiesSubmit}>Submit</Button>
                         </ButtonToolbar>
 
-                        {Object.keys(this.state.expert.clusters).map(cluster =>
+                        {this.state.expert.clusters.map(cluster =>
                             <div>
                                 <span style={{fontSize: '30px', fontWeight: 'bold'}}>
-                                    {cluster}
-                                    {this.state.expert.clusters[cluster].length === 0 && <Button onClick={() => this.handleDeleteCluster(cluster)} variant="danger" size="sm">-</Button>}
+                                    {cluster.name}
+                                    {cluster.entities.length === 0 && <Button onClick={() => this.handleDeleteCluster(cluster.name)} variant="danger" size="sm">-</Button>}
                                 </span>
                             
-                                {this.state.expert.clusters[cluster].map(entity =>
-                                    <Form.Check checked={this.state.selectedEntities.includes(entity)} style={{ paddingLeft: "3em" }} onClick={this.handleSelectEntity} label={entity} type="checkbox" id={entity} />
+                                {cluster.entities.map(entity =>
+                                    <Form.Check checked={this.state.selectedEntities.includes(entity.name)} style={{ paddingLeft: "3em" }} onClick={this.handleSelectEntity} label={entity.name} type="checkbox" id={entity.name} />
                                 )}
                             </div>
                         )}

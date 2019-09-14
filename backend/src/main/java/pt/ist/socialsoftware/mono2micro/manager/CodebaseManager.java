@@ -13,13 +13,13 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.management.openmbean.KeyAlreadyExistsException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
@@ -98,10 +98,10 @@ public class CodebaseManager {
 		Files.deleteIfExists(Paths.get(CODEBASES_FOLDER + name));
 	}
 
-	public ResponseEntity<HttpStatus> createCodebase(String codebaseName, MultipartFile datafile) {
+	public Codebase createCodebase(String codebaseName, MultipartFile datafile) throws IOException, JSONException {
 		
 		if (getCodebase(codebaseName) != null)
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			throw new KeyAlreadyExistsException();
 
 		File codebasesFolder = new File(CODEBASES_FOLDER);
 		if (!codebasesFolder.exists()) {
@@ -115,29 +115,23 @@ public class CodebaseManager {
 
 		Codebase codebase = new Codebase(codebaseName);
 
-		try {
-			//store datafile, needs to be read again when dendrogram is created
-			FileOutputStream outputStream = new FileOutputStream(CODEBASES_FOLDER + codebaseName + ".txt");
-			outputStream.write(datafile.getBytes());
-			outputStream.close();
+		//store datafile, needs to be read again when dendrogram is created
+		FileOutputStream outputStream = new FileOutputStream(CODEBASES_FOLDER + codebaseName + ".txt");
+		outputStream.write(datafile.getBytes());
+		outputStream.close();
 
-			// read datafile
-			InputStream is = new BufferedInputStream(datafile.getInputStream());
-			JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
-			is.close();
+		// read datafile
+		InputStream is = new BufferedInputStream(datafile.getInputStream());
+		JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
+		is.close();
 
-			Iterator<String> controllerNames = datafileJSON.sortedKeys();
-			List<String> controllers = new ArrayList<>();
-			while (controllerNames.hasNext()) {
-				controllers.add(controllerNames.next());
-			}
-			codebase.addProfile("Generic", controllers);
-
-			this.writeCodebase(codebaseName, codebase);
-
-			return new ResponseEntity<>(HttpStatus.CREATED);
-		} catch (IOException | JSONException e) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		Iterator<String> controllerNames = datafileJSON.sortedKeys();
+		List<String> controllers = new ArrayList<>();
+		while (controllerNames.hasNext()) {
+			controllers.add(controllerNames.next());
 		}
+		codebase.addProfile("Generic", controllers);
+
+		return codebase;
 	}
 }

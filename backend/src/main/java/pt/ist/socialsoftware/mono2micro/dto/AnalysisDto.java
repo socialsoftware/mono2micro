@@ -3,12 +3,11 @@ package pt.ist.socialsoftware.mono2micro.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import pt.ist.socialsoftware.mono2micro.domain.Graph;
+
 public class AnalysisDto {
-    private String codebaseName;
-    private String dendrogramName1;
-    private String graphName1;
-    private String dendrogramName2;
-    private String graphName2;
+    private Graph graph1;
+    private Graph graph2;
     private int truePositive;
     private int trueNegative;
     private int falsePositive;
@@ -24,12 +23,20 @@ public class AnalysisDto {
         return precision;
     }
 
-    public String getCodebaseName() {
-        return codebaseName;
+    public Graph getGraph2() {
+        return graph2;
     }
 
-    public void setCodebaseName(String codebaseName) {
-        this.codebaseName = codebaseName;
+    public void setGraph2(Graph graph2) {
+        this.graph2 = graph2;
+    }
+
+    public Graph getGraph1() {
+        return graph1;
+    }
+
+    public void setGraph1(Graph graph1) {
+        this.graph1 = graph1;
     }
 
     public float getSpecificity() {
@@ -90,38 +97,6 @@ public class AnalysisDto {
 
     public void setTruePositive(int truePositive) {
         this.truePositive = truePositive;
-    }
-
-    public String getGraphName2() {
-        return graphName2;
-    }
-
-    public void setGraphName2(String graphName2) {
-        this.graphName2 = graphName2;
-    }
-
-    public String getDendrogramName2() {
-        return dendrogramName2;
-    }
-
-    public void setDendrogramName2(String dendrogramName2) {
-        this.dendrogramName2 = dendrogramName2;
-    }
-
-    public String getGraphName1() {
-        return graphName1;
-    }
-
-    public void setGraphName1(String graphName1) {
-        this.graphName1 = graphName1;
-    }
-
-    public String getDendrogramName1() {
-        return dendrogramName1;
-    }
-
-    public void setDendrogramName1(String dendrogramName1) {
-        this.dendrogramName1 = dendrogramName1;
     }
 
     public void setPrecision(float precision) {

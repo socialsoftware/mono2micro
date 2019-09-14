@@ -9,16 +9,6 @@ codebaseName = str(sys.argv[2])
 dendrogramName = str(sys.argv[3])
 linkageType = str(sys.argv[4])
 
-"""with open(codebaseFolder + codebaseName + ".json") as f2:
-    codebase = json.load(f2)
-
-for dend in codebase["dendrograms"]:
-    if dend["name"] == dendrogramName:
-        dend["linkageType"] = "a"
-
-with open(codebaseFolder + codebaseName + ".json", 'w') as outfile:  
-    json.dump(codebase, outfile)"""
-
 with open(codebaseFolder + codebaseName + "/" + dendrogramName + ".txt") as f:
     dendrogramData = json.load(f)
 
@@ -26,7 +16,5 @@ entities = dendrogramData["entities"]
 matrix = np.array(dendrogramData["matrix"])
 hierarc = hierarchy.linkage(y=matrix, method=linkageType)
 
-dend = hierarchy.dendrogram(hierarc, labels=entities, distance_sort='descending')
-topLevel = dend["dcoord"][-1][1]
-middleCut = round(topLevel / 2, 1)
+hierarchy.dendrogram(hierarc, labels=entities, distance_sort='descending')
 plab.savefig(codebaseFolder + codebaseName + "/" + dendrogramName + ".png", format="png", bbox_inches='tight')

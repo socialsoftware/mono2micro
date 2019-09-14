@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -118,6 +119,14 @@ public class CodebaseController {
     public ResponseEntity<HttpStatus> createCodebase(@RequestParam String codebaseName, @RequestParam MultipartFile datafile) {
         logger.debug("createCodebase");
 
-        return codebaseManager.createCodebase(codebaseName, datafile);
+        try {
+            Codebase codebase = codebaseManager.createCodebase(codebaseName, datafile);
+            codebaseManager.writeCodebase(codebaseName, codebase);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (KeyAlreadyExistsException e) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (IOException | JSONException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 }
