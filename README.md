@@ -9,8 +9,8 @@ Currently implemented for systems that use the FénixFramework ORM and Spring-Bo
 - java 8+     (java --version)
 - nodejs 10+  (node --version)
 - npm 6+      (npm --version)
-- python 3+   (python --version)
-- Install the following python libraries (with pip, .etc): numpy, scipy, matplotlib, sklearn
+- python 3.5+   (python --version)
+- Run: pip install -r backend/src/main/resources/requirements.txt
 
 ### Run
 
