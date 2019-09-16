@@ -6,18 +6,18 @@ Currently implemented for systems that use the FénixFramework ORM and Spring-Bo
 
 ### Pre-Requisites
 
-- java 8+
-- nodejs 10+
-- npm 6+
-- python 3+
-- Install the following python libraries: numpy, scipy, matplotlib, sklearn
+- java 8+     (java --version)
+- nodejs 10+  (node --version)
+- npm 6+      (npm --version)
+- python 3+   (python --version)
+- Install the following python libraries (with pip, .etc): numpy, scipy, matplotlib, sklearn
 
 ### Run
 
 To run the backend:
 	
 	cd backend/
-	Create the file specific.properties in src/main/resources with the correct python command (example in specific.properties.example).
+	mvn clean compile
 	mvn spring-boot:run
 
 To run the frontend:
