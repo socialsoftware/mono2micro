@@ -123,6 +123,7 @@ public class Graph {
 			}
 		}
 		this.addCluster(mergedCluster);
+		this.calculateMetrics();
 	}
 
 	public void renameCluster(String clusterName, String newName) {
@@ -135,6 +136,7 @@ public class Graph {
 				break;
 			}
 		}
+		this.calculateMetrics();
 	}
 
 	public List<String> getClustersNames() {
@@ -167,6 +169,7 @@ public class Graph {
 			currentCluster.removeEntity(entity);
 		}
 		this.addCluster(newCluster);
+		this.calculateMetrics();
 	}
 
 	public void transferEntities(String fromCluster, String toCluster, String[] entities) {
@@ -176,6 +179,7 @@ public class Graph {
 			c2.addEntity(c1.getEntity(entity));
 			c1.removeEntity(entity);
 		}
+		this.calculateMetrics();
 	}
 
 	public void moveEntities(String[] entities, String targetCluster) {
