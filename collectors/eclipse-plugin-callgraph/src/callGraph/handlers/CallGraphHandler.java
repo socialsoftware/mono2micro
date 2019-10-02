@@ -40,7 +40,6 @@ import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CastExpression;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.internal.corext.callhierarchy.CallHierarchy;
 import org.eclipse.jdt.internal.corext.callhierarchy.CallLocation;
@@ -52,14 +51,16 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+
 
 public class CallGraphHandler extends AbstractHandler {
 
-	JSONObject callSequence;
-	JSONArray entitiesSequence;
+	JsonObject callSequence;
+	JsonArray entitiesSequence;
 	List<String> allEntities;
 	Set<String> abstractEntities;
 	Map<String,Set<String>> subclasses;
@@ -90,7 +91,7 @@ public class CallGraphHandler extends AbstractHandler {
 			if (project == null) return null;
 
 			
-			callSequence = new JSONObject();
+			callSequence = new JsonObject();
 			allEntities = new ArrayList<>();
 			abstractEntities = new HashSet<>();
 			subclasses = new HashMap<>();
@@ -111,7 +112,7 @@ public class CallGraphHandler extends AbstractHandler {
 			
 			
 			//prompt for file location
-			FileDialog fileDialog = new FileDialog(window.getShell(), SWT.OPEN);
+			FileDialog fileDialog = new FileDialog(window.getShell(), SWT.SAVE);
 			fileDialog.setFilterExtensions(new String [] {"*.json"});
 			fileDialog.setFileName(projectName + "_callSequence.json");
 			String filepath = fileDialog.open();
@@ -119,8 +120,9 @@ public class CallGraphHandler extends AbstractHandler {
 			//file store
 			if (filepath != null) {
 				try (FileWriter file = new FileWriter(filepath)) {
-					file.write(callSequence.toString(4));  //.toString(4) for indentation
-				} catch (IOException | JSONException e) {
+					Gson gson = new GsonBuilder().setPrettyPrinting().create();
+					file.write(gson.toJson(callSequence));
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
@@ -198,7 +200,7 @@ public class CallGraphHandler extends AbstractHandler {
 				
 				String controllerFullName = controllerMethod.getParent().getElementName() + "." + controllerMethod.getElementName();
 				System.out.println("Processing Controller: " + controllerFullName);
-				entitiesSequence = new JSONArray();
+				entitiesSequence = new JsonArray();
 				Stack<IMethod> methodStack = new Stack<>();
 				
 				methodCallDFS(controllerMethod, methodStack);
@@ -229,12 +231,8 @@ public class CallGraphHandler extends AbstractHandler {
 					}
 				}*/
 				
-				if (entitiesSequence.length() > 0) {
-					try {
-						callSequence.put(controllerFullName, entitiesSequence);
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
+				if (entitiesSequence.size() > 0) {
+					callSequence.add(controllerFullName, entitiesSequence);
 				}
 			}
 		} catch (JavaModelException e) {
@@ -313,19 +311,19 @@ public class CallGraphHandler extends AbstractHandler {
 			mode = "W";
 		
 		if (allEntities.contains(className[0]) && !mode.equals("")) {
-			JSONArray entityAccess = new JSONArray();
-			entityAccess.put(className[0]);
-			entityAccess.put(mode);
-			entitiesSequence.put(entityAccess);
+			JsonArray entityAccess = new JsonArray();
+			entityAccess.add(className[0]);
+			entityAccess.add(mode);
+			entitiesSequence.add(entityAccess);
 		}
 		
 		try {
 			for (String entityName : allEntities) {
 				if (callee.getSignature().contains(entityName)) {
-					JSONArray entityAccess = new JSONArray();
-					entityAccess.put(entityName);
-					entityAccess.put(mode);
-					if (!mode.equals("")) entitiesSequence.put(entityAccess);
+					JsonArray entityAccess = new JsonArray();
+					entityAccess.add(entityName);
+					entityAccess.add(mode);
+					if (!mode.equals("")) entitiesSequence.add(entityAccess);
 					break;
 				}
 			}
@@ -356,10 +354,10 @@ public class CallGraphHandler extends AbstractHandler {
 					}
 					
 					if (allEntities.contains(resolvedType)) {
-						JSONArray entityAccess = new JSONArray();
-						entityAccess.put(resolvedType);
-						entityAccess.put(mode);
-						entitiesSequence.put(entityAccess);
+						JsonArray entityAccess = new JsonArray();
+						entityAccess.add(resolvedType);
+						entityAccess.add(mode);
+						entitiesSequence.add(entityAccess);
 					}
 				}
 				return true;

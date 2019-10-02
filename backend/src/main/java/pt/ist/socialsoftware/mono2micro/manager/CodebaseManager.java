@@ -2,7 +2,8 @@ package pt.ist.socialsoftware.mono2micro.manager;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -16,14 +17,16 @@ import java.util.List;
 import javax.management.openmbean.KeyAlreadyExistsException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_FOLDER;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
 
 public class CodebaseManager {
 
@@ -33,26 +36,22 @@ public class CodebaseManager {
 
 	private CodebaseManager() {
 		objectMapper = new ObjectMapper();
-
-		File codebasesFolder = new File(CODEBASES_FOLDER);
-		if (!codebasesFolder.exists()) {
-			codebasesFolder.mkdir();
-		}
+		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 	}
 	
 	public static CodebaseManager getInstance() { 
         if (instance == null) 
         	instance = new CodebaseManager(); 
         return instance; 
-    } 
+	}
     
-    public void writeCodebase(String name, Codebase codebase) throws IOException {
-		objectMapper.writeValue(new File(CODEBASES_FOLDER + name + ".json"), codebase);
+    public void writeCodebase(String codebaseName, Codebase codebase) throws IOException {
+		objectMapper.writeValue(new File(CODEBASES_PATH + codebaseName + "/codebase.json"), codebase);
 	}
 
-	public Codebase getCodebase(String name) {
+	public Codebase getCodebase(String codebaseName) {
 		try {
-			return objectMapper.readValue(new File(CODEBASES_FOLDER + name + ".json"), Codebase.class);
+			return objectMapper.readValue(new File(CODEBASES_PATH + codebaseName + "/codebase.json"), Codebase.class);
 		} catch (IOException e) {
 			return null;
 		}
@@ -60,42 +59,40 @@ public class CodebaseManager {
 
 	public List<Codebase> getCodebases() {
 		List<Codebase> codebases = new ArrayList<>();
-		File codebasesFolder = new File(CODEBASES_FOLDER);
-		if (!codebasesFolder.exists()) {
-			codebasesFolder.mkdir();
+		File codebasesPath = new File(CODEBASES_PATH);
+		if (!codebasesPath.exists()) {
+			codebasesPath.mkdir();
+			return codebases;
 		}
 
-		File[] files = codebasesFolder.listFiles();
+		File[] files = codebasesPath.listFiles();
 		Arrays.sort(files, Comparator.comparingLong(File::lastModified));
 		for (File file : files) {
 			String filename = file.getName();
-			if (filename.endsWith(".json"))
-				codebases.add(getCodebase(filename.substring(0, filename.length()-5)));
+			codebases.add(getCodebase(filename));
 		}
         return codebases;
 	}
 
 	public List<String> getCodebaseNames() {
 		List<String> codebaseNames = new ArrayList<>();
-		File codebasesFolder = new File(CODEBASES_FOLDER);
-		if (!codebasesFolder.exists()) {
-			codebasesFolder.mkdir();
+		File codebasesPath = new File(CODEBASES_PATH);
+		if (!codebasesPath.exists()) {
+			codebasesPath.mkdir();
+			return codebaseNames;
 		}
 
-		File[] files = codebasesFolder.listFiles();
+		File[] files = codebasesPath.listFiles();
 		Arrays.sort(files, Comparator.comparingLong(File::lastModified));
 		for (File file : files) {
 			String filename = file.getName();
-			if (filename.endsWith(".json"))
-				codebaseNames.add(filename.substring(0, filename.length()-5));
+			codebaseNames.add(filename);
 		}
         return codebaseNames;
 	}
 
-	public void deleteCodebase(String name) throws IOException {
-		Files.deleteIfExists(Paths.get(CODEBASES_FOLDER + name + ".json"));
-		Files.deleteIfExists(Paths.get(CODEBASES_FOLDER + name + ".txt"));
-		Files.deleteIfExists(Paths.get(CODEBASES_FOLDER + name));
+	public void deleteCodebase(String codebaseName) throws IOException {
+		FileUtils.deleteDirectory(new File(CODEBASES_PATH + codebaseName));
 	}
 
 	public Codebase createCodebase(String codebaseName, MultipartFile datafile) throws IOException, JSONException {
@@ -103,27 +100,24 @@ public class CodebaseManager {
 		if (getCodebase(codebaseName) != null)
 			throw new KeyAlreadyExistsException();
 
-		File codebasesFolder = new File(CODEBASES_FOLDER);
-		if (!codebasesFolder.exists()) {
-			codebasesFolder.mkdir();
+		File codebasesPath = new File(CODEBASES_PATH);
+		if (!codebasesPath.exists()) {
+			codebasesPath.mkdir();
 		}
 
-		File codebaseFolder = new File(CODEBASES_FOLDER + codebaseName);
-		if (!codebaseFolder.exists()) {
-			codebaseFolder.mkdir();
+		File codebasePath = new File(CODEBASES_PATH + codebaseName);
+		if (!codebasePath.exists()) {
+			codebasePath.mkdir();
 		}
 
 		Codebase codebase = new Codebase(codebaseName);
-
-		//store datafile, needs to be read again when dendrogram is created
-		FileOutputStream outputStream = new FileOutputStream(CODEBASES_FOLDER + codebaseName + ".txt");
-		outputStream.write(datafile.getBytes());
-		outputStream.close();
 
 		// read datafile
 		InputStream is = new BufferedInputStream(datafile.getInputStream());
 		JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
 		is.close();
+
+		this.writeDatafile(codebaseName, datafileJSON);
 
 		Iterator<String> controllerNames = datafileJSON.sortedKeys();
 		List<String> controllers = new ArrayList<>();
@@ -133,5 +127,37 @@ public class CodebaseManager {
 		codebase.addProfile("Generic", controllers);
 
 		return codebase;
+	}
+
+
+
+	public JSONObject getDatafile(String codebaseName) throws IOException, JSONException {
+		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/datafile.json");
+		JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
+		is.close();
+		return datafileJSON;
+	}
+
+	public void writeDatafile(String codebaseName, JSONObject datafile) throws IOException, JSONException {
+		FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + "/datafile.json");
+		file.write(datafile.toString(4));
+		file.close();
+	}
+
+	public void writeSimilarityMatrix(String codebaseName, String dendrogramName, JSONObject similarityMatrix) throws IOException, JSONException {
+		FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + "/" + dendrogramName + "/similarityMatrix.json");
+		file.write(similarityMatrix.toString(4));
+		file.close();
+	}
+
+	public byte[] getDendrogramImage(String codebaseName, String dendrogramName) throws IOException {
+		return Files.readAllBytes(Paths.get(CODEBASES_PATH + codebaseName + "/" + dendrogramName + "/dendrogramImage.png"));
+	}
+
+	public JSONObject getClusters(String codebaseName, String dendrogramName, String graphName) throws IOException, JSONException {
+		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/" + dendrogramName + "/" + graphName + "/clusters.json");
+		JSONObject clustersJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
+		is.close();
+		return clustersJSON;
 	}
 }

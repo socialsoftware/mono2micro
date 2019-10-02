@@ -4,18 +4,20 @@ from sklearn import metrics
 import sys
 import json
 
-codebaseFolder = str(sys.argv[1])
+codebasesPath = str(sys.argv[1])
 codebaseName = str(sys.argv[2])
 dendrogramName = str(sys.argv[3])
-linkageType = str(sys.argv[4])
-cutValue = float(sys.argv[5])
+graphName = str(sys.argv[4])
+linkageType = str(sys.argv[5])
 cutType = str(sys.argv[6])
+cutValue = float(sys.argv[7])
 
-with open(codebaseFolder + codebaseName + "/" + dendrogramName + ".txt") as f:
-    dendrogramData = json.load(f)
 
-entities = dendrogramData["entities"]
-matrix = np.array(dendrogramData["matrix"])
+with open(codebasesPath + codebaseName + "/" + dendrogramName + "/" + "similarityMatrix.json") as f:
+    similarityMatrix = json.load(f)
+
+entities = similarityMatrix["entities"]
+matrix = np.array(similarityMatrix["matrix"])
 hierarc = hierarchy.linkage(y=matrix, method=linkageType)
 
 if cutType == "H":
@@ -35,7 +37,10 @@ try:
     silhouetteScore = metrics.silhouette_score(matrix, nodes)
 except:
     silhouetteScore = 0
-print(silhouetteScore)
 
-with open("temp_clusters.txt", 'w') as outfile:  
-    outfile.write(json.dumps(clusters))
+clustersJSON = {}
+clustersJSON["silhouetteScore"] = silhouetteScore
+clustersJSON["clusters"] = clusters
+
+with open(codebasesPath + codebaseName + "/" + dendrogramName + "/" + graphName + "/clusters.json", 'w') as outfile:  
+    outfile.write(json.dumps(clustersJSON, indent=4))

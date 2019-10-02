@@ -1,10 +1,11 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
-import java.io.FileInputStream;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.PYTHON;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.RESOURCES_PATH;
+
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,14 +14,12 @@ import java.util.Map;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_FOLDER;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.RESOURCES_PATH;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.PYTHON;
+import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 
 public class Codebase {
 	private String name;
@@ -34,7 +33,6 @@ public class Codebase {
 	public Codebase(String name) {
         this.name = name;
 	}
-
 
 	public String getName() {
 		return this.name;
@@ -58,7 +56,7 @@ public class Codebase {
 	}
 	
 	public void addProfile(String profileName, List<String> controllers) {
-		if (this.getProfile(profileName) != null) {
+		if (this.profiles.containsKey(profileName)) {
 			throw new KeyAlreadyExistsException();
 		}
 		this.profiles.put(profileName, controllers);
@@ -69,16 +67,12 @@ public class Codebase {
 	}
 
 	public void moveControllers(String[] controllers, String targetProfile) {
-		List<String> removedControllers = new ArrayList<>();
         for (String profile : this.profiles.keySet()) {
 			for (String controller : controllers) {
-				if (this.profiles.get(profile).contains(controller) && !profile.equals(targetProfile)) {
-					this.profiles.get(profile).remove(controller);
-					removedControllers.add(controller);
-				}
+				this.profiles.get(profile).remove(controller);
 			}
 		}
-		for (String controller : removedControllers)
+		for (String controller : controllers)
 			this.profiles.get(targetProfile).add(controller);
 	}
 
@@ -105,8 +99,7 @@ public class Codebase {
 				break;
 			}
 		}
-		Files.deleteIfExists(Paths.get(CODEBASES_FOLDER + this.name + "/" + dendrogramName + ".png"));
-		Files.deleteIfExists(Paths.get(CODEBASES_FOLDER + this.name + "/" + dendrogramName + ".txt"));
+		FileUtils.deleteDirectory(new File(CODEBASES_PATH + this.name + "/" + dendrogramName));
 	}
 
 	public List<String> getDendrogramNames() {
@@ -159,8 +152,13 @@ public class Codebase {
 	public void createDendrogram(Dendrogram dendrogram) throws Exception {
 		if (getDendrogram(dendrogram.getName()) != null)
 			throw new KeyAlreadyExistsException();
-		
-		dendrogram.calculateSimilarityMatrix(this.profiles);
+
+		File dendrogramPath = new File(CODEBASES_PATH + this.name + "/" + dendrogram.getName());
+		if (!dendrogramPath.exists()) {
+			dendrogramPath.mkdir();
+		}
+
+		dendrogram.calculateSimilarityMatrix();
 
 		this.addDendrogram(dendrogram);
 
@@ -170,7 +168,7 @@ public class Codebase {
 		String[] cmd = new String[6];
 		cmd[0] = PYTHON;
 		cmd[1] = pythonScriptPath;
-		cmd[2] = CODEBASES_FOLDER;
+		cmd[2] = CODEBASES_PATH;
 		cmd[3] = this.name;
 		cmd[4] = dendrogram.getName();
 		cmd[5] = dendrogram.getLinkageType();
@@ -183,9 +181,7 @@ public class Codebase {
 		if (getExpert(expert.getName()) != null)
 			throw new KeyAlreadyExistsException();
 
-		InputStream is = new FileInputStream(CODEBASES_FOLDER + this.name + ".txt");
-		JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
-		is.close();
+		JSONObject datafileJSON = CodebaseManager.getInstance().getDatafile(this.name);
 
 		Iterator<String> controllers = datafileJSON.sortedKeys();
 		Cluster cluster = new Cluster("Generic");

@@ -1,5 +1,9 @@
 package pt.ist.socialsoftware.mono2micro.controller;
 
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.PYTHON;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.RESOURCES_PATH;
+
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -27,15 +31,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
-import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.dto.AnalyserDto;
 import pt.ist.socialsoftware.mono2micro.dto.AnalysisDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_FOLDER;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.RESOURCES_PATH;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.PYTHON;
 
 @RestController
 @RequestMapping(value = "/mono2micro")
@@ -61,7 +60,7 @@ public class AnalysisController {
 
 
 			//read datafile
-			InputStream is = new FileInputStream(CODEBASES_FOLDER + codebase.getName() + ".txt");
+			InputStream is = new FileInputStream(CODEBASES_PATH + codebase.getName() + ".txt");
 			JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
 			is.close();
 
@@ -127,16 +126,16 @@ public class AnalysisController {
 				for (int j = 0; j < entitiesList.size(); j++) {
 					String e2 = entitiesList.get(j);
 					if (e1.equals(e2)) {
-						seq1MatrixAux.put(new Float(1));
-						seq2MatrixAux.put(new Float(1));
+						seq1MatrixAux.put(Float.valueOf(1));
+						seq2MatrixAux.put(Float.valueOf(1));
 					} else {
 						String e1e2 = e1 + "->" + e2;
 						String e2e1 = e2 + "->" + e1;
 						float e1e2Count = e1e2PairCount.containsKey(e1e2) ? e1e2PairCount.get(e1e2) : 0;
 						float e2e1Count = e1e2PairCount.containsKey(e2e1) ? e1e2PairCount.get(e2e1) : 0;
 
-						seq1MatrixAux.put(new Float(e1e2Count + e2e1Count));
-						seq2MatrixAux.put(new Float(e1e2Count + e2e1Count));
+						seq1MatrixAux.put(Float.valueOf(e1e2Count + e2e1Count));
+						seq2MatrixAux.put(Float.valueOf(e1e2Count + e2e1Count));
 					}
 				}
 
@@ -149,8 +148,8 @@ public class AnalysisController {
 
 				for (int j = 0; j < entitiesList.size(); j++) {
 					if (!entitiesList.get(j).equals(e1)) {
-						seq1MatrixAux.put(j, new Float(((float)seq1MatrixAux.get(j)) / maxNumberOfPairs));
-						seq2MatrixAux.put(j, new Float(((float)seq2MatrixAux.get(j)) / seq2Max));
+						seq1MatrixAux.put(j, Float.valueOf(((float)seq1MatrixAux.get(j)) / maxNumberOfPairs));
+						seq2MatrixAux.put(j, Float.valueOf(((float)seq2MatrixAux.get(j)) / seq2Max));
 					}
 				}
 

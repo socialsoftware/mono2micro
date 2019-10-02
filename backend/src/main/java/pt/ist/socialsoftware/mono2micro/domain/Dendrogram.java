@@ -1,13 +1,11 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileWriter;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.PYTHON;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.RESOURCES_PATH;
+
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,15 +15,13 @@ import java.util.Map;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_FOLDER;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.RESOURCES_PATH;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.PYTHON;
 
 public class Dendrogram {
 	private String codebaseName;
@@ -135,16 +131,16 @@ public class Dendrogram {
 
 	public void addGraph(Graph graph) {
 		this.graphs.add(graph);
-		graph.calculateMetrics();
 	}
 
-	public void deleteGraph(String graphName) {
+	public void deleteGraph(String graphName) throws IOException {
 		for (int i = 0; i < this.graphs.size(); i++) {
 			if (this.graphs.get(i).getName().equals(graphName)) {
 				this.graphs.remove(i);
 				break;
 			}
 		}
+		FileUtils.deleteDirectory(new File(CODEBASES_PATH + this.codebaseName + "/" + this.name + "/" + graphName));
 	}
 
 	public void renameGraph(String graphName, String newName) {
@@ -159,7 +155,7 @@ public class Dendrogram {
 		}
 	}
 
-	public void calculateSimilarityMatrix(Map<String,List<String>> profiles) throws IOException, JSONException{
+	public void calculateSimilarityMatrix() throws IOException, JSONException{
 		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 		Map<String,Integer> e1e2PairCount = new HashMap<>();
 		JSONArray similarityMatrix = new JSONArray();
@@ -167,12 +163,11 @@ public class Dendrogram {
 
 
 		//read datafile
-		InputStream is = new FileInputStream(CODEBASES_FOLDER + this.codebaseName + ".txt");
-		JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
-		is.close();
+		JSONObject datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
+		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
 
 		for (String profile : this.profiles) {
-			for (String controllerName : profiles.get(profile)) {
+			for (String controllerName : codebase.getProfile(profile)) {
 				JSONArray entities = datafileJSON.getJSONArray(controllerName);
 				for (int i = 0; i < entities.length(); i++) {
 					JSONArray entityArray = entities.getJSONArray(i);
@@ -305,21 +300,34 @@ public class Dendrogram {
 		dendrogramData.put("matrix", similarityMatrix);
 		dendrogramData.put("entities", entitiesList);
 
-		FileWriter file = new FileWriter(CODEBASES_FOLDER + this.codebaseName + "/" + this.name + ".txt");
-		file.write(dendrogramData.toString());
-		file.close();
+		CodebaseManager.getInstance().writeSimilarityMatrix(this.codebaseName, this.name, dendrogramData);
 	}
 
-	public void cut(Graph graph, Map<String,List<String>> profiles) throws Exception {
+	public void cut(Graph graph) throws Exception {
 		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 
+		String cutValue = Float.valueOf(graph.getCutValue()).toString().replaceAll("\\.?0*$", "");
+		if (this.getGraphNames().contains(graph.getCutType() + cutValue)) {
+			int i = 2;
+			while (this.getGraphNames().contains(graph.getCutType() + cutValue + "(" + i + ")")) {
+				i++;
+			}
+			graph.setName(graph.getCutType() + cutValue + "(" + i + ")");
+		} else {
+			graph.setName(graph.getCutType() + cutValue);
+		}
+
+		File graphPath = new File(CODEBASES_PATH + this.codebaseName + "/" + this.name + "/" + graph.getName());
+		if (!graphPath.exists()) {
+			graphPath.mkdir();
+		}
+
 		//read datafile
-		InputStream is = new FileInputStream(CODEBASES_FOLDER + this.codebaseName + ".txt");
-		JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
-		is.close();
+		JSONObject datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
+		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
 
 		for (String profile : this.profiles) {
-			for (String controllerName : profiles.get(profile)) {
+			for (String controllerName : codebase.getProfile(profile)) {
 				Controller controller = new Controller(controllerName);
 				graph.addController(controller);
 
@@ -354,44 +362,27 @@ public class Dendrogram {
 			}
 		}
 
-
-
-
 		Runtime r = Runtime.getRuntime();
 		String pythonScriptPath = RESOURCES_PATH + "cutDendrogram.py";
-		String[] cmd = new String[8];
+		String[] cmd = new String[9];
 		cmd[0] = PYTHON;
 		cmd[1] = pythonScriptPath;
-		cmd[2] = CODEBASES_FOLDER;
+		cmd[2] = CODEBASES_PATH;
 		cmd[3] = this.codebaseName;
 		cmd[4] = this.name;
-		cmd[5] = this.linkageType;
-		cmd[6] = Float.toString(graph.getCutValue());
+		cmd[5] = graph.getName();
+		cmd[6] = this.linkageType;
 		cmd[7] = graph.getCutType();
+		cmd[8] = Float.toString(graph.getCutValue());
 		Process p = r.exec(cmd);
-
+		
 		p.waitFor();
 
-		BufferedReader bre = new BufferedReader(new InputStreamReader(p.getInputStream()));
-		float silhouetteScore = Float.parseFloat(bre.readLine());
-		graph.setSilhouetteScore(silhouetteScore);
+		JSONObject clustersJSON = CodebaseManager.getInstance().getClusters(this.codebaseName, this.name, graph.getName());
 
-		String cutValue = Float.valueOf(graph.getCutValue()).toString().replaceAll("\\.?0*$", "");
-		if (this.getGraphNames().contains(graph.getCutType() + cutValue)) {
-			int i = 2;
-			while (this.getGraphNames().contains(graph.getCutType() + cutValue + "(" + i + ")")) {
-				i++;
-			}
-			graph.setName(graph.getCutType() + cutValue + "(" + i + ")");
-		} else {
-			graph.setName(graph.getCutType() + cutValue);
-		}
+		graph.setSilhouetteScore((float) clustersJSON.getDouble("silhouetteScore"));
 
-		is = new FileInputStream("temp_clusters.txt");
-		JSONObject json = new JSONObject(IOUtils.toString(is, "UTF-8"));
-		is.close();
-
-		Iterator<String> clusters = json.sortedKeys();
+		Iterator<String> clusters = clustersJSON.getJSONObject("clusters").sortedKeys();
 		ArrayList<Integer> clusterIds = new ArrayList<>();
 
 		while(clusters.hasNext()) {
@@ -400,7 +391,7 @@ public class Dendrogram {
 		Collections.sort(clusterIds);
 		for (Integer id : clusterIds) {
 			String clusterId = String.valueOf(id);
-			JSONArray entities = json.getJSONArray(clusterId);
+			JSONArray entities = clustersJSON.getJSONObject("clusters").getJSONArray(clusterId);
 			Cluster cluster = new Cluster("Cluster" + clusterId);
 			for (int i = 0; i < entities.length(); i++) {
 				Entity entity = new Entity(entities.getString(i));
@@ -416,7 +407,8 @@ public class Dendrogram {
 			}
 			graph.addCluster(cluster);
 		}
-		Files.deleteIfExists(Paths.get("temp_clusters.txt"));
+
 		this.addGraph(graph);
+		graph.calculateMetrics();
 	}
 }

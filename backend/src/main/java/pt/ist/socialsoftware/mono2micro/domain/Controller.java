@@ -12,8 +12,9 @@ public class Controller {
 	private float complexity;
 	private float complexityRW;
 	private float complexitySeq;
-	private Map<String,String> entities = new HashMap<>();
-	private List<Pair<String,String>> entitiesSeq = new ArrayList<>();
+	private float complexity2;
+	private Map<String, String> entities = new HashMap<>();
+	private List<Pair<String, String>> entitiesSeq = new ArrayList<>();
 
 	public Controller() {
 	}
@@ -54,6 +55,14 @@ public class Controller {
 		this.complexitySeq = complexitySeq;
 	}
 
+	public float getComplexity2() {
+		return complexity2;
+	}
+
+	public void setComplexity2(float complexity2) {
+		this.complexity2 = complexity2;
+	}
+
 	public Map<String,String> getEntities() {
 		return this.entities;
 	}
@@ -63,10 +72,12 @@ public class Controller {
 	}
 
 	public void addEntity(String entity, String mode) {
-		if (this.entities.containsKey(entity)) {
-			if (!this.entities.get(entity).contains(mode)) 
+		if (this.entities.containsKey(entity) &&
+			mode.equals("W") &&
+			this.entities.get(entity).equals("R")) {
 				this.entities.put(entity, "RW");
-		} else {
+			}
+		else if (!this.entities.containsKey(entity)) {
 			this.entities.put(entity, mode);
 		}
 	}
@@ -84,6 +95,17 @@ public class Controller {
 	}
 
 	public void addEntitySeq(String entity, String mode) {
+		for (Pair<String,String> entityPair : this.entitiesSeq) {
+			String entitySeq = entityPair.getFirst();
+			String modeSeq = entityPair.getSecond();
+
+			if (entitySeq.equals(entity) && modeSeq.equals(mode))
+				return;
+
+			if (entitySeq.equals(entity) && modeSeq.equals("W"))
+				return;
+		}
+
 		this.entitiesSeq.add(new Pair<>(entity, mode));
 	}
 }

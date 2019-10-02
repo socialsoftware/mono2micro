@@ -272,7 +272,8 @@ export class TransactionView extends React.Component {
                     clusters: this.state.controllerClusters[controller.name] === undefined ? 0 : this.state.controllerClusters[controller.name].length,
                     complexity: Number(controller.complexity.toFixed(2)),
                     complexityrw: Number(controller.complexityRW.toFixed(2)),
-                    complexityseq: Number(controller.complexitySeq.toFixed(2))
+                    complexityseq: Number(controller.complexitySeq.toFixed(2)),
+                    complexity2: Number(controller.complexity2)
                 }
             });
 
@@ -295,6 +296,10 @@ export class TransactionView extends React.Component {
         }, {
             dataField: 'complexityseq',
             text: 'Complexity Seq',
+            sort: true
+        }, {
+            dataField: 'complexity2',
+            text: 'Complexity 2',
             sort: true
         }];
 

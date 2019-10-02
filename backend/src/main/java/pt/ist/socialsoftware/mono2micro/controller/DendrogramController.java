@@ -1,10 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.controller;
 
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_FOLDER;
-
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
@@ -56,8 +52,7 @@ public class DendrogramController {
 		logger.debug("getDendrogramImage");
 
 		try {
-			File dendrogramImage = new File(CODEBASES_FOLDER + codebaseName + "/" + dendrogramName + ".png");
-			return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(Files.readAllBytes(dendrogramImage.toPath()));
+			return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(codebaseManager.getDendrogramImage(codebaseName, dendrogramName));
 		} catch (IOException e) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
@@ -102,7 +97,7 @@ public class DendrogramController {
 
 		try {
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            codebase.getDendrogram(dendrogramName).cut(graph, codebase.getProfiles());
+            codebase.getDendrogram(dendrogramName).cut(graph);
             codebaseManager.writeCodebase(codebaseName, codebase);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {

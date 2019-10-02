@@ -1,18 +1,11 @@
 package pt.ist.socialsoftware.mono2micro.controller;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 
-import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -28,7 +21,6 @@ import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_FOLDER;
 
 @RestController
 @RequestMapping(value = "/mono2micro/codebase/{codebaseName}")

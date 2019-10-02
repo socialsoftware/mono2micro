@@ -3,6 +3,7 @@ package pt.ist.socialsoftware.mono2micro.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Cluster {
 	private String name;
@@ -95,10 +96,18 @@ public class Cluster {
 	}
 
 	public List<String> getEntityNames() {
-		List<String> entityNames = new ArrayList<>();
-		for (Entity entity : this.entities)
-			entityNames.add(entity.getName());
-		return entityNames;
+		return this.entities
+			.stream()
+			.map(e -> e.getName())
+			.collect(Collectors.toList());
+	}
+
+	public Entity getEntity(String entityName) {
+		return this.entities
+			.stream()
+			.filter(e -> e.getName().equals(entityName))
+			.findAny()
+			.orElse(null);
 	}
 
 	public void addEntity(Entity entity) {
@@ -106,30 +115,13 @@ public class Cluster {
 	}
 
 	public void removeEntity(String entityName) {
-		for (int i = 0; i < this.entities.size(); i++) {
-			if (this.entities.get(i).getName().equals(entityName)) {
-				this.entities.remove(i);
-				break;
-			}
-		}
+		this.entities.removeIf(e -> e.getName().equals(entityName));
 	}
 
 	public boolean containsEntity(String entityName) {
-		for (int i = 0; i < this.entities.size(); i++) {
-			if (this.entities.get(i).getName().equals(entityName)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public Entity getEntity(String entityName) {
-		for (int i = 0; i < this.entities.size(); i++) {
-			if (this.entities.get(i).getName().equals(entityName)) {
-				return this.entities.get(i);
-			}
-		}
-		return null;
+		return this.entities
+			.stream()
+			.anyMatch(e -> e.getName().equals(entityName));
 	}
 
 	public void calculateCohesion(List<Controller> clusterControllers) {
