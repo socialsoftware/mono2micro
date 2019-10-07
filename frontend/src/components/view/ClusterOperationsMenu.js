@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, DropdownButton, Dropdown, FormControl, ButtonGroup, ButtonToolbar, InputGroup} from 'react-bootstrap';
+import Select from 'react-select';
 
 export const operations = {
     NONE: 'operation',
@@ -71,14 +72,15 @@ export class ClusterOperationsMenu extends React.Component {
 
                 {((this.state.operation === operations.SPLIT && this.props.clusterEntities) ||
                  (this.state.operation === operations.TRANSFER && this.props.transferToCluster.name)) &&
-                <DropdownButton className="mr-1" as={ButtonGroup}
-                    title={'entities'}>
-                    {this.props.clusterEntities.map(e => <Dropdown.Item 
-                        key={e.name}
-                        eventKey={e.name}
-                        onSelect={() => this.props.handleSelectEntity(e.name)}
-                        active={e.active}>{e.name}</Dropdown.Item>)}
-                </DropdownButton>}
+                    <div style={{width: "200px"}}>
+                    <Select
+                        isMulti
+                        name="entities"
+                        options={this.props.clusterEntities}
+                        closeMenuOnSelect={false}
+                        onChange={this.props.handleSelectEntities}
+                        placeholder="entities"
+                    /></div>}
                 
                 {(this.state.operation === operations.RENAME || this.props.mergeWithCluster.name || 
                 (this.props.clusterEntities &&

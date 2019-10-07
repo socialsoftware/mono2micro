@@ -16,9 +16,18 @@ public class AnalyserDto {
     private float recall;
     private float specificity;
     private float fmeasure;
+    private float complexity;
 
     public float getPrecision() {
         return precision;
+    }
+
+    public float getComplexity() {
+        return complexity;
+    }
+
+    public void setComplexity(float complexity) {
+        this.complexity = complexity;
     }
 
     public Graph getExpert() {

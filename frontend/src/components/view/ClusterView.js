@@ -93,7 +93,7 @@ export class ClusterView extends React.Component {
         this.setClusterEntities = this.setClusterEntities.bind(this);
         this.handleSelectOperation = this.handleSelectOperation.bind(this);
         this.handleSelectCluster = this.handleSelectCluster.bind(this);
-        this.handleSelectEntity = this.handleSelectEntity.bind(this);
+        this.handleSelectEntities = this.handleSelectEntities.bind(this);
         this.handleOperationSubmit = this.handleOperationSubmit.bind(this);
         this.handleOperationCancel = this.handleOperationCancel.bind(this);
         this.closeErrorMessageModal = this.closeErrorMessageModal.bind(this);
@@ -169,7 +169,8 @@ export class ClusterView extends React.Component {
         this.setState({
             selectedCluster: selectedCluster,
             mergeWithCluster: {},
-            clusterEntities: selectedCluster.entities.map(e => ({name: e.name, active: false})),
+            clusterEntities: selectedCluster.entities.sort((a, b) => (a.name > b.name) ? 1 : -1)
+                                                    .map(e => ({name: e.name, value: e.name, label: e.name, active: false})),
         });
     }
 
@@ -231,17 +232,26 @@ export class ClusterView extends React.Component {
         }
     }
 
-    handleSelectEntity(entityName) {
-        const clusterEntities = this.state.clusterEntities.map(e => {
-            if (e.name === entityName) {
-                return {...e, active: !e.active};
-            } else {
-                return e;
-            }
-        });
-        this.setState({
-            clusterEntities: clusterEntities
-        });
+    handleSelectEntities(entities) {
+        if (entities === null) {
+            const clusterEntities = this.state.clusterEntities.map(e => {
+                return {...e, active: false};
+            });
+            this.setState({
+                clusterEntities: clusterEntities
+            });
+        } else {
+            const clusterEntities = this.state.clusterEntities.map(e => {
+                if (entities.map(e => e.name).includes(e.name)) {
+                    return {...e, active: true};
+                } else {
+                    return {...e, active: false};
+                }
+            });
+            this.setState({
+                clusterEntities: clusterEntities
+            });
+        }
     }
 
     handleOperationSubmit(operation, inputValue) {
@@ -426,7 +436,7 @@ export class ClusterView extends React.Component {
                         transferToCluster={this.state.transferToCluster}
                         clusterEntities={this.state.clusterEntities}
                         handleSelectOperation={this.handleSelectOperation}
-                        handleSelectEntity={this.handleSelectEntity}
+                        handleSelectEntities={this.handleSelectEntities}
                         handleSubmit={this.handleOperationSubmit}
                         handleCancel={this.handleOperationCancel}
                     />}

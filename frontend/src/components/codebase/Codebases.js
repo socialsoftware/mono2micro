@@ -1,6 +1,6 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
-import { Row, Col, ButtonGroup, Card, Button, Form, FormControl, Breadcrumb } from 'react-bootstrap';
+import { Row, Col, Card, Button, Form, FormControl, Breadcrumb } from 'react-bootstrap';
 
 var HttpStatus = require('http-status-codes');
 
@@ -11,8 +11,7 @@ export class Codebases extends React.Component {
             newCodebaseName: "",
             selectedFile: null, 
             isUploaded: "",
-            codebases: [],
-            codebase: {}
+            codebases: []
         };
 
         this.handleSelectedFile = this.handleSelectedFile.bind(this);
@@ -29,8 +28,7 @@ export class Codebases extends React.Component {
         const service = new RepositoryService();
         service.getCodebases().then(response => {
             this.setState({
-                codebases: response.data,
-                codebase: response.data[0]
+                codebases: response.data
             });
         });
     }
@@ -38,6 +36,19 @@ export class Codebases extends React.Component {
     handleSelectedFile(event) {
         this.setState({
             selectedFile: event.target.files[0]
+        });
+    }
+
+    handleChangeNewCodebaseName(event) {
+        this.setState({ 
+            newCodebaseName: event.target.value 
+        });
+    }
+
+    handleDeleteCodebase(codebaseName) {
+        const service = new RepositoryService();
+        service.deleteCodebase(codebaseName).then(response => {
+            this.loadCodebases();
         });
     }
 
@@ -74,125 +85,94 @@ export class Codebases extends React.Component {
         });
     }
 
-    handleChangeNewCodebaseName(event) {
-        this.setState({ 
-            newCodebaseName: event.target.value 
-        });
+    renderBreadCrumbs = () => {
+        return (
+            <Breadcrumb>
+                <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+                <Breadcrumb.Item active>Codebases</Breadcrumb.Item>
+            </Breadcrumb>
+        );
     }
 
-    handleDeleteCodebase() {
-        const service = new RepositoryService();
-        service.deleteCodebase(this.state.codebase.name).then(response => {
-            this.loadCodebases();
-        });
+    renderCreateCodebaseForm = () => {
+        return (
+            <Form onSubmit={this.handleSubmit}>
+                <Form.Group as={Row} controlId="newCodebaseName">
+                    <Form.Label column sm={2}>
+                        Codebase Name
+                    </Form.Label>
+                    <Col sm={5}>
+                        <FormControl 
+                            type="text"
+                            maxLength="30"
+                            placeholder="Codebase Name"
+                            value={this.state.newCodebaseName}
+                            onChange={this.handleChangeNewCodebaseName}/>
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} controlId="datafile">
+                    <Form.Label column sm={2}>
+                        Data Collection File
+                    </Form.Label>
+                    <Col sm={5}>
+                        <FormControl
+                            type="file"
+                            onChange={this.handleSelectedFile}/>
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row}>
+                    <Col sm={{ span: 5, offset: 2 }}>
+                        <Button type="submit"
+                                disabled={this.state.isUploaded === "Uploading..." ||
+                                        this.state.newCodebaseName === "" ||
+                                        this.state.selectedFile === null}>
+                            Create Codebase
+                        </Button>
+                        <Form.Text>
+                            {this.state.isUploaded}
+                        </Form.Text>
+                    </Col>
+                </Form.Group>
+            </Form>
+        );
     }
 
-    changeCodebase(value) {
-        this.setState({
-            codebase: value
-        });
+    renderCodebases = () => {
+        return this.state.codebases.map(codebase =>
+            <div>
+                <Card key={codebase.name} style={{ width: '15rem' }}>
+                    <Card.Body>
+                        <Card.Title>
+                            {codebase.name}
+                        </Card.Title>
+                        <Button href={`/codebases/${codebase.name}`} 
+                                className="mb-2">
+                                    Go to Codebase
+                        </Button><br/>
+                        <Button onClick={() => this.handleDeleteCodebase(codebase.name)} 
+                                variant="danger">
+                                    Delete
+                        </Button>
+                    </Card.Body>
+                </Card>
+                <br/>
+            </div>
+        );
     }
 
     render() {
-        const BreadCrumbs = () => {
-            return (
-              <div>
-                <Breadcrumb>
-                  <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-                  <Breadcrumb.Item active>Codebases</Breadcrumb.Item>
-                </Breadcrumb>
-              </div>
-            );
-        };
-
-        const codebases = this.state.codebases.map(codebase =>
-            <Button key={codebase.name} 
-                    active={this.state.codebase === codebase} 
-                    onClick={() => this.changeCodebase(codebase)}>
-                        {codebase.name}
-            </Button>
-        );
-
         return (
             <div>
-                <BreadCrumbs />
-                <h2>Codebases Manager</h2>
-                <Form onSubmit={this.handleSubmit}>
-                    <Form.Group as={Row} controlId="newCodebaseName">
-                        <Form.Label column sm={2}>
-                            Codebase Name
-                        </Form.Label>
-                        <Col sm={5}>
-                            <FormControl 
-                                type="text"
-                                maxLength="30"
-                                placeholder="Codebase Name"
-                                value={this.state.newCodebaseName}
-                                onChange={this.handleChangeNewCodebaseName}/>
-                        </Col>
-                    </Form.Group>
+                {this.renderBreadCrumbs()}
+                
+                <h4 style={{color: "#666666"}}>Create Codebase</h4>
+                {this.renderCreateCodebaseForm()}
 
-                    <Form.Group as={Row} controlId="datafile">
-                        <Form.Label column sm={2}>
-                            Data Collection File
-                        </Form.Label>
-                        <Col sm={5}>
-                            <FormControl
-                                type="file"
-                                onChange={this.handleSelectedFile}/>
-                        </Col>
-                    </Form.Group>
-
-                    <Form.Group as={Row}>
-                        <Col sm={{ span: 5, offset: 2 }}>
-                            <Button type="submit"
-                                    disabled={this.state.isUploaded === "Uploading..." ||
-                                              this.state.newCodebaseName === "" ||
-                                              this.state.selectedFile === null}>
-                                Create Codebase
-                            </Button>
-                            <Form.Text>
-                                {this.state.isUploaded}
-                            </Form.Text>
-                        </Col>
-                    </Form.Group>
-                </Form>
-
-
-                {codebases.length !== 0 &&
-                    <div>
-                        <div style={{overflow: "auto"}} className="mb-2">
-                            <ButtonGroup>
-                                {codebases}
-                            </ButtonGroup>
-                        </div>
-
-                        <Card key={this.state.codebase.name} style={{ width: '20rem' }}>
-                            <Card.Body>
-                                <Card.Title>
-                                    Codebase: {this.state.codebase.name}
-                                </Card.Title>
-                                <Button href={`/codebase/${this.state.codebase.name}`} 
-                                        className="mb-2">
-                                            Change Controller Profiles
-                                </Button><br/>
-                                <Button href={`/codebase/${this.state.codebase.name}/dendrograms`} 
-                                        className="mb-2">
-                                            Go to Dendrograms
-                                </Button><br/>
-                                <Button href={`/codebase/${this.state.codebase.name}/experts`} 
-                                        className="mb-2">
-                                            Go to Expert Cuts
-                                </Button><br/>
-                                <Button onClick={this.handleDeleteCodebase} 
-                                        variant="danger">
-                                            Delete
-                                </Button>
-                            </Card.Body>
-                        </Card>
-                    </div>
-                }
+                <h4 style={{color: "#666666"}}>Codebases</h4>
+                {this.renderCodebases()}
             </div>
-        )
+        );
     }
 }

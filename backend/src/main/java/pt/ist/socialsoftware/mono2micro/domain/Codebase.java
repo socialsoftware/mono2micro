@@ -25,7 +25,6 @@ public class Codebase {
 	private String name;
 	private Map<String,List<String>> profiles = new HashMap<>();
 	private List<Dendrogram> dendrograms = new ArrayList<>();
-	private List<Graph> experts = new ArrayList<>();
 
 	public Codebase() {
 	}
@@ -113,42 +112,6 @@ public class Codebase {
 		this.dendrograms.add(dendrogram);
 	}
 
-	
-	public List<Graph> getExperts() {
-		return experts;
-	}
-
-	public void setExperts(List<Graph> experts) {
-		this.experts = experts;
-	}
-
-	public Graph getExpert(String expertName) {
-		for (Graph expert : this.experts)
-			if (expert.getName().equals(expertName))
-				return expert;
-		return null;
-	}
-
-	public void deleteExpert(String expertName) {
-		for (int i = 0; i < experts.size(); i++) {
-			if (experts.get(i).getName().equals(expertName)) {
-				experts.remove(i);
-				break;
-			}
-		}
-	}
-
-	public List<String> getExpertNames() {
-		List<String> expertNames = new ArrayList<>();
-		for (Graph expert : this.experts)
-			expertNames.add(expert.getName());
-		return expertNames;
-	}
-
-	public void addExpert(Graph expert) {
-		this.experts.add(expert);
-	}
-
 	public void createDendrogram(Dendrogram dendrogram) throws Exception {
 		if (getDendrogram(dendrogram.getName()) != null)
 			throw new KeyAlreadyExistsException();
@@ -175,27 +138,5 @@ public class Codebase {
 		
 		Process p = r.exec(cmd);
 		p.waitFor();
-	}
-
-	public void createExpert(Graph expert) throws IOException, JSONException {
-		if (getExpert(expert.getName()) != null)
-			throw new KeyAlreadyExistsException();
-
-		JSONObject datafileJSON = CodebaseManager.getInstance().getDatafile(this.name);
-
-		Iterator<String> controllers = datafileJSON.sortedKeys();
-		Cluster cluster = new Cluster("Generic");
-		while (controllers.hasNext()) {
-			JSONArray entitiesArray = datafileJSON.getJSONArray(controllers.next());
-			for (int i = 0; i < entitiesArray.length(); i++) {
-				JSONArray entityArray = entitiesArray.getJSONArray(i);
-				String entity = entityArray.getString(0);
-				if (!cluster.containsEntity(entity))
-					cluster.addEntity(new Entity(entity));
-			}
-		}
-		expert.addCluster(cluster);
-
-		this.addExpert(expert);
 	}
 }

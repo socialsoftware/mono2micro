@@ -107,9 +107,9 @@ export class Views extends React.Component {
                     <Breadcrumb>
                         <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
                         <Breadcrumb.Item href="/codebases">Codebases</Breadcrumb.Item>
-                        <Breadcrumb.Item href={`/codebase/${this.state.codebaseName}`}>{this.state.codebaseName}</Breadcrumb.Item>
-                        <Breadcrumb.Item href={`/codebase/${this.state.codebaseName}/dendrograms`}>Dendrograms</Breadcrumb.Item>
-                        <Breadcrumb.Item href={`/codebase/${this.state.codebaseName}/dendrogram/${this.state.dendrogramName}`}>{this.state.dendrogramName}</Breadcrumb.Item>
+                        <Breadcrumb.Item href={`/codebases/${this.state.codebaseName}`}>{this.state.codebaseName}</Breadcrumb.Item>
+                        <Breadcrumb.Item href={`/codebases/${this.state.codebaseName}/dendrograms`}>Dendrograms</Breadcrumb.Item>
+                        <Breadcrumb.Item href={`/codebases/${this.state.codebaseName}/dendrograms/${this.state.dendrogramName}`}>{this.state.dendrogramName}</Breadcrumb.Item>
                         <Breadcrumb.Item active>{this.state.graphName}</Breadcrumb.Item>
                     </Breadcrumb>
                 </div>

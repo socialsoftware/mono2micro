@@ -12,9 +12,10 @@ export class Dendrograms extends React.Component {
         this.state = {
             codebaseName: this.props.match.params.codebaseName,
             codebase: {},
-            dendrogram: {},
             dendrograms: [],
-            dendrogramGraphs: [],
+            allGraphs: [],
+            profiles: [],
+            selectedProfiles: [],
             isUploaded: "",
             newDendrogramName: "",
             linkageType: "",
@@ -23,7 +24,6 @@ export class Dendrograms extends React.Component {
             readMetricWeight: "",
             sequenceMetric1Weight: "",
             sequenceMetric2Weight: "",
-            selectedProfiles: []
         };
 
         this.handleDeleteDendrogram = this.handleDeleteDendrogram.bind(this);
@@ -38,38 +38,34 @@ export class Dendrograms extends React.Component {
     }
 
     componentDidMount() {
-        const service = new RepositoryService();
-        service.getCodebase(this.state.codebaseName).then(response => {
-            this.setState({
-                codebase: response.data === null ? {} : response.data
-            });
-        });
-
-        this.loadDendrograms();
+        this.loadCodebase();
     }
 
-    loadDendrograms() {
+    loadCodebase() {
         const service = new RepositoryService();
-        service.getDendrograms(this.state.codebaseName).then(response => {
-            this.setState({
-                dendrogram: response.data[0],
-                dendrograms: response.data,
-                dendrogramGraphs: response.data.map(dend => dend.graphs).flat()
-            });
+        service.getCodebase(this.state.codebaseName).then(response => {
+            if (response.data !== null) {
+                this.setState({
+                    codebase: response.data,
+                    profiles: Object.keys(response.data.profiles),
+                    dendrograms: response.data.dendrograms,
+                    allGraphs: response.data.dendrograms.map(dendrogram => dendrogram.graphs).flat()
+                });
+            }
         });
     }
 
     handleSubmit(event){
         event.preventDefault()
-        const service = new RepositoryService();
 
         this.setState({
             isUploaded: "Uploading..."
         });
         
+        const service = new RepositoryService();
         service.createDendrogram(this.state.codebaseName, this.state.newDendrogramName, this.state.linkageType, Number(this.state.accessMetricWeight), Number(this.state.writeMetricWeight), Number(this.state.readMetricWeight), Number(this.state.sequenceMetric1Weight), Number(this.state.sequenceMetric2Weight), this.state.selectedProfiles).then(response => {
             if (response.status === HttpStatus.CREATED) {
-                this.loadDendrograms();
+                this.loadCodebase();
                 this.setState({
                     isUploaded: "Upload completed successfully."
                 });
@@ -136,47 +132,217 @@ export class Dendrograms extends React.Component {
 
     selectProfile(profile) {
         if (this.state.selectedProfiles.includes(profile)) {
-            this.state.selectedProfiles.splice(this.state.selectedProfiles.indexOf(profile), 1);
+            let filteredArray = this.state.selectedProfiles.filter(p => p !== profile);
+            this.setState({
+                selectedProfiles: filteredArray
+            });
         } else {
-            this.state.selectedProfiles.push(profile);
+            this.setState({
+                selectedProfiles: [...this.state.selectedProfiles, profile]
+            });
         }
-        this.setState({
-            selectedProfiles: this.state.selectedProfiles
-        });
     }
 
-    handleDeleteDendrogram() {
+    handleDeleteDendrogram(dendrogramName) {
         const service = new RepositoryService();
-        service.deleteDendrogram(this.state.codebaseName, this.state.dendrogram.name).then(response => {
-            this.loadDendrograms();
+        service.deleteDendrogram(this.state.codebaseName, dendrogramName).then(response => {
+            this.loadCodebase();
         });
     }
 
-    changeDendrogram(value) {
-        this.setState({
-            dendrogram: this.state.dendrograms.filter(d => d.name === value)[0]
-        });
+    renderBreadCrumbs = () => {
+        return (
+            <Breadcrumb>
+                <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+                <Breadcrumb.Item href="/codebases">Codebases</Breadcrumb.Item>
+                <Breadcrumb.Item href={`/codebases/${this.state.codebaseName}`}>{this.state.codebaseName}</Breadcrumb.Item>
+                <Breadcrumb.Item active>Dendrograms</Breadcrumb.Item>
+            </Breadcrumb>
+        );
+    }
+
+    renderCreateDendrogramForm = () => {
+        return (
+            <Form onSubmit={this.handleSubmit}>
+                <Form.Group as={Row} controlId="newDendrogramName">
+                    <Form.Label column sm={3}>
+                        Dendrogram Name
+                    </Form.Label>
+                    <Col sm={5}>
+                        <FormControl 
+                            type="text"
+                            maxLength="30"
+                            placeholder="Dendrogram Name"
+                            value={this.state.newDendrogramName}
+                            onChange={this.handleChangeNewDendrogramName}/>
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} controlId="selectControllerProfiles">
+                    <Form.Label column sm={3}>
+                        Select Controller Profiles
+                    </Form.Label>
+                    <Col sm={5}>
+                        <DropdownButton title={'Controller Profiles'}>
+                            {this.state.profiles.map(profile =>
+                                <Dropdown.Item
+                                    key={profile}
+                                    onSelect={() => this.selectProfile(profile)}
+                                    active={this.state.selectedProfiles.includes(profile)}>{profile}</Dropdown.Item>)}
+                        </DropdownButton>
+                    </Col>
+                </Form.Group>
+
+                <fieldset>
+                    <Form.Group as={Row}>
+                        <Form.Label as="legend" column sm={3}>
+                            Linkage Type
+                        </Form.Label>
+                        <Col sm={5}>
+                        <Form.Check
+                            onClick={this.handleLinkageType}
+                            name="linkageType"
+                            label="Average"
+                            type="radio"
+                            id="average"/>
+                        <Form.Check
+                            onClick={this.handleLinkageType}
+                            name="linkageType"
+                            label="Single"
+                            type="radio"
+                            id="single"/>
+                        <Form.Check
+                            onClick={this.handleLinkageType}
+                            name="linkageType"
+                            label="Complete"
+                            type="radio"
+                            id="complete"/>
+                        </Col>
+                    </Form.Group>
+                </fieldset>
+
+                <Form.Group as={Row} controlId="access">
+                    <Form.Label column sm={3}>
+                        Access Metric Weight (%)
+                    </Form.Label>
+                    <Col sm={5}>
+                        <FormControl 
+                            type="number"
+                            placeholder="0-100"
+                            value={this.state.accessMetricWeight}
+                            onChange={this.handleChangeAccessMetricWeight}/>
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} controlId="write">
+                    <Form.Label column sm={3}>
+                        Write Metric Weight (%)
+                    </Form.Label>
+                    <Col sm={5}>
+                        <FormControl 
+                            type="number"
+                            placeholder="0-100"
+                            value={this.state.writeMetricWeight}
+                            onChange={this.handleChangeWriteMetricWeight}/>
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} controlId="read">
+                    <Form.Label column sm={3}>
+                        Read Metric Weight (%)
+                    </Form.Label>
+                    <Col sm={5}>
+                        <FormControl 
+                            type="number"
+                            placeholder="0-100"
+                            value={this.state.readMetricWeight}
+                            onChange={this.handleChangeReadMetricWeight}/>
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} controlId="sequence1">
+                    <Form.Label column sm={3}>
+                        Sequence Metric 1 Weight (%)
+                    </Form.Label>
+                    <Col sm={5}>
+                        <FormControl 
+                            type="number"
+                            placeholder="0-100"
+                            value={this.state.sequenceMetric1Weight}
+                            onChange={this.handleChangeSequenceMetric1Weight}/>
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} controlId="sequence2">
+                    <Form.Label column sm={3}>
+                        Sequence Metric 2 Weight (%)
+                    </Form.Label>
+                    <Col sm={5}>
+                        <FormControl 
+                            type="number"
+                            placeholder="0-100"
+                            value={this.state.sequenceMetric2Weight}
+                            onChange={this.handleChangeSequenceMetric2Weight}/>
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row}>
+                    <Col sm={{ span: 5, offset: 3 }}>
+                        <Button type="submit"
+                                disabled={this.state.isUploaded === "Uploading..." || 
+                                        this.state.newDendrogramName === "" || 
+                                        this.state.linkageType === "" || 
+                                        this.state.accessMetricWeight === "" || 
+                                        this.state.writeMetricWeight === "" ||
+                                        this.state.readMetricWeight === "" || 
+                                        this.state.sequenceMetric1Weight === "" || 
+                                        this.state.sequenceMetric2Weight === "" ||
+                                        Number(this.state.accessMetricWeight) + Number(this.state.writeMetricWeight) + Number(this.state.readMetricWeight) + Number(this.state.sequenceMetric1Weight) + Number(this.state.sequenceMetric2Weight) !== 100 || 
+                                        this.state.selectedProfiles.length === 0}>
+                            Create Dendrogram
+                        </Button>
+                        <Form.Text>
+                            {this.state.isUploaded}
+                        </Form.Text>
+                    </Col>
+                </Form.Group>
+            </Form>
+        );
+    }
+
+    renderDendrograms = () => {
+        return this.state.dendrograms.map(dendrogram =>
+            <div>
+                <Card className="mb-4" key={dendrogram.name} style={{ width: '20rem' }}>
+                    <Card.Img variant="top" src={URL + "codebase/" + this.state.codebaseName + "/dendrogram/" + dendrogram.name + "/image?" + new Date().getTime()}/>
+                    <Card.Body>
+                        <Card.Title>{dendrogram.name}</Card.Title>
+                        <Card.Text>
+                            Linkage Type: {dendrogram.linkageType}< br/>
+                            Access: {dendrogram.accessMetricWeight}%< br/>
+                            Write: {dendrogram.writeMetricWeight}%< br/>
+                            Read: {dendrogram.readMetricWeight}%< br/>
+                            Sequence 1: {dendrogram.sequenceMetric1Weight}%< br/>
+                            Sequence 2: {dendrogram.sequenceMetric2Weight}%
+                        </Card.Text>
+                        <Button href={`/codebases/${this.state.codebaseName}/dendrograms/${dendrogram.name}`} 
+                                className="mb-2">
+                                    Go to Dendrogram
+                        </Button>
+                        <br/>
+                        <Button onClick={() => this.handleDeleteDendrogram(dendrogram.name)}
+                                variant="danger">
+                                    Delete
+                        </Button>
+                    </Card.Body>
+                </Card>
+                <br/>
+            </div>
+        );
     }
 
     render() {
-        const BreadCrumbs = () => {
-            return (
-                <div>
-                    <Breadcrumb>
-                        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-                        <Breadcrumb.Item href="/codebases">Codebases</Breadcrumb.Item>
-                        <Breadcrumb.Item href={`/codebase/${this.state.codebaseName}`}>{this.state.codebaseName}</Breadcrumb.Item>
-                        <Breadcrumb.Item active>Dendrograms</Breadcrumb.Item>
-                    </Breadcrumb>
-              </div>
-            );
-        };
-
-        const dendrograms = this.state.dendrograms.map(d =>
-            <Button key={d.name} active={this.state.dendrogram.name === d.name} onClick={() => this.changeDendrogram(d.name)}>{d.name}</Button>
-        );
-
-        const metricRows = this.state.dendrogramGraphs.map(graph => {
+        const metricRows = this.state.allGraphs.map(graph => {
             return {
                 id: graph.dendrogramName + graph.name,
                 dendrogram: graph.dendrogramName,
@@ -184,8 +350,9 @@ export class Dendrograms extends React.Component {
                 clusters: graph.clusters.length,
                 singleton: graph.clusters.filter(c => c.entities.length === 1).length,
                 max_cluster_size: Math.max(...graph.clusters.map(c => c.entities.length)),
-                ss: Number(graph.silhouetteScore.toFixed(2))
-            } 
+                ss: Number(graph.silhouetteScore.toFixed(2)),
+                complexity: Number(graph.complexity.toFixed(2))
+            }
         });
 
         const metricColumns = [{
@@ -212,188 +379,25 @@ export class Dendrograms extends React.Component {
             dataField: 'ss',
             text: 'Silhouette Score',
             sort: true
+        }, {
+            dataField: 'complexity',
+            text: 'Complexity',
+            sort: true
         }];
 
         return (
             <div>
-                <BreadCrumbs />
-                <h2>Dendrograms</h2>
+                {this.renderBreadCrumbs()}
+                
+                <h4 style={{color: "#666666"}}>Create Dendrogram</h4>
+                {this.renderCreateDendrogramForm()}
 
-                <Form onSubmit={this.handleSubmit}>
-                    <Form.Group as={Row} controlId="newDendrogramName">
-                        <Form.Label column sm={3}>
-                            Dendrogram Name
-                        </Form.Label>
-                        <Col sm={5}>
-                            <FormControl 
-                                type="text"
-                                maxLength="30"
-                                placeholder="Dendrogram Name"
-                                value={this.state.newDendrogramName}
-                                onChange={this.handleChangeNewDendrogramName}/>
-                        </Col>
-                    </Form.Group>
+                <h4 style={{color: "#666666"}}>Dendrograms</h4>
+                {this.renderDendrograms()}
 
-                    <Form.Group as={Row} controlId="selectControllerProfiles">
-                        <Form.Label column sm={3}>
-                            Select Controller Profiles
-                        </Form.Label>
-                        <Col sm={5}>
-                            <DropdownButton title={'Controller Profiles'}>
-                                {Object.keys(this.state.codebase).length === 0 ? [] : Object.keys(this.state.codebase.profiles).map(profile =>
-                                    <Dropdown.Item
-                                        key={profile}
-                                        onSelect={() => this.selectProfile(profile)}
-                                        active={this.state.selectedProfiles.includes(profile)}>{profile}</Dropdown.Item>)}
-                            </DropdownButton>
-                        </Col>
-                    </Form.Group>
-
-                    <fieldset>
-                        <Form.Group as={Row}>
-                            <Form.Label as="legend" column sm={3}>
-                                Linkage Type
-                            </Form.Label>
-                            <Col sm={5}>
-                            <Form.Check
-                                onClick={this.handleLinkageType}
-                                name="linkageType"
-                                label="Average"
-                                type="radio"
-                                id="average"/>
-                            <Form.Check
-                                onClick={this.handleLinkageType}
-                                name="linkageType"
-                                label="Single"
-                                type="radio"
-                                id="single"/>
-                            <Form.Check
-                                onClick={this.handleLinkageType}
-                                name="linkageType"
-                                label="Complete"
-                                type="radio"
-                                id="complete"/>
-                            </Col>
-                        </Form.Group>
-                    </fieldset>
-
-                    <Form.Group as={Row} controlId="access">
-                        <Form.Label column sm={3}>
-                            Access Metric Weight (%)
-                        </Form.Label>
-                        <Col sm={5}>
-                            <FormControl 
-                                type="number"
-                                placeholder="0-100"
-                                value={this.state.accessMetricWeight}
-                                onChange={this.handleChangeAccessMetricWeight}/>
-                        </Col>
-                    </Form.Group>
-
-                    <Form.Group as={Row} controlId="write">
-                        <Form.Label column sm={3}>
-                            Write Metric Weight (%)
-                        </Form.Label>
-                        <Col sm={5}>
-                            <FormControl 
-                                type="number"
-                                placeholder="0-100"
-                                value={this.state.writeMetricWeight}
-                                onChange={this.handleChangeWriteMetricWeight}/>
-                        </Col>
-                    </Form.Group>
-
-                    <Form.Group as={Row} controlId="read">
-                        <Form.Label column sm={3}>
-                            Read Metric Weight (%)
-                        </Form.Label>
-                        <Col sm={5}>
-                            <FormControl 
-                                type="number"
-                                placeholder="0-100"
-                                value={this.state.readMetricWeight}
-                                onChange={this.handleChangeReadMetricWeight}/>
-                        </Col>
-                    </Form.Group>
-
-                    <Form.Group as={Row} controlId="sequence1">
-                        <Form.Label column sm={3}>
-                            Sequence Metric 1 Weight (%)
-                        </Form.Label>
-                        <Col sm={5}>
-                            <FormControl 
-                                type="number"
-                                placeholder="0-100"
-                                value={this.state.sequenceMetric1Weight}
-                                onChange={this.handleChangeSequenceMetric1Weight}/>
-                        </Col>
-                    </Form.Group>
-
-                    <Form.Group as={Row} controlId="sequence2">
-                        <Form.Label column sm={3}>
-                            Sequence Metric 2 Weight (%)
-                        </Form.Label>
-                        <Col sm={5}>
-                            <FormControl 
-                                type="number"
-                                placeholder="0-100"
-                                value={this.state.sequenceMetric2Weight}
-                                onChange={this.handleChangeSequenceMetric2Weight}/>
-                        </Col>
-                    </Form.Group>
-
-                    <Form.Group as={Row}>
-                        <Col sm={{ span: 5, offset: 3 }}>
-                            <Button type="submit"
-                                    disabled={this.state.isUploaded === "Uploading..." || 
-                                            this.state.newDendrogramName === "" || 
-                                            this.state.linkageType === "" || 
-                                            this.state.accessMetricWeight === "" || 
-                                            this.state.writeMetricWeight === "" ||
-                                            this.state.readMetricWeight === "" || 
-                                            this.state.sequenceMetric1Weight === "" || 
-                                            this.state.sequenceMetric2Weight === "" ||
-                                            Number(this.state.accessMetricWeight) + Number(this.state.writeMetricWeight) + Number(this.state.readMetricWeight) + Number(this.state.sequenceMetric1Weight) + Number(this.state.sequenceMetric2Weight) !== 100 || 
-                                            this.state.selectedProfiles.length === 0}>
-                                Create Dendrogram
-                            </Button>
-                            <Form.Text>
-                                {this.state.isUploaded}
-                            </Form.Text>
-                        </Col>
-                    </Form.Group>
-                </Form>             
-
-                {dendrograms.length !== 0 &&
+                {this.state.allGraphs.length > 0 &&
                     <div>
-                        <div style={{overflow: "auto"}} className="mb-2">
-                            <ButtonGroup>
-                                {dendrograms}
-                            </ButtonGroup>
-                        </div>
-
-                        <Card className="mb-4" key={this.state.dendrogram.name} style={{ width: '20rem' }}>
-                            <Card.Img variant="top" src={URL + "codebase/" + this.state.codebaseName + "/dendrogram/" + this.state.dendrogram.name + "/image?" + new Date().getTime()}/>
-                            <Card.Body>
-                                <Card.Title>Dendrogram: {this.state.dendrogram.name}</Card.Title>
-                                <Card.Text>
-                                    Linkage Type: {this.state.dendrogram.linkageType}< br/>
-                                    Access Metric Weight: {this.state.dendrogram.accessMetricWeight}%< br/>
-                                    Write Metric Weight: {this.state.dendrogram.writeMetricWeight}%< br/>
-                                    Read Metric Weight: {this.state.dendrogram.readMetricWeight}%< br/>
-                                    Sequence Metric 1 Weight: {this.state.dendrogram.sequenceMetric1Weight}%< br/>
-                                    Sequence Metric 2 Weight: {this.state.dendrogram.sequenceMetric2Weight}%
-                                </Card.Text>
-                                <Button href={`/codebase/${this.state.codebaseName}/dendrogram/${this.state.dendrogram.name}`} className="mb-2">Go to Dendrogram</Button><br/>
-                                <Button onClick={this.handleDeleteDendrogram} variant="danger">Delete</Button>
-                            </Card.Body>
-                        </Card>
-                    </div>
-                }
-
-                {this.state.dendrogramGraphs.length > 0 &&
-                    <div>
-                        <h5>Metrics</h5>
+                        <h4 style={{color: "#666666"}}>Metrics</h4>
                         <BootstrapTable bootstrap4 keyField='id' data={ metricRows } columns={ metricColumns } />
                     </div>
                 }

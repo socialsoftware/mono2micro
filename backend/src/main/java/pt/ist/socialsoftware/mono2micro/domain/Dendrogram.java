@@ -303,6 +303,41 @@ public class Dendrogram {
 		CodebaseManager.getInstance().writeSimilarityMatrix(this.codebaseName, this.name, dendrogramData);
 	}
 
+	public void createExpertCut(Graph expert) throws IOException, JSONException {
+		if (this.getGraphNames().contains(expert.getName()))
+			throw new KeyAlreadyExistsException();
+
+		JSONObject datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
+		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
+
+		Cluster cluster = new Cluster("Generic");
+
+		for (String profile : this.profiles) {
+			for (String controllerName : codebase.getProfile(profile)) {
+				Controller controller = new Controller(controllerName);
+				expert.addController(controller);
+
+				JSONArray entities = datafileJSON.getJSONArray(controllerName);
+				for (int i = 0; i < entities.length(); i++) {
+					JSONArray entityArray = entities.getJSONArray(i);
+					String entity = entityArray.getString(0);
+					String mode = entityArray.getString(1);
+					
+					controller.addEntity(entity, mode);
+					controller.addEntitySeq(entity, mode);
+
+					if (!cluster.containsEntity(entity))
+						cluster.addEntity(new Entity(entity));
+				}
+			}
+		}
+
+		expert.addCluster(cluster);
+
+		this.addGraph(expert);
+		expert.calculateMetrics();
+	}
+
 	public void cut(Graph graph) throws Exception {
 		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 

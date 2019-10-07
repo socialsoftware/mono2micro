@@ -18,6 +18,7 @@ public class Graph {
 	private float cutValue;
 	private String cutType;
 	private float silhouetteScore;
+	private float complexity;
 	private List<Controller> controllers = new ArrayList<>();
 	private List<Cluster> clusters = new ArrayList<>();
 
@@ -78,6 +79,14 @@ public class Graph {
 
 	public void setSilhouetteScore(float silhouetteScore) {
 		this.silhouetteScore = silhouetteScore;
+	}
+
+	public float getComplexity() {
+		return complexity;
+	}
+
+	public void setComplexity(float complexity) {
+		this.complexity = complexity;
 	}
 
 	public List<Controller> getControllers() {

@@ -1,15 +1,14 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { Home } from './Home';
-import { DendrogramCut } from './dendrogram/DendrogramCut';
+import { Dendrogram } from './dendrogram/Dendrogram';
 import { Views } from './view/Views';
 import { Dendrograms } from './dendrogram/Dendrograms'
 import { Codebases } from './codebase/Codebases';
 import { Codebase } from './codebase/Codebase';
 import { Analysis } from './analysis/Analysis';
-import { Experts } from './expert/Experts';
-import { Expert } from './expert/Expert';
 import { Analyser } from './analysis/Analyser';
+import { Profiles } from './profile/Profiles';
 
 export const Main = () => (
   <main>
@@ -17,13 +16,12 @@ export const Main = () => (
       <Route exact path='/' component={Home}/>
 
       <Route exact path='/codebases' component={Codebases} />
-      <Route exact path='/codebase/:codebaseName' component={Codebase} />
-      <Route exact path='/codebase/:codebaseName/dendrograms' component={Dendrograms} />
-      <Route exact path='/codebase/:codebaseName/dendrogram/:dendrogramName' component={DendrogramCut} />
-      <Route exact path='/codebase/:codebaseName/dendrogram/:dendrogramName/graph/:graphName' component={Views} />
-      
-      <Route exact path='/codebase/:codebaseName/experts' component={Experts} />
-      <Route exact path='/codebase/:codebaseName/expert/:expertName' component={Expert} />
+      <Route exact path='/codebases/:codebaseName' component={Codebase} />
+      <Route exact path='/codebases/:codebaseName/dendrograms' component={Dendrograms} />
+      <Route exact path='/codebases/:codebaseName/dendrograms/:dendrogramName' component={Dendrogram} />
+      <Route exact path='/codebases/:codebaseName/dendrograms/:dendrogramName/graphs/:graphName' component={Views} />
+
+      <Route exact path='/codebases/:codebaseName/profiles' component={Profiles} />
 
       <Route exact path='/analysis' component={Analysis} />
       <Route exact path='/analyser' component={Analyser} />

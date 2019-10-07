@@ -6,10 +6,15 @@ import BootstrapTable from 'react-bootstrap-table-next';
 var HttpStatus = require('http-status-codes');
 
 var count = 0;
-var interval = 100;
-var multiplier = 1;
+var interval = 1;
+var multiplier = 100;
 var minClusters = 2;
-var maxClusters = 10;
+var maxClusters = 15;
+
+var activeRequests = 0;
+var maxActiveRequests = 10;
+
+var total = 0;
 
 
 export class Analyser extends React.Component {
@@ -42,7 +47,9 @@ export class Analyser extends React.Component {
     setCodebase(codebase) {
         this.setState({
             codebase: codebase,
-            experts: codebase.experts
+            experts: codebase.dendrograms.map(dendrogram => dendrogram.graphs)
+                                        .flat()
+                                        .filter(graph => graph.expert === true)
         });
     }
 
@@ -52,7 +59,8 @@ export class Analyser extends React.Component {
         });
     }
 
-    sendRequest(a, w, r, s1, s2) {
+    async sendRequest(a, w, r, s1, s2) {
+        total += maxClusters - minClusters;
         const service = new RepositoryService();
 
         a *= multiplier;
@@ -72,8 +80,15 @@ export class Analyser extends React.Component {
             requestData["sequence2Weight"] = s2;
             requestData["numberClusters"] = n;
 
+            while (activeRequests >= maxActiveRequests) {
+                await this.sleep(3000);
+            }
+
+            activeRequests = activeRequests + 1;
             count = count + 1;
+            
             service.analyser(requestData).then(response => {
+                activeRequests = activeRequests - 1;
                 if (response.status === HttpStatus.OK) {
                     this.setState({
                         allData: [...this.state.allData, response.data]
@@ -92,35 +107,30 @@ export class Analyser extends React.Component {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    async handleSubmit(event) {
+    handleSubmit(event) {
         event.preventDefault();
 
         for (var a = interval; a >= 0; a--) { 
             let remainder = interval - a;
             if (remainder === 0) {
                 this.sendRequest(a, 0, 0, 0, 0);
-                await this.sleep(4000);
             } else {
                 for (var w = remainder; w >= 0; w--) { 
                     let remainder2 = remainder - w;
                     if (remainder2 === 0) {
                         this.sendRequest(a, w, 0, 0, 0);
-                        await this.sleep(4000);
                     } else {
                         for (var r = remainder2; r >= 0; r--) { 
                             let remainder3 = remainder2 - r;
                             if (remainder3 === 0) {
                                 this.sendRequest(a, w, r, 0, 0);
-                                await this.sleep(4000);
                             } else {
                                 for (var s1 = remainder3; s1 >= 0; s1--) {
                                     let remainder4 = remainder3 - s1;
                                     if (remainder4 === 0) {
                                         this.sendRequest(a, w, r, s1, 0);
-                                        await this.sleep(4000);
                                     } else {
                                         this.sendRequest(a, w, r, s1, remainder4);
-                                        await this.sleep(4000);
                                     }
                                 }
                             }
@@ -131,17 +141,16 @@ export class Analyser extends React.Component {
         }
     }
 
+    renderBreadCrumbs = () => {
+        return (
+            <Breadcrumb>
+                <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+                <Breadcrumb.Item active>Analyser</Breadcrumb.Item>
+            </Breadcrumb>
+        );
+    }
+
     render() {
-        const BreadCrumbs = () => {
-            return (
-                <div>
-                    <Breadcrumb>
-                        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-                        <Breadcrumb.Item active>Analyser</Breadcrumb.Item>
-                    </Breadcrumb>
-                </div>
-            );
-        };
 
         const metricRows = this.state.allData.map((data, index) => {
             return {
@@ -156,7 +165,8 @@ export class Analyser extends React.Component {
                 precision: data.precision,
                 recall: data.recall,
                 specificity: data.specificity,
-                fmeasure: data.fmeasure
+                fmeasure: data.fmeasure,
+                complexity: data.complexity
             } 
         });
 
@@ -204,12 +214,16 @@ export class Analyser extends React.Component {
             dataField: 'fmeasure',
             text: 'F-Score',
             sort: true
+        }, {
+            dataField: 'complexity',
+            text: 'Complexity',
+            sort: true
         }];
 
         return (
             <div>
-                <BreadCrumbs />
-                <h2>Analyser</h2>
+                {this.renderBreadCrumbs()}
+                <h4 style={{color: "#666666"}}>Analyser</h4>
 
                 <Form onSubmit={this.handleSubmit}>
                     <Form.Group as={Row} controlId="codebase">
@@ -248,7 +262,7 @@ export class Analyser extends React.Component {
                                 Submit
                             </Button>
                             <Form.Text>
-                                Loading: {this.state.allData.length}/{count}
+                                Loading: {this.state.allData.length}/{count}/{total}
                             </Form.Text>
                         </Col>
                     </Form.Group>

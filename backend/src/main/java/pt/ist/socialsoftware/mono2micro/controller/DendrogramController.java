@@ -104,4 +104,21 @@ public class DendrogramController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 	}
+
+
+	@RequestMapping(value = "/dendrogram/{dendrogramName}/expertCut", method = RequestMethod.POST)
+	public ResponseEntity<HttpStatus> createExpertCut(@PathVariable String codebaseName, @PathVariable String dendrogramName, @RequestBody Graph graph) {
+		logger.debug("createExpertCut");
+
+		try {
+			Codebase codebase = codebaseManager.getCodebase(codebaseName);
+            codebase.getDendrogram(dendrogramName).createExpertCut(graph);;
+            codebaseManager.writeCodebase(codebaseName, codebase);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (KeyAlreadyExistsException e) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+	}
 }

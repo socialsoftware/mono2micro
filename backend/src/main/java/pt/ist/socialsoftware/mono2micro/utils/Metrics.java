@@ -1,6 +1,5 @@
 package pt.ist.socialsoftware.mono2micro.utils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -21,6 +20,7 @@ public class Metrics {
     public void calculateMetrics() {
         Map<String,List<Controller>> clusterControllers = graph.getClusterControllers();
 		Map<String,List<Pair<Cluster,String>>> controllerClustersSeq = graph.getControllerClustersSeq();
+		float graphComplexity = 0;
 		float maximumSeqLength = 0;
 		float totalSequenceLength = 0;
 		for (String ctr : controllerClustersSeq.keySet()) {
@@ -31,8 +31,11 @@ public class Metrics {
 		
 		for (Controller controller : graph.getControllers()) {
 			calculateControllerComplexity(controller, controllerClustersSeq, maximumSeqLength);
-            calculateControllerComplexity2(controller);
-        }
+			calculateControllerComplexity2(controller);
+			graphComplexity += controller.getComplexity2();
+		}
+		graphComplexity /= graph.getControllers().size();
+		this.graph.setComplexity(graphComplexity);
             
 		for (Cluster cluster : graph.getClusters()) {
 			calculateClusterComplexity(cluster, clusterControllers);
@@ -77,17 +80,6 @@ public class Metrics {
 		complexity2 += clusterWriteCost.size();
 
         controller.setComplexity2(complexity2);
-    }
-
-    private float getMaximumSequenceLength() {
-        Map<String,List<Pair<Cluster,String>>> controllerClustersSeq = this.graph.getControllerClustersSeq();
-        
-        float maximumSequenceLength = 0;
-        for (String controller : controllerClustersSeq.keySet()) {
-			if (controllerClustersSeq.get(controller).size() > maximumSequenceLength)
-				maximumSequenceLength = controllerClustersSeq.get(controller).size();
-        }
-        return maximumSequenceLength;
     }
 
     private void costOfRead(Controller controller, String entity, Set<String> clusterReadCost) {

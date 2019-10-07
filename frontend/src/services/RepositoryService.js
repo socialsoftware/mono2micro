@@ -25,61 +25,6 @@ export class RepositoryService {
     }
 
 
-    //Experts
-    getExpertNames(codebaseName) {
-        return this.axios.get("/codebase/" + codebaseName + "/expertNames");
-    }
-
-    getExperts(codebaseName) {
-        return this.axios.get("/codebase/" + codebaseName + "/experts");
-    }
-
-    getExpert(codebaseName, expertName) {
-        return this.axios.get("/codebase/" + codebaseName + "/expert/" + expertName);
-    }
-
-    deleteExpert(codebaseName, expertName) {
-        return this.axios.delete("/codebase/" + codebaseName + "/expert/" + expertName + "/delete");
-    }
-
-    addCluster(codebaseName, expertName, cluster) {
-        return this.axios.post("/codebase/" + codebaseName + "/expert/" + expertName + "/addCluster", null,
-            {
-                params: {
-                    "cluster" : cluster
-                }
-            });
-    }
-
-    moveEntities(codebaseName, expertName, entities, cluster) {
-        return this.axios.post("/codebase/" + codebaseName + "/expert/" + expertName + "/moveEntities", 
-            entities,
-            {
-                params: {
-                    "cluster" : cluster
-                }
-            }
-        );
-    }
-
-    deleteCluster(codebaseName, expertName, cluster) {
-        return this.axios.delete("/codebase/" + codebaseName + "/expert/" + expertName + "/deleteCluster", 
-            {
-                params: {
-                    "cluster" : cluster
-                }
-            });
-    }
-
-    createExpert(codebaseName, expertName) {
-        return this.axios.post("/codebase/" + codebaseName + "/expert/create", {
-            codebaseName: codebaseName,
-            name: expertName,
-            expert: true
-        });
-    }
-
-
 
 
 
@@ -188,6 +133,16 @@ export class RepositoryService {
             cutType: cutType
         };
         return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/cut", graphData);
+    }
+
+    expertCut(codebaseName, dendrogramName, expertName) {
+        const graphData = {
+            codebaseName: codebaseName,
+            dendrogramName: dendrogramName,
+            expert: true,
+            name: expertName
+        };
+        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/expertCut", graphData);
     }
 
 

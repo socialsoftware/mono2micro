@@ -12,7 +12,6 @@ export class Analysis extends React.Component {
         this.state = {
             codebases: [],
             codebase: {},
-            experts: [],
             graphs: [],
             isUploaded: "",
             graph1: {},
@@ -25,7 +24,7 @@ export class Analysis extends React.Component {
     }
 
     componentDidMount() {
-        this.loadCodebases()
+        this.loadCodebases();
     }
 
     loadCodebases() {
@@ -40,8 +39,7 @@ export class Analysis extends React.Component {
     setCodebase(codebase) {
         this.setState({
             codebase: codebase,
-            experts: codebase.experts,
-            graphs: codebase.dendrograms.map(dend => dend.graphs).flat()
+            graphs: codebase.dendrograms.map(dendrogram => dendrogram.graphs).flat()
         });
     }
 
@@ -89,18 +87,16 @@ export class Analysis extends React.Component {
         });
     }
 
+    renderBreadCrumbs = () => {
+        return (
+            <Breadcrumb>
+                <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+                <Breadcrumb.Item active>Microservice Analysis</Breadcrumb.Item>
+            </Breadcrumb>
+        );
+    }
+
     render() {
-        console.log(this.state.graph1.expert);
-        const BreadCrumbs = () => {
-            return (
-                <div>
-                    <Breadcrumb>
-                        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-                        <Breadcrumb.Item active>Microservice Analysis</Breadcrumb.Item>
-                    </Breadcrumb>
-                </div>
-            );
-        };
 
         const falsePairRows = this.state.falsePairs.map(falsePair => {
             return {
@@ -147,8 +143,8 @@ export class Analysis extends React.Component {
 
         return (
             <div>
-                <BreadCrumbs />
-                <h2>Microservice Analysis</h2>
+                {this.renderBreadCrumbs()}
+                <h4 style={{color: "#666666"}}>Microservice Analysis</h4>
 
                 <Form onSubmit={this.handleSubmit}>
                     <Form.Group as={Row} controlId="codebase">
@@ -170,13 +166,13 @@ export class Analysis extends React.Component {
                             Source of Truth
                         </Form.Label>
                         <Col sm={5}>
-                            <DropdownButton title={Object.keys(this.state.graph1).length === 0 ? "Select Cut" : this.state.graph1.expert ? "Expert: " + this.state.graph1.name : this.state.graph1.name + " from " + this.state.graph1.dendrogramName}>
-                                {this.state.experts.map(expert =>
+                            <DropdownButton title={Object.keys(this.state.graph1).length === 0 ? "Select Cut" : this.state.graph1.name + " from " + this.state.graph1.dendrogramName}>
+                                {this.state.graphs.filter(graph => graph.expert === true).map(graph =>
                                     <Dropdown.Item
-                                        key={expert.name}
-                                        onClick={() => this.setGraph1(expert)}>{"Expert: " + expert.name}</Dropdown.Item>)}
+                                        key={graph.name}
+                                        onClick={() => this.setGraph1(graph)}>{graph.name + " from " + graph.dendrogramName}</Dropdown.Item>)}
                                 <Dropdown.Divider />
-                                {this.state.graphs.map(graph => 
+                                {this.state.graphs.filter(graph => graph.expert === false).map(graph => 
                                     <Dropdown.Item
                                         key={graph.name}
                                         onClick={() => this.setGraph1(graph)}>{graph.name + " from " + graph.dendrogramName}</Dropdown.Item>)}
@@ -189,13 +185,13 @@ export class Analysis extends React.Component {
                             Compare to Cut
                         </Form.Label>
                         <Col sm={5}>
-                            <DropdownButton title={Object.keys(this.state.graph2).length === 0 ? "Select Cut" : this.state.graph2.expert ? "Expert: " + this.state.graph2.name : this.state.graph2.name + " from " + this.state.graph2.dendrogramName}>
-                                {this.state.experts.map(expert =>
+                            <DropdownButton title={Object.keys(this.state.graph2).length === 0 ? "Select Cut" : this.state.graph2.name + " from " + this.state.graph2.dendrogramName}>
+                                {this.state.graphs.filter(graph => graph.expert === true).map(graph =>
                                     <Dropdown.Item
-                                        key={expert.name}
-                                        onClick={() => this.setGraph2(expert)}>{"Expert: " + expert.name}</Dropdown.Item>)}
+                                        key={graph.name}
+                                        onClick={() => this.setGraph2(graph)}>{graph.name + " from " + graph.dendrogramName}</Dropdown.Item>)}
                                 <Dropdown.Divider />
-                                {this.state.graphs.map(graph => 
+                                {this.state.graphs.filter(graph => graph.expert === false).map(graph => 
                                     <Dropdown.Item
                                         key={graph.name}
                                         onClick={() => this.setGraph2(graph)}>{graph.name + " from " + graph.dendrogramName}</Dropdown.Item>)}
