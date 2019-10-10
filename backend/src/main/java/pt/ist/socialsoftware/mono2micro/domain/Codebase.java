@@ -8,18 +8,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 
 import org.apache.commons.io.FileUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 
 public class Codebase {
 	private String name;

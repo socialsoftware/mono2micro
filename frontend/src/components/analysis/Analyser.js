@@ -6,8 +6,8 @@ import BootstrapTable from 'react-bootstrap-table-next';
 var HttpStatus = require('http-status-codes');
 
 var count = 0;
-var interval = 1;
-var multiplier = 100;
+var interval = 10;
+var multiplier = 10;
 var minClusters = 2;
 var maxClusters = 15;
 
@@ -16,6 +16,7 @@ var maxActiveRequests = 10;
 
 var total = 0;
 
+var maxRequests = 50;
 
 export class Analyser extends React.Component {
     constructor(props) {
@@ -81,8 +82,11 @@ export class Analyser extends React.Component {
             requestData["numberClusters"] = n;
 
             while (activeRequests >= maxActiveRequests) {
-                await this.sleep(3000);
+                await this.sleep(1000);
             }
+
+            if (count == maxRequests)
+                return;
 
             activeRequests = activeRequests + 1;
             count = count + 1;
@@ -161,12 +165,12 @@ export class Analyser extends React.Component {
                 sequence1: data.sequence1Weight,
                 sequence2: data.sequence2Weight,
                 numberClusters: data.numberClusters,
-                accuracy: data.accuracy,
-                precision: data.precision,
-                recall: data.recall,
-                specificity: data.specificity,
-                fmeasure: data.fmeasure,
-                complexity: data.complexity
+                accuracy: Number(data.accuracy).toFixed(2),
+                precision: Number(data.precision).toFixed(2),
+                recall: Number(data.recall).toFixed(2),
+                specificity: Number(data.specificity).toFixed(2),
+                fmeasure: Number(data.fmeasure).toFixed(2),
+                complexity: Number(data.complexity).toFixed(2)
             } 
         });
 
@@ -217,7 +221,13 @@ export class Analyser extends React.Component {
         }, {
             dataField: 'complexity',
             text: 'Complexity',
-            sort: true
+            sort: true,
+            sortFunc: (a, b, order, dataField, rowA, rowB) => {
+                if (order === 'asc')
+                    return a - b;
+                else
+                    return b - a;
+            }
         }];
 
         return (

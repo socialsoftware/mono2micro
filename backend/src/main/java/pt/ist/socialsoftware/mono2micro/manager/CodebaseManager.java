@@ -1,5 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.manager;
 
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,7 +28,6 @@ import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
 
 public class CodebaseManager {
 
@@ -159,5 +160,16 @@ public class CodebaseManager {
 		JSONObject clustersJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
 		is.close();
 		return clustersJSON;
+	}
+
+	public JSONObject getAnalyserResults(String codebaseName) throws IOException, JSONException {
+		File file = new File(CODEBASES_PATH + codebaseName + "/analyser.json");
+		return new JSONObject(FileUtils.readFileToString(file, "utf-8"));
+	}
+
+	public void writeAnalyserResults(String codebaseName, JSONObject analyser) throws IOException, JSONException {
+		FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser.json");
+		file.write(analyser.toString(4));
+		file.close();
 	}
 }

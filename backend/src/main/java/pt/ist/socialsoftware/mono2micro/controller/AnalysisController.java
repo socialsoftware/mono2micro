@@ -1,10 +1,13 @@
 package pt.ist.socialsoftware.mono2micro.controller;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -37,17 +40,31 @@ public class AnalysisController {
 		logger.debug("analyser");
 		
 		try {
+			String inputParameters = String.format("%.0f", analyser.getAccessWeight()) + "," +
+									String.format("%.0f", analyser.getWriteWeight()) + "," +
+									String.format("%.0f", analyser.getReadWeight()) + "," +
+									String.format("%.0f", analyser.getSequence1Weight()) + "," +
+									String.format("%.0f", analyser.getSequence2Weight()) + "," +
+									String.format("%.0f", analyser.getNumberClusters());
+			
+			JSONObject analyserJSON = CodebaseManager.getInstance().getAnalyserResults(analyser.getCodebaseName());
+			if (analyserJSON.has(inputParameters)) {
+				JSONObject analyserResult = analyserJSON.getJSONObject(inputParameters);
+				analyser.setAccuracy(BigDecimal.valueOf(analyserResult.getDouble("accuracy")).floatValue());
+				analyser.setPrecision(BigDecimal.valueOf(analyserResult.getDouble("precision")).floatValue());
+				analyser.setRecall(BigDecimal.valueOf(analyserResult.getDouble("recall")).floatValue());
+				analyser.setSpecificity(BigDecimal.valueOf(analyserResult.getDouble("specificity")).floatValue());
+				analyser.setFmeasure(BigDecimal.valueOf(analyserResult.getDouble("fmeasure")).floatValue());
+				analyser.setComplexity(BigDecimal.valueOf(analyserResult.getDouble("complexity")).floatValue());
+			
+				return new ResponseEntity<>(analyser, HttpStatus.OK);
+			}
+
 			Codebase codebase = codebaseManager.getCodebase(analyser.getCodebaseName());
 
 			Dendrogram dendrogram = new Dendrogram();
 			dendrogram.setCodebaseName(analyser.getCodebaseName());
-			String dendrogramName = analyser.getAccessWeight() + "-" +
-									analyser.getWriteWeight() + "-" +
-									analyser.getReadWeight() + "-" +
-									analyser.getSequence1Weight() + "-" +
-									analyser.getSequence2Weight() + "-" +
-									analyser.getNumberClusters();
-			dendrogram.setName(dendrogramName);
+			dendrogram.setName(inputParameters);
 			dendrogram.setLinkageType("average");
 			dendrogram.setAccessMetricWeight(analyser.getAccessWeight());
 			dendrogram.setWriteMetricWeight(analyser.getWriteWeight());
@@ -60,7 +77,7 @@ public class AnalysisController {
 
 			Graph graph = new Graph();
 			graph.setCodebaseName(analyser.getCodebaseName());
-			graph.setDendrogramName(dendrogramName);
+			graph.setDendrogramName(inputParameters);
 			graph.setExpert(false);
 			graph.setCutType("N");
 			graph.setCutValue(analyser.getNumberClusters());
@@ -70,6 +87,7 @@ public class AnalysisController {
 			AnalysisDto analysisDto = new AnalysisDto();
 			analysisDto.setGraph1(analyser.getExpert());
 			analysisDto.setGraph2(graph);
+			
 			analysisDto = getAnalysis(analysisDto).getBody();
 
 			analyser.setAccuracy(analysisDto.getAccuracy());
@@ -78,8 +96,17 @@ public class AnalysisController {
 			analyser.setSpecificity(analysisDto.getSpecificity());
 			analyser.setFmeasure(analysisDto.getFmeasure());
 			analyser.setComplexity(graph.getComplexity());
+			analyser.setExpert(null);
 
-			codebase.deleteDendrogram(dendrogramName);
+			JSONObject analyserDtoJson = new JSONObject(analyser);
+
+			synchronized(this) {
+				analyserJSON = CodebaseManager.getInstance().getAnalyserResults(analyser.getCodebaseName());
+				analyserJSON.put(inputParameters, analyserDtoJson);
+				CodebaseManager.getInstance().writeAnalyserResults(analyser.getCodebaseName(), analyserJSON);
+			}
+
+			codebase.deleteDendrogram(inputParameters);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -189,10 +216,15 @@ public class AnalysisController {
 		analysis.setFalseNegative(falseNegative);
 
 		float accuracy = (float)(truePositive + trueNegative) / (truePositive + trueNegative + falsePositive + falseNegative);
+		accuracy = BigDecimal.valueOf(accuracy).setScale(2, RoundingMode.HALF_UP).floatValue();
 		float precision = (float)truePositive / (truePositive + falsePositive);
+		precision = BigDecimal.valueOf(precision).setScale(2, RoundingMode.HALF_UP).floatValue();
 		float recall = (float)truePositive / (truePositive + falseNegative);
+		recall = BigDecimal.valueOf(recall).setScale(2, RoundingMode.HALF_UP).floatValue();
 		float specificity = (float)trueNegative / (trueNegative + falsePositive);
+		specificity = BigDecimal.valueOf(specificity).setScale(2, RoundingMode.HALF_UP).floatValue();
 		float fmeasure = 2*precision*recall / (precision + recall);
+		fmeasure = BigDecimal.valueOf(fmeasure).setScale(2, RoundingMode.HALF_UP).floatValue();
 		analysis.setAccuracy(accuracy);
 		analysis.setPrecision(precision);
 		analysis.setRecall(recall);

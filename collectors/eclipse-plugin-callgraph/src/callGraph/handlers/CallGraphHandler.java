@@ -146,22 +146,16 @@ public class CallGraphHandler extends AbstractHandler {
 
 	private void collectControllersAndEntities(IProject project) {
 		try {
-			System.out.println("a");
-			//if (project.isNatureEnabled("org.eclipse.jdt.core.javanature")) {
-				System.out.println("b");
+			if (project.isNatureEnabled("org.eclipse.jdt.core.javanature")) {
 				IJavaProject javaProject = JavaCore.create(project);
 				IPackageFragment[] packages = javaProject.getPackageFragments();
 				
 				for (IPackageFragment aPackage : packages) {
-					System.out.println("c");
 					
 					// We will only look at the package from the source folder
 					if (aPackage.getKind() == IPackageFragmentRoot.K_SOURCE) {
-						System.out.println("d");
 						for (ICompilationUnit unit : aPackage.getCompilationUnits()) {
-							System.out.println("e");
 							for (IType type : unit.getTypes()) {
-								System.out.println(type.getElementName());
 								if (type.getAnnotation("Controller").exists()) { //Controller class
 									controllers.add(type);
 									allEntities.add(type.getElementName());
@@ -185,7 +179,7 @@ public class CallGraphHandler extends AbstractHandler {
 					}
 				}
 				Collections.sort(allEntities, (string1, string2) -> Integer.compare(string2.length(), string1.length()));  //Longer length first
-			//}
+			}
 		} catch (JavaModelException e) {
 			e.printStackTrace();
 		} catch (CoreException e) {

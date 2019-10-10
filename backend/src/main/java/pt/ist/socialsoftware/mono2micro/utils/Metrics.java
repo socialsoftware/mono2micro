@@ -1,5 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.utils;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -35,6 +37,7 @@ public class Metrics {
 			graphComplexity += controller.getComplexity2();
 		}
 		graphComplexity /= graph.getControllers().size();
+		graphComplexity = BigDecimal.valueOf(graphComplexity).setScale(2, RoundingMode.HALF_UP).floatValue();
 		this.graph.setComplexity(graphComplexity);
             
 		for (Cluster cluster : graph.getClusters()) {
@@ -133,8 +136,11 @@ public class Metrics {
 			complexitySeq = 0;
 		} else {
 			complexity = clusterAccessedAmount / graph.getClusters().size();
+			complexity = BigDecimal.valueOf(complexity).setScale(2, RoundingMode.HALF_UP).floatValue();
 			complexityRW = clusterAccessedRW / graph.getClusters().size();
+			complexityRW = BigDecimal.valueOf(complexityRW).setScale(2, RoundingMode.HALF_UP).floatValue();
 			complexitySeq = controllerClustersSeq.get(controller.getName()).size() / maximumSeqLength;
+			complexitySeq = BigDecimal.valueOf(complexitySeq).setScale(2, RoundingMode.HALF_UP).floatValue();
 		}
 		controller.setComplexity(complexity);
 		controller.setComplexityRW(complexityRW);
@@ -150,8 +156,11 @@ public class Metrics {
 				complexitySeq += ctr.getComplexitySeq();
 			}
 			complexity /= clusterControllers.get(cluster.getName()).size();
+			complexity = BigDecimal.valueOf(complexity).setScale(2, RoundingMode.HALF_UP).floatValue();
 			complexityRW /= clusterControllers.get(cluster.getName()).size();
+			complexityRW = BigDecimal.valueOf(complexityRW).setScale(2, RoundingMode.HALF_UP).floatValue();
 			complexitySeq /= clusterControllers.get(cluster.getName()).size();
+			complexitySeq = BigDecimal.valueOf(complexitySeq).setScale(2, RoundingMode.HALF_UP).floatValue();
 		}
 		cluster.setComplexity(complexity);
 		cluster.setComplexityRW(complexityRW);
@@ -207,9 +216,15 @@ public class Metrics {
 					}
 				}
 			}
-			coupling.put(c2.getName(), commonControllers / cluster1Controllers.size());
-			couplingRW.put(c2.getName(), commonControllersW / cluster1Controllers.size());
-			couplingSeq.put(c2.getName(), totalSequenceLength == 0 ? 0 : (c1c2Count + c2c1Count) / totalSequenceLength);
+			float couplingValue = commonControllers / cluster1Controllers.size();
+			couplingValue = BigDecimal.valueOf(couplingValue).setScale(2, RoundingMode.HALF_UP).floatValue();
+			coupling.put(c2.getName(), couplingValue);
+			float couplingRWValue = commonControllersW / cluster1Controllers.size();
+			couplingRWValue = BigDecimal.valueOf(couplingRWValue).setScale(2, RoundingMode.HALF_UP).floatValue();
+			couplingRW.put(c2.getName(), couplingRWValue);
+			float couplingSeqValue = totalSequenceLength == 0 ? 0 : (c1c2Count + c2c1Count) / totalSequenceLength;
+			couplingSeqValue = BigDecimal.valueOf(couplingSeqValue).setScale(2, RoundingMode.HALF_UP).floatValue();
+			couplingSeq.put(c2.getName(), couplingSeqValue);
 		}
 		c1.setCoupling(coupling);
 		c1.setCouplingRW(couplingRW);
