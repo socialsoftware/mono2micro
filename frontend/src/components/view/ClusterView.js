@@ -4,7 +4,7 @@ import { ClusterOperationsMenu, operations } from './ClusterOperationsMenu';
 import { VisNetwork } from '../util/VisNetwork';
 import { ModalMessage } from '../util/ModalMessage';
 import { DataSet } from 'vis';
-import { views, types } from './ViewsMenu';
+import { views, types } from './Views';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { Button, ButtonGroup } from 'react-bootstrap';
 
@@ -144,14 +144,10 @@ export class ClusterView extends React.Component {
 
                 let couplingC1C2 = clusters[i].coupling[clusters[j].name];
                 let couplingC2C1 = clusters[j].coupling[clusters[i].name];
-                let couplingRWC1C2 = clusters[i].couplingRW[clusters[j].name];
-                let couplingRWC2C1 = clusters[j].couplingRW[clusters[i].name];
-                let couplingSeqC1C2 = clusters[i].couplingSeq[clusters[j].name];
-                let couplingSeqC2C1 = clusters[j].couplingSeq[clusters[i].name];
 
 
-                let edgeTitle = clusters[i].name + " -> " + clusters[j].name + " , Coupling: A(" + Number(couplingC1C2.toFixed(2)) + "), RW(" + Number(couplingRWC1C2.toFixed(2)) + "), Seq(" + Number(couplingSeqC1C2.toFixed(2)) + ")<br>";
-                edgeTitle += clusters[j].name + " -> " + clusters[i].name + " , Coupling: A(" + Number(couplingC2C1.toFixed(2)) + "), RW(" + Number(couplingRWC2C1.toFixed(2)) + "), Seq(" + Number(couplingSeqC2C1.toFixed(2)) + ")<br>";
+                let edgeTitle = clusters[i].name + " -> " + clusters[j].name + " , Coupling: " + couplingC1C2 + "<br>";
+                edgeTitle += clusters[j].name + " -> " + clusters[i].name + " , Coupling: " + couplingC2C1 + "<br>";
                 edgeTitle += "Controllers in common:<br>"
 
                 let edgeLength = (1/controllersInCommon.length)*edgeLengthFactor;
@@ -341,15 +337,11 @@ export class ClusterView extends React.Component {
         const metricsRows = this.state.clusters.map(cluster => {
             return {
                 cluster: cluster.name,
-                controllers: this.state.clusterControllers[cluster.name].length,
                 entities: cluster.entities.length,
-                cohesion: Number(cluster.cohesion.toFixed(2)),
-                complexity: Number(cluster.complexity.toFixed(2)),
-                complexityrw: Number(cluster.complexityRW.toFixed(2)),
-                complexityseq: Number(cluster.complexitySeq.toFixed(2)),
+                controllers: this.state.clusterControllers[cluster.name].length,
+                cohesion: cluster.cohesion,
+                complexity: cluster.complexity,
                 coupling: Number(((Object.values(cluster.coupling).reduce((a,b) => a + b, 0) - 1) / (Object.keys(cluster.coupling).length - 1)).toFixed(2)),
-                couplingrw: Number(((Object.values(cluster.couplingRW).reduce((a,b) => a + b, 0) - 1) / (Object.keys(cluster.couplingRW).length - 1)).toFixed(2)),
-                couplingseq: Number(((Object.values(cluster.couplingSeq).reduce((a,b) => a + b, 0) - 1) / (Object.keys(cluster.couplingSeq).length - 1)).toFixed(2))
             }
         });
 
@@ -357,12 +349,12 @@ export class ClusterView extends React.Component {
             dataField: 'cluster',
             text: 'Cluster'
         }, {
-            dataField: 'controllers',
-            text: 'Controllers',
-            sort: true
-        }, {
             dataField: 'entities',
             text: 'Entities',
+            sort: true
+        }, {
+            dataField: 'controllers',
+            text: 'Controllers',
             sort: true
         }, {
             dataField: 'cohesion',
@@ -370,37 +362,18 @@ export class ClusterView extends React.Component {
             sort: true
         }, {
             dataField: 'complexity',
-            text: 'Complexity Access',
-            sort: true
-        }, {
-            dataField: 'complexityrw',
-            text: 'Complexity RW',
-            sort: true
-        }, {
-            dataField: 'complexityseq',
-            text: 'Complexity Seq',
+            text: 'Complexity',
             sort: true
         }, {
             dataField: 'coupling',
-            text: 'Coupling Access',
-            sort: true
-        }, {
-            dataField: 'couplingrw',
-            text: 'Coupling RW',
-            sort: true
-        }, {
-            dataField: 'couplingseq',
-            text: 'Coupling Seq',
+            text: 'Coupling',
             sort: true
         }];
 
         const couplingRows = this.state.clusters.map(c1 => {
             return Object.assign({id: c1.name}, ...this.state.clusters.map(c2 => {
-                let couplingC1C2 = Number(c1.coupling[c2.name].toFixed(2));
-                let couplingRWC1C2 = Number(c1.couplingRW[c2.name].toFixed(2));
-                let couplingSeqC1C2 = Number(c1.couplingSeq[c2.name].toFixed(2));
                 return {
-                    [c2.name]: "A(" + couplingC1C2 + "), RW(" + couplingRWC1C2 + "), Seq(" + couplingSeqC1C2 + ")"
+                    [c2.name]: c1.name === c2.name ? "---" : c1.coupling[c2.name]
                 }
             }))
         });

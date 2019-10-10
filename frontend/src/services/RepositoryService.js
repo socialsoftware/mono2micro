@@ -159,15 +159,6 @@ export class RepositoryService {
         return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName);
     }
 
-    renameGraph(codebaseName, dendrogramName, graphName, newName) {
-        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/rename", null,
-            {
-                params: {
-                    "newName" : newName
-                }
-            });
-    }
-
     deleteGraph(codebaseName, dendrogramName, graphName) {
         return this.axios.delete("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/delete");
     }

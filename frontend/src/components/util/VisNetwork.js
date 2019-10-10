@@ -1,7 +1,7 @@
 import { Network } from 'vis';
 import React, { Component, createRef } from 'react';
 import { ModalMessage } from './ModalMessage';
-import { views, types } from '../view/ViewsMenu'
+import { views, types } from '../view/Views'
 
 export class VisNetwork extends Component {
     constructor(props) {

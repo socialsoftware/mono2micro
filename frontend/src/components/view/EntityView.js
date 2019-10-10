@@ -3,7 +3,7 @@ import { EntityOperationsMenu } from './EntityOperationsMenu';
 import { RepositoryService } from '../../services/RepositoryService';
 import { VisNetwork } from '../util/VisNetwork';
 import { DataSet } from 'vis';
-import { views, types } from './ViewsMenu';
+import { views, types } from './Views';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { Button, ButtonGroup} from 'react-bootstrap';
 
@@ -99,7 +99,6 @@ export class EntityView extends React.Component {
                     clusterControllers: response2.data,
                     controllers: response.data.controllers
                 }, () => {
-                    console.log(this.state)
                     let amountList = {};
                     for (var i = 0; i < this.state.entities.length; i++) {
                         let amount = 0;
@@ -119,12 +118,6 @@ export class EntityView extends React.Component {
                     });
                 });
             });
-        });
-    }
-
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            graph: {...this.state.graph, name: nextProps.graphName}
         });
     }
 
@@ -191,18 +184,13 @@ export class EntityView extends React.Component {
     render() {
         const metricsRows = this.state.entities.map(e => {
             return {
-                entity: e.name,
-                immutability: Number(e.immutability.toFixed(2))
+                entity: e.name
             }
         });
 
         const metricsColumns = [{
             dataField: 'entity',
             text: 'Entity',
-            sort: true
-        }, {
-            dataField: 'immutability',
-            text: 'Immutability',
             sort: true
         }];
 

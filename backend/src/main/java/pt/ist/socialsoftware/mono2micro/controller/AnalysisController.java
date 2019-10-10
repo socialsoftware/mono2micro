@@ -222,7 +222,7 @@ public class AnalysisController {
 		float recall = (float)truePositive / (truePositive + falseNegative);
 		recall = BigDecimal.valueOf(recall).setScale(2, RoundingMode.HALF_UP).floatValue();
 		float specificity = (float)trueNegative / (trueNegative + falsePositive);
-		specificity = BigDecimal.valueOf(specificity).setScale(2, RoundingMode.HALF_UP).floatValue();
+		specificity = Float.isNaN(specificity) ? specificity : BigDecimal.valueOf(specificity).setScale(2, RoundingMode.HALF_UP).floatValue();
 		float fmeasure = 2*precision*recall / (precision + recall);
 		fmeasure = BigDecimal.valueOf(fmeasure).setScale(2, RoundingMode.HALF_UP).floatValue();
 		analysis.setAccuracy(accuracy);

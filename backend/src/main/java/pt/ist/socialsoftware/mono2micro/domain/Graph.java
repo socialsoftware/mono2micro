@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.management.openmbean.KeyAlreadyExistsException;
 
 import pt.ist.socialsoftware.mono2micro.utils.Metrics;
-import pt.ist.socialsoftware.mono2micro.utils.Pair;
 
 public class Graph {
 	private String codebaseName;
@@ -240,34 +239,6 @@ public class Graph {
 			controllerClusters.put(controller.getName(), touchedClusters);
 		}
 		return controllerClusters;
-	}
-
-	public Map<String,List<Pair<Cluster,String>>> getControllerClustersSeq() {
-		Map<String,List<Pair<Cluster,String>>> controllerClustersSeq = new HashMap<>();
-
-		for (Controller controller : this.controllers) {
-			List<Pair<Cluster,String>> touchedClusters = new ArrayList<>();
-			Pair<Cluster,String> lastCluster = null;
-			for (Pair<String,String> entityPair : controller.getEntitiesSeq()) {
-				String entityName = entityPair.getFirst();
-				String mode = entityPair.getSecond();
-				Cluster clusterAccessed = getClusterWithEntity(entityName);
-				if (lastCluster == null){
-					lastCluster = new Pair<Cluster,String>(clusterAccessed, mode);
-					touchedClusters.add(new Pair<Cluster,String>(clusterAccessed, mode));
-				} else if (lastCluster.getFirst().getName().equals(clusterAccessed.getName())) {
-					if (!lastCluster.getSecond().contains(mode)) {
-						lastCluster.setSecond("RW");
-						touchedClusters.get(touchedClusters.size() - 1).setSecond("RW");
-					}
-				} else {
-					lastCluster = new Pair<Cluster,String>(clusterAccessed, mode);
-					touchedClusters.add(new Pair<Cluster,String>(clusterAccessed, mode));
-				}
-			}
-			controllerClustersSeq.put(controller.getName(), touchedClusters);
-		}
-		return controllerClustersSeq;
 	}
 
 	public void calculateMetrics() {

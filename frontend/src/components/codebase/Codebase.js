@@ -1,8 +1,5 @@
 import React from 'react';
-import { RepositoryService } from '../../services/RepositoryService';
-import { Card, Row, Col, Form, ButtonGroup, Button, FormControl, Breadcrumb, Dropdown, DropdownButton, ButtonToolbar } from 'react-bootstrap';
-
-var HttpStatus = require('http-status-codes');
+import { Card, Button, Breadcrumb} from 'react-bootstrap';
 
 export class Codebase extends React.Component {
     constructor(props) {

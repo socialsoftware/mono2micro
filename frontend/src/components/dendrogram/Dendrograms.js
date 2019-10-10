@@ -1,6 +1,6 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
-import { Form, Row, Col, FormControl, Dropdown, DropdownButton, ButtonGroup, Button, Card, Breadcrumb } from 'react-bootstrap';
+import { Form, Row, Col, FormControl, Dropdown, DropdownButton, Button, Card, Breadcrumb } from 'react-bootstrap';
 import { URL } from '../../constants/constants';
 import BootstrapTable from 'react-bootstrap-table-next';
 
@@ -350,8 +350,8 @@ export class Dendrograms extends React.Component {
                 clusters: graph.clusters.length,
                 singleton: graph.clusters.filter(c => c.entities.length === 1).length,
                 max_cluster_size: Math.max(...graph.clusters.map(c => c.entities.length)),
-                ss: Number(graph.silhouetteScore.toFixed(2)),
-                complexity: Number(graph.complexity.toFixed(2))
+                ss: graph.silhouetteScore,
+                complexity: graph.complexity
             }
         });
 

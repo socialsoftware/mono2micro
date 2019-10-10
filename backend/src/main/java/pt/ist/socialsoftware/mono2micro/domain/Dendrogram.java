@@ -143,18 +143,6 @@ public class Dendrogram {
 		FileUtils.deleteDirectory(new File(CODEBASES_PATH + this.codebaseName + "/" + this.name + "/" + graphName));
 	}
 
-	public void renameGraph(String graphName, String newName) {
-		if (this.getGraphNames().contains(newName)) {
-			throw new KeyAlreadyExistsException();
-		}
-		for (int i = 0; i < graphs.size(); i++) {
-			if (graphs.get(i).getName().equals(graphName)) {
-				graphs.get(i).setName(newName);
-				break;
-			}
-		}
-	}
-
 	public void calculateSimilarityMatrix() throws IOException, JSONException{
 		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 		Map<String,Integer> e1e2PairCount = new HashMap<>();
@@ -274,12 +262,12 @@ public class Dendrogram {
 							inCommon++;
 						if (p1.getFirst().equals(p2.getFirst()) && p1.getSecond().contains("W") && p2.getSecond().contains("W"))
 							inCommonW++;
-						if (p1.getFirst().equals(p2.getFirst()) && p1.getSecond().equals("R") && p2.getSecond().equals("R"))
+						if (p1.getFirst().equals(p2.getFirst()) && p1.getSecond().contains("R") && p2.getSecond().contains("R"))
 							inCommonR++;
 					}
 					if (p1.getSecond().contains("W"))
 						e1ControllersW++;
-					if (p1.getSecond().equals("R"))
+					if (p1.getSecond().contains("R"))
 						e1ControllersR++;
 				}
 
@@ -430,14 +418,6 @@ public class Dendrogram {
 			Cluster cluster = new Cluster("Cluster" + clusterId);
 			for (int i = 0; i < entities.length(); i++) {
 				Entity entity = new Entity(entities.getString(i));
-
-				float immutability = 0;
-				for (Pair<String,String> controllerPair : entityControllers.get(entity.getName())) {
-					if (controllerPair.getSecond().equals("R"))
-						immutability++;
-				}
-				entity.setImmutability(immutability / entityControllers.get(entity.getName()).size());
-
 				cluster.addEntity(entity);
 			}
 			graph.addCluster(cluster);

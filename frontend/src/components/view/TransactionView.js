@@ -3,7 +3,7 @@ import { TransactionOperationsMenu } from './TransactionOperationsMenu';
 import { RepositoryService } from '../../services/RepositoryService';
 import { VisNetwork } from '../util/VisNetwork';
 import { DataSet } from 'vis';
-import { views, types } from './ViewsMenu';
+import { views, types } from './Views';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { Button, ButtonGroup} from 'react-bootstrap';
 
@@ -141,17 +141,10 @@ export class TransactionView extends React.Component {
             });
         });
         service.getGraph(this.props.codebaseName, this.props.dendrogramName, this.props.graphName).then(response => {
-            console.log(response.data)
             this.setState({
                 graph: response.data,
                 controllers: response.data.controllers
             });
-        });
-    }
-
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            graph: {...this.state.graph, name: nextProps.graphName}
         });
     }
 
@@ -265,17 +258,13 @@ export class TransactionView extends React.Component {
     }
 
     render() {
-        const metricsRows = this.state.controllers === undefined ? [] : 
-            this.state.controllers.map(controller => {
-                return {
-                    controller: controller.name,
-                    clusters: this.state.controllerClusters[controller.name] === undefined ? 0 : this.state.controllerClusters[controller.name].length,
-                    complexity: Number(controller.complexity.toFixed(2)),
-                    complexityrw: Number(controller.complexityRW.toFixed(2)),
-                    complexityseq: Number(controller.complexitySeq.toFixed(2)),
-                    complexity2: Number(controller.complexity2)
-                }
-            });
+        const metricsRows = this.state.controllers.map(controller => {
+            return {
+                controller: controller.name,
+                clusters: this.state.controllerClusters[controller.name] === undefined ? 0 : this.state.controllerClusters[controller.name].length,
+                complexity: controller.complexity
+            }
+        });
 
         const metricsColumns = [{
             dataField: 'controller',
@@ -287,19 +276,7 @@ export class TransactionView extends React.Component {
             sort: true
         }, {
             dataField: 'complexity',
-            text: 'Complexity Access',
-            sort: true
-        }, {
-            dataField: 'complexityrw',
-            text: 'Complexity RW',
-            sort: true
-        }, {
-            dataField: 'complexityseq',
-            text: 'Complexity Seq',
-            sort: true
-        }, {
-            dataField: 'complexity2',
-            text: 'Complexity 2',
+            text: 'Complexity',
             sort: true
         }];
 

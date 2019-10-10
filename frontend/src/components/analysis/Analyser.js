@@ -26,7 +26,7 @@ export class Analyser extends React.Component {
             codebase: {},
             experts: [],
             expert: {},
-            allData: []
+            resultData: []
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -71,21 +71,22 @@ export class Analyser extends React.Component {
         s2 *= multiplier;
 
         for (var n = minClusters; n < maxClusters; n++) {
-            let requestData = {};
-            requestData["codebaseName"] = this.state.codebase.name;
-            requestData["expert"] = this.state.expert;
-            requestData["accessWeight"] = a;
-            requestData["writeWeight"] = w;
-            requestData["readWeight"] = r;
-            requestData["sequence1Weight"] = s1;
-            requestData["sequence2Weight"] = s2;
-            requestData["numberClusters"] = n;
+            let requestData = {
+                "codebaseName": this.state.codebase.name,
+                "expert": this.state.expert,
+                "accessWeight": a,
+                "writeWeight": w,
+                "readWeight": r,
+                "sequence1Weight": s1,
+                "sequence2Weight": s2,
+                "numberClusters": n
+            };
 
             while (activeRequests >= maxActiveRequests) {
                 await this.sleep(1000);
             }
 
-            if (count == maxRequests)
+            if (count === maxRequests)
                 return;
 
             activeRequests = activeRequests + 1;
@@ -95,7 +96,7 @@ export class Analyser extends React.Component {
                 activeRequests = activeRequests - 1;
                 if (response.status === HttpStatus.OK) {
                     this.setState({
-                        allData: [...this.state.allData, response.data]
+                        resultData: [...this.state.resultData, response.data]
                     });
                 } else {
                     console.log(response);
@@ -156,7 +157,7 @@ export class Analyser extends React.Component {
 
     render() {
 
-        const metricRows = this.state.allData.map((data, index) => {
+        const metricRows = this.state.resultData.map((data, index) => {
             return {
                 id: index,
                 access: data.accessWeight,
@@ -165,12 +166,12 @@ export class Analyser extends React.Component {
                 sequence1: data.sequence1Weight,
                 sequence2: data.sequence2Weight,
                 numberClusters: data.numberClusters,
-                accuracy: Number(data.accuracy).toFixed(2),
-                precision: Number(data.precision).toFixed(2),
-                recall: Number(data.recall).toFixed(2),
-                specificity: Number(data.specificity).toFixed(2),
-                fmeasure: Number(data.fmeasure).toFixed(2),
-                complexity: Number(data.complexity).toFixed(2)
+                accuracy: data.accuracy,
+                precision: data.precision,
+                recall: data.recall,
+                specificity: data.specificity,
+                fmeasure: data.fmeasure,
+                complexity: data.complexity
             } 
         });
 
@@ -222,12 +223,12 @@ export class Analyser extends React.Component {
             dataField: 'complexity',
             text: 'Complexity',
             sort: true,
-            sortFunc: (a, b, order, dataField, rowA, rowB) => {
+            /*sortFunc: (a, b, order, dataField, rowA, rowB) => {
                 if (order === 'asc')
                     return a - b;
                 else
                     return b - a;
-            }
+            }*/
         }];
 
         return (
@@ -272,7 +273,7 @@ export class Analyser extends React.Component {
                                 Submit
                             </Button>
                             <Form.Text>
-                                Loading: {this.state.allData.length}/{count}/{total}
+                                Loading: {this.state.resultData.length}/{count}/{total}
                             </Form.Text>
                         </Col>
                     </Form.Group>

@@ -39,7 +39,7 @@ except:
     silhouetteScore = 0
 
 clustersJSON = {}
-clustersJSON["silhouetteScore"] = silhouetteScore
+clustersJSON["silhouetteScore"] = "{0:.2f}".format(silhouetteScore)
 clustersJSON["clusters"] = clusters
 
 with open(codebasesPath + codebaseName + "/" + dendrogramName + "/" + graphName + "/clusters.json", 'w') as outfile:  

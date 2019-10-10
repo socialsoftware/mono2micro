@@ -16,7 +16,7 @@ export class Analysis extends React.Component {
             isUploaded: "",
             graph1: {},
             graph2: {},
-            result: {},
+            resultData: {},
             falsePairs: []
         };
 
@@ -62,15 +62,16 @@ export class Analysis extends React.Component {
             isUploaded: "Uploading..."
         });
 
-        let requestData = {};
-        requestData["graph1"] = this.state.graph1;
-        requestData["graph2"] = this.state.graph2;
+        let requestData = {
+            "graph1": this.state.graph1,
+            "graph2": this.state.graph2
+        };
 
         const service = new RepositoryService();
         service.analysis(requestData).then(response => {
             if (response.status === HttpStatus.OK) {
                 this.setState({
-                    result: response.data,
+                    resultData: response.data,
                     falsePairs: response.data.falsePairs,
                     isUploaded: "Upload completed successfully."
                 });
@@ -214,41 +215,36 @@ export class Analysis extends React.Component {
                     </Form.Group>
                 </Form>
 
-                {Object.keys(this.state.result).length !== 0 &&
+                {Object.keys(this.state.resultData).length !== 0 &&
                     <div>
-                        TP : {this.state.result.truePositive}< br/>
-                        TN : {this.state.result.trueNegative}< br/>
-                        FP : {this.state.result.falsePositive}< br/>
-                        FN : {this.state.result.falseNegative}< br/>
-                        Accuracy : {this.state.result.accuracy === "NaN" ? this.state.result.accuracy : this.state.result.accuracy.toFixed(2)}< br/>
-                        Precision : {this.state.result.precision === "NaN" ? this.state.result.precision : this.state.result.precision.toFixed(2)}< br/>
-                        Recall : {this.state.result.recall === "NaN" ? this.state.result.recall : this.state.result.recall.toFixed(2)}< br/>
-                        Specificity : {this.state.result.specificity === "NaN" ? this.state.result.specificity : this.state.result.specificity.toFixed(2)}< br/>
-                        F-Score : {this.state.result.fmeasure === "NaN" ? this.state.result.fmeasure : this.state.result.fmeasure.toFixed(2)}
+                        TP : {this.state.resultData.truePositive}< br/>
+                        TN : {this.state.resultData.trueNegative}< br/>
+                        FP : {this.state.resultData.falsePositive}< br/>
+                        FN : {this.state.resultData.falseNegative}< br/>
+                        Accuracy : {this.state.resultData.accuracy}< br/>
+                        Precision : {this.state.resultData.precision}< br/>
+                        Recall : {this.state.resultData.recall}< br/>
+                        Specificity : {this.state.resultData.specificity}< br/>
+                        F-Score : {this.state.resultData.fmeasure}
 
-                        {this.state.result.falsePairs.length > 0 &&
-                            <span>
-                                <hr />
-                                <h3>False Pairs</h3>
+                        <hr />
+                        <h4 style={{color: "#666666"}}>False Pairs</h4>
 
-                                <ToolkitProvider
-                                    bootstrap4
-                                    keyField="id"
-                                    data={ falsePairRows }
-                                    columns={ falsePairColumns }
-                                    search>
-                                    {
-                                        props => (
-                                            <div>
-                                                <h5>Search:</h5>
-                                                <SearchBar { ...props.searchProps } />
-                                                <BootstrapTable { ...props.baseProps } />
-                                            </div>
-                                        )
-                                    }
-                                </ToolkitProvider>
-                            </span>
-                        }
+                        <ToolkitProvider
+                            bootstrap4
+                            keyField="id"
+                            data={ falsePairRows }
+                            columns={ falsePairColumns }
+                            search>
+                            {
+                                props => (
+                                    <div>
+                                        <SearchBar { ...props.searchProps } />
+                                        <BootstrapTable { ...props.baseProps } />
+                                    </div>
+                                )
+                            }
+                        </ToolkitProvider>
                     </div>
                 }
             </div>
