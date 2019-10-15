@@ -224,7 +224,7 @@ export class Analysis extends React.Component {
                         Accuracy : {this.state.resultData.accuracy}< br/>
                         Precision : {this.state.resultData.precision}< br/>
                         Recall : {this.state.resultData.recall}< br/>
-                        Specificity : {this.state.resultData.specificity}< br/>
+                        Specificity : {this.state.resultData.specificity === -1 ? "--" : this.state.resultData.specificity}< br/>
                         F-Score : {this.state.resultData.fmeasure}
 
                         <hr />

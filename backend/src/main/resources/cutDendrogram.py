@@ -4,20 +4,21 @@ from sklearn import metrics
 import sys
 import json
 
+
 codebasesPath = str(sys.argv[1])
 codebaseName = str(sys.argv[2])
 dendrogramName = str(sys.argv[3])
 graphName = str(sys.argv[4])
-linkageType = str(sys.argv[5])
-cutType = str(sys.argv[6])
-cutValue = float(sys.argv[7])
+cutType = str(sys.argv[5])
+cutValue = float(sys.argv[6])
 
-
-with open(codebasesPath + codebaseName + "/" + dendrogramName + "/" + "similarityMatrix.json") as f:
+with open(codebasesPath + codebaseName + "/" + dendrogramName + "/similarityMatrix.json") as f:
     similarityMatrix = json.load(f)
 
 entities = similarityMatrix["entities"]
 matrix = np.array(similarityMatrix["matrix"])
+linkageType = similarityMatrix["linkageType"]
+
 hierarc = hierarchy.linkage(y=matrix, method=linkageType)
 
 if cutType == "H":

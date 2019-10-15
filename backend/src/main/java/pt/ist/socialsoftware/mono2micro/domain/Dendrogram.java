@@ -30,8 +30,7 @@ public class Dendrogram {
 	private float accessMetricWeight;
 	private float writeMetricWeight;
 	private float readMetricWeight;
-	private float sequenceMetric1Weight;
-	private float sequenceMetric2Weight;
+	private float sequenceMetricWeight;
 	private List<String> profiles = new ArrayList<>();
 	private List<Graph> graphs = new ArrayList<>();
 
@@ -86,20 +85,12 @@ public class Dendrogram {
 		this.readMetricWeight = readMetricWeight;
 	}
 
-	public float getSequenceMetric1Weight() {
-		return sequenceMetric1Weight;
+	public float getSequenceMetricWeight() {
+		return sequenceMetricWeight;
 	}
 
-	public void setSequenceMetric1Weight(float sequenceMetric1Weight) {
-		this.sequenceMetric1Weight = sequenceMetric1Weight;
-	}
-
-	public float getSequenceMetric2Weight() {
-		return sequenceMetric2Weight;
-	}
-
-	public void setSequenceMetric2Weight(float sequenceMetric2Weight) {
-		this.sequenceMetric2Weight = sequenceMetric2Weight;
+	public void setSequenceMetricWeight(float sequenceMetricWeight) {
+		this.sequenceMetricWeight = sequenceMetricWeight;
 	}
 
 	public List<String> getProfiles() {
@@ -143,14 +134,47 @@ public class Dendrogram {
 		FileUtils.deleteDirectory(new File(CODEBASES_PATH + this.codebaseName + "/" + this.name + "/" + graphName));
 	}
 
-	public void calculateSimilarityMatrix() throws IOException, JSONException{
+	public void createExpertCut(Graph expert) throws IOException, JSONException {
+		if (this.getGraphNames().contains(expert.getName()))
+			throw new KeyAlreadyExistsException();
+
+		JSONObject datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
+		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
+
+		Cluster cluster = new Cluster("Generic");
+
+		for (String profile : this.profiles) {
+			for (String controllerName : codebase.getProfile(profile)) {
+				Controller controller = new Controller(controllerName);
+				expert.addController(controller);
+
+				JSONArray entities = datafileJSON.getJSONArray(controllerName);
+				for (int i = 0; i < entities.length(); i++) {
+					JSONArray entityArray = entities.getJSONArray(i);
+					String entity = entityArray.getString(0);
+					String mode = entityArray.getString(1);
+					
+					controller.addEntity(entity, mode);
+					controller.addEntitySeq(entity, mode);
+
+					if (!cluster.containsEntity(entity))
+						cluster.addEntity(new Entity(entity));
+				}
+			}
+		}
+
+		expert.addCluster(cluster);
+
+		this.addGraph(expert);
+		expert.calculateMetrics();
+	}
+
+	public void calculateSimilarityMatrix() throws IOException, JSONException {
 		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 		Map<String,Integer> e1e2PairCount = new HashMap<>();
 		JSONArray similarityMatrix = new JSONArray();
-		JSONObject dendrogramData = new JSONObject();
+		JSONObject matrixData = new JSONObject();
 
-
-		//read datafile
 		JSONObject datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
 		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
 
@@ -189,12 +213,11 @@ public class Dendrogram {
 							String e1e2 = entity + "->" + nextEntity;
 							String e2e1 = nextEntity + "->" + entity;
 
-							if (e1e2PairCount.containsKey(e1e2)) {
-								e1e2PairCount.put(e1e2, e1e2PairCount.get(e1e2) + 1);
-							} else {
-								int count = e1e2PairCount.containsKey(e2e1) ? e1e2PairCount.get(e2e1) : 0;
-								e1e2PairCount.put(e2e1, count + 1);
-							}
+							int count = e1e2PairCount.containsKey(e1e2) ? e1e2PairCount.get(e1e2) : 0;
+							e1e2PairCount.put(e1e2, count + 1);
+
+							count = e1e2PairCount.containsKey(e2e1) ? e1e2PairCount.get(e2e1) : 0;
+							e1e2PairCount.put(e2e1, count + 1);
 						}
 					}
 				}
@@ -206,128 +229,62 @@ public class Dendrogram {
 
 		int maxNumberOfPairs = Collections.max(e1e2PairCount.values());
 
-		JSONArray seq1SimilarityMatrix = new JSONArray();
-		JSONArray seq2SimilarityMatrix = new JSONArray();
 		for (int i = 0; i < entitiesList.size(); i++) {
 			String e1 = entitiesList.get(i);
-			JSONArray seq1MatrixAux = new JSONArray();
-			JSONArray seq2MatrixAux = new JSONArray();
+			JSONArray matrixRow = new JSONArray();
 			for (int j = 0; j < entitiesList.size(); j++) {
 				String e2 = entitiesList.get(j);
+				String e1e2 = e1 + "->" + e2;
+
 				if (e1.equals(e2)) {
-					seq1MatrixAux.put(Float.valueOf(1));
-					seq2MatrixAux.put(Float.valueOf(1));
-				} else {
-					String e1e2 = e1 + "->" + e2;
-					String e2e1 = e2 + "->" + e1;
-					float e1e2Count = e1e2PairCount.containsKey(e1e2) ? e1e2PairCount.get(e1e2) : 0;
-					float e2e1Count = e1e2PairCount.containsKey(e2e1) ? e1e2PairCount.get(e2e1) : 0;
-
-					seq1MatrixAux.put(Float.valueOf(e1e2Count + e2e1Count));
-					seq2MatrixAux.put(Float.valueOf(e1e2Count + e2e1Count));
+					matrixRow.put(1);
+					continue;
 				}
-			}
 
-			List<Float> seq2List = new ArrayList<>();
-			for (int k = 0; k < seq2MatrixAux.length(); k++) {
-				seq2List.add((float)seq2MatrixAux.get(k));
-			}
-
-			float seq2Max = Collections.max(seq2List);
-
-			for (int j = 0; j < entitiesList.size(); j++) {
-				if (!entitiesList.get(j).equals(e1)) {
-					seq1MatrixAux.put(j, Float.valueOf(((float)seq1MatrixAux.get(j)) / maxNumberOfPairs));
-					seq2MatrixAux.put(j, Float.valueOf(((float)seq2MatrixAux.get(j)) / seq2Max));
-				}
-			}
-
-			seq1SimilarityMatrix.put(seq1MatrixAux);
-			seq2SimilarityMatrix.put(seq2MatrixAux);
-		}
-
-		for (int i = 0; i < entitiesList.size(); i++) {
-			String e1 = entitiesList.get(i);
-			JSONArray matrixAux = new JSONArray();
-			for (int j = 0; j < entitiesList.size(); j++) {
-				String e2 = entitiesList.get(j);
 				float inCommon = 0;
 				float inCommonW = 0;
 				float inCommonR = 0;
 				float e1ControllersW = 0;
 				float e1ControllersR = 0;
-				for (Pair<String,String> p1 : entityControllers.get(e1)) {
-					for (Pair<String,String> p2 : entityControllers.get(e2)) {
-						if (p1.getFirst().equals(p2.getFirst()))
+				for (Pair<String,String> e1Controller : entityControllers.get(e1)) {
+					for (Pair<String,String> e2Controller : entityControllers.get(e2)) {
+						if (e1Controller.getFirst().equals(e2Controller.getFirst()))
 							inCommon++;
-						if (p1.getFirst().equals(p2.getFirst()) && p1.getSecond().contains("W") && p2.getSecond().contains("W"))
+						if (e1Controller.getFirst().equals(e2Controller.getFirst()) && e1Controller.getSecond().contains("W") && e2Controller.getSecond().contains("W"))
 							inCommonW++;
-						if (p1.getFirst().equals(p2.getFirst()) && p1.getSecond().contains("R") && p2.getSecond().contains("R"))
+						if (e1Controller.getFirst().equals(e2Controller.getFirst()) && e1Controller.getSecond().contains("R") && e2Controller.getSecond().contains("R"))
 							inCommonR++;
 					}
-					if (p1.getSecond().contains("W"))
+					if (e1Controller.getSecond().contains("W"))
 						e1ControllersW++;
-					if (p1.getSecond().contains("R"))
+					if (e1Controller.getSecond().contains("R"))
 						e1ControllersR++;
 				}
 
 				float accessMetric = inCommon / entityControllers.get(e1).size();
 				float writeMetric = e1ControllersW == 0 ? 0 : inCommonW / e1ControllersW;
 				float readMetric = e1ControllersR == 0 ? 0 : inCommonR / e1ControllersR;
-				float sequence1Metric = (float) seq1SimilarityMatrix.getJSONArray(i).get(j);
-				float sequence2Metric = (float) seq2SimilarityMatrix.getJSONArray(i).get(j);
-				float metric = accessMetric * this.accessMetricWeight / 100 + 
+
+				float e1e2Count = e1e2PairCount.containsKey(e1e2) ? e1e2PairCount.get(e1e2) : 0;
+				float sequenceMetric = e1e2Count / maxNumberOfPairs;
+
+				float metric = accessMetric * this.accessMetricWeight / 100 +
 								writeMetric * this.writeMetricWeight / 100 +
 								readMetric * this.readMetricWeight / 100 +
-								sequence1Metric * this.sequenceMetric1Weight / 100 +
-								sequence2Metric * this.sequenceMetric2Weight / 100;
-				matrixAux.put(metric);
+								sequenceMetric * this.sequenceMetricWeight / 100;
+				
+				matrixRow.put(metric);
 			}
-			similarityMatrix.put(matrixAux);
+			similarityMatrix.put(matrixRow);
 		}
-		dendrogramData.put("matrix", similarityMatrix);
-		dendrogramData.put("entities", entitiesList);
+		matrixData.put("matrix", similarityMatrix);
+		matrixData.put("entities", entitiesList);
+		matrixData.put("linkageType", this.linkageType);
 
-		CodebaseManager.getInstance().writeSimilarityMatrix(this.codebaseName, this.name, dendrogramData);
-	}
-
-	public void createExpertCut(Graph expert) throws IOException, JSONException {
-		if (this.getGraphNames().contains(expert.getName()))
-			throw new KeyAlreadyExistsException();
-
-		JSONObject datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
-		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
-
-		Cluster cluster = new Cluster("Generic");
-
-		for (String profile : this.profiles) {
-			for (String controllerName : codebase.getProfile(profile)) {
-				Controller controller = new Controller(controllerName);
-				expert.addController(controller);
-
-				JSONArray entities = datafileJSON.getJSONArray(controllerName);
-				for (int i = 0; i < entities.length(); i++) {
-					JSONArray entityArray = entities.getJSONArray(i);
-					String entity = entityArray.getString(0);
-					String mode = entityArray.getString(1);
-					
-					controller.addEntity(entity, mode);
-					controller.addEntitySeq(entity, mode);
-
-					if (!cluster.containsEntity(entity))
-						cluster.addEntity(new Entity(entity));
-				}
-			}
-		}
-
-		expert.addCluster(cluster);
-
-		this.addGraph(expert);
-		expert.calculateMetrics();
+		CodebaseManager.getInstance().writeSimilarityMatrix(this.codebaseName, this.name, matrixData);
 	}
 
 	public void cut(Graph graph) throws Exception {
-		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 
 		String cutValue = Float.valueOf(graph.getCutValue()).toString().replaceAll("\\.?0*$", "");
 		if (this.getGraphNames().contains(graph.getCutType() + cutValue)) {
@@ -345,7 +302,6 @@ public class Dendrogram {
 			graphPath.mkdir();
 		}
 
-		//read datafile
 		JSONObject datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
 		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
 
@@ -362,41 +318,21 @@ public class Dendrogram {
 					
 					controller.addEntity(entity, mode);
 					controller.addEntitySeq(entity, mode);
-
-					if (entityControllers.containsKey(entity)) {
-						boolean containsController = false;
-						for (Pair<String,String> controllerPair : entityControllers.get(entity)) {
-							if (controllerPair.getFirst().equals(controllerName)) {
-								containsController = true;
-								if (!controllerPair.getSecond().contains(mode))
-									controllerPair.setSecond("RW");
-								break;
-							}
-						}
-						if (!containsController) {
-							entityControllers.get(entity).add(new Pair<String,String>(controllerName,mode));
-						}
-					} else {
-						List<Pair<String,String>> controllersPairs = new ArrayList<>();
-						controllersPairs.add(new Pair<String,String>(controllerName,mode));
-						entityControllers.put(entity, controllersPairs);
-					}
 				}
 			}
 		}
 
 		Runtime r = Runtime.getRuntime();
 		String pythonScriptPath = RESOURCES_PATH + "cutDendrogram.py";
-		String[] cmd = new String[9];
+		String[] cmd = new String[8];
 		cmd[0] = PYTHON;
 		cmd[1] = pythonScriptPath;
 		cmd[2] = CODEBASES_PATH;
 		cmd[3] = this.codebaseName;
 		cmd[4] = this.name;
 		cmd[5] = graph.getName();
-		cmd[6] = this.linkageType;
-		cmd[7] = graph.getCutType();
-		cmd[8] = Float.toString(graph.getCutValue());
+		cmd[6] = graph.getCutType();
+		cmd[7] = Float.toString(graph.getCutValue());
 		Process p = r.exec(cmd);
 		
 		p.waitFor();

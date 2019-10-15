@@ -45,18 +45,6 @@ public class CodebaseManager {
         	instance = new CodebaseManager(); 
         return instance; 
 	}
-    
-    public void writeCodebase(String codebaseName, Codebase codebase) throws IOException {
-		objectMapper.writeValue(new File(CODEBASES_PATH + codebaseName + "/codebase.json"), codebase);
-	}
-
-	public Codebase getCodebase(String codebaseName) {
-		try {
-			return objectMapper.readValue(new File(CODEBASES_PATH + codebaseName + "/codebase.json"), Codebase.class);
-		} catch (IOException e) {
-			return null;
-		}
-	}
 
 	public List<Codebase> getCodebases() {
 		List<Codebase> codebases = new ArrayList<>();
@@ -131,6 +119,17 @@ public class CodebaseManager {
 	}
 
 
+	public Codebase getCodebase(String codebaseName) {
+		try {
+			return objectMapper.readValue(new File(CODEBASES_PATH + codebaseName + "/codebase.json"), Codebase.class);
+		} catch(IOException e) {
+			return null;
+		}
+	}
+
+	public void writeCodebase(String codebaseName, Codebase codebase) throws IOException {
+		objectMapper.writeValue(new File(CODEBASES_PATH + codebaseName + "/codebase.json"), codebase);
+	}
 
 	public JSONObject getDatafile(String codebaseName) throws IOException, JSONException {
 		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/datafile.json");
@@ -162,14 +161,29 @@ public class CodebaseManager {
 		return clustersJSON;
 	}
 
-	public JSONObject getAnalyserResults(String codebaseName) throws IOException, JSONException {
-		File file = new File(CODEBASES_PATH + codebaseName + "/analyser.json");
-		return new JSONObject(FileUtils.readFileToString(file, "utf-8"));
+	public JSONObject getAnalyserResults(String codebaseName) throws IOException, JSONException {		
+		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json");
+		JSONObject analyserJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
+		is.close();
+		return analyserJSON;
 	}
 
 	public void writeAnalyserResults(String codebaseName, JSONObject analyser) throws IOException, JSONException {
-		FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser.json");
+		FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json");
 		file.write(analyser.toString(4));
+		file.close();
+	}
+
+	public JSONObject getAnalyserCut(String codebaseName, String cutName) throws IOException, JSONException {
+		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/analyser/cuts/" + cutName + ".json");
+		JSONObject analyserCutJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
+		is.close();
+		return analyserCutJSON;
+	}
+
+	public void writeAnalyserSimilarityMatrix(String codebaseName, JSONObject similarityMatrix) throws IOException, JSONException {
+		FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/similarityMatrix.json");
+		file.write(similarityMatrix.toString(4));
 		file.close();
 	}
 }

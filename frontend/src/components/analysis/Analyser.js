@@ -2,21 +2,9 @@ import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
 import { Row, Col, Form, DropdownButton, Dropdown, Button, Breadcrumb } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
+import filterFactory, { numberFilter } from 'react-bootstrap-table2-filter';
 
 var HttpStatus = require('http-status-codes');
-
-var count = 0;
-var interval = 10;
-var multiplier = 10;
-var minClusters = 2;
-var maxClusters = 15;
-
-var activeRequests = 0;
-var maxActiveRequests = 10;
-
-var total = 0;
-
-var maxRequests = 50;
 
 export class Analyser extends React.Component {
     constructor(props) {
@@ -24,12 +12,15 @@ export class Analyser extends React.Component {
         this.state = {
             codebases: [],
             codebase: {},
+            profiles: [],
+            selectedProfiles: [],
             experts: [],
             expert: {},
             resultData: []
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.importResults = this.importResults.bind(this);
     }
 
     componentDidMount() {
@@ -48,10 +39,24 @@ export class Analyser extends React.Component {
     setCodebase(codebase) {
         this.setState({
             codebase: codebase,
+            profiles: Object.keys(codebase.profiles),
             experts: codebase.dendrograms.map(dendrogram => dendrogram.graphs)
-                                        .flat()
-                                        .filter(graph => graph.expert === true)
+                                            .flat()
+                                            .filter(graph => graph.expert === true)
         });
+    }
+
+    selectProfile(profile) {
+        if (this.state.selectedProfiles.includes(profile)) {
+            let filteredArray = this.state.selectedProfiles.filter(p => p !== profile);
+            this.setState({
+                selectedProfiles: filteredArray
+            });
+        } else {
+            this.setState({
+                selectedProfiles: [...this.state.selectedProfiles, profile]
+            });
+        }
     }
 
     setExpert(expert) {
@@ -60,90 +65,34 @@ export class Analyser extends React.Component {
         });
     }
 
-    async sendRequest(a, w, r, s1, s2) {
-        total += maxClusters - minClusters;
-        const service = new RepositoryService();
-
-        a *= multiplier;
-        w *= multiplier;
-        r *= multiplier;
-        s1 *= multiplier;
-        s2 *= multiplier;
-
-        for (var n = minClusters; n < maxClusters; n++) {
-            let requestData = {
-                "codebaseName": this.state.codebase.name,
-                "expert": this.state.expert,
-                "accessWeight": a,
-                "writeWeight": w,
-                "readWeight": r,
-                "sequence1Weight": s1,
-                "sequence2Weight": s2,
-                "numberClusters": n
-            };
-
-            while (activeRequests >= maxActiveRequests) {
-                await this.sleep(1000);
-            }
-
-            if (count === maxRequests)
-                return;
-
-            activeRequests = activeRequests + 1;
-            count = count + 1;
-            
-            service.analyser(requestData).then(response => {
-                activeRequests = activeRequests - 1;
-                if (response.status === HttpStatus.OK) {
-                    this.setState({
-                        resultData: [...this.state.resultData, response.data]
-                    });
-                } else {
-                    console.log(response);
-                }
-            })
-            .catch(error => {
-                console.log(error);
-            });
-        }
-    }
-
-    sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
     handleSubmit(event) {
-        event.preventDefault();
+        event.preventDefault()
 
-        for (var a = interval; a >= 0; a--) { 
-            let remainder = interval - a;
-            if (remainder === 0) {
-                this.sendRequest(a, 0, 0, 0, 0);
+        this.setState({
+            isUploaded: "Uploading..."
+        });
+
+        const service = new RepositoryService();
+        service.analyser(this.state.codebase.name, this.state.expert, this.state.selectedProfiles).then(response => {
+            if (response.status === HttpStatus.OK) {
+                this.setState({
+                    isUploaded: "Upload completed successfully."
+                });
             } else {
-                for (var w = remainder; w >= 0; w--) { 
-                    let remainder2 = remainder - w;
-                    if (remainder2 === 0) {
-                        this.sendRequest(a, w, 0, 0, 0);
-                    } else {
-                        for (var r = remainder2; r >= 0; r--) { 
-                            let remainder3 = remainder2 - r;
-                            if (remainder3 === 0) {
-                                this.sendRequest(a, w, r, 0, 0);
-                            } else {
-                                for (var s1 = remainder3; s1 >= 0; s1--) {
-                                    let remainder4 = remainder3 - s1;
-                                    if (remainder4 === 0) {
-                                        this.sendRequest(a, w, r, s1, 0);
-                                    } else {
-                                        this.sendRequest(a, w, r, s1, remainder4);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                this.setState({
+                    isUploaded: "Upload failed."
+                });
             }
-        }
+        });
+    }
+
+    importResults() {
+        const service = new RepositoryService();
+        service.importAnalyserResults(this.state.codebase.name).then(response => {
+            this.setState({
+                resultData: Object.values(response.data)
+            });
+        });
     }
 
     renderBreadCrumbs = () => {
@@ -163,8 +112,7 @@ export class Analyser extends React.Component {
                 access: data.accessWeight,
                 write: data.writeWeight,
                 read: data.readWeight,
-                sequence1: data.sequence1Weight,
-                sequence2: data.sequence2Weight,
+                sequence: data.sequenceWeight,
                 numberClusters: data.numberClusters,
                 accuracy: data.accuracy,
                 precision: data.precision,
@@ -178,51 +126,58 @@ export class Analyser extends React.Component {
         const metricColumns = [{
             dataField: 'access',
             text: 'Access',
-            sort: true
+            sort: true,
+            filter: numberFilter()
         }, {
             dataField: 'write',
             text: 'Write',
-            sort: true
+            sort: true,
+            filter: numberFilter()
         }, {
             dataField: 'read',
             text: 'Read',
-            sort: true
+            sort: true,
+            filter: numberFilter()
         }, {
-            dataField: 'sequence1',
-            text: 'Sequence1',
-            sort: true
-        }, {
-            dataField: 'sequence2',
-            text: 'Sequence2',
-            sort: true
+            dataField: 'sequence',
+            text: 'Sequence',
+            sort: true,
+            filter: numberFilter()
         }, {
             dataField: 'numberClusters',
             text: 'Number Clusters',
-            sort: true
+            sort: true,
+            filter: numberFilter()
         }, {
             dataField: 'accuracy',
             text: 'Accuracy',
-            sort: true
+            sort: true,
+            filter: numberFilter()
         }, {
             dataField: 'precision',
             text: 'Precision',
-            sort: true
+            sort: true,
+            filter: numberFilter()
         }, {
             dataField: 'recall',
             text: 'Recall',
-            sort: true
+            sort: true,
+            filter: numberFilter()
         }, {
             dataField: 'specificity',
             text: 'Specificity',
-            sort: true
+            sort: true,
+            filter: numberFilter()
         }, {
             dataField: 'fmeasure',
             text: 'F-Score',
-            sort: true
+            sort: true,
+            filter: numberFilter()
         }, {
             dataField: 'complexity',
             text: 'Complexity',
             sort: true,
+            filter: numberFilter()
             /*sortFunc: (a, b, order, dataField, rowA, rowB) => {
                 if (order === 'asc')
                     return a - b;
@@ -238,7 +193,7 @@ export class Analyser extends React.Component {
 
                 <Form onSubmit={this.handleSubmit}>
                     <Form.Group as={Row} controlId="codebase">
-                        <Form.Label column sm={2}>
+                        <Form.Label column sm={3}>
                             Codebase
                         </Form.Label>
                         <Col sm={5}>
@@ -251,8 +206,23 @@ export class Analyser extends React.Component {
                         </Col>
                     </Form.Group>
 
+                    <Form.Group as={Row} controlId="selectControllerProfiles">
+                        <Form.Label column sm={3}>
+                            Select Controller Profiles
+                        </Form.Label>
+                        <Col sm={5}>
+                            <DropdownButton title={'Controller Profiles'}>
+                                {this.state.profiles.map(profile =>
+                                    <Dropdown.Item
+                                        key={profile}
+                                        onSelect={() => this.selectProfile(profile)}
+                                        active={this.state.selectedProfiles.includes(profile)}>{profile}</Dropdown.Item>)}
+                            </DropdownButton>
+                        </Col>
+                    </Form.Group>
+
                     <Form.Group as={Row} controlId="expert">
-                        <Form.Label column sm={2}>
+                        <Form.Label column sm={3}>
                             Expert
                         </Form.Label>
                         <Col sm={5}>
@@ -266,20 +236,27 @@ export class Analyser extends React.Component {
                     </Form.Group>
 
                     <Form.Group as={Row}>
-                        <Col sm={{ span: 5, offset: 2 }}>
+                        <Col sm={{ span: 5, offset: 3 }}>
                             <Button type="submit"
-                                    disabled={Object.keys(this.state.codebase).length === 0 || 
+                                    disabled={this.state.isUploaded === "Uploading..." ||
+                                            Object.keys(this.state.codebase).length === 0 ||
+                                            this.state.selectedProfiles.length === 0 ||
                                             Object.keys(this.state.expert).length === 0}>
                                 Submit
                             </Button>
                             <Form.Text>
-                                Loading: {this.state.resultData.length}/{count}/{total}
+                                {this.state.isUploaded}
                             </Form.Text>
                         </Col>
                     </Form.Group>
                 </Form>
 
-                <BootstrapTable bootstrap4 keyField='id' data={ metricRows } columns={ metricColumns } />
+                <Button className="mb-2" disabled={Object.keys(this.state.codebase).length === 0}
+                        onClick={this.importResults}>
+                    Import Results
+                </Button>
+
+                <BootstrapTable bootstrap4 keyField='id' data={ metricRows } columns={ metricColumns } filter={ filterFactory() }/>
             </div>
         )
     }

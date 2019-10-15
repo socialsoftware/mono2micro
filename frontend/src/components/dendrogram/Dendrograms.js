@@ -22,8 +22,7 @@ export class Dendrograms extends React.Component {
             accessMetricWeight: "",
             writeMetricWeight: "",
             readMetricWeight: "",
-            sequenceMetric1Weight: "",
-            sequenceMetric2Weight: "",
+            sequenceMetricWeight: ""
         };
 
         this.handleDeleteDendrogram = this.handleDeleteDendrogram.bind(this);
@@ -33,8 +32,7 @@ export class Dendrograms extends React.Component {
         this.handleChangeAccessMetricWeight = this.handleChangeAccessMetricWeight.bind(this);
         this.handleChangeWriteMetricWeight = this.handleChangeWriteMetricWeight.bind(this);
         this.handleChangeReadMetricWeight = this.handleChangeReadMetricWeight.bind(this);
-        this.handleChangeSequenceMetric1Weight = this.handleChangeSequenceMetric1Weight.bind(this);
-        this.handleChangeSequenceMetric2Weight = this.handleChangeSequenceMetric2Weight.bind(this);
+        this.handleChangeSequenceMetricWeight = this.handleChangeSequenceMetricWeight.bind(this);
     }
 
     componentDidMount() {
@@ -63,7 +61,7 @@ export class Dendrograms extends React.Component {
         });
         
         const service = new RepositoryService();
-        service.createDendrogram(this.state.codebaseName, this.state.newDendrogramName, this.state.linkageType, Number(this.state.accessMetricWeight), Number(this.state.writeMetricWeight), Number(this.state.readMetricWeight), Number(this.state.sequenceMetric1Weight), Number(this.state.sequenceMetric2Weight), this.state.selectedProfiles).then(response => {
+        service.createDendrogram(this.state.codebaseName, this.state.newDendrogramName, this.state.linkageType, Number(this.state.accessMetricWeight), Number(this.state.writeMetricWeight), Number(this.state.readMetricWeight), Number(this.state.sequenceMetricWeight), this.state.selectedProfiles).then(response => {
             if (response.status === HttpStatus.CREATED) {
                 this.loadCodebase();
                 this.setState({
@@ -118,15 +116,9 @@ export class Dendrograms extends React.Component {
         });
     }
 
-    handleChangeSequenceMetric1Weight(event) {
+    handleChangeSequenceMetricWeight(event) {
         this.setState({
-           sequenceMetric1Weight: event.target.value
-        });
-    }
-
-    handleChangeSequenceMetric2Weight(event) {
-        this.setState({
-           sequenceMetric2Weight: event.target.value
+           sequenceMetricWeight: event.target.value
         });
     }
 
@@ -260,29 +252,16 @@ export class Dendrograms extends React.Component {
                     </Col>
                 </Form.Group>
 
-                <Form.Group as={Row} controlId="sequence1">
+                <Form.Group as={Row} controlId="sequence">
                     <Form.Label column sm={3}>
-                        Sequence Metric 1 Weight (%)
+                        Sequence Metric Weight (%)
                     </Form.Label>
                     <Col sm={5}>
                         <FormControl 
                             type="number"
                             placeholder="0-100"
-                            value={this.state.sequenceMetric1Weight}
-                            onChange={this.handleChangeSequenceMetric1Weight}/>
-                    </Col>
-                </Form.Group>
-
-                <Form.Group as={Row} controlId="sequence2">
-                    <Form.Label column sm={3}>
-                        Sequence Metric 2 Weight (%)
-                    </Form.Label>
-                    <Col sm={5}>
-                        <FormControl 
-                            type="number"
-                            placeholder="0-100"
-                            value={this.state.sequenceMetric2Weight}
-                            onChange={this.handleChangeSequenceMetric2Weight}/>
+                            value={this.state.sequenceMetricWeight}
+                            onChange={this.handleChangeSequenceMetricWeight}/>
                     </Col>
                 </Form.Group>
 
@@ -295,9 +274,8 @@ export class Dendrograms extends React.Component {
                                         this.state.accessMetricWeight === "" || 
                                         this.state.writeMetricWeight === "" ||
                                         this.state.readMetricWeight === "" || 
-                                        this.state.sequenceMetric1Weight === "" || 
-                                        this.state.sequenceMetric2Weight === "" ||
-                                        Number(this.state.accessMetricWeight) + Number(this.state.writeMetricWeight) + Number(this.state.readMetricWeight) + Number(this.state.sequenceMetric1Weight) + Number(this.state.sequenceMetric2Weight) !== 100 || 
+                                        this.state.sequenceMetricWeight === "" ||
+                                        Number(this.state.accessMetricWeight) + Number(this.state.writeMetricWeight) + Number(this.state.readMetricWeight) + Number(this.state.sequenceMetricWeight) !== 100 || 
                                         this.state.selectedProfiles.length === 0}>
                             Create Dendrogram
                         </Button>
@@ -322,8 +300,7 @@ export class Dendrograms extends React.Component {
                             Access: {dendrogram.accessMetricWeight}%< br/>
                             Write: {dendrogram.writeMetricWeight}%< br/>
                             Read: {dendrogram.readMetricWeight}%< br/>
-                            Sequence 1: {dendrogram.sequenceMetric1Weight}%< br/>
-                            Sequence 2: {dendrogram.sequenceMetric2Weight}%
+                            Sequence: {dendrogram.sequenceMetricWeight}%
                         </Card.Text>
                         <Button href={`/codebases/${this.state.codebaseName}/dendrograms/${dendrogram.name}`} 
                                 className="mb-2">

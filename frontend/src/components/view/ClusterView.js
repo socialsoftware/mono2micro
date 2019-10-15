@@ -129,7 +129,7 @@ export class ClusterView extends React.Component {
     }
 
     convertClusterToNode(cluster) {
-        return {id: cluster.name, title: cluster.entities.map(e => e.name).join('<br>') + "<br>Total: " + cluster.entities.length, label: cluster.name, value: cluster.entities.length, type: types.CLUSTER};
+        return {id: cluster.name, title: cluster.entities.map(e => e.name).sort().join('<br>') + "<br>Total: " + cluster.entities.length, label: cluster.name, value: cluster.entities.length, type: types.CLUSTER};
     };
 
     createEdges(clusters, clusterControllers) {
@@ -340,8 +340,8 @@ export class ClusterView extends React.Component {
                 entities: cluster.entities.length,
                 controllers: this.state.clusterControllers[cluster.name].length,
                 cohesion: cluster.cohesion,
-                complexity: cluster.complexity,
                 coupling: Number(((Object.values(cluster.coupling).reduce((a,b) => a + b, 0) - 1) / (Object.keys(cluster.coupling).length - 1)).toFixed(2)),
+                complexity: cluster.complexity
             }
         });
 
@@ -361,12 +361,12 @@ export class ClusterView extends React.Component {
             text: 'Cohesion',
             sort: true
         }, {
-            dataField: 'complexity',
-            text: 'Complexity',
-            sort: true
-        }, {
             dataField: 'coupling',
             text: 'Coupling',
+            sort: true
+        }, {
+            dataField: 'complexity',
+            text: 'Complexity',
             sort: true
         }];
 

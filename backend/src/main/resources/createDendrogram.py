@@ -11,13 +11,14 @@ import matplotlib.pyplot as plt
 codebasesPath = str(sys.argv[1])
 codebaseName = str(sys.argv[2])
 dendrogramName = str(sys.argv[3])
-linkageType = str(sys.argv[4])
 
 with open(codebasesPath + codebaseName + "/" + dendrogramName + "/similarityMatrix.json") as f:
     similarityMatrix = json.load(f)
 
 entities = similarityMatrix["entities"]
 matrix = np.array(similarityMatrix["matrix"])
+linkageType = similarityMatrix["linkageType"]
+
 hierarc = hierarchy.linkage(y=matrix, method=linkageType)
 
 hierarchy.dendrogram(hierarc, labels=entities, distance_sort='descending')

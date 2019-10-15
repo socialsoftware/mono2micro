@@ -115,21 +115,20 @@ public class Codebase {
 			dendrogramPath.mkdir();
 		}
 
-		dendrogram.calculateSimilarityMatrix();
-
 		this.addDendrogram(dendrogram);
+
+		dendrogram.calculateSimilarityMatrix();
 
 		//run python script to generate dendrogram image
 		Runtime r = Runtime.getRuntime();
 		String pythonScriptPath = RESOURCES_PATH + "createDendrogram.py";
-		String[] cmd = new String[6];
+		String[] cmd = new String[5];
 		cmd[0] = PYTHON;
 		cmd[1] = pythonScriptPath;
 		cmd[2] = CODEBASES_PATH;
 		cmd[3] = this.name;
 		cmd[4] = dendrogram.getName();
-		cmd[5] = dendrogram.getLinkageType();
-		
+
 		Process p = r.exec(cmd);
 		p.waitFor();
 	}
