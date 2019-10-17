@@ -1,5 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +8,11 @@ import java.util.Map;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Metrics;
 
 public class Graph {
@@ -18,6 +24,8 @@ public class Graph {
 	private String cutType;
 	private float silhouetteScore;
 	private float complexity;
+	private float cohesion;
+	private float coupling;
 	private List<Controller> controllers = new ArrayList<>();
 	private List<Cluster> clusters = new ArrayList<>();
 
@@ -88,12 +96,97 @@ public class Graph {
 		this.complexity = complexity;
 	}
 
+	public float getCohesion() {
+		return cohesion;
+	}
+
+	public void setCohesion(float cohesion) {
+		this.cohesion = cohesion;
+	}
+
+	public float getCoupling() {
+		return coupling;
+	}
+
+	public void setCoupling(float coupling) {
+		this.coupling = coupling;
+	}
+
+	public int maxClusterSize() {
+		int max = 0;
+		for (Cluster cluster : this.clusters)
+			if (cluster.getEntities().size() > max)
+				max = cluster.getEntities().size();
+		return max;
+	}
+
 	public List<Controller> getControllers() {
 		return this.controllers;
 	}
 
 	public void addController(Controller controller) {
 		this.controllers.add(controller);
+	}
+
+	public void addControllers(List<String> profiles) throws JSONException, IOException {
+
+		JSONObject datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
+		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
+		
+		for (String profile : profiles) {
+			for (String controllerName : codebase.getProfile(profile)) {
+
+				Controller controller = new Controller(controllerName);
+				this.addController(controller);
+	
+				JSONArray entitiesSeq = new JSONArray();
+				JSONObject clusterAccess = new JSONObject();
+	
+				JSONArray entities = datafileJSON.getJSONArray(controllerName);
+				for (int i = 0; i < entities.length(); i++) {
+					JSONArray entityArray = entities.getJSONArray(i);
+					String entity = entityArray.getString(0);
+					String mode = entityArray.getString(1);
+					String cluster = this.getClusterWithEntity(entity).getName();
+					
+					if (i == 0) {
+						clusterAccess.put("cluster", cluster);
+						clusterAccess.put("sequence", new JSONArray());
+						clusterAccess.getJSONArray("sequence").put(entityArray);
+						controller.addEntity(entity, mode);
+					} else {
+						String previousCluster = this.getClusterWithEntity(entities.getJSONArray(i-1).getString(0)).getName();
+						if (cluster.equals(previousCluster)) {
+							boolean hasNoCost = false;
+							for (int j = 0; j < clusterAccess.getJSONArray("sequence").length(); j++) {
+								JSONArray entityPair = clusterAccess.getJSONArray("sequence").getJSONArray(j);
+								if (entity.equals(entityPair.getString(0)) && mode.equals(entityPair.getString(1))) {
+									hasNoCost = true;
+									break;
+								}
+								if (entity.equals(entityPair.getString(0)) && "W".equals(entityPair.getString(1))) {
+									hasNoCost = true;
+									break;
+								}
+							}
+							if (!hasNoCost) {
+								clusterAccess.getJSONArray("sequence").put(entityArray);
+								controller.addEntity(entity, mode);
+							}
+						} else {
+							entitiesSeq.put(clusterAccess);
+							clusterAccess = new JSONObject();
+							clusterAccess.put("cluster", cluster);
+							clusterAccess.put("sequence", new JSONArray());
+							clusterAccess.getJSONArray("sequence").put(entityArray);
+							controller.addEntity(entity, mode);
+						}
+					}
+				}
+				entitiesSeq.put(clusterAccess);
+				controller.addEntitiesSeq(entitiesSeq);
+			}
+		}
 	}
 
 	public List<Cluster> getClusters() {
@@ -191,20 +284,6 @@ public class Graph {
 		this.calculateMetrics();
 	}
 
-	public void moveEntities(String[] entities, String targetCluster) {
-		List<String> removedEntities = new ArrayList<>();
-        for (Cluster cluster : this.clusters) {
-			for (String entity : entities) {
-				if (cluster.containsEntity(entity) && !cluster.getName().equals(targetCluster)) {
-					cluster.removeEntity(entity);
-					removedEntities.add(entity);
-				}
-			}
-		}
-		for (String entity : removedEntities)
-			this.getCluster(targetCluster).addEntity(new Entity(entity));
-	}
-
 	public Map<String,List<Controller>> getClusterControllers() {
 		Map<String,List<Controller>> clusterControllers = new HashMap<>();
 
@@ -242,6 +321,12 @@ public class Graph {
 	}
 
 	public void calculateMetrics() {
+		try {
+			this.addControllers(CodebaseManager.getInstance().getCodebase(this.codebaseName).getDendrogram(this.dendrogramName).getProfiles());
+		} catch (IOException | JSONException e) {
+			e.printStackTrace();
+		}
+
 		Metrics metrics = new Metrics(this);
 		metrics.calculateMetrics();
 	}

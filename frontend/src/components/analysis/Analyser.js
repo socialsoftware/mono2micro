@@ -114,12 +114,15 @@ export class Analyser extends React.Component {
                 read: data.readWeight,
                 sequence: data.sequenceWeight,
                 numberClusters: data.numberClusters,
+                maxClusterSize: data.maxClusterSize,
+                cohesion: data.cohesion,
+                coupling: data.coupling,
+                complexity: data.complexity,
+                fmeasure: data.fmeasure,
                 accuracy: data.accuracy,
                 precision: data.precision,
                 recall: data.recall,
-                specificity: data.specificity,
-                fmeasure: data.fmeasure,
-                complexity: data.complexity
+                specificity: data.specificity
             } 
         });
 
@@ -149,6 +152,31 @@ export class Analyser extends React.Component {
             sort: true,
             filter: numberFilter()
         }, {
+            dataField: 'maxClusterSize',
+            text: 'Max Cluster Size',
+            sort: true,
+            filter: numberFilter()
+        }, {
+            dataField: 'cohesion',
+            text: 'Cohesion',
+            sort: true,
+            filter: numberFilter()
+        }, {
+            dataField: 'coupling',
+            text: 'Coupling',
+            sort: true,
+            filter: numberFilter()
+        }, {
+            dataField: 'complexity',
+            text: 'Complexity',
+            sort: true,
+            filter: numberFilter()
+        }, {
+            dataField: 'fmeasure',
+            text: 'F-Score',
+            sort: true,
+            filter: numberFilter()
+        }, {
             dataField: 'accuracy',
             text: 'Accuracy',
             sort: true,
@@ -168,22 +196,6 @@ export class Analyser extends React.Component {
             text: 'Specificity',
             sort: true,
             filter: numberFilter()
-        }, {
-            dataField: 'fmeasure',
-            text: 'F-Score',
-            sort: true,
-            filter: numberFilter()
-        }, {
-            dataField: 'complexity',
-            text: 'Complexity',
-            sort: true,
-            filter: numberFilter()
-            /*sortFunc: (a, b, order, dataField, rowA, rowB) => {
-                if (order === 'asc')
-                    return a - b;
-                else
-                    return b - a;
-            }*/
         }];
 
         return (

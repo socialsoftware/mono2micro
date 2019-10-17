@@ -34,7 +34,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
-import pt.ist.socialsoftware.mono2micro.domain.Controller;
 import pt.ist.socialsoftware.mono2micro.domain.Entity;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.dto.AnalyserDto;
@@ -70,9 +69,6 @@ public class AnalysisController {
 
 		try {
 
-			JSONObject datafileJSON = codebaseManager.getDatafile(codebaseName);
-			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-
 			File analyserPath = new File(CODEBASES_PATH + codebaseName + "/analyser/cuts/");
 			if (!analyserPath.exists()) {
 				analyserPath.mkdirs();
@@ -85,7 +81,7 @@ public class AnalysisController {
 
 			createAnalyserSimilarityMatrix(codebaseName, analyser);
 
-			/*Runtime r = Runtime.getRuntime();
+			Runtime r = Runtime.getRuntime();
 			String pythonScriptPath = RESOURCES_PATH + "analyser.py";
 			String[] cmd = new String[4];
 			cmd[0] = PYTHON;
@@ -101,13 +97,21 @@ public class AnalysisController {
 			while((line = bfr.readLine()) != null) 
 			{
 				System.out.println(line);
-			}*/
+			}
 
-			int maxRequests = 1700;
+			int start = 0;
+			int count = 0;
+
+			int maxRequests = 50;
 			int requestCount = 0;
 			File analyserCutsPath = new File(CODEBASES_PATH + codebaseName + "/analyser/cuts/");
 			File[] files = analyserCutsPath.listFiles();
 			for (File file : files) {
+
+				count++;
+				if (count <= start)
+					continue;
+
 				String filename = FilenameUtils.getBaseName(file.getName());
 
 				JSONObject analyserJSON = codebaseManager.getAnalyserResults(codebaseName);
@@ -115,43 +119,23 @@ public class AnalysisController {
 					continue;
 
 				Graph graph = new Graph();
-
-				for (String profile : analyser.getProfiles()) {
-					for (String controllerName : codebase.getProfile(profile)) {
-						Controller controller = new Controller(controllerName);
-						graph.addController(controller);
-
-						JSONArray entities = datafileJSON.getJSONArray(controllerName);
-						for (int i = 0; i < entities.length(); i++) {
-							JSONArray entityArray = entities.getJSONArray(i);
-							String entity = entityArray.getString(0);
-							String mode = entityArray.getString(1);
-							
-							controller.addEntity(entity, mode);
-							controller.addEntitySeq(entity, mode);
-						}
-					}
-				}
+				graph.setCodebaseName(codebaseName);
 
 				JSONObject analyserCut = codebaseManager.getAnalyserCut(codebaseName, filename);
 		
-				Iterator<String> clusters = analyserCut.getJSONObject("clusters").sortedKeys();
-				ArrayList<Integer> clusterIds = new ArrayList<>();
-		
+				Iterator<String> clusters = analyserCut.getJSONObject("clusters").keys();
+
 				while(clusters.hasNext()) {
-					clusterIds.add(Integer.parseInt(clusters.next()));
-				}
-				Collections.sort(clusterIds);
-				for (Integer id : clusterIds) {
-					String clusterId = String.valueOf(id);
+					String clusterId = clusters.next();
 					JSONArray entities = analyserCut.getJSONObject("clusters").getJSONArray(clusterId);
-					Cluster cluster = new Cluster("Cluster" + clusterId);
+					Cluster cluster = new Cluster(clusterId);
 					for (int i = 0; i < entities.length(); i++) {
-						Entity entity = new Entity(entities.getString(i));
-						cluster.addEntity(entity);
+						cluster.addEntity(new Entity(entities.getString(i)));
 					}
 					graph.addCluster(cluster);
 				}
+
+				graph.addControllers(analyser.getProfiles());
 
 				graph.calculateMetrics();
 
@@ -167,7 +151,12 @@ public class AnalysisController {
 				analyserResult.setRecall(analysisDto.getRecall());
 				analyserResult.setSpecificity(analysisDto.getSpecificity());
 				analyserResult.setFmeasure(analysisDto.getFmeasure());
+				
 				analyserResult.setComplexity(graph.getComplexity());
+				analyserResult.setCohesion(graph.getCohesion());
+				analyserResult.setCoupling(graph.getCoupling());
+
+				analyserResult.setMaxClusterSize(graph.maxClusterSize());
 
 				String[] similarityWeights = filename.split(",");
 				analyserResult.setAccessWeight(Float.parseFloat(similarityWeights[0]));
@@ -178,7 +167,6 @@ public class AnalysisController {
 
 				JSONObject analyserResultJSON = new JSONObject(analyserResult);
 
-				analyserJSON = codebaseManager.getAnalyserResults(codebaseName);
 				analyserJSON.put(filename, analyserResultJSON);
 				codebaseManager.writeAnalyserResults(codebaseName, analyserJSON);
 
@@ -186,8 +174,6 @@ public class AnalysisController {
 				if (requestCount == maxRequests)
 					break;
 			}
-
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

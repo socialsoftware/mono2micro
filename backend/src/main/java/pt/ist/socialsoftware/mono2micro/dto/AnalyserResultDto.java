@@ -6,15 +6,42 @@ public class AnalyserResultDto {
     private float readWeight;
     private float sequenceWeight;
     private float numberClusters;
+    private int maxClusterSize;
+    private float cohesion;
+    private float coupling;
+    private float complexity;
     private float accuracy;
     private float precision;
     private float recall;
     private float specificity;
     private float fmeasure;
-    private float complexity;
 
     public float getAccessWeight() {
         return accessWeight;
+    }
+
+    public float getCoupling() {
+        return coupling;
+    }
+
+    public void setCoupling(float coupling) {
+        this.coupling = coupling;
+    }
+
+    public float getCohesion() {
+        return cohesion;
+    }
+
+    public void setCohesion(float cohesion) {
+        this.cohesion = cohesion;
+    }
+
+    public int getMaxClusterSize() {
+        return maxClusterSize;
+    }
+
+    public void setMaxClusterSize(int maxClusterSize) {
+        this.maxClusterSize = maxClusterSize;
     }
 
     public float getComplexity() {

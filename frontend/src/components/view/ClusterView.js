@@ -340,7 +340,7 @@ export class ClusterView extends React.Component {
                 entities: cluster.entities.length,
                 controllers: this.state.clusterControllers[cluster.name].length,
                 cohesion: cluster.cohesion,
-                coupling: Number(((Object.values(cluster.coupling).reduce((a,b) => a + b, 0) - 1) / (Object.keys(cluster.coupling).length - 1)).toFixed(2)),
+                coupling: cluster.coupling,
                 complexity: cluster.complexity
             }
         });
@@ -373,7 +373,7 @@ export class ClusterView extends React.Component {
         const couplingRows = this.state.clusters.map(c1 => {
             return Object.assign({id: c1.name}, ...this.state.clusters.map(c2 => {
                 return {
-                    [c2.name]: c1.name === c2.name ? "---" : c1.coupling[c2.name]
+                    [c2.name]: c1.name === c2.name ? "---" : c1.couplingPairs[c2.name]
                 }
             }))
         });

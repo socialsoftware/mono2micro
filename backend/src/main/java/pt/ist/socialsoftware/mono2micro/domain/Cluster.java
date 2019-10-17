@@ -9,7 +9,8 @@ public class Cluster {
 	private String name;
 	private float complexity;
 	private float cohesion;
-	private Map<String,Float> coupling;
+	private float coupling;
+	private Map<String, Float> couplingPairs;
 	private List<Entity> entities = new ArrayList<>();
 
 	public Cluster() {
@@ -43,12 +44,20 @@ public class Cluster {
 		this.cohesion = cohesion;
 	}
 
-	public Map<String,Float> getCoupling() {
+	public float getCoupling() {
 		return coupling;
 	}
 
-	public void setCoupling(Map<String,Float> coupling) {
+	public void setCoupling(float coupling) {
 		this.coupling = coupling;
+	}
+
+	public Map<String, Float> getCouplingPairs() {
+		return couplingPairs;
+	}
+
+	public void setCouplingPairs(Map<String, Float> couplingPairs) {
+		this.couplingPairs = couplingPairs;
 	}
 
 	public List<Entity> getEntities() {

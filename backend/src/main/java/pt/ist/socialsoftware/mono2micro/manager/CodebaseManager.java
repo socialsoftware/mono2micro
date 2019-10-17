@@ -144,6 +144,13 @@ public class CodebaseManager {
 		file.close();
 	}
 
+	public JSONObject getSimilarityMatrix(String codebaseName, String dendrogramName) throws IOException, JSONException {
+		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/" + dendrogramName + "/similarityMatrix.json");
+		JSONObject similarityMatrixJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
+		is.close();
+		return similarityMatrixJSON;
+	}
+
 	public void writeSimilarityMatrix(String codebaseName, String dendrogramName, JSONObject similarityMatrix) throws IOException, JSONException {
 		FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + "/" + dendrogramName + "/similarityMatrix.json");
 		file.write(similarityMatrix.toString(4));

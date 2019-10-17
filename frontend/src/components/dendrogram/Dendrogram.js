@@ -257,6 +257,8 @@ export class Dendrogram extends React.Component {
                 singleton: graph.clusters.filter(c => c.entities.length === 1).length,
                 max_cluster_size: Math.max(...graph.clusters.map(c => c.entities.length)),
                 ss: graph.silhouetteScore,
+                cohesion: graph.cohesion,
+                coupling: graph.coupling,
                 complexity: graph.complexity
             } 
         });
@@ -280,6 +282,14 @@ export class Dendrogram extends React.Component {
         }, {
             dataField: 'ss',
             text: 'Silhouette Score',
+            sort: true
+        }, {
+            dataField: 'cohesion',
+            text: 'Cohesion',
+            sort: true
+        }, {
+            dataField: 'coupling',
+            text: 'Coupling',
             sort: true
         }, {
             dataField: 'complexity',

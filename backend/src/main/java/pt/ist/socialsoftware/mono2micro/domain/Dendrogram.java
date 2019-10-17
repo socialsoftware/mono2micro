@@ -138,32 +138,17 @@ public class Dendrogram {
 		if (this.getGraphNames().contains(expert.getName()))
 			throw new KeyAlreadyExistsException();
 
-		JSONObject datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
-		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
-
 		Cluster cluster = new Cluster("Generic");
 
-		for (String profile : this.profiles) {
-			for (String controllerName : codebase.getProfile(profile)) {
-				Controller controller = new Controller(controllerName);
-				expert.addController(controller);
-
-				JSONArray entities = datafileJSON.getJSONArray(controllerName);
-				for (int i = 0; i < entities.length(); i++) {
-					JSONArray entityArray = entities.getJSONArray(i);
-					String entity = entityArray.getString(0);
-					String mode = entityArray.getString(1);
-					
-					controller.addEntity(entity, mode);
-					controller.addEntitySeq(entity, mode);
-
-					if (!cluster.containsEntity(entity))
-						cluster.addEntity(new Entity(entity));
-				}
-			}
+		JSONObject similarityMatrixData = CodebaseManager.getInstance().getSimilarityMatrix(this.codebaseName, this.name);
+		JSONArray entities = similarityMatrixData.getJSONArray("entities");
+		for (int i = 0; i < entities.length(); i++) {
+			cluster.addEntity(new Entity(entities.getString(i)));
 		}
 
 		expert.addCluster(cluster);
+
+		expert.addControllers(this.profiles);
 
 		this.addGraph(expert);
 		expert.calculateMetrics();
@@ -302,26 +287,6 @@ public class Dendrogram {
 			graphPath.mkdir();
 		}
 
-		JSONObject datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
-		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
-
-		for (String profile : this.profiles) {
-			for (String controllerName : codebase.getProfile(profile)) {
-				Controller controller = new Controller(controllerName);
-				graph.addController(controller);
-
-				JSONArray entities = datafileJSON.getJSONArray(controllerName);
-				for (int i = 0; i < entities.length(); i++) {
-					JSONArray entityArray = entities.getJSONArray(i);
-					String entity = entityArray.getString(0);
-					String mode = entityArray.getString(1);
-					
-					controller.addEntity(entity, mode);
-					controller.addEntitySeq(entity, mode);
-				}
-			}
-		}
-
 		Runtime r = Runtime.getRuntime();
 		String pythonScriptPath = RESOURCES_PATH + "cutDendrogram.py";
 		String[] cmd = new String[8];
@@ -358,6 +323,8 @@ public class Dendrogram {
 			}
 			graph.addCluster(cluster);
 		}
+
+		graph.addControllers(this.profiles);
 
 		this.addGraph(graph);
 		graph.calculateMetrics();

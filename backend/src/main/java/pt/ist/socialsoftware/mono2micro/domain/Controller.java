@@ -1,17 +1,17 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import pt.ist.socialsoftware.mono2micro.utils.Pair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Controller {
 	private String name;
 	private float complexity;
 	private Map<String, String> entities = new HashMap<>();
-	private List<Pair<String, String>> entitiesSeq = new ArrayList<>();
+	private String entitiesSeq = "[]";
 
 	public Controller() {
 	}
@@ -45,12 +45,9 @@ public class Controller {
 	}
 
 	public void addEntity(String entity, String mode) {
-		if (this.entities.containsKey(entity) &&
-			mode.equals("W") &&
-			this.entities.get(entity).equals("R")) {
-				this.entities.put(entity, "RW");
-			}
-		else if (!this.entities.containsKey(entity)) {
+		if (this.entities.containsKey(entity) && !this.entities.get(entity).equals(mode)) {
+			this.entities.put(entity, "RW");
+		} else if (!this.entities.containsKey(entity)) {
 			this.entities.put(entity, mode);
 		}
 	}
@@ -59,26 +56,15 @@ public class Controller {
 		return this.entities.containsKey(entity);
 	}
 
-	public List<Pair<String,String>> getEntitiesSeq() {
-		return this.entitiesSeq;
+	public String getEntitiesSeq() {
+		return entitiesSeq;
 	}
 
-	public void setEntitiesSeq(List<Pair<String,String>> entitiesSeq) {
+	public void setEntitiesSeq(String entitiesSeq) {
 		this.entitiesSeq = entitiesSeq;
 	}
 
-	public void addEntitySeq(String entity, String mode) {
-		for (Pair<String,String> entityPair : this.entitiesSeq) {
-			String entitySeq = entityPair.getFirst();
-			String modeSeq = entityPair.getSecond();
-
-			if (entitySeq.equals(entity) && modeSeq.equals(mode))
-				return;
-
-			if (entitySeq.equals(entity) && modeSeq.equals("W"))
-				return;
-		}
-
-		this.entitiesSeq.add(new Pair<>(entity, mode));
+	public void addEntitiesSeq(JSONArray entitiesSeq) {
+		this.setEntitiesSeq(entitiesSeq.toString());
 	}
 }
