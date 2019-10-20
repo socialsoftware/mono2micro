@@ -1,0 +1,56 @@
+{
+    "clusters": {
+        "Models": [
+            "ActivityModel",
+            "ConditionModel",
+            "GoalModel",
+            "Activity",
+            "Goal",
+            "DefProductCondition",
+            "DefEntityCondition",
+            "DefAttributeCondition",
+            "DefPathCondition"
+        ],
+        "Design": [
+            "BlendedWorkflow",
+            "Specification",
+            "Attribute",
+            "Product",
+            "DataModel",
+            "Path",
+            "RelationBW",
+            "Dependence",
+            "Cardinality",
+            "Entity",
+            "Rule",
+            "Condition",
+            "AndCondition",
+            "NotCondition",
+            "OrCondition",
+            "Comparison",
+            "BoolComparison",
+            "AttributeBoolCondition",
+            "Expression",
+            "BinaryExpression",
+            "AttributeValueExpression",
+
+            "ActivityView",
+            "View",
+            "WorkflowInstance",
+            "GoalView",
+            "MulCondition",
+            "Position"
+        ],
+        "Execution": [
+            "ProductInstance",
+            "EntityInstance",
+            "AttributeInstance",
+            "RelationInstance",
+            "WorkItem",
+            "ActivityWorkItem",
+            "GoalWorkItem",
+            "PostWorkItemArgument",
+            "PreWorkItemArgument"
+        ]
+    }
+}

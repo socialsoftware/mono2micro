@@ -96,7 +96,7 @@ public class ClusterController {
 	public ResponseEntity<Map<String,List<Cluster>>> getControllerClusters(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName) {
 		logger.debug("getControllerClusters");
 
-		return new ResponseEntity<Map<String,List<Cluster>>>(codebaseManager.getCodebase(codebaseName).getDendrogram(dendrogramName).getGraph(graphName).getControllerClusters(), HttpStatus.OK);
+		return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getDendrogram(dendrogramName).getGraph(graphName).getControllerClusters(), HttpStatus.OK);
 	}
 
 
@@ -104,6 +104,6 @@ public class ClusterController {
 	public ResponseEntity<Map<String,List<Controller>>> getClusterControllers(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName) {
 		logger.debug("getClusterControllers");
 
-		return new ResponseEntity<Map<String,List<Controller>>>(codebaseManager.getCodebase(codebaseName).getDendrogram(dendrogramName).getGraph(graphName).getClusterControllers(), HttpStatus.OK);
+		return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getDendrogram(dendrogramName).getGraph(graphName).getClusterControllers(), HttpStatus.OK);
 	}
 }

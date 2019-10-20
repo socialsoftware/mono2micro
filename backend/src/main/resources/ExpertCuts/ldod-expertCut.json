@@ -1,0 +1,74 @@
+{
+    "clusters": {
+        "Text": [
+            "AddText",
+            "AltText",
+            "AltTextWeight",
+            "DelText",
+            "Dimensions",
+            "GapText",
+            "SegText",
+            "SpaceText",
+            "Edition",
+            "ExpertEdition",
+            "ExpertEditionInter",
+            "Facsimile",
+            "FragInter",
+            "Fragment",
+            "Heteronym",
+            "LdoD",
+            "LdoDDate",
+            "ManuscriptSource",
+            "SimpleText",
+            "Source",
+            "Surface",
+            "TextPortion",
+            "HandNote",
+            "TypeNote",
+            "UnclearText",
+            "AnnexNote",
+            "LbText",
+            "NoteText",
+            "PbText",
+            "PhysNote",
+            "RdgText",
+            "RefText",
+            "Rend",
+            "SourceInter"
+        ],
+        "VirtualEdition": [
+            "Annotation",
+            "Category",
+            "Member",
+            "Range",
+            "RecommendationWeights",
+            "Section",
+            "Tag",
+            "Taxonomy",
+            "VirtualEdition",
+            "VirtualEditionInter",
+            "HumanAnnotation"
+        ],
+        "User": [
+            "LdoDUser",
+            "RegistrationToken",
+            "Role",
+            "UserConnection"
+        ],
+        "ClassificationGame": [
+            "ClassificationGame",
+            "ClassificationGameParticipant",
+            "ClassificationGameRound",
+            "Player"
+        ],
+        "Twitter": [
+            "AwareAnnotation",
+            "Citation",
+            "InfoRange",
+            "LastTwitterID",
+            "SocialMediaCriteria",
+            "Tweet",
+            "TwitterCitation"
+        ]
+    }
+}

@@ -28,15 +28,22 @@ public class Metrics {
 		float graphComplexity = 0;
 		float graphCohesion = 0;
 		float graphCoupling = 0;
+
+		for (Cluster cluster : graph.getClusters()) {
+			cluster.setCouplingDependencies(new HashMap<>());
+		}
 		
 		for (Controller controller : graph.getControllers()) {
 			calculateControllerComplexity(controller);
 			graphComplexity += controller.getComplexity();
+
+			calculateClusterDependencies(controller);
 		}
+
 		graphComplexity /= graph.getControllers().size();
 		graphComplexity = BigDecimal.valueOf(graphComplexity).setScale(2, RoundingMode.HALF_UP).floatValue();
 		this.graph.setComplexity(graphComplexity);
-            
+
 		for (Cluster cluster : graph.getClusters()) {
 			calculateClusterComplexity(cluster, clusterControllers.get(cluster.getName()));
 
@@ -46,6 +53,7 @@ public class Metrics {
 			calculateClusterCoupling(cluster);
 			graphCoupling += cluster.getCoupling();
 		}
+
 		graphCohesion /= graph.getClusters().size();
 		graphCohesion = BigDecimal.valueOf(graphCohesion).setScale(2, RoundingMode.HALF_UP).floatValue();
 		this.graph.setCohesion(graphCohesion);
@@ -54,15 +62,33 @@ public class Metrics {
 		this.graph.setCoupling(graphCoupling);
     }
 
-    private void calculateControllerComplexity(Controller controller) {
+	private void calculateClusterDependencies(Controller controller) {
+    	try {
+			JSONArray accessSequence = new JSONArray(controller.getEntitiesSeq());
+			for (int i = 0; i < accessSequence.length() - 1; i++) {
+				JSONObject clusterAccess = accessSequence.getJSONObject(i);
+				String fromCluster = clusterAccess.getString("cluster");
+				Cluster c1 = graph.getCluster(fromCluster);
+
+				JSONObject nextClusterAccess = accessSequence.getJSONObject(i + 1);
+				String toCluster = nextClusterAccess.getString("cluster");
+				String toEntity = nextClusterAccess.getJSONArray("sequence").getJSONArray(0).getString(0);
+
+				c1.addCouplingDependency(toCluster, toEntity);
+			}
+		} catch (JSONException e) {
+    		e.printStackTrace();
+		}
+	}
+
+	private void calculateControllerComplexity(Controller controller) {
 		if (graph.getControllerClusters().get(controller.getName()).size() == 1) {
 			controller.setComplexity(0);
 			return;	
 		}
 
 		float complexity = 0;
-		Set<String> clusterReadCost = new HashSet<>();
-		Set<String> clusterWriteCost = new HashSet<>();
+		Set<String> clusterAccessDependencies = new HashSet<>();
 		try {
 			JSONArray accessSequence = new JSONArray(controller.getEntitiesSeq());
 
@@ -75,15 +101,13 @@ public class Metrics {
 					String mode = entityAccess.getString(1);
 
 					if (mode.equals("R"))
-						costOfRead(controller, entity, clusterReadCost);
+						costOfRead(controller, entity, clusterAccessDependencies);
 					else
-						costOfWrite(controller, entity, clusterWriteCost);
+						costOfWrite(controller, entity, clusterAccessDependencies);
 				}
 
-				complexity += clusterReadCost.size();
-				complexity += clusterWriteCost.size();
-				clusterReadCost.clear();
-				clusterWriteCost.clear();
+				complexity += clusterAccessDependencies.size();
+				clusterAccessDependencies.clear();
 			}
 
 			controller.setComplexity(complexity);
@@ -92,32 +116,27 @@ public class Metrics {
 		}
     }
 
-    private void costOfRead(Controller controller, String entity, Set<String> clusterReadCost) {
+    private void costOfRead(Controller controller, String entity, Set<String> clusterAccessDependencies) {
         for (Controller otherController : this.graph.getControllers()) {
             if (!otherController.getName().equals(controller.getName()) &&
                 otherController.containsEntity(entity) && 
                 otherController.getEntities().get(entity).contains("W")) {
-                    clusterReadCost.add(otherController.getName());
+					clusterAccessDependencies.add(otherController.getName());
                 }
         }
     }
 
-    private void costOfWrite(Controller controller, String entity, Set<String> clusterWriteCost) {
+    private void costOfWrite(Controller controller, String entity, Set<String> clusterAccessDependencies) {
         for (Controller otherController : this.graph.getControllers()) {
             if (!otherController.getName().equals(controller.getName()) &&
                 otherController.containsEntity(entity) && 
                 otherController.getEntities().get(entity).contains("R")) {
-                    clusterWriteCost.add(otherController.getName());
+					clusterAccessDependencies.add(otherController.getName());
                 }
         }
     }
 
 	private void calculateClusterComplexity(Cluster cluster, List<Controller> controllers) {
-		if (graph.getClusters().size() == 1) {
-			cluster.setComplexity(0);
-			return;	
-		}
-
 		float complexity = 0;
 		for (Controller controller : controllers) {
 			complexity += controller.getComplexity();
@@ -143,41 +162,12 @@ public class Metrics {
 	}
 
 	private void calculateClusterCoupling(Cluster c1) {
-		float coupling = 0;
-		Map<String,Float> couplingPairs = new HashMap<>();
-		for (Cluster c2 : graph.getClusters()) {
-			if (c1.getName().equals(c2.getName())) {
-				couplingPairs.put(c2.getName(), Float.valueOf(-1));
-				continue;
-			}
-			Set<String> touchedEntities = new HashSet<>();
-
-			try {
-				for (Controller controller : this.graph.getControllers()) {
-					JSONArray accessSequence = new JSONArray(controller.getEntitiesSeq());
-					for (int i = 0; i < accessSequence.length() - 1; i++) {
-						JSONObject clusterAccess = accessSequence.getJSONObject(i);
-						String fromCluster = clusterAccess.getString("cluster");
-
-						JSONObject nextClusterAccess = accessSequence.getJSONObject(i+1);
-						String toCluster = nextClusterAccess.getString("cluster");
-						String toEntity = nextClusterAccess.getJSONArray("sequence").getJSONArray(0).getString(0);
-					
-						if (c1.getName().equals(fromCluster) &&
-							c2.getName().equals(toCluster)) {
-								touchedEntities.add(toEntity);
-						}
-					}
-				}
-
-				coupling += touchedEntities.size();
-				couplingPairs.put(c2.getName(), Float.valueOf(touchedEntities.size()));
-			} catch(JSONException e) {
-				e.printStackTrace();
-			}
+    	float coupling = 0;
+    	for (String c2 : c1.getCouplingDependencies().keySet()) {
+    		coupling += c1.getCouplingDependencies().get(c2).size();
 		}
 		coupling = graph.getClusters().size() == 1 ? 0 : coupling / (graph.getClusters().size() - 1);
+		coupling = BigDecimal.valueOf(coupling).setScale(2, RoundingMode.HALF_UP).floatValue();
 		c1.setCoupling(coupling);
-		c1.setCouplingPairs(couplingPairs);
 	}
 }

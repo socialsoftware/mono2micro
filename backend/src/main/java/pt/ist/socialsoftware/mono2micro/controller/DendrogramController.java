@@ -113,7 +113,7 @@ public class DendrogramController {
 
 		try {
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            codebase.getDendrogram(dendrogramName).createExpertCut(graph);;
+            codebase.getDendrogram(dendrogramName).createExpertCut(graph);
             codebaseManager.writeCodebase(codebaseName, codebase);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (KeyAlreadyExistsException e) {

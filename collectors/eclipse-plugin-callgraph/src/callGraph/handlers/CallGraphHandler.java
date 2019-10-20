@@ -62,11 +62,11 @@ public class CallGraphHandler extends AbstractHandler {
 	JsonObject callSequence;
 	JsonArray entitiesSequence;
 	List<String> allEntities;
-	Set<String> abstractEntities;
-	Map<String,Set<String>> subclasses;
-	Set<IType> controllers;
+	List<String> abstractEntities;
+	List<IType> controllers;
 	ASTParser parser;
 	Map<String,List<CallLocation>> methodCallees;
+	int controllerCount;
 
 
 	@Override
@@ -93,16 +93,17 @@ public class CallGraphHandler extends AbstractHandler {
 			
 			callSequence = new JsonObject();
 			allEntities = new ArrayList<>();
-			abstractEntities = new HashSet<>();
-			subclasses = new HashMap<>();
-			controllers = new HashSet<>();
+			abstractEntities = new ArrayList<>();
+			controllers = new ArrayList<>();
 			parser = ASTParser.newParser(AST.JLS11);
 			parser.setKind(ASTParser.K_COMPILATION_UNIT);
 			methodCallees = new HashMap<>();
 			
 			collectControllersAndEntities(project);
 			
+			controllerCount = 0;
 			for (IType controller : controllers) {
+				controllerCount++;
 				processController(controller);
 			}
 			
@@ -156,21 +157,17 @@ public class CallGraphHandler extends AbstractHandler {
 					if (aPackage.getKind() == IPackageFragmentRoot.K_SOURCE) {
 						for (ICompilationUnit unit : aPackage.getCompilationUnits()) {
 							for (IType type : unit.getTypes()) {
-								if (type.getAnnotation("Controller").exists()) { //Controller class
+								
+								if (type.getAnnotation("Controller").exists() || 
+									type.getAnnotation("RestController").exists() || 
+									type.getAnnotation("RequestMapping").exists() ||
+									type.getElementName().endsWith("Controller") ||
+									(type.getSuperclassName() != null && type.getSuperclassName().equals("FenixDispatchAction"))) { //Controller class
 									controllers.add(type);
 									allEntities.add(type.getElementName());
 								} else if (!type.getElementName().endsWith("_Base")) {  //Domain class
 									if (Flags.isAbstract(type.getFlags())) {
 										abstractEntities.add(type.getElementName());
-										
-										ITypeHierarchy th= type.newTypeHierarchy(null);
-										Set<String> subclassesTemp = new HashSet<>();
-										IType[] subtypes = th.getAllSubtypes(type);
-										for (IType t : subtypes) {
-											if (!t.getElementName().endsWith("_Base"))
-												subclassesTemp.add(t.getElementName());
-										}
-										subclasses.put(type.getElementName(), subclassesTemp);
 									}
 									allEntities.add(type.getElementName());
 								}
@@ -192,42 +189,22 @@ public class CallGraphHandler extends AbstractHandler {
 		try {
 			for (IMethod controllerMethod : controller.getMethods()) {
 				
-				if (!controllerMethod.getAnnotation("RequestMapping").exists())
+				//For Fenix: check if the controller method return type == ActionForward
+				if (controller.getSuperclassName() != null && controller.getSuperclassName().equals("FenixDispatchAction")) {
+					if (!controllerMethod.getReturnType().contains("ActionForward"))
+						continue;
+				} else if (!controllerMethod.getAnnotation("RequestMapping").exists()) {
 					continue;
-				
+				}
 				
 				String controllerFullName = controllerMethod.getParent().getElementName() + "." + controllerMethod.getElementName();
-				System.out.println("Processing Controller: " + controllerFullName);
+				//if (!controllerFullName.equals("CitationController.listCitations"))
+				//	continue;
+				System.out.println("Processing Controller: " + controllerFullName + "   " + controllerCount + "/" + controllers.size());
 				entitiesSequence = new JsonArray();
-				Stack<IMethod> methodStack = new Stack<>();
+				Stack<String> methodStack = new Stack<>();
 				
 				methodCallDFS(controllerMethod, methodStack);
-				
-				//expand abstract classes
-				/*JSONArray expandedSubclassesEntities = new JSONArray();
-				for (int i = 0; i < entitiesSequence.length(); i++) {
-					try {
-						JSONArray entityArray = (JSONArray) entitiesSequence.get(i);
-						String entity = (String) entityArray.get(0);
-						String mode = (String) entityArray.get(1);
-						
-						if (abstractEntities.contains(entity)) {
-							for (String subclass : subclasses.get(entity)) {
-								JSONArray subclassEntity = new JSONArray();
-								subclassEntity.put(subclass);
-								subclassEntity.put(mode);
-								expandedSubclassesEntities.put(subclassEntity);
-							}
-						} else {
-							JSONArray subclassEntity = new JSONArray();
-							subclassEntity.put(entity);
-							subclassEntity.put(mode);
-							expandedSubclassesEntities.put(subclassEntity);
-						}
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
-				}*/
 				
 				if (entitiesSequence.size() > 0) {
 					callSequence.add(controllerFullName, entitiesSequence);
@@ -239,13 +216,15 @@ public class CallGraphHandler extends AbstractHandler {
 	}
 	
 	
-	public void methodCallDFS(IMethod method, Stack<IMethod> methodStack) throws JavaModelException {
-		methodStack.push(method);
+	public void methodCallDFS(IMethod method, Stack<String> methodStack) throws JavaModelException {
+		methodStack.push(method.toString());
 		
-		if (!methodCallees.containsKey(method.toString()))
+		if (!methodCallees.containsKey(method.toString())) {
 			methodCallees.put(method.toString(), getCalleesOf(method));
-		
+		}
+			
 		for (CallLocation calleeLocation : methodCallees.get(method.toString())) {
+			
 			IMethod callee = getIMethodFromCallLocation(calleeLocation);
 			if (callee == null) {
 				continue;
@@ -254,26 +233,18 @@ public class CallGraphHandler extends AbstractHandler {
 			} else if (callee.getParent().getElementName().equals("FenixFramework") && callee.getElementName().equals("getDomainObject")) {
 				registerDomainObject(method, calleeLocation);
 			} else if (allEntities.contains(callee.getParent().getElementName())) {
-				boolean recursive = false;
-				Iterator<IMethod> value = methodStack.iterator();
-		        while (value.hasNext()) { 
-		            IMethod methodInStack = (IMethod) value.next();
-		            if (callee.isSimilar(methodInStack) && callee.getParent().getElementName().equals(methodInStack.getParent().getElementName())) {
-		            	recursive = true;
-		            	break;
-		            }
-		        }
-		        if (!recursive)
-		        	methodCallDFS(callee, methodStack);
+				if (!methodStack.contains(callee.toString())) {
+					methodCallDFS(callee, methodStack);
+				}
 			}
 		}
 		methodStack.pop();
 	}
 
 
-	private void registerBaseClass(IMethod caller, IMethod callee, CallLocation calleeLocation) {
+	private void registerBaseClass(IMethod caller, IMethod callee, CallLocation calleeLocation) throws JavaModelException {
 		
-		String[] className = new String[] {callee.getParent().getElementName()};
+		/*String[] className = new String[] {callee.getParent().getElementName()};
 		className[0] = className[0].substring(0, className[0].length()-5);
 		
 		if (abstractEntities.contains(className[0])) {
@@ -295,45 +266,43 @@ public class CallGraphHandler extends AbstractHandler {
 					return true;
 				}
 			});
-		}
+		}*/
 		
 		String methodName = callee.getElementName();
-		String mode = "";
-		if (methodName.startsWith("get"))
-			mode = "R";
-		if (methodName.startsWith("set"))
-			mode = "W";
-		if (methodName.startsWith("add"))
-			mode = "W";
-		if (methodName.startsWith("remove"))
-			mode = "W";
+		if (methodName.startsWith("get")) {
+			for (String entityName : allEntities) {
+				if (callee.getReturnType().contains(entityName)) {
+					JsonArray entityAccess = new JsonArray();
+					entityAccess.add(entityName);
+					entityAccess.add("R");
+					entitiesSequence.add(entityAccess);
+					break;
+				}
+			}
+		} else if (methodName.startsWith("set") || methodName.startsWith("add") || methodName.startsWith("remove")) {
+			for (String entityName : allEntities) {
+				if (callee.getParameterTypes()[0].contains(entityName)) {
+					JsonArray entityAccess = new JsonArray();
+					entityAccess.add(entityName);
+					entityAccess.add("W");
+					entitiesSequence.add(entityAccess);
+					break;
+				}
+			}
+		}
 		
-		if (allEntities.contains(className[0]) && !mode.equals("")) {
+		/*if (allEntities.contains(className[0]) && !mode.equals("")) {
 			JsonArray entityAccess = new JsonArray();
 			entityAccess.add(className[0]);
 			entityAccess.add(mode);
 			entitiesSequence.add(entityAccess);
-		}
+		}*/
 		
-		try {
-			for (String entityName : allEntities) {
-				if (callee.getSignature().contains(entityName)) {
-					JsonArray entityAccess = new JsonArray();
-					entityAccess.add(entityName);
-					entityAccess.add(mode);
-					if (!mode.equals("")) entitiesSequence.add(entityAccess);
-					break;
-				}
-			}
-		} catch (JavaModelException e) {
-			e.printStackTrace();
-		}
+
 	}
 	
 	
 	private void registerDomainObject(IMethod method, CallLocation calleeLocation) {
-		
-		String mode = "R";
 
         parser.setSource(method.getCompilationUnit());
         parser.setResolveBindings(true);
@@ -354,7 +323,7 @@ public class CallGraphHandler extends AbstractHandler {
 					if (allEntities.contains(resolvedType)) {
 						JsonArray entityAccess = new JsonArray();
 						entityAccess.add(resolvedType);
-						entityAccess.add(mode);
+						entityAccess.add("R");
 						entitiesSequence.add(entityAccess);
 					}
 				}

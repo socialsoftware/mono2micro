@@ -112,7 +112,7 @@ export class ClusterView extends React.Component {
                     nodes: new DataSet(response2.data.clusters.map(cluster => this.convertClusterToNode(cluster))),
                     edges: new DataSet(this.createEdges(response2.data.clusters, response1.data))
                 };
-
+                
                 this.setState({
                     visGraph: visGraph,
                     clusters: response2.data.clusters,
@@ -373,7 +373,9 @@ export class ClusterView extends React.Component {
         const couplingRows = this.state.clusters.map(c1 => {
             return Object.assign({id: c1.name}, ...this.state.clusters.map(c2 => {
                 return {
-                    [c2.name]: c1.name === c2.name ? "---" : c1.couplingPairs[c2.name]
+                    [c2.name]:  c1.name === c2.name ? "---" :
+                                    c1.couplingDependencies[c2.name] === undefined ? 0 : 
+                                        c1.couplingDependencies[c2.name].length
                 }
             }))
         });

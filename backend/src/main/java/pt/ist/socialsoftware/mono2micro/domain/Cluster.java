@@ -1,8 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Cluster {
@@ -10,7 +8,7 @@ public class Cluster {
 	private float complexity;
 	private float cohesion;
 	private float coupling;
-	private Map<String, Float> couplingPairs;
+	private Map<String, Set<String>> couplingDependencies;
 	private List<Entity> entities = new ArrayList<>();
 
 	public Cluster() {
@@ -52,12 +50,12 @@ public class Cluster {
 		this.coupling = coupling;
 	}
 
-	public Map<String, Float> getCouplingPairs() {
-		return couplingPairs;
+	public Map<String, Set<String>> getCouplingDependencies() {
+		return couplingDependencies;
 	}
 
-	public void setCouplingPairs(Map<String, Float> couplingPairs) {
-		this.couplingPairs = couplingPairs;
+	public void setCouplingDependencies(Map<String, Set<String>> couplingDependencies) {
+		this.couplingDependencies = couplingDependencies;
 	}
 
 	public List<Entity> getEntities() {
@@ -95,5 +93,15 @@ public class Cluster {
 		return this.entities
 			.stream()
 			.anyMatch(e -> e.getName().equals(entityName));
+	}
+
+	public void addCouplingDependency(String toCluster, String toEntity) {
+		if (this.couplingDependencies.containsKey(toCluster)) {
+			this.couplingDependencies.get(toCluster).add(toEntity);
+		} else {
+			Set<String> dependencies = new HashSet<>();
+			dependencies.add(toEntity);
+			this.couplingDependencies.put(toCluster, dependencies);
+		}
 	}
 }

@@ -32,10 +32,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import pt.ist.socialsoftware.mono2micro.domain.Cluster;
-import pt.ist.socialsoftware.mono2micro.domain.Codebase;
-import pt.ist.socialsoftware.mono2micro.domain.Entity;
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.domain.*;
 import pt.ist.socialsoftware.mono2micro.dto.AnalyserDto;
 import pt.ist.socialsoftware.mono2micro.dto.AnalyserResultDto;
 import pt.ist.socialsoftware.mono2micro.dto.AnalysisDto;
@@ -99,24 +96,28 @@ public class AnalysisController {
 				System.out.println(line);
 			}
 
-			int start = 0;
+			System.out.println("Start on files");
+			int maxRequests = 1000;
+			int newRequestsCount = 0;
 			int count = 0;
-
-			int maxRequests = 50;
-			int requestCount = 0;
+			JSONObject analyserJSON = codebaseManager.getAnalyserResults(codebaseName);
 			File analyserCutsPath = new File(CODEBASES_PATH + codebaseName + "/analyser/cuts/");
 			File[] files = analyserCutsPath.listFiles();
+			int total = files.length;
 			for (File file : files) {
 
 				count++;
-				if (count <= start)
-					continue;
 
 				String filename = FilenameUtils.getBaseName(file.getName());
 
-				JSONObject analyserJSON = codebaseManager.getAnalyserResults(codebaseName);
-				if (analyserJSON.has(filename))
+
+				try {
+					analyserJSON.get(filename);
+					System.out.println(filename + " already exists. " + count + "/" + total);
 					continue;
+				} catch (JSONException e) {
+
+				}
 
 				Graph graph = new Graph();
 				graph.setCodebaseName(codebaseName);
@@ -135,9 +136,7 @@ public class AnalysisController {
 					graph.addCluster(cluster);
 				}
 
-				graph.addControllers(analyser.getProfiles());
-
-				graph.calculateMetrics();
+				graph.calculateMetricsAnalyser(analyser.getProfiles());
 
 				AnalysisDto analysisDto = new AnalysisDto();
 				analysisDto.setGraph1(analyser.getExpert());
@@ -151,6 +150,11 @@ public class AnalysisController {
 				analyserResult.setRecall(analysisDto.getRecall());
 				analyserResult.setSpecificity(analysisDto.getSpecificity());
 				analyserResult.setFmeasure(analysisDto.getFmeasure());
+				//analyserResult.setAccuracy(-1);
+				//analyserResult.setPrecision(-1);
+				//analyserResult.setRecall(-1);
+				//analyserResult.setSpecificity(-1);
+				//analyserResult.setFmeasure(-1);
 				
 				analyserResult.setComplexity(graph.getComplexity());
 				analyserResult.setCohesion(graph.getCohesion());
@@ -167,13 +171,26 @@ public class AnalysisController {
 
 				JSONObject analyserResultJSON = new JSONObject(analyserResult);
 
-				analyserJSON.put(filename, analyserResultJSON);
-				codebaseManager.writeAnalyserResults(codebaseName, analyserJSON);
+				JSONObject controllerComplexities = new JSONObject();
+				for (Controller controller : graph.getControllers()) {
+					controllerComplexities.put(controller.getName(), controller.getComplexity());
+				}
+				analyserResultJSON.put("controllerComplexities", controllerComplexities);
 
-				requestCount++;
-				if (requestCount == maxRequests)
+				analyserJSON.put(filename, analyserResultJSON);
+
+
+
+				newRequestsCount++;
+				System.out.println("NEW: " + filename + " : " + count + "/" + total);
+				if (newRequestsCount == maxRequests)
 					break;
+
+				
 			}
+
+            codebaseManager.writeAnalyserResults(codebaseName, analyserJSON);
+			System.out.println("Analyser Complete");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

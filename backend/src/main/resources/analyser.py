@@ -9,8 +9,8 @@ codebaseName = str(sys.argv[2])
 
 interval = 10
 multiplier = 10
-minClusters = 2
-maxClusters = 15
+minClusters = 3
+maxClusters = 21
 
 with open(codebasesPath + codebaseName + "/analyser/similarityMatrix.json") as f:
     similarityMatrix = json.load(f)

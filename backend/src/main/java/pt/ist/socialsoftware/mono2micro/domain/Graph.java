@@ -130,6 +130,8 @@ public class Graph {
 
 	public void addControllers(List<String> profiles) throws JSONException, IOException {
 
+		this.controllers = new ArrayList<>();
+
 		JSONObject datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
 		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
 		
@@ -323,6 +325,17 @@ public class Graph {
 	public void calculateMetrics() {
 		try {
 			this.addControllers(CodebaseManager.getInstance().getCodebase(this.codebaseName).getDendrogram(this.dendrogramName).getProfiles());
+		} catch (IOException | JSONException e) {
+			e.printStackTrace();
+		}
+
+		Metrics metrics = new Metrics(this);
+		metrics.calculateMetrics();
+	}
+
+	public void calculateMetricsAnalyser(List<String> profiles) {
+		try {
+			this.addControllers(profiles);
 		} catch (IOException | JSONException e) {
 			e.printStackTrace();
 		}

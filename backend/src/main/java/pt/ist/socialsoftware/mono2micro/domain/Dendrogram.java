@@ -138,7 +138,21 @@ public class Dendrogram {
 		if (this.getGraphNames().contains(expert.getName()))
 			throw new KeyAlreadyExistsException();
 
-		Cluster cluster = new Cluster("Generic");
+		JSONObject expertCut = CodebaseManager.getInstance().getExpertCut(this.codebaseName);
+		Iterator<String> clusters = expertCut.getJSONObject("clusters").keys();
+
+		while(clusters.hasNext()) {
+			String clusterId = clusters.next();
+			JSONArray entities = expertCut.getJSONObject("clusters").getJSONArray(clusterId);
+			Cluster cluster = new Cluster(clusterId);
+			for (int i = 0; i < entities.length(); i++) {
+				cluster.addEntity(new Entity(entities.getString(i)));
+			}
+			expert.addCluster(cluster);
+		}
+
+
+		/*Cluster cluster = new Cluster("Generic");
 
 		JSONObject similarityMatrixData = CodebaseManager.getInstance().getSimilarityMatrix(this.codebaseName, this.name);
 		JSONArray entities = similarityMatrixData.getJSONArray("entities");
@@ -146,9 +160,7 @@ public class Dendrogram {
 			cluster.addEntity(new Entity(entities.getString(i)));
 		}
 
-		expert.addCluster(cluster);
-
-		expert.addControllers(this.profiles);
+		expert.addCluster(cluster);*/
 
 		this.addGraph(expert);
 		expert.calculateMetrics();
@@ -323,8 +335,6 @@ public class Dendrogram {
 			}
 			graph.addCluster(cluster);
 		}
-
-		graph.addControllers(this.profiles);
 
 		this.addGraph(graph);
 		graph.calculateMetrics();
