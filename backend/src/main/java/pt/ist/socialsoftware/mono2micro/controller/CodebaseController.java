@@ -31,14 +31,6 @@ public class CodebaseController {
     private CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
 
-    @RequestMapping(value = "/codebaseNames", method = RequestMethod.GET)
-	public ResponseEntity<List<String>> getCodebaseNames() {
-		logger.debug("getCodebaseNames");
-
-		return new ResponseEntity<>(codebaseManager.getCodebaseNames(), HttpStatus.OK);
-	}
-
-
 	@RequestMapping(value = "/codebases", method = RequestMethod.GET)
 	public ResponseEntity<List<Codebase>> getCodebases() {
 		logger.debug("getCodebases");

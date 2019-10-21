@@ -105,25 +105,33 @@ export class ClusterView extends React.Component {
 
     loadGraph() {
         const service = new RepositoryService();
-        service.getClusterControllers(this.props.codebaseName, this.props.dendrogramName, this.props.graphName).then(response1 => {
-            service.getGraph(this.props.codebaseName, this.props.dendrogramName, this.props.graphName).then(response2 => {
 
-                const visGraph = {
-                    nodes: new DataSet(response2.data.clusters.map(cluster => this.convertClusterToNode(cluster))),
-                    edges: new DataSet(this.createEdges(response2.data.clusters, response1.data))
-                };
-                
-                this.setState({
-                    visGraph: visGraph,
-                    clusters: response2.data.clusters,
-                    clusterControllers: response1.data,
-                    showMenu: false,
-                    selectedCluster: {},
-                    mergeWithCluster: {},
-                    transferToCluster: {},
-                    clusterEntities: [],
-                    operation: operations.NONE
-                });
+        const firstRequest = service.getClusterControllers(this.props.codebaseName, this.props.dendrogramName, this.props.graphName).then(response => {
+            this.setState({
+                clusterControllers: response.data
+            });
+        });
+
+        const secondRequest = service.getGraph(this.props.codebaseName, this.props.dendrogramName, this.props.graphName).then(response => {
+            this.setState({
+                clusters: response.data.clusters,
+                showMenu: false,
+                selectedCluster: {},
+                mergeWithCluster: {},
+                transferToCluster: {},
+                clusterEntities: [],
+                operation: operations.NONE
+            });
+        });
+
+        Promise.all([firstRequest, secondRequest]).then(() => {
+            const visGraph = {
+                nodes: new DataSet(this.state.clusters.map(cluster => this.convertClusterToNode(cluster))),
+                edges: new DataSet(this.createEdges())
+            };
+
+            this.setState({
+                visGraph: visGraph
             });
         });
     }
@@ -132,22 +140,24 @@ export class ClusterView extends React.Component {
         return {id: cluster.name, title: cluster.entities.map(e => e.name).sort().join('<br>') + "<br>Total: " + cluster.entities.length, label: cluster.name, value: cluster.entities.length, type: types.CLUSTER};
     };
 
-    createEdges(clusters, clusterControllers) {
+    createEdges() {
         let edges = [];
         let edgeLengthFactor = 1000;
 
-        for (var i = 0; i < clusters.length; i++) { 
-            let cluster1Controllers = clusterControllers[clusters[i].name].map(c => c.name);
-            for (var j = i+1; j < clusters.length; j++) {
-                let cluster2Controllers = clusterControllers[clusters[j].name].map(c => c.name);
+        for (var i = 0; i < this.state.clusters.length; i++) {
+            let cluster1 = this.state.clusters[i];
+            let cluster1Controllers = this.state.clusterControllers[cluster1.name].map(c => c.name);
+            for (var j = i+1; j < this.state.clusters.length; j++) {
+                let cluster2 = this.state.clusters[j];
+                let cluster2Controllers = this.state.clusterControllers[cluster2.name].map(c => c.name);
                 let controllersInCommon = cluster1Controllers.filter(value => -1 !== cluster2Controllers.indexOf(value))
 
-                let couplingC1C2 = clusters[i].coupling[clusters[j].name];
-                let couplingC2C1 = clusters[j].coupling[clusters[i].name];
+                let couplingC1C2 = cluster1.couplingDependencies[cluster2.name] === undefined ? 0 : cluster1.couplingDependencies[cluster2.name].length;
+                let couplingC2C1 = cluster2.couplingDependencies[cluster1.name] === undefined ? 0 : cluster2.couplingDependencies[cluster1.name].length;
 
 
-                let edgeTitle = clusters[i].name + " -> " + clusters[j].name + " , Coupling: " + couplingC1C2 + "<br>";
-                edgeTitle += clusters[j].name + " -> " + clusters[i].name + " , Coupling: " + couplingC2C1 + "<br>";
+                let edgeTitle = cluster1.name + " -> " + cluster2.name + " , Coupling: " + couplingC1C2 + "<br>";
+                edgeTitle += cluster2.name + " -> " + cluster1.name + " , Coupling: " + couplingC2C1 + "<br>";
                 edgeTitle += "Controllers in common:<br>"
 
                 let edgeLength = (1/controllersInCommon.length)*edgeLengthFactor;
@@ -155,7 +165,7 @@ export class ClusterView extends React.Component {
                 else if (edgeLength > 500) edgeLength = 500;
                 
                 if (controllersInCommon.length > 0)
-                    edges.push({from: clusters[i].name, to: clusters[j].name, length:edgeLength, value: controllersInCommon.length, label: controllersInCommon.length.toString(), title: edgeTitle + controllersInCommon.join('<br>')});
+                    edges.push({from: cluster1.name, to: cluster2.name, length: edgeLength, value: controllersInCommon.length, label: controllersInCommon.length.toString(), title: edgeTitle + controllersInCommon.join('<br>')});
             }
         }
         return edges;

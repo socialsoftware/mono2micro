@@ -43,10 +43,6 @@ export class RepositoryService {
 
 
     //Codebases
-    getCodebaseNames() {
-        return this.axios.get("/codebaseNames");
-    }
-
     getCodebases() {
         return this.axios.get("/codebases");
     }
@@ -106,10 +102,6 @@ export class RepositoryService {
 
 
     //Dendrograms
-    getDendrogramNames(codebaseName) {
-        return this.axios.get("/codebase/" + codebaseName + "/dendrogramNames");
-    }
-
     getDendrograms(codebaseName) {
         return this.axios.get("/codebase/" + codebaseName + "/dendrograms");
     }

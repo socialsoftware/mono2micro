@@ -63,23 +63,6 @@ public class CodebaseManager {
         return codebases;
 	}
 
-	public List<String> getCodebaseNames() {
-		List<String> codebaseNames = new ArrayList<>();
-		File codebasesPath = new File(CODEBASES_PATH);
-		if (!codebasesPath.exists()) {
-			codebasesPath.mkdir();
-			return codebaseNames;
-		}
-
-		File[] files = codebasesPath.listFiles();
-		Arrays.sort(files, Comparator.comparingLong(File::lastModified));
-		for (File file : files) {
-			String filename = file.getName();
-			codebaseNames.add(filename);
-		}
-        return codebaseNames;
-	}
-
 	public void deleteCodebase(String codebaseName) throws IOException {
 		FileUtils.deleteDirectory(new File(CODEBASES_PATH + codebaseName));
 	}

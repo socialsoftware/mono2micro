@@ -199,15 +199,6 @@ public class Graph {
 		this.clusters.add(cluster);
 	}
 
-	public void deleteCluster(String clusterName) {
-		for (int i = 0; i < this.clusters.size(); i++) {
-			if (this.clusters.get(i).getName().equals(clusterName)) {
-				this.clusters.remove(i);
-				break;
-			}
-		}
-	}
-
 	public void mergeClusters(String cluster1, String cluster2, String newName) {
 		Cluster mergedCluster = new Cluster(newName);
 		for (int i = 0; i < clusters.size(); i++) {
@@ -231,23 +222,22 @@ public class Graph {
 	}
 
 	public void renameCluster(String clusterName, String newName) {
-		if (this.getClustersNames().contains(newName)) {
-			throw new KeyAlreadyExistsException();
+		if (clusterName.equals(newName))
+			return;
+
+		for (Cluster cluster : this.clusters) {
+			if (cluster.getName().equals(newName))
+				throw new KeyAlreadyExistsException();
 		}
-		for (int i = 0; i < clusters.size(); i++) {
-			if (clusters.get(i).getName().equals(clusterName)) {
-				clusters.get(i).setName(newName);
+
+		for (Cluster cluster : this.clusters) {
+			if (cluster.getName().equals(clusterName)) {
+				cluster.setName(newName);
 				break;
 			}
 		}
-		this.calculateMetrics();
-	}
 
-	public List<String> getClustersNames() {
-		List<String> clustersNames = new ArrayList<>();
-		for (Cluster cluster : this.clusters)
-			clustersNames.add(cluster.getName());
-		return clustersNames;
+		this.calculateMetrics();
 	}
 
 	public Cluster getCluster(String clusterName) {

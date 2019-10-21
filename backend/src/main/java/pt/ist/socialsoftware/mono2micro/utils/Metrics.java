@@ -36,7 +36,6 @@ public class Metrics {
 		for (Controller controller : graph.getControllers()) {
 			calculateControllerComplexity(controller);
 			graphComplexity += controller.getComplexity();
-
 			calculateClusterDependencies(controller);
 		}
 

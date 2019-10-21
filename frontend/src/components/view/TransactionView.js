@@ -166,10 +166,17 @@ export class TransactionView extends React.Component {
 
     createTransactionDiagram() {
         const visGraph = {
-            nodes: new DataSet(this.state.controllerClusters[this.state.controller.name].map(c => this.createNode(c))),
-            edges: new DataSet(this.state.controllerClusters[this.state.controller.name].map(c => this.createEdge(c)))
+            nodes: new DataSet(this.state.controllerClusters[this.state.controller.name].map(cluster => this.createNode(cluster))),
+            edges: new DataSet(this.state.controllerClusters[this.state.controller.name].map(cluster => this.createEdge(cluster)))
         };
-        visGraph.nodes.add({id: this.state.controller.name, title: Object.entries(this.state.controller.entities).map(e => e[0] + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(this.state.controller.entities).length, label: this.state.controller.name, level: 0, value: 1, type: types.CONTROLLER});
+        visGraph.nodes.add({
+            id: this.state.controller.name, 
+            title: Object.entries(this.state.controller.entities).map(e => e[0] + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(this.state.controller.entities).length,
+            label: this.state.controller.name,
+            level: 0,
+            value: 1,
+            type: types.CONTROLLER
+        });
 
         this.setState({
             visGraph: visGraph
@@ -177,59 +184,70 @@ export class TransactionView extends React.Component {
     }
 
     createNode(cluster) {
-        return {id: cluster.name, title: cluster.entities.map(e => e.name).join('<br>') + "<br>Total: " + cluster.entities.length, label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER};
+        return {
+            id: cluster.name, 
+            title: cluster.entities.map(e => e.name).join('<br>') + "<br>Total: " + cluster.entities.length,
+            label: cluster.name, 
+            value: cluster.entities.length, 
+            level: 1, 
+            type: types.CLUSTER
+        };
     }
 
     createEdge(cluster) {
         let entitiesTouched = Object.entries(this.state.controller.entities).filter(e => cluster.entities.map(e => e.name).includes(e[0])).map(e => e[0] + " " + e[1]);
-        return {from: this.state.controller.name, to: cluster.name, label: entitiesTouched.length.toString(), title: entitiesTouched.join('<br>')};
+        return {
+            from: this.state.controller.name, 
+            to: cluster.name, 
+            label: entitiesTouched.length.toString(), 
+            title: entitiesTouched.join('<br>')
+        };
     }
 
     createSequenceDiagram() {
         let nodes = [];
         let edges = [];
-        let clusterNodesSequence = [];
         let clusterSequence = [];
-        let lastCluster = {};
-        let entities = [];
-        let entitiesAux = [];
 
-        for (var i = 0; i < this.state.controller.entitiesSeq.length; i++) {
-            let entityName = this.state.controller.entitiesSeq[i].first;
-            let entityDescription = this.state.controller.entitiesSeq[i].first + " " + this.state.controller.entitiesSeq[i].second;
-            let clusterAccessed = this.state.graph.clusters.filter(c => c.entities.map(e => e.name).includes(entityName))[0];
+        nodes.push({
+            id: 0,
+            title: Object.entries(this.state.controller.entities).map(e => e[0] + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(this.state.controller.entities).length, 
+            label: this.state.controller.name, 
+            level: 0, 
+            value: 1, 
+            type: types.CONTROLLER
+        });
 
-            if (i === 0) {
-                lastCluster = clusterAccessed;
-                clusterNodesSequence.push(clusterAccessed);
-                entitiesAux.push(entityDescription);
-            } else if (lastCluster.name !== clusterAccessed.name) {
-                lastCluster = clusterAccessed;
-                clusterNodesSequence.push(clusterAccessed);
-                entities.push(entitiesAux);
-                entitiesAux = [];
-                entitiesAux.push(entityDescription);
-            } else {
-                if (!entitiesAux.includes(entityDescription))
-                    entitiesAux.push(entityDescription);
-            }
-        }
-        entities.push(entitiesAux);
-        
-        nodes.push({id: 0, title: Object.entries(this.state.controller.entities).map(e => e[0] + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(this.state.controller.entities).length, label: this.state.controller.name, level: 0, value: 1, type: types.CONTROLLER});
+        let entitiesSequence = JSON.parse(this.state.controller.entitiesSeq);
 
-        for (i = 0; i < clusterNodesSequence.length; i++) {
+        for (var i = 0; i < entitiesSequence.length; i++) {
+            let clusterName = entitiesSequence[i]["cluster"];
+            let cluster = this.state.graph.clusters.filter(cluster => cluster.name === clusterName)[0];
             let nodeId = i+1;
-            let cluster = clusterNodesSequence[i];
-            let entitiesCount = [...new Set(entities[i].map(e => e.split(" ")[0]))].length.toString();
-            nodes.push({id: nodeId, title: cluster.entities.map(e => e.name).join('<br>') + "<br>Total: " + cluster.entities.length, label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER});
-            if (i === 0) {
-                edges.push({from: 0, to: nodeId, title: entities[i].join('<br>'), label: entitiesCount});
-            } else {
-                edges.push({from: nodeId-1, to: nodeId, title: entities[i].join('<br>'), label: entitiesCount});
-            }
 
-            clusterSequence.push({id: nodeId, cluster: cluster.name, entities: <pre>{entities[i].join('\n')}</pre>})
+            nodes.push({
+                id: nodeId, 
+                title: cluster.entities.map(e => e.name).join('<br>') + "<br>Total: " + cluster.entities.length, 
+                label: cluster.name, 
+                value: cluster.entities.length, 
+                level: 1, 
+                type: types.CLUSTER
+            });
+
+            let entitiesTouched = entitiesSequence[i]["sequence"];
+
+            edges.push({
+                from: nodeId - 1, 
+                to: nodeId,
+                title: Object.values(entitiesTouched).map(e => e.join(" ")).join('<br>'), 
+                label: entitiesTouched.length.toString()
+            });
+
+            clusterSequence.push({
+                id: nodeId, 
+                cluster: cluster.name, 
+                entities: <pre>{Object.values(entitiesTouched).map(e => e.join(" ")).join('\n')}</pre>
+            });
         }
 
         const visGraphSeq = {

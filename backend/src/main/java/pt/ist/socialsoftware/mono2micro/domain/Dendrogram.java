@@ -138,29 +138,30 @@ public class Dendrogram {
 		if (this.getGraphNames().contains(expert.getName()))
 			throw new KeyAlreadyExistsException();
 
-		JSONObject expertCut = CodebaseManager.getInstance().getExpertCut(this.codebaseName);
-		Iterator<String> clusters = expertCut.getJSONObject("clusters").keys();
+		try {
+			JSONObject expertCut = CodebaseManager.getInstance().getExpertCut(this.codebaseName);
+			Iterator<String> clusters = expertCut.getJSONObject("clusters").keys();
 
-		while(clusters.hasNext()) {
-			String clusterId = clusters.next();
-			JSONArray entities = expertCut.getJSONObject("clusters").getJSONArray(clusterId);
-			Cluster cluster = new Cluster(clusterId);
+			while (clusters.hasNext()) {
+				String clusterId = clusters.next();
+				JSONArray entities = expertCut.getJSONObject("clusters").getJSONArray(clusterId);
+				Cluster cluster = new Cluster(clusterId);
+				for (int i = 0; i < entities.length(); i++) {
+					cluster.addEntity(new Entity(entities.getString(i)));
+				}
+				expert.addCluster(cluster);
+			}
+		} catch (IOException | JSONException e) {
+			Cluster cluster = new Cluster("Generic");
+
+			JSONObject similarityMatrixData = CodebaseManager.getInstance().getSimilarityMatrix(this.codebaseName, this.name);
+			JSONArray entities = similarityMatrixData.getJSONArray("entities");
 			for (int i = 0; i < entities.length(); i++) {
 				cluster.addEntity(new Entity(entities.getString(i)));
 			}
+
 			expert.addCluster(cluster);
 		}
-
-
-		/*Cluster cluster = new Cluster("Generic");
-
-		JSONObject similarityMatrixData = CodebaseManager.getInstance().getSimilarityMatrix(this.codebaseName, this.name);
-		JSONArray entities = similarityMatrixData.getJSONArray("entities");
-		for (int i = 0; i < entities.length(); i++) {
-			cluster.addEntity(new Entity(entities.getString(i)));
-		}
-
-		expert.addCluster(cluster);*/
 
 		this.addGraph(expert);
 		expert.calculateMetrics();
