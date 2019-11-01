@@ -6,6 +6,8 @@
             "GoalModel",
             "Activity",
             "Goal",
+            "AssociationGoal",
+            "ProductGoal",
             "DefProductCondition",
             "DefEntityCondition",
             "DefAttributeCondition",
@@ -33,13 +35,9 @@
             "Expression",
             "BinaryExpression",
             "AttributeValueExpression",
-
-            "ActivityView",
-            "View",
-            "WorkflowInstance",
-            "GoalView",
             "MulCondition",
-            "Position"
+            "NumberLiteral",
+            "StringLiteral"
         ],
         "Execution": [
             "ProductInstance",
@@ -50,7 +48,14 @@
             "ActivityWorkItem",
             "GoalWorkItem",
             "PostWorkItemArgument",
-            "PreWorkItemArgument"
+            "PreWorkItemArgument",
+            "WorkflowInstance"
+        ],
+        "View": [
+            "ActivityView",
+            "View",
+            "GoalView",
+            "Position"
         ]
     }
 }

@@ -324,13 +324,18 @@ public class Graph {
 	}
 
 	public void calculateMetricsAnalyser(List<String> profiles) {
+		long a = System.currentTimeMillis();
 		try {
 			this.addControllers(profiles);
 		} catch (IOException | JSONException e) {
 			e.printStackTrace();
 		}
 
+		System.out.println(System.currentTimeMillis()-a);
+
 		Metrics metrics = new Metrics(this);
 		metrics.calculateMetrics();
+
+		System.out.println(System.currentTimeMillis()-a);
 	}
 }

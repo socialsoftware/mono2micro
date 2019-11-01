@@ -18,13 +18,16 @@ import pt.ist.socialsoftware.mono2micro.domain.Graph;
 
 public class Metrics {
     private Graph graph;
+	private Map<String,List<Cluster>> controllerClusters;
+	private Map<String,List<Controller>> clusterControllers;
 
     public Metrics(Graph graph) {
         this.graph = graph;
+		this.controllerClusters = graph.getControllerClusters();
+		this.clusterControllers = graph.getClusterControllers();
     }
 
     public void calculateMetrics() {
-        Map<String,List<Controller>> clusterControllers = graph.getClusterControllers();
 		float graphComplexity = 0;
 		float graphCohesion = 0;
 		float graphCoupling = 0;
@@ -44,9 +47,9 @@ public class Metrics {
 		this.graph.setComplexity(graphComplexity);
 
 		for (Cluster cluster : graph.getClusters()) {
-			calculateClusterComplexity(cluster, clusterControllers.get(cluster.getName()));
+			calculateClusterComplexity(cluster);
 
-			calculateClusterCohesion(cluster, clusterControllers.get(cluster.getName()));
+			calculateClusterCohesion(cluster);
 			graphCohesion += cluster.getCohesion();
 
 			calculateClusterCoupling(cluster);
@@ -81,9 +84,9 @@ public class Metrics {
 	}
 
 	private void calculateControllerComplexity(Controller controller) {
-		if (graph.getControllerClusters().get(controller.getName()).size() == 1) {
-			controller.setComplexity(0);
-			return;	
+    	if (this.controllerClusters.get(controller.getName()).size() == 1) {
+    		controller.setComplexity(0);
+    		return;
 		}
 
 		float complexity = 0;
@@ -115,39 +118,45 @@ public class Metrics {
 		}
     }
 
-    private void costOfRead(Controller controller, String entity, Set<String> clusterAccessDependencies) {
+    private void costOfRead(Controller controller, String entity, Set<String> clusterAccessDependencies) throws JSONException {
         for (Controller otherController : this.graph.getControllers()) {
             if (!otherController.getName().equals(controller.getName()) &&
                 otherController.containsEntity(entity) && 
-                otherController.getEntities().get(entity).contains("W")) {
+                otherController.getEntities().get(entity).contains("W") &&
+            	this.controllerClusters.get(otherController.getName()).size() > 1) {
 					clusterAccessDependencies.add(otherController.getName());
                 }
         }
     }
 
-    private void costOfWrite(Controller controller, String entity, Set<String> clusterAccessDependencies) {
+    private void costOfWrite(Controller controller, String entity, Set<String> clusterAccessDependencies) throws JSONException {
         for (Controller otherController : this.graph.getControllers()) {
             if (!otherController.getName().equals(controller.getName()) &&
                 otherController.containsEntity(entity) && 
-                otherController.getEntities().get(entity).contains("R")) {
+                otherController.getEntities().get(entity).contains("R") &&
+				this.controllerClusters.get(otherController.getName()).size() > 1) {
 					clusterAccessDependencies.add(otherController.getName());
                 }
         }
     }
 
-	private void calculateClusterComplexity(Cluster cluster, List<Controller> controllers) {
+	private void calculateClusterComplexity(Cluster cluster) {
+    	List<Controller> controllersThatAccessThisCluster = this.clusterControllers.get(cluster.getName());
+
 		float complexity = 0;
-		for (Controller controller : controllers) {
+		for (Controller controller : controllersThatAccessThisCluster) {
 			complexity += controller.getComplexity();
 		}
-		complexity /= controllers.size();
+		complexity /= controllersThatAccessThisCluster.size();
 		complexity = BigDecimal.valueOf(complexity).setScale(2, RoundingMode.HALF_UP).floatValue();
 		cluster.setComplexity(complexity);
 	}
 
-	public void calculateClusterCohesion(Cluster cluster, List<Controller> controllers) {
+	public void calculateClusterCohesion(Cluster cluster) {
+		List<Controller> controllersThatAccessThisCluster = this.clusterControllers.get(cluster.getName());
+
 		float cohesion = 0;
-		for (Controller controller : controllers) {
+		for (Controller controller : controllersThatAccessThisCluster) {
 			float numberEntitiesTouched = 0;
 			for (String controllerEntity : controller.getEntities().keySet()) {
 				if (cluster.containsEntity(controllerEntity))
@@ -155,7 +164,7 @@ public class Metrics {
 			}
 			cohesion += numberEntitiesTouched / cluster.getEntities().size();
 		}
-		cohesion /= controllers.size();
+		cohesion /= controllersThatAccessThisCluster.size();
 		cohesion = BigDecimal.valueOf(cohesion).setScale(2, RoundingMode.HALF_UP).floatValue();
 		cluster.setCohesion(cohesion);
 	}

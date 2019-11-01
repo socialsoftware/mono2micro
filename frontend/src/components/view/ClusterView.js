@@ -348,7 +348,7 @@ export class ClusterView extends React.Component {
             return {
                 cluster: cluster.name,
                 entities: cluster.entities.length,
-                controllers: this.state.clusterControllers[cluster.name].length,
+                controllers: this.state.clusterControllers[cluster.name] === undefined ? 0 : this.state.clusterControllers[cluster.name].length,
                 cohesion: cluster.cohesion,
                 coupling: cluster.coupling,
                 complexity: cluster.complexity

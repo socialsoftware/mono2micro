@@ -76,7 +76,7 @@ public class AnalysisController {
 				codebaseManager.writeAnalyserResults(codebaseName, new JSONObject());
 			}
 
-			createAnalyserSimilarityMatrix(codebaseName, analyser);
+            createAnalyserSimilarityMatrix(codebaseName, analyser);
 
 			Runtime r = Runtime.getRuntime();
 			String pythonScriptPath = RESOURCES_PATH + "analyser.py";
@@ -89,15 +89,7 @@ public class AnalysisController {
 			
 			p.waitFor();
 
-			BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			String line = "";
-			while((line = bfr.readLine()) != null) 
-			{
-				System.out.println(line);
-			}
-
-			System.out.println("Start on files");
-			int maxRequests = 1000;
+			int maxRequests = 500;
 			int newRequestsCount = 0;
 			int count = 0;
 			JSONObject analyserJSON = codebaseManager.getAnalyserResults(codebaseName);
@@ -106,14 +98,13 @@ public class AnalysisController {
 			int total = files.length;
 			for (File file : files) {
 
-				count++;
-
 				String filename = FilenameUtils.getBaseName(file.getName());
 
+				count++;
 
 				try {
 					analyserJSON.get(filename);
-					System.out.println(filename + " already exists. " + count + "/" + total);
+					System.out.println(filename + " already analysed. " + count + "/" + total);
 					continue;
 				} catch (JSONException e) {
 
@@ -150,11 +141,6 @@ public class AnalysisController {
 				analyserResult.setRecall(analysisDto.getRecall());
 				analyserResult.setSpecificity(analysisDto.getSpecificity());
 				analyserResult.setFmeasure(analysisDto.getFmeasure());
-				//analyserResult.setAccuracy(-1);
-				//analyserResult.setPrecision(-1);
-				//analyserResult.setRecall(-1);
-				//analyserResult.setSpecificity(-1);
-				//analyserResult.setFmeasure(-1);
 				
 				analyserResult.setComplexity(graph.getComplexity());
 				analyserResult.setCohesion(graph.getCohesion());
@@ -185,8 +171,6 @@ public class AnalysisController {
 				System.out.println("NEW: " + filename + " : " + count + "/" + total);
 				if (newRequestsCount == maxRequests)
 					break;
-
-				
 			}
 
             codebaseManager.writeAnalyserResults(codebaseName, analyserJSON);

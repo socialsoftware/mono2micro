@@ -62,8 +62,8 @@ public class CallGraphHandler extends AbstractHandler {
 	JsonObject callSequence;
 	JsonArray entitiesSequence;
 	List<String> allEntities;
-	List<String> abstractEntities;
-	List<IType> controllers;
+	Set<String> abstractEntities;
+	Set<IType> controllers;
 	ASTParser parser;
 	Map<String,List<CallLocation>> methodCallees;
 	int controllerCount;
@@ -93,8 +93,8 @@ public class CallGraphHandler extends AbstractHandler {
 			
 			callSequence = new JsonObject();
 			allEntities = new ArrayList<>();
-			abstractEntities = new ArrayList<>();
-			controllers = new ArrayList<>();
+			abstractEntities = new HashSet<>();
+			controllers = new HashSet<>();
 			parser = ASTParser.newParser(AST.JLS11);
 			parser.setKind(ASTParser.K_COMPILATION_UNIT);
 			methodCallees = new HashMap<>();
@@ -198,8 +198,7 @@ public class CallGraphHandler extends AbstractHandler {
 				}
 				
 				String controllerFullName = controllerMethod.getParent().getElementName() + "." + controllerMethod.getElementName();
-				//if (!controllerFullName.equals("CitationController.listCitations"))
-				//	continue;
+					
 				System.out.println("Processing Controller: " + controllerFullName + "   " + controllerCount + "/" + controllers.size());
 				entitiesSequence = new JsonArray();
 				Stack<String> methodStack = new Stack<>();
@@ -243,67 +242,90 @@ public class CallGraphHandler extends AbstractHandler {
 
 
 	private void registerBaseClass(IMethod caller, IMethod callee, CallLocation calleeLocation) throws JavaModelException {
-		
-		/*String[] className = new String[] {callee.getParent().getElementName()};
-		className[0] = className[0].substring(0, className[0].length()-5);
-		
-		if (abstractEntities.contains(className[0])) {
-			parser.setSource(caller.getCompilationUnit());
-	        parser.setResolveBindings(true);
-	        CompilationUnit cu = (CompilationUnit) parser.createAST(null);
-	        
-	        cu.accept(new ASTVisitor() {
-				public boolean visit(MethodInvocation node) {
-					if (calleeLocation.getStart() == node.getStartPosition() && callee.getElementName().equals(node.getName().toString())) {
-						try {
-							if (!node.getExpression().resolveTypeBinding().getName().equals(className[0])) {
-								className[0] = node.getExpression().resolveTypeBinding().getName();
-							}
-						} catch (Exception e) {
-							
-						}
-					}
-					return true;
-				}
-			});
-		}*/
-		
 		String methodName = callee.getElementName();
+		String mode = "";
+		String returnType = "";
+		String argType = "";
 		if (methodName.startsWith("get")) {
-			for (String entityName : allEntities) {
-				if (callee.getReturnType().contains(entityName)) {
-					JsonArray entityAccess = new JsonArray();
-					entityAccess.add(entityName);
-					entityAccess.add("R");
-					entitiesSequence.add(entityAccess);
-					break;
-				}
-			}
+			mode = "R";
+			returnType = callee.getReturnType();
 		} else if (methodName.startsWith("set") || methodName.startsWith("add") || methodName.startsWith("remove")) {
-			for (String entityName : allEntities) {
-				if (callee.getParameterTypes()[0].contains(entityName)) {
-					JsonArray entityAccess = new JsonArray();
-					entityAccess.add(entityName);
-					entityAccess.add("W");
-					entitiesSequence.add(entityAccess);
-					break;
-				}
-			}
+			mode = "W";
+			argType = callee.getParameterTypes()[0];
 		}
 		
-		/*if (allEntities.contains(className[0]) && !mode.equals("")) {
-			JsonArray entityAccess = new JsonArray();
-			entityAccess.add(className[0]);
-			entityAccess.add(mode);
-			entitiesSequence.add(entityAccess);
-		}*/
-		
+		String baseClassName = callee.getParent().getElementName();
+		baseClassName = baseClassName.substring(0,baseClassName.length()-5); //remove _Base
 
+		String[] resolvedType = new String[] {" "};
+		
+		parser.setSource(caller.getCompilationUnit());
+        parser.setResolveBindings(true);
+        CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+        
+        cu.accept(new ASTVisitor() {
+			public boolean visit(MethodInvocation node) {
+				try {
+					if (node.getStartPosition() == calleeLocation.getStart() && node.toString().equals(calleeLocation.toString())) {
+						resolvedType[0] = node.getExpression().resolveTypeBinding().getName();
+					}
+				} catch (Exception e) {
+				}
+				return true;
+			}
+		});
+        
+        
+        if (mode.equals("R")) {
+			if (allEntities.contains(resolvedType[0])) {
+				JsonArray entityAccess = new JsonArray();
+				entityAccess.add(resolvedType[0]);
+				entityAccess.add(mode);
+				entitiesSequence.add(entityAccess);
+			} else if (allEntities.contains(baseClassName)) {
+				JsonArray entityAccess = new JsonArray();
+				entityAccess.add(baseClassName);
+				entityAccess.add(mode);
+				entitiesSequence.add(entityAccess);
+			}
+			
+			for (String entityName : allEntities) {
+				if (returnType.contains(entityName)) {
+					JsonArray entityAccess = new JsonArray();
+					entityAccess.add(entityName);
+					entityAccess.add(mode);
+					entitiesSequence.add(entityAccess);
+					return;
+				}
+			}
+			
+        } else if (mode.equals("W")) {
+			if (allEntities.contains(resolvedType[0])) {
+				JsonArray entityAccess = new JsonArray();
+				entityAccess.add(resolvedType[0]);
+				entityAccess.add(mode);
+				entitiesSequence.add(entityAccess);
+			} else if (allEntities.contains(baseClassName)) {
+				JsonArray entityAccess = new JsonArray();
+				entityAccess.add(baseClassName);
+				entityAccess.add(mode);
+				entitiesSequence.add(entityAccess);
+			}
+			
+			for (String entityName : allEntities) {
+				if (argType.contains(entityName)) {
+					JsonArray entityAccess = new JsonArray();
+					entityAccess.add(entityName);
+					entityAccess.add(mode);
+					entitiesSequence.add(entityAccess);
+					return;
+				}
+			}
+        }
 	}
 	
 	
 	private void registerDomainObject(IMethod method, CallLocation calleeLocation) {
-
         parser.setSource(method.getCompilationUnit());
         parser.setResolveBindings(true);
         CompilationUnit cu = (CompilationUnit) parser.createAST(null);
@@ -311,7 +333,7 @@ public class CallGraphHandler extends AbstractHandler {
         cu.accept(new ASTVisitor() {
         	
 			public boolean visit(MethodInvocation node) {
-				if (node.getStartPosition() == calleeLocation.getStart()) {
+				if (node.getStartPosition() == calleeLocation.getStart() && node.toString().equals(calleeLocation.toString())) {
 					String resolvedType;
 					if (node.getParent().getNodeType() == ASTNode.CAST_EXPRESSION) {
 						CastExpression castExpression = (CastExpression) node.getParent();
