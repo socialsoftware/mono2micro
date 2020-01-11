@@ -89,7 +89,7 @@ public class AnalysisController {
 			
 			p.waitFor();
 
-			int maxRequests = 500;
+			int maxRequests = analyser.getRequestLimit();
 			int newRequestsCount = 0;
 			int count = 0;
 			JSONObject analyserJSON = codebaseManager.getAnalyserResults(codebaseName);

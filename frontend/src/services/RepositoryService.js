@@ -20,10 +20,11 @@ export class RepositoryService {
         return this.axios.post("/analysis", data);
     }
 
-    analyser(codebaseName, expert, profiles) {
+    analyser(codebaseName, expert, profiles, requestLimit) {
         const analyserData = {
             expert: expert,
-            profiles: profiles
+            profiles: profiles,
+            requestLimit: requestLimit
         };
 
         return this.axios.post("/codebase/" + codebaseName + "/analyser", analyserData);
@@ -140,16 +141,18 @@ export class RepositoryService {
         return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/cut", graphData);
     }
 
-    expertCut(codebaseName, dendrogramName, expertName) {
-        const graphData = {
-            codebaseName: codebaseName,
-            dendrogramName: dendrogramName,
-            expert: true,
-            name: expertName
-        };
-        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/expertCut", graphData);
-    }
+    expertCut(codebaseName, dendrogramName, expertName, expertFile) {
+        const config = {
+            headers: {
+                'content-type': 'multipart/form-data'
+            }
+        }
+        var data = new FormData();
+        data.append('expertName', expertName);
+        data.append('expertFile', expertFile);
 
+        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/expertCut", data, config);
+    }
 
 
 

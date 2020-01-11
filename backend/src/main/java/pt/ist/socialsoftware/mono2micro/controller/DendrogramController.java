@@ -2,20 +2,19 @@ package pt.ist.socialsoftware.mono2micro.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
+import javax.servlet.annotation.MultipartConfig;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
@@ -108,12 +107,12 @@ public class DendrogramController {
 
 
 	@RequestMapping(value = "/dendrogram/{dendrogramName}/expertCut", method = RequestMethod.POST)
-	public ResponseEntity<HttpStatus> createExpertCut(@PathVariable String codebaseName, @PathVariable String dendrogramName, @RequestBody Graph graph) {
+	public ResponseEntity<HttpStatus> createExpertCut(@PathVariable String codebaseName, @PathVariable String dendrogramName, @RequestParam String expertName, @RequestParam Optional<MultipartFile> expertFile) {
 		logger.debug("createExpertCut");
 
 		try {
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            codebase.getDendrogram(dendrogramName).createExpertCut(graph);
+            codebase.getDendrogram(dendrogramName).createExpertCut(expertName, expertFile);
             codebaseManager.writeCodebase(codebaseName, codebase);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (KeyAlreadyExistsException e) {

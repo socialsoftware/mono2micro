@@ -4,22 +4,21 @@ import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.PYTHON;
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.RESOURCES_PATH;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.io.InputStream;
+import java.util.*;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 
@@ -134,12 +133,20 @@ public class Dendrogram {
 		FileUtils.deleteDirectory(new File(CODEBASES_PATH + this.codebaseName + "/" + this.name + "/" + graphName));
 	}
 
-	public void createExpertCut(Graph expert) throws IOException, JSONException {
-		if (this.getGraphNames().contains(expert.getName()))
+	public void createExpertCut(String expertName, Optional<MultipartFile> expertFile) throws IOException, JSONException {
+		if (this.getGraphNames().contains(expertName))
 			throw new KeyAlreadyExistsException();
 
-		try {
-			JSONObject expertCut = CodebaseManager.getInstance().getExpertCut(this.codebaseName);
+		Graph expert = new Graph();
+		expert.setExpert(true);
+		expert.setCodebaseName(this.codebaseName);
+		expert.setDendrogramName(this.name);
+		expert.setName(expertName);
+		if (expertFile.isPresent()) {
+			InputStream is = new BufferedInputStream(expertFile.get().getInputStream());
+			JSONObject expertCut = new JSONObject(IOUtils.toString(is, "UTF-8"));
+			is.close();
+
 			Iterator<String> clusters = expertCut.getJSONObject("clusters").keys();
 
 			while (clusters.hasNext()) {
@@ -151,7 +158,7 @@ public class Dendrogram {
 				}
 				expert.addCluster(cluster);
 			}
-		} catch (IOException | JSONException e) {
+		} else {
 			Cluster cluster = new Cluster("Generic");
 
 			JSONObject similarityMatrixData = CodebaseManager.getInstance().getSimilarityMatrix(this.codebaseName, this.name);

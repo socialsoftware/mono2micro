@@ -17,7 +17,8 @@ export class Dendrogram extends React.Component {
             newExpert: "",
             isUploaded: "",
             cutSuccess: "",
-            graphs: []
+            graphs: [],
+            expertFile: null, 
         };
 
         this.handleHeightChange = this.handleHeightChange.bind(this);
@@ -26,6 +27,7 @@ export class Dendrogram extends React.Component {
         this.handleDeleteGraph = this.handleDeleteGraph.bind(this);
         this.handleCutSubmit = this.handleCutSubmit.bind(this);
         this.handleExpertSubmit = this.handleExpertSubmit.bind(this);
+        this.handleSelectNewExpertFile = this.handleSelectNewExpertFile.bind(this);
     }
 
     componentDidMount() {
@@ -102,9 +104,9 @@ export class Dendrogram extends React.Component {
         this.setState({
             isUploaded: "Uploading..."
         });
-        
+
         const service = new RepositoryService();
-        service.expertCut(this.state.codebaseName, this.state.dendrogramName, this.state.newExpert).then(response => {
+        service.expertCut(this.state.codebaseName, this.state.dendrogramName, this.state.newExpert, this.state.expertFile).then(response => {
             if (response.status === HttpStatus.OK) {
                 this.loadGraphs();
                 this.setState({
@@ -133,6 +135,12 @@ export class Dendrogram extends React.Component {
         const service = new RepositoryService();
         service.deleteGraph(this.state.codebaseName, this.state.dendrogramName, graphName).then(response => {
             this.loadGraphs();
+        });
+    }
+
+    handleSelectNewExpertFile(event) {
+        this.setState({
+            expertFile: event.target.files[0]
         });
     }
 
@@ -214,6 +222,17 @@ export class Dendrogram extends React.Component {
                             placeholder="Expert Name"
                             value={this.state.newExpert}
                             onChange={this.handleChangeNewExpert}/>
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} controlId="newExpertFile">
+                    <Form.Label column sm={2}>
+                        Expert File (Optional)
+                    </Form.Label>
+                    <Col sm={5}>
+                        <FormControl 
+                            type="file"
+                            onChange={this.handleSelectNewExpertFile}/>
                     </Col>
                 </Form.Group>
 

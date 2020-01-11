@@ -176,11 +176,4 @@ public class CodebaseManager {
 		file.write(similarityMatrix.toString(4));
 		file.close();
 	}
-
-	public JSONObject getExpertCut(String codebaseName) throws IOException, JSONException {
-		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/expertCut.json");
-		JSONObject expertCutJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
-		is.close();
-		return expertCutJSON;
-	}
 }

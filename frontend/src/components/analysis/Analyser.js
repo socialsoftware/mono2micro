@@ -1,6 +1,6 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
-import { Row, Col, Form, DropdownButton, Dropdown, Button, Breadcrumb } from 'react-bootstrap';
+import { Row, Col, Form, DropdownButton, Dropdown, Button, Breadcrumb, FormControl } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { numberFilter } from 'react-bootstrap-table2-filter';
 
@@ -16,11 +16,13 @@ export class Analyser extends React.Component {
             selectedProfiles: [],
             experts: [],
             expert: {},
-            resultData: []
+            resultData: [],
+            requestLimit: ""
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.importResults = this.importResults.bind(this);
+        this.handleRequestLimitChange = this.handleRequestLimitChange.bind(this);
     }
 
     componentDidMount() {
@@ -73,7 +75,7 @@ export class Analyser extends React.Component {
         });
 
         const service = new RepositoryService();
-        service.analyser(this.state.codebase.name, this.state.expert, this.state.selectedProfiles).then(response => {
+        service.analyser(this.state.codebase.name, this.state.expert, this.state.selectedProfiles, Number(this.state.requestLimit)).then(response => {
             if (response.status === HttpStatus.OK) {
                 this.setState({
                     isUploaded: "Upload completed successfully."
@@ -83,6 +85,12 @@ export class Analyser extends React.Component {
                     isUploaded: "Upload failed."
                 });
             }
+        });
+    }
+
+    handleRequestLimitChange(event) {
+        this.setState({
+            requestLimit: event.target.value
         });
     }
 
@@ -247,13 +255,27 @@ export class Analyser extends React.Component {
                         </Col>
                     </Form.Group>
 
+                    <Form.Group as={Row} controlId="requestLimit">
+                        <Form.Label column sm={3}>
+                            Request limit
+                        </Form.Label>
+                        <Col sm={2}>
+                            <FormControl 
+                                type="number"
+                                placeholder="Request Limit"
+                                value={this.state.requestLimit}
+                                onChange={this.handleRequestLimitChange}/>
+                        </Col>
+                    </Form.Group>
+
                     <Form.Group as={Row}>
                         <Col sm={{ span: 5, offset: 3 }}>
                             <Button type="submit"
                                     disabled={this.state.isUploaded === "Uploading..." ||
                                             Object.keys(this.state.codebase).length === 0 ||
                                             this.state.selectedProfiles.length === 0 ||
-                                            Object.keys(this.state.expert).length === 0}>
+                                            Object.keys(this.state.expert).length === 0 ||
+                                            this.state.requestLimit === ""}>
                                 Submit
                             </Button>
                             <Form.Text>
