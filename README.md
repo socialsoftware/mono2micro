@@ -17,7 +17,7 @@ Currently implemented for systems that use the FénixFramework ORM and Spring-Bo
 To run the backend:
 	
 	cd backend/
-	mvn clean compile
+	mvn clean install -DskipTests
 	mvn spring-boot:run
 
 To run the frontend:
@@ -25,3 +25,14 @@ To run the frontend:
 	cd frontend/
 	npm install
 	npm start
+
+### Demo Instructions - ICSA2020
+
+- Start backend and frontend
+- Open http://localhost:3000/
+- Under the 'Codebases' tab, create a codebase using a local file from data/icsa2020/collection/plugin-eclipse
+- Proceed to create a dendrogram
+- Cut the dendrogram, using number of clusters = 5.
+- Import an expert decomposition using a local file from data/icsa2020/expert
+- Under the 'Microservice Analysis' tab, run an analysis, between the generated cut and the expert one.
+- Under the 'Analyser' tab, import an analyser result using a local file from data/icsa2020/evaluation. Observe the evaluation results.
