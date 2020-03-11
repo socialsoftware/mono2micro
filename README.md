@@ -17,7 +17,7 @@ Currently implemented for systems that use the FénixFramework ORM and Spring-Bo
 To run the backend:
 	
 	cd backend/
-	mvn clean compile
+	mvn clean install -DskipTests
 	mvn spring-boot:run
 
 To run the frontend:
