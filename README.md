@@ -11,6 +11,7 @@ Currently implemented for systems that use the FénixFramework ORM and Spring-Bo
 - npm 6+      (npm --version)
 - python 3.5+   (python --version)
 - Run: pip install -r backend/src/main/resources/requirements.txt
+- Create the file specific.properties in backend/src/main/resources with the correct python command (example in specific.properties.example)
 
 ### Run
 
