@@ -9,8 +9,11 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
+mono2micro.iml
 
 src/main/resources/specific.properties
 src/main/resources/codebases/
+src/main/resources/dendrograms/
+src/main/resources/experts/
 
 .sts4-cache/

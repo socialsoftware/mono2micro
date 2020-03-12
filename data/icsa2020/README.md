@@ -1,7 +1,7 @@
 # The data replication package of the International Conference on Software Architecture (ICSA 2020)
 
 ## Repository code
-- tag icsa2020
+- tag icsa2020 - https://github.com/socialsoftware/mono2micro/releases/tag/icsa2020
 
 ## Locate files in the project
 - data/icsa2020/collection/plugin-eclipse - contains the collected data using Eclipse JDT static analysys for each of the systems
