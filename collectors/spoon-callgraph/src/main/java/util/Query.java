@@ -1,25 +1,14 @@
-package collectors;
+package util;
 
 public class Query {
-
-    private String declaringEntity;
     private String name;
     private String value;
     private boolean isNative;
 
-    public Query(String declaringEntity, String name, String value, boolean isNative) {
-        this.declaringEntity = declaringEntity;
+    public Query(String name, String value, boolean isNative) {
         this.name = name;
         this.value = value;
         this.isNative = isNative;
-    }
-
-    public String getDeclaringEntity() {
-        return declaringEntity;
-    }
-
-    public void setDeclaringEntity(String declaringEntity) {
-        this.declaringEntity = declaringEntity;
     }
 
     public String getName() {

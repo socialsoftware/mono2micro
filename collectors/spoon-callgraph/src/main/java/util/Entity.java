@@ -1,4 +1,4 @@
-package collectors;
+package util;
 
 public class Entity {
     private String className;
