@@ -17,16 +17,46 @@
       "W"
     ]
   ],
+  "OwnerController.initUpdateOwnerForm": [
+    [
+      "Owner",
+      "R"
+    ],
+    [
+      "Owner",
+      "R"
+    ],
+    [
+      "Pet",
+      "R"
+    ],
+    [
+      "Owner",
+      "R"
+    ]
+  ],
   "OwnerController.processCreationForm": [
     [
       "Owner",
       "W"
     ]
   ],
+  "OwnerController.processFindForm": [
+    [
+      "Owner",
+      "R"
+    ]
+  ],
   "OwnerController.processUpdateOwnerForm": [
     [
       "Owner",
       "W"
+    ]
+  ],
+  "OwnerController.showOwner": [
+    [
+      "Owner",
+      "R"
     ]
   ],
   "VetController.showResourcesVetList": [

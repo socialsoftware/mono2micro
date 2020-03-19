@@ -3,21 +3,23 @@ package collectors;
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
 import com.google.gson.JsonArray;
-import parser.HqlAccess;
+import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.statement.Statement;
 import parser.MyHqlParser;
-import spoon.reflect.code.CtAbstractInvocation;
-import spoon.reflect.code.CtExpression;
-import spoon.reflect.code.CtLiteral;
-import spoon.reflect.code.CtNewArray;
+import parser.QueryAccess;
+import spoon.reflect.code.*;
 import spoon.reflect.declaration.*;
 import spoon.reflect.reference.CtExecutableReference;
 import spoon.reflect.reference.CtTypeReference;
+import spoon.reflect.visitor.CtScanner;
+import spoon.reflect.visitor.filter.TypeFilter;
 import spoon.support.reflect.code.CtInvocationImpl;
 import spoon.support.reflect.declaration.CtAnnotationImpl;
 import util.Classes;
 import util.Query;
 import util.Repository;
-
+import parser.TableNamesFinderExt;
 import java.lang.annotation.Annotation;
 import java.util.*;
 
@@ -31,6 +33,9 @@ import java.util.*;
 * implement interfaces other than SpringFramework interfaces
 *
 * Inheritance (SINGLE_TABLE) no more than one level of inheritance
+*
+* Assuming that @OneToMany, @ManyToMany and @ElementCollection fields
+* are always Collection<Type> field;
 * */
 public class SpringDataJPACollector extends SpoonCollector {
 
@@ -77,17 +82,22 @@ public class SpringDataJPACollector extends SpoonCollector {
             Repository repository = checkIfClassIsARepository(clazz, clazzAnnotations);
             if (repository != null) {
                 repositories.add(repository);
+                continue;
             }
-            else {
-                CtAnnotation entityAnnotation = getAnnotation(clazzAnnotations, "Entity");
-                if (entityAnnotation != null) { // Domain Class @Entity
-                    parseEntity(clazz, entityAnnotation, clazzAnnotations);
-                }
-            }
+
             allEntities.add(clazz.getSimpleName());
         }
 
         allEntities.sort((string1, string2) -> Integer.compare(string2.length(), string1.length()));  //Longer length first
+
+        // 2nd For, to retrieve JPA related information
+        for(CtType<?> clazz : factory.Class().getAll()) {
+            List<CtAnnotation<? extends Annotation>> clazzAnnotations = clazz.getAnnotations();
+            CtAnnotation entityAnnotation = getAnnotation(clazzAnnotations, "Entity");
+            if (entityAnnotation != null) { // Domain Class @Entity
+                parseEntity(clazz, entityAnnotation, clazzAnnotations);
+            }
+        }
     }
 
     private Repository checkIfClassIsARepository(CtType<?> clazz, List<CtAnnotation<? extends Annotation>> clazzAnnotations) {
@@ -103,18 +113,161 @@ public class SpringDataJPACollector extends SpoonCollector {
         return null;
     }
 
-    private void parseEntity(CtType<?> clazz, CtAnnotation entityAnnotation, List<CtAnnotation<? extends Annotation>> clazzAnnotations) {
-        String entityName = clazz.getSimpleName();
-
+    private void parseEntity(CtType<?> clazz, CtAnnotation atEntityAnnotation, List<CtAnnotation<? extends Annotation>> clazzAnnotations) {
         // ------------------- @Entity -----------------------
-        CtLiteral redefinedEntityName = (CtLiteral) ((CtAnnotationImpl) entityAnnotation).getElementValues().get("name");
-        if (redefinedEntityName != null)
-            entityName = (String) redefinedEntityName.getValue();
-
-        entityClassNameMap.put(entityName, clazz);
+        String entityName = parseAtEntity(clazz, atEntityAnnotation);
 
         // ------------------- @Table -----------------------
-        // ------------------- @Inheritance -----------------
+        String tableName = parseAtTableAndAtInheritance(clazz);
+
+        // ------------------- @NamedQueries -----------------------
+        parseAtNamedQueries(clazzAnnotations);
+
+        // ------------------- @NamedQuery -----------------------
+        parseAtNamedQuery(clazzAnnotations);
+
+        // ------------------- @NamedNativeQueries -----------------------
+        parseAtNamedNativeQueries(clazzAnnotations);
+
+        // ------------------- @NamedNativeQuery -----------------------
+        parseAtNamedNativeQuery(clazzAnnotations);
+
+        // ------------------- Check Fields -----------------------
+        for (CtField field : clazz.getFields()) {
+
+            List<CtAnnotation<? extends Annotation>> fieldAnnotations = field.getAnnotations();
+
+            // ------------------- @ElementCollection -----------------------
+            parseAtElementCollection(clazz, field, fieldAnnotations, entityName);
+
+            // ------------------- @OneToMany -----------------------
+            parseAtOneToMany(clazz, field, fieldAnnotations, tableName);
+
+            // ------------------- @ManyToMany -----------------------
+            parseAtManyToMany(clazz, field, fieldAnnotations, tableName);
+        }
+    }
+
+    private void parseAtManyToMany(CtType<?> clazz, CtField field, List<CtAnnotation<? extends Annotation>> fieldAnnotations, String tableName) {
+        CtAnnotation manyToManyAnnotation = getAnnotation(fieldAnnotations, "ManyToMany");
+        if (manyToManyAnnotation != null) {
+            Map manyToManyValues = ((CtAnnotationImpl) manyToManyAnnotation).getElementValues();
+            if (manyToManyValues.get("mappedBy") == null) { // new table
+
+                String joinTableName = "";
+                CtAnnotation joinTableAnnotation = getAnnotation(fieldAnnotations, "JoinTable");
+                if (joinTableAnnotation != null) {
+                    CtExpression CtJoinTableName = joinTableAnnotation.getValue("name");
+                    joinTableName = (String) ((CtLiteral) CtJoinTableName).getValue();
+                }
+                Classes classes = new Classes();
+                classes.addClass(clazz.getSimpleName());
+
+                CtType fieldType = field.getType().getActualTypeArguments().get(0).getTypeDeclaration();
+                classes.addClass(fieldType.getSimpleName());
+
+                if (joinTableName.equals("")) {
+                    joinTableName = tableName + "_" + getEntityTableName(fieldType);
+                }
+                tableClassesAccessedMap.put(joinTableName, classes);
+            }
+        }
+    }
+
+    private void parseAtOneToMany(CtType<?> clazz, CtField field, List<CtAnnotation<? extends Annotation>> fieldAnnotations, String tableName) {
+        CtAnnotation oneToManyAnnotation = (CtAnnotation) getAnnotation(fieldAnnotations, "OneToMany");
+        if (oneToManyAnnotation != null) {
+            Map annotationValues = ((CtAnnotationImpl) oneToManyAnnotation).getElementValues();
+            CtAnnotation joinColumnAnnotation = getAnnotation(fieldAnnotations, "JoinColumn");
+            if (annotationValues.get("mappedBy") == null && joinColumnAnnotation == null) { // new table
+                Classes classes = new Classes();
+                classes.addClass(clazz.getSimpleName());
+
+                CtType fieldType = null;
+                List<CtTypeReference<?>> actualTypeArguments = field.getType().getActualTypeArguments();
+                for (CtTypeReference type : actualTypeArguments) {
+
+                    fieldType = type.getTypeDeclaration();
+
+                    if (allEntities.contains(fieldType.getSimpleName()))
+                        classes.addClass(fieldType.getSimpleName());
+
+                }
+
+                String joinTableName = tableName + "_" + getEntityTableName(fieldType);
+                tableClassesAccessedMap.put(joinTableName, classes);
+            }
+        }
+    }
+
+    private void parseAtElementCollection(CtType<?> clazz, CtField field, List<CtAnnotation<? extends Annotation>> fieldAnnotations, String entityName) {
+        CtAnnotation elementCollectionAnnotation = getAnnotation(fieldAnnotations, "ElementCollection");
+        if (elementCollectionAnnotation != null) {
+            String joinTableName = "";
+            CtAnnotation collectionTableAnnotation = getAnnotation(fieldAnnotations, "CollectionTable");
+            if (collectionTableAnnotation != null) {
+                CtExpression CtJoinTableName = collectionTableAnnotation.getValue("name");
+                joinTableName = (String) ((CtLiteral) CtJoinTableName).getValue();
+            }
+            Classes classes = new Classes();
+            classes.addClass(clazz.getSimpleName());
+
+            List<CtTypeReference<?>> actualTypeArguments = field.getType().getActualTypeArguments();
+            for (CtTypeReference type : actualTypeArguments) {
+
+                CtType fieldType = type.getTypeDeclaration();
+
+                if (allEntities.contains(fieldType.getSimpleName()))
+                    classes.addClass(fieldType.getSimpleName());
+
+            }
+
+            if (joinTableName.equals("")) {
+                joinTableName = entityName + "_" + field.getSimpleName();
+            }
+            tableClassesAccessedMap.put(joinTableName, classes);
+        }
+    }
+
+    private void parseAtNamedNativeQuery(List<CtAnnotation<? extends Annotation>> clazzAnnotations) {
+        CtAnnotation namedNativeQueryAnnotation = (CtAnnotation) getAnnotation(clazzAnnotations, "NamedNativeQuery");
+        if (namedNativeQueryAnnotation != null) {
+            parseNamedQuery(namedNativeQueryAnnotation, true);
+        }
+    }
+
+    private void parseAtNamedNativeQueries(List<CtAnnotation<? extends Annotation>> clazzAnnotations) {
+        CtAnnotationImpl namedNativeQueriesAnnotation = (CtAnnotationImpl) getAnnotation(clazzAnnotations, "NamedNativeQueries");
+        if (namedNativeQueriesAnnotation != null) {
+            List namedNativeQueryList = ((CtNewArray) namedNativeQueriesAnnotation.getElementValues().get("value")).getElements();
+
+            for (Object namedNativeQueryObject : namedNativeQueryList) {
+                CtAnnotation namedNativeQueryElement = ((CtAnnotation) namedNativeQueryObject);
+                parseNamedQuery(namedNativeQueryElement, true);
+            }
+        }
+    }
+
+    private void parseAtNamedQuery(List<CtAnnotation<? extends Annotation>> clazzAnnotations) {
+        CtAnnotation namedQueryAnnotation = (CtAnnotation) getAnnotation(clazzAnnotations, "NamedQuery");
+        if (namedQueryAnnotation != null) {
+            parseNamedQuery(namedQueryAnnotation, false);
+        }
+    }
+
+    private void parseAtNamedQueries(List<CtAnnotation<? extends Annotation>> clazzAnnotations) {
+        CtAnnotationImpl namedQueriesAnnotation = (CtAnnotationImpl) getAnnotation(clazzAnnotations, "NamedQueries");
+        if (namedQueriesAnnotation != null) {
+            List namedQueryList = ((CtNewArray) namedQueriesAnnotation.getElementValues().get("value")).getElements();
+
+            for (Object namedQueryObject : namedQueryList) {
+                CtAnnotation namedQueryElement = ((CtAnnotation) namedQueryObject);
+                parseNamedQuery(namedQueryElement, false);
+            }
+        }
+    }
+
+    private String parseAtTableAndAtInheritance(CtType clazz) {
         boolean isSingleTable = false;
         CtType<?> superClass = null;
         if (clazz.getSuperclass() != null) {
@@ -133,90 +286,27 @@ public class SpringDataJPACollector extends SpoonCollector {
         }
         else {
             tableName = getEntityTableName(clazz);
-            classes.addClass(clazz);
+            classes.addClass(clazz.getSimpleName());
             tableClassesAccessedMap.put(tableName, classes);
         }
+        return tableName;
+    }
 
-        // ------------------- @NamedQueries -----------------------
-        CtAnnotationImpl namedQueriesAnnotation = (CtAnnotationImpl) getAnnotation(clazzAnnotations, "NamedQueries");
-        if (namedQueriesAnnotation != null) {
-            List namedQueryList = ((CtNewArray) namedQueriesAnnotation.getElementValues().get("value")).getElements();
+    private String parseAtEntity(CtType clazz, CtAnnotation atEntityAnnotation) {
+        String entityName = clazz.getSimpleName();
 
-            for (Object namedQueryObject : namedQueryList) {
-                CtAnnotation namedQueryElement = ((CtAnnotation) namedQueryObject);
-                parseNamedQuery(namedQueryElement, false);
-            }
-        }
+        CtLiteral redefinedEntityName = (CtLiteral) ((CtAnnotationImpl) atEntityAnnotation).getElementValues().get("name");
+        if (redefinedEntityName != null)
+            entityName = (String) redefinedEntityName.getValue();
 
-        // ------------------- @NamedQuery -----------------------
-        CtAnnotation namedQueryAnnotation = (CtAnnotation) getAnnotation(clazzAnnotations, "NamedQuery");
-        if (namedQueryAnnotation != null) {
-            parseNamedQuery(namedQueryAnnotation, false);
-        }
+        entityClassNameMap.put(entityName, clazz);
 
-        // ------------------- @NamedNativeQueries -----------------------
-        CtAnnotationImpl namedNativeQueriesAnnotation = (CtAnnotationImpl) getAnnotation(clazzAnnotations, "NamedNativeQueries");
-        if (namedNativeQueriesAnnotation != null) {
-            List namedNativeQueryList = ((CtNewArray) namedNativeQueriesAnnotation.getElementValues().get("value")).getElements();
-
-            for (Object namedNativeQueryObject : namedNativeQueryList) {
-                CtAnnotation namedNativeQueryElement = ((CtAnnotation) namedNativeQueryObject);
-                parseNamedQuery(namedNativeQueryElement, true);
-            }
-        }
-
-        // ------------------- @NamedNativeQuery -----------------------
-        CtAnnotation namedNativeQueryAnnotation = (CtAnnotation) getAnnotation(clazzAnnotations, "NamedNativeQuery");
-        if (namedNativeQueryAnnotation != null) {
-            parseNamedQuery(namedNativeQueryAnnotation, true);
-        }
-
-        // ------------------- Check Fields -----------------------
-        for (CtField field : clazz.getFields()) {
-
-            List<CtAnnotation<? extends Annotation>> fieldAnnotations = field.getAnnotations();
-
-            // ------------------- @OneToMany -----------------------
-            CtAnnotation oneToManyAnnotation = (CtAnnotation) getAnnotation(fieldAnnotations, "OneToMany");
-            if (oneToManyAnnotation != null) {
-                Map annotationValues = ((CtAnnotationImpl) oneToManyAnnotation).getElementValues();
-                CtAnnotation joinColumnAnnotation = getAnnotation(fieldAnnotations, "JoinColumn");
-                if (annotationValues.get("mappedBy") == null && joinColumnAnnotation == null) { // new table
-                    classes = new Classes();
-                    classes.addClass(clazz);
-                    CtType fieldType = field.getType().getActualTypeArguments().get(0).getTypeDeclaration();
-                    classes.addClass(fieldType);
-                    String joinTableName = tableName + "_" + getEntityTableName(fieldType);
-                    tableClassesAccessedMap.put(joinTableName, classes);
-                }
-            }
-
-            // ------------------- @ManyToMany -----------------------
-            CtAnnotation manyToManyAnnotation = getAnnotation(fieldAnnotations, "ManyToMany");
-            if (manyToManyAnnotation != null) {
-                Map manyToManyValues = ((CtAnnotationImpl) manyToManyAnnotation).getElementValues();
-                if (manyToManyValues.get("mappedBy") == null) { // new table
-
-                    String joinTableName = "";
-                    CtAnnotation joinTableAnnotation = getAnnotation(fieldAnnotations, "JoinTable");
-                    if (joinTableAnnotation != null) {
-                        CtExpression CtJoinTableName = joinTableAnnotation.getValue("name");
-                        joinTableName = (String) ((CtLiteral) CtJoinTableName).getValue();
-                    }
-                    classes = new Classes();
-                    classes.addClass(clazz);
-                    CtType fieldType = field.getType().getActualTypeArguments().get(0).getTypeDeclaration();
-                    classes.addClass(fieldType);
-                    if (joinTableName.equals("")) {
-                        joinTableName = tableName + "_" + getEntityTableName(fieldType);
-                    }
-                    tableClassesAccessedMap.put(joinTableName, classes);
-                }
-            }
-        }
+        return entityName;
     }
 
     private String getEntityTableName(CtType clazz) {
+        if (clazz == null) return "";
+
         String tableName = clazz.getSimpleName();
         List<CtAnnotation<? extends Annotation>> annotations = clazz.getAnnotations();
         // ------------------- @Table -----------------------
@@ -228,43 +318,136 @@ public class SpringDataJPACollector extends SpoonCollector {
         return tableName;
     }
 
+//    @Override
+//    public void methodCallDFS(CtExecutable callerMethod, Stack<String> methodStack) {
+//        methodStack.push(callerMethod.toString());
+//
+//        if (!methodCallees.containsKey(callerMethod.toString())) {
+//            methodCallees.put(callerMethod.toString(), getCalleesOf(callerMethod));
+//        }
+//
+//        for (CtAbstractInvocation calleeLocation : methodCallees.get(callerMethod.toString())) {
+//
+//            try {
+//                //System.out.println(calleeLocation.getExecutable().getSimpleName());
+//                if (calleeLocation == null)
+//                    continue;
+//                else if (calleeLocation.getExecutable().getDeclaringType() == null) {
+//                    // Non declared method. SpringFramework Repository default query
+//                    // extends JpaRepository
+//                    String targetClassName = ((CtInvocationImpl) calleeLocation).getTarget().getType().getSimpleName();
+//                    if (isRepository(targetClassName)) {
+//                        registerSpringDataRepositoryAccess(targetClassName, calleeLocation.getExecutable().getSimpleName());
+//                    }
+//                }
+//                else if (isRepository(calleeLocation.getExecutable().getDeclaringType().getSimpleName())) {
+//                    registerRepositoryAccess(calleeLocation.getExecutable());
+//                }
+//                // acesso a um field de uma entidade persistido?
+//                    // register domain access
+//                else if (allEntities.contains(calleeLocation.getExecutable().getDeclaringType().getSimpleName())) {
+//                    if (!methodStack.contains(calleeLocation.getExecutable().getExecutableDeclaration().toString())) {
+//                        methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), methodStack);
+//                    }
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        methodStack.pop();
+//    }
 
 
     @Override
     public void methodCallDFS(CtExecutable callerMethod, Stack<String> methodStack) {
         methodStack.push(callerMethod.toString());
 
-        if (!methodCallees.containsKey(callerMethod.toString())) {
-            methodCallees.put(callerMethod.toString(), getCalleesOf(callerMethod));
-        }
-
-        for (CtAbstractInvocation calleeLocation : methodCallees.get(callerMethod.toString())) {
-
-            try {
-                //System.out.println(calleeLocation.getExecutable().getSimpleName());
-                if (calleeLocation == null)
-                    continue;
-                else if (calleeLocation.getExecutable().getDeclaringType() == null) {
-                    // Non declared method. SpringFramework Repository default query
-                    // extends JpaRepository
-                    String targetClassName = ((CtInvocationImpl) calleeLocation).getTarget().getType().getSimpleName();
-                    if (isRepository(targetClassName)) {
-                        registerSpringDataRepositoryAccess(targetClassName, calleeLocation.getExecutable().getSimpleName());
+        callerMethod.accept(new CtScanner() {
+            private <T> void visitCtAbstractInvocation(CtAbstractInvocation calleeLocation) {
+                try {
+                    if (calleeLocation == null)
+                        return;
+                    else if (calleeLocation.getExecutable().getDeclaringType() == null) {
+                        // Non declared method. SpringFramework Repository default query
+                        // extends JpaRepository
+                        String targetClassName = ((CtInvocationImpl) calleeLocation).getTarget().getType().getSimpleName();
+                        if (isRepository(targetClassName)) {
+                            registerSpringDataRepositoryAccess(targetClassName, calleeLocation.getExecutable().getSimpleName());
+                        }
                     }
-                }
-                else if (isRepository(calleeLocation.getExecutable().getDeclaringType().getSimpleName())) {
-                    registerRepositoryAccess(calleeLocation.getExecutable());
-                }
-
-                else if (allEntities.contains(calleeLocation.getExecutable().getDeclaringType().getSimpleName())) {
-                    if (!methodStack.contains(calleeLocation.getExecutable().getExecutableDeclaration().toString())) {
-                        methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), methodStack);
+                    else if (isRepository(calleeLocation.getExecutable().getDeclaringType().getSimpleName())) {
+                        registerRepositoryAccess(calleeLocation.getExecutable());
                     }
+                    else if (allEntities.contains(calleeLocation.getExecutable().getDeclaringType().getSimpleName())) {
+                        if (!methodStack.contains(calleeLocation.getExecutable().getExecutableDeclaration().toString())) {
+                            methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), methodStack);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-        }
+
+            @Override
+            public <T> void visitCtFieldRead(CtFieldRead<T> fieldRead) {
+                super.visitCtFieldRead(fieldRead);
+                try {
+                    // class that declares the field
+                    CtType<?> typeDeclaration = fieldRead.getVariable().getDeclaringType().getTypeDeclaration();
+                    if (existsAnnotation(typeDeclaration.getAnnotations(), "Entity") ||
+                            existsAnnotation(typeDeclaration.getAnnotations(), "Embeddable")) {
+
+                        addEntitiesSequenceAccess(typeDeclaration.getSimpleName(), "R");
+
+                        // field type
+                        String fieldType = fieldRead.getVariable().getType().toString();
+                        for (String entityName : allEntities) {
+                            if (fieldType.contains(entityName))
+                                addEntitiesSequenceAccess(entityName, "R");
+                        }
+                    }
+                } catch (Exception ignored) {}
+            }
+
+            @Override
+            public <T> void visitCtAnnotationFieldAccess(CtAnnotationFieldAccess<T> annotationFieldAccess) {
+                super.visitCtAnnotationFieldAccess(annotationFieldAccess);
+            }
+
+            @Override
+            public <T> void visitCtFieldWrite(CtFieldWrite<T> fieldWrite) {
+                super.visitCtFieldWrite(fieldWrite);
+                try {
+                    // class that declares the field
+                    CtType<?> typeDeclaration = fieldWrite.getVariable().getDeclaringType().getTypeDeclaration();
+                    if (existsAnnotation(typeDeclaration.getAnnotations(), "Entity") ||
+                            existsAnnotation(typeDeclaration.getAnnotations(), "Embeddable")) {
+
+                        addEntitiesSequenceAccess(typeDeclaration.getSimpleName(), "W");
+
+                        // field type
+                        String fieldType = fieldWrite.getVariable().getType().toString();
+                        for (String entityName : allEntities) {
+                            if (fieldType.contains(entityName))
+                                addEntitiesSequenceAccess(entityName, "W");
+                        }
+                    }
+                } catch (Exception ignored) {}
+            }
+
+            @Override
+            public <T> void visitCtInvocation(CtInvocation<T> invocation) {
+                super.visitCtInvocation(invocation);
+                visitCtAbstractInvocation(invocation);
+            }
+
+            @Override
+            public <T> void visitCtConstructorCall(CtConstructorCall<T> ctConstructorCall) {
+                super.visitCtConstructorCall(ctConstructorCall);
+                visitCtAbstractInvocation(ctConstructorCall);
+            }
+        });
+
         methodStack.pop();
     }
 
@@ -286,7 +469,7 @@ public class SpringDataJPACollector extends SpoonCollector {
             }
 
             if (nativeQuery) {
-
+                parseNativeQuery(value);
             }
             else { // HQL query
                 parseHqlQuery(value);
@@ -305,11 +488,32 @@ public class SpringDataJPACollector extends SpoonCollector {
         }
     }
 
+    // TODO replace? drop? createtable?
+    private void parseNativeQuery(String sql) {
+        try {
+            Statement stmt = CCJSqlParserUtil.parse(sql);
+            TableNamesFinderExt tablesNamesFinder = new TableNamesFinderExt();
+            tablesNamesFinder.getTableList(stmt); // run visitor, populate QueryAccesses
+            ArrayList<QueryAccess> accesses = tablesNamesFinder.getAccesses();
+            for (QueryAccess qa : accesses) {
+                String tableName = qa.getName();
+                Classes classes = tableClassesAccessedMap.get(tableName);
+                for (String typeName : classes.getListOfClasses()) {
+                    addEntitiesSequenceAccess(typeName, qa.getMode());
+                }
+            }
+        } catch (JSQLParserException e) {
+            System.err.println("SQL QueryException on query: \"" + sql + "\"");
+            e.printStackTrace();
+        }
+    }
+
+    // TODO replace? drop? createtable?
     private void parseHqlQuery(String hql) {
         try {
-            Set<HqlAccess> accesses = new MyHqlParser(hql).parse();
-            for (HqlAccess a : accesses) {
-                String entityName = a.getEntityName();
+            Set<QueryAccess> accesses = new MyHqlParser(hql).parse();
+            for (QueryAccess a : accesses) {
+                String entityName = a.getName();
                 String[] split = entityName.split("\\.");
 
                 CtType clazz = entityClassNameMap.get(split[0]);
@@ -324,9 +528,10 @@ public class SpringDataJPACollector extends SpoonCollector {
                         if (field != null) {
                             List<CtTypeReference<?>> actualTypeArguments = field.getType().getActualTypeArguments();
                             if (actualTypeArguments.size() > 0) { // Set<Class> List<Class> etc
-                                CtTypeReference<?> ctTypeReference = actualTypeArguments.get(0);
-                                if (allEntities.contains(ctTypeReference.getSimpleName())) {
-                                    addEntitiesSequenceAccess(ctTypeReference.getSimpleName(), a.getMode());
+                                for (CtTypeReference ctTypeReference : actualTypeArguments) {
+                                    if (allEntities.contains(ctTypeReference.getSimpleName())) {
+                                        addEntitiesSequenceAccess(ctTypeReference.getSimpleName(), a.getMode());
+                                    }
                                 }
                             }
                             else {
@@ -334,8 +539,9 @@ public class SpringDataJPACollector extends SpoonCollector {
                                     addEntitiesSequenceAccess(field.getType().getSimpleName(), a.getMode());
                                 }
                             }
+
+                            clazz = field.getType().getTypeDeclaration(); // in order to retrieve next fields
                         }
-                        clazz = field.getType().getTypeDeclaration(); // in order to retrieve next fields
                     }
                 }
             }

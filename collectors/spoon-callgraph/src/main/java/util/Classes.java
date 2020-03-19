@@ -1,22 +1,20 @@
 package util;
 
-import spoon.reflect.declaration.CtType;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class Classes {
-    private List<CtType> listOfClasses;
+    private List<String> listOfClasses;
 
     public Classes() {
         listOfClasses = new ArrayList<>();
     }
 
-    public List<CtType> getListOfClasses() {
+    public List<String> getListOfClasses() {
         return listOfClasses;
     }
 
-    public void addClass(CtType c) {
-        this.listOfClasses.add(c);
+    public void addClass(String s) {
+        this.listOfClasses.add(s);
     }
 }

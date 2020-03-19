@@ -1,6 +1,5 @@
 package collectors;
 
-import com.google.gson.JsonArray;
 import spoon.reflect.code.*;
 import spoon.reflect.declaration.*;
 import spoon.reflect.reference.CtTypeReference;

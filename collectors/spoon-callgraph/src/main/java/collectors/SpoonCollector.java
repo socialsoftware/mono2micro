@@ -43,7 +43,7 @@ public abstract class SpoonCollector {
         launcher.addInputResource(projectPath);
     }
 
-    public void run() throws Exception {
+    public void run() {
         factory = launcher.getFactory();
 
         String projectName = null;
