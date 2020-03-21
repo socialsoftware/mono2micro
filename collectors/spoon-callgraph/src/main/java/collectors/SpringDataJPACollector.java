@@ -12,10 +12,12 @@ import spoon.reflect.code.*;
 import spoon.reflect.declaration.*;
 import spoon.reflect.reference.CtExecutableReference;
 import spoon.reflect.reference.CtTypeReference;
+import spoon.reflect.visitor.CtInheritanceScanner;
 import spoon.reflect.visitor.CtScanner;
 import spoon.reflect.visitor.filter.TypeFilter;
 import spoon.support.reflect.code.CtInvocationImpl;
 import spoon.support.reflect.declaration.CtAnnotationImpl;
+import spoon.support.reflect.declaration.CtMethodImpl;
 import util.Classes;
 import util.Query;
 import util.Repository;
@@ -36,6 +38,8 @@ import java.util.*;
 *
 * Assuming that @OneToMany, @ManyToMany and @ElementCollection fields
 * are always Collection<Type> field;
+*
+* Assuming only one concrete implementation of a given interface
 * */
 public class SpringDataJPACollector extends SpoonCollector {
 
@@ -85,13 +89,30 @@ public class SpringDataJPACollector extends SpoonCollector {
                 continue;
             }
 
-            allEntities.add(clazz.getSimpleName());
+            if (clazz.isInterface()) {
+                interfaces.put(clazz.getSimpleName(), null);
+                continue;
+            }
+
+            if (existsAnnotation(clazzAnnotations, "Entity") ||
+                    existsAnnotation(clazzAnnotations, "Embeddable") ||
+                    existsAnnotation(clazzAnnotations, "MappedSuperclass") ||
+                    existsAnnotation(clazzAnnotations, "XmlRootElement")) {
+                allEntities.add(clazz.getSimpleName());
+            }
         }
 
         allEntities.sort((string1, string2) -> Integer.compare(string2.length(), string1.length()));  //Longer length first
 
-        // 2nd For, to retrieve JPA related information
+        // 2nd iteration, to retrieve JPA related information
         for(CtType<?> clazz : factory.Class().getAll()) {
+            Set<CtTypeReference<?>> superInterfaces = clazz.getSuperInterfaces();
+            for (CtTypeReference ctTypeReference : superInterfaces) {
+                if (interfaces.containsKey(ctTypeReference.getSimpleName())) {
+                    interfaces.replace(ctTypeReference.getSimpleName(), clazz);
+                }
+            }
+
             List<CtAnnotation<? extends Annotation>> clazzAnnotations = clazz.getAnnotations();
             CtAnnotation entityAnnotation = getAnnotation(clazzAnnotations, "Entity");
             if (entityAnnotation != null) { // Domain Class @Entity
@@ -367,7 +388,42 @@ public class SpringDataJPACollector extends SpoonCollector {
                 try {
                     if (calleeLocation == null)
                         return;
-                    else if (calleeLocation.getExecutable().getDeclaringType() == null) {
+
+                    try {
+                        CtMethod calleeLocationMethod = (CtMethod) calleeLocation.getExecutable().getExecutableDeclaration();
+                        if (calleeLocationMethod.isAbstract()) {
+                            CtType interfaceImplType = interfaces.get(calleeLocationMethod.getDeclaringType().getSimpleName());
+                            if (interfaceImplType != null) {
+                                // calling an abstract method declared in an interface
+                                List methodsByName = interfaceImplType.getMethodsByName(calleeLocation.getExecutable().getSimpleName());
+                                if (methodsByName.size() > 0) {
+                                    // redirect pointer to the explicit method
+                                    Object explicitMethodObject = methodsByName.get(0);
+                                    CtMethod calleeLocationExplicit = (CtMethod) explicitMethodObject;
+                                    CtExecutableReference reference = calleeLocationExplicit.getReference();
+                                    calleeLocation.setExecutable(reference);
+                                }
+
+                                // replace the target of the call by the explicit target
+                                CtConstructorCall call = factory.Core().createConstructorCall();
+                                call.setType(factory.Core().createTypeReference().setSimpleName(interfaceImplType.getSimpleName()));
+                                ((CtInvocation) calleeLocation).setTarget(call);
+
+                                if (methodsByName.size() == 0) {
+                                    // May be a SpringDataJPA implicit method access
+                                    // unfortunately we cant get reference a to those methods so we have to duplicate code
+                                    String targetClassName = ((CtInvocation) calleeLocation).getTarget().getType().getSimpleName();
+                                    if (isRepository(targetClassName)) {
+                                        registerSpringDataRepositoryAccess(targetClassName, calleeLocation.getExecutable().getSimpleName());
+                                    }
+                                    // end of call chain
+                                    return;
+                                }
+                            }
+                        }
+                    } catch(Exception castErrorProbably) {}
+
+                    if (calleeLocation.getExecutable().getDeclaringType() == null) {
                         // Non declared method. SpringFramework Repository default query
                         // extends JpaRepository
                         String targetClassName = ((CtInvocationImpl) calleeLocation).getTarget().getType().getSimpleName();
@@ -378,11 +434,15 @@ public class SpringDataJPACollector extends SpoonCollector {
                     else if (isRepository(calleeLocation.getExecutable().getDeclaringType().getSimpleName())) {
                         registerRepositoryAccess(calleeLocation.getExecutable());
                     }
-                    else if (allEntities.contains(calleeLocation.getExecutable().getDeclaringType().getSimpleName())) {
-                        if (!methodStack.contains(calleeLocation.getExecutable().getExecutableDeclaration().toString())) {
-                            methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), methodStack);
-                        }
+                    else if (isCallToCollections(calleeLocation)) {
+                        String targetTypeName = getTargetFromCall((CtInvocation) calleeLocation);
+                        if (targetTypeName != null)
+                            registerDomainAccess(targetTypeName, calleeLocation);
                     }
+                    else if (!methodStack.contains(calleeLocation.getExecutable().getExecutableDeclaration().toString())) {
+                        methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), methodStack);
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -393,11 +453,10 @@ public class SpringDataJPACollector extends SpoonCollector {
                 super.visitCtFieldRead(fieldRead);
                 try {
                     // class that declares the field
-                    CtType<?> typeDeclaration = fieldRead.getVariable().getDeclaringType().getTypeDeclaration();
-                    if (existsAnnotation(typeDeclaration.getAnnotations(), "Entity") ||
-                            existsAnnotation(typeDeclaration.getAnnotations(), "Embeddable")) {
+                    CtTypeReference<?> typeReference = fieldRead.getVariable().getDeclaringType();
+                    if (allEntities.contains(typeReference.getSimpleName())) {
 
-                        addEntitiesSequenceAccess(typeDeclaration.getSimpleName(), "R");
+                        addEntitiesSequenceAccess(typeReference.getSimpleName(), "R");
 
                         // field type
                         String fieldType = fieldRead.getVariable().getType().toString();
@@ -410,20 +469,14 @@ public class SpringDataJPACollector extends SpoonCollector {
             }
 
             @Override
-            public <T> void visitCtAnnotationFieldAccess(CtAnnotationFieldAccess<T> annotationFieldAccess) {
-                super.visitCtAnnotationFieldAccess(annotationFieldAccess);
-            }
-
-            @Override
             public <T> void visitCtFieldWrite(CtFieldWrite<T> fieldWrite) {
                 super.visitCtFieldWrite(fieldWrite);
                 try {
                     // class that declares the field
-                    CtType<?> typeDeclaration = fieldWrite.getVariable().getDeclaringType().getTypeDeclaration();
-                    if (existsAnnotation(typeDeclaration.getAnnotations(), "Entity") ||
-                            existsAnnotation(typeDeclaration.getAnnotations(), "Embeddable")) {
+                    CtTypeReference<?> typeReference = fieldWrite.getVariable().getDeclaringType();
+                    if (allEntities.contains(typeReference.getSimpleName())) {
 
-                        addEntitiesSequenceAccess(typeDeclaration.getSimpleName(), "W");
+                        addEntitiesSequenceAccess(typeReference.getSimpleName(), "W");
 
                         // field type
                         String fieldType = fieldWrite.getVariable().getType().toString();
@@ -449,6 +502,99 @@ public class SpringDataJPACollector extends SpoonCollector {
         });
 
         methodStack.pop();
+    }
+
+    private String getTargetFromCall(CtInvocation calleeLocation) {
+        CtExpression targetExpression = calleeLocation.getTarget();
+        while (true) {
+            CtTypeReference type = targetExpression.getType();
+            if (allEntities.contains(type.getSimpleName())) {
+                return type.getSimpleName();
+            }
+            else {
+                if (targetExpression instanceof CtTargetedExpression) {
+                    targetExpression = ((CtTargetedExpression) targetExpression).getTarget();
+                }
+                else
+                    break;
+            }
+        }
+        return null;
+    }
+
+    private void registerDomainAccess(String targetName, CtAbstractInvocation calleeLocation) {
+        CtExecutableReference callee = calleeLocation.getExecutable();
+        String methodName = callee.getSimpleName();
+        String mode = "";
+        String returnType = "";
+        List<String> argTypes = new ArrayList<>();
+        if (methodName.startsWith("get") ||
+                methodName.startsWith("contains") ||
+                methodName.startsWith("equals") ||
+                methodName.startsWith("isEmpty") ||
+                methodName.startsWith("size") ||
+                methodName.startsWith("toArray") ||
+                methodName.contains("index")) {
+            mode = "R";
+            returnType = callee.getType().toString();
+        } else if (methodName.startsWith("set") ||
+                methodName.startsWith("add") ||
+                methodName.startsWith("remove") ||
+                methodName.startsWith("clear") ||
+                methodName.startsWith("replace") ||
+                methodName.startsWith("put")) {
+            mode = "W";
+
+            List<String> argumentTypes = parseArgumentTypes(calleeLocation);
+            argTypes.addAll(argumentTypes);
+        }
+
+        if (mode.equals("R")) {
+            addEntitiesSequenceAccess(targetName, mode);
+
+            for (String entityName : allEntities) {
+                if (returnType.contains(entityName)) {
+                    addEntitiesSequenceAccess(entityName, mode);
+                    return;
+                }
+            }
+        }
+        else if (mode.equals("W")) {
+            addEntitiesSequenceAccess(targetName, mode);
+            for (String entityName : allEntities) {
+                for (String argType : argTypes) {
+                    if (argType.contains(entityName)) {
+                        addEntitiesSequenceAccess(entityName, mode);
+                        return;
+                    }
+                }
+            }
+        }
+
+    }
+
+    private List<String> parseArgumentTypes(CtAbstractInvocation calleeLocation) {
+        List<String> types = new ArrayList<>();
+        List arguments = calleeLocation.getArguments();
+        for (Object arg : arguments) {
+            if (arg instanceof CtVariableAccess) {
+                CtTypeReference type = ((CtVariableAccess) arg).getType();
+                types.add(type.getSimpleName());
+            }
+        }
+        return types;
+    }
+
+    private boolean isCallToCollections(CtAbstractInvocation calleeLocation) {
+        CtTypeReference declaringType = calleeLocation.getExecutable().getDeclaringType();
+        Set superInterfaces = declaringType.getSuperInterfaces();
+        for (Object o : superInterfaces) {
+            CtTypeReference interfaceTypeReference = (CtTypeReference) o;
+            if (interfaceTypeReference.getSimpleName().contains("Collection") ||
+                    interfaceTypeReference.getSimpleName().contains("Map"))
+                return true;
+        }
+        return false;
     }
 
     private void registerRepositoryAccess(CtExecutableReference methodDeclaration) {

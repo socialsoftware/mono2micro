@@ -6,10 +6,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import spoon.Launcher;
 import spoon.reflect.code.CtAbstractInvocation;
-import spoon.reflect.declaration.CtAnnotation;
-import spoon.reflect.declaration.CtClass;
-import spoon.reflect.declaration.CtExecutable;
-import spoon.reflect.declaration.CtMethod;
+import spoon.reflect.declaration.*;
 import spoon.reflect.factory.Factory;
 import spoon.reflect.visitor.filter.TypeFilter;
 import java.io.FileWriter;
@@ -23,10 +20,13 @@ public abstract class SpoonCollector {
     private int controllerCount;
     private JsonObject callSequence;
 
+    // in FenixFramework: allEntities = all classes != _Base
+    // in JPA: allEntities = all @Entities @Embeddable @MappedSuperClass @XmlRootElement
     ArrayList<String> allEntities;
     HashSet<CtClass> controllers;
     Map<String, List<CtAbstractInvocation>> methodCallees;
     JsonArray entitiesSequence;
+    Map<String, CtType> interfaces;
 
     Factory factory;
     Launcher launcher;
@@ -39,6 +39,7 @@ public abstract class SpoonCollector {
         controllers = new HashSet<>();
         allEntities = new ArrayList<>();
         methodCallees = new HashMap<>();
+        interfaces = new HashMap<>();
         launcher = new Launcher();
         launcher.addInputResource(projectPath);
     }

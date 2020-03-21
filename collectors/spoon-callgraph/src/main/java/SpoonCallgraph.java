@@ -12,7 +12,8 @@ public class SpoonCallgraph {
         System.out.println("Insert project path:");
         Scanner scanner = new Scanner(System.in);
 //        String path = scanner.nextLine();
-        String path = "/home/samuel/ProjetoTese/repos/petclinic-DataJPA/src/main/java";
+//        String path = "/home/samuel/ProjetoTese/repos/petclinic-DataJPA/src/main/java";
+        String path = "/home/samuel/ProjetoTese/repos/spring-framework-petclinic/src/main/java";
 //        String path = "/home/samuel/ProjetoTese/repos/edition-master/edition-ldod";
 //        String path = "/home/samuel/ProjetoTese/repos/quizzes-tutor/backend/src/main/java";
 //        String path = "/home/samuel/ProjetoTese/repos/HibernateTest/src/main/java";
