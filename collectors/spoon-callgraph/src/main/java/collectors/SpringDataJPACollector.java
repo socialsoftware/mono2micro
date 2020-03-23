@@ -2,7 +2,6 @@ package collectors;
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
-import com.google.gson.JsonArray;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
@@ -12,12 +11,9 @@ import spoon.reflect.code.*;
 import spoon.reflect.declaration.*;
 import spoon.reflect.reference.CtExecutableReference;
 import spoon.reflect.reference.CtTypeReference;
-import spoon.reflect.visitor.CtInheritanceScanner;
 import spoon.reflect.visitor.CtScanner;
-import spoon.reflect.visitor.filter.TypeFilter;
 import spoon.support.reflect.code.CtInvocationImpl;
 import spoon.support.reflect.declaration.CtAnnotationImpl;
-import spoon.support.reflect.declaration.CtMethodImpl;
 import util.Classes;
 import util.Query;
 import util.Repository;
@@ -104,7 +100,7 @@ public class SpringDataJPACollector extends SpoonCollector {
 
         allEntities.sort((string1, string2) -> Integer.compare(string2.length(), string1.length()));  //Longer length first
 
-        // 2nd iteration, to retrieve JPA related information
+        // 2nd iteration, to retrieve JPA related information and interface explicit implementations
         for(CtType<?> clazz : factory.Class().getAll()) {
             Set<CtTypeReference<?>> superInterfaces = clazz.getSuperInterfaces();
             for (CtTypeReference ctTypeReference : superInterfaces) {
@@ -122,7 +118,7 @@ public class SpringDataJPACollector extends SpoonCollector {
     }
 
     private Repository checkIfClassIsARepository(CtType<?> clazz, List<CtAnnotation<? extends Annotation>> clazzAnnotations) {
-        // Spring Data JPA Repository
+        // Spring Data JPA Repositories extend *Repository classes from those packages
         for (Object o : clazz.getSuperInterfaces().toArray()) {
             CtTypeReference ctInterface = (CtTypeReference) o;
             String packageName = ctInterface.getPackage().getSimpleName();
@@ -184,6 +180,7 @@ public class SpringDataJPACollector extends SpoonCollector {
                 Classes classes = new Classes();
                 classes.addClass(clazz.getSimpleName());
 
+                // @ManyToMany fields won't be HashMaps, thus, get(0), and the Type will always be an Entity
                 CtType fieldType = field.getType().getActualTypeArguments().get(0).getTypeDeclaration();
                 classes.addClass(fieldType.getSimpleName());
 
@@ -339,46 +336,6 @@ public class SpringDataJPACollector extends SpoonCollector {
         return tableName;
     }
 
-//    @Override
-//    public void methodCallDFS(CtExecutable callerMethod, Stack<String> methodStack) {
-//        methodStack.push(callerMethod.toString());
-//
-//        if (!methodCallees.containsKey(callerMethod.toString())) {
-//            methodCallees.put(callerMethod.toString(), getCalleesOf(callerMethod));
-//        }
-//
-//        for (CtAbstractInvocation calleeLocation : methodCallees.get(callerMethod.toString())) {
-//
-//            try {
-//                //System.out.println(calleeLocation.getExecutable().getSimpleName());
-//                if (calleeLocation == null)
-//                    continue;
-//                else if (calleeLocation.getExecutable().getDeclaringType() == null) {
-//                    // Non declared method. SpringFramework Repository default query
-//                    // extends JpaRepository
-//                    String targetClassName = ((CtInvocationImpl) calleeLocation).getTarget().getType().getSimpleName();
-//                    if (isRepository(targetClassName)) {
-//                        registerSpringDataRepositoryAccess(targetClassName, calleeLocation.getExecutable().getSimpleName());
-//                    }
-//                }
-//                else if (isRepository(calleeLocation.getExecutable().getDeclaringType().getSimpleName())) {
-//                    registerRepositoryAccess(calleeLocation.getExecutable());
-//                }
-//                // acesso a um field de uma entidade persistido?
-//                    // register domain access
-//                else if (allEntities.contains(calleeLocation.getExecutable().getDeclaringType().getSimpleName())) {
-//                    if (!methodStack.contains(calleeLocation.getExecutable().getExecutableDeclaration().toString())) {
-//                        methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), methodStack);
-//                    }
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        methodStack.pop();
-//    }
-
-
     @Override
     public void methodCallDFS(CtExecutable callerMethod, Stack<String> methodStack) {
         methodStack.push(callerMethod.toString());
@@ -392,36 +349,13 @@ public class SpringDataJPACollector extends SpoonCollector {
                     try {
                         CtMethod calleeLocationMethod = (CtMethod) calleeLocation.getExecutable().getExecutableDeclaration();
                         if (calleeLocationMethod.isAbstract()) {
-                            CtType interfaceImplType = interfaces.get(calleeLocationMethod.getDeclaringType().getSimpleName());
-                            if (interfaceImplType != null) {
-                                // calling an abstract method declared in an interface
-                                List methodsByName = interfaceImplType.getMethodsByName(calleeLocation.getExecutable().getSimpleName());
-                                if (methodsByName.size() > 0) {
-                                    // redirect pointer to the explicit method
-                                    Object explicitMethodObject = methodsByName.get(0);
-                                    CtMethod calleeLocationExplicit = (CtMethod) explicitMethodObject;
-                                    CtExecutableReference reference = calleeLocationExplicit.getReference();
-                                    calleeLocation.setExecutable(reference);
-                                }
-
-                                // replace the target of the call by the explicit target
-                                CtConstructorCall call = factory.Core().createConstructorCall();
-                                call.setType(factory.Core().createTypeReference().setSimpleName(interfaceImplType.getSimpleName()));
-                                ((CtInvocation) calleeLocation).setTarget(call);
-
-                                if (methodsByName.size() == 0) {
-                                    // May be a SpringDataJPA implicit method access
-                                    // unfortunately we cant get reference a to those methods so we have to duplicate code
-                                    String targetClassName = ((CtInvocation) calleeLocation).getTarget().getType().getSimpleName();
-                                    if (isRepository(targetClassName)) {
-                                        registerSpringDataRepositoryAccess(targetClassName, calleeLocation.getExecutable().getSimpleName());
-                                    }
-                                    // end of call chain
-                                    return;
-                                }
-                            }
+                            boolean alreadyProcessed = updateCalleeLocationWithExplicitImplementation(calleeLocation, calleeLocationMethod);
+                            if (alreadyProcessed)
+                                return;
                         }
-                    } catch(Exception castErrorProbably) {}
+                    } catch(Exception castError) {
+                        // ConstructorCall, ignore
+                    }
 
                     if (calleeLocation.getExecutable().getDeclaringType() == null) {
                         // Non declared method. SpringFramework Repository default query
@@ -435,9 +369,10 @@ public class SpringDataJPACollector extends SpoonCollector {
                         registerRepositoryAccess(calleeLocation.getExecutable());
                     }
                     else if (isCallToCollections(calleeLocation)) {
-                        String targetTypeName = getTargetFromCall((CtInvocation) calleeLocation);
-                        if (targetTypeName != null)
-                            registerDomainAccess(targetTypeName, calleeLocation);
+                        inspectTargetFromCall((CtInvocation) calleeLocation);
+                        if (collectionEntityAccess && !collectionTransientField) {
+                            registerDomainAccess(collectionDeclaringTypeName, collectionFieldAccessedType, (CtInvocation) calleeLocation);
+                        }
                     }
                     else if (!methodStack.contains(calleeLocation.getExecutable().getExecutableDeclaration().toString())) {
                         methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), methodStack);
@@ -448,44 +383,49 @@ public class SpringDataJPACollector extends SpoonCollector {
                 }
             }
 
-            @Override
-            public <T> void visitCtFieldRead(CtFieldRead<T> fieldRead) {
-                super.visitCtFieldRead(fieldRead);
+            private <T> void visitCtFieldAccess(CtFieldAccess<T> fieldAccess, String mode) {
                 try {
                     // class that declares the field
-                    CtTypeReference<?> typeReference = fieldRead.getVariable().getDeclaringType();
-                    if (allEntities.contains(typeReference.getSimpleName())) {
+                    String declaringTypeName = fieldAccess.getVariable().getDeclaringType().getSimpleName();
+                    if (allEntities.contains(declaringTypeName)) {
 
-                        addEntitiesSequenceAccess(typeReference.getSimpleName(), "R");
+                        addEntitiesSequenceAccess(declaringTypeName, mode);
 
-                        // field type
-                        String fieldType = fieldRead.getVariable().getType().toString();
-                        for (String entityName : allEntities) {
-                            if (fieldType.contains(entityName))
-                                addEntitiesSequenceAccess(entityName, "R");
+                        // field read
+                        CtField<T> fieldDeclaration = fieldAccess.getVariable().getFieldDeclaration();
+                        if (isTransient(fieldDeclaration)) {
+                            return;
+                        }
+                        else {
+                            CtTypeReference<T> fieldType = fieldDeclaration.getType();
+                            List<CtTypeReference<?>> actualTypeArguments = fieldType.getActualTypeArguments();
+                            if (actualTypeArguments.size() > 0) {
+                                for (CtTypeReference ctTypeReference : actualTypeArguments) {
+                                    if (allEntities.contains(ctTypeReference.getSimpleName())) {
+                                        addEntitiesSequenceAccess(ctTypeReference.getSimpleName(), mode);
+                                    }
+                                }
+                            }
+                            else {
+                                if (allEntities.contains(fieldType.getSimpleName())) {
+                                    addEntitiesSequenceAccess(fieldType.getSimpleName(), mode);
+                                }
+                            }
                         }
                     }
                 } catch (Exception ignored) {}
             }
 
             @Override
+            public <T> void visitCtFieldRead(CtFieldRead<T> fieldRead) {
+                super.visitCtFieldRead(fieldRead);
+                visitCtFieldAccess(fieldRead, "R");
+            }
+
+            @Override
             public <T> void visitCtFieldWrite(CtFieldWrite<T> fieldWrite) {
                 super.visitCtFieldWrite(fieldWrite);
-                try {
-                    // class that declares the field
-                    CtTypeReference<?> typeReference = fieldWrite.getVariable().getDeclaringType();
-                    if (allEntities.contains(typeReference.getSimpleName())) {
-
-                        addEntitiesSequenceAccess(typeReference.getSimpleName(), "W");
-
-                        // field type
-                        String fieldType = fieldWrite.getVariable().getType().toString();
-                        for (String entityName : allEntities) {
-                            if (fieldType.contains(entityName))
-                                addEntitiesSequenceAccess(entityName, "W");
-                        }
-                    }
-                } catch (Exception ignored) {}
+                visitCtFieldAccess(fieldWrite, "W");
             }
 
             @Override
@@ -504,29 +444,151 @@ public class SpringDataJPACollector extends SpoonCollector {
         methodStack.pop();
     }
 
-    private String getTargetFromCall(CtInvocation calleeLocation) {
-        CtExpression targetExpression = calleeLocation.getTarget();
-        while (true) {
-            CtTypeReference type = targetExpression.getType();
-            if (allEntities.contains(type.getSimpleName())) {
-                return type.getSimpleName();
+    /*
+    * Return true = we reached a call to a SpringData Repository and we processed it. End of this call chain
+    * was reached so the methodCallDFS function does not have to proceed (also if it proceeded it would
+    * count the repository access twice).
+    * Return false = either explicit implementation was found and replaced the calleeLocation of the
+    * methodCallDFS function or implementation was not found.
+    * */
+    private boolean updateCalleeLocationWithExplicitImplementation(CtAbstractInvocation calleeLocation, CtMethod calleeLocationMethod) {
+        // methodCallDFS calleeLocation will be changed by reference
+        CtType interfaceImplType = interfaces.get(calleeLocationMethod.getDeclaringType().getSimpleName());
+        if (interfaceImplType != null) {
+            // calling an abstract method declared in an interface
+            List methodsByName = interfaceImplType.getMethodsByName(calleeLocation.getExecutable().getSimpleName());
+            if (methodsByName.size() > 0) {
+                // redirect pointer to the explicit method
+                Object explicitMethodObject = methodsByName.get(0);
+                CtMethod calleeLocationExplicit = (CtMethod) explicitMethodObject;
+                CtExecutableReference reference = calleeLocationExplicit.getReference();
+                calleeLocation.setExecutable(reference);
             }
-            else {
-                if (targetExpression instanceof CtTargetedExpression) {
-                    targetExpression = ((CtTargetedExpression) targetExpression).getTarget();
+
+            // replace the target of the call by the explicit target
+            CtConstructorCall call = factory.Core().createConstructorCall();
+            call.setType(factory.Core().createTypeReference().setSimpleName(interfaceImplType.getSimpleName()));
+            ((CtInvocation) calleeLocation).setTarget(call);
+
+            if (methodsByName.size() == 0) {
+                // May be a SpringDataJPA implicit method access
+                // unfortunately we cant get reference a to those methods so we have to duplicate code
+                String targetClassName = ((CtInvocation) calleeLocation).getTarget().getType().getSimpleName();
+                if (isRepository(targetClassName)) {
+                    registerSpringDataRepositoryAccess(targetClassName, calleeLocation.getExecutable().getSimpleName());
                 }
-                else
-                    break;
+                // end of call chain
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
-    private void registerDomainAccess(String targetName, CtAbstractInvocation calleeLocation) {
+    private <T> boolean isTransient(CtField<T> fieldDeclaration) {
+        List<CtAnnotation<? extends Annotation>> annotations = fieldDeclaration.getAnnotations();
+        if (existsAnnotation(annotations, "Transient") ||
+                hasModifier(fieldDeclaration, "TRANSIENT") ||
+                hasModifier(fieldDeclaration, "STATIC") ||
+                hasModifier(fieldDeclaration, "FINAL")) {
+            return true;
+        }
+        return false;
+    }
+
+    private <T> boolean hasModifier(CtField<T> fieldDeclaration, String modifierName) {
+        Set<ModifierKind> modifiers = fieldDeclaration.getModifiers();
+        for (ModifierKind mk : modifiers) {
+            if (mk.name().equals(modifierName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /*
+     * When we have a call to a collection method (add/get/etc), the target of that call
+     * must be either a Collection variable or a Collection field.
+     * We are visiting the target until we reach the field/variable that
+     * is being accessed and that may be "disguised" inside an invocation call.
+     * e.g. Class.getListField().add(value)
+     * */
+    // TODO test with getListField with more than one statement
+    private void inspectTargetFromCall(CtInvocation calleeLocation) {
+        collectionEntityAccess = false;
+        collectionTransientField = false;
+        collectionFieldAccessedType = null;
+        collectionDeclaringTypeName = null;
+        CtExpression targetExpression = calleeLocation.getTarget();
+        visitTarget(targetExpression);
+    }
+
+    private boolean collectionEntityAccess = false;
+    private boolean collectionTransientField = false;
+    private CtTypeReference collectionFieldAccessedType = null;
+    private String collectionDeclaringTypeName = null;
+    // TODO correct
+    // Array, lambda, etc, não é só invocation
+    private void visitTarget(CtTypedElement targetExpression) {
+        targetExpression.accept(new CtScanner() {
+            @Override
+            public <T> void visitCtInvocation(CtInvocation<T> invocation) {
+                super.visitCtInvocation(invocation);
+                visitTarget(invocation.getExecutable().getExecutableDeclaration());
+            }
+
+            @Override
+            public <T> void visitCtFieldRead(CtFieldRead<T> fieldRead) {
+                super.visitCtFieldRead(fieldRead);
+                CtField<T> fieldDeclaration = fieldRead.getVariable().getFieldDeclaration();
+                String declaringTypeName = fieldDeclaration.getDeclaringType().getSimpleName();
+
+                if (isTransient(fieldDeclaration)) {
+                    collectionTransientField = true;
+                }
+                else {
+                    collectionTransientField = false;
+                }
+
+                for (String entityName : allEntities) {
+                    if (declaringTypeName.equals(entityName)) {
+                        collectionEntityAccess = true;
+                        collectionFieldAccessedType = fieldDeclaration.getType();
+                        collectionDeclaringTypeName = declaringTypeName;
+                        return;
+                    }
+                }
+                collectionEntityAccess = false;
+                collectionFieldAccessedType = null;
+                collectionDeclaringTypeName = null;
+            }
+
+            // TODO test with interface variable
+            @Override
+            public <T> void visitCtVariableRead(CtVariableRead<T> variableRead) {
+                super.visitCtVariableRead(variableRead);
+                String declaringClassName = variableRead.getVariable().getDeclaration().getParent(CtClass.class).getSimpleName();
+                for (String entityName : allEntities) {
+                    if (declaringClassName.equals(entityName)) {
+                        collectionEntityAccess = true;
+                        collectionFieldAccessedType = variableRead.getVariable().getType();
+                        collectionDeclaringTypeName = declaringClassName;
+                        collectionTransientField = false;
+                        return;
+                    }
+                }
+                collectionEntityAccess = false;
+                collectionFieldAccessedType = null;
+                collectionDeclaringTypeName = null;
+                collectionTransientField = false;
+            }
+        });
+    }
+
+    private void registerDomainAccess(String declaringTypeName, CtTypeReference fieldAccessedType, CtInvocation calleeLocation) {
         CtExecutableReference callee = calleeLocation.getExecutable();
         String methodName = callee.getSimpleName();
         String mode = "";
-        String returnType = "";
+        CtTypeReference returnType = null;
         List<String> argTypes = new ArrayList<>();
         if (methodName.startsWith("get") ||
                 methodName.startsWith("contains") ||
@@ -536,8 +598,9 @@ public class SpringDataJPACollector extends SpoonCollector {
                 methodName.startsWith("toArray") ||
                 methodName.contains("index")) {
             mode = "R";
-            returnType = callee.getType().toString();
-        } else if (methodName.startsWith("set") ||
+            returnType = fieldAccessedType;
+        }
+        else if (methodName.startsWith("set") ||
                 methodName.startsWith("add") ||
                 methodName.startsWith("remove") ||
                 methodName.startsWith("clear") ||
@@ -545,40 +608,47 @@ public class SpringDataJPACollector extends SpoonCollector {
                 methodName.startsWith("put")) {
             mode = "W";
 
+            // TODO check getTopics().clear()
             List<String> argumentTypes = parseArgumentTypes(calleeLocation);
             argTypes.addAll(argumentTypes);
         }
 
+        // class access
+        addEntitiesSequenceAccess(declaringTypeName, mode);
+        // field access
         if (mode.equals("R")) {
-            addEntitiesSequenceAccess(targetName, mode);
-
-            for (String entityName : allEntities) {
-                if (returnType.contains(entityName)) {
-                    addEntitiesSequenceAccess(entityName, mode);
-                    return;
+            List<CtTypeReference<?>> actualTypeArguments = fieldAccessedType.getActualTypeArguments();
+            if (actualTypeArguments.size() > 0) {
+                for (CtTypeReference ctTypeReference : actualTypeArguments) {
+                    if (allEntities.contains(ctTypeReference.getSimpleName())) {
+                        addEntitiesSequenceAccess(ctTypeReference.getSimpleName(), mode);
+                    }
+                }
+            }
+            else {
+                if (allEntities.contains(fieldAccessedType.getSimpleName())) {
+                    addEntitiesSequenceAccess(fieldAccessedType.getSimpleName(), mode);
                 }
             }
         }
         else if (mode.equals("W")) {
-            addEntitiesSequenceAccess(targetName, mode);
-            for (String entityName : allEntities) {
-                for (String argType : argTypes) {
-                    if (argType.contains(entityName)) {
+            for (String argType : argTypes) {
+                for (String entityName : allEntities) {
+                    if (argType.equals(entityName)) {
                         addEntitiesSequenceAccess(entityName, mode);
-                        return;
+                        break;
                     }
                 }
             }
         }
-
     }
 
     private List<String> parseArgumentTypes(CtAbstractInvocation calleeLocation) {
         List<String> types = new ArrayList<>();
         List arguments = calleeLocation.getArguments();
         for (Object arg : arguments) {
-            if (arg instanceof CtVariableAccess) {
-                CtTypeReference type = ((CtVariableAccess) arg).getType();
+            if (arg instanceof CtTypedElement) {
+                CtTypeReference type = ((CtTypedElement) arg).getType();
                 types.add(type.getSimpleName());
             }
         }
@@ -586,10 +656,11 @@ public class SpringDataJPACollector extends SpoonCollector {
     }
 
     private boolean isCallToCollections(CtAbstractInvocation calleeLocation) {
+        // TODO ArrayList<T> arrayList = new ArrayList<>(); won't have superinterfaces
         CtTypeReference declaringType = calleeLocation.getExecutable().getDeclaringType();
         Set superInterfaces = declaringType.getSuperInterfaces();
-        for (Object o : superInterfaces) {
-            CtTypeReference interfaceTypeReference = (CtTypeReference) o;
+        for (Object interfaceO : superInterfaces) {
+            CtTypeReference interfaceTypeReference = (CtTypeReference) interfaceO;
             if (interfaceTypeReference.getSimpleName().contains("Collection") ||
                     interfaceTypeReference.getSimpleName().contains("Map"))
                 return true;
@@ -623,11 +694,16 @@ public class SpringDataJPACollector extends SpoonCollector {
         }
         else {
             Repository r = getRepositoryFromClassName(methodDeclaration.getDeclaringType().getSimpleName());
-            String typeClassName = r.getTypeClassName(); // never null
-            // Spring Data first tries to resolve calls to repository methods to a named query, starting with the simple name of the configured domain class, followed by the method name separated by a dot.
+            String typeClassName = r.getTypeClassName(); // will never be null
+
+            // Spring Data first tries to resolve calls to repository methods to a named query, starting with
+            // the simple name of the configured domain class, followed by the method name separated by a dot.
             Query q = getNamedQuery(typeClassName + "." + methodDeclaration.getSimpleName());
-            if (q == null)
+
+            if (q == null) {
                 registerSpringDataRepositoryAccess(methodDeclaration.getDeclaringType().getSimpleName(), methodDeclaration.getSimpleName());
+            }
+
             else {
                 parseHqlQuery(q.getValue());
             }
@@ -735,10 +811,7 @@ public class SpringDataJPACollector extends SpoonCollector {
             for (Repository r : repositories) {
                 if (r.getRepositoryClassName().equals(repositoryClassName)) {
                     String typeClassName = r.getTypeClassName();
-                    JsonArray entityAccess = new JsonArray();
-                    entityAccess.add(typeClassName);
-                    entityAccess.add(mode);
-                    entitiesSequence.add(entityAccess);
+                    addEntitiesSequenceAccess(typeClassName, mode);
                     return;
                 }
             }

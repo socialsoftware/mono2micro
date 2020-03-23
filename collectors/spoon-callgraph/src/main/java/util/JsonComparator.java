@@ -9,37 +9,35 @@ import java.util.Map;
 
 public class JsonComparator {
 
-    private static String SPOONCALLGRAPHPATH = System.getProperty("user.dir") + "/" + "spoon_callSequence_FF.json";
-    private static String SPOON2 = System.getProperty("user.dir") + "/" + "spoon_callSequence_edition-ldod.json";
-    //public static String JDTCALLGRAPHPATH = System.getProperty("user.dir") + "/../../data/icsa2020/collection/plugin-eclipse/ldod.json";
-    public static String JDTCALLGRAPHPATH = "/home/samuel/ProjetoTese/edition-ldod_callSequence_eclipse.json";
+    private static String TREE1 = System.getProperty("user.dir") + "/" + "spoon_callSequence_backend.json";
+    private static String TREE2 = System.getProperty("user.dir") + "/" + "spoon_callSequence_quizzes_save.json";
 
     public static void main(String[] args) throws FileNotFoundException {
         Gson gson = new Gson();
 
-        LinkedTreeMap tree1 = (LinkedTreeMap) gson.fromJson(new FileReader(SPOON2), Object.class);
-        LinkedTreeMap tree2 = (LinkedTreeMap) gson.fromJson(new FileReader(SPOONCALLGRAPHPATH), Object.class);
+        LinkedTreeMap tree1 = (LinkedTreeMap) gson.fromJson(new FileReader(TREE1), Object.class);
+        LinkedTreeMap tree2 = (LinkedTreeMap) gson.fromJson(new FileReader(TREE2), Object.class);
 
-        for (Object jdtElement : tree1.entrySet()) {
-            Map.Entry<String, ArrayList> jdtElement1 = (Map.Entry<String, ArrayList>) jdtElement;
+        for (Object tree1ElementObject : tree1.entrySet()) {
+            Map.Entry<String, ArrayList> tree1Element1 = (Map.Entry<String, ArrayList>) tree1ElementObject;
 
             boolean found = false;
-            System.out.println(jdtElement1.getKey());
+            System.out.println(tree1Element1.getKey());
 
-            for (Object spoonElement : tree2.entrySet()) {
-                Map.Entry<String, ArrayList> spoonElement1 = (Map.Entry<String, ArrayList>) spoonElement;
+            for (Object tree2ElementObject : tree2.entrySet()) {
+                Map.Entry<String, ArrayList> tree2Element = (Map.Entry<String, ArrayList>) tree2ElementObject;
 
-                if (jdtElement1.getKey().equals(spoonElement1.getKey())) {
+                if (tree1Element1.getKey().equals(tree2Element.getKey())) {
                     found = true;
-                    if (jdtElement1.getValue().size() != spoonElement1.getValue().size()) {
-                        System.out.println("Size\t - " + jdtElement1.getValue().size() + "/" + spoonElement1.getValue().size() + "\t" + jdtElement1.getKey());
+                    if (tree1Element1.getValue().size() != tree2Element.getValue().size()) {
+                        System.out.println("Size\t - " + tree1Element1.getValue().size() + "/" + tree2Element.getValue().size() + "\t" + tree1Element1.getKey());
                     }
                     else {
-                        if (!jdtElement1.getValue().equals(spoonElement1.getValue())) {
-                            System.out.println("Content\t - " + jdtElement1.getValue().size() + "\t" + jdtElement1.getKey());
+                        if (!tree1Element1.getValue().equals(tree2Element.getValue())) {
+                            System.out.println("Content\t - " + tree1Element1.getValue().size() + "\t" + tree1Element1.getKey());
                             int i = 0;
-                            for (Object a : jdtElement1.getValue()) {
-                                Object b = spoonElement1.getValue().get(i);
+                            for (Object a : tree1Element1.getValue()) {
+                                Object b = tree2Element.getValue().get(i);
                                 ArrayList a1 = (ArrayList) a;
                                 ArrayList b1 = (ArrayList) b;
 

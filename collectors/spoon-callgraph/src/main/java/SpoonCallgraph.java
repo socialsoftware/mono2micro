@@ -13,9 +13,9 @@ public class SpoonCallgraph {
         Scanner scanner = new Scanner(System.in);
 //        String path = scanner.nextLine();
 //        String path = "/home/samuel/ProjetoTese/repos/petclinic-DataJPA/src/main/java";
-        String path = "/home/samuel/ProjetoTese/repos/spring-framework-petclinic/src/main/java";
+//        String path = "/home/samuel/ProjetoTese/repos/spring-framework-petclinic/src/main/java";
 //        String path = "/home/samuel/ProjetoTese/repos/edition-master/edition-ldod";
-//        String path = "/home/samuel/ProjetoTese/repos/quizzes-tutor/backend/src/main/java";
+        String path = "/home/samuel/ProjetoTese/repos/quizzes-tutor/backend/src/main/java";
 //        String path = "/home/samuel/ProjetoTese/repos/HibernateTest/src/main/java";
         System.out.println("Insert project framework:");
         System.out.println("[1] FénixFramework");
