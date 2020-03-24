@@ -29,6 +29,14 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizQuestion",
       "R"
     ],
@@ -38,6 +46,14 @@
     ],
     [
       "Question",
+      "R"
+    ],
+    [
+      "Question",
+      "W"
+    ],
+    [
+      "Question",
       "W"
     ],
     [
@@ -194,18 +210,6 @@
     ],
     [
       "Question",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "QuizQuestion",
       "R"
     ],
     [
@@ -226,6 +230,50 @@
     ],
     [
       "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ],
     [
@@ -315,6 +363,10 @@
     [
       "Question",
       "W"
+    ],
+    [
+      "Question",
+      "W"
     ]
   ],
   "QuestionController.removeQuestion": [
@@ -339,7 +391,7 @@
       "R"
     ],
     [
-      "QuizQuestion",
+      "Quiz",
       "R"
     ],
     [
@@ -357,6 +409,18 @@
     [
       "QuizQuestion",
       "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Question",
+      ""
     ],
     [
       "QuizQuestion",
@@ -395,10 +459,6 @@
       "W"
     ],
     [
-      "Question",
-      "W"
-    ],
-    [
       "Course",
       "W"
     ],
@@ -424,10 +484,6 @@
     ],
     [
       "Question",
-      "W"
-    ],
-    [
-      "Question",
       "R"
     ],
     [
@@ -436,10 +492,6 @@
     ],
     [
       "Question",
-      "W"
-    ],
-    [
-      "Topic",
       "W"
     ],
     [
@@ -469,6 +521,14 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizQuestion",
       "R"
     ],
@@ -478,6 +538,10 @@
     ],
     [
       "Question",
+      "R"
+    ],
+    [
+      "Question",
       "W"
     ],
     [
@@ -546,18 +610,6 @@
     ],
     [
       "Question",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "QuizQuestion",
       "R"
     ],
     [
@@ -578,6 +630,50 @@
     ],
     [
       "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ],
     [
@@ -712,10 +808,6 @@
     ],
     [
       "Question",
-      "W"
-    ],
-    [
-      "Question",
       "R"
     ],
     [
@@ -756,10 +848,6 @@
     ],
     [
       "Topic",
-      "W"
-    ],
-    [
-      "Question",
       "W"
     ]
   ],
@@ -829,6 +917,10 @@
     [
       "Assessment",
       "W"
+    ],
+    [
+      "Assessment",
+      "W"
     ]
   ],
   "AssessmentController.createAssessment": [
@@ -882,50 +974,6 @@
     ],
     [
       "Topic",
-      "W"
-    ],
-    [
-      "TopicConjunction",
-      "W"
-    ],
-    [
-      "TopicConjunction",
-      "R"
-    ],
-    [
-      "Topic",
-      "R"
-    ],
-    [
-      "TopicConjunction",
-      "R"
-    ],
-    [
-      "Topic",
-      "R"
-    ],
-    [
-      "TopicConjunction",
-      "R"
-    ],
-    [
-      "Topic",
-      "R"
-    ],
-    [
-      "TopicConjunction",
-      "W"
-    ],
-    [
-      "Topic",
-      "W"
-    ],
-    [
-      "Topic",
-      "R"
-    ],
-    [
-      "TopicConjunction",
       "R"
     ],
     [
@@ -934,6 +982,58 @@
     ],
     [
       "TopicConjunction",
+      "R"
+    ],
+    [
+      "Topic",
+      "R"
+    ],
+    [
+      "TopicConjunction",
+      "R"
+    ],
+    [
+      "Topic",
+      "R"
+    ],
+    [
+      "TopicConjunction",
+      "R"
+    ],
+    [
+      "Topic",
+      "R"
+    ],
+    [
+      "TopicConjunction",
+      "W"
+    ],
+    [
+      "Topic",
+      "W"
+    ],
+    [
+      "Topic",
+      "R"
+    ],
+    [
+      "TopicConjunction",
+      "R"
+    ],
+    [
+      "Topic",
+      "R"
+    ],
+    [
+      "Topic",
+      "W"
+    ],
+    [
+      "TopicConjunction",
+      "W"
+    ],
+    [
+      "Assessment",
       "W"
     ],
     [
@@ -957,6 +1057,10 @@
       "W"
     ],
     [
+      "Course",
+      "W"
+    ],
+    [
       "CourseExecution",
       "R"
     ],
@@ -981,6 +1085,10 @@
       "W"
     ],
     [
+      "Topic",
+      "W"
+    ],
+    [
       "TopicConjunction",
       "W"
     ],
@@ -1006,6 +1114,10 @@
     ],
     [
       "TopicConjunction",
+      "R"
+    ],
+    [
+      "Topic",
       "R"
     ],
     [
@@ -1069,7 +1181,15 @@
       "R"
     ],
     [
+      "Assessment",
+      "R"
+    ],
+    [
       "TopicConjunction",
+      "R"
+    ],
+    [
+      "Topic",
       "R"
     ]
   ],
@@ -1080,6 +1200,10 @@
     ],
     [
       "CourseExecution",
+      "R"
+    ],
+    [
+      "Assessment",
       "R"
     ],
     [
@@ -1111,6 +1235,10 @@
       "R"
     ],
     [
+      "Topic",
+      "R"
+    ],
+    [
       "Assessment",
       "R"
     ],
@@ -1119,11 +1247,11 @@
       "R"
     ],
     [
-      "Assessment",
-      "W"
+      "Topic",
+      "R"
     ],
     [
-      "TopicConjunction",
+      "Assessment",
       "W"
     ],
     [
@@ -1150,10 +1278,18 @@
     ],
     [
       "Assessment",
+      "W"
+    ],
+    [
+      "Assessment",
       "R"
     ],
     [
       "TopicConjunction",
+      "R"
+    ],
+    [
+      "Topic",
       "R"
     ],
     [
@@ -1210,63 +1346,11 @@
     ],
     [
       "Topic",
-      "W"
-    ],
-    [
-      "TopicConjunction",
-      "W"
-    ],
-    [
-      "TopicConjunction",
-      "R"
-    ],
-    [
-      "Topic",
-      "R"
-    ],
-    [
-      "TopicConjunction",
-      "R"
-    ],
-    [
-      "Topic",
-      "R"
-    ],
-    [
-      "TopicConjunction",
-      "R"
-    ],
-    [
-      "Topic",
-      "R"
-    ],
-    [
-      "TopicConjunction",
-      "W"
-    ],
-    [
-      "Topic",
-      "W"
-    ],
-    [
-      "Topic",
-      "R"
-    ],
-    [
-      "TopicConjunction",
       "R"
     ],
     [
       "Topic",
       "W"
-    ],
-    [
-      "TopicConjunction",
-      "W"
-    ],
-    [
-      "Topic",
-      "R"
     ],
     [
       "TopicConjunction",
@@ -1310,6 +1394,10 @@
     ],
     [
       "Topic",
+      "R"
+    ],
+    [
+      "Topic",
       "W"
     ],
     [
@@ -1317,6 +1405,10 @@
       "W"
     ],
     [
+      "Topic",
+      "R"
+    ],
+    [
       "TopicConjunction",
       "R"
     ],
@@ -1354,6 +1446,58 @@
     ],
     [
       "TopicConjunction",
+      "R"
+    ],
+    [
+      "Topic",
+      "R"
+    ],
+    [
+      "Topic",
+      "W"
+    ],
+    [
+      "TopicConjunction",
+      "R"
+    ],
+    [
+      "Topic",
+      "R"
+    ],
+    [
+      "TopicConjunction",
+      "R"
+    ],
+    [
+      "Topic",
+      "R"
+    ],
+    [
+      "TopicConjunction",
+      "R"
+    ],
+    [
+      "Topic",
+      "R"
+    ],
+    [
+      "TopicConjunction",
+      "W"
+    ],
+    [
+      "Topic",
+      "W"
+    ],
+    [
+      "Topic",
+      "R"
+    ],
+    [
+      "TopicConjunction",
+      "R"
+    ],
+    [
+      "Topic",
       "R"
     ],
     [
@@ -1373,6 +1517,10 @@
       "R"
     ],
     [
+      "Topic",
+      "R"
+    ],
+    [
       "Assessment",
       "W"
     ],
@@ -1406,6 +1554,10 @@
     ],
     [
       "TopicConjunction",
+      "R"
+    ],
+    [
+      "Topic",
       "R"
     ],
     [
@@ -1469,7 +1621,15 @@
       "R"
     ],
     [
+      "Assessment",
+      "R"
+    ],
+    [
       "TopicConjunction",
+      "R"
+    ],
+    [
+      "Topic",
       "R"
     ]
   ],
@@ -1492,6 +1652,26 @@
     ],
     [
       "Course",
+      "W"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
       "R"
     ],
     [
@@ -1500,6 +1680,146 @@
     ],
     [
       "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "CourseExecution",
+      "R"
+    ],
+    [
+      "CourseExecution",
+      "R"
+    ],
+    [
+      "CourseExecution",
+      "W"
+    ],
+    [
+      "Course",
+      "W"
+    ],
+    [
+      "CourseExecution",
+      "W"
+    ],
+    [
+      "Course",
+      "W"
+    ],
+    [
+      "CourseExecution",
+      "W"
+    ],
+    [
+      "CourseExecution",
+      "W"
+    ],
+    [
+      "CourseExecution",
+      "W"
+    ],
+    [
+      "CourseExecution",
+      "W"
+    ],
+    [
+      "Course",
+      "W"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "Course",
+      "W"
+    ],
+    [
+      "CourseExecution",
+      "W"
+    ],
+    [
+      "CourseExecution",
+      "W"
+    ],
+    [
+      "CourseExecution",
+      "W"
+    ],
+    [
+      "CourseExecution",
+      "W"
+    ],
+    [
+      "Course",
+      "W"
+    ],
+    [
+      "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "Course",
       "R"
     ],
     [
@@ -1531,107 +1851,7 @@
       "R"
     ],
     [
-      "CourseExecution",
-      "W"
-    ],
-    [
-      "CourseExecution",
-      "W"
-    ],
-    [
       "Course",
-      "W"
-    ],
-    [
-      "CourseExecution",
-      "W"
-    ],
-    [
-      "CourseExecution",
-      "W"
-    ],
-    [
-      "CourseExecution",
-      "W"
-    ],
-    [
-      "Course",
-      "R"
-    ],
-    [
-      "CourseExecution",
-      "R"
-    ],
-    [
-      "Course",
-      "W"
-    ],
-    [
-      "CourseExecution",
-      "W"
-    ],
-    [
-      "CourseExecution",
-      "W"
-    ],
-    [
-      "CourseExecution",
-      "W"
-    ],
-    [
-      "CourseExecution",
-      "R"
-    ],
-    [
-      "Course",
-      "R"
-    ],
-    [
-      "Course",
-      "R"
-    ],
-    [
-      "CourseExecution",
-      "R"
-    ],
-    [
-      "Course",
-      "R"
-    ],
-    [
-      "Course",
-      "R"
-    ],
-    [
-      "CourseExecution",
-      "R"
-    ],
-    [
-      "Course",
-      "R"
-    ],
-    [
-      "Course",
-      "R"
-    ],
-    [
-      "CourseExecution",
-      "R"
-    ],
-    [
-      "CourseExecution",
-      "R"
-    ],
-    [
-      "CourseExecution",
-      "R"
-    ],
-    [
-      "CourseExecution",
-      "R"
-    ],
-    [
-      "CourseExecution",
       "R"
     ]
   ],
@@ -1647,6 +1867,10 @@
     [
       "CourseExecution",
       "R"
+    ],
+    [
+      "Course",
+      "R"
     ]
   ],
   "CourseController.getCourseStudents": [
@@ -1656,6 +1880,10 @@
     ],
     [
       "CourseExecution",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -1809,10 +2037,6 @@
       "W"
     ],
     [
-      "Topic",
-      "W"
-    ],
-    [
       "Course",
       "W"
     ],
@@ -1838,10 +2062,6 @@
     ],
     [
       "Topic",
-      "W"
-    ],
-    [
-      "Topic",
       "R"
     ],
     [
@@ -1853,10 +2073,6 @@
       "W"
     ],
     [
-      "Question",
-      "W"
-    ],
-    [
       "Topic",
       "R"
     ],
@@ -1886,10 +2102,6 @@
     ],
     [
       "Topic",
-      "W"
-    ],
-    [
-      "Topic",
       "R"
     ],
     [
@@ -1911,10 +2123,6 @@
     [
       "Topic",
       "R"
-    ],
-    [
-      "Topic",
-      "W"
     ],
     [
       "Topic",
@@ -1953,19 +2161,19 @@
       "R"
     ],
     [
-      "TopicConjunction",
-      "R"
-    ],
-    [
       "Topic",
       "R"
     ],
     [
       "TopicConjunction",
-      "W"
+      "R"
     ],
     [
       "Topic",
+      "R"
+    ],
+    [
+      "TopicConjunction",
       "W"
     ],
     [
@@ -1983,10 +2191,6 @@
     [
       "Topic",
       "R"
-    ],
-    [
-      "Topic",
-      "W"
     ],
     [
       "Topic",
@@ -2085,7 +2289,11 @@
       "R"
     ],
     [
-      "CourseExecution",
+      "User",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -2093,6 +2301,14 @@
       "R"
     ],
     [
+      "Course",
+      "R"
+    ],
+    [
+      "CourseExecution",
+      "R"
+    ],
+    [
       "Question",
       "R"
     ],
@@ -2109,6 +2325,10 @@
       "R"
     ],
     [
+      "Course",
+      "R"
+    ],
+    [
       "Question",
       "R"
     ],
@@ -2118,6 +2338,10 @@
     ],
     [
       "Course",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ],
     [
@@ -2225,6 +2449,10 @@
       "R"
     ],
     [
+      "Course",
+      "R"
+    ],
+    [
       "Topic",
       "R"
     ],
@@ -2265,6 +2493,30 @@
       "R"
     ],
     [
+      "Course",
+      "R"
+    ],
+    [
+      "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
       "CourseExecution",
       "R"
     ],
@@ -2277,19 +2529,15 @@
       "R"
     ],
     [
+      "Course",
+      "R"
+    ],
+    [
       "CourseExecution",
       "R"
     ],
     [
       "Quiz",
-      "R"
-    ],
-    [
-      "CourseExecution",
-      "R"
-    ],
-    [
-      "CourseExecution",
       "R"
     ],
     [
@@ -2354,6 +2602,14 @@
     ],
     [
       "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
       "R"
     ],
     [
@@ -2421,11 +2677,19 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
       "QuizAnswer",
       "W"
     ],
     [
       "QuestionAnswer",
+      "W"
+    ],
+    [
+      "Question",
       "W"
     ],
     [
@@ -2434,6 +2698,10 @@
     ],
     [
       "QuestionAnswer",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ],
     [
@@ -2454,6 +2722,14 @@
     ],
     [
       "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
       "R"
     ],
     [
@@ -2474,6 +2750,14 @@
     ],
     [
       "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
       "R"
     ],
     [
@@ -2628,6 +2912,10 @@
     ],
     [
       "User",
+      "W"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -2644,6 +2932,10 @@
     ],
     [
       "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
       "R"
     ],
     [
@@ -2707,6 +2999,14 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizQuestion",
       "R"
     ],
@@ -2716,6 +3016,14 @@
     ],
     [
       "Question",
+      "R"
+    ],
+    [
+      "Question",
+      "W"
+    ],
+    [
+      "Question",
       "W"
     ],
     [
@@ -2872,18 +3180,6 @@
     ],
     [
       "Question",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "QuizQuestion",
       "R"
     ],
     [
@@ -2911,6 +3207,50 @@
       "R"
     ],
     [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
       "Question",
       "R"
     ],
@@ -3140,10 +3480,6 @@
     ],
     [
       "Question",
-      "W"
-    ],
-    [
-      "Question",
       "R"
     ],
     [
@@ -3184,10 +3520,6 @@
     ],
     [
       "Topic",
-      "W"
-    ],
-    [
-      "Question",
       "W"
     ],
     [
@@ -3211,6 +3543,14 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
       "Quiz",
       "W"
     ],
@@ -3260,7 +3600,19 @@
     ],
     [
       "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
       "W"
+    ],
+    [
+      "Quiz",
+      "R"
     ],
     [
       "Quiz",
@@ -3299,6 +3651,10 @@
       "W"
     ],
     [
+      "Course",
+      "W"
+    ],
+    [
       "CourseExecution",
       "R"
     ],
@@ -3327,6 +3683,14 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
       "Quiz",
       "R"
     ],
@@ -3356,6 +3720,14 @@
     ],
     [
       "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
       "R"
     ],
     [
@@ -3384,6 +3756,14 @@
     ],
     [
       "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Question",
       "W"
     ],
     [
@@ -3447,7 +3827,19 @@
       "R"
     ],
     [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
       "R"
     ],
     [
@@ -3471,6 +3863,10 @@
       "R"
     ],
     [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
@@ -3507,6 +3903,14 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizQuestion",
       "R"
     ],
@@ -3556,18 +3960,6 @@
     ],
     [
       "Question",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "QuizQuestion",
       "R"
     ],
     [
@@ -3588,6 +3980,50 @@
     ],
     [
       "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ],
     [
@@ -3679,6 +4115,14 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
       "Quiz",
       "R"
     ],
@@ -3708,6 +4152,14 @@
     ],
     [
       "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
       "R"
     ],
     [
@@ -3736,6 +4188,14 @@
     ],
     [
       "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Question",
       "W"
     ],
     [
@@ -3819,6 +4279,10 @@
       "R"
     ],
     [
+      "Quiz",
+      "R"
+    ],
+    [
       "User",
       "W"
     ],
@@ -3844,6 +4308,10 @@
     ],
     [
       "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
       "W"
     ],
     [
@@ -3859,6 +4327,14 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
       "Quiz",
       "R"
     ],
@@ -3887,11 +4363,19 @@
       "W"
     ],
     [
+      "Quiz",
+      "W"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
     [
       "QuestionAnswer",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ],
     [
@@ -3903,11 +4387,19 @@
       "W"
     ],
     [
+      "Question",
+      "W"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
     [
       "QuestionAnswer",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ],
     [
@@ -3927,11 +4419,23 @@
       "W"
     ],
     [
+      "Question",
+      "W"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
       "QuizQuestion",
       "R"
     ],
     [
       "QuestionAnswer",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ],
     [
@@ -4003,11 +4507,19 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
       "QuizAnswer",
       "W"
     ],
     [
       "QuestionAnswer",
+      "W"
+    ],
+    [
+      "Question",
       "W"
     ],
     [
@@ -4016,6 +4528,10 @@
     ],
     [
       "QuestionAnswer",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ],
     [
@@ -4027,6 +4543,14 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizQuestion",
       "R"
     ],
@@ -4051,11 +4575,19 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
       "QuizAnswer",
       "W"
     ],
     [
       "QuestionAnswer",
+      "W"
+    ],
+    [
+      "Question",
       "W"
     ],
     [
@@ -4064,6 +4596,10 @@
     ],
     [
       "QuestionAnswer",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ],
     [
@@ -4117,6 +4653,10 @@
       "R"
     ],
     [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
@@ -4178,6 +4718,10 @@
     ],
     [
       "QuizAnswer",
+      "R"
+    ],
+    [
+      "Quiz",
       "R"
     ],
     [
@@ -4209,11 +4753,19 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
       "QuizAnswer",
       "W"
     ],
     [
       "QuestionAnswer",
+      "W"
+    ],
+    [
+      "Question",
       "W"
     ],
     [
@@ -4222,6 +4774,10 @@
     ],
     [
       "QuestionAnswer",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ]
   ],
@@ -4243,6 +4799,10 @@
       "R"
     ],
     [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
@@ -4259,6 +4819,10 @@
       "R"
     ],
     [
+      "Course",
+      "R"
+    ],
+    [
       "CourseExecution",
       "R"
     ],
@@ -4268,6 +4832,10 @@
     ],
     [
       "CourseExecution",
+      "R"
+    ],
+    [
+      "Quiz",
       "R"
     ],
     [
@@ -4323,6 +4891,10 @@
       "R"
     ],
     [
+      "Quiz",
+      "R"
+    ],
+    [
       "User",
       "W"
     ],
@@ -4348,6 +4920,10 @@
     ],
     [
       "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
       "W"
     ],
     [
@@ -4363,6 +4939,14 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
       "Quiz",
       "R"
     ],
@@ -4391,11 +4975,19 @@
       "W"
     ],
     [
+      "Quiz",
+      "W"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
     [
       "QuestionAnswer",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ],
     [
@@ -4407,11 +4999,19 @@
       "W"
     ],
     [
+      "Question",
+      "W"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
     [
       "QuestionAnswer",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ],
     [
@@ -4431,11 +5031,23 @@
       "W"
     ],
     [
+      "Question",
+      "W"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
       "QuizQuestion",
       "R"
     ],
     [
       "QuestionAnswer",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ],
     [
@@ -4460,6 +5072,10 @@
     ],
     [
       "QuizAnswer",
+      "R"
+    ],
+    [
+      "Quiz",
       "R"
     ],
     [
@@ -4496,6 +5112,10 @@
     ],
     [
       "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
       "R"
     ],
     [
@@ -4565,6 +5185,10 @@
       "W"
     ],
     [
+      "Quiz",
+      "W"
+    ],
+    [
       "CourseExecution",
       "R"
     ],
@@ -4594,6 +5218,10 @@
     ],
     [
       "TopicConjunction",
+      "R"
+    ],
+    [
+      "Topic",
       "R"
     ],
     [
@@ -4621,20 +5249,8 @@
       "R"
     ],
     [
-      "QuizAnswer",
+      "Quiz",
       "R"
-    ],
-    [
-      "QuestionAnswer",
-      "R"
-    ],
-    [
-      "QuizAnswer",
-      "W"
-    ],
-    [
-      "QuestionAnswer",
-      "W"
     ],
     [
       "QuizAnswer",
@@ -4645,359 +5261,7 @@
       "R"
     ],
     [
-      "QuestionAnswer",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
       "Question",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "QuestionAnswer",
-      "R"
-    ],
-    [
-      "QuestionAnswer",
-      "R"
-    ],
-    [
-      "QuestionAnswer",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "Question",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "Question",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "Question",
-      "W"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "W"
-    ],
-    [
-      "Quiz",
-      "W"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
-      "Quiz",
-      "W"
-    ],
-    [
-      "QuizQuestion",
-      "W"
-    ],
-    [
-      "QuizQuestion",
-      "W"
-    ],
-    [
-      "Question",
-      "W"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
-      "Question",
-      "W"
-    ],
-    [
-      "QuizQuestion",
-      "W"
-    ],
-    [
-      "QuizQuestion",
-      "W"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "W"
-    ],
-    [
-      "Quiz",
-      "W"
-    ],
-    [
-      "Quiz",
-      "W"
-    ],
-    [
-      "Quiz",
-      "W"
-    ],
-    [
-      "QuizAnswer",
-      "W"
-    ],
-    [
-      "QuizAnswer",
-      "W"
-    ],
-    [
-      "QuizAnswer",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "QuizAnswer",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "QuizAnswer",
-      "W"
-    ],
-    [
-      "QuizAnswer",
-      "W"
-    ],
-    [
-      "Quiz",
-      "W"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "QuizAnswer",
-      "R"
-    ],
-    [
-      "Quiz",
-      "W"
-    ],
-    [
-      "QuizAnswer",
-      "W"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "QuizAnswer",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
-      "QuizAnswer",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
-      "QuestionAnswer",
-      "W"
-    ],
-    [
-      "QuizAnswer",
-      "W"
-    ],
-    [
-      "QuizAnswer",
-      "R"
-    ],
-    [
-      "QuestionAnswer",
       "R"
     ],
     [
@@ -5009,11 +5273,455 @@
       "W"
     ],
     [
+      "Question",
+      "W"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
     [
       "QuestionAnswer",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "QuestionAnswer",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "QuestionAnswer",
+      "R"
+    ],
+    [
+      "QuestionAnswer",
+      "R"
+    ],
+    [
+      "QuestionAnswer",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "User",
+      "W"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "User",
+      "W"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "User",
+      "W"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "W"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
+      "QuizQuestion",
+      "W"
+    ],
+    [
+      "QuizQuestion",
+      "W"
+    ],
+    [
+      "Question",
+      "W"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Question",
+      "W"
+    ],
+    [
+      "QuizQuestion",
+      "W"
+    ],
+    [
+      "QuizQuestion",
+      "W"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
+      "QuizAnswer",
+      "W"
+    ],
+    [
+      "QuizAnswer",
+      "W"
+    ],
+    [
+      "QuizAnswer",
+      "W"
+    ],
+    [
+      "User",
+      "W"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "QuizAnswer",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "User",
+      "W"
+    ],
+    [
+      "QuizAnswer",
+      "W"
+    ],
+    [
+      "QuizAnswer",
+      "W"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "QuizAnswer",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
+      "QuizAnswer",
+      "W"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "QuizAnswer",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "QuizAnswer",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "QuestionAnswer",
+      "W"
+    ],
+    [
+      "QuizAnswer",
+      "W"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
+      "QuizAnswer",
+      "R"
+    ],
+    [
+      "QuestionAnswer",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "QuizAnswer",
+      "W"
+    ],
+    [
+      "QuestionAnswer",
+      "W"
+    ],
+    [
+      "Question",
+      "W"
+    ],
+    [
+      "QuizAnswer",
+      "R"
+    ],
+    [
+      "QuestionAnswer",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ],
     [
@@ -5033,11 +5741,23 @@
       "W"
     ],
     [
+      "Question",
+      "W"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
       "QuizQuestion",
       "R"
     ],
     [
       "QuestionAnswer",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ],
     [
@@ -5061,19 +5781,7 @@
       "W"
     ],
     [
-      "CourseExecution",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "CourseExecution",
-      "W"
-    ],
-    [
-      "Quiz",
+      "Course",
       "W"
     ],
     [
@@ -5093,6 +5801,22 @@
       "W"
     ],
     [
+      "CourseExecution",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "CourseExecution",
+      "W"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
       "Quiz",
       "W"
     ],
@@ -5213,6 +5937,10 @@
       "R"
     ],
     [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
@@ -5233,27 +5961,7 @@
       "R"
     ],
     [
-      "QuizAnswer",
-      "W"
-    ],
-    [
-      "QuestionAnswer",
-      "W"
-    ],
-    [
-      "QuizAnswer",
-      "R"
-    ],
-    [
-      "QuestionAnswer",
-      "R"
-    ],
-    [
-      "QuizAnswer",
-      "R"
-    ],
-    [
-      "QuestionAnswer",
+      "Question",
       "R"
     ],
     [
@@ -5265,11 +5973,55 @@
       "W"
     ],
     [
+      "Question",
+      "W"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
     [
       "QuestionAnswer",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "QuizAnswer",
+      "R"
+    ],
+    [
+      "QuestionAnswer",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "QuizAnswer",
+      "W"
+    ],
+    [
+      "QuestionAnswer",
+      "W"
+    ],
+    [
+      "Question",
+      "W"
+    ],
+    [
+      "QuizAnswer",
+      "R"
+    ],
+    [
+      "QuestionAnswer",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ]
   ],
@@ -5295,6 +6047,10 @@
       "R"
     ],
     [
+      "Course",
+      "R"
+    ],
+    [
       "Quiz",
       "R"
     ],
@@ -5303,6 +6059,10 @@
       "R"
     ],
     [
+      "Course",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
@@ -5355,6 +6115,10 @@
       "R"
     ],
     [
+      "Quiz",
+      "R"
+    ],
+    [
       "User",
       "W"
     ],
@@ -5380,6 +6144,10 @@
     ],
     [
       "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
       "W"
     ],
     [
@@ -5395,6 +6163,14 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
       "Quiz",
       "R"
     ],
@@ -5423,11 +6199,19 @@
       "W"
     ],
     [
+      "Quiz",
+      "W"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
     [
       "QuestionAnswer",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ],
     [
@@ -5439,11 +6223,19 @@
       "W"
     ],
     [
+      "Question",
+      "W"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
     [
       "QuestionAnswer",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ],
     [
@@ -5463,6 +6255,14 @@
       "W"
     ],
     [
+      "Question",
+      "W"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
       "QuizQuestion",
       "R"
     ],
@@ -5471,6 +6271,10 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
       "QuizQuestion",
       "W"
     ],
@@ -5627,6 +6431,10 @@
       "R"
     ],
     [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
@@ -5647,27 +6455,7 @@
       "R"
     ],
     [
-      "QuizAnswer",
-      "W"
-    ],
-    [
-      "QuestionAnswer",
-      "W"
-    ],
-    [
-      "QuizAnswer",
-      "R"
-    ],
-    [
-      "QuestionAnswer",
-      "R"
-    ],
-    [
-      "QuizAnswer",
-      "R"
-    ],
-    [
-      "QuestionAnswer",
+      "Question",
       "R"
     ],
     [
@@ -5679,11 +6467,55 @@
       "W"
     ],
     [
+      "Question",
+      "W"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
     [
       "QuestionAnswer",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "QuizAnswer",
+      "R"
+    ],
+    [
+      "QuestionAnswer",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "QuizAnswer",
+      "W"
+    ],
+    [
+      "QuestionAnswer",
+      "W"
+    ],
+    [
+      "Question",
+      "W"
+    ],
+    [
+      "QuizAnswer",
+      "R"
+    ],
+    [
+      "QuestionAnswer",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ],
     [
@@ -5713,6 +6545,10 @@
       "R"
     ],
     [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
@@ -5733,7 +6569,15 @@
       "R"
     ],
     [
+      "Course",
+      "R"
+    ],
+    [
       "QuizAnswer",
+      "R"
+    ],
+    [
+      "Quiz",
       "R"
     ],
     [
@@ -5779,11 +6623,19 @@
       "R"
     ],
     [
+      "Course",
+      "R"
+    ],
+    [
       "Quiz",
       "R"
     ],
     [
       "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
       "R"
     ],
     [
@@ -5845,6 +6697,10 @@
       "R"
     ],
     [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
@@ -5865,11 +6721,19 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
       "QuizAnswer",
       "W"
     ],
     [
       "QuestionAnswer",
+      "W"
+    ],
+    [
+      "Question",
       "W"
     ],
     [
@@ -5878,6 +6742,10 @@
     ],
     [
       "QuestionAnswer",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ],
     [
@@ -5981,6 +6849,14 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizQuestion",
       "R"
     ],
@@ -6009,6 +6885,14 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizQuestion",
       "R"
     ],
@@ -6049,6 +6933,10 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
       "Option",
       "W"
     ],
@@ -6070,6 +6958,10 @@
     ],
     [
       "QuestionAnswer",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ],
     [
@@ -6112,6 +7004,26 @@
     ],
     [
       "Course",
+      "W"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
       "R"
     ],
     [
@@ -6124,14 +7036,10 @@
     ],
     [
       "CourseExecution",
-      "R"
+      "W"
     ],
     [
-      "CourseExecution",
-      "R"
-    ],
-    [
-      "CourseExecution",
+      "Course",
       "W"
     ],
     [
@@ -6155,11 +7063,23 @@
       "W"
     ],
     [
+      "CourseExecution",
+      "W"
+    ],
+    [
+      "Course",
+      "W"
+    ],
+    [
       "Course",
       "R"
     ],
     [
       "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
       "R"
     ],
     [
@@ -6199,6 +7119,10 @@
       "R"
     ],
     [
+      "Course",
+      "R"
+    ],
+    [
       "CourseExecution",
       "R"
     ],
@@ -6219,6 +7143,14 @@
       "R"
     ],
     [
+      "Course",
+      "R"
+    ],
+    [
+      "CourseExecution",
+      "R"
+    ],
+    [
       "CourseExecution",
       "R"
     ],
@@ -6228,10 +7160,18 @@
     ],
     [
       "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
       "R"
     ]
   ],
   "AdministrationController.getCourseExecutions": [
+    [
+      "User",
+      "R"
+    ],
     [
       "User",
       "R"
@@ -6304,10 +7244,10 @@
     ],
     [
       "Course",
-      "W"
+      "R"
     ],
     [
-      "CourseExecution",
+      "Course",
       "W"
     ],
     [
@@ -6327,11 +7267,11 @@
       "R"
     ],
     [
-      "User",
-      "W"
+      "Course",
+      "R"
     ],
     [
-      "CourseExecution",
+      "User",
       "W"
     ],
     [
@@ -6353,6 +7293,14 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
       "Quiz",
       "W"
     ],
@@ -6402,7 +7350,19 @@
     ],
     [
       "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
       "W"
+    ],
+    [
+      "Quiz",
+      "R"
     ],
     [
       "Quiz",
@@ -6441,6 +7401,10 @@
       "W"
     ],
     [
+      "Course",
+      "W"
+    ],
+    [
       "CourseExecution",
       "R"
     ],
@@ -6469,6 +7433,14 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
       "Quiz",
       "R"
     ],
@@ -6498,6 +7470,14 @@
     ],
     [
       "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
       "R"
     ],
     [
@@ -6526,6 +7506,14 @@
     ],
     [
       "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Question",
       "W"
     ],
     [
@@ -6589,7 +7577,19 @@
       "R"
     ],
     [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
       "R"
     ],
     [
@@ -6613,6 +7613,10 @@
       "R"
     ],
     [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
@@ -6649,6 +7653,14 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizQuestion",
       "R"
     ],
@@ -6698,18 +7710,6 @@
     ],
     [
       "Question",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "QuizQuestion",
       "R"
     ],
     [
@@ -6730,6 +7730,50 @@
     ],
     [
       "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ],
     [
@@ -6815,6 +7859,10 @@
       "R"
     ],
     [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
@@ -6827,11 +7875,23 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
       "Quiz",
       "R"
     ],
     [
       "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
       "R"
     ],
     [
@@ -6851,11 +7911,11 @@
       "W"
     ],
     [
-      "Quiz",
+      "CourseExecution",
       "W"
     ],
     [
-      "CourseExecution",
+      "Course",
       "W"
     ],
     [
@@ -6864,6 +7924,14 @@
     ],
     [
       "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
       "R"
     ],
     [
@@ -6929,7 +7997,23 @@
       "R"
     ],
     [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
       "R"
     ],
     [
@@ -6953,6 +8037,10 @@
       "R"
     ],
     [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
@@ -6989,6 +8077,14 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizQuestion",
       "R"
     ],
@@ -7038,18 +8134,6 @@
     ],
     [
       "Question",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "QuizQuestion",
       "R"
     ],
     [
@@ -7070,6 +8154,50 @@
     ],
     [
       "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ],
     [
@@ -7157,6 +8285,14 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizQuestion",
       "R"
     ],
@@ -7206,6 +8342,10 @@
     ],
     [
       "QuizAnswer",
+      "R"
+    ],
+    [
+      "Quiz",
       "R"
     ],
     [
@@ -7239,230 +8379,6 @@
       "R"
     ],
     [
-      "QuizAnswer",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
-      "Quiz",
-      "W"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "W"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "W"
-    ],
-    [
-      "Quiz",
-      "W"
-    ],
-    [
-      "Quiz",
-      "W"
-    ],
-    [
-      "Quiz",
-      "W"
-    ],
-    [
-      "Quiz",
-      "W"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "W"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "W"
-    ],
-    [
-      "Quiz",
-      "W"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
-      "Quiz",
-      "W"
-    ],
-    [
-      "QuizQuestion",
-      "W"
-    ],
-    [
-      "QuizQuestion",
-      "W"
-    ],
-    [
-      "Question",
-      "W"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
-      "Question",
-      "W"
-    ],
-    [
-      "QuizQuestion",
-      "W"
-    ],
-    [
-      "QuizQuestion",
-      "W"
-    ],
-    [
-      "QuizQuestion",
-      "W"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
-      "Quiz",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
       "Quiz",
       "R"
     ],
@@ -7475,6 +8391,306 @@
       "R"
     ],
     [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "W"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "W"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "W"
+    ],
+    [
+      "QuizQuestion",
+      "W"
+    ],
+    [
+      "QuizQuestion",
+      "W"
+    ],
+    [
+      "Question",
+      "W"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Question",
+      "W"
+    ],
+    [
+      "QuizQuestion",
+      "W"
+    ],
+    [
+      "QuizQuestion",
+      "W"
+    ],
+    [
+      "QuizQuestion",
+      "W"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "QuizAnswer",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
@@ -7511,6 +8727,14 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizQuestion",
       "R"
     ],
@@ -7560,18 +8784,6 @@
     ],
     [
       "Question",
-      "R"
-    ],
-    [
-      "QuizQuestion",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "QuizQuestion",
       "R"
     ],
     [
@@ -7592,6 +8804,50 @@
     ],
     [
       "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
       "R"
     ],
     [
@@ -7689,7 +8945,19 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
       "R"
     ]
   ],
@@ -7723,7 +8991,19 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
       "R"
     ]
   ],
@@ -7757,7 +9037,19 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
       "R"
     ]
   ],
@@ -7775,7 +9067,15 @@
       "R"
     ],
     [
+      "Course",
+      "R"
+    ],
+    [
       "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
       "R"
     ],
     [
@@ -7799,6 +9099,18 @@
       "R"
     ],
     [
+      "Course",
+      "R"
+    ],
+    [
+      "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
       "CourseExecution",
       "R"
     ],
@@ -7807,80 +9119,8 @@
       "R"
     ],
     [
-      "CourseExecution",
-      "R"
-    ],
-    [
       "User",
       "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "W"
     ],
     [
       "User",
@@ -7959,23 +9199,7 @@
       "R"
     ],
     [
-      "CourseExecution",
-      "R"
-    ],
-    [
       "User",
-      "R"
-    ],
-    [
-      "CourseExecution",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "CourseExecution",
       "R"
     ],
     [
@@ -7984,31 +9208,67 @@
     ],
     [
       "User",
-      "R"
+      "W"
     ],
     [
       "User",
-      "R"
+      "W"
     ],
     [
       "User",
-      "R"
+      "W"
     ],
     [
       "User",
-      "R"
+      "W"
     ],
     [
       "User",
-      "R"
+      "W"
     ],
     [
       "User",
-      "R"
+      "W"
     ],
     [
-      "CourseExecution",
-      "R"
+      "User",
+      "W"
+    ],
+    [
+      "User",
+      "W"
+    ],
+    [
+      "User",
+      "W"
+    ],
+    [
+      "User",
+      "W"
+    ],
+    [
+      "User",
+      "W"
+    ],
+    [
+      "User",
+      "W"
+    ],
+    [
+      "User",
+      "W"
+    ],
+    [
+      "User",
+      "W"
+    ],
+    [
+      "User",
+      "W"
+    ],
+    [
+      "User",
+      "W"
     ],
     [
       "User",
@@ -8031,43 +9291,7 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "CourseExecution",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "CourseExecution",
+      "Course",
       "R"
     ],
     [
@@ -8107,6 +9331,46 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "CourseExecution",
       "R"
     ],
@@ -8139,7 +9403,135 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
       "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "CourseExecution",
+      "R"
+    ],
+    [
+      "User",
+      "W"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "CourseExecution",
+      "R"
+    ],
+    [
+      "Course",
       "R"
     ]
   ],
@@ -8165,6 +9557,10 @@
       "R"
     ],
     [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
@@ -8185,7 +9581,15 @@
       "R"
     ],
     [
+      "Course",
+      "R"
+    ],
+    [
       "QuizAnswer",
+      "R"
+    ],
+    [
+      "Quiz",
       "R"
     ],
     [
@@ -8217,6 +9621,10 @@
       "R"
     ],
     [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
@@ -8237,7 +9645,15 @@
       "R"
     ],
     [
+      "Course",
+      "R"
+    ],
+    [
       "QuizAnswer",
+      "R"
+    ],
+    [
+      "Quiz",
       "R"
     ],
     [
@@ -8269,6 +9685,10 @@
       "R"
     ],
     [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
@@ -8289,7 +9709,15 @@
       "R"
     ],
     [
+      "Course",
+      "R"
+    ],
+    [
       "QuizAnswer",
+      "R"
+    ],
+    [
+      "Quiz",
       "R"
     ],
     [
@@ -8321,6 +9749,10 @@
       "R"
     ],
     [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
@@ -8341,7 +9773,15 @@
       "R"
     ],
     [
+      "Course",
+      "R"
+    ],
+    [
       "QuizAnswer",
+      "R"
+    ],
+    [
+      "Quiz",
       "R"
     ],
     [
@@ -8373,6 +9813,10 @@
       "R"
     ],
     [
+      "Quiz",
+      "R"
+    ],
+    [
       "QuizAnswer",
       "R"
     ],
@@ -8393,7 +9837,15 @@
       "R"
     ],
     [
+      "Course",
+      "R"
+    ],
+    [
       "QuizAnswer",
+      "R"
+    ],
+    [
+      "Quiz",
       "R"
     ],
     [
@@ -8422,6 +9874,14 @@
     ],
     [
       "QuizQuestion",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Quiz",
       "R"
     ],
     [

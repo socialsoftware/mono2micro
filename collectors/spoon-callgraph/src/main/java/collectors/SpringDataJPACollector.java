@@ -512,7 +512,6 @@ public class SpringDataJPACollector extends SpoonCollector {
      * is being accessed and that may be "disguised" inside an invocation call.
      * e.g. Class.getListField().add(value)
      * */
-    // TODO test with getListField with more than one statement
     private void inspectTargetFromCall(CtInvocation calleeLocation) {
         collectionEntityAccess = false;
         collectionTransientField = false;
@@ -526,8 +525,7 @@ public class SpringDataJPACollector extends SpoonCollector {
     private boolean collectionTransientField = false;
     private CtTypeReference collectionFieldAccessedType = null;
     private String collectionDeclaringTypeName = null;
-    // TODO correct
-    // Array, lambda, etc, não é só invocation
+    // TODO may be incomplete Array, lambda, etc, not only invocation as target
     private void visitTarget(CtTypedElement targetExpression) {
         targetExpression.accept(new CtScanner() {
             @Override
@@ -549,32 +547,27 @@ public class SpringDataJPACollector extends SpoonCollector {
                     collectionTransientField = false;
                 }
 
-                for (String entityName : allEntities) {
-                    if (declaringTypeName.equals(entityName)) {
-                        collectionEntityAccess = true;
-                        collectionFieldAccessedType = fieldDeclaration.getType();
-                        collectionDeclaringTypeName = declaringTypeName;
-                        return;
-                    }
+                if (allEntities.contains(declaringTypeName)) {
+                    collectionEntityAccess = true;
+                    collectionFieldAccessedType = fieldDeclaration.getType();
+                    collectionDeclaringTypeName = declaringTypeName;
+                    return;
                 }
                 collectionEntityAccess = false;
                 collectionFieldAccessedType = null;
                 collectionDeclaringTypeName = null;
             }
 
-            // TODO test with interface variable
             @Override
             public <T> void visitCtVariableRead(CtVariableRead<T> variableRead) {
                 super.visitCtVariableRead(variableRead);
                 String declaringClassName = variableRead.getVariable().getDeclaration().getParent(CtClass.class).getSimpleName();
-                for (String entityName : allEntities) {
-                    if (declaringClassName.equals(entityName)) {
-                        collectionEntityAccess = true;
-                        collectionFieldAccessedType = variableRead.getVariable().getType();
-                        collectionDeclaringTypeName = declaringClassName;
-                        collectionTransientField = false;
-                        return;
-                    }
+                if (allEntities.contains(declaringClassName)) {
+                    collectionEntityAccess = true;
+                    collectionFieldAccessedType = variableRead.getVariable().getType();
+                    collectionDeclaringTypeName = declaringClassName;
+                    collectionTransientField = false;
+                    return;
                 }
                 collectionEntityAccess = false;
                 collectionFieldAccessedType = null;
@@ -584,19 +577,23 @@ public class SpringDataJPACollector extends SpoonCollector {
         });
     }
 
+    /*
+    * Acesses made to the domain through collection functions
+    * */
     private void registerDomainAccess(String declaringTypeName, CtTypeReference fieldAccessedType, CtInvocation calleeLocation) {
         CtExecutableReference callee = calleeLocation.getExecutable();
         String methodName = callee.getSimpleName();
         String mode = "";
         CtTypeReference returnType = null;
-        List<String> argTypes = new ArrayList<>();
+        List<String> argTypeNames = new ArrayList<>();
         if (methodName.startsWith("get") ||
                 methodName.startsWith("contains") ||
                 methodName.startsWith("equals") ||
                 methodName.startsWith("isEmpty") ||
                 methodName.startsWith("size") ||
                 methodName.startsWith("toArray") ||
-                methodName.contains("index")) {
+                methodName.contains("index") ||
+                methodName.contains("iterator")) {
             mode = "R";
             returnType = fieldAccessedType;
         }
@@ -608,9 +605,17 @@ public class SpringDataJPACollector extends SpoonCollector {
                 methodName.startsWith("put")) {
             mode = "W";
 
-            // TODO check getTopics().clear()
-            List<String> argumentTypes = parseArgumentTypes(calleeLocation);
-            argTypes.addAll(argumentTypes);
+//            List<String> argumentTypes = parseArgumentTypes(calleeLocation);
+//            argTypeNames.addAll(argumentTypes);
+//            if (argTypeNames.size() == 0) {
+                // no arguments in this call (Example: getFieldList().clear())
+                // we visited the target before to find the field so lets use the types of field type
+                for (CtTypeReference ctTypeReference : fieldAccessedType.getActualTypeArguments()) {
+                    if (allEntities.contains(ctTypeReference.getSimpleName())) {
+                        argTypeNames.add(ctTypeReference.getSimpleName());
+                    }
+                }
+//            }
         }
 
         // class access
@@ -632,12 +637,9 @@ public class SpringDataJPACollector extends SpoonCollector {
             }
         }
         else if (mode.equals("W")) {
-            for (String argType : argTypes) {
-                for (String entityName : allEntities) {
-                    if (argType.equals(entityName)) {
-                        addEntitiesSequenceAccess(entityName, mode);
-                        break;
-                    }
+            for (String argTypeName : argTypeNames) {
+                if (allEntities.contains(argTypeName)) {
+                    addEntitiesSequenceAccess(argTypeName, mode);
                 }
             }
         }
