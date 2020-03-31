@@ -30,8 +30,6 @@ public abstract class SpoonCollector {
 
     Factory factory;
     Launcher launcher;
-//    private String controllerGlobal;
-//    private int lastPositionSeen;
 
     SpoonCollector(String projectPath) {
         this.projectPath = projectPath;
@@ -94,16 +92,11 @@ public abstract class SpoonCollector {
             }
 
             String controllerFullName = controller.getSimpleName() + "." + controllerMethod.getSimpleName();
-//            controllerGlobal = controllerFullName;
-//            lastPositionSeen = 0;
             System.out.println("Processing Controller: " + controllerFullName + "   " + controllerCount + "/" + controllers.size());
             entitiesSequence = new JsonArray();
             Stack<String> methodStack = new Stack<>();
 
-//            if (controller.getSimpleName().equals("SearchController")) {
-//                System.out.println("breakppoint");
-//            }
-            methodCallDFS(controllerMethod, methodStack);
+            methodCallDFS(controllerMethod, null, methodStack);
 
             if (entitiesSequence.size() > 0) {
                 callSequence.add(controller.getSimpleName() + "." + controllerMethod.getSimpleName(), entitiesSequence);
@@ -111,29 +104,7 @@ public abstract class SpoonCollector {
         }
     }
 
-    abstract void methodCallDFS(CtExecutable controllerMethod, Stack<String> methodStack);
-    /*
-    // TO REMOVE (a medida que insere verifica se está a dar match com a "expert collection")
-    if (lastPositionSeen >= entitiesSequence.size())
-        continue;
-
-    LinkedTreeMap jdt = (LinkedTreeMap) new Gson().fromJson(new FileReader(util.JsonComparator.JDTCALLGRAPHPATH), Object.class);
-    for (Object jdtElement : jdt.entrySet()) {
-        Map.Entry<String, ArrayList> jdtElement1 = (Map.Entry<String, ArrayList>) jdtElement;
-        if (jdtElement1.getKey().equals(controllerGlobal)) {
-            ArrayList value = jdtElement1.getValue();
-            int sizeSoFar = entitiesSequence.size();
-            for (int i = lastPositionSeen; i<sizeSoFar; i++) {
-                String access = entitiesSequence.get(i).toString(); // access registered
-                String expertAccess = (String) ((ArrayList) value.get(i)).get(0);
-                if (!expertAccess.equals(access.substring(2, access.indexOf(",")-1))) {
-                    int i1 = 1 + 1; // breakpoint
-                }
-            }
-        }
-    }
-    lastPositionSeen = entitiesSequence.size();
-    */
+    abstract void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<String> methodStack);
 
     abstract void collectControllersAndEntities();
 

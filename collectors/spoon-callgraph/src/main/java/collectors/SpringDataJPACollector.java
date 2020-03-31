@@ -337,7 +337,7 @@ public class SpringDataJPACollector extends SpoonCollector {
     }
 
     @Override
-    public void methodCallDFS(CtExecutable callerMethod, Stack<String> methodStack) {
+    public void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<String> methodStack) {
         methodStack.push(callerMethod.toString());
 
         callerMethod.accept(new CtScanner() {
@@ -375,7 +375,7 @@ public class SpringDataJPACollector extends SpoonCollector {
                         }
                     }
                     else if (!methodStack.contains(calleeLocation.getExecutable().getExecutableDeclaration().toString())) {
-                        methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), methodStack);
+                        methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), calleeLocation, methodStack);
                     }
 
                 } catch (Exception e) {
@@ -386,7 +386,23 @@ public class SpringDataJPACollector extends SpoonCollector {
             private <T> void visitCtFieldAccess(CtFieldAccess<T> fieldAccess, String mode) {
                 try {
                     // class that declares the field
-                    String declaringTypeName = fieldAccess.getVariable().getDeclaringType().getSimpleName();
+                    CtTypeReference<?> declaringType = fieldAccess.getVariable().getDeclaringType();
+                    String declaringTypeName = null;
+
+                    /* MappedSuperclasses are similar to abstract classes. They are supposed to be extended
+                    * and not instantiated, they won't even have its own table. When accessing a field from
+                    * a class like this one, we will consider its target as the accessor and not the class
+                    * itself */
+                    if (existsAnnotation(declaringType.getTypeDeclaration().getAnnotations(),
+                            "MappedSuperclass")) {
+                        try {
+                            CtTypeReference type = ((CtInvocation) prevCalleeLocation).getTarget().getType();
+                            declaringTypeName = type.getSimpleName();
+                        } catch (Exception e) {}
+                    }
+
+                    declaringTypeName = declaringTypeName == null ? declaringType.getSimpleName() : declaringTypeName;
+
                     if (allEntities.contains(declaringTypeName)) {
 
                         addEntitiesSequenceAccess(declaringTypeName, mode);
@@ -525,7 +541,7 @@ public class SpringDataJPACollector extends SpoonCollector {
     private boolean collectionTransientField = false;
     private CtTypeReference collectionFieldAccessedType = null;
     private String collectionDeclaringTypeName = null;
-    // TODO may be incomplete Array, lambda, etc, not only invocation as target
+
     private void visitTarget(CtTypedElement targetExpression) {
         targetExpression.accept(new CtScanner() {
             @Override
@@ -578,7 +594,7 @@ public class SpringDataJPACollector extends SpoonCollector {
     }
 
     /*
-    * Acesses made to the domain through collection functions
+    * Accesses made to the domain through collection functions
     * */
     private void registerDomainAccess(String declaringTypeName, CtTypeReference fieldAccessedType, CtInvocation calleeLocation) {
         CtExecutableReference callee = calleeLocation.getExecutable();
@@ -641,18 +657,6 @@ public class SpringDataJPACollector extends SpoonCollector {
         }
     }
 
-    private List<String> parseArgumentTypes(CtAbstractInvocation calleeLocation) {
-        List<String> types = new ArrayList<>();
-        List arguments = calleeLocation.getArguments();
-        for (Object arg : arguments) {
-            if (arg instanceof CtTypedElement) {
-                CtTypeReference type = ((CtTypedElement) arg).getType();
-                types.add(type.getSimpleName());
-            }
-        }
-        return types;
-    }
-
     private boolean isCallToCollections(CtAbstractInvocation calleeLocation) {
         // TODO ArrayList<T> arrayList = new ArrayList<>(); won't have superinterfaces
         CtTypeReference declaringType = calleeLocation.getExecutable().getDeclaringType();
@@ -677,7 +681,7 @@ public class SpringDataJPACollector extends SpoonCollector {
             String namedQueryName = (String) ((CtLiteral) query.getValue("name")).getValue();
 
             if (!namedQueryName.equals("")) {
-                // TODO
+                // TODO not used i think
                 System.err.println("Error: @Query with name attribute!");
                 System.exit(1);
 
@@ -708,7 +712,7 @@ public class SpringDataJPACollector extends SpoonCollector {
         }
     }
 
-    // TODO replace? drop? createtable?
+    // TODO (select *) case
     private void parseNativeQuery(String sql) {
         try {
             Statement stmt = CCJSqlParserUtil.parse(sql);
@@ -728,7 +732,6 @@ public class SpringDataJPACollector extends SpoonCollector {
         }
     }
 
-    // TODO replace? drop? createtable?
     private void parseHqlQuery(String hql) {
         try {
             Set<QueryAccess> accesses = new MyHqlParser(hql).parse();
@@ -738,7 +741,7 @@ public class SpringDataJPACollector extends SpoonCollector {
 
                 CtType clazz = entityClassNameMap.get(split[0]);
                 if (clazz == null) {
-                    // TODO (select *owner* From Owner) case
+                    // TODO Example : (select *owner* From Owner) case
                 }
                 else {
                     addEntitiesSequenceAccess(clazz.getSimpleName(), a.getMode());

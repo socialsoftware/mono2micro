@@ -47,7 +47,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
 
 
     @Override
-    public void methodCallDFS(CtExecutable callerMethod, Stack<String> methodStack) {
+    public void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<String> methodStack) {
         methodStack.push(callerMethod.toString());
 
         if (!methodCallees.containsKey(callerMethod.toString())) {
@@ -67,7 +67,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
                     registerDomainObject(calleeLocation);
                 } else if (allEntities.contains(calleeLocation.getExecutable().getDeclaringType().getSimpleName())) {
                     if (!methodStack.contains(calleeLocation.getExecutable().getExecutableDeclaration().toString())) {
-                        methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), methodStack);
+                        methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), calleeLocation, methodStack);
                     }
                 }
             } catch (Exception e) {
