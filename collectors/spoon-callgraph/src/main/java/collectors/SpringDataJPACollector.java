@@ -605,24 +605,20 @@ public class SpringDataJPACollector extends SpoonCollector {
                 methodName.startsWith("put")) {
             mode = "W";
 
-//            List<String> argumentTypes = parseArgumentTypes(calleeLocation);
-//            argTypeNames.addAll(argumentTypes);
-//            if (argTypeNames.size() == 0) {
-                // no arguments in this call (Example: getFieldList().clear())
-                // we visited the target before to find the field so lets use the types of field type
-                for (CtTypeReference ctTypeReference : fieldAccessedType.getActualTypeArguments()) {
-                    if (allEntities.contains(ctTypeReference.getSimpleName())) {
-                        argTypeNames.add(ctTypeReference.getSimpleName());
-                    }
+
+            // we visited the target before to find the field so lets use the types of field type
+            for (CtTypeReference ctTypeReference : fieldAccessedType.getActualTypeArguments()) {
+                if (allEntities.contains(ctTypeReference.getSimpleName())) {
+                    argTypeNames.add(ctTypeReference.getSimpleName());
                 }
-//            }
+            }
         }
 
         // class access
         addEntitiesSequenceAccess(declaringTypeName, mode);
         // field access
         if (mode.equals("R")) {
-            List<CtTypeReference<?>> actualTypeArguments = fieldAccessedType.getActualTypeArguments();
+            List<CtTypeReference<?>> actualTypeArguments = returnType.getActualTypeArguments();
             if (actualTypeArguments.size() > 0) {
                 for (CtTypeReference ctTypeReference : actualTypeArguments) {
                     if (allEntities.contains(ctTypeReference.getSimpleName())) {
@@ -631,8 +627,8 @@ public class SpringDataJPACollector extends SpoonCollector {
                 }
             }
             else {
-                if (allEntities.contains(fieldAccessedType.getSimpleName())) {
-                    addEntitiesSequenceAccess(fieldAccessedType.getSimpleName(), mode);
+                if (allEntities.contains(returnType.getSimpleName())) {
+                    addEntitiesSequenceAccess(returnType.getSimpleName(), mode);
                 }
             }
         }
