@@ -9,8 +9,6 @@ import org.hibernate.hql.internal.ast.util.NodeTraverser;
 
 import java.util.*;
 
-// Assuming no full qualified path names inside From clauses
-// TODO verificar os selects (select * = access to every field)
 public class MyHqlParser {
 
     private final String hql;
@@ -82,14 +80,12 @@ public class MyHqlParser {
                 String ident = parseDot(node.getFirstChild());
                 entitiesAccessed.add(new QueryAccess(ident, mode));
                 lastIdentifierSeen = ident;
-                System.out.println(ident);
             }
             else if (type == HqlSqlTokenTypes.IDENT) {
                 entitiesAccessed.add(new QueryAccess(node.toString(), mode));
                 lastIdentifierSeen = node.toString();
             }
             else if (type == HqlSqlTokenTypes.ALIAS) {
-                System.out.println(node.toString() + " is alias of " + lastIdentifierSeen);
                 aliasMap.put(node.toString(), lastIdentifierSeen);
             }
         }

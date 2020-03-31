@@ -36,6 +36,8 @@ import java.util.*;
 * are always Collection<Type> field;
 *
 * Assuming only one concrete implementation of a given interface
+*
+* Assuming no fully qualified path names inside HQL From clauses
 * */
 public class SpringDataJPACollector extends SpoonCollector {
 
@@ -44,8 +46,8 @@ public class SpringDataJPACollector extends SpoonCollector {
     private ArrayList<Query> namedQueries; // list of tables accessed in a given query
     private List<Repository> repositories;
 
-    public SpringDataJPACollector(String projectPath) {
-        super(projectPath);
+    public SpringDataJPACollector(String projectPath, String repoName) {
+        super(projectPath, repoName);
         launcher.getEnvironment().setSourceClasspath(new String[]{
                 "./lib/spring-context-5.2.3.RELEASE.jar",
                 "./lib/spring-data-commons-core-1.4.1.RELEASE.jar",
@@ -379,7 +381,7 @@ public class SpringDataJPACollector extends SpoonCollector {
                     }
 
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    // cast error, proceed
                 }
             }
 

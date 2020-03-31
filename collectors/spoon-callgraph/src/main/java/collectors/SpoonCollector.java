@@ -16,23 +16,22 @@ import java.util.*;
 
 public abstract class SpoonCollector {
 
-    private String projectPath;
     private int controllerCount;
     private JsonObject callSequence;
+    private String projectName;
 
     // in FenixFramework: allEntities = all classes != _Base
     // in JPA: allEntities = all @Entities @Embeddable @MappedSuperClass @XmlRootElement
     ArrayList<String> allEntities;
     HashSet<CtClass> controllers;
     Map<String, List<CtAbstractInvocation>> methodCallees;
-    JsonArray entitiesSequence;
+    private JsonArray entitiesSequence;
     Map<String, CtType> interfaces;
 
     Factory factory;
     Launcher launcher;
 
-    SpoonCollector(String projectPath) {
-        this.projectPath = projectPath;
+    SpoonCollector(String projectPath, String repoName) {
         callSequence = new JsonObject();
         controllers = new HashSet<>();
         allEntities = new ArrayList<>();
@@ -40,18 +39,12 @@ public abstract class SpoonCollector {
         interfaces = new HashMap<>();
         launcher = new Launcher();
         launcher.addInputResource(projectPath);
+        this.projectName = repoName;
     }
 
     public void run() {
         factory = launcher.getFactory();
 
-        String projectName = null;
-        String[] split = projectPath.split("/");
-        for (String s : split) {
-            if (s.equals("src"))
-                break;
-            projectName = s;
-        }
         System.out.println("Processing Project: " + projectName);
         long startTime = System.currentTimeMillis();
         collectControllersAndEntities();

@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Stack;
 
 public class FenixFrameworkCollector extends SpoonCollector {
-    public FenixFrameworkCollector(String projectPath) {
-        super(projectPath);
+    public FenixFrameworkCollector(String projectPath, String repoName) {
+        super(projectPath, repoName);
         launcher.getEnvironment().setSourceClasspath(new String[]{
                 "./lib/fenix-framework-core-2.0.jar",
                 "./lib/spring-context-5.2.3.RELEASE.jar"}
