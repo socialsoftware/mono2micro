@@ -30,15 +30,6 @@ export class RepositoryService {
         return this.axios.post("/codebase/" + codebaseName + "/analyser", analyserData);
     }
 
-    importAnalyserResults(codebaseName) {
-        return this.axios.get("/importAnalyserResults",
-            {
-                params: {
-                    "codebaseName" : codebaseName
-                }
-            });
-    }
-
 
 
 

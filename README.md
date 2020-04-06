@@ -6,18 +6,19 @@ Currently implemented for systems that use the FénixFramework ORM and Spring-Bo
 
 ### Pre-Requisites
 
-- java 8+     (java --version)
-- nodejs 10+  (node --version)
-- npm 6+      (npm --version)
-- python 3.5+   (python --version)
-- Run: pip install -r backend/src/main/resources/requirements.txt
+- java 8+     (```java --version```)
+- nodejs 10+  (```node --version```)
+- npm 6+      (```npm --version```)
+- python 3.5+   (```python --version```)
+- Run: ```pip install -r backend/src/main/resources/requirements.txt```
+- Create the file ```specific.properties``` in backend/src/main/resources with the correct python command (example in file ```specific.properties.example```)
 
 ### Run
 
 To run the backend:
 	
 	cd backend/
-	mvn clean compile
+	mvn clean install -DskipTests
 	mvn spring-boot:run
 
 To run the frontend:

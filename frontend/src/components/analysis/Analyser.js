@@ -17,12 +17,14 @@ export class Analyser extends React.Component {
             experts: [],
             expert: {},
             resultData: [],
-            requestLimit: ""
+            requestLimit: "",
+            importFile: null
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.importResults = this.importResults.bind(this);
+        this.handleImportSubmit = this.handleImportSubmit.bind(this);
         this.handleRequestLimitChange = this.handleRequestLimitChange.bind(this);
+        this.handleSelectImportFile = this.handleSelectImportFile.bind(this);
     }
 
     componentDidMount() {
@@ -94,13 +96,23 @@ export class Analyser extends React.Component {
         });
     }
 
-    importResults() {
-        const service = new RepositoryService();
-        service.importAnalyserResults(this.state.codebase.name).then(response => {
-            this.setState({
-                resultData: Object.values(response.data)
-            });
+    handleImportSubmit(event) {
+        event.preventDefault();
+
+        this.setState({
+            resultData: Object.values(JSON.parse(this.state.importFile))
         });
+    }
+
+    handleSelectImportFile(event) {
+        let that = this;
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            that.setState({
+                importFile: e.target.result
+            });
+        };
+        reader.readAsText(event.target.files[0]);
     }
 
     renderBreadCrumbs = () => {
@@ -284,11 +296,29 @@ export class Analyser extends React.Component {
                         </Col>
                     </Form.Group>
                 </Form>
+                <br />
+                <Form onSubmit={this.handleImportSubmit}>
 
-                <Button className="mb-2" disabled={Object.keys(this.state.codebase).length === 0}
-                        onClick={this.importResults}>
-                    Import Results
-                </Button>
+                <Form.Group as={Row} controlId="importFile">
+                    <Form.Label column sm={3}>
+                        Import Analyser Results from File
+                    </Form.Label>
+                    <Col sm={5}>
+                        <FormControl 
+                            type="file"
+                            onChange={this.handleSelectImportFile}/>
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row}>
+                    <Col sm={{ span: 5, offset: 3 }}>
+                        <Button type="submit"
+                                disabled={this.state.importFile === null}>
+                            Import Analyser Results
+                        </Button>
+                    </Col>
+                </Form.Group>
+            </Form>
 
                 <BootstrapTable bootstrap4 keyField='id' data={ metricRows } columns={ metricColumns } filter={ filterFactory() }/>
             </div>

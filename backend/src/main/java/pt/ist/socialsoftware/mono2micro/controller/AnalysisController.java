@@ -48,18 +48,6 @@ public class AnalysisController {
     private CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
 
-
-	@RequestMapping(value = "/importAnalyserResults", method = RequestMethod.GET)
-	public ResponseEntity<String> importAnalyserResults(@RequestParam String codebaseName) {
-		logger.debug("importAnalyserResults");
-		
-		try {
-			return new ResponseEntity<>(codebaseManager.getAnalyserResults(codebaseName).toString(), HttpStatus.OK);
-		} catch (IOException | JSONException e) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
-	}
-
 	@RequestMapping(value = "/codebase/{codebaseName}/analyser", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> analyser(@PathVariable String codebaseName, @RequestBody AnalyserDto analyser) {
 		logger.debug("analyser");
