@@ -61,6 +61,7 @@ public abstract class SpoonCollector {
 
         String filepath = System.getProperty("user.dir") + "/" + "spoon_callSequence_" + projectName + ".json";
         storeJsonFile(filepath, callSequence);
+        System.out.println("File created at: " + filepath);
     }
 
     private void processController(CtClass controller) {
