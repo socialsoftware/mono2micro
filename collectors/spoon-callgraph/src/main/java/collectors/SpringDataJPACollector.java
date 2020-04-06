@@ -76,8 +76,7 @@ public class SpringDataJPACollector extends SpoonCollector {
 
             if (existsAnnotation(clazzAnnotations, "Entity") ||
                     existsAnnotation(clazzAnnotations, "Embeddable") ||
-                    existsAnnotation(clazzAnnotations, "MappedSuperclass") ||
-                    existsAnnotation(clazzAnnotations, "XmlRootElement")) {
+                    existsAnnotation(clazzAnnotations, "MappedSuperclass")) {
                 allEntities.add(clazz.getSimpleName());
             }
         }

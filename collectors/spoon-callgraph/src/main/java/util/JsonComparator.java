@@ -9,8 +9,8 @@ import java.util.Map;
 
 public class JsonComparator {
 
-    private static String TREE1 = System.getProperty("user.dir") + "/" + "spoon_callSequence_backend.json";
-    private static String TREE2 = System.getProperty("user.dir") + "/" + "spoon_callSequence_quizzes_save.json";
+    private static String TREE1 = System.getProperty("user.dir") + "/" + "spoon_callSequence_bw.json";
+    private static String TREE2 = System.getProperty("user.dir") + "/" + "bw.json";
 
     public static void main(String[] args) throws FileNotFoundException {
         Gson gson = new Gson();
@@ -22,7 +22,7 @@ public class JsonComparator {
             Map.Entry<String, ArrayList> tree1Element1 = (Map.Entry<String, ArrayList>) tree1ElementObject;
 
             boolean found = false;
-            System.out.println(tree1Element1.getKey());
+//            System.out.println(tree1Element1.getKey());
 
             for (Object tree2ElementObject : tree2.entrySet()) {
                 Map.Entry<String, ArrayList> tree2Element = (Map.Entry<String, ArrayList>) tree2ElementObject;

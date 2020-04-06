@@ -71,7 +71,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                // cast error, proceed
             }
         }
         methodStack.pop();

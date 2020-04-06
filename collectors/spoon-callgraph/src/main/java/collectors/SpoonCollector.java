@@ -21,7 +21,7 @@ public abstract class SpoonCollector {
     private String projectName;
 
     // in FenixFramework: allEntities = all classes != _Base
-    // in JPA: allEntities = all @Entities @Embeddable @MappedSuperClass @XmlRootElement
+    // in JPA: allEntities = all @Entities @Embeddable @MappedSuperClass
     ArrayList<String> allEntities;
     HashSet<CtClass> controllers;
     Map<String, List<CtAbstractInvocation>> methodCallees;

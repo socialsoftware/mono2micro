@@ -11,27 +11,38 @@ import java.io.IOException;
 
 public class SpoonCallGraph {
 
+    static String localPath = null;
     static String repoURL = null;
     static int selectedIndex = -1;
+    private static String projectName;
 
     public static void main(String[] args) throws GitAPIException, IOException {
         showDialog();
 
-        File file = new File(System.getProperty("user.dir") + "/tmpRepository");
-        if (file.exists()) {
-            FileUtils.deleteDirectory(file);
+        File file;
+        String repoName;
+        if (!localPath.isEmpty()) {
+            file = new File(localPath.trim());
+            repoName = projectName;
+            selectedIndex = 0;
         }
+        else {
+            file = new File(System.getProperty("user.dir") + "/tmpRepository");
+            if (file.exists()) {
+                FileUtils.deleteDirectory(file);
+            }
 
-        System.out.println("Cloning repository...");
-        // clone repo to tmp folder
-        Git.cloneRepository()
-                .setURI(repoURL)
-                .setDirectory(file)
-                .call();
+            System.out.println("Cloning repository...");
+            // clone repo to tmp folder
+            Git.cloneRepository()
+                    .setURI(repoURL)
+                    .setDirectory(file)
+                    .call();
 
-        String[] split = repoURL.split("/");
-        String[] split1 = split[split.length - 1].split("\\.");
-        String repoName = split1[0];
+            String[] split = repoURL.split("/");
+            String[] split1 = split[split.length - 1].split("\\.");
+            repoName = split1[0];
+        }
 
         SpoonCollector collector = null;
         switch (selectedIndex) {
@@ -47,7 +58,7 @@ public class SpoonCallGraph {
 
         collector.run();
 
-        FileUtils.deleteDirectory(file);
+//        FileUtils.deleteDirectory(file);
     }
 
     private static void showDialog() {
@@ -56,23 +67,44 @@ public class SpoonCallGraph {
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
 
-        JPanel pane = new JPanel();
-        pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
+        JTextField projectNameField = new JTextField(5);
+        JTextField localField = new JTextField(5);
         JTextField repoField = new JTextField(5);
 
         String[] choices = {"FenixFramework", "SpringDataJPA"};
         JComboBox<String> dropDownField = new JComboBox<>(choices);
 
-        pane.add(new JLabel("Git repository clone link:"));
-        pane.add(repoField);
+        panel.add(new JLabel("Project name:"));
+        panel.add(projectNameField);
 
-        pane.add(new JLabel("ORM used:"));
-        pane.add(dropDownField);
+        panel.add(new JLabel("Project local path:"));
+        panel.add(localField);
 
-        int option = JOptionPane.showConfirmDialog(frame, pane, "Parser Settings", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+        panel.add(new JLabel(""));
+        panel.add(new JLabel("OR"));
+        panel.add(new JLabel(""));
+
+        panel.add(new JLabel("Git repository clone link:"));
+        panel.add(repoField);
+
+        panel.add(new JLabel("ORM used:"));
+        panel.add(dropDownField);
+
+
+        JLabel note = new JLabel();
+        String s = "Note: Make sure that the provided sources for FenixFramework projects include " +
+                "the dml generated resources classes (_Base).";
+        note.setText("<html>"+ s +"</html>");
+        panel.add(note);
+
+        int option = JOptionPane.showConfirmDialog(frame, panel, "Parser Settings", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
 
         if (option == JOptionPane.OK_OPTION) {
+            projectName = projectNameField.getText();
+            localPath = localField.getText();
             repoURL = repoField.getText();
             selectedIndex = dropDownField.getSelectedIndex();
         }
