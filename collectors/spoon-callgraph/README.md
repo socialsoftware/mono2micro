@@ -1,4 +1,4 @@
-#How to run:
+# How to run:
 
 On terminal run using maven:
 
@@ -8,7 +8,11 @@ When prompted input the clone link of the repository
 you want to analyse and the ORM Technology 
 that is used in that repository.
 
-####Assumptions:
+After running, a .json file with the sequence of calls 
+of the program will be created at this folder, ready to
+be given as input to the frontend.
+
+#### Assumptions:
 * A SpringDataJPA projects only access the database via SpringData Repositories, i.e.,
 there are no references to EntityManager or SessionFactory.
 
