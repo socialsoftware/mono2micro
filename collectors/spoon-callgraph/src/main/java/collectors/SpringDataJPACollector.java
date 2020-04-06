@@ -21,24 +21,6 @@ import parser.TableNamesFinderExt;
 import java.lang.annotation.Annotation;
 import java.util.*;
 
-/*
-* Assumptions:
-* A SpringDataJPA project never uses EntityManager
-*
-* @Query annotations do not reference namedQueries
-*
-* All repositories are explicitly implemented and do not
-* implement interfaces other than SpringFramework interfaces
-*
-* Inheritance (SINGLE_TABLE) no more than one level of inheritance
-*
-* Assuming that @OneToMany, @ManyToMany and @ElementCollection fields
-* are always Collection<Type> field;
-*
-* Assuming only one concrete implementation of a given interface
-*
-* Assuming no fully qualified path names inside HQL From clauses
-* */
 public class SpringDataJPACollector extends SpoonCollector {
 
     private Map<String, CtType> entityClassNameMap; // map between EntityName -> ClassName
