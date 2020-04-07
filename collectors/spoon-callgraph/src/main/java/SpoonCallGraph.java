@@ -21,11 +21,15 @@ public class SpoonCallGraph {
 
         File file;
         String repoName;
+        boolean localAnalysis;
+
         if (!localPath.isEmpty()) {
+            localAnalysis = true;
             file = new File(localPath.trim());
             repoName = projectName;
         }
         else {
+            localAnalysis = false;
             file = new File(System.getProperty("user.dir") + "/tmpRepository");
             if (file.exists()) {
                 FileUtils.deleteDirectory(file);
@@ -57,7 +61,8 @@ public class SpoonCallGraph {
 
         collector.run();
 
-//        FileUtils.deleteDirectory(file);
+        if (!localAnalysis)
+            FileUtils.deleteDirectory(file);
     }
 
     private static void showDialog() {
