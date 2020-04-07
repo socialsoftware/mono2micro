@@ -10,6 +10,8 @@ import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.declaration.*;
 import spoon.reflect.factory.Factory;
 import spoon.reflect.visitor.filter.TypeFilter;
+
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -17,6 +19,7 @@ import java.util.*;
 
 public abstract class SpoonCollector {
 
+    private final String savePath = System.getProperty("user.dir") + File.separator + "collection" + File.separator;
     private int controllerCount;
     private JsonObject callSequence;
     private String projectName;
@@ -60,7 +63,7 @@ public abstract class SpoonCollector {
         float elapsedTimeSec = elapsedTimeMillis/1000F;
         System.out.println("Complete. Elapsed time: " + elapsedTimeSec + " seconds");
 
-        String filepath = System.getProperty("user.dir") + "/" + "spoon_callSequence_" + projectName + ".json";
+        String filepath = savePath + projectName + ".json";
         storeJsonFile(filepath, callSequence);
         System.out.println("File created at: " + filepath);
     }
