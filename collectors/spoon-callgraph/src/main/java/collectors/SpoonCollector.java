@@ -6,6 +6,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import spoon.Launcher;
 import spoon.reflect.code.CtAbstractInvocation;
+import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.declaration.*;
 import spoon.reflect.factory.Factory;
 import spoon.reflect.visitor.filter.TypeFilter;
@@ -24,7 +25,7 @@ public abstract class SpoonCollector {
     // in JPA: allEntities = all @Entities @Embeddable @MappedSuperClass
     ArrayList<String> allEntities;
     HashSet<CtClass> controllers;
-    Map<String, List<CtAbstractInvocation>> methodCallees;
+    Map<SourcePosition, List<CtAbstractInvocation>> methodCallees;
     private JsonArray entitiesSequence;
     Map<String, CtType> interfaces;
 
@@ -35,7 +36,7 @@ public abstract class SpoonCollector {
         callSequence = new JsonObject();
         controllers = new HashSet<>();
         allEntities = new ArrayList<>();
-        methodCallees = new HashMap<>();
+        methodCallees = new HashMap<SourcePosition, List<CtAbstractInvocation>>();
         interfaces = new HashMap<>();
         launcher = new Launcher();
         launcher.addInputResource(projectPath);
@@ -88,7 +89,10 @@ public abstract class SpoonCollector {
             String controllerFullName = controller.getSimpleName() + "." + controllerMethod.getSimpleName();
             System.out.println("Processing Controller: " + controllerFullName + "   " + controllerCount + "/" + controllers.size());
             entitiesSequence = new JsonArray();
-            Stack<String> methodStack = new Stack<>();
+            Stack<SourcePosition> methodStack = new Stack<>();
+
+            if (controllerFullName.equals("ActivityModelController.removeSequenceConditionToActivity"))
+                System.out.println("Breakpoint");
 
             methodCallDFS(controllerMethod, null, methodStack);
 
@@ -98,7 +102,7 @@ public abstract class SpoonCollector {
         }
     }
 
-    abstract void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<String> methodStack);
+    abstract void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<SourcePosition> methodStack);
 
     abstract void collectControllersAndEntities();
 

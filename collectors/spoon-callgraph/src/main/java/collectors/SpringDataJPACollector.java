@@ -8,6 +8,7 @@ import net.sf.jsqlparser.statement.Statement;
 import parser.MyHqlParser;
 import parser.QueryAccess;
 import spoon.reflect.code.*;
+import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.declaration.*;
 import spoon.reflect.reference.CtExecutableReference;
 import spoon.reflect.reference.CtTypeReference;
@@ -320,8 +321,8 @@ public class SpringDataJPACollector extends SpoonCollector {
     }
 
     @Override
-    public void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<String> methodStack) {
-        methodStack.push(callerMethod.toString());
+    public void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<SourcePosition> methodStack) {
+        methodStack.push(callerMethod.getPosition());
 
         callerMethod.accept(new CtScanner() {
             private <T> void visitCtAbstractInvocation(CtAbstractInvocation calleeLocation) {
@@ -357,7 +358,7 @@ public class SpringDataJPACollector extends SpoonCollector {
                             registerDomainAccess(collectionDeclaringTypeName, collectionFieldAccessedType, (CtInvocation) calleeLocation);
                         }
                     }
-                    else if (!methodStack.contains(calleeLocation.getExecutable().getExecutableDeclaration().toString())) {
+                    else if (!methodStack.contains(calleeLocation.getExecutable().getExecutableDeclaration().getPosition())) {
                         methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), calleeLocation, methodStack);
                     }
 

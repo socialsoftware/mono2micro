@@ -1,6 +1,7 @@
 package collectors;
 
 import spoon.reflect.code.*;
+import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.declaration.*;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.support.reflect.code.CtInvocationImpl;
@@ -47,14 +48,14 @@ public class FenixFrameworkCollector extends SpoonCollector {
 
 
     @Override
-    public void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<String> methodStack) {
-        methodStack.push(callerMethod.toString());
+    public void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<SourcePosition> methodStack) {
+        methodStack.push(callerMethod.getPosition());
 
-        if (!methodCallees.containsKey(callerMethod.toString())) {
-            methodCallees.put(callerMethod.toString(), getCalleesOf(callerMethod));
+        if (!methodCallees.containsKey(callerMethod.getPosition())) {
+            methodCallees.put(callerMethod.getPosition(), getCalleesOf(callerMethod));
         }
 
-        for (CtAbstractInvocation calleeLocation : methodCallees.get(callerMethod.toString())) {
+        for (CtAbstractInvocation calleeLocation : methodCallees.get(callerMethod.getPosition())) {
 
             try {
                 if (calleeLocation == null)
@@ -66,8 +67,8 @@ public class FenixFrameworkCollector extends SpoonCollector {
                         calleeLocation.getExecutable().getSimpleName().equals("getDomainObject")) {
                     registerDomainObject(calleeLocation);
                 } else if (allEntities.contains(calleeLocation.getExecutable().getDeclaringType().getSimpleName())) {
-                    if (!methodStack.contains(calleeLocation.getExecutable().getExecutableDeclaration().toString())) {
-                        methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), calleeLocation, methodStack);
+                    if (!methodStack.contains(calleeLocation.getExecutable().getExecutableDeclaration().getPosition())) {
+                        methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), null, methodStack);
                     }
                 }
             } catch (Exception e) {

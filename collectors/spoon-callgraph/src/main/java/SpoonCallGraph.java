@@ -24,7 +24,6 @@ public class SpoonCallGraph {
         if (!localPath.isEmpty()) {
             file = new File(localPath.trim());
             repoName = projectName;
-            selectedIndex = 0;
         }
         else {
             file = new File(System.getProperty("user.dir") + "/tmpRepository");
