@@ -30,8 +30,10 @@ public class MyHqlParser {
 
         checkMode(ast.getText());
 
+        // traverse AST and register tables/entities accessed and access mode
         new NodeTraverser(entitiesAccessedWithinQueryCollector).traverseDepthFirst(ast);
 
+        // replace alias in accesses
         for (QueryAccess a : entitiesAccessed) {
             while (true) {
                 boolean changed = false;

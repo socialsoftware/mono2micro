@@ -19,7 +19,8 @@ import java.util.*;
 
 public abstract class SpoonCollector {
 
-    private final String savePath = System.getProperty("user.dir") + File.separator + "collection" + File.separator;
+    private final String collectionSavePath =
+            System.getProperty("user.dir") + File.separator + "data" + File.separator + "collection" + File.separator;
     private int controllerCount;
     private JsonObject callSequence;
     private String projectName;
@@ -63,7 +64,7 @@ public abstract class SpoonCollector {
         float elapsedTimeSec = elapsedTimeMillis/1000F;
         System.out.println("Complete. Elapsed time: " + elapsedTimeSec + " seconds");
 
-        String filepath = savePath + projectName + ".json";
+        String filepath = collectionSavePath + projectName + ".json";
         storeJsonFile(filepath, callSequence);
         System.out.println("File created at: " + filepath);
     }
@@ -128,15 +129,18 @@ public abstract class SpoonCollector {
     }
 
     private void storeJsonFile(String filepath, JsonObject callSequence) {
-        if (filepath != null) {
-            try {
-                FileWriter file = new FileWriter(filepath);
-                Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                file.write(gson.toJson(callSequence));
-                file.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+        try {
+            File filePath = new File(filepath);
+            if (!filePath.exists()) {
+                filePath.mkdirs();
             }
+
+            FileWriter file = new FileWriter(filepath);
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            file.write(gson.toJson(callSequence));
+            file.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

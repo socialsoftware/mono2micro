@@ -149,7 +149,14 @@ public class Graph {
 					JSONArray entityArray = entities.getJSONArray(i);
 					String entity = entityArray.getString(0);
 					String mode = entityArray.getString(1);
-					String cluster = this.getClusterWithEntity(entity).getName();
+					String cluster = null;
+					try {
+						cluster = this.getClusterWithEntity(entity).getName();
+					}
+					catch (Exception e) {
+						System.err.println("Expert cut does not assign entity " + entity + " to a cluster.");
+						throw e;
+					}
 					
 					if (i == 0) {
 						clusterAccess.put("cluster", cluster);

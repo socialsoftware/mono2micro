@@ -11,6 +11,7 @@ interval = 10
 multiplier = 10
 minClusters = 3
 maxClusters = 21
+clusterstep = 1
 
 with open(codebasesPath + codebaseName + "/analyser/similarityMatrix.json") as f:
     similarityMatrix = json.load(f)
@@ -60,7 +61,7 @@ def sendRequest(a,w,r,s):
     r *= multiplier
     s *= multiplier
 
-    for n in range(minClusters,maxClusters):
+    for n in range(minClusters,maxClusters,clusterstep):
         createCut(a,w,r,s,n)
 
 try:

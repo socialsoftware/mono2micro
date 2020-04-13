@@ -376,7 +376,9 @@ public class SpringDataJPACollector extends SpoonCollector {
                     /* MappedSuperclasses are similar to abstract classes. They are supposed to be extended
                     * and not instantiated, they won't even have its own table. When accessing a field from
                     * a class like this one, we will consider its target as the accessor and not the class
-                    * itself */
+                    * itself.
+                    * To reach the setter of an abstract class, it had to be called previously. That's why
+                    * im saving the prevCalleeLocation */
                     if (existsAnnotation(declaringType.getTypeDeclaration().getAnnotations(),
                             "MappedSuperclass")) {
                         try {
