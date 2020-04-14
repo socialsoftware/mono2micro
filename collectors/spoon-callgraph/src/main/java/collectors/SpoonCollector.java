@@ -64,9 +64,9 @@ public abstract class SpoonCollector {
         float elapsedTimeSec = elapsedTimeMillis/1000F;
         System.out.println("Complete. Elapsed time: " + elapsedTimeSec + " seconds");
 
-        String filepath = collectionSavePath + projectName + ".json";
-        storeJsonFile(filepath, callSequence);
-        System.out.println("File created at: " + filepath);
+        String filepath = collectionSavePath;
+        String fileName = projectName + ".json";
+        storeJsonFile(filepath, fileName, callSequence);
     }
 
     private void processController(CtClass controller) {
@@ -94,9 +94,6 @@ public abstract class SpoonCollector {
             System.out.println("Processing Controller: " + controllerFullName + "   " + controllerCount + "/" + controllers.size());
             entitiesSequence = new JsonArray();
             Stack<SourcePosition> methodStack = new Stack<>();
-
-            if (controllerFullName.equals("ActivityModelController.removeSequenceConditionToActivity"))
-                System.out.println("Breakpoint");
 
             methodCallDFS(controllerMethod, null, methodStack);
 
@@ -128,17 +125,19 @@ public abstract class SpoonCollector {
         return false;
     }
 
-    private void storeJsonFile(String filepath, JsonObject callSequence) {
+    private void storeJsonFile(String filepath, String fileName, JsonObject callSequence) {
         try {
             File filePath = new File(filepath);
             if (!filePath.exists()) {
                 filePath.mkdirs();
             }
 
-            FileWriter file = new FileWriter(filepath);
+            FileWriter file = new FileWriter(new File(filePath, fileName));
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             file.write(gson.toJson(callSequence));
             file.close();
+
+            System.out.println("File '" + fileName + "' created at: " + filepath);
         } catch (IOException e) {
             e.printStackTrace();
         }
