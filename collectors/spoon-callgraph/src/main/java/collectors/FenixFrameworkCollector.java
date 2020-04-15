@@ -15,7 +15,8 @@ public class FenixFrameworkCollector extends SpoonCollector {
         super(projectPath, repoName);
         launcher.getEnvironment().setSourceClasspath(new String[]{
                 "./lib/fenix-framework-core-2.0.jar",
-                "./lib/spring-context-5.2.3.RELEASE.jar"}
+                "./lib/spring-context-5.2.3.RELEASE.jar",
+                "./lib/bennu-core-6.6.0.jar"}
         );
         launcher.buildModel();
     }
