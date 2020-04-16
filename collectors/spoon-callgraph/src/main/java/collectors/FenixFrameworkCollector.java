@@ -1,5 +1,6 @@
 package collectors;
 
+import spoon.MavenLauncher;
 import spoon.reflect.code.*;
 import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.declaration.*;
@@ -12,12 +13,13 @@ import java.util.Stack;
 
 public class FenixFrameworkCollector extends SpoonCollector {
     public FenixFrameworkCollector(String projectPath, String repoName) {
-        super(projectPath, repoName);
-        launcher.getEnvironment().setSourceClasspath(new String[]{
-                "./lib/fenix-framework-core-2.0.jar",
-                "./lib/spring-context-5.2.3.RELEASE.jar",
-                "./lib/bennu-core-6.6.0.jar"}
-        );
+        super(repoName);
+
+        // We'll assume that FenixFramework projects always use maven.
+        // We'll also assume that these projects dont use Custom Compile Time Annotation Processors
+        // By using MavenLauncher, the dependencies of the project we'll be detected automatically.
+        launcher = new MavenLauncher(projectPath, MavenLauncher.SOURCE_TYPE.APP_SOURCE);
+
         launcher.buildModel();
     }
 

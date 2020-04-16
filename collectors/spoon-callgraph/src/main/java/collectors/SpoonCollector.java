@@ -36,14 +36,13 @@ public abstract class SpoonCollector {
     Factory factory;
     Launcher launcher;
 
-    SpoonCollector(String projectPath, String repoName) {
+    SpoonCollector(String repoName) {
         callSequence = new JsonObject();
         controllers = new HashSet<>();
         allEntities = new ArrayList<>();
         methodCallees = new HashMap<>();
         interfaces = new HashMap<>();
-        launcher = new Launcher();
-        launcher.addInputResource(projectPath);
+
         this.projectName = repoName;
     }
 
