@@ -40,7 +40,7 @@ public abstract class SpoonCollector {
         callSequence = new JsonObject();
         controllers = new HashSet<>();
         allEntities = new ArrayList<>();
-        methodCallees = new HashMap<SourcePosition, List<CtAbstractInvocation>>();
+        methodCallees = new HashMap<>();
         interfaces = new HashMap<>();
         launcher = new Launcher();
         launcher.addInputResource(projectPath);
