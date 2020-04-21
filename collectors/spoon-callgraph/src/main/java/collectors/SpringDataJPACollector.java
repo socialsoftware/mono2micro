@@ -16,9 +16,12 @@ import spoon.reflect.visitor.CtScanner;
 import spoon.support.reflect.code.CtInvocationImpl;
 import spoon.support.reflect.declaration.CtAnnotationImpl;
 import util.Classes;
+import util.Constants;
 import util.Query;
 import util.Repository;
 import parser.TableNamesFinderExt;
+
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.*;
 
@@ -29,13 +32,26 @@ public class SpringDataJPACollector extends SpoonCollector {
     private ArrayList<Query> namedQueries; // list of tables accessed in a given query
     private List<Repository> repositories;
 
-    public SpringDataJPACollector(String projectPath, String repoName) {
-        super(projectPath, repoName);
-        launcher.getEnvironment().setSourceClasspath(new String[]{
-                "./lib/spring-context-5.2.3.RELEASE.jar",
-                "./lib/spring-data-commons-core-1.4.1.RELEASE.jar",
-                "./lib/spring-data-jpa-2.2.5.RELEASE.jar"
-        });
+    public SpringDataJPACollector(String projectPath, String repoName, int launcherChoice) throws IOException {
+        super(projectPath, repoName, launcherChoice);
+
+        switch (launcherChoice) {
+            case Constants.LAUNCHER:
+            case Constants.JAR_LAUNCHER:
+                launcher.getEnvironment().setSourceClasspath(new String[]{
+                        "./lib/spring-context-5.2.3.RELEASE.jar",
+                        "./lib/spring-data-commons-core-1.4.1.RELEASE.jar",
+                        "./lib/spring-data-jpa-2.2.5.RELEASE.jar"
+                });
+                break;
+            case Constants.MAVEN_LAUNCHER:
+                break;
+            default:
+                System.exit(1);
+                break;
+        }
+
+        System.out.println("Generating AST...");
         launcher.buildModel();
 
         entityClassNameMap = new HashMap<>();

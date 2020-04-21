@@ -26,3 +26,5 @@ and we redirect calls to interfaces to the respective interface implementor
 * Inheritance Strategy (SINGLE_TABLE) has no more than one level of inheritance
 
 * Assuming no fully qualified path names inside HQL 'From' clauses
+
+* Assuming no comments on database access queries
