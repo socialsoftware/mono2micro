@@ -491,15 +491,15 @@
       "R"
     ],
     [
-      "LikeEntity",
-      "R"
-    ],
-    [
-      "LikeEntity",
-      "R"
-    ],
-    [
       "Post",
+      "R"
+    ],
+    [
+      "LikeEntity",
+      "R"
+    ],
+    [
+      "LikeEntity",
       "R"
     ],
     [
@@ -729,11 +729,11 @@
       "R"
     ],
     [
-      "LikeEntity",
+      "Post",
       "R"
     ],
     [
-      "Post",
+      "LikeEntity",
       "R"
     ],
     [
@@ -957,16 +957,12 @@
       "R"
     ],
     [
-      "Post",
-      "R"
-    ],
-    [
       "LikeEntity",
       "R"
     ],
     [
       "Post",
-      "W"
+      "R"
     ],
     [
       "Post",
@@ -979,10 +975,6 @@
     [
       "SeoRobotAgent",
       "R"
-    ],
-    [
-      "Post",
-      "W"
     ]
   ],
   "SympathyController.dislikeIt": [
@@ -1143,10 +1135,6 @@
       "R"
     ],
     [
-      "LikeEntity",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
@@ -1159,6 +1147,10 @@
       "R"
     ],
     [
+      "LikeEntity",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
@@ -1175,11 +1167,11 @@
       "R"
     ],
     [
-      "LikeEntity",
+      "Post",
       "R"
     ],
     [
-      "Post",
+      "LikeEntity",
       "R"
     ],
     [
@@ -1247,6 +1239,10 @@
       "R"
     ],
     [
+      "Post",
+      "R"
+    ],
+    [
       "LikeEntity",
       "R"
     ],
@@ -1260,10 +1256,6 @@
     ],
     [
       "LikeEntity",
-      "R"
-    ],
-    [
-      "Post",
       "R"
     ]
   ],
@@ -1421,22 +1413,6 @@
       "R"
     ],
     [
-      "Post",
-      "R"
-    ],
-    [
-      "LikeEntity",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "LikeEntity",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
@@ -1457,7 +1433,15 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
       "LikeEntity",
+      "R"
+    ],
+    [
+      "Post",
       "R"
     ],
     [
@@ -1481,7 +1465,15 @@
       "R"
     ],
     [
+      "LikeEntity",
+      "R"
+    ],
+    [
       "Post",
+      "R"
+    ],
+    [
+      "LikeEntity",
       "R"
     ],
     [
@@ -1533,11 +1525,11 @@
       "R"
     ],
     [
-      "LikeEntity",
+      "Post",
       "R"
     ],
     [
-      "Post",
+      "LikeEntity",
       "R"
     ],
     [
@@ -1557,9 +1549,19 @@
     [
       "StoredFile",
       "R"
+    ],
+    [
+      "StoredFile",
+      "W"
     ]
   ],
   "StoredFileController.editFileById": [
+    [
+      "StoredFile",
+      "R"
+    ]
+  ],
+  "StoredFileController.index": [
     [
       "StoredFile",
       "R"
@@ -1580,6 +1582,10 @@
     ],
     [
       "User",
+      "W"
+    ],
+    [
+      "StoredFile",
       "W"
     ],
     [
@@ -1626,6 +1632,10 @@
     ],
     [
       "User",
+      "W"
+    ],
+    [
+      "StoredFile",
       "W"
     ],
     [
@@ -1825,19 +1835,19 @@
       "R"
     ],
     [
-      "Post",
-      "R"
-    ],
-    [
-      "Post",
-      "R"
-    ],
-    [
-      "Post",
-      "R"
-    ],
-    [
       "Tag",
+      "R"
+    ],
+    [
+      "Post",
+      "R"
+    ],
+    [
+      "Post",
+      "R"
+    ],
+    [
+      "Post",
       "R"
     ]
   ],
@@ -1859,10 +1869,6 @@
       "R"
     ],
     [
-      "Post",
-      "R"
-    ],
-    [
       "Tag",
       "R"
     ],
@@ -1876,16 +1882,6 @@
     ],
     [
       "Tag",
-      "R"
-    ]
-  ],
-  "AdminController.index": [
-    [
-      "Post",
-      "R"
-    ],
-    [
-      "Post",
       "R"
     ],
     [
@@ -1908,31 +1904,7 @@
     ],
     [
       "Setting",
-      "W"
-    ],
-    [
-      "Setting",
       "R"
-    ],
-    [
-      "Setting",
-      "W"
-    ],
-    [
-      "Setting",
-      "W"
-    ],
-    [
-      "Setting",
-      "W"
-    ],
-    [
-      "Setting",
-      "R"
-    ],
-    [
-      "Setting",
-      "W"
     ],
     [
       "Setting",
@@ -1956,6 +1928,14 @@
     ],
     [
       "Setting",
+      "R"
+    ],
+    [
+      "Setting",
+      "W"
+    ],
+    [
+      "Setting",
       "W"
     ],
     [
@@ -1972,10 +1952,6 @@
     ],
     [
       "Setting",
-      "W"
-    ],
-    [
-      "Setting",
       "R"
     ],
     [
@@ -1988,15 +1964,7 @@
     ],
     [
       "Setting",
-      "W"
-    ],
-    [
-      "Setting",
       "R"
-    ],
-    [
-      "Setting",
-      "W"
     ],
     [
       "Setting",

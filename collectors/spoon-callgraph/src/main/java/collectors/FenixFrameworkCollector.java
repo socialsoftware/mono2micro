@@ -7,19 +7,38 @@ import spoon.reflect.declaration.*;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.support.reflect.code.CtInvocationImpl;
 import spoon.support.reflect.code.CtReturnImpl;
+import util.Constants;
+
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Stack;
 
 public class FenixFrameworkCollector extends SpoonCollector {
-    public FenixFrameworkCollector(String projectPath, String repoName) {
-        super(repoName);
+    public FenixFrameworkCollector(String projectPath, String repoName, int launcherChoice) throws IOException {
+        super(projectPath, repoName, launcherChoice);
 
         // We'll assume that FenixFramework projects always use maven.
         // We'll also assume that these projects dont use Custom Compile Time Annotation Processors
         // By using MavenLauncher, the dependencies of the project we'll be detected automatically.
-        launcher = new MavenLauncher(projectPath, MavenLauncher.SOURCE_TYPE.APP_SOURCE);
 
+        switch (launcherChoice) {
+            case Constants.LAUNCHER:
+            case Constants.JAR_LAUNCHER:
+                launcher.getEnvironment().setSourceClasspath(new String[]{
+                        "./lib/fenix-framework-core-2.0.jar",
+                        "./lib/spring-context-5.2.3.RELEASE.jar",
+                        "./lib/bennu-core-6.6.0.jar"}
+                );
+                break;
+            case Constants.MAVEN_LAUNCHER:
+                break;
+            default:
+                System.exit(1);
+                break;
+        }
+
+        System.out.println("Generating AST...");
         launcher.buildModel();
     }
 

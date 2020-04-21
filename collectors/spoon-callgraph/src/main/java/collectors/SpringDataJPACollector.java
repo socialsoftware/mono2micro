@@ -7,9 +7,6 @@ import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import parser.MyHqlParser;
 import parser.QueryAccess;
-import spoon.JarLauncher;
-import spoon.Launcher;
-import spoon.MavenLauncher;
 import spoon.reflect.code.*;
 import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.declaration.*;
@@ -19,11 +16,12 @@ import spoon.reflect.visitor.CtScanner;
 import spoon.support.reflect.code.CtInvocationImpl;
 import spoon.support.reflect.declaration.CtAnnotationImpl;
 import util.Classes;
+import util.Constants;
 import util.Query;
 import util.Repository;
 import parser.TableNamesFinderExt;
 
-import java.io.File;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.*;
 
@@ -34,30 +32,26 @@ public class SpringDataJPACollector extends SpoonCollector {
     private ArrayList<Query> namedQueries; // list of tables accessed in a given query
     private List<Repository> repositories;
 
-    public SpringDataJPACollector(String projectPath, String repoName) {
-        super(repoName);
+    public SpringDataJPACollector(String projectPath, String repoName, int launcherChoice) throws IOException {
+        super(projectPath, repoName, launcherChoice);
 
-        // JarLauncher will decompile the bytecode given back to source code.
-        // The annotations that are important for us survive the compilation process.
-        // Some projects may have custom libs that allow the use of
-        // annotations to automatically generate code during compile phase. By translating the
-        // compiled code back to source code we'll have access to the automatically generated code
-        // (that wouldn't be available in the original source code)
+        switch (launcherChoice) {
+            case Constants.LAUNCHER:
+            case Constants.JAR_LAUNCHER:
+                launcher.getEnvironment().setSourceClasspath(new String[]{
+                        "./lib/spring-context-5.2.3.RELEASE.jar",
+                        "./lib/spring-data-commons-core-1.4.1.RELEASE.jar",
+                        "./lib/spring-data-jpa-2.2.5.RELEASE.jar"
+                });
+                break;
+            case Constants.MAVEN_LAUNCHER:
+                break;
+            default:
+                System.exit(1);
+                break;
+        }
 
-//        launcher = new MavenLauncher(projectPath, MavenLauncher.SOURCE_TYPE.APP_SOURCE);
-
-        launcher = new JarLauncher("/home/samuel/ProjetoTese/repos/SpringBlog_adapted/build/libs/SpringBlog-2.9.4.jar",
-                null);
-
-//        launcher = new Launcher();
-//        launcher.addInputResource(projectPath);
-
-        launcher.getEnvironment().setSourceClasspath(new String[]{
-                "./lib/spring-context-5.2.3.RELEASE.jar",
-                "./lib/spring-data-commons-core-1.4.1.RELEASE.jar",
-                "./lib/spring-data-jpa-2.2.5.RELEASE.jar"
-        });
-
+        System.out.println("Generating AST...");
         launcher.buildModel();
 
         entityClassNameMap = new HashMap<>();

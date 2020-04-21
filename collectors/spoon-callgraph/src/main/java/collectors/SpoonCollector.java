@@ -4,12 +4,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import org.apache.commons.io.FileUtils;
+import spoon.DecompiledResource;
 import spoon.Launcher;
+import spoon.MavenLauncher;
 import spoon.reflect.code.CtAbstractInvocation;
 import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.declaration.*;
 import spoon.reflect.factory.Factory;
 import spoon.reflect.visitor.filter.TypeFilter;
+import util.Constants;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -19,8 +23,6 @@ import java.util.*;
 
 public abstract class SpoonCollector {
 
-    private final String collectionSavePath =
-            System.getProperty("user.dir") + File.separator + "data" + File.separator + "collection" + File.separator;
     private int controllerCount;
     private JsonObject callSequence;
     private String projectName;
@@ -36,7 +38,12 @@ public abstract class SpoonCollector {
     Factory factory;
     Launcher launcher;
 
-    SpoonCollector(String repoName) {
+    SpoonCollector(String projectPath, String repoName, int launcherChoice) throws IOException {
+        File file = new File(Constants.DECOMPILED_SOURCES_PATH);
+        if (file.exists()) {
+            FileUtils.deleteDirectory(file);
+        }
+
         callSequence = new JsonObject();
         controllers = new HashSet<>();
         allEntities = new ArrayList<>();
@@ -44,9 +51,42 @@ public abstract class SpoonCollector {
         interfaces = new HashMap<>();
 
         this.projectName = repoName;
+
+        switch (launcherChoice) {
+            case Constants.LAUNCHER:
+                launcher = new Launcher();
+                launcher.addInputResource(projectPath);
+                break;
+
+            case Constants.MAVEN_LAUNCHER:
+                launcher = new MavenLauncher(projectPath, MavenLauncher.SOURCE_TYPE.APP_SOURCE);
+                break;
+
+            case Constants.JAR_LAUNCHER:
+                launcher = new Launcher();
+                String[] split = projectPath.split(",");
+                for (String packagePath : split) {
+                    String outputSourcesDir = Constants.DECOMPILED_SOURCES_PATH
+                            + packagePath.substring(packagePath.lastIndexOf("/")+1)
+                            + File.separator;
+                    new File(outputSourcesDir).mkdirs();
+
+                    new DecompiledResource(
+                            packagePath.trim(),
+                            null,
+                            null,
+                            outputSourcesDir
+                    );
+                    launcher.addInputResource(outputSourcesDir);
+                }
+                break;
+            default:
+                System.exit(1);
+                break;
+        }
     }
 
-    public void run() {
+    public void run() throws IOException {
         factory = launcher.getFactory();
 
         System.out.println("Processing Project: " + projectName);
@@ -63,9 +103,13 @@ public abstract class SpoonCollector {
         float elapsedTimeSec = elapsedTimeMillis/1000F;
         System.out.println("Complete. Elapsed time: " + elapsedTimeSec + " seconds");
 
-        String filepath = collectionSavePath;
         String fileName = projectName + ".json";
-        storeJsonFile(filepath, fileName, callSequence);
+        storeJsonFile(Constants.COLLECTION_SAVE_PATH, fileName, callSequence);
+
+        File file = new File(Constants.DECOMPILED_SOURCES_PATH);
+        if (file.exists()) {
+            FileUtils.deleteDirectory(file);
+        }
     }
 
     private void processController(CtClass controller) {
