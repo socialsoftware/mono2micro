@@ -31,6 +31,7 @@ public class SpringDataJPACollector extends SpoonCollector {
     private Map<String, Classes> tableClassesAccessedMap; // Classes related to a given table
     private ArrayList<Query> namedQueries; // list of tables accessed in a given query
     private List<Repository> repositories;
+    private Repository newRepository;
 
     public SpringDataJPACollector(String projectPath, String repoName, int launcherChoice) throws IOException {
         super(projectPath, repoName, launcherChoice);
@@ -79,9 +80,9 @@ public class SpringDataJPACollector extends SpoonCollector {
                 continue;
             }
 
-            Repository repository = checkIfClassIsARepository(clazz, clazzAnnotations);
-            if (repository != null) {
-                repositories.add(repository);
+            if (isRepository(clazz.getReference())) {
+                repositories.add(newRepository);
+                newRepository = null;
                 continue;
             }
 
@@ -100,11 +101,19 @@ public class SpringDataJPACollector extends SpoonCollector {
         allEntities.sort((string1, string2) -> Integer.compare(string2.length(), string1.length()));  //Longer length first
 
         // 2nd iteration, to retrieve JPA related information and interface explicit implementations
+        List<String> toDeleteInterfaces = new ArrayList<>();
+        
         for(CtType<?> clazz : factory.Class().getAll()) {
             Set<CtTypeReference<?>> superInterfaces = clazz.getSuperInterfaces();
             for (CtTypeReference ctTypeReference : superInterfaces) {
-                if (interfaces.containsKey(ctTypeReference.getSimpleName())) {
+                CtType interfaceValue = interfaces.get(ctTypeReference.getSimpleName());
+                if (interfaceValue == null) {
                     interfaces.replace(ctTypeReference.getSimpleName(), clazz);
+                }
+                else {
+                    // more than one implementation for this interface
+                    // don't replace interface calls by any explicit implementation
+                    toDeleteInterfaces.add(ctTypeReference.getSimpleName());
                 }
             }
 
@@ -114,19 +123,31 @@ public class SpringDataJPACollector extends SpoonCollector {
                 parseEntity(clazz, entityAnnotation, clazzAnnotations);
             }
         }
+
+        for (String interfaceClassName : toDeleteInterfaces) {
+            interfaces.remove(interfaceClassName);
+        }
     }
 
-    private Repository checkIfClassIsARepository(CtType<?> clazz, List<CtAnnotation<? extends Annotation>> clazzAnnotations) {
-        // Spring Data JPA Repositories extend *Repository classes from those packages
-        for (Object o : clazz.getSuperInterfaces().toArray()) {
+    /*
+    *  isRepository: true if class Package = org.springframework.data.repository or if it extends (in)directly from it */
+    private boolean isRepository(CtTypeReference<?> clazzReference) {
+        if (clazzReference.getPackage().toString().contains("org.springframework.data.repository") ||
+                clazzReference.getPackage().toString().contains("org.springframework.data.jpa.repository"))
+            return true;
+
+        for (Object o : clazzReference.getSuperInterfaces().toArray()) {
             CtTypeReference ctInterface = (CtTypeReference) o;
-            String packageName = ctInterface.getPackage().getSimpleName();
-            if (packageName.equals("org.springframework.data.jpa.repository") ||
-                    packageName.equals("org.springframework.data.repository"))
-                return new Repository(clazz.getSimpleName(), ctInterface.getActualTypeArguments().get(0).getSimpleName());
+            String iPackageName = ctInterface.getPackage().getSimpleName();
+            if (iPackageName.contains("org.springframework.data.repository") ||
+                    iPackageName.contains("org.springframework.data.jpa.repository")) {
+                newRepository = new Repository(clazzReference.getSimpleName(), ctInterface.getActualTypeArguments().get(0).getSimpleName());
+                return true;
+            }
         }
 
-        return null;
+        newRepository = null;
+        return false;
     }
 
     private void parseEntity(CtType<?> clazz, CtAnnotation atEntityAnnotation, List<CtAnnotation<? extends Annotation>> clazzAnnotations) {
@@ -346,9 +367,9 @@ public class SpringDataJPACollector extends SpoonCollector {
                         return;
 
                     try {
-                        CtMethod calleeLocationMethod = (CtMethod) calleeLocation.getExecutable().getExecutableDeclaration();
-                        if (calleeLocationMethod.isAbstract()) {
-                            boolean alreadyProcessed = updateCalleeLocationWithExplicitImplementation(calleeLocation, calleeLocationMethod);
+                        CtMethod calleeMethod = (CtMethod) calleeLocation.getExecutable().getExecutableDeclaration();
+                        if (calleeMethod.isAbstract()) {
+                            boolean alreadyProcessed = updateCalleeLocationWithExplicitImplementation(calleeLocation, calleeMethod);
                             if (alreadyProcessed)
                                 return;
                         }
@@ -356,16 +377,36 @@ public class SpringDataJPACollector extends SpoonCollector {
                         // ConstructorCall, ignore
                     }
 
-                    if (calleeLocation.getExecutable().getDeclaringType() == null) {
-                        // Non declared method. SpringFramework Repository default query
-                        // extends JpaRepository
-                        String targetClassName = ((CtInvocationImpl) calleeLocation).getTarget().getType().getSimpleName();
-                        if (isRepository(targetClassName)) {
-                            registerSpringDataRepositoryAccess(targetClassName, calleeLocation.getExecutable().getSimpleName());
+                    // In some cases the SpringDataJPA may be in the classpath (for instance when MavenLauncher is
+                    // used. In other cases, it won't, and getDeclaringType to a SpringDataJPA class will return null
+                    if (calleeLocation.getExecutable().getDeclaringType() == null ||
+                            isRepository(calleeLocation.getExecutable().getDeclaringType())) {
+                        // call to a repository
+                        CtTypeReference targetTypeReference = ((CtInvocationImpl) calleeLocation).getTarget().getType();
+                        String targetClassName = targetTypeReference.getSimpleName();
+                        if (isProjectDeclaredRepository(targetClassName)) {
+                            if (calleeLocation.getExecutable().getDeclaringType() == null) {
+                                // out of our classpath -> SpringData default repository method
+                                registerSpringDataRepositoryAccess(targetClassName, calleeLocation.getExecutable().getSimpleName());
+                            }
+                            else {
+                                CtType targetType = targetTypeReference.getTypeDeclaration();
+                                List<CtMethod> methodsByName = targetType.getMethodsByName(calleeLocation.getExecutable().getSimpleName());
+
+                                boolean declared = false;
+                                for (CtMethod ctM : methodsByName) {
+                                    if (compareWithMethod(calleeLocation.getExecutable(), ctM)) {
+                                        // method declared in project's class
+                                        declared = true;
+                                        registerRepositoryAccess(calleeLocation.getExecutable());
+                                        break;
+                                    }
+                                }
+                                if (!declared) {
+                                    registerSpringDataRepositoryAccess(targetClassName, calleeLocation.getExecutable().getSimpleName());
+                                }
+                            }
                         }
-                    }
-                    else if (isRepository(calleeLocation.getExecutable().getDeclaringType().getSimpleName())) {
-                        registerRepositoryAccess(calleeLocation.getExecutable());
                     }
                     else if (isCallToCollections(calleeLocation)) {
                         inspectTargetFromCall((CtInvocation) calleeLocation);
@@ -461,6 +502,23 @@ public class SpringDataJPACollector extends SpoonCollector {
         methodStack.pop();
     }
 
+    private boolean compareWithMethod(CtExecutableReference executable, CtMethod ctM) {
+        // compare return type
+        if (ctM.getType().getSimpleName().equals(executable.getType().getSimpleName())) {
+            // compare parameters type
+            List ctMParameters = ctM.getParameters();
+            List executableParameters = executable.getParameters();
+            for (int i = 0; i < ctMParameters.size(); i++) {
+                CtParameter ctMP = (CtParameter) ctMParameters.get(i);
+                CtTypeReference eP = ((CtTypeReference) executableParameters.get(i));
+                if (!ctMP.getType().getSimpleName().equals(eP.getSimpleName())) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     /*
     * Return true = we reached a call to a SpringData Repository and we processed it. End of this call chain
     * was reached so the methodCallDFS function does not have to proceed (also if it proceeded it would
@@ -491,7 +549,7 @@ public class SpringDataJPACollector extends SpoonCollector {
                 // May be a SpringDataJPA implicit method access
                 // unfortunately we cant get reference a to those methods so we have to duplicate code
                 String targetClassName = ((CtInvocation) calleeLocation).getTarget().getType().getSimpleName();
-                if (isRepository(targetClassName)) {
+                if (isProjectDeclaredRepository(targetClassName)) {
                     registerSpringDataRepositoryAccess(targetClassName, calleeLocation.getExecutable().getSimpleName());
                 }
                 // end of call chain
@@ -820,11 +878,15 @@ public class SpringDataJPACollector extends SpoonCollector {
         }
     }
 
-    private boolean isRepository(String className) {
+    private boolean isProjectDeclaredRepository(String className) {
         for (Repository r : repositories) {
             if (r.getRepositoryClassName().equals(className))
                 return true;
         }
+        return false;
+    }
+
+    private boolean isSpringDataJPARepository(CtTypeReference declaringType) {
         return false;
     }
 

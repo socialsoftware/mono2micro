@@ -92,6 +92,8 @@ public abstract class SpoonCollector {
                 System.exit(1);
                 break;
         }
+
+        launcher.getEnvironment().setIgnoreDuplicateDeclarations(true);
     }
 
     public void run() throws IOException {

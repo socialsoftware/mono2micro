@@ -1,0 +1,260 @@
+{
+  "ArticleController.createArticle": [
+    [
+      "ArticleEntity",
+      "W"
+    ],
+    [
+      "RemindEntity",
+      "W"
+    ]
+  ],
+  "ArticleController.delete": [
+    [
+      "ArticleEntity",
+      "W"
+    ]
+  ],
+  "ArticleController.getListByTag": [
+    [
+      "ArticleTagEntity",
+      "R"
+    ]
+  ],
+  "ArticleController.search": [
+    [
+      "ArticleEntity",
+      "R"
+    ]
+  ],
+  "ArticleController.update": [
+    [
+      "ArticleHistoryEntity",
+      "W"
+    ],
+    [
+      "ArticleEntity",
+      "W"
+    ]
+  ],
+  "GroupController.delete": [
+    [
+      "GroupEntity",
+      "W"
+    ]
+  ],
+  "GroupController.list": [
+    [
+      "GroupEntity",
+      "R"
+    ]
+  ],
+  "GroupController.save": [
+    [
+      "GroupEntity",
+      "W"
+    ]
+  ],
+  "RemindController.getAllRemindByUsers": [
+    [
+      "RemindEntity",
+      "R"
+    ],
+    [
+      "RemindEntity",
+      "R"
+    ]
+  ],
+  "RemindController.info": [
+    [
+      "RemindEntity",
+      "R"
+    ]
+  ],
+  "RemindController.list": [
+    [
+      "RemindEntity",
+      "R"
+    ]
+  ],
+  "UserController.impleInfo": [
+    [
+      "UserEntity",
+      "R"
+    ]
+  ],
+  "UserController.info": [
+    [
+      "UserEntity",
+      "R"
+    ]
+  ],
+  "UserController.list": [
+    [
+      "UserEntity",
+      "R"
+    ]
+  ],
+  "UserController.register": [
+    [
+      "RoleEntity",
+      "R"
+    ],
+    [
+      "UserEntity",
+      "W"
+    ]
+  ],
+  "UserController.update": [
+    [
+      "UserEntity",
+      "R"
+    ],
+    [
+      "UserEntity",
+      "R"
+    ],
+    [
+      "UserEntity",
+      "W"
+    ]
+  ],
+  "UserController.updatePassword": [
+    [
+      "UserEntity",
+      "R"
+    ]
+  ],
+  "UserController.userFollowed": [
+    [
+      "UserEntity",
+      "R"
+    ]
+  ],
+  "ArticleTagController.list": [
+    [
+      "ArticleTagEntity",
+      "R"
+    ]
+  ],
+  "ArticleTypeController.list": [
+    [
+      "ArticleTypeEntity",
+      "R"
+    ]
+  ],
+  "CommentController.createSpace": [
+    [
+      "CommentEntity",
+      "W"
+    ]
+  ],
+  "CommentController.delete": [
+    [
+      "CommentEntity",
+      "W"
+    ]
+  ],
+  "CommentController.getAllCommentByArticle": [
+    [
+      "CommentEntity",
+      "R"
+    ]
+  ],
+  "SpaceController.createSpace": [
+    [
+      "SpaceEntity",
+      "W"
+    ]
+  ],
+  "SpaceController.getAllArticleBySpace": [
+    [
+      "SpaceEntity",
+      "R"
+    ],
+    [
+      "ArticleEntity",
+      "R"
+    ]
+  ],
+  "SpaceController.getAllPrivateSpaceByUser": [
+    [
+      "SpaceEntity",
+      "R"
+    ]
+  ],
+  "SpaceController.getAllPublicSpaceByUser": [
+    [
+      "SpaceEntity",
+      "R"
+    ]
+  ],
+  "SpaceController.getAllSpaceByPrivatedFalseAndUser": [
+    [
+      "SpaceEntity",
+      "R"
+    ]
+  ],
+  "SpaceController.getAllSpaceByUser": [
+    [
+      "SpaceEntity",
+      "R"
+    ]
+  ],
+  "SpaceController.getAllSpaces": [
+    [
+      "SpaceEntity",
+      "R"
+    ]
+  ],
+  "SpaceController.getArticleCountBySpace": [
+    [
+      "SpaceEntity",
+      "R"
+    ]
+  ],
+  "SpaceController.getSpaceInfoByCode": [
+    [
+      "SpaceEntity",
+      "R"
+    ]
+  ],
+  "SpaceController.getSpaceInfoById": [
+    [
+      "SpaceEntity",
+      "R"
+    ]
+  ],
+  "SpaceController.list": [
+    [
+      "SpaceEntity",
+      "R"
+    ]
+  ],
+  "ArticleHistoryController.getArticleHistoryInfomation": [
+    [
+      "ArticleHistoryEntity",
+      "R"
+    ]
+  ],
+  "ArticleHistoryController.getByArticle": [
+    [
+      "ArticleHistoryEntity",
+      "R"
+    ]
+  ],
+  "ArticleHistoryController.restoreArticleHistoryInfomation": [
+    [
+      "ArticleHistoryEntity",
+      "R"
+    ],
+    [
+      "ArticleEntity",
+      "W"
+    ],
+    [
+      "ArticleHistoryEntity",
+      "W"
+    ]
+  ]
+}
