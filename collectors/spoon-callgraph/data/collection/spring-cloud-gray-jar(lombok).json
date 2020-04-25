@@ -1,4 +1,10 @@
 {
+  "OperateRecordResource.list": [
+    [
+      "OperateRecordDO",
+      "R"
+    ]
+  ],
   "GrayTrackResource.delete": [
     [
       "UserServiceAuthorityDO",
@@ -115,6 +121,12 @@
       "R"
     ]
   ],
+  "UserResource.page": [
+    [
+      "UserDO",
+      "R"
+    ]
+  ],
   "UserResource.resetPassword": [
     [
       "UserDO",
@@ -131,6 +143,12 @@
     [
       "UserDO",
       "W"
+    ]
+  ],
+  "ServiceOwnerResource.list": [
+    [
+      "ServiceOwnerDO",
+      "R"
     ]
   ],
   "ServiceOwnerResource.save": [
@@ -224,6 +242,10 @@
     ]
   ],
   "GrayResource.allOpens": [
+    [
+      "GrayInstanceDO",
+      "R"
+    ],
     [
       "GrayPolicyDO",
       "R"

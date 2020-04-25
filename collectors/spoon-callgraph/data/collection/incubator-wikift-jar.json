@@ -14,6 +14,10 @@
     ],
     [
       "ArticleEntity",
+      "W"
+    ],
+    [
+      "ArticleEntity",
       "R"
     ],
     [
@@ -90,6 +94,16 @@
     ],
     [
       "RemindEntity",
+      "W"
+    ],
+    [
+      "RemindEntity",
+      "W"
+    ]
+  ],
+  "ArticleController.delete": [
+    [
+      "ArticleEntity",
       "W"
     ]
   ],
@@ -193,9 +207,33 @@
     [
       "ArticleHistoryEntity",
       "W"
+    ],
+    [
+      "ArticleHistoryEntity",
+      "W"
+    ],
+    [
+      "ArticleEntity",
+      "W"
     ]
   ],
   "GroupController.delete": [
+    [
+      "GroupEntity",
+      "W"
+    ],
+    [
+      "GroupEntity",
+      "W"
+    ]
+  ],
+  "GroupController.list": [
+    [
+      "GroupEntity",
+      "R"
+    ]
+  ],
+  "GroupController.save": [
     [
       "GroupEntity",
       "W"
@@ -210,6 +248,18 @@
       "RemindEntity",
       "R"
     ],
+    [
+      "RemindEntity",
+      "R"
+    ]
+  ],
+  "RemindController.info": [
+    [
+      "RemindEntity",
+      "R"
+    ]
+  ],
+  "RemindController.list": [
     [
       "RemindEntity",
       "R"
@@ -333,6 +383,12 @@
       "R"
     ]
   ],
+  "UserController.list": [
+    [
+      "UserEntity",
+      "R"
+    ]
+  ],
   "UserController.register": [
     [
       "UserEntity",
@@ -372,6 +428,10 @@
     ],
     [
       "RoleEntity",
+      "W"
+    ],
+    [
+      "UserEntity",
       "W"
     ]
   ],
@@ -420,6 +480,10 @@
     ],
     [
       "UserEntity",
+      "R"
+    ],
+    [
+      "UserEntity",
       "W"
     ],
     [
@@ -433,6 +497,10 @@
     [
       "UserEntity",
       "R"
+    ],
+    [
+      "UserEntity",
+      "W"
     ],
     [
       "UserEntity",
@@ -462,6 +530,10 @@
     ]
   ],
   "UserController.updatePassword": [
+    [
+      "UserEntity",
+      "R"
+    ],
     [
       "UserEntity",
       "R"
@@ -527,6 +599,30 @@
       "R"
     ]
   ],
+  "ArticleTagController.list": [
+    [
+      "ArticleTagEntity",
+      "R"
+    ]
+  ],
+  "ArticleTypeController.list": [
+    [
+      "ArticleTypeEntity",
+      "R"
+    ]
+  ],
+  "CommentController.createSpace": [
+    [
+      "CommentEntity",
+      "W"
+    ]
+  ],
+  "CommentController.delete": [
+    [
+      "CommentEntity",
+      "W"
+    ]
+  ],
   "CommentController.getAllCommentByArticle": [
     [
       "ArticleEntity",
@@ -541,6 +637,12 @@
     [
       "ArticleEntity",
       "R"
+    ]
+  ],
+  "SpaceController.createSpace": [
+    [
+      "SpaceEntity",
+      "W"
     ]
   ],
   "SpaceController.getAllArticleBySpace": [
@@ -635,6 +737,12 @@
       "R"
     ]
   ],
+  "SpaceController.getSpaceInfoById": [
+    [
+      "SpaceEntity",
+      "R"
+    ]
+  ],
   "SpaceController.list": [
     [
       "SpaceEntity",
@@ -683,6 +791,10 @@
       "W"
     ],
     [
+      "ArticleEntity",
+      "W"
+    ],
+    [
       "ArticleHistoryEntity",
       "W"
     ],
@@ -716,6 +828,10 @@
     ],
     [
       "ArticleEntity",
+      "W"
+    ],
+    [
+      "ArticleHistoryEntity",
       "W"
     ],
     [

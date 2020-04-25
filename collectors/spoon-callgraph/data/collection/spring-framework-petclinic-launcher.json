@@ -187,24 +187,6 @@
       "W"
     ]
   ],
-  "OwnerController.initUpdateOwnerForm": [
-    [
-      "Owner",
-      "R"
-    ],
-    [
-      "Owner",
-      "R"
-    ],
-    [
-      "Owner",
-      "R"
-    ],
-    [
-      "Pet",
-      "R"
-    ]
-  ],
   "OwnerController.processCreationForm": [
     [
       "Owner",
@@ -231,22 +213,6 @@
     [
       "Owner",
       "R"
-    ],
-    [
-      "Pet",
-      "R"
-    ],
-    [
-      "Owner",
-      "R"
-    ],
-    [
-      "Owner",
-      "R"
-    ],
-    [
-      "Owner",
-      "R"
     ]
   ],
   "OwnerController.processUpdateOwnerForm": [
@@ -257,24 +223,6 @@
     [
       "Owner",
       "W"
-    ]
-  ],
-  "OwnerController.showOwner": [
-    [
-      "Owner",
-      "R"
-    ],
-    [
-      "Owner",
-      "R"
-    ],
-    [
-      "Owner",
-      "R"
-    ],
-    [
-      "Pet",
-      "R"
     ]
   ],
   "VetController.showResourcesVetList": [
