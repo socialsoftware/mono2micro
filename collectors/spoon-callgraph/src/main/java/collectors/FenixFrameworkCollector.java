@@ -1,6 +1,5 @@
 package collectors;
 
-import spoon.MavenLauncher;
 import spoon.reflect.code.*;
 import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.declaration.*;
@@ -25,14 +24,12 @@ public class FenixFrameworkCollector extends SpoonCollector {
         switch (launcherChoice) {
             case Constants.LAUNCHER:
             case Constants.JAR_LAUNCHER:
+            case Constants.MAVEN_LAUNCHER:
                 launcher.getEnvironment().setSourceClasspath(new String[]{
                         "./lib/fenix-framework-core-2.0.jar",
                         "./lib/spring-context-5.2.3.RELEASE.jar",
                         "./lib/bennu-core-6.6.0.jar"}
                 );
-                break;
-            case Constants.MAVEN_LAUNCHER:
-                break;
             default:
                 System.exit(1);
                 break;

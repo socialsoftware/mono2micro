@@ -39,9 +39,9 @@ public abstract class SpoonCollector {
     Launcher launcher;
 
     SpoonCollector(String projectPath, String repoName, int launcherChoice) throws IOException {
-        File file = new File(Constants.DECOMPILED_SOURCES_PATH);
-        if (file.exists()) {
-            FileUtils.deleteDirectory(file);
+        File decompiledDir = new File(Constants.DECOMPILED_SOURCES_PATH);
+        if (decompiledDir.exists()) {
+            FileUtils.deleteDirectory(decompiledDir);
         }
 
         callSequence = new JsonObject();
@@ -64,20 +64,28 @@ public abstract class SpoonCollector {
 
             case Constants.JAR_LAUNCHER:
                 launcher = new Launcher();
-                String[] split = projectPath.split(",");
-                for (String packagePath : split) {
-                    String outputSourcesDir = Constants.DECOMPILED_SOURCES_PATH
+                File projectDir = new File(projectPath);
+                String[] extensions = new String[]{"jar"};
+                Collection<File> packageFiles = FileUtils.listFiles(
+                        projectDir,
+                        extensions,
+                        true
+                );
+
+                for (File packageFile : packageFiles) {
+                    String packagePath = packageFile.getPath();
+                    String decompiledPackageSourcesDir = Constants.DECOMPILED_SOURCES_PATH
                             + packagePath.substring(packagePath.lastIndexOf("/")+1)
                             + File.separator;
-                    new File(outputSourcesDir).mkdirs();
+                    new File(decompiledPackageSourcesDir).mkdirs();
 
                     new DecompiledResource(
-                            packagePath.trim(),
+                            packagePath,
                             null,
                             null,
-                            outputSourcesDir
+                            decompiledPackageSourcesDir
                     );
-                    launcher.addInputResource(outputSourcesDir);
+                    launcher.addInputResource(decompiledPackageSourcesDir);
                 }
                 break;
             default:

@@ -1,7 +1,5 @@
 package util;
 
-import spoon.reflect.declaration.CtType;
-
 public class Repository {
     private String repositoryClassName;
     private String typeClassName;

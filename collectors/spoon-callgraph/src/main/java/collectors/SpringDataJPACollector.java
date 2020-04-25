@@ -7,6 +7,7 @@ import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import parser.MyHqlParser;
 import parser.QueryAccess;
+import parser.TableNamesFinderExt;
 import spoon.reflect.code.*;
 import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.declaration.*;
@@ -19,7 +20,6 @@ import util.Classes;
 import util.Constants;
 import util.Query;
 import util.Repository;
-import parser.TableNamesFinderExt;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -38,13 +38,12 @@ public class SpringDataJPACollector extends SpoonCollector {
         switch (launcherChoice) {
             case Constants.LAUNCHER:
             case Constants.JAR_LAUNCHER:
+            case Constants.MAVEN_LAUNCHER:
                 launcher.getEnvironment().setSourceClasspath(new String[]{
                         "./lib/spring-context-5.2.3.RELEASE.jar",
                         "./lib/spring-data-commons-core-1.4.1.RELEASE.jar",
                         "./lib/spring-data-jpa-2.2.5.RELEASE.jar"
                 });
-                break;
-            case Constants.MAVEN_LAUNCHER:
                 break;
             default:
                 System.exit(1);

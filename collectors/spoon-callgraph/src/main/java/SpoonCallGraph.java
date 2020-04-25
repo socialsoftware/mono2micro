@@ -4,13 +4,12 @@ import collectors.SpringDataJPACollector;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import util.Constants;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
-
-import util.Constants;
 
 public class SpoonCallGraph {
     private static int launcherChoice = -1;
@@ -93,7 +92,7 @@ public class SpoonCallGraph {
         if (sourcesChoice == Constants.LOCAL && launcherChoice != Constants.JAR_LAUNCHER)
             sourcesText = "Project folder path:";
         if (sourcesChoice == Constants.LOCAL && launcherChoice == Constants.JAR_LAUNCHER)
-            sourcesText = "Packages paths (separated by commas):";
+            sourcesText = "Project folder path (with packages inside):";
         if (sourcesChoice == Constants.GITHUB)
             sourcesText = "GitHub clone link:";
 
