@@ -31,7 +31,7 @@ public class SpringDataJPACollector extends SpoonCollector {
     private Map<String, Classes> tableClassesAccessedMap; // Classes related to a given table
     private ArrayList<Query> namedQueries; // list of tables accessed in a given query
     private List<Repository> repositories;
-    private Repository newRepository;
+    private Repository eventualNewRepository;
 
     public SpringDataJPACollector(String projectPath, String repoName, int launcherChoice) throws IOException {
         super(projectPath, repoName, launcherChoice);
@@ -81,8 +81,8 @@ public class SpringDataJPACollector extends SpoonCollector {
             }
 
             if (isRepository(clazz.getReference())) {
-                repositories.add(newRepository);
-                newRepository = null;
+                repositories.add(eventualNewRepository);
+                eventualNewRepository = null;
                 continue;
             }
 
@@ -102,7 +102,7 @@ public class SpringDataJPACollector extends SpoonCollector {
 
         // 2nd iteration, to retrieve JPA related information and interface explicit implementations
         List<String> toDeleteInterfaces = new ArrayList<>();
-        
+
         for(CtType<?> clazz : factory.Class().getAll()) {
             Set<CtTypeReference<?>> superInterfaces = clazz.getSuperInterfaces();
             for (CtTypeReference ctTypeReference : superInterfaces) {
@@ -138,15 +138,30 @@ public class SpringDataJPACollector extends SpoonCollector {
 
         for (Object o : clazzReference.getSuperInterfaces().toArray()) {
             CtTypeReference ctInterface = (CtTypeReference) o;
+
+            if (eventualNewRepository == null) {
+                if (ctInterface.getActualTypeArguments().size() > 0) {
+                    eventualNewRepository = new Repository(
+                            clazzReference.getSimpleName(),
+                            ctInterface.getActualTypeArguments().get(0).getSimpleName()
+                    );
+                }
+                else
+                    return false;
+            }
+
             String iPackageName = ctInterface.getPackage().getSimpleName();
             if (iPackageName.contains("org.springframework.data.repository") ||
                     iPackageName.contains("org.springframework.data.jpa.repository")) {
-                newRepository = new Repository(clazzReference.getSimpleName(), ctInterface.getActualTypeArguments().get(0).getSimpleName());
                 return true;
+            }
+            else {
+                if (isRepository(ctInterface))
+                    return true;
             }
         }
 
-        newRepository = null;
+        eventualNewRepository = null;
         return false;
     }
 
@@ -381,12 +396,14 @@ public class SpringDataJPACollector extends SpoonCollector {
                     // used. In other cases, it won't, and getDeclaringType to a SpringDataJPA class will return null
                     if (calleeLocation.getExecutable().getDeclaringType() == null ||
                             isRepository(calleeLocation.getExecutable().getDeclaringType())) {
-                        // call to a repository
+                        // possible call to a repository
                         CtTypeReference targetTypeReference = ((CtInvocationImpl) calleeLocation).getTarget().getType();
                         String targetClassName = targetTypeReference.getSimpleName();
+
                         if (isProjectDeclaredRepository(targetClassName)) {
                             if (calleeLocation.getExecutable().getDeclaringType() == null) {
                                 // out of our classpath -> SpringData default repository method
+                                // however it may be in the class path (checked below)
                                 registerSpringDataRepositoryAccess(targetClassName, calleeLocation.getExecutable().getSimpleName());
                             }
                             else {
@@ -547,7 +564,7 @@ public class SpringDataJPACollector extends SpoonCollector {
 
             if (methodsByName.size() == 0) {
                 // May be a SpringDataJPA implicit method access
-                // unfortunately we cant get reference a to those methods so we have to duplicate code
+                // unfortunately we cant get a reference to those methods so we have to duplicate code
                 String targetClassName = ((CtInvocation) calleeLocation).getTarget().getType().getSimpleName();
                 if (isProjectDeclaredRepository(targetClassName)) {
                     registerSpringDataRepositoryAccess(targetClassName, calleeLocation.getExecutable().getSimpleName());
