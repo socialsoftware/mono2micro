@@ -24,4 +24,4 @@ target/
 *.iml
 
 #tmpDirCreatedBySpoon
-/tmpDecompiledSources/
+tmpDecompiledSources/
