@@ -169,12 +169,7 @@ public class SpringDataJPACollector extends SpoonCollector {
     }
 
     private boolean isRepositoryPackageClass(String packageName, String className) {
-        if (packageName.contains("org.springframework.data") &&
-            packageName.contains(".repository") &&
-            className.contains("Repository"))
-            return true;
-        else
-            return false;
+        return packageName.contains("org.springframework.data") && packageName.endsWith(".repository");
     }
 
     private void parseEntity(CtType<?> clazz, CtAnnotation atEntityAnnotation, List<CtAnnotation<? extends Annotation>> clazzAnnotations) {

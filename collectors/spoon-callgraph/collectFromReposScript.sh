@@ -1,19 +1,19 @@
-# arg0 = Launcher Choice
-	# 0 = Launcher
-	# 1 = Maven Launcher
-	# 2 = Jar Launcher
+# # arg0 = Launcher Choice
+# 	# 0 = Launcher
+# 	# 1 = Maven Launcher
+# 	# 2 = Jar Launcher
 
-# arg1 = Sources Choice
- 	# 0 = LOCAL
- 	# 1 = GITHUB
+# # arg1 = Sources Choice
+#  	# 0 = LOCAL
+#  	# 1 = GITHUB
 
-# arg2 = ORM Choice
-	# 0 = FENIX_FRAMEWORK
-	# 1 = SPRING_DATA_JPA
+# # arg2 = ORM Choice
+# 	# 0 = FENIX_FRAMEWORK
+# 	# 1 = SPRING_DATA_JPA
 
-# arg3 = projectName
+# # arg3 = projectName
 
-# arg4 = path/link
+# # arg4 = path/link
 
 #Fenix Framework
 #ldod
