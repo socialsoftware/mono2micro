@@ -38,7 +38,7 @@ public abstract class SpoonCollector {
     Factory factory;
     Launcher launcher;
 
-    SpoonCollector(String projectPath, String repoName, int launcherChoice) throws IOException {
+    SpoonCollector(int launcherChoice, String repoName, String projectPath) throws IOException {
         File decompiledDir = new File(Constants.DECOMPILED_SOURCES_PATH);
         if (decompiledDir.exists()) {
             FileUtils.deleteDirectory(decompiledDir);

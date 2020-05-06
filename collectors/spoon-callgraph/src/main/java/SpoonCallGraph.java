@@ -9,6 +9,7 @@ import util.Constants;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class SpoonCallGraph {
@@ -21,8 +22,22 @@ public class SpoonCallGraph {
     private static String projectNameInput;
 
     public static void main(String[] args) throws GitAPIException, IOException {
-        showDialogFirst();
-        showDialogSecond();
+        if (args.length == 0) {
+            showDialogFirst();
+            showDialogSecond();
+        }
+        else if (args.length == 5) {
+            // Launcher Choice, Sources Choice, ORM Choice, projectName, path/link
+            launcherChoice = Integer.parseInt(args[0]);
+            sourcesChoice = Integer.parseInt(args[1]);
+            ormChoice = Integer.parseInt(args[2]);
+            projectNameInput = args[3];
+            sourcesPath = args[4];
+        }
+        else {
+            System.err.println("Invalid args");
+            System.exit(1);
+        }
 
         File file;
         String projectName;
@@ -52,10 +67,10 @@ public class SpoonCallGraph {
         SpoonCollector collector = null;
         switch (ormChoice) {
             case Constants.FENIX_FRAMEWORK:
-                collector = new FenixFrameworkCollector(file.getAbsolutePath(), projectName, launcherChoice);
+                collector = new FenixFrameworkCollector(launcherChoice, projectName, file.getAbsolutePath());
                 break;
             case Constants.SPRING_DATA_JPA:
-                collector = new SpringDataJPACollector(file.getAbsolutePath(), projectName, launcherChoice);
+                collector = new SpringDataJPACollector(launcherChoice, projectName, file.getAbsolutePath());
                 break;
             default:
                 System.exit(1);

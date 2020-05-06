@@ -1,0 +1,22 @@
+/*
+ * Decompiled with CFR 0.146.
+ * 
+ * Could not load the following classes:
+ *  org.springframework.data.jpa.repository.JpaRepository
+ *  org.springframework.data.jpa.repository.JpaSpecificationExecutor
+ *  org.springframework.stereotype.Repository
+ */
+package cn.springcloud.gray.server.dao.repository;
+
+import cn.springcloud.gray.server.dao.model.ServiceOwnerDO;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface ServiceOwnerRepository
+extends JpaRepository<ServiceOwnerDO, String>,
+JpaSpecificationExecutor<ServiceOwnerDO> {
+    public ServiceOwnerDO findByServiceId(String var1);
+}
+

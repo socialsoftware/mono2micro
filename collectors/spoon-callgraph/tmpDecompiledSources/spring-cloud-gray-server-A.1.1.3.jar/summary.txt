@@ -1,0 +1,2 @@
+Summary for /home/samuel/ProjetoTese/repos/spring-cloud-gray/spring-cloud-gray-server/target/spring-cloud-gray-server-A.1.1.3.jar
+Decompiled with CFR 0.146

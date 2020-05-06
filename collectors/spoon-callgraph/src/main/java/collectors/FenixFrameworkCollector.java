@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Stack;
 
 public class FenixFrameworkCollector extends SpoonCollector {
-    public FenixFrameworkCollector(String projectPath, String repoName, int launcherChoice) throws IOException {
-        super(projectPath, repoName, launcherChoice);
+    public FenixFrameworkCollector(int launcherChoice, String repoName, String projectPath) throws IOException {
+        super(launcherChoice, repoName, projectPath);
 
         // We'll assume that FenixFramework projects always use maven.
         // We'll also assume that these projects dont use Custom Compile Time Annotation Processors
@@ -23,13 +23,14 @@ public class FenixFrameworkCollector extends SpoonCollector {
 
         switch (launcherChoice) {
             case Constants.LAUNCHER:
-            case Constants.JAR_LAUNCHER:
             case Constants.MAVEN_LAUNCHER:
+            case Constants.JAR_LAUNCHER:
                 launcher.getEnvironment().setSourceClasspath(new String[]{
                         "./lib/fenix-framework-core-2.0.jar",
                         "./lib/spring-context-5.2.3.RELEASE.jar",
                         "./lib/bennu-core-6.6.0.jar"}
                 );
+                break;
             default:
                 System.exit(1);
                 break;
