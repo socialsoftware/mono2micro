@@ -1,2 +1,0 @@
-Summary for /home/samuel/ProjetoTese/repos/spring-cloud-gray/spring-cloud-gray-plugins/spring-cloud-gray-plugin-webmvc/target/spring-cloud-gray-plugin-webmvc-A.1.1.3.jar
-Decompiled with CFR 0.146
