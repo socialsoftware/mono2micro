@@ -33,8 +33,8 @@ public class SpringDataJPACollector extends SpoonCollector {
     private List<Repository> repositories;
     private Repository eventualNewRepository;
 
-    public SpringDataJPACollector(String projectPath, String repoName, int launcherChoice) throws IOException {
-        super(projectPath, repoName, launcherChoice);
+    public SpringDataJPACollector(int launcherChoice, String repoName, String projectPath) throws IOException {
+        super(launcherChoice, repoName, projectPath);
 
         switch (launcherChoice) {
             case Constants.LAUNCHER:
@@ -106,14 +106,15 @@ public class SpringDataJPACollector extends SpoonCollector {
         for(CtType<?> clazz : factory.Class().getAll()) {
             Set<CtTypeReference<?>> superInterfaces = clazz.getSuperInterfaces();
             for (CtTypeReference ctTypeReference : superInterfaces) {
-                CtType interfaceValue = interfaces.get(ctTypeReference.getSimpleName());
-                if (interfaceValue == null) {
-                    interfaces.replace(ctTypeReference.getSimpleName(), clazz);
-                }
-                else {
-                    // more than one implementation for this interface
-                    // don't replace interface calls by any explicit implementation
-                    toDeleteInterfaces.add(ctTypeReference.getSimpleName());
+                if (interfaces.containsKey(ctTypeReference.getSimpleName())) {
+                    if (interfaces.get(ctTypeReference.getSimpleName()) == null) {
+                        interfaces.replace(ctTypeReference.getSimpleName(), clazz);
+                    }
+                    else {
+                        // more than one implementation for this interface
+                        // don't replace interface calls by any explicit implementation
+                        toDeleteInterfaces.add(ctTypeReference.getSimpleName());
+                    }
                 }
             }
 
@@ -132,37 +133,43 @@ public class SpringDataJPACollector extends SpoonCollector {
     /*
     *  isRepository: true if class Package = org.springframework.data.repository or if it extends (in)directly from it */
     private boolean isRepository(CtTypeReference<?> clazzReference) {
-        if (clazzReference.getPackage().toString().contains("org.springframework.data.repository") ||
-                clazzReference.getPackage().toString().contains("org.springframework.data.jpa.repository"))
-            return true;
-
-        for (Object o : clazzReference.getSuperInterfaces().toArray()) {
-            CtTypeReference ctInterface = (CtTypeReference) o;
-
-            if (eventualNewRepository == null) {
-                if (ctInterface.getActualTypeArguments().size() > 0) {
-                    eventualNewRepository = new Repository(
-                            clazzReference.getSimpleName(),
-                            ctInterface.getActualTypeArguments().get(0).getSimpleName()
-                    );
-                }
-                else
-                    return false;
-            }
-
-            String iPackageName = ctInterface.getPackage().getSimpleName();
-            if (iPackageName.contains("org.springframework.data.repository") ||
-                    iPackageName.contains("org.springframework.data.jpa.repository")) {
+        try {
+            if (isRepositoryPackageClass(clazzReference.getPackage().toString(), clazzReference.getSimpleName()))
                 return true;
-            }
-            else {
-                if (isRepository(ctInterface))
-                    return true;
-            }
-        }
 
-        eventualNewRepository = null;
-        return false;
+            for (Object o : clazzReference.getSuperInterfaces().toArray()) {
+                CtTypeReference ctInterface = (CtTypeReference) o;
+
+                if (eventualNewRepository == null) {
+                    if (ctInterface.getActualTypeArguments().size() > 0) {
+                        eventualNewRepository = new Repository(
+                                clazzReference.getSimpleName(),
+                                ctInterface.getActualTypeArguments().get(0).getSimpleName()
+                        );
+                    }
+                    else
+                        return false;
+                }
+
+                if (isRepositoryPackageClass(ctInterface.getPackage().getSimpleName(), ctInterface.getSimpleName())) {
+                    return true;
+                }
+                else {
+                    if (isRepository(ctInterface))
+                        return true;
+                }
+            }
+
+            eventualNewRepository = null;
+            return false;
+        } catch (Exception e) {
+            eventualNewRepository = null;
+            return false;
+        }
+    }
+
+    private boolean isRepositoryPackageClass(String packageName, String className) {
+        return packageName.contains("org.springframework.data") && packageName.endsWith(".repository");
     }
 
     private void parseEntity(CtType<?> clazz, CtAnnotation atEntityAnnotation, List<CtAnnotation<? extends Annotation>> clazzAnnotations) {
@@ -209,8 +216,8 @@ public class SpringDataJPACollector extends SpoonCollector {
                 String joinTableName = "";
                 CtAnnotation joinTableAnnotation = getAnnotation(fieldAnnotations, "JoinTable");
                 if (joinTableAnnotation != null) {
-                    CtExpression CtJoinTableName = joinTableAnnotation.getValue("name");
-                    joinTableName = (String) ((CtLiteral) CtJoinTableName).getValue();
+                    CtExpression name = joinTableAnnotation.getValue("name");
+                    joinTableName = getValueAsString(name);
                 }
                 Classes classes = new Classes();
                 classes.addClass(clazz.getSimpleName());
@@ -259,8 +266,8 @@ public class SpringDataJPACollector extends SpoonCollector {
             String joinTableName = "";
             CtAnnotation collectionTableAnnotation = getAnnotation(fieldAnnotations, "CollectionTable");
             if (collectionTableAnnotation != null) {
-                CtExpression CtJoinTableName = collectionTableAnnotation.getValue("name");
-                joinTableName = (String) ((CtLiteral) CtJoinTableName).getValue();
+                CtExpression name = collectionTableAnnotation.getValue("name");
+                joinTableName = getValueAsString(name);
             }
             Classes classes = new Classes();
             classes.addClass(clazz.getSimpleName());
@@ -322,19 +329,21 @@ public class SpringDataJPACollector extends SpoonCollector {
 
     private String parseAtTableAndAtInheritance(CtType clazz) {
         boolean isSingleTable = false;
-        CtType<?> superClass = null;
+        CtType<?> superClassType = null;
         if (clazz.getSuperclass() != null) {
-            superClass = clazz.getSuperclass().getTypeDeclaration();
-            CtAnnotation<? extends Annotation> inheritanceAnnotation =
-                    getAnnotation(superClass.getAnnotations(), "Inheritance");
-            if (inheritanceAnnotation != null) {
-                isSingleTable = inheritanceAnnotation.getValue("strategy").toString().contains("SINGLE_TABLE");
+            superClassType = clazz.getSuperclass().getTypeDeclaration();
+            if (superClassType != null) {
+                CtAnnotation<? extends Annotation> inheritanceAnnotation =
+                        getAnnotation(superClassType.getAnnotations(), "Inheritance");
+                if (inheritanceAnnotation != null) {
+                    isSingleTable = inheritanceAnnotation.getValue("strategy").toString().contains("SINGLE_TABLE");
+                }
             }
         }
         Classes classes = new Classes();
         String tableName;
         if (isSingleTable) {
-            tableName = getEntityTableName(superClass);
+            tableName = getEntityTableName(superClassType);
             // table is not created (= superclass table name)
         }
         else {
@@ -348,9 +357,9 @@ public class SpringDataJPACollector extends SpoonCollector {
     private String parseAtEntity(CtType clazz, CtAnnotation atEntityAnnotation) {
         String entityName = clazz.getSimpleName();
 
-        CtLiteral redefinedEntityName = (CtLiteral) ((CtAnnotationImpl) atEntityAnnotation).getElementValues().get("name");
-        if (redefinedEntityName != null)
-            entityName = (String) redefinedEntityName.getValue();
+        Object name = ((CtAnnotationImpl) atEntityAnnotation).getElementValues().get("name");
+        if (name != null)
+            entityName = getValueAsString(name);
 
         entityClassNameMap.put(entityName, clazz);
 
@@ -365,8 +374,12 @@ public class SpringDataJPACollector extends SpoonCollector {
         // ------------------- @Table -----------------------
         CtAnnotation tableAnnotation = getAnnotation(annotations, "Table");
         if (tableAnnotation != null) {
-            CtLiteral redefinedTableName = (CtLiteral) ((CtAnnotationImpl) tableAnnotation).getElementValues().get("name");
-            tableName = (String) redefinedTableName.getValue();
+            Object name = ((CtAnnotationImpl) tableAnnotation).getElementValues().get("name");
+            if (name != null) {
+                String redefinedTableName = getValueAsString(name);
+                tableName = redefinedTableName.trim();
+            }
+
         }
         return tableName;
     }
@@ -685,7 +698,8 @@ public class SpringDataJPACollector extends SpoonCollector {
                 methodName.startsWith("size") ||
                 methodName.startsWith("toArray") ||
                 methodName.contains("index") ||
-                methodName.contains("iterator")) {
+                methodName.contains("iterator") ||
+                methodName.contains("sort")) {
             mode = "R";
             returnType = fieldAccessedType;
         }
@@ -704,6 +718,11 @@ public class SpringDataJPACollector extends SpoonCollector {
                     argTypeNames.add(ctTypeReference.getSimpleName());
                 }
             }
+        }
+
+        if (mode.isEmpty()) {
+            System.err.println("Couldn't find mode of callee: " + calleeLocation.getShortRepresentation());
+            return;
         }
 
         // class access
@@ -752,9 +771,9 @@ public class SpringDataJPACollector extends SpoonCollector {
         if (queryAnnotation != null) {
             CtAnnotation<? extends Annotation> query =
                     getAnnotation(methodDeclaration.getExecutableDeclaration().getAnnotations(), "Query");
-            String value = (String) ((CtLiteral) query.getValue("value")).getValue();
+            String value = getValueAsString(query.getValue("value"));
             Boolean nativeQuery = (Boolean) ((CtLiteral) query.getValue("nativeQuery")).getValue();
-            String namedQueryName = (String) ((CtLiteral) query.getValue("name")).getValue();
+            String namedQueryName = getValueAsString(query.getValue("name"));
 
             if (!namedQueryName.equals("")) {
                 // TODO not used i think
@@ -903,15 +922,20 @@ public class SpringDataJPACollector extends SpoonCollector {
         return false;
     }
 
-    private boolean isSpringDataJPARepository(CtTypeReference declaringType) {
-        return false;
-    }
-
     private void parseNamedQuery(CtAnnotation namedQueryAnnotation, boolean isNative) {
         Map queryValues = ((CtAnnotationImpl) namedQueryAnnotation).getElementValues();
-        String name = (String) ((CtLiteral) queryValues.get("name")).getValue();
-        String query = (String) ((CtLiteral) queryValues.get("query")).getValue();
+        String name = getValueAsString(queryValues.get("name"));
+        String query = getValueAsString(queryValues.get("query"));
         this.namedQueries.add(new Query(name, query, isNative));
+    }
+
+    private String getValueAsString(Object name) {
+        if (name instanceof CtLiteral)
+            return (String) ((CtLiteral) name).getValue();
+        else if (name instanceof CtFieldRead)
+            return (String) ((CtLiteral) ((CtFieldRead) name).getVariable().getDeclaration().getAssignment()).getValue();
+        else
+            return null;
     }
 
     private CtAnnotation<? extends Annotation> getAnnotation(List<CtAnnotation<? extends Annotation>> annotations, String annotationName) {
