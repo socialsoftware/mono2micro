@@ -73,7 +73,6 @@ public class SpringDataJPACollector extends SpoonCollector {
                 existsAnnotation(clazzAnnotations, "PatchMapping") ||
                 existsAnnotation(clazzAnnotations, "PutMapping") ||
                 existsAnnotation(clazzAnnotations, "DeleteMapping") ||
-                clazz.getSimpleName().endsWith("Controller") ||
                 (clazz.getSuperclass() != null && clazz.getSuperclass().getSimpleName().equals("DispatchAction"))
             ) {
                 controllers.add((CtClass) clazz);
@@ -128,6 +127,8 @@ public class SpringDataJPACollector extends SpoonCollector {
         for (String interfaceClassName : toDeleteInterfaces) {
             interfaces.remove(interfaceClassName);
         }
+
+        super.repositoryCount = repositories.size();
     }
 
     /*
@@ -216,8 +217,10 @@ public class SpringDataJPACollector extends SpoonCollector {
                 String joinTableName = "";
                 CtAnnotation joinTableAnnotation = getAnnotation(fieldAnnotations, "JoinTable");
                 if (joinTableAnnotation != null) {
-                    CtExpression name = joinTableAnnotation.getValue("name");
-                    joinTableName = getValueAsString(name);
+                    if (joinTableAnnotation.getValues().get("name") != null) {
+                        CtExpression name = joinTableAnnotation.getValue("name");
+                        joinTableName = getValueAsString(name);
+                    }
                 }
                 Classes classes = new Classes();
                 classes.addClass(clazz.getSimpleName());
@@ -393,6 +396,13 @@ public class SpringDataJPACollector extends SpoonCollector {
                 try {
                     if (calleeLocation == null)
                         return;
+
+                    try {
+                        boolean entityManager = ((CtInvocation) calleeLocation).getTarget().getType().getSimpleName().contains("EntityManager");
+                        if (entityManager) {
+                            SpringDataJPACollector.this.entityManager++;
+                        }
+                    } catch (Exception e) {}
 
                     try {
                         CtMethod calleeMethod = (CtMethod) calleeLocation.getExecutable().getExecutableDeclaration();

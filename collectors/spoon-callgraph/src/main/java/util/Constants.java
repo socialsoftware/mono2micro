@@ -20,6 +20,9 @@ public class Constants {
             System.getProperty("user.dir") + File.separator + "data" + File.separator + "collection" + File.separator;
     public static final String DECOMPILED_SOURCES_PATH =
             System.getProperty("user.dir") + File.separator + "tmpDecompiledSources" + File.separator;
+    public static final String TEST_DATA_PATH =
+            System.getProperty("user.dir") + File.separator + "testData.txt";
+
 
     public static final Map<Integer, String> launcherIntToName;
     static {

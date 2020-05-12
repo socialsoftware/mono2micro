@@ -27,6 +27,7 @@ public class SpoonCallGraph {
             showDialogSecond();
         }
         else if (args.length == 5) {
+            System.out.println(Arrays.toString(args));
             // Launcher Choice, Sources Choice, ORM Choice, projectName, path/link
             launcherChoice = Integer.parseInt(args[0]);
             sourcesChoice = Integer.parseInt(args[1]);

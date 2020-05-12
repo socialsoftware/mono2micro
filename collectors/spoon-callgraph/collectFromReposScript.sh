@@ -1,19 +1,19 @@
-# # arg0 = Launcher Choice
-# 	# 0 = Launcher
-# 	# 1 = Maven Launcher
-# 	# 2 = Jar Launcher
+# arg0 = Launcher Choice
+	# 0 = Launcher
+	# 1 = Maven Launcher
+	# 2 = Jar Launcher
 
-# # arg1 = Sources Choice
-#  	# 0 = LOCAL
-#  	# 1 = GITHUB
+# arg1 = Sources Choice
+ 	# 0 = LOCAL
+ 	# 1 = GITHUB
 
-# # arg2 = ORM Choice
-# 	# 0 = FENIX_FRAMEWORK
-# 	# 1 = SPRING_DATA_JPA
+# arg2 = ORM Choice
+	# 0 = FENIX_FRAMEWORK
+	# 1 = SPRING_DATA_JPA
 
-# # arg3 = projectName
+# arg3 = projectName
 
-# # arg4 = path/link
+# arg4 = path/link
 
 #Fenix Framework
 #ldod
@@ -165,5 +165,55 @@ mvn exec:java -Dexec.args="$p"
 
 #myweb
 p="1 0 1 myweb-maven /home/samuel/ProjetoTese/repos/myweb/myweb"
+echo Collecting project: $p
+mvn exec:java -Dexec.args="$p"
+
+#webofneeds
+p="1 0 1 webofneeds-maven /home/samuel/ProjetoTese/repos/webofneeds/webofneeds"
+echo Collecting project: $p
+mvn exec:java -Dexec.args="$p"
+
+#cloudstreetmarket.com
+p="1 0 1 cloudstreetmarket.com-maven /home/samuel/ProjetoTese/repos/cloudstreetmarket.com"
+echo Collecting project: $p
+mvn exec:java -Dexec.args="$p"
+
+#Exam-Online
+p="1 0 1 Exam-Online-maven /home/samuel/ProjetoTese/repos/Exam-Online"
+echo Collecting project: $p
+mvn exec:java -Dexec.args="$p"
+
+#dubai
+p="1 0 1 dubai-maven /home/samuel/ProjetoTese/repos/dubai"
+echo Collecting project: $p
+mvn exec:java -Dexec.args="$p"
+
+#bookstore-spring
+p="1 0 1 bookstore-spring-maven /home/samuel/ProjetoTese/repos/bookstore-spring"
+echo Collecting project: $p
+mvn exec:java -Dexec.args="$p"
+
+#springblog
+p="1 0 1 springblog-maven /home/samuel/ProjetoTese/repos/springblog"
+echo Collecting project: $p
+mvn exec:java -Dexec.args="$p"
+
+#hermes
+p="1 0 1 hermes-maven /home/samuel/ProjetoTese/repos/hermes"
+echo Collecting project: $p
+mvn exec:java -Dexec.args="$p"
+
+#blog
+p="1 0 1 hermes-maven /home/samuel/ProjetoTese/repos/blog"
+echo Collecting project: $p
+mvn exec:java -Dexec.args="$p"
+
+#SaaS_IHRM
+p="1 0 1 SaaS_IHRM-maven /home/samuel/ProjetoTese/repos/SaaS_IHRM/ihrm_parent"
+echo Collecting project: $p
+mvn exec:java -Dexec.args="$p"
+
+#irida
+p="1 0 1 irida-maven /home/samuel/ProjetoTese/repos/irida"
 echo Collecting project: $p
 mvn exec:java -Dexec.args="$p"

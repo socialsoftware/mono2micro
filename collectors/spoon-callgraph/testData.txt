@@ -1,0 +1,280 @@
+---------------------------
+Project: ldod-maven
+#Controllers: 22
+#ControllerMethods: 161
+#Entities: 237
+#Repositories: 0
+#EntityManager: 0
+---------------------------
+Project: bw-maven
+#Controllers: 11
+#ControllerMethods: 104
+#Entities: 124
+#Repositories: 0
+#EntityManager: 0
+---------------------------
+Project: fenix-maven
+#Controllers: 208
+#ControllerMethods: 1244
+#Entities: 3444
+#Repositories: 0
+#EntityManager: 0
+---------------------------
+Project: adventure-builder-maven
+#Controllers: 29
+#ControllerMethods: 77
+#Entities: 156
+#Repositories: 0
+#EntityManager: 0
+---------------------------
+Project: quizzes-tutor-launcher
+#Controllers: 10
+#ControllerMethods: 47
+#Entities: 13
+#Repositories: 13
+#EntityManager: 0
+---------------------------
+Project: axon-trader-maven
+#Controllers: 7
+#ControllerMethods: 23
+#Entities: 8
+#Repositories: 6
+#EntityManager: 0
+---------------------------
+Project: incubator-wikift-jar
+#Controllers: 9
+#ControllerMethods: 59
+#Entities: 12
+#Repositories: 11
+#EntityManager: 2
+---------------------------
+Project: OpenClinica-maven
+#Controllers: 46
+#ControllerMethods: 139
+#Entities: 103
+#Repositories: 1
+#EntityManager: 0
+---------------------------
+Project: s2jh4net-jar
+#Controllers: 31
+#ControllerMethods: 172
+#Entities: 41
+#Repositories: 29
+#EntityManager: 12
+---------------------------
+Project: SpringBlog_Adapted-jar
+#Controllers: 14
+#ControllerMethods: 36
+#Entities: 10
+#Repositories: 10
+#EntityManager: 0
+---------------------------
+Project: spring-cloud-gray-jar
+#Controllers: 14
+#ControllerMethods: 52
+#Entities: 9
+#Repositories: 9
+#EntityManager: 0
+---------------------------
+Project: spring-framework-petclinic-launcher
+#Controllers: 5
+#ControllerMethods: 17
+#Entities: 9
+#Repositories: 4
+#EntityManager: 0
+---------------------------
+Project: weixin-mp-java-jar
+#Controllers: 1
+#ControllerMethods: 2
+#Entities: 29
+#Repositories: 25
+#EntityManager: 0
+---------------------------
+Project: jpabook-maven
+#Controllers: 4
+#ControllerMethods: 14
+#Entities: 10
+#Repositories: 2
+#EntityManager: 0
+---------------------------
+Project: bag-database_adapted-maven
+#Controllers: 9
+#ControllerMethods: 36
+#Entities: 9
+#Repositories: 6
+#EntityManager: 0
+---------------------------
+Project: cloudunit-maven
+#Controllers: 18
+#ControllerMethods: 93
+#Entities: 23
+#Repositories: 19
+#EntityManager: 0
+---------------------------
+Project: xs2a-jar
+#Controllers: 36
+#ControllerMethods: 107
+#Entities: 28
+#Repositories: 15
+#EntityManager: 0
+---------------------------
+Project: keta-custom-launcher
+#Controllers: 12
+#ControllerMethods: 88
+#Entities: 14
+#Repositories: 13
+#EntityManager: 1
+---------------------------
+Project: learndemo-soufang-maven
+#Controllers: 6
+#ControllerMethods: 44
+#Entities: 10
+#Repositories: 10
+#EntityManager: 0
+---------------------------
+Project: reddit-app-maven
+#Controllers: 15
+#ControllerMethods: 36
+#Entities: 9
+#Repositories: 9
+#EntityManager: 0
+---------------------------
+Project: spring-mvn-react-maven
+#Controllers: 8
+#ControllerMethods: 24
+#Entities: 5
+#Repositories: 5
+#EntityManager: 0
+---------------------------
+Project: TipDM-maven
+#Controllers: 10
+#ControllerMethods: 70
+#Entities: 23
+#Repositories: 13
+#EntityManager: 0
+---------------------------
+Project: wallride-maven
+#Controllers: 70
+#ControllerMethods: 161
+#Entities: 23
+#Repositories: 13
+#EntityManager: 91
+---------------------------
+Project: cheybao-maven
+#Controllers: 24
+#ControllerMethods: 117
+#Entities: 29
+#Repositories: 33
+#EntityManager: 2
+---------------------------
+Project: JavaSpringMvcBlog-maven
+#Controllers: 5
+#ControllerMethods: 38
+#Entities: 8
+#Repositories: 7
+#EntityManager: 0
+---------------------------
+Project: gtas-maven
+#Controllers: 25
+#ControllerMethods: 134
+#Entities: 79
+#Repositories: 60
+#EntityManager: 61
+---------------------------
+Project: wish-maven
+#Controllers: 10
+#ControllerMethods: 56
+#Entities: 12
+#Repositories: 12
+#EntityManager: 0
+---------------------------
+Project: market-manage-launcher
+#Controllers: 51
+#ControllerMethods: 220
+#Entities: 61
+#Repositories: 44
+#EntityManager: 205
+---------------------------
+Project: egov-smartcity-suite-launcher
+#Controllers: 548
+#ControllerMethods: 2107
+#Entities: 441
+#Repositories: 334
+#EntityManager: 23476
+---------------------------
+Project: myweb-maven
+#Controllers: 5
+#ControllerMethods: 29
+#Entities: 5
+#Repositories: 5
+#EntityManager: 0
+---------------------------
+Project: webofneeds-maven
+#Controllers: 11
+#ControllerMethods: 71
+#Entities: 21
+#Repositories: 21
+#EntityManager: 0
+---------------------------
+Project: cloudstreetmarket.com-maven
+#Controllers: 25
+#ControllerMethods: 48
+#Entities: 28
+#Repositories: 18
+#EntityManager: 3
+---------------------------
+Project: Exam-Online-maven
+#Controllers: 11
+#ControllerMethods: 34
+#Entities: 15
+#Repositories: 13
+#EntityManager: 0
+---------------------------
+Project: dubai-maven
+#Controllers: 16
+#ControllerMethods: 57
+#Entities: 10
+#Repositories: 8
+#EntityManager: 0
+---------------------------
+Project: bookstore-spring-maven
+#Controllers: 28
+#ControllerMethods: 168
+#Entities: 17
+#Repositories: 14
+#EntityManager: 0
+---------------------------
+Project: springblog-maven
+#Controllers: 10
+#ControllerMethods: 22
+#Entities: 10
+#Repositories: 6
+#EntityManager: 0
+---------------------------
+Project: hermes-maven
+#Controllers: 28
+#ControllerMethods: 339
+#Entities: 66
+#Repositories: 62
+#EntityManager: 47
+---------------------------
+Project: hermes-maven
+#Controllers: 40
+#ControllerMethods: 280
+#Entities: 22
+#Repositories: 18
+#EntityManager: 0
+---------------------------
+Project: SaaS_IHRM-maven
+#Controllers: 16
+#ControllerMethods: 85
+#Entities: 46
+#Repositories: 36
+#EntityManager: 2
+---------------------------
+Project: irida-maven
+#Controllers: 63
+#ControllerMethods: 311
+#Entities: 63
+#Repositories: 38
+#EntityManager: 0
