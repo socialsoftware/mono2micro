@@ -1,8 +1,5 @@
 package collectors;
 
-import antlr.RecognitionException;
-import antlr.TokenStreamException;
-import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import parser.MyHqlParser;
@@ -14,6 +11,7 @@ import spoon.reflect.declaration.*;
 import spoon.reflect.reference.CtExecutableReference;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtScanner;
+import spoon.support.reflect.code.CtBinaryOperatorImpl;
 import spoon.support.reflect.code.CtInvocationImpl;
 import spoon.support.reflect.declaration.CtAnnotationImpl;
 import util.Classes;
@@ -200,11 +198,55 @@ public class SpringDataJPACollector extends SpoonCollector {
             // ------------------- @ElementCollection -----------------------
             parseAtElementCollection(clazz, field, fieldAnnotations, entityName);
 
+            // ------------------- @OneToOne -----------------------
+            parseAtOneToOne(clazz, field, fieldAnnotations, tableName);
+
             // ------------------- @OneToMany -----------------------
             parseAtOneToMany(clazz, field, fieldAnnotations, tableName);
 
             // ------------------- @ManyToMany -----------------------
             parseAtManyToMany(clazz, field, fieldAnnotations, tableName);
+
+            // ------------------- @ManyToOne -----------------------
+            parseAtManyToOne(clazz, field, fieldAnnotations, tableName);
+        }
+    }
+
+    private void parseAtOneToOne(CtType<?> clazz, CtField field, List<CtAnnotation<? extends Annotation>> fieldAnnotations, String tableName) {
+        CtAnnotation oneToOneAnnotation = (CtAnnotation) getAnnotation(fieldAnnotations, "OneToOne");
+        if (oneToOneAnnotation != null) {
+            CtAnnotation joinTableAnnotation = getAnnotation(fieldAnnotations, "JoinTable");
+            if (joinTableAnnotation != null) {
+                if (joinTableAnnotation.getValues().get("name") != null) {
+                    CtExpression name = joinTableAnnotation.getValue("name");
+                    String joinTableName = getValueAsString(name);
+
+                    Classes classes = new Classes();
+                    classes.addClass(clazz.getSimpleName());
+                    CtType fieldType = field.getType().getTypeDeclaration();
+                    classes.addClass(fieldType.getSimpleName());
+                    tableClassesAccessedMap.put(joinTableName, classes);
+                }
+            }
+        }
+    }
+
+    private void parseAtManyToOne(CtType<?> clazz, CtField field, List<CtAnnotation<? extends Annotation>> fieldAnnotations, String tableName) {
+        CtAnnotation manyToOneAnnotation = getAnnotation(fieldAnnotations, "ManyToOne");
+        if (manyToOneAnnotation != null) {
+            CtAnnotation joinTableAnnotation = getAnnotation(fieldAnnotations, "JoinTable");
+            if (joinTableAnnotation != null) {
+                if (joinTableAnnotation.getValues().get("name") != null) {
+                    CtExpression name = joinTableAnnotation.getValue("name");
+                    String joinTableName = getValueAsString(name);
+
+                    Classes classes = new Classes();
+                    classes.addClass(clazz.getSimpleName());
+                    CtType fieldType = field.getType().getTypeDeclaration();
+                    classes.addClass(fieldType.getSimpleName());
+                    tableClassesAccessedMap.put(joinTableName, classes);
+                }
+            }
         }
     }
 
@@ -258,6 +300,28 @@ public class SpringDataJPACollector extends SpoonCollector {
                 }
 
                 String joinTableName = tableName + "_" + getEntityTableName(fieldType);
+                tableClassesAccessedMap.put(joinTableName, classes);
+            }
+
+            CtAnnotation joinTableAnnotation = getAnnotation(fieldAnnotations, "JoinTable");
+            if (joinTableAnnotation != null) {
+                String joinTableName = "";
+
+                if (joinTableAnnotation.getValues().get("name") != null) {
+                    CtExpression name = joinTableAnnotation.getValue("name");
+                    joinTableName = getValueAsString(name);
+                }
+
+                Classes classes = new Classes();
+                classes.addClass(clazz.getSimpleName());
+
+                // @ManyToMany fields won't be HashMaps, thus, get(0), and the Type will always be an Entity
+                CtType fieldType = field.getType().getActualTypeArguments().get(0).getTypeDeclaration();
+                classes.addClass(fieldType.getSimpleName());
+
+                if (joinTableName.equals("")) {
+                    joinTableName = tableName + "_" + getEntityTableName(fieldType);
+                }
                 tableClassesAccessedMap.put(joinTableName, classes);
             }
         }
@@ -810,9 +874,11 @@ public class SpringDataJPACollector extends SpoonCollector {
             if (q == null) {
                 registerSpringDataRepositoryAccess(methodDeclaration.getDeclaringType().getSimpleName(), methodDeclaration.getSimpleName());
             }
-
             else {
-                parseHqlQuery(q.getValue());
+                if (q.isNative())
+                    parseNativeQuery(q.getValue());
+                else
+                    parseHqlQuery(q.getValue());
             }
         }
     }
@@ -827,12 +893,17 @@ public class SpringDataJPACollector extends SpoonCollector {
             for (QueryAccess qa : accesses) {
                 String tableName = qa.getName();
                 Classes classes = tableClassesAccessedMap.get(tableName);
+                if (classes == null) {
+                    System.err.println("Exception on query: " + sql);
+                    System.err.println("Table not found: " + tableName);
+                    continue;
+                }
                 for (String typeName : classes.getListOfClasses()) {
                     addEntitiesSequenceAccess(typeName, qa.getMode());
                 }
             }
-        } catch (JSQLParserException e) {
-            System.err.println("SQL QueryException on query: \"" + sql + "\"");
+        } catch (Exception e) {
+            System.err.println("Exception on query: \"" + sql + "\"");
             e.printStackTrace();
         }
     }
@@ -873,7 +944,7 @@ public class SpringDataJPACollector extends SpoonCollector {
                     }
                 }
             }
-        } catch (TokenStreamException | RecognitionException e) {
+        } catch (Exception e) {
             System.err.println("QueryException on query: \"" + hql + "\"");
             e.printStackTrace();
         }
@@ -944,8 +1015,13 @@ public class SpringDataJPACollector extends SpoonCollector {
             return (String) ((CtLiteral) name).getValue();
         else if (name instanceof CtFieldRead)
             return (String) ((CtLiteral) ((CtFieldRead) name).getVariable().getDeclaration().getAssignment()).getValue();
-        else
+        else if (name instanceof CtBinaryOperatorImpl)
+            return getValueAsString(((CtBinaryOperatorImpl) name).partiallyEvaluate());
+        else {
+            System.err.println("Couldn't parse value! " + name.toString());
+            System.exit(1);
             return null;
+        }
     }
 
     private CtAnnotation<? extends Annotation> getAnnotation(List<CtAnnotation<? extends Annotation>> annotations, String annotationName) {

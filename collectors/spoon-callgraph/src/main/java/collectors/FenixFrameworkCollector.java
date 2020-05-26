@@ -10,6 +10,7 @@ import util.Constants;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
@@ -81,6 +82,20 @@ public class FenixFrameworkCollector extends SpoonCollector {
                 if (calleeLocation == null)
                     continue;
                 else if (calleeLocation.getExecutable().getDeclaringType().getSimpleName().endsWith("_Base")) {
+
+                    /* TO REMOVE */
+//                    List<String> par = new ArrayList<>();
+//                    List<CtTypeReference> parameters = calleeLocation.getExecutable().getParameters();
+//                    parameters.forEach(parameter -> par.add(parameter.toString()));
+//                    methodsListForPancas.add(
+//                            new MethodContainer(
+//                                    calleeLocation.getExecutable().getType().toString(),
+//                                    calleeLocation.getExecutable().getSimpleName(),
+//                                    par.toString(),
+//                                    calleeLocation.getExecutable().getDeclaringType().getQualifiedName()
+//                            )
+//                    );
+
                     registerBaseClass(calleeLocation.getExecutable().getExecutableDeclaration(), calleeLocation);
                 }
                 else if (calleeLocation.getExecutable().getDeclaringType().getSimpleName().equals("FenixFramework") &&
@@ -173,6 +188,19 @@ public class FenixFrameworkCollector extends SpoonCollector {
         if (allEntities.contains(resolvedType)) {
             addEntitiesSequenceAccess(resolvedType, "R");
         }
+
+        /* TO REMOVE */
+//        List<String> par = new ArrayList<>();
+//        List<CtTypeReference> parameters = calleeLocation.getExecutable().getParameters();
+//        parameters.forEach(parameter -> par.add(parameter.toString()));
+//        methodsListForPancas.add(
+//                new MethodContainer(
+//                        resolvedType,
+//                        calleeLocation.getExecutable().getSimpleName(),
+//                        par.toString(),
+//                        calleeLocation.getExecutable().getDeclaringType().getQualifiedName()
+//                )
+//        );
     }
 
     private String resolveTypeDomainObject(CtInvocation calleeLocation) throws Exception {

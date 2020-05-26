@@ -28,3 +28,5 @@ and we redirect calls to interfaces to the respective interface implementor
 * Assuming no fully qualified path names inside HQL 'From' clauses
 
 * Assuming no comments on database access queries
+
+* Assuming default naming convention for @Entity and @Table annotations

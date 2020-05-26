@@ -1,5 +1,6 @@
 package collectors;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -25,7 +26,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 public abstract class SpoonCollector {
-
     private int controllerCount;
     private JsonObject callSequence;
     private String projectName;
@@ -41,6 +41,9 @@ public abstract class SpoonCollector {
     Factory factory;
     Launcher launcher;
 
+
+    /* ------- TO REMOVE ----------- */
+//    Set<MethodContainer> methodsListForPancas = new HashSet<>();
     int entityManager = 0;
     private int controllerMethodsCount = 0;
     int repositoryCount = 0;
@@ -101,6 +104,7 @@ public abstract class SpoonCollector {
         }
 
         launcher.getEnvironment().setIgnoreDuplicateDeclarations(true);
+        launcher.getEnvironment().setCommentEnabled(false);
     }
 
     public void run() throws IOException {
@@ -116,6 +120,7 @@ public abstract class SpoonCollector {
             processController(controller);
         }
 
+
         long elapsedTimeMillis = System.currentTimeMillis() - startTime;
         float elapsedTimeSec = elapsedTimeMillis/1000F;
         System.out.println("Complete. Elapsed time: " + elapsedTimeSec + " seconds");
@@ -128,29 +133,32 @@ public abstract class SpoonCollector {
             FileUtils.deleteDirectory(file);
         }
 
-        File testData = new File(Constants.TEST_DATA_PATH);
-        if (!testData.exists()) testData.createNewFile();
-        String s0 = "Project: " + projectName;
-        String s1 = "#Controllers: " + controllers.size();
-        String s15 = "#ControllerMethods: " + controllerMethodsCount;
-        String s2 = "#Entities: " + allEntities.size();
-        String s25 = "#Repositories: " + repositoryCount;
-        String s3 = "#EntityManager: " + entityManager;
-        StringBuilder sb = new StringBuilder()
-                .append("---------------------------\n")
-                .append(s0)
-                .append("\n")
-                .append(s1)
-                .append("\n")
-                .append(s15)
-                .append("\n")
-                .append(s2)
-                .append("\n")
-                .append(s25)
-                .append("\n")
-                .append(s3)
-                .append("\n");
-        Files.write(Paths.get(testData.getPath()), sb.toString().getBytes(), StandardOpenOption.APPEND);
+
+        /* ------ TO REMOVE ------- */
+//        new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(new File("ldodMethods.json"), methodsListForPancas);
+//        File testData = new File(Constants.TEST_DATA_PATH);
+//        if (!testData.exists()) testData.createNewFile();
+//        String s0 = "Project: " + projectName;
+//        String s1 = "#Controllers: " + controllers.size();
+//        String s15 = "#ControllerMethods: " + controllerMethodsCount;
+//        String s2 = "#Entities: " + allEntities.size();
+//        String s25 = "#Repositories: " + repositoryCount;
+//        String s3 = "#EntityManager: " + entityManager;
+//        StringBuilder sb = new StringBuilder()
+//                .append("---------------------------\n")
+//                .append(s0)
+//                .append("\n")
+//                .append(s1)
+//                .append("\n")
+//                .append(s15)
+//                .append("\n")
+//                .append(s2)
+//                .append("\n")
+//                .append(s25)
+//                .append("\n")
+//                .append(s3)
+//                .append("\n");
+//        Files.write(Paths.get(testData.getPath()), sb.toString().getBytes(), StandardOpenOption.APPEND);
     }
 
     private void processController(CtClass controller) {
