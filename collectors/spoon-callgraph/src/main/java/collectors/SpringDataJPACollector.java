@@ -190,11 +190,28 @@ public class SpringDataJPACollector extends SpoonCollector {
         // ------------------- @NamedNativeQuery -----------------------
         parseAtNamedNativeQuery(clazzAnnotations);
 
+        Object[] clazzMethodsArray = clazz.getMethods().toArray();
+        ArrayList<CtMethod> gettersList = new ArrayList<>();
+        for (Object ctMObject : clazzMethodsArray) {
+            CtMethod ctM = (CtMethod) ctMObject;
+            if (ctM.getSimpleName().startsWith("get"))
+                gettersList.add(ctM);
+        }
+
         // ------------------- Check Fields -----------------------
         for (CtField field : clazz.getFields()) {
 
-            List<CtAnnotation<? extends Annotation>> fieldAnnotations = field.getAnnotations();
+            List<CtAnnotation<? extends Annotation>> fieldAnnotationsUnmodifiable = field.getAnnotations();
+            List<CtAnnotation<? extends Annotation>> fieldAnnotations = new ArrayList<>(fieldAnnotationsUnmodifiable);
 
+            // JPA allows to either put the annotations on a field or its getter
+            Optional<CtMethod> first = gettersList.stream()
+                    .filter(m -> m.getSimpleName().equalsIgnoreCase("get" + field.getSimpleName()))
+                    .findFirst();
+            if (first.isPresent()) {
+                fieldAnnotations.addAll(first.get().getAnnotations());
+            }
+            ;
             // ------------------- @ElementCollection -----------------------
             parseAtElementCollection(clazz, field, fieldAnnotations, entityName);
 
@@ -225,7 +242,7 @@ public class SpringDataJPACollector extends SpoonCollector {
                     classes.addClass(clazz.getSimpleName());
                     CtType fieldType = field.getType().getTypeDeclaration();
                     classes.addClass(fieldType.getSimpleName());
-                    tableClassesAccessedMap.put(joinTableName, classes);
+                    tableClassesAccessedMap.put(joinTableName.toUpperCase(), classes);
                 }
             }
         }
@@ -244,7 +261,7 @@ public class SpringDataJPACollector extends SpoonCollector {
                     classes.addClass(clazz.getSimpleName());
                     CtType fieldType = field.getType().getTypeDeclaration();
                     classes.addClass(fieldType.getSimpleName());
-                    tableClassesAccessedMap.put(joinTableName, classes);
+                    tableClassesAccessedMap.put(joinTableName.toUpperCase(), classes);
                 }
             }
         }
@@ -274,7 +291,7 @@ public class SpringDataJPACollector extends SpoonCollector {
                 if (joinTableName.equals("")) {
                     joinTableName = tableName + "_" + getEntityTableName(fieldType);
                 }
-                tableClassesAccessedMap.put(joinTableName, classes);
+                tableClassesAccessedMap.put(joinTableName.toUpperCase(), classes);
             }
         }
     }
@@ -300,7 +317,7 @@ public class SpringDataJPACollector extends SpoonCollector {
                 }
 
                 String joinTableName = tableName + "_" + getEntityTableName(fieldType);
-                tableClassesAccessedMap.put(joinTableName, classes);
+                tableClassesAccessedMap.put(joinTableName.toUpperCase(), classes);
             }
 
             CtAnnotation joinTableAnnotation = getAnnotation(fieldAnnotations, "JoinTable");
@@ -322,7 +339,7 @@ public class SpringDataJPACollector extends SpoonCollector {
                 if (joinTableName.equals("")) {
                     joinTableName = tableName + "_" + getEntityTableName(fieldType);
                 }
-                tableClassesAccessedMap.put(joinTableName, classes);
+                tableClassesAccessedMap.put(joinTableName.toUpperCase(), classes);
             }
         }
     }
@@ -352,7 +369,7 @@ public class SpringDataJPACollector extends SpoonCollector {
             if (joinTableName.equals("")) {
                 joinTableName = entityName + "_" + field.getSimpleName();
             }
-            tableClassesAccessedMap.put(joinTableName, classes);
+            tableClassesAccessedMap.put(joinTableName.toUpperCase(), classes);
         }
     }
 
@@ -416,7 +433,7 @@ public class SpringDataJPACollector extends SpoonCollector {
         else {
             tableName = getEntityTableName(clazz);
             classes.addClass(clazz.getSimpleName());
-            tableClassesAccessedMap.put(tableName, classes);
+            tableClassesAccessedMap.put(tableName.toUpperCase(), classes);
         }
         return tableName;
     }
@@ -460,6 +477,11 @@ public class SpringDataJPACollector extends SpoonCollector {
                 try {
                     if (calleeLocation == null)
                         return;
+
+                    try {
+                        if (((CtInvocation) calleeLocation).getTarget().getType().getSimpleName().contains("EntityManager"))
+                            System.err.println(calleeLocation.toString() + "\n" +calleeLocation.getPosition());
+                    } catch (Exception e) {}
 
                     try {
                         boolean entityManager = ((CtInvocation) calleeLocation).getTarget().getType().getSimpleName().contains("EntityManager");
@@ -523,7 +545,9 @@ public class SpringDataJPACollector extends SpoonCollector {
                     }
 
                 } catch (Exception e) {
-                    // cast error, proceed
+                    if (!(e instanceof ClassCastException || e instanceof NullPointerException)) {
+                        System.err.println(e.getCause().getMessage());
+                    }
                 }
             }
 
@@ -612,6 +636,8 @@ public class SpringDataJPACollector extends SpoonCollector {
             // compare parameters type
             List ctMParameters = ctM.getParameters();
             List executableParameters = executable.getParameters();
+            if (ctMParameters.size() != executableParameters.size())
+                return false;
             for (int i = 0; i < ctMParameters.size(); i++) {
                 CtParameter ctMP = (CtParameter) ctMParameters.get(i);
                 CtTypeReference eP = ((CtTypeReference) executableParameters.get(i));
@@ -892,20 +918,29 @@ public class SpringDataJPACollector extends SpoonCollector {
             ArrayList<QueryAccess> accesses = tablesNamesFinder.getAccesses();
             for (QueryAccess qa : accesses) {
                 String tableName = qa.getName();
-                Classes classes = tableClassesAccessedMap.get(tableName);
+                Classes classes = tableClassesAccessedMap.get(parseTableName(tableName));
                 if (classes == null) {
                     System.err.println("Exception on query: " + sql);
                     System.err.println("Table not found: " + tableName);
                     continue;
+
                 }
                 for (String typeName : classes.getListOfClasses()) {
-                    addEntitiesSequenceAccess(typeName, qa.getMode());
+                    String mode = qa.getMode();
+                    if (mode == null)
+                        mode = "R";
+                    addEntitiesSequenceAccess(typeName, mode
+                    );
                 }
             }
         } catch (Exception e) {
             System.err.println("Exception on query: \"" + sql + "\"");
-            e.printStackTrace();
+            System.err.println(e.getCause().getMessage());
         }
+    }
+
+    private String parseTableName(String tableName) {
+        return tableName.toUpperCase().replace("`", "");
     }
 
     private void parseHqlQuery(String hql) {
@@ -917,36 +952,56 @@ public class SpringDataJPACollector extends SpoonCollector {
 
                 CtType clazz = entityClassNameMap.get(split[0]);
                 if (clazz == null) {
-                    // TODO Example : (select *owner* From Owner) case
+//                    System.err.println("HQL Parser: Couldn't map class " + split[0]);
                 }
                 else {
                     addEntitiesSequenceAccess(clazz.getSimpleName(), a.getMode());
                     for (int i = 1; i < split.length; i++) {
                         String fieldName = split[i];
-                        CtField field = clazz.getField(fieldName);
+                        CtField field = getFieldRecursively(clazz, fieldName);
                         if (field != null) {
                             List<CtTypeReference<?>> actualTypeArguments = field.getType().getActualTypeArguments();
                             if (actualTypeArguments.size() > 0) { // Set<Class> List<Class> etc
                                 for (CtTypeReference ctTypeReference : actualTypeArguments) {
                                     if (allEntities.contains(ctTypeReference.getSimpleName())) {
                                         addEntitiesSequenceAccess(ctTypeReference.getSimpleName(), a.getMode());
+                                        clazz = ctTypeReference.getTypeDeclaration(); // in order to retrieve next fields
                                     }
                                 }
                             }
                             else {
                                 if (allEntities.contains(field.getType().getSimpleName())) {
                                     addEntitiesSequenceAccess(field.getType().getSimpleName(), a.getMode());
+                                    clazz = field.getType().getTypeDeclaration(); // in order to retrieve next fields
                                 }
                             }
-
-                            clazz = field.getType().getTypeDeclaration(); // in order to retrieve next fields
+                        }
+                        else {
+                            System.err.println("Couldn't get field '" + fieldName + "' in " + Arrays.toString(split));
+                            break;
                         }
                     }
                 }
             }
         } catch (Exception e) {
             System.err.println("QueryException on query: \"" + hql + "\"");
-            e.printStackTrace();
+            System.err.println(e.getCause().getMessage());
+        }
+    }
+
+    private CtField getFieldRecursively(CtType clazz, String fieldName) {
+        if (clazz == null)
+            return null;
+
+        CtField field = clazz.getField(fieldName);
+        if (field != null)
+            return field;
+        else {
+            CtTypeReference<?> superClassReference = clazz.getSuperclass();
+            if (superClassReference != null)
+                return getFieldRecursively(superClassReference.getTypeDeclaration(), fieldName);
+            else
+                return null;
         }
     }
 
