@@ -207,10 +207,6 @@
     [
       "Site",
       "R"
-    ],
-    [
-      "AdSlot",
-      "R"
     ]
   ],
   "AdController.delete": [
@@ -423,6 +419,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -473,6 +477,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -518,10 +530,6 @@
     ],
     [
       "Ad",
-      "R"
-    ],
-    [
-      "AdSlot",
       "R"
     ],
     [
@@ -708,10 +716,6 @@
     ],
     [
       "Site",
-      "R"
-    ],
-    [
-      "AdSlot",
       "R"
     ],
     [
@@ -1289,6 +1293,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -1339,6 +1351,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -1667,6 +1687,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -1717,6 +1745,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -1787,6 +1823,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -1837,6 +1881,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -2021,6 +2073,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -2071,6 +2131,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -2239,6 +2307,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -2289,6 +2365,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -7975,6 +8059,22 @@
       "W"
     ],
     [
+      "QuestionOptRec",
+      "W"
+    ],
+    [
+      "QuestionOption",
+      "W"
+    ],
+    [
+      "QuestionOptRec",
+      "W"
+    ],
+    [
+      "QuestionRecord",
+      "W"
+    ],
+    [
       "QuestionItemRec",
       "W"
     ],
@@ -9699,6 +9799,14 @@
       "R"
     ],
     [
+      "Model",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
       "SpecialCategory",
       "R"
     ],
@@ -9708,6 +9816,10 @@
     ],
     [
       "Model",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ]
   ],
@@ -9909,6 +10021,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -9959,6 +10079,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -10024,6 +10152,10 @@
     ],
     [
       "Model",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ],
     [
@@ -10511,6 +10643,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -10561,6 +10701,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -11105,6 +11253,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -11155,6 +11311,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -11599,6 +11763,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -11649,6 +11821,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -11731,6 +11911,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -11781,6 +11969,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -11997,6 +12193,18 @@
       "R"
     ],
     [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
       "NodeRole",
       "R"
     ],
@@ -12074,6 +12282,14 @@
     ],
     [
       "Role",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -12127,6 +12343,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -12259,6 +12483,18 @@
       "R"
     ],
     [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
       "NodeRole",
       "R"
     ],
@@ -12336,6 +12572,14 @@
     ],
     [
       "Role",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -12389,6 +12633,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -12521,6 +12773,14 @@
       "W"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -12571,6 +12831,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -12601,6 +12869,14 @@
     [
       "Global",
       "R"
+    ],
+    [
+      "Model",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ]
   ],
   "ConfGlobalController.customUpdate": [
@@ -12627,6 +12903,14 @@
     [
       "Global",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
     ],
     [
       "OperationLog",
@@ -12679,6 +12963,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -12719,6 +13011,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -12769,6 +13069,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -12813,6 +13121,14 @@
       "W"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -12863,6 +13179,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -12907,6 +13231,14 @@
       "W"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -12957,6 +13289,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -12999,18 +13339,6 @@
     [
       "Org",
       "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
     ]
   ],
   "ConfGlobalController.registerUpdate": [
@@ -13029,6 +13357,14 @@
     [
       "Global",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
     ],
     [
       "OperationLog",
@@ -13081,6 +13417,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -13125,6 +13469,14 @@
       "W"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -13175,6 +13527,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -13315,6 +13675,14 @@
       "W"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -13393,7 +13761,23 @@
       "R"
     ],
     [
+      "Model",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
       "Node",
+      "R"
+    ],
+    [
+      "Model",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ],
     [
@@ -13453,7 +13837,15 @@
       "R"
     ],
     [
-      "MemberGroup",
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ],
     [
@@ -13481,6 +13873,10 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
       "Info",
       "R"
     ],
@@ -13489,11 +13885,7 @@
       "R"
     ],
     [
-      "Node",
-      "R"
-    ],
-    [
-      "Model",
+      "Site",
       "R"
     ],
     [
@@ -13513,7 +13905,11 @@
       "R"
     ],
     [
-      "Workflow",
+      "Node",
+      "R"
+    ],
+    [
+      "Model",
       "R"
     ],
     [
@@ -13707,10 +14103,6 @@
       "R"
     ],
     [
-      "Node",
-      "R"
-    ],
-    [
       "InfoNode",
       "R"
     ],
@@ -13723,6 +14115,10 @@
       "R"
     ],
     [
+      "Node",
+      "R"
+    ],
+    [
       "Global",
       "R"
     ],
@@ -19737,6 +20133,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -20001,19 +20405,7 @@
       "R"
     ],
     [
-      "Node",
-      "R"
-    ],
-    [
-      "Model",
-      "R"
-    ],
-    [
-      "Node",
-      "R"
-    ],
-    [
-      "Node",
+      "Site",
       "R"
     ],
     [
@@ -20022,6 +20414,30 @@
     ],
     [
       "Model",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Model",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ],
     [
@@ -20037,11 +20453,19 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
       "Role",
       "R"
     ],
     [
-      "MemberGroup",
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
       "R"
     ],
     [
@@ -20065,10 +20489,6 @@
       "R"
     ],
     [
-      "Workflow",
-      "R"
-    ],
-    [
       "Node",
       "R"
     ],
@@ -20078,6 +20498,18 @@
     ]
   ],
   "NodeController.left": [
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
     [
       "Site",
       "R"
@@ -20307,9 +20739,25 @@
     [
       "Model",
       "R"
+    ],
+    [
+      "Site",
+      "R"
     ]
   ],
   "NodeController.mergeForm": [
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
     [
       "Site",
       "R"
@@ -20465,10 +20913,6 @@
       "R"
     ],
     [
-      "Node",
-      "R"
-    ],
-    [
       "InfoNode",
       "R"
     ],
@@ -20481,6 +20925,10 @@
       "R"
     ],
     [
+      "Node",
+      "R"
+    ],
+    [
       "Global",
       "R"
     ],
@@ -26495,6 +26943,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -26552,6 +27008,18 @@
     ],
     [
       "Node",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ],
     [
@@ -26757,6 +27225,14 @@
       "W"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -26839,6 +27315,18 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
       "Role",
       "R"
     ],
@@ -26875,6 +27363,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
       "Role",
       "R"
     ],
@@ -26883,43 +27379,7 @@
       "R"
     ],
     [
-      "Node",
-      "R"
-    ],
-    [
-      "NodeMemberGroup",
-      "R"
-    ],
-    [
-      "NodeMemberGroup",
-      "R"
-    ],
-    [
-      "NodeMemberGroup",
-      "R"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "Node",
-      "W"
-    ],
-    [
-      "MemberGroup",
-      "W"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "MemberGroup",
+      "Role",
       "R"
     ],
     [
@@ -26949,10 +27409,6 @@
     [
       "MemberGroup",
       "W"
-    ],
-    [
-      "MemberGroup",
-      "R"
     ],
     [
       "MemberGroup",
@@ -26993,6 +27449,38 @@
     [
       "MemberGroup",
       "R"
+    ],
+    [
+      "MemberGroup",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "NodeMemberGroup",
+      "R"
+    ],
+    [
+      "NodeMemberGroup",
+      "R"
+    ],
+    [
+      "NodeMemberGroup",
+      "R"
+    ],
+    [
+      "MemberGroup",
+      "R"
+    ],
+    [
+      "Node",
+      "W"
+    ],
+    [
+      "MemberGroup",
+      "W"
     ],
     [
       "MemberGroup",
@@ -27287,7 +27775,11 @@
       "W"
     ],
     [
-      "Role",
+      "Node",
+      "R"
+    ],
+    [
+      "Node",
       "R"
     ],
     [
@@ -27303,7 +27795,19 @@
       "R"
     ],
     [
-      "Node",
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ],
     [
@@ -27311,7 +27815,7 @@
       "R"
     ],
     [
-      "Node",
+      "Role",
       "R"
     ],
     [
@@ -27319,11 +27823,11 @@
       "R"
     ],
     [
-      "Node",
+      "Role",
       "R"
     ],
     [
-      "Node",
+      "Role",
       "R"
     ],
     [
@@ -27377,13 +27881,21 @@
     [
       "NodeRole",
       "W"
+    ],
+    [
+      "Node",
+      "R"
     ],
     [
       "MemberGroup",
       "R"
     ],
     [
-      "Node",
+      "NodeMemberGroup",
+      "R"
+    ],
+    [
+      "MemberGroup",
       "R"
     ],
     [
@@ -27391,19 +27903,11 @@
       "R"
     ],
     [
-      "Node",
+      "MemberGroup",
       "R"
     ],
     [
-      "NodeMemberGroup",
-      "R"
-    ],
-    [
-      "Node",
-      "R"
-    ],
-    [
-      "Node",
+      "MemberGroup",
       "R"
     ],
     [
@@ -33685,6 +34189,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -34061,7 +34573,11 @@
       "W"
     ],
     [
-      "Role",
+      "Node",
+      "R"
+    ],
+    [
+      "Node",
       "R"
     ],
     [
@@ -34077,7 +34593,19 @@
       "R"
     ],
     [
-      "Node",
+      "Site",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
       "R"
     ],
     [
@@ -34085,7 +34613,7 @@
       "R"
     ],
     [
-      "Node",
+      "Role",
       "R"
     ],
     [
@@ -34093,11 +34621,11 @@
       "R"
     ],
     [
-      "Node",
+      "Role",
       "R"
     ],
     [
-      "Node",
+      "Role",
       "R"
     ],
     [
@@ -34151,13 +34679,21 @@
     [
       "NodeRole",
       "W"
+    ],
+    [
+      "Node",
+      "R"
     ],
     [
       "MemberGroup",
       "R"
     ],
     [
-      "Node",
+      "NodeMemberGroup",
+      "R"
+    ],
+    [
+      "MemberGroup",
       "R"
     ],
     [
@@ -34165,19 +34701,11 @@
       "R"
     ],
     [
-      "Node",
+      "MemberGroup",
       "R"
     ],
     [
-      "NodeMemberGroup",
-      "R"
-    ],
-    [
-      "Node",
-      "R"
-    ],
-    [
-      "Node",
+      "MemberGroup",
       "R"
     ],
     [
@@ -40467,6 +40995,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -42697,6 +43233,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -42747,6 +43291,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -43007,6 +43559,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -43057,6 +43617,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -43265,6 +43833,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -43315,6 +43891,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -43391,6 +43975,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -43441,6 +44033,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -43493,6 +44093,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -43543,6 +44151,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -43609,6 +44225,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -43659,6 +44283,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -43737,6 +44369,10 @@
       "R"
     ],
     [
+      "Tag",
+      "R"
+    ],
+    [
       "InfoTag",
       "R"
     ],
@@ -43749,7 +44385,11 @@
       "R"
     ],
     [
-      "Tag",
+      "Site",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -43803,6 +44443,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -43903,6 +44551,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -43953,6 +44609,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -44025,6 +44689,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -44075,6 +44747,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -44635,6 +45315,14 @@
       "R"
     ],
     [
+      "Tag",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
       "Site",
       "R"
     ],
@@ -45007,6 +45695,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -45057,6 +45753,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -45257,6 +45961,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -45307,6 +46019,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -45463,6 +46183,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -45513,6 +46241,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -49977,9 +50713,33 @@
     [
       "Role",
       "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
     ]
   ],
   "WorkflowStepController.delete": [
+    [
+      "WorkflowLog",
+      "R"
+    ],
+    [
+      "WorkflowProcess",
+      "R"
+    ],
+    [
+      "WorkflowProcess",
+      "R"
+    ],
     [
       "WorkflowProcess",
       "R"
@@ -49990,18 +50750,6 @@
     ],
     [
       "WorkflowLog",
-      "R"
-    ],
-    [
-      "WorkflowLog",
-      "R"
-    ],
-    [
-      "WorkflowProcess",
-      "R"
-    ],
-    [
-      "WorkflowProcess",
       "R"
     ],
     [
@@ -50048,6 +50796,18 @@
     ],
     [
       "Workflow",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Role",
       "R"
     ],
     [
@@ -50545,6 +51305,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -50595,6 +51363,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -50667,6 +51443,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -50717,6 +51501,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -50897,6 +51689,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -50947,6 +51747,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -51135,6 +51943,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -51185,6 +52001,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -55791,6 +56615,14 @@
       "R"
     ],
     [
+      "VoteMark",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "Site",
       "R"
     ],
@@ -57215,6 +58047,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -57265,6 +58105,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -57339,6 +58187,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -57389,6 +58245,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -57689,6 +58553,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -57739,6 +58611,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -57847,6 +58727,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -57897,6 +58785,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -57933,6 +58829,14 @@
   ],
   "DbBackupController.backup": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -57983,6 +58887,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -58011,6 +58923,14 @@
   ],
   "DbBackupController.delete": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -58061,6 +58981,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -58377,6 +59305,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -58427,6 +59363,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -58481,6 +59425,10 @@
       "R"
     ],
     [
+      "Attribute",
+      "R"
+    ],
+    [
       "InfoAttribute",
       "R"
     ],
@@ -58493,7 +59441,11 @@
       "R"
     ],
     [
-      "Attribute",
+      "Site",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -58547,6 +59499,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -58653,6 +59613,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -58703,6 +59671,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -59065,6 +60041,14 @@
   ],
   "WebFileUploadsController.delete": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -59115,6 +60099,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -59143,6 +60135,14 @@
   ],
   "WebFileUploadsController.mkdir": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -59193,6 +60193,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -59221,6 +60229,14 @@
   ],
   "WebFileUploadsController.move": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -59271,6 +60287,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -59299,6 +60323,14 @@
   ],
   "WebFileUploadsController.rename": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -59349,6 +60381,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -59377,6 +60417,14 @@
   ],
   "WebFileUploadsController.save": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -59427,6 +60475,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -59455,6 +60511,14 @@
   ],
   "WebFileUploadsController.unzip": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -59505,6 +60569,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -59533,6 +60605,14 @@
   ],
   "WebFileUploadsController.update": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -59583,6 +60663,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -59611,6 +60699,14 @@
   ],
   "WebFileUploadsController.upload": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -59661,6 +60757,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -59689,6 +60793,14 @@
   ],
   "WebFileUploadsController.zipUpload": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -59739,6 +60851,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -59767,6 +60887,14 @@
   ],
   "WebFileTemplateController.delete": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -59817,6 +60945,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -59851,6 +60987,14 @@
   ],
   "WebFileTemplateController.mkdir": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -59901,6 +61045,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -59929,6 +61081,14 @@
   ],
   "WebFileTemplateController.move": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -59979,6 +61139,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -60007,6 +61175,14 @@
   ],
   "WebFileTemplateController.rename": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -60057,6 +61233,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -60085,6 +61269,14 @@
   ],
   "WebFileTemplateController.save": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -60135,6 +61327,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -60163,6 +61363,14 @@
   ],
   "WebFileTemplateController.unzip": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -60213,6 +61421,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -60241,6 +61457,14 @@
   ],
   "WebFileTemplateController.update": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -60291,6 +61515,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -60319,6 +61551,14 @@
   ],
   "WebFileTemplateController.upload": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -60369,6 +61609,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -60397,6 +61645,14 @@
   ],
   "WebFileTemplateController.zipUpload": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -60447,6 +61703,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -61433,82 +62697,6 @@
       "W"
     ],
     [
-      "Org",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "Org",
-      "W"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "MemberGroup",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
       "UserDetail",
       "R"
     ],
@@ -61550,458 +62738,6 @@
     ],
     [
       "UserDetail",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "UserRole",
-      "R"
-    ],
-    [
-      "UserRole",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Site",
-      "R"
-    ],
-    [
-      "Site",
-      "R"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "UserRole",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "Role",
-      "W"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "UserRole",
-      "R"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "UserRole",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "UserRole",
-      "R"
-    ],
-    [
-      "Role",
-      "W"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "UserRole",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "UserRole",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "Org",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "Org",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "Org",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "UserMemberGroup",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "UserMemberGroup",
-      "R"
-    ],
-    [
-      "UserMemberGroup",
-      "R"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "MemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "MemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "R"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "R"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "MemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
       "W"
     ],
     [
@@ -66361,82 +67097,6 @@
       "W"
     ],
     [
-      "Org",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "Org",
-      "W"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "MemberGroup",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
       "UserDetail",
       "R"
     ],
@@ -66478,458 +67138,6 @@
     ],
     [
       "UserDetail",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "UserRole",
-      "R"
-    ],
-    [
-      "UserRole",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Site",
-      "R"
-    ],
-    [
-      "Site",
-      "R"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "UserRole",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "Role",
-      "W"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "UserRole",
-      "R"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "UserRole",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "UserRole",
-      "R"
-    ],
-    [
-      "Role",
-      "W"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "UserRole",
-      "R"
-    ],
-    [
-      "UserRole",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "Org",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "Org",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "Org",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "UserMemberGroup",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "UserMemberGroup",
-      "R"
-    ],
-    [
-      "UserMemberGroup",
-      "R"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "MemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "MemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "R"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "R"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "MemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
       "W"
     ],
     [
@@ -67791,6 +67999,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -67841,6 +68057,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -67941,6 +68165,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -67991,6 +68223,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -68067,6 +68307,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -68117,6 +68365,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -68981,6 +69237,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -69031,6 +69295,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -69060,6 +69332,14 @@
   "ConfSiteController.customEdit": [
     [
       "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Model",
       "R"
     ],
     [
@@ -69101,6 +69381,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -69151,6 +69439,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -69195,6 +69491,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -69245,6 +69549,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -69397,6 +69709,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -69447,6 +69767,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -69663,6 +69991,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -69713,6 +70049,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -69827,6 +70171,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -69877,6 +70229,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -69949,6 +70309,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -69999,6 +70367,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -70109,6 +70485,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -70159,6 +70543,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -70335,6 +70727,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -70385,6 +70785,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -70537,6 +70945,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -70587,6 +71003,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -70815,6 +71239,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -70865,6 +71297,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -71077,6 +71517,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -71127,6 +71575,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -71179,6 +71635,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -71229,6 +71693,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -71525,6 +71997,10 @@
       "R"
     ],
     [
+      "Comment",
+      "R"
+    ],
+    [
       "Info",
       "R"
     ],
@@ -71677,6 +72153,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -71727,6 +72211,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -71815,6 +72307,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -71865,6 +72365,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -76327,6 +76835,10 @@
       "R"
     ],
     [
+      "Comment",
+      "R"
+    ],
+    [
       "Info",
       "R"
     ],
@@ -76997,7 +77509,23 @@
       "R"
     ],
     [
+      "VoteMark",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "Comment",
+      "R"
+    ],
+    [
+      "VoteMark",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -81335,6 +81863,10 @@
       "R"
     ],
     [
+      "Comment",
+      "R"
+    ],
+    [
       "Info",
       "R"
     ],
@@ -83189,6 +83721,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -83239,6 +83779,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -83331,6 +83879,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -83381,6 +83937,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -83449,6 +84013,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -83499,6 +84071,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -83555,6 +84135,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -83605,6 +84193,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -83687,6 +84283,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -83737,6 +84341,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -83797,9 +84409,33 @@
     [
       "Node",
       "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
     ]
   ],
   "NodeF7Controller.f7NodeTreeInfoPerms": [
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
     [
       "Site",
       "R"
@@ -83961,9 +84597,33 @@
     [
       "Node",
       "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
     ]
   ],
   "NodeF7Controller.f7NodeTreeMultiInfoPerms": [
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
     [
       "Site",
       "R"
@@ -84127,6 +84787,18 @@
       "R"
     ],
     [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
@@ -84272,6 +84944,18 @@
     ]
   ],
   "NodeF7Controller.f7NodeTreePerms": [
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
     [
       "Site",
       "R"
@@ -84683,6 +85367,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -84733,6 +85425,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -84799,6 +85499,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -84849,6 +85557,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -85013,6 +85729,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -85063,6 +85787,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -85135,6 +85867,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -85185,6 +85925,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -85235,25 +85983,9 @@
     [
       "Org",
       "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
     ]
   ],
   "OrgF7Controller.f7OrgTreeMulti": [
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
     [
       "Org",
       "R"
@@ -85367,6 +86099,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -86601,6 +87341,22 @@
       "R"
     ],
     [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
       "Site",
       "R"
     ],
@@ -86618,6 +87374,22 @@
     ],
     [
       "Node",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ],
     [
@@ -94579,6 +95351,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -95743,6 +96523,22 @@
       "R"
     ],
     [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
       "Site",
       "R"
     ],
@@ -95760,6 +96556,22 @@
     ],
     [
       "Node",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ],
     [
@@ -103721,6 +104533,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -104797,6 +105617,22 @@
       "R"
     ],
     [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
       "Site",
       "R"
     ],
@@ -104814,6 +105650,22 @@
     ],
     [
       "Node",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ],
     [
@@ -112767,6 +113619,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -113899,6 +114759,22 @@
       "R"
     ],
     [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
       "Site",
       "R"
     ],
@@ -113916,6 +114792,22 @@
     ],
     [
       "Node",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ],
     [
@@ -121869,6 +122761,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -123001,6 +123901,22 @@
       "R"
     ],
     [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
       "Site",
       "R"
     ],
@@ -123018,6 +123934,22 @@
     ],
     [
       "Node",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ],
     [
@@ -130971,6 +131903,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -131064,10 +132004,6 @@
     ],
     [
       "Site",
-      "R"
-    ],
-    [
-      "MemberGroup",
       "R"
     ],
     [
@@ -132457,6 +133393,22 @@
       "R"
     ],
     [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
       "Site",
       "R"
     ],
@@ -132474,6 +133426,22 @@
     ],
     [
       "Node",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ],
     [
@@ -140435,6 +141403,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -140943,10 +141919,6 @@
       "R"
     ],
     [
-      "MemberGroup",
-      "R"
-    ],
-    [
       "Site",
       "R"
     ],
@@ -141040,6 +142012,18 @@
     ]
   ],
   "InfoController.left": [
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
     [
       "Site",
       "R"
@@ -142597,6 +143581,22 @@
       "R"
     ],
     [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
       "Site",
       "R"
     ],
@@ -142614,6 +143614,22 @@
     ],
     [
       "Node",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ],
     [
@@ -150575,6 +151591,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -152685,6 +153709,14 @@
       "W"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -152730,6 +153762,18 @@
     ],
     [
       "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Node",
       "R"
     ],
     [
@@ -153643,6 +154687,22 @@
       "R"
     ],
     [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
       "Site",
       "R"
     ],
@@ -153660,6 +154720,22 @@
     ],
     [
       "Node",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ],
     [
@@ -161621,6 +162697,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -162793,6 +163877,22 @@
       "R"
     ],
     [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
       "Site",
       "R"
     ],
@@ -162810,6 +163910,22 @@
     ],
     [
       "Node",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ],
     [
@@ -170771,6 +171887,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -173735,6 +174859,22 @@
       "R"
     ],
     [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
       "Site",
       "R"
     ],
@@ -173752,6 +174892,22 @@
     ],
     [
       "Node",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ],
     [
@@ -181705,6 +182861,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -185417,6 +186581,22 @@
       "R"
     ],
     [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
       "Site",
       "R"
     ],
@@ -185434,6 +186614,22 @@
     ],
     [
       "Node",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ],
     [
@@ -193395,6 +194591,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -193901,6 +195105,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -193951,6 +195163,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -194109,6 +195329,14 @@
       "W"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -194219,6 +195447,14 @@
       "W"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -194315,18 +195551,6 @@
       "R"
     ],
     [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
       "Site",
       "R"
     ]
@@ -194365,6 +195589,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -194415,6 +195647,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -194947,6 +196187,14 @@
       "W"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -195013,6 +196261,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -195063,6 +196319,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -195383,11 +196647,11 @@
       "R"
     ],
     [
-      "User",
+      "UserRole",
       "R"
     ],
     [
-      "UserRole",
+      "User",
       "R"
     ],
     [
@@ -195761,6 +197025,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -195796,6 +197068,18 @@
     ]
   ],
   "ContributionController.createForm": [
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
     [
       "Site",
       "R"
@@ -199875,6 +201159,22 @@
       "R"
     ],
     [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
       "Site",
       "R"
     ],
@@ -199892,6 +201192,22 @@
     ],
     [
       "Node",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ],
     [
@@ -210249,6 +211565,22 @@
       "R"
     ],
     [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
       "Site",
       "R"
     ],
@@ -210266,6 +211598,22 @@
     ],
     [
       "Node",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ],
     [
@@ -219297,6 +220645,18 @@
       "R"
     ],
     [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
       "Site",
       "R"
     ],
@@ -224587,6 +225947,22 @@
       "R"
     ],
     [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
       "Site",
       "R"
     ],
@@ -224604,6 +225980,22 @@
     ],
     [
       "Node",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Info",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ],
     [
@@ -233009,7 +234401,23 @@
       "R"
     ],
     [
+      "VoteMark",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "Info",
+      "R"
+    ],
+    [
+      "VoteMark",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -233229,7 +234637,23 @@
       "R"
     ],
     [
+      "VoteMark",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "Info",
+      "R"
+    ],
+    [
+      "VoteMark",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -235507,7 +236931,23 @@
       "R"
     ],
     [
+      "VoteMark",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "Info",
+      "R"
+    ],
+    [
+      "VoteMark",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -236937,6 +238377,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -236987,6 +238435,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -237039,7 +238495,71 @@
       "R"
     ],
     [
-      "Info",
+      "Node",
+      "R"
+    ],
+    [
+      "Task",
+      "R"
+    ],
+    [
+      "Task",
+      "W"
+    ],
+    [
+      "Task",
+      "W"
+    ],
+    [
+      "Task",
+      "W"
+    ],
+    [
+      "Task",
+      "W"
+    ],
+    [
+      "Site",
+      "W"
+    ],
+    [
+      "Task",
+      "W"
+    ],
+    [
+      "User",
+      "W"
+    ],
+    [
+      "Task",
+      "R"
+    ],
+    [
+      "Task",
+      "W"
+    ],
+    [
+      "Task",
+      "R"
+    ],
+    [
+      "Task",
+      "W"
+    ],
+    [
+      "Task",
+      "R"
+    ],
+    [
+      "Task",
+      "R"
+    ],
+    [
+      "Task",
+      "W"
+    ],
+    [
+      "Task",
       "R"
     ],
     [
@@ -237255,6 +238775,54 @@
       "R"
     ],
     [
+      "Task",
+      "R"
+    ],
+    [
+      "Task",
+      "R"
+    ],
+    [
+      "Task",
+      "W"
+    ],
+    [
+      "Task",
+      "R"
+    ],
+    [
+      "Task",
+      "W"
+    ],
+    [
+      "Task",
+      "R"
+    ],
+    [
+      "Task",
+      "R"
+    ],
+    [
+      "Task",
+      "W"
+    ],
+    [
+      "Task",
+      "R"
+    ],
+    [
+      "Task",
+      "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -237305,6 +238873,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -244701,6 +246277,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -244751,6 +246335,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -250291,6 +251883,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -250341,6 +251941,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -252269,6 +253877,14 @@
       "W"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -252319,6 +253935,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -257983,6 +259607,14 @@
       "W"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -258033,6 +259665,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -258079,6 +259719,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -258129,6 +259777,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -258473,6 +260129,18 @@
       "R"
     ],
     [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
       "NodeRole",
       "R"
     ],
@@ -258637,6 +260305,14 @@
       "R"
     ],
     [
+      "Model",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
       "Site",
       "R"
     ],
@@ -258801,6 +260477,14 @@
       "R"
     ],
     [
+      "Model",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
       "Site",
       "R"
     ],
@@ -258962,6 +260646,14 @@
     ],
     [
       "Node",
+      "R"
+    ],
+    [
+      "Model",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ],
     [
@@ -259129,167 +260821,7 @@
       "R"
     ],
     [
-      "Site",
-      "R"
-    ],
-    [
       "Model",
-      "W"
-    ],
-    [
-      "ModelField",
-      "W"
-    ],
-    [
-      "Model",
-      "W"
-    ],
-    [
-      "Model",
-      "R"
-    ],
-    [
-      "Model",
-      "W"
-    ],
-    [
-      "Site",
-      "W"
-    ],
-    [
-      "Model",
-      "W"
-    ],
-    [
-      "Model",
-      "R"
-    ],
-    [
-      "Model",
-      "W"
-    ],
-    [
-      "Model",
-      "R"
-    ],
-    [
-      "ModelField",
-      "R"
-    ],
-    [
-      "ModelField",
-      "W"
-    ],
-    [
-      "ModelField",
-      "R"
-    ],
-    [
-      "Model",
-      "R"
-    ],
-    [
-      "ModelField",
-      "W"
-    ],
-    [
-      "Model",
-      "W"
-    ],
-    [
-      "ModelField",
-      "W"
-    ],
-    [
-      "ModelField",
-      "R"
-    ],
-    [
-      "ModelField",
-      "W"
-    ],
-    [
-      "ModelField",
-      "R"
-    ],
-    [
-      "ModelField",
-      "R"
-    ],
-    [
-      "ModelField",
-      "W"
-    ],
-    [
-      "ModelField",
-      "R"
-    ],
-    [
-      "ModelField",
-      "W"
-    ],
-    [
-      "ModelField",
-      "R"
-    ],
-    [
-      "ModelField",
-      "W"
-    ],
-    [
-      "ModelField",
-      "R"
-    ],
-    [
-      "ModelField",
-      "W"
-    ],
-    [
-      "ModelField",
-      "R"
-    ],
-    [
-      "ModelField",
-      "W"
-    ],
-    [
-      "ModelField",
-      "W"
-    ],
-    [
-      "Model",
-      "R"
-    ],
-    [
-      "ModelField",
-      "R"
-    ],
-    [
-      "Model",
-      "W"
-    ],
-    [
-      "ModelField",
-      "W"
-    ],
-    [
-      "Model",
-      "W"
-    ],
-    [
-      "ModelField",
-      "W"
-    ],
-    [
-      "Model",
-      "W"
-    ],
-    [
-      "ModelField",
-      "W"
-    ],
-    [
-      "Site",
       "R"
     ],
     [
@@ -259301,7 +260833,183 @@
       "R"
     ],
     [
+      "Model",
+      "W"
+    ],
+    [
+      "ModelField",
+      "W"
+    ],
+    [
+      "Model",
+      "W"
+    ],
+    [
+      "Model",
+      "R"
+    ],
+    [
+      "Model",
+      "W"
+    ],
+    [
       "Site",
+      "W"
+    ],
+    [
+      "Model",
+      "W"
+    ],
+    [
+      "Model",
+      "R"
+    ],
+    [
+      "Model",
+      "W"
+    ],
+    [
+      "Model",
+      "R"
+    ],
+    [
+      "ModelField",
+      "R"
+    ],
+    [
+      "ModelField",
+      "W"
+    ],
+    [
+      "ModelField",
+      "R"
+    ],
+    [
+      "Model",
+      "R"
+    ],
+    [
+      "ModelField",
+      "W"
+    ],
+    [
+      "Model",
+      "W"
+    ],
+    [
+      "ModelField",
+      "W"
+    ],
+    [
+      "ModelField",
+      "R"
+    ],
+    [
+      "ModelField",
+      "W"
+    ],
+    [
+      "ModelField",
+      "R"
+    ],
+    [
+      "ModelField",
+      "R"
+    ],
+    [
+      "ModelField",
+      "W"
+    ],
+    [
+      "ModelField",
+      "R"
+    ],
+    [
+      "ModelField",
+      "W"
+    ],
+    [
+      "ModelField",
+      "R"
+    ],
+    [
+      "ModelField",
+      "W"
+    ],
+    [
+      "ModelField",
+      "R"
+    ],
+    [
+      "ModelField",
+      "W"
+    ],
+    [
+      "ModelField",
+      "R"
+    ],
+    [
+      "ModelField",
+      "W"
+    ],
+    [
+      "ModelField",
+      "W"
+    ],
+    [
+      "Model",
+      "R"
+    ],
+    [
+      "ModelField",
+      "R"
+    ],
+    [
+      "Model",
+      "W"
+    ],
+    [
+      "ModelField",
+      "W"
+    ],
+    [
+      "Model",
+      "W"
+    ],
+    [
+      "ModelField",
+      "W"
+    ],
+    [
+      "Model",
+      "W"
+    ],
+    [
+      "ModelField",
+      "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -259355,6 +261063,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -259392,10 +261108,22 @@
   "SiteController.update": [
     [
       "Site",
+      "W"
+    ],
+    [
+      "PublishPoint",
+      "W"
+    ],
+    [
+      "Org",
       "R"
     ],
     [
       "Site",
+      "W"
+    ],
+    [
+      "Org",
       "W"
     ],
     [
@@ -259420,6 +261148,14 @@
     ],
     [
       "Site",
+      "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ],
     [
@@ -259432,6 +261168,50 @@
     ],
     [
       "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -259485,6 +261265,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -259729,6 +261517,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -259779,6 +261575,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -259845,6 +261649,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -259895,6 +261707,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -259956,18 +261776,6 @@
     ]
   ],
   "OrgGlobalController.list": [
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
     [
       "Org",
       "R"
@@ -260119,6 +261927,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -260169,6 +261985,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -260389,6 +262213,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -260439,6 +262271,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -262003,6 +263843,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -262053,6 +263901,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -262301,6 +264157,18 @@
       "R"
     ],
     [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
       "NodeMemberGroup",
       "R"
     ],
@@ -262394,6 +264262,14 @@
     ],
     [
       "MemberGroup",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -262447,6 +264323,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -262519,6 +264403,18 @@
       "R"
     ],
     [
+      "Node",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Node",
+      "R"
+    ],
+    [
       "NodeMemberGroup",
       "R"
     ],
@@ -262612,6 +264508,14 @@
     ],
     [
       "MemberGroup",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -262665,6 +264569,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -262757,6 +264669,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -262807,6 +264727,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -262892,6 +264820,18 @@
     ],
     [
       "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ],
     [
@@ -263023,6 +264963,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -263159,6 +265107,14 @@
       "W"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -263237,6 +265193,18 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
       "Role",
       "R"
     ],
@@ -263299,11 +265267,11 @@
       "R"
     ],
     [
-      "Org",
+      "Role",
       "R"
     ],
     [
-      "Org",
+      "Role",
       "R"
     ],
     [
@@ -263312,6 +265280,10 @@
     ],
     [
       "Role",
+      "R"
+    ],
+    [
+      "Site",
       "R"
     ],
     [
@@ -263385,6 +265357,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -263435,6 +265415,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -263987,6 +265975,14 @@
       "W"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -264077,6 +266073,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -264127,6 +266131,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -264495,6 +266507,10 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
       "UserRole",
       "R"
     ],
@@ -264503,10 +266519,6 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
       "UserOrg",
       "R"
     ],
@@ -264877,6 +266889,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -265087,6 +267107,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -265137,6 +267165,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -265215,6 +267251,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -265265,6 +267309,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -265605,6 +267657,14 @@
   ],
   "WebFileSiteController.delete": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -265655,6 +267715,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -265683,6 +267751,14 @@
   ],
   "WebFileSiteController.mkdir": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -265733,6 +267809,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -265761,6 +267845,14 @@
   ],
   "WebFileSiteController.move": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -265811,6 +267903,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -265839,6 +267939,14 @@
   ],
   "WebFileSiteController.rename": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -265889,6 +267997,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -265917,6 +268033,14 @@
   ],
   "WebFileSiteController.save": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -265967,6 +268091,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -265995,6 +268127,14 @@
   ],
   "WebFileSiteController.unzip": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -266045,6 +268185,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -266073,6 +268221,14 @@
   ],
   "WebFileSiteController.update": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -266123,6 +268279,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -266151,6 +268315,14 @@
   ],
   "WebFileSiteController.upload": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -266201,6 +268373,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -266229,6 +268409,14 @@
   ],
   "WebFileSiteController.zipUpload": [
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -266279,6 +268467,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -266453,6 +268649,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -266503,6 +268707,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -266641,6 +268853,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -266691,6 +268911,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -266787,6 +269015,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -266837,6 +269073,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -268757,6 +271001,14 @@
       "W"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -268885,6 +271137,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -269017,6 +271277,14 @@
       "W"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -269145,6 +271413,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -269277,6 +271553,14 @@
       "W"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -269405,6 +271689,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -269661,6 +271953,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -269711,6 +272011,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -269817,6 +272125,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -269867,6 +272183,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -269946,14 +272270,6 @@
   "OrgController.list": [
     [
       "Site",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
       "R"
     ],
     [
@@ -270139,6 +272455,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -270189,6 +272513,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -270433,6 +272765,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -270483,6 +272823,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -270563,6 +272911,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -270613,6 +272969,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -270693,11 +273057,11 @@
       "R"
     ],
     [
-      "ScoreItem",
+      "ScoreBoard",
       "R"
     ],
     [
-      "ScoreBoard",
+      "ScoreItem",
       "R"
     ],
     [
@@ -270710,6 +273074,14 @@
     ],
     [
       "ScoreGroup",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -270763,6 +273135,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -270931,6 +273311,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -270981,6 +273369,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -271121,15 +273517,15 @@
       "R"
     ],
     [
-      "ScoreItem",
-      "R"
-    ],
-    [
       "ScoreBoard",
       "R"
     ],
     [
       "ScoreItem",
+      "R"
+    ],
+    [
+      "ScoreItem",
       "W"
     ],
     [
@@ -271146,6 +273542,14 @@
     ],
     [
       "ScoreGroup",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -271199,6 +273603,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -271291,6 +273703,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -271341,6 +273761,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -271407,6 +273835,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -271457,6 +273893,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -271561,6 +274005,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -271611,6 +274063,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -271703,6 +274163,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -271753,6 +274221,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -272355,6 +274831,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -272405,6 +274889,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -272509,6 +275001,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -272559,6 +275059,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -272627,6 +275135,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -272677,6 +275193,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -272717,6 +275241,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -272767,6 +275299,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -272815,6 +275355,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -272865,6 +275413,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -273161,6 +275717,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -273211,6 +275775,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -273269,10 +275841,6 @@
     [
       "WorkflowGroup",
       "R"
-    ],
-    [
-      "WorkflowGroup",
-      "R"
     ]
   ],
   "WorkflowController.delete": [
@@ -273309,14 +275877,6 @@
       "R"
     ],
     [
-      "WorkflowProcess",
-      "R"
-    ],
-    [
-      "WorkflowProcess",
-      "R"
-    ],
-    [
       "WorkflowStep",
       "R"
     ],
@@ -273325,11 +275885,19 @@
       "R"
     ],
     [
-      "WorkflowLog",
+      "WorkflowProcess",
       "R"
     ],
     [
       "WorkflowProcess",
+      "R"
+    ],
+    [
+      "WorkflowProcess",
+      "R"
+    ],
+    [
+      "WorkflowLog",
       "R"
     ],
     [
@@ -273362,6 +275930,14 @@
     ],
     [
       "Workflow",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -273415,6 +275991,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -273475,10 +276059,6 @@
       "R"
     ],
     [
-      "WorkflowGroup",
-      "R"
-    ],
-    [
       "Workflow",
       "R"
     ],
@@ -273498,10 +276078,6 @@
     ],
     [
       "Workflow",
-      "R"
-    ],
-    [
-      "WorkflowGroup",
       "R"
     ],
     [
@@ -273567,6 +276143,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -273617,6 +276201,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -273709,6 +276301,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -273759,6 +276359,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -288161,6 +290769,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -288211,6 +290827,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -288817,6 +291441,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -288867,6 +291499,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -288929,6 +291569,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -288979,6 +291627,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -289039,6 +291695,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -289089,6 +291753,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -289269,6 +291941,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -289319,6 +291999,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -289363,6 +292051,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -289413,6 +292109,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -289513,6 +292217,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -289563,6 +292275,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -289639,6 +292359,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -289689,6 +292417,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -292003,82 +294739,6 @@
       "R"
     ],
     [
-      "Org",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "Org",
-      "W"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "MemberGroup",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
       "UserDetail",
       "R"
     ],
@@ -292120,458 +294780,6 @@
     ],
     [
       "UserDetail",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "UserRole",
-      "R"
-    ],
-    [
-      "UserRole",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Site",
-      "R"
-    ],
-    [
-      "Site",
-      "R"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "UserRole",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "Role",
-      "W"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "UserRole",
-      "R"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "UserRole",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "UserRole",
-      "R"
-    ],
-    [
-      "Role",
-      "W"
-    ],
-    [
-      "UserRole",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "UserRole",
-      "R"
-    ],
-    [
-      "UserRole",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "Org",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "Org",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "Org",
-      "R"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "Org",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "UserOrg",
-      "W"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "UserMemberGroup",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "UserMemberGroup",
-      "R"
-    ],
-    [
-      "UserMemberGroup",
-      "R"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "MemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "MemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "R"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "R"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "MemberGroup",
-      "R"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "MemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
-      "W"
-    ],
-    [
-      "UserMemberGroup",
       "W"
     ]
   ],
@@ -298453,6 +300661,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -298503,6 +300719,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -298555,6 +300779,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -298605,6 +300837,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -298671,6 +300911,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -298721,6 +300969,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -298853,6 +301109,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -298903,6 +301167,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -298967,6 +301239,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -299017,6 +301297,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -299101,6 +301389,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -299151,6 +301447,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -299211,6 +301515,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -299261,6 +301573,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",
@@ -299423,6 +301743,14 @@
       "R"
     ],
     [
+      "Site",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "OperationLog",
       "W"
     ],
@@ -299473,6 +301801,14 @@
     [
       "Site",
       "W"
+    ],
+    [
+      "Site",
+      "R"
+    ],
+    [
+      "Site",
+      "R"
     ],
     [
       "OperationLog",

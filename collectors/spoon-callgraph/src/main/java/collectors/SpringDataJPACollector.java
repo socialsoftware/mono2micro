@@ -73,8 +73,9 @@ public class SpringDataJPACollector extends SpoonCollector {
                 existsAnnotation(clazzAnnotations, "DeleteMapping") ||
                 (clazz.getSuperclass() != null && clazz.getSuperclass().getSimpleName().equals("DispatchAction"))
             ) {
-                controllers.add((CtClass) clazz);
-                continue;
+                if (clazz instanceof CtClass)
+                    controllers.add((CtClass) clazz);
+                    continue;
             }
 
             if (isRepository(clazz.getReference())) {
@@ -84,7 +85,7 @@ public class SpringDataJPACollector extends SpoonCollector {
             }
 
             if (clazz.isInterface()) {
-                interfaces.put(clazz.getSimpleName(), null);
+                interfaces.put(clazz.getSimpleName(), new ArrayList<>());
                 continue;
             }
 
@@ -98,20 +99,11 @@ public class SpringDataJPACollector extends SpoonCollector {
         allEntities.sort((string1, string2) -> Integer.compare(string2.length(), string1.length()));  //Longer length first
 
         // 2nd iteration, to retrieve JPA related information and interface explicit implementations
-        List<String> toDeleteInterfaces = new ArrayList<>();
-
         for(CtType<?> clazz : factory.Class().getAll()) {
             Set<CtTypeReference<?>> superInterfaces = clazz.getSuperInterfaces();
             for (CtTypeReference ctTypeReference : superInterfaces) {
                 if (interfaces.containsKey(ctTypeReference.getSimpleName())) {
-                    if (interfaces.get(ctTypeReference.getSimpleName()) == null) {
-                        interfaces.replace(ctTypeReference.getSimpleName(), clazz);
-                    }
-                    else {
-                        // more than one implementation for this interface
-                        // don't replace interface calls by any explicit implementation
-                        toDeleteInterfaces.add(ctTypeReference.getSimpleName());
-                    }
+                    interfaces.get(ctTypeReference.getSimpleName()).add(clazz);
                 }
             }
 
@@ -120,10 +112,6 @@ public class SpringDataJPACollector extends SpoonCollector {
             if (entityAnnotation != null) { // Domain Class @Entity
                 parseEntity(clazz, entityAnnotation, clazzAnnotations);
             }
-        }
-
-        for (String interfaceClassName : toDeleteInterfaces) {
-            interfaces.remove(interfaceClassName);
         }
 
         super.repositoryCount = repositories.size();
@@ -477,29 +465,35 @@ public class SpringDataJPACollector extends SpoonCollector {
                 try {
                     if (calleeLocation == null)
                         return;
+                    CtExecutable calleeLocationExecutableDeclaration;
+                    try {
+                        calleeLocationExecutableDeclaration = calleeLocation.getExecutable().getExecutableDeclaration();
+                    } catch (StackOverflowError e) {
+                        System.err.println("StackOverflowError");
+                        return;
+                    }
+//                    /* TO REMOVE */
+//                    try {
+//                        if (((CtInvocation) calleeLocation).getTarget().getType().getSimpleName().contains("EntityManager"))
+//                            System.err.println(calleeLocation.toString() + "\n" +calleeLocation.getPosition());
+//                    } catch (Exception e) {}
+//
+//                    /* TO REMOVE */
+//                    try {
+//                        boolean entityManager = ((CtInvocation) calleeLocation).getTarget().getType().getSimpleName().contains("EntityManager");
+//                        if (entityManager) {
+//                            SpringDataJPACollector.this.entityManager++;
+//                        }
+//                    } catch (Exception e) {}
 
                     try {
-                        if (((CtInvocation) calleeLocation).getTarget().getType().getSimpleName().contains("EntityManager"))
-                            System.err.println(calleeLocation.toString() + "\n" +calleeLocation.getPosition());
-                    } catch (Exception e) {}
-
-                    try {
-                        boolean entityManager = ((CtInvocation) calleeLocation).getTarget().getType().getSimpleName().contains("EntityManager");
-                        if (entityManager) {
-                            SpringDataJPACollector.this.entityManager++;
-                        }
-                    } catch (Exception e) {}
-
-                    try {
-                        CtMethod calleeMethod = (CtMethod) calleeLocation.getExecutable().getExecutableDeclaration();
+                        CtMethod calleeMethod = (CtMethod) calleeLocationExecutableDeclaration;
                         if (calleeMethod.isAbstract()) {
                             boolean alreadyProcessed = updateCalleeLocationWithExplicitImplementation(calleeLocation, calleeMethod);
                             if (alreadyProcessed)
                                 return;
                         }
-                    } catch(Exception castError) {
-                        // ConstructorCall, ignore
-                    }
+                    } catch(Exception castErrorOrMoreThanOneImplementationFound) {}
 
                     // In some cases the SpringDataJPA may be in the classpath (for instance when MavenLauncher is
                     // used. In other cases, it won't, and getDeclaringType to a SpringDataJPA class will return null
@@ -540,8 +534,8 @@ public class SpringDataJPACollector extends SpoonCollector {
                             registerDomainAccess(collectionDeclaringTypeName, collectionFieldAccessedType, (CtInvocation) calleeLocation);
                         }
                     }
-                    else if (!methodStack.contains(calleeLocation.getExecutable().getExecutableDeclaration().getPosition())) {
-                        methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), calleeLocation, methodStack);
+                    else if (!methodStack.contains(calleeLocationExecutableDeclaration.getPosition())) {
+                        methodCallDFS(calleeLocationExecutableDeclaration, calleeLocation, methodStack);
                     }
 
                 } catch (Exception e) {
@@ -656,26 +650,39 @@ public class SpringDataJPACollector extends SpoonCollector {
     * Return false = either explicit implementation was found and replaced the calleeLocation of the
     * methodCallDFS function or implementation was not found.
     * */
-    private boolean updateCalleeLocationWithExplicitImplementation(CtAbstractInvocation calleeLocation, CtMethod calleeLocationMethod) {
+    private boolean updateCalleeLocationWithExplicitImplementation(CtAbstractInvocation calleeLocation, CtMethod calleeLocationMethod) throws Exception {
         // methodCallDFS calleeLocation will be changed by reference
-        CtType interfaceImplType = interfaces.get(calleeLocationMethod.getDeclaringType().getSimpleName());
-        if (interfaceImplType != null) {
-            // calling an abstract method declared in an interface
-            List methodsByName = interfaceImplType.getMethodsByName(calleeLocation.getExecutable().getSimpleName());
-            if (methodsByName.size() > 0) {
-                // redirect pointer to the explicit method
-                Object explicitMethodObject = methodsByName.get(0);
-                CtMethod calleeLocationExplicit = (CtMethod) explicitMethodObject;
-                CtExecutableReference reference = calleeLocationExplicit.getReference();
-                calleeLocation.setExecutable(reference);
+        boolean foundImplementation = false;
+        CtExecutableReference explicitCalleeReference = null;
+        CtType implementorType = null;
+
+        List<CtType> interfaceImplementors = interfaces.get(calleeLocationMethod.getDeclaringType().getSimpleName());
+        if (interfaceImplementors != null) {
+            for (CtType interfaceImplType : interfaceImplementors) {
+                // calling an abstract method declared in an interface
+                List<CtMethod> methodsByName = interfaceImplType.getMethodsByName(calleeLocation.getExecutable().getSimpleName());
+                if (methodsByName.size() > 0) {
+                    for (CtMethod ctM : methodsByName) {
+                        if (compareWithMethod(calleeLocation.getExecutable(), ctM)) {
+                            if (!foundImplementation) {
+                                // method declared in this interface implementor class
+                                foundImplementation = true;
+                                explicitCalleeReference = ctM.getReference();
+                                implementorType = interfaceImplType;
+                                break;
+                            } else {
+                                // If foundImplementation = true already
+                                // means that we found more than one implementation of a given
+                                // interface's method. We can't redirect to any implementation because only in
+                                // runtime we would know such thing
+                                throw new Exception("Abort: more than one possible implementation found");
+                            }
+                        }
+                    }
+                }
             }
 
-            // replace the target of the call by the explicit target
-            CtConstructorCall call = factory.Core().createConstructorCall();
-            call.setType(factory.Core().createTypeReference().setSimpleName(interfaceImplType.getSimpleName()));
-            ((CtInvocation) calleeLocation).setTarget(call);
-
-            if (methodsByName.size() == 0) {
+            if (!foundImplementation) {
                 // May be a SpringDataJPA implicit method access
                 // unfortunately we cant get a reference to those methods so we have to duplicate code
                 String targetClassName = ((CtInvocation) calleeLocation).getTarget().getType().getSimpleName();
@@ -685,6 +692,16 @@ public class SpringDataJPACollector extends SpoonCollector {
                 // end of call chain
                 return true;
             }
+            else {
+                // redirect calleeLocation to the explicit method found
+                calleeLocation.setExecutable(explicitCalleeReference);
+
+                // replace the target of the call by the explicit target
+                CtConstructorCall call = factory.Core().createConstructorCall();
+                call.setType(factory.Core().createTypeReference().setSimpleName(implementorType.getSimpleName()));
+                ((CtInvocation) calleeLocation).setTarget(call);
+            }
+
         }
         return false;
     }
@@ -876,10 +893,23 @@ public class SpringDataJPACollector extends SpoonCollector {
             String namedQueryName = getValueAsString(query.getValue("name"));
 
             if (!namedQueryName.equals("")) {
-                // TODO not used i think
-                System.err.println("Error: @Query with name attribute!");
-                System.exit(1);
-
+                if (!value.equals("")) {
+                    System.err.println("Error on method: " + methodDeclaration.toString());
+                    System.err.println("@Query with 'name' and 'value' definitions. Is that even possible?");
+                }
+                else {
+                    Query q = getNamedQuery(namedQueryName);
+                    if (q == null) {
+                        System.err.println("Error on method: " + methodDeclaration.toString());
+                        System.err.println("Couldn't find NamedQuery " + namedQueryName);
+                    }
+                    else {
+                        if (q.isNative())
+                            parseNativeQuery(q.getValue());
+                        else
+                            parseHqlQuery(q.getValue());
+                    }
+                }
             }
 
             if (nativeQuery) {
@@ -889,7 +919,7 @@ public class SpringDataJPACollector extends SpoonCollector {
                 parseHqlQuery(value);
             }
         }
-        else {
+        else { // No @Query annotation present
             Repository r = getRepositoryFromClassName(methodDeclaration.getDeclaringType().getSimpleName());
             String typeClassName = r.getTypeClassName(); // will never be null
 
@@ -909,7 +939,6 @@ public class SpringDataJPACollector extends SpoonCollector {
         }
     }
 
-    // TODO (select *) case
     private void parseNativeQuery(String sql) {
         try {
             Statement stmt = CCJSqlParserUtil.parse(sql);

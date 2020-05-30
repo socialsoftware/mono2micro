@@ -36,7 +36,7 @@ public abstract class SpoonCollector {
     HashSet<CtClass> controllers;
     Map<SourcePosition, List<CtAbstractInvocation>> methodCallees;
     private JsonArray entitiesSequence;
-    Map<String, CtType> interfaces;
+    Map<String, List<CtType>> interfaces;
 
     Factory factory;
     Launcher launcher;
