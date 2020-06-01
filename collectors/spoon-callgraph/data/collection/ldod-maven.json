@@ -1637,10 +1637,6 @@
       "W"
     ],
     [
-      "Member",
-      "W"
-    ],
-    [
       "VirtualEdition",
       "W"
     ],
@@ -2564,10 +2560,6 @@
     ],
     [
       "LdoDUser",
-      "W"
-    ],
-    [
-      "Member",
       "W"
     ],
     [
@@ -8201,10 +8193,6 @@
       "R"
     ],
     [
-      "Source",
-      "R"
-    ],
-    [
       "SourceInter",
       "R"
     ],
@@ -8437,10 +8425,6 @@
       "R"
     ],
     [
-      "Source",
-      "R"
-    ],
-    [
       "SourceInter",
       "R"
     ],
@@ -8512,10 +8496,6 @@
     ],
     [
       "Fragment",
-      "R"
-    ],
-    [
-      "Source",
       "R"
     ],
     [
@@ -14139,19 +14119,11 @@
       "W"
     ],
     [
-      "LdoDUser",
-      "W"
-    ],
-    [
       "LdoD",
       "R"
     ],
     [
       "LdoD",
-      "R"
-    ],
-    [
-      "Role",
       "R"
     ],
     [
@@ -14172,10 +14144,6 @@
     ],
     [
       "LdoD",
-      "W"
-    ],
-    [
-      "Role",
       "W"
     ],
     [
@@ -14778,10 +14746,6 @@
     ],
     [
       "LdoDUser",
-      "W"
-    ],
-    [
-      "Member",
       "W"
     ],
     [
@@ -16609,10 +16573,6 @@
       "W"
     ],
     [
-      "ClassificationGame",
-      "W"
-    ],
-    [
       "VirtualEditionInter",
       "W"
     ],
@@ -16924,10 +16884,6 @@
     ],
     [
       "LdoDUser",
-      "W"
-    ],
-    [
-      "Member",
       "W"
     ],
     [
@@ -21959,10 +21915,6 @@
       "R"
     ],
     [
-      "Source",
-      "R"
-    ],
-    [
       "SourceInter",
       "R"
     ],
@@ -22176,10 +22128,6 @@
     ],
     [
       "SourceInter",
-      "R"
-    ],
-    [
-      "Source",
       "R"
     ],
     [
@@ -23271,6 +23219,18 @@
       "R"
     ],
     [
+      "VirtualEdition",
+      "R"
+    ],
+    [
+      "Member",
+      "R"
+    ],
+    [
+      "Member",
+      "R"
+    ],
+    [
       "Member",
       "R"
     ],
@@ -23291,35 +23251,7 @@
       "R"
     ],
     [
-      "Member",
-      "R"
-    ],
-    [
       "VirtualEdition",
-      "R"
-    ],
-    [
-      "Member",
-      "R"
-    ],
-    [
-      "Member",
-      "R"
-    ],
-    [
-      "Member",
-      "R"
-    ],
-    [
-      "Member",
-      "R"
-    ],
-    [
-      "VirtualEdition",
-      "R"
-    ],
-    [
-      "Member",
       "R"
     ],
     [
@@ -23344,10 +23276,6 @@
     ],
     [
       "VirtualEdition",
-      "R"
-    ],
-    [
-      "Member",
       "R"
     ],
     [
@@ -24721,10 +24649,6 @@
     [
       "Member",
       "W"
-    ],
-    [
-      "Member",
-      "W"
     ]
   ],
   "VirtualEditionController.switchRole": [
@@ -24773,10 +24697,6 @@
       "R"
     ],
     [
-      "Member",
-      "R"
-    ],
-    [
       "VirtualEdition",
       "R"
     ],
@@ -24793,15 +24713,7 @@
       "R"
     ],
     [
-      "Member",
-      "R"
-    ],
-    [
       "VirtualEdition",
-      "R"
-    ],
-    [
-      "Member",
       "R"
     ],
     [
@@ -24835,18 +24747,6 @@
     [
       "Member",
       "R"
-    ],
-    [
-      "Member",
-      "R"
-    ],
-    [
-      "Member",
-      "W"
-    ],
-    [
-      "Member",
-      "W"
     ],
     [
       "Member",
@@ -24975,10 +24875,6 @@
       "R"
     ],
     [
-      "Role",
-      "R"
-    ],
-    [
       "LdoD",
       "R"
     ],
@@ -24988,10 +24884,6 @@
     ],
     [
       "LdoD",
-      "W"
-    ],
-    [
-      "Role",
       "W"
     ],
     [
@@ -25015,10 +24907,6 @@
       "R"
     ],
     [
-      "Role",
-      "R"
-    ],
-    [
       "LdoD",
       "R"
     ],
@@ -25028,10 +24916,6 @@
     ],
     [
       "LdoD",
-      "W"
-    ],
-    [
-      "Role",
       "W"
     ],
     [
@@ -30055,10 +29939,6 @@
       "R"
     ],
     [
-      "Role",
-      "R"
-    ],
-    [
       "LdoD",
       "R"
     ],
@@ -30068,10 +29948,6 @@
     ],
     [
       "LdoD",
-      "W"
-    ],
-    [
-      "Role",
       "W"
     ],
     [
@@ -30103,10 +29979,6 @@
       "R"
     ],
     [
-      "Role",
-      "R"
-    ],
-    [
       "LdoD",
       "R"
     ],
@@ -30116,10 +29988,6 @@
     ],
     [
       "LdoD",
-      "W"
-    ],
-    [
-      "Role",
       "W"
     ],
     [
@@ -30193,10 +30061,6 @@
       "R"
     ],
     [
-      "Role",
-      "R"
-    ],
-    [
       "LdoD",
       "R"
     ],
@@ -30206,10 +30070,6 @@
     ],
     [
       "LdoD",
-      "W"
-    ],
-    [
-      "Role",
       "W"
     ],
     [
@@ -30241,10 +30101,6 @@
       "R"
     ],
     [
-      "Role",
-      "R"
-    ],
-    [
       "LdoD",
       "R"
     ],
@@ -30254,10 +30110,6 @@
     ],
     [
       "LdoD",
-      "W"
-    ],
-    [
-      "Role",
       "W"
     ],
     [
@@ -30371,23 +30223,11 @@
       "R"
     ],
     [
-      "ManuscriptSource",
-      "R"
-    ],
-    [
-      "ManuscriptSource",
-      "R"
-    ],
-    [
       "LdoDDate",
       "R"
     ],
     [
       "ManuscriptSource",
-      "R"
-    ],
-    [
-      "LdoDDate",
       "R"
     ],
     [
@@ -30428,10 +30268,6 @@
     ],
     [
       "LdoDDate",
-      "R"
-    ],
-    [
-      "Fragment",
       "R"
     ],
     [
@@ -30607,15 +30443,7 @@
       "R"
     ],
     [
-      "LdoDDate",
-      "R"
-    ],
-    [
       "ExpertEditionInter",
-      "R"
-    ],
-    [
-      "LdoDDate",
       "R"
     ],
     [
@@ -30929,23 +30757,11 @@
       "R"
     ],
     [
-      "ManuscriptSource",
-      "R"
-    ],
-    [
-      "ManuscriptSource",
-      "R"
-    ],
-    [
       "LdoDDate",
       "R"
     ],
     [
       "ManuscriptSource",
-      "R"
-    ],
-    [
-      "LdoDDate",
       "R"
     ],
     [
@@ -30986,10 +30802,6 @@
     ],
     [
       "LdoDDate",
-      "R"
-    ],
-    [
-      "Fragment",
       "R"
     ],
     [
@@ -31165,15 +30977,7 @@
       "R"
     ],
     [
-      "LdoDDate",
-      "R"
-    ],
-    [
       "ExpertEditionInter",
-      "R"
-    ],
-    [
-      "LdoDDate",
       "R"
     ],
     [
@@ -31505,23 +31309,11 @@
       "R"
     ],
     [
-      "ManuscriptSource",
-      "R"
-    ],
-    [
-      "ManuscriptSource",
-      "R"
-    ],
-    [
       "LdoDDate",
       "R"
     ],
     [
       "ManuscriptSource",
-      "R"
-    ],
-    [
-      "LdoDDate",
       "R"
     ],
     [
@@ -31562,10 +31354,6 @@
     ],
     [
       "LdoDDate",
-      "R"
-    ],
-    [
-      "Fragment",
       "R"
     ],
     [
@@ -31741,15 +31529,7 @@
       "R"
     ],
     [
-      "LdoDDate",
-      "R"
-    ],
-    [
       "ExpertEditionInter",
-      "R"
-    ],
-    [
-      "LdoDDate",
       "R"
     ],
     [
@@ -32023,18 +31803,6 @@
       "R"
     ],
     [
-      "LdoDUser",
-      "R"
-    ],
-    [
-      "LdoDUser",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
       "Role",
       "R"
     ],
@@ -32233,18 +32001,6 @@
       "R"
     ],
     [
-      "LdoDUser",
-      "R"
-    ],
-    [
-      "LdoDUser",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
       "Role",
       "R"
     ],
@@ -32422,10 +32178,6 @@
     ],
     [
       "LdoDUser",
-      "R"
-    ],
-    [
-      "Member",
       "R"
     ],
     [
@@ -33050,10 +32802,6 @@
     ],
     [
       "VirtualEditionInter",
-      "R"
-    ],
-    [
-      "ClassificationGame",
       "R"
     ],
     [
@@ -36765,10 +36513,6 @@
       "W"
     ],
     [
-      "Source",
-      "W"
-    ],
-    [
       "ManuscriptSource",
       "W"
     ],
@@ -36809,14 +36553,6 @@
       "W"
     ],
     [
-      "ManuscriptSource",
-      "W"
-    ],
-    [
-      "ManuscriptSource",
-      "W"
-    ],
-    [
       "Dimensions",
       "W"
     ],
@@ -36845,10 +36581,6 @@
       "W"
     ],
     [
-      "ManuscriptSource",
-      "W"
-    ],
-    [
       "HandNote",
       "W"
     ],
@@ -36865,10 +36597,6 @@
       "W"
     ],
     [
-      "ManuscriptSource",
-      "W"
-    ],
-    [
       "HandNote",
       "W"
     ],
@@ -36885,10 +36613,6 @@
       "W"
     ],
     [
-      "ManuscriptSource",
-      "W"
-    ],
-    [
       "TypeNote",
       "W"
     ],
@@ -36905,10 +36629,6 @@
       "W"
     ],
     [
-      "ManuscriptSource",
-      "W"
-    ],
-    [
       "TypeNote",
       "W"
     ],
@@ -36958,26 +36678,6 @@
     ],
     [
       "LdoDDate",
-      "W"
-    ],
-    [
-      "LdoDDate",
-      "W"
-    ],
-    [
-      "LdoDDate",
-      "W"
-    ],
-    [
-      "LdoDDate",
-      "W"
-    ],
-    [
-      "LdoDDate",
-      "W"
-    ],
-    [
-      "Fragment",
       "W"
     ],
     [
@@ -36990,10 +36690,6 @@
     ],
     [
       "PrintedSource",
-      "W"
-    ],
-    [
-      "Source",
       "W"
     ],
     [
@@ -37106,26 +36802,6 @@
     ],
     [
       "LdoDDate",
-      "W"
-    ],
-    [
-      "LdoDDate",
-      "W"
-    ],
-    [
-      "LdoDDate",
-      "W"
-    ],
-    [
-      "LdoDDate",
-      "W"
-    ],
-    [
-      "LdoDDate",
-      "W"
-    ],
-    [
-      "Fragment",
       "W"
     ],
     [
@@ -37341,26 +37017,6 @@
       "W"
     ],
     [
-      "LdoDDate",
-      "W"
-    ],
-    [
-      "LdoDDate",
-      "W"
-    ],
-    [
-      "LdoDDate",
-      "W"
-    ],
-    [
-      "LdoDDate",
-      "W"
-    ],
-    [
-      "Fragment",
-      "W"
-    ],
-    [
       "FragInter",
       "W"
     ],
@@ -37446,10 +37102,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "NoteText",
       "W"
     ],
     [
@@ -37634,10 +37286,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "RefText",
       "W"
     ],
     [
@@ -38117,10 +37765,6 @@
       "W"
     ],
     [
-      "TextPortion",
-      "W"
-    ],
-    [
       "AppText",
       "W"
     ],
@@ -38210,10 +37854,6 @@
     ],
     [
       "RdgText",
-      "W"
-    ],
-    [
-      "TextPortion",
       "W"
     ],
     [
@@ -38890,10 +38530,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "TextPortion",
       "R"
     ],
     [
@@ -38966,10 +38602,6 @@
     ],
     [
       "RdgText",
-      "W"
-    ],
-    [
-      "TextPortion",
       "W"
     ],
     [
@@ -39074,10 +38706,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "TextPortion",
       "R"
     ],
     [
@@ -39150,10 +38778,6 @@
     ],
     [
       "RdgText",
-      "W"
-    ],
-    [
-      "TextPortion",
       "W"
     ],
     [
@@ -39257,14 +38881,6 @@
       "W"
     ],
     [
-      "SpaceText",
-      "W"
-    ],
-    [
-      "SpaceText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -39353,31 +38969,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -39401,31 +38993,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -39449,6 +39017,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -39465,6 +39041,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -39481,15 +39065,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -39677,7 +39253,11 @@
       "W"
     ],
     [
-      "AddText",
+      "Rend",
+      "W"
+    ],
+    [
+      "TextPortion",
       "W"
     ],
     [
@@ -39701,31 +39281,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -39749,31 +39305,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -39797,6 +39329,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -39813,15 +39353,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -40009,10 +39541,6 @@
       "W"
     ],
     [
-      "DelText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -40353,14 +39881,6 @@
       "W"
     ],
     [
-      "GapText",
-      "W"
-    ],
-    [
-      "GapText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -40438,10 +39958,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "UnclearText",
       "W"
     ],
     [
@@ -40617,10 +40133,6 @@
       "W"
     ],
     [
-      "NoteText",
-      "W"
-    ],
-    [
       "TextPortion",
       "R"
     ],
@@ -40858,10 +40370,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "RefText",
       "W"
     ],
     [
@@ -41201,14 +40709,6 @@
       "W"
     ],
     [
-      "SpaceText",
-      "W"
-    ],
-    [
-      "SpaceText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -41366,10 +40866,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "DelText",
       "W"
     ],
     [
@@ -41717,14 +41213,6 @@
       "W"
     ],
     [
-      "GapText",
-      "W"
-    ],
-    [
-      "GapText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -41802,10 +41290,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "UnclearText",
       "W"
     ],
     [
@@ -41974,10 +41458,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "NoteText",
       "W"
     ],
     [
@@ -42222,10 +41702,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "RefText",
       "W"
     ],
     [
@@ -42565,14 +42041,6 @@
       "W"
     ],
     [
-      "SpaceText",
-      "W"
-    ],
-    [
-      "SpaceText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -42665,14 +42133,6 @@
       "W"
     ],
     [
-      "GapText",
-      "W"
-    ],
-    [
-      "GapText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -42750,10 +42210,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "UnclearText",
       "W"
     ],
     [
@@ -43097,31 +42553,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -43145,31 +42577,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -43193,6 +42601,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -43209,6 +42625,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -43225,15 +42649,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -43414,10 +42830,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "NoteText",
       "W"
     ],
     [
@@ -43662,10 +43074,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "RefText",
       "W"
     ],
     [
@@ -43997,10 +43405,6 @@
       "W"
     ],
     [
-      "DelText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -44169,7 +43573,11 @@
       "W"
     ],
     [
-      "AddText",
+      "Rend",
+      "W"
+    ],
+    [
+      "TextPortion",
       "W"
     ],
     [
@@ -44193,31 +43601,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -44241,31 +43625,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -44289,6 +43649,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -44305,15 +43673,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -44589,14 +43949,6 @@
       "W"
     ],
     [
-      "GapText",
-      "W"
-    ],
-    [
-      "GapText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -44674,10 +44026,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "UnclearText",
       "W"
     ],
     [
@@ -45021,31 +44369,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -45069,31 +44393,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -45117,6 +44417,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -45133,6 +44441,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -45149,15 +44465,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -45338,10 +44646,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "NoteText",
       "W"
     ],
     [
@@ -45586,10 +44890,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "RefText",
       "W"
     ],
     [
@@ -46093,14 +45393,6 @@
       "W"
     ],
     [
-      "GapText",
-      "W"
-    ],
-    [
-      "GapText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -46178,10 +45470,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "UnclearText",
       "W"
     ],
     [
@@ -46357,10 +45645,6 @@
       "W"
     ],
     [
-      "NoteText",
-      "W"
-    ],
-    [
       "TextPortion",
       "R"
     ],
@@ -46598,10 +45882,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "RefText",
       "W"
     ],
     [
@@ -46926,14 +46206,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "SpaceText",
-      "W"
-    ],
-    [
-      "SpaceText",
       "W"
     ],
     [
@@ -47113,7 +46385,11 @@
       "W"
     ],
     [
-      "AddText",
+      "Rend",
+      "W"
+    ],
+    [
+      "TextPortion",
       "W"
     ],
     [
@@ -47137,31 +46413,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -47185,31 +46437,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -47233,6 +46461,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -47249,15 +46485,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -47438,10 +46666,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "DelText",
       "W"
     ],
     [
@@ -47789,14 +47013,6 @@
       "W"
     ],
     [
-      "GapText",
-      "W"
-    ],
-    [
-      "GapText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -47874,10 +47090,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "UnclearText",
       "W"
     ],
     [
@@ -48046,10 +47258,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "NoteText",
       "W"
     ],
     [
@@ -48294,10 +47502,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "RefText",
       "W"
     ],
     [
@@ -48637,14 +47841,6 @@
       "W"
     ],
     [
-      "SpaceText",
-      "W"
-    ],
-    [
-      "SpaceText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -48737,14 +47933,6 @@
       "W"
     ],
     [
-      "GapText",
-      "W"
-    ],
-    [
-      "GapText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -48822,10 +48010,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "UnclearText",
       "W"
     ],
     [
@@ -49169,31 +48353,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -49217,31 +48377,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -49265,6 +48401,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -49281,6 +48425,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -49297,15 +48449,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -49486,10 +48630,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "NoteText",
       "W"
     ],
     [
@@ -49734,10 +48874,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "RefText",
       "W"
     ],
     [
@@ -50069,10 +49205,6 @@
       "W"
     ],
     [
-      "DelText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -50241,7 +49373,11 @@
       "W"
     ],
     [
-      "AddText",
+      "Rend",
+      "W"
+    ],
+    [
+      "TextPortion",
       "W"
     ],
     [
@@ -50265,31 +49401,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -50313,31 +49425,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -50361,6 +49449,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -50377,15 +49473,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -50581,14 +49669,6 @@
       "W"
     ],
     [
-      "GapText",
-      "W"
-    ],
-    [
-      "GapText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -50666,10 +49746,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "UnclearText",
       "W"
     ],
     [
@@ -51013,31 +50089,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -51061,31 +50113,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -51109,6 +50137,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -51125,6 +50161,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -51141,15 +50185,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -51330,10 +50366,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "NoteText",
       "W"
     ],
     [
@@ -51578,10 +50610,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "RefText",
       "W"
     ],
     [
@@ -52085,14 +51113,6 @@
       "W"
     ],
     [
-      "GapText",
-      "W"
-    ],
-    [
-      "GapText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -52170,10 +51190,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "UnclearText",
       "W"
     ],
     [
@@ -52342,10 +51358,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "NoteText",
       "W"
     ],
     [
@@ -52590,10 +51602,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "RefText",
       "W"
     ],
     [
@@ -52933,14 +51941,6 @@
       "W"
     ],
     [
-      "SpaceText",
-      "W"
-    ],
-    [
-      "SpaceText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -53033,14 +52033,6 @@
       "W"
     ],
     [
-      "GapText",
-      "W"
-    ],
-    [
-      "GapText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -53118,10 +52110,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "UnclearText",
       "W"
     ],
     [
@@ -53297,10 +52285,6 @@
       "W"
     ],
     [
-      "AltText",
-      "W"
-    ],
-    [
       "AltTextWeight",
       "W"
     ],
@@ -53405,10 +52389,6 @@
       "W"
     ],
     [
-      "NoteText",
-      "W"
-    ],
-    [
       "TextPortion",
       "R"
     ],
@@ -53646,10 +52626,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "RefText",
       "W"
     ],
     [
@@ -53974,10 +52950,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "RefText",
       "W"
     ],
     [
@@ -56319,10 +55291,6 @@
       "W"
     ],
     [
-      "Source",
-      "W"
-    ],
-    [
       "ManuscriptSource",
       "W"
     ],
@@ -56363,14 +55331,6 @@
       "W"
     ],
     [
-      "ManuscriptSource",
-      "W"
-    ],
-    [
-      "ManuscriptSource",
-      "W"
-    ],
-    [
       "Dimensions",
       "W"
     ],
@@ -56399,10 +55359,6 @@
       "W"
     ],
     [
-      "ManuscriptSource",
-      "W"
-    ],
-    [
       "HandNote",
       "W"
     ],
@@ -56419,10 +55375,6 @@
       "W"
     ],
     [
-      "ManuscriptSource",
-      "W"
-    ],
-    [
       "HandNote",
       "W"
     ],
@@ -56439,10 +55391,6 @@
       "W"
     ],
     [
-      "ManuscriptSource",
-      "W"
-    ],
-    [
       "TypeNote",
       "W"
     ],
@@ -56459,10 +55407,6 @@
       "W"
     ],
     [
-      "ManuscriptSource",
-      "W"
-    ],
-    [
       "TypeNote",
       "W"
     ],
@@ -56512,26 +55456,6 @@
     ],
     [
       "LdoDDate",
-      "W"
-    ],
-    [
-      "LdoDDate",
-      "W"
-    ],
-    [
-      "LdoDDate",
-      "W"
-    ],
-    [
-      "LdoDDate",
-      "W"
-    ],
-    [
-      "LdoDDate",
-      "W"
-    ],
-    [
-      "Fragment",
       "W"
     ],
     [
@@ -56544,10 +55468,6 @@
     ],
     [
       "PrintedSource",
-      "W"
-    ],
-    [
-      "Source",
       "W"
     ],
     [
@@ -56660,26 +55580,6 @@
     ],
     [
       "LdoDDate",
-      "W"
-    ],
-    [
-      "LdoDDate",
-      "W"
-    ],
-    [
-      "LdoDDate",
-      "W"
-    ],
-    [
-      "LdoDDate",
-      "W"
-    ],
-    [
-      "LdoDDate",
-      "W"
-    ],
-    [
-      "Fragment",
       "W"
     ],
     [
@@ -56895,26 +55795,6 @@
       "W"
     ],
     [
-      "LdoDDate",
-      "W"
-    ],
-    [
-      "LdoDDate",
-      "W"
-    ],
-    [
-      "LdoDDate",
-      "W"
-    ],
-    [
-      "LdoDDate",
-      "W"
-    ],
-    [
-      "Fragment",
-      "W"
-    ],
-    [
       "FragInter",
       "W"
     ],
@@ -57000,10 +55880,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "NoteText",
       "W"
     ],
     [
@@ -57188,10 +56064,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "RefText",
       "W"
     ],
     [
@@ -57671,10 +56543,6 @@
       "W"
     ],
     [
-      "TextPortion",
-      "W"
-    ],
-    [
       "AppText",
       "W"
     ],
@@ -57764,10 +56632,6 @@
     ],
     [
       "RdgText",
-      "W"
-    ],
-    [
-      "TextPortion",
       "W"
     ],
     [
@@ -58444,10 +57308,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "TextPortion",
       "R"
     ],
     [
@@ -58520,10 +57380,6 @@
     ],
     [
       "RdgText",
-      "W"
-    ],
-    [
-      "TextPortion",
       "W"
     ],
     [
@@ -58628,10 +57484,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "TextPortion",
       "R"
     ],
     [
@@ -58704,10 +57556,6 @@
     ],
     [
       "RdgText",
-      "W"
-    ],
-    [
-      "TextPortion",
       "W"
     ],
     [
@@ -58811,14 +57659,6 @@
       "W"
     ],
     [
-      "SpaceText",
-      "W"
-    ],
-    [
-      "SpaceText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -58907,31 +57747,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -58955,31 +57771,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -59003,6 +57795,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -59019,6 +57819,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -59035,15 +57843,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -59231,7 +58031,11 @@
       "W"
     ],
     [
-      "AddText",
+      "Rend",
+      "W"
+    ],
+    [
+      "TextPortion",
       "W"
     ],
     [
@@ -59255,31 +58059,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -59303,31 +58083,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -59351,6 +58107,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -59367,15 +58131,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -59563,10 +58319,6 @@
       "W"
     ],
     [
-      "DelText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -59907,14 +58659,6 @@
       "W"
     ],
     [
-      "GapText",
-      "W"
-    ],
-    [
-      "GapText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -59992,10 +58736,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "UnclearText",
       "W"
     ],
     [
@@ -60171,10 +58911,6 @@
       "W"
     ],
     [
-      "NoteText",
-      "W"
-    ],
-    [
       "TextPortion",
       "R"
     ],
@@ -60412,10 +59148,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "RefText",
       "W"
     ],
     [
@@ -60755,14 +59487,6 @@
       "W"
     ],
     [
-      "SpaceText",
-      "W"
-    ],
-    [
-      "SpaceText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -60920,10 +59644,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "DelText",
       "W"
     ],
     [
@@ -61271,14 +59991,6 @@
       "W"
     ],
     [
-      "GapText",
-      "W"
-    ],
-    [
-      "GapText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -61356,10 +60068,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "UnclearText",
       "W"
     ],
     [
@@ -61528,10 +60236,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "NoteText",
       "W"
     ],
     [
@@ -61776,10 +60480,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "RefText",
       "W"
     ],
     [
@@ -62119,14 +60819,6 @@
       "W"
     ],
     [
-      "SpaceText",
-      "W"
-    ],
-    [
-      "SpaceText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -62219,14 +60911,6 @@
       "W"
     ],
     [
-      "GapText",
-      "W"
-    ],
-    [
-      "GapText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -62304,10 +60988,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "UnclearText",
       "W"
     ],
     [
@@ -62651,31 +61331,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -62699,31 +61355,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -62747,6 +61379,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -62763,6 +61403,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -62779,15 +61427,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -62968,10 +61608,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "NoteText",
       "W"
     ],
     [
@@ -63216,10 +61852,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "RefText",
       "W"
     ],
     [
@@ -63551,10 +62183,6 @@
       "W"
     ],
     [
-      "DelText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -63723,7 +62351,11 @@
       "W"
     ],
     [
-      "AddText",
+      "Rend",
+      "W"
+    ],
+    [
+      "TextPortion",
       "W"
     ],
     [
@@ -63747,31 +62379,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -63795,31 +62403,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -63843,6 +62427,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -63859,15 +62451,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -64143,14 +62727,6 @@
       "W"
     ],
     [
-      "GapText",
-      "W"
-    ],
-    [
-      "GapText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -64228,10 +62804,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "UnclearText",
       "W"
     ],
     [
@@ -64575,31 +63147,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -64623,31 +63171,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -64671,6 +63195,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -64687,6 +63219,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -64703,15 +63243,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -64892,10 +63424,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "NoteText",
       "W"
     ],
     [
@@ -65140,10 +63668,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "RefText",
       "W"
     ],
     [
@@ -65647,14 +64171,6 @@
       "W"
     ],
     [
-      "GapText",
-      "W"
-    ],
-    [
-      "GapText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -65732,10 +64248,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "UnclearText",
       "W"
     ],
     [
@@ -65911,10 +64423,6 @@
       "W"
     ],
     [
-      "NoteText",
-      "W"
-    ],
-    [
       "TextPortion",
       "R"
     ],
@@ -66152,10 +64660,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "RefText",
       "W"
     ],
     [
@@ -66480,14 +64984,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "SpaceText",
-      "W"
-    ],
-    [
-      "SpaceText",
       "W"
     ],
     [
@@ -66667,7 +65163,11 @@
       "W"
     ],
     [
-      "AddText",
+      "Rend",
+      "W"
+    ],
+    [
+      "TextPortion",
       "W"
     ],
     [
@@ -66691,31 +65191,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -66739,31 +65215,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -66787,6 +65239,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -66803,15 +65263,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -66992,10 +65444,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "DelText",
       "W"
     ],
     [
@@ -67343,14 +65791,6 @@
       "W"
     ],
     [
-      "GapText",
-      "W"
-    ],
-    [
-      "GapText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -67428,10 +65868,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "UnclearText",
       "W"
     ],
     [
@@ -67600,10 +66036,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "NoteText",
       "W"
     ],
     [
@@ -67848,10 +66280,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "RefText",
       "W"
     ],
     [
@@ -68191,14 +66619,6 @@
       "W"
     ],
     [
-      "SpaceText",
-      "W"
-    ],
-    [
-      "SpaceText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -68291,14 +66711,6 @@
       "W"
     ],
     [
-      "GapText",
-      "W"
-    ],
-    [
-      "GapText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -68376,10 +66788,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "UnclearText",
       "W"
     ],
     [
@@ -68723,31 +67131,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -68771,31 +67155,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -68819,6 +67179,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -68835,6 +67203,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -68851,15 +67227,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -69040,10 +67408,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "NoteText",
       "W"
     ],
     [
@@ -69288,10 +67652,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "RefText",
       "W"
     ],
     [
@@ -69623,10 +67983,6 @@
       "W"
     ],
     [
-      "DelText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -69795,7 +68151,11 @@
       "W"
     ],
     [
-      "AddText",
+      "Rend",
+      "W"
+    ],
+    [
+      "TextPortion",
       "W"
     ],
     [
@@ -69819,31 +68179,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -69867,31 +68203,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -69915,6 +68227,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -69931,15 +68251,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -70135,14 +68447,6 @@
       "W"
     ],
     [
-      "GapText",
-      "W"
-    ],
-    [
-      "GapText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -70220,10 +68524,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "UnclearText",
       "W"
     ],
     [
@@ -70567,31 +68867,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -70615,31 +68891,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "Rend",
-      "W"
-    ],
-    [
-      "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -70663,6 +68915,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -70679,6 +68939,14 @@
       "W"
     ],
     [
+      "TextPortion",
+      "W"
+    ],
+    [
+      "Rend",
+      "W"
+    ],
+    [
       "Rend",
       "W"
     ],
@@ -70695,15 +68963,7 @@
       "W"
     ],
     [
-      "Rend",
-      "W"
-    ],
-    [
       "TextPortion",
-      "W"
-    ],
-    [
-      "Rend",
       "W"
     ],
     [
@@ -70884,10 +69144,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "NoteText",
       "W"
     ],
     [
@@ -71132,10 +69388,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "RefText",
       "W"
     ],
     [
@@ -71639,14 +69891,6 @@
       "W"
     ],
     [
-      "GapText",
-      "W"
-    ],
-    [
-      "GapText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -71724,10 +69968,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "UnclearText",
       "W"
     ],
     [
@@ -71896,10 +70136,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "NoteText",
       "W"
     ],
     [
@@ -72144,10 +70380,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "RefText",
       "W"
     ],
     [
@@ -72487,14 +70719,6 @@
       "W"
     ],
     [
-      "SpaceText",
-      "W"
-    ],
-    [
-      "SpaceText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -72587,14 +70811,6 @@
       "W"
     ],
     [
-      "GapText",
-      "W"
-    ],
-    [
-      "GapText",
-      "W"
-    ],
-    [
       "TextPortion",
       "W"
     ],
@@ -72672,10 +70888,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "UnclearText",
       "W"
     ],
     [
@@ -72851,10 +71063,6 @@
       "W"
     ],
     [
-      "AltText",
-      "W"
-    ],
-    [
       "AltTextWeight",
       "W"
     ],
@@ -72959,10 +71167,6 @@
       "W"
     ],
     [
-      "NoteText",
-      "W"
-    ],
-    [
       "TextPortion",
       "R"
     ],
@@ -73200,10 +71404,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "RefText",
       "W"
     ],
     [
@@ -73528,10 +71728,6 @@
     ],
     [
       "TextPortion",
-      "W"
-    ],
-    [
-      "RefText",
       "W"
     ],
     [
@@ -74525,19 +72721,11 @@
       "W"
     ],
     [
-      "LdoDUser",
-      "W"
-    ],
-    [
       "LdoD",
       "R"
     ],
     [
       "LdoD",
-      "R"
-    ],
-    [
-      "Role",
       "R"
     ],
     [
@@ -74558,10 +72746,6 @@
     ],
     [
       "LdoD",
-      "W"
-    ],
-    [
-      "Role",
       "W"
     ],
     [
@@ -76763,10 +74947,6 @@
       "W"
     ],
     [
-      "Member",
-      "W"
-    ],
-    [
       "VirtualEdition",
       "W"
     ],
@@ -77328,10 +75508,6 @@
     ],
     [
       "LdoDUser",
-      "W"
-    ],
-    [
-      "Member",
       "W"
     ],
     [
@@ -78729,10 +76905,6 @@
       "W"
     ],
     [
-      "ClassificationGame",
-      "W"
-    ],
-    [
       "VirtualEditionInter",
       "W"
     ],
@@ -78750,10 +76922,6 @@
     ],
     [
       "VirtualEdition",
-      "W"
-    ],
-    [
-      "ClassificationGame",
       "W"
     ],
     [
@@ -79951,10 +78119,6 @@
       "R"
     ],
     [
-      "ClassificationGame",
-      "R"
-    ],
-    [
       "ClassificationGameParticipant",
       "R"
     ],
@@ -80468,10 +78632,6 @@
     ],
     [
       "Player",
-      "W"
-    ],
-    [
-      "ClassificationGame",
       "W"
     ],
     [

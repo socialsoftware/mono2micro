@@ -32,7 +32,7 @@ public class SpringDataJPACollector extends SpoonCollector {
     private Repository eventualNewRepository;
 
     public SpringDataJPACollector(int launcherChoice, String repoName, String projectPath) throws IOException {
-        super(launcherChoice, repoName, projectPath);
+        super(launcherChoice, repoName, projectPath, false);
 
         switch (launcherChoice) {
             case Constants.LAUNCHER:
@@ -71,32 +71,27 @@ public class SpringDataJPACollector extends SpoonCollector {
                 existsAnnotation(clazzAnnotations, "PatchMapping") ||
                 existsAnnotation(clazzAnnotations, "PutMapping") ||
                 existsAnnotation(clazzAnnotations, "DeleteMapping") ||
-                (clazz.getSuperclass() != null && clazz.getSuperclass().getSimpleName().equals("DispatchAction"))
-            ) {
-                if (clazz instanceof CtClass)
+                (clazz.getSuperclass() != null && clazz.getSuperclass().getSimpleName().equals("DispatchAction"))) {
+
+                if (clazz instanceof CtClass) {
                     controllers.add((CtClass) clazz);
-                    continue;
+                }
+            }
+            else {
+                if (isRepository(clazz.getReference())) {
+                    repositories.add(eventualNewRepository);
+                    eventualNewRepository = null;
+                } else if (clazz.isInterface()) {
+                    interfaces.put(clazz.getSimpleName(), new ArrayList<>());
+                } else if (existsAnnotation(clazzAnnotations, "Entity") ||
+                        existsAnnotation(clazzAnnotations, "Embeddable") ||
+                        existsAnnotation(clazzAnnotations, "MappedSuperclass")) {
+                    allDomainEntities.add(clazz.getSimpleName());
+                }
             }
 
-            if (isRepository(clazz.getReference())) {
-                repositories.add(eventualNewRepository);
-                eventualNewRepository = null;
-                continue;
-            }
-
-            if (clazz.isInterface()) {
-                interfaces.put(clazz.getSimpleName(), new ArrayList<>());
-                continue;
-            }
-
-            if (existsAnnotation(clazzAnnotations, "Entity") ||
-                    existsAnnotation(clazzAnnotations, "Embeddable") ||
-                    existsAnnotation(clazzAnnotations, "MappedSuperclass")) {
-                allEntities.add(clazz.getSimpleName());
-            }
+            allEntities.add(clazz.getSimpleName());
         }
-
-        allEntities.sort((string1, string2) -> Integer.compare(string2.length(), string1.length()));  //Longer length first
 
         // 2nd iteration, to retrieve JPA related information and interface explicit implementations
         for(CtType<?> clazz : factory.Class().getAll()) {
@@ -289,7 +284,10 @@ public class SpringDataJPACollector extends SpoonCollector {
         if (oneToManyAnnotation != null) {
             Map annotationValues = ((CtAnnotationImpl) oneToManyAnnotation).getElementValues();
             CtAnnotation joinColumnAnnotation = getAnnotation(fieldAnnotations, "JoinColumn");
-            if (annotationValues.get("mappedBy") == null && joinColumnAnnotation == null) { // new table
+            CtAnnotation joinTableAnnotation = getAnnotation(fieldAnnotations, "JoinTable");
+            if (annotationValues.get("mappedBy") == null && joinColumnAnnotation == null
+                    || joinTableAnnotation != null) { // new table
+
                 Classes classes = new Classes();
                 classes.addClass(clazz.getSimpleName());
 
@@ -299,34 +297,23 @@ public class SpringDataJPACollector extends SpoonCollector {
 
                     fieldType = type.getTypeDeclaration();
 
-                    if (allEntities.contains(fieldType.getSimpleName()))
+                    if (allDomainEntities.contains(fieldType.getSimpleName()))
                         classes.addClass(fieldType.getSimpleName());
-
                 }
 
-                String joinTableName = tableName + "_" + getEntityTableName(fieldType);
-                tableClassesAccessedMap.put(joinTableName.toUpperCase(), classes);
-            }
-
-            CtAnnotation joinTableAnnotation = getAnnotation(fieldAnnotations, "JoinTable");
-            if (joinTableAnnotation != null) {
                 String joinTableName = "";
 
-                if (joinTableAnnotation.getValues().get("name") != null) {
-                    CtExpression name = joinTableAnnotation.getValue("name");
-                    joinTableName = getValueAsString(name);
+                if (joinTableAnnotation != null) {
+                    if (joinTableAnnotation.getValues().get("name") != null) {
+                        CtExpression name = joinTableAnnotation.getValue("name");
+                        joinTableName = getValueAsString(name);
+                    }
                 }
-
-                Classes classes = new Classes();
-                classes.addClass(clazz.getSimpleName());
-
-                // @ManyToMany fields won't be HashMaps, thus, get(0), and the Type will always be an Entity
-                CtType fieldType = field.getType().getActualTypeArguments().get(0).getTypeDeclaration();
-                classes.addClass(fieldType.getSimpleName());
 
                 if (joinTableName.equals("")) {
                     joinTableName = tableName + "_" + getEntityTableName(fieldType);
                 }
+
                 tableClassesAccessedMap.put(joinTableName.toUpperCase(), classes);
             }
         }
@@ -349,7 +336,7 @@ public class SpringDataJPACollector extends SpoonCollector {
 
                 CtType fieldType = type.getTypeDeclaration();
 
-                if (allEntities.contains(fieldType.getSimpleName()))
+                if (allDomainEntities.contains(fieldType.getSimpleName()))
                     classes.addClass(fieldType.getSimpleName());
 
             }
@@ -465,13 +452,7 @@ public class SpringDataJPACollector extends SpoonCollector {
                 try {
                     if (calleeLocation == null)
                         return;
-                    CtExecutable calleeLocationExecutableDeclaration;
-                    try {
-                        calleeLocationExecutableDeclaration = calleeLocation.getExecutable().getExecutableDeclaration();
-                    } catch (StackOverflowError e) {
-                        System.err.println("StackOverflowError");
-                        return;
-                    }
+
 //                    /* TO REMOVE */
 //                    try {
 //                        if (((CtInvocation) calleeLocation).getTarget().getType().getSimpleName().contains("EntityManager"))
@@ -487,12 +468,15 @@ public class SpringDataJPACollector extends SpoonCollector {
 //                    } catch (Exception e) {}
 
                     try {
-                        CtMethod calleeMethod = (CtMethod) calleeLocationExecutableDeclaration;
+                        CtMethod calleeMethod = (CtMethod) calleeLocation.getExecutable().getExecutableDeclaration();
                         if (calleeMethod.isAbstract()) {
                             boolean alreadyProcessed = updateCalleeLocationWithExplicitImplementation(calleeLocation, calleeMethod);
                             if (alreadyProcessed)
                                 return;
                         }
+                    } catch (StackOverflowError e) {
+                        System.err.println("StackOverflowError");
+                        return;
                     } catch(Exception castErrorOrMoreThanOneImplementationFound) {}
 
                     // In some cases the SpringDataJPA may be in the classpath (for instance when MavenLauncher is
@@ -534,10 +518,11 @@ public class SpringDataJPACollector extends SpoonCollector {
                             registerDomainAccess(collectionDeclaringTypeName, collectionFieldAccessedType, (CtInvocation) calleeLocation);
                         }
                     }
-                    else if (!methodStack.contains(calleeLocationExecutableDeclaration.getPosition())) {
-                        methodCallDFS(calleeLocationExecutableDeclaration, calleeLocation, methodStack);
+                    else if (allEntities.contains(calleeLocation.getExecutable().getDeclaringType().getSimpleName())) {
+                        if (!methodStack.contains(calleeLocation.getExecutable().getExecutableDeclaration().getPosition())) {
+                            methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), calleeLocation, methodStack);
+                        }
                     }
-
                 } catch (Exception e) {
                     if (!(e instanceof ClassCastException || e instanceof NullPointerException)) {
                         System.err.println(e.getCause().getMessage());
@@ -567,7 +552,7 @@ public class SpringDataJPACollector extends SpoonCollector {
 
                     declaringTypeName = declaringTypeName == null ? declaringType.getSimpleName() : declaringTypeName;
 
-                    if (allEntities.contains(declaringTypeName)) {
+                    if (allDomainEntities.contains(declaringTypeName)) {
 
                         addEntitiesSequenceAccess(declaringTypeName, mode);
 
@@ -581,13 +566,13 @@ public class SpringDataJPACollector extends SpoonCollector {
                             List<CtTypeReference<?>> actualTypeArguments = fieldType.getActualTypeArguments();
                             if (actualTypeArguments.size() > 0) {
                                 for (CtTypeReference ctTypeReference : actualTypeArguments) {
-                                    if (allEntities.contains(ctTypeReference.getSimpleName())) {
+                                    if (allDomainEntities.contains(ctTypeReference.getSimpleName())) {
                                         addEntitiesSequenceAccess(ctTypeReference.getSimpleName(), mode);
                                     }
                                 }
                             }
                             else {
-                                if (allEntities.contains(fieldType.getSimpleName())) {
+                                if (allDomainEntities.contains(fieldType.getSimpleName())) {
                                     addEntitiesSequenceAccess(fieldType.getSimpleName(), mode);
                                 }
                             }
@@ -769,7 +754,7 @@ public class SpringDataJPACollector extends SpoonCollector {
                     collectionTransientField = false;
                 }
 
-                if (allEntities.contains(declaringTypeName)) {
+                if (allDomainEntities.contains(declaringTypeName)) {
                     collectionEntityAccess = true;
                     collectionFieldAccessedType = fieldDeclaration.getType();
                     collectionDeclaringTypeName = declaringTypeName;
@@ -784,7 +769,7 @@ public class SpringDataJPACollector extends SpoonCollector {
             public <T> void visitCtVariableRead(CtVariableRead<T> variableRead) {
                 super.visitCtVariableRead(variableRead);
                 String declaringClassName = variableRead.getVariable().getDeclaration().getParent(CtClass.class).getSimpleName();
-                if (allEntities.contains(declaringClassName)) {
+                if (allDomainEntities.contains(declaringClassName)) {
                     collectionEntityAccess = true;
                     collectionFieldAccessedType = variableRead.getVariable().getType();
                     collectionDeclaringTypeName = declaringClassName;
@@ -831,7 +816,7 @@ public class SpringDataJPACollector extends SpoonCollector {
 
             // we visited the target before to find the field so lets use the types of field type
             for (CtTypeReference ctTypeReference : fieldAccessedType.getActualTypeArguments()) {
-                if (allEntities.contains(ctTypeReference.getSimpleName())) {
+                if (allDomainEntities.contains(ctTypeReference.getSimpleName())) {
                     argTypeNames.add(ctTypeReference.getSimpleName());
                 }
             }
@@ -849,20 +834,20 @@ public class SpringDataJPACollector extends SpoonCollector {
             List<CtTypeReference<?>> actualTypeArguments = returnType.getActualTypeArguments();
             if (actualTypeArguments.size() > 0) {
                 for (CtTypeReference ctTypeReference : actualTypeArguments) {
-                    if (allEntities.contains(ctTypeReference.getSimpleName())) {
+                    if (allDomainEntities.contains(ctTypeReference.getSimpleName())) {
                         addEntitiesSequenceAccess(ctTypeReference.getSimpleName(), mode);
                     }
                 }
             }
             else {
-                if (allEntities.contains(returnType.getSimpleName())) {
+                if (allDomainEntities.contains(returnType.getSimpleName())) {
                     addEntitiesSequenceAccess(returnType.getSimpleName(), mode);
                 }
             }
         }
         else if (mode.equals("W")) {
             for (String argTypeName : argTypeNames) {
-                if (allEntities.contains(argTypeName)) {
+                if (allDomainEntities.contains(argTypeName)) {
                     addEntitiesSequenceAccess(argTypeName, mode);
                 }
             }
@@ -992,14 +977,14 @@ public class SpringDataJPACollector extends SpoonCollector {
                             List<CtTypeReference<?>> actualTypeArguments = field.getType().getActualTypeArguments();
                             if (actualTypeArguments.size() > 0) { // Set<Class> List<Class> etc
                                 for (CtTypeReference ctTypeReference : actualTypeArguments) {
-                                    if (allEntities.contains(ctTypeReference.getSimpleName())) {
+                                    if (allDomainEntities.contains(ctTypeReference.getSimpleName())) {
                                         addEntitiesSequenceAccess(ctTypeReference.getSimpleName(), a.getMode());
                                         clazz = ctTypeReference.getTypeDeclaration(); // in order to retrieve next fields
                                     }
                                 }
                             }
                             else {
-                                if (allEntities.contains(field.getType().getSimpleName())) {
+                                if (allDomainEntities.contains(field.getType().getSimpleName())) {
                                     addEntitiesSequenceAccess(field.getType().getSimpleName(), a.getMode());
                                     clazz = field.getType().getTypeDeclaration(); // in order to retrieve next fields
                                 }

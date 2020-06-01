@@ -12,15 +12,14 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
 public class FenixFrameworkCollector extends SpoonCollector {
-    public FenixFrameworkCollector(int launcherChoice, String repoName, String projectPath) throws IOException {
-        super(launcherChoice, repoName, projectPath);
 
-        // We'll assume that FenixFramework projects always use maven.
-        // We'll also assume that these projects dont use Custom Compile Time Annotation Processors
-        // By using MavenLauncher, the dependencies of the project we'll be detected automatically.
+    public FenixFrameworkCollector(int launcherChoice, String repoName, String projectPath, boolean collectionFlag)
+            throws IOException {
+        super(launcherChoice, repoName, projectPath, collectionFlag);
 
         switch (launcherChoice) {
             case Constants.LAUNCHER:
@@ -58,15 +57,25 @@ public class FenixFrameworkCollector extends SpoonCollector {
                 (clazz.getSuperclass() != null && clazz.getSuperclass().getSimpleName().equals("FenixDispatchAction"))
             ) {
                 controllers.add((CtClass) clazz);
-                allEntities.add(clazz.getSimpleName());
-            } else if (!clazz.getSimpleName().endsWith("_Base")) {  //Domain class
-                allEntities.add(clazz.getSimpleName());
+            } else {  //Domain class
+                CtTypeReference<?> superclassReference = clazz.getSuperclass();
+                if (superclassReference != null && superclassReference.getSimpleName().endsWith("_Base")) {
+                    allDomainEntities.add(clazz.getSimpleName());
+
+                    if (collectionFlag)
+                        collectBaseClassMethods((CtClass) clazz.getSuperclass().getTypeDeclaration());
+                }
+
+                if (collectionFlag) {
+                    if (clazz.getSimpleName().equals("DomainRoot_Base")) {
+                        collectBaseClassMethods((CtClass) clazz);
+                    }
+                }
+
             }
+            allEntities.add(clazz.getSimpleName());
         }
-
-        allEntities.sort((string1, string2) -> Integer.compare(string2.length(), string1.length()));  //Longer length first
     }
-
 
     @Override
     public void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<SourcePosition> methodStack) {
@@ -82,26 +91,13 @@ public class FenixFrameworkCollector extends SpoonCollector {
                 if (calleeLocation == null)
                     continue;
                 else if (calleeLocation.getExecutable().getDeclaringType().getSimpleName().endsWith("_Base")) {
-
-                    /* TO REMOVE */
-//                    List<String> par = new ArrayList<>();
-//                    List<CtTypeReference> parameters = calleeLocation.getExecutable().getParameters();
-//                    parameters.forEach(parameter -> par.add(parameter.toString()));
-//                    methodsListForPancas.add(
-//                            new MethodContainer(
-//                                    calleeLocation.getExecutable().getType().toString(),
-//                                    calleeLocation.getExecutable().getSimpleName(),
-//                                    par.toString(),
-//                                    calleeLocation.getExecutable().getDeclaringType().getQualifiedName()
-//                            )
-//                    );
-
                     registerBaseClass(calleeLocation.getExecutable().getExecutableDeclaration(), calleeLocation);
                 }
                 else if (calleeLocation.getExecutable().getDeclaringType().getSimpleName().equals("FenixFramework") &&
                         calleeLocation.getExecutable().getSimpleName().equals("getDomainObject")) {
                     registerDomainObject(calleeLocation);
-                } else if (allEntities.contains(calleeLocation.getExecutable().getDeclaringType().getSimpleName())) {
+                }
+                else if (allEntities.contains(calleeLocation.getExecutable().getDeclaringType().getSimpleName())) {
                     if (!methodStack.contains(calleeLocation.getExecutable().getExecutableDeclaration().getPosition())) {
                         methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), null, methodStack);
                     }
@@ -117,55 +113,57 @@ public class FenixFrameworkCollector extends SpoonCollector {
         String methodName = callee.getSimpleName();
         String mode = "";
         String returnType = "";
-        String argType = "";
+        List<String> argTypes = new ArrayList<>();
         if (methodName.startsWith("get")) {
             mode = "R";
-            returnType = callee.getType().toString();
-        } else if (methodName.startsWith("set") || methodName.startsWith("add") || methodName.startsWith("remove")) {
+            CtTypeReference returnTypeReference = callee.getType();
+            if (returnTypeReference.isParameterized())
+                returnType = returnTypeReference.getActualTypeArguments().get(0).getSimpleName();
+            else
+                returnType = returnTypeReference.getSimpleName();
+        }
+        else if (methodName.startsWith("set") || methodName.startsWith("add") || methodName.startsWith("remove")) {
             mode = "W";
-            CtParameter parameter = (CtParameter) callee.getParameters().get(0);
-            argType = parameter.getType().toString();
+            List<CtParameter> calleeParameters = callee.getParameters();
+            for (CtParameter ctP : calleeParameters) {
+                CtTypeReference parameterType = ctP.getType();
+                if (parameterType.isParameterized()) {
+                    for (CtTypeReference ctTR : parameterType.getActualTypeArguments())
+                        argTypes.add(ctTR.getSimpleName());
+                }
+                else
+                    argTypes.add(ctP.getType().getSimpleName());
+            }
         }
 
         String baseClassName = callee.getParent(CtClass.class).getSimpleName();
-        baseClassName = baseClassName.substring(0,baseClassName.length()-5); //remove _Base
+        baseClassName = baseClassName.substring(0, baseClassName.length()-5); //remove _Base
 
         String resolvedType = " ";
-        //resolvedType[0] = String.valueOf(calleeLocation.getExecutable().getDeclaringType());
-
         resolvedType = resolveTypeBase(calleeLocation);
-        // verificar! O que é o resolveTypeBinding() ?? Está a dar retorno diferente
-
-        // String a = virtualEdition.getAcronym()
-        // Neste caso getAcronym está definido na superclasse Edition, portanto eu iria obter uma leitura de Edition
-        // em vez de VirtualEdition se não fizesse o resolveBinding
 
         if (mode.equals("R")) {
-            if (allEntities.contains(resolvedType)) {
+            // Class Read
+            if (allDomainEntities.contains(resolvedType))
                 addEntitiesSequenceAccess(resolvedType, mode);
-            } else if (allEntities.contains(baseClassName)) {
+            else if (allDomainEntities.contains(baseClassName))
                 addEntitiesSequenceAccess(baseClassName, mode);
-            }
 
-            for (String entityName : allEntities) {
-                if (returnType.contains(entityName)) {
-                    addEntitiesSequenceAccess(entityName, mode);
-                    return;
-                }
-            }
-
-        } else if (mode.equals("W")) {
-            if (allEntities.contains(resolvedType)) {
+            // Return Type Read
+            if (allDomainEntities.contains(returnType))
+                addEntitiesSequenceAccess(returnType, mode);
+        }
+        else if (mode.equals("W")) {
+            // Class Read
+            if (allDomainEntities.contains(resolvedType))
                 addEntitiesSequenceAccess(resolvedType, mode);
-            } else if (allEntities.contains(baseClassName)) {
+            else if (allDomainEntities.contains(baseClassName))
                 addEntitiesSequenceAccess(baseClassName, mode);
-            }
 
-            for (String entityName : allEntities) {
-                if (argType.contains(entityName)) {
-                    addEntitiesSequenceAccess(entityName, mode);
-                    return;
-                }
+            // Argument Types Read
+            for (String type : argTypes) {
+                if (allDomainEntities.contains(type))
+                    addEntitiesSequenceAccess(type, mode);
             }
         }
     }
@@ -185,22 +183,9 @@ public class FenixFrameworkCollector extends SpoonCollector {
         String resolvedType;
         resolvedType = resolveTypeDomainObject(calleeLocation);
 
-        if (allEntities.contains(resolvedType)) {
+        if (allDomainEntities.contains(resolvedType)) {
             addEntitiesSequenceAccess(resolvedType, "R");
         }
-
-        /* TO REMOVE */
-//        List<String> par = new ArrayList<>();
-//        List<CtTypeReference> parameters = calleeLocation.getExecutable().getParameters();
-//        parameters.forEach(parameter -> par.add(parameter.toString()));
-//        methodsListForPancas.add(
-//                new MethodContainer(
-//                        resolvedType,
-//                        calleeLocation.getExecutable().getSimpleName(),
-//                        par.toString(),
-//                        calleeLocation.getExecutable().getDeclaringType().getQualifiedName()
-//                )
-//        );
     }
 
     private String resolveTypeDomainObject(CtInvocation calleeLocation) throws Exception {
@@ -215,5 +200,54 @@ public class FenixFrameworkCollector extends SpoonCollector {
             return ((CtAssignment) parent).getAssigned().getType().getSimpleName();
         else
             throw new Exception("Couldn't Resolve Type.");
+    }
+
+    private void collectBaseClassMethods(CtClass clazz) {
+        Set<CtMethod> baseMethods = clazz.getMethods();
+        for (CtMethod ctM : baseMethods) {
+            if (ctM.isPublic()) {
+                String returnType = ctM.getType().toString();
+                if (returnType.contains("pt.ist.fenixframework")) {
+                    continue;
+                }
+
+                List<CtParameter> parameters = ctM.getParameters();
+                boolean skip = false;
+                for (CtParameter p : parameters) {
+                    if (p.getType().toString().contains("pt.ist.fenixframework")) {
+                        skip = true;
+                        break;
+                    }
+                }
+
+                if (skip)
+                    continue;
+
+                else {
+                    List<String> par = new ArrayList<>();
+                    CtTypeReference typeReference = ctM.getType();
+                    String returnTypeParsed;
+                    if (typeReference.isParameterized())
+                        returnTypeParsed = typeReference.getActualTypeArguments().get(0).getSimpleName();
+                    else
+                        returnTypeParsed = typeReference.getSimpleName();
+
+                    parameters.forEach(parameter -> par.add(parameter.getType().getSimpleName()));
+                    methodsListCollection.put(
+                            String.join(
+                                    ".",
+                                    clazz.getSimpleName(),
+                                    ctM.getSimpleName()
+                            ),
+                            new MethodContainer(
+                                    returnTypeParsed,
+                                    ctM.getSimpleName(),
+                                    par,
+                                    clazz.getSimpleName()
+                            )
+                    );
+                }
+            }
+        }
     }
 }

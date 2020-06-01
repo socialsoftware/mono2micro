@@ -20,19 +20,21 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 public abstract class SpoonCollector {
     private int controllerCount;
     private JsonObject callSequence;
     private String projectName;
+    boolean collectionFlag;
 
-    // in FenixFramework: allEntities = all classes != _Base
-    // in JPA: allEntities = all @Entities @Embeddable @MappedSuperClass
+    // all project classes
     ArrayList<String> allEntities;
+
+    // in FenixFramework: allDomainEntities = all classes that extend .*_Base
+    // in JPA: allDomainEntities = all @Entities @Embeddable @MappedSuperClass
+    ArrayList<String> allDomainEntities;
+
     HashSet<CtClass> controllers;
     Map<SourcePosition, List<CtAbstractInvocation>> methodCallees;
     private JsonArray entitiesSequence;
@@ -41,14 +43,14 @@ public abstract class SpoonCollector {
     Factory factory;
     Launcher launcher;
 
+    HashMap<String, MethodContainer> methodsListCollection = new HashMap<>();
 
     /* ------- TO REMOVE ----------- */
-//    Set<MethodContainer> methodsListForPancas = new HashSet<>();
     int entityManager = 0;
     private int controllerMethodsCount = 0;
     int repositoryCount = 0;
 
-    SpoonCollector(int launcherChoice, String repoName, String projectPath) throws IOException {
+    SpoonCollector(int launcherChoice, String repoName, String projectPath, boolean collectionFlag) throws IOException {
         File decompiledDir = new File(Constants.DECOMPILED_SOURCES_PATH);
         if (decompiledDir.exists()) {
             FileUtils.deleteDirectory(decompiledDir);
@@ -57,10 +59,12 @@ public abstract class SpoonCollector {
         callSequence = new JsonObject();
         controllers = new HashSet<>();
         allEntities = new ArrayList<>();
+        allDomainEntities = new ArrayList<>();
         methodCallees = new HashMap<>();
         interfaces = new HashMap<>();
 
         this.projectName = repoName;
+        this.collectionFlag = collectionFlag;
 
         switch (launcherChoice) {
             case Constants.LAUNCHER:
@@ -134,8 +138,22 @@ public abstract class SpoonCollector {
         }
 
 
+        if (collectionFlag) {
+            try {
+                File methodsFile = new File(Constants.COLLECTION_SAVE_PATH, projectName + "_methods.json");
+                new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(methodsFile, methodsListCollection);
+                System.out.println("File '" + methodsFile.getName() + "' created at: " + methodsFile.getAbsolutePath());
+
+                HashMap<String, Boolean> allEntitiesHashMap = new HashMap<>();
+                allDomainEntities.forEach(e -> allEntitiesHashMap.put(e, true));
+                File entitiesFile = new File(Constants.COLLECTION_SAVE_PATH, projectName + "_allEntities.json");
+                new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(entitiesFile, allEntitiesHashMap);
+                System.out.println("File '" + entitiesFile.getName() + "' created at: " + entitiesFile.getAbsolutePath());
+            } catch (Exception e) {
+                System.err.println("Couldn't write collection file(s).");
+            }
+        }
         /* ------ TO REMOVE ------- */
-//        new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(new File("ldodMethods.json"), methodsListForPancas);
 //        File testData = new File(Constants.TEST_DATA_PATH);
 //        if (!testData.exists()) testData.createNewFile();
 //        String s0 = "Project: " + projectName;

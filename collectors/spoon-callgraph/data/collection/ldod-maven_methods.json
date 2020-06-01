@@ -1,0 +1,5648 @@
+{
+  "PrintedSource_Base.setTitle" : {
+    "returnType" : "void",
+    "methodName" : "setTitle",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "PrintedSource_Base"
+  },
+  "Fragment_Base.getCitationSet" : {
+    "returnType" : "Citation",
+    "methodName" : "getCitationSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "Fragment_Base"
+  },
+  "RefText_Base.setFragInter" : {
+    "returnType" : "void",
+    "methodName" : "setFragInter",
+    "argumentTypes" : [ "FragInter" ],
+    "declaringType" : "RefText_Base"
+  },
+  "VirtualEdition_Base.getSelectedBySet" : {
+    "returnType" : "LdoDUser",
+    "methodName" : "getSelectedBySet",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "Tag_Base.checkMultiplicityOfInter" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfInter",
+    "argumentTypes" : [ ],
+    "declaringType" : "Tag_Base"
+  },
+  "Heteronym_Base.setLdoD" : {
+    "returnType" : "void",
+    "methodName" : "setLdoD",
+    "argumentTypes" : [ "LdoD" ],
+    "declaringType" : "Heteronym_Base"
+  },
+  "Annotation_Base.removeRange" : {
+    "returnType" : "void",
+    "methodName" : "removeRange",
+    "argumentTypes" : [ "Range" ],
+    "declaringType" : "Annotation_Base"
+  },
+  "ClassificationGame_Base.getClassificationGameParticipantCount" : {
+    "returnType" : "int",
+    "methodName" : "getClassificationGameParticipantCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGame_Base"
+  },
+  "FragInter_Base.setFragment" : {
+    "returnType" : "void",
+    "methodName" : "setFragment",
+    "argumentTypes" : [ "Fragment" ],
+    "declaringType" : "FragInter_Base"
+  },
+  "LdoDUser_Base.getRecommendationWeightsSet" : {
+    "returnType" : "RecommendationWeights",
+    "methodName" : "getRecommendationWeightsSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "NoteText_Base.getAnnexNoteSet" : {
+    "returnType" : "AnnexNote",
+    "methodName" : "getAnnexNoteSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "NoteText_Base"
+  },
+  "Tag_Base.getCategory" : {
+    "returnType" : "Category",
+    "methodName" : "getCategory",
+    "argumentTypes" : [ ],
+    "declaringType" : "Tag_Base"
+  },
+  "Heteronym_Base.addFragInter" : {
+    "returnType" : "void",
+    "methodName" : "addFragInter",
+    "argumentTypes" : [ "FragInter" ],
+    "declaringType" : "Heteronym_Base"
+  },
+  "ManuscriptSource_Base.setForm" : {
+    "returnType" : "void",
+    "methodName" : "setForm",
+    "argumentTypes" : [ "Form" ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "VirtualEdition_Base.checkMultiplicityOfLdoD4Virtual" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfLdoD4Virtual",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "InfoRange_Base.setFragInter" : {
+    "returnType" : "void",
+    "methodName" : "setFragInter",
+    "argumentTypes" : [ "FragInter" ],
+    "declaringType" : "InfoRange_Base"
+  },
+  "RdgText_Base.setType" : {
+    "returnType" : "void",
+    "methodName" : "setType",
+    "argumentTypes" : [ "VariationType" ],
+    "declaringType" : "RdgText_Base"
+  },
+  "ClassificationGameParticipant_Base.setWinner" : {
+    "returnType" : "void",
+    "methodName" : "setWinner",
+    "argumentTypes" : [ "boolean" ],
+    "declaringType" : "ClassificationGameParticipant_Base"
+  },
+  "Rend_Base.getRend" : {
+    "returnType" : "Rendition",
+    "methodName" : "getRend",
+    "argumentTypes" : [ ],
+    "declaringType" : "Rend_Base"
+  },
+  "Section_Base.removeSubSections" : {
+    "returnType" : "void",
+    "methodName" : "removeSubSections",
+    "argumentTypes" : [ "Section" ],
+    "declaringType" : "Section_Base"
+  },
+  "Fragment_Base.getXmlId" : {
+    "returnType" : "String",
+    "methodName" : "getXmlId",
+    "argumentTypes" : [ ],
+    "declaringType" : "Fragment_Base"
+  },
+  "Role_Base.setLdoD" : {
+    "returnType" : "void",
+    "methodName" : "setLdoD",
+    "argumentTypes" : [ "LdoD" ],
+    "declaringType" : "Role_Base"
+  },
+  "Tag_Base.getInter" : {
+    "returnType" : "VirtualEditionInter",
+    "methodName" : "getInter",
+    "argumentTypes" : [ ],
+    "declaringType" : "Tag_Base"
+  },
+  "ExpertEditionInter_Base.getExpertEdition" : {
+    "returnType" : "ExpertEdition",
+    "methodName" : "getExpertEdition",
+    "argumentTypes" : [ ],
+    "declaringType" : "ExpertEditionInter_Base"
+  },
+  "ManuscriptSource_Base.getHandNoteSet" : {
+    "returnType" : "HandNote",
+    "methodName" : "getHandNoteSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "LdoDDate_Base.getType" : {
+    "returnType" : "DateType",
+    "methodName" : "getType",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDDate_Base"
+  },
+  "VirtualEditionInter_Base.removeTag" : {
+    "returnType" : "void",
+    "methodName" : "removeTag",
+    "argumentTypes" : [ "Tag" ],
+    "declaringType" : "VirtualEditionInter_Base"
+  },
+  "FragInter_Base.addLbText" : {
+    "returnType" : "void",
+    "methodName" : "addLbText",
+    "argumentTypes" : [ "LbText" ],
+    "declaringType" : "FragInter_Base"
+  },
+  "TextPortion_Base.setLastChildText" : {
+    "returnType" : "void",
+    "methodName" : "setLastChildText",
+    "argumentTypes" : [ "TextPortion" ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "AltTextWeight_Base.getWeight" : {
+    "returnType" : "double",
+    "methodName" : "getWeight",
+    "argumentTypes" : [ ],
+    "declaringType" : "AltTextWeight_Base"
+  },
+  "UserConnection_Base.setImageUrl" : {
+    "returnType" : "void",
+    "methodName" : "setImageUrl",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "Category_Base.addTag" : {
+    "returnType" : "void",
+    "methodName" : "addTag",
+    "argumentTypes" : [ "Tag" ],
+    "declaringType" : "Category_Base"
+  },
+  "Citation_Base.getAwareAnnotation" : {
+    "returnType" : "AwareAnnotation",
+    "methodName" : "getAwareAnnotation",
+    "argumentTypes" : [ ],
+    "declaringType" : "Citation_Base"
+  },
+  "InfoRange_Base.setEndOffset" : {
+    "returnType" : "void",
+    "methodName" : "setEndOffset",
+    "argumentTypes" : [ "int" ],
+    "declaringType" : "InfoRange_Base"
+  },
+  "LdoD_Base.getHeteronymsCount" : {
+    "returnType" : "int",
+    "methodName" : "getHeteronymsCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "FragInter_Base.setHeteronym" : {
+    "returnType" : "void",
+    "methodName" : "setHeteronym",
+    "argumentTypes" : [ "Heteronym" ],
+    "declaringType" : "FragInter_Base"
+  },
+  "Role_Base.removeUsers" : {
+    "returnType" : "void",
+    "methodName" : "removeUsers",
+    "argumentTypes" : [ "LdoDUser" ],
+    "declaringType" : "Role_Base"
+  },
+  "RecommendationWeights_Base.getDateWeight" : {
+    "returnType" : "double",
+    "methodName" : "getDateWeight",
+    "argumentTypes" : [ ],
+    "declaringType" : "RecommendationWeights_Base"
+  },
+  "ExpertEditionInter_Base.setEndPage" : {
+    "returnType" : "void",
+    "methodName" : "setEndPage",
+    "argumentTypes" : [ "int" ],
+    "declaringType" : "ExpertEditionInter_Base"
+  },
+  "LdoD_Base.addTweet" : {
+    "returnType" : "void",
+    "methodName" : "addTweet",
+    "argumentTypes" : [ "Tweet" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "ClassificationGameRound_Base.getNumber" : {
+    "returnType" : "int",
+    "methodName" : "getNumber",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGameRound_Base"
+  },
+  "InfoRange_Base.getEnd" : {
+    "returnType" : "String",
+    "methodName" : "getEnd",
+    "argumentTypes" : [ ],
+    "declaringType" : "InfoRange_Base"
+  },
+  "LdoDDate_Base.getPrecision" : {
+    "returnType" : "PrecisionType",
+    "methodName" : "getPrecision",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDDate_Base"
+  },
+  "PhysNote_Base.getTextPortionCount" : {
+    "returnType" : "int",
+    "methodName" : "getTextPortionCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "PhysNote_Base"
+  },
+  "SpaceText_Base.getQuantity" : {
+    "returnType" : "int",
+    "methodName" : "getQuantity",
+    "argumentTypes" : [ ],
+    "declaringType" : "SpaceText_Base"
+  },
+  "AltText_Base.getAltTextWeight" : {
+    "returnType" : "AltTextWeight",
+    "methodName" : "getAltTextWeight",
+    "argumentTypes" : [ ],
+    "declaringType" : "AltText_Base"
+  },
+  "VirtualEdition_Base.getTaxonomy" : {
+    "returnType" : "Taxonomy",
+    "methodName" : "getTaxonomy",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "ClassificationGame_Base.setDescription" : {
+    "returnType" : "void",
+    "methodName" : "setDescription",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "ClassificationGame_Base"
+  },
+  "LdoDUser_Base.getFirstName" : {
+    "returnType" : "String",
+    "methodName" : "getFirstName",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "Category_Base.setName" : {
+    "returnType" : "void",
+    "methodName" : "setName",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Category_Base"
+  },
+  "AltTextWeight_Base.setWeight" : {
+    "returnType" : "void",
+    "methodName" : "setWeight",
+    "argumentTypes" : [ "double" ],
+    "declaringType" : "AltTextWeight_Base"
+  },
+  "LdoDUser_Base.getAnnotationCount" : {
+    "returnType" : "int",
+    "methodName" : "getAnnotationCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "Member_Base.setDate" : {
+    "returnType" : "void",
+    "methodName" : "setDate",
+    "argumentTypes" : [ "LocalDate" ],
+    "declaringType" : "Member_Base"
+  },
+  "RdgText_Base.getFragInters" : {
+    "returnType" : "FragInter",
+    "methodName" : "getFragInters",
+    "argumentTypes" : [ ],
+    "declaringType" : "RdgText_Base"
+  },
+  "TextPortion_Base.getFirstChildText" : {
+    "returnType" : "TextPortion",
+    "methodName" : "getFirstChildText",
+    "argumentTypes" : [ ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "Annotation_Base.getUser" : {
+    "returnType" : "LdoDUser",
+    "methodName" : "getUser",
+    "argumentTypes" : [ ],
+    "declaringType" : "Annotation_Base"
+  },
+  "ClassificationGame_Base.getResponsible" : {
+    "returnType" : "LdoDUser",
+    "methodName" : "getResponsible",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGame_Base"
+  },
+  "Tweet_Base.getUserProfileURL" : {
+    "returnType" : "String",
+    "methodName" : "getUserProfileURL",
+    "argumentTypes" : [ ],
+    "declaringType" : "Tweet_Base"
+  },
+  "ClassificationGameParticipant_Base.setClassificationGame" : {
+    "returnType" : "void",
+    "methodName" : "setClassificationGame",
+    "argumentTypes" : [ "ClassificationGame" ],
+    "declaringType" : "ClassificationGameParticipant_Base"
+  },
+  "LdoD_Base.getNullEdition" : {
+    "returnType" : "NullEdition",
+    "methodName" : "getNullEdition",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "LbText_Base.getFragInterCount" : {
+    "returnType" : "int",
+    "methodName" : "getFragInterCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "LbText_Base"
+  },
+  "Surface_Base.getRefText" : {
+    "returnType" : "RefText",
+    "methodName" : "getRefText",
+    "argumentTypes" : [ ],
+    "declaringType" : "Surface_Base"
+  },
+  "TextPortion_Base.getNextText" : {
+    "returnType" : "TextPortion",
+    "methodName" : "getNextText",
+    "argumentTypes" : [ ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "NoteText_Base.setType" : {
+    "returnType" : "void",
+    "methodName" : "setType",
+    "argumentTypes" : [ "NoteType" ],
+    "declaringType" : "NoteText_Base"
+  },
+  "FragInter_Base.setLdoDDate" : {
+    "returnType" : "void",
+    "methodName" : "setLdoDDate",
+    "argumentTypes" : [ "LdoDDate" ],
+    "declaringType" : "FragInter_Base"
+  },
+  "Citation_Base.setFragText" : {
+    "returnType" : "void",
+    "methodName" : "setFragText",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Citation_Base"
+  },
+  "LdoD_Base.addExpertEditions" : {
+    "returnType" : "void",
+    "methodName" : "addExpertEditions",
+    "argumentTypes" : [ "ExpertEdition" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "InfoRange_Base.setStart" : {
+    "returnType" : "void",
+    "methodName" : "setStart",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "InfoRange_Base"
+  },
+  "LdoDUser_Base.removeMember" : {
+    "returnType" : "void",
+    "methodName" : "removeMember",
+    "argumentTypes" : [ "Member" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "Tweet_Base.setTweetText" : {
+    "returnType" : "void",
+    "methodName" : "setTweetText",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Tweet_Base"
+  },
+  "ClassificationGameRound_Base.setNumber" : {
+    "returnType" : "void",
+    "methodName" : "setNumber",
+    "argumentTypes" : [ "int" ],
+    "declaringType" : "ClassificationGameRound_Base"
+  },
+  "Tweet_Base.setUserProfileURL" : {
+    "returnType" : "void",
+    "methodName" : "setUserProfileURL",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Tweet_Base"
+  },
+  "Category_Base.setXmlId" : {
+    "returnType" : "void",
+    "methodName" : "setXmlId",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Category_Base"
+  },
+  "FragInter_Base.getRefTextCount" : {
+    "returnType" : "int",
+    "methodName" : "getRefTextCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "Surface_Base.getXmlId" : {
+    "returnType" : "String",
+    "methodName" : "getXmlId",
+    "argumentTypes" : [ ],
+    "declaringType" : "Surface_Base"
+  },
+  "LdoDUser_Base.addResponsibleForGames" : {
+    "returnType" : "void",
+    "methodName" : "addResponsibleForGames",
+    "argumentTypes" : [ "ClassificationGame" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "Section_Base.addSubSections" : {
+    "returnType" : "void",
+    "methodName" : "addSubSections",
+    "argumentTypes" : [ "Section" ],
+    "declaringType" : "Section_Base"
+  },
+  "LdoD_Base.addRoles" : {
+    "returnType" : "void",
+    "methodName" : "addRoles",
+    "argumentTypes" : [ "Role" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "Tweet_Base.getIsRetweet" : {
+    "returnType" : "boolean",
+    "methodName" : "getIsRetweet",
+    "argumentTypes" : [ ],
+    "declaringType" : "Tweet_Base"
+  },
+  "Citation_Base.checkMultiplicityOfFragment" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfFragment",
+    "argumentTypes" : [ ],
+    "declaringType" : "Citation_Base"
+  },
+  "FragInter_Base.getRefText" : {
+    "returnType" : "RefText",
+    "methodName" : "getRefText",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "LdoDUser_Base.addAnnotation" : {
+    "returnType" : "void",
+    "methodName" : "addAnnotation",
+    "argumentTypes" : [ "Annotation" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "TextPortion_Base.setFirstChildText" : {
+    "returnType" : "void",
+    "methodName" : "setFirstChildText",
+    "argumentTypes" : [ "TextPortion" ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "NullEdition_Base.setLdoD4NullEdition" : {
+    "returnType" : "void",
+    "methodName" : "setLdoD4NullEdition",
+    "argumentTypes" : [ "LdoD" ],
+    "declaringType" : "NullEdition_Base"
+  },
+  "SimpleText_Base.getEndAnnotations" : {
+    "returnType" : "HumanAnnotation",
+    "methodName" : "getEndAnnotations",
+    "argumentTypes" : [ ],
+    "declaringType" : "SimpleText_Base"
+  },
+  "SpaceText_Base.getDim" : {
+    "returnType" : "SpaceDim",
+    "methodName" : "getDim",
+    "argumentTypes" : [ ],
+    "declaringType" : "SpaceText_Base"
+  },
+  "Heteronym_Base.getFragInterSet" : {
+    "returnType" : "FragInter",
+    "methodName" : "getFragInterSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "Heteronym_Base"
+  },
+  "PhysNote_Base.getTextPortionSet" : {
+    "returnType" : "TextPortion",
+    "methodName" : "getTextPortionSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "PhysNote_Base"
+  },
+  "AltText_Base.getAltTextWeightSet" : {
+    "returnType" : "AltTextWeight",
+    "methodName" : "getAltTextWeightSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "AltText_Base"
+  },
+  "Surface_Base.removePbText" : {
+    "returnType" : "void",
+    "methodName" : "removePbText",
+    "argumentTypes" : [ "PbText" ],
+    "declaringType" : "Surface_Base"
+  },
+  "DelText_Base.setHow" : {
+    "returnType" : "void",
+    "methodName" : "setHow",
+    "argumentTypes" : [ "HowDel" ],
+    "declaringType" : "DelText_Base"
+  },
+  "Citation_Base.removeAwareAnnotation" : {
+    "returnType" : "void",
+    "methodName" : "removeAwareAnnotation",
+    "argumentTypes" : [ "AwareAnnotation" ],
+    "declaringType" : "Citation_Base"
+  },
+  "Taxonomy_Base.setEdition" : {
+    "returnType" : "void",
+    "methodName" : "setEdition",
+    "argumentTypes" : [ "VirtualEdition" ],
+    "declaringType" : "Taxonomy_Base"
+  },
+  "ExpertEditionInter_Base.getNumber" : {
+    "returnType" : "int",
+    "methodName" : "getNumber",
+    "argumentTypes" : [ ],
+    "declaringType" : "ExpertEditionInter_Base"
+  },
+  "Citation_Base.getAwareAnnotationSet" : {
+    "returnType" : "AwareAnnotation",
+    "methodName" : "getAwareAnnotationSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "Citation_Base"
+  },
+  "FragInter_Base.getPbTextCount" : {
+    "returnType" : "int",
+    "methodName" : "getPbTextCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "LdoD_Base.getUserConnectionSet" : {
+    "returnType" : "UserConnection",
+    "methodName" : "getUserConnectionSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "ClassificationGame_Base.setVirtualEdition" : {
+    "returnType" : "void",
+    "methodName" : "setVirtualEdition",
+    "argumentTypes" : [ "VirtualEdition" ],
+    "declaringType" : "ClassificationGame_Base"
+  },
+  "ClassificationGameParticipant_Base.checkMultiplicityOfClassificationGame" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfClassificationGame",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGameParticipant_Base"
+  },
+  "ClassificationGame_Base.getVirtualEdition" : {
+    "returnType" : "VirtualEdition",
+    "methodName" : "getVirtualEdition",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGame_Base"
+  },
+  "TwitterCitation_Base.setLocation" : {
+    "returnType" : "void",
+    "methodName" : "setLocation",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "TwitterCitation_Base"
+  },
+  "FragInter_Base.removePbText" : {
+    "returnType" : "void",
+    "methodName" : "removePbText",
+    "argumentTypes" : [ "PbText" ],
+    "declaringType" : "FragInter_Base"
+  },
+  "Facsimile_Base.getXmlId" : {
+    "returnType" : "String",
+    "methodName" : "getXmlId",
+    "argumentTypes" : [ ],
+    "declaringType" : "Facsimile_Base"
+  },
+  "Fragment_Base.setTextPortion" : {
+    "returnType" : "void",
+    "methodName" : "setTextPortion",
+    "argumentTypes" : [ "TextPortion" ],
+    "declaringType" : "Fragment_Base"
+  },
+  "TwitterCitation_Base.getUserImageURL" : {
+    "returnType" : "String",
+    "methodName" : "getUserImageURL",
+    "argumentTypes" : [ ],
+    "declaringType" : "TwitterCitation_Base"
+  },
+  "Range_Base.setStart" : {
+    "returnType" : "void",
+    "methodName" : "setStart",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Range_Base"
+  },
+  "Citation_Base.getInfoRangeCount" : {
+    "returnType" : "int",
+    "methodName" : "getInfoRangeCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "Citation_Base"
+  },
+  "VirtualEdition_Base.addMember" : {
+    "returnType" : "void",
+    "methodName" : "addMember",
+    "argumentTypes" : [ "Member" ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "VirtualEdition_Base.getCriteria" : {
+    "returnType" : "SocialMediaCriteria",
+    "methodName" : "getCriteria",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "Member_Base.getUser" : {
+    "returnType" : "LdoDUser",
+    "methodName" : "getUser",
+    "argumentTypes" : [ ],
+    "declaringType" : "Member_Base"
+  },
+  "RdgGrpText_Base.getType" : {
+    "returnType" : "VariationType",
+    "methodName" : "getType",
+    "argumentTypes" : [ ],
+    "declaringType" : "RdgGrpText_Base"
+  },
+  "HandNote_Base.checkMultiplicityOfManuscript" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfManuscript",
+    "argumentTypes" : [ ],
+    "declaringType" : "HandNote_Base"
+  },
+  "ManuscriptSource_Base.getDimensions" : {
+    "returnType" : "Dimensions",
+    "methodName" : "getDimensions",
+    "argumentTypes" : [ ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "RecommendationWeights_Base.getTaxonomyWeight" : {
+    "returnType" : "double",
+    "methodName" : "getTaxonomyWeight",
+    "argumentTypes" : [ ],
+    "declaringType" : "RecommendationWeights_Base"
+  },
+  "Dimensions_Base.getManuscriptSource" : {
+    "returnType" : "ManuscriptSource",
+    "methodName" : "getManuscriptSource",
+    "argumentTypes" : [ ],
+    "declaringType" : "Dimensions_Base"
+  },
+  "Source_Base.getAltIdentifier" : {
+    "returnType" : "String",
+    "methodName" : "getAltIdentifier",
+    "argumentTypes" : [ ],
+    "declaringType" : "Source_Base"
+  },
+  "ClassificationGameParticipant_Base.getWinner" : {
+    "returnType" : "boolean",
+    "methodName" : "getWinner",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGameParticipant_Base"
+  },
+  "FragInter_Base.getAnnexNote" : {
+    "returnType" : "AnnexNote",
+    "methodName" : "getAnnexNote",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "Section_Base.setVirtualEdition" : {
+    "returnType" : "void",
+    "methodName" : "setVirtualEdition",
+    "argumentTypes" : [ "VirtualEdition" ],
+    "declaringType" : "Section_Base"
+  },
+  "PhysNote_Base.getNote" : {
+    "returnType" : "String",
+    "methodName" : "getNote",
+    "argumentTypes" : [ ],
+    "declaringType" : "PhysNote_Base"
+  },
+  "Edition_Base.getPub" : {
+    "returnType" : "Boolean",
+    "methodName" : "getPub",
+    "argumentTypes" : [ ],
+    "declaringType" : "Edition_Base"
+  },
+  "RegistrationToken_Base.getToken" : {
+    "returnType" : "String",
+    "methodName" : "getToken",
+    "argumentTypes" : [ ],
+    "declaringType" : "RegistrationToken_Base"
+  },
+  "TextPortion_Base.getChildTextCount" : {
+    "returnType" : "int",
+    "methodName" : "getChildTextCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "Surface_Base.addRefText" : {
+    "returnType" : "void",
+    "methodName" : "addRefText",
+    "argumentTypes" : [ "RefText" ],
+    "declaringType" : "Surface_Base"
+  },
+  "RdgText_Base.getFragIntersCount" : {
+    "returnType" : "int",
+    "methodName" : "getFragIntersCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "RdgText_Base"
+  },
+  "Role_Base.getUsersSet" : {
+    "returnType" : "LdoDUser",
+    "methodName" : "getUsersSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "Role_Base"
+  },
+  "Citation_Base.addInfoRange" : {
+    "returnType" : "void",
+    "methodName" : "addInfoRange",
+    "argumentTypes" : [ "InfoRange" ],
+    "declaringType" : "Citation_Base"
+  },
+  "PrintedSource_Base.setIssue" : {
+    "returnType" : "void",
+    "methodName" : "setIssue",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "PrintedSource_Base"
+  },
+  "LdoDUser_Base.getSelectedVirtualEditionsSet" : {
+    "returnType" : "VirtualEdition",
+    "methodName" : "getSelectedVirtualEditionsSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "LdoDUser_Base.getSelectedVirtualEditionsCount" : {
+    "returnType" : "int",
+    "methodName" : "getSelectedVirtualEditionsCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "RecommendationWeights_Base.setTaxonomyWeight" : {
+    "returnType" : "void",
+    "methodName" : "setTaxonomyWeight",
+    "argumentTypes" : [ "double" ],
+    "declaringType" : "RecommendationWeights_Base"
+  },
+  "FragInter_Base.getXmlId" : {
+    "returnType" : "String",
+    "methodName" : "getXmlId",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "LastTwitterID_Base.setLdoD" : {
+    "returnType" : "void",
+    "methodName" : "setLdoD",
+    "argumentTypes" : [ "LdoD" ],
+    "declaringType" : "LastTwitterID_Base"
+  },
+  "VirtualEdition_Base.setTaxonomy" : {
+    "returnType" : "void",
+    "methodName" : "setTaxonomy",
+    "argumentTypes" : [ "Taxonomy" ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "ExpertEdition_Base.removeExpertEditionInters" : {
+    "returnType" : "void",
+    "methodName" : "removeExpertEditionInters",
+    "argumentTypes" : [ "ExpertEditionInter" ],
+    "declaringType" : "ExpertEdition_Base"
+  },
+  "HumanAnnotation_Base.getStartText" : {
+    "returnType" : "SimpleText",
+    "methodName" : "getStartText",
+    "argumentTypes" : [ ],
+    "declaringType" : "HumanAnnotation_Base"
+  },
+  "LastTwitterID_Base.checkMultiplicityOfLdoD" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfLdoD",
+    "argumentTypes" : [ ],
+    "declaringType" : "LastTwitterID_Base"
+  },
+  "LdoDUser_Base.getMemberCount" : {
+    "returnType" : "int",
+    "methodName" : "getMemberCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "PrintedSource_Base.getPubPlace" : {
+    "returnType" : "String",
+    "methodName" : "getPubPlace",
+    "argumentTypes" : [ ],
+    "declaringType" : "PrintedSource_Base"
+  },
+  "LbText_Base.removeFragInter" : {
+    "returnType" : "void",
+    "methodName" : "removeFragInter",
+    "argumentTypes" : [ "FragInter" ],
+    "declaringType" : "LbText_Base"
+  },
+  "UserConnection_Base.setRank" : {
+    "returnType" : "void",
+    "methodName" : "setRank",
+    "argumentTypes" : [ "int" ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "VirtualEdition_Base.getClassificationGameCount" : {
+    "returnType" : "int",
+    "methodName" : "getClassificationGameCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "VirtualEditionInter_Base.removeAnnotation" : {
+    "returnType" : "void",
+    "methodName" : "removeAnnotation",
+    "argumentTypes" : [ "Annotation" ],
+    "declaringType" : "VirtualEditionInter_Base"
+  },
+  "FragInter_Base.removeInfoRange" : {
+    "returnType" : "void",
+    "methodName" : "removeInfoRange",
+    "argumentTypes" : [ "InfoRange" ],
+    "declaringType" : "FragInter_Base"
+  },
+  "Heteronym_Base.setXmlId" : {
+    "returnType" : "void",
+    "methodName" : "setXmlId",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Heteronym_Base"
+  },
+  "Section_Base.getTitle" : {
+    "returnType" : "String",
+    "methodName" : "getTitle",
+    "argumentTypes" : [ ],
+    "declaringType" : "Section_Base"
+  },
+  "SimpleText_Base.getEndAnnotationsCount" : {
+    "returnType" : "int",
+    "methodName" : "getEndAnnotationsCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "SimpleText_Base"
+  },
+  "Member_Base.setRole" : {
+    "returnType" : "void",
+    "methodName" : "setRole",
+    "argumentTypes" : [ "MemberRole" ],
+    "declaringType" : "Member_Base"
+  },
+  "Source_Base.getXmlId" : {
+    "returnType" : "String",
+    "methodName" : "getXmlId",
+    "argumentTypes" : [ ],
+    "declaringType" : "Source_Base"
+  },
+  "ManuscriptSource_Base.setColumns" : {
+    "returnType" : "void",
+    "methodName" : "setColumns",
+    "argumentTypes" : [ "int" ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "FragInter_Base.getRefTextSet" : {
+    "returnType" : "RefText",
+    "methodName" : "getRefTextSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "TextPortion_Base.getPhysNoteSet" : {
+    "returnType" : "PhysNote",
+    "methodName" : "getPhysNoteSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "AnnexNote_Base.getFragInter" : {
+    "returnType" : "FragInter",
+    "methodName" : "getFragInter",
+    "argumentTypes" : [ ],
+    "declaringType" : "AnnexNote_Base"
+  },
+  "Dimensions_Base.setPosition" : {
+    "returnType" : "void",
+    "methodName" : "setPosition",
+    "argumentTypes" : [ "int" ],
+    "declaringType" : "Dimensions_Base"
+  },
+  "Source_Base.getSourceIntersSet" : {
+    "returnType" : "SourceInter",
+    "methodName" : "getSourceIntersSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "Source_Base"
+  },
+  "LdoD_Base.removeVirtualEditions" : {
+    "returnType" : "void",
+    "methodName" : "removeVirtualEditions",
+    "argumentTypes" : [ "VirtualEdition" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "Surface_Base.setPrev" : {
+    "returnType" : "void",
+    "methodName" : "setPrev",
+    "argumentTypes" : [ "Surface" ],
+    "declaringType" : "Surface_Base"
+  },
+  "Section_Base.getVirtualEdition" : {
+    "returnType" : "VirtualEdition",
+    "methodName" : "getVirtualEdition",
+    "argumentTypes" : [ ],
+    "declaringType" : "Section_Base"
+  },
+  "ExpertEditionInter_Base.setNumber" : {
+    "returnType" : "void",
+    "methodName" : "setNumber",
+    "argumentTypes" : [ "int" ],
+    "declaringType" : "ExpertEditionInter_Base"
+  },
+  "Source_Base.getIdno" : {
+    "returnType" : "String",
+    "methodName" : "getIdno",
+    "argumentTypes" : [ ],
+    "declaringType" : "Source_Base"
+  },
+  "Dimensions_Base.getPosition" : {
+    "returnType" : "int",
+    "methodName" : "getPosition",
+    "argumentTypes" : [ ],
+    "declaringType" : "Dimensions_Base"
+  },
+  "ManuscriptSource_Base.setNotes" : {
+    "returnType" : "void",
+    "methodName" : "setNotes",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "Surface_Base.addPbText" : {
+    "returnType" : "void",
+    "methodName" : "addPbText",
+    "argumentTypes" : [ "PbText" ],
+    "declaringType" : "Surface_Base"
+  },
+  "HumanAnnotation_Base.removeTag" : {
+    "returnType" : "void",
+    "methodName" : "removeTag",
+    "argumentTypes" : [ "Tag" ],
+    "declaringType" : "HumanAnnotation_Base"
+  },
+  "LdoDUser_Base.getSocialMediaId" : {
+    "returnType" : "String",
+    "methodName" : "getSocialMediaId",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "RecommendationWeights_Base.getHeteronymWeight" : {
+    "returnType" : "double",
+    "methodName" : "getHeteronymWeight",
+    "argumentTypes" : [ ],
+    "declaringType" : "RecommendationWeights_Base"
+  },
+  "UnclearText_Base.setReason" : {
+    "returnType" : "void",
+    "methodName" : "setReason",
+    "argumentTypes" : [ "UnclearReason" ],
+    "declaringType" : "UnclearText_Base"
+  },
+  "NullEdition_Base.checkMultiplicityOfLdoD4NullEdition" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfLdoD4NullEdition",
+    "argumentTypes" : [ ],
+    "declaringType" : "NullEdition_Base"
+  },
+  "TextPortion_Base.addRend" : {
+    "returnType" : "void",
+    "methodName" : "addRend",
+    "argumentTypes" : [ "Rend" ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "FragInter_Base.addRefText" : {
+    "returnType" : "void",
+    "methodName" : "addRefText",
+    "argumentTypes" : [ "RefText" ],
+    "declaringType" : "FragInter_Base"
+  },
+  "FragInter_Base.getInfoRangeSet" : {
+    "returnType" : "InfoRange",
+    "methodName" : "getInfoRangeSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "LdoDUser_Base.addMember" : {
+    "returnType" : "void",
+    "methodName" : "addMember",
+    "argumentTypes" : [ "Member" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "Source_Base.removeSourceInters" : {
+    "returnType" : "void",
+    "methodName" : "removeSourceInters",
+    "argumentTypes" : [ "SourceInter" ],
+    "declaringType" : "Source_Base"
+  },
+  "PrintedSource_Base.setJournal" : {
+    "returnType" : "void",
+    "methodName" : "setJournal",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "PrintedSource_Base"
+  },
+  "PbText_Base.getFragInter" : {
+    "returnType" : "FragInter",
+    "methodName" : "getFragInter",
+    "argumentTypes" : [ ],
+    "declaringType" : "PbText_Base"
+  },
+  "ClassificationGameRound_Base.getRound" : {
+    "returnType" : "int",
+    "methodName" : "getRound",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGameRound_Base"
+  },
+  "TextPortion_Base.getRendSet" : {
+    "returnType" : "Rend",
+    "methodName" : "getRendSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "TypeNote_Base.getManuscript" : {
+    "returnType" : "ManuscriptSource",
+    "methodName" : "getManuscript",
+    "argumentTypes" : [ ],
+    "declaringType" : "TypeNote_Base"
+  },
+  "LdoD_Base.getHeteronymsSet" : {
+    "returnType" : "Heteronym",
+    "methodName" : "getHeteronymsSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "Surface_Base.setNext" : {
+    "returnType" : "void",
+    "methodName" : "setNext",
+    "argumentTypes" : [ "Surface" ],
+    "declaringType" : "Surface_Base"
+  },
+  "Category_Base.getTag" : {
+    "returnType" : "Tag",
+    "methodName" : "getTag",
+    "argumentTypes" : [ ],
+    "declaringType" : "Category_Base"
+  },
+  "FragInter_Base.getFragment" : {
+    "returnType" : "Fragment",
+    "methodName" : "getFragment",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "Section_Base.getSubSectionsCount" : {
+    "returnType" : "int",
+    "methodName" : "getSubSectionsCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "Section_Base"
+  },
+  "ClassificationGame_Base.getTag" : {
+    "returnType" : "Tag",
+    "methodName" : "getTag",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGame_Base"
+  },
+  "TextPortion_Base.getFragment" : {
+    "returnType" : "Fragment",
+    "methodName" : "getFragment",
+    "argumentTypes" : [ ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "TypeNote_Base.setManuscript" : {
+    "returnType" : "void",
+    "methodName" : "setManuscript",
+    "argumentTypes" : [ "ManuscriptSource" ],
+    "declaringType" : "TypeNote_Base"
+  },
+  "Source_Base.getSourceIntersCount" : {
+    "returnType" : "int",
+    "methodName" : "getSourceIntersCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "Source_Base"
+  },
+  "VirtualEdition_Base.addSections" : {
+    "returnType" : "void",
+    "methodName" : "addSections",
+    "argumentTypes" : [ "Section" ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "LdoD_Base.addUsers" : {
+    "returnType" : "void",
+    "methodName" : "addUsers",
+    "argumentTypes" : [ "LdoDUser" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "ManuscriptSource_Base.removeDimensions" : {
+    "returnType" : "void",
+    "methodName" : "removeDimensions",
+    "argumentTypes" : [ "Dimensions" ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "Player_Base.setScore" : {
+    "returnType" : "void",
+    "methodName" : "setScore",
+    "argumentTypes" : [ "double" ],
+    "declaringType" : "Player_Base"
+  },
+  "ClassificationGame_Base.getClassificationGameParticipant" : {
+    "returnType" : "ClassificationGameParticipant",
+    "methodName" : "getClassificationGameParticipant",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGame_Base"
+  },
+  "LastTwitterID_Base.getLastVicenteParsedFile" : {
+    "returnType" : "String",
+    "methodName" : "getLastVicenteParsedFile",
+    "argumentTypes" : [ ],
+    "declaringType" : "LastTwitterID_Base"
+  },
+  "LbText_Base.setHyphenated" : {
+    "returnType" : "void",
+    "methodName" : "setHyphenated",
+    "argumentTypes" : [ "Boolean" ],
+    "declaringType" : "LbText_Base"
+  },
+  "Section_Base.removeVirtualEditionInter" : {
+    "returnType" : "void",
+    "methodName" : "removeVirtualEditionInter",
+    "argumentTypes" : [ "VirtualEditionInter" ],
+    "declaringType" : "Section_Base"
+  },
+  "RecommendationWeights_Base.setHeteronymWeight" : {
+    "returnType" : "void",
+    "methodName" : "setHeteronymWeight",
+    "argumentTypes" : [ "double" ],
+    "declaringType" : "RecommendationWeights_Base"
+  },
+  "RegistrationToken_Base.checkMultiplicityOfLdoD" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfLdoD",
+    "argumentTypes" : [ ],
+    "declaringType" : "RegistrationToken_Base"
+  },
+  "AltText_Base.addAltTextWeight" : {
+    "returnType" : "void",
+    "methodName" : "addAltTextWeight",
+    "argumentTypes" : [ "AltTextWeight" ],
+    "declaringType" : "AltText_Base"
+  },
+  "Section_Base.getSubSections" : {
+    "returnType" : "Section",
+    "methodName" : "getSubSections",
+    "argumentTypes" : [ ],
+    "declaringType" : "Section_Base"
+  },
+  "LdoDUser_Base.getResponsibleForGamesSet" : {
+    "returnType" : "ClassificationGame",
+    "methodName" : "getResponsibleForGamesSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "LdoD_Base.removeHeteronyms" : {
+    "returnType" : "void",
+    "methodName" : "removeHeteronyms",
+    "argumentTypes" : [ "Heteronym" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "AddText_Base.getPlace" : {
+    "returnType" : "Place",
+    "methodName" : "getPlace",
+    "argumentTypes" : [ ],
+    "declaringType" : "AddText_Base"
+  },
+  "LdoDUser_Base.setLastLogin" : {
+    "returnType" : "void",
+    "methodName" : "setLastLogin",
+    "argumentTypes" : [ "LocalDate" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "LdoD_Base.getFragmentsSet" : {
+    "returnType" : "Fragment",
+    "methodName" : "getFragmentsSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "InfoRange_Base.setStartOffset" : {
+    "returnType" : "void",
+    "methodName" : "setStartOffset",
+    "argumentTypes" : [ "int" ],
+    "declaringType" : "InfoRange_Base"
+  },
+  "LastTwitterID_Base.getLastPessoaParsedFile" : {
+    "returnType" : "String",
+    "methodName" : "getLastPessoaParsedFile",
+    "argumentTypes" : [ ],
+    "declaringType" : "LastTwitterID_Base"
+  },
+  "PbText_Base.setOrder" : {
+    "returnType" : "void",
+    "methodName" : "setOrder",
+    "argumentTypes" : [ "int" ],
+    "declaringType" : "PbText_Base"
+  },
+  "Fragment_Base.addCitation" : {
+    "returnType" : "void",
+    "methodName" : "addCitation",
+    "argumentTypes" : [ "Citation" ],
+    "declaringType" : "Fragment_Base"
+  },
+  "LdoDDate_Base.getDate" : {
+    "returnType" : "LocalDate",
+    "methodName" : "getDate",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDDate_Base"
+  },
+  "TextPortion_Base.setXmlId" : {
+    "returnType" : "void",
+    "methodName" : "setXmlId",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "DomainRoot_Base.getLdoD" : {
+    "returnType" : "LdoD",
+    "methodName" : "getLdoD",
+    "argumentTypes" : [ ],
+    "declaringType" : "DomainRoot_Base"
+  },
+  "Tag_Base.setCategory" : {
+    "returnType" : "void",
+    "methodName" : "setCategory",
+    "argumentTypes" : [ "Category" ],
+    "declaringType" : "Tag_Base"
+  },
+  "Heteronym_Base.removeFragInter" : {
+    "returnType" : "void",
+    "methodName" : "removeFragInter",
+    "argumentTypes" : [ "FragInter" ],
+    "declaringType" : "Heteronym_Base"
+  },
+  "RdgText_Base.removeFragInters" : {
+    "returnType" : "void",
+    "methodName" : "removeFragInters",
+    "argumentTypes" : [ "FragInter" ],
+    "declaringType" : "RdgText_Base"
+  },
+  "LbText_Base.getHyphenated" : {
+    "returnType" : "Boolean",
+    "methodName" : "getHyphenated",
+    "argumentTypes" : [ ],
+    "declaringType" : "LbText_Base"
+  },
+  "TwitterCitation_Base.setCountry" : {
+    "returnType" : "void",
+    "methodName" : "setCountry",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "TwitterCitation_Base"
+  },
+  "Fragment_Base.removeRefText" : {
+    "returnType" : "void",
+    "methodName" : "removeRefText",
+    "argumentTypes" : [ "RefText" ],
+    "declaringType" : "Fragment_Base"
+  },
+  "Heteronym_Base.getSourceCount" : {
+    "returnType" : "int",
+    "methodName" : "getSourceCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "Heteronym_Base"
+  },
+  "RefText_Base.setType" : {
+    "returnType" : "void",
+    "methodName" : "setType",
+    "argumentTypes" : [ "RefType" ],
+    "declaringType" : "RefText_Base"
+  },
+  "Surface_Base.getPbTextCount" : {
+    "returnType" : "int",
+    "methodName" : "getPbTextCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "Surface_Base"
+  },
+  "Edition_Base.removeIsUsedBy" : {
+    "returnType" : "void",
+    "methodName" : "removeIsUsedBy",
+    "argumentTypes" : [ "VirtualEdition" ],
+    "declaringType" : "Edition_Base"
+  },
+  "Heteronym_Base.removeSource" : {
+    "returnType" : "void",
+    "methodName" : "removeSource",
+    "argumentTypes" : [ "Source" ],
+    "declaringType" : "Heteronym_Base"
+  },
+  "LbText_Base.addFragInter" : {
+    "returnType" : "void",
+    "methodName" : "addFragInter",
+    "argumentTypes" : [ "FragInter" ],
+    "declaringType" : "LbText_Base"
+  },
+  "Surface_Base.getFacsimile" : {
+    "returnType" : "Facsimile",
+    "methodName" : "getFacsimile",
+    "argumentTypes" : [ ],
+    "declaringType" : "Surface_Base"
+  },
+  "LdoD_Base.getPrincipal" : {
+    "returnType" : "String",
+    "methodName" : "getPrincipal",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "Surface_Base.getPbTextSet" : {
+    "returnType" : "PbText",
+    "methodName" : "getPbTextSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "Surface_Base"
+  },
+  "UserConnection_Base.getRefreshToken" : {
+    "returnType" : "String",
+    "methodName" : "getRefreshToken",
+    "argumentTypes" : [ ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "LastTwitterID_Base.setLastBookParsedFile" : {
+    "returnType" : "void",
+    "methodName" : "setLastBookParsedFile",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "LastTwitterID_Base"
+  },
+  "Tweet_Base.getCitation" : {
+    "returnType" : "TwitterCitation",
+    "methodName" : "getCitation",
+    "argumentTypes" : [ ],
+    "declaringType" : "Tweet_Base"
+  },
+  "ManuscriptSource_Base.getTypeNoteCount" : {
+    "returnType" : "int",
+    "methodName" : "getTypeNoteCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "TextPortion_Base.setPrevText" : {
+    "returnType" : "void",
+    "methodName" : "setPrevText",
+    "argumentTypes" : [ "TextPortion" ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "Source_Base.setType" : {
+    "returnType" : "void",
+    "methodName" : "setType",
+    "argumentTypes" : [ "SourceType" ],
+    "declaringType" : "Source_Base"
+  },
+  "AnnexNote_Base.checkMultiplicityOfNoteText" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfNoteText",
+    "argumentTypes" : [ ],
+    "declaringType" : "AnnexNote_Base"
+  },
+  "RecommendationWeights_Base.setVirtualEdition" : {
+    "returnType" : "void",
+    "methodName" : "setVirtualEdition",
+    "argumentTypes" : [ "VirtualEdition" ],
+    "declaringType" : "RecommendationWeights_Base"
+  },
+  "TextPortion_Base.setNextText" : {
+    "returnType" : "void",
+    "methodName" : "setNextText",
+    "argumentTypes" : [ "TextPortion" ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "LdoDUser_Base.getSocialMediaService" : {
+    "returnType" : "SocialMediaService",
+    "methodName" : "getSocialMediaService",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "Range_Base.setEnd" : {
+    "returnType" : "void",
+    "methodName" : "setEnd",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Range_Base"
+  },
+  "AnnexNote_Base.setNoteText" : {
+    "returnType" : "void",
+    "methodName" : "setNoteText",
+    "argumentTypes" : [ "NoteText" ],
+    "declaringType" : "AnnexNote_Base"
+  },
+  "LdoD_Base.removeUsers" : {
+    "returnType" : "void",
+    "methodName" : "removeUsers",
+    "argumentTypes" : [ "LdoDUser" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "VirtualEdition_Base.getSynopsis" : {
+    "returnType" : "String",
+    "methodName" : "getSynopsis",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "Dimensions_Base.setWidth" : {
+    "returnType" : "void",
+    "methodName" : "setWidth",
+    "argumentTypes" : [ "float" ],
+    "declaringType" : "Dimensions_Base"
+  },
+  "FragInter_Base.getInfoRange" : {
+    "returnType" : "InfoRange",
+    "methodName" : "getInfoRange",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "FragInter_Base.getPbTextSet" : {
+    "returnType" : "PbText",
+    "methodName" : "getPbTextSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "UserConnection_Base.setLdoD" : {
+    "returnType" : "void",
+    "methodName" : "setLdoD",
+    "argumentTypes" : [ "LdoD" ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "SpaceText_Base.getUnit" : {
+    "returnType" : "SpaceUnit",
+    "methodName" : "getUnit",
+    "argumentTypes" : [ ],
+    "declaringType" : "SpaceText_Base"
+  },
+  "LastTwitterID_Base.setLastPessoaParsedFile" : {
+    "returnType" : "void",
+    "methodName" : "setLastPessoaParsedFile",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "LastTwitterID_Base"
+  },
+  "UserConnection_Base.getProviderId" : {
+    "returnType" : "String",
+    "methodName" : "getProviderId",
+    "argumentTypes" : [ ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "LdoD_Base.getAuthor" : {
+    "returnType" : "String",
+    "methodName" : "getAuthor",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "Taxonomy_Base.setXmlId" : {
+    "returnType" : "void",
+    "methodName" : "setXmlId",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Taxonomy_Base"
+  },
+  "VirtualEdition_Base.removeSections" : {
+    "returnType" : "void",
+    "methodName" : "removeSections",
+    "argumentTypes" : [ "Section" ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "ClassificationGame_Base.checkMultiplicityOfVirtualEdition" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfVirtualEdition",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGame_Base"
+  },
+  "VirtualEdition_Base.setLdoD4Virtual" : {
+    "returnType" : "void",
+    "methodName" : "setLdoD4Virtual",
+    "argumentTypes" : [ "LdoD" ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "UserConnection_Base.getExpireTime" : {
+    "returnType" : "Long",
+    "methodName" : "getExpireTime",
+    "argumentTypes" : [ ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "AnnexNote_Base.getNumber" : {
+    "returnType" : "int",
+    "methodName" : "getNumber",
+    "argumentTypes" : [ ],
+    "declaringType" : "AnnexNote_Base"
+  },
+  "Section_Base.getParentSection" : {
+    "returnType" : "Section",
+    "methodName" : "getParentSection",
+    "argumentTypes" : [ ],
+    "declaringType" : "Section_Base"
+  },
+  "VirtualEdition_Base.getSelectedBy" : {
+    "returnType" : "LdoDUser",
+    "methodName" : "getSelectedBy",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "LdoD_Base.getSponsor" : {
+    "returnType" : "String",
+    "methodName" : "getSponsor",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "Edition_Base.getDate" : {
+    "returnType" : "LocalDate",
+    "methodName" : "getDate",
+    "argumentTypes" : [ ],
+    "declaringType" : "Edition_Base"
+  },
+  "LdoDUser_Base.getTagSet" : {
+    "returnType" : "Tag",
+    "methodName" : "getTagSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "ManuscriptSource_Base.removeTypeNote" : {
+    "returnType" : "void",
+    "methodName" : "removeTypeNote",
+    "argumentTypes" : [ "TypeNote" ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "ClassificationGameParticipant_Base.setPlayer" : {
+    "returnType" : "void",
+    "methodName" : "setPlayer",
+    "argumentTypes" : [ "Player" ],
+    "declaringType" : "ClassificationGameParticipant_Base"
+  },
+  "ExpertEditionInter_Base.getTitle" : {
+    "returnType" : "String",
+    "methodName" : "getTitle",
+    "argumentTypes" : [ ],
+    "declaringType" : "ExpertEditionInter_Base"
+  },
+  "LastTwitterID_Base.getLastBernardoParsedFile" : {
+    "returnType" : "String",
+    "methodName" : "getLastBernardoParsedFile",
+    "argumentTypes" : [ ],
+    "declaringType" : "LastTwitterID_Base"
+  },
+  "ExpertEditionInter_Base.setTitle" : {
+    "returnType" : "void",
+    "methodName" : "setTitle",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "ExpertEditionInter_Base"
+  },
+  "Edition_Base.setPub" : {
+    "returnType" : "void",
+    "methodName" : "setPub",
+    "argumentTypes" : [ "Boolean" ],
+    "declaringType" : "Edition_Base"
+  },
+  "Fragment_Base.getFragmentInterSet" : {
+    "returnType" : "FragInter",
+    "methodName" : "getFragmentInterSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "Fragment_Base"
+  },
+  "Citation_Base.getDate" : {
+    "returnType" : "String",
+    "methodName" : "getDate",
+    "argumentTypes" : [ ],
+    "declaringType" : "Citation_Base"
+  },
+  "GapText_Base.setUnit" : {
+    "returnType" : "void",
+    "methodName" : "setUnit",
+    "argumentTypes" : [ "GapUnit" ],
+    "declaringType" : "GapText_Base"
+  },
+  "RefText_Base.getRefFrag" : {
+    "returnType" : "Fragment",
+    "methodName" : "getRefFrag",
+    "argumentTypes" : [ ],
+    "declaringType" : "RefText_Base"
+  },
+  "Section_Base.getVirtualEditionInter" : {
+    "returnType" : "VirtualEditionInter",
+    "methodName" : "getVirtualEditionInter",
+    "argumentTypes" : [ ],
+    "declaringType" : "Section_Base"
+  },
+  "Section_Base.setNumber" : {
+    "returnType" : "void",
+    "methodName" : "setNumber",
+    "argumentTypes" : [ "int" ],
+    "declaringType" : "Section_Base"
+  },
+  "Heteronym_Base.checkMultiplicityOfLdoD" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfLdoD",
+    "argumentTypes" : [ ],
+    "declaringType" : "Heteronym_Base"
+  },
+  "VirtualEditionInter_Base.getClassificationGameSet" : {
+    "returnType" : "ClassificationGame",
+    "methodName" : "getClassificationGameSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEditionInter_Base"
+  },
+  "VirtualEdition_Base.removeClassificationGame" : {
+    "returnType" : "void",
+    "methodName" : "removeClassificationGame",
+    "argumentTypes" : [ "ClassificationGame" ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "AnnexNote_Base.setNumber" : {
+    "returnType" : "void",
+    "methodName" : "setNumber",
+    "argumentTypes" : [ "int" ],
+    "declaringType" : "AnnexNote_Base"
+  },
+  "Taxonomy_Base.setOpenVocabulary" : {
+    "returnType" : "void",
+    "methodName" : "setOpenVocabulary",
+    "argumentTypes" : [ "boolean" ],
+    "declaringType" : "Taxonomy_Base"
+  },
+  "ClassificationGame_Base.getState" : {
+    "returnType" : "ClassificationGameState",
+    "methodName" : "getState",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGame_Base"
+  },
+  "MediaSource_Base.getName" : {
+    "returnType" : "String",
+    "methodName" : "getName",
+    "argumentTypes" : [ ],
+    "declaringType" : "MediaSource_Base"
+  },
+  "TimeWindow_Base.getEndDate" : {
+    "returnType" : "LocalDate",
+    "methodName" : "getEndDate",
+    "argumentTypes" : [ ],
+    "declaringType" : "TimeWindow_Base"
+  },
+  "LdoDUser_Base.getMember" : {
+    "returnType" : "Member",
+    "methodName" : "getMember",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "LdoDUser_Base.getMemberSet" : {
+    "returnType" : "Member",
+    "methodName" : "getMemberSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "UserConnection_Base.setSecret" : {
+    "returnType" : "void",
+    "methodName" : "setSecret",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "LdoD_Base.setLastTwitterID" : {
+    "returnType" : "void",
+    "methodName" : "setLastTwitterID",
+    "argumentTypes" : [ "LastTwitterID" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "ManuscriptSource_Base.getHasLdoDLabel" : {
+    "returnType" : "Boolean",
+    "methodName" : "getHasLdoDLabel",
+    "argumentTypes" : [ ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "PrintedSource_Base.getEndPage" : {
+    "returnType" : "int",
+    "methodName" : "getEndPage",
+    "argumentTypes" : [ ],
+    "declaringType" : "PrintedSource_Base"
+  },
+  "Category_Base.setTaxonomy" : {
+    "returnType" : "void",
+    "methodName" : "setTaxonomy",
+    "argumentTypes" : [ "Taxonomy" ],
+    "declaringType" : "Category_Base"
+  },
+  "LdoD_Base.removeUserConnection" : {
+    "returnType" : "void",
+    "methodName" : "removeUserConnection",
+    "argumentTypes" : [ "UserConnection" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "LdoDUser_Base.getRecommendationWeightsCount" : {
+    "returnType" : "int",
+    "methodName" : "getRecommendationWeightsCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "Taxonomy_Base.getOpenVocabulary" : {
+    "returnType" : "boolean",
+    "methodName" : "getOpenVocabulary",
+    "argumentTypes" : [ ],
+    "declaringType" : "Taxonomy_Base"
+  },
+  "Tweet_Base.setLdoD" : {
+    "returnType" : "void",
+    "methodName" : "setLdoD",
+    "argumentTypes" : [ "LdoD" ],
+    "declaringType" : "Tweet_Base"
+  },
+  "HumanAnnotation_Base.addTag" : {
+    "returnType" : "void",
+    "methodName" : "addTag",
+    "argumentTypes" : [ "Tag" ],
+    "declaringType" : "HumanAnnotation_Base"
+  },
+  "LdoD_Base.getFunder" : {
+    "returnType" : "String",
+    "methodName" : "getFunder",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "Source_Base.setHeteronym" : {
+    "returnType" : "void",
+    "methodName" : "setHeteronym",
+    "argumentTypes" : [ "Heteronym" ],
+    "declaringType" : "Source_Base"
+  },
+  "Fragment_Base.addSources" : {
+    "returnType" : "void",
+    "methodName" : "addSources",
+    "argumentTypes" : [ "Source" ],
+    "declaringType" : "Fragment_Base"
+  },
+  "TwitterCitation_Base.setTweetText" : {
+    "returnType" : "void",
+    "methodName" : "setTweetText",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "TwitterCitation_Base"
+  },
+  "Role_Base.checkMultiplicityOfLdoD" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfLdoD",
+    "argumentTypes" : [ ],
+    "declaringType" : "Role_Base"
+  },
+  "ClassificationGameRound_Base.setTag" : {
+    "returnType" : "void",
+    "methodName" : "setTag",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "ClassificationGameRound_Base"
+  },
+  "LdoD_Base.removeTweet" : {
+    "returnType" : "void",
+    "methodName" : "removeTweet",
+    "argumentTypes" : [ "Tweet" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "Tweet_Base.getLdoD" : {
+    "returnType" : "LdoD",
+    "methodName" : "getLdoD",
+    "argumentTypes" : [ ],
+    "declaringType" : "Tweet_Base"
+  },
+  "FragInter_Base.addRdg" : {
+    "returnType" : "void",
+    "methodName" : "addRdg",
+    "argumentTypes" : [ "RdgText" ],
+    "declaringType" : "FragInter_Base"
+  },
+  "InfoRange_Base.setQuote" : {
+    "returnType" : "void",
+    "methodName" : "setQuote",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "InfoRange_Base"
+  },
+  "ClassificationGame_Base.setResponsible" : {
+    "returnType" : "void",
+    "methodName" : "setResponsible",
+    "argumentTypes" : [ "LdoDUser" ],
+    "declaringType" : "ClassificationGame_Base"
+  },
+  "Player_Base.addClassificationGameParticipant" : {
+    "returnType" : "void",
+    "methodName" : "addClassificationGameParticipant",
+    "argumentTypes" : [ "ClassificationGameParticipant" ],
+    "declaringType" : "Player_Base"
+  },
+  "LdoDUser_Base.getActive" : {
+    "returnType" : "boolean",
+    "methodName" : "getActive",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "PbText_Base.setSurface" : {
+    "returnType" : "void",
+    "methodName" : "setSurface",
+    "argumentTypes" : [ "Surface" ],
+    "declaringType" : "PbText_Base"
+  },
+  "Source_Base.getRepository" : {
+    "returnType" : "String",
+    "methodName" : "getRepository",
+    "argumentTypes" : [ ],
+    "declaringType" : "Source_Base"
+  },
+  "LdoD_Base.removeRoles" : {
+    "returnType" : "void",
+    "methodName" : "removeRoles",
+    "argumentTypes" : [ "Role" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "PrintedSource_Base.setPubPlace" : {
+    "returnType" : "void",
+    "methodName" : "setPubPlace",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "PrintedSource_Base"
+  },
+  "UserConnection_Base.getProviderUserId" : {
+    "returnType" : "String",
+    "methodName" : "getProviderUserId",
+    "argumentTypes" : [ ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "Dimensions_Base.checkMultiplicityOfManuscriptSource" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfManuscriptSource",
+    "argumentTypes" : [ ],
+    "declaringType" : "Dimensions_Base"
+  },
+  "LdoDDate_Base.getFragInter" : {
+    "returnType" : "FragInter",
+    "methodName" : "getFragInter",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDDate_Base"
+  },
+  "AddText_Base.setPlace" : {
+    "returnType" : "void",
+    "methodName" : "setPlace",
+    "argumentTypes" : [ "Place" ],
+    "declaringType" : "AddText_Base"
+  },
+  "MediaSource_Base.setName" : {
+    "returnType" : "void",
+    "methodName" : "setName",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "MediaSource_Base"
+  },
+  "GeographicLocation_Base.setLocation" : {
+    "returnType" : "void",
+    "methodName" : "setLocation",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "GeographicLocation_Base"
+  },
+  "SimpleText_Base.getEndAnnotationsSet" : {
+    "returnType" : "HumanAnnotation",
+    "methodName" : "getEndAnnotationsSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "SimpleText_Base"
+  },
+  "Edition_Base.setXmlId" : {
+    "returnType" : "void",
+    "methodName" : "setXmlId",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Edition_Base"
+  },
+  "RegistrationToken_Base.getUser" : {
+    "returnType" : "LdoDUser",
+    "methodName" : "getUser",
+    "argumentTypes" : [ ],
+    "declaringType" : "RegistrationToken_Base"
+  },
+  "Heteronym_Base.getName" : {
+    "returnType" : "String",
+    "methodName" : "getName",
+    "argumentTypes" : [ ],
+    "declaringType" : "Heteronym_Base"
+  },
+  "VirtualEdition_Base.getClassificationGame" : {
+    "returnType" : "ClassificationGame",
+    "methodName" : "getClassificationGame",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "FragInter_Base.getLdoDDate" : {
+    "returnType" : "LdoDDate",
+    "methodName" : "getLdoDDate",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "SimpleText_Base.removeStartAnnotations" : {
+    "returnType" : "void",
+    "methodName" : "removeStartAnnotations",
+    "argumentTypes" : [ "HumanAnnotation" ],
+    "declaringType" : "SimpleText_Base"
+  },
+  "ManuscriptSource_Base.getHandNote" : {
+    "returnType" : "HandNote",
+    "methodName" : "getHandNote",
+    "argumentTypes" : [ ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "Category_Base.removeTag" : {
+    "returnType" : "void",
+    "methodName" : "removeTag",
+    "argumentTypes" : [ "Tag" ],
+    "declaringType" : "Category_Base"
+  },
+  "Taxonomy_Base.getCategoriesCount" : {
+    "returnType" : "int",
+    "methodName" : "getCategoriesCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "Taxonomy_Base"
+  },
+  "UserConnection_Base.setProviderUserId" : {
+    "returnType" : "void",
+    "methodName" : "setProviderUserId",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "LastTwitterID_Base.getLdoD" : {
+    "returnType" : "LdoD",
+    "methodName" : "getLdoD",
+    "argumentTypes" : [ ],
+    "declaringType" : "LastTwitterID_Base"
+  },
+  "RecommendationWeights_Base.getVirtualEdition" : {
+    "returnType" : "VirtualEdition",
+    "methodName" : "getVirtualEdition",
+    "argumentTypes" : [ ],
+    "declaringType" : "RecommendationWeights_Base"
+  },
+  "Frequency_Base.setFrequency" : {
+    "returnType" : "void",
+    "methodName" : "setFrequency",
+    "argumentTypes" : [ "int" ],
+    "declaringType" : "Frequency_Base"
+  },
+  "Tweet_Base.getUserImageURL" : {
+    "returnType" : "String",
+    "methodName" : "getUserImageURL",
+    "argumentTypes" : [ ],
+    "declaringType" : "Tweet_Base"
+  },
+  "LdoDUser_Base.getRolesCount" : {
+    "returnType" : "int",
+    "methodName" : "getRolesCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "Player_Base.getClassificationGameParticipantSet" : {
+    "returnType" : "ClassificationGameParticipant",
+    "methodName" : "getClassificationGameParticipantSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "Player_Base"
+  },
+  "VirtualEdition_Base.getLdoD4Virtual" : {
+    "returnType" : "LdoD",
+    "methodName" : "getLdoD4Virtual",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "Citation_Base.setSourceLink" : {
+    "returnType" : "void",
+    "methodName" : "setSourceLink",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Citation_Base"
+  },
+  "Fragment_Base.checkMultiplicityOfLdoD" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfLdoD",
+    "argumentTypes" : [ ],
+    "declaringType" : "Fragment_Base"
+  },
+  "ClassificationGame_Base.getClassificationGameParticipantSet" : {
+    "returnType" : "ClassificationGameParticipant",
+    "methodName" : "getClassificationGameParticipantSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGame_Base"
+  },
+  "LdoDUser_Base.getTag" : {
+    "returnType" : "Tag",
+    "methodName" : "getTag",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "Fragment_Base.getCitationCount" : {
+    "returnType" : "int",
+    "methodName" : "getCitationCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "Fragment_Base"
+  },
+  "NoteText_Base.getAnnexNote" : {
+    "returnType" : "AnnexNote",
+    "methodName" : "getAnnexNote",
+    "argumentTypes" : [ ],
+    "declaringType" : "NoteText_Base"
+  },
+  "NoteText_Base.removeAnnexNote" : {
+    "returnType" : "void",
+    "methodName" : "removeAnnexNote",
+    "argumentTypes" : [ "AnnexNote" ],
+    "declaringType" : "NoteText_Base"
+  },
+  "GeographicLocation_Base.getCountry" : {
+    "returnType" : "String",
+    "methodName" : "getCountry",
+    "argumentTypes" : [ ],
+    "declaringType" : "GeographicLocation_Base"
+  },
+  "TextPortion_Base.getParentOfLastText" : {
+    "returnType" : "TextPortion",
+    "methodName" : "getParentOfLastText",
+    "argumentTypes" : [ ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "ClassificationGame_Base.getVirtualEditionInter" : {
+    "returnType" : "VirtualEditionInter",
+    "methodName" : "getVirtualEditionInter",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGame_Base"
+  },
+  "FragInter_Base.getPbText" : {
+    "returnType" : "PbText",
+    "methodName" : "getPbText",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "VirtualEditionInter_Base.getUses" : {
+    "returnType" : "FragInter",
+    "methodName" : "getUses",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEditionInter_Base"
+  },
+  "Member_Base.getRole" : {
+    "returnType" : "MemberRole",
+    "methodName" : "getRole",
+    "argumentTypes" : [ ],
+    "declaringType" : "Member_Base"
+  },
+  "Annotation_Base.getQuote" : {
+    "returnType" : "String",
+    "methodName" : "getQuote",
+    "argumentTypes" : [ ],
+    "declaringType" : "Annotation_Base"
+  },
+  "Fragment_Base.getTitle" : {
+    "returnType" : "String",
+    "methodName" : "getTitle",
+    "argumentTypes" : [ ],
+    "declaringType" : "Fragment_Base"
+  },
+  "Fragment_Base.setTitle" : {
+    "returnType" : "void",
+    "methodName" : "setTitle",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Fragment_Base"
+  },
+  "InfoRange_Base.checkMultiplicityOfCitation" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfCitation",
+    "argumentTypes" : [ ],
+    "declaringType" : "InfoRange_Base"
+  },
+  "LdoDUser_Base.setEnabled" : {
+    "returnType" : "void",
+    "methodName" : "setEnabled",
+    "argumentTypes" : [ "boolean" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "Annotation_Base.setQuote" : {
+    "returnType" : "void",
+    "methodName" : "setQuote",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Annotation_Base"
+  },
+  "LdoDUser_Base.setSocialMediaService" : {
+    "returnType" : "void",
+    "methodName" : "setSocialMediaService",
+    "argumentTypes" : [ "SocialMediaService" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "ExpertEdition_Base.getExpertEditionIntersSet" : {
+    "returnType" : "ExpertEditionInter",
+    "methodName" : "getExpertEditionIntersSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "ExpertEdition_Base"
+  },
+  "Annotation_Base.getText" : {
+    "returnType" : "String",
+    "methodName" : "getText",
+    "argumentTypes" : [ ],
+    "declaringType" : "Annotation_Base"
+  },
+  "ManuscriptSource_Base.getDimensionsCount" : {
+    "returnType" : "int",
+    "methodName" : "getDimensionsCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "FragInter_Base.getNumAnnexNotes" : {
+    "returnType" : "int",
+    "methodName" : "getNumAnnexNotes",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "Annotation_Base.addRange" : {
+    "returnType" : "void",
+    "methodName" : "addRange",
+    "argumentTypes" : [ "Range" ],
+    "declaringType" : "Annotation_Base"
+  },
+  "Edition_Base.getIsUsedBy" : {
+    "returnType" : "VirtualEdition",
+    "methodName" : "getIsUsedBy",
+    "argumentTypes" : [ ],
+    "declaringType" : "Edition_Base"
+  },
+  "TextPortion_Base.addChildText" : {
+    "returnType" : "void",
+    "methodName" : "addChildText",
+    "argumentTypes" : [ "TextPortion" ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "Edition_Base.getXmlId" : {
+    "returnType" : "String",
+    "methodName" : "getXmlId",
+    "argumentTypes" : [ ],
+    "declaringType" : "Edition_Base"
+  },
+  "FragInter_Base.getRdgSet" : {
+    "returnType" : "RdgText",
+    "methodName" : "getRdgSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "Section_Base.getVirtualEditionInterSet" : {
+    "returnType" : "VirtualEditionInter",
+    "methodName" : "getVirtualEditionInterSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "Section_Base"
+  },
+  "ClassificationGameParticipant_Base.getClassificationGameRound" : {
+    "returnType" : "ClassificationGameRound",
+    "methodName" : "getClassificationGameRound",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGameParticipant_Base"
+  },
+  "TwitterCitation_Base.removeTweet" : {
+    "returnType" : "void",
+    "methodName" : "removeTweet",
+    "argumentTypes" : [ "Tweet" ],
+    "declaringType" : "TwitterCitation_Base"
+  },
+  "ExpertEdition_Base.getExpertEditionIntersCount" : {
+    "returnType" : "int",
+    "methodName" : "getExpertEditionIntersCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "ExpertEdition_Base"
+  },
+  "Fragment_Base.removeSources" : {
+    "returnType" : "void",
+    "methodName" : "removeSources",
+    "argumentTypes" : [ "Source" ],
+    "declaringType" : "Fragment_Base"
+  },
+  "LdoDUser_Base.getAnnotation" : {
+    "returnType" : "Annotation",
+    "methodName" : "getAnnotation",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "LdoDDate_Base.setDate" : {
+    "returnType" : "void",
+    "methodName" : "setDate",
+    "argumentTypes" : [ "LocalDate" ],
+    "declaringType" : "LdoDDate_Base"
+  },
+  "Tag_Base.setContributor" : {
+    "returnType" : "void",
+    "methodName" : "setContributor",
+    "argumentTypes" : [ "LdoDUser" ],
+    "declaringType" : "Tag_Base"
+  },
+  "Section_Base.setParentSection" : {
+    "returnType" : "void",
+    "methodName" : "setParentSection",
+    "argumentTypes" : [ "Section" ],
+    "declaringType" : "Section_Base"
+  },
+  "LdoD_Base.removeExpertEditions" : {
+    "returnType" : "void",
+    "methodName" : "removeExpertEditions",
+    "argumentTypes" : [ "ExpertEdition" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "PbText_Base.getFragInterSet" : {
+    "returnType" : "FragInter",
+    "methodName" : "getFragInterSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "PbText_Base"
+  },
+  "RefText_Base.getTarget" : {
+    "returnType" : "String",
+    "methodName" : "getTarget",
+    "argumentTypes" : [ ],
+    "declaringType" : "RefText_Base"
+  },
+  "Fragment_Base.getSources" : {
+    "returnType" : "Source",
+    "methodName" : "getSources",
+    "argumentTypes" : [ ],
+    "declaringType" : "Fragment_Base"
+  },
+  "LdoD_Base.getRoles" : {
+    "returnType" : "Role",
+    "methodName" : "getRoles",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "LdoD_Base.getLastTwitterID" : {
+    "returnType" : "LastTwitterID",
+    "methodName" : "getLastTwitterID",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "Section_Base.getSubSectionsSet" : {
+    "returnType" : "Section",
+    "methodName" : "getSubSectionsSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "Section_Base"
+  },
+  "Tweet_Base.checkMultiplicityOfLdoD" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfLdoD",
+    "argumentTypes" : [ ],
+    "declaringType" : "Tweet_Base"
+  },
+  "TwitterCitation_Base.addTweet" : {
+    "returnType" : "void",
+    "methodName" : "addTweet",
+    "argumentTypes" : [ "Tweet" ],
+    "declaringType" : "TwitterCitation_Base"
+  },
+  "LdoD_Base.getTweetCount" : {
+    "returnType" : "int",
+    "methodName" : "getTweetCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "SimpleText_Base.setValue" : {
+    "returnType" : "void",
+    "methodName" : "setValue",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "SimpleText_Base"
+  },
+  "UserConnection_Base.setRefreshToken" : {
+    "returnType" : "void",
+    "methodName" : "setRefreshToken",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "Source_Base.addSourceInters" : {
+    "returnType" : "void",
+    "methodName" : "addSourceInters",
+    "argumentTypes" : [ "SourceInter" ],
+    "declaringType" : "Source_Base"
+  },
+  "Fragment_Base.removeCitation" : {
+    "returnType" : "void",
+    "methodName" : "removeCitation",
+    "argumentTypes" : [ "Citation" ],
+    "declaringType" : "Fragment_Base"
+  },
+  "Citation_Base.getFragText" : {
+    "returnType" : "String",
+    "methodName" : "getFragText",
+    "argumentTypes" : [ ],
+    "declaringType" : "Citation_Base"
+  },
+  "RegistrationToken_Base.getAuthorized" : {
+    "returnType" : "boolean",
+    "methodName" : "getAuthorized",
+    "argumentTypes" : [ ],
+    "declaringType" : "RegistrationToken_Base"
+  },
+  "ClassificationGame_Base.checkMultiplicityOfResponsible" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfResponsible",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGame_Base"
+  },
+  "InfoRange_Base.setEnd" : {
+    "returnType" : "void",
+    "methodName" : "setEnd",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "InfoRange_Base"
+  },
+  "LastTwitterID_Base.getVicenteLastTwitterID" : {
+    "returnType" : "long",
+    "methodName" : "getVicenteLastTwitterID",
+    "argumentTypes" : [ ],
+    "declaringType" : "LastTwitterID_Base"
+  },
+  "Tweet_Base.setSourceLink" : {
+    "returnType" : "void",
+    "methodName" : "setSourceLink",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Tweet_Base"
+  },
+  "FragInter_Base.checkMultiplicityOfFragment" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfFragment",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "TextPortion_Base.getChildTextSet" : {
+    "returnType" : "TextPortion",
+    "methodName" : "getChildTextSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "LbText_Base.getFragInterSet" : {
+    "returnType" : "FragInter",
+    "methodName" : "getFragInterSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "LbText_Base"
+  },
+  "Source_Base.setIdno" : {
+    "returnType" : "void",
+    "methodName" : "setIdno",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Source_Base"
+  },
+  "Heteronym_Base.getSource" : {
+    "returnType" : "Source",
+    "methodName" : "getSource",
+    "argumentTypes" : [ ],
+    "declaringType" : "Heteronym_Base"
+  },
+  "LdoDUser_Base.getLastName" : {
+    "returnType" : "String",
+    "methodName" : "getLastName",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "ManuscriptSource_Base.addHandNote" : {
+    "returnType" : "void",
+    "methodName" : "addHandNote",
+    "argumentTypes" : [ "HandNote" ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "TimeWindow_Base.setBeginDate" : {
+    "returnType" : "void",
+    "methodName" : "setBeginDate",
+    "argumentTypes" : [ "LocalDate" ],
+    "declaringType" : "TimeWindow_Base"
+  },
+  "LdoDUser_Base.checkMultiplicityOfLdoD" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfLdoD",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "VirtualEditionInter_Base.getAnnotation" : {
+    "returnType" : "Annotation",
+    "methodName" : "getAnnotation",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEditionInter_Base"
+  },
+  "LdoD_Base.checkMultiplicityOfRoot" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfRoot",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "LdoD_Base.getTweet" : {
+    "returnType" : "Tweet",
+    "methodName" : "getTweet",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "Category_Base.checkMultiplicityOfTaxonomy" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfTaxonomy",
+    "argumentTypes" : [ ],
+    "declaringType" : "Category_Base"
+  },
+  "Surface_Base.getNext" : {
+    "returnType" : "Surface",
+    "methodName" : "getNext",
+    "argumentTypes" : [ ],
+    "declaringType" : "Surface_Base"
+  },
+  "LdoDUser_Base.getRoles" : {
+    "returnType" : "Role",
+    "methodName" : "getRoles",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "VirtualEditionInter_Base.getClassificationGameCount" : {
+    "returnType" : "int",
+    "methodName" : "getClassificationGameCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEditionInter_Base"
+  },
+  "LastTwitterID_Base.getLastBookParsedFile" : {
+    "returnType" : "String",
+    "methodName" : "getLastBookParsedFile",
+    "argumentTypes" : [ ],
+    "declaringType" : "LastTwitterID_Base"
+  },
+  "AppText_Base.setType" : {
+    "returnType" : "void",
+    "methodName" : "setType",
+    "argumentTypes" : [ "VariationType" ],
+    "declaringType" : "AppText_Base"
+  },
+  "FragInter_Base.getIsUsedBy" : {
+    "returnType" : "VirtualEditionInter",
+    "methodName" : "getIsUsedBy",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "LastTwitterID_Base.getBernardoLastTwitterID" : {
+    "returnType" : "long",
+    "methodName" : "getBernardoLastTwitterID",
+    "argumentTypes" : [ ],
+    "declaringType" : "LastTwitterID_Base"
+  },
+  "VirtualEdition_Base.checkMultiplicityOfSections" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfSections",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "ExpertEditionInter_Base.getSubNumber" : {
+    "returnType" : "String",
+    "methodName" : "getSubNumber",
+    "argumentTypes" : [ ],
+    "declaringType" : "ExpertEditionInter_Base"
+  },
+  "FragInter_Base.setNumAnnexNotes" : {
+    "returnType" : "void",
+    "methodName" : "setNumAnnexNotes",
+    "argumentTypes" : [ "int" ],
+    "declaringType" : "FragInter_Base"
+  },
+  "LdoDUser_Base.getSelectedVirtualEditions" : {
+    "returnType" : "VirtualEdition",
+    "methodName" : "getSelectedVirtualEditions",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "Edition_Base.getIsUsedByCount" : {
+    "returnType" : "int",
+    "methodName" : "getIsUsedByCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "Edition_Base"
+  },
+  "RefText_Base.getType" : {
+    "returnType" : "RefType",
+    "methodName" : "getType",
+    "argumentTypes" : [ ],
+    "declaringType" : "RefText_Base"
+  },
+  "LdoDUser_Base.setPassword" : {
+    "returnType" : "void",
+    "methodName" : "setPassword",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "FragInter_Base.addIsUsedBy" : {
+    "returnType" : "void",
+    "methodName" : "addIsUsedBy",
+    "argumentTypes" : [ "VirtualEditionInter" ],
+    "declaringType" : "FragInter_Base"
+  },
+  "Range_Base.getAnnotation" : {
+    "returnType" : "Annotation",
+    "methodName" : "getAnnotation",
+    "argumentTypes" : [ ],
+    "declaringType" : "Range_Base"
+  },
+  "Surface_Base.getPbText" : {
+    "returnType" : "PbText",
+    "methodName" : "getPbText",
+    "argumentTypes" : [ ],
+    "declaringType" : "Surface_Base"
+  },
+  "Facsimile_Base.getFirstSurface" : {
+    "returnType" : "Surface",
+    "methodName" : "getFirstSurface",
+    "argumentTypes" : [ ],
+    "declaringType" : "Facsimile_Base"
+  },
+  "PbText_Base.getSurface" : {
+    "returnType" : "Surface",
+    "methodName" : "getSurface",
+    "argumentTypes" : [ ],
+    "declaringType" : "PbText_Base"
+  },
+  "Citation_Base.setDate" : {
+    "returnType" : "void",
+    "methodName" : "setDate",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Citation_Base"
+  },
+  "Role_Base.getUsersCount" : {
+    "returnType" : "int",
+    "methodName" : "getUsersCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "Role_Base"
+  },
+  "VirtualEdition_Base.getSectionsCount" : {
+    "returnType" : "int",
+    "methodName" : "getSectionsCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "ClassificationGame_Base.getDateTime" : {
+    "returnType" : "DateTime",
+    "methodName" : "getDateTime",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGame_Base"
+  },
+  "UserConnection_Base.getSecret" : {
+    "returnType" : "String",
+    "methodName" : "getSecret",
+    "argumentTypes" : [ ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "ManuscriptSource_Base.getForm" : {
+    "returnType" : "Form",
+    "methodName" : "getForm",
+    "argumentTypes" : [ ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "ClassificationGameParticipant_Base.checkMultiplicityOfPlayer" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfPlayer",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGameParticipant_Base"
+  },
+  "RefText_Base.setTarget" : {
+    "returnType" : "void",
+    "methodName" : "setTarget",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "RefText_Base"
+  },
+  "ClassificationGame_Base.setState" : {
+    "returnType" : "void",
+    "methodName" : "setState",
+    "argumentTypes" : [ "ClassificationGameState" ],
+    "declaringType" : "ClassificationGame_Base"
+  },
+  "Annotation_Base.getVirtualEditionInter" : {
+    "returnType" : "VirtualEditionInter",
+    "methodName" : "getVirtualEditionInter",
+    "argumentTypes" : [ ],
+    "declaringType" : "Annotation_Base"
+  },
+  "FragInter_Base.removeRefText" : {
+    "returnType" : "void",
+    "methodName" : "removeRefText",
+    "argumentTypes" : [ "RefText" ],
+    "declaringType" : "FragInter_Base"
+  },
+  "Section_Base.getNumber" : {
+    "returnType" : "int",
+    "methodName" : "getNumber",
+    "argumentTypes" : [ ],
+    "declaringType" : "Section_Base"
+  },
+  "Edition_Base.addIsUsedBy" : {
+    "returnType" : "void",
+    "methodName" : "addIsUsedBy",
+    "argumentTypes" : [ "VirtualEdition" ],
+    "declaringType" : "Edition_Base"
+  },
+  "RecommendationWeights_Base.setDateWeight" : {
+    "returnType" : "void",
+    "methodName" : "setDateWeight",
+    "argumentTypes" : [ "double" ],
+    "declaringType" : "RecommendationWeights_Base"
+  },
+  "NullEdition_Base.getLdoD4NullEdition" : {
+    "returnType" : "LdoD",
+    "methodName" : "getLdoD4NullEdition",
+    "argumentTypes" : [ ],
+    "declaringType" : "NullEdition_Base"
+  },
+  "Source_Base.getFacsimile" : {
+    "returnType" : "Facsimile",
+    "methodName" : "getFacsimile",
+    "argumentTypes" : [ ],
+    "declaringType" : "Source_Base"
+  },
+  "VirtualEdition_Base.removeSelectedBy" : {
+    "returnType" : "void",
+    "methodName" : "removeSelectedBy",
+    "argumentTypes" : [ "LdoDUser" ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "Surface_Base.getPrev" : {
+    "returnType" : "Surface",
+    "methodName" : "getPrev",
+    "argumentTypes" : [ ],
+    "declaringType" : "Surface_Base"
+  },
+  "LdoD_Base.addHeteronyms" : {
+    "returnType" : "void",
+    "methodName" : "addHeteronyms",
+    "argumentTypes" : [ "Heteronym" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "ClassificationGameParticipant_Base.getPlayer" : {
+    "returnType" : "Player",
+    "methodName" : "getPlayer",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGameParticipant_Base"
+  },
+  "Fragment_Base.getLdoD" : {
+    "returnType" : "LdoD",
+    "methodName" : "getLdoD",
+    "argumentTypes" : [ ],
+    "declaringType" : "Fragment_Base"
+  },
+  "LbText_Base.setBreakWord" : {
+    "returnType" : "void",
+    "methodName" : "setBreakWord",
+    "argumentTypes" : [ "Boolean" ],
+    "declaringType" : "LbText_Base"
+  },
+  "LdoD_Base.getExpertEditionsCount" : {
+    "returnType" : "int",
+    "methodName" : "getExpertEditionsCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "PhysNote_Base.setNote" : {
+    "returnType" : "void",
+    "methodName" : "setNote",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "PhysNote_Base"
+  },
+  "Citation_Base.getAwareAnnotationCount" : {
+    "returnType" : "int",
+    "methodName" : "getAwareAnnotationCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "Citation_Base"
+  },
+  "FragInter_Base.getRdgCount" : {
+    "returnType" : "int",
+    "methodName" : "getRdgCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "Source_Base.checkMultiplicityOfFragment" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfFragment",
+    "argumentTypes" : [ ],
+    "declaringType" : "Source_Base"
+  },
+  "Range_Base.getStartOffset" : {
+    "returnType" : "int",
+    "methodName" : "getStartOffset",
+    "argumentTypes" : [ ],
+    "declaringType" : "Range_Base"
+  },
+  "TextPortion_Base.setParentText" : {
+    "returnType" : "void",
+    "methodName" : "setParentText",
+    "argumentTypes" : [ "TextPortion" ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "PrintedSource_Base.setStartPage" : {
+    "returnType" : "void",
+    "methodName" : "setStartPage",
+    "argumentTypes" : [ "int" ],
+    "declaringType" : "PrintedSource_Base"
+  },
+  "AnnexNote_Base.checkMultiplicityOfFragInter" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfFragInter",
+    "argumentTypes" : [ ],
+    "declaringType" : "AnnexNote_Base"
+  },
+  "LdoD_Base.setFunder" : {
+    "returnType" : "void",
+    "methodName" : "setFunder",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "VirtualEditionInter_Base.addTag" : {
+    "returnType" : "void",
+    "methodName" : "addTag",
+    "argumentTypes" : [ "Tag" ],
+    "declaringType" : "VirtualEditionInter_Base"
+  },
+  "LdoD_Base.addFragments" : {
+    "returnType" : "void",
+    "methodName" : "addFragments",
+    "argumentTypes" : [ "Fragment" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "LdoDUser_Base.getAnnotationSet" : {
+    "returnType" : "Annotation",
+    "methodName" : "getAnnotationSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "LdoD_Base.getUsers" : {
+    "returnType" : "LdoDUser",
+    "methodName" : "getUsers",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "LdoDUser_Base.setActive" : {
+    "returnType" : "void",
+    "methodName" : "setActive",
+    "argumentTypes" : [ "boolean" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "InfoRange_Base.getStartOffset" : {
+    "returnType" : "int",
+    "methodName" : "getStartOffset",
+    "argumentTypes" : [ ],
+    "declaringType" : "InfoRange_Base"
+  },
+  "Tweet_Base.setUsername" : {
+    "returnType" : "void",
+    "methodName" : "setUsername",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Tweet_Base"
+  },
+  "LdoD_Base.removeFragments" : {
+    "returnType" : "void",
+    "methodName" : "removeFragments",
+    "argumentTypes" : [ "Fragment" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "ManuscriptSource_Base.getTypeNote" : {
+    "returnType" : "TypeNote",
+    "methodName" : "getTypeNote",
+    "argumentTypes" : [ ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "ManuscriptSource_Base.setHasLdoDLabel" : {
+    "returnType" : "void",
+    "methodName" : "setHasLdoDLabel",
+    "argumentTypes" : [ "Boolean" ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "VirtualEditionInter_Base.checkMultiplicityOfSection" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfSection",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEditionInter_Base"
+  },
+  "Tweet_Base.setLocation" : {
+    "returnType" : "void",
+    "methodName" : "setLocation",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Tweet_Base"
+  },
+  "AltText_Base.setMode" : {
+    "returnType" : "void",
+    "methodName" : "setMode",
+    "argumentTypes" : [ "AltMode" ],
+    "declaringType" : "AltText_Base"
+  },
+  "Member_Base.getVirtualEdition" : {
+    "returnType" : "VirtualEdition",
+    "methodName" : "getVirtualEdition",
+    "argumentTypes" : [ ],
+    "declaringType" : "Member_Base"
+  },
+  "Facsimile_Base.setXmlId" : {
+    "returnType" : "void",
+    "methodName" : "setXmlId",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Facsimile_Base"
+  },
+  "Member_Base.setVirtualEdition" : {
+    "returnType" : "void",
+    "methodName" : "setVirtualEdition",
+    "argumentTypes" : [ "VirtualEdition" ],
+    "declaringType" : "Member_Base"
+  },
+  "ManuscriptSource_Base.removeHandNote" : {
+    "returnType" : "void",
+    "methodName" : "removeHandNote",
+    "argumentTypes" : [ "HandNote" ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "Member_Base.checkMultiplicityOfVirtualEdition" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfVirtualEdition",
+    "argumentTypes" : [ ],
+    "declaringType" : "Member_Base"
+  },
+  "InfoRange_Base.checkMultiplicityOfFragInter" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfFragInter",
+    "argumentTypes" : [ ],
+    "declaringType" : "InfoRange_Base"
+  },
+  "InfoRange_Base.getFragInter" : {
+    "returnType" : "FragInter",
+    "methodName" : "getFragInter",
+    "argumentTypes" : [ ],
+    "declaringType" : "InfoRange_Base"
+  },
+  "TwitterCitation_Base.getTweetCount" : {
+    "returnType" : "int",
+    "methodName" : "getTweetCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "TwitterCitation_Base"
+  },
+  "TextPortion_Base.setParentOfLastText" : {
+    "returnType" : "void",
+    "methodName" : "setParentOfLastText",
+    "argumentTypes" : [ "TextPortion" ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "Source_Base.setSettlement" : {
+    "returnType" : "void",
+    "methodName" : "setSettlement",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Source_Base"
+  },
+  "Range_Base.checkMultiplicityOfAnnotation" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfAnnotation",
+    "argumentTypes" : [ ],
+    "declaringType" : "Range_Base"
+  },
+  "TwitterCitation_Base.getCountry" : {
+    "returnType" : "String",
+    "methodName" : "getCountry",
+    "argumentTypes" : [ ],
+    "declaringType" : "TwitterCitation_Base"
+  },
+  "Tag_Base.setAnnotation" : {
+    "returnType" : "void",
+    "methodName" : "setAnnotation",
+    "argumentTypes" : [ "HumanAnnotation" ],
+    "declaringType" : "Tag_Base"
+  },
+  "LastTwitterID_Base.setPessoaLastTwitterID" : {
+    "returnType" : "void",
+    "methodName" : "setPessoaLastTwitterID",
+    "argumentTypes" : [ "long" ],
+    "declaringType" : "LastTwitterID_Base"
+  },
+  "VirtualEditionInter_Base.setNumber" : {
+    "returnType" : "void",
+    "methodName" : "setNumber",
+    "argumentTypes" : [ "int" ],
+    "declaringType" : "VirtualEditionInter_Base"
+  },
+  "TextPortion_Base.getChildText" : {
+    "returnType" : "TextPortion",
+    "methodName" : "getChildText",
+    "argumentTypes" : [ ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "RecommendationWeights_Base.setTextWeight" : {
+    "returnType" : "void",
+    "methodName" : "setTextWeight",
+    "argumentTypes" : [ "double" ],
+    "declaringType" : "RecommendationWeights_Base"
+  },
+  "LdoD_Base.addUserConnection" : {
+    "returnType" : "void",
+    "methodName" : "addUserConnection",
+    "argumentTypes" : [ "UserConnection" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "LdoDUser_Base.getToken" : {
+    "returnType" : "RegistrationToken",
+    "methodName" : "getToken",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "SimpleText_Base.getStartAnnotationsSet" : {
+    "returnType" : "HumanAnnotation",
+    "methodName" : "getStartAnnotationsSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "SimpleText_Base"
+  },
+  "Tag_Base.setInter" : {
+    "returnType" : "void",
+    "methodName" : "setInter",
+    "argumentTypes" : [ "VirtualEditionInter" ],
+    "declaringType" : "Tag_Base"
+  },
+  "LdoD_Base.setPrincipal" : {
+    "returnType" : "void",
+    "methodName" : "setPrincipal",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "SourceInter_Base.getSource" : {
+    "returnType" : "Source",
+    "methodName" : "getSource",
+    "argumentTypes" : [ ],
+    "declaringType" : "SourceInter_Base"
+  },
+  "PrintedSource_Base.getTitle" : {
+    "returnType" : "String",
+    "methodName" : "getTitle",
+    "argumentTypes" : [ ],
+    "declaringType" : "PrintedSource_Base"
+  },
+  "LdoDDate_Base.setSource" : {
+    "returnType" : "void",
+    "methodName" : "setSource",
+    "argumentTypes" : [ "Source" ],
+    "declaringType" : "LdoDDate_Base"
+  },
+  "Fragment_Base.addFragmentInter" : {
+    "returnType" : "void",
+    "methodName" : "addFragmentInter",
+    "argumentTypes" : [ "FragInter" ],
+    "declaringType" : "Fragment_Base"
+  },
+  "Fragment_Base.setXmlId" : {
+    "returnType" : "void",
+    "methodName" : "setXmlId",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Fragment_Base"
+  },
+  "Heteronym_Base.getLdoD" : {
+    "returnType" : "LdoD",
+    "methodName" : "getLdoD",
+    "argumentTypes" : [ ],
+    "declaringType" : "Heteronym_Base"
+  },
+  "HumanAnnotation_Base.getEndText" : {
+    "returnType" : "SimpleText",
+    "methodName" : "getEndText",
+    "argumentTypes" : [ ],
+    "declaringType" : "HumanAnnotation_Base"
+  },
+  "Range_Base.setEndOffset" : {
+    "returnType" : "void",
+    "methodName" : "setEndOffset",
+    "argumentTypes" : [ "int" ],
+    "declaringType" : "Range_Base"
+  },
+  "Source_Base.getSettlement" : {
+    "returnType" : "String",
+    "methodName" : "getSettlement",
+    "argumentTypes" : [ ],
+    "declaringType" : "Source_Base"
+  },
+  "ClassificationGameParticipant_Base.removeClassificationGameRound" : {
+    "returnType" : "void",
+    "methodName" : "removeClassificationGameRound",
+    "argumentTypes" : [ "ClassificationGameRound" ],
+    "declaringType" : "ClassificationGameParticipant_Base"
+  },
+  "HandNote_Base.getManuscript" : {
+    "returnType" : "ManuscriptSource",
+    "methodName" : "getManuscript",
+    "argumentTypes" : [ ],
+    "declaringType" : "HandNote_Base"
+  },
+  "ManuscriptSource_Base.addTypeNote" : {
+    "returnType" : "void",
+    "methodName" : "addTypeNote",
+    "argumentTypes" : [ "TypeNote" ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "LdoD_Base.getEditor" : {
+    "returnType" : "String",
+    "methodName" : "getEditor",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "RecommendationWeights_Base.checkMultiplicityOfVirtualEdition" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfVirtualEdition",
+    "argumentTypes" : [ ],
+    "declaringType" : "RecommendationWeights_Base"
+  },
+  "VirtualEdition_Base.addClassificationGame" : {
+    "returnType" : "void",
+    "methodName" : "addClassificationGame",
+    "argumentTypes" : [ "ClassificationGame" ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "Facsimile_Base.setFirstSurface" : {
+    "returnType" : "void",
+    "methodName" : "setFirstSurface",
+    "argumentTypes" : [ "Surface" ],
+    "declaringType" : "Facsimile_Base"
+  },
+  "Rend_Base.setRend" : {
+    "returnType" : "void",
+    "methodName" : "setRend",
+    "argumentTypes" : [ "Rendition" ],
+    "declaringType" : "Rend_Base"
+  },
+  "HumanAnnotation_Base.getTagSet" : {
+    "returnType" : "Tag",
+    "methodName" : "getTagSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "HumanAnnotation_Base"
+  },
+  "TwitterCitation_Base.setUserImageURL" : {
+    "returnType" : "void",
+    "methodName" : "setUserImageURL",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "TwitterCitation_Base"
+  },
+  "LdoD_Base.setSponsor" : {
+    "returnType" : "void",
+    "methodName" : "setSponsor",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "Member_Base.setActive" : {
+    "returnType" : "void",
+    "methodName" : "setActive",
+    "argumentTypes" : [ "boolean" ],
+    "declaringType" : "Member_Base"
+  },
+  "Fragment_Base.getCitation" : {
+    "returnType" : "Citation",
+    "methodName" : "getCitation",
+    "argumentTypes" : [ ],
+    "declaringType" : "Fragment_Base"
+  },
+  "VirtualEdition_Base.getRecommendationWeightsCount" : {
+    "returnType" : "int",
+    "methodName" : "getRecommendationWeightsCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "LdoD_Base.getUserConnectionCount" : {
+    "returnType" : "int",
+    "methodName" : "getUserConnectionCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "Tag_Base.getAnnotation" : {
+    "returnType" : "HumanAnnotation",
+    "methodName" : "getAnnotation",
+    "argumentTypes" : [ ],
+    "declaringType" : "Tag_Base"
+  },
+  "Citation_Base.setFragment" : {
+    "returnType" : "void",
+    "methodName" : "setFragment",
+    "argumentTypes" : [ "Fragment" ],
+    "declaringType" : "Citation_Base"
+  },
+  "TextPortion_Base.getPhysNoteCount" : {
+    "returnType" : "int",
+    "methodName" : "getPhysNoteCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "RefText_Base.setRefFrag" : {
+    "returnType" : "void",
+    "methodName" : "setRefFrag",
+    "argumentTypes" : [ "Fragment" ],
+    "declaringType" : "RefText_Base"
+  },
+  "TextPortion_Base.getParentOfFirstText" : {
+    "returnType" : "TextPortion",
+    "methodName" : "getParentOfFirstText",
+    "argumentTypes" : [ ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "Source_Base.getLdoDDate" : {
+    "returnType" : "LdoDDate",
+    "methodName" : "getLdoDDate",
+    "argumentTypes" : [ ],
+    "declaringType" : "Source_Base"
+  },
+  "VirtualEdition_Base.removeMember" : {
+    "returnType" : "void",
+    "methodName" : "removeMember",
+    "argumentTypes" : [ "Member" ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "Role_Base.getLdoD" : {
+    "returnType" : "LdoD",
+    "methodName" : "getLdoD",
+    "argumentTypes" : [ ],
+    "declaringType" : "Role_Base"
+  },
+  "LdoD_Base.getVirtualEditionsCount" : {
+    "returnType" : "int",
+    "methodName" : "getVirtualEditionsCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "RdgText_Base.getType" : {
+    "returnType" : "VariationType",
+    "methodName" : "getType",
+    "argumentTypes" : [ ],
+    "declaringType" : "RdgText_Base"
+  },
+  "RecommendationWeights_Base.getTextWeight" : {
+    "returnType" : "double",
+    "methodName" : "getTextWeight",
+    "argumentTypes" : [ ],
+    "declaringType" : "RecommendationWeights_Base"
+  },
+  "LdoDUser_Base.addTag" : {
+    "returnType" : "void",
+    "methodName" : "addTag",
+    "argumentTypes" : [ "Tag" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "FragInter_Base.getIsUsedByCount" : {
+    "returnType" : "int",
+    "methodName" : "getIsUsedByCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "LastTwitterID_Base.setLastBernardoParsedFile" : {
+    "returnType" : "void",
+    "methodName" : "setLastBernardoParsedFile",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "LastTwitterID_Base"
+  },
+  "SpaceText_Base.setDim" : {
+    "returnType" : "void",
+    "methodName" : "setDim",
+    "argumentTypes" : [ "SpaceDim" ],
+    "declaringType" : "SpaceText_Base"
+  },
+  "LdoDDate_Base.setType" : {
+    "returnType" : "void",
+    "methodName" : "setType",
+    "argumentTypes" : [ "DateType" ],
+    "declaringType" : "LdoDDate_Base"
+  },
+  "UserConnection_Base.getRank" : {
+    "returnType" : "int",
+    "methodName" : "getRank",
+    "argumentTypes" : [ ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "LdoD_Base.getExpertEditionsSet" : {
+    "returnType" : "ExpertEdition",
+    "methodName" : "getExpertEditionsSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "AwareAnnotation_Base.setCitation" : {
+    "returnType" : "void",
+    "methodName" : "setCitation",
+    "argumentTypes" : [ "Citation" ],
+    "declaringType" : "AwareAnnotation_Base"
+  },
+  "Member_Base.setUser" : {
+    "returnType" : "void",
+    "methodName" : "setUser",
+    "argumentTypes" : [ "LdoDUser" ],
+    "declaringType" : "Member_Base"
+  },
+  "Citation_Base.getInfoRangeSet" : {
+    "returnType" : "InfoRange",
+    "methodName" : "getInfoRangeSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "Citation_Base"
+  },
+  "AnnexNote_Base.getNoteText" : {
+    "returnType" : "NoteText",
+    "methodName" : "getNoteText",
+    "argumentTypes" : [ ],
+    "declaringType" : "AnnexNote_Base"
+  },
+  "AltText_Base.removeAltTextWeight" : {
+    "returnType" : "void",
+    "methodName" : "removeAltTextWeight",
+    "argumentTypes" : [ "AltTextWeight" ],
+    "declaringType" : "AltText_Base"
+  },
+  "VirtualEditionInter_Base.getClassificationGame" : {
+    "returnType" : "ClassificationGame",
+    "methodName" : "getClassificationGame",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEditionInter_Base"
+  },
+  "ClassificationGameParticipant_Base.getClassificationGameRoundSet" : {
+    "returnType" : "ClassificationGameRound",
+    "methodName" : "getClassificationGameRoundSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGameParticipant_Base"
+  },
+  "FragInter_Base.removeRdg" : {
+    "returnType" : "void",
+    "methodName" : "removeRdg",
+    "argumentTypes" : [ "RdgText" ],
+    "declaringType" : "FragInter_Base"
+  },
+  "RdgGrpText_Base.setType" : {
+    "returnType" : "void",
+    "methodName" : "setType",
+    "argumentTypes" : [ "VariationType" ],
+    "declaringType" : "RdgGrpText_Base"
+  },
+  "Fragment_Base.getRefTextSet" : {
+    "returnType" : "RefText",
+    "methodName" : "getRefTextSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "Fragment_Base"
+  },
+  "Member_Base.getActive" : {
+    "returnType" : "boolean",
+    "methodName" : "getActive",
+    "argumentTypes" : [ ],
+    "declaringType" : "Member_Base"
+  },
+  "AppText_Base.getType" : {
+    "returnType" : "VariationType",
+    "methodName" : "getType",
+    "argumentTypes" : [ ],
+    "declaringType" : "AppText_Base"
+  },
+  "Annotation_Base.checkMultiplicityOfVirtualEditionInter" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfVirtualEditionInter",
+    "argumentTypes" : [ ],
+    "declaringType" : "Annotation_Base"
+  },
+  "ClassificationGameRound_Base.setRound" : {
+    "returnType" : "void",
+    "methodName" : "setRound",
+    "argumentTypes" : [ "int" ],
+    "declaringType" : "ClassificationGameRound_Base"
+  },
+  "Heteronym_Base.getSourceSet" : {
+    "returnType" : "Source",
+    "methodName" : "getSourceSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "Heteronym_Base"
+  },
+  "LdoDUser_Base.getPlayer" : {
+    "returnType" : "Player",
+    "methodName" : "getPlayer",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "SourceInter_Base.checkMultiplicityOfSource" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfSource",
+    "argumentTypes" : [ ],
+    "declaringType" : "SourceInter_Base"
+  },
+  "NoteText_Base.getType" : {
+    "returnType" : "NoteType",
+    "methodName" : "getType",
+    "argumentTypes" : [ ],
+    "declaringType" : "NoteText_Base"
+  },
+  "LdoD_Base.getUsersCount" : {
+    "returnType" : "int",
+    "methodName" : "getUsersCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "Source_Base.setXmlId" : {
+    "returnType" : "void",
+    "methodName" : "setXmlId",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Source_Base"
+  },
+  "LdoD_Base.setAdmin" : {
+    "returnType" : "void",
+    "methodName" : "setAdmin",
+    "argumentTypes" : [ "boolean" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "Player_Base.getScore" : {
+    "returnType" : "double",
+    "methodName" : "getScore",
+    "argumentTypes" : [ ],
+    "declaringType" : "Player_Base"
+  },
+  "Source_Base.getSourceInters" : {
+    "returnType" : "SourceInter",
+    "methodName" : "getSourceInters",
+    "argumentTypes" : [ ],
+    "declaringType" : "Source_Base"
+  },
+  "Taxonomy_Base.removeCategories" : {
+    "returnType" : "void",
+    "methodName" : "removeCategories",
+    "argumentTypes" : [ "Category" ],
+    "declaringType" : "Taxonomy_Base"
+  },
+  "LdoDDate_Base.setPrecision" : {
+    "returnType" : "void",
+    "methodName" : "setPrecision",
+    "argumentTypes" : [ "PrecisionType" ],
+    "declaringType" : "LdoDDate_Base"
+  },
+  "Annotation_Base.setUser" : {
+    "returnType" : "void",
+    "methodName" : "setUser",
+    "argumentTypes" : [ "LdoDUser" ],
+    "declaringType" : "Annotation_Base"
+  },
+  "FragInter_Base.getHeteronym" : {
+    "returnType" : "Heteronym",
+    "methodName" : "getHeteronym",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "PbText_Base.getOrder" : {
+    "returnType" : "int",
+    "methodName" : "getOrder",
+    "argumentTypes" : [ ],
+    "declaringType" : "PbText_Base"
+  },
+  "UserConnection_Base.getProfileUrl" : {
+    "returnType" : "String",
+    "methodName" : "getProfileUrl",
+    "argumentTypes" : [ ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "ManuscriptSource_Base.getMaterial" : {
+    "returnType" : "Material",
+    "methodName" : "getMaterial",
+    "argumentTypes" : [ ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "Category_Base.getName" : {
+    "returnType" : "String",
+    "methodName" : "getName",
+    "argumentTypes" : [ ],
+    "declaringType" : "Category_Base"
+  },
+  "Citation_Base.removeInfoRange" : {
+    "returnType" : "void",
+    "methodName" : "removeInfoRange",
+    "argumentTypes" : [ "InfoRange" ],
+    "declaringType" : "Citation_Base"
+  },
+  "Source_Base.getFragment" : {
+    "returnType" : "Fragment",
+    "methodName" : "getFragment",
+    "argumentTypes" : [ ],
+    "declaringType" : "Source_Base"
+  },
+  "Fragment_Base.removeFragmentInter" : {
+    "returnType" : "void",
+    "methodName" : "removeFragmentInter",
+    "argumentTypes" : [ "FragInter" ],
+    "declaringType" : "Fragment_Base"
+  },
+  "TextPortion_Base.getXmlId" : {
+    "returnType" : "String",
+    "methodName" : "getXmlId",
+    "argumentTypes" : [ ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "UserConnection_Base.setProfileUrl" : {
+    "returnType" : "void",
+    "methodName" : "setProfileUrl",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "LdoDUser_Base.setSocialMediaId" : {
+    "returnType" : "void",
+    "methodName" : "setSocialMediaId",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "InfoRange_Base.getEndOffset" : {
+    "returnType" : "int",
+    "methodName" : "getEndOffset",
+    "argumentTypes" : [ ],
+    "declaringType" : "InfoRange_Base"
+  },
+  "TwitterCitation_Base.getTweetID" : {
+    "returnType" : "long",
+    "methodName" : "getTweetID",
+    "argumentTypes" : [ ],
+    "declaringType" : "TwitterCitation_Base"
+  },
+  "TwitterCitation_Base.setUsername" : {
+    "returnType" : "void",
+    "methodName" : "setUsername",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "TwitterCitation_Base"
+  },
+  "GapText_Base.getExtent" : {
+    "returnType" : "int",
+    "methodName" : "getExtent",
+    "argumentTypes" : [ ],
+    "declaringType" : "GapText_Base"
+  },
+  "DelText_Base.getHow" : {
+    "returnType" : "HowDel",
+    "methodName" : "getHow",
+    "argumentTypes" : [ ],
+    "declaringType" : "DelText_Base"
+  },
+  "Member_Base.getDate" : {
+    "returnType" : "LocalDate",
+    "methodName" : "getDate",
+    "argumentTypes" : [ ],
+    "declaringType" : "Member_Base"
+  },
+  "Fragment_Base.getSourcesCount" : {
+    "returnType" : "int",
+    "methodName" : "getSourcesCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "Fragment_Base"
+  },
+  "Fragment_Base.getTextPortion" : {
+    "returnType" : "TextPortion",
+    "methodName" : "getTextPortion",
+    "argumentTypes" : [ ],
+    "declaringType" : "Fragment_Base"
+  },
+  "HandNote_Base.setManuscript" : {
+    "returnType" : "void",
+    "methodName" : "setManuscript",
+    "argumentTypes" : [ "ManuscriptSource" ],
+    "declaringType" : "HandNote_Base"
+  },
+  "LdoD_Base.setAuthor" : {
+    "returnType" : "void",
+    "methodName" : "setAuthor",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "Player_Base.getClassificationGameParticipant" : {
+    "returnType" : "ClassificationGameParticipant",
+    "methodName" : "getClassificationGameParticipant",
+    "argumentTypes" : [ ],
+    "declaringType" : "Player_Base"
+  },
+  "SourceInter_Base.setSource" : {
+    "returnType" : "void",
+    "methodName" : "setSource",
+    "argumentTypes" : [ "Source" ],
+    "declaringType" : "SourceInter_Base"
+  },
+  "RefText_Base.getSurface" : {
+    "returnType" : "Surface",
+    "methodName" : "getSurface",
+    "argumentTypes" : [ ],
+    "declaringType" : "RefText_Base"
+  },
+  "Role_Base.addUsers" : {
+    "returnType" : "void",
+    "methodName" : "addUsers",
+    "argumentTypes" : [ "LdoDUser" ],
+    "declaringType" : "Role_Base"
+  },
+  "FragInter_Base.addPbText" : {
+    "returnType" : "void",
+    "methodName" : "addPbText",
+    "argumentTypes" : [ "PbText" ],
+    "declaringType" : "FragInter_Base"
+  },
+  "TextPortion_Base.removeChildText" : {
+    "returnType" : "void",
+    "methodName" : "removeChildText",
+    "argumentTypes" : [ "TextPortion" ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "LdoD_Base.getTokenSet" : {
+    "returnType" : "RegistrationToken",
+    "methodName" : "getTokenSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "ClassificationGame_Base.checkMultiplicityOfVirtualEditionInter" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfVirtualEditionInter",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGame_Base"
+  },
+  "GeographicLocation_Base.getLocation" : {
+    "returnType" : "String",
+    "methodName" : "getLocation",
+    "argumentTypes" : [ ],
+    "declaringType" : "GeographicLocation_Base"
+  },
+  "GeographicLocation_Base.setCountry" : {
+    "returnType" : "void",
+    "methodName" : "setCountry",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "GeographicLocation_Base"
+  },
+  "LdoDDate_Base.getSource" : {
+    "returnType" : "Source",
+    "methodName" : "getSource",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDDate_Base"
+  },
+  "ClassificationGame_Base.getSync" : {
+    "returnType" : "boolean",
+    "methodName" : "getSync",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGame_Base"
+  },
+  "Surface_Base.getGraphic" : {
+    "returnType" : "String",
+    "methodName" : "getGraphic",
+    "argumentTypes" : [ ],
+    "declaringType" : "Surface_Base"
+  },
+  "Fragment_Base.getFragmentInterCount" : {
+    "returnType" : "int",
+    "methodName" : "getFragmentInterCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "Fragment_Base"
+  },
+  "Surface_Base.setGraphic" : {
+    "returnType" : "void",
+    "methodName" : "setGraphic",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Surface_Base"
+  },
+  "TextPortion_Base.setParentOfFirstText" : {
+    "returnType" : "void",
+    "methodName" : "setParentOfFirstText",
+    "argumentTypes" : [ "TextPortion" ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "LdoD_Base.getVirtualEditionsSet" : {
+    "returnType" : "VirtualEdition",
+    "methodName" : "getVirtualEditionsSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "VirtualEdition_Base.removeCriteria" : {
+    "returnType" : "void",
+    "methodName" : "removeCriteria",
+    "argumentTypes" : [ "SocialMediaCriteria" ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "VirtualEditionInter_Base.getNumber" : {
+    "returnType" : "int",
+    "methodName" : "getNumber",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEditionInter_Base"
+  },
+  "VirtualEditionInter_Base.getTagSet" : {
+    "returnType" : "Tag",
+    "methodName" : "getTagSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEditionInter_Base"
+  },
+  "Annotation_Base.setText" : {
+    "returnType" : "void",
+    "methodName" : "setText",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Annotation_Base"
+  },
+  "RdgText_Base.addFragInters" : {
+    "returnType" : "void",
+    "methodName" : "addFragInters",
+    "argumentTypes" : [ "FragInter" ],
+    "declaringType" : "RdgText_Base"
+  },
+  "Tweet_Base.setUserImageURL" : {
+    "returnType" : "void",
+    "methodName" : "setUserImageURL",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Tweet_Base"
+  },
+  "TextPortion_Base.getRend" : {
+    "returnType" : "Rend",
+    "methodName" : "getRend",
+    "argumentTypes" : [ ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "Tweet_Base.getDate" : {
+    "returnType" : "String",
+    "methodName" : "getDate",
+    "argumentTypes" : [ ],
+    "declaringType" : "Tweet_Base"
+  },
+  "TwitterCitation_Base.getTweetSet" : {
+    "returnType" : "Tweet",
+    "methodName" : "getTweetSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "TwitterCitation_Base"
+  },
+  "LdoDUser_Base.getEnabled" : {
+    "returnType" : "boolean",
+    "methodName" : "getEnabled",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "LdoD_Base.getHeteronyms" : {
+    "returnType" : "Heteronym",
+    "methodName" : "getHeteronyms",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "VirtualEdition_Base.getMemberCount" : {
+    "returnType" : "int",
+    "methodName" : "getMemberCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "Surface_Base.setFacsimile" : {
+    "returnType" : "void",
+    "methodName" : "setFacsimile",
+    "argumentTypes" : [ "Facsimile" ],
+    "declaringType" : "Surface_Base"
+  },
+  "ExpertEdition_Base.setEditor" : {
+    "returnType" : "void",
+    "methodName" : "setEditor",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "ExpertEdition_Base"
+  },
+  "Heteronym_Base.getXmlId" : {
+    "returnType" : "String",
+    "methodName" : "getXmlId",
+    "argumentTypes" : [ ],
+    "declaringType" : "Heteronym_Base"
+  },
+  "Range_Base.setStartOffset" : {
+    "returnType" : "void",
+    "methodName" : "setStartOffset",
+    "argumentTypes" : [ "int" ],
+    "declaringType" : "Range_Base"
+  },
+  "Surface_Base.setXmlId" : {
+    "returnType" : "void",
+    "methodName" : "setXmlId",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Surface_Base"
+  },
+  "LdoD_Base.getRolesCount" : {
+    "returnType" : "int",
+    "methodName" : "getRolesCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "TextPortion_Base.addPhysNote" : {
+    "returnType" : "void",
+    "methodName" : "addPhysNote",
+    "argumentTypes" : [ "PhysNote" ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "LdoDUser_Base.getLdoD" : {
+    "returnType" : "LdoD",
+    "methodName" : "getLdoD",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "TextPortion_Base.setFragment" : {
+    "returnType" : "void",
+    "methodName" : "setFragment",
+    "argumentTypes" : [ "Fragment" ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "ClassificationGameParticipant_Base.setScore" : {
+    "returnType" : "void",
+    "methodName" : "setScore",
+    "argumentTypes" : [ "double" ],
+    "declaringType" : "ClassificationGameParticipant_Base"
+  },
+  "Tweet_Base.setCountry" : {
+    "returnType" : "void",
+    "methodName" : "setCountry",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Tweet_Base"
+  },
+  "ManuscriptSource_Base.getNotes" : {
+    "returnType" : "String",
+    "methodName" : "getNotes",
+    "argumentTypes" : [ ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "TwitterCitation_Base.setUserProfileURL" : {
+    "returnType" : "void",
+    "methodName" : "setUserProfileURL",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "TwitterCitation_Base"
+  },
+  "PrintedSource_Base.getIssue" : {
+    "returnType" : "String",
+    "methodName" : "getIssue",
+    "argumentTypes" : [ ],
+    "declaringType" : "PrintedSource_Base"
+  },
+  "RegistrationToken_Base.setToken" : {
+    "returnType" : "void",
+    "methodName" : "setToken",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "RegistrationToken_Base"
+  },
+  "HumanAnnotation_Base.setStartText" : {
+    "returnType" : "void",
+    "methodName" : "setStartText",
+    "argumentTypes" : [ "SimpleText" ],
+    "declaringType" : "HumanAnnotation_Base"
+  },
+  "LdoD_Base.setTitle" : {
+    "returnType" : "void",
+    "methodName" : "setTitle",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "TwitterCitation_Base.getUserProfileURL" : {
+    "returnType" : "String",
+    "methodName" : "getUserProfileURL",
+    "argumentTypes" : [ ],
+    "declaringType" : "TwitterCitation_Base"
+  },
+  "Source_Base.setFragment" : {
+    "returnType" : "void",
+    "methodName" : "setFragment",
+    "argumentTypes" : [ "Fragment" ],
+    "declaringType" : "Source_Base"
+  },
+  "FragInter_Base.getLbText" : {
+    "returnType" : "LbText",
+    "methodName" : "getLbText",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "ManuscriptSource_Base.addDimensions" : {
+    "returnType" : "void",
+    "methodName" : "addDimensions",
+    "argumentTypes" : [ "Dimensions" ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "ExpertEditionInter_Base.setExpertEdition" : {
+    "returnType" : "void",
+    "methodName" : "setExpertEdition",
+    "argumentTypes" : [ "ExpertEdition" ],
+    "declaringType" : "ExpertEditionInter_Base"
+  },
+  "Fragment_Base.addRefText" : {
+    "returnType" : "void",
+    "methodName" : "addRefText",
+    "argumentTypes" : [ "RefText" ],
+    "declaringType" : "Fragment_Base"
+  },
+  "LbText_Base.getFragInter" : {
+    "returnType" : "FragInter",
+    "methodName" : "getFragInter",
+    "argumentTypes" : [ ],
+    "declaringType" : "LbText_Base"
+  },
+  "AnnexNote_Base.setFragInter" : {
+    "returnType" : "void",
+    "methodName" : "setFragInter",
+    "argumentTypes" : [ "FragInter" ],
+    "declaringType" : "AnnexNote_Base"
+  },
+  "SimpleText_Base.getValue" : {
+    "returnType" : "String",
+    "methodName" : "getValue",
+    "argumentTypes" : [ ],
+    "declaringType" : "SimpleText_Base"
+  },
+  "Tweet_Base.getOriginalTweetID" : {
+    "returnType" : "long",
+    "methodName" : "getOriginalTweetID",
+    "argumentTypes" : [ ],
+    "declaringType" : "Tweet_Base"
+  },
+  "PhysNote_Base.getTextPortion" : {
+    "returnType" : "TextPortion",
+    "methodName" : "getTextPortion",
+    "argumentTypes" : [ ],
+    "declaringType" : "PhysNote_Base"
+  },
+  "FragInter_Base.getAnnexNoteCount" : {
+    "returnType" : "int",
+    "methodName" : "getAnnexNoteCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "Annotation_Base.getRangeSet" : {
+    "returnType" : "Range",
+    "methodName" : "getRangeSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "Annotation_Base"
+  },
+  "ClassificationGameRound_Base.getClassificationGameParticipant" : {
+    "returnType" : "ClassificationGameParticipant",
+    "methodName" : "getClassificationGameParticipant",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGameRound_Base"
+  },
+  "FragInter_Base.getAnnexNoteSet" : {
+    "returnType" : "AnnexNote",
+    "methodName" : "getAnnexNoteSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "Category_Base.getTaxonomy" : {
+    "returnType" : "Taxonomy",
+    "methodName" : "getTaxonomy",
+    "argumentTypes" : [ ],
+    "declaringType" : "Category_Base"
+  },
+  "HumanAnnotation_Base.getTagCount" : {
+    "returnType" : "int",
+    "methodName" : "getTagCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "HumanAnnotation_Base"
+  },
+  "LdoD_Base.getVirtualEditions" : {
+    "returnType" : "VirtualEdition",
+    "methodName" : "getVirtualEditions",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "TextPortion_Base.removeRend" : {
+    "returnType" : "void",
+    "methodName" : "removeRend",
+    "argumentTypes" : [ "Rend" ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "PbText_Base.addFragInter" : {
+    "returnType" : "void",
+    "methodName" : "addFragInter",
+    "argumentTypes" : [ "FragInter" ],
+    "declaringType" : "PbText_Base"
+  },
+  "Section_Base.addVirtualEditionInter" : {
+    "returnType" : "void",
+    "methodName" : "addVirtualEditionInter",
+    "argumentTypes" : [ "VirtualEditionInter" ],
+    "declaringType" : "Section_Base"
+  },
+  "PrintedSource_Base.getJournal" : {
+    "returnType" : "String",
+    "methodName" : "getJournal",
+    "argumentTypes" : [ ],
+    "declaringType" : "PrintedSource_Base"
+  },
+  "InfoRange_Base.setText" : {
+    "returnType" : "void",
+    "methodName" : "setText",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "InfoRange_Base"
+  },
+  "LastTwitterID_Base.setBernardoLastTwitterID" : {
+    "returnType" : "void",
+    "methodName" : "setBernardoLastTwitterID",
+    "argumentTypes" : [ "long" ],
+    "declaringType" : "LastTwitterID_Base"
+  },
+  "Category_Base.getXmlId" : {
+    "returnType" : "String",
+    "methodName" : "getXmlId",
+    "argumentTypes" : [ ],
+    "declaringType" : "Category_Base"
+  },
+  "TwitterCitation_Base.getTweetText" : {
+    "returnType" : "String",
+    "methodName" : "getTweetText",
+    "argumentTypes" : [ ],
+    "declaringType" : "TwitterCitation_Base"
+  },
+  "Fragment_Base.setLdoD" : {
+    "returnType" : "void",
+    "methodName" : "setLdoD",
+    "argumentTypes" : [ "LdoD" ],
+    "declaringType" : "Fragment_Base"
+  },
+  "VirtualEditionInter_Base.checkMultiplicityOfUses" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfUses",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEditionInter_Base"
+  },
+  "Tweet_Base.setOriginalTweetID" : {
+    "returnType" : "void",
+    "methodName" : "setOriginalTweetID",
+    "argumentTypes" : [ "long" ],
+    "declaringType" : "Tweet_Base"
+  },
+  "ExpertEditionInter_Base.setStartPage" : {
+    "returnType" : "void",
+    "methodName" : "setStartPage",
+    "argumentTypes" : [ "int" ],
+    "declaringType" : "ExpertEditionInter_Base"
+  },
+  "TimeWindow_Base.setEndDate" : {
+    "returnType" : "void",
+    "methodName" : "setEndDate",
+    "argumentTypes" : [ "LocalDate" ],
+    "declaringType" : "TimeWindow_Base"
+  },
+  "ManuscriptSource_Base.getTypeNoteSet" : {
+    "returnType" : "TypeNote",
+    "methodName" : "getTypeNoteSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "ManuscriptSource_Base.getDimensionsSet" : {
+    "returnType" : "Dimensions",
+    "methodName" : "getDimensionsSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "LdoD_Base.addToken" : {
+    "returnType" : "void",
+    "methodName" : "addToken",
+    "argumentTypes" : [ "RegistrationToken" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "Tweet_Base.setIsRetweet" : {
+    "returnType" : "void",
+    "methodName" : "setIsRetweet",
+    "argumentTypes" : [ "boolean" ],
+    "declaringType" : "Tweet_Base"
+  },
+  "TextPortion_Base.getLastChildText" : {
+    "returnType" : "TextPortion",
+    "methodName" : "getLastChildText",
+    "argumentTypes" : [ ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "VirtualEdition_Base.setSynopsis" : {
+    "returnType" : "void",
+    "methodName" : "setSynopsis",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "VirtualEditionInter_Base.getAnnotationCount" : {
+    "returnType" : "int",
+    "methodName" : "getAnnotationCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEditionInter_Base"
+  },
+  "VirtualEdition_Base.getCriteriaCount" : {
+    "returnType" : "int",
+    "methodName" : "getCriteriaCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "LdoDUser_Base.setFirstName" : {
+    "returnType" : "void",
+    "methodName" : "setFirstName",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "LdoDUser_Base.getResponsibleForGames" : {
+    "returnType" : "ClassificationGame",
+    "methodName" : "getResponsibleForGames",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "VirtualEdition_Base.getMember" : {
+    "returnType" : "Member",
+    "methodName" : "getMember",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "ClassificationGameParticipant_Base.addClassificationGameRound" : {
+    "returnType" : "void",
+    "methodName" : "addClassificationGameRound",
+    "argumentTypes" : [ "ClassificationGameRound" ],
+    "declaringType" : "ClassificationGameParticipant_Base"
+  },
+  "RegistrationToken_Base.getLdoD" : {
+    "returnType" : "LdoD",
+    "methodName" : "getLdoD",
+    "argumentTypes" : [ ],
+    "declaringType" : "RegistrationToken_Base"
+  },
+  "LdoDUser_Base.removeRoles" : {
+    "returnType" : "void",
+    "methodName" : "removeRoles",
+    "argumentTypes" : [ "Role" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "Section_Base.setTitle" : {
+    "returnType" : "void",
+    "methodName" : "setTitle",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Section_Base"
+  },
+  "RegistrationToken_Base.setExpireTime" : {
+    "returnType" : "void",
+    "methodName" : "setExpireTime",
+    "argumentTypes" : [ "Long" ],
+    "declaringType" : "RegistrationToken_Base"
+  },
+  "LdoDUser_Base.getRolesSet" : {
+    "returnType" : "Role",
+    "methodName" : "getRolesSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "InfoRange_Base.getQuote" : {
+    "returnType" : "String",
+    "methodName" : "getQuote",
+    "argumentTypes" : [ ],
+    "declaringType" : "InfoRange_Base"
+  },
+  "Taxonomy_Base.getCategories" : {
+    "returnType" : "Category",
+    "methodName" : "getCategories",
+    "argumentTypes" : [ ],
+    "declaringType" : "Taxonomy_Base"
+  },
+  "Edition_Base.getIsUsedBySet" : {
+    "returnType" : "VirtualEdition",
+    "methodName" : "getIsUsedBySet",
+    "argumentTypes" : [ ],
+    "declaringType" : "Edition_Base"
+  },
+  "ExpertEdition_Base.getExpertEditionInters" : {
+    "returnType" : "ExpertEditionInter",
+    "methodName" : "getExpertEditionInters",
+    "argumentTypes" : [ ],
+    "declaringType" : "ExpertEdition_Base"
+  },
+  "AltText_Base.getAltTextWeightCount" : {
+    "returnType" : "int",
+    "methodName" : "getAltTextWeightCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "AltText_Base"
+  },
+  "ClassificationGame_Base.setTag" : {
+    "returnType" : "void",
+    "methodName" : "setTag",
+    "argumentTypes" : [ "Tag" ],
+    "declaringType" : "ClassificationGame_Base"
+  },
+  "Surface_Base.getRefTextSet" : {
+    "returnType" : "RefText",
+    "methodName" : "getRefTextSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "Surface_Base"
+  },
+  "Fragment_Base.getRefText" : {
+    "returnType" : "RefText",
+    "methodName" : "getRefText",
+    "argumentTypes" : [ ],
+    "declaringType" : "Fragment_Base"
+  },
+  "Dimensions_Base.getHeight" : {
+    "returnType" : "float",
+    "methodName" : "getHeight",
+    "argumentTypes" : [ ],
+    "declaringType" : "Dimensions_Base"
+  },
+  "UnclearText_Base.getReason" : {
+    "returnType" : "UnclearReason",
+    "methodName" : "getReason",
+    "argumentTypes" : [ ],
+    "declaringType" : "UnclearText_Base"
+  },
+  "Annotation_Base.setVirtualEditionInter" : {
+    "returnType" : "void",
+    "methodName" : "setVirtualEditionInter",
+    "argumentTypes" : [ "VirtualEditionInter" ],
+    "declaringType" : "Annotation_Base"
+  },
+  "VirtualEditionInter_Base.setUses" : {
+    "returnType" : "void",
+    "methodName" : "setUses",
+    "argumentTypes" : [ "FragInter" ],
+    "declaringType" : "VirtualEditionInter_Base"
+  },
+  "LdoDUser_Base.getUsername" : {
+    "returnType" : "String",
+    "methodName" : "getUsername",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "Taxonomy_Base.getOpenManagement" : {
+    "returnType" : "boolean",
+    "methodName" : "getOpenManagement",
+    "argumentTypes" : [ ],
+    "declaringType" : "Taxonomy_Base"
+  },
+  "TwitterCitation_Base.setTweetID" : {
+    "returnType" : "void",
+    "methodName" : "setTweetID",
+    "argumentTypes" : [ "long" ],
+    "declaringType" : "TwitterCitation_Base"
+  },
+  "ManuscriptSource_Base.getColumns" : {
+    "returnType" : "int",
+    "methodName" : "getColumns",
+    "argumentTypes" : [ ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "TwitterCitation_Base.getTweet" : {
+    "returnType" : "Tweet",
+    "methodName" : "getTweet",
+    "argumentTypes" : [ ],
+    "declaringType" : "TwitterCitation_Base"
+  },
+  "ClassificationGameRound_Base.setVote" : {
+    "returnType" : "void",
+    "methodName" : "setVote",
+    "argumentTypes" : [ "double" ],
+    "declaringType" : "ClassificationGameRound_Base"
+  },
+  "Range_Base.getStart" : {
+    "returnType" : "String",
+    "methodName" : "getStart",
+    "argumentTypes" : [ ],
+    "declaringType" : "Range_Base"
+  },
+  "VirtualEdition_Base.getSections" : {
+    "returnType" : "Section",
+    "methodName" : "getSections",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "Citation_Base.getInfoRange" : {
+    "returnType" : "InfoRange",
+    "methodName" : "getInfoRange",
+    "argumentTypes" : [ ],
+    "declaringType" : "Citation_Base"
+  },
+  "RefText_Base.getFragInter" : {
+    "returnType" : "FragInter",
+    "methodName" : "getFragInter",
+    "argumentTypes" : [ ],
+    "declaringType" : "RefText_Base"
+  },
+  "LdoDUser_Base.setPlayer" : {
+    "returnType" : "void",
+    "methodName" : "setPlayer",
+    "argumentTypes" : [ "Player" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "AltText_Base.getMode" : {
+    "returnType" : "AltMode",
+    "methodName" : "getMode",
+    "argumentTypes" : [ ],
+    "declaringType" : "AltText_Base"
+  },
+  "Annotation_Base.getRange" : {
+    "returnType" : "Range",
+    "methodName" : "getRange",
+    "argumentTypes" : [ ],
+    "declaringType" : "Annotation_Base"
+  },
+  "LdoDUser_Base.removeAnnotation" : {
+    "returnType" : "void",
+    "methodName" : "removeAnnotation",
+    "argumentTypes" : [ "Annotation" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "UserConnection_Base.getDisplayName" : {
+    "returnType" : "String",
+    "methodName" : "getDisplayName",
+    "argumentTypes" : [ ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "VirtualEditionInter_Base.addClassificationGame" : {
+    "returnType" : "void",
+    "methodName" : "addClassificationGame",
+    "argumentTypes" : [ "ClassificationGame" ],
+    "declaringType" : "VirtualEditionInter_Base"
+  },
+  "LdoDUser_Base.setUsername" : {
+    "returnType" : "void",
+    "methodName" : "setUsername",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "ClassificationGameRound_Base.setTime" : {
+    "returnType" : "void",
+    "methodName" : "setTime",
+    "argumentTypes" : [ "DateTime" ],
+    "declaringType" : "ClassificationGameRound_Base"
+  },
+  "PrintedSource_Base.setEndPage" : {
+    "returnType" : "void",
+    "methodName" : "setEndPage",
+    "argumentTypes" : [ "int" ],
+    "declaringType" : "PrintedSource_Base"
+  },
+  "InfoRange_Base.setCitation" : {
+    "returnType" : "void",
+    "methodName" : "setCitation",
+    "argumentTypes" : [ "Citation" ],
+    "declaringType" : "InfoRange_Base"
+  },
+  "RegistrationToken_Base.getExpireTime" : {
+    "returnType" : "Long",
+    "methodName" : "getExpireTime",
+    "argumentTypes" : [ ],
+    "declaringType" : "RegistrationToken_Base"
+  },
+  "Taxonomy_Base.getEdition" : {
+    "returnType" : "VirtualEdition",
+    "methodName" : "getEdition",
+    "argumentTypes" : [ ],
+    "declaringType" : "Taxonomy_Base"
+  },
+  "LastTwitterID_Base.setVicenteLastTwitterID" : {
+    "returnType" : "void",
+    "methodName" : "setVicenteLastTwitterID",
+    "argumentTypes" : [ "long" ],
+    "declaringType" : "LastTwitterID_Base"
+  },
+  "RdgText_Base.getFragIntersSet" : {
+    "returnType" : "FragInter",
+    "methodName" : "getFragIntersSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "RdgText_Base"
+  },
+  "ExpertEdition_Base.getEditor" : {
+    "returnType" : "String",
+    "methodName" : "getEditor",
+    "argumentTypes" : [ ],
+    "declaringType" : "ExpertEdition_Base"
+  },
+  "Heteronym_Base.getFragInterCount" : {
+    "returnType" : "int",
+    "methodName" : "getFragInterCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "Heteronym_Base"
+  },
+  "PhysNote_Base.addTextPortion" : {
+    "returnType" : "void",
+    "methodName" : "addTextPortion",
+    "argumentTypes" : [ "TextPortion" ],
+    "declaringType" : "PhysNote_Base"
+  },
+  "SocialMediaCriteria_Base.getVirtualEdition" : {
+    "returnType" : "VirtualEdition",
+    "methodName" : "getVirtualEdition",
+    "argumentTypes" : [ ],
+    "declaringType" : "SocialMediaCriteria_Base"
+  },
+  "Dimensions_Base.getWidth" : {
+    "returnType" : "float",
+    "methodName" : "getWidth",
+    "argumentTypes" : [ ],
+    "declaringType" : "Dimensions_Base"
+  },
+  "SegText_Base.setAltTextWeight" : {
+    "returnType" : "void",
+    "methodName" : "setAltTextWeight",
+    "argumentTypes" : [ "AltTextWeight" ],
+    "declaringType" : "SegText_Base"
+  },
+  "SpaceText_Base.setUnit" : {
+    "returnType" : "void",
+    "methodName" : "setUnit",
+    "argumentTypes" : [ "SpaceUnit" ],
+    "declaringType" : "SpaceText_Base"
+  },
+  "FragInter_Base.getIsUsedBySet" : {
+    "returnType" : "VirtualEditionInter",
+    "methodName" : "getIsUsedBySet",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "ClassificationGame_Base.setDateTime" : {
+    "returnType" : "void",
+    "methodName" : "setDateTime",
+    "argumentTypes" : [ "DateTime" ],
+    "declaringType" : "ClassificationGame_Base"
+  },
+  "Dimensions_Base.setManuscriptSource" : {
+    "returnType" : "void",
+    "methodName" : "setManuscriptSource",
+    "argumentTypes" : [ "ManuscriptSource" ],
+    "declaringType" : "Dimensions_Base"
+  },
+  "Tag_Base.getContributor" : {
+    "returnType" : "LdoDUser",
+    "methodName" : "getContributor",
+    "argumentTypes" : [ ],
+    "declaringType" : "Tag_Base"
+  },
+  "LdoD_Base.removeToken" : {
+    "returnType" : "void",
+    "methodName" : "removeToken",
+    "argumentTypes" : [ "RegistrationToken" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "Member_Base.checkMultiplicityOfUser" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfUser",
+    "argumentTypes" : [ ],
+    "declaringType" : "Member_Base"
+  },
+  "Edition_Base.getTitle" : {
+    "returnType" : "String",
+    "methodName" : "getTitle",
+    "argumentTypes" : [ ],
+    "declaringType" : "Edition_Base"
+  },
+  "HumanAnnotation_Base.setEndText" : {
+    "returnType" : "void",
+    "methodName" : "setEndText",
+    "argumentTypes" : [ "SimpleText" ],
+    "declaringType" : "HumanAnnotation_Base"
+  },
+  "Taxonomy_Base.setOpenManagement" : {
+    "returnType" : "void",
+    "methodName" : "setOpenManagement",
+    "argumentTypes" : [ "boolean" ],
+    "declaringType" : "Taxonomy_Base"
+  },
+  "LdoDUser_Base.getPassword" : {
+    "returnType" : "String",
+    "methodName" : "getPassword",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "Tag_Base.setClassificationGame" : {
+    "returnType" : "void",
+    "methodName" : "setClassificationGame",
+    "argumentTypes" : [ "ClassificationGame" ],
+    "declaringType" : "Tag_Base"
+  },
+  "ExpertEditionInter_Base.checkMultiplicityOfExpertEdition" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfExpertEdition",
+    "argumentTypes" : [ ],
+    "declaringType" : "ExpertEditionInter_Base"
+  },
+  "Taxonomy_Base.getOpenAnnotation" : {
+    "returnType" : "boolean",
+    "methodName" : "getOpenAnnotation",
+    "argumentTypes" : [ ],
+    "declaringType" : "Taxonomy_Base"
+  },
+  "Taxonomy_Base.setOpenAnnotation" : {
+    "returnType" : "void",
+    "methodName" : "setOpenAnnotation",
+    "argumentTypes" : [ "boolean" ],
+    "declaringType" : "Taxonomy_Base"
+  },
+  "Rend_Base.getText" : {
+    "returnType" : "TextPortion",
+    "methodName" : "getText",
+    "argumentTypes" : [ ],
+    "declaringType" : "Rend_Base"
+  },
+  "VirtualEdition_Base.setUses" : {
+    "returnType" : "void",
+    "methodName" : "setUses",
+    "argumentTypes" : [ "Edition" ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "Edition_Base.setDate" : {
+    "returnType" : "void",
+    "methodName" : "setDate",
+    "argumentTypes" : [ "LocalDate" ],
+    "declaringType" : "Edition_Base"
+  },
+  "InfoRange_Base.getCitation" : {
+    "returnType" : "Citation",
+    "methodName" : "getCitation",
+    "argumentTypes" : [ ],
+    "declaringType" : "InfoRange_Base"
+  },
+  "VirtualEdition_Base.checkMultiplicityOfCriteria" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfCriteria",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "SpaceText_Base.setQuantity" : {
+    "returnType" : "void",
+    "methodName" : "setQuantity",
+    "argumentTypes" : [ "int" ],
+    "declaringType" : "SpaceText_Base"
+  },
+  "Frequency_Base.getFrequency" : {
+    "returnType" : "int",
+    "methodName" : "getFrequency",
+    "argumentTypes" : [ ],
+    "declaringType" : "Frequency_Base"
+  },
+  "LdoDUser_Base.setEmail" : {
+    "returnType" : "void",
+    "methodName" : "setEmail",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "AwareAnnotation_Base.getCitation" : {
+    "returnType" : "Citation",
+    "methodName" : "getCitation",
+    "argumentTypes" : [ ],
+    "declaringType" : "AwareAnnotation_Base"
+  },
+  "Source_Base.getType" : {
+    "returnType" : "SourceType",
+    "methodName" : "getType",
+    "argumentTypes" : [ ],
+    "declaringType" : "Source_Base"
+  },
+  "UserConnection_Base.checkMultiplicityOfLdoD" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfLdoD",
+    "argumentTypes" : [ ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "UserConnection_Base.setExpireTime" : {
+    "returnType" : "void",
+    "methodName" : "setExpireTime",
+    "argumentTypes" : [ "Long" ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "ExpertEditionInter_Base.getVolume" : {
+    "returnType" : "String",
+    "methodName" : "getVolume",
+    "argumentTypes" : [ ],
+    "declaringType" : "ExpertEditionInter_Base"
+  },
+  "GapText_Base.getUnit" : {
+    "returnType" : "GapUnit",
+    "methodName" : "getUnit",
+    "argumentTypes" : [ ],
+    "declaringType" : "GapText_Base"
+  },
+  "UserConnection_Base.getAccessToken" : {
+    "returnType" : "String",
+    "methodName" : "getAccessToken",
+    "argumentTypes" : [ ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "Source_Base.getHeteronym" : {
+    "returnType" : "Heteronym",
+    "methodName" : "getHeteronym",
+    "argumentTypes" : [ ],
+    "declaringType" : "Source_Base"
+  },
+  "VirtualEdition_Base.getSectionsSet" : {
+    "returnType" : "Section",
+    "methodName" : "getSectionsSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "GapText_Base.setReason" : {
+    "returnType" : "void",
+    "methodName" : "setReason",
+    "argumentTypes" : [ "GapReason" ],
+    "declaringType" : "GapText_Base"
+  },
+  "LdoDUser_Base.addRoles" : {
+    "returnType" : "void",
+    "methodName" : "addRoles",
+    "argumentTypes" : [ "Role" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "LdoDUser_Base.getEmail" : {
+    "returnType" : "String",
+    "methodName" : "getEmail",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "SimpleText_Base.getStartAnnotations" : {
+    "returnType" : "HumanAnnotation",
+    "methodName" : "getStartAnnotations",
+    "argumentTypes" : [ ],
+    "declaringType" : "SimpleText_Base"
+  },
+  "Role_Base.setType" : {
+    "returnType" : "void",
+    "methodName" : "setType",
+    "argumentTypes" : [ "RoleType" ],
+    "declaringType" : "Role_Base"
+  },
+  "Edition_Base.setTitle" : {
+    "returnType" : "void",
+    "methodName" : "setTitle",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Edition_Base"
+  },
+  "LdoD_Base.getRolesSet" : {
+    "returnType" : "Role",
+    "methodName" : "getRolesSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "SimpleText_Base.getStartAnnotationsCount" : {
+    "returnType" : "int",
+    "methodName" : "getStartAnnotationsCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "SimpleText_Base"
+  },
+  "FragInter_Base.addAnnexNote" : {
+    "returnType" : "void",
+    "methodName" : "addAnnexNote",
+    "argumentTypes" : [ "AnnexNote" ],
+    "declaringType" : "FragInter_Base"
+  },
+  "Rend_Base.setText" : {
+    "returnType" : "void",
+    "methodName" : "setText",
+    "argumentTypes" : [ "TextPortion" ],
+    "declaringType" : "Rend_Base"
+  },
+  "Taxonomy_Base.getXmlId" : {
+    "returnType" : "String",
+    "methodName" : "getXmlId",
+    "argumentTypes" : [ ],
+    "declaringType" : "Taxonomy_Base"
+  },
+  "ExpertEditionInter_Base.getEndPage" : {
+    "returnType" : "int",
+    "methodName" : "getEndPage",
+    "argumentTypes" : [ ],
+    "declaringType" : "ExpertEditionInter_Base"
+  },
+  "ExpertEditionInter_Base.getStartPage" : {
+    "returnType" : "int",
+    "methodName" : "getStartPage",
+    "argumentTypes" : [ ],
+    "declaringType" : "ExpertEditionInter_Base"
+  },
+  "VirtualEditionInter_Base.removeClassificationGame" : {
+    "returnType" : "void",
+    "methodName" : "removeClassificationGame",
+    "argumentTypes" : [ "ClassificationGame" ],
+    "declaringType" : "VirtualEditionInter_Base"
+  },
+  "Fragment_Base.getSourcesSet" : {
+    "returnType" : "Source",
+    "methodName" : "getSourcesSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "Fragment_Base"
+  },
+  "VirtualEdition_Base.getUses" : {
+    "returnType" : "Edition",
+    "methodName" : "getUses",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "NoteText_Base.getAnnexNoteCount" : {
+    "returnType" : "int",
+    "methodName" : "getAnnexNoteCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "NoteText_Base"
+  },
+  "SimpleText_Base.addEndAnnotations" : {
+    "returnType" : "void",
+    "methodName" : "addEndAnnotations",
+    "argumentTypes" : [ "HumanAnnotation" ],
+    "declaringType" : "SimpleText_Base"
+  },
+  "Role_Base.getType" : {
+    "returnType" : "RoleType",
+    "methodName" : "getType",
+    "argumentTypes" : [ ],
+    "declaringType" : "Role_Base"
+  },
+  "Source_Base.setFacsimile" : {
+    "returnType" : "void",
+    "methodName" : "setFacsimile",
+    "argumentTypes" : [ "Facsimile" ],
+    "declaringType" : "Source_Base"
+  },
+  "Facsimile_Base.getSource" : {
+    "returnType" : "Source",
+    "methodName" : "getSource",
+    "argumentTypes" : [ ],
+    "declaringType" : "Facsimile_Base"
+  },
+  "VirtualEdition_Base.getRecommendationWeightsSet" : {
+    "returnType" : "RecommendationWeights",
+    "methodName" : "getRecommendationWeightsSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "Citation_Base.getSourceLink" : {
+    "returnType" : "String",
+    "methodName" : "getSourceLink",
+    "argumentTypes" : [ ],
+    "declaringType" : "Citation_Base"
+  },
+  "Player_Base.setUser" : {
+    "returnType" : "void",
+    "methodName" : "setUser",
+    "argumentTypes" : [ "LdoDUser" ],
+    "declaringType" : "Player_Base"
+  },
+  "PbText_Base.removeFragInter" : {
+    "returnType" : "void",
+    "methodName" : "removeFragInter",
+    "argumentTypes" : [ "FragInter" ],
+    "declaringType" : "PbText_Base"
+  },
+  "LdoDUser_Base.getLastLogin" : {
+    "returnType" : "LocalDate",
+    "methodName" : "getLastLogin",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "LdoD_Base.getTweetSet" : {
+    "returnType" : "Tweet",
+    "methodName" : "getTweetSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "FragInter_Base.removeIsUsedBy" : {
+    "returnType" : "void",
+    "methodName" : "removeIsUsedBy",
+    "argumentTypes" : [ "VirtualEditionInter" ],
+    "declaringType" : "FragInter_Base"
+  },
+  "TwitterCitation_Base.getLocation" : {
+    "returnType" : "String",
+    "methodName" : "getLocation",
+    "argumentTypes" : [ ],
+    "declaringType" : "TwitterCitation_Base"
+  },
+  "Dimensions_Base.setHeight" : {
+    "returnType" : "void",
+    "methodName" : "setHeight",
+    "argumentTypes" : [ "float" ],
+    "declaringType" : "Dimensions_Base"
+  },
+  "RegistrationToken_Base.setUser" : {
+    "returnType" : "void",
+    "methodName" : "setUser",
+    "argumentTypes" : [ "LdoDUser" ],
+    "declaringType" : "RegistrationToken_Base"
+  },
+  "VirtualEdition_Base.getClassificationGameSet" : {
+    "returnType" : "ClassificationGame",
+    "methodName" : "getClassificationGameSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "ExpertEditionInter_Base.getNotes" : {
+    "returnType" : "String",
+    "methodName" : "getNotes",
+    "argumentTypes" : [ ],
+    "declaringType" : "ExpertEditionInter_Base"
+  },
+  "RecommendationWeights_Base.checkMultiplicityOfUser" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfUser",
+    "argumentTypes" : [ ],
+    "declaringType" : "RecommendationWeights_Base"
+  },
+  "ClassificationGameParticipant_Base.getClassificationGame" : {
+    "returnType" : "ClassificationGame",
+    "methodName" : "getClassificationGame",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGameParticipant_Base"
+  },
+  "SimpleText_Base.removeEndAnnotations" : {
+    "returnType" : "void",
+    "methodName" : "removeEndAnnotations",
+    "argumentTypes" : [ "HumanAnnotation" ],
+    "declaringType" : "SimpleText_Base"
+  },
+  "RegistrationToken_Base.checkMultiplicityOfUser" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfUser",
+    "argumentTypes" : [ ],
+    "declaringType" : "RegistrationToken_Base"
+  },
+  "LbText_Base.getBreakWord" : {
+    "returnType" : "Boolean",
+    "methodName" : "getBreakWord",
+    "argumentTypes" : [ ],
+    "declaringType" : "LbText_Base"
+  },
+  "LdoD_Base.getUsersSet" : {
+    "returnType" : "LdoDUser",
+    "methodName" : "getUsersSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "RecommendationWeights_Base.setUser" : {
+    "returnType" : "void",
+    "methodName" : "setUser",
+    "argumentTypes" : [ "LdoDUser" ],
+    "declaringType" : "RecommendationWeights_Base"
+  },
+  "VirtualEditionInter_Base.setSection" : {
+    "returnType" : "void",
+    "methodName" : "setSection",
+    "argumentTypes" : [ "Section" ],
+    "declaringType" : "VirtualEditionInter_Base"
+  },
+  "Player_Base.getUser" : {
+    "returnType" : "LdoDUser",
+    "methodName" : "getUser",
+    "argumentTypes" : [ ],
+    "declaringType" : "Player_Base"
+  },
+  "TimeWindow_Base.getBeginDate" : {
+    "returnType" : "LocalDate",
+    "methodName" : "getBeginDate",
+    "argumentTypes" : [ ],
+    "declaringType" : "TimeWindow_Base"
+  },
+  "ExpertEditionInter_Base.setSubNumber" : {
+    "returnType" : "void",
+    "methodName" : "setSubNumber",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "ExpertEditionInter_Base"
+  },
+  "Heteronym_Base.addSource" : {
+    "returnType" : "void",
+    "methodName" : "addSource",
+    "argumentTypes" : [ "Source" ],
+    "declaringType" : "Heteronym_Base"
+  },
+  "FragInter_Base.getInfoRangeCount" : {
+    "returnType" : "int",
+    "methodName" : "getInfoRangeCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "FragInter_Base.getRdg" : {
+    "returnType" : "RdgText",
+    "methodName" : "getRdg",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "LdoD_Base.setNullEdition" : {
+    "returnType" : "void",
+    "methodName" : "setNullEdition",
+    "argumentTypes" : [ "NullEdition" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "Surface_Base.getRefTextCount" : {
+    "returnType" : "int",
+    "methodName" : "getRefTextCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "Surface_Base"
+  },
+  "ClassificationGameParticipant_Base.getClassificationGameRoundCount" : {
+    "returnType" : "int",
+    "methodName" : "getClassificationGameRoundCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGameParticipant_Base"
+  },
+  "ClassificationGameRound_Base.getTag" : {
+    "returnType" : "String",
+    "methodName" : "getTag",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGameRound_Base"
+  },
+  "VirtualEditionInter_Base.getTagCount" : {
+    "returnType" : "int",
+    "methodName" : "getTagCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEditionInter_Base"
+  },
+  "Annotation_Base.checkMultiplicityOfUser" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfUser",
+    "argumentTypes" : [ ],
+    "declaringType" : "Annotation_Base"
+  },
+  "VirtualEdition_Base.getRecommendationWeights" : {
+    "returnType" : "RecommendationWeights",
+    "methodName" : "getRecommendationWeights",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "Fragment_Base.getFragmentInter" : {
+    "returnType" : "FragInter",
+    "methodName" : "getFragmentInter",
+    "argumentTypes" : [ ],
+    "declaringType" : "Fragment_Base"
+  },
+  "Source_Base.setRepository" : {
+    "returnType" : "void",
+    "methodName" : "setRepository",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Source_Base"
+  },
+  "PrintedSource_Base.getStartPage" : {
+    "returnType" : "int",
+    "methodName" : "getStartPage",
+    "argumentTypes" : [ ],
+    "declaringType" : "PrintedSource_Base"
+  },
+  "VirtualEditionInter_Base.addAnnotation" : {
+    "returnType" : "void",
+    "methodName" : "addAnnotation",
+    "argumentTypes" : [ "Annotation" ],
+    "declaringType" : "VirtualEditionInter_Base"
+  },
+  "VirtualEdition_Base.removeRecommendationWeights" : {
+    "returnType" : "void",
+    "methodName" : "removeRecommendationWeights",
+    "argumentTypes" : [ "RecommendationWeights" ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "AltTextWeight_Base.setAltText" : {
+    "returnType" : "void",
+    "methodName" : "setAltText",
+    "argumentTypes" : [ "AltText" ],
+    "declaringType" : "AltTextWeight_Base"
+  },
+  "Heteronym_Base.getFragInter" : {
+    "returnType" : "FragInter",
+    "methodName" : "getFragInter",
+    "argumentTypes" : [ ],
+    "declaringType" : "Heteronym_Base"
+  },
+  "TextPortion_Base.getRendCount" : {
+    "returnType" : "int",
+    "methodName" : "getRendCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "LastTwitterID_Base.getPessoaLastTwitterID" : {
+    "returnType" : "long",
+    "methodName" : "getPessoaLastTwitterID",
+    "argumentTypes" : [ ],
+    "declaringType" : "LastTwitterID_Base"
+  },
+  "ExpertEdition_Base.getLdoD4Expert" : {
+    "returnType" : "LdoD",
+    "methodName" : "getLdoD4Expert",
+    "argumentTypes" : [ ],
+    "declaringType" : "ExpertEdition_Base"
+  },
+  "ManuscriptSource_Base.getHandNoteCount" : {
+    "returnType" : "int",
+    "methodName" : "getHandNoteCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "Role_Base.getUsers" : {
+    "returnType" : "LdoDUser",
+    "methodName" : "getUsers",
+    "argumentTypes" : [ ],
+    "declaringType" : "Role_Base"
+  },
+  "UserConnection_Base.getImageUrl" : {
+    "returnType" : "String",
+    "methodName" : "getImageUrl",
+    "argumentTypes" : [ ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "Fragment_Base.getRefTextCount" : {
+    "returnType" : "int",
+    "methodName" : "getRefTextCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "Fragment_Base"
+  },
+  "UserConnection_Base.setUserId" : {
+    "returnType" : "void",
+    "methodName" : "setUserId",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "GapText_Base.getReason" : {
+    "returnType" : "GapReason",
+    "methodName" : "getReason",
+    "argumentTypes" : [ ],
+    "declaringType" : "GapText_Base"
+  },
+  "Tweet_Base.setTweetID" : {
+    "returnType" : "void",
+    "methodName" : "setTweetID",
+    "argumentTypes" : [ "long" ],
+    "declaringType" : "Tweet_Base"
+  },
+  "SegText_Base.getAltTextWeight" : {
+    "returnType" : "AltTextWeight",
+    "methodName" : "getAltTextWeight",
+    "argumentTypes" : [ ],
+    "declaringType" : "SegText_Base"
+  },
+  "RecommendationWeights_Base.getUser" : {
+    "returnType" : "LdoDUser",
+    "methodName" : "getUser",
+    "argumentTypes" : [ ],
+    "declaringType" : "RecommendationWeights_Base"
+  },
+  "UserConnection_Base.setProviderId" : {
+    "returnType" : "void",
+    "methodName" : "setProviderId",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "ClassificationGame_Base.getDescription" : {
+    "returnType" : "String",
+    "methodName" : "getDescription",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGame_Base"
+  },
+  "FragInter_Base.removeAnnexNote" : {
+    "returnType" : "void",
+    "methodName" : "removeAnnexNote",
+    "argumentTypes" : [ "AnnexNote" ],
+    "declaringType" : "FragInter_Base"
+  },
+  "ExpertEdition_Base.setLdoD4Expert" : {
+    "returnType" : "void",
+    "methodName" : "setLdoD4Expert",
+    "argumentTypes" : [ "LdoD" ],
+    "declaringType" : "ExpertEdition_Base"
+  },
+  "AltTextWeight_Base.setSegText" : {
+    "returnType" : "void",
+    "methodName" : "setSegText",
+    "argumentTypes" : [ "SegText" ],
+    "declaringType" : "AltTextWeight_Base"
+  },
+  "ClassificationGame_Base.setVirtualEditionInter" : {
+    "returnType" : "void",
+    "methodName" : "setVirtualEditionInter",
+    "argumentTypes" : [ "VirtualEditionInter" ],
+    "declaringType" : "ClassificationGame_Base"
+  },
+  "LdoDUser_Base.removeRecommendationWeights" : {
+    "returnType" : "void",
+    "methodName" : "removeRecommendationWeights",
+    "argumentTypes" : [ "RecommendationWeights" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "Heteronym_Base.setName" : {
+    "returnType" : "void",
+    "methodName" : "setName",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Heteronym_Base"
+  },
+  "VirtualEdition_Base.getMemberSet" : {
+    "returnType" : "Member",
+    "methodName" : "getMemberSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "Edition_Base.getAcronym" : {
+    "returnType" : "String",
+    "methodName" : "getAcronym",
+    "argumentTypes" : [ ],
+    "declaringType" : "Edition_Base"
+  },
+  "Edition_Base.setAcronym" : {
+    "returnType" : "void",
+    "methodName" : "setAcronym",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Edition_Base"
+  },
+  "Player_Base.getClassificationGameParticipantCount" : {
+    "returnType" : "int",
+    "methodName" : "getClassificationGameParticipantCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "Player_Base"
+  },
+  "UserConnection_Base.getUserId" : {
+    "returnType" : "String",
+    "methodName" : "getUserId",
+    "argumentTypes" : [ ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "Annotation_Base.getRangeCount" : {
+    "returnType" : "int",
+    "methodName" : "getRangeCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "Annotation_Base"
+  },
+  "VirtualEdition_Base.addSelectedBy" : {
+    "returnType" : "void",
+    "methodName" : "addSelectedBy",
+    "argumentTypes" : [ "LdoDUser" ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "ClassificationGameRound_Base.getVote" : {
+    "returnType" : "double",
+    "methodName" : "getVote",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGameRound_Base"
+  },
+  "InfoRange_Base.getText" : {
+    "returnType" : "String",
+    "methodName" : "getText",
+    "argumentTypes" : [ ],
+    "declaringType" : "InfoRange_Base"
+  },
+  "LdoD_Base.getFragments" : {
+    "returnType" : "Fragment",
+    "methodName" : "getFragments",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "PhysNote_Base.setMedium" : {
+    "returnType" : "void",
+    "methodName" : "setMedium",
+    "argumentTypes" : [ "Medium" ],
+    "declaringType" : "PhysNote_Base"
+  },
+  "FragInter_Base.setXmlId" : {
+    "returnType" : "void",
+    "methodName" : "setXmlId",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "FragInter_Base"
+  },
+  "Facsimile_Base.checkMultiplicityOfSource" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfSource",
+    "argumentTypes" : [ ],
+    "declaringType" : "Facsimile_Base"
+  },
+  "LdoDUser_Base.removeSelectedVirtualEditions" : {
+    "returnType" : "void",
+    "methodName" : "removeSelectedVirtualEditions",
+    "argumentTypes" : [ "VirtualEdition" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "TextPortion_Base.getPhysNote" : {
+    "returnType" : "PhysNote",
+    "methodName" : "getPhysNote",
+    "argumentTypes" : [ ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "DomainRoot_Base.setLdoD" : {
+    "returnType" : "void",
+    "methodName" : "setLdoD",
+    "argumentTypes" : [ "LdoD" ],
+    "declaringType" : "DomainRoot_Base"
+  },
+  "Tweet_Base.setDate" : {
+    "returnType" : "void",
+    "methodName" : "setDate",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Tweet_Base"
+  },
+  "Taxonomy_Base.addCategories" : {
+    "returnType" : "void",
+    "methodName" : "addCategories",
+    "argumentTypes" : [ "Category" ],
+    "declaringType" : "Taxonomy_Base"
+  },
+  "ClassificationGameRound_Base.getTime" : {
+    "returnType" : "DateTime",
+    "methodName" : "getTime",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGameRound_Base"
+  },
+  "ClassificationGame_Base.removeClassificationGameParticipant" : {
+    "returnType" : "void",
+    "methodName" : "removeClassificationGameParticipant",
+    "argumentTypes" : [ "ClassificationGameParticipant" ],
+    "declaringType" : "ClassificationGame_Base"
+  },
+  "LdoD_Base.setEditor" : {
+    "returnType" : "void",
+    "methodName" : "setEditor",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "VirtualEdition_Base.getSelectedByCount" : {
+    "returnType" : "int",
+    "methodName" : "getSelectedByCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "SimpleText_Base.addStartAnnotations" : {
+    "returnType" : "void",
+    "methodName" : "addStartAnnotations",
+    "argumentTypes" : [ "HumanAnnotation" ],
+    "declaringType" : "SimpleText_Base"
+  },
+  "Range_Base.getEnd" : {
+    "returnType" : "String",
+    "methodName" : "getEnd",
+    "argumentTypes" : [ ],
+    "declaringType" : "Range_Base"
+  },
+  "FragInter_Base.getLbTextSet" : {
+    "returnType" : "LbText",
+    "methodName" : "getLbTextSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "LdoDUser_Base.addSelectedVirtualEditions" : {
+    "returnType" : "void",
+    "methodName" : "addSelectedVirtualEditions",
+    "argumentTypes" : [ "VirtualEdition" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "Facsimile_Base.setSource" : {
+    "returnType" : "void",
+    "methodName" : "setSource",
+    "argumentTypes" : [ "Source" ],
+    "declaringType" : "Facsimile_Base"
+  },
+  "Player_Base.removeClassificationGameParticipant" : {
+    "returnType" : "void",
+    "methodName" : "removeClassificationGameParticipant",
+    "argumentTypes" : [ "ClassificationGameParticipant" ],
+    "declaringType" : "Player_Base"
+  },
+  "Tweet_Base.getSourceLink" : {
+    "returnType" : "String",
+    "methodName" : "getSourceLink",
+    "argumentTypes" : [ ],
+    "declaringType" : "Tweet_Base"
+  },
+  "LastTwitterID_Base.setLastVicenteParsedFile" : {
+    "returnType" : "void",
+    "methodName" : "setLastVicenteParsedFile",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "LastTwitterID_Base"
+  },
+  "ManuscriptSource_Base.setMaterial" : {
+    "returnType" : "void",
+    "methodName" : "setMaterial",
+    "argumentTypes" : [ "Material" ],
+    "declaringType" : "ManuscriptSource_Base"
+  },
+  "TypeNote_Base.checkMultiplicityOfManuscript" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfManuscript",
+    "argumentTypes" : [ ],
+    "declaringType" : "TypeNote_Base"
+  },
+  "ClassificationGameRound_Base.setClassificationGameParticipant" : {
+    "returnType" : "void",
+    "methodName" : "setClassificationGameParticipant",
+    "argumentTypes" : [ "ClassificationGameParticipant" ],
+    "declaringType" : "ClassificationGameRound_Base"
+  },
+  "ExpertEdition_Base.addExpertEditionInters" : {
+    "returnType" : "void",
+    "methodName" : "addExpertEditionInters",
+    "argumentTypes" : [ "ExpertEditionInter" ],
+    "declaringType" : "ExpertEdition_Base"
+  },
+  "LdoD_Base.getAdmin" : {
+    "returnType" : "boolean",
+    "methodName" : "getAdmin",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "VirtualEdition_Base.getCriteriaSet" : {
+    "returnType" : "SocialMediaCriteria",
+    "methodName" : "getCriteriaSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "Category_Base.getTagCount" : {
+    "returnType" : "int",
+    "methodName" : "getTagCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "Category_Base"
+  },
+  "ClassificationGameRound_Base.checkMultiplicityOfClassificationGameParticipant" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfClassificationGameParticipant",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGameRound_Base"
+  },
+  "TextPortion_Base.getParentText" : {
+    "returnType" : "TextPortion",
+    "methodName" : "getParentText",
+    "argumentTypes" : [ ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "LdoDUser_Base.getTagCount" : {
+    "returnType" : "int",
+    "methodName" : "getTagCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "PhysNote_Base.removeTextPortion" : {
+    "returnType" : "void",
+    "methodName" : "removeTextPortion",
+    "argumentTypes" : [ "TextPortion" ],
+    "declaringType" : "PhysNote_Base"
+  },
+  "VirtualEdition_Base.addCriteria" : {
+    "returnType" : "void",
+    "methodName" : "addCriteria",
+    "argumentTypes" : [ "SocialMediaCriteria" ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "ClassificationGame_Base.setSync" : {
+    "returnType" : "void",
+    "methodName" : "setSync",
+    "argumentTypes" : [ "boolean" ],
+    "declaringType" : "ClassificationGame_Base"
+  },
+  "LdoD_Base.getTitle" : {
+    "returnType" : "String",
+    "methodName" : "getTitle",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "Surface_Base.removeRefText" : {
+    "returnType" : "void",
+    "methodName" : "removeRefText",
+    "argumentTypes" : [ "RefText" ],
+    "declaringType" : "Surface_Base"
+  },
+  "Source_Base.setLdoDDate" : {
+    "returnType" : "void",
+    "methodName" : "setLdoDDate",
+    "argumentTypes" : [ "LdoDDate" ],
+    "declaringType" : "Source_Base"
+  },
+  "LdoD_Base.addVirtualEditions" : {
+    "returnType" : "void",
+    "methodName" : "addVirtualEditions",
+    "argumentTypes" : [ "VirtualEdition" ],
+    "declaringType" : "LdoD_Base"
+  },
+  "TwitterCitation_Base.getUsername" : {
+    "returnType" : "String",
+    "methodName" : "getUsername",
+    "argumentTypes" : [ ],
+    "declaringType" : "TwitterCitation_Base"
+  },
+  "VirtualEditionInter_Base.getSection" : {
+    "returnType" : "Section",
+    "methodName" : "getSection",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEditionInter_Base"
+  },
+  "FragInter_Base.removeLbText" : {
+    "returnType" : "void",
+    "methodName" : "removeLbText",
+    "argumentTypes" : [ "LbText" ],
+    "declaringType" : "FragInter_Base"
+  },
+  "Tweet_Base.getCountry" : {
+    "returnType" : "String",
+    "methodName" : "getCountry",
+    "argumentTypes" : [ ],
+    "declaringType" : "Tweet_Base"
+  },
+  "LdoDUser_Base.getRecommendationWeights" : {
+    "returnType" : "RecommendationWeights",
+    "methodName" : "getRecommendationWeights",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "LdoDUser_Base.addRecommendationWeights" : {
+    "returnType" : "void",
+    "methodName" : "addRecommendationWeights",
+    "argumentTypes" : [ "RecommendationWeights" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "ExpertEditionInter_Base.setVolume" : {
+    "returnType" : "void",
+    "methodName" : "setVolume",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "ExpertEditionInter_Base"
+  },
+  "Citation_Base.addAwareAnnotation" : {
+    "returnType" : "void",
+    "methodName" : "addAwareAnnotation",
+    "argumentTypes" : [ "AwareAnnotation" ],
+    "declaringType" : "Citation_Base"
+  },
+  "LdoDUser_Base.removeTag" : {
+    "returnType" : "void",
+    "methodName" : "removeTag",
+    "argumentTypes" : [ "Tag" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "ClassificationGameParticipant_Base.getScore" : {
+    "returnType" : "double",
+    "methodName" : "getScore",
+    "argumentTypes" : [ ],
+    "declaringType" : "ClassificationGameParticipant_Base"
+  },
+  "AwareAnnotation_Base.checkMultiplicityOfCitation" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfCitation",
+    "argumentTypes" : [ ],
+    "declaringType" : "AwareAnnotation_Base"
+  },
+  "RegistrationToken_Base.setAuthorized" : {
+    "returnType" : "void",
+    "methodName" : "setAuthorized",
+    "argumentTypes" : [ "boolean" ],
+    "declaringType" : "RegistrationToken_Base"
+  },
+  "LdoD_Base.getFragmentsCount" : {
+    "returnType" : "int",
+    "methodName" : "getFragmentsCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "ExpertEdition_Base.checkMultiplicityOfLdoD4Expert" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfLdoD4Expert",
+    "argumentTypes" : [ ],
+    "declaringType" : "ExpertEdition_Base"
+  },
+  "ExpertEdition_Base.setAuthor" : {
+    "returnType" : "void",
+    "methodName" : "setAuthor",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "ExpertEdition_Base"
+  },
+  "FragInter_Base.getLbTextCount" : {
+    "returnType" : "int",
+    "methodName" : "getLbTextCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "FragInter_Base"
+  },
+  "TextPortion_Base.removePhysNote" : {
+    "returnType" : "void",
+    "methodName" : "removePhysNote",
+    "argumentTypes" : [ "PhysNote" ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "Tweet_Base.getLocation" : {
+    "returnType" : "String",
+    "methodName" : "getLocation",
+    "argumentTypes" : [ ],
+    "declaringType" : "Tweet_Base"
+  },
+  "Tweet_Base.getTweetText" : {
+    "returnType" : "String",
+    "methodName" : "getTweetText",
+    "argumentTypes" : [ ],
+    "declaringType" : "Tweet_Base"
+  },
+  "LdoDUser_Base.removeResponsibleForGames" : {
+    "returnType" : "void",
+    "methodName" : "removeResponsibleForGames",
+    "argumentTypes" : [ "ClassificationGame" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "LdoDUser_Base.setLdoD" : {
+    "returnType" : "void",
+    "methodName" : "setLdoD",
+    "argumentTypes" : [ "LdoD" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "UserConnection_Base.getLdoD" : {
+    "returnType" : "LdoD",
+    "methodName" : "getLdoD",
+    "argumentTypes" : [ ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "Tag_Base.checkMultiplicityOfCategory" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfCategory",
+    "argumentTypes" : [ ],
+    "declaringType" : "Tag_Base"
+  },
+  "FragInter_Base.addInfoRange" : {
+    "returnType" : "void",
+    "methodName" : "addInfoRange",
+    "argumentTypes" : [ "InfoRange" ],
+    "declaringType" : "FragInter_Base"
+  },
+  "LdoDDate_Base.setFragInter" : {
+    "returnType" : "void",
+    "methodName" : "setFragInter",
+    "argumentTypes" : [ "FragInter" ],
+    "declaringType" : "LdoDDate_Base"
+  },
+  "SocialMediaCriteria_Base.checkMultiplicityOfVirtualEdition" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfVirtualEdition",
+    "argumentTypes" : [ ],
+    "declaringType" : "SocialMediaCriteria_Base"
+  },
+  "VirtualEditionInter_Base.getTag" : {
+    "returnType" : "Tag",
+    "methodName" : "getTag",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEditionInter_Base"
+  },
+  "ExpertEditionInter_Base.setNotes" : {
+    "returnType" : "void",
+    "methodName" : "setNotes",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "ExpertEditionInter_Base"
+  },
+  "LdoDUser_Base.getResponsibleForGamesCount" : {
+    "returnType" : "int",
+    "methodName" : "getResponsibleForGamesCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "ExpertEdition_Base.getAuthor" : {
+    "returnType" : "String",
+    "methodName" : "getAuthor",
+    "argumentTypes" : [ ],
+    "declaringType" : "ExpertEdition_Base"
+  },
+  "Tweet_Base.getTweetID" : {
+    "returnType" : "long",
+    "methodName" : "getTweetID",
+    "argumentTypes" : [ ],
+    "declaringType" : "Tweet_Base"
+  },
+  "Range_Base.setAnnotation" : {
+    "returnType" : "void",
+    "methodName" : "setAnnotation",
+    "argumentTypes" : [ "Annotation" ],
+    "declaringType" : "Range_Base"
+  },
+  "LdoD_Base.getTokenCount" : {
+    "returnType" : "int",
+    "methodName" : "getTokenCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "Section_Base.getVirtualEditionInterCount" : {
+    "returnType" : "int",
+    "methodName" : "getVirtualEditionInterCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "Section_Base"
+  },
+  "Citation_Base.getFragment" : {
+    "returnType" : "Fragment",
+    "methodName" : "getFragment",
+    "argumentTypes" : [ ],
+    "declaringType" : "Citation_Base"
+  },
+  "VirtualEdition_Base.addRecommendationWeights" : {
+    "returnType" : "void",
+    "methodName" : "addRecommendationWeights",
+    "argumentTypes" : [ "RecommendationWeights" ],
+    "declaringType" : "VirtualEdition_Base"
+  },
+  "TextPortion_Base.getPrevText" : {
+    "returnType" : "TextPortion",
+    "methodName" : "getPrevText",
+    "argumentTypes" : [ ],
+    "declaringType" : "TextPortion_Base"
+  },
+  "HumanAnnotation_Base.getTag" : {
+    "returnType" : "Tag",
+    "methodName" : "getTag",
+    "argumentTypes" : [ ],
+    "declaringType" : "HumanAnnotation_Base"
+  },
+  "InfoRange_Base.getStart" : {
+    "returnType" : "String",
+    "methodName" : "getStart",
+    "argumentTypes" : [ ],
+    "declaringType" : "InfoRange_Base"
+  },
+  "NoteText_Base.addAnnexNote" : {
+    "returnType" : "void",
+    "methodName" : "addAnnexNote",
+    "argumentTypes" : [ "AnnexNote" ],
+    "declaringType" : "NoteText_Base"
+  },
+  "LdoDUser_Base.setToken" : {
+    "returnType" : "void",
+    "methodName" : "setToken",
+    "argumentTypes" : [ "RegistrationToken" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "Tag_Base.getClassificationGame" : {
+    "returnType" : "ClassificationGame",
+    "methodName" : "getClassificationGame",
+    "argumentTypes" : [ ],
+    "declaringType" : "Tag_Base"
+  },
+  "UserConnection_Base.setAccessToken" : {
+    "returnType" : "void",
+    "methodName" : "setAccessToken",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "LastTwitterID_Base.getBookLastTwitterID" : {
+    "returnType" : "long",
+    "methodName" : "getBookLastTwitterID",
+    "argumentTypes" : [ ],
+    "declaringType" : "LastTwitterID_Base"
+  },
+  "Tweet_Base.getUsername" : {
+    "returnType" : "String",
+    "methodName" : "getUsername",
+    "argumentTypes" : [ ],
+    "declaringType" : "Tweet_Base"
+  },
+  "AltTextWeight_Base.getSegText" : {
+    "returnType" : "SegText",
+    "methodName" : "getSegText",
+    "argumentTypes" : [ ],
+    "declaringType" : "AltTextWeight_Base"
+  },
+  "GapText_Base.setExtent" : {
+    "returnType" : "void",
+    "methodName" : "setExtent",
+    "argumentTypes" : [ "int" ],
+    "declaringType" : "GapText_Base"
+  },
+  "LdoDUser_Base.setLastName" : {
+    "returnType" : "void",
+    "methodName" : "setLastName",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "LdoDUser_Base"
+  },
+  "PbText_Base.getFragInterCount" : {
+    "returnType" : "int",
+    "methodName" : "getFragInterCount",
+    "argumentTypes" : [ ],
+    "declaringType" : "PbText_Base"
+  },
+  "Tweet_Base.setCitation" : {
+    "returnType" : "void",
+    "methodName" : "setCitation",
+    "argumentTypes" : [ "TwitterCitation" ],
+    "declaringType" : "Tweet_Base"
+  },
+  "RefText_Base.setSurface" : {
+    "returnType" : "void",
+    "methodName" : "setSurface",
+    "argumentTypes" : [ "Surface" ],
+    "declaringType" : "RefText_Base"
+  },
+  "LastTwitterID_Base.setBookLastTwitterID" : {
+    "returnType" : "void",
+    "methodName" : "setBookLastTwitterID",
+    "argumentTypes" : [ "long" ],
+    "declaringType" : "LastTwitterID_Base"
+  },
+  "PhysNote_Base.getMedium" : {
+    "returnType" : "Medium",
+    "methodName" : "getMedium",
+    "argumentTypes" : [ ],
+    "declaringType" : "PhysNote_Base"
+  },
+  "Category_Base.getTagSet" : {
+    "returnType" : "Tag",
+    "methodName" : "getTagSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "Category_Base"
+  },
+  "LdoD_Base.getToken" : {
+    "returnType" : "RegistrationToken",
+    "methodName" : "getToken",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "RegistrationToken_Base.setLdoD" : {
+    "returnType" : "void",
+    "methodName" : "setLdoD",
+    "argumentTypes" : [ "LdoD" ],
+    "declaringType" : "RegistrationToken_Base"
+  },
+  "ClassificationGame_Base.addClassificationGameParticipant" : {
+    "returnType" : "void",
+    "methodName" : "addClassificationGameParticipant",
+    "argumentTypes" : [ "ClassificationGameParticipant" ],
+    "declaringType" : "ClassificationGame_Base"
+  },
+  "Taxonomy_Base.getCategoriesSet" : {
+    "returnType" : "Category",
+    "methodName" : "getCategoriesSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "Taxonomy_Base"
+  },
+  "LdoD_Base.getUserConnection" : {
+    "returnType" : "UserConnection",
+    "methodName" : "getUserConnection",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "AltTextWeight_Base.getAltText" : {
+    "returnType" : "AltText",
+    "methodName" : "getAltText",
+    "argumentTypes" : [ ],
+    "declaringType" : "AltTextWeight_Base"
+  },
+  "SocialMediaCriteria_Base.setVirtualEdition" : {
+    "returnType" : "void",
+    "methodName" : "setVirtualEdition",
+    "argumentTypes" : [ "VirtualEdition" ],
+    "declaringType" : "SocialMediaCriteria_Base"
+  },
+  "UserConnection_Base.setDisplayName" : {
+    "returnType" : "void",
+    "methodName" : "setDisplayName",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "UserConnection_Base"
+  },
+  "LdoD_Base.getExpertEditions" : {
+    "returnType" : "ExpertEdition",
+    "methodName" : "getExpertEditions",
+    "argumentTypes" : [ ],
+    "declaringType" : "LdoD_Base"
+  },
+  "Range_Base.getEndOffset" : {
+    "returnType" : "int",
+    "methodName" : "getEndOffset",
+    "argumentTypes" : [ ],
+    "declaringType" : "Range_Base"
+  },
+  "Player_Base.checkMultiplicityOfUser" : {
+    "returnType" : "boolean",
+    "methodName" : "checkMultiplicityOfUser",
+    "argumentTypes" : [ ],
+    "declaringType" : "Player_Base"
+  },
+  "VirtualEditionInter_Base.getAnnotationSet" : {
+    "returnType" : "Annotation",
+    "methodName" : "getAnnotationSet",
+    "argumentTypes" : [ ],
+    "declaringType" : "VirtualEditionInter_Base"
+  },
+  "Source_Base.setAltIdentifier" : {
+    "returnType" : "void",
+    "methodName" : "setAltIdentifier",
+    "argumentTypes" : [ "String" ],
+    "declaringType" : "Source_Base"
+  }
+}
