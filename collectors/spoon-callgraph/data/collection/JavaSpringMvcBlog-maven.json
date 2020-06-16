@@ -343,10 +343,6 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
       "PostRating",
       "R"
     ],
@@ -356,6 +352,10 @@
     ],
     [
       "PostRating",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -415,11 +415,11 @@
       "R"
     ],
     [
-      "Post",
+      "PostRating",
       "R"
     ],
     [
-      "PostRating",
+      "Post",
       "R"
     ]
   ],
@@ -459,19 +459,19 @@
       "R"
     ],
     [
+      "Post",
+      "R"
+    ],
+    [
+      "PostRating",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
     [
       "PostRating",
-      "R"
-    ],
-    [
-      "PostRating",
-      "R"
-    ],
-    [
-      "Post",
       "R"
     ],
     [
@@ -529,47 +529,11 @@
       "R"
     ],
     [
-      "Tag",
-      "R"
-    ],
-    [
-      "Post",
-      "R"
-    ],
-    [
-      "Post",
-      "R"
-    ],
-    [
       "Post",
       "R"
     ],
     [
       "Tag",
-      "R"
-    ],
-    [
-      "Post",
-      "R"
-    ],
-    [
-      "Post",
-      "R"
-    ],
-    [
-      "Tag",
-      "R"
-    ],
-    [
-      "Post",
-      "R"
-    ],
-    [
-      "Tag",
-      "R"
-    ],
-    [
-      "Post",
       "R"
     ],
     [
@@ -593,11 +557,7 @@
       "R"
     ],
     [
-      "Post",
-      "R"
-    ],
-    [
-      "Post",
+      "Tag",
       "R"
     ],
     [
@@ -606,6 +566,46 @@
     ],
     [
       "Tag",
+      "R"
+    ],
+    [
+      "Post",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "Post",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "Post",
+      "R"
+    ],
+    [
+      "Post",
+      "R"
+    ],
+    [
+      "Post",
+      "R"
+    ],
+    [
+      "Post",
+      "R"
+    ],
+    [
+      "Post",
+      "R"
+    ],
+    [
+      "Post",
       "R"
     ],
     [
@@ -961,15 +961,15 @@
       "R"
     ],
     [
-      "CommentRating",
-      "R"
-    ],
-    [
-      "CommentRating",
-      "R"
-    ],
-    [
       "Comment",
+      "R"
+    ],
+    [
+      "CommentRating",
+      "R"
+    ],
+    [
+      "CommentRating",
       "R"
     ],
     [
@@ -1107,6 +1107,10 @@
       "R"
     ],
     [
+      "Comment",
+      "R"
+    ],
+    [
       "CommentRating",
       "R"
     ],
@@ -1116,10 +1120,6 @@
     ],
     [
       "CommentRating",
-      "R"
-    ],
-    [
-      "Comment",
       "R"
     ],
     [

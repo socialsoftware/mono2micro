@@ -425,11 +425,11 @@
       "R"
     ],
     [
-      "ExtKeyValue",
+      "ExtKeyValueCategory",
       "R"
     ],
     [
-      "ExtKeyValueCategory",
+      "ExtKeyValue",
       "R"
     ]
   ],
@@ -523,11 +523,11 @@
       "R"
     ],
     [
-      "ExtKeyValue",
+      "ExtKeyValueCategory",
       "R"
     ],
     [
-      "ExtKeyValueCategory",
+      "ExtKeyValue",
       "R"
     ]
   ],
@@ -565,6 +565,10 @@
     [
       "User",
       "R"
+    ],
+    [
+      "BpmDelegateHistory",
+      "W"
     ]
   ],
   "FormProcessController.rollbackTask": [
@@ -631,6 +635,18 @@
       "R"
     ],
     [
+      "BpmConfNode",
+      "R"
+    ],
+    [
+      "BpmConfBase",
+      "R"
+    ],
+    [
+      "BpmConfForm",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
@@ -641,6 +657,26 @@
   ],
   "FormProcessController.viewTaskForm": [
     [
+      "BpmConfBase",
+      "R"
+    ],
+    [
+      "BpmProcess",
+      "R"
+    ],
+    [
+      "BpmConfNode",
+      "R"
+    ],
+    [
+      "BpmConfBase",
+      "R"
+    ],
+    [
+      "BpmConfForm",
+      "R"
+    ],
+    [
       "M",
       "R"
     ],
@@ -650,6 +686,18 @@
     ],
     [
       "BpmConfOperation",
+      "R"
+    ],
+    [
+      "BpmConfNode",
+      "R"
+    ],
+    [
+      "BpmConfBase",
+      "R"
+    ],
+    [
+      "BpmConfForm",
       "R"
     ],
     [
@@ -1387,10 +1435,6 @@
       "R"
     ],
     [
-      "ExtKeyValueCategory",
-      "R"
-    ],
-    [
       "ExtKeyValue",
       "R"
     ],
@@ -1403,11 +1447,7 @@
       "R"
     ],
     [
-      "ExtKeyValue",
-      "R"
-    ],
-    [
-      "ExtKeyValue",
+      "ExtKeyValueCategory",
       "R"
     ],
     [
@@ -1416,6 +1456,14 @@
     ],
     [
       "ExtKeyValueCategory",
+      "R"
+    ],
+    [
+      "ExtKeyValue",
+      "R"
+    ],
+    [
+      "ExtKeyValue",
       "R"
     ],
     [
@@ -1437,6 +1485,18 @@
       "R"
     ],
     [
+      "ExtKeyValue",
+      "R"
+    ],
+    [
+      "ExtKeyValue",
+      "R"
+    ],
+    [
+      "ExtKeyValueCategory",
+      "R"
+    ],
+    [
       "ExtKeyValueCategory",
       "R"
     ],
@@ -1454,18 +1514,6 @@
     ],
     [
       "ExtKeyValue",
-      "R"
-    ],
-    [
-      "ExtKeyValue",
-      "R"
-    ],
-    [
-      "ExtKeyValue",
-      "R"
-    ],
-    [
-      "ExtKeyValueCategory",
       "R"
     ]
   ],
@@ -1479,18 +1527,6 @@
       "R"
     ],
     [
-      "ExtKeyValue",
-      "R"
-    ],
-    [
-      "ExtKeyValue",
-      "R"
-    ],
-    [
-      "ExtKeyValueCategory",
-      "R"
-    ],
-    [
       "ExtKeyValueCategory",
       "R"
     ],
@@ -1503,11 +1539,23 @@
       "R"
     ],
     [
+      "ExtKeyValueCategory",
+      "R"
+    ],
+    [
+      "ExtKeyValue",
+      "R"
+    ],
+    [
       "ExtKeyValue",
       "R"
     ],
     [
       "ExtKeyValueCategory",
+      "R"
+    ],
+    [
+      "ExtKeyValue",
       "R"
     ],
     [
@@ -1893,10 +1941,6 @@
       "R"
     ],
     [
-      "ExtKeyValueCategory",
-      "R"
-    ],
-    [
       "ExtKeyValue",
       "R"
     ],
@@ -1909,10 +1953,6 @@
       "R"
     ],
     [
-      "ExtKeyValue",
-      "R"
-    ],
-    [
       "ExtKeyValueCategory",
       "R"
     ],
@@ -1922,6 +1962,14 @@
     ],
     [
       "ExtKeyValue",
+      "R"
+    ],
+    [
+      "ExtKeyValue",
+      "R"
+    ],
+    [
+      "ExtKeyValueCategory",
       "R"
     ],
     [
@@ -1947,10 +1995,6 @@
       "R"
     ],
     [
-      "ExtKeyValueCategory",
-      "R"
-    ],
-    [
       "ExtKeyValue",
       "R"
     ],
@@ -1963,10 +2007,6 @@
       "R"
     ],
     [
-      "ExtKeyValue",
-      "R"
-    ],
-    [
       "ExtKeyValueCategory",
       "R"
     ],
@@ -1976,6 +2016,14 @@
     ],
     [
       "ExtKeyValue",
+      "R"
+    ],
+    [
+      "ExtKeyValue",
+      "R"
+    ],
+    [
+      "ExtKeyValueCategory",
       "R"
     ],
     [
@@ -1993,11 +2041,11 @@
       "R"
     ],
     [
-      "ExtKeyValueCategory",
+      "ExtKeyValue",
       "R"
     ],
     [
-      "ExtKeyValue",
+      "ExtKeyValueCategory",
       "R"
     ],
     [
@@ -2099,11 +2147,11 @@
       "R"
     ],
     [
-      "ExtKeyValueCategory",
+      "ExtKeyValue",
       "R"
     ],
     [
-      "ExtKeyValue",
+      "ExtKeyValueCategory",
       "R"
     ],
     [
@@ -2129,10 +2177,6 @@
       "R"
     ],
     [
-      "ExtKeyValueCategory",
-      "R"
-    ],
-    [
       "ExtKeyValue",
       "R"
     ],
@@ -2141,7 +2185,7 @@
       "R"
     ],
     [
-      "ExtKeyValue",
+      "ExtKeyValueCategory",
       "R"
     ],
     [
@@ -2154,6 +2198,10 @@
     ],
     [
       "ExtKeyValueCategory",
+      "R"
+    ],
+    [
+      "ExtKeyValue",
       "R"
     ]
   ],
@@ -2187,11 +2235,11 @@
       "R"
     ],
     [
-      "ExtKeyValue",
+      "ExtKeyValueCategory",
       "R"
     ],
     [
-      "ExtKeyValueCategory",
+      "ExtKeyValue",
       "R"
     ],
     [
@@ -2262,6 +2310,18 @@
     ],
     [
       "BpmProcess",
+      "R"
+    ],
+    [
+      "BpmConfNode",
+      "R"
+    ],
+    [
+      "BpmConfBase",
+      "R"
+    ],
+    [
+      "BpmConfForm",
       "R"
     ],
     [
@@ -3909,11 +3969,11 @@
       "R"
     ],
     [
-      "ExtKeyValue",
+      "ExtKeyValueCategory",
       "R"
     ],
     [
-      "ExtKeyValueCategory",
+      "ExtKeyValue",
       "R"
     ],
     [
@@ -5405,11 +5465,11 @@
       "R"
     ],
     [
-      "ExtKeyValue",
+      "ExtKeyValueCategory",
       "R"
     ],
     [
-      "ExtKeyValueCategory",
+      "ExtKeyValue",
       "R"
     ],
     [
@@ -5439,11 +5499,11 @@
       "R"
     ],
     [
-      "ExtKeyValue",
+      "ExtKeyValueCategory",
       "R"
     ],
     [
-      "ExtKeyValueCategory",
+      "ExtKeyValue",
       "R"
     ],
     [
@@ -5497,11 +5557,11 @@
       "R"
     ],
     [
-      "ExtKeyValue",
+      "ExtKeyValueCategory",
       "R"
     ],
     [
-      "ExtKeyValueCategory",
+      "ExtKeyValue",
       "R"
     ],
     [
@@ -6031,14 +6091,6 @@
     [
       "Message",
       "R"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "M",
-      "W"
     ]
   ],
   "MessageController.reply": [
@@ -6925,6 +6977,10 @@
     [
       "User",
       "R"
+    ],
+    [
+      "BpmDelegateInfo",
+      "W"
     ]
   ],
   "DelegateController.listDelegateHistories": [
@@ -6947,6 +7003,12 @@
     [
       "BpmDelegateInfo",
       "R"
+    ]
+  ],
+  "DelegateController.removeDelegateInfo": [
+    [
+      "BpmDelegateInfo",
+      "W"
     ]
   ],
   "UserProcessController.list": [
@@ -7545,11 +7607,11 @@
       "R"
     ],
     [
-      "Child",
+      "Parent",
       "R"
     ],
     [
-      "Parent",
+      "Child",
       "R"
     ],
     [

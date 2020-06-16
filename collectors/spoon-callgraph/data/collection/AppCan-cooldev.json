@@ -567,6 +567,14 @@
       "R"
     ],
     [
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
       "Project",
       "R"
     ],
@@ -576,14 +584,6 @@
     ],
     [
       "Project",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
       "R"
     ],
     [
@@ -1365,23 +1365,23 @@
   ],
   "EmmController.getChannelByappId": [
     [
+      "AppPackage",
+      "R"
+    ],
+    [
+      "AppPackage",
+      "R"
+    ],
+    [
+      "AppPackage",
+      "R"
+    ],
+    [
+      "AppPackage",
+      "R"
+    ],
+    [
       "AppVersion",
-      "R"
-    ],
-    [
-      "AppPackage",
-      "R"
-    ],
-    [
-      "AppPackage",
-      "R"
-    ],
-    [
-      "AppPackage",
-      "R"
-    ],
-    [
-      "AppPackage",
       "R"
     ],
     [
@@ -3719,10 +3719,6 @@
       "R"
     ],
     [
-      "Project",
-      "R"
-    ],
-    [
       "App",
       "R"
     ],
@@ -3731,15 +3727,19 @@
       "R"
     ],
     [
-      "Project",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
       "App",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "Project",
       "R"
     ],
     [
@@ -5629,11 +5629,11 @@
       "R"
     ],
     [
-      "Permission",
+      "RoleAuth",
       "R"
     ],
     [
-      "RoleAuth",
+      "Permission",
       "R"
     ],
     [
@@ -5675,6 +5675,14 @@
       "R"
     ],
     [
+      "TeamMember",
+      "R"
+    ],
+    [
+      "TeamMember",
+      "R"
+    ],
+    [
       "TeamAuth",
       "R"
     ],
@@ -5691,10 +5699,6 @@
       "R"
     ],
     [
-      "TeamMember",
-      "R"
-    ],
-    [
       "TeamAuth",
       "R"
     ],
@@ -5703,15 +5707,7 @@
       "R"
     ],
     [
-      "TeamMember",
-      "R"
-    ],
-    [
       "Project",
-      "R"
-    ],
-    [
-      "App",
       "R"
     ],
     [
@@ -5740,6 +5736,10 @@
     ],
     [
       "Project",
+      "R"
+    ],
+    [
+      "App",
       "R"
     ],
     [
@@ -5995,6 +5995,14 @@
       "R"
     ],
     [
+      "ProjectMember",
+      "R"
+    ],
+    [
+      "ProjectAuth",
+      "R"
+    ],
+    [
       "ProjectAuth",
       "R"
     ],
@@ -6012,14 +6020,6 @@
     ],
     [
       "ProjectMember",
-      "R"
-    ],
-    [
-      "ProjectMember",
-      "R"
-    ],
-    [
-      "ProjectAuth",
       "R"
     ],
     [
@@ -8833,10 +8833,6 @@
       "W"
     ],
     [
-      "Task",
-      "R"
-    ],
-    [
       "Process",
       "R"
     ],
@@ -8845,15 +8841,19 @@
       "R"
     ],
     [
-      "Process",
-      "R"
-    ],
-    [
-      "Process",
+      "Task",
       "R"
     ],
     [
       "Task",
+      "R"
+    ],
+    [
+      "Process",
+      "R"
+    ],
+    [
+      "Process",
       "R"
     ],
     [
@@ -9085,6 +9085,14 @@
       "R"
     ],
     [
+      "Task",
+      "R"
+    ],
+    [
+      "Process",
+      "R"
+    ],
+    [
       "Process",
       "R"
     ],
@@ -9094,14 +9102,6 @@
     ],
     [
       "Task",
-      "R"
-    ],
-    [
-      "Task",
-      "R"
-    ],
-    [
-      "Process",
       "R"
     ],
     [
@@ -9357,7 +9357,7 @@
       "W"
     ],
     [
-      "Process",
+      "Task",
       "R"
     ],
     [
@@ -9377,7 +9377,7 @@
       "R"
     ],
     [
-      "Task",
+      "Process",
       "R"
     ],
     [
@@ -9469,11 +9469,11 @@
       "R"
     ],
     [
-      "Project",
+      "Team",
       "R"
     ],
     [
-      "Team",
+      "Project",
       "R"
     ],
     [
@@ -9853,11 +9853,11 @@
       "R"
     ],
     [
-      "Process",
+      "Task",
       "R"
     ],
     [
-      "Task",
+      "Process",
       "R"
     ],
     [
@@ -21757,30 +21757,6 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "TeamMember",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
       "ProjectMember",
       "R"
     ],
@@ -21813,6 +21789,46 @@
       "R"
     ],
     [
+      "TeamMember",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "ProjectMember",
       "R"
     ],
@@ -21821,43 +21837,27 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
       "TeamMember",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -21877,7 +21877,11 @@
       "R"
     ],
     [
-      "ProjectMember",
+      "User",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -21897,23 +21901,7 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
+      "ProjectMember",
       "R"
     ],
     [
@@ -21942,6 +21930,18 @@
     ],
     [
       "ProjectMember",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -21971,30 +21971,6 @@
       "R"
     ],
     [
-      "TeamMember",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
@@ -22031,7 +22007,7 @@
       "R"
     ],
     [
-      "ProjectMember",
+      "User",
       "R"
     ],
     [
@@ -22048,6 +22024,30 @@
     ],
     [
       "TeamMember",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "ProjectMember",
+      "R"
+    ],
+    [
+      "TeamMember",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -22103,7 +22103,27 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
       "ProjectMember",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "TeamMember",
       "R"
     ],
     [
@@ -22135,31 +22155,11 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
       "ProjectMember",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "TeamMember",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ]
   ],
@@ -22219,10 +22219,6 @@
       "R"
     ],
     [
-      "TeamAuth",
-      "R"
-    ],
-    [
       "Team",
       "R"
     ],
@@ -22232,6 +22228,10 @@
     ],
     [
       "TeamMember",
+      "R"
+    ],
+    [
+      "TeamAuth",
       "R"
     ],
     [
@@ -22367,7 +22367,7 @@
       "R"
     ],
     [
-      "Project",
+      "Team",
       "R"
     ],
     [
@@ -22375,11 +22375,15 @@
       "R"
     ],
     [
+      "Project",
+      "R"
+    ],
+    [
       "TeamAuth",
       "R"
     ],
     [
-      "Team",
+      "Project",
       "R"
     ],
     [
@@ -22396,10 +22400,6 @@
     ],
     [
       "ProjectMember",
-      "R"
-    ],
-    [
-      "Project",
       "R"
     ],
     [
@@ -22577,14 +22577,6 @@
       "R"
     ],
     [
-      "TeamMember",
-      "R"
-    ],
-    [
-      "TeamMember",
-      "R"
-    ],
-    [
       "TeamAuth",
       "R"
     ],
@@ -22597,11 +22589,11 @@
       "R"
     ],
     [
-      "Project",
+      "TeamMember",
       "R"
     ],
     [
-      "Project",
+      "TeamMember",
       "R"
     ],
     [
@@ -22610,6 +22602,14 @@
     ],
     [
       "ProjectMember",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "Project",
       "R"
     ],
     [
@@ -22893,22 +22893,6 @@
       "R"
     ],
     [
-      "TeamMember",
-      "R"
-    ],
-    [
-      "TeamMember",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "TeamMember",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
@@ -22929,19 +22913,15 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
       "TeamMember",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -22966,6 +22946,26 @@
     ],
     [
       "TeamMember",
+      "R"
+    ],
+    [
+      "TeamMember",
+      "R"
+    ],
+    [
+      "TeamMember",
+      "R"
+    ],
+    [
+      "TeamMember",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -22981,30 +22981,6 @@
       "R"
     ],
     [
-      "TeamMember",
-      "R"
-    ],
-    [
-      "TeamMember",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "TeamMember",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
@@ -23045,6 +23021,22 @@
       "R"
     ],
     [
+      "TeamMember",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "TeamMember",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
@@ -23058,6 +23050,46 @@
     ],
     [
       "TeamMember",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "TeamMember",
+      "R"
+    ],
+    [
+      "User",
+      "W"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "TeamMember",
+      "R"
+    ],
+    [
+      "TeamMember",
+      "R"
+    ],
+    [
+      "TeamAuth",
+      "R"
+    ],
+    [
+      "TeamAuth",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
       "R"
     ],
     [
@@ -23105,34 +23137,6 @@
       "R"
     ],
     [
-      "TeamMember",
-      "R"
-    ],
-    [
-      "TeamAuth",
-      "R"
-    ],
-    [
-      "TeamAuth",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "TeamMember",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
@@ -23142,10 +23146,6 @@
     ],
     [
       "TeamMember",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -23267,15 +23267,15 @@
       "R"
     ],
     [
+      "TeamMember",
+      "R"
+    ],
+    [
+      "TeamMember",
+      "R"
+    ],
+    [
       "TeamAuth",
-      "R"
-    ],
-    [
-      "TeamMember",
-      "R"
-    ],
-    [
-      "TeamMember",
       "R"
     ],
     [
@@ -23287,27 +23287,11 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
       "TeamMember",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -23327,11 +23311,7 @@
       "R"
     ],
     [
-      "TeamMember",
-      "R"
-    ],
-    [
-      "TeamMember",
+      "User",
       "R"
     ],
     [
@@ -23363,7 +23343,15 @@
       "R"
     ],
     [
-      "TeamMember",
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -23372,6 +23360,18 @@
     ],
     [
       "User",
+      "R"
+    ],
+    [
+      "TeamMember",
+      "R"
+    ],
+    [
+      "TeamMember",
+      "R"
+    ],
+    [
+      "TeamMember",
       "R"
     ],
     [
@@ -23443,6 +23443,14 @@
   ],
   "TeamController.teamListSearchLikeForName": [
     [
+      "TeamAuth",
+      "R"
+    ],
+    [
+      "TeamMember",
+      "R"
+    ],
+    [
       "TeamMember",
       "R"
     ],
@@ -23452,14 +23460,6 @@
     ],
     [
       "TeamMember",
-      "R"
-    ],
-    [
-      "TeamMember",
-      "R"
-    ],
-    [
-      "TeamAuth",
       "R"
     ],
     [
@@ -23629,14 +23629,6 @@
       "R"
     ],
     [
-      "Project",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
       "App",
       "R"
     ],
@@ -23649,7 +23641,7 @@
       "R"
     ],
     [
-      "App",
+      "Project",
       "R"
     ],
     [
@@ -23662,6 +23654,14 @@
     ],
     [
       "Project",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "App",
       "R"
     ],
     [
@@ -25347,6 +25347,10 @@
   ],
   "TeamGroupController.findUserByGroupId": [
     [
+      "User",
+      "R"
+    ],
+    [
       "TeamMember",
       "R"
     ],
@@ -25363,10 +25367,6 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
       "TeamMember",
       "R"
     ],
@@ -25379,11 +25379,11 @@
       "R"
     ],
     [
-      "User",
+      "TeamMember",
       "R"
     ],
     [
-      "TeamMember",
+      "User",
       "R"
     ],
     [
@@ -25431,14 +25431,6 @@
       "R"
     ],
     [
-      "TeamMember",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
@@ -25451,11 +25443,19 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
       "TeamMember",
       "R"
     ],
     [
       "User",
+      "R"
+    ],
+    [
+      "TeamMember",
       "R"
     ],
     [
@@ -26061,6 +26061,26 @@
       "R"
     ],
     [
+      "App",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "App",
+      "R"
+    ],
+    [
+      "App",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
       "Project",
       "R"
     ],
@@ -26073,27 +26093,7 @@
       "R"
     ],
     [
-      "App",
-      "R"
-    ],
-    [
       "Project",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
-      "App",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
-      "App",
       "R"
     ],
     [
@@ -39391,7 +39391,23 @@
       "R"
     ],
     [
+      "BugMember",
+      "R"
+    ],
+    [
+      "BugMember",
+      "R"
+    ],
+    [
       "BugAuth",
+      "R"
+    ],
+    [
+      "BugAuth",
+      "R"
+    ],
+    [
+      "BugMember",
       "R"
     ],
     [
@@ -39404,22 +39420,6 @@
     ],
     [
       "BugAuth",
-      "R"
-    ],
-    [
-      "BugAuth",
-      "R"
-    ],
-    [
-      "BugMember",
-      "R"
-    ],
-    [
-      "BugMember",
-      "R"
-    ],
-    [
-      "BugMember",
       "R"
     ],
     [
@@ -46539,11 +46539,11 @@
       "R"
     ],
     [
-      "TeamMember",
+      "TeamAuth",
       "R"
     ],
     [
-      "TeamAuth",
+      "TeamMember",
       "R"
     ],
     [
@@ -46763,19 +46763,19 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "ProjectMember",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -58169,19 +58169,19 @@
       "W"
     ],
     [
+      "Task",
+      "R"
+    ],
+    [
+      "Task",
+      "R"
+    ],
+    [
+      "Task",
+      "R"
+    ],
+    [
       "Process",
-      "R"
-    ],
-    [
-      "Task",
-      "R"
-    ],
-    [
-      "Task",
-      "R"
-    ],
-    [
-      "Task",
       "R"
     ],
     [
@@ -58259,11 +58259,11 @@
       "R"
     ],
     [
-      "TeamMember",
+      "TeamAuth",
       "R"
     ],
     [
-      "TeamAuth",
+      "TeamMember",
       "R"
     ],
     [
@@ -58279,11 +58279,11 @@
       "R"
     ],
     [
-      "Team",
+      "Project",
       "R"
     ],
     [
-      "Project",
+      "Team",
       "R"
     ],
     [
@@ -58487,19 +58487,19 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "ProjectMember",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -58581,7 +58581,159 @@
       "R"
     ],
     [
+      "ProjectMember",
+      "R"
+    ],
+    [
       "User",
+      "R"
+    ],
+    [
+      "ProjectMember",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "ProjectMember",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "ProjectMember",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "ProjectMember",
+      "R"
+    ],
+    [
+      "ProjectMember",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "ProjectMember",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "ProjectMember",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "ProjectMember",
+      "R"
+    ],
+    [
+      "ProjectMember",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "ProjectMember",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "ProjectMember",
+      "R"
+    ],
+    [
+      "ProjectMember",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "ProjectMember",
+      "R"
+    ],
+    [
+      "ProjectMember",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "ProjectMember",
+      "R"
+    ],
+    [
+      "ProjectMember",
       "R"
     ],
     [
@@ -58617,10 +58769,6 @@
       "R"
     ],
     [
-      "ProjectMember",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
@@ -58630,154 +58778,6 @@
     ],
     [
       "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "ProjectMember",
-      "R"
-    ],
-    [
-      "ProjectMember",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "ProjectMember",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "ProjectMember",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "ProjectMember",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "ProjectMember",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "ProjectMember",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "ProjectMember",
-      "R"
-    ],
-    [
-      "ProjectMember",
-      "R"
-    ],
-    [
-      "ProjectMember",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "ProjectMember",
-      "R"
-    ],
-    [
-      "ProjectMember",
-      "R"
-    ],
-    [
-      "ProjectMember",
-      "R"
-    ],
-    [
-      "ProjectMember",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "ProjectMember",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "ProjectMember",
       "R"
     ],
     [
@@ -59385,11 +59385,11 @@
       "R"
     ],
     [
-      "Project",
+      "Team",
       "R"
     ],
     [
-      "Team",
+      "Project",
       "R"
     ],
     [
@@ -60125,11 +60125,15 @@
       "R"
     ],
     [
-      "Process",
+      "ProcessAuth",
       "R"
     ],
     [
       "ProcessMember",
+      "R"
+    ],
+    [
+      "Process",
       "R"
     ],
     [
@@ -60141,7 +60145,19 @@
       "R"
     ],
     [
+      "Process",
+      "R"
+    ],
+    [
+      "Process",
+      "R"
+    ],
+    [
       "ProcessAuth",
+      "R"
+    ],
+    [
+      "Process",
       "R"
     ],
     [
@@ -60149,23 +60165,7 @@
       "R"
     ],
     [
-      "ProcessAuth",
-      "R"
-    ],
-    [
-      "Process",
-      "R"
-    ],
-    [
       "ProcessMember",
-      "R"
-    ],
-    [
-      "Process",
-      "R"
-    ],
-    [
-      "Process",
       "R"
     ],
     [
@@ -64533,11 +64533,11 @@
       "R"
     ],
     [
-      "TeamAuth",
+      "TeamMember",
       "R"
     ],
     [
-      "TeamMember",
+      "TeamAuth",
       "R"
     ],
     [
@@ -64757,15 +64757,15 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "ProjectMember",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -68259,11 +68259,11 @@
       "R"
     ],
     [
-      "BugMember",
+      "BugAuth",
       "R"
     ],
     [
-      "BugAuth",
+      "BugMember",
       "R"
     ],
     [
@@ -71851,15 +71851,7 @@
       "R"
     ],
     [
-      "Project",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
-      "Project",
+      "App",
       "R"
     ],
     [
@@ -71879,7 +71871,15 @@
       "R"
     ],
     [
-      "App",
+      "Project",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "Project",
       "R"
     ],
     [
@@ -76541,10 +76541,6 @@
       "R"
     ],
     [
-      "TaskAuth",
-      "R"
-    ],
-    [
       "TaskMember",
       "R"
     ],
@@ -76557,7 +76553,7 @@
       "R"
     ],
     [
-      "TaskMember",
+      "TaskAuth",
       "R"
     ],
     [
@@ -76570,6 +76566,10 @@
     ],
     [
       "TaskAuth",
+      "R"
+    ],
+    [
+      "TaskMember",
       "R"
     ],
     [
@@ -77377,23 +77377,11 @@
       "R"
     ],
     [
-      "TaskAuth",
-      "R"
-    ],
-    [
       "TaskMember",
       "R"
     ],
     [
       "TaskMember",
-      "R"
-    ],
-    [
-      "TaskAuth",
-      "R"
-    ],
-    [
-      "TaskAuth",
       "R"
     ],
     [
@@ -77406,6 +77394,18 @@
     ],
     [
       "TaskMember",
+      "R"
+    ],
+    [
+      "TaskAuth",
+      "R"
+    ],
+    [
+      "TaskAuth",
+      "R"
+    ],
+    [
+      "TaskAuth",
       "R"
     ],
     [
@@ -77441,15 +77441,7 @@
       "R"
     ],
     [
-      "TaskMember",
-      "R"
-    ],
-    [
-      "TaskMember",
-      "R"
-    ],
-    [
-      "TaskMember",
+      "TaskAuth",
       "R"
     ],
     [
@@ -77461,11 +77453,19 @@
       "R"
     ],
     [
-      "TaskAuth",
+      "TaskMember",
       "R"
     ],
     [
       "TaskAuth",
+      "R"
+    ],
+    [
+      "TaskMember",
+      "R"
+    ],
+    [
+      "TaskMember",
       "R"
     ],
     [
@@ -77827,14 +77827,6 @@
       "R"
     ],
     [
-      "TaskAuth",
-      "R"
-    ],
-    [
-      "TaskAuth",
-      "R"
-    ],
-    [
       "TaskMember",
       "R"
     ],
@@ -77847,11 +77839,19 @@
       "R"
     ],
     [
+      "TaskAuth",
+      "R"
+    ],
+    [
       "TaskMember",
       "R"
     ],
     [
       "TaskMember",
+      "R"
+    ],
+    [
+      "TaskAuth",
       "R"
     ],
     [
@@ -79689,7 +79689,19 @@
       "R"
     ],
     [
+      "TaskAuth",
+      "R"
+    ],
+    [
       "TaskMember",
+      "R"
+    ],
+    [
+      "TaskAuth",
+      "R"
+    ],
+    [
+      "TaskAuth",
       "R"
     ],
     [
@@ -79705,19 +79717,7 @@
       "R"
     ],
     [
-      "TaskAuth",
-      "R"
-    ],
-    [
       "TaskMember",
-      "R"
-    ],
-    [
-      "TaskAuth",
-      "R"
-    ],
-    [
-      "TaskAuth",
       "R"
     ],
     [
@@ -82637,31 +82637,31 @@
       "R"
     ],
     [
-      "TaskAuth",
-      "R"
-    ],
-    [
-      "TaskAuth",
-      "R"
-    ],
-    [
-      "TaskMember",
-      "R"
-    ],
-    [
-      "TaskMember",
-      "R"
-    ],
-    [
-      "TaskMember",
-      "R"
-    ],
-    [
       "TaskMember",
       "R"
     ],
     [
       "TaskAuth",
+      "R"
+    ],
+    [
+      "TaskAuth",
+      "R"
+    ],
+    [
+      "TaskMember",
+      "R"
+    ],
+    [
+      "TaskMember",
+      "R"
+    ],
+    [
+      "TaskAuth",
+      "R"
+    ],
+    [
+      "TaskMember",
       "R"
     ],
     [

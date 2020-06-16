@@ -1,6 +1,38 @@
 {
   "LineListController.getLineListTemplates": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Sample",
+      "R"
+    ],
+    [
+      "MetadataTemplateField",
+      "R"
+    ],
+    [
+      "MetadataEntry",
+      "R"
+    ],
+    [
+      "MetadataTemplateField",
+      "R"
+    ],
+    [
       "ProjectMetadataTemplateJoin",
       "R"
     ],
@@ -74,6 +106,34 @@
     ],
     [
       "MetadataTemplate",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Sample",
+      "R"
+    ],
+    [
+      "MetadataTemplateField",
+      "R"
+    ],
+    [
+      "MetadataEntry",
+      "R"
+    ],
+    [
+      "MetadataTemplateField",
       "R"
     ],
     [
@@ -191,11 +251,7 @@
   ],
   "LineListController.getProjectSamplesMetadataEntries": [
     [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
+      "Type",
       "R"
     ],
     [
@@ -204,6 +260,14 @@
     ],
     [
       "Project",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
       "R"
     ],
     [
@@ -285,6 +349,10 @@
   ],
   "LineListController.saveLineListTemplate": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "StaticMetadataTemplateField",
       "R"
     ],
@@ -373,6 +441,10 @@
       "R"
     ],
     [
+      "Type",
+      "R"
+    ],
+    [
       "MetadataTemplate",
       "W"
     ],
@@ -394,6 +466,34 @@
     ],
     [
       "MetadataTemplate",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Sample",
+      "R"
+    ],
+    [
+      "MetadataTemplateField",
+      "R"
+    ],
+    [
+      "MetadataEntry",
+      "R"
+    ],
+    [
+      "MetadataTemplateField",
       "R"
     ],
     [
@@ -503,6 +603,10 @@
   ],
   "LineListController.saveMetadataEntry": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "Sample",
       "R"
     ],
@@ -549,9 +653,21 @@
     [
       "MetadataEntry",
       "W"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
     ]
   ],
   "RESTAnalysisSubmissionController.getAnalysisForSubmission": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "AnalysisSubmission",
       "R"
@@ -575,6 +691,10 @@
   ],
   "RESTAnalysisSubmissionController.getAnalysisInputFilePairs": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "SequenceFilePair",
       "R"
     ],
@@ -583,15 +703,15 @@
       "R"
     ],
     [
+      "SequencingObject",
+      "R"
+    ],
+    [
+      "SequencingObject",
+      "R"
+    ],
+    [
       "AnalysisSubmission",
-      "R"
-    ],
-    [
-      "SequencingObject",
-      "R"
-    ],
-    [
-      "SequencingObject",
       "R"
     ],
     [
@@ -717,6 +837,10 @@
   ],
   "RESTAnalysisSubmissionController.getAnalysisInputUnpairedFiles": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "SingleEndSequenceFile",
       "R"
     ],
@@ -741,11 +865,11 @@
       "R"
     ],
     [
-      "SequencingObject",
+      "SampleSequencingObjectJoin",
       "R"
     ],
     [
-      "SampleSequencingObjectJoin",
+      "SequencingObject",
       "R"
     ],
     [
@@ -863,6 +987,10 @@
   ],
   "RESTAnalysisSubmissionController.getAnalysisOutputFile": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "AnalysisSubmission",
       "R"
     ],
@@ -888,6 +1016,10 @@
     ]
   ],
   "RESTAnalysisSubmissionController.getAnalysisOutputFileContents": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "AnalysisSubmission",
       "R"
@@ -955,7 +1087,21 @@
       "R"
     ]
   ],
+  "ProjectExportController.getAllExports": [
+    [
+      "Type",
+      "R"
+    ]
+  ],
   "ProjectExportController.getDetailsView": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
     [
       "User",
       "R"
@@ -963,7 +1109,7 @@
   ],
   "ProjectExportController.getExportsForProject": [
     [
-      "NcbiExportSubmission",
+      "Type",
       "R"
     ],
     [
@@ -973,9 +1119,17 @@
     [
       "Project",
       "R"
+    ],
+    [
+      "NcbiExportSubmission",
+      "R"
     ]
   ],
   "ProjectExportController.getExportsPage": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "User",
       "R"
@@ -983,7 +1137,15 @@
   ],
   "ProjectExportController.getUploadNcbiPage": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "User",
+      "R"
+    ],
+    [
+      "Type",
       "R"
     ],
     [
@@ -1065,72 +1227,16 @@
   ],
   "ProjectExportController.submitToNcbi": [
     [
-      "NcbiBioSampleFiles",
-      "W"
+      "Type",
+      "R"
     ],
     [
-      "SingleEndSequenceFile",
-      "W"
+      "Type",
+      "R"
     ],
     [
-      "NcbiBioSampleFiles",
-      "W"
-    ],
-    [
-      "SequenceFilePair",
-      "W"
-    ],
-    [
-      "NcbiBioSampleFiles",
-      "W"
-    ],
-    [
-      "NcbiBioSampleFiles",
-      "W"
-    ],
-    [
-      "NcbiBioSampleFiles",
-      "W"
-    ],
-    [
-      "NcbiBioSampleFiles",
-      "W"
-    ],
-    [
-      "SingleEndSequenceFile",
-      "W"
-    ],
-    [
-      "NcbiBioSampleFiles",
-      "W"
-    ],
-    [
-      "SequenceFilePair",
-      "W"
-    ],
-    [
-      "NcbiBioSampleFiles",
-      "W"
-    ],
-    [
-      "NcbiBioSampleFiles",
-      "W"
-    ],
-    [
-      "NcbiBioSampleFiles",
-      "W"
-    ],
-    [
-      "NcbiBioSampleFiles",
-      "W"
-    ],
-    [
-      "NcbiBioSampleFiles",
-      "W"
-    ],
-    [
-      "NcbiBioSampleFiles",
-      "W"
+      "Type",
+      "R"
     ],
     [
       "NcbiExportSubmission",
@@ -1181,11 +1287,27 @@
       "W"
     ],
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
+    ],
+    [
       "NcbiExportSubmission",
       "R"
     ]
   ],
   "ProjectMembersController.addProjectGroupMember": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
     [
       "UserGroupRoleSetProjectEvent",
       "R"
@@ -1225,7 +1347,7 @@
   ],
   "ProjectMembersController.getGroupsAvailableForProject": [
     [
-      "UserGroup",
+      "Type",
       "R"
     ],
     [
@@ -1241,11 +1363,11 @@
       "R"
     ],
     [
-      "UserGroupProjectJoin",
+      "UserGroup",
       "R"
     ],
     [
-      "UserGroup",
+      "UserGroupProjectJoin",
       "R"
     ],
     [
@@ -1255,9 +1377,17 @@
     [
       "Project",
       "R"
+    ],
+    [
+      "UserGroup",
+      "R"
     ]
   ],
   "ProjectMembersController.getProjectGroupMembers": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "UserGroupProjectJoin",
       "R"
@@ -1285,17 +1415,39 @@
   ],
   "ProjectMembersController.getProjectGroupsPage": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "User",
       "R"
     ]
   ],
   "ProjectMembersController.getProjectUsersPage": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "User",
       "R"
     ]
   ],
+  "ProjectMembersController.getRemoveUserGroupModal": [
+    [
+      "Type",
+      "R"
+    ]
+  ],
   "ProjectMembersController.removeUserGroup": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
     [
       "UserGroupRemovedProjectEvent",
       "R"
@@ -1347,6 +1499,14 @@
   ],
   "ProjectMembersController.updateUserGroupRole": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
       "UserGroupRoleSetProjectEvent",
       "R"
     ],
@@ -1371,11 +1531,11 @@
       "R"
     ],
     [
-      "Project",
+      "ProjectUserJoin",
       "R"
     ],
     [
-      "ProjectUserJoin",
+      "Project",
       "R"
     ],
     [
@@ -1406,6 +1566,14 @@
     ],
     [
       "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
       "W"
     ],
     [
@@ -1419,11 +1587,19 @@
   ],
   "ProjectLineListController.getLineListPage": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "User",
       "R"
     ]
   ],
   "ProjectLineListController.getLinelistTemplatePage": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "User",
       "R"
@@ -1459,6 +1635,10 @@
   ],
   "ProjectLineListController.getMetadaFieldsForTemplate": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "MetadataTemplate",
       "R"
     ],
@@ -1468,6 +1648,10 @@
     ]
   ],
   "ProjectLineListController.getMetadataTemplates": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "ProjectMetadataTemplateJoin",
       "R"
@@ -1490,6 +1674,10 @@
     ]
   ],
   "ProjectLineListController.saveLinelistTemplate": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "MetadataTemplateField",
       "R"
@@ -1573,8 +1761,24 @@
   ],
   "ProjectLineListController.saveMetadataTemplate": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "MetadataTemplateField",
       "R"
+    ],
+    [
+      "MetadataTemplateField",
+      "R"
+    ],
+    [
+      "MetadataTemplateField",
+      "W"
+    ],
+    [
+      "MetadataTemplateField",
+      "W"
     ],
     [
       "MetadataTemplateField",
@@ -1585,16 +1789,8 @@
       "W"
     ],
     [
-      "MetadataTemplateField",
-      "W"
-    ],
-    [
-      "MetadataTemplateField",
+      "Type",
       "R"
-    ],
-    [
-      "MetadataTemplateField",
-      "W"
     ],
     [
       "MetadataTemplate",
@@ -1667,6 +1863,10 @@
   ],
   "AnalysisAjaxController.ajaxGetAnalysisInputFiles": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "SequenceFilePair",
       "R"
     ],
@@ -1675,11 +1875,11 @@
       "R"
     ],
     [
-      "AnalysisSubmission",
+      "SequencingObject",
       "R"
     ],
     [
-      "SequencingObject",
+      "AnalysisSubmission",
       "R"
     ],
     [
@@ -1897,6 +2097,10 @@
   ],
   "AnalysisAjaxController.ajaxGetDataForDetailsTab": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "AbstractAnalysisSubmission",
       "R"
     ],
@@ -2037,6 +2241,10 @@
   ],
   "AnalysisAjaxController.ajaxUpdateEmailPipelineResult": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "AnalysisSubmission",
       "R"
     ],
@@ -2047,11 +2255,31 @@
     [
       "AbstractAnalysisSubmission",
       "W"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
     ]
   ],
   "AnalysisAjaxController.ajaxUpdateSubmission": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "AbstractAnalysisSubmission",
+      "W"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
       "W"
     ],
     [
@@ -2081,6 +2309,10 @@
   ],
   "AnalysisAjaxController.deleteAjaxAnalysisSubmission": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "AbstractAnalysisSubmission",
       "R"
     ]
@@ -2104,6 +2336,10 @@
     ]
   ],
   "AnalysisAjaxController.getAjaxDownloadAnalysisSubmission": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "AnalysisSubmission",
       "R"
@@ -2146,6 +2382,10 @@
     ]
   ],
   "AnalysisAjaxController.getAjaxDownloadAnalysisSubmissionIndividualFile": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "AnalysisSubmission",
       "R"
@@ -2211,6 +2451,10 @@
   ],
   "AnalysisAjaxController.getImageFile": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "AnalysisSubmission",
       "R"
     ],
@@ -2233,6 +2477,14 @@
   ],
   "AnalysisAjaxController.getMetadataForAnalysisSamples": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "SequencingObject",
+      "R"
+    ],
+    [
       "SequencingObject",
       "R"
     ],
@@ -2242,10 +2494,6 @@
     ],
     [
       "AnalysisSubmission",
-      "R"
-    ],
-    [
-      "SequencingObject",
       "R"
     ],
     [
@@ -2323,6 +2571,10 @@
   ],
   "AnalysisAjaxController.getMetadataTemplateFields": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "MetadataTemplate",
       "R"
     ],
@@ -2337,6 +2589,18 @@
   ],
   "AnalysisAjaxController.getMetadataTemplatesForAnalysis": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "SequencingObject",
+      "R"
+    ],
+    [
+      "SequencingObject",
+      "R"
+    ],
+    [
       "SequencingObject",
       "R"
     ],
@@ -2345,14 +2609,6 @@
       "R"
     ],
     [
-      "SequencingObject",
-      "R"
-    ],
-    [
-      "SequencingObject",
-      "R"
-    ],
-    [
       "SampleSequencingObjectJoin",
       "R"
     ],
@@ -2366,6 +2622,10 @@
     ],
     [
       "SampleSequencingObjectJoin",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
       "R"
     ],
     [
@@ -2378,10 +2638,6 @@
     ],
     [
       "Sample",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
       "R"
     ],
     [
@@ -2423,6 +2679,10 @@
   ],
   "AnalysisAjaxController.getNewickForAnalysis": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "AnalysisSubmission",
       "R"
     ],
@@ -2441,6 +2701,10 @@
   ],
   "AnalysisAjaxController.getNewickTree": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "AnalysisSubmission",
       "R"
     ],
@@ -2458,6 +2722,10 @@
     ]
   ],
   "AnalysisAjaxController.getOutputFile": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "AnalysisSubmission",
       "R"
@@ -2512,6 +2780,10 @@
     ]
   ],
   "AnalysisAjaxController.getOutputFilesInfo": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "AnalysisSubmission",
       "R"
@@ -2574,6 +2846,10 @@
     ]
   ],
   "AnalysisAjaxController.getProvenanceByFile": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "AnalysisSubmission",
       "R"
@@ -2645,6 +2921,10 @@
   ],
   "AnalysisAjaxController.getSharedProjectsForAnalysis": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "SequenceFilePair",
       "R"
     ],
@@ -2677,7 +2957,15 @@
       "R"
     ],
     [
+      "AnalysisSubmission",
+      "R"
+    ],
+    [
       "SequencingObject",
+      "R"
+    ],
+    [
+      "ProjectAnalysisSubmissionJoin",
       "R"
     ],
     [
@@ -2689,18 +2977,6 @@
       "R"
     ],
     [
-      "ProjectAnalysisSubmissionJoin",
-      "R"
-    ],
-    [
-      "AnalysisSubmission",
-      "R"
-    ],
-    [
-      "SampleSequencingObjectJoin",
-      "R"
-    ],
-    [
       "SampleSequencingObjectJoin",
       "R"
     ],
@@ -2710,6 +2986,14 @@
     ],
     [
       "SampleSequencingObjectJoin",
+      "R"
+    ],
+    [
+      "SampleSequencingObjectJoin",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
       "R"
     ],
     [
@@ -2725,14 +3009,6 @@
       "R"
     ],
     [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "SampleSequencingObjectJoin",
-      "R"
-    ],
-    [
       "SampleSequencingObjectJoin",
       "R"
     ],
@@ -2745,15 +3021,19 @@
       "R"
     ],
     [
+      "SampleSequencingObjectJoin",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
       "ProjectSampleJoin",
       "R"
     ],
     [
       "Sample",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
       "R"
     ],
     [
@@ -2770,6 +3050,10 @@
     ]
   ],
   "AnalysisAjaxController.getSistrAnalysis": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "SequencingObject",
       "R"
@@ -2845,6 +3129,10 @@
   ],
   "AnalysisAjaxController.parseExcelFile": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "AnalysisSubmission",
       "R"
     ],
@@ -2883,6 +3171,10 @@
   ],
   "AnalysisAjaxController.prepareDownload": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "AnalysisSubmission",
       "R"
     ],
@@ -2904,6 +3196,10 @@
     ]
   ],
   "AnalysisAjaxController.saveResultsToSamples": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "AbstractAnalysisSubmission",
       "R"
@@ -2959,10 +3255,26 @@
     [
       "AbstractAnalysisSubmission",
       "W"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
     ]
   ],
   "AnalysisAjaxController.updateProjectShare": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
       "ProjectAnalysisSubmissionJoin",
       "W"
     ],
@@ -2991,19 +3303,19 @@
       "R"
     ],
     [
-      "AnalysisSubmission",
-      "R"
-    ],
-    [
-      "ProjectAnalysisSubmissionJoin",
-      "R"
-    ],
-    [
-      "ProjectAnalysisSubmissionJoin",
-      "R"
-    ],
-    [
       "Project",
+      "R"
+    ],
+    [
+      "ProjectAnalysisSubmissionJoin",
+      "R"
+    ],
+    [
+      "ProjectAnalysisSubmissionJoin",
+      "R"
+    ],
+    [
+      "AnalysisSubmission",
       "R"
     ],
     [
@@ -3017,11 +3329,19 @@
   ],
   "ProjectSettingsController.getProjectDeletionPage": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "User",
       "R"
     ]
   ],
   "ProjectSettingsController.getProjectSettingsBasicPage": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "User",
       "R"
@@ -3029,15 +3349,19 @@
   ],
   "ProjectSettingsController.getProjectSettingsProcessingPage": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "AnalysisSubmissionTemplate",
+      "R"
+    ],
+    [
       "AnalysisSubmissionTemplate",
       "R"
     ],
     [
       "Project",
-      "R"
-    ],
-    [
-      "AnalysisSubmissionTemplate",
       "R"
     ],
     [
@@ -3071,6 +3395,10 @@
   ],
   "ProjectSettingsController.removeAnalysisTemplateConfirm": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "AnalysisSubmissionTemplate",
       "R"
     ],
@@ -3096,6 +3424,10 @@
     ]
   ],
   "ProjectSettingsController.removeAnalysisTemplateModal": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "AnalysisSubmissionTemplate",
       "R"
@@ -3143,6 +3475,10 @@
   ],
   "ProjectSettingsController.updateCoverageSetting": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "Project",
       "R"
     ],
@@ -3156,6 +3492,10 @@
     ]
   ],
   "ProjectSettingsController.updatePrioritySetting": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "Project",
       "R"
@@ -3233,9 +3573,21 @@
     [
       "Type",
       "W"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
     ]
   ],
   "AnalysesTableAjaxController.downloadAnalysis": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "AnalysisSubmission",
       "R"
@@ -3310,6 +3662,10 @@
     ],
     [
       "AnalysisType",
+      "R"
+    ],
+    [
+      "Type",
       "R"
     ],
     [
@@ -3469,6 +3825,10 @@
   ],
   "SequenceFileController.downloadSequenceFile": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "SequenceFile",
       "R"
     ],
@@ -3482,6 +3842,18 @@
     ]
   ],
   "SequenceFileController.downloadSequenceFileImages": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "SequenceFile",
+      "R"
+    ],
+    [
+      "SequenceFile",
+      "R"
+    ],
     [
       "SequenceFile",
       "R"
@@ -3500,14 +3872,6 @@
     ],
     [
       "AnalysisFastQC",
-      "R"
-    ],
-    [
-      "SequenceFile",
-      "R"
-    ],
-    [
-      "SequenceFile",
       "R"
     ],
     [
@@ -3537,6 +3901,14 @@
   ],
   "SequenceFileController.getSequenceFileOverrepresentedPage": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "SequenceFile",
+      "R"
+    ],
+    [
       "SequenceFile",
       "R"
     ],
@@ -3558,10 +3930,6 @@
     ],
     [
       "AnalysisFastQC",
-      "R"
-    ],
-    [
-      "SequenceFile",
       "R"
     ],
     [
@@ -3571,6 +3939,14 @@
   ],
   "SequenceFileController.getSequenceFilePage": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "SequenceFile",
+      "R"
+    ],
+    [
       "SequenceFile",
       "R"
     ],
@@ -3588,10 +3964,6 @@
     ],
     [
       "AnalysisFastQC",
-      "R"
-    ],
-    [
-      "SequenceFile",
       "R"
     ],
     [
@@ -3605,7 +3977,7 @@
   ],
   "AnnouncementsController.getAnnouncementDetailsPage": [
     [
-      "AnnouncementUserJoin",
+      "Type",
       "R"
     ],
     [
@@ -3618,6 +3990,14 @@
     ],
     [
       "AnnouncementUserJoin",
+      "R"
+    ],
+    [
+      "AnnouncementUserJoin",
+      "R"
+    ],
+    [
+      "Type",
       "R"
     ],
     [
@@ -3641,11 +4021,11 @@
       "R"
     ],
     [
-      "User",
+      "AnnouncementUserJoin",
       "R"
     ],
     [
-      "AnnouncementUserJoin",
+      "User",
       "R"
     ],
     [
@@ -3675,11 +4055,11 @@
       "R"
     ],
     [
-      "User",
+      "AnnouncementUserJoin",
       "R"
     ],
     [
-      "AnnouncementUserJoin",
+      "User",
       "R"
     ],
     [
@@ -3689,7 +4069,11 @@
   ],
   "AnnouncementsController.getUserAnnouncementInfoTable": [
     [
-      "AnnouncementUserJoin",
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
       "R"
     ],
     [
@@ -3702,6 +4086,10 @@
     ],
     [
       "Announcement",
+      "R"
+    ],
+    [
+      "AnnouncementUserJoin",
       "R"
     ],
     [
@@ -3795,6 +4183,10 @@
   ],
   "AnnouncementsController.markAnnouncementRead": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "AnnouncementUserJoin",
       "W"
     ],
@@ -3829,11 +4221,31 @@
   ],
   "AnnouncementsController.submitUpdatedAnnouncement": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "Announcement",
+      "W"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
       "W"
     ]
   ],
   "RESTSequencingRunSequenceFilesController.addSequenceFilesToSequencingRun": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
     [
       "SequencingObject",
       "R"
@@ -3873,12 +4285,28 @@
       "W"
     ],
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
+    ],
+    [
       "IridaWorkflowNamedParameters",
       "R"
     ]
   ],
   "PipelineController.ajaxStartPipeline": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
       "ReferenceFile",
       "R"
     ],
@@ -3999,6 +4427,42 @@
       "W"
     ],
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "SequencingObject",
+      "R"
+    ],
+    [
+      "SampleSequencingObjectJoin",
+      "R"
+    ],
+    [
+      "SequencingObject",
+      "R"
+    ],
+    [
+      "SampleSequencingObjectJoin",
+      "R"
+    ],
+    [
+      "SequencingObject",
+      "R"
+    ],
+    [
+      "SampleSequencingObjectJoin",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
       "SequencingObject",
       "R"
     ],
@@ -4023,10 +4487,6 @@
       "R"
     ],
     [
-      "SequencingObject",
-      "R"
-    ],
-    [
       "SampleSequencingObjectJoin",
       "R"
     ],
@@ -4036,26 +4496,6 @@
     ],
     [
       "SequencingObject",
-      "R"
-    ],
-    [
-      "SequencingObject",
-      "R"
-    ],
-    [
-      "SampleSequencingObjectJoin",
-      "R"
-    ],
-    [
-      "SampleSequencingObjectJoin",
-      "R"
-    ],
-    [
-      "SequencingObject",
-      "R"
-    ],
-    [
-      "SampleSequencingObjectJoin",
       "R"
     ],
     [
@@ -4073,90 +4513,6 @@
     [
       "ReferenceFile",
       "R"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "AnalysisSubmission",
-      "W"
-    ],
-    [
-      "AnalysisSubmission",
-      "W"
-    ],
-    [
-      "AnalysisSubmission",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "AnalysisSubmission",
-      "W"
-    ],
-    [
-      "SequencingObject",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "ReferenceFile",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "IridaWorkflowNamedParameters",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "AnalysisSubmission",
-      "W"
-    ],
-    [
-      "AnalysisSubmission",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "User",
-      "W"
     ],
     [
       "AbstractAnalysisSubmission",
@@ -4207,90 +4563,6 @@
       "W"
     ],
     [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "AnalysisSubmission",
-      "W"
-    ],
-    [
-      "AnalysisSubmission",
-      "W"
-    ],
-    [
-      "AnalysisSubmission",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "AnalysisSubmission",
-      "W"
-    ],
-    [
-      "SequencingObject",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "ReferenceFile",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "IridaWorkflowNamedParameters",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "AnalysisSubmission",
-      "W"
-    ],
-    [
-      "AnalysisSubmission",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "User",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
       "User",
       "W"
     ],
@@ -4325,90 +4597,6 @@
     [
       "ReferenceFile",
       "R"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "AnalysisSubmission",
-      "W"
-    ],
-    [
-      "AnalysisSubmission",
-      "W"
-    ],
-    [
-      "AnalysisSubmission",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "AnalysisSubmission",
-      "W"
-    ],
-    [
-      "SequencingObject",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "ReferenceFile",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "IridaWorkflowNamedParameters",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "AnalysisSubmission",
-      "W"
-    ],
-    [
-      "AnalysisSubmission",
-      "W"
-    ],
-    [
-      "AbstractAnalysisSubmission",
-      "W"
-    ],
-    [
-      "User",
-      "W"
     ],
     [
       "AbstractAnalysisSubmission",
@@ -4449,7 +4637,27 @@
   ],
   "PipelineController.getSpecifiedPipelinePage": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "Project",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "ProjectReferenceFileJoin",
       "R"
     ],
     [
@@ -4462,14 +4670,6 @@
     ],
     [
       "ProjectReferenceFileJoin",
-      "R"
-    ],
-    [
-      "ProjectReferenceFileJoin",
-      "R"
-    ],
-    [
-      "Project",
       "R"
     ],
     [
@@ -4643,9 +4843,25 @@
       "R"
     ]
   ],
+  "RemoteAPIAjaxController.checkAPIStatus": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "RemoteAPI",
+      "R"
+    ]
+  ],
+  "RemoteAPIAjaxController.getAjaxAPIList": [
+    [
+      "Type",
+      "R"
+    ]
+  ],
   "NGSLinkerAjaxController.getLinkerCommand": [
     [
-      "ProjectSampleJoin",
+      "Type",
       "R"
     ],
     [
@@ -4659,9 +4875,17 @@
     [
       "Project",
       "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
     ]
   ],
   "ProjectSettingsMetadataController.getSampleMetadataTemplatesPage": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "User",
       "R"
@@ -4689,6 +4913,10 @@
   ],
   "RESTSampleSequenceFilesController.addNewSequenceFilePairToSample": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "SequenceFile",
       "W"
     ],
@@ -4743,6 +4971,10 @@
     [
       "SequenceFile",
       "W"
+    ],
+    [
+      "Type",
+      "R"
     ],
     [
       "SequencingRun",
@@ -4911,6 +5143,14 @@
   ],
   "RESTSampleSequenceFilesController.addNewSequenceFileToSample": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
       "SequenceFile",
       "W"
     ],
@@ -5039,6 +5279,10 @@
       "R"
     ],
     [
+      "Type",
+      "R"
+    ],
+    [
       "SequenceFile",
       "R"
     ],
@@ -5049,15 +5293,19 @@
   ],
   "RESTSampleSequenceFilesController.getSampleSequenceFiles": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "SampleSequencingObjectJoin",
+      "R"
+    ],
+    [
       "SampleSequencingObjectJoin",
       "R"
     ],
     [
       "Sample",
-      "R"
-    ],
-    [
-      "SampleSequencingObjectJoin",
       "R"
     ],
     [
@@ -5102,6 +5350,10 @@
     ]
   ],
   "RESTSampleSequenceFilesController.listSequencingObjectsOfTypeForSample": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "SampleSequencingObjectJoin",
       "R"
@@ -5213,6 +5465,10 @@
   ],
   "RESTSampleSequenceFilesController.readQCForSequenceFile": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "SampleSequencingObjectJoin",
       "R"
     ],
@@ -5249,15 +5505,19 @@
       "R"
     ],
     [
-      "AnalysisFastQC",
+      "SequenceFile",
       "R"
     ],
     [
-      "SequenceFile",
+      "AnalysisFastQC",
       "R"
     ]
   ],
   "RESTSampleSequenceFilesController.readSequenceFileForSequencingObject": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "SampleSequencingObjectJoin",
       "R"
@@ -5289,15 +5549,19 @@
   ],
   "RESTSampleSequenceFilesController.readSequencingObject": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "SampleSequencingObjectJoin",
+      "R"
+    ],
+    [
       "SampleSequencingObjectJoin",
       "R"
     ],
     [
       "SequencingObject",
-      "R"
-    ],
-    [
-      "SampleSequencingObjectJoin",
       "R"
     ],
     [
@@ -5415,6 +5679,22 @@
   ],
   "RESTSampleSequenceFilesController.removeSequenceFileFromSample": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "SampleSequencingObjectJoin",
+      "R"
+    ],
+    [
+      "SequencingObject",
+      "R"
+    ],
+    [
+      "SampleSequencingObjectJoin",
+      "R"
+    ],
+    [
       "SampleSequencingObjectJoin",
       "R"
     ],
@@ -5427,10 +5707,6 @@
       "R"
     ],
     [
-      "SampleSequencingObjectJoin",
-      "R"
-    ],
-    [
       "SequencingObject",
       "R"
     ],
@@ -5444,10 +5720,6 @@
     ],
     [
       "SampleSequencingObjectJoin",
-      "R"
-    ],
-    [
-      "SequencingObject",
       "R"
     ],
     [
@@ -5456,10 +5728,6 @@
     ],
     [
       "Sample",
-      "R"
-    ],
-    [
-      "SampleSequencingObjectJoin",
       "R"
     ],
     [
@@ -5469,11 +5737,23 @@
   ],
   "ProjectReferenceFileController.getProjectReferenceFilesPage": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "User",
       "R"
     ]
   ],
   "ProjectReferenceFileController.getReferenceFilesForProject": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "ProjectReferenceFileJoin",
+      "R"
+    ],
     [
       "ProjectReferenceFileJoin",
       "R"
@@ -5484,10 +5764,6 @@
     ],
     [
       "Project",
-      "R"
-    ],
-    [
-      "ProjectReferenceFileJoin",
       "R"
     ],
     [
@@ -5512,6 +5788,14 @@
     ]
   ],
   "ProjectSettingsAssociatedProjectsController.addAssociatedProject": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
     [
       "Project",
       "R"
@@ -5571,7 +5855,7 @@
   ],
   "ProjectSettingsAssociatedProjectsController.ajaxAssociatedProjects": [
     [
-      "RelatedProjectJoin",
+      "Type",
       "R"
     ],
     [
@@ -5581,9 +5865,17 @@
     [
       "Project",
       "R"
+    ],
+    [
+      "RelatedProjectJoin",
+      "R"
     ]
   ],
   "ProjectSettingsAssociatedProjectsController.editAssociatedProjectsForProject": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "User",
       "R"
@@ -5591,6 +5883,10 @@
   ],
   "ProjectSettingsAssociatedProjectsController.getAssociatedProjectsPage": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
@@ -5599,11 +5895,11 @@
       "R"
     ],
     [
-      "Project",
+      "RelatedProjectJoin",
       "R"
     ],
     [
-      "RelatedProjectJoin",
+      "Project",
       "R"
     ],
     [
@@ -5629,15 +5925,19 @@
   ],
   "ProjectSettingsAssociatedProjectsController.getPotentialAssociatedProjects": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "RelatedProjectJoin",
+      "R"
+    ],
+    [
       "RelatedProjectJoin",
       "R"
     ],
     [
       "Project",
-      "R"
-    ],
-    [
-      "RelatedProjectJoin",
       "R"
     ],
     [
@@ -5657,10 +5957,6 @@
       "R"
     ],
     [
-      "UserGroupProjectJoin",
-      "R"
-    ],
-    [
       "Project",
       "R"
     ],
@@ -5673,23 +5969,11 @@
       "R"
     ],
     [
-      "Project",
+      "ProjectUserJoin",
       "R"
     ],
     [
       "Project",
-      "R"
-    ],
-    [
-      "UserGroupProjectJoin",
-      "R"
-    ],
-    [
-      "UserGroupJoin",
-      "R"
-    ],
-    [
-      "UserGroup",
       "R"
     ],
     [
@@ -5709,7 +5993,7 @@
       "R"
     ],
     [
-      "UserGroupJoin",
+      "Project",
       "R"
     ],
     [
@@ -5721,11 +6005,27 @@
       "R"
     ],
     [
-      "ProjectUserJoin",
+      "UserGroupJoin",
       "R"
     ],
     [
       "Project",
+      "R"
+    ],
+    [
+      "UserGroupProjectJoin",
+      "R"
+    ],
+    [
+      "UserGroupJoin",
+      "R"
+    ],
+    [
+      "UserGroup",
+      "R"
+    ],
+    [
+      "UserGroupProjectJoin",
       "R"
     ],
     [
@@ -5763,17 +6063,53 @@
   ],
   "ProjectSettingsAssociatedProjectsController.removeAssociatedProject": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "RelatedProjectJoin",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "RelatedProjectJoin",
+      "R"
+    ],
+    [
+      "RelatedProjectJoin",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
       "RelatedProjectJoin",
       "W"
     ]
   ],
   "ProjectSettingsRemoteController.getProjectSettingsRemotePage": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "User",
       "R"
     ]
   ],
   "ProjectSettingsRemoteController.updateProjectSyncSettings": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "Project",
       "R"
@@ -5789,6 +6125,38 @@
     [
       "RemoteStatus",
       "R"
+    ],
+    [
+      "RemoteStatus",
+      "W"
+    ],
+    [
+      "RemoteStatus",
+      "W"
+    ],
+    [
+      "RemoteStatus",
+      "W"
+    ],
+    [
+      "RemoteAPI",
+      "W"
+    ],
+    [
+      "RemoteStatus",
+      "W"
+    ],
+    [
+      "RemoteStatus",
+      "W"
+    ],
+    [
+      "User",
+      "W"
+    ],
+    [
+      "RemoteStatus",
+      "W"
     ],
     [
       "RemoteStatus",
@@ -5812,6 +6180,14 @@
     ]
   ],
   "ProjectSettingsAjaxController.addAssociatedProject": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
     [
       "Project",
       "R"
@@ -5871,43 +6247,7 @@
   ],
   "ProjectSettingsAjaxController.getProjectAssociatedProjects": [
     [
-      "User",
-      "R"
-    ],
-    [
-      "RelatedProjectJoin",
-      "R"
-    ],
-    [
-      "RelatedProjectJoin",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
-      "RelatedProjectJoin",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
-      "Project",
+      "Type",
       "R"
     ],
     [
@@ -5915,7 +6255,43 @@
       "R"
     ],
     [
+      "RelatedProjectJoin",
+      "R"
+    ],
+    [
       "Project",
+      "R"
+    ],
+    [
+      "RelatedProjectJoin",
+      "R"
+    ],
+    [
+      "RelatedProjectJoin",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -5935,23 +6311,11 @@
       "R"
     ],
     [
+      "Project",
+      "R"
+    ],
+    [
       "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
-      "UserGroupProjectJoin",
-      "R"
-    ],
-    [
-      "UserGroup",
       "R"
     ],
     [
@@ -5975,11 +6339,15 @@
       "R"
     ],
     [
+      "UserGroupJoin",
+      "R"
+    ],
+    [
       "Project",
       "R"
     ],
     [
-      "UserGroupJoin",
+      "UserGroupProjectJoin",
       "R"
     ],
     [
@@ -5995,15 +6363,27 @@
       "R"
     ],
     [
+      "UserGroupProjectJoin",
+      "R"
+    ],
+    [
+      "UserGroup",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
       "UserGroupJoin",
       "R"
     ],
     [
       "User",
-      "R"
-    ],
-    [
-      "UserGroupProjectJoin",
       "R"
     ],
     [
@@ -6029,7 +6409,71 @@
   ],
   "ProjectSettingsAjaxController.removeAssociatedProject": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
       "RelatedProjectJoin",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "RelatedProjectJoin",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "RelatedProjectJoin",
+      "R"
+    ],
+    [
+      "RelatedProjectJoin",
+      "W"
+    ]
+  ],
+  "RESTGenericController.create": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
+    ],
+    [
+      "Type",
+      "R"
+    ]
+  ],
+  "RESTGenericController.getResource": [
+    [
+      "Type",
+      "R"
+    ]
+  ],
+  "RESTGenericController.listAllResources": [
+    [
+      "Type",
+      "R"
+    ]
+  ],
+  "RESTGenericController.update": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
       "W"
     ]
   ],
@@ -6037,9 +6481,25 @@
     [
       "SequencingRun",
       "W"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
+    ],
+    [
+      "Type",
+      "R"
     ]
   ],
   "CartController.addSamplesToCart": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "Project",
       "W"
@@ -6067,7 +6527,7 @@
   ],
   "PasswordResetController.adminNewPasswordReset": [
     [
-      "User",
+      "Type",
       "R"
     ],
     [
@@ -6075,6 +6535,10 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
       "PasswordReset",
       "W"
     ],
@@ -6088,6 +6552,14 @@
     ],
     [
       "PasswordReset",
+      "W"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
       "W"
     ],
     [
@@ -6105,6 +6577,10 @@
   ],
   "PasswordResetController.getResetPage": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "PasswordReset",
       "R"
     ],
@@ -6113,7 +6589,21 @@
       "R"
     ]
   ],
+  "PasswordResetController.resetSuccess": [
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ]
+  ],
   "PasswordResetController.sendNewPassword": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "PasswordReset",
       "R"
@@ -6145,6 +6635,10 @@
     [
       "Type",
       "W"
+    ],
+    [
+      "Type",
+      "R"
     ],
     [
       "PasswordReset",
@@ -6161,6 +6655,14 @@
   ],
   "PasswordResetController.submitEmail": [
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "PasswordReset",
       "W"
     ],
@@ -6174,6 +6676,14 @@
     ],
     [
       "PasswordReset",
+      "W"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
       "W"
     ],
     [
@@ -6187,11 +6697,19 @@
   ],
   "UserGroupsAjaxController.deleteUserGroups": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "UserGroup",
       "R"
     ]
   ],
   "UserGroupsAjaxController.getUserGroups": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "User",
       "R"
@@ -6201,11 +6719,11 @@
       "R"
     ],
     [
-      "UserGroup",
+      "UserGroupJoin",
       "R"
     ],
     [
-      "UserGroupJoin",
+      "UserGroup",
       "R"
     ],
     [
@@ -6337,15 +6855,45 @@
     [
       "User",
       "W"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
+    ]
+  ],
+  "AnnouncementAjaxController.getAnnouncementsAdmin": [
+    [
+      "Type",
+      "R"
     ]
   ],
   "AnnouncementAjaxController.updateAnnouncement": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "Announcement",
+      "W"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
       "W"
     ]
   ],
   "RESTSampleAssemblyController.addNewAssemblyToSample": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "GenomeAssembly",
       "W"
@@ -6429,6 +6977,10 @@
   ],
   "RESTSampleAssemblyController.listAssembliesForSample": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "SampleGenomeAssemblyJoin",
       "R"
     ],
@@ -6466,6 +7018,10 @@
     ]
   ],
   "RESTSampleAssemblyController.readAssemblyForSample": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "SampleGenomeAssemblyJoin",
       "R"
@@ -6517,12 +7073,32 @@
   ],
   "ProjectSampleMetadataController.getProjectSamplesMetadataUploadPage": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "User",
       "R"
     ]
   ],
   "ProjectSampleMetadataController.saveProjectSampleMetadata": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
       "ProjectSampleJoin",
       "R"
     ],
@@ -6539,18 +7115,6 @@
       "R"
     ],
     [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "Sample",
-      "R"
-    ],
-    [
       "Project",
       "R"
     ],
@@ -6649,15 +7213,39 @@
     [
       "MetadataEntry",
       "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
     ]
   ],
   "ProjectSampleMetadataController.setProjectSampleMetadataSampleId": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "ProjectSampleJoin",
       "R"
     ],
     [
       "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
       "R"
     ],
     [
@@ -6666,18 +7254,6 @@
     ],
     [
       "Project",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "Sample",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
       "R"
     ],
     [
@@ -6686,6 +7262,10 @@
     ]
   ],
   "SequencingRunController.getDetailsPage": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "SequencingObject",
       "R"
@@ -6705,6 +7285,14 @@
   ],
   "SequencingRunController.getFilesPage": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "SequencingObject",
+      "R"
+    ],
+    [
       "SequencingObject",
       "R"
     ],
@@ -6715,14 +7303,14 @@
     [
       "SequencingRun",
       "R"
-    ],
-    [
-      "SequencingObject",
-      "R"
     ]
   ],
   "OltuAuthorizationController.getTokenFromAuthCode": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "RemoteAPI",
       "R"
     ],
@@ -6775,11 +7363,11 @@
       "R"
     ],
     [
-      "User",
+      "RemoteAPIToken",
       "R"
     ],
     [
-      "RemoteAPIToken",
+      "User",
       "R"
     ],
     [
@@ -6819,7 +7407,17 @@
       "W"
     ]
   ],
+  "AnalysisController.getAdvancedPhylogeneticVisualizationPage": [
+    [
+      "Type",
+      "R"
+    ]
+  ],
   "AnalysisController.getDetailsPage": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "User",
       "R"
@@ -6921,6 +7519,10 @@
   ],
   "RESTSampleMetadataController.addSampleMetadata": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "MetadataTemplateField",
       "R"
     ],
@@ -7006,6 +7608,18 @@
     ],
     [
       "MetadataEntry",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
+    ],
+    [
+      "Type",
       "R"
     ],
     [
@@ -7031,6 +7645,10 @@
   ],
   "RESTSampleMetadataController.getSampleMetadata": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "Sample",
       "R"
     ],
@@ -7053,6 +7671,10 @@
   ],
   "RESTSampleMetadataController.saveSampleMetadata": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "MetadataTemplateField",
       "R"
     ],
@@ -7087,6 +7709,18 @@
     [
       "MetadataEntry",
       "W"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
+    ],
+    [
+      "Type",
+      "R"
     ],
     [
       "Sample",
@@ -7116,10 +7750,18 @@
     ],
     [
       "Type",
+      "R"
+    ],
+    [
+      "Type",
       "W"
     ]
   ],
   "ProjectSamplesMetadataTemplateController.downloadTemplate": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "MetadataTemplate",
       "R"
@@ -7145,20 +7787,48 @@
   ],
   "ProjectSamplesMetadataTemplateController.getMetadataTemplateListPage": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "User",
       "R"
     ]
   ],
   "ProjectSamplesMetadataTemplateController.getMetadataTemplatePage": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "User",
+      "R"
+    ],
+    [
+      "Type",
       "R"
     ]
   ],
   "ProjectSamplesMetadataTemplateController.saveMetadataTemplate": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "MetadataTemplateField",
       "R"
+    ],
+    [
+      "MetadataTemplateField",
+      "R"
+    ],
+    [
+      "MetadataTemplateField",
+      "W"
+    ],
+    [
+      "MetadataTemplateField",
+      "W"
     ],
     [
       "MetadataTemplateField",
@@ -7169,16 +7839,8 @@
       "W"
     ],
     [
-      "MetadataTemplateField",
-      "W"
-    ],
-    [
-      "MetadataTemplateField",
+      "Type",
       "R"
-    ],
-    [
-      "MetadataTemplateField",
-      "W"
     ],
     [
       "MetadataTemplate",
@@ -7255,6 +7917,10 @@
   ],
   "SequencingRunAjaxController.listSequencingRuns": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "SequencingRun",
       "R"
     ],
@@ -7292,6 +7958,14 @@
     ]
   ],
   "SamplesController.concatenateSequenceFiles": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
     [
       "SingleEndSequenceFile",
       "R"
@@ -7369,16 +8043,20 @@
       "R"
     ],
     [
-      "SampleSequencingObjectJoin",
-      "R"
-    ],
-    [
       "SequencingObject",
       "R"
     ],
     [
       "SampleSequencingObjectJoin",
+      "R"
+    ],
+    [
+      "SampleSequencingObjectJoin",
       "W"
+    ],
+    [
+      "Type",
+      "R"
     ],
     [
       "SequenceFilePair",
@@ -7399,7 +8077,15 @@
   ],
   "SamplesController.downloadAssembly": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "Sample",
+      "R"
+    ],
+    [
+      "SampleGenomeAssemblyJoin",
       "R"
     ],
     [
@@ -7416,10 +8102,6 @@
     ],
     [
       "GenomeAssembly",
-      "R"
-    ],
-    [
-      "SampleGenomeAssemblyJoin",
       "R"
     ],
     [
@@ -7437,6 +8119,10 @@
   ],
   "SamplesController.getConcatenatePage": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "SequenceFilePair",
       "R"
     ],
@@ -7453,7 +8139,17 @@
       "R"
     ]
   ],
+  "SamplesController.getEditSampleSpecificPage": [
+    [
+      "Type",
+      "R"
+    ]
+  ],
   "SamplesController.getSampleDetails": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "Sample",
       "R"
@@ -7469,6 +8165,10 @@
   ],
   "SamplesController.getSampleFiles": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "SequenceFilePair",
       "R"
     ],
@@ -7489,11 +8189,15 @@
       "R"
     ],
     [
+      "Sample",
+      "R"
+    ],
+    [
       "SampleGenomeAssemblyJoin",
       "R"
     ],
     [
-      "Sample",
+      "Type",
       "R"
     ],
     [
@@ -7551,6 +8255,10 @@
   ],
   "SamplesController.getSampleFilesWithoutProject": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "SequenceFilePair",
       "R"
     ],
@@ -7576,6 +8284,10 @@
     ],
     [
       "Sample",
+      "R"
+    ],
+    [
+      "Type",
       "R"
     ],
     [
@@ -7633,6 +8345,10 @@
   ],
   "SamplesController.getSampleListByIdList": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "Sample",
       "R"
     ],
@@ -7641,25 +8357,19 @@
       "R"
     ]
   ],
+  "SamplesController.getSampleSpecificPage": [
+    [
+      "Type",
+      "R"
+    ]
+  ],
   "SamplesController.removeGenomeAssemblyFromSample": [
     [
-      "Sample",
-      "R"
-    ],
-    [
-      "SampleGenomeAssemblyJoin",
+      "Type",
       "R"
     ],
     [
       "Sample",
-      "R"
-    ],
-    [
-      "SampleGenomeAssemblyJoin",
-      "R"
-    ],
-    [
-      "GenomeAssembly",
       "R"
     ],
     [
@@ -7679,11 +8389,11 @@
       "R"
     ],
     [
-      "Sample",
+      "SampleGenomeAssemblyJoin",
       "R"
     ],
     [
-      "SampleGenomeAssemblyJoin",
+      "Sample",
       "R"
     ],
     [
@@ -7695,11 +8405,27 @@
       "R"
     ],
     [
+      "Sample",
+      "R"
+    ],
+    [
+      "SampleGenomeAssemblyJoin",
+      "R"
+    ],
+    [
       "SampleGenomeAssemblyJoin",
       "R"
     ],
     [
       "Sample",
+      "R"
+    ],
+    [
+      "SampleGenomeAssemblyJoin",
+      "R"
+    ],
+    [
+      "GenomeAssembly",
       "R"
     ],
     [
@@ -7725,15 +8451,7 @@
   ],
   "SamplesController.removeSequencingObjectFromSample": [
     [
-      "SampleSequencingObjectJoin",
-      "R"
-    ],
-    [
-      "Sample",
-      "R"
-    ],
-    [
-      "SampleSequencingObjectJoin",
+      "Type",
       "R"
     ],
     [
@@ -7749,10 +8467,6 @@
       "R"
     ],
     [
-      "SequencingObject",
-      "R"
-    ],
-    [
       "SampleSequencingObjectJoin",
       "R"
     ],
@@ -7762,6 +8476,22 @@
     ],
     [
       "SampleSequencingObjectJoin",
+      "R"
+    ],
+    [
+      "SequencingObject",
+      "R"
+    ],
+    [
+      "SampleSequencingObjectJoin",
+      "R"
+    ],
+    [
+      "SampleSequencingObjectJoin",
+      "R"
+    ],
+    [
+      "Sample",
       "R"
     ],
     [
@@ -7801,12 +8531,42 @@
     [
       "MetadataTemplateField",
       "W"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
+    ],
+    [
+      "Type",
+      "R"
+    ]
+  ],
+  "AdminUsersAjaxController.getUsersPagedList": [
+    [
+      "Type",
+      "R"
     ]
   ],
   "AdminUsersAjaxController.updateUserStatus": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "User",
       "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
     ],
     [
       "User",
@@ -7819,7 +8579,7 @@
   ],
   "RESTProjectAnalysisController.getProjectAnalyses": [
     [
-      "ProjectAnalysisSubmissionJoin",
+      "Type",
       "R"
     ],
     [
@@ -7828,6 +8588,10 @@
     ],
     [
       "Project",
+      "R"
+    ],
+    [
+      "ProjectAnalysisSubmissionJoin",
       "R"
     ],
     [
@@ -7837,7 +8601,7 @@
   ],
   "RESTProjectAnalysisController.getProjectAnalysesByType": [
     [
-      "ProjectAnalysisSubmissionJoin",
+      "Type",
       "R"
     ],
     [
@@ -7846,6 +8610,10 @@
     ],
     [
       "Project",
+      "R"
+    ],
+    [
+      "ProjectAnalysisSubmissionJoin",
       "R"
     ],
     [
@@ -7866,6 +8634,10 @@
     ]
   ],
   "SamplesAjaxController.uploadAssemblies": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "GenomeAssembly",
       "W"
@@ -7932,6 +8704,10 @@
     ]
   ],
   "SamplesAjaxController.uploadSequenceFiles": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "SequenceFile",
       "W"
@@ -8147,6 +8923,10 @@
   ],
   "RESTProjectUsersController.addUserToProject": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "UserRoleSetProjectEvent",
       "R"
     ],
@@ -8205,19 +8985,23 @@
   ],
   "RESTProjectUsersController.getUsersForProject": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
       "ProjectUserJoin",
       "R"
     ],
     [
       "Project",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
       "R"
     ],
     [
@@ -8231,11 +9015,19 @@
   ],
   "RESTProjectUsersController.removeUserFromProject": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "UserRemovedProjectEvent",
       "R"
     ],
     [
       "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "Project",
       "R"
     ],
     [
@@ -8248,10 +9040,6 @@
     ],
     [
       "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "Project",
       "R"
     ],
     [
@@ -8297,13 +9085,57 @@
   ],
   "ProjectsController.ajaxGetProjectsForApi": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "RemoteAPI",
       "R"
+    ],
+    [
+      "RemoteStatus",
+      "W"
+    ],
+    [
+      "RemoteStatus",
+      "W"
+    ],
+    [
+      "RemoteStatus",
+      "W"
+    ],
+    [
+      "RemoteAPI",
+      "W"
+    ],
+    [
+      "RemoteStatus",
+      "W"
+    ],
+    [
+      "RemoteStatus",
+      "W"
+    ],
+    [
+      "User",
+      "W"
+    ],
+    [
+      "RemoteStatus",
+      "W"
     ]
   ],
   "ProjectsController.createNewProject": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "Project",
+      "R"
+    ],
+    [
+      "Type",
       "R"
     ],
     [
@@ -8383,6 +9215,10 @@
       "R"
     ],
     [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
       "Project",
       "R"
     ],
@@ -8391,10 +9227,6 @@
       "R"
     ],
     [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
       "Sample",
       "R"
     ],
@@ -8405,54 +9237,6 @@
     [
       "Sample",
       "R"
-    ],
-    [
-      "Sample",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
-      "Sample",
-      "R"
-    ],
-    [
-      "Sample",
-      "W"
-    ],
-    [
-      "ProjectSampleJoin",
-      "W"
-    ],
-    [
-      "ProjectSampleJoin",
-      "W"
-    ],
-    [
-      "ProjectSampleJoin",
-      "W"
-    ],
-    [
-      "Project",
-      "W"
-    ],
-    [
-      "ProjectSampleJoin",
-      "W"
-    ],
-    [
-      "Sample",
-      "W"
-    ],
-    [
-      "ProjectSampleJoin",
-      "W"
-    ],
-    [
-      "ProjectSampleJoin",
-      "W"
     ],
     [
       "Sample",
@@ -8463,7 +9247,71 @@
       "R"
     ],
     [
+      "Sample",
+      "R"
+    ],
+    [
+      "Sample",
+      "W"
+    ],
+    [
+      "ProjectSampleJoin",
+      "W"
+    ],
+    [
+      "ProjectSampleJoin",
+      "W"
+    ],
+    [
+      "ProjectSampleJoin",
+      "W"
+    ],
+    [
       "Project",
+      "W"
+    ],
+    [
+      "ProjectSampleJoin",
+      "W"
+    ],
+    [
+      "Sample",
+      "W"
+    ],
+    [
+      "ProjectSampleJoin",
+      "W"
+    ],
+    [
+      "ProjectSampleJoin",
+      "W"
+    ],
+    [
+      "Sample",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "Type",
       "R"
     ],
     [
@@ -8472,6 +9320,14 @@
     ]
   ],
   "ProjectsController.exportProjectsToFile": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
+      "R"
+    ],
     [
       "ProjectUserJoin",
       "R"
@@ -8485,15 +9341,7 @@
       "R"
     ],
     [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
       "UserGroupProjectJoin",
-      "R"
-    ],
-    [
-      "UserGroupJoin",
       "R"
     ],
     [
@@ -8502,6 +9350,10 @@
     ],
     [
       "UserGroup",
+      "R"
+    ],
+    [
+      "UserGroupJoin",
       "R"
     ],
     [
@@ -8547,11 +9399,23 @@
   ],
   "ProjectsController.getCreateProjectPage": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "Project",
+      "R"
+    ],
+    [
+      "Type",
       "R"
     ]
   ],
   "ProjectsController.getProjectAnalysisList": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "User",
       "R"
@@ -8563,11 +9427,19 @@
   ],
   "ProjectsController.getProjectAutomatedOutputFilesPage": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "User",
       "R"
     ]
   ],
   "ProjectsController.getProjectSharedOutputFilesPage": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "User",
       "R"
@@ -8575,12 +9447,54 @@
   ],
   "ProjectsController.getProjectSpecificPage": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "User",
+      "R"
+    ]
+  ],
+  "ProjectsController.getSynchronizeProjectPage": [
+    [
+      "Type",
       "R"
     ]
   ],
   "ProjectsController.syncProject": [
     [
+      "RemoteStatus",
+      "W"
+    ],
+    [
+      "RemoteStatus",
+      "W"
+    ],
+    [
+      "RemoteStatus",
+      "W"
+    ],
+    [
+      "RemoteAPI",
+      "W"
+    ],
+    [
+      "RemoteStatus",
+      "W"
+    ],
+    [
+      "RemoteStatus",
+      "W"
+    ],
+    [
+      "User",
+      "W"
+    ],
+    [
+      "RemoteStatus",
+      "W"
+    ],
+    [
       "Project",
       "W"
     ],
@@ -8601,7 +9515,43 @@
       "W"
     ],
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
+    ],
+    [
       "Project",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ]
+  ],
+  "RemoteAPIController.checkWebApiStatus": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "RemoteAPI",
+      "R"
+    ]
+  ],
+  "RemoteAPIController.connectToAPI": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "RemoteAPI",
       "R"
     ]
   ],
@@ -8612,6 +9562,14 @@
     ]
   ],
   "RemoteAPIController.postCreateRemoteAPI": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
+    ],
     [
       "RemoteAPI",
       "R"
@@ -8635,15 +9593,7 @@
   ],
   "RemoteAPIController.read": [
     [
-      "RemoteAPIToken",
-      "R"
-    ],
-    [
-      "RemoteAPI",
-      "R"
-    ],
-    [
-      "RemoteAPIToken",
+      "Type",
       "R"
     ],
     [
@@ -8657,9 +9607,29 @@
     [
       "RemoteAPIToken",
       "R"
+    ],
+    [
+      "RemoteAPIToken",
+      "R"
+    ],
+    [
+      "RemoteAPI",
+      "R"
+    ],
+    [
+      "RemoteAPIToken",
+      "R"
     ]
   ],
   "ProjectMembersAjaxController.addMemberToProject": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
     [
       "UserRoleSetProjectEvent",
       "R"
@@ -8723,7 +9693,7 @@
   ],
   "ProjectMembersAjaxController.getAvailableMembersForProject": [
     [
-      "ProjectUserJoin",
+      "Type",
       "R"
     ],
     [
@@ -8736,22 +9706,6 @@
     ],
     [
       "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -8772,6 +9726,26 @@
     ],
     [
       "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
       "R"
     ],
     [
@@ -8781,7 +9755,27 @@
   ],
   "ProjectMembersAjaxController.getProjectMembers": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -8790,22 +9784,6 @@
     ],
     [
       "Project",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -8827,15 +9805,15 @@
   ],
   "ProjectMembersAjaxController.removeUserFromProject": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
       "UserRemovedProjectEvent",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "Project",
       "R"
     ],
     [
@@ -8863,6 +9841,10 @@
       "R"
     ],
     [
+      "Project",
+      "R"
+    ],
+    [
       "ProjectUserJoin",
       "R"
     ],
@@ -8880,6 +9862,10 @@
     ],
     [
       "Project",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
       "R"
     ],
     [
@@ -8901,19 +9887,15 @@
   ],
   "ProjectMembersAjaxController.updateUserRoleOnProject": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
       "UserRoleSetProjectEvent",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
       "R"
     ],
     [
@@ -8929,14 +9911,6 @@
       "R"
     ],
     [
-      "Project",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
       "ProjectUserJoin",
       "R"
     ],
@@ -8949,7 +9923,27 @@
       "R"
     ],
     [
+      "Project",
+      "R"
+    ],
+    [
       "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "Project",
       "R"
     ],
     [
@@ -8987,15 +9981,11 @@
   ],
   "ProjectEventsController.addSubscription": [
     [
-      "ProjectUserJoin",
+      "Type",
       "R"
     ],
     [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "Project",
+      "Type",
       "R"
     ],
     [
@@ -9008,6 +9998,18 @@
     ],
     [
       "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
       "W"
     ],
     [
@@ -9023,7 +10025,21 @@
       "R"
     ]
   ],
+  "ProjectEventsController.getAllRecentEvents": [
+    [
+      "Type",
+      "R"
+    ]
+  ],
   "ProjectEventsController.getRecentEventsForProject": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "ProjectEvent",
+      "R"
+    ],
     [
       "ProjectEvent",
       "R"
@@ -9031,13 +10047,17 @@
     [
       "Project",
       "R"
-    ],
-    [
-      "ProjectEvent",
-      "R"
     ]
   ],
   "UserGroupsController.addUserToGroup": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
     [
       "UserGroupJoin",
       "W"
@@ -9073,6 +10093,14 @@
   ],
   "UserGroupsController.createGroup": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
+    ],
+    [
       "UserGroup",
       "R"
     ],
@@ -9087,6 +10115,10 @@
   ],
   "UserGroupsController.editGroup": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "UserGroup",
       "W"
     ],
@@ -9095,6 +10127,22 @@
       "W"
     ],
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "UserGroupJoin",
+      "R"
+    ],
+    [
       "UserGroupJoin",
       "R"
     ],
@@ -9119,10 +10167,6 @@
       "R"
     ],
     [
-      "UserGroupJoin",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
@@ -9200,10 +10244,18 @@
     ],
     [
       "User",
+      "R"
+    ],
+    [
+      "Type",
       "R"
     ]
   ],
   "UserGroupsController.getDetailsPage": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "UserGroupJoin",
       "R"
@@ -9315,6 +10367,10 @@
   ],
   "UserGroupsController.getEditPage": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "UserGroup",
       "R"
     ],
@@ -9325,17 +10381,31 @@
   ],
   "UserGroupsController.getGroupUsers": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "UserGroupJoin",
+      "R"
+    ]
+  ],
+  "UserGroupsController.getRemoveUserModal": [
+    [
+      "Type",
       "R"
     ]
   ],
   "UserGroupsController.getUsersNotInGroup": [
     [
-      "User",
+      "Type",
       "R"
     ],
     [
       "UserGroupJoin",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -9352,6 +10422,14 @@
     ]
   ],
   "UserGroupsController.removeUserFromGroup": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
     [
       "UserGroupJoin",
       "R"
@@ -9386,6 +10464,14 @@
     ]
   ],
   "UserGroupsController.updateUserRole": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
     [
       "UserGroupJoin",
       "R"
@@ -9425,6 +10511,10 @@
   ],
   "ProjectDetailsAjaxController.getProjectDetails": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "Project",
       "R"
     ],
@@ -9451,6 +10541,14 @@
   ],
   "ProjectDetailsAjaxController.updateProjectDetails": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Project",
+      "W"
+    ],
+    [
       "Project",
       "W"
     ],
@@ -9459,11 +10557,19 @@
       "W"
     ],
     [
-      "Project",
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
       "W"
     ]
   ],
   "RESTProjectSamplesController.addSampleToProject": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "SampleAddedProjectEvent",
       "R"
@@ -9481,7 +10587,7 @@
       "R"
     ],
     [
-      "Sample",
+      "Project",
       "R"
     ],
     [
@@ -9489,7 +10595,7 @@
       "R"
     ],
     [
-      "Project",
+      "Sample",
       "R"
     ],
     [
@@ -9607,6 +10713,14 @@
   ],
   "RESTProjectSamplesController.copySampleToProject": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
       "SampleAddedProjectEvent",
       "R"
     ],
@@ -9623,23 +10737,23 @@
       "R"
     ],
     [
+      "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
       "Project",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "Sample",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "Sample",
       "R"
     ],
     [
@@ -9717,15 +10831,11 @@
       "R"
     ],
     [
-      "ProjectSampleJoin",
+      "Type",
       "R"
     ],
     [
       "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "Sample",
       "R"
     ],
     [
@@ -9734,6 +10844,14 @@
     ],
     [
       "Project",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Sample",
       "R"
     ],
     [
@@ -9791,6 +10909,14 @@
   ],
   "RESTProjectSamplesController.getProjectSampleBySequencerId": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
       "ProjectSampleJoin",
       "R"
     ],
@@ -9804,10 +10930,6 @@
     ],
     [
       "Project",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
       "R"
     ],
     [
@@ -9828,6 +10950,94 @@
     ]
   ],
   "RESTProjectSamplesController.getProjectSamples": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Sample",
+      "W"
+    ],
+    [
+      "Sample",
+      "W"
+    ],
+    [
+      "MetadataTemplateField",
+      "W"
+    ],
+    [
+      "MetadataEntry",
+      "W"
+    ],
+    [
+      "Sample",
+      "W"
+    ],
+    [
+      "Sample",
+      "W"
+    ],
+    [
+      "Sample",
+      "W"
+    ],
+    [
+      "Sample",
+      "W"
+    ],
+    [
+      "Sample",
+      "W"
+    ],
+    [
+      "Sample",
+      "W"
+    ],
+    [
+      "Sample",
+      "W"
+    ],
+    [
+      "Sample",
+      "W"
+    ],
+    [
+      "Sample",
+      "W"
+    ],
+    [
+      "Sample",
+      "W"
+    ],
+    [
+      "Sample",
+      "W"
+    ],
+    [
+      "Sample",
+      "W"
+    ],
+    [
+      "Sample",
+      "W"
+    ],
+    [
+      "Sample",
+      "W"
+    ],
     [
       "Sample",
       "R"
@@ -9875,6 +11085,10 @@
   ],
   "RESTProjectSamplesController.getSample": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "Sample",
       "R"
     ],
@@ -9921,19 +11135,15 @@
   ],
   "RESTProjectSamplesController.removeSampleFromProject": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
       "SampleRemovedProjectEvent",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "Sample",
       "R"
     ],
     [
@@ -9946,6 +11156,18 @@
     ],
     [
       "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
       "W"
     ],
     [
@@ -9957,11 +11179,11 @@
       "R"
     ],
     [
-      "ProjectSampleJoin",
+      "Sample",
       "R"
     ],
     [
-      "Sample",
+      "ProjectSampleJoin",
       "R"
     ],
     [
@@ -9970,6 +11192,14 @@
     ]
   ],
   "RESTProjectSamplesController.updateSample": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
+    ],
     [
       "Sample",
       "R"
@@ -10015,7 +11245,21 @@
       "R"
     ]
   ],
+  "UsersController.emailExists": [
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ]
+  ],
   "UsersController.getEditUserPage": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "User",
       "R"
@@ -10031,7 +11275,7 @@
       "R"
     ],
     [
-      "User",
+      "Type",
       "R"
     ],
     [
@@ -10116,6 +11360,14 @@
     ],
     [
       "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
       "R"
     ],
     [
@@ -10128,18 +11380,14 @@
     ],
     [
       "User",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "UserGroupProjectJoin",
       "R"
     ],
     [
       "UserGroupJoin",
+      "R"
+    ],
+    [
+      "UserGroupProjectJoin",
       "R"
     ],
     [
@@ -10217,6 +11465,10 @@
   ],
   "UsersController.getUserSpecificPage": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
@@ -10309,19 +11561,15 @@
       "R"
     ],
     [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
     [
       "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "UserGroupJoin",
       "R"
     ],
     [
@@ -10330,6 +11578,10 @@
     ],
     [
       "UserGroup",
+      "R"
+    ],
+    [
+      "UserGroupJoin",
       "R"
     ],
     [
@@ -10431,6 +11683,14 @@
       "W"
     ],
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
+    ],
+    [
       "User",
       "R"
     ],
@@ -10448,6 +11708,14 @@
     ],
     [
       "PasswordReset",
+      "W"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
       "W"
     ],
     [
@@ -10493,7 +11761,23 @@
       "R"
     ],
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
+    ],
+    [
       "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Type",
       "R"
     ],
     [
@@ -10505,7 +11789,7 @@
       "R"
     ],
     [
-      "User",
+      "Type",
       "R"
     ],
     [
@@ -10531,6 +11815,14 @@
       "W"
     ],
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
+    ],
+    [
       "ReferenceFile",
       "R"
     ],
@@ -10540,6 +11832,10 @@
     ]
   ],
   "ReferenceFileController.addReferenceFileToProject": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "ReferenceFile",
       "W"
@@ -10582,6 +11878,14 @@
     ]
   ],
   "ReferenceFileController.deleteReferenceFile": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
     [
       "ProjectReferenceFileJoin",
       "R"
@@ -10637,6 +11941,10 @@
   ],
   "ReferenceFileController.downloadReferenceFile": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "ReferenceFile",
       "R"
     ],
@@ -10656,6 +11964,10 @@
     ]
   ],
   "ClientsController.getAjaxClientsList": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "IridaClientDetails",
       "R"
@@ -10682,6 +11994,10 @@
     ]
   ],
   "ClientsController.getEditPage": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "IridaClientDetails",
       "R"
@@ -10761,6 +12077,14 @@
       "R"
     ],
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
+    ],
+    [
       "IridaClientDetails",
       "R"
     ],
@@ -10811,6 +12135,10 @@
   ],
   "ClientsController.postEditClient": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "IridaClientDetails",
       "W"
     ],
@@ -10867,11 +12195,23 @@
       "R"
     ],
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "W"
+    ],
+    [
       "IridaClientDetails",
       "R"
     ],
     [
       "IridaClientDetails",
+      "R"
+    ],
+    [
+      "Type",
       "R"
     ],
     [
@@ -10917,6 +12257,10 @@
   ],
   "ClientsController.read": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "IridaClientDetails",
       "R"
     ],
@@ -10939,17 +12283,29 @@
   ],
   "ClientsController.revokeClientTokens": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "IridaClientDetails",
       "R"
     ]
   ],
   "ClientsController.revokeTokensAndRedirect": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "IridaClientDetails",
       "R"
     ]
   ],
   "CartGalaxyController.getGalaxyExportForm": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "Sample",
       "R"
@@ -11029,9 +12385,21 @@
     [
       "User",
       "R"
+    ],
+    [
+      "Type",
+      "R"
     ]
   ],
   "RESTUsersController.getUserProjects": [
+    [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
+      "R"
+    ],
     [
       "ProjectUserJoin",
       "R"
@@ -11041,11 +12409,7 @@
       "R"
     ],
     [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
+      "UserGroupProjectJoin",
       "R"
     ],
     [
@@ -11054,10 +12418,6 @@
     ],
     [
       "UserGroup",
-      "R"
-    ],
-    [
-      "UserGroupProjectJoin",
       "R"
     ],
     [
@@ -11111,7 +12471,23 @@
   ],
   "ProjectSamplesController.ajaxSamplesMerge": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
       "Sample",
+      "W"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
       "W"
     ],
     [
@@ -11123,11 +12499,11 @@
       "R"
     ],
     [
-      "ProjectSampleJoin",
+      "Sample",
       "R"
     ],
     [
-      "Sample",
+      "ProjectSampleJoin",
       "R"
     ],
     [
@@ -11155,11 +12531,11 @@
       "R"
     ],
     [
-      "Sample",
+      "ProjectSampleJoin",
       "R"
     ],
     [
-      "ProjectSampleJoin",
+      "Sample",
       "R"
     ],
     [
@@ -11175,14 +12551,6 @@
       "R"
     ],
     [
-      "SampleSequencingObjectJoin",
-      "R"
-    ],
-    [
-      "SampleSequencingObjectJoin",
-      "R"
-    ],
-    [
       "Sample",
       "R"
     ],
@@ -11192,11 +12560,15 @@
     ],
     [
       "SampleSequencingObjectJoin",
-      "W"
+      "R"
     ],
     [
       "SampleSequencingObjectJoin",
       "R"
+    ],
+    [
+      "SampleSequencingObjectJoin",
+      "W"
     ],
     [
       "SampleSequencingObjectJoin",
@@ -11204,6 +12576,10 @@
     ],
     [
       "SequencingObject",
+      "R"
+    ],
+    [
+      "SampleSequencingObjectJoin",
       "R"
     ],
     [
@@ -11235,11 +12611,11 @@
       "R"
     ],
     [
-      "Sample",
+      "SampleGenomeAssemblyJoin",
       "R"
     ],
     [
-      "SampleGenomeAssemblyJoin",
+      "Sample",
       "R"
     ],
     [
@@ -11333,6 +12709,10 @@
   ],
   "ProjectSamplesController.createNewSample": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "Sample",
       "R"
     ],
@@ -11342,14 +12722,6 @@
     ],
     [
       "SampleAddedProjectEvent",
-      "R"
-    ],
-    [
-      "Sample",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
       "R"
     ],
     [
@@ -11374,6 +12746,14 @@
     ],
     [
       "Project",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Sample",
       "R"
     ],
     [
@@ -11439,6 +12819,14 @@
   ],
   "ProjectSamplesController.deleteProjectSamples": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
       "Sample",
       "R"
     ],
@@ -11448,6 +12836,10 @@
     ],
     [
       "Project",
+      "R"
+    ],
+    [
+      "Type",
       "R"
     ],
     [
@@ -11459,19 +12851,19 @@
       "R"
     ],
     [
-      "Project",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
       "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Project",
       "R"
     ],
     [
@@ -11483,15 +12875,15 @@
       "R"
     ],
     [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
       "Sample",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
       "R"
     ],
     [
@@ -11500,6 +12892,14 @@
     ]
   ],
   "ProjectSamplesController.downloadSamples": [
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
     [
       "Project",
       "R"
@@ -11539,6 +12939,14 @@
   ],
   "ProjectSamplesController.exportProjectSamplesTable": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
       "ProjectSampleJoin",
       "R"
     ],
@@ -11591,6 +12999,14 @@
       "R"
     ],
     [
+      "SequenceFile",
+      "R"
+    ],
+    [
+      "AnalysisFastQC",
+      "R"
+    ],
+    [
       "AnalysisFastQC",
       "R"
     ],
@@ -11600,18 +13016,6 @@
     ],
     [
       "AnalysisFastQC",
-      "R"
-    ],
-    [
-      "SequenceFile",
-      "R"
-    ],
-    [
-      "AnalysisFastQC",
-      "R"
-    ],
-    [
-      "QCEntry",
       "R"
     ],
     [
@@ -11628,6 +13032,10 @@
     ],
     [
       "Sample",
+      "R"
+    ],
+    [
+      "QCEntry",
       "R"
     ],
     [
@@ -11685,6 +13093,10 @@
   ],
   "ProjectSamplesController.getAllProjectSampleIds": [
     [
+      "Type",
+      "R"
+    ],
+    [
       "ProjectSampleJoin",
       "R"
     ],
@@ -11717,7 +13129,17 @@
       "R"
     ]
   ],
+  "ProjectSamplesController.getCreateNewSamplePage": [
+    [
+      "Type",
+      "R"
+    ]
+  ],
   "ProjectSamplesController.getMergeSamplesInProjectModal": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "Type",
       "R"
@@ -11727,11 +13149,11 @@
       "R"
     ],
     [
-      "ProjectSampleJoin",
+      "Project",
       "R"
     ],
     [
-      "Project",
+      "ProjectSampleJoin",
       "R"
     ],
     [
@@ -11765,6 +13187,14 @@
   ],
   "ProjectSamplesController.getProjectSamples": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
       "ProjectSampleJoin",
       "R"
     ],
@@ -11797,10 +13227,6 @@
       "R"
     ],
     [
-      "SampleSequencingObjectJoin",
-      "R"
-    ],
-    [
       "Sample",
       "R"
     ],
@@ -11809,7 +13235,23 @@
       "R"
     ],
     [
+      "SampleSequencingObjectJoin",
+      "R"
+    ],
+    [
       "SequenceFile",
+      "R"
+    ],
+    [
+      "SequenceFile",
+      "R"
+    ],
+    [
+      "SequenceFile",
+      "R"
+    ],
+    [
+      "AnalysisFastQC",
       "R"
     ],
     [
@@ -11821,23 +13263,7 @@
       "R"
     ],
     [
-      "SequenceFile",
-      "R"
-    ],
-    [
       "AnalysisFastQC",
-      "R"
-    ],
-    [
-      "SequenceFile",
-      "R"
-    ],
-    [
-      "AnalysisFastQC",
-      "R"
-    ],
-    [
-      "QCEntry",
       "R"
     ],
     [
@@ -11854,6 +13280,10 @@
     ],
     [
       "Sample",
+      "R"
+    ],
+    [
+      "QCEntry",
       "R"
     ],
     [
@@ -11907,6 +13337,14 @@
   ],
   "ProjectSamplesController.getProjectSamplesFilterModal": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
       "ProjectSampleJoin",
       "R"
     ],
@@ -11921,13 +13359,13 @@
     [
       "Sample",
       "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
     ]
   ],
   "ProjectSamplesController.getProjectSamplesPage": [
+    [
+      "Type",
+      "R"
+    ],
     [
       "User",
       "R"
@@ -11947,27 +13385,7 @@
   ],
   "ProjectSamplesController.getProjectsAvailableToCopySamples": [
     [
-      "User",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
+      "Type",
       "R"
     ],
     [
@@ -11975,47 +13393,11 @@
       "R"
     ],
     [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
       "Project",
       "R"
     ],
     [
-      "UserGroupJoin",
-      "R"
-    ],
-    [
       "Project",
-      "R"
-    ],
-    [
-      "UserGroupJoin",
-      "R"
-    ],
-    [
-      "UserGroup",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
-      "UserGroupProjectJoin",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "UserGroupProjectJoin",
       "R"
     ],
     [
@@ -12035,11 +13417,71 @@
       "R"
     ],
     [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "UserGroupProjectJoin",
+      "R"
+    ],
+    [
+      "UserGroupProjectJoin",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "UserGroupJoin",
+      "R"
+    ],
+    [
+      "UserGroup",
+      "R"
+    ],
+    [
       "UserGroupJoin",
       "R"
     ],
     [
       "User",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "UserGroupJoin",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "Project",
       "R"
     ],
     [
@@ -12053,6 +13495,18 @@
   ],
   "ProjectSamplesController.getRemoveSamplesFromProjectModal": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
       "ProjectSampleJoin",
       "R"
     ],
@@ -12061,25 +13515,25 @@
       "R"
     ],
     [
-      "ProjectSampleJoin",
+      "Type",
+      "R"
+    ]
+  ],
+  "ProjectSamplesController.getSampleNamesNotInProject": [
+    [
+      "Type",
       "R"
     ],
     [
       "ProjectSampleJoin",
       "R"
-    ]
-  ],
-  "ProjectSamplesController.getSampleNamesNotInProject": [
+    ],
     [
       "ProjectSampleJoin",
       "R"
     ],
     [
       "Project",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
       "R"
     ],
     [
@@ -12101,6 +13555,14 @@
       "R"
     ],
     [
+      "Type",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
       "ProjectSampleJoin",
       "R"
     ],
@@ -12114,10 +13576,6 @@
     ],
     [
       "Project",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
       "R"
     ],
     [
@@ -12147,11 +13605,27 @@
   ],
   "ProjectSamplesController.removeSamplesFromProject": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
       "SampleRemovedProjectEvent",
       "R"
     ],
     [
       "SampleRemovedProjectEvent",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Sample",
       "R"
     ],
     [
@@ -12168,14 +13642,6 @@
     ],
     [
       "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "Sample",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
       "W"
     ],
     [
@@ -12187,11 +13653,11 @@
       "R"
     ],
     [
-      "Sample",
+      "ProjectSampleJoin",
       "R"
     ],
     [
-      "ProjectSampleJoin",
+      "Sample",
       "R"
     ],
     [
@@ -12205,6 +13671,18 @@
   ],
   "ProjectSamplesController.shareSampleToProject": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
+      "Type",
+      "R"
+    ],
+    [
       "SampleAddedProjectEvent",
       "R"
     ],
@@ -12249,6 +13727,14 @@
       "R"
     ],
     [
+      "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
       "Project",
       "R"
     ],
@@ -12262,14 +13748,6 @@
     ],
     [
       "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "Sample",
       "R"
     ],
     [
@@ -12337,19 +13815,19 @@
       "R"
     ],
     [
-      "Project",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
       "ProjectSampleJoin",
       "R"
     ],
     [
       "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Project",
       "R"
     ],
     [
@@ -12361,11 +13839,11 @@
       "R"
     ],
     [
-      "ProjectSampleJoin",
+      "Sample",
       "R"
     ],
     [
-      "Sample",
+      "ProjectSampleJoin",
       "R"
     ],
     [
@@ -12401,19 +13879,19 @@
       "R"
     ],
     [
-      "Sample",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
       "Project",
       "R"
     ],
     [
       "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Sample",
       "R"
     ],
     [
@@ -12535,31 +14013,35 @@
   ],
   "ProjectSamplesController.validateNewSampleName": [
     [
+      "Type",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Sample",
+      "R"
+    ],
+    [
       "ProjectSampleJoin",
       "R"
     ],
     [
       "Project",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "Sample",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "Sample",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
       "R"
     ],
     [

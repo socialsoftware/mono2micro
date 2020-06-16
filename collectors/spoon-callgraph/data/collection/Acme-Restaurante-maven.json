@@ -17,11 +17,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Restaurante",
       "R"
     ],
     [
-      "Restaurante",
+      "UserAccount",
       "R"
     ],
     [
@@ -151,11 +151,11 @@
       "R"
     ],
     [
-      "Bandeja",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "Bandeja",
       "R"
     ],
     [
@@ -240,6 +240,10 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Plato",
       "R"
     ],
     [
@@ -248,10 +252,6 @@
     ],
     [
       "Restaurante",
-      "R"
-    ],
-    [
-      "Plato",
       "R"
     ],
     [
@@ -383,11 +383,11 @@
       "R"
     ],
     [
-      "Restaurante",
+      "Critica",
       "R"
     ],
     [
-      "Critica",
+      "Restaurante",
       "R"
     ],
     [
@@ -423,11 +423,11 @@
       "R"
     ],
     [
-      "Restaurante",
+      "Valoracion",
       "R"
     ],
     [
-      "Valoracion",
+      "Restaurante",
       "R"
     ],
     [
@@ -479,11 +479,11 @@
       "R"
     ],
     [
-      "Consumicion",
+      "Mesa",
       "R"
     ],
     [
-      "Mesa",
+      "Consumicion",
       "R"
     ],
     [
@@ -541,15 +541,15 @@
       "R"
     ],
     [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
       "R"
     ],
     [
@@ -629,15 +629,15 @@
       "R"
     ],
     [
-      "Peticion",
-      "R"
-    ],
-    [
-      "Peticion",
-      "R"
-    ],
-    [
       "Quedada",
+      "R"
+    ],
+    [
+      "Peticion",
+      "R"
+    ],
+    [
+      "Peticion",
       "R"
     ],
     [
@@ -681,11 +681,11 @@
       "R"
     ],
     [
-      "Restaurante",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Restaurante",
       "R"
     ],
     [
@@ -751,10 +751,6 @@
       "R"
     ],
     [
-      "Peticion",
-      "R"
-    ],
-    [
       "Quedada",
       "R"
     ],
@@ -764,6 +760,10 @@
     ],
     [
       "Restaurante",
+      "R"
+    ],
+    [
+      "Peticion",
       "R"
     ]
   ],
@@ -801,11 +801,11 @@
       "R"
     ],
     [
-      "Restaurante",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Restaurante",
       "R"
     ],
     [
@@ -1065,327 +1065,7 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
       "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Cupon",
-      "W"
-    ],
-    [
-      "Cupon",
-      "W"
-    ],
-    [
-      "Reserva",
-      "R"
-    ],
-    [
-      "Cupon",
-      "R"
-    ],
-    [
-      "Reserva",
-      "R"
-    ],
-    [
-      "Cupon",
-      "R"
-    ],
-    [
-      "Cupon",
-      "R"
-    ],
-    [
-      "Cupon",
-      "R"
-    ],
-    [
-      "Cupon",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "LineaDeReserva",
-      "R"
-    ],
-    [
-      "Reserva",
-      "R"
-    ],
-    [
-      "LineaDeReserva",
-      "R"
-    ],
-    [
-      "LineaDeReserva",
-      "R"
-    ],
-    [
-      "LineaDeReserva",
-      "R"
-    ],
-    [
-      "Plato",
-      "R"
-    ],
-    [
-      "Plato",
-      "R"
-    ],
-    [
-      "LineaDeReserva",
-      "R"
-    ],
-    [
-      "LineaDeReserva",
-      "R"
-    ],
-    [
-      "Plato",
-      "R"
-    ],
-    [
-      "Plato",
-      "R"
-    ],
-    [
-      "LineaDeReserva",
-      "R"
-    ],
-    [
-      "Plato",
-      "R"
-    ],
-    [
-      "Plato",
-      "R"
-    ],
-    [
-      "LineaDeReserva",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "LineaOfertaReserva",
-      "R"
-    ],
-    [
-      "LineaOfertaReserva",
-      "R"
-    ],
-    [
-      "LineaOfertaReserva",
-      "R"
-    ],
-    [
-      "Reserva",
-      "R"
-    ],
-    [
-      "LineaOfertaReserva",
-      "R"
-    ],
-    [
-      "Oferta",
-      "R"
-    ],
-    [
-      "Oferta",
-      "R"
-    ],
-    [
-      "LineaOfertaReserva",
-      "R"
-    ],
-    [
-      "LineaOfertaReserva",
-      "R"
-    ],
-    [
-      "Oferta",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "LineaPlatoOferta",
-      "R"
-    ],
-    [
-      "LineaPlatoOferta",
-      "R"
-    ],
-    [
-      "LineaPlatoOferta",
-      "R"
-    ],
-    [
-      "Oferta",
-      "R"
-    ],
-    [
-      "LineaPlatoOferta",
-      "R"
-    ],
-    [
-      "Plato",
-      "R"
-    ],
-    [
-      "Plato",
-      "R"
-    ],
-    [
-      "LineaPlatoOferta",
-      "R"
-    ],
-    [
-      "LineaPlatoOferta",
-      "R"
-    ],
-    [
-      "Plato",
-      "R"
-    ],
-    [
-      "Plato",
-      "R"
-    ],
-    [
-      "LineaPlatoOferta",
-      "R"
-    ],
-    [
-      "LineaOfertaReserva",
-      "R"
-    ],
-    [
-      "Oferta",
-      "R"
-    ],
-    [
-      "Oferta",
-      "R"
-    ],
-    [
-      "LineaOfertaReserva",
-      "R"
-    ],
-    [
-      "Cupon",
-      "R"
-    ],
-    [
-      "Cupon",
-      "R"
-    ],
-    [
-      "Reserva",
-      "W"
-    ],
-    [
-      "Ticket",
-      "W"
-    ],
-    [
-      "Ticket",
-      "W"
-    ],
-    [
-      "Ticket",
-      "W"
-    ],
-    [
-      "Reserva",
-      "W"
-    ],
-    [
-      "Ticket",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "LineaDeReserva",
-      "R"
-    ],
-    [
-      "LineaDeReserva",
-      "R"
-    ],
-    [
-      "Reserva",
-      "R"
-    ],
-    [
-      "LineaDeReserva",
-      "R"
-    ],
-    [
-      "LineaDeReserva",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "LineaOfertaReserva",
-      "R"
-    ],
-    [
-      "LineaOfertaReserva",
-      "R"
-    ],
-    [
-      "Reserva",
-      "R"
-    ],
-    [
-      "LineaOfertaReserva",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "LineaOfertaReserva",
-      "R"
-    ],
-    [
-      "LineaOfertaReserva",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
       "R"
     ],
     [
@@ -1397,11 +1077,331 @@
       "R"
     ],
     [
+      "Cupon",
+      "W"
+    ],
+    [
+      "Cupon",
+      "W"
+    ],
+    [
+      "Reserva",
+      "R"
+    ],
+    [
+      "Cupon",
+      "R"
+    ],
+    [
+      "Reserva",
+      "R"
+    ],
+    [
+      "Cupon",
+      "R"
+    ],
+    [
+      "Cupon",
+      "R"
+    ],
+    [
+      "Cupon",
+      "R"
+    ],
+    [
+      "Cupon",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "LineaDeReserva",
+      "R"
+    ],
+    [
+      "LineaDeReserva",
+      "R"
+    ],
+    [
+      "LineaDeReserva",
+      "R"
+    ],
+    [
+      "Reserva",
+      "R"
+    ],
+    [
+      "LineaDeReserva",
+      "R"
+    ],
+    [
+      "Plato",
+      "R"
+    ],
+    [
+      "Plato",
+      "R"
+    ],
+    [
+      "LineaDeReserva",
+      "R"
+    ],
+    [
+      "LineaDeReserva",
+      "R"
+    ],
+    [
+      "Plato",
+      "R"
+    ],
+    [
+      "Plato",
+      "R"
+    ],
+    [
+      "LineaDeReserva",
+      "R"
+    ],
+    [
+      "Plato",
+      "R"
+    ],
+    [
+      "Plato",
+      "R"
+    ],
+    [
+      "LineaDeReserva",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "LineaOfertaReserva",
+      "R"
+    ],
+    [
+      "LineaOfertaReserva",
+      "R"
+    ],
+    [
+      "LineaOfertaReserva",
+      "R"
+    ],
+    [
+      "Reserva",
+      "R"
+    ],
+    [
+      "LineaOfertaReserva",
+      "R"
+    ],
+    [
+      "Oferta",
+      "R"
+    ],
+    [
+      "Oferta",
+      "R"
+    ],
+    [
+      "LineaOfertaReserva",
+      "R"
+    ],
+    [
+      "LineaOfertaReserva",
+      "R"
+    ],
+    [
+      "Oferta",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "LineaPlatoOferta",
+      "R"
+    ],
+    [
+      "Oferta",
+      "R"
+    ],
+    [
+      "LineaPlatoOferta",
+      "R"
+    ],
+    [
+      "LineaPlatoOferta",
+      "R"
+    ],
+    [
+      "LineaPlatoOferta",
+      "R"
+    ],
+    [
+      "Plato",
+      "R"
+    ],
+    [
+      "Plato",
+      "R"
+    ],
+    [
+      "LineaPlatoOferta",
+      "R"
+    ],
+    [
+      "LineaPlatoOferta",
+      "R"
+    ],
+    [
+      "Plato",
+      "R"
+    ],
+    [
+      "Plato",
+      "R"
+    ],
+    [
+      "LineaPlatoOferta",
+      "R"
+    ],
+    [
+      "LineaOfertaReserva",
+      "R"
+    ],
+    [
+      "Oferta",
+      "R"
+    ],
+    [
+      "Oferta",
+      "R"
+    ],
+    [
+      "LineaOfertaReserva",
+      "R"
+    ],
+    [
+      "Cupon",
+      "R"
+    ],
+    [
+      "Cupon",
+      "R"
+    ],
+    [
+      "Reserva",
+      "W"
+    ],
+    [
+      "Ticket",
+      "W"
+    ],
+    [
+      "Ticket",
+      "W"
+    ],
+    [
+      "Ticket",
+      "W"
+    ],
+    [
+      "Reserva",
+      "W"
+    ],
+    [
+      "Ticket",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "LineaDeReserva",
+      "R"
+    ],
+    [
+      "LineaDeReserva",
+      "R"
+    ],
+    [
+      "LineaDeReserva",
+      "R"
+    ],
+    [
+      "Reserva",
+      "R"
+    ],
+    [
+      "LineaDeReserva",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "LineaOfertaReserva",
+      "R"
+    ],
+    [
+      "Reserva",
+      "R"
+    ],
+    [
+      "LineaOfertaReserva",
+      "R"
+    ],
+    [
+      "LineaOfertaReserva",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "LineaOfertaReserva",
+      "R"
+    ],
+    [
+      "LineaOfertaReserva",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
       "Actor",
       "R"
     ],
     [
       "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
       "R"
     ],
     [
@@ -1577,11 +1577,11 @@
       "R"
     ],
     [
-      "Actor",
+      "Bandeja",
       "R"
     ],
     [
-      "Bandeja",
+      "Actor",
       "R"
     ],
     [
@@ -1593,11 +1593,11 @@
       "R"
     ],
     [
-      "Bandeja",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "Bandeja",
       "R"
     ],
     [
@@ -1745,15 +1745,15 @@
       "R"
     ],
     [
+      "Plato",
+      "R"
+    ],
+    [
+      "Plato",
+      "R"
+    ],
+    [
       "Restaurante",
-      "R"
-    ],
-    [
-      "Plato",
-      "R"
-    ],
-    [
-      "Plato",
       "R"
     ]
   ],
@@ -1825,11 +1825,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -1889,11 +1889,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -2085,15 +2085,15 @@
       "R"
     ],
     [
-      "Cliente",
-      "R"
-    ],
-    [
-      "Cliente",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Cliente",
+      "R"
+    ],
+    [
+      "Cliente",
       "R"
     ],
     [
@@ -2155,18 +2155,18 @@
       "R"
     ],
     [
-      "Cliente",
-      "R"
-    ],
-    [
-      "Cliente",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
     [
+      "Cliente",
+      "R"
+    ],
+    [
+      "Cliente",
+      "R"
+    ],
+    [
       "Reserva",
       "R"
     ],
@@ -2199,11 +2199,11 @@
       "R"
     ],
     [
-      "LineaDeReserva",
+      "Reserva",
       "R"
     ],
     [
-      "Reserva",
+      "LineaDeReserva",
       "R"
     ],
     [
@@ -2215,11 +2215,11 @@
       "R"
     ],
     [
-      "LineaOfertaReserva",
+      "Reserva",
       "R"
     ],
     [
-      "Reserva",
+      "LineaOfertaReserva",
       "R"
     ],
     [
@@ -2409,15 +2409,15 @@
       "R"
     ],
     [
+      "LineaOfertaReserva",
+      "R"
+    ],
+    [
+      "LineaOfertaReserva",
+      "R"
+    ],
+    [
       "Reserva",
-      "R"
-    ],
-    [
-      "LineaOfertaReserva",
-      "R"
-    ],
-    [
-      "LineaOfertaReserva",
       "R"
     ],
     [
@@ -2517,11 +2517,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -2703,11 +2703,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Cliente",
       "R"
     ],
     [
-      "Cliente",
+      "UserAccount",
       "R"
     ],
     [
@@ -2795,15 +2795,15 @@
       "R"
     ],
     [
+      "Plato",
+      "R"
+    ],
+    [
+      "Plato",
+      "R"
+    ],
+    [
       "Restaurante",
-      "R"
-    ],
-    [
-      "Plato",
-      "R"
-    ],
-    [
-      "Plato",
       "R"
     ]
   ],
@@ -2901,15 +2901,15 @@
       "R"
     ],
     [
+      "Cliente",
+      "R"
+    ],
+    [
+      "Cliente",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Cliente",
-      "R"
-    ],
-    [
-      "Cliente",
       "R"
     ],
     [
@@ -2997,11 +2997,11 @@
       "R"
     ],
     [
-      "Oferta",
+      "Restaurante",
       "R"
     ],
     [
-      "Restaurante",
+      "Oferta",
       "R"
     ]
   ],
@@ -3027,58 +3027,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Mesa",
-      "R"
-    ],
-    [
-      "Mesa",
-      "R"
-    ],
-    [
-      "Mesa",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "Actor",
       "R"
     ],
@@ -3088,54 +3036,6 @@
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Mesa",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -3155,6 +3055,106 @@
       "R"
     ],
     [
+      "Mesa",
+      "R"
+    ],
+    [
+      "Mesa",
+      "R"
+    ],
+    [
+      "Mesa",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Mesa",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
@@ -3231,11 +3231,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Restaurante",
       "R"
     ],
     [
-      "Restaurante",
+      "UserAccount",
       "R"
     ],
     [
@@ -3255,11 +3255,11 @@
       "R"
     ],
     [
-      "Mesa",
+      "Restaurante",
       "R"
     ],
     [
-      "Restaurante",
+      "Mesa",
       "R"
     ],
     [
@@ -3303,11 +3303,11 @@
       "R"
     ],
     [
-      "Mesa",
+      "Restaurante",
       "R"
     ],
     [
-      "Restaurante",
+      "Mesa",
       "R"
     ],
     [
@@ -3409,26 +3409,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
       "Restaurante",
       "R"
     ],
@@ -3439,26 +3419,6 @@
     [
       "UserAccount",
       "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Mesa",
-      "W"
-    ],
-    [
-      "Restaurante",
-      "W"
-    ],
-    [
-      "Mesa",
-      "W"
-    ],
-    [
-      "Mesa",
-      "W"
     ],
     [
       "DomainEntity",
@@ -3485,24 +3445,16 @@
       "R"
     ],
     [
-      "DomainEntity",
-      "R"
-    ],
-    [
       "Mesa",
-      "R"
+      "W"
     ],
     [
       "Restaurante",
-      "R"
+      "W"
     ],
     [
       "Mesa",
-      "R"
-    ],
-    [
-      "Mesa",
-      "R"
+      "W"
     ],
     [
       "Mesa",
@@ -3530,6 +3482,54 @@
     ],
     [
       "UserAccount",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Mesa",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Mesa",
+      "R"
+    ],
+    [
+      "Mesa",
+      "R"
+    ],
+    [
+      "Mesa",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Restaurante",
       "R"
     ],
     [
@@ -3617,15 +3617,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -3685,38 +3685,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Mesa",
-      "W"
-    ],
-    [
-      "Restaurante",
-      "W"
-    ],
-    [
-      "Mesa",
-      "W"
-    ],
-    [
-      "Mesa",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
       "Restaurante",
       "R"
     ],
@@ -3725,32 +3693,16 @@
       "R"
     ],
     [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
       "Mesa",
-      "R"
-    ],
-    [
-      "Mesa",
-      "R"
-    ],
-    [
-      "Mesa",
-      "R"
+      "W"
     ],
     [
       "Restaurante",
-      "R"
+      "W"
+    ],
+    [
+      "Mesa",
+      "W"
     ],
     [
       "Mesa",
@@ -3762,10 +3714,6 @@
     ],
     [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Restaurante",
       "R"
     ],
     [
@@ -3781,6 +3729,10 @@
       "R"
     ],
     [
+      "Restaurante",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
@@ -3793,7 +3745,55 @@
       "R"
     ],
     [
+      "Mesa",
+      "R"
+    ],
+    [
       "Restaurante",
+      "R"
+    ],
+    [
+      "Mesa",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Mesa",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Mesa",
       "R"
     ],
     [
@@ -3903,42 +3903,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Mesa",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
       "Restaurante",
       "R"
     ],
@@ -3955,7 +3919,39 @@
       "R"
     ],
     [
+      "DomainEntity",
+      "R"
+    ],
+    [
       "Mesa",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "DomainEntity",
       "R"
     ],
     [
@@ -3968,6 +3964,10 @@
     ],
     [
       "Restaurante",
+      "R"
+    ],
+    [
+      "Mesa",
       "R"
     ],
     [
@@ -3987,11 +3987,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -4035,15 +4035,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -4075,6 +4075,70 @@
       "R"
     ],
     [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Mesa",
+      "W"
+    ],
+    [
+      "Restaurante",
+      "W"
+    ],
+    [
+      "Mesa",
+      "W"
+    ],
+    [
+      "Mesa",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
@@ -4091,7 +4155,35 @@
       "R"
     ],
     [
+      "Mesa",
+      "R"
+    ],
+    [
+      "Mesa",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Mesa",
+      "R"
+    ],
+    [
+      "Mesa",
+      "W"
+    ],
+    [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Restaurante",
       "R"
     ],
     [
@@ -4107,50 +4199,6 @@
       "R"
     ],
     [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Mesa",
-      "W"
-    ],
-    [
-      "Restaurante",
-      "W"
-    ],
-    [
-      "Mesa",
-      "W"
-    ],
-    [
-      "Mesa",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
@@ -4168,54 +4216,6 @@
     ],
     [
       "Mesa",
-      "R"
-    ],
-    [
-      "Mesa",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Mesa",
-      "R"
-    ],
-    [
-      "Mesa",
-      "R"
-    ],
-    [
-      "Mesa",
-      "R"
-    ],
-    [
-      "Restaurante",
       "R"
     ],
     [
@@ -4299,11 +4299,11 @@
       "R"
     ],
     [
-      "Restaurante",
+      "Mesa",
       "R"
     ],
     [
-      "Mesa",
+      "Restaurante",
       "R"
     ],
     [
@@ -4373,15 +4373,15 @@
       "R"
     ],
     [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
       "R"
     ],
     [
@@ -4429,6 +4429,50 @@
       "R"
     ],
     [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Plato",
+      "R"
+    ],
+    [
+      "Plato",
+      "R"
+    ],
+    [
+      "Plato",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
       "Restaurante",
       "R"
     ],
@@ -4449,43 +4493,7 @@
       "R"
     ],
     [
-      "Plato",
-      "R"
-    ],
-    [
-      "Plato",
-      "R"
-    ],
-    [
       "Restaurante",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "DomainEntity",
       "R"
     ],
     [
@@ -4494,14 +4502,6 @@
     ],
     [
       "Plato",
-      "R"
-    ],
-    [
-      "Plato",
-      "R"
-    ],
-    [
-      "Restaurante",
       "R"
     ]
   ],
@@ -4575,11 +4575,11 @@
       "R"
     ],
     [
-      "Restaurante",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Restaurante",
       "R"
     ],
     [
@@ -4631,11 +4631,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -4671,11 +4671,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Restaurante",
       "R"
     ],
     [
-      "Restaurante",
+      "UserAccount",
       "R"
     ],
     [
@@ -4703,11 +4703,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -4819,11 +4819,11 @@
       "R"
     ],
     [
-      "Restaurante",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Restaurante",
       "R"
     ],
     [
@@ -4863,11 +4863,11 @@
       "R"
     ],
     [
-      "Oferta",
+      "LineaPlatoOferta",
       "R"
     ],
     [
-      "LineaPlatoOferta",
+      "Oferta",
       "R"
     ],
     [
@@ -4903,15 +4903,15 @@
       "R"
     ],
     [
-      "LineaPlatoOferta",
-      "R"
-    ],
-    [
-      "LineaPlatoOferta",
-      "R"
-    ],
-    [
       "Oferta",
+      "R"
+    ],
+    [
+      "LineaPlatoOferta",
+      "R"
+    ],
+    [
+      "LineaPlatoOferta",
       "R"
     ],
     [
@@ -4993,15 +4993,15 @@
       "R"
     ],
     [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
       "R"
     ],
     [
@@ -5017,14 +5017,14 @@
       "R"
     ],
     [
+      "Restaurante",
+      "R"
+    ],
+    [
       "Plato",
       "R"
     ],
     [
-      "Restaurante",
-      "R"
-    ],
-    [
       "Authority",
       "R"
     ],
@@ -5157,15 +5157,15 @@
       "R"
     ],
     [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
       "R"
     ],
     [
@@ -5179,58 +5179,6 @@
     [
       "Oferta",
       "W"
-    ],
-    [
-      "LineaPlatoOferta",
-      "W"
-    ],
-    [
-      "Plato",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "LineaPlatoOferta",
-      "R"
-    ],
-    [
-      "LineaPlatoOferta",
-      "R"
-    ],
-    [
-      "LineaPlatoOferta",
-      "W"
-    ],
-    [
-      "LineaPlatoOferta",
-      "R"
-    ],
-    [
-      "Oferta",
-      "R"
-    ],
-    [
-      "LineaPlatoOferta",
-      "W"
-    ],
-    [
-      "Oferta",
-      "W"
-    ],
-    [
-      "LineaPlatoOferta",
-      "R"
-    ],
-    [
-      "Plato",
-      "R"
     ],
     [
       "LineaPlatoOferta",
@@ -5241,6 +5189,58 @@
       "W"
     ],
     [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "LineaPlatoOferta",
+      "R"
+    ],
+    [
+      "LineaPlatoOferta",
+      "R"
+    ],
+    [
+      "LineaPlatoOferta",
+      "W"
+    ],
+    [
+      "LineaPlatoOferta",
+      "R"
+    ],
+    [
+      "Oferta",
+      "R"
+    ],
+    [
+      "LineaPlatoOferta",
+      "W"
+    ],
+    [
+      "Oferta",
+      "W"
+    ],
+    [
+      "LineaPlatoOferta",
+      "R"
+    ],
+    [
+      "Plato",
+      "R"
+    ],
+    [
+      "LineaPlatoOferta",
+      "W"
+    ],
+    [
+      "Plato",
+      "W"
+    ],
+    [
       "LineaPlatoOferta",
       "W"
     ],
@@ -5345,15 +5345,15 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -5385,11 +5385,11 @@
       "R"
     ],
     [
-      "Restaurante",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Restaurante",
       "R"
     ],
     [
@@ -5417,11 +5417,11 @@
       "R"
     ],
     [
-      "Restaurante",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Restaurante",
       "R"
     ],
     [
@@ -5505,11 +5505,11 @@
       "R"
     ],
     [
-      "Oferta",
+      "LineaPlatoOferta",
       "R"
     ],
     [
-      "LineaPlatoOferta",
+      "Oferta",
       "R"
     ],
     [
@@ -5549,15 +5549,15 @@
       "R"
     ],
     [
+      "LineaPlatoOferta",
+      "R"
+    ],
+    [
+      "LineaPlatoOferta",
+      "R"
+    ],
+    [
       "Oferta",
-      "R"
-    ],
-    [
-      "LineaPlatoOferta",
-      "R"
-    ],
-    [
-      "LineaPlatoOferta",
       "R"
     ],
     [
@@ -5681,19 +5681,15 @@
       "R"
     ],
     [
-      "Restaurante",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
     [
-      "DomainEntity",
+      "Restaurante",
       "R"
     ],
     [
-      "Consumicion",
+      "DomainEntity",
       "R"
     ],
     [
@@ -5713,23 +5709,15 @@
       "R"
     ],
     [
+      "Consumicion",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
     [
       "Consumicion",
-      "R"
-    ],
-    [
-      "Mesa",
-      "R"
-    ],
-    [
-      "Consumicion",
-      "R"
-    ],
-    [
-      "Mesa",
       "R"
     ],
     [
@@ -5746,6 +5734,18 @@
     ],
     [
       "Consumicion",
+      "R"
+    ],
+    [
+      "Mesa",
+      "R"
+    ],
+    [
+      "Consumicion",
+      "R"
+    ],
+    [
+      "Mesa",
       "R"
     ],
     [
@@ -5781,19 +5781,19 @@
       "R"
     ],
     [
+      "Consumicion",
+      "R"
+    ],
+    [
+      "Consumicion",
+      "R"
+    ],
+    [
       "Mesa",
       "R"
     ],
     [
       "Restaurante",
-      "R"
-    ],
-    [
-      "Consumicion",
-      "R"
-    ],
-    [
-      "Consumicion",
       "R"
     ],
     [
@@ -5871,6 +5871,10 @@
       "R"
     ],
     [
+      "Analisis",
+      "R"
+    ],
+    [
       "Plato",
       "R"
     ],
@@ -5887,11 +5891,19 @@
       "R"
     ],
     [
-      "Analisis",
+      "DomainEntity",
       "R"
     ],
     [
-      "DomainEntity",
+      "Critica",
+      "R"
+    ],
+    [
+      "Critica",
+      "R"
+    ],
+    [
+      "Critica",
       "R"
     ],
     [
@@ -5903,18 +5915,6 @@
       "R"
     ],
     [
-      "Critica",
-      "R"
-    ],
-    [
-      "Critica",
-      "R"
-    ],
-    [
-      "Critica",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
@@ -5927,11 +5927,11 @@
       "R"
     ],
     [
-      "Restaurante",
+      "Valoracion",
       "R"
     ],
     [
-      "Valoracion",
+      "Restaurante",
       "R"
     ]
   ],
@@ -5955,15 +5955,15 @@
       "R"
     ],
     [
+      "Administrador",
+      "R"
+    ],
+    [
+      "Administrador",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Administrador",
-      "R"
-    ],
-    [
-      "Administrador",
       "R"
     ],
     [
@@ -6025,14 +6025,14 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
       "Administrador",
       "R"
     ],
     [
+      "UserAccount",
+      "R"
+    ],
+    [
       "Actor",
       "R"
     ],
@@ -6089,11 +6089,11 @@
       "R"
     ],
     [
-      "Actor",
+      "Mensaje",
       "R"
     ],
     [
-      "Mensaje",
+      "Actor",
       "R"
     ],
     [
@@ -6121,11 +6121,11 @@
       "R"
     ],
     [
-      "Actor",
+      "Mensaje",
       "R"
     ],
     [
-      "Mensaje",
+      "Actor",
       "R"
     ],
     [
@@ -6219,30 +6219,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
       "Actor",
       "R"
     ],
@@ -6255,7 +6231,31 @@
       "R"
     ],
     [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
       "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
       "R"
     ],
     [
@@ -6289,15 +6289,15 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -6317,11 +6317,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -6439,11 +6439,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -6477,10 +6477,6 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
@@ -6489,26 +6485,6 @@
       "R"
     ],
     [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
       "Actor",
       "R"
     ],
@@ -6521,7 +6497,7 @@
       "R"
     ],
     [
-      "DomainEntity",
+      "Actor",
       "R"
     ],
     [
@@ -6537,7 +6513,31 @@
       "R"
     ],
     [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
       "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
       "R"
     ],
     [
@@ -6567,11 +6567,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -6667,15 +6667,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -6721,11 +6721,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -6939,11 +6939,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -6993,11 +6993,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -7047,11 +7047,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -7127,11 +7127,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -7167,15 +7167,15 @@
       "R"
     ],
     [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
       "R"
     ],
     [
@@ -7235,19 +7235,15 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
       "Restaurante",
       "R"
     ],
     [
-      "DomainEntity",
+      "UserAccount",
       "R"
     ],
     [
-      "Consumicion",
+      "DomainEntity",
       "R"
     ],
     [
@@ -7260,6 +7256,10 @@
     ],
     [
       "Restaurante",
+      "R"
+    ],
+    [
+      "Consumicion",
       "R"
     ],
     [
@@ -7281,11 +7281,11 @@
       "R"
     ],
     [
-      "Administrador",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Administrador",
       "R"
     ],
     [
@@ -7357,11 +7357,11 @@
       "R"
     ],
     [
-      "Cliente",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Cliente",
       "R"
     ],
     [
@@ -7455,11 +7455,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Cliente",
       "R"
     ],
     [
-      "Cliente",
+      "UserAccount",
       "R"
     ],
     [
@@ -7471,11 +7471,11 @@
       "R"
     ],
     [
-      "Cliente",
+      "Peticion",
       "R"
     ],
     [
-      "Peticion",
+      "Cliente",
       "R"
     ],
     [
@@ -7607,11 +7607,11 @@
       "R"
     ],
     [
-      "Critico",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Critico",
       "R"
     ],
     [
@@ -7675,11 +7675,11 @@
       "R"
     ],
     [
-      "Critico",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Critico",
       "R"
     ],
     [
@@ -7695,11 +7695,11 @@
       "R"
     ],
     [
-      "Critico",
+      "Analisis",
       "R"
     ],
     [
-      "Analisis",
+      "Critico",
       "R"
     ]
   ],
@@ -7847,11 +7847,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -7887,11 +7887,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Administrador",
       "R"
     ],
     [
-      "Administrador",
+      "UserAccount",
       "R"
     ],
     [
@@ -7929,11 +7929,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -8043,15 +8043,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -8087,11 +8087,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Administrador",
       "R"
     ],
     [
-      "Administrador",
+      "UserAccount",
       "R"
     ],
     [
@@ -8115,15 +8115,15 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -8159,11 +8159,11 @@
       "R"
     ],
     [
-      "Administrador",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Administrador",
       "R"
     ],
     [
@@ -8221,11 +8221,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -8375,15 +8375,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -8447,10 +8447,6 @@
       "R"
     ],
     [
-      "LineaPlatoOferta",
-      "R"
-    ],
-    [
       "Plato",
       "R"
     ],
@@ -8459,6 +8455,10 @@
       "R"
     ],
     [
+      "LineaPlatoOferta",
+      "R"
+    ],
+    [
       "Authority",
       "R"
     ],
@@ -8479,11 +8479,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -8575,83 +8575,11 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
     [
       "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
       "R"
     ],
     [
@@ -8691,38 +8619,6 @@
       "R"
     ],
     [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Oferta",
-      "W"
-    ],
-    [
-      "Oferta",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
@@ -8731,14 +8627,14 @@
       "R"
     ],
     [
-      "Oferta",
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
       "W"
     ],
     [
-      "Restaurante",
-      "W"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
@@ -8747,7 +8643,35 @@
       "R"
     ],
     [
-      "Oferta",
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
       "R"
     ],
     [
@@ -8756,10 +8680,6 @@
     ],
     [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Restaurante",
       "R"
     ],
     [
@@ -8772,6 +8692,86 @@
     ],
     [
       "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Oferta",
+      "W"
+    ],
+    [
+      "Oferta",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Oferta",
+      "W"
+    ],
+    [
+      "Restaurante",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Oferta",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "UserAccount",
       "R"
     ],
     [
@@ -8811,11 +8811,11 @@
       "R"
     ],
     [
-      "LineaPlatoOferta",
+      "Oferta",
       "R"
     ],
     [
-      "Oferta",
+      "LineaPlatoOferta",
       "R"
     ],
     [
@@ -8939,11 +8939,11 @@
       "R"
     ],
     [
-      "Analisis",
+      "Plato",
       "R"
     ],
     [
-      "Plato",
+      "Analisis",
       "R"
     ],
     [
@@ -9017,11 +9017,11 @@
       "R"
     ],
     [
-      "Restaurante",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Restaurante",
       "R"
     ],
     [
@@ -9033,15 +9033,15 @@
       "R"
     ],
     [
+      "Plato",
+      "R"
+    ],
+    [
+      "Plato",
+      "R"
+    ],
+    [
       "Restaurante",
-      "R"
-    ],
-    [
-      "Plato",
-      "R"
-    ],
-    [
-      "Plato",
       "R"
     ]
   ],
@@ -9063,11 +9063,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -9105,11 +9105,11 @@
       "R"
     ],
     [
-      "Critico",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Critico",
       "R"
     ],
     [
@@ -9175,147 +9175,147 @@
       "R"
     ],
     [
+      "Critico",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Bandeja",
+      "R"
+    ],
+    [
+      "Bandeja",
+      "R"
+    ],
+    [
+      "Bandeja",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Bandeja",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Mensaje",
+      "R"
+    ],
+    [
+      "Mensaje",
+      "R"
+    ],
+    [
+      "Mensaje",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Mensaje",
+      "R"
+    ],
+    [
+      "Mensaje",
+      "R"
+    ],
+    [
+      "Mensaje",
+      "R"
+    ],
+    [
+      "Mensaje",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Mensaje",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Mensaje",
+      "R"
+    ],
+    [
+      "Mensaje",
+      "R"
+    ],
+    [
+      "Mensaje",
+      "R"
+    ],
+    [
+      "Mensaje",
+      "R"
+    ],
+    [
+      "Mensaje",
+      "R"
+    ],
+    [
+      "Mensaje",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Analisis",
+      "R"
+    ],
+    [
+      "Analisis",
+      "R"
+    ],
+    [
+      "Analisis",
+      "R"
+    ],
+    [
       "Critico",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Bandeja",
-      "R"
-    ],
-    [
-      "Bandeja",
-      "R"
-    ],
-    [
-      "Bandeja",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Bandeja",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Mensaje",
-      "R"
-    ],
-    [
-      "Mensaje",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Mensaje",
-      "R"
-    ],
-    [
-      "Mensaje",
-      "R"
-    ],
-    [
-      "Mensaje",
-      "R"
-    ],
-    [
-      "Mensaje",
-      "R"
-    ],
-    [
-      "Mensaje",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Mensaje",
-      "R"
-    ],
-    [
-      "Mensaje",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Mensaje",
-      "R"
-    ],
-    [
-      "Mensaje",
-      "R"
-    ],
-    [
-      "Mensaje",
-      "R"
-    ],
-    [
-      "Mensaje",
-      "R"
-    ],
-    [
-      "Mensaje",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Analisis",
-      "R"
-    ],
-    [
-      "Analisis",
-      "R"
-    ],
-    [
-      "Critico",
-      "R"
-    ],
-    [
-      "Analisis",
       "R"
     ],
     [
@@ -9375,11 +9375,11 @@
       "R"
     ],
     [
-      "Critico",
+      "Critica",
       "R"
     ],
     [
-      "Critica",
+      "Critico",
       "R"
     ],
     [
@@ -9437,15 +9437,15 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -9481,11 +9481,11 @@
       "R"
     ],
     [
-      "Restaurante",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Restaurante",
       "R"
     ],
     [
@@ -9575,306 +9575,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Cupon",
-      "W"
-    ],
-    [
-      "Restaurante",
-      "W"
-    ],
-    [
-      "Cupon",
-      "W"
-    ],
-    [
-      "Cupon",
-      "W"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Cupon",
-      "R"
-    ],
-    [
-      "Cupon",
-      "R"
-    ],
-    [
-      "Cupon",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Cupon",
-      "R"
-    ],
-    [
-      "Cupon",
-      "R"
-    ],
-    [
-      "Cupon",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Cupon",
-      "W"
-    ],
-    [
-      "Cupon",
-      "W"
-    ],
-    [
-      "Cupon",
-      "W"
-    ],
-    [
-      "Cupon",
-      "W"
-    ],
-    [
-      "Cupon",
-      "W"
-    ],
-    [
-      "Cupon",
-      "W"
-    ],
-    [
-      "Cupon",
-      "W"
-    ],
-    [
-      "Cupon",
-      "W"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "Actor",
       "R"
     ],
@@ -9915,6 +9615,34 @@
       "R"
     ],
     [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
@@ -9923,8 +9651,20 @@
       "R"
     ],
     [
+      "Cupon",
+      "W"
+    ],
+    [
       "Restaurante",
-      "R"
+      "W"
+    ],
+    [
+      "Cupon",
+      "W"
+    ],
+    [
+      "Cupon",
+      "W"
     ],
     [
       "Authority",
@@ -9991,7 +9731,267 @@
       "R"
     ],
     [
+      "Restaurante",
+      "R"
+    ],
+    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Cupon",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Cupon",
+      "R"
+    ],
+    [
+      "Cupon",
+      "R"
+    ],
+    [
+      "Cupon",
+      "R"
+    ],
+    [
+      "Cupon",
+      "R"
+    ],
+    [
+      "Cupon",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Cupon",
+      "W"
+    ],
+    [
+      "Cupon",
+      "W"
+    ],
+    [
+      "Cupon",
+      "W"
+    ],
+    [
+      "Cupon",
+      "W"
+    ],
+    [
+      "Cupon",
+      "W"
+    ],
+    [
+      "Cupon",
+      "W"
+    ],
+    [
+      "Cupon",
+      "W"
+    ],
+    [
+      "Cupon",
+      "W"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Restaurante",
       "R"
     ],
     [
@@ -10099,23 +10099,7 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
       "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
       "R"
     ],
     [
@@ -10127,51 +10111,15 @@
       "R"
     ],
     [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Cupon",
-      "R"
-    ],
-    [
-      "Cupon",
-      "R"
-    ],
-    [
-      "Cupon",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Cupon",
-      "R"
-    ],
-    [
-      "Cupon",
-      "R"
-    ],
-    [
-      "Cupon",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Restaurante",
       "R"
     ],
     [
@@ -10184,6 +10132,58 @@
     ],
     [
       "Restaurante",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Cupon",
+      "R"
+    ],
+    [
+      "Cupon",
+      "R"
+    ],
+    [
+      "Cupon",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Cupon",
+      "R"
+    ],
+    [
+      "Cupon",
+      "R"
+    ],
+    [
+      "Cupon",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "UserAccount",
       "R"
     ],
     [
@@ -10293,11 +10293,11 @@
       "R"
     ],
     [
-      "Cupon",
+      "Restaurante",
       "R"
     ],
     [
-      "Restaurante",
+      "Cupon",
       "R"
     ]
   ],
@@ -10363,11 +10363,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Cliente",
       "R"
     ],
     [
-      "Cliente",
+      "UserAccount",
       "R"
     ],
     [
@@ -10387,11 +10387,11 @@
       "R"
     ],
     [
-      "Cliente",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Cliente",
       "R"
     ],
     [
@@ -10423,11 +10423,11 @@
       "R"
     ],
     [
-      "Cliente",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Cliente",
       "R"
     ],
     [
@@ -10439,7 +10439,7 @@
       "R"
     ],
     [
-      "Reserva",
+      "Cliente",
       "R"
     ],
     [
@@ -10455,7 +10455,7 @@
       "R"
     ],
     [
-      "Cliente",
+      "Reserva",
       "R"
     ],
     [
@@ -10545,11 +10545,11 @@
       "R"
     ],
     [
-      "Cliente",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Cliente",
       "R"
     ],
     [
@@ -10561,11 +10561,11 @@
       "R"
     ],
     [
-      "Cliente",
+      "Valoracion",
       "R"
     ],
     [
-      "Valoracion",
+      "Cliente",
       "R"
     ],
     [
@@ -10595,11 +10595,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -10667,15 +10667,15 @@
       "R"
     ],
     [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
       "R"
     ],
     [
@@ -10713,15 +10713,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -11041,78 +11041,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "Actor",
       "R"
     ],
@@ -11153,6 +11081,110 @@
       "R"
     ],
     [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Oferta",
+      "W"
+    ],
+    [
+      "Oferta",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
       "Restaurante",
       "R"
     ],
@@ -11169,8 +11201,20 @@
       "W"
     ],
     [
-      "Oferta",
+      "Restaurante",
       "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Oferta",
+      "R"
     ],
     [
       "DomainEntity",
@@ -11194,50 +11238,6 @@
     ],
     [
       "Restaurante",
-      "R"
-    ],
-    [
-      "Oferta",
-      "W"
-    ],
-    [
-      "Restaurante",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Oferta",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "UserAccount",
       "R"
     ],
     [
@@ -11273,11 +11273,11 @@
       "R"
     ],
     [
-      "Oferta",
+      "LineaPlatoOferta",
       "R"
     ],
     [
-      "LineaPlatoOferta",
+      "Oferta",
       "R"
     ],
     [
@@ -11321,11 +11321,11 @@
       "R"
     ],
     [
-      "LineaPlatoOferta",
+      "Oferta",
       "R"
     ],
     [
-      "Oferta",
+      "LineaPlatoOferta",
       "R"
     ],
     [
@@ -11387,15 +11387,15 @@
       "R"
     ],
     [
+      "LineaPlatoOferta",
+      "R"
+    ],
+    [
+      "LineaPlatoOferta",
+      "R"
+    ],
+    [
       "Oferta",
-      "R"
-    ],
-    [
-      "LineaPlatoOferta",
-      "R"
-    ],
-    [
-      "LineaPlatoOferta",
       "R"
     ]
   ],
@@ -11419,15 +11419,15 @@
       "R"
     ],
     [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
       "R"
     ],
     [
@@ -11839,15 +11839,15 @@
       "R"
     ],
     [
-      "Critico",
-      "R"
-    ],
-    [
-      "Critico",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Critico",
+      "R"
+    ],
+    [
+      "Critico",
       "R"
     ],
     [
@@ -12009,15 +12009,15 @@
       "R"
     ],
     [
+      "Critico",
+      "R"
+    ],
+    [
+      "Critico",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Critico",
-      "R"
-    ],
-    [
-      "Critico",
       "R"
     ],
     [
@@ -12119,15 +12119,15 @@
       "R"
     ],
     [
+      "Critico",
+      "R"
+    ],
+    [
+      "Critico",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Critico",
-      "R"
-    ],
-    [
-      "Critico",
       "R"
     ],
     [
@@ -12173,15 +12173,15 @@
       "R"
     ],
     [
+      "Cliente",
+      "R"
+    ],
+    [
+      "Cliente",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Cliente",
-      "R"
-    ],
-    [
-      "Cliente",
       "R"
     ],
     [
@@ -12193,11 +12193,11 @@
       "R"
     ],
     [
-      "Cliente",
+      "Buscador",
       "R"
     ],
     [
-      "Buscador",
+      "Cliente",
       "R"
     ],
     [
@@ -12235,62 +12235,6 @@
       "R"
     ],
     [
-      "Cliente",
-      "R"
-    ],
-    [
-      "Cliente",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Buscador",
-      "R"
-    ],
-    [
-      "Buscador",
-      "R"
-    ],
-    [
-      "Buscador",
-      "R"
-    ],
-    [
-      "Cliente",
-      "R"
-    ],
-    [
-      "Buscador",
-      "W"
-    ],
-    [
-      "Restaurante",
-      "W"
-    ],
-    [
-      "Buscador",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Cliente",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
@@ -12303,6 +12247,62 @@
       "R"
     ],
     [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Buscador",
+      "R"
+    ],
+    [
+      "Cliente",
+      "R"
+    ],
+    [
+      "Buscador",
+      "R"
+    ],
+    [
+      "Buscador",
+      "R"
+    ],
+    [
+      "Buscador",
+      "W"
+    ],
+    [
+      "Restaurante",
+      "W"
+    ],
+    [
+      "Buscador",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Cliente",
+      "R"
+    ],
+    [
+      "Cliente",
+      "R"
+    ],
+    [
+      "Cliente",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
       "Buscador",
       "W"
     ],
@@ -12375,11 +12375,11 @@
       "R"
     ],
     [
-      "Restaurante",
+      "Plato",
       "R"
     ],
     [
-      "Plato",
+      "Restaurante",
       "R"
     ],
     [
@@ -12435,11 +12435,11 @@
       "R"
     ],
     [
-      "Valoracion",
+      "Restaurante",
       "R"
     ],
     [
-      "Restaurante",
+      "Valoracion",
       "R"
     ],
     [
@@ -12557,15 +12557,15 @@
       "R"
     ],
     [
+      "Plato",
+      "R"
+    ],
+    [
+      "Plato",
+      "R"
+    ],
+    [
       "Restaurante",
-      "R"
-    ],
-    [
-      "Plato",
-      "R"
-    ],
-    [
-      "Plato",
       "R"
     ],
     [
@@ -12617,11 +12617,11 @@
       "R"
     ],
     [
-      "Restaurante",
+      "Valoracion",
       "R"
     ],
     [
-      "Valoracion",
+      "Restaurante",
       "R"
     ],
     [
@@ -12719,11 +12719,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -12739,11 +12739,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -12811,11 +12811,11 @@
       "R"
     ],
     [
-      "Actor",
+      "Bandeja",
       "R"
     ],
     [
-      "Bandeja",
+      "Actor",
       "R"
     ],
     [
@@ -12827,15 +12827,15 @@
       "R"
     ],
     [
-      "Bandeja",
-      "R"
-    ],
-    [
-      "Bandeja",
-      "R"
-    ],
-    [
       "Actor",
+      "R"
+    ],
+    [
+      "Bandeja",
+      "R"
+    ],
+    [
+      "Bandeja",
       "R"
     ],
     [
@@ -12860,26 +12860,6 @@
     ],
     [
       "Mensaje",
-      "W"
-    ],
-    [
-      "ContencionMensaje",
-      "W"
-    ],
-    [
-      "Bandeja",
-      "W"
-    ],
-    [
-      "ContencionMensaje",
-      "W"
-    ],
-    [
-      "Mensaje",
-      "W"
-    ],
-    [
-      "ContencionMensaje",
       "W"
     ],
     [
@@ -12903,6 +12883,26 @@
       "W"
     ],
     [
+      "ContencionMensaje",
+      "W"
+    ],
+    [
+      "Bandeja",
+      "W"
+    ],
+    [
+      "ContencionMensaje",
+      "W"
+    ],
+    [
+      "Mensaje",
+      "W"
+    ],
+    [
+      "ContencionMensaje",
+      "W"
+    ],
+    [
       "Actor",
       "R"
     ],
@@ -12912,14 +12912,6 @@
     ],
     [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -12928,6 +12920,14 @@
     ],
     [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ]
   ],
@@ -12983,6 +12983,114 @@
       "R"
     ],
     [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "ContencionMensaje",
+      "R"
+    ],
+    [
+      "Bandeja",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "ContencionMensaje",
+      "R"
+    ],
+    [
+      "Mensaje",
+      "R"
+    ],
+    [
+      "ContencionMensaje",
+      "R"
+    ],
+    [
+      "ContencionMensaje",
+      "R"
+    ],
+    [
+      "ContencionMensaje",
+      "R"
+    ],
+    [
+      "Bandeja",
+      "R"
+    ],
+    [
+      "Bandeja",
+      "R"
+    ],
+    [
+      "ContencionMensaje",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Bandeja",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Bandeja",
+      "R"
+    ],
+    [
+      "Bandeja",
+      "R"
+    ],
+    [
+      "Bandeja",
+      "R"
+    ],
+    [
+      "ContencionMensaje",
+      "W"
+    ],
+    [
+      "Bandeja",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "Actor",
       "R"
     ],
@@ -12995,114 +13103,6 @@
       "R"
     ],
     [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "ContencionMensaje",
-      "R"
-    ],
-    [
-      "ContencionMensaje",
-      "R"
-    ],
-    [
-      "Mensaje",
-      "R"
-    ],
-    [
-      "ContencionMensaje",
-      "R"
-    ],
-    [
-      "ContencionMensaje",
-      "R"
-    ],
-    [
-      "Bandeja",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "ContencionMensaje",
-      "R"
-    ],
-    [
-      "Bandeja",
-      "R"
-    ],
-    [
-      "Bandeja",
-      "R"
-    ],
-    [
-      "ContencionMensaje",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Bandeja",
-      "R"
-    ],
-    [
-      "Bandeja",
-      "R"
-    ],
-    [
-      "Bandeja",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Bandeja",
-      "R"
-    ],
-    [
-      "ContencionMensaje",
-      "W"
-    ],
-    [
-      "Bandeja",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
       "ContencionMensaje",
       "R"
     ],
@@ -13123,6 +13123,10 @@
       "R"
     ],
     [
+      "ContencionMensaje",
+      "R"
+    ],
+    [
       "Bandeja",
       "R"
     ],
@@ -13135,15 +13139,11 @@
       "R"
     ],
     [
-      "ContencionMensaje",
-      "R"
-    ],
-    [
-      "ContencionMensaje",
-      "R"
-    ],
-    [
       "Mensaje",
+      "R"
+    ],
+    [
+      "ContencionMensaje",
       "R"
     ],
     [
@@ -13237,6 +13237,10 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
@@ -13245,10 +13249,6 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
@@ -13277,11 +13277,11 @@
       "R"
     ],
     [
-      "ContencionMensaje",
+      "Bandeja",
       "R"
     ],
     [
-      "Bandeja",
+      "ContencionMensaje",
       "R"
     ],
     [
@@ -13311,11 +13311,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -13407,7 +13407,7 @@
       "R"
     ],
     [
-      "Actor",
+      "ContencionMensaje",
       "R"
     ],
     [
@@ -13419,19 +13419,15 @@
       "R"
     ],
     [
-      "ContencionMensaje",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
       "Actor",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
       "R"
     ],
     [
@@ -13447,6 +13443,10 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
@@ -13459,11 +13459,11 @@
       "R"
     ],
     [
-      "Actor",
+      "Bandeja",
       "R"
     ],
     [
-      "Bandeja",
+      "Actor",
       "R"
     ]
   ],
@@ -13485,10 +13485,6 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
@@ -13497,7 +13493,7 @@
       "R"
     ],
     [
-      "DomainEntity",
+      "Actor",
       "R"
     ],
     [
@@ -13505,19 +13501,7 @@
       "R"
     ],
     [
-      "ContencionMensaje",
-      "R"
-    ],
-    [
-      "ContencionMensaje",
-      "R"
-    ],
-    [
-      "Mensaje",
-      "R"
-    ],
-    [
-      "ContencionMensaje",
+      "DomainEntity",
       "R"
     ],
     [
@@ -13530,6 +13514,22 @@
     ],
     [
       "Actor",
+      "R"
+    ],
+    [
+      "ContencionMensaje",
+      "R"
+    ],
+    [
+      "ContencionMensaje",
+      "R"
+    ],
+    [
+      "ContencionMensaje",
+      "R"
+    ],
+    [
+      "Mensaje",
       "R"
     ],
     [
@@ -13817,14 +13817,14 @@
       "R"
     ],
     [
-      "Cliente",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
     [
+      "Cliente",
+      "R"
+    ],
+    [
       "Actor",
       "R"
     ],
@@ -13853,6 +13853,10 @@
       "R"
     ],
     [
+      "Bandeja",
+      "R"
+    ],
+    [
       "Actor",
       "R"
     ],
@@ -13865,7 +13869,39 @@
       "R"
     ],
     [
-      "Bandeja",
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Mensaje",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Mensaje",
+      "R"
+    ],
+    [
+      "Mensaje",
+      "R"
+    ],
+    [
+      "Mensaje",
+      "R"
+    ],
+    [
+      "Mensaje",
+      "R"
+    ],
+    [
+      "Mensaje",
+      "R"
+    ],
+    [
+      "Mensaje",
       "R"
     ],
     [
@@ -13906,46 +13942,6 @@
     ],
     [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Mensaje",
-      "R"
-    ],
-    [
-      "Mensaje",
-      "R"
-    ],
-    [
-      "Mensaje",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Mensaje",
-      "R"
-    ],
-    [
-      "Mensaje",
-      "R"
-    ],
-    [
-      "Mensaje",
-      "R"
-    ],
-    [
-      "Mensaje",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Peticion",
       "R"
     ],
     [
@@ -13973,6 +13969,10 @@
       "R"
     ],
     [
+      "Peticion",
+      "R"
+    ],
+    [
       "Quedada",
       "R"
     ],
@@ -14013,10 +14013,6 @@
       "R"
     ],
     [
-      "Consumicion",
-      "R"
-    ],
-    [
       "Mesa",
       "R"
     ],
@@ -14029,7 +14025,15 @@
       "R"
     ],
     [
+      "Consumicion",
+      "R"
+    ],
+    [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Reserva",
       "R"
     ],
     [
@@ -14038,10 +14042,6 @@
     ],
     [
       "Cliente",
-      "R"
-    ],
-    [
-      "Reserva",
       "R"
     ],
     [
@@ -14125,11 +14125,11 @@
       "R"
     ],
     [
-      "Cliente",
+      "Buscador",
       "R"
     ],
     [
-      "Buscador",
+      "Cliente",
       "R"
     ],
     [
@@ -14195,19 +14195,23 @@
       "R"
     ],
     [
-      "Cliente",
-      "R"
-    ],
-    [
-      "Cliente",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
     [
+      "Cliente",
+      "R"
+    ],
+    [
+      "Cliente",
+      "R"
+    ],
+    [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Peticion",
       "R"
     ],
     [
@@ -14223,19 +14227,7 @@
       "R"
     ],
     [
-      "Peticion",
-      "R"
-    ],
-    [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Peticion",
-      "R"
-    ],
-    [
-      "Peticion",
       "R"
     ],
     [
@@ -14248,6 +14240,14 @@
     ],
     [
       "Quedada",
+      "R"
+    ],
+    [
+      "Peticion",
+      "R"
+    ],
+    [
+      "Peticion",
       "R"
     ],
     [
@@ -14305,19 +14305,19 @@
       "R"
     ],
     [
+      "Mesa",
+      "R"
+    ],
+    [
+      "Mesa",
+      "R"
+    ],
+    [
+      "Mesa",
+      "R"
+    ],
+    [
       "Restaurante",
-      "R"
-    ],
-    [
-      "Mesa",
-      "R"
-    ],
-    [
-      "Mesa",
-      "R"
-    ],
-    [
-      "Mesa",
       "R"
     ],
     [
@@ -14339,15 +14339,15 @@
       "R"
     ],
     [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
       "R"
     ],
     [
@@ -14397,11 +14397,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -14513,11 +14513,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -14661,11 +14661,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Restaurante",
       "R"
     ],
     [
-      "Restaurante",
+      "UserAccount",
       "R"
     ],
     [
@@ -14681,15 +14681,15 @@
       "R"
     ],
     [
-      "Mesa",
-      "R"
-    ],
-    [
-      "Mesa",
-      "R"
-    ],
-    [
       "Restaurante",
+      "R"
+    ],
+    [
+      "Mesa",
+      "R"
+    ],
+    [
+      "Mesa",
       "R"
     ],
     [
@@ -14709,11 +14709,11 @@
       "R"
     ],
     [
-      "Restaurante",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Restaurante",
       "R"
     ],
     [
@@ -14729,11 +14729,11 @@
       "R"
     ],
     [
-      "Restaurante",
+      "Mesa",
       "R"
     ],
     [
-      "Mesa",
+      "Restaurante",
       "R"
     ],
     [
@@ -14973,15 +14973,15 @@
       "R"
     ],
     [
-      "Bandeja",
-      "R"
-    ],
-    [
-      "Bandeja",
-      "R"
-    ],
-    [
       "Actor",
+      "R"
+    ],
+    [
+      "Bandeja",
+      "R"
+    ],
+    [
+      "Bandeja",
       "R"
     ],
     [
@@ -14993,19 +14993,19 @@
       "R"
     ],
     [
+      "Bandeja",
+      "R"
+    ],
+    [
+      "Bandeja",
+      "R"
+    ],
+    [
+      "Bandeja",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Bandeja",
-      "R"
-    ],
-    [
-      "Bandeja",
-      "R"
-    ],
-    [
-      "Bandeja",
       "R"
     ],
     [
@@ -15067,15 +15067,15 @@
       "R"
     ],
     [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
       "R"
     ],
     [
@@ -15095,11 +15095,11 @@
       "R"
     ],
     [
-      "Restaurante",
+      "Reserva",
       "R"
     ],
     [
-      "Reserva",
+      "Restaurante",
       "R"
     ]
   ],
@@ -15125,51 +15125,7 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
       "Restaurante",
-      "R"
-    ],
-    [
-      "Reserva",
-      "R"
-    ],
-    [
-      "Reserva",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Reserva",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -15177,23 +15133,7 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
       "Reserva",
-      "R"
-    ],
-    [
-      "Cliente",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
       "R"
     ],
     [
@@ -15213,6 +15153,66 @@
       "R"
     ],
     [
+      "Reserva",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Reserva",
+      "R"
+    ],
+    [
+      "Cliente",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Reserva",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
@@ -15233,15 +15233,15 @@
       "R"
     ],
     [
+      "Cliente",
+      "R"
+    ],
+    [
+      "Cliente",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Cliente",
-      "R"
-    ],
-    [
-      "Cliente",
       "R"
     ],
     [
@@ -15273,11 +15273,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -15401,6 +15401,10 @@
       "R"
     ],
     [
+      "Cliente",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
@@ -15409,10 +15413,6 @@
       "R"
     ],
     [
-      "Cliente",
-      "R"
-    ],
-    [
       "Reserva",
       "W"
     ],
@@ -15517,11 +15517,11 @@
       "R"
     ],
     [
-      "Bandeja",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "Bandeja",
       "R"
     ],
     [
@@ -15541,11 +15541,11 @@
       "R"
     ],
     [
-      "Actor",
+      "Bandeja",
       "R"
     ],
     [
-      "Bandeja",
+      "Actor",
       "R"
     ],
     [
@@ -15633,11 +15633,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -15683,6 +15683,38 @@
       "R"
     ],
     [
+      "Mesa",
+      "R"
+    ],
+    [
+      "Consumicion",
+      "R"
+    ],
+    [
+      "Mesa",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Consumicion",
+      "R"
+    ],
+    [
+      "Consumicion",
+      "R"
+    ],
+    [
+      "Consumicion",
+      "R"
+    ],
+    [
+      "Mesa",
+      "R"
+    ],
+    [
       "Consumicion",
       "R"
     ],
@@ -15711,22 +15743,6 @@
       "R"
     ],
     [
-      "Consumicion",
-      "R"
-    ],
-    [
-      "Mesa",
-      "R"
-    ],
-    [
-      "Consumicion",
-      "R"
-    ],
-    [
-      "Mesa",
-      "R"
-    ],
-    [
       "Restaurante",
       "R"
     ],
@@ -15743,39 +15759,11 @@
       "R"
     ],
     [
-      "Consumicion",
-      "R"
-    ],
-    [
-      "Mesa",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Consumicion",
-      "R"
-    ],
-    [
       "Restaurante",
       "R"
     ],
     [
       "Restaurante",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Critica",
-      "R"
-    ],
-    [
-      "Critica",
       "R"
     ],
     [
@@ -15808,10 +15796,6 @@
     ],
     [
       "Critica",
-      "R"
-    ],
-    [
-      "Restaurante",
       "R"
     ],
     [
@@ -15855,6 +15839,30 @@
       "R"
     ],
     [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Critica",
+      "R"
+    ],
+    [
+      "Critica",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
+      "Critica",
+      "R"
+    ],
+    [
+      "Restaurante",
+      "R"
+    ],
+    [
       "Critica",
       "R"
     ],
@@ -15883,23 +15891,15 @@
       "R"
     ],
     [
+      "Critica",
+      "R"
+    ],
+    [
+      "Critica",
+      "R"
+    ],
+    [
       "Restaurante",
-      "R"
-    ],
-    [
-      "Critica",
-      "R"
-    ],
-    [
-      "Restaurante",
-      "R"
-    ],
-    [
-      "Critica",
-      "R"
-    ],
-    [
-      "Critica",
       "R"
     ],
     [
@@ -15977,11 +15977,11 @@
       "R"
     ],
     [
-      "Restaurante",
+      "Valoracion",
       "R"
     ],
     [
-      "Valoracion",
+      "Restaurante",
       "R"
     ],
     [

@@ -25,10 +25,6 @@
       "R"
     ],
     [
-      "Participation",
-      "R"
-    ],
-    [
       "Groupon",
       "R"
     ],
@@ -61,11 +57,15 @@
       "R"
     ],
     [
+      "Groupon",
+      "R"
+    ],
+    [
       "Participation",
       "R"
     ],
     [
-      "Groupon",
+      "Participation",
       "R"
     ]
   ],
@@ -115,27 +115,27 @@
       "R"
     ],
     [
+      "CreditCard",
+      "R"
+    ],
+    [
+      "CreditCard",
+      "R"
+    ],
+    [
+      "CreditCard",
+      "R"
+    ],
+    [
+      "CreditCard",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "CreditCard",
-      "R"
-    ],
-    [
-      "CreditCard",
-      "R"
-    ],
-    [
-      "CreditCard",
-      "R"
-    ],
-    [
-      "CreditCard",
       "R"
     ],
     [
@@ -177,11 +177,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "User",
       "R"
     ],
     [
-      "User",
+      "UserAccount",
       "R"
     ],
     [
@@ -217,11 +217,11 @@
       "R"
     ],
     [
-      "User",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "User",
       "R"
     ],
     [
@@ -290,6 +290,10 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Subscription",
       "R"
     ],
     [
@@ -306,10 +310,6 @@
     ],
     [
       "User",
-      "R"
-    ],
-    [
-      "Subscription",
       "R"
     ],
     [
@@ -457,14 +457,6 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "Ticket",
-      "R"
-    ],
-    [
       "Raffle",
       "R"
     ],
@@ -481,6 +473,14 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "Ticket",
+      "R"
+    ],
+    [
       "CreditCard",
       "R"
     ],
@@ -801,19 +801,19 @@
       "R"
     ],
     [
+      "CreditCard",
+      "R"
+    ],
+    [
+      "CreditCard",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "CreditCard",
-      "R"
-    ],
-    [
-      "CreditCard",
       "R"
     ],
     [
@@ -851,15 +851,15 @@
       "R"
     ],
     [
+      "Ticket",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Ticket",
       "R"
     ]
   ],
@@ -889,15 +889,15 @@
       "R"
     ],
     [
+      "Question",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
       "Survey",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "Question",
       "R"
     ],
     [
@@ -939,15 +939,15 @@
       "R"
     ],
     [
+      "Moderator",
+      "R"
+    ],
+    [
+      "Moderator",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Moderator",
-      "R"
-    ],
-    [
-      "Moderator",
       "R"
     ],
     [
@@ -963,15 +963,15 @@
       "R"
     ],
     [
+      "Company",
+      "R"
+    ],
+    [
+      "Company",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Company",
-      "R"
-    ],
-    [
-      "Company",
       "R"
     ],
     [
@@ -1013,10 +1013,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
       "Moderator",
       "R"
     ],
@@ -1025,11 +1021,23 @@
       "R"
     ],
     [
+      "UserAccount",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Company",
+      "R"
+    ],
+    [
+      "Company",
       "R"
     ],
     [
@@ -1038,14 +1046,6 @@
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Company",
-      "R"
-    ],
-    [
-      "Company",
       "R"
     ],
     [
@@ -1141,6 +1141,210 @@
       "R"
     ],
     [
+      "Survey",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Answer",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Answer",
+      "R"
+    ],
+    [
+      "Answer",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Answer",
+      "R"
+    ],
+    [
+      "Answer",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Answer",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Answer",
+      "R"
+    ],
+    [
+      "Answer",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Answer",
+      "R"
+    ],
+    [
+      "Answer",
+      "W"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
       "Question",
       "R"
     ],
@@ -1153,194 +1357,6 @@
       "R"
     ],
     [
-      "Answer",
-      "R"
-    ],
-    [
-      "Answer",
-      "R"
-    ],
-    [
-      "Answer",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Answer",
-      "R"
-    ],
-    [
-      "Answer",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Answer",
-      "R"
-    ],
-    [
-      "Answer",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "Answer",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Answer",
-      "R"
-    ],
-    [
-      "Answer",
-      "W"
-    ],
-    [
       "Question",
       "R"
     ],
@@ -1353,27 +1369,11 @@
       "R"
     ],
     [
-      "DomainEntity",
-      "R"
-    ],
-    [
       "Question",
       "R"
     ],
     [
       "Question",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "Survey",
       "R"
     ],
     [
@@ -1439,22 +1439,6 @@
       "R"
     ],
     [
-      "Question",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
-      "Survey",
-      "R"
-    ],
-    [
-      "Question",
-      "R"
-    ],
-    [
       "Survey",
       "R"
     ],
@@ -1471,6 +1455,22 @@
       "R"
     ],
     [
+      "Survey",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
+      "Question",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
@@ -1511,19 +1511,19 @@
       "R"
     ],
     [
+      "Answer",
+      "R"
+    ],
+    [
+      "Answer",
+      "R"
+    ],
+    [
+      "Answer",
+      "R"
+    ],
+    [
       "Question",
-      "R"
-    ],
-    [
-      "Answer",
-      "R"
-    ],
-    [
-      "Answer",
-      "R"
-    ],
-    [
-      "Answer",
       "R"
     ]
   ],
@@ -1597,11 +1597,11 @@
       "R"
     ],
     [
-      "Survey",
+      "Question",
       "R"
     ],
     [
-      "Question",
+      "Survey",
       "R"
     ],
     [
@@ -1617,11 +1617,11 @@
       "R"
     ],
     [
-      "Question",
+      "Answer",
       "R"
     ],
     [
-      "Answer",
+      "Question",
       "R"
     ],
     [
@@ -1677,10 +1677,6 @@
       "R"
     ],
     [
-      "Moderator",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
@@ -1689,6 +1685,10 @@
       "R"
     ],
     [
+      "Moderator",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
@@ -1725,15 +1725,15 @@
       "R"
     ],
     [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
       "R"
     ],
     [
@@ -2106,6 +2106,18 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
       "R"
     ],
     [
@@ -2125,23 +2137,11 @@
       "R"
     ],
     [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
       "Sponsorship",
       "R"
     ],
     [
       "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsorship",
       "R"
     ],
     [
@@ -2267,22 +2267,6 @@
       "R"
     ],
     [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
       "Bargain",
       "R"
     ],
@@ -2292,6 +2276,22 @@
     ],
     [
       "Sponsor",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Bargain",
       "R"
     ]
   ],
@@ -2367,11 +2367,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Company",
       "R"
     ],
     [
-      "Company",
+      "UserAccount",
       "R"
     ],
     [
@@ -2485,11 +2485,11 @@
       "R"
     ],
     [
-      "Tag",
+      "Bargain",
       "R"
     ],
     [
-      "Bargain",
+      "Tag",
       "R"
     ],
     [
@@ -2593,11 +2593,11 @@
       "R"
     ],
     [
-      "Bargain",
+      "Comment",
       "R"
     ],
     [
-      "Comment",
+      "Bargain",
       "R"
     ],
     [
@@ -2613,11 +2613,11 @@
       "R"
     ],
     [
-      "Bargain",
+      "Comment",
       "R"
     ],
     [
-      "Comment",
+      "Bargain",
       "R"
     ],
     [
@@ -2965,11 +2965,11 @@
       "R"
     ],
     [
-      "User",
+      "Bargain",
       "R"
     ],
     [
-      "Bargain",
+      "User",
       "R"
     ],
     [
@@ -2993,15 +2993,15 @@
       "R"
     ],
     [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
       "Bargain",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Sponsorship",
       "R"
     ],
     [
@@ -3025,11 +3025,11 @@
       "R"
     ],
     [
-      "Bargain",
+      "Category",
       "R"
     ],
     [
-      "Category",
+      "Bargain",
       "R"
     ],
     [
@@ -3091,10 +3091,6 @@
       "R"
     ],
     [
-      "Company",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
@@ -3103,6 +3099,10 @@
       "R"
     ],
     [
+      "Company",
+      "R"
+    ],
+    [
       "Bargain",
       "R"
     ],
@@ -3139,14 +3139,6 @@
       "R"
     ],
     [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Tag",
-      "R"
-    ],
-    [
       "Tag",
       "R"
     ],
@@ -3156,6 +3148,14 @@
     ],
     [
       "Tag",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "Bargain",
       "R"
     ],
     [
@@ -3193,11 +3193,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Company",
       "R"
     ],
     [
-      "Company",
+      "UserAccount",
       "R"
     ],
     [
@@ -3209,15 +3209,15 @@
       "R"
     ],
     [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
       "Company",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
       "R"
     ]
   ],
@@ -3251,11 +3251,11 @@
       "R"
     ],
     [
-      "Bargain",
+      "Category",
       "R"
     ],
     [
-      "Category",
+      "Bargain",
       "R"
     ],
     [
@@ -3469,15 +3469,15 @@
       "R"
     ],
     [
+      "Company",
+      "R"
+    ],
+    [
+      "Company",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Company",
-      "R"
-    ],
-    [
-      "Company",
       "R"
     ],
     [
@@ -3573,15 +3573,15 @@
       "R"
     ],
     [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
       "Bargain",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Sponsorship",
       "R"
     ],
     [
@@ -3625,11 +3625,11 @@
       "R"
     ],
     [
-      "Subscription",
+      "User",
       "R"
     ],
     [
-      "User",
+      "Subscription",
       "R"
     ],
     [
@@ -3689,18 +3689,6 @@
       "R"
     ],
     [
-      "Tag",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Tag",
-      "R"
-    ],
-    [
       "Bargain",
       "R"
     ],
@@ -3710,6 +3698,18 @@
     ],
     [
       "Tag",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "Bargain",
       "R"
     ],
     [
@@ -4033,6 +4033,10 @@
       "R"
     ],
     [
+      "Subscription",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
@@ -4042,10 +4046,6 @@
     ],
     [
       "Plan",
-      "R"
-    ],
-    [
-      "Subscription",
       "R"
     ],
     [
@@ -4183,6 +4183,10 @@
       "R"
     ],
     [
+      "Bargain",
+      "R"
+    ],
+    [
       "Tag",
       "R"
     ],
@@ -4196,10 +4200,6 @@
     ],
     [
       "Tag",
-      "R"
-    ],
-    [
-      "Bargain",
       "R"
     ],
     [
@@ -4303,15 +4303,15 @@
       "R"
     ],
     [
-      "Comment",
-      "R"
-    ],
-    [
-      "Comment",
-      "R"
-    ],
-    [
       "Bargain",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
+      "Comment",
       "R"
     ],
     [
@@ -4327,11 +4327,11 @@
       "R"
     ],
     [
-      "Bargain",
+      "Comment",
       "R"
     ],
     [
-      "Comment",
+      "Bargain",
       "R"
     ],
     [
@@ -4415,11 +4415,11 @@
       "R"
     ],
     [
-      "User",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "User",
       "R"
     ],
     [
@@ -4663,11 +4663,11 @@
       "R"
     ],
     [
-      "Bargain",
+      "User",
       "R"
     ],
     [
-      "User",
+      "Bargain",
       "R"
     ],
     [
@@ -4727,14 +4727,6 @@
       "R"
     ],
     [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
       "Category",
       "R"
     ],
@@ -4744,6 +4736,14 @@
     ],
     [
       "Category",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
+      "Bargain",
       "R"
     ],
     [
@@ -4809,14 +4809,6 @@
       "R"
     ],
     [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
       "Bargain",
       "R"
     ],
@@ -4837,6 +4829,14 @@
       "R"
     ],
     [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
       "Bargain",
       "R"
     ],
@@ -4853,11 +4853,11 @@
       "R"
     ],
     [
-      "Category",
+      "Bargain",
       "R"
     ],
     [
-      "Bargain",
+      "Category",
       "R"
     ],
     [
@@ -4885,6 +4885,14 @@
       "R"
     ],
     [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
       "Tag",
       "R"
     ],
@@ -4897,19 +4905,11 @@
       "R"
     ],
     [
-      "Bargain",
-      "R"
-    ],
-    [
       "Tag",
       "R"
     ],
     [
       "Bargain",
-      "R"
-    ],
-    [
-      "Tag",
       "R"
     ],
     [
@@ -4953,18 +4953,6 @@
       "R"
     ],
     [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
       "Bargain",
       "R"
     ],
@@ -4973,10 +4961,6 @@
       "R"
     ],
     [
-      "Bargain",
-      "R"
-    ],
-    [
       "Sponsorship",
       "R"
     ],
@@ -4985,7 +4969,23 @@
       "R"
     ],
     [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
       "Sponsorship",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Bargain",
       "R"
     ],
     [
@@ -5029,6 +5029,14 @@
       "R"
     ],
     [
+      "Category",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
       "Company",
       "R"
     ],
@@ -5037,10 +5045,6 @@
       "R"
     ],
     [
-      "Category",
-      "R"
-    ],
-    [
       "Bargain",
       "R"
     ],
@@ -5050,10 +5054,6 @@
     ],
     [
       "Category",
-      "R"
-    ],
-    [
-      "Bargain",
       "R"
     ],
     [
@@ -5081,11 +5081,15 @@
       "R"
     ],
     [
-      "Bargain",
+      "Tag",
       "R"
     ],
     [
       "Tag",
+      "R"
+    ],
+    [
+      "Bargain",
       "R"
     ],
     [
@@ -5098,10 +5102,6 @@
     ],
     [
       "Company",
-      "R"
-    ],
-    [
-      "Tag",
       "R"
     ],
     [
@@ -5137,11 +5137,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "User",
       "R"
     ],
     [
-      "User",
+      "UserAccount",
       "R"
     ],
     [
@@ -5157,10 +5157,6 @@
       "R"
     ],
     [
-      "Subscription",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
@@ -5169,7 +5165,7 @@
       "R"
     ],
     [
-      "Plan",
+      "Subscription",
       "R"
     ],
     [
@@ -5177,6 +5173,14 @@
       "R"
     ],
     [
+      "Plan",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
       "Bargain",
       "R"
     ],
@@ -5197,10 +5201,6 @@
       "R"
     ],
     [
-      "Sponsorship",
-      "R"
-    ],
-    [
       "Bargain",
       "R"
     ],
@@ -5217,6 +5217,10 @@
       "R"
     ],
     [
+      "Bargain",
+      "R"
+    ],
+    [
       "Category",
       "R"
     ],
@@ -5230,10 +5234,6 @@
     ],
     [
       "Category",
-      "R"
-    ],
-    [
-      "Bargain",
       "R"
     ],
     [
@@ -5249,11 +5249,11 @@
       "R"
     ],
     [
-      "Bargain",
+      "Tag",
       "R"
     ],
     [
-      "Tag",
+      "Bargain",
       "R"
     ],
     [
@@ -5265,26 +5265,6 @@
       "R"
     ],
     [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
       "Sponsorship",
       "R"
     ],
@@ -5301,6 +5281,26 @@
       "R"
     ],
     [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
       "Bargain",
       "R"
     ],
@@ -5313,11 +5313,11 @@
       "R"
     ],
     [
-      "Bargain",
+      "Category",
       "R"
     ],
     [
-      "Category",
+      "Bargain",
       "R"
     ],
     [
@@ -5349,10 +5349,6 @@
       "R"
     ],
     [
-      "Bargain",
-      "R"
-    ],
-    [
       "Tag",
       "R"
     ],
@@ -5362,6 +5358,10 @@
     ],
     [
       "Tag",
+      "R"
+    ],
+    [
+      "Bargain",
       "R"
     ],
     [
@@ -5401,10 +5401,6 @@
       "R"
     ],
     [
-      "Sponsorship",
-      "R"
-    ],
-    [
       "Bargain",
       "R"
     ],
@@ -5421,11 +5417,31 @@
       "R"
     ],
     [
+      "Sponsorship",
+      "R"
+    ],
+    [
       "Bargain",
       "R"
     ],
     [
       "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Category",
       "R"
     ],
     [
@@ -5438,22 +5454,6 @@
     ],
     [
       "Category",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Bargain",
       "R"
     ],
     [
@@ -5465,11 +5465,11 @@
       "R"
     ],
     [
-      "Tag",
+      "Bargain",
       "R"
     ],
     [
-      "Bargain",
+      "Tag",
       "R"
     ],
     [
@@ -5511,11 +5511,15 @@
       "R"
     ],
     [
+      "Bargain",
+      "R"
+    ],
+    [
       "Tag",
       "R"
     ],
     [
-      "Bargain",
+      "Tag",
       "R"
     ],
     [
@@ -5532,10 +5536,6 @@
     ],
     [
       "Company",
-      "R"
-    ],
-    [
-      "Tag",
       "R"
     ]
   ],
@@ -5561,6 +5561,10 @@
       "R"
     ],
     [
+      "Company",
+      "R"
+    ],
+    [
       "Survey",
       "R"
     ],
@@ -5577,15 +5581,11 @@
       "R"
     ],
     [
+      "Company",
+      "R"
+    ],
+    [
       "Survey",
-      "R"
-    ],
-    [
-      "Company",
-      "R"
-    ],
-    [
-      "Company",
       "R"
     ],
     [
@@ -5611,23 +5611,7 @@
       "R"
     ],
     [
-      "Survey",
-      "R"
-    ],
-    [
       "Company",
-      "R"
-    ],
-    [
-      "Company",
-      "R"
-    ],
-    [
-      "Survey",
-      "R"
-    ],
-    [
-      "Survey",
       "R"
     ],
     [
@@ -5644,6 +5628,22 @@
     ],
     [
       "Survey",
+      "R"
+    ],
+    [
+      "Survey",
+      "R"
+    ],
+    [
+      "Survey",
+      "R"
+    ],
+    [
+      "Survey",
+      "R"
+    ],
+    [
+      "Company",
       "R"
     ]
   ],
@@ -5665,19 +5665,11 @@
       "R"
     ],
     [
-      "Company",
-      "R"
-    ],
-    [
-      "Company",
-      "R"
-    ],
-    [
       "Survey",
       "R"
     ],
     [
-      "Survey",
+      "Company",
       "R"
     ],
     [
@@ -5698,6 +5690,14 @@
     ],
     [
       "Survey",
+      "R"
+    ],
+    [
+      "Survey",
+      "R"
+    ],
+    [
+      "Company",
       "R"
     ]
   ],
@@ -5729,15 +5729,15 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -5789,15 +5789,15 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -5859,11 +5859,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -5929,11 +5929,11 @@
       "R"
     ],
     [
-      "Actor",
+      "Notification",
       "R"
     ],
     [
-      "Notification",
+      "Actor",
       "R"
     ],
     [
@@ -5979,15 +5979,15 @@
       "R"
     ],
     [
-      "Participation",
-      "R"
-    ],
-    [
-      "Participation",
-      "R"
-    ],
-    [
       "Groupon",
+      "R"
+    ],
+    [
+      "Participation",
+      "R"
+    ],
+    [
+      "Participation",
       "R"
     ],
     [
@@ -6093,15 +6093,15 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -6121,11 +6121,11 @@
       "R"
     ],
     [
-      "Subscription",
+      "Plan",
       "R"
     ],
     [
-      "Plan",
+      "Subscription",
       "R"
     ],
     [
@@ -6159,7 +6159,11 @@
       "R"
     ],
     [
-      "Bargain",
+      "User",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -6171,11 +6175,7 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "User",
+      "Bargain",
       "R"
     ],
     [
@@ -6185,34 +6185,6 @@
   ],
   "BargainAdministratorController.listWithLessSponsorships": [
     [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
       "Sponsorship",
       "R"
     ],
@@ -6233,7 +6205,35 @@
       "R"
     ],
     [
+      "Bargain",
+      "R"
+    ],
+    [
       "Sponsorship",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Bargain",
       "R"
     ]
   ],
@@ -6243,27 +6243,15 @@
       "R"
     ],
     [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
       "Bargain",
       "R"
     ],
     [
       "Bargain",
+      "R"
+    ],
+    [
+      "Sponsorship",
       "R"
     ],
     [
@@ -6288,6 +6276,18 @@
     ],
     [
       "Bargain",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Sponsorship",
       "R"
     ]
   ],
@@ -6363,14 +6363,14 @@
       "R"
     ],
     [
-      "Company",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
     [
+      "Company",
+      "R"
+    ],
+    [
       "Raffle",
       "W"
     ],
@@ -6391,11 +6391,11 @@
       "R"
     ],
     [
-      "Ticket",
+      "Raffle",
       "R"
     ],
     [
-      "Raffle",
+      "Ticket",
       "R"
     ],
     [
@@ -6421,11 +6421,11 @@
       "R"
     ],
     [
-      "Ticket",
+      "Raffle",
       "R"
     ],
     [
-      "Raffle",
+      "Ticket",
       "R"
     ],
     [
@@ -6553,11 +6553,11 @@
       "R"
     ],
     [
-      "Raffle",
+      "Ticket",
       "R"
     ],
     [
-      "Ticket",
+      "Raffle",
       "R"
     ]
   ],
@@ -6611,11 +6611,11 @@
       "R"
     ],
     [
-      "Raffle",
+      "Ticket",
       "R"
     ],
     [
-      "Ticket",
+      "Raffle",
       "R"
     ],
     [
@@ -6639,11 +6639,11 @@
       "R"
     ],
     [
-      "Raffle",
+      "Ticket",
       "R"
     ],
     [
-      "Ticket",
+      "Raffle",
       "R"
     ]
   ],
@@ -6681,15 +6681,15 @@
       "R"
     ],
     [
+      "Raffle",
+      "R"
+    ],
+    [
       "Company",
       "R"
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Raffle",
       "R"
     ]
   ],
@@ -6705,15 +6705,15 @@
       "R"
     ],
     [
-      "Evaluation",
-      "R"
-    ],
-    [
-      "Evaluation",
-      "R"
-    ],
-    [
       "Company",
+      "R"
+    ],
+    [
+      "Evaluation",
+      "R"
+    ],
+    [
+      "Evaluation",
       "R"
     ]
   ],
@@ -6735,11 +6735,11 @@
       "R"
     ],
     [
-      "Raffle",
+      "Ticket",
       "R"
     ],
     [
-      "Ticket",
+      "Raffle",
       "R"
     ],
     [
@@ -6768,6 +6768,10 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Ticket",
       "R"
     ],
     [
@@ -6792,10 +6796,6 @@
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Ticket",
       "R"
     ]
   ],
@@ -6855,26 +6855,6 @@
       "R"
     ],
     [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
       "Sponsorship",
       "R"
     ],
@@ -6895,6 +6875,42 @@
       "R"
     ],
     [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
       "Bargain",
       "R"
     ],
@@ -6915,19 +6931,7 @@
       "R"
     ],
     [
-      "Category",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Bargain",
+      "Tag",
       "R"
     ],
     [
@@ -6948,10 +6952,6 @@
     ],
     [
       "Bargain",
-      "R"
-    ],
-    [
-      "Tag",
       "R"
     ],
     [
@@ -6987,6 +6987,10 @@
       "R"
     ],
     [
+      "Company",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
@@ -6995,31 +6999,7 @@
       "R"
     ],
     [
-      "Company",
-      "R"
-    ],
-    [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Bargain",
       "R"
     ],
     [
@@ -7043,11 +7023,27 @@
       "R"
     ],
     [
-      "DomainEntity",
+      "Sponsorship",
       "R"
     ],
     [
       "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "DomainEntity",
       "R"
     ],
     [
@@ -7067,11 +7063,11 @@
       "R"
     ],
     [
-      "DomainEntity",
+      "Bargain",
       "R"
     ],
     [
-      "Category",
+      "DomainEntity",
       "R"
     ],
     [
@@ -7084,6 +7080,10 @@
     ],
     [
       "Category",
+      "R"
+    ],
+    [
+      "Bargain",
       "R"
     ],
     [
@@ -7111,7 +7111,7 @@
       "R"
     ],
     [
-      "Bargain",
+      "Category",
       "R"
     ],
     [
@@ -7139,11 +7139,15 @@
       "R"
     ],
     [
-      "Bargain",
+      "Tag",
       "R"
     ],
     [
       "Tag",
+      "R"
+    ],
+    [
+      "Bargain",
       "R"
     ],
     [
@@ -7156,10 +7160,6 @@
     ],
     [
       "Company",
-      "R"
-    ],
-    [
-      "Tag",
       "R"
     ],
     [
@@ -7187,19 +7187,27 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Subscription",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -7215,30 +7223,10 @@
       "R"
     ],
     [
-      "Subscription",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
       "Plan",
       "R"
     ],
     [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
       "Sponsorship",
       "R"
     ],
@@ -7255,7 +7243,27 @@
       "R"
     ],
     [
+      "Sponsorship",
+      "R"
+    ],
+    [
       "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Category",
       "R"
     ],
     [
@@ -7267,10 +7275,6 @@
       "R"
     ],
     [
-      "Bargain",
-      "R"
-    ],
-    [
       "Category",
       "R"
     ],
@@ -7280,10 +7284,6 @@
     ],
     [
       "Bargain",
-      "R"
-    ],
-    [
-      "Category",
       "R"
     ],
     [
@@ -7295,11 +7295,11 @@
       "R"
     ],
     [
-      "Bargain",
+      "Tag",
       "R"
     ],
     [
-      "Tag",
+      "Bargain",
       "R"
     ],
     [
@@ -7315,19 +7315,11 @@
       "R"
     ],
     [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
       "Sponsorship",
       "R"
     ],
     [
-      "Sponsorship",
+      "Bargain",
       "R"
     ],
     [
@@ -7351,6 +7343,14 @@
       "R"
     ],
     [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
       "Bargain",
       "R"
     ],
@@ -7375,10 +7375,6 @@
       "R"
     ],
     [
-      "Bargain",
-      "R"
-    ],
-    [
       "Category",
       "R"
     ],
@@ -7391,18 +7387,6 @@
       "R"
     ],
     [
-      "Tag",
-      "R"
-    ],
-    [
-      "Tag",
-      "R"
-    ],
-    [
-      "Tag",
-      "R"
-    ],
-    [
       "Bargain",
       "R"
     ],
@@ -7420,6 +7404,22 @@
     ],
     [
       "Bargain",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "Tag",
       "R"
     ],
     [
@@ -7451,10 +7451,6 @@
       "R"
     ],
     [
-      "Sponsorship",
-      "R"
-    ],
-    [
       "Bargain",
       "R"
     ],
@@ -7471,11 +7467,23 @@
       "R"
     ],
     [
+      "Sponsorship",
+      "R"
+    ],
+    [
       "Bargain",
       "R"
     ],
     [
       "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Category",
       "R"
     ],
     [
@@ -7499,14 +7507,6 @@
       "R"
     ],
     [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
       "Tag",
       "R"
     ],
@@ -7523,11 +7523,11 @@
       "R"
     ],
     [
-      "Bargain",
+      "Tag",
       "R"
     ],
     [
-      "Tag",
+      "Bargain",
       "R"
     ],
     [
@@ -7713,6 +7713,10 @@
       "R"
     ],
     [
+      "Subscription",
+      "R"
+    ],
+    [
       "Plan",
       "R"
     ],
@@ -7722,10 +7726,6 @@
     ],
     [
       "User",
-      "R"
-    ],
-    [
-      "Subscription",
       "R"
     ],
     [
@@ -7777,11 +7777,11 @@
       "R"
     ],
     [
-      "Tag",
+      "Bargain",
       "R"
     ],
     [
-      "Bargain",
+      "Tag",
       "R"
     ],
     [
@@ -7825,6 +7825,10 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
@@ -7833,10 +7837,6 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
@@ -7845,7 +7845,7 @@
       "R"
     ],
     [
-      "Plan",
+      "User",
       "R"
     ],
     [
@@ -7853,7 +7853,7 @@
       "R"
     ],
     [
-      "User",
+      "Plan",
       "R"
     ],
     [
@@ -7877,15 +7877,15 @@
       "R"
     ],
     [
+      "Comment",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
       "Bargain",
-      "R"
-    ],
-    [
-      "Comment",
-      "R"
-    ],
-    [
-      "Comment",
       "R"
     ],
     [
@@ -7909,10 +7909,6 @@
       "R"
     ],
     [
-      "Subscription",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
@@ -7922,6 +7918,10 @@
     ],
     [
       "Plan",
+      "R"
+    ],
+    [
+      "Subscription",
       "R"
     ],
     [
@@ -7983,22 +7983,6 @@
       "R"
     ],
     [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
       "Sponsorship",
       "R"
     ],
@@ -8019,6 +8003,22 @@
       "R"
     ],
     [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
       "Bargain",
       "R"
     ],
@@ -8035,14 +8035,6 @@
       "R"
     ],
     [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
       "Category",
       "R"
     ],
@@ -8055,11 +8047,7 @@
       "R"
     ],
     [
-      "Tag",
-      "R"
-    ],
-    [
-      "Tag",
+      "Category",
       "R"
     ],
     [
@@ -8084,6 +8072,18 @@
     ],
     [
       "Tag",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "Bargain",
       "R"
     ],
     [
@@ -8111,23 +8111,19 @@
       "R"
     ],
     [
-      "Company",
-      "R"
-    ],
-    [
-      "Company",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
     [
-      "DomainEntity",
+      "Company",
       "R"
     ],
     [
-      "Bargain",
+      "Company",
+      "R"
+    ],
+    [
+      "DomainEntity",
       "R"
     ],
     [
@@ -8139,30 +8135,34 @@
       "R"
     ],
     [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Company",
+      "R"
+    ],
+    [
       "Sponsorship",
       "R"
     ],
     [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Company",
-      "R"
-    ],
-    [
       "Sponsorship",
       "R"
     ],
@@ -8183,11 +8183,11 @@
       "R"
     ],
     [
-      "Bargain",
+      "Company",
       "R"
     ],
     [
-      "Company",
+      "Bargain",
       "R"
     ],
     [
@@ -8207,10 +8207,6 @@
       "R"
     ],
     [
-      "Category",
-      "R"
-    ],
-    [
       "Bargain",
       "R"
     ],
@@ -8236,6 +8232,10 @@
     ],
     [
       "Bargain",
+      "R"
+    ],
+    [
+      "Category",
       "R"
     ],
     [
@@ -8255,23 +8255,7 @@
       "R"
     ],
     [
-      "Bargain",
-      "R"
-    ],
-    [
       "Tag",
-      "R"
-    ],
-    [
-      "Tag",
-      "R"
-    ],
-    [
-      "Tag",
-      "R"
-    ],
-    [
-      "Bargain",
       "R"
     ],
     [
@@ -8284,6 +8268,22 @@
     ],
     [
       "Company",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "Bargain",
       "R"
     ],
     [
@@ -8311,10 +8311,6 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
@@ -8323,19 +8319,11 @@
       "R"
     ],
     [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Subscription",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
     [
-      "Subscription",
+      "DomainEntity",
       "R"
     ],
     [
@@ -8347,91 +8335,15 @@
       "R"
     ],
     [
-      "Plan",
+      "Subscription",
       "R"
     ],
     [
-      "Sponsorship",
+      "Subscription",
       "R"
     ],
     [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Tag",
-      "R"
-    ],
-    [
-      "Tag",
-      "R"
-    ],
-    [
-      "Tag",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Tag",
-      "R"
-    ],
-    [
-      "Bargain",
+      "User",
       "R"
     ],
     [
@@ -8439,14 +8351,6 @@
       "R"
     ],
     [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
       "Bargain",
       "R"
     ],
@@ -8471,7 +8375,7 @@
       "R"
     ],
     [
-      "Bargain",
+      "Sponsorship",
       "R"
     ],
     [
@@ -8507,6 +8411,102 @@
       "R"
     ],
     [
+      "Tag",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "Plan",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
       "Category",
       "R"
     ],
@@ -8527,10 +8527,6 @@
       "R"
     ],
     [
-      "Tag",
-      "R"
-    ],
-    [
       "Bargain",
       "R"
     ],
@@ -8544,6 +8540,10 @@
     ],
     [
       "Bargain",
+      "R"
+    ],
+    [
+      "Tag",
       "R"
     ],
     [
@@ -8579,18 +8579,6 @@
       "R"
     ],
     [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
       "Sponsorship",
       "R"
     ],
@@ -8603,6 +8591,34 @@
       "R"
     ],
     [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
       "Bargain",
       "R"
     ],
@@ -8612,22 +8628,6 @@
     ],
     [
       "Category",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Bargain",
       "R"
     ],
     [
@@ -8647,11 +8647,11 @@
       "R"
     ],
     [
-      "Tag",
+      "Bargain",
       "R"
     ],
     [
-      "Bargain",
+      "Tag",
       "R"
     ],
     [
@@ -8711,19 +8711,19 @@
       "R"
     ],
     [
+      "Plan",
+      "R"
+    ],
+    [
+      "Subscription",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
     [
       "Subscription",
-      "R"
-    ],
-    [
-      "Subscription",
-      "R"
-    ],
-    [
-      "Plan",
       "R"
     ]
   ],
@@ -8857,11 +8857,11 @@
       "R"
     ],
     [
-      "Subscription",
+      "User",
       "R"
     ],
     [
-      "User",
+      "Subscription",
       "R"
     ],
     [
@@ -8925,11 +8925,11 @@
       "R"
     ],
     [
-      "Subscription",
+      "Plan",
       "R"
     ],
     [
-      "Plan",
+      "Subscription",
       "R"
     ],
     [
@@ -8953,7 +8953,7 @@
       "R"
     ],
     [
-      "User",
+      "Plan",
       "R"
     ],
     [
@@ -8961,7 +8961,7 @@
       "R"
     ],
     [
-      "Plan",
+      "User",
       "R"
     ],
     [
@@ -8983,15 +8983,15 @@
       "R"
     ],
     [
+      "Comment",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
       "Bargain",
-      "R"
-    ],
-    [
-      "Comment",
-      "R"
-    ],
-    [
-      "Comment",
       "R"
     ],
     [
@@ -9011,6 +9011,10 @@
       "R"
     ],
     [
+      "Subscription",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
@@ -9020,10 +9024,6 @@
     ],
     [
       "Plan",
-      "R"
-    ],
-    [
-      "Subscription",
       "R"
     ]
   ],
@@ -9101,6 +9101,10 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
@@ -9109,11 +9113,11 @@
       "R"
     ],
     [
-      "User",
+      "DomainEntity",
       "R"
     ],
     [
-      "DomainEntity",
+      "Participation",
       "R"
     ],
     [
@@ -9137,10 +9141,6 @@
       "R"
     ],
     [
-      "Participation",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
@@ -9166,18 +9166,6 @@
     ],
     [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Subscription",
-      "R"
-    ],
-    [
-      "Subscription",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -9189,6 +9177,18 @@
       "R"
     ],
     [
+      "Subscription",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Subscription",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
@@ -9257,23 +9257,19 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Participation",
       "R"
     ],
     [
@@ -9289,11 +9285,15 @@
       "R"
     ],
     [
-      "User",
+      "Participation",
       "R"
     ],
     [
       "Participation",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -9345,11 +9345,11 @@
       "R"
     ],
     [
-      "User",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "User",
       "R"
     ],
     [
@@ -9361,15 +9361,15 @@
       "R"
     ],
     [
-      "Participation",
-      "R"
-    ],
-    [
-      "Participation",
-      "R"
-    ],
-    [
       "User",
+      "R"
+    ],
+    [
+      "Participation",
+      "R"
+    ],
+    [
+      "Participation",
       "R"
     ],
     [
@@ -9415,11 +9415,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "User",
       "R"
     ],
     [
-      "User",
+      "UserAccount",
       "R"
     ],
     [
@@ -9435,91 +9435,7 @@
       "R"
     ],
     [
-      "Subscription",
-      "R"
-    ],
-    [
-      "Plan",
-      "R"
-    ],
-    [
-      "Subscription",
-      "R"
-    ],
-    [
       "User",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "DomainEntity",
       "R"
     ],
     [
@@ -9535,6 +9451,82 @@
       "R"
     ],
     [
+      "Authority",
+      "W"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Subscription",
+      "R"
+    ],
+    [
       "Subscription",
       "R"
     ],
@@ -9543,6 +9535,14 @@
       "R"
     ],
     [
+      "Subscription",
+      "R"
+    ],
+    [
+      "Plan",
+      "R"
+    ],
+    [
       "Groupon",
       "R"
     ],
@@ -9631,15 +9631,15 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -9721,15 +9721,15 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -9741,15 +9741,15 @@
       "R"
     ],
     [
+      "Subscription",
+      "R"
+    ],
+    [
+      "Subscription",
+      "R"
+    ],
+    [
       "User",
-      "R"
-    ],
-    [
-      "Subscription",
-      "R"
-    ],
-    [
-      "Subscription",
       "R"
     ]
   ],
@@ -9839,15 +9839,15 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -9859,11 +9859,11 @@
       "R"
     ],
     [
-      "Plan",
+      "Subscription",
       "R"
     ],
     [
-      "Subscription",
+      "Plan",
       "R"
     ],
     [
@@ -10051,6 +10051,18 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "Evaluation",
+      "R"
+    ],
+    [
+      "Evaluation",
+      "R"
+    ],
+    [
       "Evaluation",
       "R"
     ],
@@ -10075,23 +10087,11 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
       "Evaluation",
       "R"
     ],
     [
       "User",
-      "R"
-    ],
-    [
-      "Evaluation",
-      "R"
-    ],
-    [
-      "Evaluation",
       "R"
     ],
     [
@@ -10205,18 +10205,6 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "Raffle",
-      "R"
-    ],
-    [
-      "Raffle",
-      "R"
-    ],
-    [
       "Raffle",
       "R"
     ],
@@ -10238,6 +10226,18 @@
     ],
     [
       "User",
+      "R"
+    ],
+    [
+      "Raffle",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Raffle",
       "R"
     ],
     [
@@ -10371,19 +10371,19 @@
       "R"
     ],
     [
-      "Ticket",
-      "R"
-    ],
-    [
-      "Ticket",
-      "R"
-    ],
-    [
-      "Ticket",
-      "R"
-    ],
-    [
       "User",
+      "R"
+    ],
+    [
+      "Ticket",
+      "R"
+    ],
+    [
+      "Ticket",
+      "R"
+    ],
+    [
+      "Ticket",
       "R"
     ],
     [
@@ -10485,10 +10485,6 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
       "Ticket",
       "R"
     ],
@@ -10501,11 +10497,15 @@
       "R"
     ],
     [
+      "Ticket",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
     [
-      "Ticket",
+      "User",
       "R"
     ],
     [
@@ -10631,18 +10631,6 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Ticket",
-      "R"
-    ],
-    [
       "Ticket",
       "R"
     ],
@@ -10652,6 +10640,10 @@
     ],
     [
       "Ticket",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -10676,6 +10668,14 @@
     ],
     [
       "Ticket",
+      "R"
+    ],
+    [
+      "Ticket",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -10777,10 +10777,6 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
       "Evaluation",
       "R"
     ],
@@ -10790,6 +10786,10 @@
     ],
     [
       "Evaluation",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -11219,14 +11219,6 @@
       "R"
     ],
     [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
       "Sponsor",
       "R"
     ],
@@ -11239,11 +11231,27 @@
       "R"
     ],
     [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
       "R"
     ],
     [
@@ -11252,14 +11260,6 @@
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
       "R"
     ],
     [
@@ -11309,14 +11309,14 @@
       "R"
     ],
     [
-      "Sponsor",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
     [
+      "Sponsor",
+      "R"
+    ],
+    [
       "Sponsorship",
       "R"
     ],
@@ -11365,11 +11365,11 @@
       "R"
     ],
     [
-      "Sponsorship",
+      "Bargain",
       "R"
     ],
     [
-      "Bargain",
+      "Sponsorship",
       "R"
     ],
     [
@@ -11559,6 +11559,10 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
       "Subscription",
       "R"
     ],
@@ -11568,10 +11572,6 @@
     ],
     [
       "Subscription",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -11663,11 +11663,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Sponsor",
       "R"
     ],
     [
-      "Sponsor",
+      "UserAccount",
       "R"
     ],
     [
@@ -11679,11 +11679,11 @@
       "R"
     ],
     [
-      "Sponsorship",
+      "Sponsor",
       "R"
     ],
     [
-      "Sponsor",
+      "Sponsorship",
       "R"
     ],
     [
@@ -11753,106 +11753,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "W"
-    ],
-    [
-      "Sponsor",
-      "W"
-    ],
-    [
-      "Sponsorship",
-      "W"
-    ],
-    [
-      "Bargain",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "W"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "W"
-    ],
-    [
-      "Sponsor",
-      "W"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "W"
-    ],
-    [
-      "Bargain",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
       "Sponsor",
       "R"
     ],
@@ -11862,11 +11762,43 @@
     ],
     [
       "Sponsorship",
-      "R"
+      "W"
     ],
     [
       "Sponsor",
+      "W"
+    ],
+    [
+      "Sponsorship",
+      "W"
+    ],
+    [
+      "Bargain",
+      "W"
+    ],
+    [
+      "DomainEntity",
       "R"
+    ],
+    [
+      "DomainEntity",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "W"
     ],
     [
       "Sponsorship",
@@ -11877,16 +11809,12 @@
       "R"
     ],
     [
-      "DomainEntity",
-      "R"
+      "Sponsorship",
+      "W"
     ],
     [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
+      "Sponsor",
+      "W"
     ],
     [
       "Sponsorship",
@@ -11895,6 +11823,14 @@
     [
       "Bargain",
       "R"
+    ],
+    [
+      "Sponsorship",
+      "W"
+    ],
+    [
+      "Bargain",
+      "W"
     ],
     [
       "DomainEntity",
@@ -11925,23 +11861,11 @@
       "R"
     ],
     [
-      "DomainEntity",
-      "R"
-    ],
-    [
       "Sponsorship",
       "R"
     ],
     [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Sponsorship",
+      "Sponsor",
       "R"
     ],
     [
@@ -11961,6 +11885,82 @@
       "R"
     ],
     [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
       "Sponsorship",
       "R"
     ],
@@ -11989,11 +11989,11 @@
       "R"
     ],
     [
-      "Bargain",
+      "Sponsorship",
       "R"
     ],
     [
-      "Sponsorship",
+      "Bargain",
       "R"
     ],
     [
@@ -14089,11 +14089,11 @@
       "R"
     ],
     [
-      "Groupon",
+      "Participation",
       "R"
     ],
     [
-      "Participation",
+      "Groupon",
       "R"
     ],
     [
@@ -14157,11 +14157,11 @@
       "R"
     ],
     [
-      "Groupon",
+      "Participation",
       "R"
     ],
     [
-      "Participation",
+      "Groupon",
       "R"
     ],
     [
@@ -14301,11 +14301,11 @@
       "R"
     ],
     [
-      "User",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "User",
       "R"
     ],
     [
@@ -14317,11 +14317,11 @@
       "R"
     ],
     [
-      "Groupon",
+      "User",
       "R"
     ],
     [
-      "User",
+      "Groupon",
       "R"
     ],
     [
@@ -14489,15 +14489,15 @@
       "R"
     ],
     [
-      "Participation",
-      "R"
-    ],
-    [
-      "Participation",
-      "R"
-    ],
-    [
       "Groupon",
+      "R"
+    ],
+    [
+      "Participation",
+      "R"
+    ],
+    [
+      "Participation",
       "R"
     ],
     [
@@ -14533,11 +14533,11 @@
       "R"
     ],
     [
-      "Participation",
+      "Groupon",
       "R"
     ],
     [
-      "Groupon",
+      "Participation",
       "R"
     ],
     [
@@ -14689,11 +14689,11 @@
       "R"
     ],
     [
-      "Participation",
+      "Groupon",
       "R"
     ],
     [
-      "Groupon",
+      "Participation",
       "R"
     ],
     [
@@ -14727,11 +14727,11 @@
       "R"
     ],
     [
-      "User",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "User",
       "R"
     ],
     [
@@ -14767,15 +14767,15 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -14877,11 +14877,11 @@
       "R"
     ],
     [
-      "User",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "User",
       "R"
     ],
     [
@@ -14935,11 +14935,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "User",
       "R"
     ],
     [
-      "User",
+      "UserAccount",
       "R"
     ],
     [
@@ -15115,11 +15115,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "User",
       "R"
     ],
     [
-      "User",
+      "UserAccount",
       "R"
     ],
     [
@@ -15231,11 +15231,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "User",
       "R"
     ],
     [
-      "User",
+      "UserAccount",
       "R"
     ],
     [
@@ -15295,15 +15295,15 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -15521,31 +15521,31 @@
       "R"
     ],
     [
-      "CreditCard",
-      "R"
-    ],
-    [
-      "CreditCard",
-      "R"
-    ],
-    [
-      "CreditCard",
-      "R"
-    ],
-    [
-      "CreditCard",
-      "R"
-    ],
-    [
-      "CreditCard",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
     [
       "UserAccount",
+      "R"
+    ],
+    [
+      "CreditCard",
+      "R"
+    ],
+    [
+      "CreditCard",
+      "R"
+    ],
+    [
+      "CreditCard",
+      "R"
+    ],
+    [
+      "CreditCard",
+      "R"
+    ],
+    [
+      "CreditCard",
       "R"
     ],
     [
@@ -15575,15 +15575,15 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -15599,11 +15599,11 @@
       "R"
     ],
     [
-      "Subscription",
+      "User",
       "R"
     ],
     [
-      "User",
+      "Subscription",
       "R"
     ]
   ],
@@ -15681,19 +15681,19 @@
       "R"
     ],
     [
+      "CreditCard",
+      "R"
+    ],
+    [
+      "CreditCard",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "CreditCard",
-      "R"
-    ],
-    [
-      "CreditCard",
       "R"
     ],
     [
@@ -15751,15 +15751,15 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -15771,15 +15771,15 @@
       "R"
     ],
     [
-      "Subscription",
-      "R"
-    ],
-    [
-      "Subscription",
-      "R"
-    ],
-    [
       "User",
+      "R"
+    ],
+    [
+      "Subscription",
+      "R"
+    ],
+    [
+      "Subscription",
       "R"
     ],
     [
@@ -15871,15 +15871,15 @@
       "R"
     ],
     [
-      "CreditCard",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
     [
       "UserAccount",
+      "R"
+    ],
+    [
+      "CreditCard",
       "R"
     ],
     [
@@ -16069,15 +16069,15 @@
       "R"
     ],
     [
-      "CreditCard",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
     [
       "UserAccount",
+      "R"
+    ],
+    [
+      "CreditCard",
       "R"
     ],
     [
@@ -16273,11 +16273,11 @@
       "R"
     ],
     [
-      "User",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "User",
       "R"
     ],
     [
@@ -16289,15 +16289,15 @@
       "R"
     ],
     [
-      "Subscription",
-      "R"
-    ],
-    [
-      "Subscription",
-      "R"
-    ],
-    [
       "User",
+      "R"
+    ],
+    [
+      "Subscription",
+      "R"
+    ],
+    [
+      "Subscription",
       "R"
     ],
     [
@@ -16341,31 +16341,31 @@
       "R"
     ],
     [
+      "CreditCard",
+      "R"
+    ],
+    [
+      "CreditCard",
+      "R"
+    ],
+    [
+      "CreditCard",
+      "R"
+    ],
+    [
+      "CreditCard",
+      "R"
+    ],
+    [
+      "CreditCard",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "CreditCard",
-      "R"
-    ],
-    [
-      "CreditCard",
-      "R"
-    ],
-    [
-      "CreditCard",
-      "R"
-    ],
-    [
-      "CreditCard",
-      "R"
-    ],
-    [
-      "CreditCard",
       "R"
     ],
     [
@@ -16455,15 +16455,15 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -16475,7 +16475,7 @@
       "R"
     ],
     [
-      "Participation",
+      "User",
       "R"
     ],
     [
@@ -16491,7 +16491,7 @@
       "R"
     ],
     [
-      "User",
+      "Participation",
       "R"
     ],
     [
@@ -16536,6 +16536,18 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Subscription",
+      "R"
+    ],
+    [
+      "Subscription",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -16544,18 +16556,6 @@
     ],
     [
       "Plan",
-      "R"
-    ],
-    [
-      "Subscription",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Subscription",
       "R"
     ],
     [
@@ -16681,15 +16681,15 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -16725,15 +16725,15 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -16775,15 +16775,15 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -16923,15 +16923,15 @@
       "R"
     ],
     [
+      "Participation",
+      "R"
+    ],
+    [
+      "Participation",
+      "R"
+    ],
+    [
       "User",
-      "R"
-    ],
-    [
-      "Participation",
-      "R"
-    ],
-    [
-      "Participation",
       "R"
     ],
     [
@@ -16988,6 +16988,14 @@
     ],
     [
       "Subscription",
+      "R"
+    ],
+    [
+      "Subscription",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -16996,14 +17004,6 @@
     ],
     [
       "Plan",
-      "R"
-    ],
-    [
-      "Subscription",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -17259,11 +17259,11 @@
       "R"
     ],
     [
-      "Bargain",
+      "Category",
       "R"
     ],
     [
-      "Category",
+      "Bargain",
       "R"
     ],
     [
@@ -17291,11 +17291,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -17667,15 +17667,15 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -18143,11 +18143,11 @@
       "R"
     ],
     [
-      "User",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "User",
       "R"
     ],
     [
@@ -18167,10 +18167,6 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
       "Subscription",
       "R"
     ],
@@ -18180,6 +18176,10 @@
     ],
     [
       "Subscription",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -18377,11 +18377,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "User",
       "R"
     ],
     [
-      "User",
+      "UserAccount",
       "R"
     ],
     [
@@ -19085,10 +19085,6 @@
       "R"
     ],
     [
-      "Bargain",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
@@ -19098,6 +19094,10 @@
     ],
     [
       "User",
+      "R"
+    ],
+    [
+      "Bargain",
       "R"
     ]
   ],
@@ -19545,11 +19545,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -20367,10 +20367,6 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
@@ -20379,6 +20375,10 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
       "Comment",
       "R"
     ],
@@ -20456,14 +20456,6 @@
     ],
     [
       "Subscription",
-      "R"
-    ],
-    [
-      "Subscription",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -20472,6 +20464,14 @@
     ],
     [
       "Plan",
+      "R"
+    ],
+    [
+      "Subscription",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -20675,7 +20675,7 @@
       "R"
     ],
     [
-      "User",
+      "Plan",
       "R"
     ],
     [
@@ -20683,7 +20683,7 @@
       "R"
     ],
     [
-      "Plan",
+      "User",
       "R"
     ]
   ],
@@ -20919,11 +20919,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "User",
       "R"
     ],
     [
-      "User",
+      "UserAccount",
       "R"
     ],
     [
@@ -21019,6 +21019,10 @@
       "R"
     ],
     [
+      "Subscription",
+      "R"
+    ],
+    [
       "Plan",
       "R"
     ],
@@ -21028,10 +21032,6 @@
     ],
     [
       "User",
-      "R"
-    ],
-    [
-      "Subscription",
       "R"
     ]
   ],
@@ -21057,14 +21057,14 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
       "Comment",
       "R"
     ],
@@ -21138,10 +21138,6 @@
     ],
     [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Subscription",
       "R"
     ],
     [
@@ -21161,6 +21157,10 @@
       "R"
     ],
     [
+      "Subscription",
+      "R"
+    ],
+    [
       "Comment",
       "W"
     ],
@@ -21517,14 +21517,14 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
       "Comment",
       "R"
     ],
@@ -21554,6 +21554,10 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Subscription",
       "R"
     ],
     [
@@ -21570,10 +21574,6 @@
     ],
     [
       "Plan",
-      "R"
-    ],
-    [
-      "Subscription",
       "R"
     ]
   ],
@@ -21595,18 +21595,18 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "Comment",
       "R"
     ],
@@ -21636,10 +21636,6 @@
     ],
     [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Subscription",
       "R"
     ],
     [
@@ -21656,6 +21652,10 @@
     ],
     [
       "User",
+      "R"
+    ],
+    [
+      "Subscription",
       "R"
     ]
   ],
@@ -21677,15 +21677,15 @@
       "R"
     ],
     [
+      "Comment",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Comment",
       "R"
     ],
     [
@@ -21705,11 +21705,11 @@
       "R"
     ],
     [
-      "Subscription",
+      "Plan",
       "R"
     ],
     [
-      "Plan",
+      "Subscription",
       "R"
     ],
     [
@@ -21927,18 +21927,18 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "Comment",
       "R"
     ],
@@ -21968,10 +21968,6 @@
     ],
     [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Subscription",
       "R"
     ],
     [
@@ -21988,6 +21984,10 @@
     ],
     [
       "Plan",
+      "R"
+    ],
+    [
+      "Subscription",
       "R"
     ],
     [
@@ -22039,11 +22039,11 @@
       "R"
     ],
     [
-      "User",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "User",
       "R"
     ],
     [
@@ -22063,11 +22063,11 @@
       "R"
     ],
     [
-      "User",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "User",
       "R"
     ],
     [
@@ -22279,19 +22279,19 @@
       "R"
     ],
     [
-      "Plan",
-      "R"
-    ],
-    [
-      "Subscription",
-      "R"
-    ],
-    [
-      "Subscription",
-      "R"
-    ],
-    [
       "User",
+      "R"
+    ],
+    [
+      "Subscription",
+      "R"
+    ],
+    [
+      "Subscription",
+      "R"
+    ],
+    [
+      "Plan",
       "R"
     ],
     [
@@ -22407,6 +22407,10 @@
       "R"
     ],
     [
+      "Plan",
+      "R"
+    ],
+    [
       "Subscription",
       "R"
     ],
@@ -22416,10 +22420,6 @@
     ],
     [
       "Subscription",
-      "R"
-    ],
-    [
-      "Plan",
       "R"
     ]
   ],
@@ -22441,11 +22441,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Company",
       "R"
     ],
     [
-      "Company",
+      "UserAccount",
       "R"
     ],
     [
@@ -22457,11 +22457,11 @@
       "R"
     ],
     [
-      "Company",
+      "Evaluation",
       "R"
     ],
     [
-      "Evaluation",
+      "Company",
       "R"
     ],
     [
@@ -22527,31 +22527,11 @@
       "R"
     ],
     [
-      "Sponsorship",
-      "R"
-    ],
-    [
       "Bargain",
       "R"
     ],
     [
       "Sponsorship",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
       "R"
     ],
     [
@@ -22571,7 +22551,19 @@
       "R"
     ],
     [
-      "Category",
+      "Bargain",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
       "R"
     ],
     [
@@ -22595,6 +22587,10 @@
       "R"
     ],
     [
+      "Category",
+      "R"
+    ],
+    [
       "Bargain",
       "R"
     ],
@@ -22603,6 +22599,18 @@
       "R"
     ],
     [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
       "Tag",
       "R"
     ],
@@ -22619,19 +22627,11 @@
       "R"
     ],
     [
-      "Tag",
-      "R"
-    ],
-    [
       "Bargain",
       "R"
     ],
     [
       "Tag",
-      "R"
-    ],
-    [
-      "Bargain",
       "R"
     ],
     [
@@ -22679,35 +22679,35 @@
       "R"
     ],
     [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
       "Company",
       "R"
     ],
     [
+      "Bargain",
+      "R"
+    ],
+    [
       "Sponsorship",
       "R"
     ],
     [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
       "Sponsorship",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
       "R"
     ],
     [
@@ -22723,15 +22723,15 @@
       "R"
     ],
     [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
       "Company",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
       "R"
     ],
     [
@@ -22751,6 +22751,22 @@
       "R"
     ],
     [
+      "Category",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
       "Company",
       "R"
     ],
@@ -22760,22 +22776,6 @@
     ],
     [
       "Category",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Bargain",
       "R"
     ],
     [
@@ -22799,35 +22799,35 @@
       "R"
     ],
     [
-      "Tag",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Tag",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Tag",
-      "R"
-    ],
-    [
-      "Tag",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
       "Company",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "Bargain",
       "R"
     ],
     [
@@ -22859,31 +22859,19 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Subscription",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Subscription",
       "R"
     ],
     [
@@ -22895,91 +22883,15 @@
       "R"
     ],
     [
-      "Plan",
+      "Subscription",
       "R"
     ],
     [
-      "Sponsorship",
+      "User",
       "R"
     ],
     [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Tag",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Tag",
-      "R"
-    ],
-    [
-      "Tag",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Tag",
+      "Subscription",
       "R"
     ],
     [
@@ -22987,10 +22899,6 @@
       "R"
     ],
     [
-      "Bargain",
-      "R"
-    ],
-    [
       "Sponsorship",
       "R"
     ],
@@ -23007,6 +22915,10 @@
       "R"
     ],
     [
+      "Bargain",
+      "R"
+    ],
+    [
       "Sponsorship",
       "R"
     ],
@@ -23016,22 +22928,6 @@
     ],
     [
       "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Category",
       "R"
     ],
     [
@@ -23067,11 +22963,115 @@
       "R"
     ],
     [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
       "Tag",
       "R"
     ],
     [
       "Bargain",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "Plan",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Tag",
       "R"
     ],
     [
@@ -23123,6 +23123,26 @@
       "R"
     ],
     [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
       "Sponsorship",
       "R"
     ],
@@ -23135,19 +23155,7 @@
       "R"
     ],
     [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
+      "Category",
       "R"
     ],
     [
@@ -23171,18 +23179,6 @@
       "R"
     ],
     [
-      "Category",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Tag",
-      "R"
-    ],
-    [
       "Tag",
       "R"
     ],
@@ -23195,11 +23191,15 @@
       "R"
     ],
     [
-      "Bargain",
+      "Tag",
       "R"
     ],
     [
       "Tag",
+      "R"
+    ],
+    [
+      "Bargain",
       "R"
     ],
     [
@@ -23227,11 +23227,11 @@
       "R"
     ],
     [
-      "User",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "User",
       "R"
     ],
     [
@@ -23255,11 +23255,11 @@
       "R"
     ],
     [
-      "Subscription",
+      "Plan",
       "R"
     ],
     [
-      "Plan",
+      "Subscription",
       "R"
     ],
     [
@@ -23321,15 +23321,15 @@
       "R"
     ],
     [
-      "Ticket",
-      "R"
-    ],
-    [
-      "Ticket",
-      "R"
-    ],
-    [
       "Raffle",
+      "R"
+    ],
+    [
+      "Ticket",
+      "R"
+    ],
+    [
+      "Ticket",
       "R"
     ],
     [
@@ -23401,15 +23401,15 @@
       "R"
     ],
     [
+      "Ticket",
+      "R"
+    ],
+    [
+      "Ticket",
+      "R"
+    ],
+    [
       "Raffle",
-      "R"
-    ],
-    [
-      "Ticket",
-      "R"
-    ],
-    [
-      "Ticket",
       "R"
     ],
     [
@@ -23505,19 +23505,19 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "Ticket",
+      "R"
+    ],
+    [
       "Raffle",
       "R"
     ],
     [
       "Ticket",
-      "R"
-    ],
-    [
-      "Ticket",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -23826,10 +23826,6 @@
     ],
     [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Subscription",
       "R"
     ],
     [
@@ -23849,6 +23845,10 @@
       "R"
     ],
     [
+      "Subscription",
+      "R"
+    ],
+    [
       "Ticket",
       "W"
     ],
@@ -23893,19 +23893,19 @@
       "R"
     ],
     [
-      "Plan",
-      "R"
-    ],
-    [
-      "Subscription",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
     [
       "Subscription",
+      "R"
+    ],
+    [
+      "Subscription",
+      "R"
+    ],
+    [
+      "Plan",
       "R"
     ],
     [
@@ -24057,19 +24057,19 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "Ticket",
+      "R"
+    ],
+    [
       "Ticket",
       "R"
     ],
     [
       "Raffle",
-      "R"
-    ],
-    [
-      "Ticket",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -24117,15 +24117,15 @@
       "R"
     ],
     [
+      "CreditCard",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "CreditCard",
       "R"
     ],
     [
@@ -24427,11 +24427,11 @@
       "R"
     ],
     [
-      "Category",
+      "Bargain",
       "R"
     ],
     [
-      "Bargain",
+      "Category",
       "R"
     ],
     [
@@ -24525,26 +24525,6 @@
       "R"
     ],
     [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
       "Sponsorship",
       "R"
     ],
@@ -24569,26 +24549,6 @@
       "R"
     ],
     [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
       "Sponsor",
       "R"
     ],
@@ -24606,6 +24566,34 @@
     ],
     [
       "Sponsorship",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Sponsor",
       "R"
     ],
     [
@@ -24649,18 +24637,6 @@
       "R"
     ],
     [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
       "Sponsorship",
       "R"
     ],
@@ -24677,7 +24653,27 @@
       "R"
     ],
     [
-      "Bargain",
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsorship",
       "R"
     ],
     [
@@ -24697,11 +24693,15 @@
       "R"
     ],
     [
+      "Tag",
+      "R"
+    ],
+    [
       "Bargain",
       "R"
     ],
     [
-      "Tag",
+      "Bargain",
       "R"
     ],
     [
@@ -24745,7 +24745,7 @@
       "R"
     ],
     [
-      "Participation",
+      "Groupon",
       "R"
     ],
     [
@@ -24753,7 +24753,7 @@
       "R"
     ],
     [
-      "User",
+      "Groupon",
       "R"
     ],
     [
@@ -24777,11 +24777,11 @@
       "R"
     ],
     [
-      "Groupon",
+      "Participation",
       "R"
     ],
     [
-      "Groupon",
+      "User",
       "R"
     ],
     [
@@ -24806,22 +24806,6 @@
     ],
     [
       "Authority",
-      "R"
-    ],
-    [
-      "Comment",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -24841,6 +24825,34 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
       "Category",
       "R"
     ],
@@ -24857,19 +24869,7 @@
       "R"
     ],
     [
-      "Bargain",
-      "R"
-    ],
-    [
       "Category",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Bargain",
       "R"
     ],
     [
@@ -25013,6 +25013,14 @@
       "R"
     ],
     [
+      "Raffle",
+      "R"
+    ],
+    [
+      "Ticket",
+      "R"
+    ],
+    [
       "Ticket",
       "R"
     ],
@@ -25022,14 +25030,6 @@
     ],
     [
       "Raffle",
-      "R"
-    ],
-    [
-      "Raffle",
-      "R"
-    ],
-    [
-      "Ticket",
       "R"
     ]
   ],
@@ -25051,14 +25051,14 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
       "CreditCard",
       "W"
     ],
@@ -25111,11 +25111,11 @@
       "R"
     ],
     [
-      "CreditCard",
+      "Subscription",
       "R"
     ],
     [
-      "Subscription",
+      "CreditCard",
       "R"
     ]
   ],
@@ -25169,6 +25169,14 @@
       "R"
     ],
     [
+      "Ticket",
+      "R"
+    ],
+    [
+      "Ticket",
+      "R"
+    ],
+    [
       "CreditCard",
       "R"
     ],
@@ -25178,14 +25186,6 @@
     ],
     [
       "CreditCard",
-      "R"
-    ],
-    [
-      "Ticket",
-      "R"
-    ],
-    [
-      "Ticket",
       "R"
     ],
     [
@@ -25225,10 +25225,6 @@
       "R"
     ],
     [
-      "CreditCard",
-      "R"
-    ],
-    [
       "Ticket",
       "R"
     ],
@@ -25242,6 +25238,10 @@
     ],
     [
       "Ticket",
+      "R"
+    ],
+    [
+      "CreditCard",
       "R"
     ],
     [
@@ -25253,15 +25253,15 @@
       "R"
     ],
     [
-      "Subscription",
-      "R"
-    ],
-    [
-      "Subscription",
-      "R"
-    ],
-    [
       "CreditCard",
+      "R"
+    ],
+    [
+      "Subscription",
+      "R"
+    ],
+    [
+      "Subscription",
       "R"
     ]
   ],
@@ -25345,10 +25345,6 @@
       "R"
     ],
     [
-      "CreditCard",
-      "R"
-    ],
-    [
       "Ticket",
       "R"
     ],
@@ -25358,6 +25354,10 @@
     ],
     [
       "Ticket",
+      "R"
+    ],
+    [
+      "CreditCard",
       "R"
     ],
     [
@@ -25373,11 +25373,11 @@
       "R"
     ],
     [
-      "CreditCard",
+      "Subscription",
       "R"
     ],
     [
-      "Subscription",
+      "CreditCard",
       "R"
     ],
     [
@@ -25393,6 +25393,10 @@
       "R"
     ],
     [
+      "CreditCard",
+      "R"
+    ],
+    [
       "Ticket",
       "R"
     ],
@@ -25406,10 +25410,6 @@
     ],
     [
       "Ticket",
-      "R"
-    ],
-    [
-      "CreditCard",
       "R"
     ],
     [
@@ -25475,15 +25475,15 @@
       "R"
     ],
     [
-      "CreditCard",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
     [
       "UserAccount",
+      "R"
+    ],
+    [
+      "CreditCard",
       "R"
     ],
     [
@@ -25643,10 +25643,6 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
@@ -25655,6 +25651,10 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
       "CreditCard",
       "W"
     ],
@@ -25675,14 +25675,6 @@
       "R"
     ],
     [
-      "Ticket",
-      "R"
-    ],
-    [
-      "Ticket",
-      "R"
-    ],
-    [
       "CreditCard",
       "R"
     ],
@@ -25692,6 +25684,14 @@
     ],
     [
       "CreditCard",
+      "R"
+    ],
+    [
+      "Ticket",
+      "R"
+    ],
+    [
+      "Ticket",
       "R"
     ],
     [
@@ -25857,26 +25857,6 @@
       "R"
     ],
     [
-      "Raffle",
-      "R"
-    ],
-    [
-      "Raffle",
-      "R"
-    ],
-    [
-      "Ticket",
-      "R"
-    ],
-    [
-      "Raffle",
-      "R"
-    ],
-    [
-      "Raffle",
-      "R"
-    ],
-    [
       "Ticket",
       "R"
     ],
@@ -25890,6 +25870,26 @@
     ],
     [
       "Ticket",
+      "R"
+    ],
+    [
+      "Raffle",
+      "R"
+    ],
+    [
+      "Raffle",
+      "R"
+    ],
+    [
+      "Ticket",
+      "R"
+    ],
+    [
+      "Raffle",
+      "R"
+    ],
+    [
+      "Raffle",
       "R"
     ]
   ],
@@ -25911,22 +25911,6 @@
       "R"
     ],
     [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Bargain",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
       "Category",
       "R"
     ],
@@ -25947,7 +25931,7 @@
       "R"
     ],
     [
-      "Category",
+      "Bargain",
       "R"
     ],
     [
@@ -25960,6 +25944,22 @@
     ],
     [
       "Bargain",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Bargain",
+      "R"
+    ],
+    [
+      "Category",
       "R"
     ]
   ]

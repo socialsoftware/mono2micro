@@ -9,6 +9,7 @@ import spoon.reflect.code.*;
 import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.declaration.*;
 import spoon.reflect.reference.CtExecutableReference;
+import spoon.reflect.reference.CtTypeParameterReference;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtScanner;
 import spoon.support.reflect.code.CtBinaryOperatorImpl;
@@ -116,7 +117,7 @@ public class SpringDataJPACollector extends SpoonCollector {
     *  isRepository: true if class Package = org.springframework.data.repository or if it extends (in)directly from it */
     private boolean isRepository(CtTypeReference<?> clazzReference) {
         try {
-            if (isRepositoryPackageClass(clazzReference.getPackage().toString(), clazzReference.getSimpleName()))
+            if (isRepositoryPackageClass(clazzReference.getPackage().toString()))
                 return true;
 
             for (Object o : clazzReference.getSuperInterfaces().toArray()) {
@@ -124,16 +125,31 @@ public class SpringDataJPACollector extends SpoonCollector {
 
                 if (eventualNewRepository == null) {
                     if (ctInterface.getActualTypeArguments().size() > 0) {
+                        CtTypeReference<?> ctTypeReference = ctInterface.getActualTypeArguments().get(0);
+                        String typeArgumentName = ctTypeReference.getSimpleName();
+
+                        if (!allEntities.contains(typeArgumentName)) {
+                            // repository of an entity which is not declared
+                            // should be a parameterized type
+                            // Example:
+                            // public interface ExperimentRepositoryTemplate<E extends ExperimentTemplate> extends JpaRepository<E, Long>
+                            if (ctTypeReference instanceof CtTypeParameterReference) {
+                                // bounding type returns the superClass of the TypeParameter or Object
+                                CtTypeReference<?> boundingType = ((CtTypeParameterReference) ctTypeReference).getBoundingType();
+                                if (allEntities.contains(boundingType.getSimpleName()))
+                                    typeArgumentName = boundingType.getSimpleName();
+                            }
+                        }
                         eventualNewRepository = new Repository(
                                 clazzReference.getSimpleName(),
-                                ctInterface.getActualTypeArguments().get(0).getSimpleName()
+                                typeArgumentName
                         );
                     }
                     else
                         return false;
                 }
 
-                if (isRepositoryPackageClass(ctInterface.getPackage().getSimpleName(), ctInterface.getSimpleName())) {
+                if (isRepositoryPackageClass(ctInterface.getPackage().getSimpleName())) {
                     return true;
                 }
                 else {
@@ -150,7 +166,7 @@ public class SpringDataJPACollector extends SpoonCollector {
         }
     }
 
-    private boolean isRepositoryPackageClass(String packageName, String className) {
+    private boolean isRepositoryPackageClass(String packageName) {
         return packageName.contains("org.springframework.data") && packageName.endsWith(".repository");
     }
 
@@ -502,7 +518,7 @@ public class SpringDataJPACollector extends SpoonCollector {
                                     if (compareWithMethod(calleeLocation.getExecutable(), ctM)) {
                                         // method declared in project's class
                                         declared = true;
-                                        registerRepositoryAccess(calleeLocation.getExecutable());
+                                        registerRepositoryAccess(calleeLocation.getExecutable(), targetClassName);
                                         break;
                                     }
                                 }
@@ -670,6 +686,18 @@ public class SpringDataJPACollector extends SpoonCollector {
             if (!foundImplementation) {
                 // May be a SpringDataJPA implicit method access
                 // unfortunately we cant get a reference to those methods so we have to duplicate code
+                if (interfaceImplementors.size() == 1) {
+                    // replace the target of the call by the explicit target
+                    CtConstructorCall call = factory.Core().createConstructorCall();
+                    call.setType(
+                            factory.Core().createTypeReference().setSimpleName(
+                                    interfaceImplementors.get(0).getSimpleName()
+                            )
+                    );
+
+                    ((CtInvocation) calleeLocation).setTarget(call);
+                }
+
                 String targetClassName = ((CtInvocation) calleeLocation).getTarget().getType().getSimpleName();
                 if (isProjectDeclaredRepository(targetClassName)) {
                     registerSpringDataRepositoryAccess(targetClassName, calleeLocation.getExecutable().getSimpleName());
@@ -867,7 +895,7 @@ public class SpringDataJPACollector extends SpoonCollector {
         return false;
     }
 
-    private void registerRepositoryAccess(CtExecutableReference methodDeclaration) {
+    private void registerRepositoryAccess(CtExecutableReference methodDeclaration, String repositorySimpleName) {
         List<CtAnnotation<? extends Annotation>> methodAnnotations = methodDeclaration.getExecutableDeclaration().getAnnotations();
         CtAnnotation<? extends Annotation> queryAnnotation = getAnnotation(methodAnnotations, "Query");
         if (queryAnnotation != null) {
@@ -892,7 +920,7 @@ public class SpringDataJPACollector extends SpoonCollector {
                         if (q.isNative())
                             parseNativeQuery(q.getValue());
                         else
-                            parseHqlQuery(q.getValue());
+                            parseHqlQuery(q.getValue(), repositorySimpleName);
                     }
                 }
             }
@@ -901,7 +929,7 @@ public class SpringDataJPACollector extends SpoonCollector {
                 parseNativeQuery(value);
             }
             else { // HQL query
-                parseHqlQuery(value);
+                parseHqlQuery(value, repositorySimpleName);
             }
         }
         else { // No @Query annotation present
@@ -919,7 +947,7 @@ public class SpringDataJPACollector extends SpoonCollector {
                 if (q.isNative())
                     parseNativeQuery(q.getValue());
                 else
-                    parseHqlQuery(q.getValue());
+                    parseHqlQuery(q.getValue(), repositorySimpleName);
             }
         }
     }
@@ -957,9 +985,10 @@ public class SpringDataJPACollector extends SpoonCollector {
         return tableName.toUpperCase().replace("`", "");
     }
 
-    private void parseHqlQuery(String hql) {
+    private void parseHqlQuery(String hql, String repositorySimpleName) {
         try {
-            Set<QueryAccess> accesses = new MyHqlParser(hql).parse();
+            Repository repositoryFromClassName = getRepositoryFromClassName(repositorySimpleName);
+            Set<QueryAccess> accesses = new MyHqlParser(hql, repositoryFromClassName.getTypeClassName()).parse();
             for (QueryAccess a : accesses) {
                 String entityName = a.getName();
                 String[] split = entityName.split("\\.");
@@ -974,19 +1003,38 @@ public class SpringDataJPACollector extends SpoonCollector {
                         String fieldName = split[i];
                         CtField field = getFieldRecursively(clazz, fieldName);
                         if (field != null) {
-                            List<CtTypeReference<?>> actualTypeArguments = field.getType().getActualTypeArguments();
-                            if (actualTypeArguments.size() > 0) { // Set<Class> List<Class> etc
+                            CtTypeReference fieldTypeReference = field.getType();
+                            List<CtTypeReference<?>> actualTypeArguments = fieldTypeReference.getActualTypeArguments();
+
+                            // Set<Class> List<Class>
+                            if (!allEntities.contains(field.getType().getSimpleName()) && actualTypeArguments.size() > 0) {
                                 for (CtTypeReference ctTypeReference : actualTypeArguments) {
-                                    if (allDomainEntities.contains(ctTypeReference.getSimpleName())) {
-                                        addEntitiesSequenceAccess(ctTypeReference.getSimpleName(), a.getMode());
-                                        clazz = ctTypeReference.getTypeDeclaration(); // in order to retrieve next fields
+                                    CtTypeReference<?> processedType;
+
+                                    if (ctTypeReference instanceof CtTypeParameterReference)
+                                        processedType = ((CtTypeParameterReference) ctTypeReference).getBoundingType();
+                                    else
+                                        processedType = ctTypeReference;
+
+                                    if (allDomainEntities.contains(processedType.getSimpleName())) {
+                                        addEntitiesSequenceAccess(processedType.getSimpleName(), a.getMode());
+                                        clazz = processedType.getTypeDeclaration(); // in order to retrieve next fields
                                     }
                                 }
                             }
+
                             else {
-                                if (allDomainEntities.contains(field.getType().getSimpleName())) {
-                                    addEntitiesSequenceAccess(field.getType().getSimpleName(), a.getMode());
-                                    clazz = field.getType().getTypeDeclaration(); // in order to retrieve next fields
+                                if (fieldTypeReference instanceof CtTypeParameterReference) {
+                                    CtTypeReference<?> boundingType = ((CtTypeParameterReference) fieldTypeReference).getBoundingType();
+                                    if (allDomainEntities.contains(boundingType.getSimpleName())) {
+                                        addEntitiesSequenceAccess(boundingType.getSimpleName(), a.getMode());
+                                        clazz = boundingType.getTypeDeclaration();
+                                    }
+                                }
+
+                                else if (allDomainEntities.contains(fieldTypeReference.getSimpleName())) {
+                                    addEntitiesSequenceAccess(fieldTypeReference.getSimpleName(), a.getMode());
+                                    clazz = fieldTypeReference.getTypeDeclaration(); // in order to retrieve next fields
                                 }
                             }
                         }

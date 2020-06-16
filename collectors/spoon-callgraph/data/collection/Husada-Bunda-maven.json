@@ -4407,18 +4407,6 @@
       "R"
     ],
     [
-      "RoomDetailEntity",
-      "R"
-    ],
-    [
-      "RoomBedEntity",
-      "R"
-    ],
-    [
-      "RoomDetailEntity",
-      "R"
-    ],
-    [
       "RoomBedEntity",
       "R"
     ],
@@ -4432,6 +4420,18 @@
     ],
     [
       "RoomBedEntity",
+      "R"
+    ],
+    [
+      "RoomDetailEntity",
+      "R"
+    ],
+    [
+      "RoomBedEntity",
+      "R"
+    ],
+    [
+      "RoomDetailEntity",
       "R"
     ]
   ],

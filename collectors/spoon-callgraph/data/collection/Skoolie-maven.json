@@ -9,15 +9,15 @@
       "R"
     ],
     [
+      "GradingPeriod",
+      "R"
+    ],
+    [
       "SchoolYear",
       "R"
     ],
     [
       "School",
-      "R"
-    ],
-    [
-      "GradingPeriod",
       "R"
     ]
   ],
@@ -27,11 +27,11 @@
       "R"
     ],
     [
-      "SchoolYear",
+      "School",
       "R"
     ],
     [
-      "School",
+      "SchoolYear",
       "R"
     ],
     [
@@ -79,11 +79,11 @@
       "R"
     ],
     [
-      "School",
+      "SchoolYear",
       "R"
     ],
     [
-      "SchoolYear",
+      "School",
       "R"
     ],
     [
@@ -129,11 +129,11 @@
       "R"
     ],
     [
-      "School",
+      "SchoolRoom",
       "R"
     ],
     [
-      "SchoolRoom",
+      "School",
       "R"
     ]
   ],
@@ -147,11 +147,11 @@
       "R"
     ],
     [
-      "School",
+      "Subject",
       "R"
     ],
     [
-      "Subject",
+      "School",
       "R"
     ],
     [
@@ -181,15 +181,15 @@
       "R"
     ],
     [
-      "GradingPeriod",
-      "R"
-    ],
-    [
       "SchoolYear",
       "R"
     ],
     [
       "School",
+      "R"
+    ],
+    [
+      "GradingPeriod",
       "R"
     ],
     [
@@ -223,23 +223,23 @@
       "R"
     ],
     [
+      "School",
+      "R"
+    ],
+    [
       "SchoolRoom",
       "R"
     ],
     [
-      "School",
-      "R"
-    ],
-    [
-      "Teacher",
-      "R"
-    ],
-    [
       "Teacher",
       "R"
     ],
     [
       "School",
+      "R"
+    ],
+    [
+      "Teacher",
       "R"
     ],
     [
@@ -315,15 +315,15 @@
       "R"
     ],
     [
-      "DistrictEvent",
-      "R"
-    ],
-    [
-      "DistrictEvent",
-      "R"
-    ],
-    [
       "District",
+      "R"
+    ],
+    [
+      "DistrictEvent",
+      "R"
+    ],
+    [
+      "DistrictEvent",
       "R"
     ]
   ],
@@ -357,15 +357,15 @@
       "R"
     ],
     [
-      "Teacher",
-      "R"
-    ],
-    [
-      "Teacher",
-      "R"
-    ],
-    [
       "School",
+      "R"
+    ],
+    [
+      "Teacher",
+      "R"
+    ],
+    [
+      "Teacher",
       "R"
     ]
   ]

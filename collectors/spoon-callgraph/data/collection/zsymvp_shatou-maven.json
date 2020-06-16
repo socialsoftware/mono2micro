@@ -443,11 +443,11 @@
       "R"
     ],
     [
-      "SRole",
+      "BCustomerUser",
       "R"
     ],
     [
-      "BCustomerUser",
+      "SRole",
       "R"
     ],
     [
@@ -1433,11 +1433,11 @@
       "R"
     ],
     [
-      "CCms",
+      "SDictionary",
       "R"
     ],
     [
-      "SDictionary",
+      "CCms",
       "R"
     ],
     [
@@ -1531,6 +1531,22 @@
       "R"
     ],
     [
+      "SDictionary",
+      "R"
+    ],
+    [
+      "CCms",
+      "R"
+    ],
+    [
+      "CCms",
+      "R"
+    ],
+    [
+      "CCms",
+      "R"
+    ],
+    [
       "CCms",
       "R"
     ],
@@ -1552,22 +1568,6 @@
     ],
     [
       "SDictionary",
-      "R"
-    ],
-    [
-      "CCms",
-      "R"
-    ],
-    [
-      "SDictionary",
-      "R"
-    ],
-    [
-      "CCms",
-      "R"
-    ],
-    [
-      "CCms",
       "R"
     ],
     [
@@ -1587,14 +1587,6 @@
       "R"
     ],
     [
-      "SDictionary",
-      "R"
-    ],
-    [
-      "CCms",
-      "R"
-    ],
-    [
       "CCms",
       "R"
     ],
@@ -1608,42 +1600,6 @@
     ],
     [
       "SDictionary",
-      "R"
-    ],
-    [
-      "CCms",
-      "R"
-    ],
-    [
-      "CCms",
-      "R"
-    ],
-    [
-      "CCms",
-      "R"
-    ],
-    [
-      "CCms",
-      "R"
-    ],
-    [
-      "CCms",
-      "R"
-    ],
-    [
-      "SDictionary",
-      "R"
-    ],
-    [
-      "CCms",
-      "R"
-    ],
-    [
-      "CCms",
-      "R"
-    ],
-    [
-      "CCms",
       "R"
     ],
     [
@@ -1668,6 +1624,50 @@
     ],
     [
       "SDictionary",
+      "R"
+    ],
+    [
+      "CCms",
+      "R"
+    ],
+    [
+      "CCms",
+      "R"
+    ],
+    [
+      "CCms",
+      "R"
+    ],
+    [
+      "CCms",
+      "R"
+    ],
+    [
+      "CCms",
+      "R"
+    ],
+    [
+      "SDictionary",
+      "R"
+    ],
+    [
+      "CCms",
+      "R"
+    ],
+    [
+      "CCms",
+      "R"
+    ],
+    [
+      "CCms",
+      "R"
+    ],
+    [
+      "SDictionary",
+      "R"
+    ],
+    [
+      "CCms",
       "R"
     ]
   ],
@@ -1693,18 +1693,6 @@
       "R"
     ],
     [
-      "CCms",
-      "R"
-    ],
-    [
-      "SDictionary",
-      "R"
-    ],
-    [
-      "CCms",
-      "R"
-    ],
-    [
       "SDictionary",
       "R"
     ],
@@ -1726,6 +1714,18 @@
     ],
     [
       "CCms",
+      "R"
+    ],
+    [
+      "CCms",
+      "R"
+    ],
+    [
+      "CCms",
+      "R"
+    ],
+    [
+      "SDictionary",
       "R"
     ],
     [
@@ -1745,10 +1745,6 @@
       "R"
     ],
     [
-      "SDictionary",
-      "R"
-    ],
-    [
       "CCms",
       "R"
     ],
@@ -1761,31 +1757,7 @@
       "R"
     ],
     [
-      "CCms",
-      "R"
-    ],
-    [
-      "CCms",
-      "R"
-    ],
-    [
-      "CCms",
-      "R"
-    ],
-    [
-      "CCms",
-      "R"
-    ],
-    [
       "SDictionary",
-      "R"
-    ],
-    [
-      "CCms",
-      "R"
-    ],
-    [
-      "CCms",
       "R"
     ],
     [
@@ -1809,6 +1781,26 @@
       "R"
     ],
     [
+      "CCms",
+      "R"
+    ],
+    [
+      "CCms",
+      "R"
+    ],
+    [
+      "CCms",
+      "R"
+    ],
+    [
+      "CCms",
+      "R"
+    ],
+    [
+      "CCms",
+      "R"
+    ],
+    [
       "SDictionary",
       "R"
     ],
@@ -1818,6 +1810,14 @@
     ],
     [
       "CCms",
+      "R"
+    ],
+    [
+      "CCms",
+      "R"
+    ],
+    [
+      "SDictionary",
       "R"
     ],
     [
@@ -1899,11 +1899,11 @@
       "R"
     ],
     [
-      "BAccessToken",
+      "CMp",
       "R"
     ],
     [
-      "CMp",
+      "BAccessToken",
       "R"
     ],
     [
@@ -2011,19 +2011,19 @@
       "R"
     ],
     [
-      "CMp",
-      "R"
-    ],
-    [
-      "CMp",
-      "R"
-    ],
-    [
-      "CMp",
-      "R"
-    ],
-    [
       "BAccessToken",
+      "R"
+    ],
+    [
+      "CMp",
+      "R"
+    ],
+    [
+      "CMp",
+      "R"
+    ],
+    [
+      "CMp",
       "R"
     ],
     [
@@ -2829,6 +2829,10 @@
       "R"
     ],
     [
+      "BAccessToken",
+      "R"
+    ],
+    [
       "CMp",
       "R"
     ],
@@ -2862,10 +2866,6 @@
     ],
     [
       "BAccessToken",
-      "R"
-    ],
-    [
-      "BAccessToken",
       "W"
     ],
     [
@@ -3157,62 +3157,6 @@
       "R"
     ],
     [
-      "SDictionary",
-      "R"
-    ],
-    [
-      "CClickTw",
-      "R"
-    ],
-    [
-      "CClickTw",
-      "W"
-    ],
-    [
-      "CClickTw",
-      "W"
-    ],
-    [
-      "CClickTw",
-      "R"
-    ],
-    [
-      "CClickTw",
-      "R"
-    ],
-    [
-      "CClickTw",
-      "R"
-    ],
-    [
-      "CClickTw",
-      "R"
-    ],
-    [
-      "CClickTw",
-      "R"
-    ],
-    [
-      "CClickTw",
-      "R"
-    ],
-    [
-      "CClickTw",
-      "R"
-    ],
-    [
-      "CClickTw",
-      "R"
-    ],
-    [
-      "CClickTw",
-      "R"
-    ],
-    [
-      "CClickTw",
-      "R"
-    ],
-    [
       "CClickTw",
       "R"
     ],
@@ -3222,15 +3166,23 @@
     ],
     [
       "CClickTw",
+      "W"
+    ],
+    [
+      "CClickTw",
+      "W"
+    ],
+    [
+      "CClickTw",
       "R"
     ],
     [
       "CClickTw",
-      "W"
+      "R"
     ],
     [
       "CClickTw",
-      "W"
+      "R"
     ],
     [
       "CClickTw",
@@ -3266,18 +3218,6 @@
     ],
     [
       "SDictionary",
-      "R"
-    ],
-    [
-      "CClickTw",
-      "R"
-    ],
-    [
-      "CClickTw",
-      "R"
-    ],
-    [
-      "CClickTw",
       "R"
     ],
     [
@@ -3338,6 +3278,66 @@
     ],
     [
       "CClickTw",
+      "R"
+    ],
+    [
+      "CClickTw",
+      "R"
+    ],
+    [
+      "CClickTw",
+      "W"
+    ],
+    [
+      "CClickTw",
+      "W"
+    ],
+    [
+      "CClickTw",
+      "R"
+    ],
+    [
+      "CClickTw",
+      "R"
+    ],
+    [
+      "CClickTw",
+      "R"
+    ],
+    [
+      "CClickTw",
+      "R"
+    ],
+    [
+      "CClickTw",
+      "R"
+    ],
+    [
+      "CClickTw",
+      "R"
+    ],
+    [
+      "CClickTw",
+      "R"
+    ],
+    [
+      "CClickTw",
+      "R"
+    ],
+    [
+      "CClickTw",
+      "R"
+    ],
+    [
+      "CClickTw",
+      "R"
+    ],
+    [
+      "CClickTw",
+      "R"
+    ],
+    [
+      "SDictionary",
       "R"
     ],
     [
@@ -3581,11 +3581,11 @@
       "R"
     ],
     [
-      "CMp",
+      "BAccessToken",
       "R"
     ],
     [
-      "BAccessToken",
+      "CMp",
       "R"
     ],
     [
@@ -4109,11 +4109,11 @@
       "R"
     ],
     [
-      "CFan",
+      "CFanUser",
       "R"
     ],
     [
-      "CFanUser",
+      "CFan",
       "R"
     ],
     [
@@ -4241,30 +4241,6 @@
       "R"
     ],
     [
-      "CFan",
-      "R"
-    ],
-    [
-      "CFanUser",
-      "R"
-    ],
-    [
-      "CFanUser",
-      "R"
-    ],
-    [
-      "CFanUser",
-      "R"
-    ],
-    [
-      "CFanUser",
-      "R"
-    ],
-    [
-      "CFanUser",
-      "R"
-    ],
-    [
       "CFanUser",
       "R"
     ],
@@ -4274,6 +4250,30 @@
     ],
     [
       "CFan",
+      "R"
+    ],
+    [
+      "CFanUser",
+      "R"
+    ],
+    [
+      "CFanUser",
+      "R"
+    ],
+    [
+      "CFanUser",
+      "R"
+    ],
+    [
+      "CFan",
+      "R"
+    ],
+    [
+      "CFanUser",
+      "R"
+    ],
+    [
+      "CFanUser",
       "R"
     ],
     [
@@ -4639,11 +4639,11 @@
       "R"
     ],
     [
-      "BAccessToken",
+      "CMp",
       "R"
     ],
     [
-      "CMp",
+      "BAccessToken",
       "R"
     ],
     [
@@ -4851,11 +4851,11 @@
       "R"
     ],
     [
-      "CMp",
+      "BAccessToken",
       "R"
     ],
     [
-      "BAccessToken",
+      "CMp",
       "R"
     ],
     [
@@ -4933,15 +4933,15 @@
       "R"
     ],
     [
+      "CMp",
+      "R"
+    ],
+    [
+      "CMp",
+      "R"
+    ],
+    [
       "BAccessToken",
-      "R"
-    ],
-    [
-      "CMp",
-      "R"
-    ],
-    [
-      "CMp",
       "R"
     ]
   ],
@@ -5021,11 +5021,11 @@
       "R"
     ],
     [
-      "CFan",
+      "CFanUser",
       "R"
     ],
     [
-      "CFanUser",
+      "CFan",
       "R"
     ],
     [
@@ -5757,18 +5757,6 @@
       "R"
     ],
     [
-      "CAuto",
-      "R"
-    ],
-    [
-      "CAuto",
-      "R"
-    ],
-    [
-      "CAuto",
-      "R"
-    ],
-    [
       "CAutoKeyword",
       "R"
     ],
@@ -5777,7 +5765,7 @@
       "R"
     ],
     [
-      "CSelfTag",
+      "CAuto",
       "R"
     ],
     [
@@ -5794,6 +5782,18 @@
     ],
     [
       "CAutoKeyword",
+      "R"
+    ],
+    [
+      "CAuto",
+      "R"
+    ],
+    [
+      "CAuto",
+      "R"
+    ],
+    [
+      "CSelfTag",
       "R"
     ],
     [
@@ -5907,11 +5907,11 @@
       "R"
     ],
     [
-      "CMp",
+      "BAccessToken",
       "R"
     ],
     [
-      "BAccessToken",
+      "CMp",
       "R"
     ],
     [
@@ -6243,11 +6243,11 @@
       "R"
     ],
     [
-      "BAccessToken",
+      "CMp",
       "R"
     ],
     [
-      "CMp",
+      "BAccessToken",
       "R"
     ],
     [
@@ -6403,6 +6403,10 @@
       "R"
     ],
     [
+      "BAccessToken",
+      "R"
+    ],
+    [
       "CMp",
       "R"
     ],
@@ -6436,10 +6440,6 @@
     ],
     [
       "BAccessToken",
-      "R"
-    ],
-    [
-      "BAccessToken",
       "W"
     ],
     [
@@ -6499,15 +6499,15 @@
       "R"
     ],
     [
-      "CMp",
-      "R"
-    ],
-    [
-      "CMp",
-      "R"
-    ],
-    [
       "BAccessToken",
+      "R"
+    ],
+    [
+      "CMp",
+      "R"
+    ],
+    [
+      "CMp",
       "R"
     ],
     [
@@ -6655,11 +6655,11 @@
       "R"
     ],
     [
-      "CMp",
+      "BAccessToken",
       "R"
     ],
     [
-      "BAccessToken",
+      "CMp",
       "R"
     ],
     [
@@ -6951,11 +6951,11 @@
       "R"
     ],
     [
-      "CMp",
+      "BAccessToken",
       "R"
     ],
     [
-      "BAccessToken",
+      "CMp",
       "R"
     ],
     [
@@ -7127,15 +7127,15 @@
       "R"
     ],
     [
+      "CMp",
+      "R"
+    ],
+    [
+      "CMp",
+      "R"
+    ],
+    [
       "BAccessToken",
-      "R"
-    ],
-    [
-      "CMp",
-      "R"
-    ],
-    [
-      "CMp",
       "R"
     ],
     [
@@ -7915,11 +7915,11 @@
       "R"
     ],
     [
-      "CFeedBackManage",
+      "SDictionary",
       "R"
     ],
     [
-      "SDictionary",
+      "CFeedBackManage",
       "R"
     ],
     [
@@ -8063,11 +8063,11 @@
       "R"
     ],
     [
-      "CMp",
+      "BAccessToken",
       "R"
     ],
     [
-      "BAccessToken",
+      "CMp",
       "R"
     ],
     [
@@ -8131,19 +8131,19 @@
       "R"
     ],
     [
+      "CMp",
+      "R"
+    ],
+    [
+      "CMp",
+      "R"
+    ],
+    [
+      "CMp",
+      "R"
+    ],
+    [
       "BAccessToken",
-      "R"
-    ],
-    [
-      "CMp",
-      "R"
-    ],
-    [
-      "CMp",
-      "R"
-    ],
-    [
-      "CMp",
       "R"
     ],
     [
@@ -8169,11 +8169,11 @@
       "R"
     ],
     [
-      "CMp",
+      "BAccessToken",
       "R"
     ],
     [
-      "BAccessToken",
+      "CMp",
       "R"
     ],
     [
@@ -8237,15 +8237,15 @@
       "R"
     ],
     [
+      "CMp",
+      "R"
+    ],
+    [
+      "CMp",
+      "R"
+    ],
+    [
       "BAccessToken",
-      "R"
-    ],
-    [
-      "CMp",
-      "R"
-    ],
-    [
-      "CMp",
       "R"
     ],
     [
@@ -8447,11 +8447,11 @@
       "R"
     ],
     [
-      "CMp",
+      "BAccessToken",
       "R"
     ],
     [
-      "BAccessToken",
+      "CMp",
       "R"
     ],
     [
@@ -8579,15 +8579,15 @@
       "R"
     ],
     [
-      "CLeaveWordsManage",
-      "R"
-    ],
-    [
-      "CLeaveWordsManage",
-      "R"
-    ],
-    [
       "SDictionary",
+      "R"
+    ],
+    [
+      "CLeaveWordsManage",
+      "R"
+    ],
+    [
+      "CLeaveWordsManage",
       "R"
     ],
     [
@@ -8669,11 +8669,11 @@
       "R"
     ],
     [
-      "CMp",
+      "BAccessToken",
       "R"
     ],
     [
-      "BAccessToken",
+      "CMp",
       "R"
     ],
     [
@@ -8807,11 +8807,11 @@
       "R"
     ],
     [
-      "CMp",
+      "BAccessToken",
       "R"
     ],
     [
-      "BAccessToken",
+      "CMp",
       "R"
     ],
     [
@@ -8973,11 +8973,11 @@
       "R"
     ],
     [
-      "BAccessToken",
+      "CMp",
       "R"
     ],
     [
-      "CMp",
+      "BAccessToken",
       "R"
     ],
     [
@@ -9519,11 +9519,11 @@
       "R"
     ],
     [
-      "CMp",
+      "BAccessToken",
       "R"
     ],
     [
-      "BAccessToken",
+      "CMp",
       "R"
     ],
     [
@@ -9695,15 +9695,15 @@
       "R"
     ],
     [
-      "CMp",
-      "R"
-    ],
-    [
-      "CMp",
-      "R"
-    ],
-    [
       "BAccessToken",
+      "R"
+    ],
+    [
+      "CMp",
+      "R"
+    ],
+    [
+      "CMp",
       "R"
     ],
     [
@@ -9829,11 +9829,11 @@
       "R"
     ],
     [
-      "BAccessToken",
+      "CMp",
       "R"
     ],
     [
-      "CMp",
+      "BAccessToken",
       "R"
     ],
     [
@@ -10007,11 +10007,11 @@
       "R"
     ],
     [
-      "BAccessToken",
+      "CMp",
       "R"
     ],
     [
-      "CMp",
+      "BAccessToken",
       "R"
     ]
   ],
@@ -10045,11 +10045,11 @@
       "R"
     ],
     [
-      "CMp",
+      "BAccessToken",
       "R"
     ],
     [
-      "BAccessToken",
+      "CMp",
       "R"
     ],
     [
@@ -10795,19 +10795,19 @@
       "R"
     ],
     [
+      "CMp",
+      "R"
+    ],
+    [
+      "CMp",
+      "R"
+    ],
+    [
+      "CMp",
+      "R"
+    ],
+    [
       "BAccessToken",
-      "R"
-    ],
-    [
-      "CMp",
-      "R"
-    ],
-    [
-      "CMp",
-      "R"
-    ],
-    [
-      "CMp",
       "R"
     ],
     [
@@ -11003,19 +11003,19 @@
       "R"
     ],
     [
+      "CMp",
+      "R"
+    ],
+    [
+      "CMp",
+      "R"
+    ],
+    [
+      "CMp",
+      "R"
+    ],
+    [
       "BAccessToken",
-      "R"
-    ],
-    [
-      "CMp",
-      "R"
-    ],
-    [
-      "CMp",
-      "R"
-    ],
-    [
-      "CMp",
       "R"
     ],
     [
@@ -11129,19 +11129,19 @@
       "R"
     ],
     [
-      "CMp",
-      "R"
-    ],
-    [
-      "CMp",
-      "R"
-    ],
-    [
-      "CMp",
-      "R"
-    ],
-    [
       "BAccessToken",
+      "R"
+    ],
+    [
+      "CMp",
+      "R"
+    ],
+    [
+      "CMp",
+      "R"
+    ],
+    [
+      "CMp",
       "R"
     ],
     [
@@ -12237,11 +12237,11 @@
       "R"
     ],
     [
-      "SResource",
+      "SDictionary",
       "R"
     ],
     [
-      "SDictionary",
+      "SResource",
       "R"
     ],
     [
@@ -12759,11 +12759,11 @@
       "R"
     ],
     [
-      "BAccessToken",
+      "CMp",
       "R"
     ],
     [
-      "CMp",
+      "BAccessToken",
       "R"
     ],
     [
@@ -13383,19 +13383,19 @@
       "R"
     ],
     [
+      "CClickTw",
+      "R"
+    ],
+    [
+      "CClickTw",
+      "R"
+    ],
+    [
+      "CClickTw",
+      "R"
+    ],
+    [
       "SDictionary",
-      "R"
-    ],
-    [
-      "CClickTw",
-      "R"
-    ],
-    [
-      "CClickTw",
-      "R"
-    ],
-    [
-      "CClickTw",
       "R"
     ],
     [
@@ -13425,23 +13425,23 @@
       "R"
     ],
     [
+      "CClickTw",
+      "R"
+    ],
+    [
+      "CClickTw",
+      "R"
+    ],
+    [
+      "CClickTw",
+      "R"
+    ],
+    [
+      "CClickTw",
+      "R"
+    ],
+    [
       "SDictionary",
-      "R"
-    ],
-    [
-      "CClickTw",
-      "R"
-    ],
-    [
-      "CClickTw",
-      "R"
-    ],
-    [
-      "CClickTw",
-      "R"
-    ],
-    [
-      "CClickTw",
       "R"
     ]
   ],
@@ -13529,15 +13529,15 @@
       "R"
     ],
     [
-      "CMp",
-      "R"
-    ],
-    [
-      "CMp",
-      "R"
-    ],
-    [
       "BAccessToken",
+      "R"
+    ],
+    [
+      "CMp",
+      "R"
+    ],
+    [
+      "CMp",
       "R"
     ],
     [
@@ -13749,11 +13749,11 @@
       "R"
     ],
     [
-      "CMp",
+      "BAccessToken",
       "R"
     ],
     [
-      "BAccessToken",
+      "CMp",
       "R"
     ],
     [
@@ -14045,6 +14045,14 @@
       "R"
     ],
     [
+      "BParentMenu",
+      "R"
+    ],
+    [
+      "CMenuConfigure",
+      "R"
+    ],
+    [
       "CMenuConfigure",
       "R"
     ],
@@ -14066,14 +14074,6 @@
     ],
     [
       "CMenuConfigure",
-      "R"
-    ],
-    [
-      "CMenuConfigure",
-      "R"
-    ],
-    [
-      "BParentMenu",
       "R"
     ],
     [
@@ -14179,10 +14179,6 @@
       "R"
     ],
     [
-      "BParentMenu",
-      "R"
-    ],
-    [
       "CMenuConfigure",
       "R"
     ],
@@ -14200,6 +14196,10 @@
     ],
     [
       "CMenuConfigure",
+      "R"
+    ],
+    [
+      "BParentMenu",
       "R"
     ],
     [
@@ -14425,11 +14425,11 @@
       "R"
     ],
     [
-      "CMp",
+      "BAccessToken",
       "R"
     ],
     [
-      "BAccessToken",
+      "CMp",
       "R"
     ],
     [
@@ -14641,15 +14641,15 @@
       "R"
     ],
     [
+      "CMp",
+      "R"
+    ],
+    [
+      "CMp",
+      "R"
+    ],
+    [
       "BAccessToken",
-      "R"
-    ],
-    [
-      "CMp",
-      "R"
-    ],
-    [
-      "CMp",
       "R"
     ],
     [
@@ -14767,15 +14767,15 @@
       "R"
     ],
     [
-      "CMp",
-      "R"
-    ],
-    [
-      "CMp",
-      "R"
-    ],
-    [
       "BAccessToken",
+      "R"
+    ],
+    [
+      "CMp",
+      "R"
+    ],
+    [
+      "CMp",
       "R"
     ],
     [

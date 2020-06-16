@@ -177,23 +177,23 @@
       "R"
     ],
     [
+      "Reimburse",
+      "R"
+    ],
+    [
       "ReimburseDetails",
       "R"
     ],
     [
-      "Reimburse",
-      "R"
-    ],
-    [
-      "ReimburseCustomerDetail",
-      "R"
-    ],
-    [
       "ReimburseCustomerDetail",
       "R"
     ],
     [
       "Reimburse",
+      "R"
+    ],
+    [
+      "ReimburseCustomerDetail",
       "R"
     ],
     [
@@ -4775,11 +4775,11 @@
       "R"
     ],
     [
-      "ExamPaper",
+      "ExamQuestion",
       "R"
     ],
     [
-      "ExamQuestion",
+      "ExamPaper",
       "R"
     ],
     [
@@ -5295,11 +5295,11 @@
       "R"
     ],
     [
-      "UserResume",
+      "User",
       "R"
     ],
     [
-      "User",
+      "UserResume",
       "R"
     ],
     [
@@ -7031,11 +7031,11 @@
       "R"
     ],
     [
-      "Deptment",
+      "User",
       "R"
     ],
     [
-      "User",
+      "Deptment",
       "R"
     ],
     [
@@ -7127,10 +7127,6 @@
       "R"
     ],
     [
-      "ProjectMember",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
@@ -7139,11 +7135,15 @@
       "R"
     ],
     [
+      "Project",
+      "R"
+    ],
+    [
       "ProjectMember",
       "R"
     ],
     [
-      "Project",
+      "ProjectMember",
       "R"
     ],
     [
@@ -7215,11 +7215,11 @@
       "R"
     ],
     [
-      "ProjectMember",
+      "Project",
       "R"
     ],
     [
-      "Project",
+      "ProjectMember",
       "R"
     ],
     [
@@ -7433,11 +7433,11 @@
       "R"
     ],
     [
-      "DailyReportWeekConfig",
+      "WeekReport",
       "R"
     ],
     [
-      "WeekReport",
+      "DailyReportWeekConfig",
       "R"
     ],
     [
@@ -7495,11 +7495,11 @@
       "R"
     ],
     [
-      "ExamQuestion",
+      "ExamPaper",
       "R"
     ],
     [
-      "ExamPaper",
+      "ExamQuestion",
       "R"
     ],
     [
@@ -7629,11 +7629,11 @@
       "R"
     ],
     [
-      "BaseTrainingCourse",
+      "BaseTrainingPlanCourse",
       "R"
     ],
     [
-      "BaseTrainingPlanCourse",
+      "BaseTrainingCourse",
       "R"
     ],
     [
@@ -10849,11 +10849,11 @@
       "R"
     ],
     [
-      "User",
+      "UserResume",
       "R"
     ],
     [
-      "UserResume",
+      "User",
       "R"
     ],
     [
@@ -11703,19 +11703,19 @@
   ],
   "RoleUserController.queryAllHaveUserRoles": [
     [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
       "UserRole",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
       "R"
     ]
   ],
@@ -12607,11 +12607,11 @@
       "R"
     ],
     [
-      "UserResume",
+      "User",
       "R"
     ],
     [
-      "User",
+      "UserResume",
       "R"
     ],
     [
@@ -13883,7 +13883,7 @@
       "R"
     ],
     [
-      "DailyReportWeekConfig",
+      "User",
       "R"
     ],
     [
@@ -13891,7 +13891,7 @@
       "R"
     ],
     [
-      "User",
+      "DailyReportWeekConfig",
       "R"
     ],
     [
@@ -13973,6 +13973,10 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
       "WeekReport",
       "R"
     ],
@@ -13982,10 +13986,6 @@
     ],
     [
       "WeekReport",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -14971,15 +14971,15 @@
       "R"
     ],
     [
-      "UserResume",
-      "R"
-    ],
-    [
-      "UserResume",
-      "R"
-    ],
-    [
       "User",
+      "R"
+    ],
+    [
+      "UserResume",
+      "R"
+    ],
+    [
+      "UserResume",
       "R"
     ],
     [
@@ -15185,11 +15185,11 @@
       "R"
     ],
     [
-      "UserResume",
+      "User",
       "R"
     ],
     [
-      "User",
+      "UserResume",
       "R"
     ],
     [
@@ -15401,6 +15401,14 @@
       "R"
     ],
     [
+      "BookInfo",
+      "R"
+    ],
+    [
+      "BookLendRecord",
+      "R"
+    ],
+    [
       "BookLendRecord",
       "R"
     ],
@@ -15421,11 +15429,11 @@
       "R"
     ],
     [
-      "BookInfo",
+      "BookPreRecord",
       "R"
     ],
     [
-      "BookLendRecord",
+      "BookPreRecord",
       "R"
     ],
     [
@@ -15434,14 +15442,6 @@
     ],
     [
       "BookInfo",
-      "R"
-    ],
-    [
-      "BookPreRecord",
-      "R"
-    ],
-    [
-      "BookPreRecord",
       "R"
     ],
     [
@@ -15487,15 +15487,15 @@
       "R"
     ],
     [
+      "BookLendRecord",
+      "R"
+    ],
+    [
+      "BookLendRecord",
+      "R"
+    ],
+    [
       "User",
-      "R"
-    ],
-    [
-      "BookLendRecord",
-      "R"
-    ],
-    [
-      "BookLendRecord",
       "R"
     ],
     [
@@ -15587,7 +15587,7 @@
       "R"
     ],
     [
-      "User",
+      "BookInfo",
       "R"
     ],
     [
@@ -15595,7 +15595,7 @@
       "R"
     ],
     [
-      "BookInfo",
+      "User",
       "R"
     ],
     [
@@ -15641,19 +15641,19 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "BookPreRecord",
-      "R"
-    ],
-    [
       "BookInfo",
       "R"
     ],
     [
       "BookPreRecord",
+      "R"
+    ],
+    [
+      "BookPreRecord",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -15815,11 +15815,11 @@
       "R"
     ],
     [
-      "BookInfo",
+      "BookPreRecord",
       "R"
     ],
     [
-      "BookPreRecord",
+      "BookInfo",
       "R"
     ],
     [
@@ -15941,11 +15941,11 @@
       "R"
     ],
     [
-      "BookInfo",
+      "BookLendRecord",
       "R"
     ],
     [
-      "BookLendRecord",
+      "BookInfo",
       "R"
     ],
     [
@@ -15979,11 +15979,11 @@
       "R"
     ],
     [
-      "BookLendRecord",
+      "BookInfo",
       "R"
     ],
     [
-      "BookInfo",
+      "BookLendRecord",
       "R"
     ],
     [
@@ -16309,19 +16309,19 @@
       "R"
     ],
     [
-      "BookLendRecord",
-      "R"
-    ],
-    [
-      "BookLendRecord",
-      "R"
-    ],
-    [
-      "BookLendRecord",
-      "R"
-    ],
-    [
       "BookInfo",
+      "R"
+    ],
+    [
+      "BookLendRecord",
+      "R"
+    ],
+    [
+      "BookLendRecord",
+      "R"
+    ],
+    [
+      "BookLendRecord",
       "R"
     ],
     [
@@ -17285,15 +17285,15 @@
       "R"
     ],
     [
-      "AttenceDayoff",
-      "R"
-    ],
-    [
-      "AttenceDayoff",
-      "R"
-    ],
-    [
       "User",
+      "R"
+    ],
+    [
+      "AttenceDayoff",
+      "R"
+    ],
+    [
+      "AttenceDayoff",
       "R"
     ],
     [
@@ -17447,19 +17447,11 @@
       "R"
     ],
     [
-      "AttenceBrushRecord",
-      "R"
-    ],
-    [
-      "AttenceBrushRecord",
-      "R"
-    ],
-    [
       "Code",
       "R"
     ],
     [
-      "Code",
+      "AttenceBrushRecord",
       "R"
     ],
     [
@@ -17484,6 +17476,14 @@
     ],
     [
       "Code",
+      "R"
+    ],
+    [
+      "Code",
+      "R"
+    ],
+    [
+      "AttenceBrushRecord",
       "R"
     ],
     [
@@ -17583,15 +17583,15 @@
       "R"
     ],
     [
+      "DailyReport",
+      "R"
+    ],
+    [
       "WeekReport",
       "R"
     ],
     [
       "User",
-      "R"
-    ],
-    [
-      "WeekReport",
       "R"
     ],
     [
@@ -17607,7 +17607,7 @@
       "R"
     ],
     [
-      "DailyReport",
+      "WeekReport",
       "R"
     ],
     [
@@ -18863,11 +18863,11 @@
       "R"
     ],
     [
-      "UserRights",
+      "User",
       "R"
     ],
     [
-      "User",
+      "UserRights",
       "R"
     ]
   ],

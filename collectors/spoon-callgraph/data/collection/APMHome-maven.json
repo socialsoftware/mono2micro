@@ -2559,6 +2559,10 @@
       "R"
     ],
     [
+      "FileUploaded",
+      "W"
+    ],
+    [
       "WorkOrderStep",
       "W"
     ],
@@ -2577,14 +2581,6 @@
       "R"
     ],
     [
-      "UserRole",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
@@ -2601,6 +2597,14 @@
       "R"
     ],
     [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserRole",
+      "R"
+    ],
+    [
       "UserRole",
       "R"
     ],
@@ -2610,6 +2614,12 @@
     ],
     [
       "UserAccount",
+      "R"
+    ]
+  ],
+  "WorkOrderController.getImage": [
+    [
+      "FileUploaded",
       "R"
     ]
   ],
@@ -4035,6 +4045,10 @@
       "R"
     ],
     [
+      "FileUploaded",
+      "W"
+    ],
+    [
       "WorkOrderStep",
       "W"
     ],
@@ -4085,7 +4099,7 @@
       "R"
     ],
     [
-      "WorkOrderStep",
+      "FileUploaded",
       "W"
     ],
     [
@@ -4095,6 +4109,16 @@
     [
       "WorkOrderStep",
       "W"
+    ],
+    [
+      "WorkOrderStep",
+      "W"
+    ]
+  ],
+  "WorkOrderController.uploadMediaToWeChat": [
+    [
+      "FileUploaded",
+      "R"
     ]
   ],
   "WorkOrderController.woCreate": [
@@ -4146,6 +4170,136 @@
   "RepairProcessController.findRepairList": [
     [
       "WorkOrder",
+      "R"
+    ]
+  ],
+  "AssetCostController.calByDay": [
+    [
+      "AssetSummit",
+      "R"
+    ],
+    [
+      "AssetInfo",
+      "R"
+    ],
+    [
+      "WorkOrder",
+      "R"
+    ],
+    [
+      "AssetInfo",
+      "R"
+    ],
+    [
+      "WorkOrder",
+      "R"
+    ],
+    [
+      "WorkOrder",
+      "R"
+    ],
+    [
+      "AssetDepreciation",
+      "R"
+    ],
+    [
+      "AssetSummit",
+      "R"
+    ],
+    [
+      "AssetInfo",
+      "R"
+    ],
+    [
+      "WorkOrder",
+      "R"
+    ],
+    [
+      "AssetInfo",
+      "R"
+    ],
+    [
+      "WorkOrder",
+      "R"
+    ],
+    [
+      "WorkOrder",
+      "R"
+    ],
+    [
+      "AssetDepreciation",
+      "R"
+    ],
+    [
+      "AssetSummit",
+      "R"
+    ]
+  ],
+  "AssetCostController.calByFromTo": [
+    [
+      "AssetSummit",
+      "R"
+    ],
+    [
+      "AssetInfo",
+      "R"
+    ],
+    [
+      "WorkOrder",
+      "R"
+    ],
+    [
+      "AssetInfo",
+      "R"
+    ],
+    [
+      "WorkOrder",
+      "R"
+    ],
+    [
+      "WorkOrder",
+      "R"
+    ],
+    [
+      "AssetDepreciation",
+      "R"
+    ],
+    [
+      "AssetSummit",
+      "R"
+    ]
+  ],
+  "AssetCostController.excuteTask": [
+    [
+      "AssetSummit",
+      "R"
+    ],
+    [
+      "AssetInfo",
+      "R"
+    ],
+    [
+      "WorkOrder",
+      "R"
+    ],
+    [
+      "AssetInfo",
+      "R"
+    ],
+    [
+      "WorkOrder",
+      "R"
+    ],
+    [
+      "WorkOrder",
+      "R"
+    ],
+    [
+      "AssetDepreciation",
+      "R"
+    ],
+    [
+      "AssetSummit",
       "R"
     ]
   ],
@@ -4375,6 +4529,18 @@
     [
       "AssetSummit",
       "W"
+    ]
+  ],
+  "TestController.getData": [
+    [
+      "UserAccount",
+      "R"
+    ]
+  ],
+  "TestController.getUsers": [
+    [
+      "UserAccount",
+      "R"
     ]
   ],
   "WeChatMenuDispatcher.wechatMenuItem": [

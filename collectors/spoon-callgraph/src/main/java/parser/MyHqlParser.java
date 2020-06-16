@@ -16,10 +16,12 @@ public class MyHqlParser {
     private String mode;
     private HashMap<String, String> aliasMap; // alias -> EntityName
 
-    public MyHqlParser(String hql) {
+    public MyHqlParser(String hql, String typeClassName) {
         entitiesAccessed = new HashSet<>();
         aliasMap = new HashMap<>();
-        this.hql = hql.replace("%", "");
+        String hql1 = hql.replace("%", "");
+        String hql2 = hql1.replace("#{#entityName}", typeClassName);
+        this.hql = hql2;
     }
 
     public Set<QueryAccess> parse() throws TokenStreamException, RecognitionException {
@@ -52,7 +54,6 @@ public class MyHqlParser {
                     restString = "";
                 }
 
-                String s = aliasMap.get(startString);
                 for (Map.Entry<String, String> entry : aliasMap.entrySet()) { // replace alias in queries by Class names
                     if (startString.equals(entry.getKey())) {
                         a.setName(entry.getValue() + restString);

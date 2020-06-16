@@ -427,10 +427,6 @@
       "R"
     ],
     [
-      "Navigation",
-      "R"
-    ],
-    [
       "Carousel",
       "R"
     ],
@@ -440,6 +436,10 @@
     ],
     [
       "Carousel",
+      "R"
+    ],
+    [
+      "Navigation",
       "R"
     ],
     [
@@ -1707,43 +1707,15 @@
       "R"
     ],
     [
+      "GoodOrder",
+      "R"
+    ],
+    [
       "PackageGood",
       "R"
     ],
     [
       "DecoratePackage",
-      "R"
-    ],
-    [
-      "PackageGood",
-      "R"
-    ],
-    [
-      "DecoratePackage",
-      "R"
-    ],
-    [
-      "GoodOrder",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "GoodOrder",
-      "R"
-    ],
-    [
-      "GoodOrder",
-      "R"
-    ],
-    [
-      "Good",
-      "R"
-    ],
-    [
-      "GoodOrder",
       "R"
     ],
     [
@@ -1772,6 +1744,34 @@
     ],
     [
       "PackageGood",
+      "R"
+    ],
+    [
+      "DecoratePackage",
+      "R"
+    ],
+    [
+      "PackageGood",
+      "R"
+    ],
+    [
+      "GoodOrder",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "GoodOrder",
+      "R"
+    ],
+    [
+      "Good",
+      "R"
+    ],
+    [
+      "GoodOrder",
       "R"
     ],
     [
@@ -1813,7 +1813,7 @@
       "R"
     ],
     [
-      "Good",
+      "User",
       "R"
     ],
     [
@@ -1829,6 +1829,10 @@
       "R"
     ],
     [
+      "PackageGood",
+      "R"
+    ],
+    [
       "GoodOrder",
       "R"
     ],
@@ -1841,7 +1845,19 @@
       "R"
     ],
     [
+      "GoodOrder",
+      "R"
+    ],
+    [
       "PackageGood",
+      "R"
+    ],
+    [
+      "DecoratePackage",
+      "R"
+    ],
+    [
+      "GoodOrder",
       "R"
     ],
     [
@@ -1857,23 +1873,7 @@
       "R"
     ],
     [
-      "GoodOrder",
-      "R"
-    ],
-    [
-      "GoodOrder",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "PackageGood",
-      "R"
-    ],
-    [
-      "DecoratePackage",
+      "Good",
       "R"
     ],
     [
@@ -3788,6 +3788,22 @@
     ]
   ],
   "UserController.infoCounts": [
+    [
+      "T",
+      "R"
+    ],
+    [
+      "T",
+      "R"
+    ],
+    [
+      "T",
+      "R"
+    ],
+    [
+      "T",
+      "R"
+    ],
     [
       "GoodOrder",
       "R"

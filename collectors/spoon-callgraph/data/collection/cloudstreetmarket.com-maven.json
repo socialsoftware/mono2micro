@@ -37,19 +37,19 @@
       "R"
     ],
     [
-      "Index",
-      "R"
-    ],
-    [
-      "Index",
-      "R"
-    ],
-    [
       "Exchange",
       "R"
     ],
     [
       "Market",
+      "R"
+    ],
+    [
+      "Index",
+      "R"
+    ],
+    [
+      "Index",
       "R"
     ],
     [
@@ -209,15 +209,15 @@
       "R"
     ],
     [
-      "Index",
-      "R"
-    ],
-    [
       "Exchange",
       "R"
     ],
     [
       "Market",
+      "R"
+    ],
+    [
+      "Index",
       "R"
     ],
     [
@@ -271,15 +271,15 @@
       "R"
     ],
     [
+      "Index",
+      "R"
+    ],
+    [
       "Exchange",
       "R"
     ],
     [
       "Market",
-      "R"
-    ],
-    [
-      "Index",
       "R"
     ],
     [
@@ -481,19 +481,19 @@
       "R"
     ],
     [
+      "Index",
+      "R"
+    ],
+    [
+      "Index",
+      "R"
+    ],
+    [
       "Exchange",
       "R"
     ],
     [
       "Market",
-      "R"
-    ],
-    [
-      "Index",
-      "R"
-    ],
-    [
-      "Index",
       "R"
     ],
     [
@@ -649,19 +649,19 @@
       "R"
     ],
     [
-      "Index",
-      "R"
-    ],
-    [
-      "Index",
-      "R"
-    ],
-    [
       "Exchange",
       "R"
     ],
     [
       "Market",
+      "R"
+    ],
+    [
+      "Index",
+      "R"
+    ],
+    [
+      "Index",
       "R"
     ],
     [
@@ -4311,18 +4311,6 @@
       "R"
     ],
     [
-      "Transaction",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Transaction",
-      "R"
-    ],
-    [
       "StockQuote",
       "R"
     ],
@@ -4332,6 +4320,18 @@
     ],
     [
       "Transaction",
+      "R"
+    ],
+    [
+      "Transaction",
+      "R"
+    ],
+    [
+      "Transaction",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -4577,6 +4577,10 @@
       "R"
     ],
     [
+      "Transaction",
+      "R"
+    ],
+    [
       "StockQuote",
       "R"
     ],
@@ -4590,10 +4594,6 @@
     ],
     [
       "User",
-      "R"
-    ],
-    [
-      "Transaction",
       "R"
     ],
     [

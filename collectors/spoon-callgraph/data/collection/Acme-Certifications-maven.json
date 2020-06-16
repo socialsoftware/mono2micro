@@ -29,11 +29,11 @@
       "R"
     ],
     [
-      "Customer",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Customer",
       "R"
     ],
     [
@@ -83,70 +83,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Customer",
-      "R"
-    ],
-    [
-      "Customer",
-      "R"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Customer",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Customer",
-      "R"
-    ],
-    [
       "Customer",
       "R"
     ],
@@ -159,163 +95,43 @@
       "R"
     ],
     [
-      "Registration",
-      "W"
+      "Announcement",
+      "R"
     ],
     [
       "Announcement",
-      "W"
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
     ],
     [
       "Registration",
-      "W"
+      "R"
+    ],
+    [
+      "Announcement",
+      "R"
     ],
     [
       "Registration",
-      "W"
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
     ],
     [
       "Customer",
-      "W"
-    ],
-    [
-      "Customer",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Registration",
-      "W"
-    ],
-    [
-      "Customer",
-      "W"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Registration",
-      "W"
-    ],
-    [
-      "Announcement",
-      "W"
-    ],
-    [
-      "Customer",
-      "W"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Exam",
-      "R"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Exam",
-      "R"
-    ],
-    [
-      "Exam",
-      "R"
-    ],
-    [
-      "Certification",
-      "R"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Certification",
-      "R"
-    ],
-    [
-      "Certification",
-      "R"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Exam",
-      "R"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Exam",
-      "R"
-    ],
-    [
-      "Exam",
-      "R"
-    ],
-    [
-      "Certification",
-      "R"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Certification",
-      "R"
-    ],
-    [
-      "Certification",
-      "R"
-    ],
-    [
-      "Exam",
-      "R"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Exam",
-      "R"
-    ],
-    [
-      "Announcement",
-      "W"
-    ],
-    [
-      "Registration",
-      "W"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Announcement",
       "R"
     ],
     [
@@ -343,8 +159,24 @@
       "R"
     ],
     [
-      "DomainEntity",
-      "R"
+      "Registration",
+      "W"
+    ],
+    [
+      "Announcement",
+      "W"
+    ],
+    [
+      "Registration",
+      "W"
+    ],
+    [
+      "Registration",
+      "W"
+    ],
+    [
+      "Customer",
+      "W"
     ],
     [
       "Customer",
@@ -355,7 +187,163 @@
       "R"
     ],
     [
+      "Registration",
+      "W"
+    ],
+    [
       "Customer",
+      "W"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Registration",
+      "W"
+    ],
+    [
+      "Announcement",
+      "W"
+    ],
+    [
+      "Customer",
+      "W"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "Exam",
+      "R"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "Exam",
+      "R"
+    ],
+    [
+      "Exam",
+      "R"
+    ],
+    [
+      "Certification",
+      "R"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "Certification",
+      "R"
+    ],
+    [
+      "Certification",
+      "R"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "Exam",
+      "R"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "Exam",
+      "R"
+    ],
+    [
+      "Exam",
+      "R"
+    ],
+    [
+      "Certification",
+      "R"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "Certification",
+      "R"
+    ],
+    [
+      "Certification",
+      "R"
+    ],
+    [
+      "Exam",
+      "R"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "Exam",
+      "R"
+    ],
+    [
+      "Announcement",
+      "W"
+    ],
+    [
+      "Registration",
+      "W"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Customer",
+      "R"
+    ],
+    [
+      "Customer",
+      "R"
+    ],
+    [
+      "Customer",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "DomainEntity",
       "R"
     ],
     [
@@ -372,6 +360,18 @@
     ],
     [
       "Announcement",
+      "R"
+    ],
+    [
+      "Customer",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Customer",
       "R"
     ],
     [
@@ -419,14 +419,6 @@
       "R"
     ],
     [
-      "Registration",
-      "R"
-    ],
-    [
-      "Customer",
-      "R"
-    ],
-    [
       "Customer",
       "R"
     ],
@@ -440,6 +432,14 @@
     ],
     [
       "Announcement",
+      "R"
+    ],
+    [
+      "Customer",
+      "R"
+    ],
+    [
+      "Registration",
       "R"
     ]
   ],
@@ -457,218 +457,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Customer",
-      "R"
-    ],
-    [
-      "Customer",
-      "R"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Customer",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Customer",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Registration",
-      "W"
-    ],
-    [
-      "Customer",
-      "W"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Registration",
-      "W"
-    ],
-    [
-      "Announcement",
-      "W"
-    ],
-    [
-      "Customer",
-      "W"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Exam",
-      "R"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Exam",
-      "R"
-    ],
-    [
-      "Exam",
-      "R"
-    ],
-    [
-      "Certification",
-      "R"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Certification",
-      "R"
-    ],
-    [
-      "Certification",
-      "R"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Exam",
-      "R"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Exam",
-      "R"
-    ],
-    [
-      "Exam",
-      "R"
-    ],
-    [
-      "Certification",
-      "R"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Certification",
-      "R"
-    ],
-    [
-      "Certification",
-      "R"
-    ],
-    [
-      "Exam",
-      "R"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Exam",
-      "R"
-    ],
-    [
-      "Announcement",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Registration",
-      "W"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Customer",
-      "R"
-    ],
-    [
-      "Customer",
-      "R"
-    ],
-    [
       "Customer",
       "R"
     ],
@@ -677,23 +465,23 @@
       "R"
     ],
     [
+      "Customer",
+      "R"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
     [
-      "Customer",
+      "DomainEntity",
       "R"
     ],
     [
       "Registration",
-      "R"
-    ],
-    [
-      "Customer",
-      "R"
-    ],
-    [
-      "Customer",
       "R"
     ],
     [
@@ -707,6 +495,150 @@
     [
       "Announcement",
       "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "Customer",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Registration",
+      "W"
+    ],
+    [
+      "Customer",
+      "W"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Registration",
+      "W"
+    ],
+    [
+      "Announcement",
+      "W"
+    ],
+    [
+      "Customer",
+      "W"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "Exam",
+      "R"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "Exam",
+      "R"
+    ],
+    [
+      "Exam",
+      "R"
+    ],
+    [
+      "Certification",
+      "R"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "Certification",
+      "R"
+    ],
+    [
+      "Certification",
+      "R"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "Exam",
+      "R"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "Exam",
+      "R"
+    ],
+    [
+      "Exam",
+      "R"
+    ],
+    [
+      "Certification",
+      "R"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "Certification",
+      "R"
+    ],
+    [
+      "Certification",
+      "R"
+    ],
+    [
+      "Exam",
+      "R"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "Exam",
+      "R"
+    ],
+    [
+      "Announcement",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Registration",
+      "W"
     ],
     [
       "Announcement",
@@ -765,7 +697,75 @@
       "R"
     ],
     [
+      "Customer",
+      "R"
+    ],
+    [
+      "Customer",
+      "R"
+    ],
+    [
       "Registration",
+      "R"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Customer",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Customer",
+      "R"
+    ],
+    [
+      "Customer",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Customer",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Customer",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Announcement",
       "R"
     ],
     [
@@ -809,15 +809,15 @@
       "R"
     ],
     [
-      "Exam",
-      "R"
-    ],
-    [
-      "Exam",
-      "R"
-    ],
-    [
       "Certification",
+      "R"
+    ],
+    [
+      "Exam",
+      "R"
+    ],
+    [
+      "Exam",
       "R"
     ]
   ],
@@ -941,15 +941,15 @@
       "R"
     ],
     [
-      "Registration",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
       "Announcement",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Registration",
       "R"
     ],
     [

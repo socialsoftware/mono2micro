@@ -5,6 +5,14 @@
       "R"
     ],
     [
+      "Usuario",
+      "R"
+    ],
+    [
+      "Grupo",
+      "R"
+    ],
+    [
       "Grupo",
       "R"
     ]
@@ -25,7 +33,23 @@
       "R"
     ],
     [
+      "Usuario",
+      "R"
+    ],
+    [
       "UsuarioGrupo",
+      "R"
+    ],
+    [
+      "UsuarioGrupo",
+      "R"
+    ],
+    [
+      "Grupo",
+      "R"
+    ],
+    [
+      "Usuario",
       "R"
     ],
     [
@@ -41,7 +65,23 @@
       "R"
     ],
     [
+      "Usuario",
+      "R"
+    ],
+    [
       "UsuarioGrupo",
+      "R"
+    ],
+    [
+      "UsuarioGrupo",
+      "R"
+    ],
+    [
+      "Grupo",
+      "R"
+    ],
+    [
+      "Usuario",
       "R"
     ]
   ],
@@ -157,6 +197,22 @@
     [
       "Cidade",
       "R"
+    ],
+    [
+      "Estado",
+      "R"
+    ],
+    [
+      "Cidade",
+      "R"
+    ],
+    [
+      "Cidade",
+      "R"
+    ],
+    [
+      "Estado",
+      "R"
     ]
   ],
   "CidadesController.salvar": [
@@ -195,11 +251,37 @@
     [
       "Estilo",
       "R"
+    ],
+    [
+      "Estilo",
+      "R"
+    ],
+    [
+      "Estilo",
+      "R"
     ]
   ],
   "EstilosController.salvar": [
     [
       "Estilo",
+      "R"
+    ]
+  ],
+  "DashboardController.dashboard": [
+    [
+      "Venda",
+      "R"
+    ],
+    [
+      "Venda",
+      "R"
+    ],
+    [
+      "Venda",
+      "R"
+    ],
+    [
+      "Cerveja",
       "R"
     ]
   ],
@@ -302,6 +384,10 @@
     ]
   ],
   "VendasController.editar": [
+    [
+      "Venda",
+      "R"
+    ],
     [
       "Venda",
       "R"
@@ -817,6 +903,12 @@
       "R"
     ]
   ],
+  "VendasController.listarTotalVendaPorMes": [
+    [
+      "Venda",
+      "R"
+    ]
+  ],
   "VendasController.nova": [
     [
       "Venda",
@@ -853,7 +945,23 @@
       "R"
     ],
     [
+      "Cliente",
+      "R"
+    ],
+    [
       "Venda",
+      "R"
+    ],
+    [
+      "Venda",
+      "R"
+    ],
+    [
+      "Venda",
+      "R"
+    ],
+    [
+      "Cliente",
       "R"
     ]
   ],
@@ -1015,6 +1123,24 @@
       "W"
     ]
   ],
+  "VendasController.vendasPorNacionalidade": [
+    [
+      "Cerveja",
+      "R"
+    ],
+    [
+      "Venda",
+      "R"
+    ],
+    [
+      "Cerveja",
+      "R"
+    ],
+    [
+      "Venda",
+      "R"
+    ]
+  ],
   "CervejasController.excluir": [
     [
       "Cerveja",
@@ -1025,18 +1151,6 @@
     [
       "Cerveja",
       "R"
-    ],
-    [
-      "Estilo",
-      "R"
-    ],
-    [
-      "Cerveja",
-      "R"
-    ],
-    [
-      "Estilo",
-      "R"
     ]
   ],
   "ClientesController.novo": [
@@ -1046,6 +1160,22 @@
     ]
   ],
   "ClientesController.pesquisar": [
+    [
+      "Cliente",
+      "R"
+    ],
+    [
+      "Cliente",
+      "R"
+    ],
+    [
+      "Cidade",
+      "R"
+    ],
+    [
+      "Estado",
+      "R"
+    ],
     [
       "Cliente",
       "R"

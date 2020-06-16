@@ -1743,27 +1743,23 @@
       "R"
     ],
     [
-      "ServiceOrder",
+      "BaseO2OService",
       "R"
     ],
     [
-      "ServiceOrder",
+      "BaseO2OService",
       "R"
     ],
     [
-      "ServiceOrder",
+      "BaseO2OService",
       "R"
     ],
     [
-      "ServiceOrder",
+      "BaseO2OService",
       "R"
     ],
     [
-      "Coupon",
-      "R"
-    ],
-    [
-      "Coupon",
+      "BaseO2OService",
       "R"
     ],
     [
@@ -1771,51 +1767,15 @@
       "R"
     ],
     [
-      "ServiceOrder",
+      "BaseO2OService",
       "R"
     ],
     [
-      "ServiceOrder",
+      "BaseO2OService",
       "R"
     ],
     [
-      "OrderItem",
-      "R"
-    ],
-    [
-      "ServiceOrder",
-      "R"
-    ],
-    [
-      "OrderItem",
-      "R"
-    ],
-    [
-      "OrderItem",
-      "R"
-    ],
-    [
-      "OrderItem",
-      "R"
-    ],
-    [
-      "OnSaleRule",
-      "R"
-    ],
-    [
-      "OnSaleRule",
-      "R"
-    ],
-    [
-      "OrderItem",
-      "R"
-    ],
-    [
-      "OrderItem",
-      "R"
-    ],
-    [
-      "ServiceOrder",
+      "BaseO2OService",
       "R"
     ],
     [
@@ -1999,19 +1959,15 @@
       "R"
     ],
     [
-      "Coupon",
+      "BaseO2OService",
       "R"
     ],
     [
-      "ServiceOrder",
+      "BaseO2OService",
       "R"
     ],
     [
-      "Coupon",
-      "R"
-    ],
-    [
-      "ServiceOrder",
+      "BaseO2OService",
       "R"
     ],
     [
@@ -2069,14 +2025,6 @@
     [
       "User",
       "W"
-    ],
-    [
-      "ServiceOrder",
-      "R"
-    ],
-    [
-      "Coupon",
-      "R"
     ],
     [
       "Coupon",
@@ -2550,6 +2498,10 @@
     ],
     [
       "CouponCombination",
+      "R"
+    ],
+    [
+      "CouponSeed",
       "R"
     ],
     [
@@ -3420,26 +3372,6 @@
     ]
   ],
   "ThreadController.deleteThread": [
-    [
-      "Thread",
-      "R"
-    ],
-    [
-      "Thread",
-      "R"
-    ],
-    [
-      "Thread",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Thread",
-      "W"
-    ],
     [
       "Thread",
       "W"
@@ -5415,6 +5347,62 @@
       "R"
     ],
     [
+      "ServiceOrder",
+      "R"
+    ],
+    [
+      "ServiceOrder",
+      "R"
+    ],
+    [
+      "OrderItem",
+      "R"
+    ],
+    [
+      "ServiceOrder",
+      "R"
+    ],
+    [
+      "OrderItem",
+      "R"
+    ],
+    [
+      "OrderItem",
+      "R"
+    ],
+    [
+      "OrderItem",
+      "R"
+    ],
+    [
+      "OnSaleRule",
+      "R"
+    ],
+    [
+      "OnSaleRule",
+      "R"
+    ],
+    [
+      "OrderItem",
+      "R"
+    ],
+    [
+      "OrderItem",
+      "R"
+    ],
+    [
+      "ServiceOrder",
+      "R"
+    ],
+    [
+      "Coupon",
+      "R"
+    ],
+    [
+      "Coupon",
+      "R"
+    ],
+    [
       "Coupon",
       "R"
     ],
@@ -6501,36 +6489,20 @@
       "W"
     ],
     [
-      "ServiceOrder",
-      "W"
-    ],
-    [
-      "ServiceOrder",
-      "W"
-    ],
-    [
-      "ServiceOrder",
-      "W"
-    ],
-    [
-      "ServiceOrder",
-      "W"
-    ],
-    [
       "OrderItem",
-      "W"
-    ],
-    [
-      "OrderItem",
-      "W"
-    ],
-    [
-      "ServiceOrder",
       "R"
     ],
     [
       "OrderItem",
       "R"
+    ],
+    [
+      "ServiceOrder",
+      "W"
+    ],
+    [
+      "ServiceOrder",
+      "W"
     ],
     [
       "ServiceOrder",
@@ -7138,6 +7110,62 @@
     ],
     [
       "Coupon",
+      "R"
+    ],
+    [
+      "Coupon",
+      "R"
+    ],
+    [
+      "Coupon",
+      "R"
+    ],
+    [
+      "ServiceOrder",
+      "R"
+    ],
+    [
+      "ServiceOrder",
+      "R"
+    ],
+    [
+      "OrderItem",
+      "R"
+    ],
+    [
+      "ServiceOrder",
+      "R"
+    ],
+    [
+      "OrderItem",
+      "R"
+    ],
+    [
+      "OrderItem",
+      "R"
+    ],
+    [
+      "OrderItem",
+      "R"
+    ],
+    [
+      "OnSaleRule",
+      "R"
+    ],
+    [
+      "OnSaleRule",
+      "R"
+    ],
+    [
+      "OrderItem",
+      "R"
+    ],
+    [
+      "OrderItem",
+      "R"
+    ],
+    [
+      "ServiceOrder",
       "R"
     ],
     [
@@ -8433,11 +8461,11 @@
       "R"
     ],
     [
-      "ServiceOrder",
+      "OrderItem",
       "R"
     ],
     [
-      "OrderItem",
+      "ServiceOrder",
       "R"
     ],
     [
@@ -11547,6 +11575,10 @@
       "R"
     ],
     [
+      "CouponSeed",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
@@ -11925,7 +11957,7 @@
       "R"
     ],
     [
-      "Coupon",
+      "ServiceOrder",
       "R"
     ],
     [
@@ -11945,6 +11977,34 @@
       "R"
     ],
     [
+      "Coupon",
+      "R"
+    ],
+    [
+      "Coupon",
+      "R"
+    ],
+    [
+      "Coupon",
+      "R"
+    ],
+    [
+      "ServiceOrder",
+      "R"
+    ],
+    [
+      "ServiceOrder",
+      "R"
+    ],
+    [
+      "OrderItem",
+      "R"
+    ],
+    [
+      "ServiceOrder",
+      "R"
+    ],
+    [
       "OrderItem",
       "R"
     ],
@@ -11957,15 +12017,11 @@
       "R"
     ],
     [
-      "OrderItem",
+      "OnSaleRule",
       "R"
     ],
     [
-      "Collocation",
-      "R"
-    ],
-    [
-      "Collocation",
+      "OnSaleRule",
       "R"
     ],
     [
@@ -11977,15 +12033,7 @@
       "R"
     ],
     [
-      "Collocation",
-      "R"
-    ],
-    [
-      "OrderItem",
-      "R"
-    ],
-    [
-      "OrderItem",
+      "ServiceOrder",
       "R"
     ],
     [
@@ -12237,47 +12285,23 @@
       "R"
     ],
     [
-      "OrderItem",
+      "HomeBillItem",
       "R"
     ],
     [
-      "OrderItem",
+      "HomeBillItem",
       "R"
     ],
     [
-      "OrderItem",
+      "HomeBillItem",
       "R"
     ],
     [
-      "OrderItem",
+      "HomeBillItem",
       "R"
     ],
     [
-      "Collocation",
-      "R"
-    ],
-    [
-      "Collocation",
-      "R"
-    ],
-    [
-      "OrderItem",
-      "R"
-    ],
-    [
-      "OrderItem",
-      "R"
-    ],
-    [
-      "Collocation",
-      "R"
-    ],
-    [
-      "OrderItem",
-      "R"
-    ],
-    [
-      "OrderItem",
+      "HomeBillItem",
       "R"
     ],
     [
@@ -16905,6 +16929,26 @@
       "R"
     ],
     [
+      "HomeBillItem",
+      "R"
+    ],
+    [
+      "HomeBillItem",
+      "R"
+    ],
+    [
+      "HomeBillItem",
+      "R"
+    ],
+    [
+      "HomeBillItem",
+      "R"
+    ],
+    [
+      "HomeBillItem",
+      "R"
+    ],
+    [
       "Coupon",
       "R"
     ],
@@ -18453,7 +18497,7 @@
       "R"
     ],
     [
-      "ServiceOrder",
+      "BaseO2OService",
       "R"
     ],
     [
@@ -18465,7 +18509,7 @@
       "W"
     ],
     [
-      "ServiceOrder",
+      "BaseO2OService",
       "R"
     ],
     [
@@ -18473,7 +18517,7 @@
       "W"
     ],
     [
-      "ServiceOrder",
+      "BaseO2OService",
       "R"
     ],
     [
@@ -18481,47 +18525,7 @@
       "W"
     ],
     [
-      "ServiceOrder",
-      "R"
-    ],
-    [
-      "PaymentOrder",
-      "W"
-    ],
-    [
-      "ServiceOrder",
-      "R"
-    ],
-    [
-      "PaymentOrder",
-      "W"
-    ],
-    [
-      "ServiceOrder",
-      "R"
-    ],
-    [
-      "PaymentOrder",
-      "W"
-    ],
-    [
-      "ServiceOrder",
-      "R"
-    ],
-    [
-      "ServiceOrder",
-      "W"
-    ],
-    [
-      "ServiceOrder",
-      "R"
-    ],
-    [
-      "ServiceOrder",
-      "W"
-    ],
-    [
-      "ServiceOrder",
+      "BaseO2OService",
       "R"
     ],
     [
@@ -18537,8 +18541,20 @@
       "W"
     ],
     [
-      "ServiceOrder",
+      "BaseO2OService",
       "R"
+    ],
+    [
+      "PaymentOrder",
+      "W"
+    ],
+    [
+      "PaymentOrder",
+      "W"
+    ],
+    [
+      "PaymentOrder",
+      "W"
     ],
     [
       "PaymentOrder",
@@ -19015,11 +19031,11 @@
       "R"
     ],
     [
-      "Collocation",
+      "CollocationItem",
       "R"
     ],
     [
-      "CollocationItem",
+      "Collocation",
       "R"
     ],
     [
@@ -21535,7 +21551,7 @@
       "R"
     ],
     [
-      "ServiceOrder",
+      "BaseO2OService",
       "R"
     ],
     [
@@ -21547,7 +21563,7 @@
       "W"
     ],
     [
-      "ServiceOrder",
+      "BaseO2OService",
       "R"
     ],
     [
@@ -21555,7 +21571,7 @@
       "W"
     ],
     [
-      "ServiceOrder",
+      "BaseO2OService",
       "R"
     ],
     [
@@ -21563,47 +21579,7 @@
       "W"
     ],
     [
-      "ServiceOrder",
-      "R"
-    ],
-    [
-      "PaymentOrder",
-      "W"
-    ],
-    [
-      "ServiceOrder",
-      "R"
-    ],
-    [
-      "PaymentOrder",
-      "W"
-    ],
-    [
-      "ServiceOrder",
-      "R"
-    ],
-    [
-      "PaymentOrder",
-      "W"
-    ],
-    [
-      "ServiceOrder",
-      "R"
-    ],
-    [
-      "ServiceOrder",
-      "W"
-    ],
-    [
-      "ServiceOrder",
-      "R"
-    ],
-    [
-      "ServiceOrder",
-      "W"
-    ],
-    [
-      "ServiceOrder",
+      "BaseO2OService",
       "R"
     ],
     [
@@ -21619,8 +21595,20 @@
       "W"
     ],
     [
-      "ServiceOrder",
+      "BaseO2OService",
       "R"
+    ],
+    [
+      "PaymentOrder",
+      "W"
+    ],
+    [
+      "PaymentOrder",
+      "W"
+    ],
+    [
+      "PaymentOrder",
+      "W"
     ],
     [
       "PaymentOrder",
@@ -22880,10 +22868,6 @@
     ],
     [
       "Thread",
-      "R"
-    ],
-    [
-      "Thread",
       "W"
     ],
     [
@@ -22917,6 +22901,18 @@
       "R"
     ],
     [
+      "ThreadComment",
+      "R"
+    ],
+    [
+      "Thread",
+      "R"
+    ],
+    [
+      "ThreadComment",
+      "R"
+    ],
+    [
       "Thread",
       "R"
     ],
@@ -22930,18 +22926,6 @@
     ],
     [
       "ThreadComment",
-      "R"
-    ],
-    [
-      "ThreadComment",
-      "R"
-    ],
-    [
-      "ThreadComment",
-      "R"
-    ],
-    [
-      "Thread",
       "R"
     ],
     [
@@ -25905,11 +25889,11 @@
       "R"
     ],
     [
-      "OrderItem",
+      "ServiceOrder",
       "R"
     ],
     [
-      "ServiceOrder",
+      "OrderItem",
       "R"
     ],
     [
@@ -28789,11 +28773,11 @@
       "R"
     ],
     [
-      "OrderItem",
+      "ServiceOrder",
       "R"
     ],
     [
-      "ServiceOrder",
+      "OrderItem",
       "R"
     ],
     [

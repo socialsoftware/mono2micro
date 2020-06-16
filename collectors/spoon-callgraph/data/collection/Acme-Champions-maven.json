@@ -81,11 +81,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Sponsor",
       "R"
     ],
     [
-      "Sponsor",
+      "UserAccount",
       "R"
     ],
     [
@@ -199,11 +199,11 @@
       "R"
     ],
     [
-      "Sponsor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Sponsor",
       "R"
     ],
     [
@@ -227,19 +227,23 @@
       "R"
     ],
     [
-      "Sponsorship",
-      "R"
-    ],
-    [
       "Sponsor",
       "R"
     ],
     [
+      "Sponsorship",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Sponsor",
       "R"
     ],
     [
@@ -248,10 +252,6 @@
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Sponsor",
       "R"
     ],
     [
@@ -361,11 +361,11 @@
       "R"
     ],
     [
-      "Sponsor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Sponsor",
       "R"
     ],
     [
@@ -378,10 +378,6 @@
     ],
     [
       "Sponsorship",
-      "R"
-    ],
-    [
-      "Sponsor",
       "R"
     ],
     [
@@ -401,11 +397,23 @@
       "R"
     ],
     [
+      "Sponsor",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
       "R"
     ],
     [
@@ -414,14 +422,6 @@
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
       "R"
     ],
     [
@@ -535,15 +535,15 @@
       "R"
     ],
     [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
       "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Sponsorship",
       "R"
     ],
     [
@@ -597,11 +597,11 @@
       "R"
     ],
     [
-      "Sponsorship",
+      "Sponsor",
       "R"
     ],
     [
-      "Sponsor",
+      "Sponsorship",
       "R"
     ],
     [
@@ -641,11 +641,11 @@
       "R"
     ],
     [
-      "Sponsor",
+      "Sponsorship",
       "R"
     ],
     [
-      "Sponsorship",
+      "Sponsor",
       "R"
     ],
     [
@@ -807,298 +807,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "CreditCard",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "W"
-    ],
-    [
-      "CreditCard",
-      "W"
-    ],
-    [
-      "Sponsorship",
-      "W"
-    ],
-    [
-      "Sponsor",
-      "W"
-    ],
-    [
-      "Sponsorship",
-      "W"
-    ],
-    [
-      "Game",
-      "W"
-    ],
-    [
-      "Sponsorship",
-      "W"
-    ],
-    [
-      "Player",
-      "W"
-    ],
-    [
-      "Sponsorship",
-      "W"
-    ],
-    [
-      "Team",
-      "W"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "CreditCard",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "W"
-    ],
-    [
-      "CreditCard",
-      "W"
-    ],
-    [
-      "Sponsorship",
-      "W"
-    ],
-    [
-      "Sponsor",
-      "W"
-    ],
-    [
-      "Sponsorship",
-      "W"
-    ],
-    [
-      "Game",
-      "W"
-    ],
-    [
-      "Sponsorship",
-      "W"
-    ],
-    [
-      "Player",
-      "W"
-    ],
-    [
-      "Sponsorship",
-      "W"
-    ],
-    [
-      "Team",
-      "W"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
       "Sponsor",
       "R"
     ],
@@ -1131,6 +839,298 @@
       "R"
     ],
     [
+      "Team",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "CreditCard",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "W"
+    ],
+    [
+      "CreditCard",
+      "W"
+    ],
+    [
+      "Sponsorship",
+      "W"
+    ],
+    [
+      "Sponsor",
+      "W"
+    ],
+    [
+      "Sponsorship",
+      "W"
+    ],
+    [
+      "Game",
+      "W"
+    ],
+    [
+      "Sponsorship",
+      "W"
+    ],
+    [
+      "Player",
+      "W"
+    ],
+    [
+      "Sponsorship",
+      "W"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "CreditCard",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "W"
+    ],
+    [
+      "CreditCard",
+      "W"
+    ],
+    [
+      "Sponsorship",
+      "W"
+    ],
+    [
+      "Sponsor",
+      "W"
+    ],
+    [
+      "Sponsorship",
+      "W"
+    ],
+    [
+      "Game",
+      "W"
+    ],
+    [
+      "Sponsorship",
+      "W"
+    ],
+    [
+      "Player",
+      "W"
+    ],
+    [
+      "Sponsorship",
+      "W"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
       "Game",
       "R"
     ],
@@ -1239,11 +1239,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Sponsor",
       "R"
     ],
     [
-      "Sponsor",
+      "UserAccount",
       "R"
     ],
     [
@@ -1256,10 +1256,6 @@
     ],
     [
       "Sponsorship",
-      "R"
-    ],
-    [
-      "Sponsor",
       "R"
     ],
     [
@@ -1275,6 +1271,10 @@
       "R"
     ],
     [
+      "Sponsor",
+      "R"
+    ],
+    [
       "Sponsorship",
       "R"
     ],
@@ -1327,10 +1327,6 @@
       "R"
     ],
     [
-      "Sponsorship",
-      "R"
-    ],
-    [
       "Player",
       "R"
     ],
@@ -1340,6 +1336,10 @@
     ],
     [
       "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsorship",
       "R"
     ],
     [
@@ -1403,19 +1403,19 @@
       "R"
     ],
     [
-      "Team",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
       "Sponsor",
       "R"
     ],
     [
       "Sponsorship",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Team",
       "R"
     ],
     [
@@ -1581,15 +1581,15 @@
       "R"
     ],
     [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
       "R"
     ],
     [
@@ -1627,11 +1627,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -1683,11 +1683,11 @@
       "R"
     ],
     [
-      "Player",
+      "StatisticalData",
       "R"
     ],
     [
-      "StatisticalData",
+      "Player",
       "R"
     ]
   ],
@@ -1995,11 +1995,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -2337,11 +2337,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -2731,11 +2731,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -3879,11 +3879,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -4125,11 +4125,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -4499,15 +4499,15 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -4983,11 +4983,11 @@
       "R"
     ],
     [
-      "Administrator",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Administrator",
       "R"
     ],
     [
@@ -5057,14 +5057,14 @@
       "R"
     ],
     [
+      "Manager",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
-      "Manager",
-      "R"
-    ],
-    [
       "Configuration",
       "R"
     ],
@@ -5121,11 +5121,11 @@
       "R"
     ],
     [
-      "Team",
+      "Game",
       "R"
     ],
     [
-      "Game",
+      "Team",
       "R"
     ],
     [
@@ -5305,15 +5305,15 @@
       "R"
     ],
     [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
       "R"
     ],
     [
@@ -5401,11 +5401,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -5593,11 +5593,11 @@
       "R"
     ],
     [
-      "Team",
+      "Player",
       "R"
     ],
     [
-      "Player",
+      "Team",
       "R"
     ],
     [
@@ -5643,11 +5643,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -5683,15 +5683,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -5805,55 +5805,11 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
       "Manager",
       "R"
     ],
     [
       "Manager",
-      "R"
-    ],
-    [
-      "Training",
-      "R"
-    ],
-    [
-      "Training",
-      "R"
-    ],
-    [
-      "Training",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -5861,7 +5817,51 @@
       "R"
     ],
     [
+      "Training",
+      "R"
+    ],
+    [
+      "Training",
+      "R"
+    ],
+    [
+      "Training",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
       "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
       "R"
     ],
     [
@@ -5995,11 +5995,11 @@
       "R"
     ],
     [
-      "Manager",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Manager",
       "R"
     ],
     [
@@ -6163,14 +6163,14 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
       "Manager",
       "R"
     ],
     [
+      "UserAccount",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
@@ -6196,6 +6196,10 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -6204,10 +6208,6 @@
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -6259,15 +6259,15 @@
       "R"
     ],
     [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
       "R"
     ],
     [
@@ -6343,15 +6343,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -6437,15 +6437,15 @@
       "R"
     ],
     [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
       "R"
     ],
     [
@@ -6457,15 +6457,15 @@
       "R"
     ],
     [
+      "History",
+      "R"
+    ],
+    [
+      "History",
+      "R"
+    ],
+    [
       "Player",
-      "R"
-    ],
-    [
-      "History",
-      "R"
-    ],
-    [
-      "History",
       "R"
     ],
     [
@@ -6511,15 +6511,15 @@
       "R"
     ],
     [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
       "R"
     ],
     [
@@ -6539,11 +6539,11 @@
       "R"
     ],
     [
-      "History",
+      "Player",
       "R"
     ],
     [
-      "Player",
+      "History",
       "R"
     ],
     [
@@ -6575,11 +6575,11 @@
       "R"
     ],
     [
-      "Player",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Player",
       "R"
     ],
     [
@@ -6737,11 +6737,11 @@
       "R"
     ],
     [
-      "History",
+      "Player",
       "R"
     ],
     [
-      "Player",
+      "History",
       "R"
     ],
     [
@@ -6803,11 +6803,11 @@
       "R"
     ],
     [
-      "Player",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Player",
       "R"
     ],
     [
@@ -6827,15 +6827,15 @@
       "R"
     ],
     [
-      "History",
-      "R"
-    ],
-    [
-      "History",
-      "R"
-    ],
-    [
       "Player",
+      "R"
+    ],
+    [
+      "History",
+      "R"
+    ],
+    [
+      "History",
       "R"
     ],
     [
@@ -6879,51 +6879,51 @@
       "R"
     ],
     [
-      "Player",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "History",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "History",
-      "R"
-    ],
-    [
-      "History",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
     [
       "Player",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "History",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "History",
+      "R"
+    ],
+    [
+      "History",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "UserAccount",
       "R"
     ],
     [
@@ -7003,11 +7003,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Player",
       "R"
     ],
     [
-      "Player",
+      "UserAccount",
       "R"
     ],
     [
@@ -7089,6 +7089,42 @@
       "R"
     ],
     [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "Actor",
       "R"
     ],
@@ -7098,42 +7134,6 @@
     ],
     [
       "Actor",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
       "R"
     ],
     [
@@ -7163,15 +7163,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -7215,102 +7215,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "Actor",
       "R"
     ],
@@ -7327,7 +7231,99 @@
       "R"
     ],
     [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
       "Box",
+      "R"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "DomainEntity",
       "R"
     ],
     [
@@ -7340,6 +7336,10 @@
     ],
     [
       "Actor",
+      "R"
+    ],
+    [
+      "Box",
       "R"
     ],
     [
@@ -7523,6 +7523,10 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
@@ -7531,10 +7535,6 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
@@ -7563,11 +7563,11 @@
       "R"
     ],
     [
-      "Message",
+      "Box",
       "R"
     ],
     [
-      "Box",
+      "Message",
       "R"
     ]
   ],
@@ -7637,15 +7637,15 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -7669,14 +7669,6 @@
       "R"
     ],
     [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
       "Actor",
       "R"
     ],
@@ -7689,15 +7681,23 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -7769,11 +7769,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -7818,38 +7818,6 @@
     ],
     [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
       "R"
     ],
     [
@@ -7889,6 +7857,38 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
       "Configuration",
       "R"
     ],
@@ -7945,15 +7945,15 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -8031,11 +8031,11 @@
       "R"
     ],
     [
-      "Player",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Player",
       "R"
     ],
     [
@@ -8047,15 +8047,15 @@
       "R"
     ],
     [
-      "History",
-      "R"
-    ],
-    [
-      "History",
-      "R"
-    ],
-    [
       "Player",
+      "R"
+    ],
+    [
+      "History",
+      "R"
+    ],
+    [
+      "History",
       "R"
     ],
     [
@@ -8101,15 +8101,15 @@
       "R"
     ],
     [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
       "R"
     ],
     [
@@ -8165,11 +8165,11 @@
       "R"
     ],
     [
-      "Player",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Player",
       "R"
     ],
     [
@@ -8185,11 +8185,11 @@
       "R"
     ],
     [
-      "History",
+      "Player",
       "R"
     ],
     [
-      "Player",
+      "History",
       "R"
     ],
     [
@@ -8229,11 +8229,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -8327,11 +8327,11 @@
       "R"
     ],
     [
-      "History",
+      "Player",
       "R"
     ],
     [
-      "Player",
+      "History",
       "R"
     ],
     [
@@ -8485,6 +8485,10 @@
       "R"
     ],
     [
+      "History",
+      "R"
+    ],
+    [
       "Player",
       "R"
     ],
@@ -8493,15 +8497,15 @@
       "R"
     ],
     [
-      "History",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Player",
       "R"
     ],
     [
@@ -8514,10 +8518,6 @@
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Player",
       "R"
     ],
     [
@@ -8589,15 +8589,15 @@
       "R"
     ],
     [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
       "R"
     ],
     [
@@ -8687,15 +8687,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -8845,11 +8845,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -8953,11 +8953,807 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Competition",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Competition",
+      "W"
+    ],
+    [
+      "Competition",
+      "R"
+    ],
+    [
+      "Competition",
+      "R"
+    ],
+    [
+      "Referee",
+      "R"
+    ],
+    [
+      "Competition",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Competition",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Competition",
+      "R"
+    ],
+    [
+      "Format",
+      "R"
+    ],
+    [
+      "Format",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Game",
+      "W"
+    ],
+    [
+      "Game",
+      "W"
+    ],
+    [
+      "Game",
+      "W"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Game",
+      "W"
+    ],
+    [
+      "Game",
+      "W"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "Game",
+      "W"
+    ],
+    [
+      "Referee",
+      "W"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
       "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Referee",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Game",
+      "W"
+    ],
+    [
+      "Competition",
+      "W"
+    ],
+    [
+      "Game",
+      "W"
+    ],
+    [
+      "Competition",
+      "W"
+    ],
+    [
+      "Competition",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Competition",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Game",
+      "W"
+    ],
+    [
+      "Game",
+      "W"
+    ],
+    [
+      "Game",
+      "W"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Game",
+      "W"
+    ],
+    [
+      "Game",
+      "W"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "Game",
+      "W"
+    ],
+    [
+      "Referee",
+      "W"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Referee",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Game",
+      "W"
+    ],
+    [
+      "Competition",
+      "W"
+    ],
+    [
+      "Game",
+      "W"
+    ],
+    [
+      "Competition",
+      "W"
+    ],
+    [
+      "Competition",
+      "W"
+    ],
+    [
+      "Competition",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Competition",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Competition",
+      "R"
+    ],
+    [
+      "Format",
+      "R"
+    ],
+    [
+      "Format",
+      "R"
+    ],
+    [
+      "Competition",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Competition",
+      "R"
+    ],
+    [
+      "Format",
+      "R"
+    ],
+    [
+      "Format",
+      "R"
+    ],
+    [
+      "Competition",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
       "R"
     ],
     [
@@ -9121,630 +9917,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Referee",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Game",
-      "W"
-    ],
-    [
-      "Competition",
-      "W"
-    ],
-    [
-      "Game",
-      "W"
-    ],
-    [
-      "Competition",
-      "W"
-    ],
-    [
-      "Competition",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Competition",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Game",
-      "W"
-    ],
-    [
-      "Game",
-      "W"
-    ],
-    [
-      "Game",
-      "W"
-    ],
-    [
-      "Team",
-      "W"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Game",
-      "W"
-    ],
-    [
-      "Game",
-      "W"
-    ],
-    [
-      "Team",
-      "W"
-    ],
-    [
-      "Game",
-      "W"
-    ],
-    [
-      "Referee",
-      "W"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Referee",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Game",
-      "W"
-    ],
-    [
-      "Competition",
-      "W"
-    ],
-    [
-      "Game",
-      "W"
-    ],
-    [
-      "Competition",
-      "W"
-    ],
-    [
-      "Competition",
-      "W"
-    ],
-    [
-      "Competition",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Competition",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Competition",
-      "R"
-    ],
-    [
-      "Format",
-      "R"
-    ],
-    [
-      "Format",
-      "R"
-    ],
-    [
-      "Competition",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Competition",
-      "R"
-    ],
-    [
-      "Format",
-      "R"
-    ],
-    [
-      "Format",
-      "R"
-    ],
-    [
-      "Competition",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
       "Actor",
       "R"
     ],
@@ -9754,178 +9926,6 @@
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Competition",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Competition",
-      "W"
-    ],
-    [
-      "Competition",
-      "R"
-    ],
-    [
-      "Competition",
-      "R"
-    ],
-    [
-      "Referee",
-      "R"
-    ],
-    [
-      "Competition",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Competition",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Competition",
-      "R"
-    ],
-    [
-      "Format",
-      "R"
-    ],
-    [
-      "Format",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Game",
-      "W"
-    ],
-    [
-      "Game",
-      "W"
-    ],
-    [
-      "Game",
-      "W"
-    ],
-    [
-      "Team",
-      "W"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Game",
-      "W"
-    ],
-    [
-      "Game",
-      "W"
-    ],
-    [
-      "Team",
-      "W"
-    ],
-    [
-      "Game",
-      "W"
-    ],
-    [
-      "Referee",
-      "W"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -10245,15 +10245,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -10497,11 +10497,11 @@
       "R"
     ],
     [
-      "Federation",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Federation",
       "R"
     ],
     [
@@ -10561,15 +10561,15 @@
       "R"
     ],
     [
-      "Competition",
-      "R"
-    ],
-    [
-      "Competition",
-      "R"
-    ],
-    [
       "Federation",
+      "R"
+    ],
+    [
+      "Competition",
+      "R"
+    ],
+    [
+      "Competition",
       "R"
     ]
   ],
@@ -10737,11 +10737,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -10773,11 +10773,11 @@
       "R"
     ],
     [
-      "Federation",
+      "Competition",
       "R"
     ],
     [
-      "Competition",
+      "Federation",
       "R"
     ],
     [
@@ -10957,15 +10957,15 @@
       "R"
     ],
     [
+      "Federation",
+      "R"
+    ],
+    [
+      "Federation",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Federation",
-      "R"
-    ],
-    [
-      "Federation",
       "R"
     ],
     [
@@ -11137,6 +11137,10 @@
       "R"
     ],
     [
+      "Format",
+      "R"
+    ],
+    [
       "Federation",
       "R"
     ],
@@ -11145,10 +11149,6 @@
       "R"
     ],
     [
-      "Format",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
@@ -11170,6 +11170,14 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -11178,14 +11186,6 @@
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -11345,15 +11345,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -11673,15 +11673,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -11953,11 +11953,11 @@
       "R"
     ],
     [
-      "Format",
+      "Federation",
       "R"
     ],
     [
-      "Federation",
+      "Format",
       "R"
     ],
     [
@@ -12031,11 +12031,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -12231,11 +12231,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -12689,11 +12689,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -13223,14 +13223,14 @@
       "R"
     ],
     [
-      "Team",
-      "R"
-    ],
-    [
       "President",
       "R"
     ],
     [
+      "Team",
+      "R"
+    ],
+    [
       "Manager",
       "W"
     ],
@@ -13568,26 +13568,6 @@
     ],
     [
       "Hiring",
-      "R"
-    ],
-    [
-      "President",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
       "R"
     ],
     [
@@ -13599,11 +13579,23 @@
       "R"
     ],
     [
-      "Manager",
+      "Team",
       "R"
     ],
     [
-      "Manager",
+      "Team",
+      "R"
+    ],
+    [
+      "President",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "DomainEntity",
       "R"
     ],
     [
@@ -13612,6 +13604,14 @@
     ],
     [
       "Team",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
       "R"
     ],
     [
@@ -13727,11 +13727,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -13805,6 +13805,10 @@
       "R"
     ],
     [
+      "Manager",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
@@ -13813,11 +13817,19 @@
       "R"
     ],
     [
-      "Manager",
+      "DomainEntity",
       "R"
     ],
     [
-      "DomainEntity",
+      "Hiring",
+      "R"
+    ],
+    [
+      "Hiring",
+      "R"
+    ],
+    [
+      "Manager",
       "R"
     ],
     [
@@ -13838,18 +13850,6 @@
     ],
     [
       "Team",
-      "R"
-    ],
-    [
-      "Hiring",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Hiring",
       "R"
     ],
     [
@@ -13997,14 +13997,14 @@
       "R"
     ],
     [
+      "President",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
-      "President",
-      "R"
-    ],
-    [
       "Configuration",
       "R"
     ],
@@ -14046,18 +14046,6 @@
     ],
     [
       "Hiring",
-      "R"
-    ],
-    [
-      "Hiring",
-      "R"
-    ],
-    [
-      "Hiring",
-      "R"
-    ],
-    [
-      "Manager",
       "R"
     ],
     [
@@ -14073,6 +14061,18 @@
       "R"
     ],
     [
+      "Hiring",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Hiring",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
@@ -14093,11 +14093,11 @@
       "R"
     ],
     [
-      "Manager",
+      "Training",
       "R"
     ],
     [
-      "Training",
+      "Manager",
       "R"
     ],
     [
@@ -14541,11 +14541,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -14601,11 +14601,11 @@
       "R"
     ],
     [
-      "Team",
+      "Player",
       "R"
     ],
     [
-      "Player",
+      "Team",
       "R"
     ],
     [
@@ -14617,15 +14617,15 @@
       "R"
     ],
     [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
       "Team",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
       "R"
     ],
     [
@@ -14691,31 +14691,11 @@
       "R"
     ],
     [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
       "President",
       "R"
     ],
     [
-      "Player",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
+      "Team",
       "R"
     ],
     [
@@ -14731,11 +14711,27 @@
       "R"
     ],
     [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
     [
-      "Signing",
+      "DomainEntity",
       "R"
     ],
     [
@@ -14755,11 +14751,15 @@
       "R"
     ],
     [
-      "President",
+      "Signing",
       "R"
     ],
     [
       "Signing",
+      "R"
+    ],
+    [
+      "President",
       "R"
     ],
     [
@@ -15229,6 +15229,10 @@
       "R"
     ],
     [
+      "President",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
@@ -15237,15 +15241,7 @@
       "R"
     ],
     [
-      "President",
-      "R"
-    ],
-    [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Team",
       "R"
     ],
     [
@@ -15261,15 +15257,11 @@
       "R"
     ],
     [
+      "Team",
+      "R"
+    ],
+    [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Report",
-      "R"
-    ],
-    [
-      "Player",
       "R"
     ],
     [
@@ -15289,11 +15281,19 @@
       "R"
     ],
     [
+      "Report",
+      "R"
+    ],
+    [
       "Player",
       "R"
     ],
     [
       "Report",
+      "R"
+    ],
+    [
+      "Player",
       "R"
     ],
     [
@@ -15371,11 +15371,11 @@
       "R"
     ],
     [
-      "Team",
+      "President",
       "R"
     ],
     [
-      "President",
+      "Team",
       "R"
     ],
     [
@@ -15481,15 +15481,11 @@
       "R"
     ],
     [
-      "Team",
-      "R"
-    ],
-    [
       "President",
       "R"
     ],
     [
-      "Report",
+      "Team",
       "R"
     ],
     [
@@ -15498,6 +15494,10 @@
     ],
     [
       "Player",
+      "R"
+    ],
+    [
+      "Report",
       "R"
     ],
     [
@@ -16105,15 +16105,15 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -16215,11 +16215,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -16279,11 +16279,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -16371,11 +16371,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -16449,15 +16449,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -16563,11 +16563,59 @@
       "R"
     ],
     [
+      "Game",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
       "Referee",
       "R"
     ],
     [
       "Game",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Referee",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Minutes",
       "R"
     ],
     [
@@ -16583,6 +16631,46 @@
       "R"
     ],
     [
+      "Game",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
       "Minutes",
       "R"
     ],
@@ -16603,95 +16691,7 @@
       "R"
     ],
     [
-      "Game",
-      "R"
-    ],
-    [
       "Minutes",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Referee",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Game",
       "R"
     ],
     [
@@ -16749,15 +16749,15 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -16801,11 +16801,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Referee",
       "R"
     ],
     [
-      "Referee",
+      "UserAccount",
       "R"
     ],
     [
@@ -16957,11 +16957,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -17215,11 +17215,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -17289,14 +17289,14 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
@@ -17313,15 +17313,15 @@
       "R"
     ],
     [
-      "Competition",
-      "R"
-    ],
-    [
-      "Competition",
-      "R"
-    ],
-    [
       "Format",
+      "R"
+    ],
+    [
+      "Competition",
+      "R"
+    ],
+    [
+      "Competition",
       "R"
     ],
     [
@@ -17503,11 +17503,11 @@
       "R"
     ],
     [
-      "Competition",
+      "Format",
       "R"
     ],
     [
-      "Format",
+      "Competition",
       "R"
     ]
   ],
@@ -17529,11 +17529,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -17619,11 +17619,11 @@
       "R"
     ],
     [
-      "Federation",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Federation",
       "R"
     ],
     [
@@ -17643,11 +17643,11 @@
       "R"
     ],
     [
-      "Federation",
+      "Format",
       "R"
     ],
     [
-      "Format",
+      "Federation",
       "R"
     ],
     [
@@ -17725,14 +17725,14 @@
       "R"
     ],
     [
+      "Federation",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
-      "Federation",
-      "R"
-    ],
-    [
       "Format",
       "R"
     ],
@@ -17837,11 +17837,11 @@
       "R"
     ],
     [
-      "Format",
+      "Competition",
       "R"
     ],
     [
-      "Competition",
+      "Format",
       "R"
     ],
     [
@@ -17877,11 +17877,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -17929,11 +17929,11 @@
       "R"
     ],
     [
-      "Format",
+      "Competition",
       "R"
     ],
     [
-      "Competition",
+      "Format",
       "R"
     ],
     [
@@ -18033,10 +18033,6 @@
       "R"
     ],
     [
-      "Player",
-      "R"
-    ],
-    [
       "Sponsorship",
       "R"
     ],
@@ -18050,6 +18046,10 @@
     ],
     [
       "Sponsorship",
+      "R"
+    ],
+    [
+      "Player",
       "R"
     ]
   ],
@@ -18067,15 +18067,15 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -18087,15 +18087,15 @@
       "R"
     ],
     [
+      "Message",
+      "R"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Message",
       "R"
     ],
     [
@@ -18291,15 +18291,15 @@
       "R"
     ],
     [
-      "Federation",
-      "R"
-    ],
-    [
-      "Federation",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Federation",
+      "R"
+    ],
+    [
+      "Federation",
       "R"
     ],
     [
@@ -18359,15 +18359,15 @@
       "R"
     ],
     [
-      "Competition",
-      "R"
-    ],
-    [
-      "Competition",
-      "R"
-    ],
-    [
       "Federation",
+      "R"
+    ],
+    [
+      "Competition",
+      "R"
+    ],
+    [
+      "Competition",
       "R"
     ],
     [
@@ -18379,11 +18379,11 @@
       "R"
     ],
     [
-      "Format",
+      "Federation",
       "R"
     ],
     [
-      "Federation",
+      "Format",
       "R"
     ],
     [
@@ -18475,11 +18475,11 @@
       "R"
     ],
     [
-      "Game",
+      "Referee",
       "R"
     ],
     [
-      "Referee",
+      "Game",
       "R"
     ],
     [
@@ -18531,11 +18531,11 @@
       "R"
     ],
     [
-      "Game",
+      "Minutes",
       "R"
     ],
     [
-      "Minutes",
+      "Game",
       "R"
     ],
     [
@@ -18595,15 +18595,15 @@
       "R"
     ],
     [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
       "R"
     ],
     [
@@ -18707,11 +18707,11 @@
       "R"
     ],
     [
-      "Team",
+      "President",
       "R"
     ],
     [
-      "President",
+      "Team",
       "R"
     ],
     [
@@ -18771,35 +18771,27 @@
       "R"
     ],
     [
+      "Signing",
+      "R"
+    ],
+    [
+      "Signing",
+      "R"
+    ],
+    [
+      "President",
+      "R"
+    ],
+    [
+      "Signing",
+      "R"
+    ],
+    [
       "Player",
       "R"
     ],
     [
-      "Signing",
-      "R"
-    ],
-    [
-      "Signing",
-      "R"
-    ],
-    [
-      "President",
-      "R"
-    ],
-    [
-      "Signing",
-      "R"
-    ],
-    [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
       "R"
     ],
     [
@@ -18811,11 +18803,15 @@
       "R"
     ],
     [
-      "DomainEntity",
+      "Team",
       "R"
     ],
     [
-      "Manager",
+      "Team",
+      "R"
+    ],
+    [
+      "DomainEntity",
       "R"
     ],
     [
@@ -18831,6 +18827,10 @@
       "R"
     ],
     [
+      "Manager",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
@@ -18843,11 +18843,11 @@
       "R"
     ],
     [
-      "Hiring",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "Hiring",
       "R"
     ],
     [
@@ -18971,14 +18971,14 @@
       "R"
     ],
     [
+      "Manager",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
-      "Manager",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
@@ -18991,11 +18991,11 @@
       "R"
     ],
     [
-      "Hiring",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "Hiring",
       "R"
     ],
     [
@@ -19011,11 +19011,11 @@
       "R"
     ],
     [
-      "Training",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "Training",
       "R"
     ],
     [
@@ -19119,15 +19119,15 @@
       "R"
     ],
     [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
       "R"
     ],
     [
@@ -19159,11 +19159,11 @@
       "R"
     ],
     [
-      "History",
+      "Player",
       "R"
     ],
     [
-      "Player",
+      "History",
       "R"
     ],
     [
@@ -19363,11 +19363,11 @@
       "R"
     ],
     [
-      "Message",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "Message",
       "R"
     ],
     [
@@ -19595,11 +19595,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -19755,11 +19755,11 @@
       "R"
     ],
     [
-      "Game",
+      "Referee",
       "R"
     ],
     [
-      "Referee",
+      "Game",
       "R"
     ],
     [
@@ -19803,11 +19803,11 @@
       "R"
     ],
     [
-      "Minutes",
+      "Game",
       "R"
     ],
     [
-      "Game",
+      "Minutes",
       "R"
     ],
     [
@@ -19871,15 +19871,15 @@
       "R"
     ],
     [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
       "R"
     ],
     [
@@ -19959,6 +19959,10 @@
       "R"
     ],
     [
+      "President",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
@@ -19967,15 +19971,7 @@
       "R"
     ],
     [
-      "President",
-      "R"
-    ],
-    [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Team",
       "R"
     ],
     [
@@ -19991,7 +19987,7 @@
       "R"
     ],
     [
-      "DomainEntity",
+      "Team",
       "R"
     ],
     [
@@ -20000,6 +19996,14 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -20012,10 +20016,6 @@
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -20047,115 +20047,11 @@
       "R"
     ],
     [
-      "Player",
-      "R"
-    ],
-    [
-      "Signing",
-      "R"
-    ],
-    [
-      "Signing",
-      "R"
-    ],
-    [
       "Signing",
       "R"
     ],
     [
       "President",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "President",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Hiring",
-      "R"
-    ],
-    [
-      "Hiring",
-      "R"
-    ],
-    [
-      "Hiring",
-      "R"
-    ],
-    [
-      "Hiring",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Signing",
-      "R"
-    ],
-    [
-      "Signing",
       "R"
     ],
     [
@@ -20167,6 +20063,110 @@
       "R"
     ],
     [
+      "Signing",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "President",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Hiring",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Hiring",
+      "R"
+    ],
+    [
+      "Hiring",
+      "R"
+    ],
+    [
+      "Hiring",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Signing",
+      "R"
+    ],
+    [
+      "Signing",
+      "R"
+    ],
+    [
+      "Signing",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
       "Actor",
       "R"
     ],
@@ -20200,158 +20200,6 @@
     ],
     [
       "Hiring",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Hiring",
-      "R"
-    ],
-    [
-      "Hiring",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Hiring",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Training",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Training",
-      "R"
-    ],
-    [
-      "Training",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Hiring",
-      "R"
-    ],
-    [
-      "Hiring",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Hiring",
-      "R"
-    ],
-    [
-      "Hiring",
-      "R"
-    ],
-    [
-      "Training",
-      "R"
-    ],
-    [
-      "Training",
-      "R"
-    ],
-    [
-      "Training",
-      "R"
-    ],
-    [
-      "Training",
       "R"
     ],
     [
@@ -20391,7 +20239,155 @@
       "R"
     ],
     [
-      "Player",
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Hiring",
+      "R"
+    ],
+    [
+      "Hiring",
+      "R"
+    ],
+    [
+      "Hiring",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Training",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Training",
+      "R"
+    ],
+    [
+      "Training",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Hiring",
+      "R"
+    ],
+    [
+      "Hiring",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Hiring",
+      "R"
+    ],
+    [
+      "Hiring",
+      "R"
+    ],
+    [
+      "Training",
+      "R"
+    ],
+    [
+      "Training",
+      "R"
+    ],
+    [
+      "Training",
+      "R"
+    ],
+    [
+      "Training",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "DomainEntity",
       "R"
     ],
     [
@@ -20407,7 +20403,15 @@
       "R"
     ],
     [
+      "Player",
+      "R"
+    ],
+    [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "StatisticalData",
       "R"
     ],
     [
@@ -20423,10 +20427,6 @@
       "R"
     ],
     [
-      "StatisticalData",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
@@ -20435,15 +20435,15 @@
       "R"
     ],
     [
+      "History",
+      "R"
+    ],
+    [
+      "History",
+      "R"
+    ],
+    [
       "Player",
-      "R"
-    ],
-    [
-      "History",
-      "R"
-    ],
-    [
-      "History",
       "R"
     ],
     [
@@ -20455,11 +20455,11 @@
       "R"
     ],
     [
-      "Player",
+      "Signing",
       "R"
     ],
     [
-      "Signing",
+      "Player",
       "R"
     ],
     [
@@ -20683,6 +20683,10 @@
       "R"
     ],
     [
+      "Player",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
@@ -20691,6 +20695,22 @@
       "R"
     ],
     [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "History",
+      "R"
+    ],
+    [
+      "History",
+      "R"
+    ],
+    [
+      "History",
+      "R"
+    ],
+    [
       "Player",
       "R"
     ],
@@ -20699,27 +20719,15 @@
       "R"
     ],
     [
-      "History",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "History",
-      "R"
-    ],
-    [
-      "History",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
     [
-      "DomainEntity",
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -20728,14 +20736,6 @@
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -20809,15 +20809,15 @@
       "R"
     ],
     [
+      "History",
+      "R"
+    ],
+    [
+      "History",
+      "R"
+    ],
+    [
       "Player",
-      "R"
-    ],
-    [
-      "History",
-      "R"
-    ],
-    [
-      "History",
       "R"
     ]
   ],
@@ -20863,11 +20863,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -20907,11 +20907,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -21057,6 +21057,342 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "President",
+      "R"
+    ],
+    [
+      "Signing",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Signing",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Signing",
+      "R"
+    ],
+    [
+      "Signing",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Signing",
+      "R"
+    ],
+    [
+      "President",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "President",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Signing",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Player",
+      "W"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "Player",
+      "W"
+    ],
+    [
+      "Player",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Signing",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Signing",
+      "R"
+    ],
+    [
+      "Signing",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Signing",
+      "W"
+    ],
+    [
+      "Signing",
+      "R"
+    ],
+    [
+      "President",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "President",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "Signing",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
@@ -21065,343 +21401,7 @@
       "R"
     ],
     [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "President",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Signing",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Signing",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Signing",
-      "R"
-    ],
-    [
-      "Signing",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Signing",
-      "R"
-    ],
-    [
-      "President",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "President",
-      "R"
-    ],
-    [
-      "Signing",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Player",
-      "W"
-    ],
-    [
-      "Team",
-      "W"
-    ],
-    [
-      "Player",
-      "W"
-    ],
-    [
-      "Player",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "W"
-    ],
-    [
-      "Team",
-      "W"
-    ],
-    [
-      "Team",
-      "W"
-    ],
-    [
-      "Team",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Signing",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Signing",
-      "R"
-    ],
-    [
-      "Signing",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Signing",
-      "W"
-    ],
-    [
-      "Signing",
-      "R"
-    ],
-    [
-      "President",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "President",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "W"
-    ],
-    [
-      "Team",
-      "W"
-    ],
-    [
-      "Team",
-      "W"
-    ],
-    [
-      "Team",
-      "W"
-    ],
-    [
-      "Signing",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
       "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
       "R"
     ],
     [
@@ -21453,11 +21453,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -21539,46 +21539,6 @@
       "R"
     ],
     [
-      "President",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "President",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "President",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
@@ -21587,7 +21547,47 @@
       "R"
     ],
     [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
       "President",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "President",
+      "R"
+    ],
+    [
+      "President",
+      "R"
+    ],
+    [
+      "President",
+      "R"
+    ],
+    [
+      "UserAccount",
       "R"
     ],
     [
@@ -21647,7 +21647,7 @@
       "R"
     ],
     [
-      "Player",
+      "Signing",
       "R"
     ],
     [
@@ -21663,7 +21663,7 @@
       "R"
     ],
     [
-      "Signing",
+      "Player",
       "R"
     ],
     [
@@ -21680,6 +21680,10 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "President",
       "R"
     ],
     [
@@ -21688,10 +21692,6 @@
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "President",
       "R"
     ],
     [
@@ -21833,11 +21833,11 @@
       "R"
     ],
     [
-      "President",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "President",
       "R"
     ],
     [
@@ -21881,11 +21881,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -21921,11 +21921,11 @@
       "R"
     ],
     [
-      "Team",
+      "President",
       "R"
     ],
     [
-      "President",
+      "Team",
       "R"
     ],
     [
@@ -21945,7 +21945,7 @@
       "R"
     ],
     [
-      "Team",
+      "Signing",
       "R"
     ],
     [
@@ -21961,7 +21961,7 @@
       "R"
     ],
     [
-      "Signing",
+      "Team",
       "R"
     ],
     [
@@ -22019,11 +22019,11 @@
       "R"
     ],
     [
-      "Team",
+      "President",
       "R"
     ],
     [
-      "President",
+      "Team",
       "R"
     ],
     [
@@ -22145,15 +22145,15 @@
       "R"
     ],
     [
-      "President",
-      "R"
-    ],
-    [
-      "President",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "President",
+      "R"
+    ],
+    [
+      "President",
       "R"
     ],
     [
@@ -22169,11 +22169,11 @@
       "R"
     ],
     [
-      "President",
+      "Team",
       "R"
     ],
     [
-      "Team",
+      "President",
       "R"
     ],
     [
@@ -22217,11 +22217,11 @@
       "R"
     ],
     [
-      "President",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "President",
       "R"
     ],
     [
@@ -22289,6 +22289,10 @@
       "R"
     ],
     [
+      "Signing",
+      "R"
+    ],
+    [
       "President",
       "R"
     ],
@@ -22301,10 +22305,6 @@
       "R"
     ],
     [
-      "Signing",
-      "R"
-    ],
-    [
       "Player",
       "R"
     ],
@@ -22326,6 +22326,10 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "President",
       "R"
     ],
     [
@@ -22334,10 +22338,6 @@
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "President",
       "R"
     ],
     [
@@ -22537,11 +22537,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -22627,15 +22627,15 @@
       "R"
     ],
     [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
       "R"
     ],
     [
@@ -22731,11 +22731,11 @@
       "R"
     ],
     [
-      "Actor",
+      "Box",
       "R"
     ],
     [
-      "Box",
+      "Actor",
       "R"
     ],
     [
@@ -22861,426 +22861,6 @@
       "R"
     ],
     [
-      "Team",
-      "R"
-    ],
-    [
-      "President",
-      "R"
-    ],
-    [
-      "Player",
-      "W"
-    ],
-    [
-      "Team",
-      "W"
-    ],
-    [
-      "Signing",
-      "R"
-    ],
-    [
-      "Player",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Player",
-      "W"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "UserAccount",
-      "W"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Player",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "Player",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Signing",
-      "R"
-    ],
-    [
-      "President",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
       "President",
       "R"
     ],
@@ -23289,51 +22869,7 @@
       "R"
     ],
     [
-      "Team",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
       "Player",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
       "W"
     ],
     [
@@ -23341,31 +22877,51 @@
       "W"
     ],
     [
-      "Team",
-      "W"
-    ],
-    [
-      "Team",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
       "Signing",
       "R"
     ],
     [
       "Player",
+      "W"
+    ],
+    [
+      "DomainEntity",
       "R"
     ],
     [
-      "Signing",
+      "Authority",
       "R"
     ],
     [
-      "Signing",
+      "Authority",
+      "W"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "DomainEntity",
       "R"
     ],
     [
@@ -23373,7 +22929,339 @@
       "R"
     ],
     [
-      "Signing",
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Player",
+      "W"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "UserAccount",
+      "W"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Player",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "Player",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
       "W"
     ],
     [
@@ -23393,6 +23281,118 @@
       "R"
     ],
     [
+      "President",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Signing",
+      "R"
+    ],
+    [
+      "Signing",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Signing",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Signing",
+      "W"
+    ],
+    [
+      "Signing",
+      "R"
+    ],
+    [
+      "President",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
       "Team",
       "R"
     ],
@@ -23417,14 +23417,14 @@
       "R"
     ],
     [
+      "Team",
+      "R"
+    ],
+    [
       "Manager",
       "R"
     ],
     [
-      "Team",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
@@ -23437,11 +23437,11 @@
       "R"
     ],
     [
-      "Team",
+      "Player",
       "R"
     ],
     [
-      "Player",
+      "Team",
       "R"
     ],
     [
@@ -23481,15 +23481,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -23537,11 +23537,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -23639,19 +23639,19 @@
       "R"
     ],
     [
-      "Signing",
-      "R"
-    ],
-    [
-      "Signing",
-      "R"
-    ],
-    [
       "Player",
       "R"
     ],
     [
       "Team",
+      "R"
+    ],
+    [
+      "Signing",
+      "R"
+    ],
+    [
+      "Signing",
       "R"
     ],
     [
@@ -23701,15 +23701,15 @@
       "R"
     ],
     [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
       "R"
     ],
     [
@@ -24045,15 +24045,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -24587,11 +24587,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -25113,11 +25113,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -25559,11 +25559,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -26057,11 +26057,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -26545,11 +26545,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "UserAccount",
       "R"
     ],
     [
@@ -26617,11 +26617,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -26679,11 +26679,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "UserAccount",
       "R"
     ],
     [
@@ -26719,15 +26719,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -26759,6 +26759,14 @@
       "R"
     ],
     [
+      "Player",
+      "R"
+    ],
+    [
+      "Report",
+      "R"
+    ],
+    [
       "Report",
       "R"
     ],
@@ -26768,14 +26776,6 @@
     ],
     [
       "Team",
-      "R"
-    ],
-    [
-      "Report",
-      "R"
-    ],
-    [
-      "Player",
       "R"
     ],
     [
@@ -26841,11 +26841,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "UserAccount",
       "R"
     ],
     [
@@ -26977,98 +26977,6 @@
       "R"
     ],
     [
-      "President",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Hiring",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Hiring",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Hiring",
-      "R"
-    ],
-    [
-      "Hiring",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Hiring",
-      "R"
-    ],
-    [
-      "President",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
       "Team",
       "R"
     ],
@@ -27081,6 +26989,14 @@
       "R"
     ],
     [
+      "Hiring",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
       "Manager",
       "R"
     ],
@@ -27089,23 +27005,7 @@
       "R"
     ],
     [
-      "Manager",
-      "W"
-    ],
-    [
-      "Team",
-      "W"
-    ],
-    [
-      "Manager",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Manager",
+      "Hiring",
       "R"
     ],
     [
@@ -27125,36 +27025,8 @@
       "R"
     ],
     [
-      "Player",
+      "DomainEntity",
       "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "W"
-    ],
-    [
-      "Team",
-      "W"
-    ],
-    [
-      "Team",
-      "W"
-    ],
-    [
-      "Team",
-      "W"
     ],
     [
       "DomainEntity",
@@ -27173,16 +27045,12 @@
       "R"
     ],
     [
-      "Hiring",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
     [
-      "Hiring",
-      "W"
+      "Manager",
+      "R"
     ],
     [
       "Hiring",
@@ -27201,11 +27069,123 @@
       "R"
     ],
     [
+      "President",
+      "R"
+    ],
+    [
       "Team",
       "R"
     ],
     [
       "Team",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Manager",
+      "W"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "Manager",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Hiring",
+      "R"
+    ],
+    [
+      "Hiring",
+      "R"
+    ],
+    [
+      "Hiring",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Hiring",
+      "W"
+    ],
+    [
+      "Hiring",
       "R"
     ],
     [
@@ -27217,6 +27197,26 @@
       "R"
     ],
     [
+      "Team",
+      "R"
+    ],
+    [
+      "President",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
       "Manager",
       "R"
     ],
@@ -27241,15 +27241,15 @@
       "R"
     ],
     [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
       "Team",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
       "R"
     ],
     [
@@ -27282,14 +27282,6 @@
     ],
     [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -27298,6 +27290,14 @@
     ],
     [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -27435,50 +27435,6 @@
       "R"
     ],
     [
-      "President",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "President",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "President",
-      "R"
-    ],
-    [
-      "President",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
@@ -27495,51 +27451,31 @@
       "R"
     ],
     [
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
       "President",
       "R"
     ],
     [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "President",
+      "R"
+    ],
+    [
+      "President",
       "R"
     ],
     [
@@ -27551,11 +27487,75 @@
       "R"
     ],
     [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "President",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
       "President",
       "R"
     ],
     [
       "President",
+      "R"
+    ],
+    [
+      "President",
+      "R"
+    ],
+    [
+      "UserAccount",
       "R"
     ],
     [
@@ -27567,11 +27567,11 @@
       "R"
     ],
     [
-      "Team",
+      "President",
       "R"
     ],
     [
-      "President",
+      "Team",
       "R"
     ],
     [
@@ -27619,11 +27619,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -27797,11 +27797,11 @@
       "R"
     ],
     [
-      "Manager",
+      "Team",
       "R"
     ],
     [
-      "Team",
+      "Manager",
       "R"
     ],
     [
@@ -27817,11 +27817,11 @@
       "R"
     ],
     [
-      "Hiring",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "Hiring",
       "R"
     ],
     [
@@ -27859,11 +27859,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -27879,11 +27879,11 @@
       "R"
     ],
     [
-      "President",
+      "Team",
       "R"
     ],
     [
-      "Team",
+      "President",
       "R"
     ],
     [
@@ -27997,78 +27997,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "President",
-      "R"
-    ],
-    [
-      "President",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "President",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "President",
-      "R"
-    ],
-    [
       "President",
       "R"
     ],
@@ -28101,6 +28029,78 @@
       "R"
     ],
     [
+      "Manager",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "President",
+      "R"
+    ],
+    [
+      "President",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "President",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "President",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
@@ -28113,11 +28113,11 @@
       "R"
     ],
     [
-      "Manager",
+      "Team",
       "R"
     ],
     [
-      "Team",
+      "Manager",
       "R"
     ],
     [
@@ -28153,11 +28153,11 @@
       "R"
     ],
     [
-      "President",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "President",
       "R"
     ],
     [
@@ -28277,11 +28277,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -28329,15 +28329,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -28697,10 +28697,6 @@
       "R"
     ],
     [
-      "Manager",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
@@ -28713,23 +28709,7 @@
       "R"
     ],
     [
-      "Team",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Game",
+      "Manager",
       "R"
     ],
     [
@@ -28737,39 +28717,7 @@
       "R"
     ],
     [
-      "Game",
-      "R"
-    ],
-    [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Game",
       "R"
     ],
     [
@@ -28785,7 +28733,27 @@
       "R"
     ],
     [
+      "Game",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Minutes",
       "R"
     ],
     [
@@ -28801,7 +28769,39 @@
       "R"
     ],
     [
+      "Team",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
       "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
       "R"
     ],
     [
@@ -28891,11 +28891,11 @@
       "R"
     ],
     [
-      "Player",
+      "Team",
       "R"
     ],
     [
-      "Team",
+      "Player",
       "R"
     ],
     [
@@ -28915,11 +28915,11 @@
       "R"
     ],
     [
-      "Manager",
+      "Team",
       "R"
     ],
     [
-      "Team",
+      "Manager",
       "R"
     ],
     [
@@ -28931,11 +28931,11 @@
       "R"
     ],
     [
-      "Team",
+      "Game",
       "R"
     ],
     [
-      "Game",
+      "Team",
       "R"
     ],
     [
@@ -28969,11 +28969,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -29063,11 +29063,11 @@
       "R"
     ],
     [
-      "Box",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "Box",
       "R"
     ],
     [
@@ -29091,6 +29091,14 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
       "R"
     ],
@@ -29108,14 +29116,6 @@
     ],
     [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -29168,10 +29168,6 @@
     ],
     [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -29184,6 +29180,10 @@
     ],
     [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -29227,11 +29227,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -29279,19 +29279,19 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -29365,15 +29365,15 @@
       "R"
     ],
     [
-      "History",
-      "R"
-    ],
-    [
-      "History",
-      "R"
-    ],
-    [
       "Player",
+      "R"
+    ],
+    [
+      "History",
+      "R"
+    ],
+    [
+      "History",
       "R"
     ],
     [
@@ -29471,11 +29471,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -29535,50 +29535,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "History",
-      "R"
-    ],
-    [
-      "History",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "History",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
       "Player",
       "R"
     ],
@@ -29587,7 +29543,51 @@
       "R"
     ],
     [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "History",
+      "R"
+    ],
+    [
       "Player",
+      "R"
+    ],
+    [
+      "History",
+      "R"
+    ],
+    [
+      "History",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "UserAccount",
       "R"
     ],
     [
@@ -29603,11 +29603,11 @@
       "R"
     ],
     [
-      "Player",
+      "History",
       "R"
     ],
     [
-      "History",
+      "Player",
       "R"
     ],
     [
@@ -29955,11 +29955,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -29975,11 +29975,11 @@
       "R"
     ],
     [
-      "Finder",
+      "President",
       "R"
     ],
     [
-      "President",
+      "Finder",
       "R"
     ],
     [
@@ -30051,22 +30051,6 @@
       "R"
     ],
     [
-      "President",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
       "Team",
       "R"
     ],
@@ -30075,11 +30059,23 @@
       "R"
     ],
     [
+      "DomainEntity",
+      "R"
+    ],
+    [
       "Team",
       "R"
     ],
     [
-      "DomainEntity",
+      "Team",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "President",
       "R"
     ],
     [
@@ -30095,11 +30091,7 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
+      "DomainEntity",
       "R"
     ],
     [
@@ -30108,6 +30100,14 @@
     ],
     [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -30143,19 +30143,27 @@
       "R"
     ],
     [
+      "Player",
+      "R"
+    ],
+    [
+      "Signing",
+      "R"
+    ],
+    [
+      "Signing",
+      "R"
+    ],
+    [
       "President",
       "R"
     ],
     [
-      "Signing",
+      "Manager",
       "R"
     ],
     [
-      "Signing",
-      "R"
-    ],
-    [
-      "Player",
+      "Manager",
       "R"
     ],
     [
@@ -30164,14 +30172,6 @@
     ],
     [
       "Team",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
       "R"
     ],
     [
@@ -30349,15 +30349,15 @@
       "R"
     ],
     [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
       "Player",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
       "R"
     ],
     [
@@ -30413,15 +30413,15 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -30442,6 +30442,10 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Game",
       "R"
     ],
     [
@@ -30457,10 +30461,6 @@
       "R"
     ],
     [
-      "Game",
-      "R"
-    ],
-    [
       "Minutes",
       "R"
     ],
@@ -30489,15 +30489,15 @@
       "R"
     ],
     [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
       "Game",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
       "R"
     ],
     [
@@ -30697,11 +30697,11 @@
       "R"
     ],
     [
-      "Team",
+      "Player",
       "R"
     ],
     [
-      "Player",
+      "Team",
       "R"
     ],
     [
@@ -30721,6 +30721,10 @@
       "R"
     ],
     [
+      "Player",
+      "R"
+    ],
+    [
       "Team",
       "R"
     ],
@@ -30729,10 +30733,6 @@
       "R"
     ],
     [
-      "Player",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
@@ -30755,862 +30755,6 @@
     [
       "StatisticalData",
       "R"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "Player",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Player",
-      "W"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "UserAccount",
-      "W"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Player",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "Player",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "StatisticalData",
-      "R"
-    ],
-    [
-      "StatisticalData",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "StatisticalData",
-      "R"
-    ],
-    [
-      "StatisticalData",
-      "R"
-    ],
-    [
-      "Player",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Player",
-      "W"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "UserAccount",
-      "W"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Player",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "Player",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "StatisticalData",
-      "W"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "StatisticalData",
-      "R"
-    ],
-    [
-      "StatisticalData",
-      "R"
-    ],
-    [
-      "StatisticalData",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "StatisticalData",
-      "R"
-    ],
-    [
-      "StatisticalData",
-      "W"
     ],
     [
       "StatisticalData",
@@ -32002,6 +31146,862 @@
     ],
     [
       "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "StatisticalData",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "StatisticalData",
+      "R"
+    ],
+    [
+      "StatisticalData",
+      "R"
+    ],
+    [
+      "StatisticalData",
+      "R"
+    ],
+    [
+      "Player",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Player",
+      "W"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "UserAccount",
+      "W"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Player",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "Player",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "StatisticalData",
+      "R"
+    ],
+    [
+      "StatisticalData",
+      "R"
+    ],
+    [
+      "StatisticalData",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "StatisticalData",
+      "R"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "Player",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Player",
+      "W"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "UserAccount",
+      "W"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Player",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "Player",
+      "W"
+    ],
+    [
+      "StatisticalData",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Minutes",
       "W"
     ],
     [
@@ -32077,175 +32077,19 @@
       "R"
     ],
     [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
       "Team",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
       "R"
     ],
     [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
       "R"
     ],
     [
@@ -32278,6 +32122,66 @@
     ],
     [
       "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
       "R"
     ],
     [
@@ -32317,11 +32221,11 @@
       "R"
     ],
     [
-      "Player",
+      "Minutes",
       "R"
     ],
     [
-      "Minutes",
+      "Player",
       "R"
     ],
     [
@@ -32341,11 +32245,11 @@
       "R"
     ],
     [
-      "Player",
+      "Minutes",
       "R"
     ],
     [
-      "Minutes",
+      "Player",
       "R"
     ],
     [
@@ -32374,6 +32278,102 @@
     ],
     [
       "Team",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
       "R"
     ],
     [
@@ -32437,11 +32437,11 @@
       "R"
     ],
     [
-      "Player",
+      "Team",
       "R"
     ],
     [
-      "Team",
+      "Player",
       "R"
     ],
     [
@@ -32473,11 +32473,11 @@
       "R"
     ],
     [
-      "Player",
+      "Team",
       "R"
     ],
     [
-      "Team",
+      "Player",
       "R"
     ],
     [
@@ -32486,58 +32486,6 @@
     ],
     [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Minutes",
       "R"
     ],
     [
@@ -32573,6 +32521,58 @@
       "R"
     ],
     [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
       "Player",
       "R"
     ],
@@ -32605,6 +32605,10 @@
       "R"
     ],
     [
+      "Minutes",
+      "R"
+    ],
+    [
       "Game",
       "R"
     ],
@@ -32622,10 +32626,6 @@
     ],
     [
       "Team",
-      "R"
-    ],
-    [
-      "Minutes",
       "R"
     ],
     [
@@ -32641,6 +32641,14 @@
       "R"
     ],
     [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
       "Team",
       "R"
     ],
@@ -32654,14 +32662,6 @@
     ],
     [
       "Player",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Game",
       "R"
     ],
     [
@@ -32685,10 +32685,6 @@
       "R"
     ],
     [
-      "Minutes",
-      "R"
-    ],
-    [
       "Game",
       "R"
     ],
@@ -32701,7 +32697,7 @@
       "R"
     ],
     [
-      "Player",
+      "Minutes",
       "R"
     ],
     [
@@ -32722,6 +32718,10 @@
     ],
     [
       "Minutes",
+      "R"
+    ],
+    [
+      "Player",
       "R"
     ],
     [
@@ -32737,6 +32737,14 @@
       "R"
     ],
     [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
       "Team",
       "R"
     ],
@@ -32750,14 +32758,6 @@
     ],
     [
       "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
       "R"
     ],
     [
@@ -32835,47 +32835,11 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
     [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
+      "Actor",
       "R"
     ],
     [
@@ -32903,7 +32867,35 @@
       "R"
     ],
     [
+      "Team",
+      "R"
+    ],
+    [
       "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "DomainEntity",
       "R"
     ],
     [
@@ -32912,6 +32904,14 @@
     ],
     [
       "Team",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
       "R"
     ],
     [
@@ -32971,6 +32971,34 @@
       "R"
     ],
     [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
       "Minutes",
       "R"
     ],
@@ -32980,6 +33008,10 @@
     ],
     [
       "Team",
+      "R"
+    ],
+    [
+      "Minutes",
       "R"
     ],
     [
@@ -33011,7 +33043,11 @@
       "R"
     ],
     [
-      "Minutes",
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
       "R"
     ],
     [
@@ -33020,98 +33056,66 @@
     ],
     [
       "Minutes",
+      "W"
+    ],
+    [
+      "Minutes",
+      "W"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "DomainEntity",
       "R"
     ],
     [
       "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Minutes",
-      "W"
-    ],
-    [
-      "Minutes",
-      "W"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "DomainEntity",
       "R"
     ],
     [
@@ -33127,10 +33131,6 @@
       "R"
     ],
     [
-      "Game",
-      "R"
-    ],
-    [
       "Minutes",
       "R"
     ],
@@ -33159,11 +33159,11 @@
       "R"
     ],
     [
-      "Minutes",
+      "Game",
       "R"
     ],
     [
-      "Game",
+      "Minutes",
       "R"
     ],
     [
@@ -33187,11 +33187,11 @@
       "R"
     ],
     [
-      "Game",
+      "Minutes",
       "R"
     ],
     [
-      "Minutes",
+      "Game",
       "R"
     ],
     [
@@ -33395,14 +33395,14 @@
       "R"
     ],
     [
-      "Player",
-      "R"
-    ],
-    [
       "Team",
       "R"
     ],
     [
+      "Player",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
@@ -33415,11 +33415,11 @@
       "R"
     ],
     [
-      "StatisticalData",
+      "Player",
       "R"
     ],
     [
-      "Player",
+      "StatisticalData",
       "R"
     ],
     [
@@ -33907,11 +33907,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -34339,11 +34339,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -34709,6 +34709,198 @@
       "R"
     ],
     [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Referee",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Minutes",
+      "W"
+    ],
+    [
+      "Player",
+      "W"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "Actor",
       "R"
     ],
@@ -34717,55 +34909,19 @@
       "R"
     ],
     [
-      "Minutes",
+      "Actor",
       "R"
     ],
     [
-      "Game",
+      "UserAccount",
       "R"
     ],
     [
-      "Game",
+      "UserAccount",
       "R"
     ],
     [
-      "Team",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
+      "Authority",
       "R"
     ],
     [
@@ -34773,27 +34929,7 @@
       "R"
     ],
     [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
+      "Game",
       "R"
     ],
     [
@@ -34809,142 +34945,6 @@
       "R"
     ],
     [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Minutes",
-      "W"
-    ],
-    [
-      "Player",
-      "W"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Referee",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
       "Minutes",
       "R"
     ],
@@ -34973,11 +34973,11 @@
       "R"
     ],
     [
-      "Minutes",
+      "Game",
       "R"
     ],
     [
-      "Game",
+      "Minutes",
       "R"
     ],
     [
@@ -35001,11 +35001,11 @@
       "R"
     ],
     [
-      "Minutes",
+      "Game",
       "R"
     ],
     [
-      "Game",
+      "Minutes",
       "R"
     ],
     [
@@ -35049,11 +35049,11 @@
       "R"
     ],
     [
-      "Player",
+      "StatisticalData",
       "R"
     ],
     [
-      "StatisticalData",
+      "Player",
       "R"
     ],
     [
@@ -35177,11 +35177,11 @@
       "R"
     ],
     [
-      "Team",
+      "Player",
       "R"
     ],
     [
-      "Player",
+      "Team",
       "R"
     ],
     [
@@ -35205,27 +35205,19 @@
       "R"
     ],
     [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
       "Team",
       "R"
     ],
     [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "StatisticalData",
-      "R"
-    ],
-    [
-      "StatisticalData",
       "R"
     ],
     [
@@ -35242,6 +35234,14 @@
     ],
     [
       "StatisticalData",
+      "R"
+    ],
+    [
+      "StatisticalData",
+      "R"
+    ],
+    [
+      "StatisticalData",
       "W"
     ],
     [
@@ -35290,10 +35290,6 @@
     ],
     [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -35306,6 +35302,10 @@
     ],
     [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -35645,11 +35645,11 @@
       "R"
     ],
     [
-      "Player",
+      "StatisticalData",
       "R"
     ],
     [
-      "StatisticalData",
+      "Player",
       "R"
     ],
     [
@@ -36077,11 +36077,11 @@
       "R"
     ],
     [
-      "Player",
+      "StatisticalData",
       "R"
     ],
     [
-      "StatisticalData",
+      "Player",
       "R"
     ],
     [
@@ -36525,11 +36525,11 @@
       "R"
     ],
     [
-      "Player",
+      "Team",
       "R"
     ],
     [
-      "Team",
+      "Player",
       "R"
     ],
     [
@@ -36585,6 +36585,18 @@
       "R"
     ],
     [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
       "Player",
       "R"
     ],
@@ -36594,14 +36606,6 @@
     ],
     [
       "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
       "R"
     ],
     [
@@ -36614,10 +36618,6 @@
     ],
     [
       "Team",
-      "R"
-    ],
-    [
-      "Minutes",
       "R"
     ],
     [
@@ -36629,30 +36629,6 @@
       "R"
     ],
     [
-      "Player",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
       "Minutes",
       "R"
     ],
@@ -36666,6 +36642,30 @@
     ],
     [
       "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
       "R"
     ],
     [
@@ -36677,62 +36677,6 @@
       "R"
     ],
     [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
       "Game",
       "R"
     ],
@@ -36749,11 +36693,19 @@
       "R"
     ],
     [
-      "Team",
+      "Minutes",
       "R"
     ],
     [
       "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
       "R"
     ],
     [
@@ -36789,6 +36741,14 @@
       "R"
     ],
     [
+      "Player",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
       "Minutes",
       "R"
     ],
@@ -36802,14 +36762,6 @@
     ],
     [
       "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
       "R"
     ],
     [
@@ -36829,10 +36781,6 @@
       "R"
     ],
     [
-      "Minutes",
-      "R"
-    ],
-    [
       "Game",
       "R"
     ],
@@ -36858,6 +36806,58 @@
     ],
     [
       "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
       "R"
     ],
     [
@@ -36925,11 +36925,11 @@
       "R"
     ],
     [
-      "Player",
+      "Team",
       "R"
     ],
     [
-      "Team",
+      "Player",
       "R"
     ],
     [
@@ -36961,11 +36961,11 @@
       "R"
     ],
     [
-      "Team",
+      "Player",
       "R"
     ],
     [
-      "Player",
+      "Team",
       "R"
     ],
     [
@@ -37009,215 +37009,15 @@
       "R"
     ],
     [
-      "Minutes",
+      "Player",
       "R"
     ],
     [
-      "Player",
+      "Minutes",
       "R"
     ],
     [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
       "R"
     ],
     [
@@ -37249,11 +37049,211 @@
       "R"
     ],
     [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
       "Player",
       "R"
     ],
     [
       "Team",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
       "R"
     ],
     [
@@ -37311,11 +37311,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -37413,11 +37413,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -37477,11 +37477,11 @@
       "R"
     ],
     [
-      "Game",
+      "Competition",
       "R"
     ],
     [
-      "Competition",
+      "Game",
       "R"
     ],
     [
@@ -37613,11 +37613,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -37642,10 +37642,6 @@
     ],
     [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Game",
       "R"
     ],
     [
@@ -37661,6 +37657,10 @@
       "R"
     ],
     [
+      "Game",
+      "R"
+    ],
+    [
       "Minutes",
       "R"
     ],
@@ -37689,11 +37689,11 @@
       "R"
     ],
     [
-      "Minutes",
+      "Game",
       "R"
     ],
     [
-      "Game",
+      "Minutes",
       "R"
     ],
     [
@@ -37717,11 +37717,11 @@
       "R"
     ],
     [
-      "Game",
+      "Minutes",
       "R"
     ],
     [
-      "Minutes",
+      "Game",
       "R"
     ],
     [
@@ -37761,11 +37761,11 @@
       "R"
     ],
     [
-      "StatisticalData",
+      "Player",
       "R"
     ],
     [
-      "Player",
+      "StatisticalData",
       "R"
     ],
     [
@@ -37893,11 +37893,11 @@
       "R"
     ],
     [
-      "Player",
+      "Team",
       "R"
     ],
     [
-      "Team",
+      "Player",
       "R"
     ],
     [
@@ -37925,19 +37925,15 @@
       "R"
     ],
     [
-      "Player",
-      "R"
-    ],
-    [
       "Team",
       "R"
     ],
     [
-      "DomainEntity",
+      "Player",
       "R"
     ],
     [
-      "StatisticalData",
+      "DomainEntity",
       "R"
     ],
     [
@@ -37958,6 +37954,10 @@
     ],
     [
       "StatisticalData",
+      "R"
+    ],
+    [
+      "StatisticalData",
       "W"
     ],
     [
@@ -38006,6 +38006,10 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -38018,10 +38022,6 @@
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -38433,15 +38433,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -38793,6 +38793,10 @@
       "R"
     ],
     [
+      "StatisticalData",
+      "R"
+    ],
+    [
       "Player",
       "R"
     ],
@@ -38806,10 +38810,6 @@
     ],
     [
       "StatisticalData",
-      "R"
-    ],
-    [
-      "StatisticalData",
       "W"
     ],
     [
@@ -38862,10 +38862,6 @@
     ],
     [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -38878,6 +38874,10 @@
     ],
     [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -39281,15 +39281,15 @@
       "R"
     ],
     [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
       "Game",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
       "R"
     ],
     [
@@ -39485,11 +39485,11 @@
       "R"
     ],
     [
-      "Player",
+      "Team",
       "R"
     ],
     [
-      "Team",
+      "Player",
       "R"
     ],
     [
@@ -39521,11 +39521,11 @@
       "R"
     ],
     [
-      "Player",
+      "Team",
       "R"
     ],
     [
-      "Team",
+      "Player",
       "R"
     ],
     [
@@ -39542,6 +39542,46 @@
     ],
     [
       "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "DomainEntity",
       "R"
     ],
     [
@@ -39581,7 +39621,35 @@
       "R"
     ],
     [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
       "R"
     ],
     [
@@ -39609,123 +39677,11 @@
       "R"
     ],
     [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
     [
       "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "DomainEntity",
       "R"
     ],
     [
@@ -39769,7 +39725,51 @@
       "R"
     ],
     [
+      "DomainEntity",
+      "R"
+    ],
+    [
       "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
       "R"
     ],
     [
@@ -39785,39 +39785,39 @@
       "R"
     ],
     [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
       "Game",
       "R"
     ],
     [
       "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
       "R"
     ],
     [
@@ -39887,10 +39887,6 @@
       "R"
     ],
     [
-      "Minutes",
-      "R"
-    ],
-    [
       "Game",
       "R"
     ],
@@ -39899,127 +39895,7 @@
       "R"
     ],
     [
-      "Game",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Referee",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
       "Minutes",
-      "W"
-    ],
-    [
-      "Player",
-      "W"
-    ],
-    [
-      "Minutes",
-      "W"
-    ],
-    [
-      "Player",
-      "W"
-    ],
-    [
-      "Minutes",
-      "W"
-    ],
-    [
-      "Player",
-      "W"
-    ],
-    [
-      "Minutes",
-      "W"
-    ],
-    [
-      "Minutes",
-      "W"
-    ],
-    [
-      "Game",
-      "W"
-    ],
-    [
-      "Minutes",
-      "W"
-    ],
-    [
-      "Minutes",
-      "W"
-    ],
-    [
-      "Minutes",
-      "W"
-    ],
-    [
-      "Team",
-      "W"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "DomainEntity",
       "R"
     ],
     [
@@ -40035,7 +39911,131 @@
       "R"
     ],
     [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Minutes",
+      "W"
+    ],
+    [
+      "Player",
+      "W"
+    ],
+    [
+      "Minutes",
+      "W"
+    ],
+    [
+      "Player",
+      "W"
+    ],
+    [
+      "Minutes",
+      "W"
+    ],
+    [
+      "Player",
+      "W"
+    ],
+    [
+      "Minutes",
+      "W"
+    ],
+    [
+      "Minutes",
+      "W"
+    ],
+    [
       "Game",
+      "W"
+    ],
+    [
+      "Minutes",
+      "W"
+    ],
+    [
+      "Minutes",
+      "W"
+    ],
+    [
+      "Minutes",
+      "W"
+    ],
+    [
+      "Team",
+      "W"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Referee",
       "R"
     ],
     [
@@ -40067,11 +40067,11 @@
       "R"
     ],
     [
-      "Game",
+      "Minutes",
       "R"
     ],
     [
-      "Minutes",
+      "Game",
       "R"
     ],
     [
@@ -40095,15 +40095,15 @@
       "R"
     ],
     [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
       "Game",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
       "R"
     ],
     [
@@ -40252,34 +40252,6 @@
     ],
     [
       "Game",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
       "R"
     ],
     [
@@ -40311,6 +40283,34 @@
       "R"
     ],
     [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
@@ -40319,15 +40319,15 @@
       "R"
     ],
     [
+      "StatisticalData",
+      "R"
+    ],
+    [
+      "StatisticalData",
+      "R"
+    ],
+    [
       "Player",
-      "R"
-    ],
-    [
-      "StatisticalData",
-      "R"
-    ],
-    [
-      "StatisticalData",
       "R"
     ],
     [
@@ -41641,11 +41641,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -41709,15 +41709,15 @@
       "R"
     ],
     [
+      "Player",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
       "Team",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
       "R"
     ],
     [
@@ -41745,111 +41745,15 @@
       "R"
     ],
     [
-      "Player",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
       "Team",
       "R"
     ],
     [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
       "Player",
       "R"
     ],
     [
-      "Minutes",
-      "R"
-    ],
-    [
       "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
       "R"
     ],
     [
@@ -41873,18 +41777,6 @@
       "R"
     ],
     [
-      "Game",
-      "R"
-    ],
-    [
-      "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
       "Player",
       "R"
     ],
@@ -41894,6 +41786,18 @@
     ],
     [
       "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
       "R"
     ],
     [
@@ -41909,11 +41813,7 @@
       "R"
     ],
     [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Minutes",
+      "Player",
       "R"
     ],
     [
@@ -41933,7 +41833,7 @@
       "R"
     ],
     [
-      "Player",
+      "Minutes",
       "R"
     ],
     [
@@ -41946,6 +41846,10 @@
     ],
     [
       "Team",
+      "R"
+    ],
+    [
+      "Minutes",
       "R"
     ],
     [
@@ -41957,6 +41861,14 @@
       "R"
     ],
     [
+      "Player",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
       "Minutes",
       "R"
     ],
@@ -41966,6 +41878,10 @@
     ],
     [
       "Team",
+      "R"
+    ],
+    [
+      "Minutes",
       "R"
     ],
     [
@@ -41978,18 +41894,6 @@
     ],
     [
       "Team",
-      "R"
-    ],
-    [
-      "Minutes",
-      "R"
-    ],
-    [
-      "Player",
-      "R"
-    ],
-    [
-      "Minutes",
       "R"
     ],
     [
@@ -42018,6 +41922,102 @@
     ],
     [
       "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Game",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Minutes",
+      "R"
+    ],
+    [
+      "Player",
+      "R"
+    ],
+    [
+      "Team",
+      "R"
+    ],
+    [
+      "Minutes",
       "R"
     ],
     [
@@ -42087,15 +42087,15 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -42223,11 +42223,11 @@
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
@@ -42317,15 +42317,15 @@
       "R"
     ],
     [
-      "President",
-      "R"
-    ],
-    [
-      "President",
-      "R"
-    ],
-    [
       "UserAccount",
+      "R"
+    ],
+    [
+      "President",
+      "R"
+    ],
+    [
+      "President",
       "R"
     ],
     [
@@ -42341,11 +42341,11 @@
       "R"
     ],
     [
-      "Team",
+      "President",
       "R"
     ],
     [
-      "President",
+      "Team",
       "R"
     ],
     [
@@ -42389,15 +42389,11 @@
       "R"
     ],
     [
-      "President",
-      "R"
-    ],
-    [
       "UserAccount",
       "R"
     ],
     [
-      "DomainEntity",
+      "President",
       "R"
     ],
     [
@@ -42410,6 +42406,14 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Sponsorship",
       "R"
     ],
     [
@@ -42430,10 +42434,6 @@
     ],
     [
       "Team",
-      "R"
-    ],
-    [
-      "Sponsorship",
       "R"
     ]
   ],
@@ -42629,15 +42629,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -42685,11 +42685,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "President",
       "R"
     ],
     [
-      "President",
+      "UserAccount",
       "R"
     ],
     [
@@ -42781,11 +42781,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -42865,11 +42865,11 @@
       "R"
     ],
     [
-      "Team",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "Team",
       "R"
     ],
     [

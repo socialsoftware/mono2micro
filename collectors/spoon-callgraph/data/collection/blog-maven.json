@@ -1,5 +1,15 @@
 {
+  "WebService.weChats": [
+    [
+      "Article",
+      "R"
+    ]
+  ],
   "WebController.banners": [
+    [
+      "Configure",
+      "R"
+    ],
     [
       "Configure",
       "R"
@@ -15,7 +25,17 @@
       "R"
     ]
   ],
+  "WebController.follow": [
+    [
+      "SysUser",
+      "R"
+    ]
+  ],
   "WebController.links": [
+    [
+      "Configure",
+      "R"
+    ],
     [
       "Configure",
       "R"
@@ -25,9 +45,17 @@
     [
       "Configure",
       "R"
+    ],
+    [
+      "Configure",
+      "R"
     ]
   ],
   "WebController.recommend": [
+    [
+      "Article",
+      "R"
+    ],
     [
       "Article",
       "R"
@@ -37,9 +65,21 @@
     [
       "Article",
       "R"
+    ],
+    [
+      "SimpleUser",
+      "R"
+    ],
+    [
+      "Article",
+      "R"
     ]
   ],
   "WebController.topics": [
+    [
+      "Configure",
+      "R"
+    ],
     [
       "Configure",
       "R"
@@ -633,7 +673,25 @@
       "R"
     ]
   ],
+  "GbookController.gbooks": [
+    [
+      "Gbook",
+      "R"
+    ],
+    [
+      "SimpleUser",
+      "R"
+    ],
+    [
+      "Gbook",
+      "R"
+    ]
+  ],
   "EchartsController.findECharts1": [
+    [
+      "Article",
+      "R"
+    ],
     [
       "Article",
       "R"
@@ -655,9 +713,33 @@
     [
       "Article",
       "R"
+    ],
+    [
+      "Article",
+      "R"
+    ]
+  ],
+  "EchartsController.findECharts3": [
+    [
+      "Comment",
+      "R"
+    ],
+    [
+      "Article",
+      "R"
+    ]
+  ],
+  "EchartsController.findECharts4": [
+    [
+      "Gbook",
+      "R"
     ]
   ],
   "EchartsController.findECharts5": [
+    [
+      "Article",
+      "R"
+    ],
     [
       "Article",
       "R"
@@ -788,6 +870,16 @@
       "Product",
       "R"
     ],
+    [
+      "Product",
+      "R"
+    ],
+    [
+      "Product",
+      "R"
+    ]
+  ],
+  "ProductController.products": [
     [
       "Product",
       "R"
@@ -963,6 +1055,12 @@
       "W"
     ]
   ],
+  "SimpleUserController.sendAll": [
+    [
+      "SimpleUser",
+      "R"
+    ]
+  ],
   "SimpleUserController.unbanSimpleUsers": [
     [
       "SimpleUser",
@@ -1051,6 +1149,24 @@
       "R"
     ]
   ],
+  "SimpleUserController.getBeFollowAuthors": [
+    [
+      "SimpleUser",
+      "R"
+    ]
+  ],
+  "SimpleUserController.getFollowArticles": [
+    [
+      "Article",
+      "R"
+    ]
+  ],
+  "SimpleUserController.getFollowAuthors": [
+    [
+      "SimpleUser",
+      "R"
+    ]
+  ],
   "SimpleUserController.getFollows": [
     [
       "SimpleUser",
@@ -1078,6 +1194,18 @@
     ],
     [
       "SimpleUser",
+      "R"
+    ],
+    [
+      "SimpleUser",
+      "R"
+    ],
+    [
+      "SimpleUser",
+      "R"
+    ],
+    [
+      "Article",
       "R"
     ]
   ],
@@ -1111,6 +1239,12 @@
     [
       "SimpleUser",
       "W"
+    ]
+  ],
+  "SimpleUserController.isExitPhoneOrEmail": [
+    [
+      "SimpleUser",
+      "R"
     ]
   ],
   "SimpleUserController.isNotExitEmail": [
@@ -1415,7 +1549,7 @@
       "W"
     ],
     [
-      "EventLog",
+      "SecurityLog",
       "W"
     ],
     [
@@ -1563,6 +1697,12 @@
     [
       "SysUser",
       "W"
+    ]
+  ],
+  "SysUserCtrl.sendAll": [
+    [
+      "SysUser",
+      "R"
     ]
   ],
   "SysUserCtrl.update": [
@@ -1983,6 +2123,54 @@
       "R"
     ]
   ],
+  "ArticleController.articleComments": [
+    [
+      "Comment",
+      "R"
+    ],
+    [
+      "Article",
+      "R"
+    ],
+    [
+      "SimpleUser",
+      "R"
+    ],
+    [
+      "Reply",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
+      "SimpleUser",
+      "R"
+    ],
+    [
+      "Reply",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ]
+  ],
+  "ArticleController.articleInfo": [
+    [
+      "Article",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "SimpleUser",
+      "R"
+    ]
+  ],
   "ArticleController.articleRelated": [
     [
       "Article",
@@ -2041,11 +2229,31 @@
       "R"
     ],
     [
+      "Article",
+      "R"
+    ],
+    [
+      "Article",
+      "R"
+    ],
+    [
+      "Article",
+      "R"
+    ],
+    [
+      "Article",
+      "R"
+    ],
+    [
       "Tag",
       "R"
     ],
     [
       "Tag",
+      "R"
+    ],
+    [
+      "Article",
       "R"
     ],
     [
@@ -2057,9 +2265,47 @@
     [
       "Article",
       "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "SimpleUser",
+      "R"
+    ],
+    [
+      "Article",
+      "R"
+    ]
+  ],
+  "ArticleController.articles4Author": [
+    [
+      "Article",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "SimpleUser",
+      "R"
+    ],
+    [
+      "Article",
+      "R"
+    ],
+    [
+      "SimpleUser",
+      "R"
     ]
   ],
   "ArticleController.articles4Recommend": [
+    [
+      "Article",
+      "R"
+    ],
     [
       "Article",
       "R"
@@ -2072,6 +2318,26 @@
     ],
     [
       "Article",
+      "R"
+    ],
+    [
+      "Tag",
+      "R"
+    ],
+    [
+      "SimpleUser",
+      "R"
+    ],
+    [
+      "Article",
+      "R"
+    ],
+    [
+      "Article",
+      "R"
+    ],
+    [
+      "Tag",
       "R"
     ]
   ],
@@ -2661,7 +2927,7 @@
       "W"
     ],
     [
-      "EventLog",
+      "SecurityLog",
       "W"
     ]
   ],
@@ -2747,7 +3013,7 @@
       "W"
     ],
     [
-      "EventLog",
+      "SecurityLog",
       "W"
     ]
   ],
@@ -2769,7 +3035,7 @@
       "W"
     ],
     [
-      "EventLog",
+      "SecurityLog",
       "W"
     ]
   ],
@@ -2865,7 +3131,7 @@
       "W"
     ],
     [
-      "EventLog",
+      "SecurityLog",
       "W"
     ]
   ],
@@ -2967,7 +3233,7 @@
       "W"
     ],
     [
-      "EventLog",
+      "SecurityLog",
       "W"
     ],
     [
@@ -3081,7 +3347,7 @@
       "W"
     ],
     [
-      "EventLog",
+      "SecurityLog",
       "W"
     ]
   ],
@@ -3125,8 +3391,18 @@
       "W"
     ],
     [
-      "EventLog",
+      "SecurityLog",
       "W"
+    ]
+  ],
+  "ResumeController.resumes": [
+    [
+      "Resume",
+      "R"
+    ],
+    [
+      "Resume",
+      "R"
     ]
   ],
   "ReplyController.checkName": [
@@ -3361,6 +3637,24 @@
       "R"
     ]
   ],
+  "ReplyController.replys": [
+    [
+      "Reply",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
+      "SimpleUser",
+      "R"
+    ],
+    [
+      "Reply",
+      "R"
+    ]
+  ],
   "ReplyController.unPraise": [
     [
       "Reply",
@@ -3428,6 +3722,10 @@
     ]
   ],
   "ConfigureController.findNotices": [
+    [
+      "Configure",
+      "R"
+    ],
     [
       "Configure",
       "R"
@@ -3710,6 +4008,24 @@
     ],
     [
       "SimpleUser",
+      "R"
+    ]
+  ],
+  "CommentController.comments": [
+    [
+      "Comment",
+      "R"
+    ],
+    [
+      "Article",
+      "R"
+    ],
+    [
+      "SimpleUser",
+      "R"
+    ],
+    [
+      "Comment",
       "R"
     ]
   ],

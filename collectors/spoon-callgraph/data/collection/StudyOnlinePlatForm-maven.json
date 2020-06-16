@@ -375,6 +375,10 @@
     [
       "UserPrincipal",
       "W"
+    ],
+    [
+      "UserPrincipal",
+      "W"
     ]
   ],
   "UserController.register_r": [
@@ -392,6 +396,10 @@
     ],
     [
       "AccountInfo",
+      "W"
+    ],
+    [
+      "UserPrincipal",
       "W"
     ],
     [
@@ -744,6 +752,16 @@
     ],
     [
       "UserPrincipal",
+      "R"
+    ],
+    [
+      "AccountInfo",
+      "R"
+    ]
+  ],
+  "UserInfoController.searchInfo": [
+    [
+      "UserInfoEntitySearchable",
       "R"
     ],
     [
