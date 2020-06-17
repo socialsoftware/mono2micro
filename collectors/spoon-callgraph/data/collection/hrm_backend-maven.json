@@ -1641,15 +1641,15 @@
       "R"
     ],
     [
+      "IndividualWelfare",
+      "R"
+    ],
+    [
+      "IndividualWelfare",
+      "R"
+    ],
+    [
       "WelfareEvent",
-      "R"
-    ],
-    [
-      "IndividualWelfare",
-      "R"
-    ],
-    [
-      "IndividualWelfare",
       "R"
     ],
     [
@@ -5699,15 +5699,11 @@
       "R"
     ],
     [
-      "Appointment",
-      "R"
-    ],
-    [
-      "Appointment",
-      "R"
-    ],
-    [
       "Designation",
+      "R"
+    ],
+    [
+      "Appointment",
       "R"
     ],
     [
@@ -5739,7 +5735,23 @@
       "R"
     ],
     [
+      "Appointment",
+      "R"
+    ],
+    [
+      "Appointment",
+      "R"
+    ],
+    [
       "Designation",
+      "R"
+    ],
+    [
+      "Appointment",
+      "R"
+    ],
+    [
+      "Appointment",
       "R"
     ],
     [
@@ -5767,22 +5779,6 @@
       "R"
     ],
     [
-      "Appointment",
-      "R"
-    ],
-    [
-      "Appointment",
-      "R"
-    ],
-    [
-      "Appointment",
-      "R"
-    ],
-    [
-      "Appointment",
-      "R"
-    ],
-    [
       "Designation",
       "R"
     ],
@@ -5791,15 +5787,19 @@
       "R"
     ],
     [
+      "Appointment",
+      "R"
+    ],
+    [
+      "Appointment",
+      "R"
+    ],
+    [
+      "Appointment",
+      "R"
+    ],
+    [
       "User",
-      "R"
-    ],
-    [
-      "Appointment",
-      "R"
-    ],
-    [
-      "Appointment",
       "R"
     ],
     [
@@ -6943,11 +6943,11 @@
       "R"
     ],
     [
-      "User",
+      "UserLoanDetails",
       "R"
     ],
     [
-      "UserLoanDetails",
+      "User",
       "R"
     ],
     [
@@ -7609,11 +7609,11 @@
       "R"
     ],
     [
-      "User",
+      "UserCareerDevelopmentPlanCompany",
       "R"
     ],
     [
-      "UserCareerDevelopmentPlanCompany",
+      "User",
       "R"
     ]
   ],
@@ -10579,18 +10579,6 @@
       "R"
     ],
     [
-      "AuthorizeType",
-      "R"
-    ],
-    [
-      "Privilege",
-      "R"
-    ],
-    [
-      "Privilege",
-      "R"
-    ],
-    [
       "Module",
       "R"
     ],
@@ -10600,6 +10588,18 @@
     ],
     [
       "Role",
+      "R"
+    ],
+    [
+      "Privilege",
+      "R"
+    ],
+    [
+      "Privilege",
+      "R"
+    ],
+    [
+      "AuthorizeType",
       "R"
     ],
     [
@@ -10633,14 +10633,6 @@
       "R"
     ],
     [
-      "Privilege",
-      "R"
-    ],
-    [
-      "Privilege",
-      "R"
-    ],
-    [
       "Role",
       "R"
     ],
@@ -10649,7 +10641,15 @@
       "R"
     ],
     [
+      "Privilege",
+      "R"
+    ],
+    [
       "Module",
+      "R"
+    ],
+    [
+      "Privilege",
       "R"
     ],
     [
@@ -10709,14 +10709,6 @@
       "R"
     ],
     [
-      "Module",
-      "R"
-    ],
-    [
-      "Privilege",
-      "R"
-    ],
-    [
       "AuthorizeType",
       "R"
     ],
@@ -10734,6 +10726,14 @@
     ],
     [
       "Privilege",
+      "R"
+    ],
+    [
+      "Privilege",
+      "R"
+    ],
+    [
+      "Module",
       "R"
     ],
     [
@@ -11201,11 +11201,11 @@
       "R"
     ],
     [
-      "User",
+      "Promotion",
       "R"
     ],
     [
-      "Promotion",
+      "User",
       "R"
     ]
   ],
@@ -11509,11 +11509,11 @@
       "R"
     ],
     [
-      "RequestPromotion",
+      "User",
       "R"
     ],
     [
-      "User",
+      "RequestPromotion",
       "R"
     ],
     [
@@ -12043,15 +12043,15 @@
       "R"
     ],
     [
-      "DeniedPromotion",
-      "R"
-    ],
-    [
-      "DeniedPromotion",
-      "R"
-    ],
-    [
       "User",
+      "R"
+    ],
+    [
+      "DeniedPromotion",
+      "R"
+    ],
+    [
+      "DeniedPromotion",
       "R"
     ]
   ],

@@ -99,38 +99,6 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "PrizeResult",
-      "R"
-    ],
-    [
-      "PrizeResult",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "PrizeResult",
-      "R"
-    ],
-    [
-      "PrizeResult",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "PrizeResult",
-      "R"
-    ],
-    [
       "PrizeResult",
       "R"
     ],
@@ -152,6 +120,38 @@
     ],
     [
       "PrizeResult",
+      "R"
+    ],
+    [
+      "PrizeResult",
+      "R"
+    ],
+    [
+      "PrizeResult",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "PrizeResult",
+      "R"
+    ],
+    [
+      "PrizeResult",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "PrizeResult",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ]
   ],
@@ -1081,6 +1081,18 @@
       "R"
     ],
     [
+      "MatchOrderDetail",
+      "R"
+    ],
+    [
+      "MatchOrderDetail",
+      "R"
+    ],
+    [
+      "MatchOrder",
+      "R"
+    ],
+    [
       "MatchOrder",
       "R"
     ],
@@ -1093,10 +1105,6 @@
       "R"
     ],
     [
-      "MatchOrderDetail",
-      "R"
-    ],
-    [
       "MatchOrder",
       "R"
     ],
@@ -1106,14 +1114,6 @@
     ],
     [
       "MatchOrderDetail",
-      "R"
-    ],
-    [
-      "MatchOrderDetail",
-      "R"
-    ],
-    [
-      "MatchOrder",
       "R"
     ],
     [
@@ -1127,22 +1127,6 @@
   ],
   "MatchOrderDetailController.fileDownloadMatchOrder": [
     [
-      "MatchOrderDetail",
-      "R"
-    ],
-    [
-      "MatchOrder",
-      "R"
-    ],
-    [
-      "MatchOrder",
-      "R"
-    ],
-    [
-      "MatchOrder",
-      "R"
-    ],
-    [
       "MatchOrder",
       "R"
     ],
@@ -1160,6 +1144,22 @@
     ],
     [
       "MatchOrderDetail",
+      "R"
+    ],
+    [
+      "MatchOrder",
+      "R"
+    ],
+    [
+      "MatchOrder",
+      "R"
+    ],
+    [
+      "MatchOrderDetail",
+      "R"
+    ],
+    [
+      "MatchOrder",
       "R"
     ],
     [
@@ -1177,15 +1177,7 @@
   ],
   "MatchOrderDetailController.findMatchOrderDetailByMatchIdAndTypePage": [
     [
-      "MatchOrder",
-      "R"
-    ],
-    [
-      "MatchOrder",
-      "R"
-    ],
-    [
-      "MatchOrder",
+      "MatchOrderDetail",
       "R"
     ],
     [
@@ -1205,7 +1197,7 @@
       "R"
     ],
     [
-      "MatchOrderDetail",
+      "MatchOrder",
       "R"
     ],
     [
@@ -1221,7 +1213,15 @@
       "R"
     ],
     [
+      "MatchOrder",
+      "R"
+    ],
+    [
       "MatchOrderDetail",
+      "R"
+    ],
+    [
+      "MatchOrder",
       "R"
     ]
   ],
@@ -1437,6 +1437,18 @@
   ],
   "RefundOrderController.findRefundOrderVoNEStatusPage": [
     [
+      "MatchOrderDetail",
+      "R"
+    ],
+    [
+      "RefundOrder",
+      "R"
+    ],
+    [
+      "RefundOrder",
+      "R"
+    ],
+    [
       "MatchOrder",
       "R"
     ],
@@ -1449,7 +1461,15 @@
       "R"
     ],
     [
+      "MatchOrderDetail",
+      "R"
+    ],
+    [
       "RefundOrder",
+      "R"
+    ],
+    [
+      "MatchOrderDetail",
       "R"
     ],
     [
@@ -1477,19 +1497,11 @@
       "R"
     ],
     [
-      "MatchOrder",
-      "R"
-    ],
-    [
-      "MatchOrder",
-      "R"
-    ],
-    [
       "RefundOrder",
       "R"
     ],
     [
-      "RefundOrder",
+      "MatchOrder",
       "R"
     ],
     [
@@ -1501,7 +1513,7 @@
       "R"
     ],
     [
-      "MatchOrderDetail",
+      "RefundOrder",
       "R"
     ],
     [
@@ -1509,19 +1521,7 @@
       "R"
     ],
     [
-      "RefundOrder",
-      "R"
-    ],
-    [
-      "MatchOrderDetail",
-      "R"
-    ],
-    [
-      "RefundOrder",
-      "R"
-    ],
-    [
-      "MatchOrderDetail",
+      "MatchOrder",
       "R"
     ],
     [
@@ -3163,31 +3163,7 @@
   ],
   "ApiMatchCommentController.findMatchCommentList": [
     [
-      "MatchComment",
-      "R"
-    ],
-    [
-      "MatchComment",
-      "R"
-    ],
-    [
-      "MatchComment",
-      "R"
-    ],
-    [
-      "MatchComment",
-      "R"
-    ],
-    [
       "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "MatchComment",
       "R"
     ],
     [
@@ -3208,6 +3184,18 @@
     ],
     [
       "MatchComment",
+      "R"
+    ],
+    [
+      "MatchComment",
+      "R"
+    ],
+    [
+      "MatchComment",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -3267,35 +3255,7 @@
       "R"
     ],
     [
-      "MatchComment",
-      "R"
-    ],
-    [
       "User",
-      "R"
-    ],
-    [
-      "MatchComment",
-      "R"
-    ],
-    [
-      "MatchComment",
-      "R"
-    ],
-    [
-      "MatchComment",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "MatchComment",
       "R"
     ],
     [
@@ -3355,7 +3315,47 @@
       "R"
     ],
     [
+      "MatchComment",
+      "R"
+    ],
+    [
       "User",
+      "R"
+    ],
+    [
+      "MatchComment",
+      "R"
+    ],
+    [
+      "MatchComment",
+      "R"
+    ],
+    [
+      "MatchComment",
+      "R"
+    ],
+    [
+      "MatchComment",
+      "R"
+    ],
+    [
+      "MatchComment",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "MatchComment",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "MatchComment",
       "R"
     ],
     [
@@ -3675,10 +3675,6 @@
       "R"
     ],
     [
-      "FeedBack",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
@@ -3703,287 +3699,7 @@
       "R"
     ],
     [
-      "FeedBack",
-      "R"
-    ],
-    [
       "User",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "FeedBack",
       "R"
     ],
     [
@@ -4063,6 +3779,38 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
       "FeedBack",
       "R"
     ],
@@ -4108,6 +3856,258 @@
     ],
     [
       "FeedBack",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -4133,34 +4133,6 @@
   ],
   "FeedBackController.findFeedBackById": [
     [
-      "User",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
-      "FeedBack",
-      "R"
-    ],
-    [
       "FeedBack",
       "R"
     ],
@@ -4177,11 +4149,39 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
       "FeedBack",
       "R"
     ],
     [
       "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "FeedBack",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -5469,6 +5469,14 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "MatchOrder",
+      "R"
+    ],
+    [
       "MatchOrder",
       "R"
     ],
@@ -5489,31 +5497,23 @@
       "R"
     ],
     [
+      "MatchOrder",
+      "R"
+    ],
+    [
+      "MatchOrder",
+      "R"
+    ],
+    [
+      "MatchOrder",
+      "R"
+    ],
+    [
+      "MatchOrder",
+      "R"
+    ],
+    [
       "User",
-      "R"
-    ],
-    [
-      "MatchOrder",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "MatchOrder",
-      "R"
-    ],
-    [
-      "MatchOrder",
-      "R"
-    ],
-    [
-      "MatchOrder",
-      "R"
-    ],
-    [
-      "MatchOrder",
       "R"
     ],
     [
@@ -5683,10 +5683,6 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
       "PrizeResult",
       "R"
     ],
@@ -5696,22 +5692,6 @@
     ],
     [
       "PrizeResult",
-      "R"
-    ],
-    [
-      "PrizeResult",
-      "R"
-    ],
-    [
-      "PrizeResult",
-      "R"
-    ],
-    [
-      "PrizeResult",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -5731,6 +5711,22 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "PrizeResult",
+      "R"
+    ],
+    [
+      "PrizeResult",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "PrizeResult",
       "R"
     ],
@@ -5740,6 +5736,10 @@
     ],
     [
       "User",
+      "R"
+    ],
+    [
+      "PrizeResult",
       "R"
     ]
   ],
@@ -5749,7 +5749,11 @@
       "R"
     ],
     [
-      "PrizeResult",
+      "User",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -5757,7 +5761,7 @@
       "R"
     ],
     [
-      "PrizeResult",
+      "User",
       "R"
     ],
     [
@@ -5781,7 +5785,7 @@
       "R"
     ],
     [
-      "User",
+      "PrizeResult",
       "R"
     ],
     [
@@ -5789,15 +5793,11 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
       "PrizeResult",
       "R"
     ],
     [
-      "User",
+      "PrizeResult",
       "R"
     ],
     [
@@ -5827,31 +5827,31 @@
       "R"
     ],
     [
+      "PrizeResult",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
     [
+      "PrizeResult",
+      "R"
+    ],
+    [
+      "PrizeResult",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
     [
+      "PrizeResult",
+      "R"
+    ],
+    [
       "User",
-      "R"
-    ],
-    [
-      "PrizeResult",
-      "R"
-    ],
-    [
-      "PrizeResult",
-      "R"
-    ],
-    [
-      "PrizeResult",
-      "R"
-    ],
-    [
-      "PrizeResult",
       "R"
     ],
     [

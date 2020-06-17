@@ -339,14 +339,6 @@
       "R"
     ],
     [
-      "PostRating",
-      "R"
-    ],
-    [
-      "PostRating",
-      "R"
-    ],
-    [
       "Post",
       "R"
     ],
@@ -355,7 +347,15 @@
       "R"
     ],
     [
+      "PostRating",
+      "R"
+    ],
+    [
       "User",
+      "R"
+    ],
+    [
+      "PostRating",
       "R"
     ],
     [
@@ -455,11 +455,11 @@
       "R"
     ],
     [
-      "PostRating",
+      "Post",
       "R"
     ],
     [
-      "Post",
+      "PostRating",
       "R"
     ],
     [
@@ -545,11 +545,11 @@
       "R"
     ],
     [
-      "Post",
+      "Tag",
       "R"
     ],
     [
-      "Tag",
+      "Post",
       "R"
     ],
     [
@@ -953,7 +953,7 @@
       "R"
     ],
     [
-      "User",
+      "Comment",
       "R"
     ],
     [
@@ -961,7 +961,7 @@
       "R"
     ],
     [
-      "Comment",
+      "User",
       "R"
     ],
     [
@@ -1103,19 +1103,19 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "CommentRating",
+      "R"
+    ],
+    [
       "CommentRating",
       "R"
     ],
     [
       "Comment",
-      "R"
-    ],
-    [
-      "CommentRating",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [

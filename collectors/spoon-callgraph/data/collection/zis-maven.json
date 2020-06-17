@@ -3159,6 +3159,30 @@
       "R"
     ],
     [
+      "StoragePosStock",
+      "R"
+    ],
+    [
+      "StorageProduct",
+      "R"
+    ],
+    [
+      "StoragePosition",
+      "R"
+    ],
+    [
+      "StoragePosition",
+      "R"
+    ],
+    [
+      "StorageProduct",
+      "R"
+    ],
+    [
+      "StoragePosStock",
+      "R"
+    ],
+    [
       "StoragePosition",
       "R"
     ],
@@ -3171,39 +3195,27 @@
       "R"
     ],
     [
-      "StoragePosStock",
-      "R"
-    ],
-    [
-      "StorageProduct",
-      "R"
-    ],
-    [
-      "StoragePosStock",
-      "R"
-    ],
-    [
-      "StoragePosition",
-      "R"
-    ],
-    [
-      "StoragePosition",
-      "R"
-    ],
-    [
-      "StoragePosStock",
-      "R"
-    ],
-    [
-      "StoragePosStock",
-      "R"
-    ],
-    [
       "StorageProduct",
       "R"
     ],
     [
       "StorageProduct",
+      "R"
+    ],
+    [
+      "StoragePosStock",
+      "R"
+    ],
+    [
+      "StoragePosStock",
+      "R"
+    ],
+    [
+      "StoragePosStock",
+      "R"
+    ],
+    [
+      "StoragePosStock",
       "R"
     ],
     [
@@ -3219,23 +3231,11 @@
       "R"
     ],
     [
-      "StorageProduct",
-      "R"
-    ],
-    [
-      "StoragePosStock",
-      "R"
-    ],
-    [
       "StoragePosStock",
       "R"
     ],
     [
       "StorageProduct",
-      "R"
-    ],
-    [
-      "StoragePosStock",
       "R"
     ],
     [
@@ -8559,6 +8559,102 @@
   ],
   "RegistAndUpdateController.updateWaitUser": [
     [
+      "Company",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Company",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Company",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Company",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Company",
+      "R"
+    ],
+    [
+      "Company",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
@@ -8571,7 +8667,143 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "Company",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Company",
+      "R"
+    ],
+    [
+      "Company",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Company",
+      "R"
+    ],
+    [
+      "Company",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Company",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Company",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Company",
+      "R"
+    ],
+    [
+      "Company",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Company",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -8607,18 +8839,6 @@
       "R"
     ],
     [
-      "Role",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
@@ -8628,70 +8848,6 @@
     ],
     [
       "Role",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Company",
-      "R"
-    ],
-    [
-      "Company",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Company",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Company",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -8715,163 +8871,7 @@
       "R"
     ],
     [
-      "Role",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
       "Company",
-      "R"
-    ],
-    [
-      "Company",
-      "R"
-    ],
-    [
-      "Company",
-      "R"
-    ],
-    [
-      "Company",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Company",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Company",
-      "R"
-    ],
-    [
-      "Company",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Company",
-      "R"
-    ],
-    [
-      "Company",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Company",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Company",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Company",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Role",
       "R"
     ]
   ],
@@ -9325,11 +9325,35 @@
       "R"
     ],
     [
-      "Company",
+      "User",
+      "R"
+    ],
+    [
+      "Role",
       "R"
     ],
     [
       "User",
+      "R"
+    ],
+    [
+      "Company",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Company",
+      "R"
+    ],
+    [
+      "Company",
+      "R"
+    ],
+    [
+      "Role",
       "R"
     ],
     [
@@ -9349,26 +9373,6 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Company",
-      "R"
-    ],
-    [
       "Company",
       "R"
     ],
@@ -9377,11 +9381,7 @@
       "R"
     ],
     [
-      "Role",
-      "R"
-    ],
-    [
-      "Company",
+      "User",
       "R"
     ],
     [
@@ -11665,19 +11665,19 @@
       "R"
     ],
     [
-      "StorageOrder",
-      "R"
-    ],
-    [
-      "StorageIoDetail",
-      "R"
-    ],
-    [
       "StorageIoDetail",
       "R"
     ],
     [
       "StorageOrder",
+      "R"
+    ],
+    [
+      "StorageOrder",
+      "R"
+    ],
+    [
+      "StorageIoDetail",
       "R"
     ]
   ],
@@ -11893,6 +11893,22 @@
       "R"
     ],
     [
+      "StoragePosStock",
+      "R"
+    ],
+    [
+      "StoragePosStock",
+      "R"
+    ],
+    [
+      "StoragePosition",
+      "R"
+    ],
+    [
+      "StorageProduct",
+      "R"
+    ],
+    [
       "StorageProduct",
       "R"
     ],
@@ -11901,10 +11917,6 @@
       "R"
     ],
     [
-      "StoragePosStock",
-      "R"
-    ],
-    [
       "StorageProduct",
       "R"
     ],
@@ -11913,11 +11925,23 @@
       "R"
     ],
     [
+      "StoragePosition",
+      "R"
+    ],
+    [
+      "StoragePosition",
+      "R"
+    ],
+    [
       "StoragePosStock",
       "R"
     ],
     [
       "StoragePosStock",
+      "R"
+    ],
+    [
+      "StorageProduct",
       "R"
     ],
     [
@@ -11942,30 +11966,6 @@
     ],
     [
       "StoragePosStock",
-      "R"
-    ],
-    [
-      "StoragePosition",
-      "R"
-    ],
-    [
-      "StorageProduct",
-      "R"
-    ],
-    [
-      "StoragePosition",
-      "R"
-    ],
-    [
-      "StorageProduct",
-      "R"
-    ],
-    [
-      "StoragePosStock",
-      "R"
-    ],
-    [
-      "StoragePosition",
       "R"
     ],
     [
@@ -11981,67 +11981,11 @@
       "R"
     ],
     [
-      "StoragePosition",
-      "R"
-    ],
-    [
       "StoragePosStock",
       "R"
     ],
     [
       "StoragePosStock",
-      "R"
-    ],
-    [
-      "StoragePosition",
-      "R"
-    ],
-    [
-      "StorageProduct",
-      "R"
-    ],
-    [
-      "StoragePosStock",
-      "R"
-    ],
-    [
-      "StorageProduct",
-      "R"
-    ],
-    [
-      "StoragePosStock",
-      "R"
-    ],
-    [
-      "StoragePosition",
-      "R"
-    ],
-    [
-      "StoragePosStock",
-      "R"
-    ],
-    [
-      "StorageProduct",
-      "R"
-    ],
-    [
-      "StorageProduct",
-      "R"
-    ],
-    [
-      "StoragePosStock",
-      "R"
-    ],
-    [
-      "StoragePosStock",
-      "R"
-    ],
-    [
-      "StoragePosStock",
-      "R"
-    ],
-    [
-      "StorageProduct",
       "R"
     ],
     [
@@ -12054,6 +11998,62 @@
     ],
     [
       "StoragePosition",
+      "R"
+    ],
+    [
+      "StorageProduct",
+      "R"
+    ],
+    [
+      "StoragePosition",
+      "R"
+    ],
+    [
+      "StoragePosStock",
+      "R"
+    ],
+    [
+      "StoragePosition",
+      "R"
+    ],
+    [
+      "StorageProduct",
+      "R"
+    ],
+    [
+      "StoragePosStock",
+      "R"
+    ],
+    [
+      "StoragePosStock",
+      "R"
+    ],
+    [
+      "StoragePosStock",
+      "R"
+    ],
+    [
+      "StorageProduct",
+      "R"
+    ],
+    [
+      "StoragePosition",
+      "R"
+    ],
+    [
+      "StoragePosStock",
+      "R"
+    ],
+    [
+      "StoragePosStock",
+      "R"
+    ],
+    [
+      "StorageProduct",
+      "R"
+    ],
+    [
+      "StorageProduct",
       "R"
     ],
     [
@@ -12819,7 +12819,31 @@
       "R"
     ],
     [
+      "StoragePosition",
+      "R"
+    ],
+    [
+      "StoragePosStock",
+      "R"
+    ],
+    [
+      "StoragePosition",
+      "R"
+    ],
+    [
       "StorageProduct",
+      "R"
+    ],
+    [
+      "StoragePosStock",
+      "R"
+    ],
+    [
+      "StorageProduct",
+      "R"
+    ],
+    [
+      "StoragePosStock",
       "R"
     ],
     [
@@ -12839,14 +12863,6 @@
       "R"
     ],
     [
-      "StorageProduct",
-      "R"
-    ],
-    [
-      "StoragePosStock",
-      "R"
-    ],
-    [
       "StoragePosStock",
       "R"
     ],
@@ -12856,26 +12872,6 @@
     ],
     [
       "StorageProduct",
-      "R"
-    ],
-    [
-      "StoragePosStock",
-      "R"
-    ],
-    [
-      "StorageProduct",
-      "R"
-    ],
-    [
-      "StoragePosStock",
-      "R"
-    ],
-    [
-      "StoragePosStock",
-      "R"
-    ],
-    [
-      "StoragePosition",
       "R"
     ],
     [
@@ -12887,11 +12883,15 @@
       "R"
     ],
     [
-      "StoragePosition",
+      "StorageProduct",
       "R"
     ],
     [
       "StorageProduct",
+      "R"
+    ],
+    [
+      "StoragePosStock",
       "R"
     ],
     [
@@ -12911,7 +12911,23 @@
       "R"
     ],
     [
+      "StorageProduct",
+      "R"
+    ],
+    [
       "StoragePosStock",
+      "R"
+    ],
+    [
+      "StoragePosStock",
+      "R"
+    ],
+    [
+      "StorageProduct",
+      "R"
+    ],
+    [
+      "StoragePosition",
       "R"
     ],
     [
@@ -12931,15 +12947,7 @@
       "R"
     ],
     [
-      "StorageProduct",
-      "R"
-    ],
-    [
       "StoragePosStock",
-      "R"
-    ],
-    [
-      "StorageProduct",
       "R"
     ],
     [
@@ -12951,7 +12959,19 @@
       "R"
     ],
     [
+      "StoragePosStock",
+      "R"
+    ],
+    [
+      "StorageProduct",
+      "R"
+    ],
+    [
       "StoragePosition",
+      "R"
+    ],
+    [
+      "StoragePosStock",
       "R"
     ],
     [
@@ -12968,26 +12988,6 @@
     ],
     [
       "StoragePosStock",
-      "R"
-    ],
-    [
-      "StoragePosStock",
-      "R"
-    ],
-    [
-      "StoragePosStock",
-      "R"
-    ],
-    [
-      "StorageProduct",
-      "R"
-    ],
-    [
-      "StoragePosStock",
-      "R"
-    ],
-    [
-      "StoragePosition",
       "R"
     ],
     [
@@ -13931,6 +13931,50 @@
   ],
   "StorageController.queryStoragePosStock": [
     [
+      "StorageProduct",
+      "R"
+    ],
+    [
+      "StorageProduct",
+      "R"
+    ],
+    [
+      "StoragePosStock",
+      "R"
+    ],
+    [
+      "StoragePosition",
+      "R"
+    ],
+    [
+      "StoragePosStock",
+      "R"
+    ],
+    [
+      "StoragePosStock",
+      "R"
+    ],
+    [
+      "StoragePosStock",
+      "R"
+    ],
+    [
+      "StoragePosStock",
+      "R"
+    ],
+    [
+      "StorageProduct",
+      "R"
+    ],
+    [
+      "StoragePosition",
+      "R"
+    ],
+    [
+      "StoragePosStock",
+      "R"
+    ],
+    [
       "StoragePosition",
       "R"
     ],
@@ -13947,55 +13991,11 @@
       "R"
     ],
     [
-      "StorageProduct",
-      "R"
-    ],
-    [
-      "StoragePosStock",
-      "R"
-    ],
-    [
-      "StoragePosStock",
-      "R"
-    ],
-    [
-      "StoragePosStock",
-      "R"
-    ],
-    [
       "StoragePosStock",
       "R"
     ],
     [
       "StoragePosition",
-      "R"
-    ],
-    [
-      "StoragePosStock",
-      "R"
-    ],
-    [
-      "StoragePosition",
-      "R"
-    ],
-    [
-      "StoragePosStock",
-      "R"
-    ],
-    [
-      "StorageProduct",
-      "R"
-    ],
-    [
-      "StoragePosStock",
-      "R"
-    ],
-    [
-      "StoragePosition",
-      "R"
-    ],
-    [
-      "StorageProduct",
       "R"
     ],
     [

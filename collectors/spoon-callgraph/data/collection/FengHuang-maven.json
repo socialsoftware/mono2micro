@@ -49,6 +49,10 @@
       "W"
     ],
     [
+      "Appoint",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
@@ -95,6 +99,10 @@
     [
       "Appoint",
       "R"
+    ],
+    [
+      "Appoint",
+      "W"
     ],
     [
       "Appoint",
@@ -187,6 +195,10 @@
     [
       "CouponsDef",
       "R"
+    ],
+    [
+      "Coupons",
+      "W"
     ],
     [
       "Appoint",
@@ -379,6 +391,10 @@
       "R"
     ],
     [
+      "Coupons",
+      "W"
+    ],
+    [
       "Message",
       "W"
     ],
@@ -405,9 +421,17 @@
     [
       "Message",
       "W"
+    ],
+    [
+      "Message",
+      "W"
     ]
   ],
   "AppointController.myAppoint": [
+    [
+      "Appoint",
+      "R"
+    ],
     [
       "Appoint",
       "R"
@@ -421,6 +445,12 @@
       "R"
     ]
   ],
+  "AppointController.myAppoints": [
+    [
+      "Appoint",
+      "R"
+    ]
+  ],
   "CarouselController.findByPage": [
     [
       "Carousel",
@@ -431,10 +461,6 @@
       "R"
     ],
     [
-      "Navigation",
-      "R"
-    ],
-    [
       "Carousel",
       "R"
     ],
@@ -444,6 +470,10 @@
     ],
     [
       "Carousel",
+      "R"
+    ],
+    [
+      "Navigation",
       "R"
     ]
   ],
@@ -983,6 +1013,10 @@
       "R"
     ],
     [
+      "Coupons",
+      "R"
+    ],
+    [
       "OrderPay",
       "R"
     ],
@@ -1285,6 +1319,10 @@
       "R"
     ],
     [
+      "Coupons",
+      "W"
+    ],
+    [
       "OrderPay",
       "R"
     ],
@@ -1571,6 +1609,10 @@
     [
       "Appoint",
       "R"
+    ],
+    [
+      "Appoint",
+      "W"
     ],
     [
       "Appoint",
@@ -1616,10 +1658,34 @@
   "ExperienceAppointController.cancel": [
     [
       "ExperienceAppoint",
+      "R"
+    ],
+    [
+      "ExperienceAppoint",
       "W"
     ]
   ],
+  "ExperienceAppointController.info": [
+    [
+      "ExperienceAppoint",
+      "R"
+    ]
+  ],
+  "ExperienceAppointController.page": [
+    [
+      "ExperienceAppoint",
+      "R"
+    ],
+    [
+      "ExperienceAppoint",
+      "R"
+    ]
+  ],
   "ExperienceAppointController.process": [
+    [
+      "ExperienceAppoint",
+      "R"
+    ],
     [
       "ExperienceAppoint",
       "W"
@@ -1711,50 +1777,6 @@
       "R"
     ],
     [
-      "PackageGood",
-      "R"
-    ],
-    [
-      "DecoratePackage",
-      "R"
-    ],
-    [
-      "GoodOrder",
-      "R"
-    ],
-    [
-      "Good",
-      "R"
-    ],
-    [
-      "PackageGood",
-      "R"
-    ],
-    [
-      "GoodOrder",
-      "R"
-    ],
-    [
-      "GoodOrder",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "PackageGood",
-      "R"
-    ],
-    [
-      "DecoratePackage",
-      "R"
-    ],
-    [
-      "PackageGood",
-      "R"
-    ],
-    [
       "GoodOrder",
       "R"
     ],
@@ -1771,7 +1793,51 @@
       "R"
     ],
     [
+      "PackageGood",
+      "R"
+    ],
+    [
       "GoodOrder",
+      "R"
+    ],
+    [
+      "PackageGood",
+      "R"
+    ],
+    [
+      "DecoratePackage",
+      "R"
+    ],
+    [
+      "GoodOrder",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "GoodOrder",
+      "R"
+    ],
+    [
+      "PackageGood",
+      "R"
+    ],
+    [
+      "GoodOrder",
+      "R"
+    ],
+    [
+      "Good",
+      "R"
+    ],
+    [
+      "PackageGood",
+      "R"
+    ],
+    [
+      "DecoratePackage",
       "R"
     ],
     [
@@ -1813,47 +1879,11 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "PackageGood",
-      "R"
-    ],
-    [
-      "DecoratePackage",
-      "R"
-    ],
-    [
-      "PackageGood",
-      "R"
-    ],
-    [
-      "PackageGood",
-      "R"
-    ],
-    [
       "GoodOrder",
       "R"
     ],
     [
       "Good",
-      "R"
-    ],
-    [
-      "GoodOrder",
-      "R"
-    ],
-    [
-      "GoodOrder",
-      "R"
-    ],
-    [
-      "PackageGood",
-      "R"
-    ],
-    [
-      "DecoratePackage",
       "R"
     ],
     [
@@ -1873,7 +1903,43 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "PackageGood",
+      "R"
+    ],
+    [
+      "DecoratePackage",
+      "R"
+    ],
+    [
+      "PackageGood",
+      "R"
+    ],
+    [
+      "DecoratePackage",
+      "R"
+    ],
+    [
+      "GoodOrder",
+      "R"
+    ],
+    [
       "Good",
+      "R"
+    ],
+    [
+      "PackageGood",
+      "R"
+    ],
+    [
+      "PackageGood",
+      "R"
+    ],
+    [
+      "GoodOrder",
       "R"
     ],
     [
@@ -2251,6 +2317,10 @@
       "R"
     ],
     [
+      "Coupons",
+      "W"
+    ],
+    [
       "Message",
       "W"
     ],
@@ -2265,6 +2335,10 @@
     [
       "DecoratePackage",
       "R"
+    ],
+    [
+      "Message",
+      "W"
     ],
     [
       "Message",
@@ -2632,6 +2706,12 @@
   "HouseInfoController.getUserHouseInfos": [
     [
       "HouseInfo",
+      "R"
+    ]
+  ],
+  "CommentController.comments": [
+    [
+      "CommentItem",
       "R"
     ]
   ],
@@ -3185,6 +3265,10 @@
       "R"
     ],
     [
+      "Coupons",
+      "W"
+    ],
+    [
       "UserToken",
       "R"
     ]
@@ -3527,11 +3611,11 @@
       "R"
     ],
     [
-      "Carousel",
+      "Navigation",
       "R"
     ],
     [
-      "Navigation",
+      "Carousel",
       "R"
     ],
     [
@@ -3789,19 +3873,23 @@
   ],
   "UserController.infoCounts": [
     [
-      "T",
+      "UnreadRemindModel",
       "R"
     ],
     [
-      "T",
+      "ExperienceAppoint",
       "R"
     ],
     [
-      "T",
+      "UnreadRemindModel",
       "R"
     ],
     [
-      "T",
+      "UnreadRemindModel",
+      "R"
+    ],
+    [
+      "UnreadRemindModel",
       "R"
     ],
     [
@@ -3824,6 +3912,40 @@
     ],
     [
       "UserGroup",
+      "R"
+    ]
+  ],
+  "CouponsController.coupons": [
+    [
+      "Coupons",
+      "R"
+    ],
+    [
+      "Coupons",
+      "R"
+    ],
+    [
+      "Coupons",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Coupons",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Coupons",
+      "R"
+    ],
+    [
+      "Coupons",
       "R"
     ]
   ],
@@ -3907,6 +4029,10 @@
     [
       "CouponsDef",
       "R"
+    ],
+    [
+      "Coupons",
+      "W"
     ]
   ],
   "CouponsController.scramble": [
@@ -3942,6 +4068,10 @@
     ],
     [
       "ExperienceAppoint",
+      "R"
+    ],
+    [
+      "ExperienceAppoint",
       "W"
     ],
     [
@@ -3979,6 +4109,10 @@
     [
       "ExperienceAppoint",
       "R"
+    ],
+    [
+      "ExperienceAppoint",
+      "W"
     ],
     [
       "ExperienceAppoint",
@@ -4031,6 +4165,10 @@
       "R"
     ],
     [
+      "ExperienceAppoint",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
@@ -4045,15 +4183,27 @@
       "R"
     ],
     [
+      "Message",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
     [
       "User",
       "R"
+    ],
+    [
+      "Message",
+      "W"
     ]
   ],
   "MessageController.getMessage": [
+    [
+      "Message",
+      "R"
+    ],
     [
       "Message",
       "R"
@@ -4064,6 +4214,12 @@
     ],
     [
       "User",
+      "R"
+    ]
+  ],
+  "MessageController.messages": [
+    [
+      "Message",
       "R"
     ]
   ],
@@ -4243,9 +4399,17 @@
     [
       "MediaContent",
       "W"
+    ],
+    [
+      "Collect",
+      "W"
     ]
   ],
   "CollectController.collects": [
+    [
+      "Collect",
+      "R"
+    ],
     [
       "Collect",
       "R"
@@ -4265,12 +4429,20 @@
       "R"
     ],
     [
+      "Collect",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
     [
       "User",
       "R"
+    ],
+    [
+      "Collect",
+      "W"
     ]
   ],
   "CouponsAllocaterController.getByEvent": [

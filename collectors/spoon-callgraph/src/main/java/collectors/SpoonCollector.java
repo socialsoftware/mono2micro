@@ -20,6 +20,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 public abstract class SpoonCollector {
@@ -46,9 +49,8 @@ public abstract class SpoonCollector {
     HashMap<String, MethodContainer> methodsListCollection = new HashMap<>();
 
     /* ------- TO REMOVE ----------- */
-    int entityManager = 0;
-    private int controllerMethodsCount = 0;
     int repositoryCount = 0;
+    int controllerMethodsCount = 0;
 
     SpoonCollector(int launcherChoice, String repoName, String projectPath, boolean collectionFlag) throws IOException {
         File decompiledDir = new File(Constants.DECOMPILED_SOURCES_PATH);
@@ -153,30 +155,32 @@ public abstract class SpoonCollector {
                 System.err.println("Couldn't write collection file(s).");
             }
         }
+
         /* ------ TO REMOVE ------- */
-//        File testData = new File(Constants.TEST_DATA_PATH);
-//        if (!testData.exists()) testData.createNewFile();
-//        String s0 = "Project: " + projectName;
-//        String s1 = "#Controllers: " + controllers.size();
-//        String s15 = "#ControllerMethods: " + controllerMethodsCount;
-//        String s2 = "#Entities: " + allEntities.size();
-//        String s25 = "#Repositories: " + repositoryCount;
-//        String s3 = "#EntityManager: " + entityManager;
-//        StringBuilder sb = new StringBuilder()
-//                .append("---------------------------\n")
-//                .append(s0)
-//                .append("\n")
-//                .append(s1)
-//                .append("\n")
-//                .append(s15)
-//                .append("\n")
-//                .append(s2)
-//                .append("\n")
-//                .append(s25)
-//                .append("\n")
-//                .append(s3)
-//                .append("\n");
-//        Files.write(Paths.get(testData.getPath()), sb.toString().getBytes(), StandardOpenOption.APPEND);
+        File testData = new File(Constants.TEST_DATA_PATH);
+        if (!testData.exists()) testData.createNewFile();
+        String s0 = "Project: " + projectName;
+        String s1 = "#Controllers: " + controllers.size();
+        String s15 = "#ControllerMethods: " + controllerMethodsCount;
+        String s2 = "#Entities: " + allEntities.size();
+        String s3 = "#DomainEntities: " + allDomainEntities.size();
+        String s4 = "#Repositories: " + repositoryCount;
+        StringBuilder sb = new StringBuilder()
+                .append("---------------------------\n")
+                .append(s0)
+                .append("\n")
+                .append(s1)
+                .append("\n")
+                .append(s15)
+                .append("\n")
+                .append(s2)
+                .append("\n")
+                .append(s3)
+                .append("\n")
+                .append(s4)
+                .append("\n");
+        Files.write(Paths.get(testData.getPath()), sb.toString().getBytes(), StandardOpenOption.APPEND);
+        System.exit(1);
     }
 
     private void processController(CtClass controller) {

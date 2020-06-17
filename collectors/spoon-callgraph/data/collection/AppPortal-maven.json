@@ -93,6 +93,18 @@
       "R"
     ],
     [
+      "ErnieItem",
+      "R"
+    ],
+    [
+      "ErnieItem",
+      "R"
+    ],
+    [
+      "ErnieItem",
+      "R"
+    ],
+    [
       "Ernie",
       "R"
     ],
@@ -113,18 +125,6 @@
       "R"
     ],
     [
-      "ErnieItem",
-      "R"
-    ],
-    [
-      "ErnieItem",
-      "R"
-    ],
-    [
-      "ErnieItem",
-      "R"
-    ],
-    [
       "ErnieLog",
       "W"
     ],
@@ -177,19 +177,19 @@
       "R"
     ],
     [
+      "ErnieItem",
+      "R"
+    ],
+    [
+      "ErnieItem",
+      "R"
+    ],
+    [
+      "ErnieItem",
+      "R"
+    ],
+    [
       "Ernie",
-      "R"
-    ],
-    [
-      "ErnieItem",
-      "R"
-    ],
-    [
-      "ErnieItem",
-      "R"
-    ],
-    [
-      "ErnieItem",
       "R"
     ],
     [
@@ -3023,11 +3023,11 @@
       "R"
     ],
     [
-      "ErnieItem",
+      "Ernie",
       "R"
     ],
     [
-      "Ernie",
+      "ErnieItem",
       "R"
     ],
     [
@@ -3089,23 +3089,23 @@
       "R"
     ],
     [
+      "ErnieItem",
+      "R"
+    ],
+    [
+      "ErnieItem",
+      "R"
+    ],
+    [
+      "ErnieItem",
+      "R"
+    ],
+    [
+      "ErnieItem",
+      "R"
+    ],
+    [
       "Ernie",
-      "R"
-    ],
-    [
-      "ErnieItem",
-      "R"
-    ],
-    [
-      "ErnieItem",
-      "R"
-    ],
-    [
-      "ErnieItem",
-      "R"
-    ],
-    [
-      "ErnieItem",
       "R"
     ]
   ],
@@ -3239,19 +3239,19 @@
       "R"
     ],
     [
-      "ErnieItem",
-      "R"
-    ],
-    [
-      "ErnieItem",
-      "R"
-    ],
-    [
-      "ErnieItem",
-      "R"
-    ],
-    [
       "Ernie",
+      "R"
+    ],
+    [
+      "ErnieItem",
+      "R"
+    ],
+    [
+      "ErnieItem",
+      "R"
+    ],
+    [
+      "ErnieItem",
       "R"
     ],
     [
@@ -3449,19 +3449,19 @@
       "R"
     ],
     [
-      "ErnieItem",
-      "R"
-    ],
-    [
-      "ErnieItem",
-      "R"
-    ],
-    [
-      "ErnieItem",
-      "R"
-    ],
-    [
       "Ernie",
+      "R"
+    ],
+    [
+      "ErnieItem",
+      "R"
+    ],
+    [
+      "ErnieItem",
+      "R"
+    ],
+    [
+      "ErnieItem",
       "R"
     ],
     [
@@ -3717,19 +3717,19 @@
       "R"
     ],
     [
-      "ErnieItem",
-      "R"
-    ],
-    [
-      "ErnieItem",
-      "R"
-    ],
-    [
-      "ErnieItem",
-      "R"
-    ],
-    [
       "Ernie",
+      "R"
+    ],
+    [
+      "ErnieItem",
+      "R"
+    ],
+    [
+      "ErnieItem",
+      "R"
+    ],
+    [
+      "ErnieItem",
       "R"
     ],
     [
@@ -5381,11 +5381,11 @@
       "R"
     ],
     [
-      "ErnieItem",
+      "Ernie",
       "R"
     ],
     [
-      "Ernie",
+      "ErnieItem",
       "R"
     ],
     [
@@ -5411,15 +5411,15 @@
       "R"
     ],
     [
-      "ErnieItem",
-      "R"
-    ],
-    [
-      "ErnieItem",
-      "R"
-    ],
-    [
       "Ernie",
+      "R"
+    ],
+    [
+      "ErnieItem",
+      "R"
+    ],
+    [
+      "ErnieItem",
       "R"
     ],
     [
@@ -6157,18 +6157,6 @@
       "R"
     ],
     [
-      "IndustryCategory",
-      "R"
-    ],
-    [
-      "Tcustomer",
-      "R"
-    ],
-    [
-      "IndustryCategory",
-      "R"
-    ],
-    [
       "Tcustomer",
       "R"
     ],
@@ -6186,6 +6174,18 @@
     ],
     [
       "Tcustomer",
+      "R"
+    ],
+    [
+      "IndustryCategory",
+      "R"
+    ],
+    [
+      "Tcustomer",
+      "R"
+    ],
+    [
+      "IndustryCategory",
       "R"
     ]
   ],
@@ -7769,19 +7769,19 @@
       "R"
     ],
     [
-      "Tcustomer",
-      "R"
-    ],
-    [
-      "Tcustomer",
-      "R"
-    ],
-    [
-      "Tcustomer",
-      "R"
-    ],
-    [
       "Tenancy",
+      "R"
+    ],
+    [
+      "Tcustomer",
+      "R"
+    ],
+    [
+      "Tcustomer",
+      "R"
+    ],
+    [
+      "Tcustomer",
       "R"
     ]
   ],

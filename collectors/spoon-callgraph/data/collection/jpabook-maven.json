@@ -208,10 +208,24 @@
     ],
     [
       "Order",
+      "W"
+    ],
+    [
+      "Order",
+      "R"
+    ]
+  ],
+  "OrderController.orderList": [
+    [
+      "Order",
       "R"
     ]
   ],
   "OrderController.processCancelBuy": [
+    [
+      "Order",
+      "R"
+    ],
     [
       "Order",
       "R"

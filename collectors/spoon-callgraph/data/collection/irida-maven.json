@@ -37,11 +37,11 @@
       "R"
     ],
     [
-      "ProjectMetadataTemplateJoin",
+      "Project",
       "R"
     ],
     [
-      "Project",
+      "ProjectMetadataTemplateJoin",
       "R"
     ],
     [
@@ -93,11 +93,11 @@
       "R"
     ],
     [
-      "ProjectMetadataTemplateJoin",
+      "Project",
       "R"
     ],
     [
-      "Project",
+      "ProjectMetadataTemplateJoin",
       "R"
     ],
     [
@@ -719,11 +719,11 @@
       "R"
     ],
     [
-      "SampleSequencingObjectJoin",
+      "SequencingObject",
       "R"
     ],
     [
-      "SequencingObject",
+      "SampleSequencingObjectJoin",
       "R"
     ],
     [
@@ -865,11 +865,11 @@
       "R"
     ],
     [
-      "SampleSequencingObjectJoin",
+      "SequencingObject",
       "R"
     ],
     [
-      "SequencingObject",
+      "SampleSequencingObjectJoin",
       "R"
     ],
     [
@@ -1117,11 +1117,11 @@
       "R"
     ],
     [
-      "Project",
+      "NcbiExportSubmission",
       "R"
     ],
     [
-      "NcbiExportSubmission",
+      "Project",
       "R"
     ]
   ],
@@ -1351,14 +1351,6 @@
       "R"
     ],
     [
-      "UserGroupProjectJoin",
-      "R"
-    ],
-    [
-      "UserGroup",
-      "R"
-    ],
-    [
       "UserGroup",
       "R"
     ],
@@ -1368,6 +1360,18 @@
     ],
     [
       "UserGroupProjectJoin",
+      "R"
+    ],
+    [
+      "UserGroupProjectJoin",
+      "R"
+    ],
+    [
+      "UserGroup",
+      "R"
+    ],
+    [
+      "UserGroup",
       "R"
     ],
     [
@@ -1376,10 +1380,6 @@
     ],
     [
       "Project",
-      "R"
-    ],
-    [
-      "UserGroup",
       "R"
     ]
   ],
@@ -1465,19 +1465,19 @@
       "R"
     ],
     [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
       "Project",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
       "R"
     ],
     [
@@ -1609,11 +1609,11 @@
       "R"
     ],
     [
-      "Project",
+      "ProjectMetadataTemplateJoin",
       "R"
     ],
     [
-      "ProjectMetadataTemplateJoin",
+      "Project",
       "R"
     ],
     [
@@ -1657,11 +1657,11 @@
       "R"
     ],
     [
-      "ProjectMetadataTemplateJoin",
+      "Project",
       "R"
     ],
     [
-      "Project",
+      "ProjectMetadataTemplateJoin",
       "R"
     ],
     [
@@ -1879,11 +1879,11 @@
       "R"
     ],
     [
-      "AnalysisSubmission",
+      "SequencingObject",
       "R"
     ],
     [
-      "SequencingObject",
+      "AnalysisSubmission",
       "R"
     ],
     [
@@ -2485,19 +2485,11 @@
       "R"
     ],
     [
-      "SequencingObject",
-      "R"
-    ],
-    [
-      "SequencingObject",
-      "R"
-    ],
-    [
       "AnalysisSubmission",
       "R"
     ],
     [
-      "SampleSequencingObjectJoin",
+      "SequencingObject",
       "R"
     ],
     [
@@ -2506,6 +2498,14 @@
     ],
     [
       "SampleSequencingObjectJoin",
+      "R"
+    ],
+    [
+      "SampleSequencingObjectJoin",
+      "R"
+    ],
+    [
+      "SequencingObject",
       "R"
     ],
     [
@@ -2601,15 +2601,11 @@
       "R"
     ],
     [
-      "SequencingObject",
-      "R"
-    ],
-    [
       "AnalysisSubmission",
       "R"
     ],
     [
-      "SampleSequencingObjectJoin",
+      "SequencingObject",
       "R"
     ],
     [
@@ -2618,6 +2614,10 @@
     ],
     [
       "SequencingObject",
+      "R"
+    ],
+    [
+      "SampleSequencingObjectJoin",
       "R"
     ],
     [
@@ -2653,11 +2653,11 @@
       "R"
     ],
     [
-      "Project",
+      "ProjectMetadataTemplateJoin",
       "R"
     ],
     [
-      "ProjectMetadataTemplateJoin",
+      "Project",
       "R"
     ],
     [
@@ -2981,6 +2981,10 @@
       "R"
     ],
     [
+      "SampleSequencingObjectJoin",
+      "R"
+    ],
+    [
       "SequencingObject",
       "R"
     ],
@@ -2989,7 +2993,7 @@
       "R"
     ],
     [
-      "SampleSequencingObjectJoin",
+      "ProjectSampleJoin",
       "R"
     ],
     [
@@ -3005,7 +3009,7 @@
       "R"
     ],
     [
-      "ProjectSampleJoin",
+      "SampleSequencingObjectJoin",
       "R"
     ],
     [
@@ -3021,19 +3025,15 @@
       "R"
     ],
     [
-      "SampleSequencingObjectJoin",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
       "ProjectSampleJoin",
       "R"
     ],
     [
       "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
       "R"
     ],
     [
@@ -3221,11 +3221,11 @@
       "R"
     ],
     [
-      "Sample",
+      "SampleSequencingObjectJoin",
       "R"
     ],
     [
-      "SampleSequencingObjectJoin",
+      "Sample",
       "R"
     ],
     [
@@ -3303,19 +3303,19 @@
       "R"
     ],
     [
+      "AnalysisSubmission",
+      "R"
+    ],
+    [
+      "ProjectAnalysisSubmissionJoin",
+      "R"
+    ],
+    [
       "Project",
       "R"
     ],
     [
       "ProjectAnalysisSubmissionJoin",
-      "R"
-    ],
-    [
-      "ProjectAnalysisSubmissionJoin",
-      "R"
-    ],
-    [
-      "AnalysisSubmission",
       "R"
     ],
     [
@@ -3357,11 +3357,11 @@
       "R"
     ],
     [
-      "AnalysisSubmissionTemplate",
+      "Project",
       "R"
     ],
     [
-      "Project",
+      "AnalysisSubmissionTemplate",
       "R"
     ],
     [
@@ -3403,11 +3403,11 @@
       "R"
     ],
     [
-      "AnalysisSubmissionTemplate",
+      "Project",
       "R"
     ],
     [
-      "Project",
+      "AnalysisSubmissionTemplate",
       "R"
     ],
     [
@@ -3433,11 +3433,11 @@
       "R"
     ],
     [
-      "Project",
+      "AnalysisSubmissionTemplate",
       "R"
     ],
     [
-      "AnalysisSubmissionTemplate",
+      "Project",
       "R"
     ],
     [
@@ -3925,11 +3925,11 @@
       "R"
     ],
     [
-      "SequenceFile",
+      "AnalysisFastQC",
       "R"
     ],
     [
-      "AnalysisFastQC",
+      "SequenceFile",
       "R"
     ],
     [
@@ -3963,11 +3963,11 @@
       "R"
     ],
     [
-      "AnalysisFastQC",
+      "SequenceFile",
       "R"
     ],
     [
-      "SequenceFile",
+      "AnalysisFastQC",
       "R"
     ],
     [
@@ -3985,15 +3985,15 @@
       "R"
     ],
     [
+      "AnnouncementUserJoin",
+      "R"
+    ],
+    [
+      "AnnouncementUserJoin",
+      "R"
+    ],
+    [
       "Announcement",
-      "R"
-    ],
-    [
-      "AnnouncementUserJoin",
-      "R"
-    ],
-    [
-      "AnnouncementUserJoin",
       "R"
     ],
     [
@@ -4021,11 +4021,11 @@
       "R"
     ],
     [
-      "AnnouncementUserJoin",
+      "User",
       "R"
     ],
     [
-      "User",
+      "AnnouncementUserJoin",
       "R"
     ],
     [
@@ -4035,26 +4035,6 @@
   ],
   "AnnouncementsController.getUnreadAnnouncementsForUser": [
     [
-      "Announcement",
-      "R"
-    ],
-    [
-      "AnnouncementUserJoin",
-      "R"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "Announcement",
-      "R"
-    ],
-    [
-      "AnnouncementUserJoin",
-      "R"
-    ],
-    [
       "AnnouncementUserJoin",
       "R"
     ],
@@ -4063,7 +4043,27 @@
       "R"
     ],
     [
+      "AnnouncementUserJoin",
+      "R"
+    ],
+    [
       "Announcement",
+      "R"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "Announcement",
+      "R"
+    ],
+    [
+      "AnnouncementUserJoin",
       "R"
     ]
   ],
@@ -4085,11 +4085,11 @@
       "R"
     ],
     [
-      "Announcement",
+      "AnnouncementUserJoin",
       "R"
     ],
     [
-      "AnnouncementUserJoin",
+      "Announcement",
       "R"
     ],
     [
@@ -4471,14 +4471,6 @@
       "R"
     ],
     [
-      "SampleSequencingObjectJoin",
-      "R"
-    ],
-    [
-      "SequencingObject",
-      "R"
-    ],
-    [
       "SequencingObject",
       "R"
     ],
@@ -4487,6 +4479,10 @@
       "R"
     ],
     [
+      "SequencingObject",
+      "R"
+    ],
+    [
       "SampleSequencingObjectJoin",
       "R"
     ],
@@ -4496,6 +4492,10 @@
     ],
     [
       "SequencingObject",
+      "R"
+    ],
+    [
+      "SampleSequencingObjectJoin",
       "R"
     ],
     [
@@ -4535,11 +4535,11 @@
       "R"
     ],
     [
-      "SampleSequencingObjectJoin",
+      "SequencingObject",
       "R"
     ],
     [
-      "SequencingObject",
+      "SampleSequencingObjectJoin",
       "R"
     ],
     [
@@ -4873,11 +4873,11 @@
       "R"
     ],
     [
-      "Project",
+      "ProjectSampleJoin",
       "R"
     ],
     [
-      "ProjectSampleJoin",
+      "Project",
       "R"
     ]
   ],
@@ -5473,7 +5473,7 @@
       "R"
     ],
     [
-      "SequencingObject",
+      "Sample",
       "R"
     ],
     [
@@ -5481,7 +5481,7 @@
       "R"
     ],
     [
-      "Sample",
+      "SequencingObject",
       "R"
     ],
     [
@@ -5523,6 +5523,10 @@
       "R"
     ],
     [
+      "Sample",
+      "R"
+    ],
+    [
       "SampleSequencingObjectJoin",
       "R"
     ],
@@ -5532,10 +5536,6 @@
     ],
     [
       "SampleSequencingObjectJoin",
-      "R"
-    ],
-    [
-      "Sample",
       "R"
     ],
     [
@@ -5557,6 +5557,10 @@
       "R"
     ],
     [
+      "Sample",
+      "R"
+    ],
+    [
       "SampleSequencingObjectJoin",
       "R"
     ],
@@ -5566,10 +5570,6 @@
     ],
     [
       "SampleSequencingObjectJoin",
-      "R"
-    ],
-    [
-      "Sample",
       "R"
     ],
     [
@@ -5687,14 +5687,6 @@
       "R"
     ],
     [
-      "SequencingObject",
-      "R"
-    ],
-    [
-      "SampleSequencingObjectJoin",
-      "R"
-    ],
-    [
       "SampleSequencingObjectJoin",
       "R"
     ],
@@ -5723,11 +5715,19 @@
       "R"
     ],
     [
+      "Sample",
+      "R"
+    ],
+    [
       "SampleSequencingObjectJoin",
       "R"
     ],
     [
-      "Sample",
+      "SequencingObject",
+      "R"
+    ],
+    [
+      "SampleSequencingObjectJoin",
       "R"
     ],
     [
@@ -5759,11 +5759,11 @@
       "R"
     ],
     [
-      "ProjectReferenceFileJoin",
+      "Project",
       "R"
     ],
     [
-      "Project",
+      "ProjectReferenceFileJoin",
       "R"
     ],
     [
@@ -5863,11 +5863,11 @@
       "R"
     ],
     [
-      "Project",
+      "RelatedProjectJoin",
       "R"
     ],
     [
-      "RelatedProjectJoin",
+      "Project",
       "R"
     ]
   ],
@@ -5895,11 +5895,11 @@
       "R"
     ],
     [
-      "RelatedProjectJoin",
+      "Project",
       "R"
     ],
     [
-      "Project",
+      "RelatedProjectJoin",
       "R"
     ],
     [
@@ -5961,19 +5961,11 @@
       "R"
     ],
     [
-      "UserGroupJoin",
+      "UserGroupProjectJoin",
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "Project",
+      "UserGroup",
       "R"
     ],
     [
@@ -5985,27 +5977,11 @@
       "R"
     ],
     [
-      "UserGroup",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
       "Project",
       "R"
     ],
     [
       "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "UserGroupJoin",
       "R"
     ],
     [
@@ -6025,7 +6001,19 @@
       "R"
     ],
     [
-      "UserGroupProjectJoin",
+      "Project",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "UserGroupJoin",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -6034,6 +6022,18 @@
     ],
     [
       "Project",
+      "R"
+    ],
+    [
+      "UserGroupJoin",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -6083,11 +6083,11 @@
       "R"
     ],
     [
-      "RelatedProjectJoin",
+      "Project",
       "R"
     ],
     [
-      "Project",
+      "RelatedProjectJoin",
       "R"
     ],
     [
@@ -6307,11 +6307,35 @@
       "R"
     ],
     [
-      "ProjectUserJoin",
+      "UserGroupJoin",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
       "Project",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "UserGroupProjectJoin",
+      "R"
+    ],
+    [
+      "UserGroupProjectJoin",
+      "R"
+    ],
+    [
+      "UserGroup",
       "R"
     ],
     [
@@ -6331,30 +6355,6 @@
       "R"
     ],
     [
-      "UserGroupProjectJoin",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
-      "UserGroupJoin",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
-      "UserGroupProjectJoin",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
       "ProjectUserJoin",
       "R"
     ],
@@ -6367,10 +6367,6 @@
       "R"
     ],
     [
-      "UserGroup",
-      "R"
-    ],
-    [
       "Project",
       "R"
     ],
@@ -6383,7 +6379,11 @@
       "R"
     ],
     [
-      "User",
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "Project",
       "R"
     ],
     [
@@ -6429,11 +6429,11 @@
       "R"
     ],
     [
-      "Project",
+      "RelatedProjectJoin",
       "R"
     ],
     [
-      "RelatedProjectJoin",
+      "Project",
       "R"
     ],
     [
@@ -6719,11 +6719,11 @@
       "R"
     ],
     [
-      "UserGroupJoin",
+      "UserGroup",
       "R"
     ],
     [
-      "UserGroup",
+      "UserGroupJoin",
       "R"
     ],
     [
@@ -6985,11 +6985,11 @@
       "R"
     ],
     [
-      "Sample",
+      "SampleGenomeAssemblyJoin",
       "R"
     ],
     [
-      "SampleGenomeAssemblyJoin",
+      "Sample",
       "R"
     ],
     [
@@ -7233,27 +7233,27 @@
       "R"
     ],
     [
-      "Sample",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "Sample",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
       "Project",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Sample",
       "R"
     ],
     [
@@ -7293,15 +7293,15 @@
       "R"
     ],
     [
-      "SequencingObject",
-      "R"
-    ],
-    [
-      "SequencingObject",
-      "R"
-    ],
-    [
       "SequencingRun",
+      "R"
+    ],
+    [
+      "SequencingObject",
+      "R"
+    ],
+    [
+      "SequencingObject",
       "R"
     ]
   ],
@@ -8089,19 +8089,19 @@
       "R"
     ],
     [
+      "GenomeAssembly",
+      "R"
+    ],
+    [
+      "SampleGenomeAssemblyJoin",
+      "R"
+    ],
+    [
       "SampleGenomeAssemblyJoin",
       "R"
     ],
     [
       "Sample",
-      "R"
-    ],
-    [
-      "SampleGenomeAssemblyJoin",
-      "R"
-    ],
-    [
-      "GenomeAssembly",
       "R"
     ],
     [
@@ -8279,11 +8279,11 @@
       "R"
     ],
     [
-      "SampleGenomeAssemblyJoin",
+      "Sample",
       "R"
     ],
     [
-      "Sample",
+      "SampleGenomeAssemblyJoin",
       "R"
     ],
     [
@@ -8377,10 +8377,6 @@
       "R"
     ],
     [
-      "Sample",
-      "R"
-    ],
-    [
       "SampleGenomeAssemblyJoin",
       "R"
     ],
@@ -8390,6 +8386,10 @@
     ],
     [
       "SampleGenomeAssemblyJoin",
+      "R"
+    ],
+    [
+      "Sample",
       "R"
     ],
     [
@@ -8491,7 +8491,7 @@
       "R"
     ],
     [
-      "Sample",
+      "SequencingObject",
       "R"
     ],
     [
@@ -8499,7 +8499,7 @@
       "R"
     ],
     [
-      "SequencingObject",
+      "Sample",
       "R"
     ],
     [
@@ -8997,11 +8997,11 @@
       "R"
     ],
     [
-      "ProjectUserJoin",
+      "Project",
       "R"
     ],
     [
-      "Project",
+      "ProjectUserJoin",
       "R"
     ],
     [
@@ -9027,6 +9027,10 @@
       "R"
     ],
     [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
       "Project",
       "R"
     ],
@@ -9043,6 +9047,14 @@
       "R"
     ],
     [
+      "Project",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
       "ProjectUserJoin",
       "R"
     ],
@@ -9060,18 +9072,6 @@
     ],
     [
       "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "Project",
       "R"
     ],
     [
@@ -9219,7 +9219,7 @@
       "R"
     ],
     [
-      "Project",
+      "Sample",
       "R"
     ],
     [
@@ -9227,7 +9227,7 @@
       "R"
     ],
     [
-      "Sample",
+      "Project",
       "R"
     ],
     [
@@ -9333,15 +9333,11 @@
       "R"
     ],
     [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
     [
-      "UserGroupProjectJoin",
+      "ProjectUserJoin",
       "R"
     ],
     [
@@ -9350,6 +9346,10 @@
     ],
     [
       "UserGroup",
+      "R"
+    ],
+    [
+      "UserGroupProjectJoin",
       "R"
     ],
     [
@@ -9601,19 +9601,19 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "RemoteAPIToken",
-      "R"
-    ],
-    [
-      "RemoteAPIToken",
-      "R"
-    ],
-    [
       "RemoteAPI",
+      "R"
+    ],
+    [
+      "RemoteAPIToken",
+      "R"
+    ],
+    [
+      "RemoteAPIToken",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -9701,11 +9701,39 @@
       "R"
     ],
     [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
     [
       "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -9714,34 +9742,6 @@
     ],
     [
       "Project",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -9763,18 +9763,6 @@
       "R"
     ],
     [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
@@ -9784,6 +9772,18 @@
     ],
     [
       "Project",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
       "R"
     ],
     [
@@ -9821,11 +9821,11 @@
       "R"
     ],
     [
-      "ProjectUserJoin",
+      "User",
       "R"
     ],
     [
-      "User",
+      "ProjectUserJoin",
       "R"
     ],
     [
@@ -9939,11 +9939,11 @@
       "R"
     ],
     [
-      "ProjectUserJoin",
+      "Project",
       "R"
     ],
     [
-      "Project",
+      "ProjectUserJoin",
       "R"
     ],
     [
@@ -9993,6 +9993,10 @@
       "R"
     ],
     [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
       "User",
       "R"
     ],
@@ -10002,10 +10006,6 @@
     ],
     [
       "Project",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
       "R"
     ],
     [
@@ -10261,11 +10261,11 @@
       "R"
     ],
     [
-      "UserGroupJoin",
+      "UserGroup",
       "R"
     ],
     [
-      "UserGroup",
+      "UserGroupJoin",
       "R"
     ],
     [
@@ -10401,11 +10401,11 @@
       "R"
     ],
     [
-      "UserGroupJoin",
+      "User",
       "R"
     ],
     [
-      "User",
+      "UserGroupJoin",
       "R"
     ],
     [
@@ -10587,7 +10587,7 @@
       "R"
     ],
     [
-      "Project",
+      "Sample",
       "R"
     ],
     [
@@ -10595,7 +10595,7 @@
       "R"
     ],
     [
-      "Sample",
+      "Project",
       "R"
     ],
     [
@@ -10733,27 +10733,27 @@
       "R"
     ],
     [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "Sample",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "Sample",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
       "Project",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
       "R"
     ],
     [
@@ -10839,19 +10839,19 @@
       "R"
     ],
     [
+      "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
       "ProjectSampleJoin",
       "R"
     ],
     [
       "Project",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "Sample",
       "R"
     ],
     [
@@ -10917,6 +10917,10 @@
       "R"
     ],
     [
+      "Sample",
+      "R"
+    ],
+    [
       "ProjectSampleJoin",
       "R"
     ],
@@ -10934,10 +10938,6 @@
     ],
     [
       "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "Sample",
       "R"
     ],
     [
@@ -11151,19 +11151,19 @@
       "R"
     ],
     [
+      "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
       "Project",
       "R"
     ],
     [
       "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "Sample",
       "R"
     ],
     [
@@ -11179,11 +11179,11 @@
       "R"
     ],
     [
-      "Sample",
+      "ProjectSampleJoin",
       "R"
     ],
     [
-      "ProjectSampleJoin",
+      "Sample",
       "R"
     ],
     [
@@ -11383,10 +11383,6 @@
       "R"
     ],
     [
-      "UserGroupJoin",
-      "R"
-    ],
-    [
       "UserGroupProjectJoin",
       "R"
     ],
@@ -11396,6 +11392,10 @@
     ],
     [
       "UserGroup",
+      "R"
+    ],
+    [
+      "UserGroupJoin",
       "R"
     ],
     [
@@ -11565,19 +11565,15 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
       "ProjectUserJoin",
       "R"
     ],
     [
-      "UserGroupProjectJoin",
+      "User",
       "R"
     ],
     [
-      "UserGroup",
+      "UserGroupProjectJoin",
       "R"
     ],
     [
@@ -11586,6 +11582,10 @@
     ],
     [
       "UserGroupProjectJoin",
+      "R"
+    ],
+    [
+      "UserGroup",
       "R"
     ],
     [
@@ -12397,15 +12397,19 @@
       "R"
     ],
     [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
       "User",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "UserGroupJoin",
       "R"
     ],
     [
@@ -12418,10 +12422,6 @@
     ],
     [
       "UserGroup",
-      "R"
-    ],
-    [
-      "UserGroupJoin",
       "R"
     ],
     [
@@ -12495,11 +12495,11 @@
       "R"
     ],
     [
-      "ProjectSampleJoin",
+      "Sample",
       "R"
     ],
     [
-      "Sample",
+      "ProjectSampleJoin",
       "R"
     ],
     [
@@ -12527,15 +12527,15 @@
       "R"
     ],
     [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
       "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
       "R"
     ],
     [
@@ -12575,11 +12575,11 @@
       "R"
     ],
     [
-      "SequencingObject",
+      "SampleSequencingObjectJoin",
       "R"
     ],
     [
-      "SampleSequencingObjectJoin",
+      "SequencingObject",
       "R"
     ],
     [
@@ -12733,6 +12733,14 @@
       "R"
     ],
     [
+      "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
       "ProjectSampleJoin",
       "R"
     ],
@@ -12746,14 +12754,6 @@
     ],
     [
       "Project",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "Sample",
       "R"
     ],
     [
@@ -12859,11 +12859,11 @@
       "R"
     ],
     [
-      "ProjectSampleJoin",
+      "Project",
       "R"
     ],
     [
-      "Project",
+      "ProjectSampleJoin",
       "R"
     ],
     [
@@ -12879,11 +12879,11 @@
       "R"
     ],
     [
-      "ProjectSampleJoin",
+      "Sample",
       "R"
     ],
     [
-      "Sample",
+      "ProjectSampleJoin",
       "R"
     ],
     [
@@ -12913,11 +12913,11 @@
       "R"
     ],
     [
-      "SampleSequencingObjectJoin",
+      "Sample",
       "R"
     ],
     [
-      "Sample",
+      "SampleSequencingObjectJoin",
       "R"
     ],
     [
@@ -12975,10 +12975,6 @@
       "R"
     ],
     [
-      "SampleSequencingObjectJoin",
-      "R"
-    ],
-    [
       "Sample",
       "R"
     ],
@@ -12991,11 +12987,27 @@
       "R"
     ],
     [
+      "SampleSequencingObjectJoin",
+      "R"
+    ],
+    [
       "SequenceFile",
       "R"
     ],
     [
       "SequenceFile",
+      "R"
+    ],
+    [
+      "SequenceFile",
+      "R"
+    ],
+    [
+      "AnalysisFastQC",
+      "R"
+    ],
+    [
+      "AnalysisFastQC",
       "R"
     ],
     [
@@ -13007,15 +13019,7 @@
       "R"
     ],
     [
-      "AnalysisFastQC",
-      "R"
-    ],
-    [
-      "SequenceFile",
-      "R"
-    ],
-    [
-      "AnalysisFastQC",
+      "QCEntry",
       "R"
     ],
     [
@@ -13032,10 +13036,6 @@
     ],
     [
       "Sample",
-      "R"
-    ],
-    [
-      "QCEntry",
       "R"
     ],
     [
@@ -13149,19 +13149,19 @@
       "R"
     ],
     [
-      "Project",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
       "ProjectSampleJoin",
       "R"
     ],
     [
       "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Project",
       "R"
     ],
     [
@@ -13227,6 +13227,10 @@
       "R"
     ],
     [
+      "SampleSequencingObjectJoin",
+      "R"
+    ],
+    [
       "Sample",
       "R"
     ],
@@ -13235,23 +13239,19 @@
       "R"
     ],
     [
-      "SampleSequencingObjectJoin",
-      "R"
-    ],
-    [
-      "SequenceFile",
-      "R"
-    ],
-    [
-      "SequenceFile",
-      "R"
-    ],
-    [
       "SequenceFile",
       "R"
     ],
     [
       "AnalysisFastQC",
+      "R"
+    ],
+    [
+      "SequenceFile",
+      "R"
+    ],
+    [
+      "SequenceFile",
       "R"
     ],
     [
@@ -13409,11 +13409,59 @@
       "R"
     ],
     [
-      "UserGroupProjectJoin",
+      "UserGroupJoin",
       "R"
     ],
     [
       "UserGroup",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "UserGroupProjectJoin",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "UserGroupProjectJoin",
+      "R"
+    ],
+    [
+      "Project",
+      "R"
+    ],
+    [
+      "UserGroupJoin",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "UserGroupJoin",
+      "R"
+    ],
+    [
+      "ProjectUserJoin",
+      "R"
+    ],
+    [
+      "Project",
       "R"
     ],
     [
@@ -13429,55 +13477,7 @@
       "R"
     ],
     [
-      "UserGroupProjectJoin",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
-      "UserGroupJoin",
-      "R"
-    ],
-    [
       "UserGroup",
-      "R"
-    ],
-    [
-      "UserGroupJoin",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
-      "ProjectUserJoin",
-      "R"
-    ],
-    [
-      "Project",
-      "R"
-    ],
-    [
-      "UserGroupJoin",
-      "R"
-    ],
-    [
-      "Project",
       "R"
     ],
     [
@@ -13503,15 +13503,15 @@
       "R"
     ],
     [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
       "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
       "R"
     ],
     [
@@ -13567,7 +13567,7 @@
       "R"
     ],
     [
-      "Sample",
+      "Project",
       "R"
     ],
     [
@@ -13575,7 +13575,7 @@
       "R"
     ],
     [
-      "Project",
+      "Sample",
       "R"
     ],
     [
@@ -13695,19 +13695,19 @@
       "R"
     ],
     [
+      "Project",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
       "ProjectSampleJoin",
       "R"
     ],
     [
       "Sample",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "Project",
       "R"
     ],
     [
@@ -13727,14 +13727,6 @@
       "R"
     ],
     [
-      "Sample",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
       "Project",
       "R"
     ],
@@ -13743,11 +13735,19 @@
       "R"
     ],
     [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
       "Sample",
       "R"
     ],
     [
       "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Sample",
       "R"
     ],
     [
@@ -13815,19 +13815,19 @@
       "R"
     ],
     [
+      "Project",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
       "ProjectSampleJoin",
       "R"
     ],
     [
       "Sample",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "Project",
       "R"
     ],
     [
@@ -13879,27 +13879,27 @@
       "R"
     ],
     [
+      "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
       "Project",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "Sample",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "Sample",
       "R"
     ],
     [
@@ -14021,27 +14021,27 @@
       "R"
     ],
     [
-      "Sample",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
-      "Sample",
-      "R"
-    ],
-    [
-      "ProjectSampleJoin",
-      "R"
-    ],
-    [
       "Project",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
+      "R"
+    ],
+    [
+      "Sample",
+      "R"
+    ],
+    [
+      "ProjectSampleJoin",
       "R"
     ],
     [

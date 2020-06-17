@@ -120,10 +120,12 @@ public class SpringDataJPACollector extends SpoonCollector {
             if (isRepositoryPackageClass(clazzReference.getPackage().toString()))
                 return true;
 
-            for (Object o : clazzReference.getSuperInterfaces().toArray()) {
-                CtTypeReference ctInterface = (CtTypeReference) o;
 
-                if (eventualNewRepository == null) {
+            // first call -> lets keep info about this class which may be a repository
+            // namely the eventual repository type
+            if (eventualNewRepository == null) {
+                for (Object o : clazzReference.getSuperInterfaces().toArray()) {
+                    CtTypeReference ctInterface = (CtTypeReference) o;
                     if (ctInterface.getActualTypeArguments().size() > 0) {
                         CtTypeReference<?> ctTypeReference = ctInterface.getActualTypeArguments().get(0);
                         String typeArgumentName = ctTypeReference.getSimpleName();
@@ -144,21 +146,27 @@ public class SpringDataJPACollector extends SpoonCollector {
                                 clazzReference.getSimpleName(),
                                 typeArgumentName
                         );
-                    }
-                    else
-                        return false;
-                }
 
-                if (isRepositoryPackageClass(ctInterface.getPackage().getSimpleName())) {
-                    return true;
+                        if (isRepository(ctInterface))
+                            return true;
+                        else {
+                            eventualNewRepository = null;
+                        }
+                    }
                 }
-                else {
+            }
+
+            if (eventualNewRepository == null) // root class is not a repository class definitely
+                return false;
+            else { // root class looks like a repository class; iterate over superinterfaces to confirm
+                for (Object o : clazzReference.getSuperInterfaces().toArray()) {
+                    CtTypeReference ctInterface = (CtTypeReference) o;
+
                     if (isRepository(ctInterface))
                         return true;
                 }
             }
 
-            eventualNewRepository = null;
             return false;
         } catch (Exception e) {
             eventualNewRepository = null;

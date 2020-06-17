@@ -132,22 +132,6 @@
     ],
     [
       "Usuario",
-      "W"
-    ],
-    [
-      "Usuario",
-      "R"
-    ],
-    [
-      "Usuario",
-      "R"
-    ],
-    [
-      "Usuario",
-      "W"
-    ],
-    [
-      "Usuario",
       "R"
     ],
     [
@@ -164,7 +148,31 @@
     ],
     [
       "Usuario",
+      "W"
+    ],
+    [
+      "Usuario",
       "R"
+    ],
+    [
+      "Usuario",
+      "W"
+    ],
+    [
+      "Usuario",
+      "R"
+    ],
+    [
+      "Usuario",
+      "R"
+    ],
+    [
+      "Usuario",
+      "R"
+    ],
+    [
+      "Usuario",
+      "W"
     ],
     [
       "Usuario",
@@ -215,6 +223,12 @@
       "R"
     ]
   ],
+  "CidadesController.pesquisarPorCodigoEstado": [
+    [
+      "Cidade",
+      "R"
+    ]
+  ],
   "CidadesController.salvar": [
     [
       "Estado",
@@ -233,6 +247,14 @@
       "R"
     ],
     [
+      "Cidade",
+      "R"
+    ],
+    [
+      "Cidade",
+      "W"
+    ],
+    [
       "Estado",
       "R"
     ]
@@ -241,6 +263,14 @@
     [
       "Estilo",
       "R"
+    ],
+    [
+      "Estilo",
+      "R"
+    ],
+    [
+      "Estilo",
+      "W"
     ]
   ],
   "EstilosController.pesquisar": [
@@ -265,6 +295,14 @@
     [
       "Estilo",
       "R"
+    ],
+    [
+      "Estilo",
+      "R"
+    ],
+    [
+      "Estilo",
+      "W"
     ]
   ],
   "DashboardController.dashboard": [
@@ -283,9 +321,17 @@
     [
       "Cerveja",
       "R"
+    ],
+    [
+      "Cliente",
+      "R"
     ]
   ],
   "VendasController.adicionarItem": [
+    [
+      "Cerveja",
+      "R"
+    ],
     [
       "ItemVenda",
       "R"
@@ -373,6 +419,14 @@
     [
       "Venda",
       "R"
+    ],
+    [
+      "Venda",
+      "R"
+    ],
+    [
+      "Venda",
+      "W"
     ],
     [
       "Venda",
@@ -644,6 +698,10 @@
     ],
     [
       "Venda",
+      "R"
+    ],
+    [
+      "Venda",
       "W"
     ],
     [
@@ -661,6 +719,10 @@
     [
       "Venda",
       "R"
+    ],
+    [
+      "Venda",
+      "W"
     ],
     [
       "Venda",
@@ -802,6 +864,10 @@
     ],
     [
       "Venda",
+      "R"
+    ],
+    [
+      "Venda",
       "W"
     ],
     [
@@ -819,6 +885,10 @@
     [
       "Venda",
       "R"
+    ],
+    [
+      "Venda",
+      "W"
     ],
     [
       "Venda",
@@ -1100,6 +1170,10 @@
     ],
     [
       "Venda",
+      "R"
+    ],
+    [
+      "Venda",
       "W"
     ],
     [
@@ -1117,6 +1191,10 @@
     [
       "Venda",
       "R"
+    ],
+    [
+      "Venda",
+      "W"
     ],
     [
       "Venda",
@@ -1141,9 +1219,25 @@
       "R"
     ]
   ],
+  "CervejasController.editar": [
+    [
+      "Estilo",
+      "R"
+    ]
+  ],
   "CervejasController.excluir": [
     [
       "Cerveja",
+      "R"
+    ],
+    [
+      "Cerveja",
+      "W"
+    ]
+  ],
+  "CervejasController.nova": [
+    [
+      "Estilo",
       "R"
     ]
   ],
@@ -1153,6 +1247,16 @@
       "R"
     ]
   ],
+  "CervejasController.salvar": [
+    [
+      "Estilo",
+      "R"
+    ],
+    [
+      "Cerveja",
+      "W"
+    ]
+  ],
   "ClientesController.novo": [
     [
       "Estado",
@@ -1160,26 +1264,6 @@
     ]
   ],
   "ClientesController.pesquisar": [
-    [
-      "Cliente",
-      "R"
-    ],
-    [
-      "Cliente",
-      "R"
-    ],
-    [
-      "Cidade",
-      "R"
-    ],
-    [
-      "Estado",
-      "R"
-    ],
-    [
-      "Cliente",
-      "R"
-    ],
     [
       "Cliente",
       "R"
@@ -1193,6 +1277,14 @@
     [
       "Cliente",
       "R"
+    ],
+    [
+      "Cliente",
+      "R"
+    ],
+    [
+      "Cliente",
+      "W"
     ],
     [
       "Estado",

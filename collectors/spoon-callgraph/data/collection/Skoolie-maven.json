@@ -9,15 +9,15 @@
       "R"
     ],
     [
-      "GradingPeriod",
-      "R"
-    ],
-    [
       "SchoolYear",
       "R"
     ],
     [
       "School",
+      "R"
+    ],
+    [
+      "GradingPeriod",
       "R"
     ]
   ],
@@ -27,15 +27,15 @@
       "R"
     ],
     [
+      "SchoolYear",
+      "R"
+    ],
+    [
+      "SchoolYear",
+      "R"
+    ],
+    [
       "School",
-      "R"
-    ],
-    [
-      "SchoolYear",
-      "R"
-    ],
-    [
-      "SchoolYear",
       "R"
     ]
   ],
@@ -83,11 +83,11 @@
       "R"
     ],
     [
-      "School",
+      "SchoolYear",
       "R"
     ],
     [
-      "SchoolYear",
+      "School",
       "R"
     ]
   ],
@@ -147,11 +147,15 @@
       "R"
     ],
     [
+      "School",
+      "R"
+    ],
+    [
       "Subject",
       "R"
     ],
     [
-      "School",
+      "Course",
       "R"
     ],
     [
@@ -164,10 +168,6 @@
     ],
     [
       "School",
-      "R"
-    ],
-    [
-      "Course",
       "R"
     ],
     [
@@ -219,10 +219,6 @@
       "R"
     ],
     [
-      "SchoolRoom",
-      "R"
-    ],
-    [
       "School",
       "R"
     ],
@@ -231,6 +227,10 @@
       "R"
     ],
     [
+      "SchoolRoom",
+      "R"
+    ],
+    [
       "Teacher",
       "R"
     ],
@@ -244,10 +244,6 @@
     ],
     [
       "Teacher",
-      "R"
-    ],
-    [
-      "Course",
       "R"
     ],
     [
@@ -264,6 +260,10 @@
     ],
     [
       "School",
+      "R"
+    ],
+    [
+      "Course",
       "R"
     ]
   ],
@@ -283,11 +283,11 @@
       "R"
     ],
     [
-      "School",
+      "SchoolEvent",
       "R"
     ],
     [
-      "SchoolEvent",
+      "School",
       "R"
     ]
   ],
@@ -301,11 +301,11 @@
       "R"
     ],
     [
-      "SchoolEvent",
+      "School",
       "R"
     ],
     [
-      "School",
+      "SchoolEvent",
       "R"
     ]
   ],
@@ -337,11 +337,11 @@
       "R"
     ],
     [
-      "Student",
+      "School",
       "R"
     ],
     [
-      "School",
+      "Student",
       "R"
     ]
   ],

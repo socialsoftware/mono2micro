@@ -5,6 +5,18 @@
       "R"
     ],
     [
+      "Category",
+      "R"
+    ],
+    [
+      "NameOfSpecificationDigital",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
       "NameOfSpecificationDigital",
       "R"
     ],
@@ -14,14 +26,6 @@
     ],
     [
       "Category",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "NameOfSpecificationDigital",
       "R"
     ],
     [
@@ -34,6 +38,10 @@
     ],
     [
       "Category",
+      "R"
+    ],
+    [
+      "NameOfSpecificationString",
       "R"
     ],
     [
@@ -50,14 +58,6 @@
     ],
     [
       "Category",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "NameOfSpecificationString",
       "R"
     ]
   ],
@@ -105,6 +105,10 @@
       "R"
     ],
     [
+      "Category",
+      "R"
+    ],
+    [
       "Item",
       "R"
     ],
@@ -118,10 +122,6 @@
     ],
     [
       "Item",
-      "R"
-    ],
-    [
-      "Category",
       "R"
     ],
     [
@@ -225,6 +225,10 @@
       "R"
     ],
     [
+      "SpecificationDigital",
+      "R"
+    ],
+    [
       "NameOfSpecificationDigital",
       "R"
     ],
@@ -233,15 +237,11 @@
       "R"
     ],
     [
-      "SpecificationDigital",
-      "R"
-    ],
-    [
-      "SpecificationDigital",
-      "R"
-    ],
-    [
       "MeasuringSystem",
+      "R"
+    ],
+    [
+      "SpecificationDigital",
       "R"
     ],
     [
@@ -371,10 +371,6 @@
       "R"
     ],
     [
-      "Category",
-      "R"
-    ],
-    [
       "Item",
       "R"
     ],
@@ -384,6 +380,10 @@
     ],
     [
       "Item",
+      "R"
+    ],
+    [
+      "Category",
       "R"
     ],
     [
@@ -435,11 +435,11 @@
       "R"
     ],
     [
-      "NameOfSpecificationDigital",
+      "SpecificationDigital",
       "R"
     ],
     [
-      "SpecificationDigital",
+      "NameOfSpecificationDigital",
       "R"
     ],
     [
@@ -489,11 +489,11 @@
       "R"
     ],
     [
-      "Producer",
+      "Item",
       "R"
     ],
     [
-      "Item",
+      "Producer",
       "R"
     ],
     [
@@ -506,6 +506,10 @@
     ],
     [
       "Item",
+      "R"
+    ],
+    [
+      "Category",
       "R"
     ],
     [
@@ -549,18 +553,6 @@
       "R"
     ],
     [
-      "Category",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
       "NameOfSpecificationDigital",
       "R"
     ],
@@ -570,6 +562,14 @@
     ],
     [
       "NameOfSpecificationDigital",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
+      "Category",
       "R"
     ],
     [
@@ -685,6 +685,10 @@
       "R"
     ],
     [
+      "Category",
+      "R"
+    ],
+    [
       "Item",
       "R"
     ],
@@ -698,10 +702,6 @@
     ],
     [
       "Item",
-      "R"
-    ],
-    [
-      "Category",
       "R"
     ]
   ],
@@ -733,6 +733,10 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
       "Item",
       "R"
     ],
@@ -753,15 +757,11 @@
       "R"
     ],
     [
-      "ShopingCart",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
       "Item",
+      "R"
+    ],
+    [
+      "ShopingCart",
       "R"
     ]
   ],
@@ -833,19 +833,19 @@
       "R"
     ],
     [
-      "SpecificationString",
-      "R"
-    ],
-    [
-      "SpecificationString",
-      "R"
-    ],
-    [
-      "SpecificationString",
-      "R"
-    ],
-    [
       "NameOfSpecificationString",
+      "R"
+    ],
+    [
+      "SpecificationString",
+      "R"
+    ],
+    [
+      "SpecificationString",
+      "R"
+    ],
+    [
+      "SpecificationString",
       "R"
     ],
     [
@@ -1015,11 +1015,11 @@
       "R"
     ],
     [
-      "NameOfSpecificationDigital",
+      "Category",
       "R"
     ],
     [
-      "Category",
+      "NameOfSpecificationDigital",
       "R"
     ],
     [
@@ -1061,11 +1061,11 @@
       "R"
     ],
     [
-      "Category",
+      "NameOfSpecificationString",
       "R"
     ],
     [
-      "NameOfSpecificationString",
+      "Category",
       "R"
     ],
     [
@@ -1125,11 +1125,11 @@
       "R"
     ],
     [
-      "NameOfSpecificationDigital",
+      "Category",
       "R"
     ],
     [
-      "Category",
+      "NameOfSpecificationDigital",
       "R"
     ],
     [

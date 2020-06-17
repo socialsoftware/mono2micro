@@ -209,15 +209,15 @@
       "R"
     ],
     [
+      "Index",
+      "R"
+    ],
+    [
       "Exchange",
       "R"
     ],
     [
       "Market",
-      "R"
-    ],
-    [
-      "Index",
       "R"
     ],
     [
@@ -275,19 +275,19 @@
       "R"
     ],
     [
+      "Index",
+      "R"
+    ],
+    [
+      "Index",
+      "R"
+    ],
+    [
       "Exchange",
       "R"
     ],
     [
       "Market",
-      "R"
-    ],
-    [
-      "Index",
-      "R"
-    ],
-    [
-      "Index",
       "R"
     ],
     [
@@ -443,19 +443,19 @@
       "R"
     ],
     [
+      "Index",
+      "R"
+    ],
+    [
+      "Index",
+      "R"
+    ],
+    [
       "Exchange",
       "R"
     ],
     [
       "Market",
-      "R"
-    ],
-    [
-      "Index",
-      "R"
-    ],
-    [
-      "Index",
       "R"
     ],
     [
@@ -481,19 +481,19 @@
       "R"
     ],
     [
-      "Index",
-      "R"
-    ],
-    [
-      "Index",
-      "R"
-    ],
-    [
       "Exchange",
       "R"
     ],
     [
       "Market",
+      "R"
+    ],
+    [
+      "Index",
+      "R"
+    ],
+    [
+      "Index",
       "R"
     ],
     [
@@ -649,15 +649,15 @@
       "R"
     ],
     [
+      "Index",
+      "R"
+    ],
+    [
       "Exchange",
       "R"
     ],
     [
       "Market",
-      "R"
-    ],
-    [
-      "Index",
       "R"
     ],
     [
@@ -2271,35 +2271,35 @@
       "R"
     ],
     [
-      "StockQuote",
-      "R"
-    ],
-    [
-      "StockProduct",
-      "R"
-    ],
-    [
-      "Transaction",
-      "R"
-    ],
-    [
-      "StockQuote",
-      "R"
-    ],
-    [
-      "StockProduct",
-      "R"
-    ],
-    [
-      "Transaction",
-      "R"
-    ],
-    [
-      "Transaction",
-      "R"
-    ],
-    [
       "User",
+      "R"
+    ],
+    [
+      "Transaction",
+      "R"
+    ],
+    [
+      "StockQuote",
+      "R"
+    ],
+    [
+      "StockProduct",
+      "R"
+    ],
+    [
+      "Transaction",
+      "R"
+    ],
+    [
+      "StockQuote",
+      "R"
+    ],
+    [
+      "StockProduct",
+      "R"
+    ],
+    [
+      "Transaction",
       "R"
     ],
     [
@@ -4327,11 +4327,11 @@
       "R"
     ],
     [
-      "Transaction",
+      "User",
       "R"
     ],
     [
-      "User",
+      "Transaction",
       "R"
     ],
     [
@@ -4577,6 +4577,14 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "Transaction",
+      "R"
+    ],
+    [
       "Transaction",
       "R"
     ],
@@ -4586,14 +4594,6 @@
     ],
     [
       "StockProduct",
-      "R"
-    ],
-    [
-      "Transaction",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
