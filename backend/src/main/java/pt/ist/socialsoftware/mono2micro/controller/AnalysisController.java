@@ -390,16 +390,36 @@ public class AnalysisController {
 		analysis.setFalsePositive(falsePositive);
 		analysis.setFalseNegative(falseNegative);
 
-		float accuracy = (float)(truePositive + trueNegative) / (truePositive + trueNegative + falsePositive + falseNegative);
-		accuracy = BigDecimal.valueOf(accuracy).setScale(2, RoundingMode.HALF_UP).floatValue();
-		float precision = (float)truePositive / (truePositive + falsePositive);
-		precision = BigDecimal.valueOf(precision).setScale(2, RoundingMode.HALF_UP).floatValue();
-		float recall = (float)truePositive / (truePositive + falseNegative);
-		recall = BigDecimal.valueOf(recall).setScale(2, RoundingMode.HALF_UP).floatValue();
-		float specificity = (float)trueNegative / (trueNegative + falsePositive);
-		specificity = Float.isNaN(specificity) ? -1 : BigDecimal.valueOf(specificity).setScale(2, RoundingMode.HALF_UP).floatValue();
-		float fmeasure = 2*precision*recall / (precision + recall);
-		fmeasure = BigDecimal.valueOf(fmeasure).setScale(2, RoundingMode.HALF_UP).floatValue();
+		float accuracy;
+		float precision;
+		float recall;
+		float specificity;
+		float fmeasure;
+
+		if (truePositive == 0 && trueNegative == 0 && falsePositive == 0 && falseNegative == 0) { // no ExpertCut submitted
+			accuracy = 0;
+			precision = 0;
+			recall = 0;
+			specificity = 0;
+			fmeasure = 0;
+		}
+		else {
+			accuracy = (float)(truePositive + trueNegative) / (truePositive + trueNegative + falsePositive + falseNegative);
+			accuracy = BigDecimal.valueOf(accuracy).setScale(2, RoundingMode.HALF_UP).floatValue();
+
+			precision = (float)truePositive / (truePositive + falsePositive);
+			precision = BigDecimal.valueOf(precision).setScale(2, RoundingMode.HALF_UP).floatValue();
+
+			recall = (float)truePositive / (truePositive + falseNegative);
+			recall = BigDecimal.valueOf(recall).setScale(2, RoundingMode.HALF_UP).floatValue();
+
+			specificity = (float)trueNegative / (trueNegative + falsePositive);
+			specificity = Float.isNaN(specificity) ? -1 : BigDecimal.valueOf(specificity).setScale(2, RoundingMode.HALF_UP).floatValue();
+
+			fmeasure = 2*precision*recall / (precision + recall);
+			fmeasure = BigDecimal.valueOf(fmeasure).setScale(2, RoundingMode.HALF_UP).floatValue();
+		}
+
 		analysis.setAccuracy(accuracy);
 		analysis.setPrecision(precision);
 		analysis.setRecall(recall);
