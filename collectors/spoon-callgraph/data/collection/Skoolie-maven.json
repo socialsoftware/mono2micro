@@ -9,15 +9,15 @@
       "R"
     ],
     [
+      "GradingPeriod",
+      "R"
+    ],
+    [
       "SchoolYear",
       "R"
     ],
     [
       "School",
-      "R"
-    ],
-    [
-      "GradingPeriod",
       "R"
     ]
   ],
@@ -61,15 +61,15 @@
       "R"
     ],
     [
+      "GradingPeriod",
+      "R"
+    ],
+    [
       "SchoolYear",
       "R"
     ],
     [
       "School",
-      "R"
-    ],
-    [
-      "GradingPeriod",
       "R"
     ]
   ],
@@ -147,22 +147,6 @@
       "R"
     ],
     [
-      "School",
-      "R"
-    ],
-    [
-      "Subject",
-      "R"
-    ],
-    [
-      "Course",
-      "R"
-    ],
-    [
-      "Course",
-      "R"
-    ],
-    [
       "Subject",
       "R"
     ],
@@ -172,10 +156,34 @@
     ],
     [
       "Course",
+      "R"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
+      "School",
       "R"
     ]
   ],
   "SystemSchoolClassScheduleController.getClassSchedule": [
+    [
+      "GradingPeriod",
+      "R"
+    ],
+    [
+      "GradingPeriod",
+      "R"
+    ],
     [
       "GradingPeriod",
       "R"
@@ -186,14 +194,6 @@
     ],
     [
       "School",
-      "R"
-    ],
-    [
-      "GradingPeriod",
-      "R"
-    ],
-    [
-      "GradingPeriod",
       "R"
     ]
   ],
@@ -207,14 +207,22 @@
       "R"
     ],
     [
-      "GradingPeriod",
-      "R"
-    ],
-    [
       "ClassTimeBlock",
       "R"
     ],
     [
+      "GradingPeriod",
+      "R"
+    ],
+    [
+      "SchoolRoom",
+      "R"
+    ],
+    [
+      "SchoolRoom",
+      "R"
+    ],
+    [
       "SchoolRoom",
       "R"
     ],
@@ -223,11 +231,11 @@
       "R"
     ],
     [
-      "SchoolRoom",
+      "Teacher",
       "R"
     ],
     [
-      "SchoolRoom",
+      "Teacher",
       "R"
     ],
     [
@@ -239,11 +247,7 @@
       "R"
     ],
     [
-      "Teacher",
-      "R"
-    ],
-    [
-      "Teacher",
+      "Course",
       "R"
     ],
     [
@@ -260,10 +264,6 @@
     ],
     [
       "School",
-      "R"
-    ],
-    [
-      "Course",
       "R"
     ]
   ],
@@ -301,11 +301,11 @@
       "R"
     ],
     [
-      "School",
+      "SchoolEvent",
       "R"
     ],
     [
-      "SchoolEvent",
+      "School",
       "R"
     ]
   ],
@@ -315,15 +315,15 @@
       "R"
     ],
     [
+      "DistrictEvent",
+      "R"
+    ],
+    [
+      "DistrictEvent",
+      "R"
+    ],
+    [
       "District",
-      "R"
-    ],
-    [
-      "DistrictEvent",
-      "R"
-    ],
-    [
-      "DistrictEvent",
       "R"
     ]
   ],
@@ -337,11 +337,11 @@
       "R"
     ],
     [
-      "School",
+      "Student",
       "R"
     ],
     [
-      "Student",
+      "School",
       "R"
     ]
   ],
@@ -357,15 +357,15 @@
       "R"
     ],
     [
+      "Teacher",
+      "R"
+    ],
+    [
+      "Teacher",
+      "R"
+    ],
+    [
       "School",
-      "R"
-    ],
-    [
-      "Teacher",
-      "R"
-    ],
-    [
-      "Teacher",
       "R"
     ]
   ]

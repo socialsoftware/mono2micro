@@ -53,7 +53,27 @@
       "R"
     ],
     [
-      "SystemConfiguration",
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Campaign",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Campaign",
+      "R"
+    ],
+    [
+      "Banner",
       "R"
     ],
     [
@@ -73,31 +93,11 @@
       "R"
     ],
     [
-      "Sponsor",
+      "SystemConfiguration",
       "R"
     ],
     [
       "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Campaign",
-      "R"
-    ],
-    [
-      "Banner",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Campaign",
       "R"
     ],
     [
@@ -117,31 +117,11 @@
       "R"
     ],
     [
-      "Campaign",
-      "R"
-    ],
-    [
-      "Banner",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
       "Sponsor",
       "R"
     ],
     [
       "Campaign",
-      "R"
-    ],
-    [
-      "Banner",
       "R"
     ],
     [
@@ -162,6 +142,26 @@
     ],
     [
       "Campaign",
+      "R"
+    ],
+    [
+      "Banner",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Campaign",
+      "R"
+    ],
+    [
+      "Banner",
       "R"
     ],
     [
@@ -259,15 +259,15 @@
       "R"
     ],
     [
+      "Administrator",
+      "R"
+    ],
+    [
+      "Administrator",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Administrator",
-      "R"
-    ],
-    [
-      "Administrator",
       "R"
     ],
     [
@@ -287,11 +287,11 @@
       "R"
     ],
     [
-      "Actor",
+      "Folder",
       "R"
     ],
     [
-      "Folder",
+      "Actor",
       "R"
     ],
     [
@@ -339,15 +339,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -451,18 +451,18 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "Message",
       "W"
     ],
@@ -507,11 +507,11 @@
       "R"
     ],
     [
-      "Folder",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "Folder",
       "R"
     ],
     [
@@ -535,15 +535,15 @@
       "R"
     ],
     [
+      "Folder",
+      "R"
+    ],
+    [
+      "Folder",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Folder",
-      "R"
-    ],
-    [
-      "Folder",
       "R"
     ],
     [
@@ -583,15 +583,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -607,15 +607,15 @@
       "R"
     ],
     [
+      "Folder",
+      "R"
+    ],
+    [
+      "Folder",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Folder",
-      "R"
-    ],
-    [
-      "Folder",
       "R"
     ],
     [
@@ -749,15 +749,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -777,11 +777,11 @@
       "R"
     ],
     [
-      "Actor",
+      "Folder",
       "R"
     ],
     [
-      "Folder",
+      "Actor",
       "R"
     ],
     [
@@ -849,11 +849,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -923,6 +923,58 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Folder",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Folder",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
@@ -935,55 +987,11 @@
       "R"
     ],
     [
-      "Actor",
+      "Message",
       "R"
     ],
     [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Folder",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Folder",
+      "Message",
       "R"
     ],
     [
@@ -992,14 +1000,6 @@
     ],
     [
       "Folder",
-      "R"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Message",
       "R"
     ]
   ],
@@ -1021,15 +1021,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -1135,14 +1135,14 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
       "Message",
       "W"
     ],
@@ -1187,11 +1187,11 @@
       "R"
     ],
     [
-      "Folder",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "Folder",
       "R"
     ],
     [
@@ -1215,15 +1215,15 @@
       "R"
     ],
     [
+      "Folder",
+      "R"
+    ],
+    [
+      "Folder",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Folder",
-      "R"
-    ],
-    [
-      "Folder",
       "R"
     ],
     [
@@ -1303,11 +1303,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "SocialUser",
       "R"
     ],
     [
-      "SocialUser",
+      "UserAccount",
       "R"
     ],
     [
@@ -1345,11 +1345,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "SocialUser",
       "R"
     ],
     [
-      "SocialUser",
+      "UserAccount",
       "R"
     ],
     [
@@ -1465,11 +1465,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "SocialUser",
       "R"
     ],
     [
-      "SocialUser",
+      "UserAccount",
       "R"
     ],
     [
@@ -1563,11 +1563,11 @@
       "R"
     ],
     [
-      "SocialUser",
+      "User",
       "R"
     ],
     [
-      "User",
+      "SocialUser",
       "R"
     ],
     [
@@ -1583,15 +1583,15 @@
       "R"
     ],
     [
+      "Recipe",
+      "R"
+    ],
+    [
+      "Recipe",
+      "R"
+    ],
+    [
       "User",
-      "R"
-    ],
-    [
-      "Recipe",
-      "R"
-    ],
-    [
-      "Recipe",
       "R"
     ],
     [
@@ -1621,11 +1621,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "SocialUser",
       "R"
     ],
     [
-      "SocialUser",
+      "UserAccount",
       "R"
     ],
     [
@@ -1659,15 +1659,15 @@
       "R"
     ],
     [
+      "SocialUser",
+      "R"
+    ],
+    [
+      "SocialUser",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "SocialUser",
-      "R"
-    ],
-    [
-      "SocialUser",
       "R"
     ],
     [
@@ -1705,11 +1705,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Nutritionist",
       "R"
     ],
     [
-      "Nutritionist",
+      "UserAccount",
       "R"
     ]
   ],
@@ -1839,11 +1839,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "SocialUser",
       "R"
     ],
     [
-      "SocialUser",
+      "UserAccount",
       "R"
     ],
     [
@@ -1881,11 +1881,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Cook",
       "R"
     ],
     [
-      "Cook",
+      "UserAccount",
       "R"
     ]
   ],
@@ -1979,11 +1979,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Cook",
       "R"
     ],
     [
-      "Cook",
+      "UserAccount",
       "R"
     ],
     [
@@ -2269,11 +2269,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Cook",
       "R"
     ],
     [
-      "Cook",
+      "UserAccount",
       "R"
     ],
     [
@@ -2461,11 +2461,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Sponsor",
       "R"
     ],
     [
-      "Sponsor",
+      "UserAccount",
       "R"
     ],
     [
@@ -2587,15 +2587,15 @@
       "R"
     ],
     [
+      "Nutritionist",
+      "R"
+    ],
+    [
+      "Nutritionist",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Nutritionist",
-      "R"
-    ],
-    [
-      "Nutritionist",
       "R"
     ],
     [
@@ -2655,11 +2655,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -2831,15 +2831,15 @@
       "R"
     ],
     [
+      "Cook",
+      "R"
+    ],
+    [
+      "Cook",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Cook",
-      "R"
-    ],
-    [
-      "Cook",
       "R"
     ],
     [
@@ -3075,23 +3075,11 @@
       "R"
     ],
     [
-      "Recipe",
-      "R"
-    ],
-    [
-      "Contest",
-      "R"
-    ],
-    [
       "Contest",
       "R"
     ],
     [
       "Recipe",
-      "R"
-    ],
-    [
-      "Contest",
       "R"
     ],
     [
@@ -3104,6 +3092,18 @@
     ],
     [
       "Score",
+      "R"
+    ],
+    [
+      "Contest",
+      "R"
+    ],
+    [
+      "Recipe",
+      "R"
+    ],
+    [
+      "Contest",
       "R"
     ],
     [
@@ -3333,11 +3333,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Sponsor",
       "R"
     ],
     [
-      "Sponsor",
+      "UserAccount",
       "R"
     ],
     [
@@ -3425,11 +3425,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Sponsor",
       "R"
     ],
     [
-      "Sponsor",
+      "UserAccount",
       "R"
     ],
     [
@@ -3471,15 +3471,15 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ]
   ],
@@ -4257,11 +4257,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Cook",
       "R"
     ],
     [
-      "Cook",
+      "UserAccount",
       "R"
     ],
     [
@@ -4507,15 +4507,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -4545,11 +4545,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -4595,15 +4595,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -4665,11 +4665,11 @@
       "R"
     ],
     [
-      "Actor",
+      "SocialIdentity",
       "R"
     ],
     [
-      "SocialIdentity",
+      "Actor",
       "R"
     ]
   ],
@@ -4687,15 +4687,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -4761,11 +4761,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Administrator",
       "R"
     ],
     [
-      "Administrator",
+      "UserAccount",
       "R"
     ],
     [
@@ -4877,15 +4877,15 @@
       "R"
     ],
     [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
       "R"
     ],
     [
@@ -4971,15 +4971,15 @@
       "R"
     ],
     [
+      "Banner",
+      "R"
+    ],
+    [
+      "Banner",
+      "R"
+    ],
+    [
       "Campaign",
-      "R"
-    ],
-    [
-      "Banner",
-      "R"
-    ],
-    [
-      "Banner",
       "R"
     ]
   ],
@@ -5049,11 +5049,11 @@
       "R"
     ],
     [
-      "Campaign",
+      "Sponsor",
       "R"
     ],
     [
-      "Sponsor",
+      "Campaign",
       "R"
     ]
   ],
@@ -5395,15 +5395,15 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -5543,11 +5543,11 @@
       "R"
     ],
     [
-      "User",
+      "Recipe",
       "R"
     ],
     [
-      "Recipe",
+      "User",
       "R"
     ],
     [
@@ -5755,15 +5755,15 @@
       "R"
     ],
     [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "User",
       "R"
     ],
     [
@@ -5819,15 +5819,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -5937,6 +5937,14 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
@@ -5954,14 +5962,6 @@
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -6071,11 +6071,11 @@
       "R"
     ],
     [
-      "Contest",
+      "Recipe",
       "R"
     ],
     [
-      "Recipe",
+      "Contest",
       "R"
     ],
     [
@@ -6283,15 +6283,15 @@
       "R"
     ],
     [
+      "Folder",
+      "R"
+    ],
+    [
+      "Folder",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Folder",
-      "R"
-    ],
-    [
-      "Folder",
       "R"
     ]
   ],
@@ -6317,11 +6317,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -6357,15 +6357,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -6469,15 +6469,15 @@
       "R"
     ],
     [
+      "Folder",
+      "R"
+    ],
+    [
+      "Folder",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Folder",
-      "R"
-    ],
-    [
-      "Folder",
       "R"
     ],
     [
@@ -6765,11 +6765,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Cook",
       "R"
     ],
     [
-      "Cook",
+      "UserAccount",
       "R"
     ],
     [
@@ -7015,15 +7015,15 @@
       "R"
     ],
     [
+      "SocialUser",
+      "R"
+    ],
+    [
+      "SocialUser",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "SocialUser",
-      "R"
-    ],
-    [
-      "SocialUser",
       "R"
     ],
     [
@@ -7099,6 +7099,26 @@
       "R"
     ],
     [
+      "Banner",
+      "R"
+    ],
+    [
+      "Campaign",
+      "R"
+    ],
+    [
+      "Banner",
+      "R"
+    ],
+    [
+      "Campaign",
+      "R"
+    ],
+    [
+      "Banner",
+      "R"
+    ],
+    [
       "Campaign",
       "R"
     ],
@@ -7123,10 +7143,6 @@
       "R"
     ],
     [
-      "Campaign",
-      "R"
-    ],
-    [
       "Banner",
       "R"
     ],
@@ -7139,10 +7155,6 @@
       "R"
     ],
     [
-      "Banner",
-      "R"
-    ],
-    [
       "Campaign",
       "R"
     ],
@@ -7152,18 +7164,6 @@
     ],
     [
       "Banner",
-      "R"
-    ],
-    [
-      "Banner",
-      "R"
-    ],
-    [
-      "Banner",
-      "R"
-    ],
-    [
-      "Campaign",
       "R"
     ],
     [
@@ -7233,11 +7233,11 @@
       "R"
     ],
     [
-      "Contest",
+      "Recipe",
       "R"
     ],
     [
-      "Recipe",
+      "Contest",
       "R"
     ]
   ],
@@ -7251,11 +7251,11 @@
       "R"
     ],
     [
-      "Contest",
+      "Recipe",
       "R"
     ],
     [
-      "Recipe",
+      "Contest",
       "R"
     ]
   ],
@@ -7281,11 +7281,11 @@
       "R"
     ],
     [
-      "Recipe",
+      "User",
       "R"
     ],
     [
-      "User",
+      "Recipe",
       "R"
     ]
   ],
@@ -7351,15 +7351,15 @@
       "R"
     ],
     [
+      "LearningMaterial",
+      "R"
+    ],
+    [
+      "LearningMaterial",
+      "R"
+    ],
+    [
       "MasterClass",
-      "R"
-    ],
-    [
-      "LearningMaterial",
-      "R"
-    ],
-    [
-      "LearningMaterial",
       "R"
     ]
   ],
@@ -7417,15 +7417,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -8115,15 +8115,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -8161,10 +8161,6 @@
       "R"
     ],
     [
-      "Banner",
-      "R"
-    ],
-    [
       "Campaign",
       "R"
     ],
@@ -8189,15 +8185,19 @@
       "R"
     ],
     [
+      "Banner",
+      "R"
+    ],
+    [
+      "Banner",
+      "R"
+    ],
+    [
+      "Banner",
+      "R"
+    ],
+    [
       "Campaign",
-      "R"
-    ],
-    [
-      "Banner",
-      "R"
-    ],
-    [
-      "Banner",
       "R"
     ],
     [
@@ -8250,6 +8250,14 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -8258,14 +8266,6 @@
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -9107,11 +9107,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Sponsor",
       "R"
     ],
     [
-      "Sponsor",
+      "UserAccount",
       "R"
     ],
     [
@@ -9419,11 +9419,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Nutritionist",
       "R"
     ],
     [
-      "Nutritionist",
+      "UserAccount",
       "R"
     ],
     [
@@ -9449,15 +9449,15 @@
       "R"
     ],
     [
+      "Nutritionist",
+      "R"
+    ],
+    [
+      "Nutritionist",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Nutritionist",
-      "R"
-    ],
-    [
-      "Nutritionist",
       "R"
     ],
     [
@@ -9491,11 +9491,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Nutritionist",
       "R"
     ],
     [
-      "Nutritionist",
+      "UserAccount",
       "R"
     ],
     [
@@ -9557,30 +9557,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
       "Sponsor",
       "R"
     ],
@@ -9597,6 +9573,34 @@
       "R"
     ],
     [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
       "Sponsor",
       "R"
     ],
@@ -9610,10 +9614,6 @@
     ],
     [
       "Bill",
-      "R"
-    ],
-    [
-      "Sponsor",
       "R"
     ],
     [
@@ -9687,11 +9687,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Sponsor",
       "R"
     ],
     [
-      "Sponsor",
+      "UserAccount",
       "R"
     ],
     [
@@ -9791,14 +9791,6 @@
       "R"
     ],
     [
-      "Recipe",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
@@ -9815,7 +9807,7 @@
       "R"
     ],
     [
-      "Contest",
+      "User",
       "R"
     ],
     [
@@ -9843,15 +9835,15 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "User",
+      "Contest",
       "R"
     ],
     [
       "Recipe",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -9871,7 +9863,7 @@
       "R"
     ],
     [
-      "Contest",
+      "User",
       "R"
     ],
     [
@@ -9896,6 +9888,18 @@
     ],
     [
       "Contest",
+      "R"
+    ],
+    [
+      "Contest",
+      "R"
+    ],
+    [
+      "Recipe",
+      "R"
+    ],
+    [
+      "Recipe",
       "R"
     ],
     [
@@ -9904,10 +9908,6 @@
     ],
     [
       "Step",
-      "R"
-    ],
-    [
-      "Recipe",
       "R"
     ],
     [
@@ -9936,6 +9936,10 @@
     ],
     [
       "Quantity",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -9951,7 +9955,11 @@
       "R"
     ],
     [
-      "User",
+      "Score",
+      "R"
+    ],
+    [
+      "Score",
       "R"
     ],
     [
@@ -9960,26 +9968,6 @@
     ],
     [
       "Recipe",
-      "R"
-    ],
-    [
-      "Score",
-      "R"
-    ],
-    [
-      "Recipe",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Score",
-      "R"
-    ],
-    [
-      "Score",
       "R"
     ],
     [
@@ -10003,6 +9991,18 @@
       "R"
     ],
     [
+      "Recipe",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Score",
+      "R"
+    ],
+    [
       "Score",
       "R"
     ],
@@ -10051,10 +10051,6 @@
       "R"
     ],
     [
-      "Sponsor",
-      "R"
-    ],
-    [
       "Campaign",
       "R"
     ],
@@ -10075,82 +10071,6 @@
       "R"
     ],
     [
-      "Campaign",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Bill",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Bill",
-      "R"
-    ],
-    [
-      "Bill",
-      "R"
-    ],
-    [
-      "Bill",
-      "R"
-    ],
-    [
-      "Bill",
-      "R"
-    ],
-    [
-      "Bill",
-      "R"
-    ],
-    [
-      "Bill",
-      "R"
-    ],
-    [
-      "Bill",
-      "R"
-    ],
-    [
-      "Bill",
-      "R"
-    ],
-    [
-      "Bill",
-      "R"
-    ],
-    [
-      "Bill",
-      "R"
-    ],
-    [
-      "Bill",
-      "R"
-    ],
-    [
       "Sponsor",
       "R"
     ],
@@ -10163,11 +10083,83 @@
       "R"
     ],
     [
-      "Campaign",
+      "Sponsor",
       "R"
     ],
     [
       "Sponsor",
+      "R"
+    ],
+    [
+      "Bill",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Bill",
+      "R"
+    ],
+    [
+      "Bill",
+      "R"
+    ],
+    [
+      "Bill",
+      "R"
+    ],
+    [
+      "Bill",
+      "R"
+    ],
+    [
+      "Bill",
+      "R"
+    ],
+    [
+      "Bill",
+      "R"
+    ],
+    [
+      "Bill",
+      "R"
+    ],
+    [
+      "Bill",
+      "R"
+    ],
+    [
+      "Bill",
+      "R"
+    ],
+    [
+      "Bill",
+      "R"
+    ],
+    [
+      "Bill",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Campaign",
       "R"
     ],
     [
@@ -10191,7 +10183,11 @@
       "R"
     ],
     [
-      "Bill",
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Campaign",
       "R"
     ],
     [
@@ -10207,19 +10203,23 @@
       "R"
     ],
     [
-      "Bill",
-      "R"
-    ],
-    [
-      "Bill",
-      "R"
-    ],
-    [
-      "Bill",
-      "R"
-    ],
-    [
       "Sponsor",
+      "R"
+    ],
+    [
+      "Bill",
+      "R"
+    ],
+    [
+      "Bill",
+      "R"
+    ],
+    [
+      "Bill",
+      "R"
+    ],
+    [
+      "Bill",
       "R"
     ],
     [
@@ -10343,6 +10343,10 @@
       "R"
     ],
     [
+      "LearningMaterial",
+      "R"
+    ],
+    [
       "MasterClass",
       "R"
     ],
@@ -10355,10 +10359,6 @@
       "R"
     ],
     [
-      "LearningMaterial",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
@@ -10475,11 +10475,11 @@
       "R"
     ],
     [
-      "MasterClass",
+      "Cook",
       "R"
     ],
     [
-      "Cook",
+      "MasterClass",
       "R"
     ],
     [
@@ -10531,30 +10531,6 @@
       "R"
     ],
     [
-      "Cook",
-      "R"
-    ],
-    [
-      "MasterClass",
-      "R"
-    ],
-    [
-      "MasterClass",
-      "R"
-    ],
-    [
-      "MasterClass",
-      "R"
-    ],
-    [
-      "Cook",
-      "R"
-    ],
-    [
-      "MasterClass",
-      "R"
-    ],
-    [
       "MasterClass",
       "R"
     ],
@@ -10564,6 +10540,30 @@
     ],
     [
       "Cook",
+      "R"
+    ],
+    [
+      "MasterClass",
+      "R"
+    ],
+    [
+      "MasterClass",
+      "R"
+    ],
+    [
+      "MasterClass",
+      "R"
+    ],
+    [
+      "Cook",
+      "R"
+    ],
+    [
+      "Cook",
+      "R"
+    ],
+    [
+      "MasterClass",
       "R"
     ]
   ],
@@ -10811,18 +10811,18 @@
       "R"
     ],
     [
+      "Cook",
+      "R"
+    ],
+    [
+      "Cook",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
-      "Cook",
-      "R"
-    ],
-    [
-      "Cook",
-      "R"
-    ],
-    [
       "MasterClass",
       "R"
     ],
@@ -10859,14 +10859,6 @@
       "R"
     ],
     [
-      "MasterClass",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "Actor",
       "R"
     ],
@@ -10876,6 +10868,14 @@
     ],
     [
       "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "MasterClass",
       "R"
     ],
     [
@@ -10907,15 +10907,15 @@
       "R"
     ],
     [
+      "Folder",
+      "R"
+    ],
+    [
+      "Folder",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Folder",
-      "R"
-    ],
-    [
-      "Folder",
       "R"
     ],
     [
@@ -11047,11 +11047,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -11099,11 +11099,11 @@
       "R"
     ],
     [
-      "Folder",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "Folder",
       "R"
     ],
     [
@@ -11127,15 +11127,15 @@
       "R"
     ],
     [
+      "Folder",
+      "R"
+    ],
+    [
+      "Folder",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Folder",
-      "R"
-    ],
-    [
-      "Folder",
       "R"
     ],
     [
@@ -11156,6 +11156,14 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "LearningMaterial",
+      "R"
+    ],
+    [
+      "LearningMaterial",
       "R"
     ],
     [
@@ -11164,14 +11172,6 @@
     ],
     [
       "MasterClass",
-      "R"
-    ],
-    [
-      "LearningMaterial",
-      "R"
-    ],
-    [
-      "LearningMaterial",
       "R"
     ]
   ],
@@ -11197,14 +11197,14 @@
       "R"
     ],
     [
+      "Cook",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
-      "Cook",
-      "R"
-    ],
-    [
       "MasterClass",
       "R"
     ],
@@ -11229,15 +11229,15 @@
       "R"
     ],
     [
+      "LearningMaterial",
+      "R"
+    ],
+    [
+      "LearningMaterial",
+      "R"
+    ],
+    [
       "MasterClass",
-      "R"
-    ],
-    [
-      "LearningMaterial",
-      "R"
-    ],
-    [
-      "LearningMaterial",
       "R"
     ]
   ],
@@ -11255,35 +11255,11 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
       "Actor",
       "R"
     ],
     [
       "Actor",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Cook",
-      "R"
-    ],
-    [
-      "Cook",
-      "R"
-    ],
-    [
-      "Cook",
       "R"
     ],
     [
@@ -11295,7 +11271,27 @@
       "R"
     ],
     [
-      "MasterClass",
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Cook",
+      "R"
+    ],
+    [
+      "Cook",
+      "R"
+    ],
+    [
+      "Cook",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "DomainEntity",
       "R"
     ],
     [
@@ -11312,6 +11308,10 @@
     ],
     [
       "Cook",
+      "R"
+    ],
+    [
+      "MasterClass",
       "R"
     ]
   ],
@@ -11333,15 +11333,15 @@
       "R"
     ],
     [
+      "SocialUser",
+      "R"
+    ],
+    [
+      "SocialUser",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "SocialUser",
-      "R"
-    ],
-    [
-      "SocialUser",
       "R"
     ],
     [
@@ -11515,11 +11515,11 @@
       "R"
     ],
     [
-      "MasterClass",
+      "LearningMaterial",
       "R"
     ],
     [
-      "LearningMaterial",
+      "MasterClass",
       "R"
     ]
   ]

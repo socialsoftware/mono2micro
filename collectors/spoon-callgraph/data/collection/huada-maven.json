@@ -53,28 +53,20 @@
   ],
   "FunctionInfoController.findFuncByRoleId": [
     [
+      "KnResource",
+      "R"
+    ],
+    [
+      "KnResource",
+      "R"
+    ],
+    [
       "KnRoleModuleFunctionInfo",
-      "R"
-    ],
-    [
-      "KnResource",
-      "R"
-    ],
-    [
-      "KnResource",
       "R"
     ]
   ],
   "FunctionInfoController.findFuncByRoleIdGroupByModule": [
     [
-      "KnRoleModuleFunctionInfo",
-      "R"
-    ],
-    [
-      "KnResource",
-      "R"
-    ],
-    [
       "KnResource",
       "R"
     ],
@@ -84,22 +76,6 @@
     ],
     [
       "KnResource",
-      "R"
-    ],
-    [
-      "KnRoleModuleFunctionInfo",
-      "R"
-    ],
-    [
-      "KnRoleModuleFunctionInfo",
-      "R"
-    ],
-    [
-      "KnResource",
-      "R"
-    ],
-    [
-      "KnRoleModuleFunctionInfo",
       "R"
     ],
     [
@@ -119,6 +95,22 @@
       "R"
     ],
     [
+      "KnRoleModuleFunctionInfo",
+      "R"
+    ],
+    [
+      "KnRoleModuleFunctionInfo",
+      "R"
+    ],
+    [
+      "KnResource",
+      "R"
+    ],
+    [
+      "KnResource",
+      "R"
+    ],
+    [
       "KnResource",
       "R"
     ],
@@ -131,32 +123,28 @@
       "R"
     ],
     [
-      "KnRoleModuleFunctionInfo",
-      "R"
-    ],
-    [
-      "KnRoleModuleFunctionInfo",
-      "R"
-    ],
-    [
       "KnResource",
+      "R"
+    ],
+    [
+      "KnRoleModuleFunctionInfo",
+      "R"
+    ],
+    [
+      "KnRoleModuleFunctionInfo",
+      "R"
+    ],
+    [
+      "KnRoleModuleFunctionInfo",
+      "R"
+    ],
+    [
+      "KnRoleModuleFunctionInfo",
       "R"
     ]
   ],
   "FunctionInfoController.findModuleByRoleId": [
     [
-      "KnRoleModuleFunctionInfo",
-      "R"
-    ],
-    [
-      "KnRoleModuleFunctionInfo",
-      "R"
-    ],
-    [
-      "KnRoleModuleFunctionInfo",
-      "R"
-    ],
-    [
       "KnResource",
       "R"
     ],
@@ -173,11 +161,23 @@
       "R"
     ],
     [
+      "KnResource",
+      "R"
+    ],
+    [
       "KnRoleModuleFunctionInfo",
       "R"
     ],
     [
-      "KnResource",
+      "KnRoleModuleFunctionInfo",
+      "R"
+    ],
+    [
+      "KnRoleModuleFunctionInfo",
+      "R"
+    ],
+    [
+      "KnRoleModuleFunctionInfo",
       "R"
     ]
   ],
@@ -223,11 +223,11 @@
       "R"
     ],
     [
-      "KnRoleApplicationInfo",
+      "KnRoleModuleFunctionInfo",
       "R"
     ],
     [
-      "KnRoleModuleFunctionInfo",
+      "KnRoleApplicationInfo",
       "R"
     ],
     [
@@ -593,19 +593,19 @@
       "R"
     ],
     [
+      "KnMeeting",
+      "R"
+    ],
+    [
+      "KnMeeting",
+      "R"
+    ],
+    [
+      "KnMeeting",
+      "R"
+    ],
+    [
       "KnMeetingRoom",
-      "R"
-    ],
-    [
-      "KnMeeting",
-      "R"
-    ],
-    [
-      "KnMeeting",
-      "R"
-    ],
-    [
-      "KnMeeting",
       "R"
     ],
     [
@@ -1143,18 +1143,6 @@
   ],
   "ModuleInfoController.findFuncAndFuncVersionByMid": [
     [
-      "KnRoleModuleFunctionInfo",
-      "R"
-    ],
-    [
-      "KnRoleModuleFunctionInfo",
-      "R"
-    ],
-    [
-      "KnResource",
-      "R"
-    ],
-    [
       "KnResource",
       "R"
     ],
@@ -1164,6 +1152,18 @@
     ],
     [
       "KnResource",
+      "R"
+    ],
+    [
+      "KnResource",
+      "R"
+    ],
+    [
+      "KnRoleModuleFunctionInfo",
+      "R"
+    ],
+    [
+      "KnRoleModuleFunctionInfo",
       "R"
     ],
     [
@@ -1197,23 +1197,23 @@
       "R"
     ],
     [
-      "KnRoleModuleFunctionInfo",
-      "R"
-    ],
-    [
-      "KnRoleModuleFunctionInfo",
-      "R"
-    ],
-    [
-      "KnRoleModuleFunctionInfo",
-      "R"
-    ],
-    [
       "KnResource",
       "R"
     ],
     [
       "KnResource",
+      "R"
+    ],
+    [
+      "KnRoleModuleFunctionInfo",
+      "R"
+    ],
+    [
+      "KnRoleModuleFunctionInfo",
+      "R"
+    ],
+    [
+      "KnRoleModuleFunctionInfo",
       "R"
     ],
     [
@@ -1227,11 +1227,11 @@
       "R"
     ],
     [
-      "KnRoleModuleFunctionInfo",
+      "KnResource",
       "R"
     ],
     [
-      "KnResource",
+      "KnRoleModuleFunctionInfo",
       "R"
     ]
   ],
@@ -1255,11 +1255,11 @@
       "R"
     ],
     [
-      "KnRoleModuleFunctionInfo",
+      "KnResource",
       "R"
     ],
     [
-      "KnResource",
+      "KnRoleModuleFunctionInfo",
       "R"
     ]
   ],
@@ -1811,15 +1811,15 @@
       "R"
     ],
     [
+      "KnEmployee",
+      "R"
+    ],
+    [
+      "KnEmployee",
+      "R"
+    ],
+    [
       "KnUser",
-      "R"
-    ],
-    [
-      "KnEmployee",
-      "R"
-    ],
-    [
-      "KnEmployee",
       "R"
     ],
     [
@@ -2175,15 +2175,15 @@
       "R"
     ],
     [
+      "KnLibraryBookUnit",
+      "R"
+    ],
+    [
+      "KnLibraryBookUnit",
+      "R"
+    ],
+    [
       "KnLibraryBook",
-      "R"
-    ],
-    [
-      "KnLibraryBookUnit",
-      "R"
-    ],
-    [
-      "KnLibraryBookUnit",
       "R"
     ],
     [
@@ -2647,23 +2647,7 @@
       "R"
     ],
     [
-      "KnVersionInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnVersionInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
+      "KnEmployee",
       "R"
     ],
     [
@@ -2679,7 +2663,7 @@
       "R"
     ],
     [
-      "KnScoreInfo",
+      "KnVersionInfo",
       "R"
     ],
     [
@@ -2692,18 +2676,6 @@
     ],
     [
       "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnEmployee",
-      "R"
-    ],
-    [
-      "KnEmployee",
-      "R"
-    ],
-    [
-      "KnEmployee",
       "R"
     ],
     [
@@ -2735,19 +2707,43 @@
       "R"
     ],
     [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
+      "KnEmployee",
       "R"
     ],
     [
       "KnVersionInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnEmployee",
+      "R"
+    ],
+    [
+      "KnVersionInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
       "R"
     ],
     [
@@ -2779,6 +2775,10 @@
       "R"
     ],
     [
+      "KnVersionInfo",
+      "R"
+    ],
+    [
       "KnScoreInfo",
       "R"
     ],
@@ -2787,42 +2787,6 @@
       "R"
     ],
     [
-      "KnEmployee",
-      "R"
-    ],
-    [
-      "KnEmployee",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnVersionInfo",
-      "R"
-    ],
-    [
-      "KnVersionInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnVersionInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
       "KnVersionInfo",
       "R"
     ],
@@ -2836,26 +2800,6 @@
     ],
     [
       "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnVersionInfo",
       "R"
     ],
     [
@@ -2868,6 +2812,18 @@
     ],
     [
       "KnEmployee",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnVersionInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
       "R"
     ],
     [
@@ -2887,7 +2843,47 @@
       "R"
     ],
     [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnEmployee",
+      "R"
+    ],
+    [
       "KnVersionInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnEmployee",
+      "R"
+    ],
+    [
+      "KnVersionInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
       "R"
     ],
     [
@@ -2904,6 +2900,10 @@
     ],
     [
       "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnVersionInfo",
       "R"
     ],
     [
@@ -2941,43 +2941,15 @@
   ],
   "AppScoreInfoController.list": [
     [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
       "KnEmployee",
       "R"
     ],
     [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
       "KnVersionInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
       "R"
     ],
     [
@@ -2993,35 +2965,7 @@
       "R"
     ],
     [
-      "KnEmployee",
-      "R"
-    ],
-    [
       "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnVersionInfo",
-      "R"
-    ],
-    [
-      "KnVersionInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnEmployee",
       "R"
     ],
     [
@@ -3049,51 +2993,11 @@
       "R"
     ],
     [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnEmployee",
-      "R"
-    ],
-    [
-      "KnEmployee",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
       "KnVersionInfo",
       "R"
     ],
     [
       "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnVersionInfo",
       "R"
     ],
     [
@@ -3109,7 +3013,103 @@
       "R"
     ],
     [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnEmployee",
+      "R"
+    ],
+    [
       "KnVersionInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnEmployee",
+      "R"
+    ],
+    [
+      "KnVersionInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnEmployee",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnVersionInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnVersionInfo",
+      "R"
+    ],
+    [
+      "KnEmployee",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
       "R"
     ]
   ],
@@ -4607,10 +4607,6 @@
       "R"
     ],
     [
-      "KnSocialBlog",
-      "R"
-    ],
-    [
       "KnSocialBlogCollect",
       "R"
     ],
@@ -4623,15 +4619,19 @@
       "R"
     ],
     [
-      "KnSocialBlogCollect",
-      "R"
-    ],
-    [
       "KnSocialBlog",
       "R"
     ],
     [
       "KnSocialBlogCollect",
+      "R"
+    ],
+    [
+      "KnSocialBlogCollect",
+      "R"
+    ],
+    [
+      "KnSocialBlog",
       "R"
     ],
     [
@@ -4731,22 +4731,6 @@
       "R"
     ],
     [
-      "KnEmployee",
-      "R"
-    ],
-    [
-      "KnSocialBlogAttention",
-      "R"
-    ],
-    [
-      "KnSocialBlogAttention",
-      "R"
-    ],
-    [
-      "KnSocialBlogAttention",
-      "R"
-    ],
-    [
       "KnSocialBlogAttention",
       "R"
     ],
@@ -4756,6 +4740,22 @@
     ],
     [
       "KnEmployee",
+      "R"
+    ],
+    [
+      "KnSocialBlogAttention",
+      "R"
+    ],
+    [
+      "KnSocialBlogAttention",
+      "R"
+    ],
+    [
+      "KnEmployee",
+      "R"
+    ],
+    [
+      "KnSocialBlogAttention",
       "R"
     ],
     [
@@ -4907,14 +4907,6 @@
   ],
   "KnSocialBlogRestController.ReadUserAttention": [
     [
-      "KnSocialBlogAttention",
-      "R"
-    ],
-    [
-      "KnEmployee",
-      "R"
-    ],
-    [
       "KnEmployee",
       "R"
     ],
@@ -4924,6 +4916,14 @@
     ],
     [
       "KnEmployee",
+      "R"
+    ],
+    [
+      "KnEmployee",
+      "R"
+    ],
+    [
+      "KnSocialBlogAttention",
       "R"
     ],
     [
@@ -5077,6 +5077,10 @@
   ],
   "KnSocialBlogRestController.ReadUserFans": [
     [
+      "KnEmployee",
+      "R"
+    ],
+    [
       "KnSocialBlogAttention",
       "R"
     ],
@@ -5098,10 +5102,6 @@
     ],
     [
       "KnSocialBlogAttention",
-      "R"
-    ],
-    [
-      "KnEmployee",
       "R"
     ],
     [
@@ -5773,11 +5773,11 @@
       "R"
     ],
     [
-      "KnSocialBlog",
+      "KnSocialBlogFile",
       "R"
     ],
     [
-      "KnSocialBlogFile",
+      "KnSocialBlog",
       "R"
     ],
     [
@@ -6011,19 +6011,19 @@
       "R"
     ],
     [
-      "KnSocialBlogAt",
-      "R"
-    ],
-    [
-      "KnSocialBlogAt",
-      "R"
-    ],
-    [
       "KnSocialBlog",
       "R"
     ],
     [
       "KnSocialBlog",
+      "R"
+    ],
+    [
+      "KnSocialBlogAt",
+      "R"
+    ],
+    [
+      "KnSocialBlogAt",
       "R"
     ],
     [
@@ -6249,19 +6249,19 @@
       "R"
     ],
     [
-      "KnSocialBlog",
-      "R"
-    ],
-    [
-      "KnSocialBlogComment",
-      "R"
-    ],
-    [
       "KnSocialBlogComment",
       "R"
     ],
     [
       "KnSocialBlog",
+      "R"
+    ],
+    [
+      "KnSocialBlog",
+      "R"
+    ],
+    [
+      "KnSocialBlogComment",
       "R"
     ],
     [
@@ -6351,6 +6351,14 @@
       "R"
     ],
     [
+      "KnSocialBlogAttention",
+      "R"
+    ],
+    [
+      "KnSocialBlog",
+      "R"
+    ],
+    [
       "KnSocialBlog",
       "R"
     ],
@@ -6368,14 +6376,6 @@
     ],
     [
       "KnSocialBlog",
-      "R"
-    ],
-    [
-      "KnSocialBlog",
-      "R"
-    ],
-    [
-      "KnSocialBlogAttention",
       "R"
     ],
     [
@@ -7135,22 +7135,6 @@
       "R"
     ],
     [
-      "KnAutoBorrow",
-      "R"
-    ],
-    [
-      "KnAutoBorrow",
-      "R"
-    ],
-    [
-      "KnAuto",
-      "R"
-    ],
-    [
-      "KnAuto",
-      "R"
-    ],
-    [
       "KnAuto",
       "R"
     ],
@@ -7175,6 +7159,26 @@
       "R"
     ],
     [
+      "KnAuto",
+      "R"
+    ],
+    [
+      "KnAuto",
+      "R"
+    ],
+    [
+      "KnAutoBorrow",
+      "R"
+    ],
+    [
+      "KnAutoBorrow",
+      "R"
+    ],
+    [
+      "KnAutoBorrow",
+      "R"
+    ],
+    [
       "KnAutoBorrow",
       "R"
     ],
@@ -7184,10 +7188,6 @@
     ],
     [
       "KnAuto",
-      "R"
-    ],
-    [
-      "KnAutoBorrow",
       "R"
     ],
     [
@@ -7231,19 +7231,19 @@
       "R"
     ],
     [
-      "KnAutoBorrow",
-      "R"
-    ],
-    [
-      "KnAutoBorrow",
-      "R"
-    ],
-    [
-      "KnAutoBorrow",
-      "R"
-    ],
-    [
       "KnAuto",
+      "R"
+    ],
+    [
+      "KnAutoBorrow",
+      "R"
+    ],
+    [
+      "KnAutoBorrow",
+      "R"
+    ],
+    [
+      "KnAutoBorrow",
       "R"
     ],
     [
@@ -7353,14 +7353,6 @@
       "R"
     ],
     [
-      "KnAutoBorrow",
-      "R"
-    ],
-    [
-      "KnAuto",
-      "R"
-    ],
-    [
       "KnAuto",
       "R"
     ],
@@ -7389,11 +7381,19 @@
       "R"
     ],
     [
-      "KnAutoBorrow",
+      "KnAuto",
       "R"
     ],
     [
       "KnAuto",
+      "R"
+    ],
+    [
+      "KnAutoBorrow",
+      "R"
+    ],
+    [
+      "KnAutoBorrow",
       "R"
     ],
     [
@@ -14815,19 +14815,19 @@
       "R"
     ],
     [
-      "KnEmployeeOrganization",
-      "R"
-    ],
-    [
-      "KnEmployeeOrganizationId",
-      "R"
-    ],
-    [
       "KnEmployee",
       "R"
     ],
     [
       "KnEmployeeOrganization",
+      "R"
+    ],
+    [
+      "KnEmployeeOrganization",
+      "R"
+    ],
+    [
+      "KnEmployeeOrganizationId",
       "R"
     ],
     [
@@ -16263,11 +16263,11 @@
       "R"
     ],
     [
-      "KnEmployeeOrganization",
+      "KnEmployee",
       "R"
     ],
     [
-      "KnEmployee",
+      "KnEmployeeOrganization",
       "R"
     ],
     [
@@ -17693,23 +17693,23 @@
       "R"
     ],
     [
+      "KnEmployee",
+      "R"
+    ],
+    [
+      "KnEmployeeOrganization",
+      "R"
+    ],
+    [
+      "KnEmployee",
+      "R"
+    ],
+    [
       "KnEmployeeOrganization",
       "R"
     ],
     [
       "KnEmployeeOrganizationId",
-      "R"
-    ],
-    [
-      "KnEmployee",
-      "R"
-    ],
-    [
-      "KnEmployeeOrganization",
-      "R"
-    ],
-    [
-      "KnEmployee",
       "R"
     ],
     [
@@ -19777,10 +19777,6 @@
       "R"
     ],
     [
-      "KnRoleModuleFunctionInfo",
-      "R"
-    ],
-    [
       "KnResource",
       "R"
     ],
@@ -19798,38 +19794,6 @@
     ],
     [
       "KnRoleModuleFunctionInfo",
-      "R"
-    ],
-    [
-      "KnRole",
-      "R"
-    ],
-    [
-      "KnResource",
-      "R"
-    ],
-    [
-      "KnResource",
-      "R"
-    ],
-    [
-      "KnResource",
-      "R"
-    ],
-    [
-      "KnResource",
-      "R"
-    ],
-    [
-      "KnResource",
-      "R"
-    ],
-    [
-      "KnResource",
-      "R"
-    ],
-    [
-      "KnResource",
       "R"
     ],
     [
@@ -19849,7 +19813,23 @@
       "R"
     ],
     [
-      "KnRoleModuleFunctionInfo",
+      "KnResource",
+      "R"
+    ],
+    [
+      "KnResource",
+      "R"
+    ],
+    [
+      "KnResource",
+      "R"
+    ],
+    [
+      "KnResource",
+      "R"
+    ],
+    [
+      "KnResource",
       "R"
     ],
     [
@@ -19857,7 +19837,11 @@
       "R"
     ],
     [
-      "KnRoleModuleFunctionInfo",
+      "KnRole",
+      "R"
+    ],
+    [
+      "KnResource",
       "R"
     ],
     [
@@ -19870,6 +19854,22 @@
     ],
     [
       "KnResource",
+      "R"
+    ],
+    [
+      "KnResource",
+      "R"
+    ],
+    [
+      "KnRoleModuleFunctionInfo",
+      "R"
+    ],
+    [
+      "KnRoleModuleFunctionInfo",
+      "R"
+    ],
+    [
+      "KnRoleModuleFunctionInfo",
       "R"
     ],
     [
@@ -20157,15 +20157,15 @@
       "R"
     ],
     [
+      "KnApplicationSetupInfo",
+      "R"
+    ],
+    [
+      "KnApplicationSetupInfo",
+      "R"
+    ],
+    [
       "KnApplicationInfo",
-      "R"
-    ],
-    [
-      "KnApplicationSetupInfo",
-      "R"
-    ],
-    [
-      "KnApplicationSetupInfo",
       "R"
     ],
     [
@@ -20199,15 +20199,15 @@
       "R"
     ],
     [
+      "KnVersionInfo",
+      "R"
+    ],
+    [
+      "KnVersionInfo",
+      "R"
+    ],
+    [
       "KnApplicationInfo",
-      "R"
-    ],
-    [
-      "KnVersionInfo",
-      "R"
-    ],
-    [
-      "KnVersionInfo",
       "R"
     ],
     [
@@ -21799,18 +21799,6 @@
       "R"
     ],
     [
-      "KnEmployeeOrganization",
-      "R"
-    ],
-    [
-      "KnEmployeeOrganizationId",
-      "R"
-    ],
-    [
-      "KnEmployee",
-      "R"
-    ],
-    [
       "KnEmployee",
       "R"
     ],
@@ -21828,10 +21816,6 @@
     ],
     [
       "KnEmployeeOrganizationId",
-      "R"
-    ],
-    [
-      "KnOrganization",
       "R"
     ],
     [
@@ -21852,6 +21836,22 @@
     ],
     [
       "KnEmployee",
+      "R"
+    ],
+    [
+      "KnEmployee",
+      "R"
+    ],
+    [
+      "KnEmployeeOrganization",
+      "R"
+    ],
+    [
+      "KnEmployeeOrganizationId",
+      "R"
+    ],
+    [
+      "KnOrganization",
       "R"
     ],
     [
@@ -23181,11 +23181,11 @@
       "R"
     ],
     [
-      "KnNoticeReceiptId",
+      "KnNoticeReceipt",
       "R"
     ],
     [
-      "KnNoticeReceipt",
+      "KnNoticeReceiptId",
       "R"
     ],
     [
@@ -23247,11 +23247,11 @@
       "R"
     ],
     [
-      "KnNoticeReceipt",
+      "KnNoticeReceiptId",
       "R"
     ],
     [
-      "KnNoticeReceiptId",
+      "KnNoticeReceipt",
       "R"
     ],
     [
@@ -24071,23 +24071,23 @@
       "R"
     ],
     [
-      "KnFlowForm",
-      "R"
-    ],
-    [
-      "KnApproval",
-      "R"
-    ],
-    [
-      "KnApproval",
-      "R"
-    ],
-    [
       "KnApproval",
       "R"
     ],
     [
       "KnFlowForm",
+      "R"
+    ],
+    [
+      "KnApproval",
+      "R"
+    ],
+    [
+      "KnFlowForm",
+      "R"
+    ],
+    [
+      "KnApproval",
       "R"
     ],
     [
@@ -24321,15 +24321,15 @@
       "R"
     ],
     [
+      "KnNoticeReceipt",
+      "R"
+    ],
+    [
+      "KnNoticeReceipt",
+      "R"
+    ],
+    [
       "KnNoticeReceiptId",
-      "R"
-    ],
-    [
-      "KnNoticeReceipt",
-      "R"
-    ],
-    [
-      "KnNoticeReceipt",
       "R"
     ],
     [
@@ -24339,6 +24339,26 @@
   ],
   "NoticeRestController.List": [
     [
+      "KnNotice",
+      "R"
+    ],
+    [
+      "KnNotice",
+      "R"
+    ],
+    [
+      "KnNotice",
+      "R"
+    ],
+    [
+      "KnNotice",
+      "R"
+    ],
+    [
+      "KnNoticeReceipt",
+      "R"
+    ],
+    [
       "KnNoticeReceipt",
       "R"
     ],
@@ -24355,31 +24375,11 @@
       "R"
     ],
     [
-      "KnNotice",
-      "R"
-    ],
-    [
       "KnNoticeReceipt",
       "R"
     ],
     [
       "KnNoticeReceiptId",
-      "R"
-    ],
-    [
-      "KnNoticeReceipt",
-      "R"
-    ],
-    [
-      "KnNotice",
-      "R"
-    ],
-    [
-      "KnNotice",
-      "R"
-    ],
-    [
-      "KnNotice",
       "R"
     ],
     [
@@ -24451,30 +24451,6 @@
       "R"
     ],
     [
-      "KnNoticeReceiptId",
-      "R"
-    ],
-    [
-      "KnNoticeReceipt",
-      "R"
-    ],
-    [
-      "KnNoticeReceiptId",
-      "R"
-    ],
-    [
-      "KnNoticeReceipt",
-      "R"
-    ],
-    [
-      "KnNoticeReceipt",
-      "R"
-    ],
-    [
-      "KnNoticeReceipt",
-      "R"
-    ],
-    [
       "KnNoticeReceipt",
       "R"
     ],
@@ -24491,7 +24467,31 @@
       "R"
     ],
     [
+      "KnNoticeReceiptId",
+      "R"
+    ],
+    [
       "KnNoticeReceipt",
+      "R"
+    ],
+    [
+      "KnNoticeReceipt",
+      "R"
+    ],
+    [
+      "KnNoticeReceipt",
+      "R"
+    ],
+    [
+      "KnNoticeReceipt",
+      "R"
+    ],
+    [
+      "KnNoticeReceipt",
+      "R"
+    ],
+    [
+      "KnNoticeReceiptId",
       "R"
     ],
     [
@@ -24537,34 +24537,6 @@
       "R"
     ],
     [
-      "KnNoticeReceiptId",
-      "R"
-    ],
-    [
-      "KnNoticeReceipt",
-      "R"
-    ],
-    [
-      "KnNoticeReceipt",
-      "R"
-    ],
-    [
-      "KnNoticeReceiptId",
-      "R"
-    ],
-    [
-      "KnNoticeReceipt",
-      "R"
-    ],
-    [
-      "KnNoticeReceipt",
-      "R"
-    ],
-    [
-      "KnNoticeReceipt",
-      "R"
-    ],
-    [
       "KnNoticeReceipt",
       "R"
     ],
@@ -24582,6 +24554,34 @@
     ],
     [
       "KnNoticeReceipt",
+      "R"
+    ],
+    [
+      "KnNoticeReceipt",
+      "R"
+    ],
+    [
+      "KnNoticeReceipt",
+      "R"
+    ],
+    [
+      "KnNoticeReceipt",
+      "R"
+    ],
+    [
+      "KnNoticeReceipt",
+      "R"
+    ],
+    [
+      "KnNoticeReceiptId",
+      "R"
+    ],
+    [
+      "KnNoticeReceipt",
+      "R"
+    ],
+    [
+      "KnNoticeReceiptId",
       "R"
     ],
     [
@@ -24599,10 +24599,6 @@
       "R"
     ],
     [
-      "KnNoticeReceiptId",
-      "R"
-    ],
-    [
       "KnNoticeReceipt",
       "R"
     ],
@@ -24616,6 +24612,10 @@
     ],
     [
       "KnNoticeReceipt",
+      "R"
+    ],
+    [
+      "KnNoticeReceiptId",
       "R"
     ],
     [
@@ -24681,6 +24681,14 @@
       "R"
     ],
     [
+      "KnEmployee",
+      "R"
+    ],
+    [
+      "KnEmployeeOrganization",
+      "R"
+    ],
+    [
       "KnEmployeeOrganizationId",
       "R"
     ],
@@ -24705,10 +24713,6 @@
       "R"
     ],
     [
-      "KnEmployeeOrganization",
-      "R"
-    ],
-    [
       "KnEmployee",
       "R"
     ],
@@ -24722,10 +24726,6 @@
     ],
     [
       "KnOrganization",
-      "R"
-    ],
-    [
-      "KnEmployee",
       "R"
     ],
     [
@@ -25961,6 +25961,10 @@
       "R"
     ],
     [
+      "KnMeeting",
+      "R"
+    ],
+    [
       "KnMeetingRoom",
       "R"
     ],
@@ -25971,18 +25975,6 @@
     [
       "KnMeeting",
       "R"
-    ],
-    [
-      "KnMeeting",
-      "R"
-    ],
-    [
-      "KnMeeting",
-      "W"
-    ],
-    [
-      "KnMeetingRoom",
-      "W"
     ],
     [
       "KnMeeting",
@@ -25997,6 +25989,14 @@
       "W"
     ],
     [
+      "KnMeetingRoom",
+      "W"
+    ],
+    [
+      "KnMeeting",
+      "W"
+    ],
+    [
       "KnMeeting",
       "R"
     ],
@@ -26086,6 +26086,18 @@
     ],
     [
       "KnMeetingAttendee",
+      "R"
+    ],
+    [
+      "KnEmployee",
+      "R"
+    ],
+    [
+      "KnEmployee",
+      "R"
+    ],
+    [
+      "KnEmployeeOrganization",
       "R"
     ],
     [
@@ -26114,18 +26126,6 @@
     ],
     [
       "KnOrganization",
-      "R"
-    ],
-    [
-      "KnEmployee",
-      "R"
-    ],
-    [
-      "KnEmployee",
-      "R"
-    ],
-    [
-      "KnEmployeeOrganization",
       "R"
     ],
     [
@@ -27363,10 +27363,6 @@
       "R"
     ],
     [
-      "KnMeetingAttendee",
-      "R"
-    ],
-    [
       "KnMeeting",
       "R"
     ],
@@ -27392,6 +27388,10 @@
     ],
     [
       "KnMeeting",
+      "R"
+    ],
+    [
+      "KnMeetingAttendee",
       "R"
     ],
     [
@@ -27495,23 +27495,23 @@
       "R"
     ],
     [
+      "KnMeeting",
+      "R"
+    ],
+    [
+      "KnMeeting",
+      "R"
+    ],
+    [
+      "KnMeeting",
+      "R"
+    ],
+    [
+      "KnMeeting",
+      "R"
+    ],
+    [
       "KnMeetingRoom",
-      "R"
-    ],
-    [
-      "KnMeeting",
-      "R"
-    ],
-    [
-      "KnMeeting",
-      "R"
-    ],
-    [
-      "KnMeeting",
-      "R"
-    ],
-    [
-      "KnMeeting",
       "R"
     ],
     [
@@ -27611,10 +27611,6 @@
       "R"
     ],
     [
-      "KnMeeting",
-      "R"
-    ],
-    [
       "KnMeetingAttendee",
       "R"
     ],
@@ -27635,11 +27631,15 @@
       "R"
     ],
     [
-      "KnMeetingAttendee",
+      "KnMeeting",
       "R"
     ],
     [
       "KnMeeting",
+      "R"
+    ],
+    [
+      "KnMeetingAttendee",
       "R"
     ],
     [
@@ -28111,10 +28111,6 @@
       "R"
     ],
     [
-      "KnMeetingSignInId",
-      "R"
-    ],
-    [
       "KnMeetingSignIn",
       "R"
     ],
@@ -28128,6 +28124,10 @@
     ],
     [
       "KnMeetingSignIn",
+      "R"
+    ],
+    [
+      "KnMeetingSignInId",
       "R"
     ],
     [
@@ -28215,15 +28215,15 @@
       "R"
     ],
     [
+      "KnMeetingSignIn",
+      "R"
+    ],
+    [
+      "KnMeetingSignIn",
+      "R"
+    ],
+    [
       "KnMeetingSignInId",
-      "R"
-    ],
-    [
-      "KnMeetingSignIn",
-      "R"
-    ],
-    [
-      "KnMeetingSignIn",
       "R"
     ],
     [
@@ -29595,15 +29595,7 @@
       "R"
     ],
     [
-      "KnAutoBorrow",
-      "R"
-    ],
-    [
-      "KnAutoBorrow",
-      "R"
-    ],
-    [
-      "KnAutoBorrow",
+      "KnAuto",
       "R"
     ],
     [
@@ -29631,11 +29623,7 @@
       "R"
     ],
     [
-      "KnAutoBorrow",
-      "R"
-    ],
-    [
-      "KnAutoBorrow",
+      "KnAuto",
       "R"
     ],
     [
@@ -29647,7 +29635,7 @@
       "R"
     ],
     [
-      "KnAuto",
+      "KnAutoBorrow",
       "R"
     ],
     [
@@ -29655,7 +29643,19 @@
       "R"
     ],
     [
-      "KnAuto",
+      "KnAutoBorrow",
+      "R"
+    ],
+    [
+      "KnAutoBorrow",
+      "R"
+    ],
+    [
+      "KnAutoBorrow",
+      "R"
+    ],
+    [
+      "KnAutoBorrow",
       "R"
     ],
     [
@@ -33139,7 +33139,35 @@
       "R"
     ],
     [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnEmployee",
+      "R"
+    ],
+    [
       "KnVersionInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnEmployee",
+      "R"
+    ],
+    [
+      "KnVersionInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
       "R"
     ],
     [
@@ -33159,18 +33187,6 @@
       "R"
     ],
     [
-      "KnEmployee",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnEmployee",
-      "R"
-    ],
-    [
       "KnScoreInfo",
       "R"
     ],
@@ -33184,22 +33200,6 @@
     ],
     [
       "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnVersionInfo",
       "R"
     ],
     [
@@ -33319,7 +33319,7 @@
       "R"
     ],
     [
-      "KnScoreInfo",
+      "KnEmployee",
       "R"
     ],
     [
@@ -33335,23 +33335,23 @@
       "R"
     ],
     [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
-      "KnScoreInfo",
-      "R"
-    ],
-    [
       "KnVersionInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
+      "R"
+    ],
+    [
+      "KnScoreInfo",
       "R"
     ],
     [
@@ -33375,7 +33375,7 @@
       "R"
     ],
     [
-      "KnEmployee",
+      "KnScoreInfo",
       "R"
     ],
     [
@@ -38771,37 +38771,37 @@
       "R"
     ],
     [
-      "KnRoleModuleFunctionInfo",
-      "R"
-    ],
-    [
-      "KnRoleModuleFunctionInfo",
-      "R"
-    ],
-    [
-      "KnRoleModuleFunctionInfo",
-      "R"
-    ],
-    [
-      "KnRoleModuleFunctionInfo",
-      "R"
-    ],
-    [
       "KnResource",
+      "R"
+    ],
+    [
+      "KnRoleModuleFunctionInfo",
+      "R"
+    ],
+    [
+      "KnRoleModuleFunctionInfo",
+      "R"
+    ],
+    [
+      "KnRoleModuleFunctionInfo",
+      "R"
+    ],
+    [
+      "KnRoleModuleFunctionInfo",
       "R"
     ]
   ],
   "RoleInfoController.findRoleByFunc": [
     [
+      "KnRole",
+      "R"
+    ],
+    [
+      "KnRole",
+      "R"
+    ],
+    [
       "KnRoleModuleFunctionInfo",
-      "R"
-    ],
-    [
-      "KnRole",
-      "R"
-    ],
-    [
-      "KnRole",
       "R"
     ]
   ],

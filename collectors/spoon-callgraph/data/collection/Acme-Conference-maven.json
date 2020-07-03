@@ -205,15 +205,15 @@
       "R"
     ],
     [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
       "R"
     ],
     [
@@ -237,15 +237,15 @@
       "R"
     ],
     [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
       "R"
     ],
     [
@@ -254,6 +254,26 @@
     ],
     [
       "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Registration",
       "R"
     ],
     [
@@ -270,26 +290,6 @@
     ],
     [
       "Author",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
       "R"
     ],
     [
@@ -339,11 +339,11 @@
       "R"
     ],
     [
-      "Sponsor",
+      "Sponsorship",
       "R"
     ],
     [
-      "Sponsorship",
+      "Sponsor",
       "R"
     ],
     [
@@ -363,15 +363,15 @@
       "R"
     ],
     [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
       "R"
     ],
     [
@@ -391,7 +391,7 @@
       "R"
     ],
     [
-      "Registration",
+      "Conference",
       "R"
     ],
     [
@@ -400,6 +400,14 @@
     ],
     [
       "Registration",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Conference",
       "R"
     ],
     [
@@ -408,14 +416,6 @@
     ],
     [
       "Author",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
       "R"
     ],
     [
@@ -493,11 +493,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Sponsor",
       "R"
     ],
     [
-      "Sponsor",
+      "UserAccount",
       "R"
     ],
     [
@@ -509,15 +509,27 @@
       "R"
     ],
     [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
       "Registration",
       "R"
     ],
     [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
+      "Registration",
       "R"
     ],
     [
@@ -530,18 +542,6 @@
     ],
     [
       "Author",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Registration",
       "R"
     ],
     [
@@ -591,11 +591,11 @@
       "R"
     ],
     [
-      "Sponsor",
+      "Sponsorship",
       "R"
     ],
     [
-      "Sponsorship",
+      "Sponsor",
       "R"
     ]
   ],
@@ -617,11 +617,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Sponsor",
       "R"
     ],
     [
-      "Sponsor",
+      "UserAccount",
       "R"
     ],
     [
@@ -630,6 +630,26 @@
     ],
     [
       "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Registration",
       "R"
     ],
     [
@@ -646,26 +666,6 @@
     ],
     [
       "Author",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Conference",
       "R"
     ],
     [
@@ -749,15 +749,15 @@
       "R"
     ],
     [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
       "R"
     ],
     [
@@ -777,31 +777,31 @@
       "R"
     ],
     [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
       "Registration",
       "R"
     ],
     [
       "Author",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Conference",
       "R"
     ],
     [
@@ -825,15 +825,15 @@
       "R"
     ],
     [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
       "R"
     ],
     [
@@ -846,6 +846,22 @@
     ],
     [
       "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Registration",
       "R"
     ],
     [
@@ -862,22 +878,6 @@
     ],
     [
       "Author",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
       "R"
     ],
     [
@@ -907,15 +907,15 @@
       "R"
     ],
     [
+      "Sponsor",
+      "R"
+    ],
+    [
+      "Sponsor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsor",
       "R"
     ],
     [
@@ -927,15 +927,15 @@
       "R"
     ],
     [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
       "Sponsor",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
-      "Sponsorship",
       "R"
     ]
   ],
@@ -1043,11 +1043,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Author",
       "R"
     ],
     [
-      "Author",
+      "UserAccount",
       "R"
     ],
     [
@@ -1059,39 +1059,39 @@
       "R"
     ],
     [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
       "Submission",
       "R"
     ],
     [
       "Author",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
       "R"
     ]
   ],
@@ -1113,11 +1113,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Author",
       "R"
     ],
     [
-      "Author",
+      "UserAccount",
       "R"
     ],
     [
@@ -1163,74 +1163,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Author",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Author",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "SubmissionForm",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
       "Author",
       "R"
     ],
@@ -1239,47 +1171,23 @@
       "R"
     ],
     [
-      "Author",
+      "DomainEntity",
       "R"
     ],
     [
-      "Author",
+      "Conference",
       "R"
     ],
     [
-      "Submission",
-      "W"
-    ],
-    [
-      "Author",
-      "W"
-    ],
-    [
-      "SubmissionForm",
+      "Conference",
       "R"
     ],
     [
-      "Submission",
-      "W"
-    ],
-    [
-      "SubmissionForm",
+      "Conference",
       "R"
     ],
     [
-      "Submission",
-      "W"
-    ],
-    [
-      "SubmissionForm",
-      "R"
-    ],
-    [
-      "Submission",
-      "W"
-    ],
-    [
-      "SubmissionForm",
+      "Conference",
       "R"
     ],
     [
@@ -1288,62 +1196,30 @@
     ],
     [
       "Submission",
-      "W"
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
     ],
     [
       "Conference",
-      "W"
-    ],
-    [
-      "SubmissionForm",
       "R"
-    ],
-    [
-      "Paper",
-      "W"
-    ],
-    [
-      "SubmissionForm",
-      "R"
-    ],
-    [
-      "Paper",
-      "W"
-    ],
-    [
-      "SubmissionForm",
-      "R"
-    ],
-    [
-      "Paper",
-      "W"
-    ],
-    [
-      "SubmissionForm",
-      "R"
-    ],
-    [
-      "Paper",
-      "W"
-    ],
-    [
-      "Paper",
-      "W"
     ],
     [
       "Submission",
-      "W"
-    ],
-    [
-      "Paper",
-      "W"
-    ],
-    [
-      "Submission",
-      "W"
+      "R"
     ],
     [
       "Author",
+      "R"
+    ],
+    [
+      "SubmissionForm",
+      "R"
+    ],
+    [
+      "Conference",
       "R"
     ],
     [
@@ -1371,39 +1247,111 @@
       "R"
     ],
     [
+      "Submission",
+      "W"
+    ],
+    [
+      "Author",
+      "W"
+    ],
+    [
+      "SubmissionForm",
+      "R"
+    ],
+    [
+      "Submission",
+      "W"
+    ],
+    [
+      "SubmissionForm",
+      "R"
+    ],
+    [
+      "Submission",
+      "W"
+    ],
+    [
+      "SubmissionForm",
+      "R"
+    ],
+    [
+      "Submission",
+      "W"
+    ],
+    [
+      "SubmissionForm",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Submission",
+      "W"
+    ],
+    [
+      "Conference",
+      "W"
+    ],
+    [
+      "SubmissionForm",
+      "R"
+    ],
+    [
+      "Paper",
+      "W"
+    ],
+    [
+      "SubmissionForm",
+      "R"
+    ],
+    [
+      "Paper",
+      "W"
+    ],
+    [
+      "SubmissionForm",
+      "R"
+    ],
+    [
+      "Paper",
+      "W"
+    ],
+    [
+      "SubmissionForm",
+      "R"
+    ],
+    [
+      "Paper",
+      "W"
+    ],
+    [
+      "Paper",
+      "W"
+    ],
+    [
+      "Submission",
+      "W"
+    ],
+    [
+      "Paper",
+      "W"
+    ],
+    [
+      "Submission",
+      "W"
+    ],
+    [
+      "Author",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
     [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Submission",
+      "DomainEntity",
       "R"
     ],
     [
@@ -1411,19 +1359,7 @@
       "R"
     ],
     [
-      "Conference",
-      "R"
-    ],
-    [
       "Author",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
       "R"
     ],
     [
@@ -1435,6 +1371,46 @@
       "R"
     ],
     [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
       "Author",
       "R"
     ],
@@ -1447,6 +1423,46 @@
       "R"
     ],
     [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Author",
+      "R"
+    ],
+    [
+      "Author",
+      "R"
+    ],
+    [
+      "Author",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
       "Conference",
       "R"
     ],
@@ -1455,7 +1471,7 @@
       "R"
     ],
     [
-      "Conference",
+      "Submission",
       "R"
     ],
     [
@@ -1468,22 +1484,6 @@
     ],
     [
       "Author",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Conference",
       "R"
     ]
   ],
@@ -1509,15 +1509,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -1553,15 +1553,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -1635,43 +1635,43 @@
       "R"
     ],
     [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
       "Registration",
       "R"
     ],
     [
       "Author",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
       "R"
     ],
     [
@@ -1697,15 +1697,15 @@
       "R"
     ],
     [
+      "Author",
+      "R"
+    ],
+    [
+      "Author",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Author",
-      "R"
-    ],
-    [
-      "Author",
       "R"
     ],
     [
@@ -1721,11 +1721,11 @@
       "R"
     ],
     [
-      "Author",
+      "Registration",
       "R"
     ],
     [
-      "Registration",
+      "Author",
       "R"
     ]
   ],
@@ -1763,39 +1763,39 @@
       "R"
     ],
     [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
       "Registration",
       "R"
     ],
     [
       "Author",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
       "R"
     ],
     [
@@ -1847,11 +1847,11 @@
       "R"
     ],
     [
-      "Author",
+      "Registration",
       "R"
     ],
     [
-      "Registration",
+      "Author",
       "R"
     ],
     [
@@ -1891,14 +1891,6 @@
       "R"
     ],
     [
-      "Conference",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
       "Registration",
       "R"
     ],
@@ -1908,6 +1900,14 @@
     ],
     [
       "Author",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Conference",
       "R"
     ],
     [
@@ -1971,6 +1971,30 @@
       "R"
     ],
     [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
       "Registration",
       "R"
     ],
@@ -1979,30 +2003,6 @@
       "R"
     ],
     [
-      "Registration",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
       "Customisation",
       "R"
     ],
@@ -2016,6 +2016,14 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Author",
+      "R"
+    ],
+    [
+      "Author",
       "R"
     ],
     [
@@ -2027,43 +2035,35 @@
       "R"
     ],
     [
-      "Author",
-      "R"
-    ],
-    [
-      "Author",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
     [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
       "Registration",
       "R"
     ],
     [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
       "Registration",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
       "R"
     ],
     [
@@ -2092,6 +2092,14 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Author",
+      "R"
+    ],
+    [
+      "Author",
       "R"
     ],
     [
@@ -2103,14 +2111,6 @@
       "R"
     ],
     [
-      "Author",
-      "R"
-    ],
-    [
-      "Author",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
@@ -2119,15 +2119,27 @@
       "R"
     ],
     [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
       "Registration",
       "R"
     ],
     [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
+      "Registration",
       "R"
     ],
     [
@@ -2140,18 +2152,6 @@
     ],
     [
       "Author",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Registration",
       "R"
     ],
     [
@@ -2168,6 +2168,14 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Author",
+      "R"
+    ],
+    [
+      "Author",
       "R"
     ],
     [
@@ -2179,14 +2187,6 @@
       "R"
     ],
     [
-      "Author",
-      "R"
-    ],
-    [
-      "Author",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
@@ -2207,15 +2207,19 @@
       "R"
     ],
     [
-      "Registration",
-      "R"
-    ],
-    [
       "Conference",
       "R"
     ],
     [
       "Registration",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Conference",
       "R"
     ],
     [
@@ -2224,10 +2228,6 @@
     ],
     [
       "Author",
-      "R"
-    ],
-    [
-      "Conference",
       "R"
     ],
     [
@@ -2257,15 +2257,15 @@
       "R"
     ],
     [
+      "Administrator",
+      "R"
+    ],
+    [
+      "Administrator",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Administrator",
-      "R"
-    ],
-    [
-      "Administrator",
       "R"
     ]
   ],
@@ -2367,15 +2367,15 @@
       "R"
     ],
     [
+      "CameraReadyPaper",
+      "R"
+    ],
+    [
       "Submission",
       "R"
     ],
     [
       "Author",
-      "R"
-    ],
-    [
-      "CameraReadyPaper",
       "R"
     ],
     [
@@ -2545,15 +2545,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -2667,11 +2667,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Author",
       "R"
     ],
     [
-      "Author",
+      "UserAccount",
       "R"
     ],
     [
@@ -2859,11 +2859,11 @@
       "R"
     ],
     [
-      "Reviewer",
+      "Submission",
       "R"
     ],
     [
-      "Submission",
+      "Reviewer",
       "R"
     ]
   ],
@@ -3013,15 +3013,15 @@
       "R"
     ],
     [
+      "Section",
+      "R"
+    ],
+    [
+      "Section",
+      "R"
+    ],
+    [
       "Tutorial",
-      "R"
-    ],
-    [
-      "Section",
-      "R"
-    ],
-    [
-      "Section",
       "R"
     ],
     [
@@ -3465,15 +3465,15 @@
       "R"
     ],
     [
+      "Comment",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
       "Commentable",
-      "R"
-    ],
-    [
-      "Comment",
-      "R"
-    ],
-    [
-      "Comment",
       "R"
     ],
     [
@@ -3669,15 +3669,15 @@
       "R"
     ],
     [
+      "Comment",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
       "Commentable",
-      "R"
-    ],
-    [
-      "Comment",
-      "R"
-    ],
-    [
-      "Comment",
       "R"
     ],
     [
@@ -3795,11 +3795,11 @@
       "R"
     ],
     [
-      "Commentable",
+      "Comment",
       "R"
     ],
     [
-      "Comment",
+      "Commentable",
       "R"
     ],
     [
@@ -3895,15 +3895,15 @@
       "R"
     ],
     [
+      "Comment",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
       "Commentable",
-      "R"
-    ],
-    [
-      "Comment",
-      "R"
-    ],
-    [
-      "Comment",
       "R"
     ],
     [
@@ -3915,15 +3915,15 @@
       "R"
     ],
     [
+      "Comment",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
       "Commentable",
-      "R"
-    ],
-    [
-      "Comment",
-      "R"
-    ],
-    [
-      "Comment",
       "R"
     ],
     [
@@ -3983,11 +3983,11 @@
       "R"
     ],
     [
-      "Commentable",
+      "Comment",
       "R"
     ],
     [
-      "Comment",
+      "Commentable",
       "R"
     ],
     [
@@ -3999,15 +3999,15 @@
       "R"
     ],
     [
+      "Comment",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
       "Commentable",
-      "R"
-    ],
-    [
-      "Comment",
-      "R"
-    ],
-    [
-      "Comment",
       "R"
     ],
     [
@@ -4053,15 +4053,15 @@
       "R"
     ],
     [
+      "CameraReadyPaper",
+      "R"
+    ],
+    [
       "Submission",
       "R"
     ],
     [
       "Conference",
-      "R"
-    ],
-    [
-      "CameraReadyPaper",
       "R"
     ]
   ],
@@ -4215,14 +4215,14 @@
       "R"
     ],
     [
-      "Conference",
-      "R"
-    ],
-    [
       "Registration",
       "R"
     ],
     [
+      "Conference",
+      "R"
+    ],
+    [
       "Authority",
       "R"
     ],
@@ -4247,11 +4247,11 @@
       "R"
     ],
     [
-      "Conference",
+      "Activity",
       "R"
     ],
     [
-      "Activity",
+      "Conference",
       "R"
     ],
     [
@@ -4268,6 +4268,14 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
+      "Comment",
       "R"
     ],
     [
@@ -4276,14 +4284,6 @@
     ],
     [
       "Commentable",
-      "R"
-    ],
-    [
-      "Comment",
-      "R"
-    ],
-    [
-      "Comment",
       "R"
     ],
     [
@@ -4699,11 +4699,11 @@
       "R"
     ],
     [
-      "Conference",
+      "Activity",
       "R"
     ],
     [
-      "Activity",
+      "Conference",
       "R"
     ],
     [
@@ -5025,66 +5025,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "Actor",
       "R"
     ],
@@ -5093,7 +5033,67 @@
       "R"
     ],
     [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
       "Actor",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
       "R"
     ],
     [
@@ -5127,18 +5127,18 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "Message",
       "W"
     ],
@@ -5180,6 +5180,14 @@
     ],
     [
       "Customisation",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
       "R"
     ],
     [
@@ -5215,15 +5223,7 @@
       "R"
     ],
     [
-      "Conference",
-      "R"
-    ],
-    [
       "Registration",
-      "R"
-    ],
-    [
-      "Conference",
       "R"
     ],
     [
@@ -5401,11 +5401,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -5479,15 +5479,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -5681,15 +5681,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -5807,50 +5807,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Customisation",
-      "R"
-    ],
-    [
-      "Customisation",
-      "R"
-    ],
-    [
-      "Customisation",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "Actor",
       "R"
     ],
@@ -5899,11 +5855,55 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
+      "Customisation",
+      "R"
+    ],
+    [
+      "Customisation",
+      "R"
+    ],
+    [
+      "Customisation",
+      "R"
+    ],
+    [
       "Actor",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
       "R"
     ],
     [
@@ -6003,99 +6003,7 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
       "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
       "R"
     ],
     [
@@ -6107,11 +6015,103 @@
       "R"
     ],
     [
+      "Message",
+      "W"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
       "Actor",
       "R"
     ],
     [
       "Actor",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
       "R"
     ],
     [
@@ -6145,314 +6145,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Customisation",
-      "R"
-    ],
-    [
-      "Customisation",
-      "R"
-    ],
-    [
-      "Customisation",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Customisation",
-      "R"
-    ],
-    [
-      "Customisation",
-      "R"
-    ],
-    [
-      "Customisation",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Customisation",
-      "R"
-    ],
-    [
-      "Customisation",
-      "R"
-    ],
-    [
-      "Customisation",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Author",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Author",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Author",
-      "R"
-    ],
-    [
-      "Author",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "Actor",
       "R"
     ],
@@ -6466,22 +6158,6 @@
     ],
     [
       "Message",
-      "W"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -6489,35 +6165,7 @@
       "R"
     ],
     [
-      "Box",
-      "W"
-    ],
-    [
       "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -6525,12 +6173,12 @@
       "R"
     ],
     [
-      "Box",
-      "W"
+      "Message",
+      "R"
     ],
     [
       "Message",
-      "W"
+      "R"
     ],
     [
       "Customisation",
@@ -6542,6 +6190,10 @@
     ],
     [
       "Customisation",
+      "R"
+    ],
+    [
+      "Conference",
       "R"
     ],
     [
@@ -6557,23 +6209,11 @@
       "R"
     ],
     [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
       "Submission",
       "R"
     ],
     [
       "Conference",
-      "R"
-    ],
-    [
-      "Registration",
       "R"
     ],
     [
@@ -6590,6 +6230,366 @@
     ],
     [
       "Registration",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Customisation",
+      "R"
+    ],
+    [
+      "Customisation",
+      "R"
+    ],
+    [
+      "Customisation",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Customisation",
+      "R"
+    ],
+    [
+      "Customisation",
+      "R"
+    ],
+    [
+      "Customisation",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Author",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Author",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Author",
+      "R"
+    ],
+    [
+      "Author",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Customisation",
+      "R"
+    ],
+    [
+      "Customisation",
+      "R"
+    ],
+    [
+      "Customisation",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Conference",
       "R"
     ]
   ],
@@ -6721,11 +6721,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -6869,11 +6869,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Administrator",
       "R"
     ],
     [
-      "Administrator",
+      "UserAccount",
       "R"
     ],
     [
@@ -6979,11 +6979,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Administrator",
       "R"
     ],
     [
-      "Administrator",
+      "UserAccount",
       "R"
     ],
     [
@@ -7129,15 +7129,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -7185,11 +7185,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Administrator",
       "R"
     ],
     [
-      "Administrator",
+      "UserAccount",
       "R"
     ],
     [
@@ -7279,11 +7279,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Sponsor",
       "R"
     ],
     [
-      "Sponsor",
+      "UserAccount",
       "R"
     ],
     [
@@ -7459,23 +7459,11 @@
       "R"
     ],
     [
-      "CameraReadyPaper",
-      "R"
-    ],
-    [
       "Submission",
       "R"
     ],
     [
       "Submission",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Conference",
       "R"
     ],
     [
@@ -7491,7 +7479,19 @@
       "R"
     ],
     [
+      "Conference",
+      "R"
+    ],
+    [
       "Submission",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "CameraReadyPaper",
       "R"
     ],
     [
@@ -7549,14 +7549,6 @@
       "R"
     ],
     [
-      "CameraReadyPaper",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
       "Author",
       "R"
     ],
@@ -7565,11 +7557,19 @@
       "R"
     ],
     [
+      "Conference",
+      "R"
+    ],
+    [
       "Submission",
       "R"
     ],
     [
-      "Conference",
+      "Submission",
+      "R"
+    ],
+    [
+      "CameraReadyPaper",
       "R"
     ],
     [
@@ -7601,15 +7601,15 @@
       "R"
     ],
     [
+      "Author",
+      "R"
+    ],
+    [
+      "Author",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Author",
-      "R"
-    ],
-    [
-      "Author",
       "R"
     ],
     [
@@ -7637,23 +7637,23 @@
       "R"
     ],
     [
-      "CameraReadyPaper",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
       "Conference",
       "R"
     ],
     [
-      "CameraReadyPaper",
+      "Submission",
       "R"
     ],
     [
       "Submission",
+      "R"
+    ],
+    [
+      "CameraReadyPaper",
+      "R"
+    ],
+    [
+      "CameraReadyPaper",
       "R"
     ],
     [
@@ -7695,11 +7695,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Administrator",
       "R"
     ],
     [
-      "Administrator",
+      "UserAccount",
       "R"
     ],
     [
@@ -7761,15 +7761,15 @@
       "R"
     ],
     [
+      "Administrator",
+      "R"
+    ],
+    [
+      "Administrator",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Administrator",
-      "R"
-    ],
-    [
-      "Administrator",
       "R"
     ],
     [
@@ -7791,15 +7791,15 @@
       "R"
     ],
     [
+      "Administrator",
+      "R"
+    ],
+    [
+      "Administrator",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Administrator",
-      "R"
-    ],
-    [
-      "Administrator",
       "R"
     ]
   ],
@@ -7847,35 +7847,11 @@
       "R"
     ],
     [
-      "Submission",
-      "R"
-    ],
-    [
-      "Report",
-      "R"
-    ],
-    [
       "Report",
       "R"
     ],
     [
       "Submission",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Report",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Conference",
       "R"
     ],
     [
@@ -7899,19 +7875,7 @@
       "R"
     ],
     [
-      "Report",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Report",
-      "R"
-    ],
-    [
-      "DomainEntity",
+      "Conference",
       "R"
     ],
     [
@@ -7931,6 +7895,26 @@
       "R"
     ],
     [
+      "Submission",
+      "R"
+    ],
+    [
+      "Report",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
       "Report",
       "R"
     ],
@@ -7944,283 +7928,19 @@
     ],
     [
       "Submission",
-      "W"
-    ],
-    [
-      "Submission",
       "R"
     ],
     [
-      "Submission",
+      "Report",
       "R"
     ],
     [
-      "Submission",
+      "Report",
       "R"
     ],
     [
-      "Submission",
+      "Report",
       "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Author",
-      "R"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Administrator",
-      "R"
-    ],
-    [
-      "Administrator",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Administrator",
-      "R"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Author",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Administrator",
-      "R"
-    ],
-    [
-      "Administrator",
-      "R"
-    ],
-    [
-      "Administrator",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
     ],
     [
       "Submission",
@@ -8475,11 +8195,291 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
       "Actor",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Submission",
+      "W"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Author",
+      "R"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Administrator",
+      "R"
+    ],
+    [
+      "Administrator",
+      "R"
+    ],
+    [
+      "Administrator",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Author",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Administrator",
+      "R"
+    ],
+    [
+      "Administrator",
+      "R"
+    ],
+    [
+      "Administrator",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
       "R"
     ],
     [
@@ -8789,15 +8789,15 @@
       "R"
     ],
     [
-      "Submission",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
       "Conference",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Submission",
       "R"
     ],
     [
@@ -8833,14 +8833,6 @@
       "R"
     ],
     [
-      "Submission",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
       "Conference",
       "R"
     ],
@@ -8849,43 +8841,7 @@
       "R"
     ],
     [
-      "Conference",
-      "R"
-    ],
-    [
       "Submission",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Conference",
       "R"
     ],
     [
@@ -8898,14 +8854,6 @@
     ],
     [
       "Conference",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Submission",
       "R"
     ],
     [
@@ -8945,6 +8893,18 @@
       "R"
     ],
     [
+      "Submission",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
       "Conference",
       "R"
     ],
@@ -8957,99 +8917,43 @@
       "R"
     ],
     [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
       "Submission",
       "R"
     ],
     [
-      "Authority",
+      "Submission",
       "R"
     ],
     [
-      "Authority",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Registration",
+      "Submission",
       "R"
     ],
     [
       "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Registration",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Registration",
       "R"
     ],
     [
@@ -9081,6 +8985,46 @@
       "R"
     ],
     [
+      "Registration",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
       "Conference",
       "R"
     ],
@@ -9093,11 +9037,15 @@
       "R"
     ],
     [
+      "Registration",
+      "R"
+    ],
+    [
       "Conference",
       "R"
     ],
     [
-      "Registration",
+      "Conference",
       "R"
     ],
     [
@@ -9133,6 +9081,22 @@
       "R"
     ],
     [
+      "Registration",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Registration",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
       "Conference",
       "R"
     ],
@@ -9141,15 +9105,7 @@
       "R"
     ],
     [
-      "Registration",
-      "R"
-    ],
-    [
       "Conference",
-      "R"
-    ],
-    [
-      "Registration",
       "R"
     ],
     [
@@ -9177,27 +9133,15 @@
       "R"
     ],
     [
-      "Conference",
+      "Registration",
       "R"
     ],
     [
-      "Authority",
+      "Registration",
       "R"
     ],
     [
-      "Authority",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
+      "Registration",
       "R"
     ],
     [
@@ -9265,6 +9209,62 @@
       "R"
     ],
     [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
       "Conference",
       "R"
     ],
@@ -9301,159 +9301,11 @@
       "R"
     ],
     [
-      "Conference",
-      "R"
-    ],
-    [
       "Category",
       "R"
     ],
     [
       "Conference",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Conference",
-      "R"
-    ],
-    [
-      "Category",
       "R"
     ],
     [
@@ -9493,15 +9345,7 @@
       "R"
     ],
     [
-      "Comment",
-      "R"
-    ],
-    [
-      "Comment",
-      "R"
-    ],
-    [
-      "Commentable",
+      "Category",
       "R"
     ],
     [
@@ -9509,11 +9353,27 @@
       "R"
     ],
     [
-      "Comment",
+      "Conference",
       "R"
     ],
     [
       "Conference",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Category",
       "R"
     ],
     [
@@ -9537,27 +9397,7 @@
       "R"
     ],
     [
-      "Comment",
-      "R"
-    ],
-    [
-      "Comment",
-      "R"
-    ],
-    [
-      "Comment",
-      "R"
-    ],
-    [
-      "Commentable",
-      "R"
-    ],
-    [
-      "Comment",
-      "R"
-    ],
-    [
-      "Commentable",
+      "Category",
       "R"
     ],
     [
@@ -9566,6 +9406,26 @@
     ],
     [
       "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Category",
       "R"
     ],
     [
@@ -9586,6 +9446,54 @@
     ],
     [
       "Authority",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
+      "Category",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Conference",
       "R"
     ],
     [
@@ -9606,6 +9514,46 @@
     ],
     [
       "Conference",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
+      "Commentable",
       "R"
     ],
     [
@@ -9649,15 +9597,67 @@
       "R"
     ],
     [
+      "Comment",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
       "Commentable",
       "R"
     ],
     [
+      "Conference",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
+      "Commentable",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Conference",
+      "R"
+    ],
+    [
       "Comment",
       "R"
     ],
     [
       "Comment",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
+      "Commentable",
       "R"
     ],
     [
@@ -9682,6 +9682,58 @@
     ],
     [
       "Authority",
+      "R"
+    ],
+    [
+      "Activity",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
+      "Commentable",
+      "R"
+    ],
+    [
+      "Activity",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Authority",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Authority",
+      "R"
+    ],
+    [
+      "Activity",
+      "R"
+    ],
+    [
+      "Comment",
       "R"
     ],
     [
@@ -9705,58 +9757,6 @@
       "R"
     ],
     [
-      "Activity",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Authority",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Authority",
-      "R"
-    ],
-    [
-      "Comment",
-      "R"
-    ],
-    [
-      "Activity",
-      "R"
-    ],
-    [
-      "Activity",
-      "R"
-    ],
-    [
-      "Comment",
-      "R"
-    ],
-    [
-      "Comment",
-      "R"
-    ],
-    [
-      "Commentable",
-      "R"
-    ],
-    [
-      "Comment",
-      "R"
-    ],
-    [
       "Commentable",
       "R"
     ],
@@ -9781,6 +9781,14 @@
       "R"
     ],
     [
+      "Activity",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
       "Comment",
       "R"
     ],
@@ -9797,19 +9805,11 @@
       "R"
     ],
     [
-      "Activity",
-      "R"
-    ],
-    [
       "Comment",
       "R"
     ],
     [
       "Commentable",
-      "R"
-    ],
-    [
-      "Comment",
       "R"
     ],
     [
@@ -9833,10 +9833,6 @@
       "R"
     ],
     [
-      "Comment",
-      "R"
-    ],
-    [
       "Activity",
       "R"
     ],
@@ -9845,11 +9841,15 @@
       "R"
     ],
     [
-      "Commentable",
+      "Comment",
       "R"
     ],
     [
       "Comment",
+      "R"
+    ],
+    [
+      "Commentable",
       "R"
     ],
     [
@@ -9891,11 +9891,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Author",
       "R"
     ],
     [
-      "Author",
+      "UserAccount",
       "R"
     ],
     [
@@ -9907,15 +9907,15 @@
       "R"
     ],
     [
+      "Report",
+      "R"
+    ],
+    [
+      "Report",
+      "R"
+    ],
+    [
       "Submission",
-      "R"
-    ],
-    [
-      "Report",
-      "R"
-    ],
-    [
-      "Report",
       "R"
     ],
     [
@@ -9969,11 +9969,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Author",
       "R"
     ],
     [
-      "Author",
+      "UserAccount",
       "R"
     ],
     [
@@ -10037,15 +10037,15 @@
       "R"
     ],
     [
+      "Comment",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
       "Commentable",
-      "R"
-    ],
-    [
-      "Comment",
-      "R"
-    ],
-    [
-      "Comment",
       "R"
     ],
     [
@@ -10057,15 +10057,15 @@
       "R"
     ],
     [
+      "Comment",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
       "Commentable",
-      "R"
-    ],
-    [
-      "Comment",
-      "R"
-    ],
-    [
-      "Comment",
       "R"
     ],
     [
@@ -10183,15 +10183,15 @@
       "R"
     ],
     [
+      "Reviewer",
+      "R"
+    ],
+    [
+      "Reviewer",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Reviewer",
-      "R"
-    ],
-    [
-      "Reviewer",
       "R"
     ],
     [
@@ -10219,11 +10219,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Sponsor",
       "R"
     ],
     [
-      "Sponsor",
+      "UserAccount",
       "R"
     ],
     [
@@ -10367,11 +10367,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Author",
       "R"
     ],
     [
-      "Author",
+      "UserAccount",
       "R"
     ],
     [
@@ -10459,15 +10459,15 @@
       "R"
     ],
     [
+      "Reviewer",
+      "R"
+    ],
+    [
+      "Reviewer",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Reviewer",
-      "R"
-    ],
-    [
-      "Reviewer",
       "R"
     ],
     [
@@ -10861,15 +10861,15 @@
       "R"
     ],
     [
+      "Reviewer",
+      "R"
+    ],
+    [
+      "Reviewer",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Reviewer",
-      "R"
-    ],
-    [
-      "Reviewer",
       "R"
     ],
     [
@@ -10927,14 +10927,14 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
       "Author",
       "R"
     ],
     [
+      "UserAccount",
+      "R"
+    ],
+    [
       "Comment",
       "W"
     ],
@@ -10987,15 +10987,15 @@
       "R"
     ],
     [
+      "Reviewer",
+      "R"
+    ],
+    [
+      "Reviewer",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Reviewer",
-      "R"
-    ],
-    [
-      "Reviewer",
       "R"
     ],
     [
@@ -11171,11 +11171,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Author",
       "R"
     ],
     [
-      "Author",
+      "UserAccount",
       "R"
     ],
     [
@@ -11267,11 +11267,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Reviewer",
       "R"
     ],
     [
-      "Reviewer",
+      "UserAccount",
       "R"
     ],
     [
@@ -11323,15 +11323,15 @@
       "R"
     ],
     [
+      "Author",
+      "R"
+    ],
+    [
+      "Author",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Author",
-      "R"
-    ],
-    [
-      "Author",
       "R"
     ],
     [
@@ -11385,6 +11385,14 @@
       "R"
     ],
     [
+      "Author",
+      "R"
+    ],
+    [
+      "Author",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
@@ -11393,14 +11401,6 @@
       "R"
     ],
     [
-      "Author",
-      "R"
-    ],
-    [
-      "Author",
-      "R"
-    ],
-    [
       "Finder",
       "R"
     ],
@@ -11541,11 +11541,11 @@
       "R"
     ],
     [
-      "Conference",
+      "Category",
       "R"
     ],
     [
-      "Category",
+      "Conference",
       "R"
     ],
     [
@@ -11611,11 +11611,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Author",
       "R"
     ],
     [
-      "Author",
+      "UserAccount",
       "R"
     ],
     [
@@ -11891,11 +11891,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Reviewer",
       "R"
     ],
     [
-      "Reviewer",
+      "UserAccount",
       "R"
     ]
   ],
@@ -11913,15 +11913,15 @@
       "R"
     ],
     [
+      "Reviewer",
+      "R"
+    ],
+    [
+      "Reviewer",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Reviewer",
-      "R"
-    ],
-    [
-      "Reviewer",
       "R"
     ],
     [
@@ -12019,15 +12019,15 @@
       "R"
     ],
     [
+      "Reviewer",
+      "R"
+    ],
+    [
+      "Reviewer",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Reviewer",
-      "R"
-    ],
-    [
-      "Reviewer",
       "R"
     ],
     [
@@ -12039,15 +12039,15 @@
       "R"
     ],
     [
+      "Report",
+      "R"
+    ],
+    [
+      "Report",
+      "R"
+    ],
+    [
       "Reviewer",
-      "R"
-    ],
-    [
-      "Report",
-      "R"
-    ],
-    [
-      "Report",
       "R"
     ]
   ],
@@ -12065,71 +12065,7 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
       "Reviewer",
-      "R"
-    ],
-    [
-      "Reviewer",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Reviewer",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Report",
-      "R"
-    ],
-    [
-      "Report",
-      "R"
-    ],
-    [
-      "Report",
-      "R"
-    ],
-    [
-      "Reviewer",
-      "R"
-    ],
-    [
-      "Report",
-      "R"
-    ],
-    [
-      "Submission",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
       "R"
     ],
     [
@@ -12141,11 +12077,75 @@
       "R"
     ],
     [
+      "Submission",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "Reviewer",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Report",
+      "R"
+    ],
+    [
+      "Report",
+      "R"
+    ],
+    [
+      "Report",
+      "R"
+    ],
+    [
+      "Reviewer",
+      "R"
+    ],
+    [
+      "Report",
+      "R"
+    ],
+    [
+      "Submission",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
       "Reviewer",
       "R"
     ],
     [
       "Reviewer",
+      "R"
+    ],
+    [
+      "Reviewer",
+      "R"
+    ],
+    [
+      "UserAccount",
       "R"
     ],
     [
@@ -12307,11 +12307,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Author",
       "R"
     ],
     [
-      "Author",
+      "UserAccount",
       "R"
     ],
     [
@@ -12375,15 +12375,15 @@
       "R"
     ],
     [
+      "Comment",
+      "R"
+    ],
+    [
+      "Comment",
+      "R"
+    ],
+    [
       "Commentable",
-      "R"
-    ],
-    [
-      "Comment",
-      "R"
-    ],
-    [
-      "Comment",
       "R"
     ],
     [
@@ -12399,11 +12399,11 @@
       "R"
     ],
     [
-      "Commentable",
+      "Comment",
       "R"
     ],
     [
-      "Comment",
+      "Commentable",
       "R"
     ],
     [

@@ -205,19 +205,19 @@
       "R"
     ],
     [
-      "Trade",
-      "R"
-    ],
-    [
-      "Sponsorship",
-      "R"
-    ],
-    [
       "Sponsorship",
       "R"
     ],
     [
       "Hobby",
+      "R"
+    ],
+    [
+      "Sponsorship",
+      "R"
+    ],
+    [
+      "Trade",
       "R"
     ]
   ],
@@ -733,46 +733,6 @@
       "R"
     ],
     [
-      "Point",
-      "R"
-    ],
-    [
-      "Point",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Point",
-      "W"
-    ],
-    [
-      "Point",
-      "W"
-    ],
-    [
-      "Point",
-      "W"
-    ],
-    [
-      "Point",
-      "R"
-    ],
-    [
-      "Point",
-      "R"
-    ],
-    [
-      "Point",
-      "R"
-    ],
-    [
-      "Point",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
@@ -782,7 +742,7 @@
     ],
     [
       "Point",
-      "W"
+      "R"
     ],
     [
       "Point",
@@ -791,6 +751,14 @@
     [
       "Point",
       "W"
+    ],
+    [
+      "Point",
+      "W"
+    ],
+    [
+      "Point",
+      "R"
     ],
     [
       "Point",
@@ -806,6 +774,38 @@
     ],
     [
       "Point",
+      "R"
+    ],
+    [
+      "Point",
+      "R"
+    ],
+    [
+      "Point",
+      "W"
+    ],
+    [
+      "Point",
+      "W"
+    ],
+    [
+      "Point",
+      "W"
+    ],
+    [
+      "Point",
+      "R"
+    ],
+    [
+      "Point",
+      "R"
+    ],
+    [
+      "Point",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -1089,14 +1089,6 @@
       "R"
     ],
     [
-      "Topic",
-      "R"
-    ],
-    [
-      "TopicScore",
-      "R"
-    ],
-    [
       "TopicScore",
       "R"
     ],
@@ -1110,6 +1102,14 @@
     ],
     [
       "TopicScore",
+      "R"
+    ],
+    [
+      "TopicScore",
+      "R"
+    ],
+    [
+      "Topic",
       "R"
     ],
     [
@@ -1189,15 +1189,15 @@
       "R"
     ],
     [
-      "Hobby",
-      "R"
-    ],
-    [
       "Topic",
       "R"
     ],
     [
       "Hobby",
+      "R"
+    ],
+    [
+      "Topic",
       "R"
     ],
     [
@@ -1213,7 +1213,7 @@
       "R"
     ],
     [
-      "Topic",
+      "Hobby",
       "R"
     ],
     [
@@ -1447,10 +1447,6 @@
       "R"
     ],
     [
-      "Topic",
-      "R"
-    ],
-    [
       "Hobby",
       "R"
     ],
@@ -1464,6 +1460,10 @@
     ],
     [
       "Hobby",
+      "R"
+    ],
+    [
+      "Topic",
       "R"
     ],
     [
@@ -1575,11 +1575,11 @@
       "R"
     ],
     [
-      "Point",
+      "User",
       "R"
     ],
     [
-      "User",
+      "Point",
       "R"
     ],
     [
@@ -1899,14 +1899,6 @@
       "R"
     ],
     [
-      "Hobby",
-      "R"
-    ],
-    [
-      "Topic",
-      "R"
-    ],
-    [
       "Topic",
       "R"
     ],
@@ -1916,6 +1908,14 @@
     ],
     [
       "Topic",
+      "R"
+    ],
+    [
+      "Topic",
+      "R"
+    ],
+    [
+      "Hobby",
       "R"
     ],
     [
@@ -1979,6 +1979,30 @@
       "R"
     ],
     [
+      "Hobby",
+      "R"
+    ],
+    [
+      "Topic",
+      "R"
+    ],
+    [
+      "Topic",
+      "R"
+    ],
+    [
+      "Hobby",
+      "R"
+    ],
+    [
+      "Topic",
+      "R"
+    ],
+    [
+      "Topic",
+      "R"
+    ],
+    [
       "Topic",
       "R"
     ],
@@ -2015,11 +2039,11 @@
       "R"
     ],
     [
-      "Hobby",
+      "Topic",
       "R"
     ],
     [
-      "Topic",
+      "Hobby",
       "R"
     ],
     [
@@ -2039,35 +2063,11 @@
       "R"
     ],
     [
-      "Hobby",
-      "R"
-    ],
-    [
       "Topic",
       "R"
     ],
     [
       "Hobby",
-      "R"
-    ],
-    [
-      "Topic",
-      "R"
-    ],
-    [
-      "Topic",
-      "R"
-    ],
-    [
-      "Topic",
-      "R"
-    ],
-    [
-      "Hobby",
-      "R"
-    ],
-    [
-      "Topic",
       "R"
     ],
     [
@@ -2275,11 +2275,11 @@
       "R"
     ],
     [
-      "Video",
+      "Hobby",
       "R"
     ],
     [
-      "Hobby",
+      "Video",
       "R"
     ],
     [
@@ -2913,10 +2913,6 @@
       "R"
     ],
     [
-      "Point",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
@@ -2926,38 +2922,6 @@
     ],
     [
       "Point",
-      "W"
-    ],
-    [
-      "Point",
-      "W"
-    ],
-    [
-      "Point",
-      "W"
-    ],
-    [
-      "Point",
-      "R"
-    ],
-    [
-      "Point",
-      "R"
-    ],
-    [
-      "Point",
-      "R"
-    ],
-    [
-      "Point",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Point",
       "R"
     ],
     [
@@ -2971,10 +2935,6 @@
     [
       "Point",
       "W"
-    ],
-    [
-      "Point",
-      "R"
     ],
     [
       "Point",
@@ -2990,6 +2950,46 @@
     ],
     [
       "User",
+      "R"
+    ],
+    [
+      "Point",
+      "R"
+    ],
+    [
+      "Point",
+      "R"
+    ],
+    [
+      "Point",
+      "W"
+    ],
+    [
+      "Point",
+      "W"
+    ],
+    [
+      "Point",
+      "W"
+    ],
+    [
+      "Point",
+      "R"
+    ],
+    [
+      "Point",
+      "R"
+    ],
+    [
+      "Point",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Point",
       "R"
     ],
     [
@@ -3571,11 +3571,11 @@
       "R"
     ],
     [
-      "Hobby",
+      "Exhibition",
       "R"
     ],
     [
-      "Exhibition",
+      "Hobby",
       "R"
     ]
   ],
@@ -3649,11 +3649,11 @@
       "R"
     ],
     [
-      "Hobby",
+      "Shop",
       "R"
     ],
     [
-      "Shop",
+      "Hobby",
       "R"
     ]
   ],
@@ -3917,11 +3917,11 @@
       "R"
     ],
     [
-      "Category",
+      "Goods",
       "R"
     ],
     [
-      "Goods",
+      "Category",
       "R"
     ]
   ],
@@ -4667,34 +4667,6 @@
       "R"
     ],
     [
-      "User",
-      "R"
-    ],
-    [
-      "Point",
-      "R"
-    ],
-    [
-      "Point",
-      "R"
-    ],
-    [
-      "Point",
-      "R"
-    ],
-    [
-      "Point",
-      "W"
-    ],
-    [
-      "Point",
-      "W"
-    ],
-    [
-      "Point",
-      "W"
-    ],
-    [
       "Point",
       "R"
     ],
@@ -4712,23 +4684,19 @@
     ],
     [
       "Point",
+      "W"
+    ],
+    [
+      "Point",
+      "W"
+    ],
+    [
+      "Point",
+      "W"
+    ],
+    [
+      "Point",
       "R"
-    ],
-    [
-      "Point",
-      "R"
-    ],
-    [
-      "Point",
-      "W"
-    ],
-    [
-      "Point",
-      "W"
-    ],
-    [
-      "Point",
-      "W"
     ],
     [
       "Point",
@@ -4744,6 +4712,38 @@
     ],
     [
       "Point",
+      "R"
+    ],
+    [
+      "Point",
+      "R"
+    ],
+    [
+      "Point",
+      "W"
+    ],
+    [
+      "Point",
+      "W"
+    ],
+    [
+      "Point",
+      "W"
+    ],
+    [
+      "Point",
+      "R"
+    ],
+    [
+      "Point",
+      "R"
+    ],
+    [
+      "Point",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -5415,6 +5415,14 @@
       "R"
     ],
     [
+      "CourseTaxonomy",
+      "R"
+    ],
+    [
+      "CourseTaxonomy",
+      "R"
+    ],
+    [
       "Hobby",
       "R"
     ],
@@ -5423,11 +5431,7 @@
       "R"
     ],
     [
-      "CourseTaxonomy",
-      "R"
-    ],
-    [
-      "CourseTaxonomy",
+      "Course",
       "R"
     ],
     [
@@ -5440,10 +5444,6 @@
     ],
     [
       "CourseTaxonomy",
-      "R"
-    ],
-    [
-      "Course",
       "R"
     ],
     [
@@ -5479,6 +5479,14 @@
       "R"
     ],
     [
+      "CourseTaxonomy",
+      "R"
+    ],
+    [
+      "CourseTaxonomy",
+      "R"
+    ],
+    [
       "Hobby",
       "R"
     ],
@@ -5487,11 +5495,7 @@
       "R"
     ],
     [
-      "CourseTaxonomy",
-      "R"
-    ],
-    [
-      "CourseTaxonomy",
+      "Course",
       "R"
     ],
     [
@@ -5504,10 +5508,6 @@
     ],
     [
       "CourseTaxonomy",
-      "R"
-    ],
-    [
-      "Course",
       "R"
     ],
     [
@@ -5829,34 +5829,6 @@
       "R"
     ],
     [
-      "Point",
-      "R"
-    ],
-    [
-      "Point",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Point",
-      "W"
-    ],
-    [
-      "Point",
-      "W"
-    ],
-    [
-      "Point",
-      "W"
-    ],
-    [
-      "Point",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
@@ -5870,23 +5842,23 @@
     ],
     [
       "Point",
+      "W"
+    ],
+    [
+      "Point",
+      "W"
+    ],
+    [
+      "Point",
+      "W"
+    ],
+    [
+      "Point",
       "R"
     ],
     [
       "Point",
       "R"
-    ],
-    [
-      "Point",
-      "W"
-    ],
-    [
-      "Point",
-      "W"
-    ],
-    [
-      "Point",
-      "W"
     ],
     [
       "Point",
@@ -5902,6 +5874,34 @@
     ],
     [
       "Point",
+      "R"
+    ],
+    [
+      "Point",
+      "W"
+    ],
+    [
+      "Point",
+      "W"
+    ],
+    [
+      "Point",
+      "W"
+    ],
+    [
+      "Point",
+      "R"
+    ],
+    [
+      "Point",
+      "R"
+    ],
+    [
+      "Point",
+      "R"
+    ],
+    [
+      "User",
       "R"
     ],
     [
@@ -6055,6 +6055,10 @@
       "R"
     ],
     [
+      "CourseTaxonomy",
+      "R"
+    ],
+    [
       "Hobby",
       "R"
     ],
@@ -6063,7 +6067,11 @@
       "R"
     ],
     [
-      "CourseTaxonomy",
+      "Course",
+      "R"
+    ],
+    [
+      "Course",
       "R"
     ],
     [
@@ -6072,14 +6080,6 @@
     ],
     [
       "CourseTaxonomy",
-      "R"
-    ],
-    [
-      "Course",
-      "R"
-    ],
-    [
-      "Course",
       "R"
     ],
     [
@@ -6613,34 +6613,6 @@
       "R"
     ],
     [
-      "Point",
-      "R"
-    ],
-    [
-      "User",
-      "R"
-    ],
-    [
-      "Point",
-      "R"
-    ],
-    [
-      "Point",
-      "W"
-    ],
-    [
-      "Point",
-      "W"
-    ],
-    [
-      "Point",
-      "W"
-    ],
-    [
-      "Point",
-      "R"
-    ],
-    [
       "User",
       "R"
     ],
@@ -6654,14 +6626,6 @@
     ],
     [
       "Point",
-      "R"
-    ],
-    [
-      "Point",
-      "R"
-    ],
-    [
-      "Point",
       "W"
     ],
     [
@@ -6671,14 +6635,6 @@
     [
       "Point",
       "W"
-    ],
-    [
-      "Point",
-      "R"
-    ],
-    [
-      "Point",
-      "R"
     ],
     [
       "Point",
@@ -6694,6 +6650,50 @@
     ],
     [
       "User",
+      "R"
+    ],
+    [
+      "Point",
+      "R"
+    ],
+    [
+      "Point",
+      "R"
+    ],
+    [
+      "Point",
+      "W"
+    ],
+    [
+      "Point",
+      "W"
+    ],
+    [
+      "Point",
+      "W"
+    ],
+    [
+      "Point",
+      "R"
+    ],
+    [
+      "Point",
+      "R"
+    ],
+    [
+      "Point",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "Point",
+      "R"
+    ],
+    [
+      "Point",
       "R"
     ],
     [
@@ -6853,7 +6853,15 @@
       "R"
     ],
     [
+      "Topic",
+      "R"
+    ],
+    [
       "Hobby",
+      "R"
+    ],
+    [
+      "Topic",
       "R"
     ],
     [
@@ -6881,15 +6889,7 @@
       "R"
     ],
     [
-      "Topic",
-      "R"
-    ],
-    [
       "Hobby",
-      "R"
-    ],
-    [
-      "Topic",
       "R"
     ],
     [

@@ -17,15 +17,59 @@
       "R"
     ],
     [
+      "Client",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
-      "Client",
+      "DomainEntity",
       "R"
     ],
     [
-      "DomainEntity",
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Follow",
+      "R"
+    ],
+    [
+      "Club",
       "R"
     ],
     [
@@ -41,50 +85,6 @@
       "R"
     ],
     [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Follow",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
@@ -93,6 +93,26 @@
       "R"
     ],
     [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
       "Club",
       "R"
     ],
@@ -106,18 +126,6 @@
     ],
     [
       "Club",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
       "R"
     ],
     [
@@ -133,14 +141,6 @@
       "R"
     ],
     [
-      "Event",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
@@ -149,11 +149,31 @@
       "R"
     ],
     [
-      "Club",
+      "Event",
       "R"
     ],
     [
       "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
       "R"
     ],
     [
@@ -162,58 +182,6 @@
     ],
     [
       "Follow",
-      "R"
-    ],
-    [
-      "Client",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Follow",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
       "R"
     ],
     [
@@ -237,27 +205,19 @@
       "R"
     ],
     [
-      "Follow",
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
       "R"
     ],
     [
       "Club",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
       "R"
     ],
     [
@@ -270,22 +230,6 @@
     ],
     [
       "Club",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
       "R"
     ],
     [
@@ -305,19 +249,7 @@
       "R"
     ],
     [
-      "Event",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
+      "DomainEntity",
       "R"
     ],
     [
@@ -337,11 +269,23 @@
       "R"
     ],
     [
-      "Club",
+      "Event",
       "R"
     ],
     [
       "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Club",
       "R"
     ],
     [
@@ -358,38 +302,6 @@
     ],
     [
       "Club",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Follow",
-      "R"
-    ],
-    [
-      "Client",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
       "R"
     ],
     [
@@ -409,7 +321,11 @@
       "R"
     ],
     [
-      "Event",
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
       "R"
     ],
     [
@@ -422,6 +338,22 @@
     ],
     [
       "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
       "R"
     ],
     [
@@ -437,6 +369,46 @@
       "R"
     ],
     [
+      "Club",
+      "R"
+    ],
+    [
+      "Follow",
+      "R"
+    ],
+    [
+      "Client",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
       "Event",
       "R"
     ],
@@ -446,6 +418,34 @@
     ],
     [
       "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Follow",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Follow",
+      "R"
+    ],
+    [
+      "Client",
       "R"
     ],
     [
@@ -503,11 +503,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Client",
       "R"
     ],
     [
-      "Client",
+      "UserAccount",
       "R"
     ],
     [
@@ -523,27 +523,35 @@
       "R"
     ],
     [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
       "Club",
       "R"
     ],
     [
       "Follow",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
       "R"
     ],
     [
@@ -560,14 +568,6 @@
     ],
     [
       "Client",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Event",
       "R"
     ],
     [
@@ -599,10 +599,6 @@
       "R"
     ],
     [
-      "Client",
-      "R"
-    ],
-    [
       "Club",
       "R"
     ],
@@ -612,6 +608,10 @@
     ],
     [
       "Follow",
+      "R"
+    ],
+    [
+      "Client",
       "R"
     ],
     [
@@ -660,6 +660,10 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Client",
       "R"
     ],
     [
@@ -672,10 +676,6 @@
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Client",
       "R"
     ],
     [
@@ -771,19 +771,23 @@
       "R"
     ],
     [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
       "Club",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
       "R"
     ],
     [
@@ -800,10 +804,6 @@
     ],
     [
       "Club",
-      "R"
-    ],
-    [
-      "Event",
       "R"
     ],
     [
@@ -843,6 +843,14 @@
       "R"
     ],
     [
+      "Follow",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
       "Club",
       "R"
     ],
@@ -852,14 +860,6 @@
     ],
     [
       "Client",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Follow",
       "R"
     ],
     [
@@ -891,7 +891,11 @@
       "R"
     ],
     [
-      "Club",
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
       "R"
     ],
     [
@@ -908,50 +912,6 @@
     ],
     [
       "Club",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Follow",
-      "R"
-    ],
-    [
-      "Client",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Follow",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "DomainEntity",
       "R"
     ],
     [
@@ -979,7 +939,47 @@
       "R"
     ],
     [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
       "Club",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Follow",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Follow",
+      "R"
+    ],
+    [
+      "Client",
       "R"
     ],
     [
@@ -1029,6 +1029,38 @@
       "R"
     ],
     [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Follow",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
       "Club",
       "R"
     ],
@@ -1041,6 +1073,46 @@
       "R"
     ],
     [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
       "Event",
       "R"
     ],
@@ -1057,43 +1129,23 @@
       "R"
     ],
     [
-      "Club",
+      "Event",
       "R"
     ],
     [
-      "Club",
+      "Category",
       "R"
     ],
     [
-      "Club",
+      "Category",
       "R"
     ],
     [
-      "Follow",
+      "Category",
       "R"
     ],
     [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
+      "Category",
       "R"
     ],
     [
@@ -1109,59 +1161,7 @@
       "R"
     ],
     [
-      "Category",
-      "R"
-    ],
-    [
       "Event",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Category",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Club",
       "R"
     ],
     [
@@ -1193,6 +1193,38 @@
       "R"
     ],
     [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Follow",
+      "R"
+    ],
+    [
       "Club",
       "R"
     ],
@@ -1209,38 +1241,6 @@
       "R"
     ],
     [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Follow",
-      "R"
-    ],
-    [
       "Configuration",
       "R"
     ],
@@ -1270,6 +1270,14 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Client",
+      "R"
+    ],
+    [
+      "Client",
       "R"
     ],
     [
@@ -1281,15 +1289,31 @@
       "R"
     ],
     [
-      "Client",
-      "R"
-    ],
-    [
-      "Client",
-      "R"
-    ],
-    [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
       "R"
     ],
     [
@@ -1298,30 +1322,6 @@
     ],
     [
       "Follow",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Event",
       "R"
     ],
     [
@@ -1761,11 +1761,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Client",
       "R"
     ],
     [
-      "Client",
+      "UserAccount",
       "R"
     ],
     [
@@ -1833,11 +1833,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Client",
       "R"
     ],
     [
-      "Client",
+      "UserAccount",
       "R"
     ],
     [
@@ -2131,11 +2131,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "UserAccount",
       "R"
     ],
     [
@@ -2319,15 +2319,15 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -2447,15 +2447,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -2475,11 +2475,11 @@
       "R"
     ],
     [
-      "Actor",
+      "Box",
       "R"
     ],
     [
-      "Box",
+      "Actor",
       "R"
     ],
     [
@@ -2635,11 +2635,11 @@
       "R"
     ],
     [
-      "Actor",
+      "Box",
       "R"
     ],
     [
-      "Box",
+      "Actor",
       "R"
     ],
     [
@@ -2727,11 +2727,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Client",
       "R"
     ],
     [
-      "Client",
+      "UserAccount",
       "R"
     ],
     [
@@ -2751,15 +2751,15 @@
       "R"
     ],
     [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
       "R"
     ],
     [
@@ -2779,19 +2779,19 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -2865,11 +2865,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "UserAccount",
       "R"
     ],
     [
@@ -2881,15 +2881,15 @@
       "R"
     ],
     [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
       "Manager",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Club",
       "R"
     ],
     [
@@ -2941,11 +2941,11 @@
       "R"
     ],
     [
-      "Club",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "Club",
       "R"
     ],
     [
@@ -2981,15 +2981,15 @@
       "R"
     ],
     [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
       "Manager",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Club",
       "R"
     ],
     [
@@ -3111,15 +3111,15 @@
       "R"
     ],
     [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
       "R"
     ],
     [
@@ -3135,15 +3135,15 @@
       "R"
     ],
     [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
       "Manager",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Club",
       "R"
     ],
     [
@@ -3305,11 +3305,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "UserAccount",
       "R"
     ],
     [
@@ -3407,11 +3407,11 @@
       "R"
     ],
     [
-      "Club",
+      "Event",
       "R"
     ],
     [
-      "Event",
+      "Club",
       "R"
     ],
     [
@@ -3453,19 +3453,27 @@
       "R"
     ],
     [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
       "R"
     ],
     [
@@ -3478,14 +3486,6 @@
     ],
     [
       "Manager",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
       "R"
     ],
     [
@@ -3559,15 +3559,15 @@
       "R"
     ],
     [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
       "R"
     ],
     [
@@ -3735,15 +3735,15 @@
       "R"
     ],
     [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
       "R"
     ],
     [
@@ -3803,15 +3803,15 @@
       "R"
     ],
     [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
       "R"
     ],
     [
@@ -3827,15 +3827,15 @@
       "R"
     ],
     [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
       "Manager",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Club",
       "R"
     ],
     [
@@ -3887,11 +3887,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "UserAccount",
       "R"
     ],
     [
@@ -3907,15 +3907,15 @@
       "R"
     ],
     [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
       "Manager",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Club",
       "R"
     ],
     [
@@ -3971,11 +3971,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "UserAccount",
       "R"
     ],
     [
@@ -3995,11 +3995,11 @@
       "R"
     ],
     [
-      "Manager",
+      "Club",
       "R"
     ],
     [
-      "Club",
+      "Manager",
       "R"
     ],
     [
@@ -4049,11 +4049,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "UserAccount",
       "R"
     ],
     [
@@ -4125,11 +4125,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "UserAccount",
       "R"
     ],
     [
@@ -4313,15 +4313,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -4337,15 +4337,15 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -4509,19 +4509,19 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -4669,19 +4669,19 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -4769,11 +4769,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Client",
       "R"
     ],
     [
-      "Client",
+      "UserAccount",
       "R"
     ],
     [
@@ -4825,15 +4825,15 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -4865,11 +4865,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "UserAccount",
       "R"
     ],
     [
@@ -4949,11 +4949,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "UserAccount",
       "R"
     ],
     [
@@ -4977,11 +4977,11 @@
       "R"
     ],
     [
-      "Club",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "Club",
       "R"
     ],
     [
@@ -5163,11 +5163,11 @@
       "R"
     ],
     [
-      "Manager",
+      "Club",
       "R"
     ],
     [
-      "Club",
+      "Manager",
       "R"
     ],
     [
@@ -6355,15 +6355,15 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -6723,15 +6723,15 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -6911,11 +6911,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -7193,15 +7193,15 @@
       "R"
     ],
     [
+      "Client",
+      "R"
+    ],
+    [
+      "Client",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Client",
-      "R"
-    ],
-    [
-      "Client",
       "R"
     ],
     [
@@ -7309,15 +7309,15 @@
       "R"
     ],
     [
+      "Client",
+      "R"
+    ],
+    [
+      "Client",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Client",
-      "R"
-    ],
-    [
-      "Client",
       "R"
     ],
     [
@@ -7371,11 +7371,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Client",
       "R"
     ],
     [
-      "Client",
+      "UserAccount",
       "R"
     ],
     [
@@ -7615,11 +7615,11 @@
       "R"
     ],
     [
-      "Actor",
+      "Box",
       "R"
     ],
     [
-      "Box",
+      "Actor",
       "R"
     ],
     [
@@ -7927,19 +7927,19 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -8655,11 +8655,11 @@
       "R"
     ],
     [
-      "Actor",
+      "Box",
       "R"
     ],
     [
-      "Box",
+      "Actor",
       "R"
     ],
     [
@@ -8911,11 +8911,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Client",
       "R"
     ],
     [
-      "Client",
+      "UserAccount",
       "R"
     ],
     [
@@ -8967,11 +8967,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Client",
       "R"
     ],
     [
-      "Client",
+      "UserAccount",
       "R"
     ],
     [
@@ -9127,11 +9127,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "UserAccount",
       "R"
     ],
     [
@@ -9187,11 +9187,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "UserAccount",
       "R"
     ],
     [
@@ -9253,15 +9253,15 @@
       "R"
     ],
     [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
       "R"
     ],
     [
@@ -9379,15 +9379,15 @@
       "R"
     ],
     [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
       "R"
     ],
     [
@@ -9609,11 +9609,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "UserAccount",
       "R"
     ],
     [
@@ -9691,11 +9691,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "UserAccount",
       "R"
     ],
     [
@@ -9759,15 +9759,15 @@
       "R"
     ],
     [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
       "R"
     ],
     [
@@ -9829,11 +9829,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "UserAccount",
       "R"
     ],
     [
@@ -9975,11 +9975,11 @@
       "R"
     ],
     [
-      "Event",
+      "Club",
       "R"
     ],
     [
-      "Club",
+      "Event",
       "R"
     ],
     [
@@ -10029,10 +10029,6 @@
       "R"
     ],
     [
-      "Event",
-      "R"
-    ],
-    [
       "Opinion",
       "R"
     ],
@@ -10042,6 +10038,10 @@
     ],
     [
       "Opinion",
+      "R"
+    ],
+    [
+      "Event",
       "R"
     ],
     [
@@ -10211,11 +10211,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -10277,11 +10277,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -10387,19 +10387,19 @@
       "R"
     ],
     [
+      "SocialProfile",
+      "R"
+    ],
+    [
+      "SocialProfile",
+      "R"
+    ],
+    [
       "Actor",
       "R"
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "SocialProfile",
-      "R"
-    ],
-    [
-      "SocialProfile",
       "R"
     ],
     [
@@ -10453,58 +10453,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "SocialProfile",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "SocialProfile",
-      "W"
-    ],
-    [
-      "SocialProfile",
-      "W"
-    ],
-    [
-      "SocialProfile",
-      "W"
-    ],
-    [
-      "SocialProfile",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "Actor",
       "R"
     ],
@@ -10513,7 +10461,59 @@
       "R"
     ],
     [
+      "SocialProfile",
+      "W"
+    ],
+    [
       "Actor",
+      "W"
+    ],
+    [
+      "SocialProfile",
+      "W"
+    ],
+    [
+      "SocialProfile",
+      "W"
+    ],
+    [
+      "SocialProfile",
+      "W"
+    ],
+    [
+      "SocialProfile",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
       "R"
     ],
     [
@@ -10619,11 +10619,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -10689,11 +10689,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -10823,14 +10823,14 @@
       "R"
     ],
     [
+      "Client",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
-      "Client",
-      "R"
-    ],
-    [
       "Club",
       "R"
     ],
@@ -10847,27 +10847,27 @@
       "R"
     ],
     [
+      "Club",
+      "R"
+    ],
+    [
+      "Follow",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
       "Follow",
       "R"
     ],
     [
       "Client",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Follow",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Club",
       "R"
     ],
     [
@@ -10931,6 +10931,14 @@
       "R"
     ],
     [
+      "Follow",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
       "Club",
       "R"
     ],
@@ -10947,14 +10955,6 @@
       "R"
     ],
     [
-      "Follow",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
@@ -10964,38 +10964,6 @@
     ],
     [
       "Client",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Client",
-      "R"
-    ],
-    [
-      "Client",
-      "R"
-    ],
-    [
-      "Follow",
-      "W"
-    ],
-    [
-      "Client",
-      "W"
-    ],
-    [
-      "Follow",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
       "R"
     ],
     [
@@ -11011,7 +10979,39 @@
       "R"
     ],
     [
+      "Follow",
+      "W"
+    ],
+    [
       "Client",
+      "W"
+    ],
+    [
+      "Follow",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Client",
+      "R"
+    ],
+    [
+      "Client",
+      "R"
+    ],
+    [
+      "Client",
+      "R"
+    ],
+    [
+      "UserAccount",
       "R"
     ],
     [
@@ -11063,27 +11063,27 @@
       "R"
     ],
     [
+      "Club",
+      "R"
+    ],
+    [
+      "Follow",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
       "Follow",
       "R"
     ],
     [
       "Client",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Follow",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Club",
       "R"
     ],
     [
@@ -11109,11 +11109,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Client",
       "R"
     ],
     [
-      "Client",
+      "UserAccount",
       "R"
     ],
     [
@@ -11195,15 +11195,15 @@
       "R"
     ],
     [
+      "Client",
+      "R"
+    ],
+    [
+      "Client",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Client",
-      "R"
-    ],
-    [
-      "Client",
       "R"
     ],
     [
@@ -11307,14 +11307,6 @@
       "R"
     ],
     [
-      "Client",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
       "Club",
       "R"
     ],
@@ -11324,6 +11316,14 @@
     ],
     [
       "Follow",
+      "R"
+    ],
+    [
+      "Client",
+      "R"
+    ],
+    [
+      "Club",
       "R"
     ],
     [
@@ -11355,19 +11355,19 @@
       "R"
     ],
     [
-      "Client",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
       "Club",
       "R"
     ],
     [
       "Follow",
+      "R"
+    ],
+    [
+      "Client",
+      "R"
+    ],
+    [
+      "Club",
       "R"
     ],
     [
@@ -11403,6 +11403,10 @@
       "R"
     ],
     [
+      "Follow",
+      "R"
+    ],
+    [
       "Club",
       "R"
     ],
@@ -11420,10 +11424,6 @@
     ],
     [
       "Club",
-      "R"
-    ],
-    [
-      "Follow",
       "R"
     ]
   ],
@@ -11441,90 +11441,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "Actor",
       "R"
     ],
@@ -11537,6 +11453,58 @@
       "R"
     ],
     [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
       "Message",
       "W"
     ],
@@ -11557,15 +11525,47 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
+      "Message",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
       "Actor",
       "R"
     ],
     [
       "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
       "R"
     ],
     [
@@ -11615,86 +11615,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "Actor",
       "R"
     ],
@@ -11703,7 +11623,87 @@
       "R"
     ],
     [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
+      "R"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
       "R"
     ],
     [
@@ -11785,15 +11785,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -11833,11 +11833,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -12019,11 +12019,11 @@
       "R"
     ],
     [
-      "Actor",
+      "Box",
       "R"
     ],
     [
-      "Box",
+      "Actor",
       "R"
     ],
     [
@@ -12068,6 +12068,14 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -12076,14 +12084,6 @@
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -12149,19 +12149,19 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -12295,22 +12295,22 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
       "R"
     ],
     [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
@@ -12319,15 +12319,15 @@
       "R"
     ],
     [
+      "Message",
+      "R"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
       "Box",
-      "R"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Message",
       "R"
     ],
     [
@@ -12356,6 +12356,14 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -12364,14 +12372,6 @@
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -12409,30 +12409,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
       "Actor",
       "R"
     ],
@@ -12445,83 +12421,19 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
       "Message",
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
     [
       "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Message",
       "R"
     ],
     [
       "Actor",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
       "R"
     ],
     [
@@ -12537,7 +12449,95 @@
       "R"
     ],
     [
+      "Message",
+      "R"
+    ],
+    [
       "Actor",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
       "R"
     ],
     [
@@ -12703,11 +12703,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -12755,11 +12755,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -12851,11 +12851,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -12931,162 +12931,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "Message",
-      "R"
-    ],
-    [
-      "Message",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "Actor",
       "R"
     ],
@@ -13115,11 +12959,167 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
       "R"
     ],
     [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
       "Box",
+      "W"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "Message",
+      "R"
+    ],
+    [
+      "Message",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -13271,19 +13271,19 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -13307,15 +13307,15 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -13371,15 +13371,15 @@
       "R"
     ],
     [
+      "Administrator",
+      "R"
+    ],
+    [
+      "Administrator",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Administrator",
-      "R"
-    ],
-    [
-      "Administrator",
       "R"
     ],
     [
@@ -13431,11 +13431,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "UserAccount",
       "R"
     ],
     [
@@ -13463,11 +13463,11 @@
       "R"
     ],
     [
-      "Actor",
+      "Box",
       "R"
     ],
     [
-      "Box",
+      "Actor",
       "R"
     ],
     [
@@ -13495,15 +13495,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -13825,11 +13825,11 @@
       "R"
     ],
     [
-      "Actor",
+      "Box",
       "R"
     ],
     [
-      "Box",
+      "Actor",
       "R"
     ],
     [
@@ -13889,14 +13889,14 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
       "Administrator",
       "R"
     ],
     [
+      "UserAccount",
+      "R"
+    ],
+    [
       "Actor",
       "W"
     ],
@@ -13945,11 +13945,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "UserAccount",
       "R"
     ],
     [
@@ -13969,19 +13969,19 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -14147,15 +14147,15 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -14357,15 +14357,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -14529,11 +14529,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -14591,15 +14591,15 @@
       "R"
     ],
     [
+      "Client",
+      "R"
+    ],
+    [
+      "Client",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Client",
-      "R"
-    ],
-    [
-      "Client",
       "R"
     ],
     [
@@ -14615,11 +14615,11 @@
       "R"
     ],
     [
-      "Client",
+      "ParticipationEvent",
       "R"
     ],
     [
-      "ParticipationEvent",
+      "Client",
       "R"
     ],
     [
@@ -14783,6 +14783,26 @@
       "R"
     ],
     [
+      "Manager",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
       "Club",
       "R"
     ],
@@ -14820,26 +14840,6 @@
     ],
     [
       "Manager",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Club",
       "R"
     ],
     [
@@ -14897,11 +14897,11 @@
       "R"
     ],
     [
-      "Actor",
+      "SocialProfile",
       "R"
     ],
     [
-      "SocialProfile",
+      "Actor",
       "R"
     ],
     [
@@ -16209,15 +16209,15 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -16577,15 +16577,15 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -17027,10 +17027,6 @@
       "R"
     ],
     [
-      "Event",
-      "R"
-    ],
-    [
       "ParticipationEvent",
       "R"
     ],
@@ -17048,6 +17044,10 @@
     ],
     [
       "Client",
+      "R"
+    ],
+    [
+      "Event",
       "R"
     ],
     [
@@ -17063,7 +17063,15 @@
       "R"
     ],
     [
+      "Event",
+      "R"
+    ],
+    [
       "Opinion",
+      "R"
+    ],
+    [
+      "Event",
       "R"
     ],
     [
@@ -17076,14 +17084,6 @@
     ],
     [
       "Client",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
       "R"
     ],
     [
@@ -17119,15 +17119,23 @@
       "R"
     ],
     [
+      "Opinion",
+      "R"
+    ],
+    [
+      "Opinion",
+      "R"
+    ],
+    [
       "Client",
       "R"
     ],
     [
-      "Opinion",
+      "Event",
       "R"
     ],
     [
-      "Opinion",
+      "Event",
       "R"
     ],
     [
@@ -17136,14 +17144,6 @@
     ],
     [
       "Opinion",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
       "R"
     ],
     [
@@ -17221,15 +17221,15 @@
       "R"
     ],
     [
+      "Client",
+      "R"
+    ],
+    [
+      "Client",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Client",
-      "R"
-    ],
-    [
-      "Client",
       "R"
     ],
     [
@@ -17245,11 +17245,11 @@
       "R"
     ],
     [
-      "Client",
+      "Opinion",
       "R"
     ],
     [
-      "Opinion",
+      "Client",
       "R"
     ],
     [
@@ -17359,6 +17359,10 @@
       "R"
     ],
     [
+      "Event",
+      "R"
+    ],
+    [
       "ParticipationEvent",
       "R"
     ],
@@ -17375,10 +17379,6 @@
       "R"
     ],
     [
-      "Event",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
@@ -17387,11 +17387,11 @@
       "R"
     ],
     [
-      "Opinion",
+      "Event",
       "R"
     ],
     [
-      "Event",
+      "Opinion",
       "R"
     ],
     [
@@ -17420,170 +17420,6 @@
     ],
     [
       "Client",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Client",
-      "R"
-    ],
-    [
-      "Client",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Opinion",
-      "R"
-    ],
-    [
-      "Opinion",
-      "R"
-    ],
-    [
-      "Opinion",
-      "R"
-    ],
-    [
-      "Client",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Opinion",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Opinion",
-      "R"
-    ],
-    [
-      "Opinion",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Opinion",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Opinion",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Client",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Client",
-      "R"
-    ],
-    [
-      "Client",
-      "R"
-    ],
-    [
-      "Opinion",
-      "W"
-    ],
-    [
-      "Client",
-      "W"
-    ],
-    [
-      "Opinion",
-      "W"
-    ],
-    [
-      "Opinion",
-      "W"
-    ],
-    [
-      "Opinion",
-      "W"
-    ],
-    [
-      "Opinion",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
       "R"
     ],
     [
@@ -17599,7 +17435,63 @@
       "R"
     ],
     [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Opinion",
+      "R"
+    ],
+    [
+      "Opinion",
+      "R"
+    ],
+    [
+      "Opinion",
+      "R"
+    ],
+    [
       "Client",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Opinion",
+      "R"
+    ],
+    [
+      "Opinion",
+      "R"
+    ],
+    [
+      "Opinion",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Opinion",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Opinion",
       "R"
     ],
     [
@@ -17607,11 +17499,111 @@
       "R"
     ],
     [
-      "Event",
+      "Configuration",
       "R"
     ],
     [
-      "Event",
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Client",
+      "R"
+    ],
+    [
+      "Client",
+      "R"
+    ],
+    [
+      "Client",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "Opinion",
+      "W"
+    ],
+    [
+      "Client",
+      "W"
+    ],
+    [
+      "Opinion",
+      "W"
+    ],
+    [
+      "Opinion",
+      "W"
+    ],
+    [
+      "Opinion",
+      "W"
+    ],
+    [
+      "Opinion",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Client",
+      "R"
+    ],
+    [
+      "Client",
+      "R"
+    ],
+    [
+      "Client",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "DomainEntity",
       "R"
     ],
     [
@@ -17631,11 +17623,19 @@
       "R"
     ],
     [
+      "Event",
+      "R"
+    ],
+    [
       "ParticipationEvent",
       "R"
     ],
     [
       "Client",
+      "R"
+    ],
+    [
+      "Event",
       "R"
     ],
     [
@@ -17651,6 +17651,10 @@
       "R"
     ],
     [
+      "Event",
+      "R"
+    ],
+    [
       "Opinion",
       "R"
     ],
@@ -17668,10 +17672,6 @@
     ],
     [
       "Client",
-      "R"
-    ],
-    [
-      "Event",
       "R"
     ],
     [
@@ -17755,15 +17755,15 @@
       "R"
     ],
     [
-      "Event",
-      "R"
-    ],
-    [
       "Opinion",
       "R"
     ],
     [
       "Event",
+      "R"
+    ],
+    [
+      "Event",
       "W"
     ],
     [
@@ -17828,6 +17828,14 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Client",
+      "R"
+    ],
+    [
+      "Client",
       "R"
     ],
     [
@@ -17839,15 +17847,11 @@
       "R"
     ],
     [
-      "Client",
-      "R"
-    ],
-    [
-      "Client",
-      "R"
-    ],
-    [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Event",
       "R"
     ],
     [
@@ -17867,14 +17871,6 @@
       "R"
     ],
     [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
       "ParticipationEvent",
       "R"
     ],
@@ -17887,6 +17883,10 @@
       "R"
     ],
     [
+      "Event",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
@@ -17899,11 +17899,11 @@
       "R"
     ],
     [
-      "Event",
+      "Opinion",
       "R"
     ],
     [
-      "Opinion",
+      "Event",
       "R"
     ],
     [
@@ -17924,6 +17924,10 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Client",
       "R"
     ],
     [
@@ -17939,10 +17943,6 @@
       "R"
     ],
     [
-      "Client",
-      "R"
-    ],
-    [
       "DomainEntity",
       "R"
     ],
@@ -17951,15 +17951,19 @@
       "R"
     ],
     [
+      "Opinion",
+      "R"
+    ],
+    [
+      "Opinion",
+      "R"
+    ],
+    [
       "Client",
       "R"
     ],
     [
-      "Opinion",
-      "R"
-    ],
-    [
-      "Opinion",
+      "Event",
       "R"
     ],
     [
@@ -17972,10 +17976,6 @@
     ],
     [
       "Opinion",
-      "R"
-    ],
-    [
-      "Event",
       "R"
     ],
     [
@@ -18075,15 +18075,15 @@
       "R"
     ],
     [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
       "R"
     ],
     [
@@ -18277,15 +18277,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -18301,15 +18301,15 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -18373,15 +18373,15 @@
       "R"
     ],
     [
+      "Administrator",
+      "R"
+    ],
+    [
+      "Administrator",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Administrator",
-      "R"
-    ],
-    [
-      "Administrator",
       "R"
     ],
     [
@@ -18433,15 +18433,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -18461,11 +18461,11 @@
       "R"
     ],
     [
-      "Actor",
+      "Box",
       "R"
     ],
     [
-      "Box",
+      "Actor",
       "R"
     ],
     [
@@ -18617,15 +18617,15 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -18681,15 +18681,15 @@
       "R"
     ],
     [
+      "Administrator",
+      "R"
+    ],
+    [
+      "Administrator",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Administrator",
-      "R"
-    ],
-    [
-      "Administrator",
       "R"
     ],
     [
@@ -18741,11 +18741,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "UserAccount",
       "R"
     ],
     [
@@ -18931,39 +18931,7 @@
   ],
   "DashboardAdministratorController.dashboard": [
     [
-      "Club",
-      "R"
-    ],
-    [
       "Manager",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Club",
       "R"
     ],
     [
@@ -18991,19 +18959,7 @@
       "R"
     ],
     [
-      "Manager",
-      "R"
-    ],
-    [
       "Club",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
       "R"
     ],
     [
@@ -19015,27 +18971,7 @@
       "R"
     ],
     [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Event",
+      "Manager",
       "R"
     ],
     [
@@ -19051,7 +18987,11 @@
       "R"
     ],
     [
-      "Event",
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
       "R"
     ],
     [
@@ -19059,7 +18999,7 @@
       "R"
     ],
     [
-      "Event",
+      "Club",
       "R"
     ],
     [
@@ -19067,11 +19007,15 @@
       "R"
     ],
     [
-      "Event",
+      "Manager",
       "R"
     ],
     [
-      "Event",
+      "Manager",
+      "R"
+    ],
+    [
+      "Club",
       "R"
     ],
     [
@@ -19091,11 +19035,71 @@
       "R"
     ],
     [
+      "Club",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
       "Event",
       "R"
     ],
     [
       "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Club",
+      "R"
+    ],
+    [
+      "Event",
       "R"
     ],
     [
@@ -19199,22 +19203,6 @@
       "R"
     ],
     [
-      "Event",
-      "R"
-    ],
-    [
-      "Club",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
       "Club",
       "R"
     ],
@@ -19235,11 +19223,23 @@
       "R"
     ],
     [
-      "Event",
+      "Club",
       "R"
     ],
     [
       "Club",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
       "R"
     ],
     [
@@ -19297,62 +19297,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Box",
-      "W"
-    ],
-    [
-      "Actor",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "Actor",
       "R"
     ],
@@ -19361,6 +19305,62 @@
       "R"
     ],
     [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Box",
+      "W"
+    ],
+    [
+      "Actor",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
@@ -19373,22 +19373,6 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
       "Box",
       "R"
     ],
@@ -19398,6 +19382,22 @@
     ],
     [
       "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -19451,82 +19451,6 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
       "Actor",
       "R"
     ],
@@ -19539,6 +19463,82 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
@@ -19563,19 +19563,19 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -19779,26 +19779,6 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
       "Box",
       "R"
     ],
@@ -19811,6 +19791,26 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "DomainEntity",
       "R"
     ],
@@ -19844,6 +19844,10 @@
     ],
     [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
       "R"
     ],
     [
@@ -19859,10 +19863,6 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
       "Box",
       "R"
     ],
@@ -19903,15 +19903,15 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -20039,103 +20039,11 @@
       "R"
     ],
     [
-      "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
       "Box",
       "R"
     ],
     [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
-      "R"
-    ],
-    [
-      "Configuration",
       "R"
     ],
     [
@@ -20175,6 +20083,102 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "Configuration",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
+      "UserAccount",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
       "R"
     ],
@@ -20191,15 +20195,11 @@
       "R"
     ],
     [
+      "Box",
+      "R"
+    ],
+    [
       "Actor",
-      "R"
-    ],
-    [
-      "Box",
-      "R"
-    ],
-    [
-      "Box",
       "R"
     ],
     [
@@ -20303,15 +20303,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -20363,11 +20363,11 @@
       "R"
     ],
     [
-      "Category",
+      "Event",
       "R"
     ],
     [
-      "Event",
+      "Category",
       "R"
     ],
     [
@@ -20657,15 +20657,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -20803,11 +20803,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -20873,15 +20873,35 @@
       "R"
     ],
     [
+      "Manager",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
-      "Manager",
+      "DomainEntity",
       "R"
     ],
     [
-      "DomainEntity",
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Opinion",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
+      "Opinion",
       "R"
     ],
     [
@@ -20905,26 +20925,6 @@
       "R"
     ],
     [
-      "Opinion",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Opinion",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
       "Event",
       "R"
     ],
@@ -20961,19 +20961,19 @@
       "R"
     ],
     [
+      "Event",
+      "R"
+    ],
+    [
+      "Event",
+      "R"
+    ],
+    [
       "Club",
       "R"
     ],
     [
       "Manager",
-      "R"
-    ],
-    [
-      "Event",
-      "R"
-    ],
-    [
-      "Event",
       "R"
     ],
     [
@@ -21019,11 +21019,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Client",
       "R"
     ],
     [
-      "Client",
+      "UserAccount",
       "R"
     ],
     [
@@ -21111,11 +21111,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -21207,11 +21207,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Manager",
       "R"
     ],
     [
-      "Manager",
+      "UserAccount",
       "R"
     ],
     [
@@ -21259,15 +21259,15 @@
       "R"
     ],
     [
+      "SocialProfile",
+      "R"
+    ],
+    [
       "Actor",
       "R"
     ],
     [
       "UserAccount",
-      "R"
-    ],
-    [
-      "SocialProfile",
       "R"
     ],
     [
@@ -21397,15 +21397,15 @@
       "R"
     ],
     [
+      "Client",
+      "R"
+    ],
+    [
+      "Client",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Client",
-      "R"
-    ],
-    [
-      "Client",
       "R"
     ],
     [
@@ -21425,15 +21425,15 @@
       "R"
     ],
     [
+      "Manager",
+      "R"
+    ],
+    [
+      "Manager",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Manager",
-      "R"
-    ],
-    [
-      "Manager",
       "R"
     ],
     [

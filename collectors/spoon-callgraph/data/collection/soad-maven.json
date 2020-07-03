@@ -1697,19 +1697,19 @@
       "R"
     ],
     [
+      "ApplicationStack",
+      "R"
+    ],
+    [
+      "ApplicationStack",
+      "R"
+    ],
+    [
       "ApplicationStackId",
       "R"
     ],
     [
       "Application",
-      "R"
-    ],
-    [
-      "ApplicationStack",
-      "R"
-    ],
-    [
-      "ApplicationStack",
       "R"
     ],
     [
@@ -7881,7 +7881,7 @@
       "R"
     ],
     [
-      "Stack",
+      "Environment",
       "R"
     ],
     [
@@ -7889,7 +7889,7 @@
       "R"
     ],
     [
-      "Environment",
+      "Stack",
       "R"
     ],
     [
@@ -8011,11 +8011,11 @@
       "R"
     ],
     [
-      "Stack",
+      "StackEnvironmentServer",
       "R"
     ],
     [
-      "StackEnvironmentServer",
+      "Stack",
       "R"
     ],
     [
@@ -8461,11 +8461,11 @@
       "R"
     ],
     [
-      "Environment",
+      "StackEnvironmentServer",
       "R"
     ],
     [
-      "StackEnvironmentServer",
+      "Environment",
       "R"
     ],
     [

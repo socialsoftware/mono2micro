@@ -27,15 +27,15 @@
       "R"
     ],
     [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Lecturer",
       "R"
     ],
     [
@@ -51,11 +51,7 @@
       "R"
     ],
     [
-      "Subject",
-      "R"
-    ],
-    [
-      "Lecturer",
+      "Assignment",
       "R"
     ],
     [
@@ -63,7 +59,11 @@
       "R"
     ],
     [
-      "Assignment",
+      "Subject",
+      "R"
+    ],
+    [
+      "Lecturer",
       "R"
     ]
   ],
@@ -85,15 +85,15 @@
       "R"
     ],
     [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Lecturer",
       "R"
     ],
     [
@@ -143,15 +143,15 @@
       "R"
     ],
     [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Lecturer",
       "R"
     ],
     [
@@ -160,14 +160,6 @@
     ],
     [
       "Group",
-      "R"
-    ],
-    [
-      "Subject",
-      "R"
-    ],
-    [
-      "Lecturer",
       "R"
     ],
     [
@@ -180,6 +172,14 @@
     ],
     [
       "Group",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
+      "Lecturer",
       "R"
     ]
   ],
@@ -205,11 +205,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Lecturer",
       "R"
     ],
     [
-      "Lecturer",
+      "UserAccount",
       "R"
     ],
     [
@@ -355,15 +355,15 @@
       "R"
     ],
     [
+      "Rubric",
+      "R"
+    ],
+    [
+      "Rubric",
+      "R"
+    ],
+    [
       "Assignment",
-      "R"
-    ],
-    [
-      "Rubric",
-      "R"
-    ],
-    [
-      "Rubric",
       "R"
     ],
     [
@@ -423,11 +423,7 @@
       "R"
     ],
     [
-      "Subject",
-      "R"
-    ],
-    [
-      "Lecturer",
+      "Assignment",
       "R"
     ],
     [
@@ -435,7 +431,11 @@
       "R"
     ],
     [
-      "Assignment",
+      "Subject",
+      "R"
+    ],
+    [
+      "Lecturer",
       "R"
     ]
   ],
@@ -457,11 +457,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Student",
       "R"
     ],
     [
-      "Student",
+      "UserAccount",
       "R"
     ],
     [
@@ -473,11 +473,11 @@
       "R"
     ],
     [
-      "Group",
+      "Student",
       "R"
     ],
     [
-      "Student",
+      "Group",
       "R"
     ],
     [
@@ -531,6 +531,10 @@
       "R"
     ],
     [
+      "Group",
+      "R"
+    ],
+    [
       "Assignment",
       "R"
     ],
@@ -543,14 +547,6 @@
       "R"
     ],
     [
-      "Group",
-      "R"
-    ],
-    [
-      "Student",
-      "R"
-    ],
-    [
       "Student",
       "R"
     ],
@@ -560,6 +556,10 @@
     ],
     [
       "Group",
+      "R"
+    ],
+    [
+      "Student",
       "R"
     ]
   ],
@@ -593,11 +593,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Student",
       "R"
     ],
     [
-      "Student",
+      "UserAccount",
       "R"
     ],
     [
@@ -717,11 +717,11 @@
       "R"
     ],
     [
-      "Lecturer",
+      "Subject",
       "R"
     ],
     [
-      "Subject",
+      "Lecturer",
       "R"
     ]
   ],
@@ -743,11 +743,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Lecturer",
       "R"
     ],
     [
-      "Lecturer",
+      "UserAccount",
       "R"
     ],
     [
@@ -759,15 +759,15 @@
       "R"
     ],
     [
+      "Subject",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
       "Lecturer",
-      "R"
-    ],
-    [
-      "Subject",
-      "R"
-    ],
-    [
-      "Subject",
       "R"
     ]
   ],
@@ -789,15 +789,15 @@
       "R"
     ],
     [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Lecturer",
       "R"
     ],
     [
@@ -843,11 +843,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Lecturer",
       "R"
     ],
     [
-      "Lecturer",
+      "UserAccount",
       "R"
     ],
     [
@@ -863,11 +863,11 @@
       "R"
     ],
     [
-      "Lecturer",
+      "Subject",
       "R"
     ],
     [
-      "Subject",
+      "Lecturer",
       "R"
     ]
   ],
@@ -885,19 +885,23 @@
       "R"
     ],
     [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Group",
       "R"
     ],
     [
@@ -914,10 +918,6 @@
     ],
     [
       "Lecturer",
-      "R"
-    ],
-    [
-      "Group",
       "R"
     ]
   ],
@@ -939,11 +939,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Lecturer",
       "R"
     ],
     [
-      "Lecturer",
+      "UserAccount",
       "R"
     ],
     [
@@ -983,15 +983,15 @@
       "R"
     ],
     [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Lecturer",
       "R"
     ],
     [
@@ -1003,15 +1003,15 @@
       "R"
     ],
     [
+      "Subject",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
       "Lecturer",
-      "R"
-    ],
-    [
-      "Subject",
-      "R"
-    ],
-    [
-      "Subject",
       "R"
     ]
   ],
@@ -1033,15 +1033,19 @@
       "R"
     ],
     [
+      "Student",
+      "R"
+    ],
+    [
+      "Student",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
-      "Student",
-      "R"
-    ],
-    [
-      "Student",
+      "Rubric",
       "R"
     ],
     [
@@ -1058,10 +1062,6 @@
     ],
     [
       "Assignment",
-      "R"
-    ],
-    [
-      "Rubric",
       "R"
     ],
     [
@@ -1173,11 +1173,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Student",
       "R"
     ],
     [
-      "Student",
+      "UserAccount",
       "R"
     ]
   ],
@@ -1201,15 +1201,15 @@
       "R"
     ],
     [
+      "Student",
+      "R"
+    ],
+    [
+      "Student",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Student",
-      "R"
-    ],
-    [
-      "Student",
       "R"
     ],
     [
@@ -1373,15 +1373,15 @@
       "R"
     ],
     [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Lecturer",
       "R"
     ],
     [
@@ -1393,15 +1393,15 @@
       "R"
     ],
     [
+      "Subject",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
       "Lecturer",
-      "R"
-    ],
-    [
-      "Subject",
-      "R"
-    ],
-    [
-      "Subject",
       "R"
     ],
     [
@@ -1447,11 +1447,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Actor",
       "R"
     ],
     [
-      "Actor",
+      "UserAccount",
       "R"
     ],
     [
@@ -1479,11 +1479,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Lecturer",
       "R"
     ],
     [
-      "Lecturer",
+      "UserAccount",
       "R"
     ],
     [
@@ -1499,11 +1499,11 @@
       "R"
     ],
     [
-      "Lecturer",
+      "Subject",
       "R"
     ],
     [
-      "Subject",
+      "Lecturer",
       "R"
     ],
     [
@@ -1549,11 +1549,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Lecturer",
       "R"
     ],
     [
-      "Lecturer",
+      "UserAccount",
       "R"
     ],
     [
@@ -1635,11 +1635,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Lecturer",
       "R"
     ],
     [
-      "Lecturer",
+      "UserAccount",
       "R"
     ],
     [
@@ -1673,10 +1673,6 @@
       "R"
     ],
     [
-      "Syllabus",
-      "R"
-    ],
-    [
       "Bibliography",
       "R"
     ],
@@ -1685,11 +1681,15 @@
       "R"
     ],
     [
-      "Bibliography",
+      "Syllabus",
       "R"
     ],
     [
       "Syllabus",
+      "R"
+    ],
+    [
+      "Bibliography",
       "R"
     ],
     [
@@ -1735,11 +1735,11 @@
       "R"
     ],
     [
-      "Lecturer",
+      "Subject",
       "R"
     ],
     [
-      "Subject",
+      "Lecturer",
       "R"
     ],
     [
@@ -1764,50 +1764,6 @@
     ],
     [
       "Lecturer",
-      "R"
-    ],
-    [
-      "UserAccount",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "W"
-    ],
-    [
-      "Syllabus",
-      "R"
-    ],
-    [
-      "Syllabus",
-      "R"
-    ],
-    [
-      "Syllabus",
-      "R"
-    ],
-    [
-      "Subject",
-      "R"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "DomainEntity",
       "R"
     ],
     [
@@ -1827,47 +1783,15 @@
       "R"
     ],
     [
+      "Lecturer",
+      "W"
+    ],
+    [
       "Syllabus",
       "R"
     ],
     [
-      "Bibliography",
-      "R"
-    ],
-    [
-      "Bibliography",
-      "R"
-    ],
-    [
-      "Bibliography",
-      "W"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "W"
-    ],
-    [
-      "DomainEntity",
-      "R"
-    ],
-    [
-      "Subject",
-      "R"
-    ],
-    [
-      "Subject",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Subject",
+      "Syllabus",
       "R"
     ],
     [
@@ -1879,15 +1803,15 @@
       "R"
     ],
     [
-      "Syllabus",
-      "W"
+      "DomainEntity",
+      "R"
     ],
     [
       "DomainEntity",
       "R"
     ],
     [
-      "DomainEntity",
+      "Lecturer",
       "R"
     ],
     [
@@ -1903,7 +1827,83 @@
       "R"
     ],
     [
+      "Syllabus",
+      "R"
+    ],
+    [
+      "Bibliography",
+      "R"
+    ],
+    [
+      "Bibliography",
+      "R"
+    ],
+    [
+      "Bibliography",
+      "W"
+    ],
+    [
       "Lecturer",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Syllabus",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
+      "Syllabus",
+      "W"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "DomainEntity",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "UserAccount",
       "R"
     ],
     [
@@ -1937,14 +1937,6 @@
       "R"
     ],
     [
-      "Syllabus",
-      "R"
-    ],
-    [
-      "Bibliography",
-      "R"
-    ],
-    [
       "Bibliography",
       "R"
     ],
@@ -1954,6 +1946,14 @@
     ],
     [
       "Syllabus",
+      "R"
+    ],
+    [
+      "Syllabus",
+      "R"
+    ],
+    [
+      "Bibliography",
       "R"
     ],
     [
@@ -1991,11 +1991,11 @@
       "R"
     ],
     [
-      "Rubric",
+      "Assignment",
       "R"
     ],
     [
-      "Assignment",
+      "Rubric",
       "R"
     ],
     [
@@ -2031,11 +2031,11 @@
       "R"
     ],
     [
-      "Assignment",
+      "Rubric",
       "R"
     ],
     [
-      "Rubric",
+      "Assignment",
       "R"
     ],
     [
@@ -2263,15 +2263,15 @@
       "R"
     ],
     [
+      "Student",
+      "R"
+    ],
+    [
+      "Student",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Student",
-      "R"
-    ],
-    [
-      "Student",
       "R"
     ],
     [
@@ -2321,18 +2321,18 @@
       "R"
     ],
     [
+      "Student",
+      "R"
+    ],
+    [
+      "Student",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
-      "Student",
-      "R"
-    ],
-    [
-      "Student",
-      "R"
-    ],
-    [
       "Assignment",
       "R"
     ],
@@ -2353,15 +2353,15 @@
       "R"
     ],
     [
+      "Deliverable",
+      "R"
+    ],
+    [
+      "Deliverable",
+      "R"
+    ],
+    [
       "Assignment",
-      "R"
-    ],
-    [
-      "Deliverable",
-      "R"
-    ],
-    [
-      "Deliverable",
       "R"
     ],
     [
@@ -2415,11 +2415,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Student",
       "R"
     ],
     [
-      "Student",
+      "UserAccount",
       "R"
     ],
     [
@@ -2501,11 +2501,11 @@
       "R"
     ],
     [
-      "Subject",
+      "Syllabus",
       "R"
     ],
     [
-      "Syllabus",
+      "Subject",
       "R"
     ],
     [
@@ -2531,11 +2531,11 @@
       "R"
     ],
     [
-      "UserAccount",
+      "Lecturer",
       "R"
     ],
     [
-      "Lecturer",
+      "UserAccount",
       "R"
     ],
     [
@@ -2573,15 +2573,15 @@
       "R"
     ],
     [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Lecturer",
       "R"
     ],
     [
@@ -2593,27 +2593,27 @@
       "R"
     ],
     [
+      "Syllabus",
+      "R"
+    ],
+    [
+      "Syllabus",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
+      "Syllabus",
+      "R"
+    ],
+    [
       "Subject",
       "R"
     ],
     [
       "Lecturer",
-      "R"
-    ],
-    [
-      "Syllabus",
-      "R"
-    ],
-    [
-      "Syllabus",
-      "R"
-    ],
-    [
-      "Subject",
-      "R"
-    ],
-    [
-      "Syllabus",
       "R"
     ]
   ],
@@ -2633,11 +2633,11 @@
       "R"
     ],
     [
-      "Subject",
+      "Lecturer",
       "R"
     ],
     [
-      "Lecturer",
+      "Subject",
       "R"
     ]
   ],
@@ -2651,11 +2651,11 @@
       "R"
     ],
     [
-      "Subject",
+      "Syllabus",
       "R"
     ],
     [
-      "Syllabus",
+      "Subject",
       "R"
     ]
   ],
@@ -2705,11 +2705,11 @@
       "R"
     ],
     [
-      "Group",
+      "LearningMaterial",
       "R"
     ],
     [
-      "LearningMaterial",
+      "Group",
       "R"
     ]
   ],
@@ -2755,15 +2755,15 @@
       "R"
     ],
     [
+      "Rubric",
+      "R"
+    ],
+    [
+      "Rubric",
+      "R"
+    ],
+    [
       "Assignment",
-      "R"
-    ],
-    [
-      "Rubric",
-      "R"
-    ],
-    [
-      "Rubric",
       "R"
     ],
     [
@@ -2809,11 +2809,11 @@
       "R"
     ],
     [
-      "Rubric",
+      "Assignment",
       "R"
     ],
     [
-      "Assignment",
+      "Rubric",
       "R"
     ]
   ],
@@ -2855,11 +2855,11 @@
       "R"
     ],
     [
-      "Rubric",
+      "Assignment",
       "R"
     ],
     [
-      "Assignment",
+      "Rubric",
       "R"
     ]
   ],
@@ -2911,11 +2911,11 @@
       "R"
     ],
     [
-      "Assignment",
+      "Rubric",
       "R"
     ],
     [
-      "Rubric",
+      "Assignment",
       "R"
     ],
     [
@@ -3009,19 +3009,27 @@
       "R"
     ],
     [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Group",
+      "R"
+    ],
+    [
+      "Group",
       "R"
     ],
     [
@@ -3034,14 +3042,6 @@
     ],
     [
       "Lecturer",
-      "R"
-    ],
-    [
-      "Group",
-      "R"
-    ],
-    [
-      "Group",
       "R"
     ]
   ],
@@ -3063,15 +3063,15 @@
       "R"
     ],
     [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Lecturer",
       "R"
     ],
     [
@@ -3121,15 +3121,23 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
       "Lecturer",
       "R"
     ],
     [
+      "UserAccount",
+      "R"
+    ],
+    [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Group",
+      "R"
+    ],
+    [
+      "Group",
       "R"
     ],
     [
@@ -3142,14 +3150,6 @@
     ],
     [
       "Lecturer",
-      "R"
-    ],
-    [
-      "Group",
-      "R"
-    ],
-    [
-      "Group",
       "R"
     ]
   ],
@@ -3175,14 +3175,14 @@
       "R"
     ],
     [
+      "Lecturer",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
-      "Lecturer",
-      "R"
-    ],
-    [
       "Group",
       "R"
     ],
@@ -3219,11 +3219,11 @@
       "R"
     ],
     [
-      "Group",
+      "LearningMaterial",
       "R"
     ],
     [
-      "LearningMaterial",
+      "Group",
       "R"
     ]
   ],
@@ -3245,15 +3245,19 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
       "Lecturer",
       "R"
     ],
     [
+      "UserAccount",
+      "R"
+    ],
+    [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Group",
       "R"
     ],
     [
@@ -3270,10 +3274,6 @@
     ],
     [
       "Lecturer",
-      "R"
-    ],
-    [
-      "Group",
       "R"
     ],
     [
@@ -3297,15 +3297,19 @@
       "R"
     ],
     [
-      "UserAccount",
-      "R"
-    ],
-    [
       "Lecturer",
       "R"
     ],
     [
+      "UserAccount",
+      "R"
+    ],
+    [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Group",
       "R"
     ],
     [
@@ -3322,10 +3326,6 @@
     ],
     [
       "Lecturer",
-      "R"
-    ],
-    [
-      "Group",
       "R"
     ]
   ],
@@ -3367,19 +3367,27 @@
       "R"
     ],
     [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Group",
+      "R"
+    ],
+    [
+      "Group",
       "R"
     ],
     [
@@ -3392,14 +3400,6 @@
     ],
     [
       "Lecturer",
-      "R"
-    ],
-    [
-      "Group",
-      "R"
-    ],
-    [
-      "Group",
       "R"
     ]
   ],
@@ -3421,19 +3421,23 @@
       "R"
     ],
     [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
       "UserAccount",
       "R"
     ],
     [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
       "DomainEntity",
+      "R"
+    ],
+    [
+      "Group",
       "R"
     ],
     [
@@ -3450,10 +3454,6 @@
     ],
     [
       "Lecturer",
-      "R"
-    ],
-    [
-      "Group",
       "R"
     ]
   ],
@@ -3475,15 +3475,15 @@
       "R"
     ],
     [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Lecturer",
       "R"
     ],
     [
@@ -3549,6 +3549,14 @@
       "R"
     ],
     [
+      "Assignment",
+      "R"
+    ],
+    [
+      "Group",
+      "R"
+    ],
+    [
       "Group",
       "R"
     ],
@@ -3558,14 +3566,6 @@
     ],
     [
       "Lecturer",
-      "R"
-    ],
-    [
-      "Group",
-      "R"
-    ],
-    [
-      "Assignment",
       "R"
     ]
   ],
@@ -3603,19 +3603,19 @@
       "R"
     ],
     [
+      "Group",
+      "R"
+    ],
+    [
+      "Group",
+      "R"
+    ],
+    [
       "Subject",
       "R"
     ],
     [
       "Lecturer",
-      "R"
-    ],
-    [
-      "Group",
-      "R"
-    ],
-    [
-      "Group",
       "R"
     ],
     [
@@ -3733,34 +3733,6 @@
       "R"
     ],
     [
-      "Group",
-      "R"
-    ],
-    [
-      "Student",
-      "R"
-    ],
-    [
-      "Subject",
-      "R"
-    ],
-    [
-      "Subject",
-      "R"
-    ],
-    [
-      "Subject",
-      "R"
-    ],
-    [
-      "Group",
-      "R"
-    ],
-    [
-      "Student",
-      "R"
-    ],
-    [
       "Subject",
       "R"
     ],
@@ -3777,6 +3749,70 @@
       "R"
     ],
     [
+      "Group",
+      "R"
+    ],
+    [
+      "Student",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
+      "Group",
+      "R"
+    ],
+    [
+      "Student",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
+      "Student",
+      "R"
+    ],
+    [
+      "Student",
+      "R"
+    ],
+    [
+      "Group",
+      "R"
+    ],
+    [
+      "Student",
+      "R"
+    ],
+    [
+      "Student",
+      "R"
+    ],
+    [
+      "Student",
+      "R"
+    ],
+    [
+      "Group",
+      "R"
+    ],
+    [
+      "Student",
+      "R"
+    ],
+    [
+      "Student",
+      "R"
+    ],
+    [
       "Student",
       "R"
     ],
@@ -3830,42 +3866,6 @@
     ],
     [
       "Group",
-      "R"
-    ],
-    [
-      "Student",
-      "R"
-    ],
-    [
-      "Student",
-      "R"
-    ],
-    [
-      "Student",
-      "R"
-    ],
-    [
-      "Student",
-      "R"
-    ],
-    [
-      "Group",
-      "R"
-    ],
-    [
-      "Student",
-      "R"
-    ],
-    [
-      "Group",
-      "R"
-    ],
-    [
-      "Student",
-      "R"
-    ],
-    [
-      "Student",
       "R"
     ],
     [
@@ -3889,18 +3889,6 @@
       "R"
     ],
     [
-      "Subject",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
       "Lecturer",
       "R"
     ],
@@ -3910,10 +3898,6 @@
     ],
     [
       "Lecturer",
-      "R"
-    ],
-    [
-      "Subject",
       "R"
     ],
     [
@@ -3945,6 +3929,18 @@
       "R"
     ],
     [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
       "Subject",
       "R"
     ],
@@ -3957,15 +3953,19 @@
       "R"
     ],
     [
-      "Lecturer",
-      "R"
-    ],
-    [
       "Subject",
       "R"
     ],
     [
       "Lecturer",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Subject",
       "R"
     ],
     [
@@ -3989,38 +3989,6 @@
       "R"
     ],
     [
-      "Student",
-      "R"
-    ],
-    [
-      "Group",
-      "R"
-    ],
-    [
-      "Group",
-      "R"
-    ],
-    [
-      "Student",
-      "R"
-    ],
-    [
-      "Group",
-      "R"
-    ],
-    [
-      "Group",
-      "R"
-    ],
-    [
-      "Student",
-      "R"
-    ],
-    [
-      "Group",
-      "R"
-    ],
-    [
       "Group",
       "R"
     ],
@@ -4061,11 +4029,43 @@
       "R"
     ],
     [
+      "Group",
+      "R"
+    ],
+    [
       "Student",
       "R"
     ],
     [
       "Group",
+      "R"
+    ],
+    [
+      "Student",
+      "R"
+    ],
+    [
+      "Group",
+      "R"
+    ],
+    [
+      "Group",
+      "R"
+    ],
+    [
+      "Student",
+      "R"
+    ],
+    [
+      "Group",
+      "R"
+    ],
+    [
+      "Group",
+      "R"
+    ],
+    [
+      "Student",
       "R"
     ],
     [
@@ -4082,42 +4082,6 @@
     ],
     [
       "Group",
-      "R"
-    ],
-    [
-      "Group",
-      "R"
-    ],
-    [
-      "Group",
-      "R"
-    ],
-    [
-      "Subject",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Group",
-      "R"
-    ],
-    [
-      "LearningMaterial",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Lecturer",
       "R"
     ],
     [
@@ -4134,6 +4098,42 @@
     ],
     [
       "Subject",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Group",
+      "R"
+    ],
+    [
+      "Group",
+      "R"
+    ],
+    [
+      "LearningMaterial",
+      "R"
+    ],
+    [
+      "Group",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
+      "Lecturer",
       "R"
     ],
     [
@@ -4169,22 +4169,6 @@
       "R"
     ],
     [
-      "Subject",
-      "R"
-    ],
-    [
-      "Group",
-      "R"
-    ],
-    [
-      "Subject",
-      "R"
-    ],
-    [
-      "Group",
-      "R"
-    ],
-    [
       "Group",
       "R"
     ],
@@ -4193,7 +4177,23 @@
       "R"
     ],
     [
+      "Group",
+      "R"
+    ],
+    [
       "Subject",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
+      "Group",
       "R"
     ],
     [
@@ -4249,30 +4249,6 @@
       "R"
     ],
     [
-      "Bibliography",
-      "R"
-    ],
-    [
-      "Syllabus",
-      "R"
-    ],
-    [
-      "Syllabus",
-      "R"
-    ],
-    [
-      "Subject",
-      "R"
-    ],
-    [
-      "Subject",
-      "R"
-    ],
-    [
-      "Syllabus",
-      "R"
-    ],
-    [
       "Syllabus",
       "R"
     ],
@@ -4285,27 +4261,11 @@
       "R"
     ],
     [
+      "Subject",
+      "R"
+    ],
+    [
       "Syllabus",
-      "R"
-    ],
-    [
-      "Syllabus",
-      "R"
-    ],
-    [
-      "Subject",
-      "R"
-    ],
-    [
-      "Subject",
-      "R"
-    ],
-    [
-      "Subject",
-      "R"
-    ],
-    [
-      "Subject",
       "R"
     ],
     [
@@ -4317,6 +4277,46 @@
       "R"
     ],
     [
+      "Syllabus",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
+      "Syllabus",
+      "R"
+    ],
+    [
+      "Syllabus",
+      "R"
+    ],
+    [
+      "Bibliography",
+      "R"
+    ],
+    [
+      "Syllabus",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
       "Subject",
       "R"
     ],
@@ -4329,6 +4329,38 @@
       "R"
     ],
     [
+      "Rubric",
+      "R"
+    ],
+    [
+      "Assignment",
+      "R"
+    ],
+    [
+      "Assignment",
+      "R"
+    ],
+    [
+      "Assignment",
+      "R"
+    ],
+    [
+      "Rubric",
+      "R"
+    ],
+    [
+      "Assignment",
+      "R"
+    ],
+    [
+      "Assignment",
+      "R"
+    ],
+    [
+      "Rubric",
+      "R"
+    ],
+    [
       "Assignment",
       "R"
     ],
@@ -4353,27 +4385,11 @@
       "R"
     ],
     [
-      "Rubric",
-      "R"
-    ],
-    [
-      "Assignment",
-      "R"
-    ],
-    [
       "Assignment",
       "R"
     ],
     [
       "Rubric",
-      "R"
-    ],
-    [
-      "Assignment",
-      "R"
-    ],
-    [
-      "Assignment",
       "R"
     ],
     [
@@ -4393,7 +4409,51 @@
       "R"
     ],
     [
-      "Rubric",
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
+      "Group",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
+      "Group",
+      "R"
+    ],
+    [
+      "Assignment",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Assignment",
       "R"
     ],
     [
@@ -4402,10 +4462,6 @@
     ],
     [
       "Rubric",
-      "R"
-    ],
-    [
-      "Assignment",
       "R"
     ],
     [
@@ -4433,22 +4489,6 @@
       "R"
     ],
     [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Subject",
-      "R"
-    ],
-    [
-      "Group",
-      "R"
-    ],
-    [
       "Assignment",
       "R"
     ],
@@ -4461,50 +4501,6 @@
       "R"
     ],
     [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Assignment",
-      "R"
-    ],
-    [
-      "Assignment",
-      "R"
-    ],
-    [
-      "Rubric",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Subject",
-      "R"
-    ],
-    [
-      "Group",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Subject",
-      "R"
-    ],
-    [
-      "Assignment",
-      "R"
-    ],
-    [
       "Assignment",
       "R"
     ],
@@ -4514,6 +4510,10 @@
     ],
     [
       "Subject",
+      "R"
+    ],
+    [
+      "Lecturer",
       "R"
     ],
     [
@@ -4525,7 +4525,7 @@
       "R"
     ],
     [
-      "Assignment",
+      "Lecturer",
       "R"
     ],
     [
@@ -4546,38 +4546,6 @@
     ],
     [
       "Group",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Assignment",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Lecturer",
-      "R"
-    ],
-    [
-      "Assignment",
-      "R"
-    ],
-    [
-      "Group",
-      "R"
-    ],
-    [
-      "Subject",
-      "R"
-    ],
-    [
-      "Lecturer",
       "R"
     ],
     [
@@ -4602,18 +4570,6 @@
     ],
     [
       "Assignment",
-      "R"
-    ],
-    [
-      "Group",
-      "R"
-    ],
-    [
-      "Subject",
-      "R"
-    ],
-    [
-      "Lecturer",
       "R"
     ],
     [
@@ -4629,7 +4585,51 @@
       "R"
     ],
     [
+      "Group",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Lecturer",
+      "R"
+    ],
+    [
+      "Assignment",
+      "R"
+    ],
+    [
+      "Assignment",
+      "R"
+    ],
+    [
       "Rubric",
+      "R"
+    ],
+    [
+      "Assignment",
+      "R"
+    ],
+    [
+      "Group",
+      "R"
+    ],
+    [
+      "Subject",
+      "R"
+    ],
+    [
+      "Lecturer",
       "R"
     ],
     [
@@ -4655,15 +4655,15 @@
       "R"
     ],
     [
+      "Actor",
+      "R"
+    ],
+    [
+      "Actor",
+      "R"
+    ],
+    [
       "UserAccount",
-      "R"
-    ],
-    [
-      "Actor",
-      "R"
-    ],
-    [
-      "Actor",
       "R"
     ],
     [
@@ -4769,11 +4769,11 @@
       "R"
     ],
     [
-      "Actor",
+      "SocialIdentity",
       "R"
     ],
     [
-      "SocialIdentity",
+      "Actor",
       "R"
     ]
   ],

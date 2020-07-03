@@ -3,15 +3,24 @@ from scipy.cluster import hierarchy
 import sys
 import json
 
-
 codebasesPath = str(sys.argv[1])
 codebaseName = str(sys.argv[2])
+totalNumberOfEntities = int(sys.argv[3])
 
 interval = 10
 multiplier = 10
 minClusters = 3
-maxClusters = 21
-clusterstep = 1
+clusterStep = 1
+maxClusters = -1
+
+if 3 < totalNumberOfEntities < 10:
+    maxClusters = 3
+elif 10 <= totalNumberOfEntities < 20:
+    maxClusters = 5
+elif 20 <= totalNumberOfEntities:
+    maxClusters = 10
+else:
+    raise Exception("Number of entities is too small (less than 4)")
 
 with open(codebasesPath + codebaseName + "/analyser/similarityMatrix.json") as f:
     similarityMatrix = json.load(f)
@@ -20,9 +29,8 @@ entities = similarityMatrix["entities"]
 linkageType = similarityMatrix["linkageType"]
 
 
-
-def createCut(a,w,r,s,n):
-    name = ','.join(map(str,[a,w,r,s,n]))
+def createCut(a, w, r, s, n):
+    name = ','.join(map(str, [a, w, r, s, n]))
 
     with open(codebasesPath + codebaseName + "/analyser/similarityMatrix.json") as f:
         similarityMatrix = json.load(f)
@@ -31,9 +39,9 @@ def createCut(a,w,r,s,n):
     for i in range(len(matrix)):
         for j in range(len(matrix)):
             matrix[i][j] = matrix[i][j][0] * a / 100 + \
-                            matrix[i][j][1] * w / 100 + \
-                            matrix[i][j][2] * r / 100 + \
-                            matrix[i][j][3] * s / 100
+                           matrix[i][j][1] * w / 100 + \
+                           matrix[i][j][2] * r / 100 + \
+                           matrix[i][j][3] * s / 100
 
     matrix = np.array(matrix)
 
@@ -55,31 +63,37 @@ def createCut(a,w,r,s,n):
         outfile.write(json.dumps(clustersJSON, indent=4))
 
 
-def sendRequest(a,w,r,s):
+def sendRequest(a, w, r, s, maxClusterCut):
     a *= multiplier
     w *= multiplier
     r *= multiplier
     s *= multiplier
 
-    for n in range(minClusters,maxClusters,clusterstep):
-        createCut(a,w,r,s,n)
+    if maxClusterCut:
+        createCut(a, w, r, s, totalNumberOfEntities)
+    else:
+        for n in range(minClusters, maxClusters + 1, clusterStep):
+            createCut(a, w, r, s, n)
+
 
 try:
-    for a in range(interval,-1,-1):
+    for a in range(interval, -1, -1):
         remainder = interval - a
         if remainder == 0:
-            sendRequest(a, 0, 0, 0)
+            sendRequest(a, 0, 0, 0, False)
         else:
-            for w in range(remainder,-1,-1): 
+            for w in range(remainder, -1, -1):
                 remainder2 = remainder - w
                 if remainder2 == 0:
-                    sendRequest(a, w, 0, 0)
+                    sendRequest(a, w, 0, 0, False)
                 else:
-                    for r in range(remainder2,-1,-1):
+                    for r in range(remainder2, -1, -1):
                         remainder3 = remainder2 - r
                         if remainder3 == 0:
-                            sendRequest(a, w, r, 0)
+                            sendRequest(a, w, r, 0, False)
                         else:
-                            sendRequest(a, w, r, remainder3)
+                            sendRequest(a, w, r, remainder3, False)
+
+    sendRequest(10, 0, 0, 0, True)  # last request to discover max Complexity possible (each cluster is singleton)
 except Exception as e:
     print(e)

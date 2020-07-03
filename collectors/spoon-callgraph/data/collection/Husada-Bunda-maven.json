@@ -4427,11 +4427,11 @@
       "R"
     ],
     [
-      "RoomDetailEntity",
+      "RoomBedEntity",
       "R"
     ],
     [
-      "RoomBedEntity",
+      "RoomDetailEntity",
       "R"
     ]
   ],

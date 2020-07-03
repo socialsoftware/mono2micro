@@ -4,10 +4,8 @@ import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.PYTHON;
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.RESOURCES_PATH;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -29,7 +27,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pt.ist.socialsoftware.mono2micro.domain.*;
@@ -64,22 +61,27 @@ public class AnalysisController {
 				codebaseManager.writeAnalyserResults(codebaseName, new JSONObject());
 			}
 
-            createAnalyserSimilarityMatrix(codebaseName, analyser);
+			// returning entitiesList by convenience
+			List<String> entitiesList = createAnalyserSimilarityMatrix(codebaseName, analyser);
+			int numberOfEntitiesPresentInCollection = entitiesList.size();
+
+			System.out.println(codebaseName + ": " + numberOfEntitiesPresentInCollection);
 
 			Runtime r = Runtime.getRuntime();
 			String pythonScriptPath = RESOURCES_PATH + "analyser.py";
-			String[] cmd = new String[4];
+			String[] cmd = new String[5];
 			cmd[0] = PYTHON;
 			cmd[1] = pythonScriptPath;
 			cmd[2] = CODEBASES_PATH;
 			cmd[3] = codebaseName;
+			cmd[4] = String.valueOf(numberOfEntitiesPresentInCollection);
 			Process p = r.exec(cmd);
 			
 			p.waitFor();
-
 			int maxRequests = analyser.getRequestLimit();
 			int newRequestsCount = 0;
 			int count = 0;
+			int bufferedDataCount = 0;
 			JSONObject analyserJSON = codebaseManager.getAnalyserResults(codebaseName);
 			File analyserCutsPath = new File(CODEBASES_PATH + codebaseName + "/analyser/cuts/");
 			File[] files = analyserCutsPath.listFiles();
@@ -156,9 +158,17 @@ public class AnalysisController {
 
 
 				newRequestsCount++;
+				bufferedDataCount++;
+
 				System.out.println("NEW: " + filename + " : " + count + "/" + total);
 				if (newRequestsCount == maxRequests)
 					break;
+
+				if (bufferedDataCount >= 100) {
+					// save buffered data (replace whole file, not appending)
+					codebaseManager.writeAnalyserResults(codebaseName, analyserJSON);
+					bufferedDataCount = 0;
+				}
 			}
 
             codebaseManager.writeAnalyserResults(codebaseName, analyserJSON);
@@ -170,7 +180,7 @@ public class AnalysisController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
-	void createAnalyserSimilarityMatrix(String codebaseName, AnalyserDto analyser) throws IOException, JSONException {
+	List<String> createAnalyserSimilarityMatrix(String codebaseName, AnalyserDto analyser) throws IOException, JSONException {
 		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 		Map<String,Integer> e1e2PairCount = new HashMap<>();
 		JSONArray similarityMatrix = new JSONArray();
@@ -228,7 +238,11 @@ public class AnalysisController {
 		List<String> entitiesList = new ArrayList<String>(entityControllers.keySet());
 		Collections.sort(entitiesList);
 
-		int maxNumberOfPairs = Collections.max(e1e2PairCount.values());
+		int maxNumberOfPairs;
+		if (!e1e2PairCount.values().isEmpty())
+			maxNumberOfPairs = Collections.max(e1e2PairCount.values());
+		else
+			maxNumberOfPairs = 0;
 
 		for (int i = 0; i < entitiesList.size(); i++) {
 			String e1 = entitiesList.get(i);
@@ -272,7 +286,12 @@ public class AnalysisController {
 				float readMetric = e1ControllersR == 0 ? 0 : inCommonR / e1ControllersR;
 
 				float e1e2Count = e1e2PairCount.containsKey(e1e2) ? e1e2PairCount.get(e1e2) : 0;
-				float sequenceMetric = e1e2Count / maxNumberOfPairs;
+
+				float sequenceMetric;
+				if (maxNumberOfPairs != 0)
+					sequenceMetric = e1e2Count / maxNumberOfPairs;
+				else // nao ha controladores a aceder a mais do que uma entidade
+					sequenceMetric = 0;
 
 				JSONArray metric = new JSONArray();
 				metric.put(accessMetric);
@@ -289,6 +308,8 @@ public class AnalysisController {
 		matrixData.put("linkageType", "average");
 
 		CodebaseManager.getInstance().writeAnalyserSimilarityMatrix(codebaseName, matrixData);
+
+		return entitiesList;
 	}
 
 

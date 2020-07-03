@@ -8465,11 +8465,11 @@
       "R"
     ],
     [
-      "ServiceOrder",
+      "OrderItem",
       "R"
     ],
     [
-      "OrderItem",
+      "ServiceOrder",
       "R"
     ],
     [
@@ -22901,6 +22901,10 @@
       "R"
     ],
     [
+      "Thread",
+      "R"
+    ],
+    [
       "ThreadComment",
       "R"
     ],
@@ -22926,10 +22930,6 @@
     ],
     [
       "ThreadComment",
-      "R"
-    ],
-    [
-      "Thread",
       "R"
     ]
   ],
@@ -25889,11 +25889,11 @@
       "R"
     ],
     [
-      "OrderItem",
+      "ServiceOrder",
       "R"
     ],
     [
-      "ServiceOrder",
+      "OrderItem",
       "R"
     ],
     [

@@ -17,7 +17,7 @@ public class MyHqlParser {
     private HashMap<String, String> aliasMap; // alias -> EntityName
 
     public MyHqlParser(String hql, String typeClassName) {
-        entitiesAccessed = new HashSet<>();
+        entitiesAccessed = new LinkedHashSet<>();
         aliasMap = new HashMap<>();
         String hql1 = hql.replace("%", "");
         String hql2 = hql1.replace("#{#entityName}", typeClassName);

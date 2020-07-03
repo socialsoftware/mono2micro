@@ -3665,6 +3665,14 @@
   ],
   "RoleController.updateRole": [
     [
+      "Permission",
+      "R"
+    ],
+    [
+      "Permission",
+      "R"
+    ],
+    [
       "RoleAuth",
       "R"
     ],
@@ -3682,38 +3690,6 @@
     ],
     [
       "Permission",
-      "R"
-    ],
-    [
-      "Permission",
-      "R"
-    ],
-    [
-      "Permission",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "RoleAuth",
-      "R"
-    ],
-    [
-      "RoleAuth",
       "R"
     ],
     [
@@ -3757,6 +3733,30 @@
       "R"
     ],
     [
+      "RoleAuth",
+      "R"
+    ],
+    [
+      "RoleAuth",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
       "Permission",
       "R"
     ],
@@ -3785,22 +3785,6 @@
       "R"
     ],
     [
-      "RoleAuth",
-      "R"
-    ],
-    [
-      "Permission",
-      "R"
-    ],
-    [
-      "Permission",
-      "R"
-    ],
-    [
-      "Permission",
-      "R"
-    ],
-    [
       "Permission",
       "R"
     ],
@@ -3810,50 +3794,10 @@
     ],
     [
       "RoleAuth",
-      "W"
-    ],
-    [
-      "RoleAuth",
-      "W"
-    ],
-    [
-      "RoleAuth",
-      "W"
-    ],
-    [
-      "Role",
       "R"
     ],
     [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
+      "Permission",
       "R"
     ],
     [
@@ -3866,146 +3810,14 @@
     ],
     [
       "RoleAuth",
-      "R"
-    ],
-    [
-      "Permission",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Permission",
-      "R"
+      "W"
     ],
     [
       "RoleAuth",
-      "R"
-    ],
-    [
-      "Permission",
-      "R"
-    ],
-    [
-      "Permission",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Permission",
-      "R"
-    ],
-    [
-      "Permission",
-      "R"
+      "W"
     ],
     [
       "RoleAuth",
-      "R"
-    ],
-    [
-      "Permission",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Permission",
-      "R"
-    ],
-    [
-      "Permission",
-      "R"
-    ],
-    [
-      "RoleAuth",
-      "R"
-    ],
-    [
-      "Permission",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "Role",
-      "R"
-    ],
-    [
-      "RoleAuth",
-      "R"
-    ],
-    [
-      "Permission",
-      "R"
-    ],
-    [
-      "Permission",
-      "R"
-    ],
-    [
-      "Role",
       "W"
     ],
     [
@@ -4033,6 +3845,22 @@
       "R"
     ],
     [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Permission",
+      "R"
+    ],
+    [
       "Permission",
       "R"
     ],
@@ -4046,7 +3874,103 @@
     ],
     [
       "Role",
-      "W"
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Permission",
+      "R"
+    ],
+    [
+      "Permission",
+      "R"
+    ],
+    [
+      "RoleAuth",
+      "R"
+    ],
+    [
+      "Permission",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Permission",
+      "R"
+    ],
+    [
+      "Permission",
+      "R"
+    ],
+    [
+      "RoleAuth",
+      "R"
+    ],
+    [
+      "Permission",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Permission",
+      "R"
+    ],
+    [
+      "Permission",
+      "R"
+    ],
+    [
+      "RoleAuth",
+      "R"
+    ],
+    [
+      "Permission",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
     ],
     [
       "Role",
@@ -4113,11 +4037,11 @@
       "R"
     ],
     [
-      "RoleAuth",
+      "Permission",
       "R"
     ],
     [
-      "Permission",
+      "RoleAuth",
       "R"
     ],
     [
@@ -4141,15 +4065,91 @@
       "R"
     ],
     [
+      "Role",
+      "R"
+    ],
+    [
+      "Permission",
+      "R"
+    ],
+    [
+      "Permission",
+      "R"
+    ],
+    [
       "RoleAuth",
       "R"
     ],
     [
+      "Role",
+      "W"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
       "Permission",
       "R"
     ],
     [
       "Permission",
+      "R"
+    ],
+    [
+      "RoleAuth",
+      "R"
+    ],
+    [
+      "Role",
+      "W"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Role",
+      "R"
+    ],
+    [
+      "Permission",
+      "R"
+    ],
+    [
+      "Permission",
+      "R"
+    ],
+    [
+      "RoleAuth",
       "R"
     ],
     [
@@ -4425,6 +4425,14 @@
       "R"
     ],
     [
+      "Module",
+      "R"
+    ],
+    [
+      "ManagerAuth",
+      "R"
+    ],
+    [
       "ManagerAuth",
       "R"
     ],
@@ -4434,14 +4442,6 @@
     ],
     [
       "Module",
-      "R"
-    ],
-    [
-      "Module",
-      "R"
-    ],
-    [
-      "ManagerAuth",
       "R"
     ],
     [
@@ -4503,14 +4503,6 @@
       "R"
     ],
     [
-      "ManagerAuth",
-      "R"
-    ],
-    [
-      "Module",
-      "R"
-    ],
-    [
       "Module",
       "R"
     ],
@@ -4520,6 +4512,14 @@
     ],
     [
       "ManagerAuth",
+      "R"
+    ],
+    [
+      "ManagerAuth",
+      "R"
+    ],
+    [
+      "Module",
       "R"
     ],
     [
@@ -4567,6 +4567,14 @@
       "R"
     ],
     [
+      "Module",
+      "R"
+    ],
+    [
+      "ManagerAuth",
+      "R"
+    ],
+    [
       "ManagerAuth",
       "R"
     ],
@@ -4576,14 +4584,6 @@
     ],
     [
       "Module",
-      "R"
-    ],
-    [
-      "Module",
-      "R"
-    ],
-    [
-      "ManagerAuth",
       "R"
     ],
     [
@@ -4599,7 +4599,7 @@
       "R"
     ],
     [
-      "ManagerAuth",
+      "Module",
       "R"
     ],
     [
@@ -4611,7 +4611,7 @@
       "R"
     ],
     [
-      "Module",
+      "ManagerAuth",
       "R"
     ],
     [
@@ -4661,6 +4661,14 @@
       "R"
     ],
     [
+      "Module",
+      "R"
+    ],
+    [
+      "ManagerAuth",
+      "R"
+    ],
+    [
       "ManagerAuth",
       "R"
     ],
@@ -4670,14 +4678,6 @@
     ],
     [
       "Module",
-      "R"
-    ],
-    [
-      "Module",
-      "R"
-    ],
-    [
-      "ManagerAuth",
       "R"
     ],
     [
@@ -4859,19 +4859,19 @@
       "R"
     ],
     [
-      "ManagerAuth",
-      "R"
-    ],
-    [
-      "ManagerAuth",
-      "R"
-    ],
-    [
       "Module",
       "R"
     ],
     [
       "Module",
+      "R"
+    ],
+    [
+      "ManagerAuth",
+      "R"
+    ],
+    [
+      "ManagerAuth",
       "R"
     ],
     [
@@ -8887,23 +8887,23 @@
       "R"
     ],
     [
-      "TaskConfigRelate",
-      "R"
-    ],
-    [
-      "TaskConfigRelate",
-      "R"
-    ],
-    [
-      "TaskConfigRelate",
-      "R"
-    ],
-    [
       "TaskConfig",
       "R"
     ],
     [
       "TaskConfig",
+      "R"
+    ],
+    [
+      "TaskConfigRelate",
+      "R"
+    ],
+    [
+      "TaskConfigRelate",
+      "R"
+    ],
+    [
+      "TaskConfigRelate",
       "R"
     ]
   ],
@@ -9049,11 +9049,11 @@
       "R"
     ],
     [
-      "Module",
+      "ManagerAuth",
       "R"
     ],
     [
-      "ManagerAuth",
+      "Module",
       "R"
     ],
     [
@@ -9195,19 +9195,19 @@
       "R"
     ],
     [
+      "ManagerAuth",
+      "R"
+    ],
+    [
+      "ManagerAuth",
+      "R"
+    ],
+    [
+      "ManagerAuth",
+      "R"
+    ],
+    [
       "Module",
-      "R"
-    ],
-    [
-      "ManagerAuth",
-      "R"
-    ],
-    [
-      "ManagerAuth",
-      "R"
-    ],
-    [
-      "ManagerAuth",
       "R"
     ],
     [
@@ -9421,11 +9421,11 @@
       "R"
     ],
     [
-      "RoleAuth",
+      "Permission",
       "R"
     ],
     [
-      "Permission",
+      "RoleAuth",
       "R"
     ],
     [
@@ -11925,6 +11925,14 @@
       "R"
     ],
     [
+      "Module",
+      "R"
+    ],
+    [
+      "ManagerAuth",
+      "R"
+    ],
+    [
       "ManagerAuth",
       "R"
     ],
@@ -11934,14 +11942,6 @@
     ],
     [
       "Module",
-      "R"
-    ],
-    [
-      "Module",
-      "R"
-    ],
-    [
-      "ManagerAuth",
       "R"
     ],
     [
