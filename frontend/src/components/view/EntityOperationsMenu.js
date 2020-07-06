@@ -16,12 +16,20 @@ export class EntityOperationsMenu extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    componentDidMount() {
+        if (this.state.entityAmount === "All") {
+            this.setState({
+                entityList: Object.keys(this.props.entities.map(e => e.name)).sort()
+            });
+        }
+    }
+
     componentWillReceiveProps(nextProps) {
-      if (this.state.entityAmount === "All") {
-        this.setState({
-          entityList: nextProps.entities.map(e => e.name).sort()
-        });
-      }
+        if (this.state.entityAmount === "All") {
+            this.setState({
+                entityList: nextProps.entities.map(e => e.name).sort()
+            });
+        }
     }
 
     setEntity(value) {
@@ -32,20 +40,20 @@ export class EntityOperationsMenu extends React.Component {
     }
 
     setEntityAmount(value) {
-      this.setState({
-        entityAmount: value,
-        showSubmit: false,
-        entity: "Select Entity"
-      });
-      if (value === "All") {
         this.setState({
-          entityList: this.props.entities.map(e => e.name).sort()
+            entityAmount: value,
+            showSubmit: false,
+            entity: "Select Entity"
         });
-      } else {
-        this.setState({
-          entityList: this.props.entities.map(e => e.name).filter(e => this.props.amountList[e] === value).sort()
-        });
-      }
+        if (value === "All") {
+            this.setState({
+                entityList: this.props.entities.map(e => e.name).sort()
+            });
+        } else {
+            this.setState({
+                entityList: this.props.entities.map(e => e.name).filter(e => this.props.amountList[e] === value).sort()
+            });
+        }
     }
 
     handleSubmit() {
@@ -54,75 +62,80 @@ export class EntityOperationsMenu extends React.Component {
 
 
     render() {
-      const entityAmountList = [...new Set(Object.values(this.props.amountList))].sort((a, b) => a - b).map(amount =>
-        <Dropdown.Item key={amount} onClick={() => this.setEntityAmount(amount)}>{amount}</Dropdown.Item>  
-      );
+        const entityAmountList = [...new Set(Object.values(this.props.amountList))].sort((a, b) => a - b).map(amount =>
+            <Dropdown.Item key={amount} onClick={() => this.setEntityAmount(amount)}>{amount}</Dropdown.Item>
+        );
 
-      const entitiesListDropdown = this.state.entityList.map(e =>
-          <Dropdown.Item key={e} onClick={() => this.setEntity(e)}>{e}</Dropdown.Item>
-      );
+        const entitiesListDropdown = this.state.entityList.map(e =>
+            <Dropdown.Item key={e} onClick={() => this.setEntity(e)}>{e}</Dropdown.Item>
+        );
 
-      return (
-          <ButtonToolbar>
-              <DropdownButton className="mr-1" as={ButtonGroup} title={this.state.entityAmount}>
-                <Dropdown.Item key={"All"} onClick={() => this.setEntityAmount("All")}>{"All"}</Dropdown.Item>
-                {entityAmountList}
-              </DropdownButton>
+        return (
+            <ButtonToolbar>
+                <DropdownButton className="mr-1" as={ButtonGroup} title={this.state.entityAmount}>
+                    <Dropdown.Item key={"All"} onClick={() => this.setEntityAmount("All")}>{"All"}</Dropdown.Item>
+                    {entityAmountList}
+                </DropdownButton>
 
-              <Dropdown className="mr-1" as={ButtonGroup}>
-                <Dropdown.Toggle>{this.state.entity}</Dropdown.Toggle>
-                <Dropdown.Menu as={CustomSearchMenu}>
-                  {entitiesListDropdown}
-                </Dropdown.Menu>
-              </Dropdown>
+                <Dropdown className="mr-1" as={ButtonGroup}>
+                    <Dropdown.Toggle>{this.state.entity}</Dropdown.Toggle>
+                    <Dropdown.Menu as={CustomSearchMenuForwardingRef}>
+                        {entitiesListDropdown}
+                    </Dropdown.Menu>
+                </Dropdown>
 
-              {this.state.showSubmit &&
-                  <Button onClick={this.handleSubmit}>Create View</Button>
-              }
-          </ButtonToolbar>
-      );
+                {this.state.showSubmit &&
+                <Button onClick={this.handleSubmit}>Create View</Button>
+                }
+            </ButtonToolbar>
+        );
     }
 }
 
 class CustomSearchMenu extends React.Component {
     constructor(props, context) {
-      super(props, context);
-  
-      this.handleChange = this.handleChange.bind(this);
-  
-      this.state = { value: '' };
-    }
-  
-    handleChange(e) {
-      this.setState({ value: e.target.value.toLowerCase().trim() });
-    }
-  
-    render() {
-      const {
-        children,
-        style,
-        className,
-        'aria-labelledby': labeledBy,
-      } = this.props;
+        super(props, context);
 
-      const { value } = this.state;
-  
-      return (
-        <div style={style} className={className} aria-labelledby={labeledBy}>
-          <FormControl
-            autoFocus
-            className="mx-3 my-2 w-auto"
-            placeholder="Type to filter..."
-            onChange={this.handleChange}
-            value={value}
-          />
-          <ul className="list-unstyled">
-            {React.Children.toArray(children).filter(
-              child =>
-                !value || child.props.children.toLowerCase().startsWith(value),
-            )}
-          </ul>
-        </div>
-      );
+        this.handleChange = this.handleChange.bind(this);
+
+        this.state = { value: '' };
     }
+
+    handleChange(e) {
+        this.setState({ value: e.target.value.toLowerCase().trim() });
+    }
+
+    render() {
+        const {
+            children,
+            style,
+            className,
+            'aria-labelledby': labeledBy,
+        } = this.props;
+
+        const { value } = this.state;
+
+        return (
+            <div style={style} className={className} aria-labelledby={labeledBy} ref={this.props.innerRef}>
+                <FormControl
+                    autoFocus
+                    className="mx-3 my-2 w-auto"
+                    placeholder="Type to filter..."
+                    onChange={this.handleChange}
+                    value={value}
+                />
+                <ul className="list-unstyled">
+                    {React.Children.toArray(children).filter(
+                        child =>
+                            !value || child.props.children.toLowerCase().includes(value),
+                    )}
+                </ul>
+            </div>
+        );
+    }
+
 }
+
+const CustomSearchMenuForwardingRef = React.forwardRef((props, ref) => (
+    <CustomSearchMenu {...props} innerRef={ref}/>
+));
