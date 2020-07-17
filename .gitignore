@@ -20,4 +20,9 @@ yarn-error.log*
 .project
 .settings
 .idea
-/target/
+target/
+*.iml
+
+#tmpDirCreatedBySpoon
+tmpDecompiledSources/
+collectors/spoon-callgraph/data/collection/Untitled Folder

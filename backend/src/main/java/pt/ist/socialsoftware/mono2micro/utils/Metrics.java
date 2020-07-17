@@ -172,7 +172,7 @@ public class Metrics {
 	private void calculateClusterCoupling(Cluster c1) {
     	float coupling = 0;
     	for (String c2 : c1.getCouplingDependencies().keySet()) {
-    		coupling += c1.getCouplingDependencies().get(c2).size();
+    		coupling += (float) c1.getCouplingDependencies().get(c2).size() / graph.getCluster(c2).getEntities().size();
 		}
 		coupling = graph.getClusters().size() == 1 ? 0 : coupling / (graph.getClusters().size() - 1);
 		coupling = BigDecimal.valueOf(coupling).setScale(2, RoundingMode.HALF_UP).floatValue();

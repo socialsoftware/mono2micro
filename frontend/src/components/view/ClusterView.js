@@ -385,7 +385,7 @@ export class ClusterView extends React.Component {
                 return {
                     [c2.name]:  c1.name === c2.name ? "---" :
                                     c1.couplingDependencies[c2.name] === undefined ? 0 : 
-                                        c1.couplingDependencies[c2.name].length
+                                        parseFloat(c1.couplingDependencies[c2.name].length/c2.entities.length).toFixed(2)
                 }
             }))
         });

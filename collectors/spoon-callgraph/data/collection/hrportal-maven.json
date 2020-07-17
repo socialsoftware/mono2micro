@@ -1,0 +1,3452 @@
+{
+  "LeaveGroupController.delete": [
+    [
+      "LeaveGroup",
+      "R"
+    ],
+    [
+      "LeaveGroup",
+      "W"
+    ],
+    [
+      "LeaveGroup",
+      "W"
+    ]
+  ],
+  "LeaveGroupController.get": [
+    [
+      "LeaveGroup",
+      "R"
+    ]
+  ],
+  "LeaveGroupController.getAll": [
+    [
+      "LeaveGroup",
+      "R"
+    ]
+  ],
+  "LeaveGroupController.insert": [
+    [
+      "LeaveGroup",
+      "W"
+    ]
+  ],
+  "LeaveGroupController.update": [
+    [
+      "LeaveGroup",
+      "R"
+    ],
+    [
+      "LeaveGroup",
+      "R"
+    ],
+    [
+      "LeaveGroup",
+      "R"
+    ],
+    [
+      "LeaveGroup",
+      "W"
+    ]
+  ],
+  "DataImportFileController.delete": [
+    [
+      "DataImportFile",
+      "R"
+    ],
+    [
+      "DataImportFile",
+      "W"
+    ],
+    [
+      "DataImportFile",
+      "W"
+    ]
+  ],
+  "DataImportFileController.get": [
+    [
+      "DataImportFile",
+      "R"
+    ]
+  ],
+  "DataImportFileController.getAll": [
+    [
+      "DataImportFile",
+      "R"
+    ]
+  ],
+  "DataImportFileController.insert": [
+    [
+      "DataImportFile",
+      "W"
+    ]
+  ],
+  "DataImportFileController.update": [
+    [
+      "DataImportFile",
+      "R"
+    ],
+    [
+      "DataImportFile",
+      "R"
+    ],
+    [
+      "DataImportFile",
+      "R"
+    ],
+    [
+      "DataImportFile",
+      "W"
+    ]
+  ],
+  "FileController.delete": [
+    [
+      "File",
+      "R"
+    ],
+    [
+      "File",
+      "W"
+    ],
+    [
+      "File",
+      "W"
+    ]
+  ],
+  "FileController.get": [
+    [
+      "File",
+      "R"
+    ]
+  ],
+  "FileController.getAll": [
+    [
+      "File",
+      "R"
+    ]
+  ],
+  "FileController.insert": [
+    [
+      "File",
+      "W"
+    ]
+  ],
+  "FileController.update": [
+    [
+      "File",
+      "R"
+    ],
+    [
+      "File",
+      "R"
+    ],
+    [
+      "File",
+      "R"
+    ],
+    [
+      "File",
+      "W"
+    ]
+  ],
+  "LeaveRuleController.delete": [
+    [
+      "LeaveRule",
+      "R"
+    ],
+    [
+      "LeaveRule",
+      "W"
+    ],
+    [
+      "LeaveRule",
+      "W"
+    ]
+  ],
+  "LeaveRuleController.get": [
+    [
+      "LeaveRule",
+      "R"
+    ]
+  ],
+  "LeaveRuleController.getAll": [
+    [
+      "LeaveRule",
+      "R"
+    ]
+  ],
+  "LeaveRuleController.insert": [
+    [
+      "LeaveRule",
+      "W"
+    ]
+  ],
+  "LeaveRuleController.update": [
+    [
+      "LeaveRule",
+      "R"
+    ],
+    [
+      "LeaveRule",
+      "R"
+    ],
+    [
+      "LeaveRule",
+      "R"
+    ],
+    [
+      "LeaveRule",
+      "W"
+    ]
+  ],
+  "EmployeeDataHistoryController.delete": [
+    [
+      "EmployeeDataHistory",
+      "R"
+    ],
+    [
+      "EmployeeDataHistory",
+      "W"
+    ],
+    [
+      "EmployeeDataHistory",
+      "W"
+    ]
+  ],
+  "EmployeeDataHistoryController.get": [
+    [
+      "EmployeeDataHistory",
+      "R"
+    ]
+  ],
+  "EmployeeDataHistoryController.getAll": [
+    [
+      "EmployeeDataHistory",
+      "R"
+    ]
+  ],
+  "EmployeeDataHistoryController.insert": [
+    [
+      "EmployeeDataHistory",
+      "W"
+    ]
+  ],
+  "EmployeeDataHistoryController.update": [
+    [
+      "EmployeeDataHistory",
+      "R"
+    ],
+    [
+      "EmployeeDataHistory",
+      "R"
+    ],
+    [
+      "EmployeeDataHistory",
+      "R"
+    ],
+    [
+      "EmployeeDataHistory",
+      "W"
+    ]
+  ],
+  "EmployeeApprovalController.delete": [
+    [
+      "EmployeeApproval",
+      "R"
+    ],
+    [
+      "EmployeeApproval",
+      "W"
+    ],
+    [
+      "EmployeeApproval",
+      "W"
+    ]
+  ],
+  "EmployeeApprovalController.get": [
+    [
+      "EmployeeApproval",
+      "R"
+    ]
+  ],
+  "EmployeeApprovalController.getAll": [
+    [
+      "EmployeeApproval",
+      "R"
+    ]
+  ],
+  "EmployeeApprovalController.insert": [
+    [
+      "EmployeeApproval",
+      "W"
+    ]
+  ],
+  "EmployeeApprovalController.update": [
+    [
+      "EmployeeApproval",
+      "R"
+    ],
+    [
+      "EmployeeApproval",
+      "R"
+    ],
+    [
+      "EmployeeApproval",
+      "R"
+    ],
+    [
+      "EmployeeApproval",
+      "W"
+    ]
+  ],
+  "EmployeeTimeSheetController.delete": [
+    [
+      "EmployeeTimeSheet",
+      "R"
+    ],
+    [
+      "EmployeeTimeSheet",
+      "W"
+    ],
+    [
+      "EmployeeTimeSheet",
+      "W"
+    ]
+  ],
+  "EmployeeTimeSheetController.get": [
+    [
+      "EmployeeTimeSheet",
+      "R"
+    ]
+  ],
+  "EmployeeTimeSheetController.getAll": [
+    [
+      "EmployeeTimeSheet",
+      "R"
+    ]
+  ],
+  "EmployeeTimeSheetController.insert": [
+    [
+      "EmployeeTimeSheet",
+      "W"
+    ]
+  ],
+  "EmployeeTimeSheetController.update": [
+    [
+      "EmployeeTimeSheet",
+      "R"
+    ],
+    [
+      "EmployeeTimeSheet",
+      "R"
+    ],
+    [
+      "EmployeeTimeSheet",
+      "R"
+    ],
+    [
+      "EmployeeTimeSheet",
+      "W"
+    ]
+  ],
+  "EmployeeLeaveDayController.delete": [
+    [
+      "EmployeeLeaveDay",
+      "R"
+    ],
+    [
+      "EmployeeLeaveDay",
+      "W"
+    ],
+    [
+      "EmployeeLeaveDay",
+      "W"
+    ]
+  ],
+  "EmployeeLeaveDayController.get": [
+    [
+      "EmployeeLeaveDay",
+      "R"
+    ]
+  ],
+  "EmployeeLeaveDayController.getAll": [
+    [
+      "EmployeeLeaveDay",
+      "R"
+    ]
+  ],
+  "EmployeeLeaveDayController.insert": [
+    [
+      "EmployeeLeaveDay",
+      "W"
+    ]
+  ],
+  "EmployeeLeaveDayController.update": [
+    [
+      "EmployeeLeaveDay",
+      "R"
+    ],
+    [
+      "EmployeeLeaveDay",
+      "R"
+    ],
+    [
+      "EmployeeLeaveDay",
+      "R"
+    ],
+    [
+      "EmployeeLeaveDay",
+      "W"
+    ]
+  ],
+  "EmployeeTrainingSessionController.delete": [
+    [
+      "EmployeeTrainingSession",
+      "R"
+    ],
+    [
+      "EmployeeTrainingSession",
+      "W"
+    ],
+    [
+      "EmployeeTrainingSession",
+      "W"
+    ]
+  ],
+  "EmployeeTrainingSessionController.get": [
+    [
+      "EmployeeTrainingSession",
+      "R"
+    ]
+  ],
+  "EmployeeTrainingSessionController.getAll": [
+    [
+      "EmployeeTrainingSession",
+      "R"
+    ]
+  ],
+  "EmployeeTrainingSessionController.insert": [
+    [
+      "EmployeeTrainingSession",
+      "W"
+    ]
+  ],
+  "EmployeeTrainingSessionController.update": [
+    [
+      "EmployeeTrainingSession",
+      "R"
+    ],
+    [
+      "EmployeeTrainingSession",
+      "R"
+    ],
+    [
+      "EmployeeTrainingSession",
+      "R"
+    ],
+    [
+      "EmployeeTrainingSession",
+      "W"
+    ]
+  ],
+  "EmployeeImmigrationStatusController.delete": [
+    [
+      "EmployeeImmigrationStatus",
+      "R"
+    ],
+    [
+      "EmployeeImmigrationStatus",
+      "W"
+    ],
+    [
+      "EmployeeImmigrationStatus",
+      "W"
+    ]
+  ],
+  "EmployeeImmigrationStatusController.get": [
+    [
+      "EmployeeImmigrationStatus",
+      "R"
+    ]
+  ],
+  "EmployeeImmigrationStatusController.getAll": [
+    [
+      "EmployeeImmigrationStatus",
+      "R"
+    ]
+  ],
+  "EmployeeImmigrationStatusController.insert": [
+    [
+      "EmployeeImmigrationStatus",
+      "W"
+    ]
+  ],
+  "EmployeeImmigrationStatusController.update": [
+    [
+      "EmployeeImmigrationStatus",
+      "R"
+    ],
+    [
+      "EmployeeImmigrationStatus",
+      "R"
+    ],
+    [
+      "EmployeeImmigrationStatus",
+      "R"
+    ],
+    [
+      "EmployeeImmigrationStatus",
+      "W"
+    ]
+  ],
+  "EmployeeDocumentController.delete": [
+    [
+      "EmployeeDocument",
+      "R"
+    ],
+    [
+      "EmployeeDocument",
+      "W"
+    ],
+    [
+      "EmployeeDocument",
+      "W"
+    ]
+  ],
+  "EmployeeDocumentController.get": [
+    [
+      "EmployeeDocument",
+      "R"
+    ]
+  ],
+  "EmployeeDocumentController.getAll": [
+    [
+      "EmployeeDocument",
+      "R"
+    ]
+  ],
+  "EmployeeDocumentController.insert": [
+    [
+      "EmployeeDocument",
+      "W"
+    ]
+  ],
+  "EmployeeDocumentController.update": [
+    [
+      "EmployeeDocument",
+      "R"
+    ],
+    [
+      "EmployeeDocument",
+      "R"
+    ],
+    [
+      "EmployeeDocument",
+      "R"
+    ],
+    [
+      "EmployeeDocument",
+      "W"
+    ]
+  ],
+  "LeaveGroupEmployeeController.delete": [
+    [
+      "LeaveGroupEmployee",
+      "R"
+    ],
+    [
+      "LeaveGroupEmployee",
+      "W"
+    ],
+    [
+      "LeaveGroupEmployee",
+      "W"
+    ]
+  ],
+  "LeaveGroupEmployeeController.get": [
+    [
+      "LeaveGroupEmployee",
+      "R"
+    ]
+  ],
+  "LeaveGroupEmployeeController.getAll": [
+    [
+      "LeaveGroupEmployee",
+      "R"
+    ]
+  ],
+  "LeaveGroupEmployeeController.insert": [
+    [
+      "LeaveGroupEmployee",
+      "W"
+    ]
+  ],
+  "LeaveGroupEmployeeController.update": [
+    [
+      "LeaveGroupEmployee",
+      "R"
+    ],
+    [
+      "LeaveGroupEmployee",
+      "R"
+    ],
+    [
+      "LeaveGroupEmployee",
+      "R"
+    ],
+    [
+      "LeaveGroupEmployee",
+      "W"
+    ]
+  ],
+  "CustomFieldValueController.delete": [
+    [
+      "CustomFieldValue",
+      "R"
+    ],
+    [
+      "CustomFieldValue",
+      "W"
+    ],
+    [
+      "CustomFieldValue",
+      "W"
+    ]
+  ],
+  "CustomFieldValueController.get": [
+    [
+      "CustomFieldValue",
+      "R"
+    ]
+  ],
+  "CustomFieldValueController.getAll": [
+    [
+      "CustomFieldValue",
+      "R"
+    ]
+  ],
+  "CustomFieldValueController.insert": [
+    [
+      "CustomFieldValue",
+      "W"
+    ]
+  ],
+  "CustomFieldValueController.update": [
+    [
+      "CustomFieldValue",
+      "R"
+    ],
+    [
+      "CustomFieldValue",
+      "R"
+    ],
+    [
+      "CustomFieldValue",
+      "R"
+    ],
+    [
+      "CustomFieldValue",
+      "W"
+    ]
+  ],
+  "EmployeeSkillController.Delete": [
+    [
+      "EmployeeSkill",
+      "R"
+    ],
+    [
+      "EmployeeSkill",
+      "W"
+    ],
+    [
+      "EmployeeSkill",
+      "W"
+    ]
+  ],
+  "EmployeeSkillController.get": [
+    [
+      "EmployeeSkill",
+      "R"
+    ]
+  ],
+  "EmployeeSkillController.getAll": [
+    [
+      "EmployeeSkill",
+      "R"
+    ]
+  ],
+  "EmployeeSkillController.insert": [
+    [
+      "EmployeeSkill",
+      "W"
+    ]
+  ],
+  "EmployeeSkillController.update": [
+    [
+      "EmployeeSkill",
+      "R"
+    ],
+    [
+      "EmployeeSkill",
+      "R"
+    ],
+    [
+      "EmployeeSkill",
+      "R"
+    ],
+    [
+      "EmployeeSkill",
+      "W"
+    ]
+  ],
+  "PermissionController.delete": [
+    [
+      "Permission",
+      "R"
+    ],
+    [
+      "Permission",
+      "W"
+    ],
+    [
+      "Permission",
+      "W"
+    ]
+  ],
+  "PermissionController.get": [
+    [
+      "Permission",
+      "R"
+    ]
+  ],
+  "PermissionController.getAll": [
+    [
+      "Permission",
+      "R"
+    ]
+  ],
+  "PermissionController.insert": [
+    [
+      "Permission",
+      "W"
+    ]
+  ],
+  "PermissionController.update": [
+    [
+      "Permission",
+      "R"
+    ],
+    [
+      "Permission",
+      "R"
+    ],
+    [
+      "Permission",
+      "R"
+    ],
+    [
+      "Permission",
+      "W"
+    ]
+  ],
+  "EmployeeLeaveController.delete": [
+    [
+      "EmployeeLeave",
+      "R"
+    ],
+    [
+      "EmployeeLeave",
+      "W"
+    ],
+    [
+      "EmployeeLeave",
+      "W"
+    ]
+  ],
+  "EmployeeLeaveController.get": [
+    [
+      "EmployeeLeave",
+      "R"
+    ]
+  ],
+  "EmployeeLeaveController.getAll": [
+    [
+      "EmployeeLeave",
+      "R"
+    ]
+  ],
+  "EmployeeLeaveController.insert": [
+    [
+      "EmployeeLeave",
+      "W"
+    ]
+  ],
+  "EmployeeLeaveController.update": [
+    [
+      "EmployeeLeave",
+      "R"
+    ],
+    [
+      "EmployeeLeave",
+      "R"
+    ],
+    [
+      "EmployeeLeave",
+      "R"
+    ],
+    [
+      "EmployeeLeave",
+      "W"
+    ]
+  ],
+  "EmployeeOvertimeController.delete": [
+    [
+      "EmployeeOvertime",
+      "R"
+    ],
+    [
+      "EmployeeOvertime",
+      "W"
+    ],
+    [
+      "EmployeeOvertime",
+      "W"
+    ]
+  ],
+  "EmployeeOvertimeController.get": [
+    [
+      "EmployeeOvertime",
+      "R"
+    ]
+  ],
+  "EmployeeOvertimeController.getAll": [
+    [
+      "EmployeeOvertime",
+      "R"
+    ]
+  ],
+  "EmployeeOvertimeController.insert": [
+    [
+      "EmployeeOvertime",
+      "W"
+    ]
+  ],
+  "EmployeeOvertimeController.update": [
+    [
+      "EmployeeOvertime",
+      "R"
+    ],
+    [
+      "EmployeeOvertime",
+      "R"
+    ],
+    [
+      "EmployeeOvertime",
+      "R"
+    ],
+    [
+      "EmployeeOvertime",
+      "W"
+    ]
+  ],
+  "RestAccessTokenController.delete": [
+    [
+      "RestAccessToken",
+      "R"
+    ],
+    [
+      "RestAccessToken",
+      "W"
+    ],
+    [
+      "RestAccessToken",
+      "W"
+    ]
+  ],
+  "RestAccessTokenController.get": [
+    [
+      "RestAccessToken",
+      "R"
+    ]
+  ],
+  "RestAccessTokenController.getAll": [
+    [
+      "RestAccessToken",
+      "R"
+    ]
+  ],
+  "RestAccessTokenController.insert": [
+    [
+      "RestAccessToken",
+      "W"
+    ]
+  ],
+  "RestAccessTokenController.update": [
+    [
+      "RestAccessToken",
+      "R"
+    ],
+    [
+      "RestAccessToken",
+      "R"
+    ],
+    [
+      "RestAccessToken",
+      "R"
+    ],
+    [
+      "RestAccessToken",
+      "W"
+    ]
+  ],
+  "SettingController.delete": [
+    [
+      "Setting",
+      "R"
+    ],
+    [
+      "Setting",
+      "W"
+    ],
+    [
+      "Setting",
+      "W"
+    ]
+  ],
+  "SettingController.get": [
+    [
+      "Setting",
+      "R"
+    ]
+  ],
+  "SettingController.getAll": [
+    [
+      "Setting",
+      "R"
+    ]
+  ],
+  "SettingController.insert": [
+    [
+      "Setting",
+      "W"
+    ]
+  ],
+  "SettingController.update": [
+    [
+      "Setting",
+      "R"
+    ],
+    [
+      "Setting",
+      "R"
+    ],
+    [
+      "Setting",
+      "R"
+    ],
+    [
+      "Setting",
+      "W"
+    ]
+  ],
+  "LeavePeriodController.delete": [
+    [
+      "LeavePeriod",
+      "R"
+    ],
+    [
+      "LeavePeriod",
+      "W"
+    ],
+    [
+      "LeavePeriod",
+      "W"
+    ]
+  ],
+  "LeavePeriodController.get": [
+    [
+      "LeavePeriod",
+      "R"
+    ]
+  ],
+  "LeavePeriodController.getAll": [
+    [
+      "LeavePeriod",
+      "R"
+    ]
+  ],
+  "LeavePeriodController.insert": [
+    [
+      "LeavePeriod",
+      "W"
+    ]
+  ],
+  "LeavePeriodController.update": [
+    [
+      "LeavePeriod",
+      "R"
+    ],
+    [
+      "LeavePeriod",
+      "R"
+    ],
+    [
+      "LeavePeriod",
+      "R"
+    ],
+    [
+      "LeavePeriod",
+      "W"
+    ]
+  ],
+  "CompanyDocumentController.delete": [
+    [
+      "CompanyDocument",
+      "R"
+    ],
+    [
+      "CompanyDocument",
+      "W"
+    ],
+    [
+      "CompanyDocument",
+      "W"
+    ]
+  ],
+  "CompanyDocumentController.get": [
+    [
+      "CompanyDocument",
+      "R"
+    ]
+  ],
+  "CompanyDocumentController.getAll": [
+    [
+      "CompanyDocument",
+      "R"
+    ]
+  ],
+  "CompanyDocumentController.insert": [
+    [
+      "CompanyDocument",
+      "W"
+    ]
+  ],
+  "CompanyDocumentController.update": [
+    [
+      "CompanyDocument",
+      "R"
+    ],
+    [
+      "CompanyDocument",
+      "R"
+    ],
+    [
+      "CompanyDocument",
+      "R"
+    ],
+    [
+      "CompanyDocument",
+      "W"
+    ]
+  ],
+  "TrainingSessionController.delete": [
+    [
+      "TrainingSession",
+      "R"
+    ],
+    [
+      "TrainingSession",
+      "W"
+    ],
+    [
+      "TrainingSession",
+      "W"
+    ]
+  ],
+  "TrainingSessionController.get": [
+    [
+      "TrainingSession",
+      "R"
+    ]
+  ],
+  "TrainingSessionController.getAll": [
+    [
+      "TrainingSession",
+      "R"
+    ]
+  ],
+  "TrainingSessionController.insert": [
+    [
+      "TrainingSession",
+      "W"
+    ]
+  ],
+  "TrainingSessionController.update": [
+    [
+      "TrainingSession",
+      "R"
+    ],
+    [
+      "TrainingSession",
+      "R"
+    ],
+    [
+      "TrainingSession",
+      "R"
+    ],
+    [
+      "TrainingSession",
+      "W"
+    ]
+  ],
+  "ApplicationController.delete": [
+    [
+      "Application",
+      "R"
+    ],
+    [
+      "Application",
+      "W"
+    ],
+    [
+      "Application",
+      "W"
+    ]
+  ],
+  "ApplicationController.get": [
+    [
+      "Application",
+      "R"
+    ]
+  ],
+  "ApplicationController.getAll": [
+    [
+      "Application",
+      "R"
+    ]
+  ],
+  "ApplicationController.insert": [
+    [
+      "Application",
+      "W"
+    ]
+  ],
+  "ApplicationController.update": [
+    [
+      "Application",
+      "R"
+    ],
+    [
+      "Application",
+      "R"
+    ],
+    [
+      "Application",
+      "R"
+    ],
+    [
+      "Application",
+      "W"
+    ]
+  ],
+  "EmployeeAttendanceSheetController.delete": [
+    [
+      "EmployeeAttendanceSheet",
+      "R"
+    ],
+    [
+      "EmployeeAttendanceSheet",
+      "W"
+    ],
+    [
+      "EmployeeAttendanceSheet",
+      "W"
+    ]
+  ],
+  "EmployeeAttendanceSheetController.get": [
+    [
+      "EmployeeAttendanceSheet",
+      "R"
+    ]
+  ],
+  "EmployeeAttendanceSheetController.getAll": [
+    [
+      "EmployeeAttendanceSheet",
+      "R"
+    ]
+  ],
+  "EmployeeAttendanceSheetController.insert": [
+    [
+      "EmployeeAttendanceSheet",
+      "W"
+    ]
+  ],
+  "EmployeeAttendanceSheetController.update": [
+    [
+      "EmployeeAttendanceSheet",
+      "R"
+    ],
+    [
+      "EmployeeAttendanceSheet",
+      "R"
+    ],
+    [
+      "EmployeeAttendanceSheet",
+      "R"
+    ],
+    [
+      "EmployeeAttendanceSheet",
+      "W"
+    ]
+  ],
+  "EmployeeEducationController.Delete": [
+    [
+      "EmployeeEducation",
+      "R"
+    ],
+    [
+      "EmployeeEducation",
+      "W"
+    ],
+    [
+      "EmployeeEducation",
+      "W"
+    ]
+  ],
+  "EmployeeEducationController.get": [
+    [
+      "EmployeeEducation",
+      "R"
+    ]
+  ],
+  "EmployeeEducationController.getAll": [
+    [
+      "EmployeeEducation",
+      "R"
+    ]
+  ],
+  "EmployeeEducationController.insert": [
+    [
+      "EmployeeEducation",
+      "W"
+    ]
+  ],
+  "EmployeeEducationController.update": [
+    [
+      "EmployeeEducation",
+      "R"
+    ],
+    [
+      "EmployeeEducation",
+      "R"
+    ],
+    [
+      "EmployeeEducation",
+      "R"
+    ],
+    [
+      "EmployeeEducation",
+      "W"
+    ]
+  ],
+  "PayrollEmployeeController.delete": [
+    [
+      "PayrollEmployee",
+      "R"
+    ],
+    [
+      "PayrollEmployee",
+      "W"
+    ],
+    [
+      "PayrollEmployee",
+      "W"
+    ]
+  ],
+  "PayrollEmployeeController.get": [
+    [
+      "PayrollEmployee",
+      "R"
+    ]
+  ],
+  "PayrollEmployeeController.getAll": [
+    [
+      "PayrollEmployee",
+      "R"
+    ]
+  ],
+  "PayrollEmployeeController.insert": [
+    [
+      "PayrollEmployee",
+      "W"
+    ]
+  ],
+  "PayrollEmployeeController.update": [
+    [
+      "PayrollEmployee",
+      "R"
+    ],
+    [
+      "PayrollEmployee",
+      "R"
+    ],
+    [
+      "PayrollEmployee",
+      "R"
+    ],
+    [
+      "PayrollEmployee",
+      "W"
+    ]
+  ],
+  "ReportController.delete": [
+    [
+      "Report",
+      "R"
+    ],
+    [
+      "Report",
+      "W"
+    ],
+    [
+      "Report",
+      "W"
+    ]
+  ],
+  "ReportController.get": [
+    [
+      "Report",
+      "R"
+    ]
+  ],
+  "ReportController.getAll": [
+    [
+      "Report",
+      "R"
+    ]
+  ],
+  "ReportController.insert": [
+    [
+      "Report",
+      "W"
+    ]
+  ],
+  "ReportController.update": [
+    [
+      "Report",
+      "R"
+    ],
+    [
+      "Report",
+      "R"
+    ],
+    [
+      "Report",
+      "R"
+    ],
+    [
+      "Report",
+      "W"
+    ]
+  ],
+  "CustomFieldController.delete": [
+    [
+      "CustomField",
+      "R"
+    ],
+    [
+      "CustomField",
+      "W"
+    ],
+    [
+      "CustomField",
+      "W"
+    ]
+  ],
+  "CustomFieldController.get": [
+    [
+      "CustomField",
+      "R"
+    ]
+  ],
+  "CustomFieldController.getAll": [
+    [
+      "CustomField",
+      "R"
+    ]
+  ],
+  "CustomFieldController.insert": [
+    [
+      "CustomField",
+      "W"
+    ]
+  ],
+  "CustomFieldController.update": [
+    [
+      "CustomField",
+      "R"
+    ],
+    [
+      "CustomField",
+      "R"
+    ],
+    [
+      "CustomField",
+      "R"
+    ],
+    [
+      "CustomField",
+      "W"
+    ]
+  ],
+  "EmployeeLanguageController.delete": [
+    [
+      "EmployeeLanguage",
+      "R"
+    ],
+    [
+      "EmployeeLanguage",
+      "W"
+    ],
+    [
+      "EmployeeLanguage",
+      "W"
+    ]
+  ],
+  "EmployeeLanguageController.get": [
+    [
+      "EmployeeLanguage",
+      "R"
+    ]
+  ],
+  "EmployeeLanguageController.getAll": [
+    [
+      "EmployeeLanguage",
+      "R"
+    ]
+  ],
+  "EmployeeLanguageController.insert": [
+    [
+      "EmployeeLanguage",
+      "W"
+    ]
+  ],
+  "EmployeeLanguageController.update": [
+    [
+      "EmployeeLanguage",
+      "R"
+    ],
+    [
+      "EmployeeLanguage",
+      "R"
+    ],
+    [
+      "EmployeeLanguage",
+      "R"
+    ],
+    [
+      "EmployeeLanguage",
+      "W"
+    ]
+  ],
+  "ClientController.delete": [
+    [
+      "Client",
+      "R"
+    ],
+    [
+      "Client",
+      "W"
+    ],
+    [
+      "Client",
+      "W"
+    ]
+  ],
+  "ClientController.get": [
+    [
+      "Client",
+      "R"
+    ]
+  ],
+  "ClientController.getAll": [
+    [
+      "Client",
+      "R"
+    ]
+  ],
+  "ClientController.insert": [
+    [
+      "Client",
+      "W"
+    ]
+  ],
+  "ClientController.update": [
+    [
+      "Client",
+      "R"
+    ],
+    [
+      "Client",
+      "R"
+    ],
+    [
+      "Client",
+      "R"
+    ],
+    [
+      "Client",
+      "W"
+    ]
+  ],
+  "CandidateController.Update": [
+    [
+      "Candidate",
+      "R"
+    ],
+    [
+      "Candidate",
+      "R"
+    ],
+    [
+      "Candidate",
+      "R"
+    ],
+    [
+      "Candidate",
+      "W"
+    ]
+  ],
+  "CandidateController.delete": [
+    [
+      "Candidate",
+      "R"
+    ],
+    [
+      "Candidate",
+      "W"
+    ],
+    [
+      "Candidate",
+      "W"
+    ]
+  ],
+  "CandidateController.get": [
+    [
+      "Candidate",
+      "R"
+    ]
+  ],
+  "CandidateController.getAll": [
+    [
+      "Candidate",
+      "R"
+    ]
+  ],
+  "CandidateController.insert": [
+    [
+      "Candidate",
+      "W"
+    ]
+  ],
+  "DocumentController.delete": [
+    [
+      "Document",
+      "R"
+    ],
+    [
+      "Document",
+      "W"
+    ],
+    [
+      "Document",
+      "W"
+    ]
+  ],
+  "DocumentController.get": [
+    [
+      "Document",
+      "R"
+    ]
+  ],
+  "DocumentController.getAll": [
+    [
+      "Document",
+      "R"
+    ]
+  ],
+  "DocumentController.insert": [
+    [
+      "Document",
+      "W"
+    ]
+  ],
+  "DocumentController.update": [
+    [
+      "Document",
+      "R"
+    ],
+    [
+      "Document",
+      "R"
+    ],
+    [
+      "Document",
+      "R"
+    ],
+    [
+      "Document",
+      "W"
+    ]
+  ],
+  "CompanyStructureController.delete": [
+    [
+      "CompanyStructure",
+      "R"
+    ],
+    [
+      "CompanyStructure",
+      "W"
+    ],
+    [
+      "CompanyStructure",
+      "W"
+    ]
+  ],
+  "CompanyStructureController.get": [
+    [
+      "CompanyStructure",
+      "R"
+    ]
+  ],
+  "CompanyStructureController.getAll": [
+    [
+      "CompanyStructure",
+      "R"
+    ]
+  ],
+  "CompanyStructureController.insert": [
+    [
+      "CompanyStructure",
+      "W"
+    ]
+  ],
+  "CompanyStructureController.update": [
+    [
+      "CompanyStructure",
+      "R"
+    ],
+    [
+      "CompanyStructure",
+      "R"
+    ],
+    [
+      "CompanyStructure",
+      "R"
+    ],
+    [
+      "CompanyStructure",
+      "W"
+    ]
+  ],
+  "EmergencyContactController.delete": [
+    [
+      "EmergencyContact",
+      "R"
+    ],
+    [
+      "EmergencyContact",
+      "W"
+    ],
+    [
+      "EmergencyContact",
+      "W"
+    ]
+  ],
+  "EmergencyContactController.get": [
+    [
+      "EmergencyContact",
+      "R"
+    ]
+  ],
+  "EmergencyContactController.getAll": [
+    [
+      "EmergencyContact",
+      "R"
+    ]
+  ],
+  "EmergencyContactController.insert": [
+    [
+      "EmergencyContact",
+      "W"
+    ]
+  ],
+  "EmergencyContactController.update": [
+    [
+      "EmergencyContact",
+      "R"
+    ],
+    [
+      "EmergencyContact",
+      "R"
+    ],
+    [
+      "EmergencyContact",
+      "R"
+    ],
+    [
+      "EmergencyContact",
+      "W"
+    ]
+  ],
+  "DeductionController.delete": [
+    [
+      "Deduction",
+      "R"
+    ],
+    [
+      "Deduction",
+      "W"
+    ],
+    [
+      "Deduction",
+      "W"
+    ]
+  ],
+  "DeductionController.get": [
+    [
+      "Deduction",
+      "R"
+    ]
+  ],
+  "DeductionController.getAll": [
+    [
+      "Deduction",
+      "R"
+    ]
+  ],
+  "DeductionController.insert": [
+    [
+      "Deduction",
+      "W"
+    ]
+  ],
+  "DeductionController.update": [
+    [
+      "Deduction",
+      "R"
+    ],
+    [
+      "Deduction",
+      "R"
+    ],
+    [
+      "Deduction",
+      "R"
+    ],
+    [
+      "Deduction",
+      "W"
+    ]
+  ],
+  "EmployeeController.delete": [
+    [
+      "Employee",
+      "R"
+    ],
+    [
+      "Employee",
+      "W"
+    ],
+    [
+      "Employee",
+      "W"
+    ]
+  ],
+  "EmployeeController.get": [
+    [
+      "Employee",
+      "R"
+    ]
+  ],
+  "EmployeeController.getAll": [
+    [
+      "Employee",
+      "R"
+    ]
+  ],
+  "EmployeeController.insert": [
+    [
+      "Employee",
+      "W"
+    ]
+  ],
+  "EmployeeController.update": [
+    [
+      "Employee",
+      "R"
+    ],
+    [
+      "Employee",
+      "R"
+    ],
+    [
+      "Employee",
+      "R"
+    ],
+    [
+      "Employee",
+      "W"
+    ]
+  ],
+  "ModuleController.delete": [
+    [
+      "Module",
+      "R"
+    ],
+    [
+      "Module",
+      "W"
+    ],
+    [
+      "Module",
+      "W"
+    ]
+  ],
+  "ModuleController.get": [
+    [
+      "Module",
+      "R"
+    ]
+  ],
+  "ModuleController.getAll": [
+    [
+      "Module",
+      "R"
+    ]
+  ],
+  "ModuleController.insert": [
+    [
+      "Module",
+      "W"
+    ]
+  ],
+  "ModuleController.update": [
+    [
+      "Module",
+      "R"
+    ],
+    [
+      "Module",
+      "R"
+    ],
+    [
+      "Module",
+      "R"
+    ],
+    [
+      "Module",
+      "W"
+    ]
+  ],
+  "ImmigrationDocumentController.delete": [
+    [
+      "ImmigrationDocument",
+      "R"
+    ],
+    [
+      "ImmigrationDocument",
+      "W"
+    ],
+    [
+      "ImmigrationDocument",
+      "W"
+    ]
+  ],
+  "ImmigrationDocumentController.get": [
+    [
+      "ImmigrationDocument",
+      "R"
+    ]
+  ],
+  "ImmigrationDocumentController.getAll": [
+    [
+      "ImmigrationDocument",
+      "R"
+    ]
+  ],
+  "ImmigrationDocumentController.insert": [
+    [
+      "ImmigrationDocument",
+      "W"
+    ]
+  ],
+  "ImmigrationDocumentController.update": [
+    [
+      "ImmigrationDocument",
+      "R"
+    ],
+    [
+      "ImmigrationDocument",
+      "R"
+    ],
+    [
+      "ImmigrationDocument",
+      "R"
+    ],
+    [
+      "ImmigrationDocument",
+      "W"
+    ]
+  ],
+  "EmployeeCompanyLoanController.delete": [
+    [
+      "EmployeeCompanyLoan",
+      "R"
+    ],
+    [
+      "EmployeeCompanyLoan",
+      "W"
+    ],
+    [
+      "EmployeeCompanyLoan",
+      "W"
+    ]
+  ],
+  "EmployeeCompanyLoanController.get": [
+    [
+      "EmployeeCompanyLoan",
+      "R"
+    ]
+  ],
+  "EmployeeCompanyLoanController.getAll": [
+    [
+      "EmployeeCompanyLoan",
+      "R"
+    ]
+  ],
+  "EmployeeCompanyLoanController.insert": [
+    [
+      "EmployeeCompanyLoan",
+      "W"
+    ]
+  ],
+  "EmployeeCompanyLoanController.update": [
+    [
+      "EmployeeCompanyLoan",
+      "R"
+    ],
+    [
+      "EmployeeCompanyLoan",
+      "R"
+    ],
+    [
+      "EmployeeCompanyLoan",
+      "R"
+    ],
+    [
+      "EmployeeCompanyLoan",
+      "W"
+    ]
+  ],
+  "EmployeeTravelRecordController.delete": [
+    [
+      "EmployeeTravelRecord",
+      "R"
+    ],
+    [
+      "EmployeeTravelRecord",
+      "W"
+    ],
+    [
+      "EmployeeTravelRecord",
+      "W"
+    ]
+  ],
+  "EmployeeTravelRecordController.get": [
+    [
+      "EmployeeTravelRecord",
+      "R"
+    ]
+  ],
+  "EmployeeTravelRecordController.getAll": [
+    [
+      "EmployeeTravelRecord",
+      "R"
+    ]
+  ],
+  "EmployeeTravelRecordController.insert": [
+    [
+      "EmployeeTravelRecord",
+      "W"
+    ]
+  ],
+  "EmployeeTravelRecordController.update": [
+    [
+      "EmployeeTravelRecord",
+      "R"
+    ],
+    [
+      "EmployeeTravelRecord",
+      "R"
+    ],
+    [
+      "EmployeeTravelRecord",
+      "R"
+    ],
+    [
+      "EmployeeTravelRecord",
+      "W"
+    ]
+  ],
+  "EmployeeProjectController.delete": [
+    [
+      "EmployeeProject",
+      "R"
+    ],
+    [
+      "EmployeeProject",
+      "W"
+    ],
+    [
+      "EmployeeProject",
+      "W"
+    ]
+  ],
+  "EmployeeProjectController.get": [
+    [
+      "EmployeeProject",
+      "R"
+    ]
+  ],
+  "EmployeeProjectController.getAll": [
+    [
+      "EmployeeProject",
+      "R"
+    ]
+  ],
+  "EmployeeProjectController.insert": [
+    [
+      "EmployeeProject",
+      "W"
+    ]
+  ],
+  "EmployeeProjectController.update": [
+    [
+      "EmployeeProject",
+      "R"
+    ],
+    [
+      "EmployeeProject",
+      "R"
+    ],
+    [
+      "EmployeeProject",
+      "R"
+    ],
+    [
+      "EmployeeProject",
+      "W"
+    ]
+  ],
+  "UserReportController.delete": [
+    [
+      "UserReport",
+      "R"
+    ],
+    [
+      "UserReport",
+      "W"
+    ],
+    [
+      "UserReport",
+      "W"
+    ]
+  ],
+  "UserReportController.get": [
+    [
+      "UserReport",
+      "R"
+    ]
+  ],
+  "UserReportController.getAll": [
+    [
+      "UserReport",
+      "R"
+    ]
+  ],
+  "UserReportController.insert": [
+    [
+      "UserReport",
+      "W"
+    ]
+  ],
+  "UserReportController.update": [
+    [
+      "UserReport",
+      "R"
+    ],
+    [
+      "UserReport",
+      "R"
+    ],
+    [
+      "UserReport",
+      "R"
+    ],
+    [
+      "UserReport",
+      "W"
+    ]
+  ],
+  "CallController.delete": [
+    [
+      "Call",
+      "R"
+    ],
+    [
+      "Call",
+      "W"
+    ],
+    [
+      "Call",
+      "W"
+    ]
+  ],
+  "CallController.get": [
+    [
+      "Call",
+      "R"
+    ]
+  ],
+  "CallController.getAll": [
+    [
+      "Call",
+      "R"
+    ]
+  ],
+  "CallController.insert": [
+    [
+      "Call",
+      "W"
+    ]
+  ],
+  "CallController.update": [
+    [
+      "Call",
+      "R"
+    ],
+    [
+      "Call",
+      "R"
+    ],
+    [
+      "Call",
+      "R"
+    ],
+    [
+      "Call",
+      "W"
+    ]
+  ],
+  "UserController.delete": [
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "W"
+    ],
+    [
+      "User",
+      "W"
+    ]
+  ],
+  "UserController.get": [
+    [
+      "User",
+      "R"
+    ]
+  ],
+  "UserController.getAll": [
+    [
+      "User",
+      "R"
+    ]
+  ],
+  "UserController.insert": [
+    [
+      "User",
+      "W"
+    ]
+  ],
+  "UserController.update": [
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "R"
+    ],
+    [
+      "User",
+      "W"
+    ]
+  ],
+  "EmployeeExpenseController.delete": [
+    [
+      "EmployeeExpense",
+      "R"
+    ],
+    [
+      "EmployeeExpense",
+      "W"
+    ],
+    [
+      "EmployeeExpense",
+      "W"
+    ]
+  ],
+  "EmployeeExpenseController.get": [
+    [
+      "EmployeeExpense",
+      "R"
+    ]
+  ],
+  "EmployeeExpenseController.getAll": [
+    [
+      "EmployeeExpense",
+      "R"
+    ]
+  ],
+  "EmployeeExpenseController.insert": [
+    [
+      "EmployeeExpense",
+      "W"
+    ]
+  ],
+  "EmployeeExpenseController.update": [
+    [
+      "EmployeeExpense",
+      "R"
+    ],
+    [
+      "EmployeeExpense",
+      "R"
+    ],
+    [
+      "EmployeeExpense",
+      "R"
+    ],
+    [
+      "EmployeeExpense",
+      "W"
+    ]
+  ],
+  "EmployeeImmigrationController.delete": [
+    [
+      "EmployeeImmigration",
+      "R"
+    ],
+    [
+      "EmployeeImmigration",
+      "W"
+    ],
+    [
+      "EmployeeImmigration",
+      "W"
+    ]
+  ],
+  "EmployeeImmigrationController.get": [
+    [
+      "EmployeeImmigration",
+      "R"
+    ]
+  ],
+  "EmployeeImmigrationController.getAll": [
+    [
+      "EmployeeImmigration",
+      "R"
+    ]
+  ],
+  "EmployeeImmigrationController.insert": [
+    [
+      "EmployeeImmigration",
+      "W"
+    ]
+  ],
+  "EmployeeImmigrationController.update": [
+    [
+      "EmployeeImmigration",
+      "R"
+    ],
+    [
+      "EmployeeImmigration",
+      "R"
+    ],
+    [
+      "EmployeeImmigration",
+      "R"
+    ],
+    [
+      "EmployeeImmigration",
+      "W"
+    ]
+  ],
+  "EmailController.delete": [
+    [
+      "Email",
+      "R"
+    ],
+    [
+      "Email",
+      "W"
+    ],
+    [
+      "Email",
+      "W"
+    ]
+  ],
+  "EmailController.get": [
+    [
+      "Email",
+      "R"
+    ]
+  ],
+  "EmailController.getAll": [
+    [
+      "Email",
+      "R"
+    ]
+  ],
+  "EmailController.insert": [
+    [
+      "Email",
+      "W"
+    ]
+  ],
+  "EmailController.update": [
+    [
+      "Email",
+      "R"
+    ],
+    [
+      "Email",
+      "R"
+    ],
+    [
+      "Email",
+      "R"
+    ],
+    [
+      "Email",
+      "W"
+    ]
+  ],
+  "JobController.delete": [
+    [
+      "Job",
+      "R"
+    ],
+    [
+      "Job",
+      "W"
+    ],
+    [
+      "Job",
+      "W"
+    ]
+  ],
+  "JobController.get": [
+    [
+      "Job",
+      "R"
+    ]
+  ],
+  "JobController.getAll": [
+    [
+      "Job",
+      "R"
+    ]
+  ],
+  "JobController.insert": [
+    [
+      "Job",
+      "W"
+    ]
+  ],
+  "JobController.update": [
+    [
+      "Job",
+      "R"
+    ],
+    [
+      "Job",
+      "R"
+    ],
+    [
+      "Job",
+      "R"
+    ],
+    [
+      "Job",
+      "W"
+    ]
+  ],
+  "DataImportController.delete": [
+    [
+      "DataImport",
+      "R"
+    ],
+    [
+      "DataImport",
+      "W"
+    ],
+    [
+      "DataImport",
+      "W"
+    ]
+  ],
+  "DataImportController.get": [
+    [
+      "DataImport",
+      "R"
+    ]
+  ],
+  "DataImportController.getAll": [
+    [
+      "DataImport",
+      "R"
+    ]
+  ],
+  "DataImportController.insert": [
+    [
+      "DataImport",
+      "W"
+    ]
+  ],
+  "DataImportController.update": [
+    [
+      "DataImport",
+      "R"
+    ],
+    [
+      "DataImport",
+      "R"
+    ],
+    [
+      "DataImport",
+      "R"
+    ],
+    [
+      "DataImport",
+      "W"
+    ]
+  ],
+  "FormController.delete": [
+    [
+      "Form",
+      "R"
+    ],
+    [
+      "Form",
+      "W"
+    ],
+    [
+      "Form",
+      "W"
+    ]
+  ],
+  "FormController.get": [
+    [
+      "Form",
+      "R"
+    ]
+  ],
+  "FormController.getAll": [
+    [
+      "Form",
+      "R"
+    ]
+  ],
+  "FormController.insert": [
+    [
+      "Form",
+      "W"
+    ]
+  ],
+  "FormController.update": [
+    [
+      "Form",
+      "R"
+    ],
+    [
+      "Form",
+      "R"
+    ],
+    [
+      "Form",
+      "R"
+    ],
+    [
+      "Form",
+      "W"
+    ]
+  ],
+  "ReportFileController.delete": [
+    [
+      "ReportFile",
+      "R"
+    ],
+    [
+      "ReportFile",
+      "W"
+    ],
+    [
+      "ReportFile",
+      "W"
+    ]
+  ],
+  "ReportFileController.get": [
+    [
+      "ReportFile",
+      "R"
+    ]
+  ],
+  "ReportFileController.getAll": [
+    [
+      "ReportFile",
+      "R"
+    ]
+  ],
+  "ReportFileController.insert": [
+    [
+      "ReportFile",
+      "W"
+    ]
+  ],
+  "ReportFileController.update": [
+    [
+      "ReportFile",
+      "R"
+    ],
+    [
+      "ReportFile",
+      "R"
+    ],
+    [
+      "ReportFile",
+      "R"
+    ],
+    [
+      "ReportFile",
+      "W"
+    ]
+  ],
+  "DeductionGroupController.delete": [
+    [
+      "DeductionGroup",
+      "R"
+    ],
+    [
+      "DeductionGroup",
+      "W"
+    ],
+    [
+      "DeductionGroup",
+      "W"
+    ]
+  ],
+  "DeductionGroupController.get": [
+    [
+      "DeductionGroup",
+      "R"
+    ]
+  ],
+  "DeductionGroupController.getAll": [
+    [
+      "DeductionGroup",
+      "R"
+    ]
+  ],
+  "DeductionGroupController.insert": [
+    [
+      "DeductionGroup",
+      "W"
+    ]
+  ],
+  "DeductionGroupController.update": [
+    [
+      "DeductionGroup",
+      "R"
+    ],
+    [
+      "DeductionGroup",
+      "R"
+    ],
+    [
+      "DeductionGroup",
+      "R"
+    ],
+    [
+      "DeductionGroup",
+      "W"
+    ]
+  ],
+  "IndustryController.delete": [
+    [
+      "Industry",
+      "R"
+    ],
+    [
+      "Industry",
+      "W"
+    ],
+    [
+      "Industry",
+      "W"
+    ]
+  ],
+  "IndustryController.get": [
+    [
+      "Industry",
+      "R"
+    ]
+  ],
+  "IndustryController.getAll": [
+    [
+      "Industry",
+      "R"
+    ]
+  ],
+  "IndustryController.insert": [
+    [
+      "Industry",
+      "W"
+    ]
+  ],
+  "IndustryController.update": [
+    [
+      "Industry",
+      "R"
+    ],
+    [
+      "Industry",
+      "R"
+    ],
+    [
+      "Industry",
+      "R"
+    ],
+    [
+      "Industry",
+      "W"
+    ]
+  ],
+  "CourseController.delete": [
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "Course",
+      "W"
+    ],
+    [
+      "Course",
+      "W"
+    ]
+  ],
+  "CourseController.get": [
+    [
+      "Course",
+      "R"
+    ]
+  ],
+  "CourseController.getAll": [
+    [
+      "Course",
+      "R"
+    ]
+  ],
+  "CourseController.insert": [
+    [
+      "Course",
+      "W"
+    ]
+  ],
+  "CourseController.update": [
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "Course",
+      "R"
+    ],
+    [
+      "Course",
+      "W"
+    ]
+  ],
+  "AttendanceController.delete": [
+    [
+      "Attendance",
+      "R"
+    ],
+    [
+      "Attendance",
+      "W"
+    ],
+    [
+      "Attendance",
+      "W"
+    ]
+  ],
+  "AttendanceController.get": [
+    [
+      "Attendance",
+      "R"
+    ]
+  ],
+  "AttendanceController.getAll": [
+    [
+      "Attendance",
+      "R"
+    ]
+  ],
+  "AttendanceController.insert": [
+    [
+      "Attendance",
+      "W"
+    ]
+  ],
+  "AttendanceController.update": [
+    [
+      "Attendance",
+      "R"
+    ],
+    [
+      "Attendance",
+      "R"
+    ],
+    [
+      "Attendance",
+      "R"
+    ],
+    [
+      "Attendance",
+      "W"
+    ]
+  ],
+  "SalaryComponentController.delete": [
+    [
+      "SalaryComponent",
+      "R"
+    ],
+    [
+      "SalaryComponent",
+      "W"
+    ],
+    [
+      "SalaryComponent",
+      "W"
+    ]
+  ],
+  "SalaryComponentController.get": [
+    [
+      "SalaryComponent",
+      "R"
+    ]
+  ],
+  "SalaryComponentController.getAll": [
+    [
+      "SalaryComponent",
+      "R"
+    ]
+  ],
+  "SalaryComponentController.insert": [
+    [
+      "SalaryComponent",
+      "W"
+    ]
+  ],
+  "SalaryComponentController.update": [
+    [
+      "SalaryComponent",
+      "R"
+    ],
+    [
+      "SalaryComponent",
+      "R"
+    ],
+    [
+      "SalaryComponent",
+      "R"
+    ],
+    [
+      "SalaryComponent",
+      "W"
+    ]
+  ],
+  "CronController.delete": [
+    [
+      "Cron",
+      "R"
+    ],
+    [
+      "Cron",
+      "W"
+    ],
+    [
+      "Cron",
+      "W"
+    ]
+  ],
+  "CronController.get": [
+    [
+      "Cron",
+      "R"
+    ]
+  ],
+  "CronController.getAll": [
+    [
+      "Cron",
+      "R"
+    ]
+  ],
+  "CronController.insert": [
+    [
+      "Cron",
+      "W"
+    ]
+  ],
+  "CronController.update": [
+    [
+      "Cron",
+      "R"
+    ],
+    [
+      "Cron",
+      "R"
+    ],
+    [
+      "Cron",
+      "R"
+    ],
+    [
+      "Cron",
+      "W"
+    ]
+  ],
+  "EmployeeDependentController.delete": [
+    [
+      "EmployeeDependent",
+      "R"
+    ],
+    [
+      "EmployeeDependent",
+      "W"
+    ],
+    [
+      "EmployeeDependent",
+      "W"
+    ]
+  ],
+  "EmployeeDependentController.get": [
+    [
+      "EmployeeDependent",
+      "R"
+    ]
+  ],
+  "EmployeeDependentController.getAll": [
+    [
+      "EmployeeDependent",
+      "R"
+    ]
+  ],
+  "EmployeeDependentController.insert": [
+    [
+      "EmployeeDependent",
+      "W"
+    ]
+  ],
+  "EmployeeDependentController.update": [
+    [
+      "EmployeeDependent",
+      "R"
+    ],
+    [
+      "EmployeeDependent",
+      "R"
+    ],
+    [
+      "EmployeeDependent",
+      "R"
+    ],
+    [
+      "EmployeeDependent",
+      "W"
+    ]
+  ],
+  "EmployeeLeaveLogController.delete": [
+    [
+      "EmployeeLeaveLog",
+      "R"
+    ],
+    [
+      "EmployeeLeaveLog",
+      "W"
+    ],
+    [
+      "EmployeeLeaveLog",
+      "W"
+    ]
+  ],
+  "EmployeeLeaveLogController.get": [
+    [
+      "EmployeeLeaveLog",
+      "R"
+    ]
+  ],
+  "EmployeeLeaveLogController.getAll": [
+    [
+      "EmployeeLeaveLog",
+      "R"
+    ]
+  ],
+  "EmployeeLeaveLogController.insert": [
+    [
+      "EmployeeLeaveLog",
+      "W"
+    ]
+  ],
+  "EmployeeLeaveLogController.update": [
+    [
+      "EmployeeLeaveLog",
+      "R"
+    ],
+    [
+      "EmployeeLeaveLog",
+      "R"
+    ],
+    [
+      "EmployeeLeaveLog",
+      "R"
+    ],
+    [
+      "EmployeeLeaveLog",
+      "W"
+    ]
+  ],
+  "NotificationController.delete": [
+    [
+      "Notification",
+      "R"
+    ],
+    [
+      "Notification",
+      "W"
+    ],
+    [
+      "Notification",
+      "W"
+    ]
+  ],
+  "NotificationController.get": [
+    [
+      "Notification",
+      "R"
+    ]
+  ],
+  "NotificationController.getAll": [
+    [
+      "Notification",
+      "R"
+    ]
+  ],
+  "NotificationController.insert": [
+    [
+      "Notification",
+      "W"
+    ]
+  ],
+  "NotificationController.update": [
+    [
+      "Notification",
+      "R"
+    ],
+    [
+      "Notification",
+      "R"
+    ],
+    [
+      "Notification",
+      "R"
+    ],
+    [
+      "Notification",
+      "W"
+    ]
+  ],
+  "EmployeeTimeEntryController.delete": [
+    [
+      "EmployeeTimeEntry",
+      "R"
+    ],
+    [
+      "EmployeeTimeEntry",
+      "W"
+    ],
+    [
+      "EmployeeTimeEntry",
+      "W"
+    ]
+  ],
+  "EmployeeTimeEntryController.get": [
+    [
+      "EmployeeTimeEntry",
+      "R"
+    ]
+  ],
+  "EmployeeTimeEntryController.getAll": [
+    [
+      "EmployeeTimeEntry",
+      "R"
+    ]
+  ],
+  "EmployeeTimeEntryController.insert": [
+    [
+      "EmployeeTimeEntry",
+      "W"
+    ]
+  ],
+  "EmployeeTimeEntryController.update": [
+    [
+      "EmployeeTimeEntry",
+      "R"
+    ],
+    [
+      "EmployeeTimeEntry",
+      "R"
+    ],
+    [
+      "EmployeeTimeEntry",
+      "R"
+    ],
+    [
+      "EmployeeTimeEntry",
+      "W"
+    ]
+  ],
+  "InterviewController.delete": [
+    [
+      "Interview",
+      "R"
+    ],
+    [
+      "Interview",
+      "W"
+    ],
+    [
+      "Interview",
+      "W"
+    ]
+  ],
+  "InterviewController.get": [
+    [
+      "Interview",
+      "R"
+    ]
+  ],
+  "InterviewController.getAll": [
+    [
+      "Interview",
+      "R"
+    ]
+  ],
+  "InterviewController.insert": [
+    [
+      "Interview",
+      "W"
+    ]
+  ],
+  "InterviewController.update": [
+    [
+      "Interview",
+      "R"
+    ],
+    [
+      "Interview",
+      "R"
+    ],
+    [
+      "Interview",
+      "R"
+    ],
+    [
+      "Interview",
+      "W"
+    ]
+  ],
+  "StatusChangeLogController.delete": [
+    [
+      "StatusChangeLog",
+      "R"
+    ],
+    [
+      "StatusChangeLog",
+      "W"
+    ],
+    [
+      "StatusChangeLog",
+      "W"
+    ]
+  ],
+  "StatusChangeLogController.get": [
+    [
+      "StatusChangeLog",
+      "R"
+    ]
+  ],
+  "StatusChangeLogController.getAll": [
+    [
+      "StatusChangeLog",
+      "R"
+    ]
+  ],
+  "StatusChangeLogController.insert": [
+    [
+      "StatusChangeLog",
+      "W"
+    ]
+  ],
+  "StatusChangeLogController.update": [
+    [
+      "StatusChangeLog",
+      "R"
+    ],
+    [
+      "StatusChangeLog",
+      "R"
+    ],
+    [
+      "StatusChangeLog",
+      "R"
+    ],
+    [
+      "StatusChangeLog",
+      "W"
+    ]
+  ],
+  "EmployeeSalaryController.delete": [
+    [
+      "EmployeeSalary",
+      "R"
+    ],
+    [
+      "EmployeeSalary",
+      "W"
+    ],
+    [
+      "EmployeeSalary",
+      "W"
+    ]
+  ],
+  "EmployeeSalaryController.get": [
+    [
+      "EmployeeSalary",
+      "R"
+    ]
+  ],
+  "EmployeeSalaryController.getAll": [
+    [
+      "EmployeeSalary",
+      "R"
+    ]
+  ],
+  "EmployeeSalaryController.insert": [
+    [
+      "EmployeeSalary",
+      "W"
+    ]
+  ],
+  "EmployeeSalaryController.update": [
+    [
+      "EmployeeSalary",
+      "R"
+    ],
+    [
+      "EmployeeSalary",
+      "R"
+    ],
+    [
+      "EmployeeSalary",
+      "R"
+    ],
+    [
+      "EmployeeSalary",
+      "W"
+    ]
+  ],
+  "EmploymentStatusController.delete": [
+    [
+      "EmploymentStatus",
+      "R"
+    ],
+    [
+      "EmploymentStatus",
+      "W"
+    ],
+    [
+      "EmploymentStatus",
+      "W"
+    ]
+  ],
+  "EmploymentStatusController.get": [
+    [
+      "EmploymentStatus",
+      "R"
+    ]
+  ],
+  "EmploymentStatusController.getAll": [
+    [
+      "EmploymentStatus",
+      "R"
+    ]
+  ],
+  "EmploymentStatusController.insert": [
+    [
+      "EmploymentStatus",
+      "W"
+    ]
+  ],
+  "EmploymentStatusController.update": [
+    [
+      "EmploymentStatus",
+      "R"
+    ],
+    [
+      "EmploymentStatus",
+      "R"
+    ],
+    [
+      "EmploymentStatus",
+      "R"
+    ],
+    [
+      "EmploymentStatus",
+      "W"
+    ]
+  ],
+  "LeaveStartingBalanceController.delete": [
+    [
+      "LeaveStartingBalance",
+      "R"
+    ],
+    [
+      "LeaveStartingBalance",
+      "W"
+    ],
+    [
+      "LeaveStartingBalance",
+      "W"
+    ]
+  ],
+  "LeaveStartingBalanceController.get": [
+    [
+      "LeaveStartingBalance",
+      "R"
+    ]
+  ],
+  "LeaveStartingBalanceController.getAll": [
+    [
+      "LeaveStartingBalance",
+      "R"
+    ]
+  ],
+  "LeaveStartingBalanceController.insert": [
+    [
+      "LeaveStartingBalance",
+      "W"
+    ]
+  ],
+  "LeaveStartingBalanceController.update": [
+    [
+      "LeaveStartingBalance",
+      "R"
+    ],
+    [
+      "LeaveStartingBalance",
+      "R"
+    ],
+    [
+      "LeaveStartingBalance",
+      "R"
+    ],
+    [
+      "LeaveStartingBalance",
+      "W"
+    ]
+  ],
+  "ArchivedEmployeeController.delete": [
+    [
+      "ArchivedEmployee",
+      "R"
+    ],
+    [
+      "ArchivedEmployee",
+      "W"
+    ],
+    [
+      "ArchivedEmployee",
+      "W"
+    ]
+  ],
+  "ArchivedEmployeeController.get": [
+    [
+      "ArchivedEmployee",
+      "R"
+    ]
+  ],
+  "ArchivedEmployeeController.getAll": [
+    [
+      "ArchivedEmployee",
+      "R"
+    ]
+  ],
+  "ArchivedEmployeeController.insert": [
+    [
+      "ArchivedEmployee",
+      "W"
+    ]
+  ],
+  "ArchivedEmployeeController.update": [
+    [
+      "ArchivedEmployee",
+      "R"
+    ],
+    [
+      "ArchivedEmployee",
+      "R"
+    ],
+    [
+      "ArchivedEmployee",
+      "R"
+    ],
+    [
+      "ArchivedEmployee",
+      "W"
+    ]
+  ],
+  "EmployeeCertificationController.delete": [
+    [
+      "EmployeeCertification",
+      "R"
+    ],
+    [
+      "EmployeeCertification",
+      "W"
+    ],
+    [
+      "EmployeeCertification",
+      "W"
+    ]
+  ],
+  "EmployeeCertificationController.get": [
+    [
+      "EmployeeCertification",
+      "R"
+    ]
+  ],
+  "EmployeeCertificationController.getAll": [
+    [
+      "EmployeeCertification",
+      "R"
+    ]
+  ],
+  "EmployeeCertificationController.insert": [
+    [
+      "EmployeeCertification",
+      "W"
+    ]
+  ],
+  "EmployeeCertificationController.update": [
+    [
+      "EmployeeCertification",
+      "R"
+    ],
+    [
+      "EmployeeCertification",
+      "R"
+    ],
+    [
+      "EmployeeCertification",
+      "R"
+    ],
+    [
+      "EmployeeCertification",
+      "W"
+    ]
+  ],
+  "EmployeeEthnicityController.delete": [
+    [
+      "EmployeeEthnicity",
+      "R"
+    ],
+    [
+      "EmployeeEthnicity",
+      "W"
+    ],
+    [
+      "EmployeeEthnicity",
+      "W"
+    ]
+  ],
+  "EmployeeEthnicityController.get": [
+    [
+      "EmployeeEthnicity",
+      "R"
+    ]
+  ],
+  "EmployeeEthnicityController.getAll": [
+    [
+      "EmployeeEthnicity",
+      "R"
+    ]
+  ],
+  "EmployeeEthnicityController.insert": [
+    [
+      "EmployeeEthnicity",
+      "W"
+    ]
+  ],
+  "EmployeeEthnicityController.update": [
+    [
+      "EmployeeEthnicity",
+      "R"
+    ],
+    [
+      "EmployeeEthnicity",
+      "R"
+    ],
+    [
+      "EmployeeEthnicity",
+      "R"
+    ],
+    [
+      "EmployeeEthnicity",
+      "W"
+    ]
+  ]
+}

@@ -1,0 +1,854 @@
+---------------------------
+Project: ldod-maven
+#Controllers: 22
+#ControllerMethods: 161
+#Entities: 331
+#DomainEntities: 71
+#Repositories: 0
+---------------------------
+Project: bw-maven
+#Controllers: 11
+#ControllerMethods: 104
+#Entities: 199
+#DomainEntities: 52
+#Repositories: 0
+---------------------------
+Project: fenix-maven
+#Controllers: 208
+#ControllerMethods: 1244
+#Entities: 4411
+#DomainEntities: 884
+#Repositories: 0
+---------------------------
+Project: quizzes-tutor-launcher
+#Controllers: 10
+#ControllerMethods: 47
+#Entities: 104
+#DomainEntities: 13
+#Repositories: 13
+---------------------------
+Project: axon-trader-maven
+#Controllers: 7
+#ControllerMethods: 23
+#Entities: 63
+#DomainEntities: 8
+#Repositories: 6
+---------------------------
+Project: incubator-wikift-jar
+#Controllers: 9
+#ControllerMethods: 59
+#Entities: 130
+#DomainEntities: 12
+#Repositories: 11
+---------------------------
+Project: SpringBlog_Adapted-launcher
+#Controllers: 14
+#ControllerMethods: 36
+#Entities: 89
+#DomainEntities: 10
+#Repositories: 10
+---------------------------
+Project: spring-cloud-gray-jar
+#Controllers: 14
+#ControllerMethods: 52
+#Entities: 468
+#DomainEntities: 9
+#Repositories: 9
+---------------------------
+Project: spring-framework-petclinic-launcher
+#Controllers: 5
+#ControllerMethods: 17
+#Entities: 42
+#DomainEntities: 9
+#Repositories: 4
+---------------------------
+Project: weixin-mp-java-jar
+#Controllers: 1
+#ControllerMethods: 2
+#Entities: 105
+#DomainEntities: 29
+#Repositories: 25
+---------------------------
+Project: jpabook-maven
+#Controllers: 4
+#ControllerMethods: 14
+#Entities: 28
+#DomainEntities: 10
+#Repositories: 3
+---------------------------
+Project: bag-database_adapted-maven
+#Controllers: 9
+#ControllerMethods: 36
+#Entities: 61
+#DomainEntities: 9
+#Repositories: 6
+---------------------------
+Project: cloudunit-maven
+#Controllers: 18
+#ControllerMethods: 93
+#Entities: 324
+#DomainEntities: 23
+#Repositories: 19
+---------------------------
+Project: xs2a-maven
+#Controllers: 36
+#ControllerMethods: 107
+#Entities: 1607
+#DomainEntities: 28
+#Repositories: 15
+---------------------------
+Project: keta-custom-launcher
+#Controllers: 12
+#ControllerMethods: 88
+#Entities: 153
+#DomainEntities: 14
+#Repositories: 13
+---------------------------
+Project: learndemo-soufang-maven
+#Controllers: 6
+#ControllerMethods: 44
+#Entities: 79
+#DomainEntities: 10
+#Repositories: 10
+---------------------------
+Project: reddit-app-maven
+#Controllers: 15
+#ControllerMethods: 36
+#Entities: 126
+#DomainEntities: 9
+#Repositories: 9
+---------------------------
+Project: spring-mvn-react-maven
+#Controllers: 8
+#ControllerMethods: 24
+#Entities: 47
+#DomainEntities: 5
+#Repositories: 5
+---------------------------
+Project: cheybao-maven
+#Controllers: 24
+#ControllerMethods: 117
+#Entities: 243
+#DomainEntities: 29
+#Repositories: 33
+---------------------------
+Project: JavaSpringMvcBlog-maven
+#Controllers: 5
+#ControllerMethods: 38
+#Entities: 43
+#DomainEntities: 8
+#Repositories: 7
+---------------------------
+Project: wish-maven
+#Controllers: 10
+#ControllerMethods: 56
+#Entities: 70
+#DomainEntities: 12
+#Repositories: 12
+---------------------------
+Project: market-manage-launcher
+#Controllers: 51
+#ControllerMethods: 220
+#Entities: 504
+#DomainEntities: 61
+#Repositories: 46
+---------------------------
+Project: myweb-maven
+#Controllers: 5
+#ControllerMethods: 29
+#Entities: 27
+#DomainEntities: 5
+#Repositories: 5
+---------------------------
+Project: webofneeds-maven
+#Controllers: 11
+#ControllerMethods: 71
+#Entities: 1001
+#DomainEntities: 21
+#Repositories: 21
+---------------------------
+Project: cloudstreetmarket.com-maven
+#Controllers: 25
+#ControllerMethods: 48
+#Entities: 279
+#DomainEntities: 28
+#Repositories: 18
+---------------------------
+Project: Exam-Online-maven
+#Controllers: 11
+#ControllerMethods: 34
+#Entities: 70
+#DomainEntities: 15
+#Repositories: 13
+---------------------------
+Project: dubai-maven
+#Controllers: 16
+#ControllerMethods: 57
+#Entities: 93
+#DomainEntities: 10
+#Repositories: 8
+---------------------------
+Project: bookstore-spring-maven
+#Controllers: 28
+#ControllerMethods: 168
+#Entities: 139
+#DomainEntities: 17
+#Repositories: 14
+---------------------------
+Project: springblog-maven
+#Controllers: 10
+#ControllerMethods: 22
+#Entities: 74
+#DomainEntities: 10
+#Repositories: 6
+---------------------------
+Project: blog-maven
+#Controllers: 40
+#ControllerMethods: 280
+#Entities: 237
+#DomainEntities: 22
+#Repositories: 18
+---------------------------
+Project: StudyOnlinePlatForm-maven
+#Controllers: 10
+#ControllerMethods: 51
+#Entities: 83
+#DomainEntities: 13
+#Repositories: 11
+---------------------------
+Project: java-spring-maven
+#Controllers: 86
+#ControllerMethods: 467
+#Entities: 1159
+#DomainEntities: 119
+#Repositories: 108
+---------------------------
+Project: irida-maven
+#Controllers: 63
+#ControllerMethods: 311
+#Entities: 637
+#DomainEntities: 63
+#Repositories: 38
+---------------------------
+Project: ai-cms-maven
+#Controllers: 67
+#ControllerMethods: 652
+#Entities: 504
+#DomainEntities: 81
+#Repositories: 75
+---------------------------
+Project: alfut-maven
+#Controllers: 43
+#ControllerMethods: 96
+#Entities: 146
+#DomainEntities: 22
+#Repositories: 22
+---------------------------
+Project: BuyNonVeg-maven
+#Controllers: 86
+#ControllerMethods: 449
+#Entities: 1200
+#DomainEntities: 83
+#Repositories: 82
+---------------------------
+Project: AppCenter-maven
+#Controllers: 86
+#ControllerMethods: 596
+#Entities: 834
+#DomainEntities: 97
+#Repositories: 87
+---------------------------
+Project: chorus-opensource-maven
+#Controllers: 46
+#ControllerMethods: 368
+#Entities: 1297
+#DomainEntities: 152
+#Repositories: 103
+---------------------------
+Project: AyjrFiance-maven
+#Controllers: 81
+#ControllerMethods: 583
+#Entities: 1404
+#DomainEntities: 114
+#Repositories: 105
+---------------------------
+Project: APMHome-maven
+#Controllers: 9
+#ControllerMethods: 38
+#Entities: 422
+#DomainEntities: 28
+#Repositories: 31
+---------------------------
+Project: FirstWebShop-maven
+#Controllers: 51
+#ControllerMethods: 228
+#Entities: 272
+#DomainEntities: 33
+#Repositories: 32
+---------------------------
+Project: escoladeti2014-amacap-time05-maven
+#Controllers: 51
+#ControllerMethods: 382
+#Entities: 238
+#DomainEntities: 54
+#Repositories: 50
+---------------------------
+Project: CPIS_hindi-maven
+#Controllers: 32
+#ControllerMethods: 198
+#Entities: 402
+#DomainEntities: 80
+#Repositories: 65
+---------------------------
+Project: extremeworld-maven
+#Controllers: 66
+#ControllerMethods: 163
+#Entities: 305
+#DomainEntities: 48
+#Repositories: 40
+---------------------------
+Project: FengHuang-maven
+#Controllers: 57
+#ControllerMethods: 126
+#Entities: 490
+#DomainEntities: 60
+#Repositories: 60
+---------------------------
+Project: hexie-maven
+#Controllers: 51
+#ControllerMethods: 252
+#Entities: 714
+#DomainEntities: 109
+#Repositories: 103
+---------------------------
+Project: hrm_backend-maven
+#Controllers: 77
+#ControllerMethods: 304
+#Entities: 742
+#DomainEntities: 100
+#Repositories: 86
+---------------------------
+Project: hrportal-maven
+#Controllers: 70
+#ControllerMethods: 350
+#Entities: 465
+#DomainEntities: 113
+#Repositories: 104
+---------------------------
+Project: Husada-Bunda-maven
+#Controllers: 39
+#ControllerMethods: 187
+#Entities: 252
+#DomainEntities: 43
+#Repositories: 39
+---------------------------
+Project: jewelry-maven
+#Controllers: 39
+#ControllerMethods: 203
+#Entities: 302
+#DomainEntities: 45
+#Repositories: 38
+---------------------------
+Project: huada-maven
+#Controllers: 80
+#ControllerMethods: 561
+#Entities: 492
+#DomainEntities: 106
+#Repositories: 97
+---------------------------
+Project: liuda-maven
+#Controllers: 107
+#ControllerMethods: 611
+#Entities: 638
+#DomainEntities: 71
+#Repositories: 70
+---------------------------
+Project: Logos-ShopingCartUnregisteredUser-maven
+#Controllers: 9
+#ControllerMethods: 42
+#Entities: 88
+#DomainEntities: 10
+#Repositories: 10
+---------------------------
+Project: luna-maven
+#Controllers: 74
+#ControllerMethods: 349
+#Entities: 511
+#DomainEntities: 59
+#Repositories: 57
+---------------------------
+Project: maven-project-maven
+#Controllers: 166
+#ControllerMethods: 996
+#Entities: 840
+#DomainEntities: 83
+#Repositories: 83
+---------------------------
+Project: ruanfan-maven
+#Controllers: 69
+#ControllerMethods: 356
+#Entities: 422
+#DomainEntities: 61
+#Repositories: 60
+---------------------------
+Project: Skoolie-maven
+#Controllers: 48
+#ControllerMethods: 101
+#Entities: 262
+#DomainEntities: 26
+#Repositories: 27
+---------------------------
+Project: soad-maven
+#Controllers: 24
+#ControllerMethods: 105
+#Entities: 149
+#DomainEntities: 61
+#Repositories: 41
+---------------------------
+Project: SoloMusic-maven
+#Controllers: 14
+#ControllerMethods: 69
+#Entities: 109
+#DomainEntities: 18
+#Repositories: 15
+---------------------------
+Project: tutor-simple-web-maven
+#Controllers: 44
+#ControllerMethods: 221
+#Entities: 340
+#DomainEntities: 34
+#Repositories: 31
+---------------------------
+Project: TwitterAutomationWebApp-maven
+#Controllers: 54
+#ControllerMethods: 60
+#Entities: 186
+#DomainEntities: 27
+#Repositories: 25
+---------------------------
+Project: WJKJ-center-admin-maven
+#Controllers: 92
+#ControllerMethods: 452
+#Entities: 857
+#DomainEntities: 223
+#Repositories: 221
+---------------------------
+Project: yydb-maven
+#Controllers: 67
+#ControllerMethods: 327
+#Entities: 194
+#DomainEntities: 28
+#Repositories: 27
+---------------------------
+Project: zis-maven
+#Controllers: 68
+#ControllerMethods: 178
+#Entities: 495
+#DomainEntities: 44
+#Repositories: 44
+---------------------------
+Project: zsymvp_shatou-maven
+#Controllers: 42
+#ControllerMethods: 285
+#Entities: 454
+#DomainEntities: 52
+#Repositories: 54
+---------------------------
+Project: Acme-Academy-2.0-maven
+#Controllers: 27
+#ControllerMethods: 86
+#Entities: 114
+#DomainEntities: 17
+#Repositories: 15
+---------------------------
+Project: Acme-AnimalShelter-maven
+#Controllers: 46
+#ControllerMethods: 129
+#Entities: 174
+#DomainEntities: 26
+#Repositories: 22
+---------------------------
+Project: Acme-Antenna-maven
+#Controllers: 29
+#ControllerMethods: 72
+#Entities: 136
+#DomainEntities: 20
+#Repositories: 16
+---------------------------
+Project: Acme-Barter-maven
+#Controllers: 86
+#ControllerMethods: 29
+#Entities: 239
+#DomainEntities: 15
+#Repositories: 14
+---------------------------
+Project: Acme-BnB-maven
+#Controllers: 29
+#ControllerMethods: 85
+#Entities: 154
+#DomainEntities: 38
+#Repositories: 20
+---------------------------
+Project: Acme-Certifications-maven
+#Controllers: 13
+#ControllerMethods: 27
+#Entities: 97
+#DomainEntities: 18
+#Repositories: 16
+---------------------------
+Project: Acme-Champions-maven
+#Controllers: 41
+#ControllerMethods: 138
+#Entities: 219
+#DomainEntities: 31
+#Repositories: 29
+---------------------------
+Project: Acme-Chollos-Rifas-maven
+#Controllers: 52
+#ControllerMethods: 160
+#Entities: 222
+#DomainEntities: 30
+#Repositories: 28
+---------------------------
+Project: Acme-Chorbies-maven
+#Controllers: 22
+#ControllerMethods: 72
+#Entities: 108
+#DomainEntities: 18
+#Repositories: 17
+---------------------------
+Project: Acme-CinemaDB-maven
+#Controllers: 36
+#ControllerMethods: 113
+#Entities: 185
+#DomainEntities: 28
+#Repositories: 26
+---------------------------
+Project: Acme-Citizen-maven
+#Controllers: 39
+#ControllerMethods: 100
+#Entities: 161
+#DomainEntities: 22
+#Repositories: 20
+---------------------------
+Project: Acme_CnG-maven
+#Controllers: 16
+#ControllerMethods: 45
+#Entities: 73
+#DomainEntities: 13
+#Repositories: 11
+---------------------------
+Project: Acme-Conference-maven
+#Controllers: 38
+#ControllerMethods: 123
+#Entities: 176
+#DomainEntities: 28
+#Repositories: 26
+---------------------------
+Project: AcmeDistributor-maven
+#Controllers: 28
+#ControllerMethods: 89
+#Entities: 132
+#DomainEntities: 29
+#Repositories: 17
+---------------------------
+Project: Acme-Events-maven
+#Controllers: 30
+#ControllerMethods: 102
+#Entities: 196
+#DomainEntities: 28
+#Repositories: 27
+---------------------------
+Project: Acme-Explorer-maven
+#Controllers: 56
+#ControllerMethods: 183
+#Entities: 240
+#DomainEntities: 36
+#Repositories: 32
+---------------------------
+Project: Acme-Food-launcher
+#Controllers: 28
+#ControllerMethods: 90
+#Entities: 144
+#DomainEntities: 18
+#Repositories: 16
+---------------------------
+Project: acme-furniture-launcher
+#Controllers: 36
+#ControllerMethods: 99
+#Entities: 190
+#DomainEntities: 25
+#Repositories: 23
+---------------------------
+Project: Acme-Gallery-maven
+#Controllers: 87
+#ControllerMethods: 211
+#Entities: 234
+#DomainEntities: 29
+#Repositories: 25
+---------------------------
+Project: Acme-Hacker-Rank-maven
+#Controllers: 15
+#ControllerMethods: 70
+#Entities: 141
+#DomainEntities: 21
+#Repositories: 19
+---------------------------
+Project: Acme-HandyWorker-maven
+#Controllers: 52
+#ControllerMethods: 215
+#Entities: 208
+#DomainEntities: 35
+#Repositories: 33
+---------------------------
+Project: Acme-Inmigrant-maven
+#Controllers: 41
+#ControllerMethods: 116
+#Entities: 171
+#DomainEntities: 24
+#Repositories: 21
+---------------------------
+Project: Acme-Madruga-maven
+#Controllers: 28
+#ControllerMethods: 110
+#Entities: 139
+#DomainEntities: 18
+#Repositories: 17
+---------------------------
+Project: Acme-Meals-maven
+#Controllers: 35
+#ControllerMethods: 101
+#Entities: 180
+#DomainEntities: 39
+#Repositories: 23
+---------------------------
+Project: Acme-Newspaper-maven
+#Controllers: 43
+#ControllerMethods: 156
+#Entities: 144
+#DomainEntities: 19
+#Repositories: 16
+---------------------------
+Project: Acme-Orienteering-maven
+#Controllers: 44
+#ControllerMethods: 106
+#Entities: 188
+#DomainEntities: 26
+#Repositories: 23
+---------------------------
+Project: Acme-Pad-Thai-maven
+#Controllers: 52
+#ControllerMethods: 179
+#Entities: 232
+#DomainEntities: 35
+#Repositories: 34
+---------------------------
+Project: Acme-Parade-maven
+#Controllers: 57
+#ControllerMethods: 167
+#Entities: 234
+#DomainEntities: 32
+#Repositories: 28
+---------------------------
+Project: Acme-Patronage-maven
+#Controllers: 39
+#ControllerMethods: 97
+#Entities: 161
+#DomainEntities: 22
+#Repositories: 18
+---------------------------
+Project: Acme-Personal-Trainer-maven
+#Controllers: 43
+#ControllerMethods: 152
+#Entities: 202
+#DomainEntities: 29
+#Repositories: 27
+---------------------------
+Project: Acme-Pet-maven
+#Controllers: 37
+#ControllerMethods: 106
+#Entities: 155
+#DomainEntities: 26
+#Repositories: 25
+---------------------------
+Project: Acme-Polyglot-2.0-maven
+#Controllers: 22
+#ControllerMethods: 88
+#Entities: 110
+#DomainEntities: 18
+#Repositories: 16
+---------------------------
+Project: Acme-Rebujito-maven
+#Controllers: 64
+#ControllerMethods: 204
+#Entities: 192
+#DomainEntities: 28
+#Repositories: 26
+---------------------------
+Project: Acme-Recycling-maven
+#Controllers: 66
+#ControllerMethods: 262
+#Entities: 243
+#DomainEntities: 34
+#Repositories: 30
+---------------------------
+Project: Acme-Rendezvous-maven
+#Controllers: 28
+#ControllerMethods: 103
+#Entities: 123
+#DomainEntities: 18
+#Repositories: 14
+---------------------------
+Project: Acme-Restaurante-maven
+#Controllers: 37
+#ControllerMethods: 151
+#Entities: 206
+#DomainEntities: 30
+#Repositories: 28
+---------------------------
+Project: Acme-Rookie-maven
+#Controllers: 39
+#ControllerMethods: 147
+#Entities: 196
+#DomainEntities: 27
+#Repositories: 25
+---------------------------
+Project: Acme-Santiago-maven
+#Controllers: 28
+#ControllerMethods: 84
+#Entities: 135
+#DomainEntities: 20
+#Repositories: 17
+---------------------------
+Project: Acme-Series-maven
+#Controllers: 16
+#ControllerMethods: 114
+#Entities: 136
+#DomainEntities: 19
+#Repositories: 18
+---------------------------
+Project: AcmeShop-maven
+#Controllers: 44
+#ControllerMethods: 127
+#Entities: 206
+#DomainEntities: 31
+#Repositories: 29
+---------------------------
+Project: Acme-Shout-maven
+#Controllers: 6
+#ControllerMethods: 12
+#Entities: 43
+#DomainEntities: 7
+#Repositories: 5
+---------------------------
+Project: Acme-Six-Pack-maven
+#Controllers: 40
+#ControllerMethods: 114
+#Entities: 160
+#DomainEntities: 23
+#Repositories: 20
+---------------------------
+Project: Acme-Sport-Centre-maven
+#Controllers: 20
+#ControllerMethods: 67
+#Entities: 104
+#DomainEntities: 18
+#Repositories: 15
+---------------------------
+Project: Acme-Supermarket-maven
+#Controllers: 28
+#ControllerMethods: 75
+#Entities: 138
+#DomainEntities: 22
+#Repositories: 19
+---------------------------
+Project: Acme-Taxi-maven
+#Controllers: 54
+#ControllerMethods: 222
+#Entities: 192
+#DomainEntities: 25
+#Repositories: 22
+---------------------------
+Project: Acme-Trip-maven
+#Controllers: 30
+#ControllerMethods: 108
+#Entities: 142
+#DomainEntities: 22
+#Repositories: 20
+---------------------------
+Project: Acme-Un-Viaje-maven
+#Controllers: 39
+#ControllerMethods: 203
+#Entities: 178
+#DomainEntities: 34
+#Repositories: 31
+---------------------------
+Project: Corpore-Fit-maven
+#Controllers: 56
+#ControllerMethods: 182
+#Entities: 234
+#DomainEntities: 37
+#Repositories: 34
+---------------------------
+Project: splunkwithaws-destination-maven
+#Controllers: 60
+#ControllerMethods: 288
+#Entities: 971
+#DomainEntities: 179
+#Repositories: 176
+---------------------------
+Project: spingBootJPA-CODEAPI
+#Controllers: 153
+#ControllerMethods: 736
+#Entities: 2280
+#DomainEntities: 428
+#Repositories: 297
+---------------------------
+Project: AppPortal-maven
+#Controllers: 71
+#ControllerMethods: 405
+#Entities: 439
+#DomainEntities: 85
+#Repositories: 72
+---------------------------
+Project: AppCan-coopMan
+#Controllers: 22
+#ControllerMethods: 128
+#Entities: 175
+#DomainEntities: 37
+#Repositories: 32
+---------------------------
+Project: AppCan-cooldev
+#Controllers: 41
+#ControllerMethods: 422
+#Entities: 364
+#DomainEntities: 88
+#Repositories: 87
+---------------------------
+Project: cms_wanzi-maven
+#Controllers: 95
+#ControllerMethods: 621
+#Entities: 862
+#DomainEntities: 84
+#Repositories: 82
+---------------------------
+Project: Curso-Systema-Web-brewer-maven
+#Controllers: 10
+#ControllerMethods: 42
+#Entities: 118
+#DomainEntities: 13
+#Repositories: 9
+---------------------------
+Project: echo-maven
+#Controllers: 77
+#ControllerMethods: 305
+#Entities: 395
+#DomainEntities: 102
+#Repositories: 80
+---------------------------
+Project: ims-maven
+#Controllers: 50
+#ControllerMethods: 365
+#Entities: 385
+#DomainEntities: 78
+#Repositories: 70
