@@ -19,12 +19,22 @@ public class Codebase {
 	private String name;
 	private Map<String,List<String>> profiles = new HashMap<>();
 	private List<Dendrogram> dendrograms = new ArrayList<>();
+	private String analysisType;
 
 	public Codebase() {
 	}
 
 	public Codebase(String name) {
         this.name = name;
+	}
+
+	public Codebase(String name, String analysisType) {
+		if (!analysisType.equals("static") && !analysisType.equals("dynamic")) {
+			throw new Error("Unknown analysis type: Please choose either 'static' or 'dynamic'");
+		}
+
+		this.name = name;
+		this.analysisType = analysisType;
 	}
 
 	public String getName() {
@@ -35,6 +45,11 @@ public class Codebase {
 		this.name = name;
 	}
 
+	public String getAnalysisType() { return this.analysisType; }
+
+	public void setAnalysisType(String analysisType) {
+		this.analysisType = analysisType;
+	}
 
 	public Map<String,List<String>> getProfiles() {
 		return this.profiles;

@@ -75,7 +75,7 @@ export class RepositoryService {
             });
     }
 
-    createCodebase(name, datafile) {
+    createCodebase(name, datafile, analysisType) {
         const config = {
             headers: {
                 'content-type': 'multipart/form-data'
@@ -84,6 +84,7 @@ export class RepositoryService {
         var data = new FormData();
         data.append('codebaseName', name);
         data.append('datafile', datafile);
+        data.append('analysisType', analysisType);
         
         return this.axios.post("/codebase/create", data, config);
     }

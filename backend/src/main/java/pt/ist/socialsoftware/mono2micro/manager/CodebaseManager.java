@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,7 +68,11 @@ public class CodebaseManager {
 		FileUtils.deleteDirectory(new File(CODEBASES_PATH + codebaseName));
 	}
 
-	public Codebase createCodebase(String codebaseName, MultipartFile datafile) throws IOException, JSONException {
+	public Codebase createCodebase(
+		String codebaseName,
+		MultipartFile datafile,
+		String analysisType
+	) throws IOException, JSONException {
 		
 		if (getCodebase(codebaseName) != null)
 			throw new KeyAlreadyExistsException();
@@ -82,7 +87,7 @@ public class CodebaseManager {
 			codebasePath.mkdir();
 		}
 
-		Codebase codebase = new Codebase(codebaseName);
+		Codebase codebase = new Codebase(codebaseName, analysisType);
 
 		// read datafile
 		InputStream is = new BufferedInputStream(datafile.getInputStream());
@@ -91,12 +96,36 @@ public class CodebaseManager {
 
 		this.writeDatafile(codebaseName, datafileJSON);
 
+
+		List<String> controllersNames = new ArrayList<>();
 		Iterator<String> controllerNames = datafileJSON.sortedKeys();
-		List<String> controllers = new ArrayList<>();
-		while (controllerNames.hasNext()) {
-			controllers.add(controllerNames.next());
+
+		if (analysisType.equals("static")) {
+			while (controllerNames.hasNext()) {
+				controllersNames.add(controllerNames.next());
+			}
+		} else {
+			while (controllerNames.hasNext()) {
+				String controllerContainerName = controllerNames.next();
+
+				try {
+					JSONObject controllerContainer = datafileJSON.getJSONObject(controllerContainerName);
+					JSONArray traces = controllerContainer.getJSONArray("traces");
+
+					for (int i = 0; i < traces.length(); i++) {
+						JSONObject controller = traces.getJSONObject(i);
+						String controllerName = controller.getString("label");
+
+						controllersNames.add(controllerName);
+					}
+				} catch (JSONException e) {
+					System.out.println(e.getMessage());
+					throw e;
+				}
+			}
 		}
-		codebase.addProfile("Generic", controllers);
+
+		codebase.addProfile("Generic", controllersNames);
 
 		return codebase;
 	}

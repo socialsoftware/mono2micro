@@ -108,11 +108,14 @@ public class CodebaseController {
 
 
     @RequestMapping(value = "/codebase/create", method = RequestMethod.POST)
-    public ResponseEntity<HttpStatus> createCodebase(@RequestParam String codebaseName, @RequestParam MultipartFile datafile) {
+    public ResponseEntity<HttpStatus> createCodebase(
+    	@RequestParam String codebaseName,
+		@RequestParam MultipartFile datafile,
+		@RequestParam String analysisType
+	) {
         logger.debug("createCodebase");
-
         try {
-            Codebase codebase = codebaseManager.createCodebase(codebaseName, datafile);
+            Codebase codebase = codebaseManager.createCodebase(codebaseName, datafile, analysisType);
             codebaseManager.writeCodebase(codebaseName, codebase);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (KeyAlreadyExistsException e) {

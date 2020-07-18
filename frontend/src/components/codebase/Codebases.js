@@ -11,13 +11,15 @@ export class Codebases extends React.Component {
             newCodebaseName: "",
             selectedFile: null, 
             isUploaded: "",
-            codebases: []
+            codebases: [],
+            checkedAnalysisType: "",
         };
 
         this.handleSelectedFile = this.handleSelectedFile.bind(this);
         this.handleSubmit= this.handleSubmit.bind(this);
         this.handleChangeNewCodebaseName = this.handleChangeNewCodebaseName.bind(this);
         this.handleDeleteCodebase = this.handleDeleteCodebase.bind(this);
+        this.handleSelectAnalysisType = this.handleSelectAnalysisType.bind(this);
     }
 
     componentDidMount() {
@@ -41,7 +43,14 @@ export class Codebases extends React.Component {
 
     handleChangeNewCodebaseName(event) {
         this.setState({ 
-            newCodebaseName: event.target.value 
+            newCodebaseName: event.target.value
+        });
+    }
+
+    handleSelectAnalysisType(event) {
+        console.log(event.target.value);
+        this.setState({
+            checkedAnalysisType: event.target.value
         });
     }
 
@@ -60,7 +69,11 @@ export class Codebases extends React.Component {
         });
         
         const service = new RepositoryService();
-        service.createCodebase(this.state.newCodebaseName, this.state.selectedFile).then(response => {
+        service.createCodebase(
+            this.state.newCodebaseName,
+            this.state.selectedFile,
+            this.state.checkedAnalysisType, // either static or dynamic
+        ).then(response => {
             if (response.status === HttpStatus.CREATED) {
                 this.loadCodebases();
                 this.setState({
@@ -97,7 +110,7 @@ export class Codebases extends React.Component {
     renderCreateCodebaseForm = () => {
         return (
             <Form onSubmit={this.handleSubmit}>
-                <Form.Group as={Row} controlId="newCodebaseName">
+                <Form.Group as={Row} controlId="newCodebaseName" className="align-items-center">
                     <Form.Label column sm={2}>
                         Codebase Name
                     </Form.Label>
@@ -111,7 +124,7 @@ export class Codebases extends React.Component {
                     </Col>
                 </Form.Group>
 
-                <Form.Group as={Row} controlId="datafile">
+                <Form.Group as={Row} controlId="datafile" className="align-items-center">
                     <Form.Label column sm={2}>
                         Data Collection File
                     </Form.Label>
@@ -122,12 +135,42 @@ export class Codebases extends React.Component {
                     </Col>
                 </Form.Group>
 
+                <Form.Group as={Row} key={"analysis-type-section"} className="align-items-center">
+                    <Form.Label column sm={2}>
+                        Analysis type
+                    </Form.Label>
+                    <Col sm={5} >
+                        <Form.Check
+                            inline
+                            id="static-analysis-radio-button"
+                            type="radio"
+                            value="static"
+                            label="Static analysis"
+                            onChange={this.handleSelectAnalysisType}
+                            checked={this.state.checkedAnalysisType === "static"}
+                        />
+                        <Form.Check
+                            inline
+                            id="dynamic-analysis-radio-button"
+                            type="radio"
+                            value="dynamic"
+                            label="Dynamic analysis"
+                            onChange={this.handleSelectAnalysisType}
+                            checked={this.state.checkedAnalysisType === "dynamic"}
+                        />
+                    </Col>
+                </Form.Group>
                 <Form.Group as={Row}>
                     <Col sm={{ span: 5, offset: 2 }}>
-                        <Button type="submit"
-                                disabled={this.state.isUploaded === "Uploading..." ||
-                                        this.state.newCodebaseName === "" ||
-                                        this.state.selectedFile === null}>
+                        <Button 
+                            type="submit"
+                            disabled={
+                                this.state.isUploaded === "Uploading..." ||
+                                !this.state.newCodebaseName.length ||
+                                this.state.selectedFile === null ||
+                                !this.state.checkedAnalysisType.length
+                            }
+                        >
                             Create Codebase
                         </Button>
                         <Form.Text>
