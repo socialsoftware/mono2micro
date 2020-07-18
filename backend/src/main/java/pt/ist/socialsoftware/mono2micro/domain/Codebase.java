@@ -13,6 +13,7 @@ import java.util.Map;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.io.FileUtils;
 
 public class Codebase {
@@ -50,6 +51,9 @@ public class Codebase {
 	public void setAnalysisType(String analysisType) {
 		this.analysisType = analysisType;
 	}
+
+	@JsonIgnore
+	public boolean isStatic() { return this.analysisType.equals("static"); }
 
 	public Map<String,List<String>> getProfiles() {
 		return this.profiles;
@@ -132,7 +136,11 @@ public class Codebase {
 
 		this.addDendrogram(dendrogram);
 
-		dendrogram.calculateSimilarityMatrix();
+		if (isStatic()) {
+			dendrogram.calculateStaticSimilarityMatrix();
+		} else {
+			dendrogram.calculateDynamicSimilarityMatrix();
+		}
 
 		//run python script to generate dendrogram image
 		Runtime r = Runtime.getRuntime();

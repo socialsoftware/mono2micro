@@ -114,13 +114,14 @@ public class CodebaseController {
 		@RequestParam String analysisType
 	) {
         logger.debug("createCodebase");
+
         try {
             Codebase codebase = codebaseManager.createCodebase(codebaseName, datafile, analysisType);
             codebaseManager.writeCodebase(codebaseName, codebase);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (KeyAlreadyExistsException e) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        } catch (IOException | JSONException e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

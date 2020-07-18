@@ -89,26 +89,26 @@ public class CodebaseManager {
 
 		Codebase codebase = new Codebase(codebaseName, analysisType);
 
-		// read datafile
-		InputStream is = new BufferedInputStream(datafile.getInputStream());
-		JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
-		is.close();
+		try {
+			// read datafile
+			InputStream is = new BufferedInputStream(datafile.getInputStream());
+			JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
+			is.close();
 
-		this.writeDatafile(codebaseName, datafileJSON);
+			this.writeDatafile(codebaseName, datafileJSON);
 
 
-		List<String> controllersNames = new ArrayList<>();
-		Iterator<String> controllerNames = datafileJSON.sortedKeys();
+			List<String> controllersNames = new ArrayList<>();
+			Iterator<String> controllerNames = datafileJSON.sortedKeys();
 
-		if (analysisType.equals("static")) {
-			while (controllerNames.hasNext()) {
-				controllersNames.add(controllerNames.next());
-			}
-		} else {
-			while (controllerNames.hasNext()) {
-				String controllerContainerName = controllerNames.next();
+			if (codebase.isStatic()) {
+				while (controllerNames.hasNext()) {
+					controllersNames.add(controllerNames.next());
+				}
+			} else {
+				while (controllerNames.hasNext()) {
+					String controllerContainerName = controllerNames.next();
 
-				try {
 					JSONObject controllerContainer = datafileJSON.getJSONObject(controllerContainerName);
 					JSONArray traces = controllerContainer.getJSONArray("traces");
 
@@ -118,16 +118,18 @@ public class CodebaseManager {
 
 						controllersNames.add(controllerName);
 					}
-				} catch (JSONException e) {
-					System.out.println(e.getMessage());
-					throw e;
+
 				}
 			}
+
+			codebase.addProfile("Generic", controllersNames);
+
+			return codebase;
+
+		} catch (Exception e) {
+			deleteCodebase(codebase.getName());
+			throw e;
 		}
-
-		codebase.addProfile("Generic", controllersNames);
-
-		return codebase;
 	}
 
 
