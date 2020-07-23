@@ -1,6 +1,5 @@
 package collectors;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -20,21 +19,17 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 public abstract class SpoonCollector {
     private int controllerCount;
     private JsonObject callSequence;
     private String projectName;
-    boolean collectionFlag;
 
     // all project classes
     ArrayList<String> allEntities;
 
-    // in FenixFramework: allDomainEntities = all classes that extend .*_Base
+    // in FenixFramework: allDomainEntities = all classes that extend from .*_Base
     // in JPA: allDomainEntities = all @Entities @Embeddable @MappedSuperClass
     ArrayList<String> allDomainEntities;
 
@@ -48,11 +43,7 @@ public abstract class SpoonCollector {
 
     HashMap<String, MethodContainer> methodsListCollection = new HashMap<>();
 
-    /* ------- TO REMOVE ----------- */
-    int repositoryCount = 0;
-    int controllerMethodsCount = 0;
-
-    SpoonCollector(int launcherChoice, String repoName, String projectPath, boolean collectionFlag) throws IOException {
+    SpoonCollector(int launcherChoice, String repoName, String projectPath) throws IOException {
         File decompiledDir = new File(Constants.DECOMPILED_SOURCES_PATH);
         if (decompiledDir.exists()) {
             FileUtils.deleteDirectory(decompiledDir);
@@ -66,7 +57,6 @@ public abstract class SpoonCollector {
         interfaces = new HashMap<>();
 
         this.projectName = repoName;
-        this.collectionFlag = collectionFlag;
 
         switch (launcherChoice) {
             case Constants.LAUNCHER:
@@ -138,49 +128,6 @@ public abstract class SpoonCollector {
         if (file.exists()) {
             FileUtils.deleteDirectory(file);
         }
-
-
-        if (collectionFlag) {
-            try {
-                File methodsFile = new File(Constants.COLLECTION_SAVE_PATH, projectName + "_methods.json");
-                new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(methodsFile, methodsListCollection);
-                System.out.println("File '" + methodsFile.getName() + "' created at: " + methodsFile.getAbsolutePath());
-
-                HashMap<String, Boolean> allEntitiesHashMap = new HashMap<>();
-                allDomainEntities.forEach(e -> allEntitiesHashMap.put(e, true));
-                File entitiesFile = new File(Constants.COLLECTION_SAVE_PATH, projectName + "_allEntities.json");
-                new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(entitiesFile, allEntitiesHashMap);
-                System.out.println("File '" + entitiesFile.getName() + "' created at: " + entitiesFile.getAbsolutePath());
-            } catch (Exception e) {
-                System.err.println("Couldn't write collection file(s).");
-            }
-        }
-
-        /* ------ TO REMOVE ------- */
-        File testData = new File(Constants.TEST_DATA_PATH);
-        if (!testData.exists()) testData.createNewFile();
-        String s0 = "Project: " + projectName;
-        String s1 = "#Controllers: " + controllers.size();
-        String s15 = "#ControllerMethods: " + controllerMethodsCount;
-        String s2 = "#Entities: " + allEntities.size();
-        String s3 = "#DomainEntities: " + allDomainEntities.size();
-        String s4 = "#Repositories: " + repositoryCount;
-        StringBuilder sb = new StringBuilder()
-                .append("---------------------------\n")
-                .append(s0)
-                .append("\n")
-                .append(s1)
-                .append("\n")
-                .append(s15)
-                .append("\n")
-                .append(s2)
-                .append("\n")
-                .append(s3)
-                .append("\n")
-                .append(s4)
-                .append("\n");
-        Files.write(Paths.get(testData.getPath()), sb.toString().getBytes(), StandardOpenOption.APPEND);
-        System.exit(1);
     }
 
     private void processController(CtClass controller) {
@@ -209,7 +156,6 @@ public abstract class SpoonCollector {
             entitiesSequence = new JsonArray();
             Stack<SourcePosition> methodStack = new Stack<>();
 
-            controllerMethodsCount++;
             methodCallDFS(controllerMethod, null, methodStack);
 
             if (entitiesSequence.size() > 0) {

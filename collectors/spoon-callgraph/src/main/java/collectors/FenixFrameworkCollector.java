@@ -17,9 +17,9 @@ import java.util.Stack;
 
 public class FenixFrameworkCollector extends SpoonCollector {
 
-    public FenixFrameworkCollector(int launcherChoice, String repoName, String projectPath, boolean collectionFlag)
+    public FenixFrameworkCollector(int launcherChoice, String repoName, String projectPath)
             throws IOException {
-        super(launcherChoice, repoName, projectPath, collectionFlag);
+        super(launcherChoice, repoName, projectPath);
 
         switch (launcherChoice) {
             case Constants.LAUNCHER:
@@ -61,17 +61,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
                 CtTypeReference<?> superclassReference = clazz.getSuperclass();
                 if (superclassReference != null && superclassReference.getSimpleName().endsWith("_Base")) {
                     allDomainEntities.add(clazz.getSimpleName());
-
-                    if (collectionFlag)
-                        collectBaseClassMethods((CtClass) clazz.getSuperclass().getTypeDeclaration());
                 }
-
-                if (collectionFlag) {
-                    if (clazz.getSimpleName().equals("DomainRoot_Base")) {
-                        collectBaseClassMethods((CtClass) clazz);
-                    }
-                }
-
             }
             allEntities.add(clazz.getSimpleName());
         }

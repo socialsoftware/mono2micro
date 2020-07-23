@@ -33,7 +33,7 @@ public class SpringDataJPACollector extends SpoonCollector {
     private Repository eventualNewRepository;
 
     public SpringDataJPACollector(int launcherChoice, String repoName, String projectPath) throws IOException {
-        super(launcherChoice, repoName, projectPath, false);
+        super(launcherChoice, repoName, projectPath);
 
         switch (launcherChoice) {
             case Constants.LAUNCHER:
@@ -109,8 +109,6 @@ public class SpringDataJPACollector extends SpoonCollector {
                 parseEntity(clazz, entityAnnotation, clazzAnnotations);
             }
         }
-
-        super.repositoryCount = repositories.size();
     }
 
     /*
@@ -472,24 +470,11 @@ public class SpringDataJPACollector extends SpoonCollector {
         methodStack.push(callerMethod.getPosition());
 
         callerMethod.accept(new CtScanner() {
+
             private <T> void visitCtAbstractInvocation(CtAbstractInvocation calleeLocation) {
                 try {
                     if (calleeLocation == null)
                         return;
-
-//                    /* TO REMOVE */
-//                    try {
-//                        if (((CtInvocation) calleeLocation).getTarget().getType().getSimpleName().contains("EntityManager"))
-//                            System.err.println(calleeLocation.toString() + "\n" +calleeLocation.getPosition());
-//                    } catch (Exception e) {}
-//
-//                    /* TO REMOVE */
-//                    try {
-//                        boolean entityManager = ((CtInvocation) calleeLocation).getTarget().getType().getSimpleName().contains("EntityManager");
-//                        if (entityManager) {
-//                            SpringDataJPACollector.this.entityManager++;
-//                        }
-//                    } catch (Exception e) {}
 
                     try {
                         CtMethod calleeMethod = (CtMethod) calleeLocation.getExecutable().getExecutableDeclaration();
