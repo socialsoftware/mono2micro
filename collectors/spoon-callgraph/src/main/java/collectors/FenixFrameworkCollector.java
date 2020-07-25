@@ -3,7 +3,9 @@ package collectors;
 import spoon.reflect.code.*;
 import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.declaration.*;
+import spoon.reflect.path.CtRole;
 import spoon.reflect.reference.CtTypeReference;
+import spoon.reflect.visitor.CtScanner;
 import spoon.support.reflect.code.CtInvocationImpl;
 import spoon.support.reflect.code.CtReturnImpl;
 import util.Constants;
@@ -12,7 +14,6 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.Stack;
 
 public class FenixFrameworkCollector extends SpoonCollector {
@@ -67,35 +68,187 @@ public class FenixFrameworkCollector extends SpoonCollector {
         }
     }
 
+    String lastMethodEndId;
+
     @Override
-    public void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<SourcePosition> methodStack) {
+    public void methodCallDFS(
+            CtExecutable callerMethod,
+            CtAbstractInvocation prevCalleeLocation,
+            Stack<SourcePosition> methodStack,
+            Stack<String> nextNodeIdStack
+    ) {
         methodStack.push(callerMethod.getPosition());
 
-        if (!methodCallees.containsKey(callerMethod.getPosition())) {
-            methodCallees.put(callerMethod.getPosition(), getCalleesOf(callerMethod));
-        }
+        callerMethod.accept(new CtScanner() {
+            boolean lastStatementWasReturn = false;
 
-        for (CtAbstractInvocation calleeLocation : methodCallees.get(callerMethod.getPosition())) {
+            private <T> void visitCtAbstractInvocation(CtAbstractInvocation calleeLocation) {
+                try {
+                    if (calleeLocation == null)
+                        return;
+                    else if (calleeLocation.getExecutable().getDeclaringType().getSimpleName().endsWith("_Base")) {
+                        registerBaseClass(calleeLocation.getExecutable().getExecutableDeclaration(), calleeLocation);
+                    }
+                    else if (calleeLocation.getExecutable().getDeclaringType().getSimpleName().equals("FenixFramework") &&
+                            calleeLocation.getExecutable().getSimpleName().equals("getDomainObject")) {
+                        registerDomainObject(calleeLocation);
+                    }
+                    else if (allEntities.contains(calleeLocation.getExecutable().getDeclaringType().getSimpleName())) {
+                        if (!methodStack.contains(calleeLocation.getExecutable().getExecutableDeclaration().getPosition())) {
+                            methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), calleeLocation, methodStack, nextNodeIdStack);
+                        }
+                    }
+                } catch (Exception e) {
+                    // cast error, proceed
+                }
+            }
 
-            try {
-                if (calleeLocation == null)
-                    continue;
-                else if (calleeLocation.getExecutable().getDeclaringType().getSimpleName().endsWith("_Base")) {
-                    registerBaseClass(calleeLocation.getExecutable().getExecutableDeclaration(), calleeLocation);
-                }
-                else if (calleeLocation.getExecutable().getDeclaringType().getSimpleName().equals("FenixFramework") &&
-                        calleeLocation.getExecutable().getSimpleName().equals("getDomainObject")) {
-                    registerDomainObject(calleeLocation);
-                }
-                else if (allEntities.contains(calleeLocation.getExecutable().getDeclaringType().getSimpleName())) {
-                    if (!methodStack.contains(calleeLocation.getExecutable().getExecutableDeclaration().getPosition())) {
-                        methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), null, methodStack);
+            @Override
+            public <S> void visitCtSwitch(CtSwitch<S> switchStatement) {
+                super.visitCtSwitch(switchStatement);
+            }
+
+            @Override
+            public <T, S> void visitCtSwitchExpression(CtSwitchExpression<T, S> switchExpression) {
+                super.visitCtSwitchExpression(switchExpression);
+            }
+
+            @Override
+            public <R> void visitCtReturn(CtReturn<R> returnStatement) {
+                super.visitCtReturn(returnStatement);
+                lastStatementWasReturn = true;
+            }
+
+            @Override
+            public void visitCtIf(CtIf ifElement) {
+                enter(ifElement);
+                scan(CtRole.ANNOTATION, ifElement.getAnnotations());
+                scan(CtRole.CONDITION, ifElement.getCondition());
+
+                // Node after the 'then' and the 'else' branch
+                String originNodeId = new String(currentParentNodeId);
+                Node afterNode = createGraphNode(ifElement.toString() + "END");
+
+                Node thenNode = createGraphNode(ifElement.getThenStatement().toString());
+                currentParentNodeId = thenNode.getId();
+                linkNodes(originNodeId, thenNode.getId());
+
+                scan(CtRole.THEN, ((CtStatement) (ifElement.getThenStatement())));
+
+                if (!lastStatementWasReturn)
+                    linkNodes(thenNode.getId(), afterNode.getId());
+                else {
+                    // branch that ended in return
+                    // must be linked to the end of the method execution
+                    if (!nextNodeIdStack.isEmpty()) {
+                        String peekId = nextNodeIdStack.peek();
+                        linkNodes(thenNode.getId(), peekId);
+                        lastStatementWasReturn = false;
                     }
                 }
-            } catch (Exception e) {
-                // cast error, proceed
+
+                Node elseNode = null;
+                if (ifElement.getElseStatement() != null) {
+                    elseNode = createGraphNode(ifElement.getElseStatement().toString());
+                    currentParentNodeId = elseNode.getId();
+                    linkNodes(originNodeId, elseNode.getId());
+                }
+                else {
+                    // if there is no else, we can skip if and go to post-if
+                    entitiesSequenceHashMap.get(originNodeId).addEdge(afterNode);
+                }
+                scan(CtRole.ELSE, ((CtStatement) (ifElement.getElseStatement())));
+                if (elseNode != null) {
+                    if (!lastStatementWasReturn)
+                        linkNodes(elseNode.getId(), afterNode.getId());
+                    else {
+                        // branch that ended in return
+                        // must be linked to the end of the method execution
+                        String peekId = nextNodeIdStack.peek();
+                        linkNodes(thenNode.getId(), peekId);
+                        lastStatementWasReturn = false;
+                    }
+                }
+
+                currentParentNodeId = afterNode.getId();
+
+                scan(CtRole.COMMENT, ifElement.getComments());
+                exit(ifElement);
             }
-        }
+
+            @Override
+            public <T> void visitCtConditional(CtConditional<T> conditional) {
+                super.visitCtConditional(conditional);
+            }
+
+            @Override
+            public <S> void visitCtCase(CtCase<S> caseStatement) {
+                super.visitCtCase(caseStatement);
+            }
+
+            @Override
+            public void visitCtTryWithResource(CtTryWithResource tryWithResource) {
+                super.visitCtTryWithResource(tryWithResource);
+            }
+
+            @Override
+            public void visitCtTry(CtTry tryBlock) {
+                super.visitCtTry(tryBlock);
+            }
+
+            @Override
+            public void visitCtCatch(CtCatch catchBlock) {
+                super.visitCtCatch(catchBlock);
+            }
+
+            @Override
+            public void visitCtThrow(CtThrow throwStatement) {
+                super.visitCtThrow(throwStatement);
+            }
+
+            @Override
+            public <T> void visitCtInvocation(CtInvocation<T> invocation) {
+                String originNode = new String(currentParentNodeId);
+                Node beginNode = createGraphNode(invocation.toString());
+                Node endNode = createGraphNode(invocation.toString() + "END");
+
+                nextNodeIdStack.push(endNode.getId());
+                currentParentNodeId = beginNode.getId();
+
+                super.visitCtInvocation(invocation);
+                visitCtAbstractInvocation(invocation);
+
+                // check
+//                if (getGraphNode(beginNode.getId()).getEntitiesSequence().size() == 0 &&
+//                        getGraphNode(endNode.getId()).getEntitiesSequence().size() == 0) {
+//                    removeGraphNode(beginNode.getId());
+//                    removeGraphNode(endNode.getId());
+//                    currentParentNodeId = originNode;
+//                    nextNodeIdStack.pop();
+//                }
+//                else {
+                    linkNodes(originNode, beginNode.getId());
+                    String popId = nextNodeIdStack.pop();
+                    linkNodes(currentParentNodeId, popId);
+                    currentParentNodeId = popId;
+//                }
+
+                lastStatementWasReturn = false;
+            }
+
+            @Override
+            public <T> void visitCtConstructorCall(CtConstructorCall<T> ctConstructorCall) {
+                super.visitCtConstructorCall(ctConstructorCall);
+                visitCtAbstractInvocation(ctConstructorCall);
+
+//                String popId = nextNodeIdStack.pop();
+//                linkNodes(currentParentNodeId, popId);
+//                currentParentNodeId = popId;
+//
+//                lastStatementWasReturn = false;
+            }
+        });
+
         methodStack.pop();
     }
 
@@ -190,54 +343,5 @@ public class FenixFrameworkCollector extends SpoonCollector {
             return ((CtAssignment) parent).getAssigned().getType().getSimpleName();
         else
             throw new Exception("Couldn't Resolve Type.");
-    }
-
-    private void collectBaseClassMethods(CtClass clazz) {
-        Set<CtMethod> baseMethods = clazz.getMethods();
-        for (CtMethod ctM : baseMethods) {
-            if (ctM.isPublic()) {
-                String returnType = ctM.getType().toString();
-                if (returnType.contains("pt.ist.fenixframework")) {
-                    continue;
-                }
-
-                List<CtParameter> parameters = ctM.getParameters();
-                boolean skip = false;
-                for (CtParameter p : parameters) {
-                    if (p.getType().toString().contains("pt.ist.fenixframework")) {
-                        skip = true;
-                        break;
-                    }
-                }
-
-                if (skip)
-                    continue;
-
-                else {
-                    List<String> par = new ArrayList<>();
-                    CtTypeReference typeReference = ctM.getType();
-                    String returnTypeParsed;
-                    if (typeReference.isParameterized())
-                        returnTypeParsed = typeReference.getActualTypeArguments().get(0).getSimpleName();
-                    else
-                        returnTypeParsed = typeReference.getSimpleName();
-
-                    parameters.forEach(parameter -> par.add(parameter.getType().getSimpleName()));
-                    methodsListCollection.put(
-                            String.join(
-                                    ".",
-                                    clazz.getSimpleName(),
-                                    ctM.getSimpleName()
-                            ),
-                            new MethodContainer(
-                                    returnTypeParsed,
-                                    ctM.getSimpleName(),
-                                    par,
-                                    clazz.getSimpleName()
-                            )
-                    );
-                }
-            }
-        }
     }
 }

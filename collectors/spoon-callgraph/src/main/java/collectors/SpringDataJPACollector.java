@@ -466,7 +466,7 @@ public class SpringDataJPACollector extends SpoonCollector {
     }
 
     @Override
-    public void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<SourcePosition> methodStack) {
+    public void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<SourcePosition> methodStack, Stack<String> nextNodeIdStack) {
         methodStack.push(callerMethod.getPosition());
 
         callerMethod.accept(new CtScanner() {
@@ -529,7 +529,7 @@ public class SpringDataJPACollector extends SpoonCollector {
                     }
                     else if (allEntities.contains(calleeLocation.getExecutable().getDeclaringType().getSimpleName())) {
                         if (!methodStack.contains(calleeLocation.getExecutable().getExecutableDeclaration().getPosition())) {
-                            methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), calleeLocation, methodStack);
+                            methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), calleeLocation, methodStack, nextNodeIdStack);
                         }
                     }
                 } catch (Exception e) {
@@ -964,8 +964,7 @@ public class SpringDataJPACollector extends SpoonCollector {
                     String mode = qa.getMode();
                     if (mode == null)
                         mode = "R";
-                    addEntitiesSequenceAccess(typeName, mode
-                    );
+                    addEntitiesSequenceAccess(typeName, mode);
                 }
             }
         } catch (Exception e) {

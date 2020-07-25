@@ -12,7 +12,6 @@ import spoon.reflect.code.CtAbstractInvocation;
 import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.declaration.*;
 import spoon.reflect.factory.Factory;
-import spoon.reflect.visitor.filter.TypeFilter;
 import util.Constants;
 
 import java.io.File;
@@ -23,8 +22,14 @@ import java.util.*;
 
 public abstract class SpoonCollector {
     private int controllerCount;
-    private JsonObject callSequence;
     private String projectName;
+
+    private JsonObject callSequence;
+    private JsonArray entitiesSequence;
+
+    private List<String> callSequenceEntryPoints;
+    protected HashMap<String, Node> entitiesSequenceHashMap;
+    protected String currentParentNodeId;
 
     // all project classes
     ArrayList<String> allEntities;
@@ -35,13 +40,10 @@ public abstract class SpoonCollector {
 
     HashSet<CtClass> controllers;
     Map<SourcePosition, List<CtAbstractInvocation>> methodCallees;
-    private JsonArray entitiesSequence;
     Map<String, List<CtType>> interfaces;
 
     Factory factory;
     Launcher launcher;
-
-    HashMap<String, MethodContainer> methodsListCollection = new HashMap<>();
 
     SpoonCollector(int launcherChoice, String repoName, String projectPath) throws IOException {
         File decompiledDir = new File(Constants.DECOMPILED_SOURCES_PATH);
@@ -50,6 +52,7 @@ public abstract class SpoonCollector {
         }
 
         callSequence = new JsonObject();
+        callSequenceEntryPoints = new ArrayList<>();
         controllers = new HashSet<>();
         allEntities = new ArrayList<>();
         allDomainEntities = new ArrayList<>();
@@ -153,30 +156,33 @@ public abstract class SpoonCollector {
 
             String controllerFullName = controller.getSimpleName() + "." + controllerMethod.getSimpleName();
             System.out.println("Processing Controller: " + controllerFullName + "   " + controllerCount + "/" + controllers.size());
-            entitiesSequence = new JsonArray();
-            Stack<SourcePosition> methodStack = new Stack<>();
 
-            methodCallDFS(controllerMethod, null, methodStack);
+            /* TO REMOVE */
+            if (!controllerFullName.contains("ToRemoveController"))
+                return;
+
+            entitiesSequence = new JsonArray();
+
+            entitiesSequenceHashMap = new HashMap<>();
+
+            Stack<SourcePosition> methodStack = new Stack<>();
+            Stack<String> nextNodeIdStack = new Stack<>();
+
+            // create graph node begin
+            Node beginNode = createGraphNode(controllerMethod.toString());
+            currentParentNodeId = beginNode.getId();
+            methodCallDFS(controllerMethod, null, methodStack, nextNodeIdStack);
 
             if (entitiesSequence.size() > 0) {
+                callSequenceEntryPoints.add(controllerMethod.getPosition().toString());
                 callSequence.add(controller.getSimpleName() + "." + controllerMethod.getSimpleName(), entitiesSequence);
             }
         }
     }
 
-    abstract void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<SourcePosition> methodStack);
+    abstract void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<SourcePosition> methodStack, Stack<String> nextNodeIdStack);
 
     abstract void collectControllersAndEntities();
-
-    List<CtAbstractInvocation> getCalleesOf(CtExecutable method) {
-        Map<Integer,CtAbstractInvocation> orderedCallees = new TreeMap<>();
-        List<CtAbstractInvocation> methodCalls = method.getElements(new TypeFilter<>(CtAbstractInvocation.class));
-        for (CtAbstractInvocation i : methodCalls)
-            try {
-                orderedCallees.put(i.getPosition().getSourceEnd(), i);
-            } catch (Exception ignored) {} // "super" fantasmas em construtores
-        return new ArrayList<>(orderedCallees.values()); // why are we ordering the calls?
-    }
 
     boolean existsAnnotation(List<CtAnnotation<? extends Annotation>> annotations, String annotationName) {
         for (CtAnnotation<? extends Annotation> a : annotations) {
@@ -204,10 +210,29 @@ public abstract class SpoonCollector {
         }
     }
 
+    Node createGraphNode(String id) {
+        Node newNode = new Node(id);
+        entitiesSequenceHashMap.put(id, newNode);
+        return newNode;
+    }
+
+    Node getGraphNode(String id) {
+        return entitiesSequenceHashMap.get(id);
+    }
+
+    void removeGraphNode(String id) {
+        entitiesSequenceHashMap.remove(id);
+    }
+
+    void linkNodes(String originNodeId, String destNodeId) {
+        entitiesSequenceHashMap.get(originNodeId).addEdge(entitiesSequenceHashMap.get(destNodeId));
+    }
+
     void addEntitiesSequenceAccess(String simpleName, String mode) {
         JsonArray entityAccess = new JsonArray();
         entityAccess.add(simpleName);
         entityAccess.add(mode);
         entitiesSequence.add(entityAccess);
+        entitiesSequenceHashMap.get(currentParentNodeId).addEntityAccess(entityAccess);
     }
 }
