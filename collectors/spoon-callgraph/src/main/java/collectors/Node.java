@@ -40,4 +40,8 @@ public class Node {
     public void addEdge(Node node) {
         this.edges.add(node);
     }
+
+    public void removeLastEdge() {
+        edges.remove(edges.size()-1);
+    }
 }

@@ -26,9 +26,10 @@ public abstract class SpoonCollector {
 
     private JsonObject callSequence;
     private JsonArray entitiesSequence;
+    private boolean foundAccess;
 
     private List<String> callSequenceEntryPoints;
-    protected HashMap<String, Node> entitiesSequenceHashMap;
+    private HashMap<String, Node> entitiesSequenceHashMap;
     protected String currentParentNodeId;
 
     // all project classes
@@ -58,6 +59,7 @@ public abstract class SpoonCollector {
         allDomainEntities = new ArrayList<>();
         methodCallees = new HashMap<>();
         interfaces = new HashMap<>();
+        foundAccess = false;
 
         this.projectName = repoName;
 
@@ -162,18 +164,17 @@ public abstract class SpoonCollector {
                 return;
 
             entitiesSequence = new JsonArray();
-
             entitiesSequenceHashMap = new HashMap<>();
-
             Stack<SourcePosition> methodStack = new Stack<>();
             Stack<String> nextNodeIdStack = new Stack<>();
+            foundAccess = false;
 
             // create graph node begin
             Node beginNode = createGraphNode(controllerMethod.toString());
             currentParentNodeId = beginNode.getId();
             methodCallDFS(controllerMethod, null, methodStack, nextNodeIdStack);
 
-            if (entitiesSequence.size() > 0) {
+            if (foundAccess) {
                 callSequenceEntryPoints.add(controllerMethod.getPosition().toString());
                 callSequence.add(controller.getSimpleName() + "." + controllerMethod.getSimpleName(), entitiesSequence);
             }
@@ -228,11 +229,16 @@ public abstract class SpoonCollector {
         entitiesSequenceHashMap.get(originNodeId).addEdge(entitiesSequenceHashMap.get(destNodeId));
     }
 
+    void unlinkLast(String id) {
+        entitiesSequenceHashMap.get(id).removeLastEdge();
+    }
+
     void addEntitiesSequenceAccess(String simpleName, String mode) {
         JsonArray entityAccess = new JsonArray();
         entityAccess.add(simpleName);
         entityAccess.add(mode);
         entitiesSequence.add(entityAccess);
         entitiesSequenceHashMap.get(currentParentNodeId).addEntityAccess(entityAccess);
+        foundAccess = true;
     }
 }

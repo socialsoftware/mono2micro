@@ -68,8 +68,6 @@ public class FenixFrameworkCollector extends SpoonCollector {
         }
     }
 
-    String lastMethodEndId;
-
     @Override
     public void methodCallDFS(
             CtExecutable callerMethod,
@@ -80,7 +78,10 @@ public class FenixFrameworkCollector extends SpoonCollector {
         methodStack.push(callerMethod.getPosition());
 
         callerMethod.accept(new CtScanner() {
-            boolean lastStatementWasReturn = false;
+            private boolean lastStatementWasReturnValue;
+            private Stack<String> branchOriginNodeId = new Stack<>();
+            private Stack<Boolean> lastStatementWasReturnStack = new Stack<>();
+            private Stack<Node> afterNode = new Stack<>();
 
             private <T> void visitCtAbstractInvocation(CtAbstractInvocation calleeLocation) {
                 try {
@@ -105,85 +106,146 @@ public class FenixFrameworkCollector extends SpoonCollector {
 
             @Override
             public <S> void visitCtSwitch(CtSwitch<S> switchStatement) {
+                afterNode.push(createGraphNode(switchStatement.toString() + "END"));
                 super.visitCtSwitch(switchStatement);
+                currentParentNodeId = afterNode.pop().getId();
             }
 
             @Override
             public <T, S> void visitCtSwitchExpression(CtSwitchExpression<T, S> switchExpression) {
                 super.visitCtSwitchExpression(switchExpression);
+                System.err.println("visitCtSwitchExpression not supported");
+                System.exit(1);
             }
 
             @Override
             public <R> void visitCtReturn(CtReturn<R> returnStatement) {
                 super.visitCtReturn(returnStatement);
-                lastStatementWasReturn = true;
+                lastStatementWasReturnStack.pop();
+                lastStatementWasReturnStack.push(true);
+            }
+
+            @Override
+            public <R> void visitCtBlock(CtBlock<R> block) {
+                lastStatementWasReturnStack.push(false);
+                super.visitCtBlock(block);
+                lastStatementWasReturnValue = lastStatementWasReturnStack.pop();
+            }
+
+            @Override
+            public void scan(CtRole role, CtElement element) {
+                // pre stuff before scan
+                switch (role) {
+                    case THEN:
+                        branchOriginNodeId.push(currentParentNodeId); // then
+                        branchOriginNodeId.push(currentParentNodeId); // else
+                        break;
+                    case ELSE:
+                        break;
+                    case CASE:
+                        CtSwitch switchExpression = (CtSwitch) element.getParent();
+                        if (switchExpression.getCases().get(0).equals(element)) {
+                            // the first case will populate the origin nodes stack
+                            int size = switchExpression.getCases().size();
+                            for (int i = 0 ; i < size; i++)
+                                branchOriginNodeId.push(currentParentNodeId);
+                        }
+                        // case statements are not considered to have blocks inside (although they can return)
+                        lastStatementWasReturnStack.push(false);
+                        break;
+                }
+
+                Node elementNode = null;
+                switch (role) {
+                    case THEN:
+                    case ELSE:
+                    case CASE:
+                        if (element != null) {
+                            elementNode = createGraphNode(element.toString());
+
+                            // corner case of cases without breaks/returns
+                            if (role.equals(CtRole.CASE)) {
+                                // if the previous case didn't end in break/return, we have to link it to the current case
+                                List<CtCase> cases = ((CtSwitch) element.getParent()).getCases();
+                                for (int i = 0; i < cases.size(); i++) {
+                                    CtCase ctCase = cases.get(i);
+                                    if (ctCase.equals(element)) {
+                                        if (i != 0) {
+                                            CtCase previousCase = cases.get(i - 1);
+                                            List<CtStatement> previousCaseStmts = previousCase.getStatements();
+                                            CtStatement lastStmt = previousCaseStmts.get(previousCaseStmts.size() - 1);
+                                            if (!(lastStmt instanceof CtBreak) && !(lastStmt instanceof CtReturn)) {
+                                                // the end of the case inspection link the switch case to the afterSwitchNode
+                                                // by default, so we have to unlink it, and relink to the next case
+                                                unlinkLast(currentParentNodeId);
+                                                // link end of previous case with current case
+                                                linkNodes(currentParentNodeId, elementNode.getId());
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+
+                            currentParentNodeId = elementNode.getId();
+                            linkNodes(branchOriginNodeId.pop(), elementNode.getId());
+                        }
+                        else {
+                            // if there is no else, we can skip if and go to post-if (afterNode)
+                            linkNodes(branchOriginNodeId.pop(), afterNode.peek().getId());
+                        }
+                        break;
+                }
+
+                super.scan(role, element);
+
+                // pre stuff after scan
+                switch (role) {
+                    case CASE:
+                        // case statements are not considered to have blocks inside (although they can return)
+                        lastStatementWasReturnValue = lastStatementWasReturnStack.pop();
+                        break;
+                }
+
+                switch (role) {
+                    case THEN:
+                    case ELSE:
+                    case CASE:
+                        if (elementNode != null) {
+                            if (!lastStatementWasReturnValue)
+                                linkNodes(currentParentNodeId, afterNode.peek().getId());
+                            else {
+                                // branch that ended in return
+                                // must be linked to the end of the method execution
+                                if (!nextNodeIdStack.isEmpty()) {
+                                    String peekId = nextNodeIdStack.peek();
+                                    linkNodes(currentParentNodeId, peekId);
+                                }
+                            }
+                        }
+                        break;
+                }
             }
 
             @Override
             public void visitCtIf(CtIf ifElement) {
-                enter(ifElement);
-                scan(CtRole.ANNOTATION, ifElement.getAnnotations());
-                scan(CtRole.CONDITION, ifElement.getCondition());
-
-                // Node after the 'then' and the 'else' branch
-                String originNodeId = new String(currentParentNodeId);
-                Node afterNode = createGraphNode(ifElement.toString() + "END");
-
-                Node thenNode = createGraphNode(ifElement.getThenStatement().toString());
-                currentParentNodeId = thenNode.getId();
-                linkNodes(originNodeId, thenNode.getId());
-
-                scan(CtRole.THEN, ((CtStatement) (ifElement.getThenStatement())));
-
-                if (!lastStatementWasReturn)
-                    linkNodes(thenNode.getId(), afterNode.getId());
-                else {
-                    // branch that ended in return
-                    // must be linked to the end of the method execution
-                    if (!nextNodeIdStack.isEmpty()) {
-                        String peekId = nextNodeIdStack.peek();
-                        linkNodes(thenNode.getId(), peekId);
-                        lastStatementWasReturn = false;
-                    }
-                }
-
-                Node elseNode = null;
-                if (ifElement.getElseStatement() != null) {
-                    elseNode = createGraphNode(ifElement.getElseStatement().toString());
-                    currentParentNodeId = elseNode.getId();
-                    linkNodes(originNodeId, elseNode.getId());
-                }
-                else {
-                    // if there is no else, we can skip if and go to post-if
-                    entitiesSequenceHashMap.get(originNodeId).addEdge(afterNode);
-                }
-                scan(CtRole.ELSE, ((CtStatement) (ifElement.getElseStatement())));
-                if (elseNode != null) {
-                    if (!lastStatementWasReturn)
-                        linkNodes(elseNode.getId(), afterNode.getId());
-                    else {
-                        // branch that ended in return
-                        // must be linked to the end of the method execution
-                        String peekId = nextNodeIdStack.peek();
-                        linkNodes(thenNode.getId(), peekId);
-                        lastStatementWasReturn = false;
-                    }
-                }
-
-                currentParentNodeId = afterNode.getId();
-
-                scan(CtRole.COMMENT, ifElement.getComments());
-                exit(ifElement);
+                afterNode.push(createGraphNode(ifElement.toString() + "END"));
+                super.visitCtIf(ifElement);
+                currentParentNodeId = afterNode.pop().getId();
             }
 
             @Override
             public <T> void visitCtConditional(CtConditional<T> conditional) {
+                afterNode.push(createGraphNode(conditional.toString() + "END"));
                 super.visitCtConditional(conditional);
+                currentParentNodeId = afterNode.pop().getId();
             }
 
             @Override
-            public <S> void visitCtCase(CtCase<S> caseStatement) {
-                super.visitCtCase(caseStatement);
+            public void visitCtWhile(CtWhile whileLoop) {
+                afterNode.push(createGraphNode(whileLoop.toString() + "END"));
+                super.visitCtWhile(whileLoop);
+                currentParentNodeId = afterNode.pop().getId();
             }
 
             @Override
@@ -218,34 +280,17 @@ public class FenixFrameworkCollector extends SpoonCollector {
                 super.visitCtInvocation(invocation);
                 visitCtAbstractInvocation(invocation);
 
-                // check
-//                if (getGraphNode(beginNode.getId()).getEntitiesSequence().size() == 0 &&
-//                        getGraphNode(endNode.getId()).getEntitiesSequence().size() == 0) {
-//                    removeGraphNode(beginNode.getId());
-//                    removeGraphNode(endNode.getId());
-//                    currentParentNodeId = originNode;
-//                    nextNodeIdStack.pop();
-//                }
-//                else {
-                    linkNodes(originNode, beginNode.getId());
-                    String popId = nextNodeIdStack.pop();
-                    linkNodes(currentParentNodeId, popId);
-                    currentParentNodeId = popId;
-//                }
-
-                lastStatementWasReturn = false;
+                /* TODO Optimization can be done here - remove nodes without accesses */
+                linkNodes(originNode, beginNode.getId());
+                String popId = nextNodeIdStack.pop();
+                linkNodes(currentParentNodeId, popId);
+                currentParentNodeId = popId;
             }
 
             @Override
             public <T> void visitCtConstructorCall(CtConstructorCall<T> ctConstructorCall) {
                 super.visitCtConstructorCall(ctConstructorCall);
                 visitCtAbstractInvocation(ctConstructorCall);
-
-//                String popId = nextNodeIdStack.pop();
-//                linkNodes(currentParentNodeId, popId);
-//                currentParentNodeId = popId;
-//
-//                lastStatementWasReturn = false;
             }
         });
 
