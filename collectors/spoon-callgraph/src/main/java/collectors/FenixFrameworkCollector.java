@@ -73,7 +73,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
             CtExecutable callerMethod,
             CtAbstractInvocation prevCalleeLocation,
             Stack<SourcePosition> methodStack,
-            Stack<String> nextNodeIdStack
+            Stack<String> toReturnNodeIdStack
     ) {
         methodStack.push(callerMethod.getPosition());
 
@@ -96,7 +96,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
                     }
                     else if (allEntities.contains(calleeLocation.getExecutable().getDeclaringType().getSimpleName())) {
                         if (!methodStack.contains(calleeLocation.getExecutable().getExecutableDeclaration().getPosition())) {
-                            methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), calleeLocation, methodStack, nextNodeIdStack);
+                            methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), calleeLocation, methodStack, toReturnNodeIdStack);
                         }
                     }
                 } catch (Exception e) {
@@ -127,9 +127,13 @@ public class FenixFrameworkCollector extends SpoonCollector {
 
             @Override
             public <R> void visitCtBlock(CtBlock<R> block) {
+                afterNode.push(createGraphNode(block.toString() + "END"));
                 lastStatementWasReturnStack.push(false);
                 super.visitCtBlock(block);
                 lastStatementWasReturnValue = lastStatementWasReturnStack.pop();
+                Node pop = afterNode.pop();
+                linkNodes(currentParentNodeId, pop.getId());
+                currentParentNodeId = pop.getId();
             }
 
             @Override
@@ -153,6 +157,15 @@ public class FenixFrameworkCollector extends SpoonCollector {
                         // case statements are not considered to have blocks inside (although they can return)
                         lastStatementWasReturnStack.push(false);
                         break;
+                    case BODY:
+                        branchOriginNodeId.push(currentParentNodeId);
+                        CtElement parent = element.getParent();
+
+                        if (parent instanceof CtFor) {
+                            // flow where for is not executed
+                            linkNodes(currentParentNodeId, afterNode.peek().getId());
+                        }
+                        break;
                 }
 
                 Node elementNode = null;
@@ -160,6 +173,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
                     case THEN:
                     case ELSE:
                     case CASE:
+                    case BODY:
                         if (element != null) {
                             elementNode = createGraphNode(element.toString());
 
@@ -190,7 +204,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
                             currentParentNodeId = elementNode.getId();
                             linkNodes(branchOriginNodeId.pop(), elementNode.getId());
                         }
-                        else {
+                        else { // null else case
                             // if there is no else, we can skip if and go to post-if (afterNode)
                             linkNodes(branchOriginNodeId.pop(), afterNode.peek().getId());
                         }
@@ -211,20 +225,33 @@ public class FenixFrameworkCollector extends SpoonCollector {
                     case THEN:
                     case ELSE:
                     case CASE:
+                    case BODY:
                         if (elementNode != null) {
-                            if (!lastStatementWasReturnValue)
-                                linkNodes(currentParentNodeId, afterNode.peek().getId());
+                            if (!lastStatementWasReturnValue) {
+                                Node peek = afterNode.peek();
+                                if (peek != null) {
+                                    // pode não existir after node se estivermos no fim do metodo
+                                    linkNodes(currentParentNodeId, peek.getId());
+                                }
+                            }
                             else {
                                 // branch that ended in return
                                 // must be linked to the end of the method execution
-                                if (!nextNodeIdStack.isEmpty()) {
-                                    String peekId = nextNodeIdStack.peek();
+                                if (!toReturnNodeIdStack.isEmpty()) {
+                                    String peekId = toReturnNodeIdStack.peek();
                                     linkNodes(currentParentNodeId, peekId);
                                 }
                             }
                         }
                         break;
                 }
+            }
+
+            @Override
+            public void visitCtFor(CtFor forLoop) {
+                afterNode.push(createGraphNode(forLoop.toString() + "END"));
+                super.visitCtFor(forLoop);
+                currentParentNodeId = afterNode.pop().getId();
             }
 
             @Override
@@ -270,21 +297,12 @@ public class FenixFrameworkCollector extends SpoonCollector {
 
             @Override
             public <T> void visitCtInvocation(CtInvocation<T> invocation) {
-                String originNode = new String(currentParentNodeId);
-                Node beginNode = createGraphNode(invocation.toString());
-                Node endNode = createGraphNode(invocation.toString() + "END");
-
-                nextNodeIdStack.push(endNode.getId());
-                currentParentNodeId = beginNode.getId();
+                toReturnNodeIdStack.push(afterNode.peek().getId());
 
                 super.visitCtInvocation(invocation);
                 visitCtAbstractInvocation(invocation);
 
-                /* TODO Optimization can be done here - remove nodes without accesses */
-                linkNodes(originNode, beginNode.getId());
-                String popId = nextNodeIdStack.pop();
-                linkNodes(currentParentNodeId, popId);
-                currentParentNodeId = popId;
+                String toReturnNodeId = toReturnNodeIdStack.pop();
             }
 
             @Override

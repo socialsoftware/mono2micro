@@ -38,7 +38,8 @@ public class Node {
     }
 
     public void addEdge(Node node) {
-        this.edges.add(node);
+        if (!this.edges.contains(node))
+            this.edges.add(node);
     }
 
     public void removeLastEdge() {
