@@ -113,9 +113,9 @@ public class FenixFrameworkCollector extends SpoonCollector {
 
             @Override
             public <T, S> void visitCtSwitchExpression(CtSwitchExpression<T, S> switchExpression) {
+                afterNode.push(createGraphNode(switchExpression.toString() + "END"));
                 super.visitCtSwitchExpression(switchExpression);
-                System.err.println("visitCtSwitchExpression not supported");
-                System.exit(1);
+                currentParentNodeId = afterNode.pop().getId();
             }
 
             @Override
@@ -147,10 +147,15 @@ public class FenixFrameworkCollector extends SpoonCollector {
                     case ELSE:
                         break;
                     case CASE:
-                        CtSwitch switchExpression = (CtSwitch) element.getParent();
-                        if (switchExpression.getCases().get(0).equals(element)) {
+                        List<CtCase> cases = null;
+                        if (element.getParent() instanceof  CtSwitch)
+                            cases = ((CtSwitch) element.getParent()).getCases();
+                        else if (element.getParent() instanceof  CtSwitchExpression)
+                            cases = ((CtSwitchExpression) element.getParent()).getCases();
+
+                        if (cases.get(0).equals(element)) {
                             // the first case will populate the origin nodes stack
-                            int size = switchExpression.getCases().size();
+                            int size = cases.size();
                             for (int i = 0 ; i < size; i++)
                                 branchOriginNodeId.push(currentParentNodeId);
                         }
@@ -161,7 +166,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
                         branchOriginNodeId.push(currentParentNodeId);
                         CtElement parent = element.getParent();
 
-                        if (parent instanceof CtFor) {
+                        if (parent instanceof CtFor || parent instanceof CtWhile || parent instanceof CtForEach) {
                             // flow where for is not executed
                             linkNodes(currentParentNodeId, afterNode.peek().getId());
                         }
@@ -178,7 +183,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
                             elementNode = createGraphNode(element.toString());
 
                             // corner case of cases without breaks/returns
-                            if (role.equals(CtRole.CASE)) {
+                            if (role.equals(CtRole.CASE) && element.getParent() instanceof CtSwitch) {
                                 // if the previous case didn't end in break/return, we have to link it to the current case
                                 List<CtCase> cases = ((CtSwitch) element.getParent()).getCases();
                                 for (int i = 0; i < cases.size(); i++) {
@@ -228,10 +233,9 @@ public class FenixFrameworkCollector extends SpoonCollector {
                     case BODY:
                         if (elementNode != null) {
                             if (!lastStatementWasReturnValue) {
-                                Node peek = afterNode.peek();
-                                if (peek != null) {
+                                if (!afterNode.isEmpty()) {
                                     // pode não existir after node se estivermos no fim do metodo
-                                    linkNodes(currentParentNodeId, peek.getId());
+                                    linkNodes(currentParentNodeId, afterNode.peek().getId());
                                 }
                             }
                             else {
@@ -251,6 +255,13 @@ public class FenixFrameworkCollector extends SpoonCollector {
             public void visitCtFor(CtFor forLoop) {
                 afterNode.push(createGraphNode(forLoop.toString() + "END"));
                 super.visitCtFor(forLoop);
+                currentParentNodeId = afterNode.pop().getId();
+            }
+
+            @Override
+            public void visitCtForEach(CtForEach foreach) {
+                afterNode.push(createGraphNode(foreach.toString() + "END"));
+                super.visitCtForEach(foreach);
                 currentParentNodeId = afterNode.pop().getId();
             }
 
@@ -291,24 +302,23 @@ public class FenixFrameworkCollector extends SpoonCollector {
             }
 
             @Override
-            public void visitCtThrow(CtThrow throwStatement) {
-                super.visitCtThrow(throwStatement);
-            }
-
-            @Override
             public <T> void visitCtInvocation(CtInvocation<T> invocation) {
+                afterNode.push(createGraphNode(invocation.toString() + "END"));
                 toReturnNodeIdStack.push(afterNode.peek().getId());
-
                 super.visitCtInvocation(invocation);
                 visitCtAbstractInvocation(invocation);
-
-                String toReturnNodeId = toReturnNodeIdStack.pop();
+                toReturnNodeIdStack.pop();
+                currentParentNodeId = afterNode.pop().getId();
             }
 
             @Override
             public <T> void visitCtConstructorCall(CtConstructorCall<T> ctConstructorCall) {
+                afterNode.push(createGraphNode(ctConstructorCall.toString() + "END"));
+                toReturnNodeIdStack.push(afterNode.peek().getId());
                 super.visitCtConstructorCall(ctConstructorCall);
                 visitCtAbstractInvocation(ctConstructorCall);
+                toReturnNodeIdStack.pop();
+                currentParentNodeId = afterNode.pop().getId();
             }
         });
 
