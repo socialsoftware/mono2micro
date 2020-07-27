@@ -1,4 +1,4 @@
-import { Network } from 'vis';
+import { Network } from "vis";
 import React, { Component, createRef } from 'react';
 import { ModalMessage } from './ModalMessage';
 import { views, types } from '../view/Views'

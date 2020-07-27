@@ -1,12 +1,13 @@
-import React from 'react';
+import React, {createRef} from 'react';
 import { TransactionOperationsMenu } from './TransactionOperationsMenu';
 import { RepositoryService } from '../../services/RepositoryService';
 import { VisNetwork } from '../util/VisNetwork';
-import { DataSet } from 'vis';
+import { DataSet } from "vis";
 import { views, types } from './Views';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { Button, ButtonGroup} from 'react-bootstrap';
-
+import { FunctionalityRedesignMenu, redesignOperations } from './FunctionalityRedesignMenu';
+import {ModalMessage} from "../util/ModalMessage";
 
 export const transactionViewHelp = (<div>
     Hover or double click cluster to see entities inside.<br />
@@ -114,6 +115,57 @@ const optionsSeq = {
     }
 };
 
+
+const optionsFunctionalityRedesign = {
+    height: "700",
+    layout: {
+        hierarchical: false,
+        improvedLayout: false
+    },
+    edges: {
+        smooth: false,
+        arrows: {
+            to: {
+                enabled: true,
+            }
+        },
+        scaling: {
+            label: {
+                enabled: true
+            },
+        },
+        color: {
+            color: "#2B7CE9",
+            hover: "#2B7CE9",
+            highlight: "#FFA500"
+        }
+    },
+    nodes: {
+        shape: 'ellipse',
+        scaling: {
+            label: {
+                enabled: true
+            },
+        },
+        color: {
+            border: "#2B7CE9",
+            background: "#D2E5FF",
+            highlight: {
+                background: "#FFA500",
+                border: "#FFA500"
+            }
+        }
+    },
+    interaction: {
+        hover: true
+    },
+    physics: {
+        enabled: true,
+        solver: 'hierarchicalRepulsion'
+    },
+};
+
+
 export class TransactionView extends React.Component {
     constructor(props) {
         super(props);
@@ -121,26 +173,46 @@ export class TransactionView extends React.Component {
         this.state = {
             visGraph: {},
             visGraphSeq: {},
+            redesignVisGraph: {},
             graph: {},
             controller: {},
             controllers: [],
             controllerClusters: [],
             showGraph: false,
             clusterSequence: [],
-            currentSubView: "Graph"
+            currentSubView: "Graph",
+            showMenu: false,
+            error: false,
+            selectedOperation: redesignOperations.NONE,
+            selectedLocalTransaction: null,
+            newCaller: null,
+            addCompensating: false,
+            modifiedEntities: null,
+            DCGIAvailableClusters: null,
+            DCGILocalTransactionsForTheSelectedClusters: null,
+            DCGISelectedLocalTransactions: []
         }
 
         this.handleControllerSubmit = this.handleControllerSubmit.bind(this);
+        this.handleSelectNode = this.handleSelectNode.bind(this);
+        this.handleSelectOperation = this.handleSelectOperation.bind(this);
+        this.closeErrorMessageModal = this.closeErrorMessageModal.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.DCGISelectCluster = this.DCGISelectCluster.bind(this);
+        this.handleDCGISelectLocalTransaction = this.handleDCGISelectLocalTransaction.bind(this);
     }
 
     componentDidMount() {
         const service = new RepositoryService();
         service.getControllerClusters(this.props.codebaseName, this.props.dendrogramName, this.props.graphName).then(response => {
+            console.log(response);
             this.setState({
                 controllerClusters: response.data
             });
         });
         service.getGraph(this.props.codebaseName, this.props.dendrogramName, this.props.graphName).then(response => {
+            console.log(response);
             this.setState({
                 graph: response.data,
                 controllers: response.data.controllers
@@ -150,7 +222,7 @@ export class TransactionView extends React.Component {
 
     handleControllerSubmit(value) {
         this.setState({
-            controller: this.state.controllers.filter(c => c.name === value)[0],
+            controller: this.state.controllers.filter(c => c.name === value)[0]
         }, () => {
             this.loadGraph();
         });
@@ -159,6 +231,7 @@ export class TransactionView extends React.Component {
     loadGraph() {
         this.createTransactionDiagram();
         this.createSequenceDiagram();
+        this.createRedesignGraph();
         this.setState({
             showGraph: true
         });
@@ -211,10 +284,10 @@ export class TransactionView extends React.Component {
 
         nodes.push({
             id: 0,
-            title: Object.entries(this.state.controller.entities).map(e => e[0] + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(this.state.controller.entities).length, 
-            label: this.state.controller.name, 
-            level: 0, 
-            value: 1, 
+            title: Object.entries(this.state.controller.entities).map(e => e[0] + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(this.state.controller.entities).length,
+            label: this.state.controller.name,
+            level: 0,
+            value: 1,
             type: types.CONTROLLER
         });
 
@@ -226,16 +299,15 @@ export class TransactionView extends React.Component {
             let nodeId = i+1;
 
             nodes.push({
-                id: nodeId, 
-                title: cluster.entities.map(e => e.name).join('<br>') + "<br>Total: " + cluster.entities.length, 
-                label: cluster.name, 
-                value: cluster.entities.length, 
-                level: 1, 
+                id: nodeId,
+                title: cluster.entities.map(e => e.name).join('<br>') + "<br>Total: " + cluster.entities.length,
+                label: cluster.name,
+                value: cluster.entities.length,
+                level: 1,
                 type: types.CLUSTER
             });
 
             let entitiesTouched = entitiesSequence[i]["sequence"];
-
             edges.push({
                 from: nodeId - 1, 
                 to: nodeId,
@@ -246,23 +318,138 @@ export class TransactionView extends React.Component {
             clusterSequence.push({
                 id: nodeId, 
                 cluster: cluster.name, 
-                entities: <pre>{Object.values(entitiesTouched).map(e => e.join(" ")).join('\n')}</pre>
+                entities: <pre>{Object.values(entitiesTouched).map(e => e.join(" ")).join('\n')}</pre>,
+                entitiesTouched : entitiesTouched
             });
         }
 
-        const visGraphSeq = {
+        const visGraph = {
             nodes: new DataSet(nodes),
             edges: new DataSet(edges)
         };
 
         this.setState({
-            visGraphSeq: visGraphSeq,
+            visGraphSeq: visGraph,
             clusterSequence: clusterSequence
         });
     }
 
-    handleSelectNode(nodeId) {
+    createRedesignGraph(){
+        let nodes = [];
+        let edges = [];
 
+        nodes.push({
+            id: -1,
+            title: JSON.parse(this.state.controller.functionalityRedesign[0].accessedEntities).map(e => e[0] + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(this.state.controller.entities).length,
+            label: this.state.controller.name,
+            level: -1,
+            value: 1,
+            type: types.CONTROLLER
+        });
+
+        let cluster = this.state.graph.clusters.filter(cluster => cluster.name === this.state.controller.functionalityRedesign[0].cluster)[0];
+        nodes.push({
+            id: this.state.controller.functionalityRedesign[0].id,
+            title: cluster.entities.map(e => e.name).join('<br>') + "<br>Total: " + cluster.entities.length,
+            label: this.state.controller.functionalityRedesign[0].id + ": " + this.state.controller.functionalityRedesign[0].cluster,
+            level: 0,
+            type: types.CLUSTER
+        });
+
+        edges.push({
+            from: -1,
+            to: 0,
+            title: JSON.parse(this.state.controller.functionalityRedesign[0].accessedEntities).map(e => e.join(" ")).join('<br>'),
+            label: JSON.parse(this.state.controller.functionalityRedesign[0].accessedEntities).length.toString()
+        });
+
+        for(let i = 0; i < nodes.length; i++){
+            if(nodes[i].id >= 0) {
+                let localTransaction = this.state.controller.functionalityRedesign.find(entry => entry.id === nodes[i].id.toString());
+                localTransaction.remoteInvocations.forEach((id) => {
+                    let lt = this.state.controller.functionalityRedesign.find(e => e.id === id.toString());
+                    cluster = this.state.graph.clusters.filter(cluster => cluster.name === lt.cluster)[0];
+
+                    nodes.push({
+                        id: lt.id,
+                        title: cluster.entities.map(e => e.name).join('<br>') + "<br>Total: " + cluster.entities.length,
+                        label: lt.id + ": " + lt.cluster,
+                        level: nodes[i].level + 1,
+                        type: types.CLUSTER
+                    });
+
+                    let entitiesTouched = JSON.parse(lt.accessedEntities);
+                    edges.push({
+                        from: nodes[i].id,
+                        to: id,
+                        title: Object.values(entitiesTouched).map(e => e.join(" ")).join('<br>'),
+                        label: entitiesTouched.length.toString()
+                    });
+                });
+            }
+        }
+
+        const redesignVisGraph = {
+            nodes: new DataSet(nodes),
+            edges: new DataSet(edges)
+        };
+
+        this.setState({
+            redesignVisGraph: redesignVisGraph
+        });
+    }
+
+    identifyModifiedEntities(cluster){
+        return {
+            cluster: cluster.name,
+            modifiedEntities: Object.entries(this.state.controller.entities)
+                .filter(e => cluster.entities.map(e => e.name).includes(e[0]))
+                .filter(e => e[1].includes("W"))
+                .map(e => e[0])
+        }
+    }
+
+
+    handleSelectNode(nodeId) {
+        if(this.state.selectedOperation === redesignOperations.NONE) {
+            this.setState({
+                showMenu: true,
+                selectedLocalTransaction: this.state.controller.functionalityRedesign.find(c => c.id === nodeId)
+            });
+        }
+
+        console.log("NodeID: " + nodeId);
+        console.log(this.state.selectedLocalTransaction);
+
+        if(this.state.selectedOperation === redesignOperations.SQ){
+            if(nodeId === this.state.selectedLocalTransaction.id){
+                this.setState({
+                    error: true,
+                    errorMessage: "One local transaction cannot call itself"
+                });
+            } else if(nodeId === this.state.selectedLocalTransaction.id - 1) {
+                this.setState({
+                    error: true,
+                    errorMessage: "The local transaction " + nodeId
+                        + " is already invoking local transaction " + this.state.selectedLocalTransaction.id
+                });
+            } else {
+                console.log(this.state.controller.functionalityRedesign);
+
+                this.setState({
+                   newCaller: this.state.controller.functionalityRedesign.find(c => c.id === nodeId.toString())
+                });
+            }
+        }
+        else if(this.state.selectedOperation === redesignOperations.DCGI){
+            if(!this.state.DCGISelectedLocalTransactions.map(e => e.id).includes(nodeId)){
+                const aux = this.state.DCGISelectedLocalTransactions;
+                aux.push(this.state.DCGILocalTransactionsForTheSelectedClusters.find(e => e.id === nodeId));
+                this.setState({
+                    DCGISelectedLocalTransactions: aux
+                });
+            }
+        }
     }
 
     handleDeselectNode(nodeId) {
@@ -273,6 +460,107 @@ export class TransactionView extends React.Component {
         this.setState({
             currentSubView: value
         });
+    }
+
+    handleSelectOperation(value){
+        this.setState({
+            selectedOperation: value
+        });
+
+        if(value === redesignOperations.AC){
+            this.setState({
+                modifiedEntities: this.state.controllerClusters[this.state.controller.name]
+                    .map(cluster => this.identifyModifiedEntities(cluster))
+                    .filter(e => e.modifiedEntities.length > 0)
+                    .filter(e => e.cluster !== this.state.selectedLocalTransaction.cluster)
+            });
+        } else if(value === redesignOperations.DCGI) {
+            this.setState({
+                DCGIAvailableClusters: this.state.controllerClusters[this.state.controller.name]
+                    .filter(e => e.name !== this.state.selectedLocalTransaction.cluster)
+                    .map(e => e.name),
+                DCGISelectedCluster: [this.state.selectedLocalTransaction.cluster]
+            });
+        }
+    }
+
+    closeErrorMessageModal() {
+        this.setState({
+            error: false,
+            errorMessage: ''
+        });
+    }
+
+    handleSubmit(value){
+        console.log("Teste");
+
+        const service = new RepositoryService();
+        switch (this.state.selectedOperation) {
+            case redesignOperations.AC:
+                service.addCompensating(this.props.codebaseName, this.props.dendrogramName, this.props.graphName,
+                    this.state.controller.name, value.cluster, value.entities, this.state.selectedLocalTransaction.id)
+                    .then(response => {
+                        const newController = this.state.controller;
+                        newController.functionalityRedesign = response.data;
+                        this.setState({
+                            controller: newController
+                        }, () => {
+                            this.createRedesignGraph();
+                        });
+                    }).catch((err) => {
+                        this.setState({
+                            error: true,
+                            errorMessage: 'ERROR: Add Compensating failed.'
+                        });
+                    });
+                break;
+            case redesignOperations.SQ:
+                break;
+            case redesignOperations.DCGI:
+                break;
+            default:
+                break;
+        }
+    }
+
+    handleCancel(){
+        this.setState({
+            showMenu: true,
+            selectedOperation: redesignOperations.NONE,
+            newCaller: null,
+            addCompensating: false,
+            modifiedEntities: null,
+            DCGIAvailableClusters: null,
+            DCGILocalTransactionsForTheSelectedClusters: null,
+            DCGISelectedLocalTransactions: []
+        });
+    }
+
+    DCGISelectCluster(value){
+        const selectedClusters = this.state.DCGISelectedCluster;
+        selectedClusters.push(value);
+
+        const localTransactionsForTheSelectedClusters =
+            this.state.controller.functionalityRedesign.filter(e => selectedClusters.includes(e.cluster));
+
+        this.setState({
+            DCGILocalTransactionsForTheSelectedClusters: localTransactionsForTheSelectedClusters
+        });
+    }
+
+    handleDCGISelectLocalTransaction(value){
+        console.log(value);
+        if(value === null || value.length === 0){
+            this.setState({
+                DCGISelectedLocalTransactions: [],
+            });
+        } else {
+            let selectedLocalTransactions = this.state.DCGILocalTransactionsForTheSelectedClusters
+                .filter(e => value.map(e => e.value).includes(e.id));
+            this.setState({
+                DCGISelectedLocalTransactions: selectedLocalTransactions,
+            });
+        }
     }
 
     render() {
@@ -314,11 +602,18 @@ export class TransactionView extends React.Component {
 
         return (
             <div>
+                {this.state.error &&
+                <ModalMessage
+                    title='Error Message'
+                    message={this.state.errorMessage}
+                    onClose={this.closeErrorMessageModal} />}
+
                 <ButtonGroup className="mb-2">
                     <Button disabled={this.state.currentSubView === "Graph"} onClick={() => this.changeSubView("Graph")}>Graph</Button>
                     <Button disabled={this.state.currentSubView === "Sequence Graph"} onClick={() => this.changeSubView("Sequence Graph")}>Sequence Graph</Button>
                     <Button disabled={this.state.currentSubView === "Metrics"} onClick={() => this.changeSubView("Metrics")}>Metrics</Button>
                     <Button disabled={this.state.currentSubView === "Sequence Table"} onClick={() => this.changeSubView("Sequence Table")}>Sequence Table</Button>
+                    <Button disabled={this.state.currentSubView === "Functionality Redesign"} onClick={() => this.changeSubView("Functionality Redesign")}>Functionality Redesign</Button>
                 </ButtonGroup>
                 
                 {this.state.currentSubView === "Graph" &&
@@ -365,6 +660,48 @@ export class TransactionView extends React.Component {
                         <BootstrapTable bootstrap4 keyField='id' data={ this.state.clusterSequence } columns={ seqColumns } />
                     </div>
                 }
+
+                {this.state.showGraph && this.state.currentSubView === "Functionality Redesign" &&
+                <div>
+                    {this.state.showMenu &&
+                        <FunctionalityRedesignMenu
+                            selectedLocalTransaction = {this.state.selectedLocalTransaction}
+                            newCaller = {this.state.newCaller}
+                            modifiedEntities = {this.state.modifiedEntities}
+                            DCGIAvailableClusters = {this.state.DCGIAvailableClusters}
+                            DCGILocalTransactionsForTheSelectedClusters = {this.state.DCGILocalTransactionsForTheSelectedClusters}
+                            DCGISelectedLocalTransactions = {this.state.DCGISelectedLocalTransactions}
+                            handleSelectOperation = {this.handleSelectOperation}
+                            handleCancel = {this.handleCancel}
+                            handleSubmit = {this.handleSubmit}
+                            DCGISelectCluser = {this.DCGISelectCluster}
+                            handleDCGISelectLocalTransaction = {this.handleDCGISelectLocalTransaction}
+                        />
+                    }
+
+                    <div style={{display:'none'}}>
+                        {/*this div functions as a "cache". Is is used to render the graph with the optionsSeq
+                         options in order to save the positions such that when the graph is generated with the
+                         optionsFunctionalityRedesign options is much quicker and there is no buffering*/}
+                        <VisNetwork
+                            visGraph={this.state.redesignVisGraph}
+                            options={optionsSeq}
+                            onSelection={this.handleSelectNode}
+                            onDeselection={this.handleDeselectNode}
+                            view={views.TRANSACTION} />
+                    </div>
+                    <h4>{this.state.controller.name}</h4>
+                    <div style={{width:'1000px' , height: '700px'}}>
+                        <VisNetwork
+                            visGraph={this.state.redesignVisGraph}
+                            options={optionsFunctionalityRedesign}
+                            onSelection={this.handleSelectNode}
+                            onDeselection={this.handleDeselectNode}
+                            view={views.TRANSACTION} />
+                    </div>
+                </div>
+                }
+
             </div>
         );
     }

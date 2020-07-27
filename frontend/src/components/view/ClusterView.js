@@ -3,10 +3,10 @@ import { RepositoryService } from '../../services/RepositoryService';
 import { ClusterOperationsMenu, operations } from './ClusterOperationsMenu';
 import { VisNetwork } from '../util/VisNetwork';
 import { ModalMessage } from '../util/ModalMessage';
-import { DataSet } from 'vis';
 import { views, types } from './Views';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { Button, ButtonGroup } from 'react-bootstrap';
+import { DataSet } from "vis";
 
 export const clusterViewHelp = (<div>
     Hover or double click cluster to see entities inside.<br />
@@ -43,7 +43,7 @@ const options = {
         shape: 'ellipse',
         scaling: {
             label: {
-                enabled: true
+                enabled: false
             },
         },
         color: {
@@ -300,6 +300,7 @@ export class ClusterView extends React.Component {
                 break;
             case operations.TRANSFER:
                 let activeClusterEntitiesTransfer = this.state.clusterEntities.filter(e => e.active).map(e => e.name).toString();
+                console.log(activeClusterEntitiesTransfer);
                 service.transferEntities(this.props.codebaseName, this.props.dendrogramName, this.props.graphName, this.state.selectedCluster.name, 
                     this.state.transferToCluster.name, activeClusterEntitiesTransfer)
                 .then(() => {
@@ -329,7 +330,7 @@ export class ClusterView extends React.Component {
     closeErrorMessageModal() {
         this.setState({
             error: false,
-            errrorMessage: ''
+            errorMessage: ''
         });
     }
 
@@ -344,6 +345,7 @@ export class ClusterView extends React.Component {
     }
 
     render() {
+
         const metricsRows = this.state.clusters.map(cluster => {
             return {
                 cluster: cluster.name,

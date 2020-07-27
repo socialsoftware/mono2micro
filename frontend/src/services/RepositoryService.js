@@ -218,4 +218,17 @@ export class RepositoryService {
     getClusterControllers(codebaseName, dendrogramName, graphName) {
         return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/clusterControllers");
     }
+
+
+
+    //FunctionalityRedesign
+
+    addCompensating(codebaseName, dendrogramName, graphName, controllerName, clusterName, entities, fromID) {
+        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controller/" + controllerName + "/addCompensating",
+            {
+                fromID: fromID,
+                cluster : clusterName,
+                entities : entities
+            }, null);
+    }
 }

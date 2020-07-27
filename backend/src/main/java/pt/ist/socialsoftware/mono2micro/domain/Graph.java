@@ -187,6 +187,7 @@ public class Graph {
 				}
 				entitiesSeq.put(clusterAccess);
 				controller.addEntitiesSeq(entitiesSeq);
+				controller.addFunctionalityRedesign();
 			}
 		}
 	}
@@ -332,5 +333,14 @@ public class Graph {
 
 		Metrics metrics = new Metrics(this);
 		metrics.calculateMetrics();
+	}
+
+	public Controller getController(String controllerName) {
+
+		for (Controller controller : this.controllers) {
+			if(controller.getName().equals(controllerName))
+				return  controller;
+		}
+		return null;
 	}
 }

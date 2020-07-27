@@ -1,7 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,6 +11,7 @@ public class Controller {
 	private float complexity;
 	private Map<String, String> entities = new HashMap<>();
 	private String entitiesSeq = "[]";
+	private List<LocalTransaction> functionalityRedesign = new ArrayList<>();
 
 	public Controller() {
 	}
@@ -64,7 +64,47 @@ public class Controller {
 		this.entitiesSeq = entitiesSeq;
 	}
 
-	public void addEntitiesSeq(JSONArray entitiesSeq) {
+	public void addEntitiesSeq(JSONArray entitiesSeq) throws JSONException {
 		this.setEntitiesSeq(entitiesSeq.toString());
+	}
+
+	public List<LocalTransaction> getFunctionalityRedesign() {
+		return functionalityRedesign;
+	}
+
+	public void setFunctionalityRedesign(List<LocalTransaction> functionalityRedesign) {
+		this.functionalityRedesign = functionalityRedesign;
+	}
+
+	public void addFunctionalityRedesign() throws JSONException {
+		JSONArray sequence = new JSONArray(this.entitiesSeq);
+
+		for(int i=0; i < sequence.length(); i++){
+			LocalTransaction lt = new LocalTransaction(Integer.toString(i),
+					sequence.getJSONObject(i).getString("cluster"),
+					sequence.getJSONObject(i).getString("sequence"),
+					new ArrayList<Integer>());
+
+			this.functionalityRedesign.add(lt);
+
+			if(i > 0) {
+				this.functionalityRedesign.get(i-1).getRemoteInvocations().add(i);
+			}
+		}
+	}
+
+	public List<LocalTransaction> addCompensating(String clusterName, String entities, String fromID) {
+		int maxID = this.functionalityRedesign.stream().map(lt -> Integer.parseInt(lt.getId())).max(Integer::compare).get();
+		LocalTransaction newLT = new LocalTransaction(String.valueOf(maxID+1),clusterName,entities,new ArrayList<Integer>());
+
+		LocalTransaction caller = this.functionalityRedesign.stream().filter(lt -> lt.getId().equals(fromID)).findFirst().orElse(null);
+
+		if(caller != null){
+			this.functionalityRedesign.add(newLT);
+			caller.getRemoteInvocations().add(maxID+1);
+			return this.functionalityRedesign;
+		} else {
+			return null;
+		}
 	}
 }
