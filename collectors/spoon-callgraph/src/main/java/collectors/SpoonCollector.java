@@ -1,9 +1,6 @@
 package collectors;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import org.apache.commons.io.FileUtils;
 import spoon.DecompiledResource;
 import spoon.Launcher;
@@ -28,7 +25,6 @@ public abstract class SpoonCollector {
     private JsonArray entitiesSequence;
     private boolean foundAccess;
 
-    private List<String> callSequenceEntryPoints;
     private HashMap<String, Node> entitiesSequenceHashMap;
     protected String currentParentNodeId;
 
@@ -53,7 +49,6 @@ public abstract class SpoonCollector {
         }
 
         callSequence = new JsonObject();
-        callSequenceEntryPoints = new ArrayList<>();
         controllers = new HashSet<>();
         allEntities = new ArrayList<>();
         allDomainEntities = new ArrayList<>();
@@ -175,9 +170,23 @@ public abstract class SpoonCollector {
             methodCallDFS(controllerMethod, null, methodStack, nextNodeIdStack);
 
             if (foundAccess) {
-                callSequenceEntryPoints.add(controllerMethod.getPosition().toString());
+                traverseGraph(controllerMethod.toString(), new ArrayList<>());
                 callSequence.add(controller.getSimpleName() + "." + controllerMethod.getSimpleName(), entitiesSequence);
             }
+        }
+    }
+
+    private void traverseGraph(String nodeId, List<JsonArray> localAccesses) {
+        Node source = getGraphNode(nodeId);
+        localAccesses.add(source.getEntitiesSequence());
+
+        if (source.getEdges().size() == 0) {
+            localAccesses.forEach(ja -> System.out.print(ja.toString()));
+            System.out.println("");
+        }
+        else {
+            for (Node node : source.getEdges())
+                traverseGraph(node.getId(), localAccesses);
         }
     }
 
