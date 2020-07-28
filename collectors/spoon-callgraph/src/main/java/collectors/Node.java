@@ -6,21 +6,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Node {
-    private MySourcePosition id;
+    private List<MySourcePosition> id;
     private JsonArray entitiesSequence;
     private List<Node> edges; // links to other nodes
 
-    public Node(MySourcePosition id) {
+    public Node(List<MySourcePosition> id) {
         this.id = id;
         this.entitiesSequence = new JsonArray();
         this.edges = new ArrayList<>();
     }
 
-    public MySourcePosition getId() {
+    public List<MySourcePosition> getId() {
         return id;
     }
 
-    public void setId(MySourcePosition id) {
+    public void setId(List<MySourcePosition> id) {
         this.id = id;
     }
 

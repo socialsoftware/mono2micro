@@ -74,13 +74,13 @@ public class FenixFrameworkCollector extends SpoonCollector {
             CtExecutable callerMethod,
             CtAbstractInvocation prevCalleeLocation,
             Stack<SourcePosition> methodStack,
-            Stack<MySourcePosition> toReturnNodeIdStack
-    ) {
+            Stack<List<MySourcePosition>> toReturnNodeIdStack,
+            ArrayList<MySourcePosition> idPrev) {
         methodStack.push(callerMethod.getPosition());
-
+        ArrayList<MySourcePosition> id = new ArrayList<>(idPrev);
         callerMethod.accept(new CtScanner() {
             private boolean lastStatementWasReturnValue;
-            private Stack<MySourcePosition> branchOriginNodeId = new Stack<MySourcePosition>();
+            private Stack<List<MySourcePosition>> branchOriginNodeId = new Stack<List<MySourcePosition>>();
             private Stack<Boolean> lastStatementWasReturnStack = new Stack<>();
             private Stack<Node> afterNode = new Stack<>();
 
@@ -104,7 +104,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
                     }
                     else if (allEntities.contains(calleeLocation.getExecutable().getDeclaringType().getSimpleName())) {
                         if (!methodStack.contains(calleeLocation.getExecutable().getExecutableDeclaration().getPosition())) {
-                            methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), calleeLocation, methodStack, toReturnNodeIdStack);
+                            methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), calleeLocation, methodStack, toReturnNodeIdStack, id);
                         }
                     }
                 } catch (Exception e) {
@@ -114,14 +114,16 @@ public class FenixFrameworkCollector extends SpoonCollector {
 
             @Override
             public <S> void visitCtSwitch(CtSwitch<S> switchStatement) {
-                afterNode.push(createGraphNode(new MySourcePosition(switchStatement.getPosition(), true, false, switchStatement.toString()+"END")));
+                id.add(new MySourcePosition(switchStatement.getPosition(), true, false, switchStatement.toString()+"END"));
+                afterNode.push(createGraphNode(id));
                 super.visitCtSwitch(switchStatement);
                 currentParentNodeId = afterNode.pop().getId();
             }
 
             @Override
             public <T, S> void visitCtSwitchExpression(CtSwitchExpression<T, S> switchExpression) {
-                afterNode.push(createGraphNode(new MySourcePosition(switchExpression.getPosition(), true, false, switchExpression.toString()+"END")));
+                id.add(new MySourcePosition(switchExpression.getPosition(), true, false, switchExpression.toString()+"END"));
+                afterNode.push(createGraphNode(id));
                 super.visitCtSwitchExpression(switchExpression);
                 currentParentNodeId = afterNode.pop().getId();
             }
@@ -135,7 +137,8 @@ public class FenixFrameworkCollector extends SpoonCollector {
 
             @Override
             public <R> void visitCtBlock(CtBlock<R> block) {
-                afterNode.push(createGraphNode(new MySourcePosition(block.getPosition(), true, false, block.toString()+"END")));
+                id.add(new MySourcePosition(block.getPosition(), true, false, block.toString()+"END"));
+                afterNode.push(createGraphNode(id));
                 lastStatementWasReturnStack.push(false);
                 super.visitCtBlock(block);
                 lastStatementWasReturnValue = lastStatementWasReturnStack.pop();
@@ -197,7 +200,8 @@ public class FenixFrameworkCollector extends SpoonCollector {
                     case CATCH:
                     case BODY:
                         if (element != null) {
-                            elementNode = createGraphNode(new MySourcePosition(element.getPosition(), false, false, element.toString()));
+                            id.add(new MySourcePosition(element.getPosition(), false, false, element.toString()));
+                            elementNode = createGraphNode(id);
 
                             // corner case of cases without breaks/returns
                             if (role.equals(CtRole.CASE) && element.getParent() instanceof CtSwitch) {
@@ -256,7 +260,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
                                 else {
                                     // estamos no fim do metodo e nao há next, temos que voltar para o metodo anterior
                                     if (!toReturnNodeIdStack.isEmpty()) {
-                                        MySourcePosition peekId = toReturnNodeIdStack.peek();
+                                        List<MySourcePosition> peekId = toReturnNodeIdStack.peek();
                                         linkNodes(currentParentNodeId, peekId);
                                     }
                                 }
@@ -265,7 +269,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
                                 // branch that ended in return
                                 // must be linked to the end of the method execution
                                 if (!toReturnNodeIdStack.isEmpty()) {
-                                    MySourcePosition peekId = toReturnNodeIdStack.peek();
+                                    List<MySourcePosition> peekId = toReturnNodeIdStack.peek();
                                     linkNodes(currentParentNodeId, peekId);
                                 }
                             }
@@ -276,28 +280,32 @@ public class FenixFrameworkCollector extends SpoonCollector {
 
             @Override
             public void visitCtFor(CtFor forLoop) {
-                afterNode.push(createGraphNode(new MySourcePosition(forLoop.getPosition(), true, false, forLoop.toString()+"END")));
+                id.add(new MySourcePosition(forLoop.getPosition(), true, false, forLoop.toString()+"END"));
+                afterNode.push(createGraphNode(id));
                 super.visitCtFor(forLoop);
                 currentParentNodeId = afterNode.pop().getId();
             }
 
             @Override
             public void visitCtForEach(CtForEach foreach) {
-                afterNode.push(createGraphNode(new MySourcePosition(foreach.getPosition(), true, false, foreach.toString()+"END")));
+                id.add(new MySourcePosition(foreach.getPosition(), true, false, foreach.toString()+"END"));
+                afterNode.push(createGraphNode(id));
                 super.visitCtForEach(foreach);
                 currentParentNodeId = afterNode.pop().getId();
             }
 
             @Override
             public void visitCtIf(CtIf ifElement) {
-                afterNode.push(createGraphNode(new MySourcePosition(ifElement.getPosition(), true, false, ifElement.toString()+"END")));
+                id.add(new MySourcePosition(ifElement.getPosition(), true, false, ifElement.toString()+"END"));
+                afterNode.push(createGraphNode(id));
                 super.visitCtIf(ifElement);
                 currentParentNodeId = afterNode.pop().getId();
             }
 
             @Override
             public <T> void visitCtLambda(CtLambda<T> lambda) {
-                afterNode.push(createGraphNode(new MySourcePosition(lambda.getPosition(), true, false, lambda.toString()+"END")));
+                id.add(new MySourcePosition(lambda.getPosition(), true, false, lambda.toString()+"END"));
+                afterNode.push(createGraphNode(id));
                 // lambda have a surrounding context, such as methods
                 toReturnNodeIdStack.push(afterNode.peek().getId());
                 super.visitCtLambda(lambda);
@@ -314,28 +322,32 @@ public class FenixFrameworkCollector extends SpoonCollector {
 
             @Override
             public <T> void visitCtConditional(CtConditional<T> conditional) {
-                afterNode.push(createGraphNode(new MySourcePosition(conditional.getPosition(), true, false, conditional.toString()+"END")));
+                id.add(new MySourcePosition(conditional.getPosition(), true, false, conditional.toString()+"END"));
+                afterNode.push(createGraphNode(id));
                 super.visitCtConditional(conditional);
                 currentParentNodeId = afterNode.pop().getId();
             }
 
             @Override
             public void visitCtWhile(CtWhile whileLoop) {
-                afterNode.push(createGraphNode(new MySourcePosition(whileLoop.getPosition(), true, false, whileLoop.toString()+"END")));
+                id.add(new MySourcePosition(whileLoop.getPosition(), true, false, whileLoop.toString()+"END"));
+                afterNode.push(createGraphNode(id));
                 super.visitCtWhile(whileLoop);
                 currentParentNodeId = afterNode.pop().getId();
             }
 
             @Override
             public void visitCtTryWithResource(CtTryWithResource tryWithResource) {
-                afterNode.push(createGraphNode(new MySourcePosition(tryWithResource.getPosition(), true, false, tryWithResource.toString()+"END")));
+                id.add(new MySourcePosition(tryWithResource.getPosition(), true, false, tryWithResource.toString()+"END"));
+                afterNode.push(createGraphNode(id));
                 super.visitCtTryWithResource(tryWithResource);
                 currentParentNodeId = afterNode.pop().getId();
             }
 
             @Override
             public void visitCtTry(CtTry tryBlock) {
-                afterNode.push(createGraphNode(new MySourcePosition(tryBlock.getPosition(), true, false, tryBlock.toString()+"END")));
+                id.add(new MySourcePosition(tryBlock.getPosition(), true, false, tryBlock.toString()+"END"));
+                afterNode.push(createGraphNode(id));
                 super.visitCtTry(tryBlock);
                 currentParentNodeId = afterNode.pop().getId();
             }
@@ -354,7 +366,8 @@ public class FenixFrameworkCollector extends SpoonCollector {
                         System.exit(1);
                     }
                 }
-                afterNode.push(createGraphNode(new MySourcePosition(position, true, isSuper, invocation.toString()+"END")));
+                id.add(new MySourcePosition(position, true, isSuper, invocation.toString()+"END"));
+                afterNode.push(createGraphNode(id));
                 toReturnNodeIdStack.push(afterNode.peek().getId());
                 super.visitCtInvocation(invocation);
                 postVisitCtAbstractInvocation(invocation);
@@ -367,7 +380,8 @@ public class FenixFrameworkCollector extends SpoonCollector {
                     System.err.println("NoSourcePosition unexpected");
                     System.exit(1);
                 }
-                afterNode.push(createGraphNode(new MySourcePosition(position, true, false, ctConstructorCall.toString()+"END")));
+                id.add(new MySourcePosition(position, true, false, ctConstructorCall.toString()+"END"));
+                afterNode.push(createGraphNode(id));
                 toReturnNodeIdStack.push(afterNode.peek().getId());
                 super.visitCtConstructorCall(ctConstructorCall);
                 postVisitCtAbstractInvocation(ctConstructorCall);
@@ -375,7 +389,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
 
             private <T> void postVisitCtAbstractInvocation(CtAbstractInvocation<T> invocation) {
                 // test
-                MySourcePosition currentBefore = new MySourcePosition(currentParentNodeId);
+                List<MySourcePosition> currentBefore = new ArrayList<>(currentParentNodeId);
                 visitCtAbstractInvocation(invocation);
 
                 toReturnNodeIdStack.pop();

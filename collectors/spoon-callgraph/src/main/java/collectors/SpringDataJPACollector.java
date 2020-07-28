@@ -466,7 +466,7 @@ public class SpringDataJPACollector extends SpoonCollector {
     }
 
     @Override
-    public void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<SourcePosition> methodStack, Stack<MySourcePosition> nextNodeIdStack) {
+    public void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<SourcePosition> methodStack, Stack<List<MySourcePosition>> nextNodeIdStack, ArrayList<MySourcePosition> id) {
         methodStack.push(callerMethod.getPosition());
 
         callerMethod.accept(new CtScanner() {
@@ -529,7 +529,7 @@ public class SpringDataJPACollector extends SpoonCollector {
                     }
                     else if (allEntities.contains(calleeLocation.getExecutable().getDeclaringType().getSimpleName())) {
                         if (!methodStack.contains(calleeLocation.getExecutable().getExecutableDeclaration().getPosition())) {
-                            methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), calleeLocation, methodStack, nextNodeIdStack);
+                            methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), calleeLocation, methodStack, nextNodeIdStack, id);
                         }
                     }
                 } catch (Exception e) {
