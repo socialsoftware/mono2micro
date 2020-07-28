@@ -25,8 +25,8 @@ public abstract class SpoonCollector {
     private JsonArray entitiesSequence;
     private boolean foundAccess;
 
-    private HashMap<String, Node> entitiesSequenceHashMap;
-    protected String currentParentNodeId;
+    private HashMap<MySourcePosition, Node> entitiesSequenceHashMap;
+    protected MySourcePosition currentParentNodeId;
 
     // all project classes
     ArrayList<String> allEntities;
@@ -159,24 +159,24 @@ public abstract class SpoonCollector {
                 return;
 
             entitiesSequence = new JsonArray();
-            entitiesSequenceHashMap = new HashMap<>();
+            entitiesSequenceHashMap = new HashMap<MySourcePosition, Node>();
             Stack<SourcePosition> methodStack = new Stack<>();
-            Stack<String> nextNodeIdStack = new Stack<>();
+            Stack<MySourcePosition> nextNodeIdStack = new Stack<>();
             foundAccess = false;
 
             // create graph node begin
-            Node beginNode = createGraphNode(controllerMethod.toString());
+            Node beginNode = createGraphNode(new MySourcePosition(controllerMethod.getPosition(), false, false, controllerMethod.toString()));
             currentParentNodeId = beginNode.getId();
             methodCallDFS(controllerMethod, null, methodStack, nextNodeIdStack);
 
             if (foundAccess) {
-                traverseGraph(controllerMethod.toString(), new ArrayList<>());
+                traverseGraph(new MySourcePosition(controllerMethod.getPosition(), false, false, controllerMethod.toString()), new ArrayList<>());
                 callSequence.add(controller.getSimpleName() + "." + controllerMethod.getSimpleName(), entitiesSequence);
             }
         }
     }
 
-    private void traverseGraph(String nodeId, List<JsonArray> localAccesses) {
+    private void traverseGraph(MySourcePosition nodeId, List<JsonArray> localAccesses) {
         Node source = getGraphNode(nodeId);
         localAccesses.add(source.getEntitiesSequence());
 
@@ -186,11 +186,11 @@ public abstract class SpoonCollector {
         }
         else {
             for (Node node : source.getEdges())
-                traverseGraph(node.getId(), localAccesses);
+                traverseGraph(node.getId(), new ArrayList<>(localAccesses));
         }
     }
 
-    abstract void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<SourcePosition> methodStack, Stack<String> nextNodeIdStack);
+    abstract void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<SourcePosition> methodStack, Stack<MySourcePosition> nextNodeIdStack);
 
     abstract void collectControllersAndEntities();
 
@@ -220,13 +220,13 @@ public abstract class SpoonCollector {
         }
     }
 
-    Node createGraphNode(String id) {
+    Node createGraphNode(MySourcePosition id) {
         Node newNode = new Node(id);
         entitiesSequenceHashMap.put(id, newNode);
         return newNode;
     }
 
-    Node getGraphNode(String id) {
+    Node getGraphNode(MySourcePosition id) {
         return entitiesSequenceHashMap.get(id);
     }
 
@@ -234,11 +234,11 @@ public abstract class SpoonCollector {
         entitiesSequenceHashMap.remove(id);
     }
 
-    void linkNodes(String originNodeId, String destNodeId) {
+    void linkNodes(MySourcePosition originNodeId, MySourcePosition destNodeId) {
         entitiesSequenceHashMap.get(originNodeId).addEdge(entitiesSequenceHashMap.get(destNodeId));
     }
 
-    void unlinkLast(String id) {
+    void unlinkLast(MySourcePosition id) {
         entitiesSequenceHashMap.get(id).removeLastEdge();
     }
 

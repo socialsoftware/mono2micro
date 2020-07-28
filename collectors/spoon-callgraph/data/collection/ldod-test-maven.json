@@ -1,0 +1,24 @@
+{
+  "ToRemoveController.example6": [
+    [
+      "VirtualEdition",
+      "R"
+    ],
+    [
+      "VirtualEdition",
+      "R"
+    ],
+    [
+      "Edition",
+      "W"
+    ],
+    [
+      "LdoD",
+      "R"
+    ],
+    [
+      "LdoDUser",
+      "R"
+    ]
+  ]
+}
