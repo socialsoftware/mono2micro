@@ -155,8 +155,8 @@ public abstract class SpoonCollector {
             System.out.println("Processing Controller: " + controllerFullName + "   " + controllerCount + "/" + controllers.size());
 
             /* TO REMOVE */
-            if (!controllerFullName.contains("ToRemoveController"))
-                return;
+            if (!controllerFullName.contains("getUserContributions"))
+                continue;
 
             entitiesSequence = new JsonArray();
             entitiesSequenceHashMap = new HashMap<MySourcePosition, Node>();
@@ -172,6 +172,7 @@ public abstract class SpoonCollector {
             if (foundAccess) {
                 traverseGraph(new MySourcePosition(controllerMethod.getPosition(), false, false, controllerMethod.toString()), new ArrayList<>());
                 callSequence.add(controller.getSimpleName() + "." + controllerMethod.getSimpleName(), entitiesSequence);
+                System.out.println(entitiesSequence.toString());
             }
         }
     }
@@ -181,7 +182,10 @@ public abstract class SpoonCollector {
         localAccesses.add(source.getEntitiesSequence());
 
         if (source.getEdges().size() == 0) {
-            localAccesses.forEach(ja -> System.out.print(ja.toString()));
+            localAccesses.forEach(ja -> {
+                if (ja.size() != 0)
+                    System.out.print(ja.toString());
+            });
             System.out.println("");
         }
         else {
