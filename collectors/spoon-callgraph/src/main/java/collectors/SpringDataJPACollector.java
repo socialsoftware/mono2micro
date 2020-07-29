@@ -466,7 +466,7 @@ public class SpringDataJPACollector extends SpoonCollector {
     }
 
     @Override
-    public void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<SourcePosition> methodStack, Stack<List<MySourcePosition>> nextNodeIdStack, ArrayList<MySourcePosition> id) {
+    public void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<SourcePosition> methodStack, Stack<Container<MySourcePosition>> nextNodeIdStack, Container<MySourcePosition> id) {
         methodStack.push(callerMethod.getPosition());
 
         callerMethod.accept(new CtScanner() {

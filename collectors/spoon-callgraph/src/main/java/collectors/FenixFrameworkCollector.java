@@ -74,13 +74,13 @@ public class FenixFrameworkCollector extends SpoonCollector {
             CtExecutable callerMethod,
             CtAbstractInvocation prevCalleeLocation,
             Stack<SourcePosition> methodStack,
-            Stack<List<MySourcePosition>> toReturnNodeIdStack,
-            ArrayList<MySourcePosition> idPrev) {
+            Stack<Container<MySourcePosition>> toReturnNodeIdStack,
+            Container<MySourcePosition> idPrev) {
         methodStack.push(callerMethod.getPosition());
-        ArrayList<MySourcePosition> id = new ArrayList<>(idPrev);
+        Container<MySourcePosition> id = new Container<>(idPrev);
         callerMethod.accept(new CtScanner() {
             private boolean lastStatementWasReturnValue;
-            private Stack<List<MySourcePosition>> branchOriginNodeId = new Stack<List<MySourcePosition>>();
+            private Stack<Container<MySourcePosition>> branchOriginNodeId = new Stack<>();
             private Stack<Boolean> lastStatementWasReturnStack = new Stack<>();
             private Stack<Node> afterNode = new Stack<>();
 
@@ -260,7 +260,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
                                 else {
                                     // estamos no fim do metodo e nao há next, temos que voltar para o metodo anterior
                                     if (!toReturnNodeIdStack.isEmpty()) {
-                                        List<MySourcePosition> peekId = toReturnNodeIdStack.peek();
+                                        Container<MySourcePosition> peekId = toReturnNodeIdStack.peek();
                                         linkNodes(currentParentNodeId, peekId);
                                     }
                                 }
@@ -269,7 +269,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
                                 // branch that ended in return
                                 // must be linked to the end of the method execution
                                 if (!toReturnNodeIdStack.isEmpty()) {
-                                    List<MySourcePosition> peekId = toReturnNodeIdStack.peek();
+                                    Container<MySourcePosition> peekId = toReturnNodeIdStack.peek();
                                     linkNodes(currentParentNodeId, peekId);
                                 }
                             }
@@ -299,17 +299,6 @@ public class FenixFrameworkCollector extends SpoonCollector {
                 id.add(new MySourcePosition(ifElement.getPosition(), true, false, ifElement.toString()+"END"));
                 afterNode.push(createGraphNode(id));
                 super.visitCtIf(ifElement);
-                currentParentNodeId = afterNode.pop().getId();
-            }
-
-            @Override
-            public <T> void visitCtLambda(CtLambda<T> lambda) {
-                id.add(new MySourcePosition(lambda.getPosition(), true, false, lambda.toString()+"END"));
-                afterNode.push(createGraphNode(id));
-                // lambda have a surrounding context, such as methods
-                toReturnNodeIdStack.push(afterNode.peek().getId());
-                super.visitCtLambda(lambda);
-                toReturnNodeIdStack.pop();
                 currentParentNodeId = afterNode.pop().getId();
             }
 
@@ -353,6 +342,27 @@ public class FenixFrameworkCollector extends SpoonCollector {
             }
 
             @Override
+            public <T> void visitCtLambda(CtLambda<T> lambda) {
+                id.add(new MySourcePosition(lambda.getPosition(), true, false, lambda.toString()+"END"));
+                afterNode.push(createGraphNode(id));
+                // lambda have a surrounding context, such as methods
+                toReturnNodeIdStack.push(afterNode.peek().getId());
+                Container<MySourcePosition> currentBefore = new Container<>(currentParentNodeId);
+                super.visitCtLambda(lambda);
+
+                if (lambda.getBody() == null) {
+                    // No block means CtBlock wasn't visited and the end of the expression won't be connected
+                    // to any node. We have to manually link it to the node next to the the lambda expression
+                    Container<MySourcePosition> peekId = toReturnNodeIdStack.peek();
+                    linkNodes(currentParentNodeId, peekId);
+                }
+
+                toReturnNodeIdStack.pop();
+
+                currentParentNodeId = afterNode.pop().getId();
+            }
+
+            @Override
             public <T> void visitCtInvocation(CtInvocation<T> invocation) {
                 SourcePosition position = invocation.getPosition();
                 boolean isSuper = false;
@@ -389,7 +399,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
 
             private <T> void postVisitCtAbstractInvocation(CtAbstractInvocation<T> invocation) {
                 // test
-                List<MySourcePosition> currentBefore = new ArrayList<>(currentParentNodeId);
+                Container<MySourcePosition> currentBefore = new Container<>(currentParentNodeId);
                 visitCtAbstractInvocation(invocation);
 
                 toReturnNodeIdStack.pop();

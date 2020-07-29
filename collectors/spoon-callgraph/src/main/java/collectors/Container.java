@@ -1,5 +1,6 @@
 package collectors;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -10,11 +11,13 @@ public class Container<T> {
         this.list = list;
     }
 
+    public Container(Container<T> id) {
+        this.list = new ArrayList<>(id.list);
+    }
+
     @Override
     public String toString() {
-        return "Container{" +
-                "last=" + list.get(list.size()-1).toString() +
-                '}';
+        return list.get(list.size()-1).toString();
     }
 
     @Override
@@ -28,5 +31,9 @@ public class Container<T> {
     @Override
     public int hashCode() {
         return Objects.hash(list);
+    }
+
+    public void add(T item) {
+        list.add(item);
     }
 }

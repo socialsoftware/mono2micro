@@ -25,8 +25,8 @@ public abstract class SpoonCollector {
     private JsonArray entitiesSequence;
     private boolean foundAccess;
 
-    private HashMap<List<MySourcePosition>, Node> entitiesSequenceHashMap;
-    protected List<MySourcePosition> currentParentNodeId;
+    private HashMap<Container<MySourcePosition>, Node> entitiesSequenceHashMap;
+    protected Container<MySourcePosition> currentParentNodeId;
 
     // all project classes
     ArrayList<String> allEntities;
@@ -155,31 +155,37 @@ public abstract class SpoonCollector {
             System.out.println("Processing Controller: " + controllerFullName + "   " + controllerCount + "/" + controllers.size());
 
             /* TO REMOVE */
-            if (!controllerFullName.contains("getUserContributions"))
-                continue;
+//            if (!controllerFullName.contains("getUserContributions"))
+//                continue;
 
             entitiesSequence = new JsonArray();
             entitiesSequenceHashMap = new HashMap<>();
             Stack<SourcePosition> methodStack = new Stack<>();
-            Stack<List<MySourcePosition>> nextNodeIdStack = new Stack<>();
+            Stack<Container<MySourcePosition>> nextNodeIdStack = new Stack<>();
             foundAccess = false;
 
             // create graph node begin
             ArrayList<MySourcePosition> id = new ArrayList<>();
             id.add(new MySourcePosition(controllerMethod.getPosition(), false, false, controllerMethod.toString()));
-            Node beginNode = createGraphNode(id);
+            Container<MySourcePosition> idC = new Container<>(id);
+            Node beginNode = createGraphNode(idC);
             currentParentNodeId = beginNode.getId();
-            methodCallDFS(controllerMethod, null, methodStack, nextNodeIdStack, id);
+            methodCallDFS(controllerMethod, null, methodStack, nextNodeIdStack, idC);
 
             if (foundAccess) {
-                traverseGraph(id, new ArrayList<>());
+                optimizeGraph(idC);
+                traverseGraph(idC, new ArrayList<>());
                 callSequence.add(controller.getSimpleName() + "." + controllerMethod.getSimpleName(), entitiesSequence);
                 System.out.println(entitiesSequence.toString());
             }
         }
     }
 
-    private void traverseGraph(List<MySourcePosition> nodeId, List<JsonArray> localAccesses) {
+    private void optimizeGraph(Container<MySourcePosition> nodeId) {
+        
+    }
+
+    private void traverseGraph(Container<MySourcePosition> nodeId, List<JsonArray> localAccesses) {
         Node source = getGraphNode(nodeId);
         localAccesses.add(source.getEntitiesSequence());
 
@@ -196,7 +202,7 @@ public abstract class SpoonCollector {
         }
     }
 
-    abstract void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<SourcePosition> methodStack, Stack<List<MySourcePosition>> nextNodeIdStack, ArrayList<MySourcePosition> id);
+    abstract void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<SourcePosition> methodStack, Stack<Container<MySourcePosition>> nextNodeIdStack, Container<MySourcePosition> id);
 
     abstract void collectControllersAndEntities();
 
@@ -226,25 +232,21 @@ public abstract class SpoonCollector {
         }
     }
 
-    Node createGraphNode(List<MySourcePosition> id) {
-        Node newNode = new Node(new ArrayList<>(id));
-        entitiesSequenceHashMap.put(new ArrayList<>(id), newNode);
+    Node createGraphNode(Container<MySourcePosition> id) {
+        Node newNode = new Node(new Container<MySourcePosition>(id));
+        entitiesSequenceHashMap.put(new Container<MySourcePosition>(id), newNode);
         return newNode;
     }
 
-    Node getGraphNode(List<MySourcePosition> id) {
+    Node getGraphNode(Container<MySourcePosition> id) {
         return entitiesSequenceHashMap.get(id);
     }
 
-    void removeGraphNode(String id) {
-        entitiesSequenceHashMap.remove(id);
-    }
-
-    void linkNodes(List<MySourcePosition> originNodeId, List<MySourcePosition> destNodeId) {
+    void linkNodes(Container<MySourcePosition> originNodeId, Container<MySourcePosition> destNodeId) {
         entitiesSequenceHashMap.get(originNodeId).addEdge(entitiesSequenceHashMap.get(destNodeId));
     }
 
-    void unlinkLast(List<MySourcePosition> id) {
+    void unlinkLast(Container<MySourcePosition> id) {
         entitiesSequenceHashMap.get(id).removeLastEdge();
     }
 

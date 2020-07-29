@@ -6,21 +6,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Node {
-    private List<MySourcePosition> id;
+    private Container<MySourcePosition> id;
     private JsonArray entitiesSequence;
     private List<Node> edges; // links to other nodes
 
-    public Node(List<MySourcePosition> id) {
+    public Node(Container<MySourcePosition> id) {
         this.id = id;
         this.entitiesSequence = new JsonArray();
         this.edges = new ArrayList<>();
     }
 
-    public List<MySourcePosition> getId() {
+    public Container<MySourcePosition> getId() {
         return id;
     }
 
-    public void setId(List<MySourcePosition> id) {
+    public void setId(Container<MySourcePosition> id) {
         this.id = id;
     }
 
@@ -43,5 +43,10 @@ public class Node {
 
     public void removeLastEdge() {
         edges.remove(edges.size()-1);
+    }
+
+    @Override
+    public String toString() {
+        return id.list.get(id.list.size() - 1).toString();
     }
 }
