@@ -9,11 +9,13 @@ public class Node {
     private Container<MySourcePosition> id;
     private JsonArray entitiesSequence;
     private List<Node> edges; // links to other nodes
+    private List<Node> parents;
 
     public Node(Container<MySourcePosition> id) {
         this.id = id;
         this.entitiesSequence = new JsonArray();
         this.edges = new ArrayList<>();
+        this.parents = new ArrayList<>();
     }
 
     public Container<MySourcePosition> getId() {
@@ -41,12 +43,29 @@ public class Node {
             this.edges.add(node);
     }
 
-    public void removeLastEdge() {
-        edges.remove(edges.size()-1);
+    public void removeEdge(Node node) {
+        this.edges.remove(node);
+    }
+
+    public Node removeLastEdge() {
+        return edges.remove(edges.size()-1);
     }
 
     @Override
     public String toString() {
-        return id.list.get(id.list.size() - 1).toString();
+        return id.toString();
+    }
+
+    public void addParent(Node parent) {
+        if (!this.parents.contains(parent))
+            this.parents.add(parent);
+    }
+
+    public List<Node> getParents() {
+        return parents;
+    }
+
+    public void removeParent(Node node) {
+        parents.remove(node);
     }
 }

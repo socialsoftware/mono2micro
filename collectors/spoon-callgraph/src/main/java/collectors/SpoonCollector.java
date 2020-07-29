@@ -27,6 +27,7 @@ public abstract class SpoonCollector {
 
     private HashMap<Container<MySourcePosition>, Node> entitiesSequenceHashMap;
     protected Container<MySourcePosition> currentParentNodeId;
+    private Set<Container<MySourcePosition>> optimizationProcessVisited;
 
     // all project classes
     ArrayList<String> allEntities;
@@ -155,7 +156,7 @@ public abstract class SpoonCollector {
             System.out.println("Processing Controller: " + controllerFullName + "   " + controllerCount + "/" + controllers.size());
 
             /* TO REMOVE */
-//            if (!controllerFullName.contains("getUserContributions"))
+//            if (!controllerFullName.contains("ToRemoveController"))
 //                continue;
 
             entitiesSequence = new JsonArray();
@@ -173,32 +174,76 @@ public abstract class SpoonCollector {
             methodCallDFS(controllerMethod, null, methodStack, nextNodeIdStack, idC);
 
             if (foundAccess) {
-                optimizeGraph(idC);
-                traverseGraph(idC, new ArrayList<>());
+                System.out.println("Optimizing controller graph...");
+                // child (controller method block begin) of the root node (controller node)
+                optimizationProcessVisited = new HashSet<>();
+                optimizeGraph(getGraphNode(idC).getEdges().get(0).getId());
+                optimizationProcessVisited = null;
+//                count = new String[entitiesSequenceHashMap.size()];
+//                countEdges(getGraphNode(idC), 0);
+//                for (int i = 0; i < count.length; i++) {
+//                    System.out.println(count[i]);
+//                }
+                System.out.println("Traversing controller graph...");
+                traverseGraph(idC, new ArrayList<>(), 0);
                 callSequence.add(controller.getSimpleName() + "." + controllerMethod.getSimpleName(), entitiesSequence);
-                System.out.println(entitiesSequence.toString());
+//                System.out.println(entitiesSequence.toString());
             }
         }
     }
 
-    private void optimizeGraph(Container<MySourcePosition> nodeId) {
-        
+    String[] count;
+    private void countEdges(Node n, int i) {
+        if (count[i] == null)
+            count[i] = "" + n.getEdges().size();
+        else
+            count[i] += "," + n.getEdges().size();
+        for (Node child : n.getEdges())
+            countEdges(child, i+1);
     }
 
-    private void traverseGraph(Container<MySourcePosition> nodeId, List<JsonArray> localAccesses) {
+    private void optimizeGraph(Container<MySourcePosition> nodeId) {
+        if (optimizationProcessVisited.contains(nodeId))
+            return; // reached by another branch, everything in front of this node is already optimized
+
+        Node node = getGraphNode(nodeId);
+        if (node == null)
+            return;
+
+        List<Node> children = new ArrayList<>(node.getEdges());
+        if (node.getEntitiesSequence().size() == 0) {
+            // delete node from graph
+            List<Node> parents = new ArrayList<>(node.getParents());
+            for (Node parent : parents) {
+                unlinkEdge(parent, node);
+                for (Node child : children) {
+                    unlinkEdge(node, child);
+                    linkNodes(parent, child);
+                }
+            }
+            removeGraphNode(node.getId());
+        }
+
+        optimizationProcessVisited.add(nodeId);
+
+        for (Node child : children)
+            optimizeGraph(child.getId());
+    }
+
+    private void traverseGraph(Container<MySourcePosition> nodeId, List<JsonArray> localAccesses, int i) {
+//        System.out.println(i);
         Node source = getGraphNode(nodeId);
         localAccesses.add(source.getEntitiesSequence());
 
         if (source.getEdges().size() == 0) {
-            localAccesses.forEach(ja -> {
-                if (ja.size() != 0)
-                    System.out.print(ja.toString());
-            });
-            System.out.println("");
+//            System.out.println("TraceEnd");
+            JsonArray concat = new JsonArray();
+            localAccesses.forEach(concat::addAll);
+            System.out.println(concat.toString());
         }
         else {
             for (Node node : source.getEdges())
-                traverseGraph(node.getId(), new ArrayList<>(localAccesses));
+                traverseGraph(node.getId(), new ArrayList<>(localAccesses), i+1);
         }
     }
 
@@ -242,12 +287,29 @@ public abstract class SpoonCollector {
         return entitiesSequenceHashMap.get(id);
     }
 
+    void removeGraphNode(Container<MySourcePosition> id) {
+        entitiesSequenceHashMap.remove(id);
+    }
+
     void linkNodes(Container<MySourcePosition> originNodeId, Container<MySourcePosition> destNodeId) {
         entitiesSequenceHashMap.get(originNodeId).addEdge(entitiesSequenceHashMap.get(destNodeId));
+        entitiesSequenceHashMap.get(destNodeId).addParent(entitiesSequenceHashMap.get(originNodeId));
+    }
+
+    void linkNodes(Node origin, Node dest) {
+        origin.addEdge(dest);
+        dest.addParent(origin);
+    }
+
+    private void unlinkEdge(Node parent, Node node) {
+        parent.removeEdge(node);
+        node.removeParent(parent);
     }
 
     void unlinkLast(Container<MySourcePosition> id) {
-        entitiesSequenceHashMap.get(id).removeLastEdge();
+        Node node = entitiesSequenceHashMap.get(id);
+        Node oldChild = node.removeLastEdge();
+        oldChild.removeParent(node);
     }
 
     void addEntitiesSequenceAccess(String simpleName, String mode) {
