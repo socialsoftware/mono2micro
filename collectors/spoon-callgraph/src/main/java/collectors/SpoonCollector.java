@@ -1,5 +1,10 @@
 package collectors;
 
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.util.MinimalPrettyPrinter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.*;
 import org.apache.commons.io.FileUtils;
 import spoon.DecompiledResource;
@@ -11,9 +16,7 @@ import spoon.reflect.declaration.*;
 import spoon.reflect.factory.Factory;
 import util.Constants;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.lang.annotation.Annotation;
 import java.util.*;
 
@@ -22,12 +25,16 @@ public abstract class SpoonCollector {
     private String projectName;
 
     private JsonObject callSequence;
-    private JsonArray entitiesSequence;
+    private List<Trace> controllerTraces; // list of traces
+    private int traceId;
+    private List<Access> entitiesSequence;
     private boolean foundAccess;
 
     private HashMap<Container<MySourcePosition>, Node> entitiesSequenceHashMap;
     protected Container<MySourcePosition> currentParentNodeId;
     private Set<Container<MySourcePosition>> optimizationProcessVisited;
+    private HashMap<Container<MySourcePosition>, List<Access>> traverseProcessVisitedMap;
+    private JsonGenerator jGenerator;
 
     // all project classes
     ArrayList<String> allEntities;
@@ -37,8 +44,7 @@ public abstract class SpoonCollector {
     ArrayList<String> allDomainEntities;
 
     HashSet<CtClass> controllers;
-    Map<SourcePosition, List<CtAbstractInvocation>> methodCallees;
-    Map<String, List<CtType>> interfaces;
+    Map<String, List<CtType>> abstractClassesAndInterfacesImplementorsMap;
 
     Factory factory;
     Launcher launcher;
@@ -53,8 +59,7 @@ public abstract class SpoonCollector {
         controllers = new HashSet<>();
         allEntities = new ArrayList<>();
         allDomainEntities = new ArrayList<>();
-        methodCallees = new HashMap<>();
-        interfaces = new HashMap<>();
+        abstractClassesAndInterfacesImplementorsMap = new HashMap<>();
         foundAccess = false;
 
         this.projectName = repoName;
@@ -107,6 +112,9 @@ public abstract class SpoonCollector {
     public void run() throws IOException {
         factory = launcher.getFactory();
 
+        String fileName = projectName + ".json";
+        initJsonFile(Constants.COLLECTION_SAVE_PATH, fileName);
+
         System.out.println("Processing Project: " + projectName);
         long startTime = System.currentTimeMillis();
         collectControllersAndEntities();
@@ -122,8 +130,9 @@ public abstract class SpoonCollector {
         float elapsedTimeSec = elapsedTimeMillis/1000F;
         System.out.println("Complete. Elapsed time: " + elapsedTimeSec + " seconds");
 
-        String fileName = projectName + ".json";
-        storeJsonFile(Constants.COLLECTION_SAVE_PATH, fileName, callSequence);
+        // close jsonFile
+        jGenerator.writeEndObject();
+        jGenerator.close();
 
         File file = new File(Constants.DECOMPILED_SOURCES_PATH);
         if (file.exists()) {
@@ -131,7 +140,22 @@ public abstract class SpoonCollector {
         }
     }
 
-    private void processController(CtClass controller) {
+    private void initJsonFile(String filepath, String fileName) throws IOException {
+        File filePath = new File(filepath);
+        if (!filePath.exists()) {
+            filePath.mkdirs();
+        }
+
+        JsonFactory jsonfactory = new ObjectMapper().getFactory();
+        jGenerator = jsonfactory.createGenerator(
+                new FileOutputStream(new File(Constants.COLLECTION_SAVE_PATH, fileName)),
+                JsonEncoding.UTF8
+        );
+        jGenerator.setPrettyPrinter(new MinimalPrettyPrinter(""));
+        jGenerator.writeStartObject();
+    }
+
+    private void processController(CtClass controller) throws IOException {
         for (Object cM : controller.getMethods()) {
             CtMethod controllerMethod = (CtMethod) cM;
 
@@ -155,11 +179,10 @@ public abstract class SpoonCollector {
             String controllerFullName = controller.getSimpleName() + "." + controllerMethod.getSimpleName();
             System.out.println("Processing Controller: " + controllerFullName + "   " + controllerCount + "/" + controllers.size());
 
-            /* TO REMOVE */
 //            if (!controllerFullName.contains("ToRemoveController"))
 //                continue;
 
-            entitiesSequence = new JsonArray();
+            entitiesSequence = new ArrayList<>();
             entitiesSequenceHashMap = new HashMap<>();
             Stack<SourcePosition> methodStack = new Stack<>();
             Stack<Container<MySourcePosition>> nextNodeIdStack = new Stack<>();
@@ -179,27 +202,44 @@ public abstract class SpoonCollector {
                 optimizationProcessVisited = new HashSet<>();
                 optimizeGraph(getGraphNode(idC).getEdges().get(0).getId());
                 optimizationProcessVisited = null;
-//                count = new String[entitiesSequenceHashMap.size()];
-//                countEdges(getGraphNode(idC), 0);
-//                for (int i = 0; i < count.length; i++) {
-//                    System.out.println(count[i]);
-//                }
+
                 System.out.println("Traversing controller graph...");
-                traverseGraph(idC, new ArrayList<>(), 0);
-                callSequence.add(controller.getSimpleName() + "." + controllerMethod.getSimpleName(), entitiesSequence);
-//                System.out.println(entitiesSequence.toString());
+                traverseProcessVisitedMap = new HashMap<>();
+                controllerTraces = new ArrayList<>();
+                traceId = 0;
+                traverseGraphPathCoverage(getGraphNode(idC), new ArrayList<>());
+                traverseProcessVisitedMap = null;
+                updateJsonWithNewController(controllerFullName);
+                controllerTraces = null;
+//                callSequence.add(controller.getSimpleName() + "." + controllerMethod.getSimpleName(), entitiesSequence);
             }
         }
     }
 
-    String[] count;
-    private void countEdges(Node n, int i) {
-        if (count[i] == null)
-            count[i] = "" + n.getEdges().size();
-        else
-            count[i] += "," + n.getEdges().size();
-        for (Node child : n.getEdges())
-            countEdges(child, i+1);
+    private void updateJsonWithNewController(String controllerFullName) throws IOException {
+        jGenerator.writeFieldName(controllerFullName);
+        jGenerator.writeStartObject();
+        jGenerator.writeFieldName("traces");
+        jGenerator.writeStartArray();
+        jGenerator.writeRaw('\n');
+        for (Trace trace : controllerTraces) {
+//            jGenerator.writeObject(trace);
+            jGenerator.writeRaw('[');
+            for (Access a : trace.getAccesses()) {
+                jGenerator.writeRaw('[');
+                jGenerator.writeString(a.getEntity());
+                jGenerator.writeRaw(',');
+                jGenerator.writeString(a.getType().toString());
+                jGenerator.writeRaw(']');
+                jGenerator.writeRaw(',');
+            }
+            jGenerator.writeRaw(']');
+            jGenerator.writeRaw('\n');
+        }
+        jGenerator.writeEndArray();
+        jGenerator.writeEndObject();
+        jGenerator.writeRaw('\n');
+//        jGenerator.flush();
     }
 
     private void optimizeGraph(Container<MySourcePosition> nodeId) {
@@ -230,21 +270,37 @@ public abstract class SpoonCollector {
             optimizeGraph(child.getId());
     }
 
-    private void traverseGraph(Container<MySourcePosition> nodeId, List<JsonArray> localAccesses, int i) {
-//        System.out.println(i);
-        Node source = getGraphNode(nodeId);
-        localAccesses.add(source.getEntitiesSequence());
+    private List<Access> traverseGraphPathCoverage(Node node, List<Access> accessList) {
+        List<Node> children = new ArrayList<>(node.getEdges());
+        List<Access> nodeStoredValue = traverseProcessVisitedMap.get(node.getId());
 
-        if (source.getEdges().size() == 0) {
-//            System.out.println("TraceEnd");
-            JsonArray concat = new JsonArray();
-            localAccesses.forEach(concat::addAll);
-            System.out.println(concat.toString());
+        if (children.size() == 0 && nodeStoredValue == null) { // leaf not marked as visited yet
+            traverseProcessVisitedMap.put(node.getId(), node.getEntitiesSequence());
+            accessList.addAll(node.getEntitiesSequence());
+//            System.out.println(accessList.toString()); // path clear trace
+            controllerTraces.add(new Trace(traceId++, accessList));
+            return node.getEntitiesSequence();
         }
-        else {
-            for (Node node : source.getEdges())
-                traverseGraph(node.getId(), new ArrayList<>(localAccesses), i+1);
+
+        if (nodeStoredValue != null) { // already visited
+            accessList.addAll(nodeStoredValue);
+//            System.out.println(accessList.toString()); // path clear trace
+            controllerTraces.add(new Trace(traceId++, accessList));
+            return nodeStoredValue;
         }
+
+
+        List<Access> returnedPathFromChild = null;
+        accessList.addAll(node.getEntitiesSequence());
+        for (Node child : children) {
+            returnedPathFromChild = traverseGraphPathCoverage(child, new ArrayList<>(accessList));
+        }
+
+        List<Access> myPartialPath = new ArrayList<>();
+        myPartialPath.addAll(node.getEntitiesSequence());
+        myPartialPath.addAll(returnedPathFromChild);
+        traverseProcessVisitedMap.put(node.getId(), myPartialPath);
+        return myPartialPath;
     }
 
     abstract void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<SourcePosition> methodStack, Stack<Container<MySourcePosition>> nextNodeIdStack, Container<MySourcePosition> id);
@@ -283,11 +339,11 @@ public abstract class SpoonCollector {
         return newNode;
     }
 
-    Node getGraphNode(Container<MySourcePosition> id) {
+    private Node getGraphNode(Container<MySourcePosition> id) {
         return entitiesSequenceHashMap.get(id);
     }
 
-    void removeGraphNode(Container<MySourcePosition> id) {
+    private void removeGraphNode(Container<MySourcePosition> id) {
         entitiesSequenceHashMap.remove(id);
     }
 
@@ -313,11 +369,9 @@ public abstract class SpoonCollector {
     }
 
     void addEntitiesSequenceAccess(String simpleName, String mode) {
-        JsonArray entityAccess = new JsonArray();
-        entityAccess.add(simpleName);
-        entityAccess.add(mode);
-        entitiesSequence.add(entityAccess);
-        entitiesSequenceHashMap.get(currentParentNodeId).addEntityAccess(entityAccess);
+        Access access = new Access(simpleName, Access.Type.valueOf(mode));
+        entitiesSequence.add(access);
+        entitiesSequenceHashMap.get(currentParentNodeId).addEntityAccess(access);
         foundAccess = true;
     }
 }

@@ -83,7 +83,7 @@ public class SpringDataJPACollector extends SpoonCollector {
                     repositories.add(eventualNewRepository);
                     eventualNewRepository = null;
                 } else if (clazz.isInterface()) {
-                    interfaces.put(clazz.getSimpleName(), new ArrayList<>());
+                    abstractClassesAndInterfacesImplementorsMap.put(clazz.getSimpleName(), new ArrayList<>());
                 } else if (existsAnnotation(clazzAnnotations, "Entity") ||
                         existsAnnotation(clazzAnnotations, "Embeddable") ||
                         existsAnnotation(clazzAnnotations, "MappedSuperclass")) {
@@ -98,8 +98,8 @@ public class SpringDataJPACollector extends SpoonCollector {
         for(CtType<?> clazz : factory.Class().getAll()) {
             Set<CtTypeReference<?>> superInterfaces = clazz.getSuperInterfaces();
             for (CtTypeReference ctTypeReference : superInterfaces) {
-                if (interfaces.containsKey(ctTypeReference.getSimpleName())) {
-                    interfaces.get(ctTypeReference.getSimpleName()).add(clazz);
+                if (abstractClassesAndInterfacesImplementorsMap.containsKey(ctTypeReference.getSimpleName())) {
+                    abstractClassesAndInterfacesImplementorsMap.get(ctTypeReference.getSimpleName()).add(clazz);
                 }
             }
 
@@ -650,7 +650,7 @@ public class SpringDataJPACollector extends SpoonCollector {
         CtExecutableReference explicitCalleeReference = null;
         CtType implementorType = null;
 
-        List<CtType> interfaceImplementors = interfaces.get(calleeLocationMethod.getDeclaringType().getSimpleName());
+        List<CtType> interfaceImplementors = abstractClassesAndInterfacesImplementorsMap.get(calleeLocationMethod.getDeclaringType().getSimpleName());
         if (interfaceImplementors != null) {
             for (CtType interfaceImplType : interfaceImplementors) {
                 // calling an abstract method declared in an interface

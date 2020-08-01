@@ -7,13 +7,13 @@ import java.util.List;
 
 public class Node {
     private Container<MySourcePosition> id;
-    private JsonArray entitiesSequence;
+    private List<Access> entitiesSequence;
     private List<Node> edges; // links to other nodes
     private List<Node> parents;
 
     public Node(Container<MySourcePosition> id) {
         this.id = id;
-        this.entitiesSequence = new JsonArray();
+        this.entitiesSequence = new ArrayList<>();
         this.edges = new ArrayList<>();
         this.parents = new ArrayList<>();
     }
@@ -26,11 +26,11 @@ public class Node {
         this.id = id;
     }
 
-    public JsonArray getEntitiesSequence() {
+    public List<Access> getEntitiesSequence() {
         return entitiesSequence;
     }
 
-    public void addEntityAccess(JsonArray entityAccess) {
+    public void addEntityAccess(Access entityAccess) {
         entitiesSequence.add(entityAccess);
     }
 

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
 public class FenixFrameworkCollector extends SpoonCollector {
@@ -58,14 +59,39 @@ public class FenixFrameworkCollector extends SpoonCollector {
                 clazz.getSimpleName().endsWith("Controller") ||
                 (clazz.getSuperclass() != null && clazz.getSuperclass().getSimpleName().equals("FenixDispatchAction"))
             ) {
-                controllers.add((CtClass) clazz);
-            } else {  //Domain class
+                if (clazz instanceof CtClass) {
+                    controllers.add((CtClass) clazz);
+                }
+            } else {
                 CtTypeReference<?> superclassReference = clazz.getSuperclass();
                 if (superclassReference != null && superclassReference.getSimpleName().endsWith("_Base")) {
                     allDomainEntities.add(clazz.getSimpleName());
                 }
+                if (!clazz.getSimpleName().endsWith("_Base") && (clazz.isAbstract() || clazz.isInterface()))
+                    abstractClassesAndInterfacesImplementorsMap.put(clazz.getSimpleName(), new ArrayList<>());
             }
             allEntities.add(clazz.getSimpleName());
+        }
+
+        // 2nd iteration, to retrieve interface and abstract classes implementors and subclasses
+        for(CtType<?> clazz : factory.Class().getAll()) {
+            Set<CtTypeReference<?>> superInterfaces = clazz.getSuperInterfaces();
+            for (CtTypeReference ctTypeReference : superInterfaces) {
+                List<CtType> ctTypes = abstractClassesAndInterfacesImplementorsMap.get(ctTypeReference.getSimpleName());
+                if (ctTypes != null) { // key exists
+                    ctTypes.add(clazz);
+                }
+            }
+
+            if (clazz.getSuperclass() != null) {
+                // two times because, the first time we get the Base class and then the Domain Class
+                CtTypeReference<?> superclass2 = clazz.getSuperclass().getSuperclass();
+                if (superclass2 != null) {
+                    List<CtType> ctTypes = abstractClassesAndInterfacesImplementorsMap.get(superclass2.getSimpleName());
+                    if (ctTypes != null) // key exists
+                        ctTypes.add(clazz);
+                }
+            }
         }
     }
 
@@ -91,8 +117,20 @@ public class FenixFrameworkCollector extends SpoonCollector {
 
                     try {
                         CtMethod eDM = (CtMethod) calleeLocation.getExecutable().getExecutableDeclaration();
-                        if (eDM.isAbstract())
+                        if (eDM.isAbstract()) {
+                            // call to an abstract method
+                            // lets replace this call with a call to every possible implementation of this
+                            // method to consider all possible paths in our call graph
+                            List<CtMethod> explicitImplementationsOfAbstractMethod = getExplicitImplementationsOfAbstractMethod(eDM);
+                            Container<MySourcePosition> originCurrent = new Container<>(currentParentNodeId);
+                            for (CtMethod ctMethod : explicitImplementationsOfAbstractMethod) {
+                                currentParentNodeId = originCurrent;
+                                if (!methodStack.contains(ctMethod.getPosition())) {
+                                    methodCallDFS(ctMethod, calleeLocation, methodStack, toReturnNodeIdStack, id);
+                                }
+                            }
                             return;
+                        }
                     } catch (Exception ignored) {}
 
                     if (calleeLocation.getExecutable().getDeclaringType().getSimpleName().endsWith("_Base")) {
@@ -108,7 +146,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
                         }
                     }
                 } catch (Exception e) {
-                    // cast error, proceed
+                    // null pointer exception or cast error, proceed
                 }
             }
 
@@ -418,6 +456,45 @@ public class FenixFrameworkCollector extends SpoonCollector {
         });
 
         methodStack.pop();
+    }
+
+    private List<CtMethod> getExplicitImplementationsOfAbstractMethod(CtMethod abstractMethod) {
+        List<CtMethod> explicitMethods = new ArrayList<>();
+        CtType<?> declaringType = abstractMethod.getDeclaringType();
+        List<CtType> implementors = abstractClassesAndInterfacesImplementorsMap.get(declaringType.getSimpleName());
+        if (implementors != null) {
+            for (CtType ctImplementorType : implementors) {
+                List<CtMethod> methodsByName = ctImplementorType.getMethodsByName(abstractMethod.getSimpleName());
+                if (methodsByName.size() > 0) {
+                    for (CtMethod ctM : methodsByName) {
+                        if (isEqualMethodSignature(abstractMethod, ctM)) {
+                            explicitMethods.add(ctM);
+                        }
+                    }
+                }
+            }
+        }
+
+        return explicitMethods;
+    }
+
+    private boolean isEqualMethodSignature(CtMethod method1, CtMethod method2) {
+        // compare return type
+        if (method1.getType().equals(method2.getType())) {
+            // compare parameters type
+            List ctMParams1 = method1.getParameters();
+            List ctMParams2 = method2.getParameters();
+            if (ctMParams1.size() != ctMParams2.size())
+                return false;
+            for (int i = 0; i < ctMParams1.size(); i++) {
+                CtParameter ctMParam1 = (CtParameter) ctMParams1.get(i);
+                CtParameter ctMParam2 = (CtParameter) ctMParams2.get(i);
+                if (!ctMParam1.getType().equals(ctMParam2.getType())) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private void registerBaseClass(CtExecutable callee, CtAbstractInvocation calleeLocation) {
