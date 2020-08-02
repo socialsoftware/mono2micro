@@ -156,7 +156,6 @@ public abstract class SpoonCollector {
     }
 
     private void processController(CtClass controller) throws IOException {
-        int size = controller.getMethods().size();
         for (Object cM : controller.getMethods()) {
             CtMethod controllerMethod = (CtMethod) cM;
 
@@ -180,7 +179,7 @@ public abstract class SpoonCollector {
             String controllerFullName = controller.getSimpleName() + "." + controllerMethod.getSimpleName();
             System.out.println("Processing Controller: " + controllerFullName + "   " + controllerCount + "/" + controllers.size());
 
-            if (controllerCount >= 5)
+            if (!controllerFullName.contains("ToRemoveController"))
                 continue;
 
             entitiesSequence = new JsonArray();

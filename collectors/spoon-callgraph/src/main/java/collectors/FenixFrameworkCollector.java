@@ -177,6 +177,11 @@ public class FenixFrameworkCollector extends SpoonCollector {
             public <R> void visitCtBlock(CtBlock<R> block) {
                 id.add(new MySourcePosition(block.getPosition(), true, false, block.toString()+"END"));
                 afterNode.push(createGraphNode(id));
+
+                // for reasons, the pop of this push is done inside scan(element=Body)
+                if (block.getParent() instanceof CtMethod)
+                    toReturnNodeIdStack.push(afterNode.peek().getId());
+
                 lastStatementWasReturnStack.push(false);
                 super.visitCtBlock(block);
                 lastStatementWasReturnValue = lastStatementWasReturnStack.pop();
@@ -286,10 +291,19 @@ public class FenixFrameworkCollector extends SpoonCollector {
                 }
 
                 switch (role) {
+                    case BODY:
+                        if (element != null && element.getParent() instanceof CtMethod) {
+                            // there are several blocks. This condition asserts that we just finished visiting
+                            // a "method" block. By popping the block now, we will have the caller (if any) in
+                            // the stack and we'll be able to redirect to there
+                            // Returns inside blocks within the method block will be redirected to the MethodBlockEnd
+                            // and then when the visit to the method block actually ends, redirected to the previous
+                            // caller
+                            toReturnNodeIdStack.pop();
+                        }
                     case THEN:
                     case ELSE:
                     case CASE:
-                    case BODY:
                         if (elementNode != null) {
                             if (!lastStatementWasReturnValue) {
                                 if (!afterNode.isEmpty()) {
