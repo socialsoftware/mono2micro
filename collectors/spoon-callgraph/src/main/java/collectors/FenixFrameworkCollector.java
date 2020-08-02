@@ -436,7 +436,6 @@ public class FenixFrameworkCollector extends SpoonCollector {
             }
 
             private <T> void postVisitCtAbstractInvocation(CtAbstractInvocation<T> invocation) {
-                // test
                 Container<MySourcePosition> currentBefore = new Container<>(currentParentNodeId);
                 visitCtAbstractInvocation(invocation);
 

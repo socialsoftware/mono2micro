@@ -31,7 +31,11 @@ public class Node {
     }
 
     public void addEntityAccess(Access entityAccess) {
-        entitiesSequence.add(entityAccess);
+//        if (entitiesSequence.size() == 0)
+//            entitiesSequence.add(entityAccess);
+//        else
+//            if (!entitiesSequence.get(entitiesSequence.size()-1).equals(entityAccess))
+                entitiesSequence.add(entityAccess);
     }
 
     public List<Node> getEdges() {

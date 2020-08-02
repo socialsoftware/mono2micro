@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import java.util.Objects;
+
 @JsonPropertyOrder({"entity", "type" })
 public class Access implements Cloneable {
     public enum Type {
@@ -38,5 +40,19 @@ public class Access implements Cloneable {
                 .concat(",")
                 .concat(type.name())
                 .concat("]");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Access access = (Access) o;
+        return Objects.equals(entity, access.entity) &&
+                type == access.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(entity, type);
     }
 }

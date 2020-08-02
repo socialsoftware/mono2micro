@@ -27,7 +27,7 @@ public abstract class SpoonCollector {
     private JsonObject callSequence;
     private List<Trace> controllerTraces; // list of traces
     private int traceId;
-    private List<Access> entitiesSequence;
+    private JsonArray entitiesSequence;
     private boolean foundAccess;
 
     private HashMap<Container<MySourcePosition>, Node> entitiesSequenceHashMap;
@@ -156,6 +156,7 @@ public abstract class SpoonCollector {
     }
 
     private void processController(CtClass controller) throws IOException {
+        int size = controller.getMethods().size();
         for (Object cM : controller.getMethods()) {
             CtMethod controllerMethod = (CtMethod) cM;
 
@@ -179,10 +180,10 @@ public abstract class SpoonCollector {
             String controllerFullName = controller.getSimpleName() + "." + controllerMethod.getSimpleName();
             System.out.println("Processing Controller: " + controllerFullName + "   " + controllerCount + "/" + controllers.size());
 
-//            if (!controllerFullName.contains("ToRemoveController"))
-//                continue;
+            if (controllerCount >= 5)
+                continue;
 
-            entitiesSequence = new ArrayList<>();
+            entitiesSequence = new JsonArray();
             entitiesSequenceHashMap = new HashMap<>();
             Stack<SourcePosition> methodStack = new Stack<>();
             Stack<Container<MySourcePosition>> nextNodeIdStack = new Stack<>();
@@ -211,6 +212,7 @@ public abstract class SpoonCollector {
                 traverseProcessVisitedMap = null;
                 updateJsonWithNewController(controllerFullName);
                 controllerTraces = null;
+
 //                callSequence.add(controller.getSimpleName() + "." + controllerMethod.getSimpleName(), entitiesSequence);
             }
         }
@@ -369,8 +371,11 @@ public abstract class SpoonCollector {
     }
 
     void addEntitiesSequenceAccess(String simpleName, String mode) {
+        JsonArray entityAccess = new JsonArray();
+        entityAccess.add(simpleName);
+        entityAccess.add(mode);
+        entitiesSequence.add(entityAccess);
         Access access = new Access(simpleName, Access.Type.valueOf(mode));
-        entitiesSequence.add(access);
         entitiesSequenceHashMap.get(currentParentNodeId).addEntityAccess(access);
         foundAccess = true;
     }
