@@ -100,19 +100,19 @@ public class FenixFrameworkCollector extends SpoonCollector {
             CtExecutable callerMethod,
             CtAbstractInvocation prevCalleeLocation,
             Stack<SourcePosition> methodStack,
-            Stack<Container<MySourcePosition>> toReturnNodeIdStack,
-            Container<MySourcePosition> idPrev) {
+            Stack<Container> toReturnNodeIdStack,
+            Container idPrev) {
         methodStack.push(callerMethod.getPosition());
-        Container<MySourcePosition> id = new Container<>(idPrev);
+        Container id = new Container(idPrev);
         callerMethod.accept(new CtScanner() {
             private boolean lastStatementWasReturnValue;
-            private Stack<Container<MySourcePosition>> branchOriginNodeId = new Stack<>();
+            private Stack<Container> branchOriginNodeId = new Stack<>();
             private Stack<Boolean> lastStatementWasReturnStack = new Stack<>();
             private Stack<Node> afterNode = new Stack<>();
 
             private <T> void visitCtAbstractInvocation(CtAbstractInvocation calleeLocation) {
                 try {
-                    if (calleeLocation == null)
+                    if (calleeLocation == null || calleeLocation.getExecutable().getDeclaringType() == null)
                         return;
 
                     try {
@@ -121,14 +121,14 @@ public class FenixFrameworkCollector extends SpoonCollector {
                             // call to an abstract method
                             // lets replace this call with a call to every possible implementation of this
                             // method to consider all possible paths in our call graph
-                            List<CtMethod> explicitImplementationsOfAbstractMethod = getExplicitImplementationsOfAbstractMethod(eDM);
-                            Container<MySourcePosition> originCurrent = new Container<>(currentParentNodeId);
-                            for (CtMethod ctMethod : explicitImplementationsOfAbstractMethod) {
-                                currentParentNodeId = originCurrent;
-                                if (!methodStack.contains(ctMethod.getPosition())) {
-                                    methodCallDFS(ctMethod, calleeLocation, methodStack, toReturnNodeIdStack, id);
-                                }
-                            }
+//                            List<CtMethod> explicitImplementationsOfAbstractMethod = getExplicitImplementationsOfAbstractMethod(eDM);
+//                            Container originCurrent = new Container(currentParentNodeId);
+//                            for (CtMethod ctMethod : explicitImplementationsOfAbstractMethod) {
+//                                currentParentNodeId = originCurrent;
+//                                if (!methodStack.contains(ctMethod.getPosition())) {
+//                                    methodCallDFS(ctMethod, calleeLocation, methodStack, toReturnNodeIdStack, id);
+//                                }
+//                            }
                             return;
                         }
                     } catch (Exception ignored) {}
@@ -147,6 +147,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
                     }
                 } catch (Exception e) {
                     // null pointer exception or cast error, proceed
+                    e.printStackTrace();
                 }
             }
 
@@ -175,11 +176,12 @@ public class FenixFrameworkCollector extends SpoonCollector {
 
             @Override
             public <R> void visitCtBlock(CtBlock<R> block) {
-                id.add(new MySourcePosition(block.getPosition(), true, false, block.toString()+"END"));
+                MySourcePosition msp = new MySourcePosition(block.getPosition(), true, false, block.toString() + "END");
+                id.add(msp);
                 afterNode.push(createGraphNode(id));
 
                 // for reasons, the pop of this push is done inside scan(element=Body)
-                if (block.getParent() instanceof CtMethod)
+                if (block.getParent() instanceof CtMethod || block.getParent() instanceof CtConstructor)
                     toReturnNodeIdStack.push(afterNode.peek().getId());
 
                 lastStatementWasReturnStack.push(false);
@@ -188,6 +190,14 @@ public class FenixFrameworkCollector extends SpoonCollector {
                 Node pop = afterNode.pop();
                 linkNodes(currentParentNodeId, pop.getId());
                 currentParentNodeId = pop.getId();
+
+                // nao queremos compactar o controller method, useless
+                if ((block.getParent() instanceof CtMethod || block.getParent() instanceof CtConstructor)
+                        && !(block.getParent().getPosition().equals(id.list.get(0).getSourcePosition()))) {
+                    MethodNodeReference mnr = methodNodeReferenceMap.get(block.getParent());
+                    mnr.setEndNode(pop);
+                    storeMethodSubGraph(mnr);
+                }
             }
 
             @Override
@@ -201,6 +211,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
                     case ELSE:
                         break;
                     case CASE:
+                        // the first case pushes the switch context for each case of the switch
                         List<CtCase> cases = null;
                         if (element.getParent() instanceof  CtSwitch)
                             cases = ((CtSwitch) element.getParent()).getCases();
@@ -213,6 +224,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
                             for (int i = 0 ; i < size; i++)
                                 branchOriginNodeId.push(currentParentNodeId);
                         }
+
                         // case statements are not considered to have blocks inside (although they can return)
                         lastStatementWasReturnStack.push(false);
                         break;
@@ -220,6 +232,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
                         branchOriginNodeId.push(currentParentNodeId);
                         if (element == null) // lambda
                             break;
+
                         CtElement parent = element.getParent();
 
                         if (parent instanceof CtFor || parent instanceof CtWhile || parent instanceof CtForEach ||
@@ -230,6 +243,18 @@ public class FenixFrameworkCollector extends SpoonCollector {
                         else if (parent instanceof CtTry || parent instanceof CtTryWithResource) {
                             for (CtCatch ctCatch : ((CtTry) parent).getCatchers()) {
                                 branchOriginNodeId.push(currentParentNodeId);
+                            }
+                        }
+                        else if (parent instanceof CtMethod || parent instanceof CtConstructor) {
+                            // check if this method was already visited
+                            MethodNodeReference methodNodeReference = methodNodeReferenceMap.get(parent);
+                            if (methodNodeReference != null && methodNodeReference.getEndNode() != null) {
+                                branchOriginNodeId.pop();
+                                extendGraphWithMethodSubGraph(new Container(currentParentNodeId), methodNodeReference);
+                                // already visited method, no need to visit it again
+                                // lets append the subtraces of this method to the current node and return
+                                linkNodes(currentParentNodeId, toReturnNodeIdStack.peek());
+                                return;
                             }
                         }
                         break;
@@ -280,6 +305,18 @@ public class FenixFrameworkCollector extends SpoonCollector {
                         break;
                 }
 
+                if (role.equals(CtRole.BODY) && element != null &&
+                        (element.getParent() instanceof CtMethod || element.getParent() instanceof CtConstructor)) {
+                    if (methodNodeReferenceMap.get(element.getParent()) == null) {
+                        MethodNodeReference mnr = new MethodNodeReference();
+                        mnr.setBeginNode(elementNode);
+                        methodNodeReferenceMap.put((CtExecutable) element.getParent(), mnr);
+                    }
+                    else {
+                        System.out.println();
+                    }
+                }
+
                 super.scan(role, element);
 
                 // pre stuff after scan
@@ -288,11 +325,9 @@ public class FenixFrameworkCollector extends SpoonCollector {
                         // case statements are not considered to have blocks inside (although they can return)
                         lastStatementWasReturnValue = lastStatementWasReturnStack.pop();
                         break;
-                }
-
-                switch (role) {
                     case BODY:
-                        if (element != null && element.getParent() instanceof CtMethod) {
+                        if (element != null &&
+                                (element.getParent() instanceof CtMethod || element.getParent() instanceof CtConstructor)) {
                             // there are several blocks. This condition asserts that we just finished visiting
                             // a "method" block. By popping the block now, we will have the caller (if any) in
                             // the stack and we'll be able to redirect to there
@@ -301,9 +336,14 @@ public class FenixFrameworkCollector extends SpoonCollector {
                             // caller
                             toReturnNodeIdStack.pop();
                         }
+                        break;
+                }
+
+                switch (role) {
                     case THEN:
                     case ELSE:
                     case CASE:
+                    case BODY:
                         if (elementNode != null) {
                             if (!lastStatementWasReturnValue) {
                                 if (!afterNode.isEmpty()) {
@@ -312,7 +352,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
                                 else {
                                     // estamos no fim do metodo e nao há next, temos que voltar para o metodo anterior
                                     if (!toReturnNodeIdStack.isEmpty()) {
-                                        Container<MySourcePosition> peekId = toReturnNodeIdStack.peek();
+                                        Container peekId = toReturnNodeIdStack.peek();
                                         linkNodes(currentParentNodeId, peekId);
                                     }
                                 }
@@ -321,7 +361,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
                                 // branch that ended in return
                                 // must be linked to the end of the method execution
                                 if (!toReturnNodeIdStack.isEmpty()) {
-                                    Container<MySourcePosition> peekId = toReturnNodeIdStack.peek();
+                                    Container peekId = toReturnNodeIdStack.peek();
                                     linkNodes(currentParentNodeId, peekId);
                                 }
                             }
@@ -399,13 +439,13 @@ public class FenixFrameworkCollector extends SpoonCollector {
                 afterNode.push(createGraphNode(id));
                 // lambda have a surrounding context, such as methods
                 toReturnNodeIdStack.push(afterNode.peek().getId());
-                Container<MySourcePosition> currentBefore = new Container<>(currentParentNodeId);
+                Container currentBefore = new Container(currentParentNodeId);
                 super.visitCtLambda(lambda);
 
                 if (lambda.getBody() == null) {
                     // No block means CtBlock wasn't visited and the end of the expression won't be connected
                     // to any node. We have to manually link it to the node next to the the lambda expression
-                    Container<MySourcePosition> peekId = toReturnNodeIdStack.peek();
+                    Container peekId = toReturnNodeIdStack.peek();
                     linkNodes(currentParentNodeId, peekId);
                 }
 
@@ -450,7 +490,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
             }
 
             private <T> void postVisitCtAbstractInvocation(CtAbstractInvocation<T> invocation) {
-                Container<MySourcePosition> currentBefore = new Container<>(currentParentNodeId);
+                Container currentBefore = new Container(currentParentNodeId);
                 visitCtAbstractInvocation(invocation);
 
                 toReturnNodeIdStack.pop();
@@ -536,6 +576,9 @@ public class FenixFrameworkCollector extends SpoonCollector {
                     argTypes.add(ctP.getType().getSimpleName());
             }
         }
+        else {
+            return;
+        }
 
         String baseClassName = callee.getParent(CtClass.class).getSimpleName();
         baseClassName = baseClassName.substring(0, baseClassName.length()-5); //remove _Base
@@ -571,8 +614,9 @@ public class FenixFrameworkCollector extends SpoonCollector {
 
     private String resolveTypeBase(CtAbstractInvocation calleeLocation) {
         CtExpression target = ((CtInvocationImpl) calleeLocation).getTarget();
-        if (target.getTypeCasts().size() > 0)
-            return ((CtTypeReference) target.getTypeCasts().get(0)).getSimpleName();
+        List typeCasts = target.getTypeCasts();
+        if (typeCasts != null && typeCasts.size() > 0)
+            return ((CtTypeReference) typeCasts.get(0)).getSimpleName();
         else
             return target.getType().getSimpleName();
     }

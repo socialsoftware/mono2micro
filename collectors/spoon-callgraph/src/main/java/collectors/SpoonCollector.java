@@ -25,15 +25,13 @@ public abstract class SpoonCollector {
     private String projectName;
 
     private JsonObject callSequence;
-    private List<Trace> controllerTraces; // list of traces
-    private int traceId;
     private JsonArray entitiesSequence;
     private boolean foundAccess;
 
-    private HashMap<Container<MySourcePosition>, Node> entitiesSequenceHashMap;
-    protected Container<MySourcePosition> currentParentNodeId;
-    private Set<Container<MySourcePosition>> optimizationProcessVisited;
-    private HashMap<Container<MySourcePosition>, List<Access>> traverseProcessVisitedMap;
+    private HashMap<Container, Node> entitiesSequenceHashMap;
+    protected Container currentParentNodeId;
+    protected HashMap<CtExecutable, MethodNodeReference> methodNodeReferenceMap;
+    private int methodIdIncrementWhenCopying = 0;
     private JsonGenerator jGenerator;
 
     // all project classes
@@ -122,7 +120,9 @@ public abstract class SpoonCollector {
         controllerCount = 0;
         for (CtClass controller : controllers) {
             controllerCount++;
+            long partialStartTime = System.currentTimeMillis();
             processController(controller);
+            System.out.println("Controller elapsed time: " + (System.currentTimeMillis() - partialStartTime)/1000F + " seconds");
         }
 
 
@@ -179,19 +179,20 @@ public abstract class SpoonCollector {
             String controllerFullName = controller.getSimpleName() + "." + controllerMethod.getSimpleName();
             System.out.println("Processing Controller: " + controllerFullName + "   " + controllerCount + "/" + controllers.size());
 
-            if (!controllerFullName.contains("ToRemoveController"))
-                continue;
+//            if (!controllerFullName.contains("getPublicVirtualEditions4User"))
+//                continue;
 
             entitiesSequence = new JsonArray();
             entitiesSequenceHashMap = new HashMap<>();
+            methodNodeReferenceMap = new HashMap<>();
             Stack<SourcePosition> methodStack = new Stack<>();
-            Stack<Container<MySourcePosition>> nextNodeIdStack = new Stack<>();
+            Stack<Container> nextNodeIdStack = new Stack<>();
             foundAccess = false;
 
             // create graph node begin
             ArrayList<MySourcePosition> id = new ArrayList<>();
             id.add(new MySourcePosition(controllerMethod.getPosition(), false, false, controllerMethod.toString()));
-            Container<MySourcePosition> idC = new Container<>(id);
+            Container idC = new Container(id);
             Node beginNode = createGraphNode(idC);
             currentParentNodeId = beginNode.getId();
             methodCallDFS(controllerMethod, null, methodStack, nextNodeIdStack, idC);
@@ -199,32 +200,53 @@ public abstract class SpoonCollector {
             if (foundAccess) {
                 System.out.println("Optimizing controller graph...");
                 // child (controller method block begin) of the root node (controller node)
-                optimizationProcessVisited = new HashSet<>();
                 optimizeGraph(getGraphNode(idC).getEdges().get(0).getId());
-                optimizationProcessVisited = null;
 
                 System.out.println("Traversing controller graph...");
-                traverseProcessVisitedMap = new HashMap<>();
-                controllerTraces = new ArrayList<>();
-                traceId = 0;
-                traverseGraphPathCoverage(getGraphNode(idC), new ArrayList<>());
-                traverseProcessVisitedMap = null;
-                updateJsonWithNewController(controllerFullName);
-                controllerTraces = null;
+                jsonUpdateNewController(controllerFullName);
+                /*List<Trace> traces = */traverseGraphPathCoverage(getGraphNode(idC), new ArrayList<>());
+                jsonCloseNewController();
+//                updateJsonWithNewController(controllerFullName, traces);
 
 //                callSequence.add(controller.getSimpleName() + "." + controllerMethod.getSimpleName(), entitiesSequence);
             }
         }
     }
 
-    private void updateJsonWithNewController(String controllerFullName) throws IOException {
+    private void jsonUpdateNewController(String controllerName) throws IOException {
+        jGenerator.writeFieldName(controllerName);
+        jGenerator.writeStartObject();
+        jGenerator.writeFieldName("traces");
+        jGenerator.writeStartArray();
+        jGenerator.writeRaw('\n');
+    }
+
+    private void jsonWriteTrace(Trace trace) throws IOException {
+        for (Access a : trace.getAccesses()) {
+            jGenerator.writeRaw('[');
+            jGenerator.writeString(a.getEntity());
+            jGenerator.writeRaw(',');
+            jGenerator.writeString(a.getType().toString());
+            jGenerator.writeRaw(']');
+            jGenerator.writeRaw(',');
+        }
+    }
+
+    private void jsonCloseNewController() throws IOException {
+        jGenerator.writeEndArray();
+        jGenerator.writeEndObject();
+        jGenerator.writeRaw('\n');
+        jGenerator.flush();
+    }
+
+    private void updateJsonWithNewController(String controllerFullName, List<Trace> traces) throws IOException {
         jGenerator.writeFieldName(controllerFullName);
         jGenerator.writeStartObject();
         jGenerator.writeFieldName("traces");
         jGenerator.writeStartArray();
         jGenerator.writeRaw('\n');
-        for (Trace trace : controllerTraces) {
-//            jGenerator.writeObject(trace);
+        for (Trace trace : traces) {
+////            jGenerator.writeObject(trace);
             jGenerator.writeRaw('[');
             for (Access a : trace.getAccesses()) {
                 jGenerator.writeRaw('[');
@@ -235,16 +257,24 @@ public abstract class SpoonCollector {
                 jGenerator.writeRaw(',');
             }
             jGenerator.writeRaw(']');
+            jGenerator.writeRaw(',');
             jGenerator.writeRaw('\n');
         }
         jGenerator.writeEndArray();
         jGenerator.writeEndObject();
         jGenerator.writeRaw('\n');
-//        jGenerator.flush();
+        jGenerator.flush();
     }
 
-    private void optimizeGraph(Container<MySourcePosition> nodeId) {
-        if (optimizationProcessVisited.contains(nodeId))
+    private void optimizeGraph(Container nodeId) {
+        System.out.println("Before optimization - " + entitiesSequenceHashMap.size());
+        Set<Container> visited = new HashSet<>();
+        optimizeGraphAux(nodeId, visited);
+        System.out.println("After optimization - " + entitiesSequenceHashMap.size());
+    }
+
+    private void optimizeGraphAux(Container nodeId, Set<Container> visited) {
+        if (visited.contains(nodeId))
             return; // reached by another branch, everything in front of this node is already optimized
 
         Node node = getGraphNode(nodeId);
@@ -252,59 +282,126 @@ public abstract class SpoonCollector {
             return;
 
         List<Node> children = new ArrayList<>(node.getEdges());
-        if (node.getEntitiesSequence().size() == 0) {
-            // delete node from graph
-            List<Node> parents = new ArrayList<>(node.getParents());
-            for (Node parent : parents) {
-                unlinkEdge(parent, node);
-                for (Node child : children) {
-                    unlinkEdge(node, child);
-                    linkNodes(parent, child);
-                }
-            }
-            removeGraphNode(node.getId());
-        }
+        if (node.getParents().size() == 1)
+            deleteNodeFromGraph(node);
 
-        optimizationProcessVisited.add(nodeId);
+        visited.add(nodeId);
 
         for (Node child : children)
-            optimizeGraph(child.getId());
+            optimizeGraphAux(child.getId(), visited);
     }
 
-    private List<Access> traverseGraphPathCoverage(Node node, List<Access> accessList) {
-        List<Node> children = new ArrayList<>(node.getEdges());
-        List<Access> nodeStoredValue = traverseProcessVisitedMap.get(node.getId());
 
-        if (children.size() == 0 && nodeStoredValue == null) { // leaf not marked as visited yet
-            traverseProcessVisitedMap.put(node.getId(), node.getEntitiesSequence());
-            accessList.addAll(node.getEntitiesSequence());
+    private void traverseGraphPathCoverage(Node node, List<Access> accessList) throws IOException {
+//        HashMap<Container, List<Access>> visitedMap = new HashMap<>();
+//        List<Trace> controllerTraces = new ArrayList<>();
+//        traverseGraphPathCoverageAux(node, accessList, visitedMap, controllerTraces);
+        traverseGraphPathCoverageAux(node, accessList);
+//        return controllerTraces;
+    }
+
+    private void traverseGraphPathCoverageAux(Node node, List<Access> accessList/*, HashMap<Container, List<Access>> visitedMap, List<Trace> controllerTraces*/) throws IOException {
+//        System.out.println(node.getId().toString());
+        List<Node> children = node.getEdges();
+//        List<Access> nodeStoredValue = visitedMap.get(node.getId());
+
+        if (children.size() == 0 /*&& nodeStoredValue == null*/) { // leaf not marked as visited yet
+//            visitedMap.put(node.getId(), node.getAccesses());
+
+            accessList.addAll(node.getAccesses());
+            jsonWriteTrace(new Trace(-1, accessList));
 //            System.out.println(accessList.toString()); // path clear trace
-            controllerTraces.add(new Trace(traceId++, accessList));
-            return node.getEntitiesSequence();
+//            controllerTraces.add(new Trace(-1, accessList));
+//            return node.getAccesses();
+            return;
         }
 
-        if (nodeStoredValue != null) { // already visited
-            accessList.addAll(nodeStoredValue);
-//            System.out.println(accessList.toString()); // path clear trace
-            controllerTraces.add(new Trace(traceId++, accessList));
-            return nodeStoredValue;
-        }
+//        if (nodeStoredValue != null) { // already visited
+//            accessList.addAll(nodeStoredValue);
+//            jsonWriteTrace(new Trace(-1, accessList));
+////            System.out.println(accessList.toString()); // path clear trace
+////            controllerTraces.add(new Trace(-1, accessList));
+//            return nodeStoredValue;
+//        }
 
-
-        List<Access> returnedPathFromChild = null;
-        accessList.addAll(node.getEntitiesSequence());
+//        List<Access> returnedPathFromChild = null;
+        accessList.addAll(node.getAccesses());
         for (Node child : children) {
-            returnedPathFromChild = traverseGraphPathCoverage(child, new ArrayList<>(accessList));
+            /*returnedPathFromChild = */
+            traverseGraphPathCoverageAux(child, new ArrayList<>(accessList)/*, visitedMap, controllerTraces*/);
         }
 
-        List<Access> myPartialPath = new ArrayList<>();
-        myPartialPath.addAll(node.getEntitiesSequence());
-        myPartialPath.addAll(returnedPathFromChild);
-        traverseProcessVisitedMap.put(node.getId(), myPartialPath);
-        return myPartialPath;
+//        List<Access> myPartialPath = new ArrayList<>();
+//        myPartialPath.addAll(node.getAccesses());
+//        myPartialPath.addAll(returnedPathFromChild);
+//        visitedMap.put(node.getId(), myPartialPath);
+//        return myPartialPath;
     }
 
-    abstract void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<SourcePosition> methodStack, Stack<Container<MySourcePosition>> nextNodeIdStack, Container<MySourcePosition> id);
+    void storeMethodSubGraph(MethodNodeReference mnr) {
+        mnr.setBeginNode(new Node(mnr.getBeginNode()));
+        mnr.getBeginNode().setParents(new ArrayList<>());
+        HashMap<Node, Node> map = new HashMap<>();
+        copySubGraph(mnr.getBeginNode(), map);
+        mnr.setEndNode(map.get(mnr.getEndNode()));
+        mnr.setBeginNode(map.get(mnr.getBeginNode()));
+        linkNodesOnCopy(map);
+    }
+
+    private void linkNodesOnCopy(HashMap<Node, Node> map) {
+        for (Node key : map.keySet()) {
+            for (Node keyEdge : key.getEdges()) {
+                linkNodes(map.get(key), map.get(keyEdge));
+            }
+        }
+    }
+
+    private void copySubGraph(Node node, HashMap<Node, Node> map) {
+        if (map.get(node) == null) {
+            Node nodeCopy = new Node(node);
+            nodeCopy.setParents(new ArrayList<>());
+            nodeCopy.setEdges(new ArrayList<>());
+            map.put(node, nodeCopy);
+        }
+        else {
+            return;
+        }
+
+        for (Node n : node.getEdges()) {
+            copySubGraph(n, map);
+        }
+    }
+
+    void extendGraphWithMethodSubGraph(Container id, MethodNodeReference methodNodeReference) {
+        Node beginNode = methodNodeReference.getBeginNode();
+        HashMap<Node, Node> map = new HashMap<>();
+        methodIdIncrementWhenCopying = 1;
+        extendGraphWithMethodSubGraphAux(id, beginNode, map);
+        linkNodesOnCopy(map);
+
+        Node nodeCopyBegin = map.get(beginNode);
+
+        linkNodes(entitiesSequenceHashMap.get(this.currentParentNodeId), nodeCopyBegin);
+
+        currentParentNodeId = map.get(methodNodeReference.getEndNode()).getId();
+    }
+
+    private void extendGraphWithMethodSubGraphAux(Container id, Node node, HashMap<Node, Node> map) {
+        if (map.get(node) == null) {
+            Container cCopy = new Container(id);
+            cCopy.list.get(id.list.size() - 1).setNumber(methodIdIncrementWhenCopying++);
+            Node nodeCopy = createGraphNode(cCopy);
+            nodeCopy.setAccesses(node.getAccesses());
+            map.put(node, nodeCopy);
+        }
+        else
+            return;
+
+        for (Node child : node.getEdges())
+            extendGraphWithMethodSubGraphAux(id, child, map);
+    }
+
+    abstract void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<SourcePosition> methodStack, Stack<Container> nextNodeIdStack, Container id);
 
     abstract void collectControllersAndEntities();
 
@@ -334,28 +431,48 @@ public abstract class SpoonCollector {
         }
     }
 
-    Node createGraphNode(Container<MySourcePosition> id) {
-        Node newNode = new Node(new Container<MySourcePosition>(id));
-        entitiesSequenceHashMap.put(new Container<MySourcePosition>(id), newNode);
+    Node createGraphNode(Container id) {
+        Node newNode = new Node(new Container(id));
+        entitiesSequenceHashMap.put(new Container(id), newNode);
         return newNode;
     }
 
-    private Node getGraphNode(Container<MySourcePosition> id) {
+    private Node getGraphNode(Container id) {
         return entitiesSequenceHashMap.get(id);
     }
 
-    private void removeGraphNode(Container<MySourcePosition> id) {
-        entitiesSequenceHashMap.remove(id);
+    private void deleteNodeFromGraph(Node node) {
+        List<Node> parents = new ArrayList<>(node.getParents());
+        List<Node> children = new ArrayList<>(node.getEdges());
+        for (Node parent : parents) {
+            unlinkEdge(parent, node);
+            for (Node child : children) {
+                unlinkEdge(node, child);
+                linkNodes(parent, child);
+            }
+            node.getAccesses().forEach(a -> parent.addEntityAccess(a));
+        }
+        entitiesSequenceHashMap.remove(node.getId());
     }
 
-    void linkNodes(Container<MySourcePosition> originNodeId, Container<MySourcePosition> destNodeId) {
-        entitiesSequenceHashMap.get(originNodeId).addEdge(entitiesSequenceHashMap.get(destNodeId));
-        entitiesSequenceHashMap.get(destNodeId).addParent(entitiesSequenceHashMap.get(originNodeId));
+    void linkNodes(Container originNodeId, Container destNodeId) {
+        if (!originNodeId.equals(destNodeId)) {
+            entitiesSequenceHashMap.get(originNodeId).addEdge(entitiesSequenceHashMap.get(destNodeId));
+            entitiesSequenceHashMap.get(destNodeId).addParent(entitiesSequenceHashMap.get(originNodeId));
+        }
+        else {
+            System.out.println("");
+        }
     }
 
     void linkNodes(Node origin, Node dest) {
-        origin.addEdge(dest);
-        dest.addParent(origin);
+        if (!origin.equals(dest)) {
+            origin.addEdge(dest);
+            dest.addParent(origin);
+        }
+        else {
+            System.out.println("");
+        }
     }
 
     private void unlinkEdge(Node parent, Node node) {
@@ -363,7 +480,7 @@ public abstract class SpoonCollector {
         node.removeParent(parent);
     }
 
-    void unlinkLast(Container<MySourcePosition> id) {
+    void unlinkLast(Container id) {
         Node node = entitiesSequenceHashMap.get(id);
         Node oldChild = node.removeLastEdge();
         oldChild.removeParent(node);

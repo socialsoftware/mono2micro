@@ -4,15 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Container<T> {
-    List<T> list;
+public class Container {
+    List<MySourcePosition> list;
 
-    public Container(List<T> list) {
+    public Container(List<MySourcePosition> list) {
         this.list = list;
     }
 
-    public Container(Container<T> id) {
-        this.list = new ArrayList<>(id.list);
+    public Container(Container id) {
+        List<MySourcePosition> l = new ArrayList<>();
+        for (MySourcePosition entry : id.list) {
+            l.add(new MySourcePosition(entry));
+        }
+        this.list = l;
     }
 
     @Override
@@ -24,7 +28,7 @@ public class Container<T> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Container<?> container = (Container<?>) o;
+        Container container = (Container) o;
         return list.equals(container.list);
     }
 
@@ -33,7 +37,7 @@ public class Container<T> {
         return Objects.hash(list);
     }
 
-    public void add(T item) {
+    public void add(MySourcePosition item) {
         list.add(item);
     }
 }

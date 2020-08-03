@@ -22,6 +22,11 @@ public class Trace {
         this.accesses = new ArrayList<>();
     }
 
+    public Trace(Trace t) {
+        this.id = t.getId();
+        this.accesses = new ArrayList<>(t.getAccesses());
+    }
+
     @JsonCreator
     public Trace(
             @JsonProperty("id") int id,

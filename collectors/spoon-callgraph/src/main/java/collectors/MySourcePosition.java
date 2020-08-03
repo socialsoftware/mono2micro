@@ -9,12 +9,14 @@ public class MySourcePosition {
     private final boolean isEnd;
     private final String label;
     private final boolean isSuper;
+    private int number;
 
     public MySourcePosition(MySourcePosition msp) {
         this.sourcePosition = msp.sourcePosition;
         this.isEnd = msp.isEnd;
         this.isSuper = msp.isSuper;
         this.label = msp.label;
+        this.number = msp.number;
     }
 
     public MySourcePosition(SourcePosition sourcePosition, boolean isEnd, boolean isSuper, String label) {
@@ -22,6 +24,11 @@ public class MySourcePosition {
         this.isEnd = isEnd;
         this.isSuper = isSuper;
         this.label = label;
+        this.number = 0;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public SourcePosition getSourcePosition() {
@@ -39,16 +46,17 @@ public class MySourcePosition {
         MySourcePosition that = (MySourcePosition) o;
         return isEnd == that.isEnd &&
                 sourcePosition.equals(that.sourcePosition) &&
-                isSuper == that.isSuper;
+                isSuper == that.isSuper &&
+                number == that.number;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sourcePosition, isEnd, isSuper);
+        return Objects.hash(sourcePosition, isEnd, isSuper, number);
     }
 
     @Override
     public String toString() {
-        return label;
+        return label + "_" + number;
     }
 }
