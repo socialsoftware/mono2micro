@@ -26,3 +26,4 @@ target/
 #tmpDirCreatedBySpoon
 tmpDecompiledSources/
 collectors/spoon-callgraph/data/collection/Untitled Folder
+collectors/spoon-callgraph/testData.txt

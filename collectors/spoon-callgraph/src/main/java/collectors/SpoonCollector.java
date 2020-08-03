@@ -1,6 +1,5 @@
 package collectors;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -13,7 +12,6 @@ import spoon.reflect.code.CtAbstractInvocation;
 import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.declaration.*;
 import spoon.reflect.factory.Factory;
-import spoon.reflect.visitor.filter.TypeFilter;
 import util.Constants;
 
 import java.io.File;
@@ -29,7 +27,6 @@ public abstract class SpoonCollector {
     private int controllerCount;
     private JsonObject callSequence;
     private String projectName;
-    boolean collectionFlag;
 
     // all project classes
     ArrayList<String> allEntities;
@@ -52,7 +49,7 @@ public abstract class SpoonCollector {
     int repositoryCount = 0;
     int controllerMethodsCount = 0;
 
-    SpoonCollector(int launcherChoice, String repoName, String projectPath, boolean collectionFlag) throws IOException {
+    SpoonCollector(int launcherChoice, String repoName, String projectPath) throws IOException {
         File decompiledDir = new File(Constants.DECOMPILED_SOURCES_PATH);
         if (decompiledDir.exists()) {
             FileUtils.deleteDirectory(decompiledDir);
@@ -66,7 +63,6 @@ public abstract class SpoonCollector {
         interfaces = new HashMap<>();
 
         this.projectName = repoName;
-        this.collectionFlag = collectionFlag;
 
         switch (launcherChoice) {
             case Constants.LAUNCHER:
@@ -126,7 +122,6 @@ public abstract class SpoonCollector {
             processController(controller);
         }
 
-
         long elapsedTimeMillis = System.currentTimeMillis() - startTime;
         float elapsedTimeSec = elapsedTimeMillis/1000F;
         System.out.println("Complete. Elapsed time: " + elapsedTimeSec + " seconds");
@@ -137,23 +132,6 @@ public abstract class SpoonCollector {
         File file = new File(Constants.DECOMPILED_SOURCES_PATH);
         if (file.exists()) {
             FileUtils.deleteDirectory(file);
-        }
-
-
-        if (collectionFlag) {
-            try {
-                File methodsFile = new File(Constants.COLLECTION_SAVE_PATH, projectName + "_methods.json");
-                new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(methodsFile, methodsListCollection);
-                System.out.println("File '" + methodsFile.getName() + "' created at: " + methodsFile.getAbsolutePath());
-
-                HashMap<String, Boolean> allEntitiesHashMap = new HashMap<>();
-                allDomainEntities.forEach(e -> allEntitiesHashMap.put(e, true));
-                File entitiesFile = new File(Constants.COLLECTION_SAVE_PATH, projectName + "_allEntities.json");
-                new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(entitiesFile, allEntitiesHashMap);
-                System.out.println("File '" + entitiesFile.getName() + "' created at: " + entitiesFile.getAbsolutePath());
-            } catch (Exception e) {
-                System.err.println("Couldn't write collection file(s).");
-            }
         }
 
         /* ------ TO REMOVE ------- */
@@ -180,7 +158,6 @@ public abstract class SpoonCollector {
                 .append(s4)
                 .append("\n");
         Files.write(Paths.get(testData.getPath()), sb.toString().getBytes(), StandardOpenOption.APPEND);
-        System.exit(1);
     }
 
     private void processController(CtClass controller) {
@@ -221,16 +198,6 @@ public abstract class SpoonCollector {
     abstract void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<SourcePosition> methodStack);
 
     abstract void collectControllersAndEntities();
-
-    List<CtAbstractInvocation> getCalleesOf(CtExecutable method) {
-        Map<Integer,CtAbstractInvocation> orderedCallees = new TreeMap<>();
-        List<CtAbstractInvocation> methodCalls = method.getElements(new TypeFilter<>(CtAbstractInvocation.class));
-        for (CtAbstractInvocation i : methodCalls)
-            try {
-                orderedCallees.put(i.getPosition().getSourceEnd(), i);
-            } catch (Exception ignored) {} // "super" fantasmas em construtores
-        return new ArrayList<>(orderedCallees.values()); // why are we ordering the calls?
-    }
 
     boolean existsAnnotation(List<CtAnnotation<? extends Annotation>> annotations, String annotationName) {
         for (CtAnnotation<? extends Annotation> a : annotations) {

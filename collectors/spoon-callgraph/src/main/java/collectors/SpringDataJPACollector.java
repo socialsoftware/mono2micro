@@ -33,7 +33,7 @@ public class SpringDataJPACollector extends SpoonCollector {
     private Repository eventualNewRepository;
 
     public SpringDataJPACollector(int launcherChoice, String repoName, String projectPath) throws IOException {
-        super(launcherChoice, repoName, projectPath, false);
+        super(launcherChoice, repoName, projectPath);
 
         switch (launcherChoice) {
             case Constants.LAUNCHER:
@@ -477,20 +477,6 @@ public class SpringDataJPACollector extends SpoonCollector {
                     if (calleeLocation == null)
                         return;
 
-//                    /* TO REMOVE */
-//                    try {
-//                        if (((CtInvocation) calleeLocation).getTarget().getType().getSimpleName().contains("EntityManager"))
-//                            System.err.println(calleeLocation.toString() + "\n" +calleeLocation.getPosition());
-//                    } catch (Exception e) {}
-//
-//                    /* TO REMOVE */
-//                    try {
-//                        boolean entityManager = ((CtInvocation) calleeLocation).getTarget().getType().getSimpleName().contains("EntityManager");
-//                        if (entityManager) {
-//                            SpringDataJPACollector.this.entityManager++;
-//                        }
-//                    } catch (Exception e) {}
-
                     try {
                         CtMethod calleeMethod = (CtMethod) calleeLocation.getExecutable().getExecutableDeclaration();
                         if (calleeMethod.isAbstract()) {
@@ -548,9 +534,10 @@ public class SpringDataJPACollector extends SpoonCollector {
                         }
                     }
                 } catch (Exception e) {
-                    if (!(e instanceof ClassCastException || e instanceof NullPointerException)) {
-                        System.err.println(e.getCause().getMessage());
-                    }
+//                    if (!(e instanceof ClassCastException || e instanceof NullPointerException)) {
+//                        System.err.println(e.getCause().getMessage());
+//                    }
+                    e.printStackTrace();
                 }
             }
 

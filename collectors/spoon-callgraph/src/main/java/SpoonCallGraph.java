@@ -20,7 +20,6 @@ public class SpoonCallGraph {
     private static String sourcesPath = null;
     private static String repoURL = null;
     private static String projectNameInput = null;
-    private static boolean collectionFlag = false;
 
     public static void main(String[] args) throws GitAPIException, IOException {
         if (args.length == 0) {
@@ -28,7 +27,7 @@ public class SpoonCallGraph {
             showDialogSecond();
         }
 
-        else if (args.length >= 5) {
+        else if (args.length == 5) {
             System.out.println(Arrays.toString(args));
             // Launcher Choice, Sources Choice, ORM Choice, projectName, path/link
             launcherChoice = Integer.parseInt(args[0]);
@@ -36,9 +35,6 @@ public class SpoonCallGraph {
             ormChoice = Integer.parseInt(args[2]);
             projectNameInput = args[3];
             sourcesPath = args[4];
-
-            if (args.length > 5)
-                collectionFlag = Boolean.parseBoolean(args[5]);
         }
         else {
             System.err.println("Invalid args");
@@ -73,7 +69,7 @@ public class SpoonCallGraph {
         SpoonCollector collector = null;
         switch (ormChoice) {
             case Constants.FENIX_FRAMEWORK:
-                collector = new FenixFrameworkCollector(launcherChoice, projectName, file.getAbsolutePath(), collectionFlag);
+                collector = new FenixFrameworkCollector(launcherChoice, projectName, file.getAbsolutePath());
                 break;
             case Constants.SPRING_DATA_JPA:
                 collector = new SpringDataJPACollector(launcherChoice, projectName, file.getAbsolutePath());

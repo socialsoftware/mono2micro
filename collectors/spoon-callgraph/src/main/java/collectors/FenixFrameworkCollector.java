@@ -4,6 +4,7 @@ import spoon.reflect.code.*;
 import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.declaration.*;
 import spoon.reflect.reference.CtTypeReference;
+import spoon.reflect.visitor.CtScanner;
 import spoon.support.reflect.code.CtInvocationImpl;
 import spoon.support.reflect.code.CtReturnImpl;
 import util.Constants;
@@ -12,14 +13,13 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.Stack;
 
 public class FenixFrameworkCollector extends SpoonCollector {
 
-    public FenixFrameworkCollector(int launcherChoice, String repoName, String projectPath, boolean collectionFlag)
+    public FenixFrameworkCollector(int launcherChoice, String repoName, String projectPath)
             throws IOException {
-        super(launcherChoice, repoName, projectPath, collectionFlag);
+        super(launcherChoice, repoName, projectPath);
 
         switch (launcherChoice) {
             case Constants.LAUNCHER:
@@ -61,17 +61,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
                 CtTypeReference<?> superclassReference = clazz.getSuperclass();
                 if (superclassReference != null && superclassReference.getSimpleName().endsWith("_Base")) {
                     allDomainEntities.add(clazz.getSimpleName());
-
-                    if (collectionFlag)
-                        collectBaseClassMethods((CtClass) clazz.getSuperclass().getTypeDeclaration());
                 }
-
-                if (collectionFlag) {
-                    if (clazz.getSimpleName().equals("DomainRoot_Base")) {
-                        collectBaseClassMethods((CtClass) clazz);
-                    }
-                }
-
             }
             allEntities.add(clazz.getSimpleName());
         }
@@ -81,31 +71,39 @@ public class FenixFrameworkCollector extends SpoonCollector {
     public void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<SourcePosition> methodStack) {
         methodStack.push(callerMethod.getPosition());
 
-        if (!methodCallees.containsKey(callerMethod.getPosition())) {
-            methodCallees.put(callerMethod.getPosition(), getCalleesOf(callerMethod));
-        }
-
-        for (CtAbstractInvocation calleeLocation : methodCallees.get(callerMethod.getPosition())) {
-
-            try {
-                if (calleeLocation == null)
-                    continue;
-                else if (calleeLocation.getExecutable().getDeclaringType().getSimpleName().endsWith("_Base")) {
-                    registerBaseClass(calleeLocation.getExecutable().getExecutableDeclaration(), calleeLocation);
-                }
-                else if (calleeLocation.getExecutable().getDeclaringType().getSimpleName().equals("FenixFramework") &&
-                        calleeLocation.getExecutable().getSimpleName().equals("getDomainObject")) {
-                    registerDomainObject(calleeLocation);
-                }
-                else if (allEntities.contains(calleeLocation.getExecutable().getDeclaringType().getSimpleName())) {
-                    if (!methodStack.contains(calleeLocation.getExecutable().getExecutableDeclaration().getPosition())) {
-                        methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), null, methodStack);
+        callerMethod.accept(new CtScanner() {
+            private <T> void visitCtAbstractInvocation(CtAbstractInvocation calleeLocation) {
+                try {
+                    if (calleeLocation == null || calleeLocation.getExecutable().getDeclaringType() == null)
+                        return;
+                    else if (calleeLocation.getExecutable().getDeclaringType().getSimpleName().endsWith("_Base")) {
+                        registerBaseClass(calleeLocation.getExecutable().getExecutableDeclaration(), calleeLocation);
+                    } else if (calleeLocation.getExecutable().getDeclaringType().getSimpleName().equals("FenixFramework") &&
+                            calleeLocation.getExecutable().getSimpleName().equals("getDomainObject")) {
+                        registerDomainObject(calleeLocation);
+                    } else if (allEntities.contains(calleeLocation.getExecutable().getDeclaringType().getSimpleName())) {
+                        if (!methodStack.contains(calleeLocation.getExecutable().getExecutableDeclaration().getPosition())) {
+                            methodCallDFS(calleeLocation.getExecutable().getExecutableDeclaration(), calleeLocation, methodStack);
+                        }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                // cast error, proceed
             }
-        }
+
+            @Override
+            public <T> void visitCtInvocation(CtInvocation<T> invocation) {
+                super.visitCtInvocation(invocation);
+                visitCtAbstractInvocation(invocation);
+            }
+
+            @Override
+            public <T> void visitCtConstructorCall(CtConstructorCall<T> ctConstructorCall) {
+                super.visitCtConstructorCall(ctConstructorCall);
+                visitCtAbstractInvocation(ctConstructorCall);
+            }
+        });
+
         methodStack.pop();
     }
 
@@ -135,6 +133,8 @@ public class FenixFrameworkCollector extends SpoonCollector {
                     argTypes.add(ctP.getType().getSimpleName());
             }
         }
+        else // super()
+            return;
 
         String baseClassName = callee.getParent(CtClass.class).getSimpleName();
         baseClassName = baseClassName.substring(0, baseClassName.length()-5); //remove _Base
@@ -200,54 +200,5 @@ public class FenixFrameworkCollector extends SpoonCollector {
             return ((CtAssignment) parent).getAssigned().getType().getSimpleName();
         else
             throw new Exception("Couldn't Resolve Type.");
-    }
-
-    private void collectBaseClassMethods(CtClass clazz) {
-        Set<CtMethod> baseMethods = clazz.getMethods();
-        for (CtMethod ctM : baseMethods) {
-            if (ctM.isPublic()) {
-                String returnType = ctM.getType().toString();
-                if (returnType.contains("pt.ist.fenixframework")) {
-                    continue;
-                }
-
-                List<CtParameter> parameters = ctM.getParameters();
-                boolean skip = false;
-                for (CtParameter p : parameters) {
-                    if (p.getType().toString().contains("pt.ist.fenixframework")) {
-                        skip = true;
-                        break;
-                    }
-                }
-
-                if (skip)
-                    continue;
-
-                else {
-                    List<String> par = new ArrayList<>();
-                    CtTypeReference typeReference = ctM.getType();
-                    String returnTypeParsed;
-                    if (typeReference.isParameterized())
-                        returnTypeParsed = typeReference.getActualTypeArguments().get(0).getSimpleName();
-                    else
-                        returnTypeParsed = typeReference.getSimpleName();
-
-                    parameters.forEach(parameter -> par.add(parameter.getType().getSimpleName()));
-                    methodsListCollection.put(
-                            String.join(
-                                    ".",
-                                    clazz.getSimpleName(),
-                                    ctM.getSimpleName()
-                            ),
-                            new MethodContainer(
-                                    returnTypeParsed,
-                                    ctM.getSimpleName(),
-                                    par,
-                                    clazz.getSimpleName()
-                            )
-                    );
-                }
-            }
-        }
     }
 }
