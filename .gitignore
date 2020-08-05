@@ -25,13 +25,8 @@ target/
 
 #tmpDirCreatedBySpoon
 tmpDecompiledSources/
-<<<<<<< HEAD
 
 #spoon data collection
 collectors/spoon-callgraph/data/collection/Untitled Folder
 collectors/spoon-callgraph/testData.txt
 collectors/spoon-callgraph/data/collection/*.json
-=======
-collectors/spoon-callgraph/data/collection/Untitled Folder
-collectors/spoon-callgraph/testData.txt
->>>>>>> 80b07737e5be1f0ab17f322bdd3718f3f01aa1ee
