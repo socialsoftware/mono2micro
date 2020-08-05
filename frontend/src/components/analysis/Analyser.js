@@ -286,7 +286,6 @@ export class Analyser extends React.Component {
                                     disabled={this.state.isUploaded === "Uploading..." ||
                                             Object.keys(this.state.codebase).length === 0 ||
                                             this.state.selectedProfiles.length === 0 ||
-                                            Object.keys(this.state.expert).length === 0 ||
                                             this.state.requestLimit === ""}>
                                 Submit
                             </Button>

@@ -232,7 +232,11 @@ public class Dendrogram {
 		List<String> entitiesList = new ArrayList<String>(entityControllers.keySet());
 		Collections.sort(entitiesList);
 
-		int maxNumberOfPairs = Collections.max(e1e2PairCount.values());
+		int maxNumberOfPairs;
+		if (!e1e2PairCount.values().isEmpty())
+			maxNumberOfPairs = Collections.max(e1e2PairCount.values());
+		else
+			maxNumberOfPairs = 0;
 
 		for (int i = 0; i < entitiesList.size(); i++) {
 			String e1 = entitiesList.get(i);
@@ -271,7 +275,12 @@ public class Dendrogram {
 				float readMetric = e1ControllersR == 0 ? 0 : inCommonR / e1ControllersR;
 
 				float e1e2Count = e1e2PairCount.containsKey(e1e2) ? e1e2PairCount.get(e1e2) : 0;
-				float sequenceMetric = e1e2Count / maxNumberOfPairs;
+
+				float sequenceMetric;
+				if (maxNumberOfPairs != 0)
+					sequenceMetric = e1e2Count / maxNumberOfPairs;
+				else // nao ha controladores a aceder a mais do que uma entidade
+					sequenceMetric = 0;
 
 				float metric = accessMetric * this.accessMetricWeight / 100 +
 								writeMetric * this.writeMetricWeight / 100 +

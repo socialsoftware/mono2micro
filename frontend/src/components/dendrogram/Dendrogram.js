@@ -326,7 +326,7 @@ export class Dendrogram extends React.Component {
                 <h4 style={{color: "#666666"}}>Create Expert Cut</h4>
                 {this.renderExpertForm()}
 
-                <img className="mb-5" src={URL + "codebase/" + this.state.codebaseName + "/dendrogram/" + this.state.dendrogramName + "/image?" + new Date().getTime()} alt="Dendrogram" />
+                <img width="100%" src={URL + "codebase/" + this.state.codebaseName + "/dendrogram/" + this.state.dendrogramName + "/image?" + new Date().getTime()} alt="Dendrogram" />
 
                 <h4 style={{color: "#666666"}}>Cuts</h4>
                 {this.renderCuts()}
