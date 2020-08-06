@@ -63,21 +63,21 @@ public class AnalysisController {
 			HashMap<String, ControllerDto> datafileJSON = CodebaseManager.getInstance().getDatafile(codebaseName);
 
 			// returning entitiesList by convenience
-//			List<String> entitiesList = createAnalyserSimilarityMatrix(codebaseName, analyser, datafileJSON);
-//			int numberOfEntitiesPresentInCollection = entitiesList.size();
-//
-//			System.out.println(codebaseName + ": " + numberOfEntitiesPresentInCollection);
-//
-//			Runtime r = Runtime.getRuntime();
-//			String pythonScriptPath = RESOURCES_PATH + "analyser.py";
-//			String[] cmd = new String[5];
-//			cmd[0] = PYTHON;
-//			cmd[1] = pythonScriptPath;
-//			cmd[2] = CODEBASES_PATH;
-//			cmd[3] = codebaseName;
-//			cmd[4] = String.valueOf(numberOfEntitiesPresentInCollection);
-//			Process p = r.exec(cmd);
-//			p.waitFor();
+			List<String> entitiesList = createAnalyserSimilarityMatrix(codebaseName, analyser, datafileJSON);
+			int numberOfEntitiesPresentInCollection = entitiesList.size();
+
+			System.out.println(codebaseName + ": " + numberOfEntitiesPresentInCollection);
+
+			Runtime r = Runtime.getRuntime();
+			String pythonScriptPath = RESOURCES_PATH + "analyser.py";
+			String[] cmd = new String[5];
+			cmd[0] = PYTHON;
+			cmd[1] = pythonScriptPath;
+			cmd[2] = CODEBASES_PATH;
+			cmd[3] = codebaseName;
+			cmd[4] = String.valueOf(numberOfEntitiesPresentInCollection);
+			Process p = r.exec(cmd);
+			p.waitFor();
 
 			int maxRequests = analyser.getRequestLimit();
 			int newRequestsCount = 0;
