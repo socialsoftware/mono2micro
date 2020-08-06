@@ -163,7 +163,6 @@ export class Codebases extends React.Component {
                     </Form.Label>
                     <Col sm={5}>
                         <FormControl
-                            id={"datafileID"}
                             type="file"
                             onChange={this.handleSelectedFile}/>
                     </Col>
