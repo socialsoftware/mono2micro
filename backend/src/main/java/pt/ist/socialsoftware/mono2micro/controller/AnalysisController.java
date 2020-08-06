@@ -30,9 +30,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import pt.ist.socialsoftware.mono2micro.domain.*;
-import pt.ist.socialsoftware.mono2micro.dto.AnalyserDto;
-import pt.ist.socialsoftware.mono2micro.dto.AnalyserResultDto;
-import pt.ist.socialsoftware.mono2micro.dto.AnalysisDto;
+import pt.ist.socialsoftware.mono2micro.dto.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 
@@ -58,47 +56,48 @@ public class AnalysisController {
 
 			File analyserResultPath = new File(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json");
 			if (!analyserResultPath.exists()) {
-				codebaseManager.writeAnalyserResults(codebaseName, new JSONObject());
+				codebaseManager.writeAnalyserResults(codebaseName, new HashMap());
 			}
 
+			// open codebase's datafile Json only once at the beginning of the analyser
+			HashMap<String, ControllerDto> datafileJSON = CodebaseManager.getInstance().getDatafile(codebaseName);
+
 			// returning entitiesList by convenience
-			List<String> entitiesList = createAnalyserSimilarityMatrix(codebaseName, analyser);
-			int numberOfEntitiesPresentInCollection = entitiesList.size();
+//			List<String> entitiesList = createAnalyserSimilarityMatrix(codebaseName, analyser, datafileJSON);
+//			int numberOfEntitiesPresentInCollection = entitiesList.size();
+//
+//			System.out.println(codebaseName + ": " + numberOfEntitiesPresentInCollection);
+//
+//			Runtime r = Runtime.getRuntime();
+//			String pythonScriptPath = RESOURCES_PATH + "analyser.py";
+//			String[] cmd = new String[5];
+//			cmd[0] = PYTHON;
+//			cmd[1] = pythonScriptPath;
+//			cmd[2] = CODEBASES_PATH;
+//			cmd[3] = codebaseName;
+//			cmd[4] = String.valueOf(numberOfEntitiesPresentInCollection);
+//			Process p = r.exec(cmd);
+//			p.waitFor();
 
-			System.out.println(codebaseName + ": " + numberOfEntitiesPresentInCollection);
-
-			Runtime r = Runtime.getRuntime();
-			String pythonScriptPath = RESOURCES_PATH + "analyser.py";
-			String[] cmd = new String[5];
-			cmd[0] = PYTHON;
-			cmd[1] = pythonScriptPath;
-			cmd[2] = CODEBASES_PATH;
-			cmd[3] = codebaseName;
-			cmd[4] = String.valueOf(numberOfEntitiesPresentInCollection);
-			Process p = r.exec(cmd);
-			
-			p.waitFor();
 			int maxRequests = analyser.getRequestLimit();
 			int newRequestsCount = 0;
 			int count = 0;
 			int bufferedDataCount = 0;
-			JSONObject analyserJSON = codebaseManager.getAnalyserResults(codebaseName);
+			HashMap<String, CutInfoDto> analyserJSON = codebaseManager.getAnalyserResults(codebaseName);
 			File analyserCutsPath = new File(CODEBASES_PATH + codebaseName + "/analyser/cuts/");
 			File[] files = analyserCutsPath.listFiles();
 			int total = files.length;
+
 			for (File file : files) {
 
 				String filename = FilenameUtils.getBaseName(file.getName());
 
 				count++;
 
-				try {
-					analyserJSON.get(filename);
-					System.out.println(filename + " already analysed. " + count + "/" + total);
-					continue;
-				} catch (JSONException e) {
-
-				}
+                if (analyserJSON.containsKey(filename)) {
+                    System.out.println(filename + " already analysed. " + count + "/" + total);
+                    continue;
+                }
 
 				Graph graph = new Graph();
 				graph.setCodebaseName(codebaseName);
@@ -117,7 +116,7 @@ public class AnalysisController {
 					graph.addCluster(cluster);
 				}
 
-				graph.calculateMetricsAnalyser(analyser.getProfiles());
+				graph.calculateMetricsAnalyser(analyser.getProfiles(), datafileJSON);
 
 				AnalysisDto analysisDto = new AnalysisDto();
 				analysisDto.setGraph1(analyser.getExpert());
@@ -145,17 +144,16 @@ public class AnalysisController {
 				analyserResult.setSequenceWeight(Float.parseFloat(similarityWeights[3]));
 				analyserResult.setNumberClusters(Float.parseFloat(similarityWeights[4]));
 
-				JSONObject analyserResultJSON = new JSONObject(analyserResult);
+				CutInfoDto analyserResultJSON = new CutInfoDto();
+				analyserResultJSON.setAnalyserResultDto(analyserResult);
 
-				JSONObject controllerComplexities = new JSONObject();
+				HashMap<String, Float> controllerComplexities = new HashMap<>();
 				for (Controller controller : graph.getControllers()) {
 					controllerComplexities.put(controller.getName(), controller.getComplexity());
 				}
-				analyserResultJSON.put("controllerComplexities", controllerComplexities);
+				analyserResultJSON.setControllerComplexities(controllerComplexities);
 
 				analyserJSON.put(filename, analyserResultJSON);
-
-
 
 				newRequestsCount++;
 				bufferedDataCount++;
@@ -180,22 +178,22 @@ public class AnalysisController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
-	List<String> createAnalyserSimilarityMatrix(String codebaseName, AnalyserDto analyser) throws IOException, JSONException {
+	private List<String> createAnalyserSimilarityMatrix(String codebaseName, AnalyserDto analyser, HashMap<String, ControllerDto> datafileJSON) throws IOException, JSONException {
 		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 		Map<String,Integer> e1e2PairCount = new HashMap<>();
 		JSONArray similarityMatrix = new JSONArray();
 		JSONObject matrixData = new JSONObject();
 
-		HashMap<String, ArrayList<ArrayList<String>>> datafileJSON = codebaseManager.getDatafile(codebaseName);
 		Codebase codebase = codebaseManager.getCodebase(codebaseName);
 
 		for (String profile : analyser.getProfiles()) {
 			for (String controllerName : codebase.getProfile(profile)) {
-				ArrayList<ArrayList<String>> accesses = datafileJSON.get(controllerName);
-				for (int i = 0; i < accesses.size(); i++) {
-					ArrayList<String> access = accesses.get(i);
-					String entity = access.get(0);
-					String mode = access.get(1);
+				ControllerDto controllerDto = datafileJSON.get(controllerName);
+				List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
+				for (int i = 0; i < controllerAccesses.size(); i++) {
+					AccessDto access = controllerAccesses.get(i);
+					String entity = access.getEntity();
+					String mode = access.getMode();
 
 					if (entityControllers.containsKey(entity)) {
 						boolean containsController = false;
@@ -216,9 +214,9 @@ public class AnalysisController {
 						entityControllers.put(entity, controllersPairs);
 					}
 
-					if (i < accesses.size() - 1) {
-						ArrayList<String> nextEntityArray = accesses.get(i+1);
-						String nextEntity = nextEntityArray.get(0);
+					if (i < controllerAccesses.size() - 1) {
+						AccessDto nextAccess = controllerAccesses.get(i+1);
+						String nextEntity = nextAccess.getEntity();
 
 						if (!entity.equals(nextEntity)) {
 							String e1e2 = entity + "->" + nextEntity;

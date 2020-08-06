@@ -12,6 +12,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
+import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Metrics;
 
@@ -128,13 +130,19 @@ public class Graph {
 		this.controllers.add(controller);
 	}
 
-	public void addControllers(List<String> profiles) throws JSONException, IOException {
+	public void addControllers(List<String> profiles, HashMap<String, ControllerDto> datafile)
+			throws JSONException, IOException {
 
 		this.controllers = new ArrayList<>();
 
-		HashMap<String, ArrayList<ArrayList<String>>> datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
+		HashMap<String, ControllerDto> datafileJSON;
+		if (datafile == null)
+			datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
+		else
+			datafileJSON = datafile;
+
 		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
-		
+
 		for (String profile : profiles) {
 			for (String controllerName : codebase.getProfile(profile)) {
 
@@ -144,11 +152,12 @@ public class Graph {
 				JSONArray entitiesSeq = new JSONArray();
 				JSONObject clusterAccess = new JSONObject();
 
-				ArrayList<ArrayList<String>> accesses = datafileJSON.get(controllerName);
-				for (int i = 0; i < accesses.size(); i++) {
-					ArrayList<String> access = accesses.get(i);
-					String entity = access.get(0);
-					String mode = access.get(1);
+				ControllerDto controllerDto = datafileJSON.get(controllerName);
+				List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
+				for (int i = 0; i < controllerAccesses.size(); i++) {
+					AccessDto access = controllerAccesses.get(i);
+					String entity = access.getEntity();
+					String mode = access.getMode();
 					String cluster = null;
 					try {
 						cluster = this.getClusterWithEntity(entity).getName();
@@ -161,10 +170,10 @@ public class Graph {
 					if (i == 0) {
 						clusterAccess.put("cluster", cluster);
 						clusterAccess.put("sequence", new JSONArray());
-						clusterAccess.getJSONArray("sequence").put(access);
+						clusterAccess.getJSONArray("sequence").put(access.toJSONrray());
 						controller.addEntity(entity, mode);
 					} else {
-						String previousCluster = this.getClusterWithEntity((accesses.get(i-1)).get(0)).getName();
+						String previousCluster = this.getClusterWithEntity((controllerAccesses.get(i-1)).getEntity()).getName();
 						if (cluster.equals(previousCluster)) {
 							boolean hasNoCost = false;
 							for (int j = 0; j < clusterAccess.getJSONArray("sequence").length(); j++) {
@@ -179,7 +188,7 @@ public class Graph {
 								}
 							}
 							if (!hasNoCost) {
-								clusterAccess.getJSONArray("sequence").put(access);
+								clusterAccess.getJSONArray("sequence").put(access.toJSONrray());
 								controller.addEntity(entity, mode);
 							}
 						} else {
@@ -187,7 +196,7 @@ public class Graph {
 							clusterAccess = new JSONObject();
 							clusterAccess.put("cluster", cluster);
 							clusterAccess.put("sequence", new JSONArray());
-							clusterAccess.getJSONArray("sequence").put(access);
+							clusterAccess.getJSONArray("sequence").put(access.toJSONrray());
 							controller.addEntity(entity, mode);
 						}
 					}
@@ -321,7 +330,7 @@ public class Graph {
 
 	public void calculateMetrics() {
 		try {
-			this.addControllers(CodebaseManager.getInstance().getCodebase(this.codebaseName).getDendrogram(this.dendrogramName).getProfiles());
+			this.addControllers(CodebaseManager.getInstance().getCodebase(this.codebaseName).getDendrogram(this.dendrogramName).getProfiles(), null);
 		} catch (IOException | JSONException e) {
 			e.printStackTrace();
 		}
@@ -330,9 +339,9 @@ public class Graph {
 		metrics.calculateMetrics();
 	}
 
-	public void calculateMetricsAnalyser(List<String> profiles) {
+	public void calculateMetricsAnalyser(List<String> profiles, HashMap<String, ControllerDto> datafileJSON) {
 		try {
-			this.addControllers(profiles);
+			this.addControllers(profiles, datafileJSON);
 		} catch (IOException | JSONException e) {
 			e.printStackTrace();
 		}
