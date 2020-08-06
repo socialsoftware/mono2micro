@@ -2,23 +2,17 @@ package pt.ist.socialsoftware.mono2micro.manager;
 
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import org.apache.commons.io.FileUtils;
@@ -67,8 +61,7 @@ public class CodebaseManager {
 		FileUtils.deleteDirectory(new File(CODEBASES_PATH + codebaseName));
 	}
 
-	public Codebase createCodebase(String codebaseName, MultipartFile datafile) throws IOException, JSONException {
-		
+	public Codebase createCodebase(String codebaseName, Object datafile) throws IOException {
 		if (getCodebase(codebaseName) != null)
 			throw new KeyAlreadyExistsException();
 
@@ -84,18 +77,33 @@ public class CodebaseManager {
 
 		Codebase codebase = new Codebase(codebaseName);
 
-		// read datafile
-		InputStream is = new BufferedInputStream(datafile.getInputStream());
-		JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
-		is.close();
-
-		this.writeDatafile(codebaseName, datafileJSON);
-
-		Iterator<String> controllerNames = datafileJSON.sortedKeys();
-		List<String> controllers = new ArrayList<>();
-		while (controllerNames.hasNext()) {
-			controllers.add(controllerNames.next());
+		HashMap datafileJSON = null;
+		ObjectMapper mapper = new ObjectMapper();
+		if (datafile instanceof MultipartFile) {
+			// read datafile
+			InputStream is = ((MultipartFile) datafile).getInputStream();
+			datafileJSON = mapper.readValue(is, HashMap.class);
+			is.close();
+			this.writeDatafile(codebaseName, datafileJSON);
+			codebase.setDatafilePath(new File(CODEBASES_PATH + codebaseName + "/datafile.json").getAbsolutePath());
 		}
+		else if (datafile instanceof String) {
+			File localDatafile = new File((String) datafile);
+			if (!localDatafile.exists())
+				throw new FileNotFoundException();
+
+			InputStream is = new FileInputStream(localDatafile);
+			datafileJSON = mapper.readValue(is, HashMap.class);
+			is.close();
+			codebase.setDatafilePath((String) datafile);
+		}
+
+		Object[] keySet = datafileJSON.keySet().toArray();
+		Arrays.sort(keySet);
+		List<String> controllers = new ArrayList<>();
+		for (Object key : keySet)
+			controllers.add((String) key);
+
 		codebase.addProfile("Generic", controllers);
 
 		return codebase;
@@ -114,17 +122,20 @@ public class CodebaseManager {
 		objectMapper.writeValue(new File(CODEBASES_PATH + codebaseName + "/codebase.json"), codebase);
 	}
 
-	public JSONObject getDatafile(String codebaseName) throws IOException, JSONException {
-		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/datafile.json");
-		JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
+	public HashMap<String, ArrayList<ArrayList<String>>> getDatafile(String codebaseName) throws IOException {
+		Codebase codebase = getCodebase(codebaseName);
+		InputStream is = new FileInputStream(codebase.getDatafilePath());
+		HashMap datafileJSON = new ObjectMapper().readValue(is, HashMap.class);
 		is.close();
 		return datafileJSON;
 	}
 
-	public void writeDatafile(String codebaseName, JSONObject datafile) throws IOException, JSONException {
-		FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + "/datafile.json");
-		file.write(datafile.toString(4));
-		file.close();
+	public void writeDatafile(String codebaseName, HashMap datafile) throws IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		DefaultPrettyPrinter pp = new DefaultPrettyPrinter();
+		pp.indentArraysWith( DefaultIndenter.SYSTEM_LINEFEED_INSTANCE );
+		ObjectWriter writer = mapper.writer(pp);
+		writer.writeValue(new File(CODEBASES_PATH + codebaseName + "/datafile.json"), datafile);
 	}
 
 	public JSONObject getSimilarityMatrix(String codebaseName, String dendrogramName) throws IOException, JSONException {

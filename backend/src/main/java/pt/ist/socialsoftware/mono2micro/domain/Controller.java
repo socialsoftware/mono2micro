@@ -1,11 +1,9 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
+import org.json.JSONArray;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class Controller {
 	private String name;

@@ -132,7 +132,7 @@ public class Graph {
 
 		this.controllers = new ArrayList<>();
 
-		JSONObject datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
+		HashMap<String, ArrayList<ArrayList<String>>> datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
 		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
 		
 		for (String profile : profiles) {
@@ -143,12 +143,12 @@ public class Graph {
 	
 				JSONArray entitiesSeq = new JSONArray();
 				JSONObject clusterAccess = new JSONObject();
-	
-				JSONArray entities = datafileJSON.getJSONArray(controllerName);
-				for (int i = 0; i < entities.length(); i++) {
-					JSONArray entityArray = entities.getJSONArray(i);
-					String entity = entityArray.getString(0);
-					String mode = entityArray.getString(1);
+
+				ArrayList<ArrayList<String>> accesses = datafileJSON.get(controllerName);
+				for (int i = 0; i < accesses.size(); i++) {
+					ArrayList<String> access = accesses.get(i);
+					String entity = access.get(0);
+					String mode = access.get(1);
 					String cluster = null;
 					try {
 						cluster = this.getClusterWithEntity(entity).getName();
@@ -161,10 +161,10 @@ public class Graph {
 					if (i == 0) {
 						clusterAccess.put("cluster", cluster);
 						clusterAccess.put("sequence", new JSONArray());
-						clusterAccess.getJSONArray("sequence").put(entityArray);
+						clusterAccess.getJSONArray("sequence").put(access);
 						controller.addEntity(entity, mode);
 					} else {
-						String previousCluster = this.getClusterWithEntity(entities.getJSONArray(i-1).getString(0)).getName();
+						String previousCluster = this.getClusterWithEntity((accesses.get(i-1)).get(0)).getName();
 						if (cluster.equals(previousCluster)) {
 							boolean hasNoCost = false;
 							for (int j = 0; j < clusterAccess.getJSONArray("sequence").length(); j++) {
@@ -179,7 +179,7 @@ public class Graph {
 								}
 							}
 							if (!hasNoCost) {
-								clusterAccess.getJSONArray("sequence").put(entityArray);
+								clusterAccess.getJSONArray("sequence").put(access);
 								controller.addEntity(entity, mode);
 							}
 						} else {
@@ -187,7 +187,7 @@ public class Graph {
 							clusterAccess = new JSONObject();
 							clusterAccess.put("cluster", cluster);
 							clusterAccess.put("sequence", new JSONArray());
-							clusterAccess.getJSONArray("sequence").put(entityArray);
+							clusterAccess.getJSONArray("sequence").put(access);
 							controller.addEntity(entity, mode);
 						}
 					}

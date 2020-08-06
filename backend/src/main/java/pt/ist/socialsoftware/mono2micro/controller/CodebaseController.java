@@ -1,5 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.controller;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -106,9 +107,8 @@ public class CodebaseController {
         }
     }
 
-
     @RequestMapping(value = "/codebase/create", method = RequestMethod.POST)
-    public ResponseEntity<HttpStatus> createCodebase(@RequestParam String codebaseName, @RequestParam MultipartFile datafile) {
+    public ResponseEntity<HttpStatus> createCodebase(@RequestParam String codebaseName, @RequestParam Object datafile) {
         logger.debug("createCodebase");
 
         try {
@@ -117,7 +117,9 @@ public class CodebaseController {
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (KeyAlreadyExistsException e) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        } catch (IOException | JSONException e) {
+        } catch (FileNotFoundException e) {
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
