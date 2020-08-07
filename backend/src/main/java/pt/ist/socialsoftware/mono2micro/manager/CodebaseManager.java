@@ -127,11 +127,12 @@ public class CodebaseManager {
 	}
 
 	public void writeDatafile(String codebaseName, HashMap datafile) throws IOException {
-		ObjectMapper mapper = new ObjectMapper();
-		DefaultPrettyPrinter pp = new DefaultPrettyPrinter();
-		pp.indentArraysWith( DefaultIndenter.SYSTEM_LINEFEED_INSTANCE );
-		ObjectWriter writer = mapper.writer(pp);
-		writer.writeValue(new File(CODEBASES_PATH + codebaseName + "/datafile.json"), datafile);
+//		ObjectMapper mapper = new ObjectMapper();
+//		DefaultPrettyPrinter pp = new DefaultPrettyPrinter();
+//		pp.indentArraysWith( DefaultIndenter.SYSTEM_LINEFEED_INSTANCE );
+//		ObjectWriter writer = mapper.writer(pp);
+		new ObjectMapper().writerWithDefaultPrettyPrinter()
+				.writeValue(new File(CODEBASES_PATH + codebaseName + "/datafile.json"), datafile);
 	}
 
 	public JSONObject getSimilarityMatrix(String codebaseName, String dendrogramName) throws IOException, JSONException {
