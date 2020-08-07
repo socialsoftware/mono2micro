@@ -139,15 +139,6 @@ public class JPAUtils {
             Classes classes = new Classes();
             classes.addClass(clazz.getSimpleName());
 
-            List<CtTypeReference<?>> actualTypeArguments = field.getType().getActualTypeArguments();
-            for (CtTypeReference type : actualTypeArguments) {
-
-                CtType fieldType = type.getTypeDeclaration();
-
-                if (allDomainEntities.contains(fieldType.getSimpleName()))
-                    classes.addClass(fieldType.getSimpleName());
-            }
-
             if (joinTableName.equals("")) {
                 joinTableName = entityName + "_" + field.getSimpleName();
             }

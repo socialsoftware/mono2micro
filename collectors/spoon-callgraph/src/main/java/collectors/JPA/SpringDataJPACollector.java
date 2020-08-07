@@ -85,7 +85,6 @@ public class SpringDataJPACollector extends SpoonCollector {
                     abstractClassesAndInterfacesImplementorsMap.put(clazz.getSimpleName(), new ArrayList<>());
                 }
                 if (existsAnnotation(clazzAnnotations, "Entity") ||
-                        existsAnnotation(clazzAnnotations, "Embeddable") ||
                         existsAnnotation(clazzAnnotations, "MappedSuperclass")) {
                     allDomainEntities.add(clazz.getSimpleName());
                 }
@@ -316,6 +315,8 @@ public class SpringDataJPACollector extends SpoonCollector {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                } catch (StackOverflowError soe) {
+                    System.err.println("StackOverflowError on call " + calleeLocation.toString());
                 }
             }
 
@@ -775,6 +776,7 @@ public class SpringDataJPACollector extends SpoonCollector {
                                 for (CtTypeReference ctTypeReference : actualTypeArguments) {
                                     CtTypeReference<?> processedType;
 
+                                    // List<T extends Entity>
                                     if (ctTypeReference instanceof CtTypeParameterReference)
                                         processedType = ((CtTypeParameterReference) ctTypeReference).getBoundingType();
                                     else
