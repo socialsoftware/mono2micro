@@ -127,7 +127,12 @@ public class JPAUtils {
         }
     }
 
-    static void parseAtElementCollection(CtType<?> clazz, CtField field, List<CtAnnotation<? extends Annotation>> fieldAnnotations, String entityName, Set<String> allDomainEntities) {
+    static void parseAtElementCollection(
+            CtType<?> clazz,
+            CtField field,
+            List<CtAnnotation<? extends Annotation>> fieldAnnotations,
+            String entityName
+    ) {
         CtAnnotation elementCollectionAnnotation = getAnnotation(fieldAnnotations, "ElementCollection");
         if (elementCollectionAnnotation != null) {
             String joinTableName = "";
@@ -138,15 +143,6 @@ public class JPAUtils {
             }
             Classes classes = new Classes();
             classes.addClass(clazz.getSimpleName());
-
-            List<CtTypeReference<?>> actualTypeArguments = field.getType().getActualTypeArguments();
-            for (CtTypeReference type : actualTypeArguments) {
-
-                CtType fieldType = type.getTypeDeclaration();
-
-                if (allDomainEntities.contains(fieldType.getSimpleName()))
-                    classes.addClass(fieldType.getSimpleName());
-            }
 
             if (joinTableName.equals("")) {
                 joinTableName = entityName + "_" + field.getSimpleName();
@@ -253,6 +249,14 @@ public class JPAUtils {
                 tableName = redefinedTableName.trim();
             }
 
+        }
+        else {
+            CtAnnotation atEntityAnnotation = getAnnotation(annotations, "Entity");
+            if (atEntityAnnotation != null) {
+                Object name = ((CtAnnotationImpl) atEntityAnnotation).getElementValues().get("name");
+                if (name != null)
+                    tableName = getValueAsString(name);
+            }
         }
         return tableName;
     }
