@@ -186,16 +186,16 @@ public class AnalysisController {
 		JSONArray similarityMatrix = new JSONArray();
 		JSONObject matrixData = new JSONObject();
 
-		JSONObject datafileJSON = codebaseManager.getDatafile(codebaseName);
+		HashMap<String, ArrayList<ArrayList<String>>> datafileJSON = codebaseManager.getDatafile(codebaseName);
 		Codebase codebase = codebaseManager.getCodebase(codebaseName);
 
 		for (String profile : analyser.getProfiles()) {
 			for (String controllerName : codebase.getProfile(profile)) {
-				JSONArray entities = datafileJSON.getJSONArray(controllerName);
-				for (int i = 0; i < entities.length(); i++) {
-					JSONArray entityArray = entities.getJSONArray(i);
-					String entity = entityArray.getString(0);
-					String mode = entityArray.getString(1);
+				ArrayList<ArrayList<String>> accesses = datafileJSON.get(controllerName);
+				for (int i = 0; i < accesses.size(); i++) {
+					ArrayList<String> access = accesses.get(i);
+					String entity = access.get(0);
+					String mode = access.get(1);
 
 					if (entityControllers.containsKey(entity)) {
 						boolean containsController = false;
@@ -208,17 +208,17 @@ public class AnalysisController {
 							}
 						}
 						if (!containsController) {
-							entityControllers.get(entity).add(new Pair<String,String>(controllerName,mode));
+							entityControllers.get(entity).add(new Pair<>(controllerName, mode));
 						}
 					} else {
 						List<Pair<String,String>> controllersPairs = new ArrayList<>();
-						controllersPairs.add(new Pair<String,String>(controllerName,mode));
+						controllersPairs.add(new Pair<>(controllerName, mode));
 						entityControllers.put(entity, controllersPairs);
 					}
 
-					if (i < entities.length() - 1) {
-						JSONArray nextEntityArray = entities.getJSONArray(i+1);
-						String nextEntity = nextEntityArray.getString(0);
+					if (i < accesses.size() - 1) {
+						ArrayList<String> nextEntityArray = accesses.get(i+1);
+						String nextEntity = nextEntityArray.get(0);
 
 						if (!entity.equals(nextEntity)) {
 							String e1e2 = entity + "->" + nextEntity;
@@ -235,7 +235,7 @@ public class AnalysisController {
 			}
 		}
 
-		List<String> entitiesList = new ArrayList<String>(entityControllers.keySet());
+		List<String> entitiesList = new ArrayList<>(entityControllers.keySet());
 		Collections.sort(entitiesList);
 
 		int maxNumberOfPairs;

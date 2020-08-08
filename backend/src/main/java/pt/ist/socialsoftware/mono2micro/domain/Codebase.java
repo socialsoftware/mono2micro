@@ -19,6 +19,7 @@ public class Codebase {
 	private String name;
 	private Map<String,List<String>> profiles = new HashMap<>();
 	private List<Dendrogram> dendrograms = new ArrayList<>();
+	private String datafilePath;
 
 	public Codebase() {
 	}
@@ -35,6 +36,13 @@ public class Codebase {
 		this.name = name;
 	}
 
+	public String getDatafilePath() {
+		return datafilePath;
+	}
+
+	public void setDatafilePath(String datafilePath) {
+		this.datafilePath = datafilePath;
+	}
 
 	public Map<String,List<String>> getProfiles() {
 		return this.profiles;

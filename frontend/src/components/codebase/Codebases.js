@@ -9,7 +9,8 @@ export class Codebases extends React.Component {
         super(props);
         this.state = {
             newCodebaseName: "",
-            selectedFile: null, 
+            newDatafilePath: "",
+            selectedFile: null,
             isUploaded: "",
             codebases: []
         };
@@ -17,7 +18,9 @@ export class Codebases extends React.Component {
         this.handleSelectedFile = this.handleSelectedFile.bind(this);
         this.handleSubmit= this.handleSubmit.bind(this);
         this.handleChangeNewCodebaseName = this.handleChangeNewCodebaseName.bind(this);
+        this.handleChangeNewDatafilePath = this.handleChangeNewDatafilePath.bind(this);
         this.handleDeleteCodebase = this.handleDeleteCodebase.bind(this);
+        this.doCreateCodebaseRequest = this.doCreateCodebaseRequest.bind(this);
     }
 
     componentDidMount() {
@@ -35,14 +38,23 @@ export class Codebases extends React.Component {
 
     handleSelectedFile(event) {
         this.setState({
-            selectedFile: event.target.files[0]
+            selectedFile: event.target.files[0],
+            newDatafilePath: ""
         });
     }
 
     handleChangeNewCodebaseName(event) {
-        this.setState({ 
-            newCodebaseName: event.target.value 
+        this.setState({
+            newCodebaseName: event.target.value
         });
+    }
+
+    handleChangeNewDatafilePath(event) {
+        this.setState({
+            newDatafilePath: event.target.value,
+            selectedFile: null
+        });
+        // reset input form
     }
 
     handleDeleteCodebase(codebaseName) {
@@ -58,31 +70,47 @@ export class Codebases extends React.Component {
         this.setState({
             isUploaded: "Uploading..."
         });
-        
+
+        if (this.state.selectedFile !== null) {
+            this.doCreateCodebaseRequest(this.state.newCodebaseName, this.state.selectedFile);
+        }
+        else {
+            this.doCreateCodebaseRequest(this.state.newCodebaseName, this.state.newDatafilePath);
+        }
+    }
+
+    doCreateCodebaseRequest(codebaseName, pathOrFile) {
         const service = new RepositoryService();
-        service.createCodebase(this.state.newCodebaseName, this.state.selectedFile).then(response => {
-            if (response.status === HttpStatus.CREATED) {
-                this.loadCodebases();
-                this.setState({
-                    isUploaded: "Upload completed successfully."
-                });
-            } else {
-                this.setState({
-                    isUploaded: "Upload failed."
-                });
-            }
-        })
-        .catch(error => {
-            if (error.response !== undefined && error.response.status === HttpStatus.UNAUTHORIZED) {
-                this.setState({
-                    isUploaded: "Upload failed. Codebase name already exists."
-                });
-            } else {
-                this.setState({
-                    isUploaded: "Upload failed."
-                });
-            }
-        });
+        service.createCodebase(codebaseName, pathOrFile)
+            .then(response => {
+                if (response.status === HttpStatus.CREATED) {
+                    this.loadCodebases();
+                    this.setState({
+                        isUploaded: "Upload completed successfully."
+                    });
+                } else {
+                    this.setState({
+                        isUploaded: "Upload failed."
+                    });
+                }
+            })
+            .catch(error => {
+                if (error.response !== undefined && error.response.status === HttpStatus.UNAUTHORIZED) {
+                    this.setState({
+                        isUploaded: "Upload failed. Codebase name already exists."
+                    });
+                }
+                else if (error.response !== undefined && error.response.status === HttpStatus.NOT_FOUND) {
+                    this.setState({
+                        isUploaded: "Upload failed. Invalid datafile path."
+                    });
+                }
+                else {
+                    this.setState({
+                        isUploaded: "Upload failed."
+                    });
+                }
+            });
     }
 
     renderBreadCrumbs = () => {
@@ -102,13 +130,31 @@ export class Codebases extends React.Component {
                         Codebase Name
                     </Form.Label>
                     <Col sm={5}>
-                        <FormControl 
+                        <FormControl
                             type="text"
                             maxLength="30"
                             placeholder="Codebase Name"
                             value={this.state.newCodebaseName}
                             onChange={this.handleChangeNewCodebaseName}/>
                     </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} controlId="datafilePath">
+                    <Form.Label column sm={2}>
+                        Datafile Absolute Path
+                    </Form.Label>
+                    <Col sm={5}>
+                        <FormControl
+                            type="text"
+                            placeholder="/home/example/datafile.json"
+                            value={this.state.newDatafilePath}
+                            onChange={this.handleChangeNewDatafilePath}/>
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} controlId="OR">
+                    <Form.Label column sm={2}></Form.Label>
+                    <Col sm={5}> OR </Col>
                 </Form.Group>
 
                 <Form.Group as={Row} controlId="datafile">
@@ -127,7 +173,8 @@ export class Codebases extends React.Component {
                         <Button type="submit"
                                 disabled={this.state.isUploaded === "Uploading..." ||
                                         this.state.newCodebaseName === "" ||
-                                        this.state.selectedFile === null}>
+                                        (this.state.selectedFile === null &&
+                                        this.state.newDatafilePath === "")}>
                             Create Codebase
                         </Button>
                         <Form.Text>
