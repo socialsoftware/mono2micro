@@ -224,7 +224,7 @@ public class SpringDataJPACollector extends SpoonCollector {
             first.ifPresent(method -> fieldAnnotations.addAll(method.getAnnotations()));
             ;
             // ------------------- @ElementCollection -----------------------
-            parseAtElementCollection(clazz, field, fieldAnnotations, entityName, allDomainEntities);
+            parseAtElementCollection(clazz, field, fieldAnnotations, entityName);
 
             // ------------------- @OneToOne -----------------------
             parseAtOneToOne(clazz, field, fieldAnnotations, tableName);
