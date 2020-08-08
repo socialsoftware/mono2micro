@@ -1,30 +1,28 @@
 package pt.ist.socialsoftware.mono2micro.manager;
 
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
-
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
-
-import javax.management.openmbean.KeyAlreadyExistsException;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
-
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
 import pt.ist.socialsoftware.mono2micro.dto.CutInfoDto;
+import pt.ist.socialsoftware.mono2micro.utils.Utils;
+
+import javax.management.openmbean.KeyAlreadyExistsException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
 
 public class CodebaseManager {
 
@@ -82,32 +80,27 @@ public class CodebaseManager {
 
 		HashMap datafileJSON = null;
 		ObjectMapper mapper = new ObjectMapper();
+		InputStream datafileInputStream = null;
 		if (datafile instanceof MultipartFile) {
 			// read datafile
-			InputStream is = ((MultipartFile) datafile).getInputStream();
-			datafileJSON = mapper.readValue(is, HashMap.class);
-			is.close();
+			datafileInputStream = ((MultipartFile) datafile).getInputStream();
+			datafileJSON = mapper.readValue(datafileInputStream, HashMap.class);
+			datafileInputStream.close();
 			this.writeDatafile(codebaseName, datafileJSON);
-			codebase.setDatafilePath(new File(CODEBASES_PATH + codebaseName + "/datafile.json").getAbsolutePath());
+			File datafileFile = new File(CODEBASES_PATH + codebaseName + "/datafile.json");
+			codebase.setDatafilePath(datafileFile.getAbsolutePath());
+			datafileInputStream = new FileInputStream(datafileFile);
 		}
 		else if (datafile instanceof String) {
 			File localDatafile = new File((String) datafile);
 			if (!localDatafile.exists())
 				throw new FileNotFoundException();
 
-			InputStream is = new FileInputStream(localDatafile);
-			datafileJSON = mapper.readValue(is, HashMap.class);
-			is.close();
+			datafileInputStream = new FileInputStream(localDatafile);
 			codebase.setDatafilePath((String) datafile);
 		}
 
-		Object[] keySet = datafileJSON.keySet().toArray();
-		Arrays.sort(keySet);
-		List<String> controllers = new ArrayList<>();
-		for (Object key : keySet)
-			controllers.add((String) key);
-
-		codebase.addProfile("Generic", controllers);
+		codebase.addProfile("Generic", Utils.getJsonFileKeys(datafileInputStream));
 
 		return codebase;
 	}
@@ -135,11 +128,8 @@ public class CodebaseManager {
 	}
 
 	public void writeDatafile(String codebaseName, HashMap datafile) throws IOException {
-		ObjectMapper mapper = new ObjectMapper();
-		DefaultPrettyPrinter pp = new DefaultPrettyPrinter();
-		pp.indentArraysWith( DefaultIndenter.SYSTEM_LINEFEED_INSTANCE );
-		ObjectWriter writer = mapper.writer(pp);
-		writer.writeValue(new File(CODEBASES_PATH + codebaseName + "/datafile.json"), datafile);
+		new ObjectMapper().writerWithDefaultPrettyPrinter()
+				.writeValue(new File(CODEBASES_PATH + codebaseName + "/datafile.json"), datafile);
 	}
 
 	public JSONObject getSimilarityMatrix(String codebaseName, String dendrogramName) throws IOException, JSONException {
