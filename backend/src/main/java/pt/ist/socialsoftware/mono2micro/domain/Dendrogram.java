@@ -321,10 +321,10 @@ public class Dendrogram {
 					// FIXME probably going to change the traces list to an object to speed up the search
 					for (int i = 0; i < traces.length(); i++) {
 						JSONObject controller = traces.getJSONObject(i);
-						String _controllerName = controller.getString("label");
+						String _controllerName = controllerContainerName + "-" + controller.getString("id");
 
 						if (controllerName.equals(_controllerName)) {
-							entities = controller.getJSONArray("accesses");
+							entities = controller.isNull("accs") ? new JSONArray() : controller.getJSONArray("accs");
 							break;
 						}
 					}

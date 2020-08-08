@@ -114,7 +114,7 @@ public class CodebaseManager {
 
 					for (int i = 0; i < traces.length(); i++) {
 						JSONObject controller = traces.getJSONObject(i);
-						String controllerName = controller.getString("label");
+						String controllerName = controllerContainerName + "-" + controller.getString("id");
 
 						controllersNames.add(controllerName);
 					}
@@ -127,6 +127,7 @@ public class CodebaseManager {
 			return codebase;
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			deleteCodebase(codebase.getName());
 			throw e;
 		}
