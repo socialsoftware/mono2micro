@@ -21,6 +21,7 @@ public class Codebase {
 	private Map<String,List<String>> profiles = new HashMap<>();
 	private List<Dendrogram> dendrograms = new ArrayList<>();
 	private String analysisType;
+	private String datafilePath;
 
 	public Codebase() {
 	}
@@ -54,6 +55,13 @@ public class Codebase {
 
 	@JsonIgnore
 	public boolean isStatic() { return this.analysisType.equals("static"); }
+	public String getDatafilePath() {
+		return datafilePath;
+	}
+
+	public void setDatafilePath(String datafilePath) {
+		this.datafilePath = datafilePath;
+	}
 
 	public Map<String,List<String>> getProfiles() {
 		return this.profiles;

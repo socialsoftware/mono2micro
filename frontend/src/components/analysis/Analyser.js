@@ -77,7 +77,8 @@ export class Analyser extends React.Component {
         });
 
         const service = new RepositoryService();
-        service.analyser(this.state.codebase.name, this.state.expert, this.state.selectedProfiles, Number(this.state.requestLimit)).then(response => {
+        service.analyser(this.state.codebase.name, this.state.expert, this.state.selectedProfiles, Number(this.state.requestLimit))
+        .then(response => {
             if (response.status === HttpStatus.OK) {
                 this.setState({
                     isUploaded: "Upload completed successfully."
@@ -87,6 +88,11 @@ export class Analyser extends React.Component {
                     isUploaded: "Upload failed."
                 });
             }
+        })
+        .catch(error => {
+            this.setState({
+                isUploaded: "Upload failed."
+            });
         });
     }
 

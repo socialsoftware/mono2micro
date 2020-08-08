@@ -19,6 +19,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import org.springframework.web.multipart.MultipartFile;
+import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
+import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 
@@ -180,16 +182,17 @@ public class Dendrogram {
 		JSONArray similarityMatrix = new JSONArray();
 		JSONObject matrixData = new JSONObject();
 
-		JSONObject datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
+		HashMap<String, ControllerDto> datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
 		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
 
 		for (String profile : this.profiles) {
 			for (String controllerName : codebase.getProfile(profile)) {
-				JSONArray entities = datafileJSON.getJSONArray(controllerName);
-				for (int i = 0; i < entities.length(); i++) {
-					JSONArray entityArray = entities.getJSONArray(i);
-					String entity = entityArray.getString(0);
-					String mode = entityArray.getString(1);
+				ControllerDto controllerDto = datafileJSON.get(controllerName);
+				List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
+				for (int i = 0; i < controllerAccesses.size(); i++) {
+					AccessDto access = controllerAccesses.get(i);
+					String entity = access.getEntity();
+					String mode = access.getMode();
 
 					if (entityControllers.containsKey(entity)) {
 						boolean containsController = false;
@@ -202,17 +205,17 @@ public class Dendrogram {
 							}
 						}
 						if (!containsController) {
-							entityControllers.get(entity).add(new Pair<String,String>(controllerName,mode));
+							entityControllers.get(entity).add(new Pair<>(controllerName, mode));
 						}
 					} else {
 						List<Pair<String,String>> controllersPairs = new ArrayList<>();
-						controllersPairs.add(new Pair<String,String>(controllerName,mode));
+						controllersPairs.add(new Pair<>(controllerName, mode));
 						entityControllers.put(entity, controllersPairs);
 					}
 
-					if (i < entities.length() - 1) {
-						JSONArray nextEntityArray = entities.getJSONArray(i+1);
-						String nextEntity = nextEntityArray.getString(0);
+					if (i < controllerAccesses.size() - 1) {
+						AccessDto nextAccess = controllerAccesses.get(i + 1);
+						String nextEntity = nextAccess.getEntity();
 
 						if (!entity.equals(nextEntity)) {
 							String e1e2 = entity + "->" + nextEntity;
@@ -229,7 +232,7 @@ public class Dendrogram {
 			}
 		}
 
-		List<String> entitiesList = new ArrayList<String>(entityControllers.keySet());
+		List<String> entitiesList = new ArrayList<>(entityControllers.keySet());
 		Collections.sort(entitiesList);
 
 		int maxNumberOfPairs;

@@ -1,34 +1,29 @@
 package pt.ist.socialsoftware.mono2micro.manager;
 
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
-
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.management.openmbean.KeyAlreadyExistsException;
-
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
-
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
+import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
+import pt.ist.socialsoftware.mono2micro.dto.CutInfoDto;
+import pt.ist.socialsoftware.mono2micro.utils.Utils;
+
+import javax.management.openmbean.KeyAlreadyExistsException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
 
 public class CodebaseManager {
 
@@ -70,7 +65,7 @@ public class CodebaseManager {
 
 	public Codebase createCodebase(
 		String codebaseName,
-		MultipartFile datafile,
+		Object datafile,
 		String analysisType
 	) throws IOException, JSONException {
 		
@@ -89,14 +84,29 @@ public class CodebaseManager {
 
 		Codebase codebase = new Codebase(codebaseName, analysisType);
 
-		try {
+		HashMap datafileJSON = null;
+		ObjectMapper mapper = new ObjectMapper();
+		InputStream datafileInputStream = null;
+		if (datafile instanceof MultipartFile) {
 			// read datafile
-			InputStream is = new BufferedInputStream(datafile.getInputStream());
-			JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
-			is.close();
-
+			datafileInputStream = ((MultipartFile) datafile).getInputStream();
+			datafileJSON = mapper.readValue(datafileInputStream, HashMap.class);
+			datafileInputStream.close();
 			this.writeDatafile(codebaseName, datafileJSON);
+			File datafileFile = new File(CODEBASES_PATH + codebaseName + "/datafile.json");
+			codebase.setDatafilePath(datafileFile.getAbsolutePath());
+			datafileInputStream = new FileInputStream(datafileFile);
+		}
+		else if (datafile instanceof String) {
+			File localDatafile = new File((String) datafile);
+			if (!localDatafile.exists())
+				throw new FileNotFoundException();
 
+			datafileInputStream = new FileInputStream(localDatafile);
+			codebase.setDatafilePath((String) datafile);
+		}
+
+		codebase.addProfile("Generic", Utils.getJsonFileKeys(datafileInputStream));
 
 			List<String> controllersNames = new ArrayList<>();
 			Iterator<String> controllerNames = datafileJSON.sortedKeys();
@@ -146,17 +156,18 @@ public class CodebaseManager {
 		objectMapper.writeValue(new File(CODEBASES_PATH + codebaseName + "/codebase.json"), codebase);
 	}
 
-	public JSONObject getDatafile(String codebaseName) throws IOException, JSONException {
-		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/datafile.json");
-		JSONObject datafileJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
+	public HashMap<String, ControllerDto> getDatafile(String codebaseName) throws IOException {
+		Codebase codebase = getCodebase(codebaseName);
+		InputStream is = new FileInputStream(codebase.getDatafilePath());
+		HashMap<String, ControllerDto> datafileJSON = new ObjectMapper()
+				.readValue(is, new TypeReference<HashMap<String, ControllerDto>>() {});
 		is.close();
 		return datafileJSON;
 	}
 
-	public void writeDatafile(String codebaseName, JSONObject datafile) throws IOException, JSONException {
-		FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + "/datafile.json");
-		file.write(datafile.toString(4));
-		file.close();
+	public void writeDatafile(String codebaseName, HashMap datafile) throws IOException {
+		new ObjectMapper().writerWithDefaultPrettyPrinter()
+				.writeValue(new File(CODEBASES_PATH + codebaseName + "/datafile.json"), datafile);
 	}
 
 	public JSONObject getSimilarityMatrix(String codebaseName, String dendrogramName) throws IOException, JSONException {
@@ -183,17 +194,20 @@ public class CodebaseManager {
 		return clustersJSON;
 	}
 
-	public JSONObject getAnalyserResults(String codebaseName) throws IOException, JSONException {		
+	public HashMap<String, CutInfoDto> getAnalyserResults(String codebaseName) throws IOException {
 		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json");
-		JSONObject analyserJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
+		HashMap<String, CutInfoDto> analyserJSON = new ObjectMapper()
+				.readValue(is, new TypeReference<HashMap<String, CutInfoDto>>() {});
 		is.close();
 		return analyserJSON;
 	}
 
-	public void writeAnalyserResults(String codebaseName, JSONObject analyser) throws IOException, JSONException {
-		FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json");
-		file.write(analyser.toString(4));
-		file.close();
+	public void writeAnalyserResults(String codebaseName, HashMap analyserJSON) throws IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		DefaultPrettyPrinter pp = new DefaultPrettyPrinter();
+		pp.indentArraysWith( DefaultIndenter.SYSTEM_LINEFEED_INSTANCE );
+		ObjectWriter writer = mapper.writer(pp);
+		writer.writeValue(new File(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json"), analyserJSON);
 	}
 
 	public JSONObject getAnalyserCut(String codebaseName, String cutName) throws IOException, JSONException {

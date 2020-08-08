@@ -1,6 +1,5 @@
 package collectors;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -13,8 +12,10 @@ import spoon.reflect.code.CtAbstractInvocation;
 import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.declaration.*;
 import spoon.reflect.factory.Factory;
-import spoon.reflect.visitor.filter.TypeFilter;
+import spoon.reflect.reference.CtExecutableReference;
+import spoon.reflect.reference.CtTypeReference;
 import util.Constants;
+import util.UnkownMethodException;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -29,30 +30,26 @@ public abstract class SpoonCollector {
     private int controllerCount;
     private JsonObject callSequence;
     private String projectName;
-    boolean collectionFlag;
 
     // all project classes
-    ArrayList<String> allEntities;
+    protected Set<String> allEntities;
 
     // in FenixFramework: allDomainEntities = all classes that extend .*_Base
-    // in JPA: allDomainEntities = all @Entities @Embeddable @MappedSuperClass
-    ArrayList<String> allDomainEntities;
+    // in collectors.JPA: allDomainEntities = all @Entities @Embeddable @MappedSuperClass
+    protected Set<String> allDomainEntities;
 
-    HashSet<CtClass> controllers;
-    Map<SourcePosition, List<CtAbstractInvocation>> methodCallees;
+    protected HashSet<CtClass> controllers;
     private JsonArray entitiesSequence;
-    Map<String, List<CtType>> interfaces;
+    protected Map<String, List<CtType>> abstractClassesAndInterfacesImplementorsMap;
 
-    Factory factory;
-    Launcher launcher;
-
-    HashMap<String, MethodContainer> methodsListCollection = new HashMap<>();
+    protected Factory factory;
+    protected Launcher launcher;
 
     /* ------- TO REMOVE ----------- */
-    int repositoryCount = 0;
-    int controllerMethodsCount = 0;
+    protected int repositoryCount = 0;
+    private int controllerMethodsCount = 0;
 
-    SpoonCollector(int launcherChoice, String repoName, String projectPath, boolean collectionFlag) throws IOException {
+    public SpoonCollector(int launcherChoice, String repoName, String projectPath) throws IOException {
         File decompiledDir = new File(Constants.DECOMPILED_SOURCES_PATH);
         if (decompiledDir.exists()) {
             FileUtils.deleteDirectory(decompiledDir);
@@ -60,13 +57,11 @@ public abstract class SpoonCollector {
 
         callSequence = new JsonObject();
         controllers = new HashSet<>();
-        allEntities = new ArrayList<>();
-        allDomainEntities = new ArrayList<>();
-        methodCallees = new HashMap<>();
-        interfaces = new HashMap<>();
+        allEntities = new HashSet<>();
+        allDomainEntities = new HashSet<>();
+        abstractClassesAndInterfacesImplementorsMap = new HashMap<>();
 
         this.projectName = repoName;
-        this.collectionFlag = collectionFlag;
 
         switch (launcherChoice) {
             case Constants.LAUNCHER:
@@ -126,7 +121,6 @@ public abstract class SpoonCollector {
             processController(controller);
         }
 
-
         long elapsedTimeMillis = System.currentTimeMillis() - startTime;
         float elapsedTimeSec = elapsedTimeMillis/1000F;
         System.out.println("Complete. Elapsed time: " + elapsedTimeSec + " seconds");
@@ -137,23 +131,6 @@ public abstract class SpoonCollector {
         File file = new File(Constants.DECOMPILED_SOURCES_PATH);
         if (file.exists()) {
             FileUtils.deleteDirectory(file);
-        }
-
-
-        if (collectionFlag) {
-            try {
-                File methodsFile = new File(Constants.COLLECTION_SAVE_PATH, projectName + "_methods.json");
-                new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(methodsFile, methodsListCollection);
-                System.out.println("File '" + methodsFile.getName() + "' created at: " + methodsFile.getAbsolutePath());
-
-                HashMap<String, Boolean> allEntitiesHashMap = new HashMap<>();
-                allDomainEntities.forEach(e -> allEntitiesHashMap.put(e, true));
-                File entitiesFile = new File(Constants.COLLECTION_SAVE_PATH, projectName + "_allEntities.json");
-                new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(entitiesFile, allEntitiesHashMap);
-                System.out.println("File '" + entitiesFile.getName() + "' created at: " + entitiesFile.getAbsolutePath());
-            } catch (Exception e) {
-                System.err.println("Couldn't write collection file(s).");
-            }
         }
 
         /* ------ TO REMOVE ------- */
@@ -180,7 +157,6 @@ public abstract class SpoonCollector {
                 .append(s4)
                 .append("\n");
         Files.write(Paths.get(testData.getPath()), sb.toString().getBytes(), StandardOpenOption.APPEND);
-        System.exit(1);
     }
 
     private void processController(CtClass controller) {
@@ -218,21 +194,11 @@ public abstract class SpoonCollector {
         }
     }
 
-    abstract void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<SourcePosition> methodStack);
+    protected abstract void methodCallDFS(CtExecutable callerMethod, CtAbstractInvocation prevCalleeLocation, Stack<SourcePosition> methodStack);
 
-    abstract void collectControllersAndEntities();
+    protected abstract void collectControllersAndEntities();
 
-    List<CtAbstractInvocation> getCalleesOf(CtExecutable method) {
-        Map<Integer,CtAbstractInvocation> orderedCallees = new TreeMap<>();
-        List<CtAbstractInvocation> methodCalls = method.getElements(new TypeFilter<>(CtAbstractInvocation.class));
-        for (CtAbstractInvocation i : methodCalls)
-            try {
-                orderedCallees.put(i.getPosition().getSourceEnd(), i);
-            } catch (Exception ignored) {} // "super" fantasmas em construtores
-        return new ArrayList<>(orderedCallees.values()); // why are we ordering the calls?
-    }
-
-    boolean existsAnnotation(List<CtAnnotation<? extends Annotation>> annotations, String annotationName) {
+    protected boolean existsAnnotation(List<CtAnnotation<? extends Annotation>> annotations, String annotationName) {
         for (CtAnnotation<? extends Annotation> a : annotations) {
             if ( a.getAnnotationType().getSimpleName().equals(annotationName) )
                 return true;
@@ -258,7 +224,51 @@ public abstract class SpoonCollector {
         }
     }
 
-    void addEntitiesSequenceAccess(String simpleName, String mode) {
+    protected List<CtMethod> getExplicitImplementationsOfAbstractMethod(CtMethod abstractMethod) throws UnkownMethodException {
+        List<CtMethod> explicitMethods = new ArrayList<>();
+        CtType<?> declaringType = abstractMethod.getDeclaringType();
+        List<CtType> implementors = abstractClassesAndInterfacesImplementorsMap.get(declaringType.getSimpleName());
+        if (implementors != null) {
+            for (CtType ctImplementorType : implementors) {
+                List<CtMethod> methodsByName = ctImplementorType.getMethodsByName(abstractMethod.getSimpleName());
+                if (methodsByName.size() > 0) {
+                    for (CtMethod ctM : methodsByName) {
+                        if (isEqualMethodSignature(abstractMethod.getReference(), ctM.getReference())) {
+                            explicitMethods.add(ctM);
+                        }
+                    }
+                }
+            }
+        }
+
+        return explicitMethods;
+    }
+
+    protected boolean isEqualMethodSignature(CtExecutableReference method1, CtExecutableReference method2) throws UnkownMethodException {
+        // compare return type
+        try {
+            if (method1.getType().equals(method2.getType())) {
+                // compare parameters type
+                List ctMParams1 = method1.getParameters();
+                List ctMParams2 = method2.getParameters();
+                if (ctMParams1.size() != ctMParams2.size())
+                    return false;
+                for (int i = 0; i < ctMParams1.size(); i++) {
+                    CtTypeReference ctMParam1 = (CtTypeReference) ctMParams1.get(i);
+                    CtTypeReference ctMParam2 = (CtTypeReference) ctMParams2.get(i);
+                    if (!ctMParam1.equals(ctMParam2)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            System.err.println("isEqualMethodSignature Unknown method: " + method1.toString() + " " + method2.toString());
+            throw new UnkownMethodException();
+        }
+    }
+
+    protected void addEntitiesSequenceAccess(String simpleName, String mode) {
         JsonArray entityAccess = new JsonArray();
         entityAccess.add(simpleName);
         entityAccess.add(mode);
