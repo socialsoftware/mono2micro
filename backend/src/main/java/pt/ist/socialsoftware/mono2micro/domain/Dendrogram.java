@@ -4,14 +4,16 @@ import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.PYTHON;
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.RESOURCES_PATH;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -20,9 +22,12 @@ import org.json.JSONObject;
 
 import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
+import pt.ist.socialsoftware.mono2micro.dto.AccessWithFrequencyDto;
 import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
+import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
+import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 public class Dendrogram {
 	private String codebaseName;
@@ -176,66 +181,72 @@ public class Dendrogram {
 		expert.calculateMetrics();
 	}
 
-	public void calculateStaticSimilarityMatrix() throws IOException, JSONException {
-		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
-		Map<String,Integer> e1e2PairCount = new HashMap<>();
-		JSONArray similarityMatrix = new JSONArray();
-		JSONObject matrixData = new JSONObject();
+	// FIXME better name for this function pls
+	public <A extends AccessDto> void  fillEntityDataStructures(
+		Map<String,List<Pair<String,String>>> entityControllers,
+		Map<String,Integer> e1e2PairCount,
+		List<A> accessesList,
+		String controllerName
+	) {
+		for (int i = 0; i < accessesList.size(); i++) {
+			A access = accessesList.get(i);
+			String entity = access.getEntity();
+			String mode = access.getMode();
 
-		HashMap<String, ControllerDto> datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
-		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
+			if (entityControllers.containsKey(entity)) {
+				boolean containsController = false;
 
-		for (String profile : this.profiles) {
-			for (String controllerName : codebase.getProfile(profile)) {
-				ControllerDto controllerDto = datafileJSON.get(controllerName);
-				List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
-				for (int i = 0; i < controllerAccesses.size(); i++) {
-					AccessDto access = controllerAccesses.get(i);
-					String entity = access.getEntity();
-					String mode = access.getMode();
+				for (Pair<String, String> controllerPair : entityControllers.get(entity)) {
+					if (controllerPair.getFirst().equals(controllerName)) {
+						containsController = true;
 
-					if (entityControllers.containsKey(entity)) {
-						boolean containsController = false;
-						for (Pair<String,String> controllerPair : entityControllers.get(entity)) {
-							if (controllerPair.getFirst().equals(controllerName)) {
-								containsController = true;
-								if (!controllerPair.getSecond().contains(mode))
-									controllerPair.setSecond("RW");
-								break;
-							}
-						}
-						if (!containsController) {
-							entityControllers.get(entity).add(new Pair<>(controllerName, mode));
-						}
-					} else {
-						List<Pair<String,String>> controllersPairs = new ArrayList<>();
-						controllersPairs.add(new Pair<>(controllerName, mode));
-						entityControllers.put(entity, controllersPairs);
+						if (!controllerPair.getSecond().contains(mode))
+							controllerPair.setSecond("RW");
+						break;
 					}
+				}
 
-					if (i < controllerAccesses.size() - 1) {
-						AccessDto nextAccess = controllerAccesses.get(i + 1);
-						String nextEntity = nextAccess.getEntity();
+				if (!containsController) {
+					entityControllers.get(entity).add(new Pair<>(controllerName, mode));
+				}
 
-						if (!entity.equals(nextEntity)) {
-							String e1e2 = entity + "->" + nextEntity;
-							String e2e1 = nextEntity + "->" + entity;
+			} else {
+				List<Pair<String, String>> controllersPairs = new ArrayList<>();
+				controllersPairs.add(new Pair<>(controllerName, mode));
+				entityControllers.put(entity, controllersPairs);
+			}
 
-							int count = e1e2PairCount.containsKey(e1e2) ? e1e2PairCount.get(e1e2) : 0;
-							e1e2PairCount.put(e1e2, count + 1);
+			if (i < accessesList.size() - 1) {
+				A nextAccess = accessesList.get(i + 1);
+				String nextEntity = nextAccess.getEntity();
 
-							count = e1e2PairCount.containsKey(e2e1) ? e1e2PairCount.get(e2e1) : 0;
-							e1e2PairCount.put(e2e1, count + 1);
-						}
-					}
+				if (!entity.equals(nextEntity)) {
+					String e1e2 = entity + "->" + nextEntity;
+					String e2e1 = nextEntity + "->" + entity;
+
+					int count = e1e2PairCount.getOrDefault(e1e2, 0);
+					e1e2PairCount.put(e1e2, count + 1);
+
+					count = e1e2PairCount.getOrDefault(e2e1, 0);
+					e1e2PairCount.put(e2e1, count + 1);
 				}
 			}
 		}
+	}
 
-		List<String> entitiesList = new ArrayList<>(entityControllers.keySet());
+	public JSONObject getMatrixData(
+		List<String> entitiesList,
+		Map<String,Integer> e1e2PairCount,
+		Map<String,List<Pair<String,String>>> entityControllers
+	) throws JSONException {
+
+		JSONArray similarityMatrix = new JSONArray();
+		JSONObject matrixData = new JSONObject();
+
 		Collections.sort(entitiesList);
 
 		int maxNumberOfPairs;
+
 		if (!e1e2PairCount.values().isEmpty())
 			maxNumberOfPairs = Collections.max(e1e2PairCount.values());
 		else
@@ -244,6 +255,7 @@ public class Dendrogram {
 		for (int i = 0; i < entitiesList.size(); i++) {
 			String e1 = entitiesList.get(i);
 			JSONArray matrixRow = new JSONArray();
+
 			for (int j = 0; j < entitiesList.size(); j++) {
 				String e2 = entitiesList.get(j);
 				String e1e2 = e1 + "->" + e2;
@@ -277,7 +289,7 @@ public class Dendrogram {
 				float writeMetric = e1ControllersW == 0 ? 0 : inCommonW / e1ControllersW;
 				float readMetric = e1ControllersR == 0 ? 0 : inCommonR / e1ControllersR;
 
-				float e1e2Count = e1e2PairCount.containsKey(e1e2) ? e1e2PairCount.get(e1e2) : 0;
+				float e1e2Count = e1e2PairCount.getOrDefault(e1e2, 0);
 
 				float sequenceMetric;
 				if (maxNumberOfPairs != 0)
@@ -286,10 +298,10 @@ public class Dendrogram {
 					sequenceMetric = 0;
 
 				float metric = accessMetric * this.accessMetricWeight / 100 +
-								writeMetric * this.writeMetricWeight / 100 +
-								readMetric * this.readMetricWeight / 100 +
-								sequenceMetric * this.sequenceMetricWeight / 100;
-				
+					writeMetric * this.writeMetricWeight / 100 +
+					readMetric * this.readMetricWeight / 100 +
+					sequenceMetric * this.sequenceMetricWeight / 100;
+
 				matrixRow.put(metric);
 			}
 			similarityMatrix.put(matrixRow);
@@ -298,154 +310,113 @@ public class Dendrogram {
 		matrixData.put("entities", entitiesList);
 		matrixData.put("linkageType", this.linkageType);
 
-		CodebaseManager.getInstance().writeSimilarityMatrix(this.codebaseName, this.name, matrixData);
+		return matrixData;
+	}
+
+	public void calculateStaticSimilarityMatrix() throws IOException, JSONException {
+		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
+		Map<String,Integer> e1e2PairCount = new HashMap<>();
+
+		HashMap<String, ControllerDto> datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
+		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
+
+		for (String profile : this.profiles) {
+			for (String controllerName : codebase.getProfile(profile)) {
+				ControllerDto controllerDto = datafileJSON.get(controllerName);
+				List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
+
+				fillEntityDataStructures(
+					entityControllers,
+					e1e2PairCount,
+					controllerAccesses,
+					controllerName
+				);
+			}
+		}
+
+		CodebaseManager.getInstance().writeSimilarityMatrix(
+			this.codebaseName,
+			this.name,
+			getMatrixData(
+				new ArrayList<>(entityControllers.keySet()),
+				e1e2PairCount,
+				entityControllers
+			)
+		);
 	}
 
 	public void calculateDynamicSimilarityMatrix() throws IOException, JSONException {
 		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 		Map<String,Integer> e1e2PairCount = new HashMap<>();
-		JSONArray similarityMatrix = new JSONArray();
-		JSONObject matrixData = new JSONObject();
 
-		try {
-			JSONObject datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
-			Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
+		ObjectMapper mapper = new ObjectMapper();
+		JsonFactory jsonfactory = mapper.getFactory();
 
-			for (String profile : this.profiles) {
-				for (String controllerName : codebase.getProfile(profile)) {
-					String[] splitControllerName = controllerName.split("-", -1);
+		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
 
-					String controllerContainerName = splitControllerName[0];
+		for (String profile : this.profiles) {
+			for (String controllerName : codebase.getProfile(profile)) {
+				JsonParser jsonParser = jsonfactory.createParser(new FileInputStream(codebase.getDatafilePath()));
+				JsonToken jsonToken = jsonParser.nextValue(); // JsonToken.START_OBJECT
 
-					JSONObject controllerContainer = datafileJSON.getJSONObject(controllerContainerName);
-					JSONArray traces = controllerContainer.getJSONArray("traces");
-					JSONArray entities = null;
+				if (jsonToken != JsonToken.START_OBJECT) {
+					System.err.println("Json must start with a left curly brace");
+					System.exit(-1);
+				}
 
-					// FIXME probably going to change the traces list to an object to speed up the search
-					for (int i = 0; i < traces.length(); i++) {
-						JSONObject controller = traces.getJSONObject(i);
-						String _controllerName = controllerContainerName + "-" + controller.getString("id");
+				while (jsonToken != JsonToken.END_OBJECT) {
+					if (jsonToken == JsonToken.START_OBJECT) {
+						Utils.print("Functionality name: " + jsonParser.getCurrentName(), Utils.lineno());
+						Utils.print("jsonToken: " + jsonToken, Utils.lineno());
 
-						if (controllerName.equals(_controllerName)) {
-							entities = controller.isNull("accs") ? new JSONArray() : controller.getJSONArray("accs");
-							break;
+						if (!jsonParser.getCurrentName().equals(controllerName)) {
+							jsonParser.skipChildren();
 						}
-					}
 
-					for (int i = 0; i < entities.length(); i++) {
-						JSONObject entity = entities.getJSONObject(i);
-						String entityName = entity.getString("entity");
-						String mode = entity.getString("type");
+						else {
+							while (jsonParser.nextValue() != JsonToken.END_OBJECT) {
+								Utils.print("field name: " + jsonParser.getCurrentName(), Utils.lineno());
+								Utils.print("jsonToken: " + jsonToken, Utils.lineno());
 
-						if (entityControllers.containsKey(entityName)) {
-							boolean containsController = false;
-							for (Pair<String,String> controllerPair : entityControllers.get(entityName)) {
-								if (controllerPair.getFirst().equals(controllerName)) {
-									containsController = true;
-									if (!controllerPair.getSecond().contains(mode))
-										controllerPair.setSecond("RW");
-									break;
+								switch (jsonParser.getCurrentName()) {
+									case "traces":
+										List<TraceDto> traces = jsonParser.readValueAs(new TypeReference<List<TraceDto>>(){});
+
+										traces.forEach(trace -> {
+											fillEntityDataStructures(
+												entityControllers,
+												e1e2PairCount,
+												trace.getAccesses(),
+												controllerName
+											);
+
+										});
+										break;
+
+									case "id":
+									case "f":
+										break;
+
+									default:
+										throw new IOException();
 								}
 							}
-							if (!containsController) {
-								entityControllers.get(entityName).add(new Pair<String,String>(controllerName,mode));
-							}
-						} else {
-							List<Pair<String,String>> controllersPairs = new ArrayList<>();
-							controllersPairs.add(new Pair<String,String>(controllerName,mode));
-							entityControllers.put(entityName, controllersPairs);
 						}
-
-						if (i < entities.length() - 1) {
-							JSONObject nextEntity = entities.getJSONObject(i+1);
-							String nextEntityName = nextEntity.getString("entity");
-
-							if (!entityName.equals(nextEntityName)) {
-								String e1e2 = entityName + "->" + nextEntityName;
-								String e2e1 = nextEntityName + "->" + entityName;
-
-								int count = e1e2PairCount.containsKey(e1e2) ? e1e2PairCount.get(e1e2) : 0;
-								e1e2PairCount.put(e1e2, count + 1);
-
-								count = e1e2PairCount.containsKey(e2e1) ? e1e2PairCount.get(e2e1) : 0;
-								e1e2PairCount.put(e2e1, count + 1);
-							}
-						}
+						jsonToken = jsonParser.nextValue();
 					}
 				}
 			}
-
-			List<String> entitiesList = new ArrayList<String>(entityControllers.keySet());
-			Collections.sort(entitiesList);
-
-			int maxNumberOfPairs;
-			if (!e1e2PairCount.values().isEmpty())
-				maxNumberOfPairs = Collections.max(e1e2PairCount.values());
-			else
-				maxNumberOfPairs = 0;
-
-			for (int i = 0; i < entitiesList.size(); i++) {
-				String e1 = entitiesList.get(i);
-				JSONArray matrixRow = new JSONArray();
-				for (int j = 0; j < entitiesList.size(); j++) {
-					String e2 = entitiesList.get(j);
-					String e1e2 = e1 + "->" + e2;
-
-					if (e1.equals(e2)) {
-						matrixRow.put(1);
-						continue;
-					}
-
-					float inCommon = 0;
-					float inCommonW = 0;
-					float inCommonR = 0;
-					float e1ControllersW = 0;
-					float e1ControllersR = 0;
-					for (Pair<String,String> e1Controller : entityControllers.get(e1)) {
-						for (Pair<String,String> e2Controller : entityControllers.get(e2)) {
-							if (e1Controller.getFirst().equals(e2Controller.getFirst()))
-								inCommon++;
-							if (e1Controller.getFirst().equals(e2Controller.getFirst()) && e1Controller.getSecond().contains("W") && e2Controller.getSecond().contains("W"))
-								inCommonW++;
-							if (e1Controller.getFirst().equals(e2Controller.getFirst()) && e1Controller.getSecond().contains("R") && e2Controller.getSecond().contains("R"))
-								inCommonR++;
-						}
-						if (e1Controller.getSecond().contains("W"))
-							e1ControllersW++;
-						if (e1Controller.getSecond().contains("R"))
-							e1ControllersR++;
-					}
-
-					float accessMetric = inCommon / entityControllers.get(e1).size();
-					float writeMetric = e1ControllersW == 0 ? 0 : inCommonW / e1ControllersW;
-					float readMetric = e1ControllersR == 0 ? 0 : inCommonR / e1ControllersR;
-
-					float e1e2Count = e1e2PairCount.containsKey(e1e2) ? e1e2PairCount.get(e1e2) : 0;
-
-					float sequenceMetric;
-					if (maxNumberOfPairs != 0)
-						sequenceMetric = e1e2Count / maxNumberOfPairs;
-					else // nao ha controladores a aceder a mais do que uma entidade
-						sequenceMetric = 0;
-
-					float metric = accessMetric * this.accessMetricWeight / 100 +
-						writeMetric * this.writeMetricWeight / 100 +
-						readMetric * this.readMetricWeight / 100 +
-						sequenceMetric * this.sequenceMetricWeight / 100;
-
-					matrixRow.put(metric);
-				}
-				similarityMatrix.put(matrixRow);
-			}
-			matrixData.put("matrix", similarityMatrix);
-			matrixData.put("entities", entitiesList);
-			matrixData.put("linkageType", this.linkageType);
-
-			CodebaseManager.getInstance().writeSimilarityMatrix(this.codebaseName, this.name, matrixData);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw e;
 		}
+
+		CodebaseManager.getInstance().writeSimilarityMatrix(
+			this.codebaseName,
+			this.name,
+			getMatrixData(
+				new ArrayList<>(entityControllers.keySet()),
+				e1e2PairCount,
+				entityControllers
+			)
+		);
 	}
 
 	public void cut(Graph graph) throws Exception {
