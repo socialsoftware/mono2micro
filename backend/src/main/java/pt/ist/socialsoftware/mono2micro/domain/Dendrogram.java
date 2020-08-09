@@ -270,6 +270,7 @@ public class Dendrogram {
 				float inCommonR = 0;
 				float e1ControllersW = 0;
 				float e1ControllersR = 0;
+
 				for (Pair<String,String> e1Controller : entityControllers.get(e1)) {
 					for (Pair<String,String> e2Controller : entityControllers.get(e2)) {
 						if (e1Controller.getFirst().equals(e2Controller.getFirst()))
