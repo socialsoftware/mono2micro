@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.utils;
+package pt.ist.socialsoftware.mono2micro.utils.deserializers;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;

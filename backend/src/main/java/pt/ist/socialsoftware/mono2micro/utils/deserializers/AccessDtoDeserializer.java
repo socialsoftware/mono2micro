@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.utils;
+package pt.ist.socialsoftware.mono2micro.utils.deserializers;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -14,7 +14,7 @@ public class AccessDtoDeserializer extends StdDeserializer<AccessDto> {
         this(null);
     }
 
-    public AccessDtoDeserializer(Class<ControllerDtoDeserializer> t) { super(t); }
+    public AccessDtoDeserializer(Class<AccessDto> t) { super(t); }
 
     @Override
     public AccessDto deserialize(JsonParser jsonParser, DeserializationContext ctxt) throws IOException {
