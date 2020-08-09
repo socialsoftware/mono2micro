@@ -1,7 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import pt.ist.socialsoftware.mono2micro.utils.ControllerDtoDeserializer;
+import pt.ist.socialsoftware.mono2micro.utils.deserializers.ControllerDtoDeserializer;
 
 import java.util.List;
 
