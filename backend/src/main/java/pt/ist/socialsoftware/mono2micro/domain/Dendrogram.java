@@ -357,29 +357,31 @@ public class Dendrogram {
 		for (String profile : this.profiles) {
 			for (String controllerName : codebase.getProfile(profile)) {
 				JsonParser jsonParser = jsonfactory.createParser(new FileInputStream(codebase.getDatafilePath()));
-				JsonToken jsonToken = jsonParser.nextValue(); // JsonToken.START_OBJECT
+				JsonToken jsonToken = jsonParser.nextValue();
 
 				if (jsonToken != JsonToken.START_OBJECT) {
 					System.err.println("Json must start with a left curly brace");
 					System.exit(-1);
 				}
 
+				jsonParser.nextValue();
+
+				controllersLoop:
 				while (jsonToken != JsonToken.END_OBJECT) {
-					if (jsonToken == JsonToken.START_OBJECT) {
-						Utils.print("Functionality name: " + jsonParser.getCurrentName(), Utils.lineno());
-						Utils.print("jsonToken: " + jsonToken, Utils.lineno());
+//					Utils.print("Controller name: " + jsonParser.getCurrentName(), Utils.lineno());
 
-						if (!jsonParser.getCurrentName().equals(controllerName)) {
-							jsonParser.skipChildren();
-						}
+					if (!jsonParser.getCurrentName().equals(controllerName)) {
+						jsonParser.skipChildren();
+					}
 
-						else {
-							while (jsonParser.nextValue() != JsonToken.END_OBJECT) {
-								Utils.print("field name: " + jsonParser.getCurrentName(), Utils.lineno());
-								Utils.print("jsonToken: " + jsonToken, Utils.lineno());
+					else {
+						while (jsonParser.nextValue() != JsonToken.END_OBJECT) {
+//							Utils.print("field name: " + jsonParser.getCurrentName(), Utils.lineno());
+//							Utils.print("jsonToken: " + jsonToken, Utils.lineno());
 
-								switch (jsonParser.getCurrentName()) {
-									case "traces":
+							switch (jsonParser.getCurrentName()) {
+								case "traces":
+									try {
 										List<TraceDto> traces = jsonParser.readValueAs(new TypeReference<List<TraceDto>>(){});
 
 										traces.forEach(trace -> {
@@ -391,19 +393,25 @@ public class Dendrogram {
 											);
 
 										});
-										break;
 
-									case "id":
-									case "f":
-										break;
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
 
-									default:
-										throw new IOException();
-								}
+									jsonParser.close();
+									break controllersLoop;
+
+								case "id":
+								case "f":
+									break;
+
+								default:
+									throw new IOException();
 							}
 						}
-						jsonToken = jsonParser.nextValue();
 					}
+
+					jsonToken = jsonParser.nextValue();
 				}
 			}
 		}

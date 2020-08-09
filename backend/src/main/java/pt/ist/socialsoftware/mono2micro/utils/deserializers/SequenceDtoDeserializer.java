@@ -25,7 +25,7 @@ public class SequenceDtoDeserializer extends StdDeserializer<SequenceDto> {
 
 		if (jsonToken == JsonToken.START_ARRAY) {
 			jsonParser.nextValue();
-			List<AccessWithFrequencyDto> accessesWithFrequency = null;
+			List<AccessWithFrequencyDto> accessesWithFrequency;
 
 			accessesWithFrequency = jsonParser.readValueAs(new TypeReference<List<AccessWithFrequencyDto>>(){});
 
@@ -34,9 +34,10 @@ public class SequenceDtoDeserializer extends StdDeserializer<SequenceDto> {
 			int frequency = 0;
 			if (jsonParser.getCurrentValue() == JsonToken.VALUE_NUMBER_INT) {
 				frequency = jsonParser.getValueAsInt();
+				jsonParser.nextToken();
 			}
 
-			if (jsonParser.nextToken() != (JsonToken.END_ARRAY)) {
+			if (jsonParser.getCurrentToken() != (JsonToken.END_ARRAY)) {
 				throw new IOException("Error deserializing Sequence");
 			}
 

@@ -36,10 +36,10 @@ public class AccessWithFrequencyDtoDeserializer extends StdDeserializer<AccessWi
             int frequency = 0;
             if (jsonParser.getCurrentValue() == JsonToken.VALUE_NUMBER_INT) {
                 frequency = jsonParser.getValueAsInt();
+                jsonParser.nextToken();
             }
 
-            // WIP check this
-            if (jsonParser.nextToken() != (JsonToken.END_ARRAY)) {
+            if (jsonParser.getCurrentToken() != (JsonToken.END_ARRAY)) {
                 throw new IOException("Error deserializing Access w/ frequency");
             }
 

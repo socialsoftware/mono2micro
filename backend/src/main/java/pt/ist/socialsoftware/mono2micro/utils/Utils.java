@@ -31,15 +31,14 @@ public class Utils {
 
         List<String> keys = new ArrayList<>();
 
-        while (true) {
-            if (jsonToken == JsonToken.END_OBJECT)
-                break;
+        jsonParser.nextValue();
 
-            // FIXME Wrong! Starting with an array should not be an assumption.
-            if (jsonToken == JsonToken.START_ARRAY && jsonParser.getCurrentName() != null) {
+        while (jsonToken != JsonToken.END_OBJECT) {
+            if (jsonParser.getCurrentName() != null) {
                 String controllerName = jsonParser.getCurrentName();
                 System.out.println("Controller name: " + controllerName);
                 keys.add(controllerName);
+                jsonParser.skipChildren();
             }
 
             jsonToken = jsonParser.nextValue();

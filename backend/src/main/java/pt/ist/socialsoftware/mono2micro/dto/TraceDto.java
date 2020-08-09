@@ -27,9 +27,11 @@ public class TraceDto {
 	public int getId() { return this.id; }
 	public void setId(int id) { this.id = id; }
 
+	@JsonProperty("f")
 	public int getFrequency() { return this.frequency; }
 	public void setFrequency(int frequency) { this.frequency = frequency; }
 
+	@JsonProperty("seqs")
 	public List<SequenceDto> getSequences() { return sequences; }
 	public void setSequences(List<SequenceDto> sequences) { this.sequences = sequences; }
 

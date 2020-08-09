@@ -111,7 +111,6 @@ public class CodebaseManager {
 		return codebase;
 	}
 
-
 	public Codebase getCodebase(String codebaseName) {
 		try {
 			return objectMapper.readValue(new File(CODEBASES_PATH + codebaseName + "/codebase.json"), Codebase.class);
