@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,7 +66,7 @@ public class CodebaseManager {
 		String codebaseName,
 		Object datafile,
 		String analysisType
-	) throws IOException, JSONException {
+	) throws IOException {
 		
 		if (getCodebase(codebaseName) != null)
 			throw new KeyAlreadyExistsException();
@@ -84,9 +83,10 @@ public class CodebaseManager {
 
 		Codebase codebase = new Codebase(codebaseName, analysisType);
 
-		HashMap datafileJSON = null;
+		HashMap datafileJSON;
 		ObjectMapper mapper = new ObjectMapper();
 		InputStream datafileInputStream = null;
+
 		if (datafile instanceof MultipartFile) {
 			// read datafile
 			datafileInputStream = ((MultipartFile) datafile).getInputStream();
@@ -108,39 +108,7 @@ public class CodebaseManager {
 
 		codebase.addProfile("Generic", Utils.getJsonFileKeys(datafileInputStream));
 
-			List<String> controllersNames = new ArrayList<>();
-			Iterator<String> controllerNames = datafileJSON.sortedKeys();
-
-			if (codebase.isStatic()) {
-				while (controllerNames.hasNext()) {
-					controllersNames.add(controllerNames.next());
-				}
-			} else {
-				while (controllerNames.hasNext()) {
-					String controllerContainerName = controllerNames.next();
-
-					JSONObject controllerContainer = datafileJSON.getJSONObject(controllerContainerName);
-					JSONArray traces = controllerContainer.getJSONArray("traces");
-
-					for (int i = 0; i < traces.length(); i++) {
-						JSONObject controller = traces.getJSONObject(i);
-						String controllerName = controllerContainerName + "-" + controller.getString("id");
-
-						controllersNames.add(controllerName);
-					}
-
-				}
-			}
-
-			codebase.addProfile("Generic", controllersNames);
-
-			return codebase;
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			deleteCodebase(codebase.getName());
-			throw e;
-		}
+		return codebase;
 	}
 
 
@@ -152,22 +120,31 @@ public class CodebaseManager {
 		}
 	}
 
-	public void writeCodebase(String codebaseName, Codebase codebase) throws IOException {
+	public void writeCodebase(
+		String codebaseName, // FIXME is this really necessary? what about codebase.getName()?
+		Codebase codebase
+	) throws IOException {
 		objectMapper.writeValue(new File(CODEBASES_PATH + codebaseName + "/codebase.json"), codebase);
 	}
 
 	public HashMap<String, ControllerDto> getDatafile(String codebaseName) throws IOException {
 		Codebase codebase = getCodebase(codebaseName);
 		InputStream is = new FileInputStream(codebase.getDatafilePath());
-		HashMap<String, ControllerDto> datafileJSON = new ObjectMapper()
-				.readValue(is, new TypeReference<HashMap<String, ControllerDto>>() {});
-		is.close();
-		return datafileJSON;
+
+		return objectMapper.readValue(is, new TypeReference<HashMap<String, ControllerDto>>(){});
+	}
+
+	public HashMap<String, ControllerDto> getDatafile(Codebase codebase) throws IOException {
+		InputStream is = new FileInputStream(codebase.getDatafilePath());
+
+		return objectMapper.readValue(is, new TypeReference<HashMap<String, ControllerDto>>(){});
 	}
 
 	public void writeDatafile(String codebaseName, HashMap datafile) throws IOException {
-		new ObjectMapper().writerWithDefaultPrettyPrinter()
-				.writeValue(new File(CODEBASES_PATH + codebaseName + "/datafile.json"), datafile);
+		objectMapper.writerWithDefaultPrettyPrinter().writeValue(
+			new File(CODEBASES_PATH + codebaseName + "/datafile.json"),
+			datafile
+		);
 	}
 
 	public JSONObject getSimilarityMatrix(String codebaseName, String dendrogramName) throws IOException, JSONException {
@@ -196,10 +173,7 @@ public class CodebaseManager {
 
 	public HashMap<String, CutInfoDto> getAnalyserResults(String codebaseName) throws IOException {
 		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json");
-		HashMap<String, CutInfoDto> analyserJSON = new ObjectMapper()
-				.readValue(is, new TypeReference<HashMap<String, CutInfoDto>>() {});
-		is.close();
-		return analyserJSON;
+		return objectMapper.readValue(is, new TypeReference<HashMap<String, CutInfoDto>>() {});
 	}
 
 	public void writeAnalyserResults(String codebaseName, HashMap analyserJSON) throws IOException {
