@@ -39,9 +39,7 @@ import pt.ist.socialsoftware.mono2micro.utils.Pair;
 public class AnalysisController {
 
     private static Logger logger = LoggerFactory.getLogger(AnalysisController.class);
-
     private CodebaseManager codebaseManager = CodebaseManager.getInstance();
-
 
 	@RequestMapping(value = "/codebase/{codebaseName}/analyser", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> analyser(@PathVariable String codebaseName, @RequestBody AnalyserDto analyser) {
@@ -178,7 +176,12 @@ public class AnalysisController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
-	private List<String> createAnalyserSimilarityMatrix(String codebaseName, AnalyserDto analyser, HashMap<String, ControllerDto> datafileJSON) throws IOException, JSONException {
+	private List<String> createAnalyserSimilarityMatrix(
+		String codebaseName,
+		AnalyserDto analyser,
+		HashMap<String, ControllerDto> datafileJSON
+	) throws IOException, JSONException
+	{
 		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 		Map<String,Integer> e1e2PairCount = new HashMap<>();
 		JSONArray similarityMatrix = new JSONArray();
