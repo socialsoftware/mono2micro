@@ -37,7 +37,9 @@ public class TraceDto {
 
 	public List<AccessWithFrequencyDto> getAccesses() {
 		List<AccessWithFrequencyDto> accesses = new ArrayList<>();
-		sequences.forEach(seq -> accesses.addAll(seq.getAccesses()));
+		if (sequences != null) {
+			sequences.forEach(seq -> accesses.addAll(seq.getAccesses()));
+		}
 
 		return accesses;
 	}

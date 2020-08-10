@@ -25,6 +25,7 @@ import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
 import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
+import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
@@ -265,69 +266,24 @@ public class Dendrogram {
 		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 		Map<String,Integer> e1e2PairCount = new HashMap<>();
 
-		ObjectMapper mapper = new ObjectMapper();
-		JsonFactory jsonfactory = mapper.getFactory();
-
 		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
 
 		for (String profile : this.profiles) {
 			for (String controllerName : codebase.getProfile(profile)) {
-				JsonParser jsonParser = jsonfactory.createParser(new FileInputStream(codebase.getDatafilePath()));
-				JsonToken jsonToken = jsonParser.nextValue();
+				ControllerTracesIterator iter = new ControllerTracesIterator(
+					codebase.getDatafilePath(),
+					controllerName
+				);
 
-				if (jsonToken != JsonToken.START_OBJECT) {
-					System.err.println("Json must start with a left curly brace");
-					System.exit(-1);
-				}
+				while (iter.hasMoreTraces()) {
+					TraceDto t = iter.nextTrace();
 
-				jsonParser.nextValue();
-
-				controllersLoop:
-				while (jsonToken != JsonToken.END_OBJECT) {
-//					Utils.print("Controller name: " + jsonParser.getCurrentName(), Utils.lineno());
-
-					if (!jsonParser.getCurrentName().equals(controllerName)) {
-						jsonParser.skipChildren();
-					}
-
-					else {
-						while (jsonParser.nextValue() != JsonToken.END_OBJECT) {
-//							Utils.print("field name: " + jsonParser.getCurrentName(), Utils.lineno());
-//							Utils.print("jsonToken: " + jsonToken, Utils.lineno());
-
-							switch (jsonParser.getCurrentName()) {
-								case "traces":
-									try {
-										List<TraceDto> traces = jsonParser.readValueAs(new TypeReference<List<TraceDto>>(){});
-
-										traces.forEach(trace -> {
-											Utils.fillEntityDataStructures(
-												entityControllers,
-												e1e2PairCount,
-												trace.getAccesses(),
-												controllerName
-											);
-
-										});
-
-									} catch (Exception e) {
-										e.printStackTrace();
-									}
-
-									jsonParser.close();
-									break controllersLoop;
-
-								case "id":
-								case "f":
-									break;
-
-								default:
-									throw new IOException();
-							}
-						}
-					}
-
-					jsonToken = jsonParser.nextValue();
+					Utils.fillEntityDataStructures(
+						entityControllers,
+						e1e2PairCount,
+						t.getAccesses(),
+						controllerName
+					);
 				}
 			}
 		}

@@ -16,8 +16,11 @@ import org.json.JSONObject;
 
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
+import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
+import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Metrics;
+import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 public class Graph {
 	private String codebaseName;
@@ -161,6 +164,7 @@ public class Graph {
 				ControllerDto controllerDto = datafileJSON.get(controllerName);
 				List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
 
+				// FIXME refactor the code below
 				for (int i = 0; i < controllerAccesses.size(); i++) {
 					AccessDto access = controllerAccesses.get(i);
 					String entity = access.getEntity();
@@ -218,81 +222,86 @@ public class Graph {
 		}
 	}
 
-	public void addDynamicControllers(List<String> profiles) throws JSONException {
+	public void addDynamicControllers(List<String> profiles) throws JSONException, IOException {
 		this.controllers = new ArrayList<>();
-		ObjectMapper mapper = new ObjectMapper();
-		JsonFactory jsonfactory = mapper.getFactory();
 
 		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
 
-		// FIXME
-//		for (String profile : profiles) {
-//			for (String controllerName : codebase.getProfile(profile)) {
-//
-//				Controller controller = new Controller(controllerName);
-//				this.addController(controller);
-//
-//				JSONArray entitiesSeq = new JSONArray();
-//				JSONObject clusterAccess = new JSONObject();
-//
-//				ControllerDto controllerDto = datafileJSON.get(controllerName);
-//				List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
-//
-//				for (int i = 0; i < controllerAccesses.size(); i++) {
-//					AccessDto access = controllerAccesses.get(i);
-//					String entity = access.getEntity();
-//					String mode = access.getMode();
-//					String cluster = null;
-//
-//					try {
-//						cluster = this.getClusterWithEntity(entity).getName();
-//					}
-//					catch (Exception e) {
-//						System.err.println("Expert cut does not assign entity " + entity + " to a cluster.");
-//						throw e;
-//					}
-//
-//					if (i == 0) {
-//						clusterAccess.put("cluster", cluster);
-//						clusterAccess.put("sequence", new JSONArray());
-//						clusterAccess.getJSONArray("sequence").put(access.toJSONrray());
-//						controller.addEntity(entity, mode);
-//
-//					} else {
-//						String previousCluster = this.getClusterWithEntity((controllerAccesses.get(i-1)).getEntity()).getName();
-//
-//						if (cluster.equals(previousCluster)) {
-//							boolean hasNoCost = false;
-//
-//							for (int j = 0; j < clusterAccess.getJSONArray("sequence").length(); j++) {
-//								JSONArray entityPair = clusterAccess.getJSONArray("sequence").getJSONArray(j);
-//								if (entity.equals(entityPair.getString(0)) && mode.equals(entityPair.getString(1))) {
-//									hasNoCost = true;
-//									break;
-//								}
-//								if (entity.equals(entityPair.getString(0)) && "W".equals(entityPair.getString(1))) {
-//									hasNoCost = true;
-//									break;
-//								}
-//							}
-//							if (!hasNoCost) {
-//								clusterAccess.getJSONArray("sequence").put(access.toJSONrray());
-//								controller.addEntity(entity, mode);
-//							}
-//						} else {
-//							entitiesSeq.put(clusterAccess);
-//							clusterAccess = new JSONObject();
-//							clusterAccess.put("cluster", cluster);
-//							clusterAccess.put("sequence", new JSONArray());
-//							clusterAccess.getJSONArray("sequence").put(access.toJSONrray());
-//							controller.addEntity(entity, mode);
-//						}
-//					}
-//				}
-//				entitiesSeq.put(clusterAccess);
-//				controller.addEntitiesSeq(entitiesSeq);
-//			}
-//		}
+		for (String profile : profiles) {
+			for (String controllerName : codebase.getProfile(profile)) {
+
+				Controller controller = new Controller(controllerName);
+				this.addController(controller);
+
+				JSONArray entitiesSeq = new JSONArray();
+				JSONObject clusterAccess = new JSONObject();
+
+				ControllerTracesIterator iter = new ControllerTracesIterator(
+					codebase.getDatafilePath(),
+					controllerName
+				);
+
+				while (iter.hasMoreTraces()) {
+					TraceDto t = iter.nextTrace();
+
+					// FIXME refactor the code below
+					for (int i = 0; i < t.getAccesses().size(); i++) {
+						AccessDto access = t.getAccesses().get(i);
+						String entity = access.getEntity();
+						String mode = access.getMode();
+						String cluster = null;
+
+						try {
+							cluster = this.getClusterWithEntity(entity).getName();
+						}
+						catch (Exception e) {
+							System.err.println("Expert cut does not assign entity " + entity + " to a cluster.");
+							throw e;
+						}
+
+						if (i == 0) {
+							clusterAccess.put("cluster", cluster);
+							clusterAccess.put("sequence", new JSONArray());
+							clusterAccess.getJSONArray("sequence").put(access.toJSONrray());
+							controller.addEntity(entity, mode);
+
+						} else {
+							String previousCluster = this.getClusterWithEntity((t.getAccesses().get(i-1)).getEntity()).getName();
+
+							if (cluster.equals(previousCluster)) {
+								boolean hasNoCost = false;
+
+								for (int j = 0; j < clusterAccess.getJSONArray("sequence").length(); j++) {
+									JSONArray entityPair = clusterAccess.getJSONArray("sequence").getJSONArray(j);
+									if (entity.equals(entityPair.getString(0)) && mode.equals(entityPair.getString(1))) {
+										hasNoCost = true;
+										break;
+									}
+									if (entity.equals(entityPair.getString(0)) && "W".equals(entityPair.getString(1))) {
+										hasNoCost = true;
+										break;
+									}
+								}
+								if (!hasNoCost) {
+									clusterAccess.getJSONArray("sequence").put(access.toJSONrray());
+									controller.addEntity(entity, mode);
+								}
+							} else {
+								entitiesSeq.put(clusterAccess);
+								clusterAccess = new JSONObject();
+								clusterAccess.put("cluster", cluster);
+								clusterAccess.put("sequence", new JSONArray());
+								clusterAccess.getJSONArray("sequence").put(access.toJSONrray());
+								controller.addEntity(entity, mode);
+							}
+						}
+					}
+				}
+
+				entitiesSeq.put(clusterAccess);
+				controller.addEntitiesSeq(entitiesSeq);
+			}
+		}
 	}
 
 	public List<Cluster> getClusters() {
@@ -305,6 +314,7 @@ public class Graph {
 
 	public void mergeClusters(String cluster1, String cluster2, String newName) {
 		Cluster mergedCluster = new Cluster(newName);
+
 		for (int i = 0; i < clusters.size(); i++) {
 			if (clusters.get(i).getName().equals(cluster1)) {
 				for (Entity entity : clusters.get(i).getEntities())
@@ -313,6 +323,7 @@ public class Graph {
 				break;
 			}
 		}
+
 		for (int i = 0; i < clusters.size(); i++) {
 			if (clusters.get(i).getName().equals(cluster2)) {
 				for (Entity entity : clusters.get(i).getEntities())
@@ -441,7 +452,7 @@ public class Graph {
 	public void calculateDynamicMetricsAnalyser(List<String> profiles) {
 		try {
 			this.addDynamicControllers(profiles);
-		} catch (JSONException e) {
+		} catch (JSONException | IOException e) {
 			e.printStackTrace();
 		}
 

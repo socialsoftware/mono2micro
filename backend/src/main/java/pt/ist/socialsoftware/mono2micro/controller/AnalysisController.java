@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pt.ist.socialsoftware.mono2micro.domain.*;
 import pt.ist.socialsoftware.mono2micro.dto.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
+import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
@@ -292,19 +293,25 @@ public class AnalysisController {
 		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 		Map<String,Integer> e1e2PairCount = new HashMap<>();
 
-//		for (String profile : analyser.getProfiles()) {
-//			for (String controllerName : codebase.getProfile(profile)) {
-//				ControllerDto controllerDto = datafileJSON.get(controllerName);
-//				List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
-//
-//				Utils.fillEntityDataStructures(
-//					entityControllers,
-//					e1e2PairCount,
-//					controllerAccesses,
-//					controllerName
-//				);
-//			}
-//		}
+		for (String profile : analyser.getProfiles()) {
+			for (String controllerName : codebase.getProfile(profile)) {
+				ControllerTracesIterator iter = new ControllerTracesIterator(
+					codebase.getDatafilePath(),
+					controllerName
+				);
+
+				while (iter.hasMoreTraces()) {
+					TraceDto t = iter.nextTrace();
+
+					Utils.fillEntityDataStructures(
+						entityControllers,
+						e1e2PairCount,
+						t.getAccesses(),
+						controllerName
+					);
+				}
+			}
+		}
 
 		List<String> entitiesList = new ArrayList<>(entityControllers.keySet());
 		Collections.sort(entitiesList);
