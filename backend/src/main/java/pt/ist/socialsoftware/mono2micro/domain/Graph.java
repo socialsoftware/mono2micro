@@ -429,7 +429,15 @@ public class Graph {
 
 	public void calculateMetrics() {
 		try {
-			this.addStaticControllers(CodebaseManager.getInstance().getCodebase(this.codebaseName).getDendrogram(this.dendrogramName).getProfiles(), null);
+			Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
+
+			if (codebase.isStatic()) {
+				this.addStaticControllers(codebase.getDendrogram(this.dendrogramName).getProfiles(), null);
+
+			} else {
+				this.addDynamicControllers(codebase.getDendrogram(this.dendrogramName).getProfiles());
+			}
+
 		} catch (IOException | JSONException e) {
 			e.printStackTrace();
 		}

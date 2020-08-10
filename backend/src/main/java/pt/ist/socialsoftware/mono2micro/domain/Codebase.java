@@ -23,8 +23,7 @@ public class Codebase {
 	private String analysisType;
 	private String datafilePath;
 
-	public Codebase() {
-	}
+	public Codebase() {}
 
 	public Codebase(String name) {
         this.name = name;
