@@ -33,6 +33,7 @@ import pt.ist.socialsoftware.mono2micro.domain.*;
 import pt.ist.socialsoftware.mono2micro.dto.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
+import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 @RestController
 @RequestMapping(value = "/mono2micro")
@@ -57,11 +58,20 @@ public class AnalysisController {
 				codebaseManager.writeAnalyserResults(codebaseName, new HashMap());
 			}
 
-			// open codebase's datafile Json only once at the beginning of the analyser
-			HashMap<String, ControllerDto> datafileJSON = CodebaseManager.getInstance().getDatafile(codebaseName);
+			Codebase codebase = CodebaseManager.getInstance().getCodebase(codebaseName);
 
-			// returning entitiesList by convenience
-			List<String> entitiesList = createAnalyserSimilarityMatrix(codebaseName, analyser, datafileJSON);
+			List<String> entitiesList;
+			HashMap<String, ControllerDto> datafileJSON = null;
+
+			if (codebase.isStatic()) {
+				datafileJSON = CodebaseManager.getInstance().getDatafile(codebase);
+				// returning entitiesList by convenience
+				entitiesList = createStaticAnalyserSimilarityMatrix(codebaseName, analyser, datafileJSON);
+
+			} else {
+				entitiesList = createDynamicAnalyserSimilarityMatrix(codebase, analyser);
+			}
+			// open codebase's datafile Json only once at the beginning of the analyser
 			int numberOfEntitiesPresentInCollection = entitiesList.size();
 
 			System.out.println(codebaseName + ": " + numberOfEntitiesPresentInCollection);
@@ -114,7 +124,12 @@ public class AnalysisController {
 					graph.addCluster(cluster);
 				}
 
-				graph.calculateMetricsAnalyser(analyser.getProfiles(), datafileJSON);
+				if (codebase.isStatic()) {
+					graph.calculateMetricsAnalyser(analyser.getProfiles(), datafileJSON);
+
+				} else {
+					graph.calculateDynamicMetricsAnalyser(analyser.getProfiles());
+				}
 
 				AnalysisDto analysisDto = new AnalysisDto();
 				analysisDto.setGraph1(analyser.getExpert());
@@ -175,82 +190,24 @@ public class AnalysisController {
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
-	private List<String> createAnalyserSimilarityMatrix(
-		String codebaseName,
-		AnalyserDto analyser,
-		HashMap<String, ControllerDto> datafileJSON
-	) throws IOException, JSONException
-	{
-		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
-		Map<String,Integer> e1e2PairCount = new HashMap<>();
+
+	private JSONObject getAnalyserMatrixData(
+		List<String> entitiesList,
+		Map<String,Integer> e1e2PairCount,
+		Map<String,List<Pair<String,String>>> entityControllers
+	) throws JSONException {
+
 		JSONArray similarityMatrix = new JSONArray();
 		JSONObject matrixData = new JSONObject();
 
-		Codebase codebase = codebaseManager.getCodebase(codebaseName);
-
-		for (String profile : analyser.getProfiles()) {
-			for (String controllerName : codebase.getProfile(profile)) {
-				ControllerDto controllerDto = datafileJSON.get(controllerName);
-				List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
-				for (int i = 0; i < controllerAccesses.size(); i++) {
-					AccessDto access = controllerAccesses.get(i);
-					String entity = access.getEntity();
-					String mode = access.getMode();
-
-					if (entityControllers.containsKey(entity)) {
-						boolean containsController = false;
-						for (Pair<String,String> controllerPair : entityControllers.get(entity)) {
-							if (controllerPair.getFirst().equals(controllerName)) {
-								containsController = true;
-								if (!controllerPair.getSecond().contains(mode))
-									controllerPair.setSecond("RW");
-								break;
-							}
-						}
-						if (!containsController) {
-							entityControllers.get(entity).add(new Pair<>(controllerName, mode));
-						}
-					} else {
-						List<Pair<String,String>> controllersPairs = new ArrayList<>();
-						controllersPairs.add(new Pair<>(controllerName, mode));
-						entityControllers.put(entity, controllersPairs);
-					}
-
-					if (i < controllerAccesses.size() - 1) {
-						AccessDto nextAccess = controllerAccesses.get(i+1);
-						String nextEntity = nextAccess.getEntity();
-
-						if (!entity.equals(nextEntity)) {
-							String e1e2 = entity + "->" + nextEntity;
-							String e2e1 = nextEntity + "->" + entity;
-
-							int count = e1e2PairCount.containsKey(e1e2) ? e1e2PairCount.get(e1e2) : 0;
-							e1e2PairCount.put(e1e2, count + 1);
-
-							count = e1e2PairCount.containsKey(e2e1) ? e1e2PairCount.get(e2e1) : 0;
-							e1e2PairCount.put(e2e1, count + 1);
-						}
-					}
-				}
-			}
-		}
-
-		List<String> entitiesList = new ArrayList<>(entityControllers.keySet());
-		Collections.sort(entitiesList);
-
-		int maxNumberOfPairs;
-		if (!e1e2PairCount.values().isEmpty())
-			maxNumberOfPairs = Collections.max(e1e2PairCount.values());
-		else
-			maxNumberOfPairs = 0;
+		int maxNumberOfPairs = Utils.getMaxNumberOfPairs(e1e2PairCount);
 
 		for (int i = 0; i < entitiesList.size(); i++) {
 			String e1 = entitiesList.get(i);
 			JSONArray matrixRow = new JSONArray();
+
 			for (int j = 0; j < entitiesList.size(); j++) {
 				String e2 = entitiesList.get(j);
-				String e1e2 = e1 + "->" + e2;
 
 				if (e1.equals(e2)) {
 					JSONArray metric = new JSONArray();
@@ -262,44 +219,20 @@ public class AnalysisController {
 					continue;
 				}
 
-				float inCommon = 0;
-				float inCommonW = 0;
-				float inCommonR = 0;
-				float e1ControllersW = 0;
-				float e1ControllersR = 0;
-				for (Pair<String,String> e1Controller : entityControllers.get(e1)) {
-					for (Pair<String,String> e2Controller : entityControllers.get(e2)) {
-						if (e1Controller.getFirst().equals(e2Controller.getFirst()))
-							inCommon++;
-						if (e1Controller.getFirst().equals(e2Controller.getFirst()) && e1Controller.getSecond().contains("W") && e2Controller.getSecond().contains("W"))
-							inCommonW++;
-						if (e1Controller.getFirst().equals(e2Controller.getFirst()) && e1Controller.getSecond().contains("R") && e2Controller.getSecond().contains("R"))
-							inCommonR++;
-					}
-					if (e1Controller.getSecond().contains("W"))
-						e1ControllersW++;
-					if (e1Controller.getSecond().contains("R"))
-						e1ControllersR++;
-				}
-
-				float accessMetric = inCommon / entityControllers.get(e1).size();
-				float writeMetric = e1ControllersW == 0 ? 0 : inCommonW / e1ControllersW;
-				float readMetric = e1ControllersR == 0 ? 0 : inCommonR / e1ControllersR;
-
-				float e1e2Count = e1e2PairCount.containsKey(e1e2) ? e1e2PairCount.get(e1e2) : 0;
-
-				float sequenceMetric;
-				if (maxNumberOfPairs != 0)
-					sequenceMetric = e1e2Count / maxNumberOfPairs;
-				else // nao ha controladores a aceder a mais do que uma entidade
-					sequenceMetric = 0;
+				float[] metrics = Utils.calculateSimilarityMatrixMetrics(
+					entityControllers,
+					e1e2PairCount,
+					e1,
+					e2,
+					maxNumberOfPairs
+				);
 
 				JSONArray metric = new JSONArray();
-				metric.put(accessMetric);
-				metric.put(writeMetric);
-				metric.put(readMetric);
-				metric.put(sequenceMetric);
-				
+				metric.put(metrics[0]);
+				metric.put(metrics[1]);
+				metric.put(metrics[2]);
+				metric.put(metrics[3]);
+
 				matrixRow.put(metric);
 			}
 			similarityMatrix.put(matrixRow);
@@ -308,7 +241,82 @@ public class AnalysisController {
 		matrixData.put("entities", entitiesList);
 		matrixData.put("linkageType", "average");
 
-		CodebaseManager.getInstance().writeAnalyserSimilarityMatrix(codebaseName, matrixData);
+		return matrixData;
+	}
+	
+	private List<String> createStaticAnalyserSimilarityMatrix(
+		String codebaseName,
+		AnalyserDto analyser,
+		HashMap<String, ControllerDto> datafileJSON
+	) throws IOException, JSONException
+	{
+		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
+		Map<String,Integer> e1e2PairCount = new HashMap<>();
+
+		Codebase codebase = codebaseManager.getCodebase(codebaseName);
+
+		for (String profile : analyser.getProfiles()) {
+			for (String controllerName : codebase.getProfile(profile)) {
+				ControllerDto controllerDto = datafileJSON.get(controllerName);
+				List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
+
+				Utils.fillEntityDataStructures(
+					entityControllers,
+					e1e2PairCount,
+					controllerAccesses,
+					controllerName
+				);
+			}
+		}
+
+		List<String> entitiesList = new ArrayList<>(entityControllers.keySet());
+		Collections.sort(entitiesList);
+
+		CodebaseManager.getInstance().writeAnalyserSimilarityMatrix(
+			codebaseName,
+			getAnalyserMatrixData(
+				entitiesList,
+				e1e2PairCount,
+				entityControllers
+			)
+		);
+
+		return entitiesList;
+	}
+
+	private List<String> createDynamicAnalyserSimilarityMatrix(
+		Codebase codebase,
+		AnalyserDto analyser
+	) throws IOException, JSONException
+	{
+		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
+		Map<String,Integer> e1e2PairCount = new HashMap<>();
+
+//		for (String profile : analyser.getProfiles()) {
+//			for (String controllerName : codebase.getProfile(profile)) {
+//				ControllerDto controllerDto = datafileJSON.get(controllerName);
+//				List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
+//
+//				Utils.fillEntityDataStructures(
+//					entityControllers,
+//					e1e2PairCount,
+//					controllerAccesses,
+//					controllerName
+//				);
+//			}
+//		}
+
+		List<String> entitiesList = new ArrayList<>(entityControllers.keySet());
+		Collections.sort(entitiesList);
+
+		CodebaseManager.getInstance().writeAnalyserSimilarityMatrix(
+			codebase.getName(),
+			getAnalyserMatrixData(
+				entitiesList,
+				e1e2PairCount,
+				entityControllers
+			)
+		);
 
 		return entitiesList;
 	}
