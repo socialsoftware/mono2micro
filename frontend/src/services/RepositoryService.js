@@ -9,7 +9,7 @@ export class RepositoryService {
 
         this.axios = axios.create({
             baseURL: URL,
-            timeout: 60000,
+            timeout: 0,
             headers: headers,
         });
     }

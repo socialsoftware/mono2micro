@@ -9,10 +9,9 @@ public class Cluster {
 	private float cohesion;
 	private float coupling;
 	private Map<String, Set<String>> couplingDependencies;
-	private List<Entity> entities = new ArrayList<>();
+	private Map<String, Entity> entities = new HashMap<>(); // <entityName, entity>
 
-	public Cluster() {
-	}
+	public Cluster() { }
 
 	public Cluster(String name) {
         this.name = name;
@@ -50,50 +49,29 @@ public class Cluster {
 		this.coupling = coupling;
 	}
 
-	public Map<String, Set<String>> getCouplingDependencies() {
-		return couplingDependencies;
-	}
+	public Map<String, Set<String>> getCouplingDependencies() { return couplingDependencies; }
 
-	public void setCouplingDependencies(Map<String, Set<String>> couplingDependencies) {
-		this.couplingDependencies = couplingDependencies;
-	}
+	public void setCouplingDependencies(Map<String, Set<String>> couplingDependencies) { this.couplingDependencies = couplingDependencies; }
 
-	public List<Entity> getEntities() {
-		return this.entities;
-	}
+	public Map<String, Entity> getEntities() { return entities; }
 
-	public void setEntities(List<Entity> entities) {
+	public void setEntities(Map<String, Entity> entities) {
 		this.entities = entities;
 	}
 
-	public List<String> getEntityNames() {
-		return this.entities
-			.stream()
-			.map(e -> e.getName())
-			.collect(Collectors.toList());
-	}
+	public List<String> getEntityNames() { return new ArrayList<>(this.entities.keySet()); }
 
-	public Entity getEntity(String entityName) {
-		return this.entities
-			.stream()
-			.filter(e -> e.getName().equals(entityName))
-			.findAny()
-			.orElse(null);
-	}
+	public Entity getEntity(String entityName) { return this.entities.get(entityName); }
 
 	public void addEntity(Entity entity) {
-		this.entities.add(entity);
+		this.entities.put(entity.getName(), entity);
 	}
 
 	public void removeEntity(String entityName) {
-		this.entities.removeIf(e -> e.getName().equals(entityName));
+		this.entities.remove(entityName);
 	}
 
-	public boolean containsEntity(String entityName) {
-		return this.entities
-			.stream()
-			.anyMatch(e -> e.getName().equals(entityName));
-	}
+	public boolean containsEntity(String entityName) { return this.entities.containsKey(entityName); }
 
 	public void addCouplingDependency(String toCluster, String toEntity) {
 		if (this.couplingDependencies.containsKey(toCluster)) {
