@@ -2,8 +2,8 @@ package pt.ist.socialsoftware.mono2micro.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import pt.ist.socialsoftware.mono2micro.utils.CutInfoDtoDeserializer;
-import pt.ist.socialsoftware.mono2micro.utils.CutInfoDtoSerializer;
+import pt.ist.socialsoftware.mono2micro.utils.deserializers.CutInfoDtoDeserializer;
+import pt.ist.socialsoftware.mono2micro.utils.serializers.CutInfoDtoSerializer;
 
 import java.util.HashMap;
 

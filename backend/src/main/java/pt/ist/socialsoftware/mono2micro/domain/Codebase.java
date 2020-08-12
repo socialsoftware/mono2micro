@@ -13,19 +13,29 @@ import java.util.Map;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.io.FileUtils;
 
 public class Codebase {
 	private String name;
 	private Map<String,List<String>> profiles = new HashMap<>();
 	private List<Dendrogram> dendrograms = new ArrayList<>();
+	private String analysisType;
 	private String datafilePath;
 
-	public Codebase() {
-	}
+	public Codebase() {}
 
 	public Codebase(String name) {
         this.name = name;
+	}
+
+	public Codebase(String name, String analysisType) {
+		if (!analysisType.equals("static") && !analysisType.equals("dynamic")) {
+			throw new Error("Unknown analysis type: Please choose either 'static' or 'dynamic'");
+		}
+
+		this.name = name;
+		this.analysisType = analysisType;
 	}
 
 	public String getName() {
@@ -36,6 +46,14 @@ public class Codebase {
 		this.name = name;
 	}
 
+	public String getAnalysisType() { return this.analysisType; }
+
+	public void setAnalysisType(String analysisType) {
+		this.analysisType = analysisType;
+	}
+
+	@JsonIgnore
+	public boolean isStatic() { return this.analysisType.equals("static"); }
 	public String getDatafilePath() {
 		return datafilePath;
 	}
@@ -125,7 +143,11 @@ public class Codebase {
 
 		this.addDendrogram(dendrogram);
 
-		dendrogram.calculateSimilarityMatrix();
+		if (isStatic()) {
+			dendrogram.calculateStaticSimilarityMatrix();
+		} else {
+			dendrogram.calculateDynamicSimilarityMatrix();
+		}
 
 		//run python script to generate dendrogram image
 		Runtime r = Runtime.getRuntime();

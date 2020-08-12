@@ -89,55 +89,97 @@ public class Metrics {
     		return;
 		}
 
-		float complexity = 0;
-		Set<String> clusterAccessDependencies = new HashSet<>();
+    	Map<String, Integer> cache = new HashMap<>();
+
+		float controllerComplexity = 0;
+
 		try {
 			JSONArray accessSequence = new JSONArray(controller.getEntitiesSeq());
 
 			for (int i = 0; i < accessSequence.length(); i++) {
 				JSONObject clusterAccess = accessSequence.getJSONObject(i);
 				JSONArray entitiesSequence = clusterAccess.getJSONArray("sequence");
+
+				int clusterComplexity = 0;
+
 				for (int j = 0; j < entitiesSequence.length(); j++) {
 					JSONArray entityAccess = entitiesSequence.getJSONArray(j);
 					String entity = entityAccess.getString(0);
 					String mode = entityAccess.getString(1);
 
-					if (mode.equals("R"))
-						costOfRead(controller, entity, clusterAccessDependencies);
-					else
-						costOfWrite(controller, entity, clusterAccessDependencies);
+					Integer cost;
+					String key;
+
+					if (mode.equals("R")) {
+						key = String.join("-", controller.getName(), entity, mode);
+						cost = cache.get(key);
+
+						if (cost == null) {
+							cost = costOfRead(controller, entity);
+							cache.put(key, cost);
+						}
+					}
+
+					else {
+						key = String.join("-", controller.getName(), entity, mode);
+						cost = cache.get(key);
+
+						if (cost == null) {
+							cost = costOfWrite(controller, entity);
+							cache.put(key, cost);
+						}
+					}
+
+					clusterComplexity += cost;
 				}
 
-				complexity += clusterAccessDependencies.size();
-				clusterAccessDependencies.clear();
+				controllerComplexity += clusterComplexity;
 			}
 
-			controller.setComplexity(complexity);
+			controller.setComplexity(controllerComplexity);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
     }
 
-    private void costOfRead(Controller controller, String entity, Set<String> clusterAccessDependencies) throws JSONException {
+    private int costOfRead(
+    	Controller controller,
+		String entity
+	) {
+    	int cost = 0;
+
         for (Controller otherController : this.graph.getControllers()) {
-            if (!otherController.getName().equals(controller.getName()) &&
-                otherController.containsEntity(entity) && 
+            if (
+            	!otherController.getName().equals(controller.getName()) &&
+                otherController.containsEntity(entity) &&
                 otherController.getEntities().get(entity).contains("W") &&
-            	this.controllerClusters.get(otherController.getName()).size() > 1) {
-					clusterAccessDependencies.add(otherController.getName());
-                }
+            	this.controllerClusters.get(otherController.getName()).size() > 1
+			) {
+            	cost++;
+            }
         }
+
+        return cost;
     }
 
-    private void costOfWrite(Controller controller, String entity, Set<String> clusterAccessDependencies) throws JSONException {
+    private int costOfWrite(
+    	Controller controller,
+		String entity
+	) {
+    	int cost = 0;
+
         for (Controller otherController : this.graph.getControllers()) {
-            if (!otherController.getName().equals(controller.getName()) &&
+            if (
+            	!otherController.getName().equals(controller.getName()) &&
                 otherController.containsEntity(entity) && 
                 otherController.getEntities().get(entity).contains("R") &&
-				this.controllerClusters.get(otherController.getName()).size() > 1) {
-					clusterAccessDependencies.add(otherController.getName());
-                }
+				this.controllerClusters.get(otherController.getName()).size() > 1
+			) {
+            	cost++;
+            }
         }
+
+        return cost;
     }
 
 	private void calculateClusterComplexity(Cluster cluster) {
@@ -156,8 +198,10 @@ public class Metrics {
 		List<Controller> controllersThatAccessThisCluster = this.clusterControllers.get(cluster.getName());
 
 		float cohesion = 0;
+
 		for (Controller controller : controllersThatAccessThisCluster) {
 			float numberEntitiesTouched = 0;
+
 			for (String controllerEntity : controller.getEntities().keySet()) {
 				if (cluster.containsEntity(controllerEntity))
 					numberEntitiesTouched++;

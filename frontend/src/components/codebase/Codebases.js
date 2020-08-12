@@ -12,7 +12,8 @@ export class Codebases extends React.Component {
             newDatafilePath: "",
             selectedFile: null,
             isUploaded: "",
-            codebases: []
+            codebases: [],
+            checkedAnalysisType: "",
         };
 
         this.handleSelectedFile = this.handleSelectedFile.bind(this);
@@ -20,6 +21,7 @@ export class Codebases extends React.Component {
         this.handleChangeNewCodebaseName = this.handleChangeNewCodebaseName.bind(this);
         this.handleChangeNewDatafilePath = this.handleChangeNewDatafilePath.bind(this);
         this.handleDeleteCodebase = this.handleDeleteCodebase.bind(this);
+        this.handleSelectAnalysisType = this.handleSelectAnalysisType.bind(this);
         this.doCreateCodebaseRequest = this.doCreateCodebaseRequest.bind(this);
     }
 
@@ -49,6 +51,12 @@ export class Codebases extends React.Component {
         });
     }
 
+    handleSelectAnalysisType(event) {
+        this.setState({
+            checkedAnalysisType: event.target.value,
+        });
+    }
+
     handleChangeNewDatafilePath(event) {
         this.setState({
             newDatafilePath: event.target.value,
@@ -72,16 +80,24 @@ export class Codebases extends React.Component {
         });
 
         if (this.state.selectedFile !== null) {
-            this.doCreateCodebaseRequest(this.state.newCodebaseName, this.state.selectedFile);
+            this.doCreateCodebaseRequest(
+                this.state.newCodebaseName,
+                this.state.selectedFile,
+                this.state.checkedAnalysisType, // either static or dynamic
+            );
         }
         else {
-            this.doCreateCodebaseRequest(this.state.newCodebaseName, this.state.newDatafilePath);
+            this.doCreateCodebaseRequest(
+                this.state.newCodebaseName,
+                this.state.newDatafilePath,
+                this.state.checkedAnalysisType, // either static or dynamic
+            );
         }
     }
 
-    doCreateCodebaseRequest(codebaseName, pathOrFile) {
+    doCreateCodebaseRequest(codebaseName, pathOrFile, analysisType) {
         const service = new RepositoryService();
-        service.createCodebase(codebaseName, pathOrFile)
+        service.createCodebase(codebaseName, pathOrFile, analysisType)
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
                     this.loadCodebases();
@@ -125,7 +141,7 @@ export class Codebases extends React.Component {
     renderCreateCodebaseForm = () => {
         return (
             <Form onSubmit={this.handleSubmit}>
-                <Form.Group as={Row} controlId="newCodebaseName">
+                <Form.Group as={Row} controlId="newCodebaseName" className="align-items-center">
                     <Form.Label column sm={2}>
                         Codebase Name
                     </Form.Label>
@@ -168,13 +184,41 @@ export class Codebases extends React.Component {
                     </Col>
                 </Form.Group>
 
+                <Form.Group as={Row} key={"analysis-type-section"} className="align-items-center">
+                    <Form.Label column sm={2}>
+                        Analysis type
+                    </Form.Label>
+                    <Col sm={5} >
+                        <Form.Check
+                            inline
+                            id="static-analysis-radio-button"
+                            type="radio"
+                            value="static"
+                            label="Static analysis"
+                            onChange={this.handleSelectAnalysisType}
+                            checked={this.state.checkedAnalysisType === "static"}
+                        />
+                        <Form.Check
+                            inline
+                            id="dynamic-analysis-radio-button"
+                            type="radio"
+                            value="dynamic"
+                            label="Dynamic analysis"
+                            onChange={this.handleSelectAnalysisType}
+                            checked={this.state.checkedAnalysisType === "dynamic"}
+                        />
+                    </Col>
+                </Form.Group>
                 <Form.Group as={Row}>
                     <Col sm={{ span: 5, offset: 2 }}>
                         <Button type="submit"
-                                disabled={this.state.isUploaded === "Uploading..." ||
-                                        this.state.newCodebaseName === "" ||
-                                        (this.state.selectedFile === null &&
-                                        this.state.newDatafilePath === "")}>
+                                disabled={
+                                    this.state.isUploaded === "Uploading..." ||
+                                    this.state.newCodebaseName === "" ||
+                                    (this.state.selectedFile === null &&
+                                    this.state.newDatafilePath === "")
+                                }
+                        >
                             Create Codebase
                         </Button>
                         <Form.Text>

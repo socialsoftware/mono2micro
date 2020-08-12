@@ -83,8 +83,10 @@ public class DendrogramController {
             codebaseManager.writeCodebase(codebaseName, codebase);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (KeyAlreadyExistsException e) {
+			e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
+			e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 	}

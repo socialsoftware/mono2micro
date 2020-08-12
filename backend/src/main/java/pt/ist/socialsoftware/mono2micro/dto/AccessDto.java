@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.json.JSONArray;
 import org.json.JSONException;
-import pt.ist.socialsoftware.mono2micro.utils.AccessDtoDeserializer;
+import pt.ist.socialsoftware.mono2micro.utils.deserializers.AccessDtoDeserializer;
 
 @JsonDeserialize(using = AccessDtoDeserializer.class)
 public class AccessDto {

@@ -8,7 +8,7 @@ import java.util.Map;
 public class Controller {
 	private String name;
 	private float complexity;
-	private Map<String, String> entities = new HashMap<>();
+	private Map<String, String> entities = new HashMap<>(); // <entity, mode>
 	private String entitiesSeq = "[]";
 
 	public Controller() {

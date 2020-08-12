@@ -108,18 +108,22 @@ public class CodebaseController {
     }
 
     @RequestMapping(value = "/codebase/create", method = RequestMethod.POST)
-    public ResponseEntity<HttpStatus> createCodebase(@RequestParam String codebaseName, @RequestParam Object datafile) {
+    public ResponseEntity<HttpStatus> createCodebase(
+        @RequestParam String codebaseName,
+        @RequestParam Object datafile,
+        @RequestParam String analysisType
+    ){
         logger.debug("createCodebase");
 
         try {
-            Codebase codebase = codebaseManager.createCodebase(codebaseName, datafile);
+            Codebase codebase = codebaseManager.createCodebase(codebaseName, datafile, analysisType);
             codebaseManager.writeCodebase(codebaseName, codebase);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (KeyAlreadyExistsException e) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (FileNotFoundException e) {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (IOException e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

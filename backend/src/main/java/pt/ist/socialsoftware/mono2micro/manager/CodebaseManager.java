@@ -62,7 +62,12 @@ public class CodebaseManager {
 		FileUtils.deleteDirectory(new File(CODEBASES_PATH + codebaseName));
 	}
 
-	public Codebase createCodebase(String codebaseName, Object datafile) throws IOException {
+	public Codebase createCodebase(
+		String codebaseName,
+		Object datafile,
+		String analysisType
+	) throws IOException {
+		
 		if (getCodebase(codebaseName) != null)
 			throw new KeyAlreadyExistsException();
 
@@ -76,11 +81,12 @@ public class CodebaseManager {
 			codebasePath.mkdir();
 		}
 
-		Codebase codebase = new Codebase(codebaseName);
+		Codebase codebase = new Codebase(codebaseName, analysisType);
 
-		HashMap datafileJSON = null;
+		HashMap datafileJSON;
 		ObjectMapper mapper = new ObjectMapper();
 		InputStream datafileInputStream = null;
+
 		if (datafile instanceof MultipartFile) {
 			// read datafile
 			datafileInputStream = ((MultipartFile) datafile).getInputStream();
@@ -105,7 +111,6 @@ public class CodebaseManager {
 		return codebase;
 	}
 
-
 	public Codebase getCodebase(String codebaseName) {
 		try {
 			return objectMapper.readValue(new File(CODEBASES_PATH + codebaseName + "/codebase.json"), Codebase.class);
@@ -114,22 +119,31 @@ public class CodebaseManager {
 		}
 	}
 
-	public void writeCodebase(String codebaseName, Codebase codebase) throws IOException {
+	public void writeCodebase(
+		String codebaseName, // FIXME is this really necessary? what about codebase.getName()?
+		Codebase codebase
+	) throws IOException {
 		objectMapper.writeValue(new File(CODEBASES_PATH + codebaseName + "/codebase.json"), codebase);
 	}
 
 	public HashMap<String, ControllerDto> getDatafile(String codebaseName) throws IOException {
 		Codebase codebase = getCodebase(codebaseName);
 		InputStream is = new FileInputStream(codebase.getDatafilePath());
-		HashMap<String, ControllerDto> datafileJSON = new ObjectMapper()
-				.readValue(is, new TypeReference<HashMap<String, ControllerDto>>() {});
-		is.close();
-		return datafileJSON;
+
+		return objectMapper.readValue(is, new TypeReference<HashMap<String, ControllerDto>>(){});
+	}
+
+	public HashMap<String, ControllerDto> getDatafile(Codebase codebase) throws IOException {
+		InputStream is = new FileInputStream(codebase.getDatafilePath());
+
+		return objectMapper.readValue(is, new TypeReference<HashMap<String, ControllerDto>>(){});
 	}
 
 	public void writeDatafile(String codebaseName, HashMap datafile) throws IOException {
-		new ObjectMapper().writerWithDefaultPrettyPrinter()
-				.writeValue(new File(CODEBASES_PATH + codebaseName + "/datafile.json"), datafile);
+		objectMapper.writerWithDefaultPrettyPrinter().writeValue(
+			new File(CODEBASES_PATH + codebaseName + "/datafile.json"),
+			datafile
+		);
 	}
 
 	public JSONObject getSimilarityMatrix(String codebaseName, String dendrogramName) throws IOException, JSONException {
@@ -158,10 +172,7 @@ public class CodebaseManager {
 
 	public HashMap<String, CutInfoDto> getAnalyserResults(String codebaseName) throws IOException {
 		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json");
-		HashMap<String, CutInfoDto> analyserJSON = new ObjectMapper()
-				.readValue(is, new TypeReference<HashMap<String, CutInfoDto>>() {});
-		is.close();
-		return analyserJSON;
+		return objectMapper.readValue(is, new TypeReference<HashMap<String, CutInfoDto>>() {});
 	}
 
 	public void writeAnalyserResults(String codebaseName, HashMap analyserJSON) throws IOException {
