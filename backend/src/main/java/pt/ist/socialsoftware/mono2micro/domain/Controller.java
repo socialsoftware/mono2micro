@@ -70,7 +70,7 @@ public class Controller {
 	public Controller(String name) {
         this.name = name;
 		localTransactionsGraph = new DirectedAcyclicGraph<>(DefaultEdge.class);
-        localTransactionsGraph.addVertex(new LocalTransaction(0));
+        localTransactionsGraph.addVertex(new LocalTransaction(0, null, new ArrayList<>()));
 	}
 
 	public String getName() {
@@ -111,8 +111,6 @@ public class Controller {
 
 	public DirectedAcyclicGraph<LocalTransaction, DefaultEdge> getLocalTransactionsGraph() { return localTransactionsGraph; }
 
-	public int getNumberOfLocalTransactions() { return this.localTransactionsGraph.vertexSet().size(); }
-
 	public void addLocalTransactionSequence(List<LocalTransaction> localTransactions) {
 		LocalTransaction current_lt = new LocalTransaction(0);
 
@@ -121,8 +119,10 @@ public class Controller {
 
 			int childrenLtsSize = childrenLts.size();
 
-			if (childrenLtsSize == 0)
+			if (childrenLtsSize == 0) {
 				createNewBranch(localTransactions, current_lt, i);
+				return;
+			}
 
 			for (int j = 0; j < childrenLtsSize; j++) {
 				LocalTransaction childLt = childrenLts.get(j);
@@ -147,8 +147,9 @@ public class Controller {
 		int i
 	) {
 		for (int k = i; k < localTransactions.size(); k++) {
-			this.localTransactionsGraph.addEdge(current_lt, localTransactions.get(i));
-			current_lt = localTransactions.get(i);
+			this.localTransactionsGraph.addVertex(localTransactions.get(k));
+			this.localTransactionsGraph.addEdge(current_lt, localTransactions.get(k));
+			current_lt = localTransactions.get(k);
 		}
 	}
 
@@ -156,8 +157,11 @@ public class Controller {
 		return localTransactionsGraph.vertexSet();
 	}
 
-	public Set<LocalTransaction> getNextLocalTransactions(LocalTransaction lt) {
-		return localTransactionsGraph.getDescendants(lt);
+	public List<LocalTransaction> getNextLocalTransactions(LocalTransaction lt) {
+		return successorListOf(localTransactionsGraph, lt);
 	}
 
+	public void setLocalTransactionsGraph(DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph) {
+		this.localTransactionsGraph = localTransactionsGraph;
+	}
 }

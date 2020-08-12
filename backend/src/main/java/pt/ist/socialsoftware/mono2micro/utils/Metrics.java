@@ -73,7 +73,11 @@ public class Metrics {
 
 		for (Controller.LocalTransaction lt : allLocalTransactions) {
 			Cluster fromCluster = graph.getCluster(lt.getClusterName());
-			Set<Controller.LocalTransaction> nextLocalTransactions = controller.getNextLocalTransactions(lt);
+
+			if (fromCluster == null) // root node
+				continue;
+
+			List<Controller.LocalTransaction> nextLocalTransactions = controller.getNextLocalTransactions(lt);
 
 			for (Controller.LocalTransaction nextLt : nextLocalTransactions) {
 				String toEntity = nextLt.getClusterAccesses().get(0).getEntity();

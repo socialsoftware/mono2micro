@@ -136,6 +136,8 @@ public class Graph {
 
 		String previousCluster = ""; // IntelliJ is afraid. poor him
 
+		int localTransactionsCounter = 1;
+
 		for (int i = 0; i < accesses.size(); i++) {
 			A access = accesses.get(i);
 			String entity = access.getEntity();
@@ -152,7 +154,7 @@ public class Graph {
 
 			if (i == 0) {
 				lt = new Controller.LocalTransaction(
-					controller.getNumberOfLocalTransactions(),
+					localTransactionsCounter++,
 					cluster,
 					new ArrayList<AccessDto>() { { add(access); } }
 				);
@@ -183,7 +185,7 @@ public class Graph {
 					ltList.add(new Controller.LocalTransaction(lt));
 
 					lt = new Controller.LocalTransaction(
-						controller.getNumberOfLocalTransactions(),
+						localTransactionsCounter++,
 						cluster,
 						new ArrayList<AccessDto>() { { add(access); } }
 					);
