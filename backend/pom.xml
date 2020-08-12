@@ -51,6 +51,13 @@
 			<artifactId>json</artifactId>
 			<version>20090211</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.jgrapht</groupId>
+			<artifactId>jgrapht-core</artifactId>
+			<version>1.4.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

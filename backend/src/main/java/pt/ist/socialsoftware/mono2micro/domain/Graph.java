@@ -8,10 +8,6 @@ import java.util.Map;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
 import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
@@ -32,10 +28,8 @@ public class Graph {
 	private float coupling;
 	private List<Controller> controllers = new ArrayList<>(); // FIXME Hashmap
 	private List<Cluster> clusters = new ArrayList<>(); // FIXME Hashmap
-	// FIXME Map<EntityName, HashSet<ClusterId>>
 
-	public Graph() {
-	}
+	public Graph() { }
 
 	public String getCodebaseName() {
 		return this.codebaseName;
@@ -119,27 +113,28 @@ public class Graph {
 
 	public int maxClusterSize() {
 		int max = 0;
-		for (Cluster cluster : this.clusters)
+
+		for (Cluster cluster : this.clusters) {
 			if (cluster.getEntities().size() > max)
 				max = cluster.getEntities().size();
+		}
+
 		return max;
 	}
 
-	public List<Controller> getControllers() {
-		return this.controllers;
-	}
+	public List<Controller> getControllers() { return this.controllers; }
 
-	public void addController(Controller controller) {
-		this.controllers.add(controller);
-	}
+	public void addController(Controller controller) { this.controllers.add(controller); }
 
 	private <A extends AccessDto> void calculateControllerSequences (
 		Controller controller,
 		List<A> accesses
-	) throws JSONException {
+	) {
+		Controller.LocalTransaction lt = null;
+		List<Controller.LocalTransaction> ltList = new ArrayList<>();
+		Map<String, String> entityNameToMode = new HashMap<>();
 
-		JSONArray entitiesSeq = new JSONArray();
-		JSONObject clusterAccess = new JSONObject();
+		String previousCluster = ""; // IntelliJ is afraid. poor him
 
 		for (int i = 0; i < accesses.size(); i++) {
 			A access = accesses.get(i);
@@ -156,64 +151,71 @@ public class Graph {
 			}
 
 			if (i == 0) {
-				clusterAccess.put("cluster", cluster);
-				clusterAccess.put("sequence", new JSONArray());
-				clusterAccess.getJSONArray("sequence").put(access.toJSONrray());
+				lt = new Controller.LocalTransaction(
+					controller.getNumberOfLocalTransactions(),
+					cluster,
+					new ArrayList<AccessDto>() { { add(access); } }
+				);
+
 				controller.addEntity(entity, mode);
+				entityNameToMode.put(entity, mode);
 
 			} else {
 
-				// FIXME isn't this the previous cluster (var)?
-				String previousCluster = this.getClusterWithEntity((accesses.get(i-1)).getEntity()).getName();
-
 				if (cluster.equals(previousCluster)) {
-					boolean hasNoCost = false;
+					boolean hasCost = false;
+					String savedMode = entityNameToMode.get(entity);
 
-					// FIXME clusterAccess can have a HashMap of entities and consequently the search will be much faster
-					for (int j = 0; j < clusterAccess.getJSONArray("sequence").length(); j++) {
-						JSONArray entityPair = clusterAccess.getJSONArray("sequence").getJSONArray(j);
+					if (savedMode == null) {
+						hasCost = true;
 
-						// FIXME doesnt the order matter?
-						if (entity.equals(entityPair.getString(0))) {
-							if (mode.equals(entityPair.getString(1)) || "W".equals(entityPair.getString(1))) {
-								hasNoCost = true;
-								break;
-							}
-						}
+					} else {
+						if (savedMode.equals("R") && mode.equals("W"))
+							hasCost = true;
 					}
 
-					if (!hasNoCost) {
-						clusterAccess.getJSONArray("sequence").put(access.toJSONrray());
+					if (hasCost) {
+						lt.addClusterAccess(access);
 						controller.addEntity(entity, mode);
 					}
 
 				} else {
-					entitiesSeq.put(clusterAccess);
-					clusterAccess = new JSONObject();
-					clusterAccess.put("cluster", cluster);
-					clusterAccess.put("sequence", new JSONArray());
-					clusterAccess.getJSONArray("sequence").put(access.toJSONrray());
+					ltList.add(new Controller.LocalTransaction(lt));
+
+					lt = new Controller.LocalTransaction(
+						controller.getNumberOfLocalTransactions(),
+						cluster,
+						new ArrayList<AccessDto>() { { add(access); } }
+					);
+
 					controller.addEntity(entity, mode);
+
+					entityNameToMode.clear();
+					entityNameToMode.put(entity, mode);
 				}
 			}
+
+			previousCluster = cluster;
 		}
 
-		if (clusterAccess.length() > 1)
-			entitiesSeq.put(clusterAccess);
+		if (lt != null && lt.getClusterAccesses().size() > 1)
+			ltList.add(lt);
 
-		if (entitiesSeq.length() > 1)
-			controller.addEntitiesSeq(entitiesSeq);
+		if (ltList.size() > 1)
+			controller.addLocalTransactionSequence(ltList);
+
 	}
 
 	public void addStaticControllers(
 		List<String> profiles,
 		HashMap<String, ControllerDto> datafile
 	)
-		throws JSONException, IOException
+		throws IOException
 	{
 		this.controllers = new ArrayList<>();
 
 		HashMap<String, ControllerDto> datafileJSON;
+
 		if (datafile == null)
 			datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
 		else
@@ -230,16 +232,18 @@ public class Graph {
 				ControllerDto controllerDto = datafileJSON.get(controllerName);
 				List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
 
-				calculateControllerSequences(
-					controller,
-					controllerAccesses
-				);
+				if (controllerAccesses.size() > 0) {
+					calculateControllerSequences(
+						controller,
+						controllerAccesses
+					);
+				}
 
 			}
 		}
 	}
 
-	public void addDynamicControllers(List<String> profiles) throws JSONException, IOException {
+	public void addDynamicControllers(List<String> profiles) throws IOException {
 		this.controllers = new ArrayList<>();
 
 		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
@@ -303,6 +307,7 @@ public class Graph {
 
 				for (Entity entity : clusters.get(i).getEntities().values())
 					mergedCluster.addEntity(entity);
+
 				clusters.remove(i);
 
 				break;
@@ -419,7 +424,7 @@ public class Graph {
 				this.addDynamicControllers(codebase.getDendrogram(this.dendrogramName).getProfiles());
 			}
 
-		} catch (IOException | JSONException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
@@ -430,7 +435,7 @@ public class Graph {
 	public void calculateMetricsAnalyser(List<String> profiles, HashMap<String, ControllerDto> datafileJSON) {
 		try {
 			this.addStaticControllers(profiles, datafileJSON);
-		} catch (IOException | JSONException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
@@ -441,7 +446,7 @@ public class Graph {
 	public void calculateDynamicMetricsAnalyser(List<String> profiles) {
 		try {
 			this.addDynamicControllers(profiles);
-		} catch (JSONException | IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 

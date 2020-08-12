@@ -3,10 +3,10 @@ package pt.ist.socialsoftware.mono2micro.utils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
-import java.util.HashSet;
+
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,6 +67,7 @@ public class Metrics {
 	private void calculateClusterDependencies(Controller controller) {
     	try {
 			JSONArray accessSequence = new JSONArray(controller.getEntitiesSeq());
+
 			for (int i = 0; i < accessSequence.length() - 1; i++) {
 				JSONObject clusterAccess = accessSequence.getJSONObject(i);
 				String fromCluster = clusterAccess.getString("cluster");
