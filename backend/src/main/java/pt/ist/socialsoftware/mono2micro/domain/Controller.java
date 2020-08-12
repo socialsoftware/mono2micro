@@ -9,6 +9,7 @@ import java.util.*;
 import static org.jgrapht.Graphs.successorListOf;
 
 public class Controller {
+
 	public static class LocalTransaction {
 		private int id; // transaction id
 		private String clusterName; // actually is just an Id
@@ -151,5 +152,12 @@ public class Controller {
 		}
 	}
 
+	public Set<LocalTransaction> getAllLocalTransactions() {
+		return localTransactionsGraph.vertexSet();
+	}
+
+	public Set<LocalTransaction> getNextLocalTransactions(LocalTransaction lt) {
+		return localTransactionsGraph.getDescendants(lt);
+	}
 
 }
