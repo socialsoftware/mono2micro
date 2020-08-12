@@ -32,6 +32,7 @@ public class Graph {
 	private float coupling;
 	private List<Controller> controllers = new ArrayList<>(); // FIXME Hashmap
 	private List<Cluster> clusters = new ArrayList<>(); // FIXME Hashmap
+	// FIXME Map<EntityName, HashSet<ClusterId>>
 
 	public Graph() {
 	}
@@ -133,17 +134,18 @@ public class Graph {
 	}
 
 	private <A extends AccessDto> void calculateControllerSequences (
-		JSONArray entitiesSeq,
-		JSONObject clusterAccess,
 		Controller controller,
 		List<A> accesses
 	) throws JSONException {
+
+		JSONArray entitiesSeq = new JSONArray();
+		JSONObject clusterAccess = new JSONObject();
 
 		for (int i = 0; i < accesses.size(); i++) {
 			A access = accesses.get(i);
 			String entity = access.getEntity();
 			String mode = access.getMode();
-			String cluster = null;
+			String cluster;
 
 			try {
 				cluster = this.getClusterWithEntity(entity).getName();
@@ -160,27 +162,31 @@ public class Graph {
 				controller.addEntity(entity, mode);
 
 			} else {
-				// FIXME
+
+				// FIXME isn't this the previous cluster (var)?
 				String previousCluster = this.getClusterWithEntity((accesses.get(i-1)).getEntity()).getName();
 
 				if (cluster.equals(previousCluster)) {
 					boolean hasNoCost = false;
 
+					// FIXME clusterAccess can have a HashMap of entities and consequently the search will be much faster
 					for (int j = 0; j < clusterAccess.getJSONArray("sequence").length(); j++) {
 						JSONArray entityPair = clusterAccess.getJSONArray("sequence").getJSONArray(j);
-						if (entity.equals(entityPair.getString(0)) && mode.equals(entityPair.getString(1))) {
-							hasNoCost = true;
-							break;
-						}
-						if (entity.equals(entityPair.getString(0)) && "W".equals(entityPair.getString(1))) {
-							hasNoCost = true;
-							break;
+
+						// FIXME doesnt the order matter?
+						if (entity.equals(entityPair.getString(0))) {
+							if (mode.equals(entityPair.getString(1)) || "W".equals(entityPair.getString(1))) {
+								hasNoCost = true;
+								break;
+							}
 						}
 					}
+
 					if (!hasNoCost) {
 						clusterAccess.getJSONArray("sequence").put(access.toJSONrray());
 						controller.addEntity(entity, mode);
 					}
+
 				} else {
 					entitiesSeq.put(clusterAccess);
 					clusterAccess = new JSONObject();
@@ -191,6 +197,12 @@ public class Graph {
 				}
 			}
 		}
+
+		if (clusterAccess.length() > 1)
+			entitiesSeq.put(clusterAccess);
+
+		if (entitiesSeq.length() > 1)
+			controller.addEntitiesSeq(entitiesSeq);
 	}
 
 	public void addStaticControllers(
@@ -214,22 +226,15 @@ public class Graph {
 
 				Controller controller = new Controller(controllerName);
 				this.addController(controller);
-	
-				JSONArray entitiesSeq = new JSONArray();
-				JSONObject clusterAccess = new JSONObject();
 
 				ControllerDto controllerDto = datafileJSON.get(controllerName);
 				List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
 
 				calculateControllerSequences(
-					entitiesSeq,
-					clusterAccess,
 					controller,
 					controllerAccesses
 				);
 
-				entitiesSeq.put(clusterAccess);
-				controller.addEntitiesSeq(entitiesSeq);
 			}
 		}
 	}
@@ -245,9 +250,6 @@ public class Graph {
 				Controller controller = new Controller(controllerName);
 				this.addController(controller);
 
-				JSONArray entitiesSeq = new JSONArray();
-				JSONObject clusterAccess = new JSONObject();
-
 				ControllerTracesIterator iter = new ControllerTracesIterator(
 					codebase.getDatafilePath(),
 					controllerName
@@ -256,16 +258,15 @@ public class Graph {
 				while (iter.hasMoreTraces()) {
 					TraceDto t = iter.nextTrace();
 
-					calculateControllerSequences(
-						entitiesSeq,
-						clusterAccess,
-						controller,
-						t.getAccesses()
-					);
+					if (t.getAccesses().size() > 0) {
+						calculateControllerSequences(
+							controller,
+							t.getAccesses()
+						);
+					}
 				}
 
-				entitiesSeq.put(clusterAccess);
-				controller.addEntitiesSeq(entitiesSeq);
+                
 			}
 		}
 	}
