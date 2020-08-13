@@ -137,7 +137,6 @@ export class ClusterView extends React.Component {
     }
 
     convertClusterToNode(cluster) {
-        console.log(cluster);
         const entityNames = Object.keys(cluster.entities);
 
         return {
@@ -160,7 +159,8 @@ export class ClusterView extends React.Component {
             for (var j = i + 1; j < this.state.clusters.length; j++) {
                 let cluster2 = this.state.clusters[j];
                 let cluster2Controllers = this.state.clusterControllers[cluster2.name].map(c => c.name);
-                let controllersInCommon = cluster1Controllers.filter(value => -1 !== cluster2Controllers.indexOf(value))
+
+                let controllersInCommon = cluster1Controllers.filter(controllerName => cluster2Controllers.includes(controllerName))
 
                 let couplingC1C2 = cluster1.couplingDependencies[cluster2.name] === undefined ? 0 : cluster1.couplingDependencies[cluster2.name].length;
                 let couplingC2C1 = cluster2.couplingDependencies[cluster1.name] === undefined ? 0 : cluster2.couplingDependencies[cluster1.name].length;

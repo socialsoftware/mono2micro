@@ -126,7 +126,7 @@ export class TransactionView extends React.Component {
             controllers: [],
             controllerClusters: [],
             showGraph: false,
-            clusterSequence: [],
+            localTransactionsSequence: [],
             currentSubView: "Graph"
         }
 
@@ -184,18 +184,24 @@ export class TransactionView extends React.Component {
     }
 
     createNode(cluster) {
+        const clusterEntityNames = Object.keys(cluster.entities);
+
         return {
             id: cluster.name, 
-            title: cluster.entities.map(e => e.name).join('<br>') + "<br>Total: " + cluster.entities.length,
+            title: clusterEntityNames.join('<br>') + "<br>Total: " + clusterEntityNames.length,
             label: cluster.name, 
-            value: cluster.entities.length, 
+            value: clusterEntityNames.length, 
             level: 1, 
             type: types.CLUSTER
         };
     }
 
     createEdge(cluster) {
-        let entitiesTouched = Object.entries(this.state.controller.entities).filter(e => cluster.entities.map(e => e.name).includes(e[0])).map(e => e[0] + " " + e[1]);
+        const clusterEntityNames = Object.keys(cluster.entities);
+
+        let entitiesTouched = Object.entries(this.state.controller.entities)
+                                    .filter(e => clusterEntityNames.includes(e[0]))
+                                    .map(e => e[0] + " " + e[1]);
         return {
             from: this.state.controller.name, 
             to: cluster.name, 
@@ -207,48 +213,89 @@ export class TransactionView extends React.Component {
     createSequenceDiagram() {
         let nodes = [];
         let edges = [];
-        let clusterSequence = [];
+        let localTransactionsSequence = [];
+        const localTransactionIdToClusterAccesses = {};
 
         nodes.push({
             id: 0,
-            title: Object.entries(this.state.controller.entities).map(e => e[0] + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(this.state.controller.entities).length, 
             label: this.state.controller.name, 
             level: 0, 
             value: 1, 
-            type: types.CONTROLLER
+            type: types.CONTROLLER,
+            title: Object.entries(this.state.controller.entities)
+                            .map(e => e[0] + " " + e[1])
+                            .join('<br>') + "<br>Total: " + Object.keys(this.state.controller.entities).length, 
         });
 
-        let entitiesSequence = JSON.parse(this.state.controller.entitiesSeq);
+        localTransactionIdToClusterAccesses[0] = [];
 
-        for (var i = 0; i < entitiesSequence.length; i++) {
-            let clusterName = entitiesSequence[i]["cluster"];
-            let cluster = this.state.graph.clusters.filter(cluster => cluster.name === clusterName)[0];
-            let nodeId = i+1;
+        let {
+            nodes: localTransactionsList,
+            links: linksList,
+        } = this.state.controller.localTransactionsGraph;
+
+
+        for (var i = 1; i < localTransactionsList.length; i++) {
+            
+            let {
+                id: localTransactionId,
+                clusterName,
+                clusterAccesses,
+            } = localTransactionsList[i];
+
+            localTransactionIdToClusterAccesses[localTransactionId] = clusterAccesses;
+            
+            let cluster = this.state.graph.clusters.find(cluster => cluster.name === clusterName);
+            const clusterEntityNames = Object.keys(cluster.entities);
 
             nodes.push({
-                id: nodeId, 
-                title: cluster.entities.map(e => e.name).join('<br>') + "<br>Total: " + cluster.entities.length, 
+                id: localTransactionId, 
+                title: clusterEntityNames.join('<br>') + "<br>Total: " + clusterEntityNames.length, 
                 label: cluster.name, 
-                value: cluster.entities.length, 
+                value: clusterEntityNames.length, 
                 level: 1, 
                 type: types.CLUSTER
             });
 
-            let entitiesTouched = entitiesSequence[i]["sequence"];
-
-            edges.push({
-                from: nodeId - 1, 
-                to: nodeId,
-                title: Object.values(entitiesTouched).map(e => e.join(" ")).join('<br>'), 
-                label: entitiesTouched.length.toString()
-            });
-
-            clusterSequence.push({
-                id: nodeId, 
+            localTransactionsSequence.push({
+                id: localTransactionId, 
                 cluster: cluster.name, 
-                entities: <pre>{Object.values(entitiesTouched).map(e => e.join(" ")).join('\n')}</pre>
+                entities: <pre> { clusterAccesses.map(acc => acc.join(" ")).join('\n') } </pre>
             });
         }
+
+        linksList.forEach(link => {
+            const [
+                sourceNodeId,
+                targetNodeId,
+            ] = link.split('->');
+
+            const clusterAccesses = localTransactionIdToClusterAccesses[Number(targetNodeId)];
+
+            edges.push({
+                from: Number(sourceNodeId),
+                to: Number(targetNodeId),
+                title: clusterAccesses.map(acc => acc.join(" ")).join('<br>'), 
+                label: clusterAccesses.length.toString()
+            })
+
+            let sourceNodeIndex;
+            let targetNodeIndex;
+
+            for (let i = 0; i < nodes.length; i++) {
+                if (nodes[i].id === Number(sourceNodeId)) {
+                    sourceNodeIndex = i;
+                }
+    
+                if (nodes[i].id === Number(targetNodeId)) {
+                    targetNodeIndex = i;
+                }
+                if (sourceNodeIndex !== undefined && targetNodeIndex !== undefined) {
+                    nodes[targetNodeIndex].level = nodes[sourceNodeIndex].level + 1;
+                }
+
+            }
+        });
 
         const visGraphSeq = {
             nodes: new DataSet(nodes),
@@ -256,8 +303,8 @@ export class TransactionView extends React.Component {
         };
 
         this.setState({
-            visGraphSeq: visGraphSeq,
-            clusterSequence: clusterSequence
+            visGraphSeq,
+            localTransactionsSequence,
         });
     }
 
@@ -362,7 +409,7 @@ export class TransactionView extends React.Component {
                 {this.state.showGraph && this.state.currentSubView === "Sequence Table" &&
                     <div>
                         <h4>{this.state.controller.name}</h4>
-                        <BootstrapTable bootstrap4 keyField='id' data={ this.state.clusterSequence } columns={ seqColumns } />
+                        <BootstrapTable bootstrap4 keyField='id' data={ this.state.localTransactionsSequence } columns={ seqColumns } />
                     </div>
                 }
             </div>
