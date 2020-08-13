@@ -95,13 +95,25 @@ export class VisNetwork extends Component {
                     ModalMessageText: this.props.visGraph.edges.get(event.edges[0]).title
                 });
             } else if (this.props.view === views.TRANSACTION) {
-                let from = this.props.visGraph.edges.get(event.edges[0]).from;
-                let to = this.props.visGraph.edges.get(event.edges[0]).to;
-                this.setState({
-                    showModalMessage: true,
-                    ModalMessageTitle: 'Entities of ' + to + ' accessed by controller ' + from,
-                    ModalMessageText: this.props.visGraph.edges.get(event.edges[0]).title
-                });
+                debugger;
+                if (this.props.subView === views.GRAPH) {
+                    let from = this.props.visGraph.edges.get(event.edges[0]).from;
+                    let to = this.props.visGraph.edges.get(event.edges[0]).to;
+                    this.setState({
+                        showModalMessage: true,
+                        ModalMessageTitle: 'Entities of ' + to + ' accessed by controller ' + from,
+                        ModalMessageText: this.props.visGraph.edges.get(event.edges[0]).title
+                    });
+                }
+                else { // SEQUENCE
+                    let from = this.props.visGraph.edges.get(event.edges[0]).from;
+                    let to = this.props.visGraph.edges.get(event.edges[0]).to;
+                    this.setState({
+                        showModalMessage: true,
+                        ModalMessageTitle: 'Entities of ' + to + ' accessed by ' + from,
+                        ModalMessageText: this.props.visGraph.edges.get(event.edges[0]).title
+                    });
+                }
             } else if (this.props.view === views.ENTITY) {
                 let from = this.props.visGraph.edges.get(event.edges[0]).from;
                 let to = this.props.visGraph.edges.get(event.edges[0]).to;

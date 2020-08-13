@@ -130,7 +130,7 @@ export class EntityView extends React.Component {
     handleEntitySubmit(value) {
         this.setState({
             entity: value,
-            entityCluster: this.state.clusters.filter(c => c.entities.includes(value))[0],
+            entityCluster: this.state.clusters.find(c => Object.keys(c.entities).includes(value)),
             showGraph: true
         }, () => {
             this.loadGraph();
@@ -165,19 +165,24 @@ export class EntityView extends React.Component {
             title: entityControllers.join('<br>')
         });
         
+        debugger;
+
         for (var i = 0; i < this.state.clusters.length; i++) {
             let cluster = this.state.clusters[i];
+            let clusterEntities = Object.keys(cluster.entities)
+
             if (cluster.name !== this.state.entityCluster.name) {
                 let commonControllers = this.getCommonControllers(this.state.entity, cluster);
                 
                 if (commonControllers.length > 0) {
+                    debugger;
                     nodes.push({
                         id: cluster.name,
                         label: cluster.name,
-                        value: cluster.entities.length,
+                        value: clusterEntities.length,
                         level: 1,
                         type: types.CLUSTER,
-                        title: cluster.entities.map(e => e.name).join('<br>') + "<br>Total: " + cluster.entities.length
+                        title: clusterEntities.map(e => e).join('<br>') + "<br>Total: " + clusterEntities.length
                     });
 
                     edges.push({

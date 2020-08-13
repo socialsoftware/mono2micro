@@ -180,6 +180,7 @@ public class Graph {
 					if (hasCost) {
 						lt.addClusterAccess(access);
 						controller.addEntity(entity, mode);
+						entityNameToMode.put(entity, mode);
 					}
 
 				} else {
@@ -201,10 +202,10 @@ public class Graph {
 			previousCluster = cluster;
 		}
 
-		if (lt != null && lt.getClusterAccesses().size() > 1)
+		if (lt != null && lt.getClusterAccesses().size() > 0)
 			ltList.add(lt);
 
-		if (ltList.size() > 1)
+		if (ltList.size() > 0)
 			controller.addLocalTransactionSequence(ltList);
 
 	}

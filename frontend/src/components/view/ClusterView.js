@@ -173,6 +173,7 @@ export class ClusterView extends React.Component {
                 if (edgeLength < 100) edgeLength = 300;
                 else if (edgeLength > 500) edgeLength = 500;
                 
+                controllersInCommon.sort()
                 if (controllersInCommon.length > 0)
                     edges.push({
                         from: cluster1.name, 
@@ -406,7 +407,7 @@ export class ClusterView extends React.Component {
                 return {
                     [c2.name]:  c1.name === c2.name ? "---" :
                                     c1.couplingDependencies[c2.name] === undefined ? 0 : 
-                                        parseFloat(c1.couplingDependencies[c2.name].length/c2.entities.length).toFixed(2)
+                                        parseFloat(c1.couplingDependencies[c2.name].length / Object.keys(c2.entities).length).toFixed(2)
                 }
             }))
         });
