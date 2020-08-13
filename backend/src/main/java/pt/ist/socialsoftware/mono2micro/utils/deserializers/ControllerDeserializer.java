@@ -1,30 +1,22 @@
 package pt.ist.socialsoftware.mono2micro.utils.deserializers;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
-import org.jgrapht.nio.json.JSONImporter;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
-import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
-import pt.ist.socialsoftware.mono2micro.dto.AccessWithFrequencyDto;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.HashMap;
-import java.util.List;
-import java.util.function.Supplier;
 
 public class ControllerDeserializer extends StdDeserializer<Controller> {
+
 	public ControllerDeserializer() {
 		this(null);
 	}
-
 
 	public ControllerDeserializer(Class<Controller> t) {
 		super(t);
@@ -34,7 +26,7 @@ public class ControllerDeserializer extends StdDeserializer<Controller> {
 	public Controller deserialize(
 		JsonParser jp,
 		DeserializationContext ctxt
-	) throws IOException, JsonProcessingException {
+	) throws IOException {
 		JsonToken jsonToken = jp.currentToken();
 
 		if (jsonToken == JsonToken.START_OBJECT) {
@@ -49,78 +41,42 @@ public class ControllerDeserializer extends StdDeserializer<Controller> {
 
 			jp.nextValue();
 
-			JSONImporter<Controller.LocalTransaction, DefaultEdge> importer = new JSONImporter<>();
+			DirectedAcyclicGraph<Controller.LocalTransaction, DefaultEdge> graph = getGraph(jp);
 
-			ObjectMapper mapper = new ObjectMapper();
-
-			importer.addGraphAttributeConsumer((field, value) -> {
-				System.out.println("field: "+ field);
-				System.out.println("value: "+ value);
-			});
-
-			importer.addVertexAttributeConsumer((field, value) -> {
-				System.out.println("field: "+ field);
-				System.out.println("value: "+ value);
-
-				Controller.LocalTransaction lt = field.getFirst();
-				switch (field.getSecond()) {
-					case "_id":
-						lt.setId(Integer.parseInt(value.getValue()));
-						break;
-
-					case "clusterName":
-						lt.setClusterName(value.getValue());
-						break;
-
-					case "clusterAccesses":
-						try {
-							lt.setClusterAccesses(
-								mapper.readValue(
-									value.getValue(),
-									new TypeReference<List<AccessWithFrequencyDto>>() {}
-								)
-							);
-						} catch (IOException ioException) {
-							ioException.printStackTrace();
-						}
-						break;
-					default:
-						break;
-				}
-			});
-
-			importer.addVertexConsumer((value) -> {
-				System.out.println("value: "+ value);
-			});
-
-			DirectedAcyclicGraph<Controller.LocalTransaction, DefaultEdge> graph = new DirectedAcyclicGraph<>(DefaultEdge.class);
-
-			Supplier<Controller.LocalTransaction> vSupplier = new Supplier<Controller.LocalTransaction>()
-			{
-				private int id = 0;
-
-				@Override
-				public Controller.LocalTransaction get()
-				{
-					return new Controller.LocalTransaction(--id);
-				}
-			};
-
-			graph.setVertexSupplier(vSupplier);
-
-
-			importer.importGraph(graph, new StringReader(jp.getValueAsString()));
-
-			Controller c = new Controller(
+			return new Controller(
 				name,
 				complexity,
 				entities,
 				graph
 			);
-
-			return c;
 		}
 
 		return null;
+	}
+
+	private DirectedAcyclicGraph<Controller.LocalTransaction, DefaultEdge> getGraph(JsonParser jp) throws IOException {
+		DirectedAcyclicGraph<Controller.LocalTransaction, DefaultEdge> graph = new DirectedAcyclicGraph<>(DefaultEdge.class);
+
+		HashMap<Integer, Controller.LocalTransaction> idToVertexMap = new HashMap<>();
+
+		jp.nextValue(); // nodes
+		while (jp.nextValue() != JsonToken.END_ARRAY) {
+			Controller.LocalTransaction lt = jp.readValueAs(Controller.LocalTransaction.class);
+			graph.addVertex(lt);
+			idToVertexMap.put(lt.getId(), lt);
+		}
+
+		jp.nextValue(); // links
+		while (jp.nextValue() != JsonToken.END_ARRAY) {
+			String link = jp.getValueAsString();
+			int index = link.indexOf("->");
+			int fromId = Integer.parseInt(link.substring(0, index));
+			int toId = Integer.parseInt(link.substring(link.indexOf("->") + 2));
+			graph.addEdge(idToVertexMap.get(fromId), idToVertexMap.get(toId));
+		}
+
+		jp.nextValue(); // Consume End Array
+
+		return graph;
 	}
 }

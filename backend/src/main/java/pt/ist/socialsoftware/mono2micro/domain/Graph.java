@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
 import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
@@ -375,6 +376,7 @@ public class Graph {
 		this.calculateMetrics();
 	}
 
+	@JsonIgnore
 	public Map<String,List<Controller>> getClusterControllers() {
 		Map<String,List<Controller>> clusterControllers = new HashMap<>();
 
@@ -382,11 +384,12 @@ public class Graph {
 			List<Controller> touchedControllers = new ArrayList<>();
 
 			for (Controller controller : this.controllers) {
-
-				for (String controllerEntity : controller.getEntities().keySet()) {
-					if (cluster.containsEntity(controllerEntity)) {
-						touchedControllers.add(controller);
-						break;
+				if (controller != null) {
+					for (String controllerEntity : controller.getEntities().keySet()) {
+						if (cluster.containsEntity(controllerEntity)) {
+							touchedControllers.add(controller);
+							break;
+						}
 					}
 				}
 			}
@@ -395,6 +398,7 @@ public class Graph {
 		return clusterControllers;
 	}
 
+	@JsonIgnore
 	public Map<String,List<Cluster>> getControllerClusters() {
 		Map<String,List<Cluster>> controllerClusters = new HashMap<>();
 

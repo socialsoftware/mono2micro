@@ -15,7 +15,9 @@ public class AccessWithFrequencyDtoDeserializer extends StdDeserializer<AccessWi
         this(null);
     }
 
-    public AccessWithFrequencyDtoDeserializer(Class<AccessWithFrequencyDto> t) { super(t); }
+    public AccessWithFrequencyDtoDeserializer(Class<AccessWithFrequencyDto> t) {
+        super(t);
+    }
 
     @Override
     public AccessWithFrequencyDto deserialize(
