@@ -88,9 +88,15 @@ export class EntityView extends React.Component {
     }
 
     componentDidMount() {
+        const {
+            codebaseName,
+            dendrogramName,
+            graphName,
+        } = this.props;
+
         const service = new RepositoryService();
-        service.getGraph(this.props.codebaseName, this.props.dendrogramName, this.props.graphName).then(response => {
-            service.getClusterControllers(this.props.codebaseName, this.props.dendrogramName, this.props.graphName).then(response2 => {
+        service.getGraph(codebaseName, dendrogramName, graphName).then(response => {
+            service.getClusterControllers(codebaseName, dendrogramName, graphName).then(response2 => {
                 
                 this.setState({
                     graph: response.data,
@@ -100,17 +106,22 @@ export class EntityView extends React.Component {
                     controllers: response.data.controllers
                 }, () => {
                     let amountList = {};
-                    
-                    for (var i = 0; i < this.state.entities.length; i++) {
-                        let amount = 0;
-                        let entityName = this.state.entities[i];
 
-                        let entityCluster = this.state.clusters.filter(
+                    const {
+                        entities,
+                        clusters,
+                    } = this.state;
+                    
+                    for (var i = 0; i < entities.length; i++) {
+                        let amount = 0;
+                        let entityName = entities[i];
+
+                        let entityCluster = clusters.filter(
                             c => Object.keys(c.entities).includes(entityName)
                         )[0];
                         
-                        for (var j = 0; j < this.state.clusters.length; j++) {
-                            let cluster = this.state.clusters[j];
+                        for (var j = 0; j < clusters.length; j++) {
+                            let cluster = clusters[j];
                             let commonControllers = this.getCommonControllers(entityName, cluster);
                             
                             if (cluster.name !== entityCluster.name && commonControllers.length > 0) {
@@ -140,42 +151,46 @@ export class EntityView extends React.Component {
     //get controllers that access both an entity and another cluster
     getCommonControllers(entityName, cluster) {
         let entityControllers = this.state.controllers
-                                            .filter(controller => Object.keys(controller.entities)
-                                            .includes(entityName))
-                                            .map(c => c.name);
+                                    .filter(controller => Object.keys(controller.entities)
+                                    .includes(entityName))
+                                    .map(c => c.name);
 
         let clusterControllers = this.state.clusterControllers[cluster.name].map(c => c.name);
         return entityControllers.filter(c => clusterControllers.includes(c));
     }
 
     loadGraph() {
+        const {
+            controllers,
+            entity,
+            clusters,
+            entityCluster,
+        } = this.state;
+
         let nodes = [];
         let edges = [];
-        let entityControllers = this.state.controllers
+        let entityControllers = controllers
                                     .filter(controller => Object.keys(controller.entities)
                                     .includes(this.state.entity))
                                     .map(c => c.name + " " + c.entities[this.state.entity]);
 
         nodes.push({
-            id: this.state.entity,
-            label: this.state.entity,
+            id: entity,
+            label: entity,
             value: 1,
             level: 0,
             type: types.ENTITY,
             title: entityControllers.join('<br>')
         });
         
-        debugger;
-
-        for (var i = 0; i < this.state.clusters.length; i++) {
-            let cluster = this.state.clusters[i];
+        for (var i = 0; i < clusters.length; i++) {
+            let cluster = clusters[i];
             let clusterEntities = Object.keys(cluster.entities)
 
-            if (cluster.name !== this.state.entityCluster.name) {
-                let commonControllers = this.getCommonControllers(this.state.entity, cluster);
+            if (cluster.name !== entityCluster.name) {
+                let commonControllers = this.getCommonControllers(entity, cluster);
                 
                 if (commonControllers.length > 0) {
-                    debugger;
                     nodes.push({
                         id: cluster.name,
                         label: cluster.name,
@@ -186,7 +201,7 @@ export class EntityView extends React.Component {
                     });
 
                     edges.push({
-                        from: this.state.entity,
+                        from: entity,
                         to: cluster.name,
                         label: commonControllers.length.toString(),
                         title: commonControllers.join('<br>')
@@ -205,13 +220,9 @@ export class EntityView extends React.Component {
         });
     }
 
-    handleSelectNode(nodeId) {
+    handleSelectNode(nodeId) {}
 
-    }
-
-    handleDeselectNode(nodeId) {
-
-    }
+    handleDeselectNode(nodeId) {}
 
     changeSubView(value) {
         this.setState({
@@ -220,7 +231,13 @@ export class EntityView extends React.Component {
     }
 
     render() {
-        const metricsRows = this.state.entities;
+        const {
+            entities,
+            currentSubView,
+            amountList,
+            visGraph,
+        } = this.state;
+        const metricsRows = entities;
 
         const metricsColumns = [{
             dataField: 'entity',
@@ -231,32 +248,48 @@ export class EntityView extends React.Component {
         return (
             <div>
                 <ButtonGroup className="mb-2">
-                    <Button disabled={this.state.currentSubView === "Graph"} onClick={() => this.changeSubView("Graph")}>Graph</Button>
-                    <Button disabled={this.state.currentSubView === "Metrics"} onClick={() => this.changeSubView("Metrics")}>Metrics</Button>
+                    <Button
+                        disabled={currentSubView === "Graph"}
+                        onClick={() => this.changeSubView("Graph")}
+                    >
+                        Graph
+                    </Button>
+                    <Button
+                        disabled={currentSubView === "Metrics"}
+                        onClick={() => this.changeSubView("Metrics")}
+                    >
+                        Metrics
+                    </Button>
                 </ButtonGroup>
 
-                {this.state.currentSubView === "Graph" &&
+                {currentSubView === "Graph" &&
                     <span>
                     <EntityOperationsMenu
                         handleEntitySubmit={this.handleEntitySubmit}
-                        entities={this.state.entities}
-                        amountList={this.state.amountList}
+                        entities={entities}
+                        amountList={amountList}
                     />
                     
                     <div style={{width:'1000px' , height: '700px'}}>
                         <VisNetwork
-                            visGraph={this.state.visGraph}
+                            visGraph={visGraph}
                             options={options}
                             onSelection={this.handleSelectNode}
                             onDeselection={this.handleDeselectNode}
-                            view={views.ENTITY} />
+                            view={views.ENTITY}
+                        />
                     </div>
                     </span>
                 }
 
-                {this.state.currentSubView === "Metrics" &&
+                {currentSubView === "Metrics" &&
                     <div>
-                        <BootstrapTable bootstrap4 keyField='entity' data={ metricsRows } columns={ metricsColumns } />
+                        <BootstrapTable
+                            bootstrap4
+                            keyField='entity'
+                            data={ metricsRows }
+                            columns={ metricsColumns }
+                        />
                     </div>
                 }
             </div>
