@@ -26,6 +26,11 @@ public class AccessDtoSerializer extends StdSerializer<AccessDto> {
 		jsonGenerator.writeStartArray();
 		jsonGenerator.writeString(access.getEntity());
 		jsonGenerator.writeString(access.getMode());
+
+		if (access.getFrequency() > 1) {
+			jsonGenerator.writeNumber(access.getFrequency());
+		}
+
 		jsonGenerator.writeEndArray();
 	}
 }
