@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import pt.ist.socialsoftware.mono2micro.dto.AccessWithFrequencyDto;
+import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.dto.SequenceDto;
 
 import java.io.IOException;
@@ -25,9 +25,7 @@ public class SequenceDtoDeserializer extends StdDeserializer<SequenceDto> {
 
 		if (jsonToken == JsonToken.START_ARRAY) {
 			jsonParser.nextValue();
-			List<AccessWithFrequencyDto> accessesWithFrequency;
-
-			accessesWithFrequency = jsonParser.readValueAs(new TypeReference<List<AccessWithFrequencyDto>>(){});
+			List<AccessDto> accesses = jsonParser.readValueAs(new TypeReference<List<AccessDto>>(){});
 
 			jsonParser.nextValue();
 
@@ -42,7 +40,7 @@ public class SequenceDtoDeserializer extends StdDeserializer<SequenceDto> {
 			}
 
 			SequenceDto s = new SequenceDto();
-			s.setAccesses(accessesWithFrequency);
+			s.setAccesses(accesses);
 			s.setFrequency(frequency);
 
 			return s;

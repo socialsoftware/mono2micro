@@ -10,13 +10,13 @@ import pt.ist.socialsoftware.mono2micro.utils.serializers.AccessDtoSerializer;
 public class AccessDto {
     private String entity;
     private String mode;
+    private int frequency;
 
     public AccessDto() {}
 
     public String getEntity() {
         return entity;
     }
-
     public void setEntity(String entity) {
         this.entity = entity;
     }
@@ -24,9 +24,15 @@ public class AccessDto {
     public String getMode() {
         return mode;
     }
-
     public void setMode(String mode) {
         this.mode = mode;
+    }
+
+    public int getFrequency() {
+        return frequency;
+    }
+    public void setFrequency(int frequency) {
+        this.frequency = frequency;
     }
 
     @Override

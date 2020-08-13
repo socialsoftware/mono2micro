@@ -35,8 +35,8 @@ public class TraceDto {
 	public List<SequenceDto> getSequences() { return sequences; }
 	public void setSequences(List<SequenceDto> sequences) { this.sequences = sequences; }
 
-	public List<AccessWithFrequencyDto> getAccesses() {
-		List<AccessWithFrequencyDto> accesses = new ArrayList<>();
+	public List<AccessDto> getAccesses() {
+		List<AccessDto> accesses = new ArrayList<>();
 		if (sequences != null) {
 			sequences.forEach(seq -> accesses.addAll(seq.getAccesses()));
 		}
