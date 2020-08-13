@@ -1,15 +1,20 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
+import pt.ist.socialsoftware.mono2micro.utils.deserializers.ControllerDeserializer;
+import pt.ist.socialsoftware.mono2micro.utils.serializers.ControllerSerializer;
 
 import java.util.*;
 
 import static org.jgrapht.Graphs.successorListOf;
 
+@JsonSerialize(using = ControllerSerializer.class)
+@JsonDeserialize(using = ControllerDeserializer.class)
 public class Controller {
-
 	public static class LocalTransaction {
 		private int id; // transaction id
 		private String clusterName; // actually is just an Id
@@ -71,6 +76,18 @@ public class Controller {
         this.name = name;
 		localTransactionsGraph = new DirectedAcyclicGraph<>(DefaultEdge.class);
         localTransactionsGraph.addVertex(new LocalTransaction(0, null, new ArrayList<>()));
+	}
+
+	public Controller(
+		String name,
+		float complexity,
+		Map<String, String> entities,
+		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph
+	) {
+		this.name = name;
+		this.complexity = complexity;
+		this.entities = entities;
+		this.localTransactionsGraph = localTransactionsGraph;
 	}
 
 	public String getName() {
