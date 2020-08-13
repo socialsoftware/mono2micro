@@ -9,11 +9,6 @@ import java.util.*;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -99,9 +94,7 @@ public class Dendrogram {
 		this.sequenceMetricWeight = sequenceMetricWeight;
 	}
 
-	public List<String> getProfiles() {
-		return profiles;
-	}
+	public List<String> getProfiles() { return profiles; }
 
 	public void setProfiles(List<String> profiles) {
 		this.profiles = profiles;
@@ -342,15 +335,19 @@ public class Dendrogram {
 		while(clusters.hasNext()) {
 			clusterIds.add(Integer.parseInt(clusters.next()));
 		}
+
 		Collections.sort(clusterIds);
+
 		for (Integer id : clusterIds) {
 			String clusterId = String.valueOf(id);
 			JSONArray entities = clustersJSON.getJSONObject("clusters").getJSONArray(clusterId);
 			Cluster cluster = new Cluster("Cluster" + clusterId);
+
 			for (int i = 0; i < entities.length(); i++) {
 				Entity entity = new Entity(entities.getString(i));
 				cluster.addEntity(entity);
 			}
+
 			graph.addCluster(cluster);
 		}
 

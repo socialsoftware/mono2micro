@@ -115,6 +115,7 @@ public class CodebaseManager {
 		try {
 			return objectMapper.readValue(new File(CODEBASES_PATH + codebaseName + "/codebase.json"), Codebase.class);
 		} catch(IOException e) {
+			e.printStackTrace();
 			return null;
 		}
 	}

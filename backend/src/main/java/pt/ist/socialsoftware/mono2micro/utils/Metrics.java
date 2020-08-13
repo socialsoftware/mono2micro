@@ -3,11 +3,14 @@ package pt.ist.socialsoftware.mono2micro.utils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
-import java.util.HashSet;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,6 +18,7 @@ import org.json.JSONObject;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 
 public class Metrics {
     private Graph graph;
@@ -65,21 +69,20 @@ public class Metrics {
     }
 
 	private void calculateClusterDependencies(Controller controller) {
-    	try {
-			JSONArray accessSequence = new JSONArray(controller.getEntitiesSeq());
-			for (int i = 0; i < accessSequence.length() - 1; i++) {
-				JSONObject clusterAccess = accessSequence.getJSONObject(i);
-				String fromCluster = clusterAccess.getString("cluster");
-				Cluster c1 = graph.getCluster(fromCluster);
+		Set<Controller.LocalTransaction> allLocalTransactions = controller.getAllLocalTransactions();
 
-				JSONObject nextClusterAccess = accessSequence.getJSONObject(i + 1);
-				String toCluster = nextClusterAccess.getString("cluster");
-				String toEntity = nextClusterAccess.getJSONArray("sequence").getJSONArray(0).getString(0);
+		for (Controller.LocalTransaction lt : allLocalTransactions) {
+			Cluster fromCluster = graph.getCluster(lt.getClusterName());
 
-				c1.addCouplingDependency(toCluster, toEntity);
+			if (fromCluster == null) // root node
+				continue;
+
+			List<Controller.LocalTransaction> nextLocalTransactions = controller.getNextLocalTransactions(lt);
+
+			for (Controller.LocalTransaction nextLt : nextLocalTransactions) {
+				String toEntity = nextLt.getClusterAccesses().get(0).getEntity();
+				fromCluster.addCouplingDependency(nextLt.getClusterName(), toEntity);
 			}
-		} catch (JSONException e) {
-    		e.printStackTrace();
 		}
 	}
 
@@ -93,56 +96,49 @@ public class Metrics {
 
 		float controllerComplexity = 0;
 
-		try {
-			JSONArray accessSequence = new JSONArray(controller.getEntitiesSeq());
+		Set<Controller.LocalTransaction> allLocalTransactions = controller.getAllLocalTransactions();
 
-			for (int i = 0; i < accessSequence.length(); i++) {
-				JSONObject clusterAccess = accessSequence.getJSONObject(i);
-				JSONArray entitiesSequence = clusterAccess.getJSONArray("sequence");
+		for (Controller.LocalTransaction lt : allLocalTransactions) {
 
-				int clusterComplexity = 0;
+			List<AccessDto> clusterAccesses = lt.getClusterAccesses();
+			int ltComplexity = 0;
 
-				for (int j = 0; j < entitiesSequence.length(); j++) {
-					JSONArray entityAccess = entitiesSequence.getJSONArray(j);
-					String entity = entityAccess.getString(0);
-					String mode = entityAccess.getString(1);
+			for (AccessDto a : clusterAccesses) {
+				String entity = a.getEntity();
+				String mode = a.getMode();
 
-					Integer cost;
-					String key;
+				Integer cost;
+				String key;
 
-					if (mode.equals("R")) {
-						key = String.join("-", controller.getName(), entity, mode);
-						cost = cache.get(key);
+				if (mode.equals("R")) {
+					key = String.join("-", controller.getName(), entity, mode);
+					cost = cache.get(key);
 
-						if (cost == null) {
-							cost = costOfRead(controller, entity);
-							cache.put(key, cost);
-						}
+					if (cost == null) {
+						cost = costOfRead(controller, entity);
+						cache.put(key, cost);
 					}
+				}
+				else {
+					key = String.join("-", controller.getName(), entity, mode);
+					cost = cache.get(key);
 
-					else {
-						key = String.join("-", controller.getName(), entity, mode);
-						cost = cache.get(key);
-
-						if (cost == null) {
-							cost = costOfWrite(controller, entity);
-							cache.put(key, cost);
-						}
+					if (cost == null) {
+						cost = costOfWrite(controller, entity);
+						cache.put(key, cost);
 					}
-
-					clusterComplexity += cost;
 				}
 
-				controllerComplexity += clusterComplexity;
+				ltComplexity += cost;
 			}
 
-			controller.setComplexity(controllerComplexity);
-		} catch (JSONException e) {
-			e.printStackTrace();
+			controllerComplexity += ltComplexity;
 		}
+
+		controller.setComplexity(controllerComplexity);
     }
 
-    private int costOfRead(
+    private int costOfRead (
     	Controller controller,
 		String entity
 	) {
@@ -162,7 +158,7 @@ public class Metrics {
         return cost;
     }
 
-    private int costOfWrite(
+    private int costOfWrite (
     	Controller controller,
 		String entity
 	) {

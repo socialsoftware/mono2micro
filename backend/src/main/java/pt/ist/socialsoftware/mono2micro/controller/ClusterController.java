@@ -101,9 +101,20 @@ public class ClusterController {
 
 
 	@RequestMapping(value = "/clusterControllers", method = RequestMethod.GET)
-	public ResponseEntity<Map<String,List<Controller>>> getClusterControllers(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName) {
+	public ResponseEntity<Map<String,List<Controller>>> getClusterControllers(
+		@PathVariable String codebaseName,
+		@PathVariable String dendrogramName,
+		@PathVariable String graphName
+	) {
 		logger.debug("getClusterControllers");
 
-		return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getDendrogram(dendrogramName).getGraph(graphName).getClusterControllers(), HttpStatus.OK);
+		return new ResponseEntity<>(
+			codebaseManager
+				.getCodebase(codebaseName)
+				.getDendrogram(dendrogramName)
+				.getGraph(graphName)
+				.getClusterControllers(),
+			HttpStatus.OK
+		);
 	}
 }

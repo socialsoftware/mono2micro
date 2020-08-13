@@ -8,7 +8,7 @@ import java.util.List;
 @JsonDeserialize(using = SequenceDtoDeserializer.class)
 public class SequenceDto {
 	private int frequency;
-	private List<AccessWithFrequencyDto> accesses;
+	private List<AccessDto> accesses;
 
 	public SequenceDto() {}
 
@@ -20,11 +20,11 @@ public class SequenceDto {
 		this.frequency = frequency;
 	}
 
-	public List<AccessWithFrequencyDto> getAccesses() {
+	public List<AccessDto> getAccesses() {
 		return accesses;
 	}
 
-	public void setAccesses(List<AccessWithFrequencyDto> accesses) {
+	public void setAccesses(List<AccessDto> accesses) {
 		this.accesses = accesses;
 	}
 }

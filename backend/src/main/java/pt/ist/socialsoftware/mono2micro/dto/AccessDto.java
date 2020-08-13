@@ -1,23 +1,22 @@
 package pt.ist.socialsoftware.mono2micro.dto;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.json.JSONArray;
-import org.json.JSONException;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.AccessDtoDeserializer;
+import pt.ist.socialsoftware.mono2micro.utils.serializers.AccessDtoSerializer;
 
 @JsonDeserialize(using = AccessDtoDeserializer.class)
+@JsonSerialize(using = AccessDtoSerializer.class)
 public class AccessDto {
     private String entity;
     private String mode;
+    private int frequency;
 
     public AccessDto() {}
 
     public String getEntity() {
         return entity;
     }
-
     public void setEntity(String entity) {
         this.entity = entity;
     }
@@ -25,20 +24,19 @@ public class AccessDto {
     public String getMode() {
         return mode;
     }
-
     public void setMode(String mode) {
         this.mode = mode;
     }
 
-    @Override
-    public String toString() {
-        return "[" + "\"" + entity + "\"" + ',' + "\"" + mode + "\"" + ']';
+    public int getFrequency() {
+        return frequency;
+    }
+    public void setFrequency(int frequency) {
+        this.frequency = frequency;
     }
 
-    public JSONArray toJSONrray() throws JSONException {
-        ArrayNode arrayNode = new ObjectMapper().createArrayNode();
-        arrayNode.add(entity);
-        arrayNode.add(mode);
-        return new JSONArray(arrayNode.toString());
+    @Override
+    public String toString() {
+        return "[" + entity + ',' + mode + ']';
     }
 }

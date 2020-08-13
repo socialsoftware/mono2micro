@@ -137,7 +137,15 @@ export class ClusterView extends React.Component {
     }
 
     convertClusterToNode(cluster) {
-        return {id: cluster.name, title: cluster.entities.map(e => e.name).sort().join('<br>') + "<br>Total: " + cluster.entities.length, label: cluster.name, value: cluster.entities.length, type: types.CLUSTER};
+        const entityNames = Object.keys(cluster.entities);
+
+        return {
+            id: cluster.name,
+            title: entityNames.sort().join('<br>') + "<br>Total: " + entityNames.length,
+            label: cluster.name,
+            value: cluster.entities.length,
+            type: types.CLUSTER,
+        };
     };
 
     createEdges() {
@@ -147,25 +155,33 @@ export class ClusterView extends React.Component {
         for (var i = 0; i < this.state.clusters.length; i++) {
             let cluster1 = this.state.clusters[i];
             let cluster1Controllers = this.state.clusterControllers[cluster1.name].map(c => c.name);
-            for (var j = i+1; j < this.state.clusters.length; j++) {
+            
+            for (var j = i + 1; j < this.state.clusters.length; j++) {
                 let cluster2 = this.state.clusters[j];
                 let cluster2Controllers = this.state.clusterControllers[cluster2.name].map(c => c.name);
-                let controllersInCommon = cluster1Controllers.filter(value => -1 !== cluster2Controllers.indexOf(value))
+
+                let controllersInCommon = cluster1Controllers.filter(controllerName => cluster2Controllers.includes(controllerName))
 
                 let couplingC1C2 = cluster1.couplingDependencies[cluster2.name] === undefined ? 0 : cluster1.couplingDependencies[cluster2.name].length;
                 let couplingC2C1 = cluster2.couplingDependencies[cluster1.name] === undefined ? 0 : cluster2.couplingDependencies[cluster1.name].length;
-
 
                 let edgeTitle = cluster1.name + " -> " + cluster2.name + " , Coupling: " + couplingC1C2 + "<br>";
                 edgeTitle += cluster2.name + " -> " + cluster1.name + " , Coupling: " + couplingC2C1 + "<br>";
                 edgeTitle += "Controllers in common:<br>"
 
-                let edgeLength = (1/controllersInCommon.length)*edgeLengthFactor;
+                let edgeLength = (1 / controllersInCommon.length) * edgeLengthFactor;
                 if (edgeLength < 100) edgeLength = 300;
                 else if (edgeLength > 500) edgeLength = 500;
                 
                 if (controllersInCommon.length > 0)
-                    edges.push({from: cluster1.name, to: cluster2.name, length: edgeLength, value: controllersInCommon.length, label: controllersInCommon.length.toString(), title: edgeTitle + controllersInCommon.join('<br>')});
+                    edges.push({
+                        from: cluster1.name, 
+                        to: cluster2.name,
+                        length: edgeLength,
+                        value: controllersInCommon.length,
+                        label: controllersInCommon.length.toString(),
+                        title: edgeTitle + controllersInCommon.join('<br>')
+                    });
             }
         }
         return edges;
@@ -176,7 +192,12 @@ export class ClusterView extends React.Component {
             selectedCluster: selectedCluster,
             mergeWithCluster: {},
             clusterEntities: selectedCluster.entities.sort((a, b) => (a.name > b.name) ? 1 : -1)
-                                                    .map(e => ({name: e.name, value: e.name, label: e.name, active: false})),
+                                                    .map(e => ({
+                                                        name: e.name,
+                                                        value: e.name,
+                                                        label: e.name,
+                                                        active: false
+                                                    })),
         });
     }
 

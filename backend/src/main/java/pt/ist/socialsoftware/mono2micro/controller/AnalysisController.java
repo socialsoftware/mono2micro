@@ -119,9 +119,11 @@ public class AnalysisController {
 					String clusterId = clusters.next();
 					JSONArray entities = analyserCut.getJSONObject("clusters").getJSONArray(clusterId);
 					Cluster cluster = new Cluster(clusterId);
+
 					for (int i = 0; i < entities.length(); i++) {
 						cluster.addEntity(new Entity(entities.getString(i)));
 					}
+
 					graph.addCluster(cluster);
 				}
 
