@@ -378,7 +378,7 @@ public class Graph {
 
 	@JsonIgnore
 	public Map<String,List<Controller>> getClusterControllers() {
-		Map<String,List<Controller>> clusterControllers = new HashMap<>();
+		Map<String, List<Controller>> clusterControllers = new HashMap<>();
 
 		for (Cluster cluster : this.clusters) {
 			List<Controller> touchedControllers = new ArrayList<>();

@@ -24,24 +24,26 @@ public class ControllerDeserializer extends StdDeserializer<Controller> {
 
 	@Override
 	public Controller deserialize(
-		JsonParser jp,
+		JsonParser jsonParser,
 		DeserializationContext ctxt
 	) throws IOException {
-		JsonToken jsonToken = jp.currentToken();
+		JsonToken jsonToken = jsonParser.currentToken();
 
 		if (jsonToken == JsonToken.START_OBJECT) {
-			jp.nextValue();
-			String name = jp.getValueAsString();
+			jsonParser.nextValue();
+			String name = jsonParser.getValueAsString();
 
-			jp.nextValue();
-			float complexity = jp.getFloatValue();
+			jsonParser.nextValue();
+			float complexity = jsonParser.getFloatValue();
 
-			jp.nextValue(); // consume END_ARRAY
-			HashMap<String, String> entities = jp.readValueAs(new TypeReference<HashMap<String, String>>() {});
+			jsonParser.nextValue(); // consume END_ARRAY
+			HashMap<String, String> entities = jsonParser.readValueAs(new TypeReference<HashMap<String, String>>() {});
 
-			jp.nextValue();
+			jsonParser.nextValue();
 
-			DirectedAcyclicGraph<Controller.LocalTransaction, DefaultEdge> graph = getGraph(jp);
+			DirectedAcyclicGraph<Controller.LocalTransaction, DefaultEdge> graph = getGraph(jsonParser);
+
+			jsonParser.nextValue();
 
 			return new Controller(
 				name,
@@ -54,28 +56,28 @@ public class ControllerDeserializer extends StdDeserializer<Controller> {
 		return null;
 	}
 
-	private DirectedAcyclicGraph<Controller.LocalTransaction, DefaultEdge> getGraph(JsonParser jp) throws IOException {
+	private DirectedAcyclicGraph<Controller.LocalTransaction, DefaultEdge> getGraph(JsonParser jsonParser) throws IOException {
 		DirectedAcyclicGraph<Controller.LocalTransaction, DefaultEdge> graph = new DirectedAcyclicGraph<>(DefaultEdge.class);
 
 		HashMap<Integer, Controller.LocalTransaction> idToVertexMap = new HashMap<>();
 
-		jp.nextValue(); // nodes
-		while (jp.nextValue() != JsonToken.END_ARRAY) {
-			Controller.LocalTransaction lt = jp.readValueAs(Controller.LocalTransaction.class);
+		jsonParser.nextValue(); // nodes
+		while (jsonParser.nextValue() != JsonToken.END_ARRAY) {
+			Controller.LocalTransaction lt = jsonParser.readValueAs(Controller.LocalTransaction.class);
 			graph.addVertex(lt);
 			idToVertexMap.put(lt.getId(), lt);
 		}
 
-		jp.nextValue(); // links
-		while (jp.nextValue() != JsonToken.END_ARRAY) {
-			String link = jp.getValueAsString();
+		jsonParser.nextValue(); // links
+		while (jsonParser.nextValue() != JsonToken.END_ARRAY) {
+			String link = jsonParser.getValueAsString();
 			int index = link.indexOf("->");
 			int fromId = Integer.parseInt(link.substring(0, index));
 			int toId = Integer.parseInt(link.substring(link.indexOf("->") + 2));
 			graph.addEdge(idToVertexMap.get(fromId), idToVertexMap.get(toId));
 		}
 
-		jp.nextValue(); // Consume End Array
+		jsonParser.nextValue(); // Consume End Array
 
 		return graph;
 	}
