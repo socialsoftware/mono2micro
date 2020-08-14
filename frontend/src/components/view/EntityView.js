@@ -238,7 +238,10 @@ export class EntityView extends React.Component {
             amountList,
             visGraph,
         } = this.state;
-        const metricsRows = entities;
+
+        const metricsRows = entities.map(entity => {
+            return { entity };
+        });
 
         const metricsColumns = [{
             dataField: 'entity',
