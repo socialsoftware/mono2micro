@@ -243,13 +243,18 @@ export class Codebases extends React.Component {
                     <Card.Title>
                         {codebase.name}
                     </Card.Title>
-                    <Button href={`/codebases/${codebase.name}`} 
-                            className="mb-2">
-                                Go to Codebase
-                    </Button><br/>
-                    <Button onClick={() => this.handleDeleteCodebase(codebase.name)} 
-                            variant="danger">
-                                Delete
+                    <Button 
+                        href={`/codebases/${codebase.name}`} 
+                        className="mb-2"
+                    >
+                        Go to Codebase
+                    </Button>
+                    <br/>
+                    <Button 
+                        onClick={() => this.handleDeleteCodebase(codebase.name)} 
+                        variant="danger"
+                    >
+                        Delete
                     </Button>
                 </Card.Body>
             </Card>
