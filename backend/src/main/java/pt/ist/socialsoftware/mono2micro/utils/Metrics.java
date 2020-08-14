@@ -2,18 +2,7 @@ package pt.ist.socialsoftware.mono2micro.utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.HashMap;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.DirectedAcyclicGraph;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.*;
 
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
@@ -92,90 +81,58 @@ public class Metrics {
     		return;
 		}
 
-    	Map<String, Integer> cache = new HashMap<>();
+    	Map<String, List<String>> cache = new HashMap<>(); // < entity + mode, List<controllerName>> controllersThatTouchSameEntities for a given mode
 
 		float controllerComplexity = 0;
+
 
 		Set<Controller.LocalTransaction> allLocalTransactions = controller.getAllLocalTransactions();
 
 		for (Controller.LocalTransaction lt : allLocalTransactions) {
 
+			Set<String> controllersThatTouchSameEntities = new HashSet<>();
 			List<AccessDto> clusterAccesses = lt.getClusterAccesses();
-			int ltComplexity = 0;
 
 			for (AccessDto a : clusterAccesses) {
 				String entity = a.getEntity();
 				String mode = a.getMode();
 
-				Integer cost;
-				String key;
+				String key = String.join("-", entity, mode);
+				List<String> controllersThatTouchThisEntityAndMode = cache.get(key);
 
-				if (mode.equals("R")) {
-					key = String.join("-", controller.getName(), entity, mode);
-					cost = cache.get(key);
-
-					if (cost == null) {
-						cost = costOfRead(controller, entity);
-						cache.put(key, cost);
-					}
-				}
-				else {
-					key = String.join("-", controller.getName(), entity, mode);
-					cost = cache.get(key);
-
-					if (cost == null) {
-						cost = costOfWrite(controller, entity);
-						cache.put(key, cost);
-					}
+				if (controllersThatTouchThisEntityAndMode == null) {
+					controllersThatTouchThisEntityAndMode = costOfAccess(controller, entity, mode);
+					cache.put(key, controllersThatTouchThisEntityAndMode);
 				}
 
-				ltComplexity += cost;
+				controllersThatTouchSameEntities.addAll(controllersThatTouchThisEntityAndMode);
 			}
 
-			controllerComplexity += ltComplexity;
+			controllerComplexity += controllersThatTouchSameEntities.size();
 		}
 
 		controller.setComplexity(controllerComplexity);
     }
 
-    private int costOfRead (
+    private List<String> costOfAccess (
     	Controller controller,
-		String entity
+		String entity,
+		String mode
 	) {
-    	int cost = 0;
+		List<String> controllersThatTouchThisEntityAndMode = new ArrayList<>();
 
         for (Controller otherController : this.graph.getControllers()) {
             if (
             	!otherController.getName().equals(controller.getName()) &&
                 otherController.containsEntity(entity) &&
-                otherController.getEntities().get(entity).contains("W") &&
+                otherController.getEntities().get(entity).contains(mode.equals("W") ? "R" : "W") &&
             	this.controllerClusters.get(otherController.getName()).size() > 1
 			) {
-            	cost++;
+				controllersThatTouchThisEntityAndMode.add(otherController.getName());
             }
         }
 
-        return cost;
-    }
-
-    private int costOfWrite (
-    	Controller controller,
-		String entity
-	) {
-    	int cost = 0;
-
-        for (Controller otherController : this.graph.getControllers()) {
-            if (
-            	!otherController.getName().equals(controller.getName()) &&
-                otherController.containsEntity(entity) && 
-                otherController.getEntities().get(entity).contains("R") &&
-				this.controllerClusters.get(otherController.getName()).size() > 1
-			) {
-            	cost++;
-            }
-        }
-
-        return cost;
+        return controllersThatTouchThisEntityAndMode;
     }
 
 	private void calculateClusterComplexity(Cluster cluster) {
