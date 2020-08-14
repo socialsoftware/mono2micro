@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
+import Container from 'react-bootstrap/Container';
 
 var HttpStatus = require('http-status-codes');
 
@@ -237,28 +238,37 @@ export class Codebases extends React.Component {
     }
 
     renderCodebases = () => {
-        return this.state.codebases.map(codebase =>
-            <Card key={codebase.name} style={{ width: '15rem', marginBottom: "16px" }}>
-                <Card.Body>
-                    <Card.Title>
-                        {codebase.name}
-                    </Card.Title>
-                    <Button 
-                        href={`/codebases/${codebase.name}`} 
-                        className="mb-2"
-                    >
-                        Go to Codebase
-                    </Button>
-                    <br/>
-                    <Button 
-                        onClick={() => this.handleDeleteCodebase(codebase.name)} 
-                        variant="danger"
-                    >
-                        Delete
-                    </Button>
-                </Card.Body>
-            </Card>
+        return (
+            <Row>
+                {
+                    this.state.codebases.map(codebase =>
+                        <Col>
+                            <Card key={codebase.name} style={{ width: '15rem', marginBottom: "16px" }}>
+                                <Card.Body>
+                                    <Card.Title>
+                                        {codebase.name}
+                                    </Card.Title>
+                                    <Button 
+                                        href={`/codebases/${codebase.name}`} 
+                                        className="mb-2"
+                                    >
+                                        Go to Codebase
+                                    </Button>
+                                    <br/>
+                                    <Button 
+                                        onClick={() => this.handleDeleteCodebase(codebase.name)} 
+                                        variant="danger"
+                                    >
+                                        Delete
+                                    </Button>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    )
+                }
+            </Row>
         );
+        
     }
 
     render() {
