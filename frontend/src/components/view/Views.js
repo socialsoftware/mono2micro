@@ -2,14 +2,20 @@ import React from 'react';
 import { ClusterView, clusterViewHelp } from './ClusterView';
 import { TransactionView, transactionViewHelp } from './TransactionView';
 import { EntityView, entityViewHelp } from './EntityView';
-import { Dropdown, DropdownButton, OverlayTrigger, Button, Popover, Container, Row, Col, Breadcrumb} from 'react-bootstrap';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Popover from 'react-bootstrap/Popover';
+import Container from 'react-bootstrap/Container';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Button from 'react-bootstrap/Button';
+import Breadcrumb from 'react-bootstrap/Breadcrumb';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 
 export const views = {
     CLUSTERS: 'Clusters View',
     TRANSACTION: 'Transaction View',
     ENTITY: 'Entity View',
-    GRAPH: 'Graph',
-    SEQUENCE: 'Sequence'
 };
 
 export const types = {

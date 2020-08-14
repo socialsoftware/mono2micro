@@ -1,5 +1,7 @@
 import React from 'react';
-import { Card, Button, Breadcrumb} from 'react-bootstrap';
+import Breadcrumb from 'react-bootstrap/Breadcrumb';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
 
 export class Codebase extends React.Component {
     constructor(props) {

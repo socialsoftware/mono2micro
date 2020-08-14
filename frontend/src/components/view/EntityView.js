@@ -5,7 +5,8 @@ import { VisNetwork } from '../util/VisNetwork';
 import { DataSet } from 'vis';
 import { views, types } from './Views';
 import BootstrapTable from 'react-bootstrap-table-next';
-import { Button, ButtonGroup} from 'react-bootstrap';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
 export const entityViewHelp = (<div>
     Hover entity to see controllers that access it.< br/>

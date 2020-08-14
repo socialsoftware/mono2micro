@@ -1,6 +1,15 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
-import { Form, Row, Col, FormControl, Dropdown, DropdownButton, Button, Card, Breadcrumb } from 'react-bootstrap';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
+import FormControl from 'react-bootstrap/FormControl';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
+import Breadcrumb from 'react-bootstrap/Breadcrumb';
+
 import { URL } from '../../constants/constants';
 import BootstrapTable from 'react-bootstrap-table-next';
 
