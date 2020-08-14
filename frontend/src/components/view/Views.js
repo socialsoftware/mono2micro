@@ -7,7 +7,9 @@ import { Dropdown, DropdownButton, OverlayTrigger, Button, Popover, Container, R
 export const views = {
     CLUSTERS: 'Clusters View',
     TRANSACTION: 'Transaction View',
-    ENTITY: 'Entity View'
+    ENTITY: 'Entity View',
+    GRAPH: 'Graph',
+    SEQUENCE: 'Sequence'
 };
 
 export const types = {

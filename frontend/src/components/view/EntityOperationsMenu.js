@@ -4,7 +4,6 @@ import { Button, DropdownButton, Dropdown, FormControl, ButtonToolbar, ButtonGro
 export class EntityOperationsMenu extends React.Component {
     constructor(props) {
         super(props);
-        debugger;
         this.state = {
             showSubmit: false,
             entityList: this.props.entities.sort(),
@@ -18,7 +17,6 @@ export class EntityOperationsMenu extends React.Component {
 
     componentDidMount() {
         if (this.state.entityAmount === "All") {
-            debugger;
             this.setState({
                 entityList: this.props.entities.sort()
             });
@@ -27,7 +25,6 @@ export class EntityOperationsMenu extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (this.state.entityAmount === "All") {
-            debugger;
             this.setState({
                 entityList: nextProps.entities.sort()
             });
@@ -71,7 +68,6 @@ export class EntityOperationsMenu extends React.Component {
         const entitiesListDropdown = this.state.entityList.map(e =>
             <Dropdown.Item key={e} onClick={() => this.setEntity(e)}>{e}</Dropdown.Item>
         );
-        debugger;
         return (
             <ButtonToolbar>
                 <DropdownButton className="mr-1" as={ButtonGroup} title={this.state.entityAmount}>
@@ -116,7 +112,6 @@ class CustomSearchMenu extends React.Component {
         } = this.props;
 
         const { value } = this.state;
-        debugger;
         return (
             <div style={style} className={className} aria-labelledby={labeledBy} ref={this.props.innerRef}>
                 <FormControl

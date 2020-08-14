@@ -260,7 +260,7 @@ export class TransactionView extends React.Component {
             localTransactionsSequence.push({
                 id: localTransactionId, 
                 cluster: cluster.name, 
-                entities: <pre> { clusterAccesses.map(acc => acc.join(" ")).join('\n') } </pre>
+                entities: <pre>{clusterAccesses.map(acc => acc.join(" ")).join('\n') }</pre>
             });
         }
 
@@ -380,7 +380,8 @@ export class TransactionView extends React.Component {
                                 options={options}
                                 onSelection={this.handleSelectNode}
                                 onDeselection={this.handleDeselectNode}
-                                view={views.TRANSACTION} />
+                                view={views.TRANSACTION}
+                                subView={views.GRAPH} />
                         </div>
                     </span>
                 }
@@ -392,7 +393,8 @@ export class TransactionView extends React.Component {
                             options={optionsSeq}
                             onSelection={this.handleSelectNode}
                             onDeselection={this.handleDeselectNode}
-                            view={views.TRANSACTION} />
+                            view={views.TRANSACTION}
+                            subView={views.SEQUENCE} />
                     </div>
                 }
 

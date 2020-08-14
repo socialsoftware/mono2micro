@@ -6,6 +6,96 @@ import filterFactory, { numberFilter } from 'react-bootstrap-table2-filter';
 
 var HttpStatus = require('http-status-codes');
 
+const filter = numberFilter();
+const sort = true;
+
+const metricColumns = [
+    {
+        dataField: 'access',
+        text: 'Access',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'write',
+        text: 'Write',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'read',
+        text: 'Read',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'sequence',
+        text: 'Sequence',
+        sort,
+        filter,
+    },
+    {
+        dataField: 'numberClusters',
+        text: 'Number Clusters',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'maxClusterSize',
+        text: 'Max Cluster Size',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'cohesion',
+        text: 'Cohesion',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'coupling',
+        text: 'Coupling',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'complexity',
+        text: 'Complexity',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'fmeasure',
+        text: 'F-Score',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'accuracy',
+        text: 'Accuracy',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'precision',
+        text: 'Precision',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'recall',
+        text: 'Recall',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'specificity',
+        text: 'Specificity',
+        sort,
+        filter,
+    }
+];
+
 export class Analyser extends React.Component {
     constructor(props) {
         super(props);
@@ -104,7 +194,6 @@ export class Analyser extends React.Component {
 
     handleImportSubmit(event) {
         event.preventDefault();
-
         this.setState({
             resultData: Object.values(JSON.parse(this.state.importFile))
         });
@@ -152,77 +241,7 @@ export class Analyser extends React.Component {
             } 
         });
 
-        const metricColumns = [{
-            dataField: 'access',
-            text: 'Access',
-            sort: true,
-            filter: numberFilter()
-        }, {
-            dataField: 'write',
-            text: 'Write',
-            sort: true,
-            filter: numberFilter()
-        }, {
-            dataField: 'read',
-            text: 'Read',
-            sort: true,
-            filter: numberFilter()
-        }, {
-            dataField: 'sequence',
-            text: 'Sequence',
-            sort: true,
-            filter: numberFilter()
-        }, {
-            dataField: 'numberClusters',
-            text: 'Number Clusters',
-            sort: true,
-            filter: numberFilter()
-        }, {
-            dataField: 'maxClusterSize',
-            text: 'Max Cluster Size',
-            sort: true,
-            filter: numberFilter()
-        }, {
-            dataField: 'cohesion',
-            text: 'Cohesion',
-            sort: true,
-            filter: numberFilter()
-        }, {
-            dataField: 'coupling',
-            text: 'Coupling',
-            sort: true,
-            filter: numberFilter()
-        }, {
-            dataField: 'complexity',
-            text: 'Complexity',
-            sort: true,
-            filter: numberFilter()
-        }, {
-            dataField: 'fmeasure',
-            text: 'F-Score',
-            sort: true,
-            filter: numberFilter()
-        }, {
-            dataField: 'accuracy',
-            text: 'Accuracy',
-            sort: true,
-            filter: numberFilter()
-        }, {
-            dataField: 'precision',
-            text: 'Precision',
-            sort: true,
-            filter: numberFilter()
-        }, {
-            dataField: 'recall',
-            text: 'Recall',
-            sort: true,
-            filter: numberFilter()
-        }, {
-            dataField: 'specificity',
-            text: 'Specificity',
-            sort: true,
-            filter: numberFilter()
-        }];
+        console.log(metricColumns);
 
         return (
             <div>
@@ -303,29 +322,35 @@ export class Analyser extends React.Component {
                 </Form>
                 <br />
                 <Form onSubmit={this.handleImportSubmit}>
+                    <Form.Group as={Row} controlId="importFile">
+                        <Form.Label column sm={3}>
+                            Import Analyser Results from File
+                        </Form.Label>
+                        <Col sm={5}>
+                            <FormControl 
+                                type="file"
+                                onChange={this.handleSelectImportFile}
+                            />
+                        </Col>
+                    </Form.Group>
 
-                <Form.Group as={Row} controlId="importFile">
-                    <Form.Label column sm={3}>
-                        Import Analyser Results from File
-                    </Form.Label>
-                    <Col sm={5}>
-                        <FormControl 
-                            type="file"
-                            onChange={this.handleSelectImportFile}/>
-                    </Col>
-                </Form.Group>
-
-                <Form.Group as={Row}>
-                    <Col sm={{ span: 5, offset: 3 }}>
-                        <Button type="submit"
-                                disabled={this.state.importFile === null}>
-                            Import Analyser Results
-                        </Button>
-                    </Col>
-                </Form.Group>
-            </Form>
-
-                <BootstrapTable bootstrap4 keyField='id' data={ metricRows } columns={ metricColumns } filter={ filterFactory() }/>
+                    <Form.Group as={Row}>
+                        <Col sm={{ span: 5, offset: 3 }}>
+                            <Button 
+                                type="submit"
+                                disabled={ this.state.importFile === null }
+                            >
+                                Import Analyser Results
+                            </Button>
+                        </Col>
+                    </Form.Group>
+                </Form>
+                <BootstrapTable
+                    keyField='id'
+                    data={ metricRows }
+                    columns={ metricColumns }
+                    filter={ filterFactory() }
+                />
             </div>
         )
     }
