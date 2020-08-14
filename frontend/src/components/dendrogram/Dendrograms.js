@@ -298,38 +298,43 @@ export class Dendrograms extends React.Component {
     }
 
     renderDendrograms = () => {
-        return this.state.dendrograms.map(dendrogram =>
-            <div>
-                <Card className="mb-4" key={dendrogram.name} style={{ width: '20rem' }}>
-                    <Card.Img variant="top" src={URL + "codebase/" + this.state.codebaseName + "/dendrogram/" + dendrogram.name + "/image?" + new Date().getTime()}/>
-                    <Card.Body>
-                        <Card.Title>{dendrogram.name}</Card.Title>
-                        <Card.Text>
-                            Linkage Type: {dendrogram.linkageType}< br/>
-                            Access: {dendrogram.accessMetricWeight}%< br/>
-                            Write: {dendrogram.writeMetricWeight}%< br/>
-                            Read: {dendrogram.readMetricWeight}%< br/>
-                            Sequence: {dendrogram.sequenceMetricWeight}%
-                        </Card.Text>
-                        <Button href={`/codebases/${this.state.codebaseName}/dendrograms/${dendrogram.name}`} 
-                                className="mb-2">
-                                    Go to Dendrogram
-                        </Button>
-                        <br/>
-                        <Button onClick={() => this.handleDeleteDendrogram(dendrogram.name)}
-                                variant="danger">
-                                    Delete
-                        </Button>
-                    </Card.Body>
-                </Card>
-                <br/>
-            </div>
+        return (
+            <Row>
+                {
+                    this.state.dendrograms.map(dendrogram =>
+                        <Col>
+                            <Card className="mb-4" key={dendrogram.name} style={{ width: '20rem' }}>
+                                <Card.Img variant="top" src={URL + "codebase/" + this.state.codebaseName + "/dendrogram/" + dendrogram.name + "/image?" + new Date().getTime()}/>
+                                <Card.Body>
+                                    <Card.Title>{dendrogram.name}</Card.Title>
+                                    <Card.Text>
+                                        Linkage Type: {dendrogram.linkageType}< br/>
+                                        Access: {dendrogram.accessMetricWeight}%< br/>
+                                        Write: {dendrogram.writeMetricWeight}%< br/>
+                                        Read: {dendrogram.readMetricWeight}%< br/>
+                                        Sequence: {dendrogram.sequenceMetricWeight}%
+                                    </Card.Text>
+                                    <Button href={`/codebases/${this.state.codebaseName}/dendrograms/${dendrogram.name}`} 
+                                            className="mb-2">
+                                                Go to Dendrogram
+                                    </Button>
+                                    <br/>
+                                    <Button onClick={() => this.handleDeleteDendrogram(dendrogram.name)}
+                                            variant="danger">
+                                                Delete
+                                    </Button>
+                                </Card.Body>
+                            </Card>
+                            <br/>
+                        </Col>
+                    )
+                }
+            </Row>
         );
     }
 
     render() {
         const metricRows = this.state.allGraphs.map(graph => {
-            debugger;
             return {
                 id: graph.dendrogramName + graph.name,
                 dendrogram: graph.dendrogramName,

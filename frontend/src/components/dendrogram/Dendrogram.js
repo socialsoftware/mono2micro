@@ -259,14 +259,35 @@ export class Dendrogram extends React.Component {
     }
 
     renderCuts = () => {
-        return this.state.graphs.map(graph =>
-            <Card key={graph.name} style={{ width: '15rem', marginBottom: "16px" }}>
-                <Card.Body>
-                    <Card.Title>{graph.name}</Card.Title>
-                    <Button href={`/codebases/${this.state.codebaseName}/dendrograms/${this.state.dendrogramName}/graphs/${graph.name}`} className="mb-2">Go to Graph</Button><br/>
-                    <Button onClick={() => this.handleDeleteGraph(graph.name)} variant="danger">Delete</Button>
-                </Card.Body>
-            </Card>
+        return (
+            <Row>
+                {
+                    this.state.graphs.map(graph =>
+                        <Col>
+                            <Card key={graph.name} style={{ width: '15rem', marginBottom: "16px" }}>
+                                <Card.Body>
+                                    <Card.Title>
+                                        {graph.name}
+                                    </Card.Title>
+                                    <Button
+                                        href={`/codebases/${this.state.codebaseName}/dendrograms/${this.state.dendrogramName}/graphs/${graph.name}`}
+                                        className="mb-2"
+                                    >
+                                        Go to Graph
+                                    </Button>
+                                    <br/>
+                                    <Button
+                                        onClick={() => this.handleDeleteGraph(graph.name)}
+                                        variant="danger"
+                                    >
+                                        Delete
+                                    </Button>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    )
+                }
+            </Row>
         );
     }
 
