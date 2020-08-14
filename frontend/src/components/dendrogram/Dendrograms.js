@@ -302,8 +302,8 @@ export class Dendrograms extends React.Component {
             <Row>
                 {
                     this.state.dendrograms.map(dendrogram =>
-                        <Col>
-                            <Card className="mb-4" key={dendrogram.name} style={{ width: '20rem' }}>
+                        <Col key={dendrogram.name}>
+                            <Card className="mb-4" style={{ width: '20rem' }}>
                                 <Card.Img variant="top" src={URL + "codebase/" + this.state.codebaseName + "/dendrogram/" + dendrogram.name + "/image?" + new Date().getTime()}/>
                                 <Card.Body>
                                     <Card.Title>{dendrogram.name}</Card.Title>
