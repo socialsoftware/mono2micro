@@ -8,14 +8,28 @@ import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.*;
 
 public class ControllerTracesIterator {
 	private JsonParser jsonParser;
+	private int limit = 0; // 0 means no limit aka all traces will be parsed
+	private int counter = 0; // #traces
+	String filePath;
+	String controllerName;
 
 	public ControllerTracesIterator(
 		String filePath,
-		String controllerName
+		String controllerName,
+		int limit
 	) throws IOException {
+		this.limit = limit;
+		this.filePath = filePath;
+		this.controllerName = controllerName;
+
+		init();
+	}
+
+	private void init() throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		JsonFactory jsonfactory = mapper.getFactory();
 
@@ -66,6 +80,13 @@ public class ControllerTracesIterator {
 		}
 	}
 
+	public void reset() throws IOException {
+		if (!jsonParser.isClosed())
+			jsonParser.close();
+
+		init();
+	}
+
 	public TraceDto nextTrace() throws IOException {
 		if (jsonParser.getCurrentToken() == JsonToken.END_ARRAY || jsonParser.getCurrentToken() == JsonToken.END_OBJECT)
 			return null;
@@ -73,10 +94,93 @@ public class ControllerTracesIterator {
 		TraceDto t = jsonParser.readValueAs(TraceDto.class);
 		jsonParser.nextToken();
 
+		counter++;
+
 		return t;
 	}
 
 	public boolean hasMoreTraces() {
-		return jsonParser.getCurrentToken() != JsonToken.END_ARRAY && jsonParser.getCurrentToken() != JsonToken.END_OBJECT;
+		return (
+			jsonParser.getCurrentToken() != JsonToken.END_ARRAY &&
+			jsonParser.getCurrentToken() != JsonToken.END_OBJECT &&
+			(limit == 0 || counter < limit)
+		);
 	}
+
+	public TraceDto getLongestTrace() throws IOException {
+		if (this.hasMoreTraces()) {
+			TraceDto t1 = this.nextTrace();
+
+			while (this.hasMoreTraces()) {
+				TraceDto t2 = this.nextTrace();
+
+				if (t2.getAccesses().size() > t1.getAccesses().size()) {
+					t1 = t2;
+				}
+			}
+
+			return t1;
+		}
+
+		return null;
+	}
+
+	public TraceDto getTraceWithMoreDifferentAccesses() throws IOException {
+		if (this.hasMoreTraces()) {
+			TraceDto t1 = this.nextTrace();
+
+			while (this.hasMoreTraces()) {
+				TraceDto t2 = this.nextTrace();
+
+				if (t2.getAccessesSet().size() > t1.getAccessesSet().size()) {
+					t1 = t2;
+				}
+			}
+
+			return t1;
+		}
+
+		return null;
+	}
+
+	public Set<String> getRepresentativeTraces() throws IOException {
+		Map<String, HashSet<String>> traceIdToAccessesMap = new HashMap<>();
+
+		if (this.hasMoreTraces()) {
+			TraceDto t1 = this.nextTrace();
+			traceIdToAccessesMap.put(String.valueOf(t1.getId()), t1.getAccessesSet());
+
+			while (this.hasMoreTraces()) {
+				TraceDto t2 = this.nextTrace();
+				HashSet<String> t2AcessesSet = t2.getAccessesSet();
+
+				Iterator<Map.Entry<String, HashSet<String>>> iter = traceIdToAccessesMap.entrySet().iterator();
+				boolean t2IsRepresentative = true;
+
+				while (iter.hasNext()) {
+					Map.Entry<String, HashSet<String>> entry = iter.next();
+
+					if (entry.getValue().containsAll(t2AcessesSet)) { // t2 C t[i] => t2 is not representative
+						t2IsRepresentative = false;
+						break;
+					}
+
+					else if(t2AcessesSet.containsAll(entry.getValue())) { // t[i] C t2 => t2 is representative and t[i] isn't
+						iter.remove();
+					}
+
+					// unnecessary else statement cuz both t[i] and t2 are representative
+				}
+
+				if (t2IsRepresentative)
+					traceIdToAccessesMap.put(String.valueOf(t2.getId()), t2AcessesSet);
+			}
+
+			return traceIdToAccessesMap.keySet();
+		}
+
+		return traceIdToAccessesMap.keySet();
+	}
+
+
 }

@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class TraceDto {
 	protected int id;
@@ -42,5 +44,22 @@ public class TraceDto {
 		}
 
 		return accesses;
+	}
+
+	public HashSet<String> getAccessesSet() {
+		HashSet<String> accessesSet = new HashSet<>();
+
+		if (sequences != null) {
+			sequences.forEach(seq -> {
+				List<AccessDto> accesses = seq.getAccesses();
+
+				accesses.forEach(a -> {
+					String accessString = String.join("-", a.getEntity(), a.getMode());
+					accessesSet.add(accessString);
+				});
+			});
+		}
+
+		return accessesSet;
 	}
 }

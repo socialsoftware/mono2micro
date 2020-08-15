@@ -74,12 +74,22 @@ public class DendrogramController {
 
 
 	@RequestMapping(value = "/dendrogram/create", method = RequestMethod.POST)
-	public ResponseEntity<HttpStatus> createDendrogram(@PathVariable String codebaseName, @RequestBody Dendrogram dendrogram) {
+	public ResponseEntity<HttpStatus> createDendrogram(
+		@PathVariable String codebaseName,
+
+		@RequestBody Dendrogram dendrogram
+	) {
 		logger.debug("createDendrogram");
 
 		try {
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            codebase.createDendrogram(dendrogram);
+
+			if (codebase.isStatic()) {
+				codebase.createStaticDendrogram(dendrogram);
+			} else {
+				codebase.createDynamicDendrogram(dendrogram);
+			}
+
             codebaseManager.writeCodebase(codebaseName, codebase);
             return new ResponseEntity<>(HttpStatus.CREATED);
 

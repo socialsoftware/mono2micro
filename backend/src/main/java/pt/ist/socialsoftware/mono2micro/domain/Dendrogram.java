@@ -25,6 +25,13 @@ import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 public class Dendrogram {
+	enum TypesOfTraces {
+		DEFAULT,
+		REPRESENTATIVE,
+		LONGEST,
+		WITH_MORE_DIFFERENT_ACCESSES
+	}
+
 	private String codebaseName;
 	private String name;
 	private String linkageType;
@@ -34,9 +41,10 @@ public class Dendrogram {
 	private float sequenceMetricWeight;
 	private List<String> profiles = new ArrayList<>();
 	private List<Graph> graphs = new ArrayList<>();
+	private int tracesMaxLimit = 0;
+	private TypesOfTraces typeOfTraces = TypesOfTraces.DEFAULT;
 
-	public Dendrogram() {
-	}
+	public Dendrogram() {}
 
 	public String getName() {
 		return this.name;
@@ -103,6 +111,14 @@ public class Dendrogram {
 	public List<Graph> getGraphs() {
 		return this.graphs;
 	}
+
+	public int getTracesMaxLimit() { return tracesMaxLimit; }
+
+	public void setTracesMaxLimit(int tracesMaxLimit) { this.tracesMaxLimit = tracesMaxLimit; }
+
+	public TypesOfTraces getTraceType() { return typeOfTraces; }
+
+	public void setTraceType(TypesOfTraces typeOfTraces) { this.typeOfTraces = typeOfTraces; }
 
 	public List<String> getGraphNames() {
 		List<String> graphNames = new ArrayList<>();
@@ -261,25 +277,84 @@ public class Dendrogram {
 
 		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
 
+		ControllerTracesIterator iter;
+		TraceDto t;
+
 		for (String profile : this.profiles) {
 			for (String controllerName : codebase.getProfile(profile)) {
-				ControllerTracesIterator iter = new ControllerTracesIterator(
+				iter = new ControllerTracesIterator(
 					codebase.getDatafilePath(),
-					controllerName
+					controllerName,
+					tracesMaxLimit
 				);
 
-				while (iter.hasMoreTraces()) {
-					TraceDto t = iter.nextTrace();
+				switch (this.typeOfTraces) {
+					case LONGEST:
+						t = iter.getLongestTrace();
 
-					Utils.fillEntityDataStructures(
-						entityControllers,
-						e1e2PairCount,
-						t.getAccesses(),
-						controllerName
-					);
+						if (t != null) {
+							Utils.fillEntityDataStructures(
+								entityControllers,
+								e1e2PairCount,
+								t.getAccesses(),
+								controllerName
+							);
+						}
+
+						break;
+
+					case WITH_MORE_DIFFERENT_ACCESSES:
+						t = iter.getTraceWithMoreDifferentAccesses();
+
+						if (t != null) {
+							Utils.fillEntityDataStructures(
+								entityControllers,
+								e1e2PairCount,
+								t.getAccesses(),
+								controllerName
+							);
+						}
+
+						break;
+
+					case REPRESENTATIVE:
+						Set<String> tracesIds = iter.getRepresentativeTraces();
+						iter.reset();
+
+						while (iter.hasMoreTraces()) {
+							t = iter.nextTrace();
+
+							if (tracesIds.contains(String.valueOf(t.getId()))) {
+								Utils.fillEntityDataStructures(
+									entityControllers,
+									e1e2PairCount,
+									t.getAccesses(),
+									controllerName
+								);
+							}
+
+						}
+
+						break;
+
+					default:
+						while (iter.hasMoreTraces()) {
+							t = iter.nextTrace();
+
+							Utils.fillEntityDataStructures(
+								entityControllers,
+								e1e2PairCount,
+								t.getAccesses(),
+								controllerName
+							);
+						}
 				}
+
+				t = null; // release memory
 			}
 		}
+
+		iter = null; // release memory
 
 		CodebaseManager.getInstance().writeSimilarityMatrix(
 			this.codebaseName,
