@@ -263,7 +263,7 @@ export class Dendrogram extends React.Component {
             <Row>
                 {
                     this.state.graphs.map(graph =>
-                        <Col key={graph.name}>
+                        <Col key={graph.name} md="auto">
                             <Card style={{ width: '15rem', marginBottom: "16px" }}>
                                 <Card.Body>
                                     <Card.Title>

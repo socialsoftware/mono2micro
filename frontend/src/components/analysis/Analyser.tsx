@@ -117,7 +117,7 @@ export class Analyser extends React.Component<any, any> {
             requestLimit: "",
             importFile: null,
             amountOfTraces: "0",
-            typeOfTraces: "",
+            typeOfTraces: "ALL",
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -452,8 +452,7 @@ export class Analyser extends React.Component<any, any> {
                                     !codebase ||
                                     selectedProfiles.length === 0 ||
                                     requestLimit === "" ||
-                                    typeOfTraces === "" ||
-                                    amountOfTraces === "" 
+                                    (codebase.analysisType === "dynamic" && (typeOfTraces === "" || amountOfTraces === ""))
                                 }
                             >
                                 Submit

@@ -83,7 +83,7 @@ export class Dendrograms extends React.Component {
             readMetricWeight: "25",
             sequenceMetricWeight: "25",
             amountOfTraces: "0",
-            typeOfTraces: "",
+            typeOfTraces: "ALL",
         };
 
         this.handleDeleteDendrogram = this.handleDeleteDendrogram.bind(this);
@@ -484,8 +484,7 @@ export class Dendrograms extends React.Component {
                                 sequenceMetricWeight === "" ||
                                 Number(accessMetricWeight) + Number(writeMetricWeight) + Number(readMetricWeight) + Number(sequenceMetricWeight) !== 100 || 
                                 selectedProfiles.length === 0 ||
-                                typeOfTraces === "" ||
-                                amountOfTraces === "" 
+                                (analysisType === "dynamic" && (typeOfTraces === "" || amountOfTraces === ""))
                             }
                         >
                             Create Dendrogram
