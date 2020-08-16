@@ -286,7 +286,7 @@ export class Analyser extends React.Component<any, any> {
                 specificity: data.specificity
             } 
         });
-        
+
         return (
             <>
                 {this.renderBreadCrumbs()}
@@ -294,10 +294,10 @@ export class Analyser extends React.Component<any, any> {
 
                 <Form onSubmit={this.handleSubmit}>
                     <Form.Group as={Row} controlId="codebase">
-                        <Form.Label column sm={2}>
+                        <Form.Label column sm={3}>
                             Codebase
                         </Form.Label>
-                        <Col sm={2}>
+                        <Col sm={3}>
                             <DropdownButton title={codebase?.name || "Select Codebase"}>
                                 {
                                     codebases.map((codebase: any) => 
@@ -312,10 +312,10 @@ export class Analyser extends React.Component<any, any> {
                     </Form.Group>
 
                     <Form.Group as={Row} controlId="selectControllerProfiles">
-                        <Form.Label column sm={2}>
+                        <Form.Label column sm={3}>
                             Select Controller Profiles
                         </Form.Label>
-                        <Col sm={2}>
+                        <Col sm={3}>
                             <DropdownButton title={'Controller Profiles'}>
                                 {profiles.map((profile: any) =>
                                     <Dropdown.Item
@@ -333,10 +333,10 @@ export class Analyser extends React.Component<any, any> {
                         codebase?.analysisType === "dynamic" && (
                             <>
                                 <Form.Group as={Row} controlId="amountOfTraces">
-                                    <Form.Label column sm={2}>
+                                    <Form.Label column sm={3}>
                                         Amount of Traces per Controller
                                     </Form.Label>
-                                    <Col sm={2}>
+                                    <Col sm={3}>
                                         <FormControl 
                                             type="number"
                                             value={amountOfTraces}
@@ -349,7 +349,7 @@ export class Analyser extends React.Component<any, any> {
                                     </Col>
                                 </Form.Group>
                                 <Form.Group as={Row} className="align-items-center">
-                                    <Form.Label as="legend" column sm={2}>
+                                    <Form.Label as="legend" column sm={3}>
                                         Type of traces
                                     </Form.Label>
                                     <Col sm={3} style={{ paddingLeft: 0 }}>
@@ -412,10 +412,10 @@ export class Analyser extends React.Component<any, any> {
                         )
                     }
                     <Form.Group as={Row} controlId="expert">
-                        <Form.Label column sm={2}>
+                        <Form.Label column sm={3}>
                             Expert
                         </Form.Label>
-                        <Col sm={2}>
+                        <Col sm={3}>
                             <DropdownButton title={expert?.name || "Select Expert Cut"}>
                                 {experts.map((expert: any) => 
                                     <Dropdown.Item 
@@ -430,10 +430,10 @@ export class Analyser extends React.Component<any, any> {
                     </Form.Group>
 
                     <Form.Group as={Row} controlId="requestLimit">
-                        <Form.Label column sm={2}>
+                        <Form.Label column sm={3}>
                             Request limit
                         </Form.Label>
-                        <Col sm={2}>
+                        <Col sm={3}>
                             <FormControl 
                                 type="number"
                                 placeholder="Request Limit"
@@ -444,7 +444,7 @@ export class Analyser extends React.Component<any, any> {
                     </Form.Group>
 
                     <Form.Group as={Row}>
-                        <Col sm={{ span: 5, offset: 2 }}>
+                        <Col sm={{ span: 5, offset: 3 }}>
                             <Button 
                                 type="submit"
                                 disabled={
@@ -467,10 +467,10 @@ export class Analyser extends React.Component<any, any> {
                 <br />
                 <Form onSubmit={this.handleImportSubmit}>
                     <Form.Group as={Row} controlId="importFile">
-                        <Form.Label column sm={2}>
+                        <Form.Label column sm={3}>
                             Import Analyser Results from File
                         </Form.Label>
-                        <Col sm={2}>
+                        <Col sm={3}>
                             <FormControl 
                                 type="file"
                                 onChange={this.handleSelectImportFile}
@@ -479,7 +479,7 @@ export class Analyser extends React.Component<any, any> {
                     </Form.Group>
 
                     <Form.Group as={Row}>
-                        <Col sm={{ span: 5, offset: 2 }}>
+                        <Col sm={{ span: 5, offset: 3 }}>
                             <Button 
                                 type="submit"
                                 disabled={ importFile === null }
