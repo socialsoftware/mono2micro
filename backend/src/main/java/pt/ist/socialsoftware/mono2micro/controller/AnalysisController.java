@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pt.ist.socialsoftware.mono2micro.domain.*;
 import pt.ist.socialsoftware.mono2micro.dto.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
+import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
@@ -352,7 +353,6 @@ public class AnalysisController {
 									controllerName
 								);
 							}
-
 						}
 
 						break;

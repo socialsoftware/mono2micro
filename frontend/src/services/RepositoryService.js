@@ -30,10 +30,6 @@ export class RepositoryService {
         return this.axios.post("/codebase/" + codebaseName + "/analyser", analyserData);
     }
 
-
-
-
-
     //Codebases
     getCodebases() {
         return this.axios.get("/codebases");
@@ -89,11 +85,6 @@ export class RepositoryService {
         return this.axios.post("/codebase/create", data, config);
     }
 
-
-
-
-
-
     //Dendrograms
     getDendrograms(codebaseName) {
         return this.axios.get("/codebase/" + codebaseName + "/dendrograms");
@@ -107,16 +98,29 @@ export class RepositoryService {
         return this.axios.delete("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/delete");
     }
     
-    createDendrogram(codebaseName, dendrogramName, linkageType, accessMetricWeight, writeMetricWeight, readMetricWeight, sequenceMetricWeight, profiles) {
+    createDendrogram(
+        codebaseName,
+        dendrogramName,
+        linkageType,
+        accessMetricWeight,
+        writeMetricWeight,
+        readMetricWeight,
+        sequenceMetricWeight,
+        profiles,
+        amountOfTraces,
+        typeOfTraces,
+    ) {
         const dendrogramData = {
-            codebaseName: codebaseName,
+            codebaseName,
             name: dendrogramName,
-            linkageType: linkageType,
-            accessMetricWeight: accessMetricWeight,
-            writeMetricWeight: writeMetricWeight,
-            readMetricWeight: readMetricWeight,
-            sequenceMetricWeight: sequenceMetricWeight,
-            profiles: profiles
+            linkageType,
+            accessMetricWeight,
+            writeMetricWeight,
+            readMetricWeight,
+            sequenceMetricWeight,
+            profiles,
+            tracesMaxLimit: amountOfTraces,
+            typeOfTraces,
         };
         
         return this.axios.post("/codebase/" + codebaseName + "/dendrogram/create", dendrogramData);
@@ -145,10 +149,6 @@ export class RepositoryService {
 
         return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/expertCut", data, config);
     }
-
-
-
-
 
     //Graph
     getGraphs(codebaseName, dendrogramName) {

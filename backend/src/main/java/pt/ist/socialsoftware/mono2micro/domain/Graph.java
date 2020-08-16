@@ -10,9 +10,9 @@ import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
 import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
+import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Metrics;
-import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 public class Graph {
 	private String codebaseName;
@@ -475,7 +475,7 @@ public class Graph {
 				this.addDynamicControllers(
 					d.getProfiles(),
 					d.getTracesMaxLimit(),
-					d.getTraceType()
+					d.getTypeOfTraces()
 				);
 			}
 

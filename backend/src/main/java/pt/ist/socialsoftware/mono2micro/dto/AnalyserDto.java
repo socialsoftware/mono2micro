@@ -1,10 +1,8 @@
 package pt.ist.socialsoftware.mono2micro.dto;
 
 import java.util.List;
-
-import pt.ist.socialsoftware.mono2micro.domain.Constants;
-import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 public class AnalyserDto {
     private Graph expert;
@@ -12,7 +10,7 @@ public class AnalyserDto {
     private int requestLimit;
     // only used when the codebase "is dynamic" aka !isStatic()
     private int tracesMaxLimit; // default is 0 which means, no limit
-    private Constants.TypeOfTraces typeOfTraces = Constants.TypeOfTraces.DEFAULT;
+    private Constants.TypeOfTraces typeOfTraces = Constants.TypeOfTraces.ALL;
 
     public Graph getExpert() { return expert; }
 

@@ -20,10 +20,10 @@ import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
 import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
+import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
-import pt.ist.socialsoftware.mono2micro.domain.Constants.*;
 
 public class Dendrogram {
 	private String codebaseName;
@@ -36,7 +36,8 @@ public class Dendrogram {
 	private List<String> profiles = new ArrayList<>();
 	private List<Graph> graphs = new ArrayList<>();
 	private int tracesMaxLimit = 0;
-	private TypeOfTraces typeOfTraces = TypeOfTraces.DEFAULT;
+
+	private Constants.TypeOfTraces typeOfTraces = Constants.TypeOfTraces.ALL;
 
 	public Dendrogram() {}
 
@@ -110,9 +111,9 @@ public class Dendrogram {
 
 	public void setTracesMaxLimit(int tracesMaxLimit) { this.tracesMaxLimit = tracesMaxLimit; }
 
-	public TypeOfTraces getTraceType() { return typeOfTraces; }
+	public Constants.TypeOfTraces getTypeOfTraces() { return typeOfTraces; }
 
-	public void setTraceType(TypeOfTraces typeOfTraces) { this.typeOfTraces = typeOfTraces; }
+	public void setTypeOfTraces(Constants.TypeOfTraces typeOfTraces) { this.typeOfTraces = typeOfTraces; }
 
 	public List<String> getGraphNames() {
 		List<String> graphNames = new ArrayList<>();
@@ -330,6 +331,8 @@ public class Dendrogram {
 							}
 
 						}
+
+
 
 						break;
 

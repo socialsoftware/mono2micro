@@ -13,7 +13,7 @@ import java.util.*;
 public class ControllerTracesIterator {
 	private JsonParser jsonParser;
 	private int limit = 0; // 0 means no limit aka all traces will be parsed
-	private int counter = 0; // #traces
+	private int counter; // #traces
 	String filePath;
 	String controllerName;
 
@@ -30,6 +30,8 @@ public class ControllerTracesIterator {
 	}
 
 	private void init() throws IOException {
+		this.counter = 0;
+
 		ObjectMapper mapper = new ObjectMapper();
 		JsonFactory jsonfactory = mapper.getFactory();
 
@@ -110,12 +112,15 @@ public class ControllerTracesIterator {
 	public TraceDto getLongestTrace() throws IOException {
 		if (this.hasMoreTraces()) {
 			TraceDto t1 = this.nextTrace();
+			int t1AccessesListSize = t1.getAccesses().size();
 
 			while (this.hasMoreTraces()) {
 				TraceDto t2 = this.nextTrace();
+				int t2AccessesListSize = t2.getAccesses().size();
 
-				if (t2.getAccesses().size() > t1.getAccesses().size()) {
+				if (t2AccessesListSize > t1AccessesListSize) {
 					t1 = t2;
+					t1AccessesListSize = t2AccessesListSize;
 				}
 			}
 
@@ -128,12 +133,15 @@ public class ControllerTracesIterator {
 	public TraceDto getTraceWithMoreDifferentAccesses() throws IOException {
 		if (this.hasMoreTraces()) {
 			TraceDto t1 = this.nextTrace();
+			int t1AccessesSetSize = t1.getAccessesSet().size();
 
 			while (this.hasMoreTraces()) {
 				TraceDto t2 = this.nextTrace();
+				int t2AccessesSetSize = t2.getAccessesSet().size();
 
-				if (t2.getAccessesSet().size() > t1.getAccessesSet().size()) {
+				if (t2AccessesSetSize > t1AccessesSetSize) {
 					t1 = t2;
+					t1AccessesSetSize = t2AccessesSetSize;
 				}
 			}
 
@@ -175,8 +183,6 @@ public class ControllerTracesIterator {
 				if (t2IsRepresentative)
 					traceIdToAccessesMap.put(String.valueOf(t2.getId()), t2AcessesSet);
 			}
-
-			return traceIdToAccessesMap.keySet();
 		}
 
 		return traceIdToAccessesMap.keySet();

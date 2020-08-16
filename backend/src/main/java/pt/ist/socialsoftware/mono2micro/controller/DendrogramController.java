@@ -76,7 +76,6 @@ public class DendrogramController {
 	@RequestMapping(value = "/dendrogram/create", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> createDendrogram(
 		@PathVariable String codebaseName,
-
 		@RequestBody Dendrogram dendrogram
 	) {
 		logger.debug("createDendrogram");
