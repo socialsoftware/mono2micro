@@ -23,15 +23,9 @@ import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
+import pt.ist.socialsoftware.mono2micro.domain.Constants.*;
 
 public class Dendrogram {
-	enum TypesOfTraces {
-		DEFAULT,
-		REPRESENTATIVE,
-		LONGEST,
-		WITH_MORE_DIFFERENT_ACCESSES
-	}
-
 	private String codebaseName;
 	private String name;
 	private String linkageType;
@@ -42,7 +36,7 @@ public class Dendrogram {
 	private List<String> profiles = new ArrayList<>();
 	private List<Graph> graphs = new ArrayList<>();
 	private int tracesMaxLimit = 0;
-	private TypesOfTraces typeOfTraces = TypesOfTraces.DEFAULT;
+	private TypeOfTraces typeOfTraces = TypeOfTraces.DEFAULT;
 
 	public Dendrogram() {}
 
@@ -116,9 +110,9 @@ public class Dendrogram {
 
 	public void setTracesMaxLimit(int tracesMaxLimit) { this.tracesMaxLimit = tracesMaxLimit; }
 
-	public TypesOfTraces getTraceType() { return typeOfTraces; }
+	public TypeOfTraces getTraceType() { return typeOfTraces; }
 
-	public void setTraceType(TypesOfTraces typeOfTraces) { this.typeOfTraces = typeOfTraces; }
+	public void setTraceType(TypeOfTraces typeOfTraces) { this.typeOfTraces = typeOfTraces; }
 
 	public List<String> getGraphNames() {
 		List<String> graphNames = new ArrayList<>();
@@ -271,7 +265,9 @@ public class Dendrogram {
 		);
 	}
 
-	public void calculateDynamicSimilarityMatrix() throws IOException, JSONException {
+	public void calculateDynamicSimilarityMatrix()
+		throws IOException, JSONException
+	{
 		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 		Map<String,Integer> e1e2PairCount = new HashMap<>();
 
