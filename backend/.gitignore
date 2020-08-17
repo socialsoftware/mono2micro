@@ -15,5 +15,6 @@ src/main/resources/specific.properties
 src/main/resources/codebases/
 src/main/resources/dendrograms/
 src/main/resources/experts/
+src/main/resources/evaluation/data/
 
 .sts4-cache/
