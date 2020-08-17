@@ -5,6 +5,10 @@ import plotly
 import plotly.express as px
 from pathlib import Path
 
+# For each codebase and N value, calculates a plot that assesses the relation
+# between the weights given to each measure and the complexity, coupling and cohesion
+# obtained. Studies the performance of each measure, individually, for each codebase.
+
 # Warning: You need orca installed to write plot images to filesystem
 # Replace path with your own
 home = str(Path.home())

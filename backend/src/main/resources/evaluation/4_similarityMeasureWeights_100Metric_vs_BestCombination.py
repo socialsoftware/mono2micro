@@ -3,6 +3,15 @@ import numpy as np
 import pandas as pd
 import math
 
+# Calculates the difference between
+#   the distance of the decompositions with 100 weight on the Access Measure
+#   from the min complexity decomposition (for a given codebase and N value)
+# and
+#   the distance of the average complexity (considering all the combinations)
+#   from the min complexity decomposition (for a given codebase and N value)
+
+# In the end, join all the results from each codebase and calculate mean and stdErr
+
 files = []
 for (dirpath, dirnames, filenames) in walk("./data/"):
     files.extend(filenames)
@@ -52,7 +61,7 @@ for n in range(3, 11):
 
     distance = []
     for a, b in zip(deltas100A, deltasAvgDist):
-        d = a/b
+        d = a / b
         if math.isnan(d):
             distance.append(0)
         else:

@@ -2,7 +2,7 @@ from os import walk
 import numpy as np
 import pandas as pd
 
-# Get min complexity decompositions weights and calculate average and np.std among them
+# Get min complexity decompositions weights and calculate average and stdErr among them
 # for different N values
 
 files = []

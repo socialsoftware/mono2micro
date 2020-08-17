@@ -5,11 +5,15 @@ import pandas as pd
 import plotly.express as px
 from py4j.java_gateway import JavaGateway
 
+DISTR_SRC_FILE_PATH = './mojoCalculator/src/main/resources/distrSrc.rsf'
+DISTR_TARGET_FILE_PATH = './mojoCalculator/src/main/resources/distrTarget.rsf'
+
+# Warning:
 # Run MoJo Calculator Java code before running this script
 # More info on ./mojoCalculator/ folder
 
-DISTR_SRC_FILE_PATH = './mojoCalculator/src/main/resources/distrSrc.rsf'
-DISTR_TARGET_FILE_PATH = './mojoCalculator/src/main/resources/distrTarget.rsf'
+# Calculates how many changes have to be made from the best decomposition
+# of N = n, to the best decomposition of N = n + 1
 
 data_dict = {
     'transition': [],
@@ -123,13 +127,14 @@ for file in files:
     calculateTransitionMoJos(minComplexityClusters)
 
 # box plot style
-boxFig = px.box(data_dict,
-                x="transition",
-                y="mojoFM",
-                hover_name='hoverText',
-                title='Transition From N to N+1',
-                points='all',
-                )
+boxFig = px.box(
+    data_dict,
+    x="transition",
+    y="mojoFM",
+    hover_name='hoverText',
+    title='Transition From N to N+1',
+    points='all',
+)
 boxFig.update_traces(marker=dict(size=2))
 boxFig.show()
 

@@ -3,6 +3,10 @@ from os import walk
 import pandas as pd
 import plotly.express as px
 
+# Calculates a plot that assesses the relation between the number
+# of singleton clusters present in a decomposition and the
+# complexity of that decomposition
+
 files = []
 for (dirpath, dirnames, filenames) in walk("./data/"):
     files.extend(filenames)

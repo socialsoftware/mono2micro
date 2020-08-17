@@ -1,7 +1,9 @@
 from os import walk
-
 import pandas as pd
 import plotly.express as px
+
+# Plot that compares the number of entities of a codebase
+# with the average complexity of its decompositions
 
 files = []
 for (dirpath, dirnames, filenames) in walk("./data/"):
@@ -26,6 +28,10 @@ for file in files:
     avg = total/count
     y_data.append(avg)
 
-fig = px.scatter(x=x_data, y=y_data, title="Number of Entities vs AvgComplexity",
-                 labels={'x': 'Number of Entities', 'y': 'Average Complexity'})
+fig = px.scatter(
+    x=x_data,
+    y=y_data,
+    title="Number of Entities vs AvgComplexity",
+    labels={'x': 'Number of Entities', 'y': 'Average Complexity'}
+)
 fig.show()

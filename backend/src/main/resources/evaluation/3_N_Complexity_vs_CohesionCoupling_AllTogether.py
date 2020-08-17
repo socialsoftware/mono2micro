@@ -3,7 +3,12 @@ import pandas as pd
 import statsmodels.api as sm
 import plotly.express as px
 
-# N vs Cohesion
+# Plots the relation between Complexity and Coupling and Complexity and Cohesion
+# for different values of N
+
+# OLS Regression Model calculator
+# Estimates the coupling values based on the N and Complexity
+# Estimates the cohesion values based on the N and Complexity
 
 files = []
 for (dirpath, dirnames, filenames) in walk("./data/"):

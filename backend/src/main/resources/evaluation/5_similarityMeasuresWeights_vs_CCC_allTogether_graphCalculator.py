@@ -3,10 +3,9 @@ from os import walk
 import pandas as pd
 import plotly.express as px
 
-
-# Comparar Weight de cada métrica vs Complexidade Coupling e Coesão com os dados de todos os repos
-# Figura para cada N
-# Escolher entre BoxPlot ou TrendLine
+# Plot that studies the performances of each similarity measure individually
+# For each N value, compares the weights given to a similarity measure with the
+# complexity obtained for the decomposition
 
 def iToChar(i):
     if i == 1:
@@ -17,6 +16,7 @@ def iToChar(i):
         return 'R'
     if i == 4:
         return 'S'
+
 
 df = {
     'n': [],
@@ -93,8 +93,8 @@ for i in range(3, 11):
     )
     boxFig.show()
 
-    # boxFig = px.box(df_n, x="weight", y="coupling", color="metric", title="N = " + str(i))
-    # boxFig.show()
-    #
-    # boxFig = px.box(df_n, x="weight", y="cohesion", color="metric", title="N = " + str(i))
-    # boxFig.show()
+    boxFig = px.box(df_n, x="weight", y="coupling", color="metric", title="N = " + str(i))
+    boxFig.show()
+
+    boxFig = px.box(df_n, x="weight", y="cohesion", color="metric", title="N = " + str(i))
+    boxFig.show()

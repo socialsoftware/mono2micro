@@ -5,16 +5,16 @@ import pandas as pd
 import plotly.express as px
 from py4j.java_gateway import JavaGateway
 import itertools
+DISTR_SRC_FILE_PATH = './mojoCalculator/src/main/resources/distrSrc.rsf'
+DISTR_TARGET_FILE_PATH = './mojoCalculator/src/main/resources/distrTarget.rsf'
 
+# Warning:
 # Run MoJo Calculator Java code before running this script
 # More info on ./mojoCalculator/ folder
 
-# MojoFM de cada transição de N
-# para cada possível decomposição
-# de cada Repositório vs PonderatedComplexity diff entre a decomposição_N e a N+1
-
-DISTR_SRC_FILE_PATH = './mojoCalculator/src/main/resources/distrSrc.rsf'
-DISTR_TARGET_FILE_PATH = './mojoCalculator/src/main/resources/distrTarget.rsf'
+# Calculates how many changes have to be made in the best decomposition
+# of N = n, so that the best decomposition of N = n + 1 can be obtained
+# incrementally from the first.
 
 data_dict = {
     'transition': [],
@@ -42,9 +42,9 @@ def getClusters(complexityWeights):
 
 
 # each entry in the list 'clustersForN' corresponds to a list of clusters of a specific decomposition
-# minComplexityClusters -> the decomposition with less complexity for each N
-# calculates the MoJoFM result between a decomposition[n-1] and each possible decomposition with n-1 clusters
-# given a decomposition with n clusters
+# calculates the MoJoFM result between a decomposition[n-1] and each possible decomposition
+# with n-1 clusters given a decomposition with n clusters, i.e., each parent decomposition of a
+# decomposition with n clusters so that this one can be obtained incrementally from the parent
 def calculateTransitionMoJos(clustersForN):
     for i in range(1, len(clustersForN)):
         clustersN = clustersForN[i]
@@ -52,7 +52,7 @@ def calculateTransitionMoJos(clustersForN):
         clustersNLess1FromN_Comb = []  # matrix [combinationN][ClustersList]
         numOfClustersN = len(clustersN)
         lst1 = list(range(numOfClustersN))
-        # possible combinations of converting system of n cluster into a system of n-1 clusters
+        # possible "parent decompositions" of a a system with n clusters
         combinationsList = list(itertools.combinations(lst1, 2))
 
         for comb in combinationsList:
@@ -157,14 +157,15 @@ for file in files:
 data_dict = pd.DataFrame(data_dict)
 
 # box plot style
-boxFig = px.box(data_dict,
-                x="transition",
-                y="mojoFM",
-                hover_name='hoverText',
-                title='Transition From N to N of the next N+1 decomposition',
-                points='all',
-                # range_y=[0, 100]
-                )
+boxFig = px.box(
+    data_dict,
+    x="transition",
+    y="mojoFM",
+    hover_name='hoverText',
+    title='Transition From N to N of the next N+1 decomposition',
+    points='all',
+    # range_y=[0, 100]
+)
 boxFig.update_traces(marker=dict(size=2))
 boxFig.show()
 

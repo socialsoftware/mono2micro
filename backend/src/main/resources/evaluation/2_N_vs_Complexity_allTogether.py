@@ -3,8 +3,9 @@ from os import walk
 import plotly.express as px
 import statsmodels.api as sm
 
-
-# N vs Pondered Complexity box ploy and trendline of Quartiles
+# Plot that compares the number of clusters of each decomposition
+# with its complexity
+# And a plot with trendlines of the min max and median values of each Quartile
 
 def find_min(sorted_list):
     return sorted_list[0]
@@ -96,16 +97,26 @@ for file in files:
         y_pComplexity.append(var[2])
         colors_all += ['max']
 
-fig1 = px.scatter(x=x_n,
-                  y=y_pComplexity,
-                  color=colors_all,
-                  labels={'x': 'N', 'y': 'PComplexity'},
-                  range_y=[0, 1],
-                  title="N x PComplexity (min, med and max regressions)",
-                  trendline="ols")
-fig1.show()
-
-boxFig = px.box(df, x="n", y="pComplexity", hover_name='hover', title="N vs PComplexity", points="all",
-                labels={"n": "Number Of Clusters", "pComplexity": "Pondered Complexity"})
+boxFig = px.box(
+    df,
+    x="n",
+    y="pComplexity",
+    hover_name='hover',
+    title="N vs PComplexity",
+    points="all",
+    labels={"n": "Number Of Clusters", "pComplexity": "Pondered Complexity"}
+)
 boxFig.update_traces(marker=dict(size=2))
 boxFig.show()
+
+fig1 = px.scatter(
+    x=x_n,
+    y=y_pComplexity,
+    color=colors_all,
+    labels={'x': 'N', 'y': 'PComplexity'},
+    range_y=[0, 1],
+    title="N x PComplexity (min, med and max regressions)",
+    trendline="ols"
+)
+fig1.show()
+

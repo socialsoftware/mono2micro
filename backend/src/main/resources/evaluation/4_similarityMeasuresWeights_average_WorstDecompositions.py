@@ -1,7 +1,9 @@
 from os import walk
 import numpy as np
 import pandas as pd
-import plotly
+
+# Get max complexity decompositions weights and calculate average and stdErr among them
+# for different N values
 
 files = []
 for (dirpath, dirnames, filenames) in walk("./data/"):
