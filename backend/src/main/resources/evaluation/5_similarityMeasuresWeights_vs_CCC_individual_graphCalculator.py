@@ -14,6 +14,7 @@ from pathlib import Path
 home = str(Path.home())
 plotly.io.orca.config.executable = home + '/anaconda3/bin/orca'
 
+
 def iToChar(i):
     if i == 1:
         return 'A'

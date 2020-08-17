@@ -5,23 +5,13 @@ import pandas as pd
 import plotly.express as px
 import statsmodels.api as sm
 
+
 # Studies the relation between the performance of the Write similarity measure
 # with the number of Write Accesses that the datafile has
 
 # OLS Regression Model calculator
 # Estimates the performance of the Write Similarity measure
 # given the percentage of write accesses the datafile has
-
-def iToChar(i):
-    if i == 1:
-        return 'A'
-    if i == 2:
-        return 'W'
-    if i == 3:
-        return 'R'
-    if i == 4:
-        return 'S'
-
 
 df = {
     'n': [],

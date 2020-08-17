@@ -3,6 +3,7 @@ from os import walk
 import pandas as pd
 import statsmodels.api as sm
 
+
 # OLS Regression Model calculator
 # Estimates the complexity values based on the N value and
 # the weights given to each similarity measure
