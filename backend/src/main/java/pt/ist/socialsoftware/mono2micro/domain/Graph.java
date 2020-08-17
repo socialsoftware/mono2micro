@@ -1,11 +1,16 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
 import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
@@ -13,6 +18,8 @@ import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Metrics;
+
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
 
 public class Graph {
 	private String codebaseName;
@@ -259,6 +266,16 @@ public class Graph {
 		TraceDto t;
 		List<AccessDto> traceAccesses;
 
+		ObjectMapper mapper = new ObjectMapper();
+		JsonFactory jsonfactory = mapper.getFactory();
+		JsonGenerator jGenerator = jsonfactory.createGenerator(
+			new FileOutputStream(CODEBASES_PATH + codebaseName + "/controllerEntities.json"),
+			JsonEncoding.UTF8
+		);
+
+		jGenerator.useDefaultPrettyPrinter(); // for testing purposes
+		jGenerator.writeStartObject();
+
 		for (String profile : profiles) {
 			for (String controllerName : codebase.getProfile(profile)) {
 				iter = new ControllerTracesIterator(
@@ -318,10 +335,16 @@ public class Graph {
 						}
 				}
 
-				if (controller.getEntities().size() > 0)
+				if (controller.getEntities().size() > 0) {
 					this.addController(controller);
+				}
+
+				jGenerator.writeObjectField(controller.getName(), controller.getEntities());
 			}
 		}
+
+		jGenerator.writeEndObject();
+		jGenerator.close();
 	}
 
 	public void mergeClusters(
