@@ -1,7 +1,13 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
 import { URL } from '../../constants/constants';
-import { Row, Col, FormControl, Button, Form, Card, Breadcrumb } from 'react-bootstrap';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
+import FormControl from 'react-bootstrap/FormControl';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
+import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import BootstrapTable from 'react-bootstrap-table-next';
 
 var HttpStatus = require('http-status-codes');
@@ -253,17 +259,35 @@ export class Dendrogram extends React.Component {
     }
 
     renderCuts = () => {
-        return this.state.graphs.map(graph =>
-            <div>
-                <Card key={graph.name} style={{ width: '15rem' }}>
-                    <Card.Body>
-                        <Card.Title>{graph.name}</Card.Title>
-                        <Button href={`/codebases/${this.state.codebaseName}/dendrograms/${this.state.dendrogramName}/graphs/${graph.name}`} className="mb-2">Go to Graph</Button><br/>
-                        <Button onClick={() => this.handleDeleteGraph(graph.name)} variant="danger">Delete</Button>
-                    </Card.Body>
-                </Card>
-                <br/>
-            </div>
+        return (
+            <Row>
+                {
+                    this.state.graphs.map(graph =>
+                        <Col key={graph.name} md="auto">
+                            <Card style={{ width: '15rem', marginBottom: "16px" }}>
+                                <Card.Body>
+                                    <Card.Title>
+                                        {graph.name}
+                                    </Card.Title>
+                                    <Button
+                                        href={`/codebases/${this.state.codebaseName}/dendrograms/${this.state.dendrogramName}/graphs/${graph.name}`}
+                                        className="mb-2"
+                                    >
+                                        Go to Graph
+                                    </Button>
+                                    <br/>
+                                    <Button
+                                        onClick={() => this.handleDeleteGraph(graph.name)}
+                                        variant="danger"
+                                    >
+                                        Delete
+                                    </Button>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    )
+                }
+            </Row>
         );
     }
 
@@ -274,7 +298,7 @@ export class Dendrogram extends React.Component {
                 graph: graph.name,
                 clusters: graph.clusters.length,
                 singleton: graph.clusters.filter(c => c.entities.length === 1).length,
-                max_cluster_size: Math.max(...graph.clusters.map(c => c.entities.length)),
+                max_cluster_size: Math.max(...graph.clusters.map(c => Object.keys(c.entities).length)),
                 ss: graph.silhouetteScore,
                 cohesion: graph.cohesion,
                 coupling: graph.coupling,
@@ -328,7 +352,7 @@ export class Dendrogram extends React.Component {
 
                 <img width="100%" src={URL + "codebase/" + this.state.codebaseName + "/dendrogram/" + this.state.dendrogramName + "/image?" + new Date().getTime()} alt="Dendrogram" />
 
-                <h4 style={{color: "#666666"}}>Cuts</h4>
+                <h4 style={{color: "#666666", marginTop: "16px" }}>Cuts</h4>
                 {this.renderCuts()}
 
                 {this.state.graphs.length > 0 &&

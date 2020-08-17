@@ -1,10 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 
@@ -13,6 +10,7 @@ import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
 import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
+import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Metrics;
 
@@ -112,6 +110,14 @@ public class Graph {
 		this.coupling = coupling;
 	}
 
+	public List<Cluster> getClusters() { return this.clusters; }
+
+	public void addCluster(Cluster cluster) { this.clusters.add(cluster); }
+
+	public List<Controller> getControllers() { return this.controllers; }
+
+	public void addController(Controller controller) { this.controllers.add(controller); }
+
 	public int maxClusterSize() {
 		int max = 0;
 
@@ -122,10 +128,6 @@ public class Graph {
 
 		return max;
 	}
-
-	public List<Controller> getControllers() { return this.controllers; }
-
-	public void addController(Controller controller) { this.controllers.add(controller); }
 
 	private <A extends AccessDto> void calculateControllerSequences (
 		Controller controller,
@@ -207,7 +209,6 @@ public class Graph {
 
 		if (ltList.size() > 0)
 			controller.addLocalTransactionSequence(ltList);
-
 	}
 
 	public void addStaticControllers(
@@ -229,14 +230,13 @@ public class Graph {
 
 		for (String profile : profiles) {
 			for (String controllerName : codebase.getProfile(profile)) {
-
-				Controller controller = new Controller(controllerName);
-				this.addController(controller);
-
 				ControllerDto controllerDto = datafileJSON.get(controllerName);
 				List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
 
 				if (controllerAccesses.size() > 0) {
+					Controller controller = new Controller(controllerName);
+					this.addController(controller);
+
 					calculateControllerSequences(
 						controller,
 						controllerAccesses
@@ -247,44 +247,81 @@ public class Graph {
 		}
 	}
 
-	public void addDynamicControllers(List<String> profiles) throws IOException {
+	public void addDynamicControllers(
+		List<String> profiles,
+		int tracesMaxLimit,
+		Constants.TypeOfTraces typeOfTraces
+	) throws IOException {
 		this.controllers = new ArrayList<>();
 
 		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
+		ControllerTracesIterator iter;
+		TraceDto t;
+		List<AccessDto> traceAccesses;
 
 		for (String profile : profiles) {
 			for (String controllerName : codebase.getProfile(profile)) {
-
-				Controller controller = new Controller(controllerName);
-				this.addController(controller);
-
-				ControllerTracesIterator iter = new ControllerTracesIterator(
+				iter = new ControllerTracesIterator(
 					codebase.getDatafilePath(),
-					controllerName
+					controllerName,
+					tracesMaxLimit
 				);
 
-				while (iter.hasMoreTraces()) {
-					TraceDto t = iter.nextTrace();
+				Controller controller = new Controller(controllerName);
 
-					if (t.getAccesses().size() > 0) {
-						calculateControllerSequences(
-							controller,
-							t.getAccesses()
-						);
-					}
+				switch (typeOfTraces) {
+					case LONGEST:
+						t = iter.getLongestTrace();
+
+						if (t != null) {
+							traceAccesses = t.getAccesses();
+
+							if (traceAccesses.size() > 0)
+								calculateControllerSequences(controller, traceAccesses);
+						}
+
+						break;
+
+					case WITH_MORE_DIFFERENT_ACCESSES:
+						t = iter.getTraceWithMoreDifferentAccesses();
+
+						if (t != null) {
+							traceAccesses = t.getAccesses();
+
+							if (traceAccesses.size() > 0)
+								calculateControllerSequences(controller, traceAccesses);
+						}
+
+						break;
+
+					case REPRESENTATIVE:
+						Set<String> tracesIds = iter.getRepresentativeTraces();
+						iter.reset();
+
+						while (iter.hasMoreTraces()) {
+							t = iter.nextTrace();
+							traceAccesses = t.getAccesses();
+
+							if (tracesIds.contains(String.valueOf(t.getId())) && traceAccesses.size() > 0)
+								calculateControllerSequences(controller, traceAccesses);
+						}
+
+						break;
+
+					default:
+						while (iter.hasMoreTraces()) {
+							t = iter.nextTrace();
+							traceAccesses = t.getAccesses();
+
+							if (traceAccesses.size() > 0)
+								calculateControllerSequences(controller, traceAccesses);
+						}
 				}
 
-                
+				if (controller.getEntities().size() > 0)
+					this.addController(controller);
 			}
 		}
-	}
-
-	public List<Cluster> getClusters() {
-		return this.clusters;
-	}
-
-	public void addCluster(Cluster cluster) {
-		this.clusters.add(cluster);
 	}
 
 	public void mergeClusters(
@@ -425,10 +462,19 @@ public class Graph {
 			Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
 
 			if (codebase.isStatic()) {
-				this.addStaticControllers(codebase.getDendrogram(this.dendrogramName).getProfiles(), null);
+				this.addStaticControllers(
+					codebase.getDendrogram(this.dendrogramName).getProfiles(),
+					null
+				);
 
 			} else {
-				this.addDynamicControllers(codebase.getDendrogram(this.dendrogramName).getProfiles());
+				Dendrogram d = codebase.getDendrogram(this.dendrogramName);
+
+				this.addDynamicControllers(
+					d.getProfiles(),
+					d.getTracesMaxLimit(),
+					d.getTypeOfTraces()
+				);
 			}
 
 		} catch (IOException e) {
@@ -450,9 +496,17 @@ public class Graph {
 		metrics.calculateMetrics();
 	}
 
-	public void calculateDynamicMetricsAnalyser(List<String> profiles) {
+	public void calculateDynamicMetricsAnalyser(
+		List<String> profiles,
+		int tracesMaxLimit,
+		Constants.TypeOfTraces traceType
+	) {
 		try {
-			this.addDynamicControllers(profiles);
+			this.addDynamicControllers(
+				profiles,
+				tracesMaxLimit,
+				traceType
+			);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

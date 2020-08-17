@@ -1,6 +1,15 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
-import { Row, Col, Form, ButtonGroup, Button, FormControl, Breadcrumb, Dropdown, DropdownButton, ButtonToolbar } from 'react-bootstrap';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
+import FormControl from 'react-bootstrap/FormControl';
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Breadcrumb from 'react-bootstrap/Breadcrumb';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 
 var HttpStatus = require('http-status-codes');
 
@@ -182,26 +191,31 @@ export class Profiles extends React.Component {
                         </ButtonToolbar>
 
                         {Object.keys(this.state.codebase.profiles).map(profile =>
-                            <div>
+                            <div key={profile}>
                                 <div style={{fontSize: '25px'}}>
                                     {profile}
                                     {this.state.codebase.profiles[profile].length === 0 && 
-                                        <Button onClick={() => this.handleDeleteProfile(profile)} 
-                                                className="ml-2"
-                                                variant="danger" 
-                                                size="sm">
-                                                    -
+                                        <Button 
+                                            onClick={() => this.handleDeleteProfile(profile)} 
+                                            className="ml-2"
+                                            variant="danger" 
+                                            size="sm"
+                                        >
+                                            -
                                         </Button>
                                     }
                                 </div>
                             
                                 {this.state.codebase.profiles[profile].map(controller =>
-                                    <Form.Check checked={this.state.selectedControllers.includes(controller)} 
-                                                style={{ paddingLeft: "3em" }} 
-                                                onClick={this.handleSelectController} 
-                                                label={controller} 
-                                                type="checkbox" 
-                                                id={controller} />
+                                    <Form.Check
+                                        key={controller}
+                                        checked={this.state.selectedControllers.includes(controller)} 
+                                        style={{ paddingLeft: "3em" }} 
+                                        onChange={this.handleSelectController} 
+                                        label={controller} 
+                                        type="checkbox" 
+                                        id={controller}
+                                    />
                                 )}
                             </div>
                         )}

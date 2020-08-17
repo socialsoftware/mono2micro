@@ -1,6 +1,8 @@
 import React from 'react';
 import Parser from 'html-react-parser';
-import { Modal, Button } from 'react-bootstrap';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
+
 
 export class ModalMessage extends React.Component {
     constructor(props, context) {

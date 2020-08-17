@@ -1,6 +1,12 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
-import { Row, Col, Card, Button, Form, FormControl, Breadcrumb } from 'react-bootstrap';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import FormControl from 'react-bootstrap/FormControl';
+import Breadcrumb from 'react-bootstrap/Breadcrumb';
 
 var HttpStatus = require('http-status-codes');
 
@@ -231,26 +237,37 @@ export class Codebases extends React.Component {
     }
 
     renderCodebases = () => {
-        return this.state.codebases.map(codebase =>
-            <div>
-                <Card key={codebase.name} style={{ width: '15rem' }}>
-                    <Card.Body>
-                        <Card.Title>
-                            {codebase.name}
-                        </Card.Title>
-                        <Button href={`/codebases/${codebase.name}`} 
-                                className="mb-2">
-                                    Go to Codebase
-                        </Button><br/>
-                        <Button onClick={() => this.handleDeleteCodebase(codebase.name)} 
-                                variant="danger">
-                                    Delete
-                        </Button>
-                    </Card.Body>
-                </Card>
-                <br/>
-            </div>
+        return (
+            <Row>
+                {
+                    this.state.codebases.map(codebase =>
+                        <Col key={codebase.name} md="auto">
+                            <Card style={{ width: '15rem', marginBottom: "16px" }}>
+                                <Card.Body>
+                                    <Card.Title>
+                                        {codebase.name}
+                                    </Card.Title>
+                                    <Button 
+                                        href={`/codebases/${codebase.name}`} 
+                                        className="mb-2"
+                                    >
+                                        Go to Codebase
+                                    </Button>
+                                    <br/>
+                                    <Button 
+                                        onClick={() => this.handleDeleteCodebase(codebase.name)} 
+                                        variant="danger"
+                                    >
+                                        Delete
+                                    </Button>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    )
+                }
+            </Row>
         );
+        
     }
 
     render() {
