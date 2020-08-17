@@ -1,9 +1,8 @@
 from os import walk
+
 import pandas as pd
-import plotly
 import statsmodels.api as sm
 
-plotly.io.orca.config.executable = '~/anaconda3/bin/orca'
 
 def iToChar(i):
     if i == 1:

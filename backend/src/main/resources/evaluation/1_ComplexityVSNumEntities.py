@@ -26,5 +26,6 @@ for file in files:
     avg = total/count
     y_data.append(avg)
 
-fig = px.scatter(x=x_data, y=y_data, title="Number of Entities vs AvgComplexity")
+fig = px.scatter(x=x_data, y=y_data, title="Number of Entities vs AvgComplexity",
+                 labels={'x': 'Number of Entities', 'y': 'Average Complexity'})
 fig.show()

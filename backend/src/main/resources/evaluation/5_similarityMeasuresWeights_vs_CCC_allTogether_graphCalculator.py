@@ -1,8 +1,8 @@
 from os import walk
+
 import pandas as pd
-import plotly
 import plotly.express as px
-plotly.io.orca.config.executable = '~/anaconda3/bin/orca'
+
 
 # Comparar Weight de cada métrica vs Complexidade Coupling e Coesão com os dados de todos os repos
 # Figura para cada N
@@ -18,12 +18,6 @@ def iToChar(i):
     if i == 4:
         return 'S'
 
-
-files = []
-for (dirpath, dirnames, filenames) in walk("./data/"):
-    files.extend(filenames)
-    break
-
 df = {
     'n': [],
     'weight': [],
@@ -32,6 +26,11 @@ df = {
     'cohesion': [],
     'metric': [],
 }
+
+files = []
+for (dirpath, dirnames, filenames) in walk("./data/"):
+    files.extend(filenames)
+    break
 
 for file in files:
     data = pd.read_csv("./data/" + file)
@@ -71,23 +70,28 @@ for i in range(3, 11):
     # )
     # fig2.show()
 
-    fig3 = px.scatter(
-        df_n,
-        x='weight',
-        y='complexity',
-        color='metric',
-        title="N = " + str(i),
-        labels={"x": "Weight", "y": "Complexity"},
-        range_y=[0, 1],
-        trendline='lowess',
-    )
-    fig3.show()
-
+    # fig3 = px.scatter(
+    #     df_n,
+    #     x='weight',
+    #     y='complexity',
+    #     color='metric',
+    #     title="N = " + str(i),
+    #     labels={"x": "Weight", "y": "Complexity"},
+    #     range_y=[0, 1],
+    #     trendline='lowess',
+    # )
+    # fig3.show()
 
     # box plot style
-    # boxFig = px.box(df_n, x="weight", y="complexity", color="metric", title="N = " + str(i),
-    #                 labels={"complexity": "Pondered Complexity", "weight": "Weight"})
-    # boxFig.show()
+    boxFig = px.box(
+        df_n,
+        x="weight",
+        y="complexity",
+        color="metric",
+        title="N = " + str(i),
+        labels={"complexity": "Pondered Complexity", "weight": "Weight"}
+    )
+    boxFig.show()
 
     # boxFig = px.box(df_n, x="weight", y="coupling", color="metric", title="N = " + str(i))
     # boxFig.show()

@@ -16,5 +16,9 @@ src/main/resources/codebases/
 src/main/resources/dendrograms/
 src/main/resources/experts/
 src/main/resources/evaluation/data/
+src/main/resources/evaluation/mojoCalculator/src/main/resources
+src/main/resources/evaluation/simMeasuresVsCohesion/
+src/main/resources/evaluation/simMeasuresVsComplexity/
+src/main/resources/evaluation/simMeasuresVsCoupling/
 
 .sts4-cache/

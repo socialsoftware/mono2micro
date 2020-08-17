@@ -1,17 +1,18 @@
 from os import walk
 import numpy as np
 import pandas as pd
-import plotly
-plotly.io.orca.config.executable = '~/anaconda3/bin/orca'
+
+# Get min complexity decompositions weights and calculate average and np.std among them
+# for different N values
 
 files = []
 for (dirpath, dirnames, filenames) in walk("./data/"):
     files.extend(filenames)
     break
 
-dictTop = {}
 for n in range(3, 11):
     print('N = ' + str(n))
+
     allTogetherWeights = []
 
     for file in files:
@@ -21,20 +22,20 @@ for n in range(3, 11):
         if maxComplexity == 0:
             continue
 
-        maxComplexity = 0
+        minComplexity = float("inf")
         count = 0
         weights = []
         for entry in data.values:
             if entry[0] != n:
                 continue
 
-            if entry[7] > maxComplexity:
-                maxComplexity = entry[7]
+            if entry[7] < minComplexity:
+                minComplexity = entry[7]
                 count = 1
                 weights.clear()
                 weights.append([entry[1], entry[2], entry[3], entry[4]])
 
-            elif entry[7] == maxComplexity:
+            elif entry[7] == minComplexity:
                 count += 1
                 weights.append([entry[1], entry[2], entry[3], entry[4]])
 
@@ -61,6 +62,7 @@ for n in range(3, 11):
         w.append(entry[1])
         r.append(entry[2])
         s.append(entry[3])
+
     allTogetherMedWeights = [round(np.mean(a), 2), round(np.mean(w), 2), round(np.mean(r), 2), round(np.mean(s), 2)]
     allTogetherStdDev = [round(np.std(a), 2), round(np.std(w), 2), round(np.std(r), 2), round(np.std(s), 2)]
     print("[A, W, R, S]")

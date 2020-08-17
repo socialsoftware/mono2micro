@@ -3,10 +3,6 @@ import numpy as np
 import pandas as pd
 import plotly
 
-plotly.io.orca.config.executable = '~/anaconda3/bin/orca'
-
-# Get min complexity decompositions weights and calculate average and np.std among them for different N values
-
 files = []
 for (dirpath, dirnames, filenames) in walk("./data/"):
     files.extend(filenames)
@@ -24,20 +20,20 @@ for n in range(3, 11):
         if maxComplexity == 0:
             continue
 
-        minComplexity = float("inf")
+        maxComplexity = 0
         count = 0
         weights = []
         for entry in data.values:
             if entry[0] != n:
                 continue
 
-            if entry[7] < minComplexity:
-                minComplexity = entry[7]
+            if entry[7] > maxComplexity:
+                maxComplexity = entry[7]
                 count = 1
                 weights.clear()
                 weights.append([entry[1], entry[2], entry[3], entry[4]])
 
-            elif entry[7] == minComplexity:
+            elif entry[7] == maxComplexity:
                 count += 1
                 weights.append([entry[1], entry[2], entry[3], entry[4]])
 
