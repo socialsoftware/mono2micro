@@ -230,15 +230,13 @@ public class Graph {
 
 		for (String profile : profiles) {
 			for (String controllerName : codebase.getProfile(profile)) {
-
-				// FIXME do these 2 lines make sense if the trace does not have accesses?
-				Controller controller = new Controller(controllerName);
-				this.addController(controller);
-
 				ControllerDto controllerDto = datafileJSON.get(controllerName);
 				List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
 
 				if (controllerAccesses.size() > 0) {
+					Controller controller = new Controller(controllerName);
+					this.addController(controller);
+
 					calculateControllerSequences(
 						controller,
 						controllerAccesses
@@ -269,10 +267,7 @@ public class Graph {
 					tracesMaxLimit
 				);
 
-				// FIXME do these 2 lines make sense if the trace does not have traces w/ accesses?
 				Controller controller = new Controller(controllerName);
-				this.addController(controller);
-
 
 				switch (typeOfTraces) {
 					case LONGEST:
@@ -322,6 +317,9 @@ public class Graph {
 								calculateControllerSequences(controller, traceAccesses);
 						}
 				}
+
+				if (controller.getEntities().size() > 0)
+					this.addController(controller);
 			}
 		}
 	}
