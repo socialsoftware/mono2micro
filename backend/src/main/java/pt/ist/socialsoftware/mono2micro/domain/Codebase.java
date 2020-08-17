@@ -132,23 +132,9 @@ public class Codebase {
 		this.dendrograms.add(dendrogram);
 	}
 
-	public void createDendrogram(Dendrogram dendrogram) throws Exception {
-		if (getDendrogram(dendrogram.getName()) != null)
-			throw new KeyAlreadyExistsException();
-
-		File dendrogramPath = new File(CODEBASES_PATH + this.name + "/" + dendrogram.getName());
-		if (!dendrogramPath.exists()) {
-			dendrogramPath.mkdir();
-		}
-
-		this.addDendrogram(dendrogram);
-
-		if (isStatic()) {
-			dendrogram.calculateStaticSimilarityMatrix();
-		} else {
-			dendrogram.calculateDynamicSimilarityMatrix();
-		}
-
+	public void executeCreateDendrogramPythonScript(Dendrogram dendrogram)
+		throws InterruptedException, IOException
+	{
 		//run python script to generate dendrogram image
 		Runtime r = Runtime.getRuntime();
 		String pythonScriptPath = RESOURCES_PATH + "createDendrogram.py";
@@ -162,4 +148,38 @@ public class Codebase {
 		Process p = r.exec(cmd);
 		p.waitFor();
 	}
+
+	public void createStaticDendrogram(Dendrogram dendrogram) throws Exception {
+		if (getDendrogram(dendrogram.getName()) != null)
+			throw new KeyAlreadyExistsException();
+
+		File dendrogramPath = new File(CODEBASES_PATH + this.name + "/" + dendrogram.getName());
+		if (!dendrogramPath.exists()) {
+			dendrogramPath.mkdir();
+		}
+
+		this.addDendrogram(dendrogram);
+
+		dendrogram.calculateStaticSimilarityMatrix();
+
+		executeCreateDendrogramPythonScript(dendrogram);
+	}
+
+	public void createDynamicDendrogram(Dendrogram dendrogram) throws Exception {
+		if (getDendrogram(dendrogram.getName()) != null)
+			throw new KeyAlreadyExistsException();
+
+		File dendrogramPath = new File(CODEBASES_PATH + this.name + "/" + dendrogram.getName());
+		if (!dendrogramPath.exists()) {
+			dendrogramPath.mkdir();
+		}
+
+		this.addDendrogram(dendrogram);
+
+		dendrogram.calculateDynamicSimilarityMatrix();
+
+		executeCreateDendrogramPythonScript(dendrogram);
+	}
+
+
 }

@@ -14,25 +14,29 @@ export class RepositoryService {
         });
     }
 
-
     //Analysis
     analysis(data) {
         return this.axios.post("/analysis", data);
     }
 
-    analyser(codebaseName, expert, profiles, requestLimit) {
+    analyser(
+        codebaseName,
+        expert,
+        profiles,
+        requestLimit,
+        amountOfTraces,
+        typeOfTraces,
+    ) {
         const analyserData = {
-            expert: expert,
-            profiles: profiles,
-            requestLimit: requestLimit
+            expert: expert || {},
+            profiles,
+            requestLimit,
+            typeOfTraces,
+            tracesMaxLimit: amountOfTraces,
         };
 
         return this.axios.post("/codebase/" + codebaseName + "/analyser", analyserData);
     }
-
-
-
-
 
     //Codebases
     getCodebases() {
@@ -89,11 +93,6 @@ export class RepositoryService {
         return this.axios.post("/codebase/create", data, config);
     }
 
-
-
-
-
-
     //Dendrograms
     getDendrograms(codebaseName) {
         return this.axios.get("/codebase/" + codebaseName + "/dendrograms");
@@ -107,16 +106,29 @@ export class RepositoryService {
         return this.axios.delete("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/delete");
     }
     
-    createDendrogram(codebaseName, dendrogramName, linkageType, accessMetricWeight, writeMetricWeight, readMetricWeight, sequenceMetricWeight, profiles) {
+    createDendrogram(
+        codebaseName,
+        dendrogramName,
+        linkageType,
+        accessMetricWeight,
+        writeMetricWeight,
+        readMetricWeight,
+        sequenceMetricWeight,
+        profiles,
+        amountOfTraces,
+        typeOfTraces,
+    ) {
         const dendrogramData = {
-            codebaseName: codebaseName,
+            codebaseName,
             name: dendrogramName,
-            linkageType: linkageType,
-            accessMetricWeight: accessMetricWeight,
-            writeMetricWeight: writeMetricWeight,
-            readMetricWeight: readMetricWeight,
-            sequenceMetricWeight: sequenceMetricWeight,
-            profiles: profiles
+            linkageType,
+            accessMetricWeight,
+            writeMetricWeight,
+            readMetricWeight,
+            sequenceMetricWeight,
+            profiles,
+            tracesMaxLimit: amountOfTraces,
+            typeOfTraces,
         };
         
         return this.axios.post("/codebase/" + codebaseName + "/dendrogram/create", dendrogramData);
@@ -146,10 +158,6 @@ export class RepositoryService {
         return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/expertCut", data, config);
     }
 
-
-
-
-
     //Graph
     getGraphs(codebaseName, dendrogramName) {
         return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graphs");
@@ -162,14 +170,6 @@ export class RepositoryService {
     deleteGraph(codebaseName, dendrogramName, graphName) {
         return this.axios.delete("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/delete");
     }
-
-    
-
-    
-
-    
-
-
 
     //Cluster
     mergeClusters(codebaseName, dendrogramName, graphName, clusterName, otherCluster, newName) {
@@ -210,7 +210,6 @@ export class RepositoryService {
                 }
             });
     }
-
 
     getControllerClusters(codebaseName, dendrogramName, graphName) {
         return this.axios.get("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controllerClusters");

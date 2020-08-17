@@ -108,20 +108,24 @@ export class Analyser extends React.Component<any, any> {
         super(props);
         this.state = {
             codebases: [],
-            codebase: {},
+            codebase: null,
             profiles: [],
             selectedProfiles: [],
             experts: [],
-            expert: {},
+            expert: null,
             resultData: [],
             requestLimit: "",
-            importFile: null
+            importFile: null,
+            amountOfTraces: "0",
+            typeOfTraces: "ALL",
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleImportSubmit = this.handleImportSubmit.bind(this);
         this.handleRequestLimitChange = this.handleRequestLimitChange.bind(this);
         this.handleSelectImportFile = this.handleSelectImportFile.bind(this);
+        this.handleChangeAmountOfTraces = this.handleChangeAmountOfTraces.bind(this);
+        this.handleChangeTypeOfTraces = this.handleChangeTypeOfTraces.bind(this);
     }
 
     componentDidMount() {
@@ -175,7 +179,14 @@ export class Analyser extends React.Component<any, any> {
         });
 
         const service = new RepositoryService();
-        service.analyser(this.state.codebase.name, this.state.expert, this.state.selectedProfiles, Number(this.state.requestLimit))
+        service.analyser(
+            this.state.codebase.name,
+            this.state.expert,
+            this.state.selectedProfiles,
+            Number(this.state.requestLimit),
+            Number(this.state.amountOfTraces),
+            this.state.typeOfTraces,
+        )
         .then(response => {
             if (response.status === HttpStatus.OK) {
                 this.setState({
@@ -218,6 +229,18 @@ export class Analyser extends React.Component<any, any> {
         reader.readAsText(event.target.files[0]);
     }
 
+    handleChangeAmountOfTraces(event: any) {
+        this.setState({
+           amountOfTraces: event.target.value
+        });
+    }
+
+    handleChangeTypeOfTraces(event: any) {
+        this.setState({
+            typeOfTraces: event.target.value
+        });
+    }
+
     renderBreadCrumbs = () => {
         return (
             <Breadcrumb>
@@ -229,7 +252,22 @@ export class Analyser extends React.Component<any, any> {
 
     render() {
 
-        const metricRows = this.state.resultData.map((data: any, index: any) => {
+        const {
+            resultData,
+            codebase,
+            codebases,
+            profiles,
+            expert,
+            selectedProfiles,
+            requestLimit,
+            experts,
+            isUploaded,
+            importFile,
+            amountOfTraces,
+            typeOfTraces,
+        } = this.state;
+
+        const metricRows = resultData.map((data: any, index: any) => {
             return {
                 id: index,
                 access: data.accessWeight,
@@ -249,10 +287,8 @@ export class Analyser extends React.Component<any, any> {
             } 
         });
 
-        console.log(metricColumns);
-
         return (
-            <div>
+            <>
                 {this.renderBreadCrumbs()}
                 <h4 style={{color: "#666666"}}>Analyser</h4>
 
@@ -261,10 +297,10 @@ export class Analyser extends React.Component<any, any> {
                         <Form.Label column sm={3}>
                             Codebase
                         </Form.Label>
-                        <Col sm={5}>
-                            <DropdownButton title={Object.keys(this.state.codebase).length === 0 ? "Select Codebase" : this.state.codebase.name}>
+                        <Col sm={3}>
+                            <DropdownButton title={codebase?.name || "Select Codebase"}>
                                 {
-                                    this.state.codebases.map((codebase: any) => 
+                                    codebases.map((codebase: any) => 
                                         <Dropdown.Item 
                                             key={codebase.name}
                                             onClick={() => this.setCodebase(codebase)}>{codebase.name}
@@ -279,27 +315,116 @@ export class Analyser extends React.Component<any, any> {
                         <Form.Label column sm={3}>
                             Select Controller Profiles
                         </Form.Label>
-                        <Col sm={5}>
+                        <Col sm={3}>
                             <DropdownButton title={'Controller Profiles'}>
-                                {this.state.profiles.map((profile: any) =>
+                                {profiles.map((profile: any) =>
                                     <Dropdown.Item
                                         key={profile}
                                         onSelect={() => this.selectProfile(profile)}
-                                        active={this.state.selectedProfiles.includes(profile)}>{profile}</Dropdown.Item>)}
+                                        active={selectedProfiles.includes(profile)}
+                                    >
+                                        {profile}
+                                    </Dropdown.Item>
+                                )}
                             </DropdownButton>
                         </Col>
                     </Form.Group>
+                    {
+                        codebase?.analysisType === "dynamic" && (
+                            <>
+                                <Form.Group as={Row} controlId="amountOfTraces">
+                                    <Form.Label column sm={3}>
+                                        Amount of Traces per Controller
+                                    </Form.Label>
+                                    <Col sm={3}>
+                                        <FormControl 
+                                            type="number"
+                                            value={amountOfTraces}
+                                            onChange={this.handleChangeAmountOfTraces}
+                                            
+                                        />
+                                        <Form.Text className="text-muted">
+                                            If no number is inserted, 0 is assumed to be the default value meaning the maximum number of traces
+                                        </Form.Text>
+                                    </Col>
+                                </Form.Group>
+                                <Form.Group as={Row} className="align-items-center">
+                                    <Form.Label as="legend" column sm={3}>
+                                        Type of traces
+                                    </Form.Label>
+                                    <Col sm={3} style={{ paddingLeft: 0 }}>
+                                        <Col sm="auto">
+                                            <Form.Check
+                                                onClick={this.handleChangeTypeOfTraces}
+                                                name="typeOfTraces"
+                                                label="All"
+                                                type="radio"
+                                                id="allTraces"
+                                                value="ALL"
+                                            />
+                                        </Col>
+                                        <Col sm="auto">
+                                            <Form.Check
+                                                onClick={this.handleChangeTypeOfTraces}
+                                                name="typeOfTraces"
+                                                label="Longest"
+                                                type="radio"
+                                                id="longest"
+                                                value="LONGEST"
+                                            />
+                                        </Col>
+                                        <Col sm="auto">
+                                            <Form.Check
+                                                onClick={this.handleChangeTypeOfTraces}
+                                                name="typeOfTraces"
+                                                label="With more different accesses"
+                                                type="radio"
+                                                id="withMoreDifferentTraces"
+                                                value="WITH_MORE_DIFFERENT_ACCESSES"
+                                            />
 
+                                        </Col>
+                                        <Col sm="auto">
+                                            <Form.Check
+                                                onClick={this.handleChangeTypeOfTraces}
+                                                name="typeOfTraces"
+                                                label="Representative (set of accesses)"
+                                                type="radio"
+                                                id="representativeSetOfAccesses"
+                                                value="REPRESENTATIVE"
+                                            />
+                                        </Col>
+                                        {/* WIP */}
+                                        <Col sm="auto">
+                                            <Form.Check
+                                                onClick={undefined}
+                                                name="typeOfTraces"
+                                                label="Representative (subsequence of accesses)"
+                                                type="radio"
+                                                id="complete"
+                                                value="?"
+                                                disabled
+                                            />
+                                        </Col>
+                                    </Col>
+                                </Form.Group>
+                            </>
+                        )
+                    }
                     <Form.Group as={Row} controlId="expert">
                         <Form.Label column sm={3}>
                             Expert
                         </Form.Label>
-                        <Col sm={5}>
-                            <DropdownButton title={Object.keys(this.state.expert).length === 0 ? "Select Expert Cut" : this.state.expert.name}>
-                                {this.state.experts.map((expert: any) => 
+                        <Col sm={3}>
+                            <DropdownButton title={expert?.name || "Select Expert Cut"}>
+                                {experts.map((expert: any) => 
                                     <Dropdown.Item 
                                         key={expert.name}
-                                        onClick={() => this.setExpert(expert)}>{expert.name}</Dropdown.Item>)}
+                                        onClick={() => this.setExpert(expert)}
+                                    >
+                                        {expert.name}
+                                    </Dropdown.Item>
+                                )}
                             </DropdownButton>
                         </Col>
                     </Form.Group>
@@ -308,26 +433,32 @@ export class Analyser extends React.Component<any, any> {
                         <Form.Label column sm={3}>
                             Request limit
                         </Form.Label>
-                        <Col sm={2}>
+                        <Col sm={3}>
                             <FormControl 
                                 type="number"
                                 placeholder="Request Limit"
-                                value={this.state.requestLimit}
-                                onChange={this.handleRequestLimitChange}/>
+                                value={requestLimit}
+                                onChange={this.handleRequestLimitChange}
+                            />
                         </Col>
                     </Form.Group>
 
                     <Form.Group as={Row}>
                         <Col sm={{ span: 5, offset: 3 }}>
-                            <Button type="submit"
-                                    disabled={this.state.isUploaded === "Uploading..." ||
-                                            Object.keys(this.state.codebase).length === 0 ||
-                                            this.state.selectedProfiles.length === 0 ||
-                                            this.state.requestLimit === ""}>
+                            <Button 
+                                type="submit"
+                                disabled={
+                                    isUploaded === "Uploading..." ||
+                                    !codebase ||
+                                    selectedProfiles.length === 0 ||
+                                    requestLimit === "" ||
+                                    (codebase.analysisType === "dynamic" && (typeOfTraces === "" || amountOfTraces === ""))
+                                }
+                            >
                                 Submit
                             </Button>
                             <Form.Text>
-                                {this.state.isUploaded}
+                                {isUploaded}
                             </Form.Text>
                         </Col>
                     </Form.Group>
@@ -338,7 +469,7 @@ export class Analyser extends React.Component<any, any> {
                         <Form.Label column sm={3}>
                             Import Analyser Results from File
                         </Form.Label>
-                        <Col sm={5}>
+                        <Col sm={3}>
                             <FormControl 
                                 type="file"
                                 onChange={this.handleSelectImportFile}
@@ -350,7 +481,7 @@ export class Analyser extends React.Component<any, any> {
                         <Col sm={{ span: 5, offset: 3 }}>
                             <Button 
                                 type="submit"
-                                disabled={ this.state.importFile === null }
+                                disabled={ importFile === null }
                             >
                                 Import Analyser Results
                             </Button>
@@ -363,7 +494,7 @@ export class Analyser extends React.Component<any, any> {
                     columns={ metricColumns }
                     filter={ filterFactory() }
                 />
-            </div>
+            </>
         )
     }
 }

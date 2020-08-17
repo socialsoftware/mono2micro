@@ -241,7 +241,7 @@ export class Codebases extends React.Component {
             <Row>
                 {
                     this.state.codebases.map(codebase =>
-                        <Col key={codebase.name}>
+                        <Col key={codebase.name} md="auto">
                             <Card style={{ width: '15rem', marginBottom: "16px" }}>
                                 <Card.Body>
                                     <Card.Title>

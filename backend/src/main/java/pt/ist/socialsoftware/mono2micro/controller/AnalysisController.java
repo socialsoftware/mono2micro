@@ -8,12 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONArray;
@@ -32,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pt.ist.socialsoftware.mono2micro.domain.*;
 import pt.ist.socialsoftware.mono2micro.dto.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
+import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
@@ -44,7 +40,10 @@ public class AnalysisController {
     private CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
 	@RequestMapping(value = "/codebase/{codebaseName}/analyser", method = RequestMethod.POST)
-	public ResponseEntity<HttpStatus> analyser(@PathVariable String codebaseName, @RequestBody AnalyserDto analyser) {
+	public ResponseEntity<HttpStatus> analyser(
+		@PathVariable String codebaseName,
+		@RequestBody AnalyserDto analyser
+	) {
 		logger.debug("analyser");
 
 		try {
@@ -131,7 +130,11 @@ public class AnalysisController {
 					graph.calculateMetricsAnalyser(analyser.getProfiles(), datafileJSON);
 
 				} else {
-					graph.calculateDynamicMetricsAnalyser(analyser.getProfiles());
+					graph.calculateDynamicMetricsAnalyser(
+						analyser.getProfiles(),
+						analyser.getTracesMaxLimit(),
+						analyser.getTypeOfTraces()
+					);
 				}
 
 				AnalysisDto analysisDto = new AnalysisDto();
@@ -295,25 +298,83 @@ public class AnalysisController {
 		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 		Map<String,Integer> e1e2PairCount = new HashMap<>();
 
+		ControllerTracesIterator iter;
+		TraceDto t;
+
 		for (String profile : analyser.getProfiles()) {
 			for (String controllerName : codebase.getProfile(profile)) {
-				ControllerTracesIterator iter = new ControllerTracesIterator(
+				iter = new ControllerTracesIterator(
 					codebase.getDatafilePath(),
-					controllerName
+					controllerName,
+					analyser.getTracesMaxLimit()
 				);
 
-				while (iter.hasMoreTraces()) {
-					TraceDto t = iter.nextTrace();
+				switch (analyser.getTypeOfTraces()) {
+					case LONGEST:
+						t = iter.getLongestTrace();
 
-					Utils.fillEntityDataStructures(
-						entityControllers,
-						e1e2PairCount,
-						t.getAccesses(),
-						controllerName
-					);
+						if (t != null) {
+							Utils.fillEntityDataStructures(
+								entityControllers,
+								e1e2PairCount,
+								t.getAccesses(),
+								controllerName
+							);
+						}
+
+						break;
+
+					case WITH_MORE_DIFFERENT_ACCESSES:
+						t = iter.getTraceWithMoreDifferentAccesses();
+
+						if (t != null) {
+							Utils.fillEntityDataStructures(
+								entityControllers,
+								e1e2PairCount,
+								t.getAccesses(),
+								controllerName
+							);
+						}
+
+						break;
+
+					case REPRESENTATIVE:
+						Set<String> tracesIds = iter.getRepresentativeTraces();
+						iter.reset();
+
+						while (iter.hasMoreTraces()) {
+							t = iter.nextTrace();
+
+							if (tracesIds.contains(String.valueOf(t.getId()))) {
+								Utils.fillEntityDataStructures(
+									entityControllers,
+									e1e2PairCount,
+									t.getAccesses(),
+									controllerName
+								);
+							}
+						}
+
+						break;
+
+					default:
+						while (iter.hasMoreTraces()) {
+							t = iter.nextTrace();
+
+							Utils.fillEntityDataStructures(
+								entityControllers,
+								e1e2PairCount,
+								t.getAccesses(),
+								controllerName
+							);
+						}
 				}
+
+				t = null; // release memory
 			}
 		}
+
+		iter = null; // release memory
 
 		List<String> entitiesList = new ArrayList<>(entityControllers.keySet());
 		Collections.sort(entitiesList);

@@ -9,6 +9,13 @@ public final class Constants {
   public static String RESOURCES_PATH = "src/main/resources/";
   public static String PYTHON = PropertiesManager.getProperties().getProperty("python");
 
+  public enum TypeOfTraces {
+    ALL,
+    REPRESENTATIVE,
+    LONGEST,
+    WITH_MORE_DIFFERENT_ACCESSES,
+  }
+
   enum Mode {
     READ,
     WRITE,
