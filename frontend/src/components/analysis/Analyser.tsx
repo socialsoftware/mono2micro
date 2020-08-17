@@ -1,12 +1,19 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
-import { Row, Col, Form, DropdownButton, Dropdown, Button, Breadcrumb, FormControl } from 'react-bootstrap';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
+import FormControl from 'react-bootstrap/FormControl';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Dropdown from 'react-bootstrap/Dropdown';
+import Button from 'react-bootstrap/Button';
+import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { numberFilter } from 'react-bootstrap-table2-filter';
 
 var HttpStatus = require('http-status-codes');
 
-const filter = numberFilter();
+const filter = numberFilter({});
 const sort = true;
 
 const metricColumns = [
@@ -96,8 +103,8 @@ const metricColumns = [
     }
 ];
 
-export class Analyser extends React.Component {
-    constructor(props) {
+export class Analyser extends React.Component<any, any> {
+    constructor(props: any) {
         super(props);
         this.state = {
             codebases: [],
@@ -130,19 +137,20 @@ export class Analyser extends React.Component {
         });
     }
 
-    setCodebase(codebase) {
+    setCodebase(codebase: any) {
         this.setState({
             codebase: codebase,
             profiles: Object.keys(codebase.profiles),
-            experts: codebase.dendrograms.map(dendrogram => dendrogram.graphs)
-                                            .flat()
-                                            .filter(graph => graph.expert === true)
+            experts: codebase.dendrograms
+                        .map((dendrogram: any) => dendrogram.graphs)
+                        .flat()
+                        .filter((graph: any) => graph.expert === true)
         });
     }
 
-    selectProfile(profile) {
+    selectProfile(profile: any) {
         if (this.state.selectedProfiles.includes(profile)) {
-            let filteredArray = this.state.selectedProfiles.filter(p => p !== profile);
+            let filteredArray = this.state.selectedProfiles.filter((p : any) => p !== profile);
             this.setState({
                 selectedProfiles: filteredArray
             });
@@ -153,13 +161,13 @@ export class Analyser extends React.Component {
         }
     }
 
-    setExpert(expert) {
+    setExpert(expert: any) {
         this.setState({
             expert: expert
         });
     }
 
-    handleSubmit(event) {
+    handleSubmit(event: any) {
         event.preventDefault()
 
         this.setState({
@@ -186,23 +194,23 @@ export class Analyser extends React.Component {
         });
     }
 
-    handleRequestLimitChange(event) {
+    handleRequestLimitChange(event: any) {
         this.setState({
             requestLimit: event.target.value
         });
     }
 
-    handleImportSubmit(event) {
+    handleImportSubmit(event: any) {
         event.preventDefault();
         this.setState({
             resultData: Object.values(JSON.parse(this.state.importFile))
         });
     }
 
-    handleSelectImportFile(event) {
+    handleSelectImportFile(event: any) {
         let that = this;
         let reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function(e: any) {
             that.setState({
                 importFile: e.target.result
             });
@@ -221,7 +229,7 @@ export class Analyser extends React.Component {
 
     render() {
 
-        const metricRows = this.state.resultData.map((data, index) => {
+        const metricRows = this.state.resultData.map((data: any, index: any) => {
             return {
                 id: index,
                 access: data.accessWeight,
@@ -255,10 +263,14 @@ export class Analyser extends React.Component {
                         </Form.Label>
                         <Col sm={5}>
                             <DropdownButton title={Object.keys(this.state.codebase).length === 0 ? "Select Codebase" : this.state.codebase.name}>
-                                {this.state.codebases.map(codebase => 
-                                    <Dropdown.Item 
-                                        key={codebase.name}
-                                        onClick={() => this.setCodebase(codebase)}>{codebase.name}</Dropdown.Item>)}
+                                {
+                                    this.state.codebases.map((codebase: any) => 
+                                        <Dropdown.Item 
+                                            key={codebase.name}
+                                            onClick={() => this.setCodebase(codebase)}>{codebase.name}
+                                        </Dropdown.Item>
+                                    )
+                                }
                             </DropdownButton>
                         </Col>
                     </Form.Group>
@@ -269,7 +281,7 @@ export class Analyser extends React.Component {
                         </Form.Label>
                         <Col sm={5}>
                             <DropdownButton title={'Controller Profiles'}>
-                                {this.state.profiles.map(profile =>
+                                {this.state.profiles.map((profile: any) =>
                                     <Dropdown.Item
                                         key={profile}
                                         onSelect={() => this.selectProfile(profile)}
@@ -284,7 +296,7 @@ export class Analyser extends React.Component {
                         </Form.Label>
                         <Col sm={5}>
                             <DropdownButton title={Object.keys(this.state.expert).length === 0 ? "Select Expert Cut" : this.state.expert.name}>
-                                {this.state.experts.map(expert => 
+                                {this.state.experts.map((expert: any) => 
                                     <Dropdown.Item 
                                         key={expert.name}
                                         onClick={() => this.setExpert(expert)}>{expert.name}</Dropdown.Item>)}

@@ -1,5 +1,13 @@
 import React from 'react';
-import { Button, DropdownButton, Dropdown, FormControl, ButtonGroup, ButtonToolbar, InputGroup} from 'react-bootstrap';
+import InputGroup from 'react-bootstrap/InputGroup';
+import FormControl from 'react-bootstrap/FormControl';
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+
+
 import Select from 'react-select';
 
 export const operations = {

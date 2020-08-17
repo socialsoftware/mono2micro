@@ -6,7 +6,8 @@ import { ModalMessage } from '../util/ModalMessage';
 import { DataSet } from 'vis';
 import { views, types } from './Views';
 import BootstrapTable from 'react-bootstrap-table-next';
-import { Button, ButtonGroup } from 'react-bootstrap';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
 export const clusterViewHelp = (<div>
     Hover or double click cluster to see entities inside.<br />

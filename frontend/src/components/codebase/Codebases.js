@@ -1,6 +1,12 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
-import { Row, Col, Card, Button, Form, FormControl, Breadcrumb } from 'react-bootstrap';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import FormControl from 'react-bootstrap/FormControl';
+import Breadcrumb from 'react-bootstrap/Breadcrumb';
 
 var HttpStatus = require('http-status-codes');
 
