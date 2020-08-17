@@ -237,26 +237,37 @@ export class Codebases extends React.Component {
     }
 
     renderCodebases = () => {
-        return this.state.codebases.map(codebase =>
-            <div>
-                <Card key={codebase.name} style={{ width: '15rem' }}>
-                    <Card.Body>
-                        <Card.Title>
-                            {codebase.name}
-                        </Card.Title>
-                        <Button href={`/codebases/${codebase.name}`} 
-                                className="mb-2">
-                                    Go to Codebase
-                        </Button><br/>
-                        <Button onClick={() => this.handleDeleteCodebase(codebase.name)} 
-                                variant="danger">
-                                    Delete
-                        </Button>
-                    </Card.Body>
-                </Card>
-                <br/>
-            </div>
+        return (
+            <Row>
+                {
+                    this.state.codebases.map(codebase =>
+                        <Col key={codebase.name}>
+                            <Card style={{ width: '15rem', marginBottom: "16px" }}>
+                                <Card.Body>
+                                    <Card.Title>
+                                        {codebase.name}
+                                    </Card.Title>
+                                    <Button 
+                                        href={`/codebases/${codebase.name}`} 
+                                        className="mb-2"
+                                    >
+                                        Go to Codebase
+                                    </Button>
+                                    <br/>
+                                    <Button 
+                                        onClick={() => this.handleDeleteCodebase(codebase.name)} 
+                                        variant="danger"
+                                    >
+                                        Delete
+                                    </Button>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    )
+                }
+            </Row>
         );
+        
     }
 
     render() {
