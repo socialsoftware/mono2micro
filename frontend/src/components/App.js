@@ -1,7 +1,6 @@
 import React from 'react';
 import { Header} from './Header';
 import { Main } from './Main';
-import Jumbotron from 'react-bootstrap/Jumbotron';
 import { BrowserRouter } from 'react-router-dom';
 
 
