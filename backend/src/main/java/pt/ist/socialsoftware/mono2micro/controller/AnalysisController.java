@@ -1,15 +1,5 @@
 package pt.ist.socialsoftware.mono2micro.controller;
 
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.PYTHON;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.RESOURCES_PATH;
-
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.*;
-
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,19 +8,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.domain.*;
 import pt.ist.socialsoftware.mono2micro.dto.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
-import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
+import pt.ist.socialsoftware.mono2micro.utils.mojoCalculator.src.main.java.MoJo;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
+
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 
 @RestController
 @RequestMapping(value = "/mono2micro")
@@ -393,7 +387,7 @@ public class AnalysisController {
 
 
 	@RequestMapping(value = "/analysis", method = RequestMethod.POST)
-	public ResponseEntity<AnalysisDto> getAnalysis(@RequestBody AnalysisDto analysis) {
+	public ResponseEntity<AnalysisDto> getAnalysis(@RequestBody AnalysisDto analysis) throws IOException {
 		logger.debug("getAnalysis");
 		
 		Map<String,List<String>> graph1 = new HashMap<>();
@@ -407,6 +401,7 @@ public class AnalysisController {
 		}
 
 		List<String> entities = new ArrayList<>();
+//		List<String> notSharedEntities = new ArrayList<>();
 		for (List<String> l1 : graph1.values()) {
 			for (String e1 : l1) {
 				boolean inBoth = false;
@@ -418,8 +413,13 @@ public class AnalysisController {
 				}
 				if (inBoth)
 					entities.add(e1);
+//				else {
+//					entities.add(e1);
+//					notSharedEntities.add(e1);
+//				}
 			}				
 		}
+//		graph2.put("nonAssignedEntities", notSharedEntities);
 
 		int truePositive = 0;
 		int falsePositive = 0;
@@ -525,7 +525,47 @@ public class AnalysisController {
 		analysis.setRecall(recall);
 		analysis.setSpecificity(specificity);
         analysis.setFmeasure(fmeasure);
-		
+
+		StringBuilder sbSource = new StringBuilder();
+		for (Map.Entry<String, List<String>> clusterEntry : graph1.entrySet()) {
+			String clusterName = clusterEntry.getKey();
+			List<String> clusterEntities = clusterEntry.getValue();
+			for (String entity : clusterEntities) {
+				if (entities.contains(entity)) { // entity present in both graphs
+					sbSource.append("contain " + clusterName + " " + entity + "\n");
+				}
+			}
+		}
+
+		StringBuilder sbTarget = new StringBuilder();
+		for (Map.Entry<String, List<String>> clusterEntry : graph2.entrySet()) {
+			String clusterName = clusterEntry.getKey();
+			List<String> clusterEntities = clusterEntry.getValue();
+			for (String entity : clusterEntities) {
+				if (entities.contains(entity)) { // entity present in both graphs
+					sbTarget.append("contain " + clusterName + " " + entity + "\n");
+				}
+			}
+		}
+
+		String distrSrcPath = MOJO_RESOURCES_PATH + "distrSrc.rsf";
+		String distrTargetPath = MOJO_RESOURCES_PATH + "distrTarget.rsf";
+
+		FileWriter srcFileWriter = new FileWriter(new File(distrSrcPath));
+		srcFileWriter.write(sbSource.toString());
+		srcFileWriter.close();
+
+		FileWriter targetFileWriter = new FileWriter(new File(distrTargetPath));
+		targetFileWriter.write(sbTarget.toString());
+		targetFileWriter.close();
+
+		double mojoValue = new MoJo().executeMojo(new String[]{
+				distrSrcPath,
+				distrTargetPath,
+				"-fm"
+		});
+
+		analysis.setMojo(mojoValue);
 		return new ResponseEntity<>(analysis, HttpStatus.OK);
 	}
 }
