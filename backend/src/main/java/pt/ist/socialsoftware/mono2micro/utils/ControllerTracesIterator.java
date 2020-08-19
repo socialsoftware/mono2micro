@@ -96,7 +96,9 @@ public class ControllerTracesIterator {
 		TraceDto t = jsonParser.readValueAs(TraceDto.class);
 		jsonParser.nextToken();
 
-		counter++;
+		if (t.getSequences() != null && t.getSequences().size() > 0) {
+			counter++;
+		}
 
 		return t;
 	}
