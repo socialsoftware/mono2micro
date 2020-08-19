@@ -2,6 +2,7 @@ import os
 from os import walk
 import pandas as pd
 import csv
+import shutil
 
 # Create .CSV files from analyser results
 # numberOfEntities_MaxComplexity_CodebaseName.csv
@@ -15,9 +16,14 @@ for (dirpath, dirnames, filenames) in walk("../codebases"):
 dataFolderPath = os.getcwd() + "/data/"
 if not os.path.exists(dataFolderPath):
     os.mkdir(dataFolderPath)
-
+else:
+    shutil.rmtree(dataFolderPath)
+    os.mkdir(dataFolderPath)
 
 for folder in codebases:
+    if 'ldod' not in folder.lower():
+        continue
+
     analyserPath = os.getcwd() + "/../codebases/" + folder + "/analyser/analyserResult.json"
     similarityMatrixPath = os.getcwd() + "/../codebases/" + folder + "/analyser/similarityMatrix.json"
 

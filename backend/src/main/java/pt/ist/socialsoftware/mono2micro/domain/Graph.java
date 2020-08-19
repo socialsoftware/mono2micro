@@ -235,13 +235,24 @@ public class Graph {
 
 		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
 
+		ObjectMapper mapper = new ObjectMapper();
+		JsonFactory jsonfactory = mapper.getFactory();
+		JsonGenerator jGenerator = jsonfactory.createGenerator(
+				new FileOutputStream(CODEBASES_PATH + codebaseName + "/controllerEntities.json"),
+				JsonEncoding.UTF8
+		);
+
+		jGenerator.useDefaultPrettyPrinter(); // for testing purposes
+		jGenerator.writeStartObject();
+
 		for (String profile : profiles) {
 			for (String controllerName : codebase.getProfile(profile)) {
 				ControllerDto controllerDto = datafileJSON.get(controllerName);
 				List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
 
+				Controller controller = new Controller(controllerName);
 				if (controllerAccesses.size() > 0) {
-					Controller controller = new Controller(controllerName);
+//					Controller controller = new Controller(controllerName);
 					this.addController(controller);
 
 					calculateControllerSequences(
@@ -250,8 +261,12 @@ public class Graph {
 					);
 				}
 
+				jGenerator.writeObjectField(controller.getName(), controller.getEntities());
 			}
 		}
+
+		jGenerator.writeEndObject();
+		jGenerator.close();
 	}
 
 	public void addDynamicControllers(

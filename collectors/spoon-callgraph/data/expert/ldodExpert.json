@@ -6,6 +6,8 @@
             "AltTextWeight",
             "AppText",
             "DelText",
+            "ParagraphText",
+            "SubstText",
             "Dimensions",
             "GapText",
             "SegText",
