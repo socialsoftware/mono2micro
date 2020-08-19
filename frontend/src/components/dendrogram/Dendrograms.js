@@ -538,12 +538,13 @@ export class Dendrograms extends React.Component {
 
     render() {
         const metricRows = this.state.allGraphs.map(graph => {
+            debugger;
             return {
                 id: graph.dendrogramName + graph.name,
                 dendrogram: graph.dendrogramName,
                 graph: graph.name,
                 clusters: graph.clusters.length,
-                singleton: graph.clusters.filter(c => c.entities.length === 1).length,
+                singleton: graph.clusters.filter(c => Object.keys(c.entities).length === 1).length,
                 max_cluster_size: Math.max(...graph.clusters.map(c => Object.keys(c.entities).length)),
                 ss: graph.silhouetteScore,
                 cohesion: graph.cohesion,
