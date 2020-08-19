@@ -71,6 +71,10 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<!-- <configuration>
+					<jvmArguments>-Xms2g</jvmArguments>
+					<jvmArguments>-Xmx12g</jvmArguments>
+				</configuration> -->
 			</plugin>
 		</plugins>
 	</build>
