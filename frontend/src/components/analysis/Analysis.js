@@ -149,7 +149,7 @@ export class Analysis extends React.Component {
         }];
 
         return (
-            <div>
+            <>
                 {this.renderBreadCrumbs()}
                 <h4 style={{color: "#666666"}}>Microservice Analysis</h4>
 
@@ -222,17 +222,63 @@ export class Analysis extends React.Component {
                 </Form>
 
                 {Object.keys(this.state.resultData).length !== 0 &&
-                    <div>
-                        TP : {this.state.resultData.truePositive}< br/>
-                        TN : {this.state.resultData.trueNegative}< br/>
-                        FP : {this.state.resultData.falsePositive}< br/>
-                        FN : {this.state.resultData.falseNegative}< br/>
-                        Accuracy : {this.state.resultData.accuracy}< br/>
-                        Precision : {this.state.resultData.precision}< br/>
-                        Recall : {this.state.resultData.recall}< br/>
-                        Specificity : {this.state.resultData.specificity === -1 ? "--" : this.state.resultData.specificity}< br/>
-                        F-Score : {this.state.resultData.fmeasure}
-
+                    <>
+                        <h4 style={{color: "#666666"}}> Metrics </h4>
+                        <BootstrapTable
+                            keyField='id'
+                            data={ [ {
+                                id: "metrics",
+                                tp: this.state.resultData.truePositive,
+                                tn: this.state.resultData.trueNegative,
+                                fp: this.state.resultData.falsePositive,
+                                fn: this.state.resultData.falseNegative,
+                                accuracy: this.state.resultData.accuracy,
+                                precision: this.state.resultData.precision,
+                                recall: this.state.resultData.recall,
+                                specificity: this.state.resultData.specificity === -1 ? "--" : this.state.resultData.specificity,
+                                fscore: this.state.resultData.fmeasure
+                            }
+                            ] }
+                            columns={ [
+                                {
+                                    dataField: 'tp',
+                                    text: 'TP',
+                                }, 
+                                {
+                                    dataField: 'tn',
+                                    text: 'TN',
+                                }, 
+                                {
+                                    dataField: 'fp',
+                                    text: 'FP',
+                                }, 
+                                {
+                                    dataField: 'fn',
+                                    text: 'FN',
+                                },
+                                {
+                                    dataField: 'accuracy',
+                                    text: 'Accuracy',
+                                }, 
+                                {
+                                    dataField: 'precision',
+                                    text: 'Precision',
+                                }, 
+                                {
+                                    dataField: 'recall',
+                                    text: 'Recall',
+                                }, 
+                                {
+                                    dataField: 'specificity',
+                                    text: 'Specificity',
+                                }, 
+                                {
+                                    dataField: 'fscore',
+                                    text: 'F-Score',
+                                }
+                            ]}
+                            bootstrap4
+                        />
                         <hr />
                         <h4 style={{color: "#666666"}}>False Pairs</h4>
 
@@ -244,16 +290,16 @@ export class Analysis extends React.Component {
                             search>
                             {
                                 props => (
-                                    <div>
+                                    <>
                                         <SearchBar { ...props.searchProps } />
                                         <BootstrapTable { ...props.baseProps } />
-                                    </div>
+                                    </>
                                 )
                             }
                         </ToolkitProvider>
-                    </div>
+                    </>
                 }
-            </div>
+            </>
         )
     }
 }
