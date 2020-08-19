@@ -19,6 +19,7 @@ public class AnalysisDto {
     private float specificity;
     private float fmeasure;
     private float complexity;
+    private double mojo;
 
     public float getPrecision() {
         return precision;
@@ -126,5 +127,13 @@ public class AnalysisDto {
 
     public void setFmeasure(float fmeasure) {
         this.fmeasure = fmeasure;
+    }
+
+    public double getMojo() {
+        return mojo;
+    }
+
+    public void setMojo(double mojoValue) {
+        this.mojo = mojoValue;
     }
 }

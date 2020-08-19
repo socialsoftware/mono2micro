@@ -236,7 +236,8 @@ export class Analysis extends React.Component {
                                 precision: this.state.resultData.precision,
                                 recall: this.state.resultData.recall,
                                 specificity: this.state.resultData.specificity === -1 ? "--" : this.state.resultData.specificity,
-                                fscore: this.state.resultData.fmeasure
+                                fscore: this.state.resultData.fmeasure,
+                                mojo: this.state.resultData.mojo
                             }
                             ] }
                             columns={ [
@@ -275,6 +276,10 @@ export class Analysis extends React.Component {
                                 {
                                     dataField: 'specificity',
                                     text: 'Specificity',
+                                }, 
+                                {
+                                    dataField: 'mojo',
+                                    text: 'MoJo',
                                 }, 
                             ]}
                             bootstrap4
