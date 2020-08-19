@@ -257,6 +257,10 @@ export class Analysis extends React.Component {
                                     text: 'FN',
                                 },
                                 {
+                                    dataField: 'fscore',
+                                    text: 'F-Score',
+                                },
+                                {
                                     dataField: 'accuracy',
                                     text: 'Accuracy',
                                 }, 
@@ -272,10 +276,6 @@ export class Analysis extends React.Component {
                                     dataField: 'specificity',
                                     text: 'Specificity',
                                 }, 
-                                {
-                                    dataField: 'fscore',
-                                    text: 'F-Score',
-                                }
                             ]}
                             bootstrap4
                         />
