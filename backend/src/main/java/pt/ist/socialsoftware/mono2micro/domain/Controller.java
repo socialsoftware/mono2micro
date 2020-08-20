@@ -1,17 +1,17 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
 import java.util.*;
-
+import java.util.stream.Collectors;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
+import pt.ist.socialsoftware.mono2micro.utils.LocalTransactionTypes;
 
 public class Controller {
 	private String name;
 	private float complexity;
 	private Map<String, String> entities = new HashMap<>();
 	private String entitiesSeq = "[]";
-	private List<LocalTransaction> functionalityRedesign = new ArrayList<>();
+	private List<FunctionalityRedesign> functionalityRedesigns = new ArrayList<>();
 
 	public Controller() {
 	}
@@ -64,47 +64,58 @@ public class Controller {
 		this.entitiesSeq = entitiesSeq;
 	}
 
-	public void addEntitiesSeq(JSONArray entitiesSeq) throws JSONException {
+	public void addEntitiesSeq(JSONArray entitiesSeq){
 		this.setEntitiesSeq(entitiesSeq.toString());
 	}
 
-	public List<LocalTransaction> getFunctionalityRedesign() {
-		return functionalityRedesign;
+	public List<FunctionalityRedesign> getFunctionalityRedesigns() {
+		return functionalityRedesigns;
 	}
 
-	public void setFunctionalityRedesign(List<LocalTransaction> functionalityRedesign) {
-		this.functionalityRedesign = functionalityRedesign;
+	public void setFunctionalityRedesigns(List<FunctionalityRedesign> functionalityRedesigns) {
+		this.functionalityRedesigns = functionalityRedesigns;
 	}
 
-	public void addFunctionalityRedesign() throws JSONException {
+	public void createFunctionalityRedesign(String name) throws JSONException {
+		FunctionalityRedesign functionalityRedesign = new FunctionalityRedesign(name);
+
 		JSONArray sequence = new JSONArray(this.entitiesSeq);
+		LocalTransaction lt = new LocalTransaction(Integer.toString(-1), this.name,
+				"", new ArrayList<>(), this.name );
+		lt.getRemoteInvocations().add(0);
+		functionalityRedesign.getRedesign().add(lt);
 
 		for(int i=0; i < sequence.length(); i++){
-			LocalTransaction lt = new LocalTransaction(Integer.toString(i),
+			lt = new LocalTransaction(Integer.toString(i),
 					sequence.getJSONObject(i).getString("cluster"),
 					sequence.getJSONObject(i).getString("sequence"),
-					new ArrayList<Integer>());
+					new ArrayList<Integer>(),
+					i + ": " + sequence.getJSONObject(i).getString("cluster"));
 
-			this.functionalityRedesign.add(lt);
+			functionalityRedesign.getRedesign().add(lt);
 
 			if(i > 0) {
-				this.functionalityRedesign.get(i-1).getRemoteInvocations().add(i);
+				functionalityRedesign.getRedesign().get(i).getRemoteInvocations().add(i);
 			}
 		}
+		this.functionalityRedesigns.add(0,functionalityRedesign);
 	}
 
-	public List<LocalTransaction> addCompensating(String clusterName, String entities, String fromID) {
-		int maxID = this.functionalityRedesign.stream().map(lt -> Integer.parseInt(lt.getId())).max(Integer::compare).get();
-		LocalTransaction newLT = new LocalTransaction(String.valueOf(maxID+1),clusterName,entities,new ArrayList<Integer>());
+	public FunctionalityRedesign getFunctionalityRedesign(String redesignName){
+		return this.functionalityRedesigns.stream().filter(fr -> fr.getName().equals(redesignName)).findFirst().orElse(null);
+	}
 
-		LocalTransaction caller = this.functionalityRedesign.stream().filter(lt -> lt.getId().equals(fromID)).findFirst().orElse(null);
+	public boolean changeFunctionalityRedesignName(String oldName, String newName){
+		FunctionalityRedesign functionalityRedesign = this.functionalityRedesigns.stream().filter(fr -> fr.getName().equals(oldName)).findFirst().orElse(null);
+		functionalityRedesign.setName(newName);
+		return true;
+	}
 
-		if(caller != null){
-			this.functionalityRedesign.add(newLT);
-			caller.getRemoteInvocations().add(maxID+1);
-			return this.functionalityRedesign;
-		} else {
-			return null;
-		}
+	public boolean checkNameValidity(String name){
+		return this.functionalityRedesigns.stream().filter(fr -> fr.getName().equals(name)).findFirst().orElse(null) == null;
+	}
+
+	public void deleteRedesign(String redesignName){
+		this.functionalityRedesigns.removeIf(fr -> fr.getName().equals(redesignName));
 	}
 }

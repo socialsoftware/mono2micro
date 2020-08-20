@@ -223,12 +223,43 @@ export class RepositoryService {
 
     //FunctionalityRedesign
 
-    addCompensating(codebaseName, dendrogramName, graphName, controllerName, clusterName, entities, fromID) {
-        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controller/" + controllerName + "/addCompensating",
+    addCompensating(codebaseName, dendrogramName, graphName, controllerName, redesignName, clusterName, entities, fromID) {
+        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controller/" + controllerName + "/redesign/" + redesignName + "/addCompensating",
             {
                 fromID: fromID,
                 cluster : clusterName,
                 entities : entities
             }, null);
+    }
+
+    sequenceChange(codebaseName, dendrogramName, graphName, controllerName, redesignName, localTransaction, newCaller) {
+        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controller/" + controllerName + "/redesign/" + redesignName + "/sequenceChange",
+            {
+                localTransactionID: localTransaction,
+                newCaller: newCaller
+            }, null);
+    }
+
+    dcgi(codebaseName, dendrogramName, graphName, controllerName, redesignName, fromCluster, toCluster, localTransactions) {
+        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controller/" + controllerName + "/redesign/" + redesignName + "/dcgi",
+            {
+                fromCluster: fromCluster,
+                toCluster: toCluster,
+                localTransactions: localTransactions
+            }, null);
+    }
+
+    selectPivotTransaction(codebaseName, dendrogramName, graphName, controllerName, redesignName,  transactionID, newRedesignName) {
+        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controller/" + controllerName + "/redesign/" + redesignName + "/pivotTransaction",
+            null, { params: {"transactionID" : transactionID, "newRedesignName": newRedesignName}});
+    }
+
+    changeLTName(codebaseName, dendrogramName, graphName, controllerName, redesignName, transactionID, newName) {
+        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controller/" + controllerName + "/redesign/" + redesignName + "/changeLTName",
+            null, { params: {"transactionID" : transactionID, "newName": newName}});
+    }
+
+    deleteRedesign(codebaseName, dendrogramName, graphName, controllerName, redesignName){
+        return this.axios.delete("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controller/" + controllerName + "/redesign/" + redesignName + "/deleteRedesign");
     }
 }

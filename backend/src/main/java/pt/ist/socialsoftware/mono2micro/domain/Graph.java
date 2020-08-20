@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
+import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.Metrics;
 
 public class Graph {
@@ -187,7 +188,7 @@ public class Graph {
 				}
 				entitiesSeq.put(clusterAccess);
 				controller.addEntitiesSeq(entitiesSeq);
-				controller.addFunctionalityRedesign();
+				controller.createFunctionalityRedesign(Constants.DEFAULT_REDESIGN_NAME);
 			}
 		}
 	}

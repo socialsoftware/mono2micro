@@ -209,7 +209,7 @@ export class EntityView extends React.Component {
                         amountList={this.state.amountList}
                     />
                     
-                    <div style={{width:'1000px' , height: '700px'}}>
+                    <div style={{height: '700px'}}>
                         <VisNetwork
                             visGraph={this.state.visGraph}
                             options={options}

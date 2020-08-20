@@ -71,7 +71,7 @@ export class Views extends React.Component {
         );  
 
         return (
-            <Container>
+            <Container fluid>
                 {this.renderBreadCrumbs()}
                 <Row className="mb-2">
                     <Col>
