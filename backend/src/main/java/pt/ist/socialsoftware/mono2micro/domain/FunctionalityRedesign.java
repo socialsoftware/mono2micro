@@ -2,6 +2,7 @@ package pt.ist.socialsoftware.mono2micro.domain;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import pt.ist.socialsoftware.mono2micro.exceptions.BadConstructedRedesignException;
 import pt.ist.socialsoftware.mono2micro.utils.LocalTransactionTypes;
 
 import java.util.ArrayList;
@@ -195,7 +196,7 @@ public class FunctionalityRedesign {
     }
 
 
-    public void definePivotTransaction(String pivotID) throws JSONException {
+    public void definePivotTransaction(String pivotID) throws JSONException, BadConstructedRedesignException {
         pivotID = checkForRemoteInvocationsValidity(pivotID);
         this.setPivotTransaction(pivotID);
 
@@ -205,6 +206,9 @@ public class FunctionalityRedesign {
                 localTransactionsSequence.add(lt);
             }
         }
+
+        List<String> retriableTouchedEntities = new ArrayList<>();
+        List<String> compensatableTouchedEntities = new ArrayList<>();
 
         List<LocalTransaction> retriableLTs = new ArrayList<>();
         for(int i = 0; i < localTransactionsSequence.size(); i++){
@@ -226,9 +230,12 @@ public class FunctionalityRedesign {
                         }
                     }
                 }
+                identifyTouchedEntities(lt, retriableTouchedEntities);
             }
             else {
                 lt.setType(LocalTransactionTypes.COMPENSATABLE);
+                if(!lt.getId().equals(Integer.toString(-1)))
+                    identifyTouchedEntities(lt, compensatableTouchedEntities);
             }
         }
 
@@ -242,6 +249,24 @@ public class FunctionalityRedesign {
                 }
             }
             lt.setType(LocalTransactionTypes.RETRIABLE);
+            identifyTouchedEntities(lt, retriableTouchedEntities);
+        }
+
+        if(!retriableTouchedEntities.containsAll(compensatableTouchedEntities)){
+            for (LocalTransaction lt : this.redesign) {
+                lt.setType(LocalTransactionTypes.COMPENSATABLE);
+            }
+            throw new BadConstructedRedesignException("In the specified redesign there are entities that are written in " +
+                    "compensatable transactions that are not updated in a retriable transaction");
+        }
+    }
+
+    private void identifyTouchedEntities(LocalTransaction lt, List<String> touchedEntities) throws JSONException {
+        JSONArray sequence = new JSONArray(lt.getAccessedEntities());
+        for(int j=0; j < sequence.length(); j++){
+            if(sequence.getJSONArray(j).getString(1).contains("W") &&
+                    !touchedEntities.contains(sequence.getJSONArray(j).getString(0)))
+                touchedEntities.add(sequence.getJSONArray(j).getString(0));
         }
     }
 

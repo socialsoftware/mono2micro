@@ -287,7 +287,7 @@ export class FunctionalityRedesignMenu extends React.Component{
                             className="mr-1"
                             variant="warning"
                             onClick={this.handleSubmit}
-                            disabled={this.state.inputValue === ""}> Finish Redesign
+                            disabled={this.props.selectedRedesign.pivotTransaction === "" && this.state.inputValue === ""}> Finish Redesign
                         </Button>
                     }
 

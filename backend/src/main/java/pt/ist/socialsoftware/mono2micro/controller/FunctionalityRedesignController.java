@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.domain.*;
+import pt.ist.socialsoftware.mono2micro.exceptions.BadConstructedRedesignException;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.Metrics;
@@ -111,7 +112,7 @@ public class FunctionalityRedesignController {
     }
 
     @RequestMapping(value = "/controller/{controllerName}/redesign/{redesignName}/pivotTransaction", method = RequestMethod.POST)
-    public ResponseEntity<Controller> pivotTransaction(@PathVariable String codebaseName,
+    public ResponseEntity<Object> pivotTransaction(@PathVariable String codebaseName,
                                                        @PathVariable String dendrogramName,
                                                        @PathVariable String graphName,
                                                        @PathVariable String controllerName,
@@ -126,7 +127,7 @@ public class FunctionalityRedesignController {
 
             if(newRedesignName.isPresent())
                 if(!controller.checkNameValidity(newRedesignName.get()))
-                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                    return new ResponseEntity<>("Name is already selected",HttpStatus.FORBIDDEN);
 
 
             controller.getFunctionalityRedesign(redesignName).definePivotTransaction(transactionID);
@@ -145,6 +146,8 @@ public class FunctionalityRedesignController {
         } catch (IOException | JSONException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (BadConstructedRedesignException e) {
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.FORBIDDEN);
         }
 
     }

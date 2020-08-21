@@ -21,6 +21,8 @@ import { FunctionalityRedesignMenu, redesignOperations } from './FunctionalityRe
 import {ModalMessage} from "../util/ModalMessage";
 import {DEFAULT_REDESIGN_NAME} from "../../constants/constants";
 
+var HttpStatus = require('http-status-codes');
+
 export const transactionViewHelp = (<div>
     Hover or double click cluster to see entities inside.<br />
     Hover or double click controller to see entities accessed.<br />
@@ -578,13 +580,23 @@ export class TransactionView extends React.Component {
                     this.state.controller.name, this.state.selectedRedesign.name, this.state.selectedLocalTransaction.id,
                     this.state.selectedRedesign.pivotTransaction === "" ? value : null)
                     .then(response => {
+                        console.log(response);
                         this.handlePivotTransactionSubmit(response);
-                    }).catch(() => {
-                        this.setState({
-                            error: true,
-                            errorMessage: 'ERROR: Pivot selection failed.'
-                        });
-                });
+
+                    }).catch( error => {
+                        console.log(error.response)
+                        if(error.response !== undefined && error.response.status === HttpStatus.FORBIDDEN){
+                            this.setState({
+                                error: true,
+                                errorMessage: 'Pivot selection failed - ' + error.response.data
+                            });
+                        } else {
+                            this.setState({
+                                error: true,
+                                errorMessage: 'Pivot selection failed.'
+                            });
+                        }
+                    });
                 break;
 
 
