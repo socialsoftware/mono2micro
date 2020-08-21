@@ -235,16 +235,6 @@ public class Graph {
 
 		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
 
-		ObjectMapper mapper = new ObjectMapper();
-		JsonFactory jsonfactory = mapper.getFactory();
-		JsonGenerator jGenerator = jsonfactory.createGenerator(
-				new FileOutputStream(CODEBASES_PATH + codebaseName + "/controllerEntities.json"),
-				JsonEncoding.UTF8
-		);
-
-		jGenerator.useDefaultPrettyPrinter(); // for testing purposes
-		jGenerator.writeStartObject();
-
 		for (String profile : profiles) {
 			for (String controllerName : codebase.getProfile(profile)) {
 				ControllerDto controllerDto = datafileJSON.get(controllerName);
@@ -260,13 +250,8 @@ public class Graph {
 						controllerAccesses
 					);
 				}
-
-				jGenerator.writeObjectField(controller.getName(), controller.getEntities());
 			}
 		}
-
-		jGenerator.writeEndObject();
-		jGenerator.close();
 	}
 
 	public void addDynamicControllers(
@@ -280,16 +265,6 @@ public class Graph {
 		ControllerTracesIterator iter;
 		TraceDto t;
 		List<AccessDto> traceAccesses;
-
-		ObjectMapper mapper = new ObjectMapper();
-		JsonFactory jsonfactory = mapper.getFactory();
-		JsonGenerator jGenerator = jsonfactory.createGenerator(
-			new FileOutputStream(CODEBASES_PATH + codebaseName + "/controllerEntities.json"),
-			JsonEncoding.UTF8
-		);
-
-		jGenerator.useDefaultPrettyPrinter(); // for testing purposes
-		jGenerator.writeStartObject();
 
 		for (String profile : profiles) {
 			for (String controllerName : codebase.getProfile(profile)) {
@@ -353,13 +328,8 @@ public class Graph {
 				if (controller.getEntities().size() > 0) {
 					this.addController(controller);
 				}
-
-				jGenerator.writeObjectField(controller.getName(), controller.getEntities());
 			}
 		}
-
-		jGenerator.writeEndObject();
-		jGenerator.close();
 	}
 
 	public void mergeClusters(
