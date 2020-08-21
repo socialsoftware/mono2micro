@@ -401,7 +401,7 @@ public class AnalysisController {
 		}
 
 		List<String> entities = new ArrayList<>();
-//		List<String> notSharedEntities = new ArrayList<>();
+		List<String> notSharedEntities = new ArrayList<>();
 		for (List<String> l1 : graph1.values()) {
 			for (String e1 : l1) {
 				boolean inBoth = false;
@@ -413,13 +413,17 @@ public class AnalysisController {
 				}
 				if (inBoth)
 					entities.add(e1);
-//				else {
-//					entities.add(e1);
-//					notSharedEntities.add(e1);
-//				}
+				else {
+					entities.add(e1);
+					notSharedEntities.add(e1);
+				}
 			}				
 		}
-//		graph2.put("nonAssignedEntities", notSharedEntities);
+		for (int i = 0; i < notSharedEntities.size(); i++) {
+			ArrayList<String> clusterSingletonEntity = new ArrayList<>();
+			clusterSingletonEntity.add(notSharedEntities.get(i));
+			graph2.put("singletonCluster" + i, clusterSingletonEntity);
+		}
 
 		int truePositive = 0;
 		int falsePositive = 0;

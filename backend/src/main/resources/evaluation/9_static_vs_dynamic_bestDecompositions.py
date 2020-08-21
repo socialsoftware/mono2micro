@@ -81,7 +81,7 @@ def getClusters(complexityWeights):
 
 # the two csv files two compare
 files = [
-    '57_31432.44_LdoD-ExpertUsage-5fragments.csv',
+    '58_3195.8_LdoDTest-2ndIteration.csv',
     '69_99631.32_ldod-maven.csv'
 ]
 bestDecompositionsOfFile = {}

@@ -24,7 +24,7 @@ df = {
     'complexity': [],
     'coupling': [],
     'cohesion': [],
-    'metric': [],
+    'measure': [],
 }
 
 files = []
@@ -41,10 +41,10 @@ for file in files:
             df['complexity'].append(entry[8])
             df['coupling'].append(entry[6])
             df['cohesion'].append(entry[5])
-            df['metric'].append(iToChar(i))
+            df['measure'].append(iToChar(i))
 
 df = pd.DataFrame(df)
-for i in range(3, 11):
+for i in [3, 6, 10]:
     df_n = df[df.n == i]
     # fig1 = px.scatter(
     #     df_n,
@@ -87,14 +87,14 @@ for i in range(3, 11):
         df_n,
         x="weight",
         y="complexity",
-        color="metric",
+        color="measure",
         title="N = " + str(i),
-        labels={"complexity": "Pondered Complexity", "weight": "Weight"}
+        labels={"complexity": "Weighted Complexity", "weight": "Measure Weight"}
     )
     boxFig.show()
 
-    boxFig = px.box(df_n, x="weight", y="coupling", color="metric", title="N = " + str(i))
+    boxFig = px.box(df_n, x="weight", y="coupling", color="measure", title="N = " + str(i))
     boxFig.show()
 
-    boxFig = px.box(df_n, x="weight", y="cohesion", color="metric", title="N = " + str(i))
+    boxFig = px.box(df_n, x="weight", y="cohesion", color="measure", title="N = " + str(i))
     boxFig.show()
