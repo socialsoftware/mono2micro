@@ -281,16 +281,6 @@ public class Graph {
 		TraceDto t;
 		List<AccessDto> traceAccesses;
 
-		ObjectMapper mapper = new ObjectMapper();
-		JsonFactory jsonfactory = mapper.getFactory();
-		JsonGenerator jGenerator = jsonfactory.createGenerator(
-			new FileOutputStream(CODEBASES_PATH + codebaseName + "/controllerEntities.json"),
-			JsonEncoding.UTF8
-		);
-
-		jGenerator.useDefaultPrettyPrinter(); // for testing purposes
-		jGenerator.writeStartObject();
-
 		for (String profile : profiles) {
 			for (String controllerName : codebase.getProfile(profile)) {
 				iter = new ControllerTracesIterator(
@@ -353,13 +343,8 @@ public class Graph {
 				if (controller.getEntities().size() > 0) {
 					this.addController(controller);
 				}
-
-				jGenerator.writeObjectField(controller.getName(), controller.getEntities());
 			}
 		}
-
-		jGenerator.writeEndObject();
-		jGenerator.close();
 	}
 
 	public void mergeClusters(
