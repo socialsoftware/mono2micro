@@ -6,8 +6,8 @@ import java.util.*;
 
 public class ControllersComparator {
 
-    private static String CONTROLLER_JSON_PATH_1 = "/home/samuel/ProjetoTese/mono2micro/backend/src/main/resources/codebases/ldod-maven/controllerEntitiesWholeDatafileProdControllers.json"; // static
-    private static String CONTROLLER_JSON_PATH_2 = "/home/samuel/ProjetoTese/mono2micro/backend/src/main/resources/codebases/ldod-maven/controllerEntities-Production-4k-plus-boot.json"; // dynamic
+    private static String CONTROLLER_JSON_PATH_1 = "/home/samuel/ProjetoTese/mono2micro/backend/src/main/resources/codebases/ldod-maven/controllerEntitiesWholeDatafile.json"; // static
+    private static String CONTROLLER_JSON_PATH_2 = "/home/samuel/ProjetoTese/mono2micro/backend/src/main/resources/codebases/LdoD-ExpertUsage-5fragments/controllerEntities-LdoD-ExpertUsage-5fragments.json"; // dynamic
 
     private void run() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
@@ -98,6 +98,9 @@ public class ControllersComparator {
             }
         }
 
+
+
+        System.out.println("------------------------------------------------------------------------");
         System.out.println("Controllers that Static has and Dynamic hasn't:");
         ArrayList<String> dynamicMissingControllers = new ArrayList<String>(staticJson.keySet());
         dynamicMissingControllers.removeAll(dynamicJson.keySet());
@@ -114,8 +117,31 @@ public class ControllersComparator {
         staticMissingControllers.removeAll(staticJson.keySet());
         System.out.println(Arrays.toString(staticMissingControllers.toArray()));
 
-        int totalControllers = staticMissingControllers.size() + staticJson.keySet().size();
+        // difference in entities
+        Collection<HashMap<String, String>> staticValues = staticJson.values();
+        Collection<HashMap<String, String>> dynamicValues = dynamicJson.values();
 
+        Set<String> entitiesStatic = new HashSet<String>();
+        for (HashMap<String, String> entitiesModes : staticValues) {
+            entitiesStatic.addAll(entitiesModes.keySet());
+        }
+
+        Set<String> entitiesDynamic = new HashSet<String>();
+        for (HashMap<String, String> entitiesModes : dynamicValues) {
+            entitiesDynamic.addAll(entitiesModes.keySet());
+        }
+
+        HashSet<String> entitiesStaticCopy = new HashSet<String>(entitiesStatic);
+        entitiesStaticCopy.removeAll(entitiesDynamic);
+        HashSet<String> entitiesDynamicCopy = new HashSet<String>(entitiesDynamic);
+        entitiesDynamicCopy.removeAll(entitiesStatic);
+        System.out.println("Whole entities that Static has and Dynamic hasn't:");
+        System.out.println(Arrays.toString(entitiesStaticCopy.toArray()));
+        System.out.println("Whole entities that Dynamic has and Static hasn't:");
+        System.out.println(Arrays.toString(entitiesDynamicCopy.toArray()));
+
+
+        int totalControllers = staticMissingControllers.size() + staticJson.keySet().size();
 
         System.out.println("Average percentage of coveraged entities (static):");
         System.out.println(sumEntityCoverageOfStatic / commonControllerCount);

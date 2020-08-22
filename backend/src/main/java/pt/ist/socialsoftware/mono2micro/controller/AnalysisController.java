@@ -389,7 +389,16 @@ public class AnalysisController {
 	@RequestMapping(value = "/analysis", method = RequestMethod.POST)
 	public ResponseEntity<AnalysisDto> getAnalysis(@RequestBody AnalysisDto analysis) throws IOException {
 		logger.debug("getAnalysis");
-		
+
+		if (analysis.getGraph1().getCodebaseName() == null) { // expert cut from frontend
+			analysis.setAccuracy(0);
+			analysis.setPrecision(0);
+			analysis.setRecall(0);
+			analysis.setSpecificity(0);
+			analysis.setFmeasure(0);
+			return new ResponseEntity<>(analysis, HttpStatus.OK);
+		}
+
 		Map<String,List<String>> graph1 = new HashMap<>();
 		for (Cluster c : analysis.getGraph1().getClusters()) {
 			graph1.put(c.getName(), c.getEntityNames());
@@ -401,7 +410,7 @@ public class AnalysisController {
 		}
 
 		List<String> entities = new ArrayList<>();
-		List<String> notSharedEntities = new ArrayList<>();
+//		List<String> notSharedEntities = new ArrayList<>();
 		for (List<String> l1 : graph1.values()) {
 			for (String e1 : l1) {
 				boolean inBoth = false;
@@ -413,17 +422,17 @@ public class AnalysisController {
 				}
 				if (inBoth)
 					entities.add(e1);
-				else {
-					entities.add(e1);
-					notSharedEntities.add(e1);
-				}
+//				else {
+//					entities.add(e1);
+//					notSharedEntities.add(e1);
+//				}
 			}				
 		}
-		for (int i = 0; i < notSharedEntities.size(); i++) {
-			ArrayList<String> clusterSingletonEntity = new ArrayList<>();
-			clusterSingletonEntity.add(notSharedEntities.get(i));
-			graph2.put("singletonCluster" + i, clusterSingletonEntity);
-		}
+//		for (int i = 0; i < notSharedEntities.size(); i++) {
+//			ArrayList<String> clusterSingletonEntity = new ArrayList<>();
+//			clusterSingletonEntity.add(notSharedEntities.get(i));
+//			graph2.put("singletonCluster" + i, clusterSingletonEntity);
+//		}
 
 		int truePositive = 0;
 		int falsePositive = 0;
