@@ -6,8 +6,8 @@ import java.util.*;
 
 public class ControllersComparator {
 
-    private static String CONTROLLER_JSON_PATH_1 = "/home/samuel/ProjetoTese/mono2micro/backend/src/main/resources/codebases/ldod-maven/controllerEntitiesWholeDatafile.json"; // static
-    private static String CONTROLLER_JSON_PATH_2 = "/home/samuel/ProjetoTese/mono2micro/backend/src/main/resources/codebases/LdoD-ExpertUsage-5fragments/controllerEntities-LdoD-ExpertUsage-5fragments.json"; // dynamic
+    private static String CONTROLLER_JSON_PATH_1 = "/home/samuel/ProjetoTese/mono2micro/backend/src/main/resources/codebases/bw-maven/controllerEntitiesStaticWholeDatafile.json"; // static
+    private static String CONTROLLER_JSON_PATH_2 = "/home/samuel/ProjetoTese/mono2micro/backend/src/main/resources/codebases/bw-maven/controllerEntitiesDynamicExpertSimulation.json"; // dynamic
 
     private void run() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
@@ -113,7 +113,6 @@ public class ControllersComparator {
                 staticMissingControllers.add(entry.getKey());
             }
         }
-
         staticMissingControllers.removeAll(staticJson.keySet());
         System.out.println(Arrays.toString(staticMissingControllers.toArray()));
 

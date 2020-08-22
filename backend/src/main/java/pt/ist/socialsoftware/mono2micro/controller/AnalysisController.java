@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 
@@ -404,17 +405,17 @@ public class AnalysisController {
 			graph1.put(c.getName(), c.getEntityNames());
 		}
 
-		Map<String,List<String>> graph2 = new HashMap<>();
+		Map<String,List<String>> graph2_CommonEntitiesOnly = new HashMap<>();
 		for (Cluster c : analysis.getGraph2().getClusters()) {
-			graph2.put(c.getName(), c.getEntityNames());
+			graph2_CommonEntitiesOnly.put(c.getName(), c.getEntityNames());
 		}
 
 		List<String> entities = new ArrayList<>();
-//		List<String> notSharedEntities = new ArrayList<>();
+		List<String> notSharedEntities = new ArrayList<>();
 		for (List<String> l1 : graph1.values()) {
 			for (String e1 : l1) {
 				boolean inBoth = false;
-				for (List<String> l2 : graph2.values()) {
+				for (List<String> l2 : graph2_CommonEntitiesOnly.values()) {
 					if (l2.contains(e1)) {
 						inBoth = true;
 						break;
@@ -422,17 +423,37 @@ public class AnalysisController {
 				}
 				if (inBoth)
 					entities.add(e1);
-//				else {
-//					entities.add(e1);
-//					notSharedEntities.add(e1);
-//				}
+				else {
+					notSharedEntities.add(e1);
+				}
 			}				
 		}
-//		for (int i = 0; i < notSharedEntities.size(); i++) {
-//			ArrayList<String> clusterSingletonEntity = new ArrayList<>();
-//			clusterSingletonEntity.add(notSharedEntities.get(i));
-//			graph2.put("singletonCluster" + i, clusterSingletonEntity);
-//		}
+
+		// ------------------------------------------------------------------------------------------
+		Map<String,List<String>> graph2_UnassignedInBigger = graphCopyOf(graph2_CommonEntitiesOnly);
+		Map.Entry<String, List<String>> biggerClusterEntry = null;
+		for (Map.Entry<String, List<String>> clusterEntry : graph2_UnassignedInBigger.entrySet()) {
+			if (biggerClusterEntry == null)
+				biggerClusterEntry = clusterEntry;
+
+			else if (clusterEntry.getValue().size() > biggerClusterEntry.getValue().size())
+				biggerClusterEntry = clusterEntry;
+		}
+		biggerClusterEntry.getValue().addAll(notSharedEntities);
+
+		// ------------------------------------------------------------------------------------------
+		Map<String,List<String>> graph2_UnassignedInNew = graphCopyOf(graph2_CommonEntitiesOnly);
+		ArrayList<String> newClusterForUnassignedEntities = new ArrayList<>();
+		newClusterForUnassignedEntities.addAll(notSharedEntities);
+		graph2_UnassignedInNew.put("newClusterForUnnasignedEntities", newClusterForUnassignedEntities);
+
+		// ------------------------------------------------------------------------------------------
+		Map<String,List<String>> graph2_UnassignedInSingletons = graphCopyOf(graph2_CommonEntitiesOnly);
+		for (int i = 0; i < notSharedEntities.size(); i++) {
+			ArrayList<String> clusterSingletonEntity = new ArrayList<>();
+			clusterSingletonEntity.add(notSharedEntities.get(i));
+			graph2_UnassignedInSingletons.put("singletonCluster" + i, clusterSingletonEntity);
+		}
 
 		int truePositive = 0;
 		int falsePositive = 0;
@@ -458,11 +479,11 @@ public class AnalysisController {
 					}
 				}
 
-				for (String cluster : graph2.keySet()) {
-					if (graph2.get(cluster).contains(e1)) {
+				for (String cluster : graph2_CommonEntitiesOnly.keySet()) {
+					if (graph2_CommonEntitiesOnly.get(cluster).contains(e1)) {
 						e1ClusterG2 = cluster;
 					}
-					if (graph2.get(cluster).contains(e2)) {
+					if (graph2_CommonEntitiesOnly.get(cluster).contains(e2)) {
 						e2ClusterG2 = cluster;
 					}
 				}
@@ -539,6 +560,55 @@ public class AnalysisController {
 		analysis.setSpecificity(specificity);
         analysis.setFmeasure(fmeasure);
 
+
+        /*
+        *******************************************
+        ************ CALCULATE MOJO ***************
+        *******************************************
+        */
+		double mojoValueCommonOnly = getMojoValue(
+				graph1,
+				graph2_CommonEntitiesOnly,
+				graph2_CommonEntitiesOnly.values().stream().flatMap(Collection::stream).collect(Collectors.toList())
+		);
+		double mojoValueUnassignedInBigger = getMojoValue(
+				graph1,
+				graph2_UnassignedInBigger,
+				graph2_UnassignedInBigger.values().stream().flatMap(Collection::stream).collect(Collectors.toList())
+		);
+		double mojoValueUnassignedInNew = getMojoValue(
+				graph1,
+				graph2_UnassignedInNew,
+				graph2_UnassignedInNew.values().stream().flatMap(Collection::stream).collect(Collectors.toList())
+		);
+		double mojoValueUnassignedInSingletons = getMojoValue(
+				graph1,
+				graph2_UnassignedInSingletons,
+				graph2_UnassignedInSingletons.values().stream().flatMap(Collection::stream).collect(Collectors.toList())
+		);
+
+		analysis.setMojoCommon(mojoValueCommonOnly);
+		analysis.setMojoBigger(mojoValueUnassignedInBigger);
+		analysis.setMojoNew(mojoValueUnassignedInNew);
+		analysis.setMojoSingletons(mojoValueUnassignedInSingletons);
+		return new ResponseEntity<>(analysis, HttpStatus.OK);
+	}
+
+	private Map<String, List<String>> graphCopyOf(Map<String, List<String>> graph) {
+		HashMap<String, List<String>> copy = new HashMap<>();
+		for (Map.Entry<String, List<String>> entry : graph.entrySet()) {
+			copy.put(entry.getKey(), new ArrayList<>(entry.getValue()));
+		}
+
+		return copy;
+	}
+
+	private double getMojoValue(
+			Map<String, List<String>> graph1,
+			Map<String, List<String>> graph2,
+			List<String> entities
+	) throws IOException
+	{
 		StringBuilder sbSource = new StringBuilder();
 		for (Map.Entry<String, List<String>> clusterEntry : graph1.entrySet()) {
 			String clusterName = clusterEntry.getKey();
@@ -572,13 +642,10 @@ public class AnalysisController {
 		targetFileWriter.write(sbTarget.toString());
 		targetFileWriter.close();
 
-		double mojoValue = new MoJo().executeMojo(new String[]{
+		return new MoJo().executeMojo(new String[]{
 				distrSrcPath,
 				distrTargetPath,
 				"-fm"
 		});
-
-		analysis.setMojo(mojoValue);
-		return new ResponseEntity<>(analysis, HttpStatus.OK);
 	}
 }

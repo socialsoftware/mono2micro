@@ -22,3 +22,6 @@ src/main/resources/evaluation/simMeasuresVsComplexity/
 src/main/resources/evaluation/simMeasuresVsCoupling/
 
 .sts4-cache/
+
+/src/main/java/pt/ist/socialsoftware/mono2micro/utils/mojoCalculator/src/main/resources/distrSrc.rsf
+/src/main/java/pt/ist/socialsoftware/mono2micro/utils/mojoCalculator/src/main/resources/distrTarget.rsf

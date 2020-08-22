@@ -19,7 +19,10 @@ public class AnalysisDto {
     private float specificity;
     private float fmeasure;
     private float complexity;
-    private double mojo;
+    private double mojoCommon;
+    private double mojoBigger;
+    private double mojoNew;
+    private double mojoSingletons;
 
     public float getPrecision() {
         return precision;
@@ -129,11 +132,35 @@ public class AnalysisDto {
         this.fmeasure = fmeasure;
     }
 
-    public double getMojo() {
-        return mojo;
+    public double getMojoCommon() {
+        return mojoCommon;
     }
 
-    public void setMojo(double mojoValue) {
-        this.mojo = mojoValue;
+    public void setMojoCommon(double mojoValue) {
+        this.mojoCommon = mojoValue;
+    }
+
+    public double getMojoBigger() {
+        return mojoBigger;
+    }
+
+    public void setMojoBigger(double mojoBigger) {
+        this.mojoBigger = mojoBigger;
+    }
+
+    public double getMojoNew() {
+        return mojoNew;
+    }
+
+    public void setMojoNew(double mojoNew) {
+        this.mojoNew = mojoNew;
+    }
+
+    public double getMojoSingletons() {
+        return mojoSingletons;
+    }
+
+    public void setMojoSingletons(double mojoSingletons) {
+        this.mojoSingletons = mojoSingletons;
     }
 }
