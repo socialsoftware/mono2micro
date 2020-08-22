@@ -571,7 +571,7 @@ public class AnalysisController {
 				graph2_CommonEntitiesOnly,
 				graph2_CommonEntitiesOnly.values().stream().flatMap(Collection::stream).collect(Collectors.toList())
 		);
-		double mojoValueUnassignedInBigger = getMojoValue(
+		double mojoValueUnassignedInBiggest = getMojoValue(
 				graph1,
 				graph2_UnassignedInBigger,
 				graph2_UnassignedInBigger.values().stream().flatMap(Collection::stream).collect(Collectors.toList())
@@ -588,7 +588,7 @@ public class AnalysisController {
 		);
 
 		analysis.setMojoCommon(mojoValueCommonOnly);
-		analysis.setMojoBigger(mojoValueUnassignedInBigger);
+		analysis.setMojoBiggest(mojoValueUnassignedInBiggest);
 		analysis.setMojoNew(mojoValueUnassignedInNew);
 		analysis.setMojoSingletons(mojoValueUnassignedInSingletons);
 		return new ResponseEntity<>(analysis, HttpStatus.OK);

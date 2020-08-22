@@ -20,7 +20,7 @@ public class AnalysisDto {
     private float fmeasure;
     private float complexity;
     private double mojoCommon;
-    private double mojoBigger;
+    private double mojoBiggest;
     private double mojoNew;
     private double mojoSingletons;
 
@@ -140,12 +140,12 @@ public class AnalysisDto {
         this.mojoCommon = mojoValue;
     }
 
-    public double getMojoBigger() {
-        return mojoBigger;
+    public double getMojoBiggest() {
+        return mojoBiggest;
     }
 
-    public void setMojoBigger(double mojoBigger) {
-        this.mojoBigger = mojoBigger;
+    public void setMojoBiggest(double mojoBiggest) {
+        this.mojoBiggest = mojoBiggest;
     }
 
     public double getMojoNew() {

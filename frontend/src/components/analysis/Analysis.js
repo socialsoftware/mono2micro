@@ -237,7 +237,10 @@ export class Analysis extends React.Component {
                                 recall: this.state.resultData.recall,
                                 specificity: this.state.resultData.specificity === -1 ? "--" : this.state.resultData.specificity,
                                 fscore: this.state.resultData.fmeasure,
-                                mojo: this.state.resultData.mojo
+                                mojoCommon: this.state.resultData.mojoCommon,
+                                mojoBiggest: this.state.resultData.mojoBiggest,
+                                mojoNew: this.state.resultData.mojoNew,
+                                mojoSingletons: this.state.resultData.mojoSingletons,
                             }
                             ] }
                             columns={ [
@@ -278,8 +281,20 @@ export class Analysis extends React.Component {
                                     text: 'Specificity',
                                 }, 
                                 {
-                                    dataField: 'mojo',
-                                    text: 'MoJo',
+                                    dataField: 'mojoCommon',
+                                    text: 'MoJo Common Entities',
+                                },
+                                {
+                                    dataField: 'mojoBiggest',
+                                    text: 'MoJo Biggest Cluster',
+                                }, 
+                                {
+                                    dataField: 'mojoNew',
+                                    text: 'MoJo New Cluster',
+                                }, 
+                                {
+                                    dataField: 'mojoSingletons',
+                                    text: 'MoJo Singletons',
                                 }, 
                             ]}
                             bootstrap4
