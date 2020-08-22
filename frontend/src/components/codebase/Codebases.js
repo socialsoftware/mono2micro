@@ -154,7 +154,7 @@ export class Codebases extends React.Component {
                     <Col sm={5}>
                         <FormControl
                             type="text"
-                            maxLength="30"
+                            maxLength="256"
                             placeholder="Codebase Name"
                             value={this.state.newCodebaseName}
                             onChange={this.handleChangeNewCodebaseName}/>
