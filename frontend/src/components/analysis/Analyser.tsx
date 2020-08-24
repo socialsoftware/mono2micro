@@ -10,7 +10,6 @@ import Button from 'react-bootstrap/Button';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { numberFilter } from 'react-bootstrap-table2-filter';
-import { FormControlProps } from "react-bootstrap";
 
 var HttpStatus = require('http-status-codes');
 
