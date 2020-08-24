@@ -10,6 +10,7 @@ import Button from 'react-bootstrap/Button';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { numberFilter } from 'react-bootstrap-table2-filter';
+import { FormControlProps } from "react-bootstrap";
 
 var HttpStatus = require('http-status-codes');
 
@@ -226,7 +227,9 @@ export class Analyser extends React.Component<any, any> {
                 importFile: e.target.result
             });
         };
-        reader.readAsText(event.target.files[0]);
+        
+        if (event.target.files.length > 0)
+            reader.readAsText(event.target.files[0]);
     }
 
     handleChangeAmountOfTraces(event: any) {
