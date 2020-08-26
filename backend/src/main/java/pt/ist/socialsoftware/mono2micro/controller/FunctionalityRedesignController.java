@@ -146,8 +146,6 @@ public class FunctionalityRedesignController {
         } catch (IOException | JSONException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (BadConstructedRedesignException e) {
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.FORBIDDEN);
         }
 
     }

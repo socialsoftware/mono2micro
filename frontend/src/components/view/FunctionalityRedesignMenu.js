@@ -212,11 +212,11 @@ export class FunctionalityRedesignMenu extends React.Component{
                     }
 
                     {this.state.operation === redesignOperations.DCGI &&
-                        <Button className="mr-1">{"Cluster 1: " + this.props.selectedLocalTransaction.cluster}</Button>
+                        <Button className="mr-1">{"From Cluster: " + this.props.selectedLocalTransaction.cluster}</Button>
                     }
 
                     {this.props.DCGIAvailableClusters !== null &&
-                        <DropdownButton className="mr-1" as={ButtonGroup} title={"Cluster 2: " + this.state.DCGICluster}>
+                        <DropdownButton className="mr-1" as={ButtonGroup} title={"To Cluster: " + this.state.DCGICluster}>
                             {this.props.DCGIAvailableClusters.map(e =>
                                 <Dropdown.Item
                                     key={e}

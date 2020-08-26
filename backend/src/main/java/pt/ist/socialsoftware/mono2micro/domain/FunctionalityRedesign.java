@@ -196,7 +196,7 @@ public class FunctionalityRedesign {
     }
 
 
-    public void definePivotTransaction(String pivotID) throws JSONException, BadConstructedRedesignException {
+    public void definePivotTransaction(String pivotID) throws JSONException {
         pivotID = checkForRemoteInvocationsValidity(pivotID);
         this.setPivotTransaction(pivotID);
 
@@ -252,13 +252,13 @@ public class FunctionalityRedesign {
             identifyTouchedEntities(lt, retriableTouchedEntities);
         }
 
-        if(!retriableTouchedEntities.containsAll(compensatableTouchedEntities)){
+        /*if(!retriableTouchedEntities.containsAll(compensatableTouchedEntities)){
             for (LocalTransaction lt : this.redesign) {
                 lt.setType(LocalTransactionTypes.COMPENSATABLE);
             }
             throw new BadConstructedRedesignException("In the specified redesign there are entities that are written in " +
                     "compensatable transactions that are not updated in a retriable transaction");
-        }
+        }*/
     }
 
     private void identifyTouchedEntities(LocalTransaction lt, List<String> touchedEntities) throws JSONException {
@@ -350,14 +350,16 @@ public class FunctionalityRedesign {
 
         List<String> slEntities = new ArrayList<>();
         for (LocalTransaction lt : this.redesign) {
-            if(lt.getType() == LocalTransactionTypes.COMPENSATABLE){
-                JSONArray sequence = new JSONArray(lt.getAccessedEntities());
-                for(int j=0; j < sequence.length(); j++){
-                    String entity = sequence.getJSONArray(j).getString(0);
-                    String accessMode = sequence.getJSONArray(j).getString(1);
+            if(!lt.getId().equals(String.valueOf(-1))) {
+                if (lt.getType() == LocalTransactionTypes.COMPENSATABLE) {
+                    JSONArray sequence = new JSONArray(lt.getAccessedEntities());
+                    for (int j = 0; j < sequence.length(); j++) {
+                        String entity = sequence.getJSONArray(j).getString(0);
+                        String accessMode = sequence.getJSONArray(j).getString(1);
 
-                    if(accessMode.contains("W")){
-                        slEntities.add(entity);
+                        if (accessMode.contains("W")) {
+                            slEntities.add(entity);
+                        }
                     }
                 }
             }

@@ -435,6 +435,7 @@ export class TransactionView extends React.Component {
 
 
     handleSelectNode(nodeId) {
+        console.log(nodeId);
         if(nodeId === -1 && this.state.selectedOperation !== redesignOperations.SQ) return;
         if(this.state.compareRedesigns) return;
 
@@ -943,7 +944,7 @@ export class TransactionView extends React.Component {
                 {this.state.showGraph && this.state.currentSubView === "Functionality Redesign" && this.state.selectedRedesign === null &&
                 this.state.compareRedesigns &&
                 <div>
-                    <Button className="mr-1"
+                    <Button className="mb-2"
                             onClick={() => this.setState({compareRedesigns: false, selectedRedesignsToCompare: ["Select a Redesign", "Select a Redesign"]})}>
                         Back
                     </Button>
@@ -976,7 +977,7 @@ export class TransactionView extends React.Component {
                     <Container fluid>
                         <Row>
                             <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
-                                <Button className="mr-1"
+                                <Button className="mb-2"
                                         onClick={() => this.setState({selectedRedesign: null}, () => this.handleCancel())}>
                                     Back
                                 </Button>

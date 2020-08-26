@@ -176,24 +176,11 @@ public class Metrics {
 
 	public void calculateRedesignComplexities(Controller controller, String redesignName){
 		FunctionalityRedesign functionalityRedesign = controller.getFunctionalityRedesign(redesignName);
-		List<LocalTransaction> localTransactionsSequence = new ArrayList<>();
-		for (LocalTransaction lt : functionalityRedesign.getRedesign()) {
-			if(lt.getId().equals(String.valueOf(-1))){
-				localTransactionsSequence.add(lt);
-			}
-		}
-
 		functionalityRedesign.setFunctionalityComplexity(0);
 		functionalityRedesign.setSystemComplexity(0);
-		for (int i = 0; i < localTransactionsSequence.size(); i++) {
-			LocalTransaction lt = localTransactionsSequence.get(i);
 
-			for (Integer id : lt.getRemoteInvocations()) {
-				for (LocalTransaction localTransaction : functionalityRedesign.getRedesign()) {
-					if(localTransaction.getId().equals(String.valueOf(id)))
-						localTransactionsSequence.add(localTransaction);
-				}
-			}
+		for (int i = 0; i < functionalityRedesign.getRedesign().size(); i++) {
+			LocalTransaction lt = functionalityRedesign.getRedesign().get(i);
 
 			if(!lt.getId().equals(String.valueOf(-1))){
 				try {
