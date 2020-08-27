@@ -5,8 +5,9 @@ import pandas as pd
 import plotly.express as px
 from py4j.java_gateway import JavaGateway
 import itertools
-DISTR_SRC_FILE_PATH = './mojoCalculator/src/main/resources/distrSrc.rsf'
-DISTR_TARGET_FILE_PATH = './mojoCalculator/src/main/resources/distrTarget.rsf'
+DISTR_SRC_FILE_PATH = '../../java/pt/ist/socialsoftware/mono2micro/utils/mojoCalculator/src/main/resources/distrSrc.rsf'
+DISTR_TARGET_FILE_PATH = '../../java/pt/ist/socialsoftware/mono2micro/utils/mojoCalculator/src/main/resources' \
+                         '/distrTarget.rsf'
 
 # Warning:
 # Run MoJo Calculator Java code before running this script
@@ -161,13 +162,18 @@ boxFig = px.box(
     data_dict,
     x="transition",
     y="mojoFM",
-    hover_name='hoverText',
-    title='Transition From N to N of the next N+1 decomposition',
-    points='all',
+    # hover_name='hoverText',
+    title='Transition From Best N\'s decomposition to N+1\'s closest parent',
+    labels={
+        'transition': 'N to N+1\'s Parent Transition',
+        'mojoFM': 'MoJoFM'
+    }
+    # points='all',
     # range_y=[0, 100]
 )
-boxFig.update_traces(marker=dict(size=2))
+# boxFig.update_traces(marker=dict(size=2))
 boxFig.show()
+# boxFig.write_html('incrementalMigrationEvaluation.html')
 
 entityCountGE80 = []
 entityCountLT80 = []

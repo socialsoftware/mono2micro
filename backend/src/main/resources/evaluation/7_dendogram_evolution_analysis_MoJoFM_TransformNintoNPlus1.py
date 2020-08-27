@@ -5,8 +5,9 @@ import pandas as pd
 import plotly.express as px
 from py4j.java_gateway import JavaGateway
 
-DISTR_SRC_FILE_PATH = './mojoCalculator/src/main/resources/distrSrc.rsf'
-DISTR_TARGET_FILE_PATH = './mojoCalculator/src/main/resources/distrTarget.rsf'
+DISTR_SRC_FILE_PATH = '../../java/pt/ist/socialsoftware/mono2micro/utils/mojoCalculator/src/main/resources/distrSrc.rsf'
+DISTR_TARGET_FILE_PATH = '../../java/pt/ist/socialsoftware/mono2micro/utils/mojoCalculator/src/main/resources' \
+                         '/distrTarget.rsf'
 
 # Warning:
 # Run MoJo Calculator Java code before running this script
