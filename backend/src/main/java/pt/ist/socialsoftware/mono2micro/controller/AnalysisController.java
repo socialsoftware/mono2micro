@@ -567,23 +567,23 @@ public class AnalysisController {
         *******************************************
         */
 		double mojoValueCommonOnly = getMojoValue(
-				graph1,
 				graph2_CommonEntitiesOnly,
+				graph1,
 				graph2_CommonEntitiesOnly.values().stream().flatMap(Collection::stream).collect(Collectors.toList())
 		);
 		double mojoValueUnassignedInBiggest = getMojoValue(
-				graph1,
 				graph2_UnassignedInBigger,
+				graph1,
 				graph2_UnassignedInBigger.values().stream().flatMap(Collection::stream).collect(Collectors.toList())
 		);
 		double mojoValueUnassignedInNew = getMojoValue(
-				graph1,
 				graph2_UnassignedInNew,
+				graph1,
 				graph2_UnassignedInNew.values().stream().flatMap(Collection::stream).collect(Collectors.toList())
 		);
 		double mojoValueUnassignedInSingletons = getMojoValue(
-				graph1,
 				graph2_UnassignedInSingletons,
+				graph1,
 				graph2_UnassignedInSingletons.values().stream().flatMap(Collection::stream).collect(Collectors.toList())
 		);
 
