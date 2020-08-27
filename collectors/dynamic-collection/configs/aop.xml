@@ -6,6 +6,7 @@
     </weaver>
     
     <aspects>
+      <!-- Modify the package to fit your needs -->
       <aspect name="pt.ist.socialsoftware.edition.ldod.aspects.GettersAndSetters"/>
     </aspects>
 </aspectj>

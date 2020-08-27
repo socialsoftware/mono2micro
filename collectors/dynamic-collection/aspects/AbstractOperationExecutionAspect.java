@@ -1,5 +1,3 @@
-package pt.ist.socialsoftware.edition.ldod.aspects;
-
 import java.util.Iterator;
 
 import org.aspectj.lang.ProceedingJoinPoint;

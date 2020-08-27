@@ -1,5 +1,3 @@
-package pt.ist.socialsoftware.edition.ldod.aspects;
-
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 
