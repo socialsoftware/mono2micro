@@ -1,0 +1,11 @@
+<!DOCTYPE aspectj PUBLIC "-//AspectJ//DTD//EN" "http://www.aspectj.org/dtd/aspectj_1_5_0.dtd">
+
+<aspectj>
+    <weaver options="-Xset:weaveJavaxPackages=false">
+        <include within="pt.ist..*"/>
+    </weaver>
+    
+    <aspects>
+      <aspect name="pt.ist.socialsoftware.edition.ldod.aspects.GettersAndSetters"/>
+    </aspects>
+</aspectj>
