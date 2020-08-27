@@ -226,7 +226,9 @@ export class Analyser extends React.Component<any, any> {
                 importFile: e.target.result
             });
         };
-        reader.readAsText(event.target.files[0]);
+        
+        if (event.target.files.length > 0)
+            reader.readAsText(event.target.files[0]);
     }
 
     handleChangeAmountOfTraces(event: any) {
