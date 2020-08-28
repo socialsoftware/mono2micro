@@ -22,6 +22,9 @@ else:
 
 for folder in codebases:
 
+    # if 'ldod' not in folder.lower() and "bw" not in folder:
+    #     continue
+
     analyserPath = os.getcwd() + "/../codebases/" + folder + "/analyser/analyserResult.json"
     similarityMatrixPath = os.getcwd() + "/../codebases/" + folder + "/analyser/similarityMatrix.json"
 

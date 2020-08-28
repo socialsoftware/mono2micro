@@ -8,17 +8,6 @@ import statsmodels.api as sm
 # Estimates the complexity values based on the N value and
 # the weights given to each similarity measure
 
-def iToChar(i):
-    if i == 1:
-        return 'A'
-    if i == 2:
-        return 'W'
-    if i == 3:
-        return 'R'
-    if i == 4:
-        return 'S'
-
-
 files = []
 for (dirpath, dirnames, filenames) in walk("./data/"):
     files.extend(filenames)
@@ -30,7 +19,7 @@ df = {
     'W': [],
     'R': [],
     'S': [],
-    'pComplexity': [],
+    'complexity': [],
     'coupling': [],
     'cohesion': [],
 }
@@ -46,12 +35,28 @@ for file in files:
         df['S'].append(entry[4])
         df['cohesion'].append(entry[5])
         df['coupling'].append(entry[6])
-        df['pComplexity'].append(entry[8])
+        df['complexity'].append(entry[8])
 
 df = pd.DataFrame(df)
 
 X = df.loc[:, ['n', 'A', 'W', 'R', 'S']]
-y = df.loc[:, 'pComplexity']
+y = df.loc[:, 'complexity']
+X = sm.add_constant(X)
+model = sm.OLS(y, X)
+results = model.fit()
+print(results.summary())
+print()
+
+X = df.loc[:, ['n', 'A', 'W', 'R', 'S']]
+y = df.loc[:, 'coupling']
+X = sm.add_constant(X)
+model = sm.OLS(y, X)
+results = model.fit()
+print(results.summary())
+print()
+
+X = df.loc[:, ['n', 'A', 'W', 'R', 'S']]
+y = df.loc[:, 'cohesion']
 X = sm.add_constant(X)
 model = sm.OLS(y, X)
 results = model.fit()

@@ -33,11 +33,6 @@ for file in files:
 
 df = pd.DataFrame(df)
 
-#mean cohesion for N = x
-print(str(df[(df['n'] == 3)].mean()['coup']))
-print(str(df[(df['n'] == 6)].mean()['coup']))
-print(str(df[(df['n'] == 10)].mean()['coup']))
-
 
 # percentage of points with less or equal 0.2 Pondered Complexity for N = x
 # print((df[(df['n'] == 3) & (df['pComplexity'] <= 0.2)].count()) / (df[(df['n'] == 3)].count()))
@@ -53,21 +48,21 @@ fig1 = px.scatter(
     title="Complexity X Coupling",
     range_y=[0, 1],
     trendline="ols",
-    labels={'pComplexity': 'Weighted Complexity', 'coup': 'Coupling'}
+    labels={'pComplexity': 'Uniform Complexity', 'coup': 'Coupling'}
 )
 fig1.show()
 
-# fig1 = px.scatter(
-#     df,
-#     x='pComplexity',
-#     y='coh',
-#     color='n',
-#     title="Complexity X Cohesion",
-#     range_y=[0, 1],
-#     trendline="ols",
-#     labels={'pComplexity': 'Weighted Complexity', 'coh': 'Cohesion'}
-# )
-# fig1.show()
+fig1 = px.scatter(
+    df,
+    x='pComplexity',
+    y='coh',
+    color='n',
+    title="Complexity X Cohesion",
+    range_y=[0, 1],
+    trendline="ols",
+    labels={'pComplexity': 'Uniform Complexity', 'coh': 'Cohesion'}
+)
+fig1.show()
 
 df['n'] = df['n'].astype(float)
 
