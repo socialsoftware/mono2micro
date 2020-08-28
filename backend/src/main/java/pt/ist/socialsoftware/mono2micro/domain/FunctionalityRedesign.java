@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 public class FunctionalityRedesign {
 
     private String name;
+    private boolean usedForMetrics;
     private List<LocalTransaction> redesign = new ArrayList<>();
     private int systemComplexity;
     private int functionalityComplexity;
@@ -167,12 +168,17 @@ public class FunctionalityRedesign {
             }
         }
 
+        LocalTransaction firstLT = firstLocalTransactionInAMerge(ltsBeingMergedIDs);
+        for(i = 0; i < firstLT.getRemoteInvocations().size(); i++){
+            if(ltsBeingMergedIDs.contains(firstLT.getRemoteInvocations().get(i))){
+                firstLT.getRemoteInvocations().remove(i);
+            }
+        }
+        firstLT.getRemoteInvocations().add(min);
+
         for (LocalTransaction lt : this.redesign) {
-            for (Integer ri : lt.getRemoteInvocations()) {
-                if(ltsBeingMergedIDs.contains(ri)){
-                    lt.getRemoteInvocations().remove(ri);
-                    lt.getRemoteInvocations().add(min);
-                }
+            if(!lt.getId().equals(firstLT.getId())) {
+                lt.getRemoteInvocations().removeIf(ltsBeingMergedIDs::contains);
             }
         }
 
@@ -183,6 +189,32 @@ public class FunctionalityRedesign {
         this.redesign.add(newToLT);
 
         return this.redesign;
+    }
+
+    private LocalTransaction firstLocalTransactionInAMerge(List<Integer> ltsBeingMergedIDs){
+        List<LocalTransaction> localTransactionsSequence = new ArrayList<>();
+        for (LocalTransaction lt : this.redesign) {
+            if(lt.getId().equals(String.valueOf(-1))){
+                localTransactionsSequence.add(lt);
+            }
+        }
+
+        for(int i = 0; i < localTransactionsSequence.size(); i++) {
+            LocalTransaction lt = localTransactionsSequence.get(i);
+
+            for (Integer id : lt.getRemoteInvocations()) {
+                for (LocalTransaction localTransaction : this.redesign) {
+                    if(localTransaction.getId().equals(String.valueOf(id)))
+                        localTransactionsSequence.add(localTransaction);
+                }
+            }
+
+            if(!lt.getId().equals(Integer.toString(-1))){
+                if(lt.getRemoteInvocations().stream().filter(ri -> ltsBeingMergedIDs.contains(ri)).findAny().orElse(null) != null)
+                    return lt;
+            }
+        }
+        return null;
     }
 
     private String constructSequence(HashMap<String, String> hashMapSequence){
@@ -373,5 +405,13 @@ public class FunctionalityRedesign {
                 lt.setName(newName);
             }
         }
+    }
+
+    public boolean isUsedForMetrics() {
+        return usedForMetrics;
+    }
+
+    public void setUsedForMetrics(boolean usedForMetrics) {
+        this.usedForMetrics = usedForMetrics;
     }
 }

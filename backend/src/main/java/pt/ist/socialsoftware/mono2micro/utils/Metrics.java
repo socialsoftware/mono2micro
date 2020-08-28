@@ -224,12 +224,12 @@ public class Metrics {
 					otherController.containsEntity(entity) &&
 					this.controllerClusters.get(otherController.getName()).size() > 1) {
 
-				if(functionalityRedesign.getPivotTransaction().equals("") &&
+				if(otherController.getFunctionalityRedesigns().size() == 1 &&
 						otherController.getEntities().get(entity).contains("W")){
 					functionalityRedesign.setFunctionalityComplexity(functionalityRedesign.getFunctionalityComplexity() + 1);
 				}
-				else if(!functionalityRedesign.getPivotTransaction().equals("") &&
-						functionalityRedesign.semanticLockEntities().contains(entity)){
+				else if(otherController.getFunctionalityRedesigns().size() > 1 &&
+					otherController.frUsedForMetrics().semanticLockEntities().contains(entity)){
 					functionalityRedesign.setFunctionalityComplexity(functionalityRedesign.getFunctionalityComplexity() + 1);
 				}
 

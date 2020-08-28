@@ -136,7 +136,7 @@ public class FunctionalityRedesignController {
 
             if(newRedesignName.isPresent()) {
                 controller.changeFunctionalityRedesignName(redesignName, newRedesignName.get());
-                controller.createFunctionalityRedesign(Constants.DEFAULT_REDESIGN_NAME);
+                controller.createFunctionalityRedesign(Constants.DEFAULT_REDESIGN_NAME, false);
             }
 
             metrics.calculateRedesignComplexities(controller, Constants.DEFAULT_REDESIGN_NAME);
@@ -186,6 +186,27 @@ public class FunctionalityRedesignController {
             Graph graph = codebase.getDendrogram(dendrogramName).getGraph(graphName);
             Controller controller = graph.getController(controllerName);
             controller.deleteRedesign(redesignName);
+            codebaseManager.writeCodebase(codebaseName, codebase);
+
+            return new ResponseEntity<>(controller, HttpStatus.OK);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(value="/controller/{controllerName}/redesign/{redesignName}/useForMetrics", method = RequestMethod.POST)
+    public ResponseEntity<Controller> useForMetrics(@PathVariable String codebaseName,
+                                                    @PathVariable String dendrogramName,
+                                                    @PathVariable String graphName,
+                                                    @PathVariable String controllerName,
+                                                    @PathVariable String redesignName) {
+        logger.debug("useForMetrics");
+        try {
+            Codebase codebase = codebaseManager.getCodebase(codebaseName);
+            Graph graph = codebase.getDendrogram(dendrogramName).getGraph(graphName);
+            Controller controller = graph.getController(controllerName);
+            controller.changeFRUsedForMetrics(redesignName);
             codebaseManager.writeCodebase(codebaseName, codebase);
 
             return new ResponseEntity<>(controller, HttpStatus.OK);

@@ -188,7 +188,7 @@ public class Graph {
 				}
 				entitiesSeq.put(clusterAccess);
 				controller.addEntitiesSeq(entitiesSeq);
-				controller.createFunctionalityRedesign(Constants.DEFAULT_REDESIGN_NAME);
+				controller.createFunctionalityRedesign(Constants.DEFAULT_REDESIGN_NAME, true);
 			}
 		}
 	}

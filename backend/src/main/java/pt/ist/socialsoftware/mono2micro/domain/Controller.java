@@ -76,8 +76,9 @@ public class Controller {
 		this.functionalityRedesigns = functionalityRedesigns;
 	}
 
-	public void createFunctionalityRedesign(String name) throws JSONException {
+	public void createFunctionalityRedesign(String name, boolean usedForMetrics) throws JSONException {
 		FunctionalityRedesign functionalityRedesign = new FunctionalityRedesign(name);
+		functionalityRedesign.setUsedForMetrics(usedForMetrics);
 
 		JSONArray sequence = new JSONArray(this.entitiesSeq);
 		LocalTransaction lt = new LocalTransaction(Integer.toString(-1), this.name,
@@ -111,11 +112,31 @@ public class Controller {
 		return true;
 	}
 
+	public FunctionalityRedesign frUsedForMetrics(){
+		for(FunctionalityRedesign fr : this.getFunctionalityRedesigns()){
+			if(fr.isUsedForMetrics()) return fr;
+		}
+		return null;
+	}
+
 	public boolean checkNameValidity(String name){
 		return this.functionalityRedesigns.stream().filter(fr -> fr.getName().equals(name)).findFirst().orElse(null) == null;
 	}
 
+
 	public void deleteRedesign(String redesignName){
-		this.functionalityRedesigns.removeIf(fr -> fr.getName().equals(redesignName));
+		if(this.functionalityRedesigns.removeIf(fr -> fr.getName().equals(redesignName))){
+			this.functionalityRedesigns.get(0).setUsedForMetrics(true);
+		}
+	}
+
+	public void changeFRUsedForMetrics(String redesignName){
+		for(FunctionalityRedesign fr : this.getFunctionalityRedesigns()){
+			if (fr.isUsedForMetrics())
+				fr.setUsedForMetrics(false);
+			else if(fr.getName().equals(redesignName))
+				fr.setUsedForMetrics(true);
+
+		}
 	}
 }

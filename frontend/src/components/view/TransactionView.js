@@ -224,6 +224,7 @@ export class TransactionView extends React.Component {
         this.handleDeleteRedesign = this.handleDeleteRedesign.bind(this);
         this.setComparingRedesign = this.setComparingRedesign.bind(this);
         this.handleCompareRedesignSubmit = this.handleCompareRedesignSubmit(this);
+        this.handleUseForMetrics = this.handleUseForMetrics.bind(this);
     }
 
     componentDidMount() {
@@ -391,11 +392,12 @@ export class TransactionView extends React.Component {
 
         for(let i = 0; i < nodes.length; i++){
             if(nodes[i].id >= 0) {
+                console.log(nodes[i].id);
                 let localTransaction = functionalityRedesign.redesign.find(entry => entry.id === nodes[i].id.toString());
                 localTransaction.remoteInvocations.forEach((id) => {
                     let lt = functionalityRedesign.redesign.find(e => e.id === id.toString());
                     let cluster = this.state.graph.clusters.filter(cluster => cluster.name === lt.cluster)[0];
-
+                    console.log(lt);
                     nodes.push({
                         id: lt.id,
                         title: cluster.entities.map(e => e.name).join('<br>') + "<br>Total: " + cluster.entities.length,
@@ -696,17 +698,24 @@ export class TransactionView extends React.Component {
     renderFunctionalityRedesigns(){
         return <CardDeck style={{ width: "fit-content" }}>
             {this.state.controller.functionalityRedesigns.map(fr =>
-                <Card className="mb-4" key={fr.name} style={{ width: "20.5rem" }}>
+                <Card className="mb-4" key={fr.name} style={{ width: "30rem" }}>
                     <Card.Body>
-                        <Card.Title>
-                            {fr.name}
-                        </Card.Title>
+                        {fr.usedForMetrics ? <Card.Title>
+                            {fr.name + " (Used For Metrics)"}
+                        </Card.Title> :
+                            <Card.Title>
+                                {fr.name}
+                            </Card.Title>
+                        }
                         <Card.Text>
                             Functionality Complexity: {fr.functionalityComplexity}< br/>
                             System Complexity: {fr.systemComplexity}
                         </Card.Text>
                         <Button onClick={() => this.handleSelectRedesign(fr)} className="mr-2">
                             {fr.name === DEFAULT_REDESIGN_NAME ? "Create a new Redesign" : "Go to Redesign"}
+                        </Button>
+                        <Button onClick={() => this.handleUseForMetrics(fr)} className="mr-2" disabled={fr.usedForMetrics}>
+                            Use For Metrics
                         </Button>
                         <Button onClick={() => this.handleDeleteRedesign(fr)} variant="danger" className="mr-2" disabled={fr.name === DEFAULT_REDESIGN_NAME}>
                             Delete
@@ -715,6 +724,28 @@ export class TransactionView extends React.Component {
                 </Card>
             )}
         </CardDeck>
+    }
+
+    handleUseForMetrics(value){
+        console.log(value);
+        const service = new RepositoryService();
+        service.setUseForMetrics(this.props.codebaseName, this.props.dendrogramName, this.props.graphName,
+            this.state.controller.name, value.name)
+            .then(response => {
+                const controllers = this.state.controllers;
+                const index = controllers.indexOf(this.state.controller);
+                controllers[index] = response.data;
+                this.setState({
+                    controllers: controllers,
+                    controller: response.data,
+                });
+            }).catch(() => {
+                this.setState({
+                    error: true,
+                    errorMessage: 'ERROR: Change Functionality Used for Metrics failed.'
+                });
+            }
+        );
     }
 
     handleSelectRedesign(value){

@@ -262,4 +262,8 @@ export class RepositoryService {
     deleteRedesign(codebaseName, dendrogramName, graphName, controllerName, redesignName){
         return this.axios.delete("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controller/" + controllerName + "/redesign/" + redesignName + "/deleteRedesign");
     }
+
+    setUseForMetrics(codebaseName, dendrogramName, graphName, controllerName, redesignName){
+        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controller/" + controllerName + "/redesign/" + redesignName + "/useForMetrics");
+    }
 }
