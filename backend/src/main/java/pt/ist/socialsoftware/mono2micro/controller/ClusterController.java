@@ -29,76 +29,114 @@ public class ClusterController {
 
 	private CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
-
 	@RequestMapping(value = "/cluster/{clusterName}/merge", method = RequestMethod.POST)
-	public ResponseEntity<HttpStatus> mergeClusters(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName, @PathVariable String clusterName, @RequestParam String otherCluster, @RequestParam String newName) {
+	public ResponseEntity<HttpStatus> mergeClusters(
+		@PathVariable String codebaseName,
+		@PathVariable String dendrogramName,
+		@PathVariable String graphName,
+		@PathVariable String clusterName,
+		@RequestParam String otherCluster,
+		@RequestParam String newName
+	) {
 		logger.debug("mergeClusters");
 
 		try {
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 			codebase.getDendrogram(dendrogramName).getGraph(graphName).mergeClusters(clusterName, otherCluster, newName);
-			codebaseManager.writeCodebase(codebaseName, codebase);
+			codebaseManager.writeCodebase(codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
+
 		} catch (IOException e) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 
-
 	@RequestMapping(value = "/cluster/{clusterName}/rename", method = RequestMethod.POST)
-	public ResponseEntity<HttpStatus> renameCluster(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName, @PathVariable String clusterName, @RequestParam String newName) {
+	public ResponseEntity<HttpStatus> renameCluster(
+		@PathVariable String codebaseName,
+		@PathVariable String dendrogramName,
+		@PathVariable String graphName,
+		@PathVariable String clusterName,
+		@RequestParam String newName
+	) {
 		logger.debug("renameCluster");
 
 		try {
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 			codebase.getDendrogram(dendrogramName).getGraph(graphName).renameCluster(clusterName, newName);
-			codebaseManager.writeCodebase(codebaseName, codebase);
+			codebaseManager.writeCodebase(codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
+
 		} catch (KeyAlreadyExistsException e) {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
 		} catch (IOException e) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 
-
 	@RequestMapping(value = "/cluster/{clusterName}/split", method = RequestMethod.POST)
-	public ResponseEntity<HttpStatus> splitCluster(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName, @PathVariable String clusterName, @RequestParam String newName, @RequestParam String entities) {
+	public ResponseEntity<HttpStatus> splitCluster(
+		@PathVariable String codebaseName,
+		@PathVariable String dendrogramName,
+		@PathVariable String graphName,
+		@PathVariable String clusterName,
+		@RequestParam String newName,
+		@RequestParam String entities
+	) {
 		logger.debug("splitCluster");
 
 		try {
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 			codebase.getDendrogram(dendrogramName).getGraph(graphName).splitCluster(clusterName, newName, entities.split(","));
-			codebaseManager.writeCodebase(codebaseName, codebase);
+			codebaseManager.writeCodebase(codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
+
 		} catch (IOException e) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 
-
 	@RequestMapping(value = "/cluster/{clusterName}/transferEntities", method = RequestMethod.POST)
-	public ResponseEntity<HttpStatus> transferEntities(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName, @PathVariable String clusterName, @RequestParam String toCluster, @RequestParam String entities) {
+	public ResponseEntity<HttpStatus> transferEntities(
+		@PathVariable String codebaseName,
+		@PathVariable String dendrogramName,
+		@PathVariable String graphName,
+		@PathVariable String clusterName,
+		@RequestParam String toCluster,
+		@RequestParam String entities
+	) {
 		logger.debug("transferEntities");
 
 		try {
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 			codebase.getDendrogram(dendrogramName).getGraph(graphName).transferEntities(clusterName, toCluster, entities.split(","));
-			codebaseManager.writeCodebase(codebaseName, codebase);
+			codebaseManager.writeCodebase(codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
+
 		} catch (IOException e) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 
-
 	@RequestMapping(value = "/controllerClusters", method = RequestMethod.GET)
-	public ResponseEntity<Map<String,List<Cluster>>> getControllerClusters(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName) {
+	public ResponseEntity<Map<String,List<Cluster>>> getControllerClusters(
+		@PathVariable String codebaseName,
+		@PathVariable String dendrogramName,
+		@PathVariable String graphName
+	) {
 		logger.debug("getControllerClusters");
 
-		return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getDendrogram(dendrogramName).getGraph(graphName).getControllerClusters(), HttpStatus.OK);
-	}
+		try {
+			return new ResponseEntity<>(
+				codebaseManager.getCodebase(codebaseName).getDendrogram(dendrogramName).getGraph(graphName).getControllerClusters(),
+				HttpStatus.OK
+			);
 
+		} catch (IOException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
 
 	@RequestMapping(value = "/clusterControllers", method = RequestMethod.GET)
 	public ResponseEntity<Map<String,List<Controller>>> getClusterControllers(
@@ -108,13 +146,17 @@ public class ClusterController {
 	) {
 		logger.debug("getClusterControllers");
 
-		return new ResponseEntity<>(
-			codebaseManager
-				.getCodebase(codebaseName)
-				.getDendrogram(dendrogramName)
-				.getGraph(graphName)
-				.getClusterControllers(),
-			HttpStatus.OK
-		);
+		try {
+			return new ResponseEntity<>(
+				codebaseManager
+					.getCodebase(codebaseName)
+					.getDendrogram(dendrogramName)
+					.getGraph(graphName)
+					.getClusterControllers(),
+				HttpStatus.OK
+			);
+		} catch (IOException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 	}
 }

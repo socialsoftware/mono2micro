@@ -29,27 +29,48 @@ public class GraphController {
 	public ResponseEntity<List<Graph>> getGraphs(@PathVariable String codebaseName, @PathVariable String dendrogramName) {
 		logger.debug("getGraphs");
 
-		return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getDendrogram(dendrogramName).getGraphs(), HttpStatus.OK);
+		try {
+			return new ResponseEntity<>(
+				codebaseManager.getCodebase(codebaseName).getDendrogram(dendrogramName).getGraphs(),
+				HttpStatus.OK
+			);
+		} catch (IOException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 	}
-
 
 	@RequestMapping(value = "/graph/{graphName}", method = RequestMethod.GET)
-	public ResponseEntity<Graph> getGraph(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName) {
+	public ResponseEntity<Graph> getGraph(
+		@PathVariable String codebaseName,
+		@PathVariable String dendrogramName,
+		@PathVariable String graphName
+	) {
 		logger.debug("getGraph");
-		
-		return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getDendrogram(dendrogramName).getGraph(graphName), HttpStatus.OK);
+
+		try {
+			return new ResponseEntity<>(
+				codebaseManager.getCodebase(codebaseName).getDendrogram(dendrogramName).getGraph(graphName),
+				HttpStatus.OK
+			);
+		} catch (IOException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 	}
 
-
 	@RequestMapping(value = "/graph/{graphName}/delete", method = RequestMethod.DELETE)
-	public ResponseEntity<HttpStatus> deleteGraph(@PathVariable String codebaseName, @PathVariable String dendrogramName, @PathVariable String graphName) {
+	public ResponseEntity<HttpStatus> deleteGraph(
+		@PathVariable String codebaseName,
+		@PathVariable String dendrogramName,
+		@PathVariable String graphName
+	) {
 		logger.debug("deleteGraph");
 
 		try {
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 			codebase.getDendrogram(dendrogramName).deleteGraph(graphName);
-			codebaseManager.writeCodebase(codebaseName, codebase);
+			codebaseManager.writeCodebase(codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
+
 		} catch (IOException e) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}

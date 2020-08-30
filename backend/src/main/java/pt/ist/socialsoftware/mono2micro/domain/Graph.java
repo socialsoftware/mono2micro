@@ -1,16 +1,11 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonEncoding;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
 import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
@@ -18,8 +13,6 @@ import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Metrics;
-
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
 
 public class Graph {
 	private String codebaseName;
@@ -342,7 +335,7 @@ public class Graph {
 		for (int i = 0; i < clusters.size(); i++) {
 			if (clusters.get(i).getName().equals(cluster1)) {
 
-				for (Entity entity : clusters.get(i).getEntities().values())
+				for (String entity : clusters.get(i).getEntities())
 					mergedCluster.addEntity(entity);
 
 				clusters.remove(i);
@@ -354,7 +347,7 @@ public class Graph {
 		for (int i = 0; i < clusters.size(); i++) {
 			if (clusters.get(i).getName().equals(cluster2)) {
 
-				for (Entity entity : clusters.get(i).getEntities().values())
+				for (String entity : clusters.get(i).getEntities())
 					mergedCluster.addEntity(entity);
 
 				clusters.remove(i);
@@ -405,20 +398,26 @@ public class Graph {
 		Cluster currentCluster = this.getCluster(clusterName);
 		Cluster newCluster = new Cluster(newName);
 		for (String entity : entities) {
-			newCluster.addEntity(currentCluster.getEntity(entity));
-			currentCluster.removeEntity(entity);
+			if (currentCluster.containsEntity(entity)) {
+				newCluster.addEntity(entity);
+				currentCluster.removeEntity(entity);
+			}
 		}
 		this.addCluster(newCluster);
 		this.calculateMetrics();
 	}
 
-	public void transferEntities(String fromCluster, String toCluster, String[] entities) {
-		Cluster c1 = this.getCluster(fromCluster);
-		Cluster c2 = this.getCluster(toCluster);
+	public void transferEntities(String fromClusterName, String toClusterName, String[] entities) {
+		Cluster fromCluster = this.getCluster(fromClusterName);
+		Cluster toCluster = this.getCluster(toClusterName);
+
 		for (String entity : entities) {
-			c2.addEntity(c1.getEntity(entity));
-			c1.removeEntity(entity);
+			if (fromCluster.containsEntity(entity)) {
+				toCluster.addEntity(entity);
+				fromCluster.removeEntity(entity);
+			}
 		}
+
 		this.calculateMetrics();
 	}
 
@@ -453,8 +452,8 @@ public class Graph {
 
 			for (Cluster cluster : this.clusters) {
 
-				for (Entity clusterEntity : cluster.getEntities().values()) {
-					if (controller.containsEntity(clusterEntity.getName())) {
+				for (String clusterEntity : cluster.getEntities()) {
+					if (controller.containsEntity(clusterEntity)) {
 						touchedClusters.add(cluster);
 						break;
 					}

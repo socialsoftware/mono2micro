@@ -41,7 +41,7 @@ public class CodebaseManager {
         return instance; 
 	}
 
-	public List<Codebase> getCodebases() {
+	public List<Codebase> getCodebases() throws IOException {
 		List<Codebase> codebases = new ArrayList<>();
 		File codebasesPath = new File(CODEBASES_PATH);
 		if (!codebasesPath.exists()) {
@@ -111,19 +111,12 @@ public class CodebaseManager {
 		return codebase;
 	}
 
-	public Codebase getCodebase(String codebaseName) {
-		try {
-			return objectMapper.readValue(new File(CODEBASES_PATH + codebaseName + "/codebase.json"), Codebase.class);
-		} catch(IOException e) {
-			return null;
-		}
+	public Codebase getCodebase(String codebaseName) throws IOException {
+		return objectMapper.readValue(new File(CODEBASES_PATH + codebaseName + "/codebase.json"), Codebase.class);
 	}
 
-	public void writeCodebase(
-		String codebaseName, // FIXME is this really necessary? what about codebase.getName()?
-		Codebase codebase
-	) throws IOException {
-		objectMapper.writeValue(new File(CODEBASES_PATH + codebaseName + "/codebase.json"), codebase);
+	public void writeCodebase(Codebase codebase) throws IOException {
+		objectMapper.writeValue(new File(CODEBASES_PATH + codebase.getName() + "/codebase.json"), codebase);
 	}
 
 	public HashMap<String, ControllerDto> getDatafile(String codebaseName) throws IOException {

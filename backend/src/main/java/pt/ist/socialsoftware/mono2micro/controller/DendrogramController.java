@@ -34,7 +34,11 @@ public class DendrogramController {
 	public ResponseEntity<List<Dendrogram>> getDendrograms(@PathVariable String codebaseName) {
 		logger.debug("getDendrograms");
 
-		return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getDendrograms(), HttpStatus.OK);
+		try {
+			return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getDendrograms(), HttpStatus.OK);
+		} catch (IOException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 	}
 
 
@@ -42,7 +46,12 @@ public class DendrogramController {
 	public ResponseEntity<Dendrogram> getDendrogram(@PathVariable String codebaseName, @PathVariable String dendrogramName) {
 		logger.debug("getDendrogram");
 
-		return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getDendrogram(dendrogramName), HttpStatus.OK);
+		try {
+			return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getDendrogram(dendrogramName), HttpStatus.OK);
+		} catch (IOException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
 	}
 
 
@@ -65,7 +74,7 @@ public class DendrogramController {
 		try {
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 			codebase.deleteDendrogram(dendrogramName);
-			codebaseManager.writeCodebase(codebaseName, codebase);
+			codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -89,7 +98,7 @@ public class DendrogramController {
 				codebase.createDynamicDendrogram(dendrogram);
 			}
 
-            codebaseManager.writeCodebase(codebaseName, codebase);
+            codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.CREATED);
 
 		} catch (KeyAlreadyExistsException e) {
@@ -110,7 +119,7 @@ public class DendrogramController {
 		try {
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
             codebase.getDendrogram(dendrogramName).cut(graph);
-            codebaseManager.writeCodebase(codebaseName, codebase);
+            codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
 			e.printStackTrace();
@@ -126,7 +135,7 @@ public class DendrogramController {
 		try {
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
             codebase.getDendrogram(dendrogramName).createExpertCut(expertName, expertFile);
-            codebaseManager.writeCodebase(codebaseName, codebase);
+            codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (KeyAlreadyExistsException e) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

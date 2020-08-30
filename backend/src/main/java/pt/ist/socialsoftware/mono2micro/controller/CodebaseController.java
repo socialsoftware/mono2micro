@@ -36,15 +36,23 @@ public class CodebaseController {
 	public ResponseEntity<List<Codebase>> getCodebases() {
 		logger.debug("getCodebases");
 
-		return new ResponseEntity<>(codebaseManager.getCodebases(), HttpStatus.OK);
+		try {
+			return new ResponseEntity<>(codebaseManager.getCodebases(), HttpStatus.OK);
+		} catch (IOException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 	}
-
 
 	@RequestMapping(value = "/codebase/{codebaseName}", method = RequestMethod.GET)
 	public ResponseEntity<Codebase> getCodebase(@PathVariable String codebaseName) {
 		logger.debug("getCodebase");
 
-		return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName), HttpStatus.OK);
+		try {
+			return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName), HttpStatus.OK);
+		} catch (IOException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
     }
     
 
@@ -68,7 +76,7 @@ public class CodebaseController {
         try {
             Codebase codebase = codebaseManager.getCodebase(codebaseName);
             codebase.addProfile(profile, new ArrayList<>());
-            codebaseManager.writeCodebase(codebaseName, codebase);
+            codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (KeyAlreadyExistsException e) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -85,7 +93,7 @@ public class CodebaseController {
         try {
             Codebase codebase = codebaseManager.getCodebase(codebaseName);
             codebase.moveControllers(controllers, targetProfile);
-            codebaseManager.writeCodebase(codebaseName, codebase);
+            codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -100,7 +108,7 @@ public class CodebaseController {
         try {
             Codebase codebase = codebaseManager.getCodebase(codebaseName);
             codebase.deleteProfile(profile);
-            codebaseManager.writeCodebase(codebaseName, codebase);
+            codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -117,7 +125,7 @@ public class CodebaseController {
 
         try {
             Codebase codebase = codebaseManager.createCodebase(codebaseName, datafile, analysisType);
-            codebaseManager.writeCodebase(codebaseName, codebase);
+            codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (KeyAlreadyExistsException e) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
