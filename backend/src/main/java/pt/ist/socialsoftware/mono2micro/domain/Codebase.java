@@ -13,8 +13,12 @@ import java.util.Map;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.apache.commons.io.FileUtils;
+import pt.ist.socialsoftware.mono2micro.utils.deserializers.CodebaseDeserializer;
+import pt.ist.socialsoftware.mono2micro.utils.deserializers.ControllerDtoDeserializer;
 
 public class Codebase {
 	private String name;

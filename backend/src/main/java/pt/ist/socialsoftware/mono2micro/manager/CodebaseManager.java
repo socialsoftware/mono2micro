@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
@@ -112,7 +113,14 @@ public class CodebaseManager {
 	}
 
 	public Codebase getCodebase(String codebaseName) throws IOException {
-		return objectMapper.readValue(new File(CODEBASES_PATH + codebaseName + "/codebase.json"), Codebase.class);
+		File codebaseJSONFile = new File(CODEBASES_PATH + codebaseName + "/codebase.json");
+
+		if (!codebaseJSONFile.exists()) return null;
+
+		return objectMapper.readValue(
+			codebaseJSONFile,
+			Codebase.class
+		);
 	}
 
 	public void writeCodebase(Codebase codebase) throws IOException {
