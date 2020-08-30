@@ -9,6 +9,7 @@ import java.util.*;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -115,6 +116,7 @@ public class Dendrogram {
 
 	public void setTypeOfTraces(Constants.TypeOfTraces typeOfTraces) { this.typeOfTraces = typeOfTraces; }
 
+	@JsonIgnore
 	public List<String> getGraphNames() {
 		List<String> graphNames = new ArrayList<>();
 		for (Graph graph : this.graphs)
@@ -165,7 +167,7 @@ public class Dendrogram {
 				JSONArray entities = expertCut.getJSONObject("clusters").getJSONArray(clusterId);
 				Cluster cluster = new Cluster(clusterId);
 				for (int i = 0; i < entities.length(); i++) {
-					cluster.addEntity(new Entity(entities.getString(i)));
+					cluster.addEntity(entities.getString(i));
 				}
 				expert.addCluster(cluster);
 			}
@@ -175,7 +177,7 @@ public class Dendrogram {
 			JSONObject similarityMatrixData = CodebaseManager.getInstance().getSimilarityMatrix(this.codebaseName, this.name);
 			JSONArray entities = similarityMatrixData.getJSONArray("entities");
 			for (int i = 0; i < entities.length(); i++) {
-				cluster.addEntity(new Entity(entities.getString(i)));
+				cluster.addEntity(entities.getString(i));
 			}
 
 			expert.addCluster(cluster);
@@ -418,8 +420,7 @@ public class Dendrogram {
 			Cluster cluster = new Cluster("Cluster" + clusterId);
 
 			for (int i = 0; i < entities.length(); i++) {
-				Entity entity = new Entity(entities.getString(i));
-				cluster.addEntity(entity);
+				cluster.addEntity(entities.getString(i));
 			}
 
 			graph.addCluster(cluster);
