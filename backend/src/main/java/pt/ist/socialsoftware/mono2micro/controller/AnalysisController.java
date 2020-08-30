@@ -115,7 +115,7 @@ public class AnalysisController {
 					Cluster cluster = new Cluster(clusterId);
 
 					for (int i = 0; i < entities.length(); i++) {
-						cluster.addEntity(new Entity(entities.getString(i)));
+						cluster.addEntity(entities.getString(i));
 					}
 
 					graph.addCluster(cluster);
@@ -400,27 +400,30 @@ public class AnalysisController {
 			return new ResponseEntity<>(analysis, HttpStatus.OK);
 		}
 
-		Map<String,List<String>> graph1 = new HashMap<>();
+		Map<String, Set<String>> graph1 = new HashMap<>();
 		for (Cluster c : analysis.getGraph1().getClusters()) {
-			graph1.put(c.getName(), c.getEntityNames());
+			graph1.put(c.getName(), c.getEntities());
 		}
 
-		Map<String,List<String>> graph2_CommonEntitiesOnly = new HashMap<>();
+		Map<String, Set<String>> graph2_CommonEntitiesOnly = new HashMap<>();
 		for (Cluster c : analysis.getGraph2().getClusters()) {
-			graph2_CommonEntitiesOnly.put(c.getName(), c.getEntityNames());
+			graph2_CommonEntitiesOnly.put(c.getName(), c.getEntities());
 		}
 
 		List<String> entities = new ArrayList<>();
 		List<String> notSharedEntities = new ArrayList<>();
-		for (List<String> l1 : graph1.values()) {
+
+		for (Set<String> l1 : graph1.values()) {
 			for (String e1 : l1) {
 				boolean inBoth = false;
-				for (List<String> l2 : graph2_CommonEntitiesOnly.values()) {
+
+				for (Set<String> l2 : graph2_CommonEntitiesOnly.values()) {
 					if (l2.contains(e1)) {
 						inBoth = true;
 						break;
 					}
 				}
+
 				if (inBoth)
 					entities.add(e1);
 				else {
@@ -430,9 +433,9 @@ public class AnalysisController {
 		}
 
 		// ------------------------------------------------------------------------------------------
-		Map<String,List<String>> graph2_UnassignedInBigger = graphCopyOf(graph2_CommonEntitiesOnly);
-		Map.Entry<String, List<String>> biggerClusterEntry = null;
-		for (Map.Entry<String, List<String>> clusterEntry : graph2_UnassignedInBigger.entrySet()) {
+		Map<String, Set<String>> graph2_UnassignedInBigger = graphCopyOf(graph2_CommonEntitiesOnly);
+		Map.Entry<String, Set<String>> biggerClusterEntry = null;
+		for (Map.Entry<String, Set<String>> clusterEntry : graph2_UnassignedInBigger.entrySet()) {
 			if (biggerClusterEntry == null)
 				biggerClusterEntry = clusterEntry;
 
@@ -442,15 +445,14 @@ public class AnalysisController {
 		biggerClusterEntry.getValue().addAll(notSharedEntities);
 
 		// ------------------------------------------------------------------------------------------
-		Map<String,List<String>> graph2_UnassignedInNew = graphCopyOf(graph2_CommonEntitiesOnly);
-		ArrayList<String> newClusterForUnassignedEntities = new ArrayList<>();
-		newClusterForUnassignedEntities.addAll(notSharedEntities);
+		Map<String, Set<String>> graph2_UnassignedInNew = graphCopyOf(graph2_CommonEntitiesOnly);
+		Set<String> newClusterForUnassignedEntities = new HashSet<>(notSharedEntities);
 		graph2_UnassignedInNew.put("newClusterForUnnasignedEntities", newClusterForUnassignedEntities);
 
 		// ------------------------------------------------------------------------------------------
-		Map<String,List<String>> graph2_UnassignedInSingletons = graphCopyOf(graph2_CommonEntitiesOnly);
+		Map<String, Set<String>> graph2_UnassignedInSingletons = graphCopyOf(graph2_CommonEntitiesOnly);
 		for (int i = 0; i < notSharedEntities.size(); i++) {
-			ArrayList<String> clusterSingletonEntity = new ArrayList<>();
+			Set<String> clusterSingletonEntity = new HashSet<>();
 			clusterSingletonEntity.add(notSharedEntities.get(i));
 			graph2_UnassignedInSingletons.put("singletonCluster" + i, clusterSingletonEntity);
 		}
@@ -569,22 +571,22 @@ public class AnalysisController {
 		double mojoValueCommonOnly = getMojoValue(
 				graph2_CommonEntitiesOnly,
 				graph1,
-				graph2_CommonEntitiesOnly.values().stream().flatMap(Collection::stream).collect(Collectors.toList())
+				graph2_CommonEntitiesOnly.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
 		);
 		double mojoValueUnassignedInBiggest = getMojoValue(
 				graph2_UnassignedInBigger,
 				graph1,
-				graph2_UnassignedInBigger.values().stream().flatMap(Collection::stream).collect(Collectors.toList())
+				graph2_UnassignedInBigger.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
 		);
 		double mojoValueUnassignedInNew = getMojoValue(
 				graph2_UnassignedInNew,
 				graph1,
-				graph2_UnassignedInNew.values().stream().flatMap(Collection::stream).collect(Collectors.toList())
+				graph2_UnassignedInNew.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
 		);
 		double mojoValueUnassignedInSingletons = getMojoValue(
 				graph2_UnassignedInSingletons,
 				graph1,
-				graph2_UnassignedInSingletons.values().stream().flatMap(Collection::stream).collect(Collectors.toList())
+				graph2_UnassignedInSingletons.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
 		);
 
 		analysis.setMojoCommon(mojoValueCommonOnly);
@@ -594,25 +596,25 @@ public class AnalysisController {
 		return new ResponseEntity<>(analysis, HttpStatus.OK);
 	}
 
-	private Map<String, List<String>> graphCopyOf(Map<String, List<String>> graph) {
-		HashMap<String, List<String>> copy = new HashMap<>();
-		for (Map.Entry<String, List<String>> entry : graph.entrySet()) {
-			copy.put(entry.getKey(), new ArrayList<>(entry.getValue()));
+	private Map<String, Set<String>> graphCopyOf(Map<String, Set<String>> graph) {
+		HashMap<String, Set<String>> copy = new HashMap<>();
+		for (Map.Entry<String, Set<String>> entry : graph.entrySet()) {
+			copy.put(entry.getKey(), new HashSet<>(entry.getValue()));
 		}
 
 		return copy;
 	}
 
 	private double getMojoValue(
-			Map<String, List<String>> graph1,
-			Map<String, List<String>> graph2,
-			List<String> entities
+			Map<String, Set<String>> graph1,
+			Map<String, Set<String>> graph2,
+			Set<String> entities
 	) throws IOException
 	{
 		StringBuilder sbSource = new StringBuilder();
-		for (Map.Entry<String, List<String>> clusterEntry : graph1.entrySet()) {
+		for (Map.Entry<String, Set<String>> clusterEntry : graph1.entrySet()) {
 			String clusterName = clusterEntry.getKey();
-			List<String> clusterEntities = clusterEntry.getValue();
+			Set<String> clusterEntities = clusterEntry.getValue();
 			for (String entity : clusterEntities) {
 				if (entities.contains(entity)) { // entity present in both graphs
 					sbSource.append("contain " + clusterName + " " + entity + "\n");
@@ -621,9 +623,9 @@ public class AnalysisController {
 		}
 
 		StringBuilder sbTarget = new StringBuilder();
-		for (Map.Entry<String, List<String>> clusterEntry : graph2.entrySet()) {
+		for (Map.Entry<String, Set<String>> clusterEntry : graph2.entrySet()) {
 			String clusterName = clusterEntry.getKey();
-			List<String> clusterEntities = clusterEntry.getValue();
+			Set<String> clusterEntities = clusterEntry.getValue();
 			for (String entity : clusterEntities) {
 				if (entities.contains(entity)) { // entity present in both graphs
 					sbTarget.append("contain " + clusterName + " " + entity + "\n");
