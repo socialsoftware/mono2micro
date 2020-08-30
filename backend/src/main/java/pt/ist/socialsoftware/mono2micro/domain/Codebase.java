@@ -18,7 +18,7 @@ import org.apache.commons.io.FileUtils;
 
 public class Codebase {
 	private String name;
-	private Map<String,List<String>> profiles = new HashMap<>();
+	private Map<String, List<String>> profiles = new HashMap<>(); // e.g <Generic, ControllerNamesList>
 	private List<Dendrogram> dendrograms = new ArrayList<>();
 	private String analysisType;
 	private String datafilePath;
@@ -121,6 +121,7 @@ public class Codebase {
 		FileUtils.deleteDirectory(new File(CODEBASES_PATH + this.name + "/" + dendrogramName));
 	}
 
+	@JsonIgnore
 	public List<String> getDendrogramNames() {
 		List<String> dendrogramNames = new ArrayList<>();
 		for (Dendrogram dendrogram : this.dendrograms)
