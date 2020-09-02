@@ -1,7 +1,5 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.*;
 
 public class Cluster {

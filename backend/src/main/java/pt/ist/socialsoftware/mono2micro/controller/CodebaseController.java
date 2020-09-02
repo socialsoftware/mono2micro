@@ -36,69 +36,46 @@ public class CodebaseController {
 
     private static Logger logger = LoggerFactory.getLogger(CodebaseController.class);
 
-    private CodebaseManager codebaseManager = CodebaseManager.getInstance();
+    private final CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
 	@RequestMapping(value = "/codebases", method = RequestMethod.GET)
-	public ResponseEntity<List<Codebase>> getCodebases() {
+	public ResponseEntity<List<Codebase>> getCodebases(@RequestParam List<String> fieldNames) {
 		logger.debug("getCodebases");
 
 		try {
+			return new ResponseEntity<>(
+				codebaseManager.getCodebasesWithFields(new HashSet<>(fieldNames)),
+				HttpStatus.OK
+			);
+		}
 
-			List<Codebase> codebases = new ArrayList<>();
-			File codebasesPath = new File(CODEBASES_PATH);
-			if (!codebasesPath.exists()) {
-				codebasesPath.mkdir();
-				return new ResponseEntity<>(codebases, HttpStatus.OK);
-			}
-
-			ObjectMapper objectMapper = new ObjectMapper();
-			SimpleModule module = new SimpleModule();
-			module.addDeserializer(Codebase.class, new CodebaseDeserializer());
-			objectMapper.registerModule(module);
-
-			Set<String> deserializableFields = new HashSet<String>(){{
-				add("name");
-				add("analysisType");
-			}};
-
-			ContextAttributes attrs = ContextAttributes.getEmpty().withSharedAttribute("nonDeserializableFields", deserializableFields);
-			ObjectReader reader = objectMapper.readerFor(Codebase.class).with(attrs);
-
-			File[] files = codebasesPath.listFiles();
-			Arrays.sort(files, Comparator.comparingLong(File::lastModified));
-
-			for (File file : files) {
-				if (file.isDirectory()) {
-					String filename = file.getName();
-					File codebaseJSONFile = new File(CODEBASES_PATH + filename + "/codebase.json");
-
-					if (codebaseJSONFile.exists()) {
-						Codebase cb = reader.readValue(codebaseJSONFile);
-
-						codebases.add(cb);
-					}
-				}
-			}
-
-			return new ResponseEntity<>(codebases, HttpStatus.OK);
-		} catch (IOException e) {
+		catch (IOException e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 
 	@RequestMapping(value = "/codebase/{codebaseName}", method = RequestMethod.GET)
-	public ResponseEntity<Codebase> getCodebase(@PathVariable String codebaseName) {
+	public ResponseEntity<Codebase> getCodebase(
+		@PathVariable String codebaseName,
+		@RequestParam List<String> fieldNames
+	) {
 		logger.debug("getCodebase");
 
 		try {
-			return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName), HttpStatus.OK);
+			return new ResponseEntity<>(
+				codebaseManager.getCodebaseWithFields(
+					CODEBASES_PATH + codebaseName,
+					new HashSet<>(fieldNames)
+				),
+				HttpStatus.OK
+			);
+
 		} catch (IOException e) {
+			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-
     }
-    
 
     @RequestMapping(value = "/codebase/{codebaseName}/delete", method = RequestMethod.DELETE)
 	public ResponseEntity<HttpStatus> deleteCodebase(@PathVariable String codebaseName) {
@@ -107,7 +84,9 @@ public class CodebaseController {
         try {
             codebaseManager.deleteCodebase(codebaseName);
             return new ResponseEntity<>(HttpStatus.OK);
+
         } catch (IOException e) {
+			e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -122,9 +101,13 @@ public class CodebaseController {
             codebase.addProfile(profile, new ArrayList<>());
             codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.OK);
+
         } catch (KeyAlreadyExistsException e) {
+			e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
         } catch (IOException e) {
+			e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -139,7 +122,9 @@ public class CodebaseController {
             codebase.moveControllers(controllers, targetProfile);
             codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.OK);
+
         } catch (IOException e) {
+			e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -154,7 +139,9 @@ public class CodebaseController {
             codebase.deleteProfile(profile);
             codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.OK);
+
         } catch (IOException e) {
+			e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

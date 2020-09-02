@@ -37,7 +37,6 @@ public class Dendrogram {
 	private List<String> profiles = new ArrayList<>();
 	private List<Graph> graphs = new ArrayList<>();
 	private int tracesMaxLimit = 0;
-
 	private Constants.TypeOfTraces typeOfTraces = Constants.TypeOfTraces.ALL;
 
 	public Dendrogram() {}
@@ -107,6 +106,8 @@ public class Dendrogram {
 	public List<Graph> getGraphs() {
 		return this.graphs;
 	}
+
+	public void setGraphs(List<Graph> graphs) { this.graphs = graphs; }
 
 	public int getTracesMaxLimit() { return tracesMaxLimit; }
 
@@ -241,6 +242,8 @@ public class Dendrogram {
 		Map<String,Integer> e1e2PairCount = new HashMap<>();
 
 		HashMap<String, ControllerDto> datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
+
+		// WIP getCodebaseProfilesAndDatafilePath()
 		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
 
 		for (String profile : this.profiles) {
@@ -274,6 +277,7 @@ public class Dendrogram {
 		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 		Map<String,Integer> e1e2PairCount = new HashMap<>();
 
+		// WIP getCodebaseProfilesAndDatafilePath()
 		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
 
 		ControllerTracesIterator iter;

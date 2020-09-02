@@ -53,6 +53,7 @@ public class AnalysisController {
 				codebaseManager.writeAnalyserResults(codebaseName, new HashMap());
 			}
 
+			// getCodebaseFields(["profiles", "datafilePath"])
 			Codebase codebase = CodebaseManager.getInstance().getCodebase(codebaseName);
 
 			List<String> entitiesList;
@@ -114,6 +115,7 @@ public class AnalysisController {
 					JSONArray entities = analyserCut.getJSONObject("clusters").getJSONArray(clusterId);
 					Cluster cluster = new Cluster(clusterId);
 
+					// FIXME setEntities
 					for (int i = 0; i < entities.length(); i++) {
 						cluster.addEntity(entities.getString(i));
 					}
@@ -306,6 +308,7 @@ public class AnalysisController {
 
 				switch (analyser.getTypeOfTraces()) {
 					case LONGEST:
+						// FIXME return accesses of longest trace instead of the trace itself
 						t = iter.getLongestTrace();
 
 						if (t != null) {
@@ -320,6 +323,7 @@ public class AnalysisController {
 						break;
 
 					case WITH_MORE_DIFFERENT_ACCESSES:
+						// FIXME return accesses of longest trace instead of the trace itself
 						t = iter.getTraceWithMoreDifferentAccesses();
 
 						if (t != null) {

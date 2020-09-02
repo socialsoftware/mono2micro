@@ -254,6 +254,7 @@ public class Graph {
 	) throws IOException {
 		this.controllers = new ArrayList<>();
 
+		// getCodebaseFields(["profiles", "datafilePath"])
 		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
 		ControllerTracesIterator iter;
 		TraceDto t;

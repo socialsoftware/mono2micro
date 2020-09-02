@@ -4,18 +4,23 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.fasterxml.jackson.databind.cfg.ContextAttributes;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
+import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
 import pt.ist.socialsoftware.mono2micro.dto.CutInfoDto;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
+import pt.ist.socialsoftware.mono2micro.utils.deserializers.CodebaseDeserializer;
+import pt.ist.socialsoftware.mono2micro.utils.deserializers.DendrogramDeserializer;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.*;
@@ -29,11 +34,17 @@ public class CodebaseManager {
 
 	private static CodebaseManager instance = null; 
 
-    private ObjectMapper objectMapper;
+    private static ObjectMapper objectMapper = null;
 
 	private CodebaseManager() {
 		objectMapper = new ObjectMapper();
 		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+		SimpleModule module = new SimpleModule();
+		module.addDeserializer(Codebase.class, new CodebaseDeserializer());
+
+		module.addDeserializer(Dendrogram.class, new DendrogramDeserializer());
+		objectMapper.registerModule(module);
 	}
 	
 	public static CodebaseManager getInstance() { 
@@ -42,8 +53,9 @@ public class CodebaseManager {
         return instance; 
 	}
 
-	public List<Codebase> getCodebases() throws IOException {
+	public List<Codebase> getCodebasesWithFields(Set<String> deserializableFields) throws IOException {
 		List<Codebase> codebases = new ArrayList<>();
+
 		File codebasesPath = new File(CODEBASES_PATH);
 		if (!codebasesPath.exists()) {
 			codebasesPath.mkdir();
@@ -51,12 +63,68 @@ public class CodebaseManager {
 		}
 
 		File[] files = codebasesPath.listFiles();
-		Arrays.sort(files, Comparator.comparingLong(File::lastModified));
-		for (File file : files) {
-			String filename = file.getName();
-			codebases.add(getCodebase(filename));
+
+		if (files != null) {
+			Arrays.sort(files, Comparator.comparingLong(File::lastModified));
+
+			for (File file : files) {
+				if (file.isDirectory()) {
+					Codebase cb = getCodebaseWithFields(CODEBASES_PATH + file.getName(), deserializableFields);
+
+					if (cb != null)
+						codebases.add(cb);
+				}
+			}
 		}
-        return codebases;
+
+		return codebases;
+	}
+
+	public Codebase getCodebaseWithFields(
+		String codebaseFolderPath,
+		Set<String> deserializableFields
+	) throws IOException {
+
+		ContextAttributes attrs = ContextAttributes.getEmpty().withPerCallAttribute(
+			"codebaseDeserializableFields",
+			deserializableFields
+		);
+
+		ObjectReader reader = objectMapper.readerFor(Codebase.class).with(attrs);
+
+		File codebaseJSONFile = new File(codebaseFolderPath + "/codebase.json");
+
+		if (!codebaseJSONFile.exists())
+			return null;
+
+		return reader.readValue(codebaseJSONFile);
+	}
+
+	public List<Dendrogram> getCodebaseDendrogramsWithFields(
+		String codebaseFolderPath,
+		Set<String> dendrogramDeserializableFields
+	) throws IOException {
+
+		ContextAttributes attrs = ContextAttributes.getEmpty()
+			.withPerCallAttribute(
+				"codebaseDeserializableFields",
+				new HashSet<String>() {{ add("dendrograms"); }}
+			)
+			.withPerCallAttribute(
+				"dendrogramDeserializableFields",
+				dendrogramDeserializableFields
+			);
+
+		ObjectReader reader = objectMapper.readerFor(Codebase.class).with(attrs);
+
+		File codebaseJSONFile = new File(codebaseFolderPath + "/codebase.json");
+
+		if (!codebaseJSONFile.exists())
+			return null;
+
+		Codebase cb = reader.readValue(codebaseJSONFile);
+
+		return cb.getDendrograms();
 	}
 
 	public void deleteCodebase(String codebaseName) throws IOException {
@@ -85,13 +153,13 @@ public class CodebaseManager {
 		Codebase codebase = new Codebase(codebaseName, analysisType);
 
 		HashMap datafileJSON;
-		ObjectMapper mapper = new ObjectMapper();
+
 		InputStream datafileInputStream = null;
 
 		if (datafile instanceof MultipartFile) {
 			// read datafile
 			datafileInputStream = ((MultipartFile) datafile).getInputStream();
-			datafileJSON = mapper.readValue(datafileInputStream, HashMap.class);
+			datafileJSON = objectMapper.readValue(datafileInputStream, HashMap.class);
 			datafileInputStream.close();
 			this.writeDatafile(codebaseName, datafileJSON);
 			File datafileFile = new File(CODEBASES_PATH + codebaseName + "/datafile.json");
@@ -113,14 +181,9 @@ public class CodebaseManager {
 	}
 
 	public Codebase getCodebase(String codebaseName) throws IOException {
-		File codebaseJSONFile = new File(CODEBASES_PATH + codebaseName + "/codebase.json");
+		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/codebase.json");
 
-		if (!codebaseJSONFile.exists()) return null;
-
-		return objectMapper.readValue(
-			codebaseJSONFile,
-			Codebase.class
-		);
+		return objectMapper.readerFor(Codebase.class).readValue(is);
 	}
 
 	public void writeCodebase(Codebase codebase) throws IOException {
@@ -128,16 +191,18 @@ public class CodebaseManager {
 	}
 
 	public HashMap<String, ControllerDto> getDatafile(String codebaseName) throws IOException {
-		Codebase codebase = getCodebase(codebaseName);
-		InputStream is = new FileInputStream(codebase.getDatafilePath());
+		Codebase codebase = getCodebaseWithFields(
+			CODEBASES_PATH + codebaseName,
+			new HashSet<String>() {{ add("datafilePath"); }}
+		);
 
-		return objectMapper.readValue(is, new TypeReference<HashMap<String, ControllerDto>>(){});
+		InputStream is = new FileInputStream(codebase.getDatafilePath());
+		return objectMapper.readerFor(new TypeReference<HashMap<String, ControllerDto>>() {}).readValue(is);
 	}
 
 	public HashMap<String, ControllerDto> getDatafile(Codebase codebase) throws IOException {
 		InputStream is = new FileInputStream(codebase.getDatafilePath());
-
-		return objectMapper.readValue(is, new TypeReference<HashMap<String, ControllerDto>>(){});
+		return objectMapper.readerFor(new TypeReference<HashMap<String, ControllerDto>>() {}).readValue(is);
 	}
 
 	public void writeDatafile(String codebaseName, HashMap datafile) throws IOException {
@@ -177,10 +242,9 @@ public class CodebaseManager {
 	}
 
 	public void writeAnalyserResults(String codebaseName, HashMap analyserJSON) throws IOException {
-		ObjectMapper mapper = new ObjectMapper();
 		DefaultPrettyPrinter pp = new DefaultPrettyPrinter();
 		pp.indentArraysWith( DefaultIndenter.SYSTEM_LINEFEED_INSTANCE );
-		ObjectWriter writer = mapper.writer(pp);
+		ObjectWriter writer = objectMapper.writer(pp);
 		writer.writeValue(new File(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json"), analyserJSON);
 	}
 

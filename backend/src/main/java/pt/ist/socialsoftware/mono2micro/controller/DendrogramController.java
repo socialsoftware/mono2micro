@@ -1,6 +1,8 @@
 package pt.ist.socialsoftware.mono2micro.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,31 +26,58 @@ import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 @RequestMapping(value = "/mono2micro/codebase/{codebaseName}")
 public class DendrogramController {
 
-	private static Logger logger = LoggerFactory.getLogger(DendrogramController.class);
+	private static final Logger logger = LoggerFactory.getLogger(DendrogramController.class);
 
-	private CodebaseManager codebaseManager = CodebaseManager.getInstance();
-
-
+	private final CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
 	@RequestMapping(value = "/dendrograms", method = RequestMethod.GET)
-	public ResponseEntity<List<Dendrogram>> getDendrograms(@PathVariable String codebaseName) {
+	public ResponseEntity<List<Dendrogram>> getDendrograms(
+		@PathVariable String codebaseName,
+		@RequestParam List<String> fieldNames
+	) {
 		logger.debug("getDendrograms");
 
 		try {
-			return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getDendrograms(), HttpStatus.OK);
+			return new ResponseEntity<>(
+				codebaseManager.getCodebaseDendrogramsWithFields(
+					codebaseName,
+					new HashSet<>(fieldNames)
+				),
+				HttpStatus.OK
+			);
+
 		} catch (IOException e) {
+			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 
 
 	@RequestMapping(value = "/dendrogram/{dendrogramName}", method = RequestMethod.GET)
-	public ResponseEntity<Dendrogram> getDendrogram(@PathVariable String codebaseName, @PathVariable String dendrogramName) {
+	public ResponseEntity<Dendrogram> getDendrogram(
+		@PathVariable String codebaseName,
+		@PathVariable String dendrogramName,
+		@RequestParam List<String> fieldNames
+	) {
 		logger.debug("getDendrogram");
 
 		try {
-			return new ResponseEntity<>(codebaseManager.getCodebase(codebaseName).getDendrogram(dendrogramName), HttpStatus.OK);
-		} catch (IOException e) {
+			// FIXME Instead of parsing the whole list of dendrograms, it would be much better to just parse the right one
+			// FIXME or the respective dendrogram directory could also have a dendrogram.json
+			return new ResponseEntity<>(
+				codebaseManager.getCodebaseDendrogramsWithFields(
+					codebaseName,
+					new HashSet<>(fieldNames)
+				)
+					.stream()
+					.filter(dendrogram -> dendrogram.getName().equals(dendrogramName))
+					.findAny()
+					.orElseThrow(() -> new Exception("Dendrogram " + dendrogramName + " not found")),
+				HttpStatus.OK
+			);
+
+		} catch (Exception e) {
+			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
@@ -56,27 +85,40 @@ public class DendrogramController {
 
 
 	@RequestMapping(value = "/dendrogram/{dendrogramName}/image", method = RequestMethod.GET)
-	public ResponseEntity<byte[]> getDendrogramImage(@PathVariable String codebaseName, @PathVariable String dendrogramName) {
+	public ResponseEntity<byte[]> getDendrogramImage(
+		@PathVariable String codebaseName,
+		@PathVariable String dendrogramName
+	) {
 		logger.debug("getDendrogramImage");
 
 		try {
-			return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(codebaseManager.getDendrogramImage(codebaseName, dendrogramName));
+			return ResponseEntity.ok()
+				.contentType(MediaType.IMAGE_PNG)
+				.body(codebaseManager.getDendrogramImage(codebaseName, dendrogramName));
+
 		} catch (IOException e) {
+			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 
 
 	@RequestMapping(value = "/dendrogram/{dendrogramName}/delete", method = RequestMethod.DELETE)
-	public ResponseEntity<HttpStatus> deleteDendrogram(@PathVariable String codebaseName, @PathVariable String dendrogramName) {
+	public ResponseEntity<HttpStatus> deleteDendrogram(
+		@PathVariable String codebaseName,
+		@PathVariable String dendrogramName
+	) {
 		logger.debug("deleteDendrogram");
 		
 		try {
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 			codebase.deleteDendrogram(dendrogramName);
 			codebaseManager.writeCodebase(codebase);
+
             return new ResponseEntity<>(HttpStatus.OK);
+
         } catch (IOException e) {
+			e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 	}
@@ -90,6 +132,8 @@ public class DendrogramController {
 		logger.debug("createDendrogram");
 
 		try {
+			// FIXME The whole codebase needs to be fetched because it needs to be written as a whole again
+			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 
 			if (codebase.isStatic()) {
@@ -113,14 +157,22 @@ public class DendrogramController {
 
 
 	@RequestMapping(value = "/dendrogram/{dendrogramName}/cut", method = RequestMethod.POST)
-	public ResponseEntity<HttpStatus> cutDendrogram(@PathVariable String codebaseName, @PathVariable String dendrogramName, @RequestBody Graph graph) {
+	public ResponseEntity<HttpStatus> cutDendrogram(
+		@PathVariable String codebaseName,
+		@PathVariable String dendrogramName,
+		@RequestBody Graph graph
+	) {
 		logger.debug("cutDendrogram");
 
 		try {
+			// FIXME The whole codebase needs to be fetched because it needs to be written as a whole again
+			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
+
             codebase.getDendrogram(dendrogramName).cut(graph);
             codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.OK);
+
         } catch (Exception e) {
 			e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -129,16 +181,28 @@ public class DendrogramController {
 
 
 	@RequestMapping(value = "/dendrogram/{dendrogramName}/expertCut", method = RequestMethod.POST)
-	public ResponseEntity<HttpStatus> createExpertCut(@PathVariable String codebaseName, @PathVariable String dendrogramName, @RequestParam String expertName, @RequestParam Optional<MultipartFile> expertFile) {
+	public ResponseEntity<HttpStatus> createExpertCut(
+		@PathVariable String codebaseName,
+		@PathVariable String dendrogramName,
+		@RequestParam String expertName,
+		@RequestParam Optional<MultipartFile> expertFile
+	) {
 		logger.debug("createExpertCut");
 
 		try {
+			// FIXME The whole codebase needs to be fetched because it needs to be written as a whole again
+			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
+
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
             codebase.getDendrogram(dendrogramName).createExpertCut(expertName, expertFile);
             codebaseManager.writeCodebase(codebase);
+
             return new ResponseEntity<>(HttpStatus.OK);
+
         } catch (KeyAlreadyExistsException e) {
+			e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
         } catch (Exception e) {
 			e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
