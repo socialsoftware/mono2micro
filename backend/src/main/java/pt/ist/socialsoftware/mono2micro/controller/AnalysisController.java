@@ -53,7 +53,7 @@ public class AnalysisController {
 				codebaseManager.writeAnalyserResults(codebaseName, new HashMap());
 			}
 
-			// getCodebaseFields(["profiles", "datafilePath"])
+			// FIXME getCodebaseFields(["profiles", "datafilePath"])
 			Codebase codebase = CodebaseManager.getInstance().getCodebase(codebaseName);
 
 			List<String> entitiesList;
@@ -61,7 +61,7 @@ public class AnalysisController {
 
 			if (codebase.isStatic()) {
 				datafileJSON = CodebaseManager.getInstance().getDatafile(codebase);
-				// returning entitiesList by convenience
+				// returning entitiesList by convenience FIXME just return the length of the list such that memory can be released after the function execution
 				entitiesList = createStaticAnalyserSimilarityMatrix(codebaseName, analyser, datafileJSON);
 
 			} else {

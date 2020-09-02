@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
+import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
 import pt.ist.socialsoftware.mono2micro.dto.CutInfoDto;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
@@ -69,7 +70,7 @@ public class CodebaseManager {
 
 			for (File file : files) {
 				if (file.isDirectory()) {
-					Codebase cb = getCodebaseWithFields(CODEBASES_PATH + file.getName(), deserializableFields);
+					Codebase cb = getCodebaseWithFields(file.getName(), deserializableFields);
 
 					if (cb != null)
 						codebases.add(cb);
@@ -81,7 +82,7 @@ public class CodebaseManager {
 	}
 
 	public Codebase getCodebaseWithFields(
-		String codebaseFolderPath,
+		String codebaseName,
 		Set<String> deserializableFields
 	) throws IOException {
 
@@ -92,7 +93,7 @@ public class CodebaseManager {
 
 		ObjectReader reader = objectMapper.readerFor(Codebase.class).with(attrs);
 
-		File codebaseJSONFile = new File(codebaseFolderPath + "/codebase.json");
+		File codebaseJSONFile = new File(CODEBASES_PATH + codebaseName + "/codebase.json");
 
 		if (!codebaseJSONFile.exists())
 			return null;
@@ -101,7 +102,7 @@ public class CodebaseManager {
 	}
 
 	public List<Dendrogram> getCodebaseDendrogramsWithFields(
-		String codebaseFolderPath,
+		String codebaseName,
 		Set<String> dendrogramDeserializableFields
 	) throws IOException {
 
@@ -117,7 +118,7 @@ public class CodebaseManager {
 
 		ObjectReader reader = objectMapper.readerFor(Codebase.class).with(attrs);
 
-		File codebaseJSONFile = new File(codebaseFolderPath + "/codebase.json");
+		File codebaseJSONFile = new File(CODEBASES_PATH + codebaseName + "/codebase.json");
 
 		if (!codebaseJSONFile.exists())
 			return null;
@@ -125,6 +126,78 @@ public class CodebaseManager {
 		Codebase cb = reader.readValue(codebaseJSONFile);
 
 		return cb.getDendrograms();
+	}
+
+	public Dendrogram getCodebaseDendrogramWithFields(
+		String codebaseName,
+		String dendrogramName,
+		Set<String> dendrogramDeserializableFields
+	) throws Exception {
+
+		return getCodebaseDendrogramsWithFields(
+			codebaseName,
+			dendrogramDeserializableFields
+		)
+			.stream()
+			.filter(dendrogram -> dendrogram.getName().equals(dendrogramName))
+			.findFirst()
+			.orElseThrow(() -> new Exception("Dendrogram " + dendrogramName + " not found"));
+	}
+
+	public List<Graph> getDendrogramGraphsWithFields(
+		String codebaseName,
+		String dendrogramName,
+		Set<String> graphDeserializableFields
+	) throws Exception {
+
+		ContextAttributes attrs = ContextAttributes.getEmpty()
+			.withPerCallAttribute(
+				"codebaseDeserializableFields",
+				new HashSet<String>() {{ add("dendrograms"); }}
+			)
+			.withPerCallAttribute(
+				"dendrogramDeserializableFields",
+				new HashSet<String>() {{ add("graphs"); }}
+			)
+			.withPerCallAttribute(
+				"graphDeserializableFields",
+				graphDeserializableFields
+			);
+
+		ObjectReader reader = objectMapper.readerFor(Codebase.class).with(attrs);
+
+		File codebaseJSONFile = new File(CODEBASES_PATH + codebaseName + "/codebase.json");
+
+		if (!codebaseJSONFile.exists())
+			return null;
+
+		Codebase cb = reader.readValue(codebaseJSONFile);
+
+		Dendrogram d = cb.getDendrograms()
+							.stream()
+							.filter(dendrogram -> dendrogram.getName().equals(dendrogramName))
+							.findFirst()
+							.orElseThrow(() -> new Exception("Dendrogram " + dendrogramName + " not found"));
+
+		return d.getGraphs();
+	}
+
+	public Graph getDendrogramGraphWithFields(
+		String codebaseName,
+		String dendrogramName,
+		String graphName,
+		Set<String> graphDeserializableFields
+	) throws Exception {
+
+		return getDendrogramGraphsWithFields(
+			codebaseName,
+			dendrogramName,
+			graphDeserializableFields
+		)
+			.stream()
+			.filter(graph -> graph.getName().equals(graphName))
+			.findFirst()
+			.orElseThrow(() -> new Exception("Graph " + graphName + " not found"));
 	}
 
 	public void deleteCodebase(String codebaseName) throws IOException {
@@ -192,7 +265,7 @@ public class CodebaseManager {
 
 	public HashMap<String, ControllerDto> getDatafile(String codebaseName) throws IOException {
 		Codebase codebase = getCodebaseWithFields(
-			CODEBASES_PATH + codebaseName,
+			codebaseName,
 			new HashSet<String>() {{ add("datafilePath"); }}
 		);
 

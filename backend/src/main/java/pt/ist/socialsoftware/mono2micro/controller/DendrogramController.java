@@ -52,7 +52,6 @@ public class DendrogramController {
 		}
 	}
 
-
 	@RequestMapping(value = "/dendrogram/{dendrogramName}", method = RequestMethod.GET)
 	public ResponseEntity<Dendrogram> getDendrogram(
 		@PathVariable String codebaseName,
@@ -65,14 +64,11 @@ public class DendrogramController {
 			// FIXME Instead of parsing the whole list of dendrograms, it would be much better to just parse the right one
 			// FIXME or the respective dendrogram directory could also have a dendrogram.json
 			return new ResponseEntity<>(
-				codebaseManager.getCodebaseDendrogramsWithFields(
+				codebaseManager.getCodebaseDendrogramWithFields(
 					codebaseName,
+					dendrogramName,
 					new HashSet<>(fieldNames)
-				)
-					.stream()
-					.filter(dendrogram -> dendrogram.getName().equals(dendrogramName))
-					.findAny()
-					.orElseThrow(() -> new Exception("Dendrogram " + dendrogramName + " not found")),
+				),
 				HttpStatus.OK
 			);
 
@@ -80,9 +76,7 @@ public class DendrogramController {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-
 	}
-
 
 	@RequestMapping(value = "/dendrogram/{dendrogramName}/image", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getDendrogramImage(
@@ -101,7 +95,6 @@ public class DendrogramController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
-
 
 	@RequestMapping(value = "/dendrogram/{dendrogramName}/delete", method = RequestMethod.DELETE)
 	public ResponseEntity<HttpStatus> deleteDendrogram(

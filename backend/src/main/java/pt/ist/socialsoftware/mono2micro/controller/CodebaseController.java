@@ -65,7 +65,7 @@ public class CodebaseController {
 		try {
 			return new ResponseEntity<>(
 				codebaseManager.getCodebaseWithFields(
-					CODEBASES_PATH + codebaseName,
+					codebaseName,
 					new HashSet<>(fieldNames)
 				),
 				HttpStatus.OK

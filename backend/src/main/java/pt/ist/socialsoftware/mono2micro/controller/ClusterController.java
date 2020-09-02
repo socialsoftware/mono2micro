@@ -1,6 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.controller;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -25,9 +26,9 @@ import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 @RequestMapping(value = "/mono2micro/codebase/{codebaseName}/dendrogram/{dendrogramName}/graph/{graphName}")
 public class ClusterController {
 
-	private static Logger logger = LoggerFactory.getLogger(ClusterController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ClusterController.class);
 
-	private CodebaseManager codebaseManager = CodebaseManager.getInstance();
+	private final CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
 	@RequestMapping(value = "/cluster/{clusterName}/merge", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> mergeClusters(
@@ -41,12 +42,18 @@ public class ClusterController {
 		logger.debug("mergeClusters");
 
 		try {
+			// FIXME The whole codebase needs to be fetched because it needs to be written as a whole again
+			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
+			// FIXME Each dendrogram directory would have a folder for controllers and another for clusters
+			// FIXME Each controller and cluster would have its own json file
+
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 			codebase.getDendrogram(dendrogramName).getGraph(graphName).mergeClusters(clusterName, otherCluster, newName);
 			codebaseManager.writeCodebase(codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (IOException e) {
+			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -62,15 +69,23 @@ public class ClusterController {
 		logger.debug("renameCluster");
 
 		try {
+			// FIXME The whole codebase needs to be fetched because it needs to be written as a whole again
+			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
+			// FIXME Each dendrogram directory would have a folder for controllers and another for clusters
+			// FIXME Each controller and cluster would have its own json file
+
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 			codebase.getDendrogram(dendrogramName).getGraph(graphName).renameCluster(clusterName, newName);
 			codebaseManager.writeCodebase(codebase);
+
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (KeyAlreadyExistsException e) {
+			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 		} catch (IOException e) {
+			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -87,12 +102,19 @@ public class ClusterController {
 		logger.debug("splitCluster");
 
 		try {
+			// FIXME The whole codebase needs to be fetched because it needs to be written as a whole again
+			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
+			// FIXME Each dendrogram directory would have a folder for controllers and another for clusters
+			// FIXME Each controller and cluster would have its own json file
+
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 			codebase.getDendrogram(dendrogramName).getGraph(graphName).splitCluster(clusterName, newName, entities.split(","));
 			codebaseManager.writeCodebase(codebase);
+
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (IOException e) {
+			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -109,12 +131,19 @@ public class ClusterController {
 		logger.debug("transferEntities");
 
 		try {
+			// FIXME The whole codebase needs to be fetched because it needs to be written as a whole again
+			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
+			// FIXME Each dendrogram directory would have a folder for controllers and another for clusters
+			// FIXME Each controller and cluster would have its own json file
+
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 			codebase.getDendrogram(dendrogramName).getGraph(graphName).transferEntities(clusterName, toCluster, entities.split(","));
 			codebaseManager.writeCodebase(codebase);
+
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (IOException e) {
+			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -128,12 +157,22 @@ public class ClusterController {
 		logger.debug("getControllerClusters");
 
 		try {
+			// FIXME Deserializer for cluster and controller
+			// FIXME cluster needs set of entities
+			// FIXME controller needs name and Map<String, String> entities -> <entity, mode>
+			// getGraphControllersAndClustersWithFieldNames() method on codebaseManager that receives both controller and cluster fieldNames
+
 			return new ResponseEntity<>(
-				codebaseManager.getCodebase(codebaseName).getDendrogram(dendrogramName).getGraph(graphName).getControllerClusters(),
+				codebaseManager
+					.getCodebase(codebaseName)
+					.getDendrogram(dendrogramName)
+					.getGraph(graphName)
+					.getControllerClusters(),
 				HttpStatus.OK
 			);
 
 		} catch (IOException e) {
+			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -156,6 +195,7 @@ public class ClusterController {
 				HttpStatus.OK
 			);
 		} catch (IOException e) {
+			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}

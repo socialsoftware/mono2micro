@@ -30,25 +30,17 @@ public class Graph {
 
 	public Graph() { }
 
-	public String getCodebaseName() {
-		return this.codebaseName;
-	}
+	public String getCodebaseName() { return this.codebaseName; }
 
-	public void setCodebaseName(String codebaseName) {
-		this.codebaseName = codebaseName;
-	}
+	public void setCodebaseName(String codebaseName) { this.codebaseName = codebaseName; }
 
-	public String getDendrogramName() {
-		return this.dendrogramName;
-	}
+	public String getDendrogramName() { return this.dendrogramName; }
 
 	public void setDendrogramName(String dendrogramName) {
 		this.dendrogramName = dendrogramName;
 	}
 
-	public String getName() {
-		return this.name;
-	}
+	public String getName() { return this.name; }
 
 	public void setName(String name) {
 		this.name = name;
@@ -112,9 +104,13 @@ public class Graph {
 
 	public List<Cluster> getClusters() { return this.clusters; }
 
+	public void setClusters(List<Cluster> clusters) { this.clusters = clusters; }
+
 	public void addCluster(Cluster cluster) { this.clusters.add(cluster); }
 
 	public List<Controller> getControllers() { return this.controllers; }
+
+	public void setControllers(List<Controller> controllers) { this.controllers = controllers; }
 
 	public void addController(Controller controller) { this.controllers.add(controller); }
 
