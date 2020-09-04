@@ -14,14 +14,11 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
-import pt.ist.socialsoftware.mono2micro.domain.Codebase;
-import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.domain.*;
 import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
 import pt.ist.socialsoftware.mono2micro.dto.CutInfoDto;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
-import pt.ist.socialsoftware.mono2micro.utils.deserializers.CodebaseDeserializer;
-import pt.ist.socialsoftware.mono2micro.utils.deserializers.DendrogramDeserializer;
+import pt.ist.socialsoftware.mono2micro.utils.deserializers.*;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.*;
@@ -42,9 +39,13 @@ public class CodebaseManager {
 		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 
 		SimpleModule module = new SimpleModule();
-		module.addDeserializer(Codebase.class, new CodebaseDeserializer());
 
+		module.addDeserializer(Codebase.class, new CodebaseDeserializer());
 		module.addDeserializer(Dendrogram.class, new DendrogramDeserializer());
+		module.addDeserializer(Graph.class, new GraphDeserializer());
+		module.addDeserializer(Controller.class, new ControllerDeserializer());
+		module.addDeserializer(Cluster.class, new ClusterDeserializer());
+
 		objectMapper.registerModule(module);
 	}
 	
@@ -198,6 +199,57 @@ public class CodebaseManager {
 			.filter(graph -> graph.getName().equals(graphName))
 			.findFirst()
 			.orElseThrow(() -> new Exception("Graph " + graphName + " not found"));
+	}
+
+	public Graph getGraphWithControllersAndClustersWithFields(
+		String codebaseName,
+		String dendrogramName,
+		String graphName,
+		Set<String> controllerDeserializableFields,
+		Set<String> clusterDeserializableFields
+	) throws Exception {
+
+		ContextAttributes attrs = ContextAttributes.getEmpty()
+			.withPerCallAttribute(
+				"codebaseDeserializableFields",
+				new HashSet<String>() {{ add("dendrograms"); }}
+			)
+			.withPerCallAttribute(
+				"dendrogramDeserializableFields",
+				new HashSet<String>() {{ add("graphs"); }}
+			)
+			.withPerCallAttribute(
+				"graphDeserializableFields",
+				new HashSet<String>() {{ add("controllers"); add("clusters"); }}
+			)
+			.withPerCallAttribute(
+				"controllerDeserializableFields",
+				controllerDeserializableFields
+			)
+			.withPerCallAttribute(
+				"clusterDeserializableFields",
+				clusterDeserializableFields
+			);
+
+		ObjectReader reader = objectMapper.readerFor(Codebase.class).with(attrs);
+
+		File codebaseJSONFile = new File(CODEBASES_PATH + codebaseName + "/codebase.json");
+
+		if (!codebaseJSONFile.exists())
+			return null;
+
+		Codebase cb = reader.readValue(codebaseJSONFile);
+
+		Dendrogram d = cb.getDendrograms()
+						 .stream()
+						 .filter(dendrogram -> dendrogram.getName().equals(dendrogramName))
+						 .findFirst()
+						 .orElseThrow(() -> new Exception("Dendrogram " + dendrogramName + " not found"));
+
+		return d.getGraphs().stream()
+				.filter(graph -> graph.getName().equals(graphName))
+				.findFirst()
+				.orElseThrow(() -> new Exception("Graph " + graphName + " not found"));
 	}
 
 	public void deleteCodebase(String codebaseName) throws IOException {

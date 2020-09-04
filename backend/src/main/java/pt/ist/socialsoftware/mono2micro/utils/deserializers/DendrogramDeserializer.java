@@ -58,7 +58,7 @@ public class DendrogramDeserializer extends StdDeserializer<Dendrogram> {
 							dendrogram.setSequenceMetricWeight(jsonParser.getFloatValue());
 							break;
 						case "profiles":
-							dendrogram.setProfiles(jsonParser.readValueAs(new TypeReference<List<Dendrogram>>(){}));
+							dendrogram.setProfiles(jsonParser.readValueAs(new TypeReference<List<String>>(){}));
 							break;
 						case "graphs":
 							dendrogram.setGraphs(jsonParser.readValueAs(new TypeReference<List<Graph>>(){}));
@@ -71,7 +71,7 @@ public class DendrogramDeserializer extends StdDeserializer<Dendrogram> {
 							break;
 
 						default:
-							throw new IOException();
+							throw new IOException("Attribute " + jsonParser.getCurrentName() + " does not exist on Dendrogram object");
 					}
 				}
 				else {
@@ -82,7 +82,7 @@ public class DendrogramDeserializer extends StdDeserializer<Dendrogram> {
 			return dendrogram;
 		}
 
-		throw new IOException("Error deserializing Access");
+		throw new IOException("Error deserializing Dendrogram");
 	}
 }
 

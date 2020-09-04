@@ -157,21 +157,19 @@ public class ClusterController {
 		logger.debug("getControllerClusters");
 
 		try {
-			// FIXME Deserializer for cluster and controller
-			// FIXME cluster needs set of entities
-			// FIXME controller needs name and Map<String, String> entities -> <entity, mode>
-			// getGraphControllersAndClustersWithFieldNames() method on codebaseManager that receives both controller and cluster fieldNames
-
 			return new ResponseEntity<>(
-				codebaseManager
-					.getCodebase(codebaseName)
-					.getDendrogram(dendrogramName)
-					.getGraph(graphName)
+				codebaseManager.getGraphWithControllersAndClustersWithFields(
+					codebaseName,
+					dendrogramName,
+					graphName,
+					new HashSet<String>() {{ add("name"); add("entities"); }},
+					new HashSet<String>() {{ add("name"); add("entities"); }}
+				)
 					.getControllerClusters(),
 				HttpStatus.OK
 			);
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
@@ -187,14 +185,18 @@ public class ClusterController {
 
 		try {
 			return new ResponseEntity<>(
-				codebaseManager
-					.getCodebase(codebaseName)
-					.getDendrogram(dendrogramName)
-					.getGraph(graphName)
+				codebaseManager.getGraphWithControllersAndClustersWithFields(
+					codebaseName,
+					dendrogramName,
+					graphName,
+					new HashSet<String>() {{ add("name"); add("entities"); }},
+					new HashSet<String>() {{ add("name"); add("entities"); }}
+				)
 					.getClusterControllers(),
 				HttpStatus.OK
 			);
-		} catch (IOException e) {
+
+		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}

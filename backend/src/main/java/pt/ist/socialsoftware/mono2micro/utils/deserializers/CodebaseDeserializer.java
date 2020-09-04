@@ -51,7 +51,7 @@ public class CodebaseDeserializer extends StdDeserializer<Codebase> {
 							codebase.setDatafilePath(jsonParser.getValueAsString());
 							break;
 						default:
-							throw new IOException();
+							throw new IOException("Attribute " + jsonParser.getCurrentName() + " does not exist on Codebase object");
 					}
 				}
 				else {

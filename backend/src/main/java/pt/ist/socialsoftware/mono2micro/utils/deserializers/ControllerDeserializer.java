@@ -8,9 +8,14 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
+import pt.ist.socialsoftware.mono2micro.domain.Controller;
+import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 public class ControllerDeserializer extends StdDeserializer<Controller> {
 
@@ -28,32 +33,40 @@ public class ControllerDeserializer extends StdDeserializer<Controller> {
 		DeserializationContext ctxt
 	) throws IOException {
 		JsonToken jsonToken = jsonParser.currentToken();
+		Set<String> deserializableFields = (Set<String>) ctxt.getAttribute("controllerDeserializableFields");
 
 		if (jsonToken == JsonToken.START_OBJECT) {
-			jsonParser.nextValue();
-			String name = jsonParser.getValueAsString();
 
-			jsonParser.nextValue();
-			float complexity = jsonParser.getFloatValue();
+			Controller controller = new Controller();
+			while (jsonParser.nextValue() != JsonToken.END_OBJECT) {
+				if (deserializableFields == null || deserializableFields.contains(jsonParser.getCurrentName())) {
+					switch (jsonParser.getCurrentName()) {
+						case "name":
+							controller.setName(jsonParser.getValueAsString());
+							break;
+						case "complexity":
+							controller.setComplexity(jsonParser.getFloatValue());
+							break;
+						case "entities":
+							controller.setEntities(jsonParser.readValueAs(new TypeReference<HashMap<String, String>>() {}));
+							break;
+						case "localTransactionsGraph":
+							controller.setLocalTransactionsGraph(getGraph(jsonParser));
+							break;
 
-			jsonParser.nextValue(); // consume END_ARRAY
-			HashMap<String, String> entities = jsonParser.readValueAs(new TypeReference<HashMap<String, String>>() {});
+						default:
+							throw new IOException("Attribute " + jsonParser.getCurrentName() + " does not exist on Controller object");
+					}
+				}
+				else {
+					jsonParser.skipChildren();
+				}
+			}
 
-			jsonParser.nextValue();
-
-			DirectedAcyclicGraph<Controller.LocalTransaction, DefaultEdge> graph = getGraph(jsonParser);
-
-			jsonParser.nextValue();
-
-			return new Controller(
-				name,
-				complexity,
-				entities,
-				graph
-			);
+			return controller;
 		}
 
-		return null;
+		throw new IOException("Error deserializing Controller");
 	}
 
 	private DirectedAcyclicGraph<Controller.LocalTransaction, DefaultEdge> getGraph(JsonParser jsonParser) throws IOException {

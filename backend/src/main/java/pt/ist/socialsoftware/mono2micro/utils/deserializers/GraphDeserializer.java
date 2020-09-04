@@ -75,7 +75,7 @@ public class GraphDeserializer extends StdDeserializer<Graph> {
 							break;
 
 						default:
-							throw new IOException();
+							throw new IOException("Attribute " + jsonParser.getCurrentName() + " does not exist on Graph object");
 					}
 				}
 				else {
