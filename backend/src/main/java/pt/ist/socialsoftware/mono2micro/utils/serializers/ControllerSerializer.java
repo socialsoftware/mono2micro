@@ -47,6 +47,9 @@ public class ControllerSerializer extends StdSerializer<Controller> {
 			mapper.registerModule(module);
 			String graphString = mapper.writeValueAsString(controller.getLocalTransactionsGraph());
 			jg.writeRawValue(graphString);
+
+		} else {
+			jg.writeObject(null);
 		}
 
 		jg.writeEndObject();

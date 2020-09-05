@@ -173,6 +173,7 @@ export class ClusterView extends React.Component {
             clusters,
             clusterControllers,
         } = this.state;
+        console.log(clusterControllers);
 
         for (var i = 0; i < clusters.length; i++) {
             let cluster1 = clusters[i];
