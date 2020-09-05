@@ -95,6 +95,7 @@ public class CodebaseManager {
 		Set<String> dendrogramDeserializableFields
 	) throws IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
+		dendrogramDeserializableFields.add("name");
 
 		objectMapper.setInjectableValues(
 			new InjectableValues.Std()
@@ -164,6 +165,7 @@ public class CodebaseManager {
 	) throws Exception {
 
 		ObjectMapper objectMapper = new ObjectMapper();
+		graphDeserializableFields.add("name");
 
 		objectMapper.setInjectableValues(
 			new InjectableValues.Std()
@@ -220,8 +222,8 @@ public class CodebaseManager {
 		objectMapper.setInjectableValues(
 			new InjectableValues.Std()
 				.addValue("codebaseDeserializableFields", new HashSet<String>() {{ add("dendrograms"); }})
-				.addValue("dendrogramDeserializableFields", new HashSet<String>() {{ add("graphs"); }})
-				.addValue("graphDeserializableFields", new HashSet<String>() {{ add("controllers"); add("clusters"); }})
+				.addValue("dendrogramDeserializableFields", new HashSet<String>() {{ add("name"); add("graphs"); }})
+				.addValue("graphDeserializableFields", new HashSet<String>() {{ add("name"); add("controllers"); add("clusters"); }})
 				.addValue("controllerDeserializableFields", controllerDeserializableFields)
 				.addValue("clusterDeserializableFields", clusterDeserializableFields)
 		);

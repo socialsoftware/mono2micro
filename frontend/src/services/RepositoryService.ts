@@ -250,8 +250,14 @@ export class RepositoryService {
         codebaseName: string,
         dendrogramName: string,
         graphName: string,
+        fieldNames?: string[],
     ) {
-        return this.axios.get<Graph>("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName);
+        return this.axios.get<Graph>(
+            addSearchParamsToUrl(
+                "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName,
+                { fieldNames }
+            )
+        );
     }
 
     deleteGraph(
@@ -342,7 +348,9 @@ export class RepositoryService {
         dendrogramName: string,
         graphName: string,
     ) {
-        return this.axios.get<Record<string, Cluster[]>>("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controllerClusters");
+        return this.axios.get<Record<string, Cluster[]>>(
+            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controllerClusters"
+        );
     }
 
     getClusterControllers(
@@ -350,6 +358,8 @@ export class RepositoryService {
         dendrogramName: string,
         graphName: string
     ) {
-        return this.axios.get<Record<string, Controller[]>>("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/clusterControllers");
+        return this.axios.get<Record<string, Controller[]>>(
+            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/clusterControllers"
+        );
     }
 }
