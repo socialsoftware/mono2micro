@@ -8,13 +8,8 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
-import pt.ist.socialsoftware.mono2micro.domain.Controller;
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
-import pt.ist.socialsoftware.mono2micro.utils.Constants;
-
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 
 public class ControllerDeserializer extends StdDeserializer<Controller> {
@@ -33,7 +28,17 @@ public class ControllerDeserializer extends StdDeserializer<Controller> {
 		DeserializationContext ctxt
 	) throws IOException {
 		JsonToken jsonToken = jsonParser.currentToken();
-		Set<String> deserializableFields = (Set<String>) ctxt.getAttribute("controllerDeserializableFields");
+
+		Set<String> deserializableFields = null;
+
+		try {
+			deserializableFields = (Set<String>) ctxt.findInjectableValue(
+				"controllerDeserializableFields",
+				null,
+				null
+			);
+
+		} catch (Exception ignored) {}
 
 		if (jsonToken == JsonToken.START_OBJECT) {
 

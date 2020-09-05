@@ -69,7 +69,6 @@ export class Dendrograms extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            codebaseName: this.props.match.params.codebaseName,
             codebase: {},
             dendrograms: [],
             allGraphs: [],
@@ -99,18 +98,71 @@ export class Dendrograms extends React.Component {
     }
 
     componentDidMount() {
+        this.loadDendrograms();
+        this.loadGraphs();
         this.loadCodebase();
     }
 
     loadCodebase() {
         const service = new RepositoryService();
-        service.getCodebase(this.state.codebaseName).then(response => {
+        service.getCodebase(
+            this.props.match.params.codebaseName,
+            [ "profiles" ]
+        ).then(response => {
+            console.log(response.data);
+
+            if (response.data !== null) {
+                this.setState({ profiles: Object.keys(response.data.profiles) });
+            }
+        });
+    }
+
+    loadDendrograms() {
+        const service = new RepositoryService();
+        service.getDendrograms(
+            this.props.match.params.codebaseName,
+            [
+                "name",
+                "profiles",
+                "linkageType",
+                "tracesMaxlimit",
+                "typeOfTraces",
+                "accessMetricWeight",
+                "writeMetricWeight",
+                "readMetricWeight",
+                "sequenceMetricWeight"
+            ]
+        ).then((response) => {
+            if (response.data !== null) {
+                console.log(response.data);
+
+                this.setState({
+                    dendrograms: response.data,
+                });
+            }
+        });
+    }
+
+    loadGraphs() {
+        const service = new RepositoryService();
+        service.getCodebaseGraphs(
+            this.props.match.params.codebaseName,
+            [
+                "name",
+                "dendrogramName",
+                "clusters",
+                "tracesMaxlimit",
+                "silhouetteScore",
+                "cohesion",
+                "coupling",
+                "complexity",
+            ]
+        ).then((response) => {
+            console.log(response.data);
+
             if (response.data !== null) {
                 this.setState({
-                    codebase: response.data,
-                    profiles: Object.keys(response.data.profiles),
-                    dendrograms: response.data.dendrograms,
-                    allGraphs: response.data.dendrograms.map(dendrogram => dendrogram.graphs).flat()
+                    allGraphs: response.data,
                 });
             }
         });
@@ -124,7 +176,6 @@ export class Dendrograms extends React.Component {
         });
 
         const {
-            codebaseName,
             newDendrogramName,
             linkageType,
             accessMetricWeight,
@@ -138,7 +189,7 @@ export class Dendrograms extends React.Component {
         
         const service = new RepositoryService();
         service.createDendrogram(
-            codebaseName,
+            this.props.match.params.codebaseName,
             newDendrogramName,
             linkageType,
             Number(accessMetricWeight),
@@ -151,7 +202,8 @@ export class Dendrograms extends React.Component {
         )
         .then(response => {
             if (response.status === HttpStatus.CREATED) {
-                this.loadCodebase();
+                this.loadDendrograms();
+                this.loadGraphs();
                 this.setState({
                     isUploaded: "Upload completed successfully."
                 });
@@ -237,8 +289,9 @@ export class Dendrograms extends React.Component {
 
     handleDeleteDendrogram(dendrogramName) {
         const service = new RepositoryService();
-        service.deleteDendrogram(this.state.codebaseName, dendrogramName).then(response => {
-            this.loadCodebase();
+        service.deleteDendrogram(this.props.match.params.codebaseName, dendrogramName).then(response => {
+            this.loadDendrograms();
+            this.loadGraphs();
         });
     }
 
@@ -247,7 +300,7 @@ export class Dendrograms extends React.Component {
             <Breadcrumb>
                 <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
                 <Breadcrumb.Item href="/codebases">Codebases</Breadcrumb.Item>
-                <Breadcrumb.Item href={`/codebases/${this.state.codebaseName}`}>{this.state.codebaseName}</Breadcrumb.Item>
+                <Breadcrumb.Item href={`/codebases/${this.props.match.params.codebaseName}`}>{this.props.match.params.codebaseName}</Breadcrumb.Item>
                 <Breadcrumb.Item active>Dendrograms</Breadcrumb.Item>
             </Breadcrumb>
         );
@@ -505,7 +558,7 @@ export class Dendrograms extends React.Component {
                     this.state.dendrograms.map(dendrogram =>
                         <Col key={dendrogram.name} md="auto">
                             <Card className="mb-4" style={{ width: '20rem' }}>
-                                <Card.Img variant="top" src={URL + "codebase/" + this.state.codebaseName + "/dendrogram/" + dendrogram.name + "/image?" + new Date().getTime()}/>
+                                <Card.Img variant="top" src={URL + "codebase/" + this.props.match.params.codebaseName + "/dendrogram/" + dendrogram.name + "/image?" + new Date().getTime()}/>
                                 <Card.Body>
                                     <Card.Title>{dendrogram.name}</Card.Title>
                                     <Card.Text>
@@ -517,7 +570,7 @@ export class Dendrograms extends React.Component {
                                         Read: {dendrogram.readMetricWeight}%< br/>
                                         Sequence: {dendrogram.sequenceMetricWeight}%
                                     </Card.Text>
-                                    <Button href={`/codebases/${this.state.codebaseName}/dendrograms/${dendrogram.name}`} 
+                                    <Button href={`/codebases/${this.props.match.params.codebaseName}/dendrograms/${dendrogram.name}`} 
                                             className="mb-2">
                                                 Go to Dendrogram
                                     </Button>
@@ -538,7 +591,6 @@ export class Dendrograms extends React.Component {
 
     render() {
         const metricRows = this.state.allGraphs.map(graph => {
-            debugger;
             return {
                 id: graph.dendrogramName + graph.name,
                 dendrogram: graph.dendrogramName,
@@ -557,17 +609,25 @@ export class Dendrograms extends React.Component {
             <div>
                 {this.renderBreadCrumbs()}
                 
-                <h4 style={{color: "#666666"}}>Create Dendrogram</h4>
+                <h4 style={{color: "#666666"}}>
+                    Create Dendrogram
+                </h4>
+                
                 {this.renderCreateDendrogramForm()}
 
-                <h4 style={{color: "#666666"}}>Dendrograms</h4>
+                <h4 style={{color: "#666666"}}>
+                    Dendrograms
+                </h4>
+
                 {this.renderDendrograms()}
 
-                {this.state.allGraphs.length > 0 &&
-                    <div>
-                        <h4 style={{color: "#666666"}}>Metrics</h4>
+                <h4 style={{color: "#666666"}}>
+                    Metrics
+                </h4>
+                
+                {
+                    this.state.allGraphs.length > 0 &&
                         <BootstrapTable bootstrap4 keyField='id' data={ metricRows } columns={ metricColumns } />
-                    </div>
                 }
             </div>
         )

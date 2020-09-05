@@ -11,7 +11,6 @@ import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class DendrogramDeserializer extends StdDeserializer<Dendrogram> {
@@ -28,7 +27,17 @@ public class DendrogramDeserializer extends StdDeserializer<Dendrogram> {
 		DeserializationContext ctxt
 	) throws IOException {
 		JsonToken jsonToken = jsonParser.currentToken();
-		Set<String> deserializableFields = (Set<String>) ctxt.getAttribute("dendrogramDeserializableFields");
+
+		Set<String> deserializableFields = null;
+
+		try {
+			deserializableFields = (Set<String>) ctxt.findInjectableValue(
+				"dendrogramDeserializableFields",
+				null,
+				null
+			);
+
+		} catch (Exception ignored) {}
 
 		if (jsonToken == JsonToken.START_OBJECT) {
 

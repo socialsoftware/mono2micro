@@ -27,7 +27,17 @@ public class CodebaseDeserializer extends StdDeserializer<Codebase> {
 		DeserializationContext ctxt
 	) throws IOException {
 		JsonToken jsonToken = jsonParser.currentToken();
-		Set<String> deserializableFields = (Set<String>) ctxt.getAttribute("codebaseDeserializableFields");
+
+		Set<String> deserializableFields = null;
+
+		try {
+			deserializableFields = (Set<String>) ctxt.findInjectableValue(
+				"codebaseDeserializableFields",
+				null,
+				null
+			);
+
+		} catch (Exception ignored) {}
 
 		if (jsonToken == JsonToken.START_OBJECT) {
 

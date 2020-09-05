@@ -28,7 +28,18 @@ public class ClusterDeserializer extends StdDeserializer<Cluster> {
 		DeserializationContext ctxt
 	) throws IOException {
 		JsonToken jsonToken = jsonParser.currentToken();
-		Set<String> deserializableFields = (Set<String>) ctxt.getAttribute("clusterDeserializableFields");
+
+		Set<String> deserializableFields = null;
+
+		try {
+			deserializableFields = (Set<String>) ctxt.findInjectableValue(
+				"clusterDeserializableFields",
+				null,
+				null
+			);
+
+		} catch (Exception ignored) {}
+
 
 		if (jsonToken == JsonToken.START_OBJECT) {
 

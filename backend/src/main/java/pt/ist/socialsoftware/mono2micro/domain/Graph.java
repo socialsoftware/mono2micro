@@ -6,6 +6,8 @@ import java.util.*;
 import javax.management.openmbean.KeyAlreadyExistsException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
 import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
@@ -13,7 +15,10 @@ import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Metrics;
+import pt.ist.socialsoftware.mono2micro.utils.deserializers.GraphDeserializer;
 
+@JsonInclude(JsonInclude.Include.USE_DEFAULTS)
+@JsonDeserialize(using = GraphDeserializer.class)
 public class Graph {
 	private String codebaseName;
 	private String dendrogramName;

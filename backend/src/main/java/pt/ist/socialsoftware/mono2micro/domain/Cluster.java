@@ -1,7 +1,14 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import pt.ist.socialsoftware.mono2micro.utils.deserializers.AccessDtoDeserializer;
+import pt.ist.socialsoftware.mono2micro.utils.deserializers.ClusterDeserializer;
+
 import java.util.*;
 
+@JsonInclude(JsonInclude.Include.USE_DEFAULTS)
+@JsonDeserialize(using = ClusterDeserializer.class)
 public class Cluster {
 	private String name;
 	private float complexity;

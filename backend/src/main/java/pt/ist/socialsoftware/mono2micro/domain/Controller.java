@@ -1,10 +1,12 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
+import pt.ist.socialsoftware.mono2micro.utils.deserializers.AccessDtoDeserializer;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.ControllerDeserializer;
 import pt.ist.socialsoftware.mono2micro.utils.serializers.ControllerSerializer;
 
@@ -12,6 +14,7 @@ import java.util.*;
 
 import static org.jgrapht.Graphs.successorListOf;
 
+@JsonInclude(JsonInclude.Include.USE_DEFAULTS)
 @JsonSerialize(using = ControllerSerializer.class)
 @JsonDeserialize(using = ControllerDeserializer.class)
 public class Controller {

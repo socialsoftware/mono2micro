@@ -42,7 +42,11 @@ export class Dendrogram extends React.Component {
 
     loadGraphs() {
         const service = new RepositoryService();
-        service.getGraphs(this.state.codebaseName, this.state.dendrogramName).then(response => {
+        service.getGraphs(
+            this.state.codebaseName,
+            this.state.dendrogramName,
+            [ "name", "clusters", "singleton", "silhouetteScore", "complexity", "cohesion", "coupling"]
+        ).then(response => {
             this.setState({
                 graphs: response.data
             });
@@ -81,11 +85,17 @@ export class Dendrogram extends React.Component {
             cutValue = Number(this.state.height);
         } else {
             cutType = "N";
-            cutValue = Number(this.state.numberClusters).toFixed(0);
+            cutValue = Number(this.state.numberClusters);
         }
 
         const service = new RepositoryService();
-        service.cutDendrogram(this.state.codebaseName, this.state.dendrogramName, cutValue, cutType).then(response => {
+        console.log(cutValue);
+        service.cutDendrogram(
+            this.state.codebaseName,
+            this.state.dendrogramName,
+            cutValue,
+            cutType
+        ).then(response => {
             if (response.status === HttpStatus.OK) {
                 this.loadGraphs();
                 this.setState({

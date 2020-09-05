@@ -3,10 +3,7 @@ package pt.ist.socialsoftware.mono2micro.manager;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.ContextAttributes;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.apache.commons.io.FileUtils;
@@ -25,32 +22,23 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
 
 public class CodebaseManager {
 
-	private static CodebaseManager instance = null; 
+	private static CodebaseManager instance = null;
 
-    private static ObjectMapper objectMapper = null;
+    private ObjectMapper objectMapper = null;
 
 	private CodebaseManager() {
 		objectMapper = new ObjectMapper();
 		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-
-		SimpleModule module = new SimpleModule();
-
-		module.addDeserializer(Codebase.class, new CodebaseDeserializer());
-		module.addDeserializer(Dendrogram.class, new DendrogramDeserializer());
-		module.addDeserializer(Graph.class, new GraphDeserializer());
-		module.addDeserializer(Controller.class, new ControllerDeserializer());
-		module.addDeserializer(Cluster.class, new ClusterDeserializer());
-
-		objectMapper.registerModule(module);
 	}
 	
-	public static CodebaseManager getInstance() { 
-        if (instance == null) 
+	public static CodebaseManager getInstance() {
+        if (instance == null)
         	instance = new CodebaseManager(); 
         return instance; 
 	}
@@ -86,13 +74,13 @@ public class CodebaseManager {
 		String codebaseName,
 		Set<String> deserializableFields
 	) throws IOException {
+		ObjectMapper objectMapper = new ObjectMapper();
 
-		ContextAttributes attrs = ContextAttributes.getEmpty().withPerCallAttribute(
-			"codebaseDeserializableFields",
-			deserializableFields
+		objectMapper.setInjectableValues(
+			new InjectableValues.Std().addValue("codebaseDeserializableFields", deserializableFields)
 		);
 
-		ObjectReader reader = objectMapper.readerFor(Codebase.class).with(attrs);
+		ObjectReader reader = objectMapper.readerFor(Codebase.class);
 
 		File codebaseJSONFile = new File(CODEBASES_PATH + codebaseName + "/codebase.json");
 
@@ -106,24 +94,20 @@ public class CodebaseManager {
 		String codebaseName,
 		Set<String> dendrogramDeserializableFields
 	) throws IOException {
+		ObjectMapper objectMapper = new ObjectMapper();
 
-		ContextAttributes attrs = ContextAttributes.getEmpty()
-			.withPerCallAttribute(
-				"codebaseDeserializableFields",
-				new HashSet<String>() {{ add("dendrograms"); }}
-			)
-			.withPerCallAttribute(
-				"dendrogramDeserializableFields",
-				dendrogramDeserializableFields
-			);
-
-		ObjectReader reader = objectMapper.readerFor(Codebase.class).with(attrs);
+		objectMapper.setInjectableValues(
+			new InjectableValues.Std()
+				.addValue("codebaseDeserializableFields", new HashSet<String>() {{ add("dendrograms"); }})
+				.addValue("dendrogramDeserializableFields", dendrogramDeserializableFields)
+		);
 
 		File codebaseJSONFile = new File(CODEBASES_PATH + codebaseName + "/codebase.json");
 
 		if (!codebaseJSONFile.exists())
 			return null;
 
+		ObjectReader reader = objectMapper.readerFor(Codebase.class);
 		Codebase cb = reader.readValue(codebaseJSONFile);
 
 		return cb.getDendrograms();
@@ -145,33 +129,55 @@ public class CodebaseManager {
 			.orElseThrow(() -> new Exception("Dendrogram " + dendrogramName + " not found"));
 	}
 
-	public List<Graph> getDendrogramGraphsWithFields(
+	public List<Graph> getCodebaseGraphsWithFields(
 		String codebaseName,
-		String dendrogramName,
 		Set<String> graphDeserializableFields
 	) throws Exception {
 
-		ContextAttributes attrs = ContextAttributes.getEmpty()
-			.withPerCallAttribute(
-				"codebaseDeserializableFields",
-				new HashSet<String>() {{ add("dendrograms"); }}
-			)
-			.withPerCallAttribute(
-				"dendrogramDeserializableFields",
-				new HashSet<String>() {{ add("graphs"); }}
-			)
-			.withPerCallAttribute(
-				"graphDeserializableFields",
-				graphDeserializableFields
-			);
+		ObjectMapper objectMapper = new ObjectMapper();
 
-		ObjectReader reader = objectMapper.readerFor(Codebase.class).with(attrs);
+		objectMapper.setInjectableValues(
+			new InjectableValues.Std()
+				.addValue("codebaseDeserializableFields", new HashSet<String>() {{ add("dendrograms"); }})
+				.addValue("dendrogramDeserializableFields", new HashSet<String>() {{ add("graphs"); }})
+				.addValue("graphDeserializableFields", graphDeserializableFields)
+		);
 
 		File codebaseJSONFile = new File(CODEBASES_PATH + codebaseName + "/codebase.json");
 
 		if (!codebaseJSONFile.exists())
 			return null;
 
+		ObjectReader reader = objectMapper.readerFor(Codebase.class);
+		Codebase cb = reader.readValue(codebaseJSONFile);
+
+		return cb.getDendrograms()
+			.stream()
+			.flatMap(dendrogram -> dendrogram.getGraphs().stream())
+			.collect(Collectors.toList());
+	}
+
+	public List<Graph> getDendrogramGraphsWithFields(
+		String codebaseName,
+		String dendrogramName,
+		Set<String> graphDeserializableFields
+	) throws Exception {
+
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		objectMapper.setInjectableValues(
+			new InjectableValues.Std()
+				.addValue("codebaseDeserializableFields", new HashSet<String>() {{ add("dendrograms"); }})
+				.addValue("dendrogramDeserializableFields", new HashSet<String>() {{ add("name"); add("graphs"); }})
+				.addValue("graphDeserializableFields", graphDeserializableFields)
+		);
+
+		File codebaseJSONFile = new File(CODEBASES_PATH + codebaseName + "/codebase.json");
+
+		if (!codebaseJSONFile.exists())
+			return null;
+
+		ObjectReader reader = objectMapper.readerFor(Codebase.class);
 		Codebase cb = reader.readValue(codebaseJSONFile);
 
 		Dendrogram d = cb.getDendrograms()
@@ -209,35 +215,23 @@ public class CodebaseManager {
 		Set<String> clusterDeserializableFields
 	) throws Exception {
 
-		ContextAttributes attrs = ContextAttributes.getEmpty()
-			.withPerCallAttribute(
-				"codebaseDeserializableFields",
-				new HashSet<String>() {{ add("dendrograms"); }}
-			)
-			.withPerCallAttribute(
-				"dendrogramDeserializableFields",
-				new HashSet<String>() {{ add("graphs"); }}
-			)
-			.withPerCallAttribute(
-				"graphDeserializableFields",
-				new HashSet<String>() {{ add("controllers"); add("clusters"); }}
-			)
-			.withPerCallAttribute(
-				"controllerDeserializableFields",
-				controllerDeserializableFields
-			)
-			.withPerCallAttribute(
-				"clusterDeserializableFields",
-				clusterDeserializableFields
-			);
+		ObjectMapper objectMapper = new ObjectMapper();
 
-		ObjectReader reader = objectMapper.readerFor(Codebase.class).with(attrs);
+		objectMapper.setInjectableValues(
+			new InjectableValues.Std()
+				.addValue("codebaseDeserializableFields", new HashSet<String>() {{ add("dendrograms"); }})
+				.addValue("dendrogramDeserializableFields", new HashSet<String>() {{ add("graphs"); }})
+				.addValue("graphDeserializableFields", new HashSet<String>() {{ add("controllers"); add("clusters"); }})
+				.addValue("controllerDeserializableFields", controllerDeserializableFields)
+				.addValue("clusterDeserializableFields", clusterDeserializableFields)
+		);
 
 		File codebaseJSONFile = new File(CODEBASES_PATH + codebaseName + "/codebase.json");
 
 		if (!codebaseJSONFile.exists())
 			return null;
 
+		ObjectReader reader = objectMapper.readerFor(Codebase.class);
 		Codebase cb = reader.readValue(codebaseJSONFile);
 
 		Dendrogram d = cb.getDendrograms()

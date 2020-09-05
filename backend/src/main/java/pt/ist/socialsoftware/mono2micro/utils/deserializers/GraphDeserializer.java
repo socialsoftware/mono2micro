@@ -8,10 +8,8 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
-import pt.ist.socialsoftware.mono2micro.utils.Constants;
-
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -29,49 +27,59 @@ public class GraphDeserializer extends StdDeserializer<Graph> {
 		DeserializationContext ctxt
 	) throws IOException {
 		JsonToken jsonToken = jsonParser.currentToken();
-		Set<String> deserializableFields = (Set<String>) ctxt.getAttribute("graphDeserializableFields");
+
+		Set<String> deserializableFields = null;
+
+		try {
+			deserializableFields = (Set<String>) ctxt.findInjectableValue(
+				"graphDeserializableFields",
+				null,
+				null
+			);
+
+		} catch (Exception ignored) {}
 
 		if (jsonToken == JsonToken.START_OBJECT) {
+			Graph graph = new Graph();
 
-			Graph dendrogram = new Graph();
 			while (jsonParser.nextValue() != JsonToken.END_OBJECT) {
 				if (deserializableFields == null || deserializableFields.contains(jsonParser.getCurrentName())) {
 					switch (jsonParser.getCurrentName()) {
 						case "name":
-							dendrogram.setName(jsonParser.getValueAsString());
+							graph.setName(jsonParser.getValueAsString());
 							break;
 						case "codebaseName":
-							dendrogram.setCodebaseName(jsonParser.getValueAsString());
+							graph.setCodebaseName(jsonParser.getValueAsString());
 							break;
 						case "dendrogramName":
-							dendrogram.setDendrogramName(jsonParser.getValueAsString());
+							graph.setDendrogramName(jsonParser.getValueAsString());
 							break;
 						case "cutType":
-							dendrogram.setCutType(jsonParser.getValueAsString());
+							graph.setCutType(jsonParser.getValueAsString());
 							break;
 						case "cutValue":
-							dendrogram.setCutValue(jsonParser.getFloatValue());
+							graph.setCutValue(jsonParser.getFloatValue());
 							break;
 						case "silhouetteScore":
-							dendrogram.setSilhouetteScore(jsonParser.getFloatValue());
+							graph.setSilhouetteScore(jsonParser.getFloatValue());
 							break;
 						case "complexity":
-							dendrogram.setComplexity(jsonParser.getFloatValue());
+							graph.setComplexity(jsonParser.getFloatValue());
 							break;
 						case "cohesion":
-							dendrogram.setCohesion(jsonParser.getFloatValue());
+							graph.setCohesion(jsonParser.getFloatValue());
 							break;
 						case "coupling":
-							dendrogram.setCoupling(jsonParser.getFloatValue());
+							graph.setCoupling(jsonParser.getFloatValue());
 							break;
 						case "controllers":
-							dendrogram.setControllers(jsonParser.readValueAs(new TypeReference<List<Controller>>(){}));
+							graph.setControllers(jsonParser.readValueAs(new TypeReference<List<Controller>>(){}));
 							break;
 						case "clusters":
-							dendrogram.setClusters(jsonParser.readValueAs(new TypeReference<List<Cluster>>(){}));
+							graph.setClusters(jsonParser.readValueAs(new TypeReference<List<Cluster>>(){}));
 							break;
 						case "expert":
-							dendrogram.setExpert(jsonParser.getBooleanValue());
+							graph.setExpert(jsonParser.getBooleanValue());
 							break;
 
 						default:
@@ -83,7 +91,7 @@ public class GraphDeserializer extends StdDeserializer<Graph> {
 				}
 			}
 
-			return dendrogram;
+			return graph;
 		}
 
 		throw new IOException("Error deserializing Access");

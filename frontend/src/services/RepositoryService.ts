@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import { URL } from '../constants/constants';
 import { AnalyserDto, Graph, AnalysisDto, Codebase, TypeOfTraces, Dendrogram, Cluster, Controller } from "../type-declarations/types";
+import { addSearchParamsToUrl } from "../utils/url";
 
 export class RepositoryService {
     axios: AxiosInstance;
@@ -45,12 +46,31 @@ export class RepositoryService {
     }
 
     //Codebases
-    getCodebases() {
-        return this.axios.get<Codebase[]>("/codebases");
+    getCodebases(fieldNames?: string[]) {
+        return this.axios.get<Codebase[]>(addSearchParamsToUrl(
+            "/codebases",
+            { fieldNames }
+        ));
     }
 
-    getCodebase(name: string) {
-        return this.axios.get<Codebase>("/codebase/" + name);
+    getCodebase(codebaseName: string, fieldNames?: string[]) {
+        return this.axios.get<Codebase>(addSearchParamsToUrl(
+            "/codebase/" + codebaseName,
+            { fieldNames }
+        ));
+    }
+
+    //Dendrograms
+    getCodebaseGraphs(
+        codebaseName: string,
+        fieldNames?: string[],
+    ) {
+        return this.axios.get<Graph[]>(
+            addSearchParamsToUrl(
+                "/codebase/" + codebaseName + "/graphs",
+                { fieldNames }
+            )
+        );
     }
 
     deleteCodebase(name: string) {
@@ -118,8 +138,16 @@ export class RepositoryService {
     }
 
     //Dendrograms
-    getDendrograms(codebaseName: string) {
-        return this.axios.get<Dendrogram[]>("/codebase/" + codebaseName + "/dendrograms");
+    getDendrograms(
+        codebaseName: string,
+        fieldNames?: string[],
+    ) {
+        return this.axios.get<Dendrogram[]>(
+            addSearchParamsToUrl(
+                "/codebase/" + codebaseName + "/dendrograms",
+                { fieldNames }
+            )
+        );
     }
 
     getDendrogram(codebaseName: string, dendrogramName: string) {
@@ -174,6 +202,8 @@ export class RepositoryService {
             cutValue,
             cutType,
         };
+
+        console.log(graphData);
         return this.axios.post<null>(
             "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/cut",
             graphData
@@ -205,9 +235,15 @@ export class RepositoryService {
     //Graph
     getGraphs(
         codebaseName: string,
-        dendrogramName: string
+        dendrogramName: string,
+        fieldNames?: string[],
     ) {
-        return this.axios.get<Graph[]>("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graphs");
+        return this.axios.get<Graph[]>(
+            addSearchParamsToUrl(
+                "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graphs",
+                { fieldNames }
+            )
+        );
     }
 
     getGraph(
@@ -259,7 +295,7 @@ export class RepositoryService {
             {
                 params: {
                     "newName" : newName
-                }
+                },
             });
     }
 

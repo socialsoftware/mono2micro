@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
+import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.CodebaseDeserializer;
 
@@ -39,7 +40,9 @@ public class CodebaseController {
     private final CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
 	@RequestMapping(value = "/codebases", method = RequestMethod.GET)
-	public ResponseEntity<List<Codebase>> getCodebases(@RequestParam List<String> fieldNames) {
+	public ResponseEntity<List<Codebase>> getCodebases(
+		@RequestParam(required = false, defaultValue = "") List<String> fieldNames
+	) {
 		logger.debug("getCodebases");
 
 		try {
@@ -76,6 +79,29 @@ public class CodebaseController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
     }
+
+	@RequestMapping(value = "/codebase/{codebaseName}/graphs", method = RequestMethod.GET)
+	public ResponseEntity<List<Graph>> getCodebaseGraphs(
+		@PathVariable String codebaseName,
+		@RequestParam List<String> fieldNames
+	) {
+		logger.debug("getCodebaseGraphs");
+
+		try {
+			return new ResponseEntity<>(
+				codebaseManager.getCodebaseGraphsWithFields(
+					codebaseName,
+					new HashSet<>(fieldNames)
+				),
+				HttpStatus.OK
+			);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+		}
+	}
 
     @RequestMapping(value = "/codebase/{codebaseName}/delete", method = RequestMethod.DELETE)
 	public ResponseEntity<HttpStatus> deleteCodebase(@PathVariable String codebaseName) {
