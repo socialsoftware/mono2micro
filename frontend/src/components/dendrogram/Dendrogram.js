@@ -89,7 +89,7 @@ export class Dendrogram extends React.Component {
         }
 
         const service = new RepositoryService();
-        console.log(cutValue);
+        
         service.cutDendrogram(
             this.state.codebaseName,
             this.state.dendrogramName,

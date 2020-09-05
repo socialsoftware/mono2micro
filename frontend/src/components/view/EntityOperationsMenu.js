@@ -15,7 +15,6 @@ export class EntityOperationsMenu extends React.Component {
             entity: 'Select Entity',
             entityAmount: "All"
         }
-
         this.setEntity = this.setEntity.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -66,29 +65,57 @@ export class EntityOperationsMenu extends React.Component {
 
 
     render() {
+        const {
+            entity,
+            entityAmount,
+            entityList,
+            showSubmit,
+        } = this.state;
+
         const entityAmountList = [...new Set(Object.values(this.props.amountList))].sort((a, b) => a - b).map(amount =>
-            <Dropdown.Item key={amount} onClick={() => this.setEntityAmount(amount)}>{amount}</Dropdown.Item>
+            <Dropdown.Item
+                key={amount}
+                onClick={() => this.setEntityAmount(amount)}
+            >
+                {amount}
+            </Dropdown.Item>
         );
 
-        const entitiesListDropdown = this.state.entityList.map(e =>
-            <Dropdown.Item key={e} onClick={() => this.setEntity(e)}>{e}</Dropdown.Item>
+        const entitiesListDropdown = entityList.map(e =>
+            <Dropdown.Item
+                key={e}
+                onClick={() => this.setEntity(e)}
+            >
+                {e}
+            </Dropdown.Item>
         );
         return (
             <ButtonToolbar>
-                <DropdownButton className="mr-1" as={ButtonGroup} title={this.state.entityAmount}>
-                    <Dropdown.Item key={"All"} onClick={() => this.setEntityAmount("All")}>{"All"}</Dropdown.Item>
+                <DropdownButton className="mr-1" as={ButtonGroup} title={entityAmount}>
+                    <Dropdown.Item
+                        key={"All"}
+                        onClick={() => this.setEntityAmount("All")}
+                    >
+                        {"All"}
+                    </Dropdown.Item>
                     {entityAmountList}
                 </DropdownButton>
 
                 <Dropdown className="mr-1" as={ButtonGroup}>
-                    <Dropdown.Toggle>{this.state.entity}</Dropdown.Toggle>
+                    <Dropdown.Toggle>
+                        {entity}
+                    </Dropdown.Toggle>
                     <Dropdown.Menu as={CustomSearchMenuForwardingRef}>
                         {entitiesListDropdown}
                     </Dropdown.Menu>
                 </Dropdown>
-
                 {
-                    this.state.showSubmit && <Button onClick={this.handleSubmit}>Create View</Button>
+                    showSubmit && 
+                    <Button
+                        onClick={this.handleSubmit}
+                    >
+                        Create View
+                    </Button>
                 }
             </ButtonToolbar>
         );

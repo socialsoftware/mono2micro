@@ -49,14 +49,14 @@ export class RepositoryService {
     getCodebases(fieldNames?: string[]) {
         return this.axios.get<Codebase[]>(addSearchParamsToUrl(
             "/codebases",
-            { fieldNames }
+            fieldNames ? { fieldNames } : {},
         ));
     }
 
     getCodebase(codebaseName: string, fieldNames?: string[]) {
         return this.axios.get<Codebase>(addSearchParamsToUrl(
             "/codebase/" + codebaseName,
-            { fieldNames }
+            fieldNames ? { fieldNames } : {},
         ));
     }
 
@@ -68,7 +68,7 @@ export class RepositoryService {
         return this.axios.get<Graph[]>(
             addSearchParamsToUrl(
                 "/codebase/" + codebaseName + "/graphs",
-                { fieldNames }
+                fieldNames ? { fieldNames } : {},
             )
         );
     }
@@ -145,7 +145,7 @@ export class RepositoryService {
         return this.axios.get<Dendrogram[]>(
             addSearchParamsToUrl(
                 "/codebase/" + codebaseName + "/dendrograms",
-                { fieldNames }
+                fieldNames ? { fieldNames } : {}
             )
         );
     }
@@ -203,7 +203,6 @@ export class RepositoryService {
             cutType,
         };
 
-        console.log(graphData);
         return this.axios.post<null>(
             "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/cut",
             graphData
@@ -241,7 +240,7 @@ export class RepositoryService {
         return this.axios.get<Graph[]>(
             addSearchParamsToUrl(
                 "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graphs",
-                { fieldNames }
+                fieldNames ? { fieldNames } : {},
             )
         );
     }
@@ -252,10 +251,11 @@ export class RepositoryService {
         graphName: string,
         fieldNames?: string[],
     ) {
+
         return this.axios.get<Graph>(
             addSearchParamsToUrl(
                 "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName,
-                { fieldNames }
+                fieldNames ? { fieldNames } : {},
             )
         );
     }

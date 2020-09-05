@@ -3,7 +3,7 @@ import { RepositoryService } from '../../services/RepositoryService';
 import { ClusterOperationsMenu, operations } from './ClusterOperationsMenu';
 import { VisNetwork } from '../util/VisNetwork';
 import { ModalMessage } from '../util/ModalMessage';
-import { DataSet } from 'vis';
+import { DataSet } from "vis-network/standalone";
 import { views, types } from './Views';
 import BootstrapTable from 'react-bootstrap-table-next';
 import Button from 'react-bootstrap/Button';
@@ -29,11 +29,6 @@ const options = {
                 scaleFactor: 0.5
             }
         },
-        scaling: {
-            label: {
-                enabled: true
-            },
-        },
         color: {
             color: "#2B7CE9",
             hover: "#2B7CE9",
@@ -42,11 +37,6 @@ const options = {
     },
     nodes: {
         shape: 'ellipse',
-        scaling: {
-            label: {
-                enabled: true
-            },
-        },
         color: {
             border: "#2B7CE9",
             background: "#D2E5FF",
@@ -129,7 +119,6 @@ export class ClusterView extends React.Component {
             graphName,
             ["clusters"]
         ).then(response => {
-            console.log(response);
             this.setState({
                 clusters: response.data.clusters,
                 showMenu: false,
@@ -154,11 +143,9 @@ export class ClusterView extends React.Component {
     }
 
     convertClusterToNode(cluster) {
-        const entityNames = Object.keys(cluster.entities);
-
         return {
             id: cluster.name,
-            title: entityNames.sort().join('<br>') + "<br>Total: " + entityNames.length,
+            title: cluster.entities.sort().join('<br>') + "<br>Total: " + cluster.entities.length,
             label: cluster.name,
             value: cluster.entities.length,
             type: types.CLUSTER,
@@ -173,7 +160,6 @@ export class ClusterView extends React.Component {
             clusters,
             clusterControllers,
         } = this.state;
-        console.log(clusterControllers);
 
         for (var i = 0; i < clusters.length; i++) {
             let cluster1 = clusters[i];
@@ -215,11 +201,11 @@ export class ClusterView extends React.Component {
         this.setState({
             selectedCluster: selectedCluster,
             mergeWithCluster: {},
-            clusterEntities: selectedCluster.entities.sort((a, b) => (a.name > b.name) ? 1 : -1)
+            clusterEntities: selectedCluster.entities.sort((a, b) => (a > b) ? 1 : -1)
                 .map(e => ({
-                    name: e.name,
-                    value: e.name,
-                    label: e.name,
+                    name: e,
+                    value: e,
+                    label: e,
                     active: false
                 })),
         });

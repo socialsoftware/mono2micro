@@ -109,8 +109,6 @@ export class Dendrograms extends React.Component {
             this.props.match.params.codebaseName,
             [ "profiles" ]
         ).then(response => {
-            console.log(response.data);
-
             if (response.data !== null) {
                 this.setState({ profiles: Object.keys(response.data.profiles) });
             }
@@ -134,8 +132,6 @@ export class Dendrograms extends React.Component {
             ]
         ).then((response) => {
             if (response.data !== null) {
-                console.log(response.data);
-
                 this.setState({
                     dendrograms: response.data,
                 });
@@ -158,8 +154,6 @@ export class Dendrograms extends React.Component {
                 "complexity",
             ]
         ).then((response) => {
-            console.log(response.data);
-
             if (response.data !== null) {
                 this.setState({
                     allGraphs: response.data,

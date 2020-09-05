@@ -1,4 +1,4 @@
-import { Network } from 'vis';
+import { Network } from "vis-network/standalone";
 import React, { Component, createRef } from 'react';
 import { ModalMessage } from './ModalMessage';
 import { views, types } from '../view/Views'
@@ -224,18 +224,7 @@ export class VisNetwork extends Component {
     }
 
     componentDidMount(){
-        this.network = new Network(this.appRef.current, this.props.visGraph, this.props.options);
-        this.network.on("doubleClick", this.handleDoubleClick);
-        this.network.on("selectNode", this.handleSelectNode);
-        this.network.on("deselectNode", this.handleDeselectNode);
-        this.network.on("selectEdge", this.handleSelectEdge);
-        this.network.on("deselectEdge", this.handleDeselectEdge);
-        this.network.on("stabilizationIterationsDone", this.handleStabilization);
-        this.network.storePositions();
-    }
-
-    componentDidUpdate(prevProps) {
-        if (this.props.visGraph !== prevProps.visGraph) {
+        try {
             this.network = new Network(this.appRef.current, this.props.visGraph, this.props.options);
             this.network.on("doubleClick", this.handleDoubleClick);
             this.network.on("selectNode", this.handleSelectNode);
@@ -244,12 +233,33 @@ export class VisNetwork extends Component {
             this.network.on("deselectEdge", this.handleDeselectEdge);
             this.network.on("stabilizationIterationsDone", this.handleStabilization);
             this.network.storePositions();
+
+        } catch (e) {
+            console.error(e);
+        } 
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.visGraph !== prevProps.visGraph) {
+            try {
+                this.network = new Network(this.appRef.current, this.props.visGraph, this.props.options);
+                this.network.on("doubleClick", this.handleDoubleClick);
+                this.network.on("selectNode", this.handleSelectNode);
+                this.network.on("deselectNode", this.handleDeselectNode);
+                this.network.on("selectEdge", this.handleSelectEdge);
+                this.network.on("deselectEdge", this.handleDeselectEdge);
+                this.network.on("stabilizationIterationsDone", this.handleStabilization);
+                this.network.storePositions();
+    
+            } catch (e) {
+                console.error(e);
+            } 
         }
     }
 
     render() {
         return (
-            <div>
+            <>
                 {
                     this.state.showModalMessage && (
                         <ModalMessage
@@ -260,7 +270,7 @@ export class VisNetwork extends Component {
                     )
                 }
                 <div ref = {this.appRef}/>
-            </div>
+            </>
         );
     }
 }
