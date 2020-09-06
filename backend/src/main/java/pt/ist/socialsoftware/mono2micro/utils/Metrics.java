@@ -25,37 +25,105 @@ public class Metrics {
 		float graphCohesion = 0;
 		float graphCoupling = 0;
 
-		for (Cluster cluster : graph.getClusters()) {
-			cluster.setCouplingDependencies(new HashMap<>());
-		}
-		
-		for (Controller controller : graph.getControllers()) {
-			calculateControllerComplexity(controller);
+		List<Controller> graphControllers = graph.getControllers();
+
+		for (Controller controller : graphControllers) {
+			calculateControllerComplexityAndClusterDependencies(controller);
 			graphComplexity += controller.getComplexity();
-			calculateClusterDependencies(controller);
 		}
 
-		graphComplexity /= graph.getControllers().size();
+		graphComplexity /= graphControllers.size();
 		graphComplexity = BigDecimal.valueOf(graphComplexity).setScale(2, RoundingMode.HALF_UP).floatValue();
+
 		this.graph.setComplexity(graphComplexity);
 
-		for (Cluster cluster : graph.getClusters()) {
-			calculateClusterComplexity(cluster);
+		List<Cluster> graphClusters = graph.getClusters();
 
-			calculateClusterCohesion(cluster);
+		for (Cluster cluster : graphClusters) {
+			calculateClusterComplexityAndCohesion(cluster);
+
 			graphCohesion += cluster.getCohesion();
 
 			calculateClusterCoupling(cluster);
 			graphCoupling += cluster.getCoupling();
 		}
 
-		graphCohesion /= graph.getClusters().size();
+		int graphClustersAmount = graphClusters.size();
+
+		graphCohesion /= graphClustersAmount;
 		graphCohesion = BigDecimal.valueOf(graphCohesion).setScale(2, RoundingMode.HALF_UP).floatValue();
 		this.graph.setCohesion(graphCohesion);
-		graphCoupling /= graph.getClusters().size();
+
+		graphCoupling /= graphClustersAmount;
 		graphCoupling = BigDecimal.valueOf(graphCoupling).setScale(2, RoundingMode.HALF_UP).floatValue();
 		this.graph.setCoupling(graphCoupling);
     }
+
+    private void calculateControllerComplexityAndClusterDependencies(Controller controller) {
+		Set<Controller.LocalTransaction> allLocalTransactions = controller.getAllLocalTransactions();
+
+		if (this.controllerClusters.get(controller.getName()).size() == 1) {
+			controller.setComplexity(0);
+
+			// I'm so sorry but... is there a better way?
+			for (Controller.LocalTransaction lt : allLocalTransactions) {
+				// ClusterDependencies
+				Cluster fromCluster = graph.getCluster(lt.getClusterName());
+
+				if (fromCluster != null) { // not root node
+					List<Controller.LocalTransaction> nextLocalTransactions = controller.getNextLocalTransactions(lt);
+
+					for (Controller.LocalTransaction nextLt : nextLocalTransactions) {
+						String toEntity = nextLt.getClusterAccesses().get(0).getEntity();
+						fromCluster.addCouplingDependency(nextLt.getClusterName(), toEntity);
+					}
+				}
+			}
+
+		} else {
+
+			Map<String, List<String>> cache = new HashMap<>(); // < entity + mode, List<controllerName>> controllersThatTouchSameEntities for a given mode
+			float controllerComplexity = 0;
+
+			for (Controller.LocalTransaction lt : allLocalTransactions) {
+				// ClusterDependencies
+				Cluster fromCluster = graph.getCluster(lt.getClusterName());
+
+				if (fromCluster != null) { // not root node
+					List<Controller.LocalTransaction> nextLocalTransactions = controller.getNextLocalTransactions(lt);
+
+					for (Controller.LocalTransaction nextLt : nextLocalTransactions) {
+						String toEntity = nextLt.getClusterAccesses().get(0).getEntity();
+						fromCluster.addCouplingDependency(nextLt.getClusterName(), toEntity);
+					}
+				}
+
+				Set<String> controllersThatTouchSameEntities = new HashSet<>();
+				List<AccessDto> clusterAccesses = lt.getClusterAccesses();
+
+				for (AccessDto a : clusterAccesses) {
+					String entity = a.getEntity();
+					String mode = a.getMode();
+
+					String key = String.join("-", entity, mode);
+					List<String> controllersThatTouchThisEntityAndMode = cache.get(key);
+
+					if (controllersThatTouchThisEntityAndMode == null) {
+						controllersThatTouchThisEntityAndMode = costOfAccess(controller, entity, mode);
+						cache.put(key, controllersThatTouchThisEntityAndMode);
+					}
+
+					controllersThatTouchSameEntities.addAll(controllersThatTouchThisEntityAndMode);
+				}
+
+				controllerComplexity += controllersThatTouchSameEntities.size();
+			}
+
+			controller.setComplexity(controllerComplexity);
+		}
+
+
+	}
 
 	private void calculateClusterDependencies(Controller controller) {
 		Set<Controller.LocalTransaction> allLocalTransactions = controller.getAllLocalTransactions();
@@ -84,7 +152,6 @@ public class Metrics {
     	Map<String, List<String>> cache = new HashMap<>(); // < entity + mode, List<controllerName>> controllersThatTouchSameEntities for a given mode
 
 		float controllerComplexity = 0;
-
 
 		Set<Controller.LocalTransaction> allLocalTransactions = controller.getAllLocalTransactions();
 
@@ -135,6 +202,41 @@ public class Metrics {
         return controllersThatTouchThisEntityAndMode;
     }
 
+    private void calculateClusterComplexityAndCohesion(Cluster cluster) {
+		List<Controller> controllersThatAccessThisCluster = this.clusterControllers.get(cluster.getName());
+
+		float complexity = 0;
+		float cohesion = 0;
+
+		for (Controller controller : controllersThatAccessThisCluster) {
+			// complexity calculus
+			complexity += controller.getComplexity();
+
+			// cohesion calculus
+			float numberEntitiesTouched = 0;
+
+			Set<String> controllerEntities = controller.getEntities().keySet();
+
+			for (String controllerEntity : controllerEntities) {
+				if (cluster.containsEntity(controllerEntity))
+					numberEntitiesTouched++;
+			}
+
+			cohesion += numberEntitiesTouched / cluster.getEntities().size();
+		}
+
+		// complexity calculus
+		complexity /= controllersThatAccessThisCluster.size();
+		complexity = BigDecimal.valueOf(complexity).setScale(2, RoundingMode.HALF_UP).floatValue();
+		cluster.setComplexity(complexity);
+
+		// cohesion calculus
+		cohesion /= controllersThatAccessThisCluster.size();
+		cohesion = BigDecimal.valueOf(cohesion).setScale(2, RoundingMode.HALF_UP).floatValue();
+		cluster.setCohesion(cohesion);
+	}
+
+	// FIXME maybe let's deprecate it?
 	private void calculateClusterComplexity(Cluster cluster) {
     	List<Controller> controllersThatAccessThisCluster = this.clusterControllers.get(cluster.getName());
 
@@ -147,6 +249,7 @@ public class Metrics {
 		cluster.setComplexity(complexity);
 	}
 
+	// FIXME maybe let's deprecate it?
 	public void calculateClusterCohesion(Cluster cluster) {
 		List<Controller> controllersThatAccessThisCluster = this.clusterControllers.get(cluster.getName());
 
@@ -168,10 +271,14 @@ public class Metrics {
 
 	private void calculateClusterCoupling(Cluster c1) {
     	float coupling = 0;
-    	for (String c2 : c1.getCouplingDependencies().keySet()) {
-    		coupling += (float) c1.getCouplingDependencies().get(c2).size() / graph.getCluster(c2).getEntities().size();
-		}
-		coupling = graph.getClusters().size() == 1 ? 0 : coupling / (graph.getClusters().size() - 1);
+		Map<String, Set<String>> couplingDependencies = c1.getCouplingDependencies();
+
+    	for (String c2 : couplingDependencies.keySet())
+    		coupling += (float) couplingDependencies.get(c2).size() / graph.getCluster(c2).getEntities().size();
+
+    	int graphClustersAmount = graph.getClusters().size();
+
+		coupling = graphClustersAmount == 1 ? 0 : coupling / (graphClustersAmount - 1);
 		coupling = BigDecimal.valueOf(coupling).setScale(2, RoundingMode.HALF_UP).floatValue();
 		c1.setCoupling(coupling);
 	}

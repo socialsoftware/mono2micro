@@ -14,7 +14,7 @@ public class Cluster {
 	private float complexity;
 	private float cohesion;
 	private float coupling;
-	private Map<String, Set<String>> couplingDependencies;
+	private Map<String, Set<String>> couplingDependencies = new HashMap<>(); // <clusterName, List<EntityName>>
 	private Set<String> entities = new HashSet<>(); // entity names
 
 	public Cluster() { }
