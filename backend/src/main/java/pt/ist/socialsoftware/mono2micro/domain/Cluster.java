@@ -2,10 +2,12 @@ package pt.ist.socialsoftware.mono2micro.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import pt.ist.socialsoftware.mono2micro.utils.deserializers.AccessDtoDeserializer;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.ClusterDeserializer;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
 @JsonDeserialize(using = ClusterDeserializer.class)

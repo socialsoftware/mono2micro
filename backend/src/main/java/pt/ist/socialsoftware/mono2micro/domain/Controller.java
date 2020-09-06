@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
-import pt.ist.socialsoftware.mono2micro.utils.deserializers.AccessDtoDeserializer;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.ControllerDeserializer;
 import pt.ist.socialsoftware.mono2micro.utils.serializers.ControllerSerializer;
 

@@ -1,6 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.utils.mojoCalculator.src.main.java;
 
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Vector;
 
 class Cluster {
 	

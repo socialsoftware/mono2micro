@@ -8,8 +8,8 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
+
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 

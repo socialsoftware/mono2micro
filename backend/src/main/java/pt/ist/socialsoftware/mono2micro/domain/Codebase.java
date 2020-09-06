@@ -1,9 +1,12 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.PYTHON;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.RESOURCES_PATH;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.apache.commons.io.FileUtils;
+import pt.ist.socialsoftware.mono2micro.utils.deserializers.CodebaseDeserializer;
 
+import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,12 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.management.openmbean.KeyAlreadyExistsException;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.apache.commons.io.FileUtils;
-import pt.ist.socialsoftware.mono2micro.utils.deserializers.CodebaseDeserializer;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 
 @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
 @JsonDeserialize(using = CodebaseDeserializer.class)

@@ -1,13 +1,13 @@
 package pt.ist.socialsoftware.mono2micro.utils;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.*;
-
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
 
 public class Metrics {
     private Graph graph;

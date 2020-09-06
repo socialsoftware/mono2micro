@@ -1,8 +1,9 @@
 package pt.ist.socialsoftware.mono2micro.dto;
 
-import java.util.List;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
+
+import java.util.List;
 
 public class AnalyserDto {
     private Graph expert;

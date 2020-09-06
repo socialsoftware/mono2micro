@@ -1,35 +1,20 @@
 package pt.ist.socialsoftware.mono2micro.controller;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.*;
-
-import javax.management.openmbean.KeyAlreadyExistsException;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.cfg.ContextAttributes;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
-import pt.ist.socialsoftware.mono2micro.utils.deserializers.CodebaseDeserializer;
 
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
+import javax.management.openmbean.KeyAlreadyExistsException;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/mono2micro")

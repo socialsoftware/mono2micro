@@ -1,6 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.utils.mojoCalculator.src.main.java;
 
-import java.util.*;
+import java.util.Vector;
 
 /* Vertex in a bipartite graph */
 class Vertex {

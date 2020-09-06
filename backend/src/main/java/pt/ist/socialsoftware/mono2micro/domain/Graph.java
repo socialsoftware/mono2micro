@@ -1,10 +1,5 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
-import java.io.IOException;
-import java.util.*;
-
-import javax.management.openmbean.KeyAlreadyExistsException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -16,6 +11,10 @@ import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Metrics;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.GraphDeserializer;
+
+import javax.management.openmbean.KeyAlreadyExistsException;
+import java.io.IOException;
+import java.util.*;
 
 @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
 @JsonDeserialize(using = GraphDeserializer.class)

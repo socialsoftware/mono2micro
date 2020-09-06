@@ -1,14 +1,5 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.PYTHON;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.RESOURCES_PATH;
-
-import java.io.*;
-import java.util.*;
-
-import javax.management.openmbean.KeyAlreadyExistsException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -17,7 +8,6 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
@@ -28,6 +18,15 @@ import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.DendrogramDeserializer;
+
+import javax.management.openmbean.KeyAlreadyExistsException;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 
 @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
 @JsonDeserialize(using = DendrogramDeserializer.class)

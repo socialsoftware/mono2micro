@@ -6,12 +6,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
-import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 
 public class ClusterDeserializer extends StdDeserializer<Cluster> {

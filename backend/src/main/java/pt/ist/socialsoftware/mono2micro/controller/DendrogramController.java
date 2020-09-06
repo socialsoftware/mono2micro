@@ -1,26 +1,22 @@
 package pt.ist.socialsoftware.mono2micro.controller;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-
-import javax.management.openmbean.KeyAlreadyExistsException;
-import javax.servlet.annotation.MultipartConfig;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
+
+import javax.management.openmbean.KeyAlreadyExistsException;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/mono2micro/codebase/{codebaseName}")
