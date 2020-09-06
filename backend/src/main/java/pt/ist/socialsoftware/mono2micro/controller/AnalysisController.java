@@ -66,8 +66,12 @@ public class AnalysisController {
 
 			if (codebase.isStatic()) {
 				datafileJSON = CodebaseManager.getInstance().getDatafile(codebase);
-				// returning entitiesList by convenience FIXME just return the length of the list such that memory can be released after the function execution
-				numberOfEntitiesPresentInCollection = createStaticAnalyserSimilarityMatrix(codebaseName, analyser, datafileJSON);
+
+				numberOfEntitiesPresentInCollection = createStaticAnalyserSimilarityMatrix(
+					codebaseName,
+					analyser,
+					datafileJSON
+				);
 
 			} else {
 				numberOfEntitiesPresentInCollection = createDynamicAnalyserSimilarityMatrix(codebase, analyser);
