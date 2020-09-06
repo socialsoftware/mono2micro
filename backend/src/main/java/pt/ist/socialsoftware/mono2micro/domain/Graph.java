@@ -227,7 +227,10 @@ public class Graph {
 		else
 			datafileJSON = datafile;
 
-		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
+		Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
+			codebaseName,
+			new HashSet<String>() {{ add("profiles"); }}
+		);
 
 		for (String profile : profiles) {
 			for (String controllerName : codebase.getProfile(profile)) {
@@ -255,8 +258,11 @@ public class Graph {
 	) throws IOException {
 		this.controllers = new ArrayList<>();
 
-		// getCodebaseFields(["profiles", "datafilePath"])
-		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
+		Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
+			codebaseName,
+			new HashSet<String>() {{ add("profiles"); add("datafilePath"); }}
+		);
+
 		ControllerTracesIterator iter;
 		TraceDto t;
 		List<AccessDto> traceAccesses;
@@ -331,7 +337,7 @@ public class Graph {
 		String cluster1,
 		String cluster2,
 		String newName
-	) {
+	) throws Exception {
 		Cluster mergedCluster = new Cluster(newName);
 
 		for (int i = 0; i < clusters.size(); i++) {
@@ -362,7 +368,7 @@ public class Graph {
 		this.calculateMetrics();
 	}
 
-	public void renameCluster(String clusterName, String newName) {
+	public void renameCluster(String clusterName, String newName) throws Exception {
 		if (clusterName.equals(newName))
 			return;
 
@@ -396,7 +402,7 @@ public class Graph {
 		return null;
 	}
 
-	public void splitCluster(String clusterName, String newName, String[] entities) {
+	public void splitCluster(String clusterName, String newName, String[] entities) throws Exception {
 		Cluster currentCluster = this.getCluster(clusterName);
 		Cluster newCluster = new Cluster(newName);
 		for (String entity : entities) {
@@ -409,7 +415,7 @@ public class Graph {
 		this.calculateMetrics();
 	}
 
-	public void transferEntities(String fromClusterName, String toClusterName, String[] entities) {
+	public void transferEntities(String fromClusterName, String toClusterName, String[] entities) throws Exception {
 		Cluster fromCluster = this.getCluster(fromClusterName);
 		Cluster toCluster = this.getCluster(toClusterName);
 
@@ -466,40 +472,43 @@ public class Graph {
 		return controllerClusters;
 	}
 
-	public void calculateMetrics() {
-		try {
-			Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
+	public void calculateMetrics() throws Exception {
+		CodebaseManager cm = CodebaseManager.getInstance();
 
-			if (codebase.isStatic()) {
-				this.addStaticControllers(
-					codebase.getDendrogram(this.dendrogramName).getProfiles(),
-					null
-				);
+		Codebase codebase = cm.getCodebaseWithFields(
+			this.codebaseName,
+			new HashSet<String>() {{ add("analysisType"); }}
+		);
 
-			} else {
-				Dendrogram d = codebase.getDendrogram(this.dendrogramName);
+		Dendrogram d = cm.getCodebaseDendrogramWithFields(
+			this.codebaseName,
+			this.dendrogramName,
+			new HashSet<String>() {{ add("profiles"); add("typeOfTraces"); add("tracesMaxLimit"); }}
+		);
 
-				this.addDynamicControllers(
-					d.getProfiles(),
-					d.getTracesMaxLimit(),
-					d.getTypeOfTraces()
-				);
-			}
+		if (codebase.isStatic()) {
+			this.addStaticControllers(
+				d.getProfiles(),
+				null
+			);
 
-		} catch (IOException e) {
-			e.printStackTrace();
+		} else {
+			this.addDynamicControllers(
+				d.getProfiles(),
+				d.getTracesMaxLimit(),
+				d.getTypeOfTraces()
+			);
 		}
 
 		Metrics metrics = new Metrics(this);
 		metrics.calculateMetrics();
 	}
 
-	public void calculateMetricsAnalyser(List<String> profiles, HashMap<String, ControllerDto> datafileJSON) {
-		try {
-			this.addStaticControllers(profiles, datafileJSON);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public void calculateMetricsAnalyser(
+		List<String> profiles,
+		HashMap<String, ControllerDto> datafileJSON
+	) throws IOException {
+		this.addStaticControllers(profiles, datafileJSON);
 
 		Metrics metrics = new Metrics(this);
 		metrics.calculateMetrics();
@@ -509,16 +518,12 @@ public class Graph {
 		List<String> profiles,
 		int tracesMaxLimit,
 		Constants.TypeOfTraces traceType
-	) {
-		try {
-			this.addDynamicControllers(
-				profiles,
-				tracesMaxLimit,
-				traceType
-			);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	) throws IOException {
+		this.addDynamicControllers(
+			profiles,
+			tracesMaxLimit,
+			traceType
+		);
 
 		Metrics metrics = new Metrics(this);
 		metrics.calculateMetrics();

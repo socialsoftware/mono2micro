@@ -10,6 +10,7 @@ import Button from 'react-bootstrap/Button';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { numberFilter } from 'react-bootstrap-table2-filter';
+import { Codebase, Graph } from "../../type-declarations/types";
 
 var HttpStatus = require('http-status-codes');
 
@@ -108,8 +109,9 @@ export class Analyser extends React.Component<any, any> {
         super(props);
         this.state = {
             codebases: [],
-            codebase: null,
-            profiles: [],
+            codebase: {
+                profiles: {}
+            },
             selectedProfiles: [],
             experts: [],
             expert: null,
@@ -134,22 +136,45 @@ export class Analyser extends React.Component<any, any> {
 
     loadCodebases() {
         const service = new RepositoryService();
-        service.getCodebases().then(response => {
+        service.getCodebases(
+            [
+                "name",
+                "profiles",
+                "analysisType"
+            ]
+        ).then(response => {
             this.setState({
                 codebases: response.data
             });
         });
     }
 
-    setCodebase(codebase: any) {
+    loadCodebaseGraphs(codebaseName: string) {
+        const service = new RepositoryService();
+        
+        service.getCodebaseGraphs(
+            codebaseName,
+            [
+                "name",
+                "expert",
+                "codebaseName",
+                "clusters",
+            ]
+        ).then((response) => {
+            if (response.data !== null) {
+                this.setState({
+                    experts: response.data.filter((graph: Graph) => graph.expert === true)
+                });
+            }
+        });
+    }
+
+    setCodebase(codebase: Pick<Codebase, "name" | "profiles">) {
         this.setState({
             codebase: codebase,
-            profiles: Object.keys(codebase.profiles),
-            experts: codebase.dendrograms
-                        .map((dendrogram: any) => dendrogram.graphs)
-                        .flat()
-                        .filter((graph: any) => graph.expert === true)
         });
+        
+        this.loadCodebaseGraphs(codebase.name!);
     }
 
     selectProfile(profile: any) {
@@ -258,7 +283,6 @@ export class Analyser extends React.Component<any, any> {
             resultData,
             codebase,
             codebases,
-            profiles,
             expert,
             selectedProfiles,
             requestLimit,
@@ -269,7 +293,7 @@ export class Analyser extends React.Component<any, any> {
             typeOfTraces,
         } = this.state;
 
-        const metricRows = resultData.map((data: any, index: any) => {
+        const metricRows = resultData.map((data: any, index: number) => {
             return {
                 id: index,
                 access: data.accessWeight,
@@ -305,7 +329,9 @@ export class Analyser extends React.Component<any, any> {
                                     codebases.map((codebase: any) => 
                                         <Dropdown.Item 
                                             key={codebase.name}
-                                            onClick={() => this.setCodebase(codebase)}>{codebase.name}
+                                            onClick={() => this.setCodebase(codebase)}
+                                        >
+                                            {codebase.name}
                                         </Dropdown.Item>
                                     )
                                 }
@@ -319,7 +345,7 @@ export class Analyser extends React.Component<any, any> {
                         </Form.Label>
                         <Col sm={3}>
                             <DropdownButton title={'Controller Profiles'}>
-                                {profiles.map((profile: any) =>
+                                {Object.keys(codebase.profiles).map((profile: any) =>
                                     <Dropdown.Item
                                         key={profile}
                                         onSelect={() => this.selectProfile(profile)}
@@ -451,7 +477,6 @@ export class Analyser extends React.Component<any, any> {
                                 type="submit"
                                 disabled={
                                     isUploaded === "Uploading..." ||
-                                    !codebase ||
                                     selectedProfiles.length === 0 ||
                                     requestLimit === "" ||
                                     (codebase.analysisType === "dynamic" && (typeOfTraces === "" || amountOfTraces === ""))

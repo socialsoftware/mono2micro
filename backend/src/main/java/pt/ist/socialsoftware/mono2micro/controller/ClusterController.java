@@ -52,7 +52,7 @@ public class ClusterController {
 			codebaseManager.writeCodebase(codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
@@ -84,7 +84,7 @@ public class ClusterController {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
@@ -113,7 +113,7 @@ public class ClusterController {
 
 			return new ResponseEntity<>(HttpStatus.OK);
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
@@ -142,7 +142,7 @@ public class ClusterController {
 
 			return new ResponseEntity<>(HttpStatus.OK);
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}

@@ -369,11 +369,9 @@ public class CodebaseManager {
 		writer.writeValue(new File(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json"), analyserJSON);
 	}
 
-	public JSONObject getAnalyserCut(String codebaseName, String cutName) throws IOException, JSONException {
+	public HashMap<String, HashMap<String, Set<String>>> getAnalyserCut(String codebaseName, String cutName) throws IOException, JSONException {
 		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/analyser/cuts/" + cutName + ".json");
-		JSONObject analyserCutJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
-		is.close();
-		return analyserCutJSON;
+		return objectMapper.readValue(is, new TypeReference<HashMap<String, HashMap<String, Set<String>>>>() {});
 	}
 
 	public void writeAnalyserSimilarityMatrix(String codebaseName, JSONObject similarityMatrix) throws IOException, JSONException {

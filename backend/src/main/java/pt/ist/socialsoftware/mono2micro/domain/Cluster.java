@@ -23,6 +23,11 @@ public class Cluster {
         this.name = name;
 	}
 
+	public Cluster(String name, Set<String> entities) {
+		this.name = name;
+		this.entities = entities;
+	}
+
 	public String getName() {
 		return this.name;
 	}

@@ -152,7 +152,7 @@ public class Dendrogram {
 		FileUtils.deleteDirectory(new File(CODEBASES_PATH + this.codebaseName + "/" + this.name + "/" + graphName));
 	}
 
-	public void createExpertCut(String expertName, Optional<MultipartFile> expertFile) throws IOException, JSONException {
+	public void createExpertCut(String expertName, Optional<MultipartFile> expertFile) throws Exception {
 		if (this.getGraphNames().contains(expertName))
 			throw new KeyAlreadyExistsException();
 
@@ -182,6 +182,7 @@ public class Dendrogram {
 
 			JSONObject similarityMatrixData = CodebaseManager.getInstance().getSimilarityMatrix(this.codebaseName, this.name);
 			JSONArray entities = similarityMatrixData.getJSONArray("entities");
+
 			for (int i = 0; i < entities.length(); i++) {
 				cluster.addEntity(entities.getString(i));
 			}
@@ -248,8 +249,10 @@ public class Dendrogram {
 
 		HashMap<String, ControllerDto> datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
 
-		// WIP getCodebaseProfilesAndDatafilePath()
-		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
+		Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
+			codebaseName,
+			new HashSet<String>() {{ add("profiles"); }}
+		);
 
 		for (String profile : this.profiles) {
 			for (String controllerName : codebase.getProfile(profile)) {
@@ -282,8 +285,10 @@ public class Dendrogram {
 		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 		Map<String,Integer> e1e2PairCount = new HashMap<>();
 
-		// WIP getCodebaseProfilesAndDatafilePath()
-		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
+		Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
+			codebaseName,
+			new HashSet<String>() {{ add("profiles"); add("datafilePath"); }}
+		);
 
 		ControllerTracesIterator iter;
 		TraceDto t;

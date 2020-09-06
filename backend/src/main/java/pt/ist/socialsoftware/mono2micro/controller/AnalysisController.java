@@ -53,22 +53,22 @@ public class AnalysisController {
 				codebaseManager.writeAnalyserResults(codebaseName, new HashMap());
 			}
 
-			// FIXME getCodebaseFields(["profiles", "datafilePath"])
-			Codebase codebase = CodebaseManager.getInstance().getCodebase(codebaseName);
+			Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
+				codebaseName,
+				new HashSet<String>() {{ add("analysisType"); add("name"); add("profiles"); add("datafilePath"); }}
+			);
 
-			List<String> entitiesList;
+			int numberOfEntitiesPresentInCollection;
 			HashMap<String, ControllerDto> datafileJSON = null;
 
 			if (codebase.isStatic()) {
 				datafileJSON = CodebaseManager.getInstance().getDatafile(codebase);
 				// returning entitiesList by convenience FIXME just return the length of the list such that memory can be released after the function execution
-				entitiesList = createStaticAnalyserSimilarityMatrix(codebaseName, analyser, datafileJSON);
+				numberOfEntitiesPresentInCollection = createStaticAnalyserSimilarityMatrix(codebaseName, analyser, datafileJSON);
 
 			} else {
-				entitiesList = createDynamicAnalyserSimilarityMatrix(codebase, analyser);
+				numberOfEntitiesPresentInCollection = createDynamicAnalyserSimilarityMatrix(codebase, analyser);
 			}
-			// open codebase's datafile Json only once at the beginning of the analyser
-			int numberOfEntitiesPresentInCollection = entitiesList.size();
 
 			System.out.println(codebaseName + ": " + numberOfEntitiesPresentInCollection);
 
@@ -106,19 +106,13 @@ public class AnalysisController {
 				Graph graph = new Graph();
 				graph.setCodebaseName(codebaseName);
 
-				JSONObject analyserCut = codebaseManager.getAnalyserCut(codebaseName, filename);
-		
-				Iterator<String> clusters = analyserCut.getJSONObject("clusters").keys();
+				HashMap<String, HashMap<String, Set<String>>> analyserCut = codebaseManager.getAnalyserCut(codebaseName, filename);
 
-				while(clusters.hasNext()) {
-					String clusterId = clusters.next();
-					JSONArray entities = analyserCut.getJSONObject("clusters").getJSONArray(clusterId);
-					Cluster cluster = new Cluster(clusterId);
+				Set<String> clusterIDs = analyserCut.get("clusters").keySet();
 
-					// FIXME setEntities
-					for (int i = 0; i < entities.length(); i++) {
-						cluster.addEntity(entities.getString(i));
-					}
+				for (String clusterId : clusterIDs) {
+					Set<String> entities = analyserCut.get("clusters").get(clusterId);
+					Cluster cluster = new Cluster(clusterId, entities);
 
 					graph.addCluster(cluster);
 				}
@@ -247,7 +241,7 @@ public class AnalysisController {
 		return matrixData;
 	}
 	
-	private List<String> createStaticAnalyserSimilarityMatrix(
+	private int createStaticAnalyserSimilarityMatrix(
 		String codebaseName,
 		AnalyserDto analyser,
 		HashMap<String, ControllerDto> datafileJSON
@@ -284,10 +278,10 @@ public class AnalysisController {
 			)
 		);
 
-		return entitiesList;
+		return entitiesList.size();
 	}
 
-	private List<String> createDynamicAnalyserSimilarityMatrix(
+	private int createDynamicAnalyserSimilarityMatrix(
 		Codebase codebase,
 		AnalyserDto analyser
 	) throws IOException, JSONException
@@ -387,7 +381,7 @@ public class AnalysisController {
 			)
 		);
 
-		return entitiesList;
+		return entitiesList.size();
 	}
 
 
