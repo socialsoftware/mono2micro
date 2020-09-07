@@ -256,8 +256,10 @@ public class CodebaseManager {
 		Object datafile,
 		String analysisType
 	) throws IOException {
-		
-		if (getCodebase(codebaseName) != null)
+
+		File codebaseJSONFile = new File(CODEBASES_PATH + codebaseName + "/codebase.json");
+
+		if (codebaseJSONFile.exists())
 			throw new KeyAlreadyExistsException();
 
 		File codebasesPath = new File(CODEBASES_PATH);
