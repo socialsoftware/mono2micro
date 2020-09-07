@@ -65,21 +65,6 @@ public class Metrics {
 		if (this.controllerClusters.get(controller.getName()).size() == 1) {
 			controller.setComplexity(0);
 
-			// I'm so sorry but... is there a better way?
-			for (Controller.LocalTransaction lt : allLocalTransactions) {
-				// ClusterDependencies
-				Cluster fromCluster = graph.getCluster(lt.getClusterName());
-
-				if (fromCluster != null) { // not root node
-					List<Controller.LocalTransaction> nextLocalTransactions = controller.getNextLocalTransactions(lt);
-
-					for (Controller.LocalTransaction nextLt : nextLocalTransactions) {
-						String toEntity = nextLt.getClusterAccesses().get(0).getEntity();
-						fromCluster.addCouplingDependency(nextLt.getClusterName(), toEntity);
-					}
-				}
-			}
-
 		} else {
 
 			Map<String, List<String>> cache = new HashMap<>(); // < entity + mode, List<controllerName>> controllersThatTouchSameEntities for a given mode
@@ -121,8 +106,6 @@ public class Metrics {
 
 			controller.setComplexity(controllerComplexity);
 		}
-
-
 	}
 
 	private void calculateClusterDependencies(Controller controller) {
