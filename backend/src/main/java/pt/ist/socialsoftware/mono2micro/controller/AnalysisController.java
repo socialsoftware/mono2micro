@@ -68,7 +68,7 @@ public class AnalysisController {
 				datafileJSON = CodebaseManager.getInstance().getDatafile(codebase);
 
 				numberOfEntitiesPresentInCollection = createStaticAnalyserSimilarityMatrix(
-					codebaseName,
+					codebase,
 					analyser,
 					datafileJSON
 				);
@@ -249,15 +249,13 @@ public class AnalysisController {
 	}
 	
 	private int createStaticAnalyserSimilarityMatrix(
-		String codebaseName,
+		Codebase codebase,
 		AnalyserDto analyser,
 		HashMap<String, ControllerDto> datafileJSON
 	) throws IOException, JSONException
 	{
 		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 		Map<String,Integer> e1e2PairCount = new HashMap<>();
-
-		Codebase codebase = codebaseManager.getCodebase(codebaseName);
 
 		for (String profile : analyser.getProfiles()) {
 			for (String controllerName : codebase.getProfile(profile)) {
@@ -277,7 +275,7 @@ public class AnalysisController {
 		Collections.sort(entitiesList);
 
 		CodebaseManager.getInstance().writeAnalyserSimilarityMatrix(
-			codebaseName,
+			codebase.getName(),
 			getAnalyserMatrixData(
 				entitiesList,
 				e1e2PairCount,
