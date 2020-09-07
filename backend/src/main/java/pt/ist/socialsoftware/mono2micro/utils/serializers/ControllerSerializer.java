@@ -32,19 +32,26 @@ public class ControllerSerializer extends StdSerializer<Controller> {
 		jg.writeNumberField("complexity", controller.getComplexity());
 		jg.writeObjectField("entities", controller.getEntities());
 
-		ObjectMapper mapper = new ObjectMapper();
-		SimpleModule module = new SimpleModule("GraphSerializer");
-		module.addSerializer(
-				new GraphSerializer(
-						(Class<DirectedAcyclicGraph<Controller.LocalTransaction, DefaultEdge>>) controller
-								.getLocalTransactionsGraph().getClass()
-				)
-		);
-		mapper.registerModule(module);
-		String graphString = mapper.writeValueAsString(controller.getLocalTransactionsGraph());
-
 		jg.writeFieldName("localTransactionsGraph");
-		jg.writeRawValue(graphString);
+		if (controller.getLocalTransactionsGraph() != null) {
+
+			ObjectMapper mapper = new ObjectMapper();
+			SimpleModule module = new SimpleModule("GraphSerializer");
+			module.addSerializer(
+					new GraphSerializer(
+							(Class<DirectedAcyclicGraph<Controller.LocalTransaction, DefaultEdge>>) controller
+									.getLocalTransactionsGraph().getClass()
+					)
+			);
+
+			mapper.registerModule(module);
+			String graphString = mapper.writeValueAsString(controller.getLocalTransactionsGraph());
+			jg.writeRawValue(graphString);
+
+		} else {
+			jg.writeObject(null);
+		}
+
 		jg.writeEndObject();
 	}
 }

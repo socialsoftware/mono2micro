@@ -37,7 +37,9 @@ export class Codebases extends React.Component {
 
     loadCodebases() {
         const service = new RepositoryService();
-        service.getCodebases().then(response => {
+        service.getCodebases(
+            ["name", "analysisType"],
+        ).then(response => {
             this.setState({
                 codebases: response.data
             });

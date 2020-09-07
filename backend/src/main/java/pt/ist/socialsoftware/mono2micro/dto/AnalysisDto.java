@@ -1,9 +1,9 @@
 package pt.ist.socialsoftware.mono2micro.dto;
 
+import pt.ist.socialsoftware.mono2micro.domain.Graph;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
 
 public class AnalysisDto {
     private Graph graph1;

@@ -32,13 +32,18 @@ export class Codebase extends React.Component {
                         <Card.Title>
                             {this.state.codebaseName}
                         </Card.Title>
-                        <Button href={`/codebases/${this.state.codebaseName}/profiles`} 
-                                className="mb-2">
-                                    Change Controller Profiles
-                        </Button><br/>
-                        <Button href={`/codebases/${this.state.codebaseName}/dendrograms`} 
-                                className="mb-2">
-                                    Go to Dendrograms
+                        <Button
+                            href={`/codebases/${this.state.codebaseName}/profiles`} 
+                            className="mb-2"
+                        >
+                            Change Controller Profiles
+                        </Button>
+                        <br/>
+                        <Button 
+                            href={`/codebases/${this.state.codebaseName}/dendrograms`} 
+                            className="mb-2"
+                        >
+                            Go to Dendrograms
                         </Button>
                     </Card.Body>
                 </Card>

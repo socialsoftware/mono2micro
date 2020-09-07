@@ -1,20 +1,33 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import pt.ist.socialsoftware.mono2micro.utils.deserializers.ClusterDeserializer;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+@JsonInclude(JsonInclude.Include.USE_DEFAULTS)
+@JsonDeserialize(using = ClusterDeserializer.class)
 public class Cluster {
 	private String name;
 	private float complexity;
 	private float cohesion;
 	private float coupling;
-	private Map<String, Set<String>> couplingDependencies;
-	private Map<String, Entity> entities = new HashMap<>(); // <entityName, entity>
+	private Map<String, Set<String>> couplingDependencies = new HashMap<>(); // <clusterName, List<EntityName>>
+	private Set<String> entities = new HashSet<>(); // entity names
 
 	public Cluster() { }
 
 	public Cluster(String name) {
         this.name = name;
+	}
+
+	public Cluster(String name, Set<String> entities) {
+		this.name = name;
+		this.entities = entities;
 	}
 
 	public String getName() {
@@ -53,25 +66,16 @@ public class Cluster {
 
 	public void setCouplingDependencies(Map<String, Set<String>> couplingDependencies) { this.couplingDependencies = couplingDependencies; }
 
-	public Map<String, Entity> getEntities() { return entities; }
+	public Set<String> getEntities() { return entities; }
 
-	public void setEntities(Map<String, Entity> entities) {
+	public void setEntities(Set<String> entities) {
 		this.entities = entities;
 	}
+	public void addEntity(String entity) { this.entities.add(entity); }
 
-	public List<String> getEntityNames() { return new ArrayList<>(this.entities.keySet()); }
+	public void removeEntity(String entityName) { this.entities.remove(entityName); }
 
-	public Entity getEntity(String entityName) { return this.entities.get(entityName); }
-
-	public void addEntity(Entity entity) {
-		this.entities.put(entity.getName(), entity);
-	}
-
-	public void removeEntity(String entityName) {
-		this.entities.remove(entityName);
-	}
-
-	public boolean containsEntity(String entityName) { return this.entities.containsKey(entityName); }
+	public boolean containsEntity(String entityName) { return this.entities.contains(entityName); }
 
 	public void addCouplingDependency(String toCluster, String toEntity) {
 		if (this.couplingDependencies.containsKey(toCluster)) {

@@ -1,16 +1,8 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.*;
-
-import javax.management.openmbean.KeyAlreadyExistsException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonEncoding;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
 import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
@@ -18,9 +10,14 @@ import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Metrics;
+import pt.ist.socialsoftware.mono2micro.utils.deserializers.GraphDeserializer;
 
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
+import javax.management.openmbean.KeyAlreadyExistsException;
+import java.io.IOException;
+import java.util.*;
 
+@JsonInclude(JsonInclude.Include.USE_DEFAULTS)
+@JsonDeserialize(using = GraphDeserializer.class)
 public class Graph {
 	private String codebaseName;
 	private String dendrogramName;
@@ -37,25 +34,17 @@ public class Graph {
 
 	public Graph() { }
 
-	public String getCodebaseName() {
-		return this.codebaseName;
-	}
+	public String getCodebaseName() { return this.codebaseName; }
 
-	public void setCodebaseName(String codebaseName) {
-		this.codebaseName = codebaseName;
-	}
+	public void setCodebaseName(String codebaseName) { this.codebaseName = codebaseName; }
 
-	public String getDendrogramName() {
-		return this.dendrogramName;
-	}
+	public String getDendrogramName() { return this.dendrogramName; }
 
 	public void setDendrogramName(String dendrogramName) {
 		this.dendrogramName = dendrogramName;
 	}
 
-	public String getName() {
-		return this.name;
-	}
+	public String getName() { return this.name; }
 
 	public void setName(String name) {
 		this.name = name;
@@ -119,9 +108,13 @@ public class Graph {
 
 	public List<Cluster> getClusters() { return this.clusters; }
 
+	public void setClusters(List<Cluster> clusters) { this.clusters = clusters; }
+
 	public void addCluster(Cluster cluster) { this.clusters.add(cluster); }
 
 	public List<Controller> getControllers() { return this.controllers; }
+
+	public void setControllers(List<Controller> controllers) { this.controllers = controllers; }
 
 	public void addController(Controller controller) { this.controllers.add(controller); }
 
@@ -233,7 +226,10 @@ public class Graph {
 		else
 			datafileJSON = datafile;
 
-		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
+		Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
+			codebaseName,
+			new HashSet<String>() {{ add("profiles"); }}
+		);
 
 		for (String profile : profiles) {
 			for (String controllerName : codebase.getProfile(profile)) {
@@ -261,7 +257,11 @@ public class Graph {
 	) throws IOException {
 		this.controllers = new ArrayList<>();
 
-		Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
+		Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
+			codebaseName,
+			new HashSet<String>() {{ add("profiles"); add("datafilePath"); }}
+		);
+
 		ControllerTracesIterator iter;
 		TraceDto t;
 		List<AccessDto> traceAccesses;
@@ -336,13 +336,13 @@ public class Graph {
 		String cluster1,
 		String cluster2,
 		String newName
-	) {
+	) throws Exception {
 		Cluster mergedCluster = new Cluster(newName);
 
 		for (int i = 0; i < clusters.size(); i++) {
 			if (clusters.get(i).getName().equals(cluster1)) {
 
-				for (Entity entity : clusters.get(i).getEntities().values())
+				for (String entity : clusters.get(i).getEntities())
 					mergedCluster.addEntity(entity);
 
 				clusters.remove(i);
@@ -354,7 +354,7 @@ public class Graph {
 		for (int i = 0; i < clusters.size(); i++) {
 			if (clusters.get(i).getName().equals(cluster2)) {
 
-				for (Entity entity : clusters.get(i).getEntities().values())
+				for (String entity : clusters.get(i).getEntities())
 					mergedCluster.addEntity(entity);
 
 				clusters.remove(i);
@@ -367,7 +367,7 @@ public class Graph {
 		this.calculateMetrics();
 	}
 
-	public void renameCluster(String clusterName, String newName) {
+	public void renameCluster(String clusterName, String newName) throws Exception {
 		if (clusterName.equals(newName))
 			return;
 
@@ -401,24 +401,30 @@ public class Graph {
 		return null;
 	}
 
-	public void splitCluster(String clusterName, String newName, String[] entities) {
+	public void splitCluster(String clusterName, String newName, String[] entities) throws Exception {
 		Cluster currentCluster = this.getCluster(clusterName);
 		Cluster newCluster = new Cluster(newName);
 		for (String entity : entities) {
-			newCluster.addEntity(currentCluster.getEntity(entity));
-			currentCluster.removeEntity(entity);
+			if (currentCluster.containsEntity(entity)) {
+				newCluster.addEntity(entity);
+				currentCluster.removeEntity(entity);
+			}
 		}
 		this.addCluster(newCluster);
 		this.calculateMetrics();
 	}
 
-	public void transferEntities(String fromCluster, String toCluster, String[] entities) {
-		Cluster c1 = this.getCluster(fromCluster);
-		Cluster c2 = this.getCluster(toCluster);
+	public void transferEntities(String fromClusterName, String toClusterName, String[] entities) throws Exception {
+		Cluster fromCluster = this.getCluster(fromClusterName);
+		Cluster toCluster = this.getCluster(toClusterName);
+
 		for (String entity : entities) {
-			c2.addEntity(c1.getEntity(entity));
-			c1.removeEntity(entity);
+			if (fromCluster.containsEntity(entity)) {
+				toCluster.addEntity(entity);
+				fromCluster.removeEntity(entity);
+			}
 		}
+
 		this.calculateMetrics();
 	}
 
@@ -453,8 +459,8 @@ public class Graph {
 
 			for (Cluster cluster : this.clusters) {
 
-				for (Entity clusterEntity : cluster.getEntities().values()) {
-					if (controller.containsEntity(clusterEntity.getName())) {
+				for (String clusterEntity : cluster.getEntities()) {
+					if (controller.containsEntity(clusterEntity)) {
 						touchedClusters.add(cluster);
 						break;
 					}
@@ -465,40 +471,43 @@ public class Graph {
 		return controllerClusters;
 	}
 
-	public void calculateMetrics() {
-		try {
-			Codebase codebase = CodebaseManager.getInstance().getCodebase(this.codebaseName);
+	public void calculateMetrics() throws Exception {
+		CodebaseManager cm = CodebaseManager.getInstance();
 
-			if (codebase.isStatic()) {
-				this.addStaticControllers(
-					codebase.getDendrogram(this.dendrogramName).getProfiles(),
-					null
-				);
+		Codebase codebase = cm.getCodebaseWithFields(
+			this.codebaseName,
+			new HashSet<String>() {{ add("analysisType"); }}
+		);
 
-			} else {
-				Dendrogram d = codebase.getDendrogram(this.dendrogramName);
+		Dendrogram d = cm.getCodebaseDendrogramWithFields(
+			this.codebaseName,
+			this.dendrogramName,
+			new HashSet<String>() {{ add("profiles"); add("typeOfTraces"); add("tracesMaxLimit"); }}
+		);
 
-				this.addDynamicControllers(
-					d.getProfiles(),
-					d.getTracesMaxLimit(),
-					d.getTypeOfTraces()
-				);
-			}
+		if (codebase.isStatic()) {
+			this.addStaticControllers(
+				d.getProfiles(),
+				null
+			);
 
-		} catch (IOException e) {
-			e.printStackTrace();
+		} else {
+			this.addDynamicControllers(
+				d.getProfiles(),
+				d.getTracesMaxLimit(),
+				d.getTypeOfTraces()
+			);
 		}
 
 		Metrics metrics = new Metrics(this);
 		metrics.calculateMetrics();
 	}
 
-	public void calculateMetricsAnalyser(List<String> profiles, HashMap<String, ControllerDto> datafileJSON) {
-		try {
-			this.addStaticControllers(profiles, datafileJSON);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public void calculateMetricsAnalyser(
+		List<String> profiles,
+		HashMap<String, ControllerDto> datafileJSON
+	) throws IOException {
+		this.addStaticControllers(profiles, datafileJSON);
 
 		Metrics metrics = new Metrics(this);
 		metrics.calculateMetrics();
@@ -508,16 +517,12 @@ public class Graph {
 		List<String> profiles,
 		int tracesMaxLimit,
 		Constants.TypeOfTraces traceType
-	) {
-		try {
-			this.addDynamicControllers(
-				profiles,
-				tracesMaxLimit,
-				traceType
-			);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	) throws IOException {
+		this.addDynamicControllers(
+			profiles,
+			tracesMaxLimit,
+			traceType
+		);
 
 		Metrics metrics = new Metrics(this);
 		metrics.calculateMetrics();
