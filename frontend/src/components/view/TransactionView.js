@@ -476,6 +476,13 @@ export class TransactionView extends React.Component {
         }
         else if(this.state.selectedOperation === redesignOperations.DCGI &&
                     this.state.DCGILocalTransactionsForTheSelectedClusters !== null){
+            const localTransaction = this.state.selectedRedesign.redesign.find(c => c.id === nodeId.toString());
+
+            console.log(this.state.DCGIAvailableClusters);
+            console.log(localTransaction);
+
+            if(!this.state.DCGISelectedClusters.includes(localTransaction.cluster))
+                return
 
             if(!this.state.DCGISelectedLocalTransactions.map(e => e.id).includes(nodeId)){
                 const aux = this.state.DCGISelectedLocalTransactions;
@@ -573,7 +580,7 @@ export class TransactionView extends React.Component {
                     }).catch(() => {
                         this.setState({
                             error: true,
-                            errorMessage: 'ERROR: Sequence Change failed.'
+                            errorMessage: 'ERROR: DCGI failed.'
                         });
                 });
                 break;

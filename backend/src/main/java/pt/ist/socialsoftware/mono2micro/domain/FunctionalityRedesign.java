@@ -209,10 +209,8 @@ public class FunctionalityRedesign {
                 }
             }
 
-            if(!lt.getId().equals(Integer.toString(-1))){
-                if(lt.getRemoteInvocations().stream().filter(ri -> ltsBeingMergedIDs.contains(ri)).findAny().orElse(null) != null)
-                    return lt;
-            }
+            if(lt.getRemoteInvocations().stream().filter(ri -> ltsBeingMergedIDs.contains(ri)).findAny().orElse(null) != null)
+                return lt;
         }
         return null;
     }

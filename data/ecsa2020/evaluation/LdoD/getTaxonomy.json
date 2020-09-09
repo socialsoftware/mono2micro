@@ -1,0 +1,162 @@
+{
+  "name" : "FragmentController.getTaxonomy",
+  "complexity" : 471.0,
+  "entities" : {
+    "LdoDUser" : "RW",
+    "VirtualEditionInter" : "R",
+    "VirtualEdition" : "RW",
+    "LdoD" : "R",
+    "Section" : "R",
+    "Member" : "R",
+    "Edition" : "R"
+  },
+  "entitiesSeq" : "[{\"cluster\":\"VirtualEdition\",\"sequence\":[[\"VirtualEditionInter\",\"R\"],[\"Section\",\"R\"],[\"VirtualEdition\",\"R\"]]},{\"cluster\":\"User\",\"sequence\":[[\"LdoDUser\",\"R\"]]},{\"cluster\":\"Text\",\"sequence\":[[\"Edition\",\"R\"]]},{\"cluster\":\"VirtualEdition\",\"sequence\":[[\"VirtualEdition\",\"R\"],[\"Member\",\"R\"]]},{\"cluster\":\"User\",\"sequence\":[[\"LdoDUser\",\"R\"]]},{\"cluster\":\"VirtualEdition\",\"sequence\":[[\"VirtualEdition\",\"R\"]]},{\"cluster\":\"User\",\"sequence\":[[\"LdoDUser\",\"W\"]]},{\"cluster\":\"VirtualEdition\",\"sequence\":[[\"VirtualEdition\",\"W\"]]},{\"cluster\":\"User\",\"sequence\":[[\"LdoDUser\",\"W\"]]},{\"cluster\":\"VirtualEdition\",\"sequence\":[[\"VirtualEdition\",\"W\"]]},{\"cluster\":\"Text\",\"sequence\":[[\"LdoD\",\"R\"]]},{\"cluster\":\"User\",\"sequence\":[[\"LdoDUser\",\"R\"]]}]",
+  "functionalityRedesigns" : [ {
+    "name" : "Monolith Trace",
+    "usedForMetrics" : false,
+    "redesign" : [ {
+      "name" : "FragmentController.getTaxonomy",
+      "id" : "-1",
+      "cluster" : "FragmentController.getTaxonomy",
+      "accessedEntities" : "",
+      "remoteInvocations" : [ 0 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "0: VirtualEdition",
+      "id" : "0",
+      "cluster" : "VirtualEdition",
+      "accessedEntities" : "[[\"VirtualEditionInter\",\"R\"],[\"Section\",\"R\"],[\"VirtualEdition\",\"R\"]]",
+      "remoteInvocations" : [ 1 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "1: User",
+      "id" : "1",
+      "cluster" : "User",
+      "accessedEntities" : "[[\"LdoDUser\",\"R\"]]",
+      "remoteInvocations" : [ 2 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "2: Text",
+      "id" : "2",
+      "cluster" : "Text",
+      "accessedEntities" : "[[\"Edition\",\"R\"]]",
+      "remoteInvocations" : [ 3 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "3: VirtualEdition",
+      "id" : "3",
+      "cluster" : "VirtualEdition",
+      "accessedEntities" : "[[\"VirtualEdition\",\"R\"],[\"Member\",\"R\"]]",
+      "remoteInvocations" : [ 4 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "4: User",
+      "id" : "4",
+      "cluster" : "User",
+      "accessedEntities" : "[[\"LdoDUser\",\"R\"]]",
+      "remoteInvocations" : [ 5 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "5: VirtualEdition",
+      "id" : "5",
+      "cluster" : "VirtualEdition",
+      "accessedEntities" : "[[\"VirtualEdition\",\"R\"]]",
+      "remoteInvocations" : [ 6 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "6: User",
+      "id" : "6",
+      "cluster" : "User",
+      "accessedEntities" : "[[\"LdoDUser\",\"W\"]]",
+      "remoteInvocations" : [ 7 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "7: VirtualEdition",
+      "id" : "7",
+      "cluster" : "VirtualEdition",
+      "accessedEntities" : "[[\"VirtualEdition\",\"W\"]]",
+      "remoteInvocations" : [ 8 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "8: User",
+      "id" : "8",
+      "cluster" : "User",
+      "accessedEntities" : "[[\"LdoDUser\",\"W\"]]",
+      "remoteInvocations" : [ 9 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "9: VirtualEdition",
+      "id" : "9",
+      "cluster" : "VirtualEdition",
+      "accessedEntities" : "[[\"VirtualEdition\",\"W\"]]",
+      "remoteInvocations" : [ 10 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "10: Text",
+      "id" : "10",
+      "cluster" : "Text",
+      "accessedEntities" : "[[\"LdoD\",\"R\"]]",
+      "remoteInvocations" : [ 11 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "11: User",
+      "id" : "11",
+      "cluster" : "User",
+      "accessedEntities" : "[[\"LdoDUser\",\"R\"]]",
+      "remoteInvocations" : [ ],
+      "type" : "COMPENSATABLE"
+    } ],
+    "systemComplexity" : 216,
+    "functionalityComplexity" : 303,
+    "pivotTransaction" : ""
+  }, {
+    "name" : "ecsa",
+    "usedForMetrics" : true,
+    "redesign" : [ {
+      "name" : "FragmentController.getTaxonomy",
+      "id" : "-1",
+      "cluster" : "FragmentController.getTaxonomy",
+      "accessedEntities" : "",
+      "remoteInvocations" : [ 0 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "2: Text",
+      "id" : "2",
+      "cluster" : "Text",
+      "accessedEntities" : "[[\"Edition\",\"R\"]]",
+      "remoteInvocations" : [ ],
+      "type" : "RETRIABLE"
+    }, {
+      "name" : "11: User",
+      "id" : "11",
+      "cluster" : "User",
+      "accessedEntities" : "[[\"LdoDUser\",\"R\"]]",
+      "remoteInvocations" : [ ],
+      "type" : "RETRIABLE"
+    }, {
+      "name" : "1: User",
+      "id" : "1",
+      "cluster" : "User",
+      "accessedEntities" : "[[\"LdoDUser\",\"RW\"]]",
+      "remoteInvocations" : [ 2 ],
+      "type" : "RETRIABLE"
+    }, {
+      "name" : "0: VirtualEdition",
+      "id" : "0",
+      "cluster" : "VirtualEdition",
+      "accessedEntities" : "[[\"VirtualEditionInter\",\"R\"],[\"VirtualEdition\",\"RW\"],[\"Section\",\"R\"],[\"Member\",\"R\"]]",
+      "remoteInvocations" : [ 3, 11, 1 ],
+      "type" : "PIVOT"
+    }, {
+      "name" : "3: Text",
+      "id" : "3",
+      "cluster" : "Text",
+      "accessedEntities" : "[[\"LdoD\",\"R\"]]",
+      "remoteInvocations" : [ ],
+      "type" : "RETRIABLE"
+    } ],
+    "systemComplexity" : 0,
+    "functionalityComplexity" : 192,
+    "pivotTransaction" : "0"
+  } ]
+}

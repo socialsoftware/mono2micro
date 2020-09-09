@@ -1,0 +1,175 @@
+{
+  "name" : "AdminController.removeTweets",
+  "complexity" : 297.0,
+  "entities" : {
+    "AwareAnnotation" : "RW",
+    "LdoDUser" : "W",
+    "Tweet" : "RW",
+    "LdoD" : "RW",
+    "Range" : "RW",
+    "Fragment" : "W",
+    "Annotation" : "RW",
+    "LastTwitterID" : "RW",
+    "VirtualEditionInter" : "W",
+    "InfoRange" : "RW",
+    "Citation" : "RW",
+    "TwitterCitation" : "RW",
+    "FragInter" : "W"
+  },
+  "entitiesSeq" : "[{\"cluster\":\"Text\",\"sequence\":[[\"LdoD\",\"R\"]]},{\"cluster\":\"Twitter\",\"sequence\":[[\"LastTwitterID\",\"R\"],[\"LastTwitterID\",\"W\"]]},{\"cluster\":\"Text\",\"sequence\":[[\"LdoD\",\"R\"]]},{\"cluster\":\"Twitter\",\"sequence\":[[\"Tweet\",\"R\"],[\"Tweet\",\"W\"]]},{\"cluster\":\"Text\",\"sequence\":[[\"LdoD\",\"W\"]]},{\"cluster\":\"Twitter\",\"sequence\":[[\"Tweet\",\"R\"],[\"TwitterCitation\",\"R\"],[\"TwitterCitation\",\"W\"],[\"Tweet\",\"W\"],[\"Citation\",\"W\"]]},{\"cluster\":\"Text\",\"sequence\":[[\"Fragment\",\"W\"]]},{\"cluster\":\"Twitter\",\"sequence\":[[\"Citation\",\"R\"],[\"AwareAnnotation\",\"R\"],[\"AwareAnnotation\",\"W\"],[\"Citation\",\"W\"]]},{\"cluster\":\"VirtualEdition\",\"sequence\":[[\"Annotation\",\"W\"]]},{\"cluster\":\"User\",\"sequence\":[[\"LdoDUser\",\"W\"]]},{\"cluster\":\"VirtualEdition\",\"sequence\":[[\"Annotation\",\"R\"],[\"Range\",\"R\"],[\"Range\",\"W\"],[\"Annotation\",\"W\"],[\"VirtualEditionInter\",\"W\"]]},{\"cluster\":\"Twitter\",\"sequence\":[[\"Citation\",\"R\"],[\"InfoRange\",\"R\"],[\"InfoRange\",\"W\"]]},{\"cluster\":\"Text\",\"sequence\":[[\"FragInter\",\"W\"]]},{\"cluster\":\"Twitter\",\"sequence\":[[\"InfoRange\",\"W\"],[\"Citation\",\"W\"]]}]",
+  "functionalityRedesigns" : [ {
+    "name" : "Monolith Trace",
+    "usedForMetrics" : false,
+    "redesign" : [ {
+      "name" : "AdminController.removeTweets",
+      "id" : "-1",
+      "cluster" : "AdminController.removeTweets",
+      "accessedEntities" : "",
+      "remoteInvocations" : [ 0 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "0: Text",
+      "id" : "0",
+      "cluster" : "Text",
+      "accessedEntities" : "[[\"LdoD\",\"R\"]]",
+      "remoteInvocations" : [ 1 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "1: Twitter",
+      "id" : "1",
+      "cluster" : "Twitter",
+      "accessedEntities" : "[[\"LastTwitterID\",\"R\"],[\"LastTwitterID\",\"W\"]]",
+      "remoteInvocations" : [ 2 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "2: Text",
+      "id" : "2",
+      "cluster" : "Text",
+      "accessedEntities" : "[[\"LdoD\",\"R\"]]",
+      "remoteInvocations" : [ 3 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "3: Twitter",
+      "id" : "3",
+      "cluster" : "Twitter",
+      "accessedEntities" : "[[\"Tweet\",\"R\"],[\"Tweet\",\"W\"]]",
+      "remoteInvocations" : [ 4 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "4: Text",
+      "id" : "4",
+      "cluster" : "Text",
+      "accessedEntities" : "[[\"LdoD\",\"W\"]]",
+      "remoteInvocations" : [ 5 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "5: Twitter",
+      "id" : "5",
+      "cluster" : "Twitter",
+      "accessedEntities" : "[[\"Tweet\",\"R\"],[\"TwitterCitation\",\"R\"],[\"TwitterCitation\",\"W\"],[\"Tweet\",\"W\"],[\"Citation\",\"W\"]]",
+      "remoteInvocations" : [ 6 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "6: Text",
+      "id" : "6",
+      "cluster" : "Text",
+      "accessedEntities" : "[[\"Fragment\",\"W\"]]",
+      "remoteInvocations" : [ 7 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "7: Twitter",
+      "id" : "7",
+      "cluster" : "Twitter",
+      "accessedEntities" : "[[\"Citation\",\"R\"],[\"AwareAnnotation\",\"R\"],[\"AwareAnnotation\",\"W\"],[\"Citation\",\"W\"]]",
+      "remoteInvocations" : [ 8 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "8: VirtualEdition",
+      "id" : "8",
+      "cluster" : "VirtualEdition",
+      "accessedEntities" : "[[\"Annotation\",\"W\"]]",
+      "remoteInvocations" : [ 9 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "9: User",
+      "id" : "9",
+      "cluster" : "User",
+      "accessedEntities" : "[[\"LdoDUser\",\"W\"]]",
+      "remoteInvocations" : [ 10 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "10: VirtualEdition",
+      "id" : "10",
+      "cluster" : "VirtualEdition",
+      "accessedEntities" : "[[\"Annotation\",\"R\"],[\"Range\",\"R\"],[\"Range\",\"W\"],[\"Annotation\",\"W\"],[\"VirtualEditionInter\",\"W\"]]",
+      "remoteInvocations" : [ 11 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "11: Twitter",
+      "id" : "11",
+      "cluster" : "Twitter",
+      "accessedEntities" : "[[\"Citation\",\"R\"],[\"InfoRange\",\"R\"],[\"InfoRange\",\"W\"]]",
+      "remoteInvocations" : [ 12 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "12: Text",
+      "id" : "12",
+      "cluster" : "Text",
+      "accessedEntities" : "[[\"FragInter\",\"W\"]]",
+      "remoteInvocations" : [ 13 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "13: Twitter",
+      "id" : "13",
+      "cluster" : "Twitter",
+      "accessedEntities" : "[[\"InfoRange\",\"W\"],[\"Citation\",\"W\"]]",
+      "remoteInvocations" : [ ],
+      "type" : "COMPENSATABLE"
+    } ],
+    "systemComplexity" : 322,
+    "functionalityComplexity" : 130,
+    "pivotTransaction" : ""
+  }, {
+    "name" : "ecsa",
+    "usedForMetrics" : true,
+    "redesign" : [ {
+      "name" : "AdminController.removeTweets",
+      "id" : "-1",
+      "cluster" : "AdminController.removeTweets",
+      "accessedEntities" : "",
+      "remoteInvocations" : [ 0 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "0: Text",
+      "id" : "0",
+      "cluster" : "Text",
+      "accessedEntities" : "[[\"LdoD\",\"RW\"],[\"Fragment\",\"W\"],[\"FragInter\",\"W\"]]",
+      "remoteInvocations" : [ 1 ],
+      "type" : "PIVOT"
+    }, {
+      "name" : "1: Twitter",
+      "id" : "1",
+      "cluster" : "Twitter",
+      "accessedEntities" : "[[\"AwareAnnotation\",\"RW\"],[\"LastTwitterID\",\"RW\"],[\"InfoRange\",\"RW\"],[\"Tweet\",\"RW\"],[\"Citation\",\"RW\"],[\"TwitterCitation\",\"RW\"]]",
+      "remoteInvocations" : [ 2 ],
+      "type" : "RETRIABLE"
+    }, {
+      "name" : "2: VirtualEdition",
+      "id" : "2",
+      "cluster" : "VirtualEdition",
+      "accessedEntities" : "[[\"VirtualEditionInter\",\"W\"],[\"Range\",\"RW\"],[\"Annotation\",\"RW\"]]",
+      "remoteInvocations" : [ 9 ],
+      "type" : "RETRIABLE"
+    }, {
+      "name" : "9: User",
+      "id" : "9",
+      "cluster" : "User",
+      "accessedEntities" : "[[\"LdoDUser\",\"W\"]]",
+      "remoteInvocations" : [ ],
+      "type" : "RETRIABLE"
+    } ],
+    "systemComplexity" : 0,
+    "functionalityComplexity" : 82,
+    "pivotTransaction" : "0"
+  } ]
+}
