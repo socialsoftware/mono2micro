@@ -3,6 +3,9 @@ package pt.ist.socialsoftware.mono2micro.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
 import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
@@ -132,7 +135,7 @@ public class Graph {
 	private <A extends AccessDto> void calculateControllerSequences (
 		Controller controller,
 		List<A> accesses
-	) {
+	) throws JSONException {
 		Controller.LocalTransaction lt = null;
 		List<Controller.LocalTransaction> ltList = new ArrayList<>();
 		Map<String, String> entityNameToMode = new HashMap<>();
@@ -140,6 +143,9 @@ public class Graph {
 		String previousCluster = ""; // IntelliJ is afraid. poor him
 
 		int localTransactionsCounter = 1;
+
+		JSONArray entitiesSeq = new JSONArray();
+		JSONObject clusterAccess = new JSONObject();
 
 		for (int i = 0; i < accesses.size(); i++) {
 			A access = accesses.get(i);
@@ -165,6 +171,12 @@ public class Graph {
 				controller.addEntity(entity, mode);
 				entityNameToMode.put(entity, mode);
 
+				clusterAccess.put("cluster", cluster);
+				clusterAccess.put("sequence", new JSONArray());
+				clusterAccess.getJSONArray("sequence").put(
+					new JSONArray().put(entity).put(mode)
+				);
+
 			} else {
 
 				if (cluster.equals(previousCluster)) {
@@ -183,6 +195,10 @@ public class Graph {
 						lt.addClusterAccess(access);
 						controller.addEntity(entity, mode);
 						entityNameToMode.put(entity, mode);
+
+						clusterAccess.getJSONArray("sequence").put(
+							new JSONArray().put(entity).put(mode)
+						);
 					}
 
 				} else {
@@ -198,11 +214,24 @@ public class Graph {
 
 					entityNameToMode.clear();
 					entityNameToMode.put(entity, mode);
+
+
+					entitiesSeq.put(clusterAccess);
+					clusterAccess = new JSONObject();
+					clusterAccess.put("cluster", cluster);
+					clusterAccess.put("sequence", new JSONArray());
+					clusterAccess.getJSONArray("sequence").put(
+						new JSONArray().put(entity).put(mode)
+					);
 				}
 			}
 
 			previousCluster = cluster;
 		}
+
+		entitiesSeq.put(clusterAccess);
+		controller.addEntitiesSeq(entitiesSeq);
+		controller.addFunctionalityRedesign();
 
 		if (lt != null && lt.getClusterAccesses().size() > 0)
 			ltList.add(lt);
@@ -215,8 +244,7 @@ public class Graph {
 		List<String> profiles,
 		HashMap<String, ControllerDto> datafile
 	)
-		throws IOException
-	{
+		throws IOException, JSONException {
 		this.controllers = new ArrayList<>();
 
 		HashMap<String, ControllerDto> datafileJSON;
@@ -254,7 +282,7 @@ public class Graph {
 		List<String> profiles,
 		int tracesMaxLimit,
 		Constants.TypeOfTraces typeOfTraces
-	) throws IOException {
+	) throws IOException, JSONException {
 		this.controllers = new ArrayList<>();
 
 		Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
@@ -506,7 +534,7 @@ public class Graph {
 	public void calculateMetricsAnalyser(
 		List<String> profiles,
 		HashMap<String, ControllerDto> datafileJSON
-	) throws IOException {
+	) throws IOException, JSONException {
 		this.addStaticControllers(profiles, datafileJSON);
 
 		Metrics metrics = new Metrics(this);
@@ -517,7 +545,7 @@ public class Graph {
 		List<String> profiles,
 		int tracesMaxLimit,
 		Constants.TypeOfTraces traceType
-	) throws IOException {
+	) throws IOException, JSONException {
 		this.addDynamicControllers(
 			profiles,
 			tracesMaxLimit,
@@ -526,5 +554,14 @@ public class Graph {
 
 		Metrics metrics = new Metrics(this);
 		metrics.calculateMetrics();
+	}
+
+	public Controller getController(String controllerName) {
+
+		for (Controller controller : this.controllers) {
+			if(controller.getName().equals(controllerName))
+				return  controller;
+		}
+		return null;
 	}
 }

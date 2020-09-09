@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
+import org.json.JSONArray;
+import org.json.JSONException;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.ControllerDeserializer;
 import pt.ist.socialsoftware.mono2micro.utils.serializers.ControllerSerializer;
@@ -71,6 +73,8 @@ public class Controller {
 	private float complexity;
 	private Map<String, String> entities = new HashMap<>(); // <entity, mode>
 	private DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph;
+	private String entitiesSeq = "[]";
+	private List<pt.ist.socialsoftware.mono2micro.domain.LocalTransaction> functionalityRedesign = new ArrayList<>();
 
 	public Controller() {}
 
@@ -115,6 +119,10 @@ public class Controller {
 	public void setEntities(Map<String,String> entities) {
 		this.entities = entities;
 	}
+
+	public String getEntitiesSeq() { return entitiesSeq; }
+
+	public void setEntitiesSeq(String entitiesSeq) { this.entitiesSeq = entitiesSeq; }
 
 	public void addEntity(String entity, String mode) {
 		if (this.entities.containsKey(entity) && !this.entities.get(entity).equals(mode)) {
@@ -182,5 +190,61 @@ public class Controller {
 
 	public void setLocalTransactionsGraph(DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph) {
 		this.localTransactionsGraph = localTransactionsGraph;
+    }
+    
+	public void addEntitiesSeq(JSONArray entitiesSeq) throws JSONException {
+		this.setEntitiesSeq(entitiesSeq.toString());
+	}
+
+	public List<pt.ist.socialsoftware.mono2micro.domain.LocalTransaction> getFunctionalityRedesign() {
+		return functionalityRedesign;
+	}
+
+	public void setFunctionalityRedesign(List<pt.ist.socialsoftware.mono2micro.domain.LocalTransaction> functionalityRedesign) {
+		this.functionalityRedesign = functionalityRedesign;
+	}
+
+	public void addFunctionalityRedesign() throws JSONException {
+		JSONArray sequence = new JSONArray(this.entitiesSeq);
+
+		for(int i=0; i < sequence.length(); i++){
+			pt.ist.socialsoftware.mono2micro.domain.LocalTransaction lt = new pt.ist.socialsoftware.mono2micro.domain.LocalTransaction(
+				Integer.toString(i),
+				sequence.getJSONObject(i).getString("cluster"),
+				sequence.getJSONObject(i).getString("sequence"),
+				new ArrayList<>()
+			);
+
+			this.functionalityRedesign.add(lt);
+
+			if(i > 0) {
+				this.functionalityRedesign.get(i-1).getRemoteInvocations().add(i);
+			}
+		}
+	}
+
+	public List<pt.ist.socialsoftware.mono2micro.domain.LocalTransaction> addCompensating(String clusterName, String entities, String fromID) {
+		int maxID = this.functionalityRedesign.stream().map(lt -> Integer.parseInt(lt.getId())).max(Integer::compare).get();
+
+		pt.ist.socialsoftware.mono2micro.domain.LocalTransaction newLT = new pt.ist.socialsoftware.mono2micro.domain.LocalTransaction(
+			String.valueOf(maxID+1),
+			clusterName,
+			entities,
+			new ArrayList<>()
+		);
+
+		pt.ist.socialsoftware.mono2micro.domain.LocalTransaction caller = this.functionalityRedesign
+			.stream()
+			.filter(lt -> lt.getId().equals(fromID))
+			.findFirst()
+			.orElse(null);
+
+		if(caller != null){
+			this.functionalityRedesign.add(newLT);
+			caller.getRemoteInvocations().add(maxID+1);
+			return this.functionalityRedesign;
+		} else {
+			return null;
+		}
 	}
 }

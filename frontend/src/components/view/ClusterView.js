@@ -418,7 +418,7 @@ export class ClusterView extends React.Component {
     closeErrorMessageModal() {
         this.setState({
             error: false,
-            errrorMessage: ''
+            errorMessage: ''
         });
     }
 
