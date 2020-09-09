@@ -1,5 +1,10 @@
 import React from 'react';
-import { Button, DropdownButton, Dropdown, FormControl, ButtonToolbar, ButtonGroup } from 'react-bootstrap';
+import FormControl from 'react-bootstrap/FormControl';
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 
 export class TransactionOperationsMenu extends React.Component {
     constructor(props) {

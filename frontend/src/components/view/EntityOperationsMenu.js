@@ -1,17 +1,20 @@
 import React from 'react';
-import { Button, DropdownButton, Dropdown, FormControl, ButtonToolbar, ButtonGroup } from 'react-bootstrap';
+import FormControl from 'react-bootstrap/FormControl';
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 
 export class EntityOperationsMenu extends React.Component {
     constructor(props) {
         super(props);
-
         this.state = {
             showSubmit: false,
-            entityList: this.props.entities.map(e => e.name).sort(),
+            entityList: this.props.entities.sort(),
             entity: 'Select Entity',
             entityAmount: "All"
         }
-
         this.setEntity = this.setEntity.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -19,7 +22,7 @@ export class EntityOperationsMenu extends React.Component {
     componentDidMount() {
         if (this.state.entityAmount === "All") {
             this.setState({
-                entityList: Object.keys(this.props.entities.map(e => e.name)).sort()
+                entityList: this.props.entities.sort()
             });
         }
     }
@@ -27,7 +30,7 @@ export class EntityOperationsMenu extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (this.state.entityAmount === "All") {
             this.setState({
-                entityList: nextProps.entities.map(e => e.name).sort()
+                entityList: nextProps.entities.sort()
             });
         }
     }
@@ -62,30 +65,57 @@ export class EntityOperationsMenu extends React.Component {
 
 
     render() {
+        const {
+            entity,
+            entityAmount,
+            entityList,
+            showSubmit,
+        } = this.state;
+
         const entityAmountList = [...new Set(Object.values(this.props.amountList))].sort((a, b) => a - b).map(amount =>
-            <Dropdown.Item key={amount} onClick={() => this.setEntityAmount(amount)}>{amount}</Dropdown.Item>
+            <Dropdown.Item
+                key={amount}
+                onClick={() => this.setEntityAmount(amount)}
+            >
+                {amount}
+            </Dropdown.Item>
         );
 
-        const entitiesListDropdown = this.state.entityList.map(e =>
-            <Dropdown.Item key={e} onClick={() => this.setEntity(e)}>{e}</Dropdown.Item>
+        const entitiesListDropdown = entityList.map(e =>
+            <Dropdown.Item
+                key={e}
+                onClick={() => this.setEntity(e)}
+            >
+                {e}
+            </Dropdown.Item>
         );
-
         return (
             <ButtonToolbar>
-                <DropdownButton className="mr-1" as={ButtonGroup} title={this.state.entityAmount}>
-                    <Dropdown.Item key={"All"} onClick={() => this.setEntityAmount("All")}>{"All"}</Dropdown.Item>
+                <DropdownButton className="mr-1" as={ButtonGroup} title={entityAmount}>
+                    <Dropdown.Item
+                        key={"All"}
+                        onClick={() => this.setEntityAmount("All")}
+                    >
+                        {"All"}
+                    </Dropdown.Item>
                     {entityAmountList}
                 </DropdownButton>
 
                 <Dropdown className="mr-1" as={ButtonGroup}>
-                    <Dropdown.Toggle>{this.state.entity}</Dropdown.Toggle>
+                    <Dropdown.Toggle>
+                        {entity}
+                    </Dropdown.Toggle>
                     <Dropdown.Menu as={CustomSearchMenuForwardingRef}>
                         {entitiesListDropdown}
                     </Dropdown.Menu>
                 </Dropdown>
-
-                {this.state.showSubmit &&
-                <Button onClick={this.handleSubmit}>Create View</Button>
+                {
+                    showSubmit && 
+                    <Button
+                        onClick={this.handleSubmit}
+                    >
+                        Create View
+                    </Button>
                 }
             </ButtonToolbar>
         );
@@ -114,7 +144,6 @@ class CustomSearchMenu extends React.Component {
         } = this.props;
 
         const { value } = this.state;
-
         return (
             <div style={style} className={className} aria-labelledby={labeledBy} ref={this.props.innerRef}>
                 <FormControl

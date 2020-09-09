@@ -2,16 +2,17 @@ import React from 'react';
 import { EntityOperationsMenu } from './EntityOperationsMenu';
 import { RepositoryService } from '../../services/RepositoryService';
 import { VisNetwork } from '../util/VisNetwork';
-import { DataSet } from 'vis';
+import { DataSet } from 'vis-network/standalone'
 import { views, types } from './Views';
 import BootstrapTable from 'react-bootstrap-table-next';
-import { Button, ButtonGroup} from 'react-bootstrap';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
 export const entityViewHelp = (<div>
-    Hover entity to see controllers that access it.< br/>
-    Hover edge to see controllers that access the entity and the cluster.< br/>
-    Hover cluster to see entities inside.< br/>
-    </div>);
+    Hover entity to see controllers that access it.< br />
+    Hover edge to see controllers that access the entity and the cluster.< br />
+    Hover cluster to see entities inside.< br />
+</div>);
 
 const options = {
     height: "700",
@@ -24,14 +25,9 @@ const options = {
     edges: {
         smooth: false,
         arrows: {
-          to: {
-            enabled: false,
-          }
-        },
-        scaling: {
-            label: {
-                enabled: true
-            },
+            to: {
+                enabled: false,
+            }
         },
         color: {
             color: "#2B7CE9",
@@ -41,11 +37,6 @@ const options = {
     },
     nodes: {
         shape: 'ellipse',
-        scaling: {
-            label: {
-                enabled: true
-            },
-        },
         color: {
             border: "#2B7CE9",
             background: "#D2E5FF",
@@ -68,7 +59,6 @@ export class EntityView extends React.Component {
         super(props);
 
         this.state = {
-            graph: {},
             visGraph: {},
             entity: "",
             entities: [],
@@ -88,31 +78,57 @@ export class EntityView extends React.Component {
     }
 
     componentDidMount() {
+        const {
+            codebaseName,
+            dendrogramName,
+            graphName,
+        } = this.props;
+
         const service = new RepositoryService();
-        service.getGraph(this.props.codebaseName, this.props.dendrogramName, this.props.graphName).then(response => {
-            service.getClusterControllers(this.props.codebaseName, this.props.dendrogramName, this.props.graphName).then(response2 => {
-                
+        
+        service.getGraph(
+            codebaseName,
+            dendrogramName,
+            graphName,
+            [ "clusters", "controllers" ]
+        ).then(response => {
+
+            service.getClusterControllers(
+                codebaseName,
+                dendrogramName,
+                graphName
+            ).then(response2 => {
                 this.setState({
-                    graph: response.data,
                     clusters: response.data.clusters,
                     entities: response.data.clusters.map(c => c.entities).flat(),
+                    controllers: response.data.controllers,
                     clusterControllers: response2.data,
-                    controllers: response.data.controllers
                 }, () => {
                     let amountList = {};
-                    for (var i = 0; i < this.state.entities.length; i++) {
+
+                    const {
+                        entities,
+                        clusters,
+                    } = this.state;
+
+                    for (var i = 0; i < entities.length; i++) {
                         let amount = 0;
-                        let entity = this.state.entities[i];
-                        let entityCluster = this.state.clusters.filter(c => c.entities.map(e => e.name).includes(entity.name))[0];
-                        for (var j = 0; j < this.state.clusters.length; j++) {
-                            let cluster = this.state.clusters[j];
-                            let commonControllers = this.getCommonControllers(entity.name, cluster);
+                        let entityName = entities[i];
+
+                        let entityCluster = clusters.find(c => c.entities.includes(entityName));
+
+                        for (var j = 0; j < clusters.length; j++) {
+                            let cluster = clusters[j];
+                            let commonControllers = this.getCommonControllers(entityName, cluster);
+
                             if (cluster.name !== entityCluster.name && commonControllers.length > 0) {
                                 amount += 1;
                             }
                         }
-                        amountList[entity.name] = amount;
+
+                        amountList[entityName] = amount;
                     }
+
                     this.setState({
                         amountList: amountList
                     });
@@ -124,7 +140,7 @@ export class EntityView extends React.Component {
     handleEntitySubmit(value) {
         this.setState({
             entity: value,
-            entityCluster: this.state.clusters.filter(c => c.entities.map(e => e.name).includes(value))[0],
+            entityCluster: this.state.clusters.find(c => c.entities.includes(value)),
             showGraph: true
         }, () => {
             this.loadGraph();
@@ -133,26 +149,60 @@ export class EntityView extends React.Component {
 
     //get controllers that access both an entity and another cluster
     getCommonControllers(entityName, cluster) {
-        let entityControllers = this.state.controllers.filter(controller => Object.keys(controller.entities).includes(entityName)).map(c => c.name);
+        let entityControllers = this.state.controllers
+            .filter(controller => Object.keys(controller.entities).includes(entityName))
+            .map(c => c.name);
+
         let clusterControllers = this.state.clusterControllers[cluster.name].map(c => c.name);
         return entityControllers.filter(c => clusterControllers.includes(c));
     }
 
     loadGraph() {
+        const {
+            controllers,
+            clusters,
+            entityCluster,
+            entity,
+        } = this.state;
+
         let nodes = [];
         let edges = [];
-        let entityControllers = this.state.controllers.filter(controller => Object.keys(controller.entities).includes(this.state.entity)).map(c => c.name + " " + c.entities[this.state.entity]);
+        let entityControllers = controllers
+            .filter(controller => Object.keys(controller.entities).includes(entity))
+            .map(controller => controller.name + " " + controller.entities[entity]);
 
-        nodes.push({id: this.state.entity, label: this.state.entity, value: 1, level: 0, type: types.ENTITY, title: entityControllers.join('<br>')});
-        
-        for (var i = 0; i < this.state.clusters.length; i++) {
-            let cluster = this.state.clusters[i];
-            if (cluster.name !== this.state.entityCluster.name) {
-                let commonControllers = this.getCommonControllers(this.state.entity, cluster);
-                
+        nodes.push({
+            id: entity,
+            label: entity,
+            value: 1,
+            level: 0,
+            type: types.ENTITY,
+            title: entityControllers.join('<br>')
+        });
+
+        for (var i = 0; i < clusters.length; i++) {
+            let cluster = clusters[i];
+            let clusterEntities = cluster.entities;
+
+            if (cluster.name !== entityCluster.name) {
+                let commonControllers = this.getCommonControllers(entity, cluster);
+
                 if (commonControllers.length > 0) {
-                    nodes.push({id: cluster.name, label: cluster.name, value: cluster.entities.length, level: 1, type: types.CLUSTER, title: cluster.entities.map(e => e.name).join('<br>') + "<br>Total: " + cluster.entities.length});
-                    edges.push({from: this.state.entity, to: cluster.name, label: commonControllers.length.toString(), title: commonControllers.join('<br>')})
+                    nodes.push({
+                        id: cluster.name,
+                        label: cluster.name,
+                        value: clusterEntities.length,
+                        level: 1,
+                        type: types.CLUSTER,
+                        title: clusterEntities.map(e => e).join('<br>') + "<br>Total: " + clusterEntities.length
+                    });
+
+                    edges.push({
+                        from: entity,
+                        to: cluster.name,
+                        label: commonControllers.length.toString(),
+                        title: commonControllers.join('<br>')
+                    })
                 }
             }
         }
@@ -161,19 +211,15 @@ export class EntityView extends React.Component {
             nodes: new DataSet(nodes),
             edges: new DataSet(edges)
         };
-        
+
         this.setState({
             visGraph: visGraph
         });
     }
 
-    handleSelectNode(nodeId) {
+    handleSelectNode(nodeId) { }
 
-    }
-
-    handleDeselectNode(nodeId) {
-
-    }
+    handleDeselectNode(nodeId) { }
 
     changeSubView(value) {
         this.setState({
@@ -182,10 +228,15 @@ export class EntityView extends React.Component {
     }
 
     render() {
-        const metricsRows = this.state.entities.map(e => {
-            return {
-                entity: e.name
-            }
+        const {
+            entities,
+            currentSubView,
+            amountList,
+            visGraph,
+        } = this.state;
+
+        const metricsRows = entities.map(entity => {
+            return { entity };
         });
 
         const metricsColumns = [{
@@ -197,33 +248,47 @@ export class EntityView extends React.Component {
         return (
             <div>
                 <ButtonGroup className="mb-2">
-                    <Button disabled={this.state.currentSubView === "Graph"} onClick={() => this.changeSubView("Graph")}>Graph</Button>
-                    <Button disabled={this.state.currentSubView === "Metrics"} onClick={() => this.changeSubView("Metrics")}>Metrics</Button>
+                    <Button
+                        disabled={currentSubView === "Graph"}
+                        onClick={() => this.changeSubView("Graph")}
+                    >
+                        Graph
+                    </Button>
+                    <Button
+                        disabled={currentSubView === "Metrics"}
+                        onClick={() => this.changeSubView("Metrics")}
+                    >
+                        Metrics
+                    </Button>
                 </ButtonGroup>
 
-                {this.state.currentSubView === "Graph" &&
+                {currentSubView === "Graph" &&
                     <span>
-                    <EntityOperationsMenu
-                        handleEntitySubmit={this.handleEntitySubmit}
-                        entities={this.state.entities}
-                        amountList={this.state.amountList}
-                    />
-                    
-                    <div style={{width:'1000px' , height: '700px'}}>
-                        <VisNetwork
-                            visGraph={this.state.visGraph}
-                            options={options}
-                            onSelection={this.handleSelectNode}
-                            onDeselection={this.handleDeselectNode}
-                            view={views.ENTITY} />
-                    </div>
+                        <EntityOperationsMenu
+                            handleEntitySubmit={this.handleEntitySubmit}
+                            entities={entities}
+                            amountList={amountList}
+                        />
+
+                        <div style={{ width: '1000px', height: '700px' }}>
+                            <VisNetwork
+                                visGraph={visGraph}
+                                options={options}
+                                onSelection={this.handleSelectNode}
+                                onDeselection={this.handleDeselectNode}
+                                view={views.ENTITY}
+                            />
+                        </div>
                     </span>
                 }
 
-                {this.state.currentSubView === "Metrics" &&
-                    <div>
-                        <BootstrapTable bootstrap4 keyField='entity' data={ metricsRows } columns={ metricsColumns } />
-                    </div>
+                {currentSubView === "Metrics" &&
+                    <BootstrapTable
+                        bootstrap4
+                        keyField='entity'
+                        data={metricsRows}
+                        columns={metricsColumns}
+                    />
                 }
             </div>
         );

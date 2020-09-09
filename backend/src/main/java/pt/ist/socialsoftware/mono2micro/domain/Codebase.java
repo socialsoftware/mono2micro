@@ -1,9 +1,12 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.PYTHON;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.RESOURCES_PATH;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.apache.commons.io.FileUtils;
+import pt.ist.socialsoftware.mono2micro.utils.deserializers.CodebaseDeserializer;
 
+import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,20 +14,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.management.openmbean.KeyAlreadyExistsException;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 
-import org.apache.commons.io.FileUtils;
-
+@JsonInclude(JsonInclude.Include.USE_DEFAULTS)
+@JsonDeserialize(using = CodebaseDeserializer.class)
 public class Codebase {
 	private String name;
-	private Map<String,List<String>> profiles = new HashMap<>();
+	private Map<String, List<String>> profiles = new HashMap<>(); // e.g <Generic, ControllerNamesList>
 	private List<Dendrogram> dendrograms = new ArrayList<>();
+	private String analysisType;
+	private String datafilePath;
 
-	public Codebase() {
-	}
+	public Codebase() {}
 
 	public Codebase(String name) {
         this.name = name;
+	}
+
+	public Codebase(String name, String analysisType) {
+		if (!analysisType.equals("static") && !analysisType.equals("dynamic")) {
+			throw new Error("Unknown analysis type: Please choose either 'static' or 'dynamic'");
+		}
+
+		this.name = name;
+		this.analysisType = analysisType;
 	}
 
 	public String getName() {
@@ -35,6 +48,21 @@ public class Codebase {
 		this.name = name;
 	}
 
+	public String getAnalysisType() { return this.analysisType; }
+
+	public void setAnalysisType(String analysisType) {
+		this.analysisType = analysisType;
+	}
+
+	@JsonIgnore
+	public boolean isStatic() { return this.analysisType.equals("static"); }
+	public String getDatafilePath() {
+		return datafilePath;
+	}
+
+	public void setDatafilePath(String datafilePath) {
+		this.datafilePath = datafilePath;
+	}
 
 	public Map<String,List<String>> getProfiles() {
 		return this.profiles;
@@ -95,6 +123,7 @@ public class Codebase {
 		FileUtils.deleteDirectory(new File(CODEBASES_PATH + this.name + "/" + dendrogramName));
 	}
 
+	@JsonIgnore
 	public List<String> getDendrogramNames() {
 		List<String> dendrogramNames = new ArrayList<>();
 		for (Dendrogram dendrogram : this.dendrograms)
@@ -106,19 +135,9 @@ public class Codebase {
 		this.dendrograms.add(dendrogram);
 	}
 
-	public void createDendrogram(Dendrogram dendrogram) throws Exception {
-		if (getDendrogram(dendrogram.getName()) != null)
-			throw new KeyAlreadyExistsException();
-
-		File dendrogramPath = new File(CODEBASES_PATH + this.name + "/" + dendrogram.getName());
-		if (!dendrogramPath.exists()) {
-			dendrogramPath.mkdir();
-		}
-
-		this.addDendrogram(dendrogram);
-
-		dendrogram.calculateSimilarityMatrix();
-
+	public void executeCreateDendrogramPythonScript(Dendrogram dendrogram)
+		throws InterruptedException, IOException
+	{
 		//run python script to generate dendrogram image
 		Runtime r = Runtime.getRuntime();
 		String pythonScriptPath = RESOURCES_PATH + "createDendrogram.py";
@@ -132,4 +151,38 @@ public class Codebase {
 		Process p = r.exec(cmd);
 		p.waitFor();
 	}
+
+	public void createStaticDendrogram(Dendrogram dendrogram) throws Exception {
+		if (getDendrogram(dendrogram.getName()) != null)
+			throw new KeyAlreadyExistsException();
+
+		File dendrogramPath = new File(CODEBASES_PATH + this.name + "/" + dendrogram.getName());
+		if (!dendrogramPath.exists()) {
+			dendrogramPath.mkdir();
+		}
+
+		this.addDendrogram(dendrogram);
+
+		dendrogram.calculateStaticSimilarityMatrix();
+
+		executeCreateDendrogramPythonScript(dendrogram);
+	}
+
+	public void createDynamicDendrogram(Dendrogram dendrogram) throws Exception {
+		if (getDendrogram(dendrogram.getName()) != null)
+			throw new KeyAlreadyExistsException();
+
+		File dendrogramPath = new File(CODEBASES_PATH + this.name + "/" + dendrogram.getName());
+		if (!dendrogramPath.exists()) {
+			dendrogramPath.mkdir();
+		}
+
+		this.addDendrogram(dendrogram);
+
+		dendrogram.calculateDynamicSimilarityMatrix();
+
+		executeCreateDendrogramPythonScript(dendrogram);
+	}
+
+
 }

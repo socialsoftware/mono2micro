@@ -1,22 +1,5 @@
 package pt.ist.socialsoftware.mono2micro.controller;
 
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.PYTHON;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.RESOURCES_PATH;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,31 +8,40 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import pt.ist.socialsoftware.mono2micro.domain.*;
-import pt.ist.socialsoftware.mono2micro.dto.AnalyserDto;
-import pt.ist.socialsoftware.mono2micro.dto.AnalyserResultDto;
-import pt.ist.socialsoftware.mono2micro.dto.AnalysisDto;
+import org.springframework.web.bind.annotation.*;
+import pt.ist.socialsoftware.mono2micro.domain.Cluster;
+import pt.ist.socialsoftware.mono2micro.domain.Codebase;
+import pt.ist.socialsoftware.mono2micro.domain.Controller;
+import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.dto.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
+import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
+import pt.ist.socialsoftware.mono2micro.utils.Utils;
+import pt.ist.socialsoftware.mono2micro.utils.mojoCalculator.src.main.java.MoJo;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 
 @RestController
 @RequestMapping(value = "/mono2micro")
 public class AnalysisController {
 
     private static Logger logger = LoggerFactory.getLogger(AnalysisController.class);
-
     private CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
-
 	@RequestMapping(value = "/codebase/{codebaseName}/analyser", method = RequestMethod.POST)
-	public ResponseEntity<HttpStatus> analyser(@PathVariable String codebaseName, @RequestBody AnalyserDto analyser) {
+	public ResponseEntity<HttpStatus> analyser(
+		@PathVariable String codebaseName,
+		@RequestBody AnalyserDto analyser
+	) {
 		logger.debug("analyser");
 
 		try {
@@ -61,61 +53,87 @@ public class AnalysisController {
 
 			File analyserResultPath = new File(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json");
 			if (!analyserResultPath.exists()) {
-				codebaseManager.writeAnalyserResults(codebaseName, new JSONObject());
+				codebaseManager.writeAnalyserResults(codebaseName, new HashMap());
 			}
 
-            createAnalyserSimilarityMatrix(codebaseName, analyser);
+			Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
+				codebaseName,
+				new HashSet<String>() {{ add("analysisType"); add("name"); add("profiles"); add("datafilePath"); }}
+			);
+
+			int numberOfEntitiesPresentInCollection;
+			HashMap<String, ControllerDto> datafileJSON = null;
+
+			if (codebase.isStatic()) {
+				datafileJSON = CodebaseManager.getInstance().getDatafile(codebase);
+
+				numberOfEntitiesPresentInCollection = createStaticAnalyserSimilarityMatrix(
+					codebase,
+					analyser,
+					datafileJSON
+				);
+
+			} else {
+				numberOfEntitiesPresentInCollection = createDynamicAnalyserSimilarityMatrix(codebase, analyser);
+			}
+
+			System.out.println(codebaseName + ": " + numberOfEntitiesPresentInCollection);
 
 			Runtime r = Runtime.getRuntime();
 			String pythonScriptPath = RESOURCES_PATH + "analyser.py";
-			String[] cmd = new String[4];
+			String[] cmd = new String[5];
 			cmd[0] = PYTHON;
 			cmd[1] = pythonScriptPath;
 			cmd[2] = CODEBASES_PATH;
 			cmd[3] = codebaseName;
+			cmd[4] = String.valueOf(numberOfEntitiesPresentInCollection);
 			Process p = r.exec(cmd);
-			
 			p.waitFor();
 
 			int maxRequests = analyser.getRequestLimit();
 			int newRequestsCount = 0;
 			int count = 0;
-			JSONObject analyserJSON = codebaseManager.getAnalyserResults(codebaseName);
+			int bufferedDataCount = 0;
+			HashMap<String, CutInfoDto> analyserJSON = codebaseManager.getAnalyserResults(codebaseName);
 			File analyserCutsPath = new File(CODEBASES_PATH + codebaseName + "/analyser/cuts/");
 			File[] files = analyserCutsPath.listFiles();
 			int total = files.length;
+
 			for (File file : files) {
 
 				String filename = FilenameUtils.getBaseName(file.getName());
 
 				count++;
 
-				try {
-					analyserJSON.get(filename);
-					System.out.println(filename + " already analysed. " + count + "/" + total);
-					continue;
-				} catch (JSONException e) {
-
-				}
+                if (analyserJSON.containsKey(filename)) {
+                    System.out.println(filename + " already analysed. " + count + "/" + total);
+                    continue;
+                }
 
 				Graph graph = new Graph();
 				graph.setCodebaseName(codebaseName);
 
-				JSONObject analyserCut = codebaseManager.getAnalyserCut(codebaseName, filename);
-		
-				Iterator<String> clusters = analyserCut.getJSONObject("clusters").keys();
+				HashMap<String, HashMap<String, Set<String>>> analyserCut = codebaseManager.getAnalyserCut(codebaseName, filename);
 
-				while(clusters.hasNext()) {
-					String clusterId = clusters.next();
-					JSONArray entities = analyserCut.getJSONObject("clusters").getJSONArray(clusterId);
-					Cluster cluster = new Cluster(clusterId);
-					for (int i = 0; i < entities.length(); i++) {
-						cluster.addEntity(new Entity(entities.getString(i)));
-					}
+				Set<String> clusterIDs = analyserCut.get("clusters").keySet();
+
+				for (String clusterId : clusterIDs) {
+					Set<String> entities = analyserCut.get("clusters").get(clusterId);
+					Cluster cluster = new Cluster(clusterId, entities);
+
 					graph.addCluster(cluster);
 				}
 
-				graph.calculateMetricsAnalyser(analyser.getProfiles());
+				if (codebase.isStatic()) {
+					graph.calculateMetricsAnalyser(analyser.getProfiles(), datafileJSON);
+
+				} else {
+					graph.calculateDynamicMetricsAnalyser(
+						analyser.getProfiles(),
+						analyser.getTracesMaxLimit(),
+						analyser.getTypeOfTraces()
+					);
+				}
 
 				AnalysisDto analysisDto = new AnalysisDto();
 				analysisDto.setGraph1(analyser.getExpert());
@@ -143,22 +161,29 @@ public class AnalysisController {
 				analyserResult.setSequenceWeight(Float.parseFloat(similarityWeights[3]));
 				analyserResult.setNumberClusters(Float.parseFloat(similarityWeights[4]));
 
-				JSONObject analyserResultJSON = new JSONObject(analyserResult);
+				CutInfoDto analyserResultJSON = new CutInfoDto();
+				analyserResultJSON.setAnalyserResultDto(analyserResult);
 
-				JSONObject controllerComplexities = new JSONObject();
+				HashMap<String, Float> controllerComplexities = new HashMap<>();
 				for (Controller controller : graph.getControllers()) {
 					controllerComplexities.put(controller.getName(), controller.getComplexity());
 				}
-				analyserResultJSON.put("controllerComplexities", controllerComplexities);
+				analyserResultJSON.setControllerComplexities(controllerComplexities);
 
 				analyserJSON.put(filename, analyserResultJSON);
 
-
-
 				newRequestsCount++;
+				bufferedDataCount++;
+
 				System.out.println("NEW: " + filename + " : " + count + "/" + total);
 				if (newRequestsCount == maxRequests)
 					break;
+
+				if (bufferedDataCount >= 100) {
+					// save buffered data (replace whole file, not appending)
+					codebaseManager.writeAnalyserResults(codebaseName, analyserJSON);
+					bufferedDataCount = 0;
+				}
 			}
 
             codebaseManager.writeAnalyserResults(codebaseName, analyserJSON);
@@ -169,73 +194,24 @@ public class AnalysisController {
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
-	void createAnalyserSimilarityMatrix(String codebaseName, AnalyserDto analyser) throws IOException, JSONException {
-		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
-		Map<String,Integer> e1e2PairCount = new HashMap<>();
+
+	private JSONObject getAnalyserMatrixData(
+		List<String> entitiesList,
+		Map<String,Integer> e1e2PairCount,
+		Map<String,List<Pair<String,String>>> entityControllers
+	) throws JSONException {
+
 		JSONArray similarityMatrix = new JSONArray();
 		JSONObject matrixData = new JSONObject();
 
-		JSONObject datafileJSON = codebaseManager.getDatafile(codebaseName);
-		Codebase codebase = codebaseManager.getCodebase(codebaseName);
-
-		for (String profile : analyser.getProfiles()) {
-			for (String controllerName : codebase.getProfile(profile)) {
-				JSONArray entities = datafileJSON.getJSONArray(controllerName);
-				for (int i = 0; i < entities.length(); i++) {
-					JSONArray entityArray = entities.getJSONArray(i);
-					String entity = entityArray.getString(0);
-					String mode = entityArray.getString(1);
-
-					if (entityControllers.containsKey(entity)) {
-						boolean containsController = false;
-						for (Pair<String,String> controllerPair : entityControllers.get(entity)) {
-							if (controllerPair.getFirst().equals(controllerName)) {
-								containsController = true;
-								if (!controllerPair.getSecond().contains(mode))
-									controllerPair.setSecond("RW");
-								break;
-							}
-						}
-						if (!containsController) {
-							entityControllers.get(entity).add(new Pair<String,String>(controllerName,mode));
-						}
-					} else {
-						List<Pair<String,String>> controllersPairs = new ArrayList<>();
-						controllersPairs.add(new Pair<String,String>(controllerName,mode));
-						entityControllers.put(entity, controllersPairs);
-					}
-
-					if (i < entities.length() - 1) {
-						JSONArray nextEntityArray = entities.getJSONArray(i+1);
-						String nextEntity = nextEntityArray.getString(0);
-
-						if (!entity.equals(nextEntity)) {
-							String e1e2 = entity + "->" + nextEntity;
-							String e2e1 = nextEntity + "->" + entity;
-
-							int count = e1e2PairCount.containsKey(e1e2) ? e1e2PairCount.get(e1e2) : 0;
-							e1e2PairCount.put(e1e2, count + 1);
-
-							count = e1e2PairCount.containsKey(e2e1) ? e1e2PairCount.get(e2e1) : 0;
-							e1e2PairCount.put(e2e1, count + 1);
-						}
-					}
-				}
-			}
-		}
-
-		List<String> entitiesList = new ArrayList<String>(entityControllers.keySet());
-		Collections.sort(entitiesList);
-
-		int maxNumberOfPairs = Collections.max(e1e2PairCount.values());
+		int maxNumberOfPairs = Utils.getMaxNumberOfPairs(e1e2PairCount);
 
 		for (int i = 0; i < entitiesList.size(); i++) {
 			String e1 = entitiesList.get(i);
 			JSONArray matrixRow = new JSONArray();
+
 			for (int j = 0; j < entitiesList.size(); j++) {
 				String e2 = entitiesList.get(j);
-				String e1e2 = e1 + "->" + e2;
 
 				if (e1.equals(e2)) {
 					JSONArray metric = new JSONArray();
@@ -247,39 +223,20 @@ public class AnalysisController {
 					continue;
 				}
 
-				float inCommon = 0;
-				float inCommonW = 0;
-				float inCommonR = 0;
-				float e1ControllersW = 0;
-				float e1ControllersR = 0;
-				for (Pair<String,String> e1Controller : entityControllers.get(e1)) {
-					for (Pair<String,String> e2Controller : entityControllers.get(e2)) {
-						if (e1Controller.getFirst().equals(e2Controller.getFirst()))
-							inCommon++;
-						if (e1Controller.getFirst().equals(e2Controller.getFirst()) && e1Controller.getSecond().contains("W") && e2Controller.getSecond().contains("W"))
-							inCommonW++;
-						if (e1Controller.getFirst().equals(e2Controller.getFirst()) && e1Controller.getSecond().contains("R") && e2Controller.getSecond().contains("R"))
-							inCommonR++;
-					}
-					if (e1Controller.getSecond().contains("W"))
-						e1ControllersW++;
-					if (e1Controller.getSecond().contains("R"))
-						e1ControllersR++;
-				}
-
-				float accessMetric = inCommon / entityControllers.get(e1).size();
-				float writeMetric = e1ControllersW == 0 ? 0 : inCommonW / e1ControllersW;
-				float readMetric = e1ControllersR == 0 ? 0 : inCommonR / e1ControllersR;
-
-				float e1e2Count = e1e2PairCount.containsKey(e1e2) ? e1e2PairCount.get(e1e2) : 0;
-				float sequenceMetric = e1e2Count / maxNumberOfPairs;
+				float[] metrics = Utils.calculateSimilarityMatrixMetrics(
+					entityControllers,
+					e1e2PairCount,
+					e1,
+					e2,
+					maxNumberOfPairs
+				);
 
 				JSONArray metric = new JSONArray();
-				metric.put(accessMetric);
-				metric.put(writeMetric);
-				metric.put(readMetric);
-				metric.put(sequenceMetric);
-				
+				metric.put(metrics[0]);
+				metric.put(metrics[1]);
+				metric.put(metrics[2]);
+				metric.put(metrics[3]);
+
 				matrixRow.put(metric);
 			}
 			similarityMatrix.put(matrixRow);
@@ -288,37 +245,219 @@ public class AnalysisController {
 		matrixData.put("entities", entitiesList);
 		matrixData.put("linkageType", "average");
 
-		CodebaseManager.getInstance().writeAnalyserSimilarityMatrix(codebaseName, matrixData);
+		return matrixData;
+	}
+	
+	private int createStaticAnalyserSimilarityMatrix(
+		Codebase codebase,
+		AnalyserDto analyser,
+		HashMap<String, ControllerDto> datafileJSON
+	) throws IOException, JSONException
+	{
+		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
+		Map<String,Integer> e1e2PairCount = new HashMap<>();
+
+		for (String profile : analyser.getProfiles()) {
+			for (String controllerName : codebase.getProfile(profile)) {
+				ControllerDto controllerDto = datafileJSON.get(controllerName);
+				List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
+
+				Utils.fillEntityDataStructures(
+					entityControllers,
+					e1e2PairCount,
+					controllerAccesses,
+					controllerName
+				);
+			}
+		}
+
+		List<String> entitiesList = new ArrayList<>(entityControllers.keySet());
+		Collections.sort(entitiesList);
+
+		CodebaseManager.getInstance().writeAnalyserSimilarityMatrix(
+			codebase.getName(),
+			getAnalyserMatrixData(
+				entitiesList,
+				e1e2PairCount,
+				entityControllers
+			)
+		);
+
+		return entitiesList.size();
+	}
+
+	private int createDynamicAnalyserSimilarityMatrix(
+		Codebase codebase,
+		AnalyserDto analyser
+	) throws IOException, JSONException
+	{
+		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
+		Map<String,Integer> e1e2PairCount = new HashMap<>();
+
+		ControllerTracesIterator iter;
+		TraceDto t;
+
+		for (String profile : analyser.getProfiles()) {
+			for (String controllerName : codebase.getProfile(profile)) {
+				iter = new ControllerTracesIterator(
+					codebase.getDatafilePath(),
+					controllerName,
+					analyser.getTracesMaxLimit()
+				);
+
+				switch (analyser.getTypeOfTraces()) {
+					case LONGEST:
+						// FIXME return accesses of longest trace instead of the trace itself
+						t = iter.getLongestTrace();
+
+						if (t != null) {
+							Utils.fillEntityDataStructures(
+								entityControllers,
+								e1e2PairCount,
+								t.getAccesses(),
+								controllerName
+							);
+						}
+
+						break;
+
+					case WITH_MORE_DIFFERENT_ACCESSES:
+						// FIXME return accesses of longest trace instead of the trace itself
+						t = iter.getTraceWithMoreDifferentAccesses();
+
+						if (t != null) {
+							Utils.fillEntityDataStructures(
+								entityControllers,
+								e1e2PairCount,
+								t.getAccesses(),
+								controllerName
+							);
+						}
+
+						break;
+
+					case REPRESENTATIVE:
+						Set<String> tracesIds = iter.getRepresentativeTraces();
+						iter.reset();
+
+						while (iter.hasMoreTraces()) {
+							t = iter.nextTrace();
+
+							if (tracesIds.contains(String.valueOf(t.getId()))) {
+								Utils.fillEntityDataStructures(
+									entityControllers,
+									e1e2PairCount,
+									t.getAccesses(),
+									controllerName
+								);
+							}
+						}
+
+						break;
+
+					default:
+						while (iter.hasMoreTraces()) {
+							t = iter.nextTrace();
+
+							Utils.fillEntityDataStructures(
+								entityControllers,
+								e1e2PairCount,
+								t.getAccesses(),
+								controllerName
+							);
+						}
+				}
+
+				t = null; // release memory
+			}
+		}
+
+		iter = null; // release memory
+
+		List<String> entitiesList = new ArrayList<>(entityControllers.keySet());
+		Collections.sort(entitiesList);
+
+		CodebaseManager.getInstance().writeAnalyserSimilarityMatrix(
+			codebase.getName(),
+			getAnalyserMatrixData(
+				entitiesList,
+				e1e2PairCount,
+				entityControllers
+			)
+		);
+
+		return entitiesList.size();
 	}
 
 
 	@RequestMapping(value = "/analysis", method = RequestMethod.POST)
-	public ResponseEntity<AnalysisDto> getAnalysis(@RequestBody AnalysisDto analysis) {
+	public ResponseEntity<AnalysisDto> getAnalysis(@RequestBody AnalysisDto analysis) throws IOException {
 		logger.debug("getAnalysis");
-		
-		Map<String,List<String>> graph1 = new HashMap<>();
-		for (Cluster c : analysis.getGraph1().getClusters()) {
-			graph1.put(c.getName(), c.getEntityNames());
+
+		if (analysis.getGraph1().getCodebaseName() == null) { // expert cut from frontend
+			analysis.setAccuracy(0);
+			analysis.setPrecision(0);
+			analysis.setRecall(0);
+			analysis.setSpecificity(0);
+			analysis.setFmeasure(0);
+			return new ResponseEntity<>(analysis, HttpStatus.OK);
 		}
 
-		Map<String,List<String>> graph2 = new HashMap<>();
+		Map<String, Set<String>> graph1 = new HashMap<>();
+		for (Cluster c : analysis.getGraph1().getClusters()) {
+			graph1.put(c.getName(), c.getEntities());
+		}
+
+		Map<String, Set<String>> graph2_CommonEntitiesOnly = new HashMap<>();
 		for (Cluster c : analysis.getGraph2().getClusters()) {
-			graph2.put(c.getName(), c.getEntityNames());
+			graph2_CommonEntitiesOnly.put(c.getName(), c.getEntities());
 		}
 
 		List<String> entities = new ArrayList<>();
-		for (List<String> l1 : graph1.values()) {
+		List<String> notSharedEntities = new ArrayList<>();
+
+		for (Set<String> l1 : graph1.values()) {
 			for (String e1 : l1) {
 				boolean inBoth = false;
-				for (List<String> l2 : graph2.values()) {
+
+				for (Set<String> l2 : graph2_CommonEntitiesOnly.values()) {
 					if (l2.contains(e1)) {
 						inBoth = true;
 						break;
 					}
 				}
+
 				if (inBoth)
 					entities.add(e1);
+				else {
+					notSharedEntities.add(e1);
+				}
 			}				
+		}
+
+		// ------------------------------------------------------------------------------------------
+		Map<String, Set<String>> graph2_UnassignedInBigger = graphCopyOf(graph2_CommonEntitiesOnly);
+		Map.Entry<String, Set<String>> biggerClusterEntry = null;
+		for (Map.Entry<String, Set<String>> clusterEntry : graph2_UnassignedInBigger.entrySet()) {
+			if (biggerClusterEntry == null)
+				biggerClusterEntry = clusterEntry;
+
+			else if (clusterEntry.getValue().size() > biggerClusterEntry.getValue().size())
+				biggerClusterEntry = clusterEntry;
+		}
+		biggerClusterEntry.getValue().addAll(notSharedEntities);
+
+		// ------------------------------------------------------------------------------------------
+		Map<String, Set<String>> graph2_UnassignedInNew = graphCopyOf(graph2_CommonEntitiesOnly);
+		Set<String> newClusterForUnassignedEntities = new HashSet<>(notSharedEntities);
+		graph2_UnassignedInNew.put("newClusterForUnnasignedEntities", newClusterForUnassignedEntities);
+
+		// ------------------------------------------------------------------------------------------
+		Map<String, Set<String>> graph2_UnassignedInSingletons = graphCopyOf(graph2_CommonEntitiesOnly);
+		for (int i = 0; i < notSharedEntities.size(); i++) {
+			Set<String> clusterSingletonEntity = new HashSet<>();
+			clusterSingletonEntity.add(notSharedEntities.get(i));
+			graph2_UnassignedInSingletons.put("singletonCluster" + i, clusterSingletonEntity);
 		}
 
 		int truePositive = 0;
@@ -345,11 +484,11 @@ public class AnalysisController {
 					}
 				}
 
-				for (String cluster : graph2.keySet()) {
-					if (graph2.get(cluster).contains(e1)) {
+				for (String cluster : graph2_CommonEntitiesOnly.keySet()) {
+					if (graph2_CommonEntitiesOnly.get(cluster).contains(e1)) {
 						e1ClusterG2 = cluster;
 					}
-					if (graph2.get(cluster).contains(e2)) {
+					if (graph2_CommonEntitiesOnly.get(cluster).contains(e2)) {
 						e2ClusterG2 = cluster;
 					}
 				}
@@ -390,22 +529,128 @@ public class AnalysisController {
 		analysis.setFalsePositive(falsePositive);
 		analysis.setFalseNegative(falseNegative);
 
-		float accuracy = (float)(truePositive + trueNegative) / (truePositive + trueNegative + falsePositive + falseNegative);
-		accuracy = BigDecimal.valueOf(accuracy).setScale(2, RoundingMode.HALF_UP).floatValue();
-		float precision = (float)truePositive / (truePositive + falsePositive);
-		precision = BigDecimal.valueOf(precision).setScale(2, RoundingMode.HALF_UP).floatValue();
-		float recall = (float)truePositive / (truePositive + falseNegative);
-		recall = BigDecimal.valueOf(recall).setScale(2, RoundingMode.HALF_UP).floatValue();
-		float specificity = (float)trueNegative / (trueNegative + falsePositive);
-		specificity = Float.isNaN(specificity) ? -1 : BigDecimal.valueOf(specificity).setScale(2, RoundingMode.HALF_UP).floatValue();
-		float fmeasure = 2*precision*recall / (precision + recall);
-		fmeasure = BigDecimal.valueOf(fmeasure).setScale(2, RoundingMode.HALF_UP).floatValue();
+		float accuracy;
+		float precision;
+		float recall;
+		float specificity;
+		float fmeasure;
+
+		if (truePositive == 0 && trueNegative == 0 && falsePositive == 0 && falseNegative == 0) { // no ExpertCut submitted
+			accuracy = 0;
+			precision = 0;
+			recall = 0;
+			specificity = 0;
+			fmeasure = 0;
+		}
+		else {
+			accuracy = (float)(truePositive + trueNegative) / (truePositive + trueNegative + falsePositive + falseNegative);
+			accuracy = BigDecimal.valueOf(accuracy).setScale(2, RoundingMode.HALF_UP).floatValue();
+
+			precision = (float)truePositive / (truePositive + falsePositive);
+			precision = BigDecimal.valueOf(precision).setScale(2, RoundingMode.HALF_UP).floatValue();
+
+			recall = (float)truePositive / (truePositive + falseNegative);
+			recall = BigDecimal.valueOf(recall).setScale(2, RoundingMode.HALF_UP).floatValue();
+
+			specificity = (float)trueNegative / (trueNegative + falsePositive);
+			specificity = Float.isNaN(specificity) ? -1 : BigDecimal.valueOf(specificity).setScale(2, RoundingMode.HALF_UP).floatValue();
+
+			fmeasure = 2*precision*recall / (precision + recall);
+			fmeasure = BigDecimal.valueOf(fmeasure).setScale(2, RoundingMode.HALF_UP).floatValue();
+		}
+
 		analysis.setAccuracy(accuracy);
 		analysis.setPrecision(precision);
 		analysis.setRecall(recall);
 		analysis.setSpecificity(specificity);
         analysis.setFmeasure(fmeasure);
-		
+
+
+        /*
+        *******************************************
+        ************ CALCULATE MOJO ***************
+        *******************************************
+        */
+		double mojoValueCommonOnly = getMojoValue(
+				graph2_CommonEntitiesOnly,
+				graph1,
+				graph2_CommonEntitiesOnly.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
+		);
+		double mojoValueUnassignedInBiggest = getMojoValue(
+				graph2_UnassignedInBigger,
+				graph1,
+				graph2_UnassignedInBigger.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
+		);
+		double mojoValueUnassignedInNew = getMojoValue(
+				graph2_UnassignedInNew,
+				graph1,
+				graph2_UnassignedInNew.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
+		);
+		double mojoValueUnassignedInSingletons = getMojoValue(
+				graph2_UnassignedInSingletons,
+				graph1,
+				graph2_UnassignedInSingletons.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
+		);
+
+		analysis.setMojoCommon(mojoValueCommonOnly);
+		analysis.setMojoBiggest(mojoValueUnassignedInBiggest);
+		analysis.setMojoNew(mojoValueUnassignedInNew);
+		analysis.setMojoSingletons(mojoValueUnassignedInSingletons);
 		return new ResponseEntity<>(analysis, HttpStatus.OK);
+	}
+
+	private Map<String, Set<String>> graphCopyOf(Map<String, Set<String>> graph) {
+		HashMap<String, Set<String>> copy = new HashMap<>();
+		for (Map.Entry<String, Set<String>> entry : graph.entrySet()) {
+			copy.put(entry.getKey(), new HashSet<>(entry.getValue()));
+		}
+
+		return copy;
+	}
+
+	private double getMojoValue(
+			Map<String, Set<String>> graph1,
+			Map<String, Set<String>> graph2,
+			Set<String> entities
+	) throws IOException
+	{
+		StringBuilder sbSource = new StringBuilder();
+		for (Map.Entry<String, Set<String>> clusterEntry : graph1.entrySet()) {
+			String clusterName = clusterEntry.getKey();
+			Set<String> clusterEntities = clusterEntry.getValue();
+			for (String entity : clusterEntities) {
+				if (entities.contains(entity)) { // entity present in both graphs
+					sbSource.append("contain " + clusterName + " " + entity + "\n");
+				}
+			}
+		}
+
+		StringBuilder sbTarget = new StringBuilder();
+		for (Map.Entry<String, Set<String>> clusterEntry : graph2.entrySet()) {
+			String clusterName = clusterEntry.getKey();
+			Set<String> clusterEntities = clusterEntry.getValue();
+			for (String entity : clusterEntities) {
+				if (entities.contains(entity)) { // entity present in both graphs
+					sbTarget.append("contain " + clusterName + " " + entity + "\n");
+				}
+			}
+		}
+
+		String distrSrcPath = MOJO_RESOURCES_PATH + "distrSrc.rsf";
+		String distrTargetPath = MOJO_RESOURCES_PATH + "distrTarget.rsf";
+
+		FileWriter srcFileWriter = new FileWriter(new File(distrSrcPath));
+		srcFileWriter.write(sbSource.toString());
+		srcFileWriter.close();
+
+		FileWriter targetFileWriter = new FileWriter(new File(distrTargetPath));
+		targetFileWriter.write(sbTarget.toString());
+		targetFileWriter.close();
+
+		return new MoJo().executeMojo(new String[]{
+				distrSrcPath,
+				distrTargetPath,
+				"-fm"
+		});
 	}
 }

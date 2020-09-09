@@ -1,19 +1,20 @@
-import React, {createRef} from 'react';
+import React from 'react';
 import { TransactionOperationsMenu } from './TransactionOperationsMenu';
 import { RepositoryService } from '../../services/RepositoryService';
 import { VisNetwork } from '../util/VisNetwork';
-import { DataSet } from "vis";
+import { DataSet } from "vis-network/standalone";
 import { views, types } from './Views';
 import BootstrapTable from 'react-bootstrap-table-next';
-import { Button, ButtonGroup} from 'react-bootstrap';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { FunctionalityRedesignMenu, redesignOperations } from './FunctionalityRedesignMenu';
-import {ModalMessage} from "../util/ModalMessage";
+import { ModalMessage } from '../util/ModalMessage';
 
 export const transactionViewHelp = (<div>
     Hover or double click cluster to see entities inside.<br />
     Hover or double click controller to see entities accessed.<br />
     Hover or double click edge to see entities accessed in a cluster.<br />
-    </div>);
+</div>);
 
 const options = {
     height: "700",
@@ -26,14 +27,9 @@ const options = {
     edges: {
         smooth: false,
         arrows: {
-          to: {
-            enabled: true,
-          }
-        },
-        scaling: {
-            label: {
-                enabled: true
-            },
+            to: {
+                enabled: true,
+            }
         },
         color: {
             color: "#2B7CE9",
@@ -43,11 +39,6 @@ const options = {
     },
     nodes: {
         shape: 'ellipse',
-        scaling: {
-            label: {
-                enabled: true
-            },
-        },
         color: {
             border: "#2B7CE9",
             background: "#D2E5FF",
@@ -70,20 +61,15 @@ const optionsSeq = {
     layout: {
         hierarchical: {
             direction: 'UD',
-            nodeSpacing: 200
+            nodeSpacing: 100
         }
     },
     edges: {
         smooth: false,
         arrows: {
-          to: {
-            enabled: true,
-          }
-        },
-        scaling: {
-            label: {
-                enabled: true
-            },
+            to: {
+                enabled: true,
+            }
         },
         color: {
             color: "#2B7CE9",
@@ -93,11 +79,6 @@ const optionsSeq = {
     },
     nodes: {
         shape: 'ellipse',
-        scaling: {
-            label: {
-                enabled: true
-            },
-        },
         color: {
             border: "#2B7CE9",
             background: "#D2E5FF",
@@ -129,11 +110,6 @@ const optionsFunctionalityRedesign = {
                 enabled: true,
             }
         },
-        scaling: {
-            label: {
-                enabled: true
-            },
-        },
         color: {
             color: "#2B7CE9",
             hover: "#2B7CE9",
@@ -142,11 +118,6 @@ const optionsFunctionalityRedesign = {
     },
     nodes: {
         shape: 'ellipse',
-        scaling: {
-            label: {
-                enabled: true
-            },
-        },
         color: {
             border: "#2B7CE9",
             background: "#D2E5FF",
@@ -174,13 +145,12 @@ export class TransactionView extends React.Component {
             visGraph: {},
             visGraphSeq: {},
             redesignVisGraph: {},
-            graph: {},
             controller: {},
-            controllers: [],
             controllerClusters: [],
             showGraph: false,
-            clusterSequence: [],
+            localTransactionsSequence: [],
             currentSubView: "Graph",
+            clusterSequence: [],
             showMenu: false,
             error: false,
             selectedOperation: redesignOperations.NONE,
@@ -190,7 +160,11 @@ export class TransactionView extends React.Component {
             modifiedEntities: null,
             DCGIAvailableClusters: null,
             DCGILocalTransactionsForTheSelectedClusters: null,
-            DCGISelectedLocalTransactions: []
+            DCGISelectedLocalTransactions: [],
+            graph: {
+                controllers: [],
+                clusters: [],
+            },
         }
 
         this.handleControllerSubmit = this.handleControllerSubmit.bind(this);
@@ -204,25 +178,39 @@ export class TransactionView extends React.Component {
     }
 
     componentDidMount() {
+        const {
+            codebaseName,
+            dendrogramName,
+            graphName,
+        } = this.props;
+
         const service = new RepositoryService();
-        service.getControllerClusters(this.props.codebaseName, this.props.dendrogramName, this.props.graphName).then(response => {
-            console.log(response);
+
+        service.getControllerClusters(
+            codebaseName,
+            dendrogramName,
+            graphName
+        ).then(response => {
             this.setState({
                 controllerClusters: response.data
             });
         });
-        service.getGraph(this.props.codebaseName, this.props.dendrogramName, this.props.graphName).then(response => {
-            console.log(response);
+
+        service.getGraph(
+            codebaseName,
+            dendrogramName,
+            graphName,
+            ["clusters", "controllers"]
+        ).then(response => {
             this.setState({
                 graph: response.data,
-                controllers: response.data.controllers
             });
         });
     }
 
     handleControllerSubmit(value) {
         this.setState({
-            controller: this.state.controllers.filter(c => c.name === value)[0]
+            controller: this.state.graph.controllers.find(c => c.name === value),
         }, () => {
             this.loadGraph();
         });
@@ -238,14 +226,20 @@ export class TransactionView extends React.Component {
     }
 
     createTransactionDiagram() {
+        const {
+            controller,
+            controllerClusters,
+        } = this.state;
+
+
         const visGraph = {
-            nodes: new DataSet(this.state.controllerClusters[this.state.controller.name].map(cluster => this.createNode(cluster))),
-            edges: new DataSet(this.state.controllerClusters[this.state.controller.name].map(cluster => this.createEdge(cluster)))
+            nodes: new DataSet(controllerClusters[controller.name].map(cluster => this.createNode(cluster))),
+            edges: new DataSet(controllerClusters[controller.name].map(cluster => this.createEdge(cluster)))
         };
         visGraph.nodes.add({
-            id: this.state.controller.name, 
-            title: Object.entries(this.state.controller.entities).map(e => e[0] + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(this.state.controller.entities).length,
-            label: this.state.controller.name,
+            id: controller.name,
+            title: Object.entries(controller.entities).map(e => e[0] + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(controller.entities).length,
+            label: controller.name,
             level: 0,
             value: 1,
             type: types.CONTROLLER
@@ -258,86 +252,138 @@ export class TransactionView extends React.Component {
 
     createNode(cluster) {
         return {
-            id: cluster.name, 
-            title: cluster.entities.map(e => e.name).join('<br>') + "<br>Total: " + cluster.entities.length,
-            label: cluster.name, 
-            value: cluster.entities.length, 
-            level: 1, 
+            id: cluster.name,
+            title: cluster.entities.join('<br>') + "<br>Total: " + cluster.entities.length,
+            label: cluster.name,
+            value: cluster.entities,
+            level: 1,
             type: types.CLUSTER
         };
     }
 
     createEdge(cluster) {
-        let entitiesTouched = Object.entries(this.state.controller.entities).filter(e => cluster.entities.map(e => e.name).includes(e[0])).map(e => e[0] + " " + e[1]);
+        let entitiesTouched = Object.entries(this.state.controller.entities)
+            .filter(e => cluster.entities.includes(e[0]))
+            .map(e => e[0] + " " + e[1]);
+
         return {
-            from: this.state.controller.name, 
-            to: cluster.name, 
-            label: entitiesTouched.length.toString(), 
+            from: this.state.controller.name,
+            to: cluster.name,
+            label: entitiesTouched.length.toString(),
             title: entitiesTouched.join('<br>')
         };
     }
 
     createSequenceDiagram() {
+
+        const {
+            controller,
+            graph,
+        } = this.state;
+
         let nodes = [];
         let edges = [];
-        let clusterSequence = [];
+        let localTransactionsSequence = [];
+        const localTransactionIdToClusterAccesses = {};
 
         nodes.push({
             id: 0,
-            title: Object.entries(this.state.controller.entities).map(e => e[0] + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(this.state.controller.entities).length,
-            label: this.state.controller.name,
+            label: controller.name,
             level: 0,
             value: 1,
-            type: types.CONTROLLER
+            type: types.CONTROLLER,
+            title: Object.entries(controller.entities)
+                .map(e => e[0] + " " + e[1])
+                .join('<br>') + "<br>Total: " + Object.keys(controller.entities).length,
         });
 
-        let entitiesSequence = JSON.parse(this.state.controller.entitiesSeq);
+        localTransactionIdToClusterAccesses[0] = [];
 
-        for (var i = 0; i < entitiesSequence.length; i++) {
-            let clusterName = entitiesSequence[i]["cluster"];
-            let cluster = this.state.graph.clusters.filter(cluster => cluster.name === clusterName)[0];
-            let nodeId = i+1;
+        let {
+            nodes: localTransactionsList,
+            links: linksList,
+        } = controller.localTransactionsGraph;
+
+
+        for (var i = 1; i < localTransactionsList.length; i++) {
+
+            let {
+                id: localTransactionId,
+                clusterName,
+                clusterAccesses,
+            } = localTransactionsList[i];
+
+            localTransactionIdToClusterAccesses[localTransactionId] = clusterAccesses;
+
+            let cluster = graph.clusters.find(cluster => cluster.name === clusterName);
+            const clusterEntityNames = cluster.entities;
 
             nodes.push({
-                id: nodeId,
-                title: cluster.entities.map(e => e.name).join('<br>') + "<br>Total: " + cluster.entities.length,
+                id: localTransactionId,
+                title: clusterEntityNames.join('<br>') + "<br>Total: " + clusterEntityNames.length,
                 label: cluster.name,
-                value: cluster.entities.length,
+                value: clusterEntityNames.length,
                 level: 1,
                 type: types.CLUSTER
             });
 
-            let entitiesTouched = entitiesSequence[i]["sequence"];
-            edges.push({
-                from: nodeId - 1, 
-                to: nodeId,
-                title: Object.values(entitiesTouched).map(e => e.join(" ")).join('<br>'), 
-                label: entitiesTouched.length.toString()
-            });
-
-            clusterSequence.push({
-                id: nodeId, 
-                cluster: cluster.name, 
-                entities: <pre>{Object.values(entitiesTouched).map(e => e.join(" ")).join('\n')}</pre>,
-                entitiesTouched : entitiesTouched
+            localTransactionsSequence.push({
+                id: localTransactionId,
+                cluster: cluster.name,
+                entities: <pre>{clusterAccesses.map(acc => acc.join(" ")).join('\n')}</pre>
             });
         }
 
-        const visGraph = {
+        linksList.forEach(link => {
+            const [
+                sourceNodeId,
+                targetNodeId,
+            ] = link.split('->');
+
+            const clusterAccesses = localTransactionIdToClusterAccesses[Number(targetNodeId)];
+
+            edges.push({
+                from: Number(sourceNodeId),
+                to: Number(targetNodeId),
+                title: clusterAccesses.map(acc => acc.join(" ")).join('<br>'),
+                label: clusterAccesses.length.toString()
+            })
+
+            let sourceNodeIndex;
+            let targetNodeIndex;
+
+            for (let i = 0; i < nodes.length; i++) {
+                if (nodes[i].id === Number(sourceNodeId)) {
+                    sourceNodeIndex = i;
+                }
+
+                if (nodes[i].id === Number(targetNodeId)) {
+                    targetNodeIndex = i;
+                }
+                if (sourceNodeIndex !== undefined && targetNodeIndex !== undefined) {
+                    nodes[targetNodeIndex].level = nodes[sourceNodeIndex].level + 1;
+                }
+
+            }
+        });
+
+        const visGraphSeq = {
             nodes: new DataSet(nodes),
             edges: new DataSet(edges)
         };
 
         this.setState({
-            visGraphSeq: visGraph,
-            clusterSequence: clusterSequence
+            visGraphSeq,
+            localTransactionsSequence,
         });
     }
+
+    handleDeselectNode(nodeId) {}
 
     createRedesignGraph(){
         let nodes = [];
         let edges = [];
-
+        debugger;
         nodes.push({
             id: -1,
             title: JSON.parse(this.state.controller.functionalityRedesign[0].accessedEntities).map(e => e[0] + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(this.state.controller.entities).length,
@@ -347,7 +393,7 @@ export class TransactionView extends React.Component {
             type: types.CONTROLLER
         });
 
-        let cluster = this.state.graph.clusters.filter(cluster => cluster.name === this.state.controller.functionalityRedesign[0].cluster)[0];
+        let cluster = this.state.graph.clusters.find(cluster => cluster.name === this.state.controller.functionalityRedesign[0].cluster);
         nodes.push({
             id: this.state.controller.functionalityRedesign[0].id,
             title: cluster.entities.map(e => e.name).join('<br>') + "<br>Total: " + cluster.entities.length,
@@ -368,7 +414,7 @@ export class TransactionView extends React.Component {
                 let localTransaction = this.state.controller.functionalityRedesign.find(entry => entry.id === nodes[i].id.toString());
                 localTransaction.remoteInvocations.forEach((id) => {
                     let lt = this.state.controller.functionalityRedesign.find(e => e.id === id.toString());
-                    cluster = this.state.graph.clusters.filter(cluster => cluster.name === lt.cluster)[0];
+                    cluster = this.state.graph.clusters.find(c => c.name === lt.cluster);
 
                     nodes.push({
                         id: lt.id,
@@ -450,10 +496,6 @@ export class TransactionView extends React.Component {
                 });
             }
         }
-    }
-
-    handleDeselectNode(nodeId) {
-
     }
 
     changeSubView(value) {
@@ -564,10 +606,25 @@ export class TransactionView extends React.Component {
     }
 
     render() {
-        const metricsRows = this.state.controllers.map(controller => {
+
+        const {
+            controllerClusters,
+            currentSubView,
+            visGraph,
+            visGraphSeq,
+            localTransactionsSequence,
+            showGraph,
+            controller,
+            graph: {
+                controllers,
+                clusters,
+            },
+        } = this.state;
+
+        const metricsRows = controllers.map(controller => {
             return {
                 controller: controller.name,
-                clusters: this.state.controllerClusters[controller.name] === undefined ? 0 : this.state.controllerClusters[controller.name].length,
+                clusters: controllerClusters[controller.name] === undefined ? 0 : controllerClusters[controller.name].length,
                 complexity: controller.complexity
             }
         });
@@ -597,112 +654,157 @@ export class TransactionView extends React.Component {
             text: 'Entities Accessed'
         }];
 
-        let controllerClustersAmount = Object.keys(this.state.controllerClusters).map(controller => this.state.controllerClusters[controller].length);
-        let averageClustersAccessed = controllerClustersAmount.reduce((a,b) => a + b, 0) / controllerClustersAmount.length;
+        let controllerClustersAmount = Object.keys(controllerClusters).map(controller => controllerClusters[controller].length);
+        let averageClustersAccessed = controllerClustersAmount.reduce((a, b) => a + b, 0) / controllerClustersAmount.length;
 
         return (
-            <div>
-                {this.state.error &&
-                <ModalMessage
-                    title='Error Message'
-                    message={this.state.errorMessage}
-                    onClose={this.closeErrorMessageModal} />}
-
+            <>
+                {
+                    this.state.error && (
+                        <ModalMessage
+                            title='Error Message'
+                            message={this.state.errorMessage}
+                            onClose={this.closeErrorMessageModal}
+                        />
+                    )
+                }
                 <ButtonGroup className="mb-2">
-                    <Button disabled={this.state.currentSubView === "Graph"} onClick={() => this.changeSubView("Graph")}>Graph</Button>
-                    <Button disabled={this.state.currentSubView === "Sequence Graph"} onClick={() => this.changeSubView("Sequence Graph")}>Sequence Graph</Button>
-                    <Button disabled={this.state.currentSubView === "Metrics"} onClick={() => this.changeSubView("Metrics")}>Metrics</Button>
-                    <Button disabled={this.state.currentSubView === "Sequence Table"} onClick={() => this.changeSubView("Sequence Table")}>Sequence Table</Button>
-                    <Button disabled={this.state.currentSubView === "Functionality Redesign"} onClick={() => this.changeSubView("Functionality Redesign")}>Functionality Redesign</Button>
+                    <Button
+                        disabled={currentSubView === "Graph"}
+                        onClick={() => this.changeSubView("Graph")}
+                    >
+                        Graph
+                    </Button>
+                    <Button
+                        disabled={currentSubView === "Sequence Graph"}
+                        onClick={() => this.changeSubView("Sequence Graph")}
+                    >
+                        Sequence Graph
+                    </Button>
+                    <Button
+                        disabled={currentSubView === "Metrics"}
+                        onClick={() => this.changeSubView("Metrics")}
+                    >
+                        Metrics
+                    </Button>
+                    <Button
+                        disabled={currentSubView === "Sequence Table"}
+                        onClick={() => this.changeSubView("Sequence Table")}
+                    >
+                        Sequence Table
+                    </Button>
+                    <Button
+                        disabled={this.state.currentSubView === "Functionality Redesign"}
+                        onClick={() => this.changeSubView("Functionality Redesign")}
+                    >
+                        Functionality Redesign
+                    </Button>
                 </ButtonGroup>
-                
-                {this.state.currentSubView === "Graph" &&
+
+                {currentSubView === "Graph" &&
                     <span>
                         <TransactionOperationsMenu
                             handleControllerSubmit={this.handleControllerSubmit}
-                            controllerClusters={this.state.controllerClusters}
+                            controllerClusters={controllerClusters}
                         />
-                        <div style={{width:'1000px' , height: '700px'}}>
-                            <VisNetwork 
-                                visGraph={this.state.visGraph}
+                        <div style={{ width: '1000px', height: '700px' }}>
+                            <VisNetwork
+                                visGraph={visGraph}
                                 options={options}
                                 onSelection={this.handleSelectNode}
                                 onDeselection={this.handleDeselectNode}
-                                view={views.TRANSACTION} />
+                                view={views.TRANSACTION}
+                                subView={views.GRAPH}
+                            />
                         </div>
                     </span>
                 }
 
-                {this.state.currentSubView === "Sequence Graph" &&
-                    <div style={{width:'1000px' , height: '700px'}}>
+                {currentSubView === "Sequence Graph" &&
+                    <div style={{ width: '1000px', height: '700px' }}>
                         <VisNetwork
-                            visGraph={this.state.visGraphSeq}
+                            visGraph={visGraphSeq}
                             options={optionsSeq}
                             onSelection={this.handleSelectNode}
                             onDeselection={this.handleDeselectNode}
-                            view={views.TRANSACTION} />
+                            view={views.TRANSACTION}
+                        />
                     </div>
                 }
 
-                {this.state.currentSubView === "Metrics" &&
+                {currentSubView === "Metrics" &&
                     <div>
-                        Number of Clusters : {this.state.graph.clusters.length}< br/>
-                        Number of Controllers that access a single Cluster : {Object.keys(this.state.controllerClusters).filter(key => this.state.controllerClusters[key].length === 1).length}< br/>
-                        Maximum number of Clusters accessed by a single Controller : {Math.max(...Object.keys(this.state.controllerClusters).map(key => this.state.controllerClusters[key].length))}< br/>
+                        Number of Clusters : {clusters.length}
+                        < br />
+                        Number of Controllers that access a single Cluster : {Object.keys(controllerClusters).filter(key => controllerClusters[key].length === 1).length}
+                        < br />
+                        Maximum number of Clusters accessed by a single Controller : {Math.max(...Object.keys(controllerClusters).map(key => controllerClusters[key].length))}
+                        < br />
                         Average Number of Clusters accessed (Average number of microservices accessed during a transaction) : {Number(averageClustersAccessed.toFixed(2))}
-                        <BootstrapTable bootstrap4 keyField='controller' data={ metricsRows } columns={ metricsColumns } />
+                        <BootstrapTable
+                            bootstrap4
+                            keyField='controller'
+                            data={metricsRows}
+                            columns={metricsColumns}
+                        />
                     </div>
                 }
 
-                {this.state.showGraph && this.state.currentSubView === "Sequence Table" &&
-                    <div>
-                        <h4>{this.state.controller.name}</h4>
-                        <BootstrapTable bootstrap4 keyField='id' data={ this.state.clusterSequence } columns={ seqColumns } />
-                    </div>
+                {showGraph && currentSubView === "Sequence Table" &&
+                    <>
+                        <h4>{controller.name}</h4>
+                        <BootstrapTable
+                            bootstrap4
+                            keyField='id'
+                            data={localTransactionsSequence}
+                            columns={seqColumns}
+                        />
+                    </>
                 }
 
                 {this.state.showGraph && this.state.currentSubView === "Functionality Redesign" &&
-                <div>
-                    {this.state.showMenu &&
-                        <FunctionalityRedesignMenu
-                            selectedLocalTransaction = {this.state.selectedLocalTransaction}
-                            newCaller = {this.state.newCaller}
-                            modifiedEntities = {this.state.modifiedEntities}
-                            DCGIAvailableClusters = {this.state.DCGIAvailableClusters}
-                            DCGILocalTransactionsForTheSelectedClusters = {this.state.DCGILocalTransactionsForTheSelectedClusters}
-                            DCGISelectedLocalTransactions = {this.state.DCGISelectedLocalTransactions}
-                            handleSelectOperation = {this.handleSelectOperation}
-                            handleCancel = {this.handleCancel}
-                            handleSubmit = {this.handleSubmit}
-                            DCGISelectCluser = {this.DCGISelectCluster}
-                            handleDCGISelectLocalTransaction = {this.handleDCGISelectLocalTransaction}
-                        />
-                    }
+                    <div>
+                        {this.state.showMenu &&
+                            <FunctionalityRedesignMenu
+                                selectedLocalTransaction = {this.state.selectedLocalTransaction}
+                                newCaller = {this.state.newCaller}
+                                modifiedEntities = {this.state.modifiedEntities}
+                                DCGIAvailableClusters = {this.state.DCGIAvailableClusters}
+                                DCGILocalTransactionsForTheSelectedClusters = {this.state.DCGILocalTransactionsForTheSelectedClusters}
+                                DCGISelectedLocalTransactions = {this.state.DCGISelectedLocalTransactions}
+                                handleSelectOperation = {this.handleSelectOperation}
+                                handleCancel = {this.handleCancel}
+                                handleSubmit = {this.handleSubmit}
+                                DCGISelectCluser = {this.DCGISelectCluster}
+                                handleDCGISelectLocalTransaction = {this.handleDCGISelectLocalTransaction}
+                            />
+                        }
 
-                    <div style={{display:'none'}}>
-                        {/*this div functions as a "cache". Is is used to render the graph with the optionsSeq
-                         options in order to save the positions such that when the graph is generated with the
-                         optionsFunctionalityRedesign options is much quicker and there is no buffering*/}
-                        <VisNetwork
-                            visGraph={this.state.redesignVisGraph}
-                            options={optionsSeq}
-                            onSelection={this.handleSelectNode}
-                            onDeselection={this.handleDeselectNode}
-                            view={views.TRANSACTION} />
+                        <div style={{display:'none'}}>
+                            {/*this div functions as a "cache". Is is used to render the graph with the optionsSeq
+                            options in order to save the positions such that when the graph is generated with the
+                            optionsFunctionalityRedesign options is much quicker and there is no buffering*/}
+                            <VisNetwork
+                                visGraph={this.state.redesignVisGraph}
+                                options={optionsSeq}
+                                onSelection={this.handleSelectNode}
+                                onDeselection={this.handleDeselectNode}
+                                view={views.TRANSACTION}
+                            />
+                        </div>
+                        <h4>{this.state.controller.name}</h4>
+                        <div style={{width:'1000px' , height: '700px'}}>
+                            <VisNetwork
+                                visGraph={this.state.redesignVisGraph}
+                                options={optionsFunctionalityRedesign}
+                                onSelection={this.handleSelectNode}
+                                onDeselection={this.handleDeselectNode}
+                                view={views.TRANSACTION}
+                            />
+                        </div>
                     </div>
-                    <h4>{this.state.controller.name}</h4>
-                    <div style={{width:'1000px' , height: '700px'}}>
-                        <VisNetwork
-                            visGraph={this.state.redesignVisGraph}
-                            options={optionsFunctionalityRedesign}
-                            onSelection={this.handleSelectNode}
-                            onDeselection={this.handleDeselectNode}
-                            view={views.TRANSACTION} />
-                    </div>
-                </div>
                 }
-
-            </div>
+            </>
         );
     }
 }

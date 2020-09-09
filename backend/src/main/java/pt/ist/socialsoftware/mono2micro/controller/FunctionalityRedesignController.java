@@ -35,8 +35,14 @@ public class FunctionalityRedesignController {
             String clusterName = data.get("cluster");
             String entities = data.get("entities");
             Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            List<LocalTransaction> response = codebase.getDendrogram(dendrogramName).getGraph(graphName).getController(controllerName).addCompensating(clusterName, entities, fromID);
-            codebaseManager.writeCodebase(codebaseName, codebase);
+
+            List<LocalTransaction> response = codebase
+                .getDendrogram(dendrogramName)
+                .getGraph(graphName)
+                .getController(controllerName)
+                .addCompensating(clusterName, entities, fromID);
+
+            codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IOException e) {
             e.printStackTrace();
