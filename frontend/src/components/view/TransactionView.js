@@ -1,4 +1,4 @@
-import React, {createRef} from 'react';
+import React from 'react';
 import { TransactionOperationsMenu } from './TransactionOperationsMenu';
 import { RepositoryService } from '../../services/RepositoryService';
 import { VisNetwork } from '../util/VisNetwork';
@@ -7,6 +7,8 @@ import { views, types } from './Views';
 import BootstrapTable from 'react-bootstrap-table-next';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import { FunctionalityRedesignMenu, redesignOperations } from './FunctionalityRedesignMenu';
+import { ModalMessage } from '../util/ModalMessage';
 
 export const transactionViewHelp = (<div>
     Hover or double click cluster to see entities inside.<br />
@@ -108,11 +110,6 @@ const optionsFunctionalityRedesign = {
                 enabled: true,
             }
         },
-        scaling: {
-            label: {
-                enabled: true
-            },
-        },
         color: {
             color: "#2B7CE9",
             hover: "#2B7CE9",
@@ -121,11 +118,6 @@ const optionsFunctionalityRedesign = {
     },
     nodes: {
         shape: 'ellipse',
-        scaling: {
-            label: {
-                enabled: true
-            },
-        },
         color: {
             border: "#2B7CE9",
             background: "#D2E5FF",
@@ -391,7 +383,7 @@ export class TransactionView extends React.Component {
     createRedesignGraph(){
         let nodes = [];
         let edges = [];
-
+        debugger;
         nodes.push({
             id: -1,
             title: JSON.parse(this.state.controller.functionalityRedesign[0].accessedEntities).map(e => e[0] + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(this.state.controller.entities).length,
@@ -401,7 +393,7 @@ export class TransactionView extends React.Component {
             type: types.CONTROLLER
         });
 
-        let cluster = this.state.graph.clusters.filter(cluster => cluster.name === this.state.controller.functionalityRedesign[0].cluster)[0];
+        let cluster = this.state.graph.clusters.find(cluster => cluster.name === this.state.controller.functionalityRedesign[0].cluster);
         nodes.push({
             id: this.state.controller.functionalityRedesign[0].id,
             title: cluster.entities.map(e => e.name).join('<br>') + "<br>Total: " + cluster.entities.length,
@@ -422,7 +414,7 @@ export class TransactionView extends React.Component {
                 let localTransaction = this.state.controller.functionalityRedesign.find(entry => entry.id === nodes[i].id.toString());
                 localTransaction.remoteInvocations.forEach((id) => {
                     let lt = this.state.controller.functionalityRedesign.find(e => e.id === id.toString());
-                    cluster = this.state.graph.clusters.filter(cluster => cluster.name === lt.cluster)[0];
+                    cluster = this.state.graph.clusters.find(c => c.name === lt.cluster);
 
                     nodes.push({
                         id: lt.id,

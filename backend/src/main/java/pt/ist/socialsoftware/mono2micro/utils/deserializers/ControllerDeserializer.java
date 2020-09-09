@@ -8,9 +8,11 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
+import pt.ist.socialsoftware.mono2micro.domain.LocalTransaction;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 public class ControllerDeserializer extends StdDeserializer<Controller> {
@@ -55,6 +57,12 @@ public class ControllerDeserializer extends StdDeserializer<Controller> {
 							break;
 						case "entities":
 							controller.setEntities(jsonParser.readValueAs(new TypeReference<HashMap<String, String>>() {}));
+							break;
+						case "entitiesSeq":
+							controller.setEntitiesSeq(jsonParser.getValueAsString());
+							break;
+						case "functionalityRedesign":
+							controller.setFunctionalityRedesign(jsonParser.readValueAs(new TypeReference<List<LocalTransaction>>() {}));
 							break;
 						case "localTransactionsGraph":
 							controller.setLocalTransactionsGraph(getGraph(jsonParser));
