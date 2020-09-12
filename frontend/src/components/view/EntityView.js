@@ -2,7 +2,7 @@ import React from 'react';
 import { EntityOperationsMenu } from './EntityOperationsMenu';
 import { RepositoryService } from '../../services/RepositoryService';
 import { VisNetwork } from '../util/VisNetwork';
-import { DataSet } from 'vis-network/standalone'
+import { DataSet } from 'vis';
 import { views, types } from './Views';
 import BootstrapTable from 'react-bootstrap-table-next';
 import Button from 'react-bootstrap/Button';
@@ -266,18 +266,17 @@ export class EntityView extends React.Component {
                     <span>
                         <EntityOperationsMenu
                             handleEntitySubmit={this.handleEntitySubmit}
-                            entities={entities}
-                            amountList={amountList}
+                            entities={this.state.entities}
+                            amountList={this.state.amountList}
                         />
 
-                        <div style={{ width: '1000px', height: '700px' }}>
+                        <div style={{height: '700px'}}>
                             <VisNetwork
-                                visGraph={visGraph}
+                                visGraph={this.state.visGraph}
                                 options={options}
                                 onSelection={this.handleSelectNode}
                                 onDeselection={this.handleDeselectNode}
-                                view={views.ENTITY}
-                            />
+                                view={views.ENTITY} />
                         </div>
                     </span>
                 }

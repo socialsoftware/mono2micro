@@ -10,6 +10,7 @@ public final class Constants {
   public static String MOJO_RESOURCES_PATH = "src/main/java/pt/ist/socialsoftware/mono2micro/utils/mojoCalculator/" +
           "src/main/resources/";
   public static String PYTHON = PropertiesManager.getProperties().getProperty("python");
+  public static final String DEFAULT_REDESIGN_NAME = "Monolith Trace";
 
   public enum TypeOfTraces {
     ALL,

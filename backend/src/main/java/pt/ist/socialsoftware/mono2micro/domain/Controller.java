@@ -1,19 +1,19 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
+
+import java.util.*;
+import org.json.JSONArray;
+import org.json.JSONException;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
-import org.json.JSONArray;
-import org.json.JSONException;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.ControllerDeserializer;
 import pt.ist.socialsoftware.mono2micro.utils.serializers.ControllerSerializer;
-
-import java.util.*;
-
 import static org.jgrapht.Graphs.successorListOf;
+
 
 @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
 @JsonSerialize(using = ControllerSerializer.class)
@@ -74,7 +74,7 @@ public class Controller {
 	private Map<String, String> entities = new HashMap<>(); // <entity, mode>
 	private DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph;
 	private String entitiesSeq = "[]";
-	private List<pt.ist.socialsoftware.mono2micro.domain.LocalTransaction> functionalityRedesign = new ArrayList<>();
+	private List<FunctionalityRedesign> functionalityRedesigns = new ArrayList<>();
 
 	public Controller() {}
 
@@ -188,6 +188,14 @@ public class Controller {
 		return successorListOf(localTransactionsGraph, lt);
 	}
 
+	public List<FunctionalityRedesign> getFunctionalityRedesigns() {
+		return functionalityRedesigns;
+	}
+
+	public void setFunctionalityRedesigns(List<FunctionalityRedesign> functionalityRedesigns) {
+		this.functionalityRedesigns = functionalityRedesigns;
+	}
+
 	public void setLocalTransactionsGraph(DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph) {
 		this.localTransactionsGraph = localTransactionsGraph;
     }
@@ -196,55 +204,73 @@ public class Controller {
 		this.setEntitiesSeq(entitiesSeq.toString());
 	}
 
-	public List<pt.ist.socialsoftware.mono2micro.domain.LocalTransaction> getFunctionalityRedesign() {
-		return functionalityRedesign;
-	}
+	public void createFunctionalityRedesign(String name, boolean usedForMetrics) throws JSONException {
+		FunctionalityRedesign functionalityRedesign = new FunctionalityRedesign(name);
+		functionalityRedesign.setUsedForMetrics(usedForMetrics);
 
-	public void setFunctionalityRedesign(List<pt.ist.socialsoftware.mono2micro.domain.LocalTransaction> functionalityRedesign) {
-		this.functionalityRedesign = functionalityRedesign;
-	}
-
-	public void addFunctionalityRedesign() throws JSONException {
 		JSONArray sequence = new JSONArray(this.entitiesSeq);
+		pt.ist.socialsoftware.mono2micro.domain.LocalTransaction lt = new pt.ist.socialsoftware.mono2micro.domain.LocalTransaction(
+				Integer.toString(-1),
+				this.name,
+				"",
+				new ArrayList<>(),
+				this.name
+		);
+
+		lt.getRemoteInvocations().add(0);
+		functionalityRedesign.getRedesign().add(lt);
 
 		for(int i=0; i < sequence.length(); i++){
-			pt.ist.socialsoftware.mono2micro.domain.LocalTransaction lt = new pt.ist.socialsoftware.mono2micro.domain.LocalTransaction(
+			lt = new pt.ist.socialsoftware.mono2micro.domain.LocalTransaction(
 				Integer.toString(i),
 				sequence.getJSONObject(i).getString("cluster"),
 				sequence.getJSONObject(i).getString("sequence"),
-				new ArrayList<>()
+				new ArrayList<>(),
+					i + ": " + sequence.getJSONObject(i).getString("cluster")
 			);
 
-			this.functionalityRedesign.add(lt);
+			functionalityRedesign.getRedesign().add(lt);
 
 			if(i > 0) {
-				this.functionalityRedesign.get(i-1).getRemoteInvocations().add(i);
+				functionalityRedesign.getRedesign().get(i).getRemoteInvocations().add(i);
 			}
+		}
+		this.functionalityRedesigns.add(0,functionalityRedesign);
+	}
+
+	public FunctionalityRedesign getFunctionalityRedesign(String redesignName){
+		return this.functionalityRedesigns.stream().filter(fr -> fr.getName().equals(redesignName)).findFirst().orElse(null);
+	}
+
+	public boolean changeFunctionalityRedesignName(String oldName, String newName){
+		FunctionalityRedesign functionalityRedesign = this.functionalityRedesigns.stream().filter(fr -> fr.getName().equals(oldName)).findFirst().orElse(null);
+		functionalityRedesign.setName(newName);
+		return true;
+	}
+
+	public FunctionalityRedesign frUsedForMetrics(){
+		for(FunctionalityRedesign fr : this.getFunctionalityRedesigns()){
+			if(fr.isUsedForMetrics()) return fr;
+		}
+		return null;
+	}
+
+	public boolean checkNameValidity(String name){
+		return this.functionalityRedesigns.stream().filter(fr -> fr.getName().equals(name)).findFirst().orElse(null) == null;
+	}
+
+	public void deleteRedesign(String redesignName){
+		if(this.functionalityRedesigns.removeIf(fr -> fr.getName().equals(redesignName))){
+			this.functionalityRedesigns.get(0).setUsedForMetrics(true);
 		}
 	}
 
-	public List<pt.ist.socialsoftware.mono2micro.domain.LocalTransaction> addCompensating(String clusterName, String entities, String fromID) {
-		int maxID = this.functionalityRedesign.stream().map(lt -> Integer.parseInt(lt.getId())).max(Integer::compare).get();
-
-		pt.ist.socialsoftware.mono2micro.domain.LocalTransaction newLT = new pt.ist.socialsoftware.mono2micro.domain.LocalTransaction(
-			String.valueOf(maxID+1),
-			clusterName,
-			entities,
-			new ArrayList<>()
-		);
-
-		pt.ist.socialsoftware.mono2micro.domain.LocalTransaction caller = this.functionalityRedesign
-			.stream()
-			.filter(lt -> lt.getId().equals(fromID))
-			.findFirst()
-			.orElse(null);
-
-		if(caller != null){
-			this.functionalityRedesign.add(newLT);
-			caller.getRemoteInvocations().add(maxID+1);
-			return this.functionalityRedesign;
-		} else {
-			return null;
+	public void changeFRUsedForMetrics(String redesignName){
+		for(FunctionalityRedesign fr : this.getFunctionalityRedesigns()) {
+			if (fr.isUsedForMetrics())
+				fr.setUsedForMetrics(false);
+			else if (fr.getName().equals(redesignName))
+				fr.setUsedForMetrics(true);
 		}
 	}
 }

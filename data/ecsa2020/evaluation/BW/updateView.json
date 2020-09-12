@@ -1,0 +1,127 @@
+{
+  "name" : "GoalModelController.updateView",
+  "complexity" : 246.0,
+  "entities" : {
+    "GoalModel" : "R",
+    "Goal" : "RW",
+    "BlendedWorkflow" : "RW",
+    "Position" : "RW",
+    "Specification" : "R",
+    "View" : "W",
+    "GoalView" : "RW"
+  },
+  "entitiesSeq" : "[{\"cluster\":\"Design\",\"sequence\":[[\"BlendedWorkflow\",\"R\"],[\"BlendedWorkflow\",\"W\"],[\"Specification\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"GoalModel\",\"R\"],[\"Goal\",\"R\"]]},{\"cluster\":\"View\",\"sequence\":[[\"GoalView\",\"R\"],[\"Position\",\"W\"],[\"GoalView\",\"W\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"Goal\",\"W\"]]},{\"cluster\":\"View\",\"sequence\":[[\"View\",\"W\"],[\"Position\",\"W\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"Goal\",\"R\"]]},{\"cluster\":\"View\",\"sequence\":[[\"GoalView\",\"R\"],[\"Position\",\"R\"],[\"Position\",\"W\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"Goal\",\"R\"]]},{\"cluster\":\"View\",\"sequence\":[[\"GoalView\",\"R\"],[\"Position\",\"R\"],[\"Position\",\"W\"]]}]",
+  "functionalityRedesigns" : [ {
+    "name" : "Monolith Trace",
+    "usedForMetrics" : false,
+    "redesign" : [ {
+      "name" : "GoalModelController.updateView",
+      "id" : "-1",
+      "cluster" : "GoalModelController.updateView",
+      "accessedEntities" : "",
+      "remoteInvocations" : [ 0 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "0: Design",
+      "id" : "0",
+      "cluster" : "Design",
+      "accessedEntities" : "[[\"BlendedWorkflow\",\"R\"],[\"BlendedWorkflow\",\"W\"],[\"Specification\",\"R\"]]",
+      "remoteInvocations" : [ 1 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "1: Models",
+      "id" : "1",
+      "cluster" : "Models",
+      "accessedEntities" : "[[\"GoalModel\",\"R\"],[\"Goal\",\"R\"]]",
+      "remoteInvocations" : [ 2 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "2: View",
+      "id" : "2",
+      "cluster" : "View",
+      "accessedEntities" : "[[\"GoalView\",\"R\"],[\"Position\",\"W\"],[\"GoalView\",\"W\"]]",
+      "remoteInvocations" : [ 3 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "3: Models",
+      "id" : "3",
+      "cluster" : "Models",
+      "accessedEntities" : "[[\"Goal\",\"W\"]]",
+      "remoteInvocations" : [ 4 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "4: View",
+      "id" : "4",
+      "cluster" : "View",
+      "accessedEntities" : "[[\"View\",\"W\"],[\"Position\",\"W\"]]",
+      "remoteInvocations" : [ 5 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "5: Models",
+      "id" : "5",
+      "cluster" : "Models",
+      "accessedEntities" : "[[\"Goal\",\"R\"]]",
+      "remoteInvocations" : [ 6 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "6: View",
+      "id" : "6",
+      "cluster" : "View",
+      "accessedEntities" : "[[\"GoalView\",\"R\"],[\"Position\",\"R\"],[\"Position\",\"W\"]]",
+      "remoteInvocations" : [ 7 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "7: Models",
+      "id" : "7",
+      "cluster" : "Models",
+      "accessedEntities" : "[[\"Goal\",\"R\"]]",
+      "remoteInvocations" : [ 8 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "8: View",
+      "id" : "8",
+      "cluster" : "View",
+      "accessedEntities" : "[[\"GoalView\",\"R\"],[\"Position\",\"R\"],[\"Position\",\"W\"]]",
+      "remoteInvocations" : [ ],
+      "type" : "COMPENSATABLE"
+    } ],
+    "systemComplexity" : 218,
+    "functionalityComplexity" : 204,
+    "pivotTransaction" : ""
+  }, {
+    "name" : "ecsa",
+    "usedForMetrics" : true,
+    "redesign" : [ {
+      "name" : "GoalModelController.updateView",
+      "id" : "-1",
+      "cluster" : "GoalModelController.updateView",
+      "accessedEntities" : "",
+      "remoteInvocations" : [ 2 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "0: Design",
+      "id" : "0",
+      "cluster" : "Design",
+      "accessedEntities" : "[[\"BlendedWorkflow\",\"R\"],[\"BlendedWorkflow\",\"W\"],[\"Specification\",\"R\"]]",
+      "remoteInvocations" : [ ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "1: Models",
+      "id" : "1",
+      "cluster" : "Models",
+      "accessedEntities" : "[[\"GoalModel\",\"R\"],[\"Goal\",\"RW\"]]",
+      "remoteInvocations" : [ ],
+      "type" : "PIVOT"
+    }, {
+      "name" : "2: View",
+      "id" : "2",
+      "cluster" : "View",
+      "accessedEntities" : "[[\"Position\",\"RW\"],[\"View\",\"W\"],[\"GoalView\",\"RW\"]]",
+      "remoteInvocations" : [ 0, 1 ],
+      "type" : "COMPENSATABLE"
+    } ],
+    "systemComplexity" : 123,
+    "functionalityComplexity" : 134,
+    "pivotTransaction" : "1"
+  } ]
+} 

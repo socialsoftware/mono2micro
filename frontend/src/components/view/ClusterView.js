@@ -3,7 +3,7 @@ import { RepositoryService } from '../../services/RepositoryService';
 import { ClusterOperationsMenu, operations } from './ClusterOperationsMenu';
 import { VisNetwork } from '../util/VisNetwork';
 import { ModalMessage } from '../util/ModalMessage';
-import { DataSet } from "vis-network/standalone";
+import { DataSet } from "vis";
 import { views, types } from './Views';
 import BootstrapTable from 'react-bootstrap-table-next';
 import Button from 'react-bootstrap/Button';
@@ -536,34 +536,31 @@ export class ClusterView extends React.Component {
                     </Button>
                 </ButtonGroup>
 
-                {
-                    currentSubView === "Graph" &&
-                    <>
-                        {
-                            showMenu &&
-                            <ClusterOperationsMenu
-                                selectedCluster={selectedCluster}
-                                mergeWithCluster={mergeWithCluster}
-                                transferToCluster={transferToCluster}
-                                clusterEntities={clusterEntities}
-                                handleSelectOperation={this.handleSelectOperation}
-                                handleSelectEntities={this.handleSelectEntities}
-                                handleSubmit={this.handleOperationSubmit}
-                                handleCancel={this.handleOperationCancel}
-                            />
-                        }
+                {this.state.currentSubView === "Graph" &&
+                    <span>
+                        {this.state.showMenu &&
+                        <ClusterOperationsMenu
+                            selectedCluster={this.state.selectedCluster}
+                            mergeWithCluster={this.state.mergeWithCluster}
+                            transferToCluster={this.state.transferToCluster}
+                            clusterEntities={this.state.clusterEntities}
+                            handleSelectOperation={this.handleSelectOperation}
+                            handleSelectEntities={this.handleSelectEntities}
+                            handleSubmit={this.handleOperationSubmit}
+                            handleCancel={this.handleOperationCancel}
+                        />}
 
-                        <div style={{ width: '1000px', height: '700px' }}>
+                        <div style={{height: '700px'}}>
                             <VisNetwork
-                                visGraph={visGraph}
+                                visGraph={this.state.visGraph}
                                 options={options}
                                 onSelection={this.handleSelectCluster}
                                 onDeselection={this.handleDeselectNode}
-                                view={views.CLUSTERS}
-                            />
+                                view={views.CLUSTERS}/>
                         </div>
-                    </>
+                    </span>
                 }
+
 
                 {
                     currentSubView === "Metrics" &&

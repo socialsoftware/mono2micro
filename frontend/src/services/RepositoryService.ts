@@ -362,4 +362,105 @@ export class RepositoryService {
             "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/clusterControllers"
         );
     }
+
+
+    //FunctionalityRedesign
+
+    addCompensating(
+        codebaseName: string,
+        dendrogramName: string,
+        graphName: string,
+        controllerName: string,
+        redesignName: string,
+        clusterName: string,
+        entities: string,
+        fromID: string
+    ) {
+        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controller/" + controllerName + "/redesign/" + redesignName + "/addCompensating",
+            {
+                fromID: fromID,
+                cluster : clusterName,
+                entities : entities
+            });
+    }
+
+    sequenceChange(
+        codebaseName: string,
+        dendrogramName: string,
+        graphName: string,
+        controllerName: string,
+        redesignName: string,
+        localTransaction: string,
+        newCaller: string
+    ) {
+        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controller/" + controllerName + "/redesign/" + redesignName + "/sequenceChange",
+            {
+                localTransactionID: localTransaction,
+                newCaller: newCaller
+            });
+    }
+
+    dcgi(
+        codebaseName: string,
+        dendrogramName: string,
+        graphName: string,
+        controllerName: string,
+        redesignName: string,
+        fromCluster: string,
+        toCluster: string,
+        localTransactions: string
+    ) {
+        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controller/" + controllerName + "/redesign/" + redesignName + "/dcgi",
+            {
+                fromCluster: fromCluster,
+                toCluster: toCluster,
+                localTransactions: localTransactions
+            });
+    }
+
+    selectPivotTransaction(
+        codebaseName: string,
+        dendrogramName: string,
+        graphName: string,
+        controllerName: string,
+        redesignName: string,
+        transactionID: string,
+        newRedesignName: string
+    ) {
+        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controller/" + controllerName + "/redesign/" + redesignName + "/pivotTransaction",
+            null, { params: {"transactionID" : transactionID, "newRedesignName": newRedesignName}});
+    }
+
+    changeLTName(
+        codebaseName: string,
+        dendrogramName: string,
+        graphName: string,
+        controllerName: string,
+        redesignName: string,
+        transactionID: string,
+        newName: string
+    ) {
+        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controller/" + controllerName + "/redesign/" + redesignName + "/changeLTName",
+            null, { params: {"transactionID" : transactionID, "newName": newName}});
+    }
+
+    deleteRedesign(
+        codebaseName: string,
+        dendrogramName: string,
+        graphName: string,
+        controllerName: string,
+        redesignName: string
+    ){
+        return this.axios.delete("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controller/" + controllerName + "/redesign/" + redesignName + "/deleteRedesign");
+    }
+
+    setUseForMetrics(
+        codebaseName: string,
+        dendrogramName: string,
+        graphName: string,
+        controllerName: string,
+        redesignName: string
+    ){
+        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controller/" + controllerName + "/redesign/" + redesignName + "/useForMetrics");
+    }
 }

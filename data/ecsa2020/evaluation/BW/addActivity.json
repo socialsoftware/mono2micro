@@ -1,0 +1,560 @@
+{
+  "controllers" : [ {
+    "name" : "ActivityModelController.addActivity",
+    "complexity" : 1940.0,
+    "entities" : {
+      "Path" : "RW",
+      "Entity" : "RW",
+      "BlendedWorkflow" : "RW",
+      "Attribute" : "RW",
+      "Position" : "R",
+      "ActivityModel" : "RW",
+      "Activity" : "RW",
+      "Product" : "R",
+      "Specification" : "R",
+      "DefEntityCondition" : "RW",
+      "DefAttributeCondition" : "RW",
+      "ConditionModel" : "RW",
+      "DefPathCondition" : "RW",
+      "ActivityView" : "R",
+      "DataModel" : "RW",
+      "DefProductCondition" : "RW",
+      "Dependence" : "R",
+      "RelationBW" : "R"
+    },
+    "entitiesSeq" : "[{\"cluster\":\"Design\",\"sequence\":[[\"BlendedWorkflow\",\"R\"],[\"BlendedWorkflow\",\"W\"],[\"Specification\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"ActivityModel\",\"R\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Specification\",\"R\"],[\"DataModel\",\"R\"],[\"Entity\",\"R\"],[\"Attribute\",\"R\"],[\"RelationBW\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"DefEntityCondition\",\"R\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Entity\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"DefEntityCondition\",\"R\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Entity\",\"R\"],[\"DataModel\",\"R\"],[\"Specification\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"ConditionModel\",\"R\"],[\"DefEntityCondition\",\"W\"],[\"ConditionModel\",\"W\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Entity\",\"R\"],[\"DataModel\",\"R\"],[\"Path\",\"W\"],[\"DataModel\",\"W\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"DefProductCondition\",\"W\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Path\",\"W\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"DefEntityCondition\",\"W\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Entity\",\"W\"],[\"Specification\",\"R\"],[\"DataModel\",\"R\"],[\"Attribute\",\"R\"],[\"RelationBW\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"DefAttributeCondition\",\"R\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Attribute\",\"R\"],[\"Entity\",\"R\"],[\"DataModel\",\"R\"],[\"Specification\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"ConditionModel\",\"R\"],[\"DefAttributeCondition\",\"W\"],[\"ConditionModel\",\"W\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Attribute\",\"R\"],[\"Entity\",\"R\"],[\"DataModel\",\"R\"],[\"Path\",\"W\"],[\"DataModel\",\"W\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"DefProductCondition\",\"W\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Path\",\"W\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"DefAttributeCondition\",\"W\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Attribute\",\"W\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"ActivityModel\",\"R\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Specification\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"ConditionModel\",\"R\"],[\"DefEntityCondition\",\"R\"],[\"Activity\",\"R\"],[\"DefAttributeCondition\",\"R\"],[\"ActivityModel\",\"R\"],[\"DefProductCondition\",\"R\"],[\"Activity\",\"W\"],[\"ActivityModel\",\"W\"],[\"DefProductCondition\",\"W\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Path\",\"R\"],[\"DataModel\",\"R\"],[\"Entity\",\"R\"],[\"Attribute\",\"R\"],[\"RelationBW\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"DefAttributeCondition\",\"R\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Attribute\",\"R\"],[\"Entity\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"ActivityModel\",\"R\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Specification\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"DefAttributeCondition\",\"R\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Attribute\",\"R\"],[\"Entity\",\"R\"],[\"Specification\",\"R\"],[\"DataModel\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"DefPathCondition\",\"R\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Path\",\"R\"],[\"Specification\",\"R\"],[\"DataModel\",\"R\"],[\"Path\",\"W\"],[\"DataModel\",\"W\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"DefProductCondition\",\"W\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Path\",\"W\"],[\"Specification\",\"R\"],[\"DataModel\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"DefPathCondition\",\"W\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"DataModel\",\"W\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"Activity\",\"W\"],[\"DefPathCondition\",\"W\"],[\"DefProductCondition\",\"R\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Path\",\"R\"],[\"DataModel\",\"R\"],[\"Entity\",\"R\"],[\"Attribute\",\"R\"],[\"RelationBW\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"Activity\",\"R\"],[\"DefPathCondition\",\"R\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Path\",\"R\"],[\"DataModel\",\"R\"],[\"Entity\",\"R\"],[\"Attribute\",\"R\"],[\"RelationBW\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"ActivityModel\",\"R\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Specification\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"ConditionModel\",\"R\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Dependence\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"ActivityModel\",\"R\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Specification\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"ConditionModel\",\"R\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Dependence\",\"R\"],[\"Product\",\"R\"],[\"Path\",\"R\"],[\"DataModel\",\"R\"],[\"Entity\",\"R\"],[\"Attribute\",\"R\"],[\"RelationBW\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"ActivityModel\",\"R\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Specification\",\"R\"],[\"Dependence\",\"R\"],[\"Path\",\"R\"],[\"DataModel\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"DefPathCondition\",\"R\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Path\",\"R\"],[\"Specification\",\"R\"],[\"DataModel\",\"R\"],[\"Path\",\"W\"],[\"DataModel\",\"W\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"DefProductCondition\",\"W\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Path\",\"W\"],[\"Specification\",\"R\"],[\"DataModel\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"DefPathCondition\",\"W\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"DataModel\",\"W\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"Activity\",\"W\"],[\"DefPathCondition\",\"W\"],[\"ActivityModel\",\"R\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Specification\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"Activity\",\"R\"]]},{\"cluster\":\"View\",\"sequence\":[[\"ActivityView\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"Activity\",\"R\"]]},{\"cluster\":\"View\",\"sequence\":[[\"ActivityView\",\"R\"],[\"Position\",\"R\"]]}]",
+    "functionalityRedesigns" : [ {
+      "name" : "Monolith Trace",
+      "usedForMetrics" : false,
+      "redesign" : [ {
+        "name" : "ActivityModelController.addActivity",
+        "id" : "-1",
+        "cluster" : "ActivityModelController.addActivity",
+        "accessedEntities" : "",
+        "remoteInvocations" : [ 0 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "0: Design",
+        "id" : "0",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"BlendedWorkflow\",\"R\"],[\"BlendedWorkflow\",\"W\"],[\"Specification\",\"R\"]]",
+        "remoteInvocations" : [ 1 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "1: Models",
+        "id" : "1",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"ActivityModel\",\"R\"]]",
+        "remoteInvocations" : [ 2 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "2: Design",
+        "id" : "2",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Specification\",\"R\"],[\"DataModel\",\"R\"],[\"Entity\",\"R\"],[\"Attribute\",\"R\"],[\"RelationBW\",\"R\"]]",
+        "remoteInvocations" : [ 3 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "3: Models",
+        "id" : "3",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"DefEntityCondition\",\"R\"]]",
+        "remoteInvocations" : [ 4 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "4: Design",
+        "id" : "4",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Entity\",\"R\"]]",
+        "remoteInvocations" : [ 5 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "5: Models",
+        "id" : "5",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"DefEntityCondition\",\"R\"]]",
+        "remoteInvocations" : [ 6 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "6: Design",
+        "id" : "6",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Entity\",\"R\"],[\"DataModel\",\"R\"],[\"Specification\",\"R\"]]",
+        "remoteInvocations" : [ 7 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "7: Models",
+        "id" : "7",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"ConditionModel\",\"R\"],[\"DefEntityCondition\",\"W\"],[\"ConditionModel\",\"W\"]]",
+        "remoteInvocations" : [ 8 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "8: Design",
+        "id" : "8",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Entity\",\"R\"],[\"DataModel\",\"R\"],[\"Path\",\"W\"],[\"DataModel\",\"W\"]]",
+        "remoteInvocations" : [ 9 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "9: Models",
+        "id" : "9",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"DefProductCondition\",\"W\"]]",
+        "remoteInvocations" : [ 10 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "10: Design",
+        "id" : "10",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Path\",\"W\"]]",
+        "remoteInvocations" : [ 11 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "11: Models",
+        "id" : "11",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"DefEntityCondition\",\"W\"]]",
+        "remoteInvocations" : [ 12 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "12: Design",
+        "id" : "12",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Entity\",\"W\"],[\"Specification\",\"R\"],[\"DataModel\",\"R\"],[\"Attribute\",\"R\"],[\"RelationBW\",\"R\"]]",
+        "remoteInvocations" : [ 13 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "13: Models",
+        "id" : "13",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"DefAttributeCondition\",\"R\"]]",
+        "remoteInvocations" : [ 14 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "14: Design",
+        "id" : "14",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Attribute\",\"R\"],[\"Entity\",\"R\"],[\"DataModel\",\"R\"],[\"Specification\",\"R\"]]",
+        "remoteInvocations" : [ 15 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "15: Models",
+        "id" : "15",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"ConditionModel\",\"R\"],[\"DefAttributeCondition\",\"W\"],[\"ConditionModel\",\"W\"]]",
+        "remoteInvocations" : [ 16 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "16: Design",
+        "id" : "16",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Attribute\",\"R\"],[\"Entity\",\"R\"],[\"DataModel\",\"R\"],[\"Path\",\"W\"],[\"DataModel\",\"W\"]]",
+        "remoteInvocations" : [ 17 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "17: Models",
+        "id" : "17",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"DefProductCondition\",\"W\"]]",
+        "remoteInvocations" : [ 18 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "18: Design",
+        "id" : "18",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Path\",\"W\"]]",
+        "remoteInvocations" : [ 19 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "19: Models",
+        "id" : "19",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"DefAttributeCondition\",\"W\"]]",
+        "remoteInvocations" : [ 20 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "20: Design",
+        "id" : "20",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Attribute\",\"W\"]]",
+        "remoteInvocations" : [ 21 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "21: Models",
+        "id" : "21",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"ActivityModel\",\"R\"]]",
+        "remoteInvocations" : [ 22 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "22: Design",
+        "id" : "22",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Specification\",\"R\"]]",
+        "remoteInvocations" : [ 23 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "23: Models",
+        "id" : "23",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"ConditionModel\",\"R\"],[\"DefEntityCondition\",\"R\"],[\"Activity\",\"R\"],[\"DefAttributeCondition\",\"R\"],[\"ActivityModel\",\"R\"],[\"DefProductCondition\",\"R\"],[\"Activity\",\"W\"],[\"ActivityModel\",\"W\"],[\"DefProductCondition\",\"W\"]]",
+        "remoteInvocations" : [ 24 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "24: Design",
+        "id" : "24",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Path\",\"R\"],[\"DataModel\",\"R\"],[\"Entity\",\"R\"],[\"Attribute\",\"R\"],[\"RelationBW\",\"R\"]]",
+        "remoteInvocations" : [ 25 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "25: Models",
+        "id" : "25",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"DefAttributeCondition\",\"R\"]]",
+        "remoteInvocations" : [ 26 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "26: Design",
+        "id" : "26",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Attribute\",\"R\"],[\"Entity\",\"R\"]]",
+        "remoteInvocations" : [ 27 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "27: Models",
+        "id" : "27",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"ActivityModel\",\"R\"]]",
+        "remoteInvocations" : [ 28 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "28: Design",
+        "id" : "28",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Specification\",\"R\"]]",
+        "remoteInvocations" : [ 29 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "29: Models",
+        "id" : "29",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"DefAttributeCondition\",\"R\"]]",
+        "remoteInvocations" : [ 30 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "30: Design",
+        "id" : "30",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Attribute\",\"R\"],[\"Entity\",\"R\"],[\"Specification\",\"R\"],[\"DataModel\",\"R\"]]",
+        "remoteInvocations" : [ 31 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "31: Models",
+        "id" : "31",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"DefPathCondition\",\"R\"]]",
+        "remoteInvocations" : [ 32 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "32: Design",
+        "id" : "32",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Path\",\"R\"],[\"Specification\",\"R\"],[\"DataModel\",\"R\"],[\"Path\",\"W\"],[\"DataModel\",\"W\"]]",
+        "remoteInvocations" : [ 33 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "33: Models",
+        "id" : "33",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"DefProductCondition\",\"W\"]]",
+        "remoteInvocations" : [ 34 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "34: Design",
+        "id" : "34",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Path\",\"W\"],[\"Specification\",\"R\"],[\"DataModel\",\"R\"]]",
+        "remoteInvocations" : [ 35 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "35: Models",
+        "id" : "35",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"DefPathCondition\",\"W\"]]",
+        "remoteInvocations" : [ 36 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "36: Design",
+        "id" : "36",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"DataModel\",\"W\"]]",
+        "remoteInvocations" : [ 37 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "37: Models",
+        "id" : "37",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"Activity\",\"W\"],[\"DefPathCondition\",\"W\"],[\"DefProductCondition\",\"R\"]]",
+        "remoteInvocations" : [ 38 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "38: Design",
+        "id" : "38",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Path\",\"R\"],[\"DataModel\",\"R\"],[\"Entity\",\"R\"],[\"Attribute\",\"R\"],[\"RelationBW\",\"R\"]]",
+        "remoteInvocations" : [ 39 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "39: Models",
+        "id" : "39",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"Activity\",\"R\"],[\"DefPathCondition\",\"R\"]]",
+        "remoteInvocations" : [ 40 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "40: Design",
+        "id" : "40",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Path\",\"R\"],[\"DataModel\",\"R\"],[\"Entity\",\"R\"],[\"Attribute\",\"R\"],[\"RelationBW\",\"R\"]]",
+        "remoteInvocations" : [ 41 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "41: Models",
+        "id" : "41",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"ActivityModel\",\"R\"]]",
+        "remoteInvocations" : [ 42 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "42: Design",
+        "id" : "42",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Specification\",\"R\"]]",
+        "remoteInvocations" : [ 43 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "43: Models",
+        "id" : "43",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"ConditionModel\",\"R\"]]",
+        "remoteInvocations" : [ 44 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "44: Design",
+        "id" : "44",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Dependence\",\"R\"]]",
+        "remoteInvocations" : [ 45 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "45: Models",
+        "id" : "45",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"ActivityModel\",\"R\"]]",
+        "remoteInvocations" : [ 46 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "46: Design",
+        "id" : "46",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Specification\",\"R\"]]",
+        "remoteInvocations" : [ 47 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "47: Models",
+        "id" : "47",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"ConditionModel\",\"R\"]]",
+        "remoteInvocations" : [ 48 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "48: Design",
+        "id" : "48",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Dependence\",\"R\"],[\"Product\",\"R\"],[\"Path\",\"R\"],[\"DataModel\",\"R\"],[\"Entity\",\"R\"],[\"Attribute\",\"R\"],[\"RelationBW\",\"R\"]]",
+        "remoteInvocations" : [ 49 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "49: Models",
+        "id" : "49",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"ActivityModel\",\"R\"]]",
+        "remoteInvocations" : [ 50 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "50: Design",
+        "id" : "50",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Specification\",\"R\"],[\"Dependence\",\"R\"],[\"Path\",\"R\"],[\"DataModel\",\"R\"]]",
+        "remoteInvocations" : [ 51 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "51: Models",
+        "id" : "51",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"DefPathCondition\",\"R\"]]",
+        "remoteInvocations" : [ 52 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "52: Design",
+        "id" : "52",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Path\",\"R\"],[\"Specification\",\"R\"],[\"DataModel\",\"R\"],[\"Path\",\"W\"],[\"DataModel\",\"W\"]]",
+        "remoteInvocations" : [ 53 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "53: Models",
+        "id" : "53",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"DefProductCondition\",\"W\"]]",
+        "remoteInvocations" : [ 54 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "54: Design",
+        "id" : "54",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Path\",\"W\"],[\"Specification\",\"R\"],[\"DataModel\",\"R\"]]",
+        "remoteInvocations" : [ 55 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "55: Models",
+        "id" : "55",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"DefPathCondition\",\"W\"]]",
+        "remoteInvocations" : [ 56 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "56: Design",
+        "id" : "56",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"DataModel\",\"W\"]]",
+        "remoteInvocations" : [ 57 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "57: Models",
+        "id" : "57",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"Activity\",\"W\"],[\"DefPathCondition\",\"W\"],[\"ActivityModel\",\"R\"]]",
+        "remoteInvocations" : [ 58 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "58: Design",
+        "id" : "58",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Specification\",\"R\"]]",
+        "remoteInvocations" : [ 59 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "59: Models",
+        "id" : "59",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"Activity\",\"R\"]]",
+        "remoteInvocations" : [ 60 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "60: View",
+        "id" : "60",
+        "cluster" : "View",
+        "accessedEntities" : "[[\"ActivityView\",\"R\"]]",
+        "remoteInvocations" : [ 61 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "61: Models",
+        "id" : "61",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"Activity\",\"R\"]]",
+        "remoteInvocations" : [ 62 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "62: View",
+        "id" : "62",
+        "cluster" : "View",
+        "accessedEntities" : "[[\"ActivityView\",\"R\"],[\"Position\",\"R\"]]",
+        "remoteInvocations" : [ ],
+        "type" : "COMPENSATABLE"
+      } ],
+      "systemComplexity" : 1584,
+      "functionalityComplexity" : 1775,
+      "pivotTransaction" : ""
+    }, {
+      "name" : "ecsa",
+      "usedForMetrics" : true,
+      "redesign" : [ {
+        "name" : "ActivityModelController.addActivity",
+        "id" : "-1",
+        "cluster" : "ActivityModelController.addActivity",
+        "accessedEntities" : "",
+        "remoteInvocations" : [ 0 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "0: Design",
+        "id" : "0",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"BlendedWorkflow\",\"R\"],[\"BlendedWorkflow\",\"W\"],[\"Specification\",\"R\"]]",
+        "remoteInvocations" : [ 1 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "1: Models",
+        "id" : "1",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"DefEntityCondition\",\"RW\"],[\"DefAttributeCondition\",\"RW\"],[\"ConditionModel\",\"RW\"],[\"ActivityModel\",\"R\"],[\"DefProductCondition\",\"W\"]]",
+        "remoteInvocations" : [ 2 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "2: Design",
+        "id" : "2",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Path\",\"W\"],[\"Entity\",\"RW\"],[\"Attribute\",\"RW\"],[\"DataModel\",\"RW\"],[\"Specification\",\"R\"],[\"RelationBW\",\"R\"]]",
+        "remoteInvocations" : [ 3 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "3: Models",
+        "id" : "3",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"DefEntityCondition\",\"R\"],[\"DefAttributeCondition\",\"R\"],[\"ConditionModel\",\"R\"],[\"DefPathCondition\",\"RW\"],[\"ActivityModel\",\"RW\"],[\"DefProductCondition\",\"RW\"],[\"Activity\",\"RW\"]]",
+        "remoteInvocations" : [ 4 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "4: Design",
+        "id" : "4",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Path\",\"RW\"],[\"Entity\",\"R\"],[\"Attribute\",\"R\"],[\"DataModel\",\"RW\"],[\"Specification\",\"R\"],[\"RelationBW\",\"R\"]]",
+        "remoteInvocations" : [ 5 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "5: Models",
+        "id" : "5",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"DefPathCondition\",\"RW\"],[\"ConditionModel\",\"R\"],[\"ActivityModel\",\"R\"],[\"DefProductCondition\",\"W\"],[\"Activity\",\"RW\"]]",
+        "remoteInvocations" : [ 6 ],
+        "type" : "COMPENSATABLE"
+      }, {
+        "name" : "60: View",
+        "id" : "60",
+        "cluster" : "View",
+        "accessedEntities" : "[[\"ActivityView\",\"R\"],[\"Position\",\"R\"]]",
+        "remoteInvocations" : [ ],
+        "type" : "RETRIABLE"
+      }, {
+        "name" : "6: Design",
+        "id" : "6",
+        "cluster" : "Design",
+        "accessedEntities" : "[[\"Path\",\"RW\"],[\"Entity\",\"R\"],[\"Attribute\",\"R\"],[\"DataModel\",\"RW\"],[\"Dependence\",\"R\"],[\"Product\",\"R\"],[\"Specification\",\"R\"],[\"RelationBW\",\"R\"]]",
+        "remoteInvocations" : [ 7 ],
+        "type" : "PIVOT"
+      }, {
+        "name" : "7: Models",
+        "id" : "7",
+        "cluster" : "Models",
+        "accessedEntities" : "[[\"DefEntityCondition\",\"W\"],[\"DefAttributeCondition\",\"W\"],[\"ConditionModel\",\"W\"],[\"DefPathCondition\",\"W\"],[\"ActivityModel\",\"W\"],[\"DefProductCondition\",\"W\"],[\"Activity\",\"RW\"]]",
+        "remoteInvocations" : [ 60 ],
+        "type" : "RETRIABLE"
+      } ],
+      "systemComplexity" : 772,
+      "functionalityComplexity" : 721,
+      "pivotTransaction" : "6"
+    } ]
+  }
+}

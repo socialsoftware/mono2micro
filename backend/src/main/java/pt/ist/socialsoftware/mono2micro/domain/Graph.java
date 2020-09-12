@@ -14,7 +14,6 @@ import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Metrics;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.GraphDeserializer;
-
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.IOException;
 import java.util.*;
@@ -231,7 +230,7 @@ public class Graph {
 
 		entitiesSeq.put(clusterAccess);
 		controller.addEntitiesSeq(entitiesSeq);
-		controller.addFunctionalityRedesign();
+		controller.createFunctionalityRedesign(Constants.DEFAULT_REDESIGN_NAME, true);
 
 		if (lt != null && lt.getClusterAccesses().size() > 0)
 			ltList.add(lt);
