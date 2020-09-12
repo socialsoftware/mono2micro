@@ -1,6 +1,12 @@
 import React from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
-import { Row, Col, Form, DropdownButton, Dropdown, Button, Breadcrumb } from 'react-bootstrap';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Dropdown from 'react-bootstrap/Dropdown';
+import Button from 'react-bootstrap/Button';
+import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import BootstrapTable from 'react-bootstrap-table-next';
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 
@@ -29,18 +35,42 @@ export class Analysis extends React.Component {
 
     loadCodebases() {
         const service = new RepositoryService();
-        service.getCodebases().then(response => {
+        service.getCodebases(
+            [ "name" ]
+        ).then(response => {
             this.setState({
                 codebases: response.data
             });
         });
     }
 
+    loadCodebaseGraphs(codebaseName) {
+        const service = new RepositoryService();
+        
+        service.getCodebaseGraphs(
+            codebaseName,
+            [
+                "name",
+                "dendrogramName",
+                "expert",
+                "codebaseName",
+                "clusters",
+            ]
+        ).then((response) => {
+            if (response.data !== null) {
+                this.setState({
+                    graphs: response.data,
+                });
+            }
+        });
+    }
+
     setCodebase(codebase) {
         this.setState({
             codebase: codebase,
-            graphs: codebase.dendrograms.map(dendrogram => dendrogram.graphs).flat()
         });
+
+        this.loadCodebaseGraphs(codebase.name);
     }
 
     setGraph1(graph) {
@@ -68,24 +98,25 @@ export class Analysis extends React.Component {
         };
 
         const service = new RepositoryService();
-        service.analysis(requestData).then(response => {
-            if (response.status === HttpStatus.OK) {
-                this.setState({
-                    resultData: response.data,
-                    falsePairs: response.data.falsePairs,
-                    isUploaded: "Upload completed successfully."
-                });
-            } else {
+        service.analysis(requestData)
+            .then(response => {
+                if (response.status === HttpStatus.OK) {
+                    this.setState({
+                        resultData: response.data,
+                        falsePairs: response.data.falsePairs,
+                        isUploaded: "Upload completed successfully."
+                    });
+                } else {
+                    this.setState({
+                        isUploaded: "Upload failed."
+                    });
+                }
+            })
+            .catch(error => {
                 this.setState({
                     isUploaded: "Upload failed."
                 });
-            }
-        })
-        .catch(error => {
-            this.setState({
-                isUploaded: "Upload failed."
             });
-        });
     }
 
     renderBreadCrumbs = () => {
@@ -99,7 +130,18 @@ export class Analysis extends React.Component {
 
     render() {
 
-        const falsePairRows = this.state.falsePairs.map(falsePair => {
+        const {
+            codebase,
+            codebases,
+            falsePairs,
+            graph1,
+            graph2,
+            graphs,
+            isUploaded,
+            resultData,
+        } = this.state;
+
+        const falsePairRows = falsePairs.map(falsePair => {
             return {
                 id: falsePair[0] + falsePair[3],
                 e1: falsePair[0],
@@ -108,7 +150,7 @@ export class Analysis extends React.Component {
                 e2: falsePair[3],
                 e2g1: falsePair[4],
                 e2g2: falsePair[5]
-            } 
+            }
         });
 
         const { SearchBar } = Search;
@@ -119,11 +161,11 @@ export class Analysis extends React.Component {
             sort: true
         }, {
             dataField: 'e1g1',
-            text: this.state.graph1.name,
+            text: graph1.name,
             sort: true
         }, {
             dataField: 'e1g2',
-            text: this.state.graph2.name,
+            text: graph2.name,
             sort: true
         }, {
             dataField: 'space',
@@ -134,18 +176,18 @@ export class Analysis extends React.Component {
             sort: true
         }, {
             dataField: 'e2g1',
-            text: this.state.graph1.name,
+            text: graph1.name,
             sort: true
         }, {
             dataField: 'e2g2',
-            text: this.state.graph2.name,
+            text: graph2.name,
             sort: true
         }];
 
         return (
-            <div>
+            <>
                 {this.renderBreadCrumbs()}
-                <h4 style={{color: "#666666"}}>Microservice Analysis</h4>
+                <h4 style={{ color: "#666666" }}>Microservice Analysis</h4>
 
                 <Form onSubmit={this.handleSubmit}>
                     <Form.Group as={Row} controlId="codebase">
@@ -153,11 +195,20 @@ export class Analysis extends React.Component {
                             Codebase
                         </Form.Label>
                         <Col sm={5}>
-                            <DropdownButton title={Object.keys(this.state.codebase).length === 0 ? "Select Codebase" : this.state.codebase.name}>
-                                {this.state.codebases.map(codebase => 
-                                    <Dropdown.Item 
+                            <DropdownButton
+                                title={Object.keys(codebase).length === 0 ?
+                                    "Select Codebase" :
+                                    codebase.name
+                                }
+                            >
+                                {codebases.map(codebase =>
+                                    <Dropdown.Item
                                         key={codebase.name}
-                                        onClick={() => this.setCodebase(codebase)}>{codebase.name}</Dropdown.Item>)}
+                                        onClick={() => this.setCodebase(codebase)}
+                                    >
+                                        {codebase.name}
+                                    </Dropdown.Item>
+                                )}
                             </DropdownButton>
                         </Col>
                     </Form.Group>
@@ -167,16 +218,33 @@ export class Analysis extends React.Component {
                             Source of Truth
                         </Form.Label>
                         <Col sm={5}>
-                            <DropdownButton title={Object.keys(this.state.graph1).length === 0 ? "Select Cut" : this.state.graph1.name + " from " + this.state.graph1.dendrogramName}>
-                                {this.state.graphs.filter(graph => graph.expert === true).map(graph =>
-                                    <Dropdown.Item
-                                        key={graph.name}
-                                        onClick={() => this.setGraph1(graph)}>{graph.name + " from " + graph.dendrogramName}</Dropdown.Item>)}
+                            <DropdownButton
+                                title={
+                                    Object.keys(graph1).length === 0 ?
+                                        "Select Cut" :
+                                        graph1.name + " from " + graph1.dendrogramName
+                                }
+                            >
+                                {
+                                    graphs.filter(graph => graph.expert === true).map(graph =>
+                                        <Dropdown.Item
+                                            key={graph.name}
+                                            onClick={() => this.setGraph1(graph)}
+                                        >
+                                            {graph.name + " from " + graph.dendrogramName}
+                                        </Dropdown.Item>
+                                    )
+                                }
                                 <Dropdown.Divider />
-                                {this.state.graphs.filter(graph => graph.expert === false).map(graph => 
-                                    <Dropdown.Item
-                                        key={graph.name}
-                                        onClick={() => this.setGraph1(graph)}>{graph.name + " from " + graph.dendrogramName}</Dropdown.Item>)}
+                                {
+                                    graphs.filter(graph => graph.expert === false).map(graph =>
+                                        <Dropdown.Item
+                                            key={graph.name}
+                                            onClick={() => this.setGraph1(graph)}
+                                        >
+                                            {graph.name + " from " + graph.dendrogramName}
+                                        </Dropdown.Item>)
+                                }
                             </DropdownButton>
                         </Col>
                     </Form.Group>
@@ -186,68 +254,154 @@ export class Analysis extends React.Component {
                             Compare to Cut
                         </Form.Label>
                         <Col sm={5}>
-                            <DropdownButton title={Object.keys(this.state.graph2).length === 0 ? "Select Cut" : this.state.graph2.name + " from " + this.state.graph2.dendrogramName}>
-                                {this.state.graphs.filter(graph => graph.expert === true).map(graph =>
-                                    <Dropdown.Item
-                                        key={graph.name}
-                                        onClick={() => this.setGraph2(graph)}>{graph.name + " from " + graph.dendrogramName}</Dropdown.Item>)}
+                            <DropdownButton
+                                title={Object.keys(graph2).length === 0 ?
+                                    "Select Cut" :
+                                    graph2.name + " from " + graph2.dendrogramName
+                                }
+                            >
+                                {
+                                    graphs.filter(graph => graph.expert === true).map(graph =>
+                                        <Dropdown.Item
+                                            key={graph.name}
+                                            onClick={() => this.setGraph2(graph)}
+                                        >
+                                            {graph.name + " from " + graph.dendrogramName}
+                                        </Dropdown.Item>
+                                    )
+                                }
                                 <Dropdown.Divider />
-                                {this.state.graphs.filter(graph => graph.expert === false).map(graph => 
-                                    <Dropdown.Item
-                                        key={graph.name}
-                                        onClick={() => this.setGraph2(graph)}>{graph.name + " from " + graph.dendrogramName}</Dropdown.Item>)}
+                                {
+                                    graphs.filter(graph => graph.expert === false).map(graph =>
+                                        <Dropdown.Item
+                                            key={graph.name}
+                                            onClick={() => this.setGraph2(graph)}
+                                        >
+                                            {graph.name + " from " + graph.dendrogramName}
+                                        </Dropdown.Item>
+                                    )
+                                }
                             </DropdownButton>
                         </Col>
                     </Form.Group>
 
                     <Form.Group as={Row}>
                         <Col sm={{ span: 5, offset: 2 }}>
-                            <Button type="submit"
-                                    disabled={Object.keys(this.state.codebase).length === 0 || 
-                                            Object.keys(this.state.graph1).length === 0 || 
-                                            Object.keys(this.state.graph2).length === 0}>
+                            <Button
+                                type="submit"
+                                disabled={Object.keys(codebase).length === 0 ||
+                                    Object.keys(graph1).length === 0 ||
+                                    Object.keys(graph2).length === 0
+                                }
+                            >
                                 Submit
                             </Button>
                             <Form.Text>
-                                {this.state.isUploaded}
+                                {isUploaded}
                             </Form.Text>
                         </Col>
                     </Form.Group>
                 </Form>
 
-                {Object.keys(this.state.resultData).length !== 0 &&
-                    <div>
-                        TP : {this.state.resultData.truePositive}< br/>
-                        TN : {this.state.resultData.trueNegative}< br/>
-                        FP : {this.state.resultData.falsePositive}< br/>
-                        FN : {this.state.resultData.falseNegative}< br/>
-                        Accuracy : {this.state.resultData.accuracy}< br/>
-                        Precision : {this.state.resultData.precision}< br/>
-                        Recall : {this.state.resultData.recall}< br/>
-                        Specificity : {this.state.resultData.specificity === -1 ? "--" : this.state.resultData.specificity}< br/>
-                        F-Score : {this.state.resultData.fmeasure}
-
+                {Object.keys(resultData).length !== 0 &&
+                    <>
+                        <h4 style={{ color: "#666666" }}> Metrics </h4>
+                        <BootstrapTable
+                            keyField='id'
+                            data={[{
+                                id: "metrics",
+                                tp: resultData.truePositive,
+                                tn: resultData.trueNegative,
+                                fp: resultData.falsePositive,
+                                fn: resultData.falseNegative,
+                                accuracy: resultData.accuracy,
+                                precision: resultData.precision,
+                                recall: resultData.recall,
+                                specificity: resultData.specificity === -1 ? "--" : resultData.specificity,
+                                fscore: resultData.fmeasure,
+                                mojoCommon: resultData.mojoCommon,
+                                mojoBiggest: resultData.mojoBiggest,
+                                mojoNew: resultData.mojoNew,
+                                mojoSingletons: resultData.mojoSingletons,
+                            }
+                            ]}
+                            columns={[
+                                {
+                                    dataField: 'tp',
+                                    text: 'TP',
+                                },
+                                {
+                                    dataField: 'tn',
+                                    text: 'TN',
+                                },
+                                {
+                                    dataField: 'fp',
+                                    text: 'FP',
+                                },
+                                {
+                                    dataField: 'fn',
+                                    text: 'FN',
+                                },
+                                {
+                                    dataField: 'fscore',
+                                    text: 'F-Score',
+                                },
+                                {
+                                    dataField: 'accuracy',
+                                    text: 'Accuracy',
+                                },
+                                {
+                                    dataField: 'precision',
+                                    text: 'Precision',
+                                },
+                                {
+                                    dataField: 'recall',
+                                    text: 'Recall',
+                                },
+                                {
+                                    dataField: 'specificity',
+                                    text: 'Specificity',
+                                },
+                                {
+                                    dataField: 'mojoCommon',
+                                    text: 'MoJo Common Entities',
+                                },
+                                {
+                                    dataField: 'mojoBiggest',
+                                    text: 'MoJo Biggest Cluster',
+                                },
+                                {
+                                    dataField: 'mojoNew',
+                                    text: 'MoJo New Cluster',
+                                },
+                                {
+                                    dataField: 'mojoSingletons',
+                                    text: 'MoJo Singletons',
+                                },
+                            ]}
+                            bootstrap4
+                        />
                         <hr />
-                        <h4 style={{color: "#666666"}}>False Pairs</h4>
+                        <h4 style={{ color: "#666666" }}>False Pairs</h4>
 
                         <ToolkitProvider
                             bootstrap4
                             keyField="id"
-                            data={ falsePairRows }
-                            columns={ falsePairColumns }
+                            data={falsePairRows}
+                            columns={falsePairColumns}
                             search>
                             {
                                 props => (
-                                    <div>
-                                        <SearchBar { ...props.searchProps } />
-                                        <BootstrapTable { ...props.baseProps } />
-                                    </div>
+                                    <>
+                                        <SearchBar {...props.searchProps} />
+                                        <BootstrapTable {...props.baseProps} />
+                                    </>
                                 )
                             }
                         </ToolkitProvider>
-                    </div>
+                    </>
                 }
-            </div>
+            </>
         )
     }
 }

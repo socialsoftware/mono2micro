@@ -1,5 +1,7 @@
 import React from 'react';
-import { Card, Button, Breadcrumb} from 'react-bootstrap';
+import Breadcrumb from 'react-bootstrap/Breadcrumb';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
 
 export class Codebase extends React.Component {
     constructor(props) {
@@ -30,13 +32,18 @@ export class Codebase extends React.Component {
                         <Card.Title>
                             {this.state.codebaseName}
                         </Card.Title>
-                        <Button href={`/codebases/${this.state.codebaseName}/profiles`} 
-                                className="mb-2">
-                                    Change Controller Profiles
-                        </Button><br/>
-                        <Button href={`/codebases/${this.state.codebaseName}/dendrograms`} 
-                                className="mb-2">
-                                    Go to Dendrograms
+                        <Button
+                            href={`/codebases/${this.state.codebaseName}/profiles`} 
+                            className="mb-2"
+                        >
+                            Change Controller Profiles
+                        </Button>
+                        <br/>
+                        <Button 
+                            href={`/codebases/${this.state.codebaseName}/dendrograms`} 
+                            className="mb-2"
+                        >
+                            Go to Dendrograms
                         </Button>
                     </Card.Body>
                 </Card>

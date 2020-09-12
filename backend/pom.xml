@@ -51,6 +51,24 @@
 			<artifactId>json</artifactId>
 			<version>20090211</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.jgrapht</groupId>
+			<artifactId>jgrapht-core</artifactId>
+			<version>1.4.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jgrapht</groupId>
+			<artifactId>jgrapht-io</artifactId>
+			<version>1.4.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.py4j</groupId>
+			<artifactId>py4j</artifactId>
+			<version>0.10.9</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -58,6 +76,10 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+<!--				 <configuration>-->
+<!--					<jvmArguments>-Xms2g</jvmArguments>-->
+<!--					<jvmArguments>-Xmx4g</jvmArguments>-->
+<!--				</configuration>-->
 			</plugin>
 		</plugins>
 	</build>

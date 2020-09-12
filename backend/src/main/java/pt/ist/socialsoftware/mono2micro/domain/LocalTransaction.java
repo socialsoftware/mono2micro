@@ -1,10 +1,13 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.ArrayList;
 import java.util.List;
 import pt.ist.socialsoftware.mono2micro.utils.LocalTransactionTypes;
 
+@JsonInclude(JsonInclude.Include.USE_DEFAULTS)
 public class LocalTransaction {
 
     private String name;

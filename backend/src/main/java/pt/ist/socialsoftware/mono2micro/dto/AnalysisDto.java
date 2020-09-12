@@ -1,9 +1,9 @@
 package pt.ist.socialsoftware.mono2micro.dto;
 
+import pt.ist.socialsoftware.mono2micro.domain.Graph;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
 
 public class AnalysisDto {
     private Graph graph1;
@@ -19,6 +19,10 @@ public class AnalysisDto {
     private float specificity;
     private float fmeasure;
     private float complexity;
+    private double mojoCommon;
+    private double mojoBiggest;
+    private double mojoNew;
+    private double mojoSingletons;
 
     public float getPrecision() {
         return precision;
@@ -126,5 +130,37 @@ public class AnalysisDto {
 
     public void setFmeasure(float fmeasure) {
         this.fmeasure = fmeasure;
+    }
+
+    public double getMojoCommon() {
+        return mojoCommon;
+    }
+
+    public void setMojoCommon(double mojoValue) {
+        this.mojoCommon = mojoValue;
+    }
+
+    public double getMojoBiggest() {
+        return mojoBiggest;
+    }
+
+    public void setMojoBiggest(double mojoBiggest) {
+        this.mojoBiggest = mojoBiggest;
+    }
+
+    public double getMojoNew() {
+        return mojoNew;
+    }
+
+    public void setMojoNew(double mojoNew) {
+        this.mojoNew = mojoNew;
+    }
+
+    public double getMojoSingletons() {
+        return mojoSingletons;
+    }
+
+    public void setMojoSingletons(double mojoSingletons) {
+        this.mojoSingletons = mojoSingletons;
     }
 }

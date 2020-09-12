@@ -3,7 +3,6 @@ package pt.ist.socialsoftware.mono2micro.controller;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Optional;
-
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.domain.*;
-import pt.ist.socialsoftware.mono2micro.exceptions.BadConstructedRedesignException;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.Metrics;
@@ -44,7 +42,7 @@ public class FunctionalityRedesignController {
 
             Metrics metrics = new Metrics(graph);
             metrics.calculateRedesignComplexities(controller, redesignName);
-            codebaseManager.writeCodebase(codebaseName, codebase);
+            codebaseManager.writeCodebase(codebase);
 
             return new ResponseEntity<>(controller, HttpStatus.OK);
         } catch (IOException e) {
@@ -72,7 +70,7 @@ public class FunctionalityRedesignController {
 
             Metrics metrics = new Metrics(graph);
             metrics.calculateRedesignComplexities(controller, redesignName);
-            codebaseManager.writeCodebase(codebaseName, codebase);
+            codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(controller, HttpStatus.OK);
         } catch (IOException e) {
             e.printStackTrace();
@@ -101,7 +99,7 @@ public class FunctionalityRedesignController {
 
             Metrics metrics = new Metrics(graph);
             metrics.calculateRedesignComplexities(controller, redesignName);
-            codebaseManager.writeCodebase(codebaseName, codebase);
+            codebaseManager.writeCodebase(codebase);
 
             return new ResponseEntity<>(controller, HttpStatus.OK);
         } catch (IOException | JSONException e) {
@@ -140,7 +138,7 @@ public class FunctionalityRedesignController {
             }
 
             metrics.calculateRedesignComplexities(controller, Constants.DEFAULT_REDESIGN_NAME);
-            codebaseManager.writeCodebase(codebaseName, codebase);
+            codebaseManager.writeCodebase(codebase);
 
             return new ResponseEntity<>(controller, HttpStatus.OK);
         } catch (IOException | JSONException e) {
@@ -165,7 +163,7 @@ public class FunctionalityRedesignController {
             Graph graph = codebase.getDendrogram(dendrogramName).getGraph(graphName);
             Controller controller = graph.getController(controllerName);
             controller.getFunctionalityRedesign(redesignName).changeLTName(transactionID, newName);
-            codebaseManager.writeCodebase(codebaseName, codebase);
+            codebaseManager.writeCodebase(codebase);
 
             return new ResponseEntity<>(controller, HttpStatus.OK);
         } catch (IOException e) {
@@ -186,7 +184,7 @@ public class FunctionalityRedesignController {
             Graph graph = codebase.getDendrogram(dendrogramName).getGraph(graphName);
             Controller controller = graph.getController(controllerName);
             controller.deleteRedesign(redesignName);
-            codebaseManager.writeCodebase(codebaseName, codebase);
+            codebaseManager.writeCodebase(codebase);
 
             return new ResponseEntity<>(controller, HttpStatus.OK);
         } catch (IOException e) {
@@ -207,7 +205,7 @@ public class FunctionalityRedesignController {
             Graph graph = codebase.getDendrogram(dendrogramName).getGraph(graphName);
             Controller controller = graph.getController(controllerName);
             controller.changeFRUsedForMetrics(redesignName);
-            codebaseManager.writeCodebase(codebaseName, codebase);
+            codebaseManager.writeCodebase(codebase);
 
             return new ResponseEntity<>(controller, HttpStatus.OK);
         } catch (IOException e) {
