@@ -27,14 +27,17 @@ public class Rule {
       if (usage != 0) {
          throw new RuntimeException("Trying to re-use an already in-use rule!");
       }
+
       final Symbol start = new Symbol(this.sequitur, existing.getStart());
       final Symbol end = new Symbol(this.sequitur, existing.getEnd());
 
       this.sequitur.digrams.remove(existing);
       this.sequitur.link(anchor, start);
       this.sequitur.link(end, anchor);
+
       start.setSucessor(end);
       end.setPredecessor(start);
+
       final Digram ruleDigram = new Digram(start, end);
       ruleDigram.rule = this;
 
@@ -62,11 +65,13 @@ public class Rule {
    public List<ReducedTraceElement> getElements() {
       final List<ReducedTraceElement> result = new LinkedList<>();
       Symbol iterator = anchor.getSucessor();
+
       while (iterator != anchor) {
          LOG.trace(String.valueOf(iterator));
          result.add(new ReducedTraceElement(iterator.getValue(), iterator.getOccurences()));
          iterator = iterator.getSucessor();
       }
+
       return result;
    }
 
@@ -75,8 +80,10 @@ public class Rule {
          LOG.error("Trying to re-use unused rule " + name + " " + anchor.getValue() + " " + anchor.getSucessor() + " " + anchor.getSucessor().getSucessor());
          throw new RuntimeException("Can not re-use unused rule!");
       }
+
       final Symbol ruleSymbol = new Symbol(this.sequitur, this);
       useRule(digram, ruleSymbol);
+
       return ruleSymbol;
    }
 
@@ -91,6 +98,7 @@ public class Rule {
       if (digram.getEnd().getSucessor() != null) {
          digram.getEnd().getSucessor().setPredecessor(ruleSymbol);
          ruleSymbol.setSucessor(digram.getEnd().getSucessor());
+
       } else {
          this.sequitur.lastSymbol = ruleSymbol;
       }
@@ -99,11 +107,14 @@ public class Rule {
       if (digram.getStart().getPredecessor().getValue() != null) {
          final Digram prevDigram = new Digram(digram.getStart().getPredecessor(), digram.getStart());
          final Digram oldDigram = sequitur.digrams.get(prevDigram);
+
          if (oldDigram.getStart() == digram.getStart().getPredecessor() && oldDigram.getEnd() == digram.getStart()) {
             this.sequitur.digrams.remove(oldDigram);
          }
+
          final Digram newDigram = new Digram(digram.getStart().getPredecessor(), ruleSymbol);
          this.sequitur.handleDigram(newDigram);
+
          if (newDigram.getStart().getPredecessor() == newDigram.getEnd().getSucessor()) {
             newDigram.rule = newDigram.getEnd().getSucessor().getRule();
          }
@@ -111,14 +122,18 @@ public class Rule {
       if (digram.getEnd().getSucessor() != null && digram.getEnd().getSucessor().getValue() != null) {
          final Digram sucDigram = new Digram(digram.getEnd(), digram.getEnd().getSucessor());
          this.sequitur.digrams.remove(sucDigram);
+
          if (digram.getEnd().getSucessor().getSucessor() != null) {
             final Digram overlappingDigram = new Digram(digram.getEnd().getSucessor(), digram.getEnd().getSucessor().getSucessor());
+
             if (overlappingDigram.equals(sucDigram)) {
                this.sequitur.digrams.put(overlappingDigram, overlappingDigram);
             }
          }
+
          final Digram newDigram = new Digram(ruleSymbol, digram.getEnd().getSucessor());
          this.sequitur.handleDigram(newDigram);
+
          if (newDigram.getStart().getPredecessor() == newDigram.getEnd().getSucessor()) {
             newDigram.rule = newDigram.getEnd().getSucessor().getRule();
          }
@@ -130,13 +145,15 @@ public class Rule {
 
    @Override
    public String toString() {
-      String result = name + " -> [";
+      StringBuilder result = new StringBuilder(name + " -> [");
       Symbol iterator = anchor.getSucessor();
+
       while (iterator != anchor && result.length() < 10000) {
          if (iterator.getOccurences() == 1) {
-            result += iterator.getValue() + " ";
+            result.append(iterator.getValue()).append(" ");
+
          } else {
-            result += iterator.getOccurences() + " x " + iterator.getValue() + " ";
+            result.append(iterator.getOccurences()).append(" x ").append(iterator.getValue()).append(" ");
          }
 
          iterator = iterator.getSucessor();

@@ -4,24 +4,24 @@ import requitur.content.Content;
 
 public class ReducedTraceElement {
 	private final Content value;
-	private final int occurences;
+	private final int occurrences;
 
 	public ReducedTraceElement(final Content value, final int occurences) {
 		super();
 		this.value = value;
-		this.occurences = occurences;
+		this.occurrences = occurences;
 	}
 
 	public Content getValue() {
 		return value;
 	}
 
-	public int getOccurences() {
-		return occurences;
+	public int getOccurrences() {
+		return occurrences;
 	}
 
 	@Override
 	public String toString() {
-		return "(" + value + ")x" + occurences ;
+		return "(" + value + ")x" + occurrences;
 	}
 }

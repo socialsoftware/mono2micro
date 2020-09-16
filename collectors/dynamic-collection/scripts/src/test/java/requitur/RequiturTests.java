@@ -43,7 +43,7 @@ public class RequiturTests {
 		System.out.println("Readable trace: " + trace);
 
 		assertEquals(1, trace.size());
-		assertEquals(3, trace.get(0).getOccurences());
+		assertEquals(3, trace.get(0).getOccurrences());
 
 		final List<Content> unexpandedTrace = seg.getUncompressedTrace();
 		System.out.println("unexpandedTrace: " + unexpandedTrace);

@@ -20,11 +20,14 @@ public class ChangedEntity implements Comparable<ChangedEntity> {
 
    public static String replaceClazzFolderFromName(final String fileName) {
       boolean isInClassFolder = false;
+
       for (final String clazzFolder : potentialClassFolders) {
          if (fileName.contains(clazzFolder)) {
             isInClassFolder = true;
+            break;
          }
       }
+
       if (isInClassFolder) {
          String tempClazzName = fileName.replace(".java", "");
          for (final String clazzFolder : potentialClassFolders) {
@@ -88,8 +91,7 @@ public class ChangedEntity implements Comparable<ChangedEntity> {
 
    @JsonIgnore
    public String getPackage() {
-      final String result = javaClazzName.contains(".") ? javaClazzName.substring(0, javaClazzName.lastIndexOf('.')) : "";
-      return result;
+      return javaClazzName.contains(".") ? javaClazzName.substring(0, javaClazzName.lastIndexOf('.')) : "";
    }
 
    public String getFilename() {

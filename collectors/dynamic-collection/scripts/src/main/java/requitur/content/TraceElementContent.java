@@ -25,7 +25,7 @@ public class TraceElementContent extends Content {
 		this.isStatic = element.isStatic();
 	}
 
-	public TraceElementContent(final String clazz, final String method, final String parameterTypes[], final int depth) {
+	public TraceElementContent(final String clazz, final String method, final String[] parameterTypes, final int depth) {
 		this.clazz = clazz;
 		this.method = method;
 		this.depth = depth;
@@ -38,7 +38,7 @@ public class TraceElementContent extends Content {
 		if (obj instanceof TraceElementContent) {
 			final TraceElementContent other = (TraceElementContent) obj;
 			if (((TraceElementContent) obj).getMethod().equals("main")) {
-				System.out.println(parameterTypes);
+				System.out.println(Arrays.toString(parameterTypes));
 			}
 			return other.getClazz().equals(this.getClazz()) &&
 					other.getMethod().equals(this.getMethod()) &&
@@ -55,7 +55,7 @@ public class TraceElementContent extends Content {
 
 	@Override
 	public String toString() {
-		final StringBuffer result = new StringBuffer();
+		final StringBuilder result = new StringBuilder();
 		result.append(clazz);
 		result.append("#");
 		result.append(method);
@@ -76,16 +76,14 @@ public class TraceElementContent extends Content {
 	}
 	
 	public String getPackagelessClazz() {
-      final String simpleClazz = clazz.substring(clazz.lastIndexOf('.') + 1);
-      return simpleClazz;
+		return clazz.substring(clazz.lastIndexOf('.') + 1);
    }
 
 	public String getSimpleClazz() {
 		if (clazz.contains(ChangedEntity.CLAZZ_SEPARATOR)) {
 			return clazz.substring(clazz.lastIndexOf(ChangedEntity.CLAZZ_SEPARATOR) + 1);
 		}
-		final String simpleClazz = clazz.substring(clazz.lastIndexOf('.') + 1);
-		return simpleClazz;
+		return clazz.substring(clazz.lastIndexOf('.') + 1);
 	}
 
 	public int getDepth() {
@@ -105,8 +103,7 @@ public class TraceElementContent extends Content {
    }
 
    public String getPackage() {
-      final String result = clazz.contains(".") ? clazz.substring(0, clazz.lastIndexOf('.')) : "";
-      return result;
+	   return clazz.contains(".") ? clazz.substring(0, clazz.lastIndexOf('.')) : "";
    }
 
 	// public String getSource() {

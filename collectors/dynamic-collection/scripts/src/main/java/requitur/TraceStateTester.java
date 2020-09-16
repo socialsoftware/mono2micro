@@ -140,7 +140,7 @@ public class TraceStateTester {
    public static List<Content> expandReadableTrace(final List<ReducedTraceElement> trace, final Map<String, Rule> rules) {
       final List<Content> result = new LinkedList<>();
       for (final ReducedTraceElement element : trace) {
-         for (int i = 0; i < element.getOccurences(); i++) {
+         for (int i = 0; i < element.getOccurrences(); i++) {
             if (element.getValue() instanceof RuleContent) {
                final String value = ((RuleContent) element.getValue()).getValue();
                final Rule rule = rules.get(value);
@@ -170,7 +170,7 @@ public class TraceStateTester {
    public static List<Content> expandTrace(final List<ReducedTraceElement> trace, final Map<String, Rule> rules) {
       final List<Content> result = new LinkedList<>();
       for (final ReducedTraceElement element : trace) {
-         for (int i = 0; i < element.getOccurences(); i++) {
+         for (int i = 0; i < element.getOccurrences(); i++) {
             if (element.getValue() instanceof RuleContent) {
                final String value = ((RuleContent) element.getValue()).getValue();
                final Rule rule = rules.get(value);

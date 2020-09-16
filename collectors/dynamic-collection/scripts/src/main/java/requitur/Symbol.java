@@ -126,7 +126,7 @@ class Symbol {
 				final Symbol firstElement = rule.getAnchor().sucessor;
 				final Symbol lastElement = rule.getAnchor().predecessor;
 				sequitur.rules.remove(rule.getName());
-				sequitur.ununsedRules.add(rule);
+				sequitur.unusedRules.add(rule);
 				if (usingRule.getAnchor().sucessor.equals(this)) {
 					replaceStartRule(usingRule, firstElement, lastElement);
 				} else if (usingRule.getAnchor().predecessor.equals(this)) {

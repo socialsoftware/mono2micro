@@ -39,10 +39,13 @@ public class RunLengthEncodingSequitur {
 				if (successor.getSucessor() != null) {
 					iterator.setSucessor(successor.getSucessor());
 					successor.getSucessor().setPredecessor(iterator);
+
 				} else {
 					iterator.setSucessor(null);
 				}
+
 				iterator.setOccurences(iterator.getOccurences() + successor.getOccurences());
+
 			} else {
 				iterator = iterator.getSucessor();
 			}
@@ -69,6 +72,7 @@ public class RunLengthEncodingSequitur {
 
 				if (firstSymbolOfRule.getRule() != null) {
 					containingSymbol.setRule(firstSymbolOfRule.getRule());
+
 				} else {
 					firstSymbolOfRule.setRule(null);
 				}
@@ -81,10 +85,12 @@ public class RunLengthEncodingSequitur {
 	public List<ReducedTraceElement> getReadableRLETrace() {
 		Symbol iterator = sequitur.getStartSymbol().getSucessor();
 		final List<ReducedTraceElement> trace = new LinkedList<>();
+
 		while (iterator != null) {
 			addReadableElement(iterator, trace);
 			iterator = iterator.getSucessor();
 		}
+
 		return trace;
 	}
 
@@ -96,18 +102,23 @@ public class RunLengthEncodingSequitur {
 		if (content instanceof RuleContent) {
 			final RuleContent currentContent = (RuleContent) content;
 			trace.add(newElement);
+
 			final Symbol anchor = iterator.getRule().getAnchor();
 			Symbol ruleIterator = anchor.getSucessor();
-			int subelements = 1;
+
+			int subElements = 1;
+
 			while (ruleIterator != anchor) {
-				subelements += addReadableElement(ruleIterator, trace);
+				subElements += addReadableElement(ruleIterator, trace);
 				ruleIterator = ruleIterator.getSucessor();
 			}
-			currentContent.setCount(subelements - 1);
-			return subelements;
+
+			currentContent.setCount(subElements - 1);
+			return subElements;
 
 		} else {
 			trace.add(newElement);
+
 			return 1;
 		}
 	}
