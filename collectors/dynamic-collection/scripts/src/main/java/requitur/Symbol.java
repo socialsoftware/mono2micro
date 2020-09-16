@@ -6,44 +6,45 @@ import requitur.content.Content;
 import requitur.content.RuleContent;
 
 class Symbol {
-
 	private static final Logger LOG = LoggerFactory.getLogger(Symbol.class);
 	private final Sequitur sequitur;
 	private Symbol predecessor;
-	private Symbol sucessor;
+	private Symbol successor;
 	private Content value;
 	private RuleContent name; // if this is a rule-symbol
 	private Rule rule;
-	private int occurences = 1;
+	private int occurrences = 1;
 
-	public Symbol(final Sequitur seguitur, final Content value) {
-		this.sequitur = seguitur;
+	public Symbol(final Sequitur sequitur, final Content value) {
+		this.sequitur = sequitur;
 		this.value = value;
 		rule = null;
 		name = null;
 	}
 
-	public Symbol(final Sequitur seguitur, final Symbol other) {
-		this.sequitur = seguitur;
+	public Symbol(final Sequitur sequitur, final Symbol other) {
+		this.sequitur = sequitur;
 		this.value = other.value;
 		this.name = other.name;
+
 		if (other.rule != null) {
 			rule = other.rule;
 			rule.usage++;
+
 		} else {
 			rule = null;
 		}
 	}
 
-	public Symbol(final Sequitur seguitur, final Content value, final Rule rule) {
-		this.sequitur = seguitur;
+	public Symbol(final Sequitur sequitur, final Content value, final Rule rule) {
+		this.sequitur = sequitur;
 		this.value = value;
 		this.rule = rule;
 		name = null;
 	}
 
-	public Symbol(final Sequitur seguitur, final Rule rule) {
-		this.sequitur = seguitur;
+	public Symbol(final Sequitur sequitur, final Rule rule) {
+		this.sequitur = sequitur;
 		this.rule = rule;
 		this.name = new RuleContent(rule.getName());
 		this.value = null;
@@ -53,24 +54,20 @@ class Symbol {
 		return predecessor;
 	}
 
-	public void setPredecessor(final Symbol predecessor) {
-		this.predecessor = predecessor;
+	public void setPredecessor(final Symbol predecessor) { this.predecessor = predecessor; }
+
+	public Symbol getSuccessor() {
+		return successor;
 	}
 
-	public Symbol getSucessor() {
-		return sucessor;
+	public void setSuccessor(final Symbol successor) { this.successor = successor; }
+
+	public int getOccurrences() {
+		return occurrences;
 	}
 
-	public void setSucessor(final Symbol sucessor) {
-		this.sucessor = sucessor;
-	}
-
-	public int getOccurences() {
-		return occurences;
-	}
-
-	public void setOccurences(final int occurences) {
-		this.occurences = occurences;
+	public void setOccurrences(final int occurrences) {
+		this.occurrences = occurrences;
 	}
 
 	public Rule getRule() {
@@ -88,20 +85,17 @@ class Symbol {
 	@Override
 	public String toString() {
 		final Content value = getValue();
-		if (value == null){
-			return null;
-		}
-		return occurences == 1 ? value.toString() : occurences + " x " + value.toString();
+
+		if (value == null) return null;
+
+		return occurrences == 1 ? value.toString() : occurrences + " x " + value.toString();
 	}
 
 	@Override
 	public int hashCode() {
-		if (value != null){
-			return value.hashCode();
-		}
-		if (name != null){
-			return name.hashCode();
-		}
+		if (value != null) return value.hashCode();
+		if (name != null) return name.hashCode();
+
 		return 0;
 	}
 
@@ -110,8 +104,10 @@ class Symbol {
 		if (obj instanceof Symbol) {
 			final Symbol other = (Symbol) obj;
 			final Content otherContent = other.getValue();
+
 			return otherContent.equals(getValue());
 		}
+
 		return false;
 	}
 
@@ -120,35 +116,48 @@ class Symbol {
 			rule.decrementUsage();
 			// System.out.println("Decrement usage: " + rule.value + " " + rule.usage);
 			if (rule.usage == 1) {
-				if (rule.getAnchor().sucessor.sucessor == rule.getAnchor().predecessor) {
+				if (rule.getAnchor().successor.successor == rule.getAnchor().predecessor) {
 					replaceTraceDigram();
 				}
-				final Symbol firstElement = rule.getAnchor().sucessor;
+
+				final Symbol firstElement = rule.getAnchor().successor;
 				final Symbol lastElement = rule.getAnchor().predecessor;
 				sequitur.rules.remove(rule.getName());
 				sequitur.unusedRules.add(rule);
-				if (usingRule.getAnchor().sucessor.equals(this)) {
+
+				if (usingRule.getAnchor().successor.equals(this)) {
 					replaceStartRule(usingRule, firstElement, lastElement);
+
 				} else if (usingRule.getAnchor().predecessor.equals(this)) {
 					replaceEndRule(usingRule, firstElement, lastElement);
+
 				} else {
 					throw new RuntimeException("Unexpected: Rule-Symbol " + getValue() + " is deleted, but deleted symbol is neither start nor end of rule " + usingRule);
 				}
+
 				rule.usage = 0;
 			}
 		}
 	}
 
-	private void replaceEndRule(final Rule usingRule, final Symbol firstElement, final Symbol lastElement) {
+	private void replaceEndRule(
+		final Rule usingRule,
+		final Symbol firstElement,
+		final Symbol lastElement
+	) {
 		final Symbol temp = usingRule.getAnchor().predecessor.predecessor;
 		sequitur.digrams.remove(new Digram(usingRule.getAnchor().predecessor, usingRule.getAnchor().predecessor.predecessor));
 		sequitur.link(usingRule.getAnchor(), lastElement);
 		sequitur.link(firstElement, temp);
 	}
 
-	private void replaceStartRule(final Rule usingRule, final Symbol firstElement, final Symbol lastElement) {
-		final Symbol temp = usingRule.getAnchor().sucessor.sucessor;
-		sequitur.digrams.remove(new Digram(usingRule.getAnchor().sucessor, usingRule.getAnchor().sucessor.sucessor));
+	private void replaceStartRule(
+		final Rule usingRule,
+		final Symbol firstElement,
+		final Symbol lastElement
+	) {
+		final Symbol temp = usingRule.getAnchor().successor.successor;
+		sequitur.digrams.remove(new Digram(usingRule.getAnchor().successor, usingRule.getAnchor().successor.successor));
 		sequitur.link(usingRule.getAnchor(), firstElement);
 		sequitur.link(lastElement, temp);
 	}
@@ -157,7 +166,7 @@ class Symbol {
 	 * The digram, originally saved in the trace, is replaced by the digram in the rule.
 	 */
 	private void replaceTraceDigram() {
-		final Digram ruleDigram = new Digram(rule.getAnchor().sucessor, rule.getAnchor().sucessor.sucessor);
+		final Digram ruleDigram = new Digram(rule.getAnchor().successor, rule.getAnchor().successor.successor);
 		final Digram savedDigram = this.sequitur.digrams.get(ruleDigram);
 		savedDigram.rule = null;
 	}
@@ -168,12 +177,6 @@ class Symbol {
 
 	}
 
-	public boolean isRule() {
-		return name != null;
-	}
-
-	public void setRule(Rule rule) {
-		this.rule = rule;
-		
-	}
+	public boolean isRule() { return name != null; }
+	public void setRule(Rule rule) { this.rule = rule; }
 }

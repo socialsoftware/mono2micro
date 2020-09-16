@@ -24,7 +24,7 @@ public class Sequitur {
    private int ruleIndex = 0;
 
    Digram link(final Symbol start, final Symbol end) {
-      start.setSucessor(end);
+      start.setSuccessor(end);
       end.setPredecessor(start);
 
       if (start.getValue() != null && end.getValue() != null) {
@@ -45,7 +45,7 @@ public class Sequitur {
          lastSymbol = symbol;
 
       } else {
-         lastSymbol.setSucessor(symbol);
+         lastSymbol.setSuccessor(symbol);
          symbol.setPredecessor(lastSymbol);
          lastSymbol = symbol;
 
@@ -94,26 +94,26 @@ public class Sequitur {
    }
 
    public List<Content> getTrace() {
-      Symbol iterator = startSymbol.getSucessor();
+      Symbol iterator = startSymbol.getSuccessor();
       final List<Content> trace = new LinkedList<>();
 
       while (iterator != null) {
          trace.add(iterator.getValue());
-         iterator = iterator.getSucessor();
+         iterator = iterator.getSuccessor();
       }
 
       return trace;
    }
 
    public List<Content> getUncompressedTrace() {
-      Symbol iterator = startSymbol.getSucessor();
+      Symbol iterator = startSymbol.getSuccessor();
       final List<Content> trace = new LinkedList<>();
 
       while (iterator != null) {
-         for (int i = 0; i < iterator.getOccurences(); i++) {
+         for (int i = 0; i < iterator.getOccurrences(); i++) {
             trace.add(iterator.getValue());
          }
-         iterator = iterator.getSucessor();
+         iterator = iterator.getSuccessor();
       }
 
       return trace;

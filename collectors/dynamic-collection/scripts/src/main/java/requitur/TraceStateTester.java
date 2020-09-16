@@ -28,20 +28,27 @@ public class TraceStateTester {
    }
 
    private static void testRuleUsage(final Sequitur sequitur) {
-      for (final Content traceelement : sequitur.getUncompressedTrace()) {
-         if (traceelement instanceof RuleContent && !sequitur.rules.containsKey(((RuleContent) traceelement).getValue())) {
+      for (final Content traceElement : sequitur.getUncompressedTrace()) {
+         if (traceElement instanceof RuleContent && !sequitur.rules.containsKey(((RuleContent) traceElement).getValue())) {
             throw new RuntimeException("Rule missing!");
          }
       }
 
       for (final Rule r : sequitur.getRules().values()) {
          if (r.getElements().size() == 2) {
-            final Digram keyDigram = new Digram(new Symbol(sequitur, r.getElements().get(0).getValue()), new Symbol(sequitur, r.getElements().get(1).getValue()));
+
+            final Digram keyDigram = new Digram(
+                new Symbol(sequitur, r.getElements().get(0).getValue()),
+                new Symbol(sequitur, r.getElements().get(1).getValue())
+            );
+
             final Digram test = sequitur.digrams.get(keyDigram);
+
             if (test == null) {
                LOG.error(String.valueOf(keyDigram));
             }
-            if (test.rule == null || test.rule != r) {
+
+            else if (test.rule == null || test.rule != r) {
                throw new RuntimeException(r.getElements() + " should have  rule " + r + " but has " + test.rule);
             }
          }
@@ -65,6 +72,7 @@ public class TraceStateTester {
                usages++;
             }
          }
+
          for (final Rule other : sequitur.rules.values()) {
             for (final ReducedTraceElement otherElement : other.getElements()) {
                if (otherElement.getValue() instanceof RuleContent && ((RuleContent) otherElement.getValue()).getValue().equals(r.getName())) {
@@ -72,6 +80,7 @@ public class TraceStateTester {
                }
             }
          }
+
          if (usages < 2) {
             throw new RuntimeException("Rule " + r.getName() + " underused: " + usages);
          }
@@ -79,8 +88,7 @@ public class TraceStateTester {
    }
 
    private static void testDigrams(final Sequitur sequitur) {
-      final Set<Digram> currentDigrams = new HashSet<>();
-      currentDigrams.addAll(sequitur.digrams.values());
+      final Set<Digram> currentDigrams = new HashSet<>(sequitur.digrams.values());
       Content before = null;
 
       for (final Content trace : sequitur.getUncompressedTrace()) {
@@ -88,6 +96,7 @@ public class TraceStateTester {
             final Digram di = new Digram(new Symbol(sequitur, before), new Symbol(sequitur, trace));
             currentDigrams.remove(di);
          }
+
          before = trace;
       }
 
@@ -96,11 +105,13 @@ public class TraceStateTester {
          if (r.getElements().size() == 1) {
             throw new RuntimeException("Rule consists of only one symbol: " + r);
          }
+
          for (final ReducedTraceElement trace : r.getElements()) {
             if (before != null) {
                final Digram di = new Digram(new Symbol(sequitur, before), new Symbol(sequitur, trace.getValue()));
                currentDigrams.remove(di);
             }
+
             before = trace.getValue();
          }
       }
@@ -112,12 +123,14 @@ public class TraceStateTester {
       }
       
       final List<Content> trace = sequitur.getTrace();
+
       for (int index = 1; index < trace.size(); index++) {
          final Content predecessor = trace.get(index - 1);
          final Content current = trace.get(index);
          final Digram digram = new Digram(new Symbol(sequitur, predecessor), new Symbol(sequitur, current));
          final Digram other = sequitur.digrams.get(digram);
          System.out.println("Search: " + digram);
+
          if (other == null) {
             throw new RuntimeException("Digram exists but is not listed: " + digram);
          }
@@ -127,6 +140,7 @@ public class TraceStateTester {
       for (int index = 1; index < trace.size(); index++) {
          final Content predecessor = trace.get(index - 1);
          final Content current = trace.get(index);
+
          for (int indexCompare = index + 2; indexCompare < trace.size(); indexCompare++) {
             final Content comparePredecessor = trace.get(indexCompare-1);
             final Content compareCurrent = trace.get(indexCompare);
@@ -139,22 +153,27 @@ public class TraceStateTester {
 
    public static List<Content> expandReadableTrace(final List<ReducedTraceElement> trace, final Map<String, Rule> rules) {
       final List<Content> result = new LinkedList<>();
+
       for (final ReducedTraceElement element : trace) {
+
          for (int i = 0; i < element.getOccurrences(); i++) {
             if (element.getValue() instanceof RuleContent) {
                final String value = ((RuleContent) element.getValue()).getValue();
                final Rule rule = rules.get(value);
                result.addAll(expandReadableTrace(rule.getElements(), rules));
+
             } else {
                result.add(element.getValue());
             }
          }
       }
+
       return result;
    }
 
    public static List<Content> expandContentTrace(final List<Content> trace, final Map<String, Rule> rules) {
       final List<Content> result = new LinkedList<>();
+
       for (final Content element : trace) {
          if (element instanceof RuleContent) {
             final String value = ((RuleContent) element).getValue();
@@ -164,19 +183,23 @@ public class TraceStateTester {
             result.add(element);
          }
       }
+
       return result;
    }
 
    public static List<Content> expandTrace(final List<ReducedTraceElement> trace, final Map<String, Rule> rules) {
       final List<Content> result = new LinkedList<>();
+
       for (final ReducedTraceElement element : trace) {
          for (int i = 0; i < element.getOccurrences(); i++) {
+
             if (element.getValue() instanceof RuleContent) {
                final String value = ((RuleContent) element.getValue()).getValue();
                final Rule rule = rules.get(value);
 //               System.out.println("Expanding: " + value);
                final List<Content> expandedElements = expandTrace(rule.getElements(), rules);
                result.addAll(expandedElements);
+
             } else {
                result.add(element.getValue());
             }

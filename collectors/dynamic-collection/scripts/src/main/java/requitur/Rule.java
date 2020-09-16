@@ -35,7 +35,7 @@ public class Rule {
       this.sequitur.link(anchor, start);
       this.sequitur.link(end, anchor);
 
-      start.setSucessor(end);
+      start.setSuccessor(end);
       end.setPredecessor(start);
 
       final Digram ruleDigram = new Digram(start, end);
@@ -64,12 +64,12 @@ public class Rule {
 
    public List<ReducedTraceElement> getElements() {
       final List<ReducedTraceElement> result = new LinkedList<>();
-      Symbol iterator = anchor.getSucessor();
+      Symbol iterator = anchor.getSuccessor();
 
       while (iterator != anchor) {
          LOG.trace(String.valueOf(iterator));
-         result.add(new ReducedTraceElement(iterator.getValue(), iterator.getOccurences()));
-         iterator = iterator.getSucessor();
+         result.add(new ReducedTraceElement(iterator.getValue(), iterator.getOccurrences()));
+         iterator = iterator.getSuccessor();
       }
 
       return result;
@@ -77,7 +77,7 @@ public class Rule {
 
    public Symbol use(Digram digram) {
       if (usage == 0) {
-         LOG.error("Trying to re-use unused rule " + name + " " + anchor.getValue() + " " + anchor.getSucessor() + " " + anchor.getSucessor().getSucessor());
+         LOG.error("Trying to re-use unused rule " + name + " " + anchor.getValue() + " " + anchor.getSuccessor() + " " + anchor.getSuccessor().getSuccessor());
          throw new RuntimeException("Can not re-use unused rule!");
       }
 
@@ -92,12 +92,12 @@ public class Rule {
 
       usage++;
 
-      digram.getStart().getPredecessor().setSucessor(ruleSymbol);
+      digram.getStart().getPredecessor().setSuccessor(ruleSymbol);
       ruleSymbol.setPredecessor(digram.getStart().getPredecessor());
 
-      if (digram.getEnd().getSucessor() != null) {
-         digram.getEnd().getSucessor().setPredecessor(ruleSymbol);
-         ruleSymbol.setSucessor(digram.getEnd().getSucessor());
+      if (digram.getEnd().getSuccessor() != null) {
+         digram.getEnd().getSuccessor().setPredecessor(ruleSymbol);
+         ruleSymbol.setSuccessor(digram.getEnd().getSuccessor());
 
       } else {
          this.sequitur.lastSymbol = ruleSymbol;
@@ -115,27 +115,27 @@ public class Rule {
          final Digram newDigram = new Digram(digram.getStart().getPredecessor(), ruleSymbol);
          this.sequitur.handleDigram(newDigram);
 
-         if (newDigram.getStart().getPredecessor() == newDigram.getEnd().getSucessor()) {
-            newDigram.rule = newDigram.getEnd().getSucessor().getRule();
+         if (newDigram.getStart().getPredecessor() == newDigram.getEnd().getSuccessor()) {
+            newDigram.rule = newDigram.getEnd().getSuccessor().getRule();
          }
       }
-      if (digram.getEnd().getSucessor() != null && digram.getEnd().getSucessor().getValue() != null) {
-         final Digram sucDigram = new Digram(digram.getEnd(), digram.getEnd().getSucessor());
+      if (digram.getEnd().getSuccessor() != null && digram.getEnd().getSuccessor().getValue() != null) {
+         final Digram sucDigram = new Digram(digram.getEnd(), digram.getEnd().getSuccessor());
          this.sequitur.digrams.remove(sucDigram);
 
-         if (digram.getEnd().getSucessor().getSucessor() != null) {
-            final Digram overlappingDigram = new Digram(digram.getEnd().getSucessor(), digram.getEnd().getSucessor().getSucessor());
+         if (digram.getEnd().getSuccessor().getSuccessor() != null) {
+            final Digram overlappingDigram = new Digram(digram.getEnd().getSuccessor(), digram.getEnd().getSuccessor().getSuccessor());
 
             if (overlappingDigram.equals(sucDigram)) {
                this.sequitur.digrams.put(overlappingDigram, overlappingDigram);
             }
          }
 
-         final Digram newDigram = new Digram(ruleSymbol, digram.getEnd().getSucessor());
+         final Digram newDigram = new Digram(ruleSymbol, digram.getEnd().getSuccessor());
          this.sequitur.handleDigram(newDigram);
 
-         if (newDigram.getStart().getPredecessor() == newDigram.getEnd().getSucessor()) {
-            newDigram.rule = newDigram.getEnd().getSucessor().getRule();
+         if (newDigram.getStart().getPredecessor() == newDigram.getEnd().getSuccessor()) {
+            newDigram.rule = newDigram.getEnd().getSuccessor().getRule();
          }
       }
 
@@ -146,17 +146,17 @@ public class Rule {
    @Override
    public String toString() {
       StringBuilder result = new StringBuilder(name + " -> [");
-      Symbol iterator = anchor.getSucessor();
+      Symbol iterator = anchor.getSuccessor();
 
       while (iterator != anchor && result.length() < 10000) {
-         if (iterator.getOccurences() == 1) {
+         if (iterator.getOccurrences() == 1) {
             result.append(iterator.getValue()).append(" ");
 
          } else {
-            result.append(iterator.getOccurences()).append(" x ").append(iterator.getValue()).append(" ");
+            result.append(iterator.getOccurrences()).append(" x ").append(iterator.getValue()).append(" ");
          }
 
-         iterator = iterator.getSucessor();
+         iterator = iterator.getSuccessor();
       }
       return result + "]";
    }

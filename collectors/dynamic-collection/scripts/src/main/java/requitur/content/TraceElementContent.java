@@ -25,7 +25,12 @@ public class TraceElementContent extends Content {
 		this.isStatic = element.isStatic();
 	}
 
-	public TraceElementContent(final String clazz, final String method, final String[] parameterTypes, final int depth) {
+	public TraceElementContent(
+		final String clazz,
+		final String method,
+		final String[] parameterTypes,
+		final int depth
+	) {
 		this.clazz = clazz;
 		this.method = method;
 		this.depth = depth;
@@ -59,11 +64,13 @@ public class TraceElementContent extends Content {
 		result.append(clazz);
 		result.append("#");
 		result.append(method);
+
 		if (parameterTypes.length != 0) {
 			result.append("(");
 			result.append(Arrays.deepToString(parameterTypes));
 			result.append(")");
 		}
+
 		return result.toString();
 	}
 
