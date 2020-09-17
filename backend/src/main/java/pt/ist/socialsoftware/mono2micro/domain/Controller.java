@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
+import pt.ist.socialsoftware.mono2micro.utils.ControllerType;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.ControllerDeserializer;
 import pt.ist.socialsoftware.mono2micro.utils.serializers.ControllerSerializer;
 import static org.jgrapht.Graphs.successorListOf;
@@ -70,8 +71,10 @@ public class Controller {
 	}
 
 	private String name;
+	private ControllerType type;
 	private float complexity;
 	private Map<String, String> entities = new HashMap<>(); // <entity, mode>
+	private Map<String, List<String>> entitiesPerCluster = new HashMap<>();
 	private DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph;
 	private String entitiesSeq = "[]";
 	private List<FunctionalityRedesign> functionalityRedesigns = new ArrayList<>();
@@ -123,6 +126,38 @@ public class Controller {
 	public String getEntitiesSeq() { return entitiesSeq; }
 
 	public void setEntitiesSeq(String entitiesSeq) { this.entitiesSeq = entitiesSeq; }
+
+	public ControllerType getType() {
+		return type;
+	}
+
+	public void setType(ControllerType type) {
+		this.type = type;
+	}
+
+	public Map<String, List<String>> getEntitiesPerCluster() {
+		return entitiesPerCluster;
+	}
+
+	public void setEntitiesPerCluster(Map<String, List<String>> entitiesPerCluster) {
+		this.entitiesPerCluster = entitiesPerCluster;
+	}
+
+	public ControllerType defineControllerType(){
+		if(this.type != null) return this.type;
+
+		if(!this.entities.isEmpty()){
+			for(String entity : this.entities.keySet()){
+				if(this.entities.get(entity).contains("W")) {
+					this.type = ControllerType.SAGA;
+					return this.type;
+				}
+
+			}
+			this.type = ControllerType.QUERY;
+		}
+		return this.type;
+	}
 
 	public void addEntity(String entity, String mode) {
 		if (this.entities.containsKey(entity) && !this.entities.get(entity).equals(mode)) {
@@ -272,5 +307,25 @@ public class Controller {
 			else if (fr.getName().equals(redesignName))
 				fr.setUsedForMetrics(true);
 		}
+	}
+
+	public List<String> entitiesTouchedInAGivenMode(String mode){
+		List<String> entitiesTouchedInAGivenMode = new ArrayList<>();
+		for(String entity : this.entities.keySet()){
+			if(this.entities.get(entity).contains(mode))
+				entitiesTouchedInAGivenMode.add(entity);
+		}
+		return entitiesTouchedInAGivenMode;
+	}
+
+	public List<String> clustersOfGivenEntities(List<String> entities){
+		List<String> clustersOfGivenEntities = new ArrayList<>();
+		for(String cluster : this.entitiesPerCluster.keySet()){
+			for(String entity : entities){
+				if(this.entitiesPerCluster.get(cluster).contains(entity))
+					clustersOfGivenEntities.add(cluster);
+			}
+		}
+		return clustersOfGivenEntities;
 	}
 }

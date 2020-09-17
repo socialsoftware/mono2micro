@@ -10,6 +10,7 @@ import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
 import pt.ist.socialsoftware.mono2micro.domain.FunctionalityRedesign;
 import pt.ist.socialsoftware.mono2micro.domain.LocalTransaction;
+import pt.ist.socialsoftware.mono2micro.utils.ControllerType;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -55,6 +56,12 @@ public class ControllerDeserializer extends StdDeserializer<Controller> {
 							break;
 						case "complexity":
 							controller.setComplexity(jsonParser.getFloatValue());
+							break;
+						case "type":
+							controller.setType(jsonParser.readValueAs(new TypeReference<ControllerType>() {}));
+							break;
+						case "entitiesPerCluster":
+							controller.setEntitiesPerCluster(jsonParser.readValueAs(new TypeReference<HashMap<String, List<String>>>() {}));
 							break;
 						case "entities":
 							controller.setEntities(jsonParser.readValueAs(new TypeReference<HashMap<String, String>>() {}));

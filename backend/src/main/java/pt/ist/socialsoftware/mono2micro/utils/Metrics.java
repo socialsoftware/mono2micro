@@ -177,8 +177,38 @@ public class Metrics {
 	}
 
 	public void calculateRedesignComplexities(Controller controller, String redesignName){
+		ControllerType type = controller.defineControllerType();
+
+		if(type == ControllerType.QUERY)
+			calculateQueryRedesignComplexity(controller, redesignName);
+		else
+			calculateSAGASRedesignComplexities(controller, redesignName);
+	}
+
+	private void calculateQueryRedesignComplexity(Controller controller, String redesignName) {
 		FunctionalityRedesign functionalityRedesign = controller.getFunctionalityRedesign(redesignName);
-		functionalityRedesign.setFunctionalityComplexity(0);
+		functionalityRedesign.setInconsistencyComplexity(0);
+
+		List<String> entitiesRead = controller.entitiesTouchedInAGivenMode("R");
+
+		for (Controller otherController : this.graph.getControllers()) {
+			if (!otherController.getName().equals(controller.getName()) &&
+				otherController.defineControllerType() == ControllerType.SAGA){
+
+				List<String> entitiesWritten = otherController.entitiesTouchedInAGivenMode("W");
+				entitiesWritten.retainAll(entitiesRead);
+				List<String> clustersInCommon = otherController.clustersOfGivenEntities(entitiesWritten);
+
+				functionalityRedesign.setInconsistencyComplexity(
+						functionalityRedesign.getInconsistencyComplexity() + clustersInCommon.size()
+				);
+			}
+		}
+    }
+
+	private void calculateSAGASRedesignComplexities(Controller controller,  String redesignName){
+		FunctionalityRedesign functionalityRedesign = controller.getFunctionalityRedesign(redesignName);
+    	functionalityRedesign.setFunctionalityComplexity(0);
 		functionalityRedesign.setSystemComplexity(0);
 
 		for (int i = 0; i < functionalityRedesign.getRedesign().size(); i++) {
@@ -194,7 +224,7 @@ public class Metrics {
 						if(accessMode.contains("W")){
 							if(lt.getType() == LocalTransactionTypes.COMPENSATABLE) {
 								functionalityRedesign.setFunctionalityComplexity(functionalityRedesign.getFunctionalityComplexity() + 1);
-								calculateSystemComplexity(entity, functionalityRedesign);
+								calculateSystemComplexity(entity, controller, functionalityRedesign);
 							}
 						}
 
@@ -209,9 +239,9 @@ public class Metrics {
 		}
 	}
 
-	private void calculateSystemComplexity(String entity, FunctionalityRedesign functionalityRedesign) {
+	private void calculateSystemComplexity(String entity, Controller controller, FunctionalityRedesign functionalityRedesign) {
 		for (Controller otherController : this.graph.getControllers()) {
-			if (!otherController.getName().equals(functionalityRedesign.getName()) &&
+			if (!otherController.getName().equals(controller.getName()) &&
 					otherController.containsEntity(entity) &&
 					otherController.getEntities().get(entity).contains("R") &&
 					this.controllerClusters.get(otherController.getName()).size() > 1) {

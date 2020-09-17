@@ -230,6 +230,7 @@ export class TransactionView extends React.Component {
             dendrogramName,
             graphName
         ).then(response => {
+            console.log(response);
             this.setState({
                 controllerClusters: response.data
             });
@@ -436,7 +437,7 @@ export class TransactionView extends React.Component {
                 let cluster = this.state.graph.clusters.find(cluster => cluster.name === lt.cluster);
                 nodes.push({
                     id: lt.id,
-                    title: cluster.entities.join('<br>') + "<br>Total: " + cluster.entities.length,
+                    title: lt.type,
                     label: lt.name,
                     level: 0,
                     type: types.CLUSTER
@@ -459,7 +460,7 @@ export class TransactionView extends React.Component {
 
                     nodes.push({
                         id: lt.id,
-                        title: cluster.entities.join('<br>') + "<br>Total: " + cluster.entities.length,
+                        title: lt.type,
                         label: lt.name,
                         level: nodes[i].level + 1,
                         type: types.CLUSTER
@@ -686,6 +687,7 @@ export class TransactionView extends React.Component {
     }
 
     rebuildRedesignGraph(value){
+        console.log(value);
         const controllers = this.state.graph.controllers;
         const index = controllers.indexOf(this.state.controller);
         controllers[index] = value.data;
@@ -770,10 +772,18 @@ export class TransactionView extends React.Component {
                                 {fr.name}
                             </Card.Title>
                         }
-                        <Card.Text>
-                            Functionality Complexity: {fr.functionalityComplexity}< br/>
-                            System Complexity: {fr.systemComplexity}
-                        </Card.Text>
+                        {this.state.controller.type === "QUERY" ?
+                            <Card.Text>
+                                Type: Query <br/>
+                                Inconsistency Complexity: {fr.inconsistencyComplexity}
+                            </Card.Text>
+                            :
+                            <Card.Text>
+                                Type: Saga <br/>
+                                Functionality Complexity: {fr.functionalityComplexity}< br/>
+                                System Complexity: {fr.systemComplexity}
+                            </Card.Text>
+                        }
                         <Button onClick={() => this.handleSelectRedesign(fr)} className="mr-2">
                             {fr.name === DEFAULT_REDESIGN_NAME ? "Create a new Redesign" : "Go to Redesign"}
                         </Button>
@@ -812,7 +822,6 @@ export class TransactionView extends React.Component {
     }
 
     handleSelectRedesign(value){
-        console.log(value);
         this.setState({
             selectedRedesign: value,
             redesignVisGraph: this.createRedesignGraph(value)
@@ -884,7 +893,6 @@ export class TransactionView extends React.Component {
         const {
             controllerClusters,
             currentSubView,
-            visGraph,
             visGraphSeq,
             localTransactionsSequence,
             showGraph,
@@ -896,12 +904,23 @@ export class TransactionView extends React.Component {
         } = this.state;
 
         const metricsRows = controllers.map(controller => {
-            return {
+            return controller.type === "QUERY" ?
+            {
                 controller: controller.name,
                 clusters: this.state.controllerClusters[controller.name] === undefined ? 0 : this.state.controllerClusters[controller.name].length,
+                type: controller.type,
                 complexity: controller.complexity,
-                functionalityComplexity: controller.functionalityComplexity,
-                systemComplexity: controller.systemComplexity,
+                inconsistencyComplexity: controller.functionalityRedesigns.find(fr => fr.usedForMetrics).inconsistencyComplexity
+
+            }
+            :
+            {
+                controller: controller.name,
+                clusters: this.state.controllerClusters[controller.name] === undefined ? 0 : this.state.controllerClusters[controller.name].length,
+                type: controller.type,
+                complexity: controller.complexity,
+                functionalityComplexity: controller.functionalityRedesigns.find(fr => fr.usedForMetrics).functionalityComplexity,
+                systemComplexity: controller.functionalityRedesigns.find(fr => fr.usedForMetrics).systemComplexity
             }
         });
 
@@ -918,12 +937,20 @@ export class TransactionView extends React.Component {
             text: 'Complexity',
             sort: true
         }, {
+            dataField: 'type',
+            text: 'Type',
+            sort: true
+        }, {
             dataField: 'functionalityComplexity',
             text: 'Functionality Complexity',
             sort: true
         }, {
             dataField: 'systemComplexity',
             text: 'System Complexity',
+            sort: true
+        }, {
+            dataField: 'inconsistencyComplexity',
+            text: 'Query Inconsistency Complexity',
             sort: true
         }];
 
