@@ -10,10 +10,11 @@ import java.util.List;
 
 @JsonSerialize(using = TraceWithAccessesSerializer.class)
 public class TraceWithAccesses extends Trace {
-    private List<Access> accesses;
+    private final List<Access> accesses;
 
     public TraceWithAccesses(int id, int frequency) {
-        super(id, frequency);
+        this.id = id;
+        this.frequency = frequency;
         this.accesses = new ArrayList<>();
     }
 
@@ -23,7 +24,8 @@ public class TraceWithAccesses extends Trace {
         @JsonProperty("f") int frequency,
         @JsonProperty("accs") List<Access> accesses)
     {
-        super(id, frequency);
+        this.id = id;
+        this.frequency = frequency;
         this.accesses = accesses;
     }
 

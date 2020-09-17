@@ -14,7 +14,8 @@ public class TraceWithSequences extends Trace {
 		TraceWithAccesses t,
 		List<Sequence<AccessWithFrequency>> sequences
 	) {
-		super(t.getId(), t.getFrequency());
+		this.id = t.getId();
+		this.frequency = t.getFrequency();
 		this.sequences = sequences;
 	}
 
@@ -24,7 +25,8 @@ public class TraceWithSequences extends Trace {
 		@JsonProperty("f") int frequency,
 		@JsonProperty("seqs") List<Sequence<AccessWithFrequency>> sequences)
 	{
-		super(id, frequency);
+		this.id = id;
+		this.frequency = frequency;
 		this.sequences = sequences;
 	}
 

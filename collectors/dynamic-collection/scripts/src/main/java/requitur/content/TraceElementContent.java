@@ -42,9 +42,11 @@ public class TraceElementContent extends Content {
 	public boolean equals(final Object obj) {
 		if (obj instanceof TraceElementContent) {
 			final TraceElementContent other = (TraceElementContent) obj;
+
 			if (((TraceElementContent) obj).getMethod().equals("main")) {
 				System.out.println(Arrays.toString(parameterTypes));
 			}
+
 			return other.getClazz().equals(this.getClazz()) &&
 					other.getMethod().equals(this.getMethod()) &&
 					Arrays.equals(other.getParameterTypes(), this.getParameterTypes());

@@ -13,7 +13,7 @@ import java.io.*;
 import java.util.*;
 
 public class JSONGenerator {
-    static HashMap<String, Functionality<TraceWithAccesses>> json = new HashMap<>();
+    static HashMap<String, Functionality> json = new HashMap<>();
     static HashMap<String, List<Access>> cache = new HashMap<>();
     static HashMap<String, Boolean> domainEntities;
 
@@ -63,7 +63,7 @@ public class JSONGenerator {
 
 
             if (!json.containsKey(currentFunctionalityLabel)) {
-                json.put(currentFunctionalityLabel, new Functionality<>(currentFunctionalityLabel));
+                json.put(currentFunctionalityLabel, new Functionality(currentFunctionalityLabel));
                 currentTrace = new TraceWithAccesses(0, 1);
 
             } else {
@@ -114,8 +114,8 @@ public class JSONGenerator {
     }
 
     public static void deleteFunctionalitiesWithNoAccesses() {
-        Iterator<Map.Entry<String, Functionality<TraceWithAccesses>>> it = json.entrySet().iterator();
-        Map.Entry<String, Functionality<TraceWithAccesses>> kvp;
+        Iterator<Map.Entry<String, Functionality>> it = json.entrySet().iterator();
+        Map.Entry<String, Functionality> kvp;
 
         while (it.hasNext()) {
             kvp = it.next();
@@ -126,25 +126,22 @@ public class JSONGenerator {
     }
 
     public static void generateStatistics(String dir) throws IOException {
-        Functionality<TraceWithAccesses> functionalityWithHighestFrequency;
-        Functionality<TraceWithAccesses> functionalityWithMoreDifferentTraces;
-        Functionality<TraceWithAccesses> functionalityWithTheLongestTrace;
-        Functionality<TraceWithAccesses> functionalityWithMoreSubsequences;
+        Functionality functionalityWithHighestFrequency;
+        Functionality functionalityWithMoreDifferentTraces;
+        Functionality functionalityWithTheLongestTrace;
         int totalAmountOfProcessedTraces = 0;
         int totalAmountOfUniqueProcessedTraces = 0;
         int totalAmountOfSubsequencesFound = 0;
 
-        Iterator<Map.Entry<String, Functionality<TraceWithAccesses>>> it = json.entrySet().iterator();
+        Iterator<Map.Entry<String, Functionality>> it = json.entrySet().iterator();
 
         if (it.hasNext()) {
-            Map.Entry<String, Functionality<TraceWithAccesses>> kvp = it.next();
+            Map.Entry<String, Functionality> kvp = it.next();
             functionalityWithHighestFrequency = kvp.getValue();
             functionalityWithMoreDifferentTraces = kvp.getValue();
             functionalityWithTheLongestTrace = kvp.getValue();
             totalAmountOfProcessedTraces += kvp.getValue().getFrequency();
             totalAmountOfUniqueProcessedTraces += kvp.getValue().getTraces().size();
-            totalAmountOfSubsequencesFound += kvp.getValue().getNumberOfSubsequencesFound();
-            functionalityWithMoreSubsequences = kvp.getValue();
 
             int accessesListMaximumLength = 0;
             int longestTraceID = -1;
@@ -161,7 +158,6 @@ public class JSONGenerator {
 
                 totalAmountOfProcessedTraces += kvp.getValue().getFrequency();
                 totalAmountOfUniqueProcessedTraces += kvp.getValue().getTraces().size();
-                totalAmountOfSubsequencesFound += kvp.getValue().getNumberOfSubsequencesFound();
 
                 if (kvp.getValue().getFrequency() > functionalityWithHighestFrequency.getFrequency()) {
                     functionalityWithHighestFrequency = kvp.getValue();
@@ -169,10 +165,6 @@ public class JSONGenerator {
 
                 if (kvp.getValue().getTraces().size() > functionalityWithMoreDifferentTraces.getTraces().size()) {
                     functionalityWithMoreDifferentTraces = kvp.getValue();
-                }
-
-                if (kvp.getValue().getNumberOfSubsequencesFound() > functionalityWithMoreSubsequences.getNumberOfSubsequencesFound()) {
-                    functionalityWithMoreSubsequences = kvp.getValue();
                 }
 
                 for (Object t : kvp.getValue().getTraces()) {
@@ -196,9 +188,7 @@ public class JSONGenerator {
                 '\n' +
                 "Functionality with more different traces: " + functionalityWithMoreDifferentTraces.getLabel() + " (" + functionalityWithMoreDifferentTraces.getTraces().size() + " different traces)" +
                 '\n' +
-                "Functionality with longest trace: " + functionalityWithTheLongestTrace.getLabel() + " (traceId: " + longestTraceID + ") (#accesses: " + accessesListMaximumLength + ")" +
-                '\n' +
-                "Functionality with more subsequences: " + functionalityWithMoreSubsequences.getLabel() + " (#subsequences: " + functionalityWithMoreSubsequences.getNumberOfSubsequencesFound() + ")";
+                "Functionality with longest trace: " + functionalityWithTheLongestTrace.getLabel() + " (traceId: " + longestTraceID + ") (#accesses: " + accessesListMaximumLength + ")";
 
             System.out.println(str);
 

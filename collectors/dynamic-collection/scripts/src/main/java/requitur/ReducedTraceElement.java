@@ -1,7 +1,10 @@
 package requitur;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import requitur.content.Content;
+import serializers.ReducedTraceElementSerializer;
 
+@JsonSerialize(using = ReducedTraceElementSerializer.class)
 public class ReducedTraceElement {
 	private final Content value;
 	private final int occurrences;

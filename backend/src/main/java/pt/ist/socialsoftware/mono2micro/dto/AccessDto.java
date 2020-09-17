@@ -7,36 +7,33 @@ import pt.ist.socialsoftware.mono2micro.utils.serializers.AccessDtoSerializer;
 
 @JsonDeserialize(using = AccessDtoDeserializer.class)
 @JsonSerialize(using = AccessDtoSerializer.class)
-public class AccessDto {
+public class AccessDto extends ReducedTraceElementDto {
     private String entity;
     private String mode;
-    private int frequency;
 
     public AccessDto() {}
 
-    public String getEntity() {
-        return entity;
-    }
-    public void setEntity(String entity) {
-        this.entity = entity;
-    }
+    public String getEntity() { return entity; }
+    public void setEntity(String entity) { this.entity = entity; }
 
-    public String getMode() {
-        return mode;
-    }
-    public void setMode(String mode) {
-        this.mode = mode;
-    }
+    public String getMode() { return mode; }
+    public void setMode(String mode) { this.mode = mode; }
 
-    public int getFrequency() {
-        return frequency;
-    }
-    public void setFrequency(int frequency) {
-        this.frequency = frequency;
+    @Override
+	public boolean equals(final Object other) {
+        if (other instanceof Access) {
+            Access that = (Access) other;
+            return this.entity.equals(that.entity) && this.mode.equals(that.mode);
+        }
+        
+        return false;
     }
 
     @Override
     public String toString() {
-        return "[" + entity + ',' + mode + ']';
+        if (frequency < 2)
+            return "[" + entity + ',' + mode + ']';
+
+        return "[" + entity + ',' + mode + ',' + frequency + ']'
     }
 }
