@@ -21,8 +21,8 @@ public class AccessDto extends ReducedTraceElementDto {
 
     @Override
 	public boolean equals(final Object other) {
-        if (other instanceof Access) {
-            Access that = (Access) other;
+        if (other instanceof AccessDto) {
+            AccessDto that = (AccessDto) other;
             return this.entity.equals(that.entity) && this.mode.equals(that.mode);
         }
         
@@ -31,9 +31,9 @@ public class AccessDto extends ReducedTraceElementDto {
 
     @Override
     public String toString() {
-        if (frequency < 2)
+        if (occurrences < 2)
             return "[" + entity + ',' + mode + ']';
 
-        return "[" + entity + ',' + mode + ',' + frequency + ']'
+        return "[" + entity + ',' + mode + ',' + occurrences + ']';
     }
 }

@@ -1,9 +1,9 @@
 package pt.ist.socialsoftware.mono2micro.dto;
 
-public class Rule extends ReducedTraceElementDto {
+public class RuleDto extends ReducedTraceElementDto {
 	private int count;
 
-	public Rule() {}
+	public RuleDto() {}
 
 	public int getCount() { return count; }
 
@@ -11,9 +11,9 @@ public class Rule extends ReducedTraceElementDto {
 
 	@Override
 	public boolean equals(final Object other) {
-		if (other instanceof Rule) {
-            Rule that = (Rule) other;
-			return count == that.counter && occurrences == that.occurrences;
+		if (other instanceof RuleDto) {
+            RuleDto that = (RuleDto) other;
+			return count == that.count && occurrences == that.occurrences;
 		}
 
 		return false;
@@ -21,9 +21,9 @@ public class Rule extends ReducedTraceElementDto {
 	
 	@Override
 	public String toString() {
-        if (frequency < 2)
+        if (occurrences < 2)
             return "[" + count + "]";
 
-        return "[" + count + ',' + frequency + ']'
+        return "[" + count + ',' + occurrences + ']';
     }
 }

@@ -25,13 +25,14 @@ public class RequiturTests {
 	@Order(1)
 	public void test3AReduction() {
 		final List<String> mytrace = new LinkedList<>();
+		final Sequitur seg = new Sequitur();
 
 		for (int i = 0; i < 3; i++) {
 			mytrace.add("A");
+			seg.addStringElement("A");
 		}
 
-		final Sequitur seg = new Sequitur();
-		seg.addElements(mytrace);
+//		seg.addStringElements(mytrace);
 
 		System.out.println("Sequitur trace: " + seg.getTrace());
 		System.out.println("Sequitur rules: " + seg.getRules());
@@ -58,23 +59,33 @@ public class RequiturTests {
 	@Order(2)
 	public void testViewExample() {
 		final List<String> mytrace = new LinkedList<>();
+		final Sequitur seg = new Sequitur();
 
 		mytrace.add("A");
 		mytrace.add("B");
+
+		seg.addStringElement("A");
+		seg.addStringElement("B");
 
 		for (int j = 0; j < 2; j++) {
 			for (int i = 0; i < 2; i++) {
 				mytrace.add("C");
 				mytrace.add("D");
+
+				seg.addStringElement("C");
+				seg.addStringElement("D");
 			}
+
 			mytrace.add("E");
+			seg.addStringElement("E");
 		}
 
 		mytrace.add("E");
+		seg.addStringElement("E");
+
 		System.out.println("trace: " + mytrace);
 
-		final Sequitur seg = new Sequitur();
-		seg.addElements(mytrace);
+//		seg.addStringElements(mytrace);
 
 		System.out.println("Sequitur trace: " + seg.getTrace());
 		System.out.println("Sequitur rules: " + seg.getRules());
@@ -97,17 +108,19 @@ public class RequiturTests {
 	@Order(3)
 	public void testSimpleTraceReduction() {
 		final List<String> mytrace = new LinkedList<>();
+		final Sequitur seg = new Sequitur();
 
 		for (int i = 0; i < 2; i++) {
 			mytrace.add("A");
 			mytrace.add("B");
+
+			seg.addStringElement("A");
+			seg.addStringElement("B");
 		}
 
 		System.out.println("trace: " + mytrace);
 
-		final Sequitur seg = new Sequitur();
-
-		seg.addElements(mytrace);
+//		seg.addStringElements(mytrace);
 		System.out.println("Sequitur trace: " + seg.getTrace());
 		System.out.println("Sequitur rules: " + seg.getRules());
 
@@ -128,24 +141,33 @@ public class RequiturTests {
 	@Order(4)
 	public void testTriple() {
 		final List<String> mytrace = new LinkedList<>();
+		final Sequitur seg = new Sequitur();
 
 		for (int i = 0; i < 1; i++) {
 			mytrace.add("A");
 			mytrace.add("B");
 			mytrace.add("C");
+
+			seg.addStringElement("A");
+			seg.addStringElement("B");
+			seg.addStringElement("C");
+
 		}
 
 		for (int i = 0; i < 2; i++) {
 			mytrace.add("D");
 			mytrace.add("E");
 			mytrace.add("F");
+
+			seg.addStringElement("D");
+			seg.addStringElement("E");
+			seg.addStringElement("F");
 		}
 
 		System.out.println("trace: " + mytrace);
 
-		final Sequitur seg = new Sequitur();
 
-		seg.addElements(mytrace);
+//		seg.addStringElements(mytrace);
 		System.out.println("Sequitur trace: " + seg.getTrace());
 		System.out.println("Sequitur rules: " + seg.getRules());
 
@@ -166,17 +188,21 @@ public class RequiturTests {
 	@Order(5)
 	public void testRuleCompression() {
 		final List<String> mytrace = new LinkedList<>();
+		final Sequitur seg = new Sequitur();
+
 		for (int i = 0; i < 2; i++) {
 			mytrace.add("A");
 			mytrace.add("A");
 			mytrace.add("C");
+
+			seg.addStringElement("A");
+			seg.addStringElement("A");
+			seg.addStringElement("C");
 		}
 
 		System.out.println("trace: " + mytrace);
 
-		final Sequitur seg = new Sequitur();
-
-		seg.addElements(mytrace);
+//		seg.addStringElements(mytrace);
 		System.out.println("Sequitur trace: " + seg.getTrace());
 		System.out.println("Sequitur rules: " + seg.getRules());
 
@@ -197,21 +223,29 @@ public class RequiturTests {
 	@Order(6)
 	public void testRuleDeletion() {
 		final List<String> mytrace = new LinkedList<>();
+		final Sequitur seg = new Sequitur();
 
 		for (int j = 0; j < 2; j++) {
 			for (int i = 0; i < 2; i++) {
 				mytrace.add("A");
 				mytrace.add("A");
+
+				seg.addStringElement("A");
+				seg.addStringElement("A");
 			}
+
 			mytrace.add("B");
 			mytrace.add("B");
 			mytrace.add("C");
+
+			seg.addStringElement("B");
+			seg.addStringElement("B");
+			seg.addStringElement("C");
 		}
 
 		System.out.println("trace: " + mytrace);
 
-		final Sequitur seg = new Sequitur();
-		seg.addElements(mytrace);
+//		seg.addStringElements(mytrace);
 
 		System.out.println("Sequitur trace: " + seg.getTrace());
 		System.out.println("Sequitur rules: " + seg.getRules());
@@ -233,50 +267,54 @@ public class RequiturTests {
 	@Order(7)
 	public void testRuleOnce() {
 		final List<String> mytrace = new LinkedList<>();
+		final Sequitur seg = new Sequitur();
 
-		for (int j = 0; j < 2; j++) {
+		for (int j = 0; j < 100000; j++) {
 			for (int i = 0; i < 2; i++) {
 				mytrace.add("A");
 				mytrace.add("B");
 				mytrace.add("C");
 			}
+
 			mytrace.add("D");
 			mytrace.add("E");
 			mytrace.add("F");
 		}
+
 		mytrace.add("A");
 		mytrace.add("B");
 		mytrace.add("C");
 
-		System.out.println("trace: " + mytrace);
+//		System.out.println("trace: " + mytrace);
 
-		final Sequitur seg = new Sequitur();
-		seg.addElements(mytrace);
+		seg.addStringElements(mytrace);
 
-		System.out.println("Sequitur trace: " + seg.getTrace());
-		System.out.println("Sequitur rules: " + seg.getRules());
+//		System.out.println("Sequitur trace: " + seg.getTrace());
+//		System.out.println("Sequitur rules: " + seg.getRules());
 
 		final RunLengthEncodingSequitur runLengthEncodingSequitur = new RunLengthEncodingSequitur(seg);
 		runLengthEncodingSequitur.reduce();
 
 		final List<ReducedTraceElement> trace = runLengthEncodingSequitur.getReadableRLETrace();
-		System.out.println("Readable trace: " + trace);
+//		System.out.println("Readable trace: " + trace);
 
 		final List<Content> unexpandedTrace = seg.getUncompressedTrace();
-		System.out.println("unexpandedTrace: " + unexpandedTrace);
+//		System.out.println("unexpandedTrace: " + unexpandedTrace);
 
 		final List<Content> expandedTrace = TraceStateTester.expandContentTrace(unexpandedTrace, seg.getRules());
-		assertEquals(mytrace, SequiturTests.contentToStringTrace(expandedTrace));
+//		assertEquals(mytrace, SequiturTests.contentToStringTrace(expandedTrace));
 	}
 
+
+
 	@Test
-	@Order(5)
+	@Order(8)
 	public void testOverlappingSuccessor() {
 		final List<String> mytrace = new LinkedList<>();
 		Collections.addAll(mytrace, "D", "E", "G", "K", "I", "J", "I", "J", "I", "J", "X", "M", "L", "N", "O", "P", "T", "Q", "R", "S", "R", "S", "R", "S", "U", "V", "W", "V", "X", "M", "L", "N", "O", "P", "T", "Q", "R", "S");
 
 		final Sequitur seg = new Sequitur();
-		seg.addElements(mytrace);
+		seg.addStringElements(mytrace);
 
 		System.out.println("trace: " + mytrace);
 		System.out.println("Sequitur trace: " + seg.getTrace());
@@ -295,5 +333,44 @@ public class RequiturTests {
 		final List<Content> expandedTrace = TraceStateTester.expandContentTrace(uncompressedTrace, seg.getRules());
 		System.out.println("expandedTrace: " + expandedTrace);
 		assertEquals(mytrace, SequiturTests.contentToStringTrace(expandedTrace));
+	}
+
+	@Test
+	@Order(9)
+	public void testRulePerformance() {
+		final Sequitur seg = new Sequitur();
+
+		for (int j = 0; j < 100000; j++) {
+			for (int i = 0; i < 2; i++) {
+				seg.addStringElement("A");
+				seg.addStringElement("B");
+				seg.addStringElement("C");
+			}
+
+			seg.addStringElement("D");
+			seg.addStringElement("E");
+			seg.addStringElement("F");
+		}
+
+		seg.addStringElement("A");
+		seg.addStringElement("B");
+		seg.addStringElement("C");
+
+//		seg.addStringElements(mytrace);
+
+//		System.out.println("Sequitur trace: " + seg.getTrace());
+//		System.out.println("Sequitur rules: " + seg.getRules());
+
+		final RunLengthEncodingSequitur runLengthEncodingSequitur = new RunLengthEncodingSequitur(seg);
+		runLengthEncodingSequitur.reduce();
+
+		final List<ReducedTraceElement> trace = runLengthEncodingSequitur.getReadableRLETrace();
+//		System.out.println("Readable trace: " + trace);
+
+		final List<Content> unexpandedTrace = seg.getUncompressedTrace();
+//		System.out.println("unexpandedTrace: " + unexpandedTrace);
+
+		final List<Content> expandedTrace = TraceStateTester.expandContentTrace(unexpandedTrace, seg.getRules());
+//		assertEquals(mytrace, SequiturTests.contentToStringTrace(expandedTrace));
 	}
 }

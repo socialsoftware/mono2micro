@@ -1,8 +1,8 @@
 package pt.ist.socialsoftware.mono2micro.dto;
 
 public abstract class ReducedTraceElementDto {
-    private int frequency;
+    protected int occurrences;
 
-    public int getFrequency() { return frequency; }
-    public void setFrequency(int frequency) { this.frequency = frequency; }
+    public int getOccurrences() { return occurrences; }
+    public void setOccurrences(int occurrences) { this.occurrences = occurrences; }
 }

@@ -38,7 +38,8 @@ public class Sequitur {
       }
    }
 
-   public void addElement(final Symbol symbol) {
+   public void addElement(Content content) {
+      Symbol symbol = new Symbol(this, content);
       // TraceStateTester.assureCorrectState(this);
       if (startSymbol == null) {
          startSymbol = symbol;
@@ -126,27 +127,23 @@ public class Sequitur {
       return getTrace().toString();
    }
 
-   List<Content> addingElements;
+   public void addStringElement(final String stringElement) {
+      addElement(new StringContent(stringElement));
+   }
 
-   public void addElements(final List<String> mytrace) {
-      addingElements = new LinkedList<>();
-
+   public void addStringElements(final List<String> mytrace) {
       for (final String element : mytrace) {
-         addingElements.add(new StringContent(element));
-         final Symbol symbol = new Symbol(this, new StringContent(element));
-         addElement(symbol);
+         addElement(new StringContent(element));
       }
    }
 
+   public void addTraceElement(final TraceElement traceElement) {
+      addElement(new TraceElementContent(traceElement));
+   }
+
    public void addTraceElements(final List<TraceElement> calls2) {
-      addingElements = new LinkedList<>();
-
       for (final TraceElement element : calls2) {
-         final TraceElementContent content = new TraceElementContent(element);
-         addingElements.add(content);
-
-         final Symbol symbol = new Symbol(this, content);
-         addElement(symbol);
+         addElement(new TraceElementContent(element));
       }
    }
 
