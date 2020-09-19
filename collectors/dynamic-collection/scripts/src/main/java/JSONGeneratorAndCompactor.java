@@ -1,23 +1,29 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import domain.*;
 import org.apache.commons.cli.*;
-import domain.Access;
-import domain.Functionality;
-import domain.TraceWithAccesses;
-import utils.*;
+import requitur.RunLengthEncodingSequitur;
+import requitur.Sequitur;
+import utils.Utils;
 
 import java.io.*;
 import java.util.*;
 
-public class JSONGenerator {
+public class JSONGeneratorAndCompactor {
     static HashMap<String, Functionality> json = new HashMap<>();
     static HashMap<String, List<Access>> cache = new HashMap<>();
     static HashMap<String, String> domainEntities;
 
-    static TraceWithAccesses currentTrace = null;
+    static CompactedTrace currentTrace = null;
+    static Sequitur sequitur = null;
+    final static RunLengthEncodingSequitur runLengthEncodingSequitur = new RunLengthEncodingSequitur();
+
     static int currentKiekerTraceID = -1;
     static String currentFunctionalityLabel = "";
 
@@ -50,7 +56,17 @@ public class JSONGenerator {
 
         if (!(currentKiekerTraceID == traceID)) {
             if (currentTrace != null) {
+                if (!sequitur.isEmpty()) {
+                    runLengthEncodingSequitur.setSequitur(sequitur);
+                    runLengthEncodingSequitur.reduce();
+
+                    currentTrace.setElements(runLengthEncodingSequitur.getReadableRLETraceImproved());
+                } else {
+                    currentTrace.setElements(new ArrayList<>());
+                }
+
                 json.get(currentFunctionalityLabel).addTrace(currentTrace);
+
                 currentTrace = null;
             }
 
@@ -61,14 +77,22 @@ public class JSONGenerator {
 
             Utils.print("Trace: " + traceID, Utils.lineno());
 
-
             if (!json.containsKey(currentFunctionalityLabel)) {
                 json.put(currentFunctionalityLabel, new Functionality(currentFunctionalityLabel));
-                currentTrace = new TraceWithAccesses(0, 1);
+
+                currentTrace = new CompactedTrace(
+                    0,
+                    1
+                );
 
             } else {
-                currentTrace = new TraceWithAccesses(json.get(currentFunctionalityLabel).getFrequency(), 1);
+                currentTrace = new CompactedTrace(
+                    json.get(currentFunctionalityLabel).getFrequency(),
+                    1
+                );
             }
+
+            sequitur = new Sequitur();
         }
         else {
             if (
@@ -85,7 +109,7 @@ public class JSONGenerator {
 
                 List<Access> cachedAccessesList = cache.get(splitTrace[3]);
                 if (cachedAccessesList != null) {
-                    currentTrace.addMultipleAccesses(cachedAccessesList);
+                    sequitur.addAccessElements(cachedAccessesList);
                     return;
                 }
 
@@ -102,14 +126,13 @@ public class JSONGenerator {
 //                Utils.print("Accesses: " + accesses.toString(), Utils.lineno());
 
                 cache.put(splitTrace[3], accesses);
-                currentTrace.addMultipleAccesses(accesses);
+                sequitur.addAccessElements(accesses);
 
                 return;
             }
 
             Utils.print("[ERROR]: Unknown declaring type: " + declaringType, Utils.lineno());
             System.exit(-1);
-
         }
     }
 
@@ -145,10 +168,12 @@ public class JSONGenerator {
             int accessesListMaximumLength = 0;
             int longestTraceID = -1;
 
-            for (Object t : functionalityWithTheLongestTrace.getTraces()) {
-                if (((TraceWithAccesses) t).getAccesses().size() > accessesListMaximumLength) {
-                    accessesListMaximumLength = ((TraceWithAccesses ) t).getAccesses().size();
-                    longestTraceID = ((TraceWithAccesses) t).getId();
+            for (Trace t : functionalityWithTheLongestTrace.getTraces()) {
+                int traceAccessesListSize = ((CompactedTrace) t).getUncompressedSize();
+
+                if (traceAccessesListSize > accessesListMaximumLength) {
+                    accessesListMaximumLength = traceAccessesListSize;
+                    longestTraceID = t.getId();
                 }
             }
 
@@ -166,11 +191,13 @@ public class JSONGenerator {
                     functionalityWithMoreDifferentTraces = kvp.getValue();
                 }
 
-                for (Object t : kvp.getValue().getTraces()) {
-                    if (((TraceWithAccesses) t).getAccesses().size() > accessesListMaximumLength) {
-                        accessesListMaximumLength = ((TraceWithAccesses) t).getAccesses().size();
+                for (Trace t : kvp.getValue().getTraces()) {
+                    int traceAccessesListSize = ((CompactedTrace) t).getUncompressedSize();
+
+                    if (traceAccessesListSize > accessesListMaximumLength) {
                         functionalityWithTheLongestTrace = kvp.getValue();
-                        longestTraceID = ((TraceWithAccesses) t).getId();
+                        accessesListMaximumLength = traceAccessesListSize;
+                        longestTraceID = t.getId();
                     }
                 }
             }
@@ -271,8 +298,17 @@ public class JSONGenerator {
             }
 
 
-            if (currentTrace != null)
+            if (currentTrace != null) {
+                if (!sequitur.isEmpty()) {
+                    runLengthEncodingSequitur.setSequitur(sequitur);
+                    runLengthEncodingSequitur.reduce();
+                    currentTrace.setElements(runLengthEncodingSequitur.getReadableRLETraceImproved());
+                } else {
+                    currentTrace.setElements(new ArrayList<>());
+                }
+
                 json.get(currentFunctionalityLabel).addTrace(currentTrace);
+            }
 
             cache.clear();
 
@@ -294,7 +330,11 @@ public class JSONGenerator {
 
             Utils.print("Writing JSON to file " + outputFileDir, Utils.lineno());
 
-            mapper.writeValue(new FileOutputStream(outputFileDir), json);
+            DefaultPrettyPrinter pp = new DefaultPrettyPrinter();
+            pp.indentArraysWith( DefaultIndenter.SYSTEM_LINEFEED_INSTANCE );
+            ObjectWriter writer = mapper.writer(pp);
+
+            writer.writeValue(new FileOutputStream(outputFileDir), json);
 
             Utils.print("Writing phase has ended.", Utils.lineno());
 

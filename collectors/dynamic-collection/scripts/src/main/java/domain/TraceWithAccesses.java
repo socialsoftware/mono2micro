@@ -191,9 +191,9 @@ public class TraceWithAccesses extends Trace {
     public String toString() {
         return "<Trace id="
                 .concat(String.valueOf(id))
-                .concat(" frequency=")
+                .concat(" f=")
                 .concat("" + frequency)
-                .concat(" accesses=")
+                .concat(" a=")
                 .concat("" + accesses)
                 .concat(">");
     }

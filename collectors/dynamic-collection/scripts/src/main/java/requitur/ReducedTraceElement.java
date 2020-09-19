@@ -27,4 +27,14 @@ public class ReducedTraceElement {
 	public String toString() {
 		return "(" + value + ")x" + occurrences;
 	}
+
+	@Override
+	public boolean equals(final Object other) {
+		if (other instanceof ReducedTraceElement) {
+			ReducedTraceElement that = (ReducedTraceElement) other;
+			return this.value.equals(that.value) && this.occurrences == that.occurrences;
+		}
+
+		return false;
+	}
 }

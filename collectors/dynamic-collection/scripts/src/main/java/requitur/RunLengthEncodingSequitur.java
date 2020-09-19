@@ -12,13 +12,21 @@ public class RunLengthEncodingSequitur {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RunLengthEncodingSequitur.class);
 
-	private final Sequitur sequitur;
+	private Sequitur sequitur;
+
+	public RunLengthEncodingSequitur() {}
 
 	public RunLengthEncodingSequitur(final Sequitur sequitur) {
 		this.sequitur = sequitur;
 	}
 
+
+	public void setSequitur(Sequitur seq) {
+		this.sequitur = seq;
+	}
+
 	public void reduce() {
+		System.out.println(TraceStateTester.expandContentTrace(sequitur.getUncompressedTrace(), sequitur.getRules()));
 		reduce(sequitur.getStartSymbol());
 	}
 

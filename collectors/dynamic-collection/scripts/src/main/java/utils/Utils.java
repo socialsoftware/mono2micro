@@ -36,7 +36,7 @@ public class Utils {
         @Nullable String callerDynamicType,
         @Nullable String[] argumentTypes,
         @Nullable String returnType,
-        Map<String, Boolean> domainEntities
+        Map<String, String> domainEntities
     ) {
 //        Utils.print("Parsing method " + methodName + " of class " + declaringType, lineno());
         List<Access> accessesList = new ArrayList<>();

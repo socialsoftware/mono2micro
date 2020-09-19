@@ -84,12 +84,12 @@
                         <descriptorRefs>
                             <descriptorRef>jar-with-dependencies</descriptorRef>
                         </descriptorRefs>
-<!--                        <finalName>json-generator</finalName>-->
-<!--                        <archive>-->
-<!--                            <manifest>-->
-<!--                                <mainClass>JSONGenerator</mainClass>-->
-<!--                            </manifest>-->
-<!--                        </archive>-->
+                        <finalName>json-generator</finalName>
+                        <archive>
+                            <manifest>
+                                <mainClass>JSONGenerator</mainClass>
+                            </manifest>
+                        </archive>
 <!--                        <finalName>json-reducer</finalName>-->
 <!--                        <archive>-->
 <!--                            <manifest>-->
@@ -103,12 +103,18 @@
 <!--                                <mainClass>JSONCompactor</mainClass>-->
 <!--                            </manifest>-->
 <!--                        </archive>-->
-                        <finalName>controller-entities</finalName>
-                        <archive>
-                            <manifest>
-                                <mainClass>ControllerEntities</mainClass>
-                            </manifest>
-                        </archive>
+<!--                        <finalName>controller-entities</finalName>-->
+<!--                        <archive>-->
+<!--                            <manifest>-->
+<!--                                <mainClass>ControllerEntities</mainClass>-->
+<!--                            </manifest>-->
+<!--                        </archive>-->
+<!--                        <finalName>json-rle-seq-compactor</finalName>-->
+<!--                        <archive>-->
+<!--                            <manifest>-->
+<!--                                <mainClass>JSONRLESeqCompactor</mainClass>-->
+<!--                            </manifest>-->
+<!--                        </archive>-->
                     </configuration>
                 </plugin>
             </plugins>

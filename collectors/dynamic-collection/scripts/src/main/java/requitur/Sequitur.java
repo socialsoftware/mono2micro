@@ -14,12 +14,17 @@ public class Sequitur {
 
    private static final Logger LOG = LoggerFactory.getLogger(Sequitur.class);
 
+
    Map<Digram, Digram> digrams = new HashMap<>();
    Map<String, Rule> rules = new HashMap<>();
    List<Rule> unusedRules = new LinkedList<>();
    private Symbol startSymbol = new Symbol(this, (StringContent) null);
    Symbol lastSymbol = startSymbol;
    private int ruleIndex = 0;
+
+   public boolean isEmpty() {
+      return digrams.size() == 0;
+   }
 
    Digram link(final Symbol start, final Symbol end) {
       start.setSuccessor(end);
