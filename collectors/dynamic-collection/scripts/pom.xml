@@ -84,10 +84,16 @@
                         <descriptorRefs>
                             <descriptorRef>jar-with-dependencies</descriptorRef>
                         </descriptorRefs>
-                        <finalName>json-generator</finalName>
+<!--                        <finalName>json-generator</finalName>-->
+<!--                        <archive>-->
+<!--                            <manifest>-->
+<!--                                <mainClass>JSONGenerator</mainClass>-->
+<!--                            </manifest>-->
+<!--                        </archive>-->
+                        <finalName>json-generator-and-compactor</finalName>
                         <archive>
                             <manifest>
-                                <mainClass>JSONGenerator</mainClass>
+                                <mainClass>JSONGeneratorAndCompactor</mainClass>
                             </manifest>
                         </archive>
 <!--                        <finalName>json-reducer</finalName>-->
