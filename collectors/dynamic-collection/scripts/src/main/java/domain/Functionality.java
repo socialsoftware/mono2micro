@@ -22,7 +22,7 @@ public class Functionality {
     @JsonCreator
     public Functionality(
         @JsonProperty("f") int frequency,
-        @JsonProperty("traces") List<Trace> traces
+        @JsonProperty("t") List<Trace> traces
     ) {
         this.frequency = frequency;
         this.traces = traces;

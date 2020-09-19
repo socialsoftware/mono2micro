@@ -31,7 +31,7 @@ public class FunctionalitySerializer extends StdSerializer<Functionality> {
 		}
 
 		if (functionality.getTraces().size() > 0) {
-			jsonGenerator.writeObjectField("traces", functionality.getTraces());
+			jsonGenerator.writeObjectField("t", functionality.getTraces());
 		}
 
 		jsonGenerator.writeEndObject();

@@ -33,7 +33,7 @@ public class TraceWithAccessesSerializer extends StdSerializer<TraceWithAccesses
 		}
 
 		if (trace.getAccesses().size() > 0) {
-			jsonGenerator.writeObjectField("accs", trace.getAccesses());
+			jsonGenerator.writeObjectField("a", trace.getAccesses());
 		}
 
 		jsonGenerator.writeEndObject();

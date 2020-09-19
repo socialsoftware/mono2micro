@@ -32,8 +32,7 @@ public class CompactedTraceSerializer extends StdSerializer<CompactedTrace> {
 		}
 
 		if (compactedTrace.getElements().size() > 0) {
-			// FIXME replace "accs" by "a"
-			jsonGenerator.writeObjectField("accs", compactedTrace.getElements());
+			jsonGenerator.writeObjectField("a", compactedTrace.getElements());
 		}
 
 		jsonGenerator.writeEndObject();

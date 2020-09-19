@@ -22,14 +22,14 @@ public class TraceWithAccesses extends Trace {
     public TraceWithAccesses(
         @JsonProperty("id") int id,
         @JsonProperty("f") int frequency,
-        @JsonProperty("accs") List<Access> accesses)
+        @JsonProperty("a") List<Access> accesses)
     {
         this.id = id;
         this.frequency = frequency;
         this.accesses = accesses;
     }
 
-    @JsonProperty("accs")
+    @JsonProperty("a")
     public List<Access> getAccesses() { return this.accesses; }
 
     public void addSingleAccess(Access access) {
