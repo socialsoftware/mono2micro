@@ -5,26 +5,46 @@ import org.apache.commons.cli.*;
 import requitur.ReducedTraceElement;
 import requitur.RunLengthEncodingSequitur;
 import requitur.Sequitur;
+import requitur.content.Content;
+import requitur.content.RuleContent;
 import utils.Utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class JSONRLESeqCompactor {
 	private static int traceCounter = 0;
 
-	public static CompactedTrace compactTraceConsecutiveEqualSequences(TraceWithAccesses trace) {
+	public static CompactedTrace compactTrace(TraceWithAccesses trace) {
 		final Sequitur seg = new Sequitur();
-//		seg.addElements(trace.getAccesses());
 
-		final RunLengthEncodingSequitur runLengthEncodingSequitur = new RunLengthEncodingSequitur(seg);
-		runLengthEncodingSequitur.reduce();
+		final List<ReducedTraceElement> compactedAccessesList;
+		List<Access> accesses = trace.getAccesses();
 
-		final List<ReducedTraceElement> compactedAccessesList = runLengthEncodingSequitur.getReadableRLETrace();
-		System.out.println("Readable trace: " + trace);
+		if (accesses != null) {
+			seg.addAccessElements(accesses);
+			final RunLengthEncodingSequitur runLengthEncodingSequitur = new RunLengthEncodingSequitur(seg);
+			runLengthEncodingSequitur.reduce();
 
-		return new CompactedTrace(trace.getId(), trace.getFrequency(), compactedAccessesList);
+			compactedAccessesList = runLengthEncodingSequitur.getReadableRLETraceImproved();
+//			 System.out.println("Compacted accesses: " + compactedAccessesList);
+
+			return new CompactedTrace(
+				trace.getId(),
+				trace.getFrequency(),
+				compactedAccessesList
+			);
+		}
+
+		return new CompactedTrace(
+			trace.getId(),
+			trace.getFrequency(),
+			new ArrayList<>()
+		);
+
 	}
 
 	public static Options getCommandLineParserConfig() {
@@ -102,11 +122,11 @@ public class JSONRLESeqCompactor {
 								TraceWithAccesses t = jsonParser.readValueAs(TraceWithAccesses.class);
 
 								Utils.print("COMPACTING Trace with id: " + t.getId(), Utils.lineno());
-								CompactedTrace tws = compactTraceConsecutiveEqualSequences(t);
-//								Utils.print("COMPACTED trace:\n" + tws, Utils.lineno());
+								CompactedTrace compactedTrace = compactTrace(t);
+//								Utils.print("COMPACTED trace:\n" + compactedTrace, Utils.lineno());
 
 								Utils.print("WRITING COMPACTED trace...", Utils.lineno());
-								jGenerator.writeObject(tws);
+								jGenerator.writeObject(compactedTrace);
 								jGenerator.flush();
 
 								Utils.print("#Compacted traces: " + traceCounter, Utils.lineno());
