@@ -1,5 +1,6 @@
 package requitur;
 
+import domain.Access;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import requitur.content.Content;
@@ -7,10 +8,7 @@ import requitur.content.StringContent;
 import requitur.content.TraceElementContent;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Sequitur {
 
@@ -96,7 +94,7 @@ public class Sequitur {
 
    public List<Content> getTrace() {
       Symbol iterator = startSymbol.getSuccessor();
-      final List<Content> trace = new LinkedList<>();
+      final List<Content> trace = new ArrayList<>();
 
       while (iterator != null) {
          trace.add(iterator.getValue());
@@ -108,7 +106,7 @@ public class Sequitur {
 
    public List<Content> getUncompressedTrace() {
       Symbol iterator = startSymbol.getSuccessor();
-      final List<Content> trace = new LinkedList<>();
+      final List<Content> trace = new ArrayList<>();
 
       while (iterator != null) {
          for (int i = 0; i < iterator.getOccurrences(); i++) {
@@ -147,12 +145,22 @@ public class Sequitur {
       }
    }
 
+   public void addAccessElement(final Access access) {
+      addElement(access);
+   }
+
+   public void addAccessElements(final List<Access> accessesList) {
+      for (final Access access : accessesList) {
+         addElement(access);
+      }
+   }
+
    public Symbol getStartSymbol() {
       return startSymbol;
    }
 
    public static List<String> getExpandedTrace(final File methodTraceFile) throws IOException {
-      final List<String> trace1 = new LinkedList<>();
+      final List<String> trace1 = new ArrayList<>();
 
       try (BufferedReader br = new BufferedReader(new FileReader(methodTraceFile))) {
          String line;
@@ -167,7 +175,7 @@ public class Sequitur {
    }
 
    public static List<String> expandTraceElements(final List<String> elements) {
-      final List<String> added = new LinkedList<>();
+      final List<String> added = new ArrayList<>();
 
       for (final String element : elements) {
 
@@ -192,7 +200,7 @@ public class Sequitur {
 
    static class Return {
       int readLines = 1;
-      List<String> elements = new LinkedList<>();
+      List<String> elements = new ArrayList<>();
    }
 
    public static Return getCurrentValues(String line, final BufferedReader reader) throws IOException {
@@ -203,7 +211,7 @@ public class Sequitur {
          final String[] parts = trimmedLine.split(" ");
          final int count = Integer.parseInt(parts[0]);
          final int length = Integer.parseInt(parts[3].replaceAll("[\\(\\)]", ""));
-         final List<String> subList = new LinkedList<>();
+         final List<String> subList = new ArrayList<>();
 
          for (int i = 0; i < length;) {
             line = reader.readLine();

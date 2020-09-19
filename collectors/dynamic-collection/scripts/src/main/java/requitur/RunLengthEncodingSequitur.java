@@ -1,6 +1,6 @@
 package requitur;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -36,7 +36,7 @@ public class RunLengthEncodingSequitur {
 			subReduce(successor);
 
 			if (iterator.valueEqual(successor)) {
-				if (successor.getSuccessor() != null) {
+				if (successor.getSuccessor() != null) { // similar to linkedList deletion process
 					iterator.setSuccessor(successor.getSuccessor());
 					successor.getSuccessor().setPredecessor(iterator);
 
@@ -84,7 +84,7 @@ public class RunLengthEncodingSequitur {
 
 	public List<ReducedTraceElement> getReadableRLETrace() {
 		Symbol iterator = sequitur.getStartSymbol().getSuccessor();
-		final List<ReducedTraceElement> trace = new LinkedList<>();
+		final List<ReducedTraceElement> trace = new ArrayList<>();
 
 		while (iterator != null) {
 			addReadableElement(iterator, trace);
@@ -94,14 +94,28 @@ public class RunLengthEncodingSequitur {
 		return trace;
 	}
 
+	public List<ReducedTraceElement> getReadableRLETraceImproved() {
+		Symbol iterator = sequitur.getStartSymbol().getSuccessor();
+		final List<ReducedTraceElement> trace = new ArrayList<>();
+
+		while (iterator != null) {
+			addReadableElementImproved(iterator, trace);
+			iterator = iterator.getSuccessor();
+		}
+
+		return trace;
+	}
+
 	private int addReadableElement(final Symbol iterator, final List<ReducedTraceElement> trace) {
 		final Content content = iterator.getValue();
 		LOG.trace("Add: {} {}", content, content.getClass());
+
 		final ReducedTraceElement newElement = new ReducedTraceElement(content, iterator.getOccurrences());
 
 		if (content instanceof RuleContent) {
 			final RuleContent currentContent = (RuleContent) content;
-			trace.add(newElement);
+
+            trace.add(newElement);
 
 			final Symbol anchor = iterator.getRule().getAnchor();
 			Symbol ruleIterator = anchor.getSuccessor();
@@ -114,7 +128,41 @@ public class RunLengthEncodingSequitur {
 			}
 
 			currentContent.setCount(subElements - 1);
+
 			return subElements;
+
+		} else {
+			trace.add(newElement);
+
+			return 1;
+		}
+	}
+
+	private int addReadableElementImproved(final Symbol iterator, final List<ReducedTraceElement> trace) {
+		final Content content = iterator.getValue();
+		LOG.trace("Add: {} {}", content, content.getClass());
+
+		final ReducedTraceElement newElement = new ReducedTraceElement(content, iterator.getOccurrences());
+
+		if (content instanceof RuleContent) {
+			final RuleContent currentContent = (RuleContent) content;
+
+			if (newElement.getOccurrences() > 1)
+				trace.add(newElement);
+
+			final Symbol anchor = iterator.getRule().getAnchor();
+			Symbol ruleIterator = anchor.getSuccessor();
+
+			int subElements = 1;
+
+			while (ruleIterator != anchor) {
+				subElements += addReadableElementImproved(ruleIterator, trace);
+				ruleIterator = ruleIterator.getSuccessor();
+			}
+
+			currentContent.setCount(subElements - 1);
+
+			return newElement.getOccurrences() > 1 ? subElements : subElements - 1;
 
 		} else {
 			trace.add(newElement);

@@ -1,7 +1,7 @@
 package requitur;
 
 import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -171,7 +171,7 @@ public class TraceStateTester {
    }
 
    public static List<Content> expandReadableTrace(final List<ReducedTraceElement> trace, final Map<String, Rule> rules) {
-      final List<Content> result = new LinkedList<>();
+      final List<Content> result = new ArrayList<>();
 
       for (final ReducedTraceElement element : trace) {
 
@@ -191,7 +191,7 @@ public class TraceStateTester {
    }
 
    public static List<Content> expandContentTrace(final List<Content> trace, final Map<String, Rule> rules) {
-      final List<Content> result = new LinkedList<>();
+      final List<Content> result = new ArrayList<>();
 
       for (final Content element : trace) {
          if (element instanceof RuleContent) {
@@ -207,7 +207,7 @@ public class TraceStateTester {
    }
 
    public static List<Content> expandTrace(final List<ReducedTraceElement> trace, final Map<String, Rule> rules) {
-      final List<Content> result = new LinkedList<>();
+      final List<Content> result = new ArrayList<>();
 
       for (final ReducedTraceElement element : trace) {
          for (int i = 0; i < element.getOccurrences(); i++) {

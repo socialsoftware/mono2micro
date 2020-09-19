@@ -1,6 +1,6 @@
 package requitur;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -63,7 +63,7 @@ public class Rule {
    }
 
    public List<ReducedTraceElement> getElements() {
-      final List<ReducedTraceElement> result = new LinkedList<>();
+      final List<ReducedTraceElement> result = new ArrayList<>();
       Symbol iterator = anchor.getSuccessor();
 
       while (iterator != anchor) {

@@ -55,10 +55,10 @@ public class Access extends Content implements Cloneable  {
 
     @Override
     public String toString() {
-        return "<Access entity="
+        return "["
                 .concat(entity)
-                .concat(" type=")
+                .concat(",")
                 .concat(type.name())
-                .concat(">");
+                .concat("]");
     }
 }

@@ -17,7 +17,11 @@ public class CompactedTrace extends Trace {
 		this.elements = new ArrayList<>();
 	}
 
-	public CompactedTrace(int id, int frequency, List<ReducedTraceElement> elements) {
+	public CompactedTrace(
+		int id,
+		int frequency,
+		List<ReducedTraceElement> elements
+	) {
 		this.frequency = frequency;
 		this.id = id;
 		this.elements = elements;
