@@ -57,7 +57,7 @@ public class ControllerTracesIterator {
 
 				while (jsonParser.nextValue() != JsonToken.END_OBJECT) {
 					switch (jsonParser.getCurrentName()) {
-						case "traces":
+						case "t":
 							if (jsonParser.getCurrentToken() != JsonToken.START_ARRAY) {
 								System.err.println("Json must start with a left bracket");
 								System.exit(-1);

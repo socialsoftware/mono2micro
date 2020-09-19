@@ -5,14 +5,11 @@ import org.apache.commons.cli.*;
 import requitur.ReducedTraceElement;
 import requitur.RunLengthEncodingSequitur;
 import requitur.Sequitur;
-import requitur.content.Content;
-import requitur.content.RuleContent;
 import utils.Utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class JSONRLESeqCompactor {
