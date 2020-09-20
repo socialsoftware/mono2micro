@@ -1,0 +1,24 @@
+Regression results for the evaluation of the correlation between Uniform Complexity (uComplexity) and the number of clusters (N) of a decomposition with its Cohesion.
+
+
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:               cohesion   R-squared:                       0.110
+Model:                            OLS   Adj. R-squared:                  0.110
+Method:                 Least Squares   F-statistic:                 1.230e+04
+No. Observations:              199056   Prob (F-statistic):               0.00
+Df Residuals:                  199053   Log-Likelihood:                 79105.
+Df Model:                           2   AIC:                        -1.582e+05
+Covariance Type:            nonrobust   BIC:                        -1.582e+05
+===============================================================================
+                  coef    std err          t      P>|t|      [0.025      0.975]
+-------------------------------------------------------------------------------
+const           0.3972      0.001    387.231      0.000       0.395       0.399
+N               0.0255      0.000    149.850      0.000       0.025       0.026
+uComplexity    -0.0346      0.002    -17.865      0.000      -0.038      -0.031
+==============================================================================
+Omnibus:                     1939.251   Durbin-Watson:                   0.404
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):             1920.659
+Skew:                           0.223   Prob(JB):                         0.00
+Kurtosis:                       2.819   Cond. No.                         35.2
+==============================================================================
