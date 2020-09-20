@@ -308,7 +308,7 @@ public class Graph {
 						t = iter.getLongestTrace();
 
 						if (t != null) {
-							traceAccesses = t.getAccesses();
+							traceAccesses = t.expand();
 
 							if (traceAccesses.size() > 0)
 								calculateControllerSequences(controller, traceAccesses);
@@ -320,7 +320,7 @@ public class Graph {
 						t = iter.getTraceWithMoreDifferentAccesses();
 
 						if (t != null) {
-							traceAccesses = t.getAccesses();
+							traceAccesses = t.expand();
 
 							if (traceAccesses.size() > 0)
 								calculateControllerSequences(controller, traceAccesses);
@@ -334,7 +334,7 @@ public class Graph {
 
 						while (iter.hasMoreTraces()) {
 							t = iter.nextTrace();
-							traceAccesses = t.getAccesses();
+							traceAccesses = t.expand();
 
 							if (tracesIds.contains(String.valueOf(t.getId())) && traceAccesses.size() > 0)
 								calculateControllerSequences(controller, traceAccesses);
@@ -345,7 +345,7 @@ public class Graph {
 					default:
 						while (iter.hasMoreTraces()) {
 							t = iter.nextTrace();
-							traceAccesses = t.getAccesses();
+							traceAccesses = t.expand();
 
 							if (traceAccesses.size() > 0)
 								calculateControllerSequences(controller, traceAccesses);

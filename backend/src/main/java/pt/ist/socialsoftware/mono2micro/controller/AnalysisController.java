@@ -314,7 +314,7 @@ public class AnalysisController {
 							Utils.fillEntityDataStructures(
 								entityControllers,
 								e1e2PairCount,
-								t.getAccesses(),
+								t.expand(),
 								controllerName
 							);
 						}
@@ -322,14 +322,13 @@ public class AnalysisController {
 						break;
 
 					case WITH_MORE_DIFFERENT_ACCESSES:
-						// FIXME return accesses of longest trace instead of the trace itself
 						t = iter.getTraceWithMoreDifferentAccesses();
 
 						if (t != null) {
 							Utils.fillEntityDataStructures(
 								entityControllers,
 								e1e2PairCount,
-								t.getAccesses(),
+								t.expand(),
 								controllerName
 							);
 						}
@@ -347,7 +346,7 @@ public class AnalysisController {
 								Utils.fillEntityDataStructures(
 									entityControllers,
 									e1e2PairCount,
-									t.getAccesses(),
+									t.expand(),
 									controllerName
 								);
 							}
@@ -362,7 +361,7 @@ public class AnalysisController {
 							Utils.fillEntityDataStructures(
 								entityControllers,
 								e1e2PairCount,
-								t.getAccesses(),
+								t.expand(),
 								controllerName
 							);
 						}
