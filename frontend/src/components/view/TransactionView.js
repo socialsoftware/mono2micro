@@ -4,8 +4,15 @@ import {VisNetwork} from '../util/VisNetwork';
 import { DataSet } from "vis";
 import {types, views} from './Views';
 import BootstrapTable from 'react-bootstrap-table-next';
-
-import {Button, ButtonGroup, Card, Col, Container, Dropdown, DropdownButton, Row, CardDeck} from 'react-bootstrap';
+import CardDeck from 'react-bootstrap/CardDeck';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Row from 'react-bootstrap/Row';
+import Card from 'react-bootstrap/Card';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
 
 import {FunctionalityRedesignMenu, redesignOperations} from './FunctionalityRedesignMenu';
 import {ModalMessage} from "../util/ModalMessage";
