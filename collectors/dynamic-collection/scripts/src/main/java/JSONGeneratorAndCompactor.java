@@ -330,11 +330,11 @@ public class JSONGeneratorAndCompactor {
 
             Utils.print("Writing JSON to file " + outputFileDir, Utils.lineno());
 
-            DefaultPrettyPrinter pp = new DefaultPrettyPrinter();
-            pp.indentArraysWith( DefaultIndenter.SYSTEM_LINEFEED_INSTANCE );
-            ObjectWriter writer = mapper.writer(pp);
+//            DefaultPrettyPrinter pp = new DefaultPrettyPrinter();
+//            pp.indentArraysWith( DefaultIndenter.SYSTEM_LINEFEED_INSTANCE );
+//            ObjectWriter writer = mapper.writer(pp);
 
-            writer.writeValue(new FileOutputStream(outputFileDir), json);
+            mapper.writeValue(new FileOutputStream(outputFileDir), json);
 
             Utils.print("Writing phase has ended.", Utils.lineno());
 

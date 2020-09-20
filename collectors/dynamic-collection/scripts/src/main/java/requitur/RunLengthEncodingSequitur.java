@@ -26,7 +26,6 @@ public class RunLengthEncodingSequitur {
 	}
 
 	public void reduce() {
-		System.out.println(TraceStateTester.expandContentTrace(sequitur.getUncompressedTrace(), sequitur.getRules()));
 		reduce(sequitur.getStartSymbol());
 	}
 
