@@ -266,13 +266,13 @@ export class EntityView extends React.Component {
                     <span>
                         <EntityOperationsMenu
                             handleEntitySubmit={this.handleEntitySubmit}
-                            entities={this.state.entities}
-                            amountList={this.state.amountList}
+                            entities={entities}
+                            amountList={amountList}
                         />
 
                         <div style={{height: '700px'}}>
                             <VisNetwork
-                                visGraph={this.state.visGraph}
+                                visGraph={visGraph}
                                 options={options}
                                 onSelection={this.handleSelectNode}
                                 onDeselection={this.handleDeselectNode}

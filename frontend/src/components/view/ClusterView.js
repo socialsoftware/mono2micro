@@ -536,14 +536,14 @@ export class ClusterView extends React.Component {
                     </Button>
                 </ButtonGroup>
 
-                {this.state.currentSubView === "Graph" &&
+                {currentSubView === "Graph" &&
                     <span>
-                        {this.state.showMenu &&
+                        {showMenu &&
                         <ClusterOperationsMenu
-                            selectedCluster={this.state.selectedCluster}
-                            mergeWithCluster={this.state.mergeWithCluster}
-                            transferToCluster={this.state.transferToCluster}
-                            clusterEntities={this.state.clusterEntities}
+                            selectedCluster={selectedCluster}
+                            mergeWithCluster={mergeWithCluster}
+                            transferToCluster={transferToCluster}
+                            clusterEntities={clusterEntities}
                             handleSelectOperation={this.handleSelectOperation}
                             handleSelectEntities={this.handleSelectEntities}
                             handleSubmit={this.handleOperationSubmit}
@@ -552,7 +552,7 @@ export class ClusterView extends React.Component {
 
                         <div style={{height: '700px'}}>
                             <VisNetwork
-                                visGraph={this.state.visGraph}
+                                visGraph={visGraph}
                                 options={options}
                                 onSelection={this.handleSelectCluster}
                                 onDeselection={this.handleDeselectNode}
