@@ -1,14 +1,12 @@
 import React from 'react';
-import {
-    Button,
-    ButtonGroup,
-    ButtonToolbar,
-    Container,
-    Dropdown,
-    DropdownButton,
-    ListGroup,
-    Col, FormControl, InputGroup
-} from "react-bootstrap";
+import FormControl from 'react-bootstrap/FormControl';
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import ListGroup from 'react-bootstrap/ListGroup';
+import InputGroup from 'react-bootstrap/InputGroup';
 import Select from 'react-select';
 
 export const redesignOperations = {
@@ -207,7 +205,9 @@ export class FunctionalityRedesignMenu extends React.Component{
                             {this.props.modifiedEntities.map(e =>
                                 <Dropdown.Item
                                     key={e.cluster}
-                                    onSelect={() => this.setCompensatingCluster(e)}>{e.cluster}</Dropdown.Item>)}
+                                    onSelect={() => this.setCompensatingCluster(e)}>{e.cluster}
+                                </Dropdown.Item>
+                            )}
                         </DropdownButton>
                     }
 
@@ -220,7 +220,9 @@ export class FunctionalityRedesignMenu extends React.Component{
                             {this.props.DCGIAvailableClusters.map(e =>
                                 <Dropdown.Item
                                     key={e}
-                                    onSelect={() => this.DCGISelectCluster(e)}>{e}</Dropdown.Item>)}
+                                    onSelect={() => this.DCGISelectCluster(e)}>{e}
+                                </Dropdown.Item>
+                            )}
                         </DropdownButton>
                     }
 
