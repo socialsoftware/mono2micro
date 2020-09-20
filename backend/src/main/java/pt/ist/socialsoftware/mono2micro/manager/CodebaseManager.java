@@ -291,8 +291,10 @@ public class CodebaseManager {
 		}
 		else if (datafile instanceof String) {
 			File localDatafile = new File((String) datafile);
+
 			if (!localDatafile.exists())
 				throw new FileNotFoundException();
+
 
 			datafileInputStream = new FileInputStream(localDatafile);
 			codebase.setDatafilePath((String) datafile);

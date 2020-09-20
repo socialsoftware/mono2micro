@@ -519,7 +519,7 @@ export class TransactionView extends React.Component {
         if(selectedOperation === redesignOperations.NONE) {
             this.setState({
                 showMenu: true,
-                selectedLocalTransaction: selectedRedesign.redesign.find(c => c.id === nodeId.toString())
+                // selectedLocalTransaction: selectedRedesign.redesign.find(c => c.id === nodeId.toString())
             });
         }
 
@@ -1084,12 +1084,12 @@ export class TransactionView extends React.Component {
                                 >
                                     Sequence Table
                                 </Button>
-                                <Button
+                                {/* <Button
                                     disabled={this.state.currentSubView === "Functionality Redesign"}
                                     onClick={() => this.changeSubView("Functionality Redesign")}
                                 >
                                     Functionality Redesign
-                                </Button>
+                                </Button> */}
                             </ButtonGroup>
                         </Col>
                         {

@@ -79,6 +79,8 @@ public class TraceDto {
 
 		List<ReducedTraceElementDto> accesses = new ArrayList<>();
 
+		if (elements == null) return accesses;
+
 		while (i < elements.size()) {
 			ReducedTraceElementDto element = elements.get(i);
 

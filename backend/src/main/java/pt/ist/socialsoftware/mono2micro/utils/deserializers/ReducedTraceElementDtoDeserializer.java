@@ -38,7 +38,7 @@ public class ReducedTraceElementDtoDeserializer extends StdDeserializer<ReducedT
 				int occurrences = 0;
 				if (jsonParser.getCurrentToken() == JsonToken.VALUE_NUMBER_INT) {
 					occurrences = jsonParser.getValueAsInt();
-					jsonParser.nextToken();
+					jsonParser.nextValue();
 				}
 
 				if (jsonParser.getCurrentToken() != (JsonToken.END_ARRAY)) {
@@ -59,13 +59,15 @@ public class ReducedTraceElementDtoDeserializer extends StdDeserializer<ReducedT
 				jsonParser.nextValue();
 				String mode = jsonParser.getValueAsString();
 
+				jsonParser.nextValue();
+
 				int occurrences = 0;
 				if (jsonParser.getCurrentToken() == JsonToken.VALUE_NUMBER_INT) {
 					occurrences = jsonParser.getValueAsInt();
-					jsonParser.nextToken();
+					jsonParser.nextValue();
 				}
 
-				if (jsonParser.nextToken() != (JsonToken.END_ARRAY)) {
+				if (jsonParser.getCurrentToken() != (JsonToken.END_ARRAY)) {
 					throw new IOException("Error deserializing ReducedTraceElementDto - Missing END_ARRAY token on Access");
 				}
 
