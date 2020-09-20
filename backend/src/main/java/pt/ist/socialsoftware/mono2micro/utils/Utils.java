@@ -50,14 +50,14 @@ public class Utils {
     }
 
     // FIXME better name for this function pls
-    public static <A extends AccessDto> void  fillEntityDataStructures(
+    public static void  fillEntityDataStructures(
         Map<String,List<Pair<String,String>>> entityControllers,
         Map<String,Integer> e1e2PairCount,
-        List<A> accessesList,
+        List<AccessDto> accessesList,
         String controllerName
     ) {
         for (int i = 0; i < accessesList.size(); i++) {
-            A access = accessesList.get(i);
+            AccessDto access = accessesList.get(i);
             String entity = access.getEntity();
             String mode = access.getMode();
 
@@ -85,7 +85,7 @@ public class Utils {
             }
 
             if (i < accessesList.size() - 1) {
-                A nextAccess = accessesList.get(i + 1);
+                AccessDto nextAccess = accessesList.get(i + 1);
                 String nextEntity = nextAccess.getEntity();
 
                 if (!entity.equals(nextEntity)) {

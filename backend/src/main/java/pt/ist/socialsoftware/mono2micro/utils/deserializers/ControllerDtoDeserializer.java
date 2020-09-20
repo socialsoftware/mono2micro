@@ -23,12 +23,15 @@ public class ControllerDtoDeserializer extends StdDeserializer<ControllerDto> {
     public ControllerDto deserialize(JsonParser jsonParser, DeserializationContext ctxt) throws IOException {
         ControllerDto controllerDto = new ControllerDto();
         JsonToken jsonToken = jsonParser.currentToken();
+
         if (jsonToken == JsonToken.START_ARRAY) {
             List<AccessDto> controllerAccesses = new ArrayList<>();
-            while (jsonParser.nextValue() != JsonToken.END_ARRAY) {
+
+            while (jsonParser.nextValue() != JsonToken.END_ARRAY)
                 controllerAccesses.add(jsonParser.readValueAs(AccessDto.class));
-            }
+
             controllerDto.setControllerAccesses(controllerAccesses);
+
             return controllerDto;
         }
         throw new IOException("Error deserializing Controller");

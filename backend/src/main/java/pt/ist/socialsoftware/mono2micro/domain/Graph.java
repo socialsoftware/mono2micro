@@ -143,8 +143,8 @@ public class Graph {
 
 		int localTransactionsCounter = 1;
 
-		JSONArray entitiesSeq = new JSONArray();
-		JSONObject clusterAccess = new JSONObject();
+//		JSONArray entitiesSeq = new JSONArray();
+//		JSONObject clusterAccess = new JSONObject();
 
 		for (int i = 0; i < accesses.size(); i++) {
 			A access = accesses.get(i);
@@ -170,11 +170,11 @@ public class Graph {
 				controller.addEntity(entity, mode);
 				entityNameToMode.put(entity, mode);
 
-				clusterAccess.put("cluster", cluster);
-				clusterAccess.put("sequence", new JSONArray());
-				clusterAccess.getJSONArray("sequence").put(
-					new JSONArray().put(entity).put(mode)
-				);
+//				clusterAccess.put("cluster", cluster);
+//				clusterAccess.put("sequence", new JSONArray());
+//				clusterAccess.getJSONArray("sequence").put(
+//					new JSONArray().put(entity).put(mode)
+//				);
 
 			} else {
 
@@ -195,9 +195,9 @@ public class Graph {
 						controller.addEntity(entity, mode);
 						entityNameToMode.put(entity, mode);
 
-						clusterAccess.getJSONArray("sequence").put(
-							new JSONArray().put(entity).put(mode)
-						);
+//						clusterAccess.getJSONArray("sequence").put(
+//							new JSONArray().put(entity).put(mode)
+//						);
 					}
 
 				} else {
@@ -215,22 +215,22 @@ public class Graph {
 					entityNameToMode.put(entity, mode);
 
 
-					entitiesSeq.put(clusterAccess);
-					clusterAccess = new JSONObject();
-					clusterAccess.put("cluster", cluster);
-					clusterAccess.put("sequence", new JSONArray());
-					clusterAccess.getJSONArray("sequence").put(
-						new JSONArray().put(entity).put(mode)
-					);
+//					entitiesSeq.put(clusterAccess);
+//					clusterAccess = new JSONObject();
+//					clusterAccess.put("cluster", cluster);
+//					clusterAccess.put("sequence", new JSONArray());
+//					clusterAccess.getJSONArray("sequence").put(
+//						new JSONArray().put(entity).put(mode)
+//					);
 				}
 			}
 
 			previousCluster = cluster;
 		}
 
-		entitiesSeq.put(clusterAccess);
-		controller.addEntitiesSeq(entitiesSeq);
-		controller.createFunctionalityRedesign(Constants.DEFAULT_REDESIGN_NAME, true);
+//		entitiesSeq.put(clusterAccess);
+//		controller.addEntitiesSeq(entitiesSeq);
+//		controller.createFunctionalityRedesign(Constants.DEFAULT_REDESIGN_NAME, true);
 
 		if (lt != null && lt.getClusterAccesses().size() > 0)
 			ltList.add(lt);

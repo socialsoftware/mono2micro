@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class TraceDto {
 	protected int id;
@@ -77,8 +74,50 @@ public class TraceDto {
 		return counter;
 	}
 
+	private List<ReducedTraceElementDto> expand(List<ReducedTraceElementDto> elements) {
+		int i = 0;
+
+		List<ReducedTraceElementDto> accesses = new ArrayList<>();
+
+		while (i < elements.size()) {
+			ReducedTraceElementDto element = elements.get(i);
+
+			List<ReducedTraceElementDto> expandedElements = new ArrayList<>();
+
+			if (element instanceof RuleDto) {
+				RuleDto r = (RuleDto) element;
+
+				expandedElements.addAll(
+					expand(
+						elements.subList(
+							i + 1,
+							i + 1 + r.getCount()
+						)
+					)
+				);
+
+				i += 1 + r.getCount();
+
+			} else {
+				expandedElements.add(element);
+				i++;
+			}
+
+			for (int j = 0; j < element.getOccurrences(); j++)
+				accesses.addAll(expandedElements);
+
+		}
+
+		return accesses;
+	}
+
 	@JsonIgnore
-	public List<AccessDto> getAccesses() {
+	public List<AccessDto> expand() {
+		return (List<AccessDto>) ((List<?>) this.expand(elements)); // sorry but... it is what it is
+	}
+
+	@JsonIgnore
+	public List<AccessDto> getAccesses() { // no decompression
 		List<AccessDto> accesses = new ArrayList<>();
 
 		if (elements != null) {

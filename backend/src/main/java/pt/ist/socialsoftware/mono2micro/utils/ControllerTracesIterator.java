@@ -109,7 +109,7 @@ public class ControllerTracesIterator {
 			(limit == 0 || counter < limit)
 		);
 	}
-	
+
 	public TraceDto getLongestTrace() throws IOException {
 		if (this.hasMoreTraces()) {
 			TraceDto t1 = this.nextTrace();
