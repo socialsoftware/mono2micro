@@ -24,6 +24,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
@@ -162,7 +163,7 @@ public class Dendrogram {
 		expert.setName(expertName);
 		if (expertFile.isPresent()) {
 			InputStream is = new BufferedInputStream(expertFile.get().getInputStream());
-			JSONObject expertCut = new JSONObject(IOUtils.toString(is, "UTF-8"));
+			JSONObject expertCut = new JSONObject(IOUtils.toString(is, StandardCharsets.UTF_8));
 			is.close();
 
 			Iterator<String> clusters = expertCut.getJSONObject("clusters").keys();

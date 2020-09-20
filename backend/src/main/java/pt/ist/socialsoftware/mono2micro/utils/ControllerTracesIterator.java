@@ -96,9 +96,8 @@ public class ControllerTracesIterator {
 		TraceDto t = jsonParser.readValueAs(TraceDto.class);
 		jsonParser.nextToken();
 
-		if (t.getSequences() != null && t.getSequences().size() > 0) {
+		if (t.getElements() != null && t.getElements().size() > 0)
 			counter++;
-		}
 
 		return t;
 	}
@@ -110,19 +109,19 @@ public class ControllerTracesIterator {
 			(limit == 0 || counter < limit)
 		);
 	}
-
+	
 	public TraceDto getLongestTrace() throws IOException {
 		if (this.hasMoreTraces()) {
 			TraceDto t1 = this.nextTrace();
-			int t1AccessesListSize = t1.getAccesses().size();
+			int t1UncompressedSize = t1.getUncompressedSize();
 
 			while (this.hasMoreTraces()) {
 				TraceDto t2 = this.nextTrace();
-				int t2AccessesListSize = t2.getAccesses().size();
+				int t2UncompressedSize = t2.getUncompressedSize();
 
-				if (t2AccessesListSize > t1AccessesListSize) {
+				if (t2UncompressedSize > t1UncompressedSize) {
 					t1 = t2;
-					t1AccessesListSize = t2AccessesListSize;
+					t1UncompressedSize = t2UncompressedSize;
 				}
 			}
 
@@ -162,7 +161,7 @@ public class ControllerTracesIterator {
 
 			while (this.hasMoreTraces()) {
 				TraceDto t2 = this.nextTrace();
-				HashSet<String> t2AcessesSet = t2.getAccessesSet();
+				HashSet<String> t2AccessesSet = t2.getAccessesSet();
 
 				Iterator<Map.Entry<String, HashSet<String>>> iter = traceIdToAccessesMap.entrySet().iterator();
 				boolean t2IsRepresentative = true;
@@ -170,12 +169,12 @@ public class ControllerTracesIterator {
 				while (iter.hasNext()) {
 					Map.Entry<String, HashSet<String>> entry = iter.next();
 
-					if (entry.getValue().containsAll(t2AcessesSet)) { // t2 C t[i] => t2 is not representative
+					if (entry.getValue().containsAll(t2AccessesSet)) { // t2 C t[i] => t2 is not representative
 						t2IsRepresentative = false;
 						break;
 					}
 
-					else if(t2AcessesSet.containsAll(entry.getValue())) { // t[i] C t2 => t2 is representative and t[i] isn't
+					else if(t2AccessesSet.containsAll(entry.getValue())) { // t[i] C t2 => t2 is representative and t[i] isn't
 						iter.remove();
 					}
 
@@ -183,7 +182,7 @@ public class ControllerTracesIterator {
 				}
 
 				if (t2IsRepresentative)
-					traceIdToAccessesMap.put(String.valueOf(t2.getId()), t2AcessesSet);
+					traceIdToAccessesMap.put(String.valueOf(t2.getId()), t2AccessesSet);
 			}
 		}
 

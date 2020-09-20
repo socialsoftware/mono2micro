@@ -2,8 +2,6 @@ package pt.ist.socialsoftware.mono2micro.domain;
 
 
 import java.util.*;
-import org.json.JSONArray;
-import org.json.JSONException;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -73,8 +71,8 @@ public class Controller {
 	private float complexity;
 	private Map<String, String> entities = new HashMap<>(); // <entity, mode>
 	private DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph;
-	private String entitiesSeq = "[]";
-	private List<FunctionalityRedesign> functionalityRedesigns = new ArrayList<>();
+//	private String entitiesSeq = "[]";
+//	private List<FunctionalityRedesign> functionalityRedesigns = new ArrayList<>();
 
 	public Controller() {}
 
@@ -120,9 +118,9 @@ public class Controller {
 		this.entities = entities;
 	}
 
-	public String getEntitiesSeq() { return entitiesSeq; }
-
-	public void setEntitiesSeq(String entitiesSeq) { this.entitiesSeq = entitiesSeq; }
+//	public String getEntitiesSeq() { return entitiesSeq; }
+//
+//	public void setEntitiesSeq(String entitiesSeq) { this.entitiesSeq = entitiesSeq; }
 
 	public void addEntity(String entity, String mode) {
 		if (this.entities.containsKey(entity) && !this.entities.get(entity).equals(mode)) {
@@ -188,89 +186,89 @@ public class Controller {
 		return successorListOf(localTransactionsGraph, lt);
 	}
 
-	public List<FunctionalityRedesign> getFunctionalityRedesigns() {
-		return functionalityRedesigns;
-	}
-
-	public void setFunctionalityRedesigns(List<FunctionalityRedesign> functionalityRedesigns) {
-		this.functionalityRedesigns = functionalityRedesigns;
-	}
+//	public List<FunctionalityRedesign> getFunctionalityRedesigns() {
+//		return functionalityRedesigns;
+//	}
+//
+//	public void setFunctionalityRedesigns(List<FunctionalityRedesign> functionalityRedesigns) {
+//		this.functionalityRedesigns = functionalityRedesigns;
+//	}
 
 	public void setLocalTransactionsGraph(DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph) {
 		this.localTransactionsGraph = localTransactionsGraph;
     }
     
-	public void addEntitiesSeq(JSONArray entitiesSeq) throws JSONException {
-		this.setEntitiesSeq(entitiesSeq.toString());
-	}
+//	public void addEntitiesSeq(JSONArray entitiesSeq) throws JSONException {
+//		this.setEntitiesSeq(entitiesSeq.toString());
+//	}
 
-	public void createFunctionalityRedesign(String name, boolean usedForMetrics) throws JSONException {
-		FunctionalityRedesign functionalityRedesign = new FunctionalityRedesign(name);
-		functionalityRedesign.setUsedForMetrics(usedForMetrics);
-
-		JSONArray sequence = new JSONArray(this.entitiesSeq);
-		pt.ist.socialsoftware.mono2micro.domain.LocalTransaction lt = new pt.ist.socialsoftware.mono2micro.domain.LocalTransaction(
-				Integer.toString(-1),
-				this.name,
-				"",
-				new ArrayList<>(),
-				this.name
-		);
-
-		lt.getRemoteInvocations().add(0);
-		functionalityRedesign.getRedesign().add(lt);
-
-		for(int i=0; i < sequence.length(); i++){
-			lt = new pt.ist.socialsoftware.mono2micro.domain.LocalTransaction(
-				Integer.toString(i),
-				sequence.getJSONObject(i).getString("cluster"),
-				sequence.getJSONObject(i).getString("sequence"),
-				new ArrayList<>(),
-					i + ": " + sequence.getJSONObject(i).getString("cluster")
-			);
-
-			functionalityRedesign.getRedesign().add(lt);
-
-			if(i > 0) {
-				functionalityRedesign.getRedesign().get(i).getRemoteInvocations().add(i);
-			}
-		}
-		this.functionalityRedesigns.add(0,functionalityRedesign);
-	}
-
-	public FunctionalityRedesign getFunctionalityRedesign(String redesignName){
-		return this.functionalityRedesigns.stream().filter(fr -> fr.getName().equals(redesignName)).findFirst().orElse(null);
-	}
-
-	public boolean changeFunctionalityRedesignName(String oldName, String newName){
-		FunctionalityRedesign functionalityRedesign = this.functionalityRedesigns.stream().filter(fr -> fr.getName().equals(oldName)).findFirst().orElse(null);
-		functionalityRedesign.setName(newName);
-		return true;
-	}
-
-	public FunctionalityRedesign frUsedForMetrics(){
-		for(FunctionalityRedesign fr : this.getFunctionalityRedesigns()){
-			if(fr.isUsedForMetrics()) return fr;
-		}
-		return null;
-	}
-
-	public boolean checkNameValidity(String name){
-		return this.functionalityRedesigns.stream().filter(fr -> fr.getName().equals(name)).findFirst().orElse(null) == null;
-	}
-
-	public void deleteRedesign(String redesignName){
-		if(this.functionalityRedesigns.removeIf(fr -> fr.getName().equals(redesignName))){
-			this.functionalityRedesigns.get(0).setUsedForMetrics(true);
-		}
-	}
-
-	public void changeFRUsedForMetrics(String redesignName){
-		for(FunctionalityRedesign fr : this.getFunctionalityRedesigns()) {
-			if (fr.isUsedForMetrics())
-				fr.setUsedForMetrics(false);
-			else if (fr.getName().equals(redesignName))
-				fr.setUsedForMetrics(true);
-		}
-	}
+//	public void createFunctionalityRedesign(String name, boolean usedForMetrics) throws JSONException {
+//		FunctionalityRedesign functionalityRedesign = new FunctionalityRedesign(name);
+//		functionalityRedesign.setUsedForMetrics(usedForMetrics);
+//
+//		JSONArray sequence = new JSONArray(this.entitiesSeq);
+//		pt.ist.socialsoftware.mono2micro.domain.LocalTransaction lt = new pt.ist.socialsoftware.mono2micro.domain.LocalTransaction(
+//				Integer.toString(-1),
+//				this.name,
+//				"",
+//				new ArrayList<>(),
+//				this.name
+//		);
+//
+//		lt.getRemoteInvocations().add(0);
+//		functionalityRedesign.getRedesign().add(lt);
+//
+//		for(int i=0; i < sequence.length(); i++){
+//			lt = new pt.ist.socialsoftware.mono2micro.domain.LocalTransaction(
+//				Integer.toString(i),
+//				sequence.getJSONObject(i).getString("cluster"),
+//				sequence.getJSONObject(i).getString("sequence"),
+//				new ArrayList<>(),
+//					i + ": " + sequence.getJSONObject(i).getString("cluster")
+//			);
+//
+//			functionalityRedesign.getRedesign().add(lt);
+//
+//			if(i > 0) {
+//				functionalityRedesign.getRedesign().get(i).getRemoteInvocations().add(i);
+//			}
+//		}
+//		this.functionalityRedesigns.add(0,functionalityRedesign);
+//	}
+//
+//	public FunctionalityRedesign getFunctionalityRedesign(String redesignName){
+//		return this.functionalityRedesigns.stream().filter(fr -> fr.getName().equals(redesignName)).findFirst().orElse(null);
+//	}
+//
+//	public boolean changeFunctionalityRedesignName(String oldName, String newName){
+//		FunctionalityRedesign functionalityRedesign = this.functionalityRedesigns.stream().filter(fr -> fr.getName().equals(oldName)).findFirst().orElse(null);
+//		functionalityRedesign.setName(newName);
+//		return true;
+//	}
+//
+//	public FunctionalityRedesign frUsedForMetrics(){
+//		for(FunctionalityRedesign fr : this.getFunctionalityRedesigns()){
+//			if(fr.isUsedForMetrics()) return fr;
+//		}
+//		return null;
+//	}
+//
+//	public boolean checkNameValidity(String name){
+//		return this.functionalityRedesigns.stream().filter(fr -> fr.getName().equals(name)).findFirst().orElse(null) == null;
+//	}
+//
+//	public void deleteRedesign(String redesignName){
+//		if(this.functionalityRedesigns.removeIf(fr -> fr.getName().equals(redesignName))){
+//			this.functionalityRedesigns.get(0).setUsedForMetrics(true);
+//		}
+//	}
+//
+//	public void changeFRUsedForMetrics(String redesignName){
+//		for(FunctionalityRedesign fr : this.getFunctionalityRedesigns()) {
+//			if (fr.isUsedForMetrics())
+//				fr.setUsedForMetrics(false);
+//			else if (fr.getName().equals(redesignName))
+//				fr.setUsedForMetrics(true);
+//		}
+//	}
 }

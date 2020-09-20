@@ -18,6 +18,7 @@ import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -299,13 +300,18 @@ public class CodebaseManager {
 
 		codebase.addProfile("Generic", Utils.getJsonFileKeys(datafileInputStream));
 
+		datafileInputStream.close();
+
 		return codebase;
 	}
 
 	public Codebase getCodebase(String codebaseName) throws IOException {
 		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/codebase.json");
 
-		return objectMapper.readerFor(Codebase.class).readValue(is);
+		Codebase codebase = objectMapper.readerFor(Codebase.class).readValue(is);
+		is.close();
+
+		return codebase;
 	}
 
 	public void writeCodebase(Codebase codebase) throws IOException {
@@ -319,12 +325,26 @@ public class CodebaseManager {
 		);
 
 		InputStream is = new FileInputStream(codebase.getDatafilePath());
-		return objectMapper.readerFor(new TypeReference<HashMap<String, ControllerDto>>() {}).readValue(is);
+
+		HashMap<String, ControllerDto> datafile = objectMapper.readerFor(
+			new TypeReference<HashMap<String, ControllerDto>>() {}
+		).readValue(is);
+
+		is.close();
+
+		return datafile;
 	}
 
 	public HashMap<String, ControllerDto> getDatafile(Codebase codebase) throws IOException {
 		InputStream is = new FileInputStream(codebase.getDatafilePath());
-		return objectMapper.readerFor(new TypeReference<HashMap<String, ControllerDto>>() {}).readValue(is);
+
+		HashMap<String, ControllerDto> datafile = objectMapper.readerFor(
+			new TypeReference<HashMap<String, ControllerDto>>() {}
+		).readValue(is);
+
+		is.close();
+
+		return datafile;
 	}
 
 	public void writeDatafile(String codebaseName, HashMap datafile) throws IOException {
@@ -336,8 +356,11 @@ public class CodebaseManager {
 
 	public JSONObject getSimilarityMatrix(String codebaseName, String dendrogramName) throws IOException, JSONException {
 		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/" + dendrogramName + "/similarityMatrix.json");
+
 		JSONObject similarityMatrixJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
+
 		is.close();
+
 		return similarityMatrixJSON;
 	}
 
@@ -353,14 +376,25 @@ public class CodebaseManager {
 
 	public JSONObject getClusters(String codebaseName, String dendrogramName, String graphName) throws IOException, JSONException {
 		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/" + dendrogramName + "/" + graphName + "/clusters.json");
-		JSONObject clustersJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
+
+		JSONObject clustersJSON = new JSONObject(IOUtils.toString(is, StandardCharsets.UTF_8));
+
 		is.close();
+
 		return clustersJSON;
 	}
 
 	public HashMap<String, CutInfoDto> getAnalyserResults(String codebaseName) throws IOException {
 		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json");
-		return objectMapper.readValue(is, new TypeReference<HashMap<String, CutInfoDto>>() {});
+
+		HashMap<String, CutInfoDto> analyserResults = objectMapper.readValue(
+			is,
+			new TypeReference<HashMap<String, CutInfoDto>>() {}
+		);
+
+		is.close();
+
+		return analyserResults;
 	}
 
 	public void writeAnalyserResults(String codebaseName, HashMap analyserJSON) throws IOException {
@@ -372,7 +406,14 @@ public class CodebaseManager {
 
 	public HashMap<String, HashMap<String, Set<String>>> getAnalyserCut(String codebaseName, String cutName) throws IOException, JSONException {
 		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/analyser/cuts/" + cutName + ".json");
-		return objectMapper.readValue(is, new TypeReference<HashMap<String, HashMap<String, Set<String>>>>() {});
+
+		HashMap<String, HashMap<String, Set<String>>> value = objectMapper.readValue(
+			is,
+			new TypeReference<HashMap<String, HashMap<String, Set<String>>>>() {}
+		);
+
+		is.close();
+		return value;
 	}
 
 	public void writeAnalyserSimilarityMatrix(String codebaseName, JSONObject similarityMatrix) throws IOException, JSONException {
