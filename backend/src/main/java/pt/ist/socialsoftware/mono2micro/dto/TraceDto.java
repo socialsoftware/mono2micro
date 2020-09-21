@@ -101,10 +101,21 @@ public class TraceDto {
 				i += 1 + r.getCount();
 
 			} else {
-				expandedElements.add(element);
+				AccessDto a = (AccessDto) element;
+
+				AccessDto newAccess = new AccessDto();
+				newAccess.setOccurrences(0);
+				newAccess.setEntity(a.getEntity());
+				newAccess.setMode(a.getMode());
+
+				expandedElements.add(newAccess);
 				i++;
 			}
 
+			// FIXME maybe here we can assume that if we have many consecutive equal accesses,
+			// FIXME we are only interested on the first two meaning a Pair<e1, e1>
+			// FIXME and thus, will optimize decrease the number of accesses this trace will have
+			// FIXME only reduced elements with 2 occurrences to detect those pairs
 			for (int j = 0; j < element.getOccurrences(); j++)
 				accesses.addAll(expandedElements);
 

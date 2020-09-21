@@ -35,7 +35,7 @@ public class ReducedTraceElementDtoDeserializer extends StdDeserializer<ReducedT
 
 				jsonParser.nextValue();
 
-				int occurrences = 0;
+				int occurrences = 1;
 				if (jsonParser.getCurrentToken() == JsonToken.VALUE_NUMBER_INT) {
 					occurrences = jsonParser.getValueAsInt();
 					jsonParser.nextValue();
@@ -61,7 +61,7 @@ public class ReducedTraceElementDtoDeserializer extends StdDeserializer<ReducedT
 
 				jsonParser.nextValue();
 
-				int occurrences = 0;
+				int occurrences = 1;
 				if (jsonParser.getCurrentToken() == JsonToken.VALUE_NUMBER_INT) {
 					occurrences = jsonParser.getValueAsInt();
 					jsonParser.nextValue();
