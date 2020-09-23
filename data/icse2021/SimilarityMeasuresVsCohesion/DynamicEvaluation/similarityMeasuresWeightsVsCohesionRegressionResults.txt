@@ -1,0 +1,22 @@
+Regression results for the evaluation of the correlation between weights given to the four similarity measures, access (A), write (W), read(R) and sequence (S) and the number of clusters (N) of a decomposition with its Cohesion.
+
+
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:               cohesion   R-squared:                       0.638
+Model:                            OLS   Adj. R-squared:                  0.638
+Method:                 Least Squares   F-statistic:                     2014.
+No. Observations:                4576   Prob (F-statistic):               0.00
+Df Residuals:                    4571   Log-Likelihood:                 5510.1
+Df Model:                           4   AIC:                        -1.101e+04
+Covariance Type:            nonrobust   BIC:                        -1.098e+04
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+const          0.0001   1.29e-06    116.055      0.000       0.000       0.000
+n              0.0382      0.000     81.474      0.000       0.037       0.039
+A              0.0045   4.77e-05     95.080      0.000       0.004       0.005
+W              0.0025   4.77e-05     53.233      0.000       0.002       0.003
+R              0.0042   4.77e-05     88.983      0.000       0.004       0.004
+S              0.0037   4.77e-05     76.741      0.000       0.004       0.004
+==============================================================================
