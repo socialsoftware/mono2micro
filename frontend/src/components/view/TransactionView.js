@@ -434,7 +434,6 @@ export class TransactionView extends React.Component {
         functionalityRedesign.redesign.find(e => e.id === (-1).toString())
             .remoteInvocations.forEach((id) => {
                 const lt = functionalityRedesign.redesign.find(e => e.id === id.toString());
-                let cluster = this.state.graph.clusters.find(cluster => cluster.name === lt.cluster);
                 nodes.push({
                     id: lt.id,
                     title: lt.type,
@@ -456,7 +455,6 @@ export class TransactionView extends React.Component {
                 let localTransaction = functionalityRedesign.redesign.find(entry => entry.id === nodes[i].id.toString());
                 localTransaction.remoteInvocations.forEach((id) => {
                     let lt = functionalityRedesign.redesign.find(e => e.id === id.toString());
-                    let cluster = this.state.graph.clusters.find(cluster => cluster.name === lt.cluster);
 
                     nodes.push({
                         id: lt.id,
@@ -496,7 +494,7 @@ export class TransactionView extends React.Component {
 
     handleSelectNode(nodeId) {
         console.log(nodeId);
-        if(nodeId === -1 && this.state.selectedOperation !== redesignOperations.SQ) return;
+
         if(this.state.compareRedesigns) return;
 
         if(this.state.selectedOperation === redesignOperations.NONE) {
@@ -504,7 +502,10 @@ export class TransactionView extends React.Component {
                 showMenu: true,
                 selectedLocalTransaction: this.state.selectedRedesign.redesign.find(c => c.id === nodeId.toString())
             });
+            return;
         }
+
+        if(nodeId === -1 && this.state.selectedOperation !== redesignOperations.SQ) return;
 
         if(this.state.selectedOperation === redesignOperations.SQ){
             if(nodeId.toString() === this.state.selectedLocalTransaction.id){
@@ -920,7 +921,8 @@ export class TransactionView extends React.Component {
                 type: controller.type,
                 complexity: controller.complexity,
                 functionalityComplexity: controller.functionalityRedesigns.find(fr => fr.usedForMetrics).functionalityComplexity,
-                systemComplexity: controller.functionalityRedesigns.find(fr => fr.usedForMetrics).systemComplexity
+                systemComplexity: controller.functionalityRedesigns.find(fr => fr.usedForMetrics).systemComplexity,
+                total: controller.functionalityRedesigns.find(fr => fr.usedForMetrics).functionalityComplexity + controller.functionalityRedesigns.find(fr => fr.usedForMetrics).systemComplexity
             }
         });
 
@@ -949,6 +951,10 @@ export class TransactionView extends React.Component {
             text: 'System Complexity',
             sort: true
         }, {
+            dataField: 'total',
+            text: 'Total',
+            sort: true
+        },  {
             dataField: 'inconsistencyComplexity',
             text: 'Query Inconsistency Complexity',
             sort: true
@@ -1014,8 +1020,15 @@ export class TransactionView extends React.Component {
                         {this.state.selectedRedesign !== null &&
                             <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
                                 {this.state.showGraph && this.state.currentSubView === "Functionality Redesign" &&
+                                    this.state.controller.type === "SAGA" &&
                                 <h4 style={{color: "#666666", textAlign: "center"}}>
                                     Functionality Complexity: {this.state.selectedRedesign.functionalityComplexity} - System Complexity: {this.state.selectedRedesign.systemComplexity}
+                                </h4>
+                                }
+                                {this.state.showGraph && this.state.currentSubView === "Functionality Redesign" &&
+                                this.state.controller.type === "QUERY" &&
+                                <h4 style={{color: "#666666", textAlign: "center"}}>
+                                    Query Inconsistency Complexity: {this.state.selectedRedesign.inconsistencyComplexity}
                                 </h4>
                                 }
                             </Col>
@@ -1087,7 +1100,7 @@ export class TransactionView extends React.Component {
                     <div>
                         <br/>
 
-                        <h4 style={{color: "#666666"}}>Redesigns</h4>
+                        <h4 style={{color: "#666666"}}>{this.state.controller.name} Redesigns</h4>
 
                         {this.state.controller.functionalityRedesigns.length >= 2 &&
                         <ButtonGroup className="mb-2">
@@ -1126,21 +1139,37 @@ export class TransactionView extends React.Component {
                     <Container fluid>
                         <Row>
                             <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
-                                <h4 style={{color: "#666666", textAlign: "center"}}>
-                                    {this.state.selectedRedesignsToCompare[0]}
-                                </h4>
-                                <h4 style={{color: "#666666", textAlign: "center"}}>
-                                    Functionality Complexity: {this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[0])[0].functionalityComplexity} - System Complexity: {this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[0])[0].systemComplexity}
-                                </h4>
+                                {this.state.controller.type === "SAGA" ?
+                                    <div>
+                                        <h4 style={{color: "#666666", textAlign: "center"}}>
+                                            {this.state.selectedRedesignsToCompare[0]}
+                                        </h4>
+                                        <h4 style={{color: "#666666", textAlign: "center"}}>
+                                            Functionality Complexity: {this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[0])[0].functionalityComplexity} - System Complexity: {this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[0])[0].systemComplexity}
+                                        </h4>
+                                    </div>
+                                    :
+                                    <h4 style={{color: "#666666", textAlign: "center"}}>
+                                        Query Inconsistency Complexity: {this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[0])[0].inconsistencyComplexity}
+                                    </h4>
+                                }
                                 {this.renderRedesignGraph(this.createRedesignGraph(this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[0])[0]))}
                             </Col>
                             <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
+                                {this.state.controller.type === "SAGA" ?
+                                <div>
+                                    <h4 style={{color: "#666666", textAlign: "center"}}>
+                                        {this.state.selectedRedesignsToCompare[1]}
+                                    </h4>
+                                    <h4 style={{color: "#666666", textAlign: "center"}}>
+                                        Functionality Complexity: {this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[1])[0].functionalityComplexity} - System Complexity: {this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[1])[0].systemComplexity}
+                                    </h4>
+                                </div>
+                                :
                                 <h4 style={{color: "#666666", textAlign: "center"}}>
-                                    {this.state.selectedRedesignsToCompare[1]}
+                                    Query Inconsistency Complexity: {this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[1])[0].inconsistencyComplexity}
                                 </h4>
-                                <h4 style={{color: "#666666", textAlign: "center"}}>
-                                    Functionality Complexity: {this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[1])[0].functionalityComplexity} - System Complexity: {this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[1])[0].systemComplexity}
-                                </h4>
+                                }
                                 {this.renderRedesignGraph(this.createRedesignGraph(this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[1])[0]))}
                             </Col>
                         </Row>

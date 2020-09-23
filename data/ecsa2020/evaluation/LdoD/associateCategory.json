@@ -483,7 +483,7 @@
       "remoteInvocations" : [ ],
       "type" : "COMPENSATABLE"
     } ],
-    "systemComplexity" : 1724,
+    "systemComplexity" : 1667,
     "functionalityComplexity" : 1803,
     "pivotTransaction" : ""
   }, {

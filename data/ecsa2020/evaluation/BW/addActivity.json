@@ -475,7 +475,7 @@
         "remoteInvocations" : [ ],
         "type" : "COMPENSATABLE"
       } ],
-      "systemComplexity" : 1584,
+      "systemComplexity" : 1548,
       "functionalityComplexity" : 1775,
       "pivotTransaction" : ""
     }, {
@@ -555,6 +555,5 @@
       "systemComplexity" : 772,
       "functionalityComplexity" : 721,
       "pivotTransaction" : "6"
-    } ]
-  }
+  } ]
 }

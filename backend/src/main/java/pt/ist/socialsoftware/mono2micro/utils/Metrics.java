@@ -199,9 +199,11 @@ public class Metrics {
 				entitiesWritten.retainAll(entitiesRead);
 				List<String> clustersInCommon = otherController.clustersOfGivenEntities(entitiesWritten);
 
-				functionalityRedesign.setInconsistencyComplexity(
-						functionalityRedesign.getInconsistencyComplexity() + clustersInCommon.size()
-				);
+				if(clustersInCommon.size() > 1){
+					functionalityRedesign.setInconsistencyComplexity(
+							functionalityRedesign.getInconsistencyComplexity() + clustersInCommon.size()
+					);
+				}
 			}
 		}
     }
