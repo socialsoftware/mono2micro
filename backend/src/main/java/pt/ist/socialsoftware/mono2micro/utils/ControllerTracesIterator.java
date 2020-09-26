@@ -15,16 +15,13 @@ public class ControllerTracesIterator {
 	private int limit = 0; // 0 means no limit aka all traces will be parsed
 	private int counter; // #traces
 	String filePath;
-	String controllerName;
 
 	public ControllerTracesIterator(
 		String filePath,
-		String controllerName,
 		int limit
 	) throws IOException {
 		this.limit = limit;
 		this.filePath = filePath;
-		this.controllerName = controllerName;
 
 		init();
 	}
@@ -44,42 +41,6 @@ public class ControllerTracesIterator {
 			System.exit(-1);
 		}
 
-		jsonParser.nextValue();
-
-		controllersLoop:
-		while (jsonParser.getCurrentToken() != JsonToken.END_OBJECT) {
-			if (!jsonParser.getCurrentName().equals(controllerName)) {
-				jsonParser.skipChildren();
-			}
-
-			else {
-				jsonParser.nextToken();
-
-				while (jsonParser.nextValue() != JsonToken.END_OBJECT) {
-					switch (jsonParser.getCurrentName()) {
-						case "t":
-							if (jsonParser.getCurrentToken() != JsonToken.START_ARRAY) {
-								System.err.println("Json must start with a left bracket");
-								System.exit(-1);
-							}
-
-							jsonParser.nextToken();
-							break controllersLoop;
-
-						case "id":
-						case "f":
-							break;
-
-						default:
-							throw new IOException();
-					}
-				}
-
-				break;
-			}
-
-			jsonParser.nextValue();
-		}
 	}
 
 	public void reset() throws IOException {
@@ -100,6 +61,36 @@ public class ControllerTracesIterator {
 			counter++;
 
 		return t;
+	}
+
+	public void nextController(String controllerName) throws IOException {
+		while (
+			jsonParser.getCurrentToken() != JsonToken.START_OBJECT ||
+			jsonParser.getCurrentName() == null ||
+			!jsonParser.getCurrentName().equals(controllerName)
+		) {
+			jsonParser.nextValue();
+		}
+
+		findTraceFieldLoop:
+		while (jsonParser.nextValue() != JsonToken.END_OBJECT) {
+			switch (jsonParser.getCurrentName()) {
+				case "t":
+					if (jsonParser.getCurrentToken() != JsonToken.START_ARRAY) {
+						System.err.println("Json must start with a left bracket");
+						System.exit(-1);
+					}
+
+					jsonParser.nextToken();
+					break findTraceFieldLoop;
+				case "id":
+				case "f":
+					break;
+
+				default:
+					throw new IOException();
+			}
+		}
 	}
 
 	public boolean hasMoreTraces() {

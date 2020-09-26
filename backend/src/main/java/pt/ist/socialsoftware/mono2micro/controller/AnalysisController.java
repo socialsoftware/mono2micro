@@ -107,7 +107,7 @@ public class AnalysisController {
 					return new ResponseEntity<>(HttpStatus.OK);
 				}
 
-				JsonParser jsonParser = jsonfactory.createParser(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json");
+				JsonParser jsonParser = jsonfactory.createParser(existentAnalyserResultFile);
 				jsonParser.nextValue();
 
 				if (jsonParser.getCurrentToken() != JsonToken.START_OBJECT) {
@@ -449,16 +449,16 @@ public class AnalysisController {
 		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 		Map<String,Integer> e1e2PairCount = new HashMap<>();
 
-		ControllerTracesIterator iter;
+		ControllerTracesIterator iter = new ControllerTracesIterator(
+			codebase.getDatafilePath(),
+			analyser.getTracesMaxLimit()
+		);
+
 		TraceDto t;
 
 		for (String profile : analyser.getProfiles()) {
 			for (String controllerName : codebase.getProfile(profile)) {
-				iter = new ControllerTracesIterator(
-					codebase.getDatafilePath(),
-					controllerName,
-					analyser.getTracesMaxLimit()
-				);
+				iter.nextController(controllerName);
 
 				switch (analyser.getTypeOfTraces()) {
 					case LONGEST:
@@ -492,6 +492,7 @@ public class AnalysisController {
 
 					case REPRESENTATIVE:
 						Set<String> tracesIds = iter.getRepresentativeTraces();
+						// FIXME probably here we create a second controllerTracesIterator
 						iter.reset();
 
 						while (iter.hasMoreTraces()) {

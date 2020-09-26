@@ -134,9 +134,9 @@ public class Graph {
 		return max;
 	}
 
-	private <A extends AccessDto> void calculateControllerSequences (
+	private void calculateControllerSequences (
 		Controller controller,
-		List<A> accesses
+		List<AccessDto> accesses
 	) {
 
 		Controller.LocalTransaction lt = null;
@@ -151,7 +151,7 @@ public class Graph {
 //		JSONObject clusterAccess = new JSONObject();
 
 		for (int i = 0; i < accesses.size(); i++) {
-			A access = accesses.get(i);
+			AccessDto access = accesses.get(i);
 			String entity = access.getEntity();
 			String mode = access.getMode();
 			String cluster;
@@ -303,17 +303,17 @@ public class Graph {
 			new HashSet<String>() {{ add("profiles"); add("datafilePath"); }}
 		);
 
-		ControllerTracesIterator iter;
+		ControllerTracesIterator iter = new ControllerTracesIterator(
+			codebase.getDatafilePath(),
+			tracesMaxLimit
+		);
+
 		TraceDto t;
 		List<AccessDto> traceAccesses;
 
 		for (String profile : profiles) {
 			for (String controllerName : codebase.getProfile(profile)) {
-				iter = new ControllerTracesIterator(
-					codebase.getDatafilePath(),
-					controllerName,
-					tracesMaxLimit
-				);
+				iter.nextController(controllerName);
 
 				Controller controller = new Controller(controllerName);
 
@@ -344,6 +344,7 @@ public class Graph {
 
 					case REPRESENTATIVE:
 						Set<String> tracesIds = iter.getRepresentativeTraces();
+						// FIXME probably here we create a second controllerTracesIterator
 						iter.reset();
 
 						while (iter.hasMoreTraces()) {
@@ -558,7 +559,9 @@ public class Graph {
 		List<String> profiles,
 		int tracesMaxLimit,
 		Constants.TypeOfTraces traceType
-	) throws IOException, JSONException {
+	)
+		throws IOException
+	{
 		this.addDynamicControllers(
 			profiles,
 			tracesMaxLimit,

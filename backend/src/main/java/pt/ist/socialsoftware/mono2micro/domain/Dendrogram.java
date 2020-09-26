@@ -294,16 +294,16 @@ public class Dendrogram {
 			new HashSet<String>() {{ add("profiles"); add("datafilePath"); }}
 		);
 
-		ControllerTracesIterator iter;
+		ControllerTracesIterator iter = new ControllerTracesIterator(
+			codebase.getDatafilePath(),
+			tracesMaxLimit
+		);
+
 		TraceDto t;
 
 		for (String profile : this.profiles) {
 			for (String controllerName : codebase.getProfile(profile)) {
-				iter = new ControllerTracesIterator(
-					codebase.getDatafilePath(),
-					controllerName,
-					tracesMaxLimit
-				);
+				iter.nextController(controllerName);
 
 				switch (this.typeOfTraces) {
 					case LONGEST:
@@ -336,6 +336,7 @@ public class Dendrogram {
 
 					case REPRESENTATIVE:
 						Set<String> tracesIds = iter.getRepresentativeTraces();
+						// FIXME probably here we create a second controllerTracesIterator
 						iter.reset();
 
 						while (iter.hasMoreTraces()) {

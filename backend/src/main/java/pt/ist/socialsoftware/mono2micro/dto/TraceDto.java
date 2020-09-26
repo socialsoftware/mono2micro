@@ -119,12 +119,11 @@ public class TraceDto {
 			// FIXME we are only interested on the first two meaning a Pair<e1, e1>
 			// FIXME and thus, will decrease the number of accesses this trace will have
 			// FIXME only reduced elements with 2 occurrences to detect those pairs
-			int max = Math.min(element.getOccurrences(), 2);
-//			int max = element.getOccurrences();
+//			int max = Math.min(element.getOccurrences(), 2);
+			int max = element.getOccurrences();
 
 			for (int j = 0; j < max; j++)
 				accesses.addAll(expandedElements);
-
 		}
 
 		return accesses;

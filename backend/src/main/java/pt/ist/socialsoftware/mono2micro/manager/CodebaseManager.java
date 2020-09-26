@@ -16,8 +16,6 @@ import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
 import pt.ist.socialsoftware.mono2micro.dto.CutInfoDto;
 import pt.ist.socialsoftware.mono2micro.dto.SimilarityMatrixDto;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
-
-import javax.imageio.stream.FileImageInputStream;
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
