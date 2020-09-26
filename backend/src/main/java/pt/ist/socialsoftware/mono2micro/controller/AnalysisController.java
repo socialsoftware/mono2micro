@@ -68,7 +68,7 @@ public class AnalysisController {
 
 			System.out.println("Codebase: " + codebaseName + " has " + numberOfEntitiesPresentInCollection + " entities");
 
-			executeAnalyserPythonScript(
+			executeCreateCutsPythonScript(
 				codebaseName,
 				numberOfEntitiesPresentInCollection
 			);
@@ -228,12 +228,14 @@ public class AnalysisController {
 		return similarityMatrixDto.getEntities().size();
 	}
 
-	private void executeAnalyserPythonScript(
+	private void executeCreateCutsPythonScript(
 		String codebaseName,
 		int numberOfEntitiesPresentInCollection
 	)
 		throws InterruptedException, IOException
 	{
+		System.out.println("Executing analyser.py to create cuts...");
+
 		Runtime r = Runtime.getRuntime();
 		String pythonScriptPath = RESOURCES_PATH + "analyser.py";
 		String[] cmd = new String[5];
@@ -245,7 +247,7 @@ public class AnalysisController {
 		Process p = r.exec(cmd);
 		p.waitFor();
 
-		System.out.println("analyser.py script execution has ended");
+		System.out.println("script execution has ended");
 
 	}
 

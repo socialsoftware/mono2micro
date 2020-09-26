@@ -2,6 +2,7 @@ import numpy as np
 from scipy.cluster import hierarchy
 import sys
 import json
+from os import path
 
 codebasesPath = str(sys.argv[1])
 codebaseName = str(sys.argv[2])
@@ -32,6 +33,11 @@ linkageType = similarityMatrix["linkageType"]
 def createCut(a, w, r, s, n):
     name = ','.join(map(str, [a, w, r, s, n]))
 
+    filePath = codebasesPath + codebaseName + "/analyser/cuts/" + name + ".json"
+
+    if (path.exists(filePath)):
+        return
+
     with open(codebasesPath + codebaseName + "/analyser/similarityMatrix.json") as f:
         similarityMatrix = json.load(f)
 
@@ -59,7 +65,7 @@ def createCut(a, w, r, s, n):
     clustersJSON = {}
     clustersJSON["clusters"] = clusters
 
-    with open(codebasesPath + codebaseName + "/analyser/cuts/" + name + ".json", 'w') as outfile:
+    with open(filePath, 'w') as outfile:
         outfile.write(json.dumps(clustersJSON, indent=4))
 
 
