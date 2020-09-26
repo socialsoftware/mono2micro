@@ -2,6 +2,7 @@ package pt.ist.socialsoftware.mono2micro.utils.deserializers;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import pt.ist.socialsoftware.mono2micro.dto.AnalyserResultDto;
@@ -52,6 +53,9 @@ public class CutInfoDtoDeserializer extends StdDeserializer<CutInfoDto> {
                     case "complexity":
                         analyserResultDto.setComplexity(jsonParser.getFloatValue());
                         break;
+                    case "performance":
+                        analyserResultDto.setPerformance(jsonParser.getFloatValue());
+                        break;
                     case "accuracy":
                         analyserResultDto.setAccuracy(jsonParser.getFloatValue());
                         break;
@@ -67,8 +71,20 @@ public class CutInfoDtoDeserializer extends StdDeserializer<CutInfoDto> {
                     case "fmeasure":
                         analyserResultDto.setFmeasure(jsonParser.getFloatValue());
                         break;
-                    case "controllerComplexities":
-                        cutInfoDto.setControllerComplexities(jsonParser.readValueAs(HashMap.class));
+                    case "mojoCommon":
+                        analyserResultDto.setMojoCommon(jsonParser.getDoubleValue());
+                        break;
+                    case "mojoBiggest":
+                        analyserResultDto.setMojoBiggest(jsonParser.getDoubleValue());
+                        break;
+                    case "mojoNew":
+                        analyserResultDto.setMojoNew(jsonParser.getDoubleValue());
+                        break;
+                    case "mojoSingletons":
+                        analyserResultDto.setMojoSingletons(jsonParser.getDoubleValue());
+                        break;
+                    case "controllerSpecs":
+                        cutInfoDto.setControllerSpecs(jsonParser.readValueAs(new TypeReference<HashMap<String, HashMap<String, Float>>>() {}));
                         break;
                     default:
                         throw new IOException();

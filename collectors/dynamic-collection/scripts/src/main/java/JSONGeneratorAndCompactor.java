@@ -10,6 +10,7 @@ import domain.*;
 import org.apache.commons.cli.*;
 import requitur.RunLengthEncodingSequitur;
 import requitur.Sequitur;
+import requitur.TraceStateTester;
 import utils.Utils;
 
 import java.io.*;

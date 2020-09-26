@@ -3,10 +3,7 @@ package requitur;
 import org.junit.jupiter.api.*;
 import requitur.content.Content;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -347,34 +344,132 @@ public class RequiturTests {
 		assertEquals(mytrace, SequiturTests.contentToStringTrace(expandedTrace));
 	}
 
-//	@Test
-//	@Order(9)
-//	public void testUselessRulesThatOnlyOccurOnce() {
-//		final List<String> mytrace = new ArrayList<>();
-//		Collections.addAll(mytrace, "A","A","B","B","C","C","B","D","D","D","E","D","E","E","D","E","E","B","C","C","B","C","C","B","C","C","B","C","C");
-//
-//		final Sequitur seg = new Sequitur();
-//		seg.addStringElements(mytrace);
-//
-//		System.out.println("trace: " + mytrace);
-//		System.out.println("Sequitur trace: " + seg.getTrace());
-//		System.out.println("Sequitur rules: " + seg.getRules());
-//
-//		final RunLengthEncodingSequitur runLengthEncodingSequitur = new RunLengthEncodingSequitur(seg);
-//		runLengthEncodingSequitur.reduce();
-//
-//		final List<ReducedTraceElement> trace = runLengthEncodingSequitur.getReadableRLETrace();
-//		System.out.println("Readable trace: " + trace);
-//
-//		final List<ReducedTraceElement> trace2 = runLengthEncodingSequitur.getReadableRLETraceImproved();
-//		System.out.println("Readable trace2: " + trace2);
-//
-//		final List<Content> uncompressedTrace = seg.getUncompressedTrace();
-//		System.out.println("uncompressedTrace: " + uncompressedTrace);
-//		assertEquals(15, uncompressedTrace.size());
-//
-//		final List<Content> expandedTrace = TraceStateTester.expandContentTrace(uncompressedTrace, seg.getRules());
-//		System.out.println("expandedTrace: " + expandedTrace);
-//		assertEquals(mytrace, SequiturTests.contentToStringTrace(expandedTrace));
-//	}
+	@Test
+	@Order(9)
+	public void testUselessRulesThatOnlyOccurOnce() {
+		final List<String> mytrace = new ArrayList<>();
+		Collections.addAll(mytrace, "A","A","B","B","C","C","B","D","D","D","E","D","E","E","D","E","E","B","C","C","B","C","C","B","C","C","B","C","C");
+
+		final Sequitur seg = new Sequitur();
+		seg.addStringElements(mytrace);
+
+		System.out.println("trace: " + mytrace);
+		System.out.println("Sequitur trace: " + seg.getTrace());
+		System.out.println("Sequitur rules: " + seg.getRules());
+
+		final RunLengthEncodingSequitur runLengthEncodingSequitur = new RunLengthEncodingSequitur(seg);
+		runLengthEncodingSequitur.reduce();
+
+		final List<ReducedTraceElement> trace = runLengthEncodingSequitur.getReadableRLETrace();
+		System.out.println("Readable trace: " + trace);
+
+		final List<ReducedTraceElement> trace2 = runLengthEncodingSequitur.getReadableRLETraceImproved();
+		System.out.println("Readable trace2: " + trace2);
+
+		final List<Content> uncompressedTrace = seg.getUncompressedTrace();
+		System.out.println("uncompressedTrace: " + uncompressedTrace);
+		assertEquals(15, uncompressedTrace.size());
+
+		final List<Content> expandedTrace = TraceStateTester.expandContentTrace(uncompressedTrace, seg.getRules());
+		System.out.println("expandedTrace: " + expandedTrace);
+		assertEquals(mytrace, SequiturTests.contentToStringTrace(expandedTrace));
+	}
+
+	@Test
+	@Order(10)
+	public void testUnitRules() {
+		// AABBCCBDDDEDEEDEEBCCBCCBCCBCC
+		String content[] = new String[] {"A","A","B","B","C","C","B","D","D","D","E","D","E","E","D","E","E","B","C","C","B","C","C","B","C","C","B","C","C" };
+		System.out.println(Arrays.toString(content));
+		List<String> trace = Arrays.asList(content);
+		final Sequitur seq = new Sequitur();
+		seq.addStringElements(trace);
+
+		for (Map.Entry<String, Rule> rule : seq.getRules().entrySet()) {
+			System.out.println(rule.getValue());
+		}
+
+		System.out.println(seq.getUncompressedTrace());
+		System.out.println(seq.getTrace());
+
+		final List<Content> expandedTrace = TraceStateTester.expandContentTrace(seq.getUncompressedTrace(), seq.getRules());
+		assertEquals(trace, SequiturTests.contentToStringTrace(expandedTrace));
+
+		final RunLengthEncodingSequitur runLengthEncodingSequitur = new RunLengthEncodingSequitur(seq);
+		runLengthEncodingSequitur.reduce();
+
+		System.out.println(seq.getUncompressedTrace());
+		System.out.println(seq.getTrace());
+
+		final List<ReducedTraceElement> trace1 = runLengthEncodingSequitur.getReadableRLETrace();
+		System.out.println("Readable trace: " + trace1);
+
+		final List<ReducedTraceElement> trace2 = runLengthEncodingSequitur.getReadableRLETraceImproved();
+		System.out.println("Readable trace without unit rules: " + trace2);
+	}
+
+	@Test
+	@Order(11)
+	public void testUnitRules2() {
+		// AABBCCBDDDEDEEDEEBCCBCCBCCBCC
+		String content[] = new String[] {"A","A","A","B","B","B","B","B","B","B","A","C","A","A","B","B","B","B","B","A","D","D","D","D","D","D","D","A","B","B","B","B","B","A","D","D","A","B","B","B","B","B","A","D","D","D","C","D","D","D","A","D","D","C","D","C","D","D","E","E","E","C","D","D","E","E","E","C","D","D","E","E","E","C","D","D","E","E","E","C","C" };
+		System.out.println(Arrays.toString(content));
+		List<String> trace = Arrays.asList(content);
+		final Sequitur seq = new Sequitur();
+		seq.addStringElements(trace);
+
+		for (Map.Entry<String, Rule> rule : seq.getRules().entrySet()) {
+			System.out.println(rule.getValue());
+		}
+
+		System.out.println(seq.getUncompressedTrace());
+		System.out.println(seq.getTrace());
+
+		final List<Content> expandedTrace = TraceStateTester.expandContentTrace(seq.getUncompressedTrace(), seq.getRules());
+		assertEquals(trace, SequiturTests.contentToStringTrace(expandedTrace));
+
+		final RunLengthEncodingSequitur runLengthEncodingSequitur = new RunLengthEncodingSequitur(seq);
+		runLengthEncodingSequitur.reduce();
+
+		System.out.println(seq.getUncompressedTrace());
+		System.out.println(seq.getTrace());
+
+		final List<ReducedTraceElement> trace1 = runLengthEncodingSequitur.getReadableRLETrace();
+		System.out.println("Readable trace: " + trace1);
+
+		final List<ReducedTraceElement> trace2 = runLengthEncodingSequitur.getReadableRLETraceImproved();
+		System.out.println("Readable trace without unit rules: " + trace2);
+	}
+
+	@Test
+	@Order(12)
+	public void testUnitRules3() {
+		String content[] = new String[] {"A","A","A","A","B","A","C","A","D","D","D","A","C","A","D","D","D","D","A","C","A","D","D","A","C","A","D","D","D","D","D","B","C","B","E","E","B","C","C" };
+		System.out.println(Arrays.toString(content));
+		List<String> trace = Arrays.asList(content);
+		final Sequitur seq = new Sequitur();
+		seq.addStringElements(trace);
+
+		for (Map.Entry<String, Rule> rule : seq.getRules().entrySet()) {
+			System.out.println(rule.getValue());
+		}
+
+		System.out.println(seq.getUncompressedTrace());
+		System.out.println(seq.getTrace());
+
+		final List<Content> expandedTrace = TraceStateTester.expandContentTrace(seq.getUncompressedTrace(), seq.getRules());
+		assertEquals(trace, SequiturTests.contentToStringTrace(expandedTrace));
+
+		final RunLengthEncodingSequitur runLengthEncodingSequitur = new RunLengthEncodingSequitur(seq);
+		runLengthEncodingSequitur.reduce();
+
+		System.out.println(seq.getUncompressedTrace());
+		System.out.println(seq.getTrace());
+
+		final List<ReducedTraceElement> trace1 = runLengthEncodingSequitur.getReadableRLETrace();
+		System.out.println("Readable trace: " + trace1);
+
+		final List<ReducedTraceElement> trace2 = runLengthEncodingSequitur.getReadableRLETraceImproved();
+		System.out.println("Readable trace without unit rules: " + trace2);
+	}
 }

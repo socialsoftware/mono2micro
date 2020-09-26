@@ -16,9 +16,16 @@ public class CutInfoDtoSerializer extends StdSerializer<CutInfoDto> {
     public CutInfoDtoSerializer(Class<CutInfoDto> t) { super(t); }
 
     @Override
-    public void serialize(CutInfoDto value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+    public void serialize(
+        CutInfoDto value,
+        JsonGenerator gen,
+        SerializerProvider provider
+    )
+        throws IOException
+    {
         AnalyserResultDto analyserResultDto = value.getAnalyserResultDto();
         gen.writeStartObject();
+
         gen.writeObjectField("accessWeight", analyserResultDto.getAccessWeight());
         gen.writeObjectField("writeWeight", analyserResultDto.getWriteWeight());
         gen.writeObjectField("readWeight", analyserResultDto.getReadWeight());
@@ -28,12 +35,18 @@ public class CutInfoDtoSerializer extends StdSerializer<CutInfoDto> {
         gen.writeObjectField("cohesion", analyserResultDto.getCohesion());
         gen.writeObjectField("coupling", analyserResultDto.getCoupling());
         gen.writeObjectField("complexity", analyserResultDto.getComplexity());
+        gen.writeObjectField("performance", analyserResultDto.getPerformance());
         gen.writeObjectField("accuracy", analyserResultDto.getAccuracy());
         gen.writeObjectField("precision", analyserResultDto.getPrecision());
         gen.writeObjectField("recall", analyserResultDto.getRecall());
         gen.writeObjectField("specificity", analyserResultDto.getSpecificity());
         gen.writeObjectField("fmeasure", analyserResultDto.getFmeasure());
-        gen.writeObjectField("controllerComplexities", value.getControllerComplexities());
+        gen.writeObjectField("mojoCommon", analyserResultDto.getMojoCommon());
+        gen.writeObjectField("mojoBiggest", analyserResultDto.getMojoBiggest());
+        gen.writeObjectField("mojoNew", analyserResultDto.getMojoNew());
+        gen.writeObjectField("mojoSingletons", analyserResultDto.getMojoSingletons());
+        gen.writeObjectField("controllerSpecs", value.getControllerSpecs());
+
         gen.writeEndObject();
     }
 }

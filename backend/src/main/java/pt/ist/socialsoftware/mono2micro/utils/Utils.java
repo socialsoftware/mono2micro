@@ -6,12 +6,11 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Utils {
 
@@ -19,7 +18,9 @@ public class Utils {
 
     public static void print(String message, Integer lineNumber) { System.out.println("[" + lineNumber + "] " + message); }
 
-    public static List<String> getJsonFileKeys(InputStream is) throws IOException {
+    public static Set<String> getJsonFileKeys(File file) throws IOException {
+        InputStream is = new FileInputStream(file);
+
         ObjectMapper mapper = new ObjectMapper();
         JsonFactory jsonfactory = mapper.getFactory();
 
@@ -31,20 +32,22 @@ public class Utils {
             System.exit(-1);
         }
 
-        List<String> keys = new ArrayList<>();
+        Set<String> keys = new HashSet<>();
 
         jsonParser.nextValue();
 
         while (jsonToken != JsonToken.END_OBJECT) {
             if (jsonParser.getCurrentName() != null) {
-                String controllerName = jsonParser.getCurrentName();
-                System.out.println("Controller name: " + controllerName);
-                keys.add(controllerName);
+                String keyName = jsonParser.getCurrentName();
+                System.out.println("Key name: " + keyName);
+                keys.add(keyName);
                 jsonParser.skipChildren();
             }
 
             jsonToken = jsonParser.nextValue();
         }
+
+        is.close();
 
         return keys;
     }
@@ -56,6 +59,8 @@ public class Utils {
         List<AccessDto> accessesList,
         String controllerName
     ) {
+        System.out.println("Filling entity data structures...");
+
         for (int i = 0; i < accessesList.size(); i++) {
             AccessDto access = accessesList.get(i);
             String entity = access.getEntity();

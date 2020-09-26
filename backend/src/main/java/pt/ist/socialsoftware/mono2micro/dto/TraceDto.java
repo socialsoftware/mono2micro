@@ -40,6 +40,9 @@ public class TraceDto {
 	@JsonIgnore
 	public int getUncompressedSize() {
 		int counter = 0;
+
+		if (elements == null) return counter;
+
 		LinkedList<Pair<Integer, RuleDto>> ll = new LinkedList<>();
 
 		int elementsListSize = elements.size();
@@ -114,9 +117,12 @@ public class TraceDto {
 
 			// FIXME maybe here we can assume that if we have many consecutive equal accesses,
 			// FIXME we are only interested on the first two meaning a Pair<e1, e1>
-			// FIXME and thus, will optimize decrease the number of accesses this trace will have
+			// FIXME and thus, will decrease the number of accesses this trace will have
 			// FIXME only reduced elements with 2 occurrences to detect those pairs
-			for (int j = 0; j < element.getOccurrences(); j++)
+			int max = Math.min(element.getOccurrences(), 2);
+//			int max = element.getOccurrences();
+
+			for (int j = 0; j < max; j++)
 				accesses.addAll(expandedElements);
 
 		}

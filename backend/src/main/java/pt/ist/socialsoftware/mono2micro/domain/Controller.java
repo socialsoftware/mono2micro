@@ -69,6 +69,7 @@ public class Controller {
 
 	private String name;
 	private float complexity;
+	private int performance; // number of hops between clusters
 	private Map<String, String> entities = new HashMap<>(); // <entity, mode>
 	private DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph;
 //	private String entitiesSeq = "[]";
@@ -108,6 +109,14 @@ public class Controller {
 
 	public void setComplexity(float complexity) {
 		this.complexity = complexity;
+	}
+
+	public int getPerformance() {
+		return performance;
+	}
+
+	public void setPerformance(int performance) {
+		this.performance = performance;
 	}
 
 	public Map<String,String> getEntities() {

@@ -20,9 +20,12 @@ public class Metrics {
     }
 
     public void calculateMetrics() {
+    	System.out.println("Calculating metrics...");
+
 		float graphComplexity = 0;
 		float graphCohesion = 0;
 		float graphCoupling = 0;
+		float graphPerformance = 0;
 
 		List<Controller> graphControllers = graph.getControllers();
 
@@ -30,11 +33,18 @@ public class Metrics {
 			calculateControllerComplexityAndClusterDependencies(controller);
 //			calculateRedesignComplexities(controller, Constants.DEFAULT_REDESIGN_NAME);
 			graphComplexity += controller.getComplexity();
+			graphPerformance += controller.getPerformance();
 		}
 
-		graphComplexity /= graphControllers.size();
+		int graphControllersAmount = graphControllers.size();
+
+		graphComplexity /= graphControllersAmount;
 		graphComplexity = BigDecimal.valueOf(graphComplexity).setScale(2, RoundingMode.HALF_UP).floatValue();
 		this.graph.setComplexity(graphComplexity);
+
+		graphPerformance /= graphControllersAmount;
+		graphPerformance = BigDecimal.valueOf(graphPerformance).setScale(2, RoundingMode.HALF_UP).floatValue();
+		this.graph.setPerformance(graphPerformance);
 
 		List<Cluster> graphClusters = graph.getClusters();
 
@@ -60,6 +70,8 @@ public class Metrics {
     }
 
     private void calculateControllerComplexityAndClusterDependencies(Controller controller) {
+		System.out.println("Calculating controller complexity and cluster dependencies...");
+
 		Set<Controller.LocalTransaction> allLocalTransactions = controller.getAllLocalTransactions();
 
 		if (this.controllerClusters.get(controller.getName()).size() == 1) {
@@ -126,6 +138,8 @@ public class Metrics {
 	}
 
     private void calculateClusterComplexityAndCohesion(Cluster cluster) {
+		System.out.println("Calculating cluster complexity and cohesion...");
+
 		List<Controller> controllersThatAccessThisCluster = this.clusterControllers.get(cluster.getName());
 
 		float complexity = 0;
@@ -160,6 +174,8 @@ public class Metrics {
 	}
 
 	private void calculateClusterCoupling(Cluster c1) {
+		System.out.println("Calculating cluster coupling...");
+
     	float coupling = 0;
 		Map<String, Set<String>> couplingDependencies = c1.getCouplingDependencies();
 

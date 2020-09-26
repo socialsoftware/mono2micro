@@ -244,6 +244,8 @@ public class Dendrogram {
 	}
 
 	public void calculateStaticSimilarityMatrix() throws IOException, JSONException {
+		System.out.println("Calculating similarity matrix...");
+
 		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 		Map<String,Integer> e1e2PairCount = new HashMap<>();
 
@@ -282,6 +284,8 @@ public class Dendrogram {
 	public void calculateDynamicSimilarityMatrix()
 		throws IOException, JSONException
 	{
+		System.out.println("Calculating similarity matrix...");
+
 		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 		Map<String,Integer> e1e2PairCount = new HashMap<>();
 
@@ -347,8 +351,6 @@ public class Dendrogram {
 							}
 
 						}
-
-
 
 						break;
 

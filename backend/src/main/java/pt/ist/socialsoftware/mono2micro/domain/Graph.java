@@ -3,9 +3,7 @@ package pt.ist.socialsoftware.mono2micro.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
 import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
@@ -29,10 +27,11 @@ public class Graph {
 	private String cutType;
 	private float silhouetteScore;
 	private float complexity;
+	private float performance;
 	private float cohesion;
 	private float coupling;
-	private List<Controller> controllers = new ArrayList<>(); // FIXME Hashmap
-	private List<Cluster> clusters = new ArrayList<>(); // FIXME Hashmap
+	private List<Controller> controllers = new ArrayList<>();
+	private List<Cluster> clusters = new ArrayList<>();
 
 	public Graph() { }
 
@@ -92,6 +91,10 @@ public class Graph {
 		this.complexity = complexity;
 	}
 
+	public float getPerformance() { return performance; }
+
+	public void setPerformance(float performance) { this.performance = performance; }
+
 	public float getCohesion() {
 		return cohesion;
 	}
@@ -134,7 +137,11 @@ public class Graph {
 	private <A extends AccessDto> void calculateControllerSequences (
 		Controller controller,
 		List<A> accesses
-	) throws JSONException {
+	)
+		throws JSONException
+	{
+		System.out.println("Calculating controller sequences...");
+
 		Controller.LocalTransaction lt = null;
 		List<Controller.LocalTransaction> ltList = new ArrayList<>();
 		Map<String, String> entityNameToMode = new HashMap<>();
@@ -214,7 +221,6 @@ public class Graph {
 					entityNameToMode.clear();
 					entityNameToMode.put(entity, mode);
 
-
 //					entitiesSeq.put(clusterAccess);
 //					clusterAccess = new JSONObject();
 //					clusterAccess.put("cluster", cluster);
@@ -235,15 +241,22 @@ public class Graph {
 		if (lt != null && lt.getClusterAccesses().size() > 0)
 			ltList.add(lt);
 
-		if (ltList.size() > 0)
+		if (ltList.size() > 0) {
+			// we can piggyback the local transaction list size to know how many hops happened between different clusters
+			controller.setPerformance(ltList.size());
+
 			controller.addLocalTransactionSequence(ltList);
+		}
 	}
 
 	public void addStaticControllers(
 		List<String> profiles,
 		HashMap<String, ControllerDto> datafile
 	)
-		throws IOException, JSONException {
+		throws IOException, JSONException
+	{
+		System.out.println("Adding controllers...");
+
 		this.controllers = new ArrayList<>();
 
 		HashMap<String, ControllerDto> datafileJSON;
@@ -282,6 +295,8 @@ public class Graph {
 		int tracesMaxLimit,
 		Constants.TypeOfTraces typeOfTraces
 	) throws IOException, JSONException {
+		System.out.println("Adding controllers...");
+
 		this.controllers = new ArrayList<>();
 
 		Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(

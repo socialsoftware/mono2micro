@@ -1,5 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.controller;
 
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,6 +23,7 @@ import pt.ist.socialsoftware.mono2micro.utils.Utils;
 import pt.ist.socialsoftware.mono2micro.utils.mojoCalculator.src.main.java.MoJo;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -45,15 +48,9 @@ public class AnalysisController {
 		logger.debug("analyser");
 
 		try {
-
 			File analyserPath = new File(CODEBASES_PATH + codebaseName + "/analyser/cuts/");
 			if (!analyserPath.exists()) {
 				analyserPath.mkdirs();
-			}
-
-			File analyserResultPath = new File(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json");
-			if (!analyserResultPath.exists()) {
-				codebaseManager.writeAnalyserResults(codebaseName, new HashMap());
 			}
 
 			Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
@@ -64,40 +61,99 @@ public class AnalysisController {
 			int numberOfEntitiesPresentInCollection;
 			HashMap<String, ControllerDto> datafileJSON = null;
 
-			if (codebase.isStatic()) {
-				datafileJSON = CodebaseManager.getInstance().getDatafile(codebase);
+			if (!codebaseManager.analyserSimilarityMatrixFileAlreadyExists(codebaseName)) {
+				if (codebase.isStatic()) {
+					datafileJSON = CodebaseManager.getInstance().getDatafile(codebase);
 
-				numberOfEntitiesPresentInCollection = createStaticAnalyserSimilarityMatrix(
-					codebase,
-					analyser,
-					datafileJSON
-				);
+					numberOfEntitiesPresentInCollection = createStaticAnalyserSimilarityMatrix(
+						codebase,
+						analyser,
+						datafileJSON
+					);
+
+				} else {
+					numberOfEntitiesPresentInCollection = createDynamicAnalyserSimilarityMatrix(codebase, analyser);
+				}
 
 			} else {
-				numberOfEntitiesPresentInCollection = createDynamicAnalyserSimilarityMatrix(codebase, analyser);
+				SimilarityMatrixDto similarityMatrixDto = CodebaseManager.getInstance().getSimilarityMatrixDtoWithFields(
+					codebaseName,
+					new HashSet<String>() {{ add("entities"); }}
+				);
+
+				numberOfEntitiesPresentInCollection = similarityMatrixDto.getEntities().size();
 			}
 
-			System.out.println(codebaseName + ": " + numberOfEntitiesPresentInCollection);
+			System.out.println("Codebase: " + codebaseName + " has " + numberOfEntitiesPresentInCollection + " entities");
 
-			Runtime r = Runtime.getRuntime();
-			String pythonScriptPath = RESOURCES_PATH + "analyser.py";
-			String[] cmd = new String[5];
-			cmd[0] = PYTHON;
-			cmd[1] = pythonScriptPath;
-			cmd[2] = CODEBASES_PATH;
-			cmd[3] = codebaseName;
-			cmd[4] = String.valueOf(numberOfEntitiesPresentInCollection);
-			Process p = r.exec(cmd);
-			p.waitFor();
+			executeAnalyserPythonScript(
+				codebaseName,
+				numberOfEntitiesPresentInCollection
+			);
 
-			int maxRequests = analyser.getRequestLimit();
-			int newRequestsCount = 0;
-			int count = 0;
-			int bufferedDataCount = 0;
-			HashMap<String, CutInfoDto> analyserJSON = codebaseManager.getAnalyserResults(codebaseName);
 			File analyserCutsPath = new File(CODEBASES_PATH + codebaseName + "/analyser/cuts/");
 			File[] files = analyserCutsPath.listFiles();
-			int total = files.length;
+			int totalNumberOfFiles = files.length;
+
+			ObjectMapper mapper = new ObjectMapper();
+			JsonFactory jsonfactory = mapper.getFactory();
+
+			boolean analyserResultFileAlreadyExists = codebaseManager.analyserResultFileAlreadyExists(codebaseName);
+
+			String analyserResultFilename =  analyserResultFileAlreadyExists ?
+				"newAnalyserResult.json" :
+				"analyserResult.json";
+
+			JsonGenerator jGenerator = jsonfactory.createGenerator(
+				new FileOutputStream(CODEBASES_PATH + codebaseName + "/analyser/" + analyserResultFilename),
+				JsonEncoding.UTF8
+			);
+
+		 	jGenerator.useDefaultPrettyPrinter();
+			jGenerator.writeStartObject();
+
+			Set<String> cutInfoNames = new HashSet<>();
+
+			if (analyserResultFileAlreadyExists) {
+
+				File existentAnalyserResultFile = new File(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json");
+
+				cutInfoNames = Utils.getJsonFileKeys(existentAnalyserResultFile);
+
+				if (cutInfoNames.size() == totalNumberOfFiles) {
+					System.out.println("Analyser Complete");
+					return new ResponseEntity<>(HttpStatus.OK);
+				}
+
+				JsonParser jsonParser = jsonfactory.createParser(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json");
+				jsonParser.nextValue();
+
+				if (jsonParser.getCurrentToken() != JsonToken.START_OBJECT) {
+					System.err.println("Json must start with a left curly brace");
+					System.exit(-1);
+				}
+
+				jsonParser.nextValue();
+
+				while (jsonParser.getCurrentToken() != JsonToken.END_OBJECT) {
+					if (jsonParser.getCurrentToken() == JsonToken.START_OBJECT) {
+						Utils.print("Cut name: " + jsonParser.getCurrentName(), Utils.lineno());
+						cutInfoNames.add(jsonParser.currentName());
+
+						CutInfoDto cutInfo = jsonParser.readValueAs(CutInfoDto.class);
+
+						jGenerator.writeObjectField(jsonParser.getCurrentName(), cutInfo);
+
+						jsonParser.nextValue();
+					}
+				}
+
+				existentAnalyserResultFile.delete();
+			}
+
+			int maxRequests = analyser.getRequestLimit();
+			short newRequestsCount = 0;
+			short count = 0;
 
 			for (File file : files) {
 
@@ -105,88 +161,48 @@ public class AnalysisController {
 
 				count++;
 
-                if (analyserJSON.containsKey(filename)) {
-                    System.out.println(filename + " already analysed. " + count + "/" + total);
+                if (cutInfoNames.contains(filename)) {
+                    System.out.println(filename + " already analysed. " + count + "/" + totalNumberOfFiles);
                     continue;
                 }
 
-				Graph graph = new Graph();
-				graph.setCodebaseName(codebaseName);
+				Graph graph = buildGraphAndCalculateMetrics(
+					analyser,
+					codebase,
+					filename,
+					datafileJSON
+				);
 
-				HashMap<String, HashMap<String, Set<String>>> analyserCut = codebaseManager.getAnalyserCut(codebaseName, filename);
+                CutInfoDto cutInfo = assembleCutInformation(
+                	analyser,
+					graph,
+					filename
+				);
 
-				Set<String> clusterIDs = analyserCut.get("clusters").keySet();
-
-				for (String clusterId : clusterIDs) {
-					Set<String> entities = analyserCut.get("clusters").get(clusterId);
-					Cluster cluster = new Cluster(clusterId, entities);
-
-					graph.addCluster(cluster);
-				}
-
-				if (codebase.isStatic()) {
-					graph.calculateMetricsAnalyser(analyser.getProfiles(), datafileJSON);
-
-				} else {
-					graph.calculateDynamicMetricsAnalyser(
-						analyser.getProfiles(),
-						analyser.getTracesMaxLimit(),
-						analyser.getTypeOfTraces()
-					);
-				}
-
-				AnalysisDto analysisDto = new AnalysisDto();
-				analysisDto.setGraph1(analyser.getExpert());
-				analysisDto.setGraph2(graph);
-				
-				analysisDto = getAnalysis(analysisDto).getBody();
-
-				AnalyserResultDto analyserResult = new AnalyserResultDto();
-				analyserResult.setAccuracy(analysisDto.getAccuracy());
-				analyserResult.setPrecision(analysisDto.getPrecision());
-				analyserResult.setRecall(analysisDto.getRecall());
-				analyserResult.setSpecificity(analysisDto.getSpecificity());
-				analyserResult.setFmeasure(analysisDto.getFmeasure());
-				
-				analyserResult.setComplexity(graph.getComplexity());
-				analyserResult.setCohesion(graph.getCohesion());
-				analyserResult.setCoupling(graph.getCoupling());
-
-				analyserResult.setMaxClusterSize(graph.maxClusterSize());
-
-				String[] similarityWeights = filename.split(",");
-				analyserResult.setAccessWeight(Float.parseFloat(similarityWeights[0]));
-				analyserResult.setWriteWeight(Float.parseFloat(similarityWeights[1]));
-				analyserResult.setReadWeight(Float.parseFloat(similarityWeights[2]));
-				analyserResult.setSequenceWeight(Float.parseFloat(similarityWeights[3]));
-				analyserResult.setNumberClusters(Float.parseFloat(similarityWeights[4]));
-
-				CutInfoDto analyserResultJSON = new CutInfoDto();
-				analyserResultJSON.setAnalyserResultDto(analyserResult);
-
-				HashMap<String, Float> controllerComplexities = new HashMap<>();
-				for (Controller controller : graph.getControllers()) {
-					controllerComplexities.put(controller.getName(), controller.getComplexity());
-				}
-				analyserResultJSON.setControllerComplexities(controllerComplexities);
-
-				analyserJSON.put(filename, analyserResultJSON);
+				jGenerator.writeObjectField(
+					filename,
+					cutInfo
+				);
 
 				newRequestsCount++;
-				bufferedDataCount++;
 
-				System.out.println("NEW: " + filename + " : " + count + "/" + total);
+				System.out.println("NEW: " + filename + " : " + count + "/" + totalNumberOfFiles);
 				if (newRequestsCount == maxRequests)
 					break;
 
-				if (bufferedDataCount >= 100) {
-					// save buffered data (replace whole file, not appending)
-					codebaseManager.writeAnalyserResults(codebaseName, analyserJSON);
-					bufferedDataCount = 0;
-				}
 			}
 
-            codebaseManager.writeAnalyserResults(codebaseName, analyserJSON);
+			jGenerator.writeEndObject();
+			jGenerator.close();
+
+			if (analyserResultFileAlreadyExists) {
+				File fileToBeRenamed = new File(CODEBASES_PATH + codebaseName + "/analyser/" + analyserResultFilename);
+				File fileRenamed = new File(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json");
+
+				fileToBeRenamed.renameTo(fileRenamed);
+			}
+
+//            codebaseManager.writeAnalyserResults(codebaseName, analyserJSON);
 			System.out.println("Analyser Complete");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -195,31 +211,151 @@ public class AnalysisController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	private JSONObject getAnalyserMatrixData(
-		List<String> entitiesList,
+	private void executeAnalyserPythonScript(
+		String codebaseName,
+		int numberOfEntitiesPresentInCollection
+	)
+		throws InterruptedException, IOException
+	{
+		Runtime r = Runtime.getRuntime();
+		String pythonScriptPath = RESOURCES_PATH + "analyser.py";
+		String[] cmd = new String[5];
+		cmd[0] = PYTHON;
+		cmd[1] = pythonScriptPath;
+		cmd[2] = CODEBASES_PATH;
+		cmd[3] = codebaseName;
+		cmd[4] = String.valueOf(numberOfEntitiesPresentInCollection);
+		Process p = r.exec(cmd);
+		p.waitFor();
+
+		System.out.println("analyser.py script execution has ended");
+
+	}
+
+	private Graph buildGraphAndCalculateMetrics(
+		AnalyserDto analyser,
+		Codebase codebase,
+		String filename,
+		HashMap<String, ControllerDto> datafileJSON
+	)
+		throws IOException, JSONException
+	{
+		Graph graph = new Graph();
+		graph.setCodebaseName(codebase.getName());
+
+		HashMap<String, HashMap<String, Set<String>>> analyserCut = codebaseManager.getAnalyserCut(
+			codebase.getName(),
+			filename
+		);
+
+		Set<String> clusterIDs = analyserCut.get("clusters").keySet();
+
+		for (String clusterId : clusterIDs) {
+			Set<String> entities = analyserCut.get("clusters").get(clusterId);
+			Cluster cluster = new Cluster(clusterId, entities);
+
+			graph.addCluster(cluster);
+		}
+
+		if (codebase.isStatic()) {
+			graph.calculateMetricsAnalyser(
+				analyser.getProfiles(),
+				datafileJSON
+			);
+
+		} else {
+			graph.calculateDynamicMetricsAnalyser(
+				analyser.getProfiles(),
+				analyser.getTracesMaxLimit(),
+				analyser.getTypeOfTraces()
+			);
+		}
+
+		return graph;
+	}
+
+	private CutInfoDto assembleCutInformation(
+		AnalyserDto analyser,
+		Graph graph,
+		String filename
+	)
+		throws IOException
+	{
+		AnalysisDto analysisDto = new AnalysisDto();
+		analysisDto.setGraph1(analyser.getExpert());
+		analysisDto.setGraph2(graph);
+
+		analysisDto = getAnalysis(analysisDto).getBody();
+
+		AnalyserResultDto analyserResult = new AnalyserResultDto();
+		analyserResult.setAccuracy(analysisDto.getAccuracy());
+		analyserResult.setPrecision(analysisDto.getPrecision());
+		analyserResult.setRecall(analysisDto.getRecall());
+		analyserResult.setSpecificity(analysisDto.getSpecificity());
+		analyserResult.setFmeasure(analysisDto.getFmeasure());
+		analyserResult.setMojoBiggest(analysisDto.getMojoBiggest());
+		analyserResult.setMojoCommon(analysisDto.getMojoCommon());
+		analyserResult.setMojoSingletons(analysisDto.getMojoSingletons());
+		analyserResult.setMojoNew(analysisDto.getMojoNew());
+
+		analyserResult.setComplexity(graph.getComplexity());
+		analyserResult.setCohesion(graph.getCohesion());
+		analyserResult.setCoupling(graph.getCoupling());
+		analyserResult.setPerformance(graph.getPerformance());
+
+		analyserResult.setMaxClusterSize(graph.maxClusterSize());
+
+		String[] similarityWeights = filename.split(",");
+		analyserResult.setAccessWeight(Float.parseFloat(similarityWeights[0]));
+		analyserResult.setWriteWeight(Float.parseFloat(similarityWeights[1]));
+		analyserResult.setReadWeight(Float.parseFloat(similarityWeights[2]));
+		analyserResult.setSequenceWeight(Float.parseFloat(similarityWeights[3]));
+		analyserResult.setNumberClusters(Float.parseFloat(similarityWeights[4]));
+
+		CutInfoDto cutInfo = new CutInfoDto();
+		cutInfo.setAnalyserResultDto(analyserResult);
+
+		HashMap<String, HashMap<String, Float>> controllerSpecs = new HashMap<>();
+		for (Controller controller : graph.getControllers()) {
+			controllerSpecs.put(
+				controller.getName(),
+				new HashMap<String, Float>() {{
+					put("complexity", controller.getComplexity());
+					put("performance", (float) controller.getPerformance());
+				}}
+			);
+		}
+
+		cutInfo.setControllerSpecs(controllerSpecs);
+
+		return cutInfo;
+	}
+
+	private SimilarityMatrixDto getAnalyserMatrixData(
+		Set<String> entities,
 		Map<String,Integer> e1e2PairCount,
 		Map<String,List<Pair<String,String>>> entityControllers
-	) throws JSONException {
+	) {
 
-		JSONArray similarityMatrix = new JSONArray();
-		JSONObject matrixData = new JSONObject();
+		SimilarityMatrixDto matrixData = new SimilarityMatrixDto();
+
+		List<List<List<Float>>> similarityMatrix = new ArrayList<>();
 
 		int maxNumberOfPairs = Utils.getMaxNumberOfPairs(e1e2PairCount);
 
-		for (int i = 0; i < entitiesList.size(); i++) {
-			String e1 = entitiesList.get(i);
-			JSONArray matrixRow = new JSONArray();
+		for (String e1 : entities) {
+			List<List<Float>> matrixRow = new ArrayList<>();
 
-			for (int j = 0; j < entitiesList.size(); j++) {
-				String e2 = entitiesList.get(j);
+			for (String e2 : entities) {
+				List<Float> metric = new ArrayList<>();
 
 				if (e1.equals(e2)) {
-					JSONArray metric = new JSONArray();
-					metric.put(1);
-					metric.put(1);
-					metric.put(1);
-					metric.put(1);
-					matrixRow.put(metric);
+					metric.add((float) 1);
+					metric.add((float) 1);
+					metric.add((float) 1);
+					metric.add((float) 1);
+
+					matrixRow.add(metric);
 					continue;
 				}
 
@@ -231,19 +367,18 @@ public class AnalysisController {
 					maxNumberOfPairs
 				);
 
-				JSONArray metric = new JSONArray();
-				metric.put(metrics[0]);
-				metric.put(metrics[1]);
-				metric.put(metrics[2]);
-				metric.put(metrics[3]);
+				metric.add(metrics[0]);
+				metric.add(metrics[1]);
+				metric.add(metrics[2]);
+				metric.add(metrics[3]);
 
-				matrixRow.put(metric);
+				matrixRow.add(metric);
 			}
-			similarityMatrix.put(matrixRow);
+			similarityMatrix.add(matrixRow);
 		}
-		matrixData.put("matrix", similarityMatrix);
-		matrixData.put("entities", entitiesList);
-		matrixData.put("linkageType", "average");
+		matrixData.setMatrix(similarityMatrix);
+		matrixData.setEntities(entities);
+		matrixData.setLinkageType("average");
 
 		return matrixData;
 	}
@@ -254,6 +389,8 @@ public class AnalysisController {
 		HashMap<String, ControllerDto> datafileJSON
 	) throws IOException, JSONException
 	{
+		System.out.println("Creating similarity matrix");
+
 		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 		Map<String,Integer> e1e2PairCount = new HashMap<>();
 
@@ -271,19 +408,18 @@ public class AnalysisController {
 			}
 		}
 
-		List<String> entitiesList = new ArrayList<>(entityControllers.keySet());
-		Collections.sort(entitiesList);
+		Set<String> entities = new TreeSet<>(entityControllers.keySet());
 
 		CodebaseManager.getInstance().writeAnalyserSimilarityMatrix(
 			codebase.getName(),
 			getAnalyserMatrixData(
-				entitiesList,
+				entities,
 				e1e2PairCount,
 				entityControllers
 			)
 		);
 
-		return entitiesList.size();
+		return entities.size();
 	}
 
 	private int createDynamicAnalyserSimilarityMatrix(
@@ -291,6 +427,8 @@ public class AnalysisController {
 		AnalyserDto analyser
 	) throws IOException, JSONException
 	{
+		System.out.println("Creating similarity matrix");
+
 		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 		Map<String,Integer> e1e2PairCount = new HashMap<>();
 
@@ -373,19 +511,18 @@ public class AnalysisController {
 
 		iter = null; // release memory
 
-		List<String> entitiesList = new ArrayList<>(entityControllers.keySet());
-		Collections.sort(entitiesList);
+		Set<String> entities = new TreeSet<>(entityControllers.keySet());
 
 		CodebaseManager.getInstance().writeAnalyserSimilarityMatrix(
 			codebase.getName(),
 			getAnalyserMatrixData(
-				entitiesList,
+				entities,
 				e1e2PairCount,
 				entityControllers
 			)
 		);
 
-		return entitiesList.size();
+		return entities.size();
 	}
 
 
@@ -393,12 +530,7 @@ public class AnalysisController {
 	public ResponseEntity<AnalysisDto> getAnalysis(@RequestBody AnalysisDto analysis) throws IOException {
 		logger.debug("getAnalysis");
 
-		if (analysis.getGraph1().getCodebaseName() == null) { // expert cut from frontend
-			analysis.setAccuracy(0);
-			analysis.setPrecision(0);
-			analysis.setRecall(0);
-			analysis.setSpecificity(0);
-			analysis.setFmeasure(0);
+		if (analysis.getGraph1().getCodebaseName() == null) { // no expert cut from frontend
 			return new ResponseEntity<>(analysis, HttpStatus.OK);
 		}
 

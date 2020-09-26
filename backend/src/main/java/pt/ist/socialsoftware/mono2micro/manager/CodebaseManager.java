@@ -14,8 +14,10 @@ import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
 import pt.ist.socialsoftware.mono2micro.dto.CutInfoDto;
+import pt.ist.socialsoftware.mono2micro.dto.SimilarityMatrixDto;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
+import javax.imageio.stream.FileImageInputStream;
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -277,32 +279,29 @@ public class CodebaseManager {
 
 		HashMap datafileJSON;
 
-		InputStream datafileInputStream = null;
+		File datafileFile = null;
 
 		if (datafile instanceof MultipartFile) {
 			// read datafile
-			datafileInputStream = ((MultipartFile) datafile).getInputStream();
+			InputStream datafileInputStream = ((MultipartFile) datafile).getInputStream();
 			datafileJSON = objectMapper.readValue(datafileInputStream, HashMap.class);
 			datafileInputStream.close();
-			this.writeDatafile(codebaseName, datafileJSON);
-			File datafileFile = new File(CODEBASES_PATH + codebaseName + "/datafile.json");
-			codebase.setDatafilePath(datafileFile.getAbsolutePath());
-			datafileInputStream = new FileInputStream(datafileFile);
-		}
-		else if (datafile instanceof String) {
-			File localDatafile = new File((String) datafile);
 
-			if (!localDatafile.exists())
+			this.writeDatafile(codebaseName, datafileJSON);
+			datafileFile = new File(CODEBASES_PATH + codebaseName + "/datafile.json");
+			codebase.setDatafilePath(datafileFile.getAbsolutePath());
+		}
+
+		else if (datafile instanceof String) {
+			datafileFile = new File((String) datafile);
+
+			if (!datafileFile.exists())
 				throw new FileNotFoundException();
 
-
-			datafileInputStream = new FileInputStream(localDatafile);
 			codebase.setDatafilePath((String) datafile);
 		}
 
-		codebase.addProfile("Generic", Utils.getJsonFileKeys(datafileInputStream));
-
-		datafileInputStream.close();
+		codebase.addProfile("Generic", new ArrayList<>(Utils.getJsonFileKeys(datafileFile)));
 
 		return codebase;
 	}
@@ -356,7 +355,12 @@ public class CodebaseManager {
 		);
 	}
 
-	public JSONObject getSimilarityMatrix(String codebaseName, String dendrogramName) throws IOException, JSONException {
+	public JSONObject getSimilarityMatrix(
+		String codebaseName,
+		String dendrogramName
+	)
+		throws IOException, JSONException
+	{
 		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/" + dendrogramName + "/similarityMatrix.json");
 
 		JSONObject similarityMatrixJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
@@ -366,7 +370,13 @@ public class CodebaseManager {
 		return similarityMatrixJSON;
 	}
 
-	public void writeSimilarityMatrix(String codebaseName, String dendrogramName, JSONObject similarityMatrix) throws IOException, JSONException {
+	public void writeSimilarityMatrix(
+		String codebaseName,
+		String dendrogramName,
+		JSONObject similarityMatrix
+	)
+		throws IOException, JSONException
+	{
 		FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + "/" + dendrogramName + "/similarityMatrix.json");
 		file.write(similarityMatrix.toString(4));
 		file.close();
@@ -376,7 +386,13 @@ public class CodebaseManager {
 		return Files.readAllBytes(Paths.get(CODEBASES_PATH + codebaseName + "/" + dendrogramName + "/dendrogramImage.png"));
 	}
 
-	public JSONObject getClusters(String codebaseName, String dendrogramName, String graphName) throws IOException, JSONException {
+	public JSONObject getClusters(
+		String codebaseName,
+		String dendrogramName,
+		String graphName
+	)
+		throws IOException, JSONException
+	{
 		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/" + dendrogramName + "/" + graphName + "/clusters.json");
 
 		JSONObject clustersJSON = new JSONObject(IOUtils.toString(is, StandardCharsets.UTF_8));
@@ -399,6 +415,10 @@ public class CodebaseManager {
 		return analyserResults;
 	}
 
+	public boolean analyserResultFileAlreadyExists(String codebaseName) {
+		return new File(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json").exists();
+	}
+
 	public void writeAnalyserResults(String codebaseName, HashMap analyserJSON) throws IOException {
 		DefaultPrettyPrinter pp = new DefaultPrettyPrinter();
 		pp.indentArraysWith( DefaultIndenter.SYSTEM_LINEFEED_INSTANCE );
@@ -406,7 +426,12 @@ public class CodebaseManager {
 		writer.writeValue(new File(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json"), analyserJSON);
 	}
 
-	public HashMap<String, HashMap<String, Set<String>>> getAnalyserCut(String codebaseName, String cutName) throws IOException, JSONException {
+	public HashMap<String, HashMap<String, Set<String>>> getAnalyserCut(
+		String codebaseName,
+		String cutName
+	)
+		throws IOException
+	{
 		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/analyser/cuts/" + cutName + ".json");
 
 		HashMap<String, HashMap<String, Set<String>>> value = objectMapper.readValue(
@@ -418,9 +443,43 @@ public class CodebaseManager {
 		return value;
 	}
 
-	public void writeAnalyserSimilarityMatrix(String codebaseName, JSONObject similarityMatrix) throws IOException, JSONException {
-		FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/similarityMatrix.json");
-		file.write(similarityMatrix.toString(4));
-		file.close();
+	public void writeAnalyserSimilarityMatrix(
+		String codebaseName,
+		SimilarityMatrixDto similarityMatrix
+	)
+		throws IOException
+	{
+		DefaultPrettyPrinter pp = new DefaultPrettyPrinter();
+		pp.indentArraysWith( DefaultIndenter.SYSTEM_LINEFEED_INSTANCE );
+		ObjectWriter writer = objectMapper.writer(pp);
+
+		OutputStream os = new FileOutputStream(CODEBASES_PATH + codebaseName + "/analyser/similarityMatrix.json");
+
+		writer.writeValue(os, similarityMatrix);
+		os.close();
+	}
+
+	public boolean analyserSimilarityMatrixFileAlreadyExists(String codebaseName) {
+		return new File(CODEBASES_PATH + codebaseName + "/analyser/similarityMatrix.json").exists();
+	}
+
+	public SimilarityMatrixDto getSimilarityMatrixDtoWithFields(
+		String codebaseName,
+		Set<String> deserializableFields
+	) throws IOException {
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		objectMapper.setInjectableValues(
+			new InjectableValues.Std().addValue("similarityMatrixDtoDeserializableFields", deserializableFields)
+		);
+
+		ObjectReader reader = objectMapper.readerFor(SimilarityMatrixDto.class);
+
+		File similarityMatrixFile = new File(CODEBASES_PATH + codebaseName + "/analyser/similarityMatrix.json");
+
+		if (!similarityMatrixFile.exists())
+			return null;
+
+		return reader.readValue(similarityMatrixFile);
 	}
 }
