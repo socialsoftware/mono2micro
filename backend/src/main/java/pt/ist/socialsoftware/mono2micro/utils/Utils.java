@@ -59,7 +59,6 @@ public class Utils {
         List<AccessDto> accessesList,
         String controllerName
     ) {
-        System.out.println("Filling entity data structures...");
 
         for (int i = 0; i < accessesList.size(); i++) {
             AccessDto access = accessesList.get(i);

@@ -58,31 +58,13 @@ public class AnalysisController {
 				new HashSet<String>() {{ add("analysisType"); add("name"); add("profiles"); add("datafilePath"); }}
 			);
 
-			int numberOfEntitiesPresentInCollection;
 			HashMap<String, ControllerDto> datafileJSON = null;
 
-			if (!codebaseManager.analyserSimilarityMatrixFileAlreadyExists(codebaseName)) {
-				if (codebase.isStatic()) {
-					datafileJSON = CodebaseManager.getInstance().getDatafile(codebase);
-
-					numberOfEntitiesPresentInCollection = createStaticAnalyserSimilarityMatrix(
-						codebase,
-						analyser,
-						datafileJSON
-					);
-
-				} else {
-					numberOfEntitiesPresentInCollection = createDynamicAnalyserSimilarityMatrix(codebase, analyser);
-				}
-
-			} else {
-				SimilarityMatrixDto similarityMatrixDto = CodebaseManager.getInstance().getSimilarityMatrixDtoWithFields(
-					codebaseName,
-					new HashSet<String>() {{ add("entities"); }}
-				);
-
-				numberOfEntitiesPresentInCollection = similarityMatrixDto.getEntities().size();
-			}
+			int numberOfEntitiesPresentInCollection = getOrCreateSimilarityMatrix(
+				codebase,
+				datafileJSON, // yes but its content may change if codebase is static but CHECK!
+				analyser
+			);
 
 			System.out.println("Codebase: " + codebaseName + " has " + numberOfEntitiesPresentInCollection + " entities");
 
@@ -209,6 +191,41 @@ public class AnalysisController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	public int getOrCreateSimilarityMatrix(
+		Codebase codebase,
+		HashMap<String, ControllerDto> datafileJSON,
+		AnalyserDto analyser
+
+	)
+		throws IOException
+	{
+
+		if (!codebaseManager.analyserSimilarityMatrixFileAlreadyExists(codebase.getName())) {
+			System.out.println("Creating similarity matrix...");
+
+			if (codebase.isStatic()) {
+				datafileJSON = CodebaseManager.getInstance().getDatafile(codebase);
+
+				return createStaticAnalyserSimilarityMatrix(
+					codebase,
+					analyser,
+					datafileJSON
+				);
+			}
+
+			return createDynamicAnalyserSimilarityMatrix(codebase, analyser);
+		}
+
+		System.out.println("Similarity matrix already exists...");
+
+		SimilarityMatrixDto similarityMatrixDto = CodebaseManager.getInstance().getSimilarityMatrixDtoWithFields(
+			codebase.getName(),
+			new HashSet<String>() {{ add("entities"); }}
+		);
+
+		return similarityMatrixDto.getEntities().size();
 	}
 
 	private void executeAnalyserPythonScript(
@@ -387,10 +404,9 @@ public class AnalysisController {
 		Codebase codebase,
 		AnalyserDto analyser,
 		HashMap<String, ControllerDto> datafileJSON
-	) throws IOException, JSONException
+	)
+		throws IOException
 	{
-		System.out.println("Creating similarity matrix");
-
 		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 		Map<String,Integer> e1e2PairCount = new HashMap<>();
 
@@ -425,10 +441,9 @@ public class AnalysisController {
 	private int createDynamicAnalyserSimilarityMatrix(
 		Codebase codebase,
 		AnalyserDto analyser
-	) throws IOException, JSONException
+	)
+		throws IOException
 	{
-		System.out.println("Creating similarity matrix");
-
 		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
 		Map<String,Integer> e1e2PairCount = new HashMap<>();
 

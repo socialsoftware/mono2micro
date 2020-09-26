@@ -137,10 +137,7 @@ public class Graph {
 	private <A extends AccessDto> void calculateControllerSequences (
 		Controller controller,
 		List<A> accesses
-	)
-		throws JSONException
-	{
-		System.out.println("Calculating controller sequences...");
+	) {
 
 		Controller.LocalTransaction lt = null;
 		List<Controller.LocalTransaction> ltList = new ArrayList<>();
@@ -253,9 +250,9 @@ public class Graph {
 		List<String> profiles,
 		HashMap<String, ControllerDto> datafile
 	)
-		throws IOException, JSONException
+		throws IOException
 	{
-		System.out.println("Adding controllers...");
+		System.out.println("Adding static controllers...");
 
 		this.controllers = new ArrayList<>();
 
@@ -294,8 +291,10 @@ public class Graph {
 		List<String> profiles,
 		int tracesMaxLimit,
 		Constants.TypeOfTraces typeOfTraces
-	) throws IOException, JSONException {
-		System.out.println("Adding controllers...");
+	)
+		throws IOException
+	{
+		System.out.println("Adding dynamic controllers...");
 
 		this.controllers = new ArrayList<>();
 
