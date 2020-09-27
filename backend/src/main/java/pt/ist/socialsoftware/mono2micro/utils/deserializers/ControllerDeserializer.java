@@ -53,6 +53,9 @@ public class ControllerDeserializer extends StdDeserializer<Controller> {
 						case "complexity":
 							controller.setComplexity(jsonParser.getFloatValue());
 							break;
+						case "performance":
+							controller.setPerformance(jsonParser.getIntValue());
+							break;
 						case "entities":
 							controller.setEntities(jsonParser.readValueAs(new TypeReference<HashMap<String, String>>() {}));
 							break;

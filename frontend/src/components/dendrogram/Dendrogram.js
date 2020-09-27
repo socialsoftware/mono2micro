@@ -45,7 +45,16 @@ export class Dendrogram extends React.Component {
         service.getGraphs(
             this.state.codebaseName,
             this.state.dendrogramName,
-            [ "name", "clusters", "singleton", "silhouetteScore", "complexity", "cohesion", "coupling"]
+            [
+                "name",
+                "clusters",
+                "singleton",
+                "silhouetteScore",
+                "complexity",
+                "cohesion",
+                "coupling",
+                "performance"
+            ]
         ).then(response => {
             this.setState({
                 graphs: response.data
@@ -312,43 +321,58 @@ export class Dendrogram extends React.Component {
                 ss: graph.silhouetteScore,
                 cohesion: graph.cohesion,
                 coupling: graph.coupling,
-                complexity: graph.complexity
+                complexity: graph.complexity,
+                performance: graph.performance
             } 
         });
 
-        const metricColumns = [{
-            dataField: 'graph',
-            text: 'Graph',
-            sort: true
-        }, {
-            dataField: 'clusters',
-            text: 'Number of Retrieved Clusters',
-            sort: true
-        }, {
-            dataField: 'singleton',
-            text: 'Number of Singleton Clusters',
-            sort: true
-        }, {
-            dataField: 'max_cluster_size',
-            text: 'Maximum Cluster Size',
-            sort: true
-        }, {
-            dataField: 'ss',
-            text: 'Silhouette Score',
-            sort: true
-        }, {
-            dataField: 'cohesion',
-            text: 'Cohesion',
-            sort: true
-        }, {
-            dataField: 'coupling',
-            text: 'Coupling',
-            sort: true
-        }, {
-            dataField: 'complexity',
-            text: 'Complexity',
-            sort: true
-        }];
+        const metricColumns = [
+            {
+                dataField: 'graph',
+                text: 'Graph',
+                sort: true
+            },
+            {
+                dataField: 'clusters',
+                text: 'Number of Retrieved Clusters',
+                sort: true
+            },
+            {
+                dataField: 'singleton',
+                text: 'Number of Singleton Clusters',
+                sort: true
+            },
+            {
+                dataField: 'max_cluster_size',
+                text: 'Maximum Cluster Size',
+                sort: true
+            },
+            {
+                dataField: 'ss',
+                text: 'Silhouette Score',
+                sort: true
+            },
+            {
+                dataField: 'cohesion',
+                text: 'Cohesion',
+                sort: true
+            },
+            {
+                dataField: 'coupling',
+                text: 'Coupling',
+                sort: true
+            },
+            {
+                dataField: 'complexity',
+                text: 'Complexity',
+                sort: true
+            },
+            {
+                dataField: 'performance',
+                text: 'Performance',
+                sort: true
+            }
+        ];
 
         return (
             <div>

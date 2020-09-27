@@ -66,6 +66,9 @@ public class GraphDeserializer extends StdDeserializer<Graph> {
 						case "complexity":
 							graph.setComplexity(jsonParser.getFloatValue());
 							break;
+						case "performance":
+							graph.setPerformance(jsonParser.getFloatValue());
+							break;
 						case "cohesion":
 							graph.setCohesion(jsonParser.getFloatValue());
 							break;

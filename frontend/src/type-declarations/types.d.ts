@@ -15,6 +15,7 @@ export interface LocalTransaction {
 export interface Controller {
     name?: string;
     complexity?: number;
+    performance?: number;
     entities?: Record<string, string>; // <entityName, mode>
     localTransactionsGraph?: {
         nodes?: LocalTransaction[];
@@ -39,7 +40,8 @@ export interface Graph {
 	cutValue?: number;
 	cutType?: string;
 	silhouetteScore?: number;
-	complexity?: number;
+    complexity?: number;
+    performance?: number;
 	cohesion?: number;
 	coupling?: number;
 	controllers?: Controller[];

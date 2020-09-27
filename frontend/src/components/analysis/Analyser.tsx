@@ -73,6 +73,12 @@ const metricColumns = [
         filter,
     }, 
     {
+        dataField: 'performance',
+        text: 'Performance',
+        sort,
+        filter,
+    }, 
+    {
         dataField: 'fmeasure',
         text: 'F-Score',
         sort,
@@ -99,6 +105,30 @@ const metricColumns = [
     {
         dataField: 'specificity',
         text: 'Specificity',
+        sort,
+        filter,
+    },
+    {
+        dataField: 'mojoCommon',
+        text: 'MoJo Common',
+        sort,
+        filter,
+    },
+    {
+        dataField: 'mojoBiggest',
+        text: 'MoJo Biggest',
+        sort,
+        filter,
+    },
+    {
+        dataField: 'mojoNew',
+        text: 'MoJo New',
+        sort,
+        filter,
+    },
+    {
+        dataField: 'mojoSingletons',
+        text: 'MoJo Singletons',
         sort,
         filter,
     }
@@ -293,6 +323,8 @@ export class Analyser extends React.Component<any, any> {
             typeOfTraces,
         } = this.state;
 
+        console.log(resultData);
+
         const metricRows = resultData.map((data: any, index: number) => {
             return {
                 id: index,
@@ -305,11 +337,16 @@ export class Analyser extends React.Component<any, any> {
                 cohesion: data.cohesion,
                 coupling: data.coupling,
                 complexity: data.complexity,
+                performance: data.performance,
                 fmeasure: data.fmeasure,
                 accuracy: data.accuracy,
                 precision: data.precision,
                 recall: data.recall,
-                specificity: data.specificity
+                specificity: data.specificity,
+                mojoCommon: data.mojoCommon,
+                mojoBiggest: data.mojoBiggest,
+                mojoNew: data.mojoNew,
+                mojoSingletons: data.mojoSingletons
             } 
         });
 

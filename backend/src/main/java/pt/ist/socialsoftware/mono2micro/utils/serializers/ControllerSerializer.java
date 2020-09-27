@@ -30,6 +30,7 @@ public class ControllerSerializer extends StdSerializer<Controller> {
 		jg.writeStartObject();
 		jg.writeStringField("name", controller.getName());
 		jg.writeNumberField("complexity", controller.getComplexity());
+		jg.writeNumberField("performance", controller.getPerformance());
 		jg.writeObjectField("entities", controller.getEntities());
 //		jg.writeStringField("entitiesSeq", controller.getEntitiesSeq());
 //		jg.writeArrayFieldStart("functionalityRedesigns");

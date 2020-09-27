@@ -62,6 +62,11 @@ const metricColumns = [
         dataField: 'complexity',
         text: 'Complexity',
         sort,
+    },
+    {
+        dataField: 'performance',
+        text: 'Performance',
+        sort,
     }
 ];
 
@@ -74,7 +79,7 @@ export class Dendrograms extends React.Component {
             selectedProfiles: [],
             isUploaded: "",
             newDendrogramName: "",
-            linkageType: "",
+            linkageType: "average",
             accessMetricWeight: "25",
             writeMetricWeight: "25",
             readMetricWeight: "25",
@@ -154,6 +159,7 @@ export class Dendrograms extends React.Component {
                 "cohesion",
                 "coupling",
                 "complexity",
+                "performance"
             ]
         ).then((response) => {
             if (response.data !== null) {
@@ -229,6 +235,7 @@ export class Dendrograms extends React.Component {
     }
 
     handleLinkageType(event) {
+        console.log(event.target.id)
         this.setState({
             linkageType: event.target.id
         });
@@ -388,6 +395,7 @@ export class Dendrograms extends React.Component {
                                             type="radio"
                                             id="allTraces"
                                             value="ALL"
+                                            defaultChecked
                                         />
                                     </Col>
                                     <Col sm="auto">
@@ -449,6 +457,7 @@ export class Dendrograms extends React.Component {
                             label="Average"
                             type="radio"
                             id="average"
+                            defaultChecked
                         />
                     </Col>
                     <Col sm="auto">
@@ -602,7 +611,8 @@ export class Dendrograms extends React.Component {
                 ss: graph.silhouetteScore,
                 cohesion: graph.cohesion,
                 coupling: graph.coupling,
-                complexity: graph.complexity
+                complexity: graph.complexity,
+                performance: graph.performance
             }
         });
 
