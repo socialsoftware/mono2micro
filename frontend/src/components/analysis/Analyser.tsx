@@ -146,7 +146,7 @@ export class Analyser extends React.Component<any, any> {
             experts: [],
             expert: null,
             resultData: [],
-            requestLimit: "",
+            requestLimit: "0",
             importFile: null,
             amountOfTraces: "0",
             typeOfTraces: "ALL",
@@ -323,8 +323,6 @@ export class Analyser extends React.Component<any, any> {
             typeOfTraces,
         } = this.state;
 
-        console.log(resultData);
-
         const metricRows = resultData.map((data: any, index: number) => {
             return {
                 id: index,
@@ -426,6 +424,7 @@ export class Analyser extends React.Component<any, any> {
                                                 type="radio"
                                                 id="allTraces"
                                                 value="ALL"
+                                                defaultChecked
                                             />
                                         </Col>
                                         <Col sm="auto">
