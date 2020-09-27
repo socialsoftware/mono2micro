@@ -77,7 +77,7 @@ public class TraceDto {
 		return counter;
 	}
 
-	private List<ReducedTraceElementDto> expand(List<ReducedTraceElementDto> elements) {
+	private List<ReducedTraceElementDto> expand(List<ReducedTraceElementDto> elements, int maxOccurrences) {
 		int i = 0;
 
 		List<ReducedTraceElementDto> accesses = new ArrayList<>();
@@ -97,7 +97,8 @@ public class TraceDto {
 						elements.subList(
 							i + 1,
 							i + 1 + r.getCount()
-						)
+						),
+						maxOccurrences
 					)
 				);
 
@@ -119,8 +120,7 @@ public class TraceDto {
 			// FIXME we are only interested on the first two meaning a Pair<e1, e1>
 			// FIXME and thus, will decrease the number of accesses this trace will have
 			// FIXME only reduced elements with 2 occurrences to detect those pairs
-//			int max = Math.min(element.getOccurrences(), 2);
-			int max = element.getOccurrences();
+			int max = Math.min(element.getOccurrences(), maxOccurrences);
 
 			for (int j = 0; j < max; j++)
 				accesses.addAll(expandedElements);
@@ -130,8 +130,8 @@ public class TraceDto {
 	}
 
 	@JsonIgnore
-	public List<AccessDto> expand() {
-		return (List<AccessDto>) ((List<?>) this.expand(elements)); // sorry but... it is what it is
+	public List<AccessDto> expand(int maxOccurrences) {
+		return (List<AccessDto>) ((List<?>) this.expand(elements, maxOccurrences));
 	}
 
 	@JsonIgnore

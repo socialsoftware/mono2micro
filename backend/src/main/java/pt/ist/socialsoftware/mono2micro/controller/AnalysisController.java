@@ -469,7 +469,7 @@ public class AnalysisController {
 							Utils.fillEntityDataStructures(
 								entityControllers,
 								e1e2PairCount,
-								t.expand(),
+								t.expand(2),
 								controllerName
 							);
 						}
@@ -483,7 +483,7 @@ public class AnalysisController {
 							Utils.fillEntityDataStructures(
 								entityControllers,
 								e1e2PairCount,
-								t.expand(),
+								t.expand(2),
 								controllerName
 							);
 						}
@@ -502,7 +502,7 @@ public class AnalysisController {
 								Utils.fillEntityDataStructures(
 									entityControllers,
 									e1e2PairCount,
-									t.expand(),
+									t.expand(2),
 									controllerName
 								);
 							}
@@ -517,7 +517,7 @@ public class AnalysisController {
 							Utils.fillEntityDataStructures(
 								entityControllers,
 								e1e2PairCount,
-								t.expand(),
+								t.expand(2),
 								controllerName
 							);
 						}

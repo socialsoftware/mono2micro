@@ -313,7 +313,7 @@ public class Dendrogram {
 							Utils.fillEntityDataStructures(
 								entityControllers,
 								e1e2PairCount,
-								t.expand(),
+								t.expand(2),
 								controllerName
 							);
 						}
@@ -327,7 +327,7 @@ public class Dendrogram {
 							Utils.fillEntityDataStructures(
 								entityControllers,
 								e1e2PairCount,
-								t.expand(),
+								t.expand(2),
 								controllerName
 							);
 						}
@@ -346,7 +346,7 @@ public class Dendrogram {
 								Utils.fillEntityDataStructures(
 									entityControllers,
 									e1e2PairCount,
-									t.expand(),
+									t.expand(2),
 									controllerName
 								);
 							}
@@ -362,7 +362,7 @@ public class Dendrogram {
 							Utils.fillEntityDataStructures(
 								entityControllers,
 								e1e2PairCount,
-								t.expand(),
+								t.expand(2),
 								controllerName
 							);
 						}
