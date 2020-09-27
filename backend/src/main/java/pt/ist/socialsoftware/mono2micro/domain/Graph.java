@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.json.JSONException;
-import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
-import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
-import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
+import pt.ist.socialsoftware.mono2micro.dto.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
@@ -134,7 +132,118 @@ public class Graph {
 		return max;
 	}
 
-	private void calculateControllerSequences (
+	// FIXME GET FIRST ELEMENT OF RULE
+	private int calculateControllerPerformance(
+		List<ReducedTraceElementDto> elements,
+		StringBuilder previousClusterNameStringBuilder,
+		AccessDto firstElement
+	) {
+		int numberOfElements = elements == null ? 0 : elements.size();
+
+		if (numberOfElements == 0) return 0;
+
+		if (numberOfElements == 1) {
+			if (previousClusterNameStringBuilder.length() == 0) return 1;
+
+			String currentClusterName;
+
+			AccessDto a = (AccessDto) elements.get(0);
+			String entity = a.getEntity();
+
+			try {
+				currentClusterName = this.getClusterWithEntity(entity).getName();
+			}
+			catch (Exception e) {
+				System.err.println("No assigned entity " + entity + " to a cluster.");
+				throw e;
+			}
+
+			if (!currentClusterName.equals(previousClusterNameStringBuilder.toString())) {
+				previousClusterNameStringBuilder.setLength(0);
+				previousClusterNameStringBuilder.append(currentClusterName);
+
+				return 1;
+			}
+
+			return 0;
+		}
+
+		int performance = 0;
+		int i = 0;
+
+		while (i < numberOfElements) {
+			ReducedTraceElementDto element = elements.get(i);
+
+			if (element instanceof RuleDto) {
+				RuleDto r = (RuleDto) element;
+
+				// a Sequence is composed by a Rule and its next elements
+				List<ReducedTraceElementDto> sequenceElements = elements.subList(
+					i + 1,
+					i + 1 + r.getCount()
+				);
+
+				// if the firstElement hasnt been set, meaning entity string is empty, and
+				// the sequence's first element is an access then:
+				if (firstElement.getEntity().length() == 0 && sequenceElements.get(0) instanceof AccessDto) {
+					firstElement.setEntity(((AccessDto) sequenceElements.get(0)).getEntity());
+					firstElement.setMode(((AccessDto) sequenceElements.get(0)).getMode());
+				}
+
+				// we need a copy because we are using the string builder as a mean to modify the previous cluster by reference
+				String previousClusterNameCopy = previousClusterNameStringBuilder.toString();
+
+				int sequencePerformance = calculateControllerPerformance(
+					sequenceElements,
+					previousClusterNameStringBuilder,
+					firstElement
+				);
+
+				// hop between an access (previous cluster if it exists) and the sequence in question
+				if (previousClusterNameCopy.length() > 0 && !previousClusterNameCopy.equals(this.getClusterWithEntity(firstElement.getEntity()).getName()))
+					performance++;
+
+				// performance of the sequence multiplied by the number of times it occurs
+				performance += sequencePerformance * r.getOccurrences();
+
+				// Here we assume that a sequence will always have an access as its last element
+				AccessDto sequenceLastElement = (AccessDto) sequenceElements.get(sequenceElements.size() - 1);
+
+				// If the rule has more than 1 occurrence, then we want to consider the hop between the final access and the first one
+				if (r.getOccurrences() > 1 && !firstElement.equals(sequenceLastElement))
+					performance += r.getOccurrences() - 1;
+
+				i += 1 + r.getCount();
+
+			} else {
+				String currentClusterName;
+
+				AccessDto a = (AccessDto) element;
+				String entity = a.getEntity();
+
+				try {
+					currentClusterName = this.getClusterWithEntity(entity).getName();
+				}
+				catch (Exception e) {
+					System.err.println("No assigned entity " + entity + " to a cluster.");
+					throw e;
+				}
+
+				if (previousClusterNameStringBuilder.length() > 0 && !currentClusterName.equals(previousClusterNameStringBuilder.toString())) {
+					performance++;
+
+					previousClusterNameStringBuilder.setLength(0);
+					previousClusterNameStringBuilder.append(currentClusterName);
+				}
+
+				i++;
+			}
+		}
+
+		return performance;
+	}
+
+	private void calculateControllerSequences(
 		Controller controller,
 		List<AccessDto> accesses
 	) {
@@ -322,7 +431,7 @@ public class Graph {
 						t = iter.getLongestTrace();
 
 						if (t != null) {
-							traceAccesses = t.expand();
+							traceAccesses = t.expand(2);
 
 							if (traceAccesses.size() > 0)
 								calculateControllerSequences(controller, traceAccesses);
@@ -334,7 +443,7 @@ public class Graph {
 						t = iter.getTraceWithMoreDifferentAccesses();
 
 						if (t != null) {
-							traceAccesses = t.expand();
+							traceAccesses = t.expand(2);
 
 							if (traceAccesses.size() > 0)
 								calculateControllerSequences(controller, traceAccesses);
@@ -349,7 +458,7 @@ public class Graph {
 
 						while (iter.hasMoreTraces()) {
 							t = iter.nextTrace();
-							traceAccesses = t.expand();
+							traceAccesses = t.expand(2);
 
 							if (tracesIds.contains(String.valueOf(t.getId())) && traceAccesses.size() > 0)
 								calculateControllerSequences(controller, traceAccesses);
@@ -360,7 +469,7 @@ public class Graph {
 					default:
 						while (iter.hasMoreTraces()) {
 							t = iter.nextTrace();
-							traceAccesses = t.expand();
+							traceAccesses = t.expand(2);
 
 							if (traceAccesses.size() > 0)
 								calculateControllerSequences(controller, traceAccesses);
