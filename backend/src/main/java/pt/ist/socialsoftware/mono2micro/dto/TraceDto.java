@@ -93,7 +93,7 @@ public class TraceDto {
 				RuleDto r = (RuleDto) element;
 
 				expandedElements.addAll(
-					expand(
+					expand(// FIXME don't send sublist, send FROM and TO indexes
 						elements.subList(
 							i + 1,
 							i + 1 + r.getCount()

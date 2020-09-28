@@ -132,7 +132,7 @@ public class Graph {
 		return max;
 	}
 
-	// FIXME GET FIRST ELEMENT OF RULE
+	// FIXME GET FIRST ELEMENT OF RULE maybe a STACK IS A NICE IDEA
 	private int calculateControllerPerformance(
 		List<ReducedTraceElementDto> elements,
 		StringBuilder previousClusterNameStringBuilder,
@@ -178,7 +178,7 @@ public class Graph {
 				RuleDto r = (RuleDto) element;
 
 				// a Sequence is composed by a Rule and its next elements
-				List<ReducedTraceElementDto> sequenceElements = elements.subList(
+				List<ReducedTraceElementDto> sequenceElements = elements.subList( // let's try not to do this
 					i + 1,
 					i + 1 + r.getCount()
 				);
