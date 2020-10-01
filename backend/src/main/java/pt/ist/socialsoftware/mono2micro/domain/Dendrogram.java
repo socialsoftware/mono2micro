@@ -156,11 +156,12 @@ public class Dendrogram {
 		if (this.getGraphNames().contains(expertName))
 			throw new KeyAlreadyExistsException();
 
-		Graph expert = new Graph();
-		expert.setExpert(true);
-		expert.setCodebaseName(this.codebaseName);
-		expert.setDendrogramName(this.name);
-		expert.setName(expertName);
+		Graph expertGraph = new Graph();
+		expertGraph.setExpert(true);
+		expertGraph.setCodebaseName(this.codebaseName);
+		expertGraph.setDendrogramName(this.name);
+		expertGraph.setName(expertName);
+
 		if (expertFile.isPresent()) {
 			InputStream is = new BufferedInputStream(expertFile.get().getInputStream());
 			JSONObject expertCut = new JSONObject(IOUtils.toString(is, StandardCharsets.UTF_8));
@@ -174,8 +175,10 @@ public class Dendrogram {
 				Cluster cluster = new Cluster(clusterId);
 				for (int i = 0; i < entities.length(); i++) {
 					cluster.addEntity(entities.getString(i));
+					expertGraph.putEntity(entities.getString(i), clusterId);
 				}
-				expert.addCluster(cluster);
+
+				expertGraph.addCluster(cluster);
 			}
 		} else {
 			Cluster cluster = new Cluster("Generic");
@@ -185,13 +188,14 @@ public class Dendrogram {
 
 			for (int i = 0; i < entities.length(); i++) {
 				cluster.addEntity(entities.getString(i));
+				expertGraph.putEntity(entities.getString(i), "Generic");
 			}
 
-			expert.addCluster(cluster);
+			expertGraph.addCluster(cluster);
 		}
 
-		this.addGraph(expert);
-		expert.calculateMetrics();
+		this.addGraph(expertGraph);
+		expertGraph.calculateMetrics();
 	}
 
 	private JSONObject getMatrixData(

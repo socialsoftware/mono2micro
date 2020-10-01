@@ -77,14 +77,19 @@ public class TraceDto {
 		return counter;
 	}
 
-	private List<ReducedTraceElementDto> expand(List<ReducedTraceElementDto> elements, int maxOccurrences) {
-		int i = 0;
-
+	private List<ReducedTraceElementDto> expand(
+		List<ReducedTraceElementDto> elements,
+		int from,
+		int to,
+		int maxOccurrences
+	) {
 		List<ReducedTraceElementDto> accesses = new ArrayList<>();
 
-		if (elements == null) return accesses;
+		if (elements == null || elements.size() == 0) return accesses;
 
-		while (i < elements.size()) {
+		int i = from;
+
+		while (i < to) {
 			ReducedTraceElementDto element = elements.get(i);
 
 			List<ReducedTraceElementDto> expandedElements = new ArrayList<>();
@@ -93,11 +98,10 @@ public class TraceDto {
 				RuleDto r = (RuleDto) element;
 
 				expandedElements.addAll(
-					expand(// FIXME don't send sublist, send FROM and TO indexes
-						elements.subList(
-							i + 1,
-							i + 1 + r.getCount()
-						),
+					expand(
+						elements,
+						i + 1,
+						i + 1 + r.getCount(),
 						maxOccurrences
 					)
 				);
@@ -127,7 +131,12 @@ public class TraceDto {
 
 	@JsonIgnore
 	public List<AccessDto> expand(int maxOccurrences) {
-		return (List<AccessDto>) ((List<?>) this.expand(elements, maxOccurrences));
+		return (List<AccessDto>) ((List<?>) this.expand(
+			elements,
+			0,
+			elements == null ? 0 : elements.size(),
+			maxOccurrences)
+		);
 	}
 
 	@JsonIgnore

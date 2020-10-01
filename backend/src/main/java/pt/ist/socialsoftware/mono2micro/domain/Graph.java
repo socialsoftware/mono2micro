@@ -30,6 +30,8 @@ public class Graph {
 	private float coupling;
 	private List<Controller> controllers = new ArrayList<>();
 	private List<Cluster> clusters = new ArrayList<>();
+	@JsonIgnore
+	private final Map<String, String> entityToClusterName = new HashMap<>();
 
 	public Graph() { }
 
@@ -132,6 +134,10 @@ public class Graph {
 		return max;
 	}
 
+	public void putEntity(String entity, String clusterName) {
+		entityToClusterName.put(entity, clusterName);
+	}
+
 	public static class CalculateControllerPerformanceResult {
 		int performance = 0;
 		AccessDto firstElement = null;
@@ -145,7 +151,9 @@ public class Graph {
 	}
 
 	private CalculateControllerPerformanceResult calculateControllerPerformance(
-		List<ReducedTraceElementDto> elements
+		List<ReducedTraceElementDto> elements,
+		int from,
+		int to
 	) {
 		int numberOfElements = elements == null ? 0 : elements.size();
 
@@ -154,29 +162,37 @@ public class Graph {
 		if (numberOfElements == 1) return new CalculateControllerPerformanceResult(1, (AccessDto) elements.get(0));
 
 		int performance = 0;
-		int i = 0;
 		String previousClusterName = null;
-		AccessDto firstElement = null;
+		AccessDto firstAccess = null;
 
-		while (i < numberOfElements) {
+		int i = from;
+
+		while (i < to) {
 			ReducedTraceElementDto element = elements.get(i);
 
 			if (element instanceof RuleDto) {
 				RuleDto r = (RuleDto) element;
 
 				// a Sequence is composed by a Rule and its next elements
-				List<ReducedTraceElementDto> sequenceElements = elements.subList( // let's try not to do this
+//				List<ReducedTraceElementDto> sequenceElements = elements.subList( // let's try not to do this
+//					i + 1,
+//					i + 1 + r.getCount()
+//				);
+
+				CalculateControllerPerformanceResult result = calculateControllerPerformance(
+					elements,
 					i + 1,
 					i + 1 + r.getCount()
 				);
 
-				CalculateControllerPerformanceResult result = calculateControllerPerformance(sequenceElements);
-
 				AccessDto sequenceFirstAccess = result.firstElement;
 				int sequencePerformance = result.performance;
 
+				if (firstAccess == null)
+					firstAccess = sequenceFirstAccess;
+
 				String sequenceFirstAccessedEntity = sequenceFirstAccess.getEntity();
-				String sequenceFirstAccessedClusterName = this.getClusterWithEntity(sequenceFirstAccessedEntity).getName();
+				String sequenceFirstAccessedClusterName = this.getClusterWithEntity(sequenceFirstAccessedEntity);
 
 				// hop between an access (previous cluster if it exists) and the sequence in question
 				if (previousClusterName != null && !previousClusterName.equals(sequenceFirstAccessedClusterName))
@@ -186,8 +202,8 @@ public class Graph {
 				performance += sequencePerformance * r.getOccurrences();
 
 				// Here we assume that a sequence will always have an access as its last element
-				String sequenceLastAccessedEntity = ((AccessDto) sequenceElements.get(sequenceElements.size() - 1)).getEntity();
-				String sequenceLastAccessedClusterName = this.getClusterWithEntity(sequenceLastAccessedEntity).getName();
+				String sequenceLastAccessedEntity = ((AccessDto) elements.get(i + r.getCount())).getEntity();
+				String sequenceLastAccessedClusterName = this.getClusterWithEntity(sequenceLastAccessedEntity);
 
 				previousClusterName = sequenceLastAccessedClusterName;
 
@@ -202,11 +218,11 @@ public class Graph {
 				AccessDto a = (AccessDto) element;
 				String entity = a.getEntity();
 
-				if (firstElement == null)
-					firstElement = a;
+				if (firstAccess == null)
+					firstAccess = a;
 
 				try {
-					String currentClusterName = this.getClusterWithEntity(entity).getName();
+					String currentClusterName = this.getClusterWithEntity(entity);
 
 					if (previousClusterName == null)
 						previousClusterName = currentClusterName;
@@ -227,7 +243,7 @@ public class Graph {
 			}
 		}
 
-		return new CalculateControllerPerformanceResult(performance, firstElement);
+		return new CalculateControllerPerformanceResult(performance, firstAccess);
 	}
 
 	private void calculateControllerSequences(
@@ -252,7 +268,7 @@ public class Graph {
 			String cluster;
 
 			try {
-				cluster = this.getClusterWithEntity(entity).getName();
+				cluster = this.getClusterWithEntity(entity);
 			}
 			catch (Exception e) {
 				System.err.println("Expert cut does not assign entity " + entity + " to a cluster.");
@@ -421,6 +437,14 @@ public class Graph {
 
 							if (traceAccesses.size() > 0)
 								calculateControllerSequences(controller, traceAccesses);
+
+							CalculateControllerPerformanceResult result = calculateControllerPerformance(
+								t.getElements(),
+								0,
+								t.getElements() == null ? 0 : t.getElements().size()
+							);
+
+							controllerPerformance += result.performance;
 						}
 
 						break;
@@ -433,6 +457,14 @@ public class Graph {
 
 							if (traceAccesses.size() > 0)
 								calculateControllerSequences(controller, traceAccesses);
+
+							CalculateControllerPerformanceResult result = calculateControllerPerformance(
+								t.getElements(),
+								0,
+								t.getElements() == null ? 0 : t.getElements().size()
+							);
+
+							controllerPerformance += result.performance;
 						}
 
 						break;
@@ -446,8 +478,17 @@ public class Graph {
 							t = iter.nextTrace();
 							traceAccesses = t.expand(2);
 
-							if (tracesIds.contains(String.valueOf(t.getId())) && traceAccesses.size() > 0)
+							if (tracesIds.contains(String.valueOf(t.getId())) && traceAccesses.size() > 0) {
 								calculateControllerSequences(controller, traceAccesses);
+
+								CalculateControllerPerformanceResult result = calculateControllerPerformance(
+									t.getElements(),
+									0,
+									t.getElements() == null ? 0 : t.getElements().size()
+								);
+
+								controllerPerformance += result.performance;
+							}
 						}
 
 						break;
@@ -462,7 +503,11 @@ public class Graph {
 							if (traceAccesses.size() > 0)
 								calculateControllerSequences(controller, traceAccesses);
 
-							CalculateControllerPerformanceResult result = calculateControllerPerformance(t.getElements());
+							CalculateControllerPerformanceResult result = calculateControllerPerformance(
+								t.getElements(),
+								0,
+								t.getElements() == null ? 0 : t.getElements().size()
+							);
 
 							controllerPerformance += result.performance;
 						}
@@ -538,12 +583,8 @@ public class Graph {
 		return null;
 	}
 
-	public Cluster getClusterWithEntity(String entityName) {
-		for (Cluster cluster : this.clusters) {
-			if (cluster.containsEntity(entityName))
-				return cluster;
-		}
-		return null;
+	public String getClusterWithEntity(String entityName) {
+		return entityToClusterName.get(entityName);
 	}
 
 	public void splitCluster(String clusterName, String newName, String[] entities) throws Exception {

@@ -273,6 +273,9 @@ public class AnalysisController {
 			Set<String> entities = analyserCut.get("clusters").get(clusterId);
 			Cluster cluster = new Cluster(clusterId, entities);
 
+			for (String entity : entities)
+				graph.putEntity(entity, clusterId);
+
 			graph.addCluster(cluster);
 		}
 
