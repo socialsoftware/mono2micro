@@ -132,7 +132,7 @@ public class Graph {
 		return max;
 	}
 
-	static class CalculateControllerPerformanceResult {
+	public static class CalculateControllerPerformanceResult {
 		int performance = 0;
 		AccessDto firstElement = null;
 
@@ -234,7 +234,6 @@ public class Graph {
 		Controller controller,
 		List<AccessDto> accesses
 	) {
-
 		Controller.LocalTransaction lt = null;
 		List<Controller.LocalTransaction> ltList = new ArrayList<>();
 		Map<String, String> entityNameToMode = new HashMap<>();
@@ -335,9 +334,6 @@ public class Graph {
 			ltList.add(lt);
 
 		if (ltList.size() > 0) {
-			// we can piggyback the local transaction list size to know how many hops happened between different clusters
-			controller.setPerformance(ltList.size());
-
 			controller.addLocalTransactionSequence(ltList);
 		}
 	}
@@ -413,6 +409,9 @@ public class Graph {
 
 				Controller controller = new Controller(controllerName);
 
+				int controllerPerformance = 0;
+				int tracesCounter = 0;
+
 				switch (typeOfTraces) {
 					case LONGEST:
 						t = iter.getLongestTrace();
@@ -455,13 +454,21 @@ public class Graph {
 
 					default:
 						while (iter.hasMoreTraces()) {
+							tracesCounter++;
+
 							t = iter.nextTrace();
 							traceAccesses = t.expand(2);
 
 							if (traceAccesses.size() > 0)
 								calculateControllerSequences(controller, traceAccesses);
+
+							CalculateControllerPerformanceResult result = calculateControllerPerformance(t.getElements());
+
+							controllerPerformance += result.performance;
 						}
 				}
+
+				controller.setPerformance(controllerPerformance / tracesCounter);
 
 				if (controller.getEntities().size() > 0) {
 					this.addController(controller);
