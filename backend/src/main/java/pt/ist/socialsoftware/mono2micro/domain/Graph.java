@@ -132,44 +132,31 @@ public class Graph {
 		return max;
 	}
 
-	// FIXME GET FIRST ELEMENT OF RULE maybe a STACK IS A NICE IDEA
-	private int calculateControllerPerformance(
-		List<ReducedTraceElementDto> elements,
-		StringBuilder previousClusterNameStringBuilder,
-		AccessDto firstElement
+	static class CalculateControllerPerformanceResult {
+		int performance = 0;
+		AccessDto firstElement = null;
+
+		public CalculateControllerPerformanceResult() {}
+
+		public CalculateControllerPerformanceResult(int performance, AccessDto firstElement) {
+			this.performance = performance;
+			this.firstElement = firstElement;
+		}
+	}
+
+	private CalculateControllerPerformanceResult calculateControllerPerformance(
+		List<ReducedTraceElementDto> elements
 	) {
 		int numberOfElements = elements == null ? 0 : elements.size();
 
-		if (numberOfElements == 0) return 0;
+		if (numberOfElements == 0) return new CalculateControllerPerformanceResult();
 
-		if (numberOfElements == 1) {
-			if (previousClusterNameStringBuilder.length() == 0) return 1;
-
-			String currentClusterName;
-
-			AccessDto a = (AccessDto) elements.get(0);
-			String entity = a.getEntity();
-
-			try {
-				currentClusterName = this.getClusterWithEntity(entity).getName();
-			}
-			catch (Exception e) {
-				System.err.println("No assigned entity " + entity + " to a cluster.");
-				throw e;
-			}
-
-			if (!currentClusterName.equals(previousClusterNameStringBuilder.toString())) {
-				previousClusterNameStringBuilder.setLength(0);
-				previousClusterNameStringBuilder.append(currentClusterName);
-
-				return 1;
-			}
-
-			return 0;
-		}
+		if (numberOfElements == 1) return new CalculateControllerPerformanceResult(1, (AccessDto) elements.get(0));
 
 		int performance = 0;
 		int i = 0;
+		String previousClusterName = null;
+		AccessDto firstElement = null;
 
 		while (i < numberOfElements) {
 			ReducedTraceElementDto element = elements.get(i);
@@ -183,64 +170,64 @@ public class Graph {
 					i + 1 + r.getCount()
 				);
 
-				// if the firstElement hasnt been set, meaning entity string is empty, and
-				// the sequence's first element is an access then:
-				if (firstElement.getEntity().length() == 0 && sequenceElements.get(0) instanceof AccessDto) {
-					firstElement.setEntity(((AccessDto) sequenceElements.get(0)).getEntity());
-					firstElement.setMode(((AccessDto) sequenceElements.get(0)).getMode());
-				}
+				CalculateControllerPerformanceResult result = calculateControllerPerformance(sequenceElements);
 
-				// we need a copy because we are using the string builder as a mean to modify the previous cluster by reference
-				String previousClusterNameCopy = previousClusterNameStringBuilder.toString();
+				AccessDto sequenceFirstAccess = result.firstElement;
+				int sequencePerformance = result.performance;
 
-				int sequencePerformance = calculateControllerPerformance(
-					sequenceElements,
-					previousClusterNameStringBuilder,
-					firstElement
-				);
+				String sequenceFirstAccessedEntity = sequenceFirstAccess.getEntity();
+				String sequenceFirstAccessedClusterName = this.getClusterWithEntity(sequenceFirstAccessedEntity).getName();
 
 				// hop between an access (previous cluster if it exists) and the sequence in question
-				if (previousClusterNameCopy.length() > 0 && !previousClusterNameCopy.equals(this.getClusterWithEntity(firstElement.getEntity()).getName()))
+				if (previousClusterName != null && !previousClusterName.equals(sequenceFirstAccessedClusterName))
 					performance++;
 
 				// performance of the sequence multiplied by the number of times it occurs
 				performance += sequencePerformance * r.getOccurrences();
 
 				// Here we assume that a sequence will always have an access as its last element
-				AccessDto sequenceLastElement = (AccessDto) sequenceElements.get(sequenceElements.size() - 1);
+				String sequenceLastAccessedEntity = ((AccessDto) sequenceElements.get(sequenceElements.size() - 1)).getEntity();
+				String sequenceLastAccessedClusterName = this.getClusterWithEntity(sequenceLastAccessedEntity).getName();
+
+				previousClusterName = sequenceLastAccessedClusterName;
 
 				// If the rule has more than 1 occurrence, then we want to consider the hop between the final access and the first one
-				if (r.getOccurrences() > 1 && !firstElement.equals(sequenceLastElement))
+				if (r.getOccurrences() > 1 && !sequenceFirstAccessedClusterName.equals(sequenceLastAccessedClusterName))
 					performance += r.getOccurrences() - 1;
 
 				i += 1 + r.getCount();
 
 			} else {
-				String currentClusterName;
 
 				AccessDto a = (AccessDto) element;
 				String entity = a.getEntity();
 
+				if (firstElement == null)
+					firstElement = a;
+
 				try {
-					currentClusterName = this.getClusterWithEntity(entity).getName();
+					String currentClusterName = this.getClusterWithEntity(entity).getName();
+
+					if (previousClusterName == null)
+						previousClusterName = currentClusterName;
+
+					else if (!currentClusterName.equals(previousClusterName)) {
+						performance++;
+						previousClusterName = currentClusterName;
+					}
+
+					i++;
 				}
+
 				catch (Exception e) {
 					System.err.println("No assigned entity " + entity + " to a cluster.");
 					throw e;
 				}
 
-				if (previousClusterNameStringBuilder.length() > 0 && !currentClusterName.equals(previousClusterNameStringBuilder.toString())) {
-					performance++;
-
-					previousClusterNameStringBuilder.setLength(0);
-					previousClusterNameStringBuilder.append(currentClusterName);
-				}
-
-				i++;
 			}
 		}
 
-		return performance;
+		return new CalculateControllerPerformanceResult(performance, firstElement);
 	}
 
 	private void calculateControllerSequences(
