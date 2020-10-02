@@ -140,13 +140,13 @@ public class Graph {
 
 	public static class CalculateControllerPerformanceResult {
 		int performance = 0;
-		AccessDto firstElement = null;
+		String firstAccessedClusterName = null;
 
 		public CalculateControllerPerformanceResult() {}
 
-		public CalculateControllerPerformanceResult(int performance, AccessDto firstElement) {
+		public CalculateControllerPerformanceResult(int performance, String firstAccessedClusterName) {
 			this.performance = performance;
-			this.firstElement = firstElement;
+			this.firstAccessedClusterName = firstAccessedClusterName;
 		}
 	}
 
@@ -159,11 +159,14 @@ public class Graph {
 
 		if (numberOfElements == 0) return new CalculateControllerPerformanceResult();
 
-		if (numberOfElements == 1) return new CalculateControllerPerformanceResult(1, (AccessDto) elements.get(0));
+		if (numberOfElements == 1) return new CalculateControllerPerformanceResult(
+			1,
+			this.getClusterWithEntity(((AccessDto) elements.get(0)).getEntity())
+		);
 
 		int performance = 0;
 		String previousClusterName = null;
-		AccessDto firstAccess = null;
+		String firstAccessedClusterName = null;
 
 		int i = from;
 
@@ -173,26 +176,17 @@ public class Graph {
 			if (element instanceof RuleDto) {
 				RuleDto r = (RuleDto) element;
 
-				// a Sequence is composed by a Rule and its next elements
-//				List<ReducedTraceElementDto> sequenceElements = elements.subList( // let's try not to do this
-//					i + 1,
-//					i + 1 + r.getCount()
-//				);
-
 				CalculateControllerPerformanceResult result = calculateControllerPerformance(
 					elements,
 					i + 1,
 					i + 1 + r.getCount()
 				);
 
-				AccessDto sequenceFirstAccess = result.firstElement;
+				String sequenceFirstAccessedClusterName = result.firstAccessedClusterName;
 				int sequencePerformance = result.performance;
 
-				if (firstAccess == null)
-					firstAccess = sequenceFirstAccess;
-
-				String sequenceFirstAccessedEntity = sequenceFirstAccess.getEntity();
-				String sequenceFirstAccessedClusterName = this.getClusterWithEntity(sequenceFirstAccessedEntity);
+				if (firstAccessedClusterName == null)
+					firstAccessedClusterName = sequenceFirstAccessedClusterName;
 
 				// hop between an access (previous cluster if it exists) and the sequence in question
 				if (previousClusterName != null && !previousClusterName.equals(sequenceFirstAccessedClusterName))
@@ -218,11 +212,11 @@ public class Graph {
 				AccessDto a = (AccessDto) element;
 				String entity = a.getEntity();
 
-				if (firstAccess == null)
-					firstAccess = a;
-
 				try {
 					String currentClusterName = this.getClusterWithEntity(entity);
+
+					if (firstAccessedClusterName == null)
+						firstAccessedClusterName = currentClusterName;
 
 					if (previousClusterName == null)
 						previousClusterName = currentClusterName;
@@ -243,7 +237,7 @@ public class Graph {
 			}
 		}
 
-		return new CalculateControllerPerformanceResult(performance, firstAccess);
+		return new CalculateControllerPerformanceResult(performance, firstAccessedClusterName);
 	}
 
 	private void calculateControllerSequences(
