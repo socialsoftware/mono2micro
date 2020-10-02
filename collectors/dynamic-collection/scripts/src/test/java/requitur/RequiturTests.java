@@ -363,7 +363,7 @@ public class RequiturTests {
 		final List<ReducedTraceElement> trace = runLengthEncodingSequitur.getReadableRLETrace();
 		System.out.println("Readable trace: " + trace);
 
-		final List<ReducedTraceElement> trace2 = runLengthEncodingSequitur.getReadableRLETraceImproved();
+		final List<ReducedTraceElement> trace2 = runLengthEncodingSequitur.getReadableRLETrace();
 		System.out.println("Readable trace2: " + trace2);
 
 		final List<Content> uncompressedTrace = seg.getUncompressedTrace();
@@ -404,7 +404,7 @@ public class RequiturTests {
 		final List<ReducedTraceElement> trace1 = runLengthEncodingSequitur.getReadableRLETrace();
 		System.out.println("Readable trace: " + trace1);
 
-		final List<ReducedTraceElement> trace2 = runLengthEncodingSequitur.getReadableRLETraceImproved();
+		final List<ReducedTraceElement> trace2 = runLengthEncodingSequitur.getReadableRLETrace();
 		System.out.println("Readable trace without unit rules: " + trace2);
 	}
 
@@ -437,14 +437,14 @@ public class RequiturTests {
 		final List<ReducedTraceElement> trace1 = runLengthEncodingSequitur.getReadableRLETrace();
 		System.out.println("Readable trace: " + trace1);
 
-		final List<ReducedTraceElement> trace2 = runLengthEncodingSequitur.getReadableRLETraceImproved();
+		final List<ReducedTraceElement> trace2 = runLengthEncodingSequitur.getReadableRLETrace();
 		System.out.println("Readable trace without unit rules: " + trace2);
 	}
 
 	@Test
 	@Order(12)
 	public void testUnitRules3() {
-		String content[] = new String[] {"A","A","A","A","B","A","C","A","D","D","D","A","C","A","D","D","D","D","A","C","A","D","D","A","C","A","D","D","D","D","D","B","C","B","E","E","B","C","C" };
+		String[] content = new String[] {"A","A","A","A","B","A","C","A","D","D","D","A","C","A","D","D","D","D","A","C","A","D","D","A","C","A","D","D","D","D","D","B","C","B","E","E","B","C","C" };
 		System.out.println(Arrays.toString(content));
 		List<String> trace = Arrays.asList(content);
 		final Sequitur seq = new Sequitur();
@@ -469,7 +469,7 @@ public class RequiturTests {
 		final List<ReducedTraceElement> trace1 = runLengthEncodingSequitur.getReadableRLETrace();
 		System.out.println("Readable trace: " + trace1);
 
-		final List<ReducedTraceElement> trace2 = runLengthEncodingSequitur.getReadableRLETraceImproved();
+		final List<ReducedTraceElement> trace2 = runLengthEncodingSequitur.getReadableRLETrace();
 		System.out.println("Readable trace without unit rules: " + trace2);
 	}
 }

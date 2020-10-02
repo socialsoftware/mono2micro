@@ -26,7 +26,7 @@ public class JSONRLESeqCompactor {
 			final RunLengthEncodingSequitur runLengthEncodingSequitur = new RunLengthEncodingSequitur(seg);
 			runLengthEncodingSequitur.reduce();
 
-			compactedAccessesList = runLengthEncodingSequitur.getReadableRLETraceImproved();
+			compactedAccessesList = runLengthEncodingSequitur.getReadableRLETrace();
 //			 System.out.println("Compacted accesses: " + compactedAccessesList);
 
 			return new CompactedTrace(
