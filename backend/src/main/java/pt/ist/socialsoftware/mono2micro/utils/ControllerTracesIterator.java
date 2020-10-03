@@ -66,6 +66,8 @@ public class ControllerTracesIterator {
 	}
 
 	public void nextController(String controllerName) throws IOException {
+		counter = 0;
+
 		while (true) {
 			if (jsonParser.getCurrentToken() == JsonToken.START_OBJECT) {
 				if (jsonParser.getCurrentName() != null && jsonParser.getCurrentName().equals(controllerName)) {
