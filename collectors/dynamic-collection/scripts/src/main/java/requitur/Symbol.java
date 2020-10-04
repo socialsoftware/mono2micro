@@ -26,6 +26,7 @@ class Symbol {
 		this.sequitur = sequitur;
 		this.value = other.value;
 		this.name = other.name;
+		this.occurrences = other.getOccurrences();
 
 		if (other.rule != null) {
 			rule = other.rule;
@@ -105,7 +106,7 @@ class Symbol {
 			final Symbol other = (Symbol) obj;
 			final Content otherContent = other.getValue();
 
-			return otherContent.equals(getValue());
+			return otherContent.equals(getValue()) && other.getOccurrences() == occurrences;
 		}
 
 		return false;
@@ -116,28 +117,28 @@ class Symbol {
 			rule.decrementUsage();
 			// System.out.println("Decrement usage: " + rule.value + " " + rule.usage);
 			if (rule.usage == 1) {
-				if (rule.getAnchor().successor.successor == rule.getAnchor().predecessor) {
-					replaceTraceDigram();
-				}
-
-				final Symbol firstElement = rule.getAnchor().successor;
-				final Symbol lastElement = rule.getAnchor().predecessor;
-				sequitur.rules.remove(rule.getName());
-				sequitur.unusedRules.add(rule);
-
-				if (usingRule.getAnchor().successor.equals(this)) {
-					replaceStartRule(usingRule, firstElement, lastElement);
-
-				} else if (usingRule.getAnchor().predecessor.equals(this)) {
-					replaceEndRule(usingRule, firstElement, lastElement);
-
-				} else {
-					throw new RuntimeException("Unexpected: Rule-Symbol " + getValue() + " is deleted, but deleted symbol is neither start nor end of rule " + usingRule);
-				}
-
-				rule.usage = 0;
+				removeSingleUsageRule(usingRule);
 			}
 		}
+	}
+
+	public void removeSingleUsageRule(final Rule usingRule) {
+		if (rule.getAnchor().successor.successor == rule.getAnchor().predecessor) {
+			replaceTraceDigram();
+		}
+		final Symbol firstElement = rule.getAnchor().successor;
+		final Symbol lastElement = rule.getAnchor().predecessor;
+		sequitur.rules.remove(rule.getName());
+		sequitur.unusedRules.add(rule);
+
+		if (usingRule.getAnchor().successor.equals(this)) {
+			replaceStartRule(usingRule, firstElement, lastElement);
+		} else if (usingRule.getAnchor().predecessor.equals(this)) {
+			replaceEndRule(usingRule, firstElement, lastElement);
+		} else {
+			throw new RuntimeException("Unexpected: Rule-Symbol " + getValue() + " is deleted, but deleted symbol is neither start nor end of rule " + usingRule);
+		}
+		rule.usage = 0;
 	}
 
 	private void replaceEndRule(

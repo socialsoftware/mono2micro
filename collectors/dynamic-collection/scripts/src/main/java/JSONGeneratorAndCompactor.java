@@ -61,7 +61,7 @@ public class JSONGeneratorAndCompactor {
                     runLengthEncodingSequitur.setSequitur(sequitur);
                     runLengthEncodingSequitur.reduce();
 
-                    currentTrace.setElements(runLengthEncodingSequitur.getReadableRLETraceImproved());
+                    currentTrace.setElements(runLengthEncodingSequitur.getReadableRLETrace());
                 } else {
                     currentTrace.setElements(new ArrayList<>());
                 }
@@ -303,7 +303,7 @@ public class JSONGeneratorAndCompactor {
                 if (!sequitur.isEmpty()) {
                     runLengthEncodingSequitur.setSequitur(sequitur);
                     runLengthEncodingSequitur.reduce();
-                    currentTrace.setElements(runLengthEncodingSequitur.getReadableRLETraceImproved());
+                    currentTrace.setElements(runLengthEncodingSequitur.getReadableRLETrace());
                 } else {
                     currentTrace.setElements(new ArrayList<>());
                 }

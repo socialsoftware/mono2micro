@@ -130,6 +130,8 @@ public class AnalysisController {
 					}
 				}
 
+				jGenerator.flush();
+
 				existentAnalyserResultFile.delete();
 			}
 
@@ -165,6 +167,8 @@ public class AnalysisController {
 					filename,
 					cutInfo
 				);
+
+				jGenerator.flush();
 
 				newRequestsCount++;
 

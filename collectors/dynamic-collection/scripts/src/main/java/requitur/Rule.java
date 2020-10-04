@@ -104,6 +104,13 @@ public class Rule {
       }
 
       // Remove wrong Digrams
+      removeInvalidatedDigrams(digram, ruleSymbol);
+
+      digram.getStart().decrementUsage(this);
+      digram.getEnd().decrementUsage(this);
+   }
+
+   private void removeInvalidatedDigrams(Digram digram, Symbol ruleSymbol) {
       if (digram.getStart().getPredecessor().getValue() != null) {
          final Digram prevDigram = new Digram(digram.getStart().getPredecessor(), digram.getStart());
          final Digram oldDigram = sequitur.digrams.get(prevDigram);
@@ -119,6 +126,7 @@ public class Rule {
             newDigram.rule = newDigram.getEnd().getSuccessor().getRule();
          }
       }
+
       if (digram.getEnd().getSuccessor() != null && digram.getEnd().getSuccessor().getValue() != null) {
          final Digram sucDigram = new Digram(digram.getEnd(), digram.getEnd().getSuccessor());
          this.sequitur.digrams.remove(sucDigram);
@@ -138,9 +146,6 @@ public class Rule {
             newDigram.rule = newDigram.getEnd().getSuccessor().getRule();
          }
       }
-
-      digram.getStart().decrementUsage(this);
-      digram.getEnd().decrementUsage(this);
    }
 
    @Override

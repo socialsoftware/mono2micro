@@ -14,7 +14,6 @@ public class Sequitur {
 
    private static final Logger LOG = LoggerFactory.getLogger(Sequitur.class);
 
-
    Map<Digram, Digram> digrams = new HashMap<>();
    Map<String, Rule> rules = new HashMap<>();
    List<Rule> unusedRules = new LinkedList<>();
@@ -77,14 +76,8 @@ public class Sequitur {
                   rule.setDigram(existing);
 
                } else {
-                  // if (digram.getStart().isRule() && digram.getStart().getRule().getUsage() == 2) {
-                  // rule = digram.getStart().getRule();
-                  // link(rule.getAnchor().getPredecessor(), digram.getEnd());
-                  // link(existing.getStart(), existing.getEnd().getSucessor());
-                  // } else {
                   rule = new Rule(this, ruleIndex, existing);
                   ruleIndex++;
-                  // }
                }
                rules.put(rule.getName(), rule);
 

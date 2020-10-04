@@ -86,13 +86,13 @@ public class JSONCompactor {
 					break;
 				}
 
-				accessesToMatch = trace.getAccesses().subList(pivot, limit + 1);
-	//			Utils.print("Accesses to match: " + accessesToMatch, Utils.lineno());
+					accessesToMatch = trace.getAccesses().subList(pivot, limit + 1);
+		//			Utils.print("Accesses to match: " + accessesToMatch, Utils.lineno());
 
 				// it's unnecessary to match something if the remaining values aren't at least of the same size
 				// consequently, pivot must change
 
-				if (accessesToMatch.size() > (lastAccessIndex - limit)) { // optimization
+					if (accessesToMatch.size() > (lastAccessIndex - limit)) { // optimization
 	//				Utils.print("Remaining elements are insufficient after limit", Utils.lineno());
 
 	//				Utils.print("Best sequence: " + bestSequence, Utils.lineno());
@@ -122,7 +122,7 @@ public class JSONCompactor {
 				}
 
 				// if we can't match more sequences because there isn't enough elements to match then we can increase the limit
-				if (accessesToMatch.size() > (totalNumberOfAccesses - i)) {
+					if (accessesToMatch.size() > (totalNumberOfAccesses - i)) {
 	//				Utils.print("Not enough elements to match after i", Utils.lineno());
 					if (currentSequence.getAccesses().size() > 0) {
 						// check if currentSequence is longer than best sequence
@@ -158,7 +158,7 @@ public class JSONCompactor {
 
 
 				List<Access> currentAccesses = trace.getAccesses().subList(
-					i, i + accessesToMatch.size()
+						i, i + accessesToMatch.size()
 				);
 
 				if (accessesToMatch.equals(currentAccesses)) {

@@ -41,6 +41,8 @@ public class ControllerTracesIterator {
 			System.exit(-1);
 		}
 
+		jsonParser.nextValue();
+
 	}
 
 	public void reset() throws IOException {
@@ -55,7 +57,7 @@ public class ControllerTracesIterator {
 			return null;
 
 		TraceDto t = jsonParser.readValueAs(TraceDto.class);
-		jsonParser.nextToken();
+		jsonParser.nextValue();
 
 		if (t.getElements() != null && t.getElements().size() > 0)
 			counter++;
@@ -64,11 +66,20 @@ public class ControllerTracesIterator {
 	}
 
 	public void nextController(String controllerName) throws IOException {
-		while (
-			jsonParser.getCurrentToken() != JsonToken.START_OBJECT ||
-			jsonParser.getCurrentName() == null ||
-			!jsonParser.getCurrentName().equals(controllerName)
-		) {
+		counter = 0;
+
+		while (true) {
+			if (jsonParser.getCurrentToken() == JsonToken.START_OBJECT) {
+				if (jsonParser.getCurrentName() != null && jsonParser.getCurrentName().equals(controllerName)) {
+					break;
+				}
+
+				jsonParser.skipChildren();
+
+			} else if (jsonParser.getCurrentToken() == JsonToken.START_ARRAY) {
+				jsonParser.skipChildren();
+			}
+
 			jsonParser.nextValue();
 		}
 
@@ -81,7 +92,7 @@ public class ControllerTracesIterator {
 						System.exit(-1);
 					}
 
-					jsonParser.nextToken();
+					jsonParser.nextValue();
 					break findTraceFieldLoop;
 				case "id":
 				case "f":
@@ -96,8 +107,8 @@ public class ControllerTracesIterator {
 	public boolean hasMoreTraces() {
 		return (
 			jsonParser.getCurrentToken() != JsonToken.END_ARRAY &&
-			jsonParser.getCurrentToken() != JsonToken.END_OBJECT &&
-			(limit == 0 || counter < limit)
+				jsonParser.getCurrentToken() != JsonToken.END_OBJECT &&
+				(limit == 0 || counter < limit)
 		);
 	}
 
@@ -179,6 +190,4 @@ public class ControllerTracesIterator {
 
 		return traceIdToAccessesMap.keySet();
 	}
-
-
 }
