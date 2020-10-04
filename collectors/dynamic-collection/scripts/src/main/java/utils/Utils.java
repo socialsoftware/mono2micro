@@ -36,13 +36,13 @@ public class Utils {
         @Nullable String callerDynamicType,
         @Nullable String[] argumentTypes,
         @Nullable String returnType,
-        Map<String, String> domainEntities
+        Map<String, Short> domainEntities
     ) {
 //        Utils.print("Parsing method " + methodName + " of class " + declaringType, lineno());
         List<Access> accessesList = new ArrayList<>();
         String lowercasedMethodName = methodName.toLowerCase();
         String threeFirstLetters = lowercasedMethodName.substring(0, 3);
-        
+
         if (readMethodPrefixes.contains(threeFirstLetters)) {
             if (callerDynamicType != null && domainEntities.containsKey(callerDynamicType)){
                 accessesList.add(

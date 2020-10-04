@@ -15,7 +15,7 @@ import java.util.*;
 public class JSONGenerator {
     static HashMap<String, Functionality> json = new HashMap<>();
     static HashMap<String, List<Access>> cache = new HashMap<>();
-    static HashMap<String, String> domainEntities;
+    static HashMap<String, Short> domainEntities;
 
     static TraceWithAccesses currentTrace = null;
     static int currentKiekerTraceID = -1;
@@ -246,7 +246,7 @@ public class JSONGenerator {
 
             String domainEntitiesFileDir = cmdline.getOptionValue("domainEntities");
 
-            domainEntities = mapper.readValue(new FileInputStream(domainEntitiesFileDir), new TypeReference<HashMap<String, String>>(){});
+            domainEntities = mapper.readValue(new FileInputStream(domainEntitiesFileDir), new TypeReference<HashMap<String, Short>>(){});
 
             // Read all files starting with "executionTraces..."
             File f = new File(inputFilesDir);
