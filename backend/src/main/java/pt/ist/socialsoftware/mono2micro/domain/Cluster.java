@@ -12,30 +12,30 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
 @JsonDeserialize(using = ClusterDeserializer.class)
 public class Cluster {
-	private short id;
+	private String name;
 	private float complexity;
 	private float cohesion;
 	private float coupling;
-	private Map<Short, Set<Short>> couplingDependencies = new HashMap<>(); // <clusterID, Set<EntityID>>
+	private Map<String, Set<Short>> couplingDependencies = new HashMap<>(); // <clusterID, Set<EntityID>>
 	private Set<Short> entities = new HashSet<>(); // entity IDs
 
 	public Cluster() { }
 
-	public Cluster(short id) {
-        this.id = id;
+	public Cluster(String name) {
+        this.name = name;
 	}
 
-	public Cluster(short id, Set<Short> entities) {
-		this.id = id;
+	public Cluster(String name, Set<Short> entities) {
+		this.name = name;
 		this.entities = entities;
 	}
 
-	public short getId() {
-		return this.id;
+	public String getName() {
+		return this.name;
 	}
 
-	public void setId(short id) {
-		this.id = id;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public float getComplexity() {
