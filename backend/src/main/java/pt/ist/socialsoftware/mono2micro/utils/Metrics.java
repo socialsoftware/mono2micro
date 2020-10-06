@@ -89,45 +89,46 @@ public class Metrics {
 				if (fromCluster != null) { // not root node
 					List<Controller.LocalTransaction> nextLocalTransactions = controller.getNextLocalTransactions(lt);
 
-					for (Controller.LocalTransaction nextLt : nextLocalTransactions) {
-						String toEntity = nextLt.getClusterAccesses().get(0).getEntity();
-						fromCluster.addCouplingDependency(nextLt.getClusterName(), toEntity);
+					for (Controller.LocalTransaction nextLt : nextLocalTransactions)
+						fromCluster.addCouplingDependencies(
+							nextLt.getClusterName(),
+							nextLt.getFirstAccessedEntityIDs()
+						);
+
+					Set<String> controllersThatTouchSameEntities = new HashSet<>();
+					Set<AccessDto> clusterAccesses = lt.getClusterAccesses();
+
+					for (AccessDto a : clusterAccesses) {
+						short entityID = a.getEntityID();
+						String mode = a.getMode();
+
+						String key = String.join("-", String.valueOf(entityID), mode);
+						List<String> controllersThatTouchThisEntityAndMode = cache.get(key);
+
+						if (controllersThatTouchThisEntityAndMode == null) {
+							controllersThatTouchThisEntityAndMode = costOfAccess(controller, entityID, mode);
+							cache.put(key, controllersThatTouchThisEntityAndMode);
+						}
+
+						controllersThatTouchSameEntities.addAll(controllersThatTouchThisEntityAndMode);
 					}
+
+					controllerComplexity += controllersThatTouchSameEntities.size();
 				}
-
-				Set<String> controllersThatTouchSameEntities = new HashSet<>();
-				List<AccessDto> clusterAccesses = lt.getClusterAccesses();
-
-				for (AccessDto a : clusterAccesses) {
-					String entity = a.getEntity();
-					String mode = a.getMode();
-
-					String key = String.join("-", entity, mode);
-					List<String> controllersThatTouchThisEntityAndMode = cache.get(key);
-
-					if (controllersThatTouchThisEntityAndMode == null) {
-						controllersThatTouchThisEntityAndMode = costOfAccess(controller, entity, mode);
-						cache.put(key, controllersThatTouchThisEntityAndMode);
-					}
-
-					controllersThatTouchSameEntities.addAll(controllersThatTouchThisEntityAndMode);
-				}
-
-				controllerComplexity += controllersThatTouchSameEntities.size();
 			}
 
 			controller.setComplexity(controllerComplexity);
 		}
 	}
 
-	private List<String> costOfAccess (Controller controller, String entity, String mode) {
+	private List<String> costOfAccess (Controller controller, short entityID, String mode) {
 
 		List<String> controllersThatTouchThisEntityAndMode = new ArrayList<>();
 		for (Controller otherController : this.graph.getControllers()) {
 			if (
 				!otherController.getName().equals(controller.getName()) &&
-				otherController.containsEntity(entity) &&
-				otherController.getEntities().get(entity).contains(mode.equals("W") ? "R" : "W") &&
+				otherController.containsEntity(entityID) &&
+				otherController.getEntities().get(entityID).contains(mode.equals("W") ? "R" : "W") &&
 				this.controllerClusters.get(otherController.getName()).size() > 1
 			) {
 				controllersThatTouchThisEntityAndMode.add(otherController.getName());
@@ -150,10 +151,10 @@ public class Metrics {
 			// cohesion calculus
 			float numberEntitiesTouched = 0;
 
-			Set<String> controllerEntities = controller.getEntities().keySet();
+			Set<Short> controllerEntities = controller.getEntities().keySet();
 
-			for (String controllerEntity : controllerEntities) {
-				if (cluster.containsEntity(controllerEntity))
+			for (short entityID : controllerEntities) {
+				if (cluster.containsEntity(entityID))
 					numberEntitiesTouched++;
 			}
 
@@ -173,7 +174,7 @@ public class Metrics {
 
 	private void calculateClusterCoupling(Cluster c1) {
     	float coupling = 0;
-		Map<String, Set<String>> couplingDependencies = c1.getCouplingDependencies();
+		Map<String, Set<Short>> couplingDependencies = c1.getCouplingDependencies();
 
     	for (String c2 : couplingDependencies.keySet())
     		coupling += (float) couplingDependencies.get(c2).size() / graph.getCluster(c2).getEntities().size();

@@ -113,7 +113,7 @@ public class TraceDto {
 
 				AccessDto newAccess = new AccessDto();
 				newAccess.setOccurrences(0);
-				newAccess.setEntity(a.getEntity());
+				newAccess.setEntityID(a.getEntityID());
 				newAccess.setMode(a.getMode());
 
 				expandedElements.add(newAccess);
@@ -162,7 +162,12 @@ public class TraceDto {
 				if (e instanceof AccessDto) {
 					AccessDto a = (AccessDto) e;
 
-					String accessString = String.join("-", a.getEntity(), a.getMode());
+					String accessString = String.join(
+						"-",
+						String.valueOf(a.getEntityID()),
+						a.getMode()
+					);
+
 					accessesSet.add(accessString);
 				}
 			});

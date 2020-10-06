@@ -12,30 +12,30 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
 @JsonDeserialize(using = ClusterDeserializer.class)
 public class Cluster {
-	private String name;
+	private short id;
 	private float complexity;
 	private float cohesion;
 	private float coupling;
-	private Map<String, Set<String>> couplingDependencies = new HashMap<>(); // <clusterName, List<EntityName>>
-	private Set<String> entities = new HashSet<>(); // entity names
+	private Map<Short, Set<Short>> couplingDependencies = new HashMap<>(); // <clusterID, Set<EntityID>>
+	private Set<Short> entities = new HashSet<>(); // entity IDs
 
 	public Cluster() { }
 
-	public Cluster(String name) {
-        this.name = name;
+	public Cluster(short id) {
+        this.id = id;
 	}
 
-	public Cluster(String name, Set<String> entities) {
-		this.name = name;
+	public Cluster(short id, Set<Short> entities) {
+		this.id = id;
 		this.entities = entities;
 	}
 
-	public String getName() {
-		return this.name;
+	public short getId() {
+		return this.id;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setId(short id) {
+		this.id = id;
 	}
 
 	public float getComplexity() {
@@ -62,28 +62,36 @@ public class Cluster {
 		this.coupling = coupling;
 	}
 
-	public Map<String, Set<String>> getCouplingDependencies() { return couplingDependencies; }
+	public Map<String, Set<Short>> getCouplingDependencies() { return couplingDependencies; }
 
-	public void setCouplingDependencies(Map<String, Set<String>> couplingDependencies) { this.couplingDependencies = couplingDependencies; }
+	public void setCouplingDependencies(Map<String, Set<Short>> couplingDependencies) { this.couplingDependencies = couplingDependencies; }
 
-	public Set<String> getEntities() { return entities; }
+	public Set<Short> getEntities() { return entities; }
 
-	public void setEntities(Set<String> entities) {
+	public void setEntities(Set<Short> entities) {
 		this.entities = entities;
 	}
-	public void addEntity(String entity) { this.entities.add(entity); }
+	public void addEntity(short entity) { this.entities.add(entity); }
 
-	public void removeEntity(String entityName) { this.entities.remove(entityName); }
+	public void removeEntity(short entityID) { this.entities.remove(entityID); }
 
-	public boolean containsEntity(String entityName) { return this.entities.contains(entityName); }
+	public boolean containsEntity(short entityID) { return this.entities.contains(entityID); }
 
-	public void addCouplingDependency(String toCluster, String toEntity) {
+	public void addCouplingDependency(String toCluster, short entityID) {
 		if (this.couplingDependencies.containsKey(toCluster)) {
-			this.couplingDependencies.get(toCluster).add(toEntity);
+			this.couplingDependencies.get(toCluster).add(entityID);
 		} else {
-			Set<String> dependencies = new HashSet<>();
-			dependencies.add(toEntity);
-			this.couplingDependencies.put(toCluster, dependencies);
+			Set<Short> touchedEntityIDs = new HashSet<>();
+			touchedEntityIDs.add(entityID);
+			this.couplingDependencies.put(toCluster, touchedEntityIDs);
+		}
+	}
+
+	public void addCouplingDependencies(String toCluster, Set<Short> entityIDs) {
+		if (this.couplingDependencies.containsKey(toCluster)) {
+			this.couplingDependencies.get(toCluster).addAll(entityIDs);
+		} else {
+			this.couplingDependencies.put(toCluster, entityIDs);
 		}
 	}
 }

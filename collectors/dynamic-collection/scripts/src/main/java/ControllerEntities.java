@@ -17,7 +17,7 @@ public class ControllerEntities {
 //    static HashMap<String, List<Access>> cache = new HashMap<>();
     static HashMap<String, Short> domainEntities;
 
-    static HashMap<String, HashMap<String, String>> functionalitiesAccesses = new HashMap<>(); // <controllerName, <entityName, accesses>>
+    static HashMap<String, HashMap<Short, String>> functionalitiesAccesses = new HashMap<>(); // <controllerName, <entityName, accesses>>
     static int currentKiekerTraceID = -1;
     static String currentFunctionalityLabel = "";
 
@@ -114,20 +114,20 @@ public class ControllerEntities {
 
 //                Utils.print("Accesses: " + accesses.toString(), Utils.lineno());
 
-                HashMap<String, String> functionalityAccesses = functionalitiesAccesses.get(currentFunctionalityLabel);
+                HashMap<Short, String> functionalityAccesses = functionalitiesAccesses.get(currentFunctionalityLabel);
 
                 for (Access a : accesses) {
-                    String accessedEntity = a.getEntity();
+                    short accessedEntityID = a.getEntityID();
                     String accessMode = a.getType().name();
 
-                    String savedEntityMode = functionalityAccesses.get(accessedEntity);
+                    String savedEntityMode = functionalityAccesses.get(accessedEntityID);
 
                     if (savedEntityMode != null) {
                         if (!savedEntityMode.equals(accessMode))
-                            functionalityAccesses.put(accessedEntity, "RW");
+                            functionalityAccesses.put(accessedEntityID, "RW");
 
                     } else {
-                        functionalityAccesses.put(accessedEntity, accessMode);
+                        functionalityAccesses.put(accessedEntityID, accessMode);
                     }
 
                 }

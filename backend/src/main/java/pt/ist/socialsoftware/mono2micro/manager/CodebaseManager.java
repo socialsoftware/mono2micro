@@ -424,7 +424,7 @@ public class CodebaseManager {
 		writer.writeValue(new File(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json"), analyserJSON);
 	}
 
-	public HashMap<String, HashMap<String, Set<String>>> getAnalyserCut(
+	public HashMap<String, HashMap<String, Set<Short>>> getAnalyserCut(
 		String codebaseName,
 		String cutName
 	)
@@ -432,9 +432,9 @@ public class CodebaseManager {
 	{
 		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/analyser/cuts/" + cutName + ".json");
 
-		HashMap<String, HashMap<String, Set<String>>> value = objectMapper.readValue(
+		HashMap<String, HashMap<String, Set<Short>>> value = objectMapper.readValue(
 			is,
-			new TypeReference<HashMap<String, HashMap<String, Set<String>>>>() {}
+			new TypeReference<HashMap<String, HashMap<String, Set<Short>>>>() {}
 		);
 
 		is.close();

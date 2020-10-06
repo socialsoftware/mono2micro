@@ -38,8 +38,8 @@ public class ReducedTraceElementSerializer extends StdSerializer<ReducedTraceEle
 		} else if (c instanceof Access) {
 			final Access a = (Access) c;
 
-			jsonGenerator.writeString(a.getEntity());
 			jsonGenerator.writeString(a.getType().name());
+			jsonGenerator.writeNumber(a.getEntityID());
 		}
 
 		int occurrences = reducedTraceElement.getOccurrences();

@@ -23,8 +23,8 @@ public class AccessSerializer extends StdSerializer<Access> {
 		SerializerProvider serializerProvider
 	) throws IOException {
 		jsonGenerator.writeStartArray();
-		jsonGenerator.writeString(access.getEntity());
 		jsonGenerator.writeString(access.getType().name());
+		jsonGenerator.writeNumber(access.getEntityID());
 		jsonGenerator.writeEndArray();
 	}
 }

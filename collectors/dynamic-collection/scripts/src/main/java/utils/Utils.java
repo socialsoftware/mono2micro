@@ -33,7 +33,7 @@ public class Utils {
     public static List<Access> getMethodEntityAccesses(
         @Nullable String declaringType,
         @Nullable String methodName,
-        @Nullable String callerDynamicType,
+        @Nullable String callerType,
         @Nullable String[] argumentTypes,
         @Nullable String returnType,
         Map<String, Short> domainEntities
@@ -44,19 +44,23 @@ public class Utils {
         String threeFirstLetters = lowercasedMethodName.substring(0, 3);
 
         if (readMethodPrefixes.contains(threeFirstLetters)) {
-            if (callerDynamicType != null && domainEntities.containsKey(callerDynamicType)){
+            Short callerEntityTypeID = domainEntities.get(callerType);
+
+            if (callerEntityTypeID != null){
                 accessesList.add(
                     new Access(
-                        callerDynamicType,
+                        callerEntityTypeID,
                         Access.Type.R
                     )
                 );
             }
-                
-            if (returnType != null && domainEntities.containsKey(returnType)) {
+
+            Short returnEntityTypeID = domainEntities.get(returnType);
+
+            if (returnEntityTypeID != null) {
                 accessesList.add(
                     new Access(
-                        returnType,
+                        returnEntityTypeID,
                         Access.Type.R
                     )
                 );
@@ -68,10 +72,12 @@ public class Utils {
             writeMethodPrefixes.contains(threeFirstLetters) ||
             writeMethodPrefixes.contains(lowercasedMethodName.substring(0, 6))
         ) {
-            if (callerDynamicType != null && domainEntities.containsKey(callerDynamicType)) {
+            Short callerEntityTypeID = domainEntities.get(callerType);
+
+            if (callerEntityTypeID != null) {
                 accessesList.add(
                     new Access(
-                        callerDynamicType,
+                        callerEntityTypeID,
                         Access.Type.W
                     )
                 );
@@ -79,10 +85,12 @@ public class Utils {
     
             if (argumentTypes != null) { // both static and dynamic
                 for (String argType : argumentTypes) {
-                    if (domainEntities.containsKey(argType)){
+                    Short argEntityTypeID = domainEntities.get(argType);
+
+                    if (argEntityTypeID != null){
                         accessesList.add(
                             new Access(
-                                argType,
+                                argEntityTypeID,
                                 Access.Type.W
                             )
                         );

@@ -26,7 +26,7 @@ public class AccessWithFrequencyDeserializer extends StdDeserializer<AccessWithF
 
 		if (jsonToken == JsonToken.START_ARRAY) {
 			jsonParser.nextValue();
-			String entity = jsonParser.getValueAsString();
+			short entityID = jsonParser.getShortValue();
 
 			jsonParser.nextValue();
 			String type = jsonParser.getValueAsString();
@@ -40,7 +40,11 @@ public class AccessWithFrequencyDeserializer extends StdDeserializer<AccessWithF
 				throw new IOException("Error deserializing Access");
 			}
 
-			return new AccessWithFrequency(entity, Access.Type.valueOf(type), frequency);
+			return new AccessWithFrequency(
+				entityID,
+				Access.Type.valueOf(type),
+				frequency
+			);
 		}
 
 		throw new IOException("Error deserializing Access");

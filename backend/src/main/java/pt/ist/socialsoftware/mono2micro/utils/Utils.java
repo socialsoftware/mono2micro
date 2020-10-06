@@ -53,8 +53,8 @@ public class Utils {
     }
 
     // FIXME better name for this function pls
-    public static void  fillEntityDataStructures(
-        Map<String,List<Pair<String,String>>> entityControllers,
+    public static void fillEntityDataStructures(
+        Map<Short,List<Pair<String,String>>> entityControllers,
         Map<String,Integer> e1e2PairCount,
         List<AccessDto> accessesList,
         String controllerName
@@ -62,13 +62,13 @@ public class Utils {
 
         for (int i = 0; i < accessesList.size(); i++) {
             AccessDto access = accessesList.get(i);
-            String entity = access.getEntity();
+            short entityID = access.getEntityID();
             String mode = access.getMode();
 
-            if (entityControllers.containsKey(entity)) {
+            if (entityControllers.containsKey(entityID)) {
                 boolean containsController = false;
 
-                for (Pair<String, String> controllerPair : entityControllers.get(entity)) {
+                for (Pair<String, String> controllerPair : entityControllers.get(entityID)) {
                     if (controllerPair.getFirst().equals(controllerName)) {
                         containsController = true;
 
@@ -79,22 +79,22 @@ public class Utils {
                 }
 
                 if (!containsController) {
-                    entityControllers.get(entity).add(new Pair<>(controllerName, mode));
+                    entityControllers.get(entityID).add(new Pair<>(controllerName, mode));
                 }
 
             } else {
                 List<Pair<String, String>> controllersPairs = new ArrayList<>();
                 controllersPairs.add(new Pair<>(controllerName, mode));
-                entityControllers.put(entity, controllersPairs);
+                entityControllers.put(entityID, controllersPairs);
             }
 
             if (i < accessesList.size() - 1) {
                 AccessDto nextAccess = accessesList.get(i + 1);
-                String nextEntity = nextAccess.getEntity();
+                short nextEntityID = nextAccess.getEntityID();
 
-                if (!entity.equals(nextEntity)) {
-                    String e1e2 = entity + "->" + nextEntity;
-                    String e2e1 = nextEntity + "->" + entity;
+                if (entityID != nextEntityID) {
+                    String e1e2 = entityID + "->" + nextEntityID;
+                    String e2e1 = nextEntityID + "->" + entityID;
 
                     int count = e1e2PairCount.getOrDefault(e1e2, 0);
                     e1e2PairCount.put(e1e2, count + 1);
@@ -114,10 +114,10 @@ public class Utils {
     }
 
     public static float[] calculateSimilarityMatrixMetrics(
-        Map<String,List<Pair<String,String>>> entityControllers,
+        Map<Short,List<Pair<String,String>>> entityControllers, // entityID -> [<controllerName, accessMode>, ...]
         Map<String,Integer> e1e2PairCount,
-        String e1,
-        String e2,
+        short e1ID,
+        short e2ID,
         int maxNumberOfPairs
     ) {
 
@@ -127,8 +127,8 @@ public class Utils {
         float e1ControllersW = 0;
         float e1ControllersR = 0;
 
-        for (Pair<String,String> e1Controller : entityControllers.get(e1)) {
-            for (Pair<String,String> e2Controller : entityControllers.get(e2)) {
+        for (Pair<String,String> e1Controller : entityControllers.get(e1ID)) {
+            for (Pair<String,String> e2Controller : entityControllers.get(e2ID)) {
                 if (e1Controller.getFirst().equals(e2Controller.getFirst()))
                     inCommon++;
                 if (e1Controller.getFirst().equals(e2Controller.getFirst()) && e1Controller.getSecond().contains("W") && e2Controller.getSecond().contains("W"))
@@ -142,11 +142,11 @@ public class Utils {
                 e1ControllersR++;
         }
 
-        float accessMetric = inCommon / entityControllers.get(e1).size();
+        float accessMetric = inCommon / entityControllers.get(e1ID).size();
         float writeMetric = e1ControllersW == 0 ? 0 : inCommonW / e1ControllersW;
         float readMetric = e1ControllersR == 0 ? 0 : inCommonR / e1ControllersR;
 
-        String e1e2 = e1 + "->" + e2;
+        String e1e2 = e1ID + "->" + e2ID;
         float e1e2Count = e1e2PairCount.getOrDefault(e1e2, 0);
 
         float sequenceMetric;

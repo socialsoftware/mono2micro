@@ -54,10 +54,11 @@ public class ReducedTraceElementDtoDeserializer extends StdDeserializer<ReducedT
 			}
 
 			else if (jsonParser.getCurrentToken() == JsonToken.VALUE_STRING){ // an access
-				String entity = jsonParser.getValueAsString();
+				String mode = jsonParser.getValueAsString();
 
 				jsonParser.nextValue();
-				String mode = jsonParser.getValueAsString();
+
+				short entityID = jsonParser.getShortValue();
 
 				jsonParser.nextValue();
 
@@ -73,7 +74,7 @@ public class ReducedTraceElementDtoDeserializer extends StdDeserializer<ReducedT
 
 				AccessDto a = new AccessDto();
 
-				a.setEntity(entity);
+				a.setEntityID(entityID);
 				a.setMode(mode);
 				a.setOccurrences(occurrences);
 
