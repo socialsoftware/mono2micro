@@ -271,7 +271,7 @@ public class Graph {
 			if (i == 0) {
 				lt = new Controller.LocalTransaction(
 					localTransactionsCounter++,
-					cluster,
+					Short.parseShort(cluster),
 					new HashSet<AccessDto>() { { add(access); } },
 					entityID
 				);
@@ -314,7 +314,7 @@ public class Graph {
 
 					lt = new Controller.LocalTransaction(
 						localTransactionsCounter++,
-						cluster,
+						Short.parseShort(cluster),
 						new HashSet<AccessDto>() { { add(access); } },
 						entityID
 					);

@@ -19,7 +19,7 @@ import static org.jgrapht.Graphs.successorListOf;
 public class Controller {
 	public static class LocalTransaction {
 		private int id; // transaction id to ensure that every node in the graph is unique
-		private String clusterName; // actually is just an Id
+		private short clusterID; // changed to short instead of String to minimize the memory footprint
 		private Set<AccessDto> clusterAccesses;
 		private Set<Short> firstAccessedEntityIDs; // to calculate the coupling dependencies
 
@@ -31,35 +31,35 @@ public class Controller {
 
 		public LocalTransaction(
 			int id,
-			String clusterName
+			short clusterID
 		) {
 			this.id = id;
-			this.clusterName = clusterName;
+			this.clusterID = clusterID;
 		}
 
 		public LocalTransaction(
 			int id,
-			String clusterName,
+			short clusterID,
 			Set<AccessDto> clusterAccesses,
 			short firstAccessedEntityID
 		) {
 			this.id = id;
-			this.clusterName = clusterName;
+			this.clusterID = clusterID;
 			this.clusterAccesses = clusterAccesses;
 			this.firstAccessedEntityIDs = new HashSet<Short>() { { add(firstAccessedEntityID); } };
 		}
 
 		public LocalTransaction(LocalTransaction lt) {
 			this.id = lt.getId();
-			this.clusterName = lt.getClusterName();
+			this.clusterID = lt.getClusterID();
 			this.clusterAccesses = new HashSet<>(lt.getClusterAccesses());
 			this.firstAccessedEntityIDs = new HashSet<>(lt.getFirstAccessedEntityIDs());
 		}
 
 		public int getId() { return id; }
 		public void setId(int id) { this.id = id; }
-		public String getClusterName() { return clusterName; }
-		public void setClusterName(String clusterName) { this.clusterName = clusterName; }
+		public short getClusterID() { return clusterID; }
+		public void setClusterID(short clusterID) { this.clusterID = clusterID; }
 		public Set<AccessDto> getClusterAccesses() { return clusterAccesses; }
 		public void setClusterAccesses(Set<AccessDto> clusterAccesses) { this.clusterAccesses = clusterAccesses; }
 		public void addClusterAccess(AccessDto a) { this.clusterAccesses.add(a); }
@@ -100,7 +100,7 @@ public class Controller {
         localTransactionsGraph.addVertex( // root
         	new LocalTransaction(
         		0,
-				null
+				(short) -1
 			)
 		);
         this.localTransactionCounter = 1;
@@ -176,7 +176,7 @@ public class Controller {
 	public void addLocalTransactionSequence(List<LocalTransaction> localTransactionSequence) {
 		this.setLocalTransactionCounter(localTransactionSequence.size());
 
-		LocalTransaction graphCurrentLT = new LocalTransaction(0, null);
+		LocalTransaction graphCurrentLT = new LocalTransaction(0, (short) -1); // root
 
 		for (int i = 0; i < localTransactionSequence.size(); i++) {
 			List<LocalTransaction> graphChildrenLTs = getNextLocalTransactions(graphCurrentLT);
@@ -197,7 +197,7 @@ public class Controller {
 				LocalTransaction graphChildLT = graphChildrenLTs.get(j);
 				LocalTransaction sequenceCurrentLT = localTransactionSequence.get(i);
 
-				if (sequenceCurrentLT.getClusterName().equals(graphChildLT.getClusterName())) {
+				if (sequenceCurrentLT.getClusterID() == graphChildLT.getClusterID()) {
 					graphChildLT.getClusterAccesses().addAll(sequenceCurrentLT.getClusterAccesses());
 					graphChildLT.getFirstAccessedEntityIDs().addAll(sequenceCurrentLT.getFirstAccessedEntityIDs());
 

@@ -84,14 +84,14 @@ public class Metrics {
 
 			for (Controller.LocalTransaction lt : allLocalTransactions) {
 				// ClusterDependencies
-				Cluster fromCluster = graph.getCluster(lt.getClusterName());
+				Cluster fromCluster = graph.getCluster(String.valueOf(lt.getClusterID()));
 
 				if (fromCluster != null) { // not root node
 					List<Controller.LocalTransaction> nextLocalTransactions = controller.getNextLocalTransactions(lt);
 
 					for (Controller.LocalTransaction nextLt : nextLocalTransactions)
 						fromCluster.addCouplingDependencies(
-							nextLt.getClusterName(),
+							String.valueOf(nextLt.getClusterID()),
 							nextLt.getFirstAccessedEntityIDs()
 						);
 
