@@ -250,7 +250,6 @@ public class Graph {
 		String previousCluster = ""; // IntelliJ is afraid. poor him
 
 		int localTransactionsCounter = controller.getLocalTransactionCounter();
-
 //		JSONArray entitiesSeq = new JSONArray();
 //		JSONObject clusterAccess = new JSONObject();
 
@@ -345,6 +344,7 @@ public class Graph {
 			ltList.add(lt);
 
 		if (ltList.size() > 0) {
+			controller.setLocalTransactionCounter(localTransactionsCounter);
 			controller.addLocalTransactionSequence(ltList);
 		}
 	}

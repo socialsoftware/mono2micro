@@ -28,13 +28,21 @@ public class Metrics {
 		List<Controller> graphControllers = graph.getControllers();
 
 		System.out.println("Calculating graph complexity and performance...");
+		// int graphNodes = 0;
+		// int maxNumberOfNodes = 0;
 
 		for (Controller controller : graphControllers) {
 			calculateControllerComplexityAndClusterDependencies(controller);
 //			calculateRedesignComplexities(controller, Constants.DEFAULT_REDESIGN_NAME);
 			graphComplexity += controller.getComplexity();
 			graphPerformance += controller.getPerformance();
+			// graphNodes += controller.getAllLocalTransactions().size();
+			// if (controller.getAllLocalTransactions().size() > maxNumberOfNodes)
+			// 	maxNumberOfNodes = controller.getAllLocalTransactions().size();
 		}
+
+		// System.out.println("Média de nós do grafo: " + graphNodes/graphControllers.size());
+		// System.out.println("Máximo numero de nós: " + maxNumberOfNodes);
 
 		int graphControllersAmount = graphControllers.size();
 

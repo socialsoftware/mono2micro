@@ -174,8 +174,6 @@ public class Controller {
 	public DirectedAcyclicGraph<LocalTransaction, DefaultEdge> getLocalTransactionsGraph() { return localTransactionsGraph; }
 
 	public void addLocalTransactionSequence(List<LocalTransaction> localTransactionSequence) {
-		this.setLocalTransactionCounter(localTransactionSequence.size());
-
 		LocalTransaction graphCurrentLT = new LocalTransaction(0, (short) -1); // root
 
 		for (int i = 0; i < localTransactionSequence.size(); i++) {
