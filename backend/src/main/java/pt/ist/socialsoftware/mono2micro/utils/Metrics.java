@@ -51,7 +51,7 @@ public class Metrics {
 		System.out.println("Calculating graph cohesion and coupling");
 
 		for (Cluster cluster : graphClusters) {
-			calculateClusterComplexityAndCohesion(cluster); // FIXME What do we do with the cluster complexity?
+			calculateClusterComplexityAndCohesion(cluster);
 
 			graphCohesion += cluster.getCohesion();
 
