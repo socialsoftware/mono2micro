@@ -64,7 +64,7 @@ def calculateMoJoBetweenBestOfStaticAndBestOfDynamic():
 
 
 def getClusters(complexityWeights):
-    cutName = ",".join(
+    cutFileName = ",".join(
         [
             str(int(complexityWeights[0])),
             str(int(complexityWeights[1])),
@@ -75,15 +75,16 @@ def getClusters(complexityWeights):
     ) + ".json"
 
     with open('/home/samuel/ProjetoTese/mono2micro/backend/src/main/resources/codebases/' +
-              parsedFileName + '/analyser/cuts/' + cutName) as f:
+              parsedFileName + '/analyser/cuts/' + cutFileName) as f:
         dataFile = json.load(f)
         return dataFile['clusters']
 
 
 # the two csv files two compare
 files = [
-    '49_81574.52_bw-maven.csv',
-    '45_61179.04_bwRebaixadoADynamicExpert.csv'
+    '45_83104.77_bw-simulation.csv',
+    '57_72757.14_LdoD-simulation-5fragments.csv',
+    '58_6114.03_LdoD-test.csv'
 ]
 bestDecompositionsOfFile = {}
 
@@ -113,9 +114,6 @@ for file in files:
         parsedFileName = "_".join(file.split("_")[2:])
         parsedFileName = parsedFileName[0:len(parsedFileName) - 4]
 
-        # print('N = ' + str(n) + " " + str(minComplexityWeights))
-        # print(str(minComplexityWeights))
-
         accessesWeights = []
         writeWeights = []
         readWeights = []
@@ -126,14 +124,16 @@ for file in files:
             readWeights.append(sub[2])
             sequenceWeights.append(sub[3])
 
-        print("[" + str(round(np.mean(accessesWeights), 2)) +
+        avgText = ("AVG: [" + str(round(np.mean(accessesWeights), 2)) +
               ", " + str(round(np.mean(writeWeights), 2)) +
               ", " + str(round(np.mean(readWeights), 2)) +
               ", " + str(round(np.mean(sequenceWeights), 2)) +
               "]")
 
-        minComplexityClusters.append(getClusters(minComplexityWeights))
+        print('N = ' + str(n) + '\tMIN: ' + str(minComplexityWeights) + '\t' + avgText)
+        # minComplexityClusters.append(getClusters(minComplexityWeights))
 
-    bestDecompositionsOfFile[file] = minComplexityClusters
+    # bestDecompositionsOfFile[file] = minComplexityClusters
+    print()
 
-calculateMoJoBetweenBestOfStaticAndBestOfDynamic()
+# calculateMoJoBetweenBestOfStaticAndBestOfDynamic()

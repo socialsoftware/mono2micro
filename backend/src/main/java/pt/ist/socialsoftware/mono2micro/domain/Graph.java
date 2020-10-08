@@ -28,7 +28,7 @@ public class Graph {
 	private float cohesion;
 	private float coupling;
 	private List<Controller> controllers = new ArrayList<>();
-	private List<Cluster> clusters = new ArrayList<>();
+	private List<Cluster> clusters = new ArrayList<>(); // FIXME hashmap
 	@JsonIgnore
 	private final Map<Short, String> entityIDToClusterName = new HashMap<>();
 
