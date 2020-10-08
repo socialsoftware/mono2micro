@@ -10,27 +10,24 @@ DISTR_TARGET_FILE_PATH = '../../java/pt/ist/socialsoftware/mono2micro/utils/mojo
 
 def calculateMoJoBetweenBestOfStaticAndBestOfDynamic():
     print("MoJo")
-    bestDecompositionsClustersForNFiles = []  # each position is a different file
-    for key in bestDecompositionsOfFile.keys():
-        bestDecompositionsClustersForNFiles.append(bestDecompositionsOfFile[key])
 
     dynamicEntities = []
     staticEntities = []
-    firstFileDecompositions = bestDecompositionsClustersForNFiles[0]
+    firstFileDecompositions = bestDecompositionsOfFile[0]
     bestDecompositionForN = firstFileDecompositions[0]
     for clusterKey in bestDecompositionForN.keys():
         for entity in bestDecompositionForN[clusterKey]:
             dynamicEntities.append(entity)
 
-    secondFileDecompositions = bestDecompositionsClustersForNFiles[1]
+    secondFileDecompositions = bestDecompositionsOfFile[1]
     bestDecompositionForN = secondFileDecompositions[0]
     for clusterKey in bestDecompositionForN.keys():
         for entity in bestDecompositionForN[clusterKey]:
             staticEntities.append(entity)
 
-    for n in range(0, len(bestDecompositionsClustersForNFiles[0])):
+    for n in range(0, len(bestDecompositionsOfFile[0])):
         distrSrc = ""
-        firstFileDecompositions = bestDecompositionsClustersForNFiles[0]
+        firstFileDecompositions = bestDecompositionsOfFile[0]
         bestDecompositionForN = firstFileDecompositions[n]
         for clusterKey in bestDecompositionForN.keys():
             for entity in bestDecompositionForN[clusterKey]:
@@ -41,7 +38,7 @@ def calculateMoJoBetweenBestOfStaticAndBestOfDynamic():
         text_file.close()
 
         distrTarget = ""  # static
-        secondFileDecompositions = bestDecompositionsClustersForNFiles[1]
+        secondFileDecompositions = bestDecompositionsOfFile[1]
         bestDecompositionForN = secondFileDecompositions[n]
         for clusterKey in bestDecompositionForN.keys():
             for entity in bestDecompositionForN[clusterKey]:
@@ -81,11 +78,12 @@ def getClusters(complexityWeights):
 
 
 # the two csv files two compare
+# if comparing Dynamic to Static dynamic has to be on index 0
 files = [
-    '49_81574.52_bw-maven.csv',
-    '45_61179.04_bwRebaixadoADynamicExpert.csv'
+    '45_9522.06_bw-ExpertUsage.csv',
+    '49_81574.52_bw-maven.csv'
 ]
-bestDecompositionsOfFile = {}
+bestDecompositionsOfFile = []
 
 for file in files:
     print(file)
@@ -134,6 +132,6 @@ for file in files:
 
         minComplexityClusters.append(getClusters(minComplexityWeights))
 
-    bestDecompositionsOfFile[file] = minComplexityClusters
+    bestDecompositionsOfFile.append(minComplexityClusters)
 
 calculateMoJoBetweenBestOfStaticAndBestOfDynamic()
