@@ -129,7 +129,11 @@ public class Metrics {
 		}
 	}
 
-	private List<String> costOfAccess (Controller controller, short entityID, String mode) {
+	private List<String> costOfAccess (
+		Controller controller,
+		short entityID,
+		String mode
+	) {
 
 		List<String> controllersThatTouchThisEntityAndMode = new ArrayList<>();
 		for (Controller otherController : this.graph.getControllers()) {

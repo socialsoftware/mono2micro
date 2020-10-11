@@ -90,7 +90,7 @@
 <!--                                <mainClass>JSONGenerator</mainClass>-->
 <!--                            </manifest>-->
 <!--                        </archive>-->
-                        <finalName>json-generator-and-compactor</finalName>
+                        <finalName>json-generator-and-compactorV3</finalName>
                         <archive>
                             <manifest>
                                 <mainClass>JSONGeneratorAndCompactor</mainClass>
@@ -115,10 +115,10 @@
 <!--                                <mainClass>ControllerEntities</mainClass>-->
 <!--                            </manifest>-->
 <!--                        </archive>-->
-<!--                        <finalName>json-rle-seq-compactor</finalName>-->
+<!--                        <finalName>json-evener</finalName>-->
 <!--                        <archive>-->
 <!--                            <manifest>-->
-<!--                                <mainClass>JSONRLESeqCompactor</mainClass>-->
+<!--                                <mainClass>JSONEvener</mainClass>-->
 <!--                            </manifest>-->
 <!--                        </archive>-->
                     </configuration>

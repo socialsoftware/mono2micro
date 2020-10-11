@@ -45,7 +45,6 @@ for folder in codebases:
                 maxComplexity = dfAnalyser[entry]['complexity']
 
             if n != entitiesCount and dfAnalyser[entry]['performance'] > maxPerformance:
-                print(dfAnalyser[entry]['performance'])
                 maxPerformance = dfAnalyser[entry]['performance']
 
         csvFilePath = os.getcwd() + "/data/" + str(entitiesCount) + "_" + str(maxComplexity) + "_" + folder + ".csv"

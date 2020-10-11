@@ -137,28 +137,28 @@ public class Graph {
 		entityIDToClusterName.put(entityID, clusterName);
 	}
 
-	public static class CalculateControllerPerformanceResult {
+	public static class CalculateTracePerformanceResult {
 		int performance = 0;
 		String firstAccessedClusterName = null;
 
-		public CalculateControllerPerformanceResult() {}
+		public CalculateTracePerformanceResult() {}
 
-		public CalculateControllerPerformanceResult(int performance, String firstAccessedClusterName) {
+		public CalculateTracePerformanceResult(int performance, String firstAccessedClusterName) {
 			this.performance = performance;
 			this.firstAccessedClusterName = firstAccessedClusterName;
 		}
 	}
 
-	private CalculateControllerPerformanceResult calculateControllerPerformance(
+	private CalculateTracePerformanceResult calculateTracePerformance(
 		List<ReducedTraceElementDto> elements,
 		int from,
 		int to
 	) {
 		int numberOfElements = elements == null ? 0 : elements.size();
 
-		if (numberOfElements == 0) return new CalculateControllerPerformanceResult();
+		if (numberOfElements == 0) return new CalculateTracePerformanceResult();
 
-		if (numberOfElements == 1) return new CalculateControllerPerformanceResult(
+		if (numberOfElements == 1) return new CalculateTracePerformanceResult(
 			1,
 			this.getClusterWithEntity(((AccessDto) elements.get(0)).getEntityID())
 		);
@@ -175,7 +175,7 @@ public class Graph {
 			if (element instanceof RuleDto) {
 				RuleDto r = (RuleDto) element;
 
-				CalculateControllerPerformanceResult result = calculateControllerPerformance(
+				CalculateTracePerformanceResult result = calculateTracePerformance(
 					elements,
 					i + 1,
 					i + 1 + r.getCount()
@@ -236,7 +236,7 @@ public class Graph {
 			}
 		}
 
-		return new CalculateControllerPerformanceResult(performance, firstAccessedClusterName);
+		return new CalculateTracePerformanceResult(performance, firstAccessedClusterName);
 	}
 
 	private void calculateControllerSequences(
@@ -390,6 +390,115 @@ public class Graph {
 		}
 	}
 
+	private Controller getDynamicController(
+		ControllerTracesIterator iter,
+		String controllerName,
+		Constants.TypeOfTraces typeOfTraces
+	)
+		throws IOException
+	{
+		TraceDto t;
+		List<AccessDto> traceAccesses;
+
+		iter.nextController(controllerName);
+
+		Controller controller = new Controller(controllerName);
+
+		int controllerPerformance = 0;
+		int tracesCounter = 0;
+
+		switch (typeOfTraces) {
+			case LONGEST:
+				t = iter.getLongestTrace();
+
+				if (t != null) {
+					traceAccesses = t.expand(2);
+
+					if (traceAccesses.size() > 0)
+						calculateControllerSequences(controller, traceAccesses);
+
+					CalculateTracePerformanceResult result = calculateTracePerformance(
+						t.getElements(),
+						0,
+						t.getElements() == null ? 0 : t.getElements().size()
+					);
+
+					controllerPerformance += result.performance;
+				}
+
+				break;
+
+			case WITH_MORE_DIFFERENT_ACCESSES:
+				t = iter.getTraceWithMoreDifferentAccesses();
+
+				if (t != null) {
+					traceAccesses = t.expand(2);
+
+					if (traceAccesses.size() > 0)
+						calculateControllerSequences(controller, traceAccesses);
+
+					CalculateTracePerformanceResult result = calculateTracePerformance(
+						t.getElements(),
+						0,
+						t.getElements() == null ? 0 : t.getElements().size()
+					);
+
+					controllerPerformance += result.performance;
+				}
+
+				break;
+
+			case REPRESENTATIVE:
+				Set<String> tracesIds = iter.getRepresentativeTraces();
+				// FIXME probably here we create a second controllerTracesIterator
+				iter.reset();
+
+				while (iter.hasMoreTraces()) {
+					t = iter.nextTrace();
+					traceAccesses = t.expand(2);
+
+					if (tracesIds.contains(String.valueOf(t.getId())) && traceAccesses.size() > 0) {
+						calculateControllerSequences(controller, traceAccesses);
+
+						CalculateTracePerformanceResult result = calculateTracePerformance(
+							t.getElements(),
+							0,
+							t.getElements() == null ? 0 : t.getElements().size()
+						);
+
+						controllerPerformance += result.performance;
+					}
+				}
+
+				break;
+
+			default:
+				while (iter.hasMoreTraces()) {
+					tracesCounter++;
+
+					t = iter.nextTrace();
+					traceAccesses = t.expand(2);
+
+					if (traceAccesses.size() > 0)
+						calculateControllerSequences(controller, traceAccesses);
+
+					CalculateTracePerformanceResult result = calculateTracePerformance(
+						t.getElements(),
+						0,
+						t.getElements() == null ? 0 : t.getElements().size()
+					);
+
+					controllerPerformance += result.performance;
+				}
+		}
+
+		controller.setPerformance(controllerPerformance / tracesCounter);
+
+		return controller;
+	}
+
+
+
 	public void addDynamicControllers(
 		List<String> profiles,
 		int tracesMaxLimit,
@@ -398,8 +507,6 @@ public class Graph {
 		throws IOException
 	{
 		System.out.println("Adding dynamic controllers...");
-
-		this.controllers = new ArrayList<>();
 
 		Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
 			codebaseName,
@@ -411,108 +518,117 @@ public class Graph {
 			tracesMaxLimit
 		);
 
-		TraceDto t;
-		List<AccessDto> traceAccesses;
+//		TraceDto t;
+//		List<AccessDto> traceAccesses;
 
 		for (String profile : profiles) {
 			for (String controllerName : codebase.getProfile(profile)) {
-				iter.nextController(controllerName);
+				Controller controller = getDynamicController(
+					iter,
+					controllerName,
+					typeOfTraces
+				);
 
-				Controller controller = new Controller(controllerName);
-
-				int controllerPerformance = 0;
-				int tracesCounter = 0;
-
-				switch (typeOfTraces) {
-					case LONGEST:
-						t = iter.getLongestTrace();
-
-						if (t != null) {
-							traceAccesses = t.expand(2);
-
-							if (traceAccesses.size() > 0)
-								calculateControllerSequences(controller, traceAccesses);
-
-							CalculateControllerPerformanceResult result = calculateControllerPerformance(
-								t.getElements(),
-								0,
-								t.getElements() == null ? 0 : t.getElements().size()
-							);
-
-							controllerPerformance += result.performance;
-						}
-
-						break;
-
-					case WITH_MORE_DIFFERENT_ACCESSES:
-						t = iter.getTraceWithMoreDifferentAccesses();
-
-						if (t != null) {
-							traceAccesses = t.expand(2);
-
-							if (traceAccesses.size() > 0)
-								calculateControllerSequences(controller, traceAccesses);
-
-							CalculateControllerPerformanceResult result = calculateControllerPerformance(
-								t.getElements(),
-								0,
-								t.getElements() == null ? 0 : t.getElements().size()
-							);
-
-							controllerPerformance += result.performance;
-						}
-
-						break;
-
-					case REPRESENTATIVE:
-						Set<String> tracesIds = iter.getRepresentativeTraces();
-						// FIXME probably here we create a second controllerTracesIterator
-						iter.reset();
-
-						while (iter.hasMoreTraces()) {
-							t = iter.nextTrace();
-							traceAccesses = t.expand(2);
-
-							if (tracesIds.contains(String.valueOf(t.getId())) && traceAccesses.size() > 0) {
-								calculateControllerSequences(controller, traceAccesses);
-
-								CalculateControllerPerformanceResult result = calculateControllerPerformance(
-									t.getElements(),
-									0,
-									t.getElements() == null ? 0 : t.getElements().size()
-								);
-
-								controllerPerformance += result.performance;
-							}
-						}
-
-						break;
-
-					default:
-						while (iter.hasMoreTraces()) {
-							tracesCounter++;
-
-							t = iter.nextTrace();
-							traceAccesses = t.expand(2);
-
-							if (traceAccesses.size() > 0)
-								calculateControllerSequences(controller, traceAccesses);
-
-							CalculateControllerPerformanceResult result = calculateControllerPerformance(
-								t.getElements(),
-								0,
-								t.getElements() == null ? 0 : t.getElements().size()
-							);
-
-							controllerPerformance += result.performance;
-						}
-				}
-
-				controller.setPerformance(controllerPerformance / tracesCounter);
-
-				if (controller.getEntities().size() > 0) {
+				if (controller.getEntities().size() > 0)
 					this.addController(controller);
-				}
+
+//				iter.nextController(controllerName);
+//
+//				Controller controller = new Controller(controllerName);
+//
+//				int controllerPerformance = 0;
+//				int tracesCounter = 0;
+//
+//				switch (typeOfTraces) {
+//					case LONGEST:
+//						t = iter.getLongestTrace();
+//
+//						if (t != null) {
+//							traceAccesses = t.expand(2);
+//
+//							if (traceAccesses.size() > 0)
+//								calculateControllerSequences(controller, traceAccesses);
+//
+//							CalculateTracePerformanceResult result = calculateTracePerformance(
+//								t.getElements(),
+//								0,
+//								t.getElements() == null ? 0 : t.getElements().size()
+//							);
+//
+//							controllerPerformance += result.performance;
+//						}
+//
+//						break;
+//
+//					case WITH_MORE_DIFFERENT_ACCESSES:
+//						t = iter.getTraceWithMoreDifferentAccesses();
+//
+//						if (t != null) {
+//							traceAccesses = t.expand(2);
+//
+//							if (traceAccesses.size() > 0)
+//								calculateControllerSequences(controller, traceAccesses);
+//
+//							CalculateTracePerformanceResult result = calculateTracePerformance(
+//								t.getElements(),
+//								0,
+//								t.getElements() == null ? 0 : t.getElements().size()
+//							);
+//
+//							controllerPerformance += result.performance;
+//						}
+//
+//						break;
+//
+//					case REPRESENTATIVE:
+//						Set<String> tracesIds = iter.getRepresentativeTraces();
+//						// FIXME probably here we create a second controllerTracesIterator
+//						iter.reset();
+//
+//						while (iter.hasMoreTraces()) {
+//							t = iter.nextTrace();
+//							traceAccesses = t.expand(2);
+//
+//							if (tracesIds.contains(String.valueOf(t.getId())) && traceAccesses.size() > 0) {
+//								calculateControllerSequences(controller, traceAccesses);
+//
+//								CalculateTracePerformanceResult result = calculateTracePerformance(
+//									t.getElements(),
+//									0,
+//									t.getElements() == null ? 0 : t.getElements().size()
+//								);
+//
+//								controllerPerformance += result.performance;
+//							}
+//						}
+//
+//						break;
+//
+//					default:
+//						while (iter.hasMoreTraces()) {
+//							tracesCounter++;
+//
+//							t = iter.nextTrace();
+//							traceAccesses = t.expand(2);
+//
+//							if (traceAccesses.size() > 0)
+//								calculateControllerSequences(controller, traceAccesses);
+//
+//							CalculateTracePerformanceResult result = calculateTracePerformance(
+//								t.getElements(),
+//								0,
+//								t.getElements() == null ? 0 : t.getElements().size()
+//							);
+//
+//							controllerPerformance += result.performance;
+//						}
+//				}
+//
+//				controller.setPerformance(controllerPerformance / tracesCounter);
+//
+//				if (controller.getEntities().size() > 0) {
+//					this.addController(controller);
+//				}
 			}
 		}
 	}

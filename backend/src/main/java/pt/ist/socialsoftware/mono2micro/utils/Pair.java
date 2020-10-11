@@ -9,7 +9,7 @@ public class Pair<F, S> {
 
     }
 
-    public  Pair( F f, S s ) {
+    public Pair(F f, S s) {
         this.first = f;
         this.second = s;
     }
