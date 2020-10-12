@@ -85,7 +85,7 @@ public class Controller {
 	private String name;
 	private float complexity;
 	private int performance; // number of hops between clusters
-	private Map<Short, String> entities = new HashMap<>(); // <entityID, mode>
+	private Map<Short, Byte> entities = new HashMap<>(); // <entityID, mode>
 	private DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph;
 	@JsonIgnore
 	private int localTransactionCounter;
@@ -109,7 +109,7 @@ public class Controller {
 	public Controller(
 		String name,
 		float complexity,
-		Map<Short, String> entities,
+		Map<Short, Byte> entities,
 		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph
 	) {
 		this.name = name;
@@ -147,11 +147,11 @@ public class Controller {
 		this.performance = performance;
 	}
 
-	public Map<Short, String> getEntities() {
+	public Map<Short, Byte> getEntities() {
 		return this.entities;
 	}
 
-	public void setEntities(Map<Short, String> entities) {
+	public void setEntities(Map<Short, Byte> entities) {
 		this.entities = entities;
 	}
 
@@ -159,10 +159,16 @@ public class Controller {
 //
 //	public void setEntitiesSeq(String entitiesSeq) { this.entitiesSeq = entitiesSeq; }
 
-	public void addEntity(short entityID, String mode) {
-		if (this.entities.containsKey(entityID) && !this.entities.get(entityID).equals(mode)) {
-			this.entities.put(entityID, "RW");
-		} else if (!this.entities.containsKey(entityID)) {
+	public void addEntity(
+		short entityID,
+		byte mode
+	) {
+		Byte savedMode = this.entities.get(entityID);
+
+		if (savedMode != null) {
+			if (savedMode != mode && savedMode != 3) // "RW" -> 3
+				this.entities.put(entityID, (byte) 3); // "RW" -> 3
+		} else {
 			this.entities.put(entityID, mode);
 		}
 	}

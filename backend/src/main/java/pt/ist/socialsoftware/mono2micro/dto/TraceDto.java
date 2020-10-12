@@ -165,7 +165,7 @@ public class TraceDto {
 					String accessString = String.join(
 						"-",
 						String.valueOf(a.getEntityID()),
-						a.getMode()
+						String.valueOf(a.getMode())
 					);
 
 					accessesSet.add(accessString);

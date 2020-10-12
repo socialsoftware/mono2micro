@@ -204,8 +204,8 @@ public class Dendrogram {
 
 	private JSONObject getMatrixData(
 		List<Short> entitiesList,
-		Map<String,Integer> e1e2PairCount,
-		Map<Short,List<Pair<String,String>>> entityControllers
+		Map<String, Integer> e1e2PairCount,
+		Map<Short, List<Pair<String, Byte>>> entityControllers
 	) throws JSONException {
 
 		JSONArray similarityMatrix = new JSONArray();
@@ -254,8 +254,8 @@ public class Dendrogram {
 	public void calculateStaticSimilarityMatrix() throws IOException, JSONException {
 		System.out.println("Calculating similarity matrix...");
 
-		Map<Short,List<Pair<String,String>>> entityControllers = new HashMap<>();
-		Map<String,Integer> e1e2PairCount = new HashMap<>();
+		Map<Short, List<Pair<String, Byte>>> entityControllers = new HashMap<>();
+		Map<String, Integer> e1e2PairCount = new HashMap<>();
 
 		HashMap<String, ControllerDto> datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
 
@@ -294,7 +294,7 @@ public class Dendrogram {
 	{
 		System.out.println("Calculating similarity matrix...");
 
-		Map<Short,List<Pair<String,String>>> entityControllers = new HashMap<>();
+		Map<Short, List<Pair<String, Byte>>> entityControllers = new HashMap<>();
 		Map<String,Integer> e1e2PairCount = new HashMap<>();
 
 		Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(

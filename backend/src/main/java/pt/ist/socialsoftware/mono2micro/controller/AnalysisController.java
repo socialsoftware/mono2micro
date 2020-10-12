@@ -358,7 +358,7 @@ public class AnalysisController {
 	private SimilarityMatrixDto getAnalyserMatrixData(
 		Set<Short> entityIDs,
 		Map<String,Integer> e1e2PairCount,
-		Map<Short,List<Pair<String,String>>> entityControllers
+		Map<Short, List<Pair<String, Byte>>> entityControllers
 	) {
 
 		SimilarityMatrixDto matrixData = new SimilarityMatrixDto();
@@ -414,8 +414,8 @@ public class AnalysisController {
 	)
 		throws IOException
 	{
-		Map<Short,List<Pair<String,String>>> entityControllers = new HashMap<>();
-		Map<String,Integer> e1e2PairCount = new HashMap<>();
+		Map<Short, List<Pair<String, Byte>>> entityControllers = new HashMap<>();
+		Map<String, Integer> e1e2PairCount = new HashMap<>();
 
 		for (String profile : analyser.getProfiles()) {
 			for (String controllerName : codebase.getProfile(profile)) {
@@ -451,8 +451,8 @@ public class AnalysisController {
 	)
 		throws IOException
 	{
-		Map<Short,List<Pair<String,String>>> entityControllers = new HashMap<>();
-		Map<String,Integer> e1e2PairCount = new HashMap<>();
+		Map<Short, List<Pair<String, Byte>>> entityControllers = new HashMap<>();
+		Map<String, Integer> e1e2PairCount = new HashMap<>();
 
 		ControllerTracesIterator iter = new ControllerTracesIterator(
 			codebase.getDatafilePath(),

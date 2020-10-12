@@ -245,7 +245,7 @@ public class Graph {
 	) {
 		Controller.LocalTransaction lt = null;
 		List<Controller.LocalTransaction> ltList = new ArrayList<>();
-		Map<Short, String> entityIDToMode = new HashMap<>();
+		Map<Short, Byte> entityIDToMode = new HashMap<>();
 
 		String previousCluster = ""; // IntelliJ is afraid. poor him
 
@@ -256,7 +256,7 @@ public class Graph {
 		for (int i = 0; i < accesses.size(); i++) {
 			AccessDto access = accesses.get(i);
 			short entityID = access.getEntityID();
-			String mode = access.getMode();
+			byte mode = access.getMode();
 			String cluster;
 
 			try {
@@ -288,13 +288,13 @@ public class Graph {
 
 				if (cluster.equals(previousCluster)) {
 					boolean hasCost = false;
-					String savedMode = entityIDToMode.get(entityID);
+					Byte savedMode = entityIDToMode.get(entityID);
 
 					if (savedMode == null) {
 						hasCost = true;
 
 					} else {
-						if (savedMode.equals("R") && mode.equals("W"))
+						if (savedMode == 1 && mode == 2) // "R" -> 1, "W" -> 2
 							hasCost = true;
 					}
 
@@ -518,9 +518,6 @@ public class Graph {
 			tracesMaxLimit
 		);
 
-//		TraceDto t;
-//		List<AccessDto> traceAccesses;
-
 		for (String profile : profiles) {
 			for (String controllerName : codebase.getProfile(profile)) {
 				Controller controller = getDynamicController(
@@ -531,104 +528,6 @@ public class Graph {
 
 				if (controller.getEntities().size() > 0)
 					this.addController(controller);
-
-//				iter.nextController(controllerName);
-//
-//				Controller controller = new Controller(controllerName);
-//
-//				int controllerPerformance = 0;
-//				int tracesCounter = 0;
-//
-//				switch (typeOfTraces) {
-//					case LONGEST:
-//						t = iter.getLongestTrace();
-//
-//						if (t != null) {
-//							traceAccesses = t.expand(2);
-//
-//							if (traceAccesses.size() > 0)
-//								calculateControllerSequences(controller, traceAccesses);
-//
-//							CalculateTracePerformanceResult result = calculateTracePerformance(
-//								t.getElements(),
-//								0,
-//								t.getElements() == null ? 0 : t.getElements().size()
-//							);
-//
-//							controllerPerformance += result.performance;
-//						}
-//
-//						break;
-//
-//					case WITH_MORE_DIFFERENT_ACCESSES:
-//						t = iter.getTraceWithMoreDifferentAccesses();
-//
-//						if (t != null) {
-//							traceAccesses = t.expand(2);
-//
-//							if (traceAccesses.size() > 0)
-//								calculateControllerSequences(controller, traceAccesses);
-//
-//							CalculateTracePerformanceResult result = calculateTracePerformance(
-//								t.getElements(),
-//								0,
-//								t.getElements() == null ? 0 : t.getElements().size()
-//							);
-//
-//							controllerPerformance += result.performance;
-//						}
-//
-//						break;
-//
-//					case REPRESENTATIVE:
-//						Set<String> tracesIds = iter.getRepresentativeTraces();
-//						// FIXME probably here we create a second controllerTracesIterator
-//						iter.reset();
-//
-//						while (iter.hasMoreTraces()) {
-//							t = iter.nextTrace();
-//							traceAccesses = t.expand(2);
-//
-//							if (tracesIds.contains(String.valueOf(t.getId())) && traceAccesses.size() > 0) {
-//								calculateControllerSequences(controller, traceAccesses);
-//
-//								CalculateTracePerformanceResult result = calculateTracePerformance(
-//									t.getElements(),
-//									0,
-//									t.getElements() == null ? 0 : t.getElements().size()
-//								);
-//
-//								controllerPerformance += result.performance;
-//							}
-//						}
-//
-//						break;
-//
-//					default:
-//						while (iter.hasMoreTraces()) {
-//							tracesCounter++;
-//
-//							t = iter.nextTrace();
-//							traceAccesses = t.expand(2);
-//
-//							if (traceAccesses.size() > 0)
-//								calculateControllerSequences(controller, traceAccesses);
-//
-//							CalculateTracePerformanceResult result = calculateTracePerformance(
-//								t.getElements(),
-//								0,
-//								t.getElements() == null ? 0 : t.getElements().size()
-//							);
-//
-//							controllerPerformance += result.performance;
-//						}
-//				}
-//
-//				controller.setPerformance(controllerPerformance / tracesCounter);
-//
-//				if (controller.getEntities().size() > 0) {
-//					this.addController(controller);
-//				}
 			}
 		}
 	}

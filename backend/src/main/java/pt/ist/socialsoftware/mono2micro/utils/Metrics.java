@@ -108,13 +108,18 @@ public class Metrics {
 
 					for (AccessDto a : clusterAccesses) {
 						short entityID = a.getEntityID();
-						String mode = a.getMode();
+						byte mode = a.getMode();
 
-						String key = String.join("-", String.valueOf(entityID), mode);
+						String key = String.join("-", String.valueOf(entityID), String.valueOf(mode));
 						List<String> controllersThatTouchThisEntityAndMode = cache.get(key);
 
 						if (controllersThatTouchThisEntityAndMode == null) {
-							controllersThatTouchThisEntityAndMode = costOfAccess(controller, entityID, mode);
+							controllersThatTouchThisEntityAndMode = costOfAccess(
+								controller,
+								entityID,
+								mode
+							);
+
 							cache.put(key, controllersThatTouchThisEntityAndMode);
 						}
 
@@ -132,18 +137,21 @@ public class Metrics {
 	private List<String> costOfAccess (
 		Controller controller,
 		short entityID,
-		String mode
+		byte mode
 	) {
 
 		List<String> controllersThatTouchThisEntityAndMode = new ArrayList<>();
 		for (Controller otherController : this.graph.getControllers()) {
-			if (
-				!otherController.getName().equals(controller.getName()) &&
-				otherController.containsEntity(entityID) &&
-				otherController.getEntities().get(entityID).contains(mode.equals("W") ? "R" : "W") &&
-				this.controllerClusters.get(otherController.getName()).size() > 1
-			) {
-				controllersThatTouchThisEntityAndMode.add(otherController.getName());
+			if (!otherController.getName().equals(controller.getName())) {
+				Byte savedMode = otherController.getEntities().get(entityID);
+
+				if (
+					savedMode != null &&
+					savedMode != mode &&
+					this.controllerClusters.get(otherController.getName()).size() > 1
+				) {
+					controllersThatTouchThisEntityAndMode.add(otherController.getName());
+				}
 			}
 		}
 

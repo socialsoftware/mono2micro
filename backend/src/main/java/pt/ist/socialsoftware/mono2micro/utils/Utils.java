@@ -54,8 +54,8 @@ public class Utils {
 
     // FIXME better name for this function pls
     public static void fillEntityDataStructures(
-        Map<Short,List<Pair<String,String>>> entityControllers,
-        Map<String,Integer> e1e2PairCount,
+        Map<Short, List<Pair<String, Byte>>> entityControllers,
+        Map<String, Integer> e1e2PairCount,
         List<AccessDto> accessesList,
         String controllerName
     ) {
@@ -63,28 +63,41 @@ public class Utils {
         for (int i = 0; i < accessesList.size(); i++) {
             AccessDto access = accessesList.get(i);
             short entityID = access.getEntityID();
-            String mode = access.getMode();
+            byte mode = access.getMode();
 
             if (entityControllers.containsKey(entityID)) {
                 boolean containsController = false;
 
-                for (Pair<String, String> controllerPair : entityControllers.get(entityID)) {
+                for (Pair<String, Byte> controllerPair : entityControllers.get(entityID)) {
                     if (controllerPair.getFirst().equals(controllerName)) {
                         containsController = true;
 
-                        if (!controllerPair.getSecond().contains(mode))
-                            controllerPair.setSecond("RW");
+                        if (controllerPair.getSecond() != 3 && controllerPair.getSecond() != mode)
+                            controllerPair.setSecond((byte) 3); // "RW" -> 3
+
                         break;
                     }
                 }
 
                 if (!containsController) {
-                    entityControllers.get(entityID).add(new Pair<>(controllerName, mode));
+                    entityControllers.get(entityID).add(
+                        new Pair<>(
+                            controllerName,
+                            mode
+                        )
+                    );
                 }
 
             } else {
-                List<Pair<String, String>> controllersPairs = new ArrayList<>();
-                controllersPairs.add(new Pair<>(controllerName, mode));
+                List<Pair<String, Byte>> controllersPairs = new ArrayList<>();
+                controllersPairs.add(
+                    new Pair<>(
+                        controllerName,
+                        mode
+                    )
+                );
+
+
                 entityControllers.put(entityID, controllersPairs);
             }
 
@@ -114,7 +127,7 @@ public class Utils {
     }
 
     public static float[] calculateSimilarityMatrixMetrics(
-        Map<Short,List<Pair<String,String>>> entityControllers, // entityID -> [<controllerName, accessMode>, ...]
+        Map<Short,List<Pair<String, Byte>>> entityControllers, // entityID -> [<controllerName, accessMode>, ...]
         Map<String,Integer> e1e2PairCount,
         short e1ID,
         short e2ID,
@@ -127,18 +140,26 @@ public class Utils {
         float e1ControllersW = 0;
         float e1ControllersR = 0;
 
-        for (Pair<String,String> e1Controller : entityControllers.get(e1ID)) {
-            for (Pair<String,String> e2Controller : entityControllers.get(e2ID)) {
-                if (e1Controller.getFirst().equals(e2Controller.getFirst()))
+        for (Pair<String, Byte> e1Controller : entityControllers.get(e1ID)) {
+            for (Pair<String, Byte> e2Controller : entityControllers.get(e2ID)) {
+                if (e1Controller.getFirst().equals(e2Controller.getFirst())) {
                     inCommon++;
-                if (e1Controller.getFirst().equals(e2Controller.getFirst()) && e1Controller.getSecond().contains("W") && e2Controller.getSecond().contains("W"))
-                    inCommonW++;
-                if (e1Controller.getFirst().equals(e2Controller.getFirst()) && e1Controller.getSecond().contains("R") && e2Controller.getSecond().contains("R"))
-                    inCommonR++;
+                    // != 1 == contains("W") -> "W" or "RW"
+                    if (e1Controller.getSecond() != 1 && e2Controller.getSecond() != 1)
+                        inCommonW++;
+
+                    // != 2 == contains("R") -> "R" or "RW"
+                    if (e1Controller.getSecond() != 2 && e2Controller.getSecond() != 2)
+                        inCommonR++;
+                }
             }
-            if (e1Controller.getSecond().contains("W"))
+
+            // != 1 == contains("W") -> "W" or "RW"
+            if (e1Controller.getSecond() != 1)
                 e1ControllersW++;
-            if (e1Controller.getSecond().contains("R"))
+
+            // != 2 == contains("R") -> "R" or "RW"
+            if (e1Controller.getSecond() != 2)
                 e1ControllersR++;
         }
 

@@ -39,7 +39,7 @@ public class AccessDtoDeserializer extends StdDeserializer<AccessDto> {
             }
 
             AccessDto accessDto = new AccessDto();
-            accessDto.setMode(mode);
+            accessDto.setMode((byte) (mode.equals("R") ? 1 : 2));
             accessDto.setEntityID(entityID);
             accessDto.setOccurrences(occurrences);
             return accessDto;

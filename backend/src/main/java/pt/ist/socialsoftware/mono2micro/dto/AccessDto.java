@@ -11,21 +11,21 @@ import java.util.Objects;
 @JsonSerialize(using = AccessDtoSerializer.class)
 public class AccessDto extends ReducedTraceElementDto {
     private short entityID;
-    private String mode;
+    private byte mode; // "R" -> 1, "W" -> 2
 
     public AccessDto() {}
 
     public short getEntityID() { return entityID; }
     public void setEntityID(short entityID) { this.entityID = entityID; }
 
-    public String getMode() { return mode; }
-    public void setMode(String mode) { this.mode = mode; }
+    public byte getMode() { return mode; }
+    public void setMode(byte mode) { this.mode = mode; }
 
     @Override
 	public boolean equals(final Object other) {
         if (other instanceof AccessDto) {
             AccessDto that = (AccessDto) other;
-            return this.entityID == that.entityID && this.mode.equals(that.mode);
+            return this.entityID == that.entityID && this.mode == that.mode;
         }
         
         return false;
