@@ -43,7 +43,11 @@ public class CodebaseManager {
         return instance; 
 	}
 
-	public List<Codebase> getCodebasesWithFields(Set<String> deserializableFields) throws IOException {
+	public List<Codebase> getCodebasesWithFields(
+		Set<String> deserializableFields
+	)
+		throws IOException
+	{
 		List<Codebase> codebases = new ArrayList<>();
 
 		File codebasesPath = new File(CODEBASES_PATH);
@@ -73,7 +77,9 @@ public class CodebaseManager {
 	public Codebase getCodebaseWithFields(
 		String codebaseName,
 		Set<String> deserializableFields
-	) throws IOException {
+	)
+		throws IOException
+	{
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		objectMapper.setInjectableValues(
@@ -93,7 +99,9 @@ public class CodebaseManager {
 	public List<Dendrogram> getCodebaseDendrogramsWithFields(
 		String codebaseName,
 		Set<String> dendrogramDeserializableFields
-	) throws IOException {
+	)
+		throws IOException
+	{
 		ObjectMapper objectMapper = new ObjectMapper();
 		dendrogramDeserializableFields.add("name");
 
@@ -118,8 +126,9 @@ public class CodebaseManager {
 		String codebaseName,
 		String dendrogramName,
 		Set<String> dendrogramDeserializableFields
-	) throws Exception {
-
+	)
+		throws Exception
+	{
 		return getCodebaseDendrogramsWithFields(
 			codebaseName,
 			dendrogramDeserializableFields
@@ -380,7 +389,12 @@ public class CodebaseManager {
 		file.close();
 	}
 
-	public byte[] getDendrogramImage(String codebaseName, String dendrogramName) throws IOException {
+	public byte[] getDendrogramImage(
+		String codebaseName,
+		String dendrogramName
+	)
+		throws IOException
+	{
 		return Files.readAllBytes(Paths.get(CODEBASES_PATH + codebaseName + "/" + dendrogramName + "/dendrogramImage.png"));
 	}
 
@@ -400,7 +414,11 @@ public class CodebaseManager {
 		return clustersJSON;
 	}
 
-	public HashMap<String, CutInfoDto> getAnalyserResults(String codebaseName) throws IOException {
+	public HashMap<String, CutInfoDto> getAnalyserResults(
+		String codebaseName
+	)
+		throws IOException
+	{
 		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json");
 
 		HashMap<String, CutInfoDto> analyserResults = objectMapper.readValue(
@@ -413,11 +431,18 @@ public class CodebaseManager {
 		return analyserResults;
 	}
 
-	public boolean analyserResultFileAlreadyExists(String codebaseName) {
+	public boolean analyserResultFileAlreadyExists(
+		String codebaseName
+	) {
 		return new File(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json").exists();
 	}
 
-	public void writeAnalyserResults(String codebaseName, HashMap analyserJSON) throws IOException {
+	public void writeAnalyserResults(
+		String codebaseName,
+		HashMap analyserJSON
+	)
+		throws IOException
+	{
 		DefaultPrettyPrinter pp = new DefaultPrettyPrinter();
 		pp.indentArraysWith( DefaultIndenter.SYSTEM_LINEFEED_INSTANCE );
 		ObjectWriter writer = objectMapper.writer(pp);
@@ -457,14 +482,18 @@ public class CodebaseManager {
 		os.close();
 	}
 
-	public boolean analyserSimilarityMatrixFileAlreadyExists(String codebaseName) {
+	public boolean analyserSimilarityMatrixFileAlreadyExists(
+		String codebaseName
+	) {
 		return new File(CODEBASES_PATH + codebaseName + "/analyser/similarityMatrix.json").exists();
 	}
 
 	public SimilarityMatrixDto getSimilarityMatrixDtoWithFields(
 		String codebaseName,
 		Set<String> deserializableFields
-	) throws IOException {
+	)
+		throws IOException
+	{
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		objectMapper.setInjectableValues(

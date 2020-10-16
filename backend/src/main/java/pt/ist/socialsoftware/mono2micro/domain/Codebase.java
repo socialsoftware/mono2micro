@@ -21,6 +21,7 @@ import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 public class Codebase {
 	private String name;
 	private Map<String, List<String>> profiles = new HashMap<>(); // e.g <Generic, ControllerNamesList>
+	private Map<String, Controller> controllers = new HashMap<>(); // <controllerName, Controller>
 	private List<Dendrogram> dendrograms = new ArrayList<>();
 	private String analysisType;
 	private String datafilePath;
@@ -54,8 +55,10 @@ public class Codebase {
 		this.analysisType = analysisType;
 	}
 
-	@JsonIgnore
-	public boolean isStatic() { return this.analysisType.equals("static"); }
+	public Map<String, Controller> getControllers() { return controllers; }
+
+	public void setControllers(Map<String, Controller> controllers) { this.controllers = controllers; }
+
 	public String getDatafilePath() {
 		return datafilePath;
 	}
@@ -67,6 +70,9 @@ public class Codebase {
 	public Map<String,List<String>> getProfiles() {
 		return this.profiles;
     }
+
+	@JsonIgnore
+	public boolean isStatic() { return this.analysisType.equals("static"); }
     
     public List<String> getProfile(String profileName) {
 		return this.profiles.get(profileName);
