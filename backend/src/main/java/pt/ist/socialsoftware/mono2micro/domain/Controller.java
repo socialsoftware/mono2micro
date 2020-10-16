@@ -1,7 +1,8 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
-
 import java.util.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -12,15 +13,15 @@ import pt.ist.socialsoftware.mono2micro.utils.deserializers.ControllerDeserializ
 import pt.ist.socialsoftware.mono2micro.utils.serializers.ControllerSerializer;
 import static org.jgrapht.Graphs.successorListOf;
 
-
 @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
 @JsonSerialize(using = ControllerSerializer.class)
 @JsonDeserialize(using = ControllerDeserializer.class)
 public class Controller {
 	public static class LocalTransaction {
-		private int id; // transaction id
-		private String clusterName; // actually is just an Id
-		private List<AccessDto> clusterAccesses;
+		private int id; // transaction id to ensure that every node in the graph is unique
+		private short clusterID; // changed to short instead of String to minimize the memory footprint
+		private Set<AccessDto> clusterAccesses;
+		private Set<Short> firstAccessedEntityIDs; // to calculate the coupling dependencies
 
 		public LocalTransaction() {}
 
@@ -30,35 +31,49 @@ public class Controller {
 
 		public LocalTransaction(
 			int id,
-			String clusterName,
-			List<AccessDto> clusterAccesses
+			short clusterID
 		) {
 			this.id = id;
-			this.clusterName = clusterName;
+			this.clusterID = clusterID;
+		}
+
+		public LocalTransaction(
+			int id,
+			short clusterID,
+			Set<AccessDto> clusterAccesses,
+			short firstAccessedEntityID
+		) {
+			this.id = id;
+			this.clusterID = clusterID;
 			this.clusterAccesses = clusterAccesses;
+			this.firstAccessedEntityIDs = new HashSet<Short>() { { add(firstAccessedEntityID); } };
 		}
 
 		public LocalTransaction(LocalTransaction lt) {
 			this.id = lt.getId();
-			this.clusterName = lt.getClusterName();
-			this.clusterAccesses = new ArrayList<>(lt.getClusterAccesses());
+			this.clusterID = lt.getClusterID();
+			this.clusterAccesses = new HashSet<>(lt.getClusterAccesses());
+			this.firstAccessedEntityIDs = new HashSet<>(lt.getFirstAccessedEntityIDs());
 		}
 
 		public int getId() { return id; }
 		public void setId(int id) { this.id = id; }
-		public String getClusterName() { return clusterName; }
-		public void setClusterName(String clusterName) { this.clusterName = clusterName; }
-		public List<AccessDto> getClusterAccesses() { return clusterAccesses; }
-		public void setClusterAccesses(List<AccessDto> clusterAccesses) { this.clusterAccesses = clusterAccesses; }
+		public short getClusterID() { return clusterID; }
+		public void setClusterID(short clusterID) { this.clusterID = clusterID; }
+		public Set<AccessDto> getClusterAccesses() { return clusterAccesses; }
+		public void setClusterAccesses(Set<AccessDto> clusterAccesses) { this.clusterAccesses = clusterAccesses; }
 		public void addClusterAccess(AccessDto a) { this.clusterAccesses.add(a); }
+		public Set<Short> getFirstAccessedEntityIDs() { return firstAccessedEntityIDs; }
+		public void setFirstAccessedEntityIDs(Set<Short> firstAccessedEntityIDs) { this.firstAccessedEntityIDs = firstAccessedEntityIDs; }
 
 		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
-			LocalTransaction that = (LocalTransaction) o;
+		public boolean equals(Object other) {
+			if (other instanceof LocalTransaction) {
+				LocalTransaction that = (LocalTransaction) other;
+				return id == that.id;
+			}
 
-			return id == that.id;
+			return false;
 		}
 
 		@Override
@@ -70,8 +85,10 @@ public class Controller {
 	private String name;
 	private float complexity;
 	private int performance; // number of hops between clusters
-	private Map<String, String> entities = new HashMap<>(); // <entity, mode>
+	private Map<Short, Byte> entities = new HashMap<>(); // <entityID, mode>
 	private DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph;
+	@JsonIgnore
+	private int localTransactionCounter;
 //	private String entitiesSeq = "[]";
 //	private List<FunctionalityRedesign> functionalityRedesigns = new ArrayList<>();
 
@@ -80,13 +97,19 @@ public class Controller {
 	public Controller(String name) {
         this.name = name;
 		localTransactionsGraph = new DirectedAcyclicGraph<>(DefaultEdge.class);
-        localTransactionsGraph.addVertex(new LocalTransaction(0, null, new ArrayList<>()));
+        localTransactionsGraph.addVertex( // root
+        	new LocalTransaction(
+        		0,
+				(short) -1
+			)
+		);
+        this.localTransactionCounter = 1;
 	}
 
 	public Controller(
 		String name,
 		float complexity,
-		Map<String, String> entities,
+		Map<Short, Byte> entities,
 		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph
 	) {
 		this.name = name;
@@ -102,6 +125,11 @@ public class Controller {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	@JsonIgnore
+	public int getLocalTransactionCounter() { return localTransactionCounter; }
+
+	public void setLocalTransactionCounter(int localTransactionCounter) { this.localTransactionCounter = localTransactionCounter; }
 
 	public float getComplexity() {
 		return complexity;
@@ -119,11 +147,11 @@ public class Controller {
 		this.performance = performance;
 	}
 
-	public Map<String,String> getEntities() {
+	public Map<Short, Byte> getEntities() {
 		return this.entities;
 	}
 
-	public void setEntities(Map<String,String> entities) {
+	public void setEntities(Map<Short, Byte> entities) {
 		this.entities = entities;
 	}
 
@@ -131,43 +159,63 @@ public class Controller {
 //
 //	public void setEntitiesSeq(String entitiesSeq) { this.entitiesSeq = entitiesSeq; }
 
-	public void addEntity(String entity, String mode) {
-		if (this.entities.containsKey(entity) && !this.entities.get(entity).equals(mode)) {
-			this.entities.put(entity, "RW");
-		} else if (!this.entities.containsKey(entity)) {
-			this.entities.put(entity, mode);
+	public void addEntity(
+		short entityID,
+		byte mode
+	) {
+		Byte savedMode = this.entities.get(entityID);
+
+		if (savedMode != null) {
+			if (savedMode != mode && savedMode != 3) // "RW" -> 3
+				this.entities.put(entityID, (byte) 3); // "RW" -> 3
+		} else {
+			this.entities.put(entityID, mode);
 		}
 	}
 
-	public boolean containsEntity(String entity) {
+	public boolean containsEntity(short entity) {
 		return this.entities.containsKey(entity);
 	}
 
 	public DirectedAcyclicGraph<LocalTransaction, DefaultEdge> getLocalTransactionsGraph() { return localTransactionsGraph; }
 
-	public void addLocalTransactionSequence(List<LocalTransaction> localTransactions) {
-		LocalTransaction current_lt = new LocalTransaction(0);
+	public void addLocalTransactionSequence(List<LocalTransaction> localTransactionSequence) {
+		LocalTransaction graphCurrentLT = new LocalTransaction(0, (short) -1); // root
 
-		for (int i = 0; i < localTransactions.size(); i++) {
-			List<LocalTransaction> childrenLts = successorListOf(this.localTransactionsGraph, current_lt);
+		for (int i = 0; i < localTransactionSequence.size(); i++) {
+			List<LocalTransaction> graphChildrenLTs = getNextLocalTransactions(graphCurrentLT);
 
-			int childrenLtsSize = childrenLts.size();
+			int graphChildrenLTsSize = graphChildrenLTs.size();
 
-			if (childrenLtsSize == 0) {
-				createNewBranch(localTransactions, current_lt, i);
+			if (graphChildrenLTsSize == 0) {
+				createNewBranch(
+					localTransactionSequence,
+					graphCurrentLT,
+					i
+				);
+
 				return;
 			}
 
-			for (int j = 0; j < childrenLtsSize; j++) {
-				LocalTransaction childLt = childrenLts.get(j);
+			for (int j = 0; j < graphChildrenLTsSize; j++) {
+				LocalTransaction graphChildLT = graphChildrenLTs.get(j);
+				LocalTransaction sequenceCurrentLT = localTransactionSequence.get(i);
 
-				if (localTransactions.get(i).equals(childLt)) {
-					current_lt = childLt;
+				if (sequenceCurrentLT.getClusterID() == graphChildLT.getClusterID()) {
+					graphChildLT.getClusterAccesses().addAll(sequenceCurrentLT.getClusterAccesses());
+					graphChildLT.getFirstAccessedEntityIDs().addAll(sequenceCurrentLT.getFirstAccessedEntityIDs());
+
+					graphCurrentLT = graphChildLT;
 					break;
 
 				} else {
-					if (j == childrenLtsSize - 1) {
-						createNewBranch(localTransactions, current_lt, i);
+					if (j == graphChildrenLTsSize - 1) {
+						createNewBranch(
+							localTransactionSequence,
+							graphCurrentLT,
+							i
+						);
+
 						return;
 					}
 				}
@@ -177,13 +225,15 @@ public class Controller {
 
 	private void createNewBranch(
 		List<LocalTransaction> localTransactions,
-		LocalTransaction current_lt,
+		LocalTransaction currentLT,
 		int i
 	) {
 		for (int k = i; k < localTransactions.size(); k++) {
-			this.localTransactionsGraph.addVertex(localTransactions.get(k));
-			this.localTransactionsGraph.addEdge(current_lt, localTransactions.get(k));
-			current_lt = localTransactions.get(k);
+			LocalTransaction lt = localTransactions.get(k);
+
+			this.localTransactionsGraph.addVertex(lt);
+			this.localTransactionsGraph.addEdge(currentLT, lt);
+			currentLT = lt;
 		}
 	}
 

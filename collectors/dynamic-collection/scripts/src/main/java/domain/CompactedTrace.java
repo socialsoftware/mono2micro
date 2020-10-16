@@ -7,14 +7,12 @@ import serializers.CompactedTraceSerializer;
 import utils.Pair;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 @JsonSerialize(using = CompactedTraceSerializer.class)
 public class CompactedTrace extends Trace {
 	private List<ReducedTraceElement> elements;
-	private int uncompressedSize;
 
 	public CompactedTrace(int id, int frequency) {
 		this.frequency = frequency;

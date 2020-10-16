@@ -28,13 +28,21 @@ public class Metrics {
 		List<Controller> graphControllers = graph.getControllers();
 
 		System.out.println("Calculating graph complexity and performance...");
+		// int graphNodes = 0;
+		// int maxNumberOfNodes = 0;
 
 		for (Controller controller : graphControllers) {
 			calculateControllerComplexityAndClusterDependencies(controller);
 //			calculateRedesignComplexities(controller, Constants.DEFAULT_REDESIGN_NAME);
 			graphComplexity += controller.getComplexity();
 			graphPerformance += controller.getPerformance();
+			// graphNodes += controller.getAllLocalTransactions().size();
+			// if (controller.getAllLocalTransactions().size() > maxNumberOfNodes)
+			// 	maxNumberOfNodes = controller.getAllLocalTransactions().size();
 		}
+
+		// System.out.println("Média de nós do grafo: " + graphNodes/graphControllers.size());
+		// System.out.println("Máximo numero de nós: " + maxNumberOfNodes);
 
 		int graphControllersAmount = graphControllers.size();
 
@@ -51,7 +59,7 @@ public class Metrics {
 		System.out.println("Calculating graph cohesion and coupling");
 
 		for (Cluster cluster : graphClusters) {
-			calculateClusterComplexityAndCohesion(cluster); // FIXME What do we do with the cluster complexity?
+			calculateClusterComplexityAndCohesion(cluster);
 
 			graphCohesion += cluster.getCohesion();
 
@@ -84,53 +92,66 @@ public class Metrics {
 
 			for (Controller.LocalTransaction lt : allLocalTransactions) {
 				// ClusterDependencies
-				Cluster fromCluster = graph.getCluster(lt.getClusterName());
+				Cluster fromCluster = graph.getCluster(String.valueOf(lt.getClusterID()));
 
 				if (fromCluster != null) { // not root node
 					List<Controller.LocalTransaction> nextLocalTransactions = controller.getNextLocalTransactions(lt);
 
-					for (Controller.LocalTransaction nextLt : nextLocalTransactions) {
-						String toEntity = nextLt.getClusterAccesses().get(0).getEntity();
-						fromCluster.addCouplingDependency(nextLt.getClusterName(), toEntity);
+					for (Controller.LocalTransaction nextLt : nextLocalTransactions)
+						fromCluster.addCouplingDependencies(
+							String.valueOf(nextLt.getClusterID()),
+							nextLt.getFirstAccessedEntityIDs()
+						);
+
+					Set<String> controllersThatTouchSameEntities = new HashSet<>();
+					Set<AccessDto> clusterAccesses = lt.getClusterAccesses();
+
+					for (AccessDto a : clusterAccesses) {
+						short entityID = a.getEntityID();
+						byte mode = a.getMode();
+
+						String key = String.join("-", String.valueOf(entityID), String.valueOf(mode));
+						List<String> controllersThatTouchThisEntityAndMode = cache.get(key);
+
+						if (controllersThatTouchThisEntityAndMode == null) {
+							controllersThatTouchThisEntityAndMode = costOfAccess(
+								controller,
+								entityID,
+								mode
+							);
+
+							cache.put(key, controllersThatTouchThisEntityAndMode);
+						}
+
+						controllersThatTouchSameEntities.addAll(controllersThatTouchThisEntityAndMode);
 					}
+
+					controllerComplexity += controllersThatTouchSameEntities.size();
 				}
-
-				Set<String> controllersThatTouchSameEntities = new HashSet<>();
-				List<AccessDto> clusterAccesses = lt.getClusterAccesses();
-
-				for (AccessDto a : clusterAccesses) {
-					String entity = a.getEntity();
-					String mode = a.getMode();
-
-					String key = String.join("-", entity, mode);
-					List<String> controllersThatTouchThisEntityAndMode = cache.get(key);
-
-					if (controllersThatTouchThisEntityAndMode == null) {
-						controllersThatTouchThisEntityAndMode = costOfAccess(controller, entity, mode);
-						cache.put(key, controllersThatTouchThisEntityAndMode);
-					}
-
-					controllersThatTouchSameEntities.addAll(controllersThatTouchThisEntityAndMode);
-				}
-
-				controllerComplexity += controllersThatTouchSameEntities.size();
 			}
 
 			controller.setComplexity(controllerComplexity);
 		}
 	}
 
-	private List<String> costOfAccess (Controller controller, String entity, String mode) {
+	private List<String> costOfAccess (
+		Controller controller,
+		short entityID,
+		byte mode
+	) {
 
 		List<String> controllersThatTouchThisEntityAndMode = new ArrayList<>();
 		for (Controller otherController : this.graph.getControllers()) {
-			if (
-				!otherController.getName().equals(controller.getName()) &&
-				otherController.containsEntity(entity) &&
-				otherController.getEntities().get(entity).contains(mode.equals("W") ? "R" : "W") &&
-				this.controllerClusters.get(otherController.getName()).size() > 1
-			) {
-				controllersThatTouchThisEntityAndMode.add(otherController.getName());
+			if (!otherController.getName().equals(controller.getName())) {
+				Byte savedMode = otherController.getEntities().get(entityID);
+
+				if (
+					savedMode != null &&
+					savedMode != mode &&
+					this.controllerClusters.get(otherController.getName()).size() > 1
+				) {
+					controllersThatTouchThisEntityAndMode.add(otherController.getName());
+				}
 			}
 		}
 
@@ -150,10 +171,10 @@ public class Metrics {
 			// cohesion calculus
 			float numberEntitiesTouched = 0;
 
-			Set<String> controllerEntities = controller.getEntities().keySet();
+			Set<Short> controllerEntities = controller.getEntities().keySet();
 
-			for (String controllerEntity : controllerEntities) {
-				if (cluster.containsEntity(controllerEntity))
+			for (short entityID : controllerEntities) {
+				if (cluster.containsEntity(entityID))
 					numberEntitiesTouched++;
 			}
 
@@ -173,7 +194,7 @@ public class Metrics {
 
 	private void calculateClusterCoupling(Cluster c1) {
     	float coupling = 0;
-		Map<String, Set<String>> couplingDependencies = c1.getCouplingDependencies();
+		Map<String, Set<Short>> couplingDependencies = c1.getCouplingDependencies();
 
     	for (String c2 : couplingDependencies.keySet())
     		coupling += (float) couplingDependencies.get(c2).size() / graph.getCluster(c2).getEntities().size();

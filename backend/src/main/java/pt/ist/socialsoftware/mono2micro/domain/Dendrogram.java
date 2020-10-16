@@ -174,8 +174,10 @@ public class Dendrogram {
 				JSONArray entities = expertCut.getJSONObject("clusters").getJSONArray(clusterId);
 				Cluster cluster = new Cluster(clusterId);
 				for (int i = 0; i < entities.length(); i++) {
-					cluster.addEntity(entities.getString(i));
-					expertGraph.putEntity(entities.getString(i), clusterId);
+					short entityID = (short) entities.getInt(i);
+
+					cluster.addEntity(entityID);
+					expertGraph.putEntity(entityID, clusterId);
 				}
 
 				expertGraph.addCluster(cluster);
@@ -187,8 +189,10 @@ public class Dendrogram {
 			JSONArray entities = similarityMatrixData.getJSONArray("entities");
 
 			for (int i = 0; i < entities.length(); i++) {
-				cluster.addEntity(entities.getString(i));
-				expertGraph.putEntity(entities.getString(i), "Generic");
+				short entityID = (short) entities.getInt(i);
+
+				cluster.addEntity(entityID);
+				expertGraph.putEntity(entityID, "Generic");
 			}
 
 			expertGraph.addCluster(cluster);
@@ -199,9 +203,9 @@ public class Dendrogram {
 	}
 
 	private JSONObject getMatrixData(
-		List<String> entitiesList,
-		Map<String,Integer> e1e2PairCount,
-		Map<String,List<Pair<String,String>>> entityControllers
+		List<Short> entitiesList,
+		Map<String, Integer> e1e2PairCount,
+		Map<Short, List<Pair<String, Byte>>> entityControllers
 	) throws JSONException {
 
 		JSONArray similarityMatrix = new JSONArray();
@@ -212,13 +216,13 @@ public class Dendrogram {
 		int maxNumberOfPairs = Utils.getMaxNumberOfPairs(e1e2PairCount);
 
 		for (int i = 0; i < entitiesList.size(); i++) {
-			String e1 = entitiesList.get(i);
+			short e1ID = entitiesList.get(i);
 			JSONArray matrixRow = new JSONArray();
 
 			for (int j = 0; j < entitiesList.size(); j++) {
-				String e2 = entitiesList.get(j);
+				short e2ID = entitiesList.get(j);
 
-				if (e1.equals(e2)) {
+				if (e1ID == e2ID) {
 					matrixRow.put(1);
 					continue;
 				}
@@ -226,8 +230,8 @@ public class Dendrogram {
 				float[] metrics = Utils.calculateSimilarityMatrixMetrics(
 					entityControllers,
 					e1e2PairCount,
-					e1,
-					e2,
+					e1ID,
+					e2ID,
 					maxNumberOfPairs
 				);
 
@@ -250,8 +254,8 @@ public class Dendrogram {
 	public void calculateStaticSimilarityMatrix() throws IOException, JSONException {
 		System.out.println("Calculating similarity matrix...");
 
-		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
-		Map<String,Integer> e1e2PairCount = new HashMap<>();
+		Map<Short, List<Pair<String, Byte>>> entityControllers = new HashMap<>();
+		Map<String, Integer> e1e2PairCount = new HashMap<>();
 
 		HashMap<String, ControllerDto> datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
 
@@ -290,7 +294,7 @@ public class Dendrogram {
 	{
 		System.out.println("Calculating similarity matrix...");
 
-		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
+		Map<Short, List<Pair<String, Byte>>> entityControllers = new HashMap<>();
 		Map<String,Integer> e1e2PairCount = new HashMap<>();
 
 		Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
@@ -438,10 +442,13 @@ public class Dendrogram {
 		for (Integer id : clusterIds) {
 			String clusterId = String.valueOf(id);
 			JSONArray entities = clustersJSON.getJSONObject("clusters").getJSONArray(clusterId);
-			Cluster cluster = new Cluster("Cluster" + clusterId);
+			Cluster cluster = new Cluster(clusterId);
 
 			for (int i = 0; i < entities.length(); i++) {
-				cluster.addEntity(entities.getString(i));
+				short entityID = (short) entities.getInt(i);
+
+				cluster.addEntity(entityID);
+				graph.putEntity(entityID, clusterId);
 			}
 
 			graph.addCluster(cluster);

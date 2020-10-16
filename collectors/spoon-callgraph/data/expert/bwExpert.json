@@ -29,6 +29,8 @@
             "AndCondition",
             "NotCondition",
             "OrCondition",
+            "TrueCondition",
+            "FalseCondition",
             "Comparison",
             "BoolComparison",
             "AttributeBoolCondition",
@@ -49,6 +51,7 @@
             "GoalWorkItem",
             "PostWorkItemArgument",
             "PreWorkItemArgument",
+            "WorkItemArgument",
             "WorkflowInstance"
         ],
         "View": [

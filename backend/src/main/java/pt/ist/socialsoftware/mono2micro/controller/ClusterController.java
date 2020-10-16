@@ -101,7 +101,12 @@ public class ClusterController {
 			// FIXME Each controller and cluster would have its own json file
 
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-			codebase.getDendrogram(dendrogramName).getGraph(graphName).splitCluster(clusterName, newName, entities.split(","));
+			codebase.getDendrogram(dendrogramName).getGraph(graphName).splitCluster(
+				clusterName,
+				newName,
+				entities.split(",")
+			);
+
 			codebaseManager.writeCodebase(codebase);
 
 			return new ResponseEntity<>(HttpStatus.OK);

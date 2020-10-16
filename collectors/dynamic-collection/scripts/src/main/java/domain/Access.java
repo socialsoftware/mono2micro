@@ -18,20 +18,20 @@ public class Access extends Content implements Cloneable  {
         W, // Write
     };
     
-    protected String entity;
+    protected short entityID;
     protected Type type;
 
     @JsonCreator
     public Access(
-        String entity,
+        short entityID,
         Type type
     ) {
-        this.entity = entity;
+        this.entityID = entityID;
         this.type = type;
     }
 
-    public String getEntity() {
-        return this.entity;
+    public short getEntityID() {
+        return this.entityID;
     }
 
     public Type getType() {
@@ -42,7 +42,7 @@ public class Access extends Content implements Cloneable  {
     public boolean equals(Object other) {
         if (other instanceof Access) {
             Access that = (Access) other;
-            return this.entity.equals(that.entity) && this.type == that.type;
+            return this.entityID == that.entityID && this.type == that.type;
         }
 
         return false;
@@ -50,13 +50,13 @@ public class Access extends Content implements Cloneable  {
 
     @Override
     public int hashCode() {
-        return this.entity.hashCode() + this.type.hashCode();
+        return this.entityID + this.type.hashCode();
     }
 
     @Override
     public String toString() {
         return "["
-                .concat(entity)
+                .concat(String.valueOf(entityID))
                 .concat(",")
                 .concat(type.name())
                 .concat("]");

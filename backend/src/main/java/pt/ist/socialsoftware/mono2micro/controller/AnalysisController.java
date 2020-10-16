@@ -3,9 +3,7 @@ package pt.ist.socialsoftware.mono2micro.controller;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FilenameUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -261,12 +259,12 @@ public class AnalysisController {
 		String filename,
 		HashMap<String, ControllerDto> datafileJSON
 	)
-		throws IOException, JSONException
+		throws IOException
 	{
 		Graph graph = new Graph();
 		graph.setCodebaseName(codebase.getName());
 
-		HashMap<String, HashMap<String, Set<String>>> analyserCut = codebaseManager.getAnalyserCut(
+		HashMap<String, HashMap<String, Set<Short>>> analyserCut = codebaseManager.getAnalyserCut(
 			codebase.getName(),
 			filename
 		);
@@ -274,11 +272,11 @@ public class AnalysisController {
 		Set<String> clusterIDs = analyserCut.get("clusters").keySet();
 
 		for (String clusterId : clusterIDs) {
-			Set<String> entities = analyserCut.get("clusters").get(clusterId);
+			Set<Short> entities = analyserCut.get("clusters").get(clusterId);
 			Cluster cluster = new Cluster(clusterId, entities);
 
-			for (String entity : entities)
-				graph.putEntity(entity, clusterId);
+			for (short entityID : entities)
+				graph.putEntity(entityID, clusterId);
 
 			graph.addCluster(cluster);
 		}
@@ -358,9 +356,9 @@ public class AnalysisController {
 	}
 
 	private SimilarityMatrixDto getAnalyserMatrixData(
-		Set<String> entities,
+		Set<Short> entityIDs,
 		Map<String,Integer> e1e2PairCount,
-		Map<String,List<Pair<String,String>>> entityControllers
+		Map<Short, List<Pair<String, Byte>>> entityControllers
 	) {
 
 		SimilarityMatrixDto matrixData = new SimilarityMatrixDto();
@@ -369,13 +367,13 @@ public class AnalysisController {
 
 		int maxNumberOfPairs = Utils.getMaxNumberOfPairs(e1e2PairCount);
 
-		for (String e1 : entities) {
+		for (short e1ID : entityIDs) {
 			List<List<Float>> matrixRow = new ArrayList<>();
 
-			for (String e2 : entities) {
+			for (short e2ID : entityIDs) {
 				List<Float> metric = new ArrayList<>();
 
-				if (e1.equals(e2)) {
+				if (e1ID == e2ID) {
 					metric.add((float) 1);
 					metric.add((float) 1);
 					metric.add((float) 1);
@@ -388,8 +386,8 @@ public class AnalysisController {
 				float[] metrics = Utils.calculateSimilarityMatrixMetrics(
 					entityControllers,
 					e1e2PairCount,
-					e1,
-					e2,
+					e1ID,
+					e2ID,
 					maxNumberOfPairs
 				);
 
@@ -403,7 +401,7 @@ public class AnalysisController {
 			similarityMatrix.add(matrixRow);
 		}
 		matrixData.setMatrix(similarityMatrix);
-		matrixData.setEntities(entities);
+		matrixData.setEntities(entityIDs);
 		matrixData.setLinkageType("average");
 
 		return matrixData;
@@ -416,8 +414,8 @@ public class AnalysisController {
 	)
 		throws IOException
 	{
-		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
-		Map<String,Integer> e1e2PairCount = new HashMap<>();
+		Map<Short, List<Pair<String, Byte>>> entityControllers = new HashMap<>();
+		Map<String, Integer> e1e2PairCount = new HashMap<>();
 
 		for (String profile : analyser.getProfiles()) {
 			for (String controllerName : codebase.getProfile(profile)) {
@@ -433,7 +431,7 @@ public class AnalysisController {
 			}
 		}
 
-		Set<String> entities = new TreeSet<>(entityControllers.keySet());
+		Set<Short> entities = new TreeSet<>(entityControllers.keySet());
 
 		CodebaseManager.getInstance().writeAnalyserSimilarityMatrix(
 			codebase.getName(),
@@ -453,8 +451,8 @@ public class AnalysisController {
 	)
 		throws IOException
 	{
-		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
-		Map<String,Integer> e1e2PairCount = new HashMap<>();
+		Map<Short, List<Pair<String, Byte>>> entityControllers = new HashMap<>();
+		Map<String, Integer> e1e2PairCount = new HashMap<>();
 
 		ControllerTracesIterator iter = new ControllerTracesIterator(
 			codebase.getDatafilePath(),
@@ -536,7 +534,7 @@ public class AnalysisController {
 
 		iter = null; // release memory
 
-		Set<String> entities = new TreeSet<>(entityControllers.keySet());
+		Set<Short> entities = new TreeSet<>(entityControllers.keySet());
 
 		CodebaseManager.getInstance().writeAnalyserSimilarityMatrix(
 			codebase.getName(),
@@ -559,59 +557,61 @@ public class AnalysisController {
 			return new ResponseEntity<>(analysis, HttpStatus.OK);
 		}
 
-		Map<String, Set<String>> graph1 = new HashMap<>();
+		Map<String, Set<Short>> graph1 = new HashMap<>();
 		for (Cluster c : analysis.getGraph1().getClusters()) {
 			graph1.put(c.getName(), c.getEntities());
 		}
 
-		Map<String, Set<String>> graph2_CommonEntitiesOnly = new HashMap<>();
+		Map<String, Set<Short>> graph2_CommonEntitiesOnly = new HashMap<>();
 		for (Cluster c : analysis.getGraph2().getClusters()) {
 			graph2_CommonEntitiesOnly.put(c.getName(), c.getEntities());
 		}
 
-		List<String> entities = new ArrayList<>();
-		List<String> notSharedEntities = new ArrayList<>();
+		List<Short> entities = new ArrayList<>();
+		List<Short> notSharedEntities = new ArrayList<>();
 
-		for (Set<String> l1 : graph1.values()) {
-			for (String e1 : l1) {
+		for (Set<Short> l1 : graph1.values()) {
+			for (short e1ID : l1) {
 				boolean inBoth = false;
 
-				for (Set<String> l2 : graph2_CommonEntitiesOnly.values()) {
-					if (l2.contains(e1)) {
+				for (Set<Short> l2 : graph2_CommonEntitiesOnly.values()) {
+					if (l2.contains(e1ID)) {
 						inBoth = true;
 						break;
 					}
 				}
 
 				if (inBoth)
-					entities.add(e1);
+					entities.add(e1ID);
 				else {
-					notSharedEntities.add(e1);
+					notSharedEntities.add(e1ID);
 				}
 			}				
 		}
 
 		// ------------------------------------------------------------------------------------------
-		Map<String, Set<String>> graph2_UnassignedInBigger = graphCopyOf(graph2_CommonEntitiesOnly);
-		Map.Entry<String, Set<String>> biggerClusterEntry = null;
-		for (Map.Entry<String, Set<String>> clusterEntry : graph2_UnassignedInBigger.entrySet()) {
+		Map<String, Set<Short>> graph2_UnassignedInBigger = graphCopyOf(graph2_CommonEntitiesOnly);
+		Map.Entry<String, Set<Short>> biggerClusterEntry = null;
+
+		for (Map.Entry<String, Set<Short>> clusterEntry : graph2_UnassignedInBigger.entrySet()) {
 			if (biggerClusterEntry == null)
 				biggerClusterEntry = clusterEntry;
 
 			else if (clusterEntry.getValue().size() > biggerClusterEntry.getValue().size())
 				biggerClusterEntry = clusterEntry;
 		}
+
 		biggerClusterEntry.getValue().addAll(notSharedEntities);
 
 		// ------------------------------------------------------------------------------------------
-		Map<String, Set<String>> graph2_UnassignedInNew = graphCopyOf(graph2_CommonEntitiesOnly);
-		Set<String> newClusterForUnassignedEntities = new HashSet<>(notSharedEntities);
+		Map<String, Set<Short>> graph2_UnassignedInNew = graphCopyOf(graph2_CommonEntitiesOnly);
+		Set<Short> newClusterForUnassignedEntities = new HashSet<>(notSharedEntities);
 		graph2_UnassignedInNew.put("newClusterForUnnasignedEntities", newClusterForUnassignedEntities);
 
 		// ------------------------------------------------------------------------------------------
-		Map<String, Set<String>> graph2_UnassignedInSingletons = graphCopyOf(graph2_CommonEntitiesOnly);
+		Map<String, Set<Short>> graph2_UnassignedInSingletons = graphCopyOf(graph2_CommonEntitiesOnly);
 		for (int i = 0; i < notSharedEntities.size(); i++) {
-			Set<String> clusterSingletonEntity = new HashSet<>();
+			Set<Short> clusterSingletonEntity = new HashSet<>();
 			clusterSingletonEntity.add(notSharedEntities.get(i));
 			graph2_UnassignedInSingletons.put("singletonCluster" + i, clusterSingletonEntity);
 		}
@@ -623,8 +623,8 @@ public class AnalysisController {
 
 		for (int i = 0; i < entities.size(); i++) {
 			for (int j = i+1; j < entities.size(); j++) {
-				String e1 = entities.get(i);
-				String e2 = entities.get(j);
+				short e1ID = entities.get(i);
+				short e2ID = entities.get(j);
 
 				String e1ClusterG1 = "";
 				String e2ClusterG1 = "";
@@ -632,19 +632,19 @@ public class AnalysisController {
 				String e2ClusterG2 = "";
 
 				for (String cluster : graph1.keySet()) {
-					if (graph1.get(cluster).contains(e1)) {
+					if (graph1.get(cluster).contains(e1ID)) {
 						e1ClusterG1 = cluster;
 					}
-					if (graph1.get(cluster).contains(e2)) {
+					if (graph1.get(cluster).contains(e2ID)) {
 						e2ClusterG1 = cluster;
 					}
 				}
 
 				for (String cluster : graph2_CommonEntitiesOnly.keySet()) {
-					if (graph2_CommonEntitiesOnly.get(cluster).contains(e1)) {
+					if (graph2_CommonEntitiesOnly.get(cluster).contains(e1ID)) {
 						e1ClusterG2 = cluster;
 					}
-					if (graph2_CommonEntitiesOnly.get(cluster).contains(e2)) {
+					if (graph2_CommonEntitiesOnly.get(cluster).contains(e2ID)) {
 						e2ClusterG2 = cluster;
 					}
 				}
@@ -668,10 +668,10 @@ public class AnalysisController {
 
 				if (sameClusterInGraph1 != sameClusterInGraph2) {
 					String[] falsePair = new String[6];
-					falsePair[0] = e1;
+					falsePair[0] = String.valueOf(e1ID);
 					falsePair[1] = e1ClusterG1;
 					falsePair[2] = e1ClusterG2;
-					falsePair[3] = e2;
+					falsePair[3] = String.valueOf(e2ID);
 					falsePair[4] = e2ClusterG1;
 					falsePair[5] = e2ClusterG2;
 
@@ -721,7 +721,6 @@ public class AnalysisController {
 		analysis.setSpecificity(specificity);
         analysis.setFmeasure(fmeasure);
 
-
         /*
         *******************************************
         ************ CALCULATE MOJO ***************
@@ -755,9 +754,9 @@ public class AnalysisController {
 		return new ResponseEntity<>(analysis, HttpStatus.OK);
 	}
 
-	private Map<String, Set<String>> graphCopyOf(Map<String, Set<String>> graph) {
-		HashMap<String, Set<String>> copy = new HashMap<>();
-		for (Map.Entry<String, Set<String>> entry : graph.entrySet()) {
+	private Map<String, Set<Short>> graphCopyOf(Map<String, Set<Short>> graph) {
+		HashMap<String, Set<Short>> copy = new HashMap<>();
+		for (Map.Entry<String, Set<Short>> entry : graph.entrySet()) {
 			copy.put(entry.getKey(), new HashSet<>(entry.getValue()));
 		}
 
@@ -765,29 +764,30 @@ public class AnalysisController {
 	}
 
 	private double getMojoValue(
-			Map<String, Set<String>> graph1,
-			Map<String, Set<String>> graph2,
-			Set<String> entities
+			Map<String, Set<Short>> graph1,
+			Map<String, Set<Short>> graph2,
+			Set<Short> entities
 	) throws IOException
 	{
 		StringBuilder sbSource = new StringBuilder();
-		for (Map.Entry<String, Set<String>> clusterEntry : graph1.entrySet()) {
+		for (Map.Entry<String, Set<Short>> clusterEntry : graph1.entrySet()) {
 			String clusterName = clusterEntry.getKey();
-			Set<String> clusterEntities = clusterEntry.getValue();
-			for (String entity : clusterEntities) {
-				if (entities.contains(entity)) { // entity present in both graphs
-					sbSource.append("contain " + clusterName + " " + entity + "\n");
+			Set<Short> clusterEntities = clusterEntry.getValue();
+
+			for (short entityID : clusterEntities) {
+				if (entities.contains(entityID)) { // entity present in both graphs
+					sbSource.append("contain " + clusterName + " " + entityID + "\n");
 				}
 			}
 		}
 
 		StringBuilder sbTarget = new StringBuilder();
-		for (Map.Entry<String, Set<String>> clusterEntry : graph2.entrySet()) {
+		for (Map.Entry<String, Set<Short>> clusterEntry : graph2.entrySet()) {
 			String clusterName = clusterEntry.getKey();
-			Set<String> clusterEntities = clusterEntry.getValue();
-			for (String entity : clusterEntities) {
-				if (entities.contains(entity)) { // entity present in both graphs
-					sbTarget.append("contain " + clusterName + " " + entity + "\n");
+			Set<Short> clusterEntities = clusterEntry.getValue();
+			for (short entityID : clusterEntities) {
+				if (entities.contains(entityID)) { // entity present in both graphs
+					sbTarget.append("contain " + clusterName + " " + entityID + "\n");
 				}
 			}
 		}

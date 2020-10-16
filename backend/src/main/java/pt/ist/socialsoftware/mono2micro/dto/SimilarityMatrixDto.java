@@ -9,7 +9,7 @@ import java.util.Set;
 @JsonDeserialize(using = SimilarityMatrixDtoDeserializer.class)
 public class SimilarityMatrixDto {
 
-    private Set<String> entities;
+    private Set<Short> entities;
 
     private String linkageType;
 
@@ -17,11 +17,11 @@ public class SimilarityMatrixDto {
 
     public SimilarityMatrixDto() {}
 
-    public Set<String> getEntities() {
+    public Set<Short> getEntities() {
         return entities;
     }
 
-    public void setEntities(Set<String> entities) {
+    public void setEntities(Set<Short> entities) {
         this.entities = entities;
     }
 

@@ -1,12 +1,18 @@
-package pt.ist.socialsoftware.mono2micro.dto;
+package dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import pt.ist.socialsoftware.mono2micro.utils.Pair;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import serializers.TraceDtoSerializer;
+import utils.Pair;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
+@JsonSerialize(using = TraceDtoSerializer.class)
 public class TraceDto {
 	protected int id;
 	protected int frequency;
@@ -165,7 +171,7 @@ public class TraceDto {
 					String accessString = String.join(
 						"-",
 						String.valueOf(a.getEntityID()),
-						String.valueOf(a.getMode())
+						a.getMode()
 					);
 
 					accessesSet.add(accessString);

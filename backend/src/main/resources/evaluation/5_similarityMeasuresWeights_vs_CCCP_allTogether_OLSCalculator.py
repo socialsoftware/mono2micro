@@ -22,6 +22,7 @@ df = {
     'complexity': [],
     'coupling': [],
     'cohesion': [],
+    'performance': [],
 }
 
 for file in files:
@@ -35,7 +36,8 @@ for file in files:
         df['S'].append(entry[4])
         df['cohesion'].append(entry[5])
         df['coupling'].append(entry[6])
-        df['complexity'].append(entry[8])
+        df['complexity'].append(entry[8]) # pComplexity
+        df['performance'].append(entry[10]) # pPerformance
 
 df = pd.DataFrame(df)
 
@@ -57,6 +59,14 @@ print()
 
 X = df.loc[:, ['n', 'A', 'W', 'R', 'S']]
 y = df.loc[:, 'cohesion']
+X = sm.add_constant(X)
+model = sm.OLS(y, X)
+results = model.fit()
+print(results.summary())
+print()
+
+X = df.loc[:, ['n', 'A', 'W', 'R', 'S']]
+y = df.loc[:, 'performance']
 X = sm.add_constant(X)
 model = sm.OLS(y, X)
 results = model.fit()

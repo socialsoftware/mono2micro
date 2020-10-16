@@ -248,7 +248,6 @@ export class TransactionView extends React.Component {
             graphName,
             ["clusters", "controllers"]
         ).then(response => {
-            console.log(response);
             this.setState({
                 graph: response.data,
             });
@@ -308,15 +307,19 @@ export class TransactionView extends React.Component {
     }
 
     createEdge(cluster) {
-        let entitiesTouched = Object.entries(this.state.controller.entities)
-            .filter(e => cluster.entities.includes(e[0]))
-            .map(e => e[0] + " " + e[1]);
+        const text = []     
+        
+        Object.entries(this.state.controller.entities).forEach(([key, value]) => {
+            if (cluster.entities.includes(Number(key)))
+                text.push(key + " " + value)
+        });
+
 
         return {
             from: this.state.controller.name,
             to: cluster.name,
-            label: entitiesTouched.length.toString(),
-            title: entitiesTouched.join('<br>')
+            label: text.length.toString(),
+            title: text.join('<br>')
         };
     }
 
@@ -355,13 +358,14 @@ export class TransactionView extends React.Component {
 
             let {
                 id: localTransactionId,
-                clusterName,
+                clusterID,
                 clusterAccesses,
             } = localTransactionsList[i];
 
+
             localTransactionIdToClusterAccesses[localTransactionId] = clusterAccesses;
 
-            let cluster = graph.clusters.find(cluster => cluster.name === clusterName);
+            let cluster = graph.clusters.find(cluster => Number(cluster.name) === clusterID);
             const clusterEntityNames = cluster.entities;
 
             nodes.push({

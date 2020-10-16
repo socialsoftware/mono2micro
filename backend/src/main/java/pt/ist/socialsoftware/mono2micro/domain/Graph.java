@@ -3,7 +3,6 @@ package pt.ist.socialsoftware.mono2micro.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.json.JSONException;
 import pt.ist.socialsoftware.mono2micro.dto.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
@@ -29,9 +28,9 @@ public class Graph {
 	private float cohesion;
 	private float coupling;
 	private List<Controller> controllers = new ArrayList<>();
-	private List<Cluster> clusters = new ArrayList<>();
+	private List<Cluster> clusters = new ArrayList<>(); // FIXME hashmap
 	@JsonIgnore
-	private final Map<String, String> entityToClusterName = new HashMap<>();
+	private final Map<Short, String> entityIDToClusterName = new HashMap<>();
 
 	public Graph() { }
 
@@ -134,34 +133,34 @@ public class Graph {
 		return max;
 	}
 
-	public void putEntity(String entity, String clusterName) {
-		entityToClusterName.put(entity, clusterName);
+	public void putEntity(short entityID, String clusterName) {
+		entityIDToClusterName.put(entityID, clusterName);
 	}
 
-	public static class CalculateControllerPerformanceResult {
+	public static class CalculateTracePerformanceResult {
 		int performance = 0;
 		String firstAccessedClusterName = null;
 
-		public CalculateControllerPerformanceResult() {}
+		public CalculateTracePerformanceResult() {}
 
-		public CalculateControllerPerformanceResult(int performance, String firstAccessedClusterName) {
+		public CalculateTracePerformanceResult(int performance, String firstAccessedClusterName) {
 			this.performance = performance;
 			this.firstAccessedClusterName = firstAccessedClusterName;
 		}
 	}
 
-	private CalculateControllerPerformanceResult calculateControllerPerformance(
+	private CalculateTracePerformanceResult calculateTracePerformance(
 		List<ReducedTraceElementDto> elements,
 		int from,
 		int to
 	) {
 		int numberOfElements = elements == null ? 0 : elements.size();
 
-		if (numberOfElements == 0) return new CalculateControllerPerformanceResult();
+		if (numberOfElements == 0) return new CalculateTracePerformanceResult();
 
-		if (numberOfElements == 1) return new CalculateControllerPerformanceResult(
+		if (numberOfElements == 1) return new CalculateTracePerformanceResult(
 			1,
-			this.getClusterWithEntity(((AccessDto) elements.get(0)).getEntity())
+			this.getClusterWithEntity(((AccessDto) elements.get(0)).getEntityID())
 		);
 
 		int performance = 0;
@@ -176,7 +175,7 @@ public class Graph {
 			if (element instanceof RuleDto) {
 				RuleDto r = (RuleDto) element;
 
-				CalculateControllerPerformanceResult result = calculateControllerPerformance(
+				CalculateTracePerformanceResult result = calculateTracePerformance(
 					elements,
 					i + 1,
 					i + 1 + r.getCount()
@@ -196,8 +195,8 @@ public class Graph {
 				performance += sequencePerformance * r.getOccurrences();
 
 				// Here we assume that a sequence will always have an access as its last element
-				String sequenceLastAccessedEntity = ((AccessDto) elements.get(i + r.getCount())).getEntity();
-				String sequenceLastAccessedClusterName = this.getClusterWithEntity(sequenceLastAccessedEntity);
+				short sequenceLastAccessedEntityID = ((AccessDto) elements.get(i + r.getCount())).getEntityID();
+				String sequenceLastAccessedClusterName = this.getClusterWithEntity(sequenceLastAccessedEntityID);
 
 				previousClusterName = sequenceLastAccessedClusterName;
 
@@ -210,10 +209,10 @@ public class Graph {
 			} else {
 
 				AccessDto a = (AccessDto) element;
-				String entity = a.getEntity();
+				short entityID = a.getEntityID();
 
 				try {
-					String currentClusterName = this.getClusterWithEntity(entity);
+					String currentClusterName = this.getClusterWithEntity(entityID);
 
 					if (firstAccessedClusterName == null)
 						firstAccessedClusterName = currentClusterName;
@@ -230,14 +229,14 @@ public class Graph {
 				}
 
 				catch (Exception e) {
-					System.err.println("No assigned entity " + entity + " to a cluster.");
+					System.err.println("No assigned entity with ID " + entityID + " to a cluster.");
 					throw e;
 				}
 
 			}
 		}
 
-		return new CalculateControllerPerformanceResult(performance, firstAccessedClusterName);
+		return new CalculateTracePerformanceResult(performance, firstAccessedClusterName);
 	}
 
 	private void calculateControllerSequences(
@@ -246,38 +245,38 @@ public class Graph {
 	) {
 		Controller.LocalTransaction lt = null;
 		List<Controller.LocalTransaction> ltList = new ArrayList<>();
-		Map<String, String> entityNameToMode = new HashMap<>();
+		Map<Short, Byte> entityIDToMode = new HashMap<>();
 
 		String previousCluster = ""; // IntelliJ is afraid. poor him
 
-		int localTransactionsCounter = 1;
-
+		int localTransactionsCounter = controller.getLocalTransactionCounter();
 //		JSONArray entitiesSeq = new JSONArray();
 //		JSONObject clusterAccess = new JSONObject();
 
 		for (int i = 0; i < accesses.size(); i++) {
 			AccessDto access = accesses.get(i);
-			String entity = access.getEntity();
-			String mode = access.getMode();
+			short entityID = access.getEntityID();
+			byte mode = access.getMode();
 			String cluster;
 
 			try {
-				cluster = this.getClusterWithEntity(entity);
+				cluster = this.getClusterWithEntity(entityID);
 			}
 			catch (Exception e) {
-				System.err.println("Expert cut does not assign entity " + entity + " to a cluster.");
+				System.err.println("Expert cut does not assign entity " + entityID + " to a cluster.");
 				throw e;
 			}
 
 			if (i == 0) {
 				lt = new Controller.LocalTransaction(
 					localTransactionsCounter++,
-					cluster,
-					new ArrayList<AccessDto>() { { add(access); } }
+					Short.parseShort(cluster),
+					new HashSet<AccessDto>() { { add(access); } },
+					entityID
 				);
 
-				controller.addEntity(entity, mode);
-				entityNameToMode.put(entity, mode);
+				controller.addEntity(entityID, mode);
+				entityIDToMode.put(entityID, mode);
 
 //				clusterAccess.put("cluster", cluster);
 //				clusterAccess.put("sequence", new JSONArray());
@@ -289,20 +288,20 @@ public class Graph {
 
 				if (cluster.equals(previousCluster)) {
 					boolean hasCost = false;
-					String savedMode = entityNameToMode.get(entity);
+					Byte savedMode = entityIDToMode.get(entityID);
 
 					if (savedMode == null) {
 						hasCost = true;
 
 					} else {
-						if (savedMode.equals("R") && mode.equals("W"))
+						if (savedMode == 1 && mode == 2) // "R" -> 1, "W" -> 2
 							hasCost = true;
 					}
 
 					if (hasCost) {
 						lt.addClusterAccess(access);
-						controller.addEntity(entity, mode);
-						entityNameToMode.put(entity, mode);
+						controller.addEntity(entityID, mode);
+						entityIDToMode.put(entityID, mode);
 
 //						clusterAccess.getJSONArray("sequence").put(
 //							new JSONArray().put(entity).put(mode)
@@ -314,14 +313,15 @@ public class Graph {
 
 					lt = new Controller.LocalTransaction(
 						localTransactionsCounter++,
-						cluster,
-						new ArrayList<AccessDto>() { { add(access); } }
+						Short.parseShort(cluster),
+						new HashSet<AccessDto>() { { add(access); } },
+						entityID
 					);
 
-					controller.addEntity(entity, mode);
+					controller.addEntity(entityID, mode);
 
-					entityNameToMode.clear();
-					entityNameToMode.put(entity, mode);
+					entityIDToMode.clear();
+					entityIDToMode.put(entityID, mode);
 
 //					entitiesSeq.put(clusterAccess);
 //					clusterAccess = new JSONObject();
@@ -344,6 +344,7 @@ public class Graph {
 			ltList.add(lt);
 
 		if (ltList.size() > 0) {
+			controller.setLocalTransactionCounter(localTransactionsCounter);
 			controller.addLocalTransactionSequence(ltList);
 		}
 	}
@@ -389,6 +390,115 @@ public class Graph {
 		}
 	}
 
+	private Controller getDynamicController(
+		ControllerTracesIterator iter,
+		String controllerName,
+		Constants.TypeOfTraces typeOfTraces
+	)
+		throws IOException
+	{
+		TraceDto t;
+		List<AccessDto> traceAccesses;
+
+		iter.nextController(controllerName);
+
+		Controller controller = new Controller(controllerName);
+
+		int controllerPerformance = 0;
+		int tracesCounter = 0;
+
+		switch (typeOfTraces) {
+			case LONGEST:
+				t = iter.getLongestTrace();
+
+				if (t != null) {
+					traceAccesses = t.expand(2);
+
+					if (traceAccesses.size() > 0)
+						calculateControllerSequences(controller, traceAccesses);
+
+					CalculateTracePerformanceResult result = calculateTracePerformance(
+						t.getElements(),
+						0,
+						t.getElements() == null ? 0 : t.getElements().size()
+					);
+
+					controllerPerformance += result.performance;
+				}
+
+				break;
+
+			case WITH_MORE_DIFFERENT_ACCESSES:
+				t = iter.getTraceWithMoreDifferentAccesses();
+
+				if (t != null) {
+					traceAccesses = t.expand(2);
+
+					if (traceAccesses.size() > 0)
+						calculateControllerSequences(controller, traceAccesses);
+
+					CalculateTracePerformanceResult result = calculateTracePerformance(
+						t.getElements(),
+						0,
+						t.getElements() == null ? 0 : t.getElements().size()
+					);
+
+					controllerPerformance += result.performance;
+				}
+
+				break;
+
+			case REPRESENTATIVE:
+				Set<String> tracesIds = iter.getRepresentativeTraces();
+				// FIXME probably here we create a second controllerTracesIterator
+				iter.reset();
+
+				while (iter.hasMoreTraces()) {
+					t = iter.nextTrace();
+					traceAccesses = t.expand(2);
+
+					if (tracesIds.contains(String.valueOf(t.getId())) && traceAccesses.size() > 0) {
+						calculateControllerSequences(controller, traceAccesses);
+
+						CalculateTracePerformanceResult result = calculateTracePerformance(
+							t.getElements(),
+							0,
+							t.getElements() == null ? 0 : t.getElements().size()
+						);
+
+						controllerPerformance += result.performance;
+					}
+				}
+
+				break;
+
+			default:
+				while (iter.hasMoreTraces()) {
+					tracesCounter++;
+
+					t = iter.nextTrace();
+					traceAccesses = t.expand(2);
+
+					if (traceAccesses.size() > 0)
+						calculateControllerSequences(controller, traceAccesses);
+
+					CalculateTracePerformanceResult result = calculateTracePerformance(
+						t.getElements(),
+						0,
+						t.getElements() == null ? 0 : t.getElements().size()
+					);
+
+					controllerPerformance += result.performance;
+				}
+		}
+
+		controller.setPerformance(controllerPerformance / tracesCounter);
+
+		return controller;
+	}
+
+
+
 	public void addDynamicControllers(
 		List<String> profiles,
 		int tracesMaxLimit,
@@ -397,8 +507,6 @@ public class Graph {
 		throws IOException
 	{
 		System.out.println("Adding dynamic controllers...");
-
-		this.controllers = new ArrayList<>();
 
 		Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
 			codebaseName,
@@ -410,108 +518,16 @@ public class Graph {
 			tracesMaxLimit
 		);
 
-		TraceDto t;
-		List<AccessDto> traceAccesses;
-
 		for (String profile : profiles) {
 			for (String controllerName : codebase.getProfile(profile)) {
-				iter.nextController(controllerName);
+				Controller controller = getDynamicController(
+					iter,
+					controllerName,
+					typeOfTraces
+				);
 
-				Controller controller = new Controller(controllerName);
-
-				int controllerPerformance = 0;
-				int tracesCounter = 0;
-
-				switch (typeOfTraces) {
-					case LONGEST:
-						t = iter.getLongestTrace();
-
-						if (t != null) {
-							traceAccesses = t.expand(2);
-
-							if (traceAccesses.size() > 0)
-								calculateControllerSequences(controller, traceAccesses);
-
-							CalculateControllerPerformanceResult result = calculateControllerPerformance(
-								t.getElements(),
-								0,
-								t.getElements() == null ? 0 : t.getElements().size()
-							);
-
-							controllerPerformance += result.performance;
-						}
-
-						break;
-
-					case WITH_MORE_DIFFERENT_ACCESSES:
-						t = iter.getTraceWithMoreDifferentAccesses();
-
-						if (t != null) {
-							traceAccesses = t.expand(2);
-
-							if (traceAccesses.size() > 0)
-								calculateControllerSequences(controller, traceAccesses);
-
-							CalculateControllerPerformanceResult result = calculateControllerPerformance(
-								t.getElements(),
-								0,
-								t.getElements() == null ? 0 : t.getElements().size()
-							);
-
-							controllerPerformance += result.performance;
-						}
-
-						break;
-
-					case REPRESENTATIVE:
-						Set<String> tracesIds = iter.getRepresentativeTraces();
-						// FIXME probably here we create a second controllerTracesIterator
-						iter.reset();
-
-						while (iter.hasMoreTraces()) {
-							t = iter.nextTrace();
-							traceAccesses = t.expand(2);
-
-							if (tracesIds.contains(String.valueOf(t.getId())) && traceAccesses.size() > 0) {
-								calculateControllerSequences(controller, traceAccesses);
-
-								CalculateControllerPerformanceResult result = calculateControllerPerformance(
-									t.getElements(),
-									0,
-									t.getElements() == null ? 0 : t.getElements().size()
-								);
-
-								controllerPerformance += result.performance;
-							}
-						}
-
-						break;
-
-					default:
-						while (iter.hasMoreTraces()) {
-							tracesCounter++;
-
-							t = iter.nextTrace();
-							traceAccesses = t.expand(2);
-
-							if (traceAccesses.size() > 0)
-								calculateControllerSequences(controller, traceAccesses);
-
-							CalculateControllerPerformanceResult result = calculateControllerPerformance(
-								t.getElements(),
-								0,
-								t.getElements() == null ? 0 : t.getElements().size()
-							);
-
-							controllerPerformance += result.performance;
-						}
-				}
-
-				controller.setPerformance(controllerPerformance / tracesCounter);
-
-				if (controller.getEntities().size() > 0) {
+				if (controller.getEntities().size() > 0)
 					this.addController(controller);
-				}
 			}
 		}
 	}
@@ -525,9 +541,7 @@ public class Graph {
 
 		for (int i = 0; i < clusters.size(); i++) {
 			if (clusters.get(i).getName().equals(cluster1)) {
-
-				for (String entity : clusters.get(i).getEntities())
-					mergedCluster.addEntity(entity);
+				mergedCluster.setEntities(clusters.get(i).getEntities());
 
 				clusters.remove(i);
 
@@ -537,9 +551,7 @@ public class Graph {
 
 		for (int i = 0; i < clusters.size(); i++) {
 			if (clusters.get(i).getName().equals(cluster2)) {
-
-				for (String entity : clusters.get(i).getEntities())
-					mergedCluster.addEntity(entity);
+				mergedCluster.setEntities(clusters.get(i).getEntities());
 
 				clusters.remove(i);
 
@@ -577,31 +589,49 @@ public class Graph {
 		return null;
 	}
 
-	public String getClusterWithEntity(String entityName) {
-		return entityToClusterName.get(entityName);
+	public String getClusterWithEntity(short entityID) {
+		return entityIDToClusterName.get(entityID);
 	}
 
-	public void splitCluster(String clusterName, String newName, String[] entities) throws Exception {
+	public void splitCluster(
+		String clusterName,
+		String newName,
+		String[] entities
+	)
+		throws Exception
+	{
 		Cluster currentCluster = this.getCluster(clusterName);
 		Cluster newCluster = new Cluster(newName);
-		for (String entity : entities) {
-			if (currentCluster.containsEntity(entity)) {
-				newCluster.addEntity(entity);
-				currentCluster.removeEntity(entity);
+
+		for (String stringifiedEntityID : entities) {
+			short entityID = Short.parseShort(stringifiedEntityID);
+
+			if (currentCluster.containsEntity(entityID)) {
+				newCluster.addEntity(entityID);
+				currentCluster.removeEntity(entityID);
 			}
 		}
+
 		this.addCluster(newCluster);
 		this.calculateMetrics();
 	}
 
-	public void transferEntities(String fromClusterName, String toClusterName, String[] entities) throws Exception {
+	public void transferEntities(
+		String fromClusterName,
+		String toClusterName,
+		String[] entities
+	)
+		throws Exception
+	{
 		Cluster fromCluster = this.getCluster(fromClusterName);
 		Cluster toCluster = this.getCluster(toClusterName);
 
-		for (String entity : entities) {
-			if (fromCluster.containsEntity(entity)) {
-				toCluster.addEntity(entity);
-				fromCluster.removeEntity(entity);
+		for (String stringifiedEntityID : entities) {
+			short entityID = Short.parseShort(stringifiedEntityID);
+
+			if (fromCluster.containsEntity(entityID)) {
+				toCluster.addEntity(entityID);
+				fromCluster.removeEntity(entityID);
 			}
 		}
 
@@ -617,8 +647,8 @@ public class Graph {
 
 			for (Controller controller : this.controllers) {
 				if (controller != null) {
-					for (String controllerEntity : controller.getEntities().keySet()) {
-						if (cluster.containsEntity(controllerEntity)) {
+					for (short entityID : controller.getEntities().keySet()) {
+						if (cluster.containsEntity(entityID)) {
 							touchedControllers.add(controller);
 							break;
 						}
@@ -639,8 +669,8 @@ public class Graph {
 
 			for (Cluster cluster : this.clusters) {
 
-				for (String clusterEntity : cluster.getEntities()) {
-					if (controller.containsEntity(clusterEntity)) {
+				for (short entityID : cluster.getEntities()) {
+					if (controller.containsEntity(entityID)) {
 						touchedClusters.add(cluster);
 						break;
 					}
@@ -686,7 +716,7 @@ public class Graph {
 	public void calculateMetricsAnalyser(
 		List<String> profiles,
 		HashMap<String, ControllerDto> datafileJSON
-	) throws IOException, JSONException {
+	) throws IOException {
 		this.addStaticControllers(profiles, datafileJSON);
 
 		Metrics metrics = new Metrics(this);

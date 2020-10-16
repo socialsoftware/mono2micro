@@ -21,10 +21,10 @@ public class AccessDtoDeserializer extends StdDeserializer<AccessDto> {
         JsonToken jsonToken = jsonParser.currentToken();
         if (jsonToken == JsonToken.START_ARRAY) {
             jsonParser.nextValue();
-            String entity = jsonParser.getValueAsString();
+            String mode = jsonParser.getValueAsString();
 
             jsonParser.nextValue();
-            String mode = jsonParser.getValueAsString();
+            short entityID = jsonParser.getShortValue();
 
             jsonParser.nextValue(); // consume END_ARRAY
 
@@ -39,8 +39,8 @@ public class AccessDtoDeserializer extends StdDeserializer<AccessDto> {
             }
 
             AccessDto accessDto = new AccessDto();
-            accessDto.setEntity(entity);
-            accessDto.setMode(mode);
+            accessDto.setMode((byte) (mode.equals("R") ? 1 : 2));
+            accessDto.setEntityID(entityID);
             accessDto.setOccurrences(occurrences);
             return accessDto;
         }

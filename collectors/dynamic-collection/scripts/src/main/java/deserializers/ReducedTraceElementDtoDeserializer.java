@@ -1,12 +1,12 @@
-package pt.ist.socialsoftware.mono2micro.utils.deserializers;
+package deserializers;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
-import pt.ist.socialsoftware.mono2micro.dto.ReducedTraceElementDto;
-import pt.ist.socialsoftware.mono2micro.dto.RuleDto;
+import dto.AccessDto;
+import dto.ReducedTraceElementDto;
+import dto.RuleDto;
 
 import java.io.IOException;
 
@@ -75,7 +75,7 @@ public class ReducedTraceElementDtoDeserializer extends StdDeserializer<ReducedT
 				AccessDto a = new AccessDto();
 
 				a.setEntityID(entityID);
-				a.setMode((byte) (mode.equals("R") ? 1 : 2));
+				a.setMode(mode);
 				a.setOccurrences(occurrences);
 
 				return a;

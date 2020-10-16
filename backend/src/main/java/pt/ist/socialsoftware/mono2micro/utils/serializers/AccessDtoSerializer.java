@@ -24,8 +24,8 @@ public class AccessDtoSerializer extends StdSerializer<AccessDto> {
 		SerializerProvider serializerProvider
 	) throws IOException {
 		jsonGenerator.writeStartArray();
-		jsonGenerator.writeString(access.getEntity());
-		jsonGenerator.writeString(access.getMode());
+		jsonGenerator.writeString(access.getMode() == 1 ? "R" : "W");
+		jsonGenerator.writeNumber(access.getEntityID());
 
 		if (access.getOccurrences() > 1) {
 			jsonGenerator.writeNumber(access.getOccurrences());

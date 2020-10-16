@@ -34,6 +34,7 @@ public class GraphSerializer extends StdSerializer<DirectedAcyclicGraph<Controll
         List<Controller.LocalTransaction> nodes = new ArrayList<>();
         List<String> links = new ArrayList<>();
         Iterator<Controller.LocalTransaction> iterator = graph.iterator();
+
         while (iterator.hasNext()) {
             Controller.LocalTransaction lt = iterator.next();
 

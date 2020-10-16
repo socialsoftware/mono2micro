@@ -3,42 +3,39 @@ package serializers;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import domain.Access;
-import requitur.ReducedTraceElement;
-import requitur.content.Content;
-import requitur.content.RuleContent;
+import dto.AccessDto;
+import dto.ReducedTraceElementDto;
+import dto.RuleDto;
 
 import java.io.IOException;
 
-public class ReducedTraceElementSerializer extends StdSerializer<ReducedTraceElement> {
+public class ReducedTraceElementDtoSerializer extends StdSerializer<ReducedTraceElementDto> {
 
-	public ReducedTraceElementSerializer() {
+	public ReducedTraceElementDtoSerializer() {
 		this(null);
 	}
 
-	public ReducedTraceElementSerializer(Class<ReducedTraceElement> t) {
+	public ReducedTraceElementDtoSerializer(Class<ReducedTraceElementDto> t) {
 		super(t);
 	}
 
 	@Override
 	public void serialize(
-		ReducedTraceElement reducedTraceElement,
+		ReducedTraceElementDto reducedTraceElement,
 		JsonGenerator jsonGenerator,
 		SerializerProvider serializerProvider
 	) throws IOException {
 		jsonGenerator.writeStartArray();
 
-		Content c = reducedTraceElement.getValue();
-
-		if (c instanceof RuleContent) {
-			final RuleContent rc = (RuleContent) c;
+		if (reducedTraceElement instanceof RuleDto) {
+			final RuleDto rc = (RuleDto) reducedTraceElement;
 
 			jsonGenerator.writeNumber(rc.getCount());
 
-		} else if (c instanceof Access) {
-			final Access a = (Access) c;
+		} else if (reducedTraceElement instanceof AccessDto) {
+			final AccessDto a = (AccessDto) reducedTraceElement;
 
-			jsonGenerator.writeString(a.getType().name());
+			jsonGenerator.writeString(a.getMode());
 			jsonGenerator.writeNumber(a.getEntityID());
 		}
 
