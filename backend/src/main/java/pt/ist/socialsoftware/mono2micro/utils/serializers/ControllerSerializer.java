@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
+import pt.ist.socialsoftware.mono2micro.domain.Graph;
 
 import java.io.IOException;
 
@@ -44,25 +45,26 @@ public class ControllerSerializer extends StdSerializer<Controller> {
 //
 //		jg.writeEndArray();
 
-		jg.writeFieldName("localTransactionsGraph");
-		if (controller.getLocalTransactionsGraph() != null) {
-
-			ObjectMapper mapper = new ObjectMapper();
-			SimpleModule module = new SimpleModule("GraphSerializer");
-			module.addSerializer(
-					new GraphSerializer(
-							(Class<DirectedAcyclicGraph<Controller.LocalTransaction, DefaultEdge>>) controller
-									.getLocalTransactionsGraph().getClass()
-					)
-			);
-
-			mapper.registerModule(module);
-			String graphString = mapper.writeValueAsString(controller.getLocalTransactionsGraph());
-			jg.writeRawValue(graphString);
-
-		} else {
-			jg.writeObject(null);
-		}
+//		// FIXME DEPRECATED - Left this here in case for some reason there is the need of serializing this type of graph
+//		jg.writeFieldName("localTransactionsGraph");
+//		if (controller.getLocalTransactionsGraph() != null) {
+//
+//			ObjectMapper mapper = new ObjectMapper();
+//			SimpleModule module = new SimpleModule("GraphSerializer");
+//			module.addSerializer(
+//					new LocalTransactionGraphSerializer(
+//							(Class<DirectedAcyclicGraph<Graph.LocalTransaction, DefaultEdge>>) controller
+//									.getLocalTransactionsGraph().getClass()
+//					)
+//			);
+//
+//			mapper.registerModule(module);
+//			String graphString = mapper.writeValueAsString(controller.getLocalTransactionsGraph());
+//			jg.writeRawValue(graphString);
+//
+//		} else {
+//			jg.writeObject(null);
+//		}
 
 		jg.writeEndObject();
 	}

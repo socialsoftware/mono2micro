@@ -8,9 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
+import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
+import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -147,7 +150,7 @@ public class ClusterController {
 	}
 
 	@RequestMapping(value = "/controllerClusters", method = RequestMethod.GET)
-	public ResponseEntity<Map<String,List<Cluster>>> getControllerClusters(
+	public ResponseEntity<Map<String, List<Cluster>>> getControllerClusters(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
 		@PathVariable String graphName
@@ -155,15 +158,44 @@ public class ClusterController {
 		logger.debug("getControllerClusters");
 
 		try {
+
+			String dendrogramProfile = codebaseManager.getCodebaseDendrogramWithFields(
+				codebaseName,
+				dendrogramName,
+				new HashSet<String>() {{ add("profile"); }}
+			).getProfile();
+
+			Codebase codebase = codebaseManager.getCodebaseWithFields(
+				codebaseName,
+				new HashSet<String>() {{ add("profiles"); add("controllers"); }}
+			);
+
+			List<String> profileControllers = codebase.getProfile(dendrogramProfile);
+
+			List<Controller> controllers = new ArrayList<>();
+
+			profileControllers.forEach(controllerName -> {
+				Controller controller = codebase.getControllers().get(controllerName);
+
+				if (controller != null) {
+					controllers.add(controller);
+				} else {
+					throw new Error("Controller " + controllerName + " not found");
+				}
+			});
+
+			Graph graph = codebaseManager.getDendrogramGraphWithFields(
+				codebaseName,
+				dendrogramName,
+				graphName,
+				new HashSet<String>() {{ add("clusters"); }}
+			);
+
 			return new ResponseEntity<>(
-				codebaseManager.getGraphWithControllersAndClustersWithFields(
-					codebaseName,
-					dendrogramName,
-					graphName,
-					new HashSet<String>() {{ add("name"); add("entities"); }},
-					new HashSet<String>() {{ add("name"); add("entities"); }}
-				)
-					.getControllerClusters(),
+				Utils.getControllerClusters(
+					(List<Cluster>) graph.getClusters().values(),
+					controllers
+				),
 				HttpStatus.OK
 			);
 
@@ -174,7 +206,7 @@ public class ClusterController {
 	}
 
 	@RequestMapping(value = "/clusterControllers", method = RequestMethod.GET)
-	public ResponseEntity<Map<String,List<Controller>>> getClusterControllers(
+	public ResponseEntity<Map<String, List<Controller>>> getClusterControllers(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
 		@PathVariable String graphName
@@ -182,15 +214,43 @@ public class ClusterController {
 		logger.debug("getClusterControllers");
 
 		try {
+			String dendrogramProfile = codebaseManager.getCodebaseDendrogramWithFields(
+				codebaseName,
+				dendrogramName,
+				new HashSet<String>() {{ add("profile"); }}
+			).getProfile();
+
+			Codebase codebase = codebaseManager.getCodebaseWithFields(
+				codebaseName,
+				new HashSet<String>() {{ add("profiles"); add("controllers"); }}
+			);
+
+			List<String> profileControllers = codebase.getProfile(dendrogramProfile);
+
+			List<Controller> controllers = new ArrayList<>();
+
+			profileControllers.forEach(controllerName -> {
+				Controller controller = codebase.getControllers().get(controllerName);
+
+				if (controller != null) {
+					controllers.add(controller);
+				} else {
+					throw new Error("Controller " + controllerName + " not found");
+				}
+			});
+
+			Graph graph = codebaseManager.getDendrogramGraphWithFields(
+				codebaseName,
+				dendrogramName,
+				graphName,
+				new HashSet<String>() {{ add("clusters"); }}
+			);
+
 			return new ResponseEntity<>(
-				codebaseManager.getGraphWithControllersAndClustersWithFields(
-					codebaseName,
-					dendrogramName,
-					graphName,
-					new HashSet<String>() {{ add("name"); add("entities"); }},
-					new HashSet<String>() {{ add("name"); add("entities"); }}
-				)
-					.getClusterControllers(),
+				Utils.getClusterControllers(
+					(List<Cluster>) graph.getClusters().values(),
+					controllers
+				),
 				HttpStatus.OK
 			);
 

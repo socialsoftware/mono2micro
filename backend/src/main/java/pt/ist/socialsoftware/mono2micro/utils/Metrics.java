@@ -13,35 +13,39 @@ import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 
 public class Metrics {
 	List<Controller> controllers;
-	List<Cluster> clusters;
-	private final Map<String, List<Cluster>> controllerClusters;
-	private final Map<String, List<Controller>> clusterControllers;
 
-    public Metrics(
-    	List<Controller> controllers,
-		List<Cluster> clusters
-	) {
+    public Metrics(List<Controller> controllers) {
         this.controllers = controllers;
-        this.clusters = clusters;
-		this.controllerClusters = Utils.getControllerClusters(clusters, controllers);
-		this.clusterControllers = Utils.getClusterControllers(clusters, controllers);
     }
 
-    public void calculateMetrics() {
+    public void calculateGraphMetrics(
+    	Graph graph,
+		DirectedAcyclicGraph<Graph.LocalTransaction, DefaultEdge> localTransactionsGraph
+	) {
 		float graphComplexity = 0;
 		float graphCohesion = 0;
 		float graphCoupling = 0;
 		float graphPerformance = 0;
 
+		Map<String, Cluster> graphClusters = graph.getClusters();
+
 		System.out.println("Calculating graph complexity and performance...");
 		// int graphNodes = 0;
 		// int maxNumberOfNodes = 0;
-		// iterate over profileControllers
+
+		Map<String, List<Cluster>> controllerClusters = Utils.getControllerClusters(
+			(List<Cluster>) graphClusters.values(),
+			controllers
+		);
+
 		for (Controller controller : controllers) {
 			calculateControllerComplexityAndClusterDependencies(
-				localTransactionsGraph,
-				controller
+				graph,
+				controller,
+				controllerClusters,
+				localTransactionsGraph
 			);
+
 //			calculateRedesignComplexities(controller, Constants.DEFAULT_REDESIGN_NAME);
 			graphComplexity += controller.getComplexity();
 			graphPerformance += controller.getPerformance();
@@ -53,47 +57,75 @@ public class Metrics {
 		// System.out.println("Média de nós do grafo: " + graphNodes/graphControllers.size());
 		// System.out.println("Máximo numero de nós: " + maxNumberOfNodes);
 
+		controllerClusters = null; // memory release
+
 		int graphControllersAmount = controllers.size();
 
-		graphComplexity /= graphControllersAmount;
-		graphComplexity = BigDecimal.valueOf(graphComplexity).setScale(2, RoundingMode.HALF_UP).floatValue();
-		this.graph.setComplexity(graphComplexity);
+		graphComplexity = BigDecimal
+							.valueOf(graphComplexity / graphControllersAmount)
+							.setScale(2, RoundingMode.HALF_UP)
+							.floatValue();
 
-		graphPerformance /= graphControllersAmount;
-		graphPerformance = BigDecimal.valueOf(graphPerformance).setScale(2, RoundingMode.HALF_UP).floatValue();
-		this.graph.setPerformance(graphPerformance);
+		graph.setComplexity(graphComplexity);
 
-		List<Cluster> graphClusters = graph.getClusters();
+		graphPerformance = BigDecimal
+							.valueOf(graphPerformance / graphControllersAmount)
+							.setScale(2, RoundingMode.HALF_UP)
+							.floatValue();
+
+		graph.setPerformance(graphPerformance);
 
 		System.out.println("Calculating graph cohesion and coupling");
 
-		for (Cluster cluster : graphClusters) {
-			calculateClusterComplexityAndCohesion(cluster);
+		Map<String, List<Controller>> clusterControllers = Utils.getClusterControllers(
+			(List<Cluster>) graphClusters.values(),
+			controllers
+		);
+
+		for (Cluster cluster : graphClusters.values()) {
+			calculateClusterComplexityAndCohesion(
+				cluster,
+				clusterControllers
+			);
 
 			graphCohesion += cluster.getCohesion();
 
-			calculateClusterCoupling(cluster);
+			calculateClusterCoupling(
+				cluster,
+				graphClusters
+			);
+
 			graphCoupling += cluster.getCoupling();
 		}
 
+		clusterControllers = null; // memory release
+
 		int graphClustersAmount = graphClusters.size();
 
-		graphCohesion /= graphClustersAmount;
-		graphCohesion = BigDecimal.valueOf(graphCohesion).setScale(2, RoundingMode.HALF_UP).floatValue();
-		this.graph.setCohesion(graphCohesion);
+		graphCohesion = BigDecimal
+							.valueOf(graphCohesion / graphClustersAmount)
+							.setScale(2, RoundingMode.HALF_UP)
+							.floatValue();
 
-		graphCoupling /= graphClustersAmount;
-		graphCoupling = BigDecimal.valueOf(graphCoupling).setScale(2, RoundingMode.HALF_UP).floatValue();
-		this.graph.setCoupling(graphCoupling);
+		graph.setCohesion(graphCohesion);
+
+		graphCoupling = BigDecimal
+							.valueOf(graphCoupling / graphClustersAmount)
+							.setScale(2, RoundingMode.HALF_UP)
+							.floatValue();
+
+		graph.setCoupling(graphCoupling);
     }
 
-    private void calculateControllerComplexityAndClusterDependencies( // FIXME CREATE CLASS FOR THE RESULT OF THIS
-		DirectedAcyclicGraph<Graph.LocalTransaction, DefaultEdge> localTransactionsGraph,
-		String controllerName
+    public void calculateControllerComplexityAndClusterDependencies( // FIXME CREATE CLASS FOR THE RESULT OF THIS
+	 	Graph graph,
+		Controller controller,
+	 	Map<String, List<Cluster>> controllerClusters,
+		DirectedAcyclicGraph<Graph.LocalTransaction, DefaultEdge> localTransactionsGraph
 	) {
 		Set<Graph.LocalTransaction> allLocalTransactions = Graph.getAllLocalTransactions(localTransactionsGraph);
 
-		if (this.controllerClusters.get(controllerName).size() == 1) {
+		if (controllerClusters.get(controller.getName()).size() == 1) {
 			controller.setComplexity(0);
 
 		} else {
@@ -131,7 +163,8 @@ public class Metrics {
 							controllersThatTouchThisEntityAndMode = costOfAccess(
 								controller,
 								entityID,
-								mode
+								mode,
+								controllerClusters
 							);
 
 							cache.put(key, controllersThatTouchThisEntityAndMode);
@@ -151,18 +184,19 @@ public class Metrics {
 	private List<String> costOfAccess (
 		Controller controller,
 		short entityID,
-		byte mode
+		byte mode,
+		Map<String, List<Cluster>> controllerClusters
 	) {
-
 		List<String> controllersThatTouchThisEntityAndMode = new ArrayList<>();
-		for (Controller otherController : this.graph.getControllers()) {
+
+		for (Controller otherController : controllers) {
 			if (!otherController.getName().equals(controller.getName())) {
 				Byte savedMode = otherController.getEntities().get(entityID);
 
 				if (
 					savedMode != null &&
 					savedMode != mode &&
-					this.controllerClusters.get(otherController.getName()).size() > 1
+					controllerClusters.get(otherController.getName()).size() > 1
 				) {
 					controllersThatTouchThisEntityAndMode.add(otherController.getName());
 				}
@@ -172,8 +206,11 @@ public class Metrics {
 		return controllersThatTouchThisEntityAndMode;
 	}
 
-    private void calculateClusterComplexityAndCohesion(Cluster cluster) {
-		List<Controller> controllersThatAccessThisCluster = this.clusterControllers.get(cluster.getName());
+    private void calculateClusterComplexityAndCohesion(
+    	Cluster cluster,
+		Map<String, List<Controller>> clusterControllers
+	) {
+		List<Controller> controllersThatAccessThisCluster = clusterControllers.get(cluster.getName());
 
 		float complexity = 0;
 		float cohesion = 0;
@@ -197,7 +234,11 @@ public class Metrics {
 
 		// complexity calculus
 		complexity /= controllersThatAccessThisCluster.size();
-		complexity = BigDecimal.valueOf(complexity).setScale(2, RoundingMode.HALF_UP).floatValue();
+		complexity = BigDecimal
+						.valueOf(complexity)
+						.setScale(2, RoundingMode.HALF_UP)
+						.floatValue();
+
 		cluster.setComplexity(complexity);
 
 		// cohesion calculus
@@ -206,17 +247,21 @@ public class Metrics {
 		cluster.setCohesion(cohesion);
 	}
 
-	private void calculateClusterCoupling(Cluster c1) {
+	private void calculateClusterCoupling(Cluster c1, Map<String, Cluster> clusters) {
     	float coupling = 0;
 		Map<String, Set<Short>> couplingDependencies = c1.getCouplingDependencies();
 
     	for (String c2 : couplingDependencies.keySet())
-    		coupling += (float) couplingDependencies.get(c2).size() / graph.getCluster(c2).getEntities().size();
+    		coupling += (float) couplingDependencies.get(c2).size() / clusters.get(c2).getEntities().size();
 
-    	int graphClustersAmount = graph.getClusters().size();
+    	int graphClustersAmount = clusters.size();
 
 		coupling = graphClustersAmount == 1 ? 0 : coupling / (graphClustersAmount - 1);
-		coupling = BigDecimal.valueOf(coupling).setScale(2, RoundingMode.HALF_UP).floatValue();
+		coupling = BigDecimal
+					.valueOf(coupling)
+					.setScale(2, RoundingMode.HALF_UP)
+					.floatValue();
+
 		c1.setCoupling(coupling);
 	}
 

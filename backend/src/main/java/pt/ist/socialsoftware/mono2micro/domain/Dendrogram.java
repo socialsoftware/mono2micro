@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 
@@ -38,7 +39,7 @@ public class Dendrogram {
 	private float writeMetricWeight;
 	private float readMetricWeight;
 	private float sequenceMetricWeight;
-	private List<String> profiles = new ArrayList<>();
+	private String profile;
 	private List<Graph> graphs = new ArrayList<>();
 	private int tracesMaxLimit = 0;
 	private TraceType traceType = TraceType.ALL;
@@ -101,11 +102,9 @@ public class Dendrogram {
 		this.sequenceMetricWeight = sequenceMetricWeight;
 	}
 
-	public List<String> getProfiles() { return profiles; }
+	public String getProfile() { return profile; }
 
-	public void setProfiles(List<String> profiles) {
-		this.profiles = profiles;
-	}
+	public void setProfile(String profile) { this.profile = profile; }
 
 	public List<Graph> getGraphs() {
 		return this.graphs;
@@ -122,18 +121,14 @@ public class Dendrogram {
 	public void setTypeOfTraces(TraceType traceType) { this.traceType = traceType; }
 
 	@JsonIgnore
-	public List<String> getGraphNames() {
-		List<String> graphNames = new ArrayList<>();
-		for (Graph graph : this.graphs)
-			graphNames.add(graph.getName());
-		return graphNames;
-	}
+	public List<String> getGraphNames() { return this.graphs.stream().map(Graph::getName).collect(Collectors.toList()); }
 
 	public Graph getGraph(String graphName) {
 		for (Graph graph : this.graphs) {
 			if (graph.getName().equals(graphName))
 				return graph;
 		}
+
 		return null;
 	}
 
@@ -141,13 +136,18 @@ public class Dendrogram {
 		this.graphs.add(graph);
 	}
 
-	public void deleteGraph(String graphName) throws IOException {
+	public void deleteGraph(
+		String graphName
+	)
+		throws IOException
+	{
 		for (int i = 0; i < this.graphs.size(); i++) {
 			if (this.graphs.get(i).getName().equals(graphName)) {
 				this.graphs.remove(i);
 				break;
 			}
 		}
+
 		FileUtils.deleteDirectory(new File(CODEBASES_PATH + this.codebaseName + "/" + this.name + "/" + graphName));
 	}
 
@@ -250,7 +250,9 @@ public class Dendrogram {
 		return matrixData;
 	}
 
-	public void calculateStaticSimilarityMatrix() throws IOException, JSONException {
+	public void calculateStaticSimilarityMatrix()
+		throws IOException, JSONException
+	{
 		System.out.println("Calculating similarity matrix...");
 
 		Map<Short, List<Pair<String, Byte>>> entityControllers = new HashMap<>();
@@ -263,18 +265,18 @@ public class Dendrogram {
 			new HashSet<String>() {{ add("profiles"); }}
 		);
 
-		for (String profile : this.profiles) {
-			for (String controllerName : codebase.getProfile(profile)) {
-				ControllerDto controllerDto = datafileJSON.get(controllerName);
-				List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
+		List<String> profileControllers = codebase.getProfile(profile);
 
-				Utils.fillEntityDataStructures(
-					entityControllers,
-					e1e2PairCount,
-					controllerAccesses,
-					controllerName
-				);
-			}
+		for (String controllerName : profileControllers) {
+			ControllerDto controllerDto = datafileJSON.get(controllerName);
+			List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
+
+			Utils.fillEntityDataStructures(
+				entityControllers,
+				e1e2PairCount,
+				controllerAccesses,
+				controllerName
+			);
 		}
 
 		CodebaseManager.getInstance().writeSimilarityMatrix(
@@ -308,15 +310,49 @@ public class Dendrogram {
 
 		TraceDto t;
 
-		for (String profile : this.profiles) {
-			for (String controllerName : codebase.getProfile(profile)) {
-				iter.nextControllerWithName(controllerName);
+		List<String> profileControllers = codebase.getProfile(profile);
 
-				switch (this.traceType) {
-					case LONGEST:
-						t = iter.getLongestTrace();
+		for (String controllerName : profileControllers) {
+			iter.nextControllerWithName(controllerName);
 
-						if (t != null) {
+			switch (this.traceType) {
+				case LONGEST:
+					t = iter.getLongestTrace();
+
+					if (t != null) {
+						Utils.fillEntityDataStructures(
+							entityControllers,
+							e1e2PairCount,
+							t.expand(2),
+							controllerName
+						);
+					}
+
+					break;
+
+				case WITH_MORE_DIFFERENT_ACCESSES:
+					t = iter.getTraceWithMoreDifferentAccesses();
+
+					if (t != null) {
+						Utils.fillEntityDataStructures(
+							entityControllers,
+							e1e2PairCount,
+							t.expand(2),
+							controllerName
+						);
+					}
+
+					break;
+
+				case REPRESENTATIVE:
+					Set<String> tracesIds = iter.getRepresentativeTraces();
+					// FIXME probably here we create a second controllerTracesIterator
+					iter.reset();
+
+					while (iter.hasMoreTraces()) {
+						t = iter.nextTrace();
+
+						if (tracesIds.contains(String.valueOf(t.getId()))) {
 							Utils.fillEntityDataStructures(
 								entityControllers,
 								e1e2PairCount,
@@ -325,58 +361,24 @@ public class Dendrogram {
 							);
 						}
 
-						break;
+					}
 
-					case WITH_MORE_DIFFERENT_ACCESSES:
-						t = iter.getTraceWithMoreDifferentAccesses();
+					break;
 
-						if (t != null) {
-							Utils.fillEntityDataStructures(
-								entityControllers,
-								e1e2PairCount,
-								t.expand(2),
-								controllerName
-							);
-						}
+				default:
+					while (iter.hasMoreTraces()) {
+						t = iter.nextTrace();
 
-						break;
-
-					case REPRESENTATIVE:
-						Set<String> tracesIds = iter.getRepresentativeTraces();
-						// FIXME probably here we create a second controllerTracesIterator
-						iter.reset();
-
-						while (iter.hasMoreTraces()) {
-							t = iter.nextTrace();
-
-							if (tracesIds.contains(String.valueOf(t.getId()))) {
-								Utils.fillEntityDataStructures(
-									entityControllers,
-									e1e2PairCount,
-									t.expand(2),
-									controllerName
-								);
-							}
-
-						}
-
-						break;
-
-					default:
-						while (iter.hasMoreTraces()) {
-							t = iter.nextTrace();
-
-							Utils.fillEntityDataStructures(
-								entityControllers,
-								e1e2PairCount,
-								t.expand(2),
-								controllerName
-							);
-						}
-				}
-
-				t = null; // release memory
+						Utils.fillEntityDataStructures(
+							entityControllers,
+							e1e2PairCount,
+							t.expand(2),
+							controllerName
+						);
+					}
 			}
+
+			t = null; // release memory
 		}
 
 		iter = null; // release memory

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
+import pt.ist.socialsoftware.mono2micro.domain.Graph;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,32 +15,32 @@ import java.util.List;
 
 import static org.jgrapht.Graphs.successorListOf;
 
-public class GraphSerializer extends StdSerializer<DirectedAcyclicGraph<Controller.LocalTransaction, DefaultEdge>> {
+public class LocalTransactionsGraphSerializer extends StdSerializer<DirectedAcyclicGraph<Graph.LocalTransaction, DefaultEdge>> {
 
-    public GraphSerializer() {
+    public LocalTransactionsGraphSerializer() {
             this(null);
     }
 
-    public GraphSerializer(Class<DirectedAcyclicGraph<Controller.LocalTransaction, DefaultEdge>> t) {
+    public LocalTransactionsGraphSerializer(Class<DirectedAcyclicGraph<Graph.LocalTransaction, DefaultEdge>> t) {
         super(t);
     }
 
     @Override
     public void serialize(
-            DirectedAcyclicGraph<Controller.LocalTransaction, DefaultEdge> graph,
+            DirectedAcyclicGraph<Graph.LocalTransaction, DefaultEdge> graph,
             JsonGenerator jsonGenerator,
             SerializerProvider provider
     ) throws IOException {
 
-        List<Controller.LocalTransaction> nodes = new ArrayList<>();
+        List<Graph.LocalTransaction> nodes = new ArrayList<>();
         List<String> links = new ArrayList<>();
-        Iterator<Controller.LocalTransaction> iterator = graph.iterator();
+        Iterator<Graph.LocalTransaction> iterator = graph.iterator();
 
         while (iterator.hasNext()) {
-            Controller.LocalTransaction lt = iterator.next();
+            Graph.LocalTransaction lt = iterator.next();
 
-            List<Controller.LocalTransaction> ltChildren = successorListOf(graph, lt);
-            for (Controller.LocalTransaction ltC : ltChildren)
+            List<Graph.LocalTransaction> ltChildren = successorListOf(graph, lt);
+            for (Graph.LocalTransaction ltC : ltChildren)
                 links.add(lt.getId() + "->" + ltC.getId());
 
             nodes.add(lt);

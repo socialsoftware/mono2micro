@@ -180,11 +180,37 @@ public class Graph {
 		this.coupling = coupling;
 	}
 
+	public void putEntity(short entityID, String clusterName) {
+		entityIDToClusterName.put(entityID, clusterName);
+	}
+
 	public Map<String, Cluster> getClusters() { return this.clusters; }
 
 	public void setClusters(Map<String, Cluster> clusters) { this.clusters = clusters; }
 
-	public void addCluster(Cluster cluster) { this.clusters.put(cluster.getName(), cluster); }
+	public boolean clusterExists(String clusterID) { return this.clusters.containsKey(clusterID); }
+
+	public void addCluster(Cluster cluster) {
+		Cluster c = this.clusters.putIfAbsent(cluster.getName(), cluster);
+
+		if (c != null) throw new Error("Cluster with ID: " + cluster.getName() + " already exists");
+	}
+
+	public Cluster removeCluster(String clusterID) {
+		Cluster c = this.clusters.remove(clusterID);
+
+		if (c == null) throw new Error("Cluster with ID: " + clusterID + " not found");
+
+		return c;
+	}
+
+	public Cluster getCluster(String clusterID) {
+		Cluster c = this.clusters.get(clusterID);
+
+		if (c == null) throw new Error("Cluster with ID: " + clusterID + " not found");
+
+		return c;
+	}
 
 	public int maxClusterSize() {
 		int max = 0;
@@ -197,8 +223,17 @@ public class Graph {
 		return max;
 	}
 
-	public void putEntity(short entityID, String clusterName) {
-		entityIDToClusterName.put(entityID, clusterName);
+	public static Set<LocalTransaction> getAllLocalTransactions(
+		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph
+	) {
+		return localTransactionsGraph.vertexSet();
+	}
+
+	public static List<LocalTransaction> getNextLocalTransactions(
+		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph,
+		LocalTransaction lt
+	) {
+		return successorListOf(localTransactionsGraph, lt);
 	}
 
 	public static List<LocalTransaction> getLocalTransactionsSequence(
@@ -302,6 +337,73 @@ public class Graph {
 			localTransactionsSequence.add(lt);
 
 		return localTransactionsSequence;
+	}
+
+	public static void addLocalTransactionsSequenceToGraph(
+		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph,
+		List<LocalTransaction> localTransactionSequence
+	) {
+		LocalTransaction graphCurrentLT = new LocalTransaction(0, (short) -1); // root
+
+		for (int i = 0; i < localTransactionSequence.size(); i++) {
+			List<LocalTransaction> graphChildrenLTs = getNextLocalTransactions(
+				localTransactionsGraph,
+				graphCurrentLT
+			);
+
+			int graphChildrenLTsSize = graphChildrenLTs.size();
+
+			if (graphChildrenLTsSize == 0) {
+				createNewBranch(
+					localTransactionsGraph,
+					localTransactionSequence,
+					graphCurrentLT,
+					i
+				);
+
+				return;
+			}
+
+			for (int j = 0; j < graphChildrenLTsSize; j++) {
+				LocalTransaction graphChildLT = graphChildrenLTs.get(j);
+				LocalTransaction sequenceCurrentLT = localTransactionSequence.get(i);
+
+				if (sequenceCurrentLT.getClusterID() == graphChildLT.getClusterID()) {
+					graphChildLT.getClusterAccesses().addAll(sequenceCurrentLT.getClusterAccesses());
+					graphChildLT.getFirstAccessedEntityIDs().addAll(sequenceCurrentLT.getFirstAccessedEntityIDs());
+
+					graphCurrentLT = graphChildLT;
+					break;
+
+				} else {
+					if (j == graphChildrenLTsSize - 1) {
+						createNewBranch(
+							localTransactionsGraph,
+							localTransactionSequence,
+							graphCurrentLT,
+							i
+						);
+
+						return;
+					}
+				}
+			}
+		}
+	}
+
+	private static void createNewBranch(
+		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph,
+		List<LocalTransaction> localTransactions,
+		LocalTransaction currentLT,
+		int i
+	) {
+		for (int k = i; k < localTransactions.size(); k++) {
+			LocalTransaction lt = localTransactions.get(k);
+
+			localTransactionsGraph.addVertex(lt);
+			localTransactionsGraph.addEdge(currentLT, lt);
+			currentLT = lt;
+		}
 	}
 
 	public static class GetLocalTransactionsGraphAndControllerPerformanceResult {
@@ -557,113 +659,9 @@ public class Graph {
 		}
 	}
 
-	public void mergeClusters(
-		String cluster1,
-		String cluster2,
-		String newName
-	) throws Exception {
-		Cluster mergedCluster = new Cluster(newName);
-
-		for (int i = 0; i < clusters.size(); i++) {
-			if (clusters.get(i).getName().equals(cluster1)) {
-				mergedCluster.setEntities(clusters.get(i).getEntities());
-
-				clusters.remove(i);
-
-				break;
-			}
-		}
-
-		for (int i = 0; i < clusters.size(); i++) {
-			if (clusters.get(i).getName().equals(cluster2)) {
-				mergedCluster.setEntities(clusters.get(i).getEntities());
-
-				clusters.remove(i);
-
-				break;
-			}
-
-		}
-		this.addCluster(mergedCluster);
-		this.calculateMetrics();
-	}
-
-	public void renameCluster(String clusterName, String newName) throws Exception {
-		if (clusterName.equals(newName))
-			return;
-
-		for (Cluster cluster : this.clusters) {
-			if (cluster.getName().equals(newName))
-				throw new KeyAlreadyExistsException();
-		}
-
-		for (Cluster cluster : this.clusters) {
-			if (cluster.getName().equals(clusterName)) {
-				cluster.setName(newName);
-				break;
-			}
-		}
-
-		this.calculateMetrics();
-	}
-
-	public Cluster getCluster(String clusterName) {
-		for (Cluster cluster : this.clusters)
-			if (cluster.getName().equals(clusterName))
-				return cluster;
-		return null;
-	}
-
-	public String getClusterWithEntity(short entityID) {
-		return entityIDToClusterName.get(entityID);
-	}
-
-	public void splitCluster(
-		String clusterName,
-		String newName,
-		String[] entities
-	)
+	public void calculateMetrics()
 		throws Exception
 	{
-		Cluster currentCluster = this.getCluster(clusterName);
-		Cluster newCluster = new Cluster(newName);
-
-		for (String stringifiedEntityID : entities) {
-			short entityID = Short.parseShort(stringifiedEntityID);
-
-			if (currentCluster.containsEntity(entityID)) {
-				newCluster.addEntity(entityID);
-				currentCluster.removeEntity(entityID);
-			}
-		}
-
-		this.addCluster(newCluster);
-		this.calculateMetrics();
-	}
-
-	public void transferEntities(
-		String fromClusterName,
-		String toClusterName,
-		String[] entities
-	)
-		throws Exception
-	{
-		Cluster fromCluster = this.getCluster(fromClusterName);
-		Cluster toCluster = this.getCluster(toClusterName);
-
-		for (String stringifiedEntityID : entities) {
-			short entityID = Short.parseShort(stringifiedEntityID);
-
-			if (fromCluster.containsEntity(entityID)) {
-				toCluster.addEntity(entityID);
-				fromCluster.removeEntity(entityID);
-			}
-		}
-
-		this.calculateMetrics();
-	}
-
-	public void calculateMetrics() throws Exception {
 		CodebaseManager cm = CodebaseManager.getInstance();
 
 		Codebase codebase = cm.getCodebaseWithFields(
@@ -674,18 +672,18 @@ public class Graph {
 		Dendrogram d = cm.getCodebaseDendrogramWithFields(
 			this.codebaseName,
 			this.dendrogramName,
-			new HashSet<String>() {{ add("profiles"); add("typeOfTraces"); add("tracesMaxLimit"); }}
+			new HashSet<String>() {{ add("profile"); add("typeOfTraces"); add("tracesMaxLimit"); }}
 		);
 
 		if (codebase.isStatic()) {
 			this.addStaticControllers(
-				d.getProfiles(),
+				d.getProfile(),
 				null
 			);
 
 		} else {
 			this.addDynamicControllers(
-				d.getProfiles(),
+				d.getProfile(),
 				d.getTracesMaxLimit(),
 				d.getTypeOfTraces()
 			);
@@ -739,8 +737,8 @@ public class Graph {
 			);
 
 		}
-		
-		
+
+
 //		this.addDynamicControllers(
 //			profile,
 //			tracesMaxLimit,
@@ -751,83 +749,90 @@ public class Graph {
 		metrics.calculateMetrics();
 	}
 
-	public static void addLocalTransactionsSequenceToGraph(
-		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph,
-		List<LocalTransaction> localTransactionSequence
-	) {
-		LocalTransaction graphCurrentLT = new LocalTransaction(0, (short) -1); // root
+	public void mergeClusters(
+		String cluster1ID,
+		String cluster2ID,
+		String newName
+	)
+		throws Exception
+	{
+		Cluster cluster1 = getCluster(cluster1ID);
+		Cluster cluster2 = getCluster(cluster2ID);
 
-		for (int i = 0; i < localTransactionSequence.size(); i++) {
-			List<LocalTransaction> graphChildrenLTs = getNextLocalTransactions(
-				localTransactionsGraph,
-				graphCurrentLT
-			);
+		Cluster mergedCluster = new Cluster(newName);
+		mergedCluster.setEntities(cluster1.getEntities());
+		mergedCluster.setEntities(cluster2.getEntities());
 
-			int graphChildrenLTsSize = graphChildrenLTs.size();
+		removeCluster(cluster1ID);
+		removeCluster(cluster2ID);
 
-			if (graphChildrenLTsSize == 0) {
-				createNewBranch(
-					localTransactionsGraph,
-					localTransactionSequence,
-					graphCurrentLT,
-					i
-				);
+		addCluster(mergedCluster);
 
-				return;
-			}
+		calculateMetrics();
+	}
 
-			for (int j = 0; j < graphChildrenLTsSize; j++) {
-				LocalTransaction graphChildLT = graphChildrenLTs.get(j);
-				LocalTransaction sequenceCurrentLT = localTransactionSequence.get(i);
+	public void renameCluster(
+		String clusterID,
+		String newID
+	)
+		throws Exception
+	{
+		if (clusterID.equals(newID)) return;
 
-				if (sequenceCurrentLT.getClusterID() == graphChildLT.getClusterID()) {
-					graphChildLT.getClusterAccesses().addAll(sequenceCurrentLT.getClusterAccesses());
-					graphChildLT.getFirstAccessedEntityIDs().addAll(sequenceCurrentLT.getFirstAccessedEntityIDs());
+		if (clusterExists(newID)) throw new KeyAlreadyExistsException("Cluster with ID: " + newID + " already exists");
 
-					graphCurrentLT = graphChildLT;
-					break;
+		Cluster c = removeCluster(clusterID);
 
-				} else {
-					if (j == graphChildrenLTsSize - 1) {
-						createNewBranch(
-							localTransactionsGraph,
-							localTransactionSequence,
-							graphCurrentLT,
-							i
-						);
+		c.setName(newID);
 
-						return;
-					}
-				}
+		addCluster(new Cluster(c));
+
+		calculateMetrics();
+	}
+
+	public void splitCluster(
+		String clusterID,
+		String newID,
+		String[] entities
+	)
+		throws Exception
+	{
+		Cluster currentCluster = getCluster(clusterID);
+		Cluster newCluster = new Cluster(newID);
+
+		for (String stringifiedEntityID : entities) {
+			short entityID = Short.parseShort(stringifiedEntityID);
+
+			if (currentCluster.containsEntity(entityID)) {
+				newCluster.addEntity(entityID);
+				currentCluster.removeEntity(entityID);
 			}
 		}
+
+		addCluster(newCluster);
+
+		calculateMetrics();
 	}
 
-	private static void createNewBranch(
-		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph,
-		List<LocalTransaction> localTransactions,
-		LocalTransaction currentLT,
-		int i
-	) {
-		for (int k = i; k < localTransactions.size(); k++) {
-			LocalTransaction lt = localTransactions.get(k);
+	public void transferEntities(
+		String fromClusterID,
+		String toClusterID,
+		String[] entities
+	)
+		throws Exception
+	{
+		Cluster fromCluster = getCluster(fromClusterID);
+		Cluster toCluster = getCluster(toClusterID);
 
-			localTransactionsGraph.addVertex(lt);
-			localTransactionsGraph.addEdge(currentLT, lt);
-			currentLT = lt;
+		for (String stringifiedEntityID : entities) {
+			short entityID = Short.parseShort(stringifiedEntityID);
+
+			if (fromCluster.containsEntity(entityID)) {
+				toCluster.addEntity(entityID);
+				fromCluster.removeEntity(entityID);
+			}
 		}
-	}
 
-	public static Set<LocalTransaction> getAllLocalTransactions(
-		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph
-	) {
-		return localTransactionsGraph.vertexSet();
-	}
-
-	public static List<LocalTransaction> getNextLocalTransactions(
-		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph,
-		LocalTransaction lt
-	) {
-		return successorListOf(localTransactionsGraph, lt);
+		calculateMetrics();
 	}
 }
