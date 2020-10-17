@@ -13,7 +13,7 @@ import java.util.*;
 public class ControllerTracesIterator {
 	private JsonParser jsonParser;
 	private int limit = 0; // 0 means no limit aka all traces will be parsed
-	private int counter; // #traces
+	private int tracesCounter; // #traces
 	String filePath;
 
 	public ControllerTracesIterator(
@@ -27,7 +27,7 @@ public class ControllerTracesIterator {
 	}
 
 	private void init() throws IOException {
-		this.counter = 0;
+		this.tracesCounter = 0;
 
 		ObjectMapper mapper = new ObjectMapper();
 		JsonFactory jsonfactory = mapper.getFactory();
@@ -60,17 +60,24 @@ public class ControllerTracesIterator {
 		jsonParser.nextValue();
 
 		if (t.getElements() != null && t.getElements().size() > 0)
-			counter++;
+			tracesCounter++;
 
 		return t;
 	}
 
-	public void nextController(String controllerName) throws IOException {
-		counter = 0;
+	public void nextControllerWithName(
+		String controllerName
+	)
+		throws IOException
+	{
+		tracesCounter = 0;
 
 		while (true) {
 			if (jsonParser.getCurrentToken() == JsonToken.START_OBJECT) {
-				if (jsonParser.getCurrentName() != null && jsonParser.getCurrentName().equals(controllerName)) {
+				if (
+					jsonParser.getCurrentName() != null &&
+					(controllerName == null || jsonParser.getCurrentName().equals(controllerName)) // null means every controller is acceptable
+				) {
 					break;
 				}
 
@@ -104,11 +111,15 @@ public class ControllerTracesIterator {
 		}
 	}
 
+	public boolean hasMoreControllers() {
+		return jsonParser.getCurrentToken() != JsonToken.END_OBJECT; // FIXME TEST ME
+	}
+
 	public boolean hasMoreTraces() {
 		return (
 			jsonParser.getCurrentToken() != JsonToken.END_ARRAY &&
-				jsonParser.getCurrentToken() != JsonToken.END_OBJECT &&
-				(limit == 0 || counter < limit)
+			jsonParser.getCurrentToken() != JsonToken.END_OBJECT &&
+			(limit == 0 || tracesCounter < limit)
 		);
 	}
 

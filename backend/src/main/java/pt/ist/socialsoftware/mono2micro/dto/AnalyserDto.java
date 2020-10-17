@@ -3,15 +3,13 @@ package pt.ist.socialsoftware.mono2micro.dto;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
-import java.util.List;
-
 public class AnalyserDto {
     private Graph expert;
-    private List<String> profiles;
+    private String profile;
     private int requestLimit;
     // only used when the codebase "is dynamic" aka !isStatic()
     private int tracesMaxLimit; // default is 0 which means, no limit
-    private Constants.TypeOfTraces typeOfTraces = Constants.TypeOfTraces.ALL;
+    private Constants.TraceType traceType = Constants.TraceType.ALL;
 
     public Graph getExpert() { return expert; }
 
@@ -19,9 +17,9 @@ public class AnalyserDto {
         this.expert = expert;
     }
 
-    public List<String> getProfiles() { return profiles; }
+    public String getProfile() { return profile; }
 
-    public void setProfiles(List<String> profiles) { this.profiles = profiles; }
+    public void setProfile(String profile) { this.profile = profile; }
 
     public int getRequestLimit() { return requestLimit; }
 
@@ -31,7 +29,7 @@ public class AnalyserDto {
 
     public void setTracesMaxLimit(int tracesMaxLimit) { this.tracesMaxLimit = tracesMaxLimit; }
 
-    public Constants.TypeOfTraces getTypeOfTraces() { return typeOfTraces; }
+    public Constants.TraceType getTypeOfTraces() { return traceType; }
 
-    public void setTypeOfTraces(Constants.TypeOfTraces typeOfTraces) { this.typeOfTraces = typeOfTraces; }
+    public void setTypeOfTraces(Constants.TraceType traceType) { this.traceType = traceType; }
 }

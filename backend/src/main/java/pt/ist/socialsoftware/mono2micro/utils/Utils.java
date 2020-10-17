@@ -1,10 +1,16 @@
 package pt.ist.socialsoftware.mono2micro.utils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import pt.ist.socialsoftware.mono2micro.domain.Cluster;
+import pt.ist.socialsoftware.mono2micro.domain.Controller;
+import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
+import pt.ist.socialsoftware.mono2micro.dto.ReducedTraceElementDto;
+import pt.ist.socialsoftware.mono2micro.dto.RuleDto;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -184,4 +190,158 @@ public class Utils {
             sequenceMetric
         };
     }
+
+    public static class CalculateTracePerformanceResult {
+        public int performance = 0;
+        public String firstAccessedClusterName = null;
+
+        public CalculateTracePerformanceResult() {}
+
+        public CalculateTracePerformanceResult(int performance, String firstAccessedClusterName) {
+            this.performance = performance;
+            this.firstAccessedClusterName = firstAccessedClusterName;
+        }
+    }
+
+    public static CalculateTracePerformanceResult calculateTracePerformance(
+        List<ReducedTraceElementDto> elements,
+        Map<Short, String> entityIDToClusterName,
+        int from,
+        int to
+    ) {
+        int numberOfElements = elements == null ? 0 : elements.size();
+
+        if (numberOfElements == 0) return new CalculateTracePerformanceResult();
+
+        if (numberOfElements == 1) return new CalculateTracePerformanceResult(
+            1,
+            entityIDToClusterName.get(((AccessDto) elements.get(0)).getEntityID())
+        );
+
+        int performance = 0;
+        String previousClusterName = null;
+        String firstAccessedClusterName = null;
+
+        int i = from;
+
+        while (i < to) {
+            ReducedTraceElementDto element = elements.get(i);
+
+            if (element instanceof RuleDto) {
+                RuleDto r = (RuleDto) element;
+
+                CalculateTracePerformanceResult result = calculateTracePerformance(
+                    elements,
+                    entityIDToClusterName,
+                    i + 1,
+                    i + 1 + r.getCount()
+                );
+
+                String sequenceFirstAccessedClusterName = result.firstAccessedClusterName;
+                int sequencePerformance = result.performance;
+
+                if (firstAccessedClusterName == null)
+                    firstAccessedClusterName = sequenceFirstAccessedClusterName;
+
+                // hop between an access (previous cluster if it exists) and the sequence in question
+                if (previousClusterName != null && !previousClusterName.equals(sequenceFirstAccessedClusterName))
+                    performance++;
+
+                // performance of the sequence multiplied by the number of times it occurs
+                performance += sequencePerformance * r.getOccurrences();
+
+                // Here we assume that a sequence will always have an access as its last element
+                short sequenceLastAccessedEntityID = ((AccessDto) elements.get(i + r.getCount())).getEntityID();
+                String sequenceLastAccessedClusterName = entityIDToClusterName.get(sequenceLastAccessedEntityID);
+
+                previousClusterName = sequenceLastAccessedClusterName;
+
+                // If the rule has more than 1 occurrence, then we want to consider the hop between the final access and the first one
+                if (r.getOccurrences() > 1 && !sequenceFirstAccessedClusterName.equals(sequenceLastAccessedClusterName))
+                    performance += r.getOccurrences() - 1;
+
+                i += 1 + r.getCount();
+
+            } else {
+
+                AccessDto a = (AccessDto) element;
+                short entityID = a.getEntityID();
+
+                try {
+                    String currentClusterName = entityIDToClusterName.get(entityID);
+
+                    if (firstAccessedClusterName == null)
+                        firstAccessedClusterName = currentClusterName;
+
+                    if (previousClusterName == null)
+                        previousClusterName = currentClusterName;
+
+                    else if (!currentClusterName.equals(previousClusterName)) {
+                        performance++;
+                        previousClusterName = currentClusterName;
+                    }
+
+                    i++;
+                }
+
+                catch (Exception e) {
+                    System.err.println("No assigned entity with ID " + entityID + " to a cluster.");
+                    throw e;
+                }
+
+            }
+        }
+
+        return new CalculateTracePerformanceResult(performance, firstAccessedClusterName);
+    }
+
+    public static Map<String, List<Controller>> getClusterControllers(
+        List<Cluster> clusters,
+        List<Controller> controllers
+    ) {
+        Map<String, List<Controller>> clusterControllers = new HashMap<>();
+
+        for (Cluster cluster : clusters) {
+            List<Controller> touchedControllers = new ArrayList<>();
+
+            for (Controller controller : controllers) {
+                if (controller != null) {
+                    for (short entityID : controller.getEntities().keySet()) {
+                        if (cluster.containsEntity(entityID)) {
+                            touchedControllers.add(controller);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            clusterControllers.put(cluster.getName(), touchedControllers);
+        }
+        return clusterControllers;
+    }
+
+    public static Map<String, List<Cluster>> getControllerClusters(
+        List<Cluster> clusters,
+        List<Controller> controllers
+    ) {
+        Map<String,List<Cluster>> controllerClusters = new HashMap<>();
+
+        for (Controller controller : controllers) {
+            List<Cluster> touchedClusters = new ArrayList<>();
+
+            for (Cluster cluster : clusters) {
+
+                for (short entityID : cluster.getEntities()) {
+                    if (controller.containsEntity(entityID)) {
+                        touchedClusters.add(cluster);
+                        break;
+                    }
+                }
+            }
+
+            controllerClusters.put(controller.getName(), touchedClusters);
+        }
+        return controllerClusters;
+    }
+
 }

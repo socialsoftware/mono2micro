@@ -3,20 +3,28 @@ package pt.ist.socialsoftware.mono2micro.utils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 
 public class Metrics {
-    private final Graph graph;
-	private final Map<String,List<Cluster>> controllerClusters;
-	private final Map<String,List<Controller>> clusterControllers;
+	List<Controller> controllers;
+	List<Cluster> clusters;
+	private final Map<String, List<Cluster>> controllerClusters;
+	private final Map<String, List<Controller>> clusterControllers;
 
-    public Metrics(Graph graph) {
-        this.graph = graph;
-		this.controllerClusters = graph.getControllerClusters();
-		this.clusterControllers = graph.getClusterControllers();
+    public Metrics(
+    	List<Controller> controllers,
+		List<Cluster> clusters
+	) {
+        this.controllers = controllers;
+        this.clusters = clusters;
+		this.controllerClusters = Utils.getControllerClusters(clusters, controllers);
+		this.clusterControllers = Utils.getClusterControllers(clusters, controllers);
     }
 
     public void calculateMetrics() {
@@ -25,14 +33,15 @@ public class Metrics {
 		float graphCoupling = 0;
 		float graphPerformance = 0;
 
-		List<Controller> graphControllers = graph.getControllers();
-
 		System.out.println("Calculating graph complexity and performance...");
 		// int graphNodes = 0;
 		// int maxNumberOfNodes = 0;
-
-		for (Controller controller : graphControllers) {
-			calculateControllerComplexityAndClusterDependencies(controller);
+		// iterate over profileControllers
+		for (Controller controller : controllers) {
+			calculateControllerComplexityAndClusterDependencies(
+				localTransactionsGraph,
+				controller
+			);
 //			calculateRedesignComplexities(controller, Constants.DEFAULT_REDESIGN_NAME);
 			graphComplexity += controller.getComplexity();
 			graphPerformance += controller.getPerformance();
@@ -44,7 +53,7 @@ public class Metrics {
 		// System.out.println("Média de nós do grafo: " + graphNodes/graphControllers.size());
 		// System.out.println("Máximo numero de nós: " + maxNumberOfNodes);
 
-		int graphControllersAmount = graphControllers.size();
+		int graphControllersAmount = controllers.size();
 
 		graphComplexity /= graphControllersAmount;
 		graphComplexity = BigDecimal.valueOf(graphComplexity).setScale(2, RoundingMode.HALF_UP).floatValue();
@@ -76,13 +85,15 @@ public class Metrics {
 		graphCoupling /= graphClustersAmount;
 		graphCoupling = BigDecimal.valueOf(graphCoupling).setScale(2, RoundingMode.HALF_UP).floatValue();
 		this.graph.setCoupling(graphCoupling);
-
     }
 
-    private void calculateControllerComplexityAndClusterDependencies(Controller controller) {
-		Set<Controller.LocalTransaction> allLocalTransactions = controller.getAllLocalTransactions();
+    private void calculateControllerComplexityAndClusterDependencies( // FIXME CREATE CLASS FOR THE RESULT OF THIS
+		DirectedAcyclicGraph<Graph.LocalTransaction, DefaultEdge> localTransactionsGraph,
+		String controllerName
+	) {
+		Set<Graph.LocalTransaction> allLocalTransactions = Graph.getAllLocalTransactions(localTransactionsGraph);
 
-		if (this.controllerClusters.get(controller.getName()).size() == 1) {
+		if (this.controllerClusters.get(controllerName).size() == 1) {
 			controller.setComplexity(0);
 
 		} else {
@@ -90,14 +101,17 @@ public class Metrics {
 			Map<String, List<String>> cache = new HashMap<>(); // < entity + mode, List<controllerName>> controllersThatTouchSameEntities for a given mode
 			float controllerComplexity = 0;
 
-			for (Controller.LocalTransaction lt : allLocalTransactions) {
+			for (Graph.LocalTransaction lt : allLocalTransactions) {
 				// ClusterDependencies
 				Cluster fromCluster = graph.getCluster(String.valueOf(lt.getClusterID()));
 
 				if (fromCluster != null) { // not root node
-					List<Controller.LocalTransaction> nextLocalTransactions = controller.getNextLocalTransactions(lt);
+					List<Graph.LocalTransaction> nextLocalTransactions = Graph.getNextLocalTransactions(
+						localTransactionsGraph,
+						lt
+					);
 
-					for (Controller.LocalTransaction nextLt : nextLocalTransactions)
+					for (Graph.LocalTransaction nextLt : nextLocalTransactions)
 						fromCluster.addCouplingDependencies(
 							String.valueOf(nextLt.getClusterID()),
 							nextLt.getFirstAccessedEntityIDs()

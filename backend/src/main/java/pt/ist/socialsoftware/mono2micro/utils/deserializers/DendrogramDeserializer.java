@@ -76,7 +76,7 @@ public class DendrogramDeserializer extends StdDeserializer<Dendrogram> {
 							dendrogram.setTracesMaxLimit(jsonParser.getIntValue());
 							break;
 						case "typeOfTraces":
-							dendrogram.setTypeOfTraces(Constants.TypeOfTraces.valueOf(jsonParser.getValueAsString()));
+							dendrogram.setTypeOfTraces(Constants.TraceType.valueOf(jsonParser.getValueAsString()));
 							break;
 
 						default:

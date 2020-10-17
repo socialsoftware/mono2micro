@@ -10,11 +10,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
+import pt.ist.socialsoftware.mono2micro.domain.Controller;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
 import pt.ist.socialsoftware.mono2micro.dto.CutInfoDto;
 import pt.ist.socialsoftware.mono2micro.dto.SimilarityMatrixDto;
+import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.*;
@@ -309,6 +311,7 @@ public class CodebaseManager {
 		}
 
 		codebase.addProfile("Generic", new ArrayList<>(Utils.getJsonFileKeys(datafileFile)));
+		codebase.setControllers(new HashMap<>()); // FiXME
 
 		return codebase;
 	}
@@ -320,6 +323,30 @@ public class CodebaseManager {
 		is.close();
 
 		return codebase;
+	}
+
+	public Map<String, Controller> getCodebaseControllers(
+		Codebase codebase
+	)
+		throws IOException
+	{
+		ControllerTracesIterator iter = new ControllerTracesIterator(
+			codebase.getDatafilePath(),
+			0
+		);
+
+		while (iter.hasMoreControllers()) {
+			Controller controller = getNextDynamicController(
+				iter,
+				controllerName,
+				typeOfTraces
+			);
+
+		}
+
+
+		if (controller.getEntities().size() > 0)
+			this.addController(controller);
 	}
 
 	public void writeCodebase(Codebase codebase) throws IOException {

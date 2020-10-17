@@ -3,7 +3,6 @@ package pt.ist.socialsoftware.mono2micro.controller;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FilenameUtils;
-import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -282,14 +281,14 @@ public class AnalysisController {
 		}
 
 		if (codebase.isStatic()) {
-			graph.calculateMetricsAnalyser(
-				analyser.getProfiles(),
+			graph.calculateAnalyserStaticMetrics(
+				analyser.getProfile(),
 				datafileJSON
 			);
 
 		} else {
-			graph.calculateDynamicMetricsAnalyser(
-				analyser.getProfiles(),
+			graph.calculateAnalyserDynamicMetrics(
+				analyser.getProfile(),
 				analyser.getTracesMaxLimit(),
 				analyser.getTypeOfTraces()
 			);
@@ -417,18 +416,18 @@ public class AnalysisController {
 		Map<Short, List<Pair<String, Byte>>> entityControllers = new HashMap<>();
 		Map<String, Integer> e1e2PairCount = new HashMap<>();
 
-		for (String profile : analyser.getProfiles()) {
-			for (String controllerName : codebase.getProfile(profile)) {
-				ControllerDto controllerDto = datafileJSON.get(controllerName);
-				List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
+		List<String> profileControllers = codebase.getProfile(analyser.getProfile());
 
-				Utils.fillEntityDataStructures(
-					entityControllers,
-					e1e2PairCount,
-					controllerAccesses,
-					controllerName
-				);
-			}
+		for (String controllerName : profileControllers) {
+			ControllerDto controllerDto = datafileJSON.get(controllerName);
+			List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
+
+			Utils.fillEntityDataStructures(
+				entityControllers,
+				e1e2PairCount,
+				controllerAccesses,
+				controllerName
+			);
 		}
 
 		Set<Short> entities = new TreeSet<>(entityControllers.keySet());
@@ -460,17 +459,50 @@ public class AnalysisController {
 		);
 
 		TraceDto t;
+		List<String> profileControllers = codebase.getProfile(analyser.getProfile());
 
-		for (String profile : analyser.getProfiles()) {
-			for (String controllerName : codebase.getProfile(profile)) {
-				iter.nextController(controllerName);
+		for (String controllerName : profileControllers) {
+			iter.nextControllerWithName(controllerName);
 
-				switch (analyser.getTypeOfTraces()) {
-					case LONGEST:
-						// FIXME return accesses of longest trace instead of the trace itself
-						t = iter.getLongestTrace();
+			switch (analyser.getTypeOfTraces()) {
+				case LONGEST:
+					// FIXME return accesses of longest trace instead of the trace itself
+					t = iter.getLongestTrace();
 
-						if (t != null) {
+					if (t != null) {
+						Utils.fillEntityDataStructures(
+							entityControllers,
+							e1e2PairCount,
+							t.expand(2),
+							controllerName
+						);
+					}
+
+					break;
+
+				case WITH_MORE_DIFFERENT_ACCESSES:
+					t = iter.getTraceWithMoreDifferentAccesses();
+
+					if (t != null) {
+						Utils.fillEntityDataStructures(
+							entityControllers,
+							e1e2PairCount,
+							t.expand(2),
+							controllerName
+						);
+					}
+
+					break;
+
+				case REPRESENTATIVE:
+					Set<String> tracesIds = iter.getRepresentativeTraces();
+					// FIXME probably here we create a second controllerTracesIterator
+					iter.reset();
+
+					while (iter.hasMoreTraces()) {
+						t = iter.nextTrace();
+
+						if (tracesIds.contains(String.valueOf(t.getId()))) {
 							Utils.fillEntityDataStructures(
 								entityControllers,
 								e1e2PairCount,
@@ -478,58 +510,24 @@ public class AnalysisController {
 								controllerName
 							);
 						}
+					}
 
-						break;
+					break;
 
-					case WITH_MORE_DIFFERENT_ACCESSES:
-						t = iter.getTraceWithMoreDifferentAccesses();
+				default:
+					while (iter.hasMoreTraces()) {
+						t = iter.nextTrace();
 
-						if (t != null) {
-							Utils.fillEntityDataStructures(
-								entityControllers,
-								e1e2PairCount,
-								t.expand(2),
-								controllerName
-							);
-						}
-
-						break;
-
-					case REPRESENTATIVE:
-						Set<String> tracesIds = iter.getRepresentativeTraces();
-						// FIXME probably here we create a second controllerTracesIterator
-						iter.reset();
-
-						while (iter.hasMoreTraces()) {
-							t = iter.nextTrace();
-
-							if (tracesIds.contains(String.valueOf(t.getId()))) {
-								Utils.fillEntityDataStructures(
-									entityControllers,
-									e1e2PairCount,
-									t.expand(2),
-									controllerName
-								);
-							}
-						}
-
-						break;
-
-					default:
-						while (iter.hasMoreTraces()) {
-							t = iter.nextTrace();
-
-							Utils.fillEntityDataStructures(
-								entityControllers,
-								e1e2PairCount,
-								t.expand(2),
-								controllerName
-							);
-						}
-				}
-
-				t = null; // release memory
+						Utils.fillEntityDataStructures(
+							entityControllers,
+							e1e2PairCount,
+							t.expand(2),
+							controllerName
+						);
+					}
 			}
+
+			t = null; // release memory
 		}
 
 		iter = null; // release memory

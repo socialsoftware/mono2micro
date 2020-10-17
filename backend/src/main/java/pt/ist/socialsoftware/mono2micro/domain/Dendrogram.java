@@ -13,7 +13,6 @@ import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
 import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
-import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
@@ -42,7 +41,7 @@ public class Dendrogram {
 	private List<String> profiles = new ArrayList<>();
 	private List<Graph> graphs = new ArrayList<>();
 	private int tracesMaxLimit = 0;
-	private Constants.TypeOfTraces typeOfTraces = Constants.TypeOfTraces.ALL;
+	private TraceType traceType = TraceType.ALL;
 
 	public Dendrogram() {}
 
@@ -118,9 +117,9 @@ public class Dendrogram {
 
 	public void setTracesMaxLimit(int tracesMaxLimit) { this.tracesMaxLimit = tracesMaxLimit; }
 
-	public Constants.TypeOfTraces getTypeOfTraces() { return typeOfTraces; }
+	public TraceType getTypeOfTraces() { return traceType; }
 
-	public void setTypeOfTraces(Constants.TypeOfTraces typeOfTraces) { this.typeOfTraces = typeOfTraces; }
+	public void setTypeOfTraces(TraceType traceType) { this.traceType = traceType; }
 
 	@JsonIgnore
 	public List<String> getGraphNames() {
@@ -311,9 +310,9 @@ public class Dendrogram {
 
 		for (String profile : this.profiles) {
 			for (String controllerName : codebase.getProfile(profile)) {
-				iter.nextController(controllerName);
+				iter.nextControllerWithName(controllerName);
 
-				switch (this.typeOfTraces) {
+				switch (this.traceType) {
 					case LONGEST:
 						t = iter.getLongestTrace();
 
