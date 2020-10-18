@@ -14,6 +14,8 @@ import pt.ist.socialsoftware.mono2micro.utils.Utils;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.GraphDeserializer;
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 import static org.jgrapht.Graphs.successorListOf;
@@ -419,6 +421,7 @@ public class Graph {
 		}
 	}
 
+	// FIXME MERGE getLocalTransactionsSequence AND calculateTracePerformance TO SPEED UP PROCESSING
 	public GetLocalTransactionsGraphAndControllerPerformanceResult getLocalTransactionsGraphAndControllerPerformance(
 		ControllerTracesIterator iter,
 		String controllerName,
@@ -606,7 +609,7 @@ public class Graph {
 			new HashSet<String>() {{ add("profiles"); }}
 		);
 
-		List<String> profileControllers = codebase.getProfile(profile);
+		Set<String> profileControllers = codebase.getProfile(profile);
 
 		for (String controllerName : profileControllers) {
 			ControllerDto controllerDto = datafileJSON.get(controllerName);
@@ -626,39 +629,6 @@ public class Graph {
 		}
 	}
 
-	public void addDynamicControllers(
-		String profile,
-		int tracesMaxLimit,
-		Constants.TraceType traceType
-	)
-		throws IOException
-	{
-		System.out.println("Adding dynamic controllers...");
-
-		Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
-			codebaseName,
-			new HashSet<String>() {{ add("profiles"); add("datafilePath"); }}
-		);
-
-		List<String> profileControllers = codebase.getProfile(profile);
-
-		ControllerTracesIterator iter = new ControllerTracesIterator(
-			codebase.getDatafilePath(),
-			tracesMaxLimit
-		);
-
-		for (String controllerName : profileControllers) {
-			GetLocalTransactionsGraphAndControllerPerformanceResult result = getLocalTransactionsGraphAndControllerPerformance(
-				iter,
-				controllerName,
-				traceType
-			);
-
-			if (controller.getEntities().size() > 0)
-				this.addController(controller);
-		}
-	}
-
 	public void calculateMetrics()
 		throws Exception
 	{
@@ -666,7 +636,7 @@ public class Graph {
 
 		Codebase codebase = cm.getCodebaseWithFields(
 			this.codebaseName,
-			new HashSet<String>() {{ add("analysisType"); }}
+			new HashSet<String>() {{ add("analysisType"); add("profiles"); add("controllers"); }}
 		);
 
 		Dendrogram d = cm.getCodebaseDendrogramWithFields(
@@ -676,21 +646,18 @@ public class Graph {
 		);
 
 		if (codebase.isStatic()) {
-			this.addStaticControllers(
-				d.getProfile(),
-				null
-			);
+			calculateStaticMetrics();
 
 		} else {
-			this.addDynamicControllers(
+			calculateDynamicMetrics(
+				codebase,
 				d.getProfile(),
 				d.getTracesMaxLimit(),
 				d.getTypeOfTraces()
 			);
 		}
 
-		Metrics metrics = new Metrics(this);
-		metrics.calculateMetrics();
+
 	}
 
 	public void calculateAnalyserStaticMetrics(
@@ -708,45 +675,186 @@ public class Graph {
 		metrics.calculateMetrics();
 	}
 
-	public void calculateAnalyserDynamicMetrics(
+	public void calculateDynamicMetrics(
+		Codebase codebase, // requirements: profiles, datafilePath and controllers
 		String profile,
 		int tracesMaxLimit,
 		Constants.TraceType traceType
 	)
 		throws IOException
 	{
-		System.out.println("Calculating Analyser Dynamic metrics...");
+		System.out.println("Calculating Dynamic metrics...");
 
-		Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
-			codebaseName,
-			new HashSet<String>() {{ add("profiles"); add("datafilePath"); }}
+		Set<String> profileControllers = codebase.getProfile(profile);
+
+		List<Cluster> clusters = (List<Cluster>) this.getClusters().values();
+		List<Controller> codebaseControllers = (List<Controller>) codebase.getControllers().values();
+
+		CalculateComplexityAndPerformanceResult result1 = calculateComplexityAndPerformance(
+			codebase,
+			profileControllers,
+			clusters,
+			codebaseControllers,
+			traceType,
+			tracesMaxLimit
 		);
 
-		List<String> profileControllers = codebase.getProfile(profile);
+		this.setPerformance(result1.performance);
+		this.setComplexity(result1.complexity);
+
+		CalculateCouplingAndCohesionResult result2 = calculateCouplingAndCohesion(
+			profileControllers,
+			clusters,
+			codebaseControllers
+		);
+
+		this.setCohesion(result2.cohesion);
+		this.setCoupling(result2.coupling);
+	}
+
+	public static class CalculateComplexityAndPerformanceResult {
+		public float complexity;
+		public float performance;
+
+		public CalculateComplexityAndPerformanceResult(
+			float complexity,
+			float performance
+		) {
+			this.complexity = complexity;
+			this.performance = performance;
+		}
+	}
+
+	public CalculateComplexityAndPerformanceResult calculateComplexityAndPerformance(
+		Codebase codebase,
+		Set<String> profileControllers,
+		List<Cluster> clusters,
+		List<Controller> controllers,
+		Constants.TraceType traceType,
+		int tracesMaxLimit
+	)
+		throws IOException
+	{
+		Map<String, List<Cluster>> controllerClusters = Utils.getControllerClusters(
+			profileControllers,
+			clusters,
+			controllers
+		);
 
 		ControllerTracesIterator iter = new ControllerTracesIterator(
 			codebase.getDatafilePath(),
 			tracesMaxLimit
 		);
 
+		float complexity = 0;
+		float performance = 0;
+
+		System.out.println("Calculating graph complexity and performance...");
+
 		for (String controllerName : profileControllers) {
+			// FIXME WIP only specific to dynamic analysis for now
 			GetLocalTransactionsGraphAndControllerPerformanceResult result = getLocalTransactionsGraphAndControllerPerformance(
 				iter,
 				controllerName,
 				traceType
 			);
 
+			int controllerPerformance = result.performance;
+
+			float controllerComplexity = Metrics.calculateControllerComplexityAndClusterDependencies(
+				this,
+				controllerName,
+				controllerClusters,
+				result.localTransactionsGraph
+			);
+
+			Controller c = codebase.getControllers().get(controllerName);
+			// This needs to be done because the cluster complexity calculation depends on this result
+			c.setPerformance(controllerPerformance);
+			c.setComplexity(controllerComplexity);
+
+			performance += controllerPerformance;
+			complexity += controllerComplexity;
 		}
 
+		int graphControllersAmount = controllerClusters.size();
 
-//		this.addDynamicControllers(
-//			profile,
-//			tracesMaxLimit,
-//			traceType
-//		);
+		complexity = BigDecimal
+			.valueOf(complexity / graphControllersAmount)
+			.setScale(2, RoundingMode.HALF_UP)
+			.floatValue();
 
-		Metrics metrics = new Metrics(this);
-		metrics.calculateMetrics();
+		performance = BigDecimal
+			.valueOf(performance / graphControllersAmount)
+			.setScale(2, RoundingMode.HALF_UP)
+			.floatValue();
+
+		return new CalculateComplexityAndPerformanceResult(
+			complexity,
+			performance
+		);
+	}
+
+	public static class CalculateCouplingAndCohesionResult {
+		public float coupling;
+		public float cohesion;
+
+		public CalculateCouplingAndCohesionResult(
+			float coupling,
+			float cohesion
+		) {
+			this.coupling = coupling;
+			this.cohesion = cohesion;
+		}
+	}
+
+	public CalculateCouplingAndCohesionResult calculateCouplingAndCohesion(
+		Set<String> profileControllers,
+		List<Cluster> clusters,
+		List<Controller> controllers
+	) {
+		System.out.println("Calculating graph cohesion and coupling...");
+
+		float cohesion = 0;
+		float coupling = 0;
+
+		Map<String, List<Controller>> clusterControllers = Utils.getClusterControllers(
+			profileControllers,
+			clusters,
+			controllers
+		);
+
+		for (Cluster cluster : clusters) {
+			Metrics.calculateClusterComplexityAndCohesion(
+				cluster,
+				clusterControllers
+			);
+
+			Metrics.calculateClusterCoupling(
+				cluster,
+				this.getClusters()
+			);
+
+			coupling += cluster.getCoupling();
+			cohesion += cluster.getCohesion();
+		}
+
+		int graphClustersAmount = clusters.size();
+
+		cohesion = BigDecimal
+			.valueOf(cohesion / graphClustersAmount)
+			.setScale(2, RoundingMode.HALF_UP)
+			.floatValue();
+
+		coupling = BigDecimal
+			.valueOf(coupling / graphClustersAmount)
+			.setScale(2, RoundingMode.HALF_UP)
+			.floatValue();
+
+		return new CalculateCouplingAndCohesionResult(
+			coupling,
+			cohesion
+		);
 	}
 
 	public void mergeClusters(

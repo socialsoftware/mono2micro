@@ -202,7 +202,6 @@ public class AnalysisController {
 	)
 		throws IOException
 	{
-
 		if (!codebaseManager.analyserSimilarityMatrixFileAlreadyExists(codebase.getName())) {
 			System.out.println("Creating similarity matrix...");
 

@@ -104,12 +104,15 @@ public class CodebaseController {
 
 
     @RequestMapping(value = "/codebase/{codebaseName}/addProfile", method = RequestMethod.POST)
-	public ResponseEntity<HttpStatus> addProfile(@PathVariable String codebaseName, @RequestParam String profile) {
+	public ResponseEntity<HttpStatus> addProfile(
+		@PathVariable String codebaseName,
+		@RequestParam String profile
+	) {
         logger.debug("addProfile");
 
         try {
             Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            codebase.addProfile(profile, new ArrayList<>());
+            codebase.addProfile(profile, new HashSet<>());
             codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.OK);
 
@@ -125,7 +128,11 @@ public class CodebaseController {
 
 
     @RequestMapping(value = "/codebase/{codebaseName}/moveControllers", method = RequestMethod.POST)
-	public ResponseEntity<HttpStatus> moveControllers(@PathVariable String codebaseName, @RequestBody String[] controllers, @RequestParam String targetProfile) {
+	public ResponseEntity<HttpStatus> moveControllers(
+		@PathVariable String codebaseName,
+		@RequestBody String[] controllers,
+		@RequestParam String targetProfile
+	) {
 		logger.debug("moveControllers");
         
         try {
@@ -142,7 +149,10 @@ public class CodebaseController {
 
 
     @RequestMapping(value = "/codebase/{codebaseName}/deleteProfile", method = RequestMethod.DELETE)
-	public ResponseEntity<HttpStatus> deleteProfile(@PathVariable String codebaseName, @RequestParam String profile) {
+	public ResponseEntity<HttpStatus> deleteProfile(
+		@PathVariable String codebaseName,
+		@RequestParam String profile
+	) {
 		logger.debug("deleteProfile");
 
         try {
@@ -166,7 +176,12 @@ public class CodebaseController {
         logger.debug("createCodebase");
 
         try {
-            Codebase codebase = codebaseManager.createCodebase(codebaseName, datafile, analysisType);
+            Codebase codebase = codebaseManager.createCodebase(
+            	codebaseName,
+				datafile,
+				analysisType
+			);
+
             codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.CREATED);
 

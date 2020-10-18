@@ -9,10 +9,7 @@ import pt.ist.socialsoftware.mono2micro.utils.deserializers.CodebaseDeserializer
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 
@@ -20,7 +17,7 @@ import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 @JsonDeserialize(using = CodebaseDeserializer.class)
 public class Codebase {
 	private String name;
-	private Map<String, List<String>> profiles = new HashMap<>(); // e.g <Generic, ControllerNamesList>
+	private Map<String, Set<String>> profiles = new HashMap<>(); // e.g <Generic, ControllerNamesList> change to Set
 	private Map<String, Controller> controllers = new HashMap<>(); // <controllerName, Controller>
 	private List<Dendrogram> dendrograms = new ArrayList<>();
 	private String analysisType;
@@ -67,25 +64,29 @@ public class Codebase {
 		this.datafilePath = datafilePath;
 	}
 
-	public Map<String,List<String>> getProfiles() {
+	public Map<String, Set<String>> getProfiles() {
 		return this.profiles;
     }
 
 	@JsonIgnore
 	public boolean isStatic() { return this.analysisType.equals("static"); }
     
-    public List<String> getProfile(String profileName) {
+    public Set<String> getProfile(String profileName) {
 		return this.profiles.get(profileName);
     }
 
-	public void setProfiles(Map<String,List<String>> profiles) {
+	public void setProfiles(Map<String, Set<String>> profiles) {
 		this.profiles = profiles;
 	}
 	
-	public void addProfile(String profileName, List<String> controllers) {
+	public void addProfile(
+		String profileName,
+		Set<String> controllers
+	) {
 		if (this.profiles.containsKey(profileName)) {
 			throw new KeyAlreadyExistsException();
 		}
+
 		this.profiles.put(profileName, controllers);
 	}
 	

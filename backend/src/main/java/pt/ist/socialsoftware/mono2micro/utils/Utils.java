@@ -296,6 +296,7 @@ public class Utils {
     }
 
     public static Map<String, List<Controller>> getClusterControllers(
+        Set<String> profileControllers,
         List<Cluster> clusters,
         List<Controller> controllers
     ) {
@@ -305,7 +306,7 @@ public class Utils {
             List<Controller> touchedControllers = new ArrayList<>();
 
             for (Controller controller : controllers) {
-                if (controller != null) {
+                if (profileControllers.contains(controller.getName()) && !controller.getEntities().isEmpty()) {
                     for (short entityID : controller.getEntities().keySet()) {
                         if (cluster.containsEntity(entityID)) {
                             touchedControllers.add(controller);
@@ -321,26 +322,30 @@ public class Utils {
     }
 
     public static Map<String, List<Cluster>> getControllerClusters(
+        Set<String> profileControllers,
         List<Cluster> clusters,
         List<Controller> controllers
     ) {
-        Map<String,List<Cluster>> controllerClusters = new HashMap<>();
+        Map<String, List<Cluster>> controllerClusters = new HashMap<>();
 
         for (Controller controller : controllers) {
-            List<Cluster> touchedClusters = new ArrayList<>();
+            if (profileControllers.contains(controller.getName()) && !controller.getEntities().isEmpty()) {
+                List<Cluster> touchedClusters = new ArrayList<>();
 
-            for (Cluster cluster : clusters) {
+                for (Cluster cluster : clusters) {
 
-                for (short entityID : cluster.getEntities()) {
-                    if (controller.containsEntity(entityID)) {
-                        touchedClusters.add(cluster);
-                        break;
+                    for (short entityID : cluster.getEntities()) {
+                        if (controller.containsEntity(entityID)) {
+                            touchedClusters.add(cluster);
+                            break;
+                        }
                     }
                 }
-            }
 
-            controllerClusters.put(controller.getName(), touchedClusters);
+                controllerClusters.put(controller.getName(), touchedClusters);
+            }
         }
+
         return controllerClusters;
     }
 

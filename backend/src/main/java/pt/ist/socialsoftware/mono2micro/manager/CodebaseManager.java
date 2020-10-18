@@ -310,7 +310,7 @@ public class CodebaseManager {
 			codebase.setDatafilePath((String) datafile);
 		}
 
-		codebase.addProfile("Generic", new ArrayList<>(Utils.getJsonFileKeys(datafileFile)));
+		codebase.addProfile("Generic", Utils.getJsonFileKeys(datafileFile));
 		codebase.setControllers(new HashMap<>()); // FiXME
 
 		return codebase;
@@ -343,7 +343,6 @@ public class CodebaseManager {
 			);
 
 		}
-
 
 		if (controller.getEntities().size() > 0)
 			this.addController(controller);

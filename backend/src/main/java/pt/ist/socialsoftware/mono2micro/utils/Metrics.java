@@ -117,16 +117,16 @@ public class Metrics {
 		graph.setCoupling(graphCoupling);
     }
 
-    public void calculateControllerComplexityAndClusterDependencies( // FIXME CREATE CLASS FOR THE RESULT OF THIS
+    public static float calculateControllerComplexityAndClusterDependencies(
 	 	Graph graph,
-		Controller controller,
+		String controllerName,
 	 	Map<String, List<Cluster>> controllerClusters,
 		DirectedAcyclicGraph<Graph.LocalTransaction, DefaultEdge> localTransactionsGraph
 	) {
 		Set<Graph.LocalTransaction> allLocalTransactions = Graph.getAllLocalTransactions(localTransactionsGraph);
 
-		if (controllerClusters.get(controller.getName()).size() == 1) {
-			controller.setComplexity(0);
+		if (controllerClusters.get(controllerName).size() == 1) {
+			return 0;
 
 		} else {
 
@@ -161,7 +161,7 @@ public class Metrics {
 
 						if (controllersThatTouchThisEntityAndMode == null) {
 							controllersThatTouchThisEntityAndMode = costOfAccess(
-								controller,
+								controllerName,
 								entityID,
 								mode,
 								controllerClusters
@@ -177,12 +177,12 @@ public class Metrics {
 				}
 			}
 
-			controller.setComplexity(controllerComplexity);
+			return controllerComplexity;
 		}
 	}
 
-	private List<String> costOfAccess (
-		Controller controller,
+	private static List<String> costOfAccess(
+		String controllerName,
 		short entityID,
 		byte mode,
 		Map<String, List<Cluster>> controllerClusters
@@ -190,7 +190,7 @@ public class Metrics {
 		List<String> controllersThatTouchThisEntityAndMode = new ArrayList<>();
 
 		for (Controller otherController : controllers) {
-			if (!otherController.getName().equals(controller.getName())) {
+			if (!otherController.getName().equals(controllerName)) {
 				Byte savedMode = otherController.getEntities().get(entityID);
 
 				if (
@@ -206,7 +206,7 @@ public class Metrics {
 		return controllersThatTouchThisEntityAndMode;
 	}
 
-    private void calculateClusterComplexityAndCohesion(
+    public static void calculateClusterComplexityAndCohesion(
     	Cluster cluster,
 		Map<String, List<Controller>> clusterControllers
 	) {
@@ -247,7 +247,10 @@ public class Metrics {
 		cluster.setCohesion(cohesion);
 	}
 
-	private void calculateClusterCoupling(Cluster c1, Map<String, Cluster> clusters) {
+	public static void calculateClusterCoupling(
+		Cluster c1,
+		Map<String, Cluster> clusters
+	) {
     	float coupling = 0;
 		Map<String, Set<Short>> couplingDependencies = c1.getCouplingDependencies();
 
