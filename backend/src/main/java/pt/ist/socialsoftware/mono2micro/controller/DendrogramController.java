@@ -124,12 +124,7 @@ public class DendrogramController {
 			// FIXME The whole codebase needs to be fetched because it needs to be written as a whole again
 			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-
-			if (codebase.isStatic()) {
-				codebase.createStaticDendrogram(dendrogram);
-			} else {
-				codebase.createDynamicDendrogram(dendrogram);
-			}
+			codebase.createDendrogram(dendrogram);
 
             codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.CREATED);
@@ -158,7 +153,22 @@ public class DendrogramController {
 			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 
-            codebase.getDendrogram(dendrogramName).cut(graph);
+			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
+
+			// FIXME the graph given to the cut function shouldn't be a Graph
+			// FIXME The result of the cut function SHOULD be a graph/decomposition
+			// FIXME Did not have the patience to code it well
+			Graph cutGraph = dendrogram.cut(graph);
+
+			cutGraph.calculateMetrics(
+				codebase,
+				dendrogram.getProfile(),
+				dendrogram.getTracesMaxLimit(),
+				dendrogram.getTypeOfTraces()
+			);
+
+			dendrogram.addGraph(cutGraph);
+
             codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.OK);
 
@@ -167,7 +177,6 @@ public class DendrogramController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 	}
-
 
 	@RequestMapping(value = "/dendrogram/{dendrogramName}/expertCut", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> createExpertCut(
@@ -183,7 +192,22 @@ public class DendrogramController {
 			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
 
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            codebase.getDendrogram(dendrogramName).createExpertCut(expertName, expertFile);
+			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
+
+			Graph graph = dendrogram.createExpertCut(
+            	expertName,
+				expertFile
+			);
+
+			graph.calculateMetrics(
+				codebase,
+				dendrogram.getProfile(),
+				dendrogram.getTracesMaxLimit(),
+				dendrogram.getTypeOfTraces()
+			);
+
+			dendrogram.addGraph(graph);
+
             codebaseManager.writeCodebase(codebase);
 
             return new ResponseEntity<>(HttpStatus.OK);

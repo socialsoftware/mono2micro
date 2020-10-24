@@ -5,18 +5,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pt.ist.socialsoftware.mono2micro.domain.Cluster;
-import pt.ist.socialsoftware.mono2micro.domain.Codebase;
-import pt.ist.socialsoftware.mono2micro.domain.Controller;
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.domain.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping(value = "/mono2micro/codebase/{codebaseName}/dendrogram/{dendrogramName}/graph/{graphName}")
@@ -44,7 +38,22 @@ public class ClusterController {
 			// FIXME Each controller and cluster would have its own json file
 
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-			codebase.getDendrogram(dendrogramName).getGraph(graphName).mergeClusters(clusterName, otherCluster, newName);
+			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
+			Graph graph = dendrogram.getGraph(graphName);
+
+			graph.mergeClusters(
+				clusterName,
+				otherCluster,
+				newName
+			);
+
+			graph.calculateMetrics(
+				codebase,
+				dendrogram.getProfile(),
+				dendrogram.getTracesMaxLimit(),
+				dendrogram.getTypeOfTraces()
+			);
+
 			codebaseManager.writeCodebase(codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
 
@@ -71,9 +80,24 @@ public class ClusterController {
 			// FIXME Each controller and cluster would have its own json file
 
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-			codebase.getDendrogram(dendrogramName).getGraph(graphName).renameCluster(clusterName, newName);
-			codebaseManager.writeCodebase(codebase);
+			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
+			Graph graph = dendrogram.getGraph(graphName);
 
+			graph.renameCluster(
+				clusterName,
+				newName
+			);
+
+			// it should not be necessary to recalculate metrics due to just a renaming
+			// but for safety i'll keep the existent behaviour
+			graph.calculateMetrics(
+				codebase,
+				dendrogram.getProfile(),
+				dendrogram.getTracesMaxLimit(),
+				dendrogram.getTypeOfTraces()
+			);
+
+			codebaseManager.writeCodebase(codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (KeyAlreadyExistsException e) {
@@ -104,14 +128,23 @@ public class ClusterController {
 			// FIXME Each controller and cluster would have its own json file
 
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-			codebase.getDendrogram(dendrogramName).getGraph(graphName).splitCluster(
+			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
+			Graph graph = dendrogram.getGraph(graphName);
+
+			graph.splitCluster(
 				clusterName,
 				newName,
 				entities.split(",")
 			);
 
-			codebaseManager.writeCodebase(codebase);
+			graph.calculateMetrics(
+				codebase,
+				dendrogram.getProfile(),
+				dendrogram.getTracesMaxLimit(),
+				dendrogram.getTypeOfTraces()
+			);
 
+			codebaseManager.writeCodebase(codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -138,9 +171,23 @@ public class ClusterController {
 			// FIXME Each controller and cluster would have its own json file
 
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-			codebase.getDendrogram(dendrogramName).getGraph(graphName).transferEntities(clusterName, toCluster, entities.split(","));
-			codebaseManager.writeCodebase(codebase);
+			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
+			Graph graph = dendrogram.getGraph(graphName);
 
+			graph.transferEntities(
+				clusterName,
+				toCluster,
+				entities.split(",")
+			);
+
+			graph.calculateMetrics(
+				codebase,
+				dendrogram.getProfile(),
+				dendrogram.getTracesMaxLimit(),
+				dendrogram.getTypeOfTraces()
+			);
+
+			codebaseManager.writeCodebase(codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -149,13 +196,13 @@ public class ClusterController {
 		}
 	}
 
-	@RequestMapping(value = "/controllerClusters", method = RequestMethod.GET)
-	public ResponseEntity<Map<String, List<Cluster>>> getControllerClusters(
+	@RequestMapping(value = "/controllersClusters", method = RequestMethod.GET)
+	public ResponseEntity<Map<String, Set<Cluster>>> getControllersClusters(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
 		@PathVariable String graphName
 	) {
-		logger.debug("getControllerClusters");
+		logger.debug("getControllersClusters");
 
 		try {
 
@@ -170,19 +217,7 @@ public class ClusterController {
 				new HashSet<String>() {{ add("profiles"); add("controllers"); }}
 			);
 
-			List<String> profileControllers = codebase.getProfile(dendrogramProfile);
-
-			List<Controller> controllers = new ArrayList<>();
-
-			profileControllers.forEach(controllerName -> {
-				Controller controller = codebase.getControllers().get(controllerName);
-
-				if (controller != null) {
-					controllers.add(controller);
-				} else {
-					throw new Error("Controller " + controllerName + " not found");
-				}
-			});
+			Set<String> profileControllers = codebase.getProfile(dendrogramProfile);
 
 			Graph graph = codebaseManager.getDendrogramGraphWithFields(
 				codebaseName,
@@ -191,11 +226,17 @@ public class ClusterController {
 				new HashSet<String>() {{ add("clusters"); }}
 			);
 
+			List<Cluster> clusters = (List<Cluster>) graph.getClusters().values();
+
+			Utils.GetControllersClustersAndClustersControllersResult result =
+				Utils.getControllersClustersAndClustersControllers(
+					profileControllers,
+					clusters,
+					codebase.getControllers()
+				);
+
 			return new ResponseEntity<>(
-				Utils.getControllerClusters(
-					(List<Cluster>) graph.getClusters().values(),
-					controllers
-				),
+				result.controllersClusters,
 				HttpStatus.OK
 			);
 
@@ -205,13 +246,13 @@ public class ClusterController {
 		}
 	}
 
-	@RequestMapping(value = "/clusterControllers", method = RequestMethod.GET)
-	public ResponseEntity<Map<String, List<Controller>>> getClusterControllers(
+	@RequestMapping(value = "/clustersControllers", method = RequestMethod.GET)
+	public ResponseEntity<Map<String, Set<Controller>>> getClustersControllers(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
 		@PathVariable String graphName
 	) {
-		logger.debug("getClusterControllers");
+		logger.debug("getClustersControllers");
 
 		try {
 			String dendrogramProfile = codebaseManager.getCodebaseDendrogramWithFields(
@@ -225,19 +266,7 @@ public class ClusterController {
 				new HashSet<String>() {{ add("profiles"); add("controllers"); }}
 			);
 
-			List<String> profileControllers = codebase.getProfile(dendrogramProfile);
-
-			List<Controller> controllers = new ArrayList<>();
-
-			profileControllers.forEach(controllerName -> {
-				Controller controller = codebase.getControllers().get(controllerName);
-
-				if (controller != null) {
-					controllers.add(controller);
-				} else {
-					throw new Error("Controller " + controllerName + " not found");
-				}
-			});
+			Set<String> profileControllers = codebase.getProfile(dendrogramProfile);
 
 			Graph graph = codebaseManager.getDendrogramGraphWithFields(
 				codebaseName,
@@ -246,11 +275,17 @@ public class ClusterController {
 				new HashSet<String>() {{ add("clusters"); }}
 			);
 
+			List<Cluster> clusters = (List<Cluster>) graph.getClusters().values();
+
+			Utils.GetControllersClustersAndClustersControllersResult result =
+				Utils.getControllersClustersAndClustersControllers(
+					profileControllers,
+					clusters,
+					codebase.getControllers()
+				);
+
 			return new ResponseEntity<>(
-				Utils.getClusterControllers(
-					(List<Cluster>) graph.getClusters().values(),
-					controllers
-				),
+				result.clustersControllers,
 				HttpStatus.OK
 			);
 

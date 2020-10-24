@@ -403,7 +403,7 @@ public class CodebaseManager {
 		return similarityMatrixJSON;
 	}
 
-	public void writeSimilarityMatrix(
+	public void writeDendrogramSimilarityMatrix(
 		String codebaseName,
 		String dendrogramName,
 		JSONObject similarityMatrix
@@ -523,7 +523,10 @@ public class CodebaseManager {
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		objectMapper.setInjectableValues(
-			new InjectableValues.Std().addValue("similarityMatrixDtoDeserializableFields", deserializableFields)
+			new InjectableValues.Std().addValue(
+				"similarityMatrixDtoDeserializableFields",
+				deserializableFields
+			)
 		);
 
 		ObjectReader reader = objectMapper.readerFor(SimilarityMatrixDto.class);

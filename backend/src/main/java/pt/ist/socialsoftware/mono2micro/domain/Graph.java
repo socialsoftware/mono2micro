@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.dto.*;
-import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Metrics;
@@ -409,7 +408,7 @@ public class Graph {
 	}
 
 	public static class GetLocalTransactionsGraphAndControllerPerformanceResult {
-		public int performance = 0;
+		public int performance;
 		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph;
 
 		public GetLocalTransactionsGraphAndControllerPerformanceResult(
@@ -589,127 +588,50 @@ public class Graph {
 		);
 	}
 
-	public void addStaticControllers(
-		String profile,
-		HashMap<String, ControllerDto> datafile
-	)
-		throws IOException
-	{
-		System.out.println("Adding static controllers...");
-
-		HashMap<String, ControllerDto> datafileJSON;
-
-		if (datafile == null)
-			datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
-		else
-			datafileJSON = datafile;
-
-		Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
-			codebaseName,
-			new HashSet<String>() {{ add("profiles"); }}
-		);
-
-		Set<String> profileControllers = codebase.getProfile(profile);
-
-		for (String controllerName : profileControllers) {
-			ControllerDto controllerDto = datafileJSON.get(controllerName);
-			List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
-
-			Controller controller = new Controller(controllerName);
-			if (controllerAccesses.size() > 0) {
-//					Controller controller = new Controller(controllerName);
-//					this.addController(controller); // FIXME
-
-				List<LocalTransaction> localTransactionsSequence = getLocalTransactionsSequence(
-					0, // FIXME probably graph must have a counter for local transactions
-					entityIDToClusterName,
-					controllerAccesses
-				);
-			}
-		}
-	}
-
-	public void calculateMetrics()
-		throws Exception
-	{
-		CodebaseManager cm = CodebaseManager.getInstance();
-
-		Codebase codebase = cm.getCodebaseWithFields(
-			this.codebaseName,
-			new HashSet<String>() {{ add("analysisType"); add("profiles"); add("controllers"); }}
-		);
-
-		Dendrogram d = cm.getCodebaseDendrogramWithFields(
-			this.codebaseName,
-			this.dendrogramName,
-			new HashSet<String>() {{ add("profile"); add("typeOfTraces"); add("tracesMaxLimit"); }}
-		);
-
-		if (codebase.isStatic()) {
-			calculateStaticMetrics();
-
-		} else {
-			calculateDynamicMetrics(
-				codebase,
-				d.getProfile(),
-				d.getTracesMaxLimit(),
-				d.getTypeOfTraces()
-			);
-		}
-
-
-	}
-
-	public void calculateAnalyserStaticMetrics(
-		String profile,
-		HashMap<String, ControllerDto> datafileJSON
-	)
-		throws IOException
-	{
-		this.addStaticControllers(
-			profile,
-			datafileJSON
-		);
-
-		Metrics metrics = new Metrics(this);
-		metrics.calculateMetrics();
-	}
-
-	public void calculateDynamicMetrics(
+	public void calculateMetrics(
 		Codebase codebase, // requirements: profiles, datafilePath and controllers
 		String profile,
 		int tracesMaxLimit,
 		Constants.TraceType traceType
 	)
-		throws IOException
+		throws Exception
 	{
 		System.out.println("Calculating Dynamic metrics...");
 
 		Set<String> profileControllers = codebase.getProfile(profile);
 
 		List<Cluster> clusters = (List<Cluster>) this.getClusters().values();
-		List<Controller> codebaseControllers = (List<Controller>) codebase.getControllers().values();
 
-		CalculateComplexityAndPerformanceResult result1 = calculateComplexityAndPerformance(
+		Utils.GetControllersClustersAndClustersControllersResult result1 =
+			Utils.getControllersClustersAndClustersControllers(
+				profileControllers,
+				clusters,
+				codebase.getControllers()
+			);
+
+		Map<String, Set<Cluster>> controllersClusters = result1.controllersClusters;
+		Map<String, Set<Controller>> clustersControllers = result1.clustersControllers;
+
+		// COMPLEXITY AND PERFORMANCE CALCULATION
+		CalculateComplexityAndPerformanceResult result2 = calculateComplexityAndPerformance(
 			codebase,
 			profileControllers,
-			clusters,
-			codebaseControllers,
+			controllersClusters,
 			traceType,
 			tracesMaxLimit
 		);
 
-		this.setPerformance(result1.performance);
-		this.setComplexity(result1.complexity);
+		this.setPerformance(result2.performance);
+		this.setComplexity(result2.complexity);
 
-		CalculateCouplingAndCohesionResult result2 = calculateCouplingAndCohesion(
-			profileControllers,
+		// COUPLING AND COHESION CALCULATION
+		CalculateCouplingAndCohesionResult result3 = calculateCouplingAndCohesion(
 			clusters,
-			codebaseControllers
+			clustersControllers
 		);
 
-		this.setCohesion(result2.cohesion);
-		this.setCoupling(result2.coupling);
+		this.setCohesion(result3.cohesion);
+		this.setCoupling(result3.coupling);
 	}
 
 	public static class CalculateComplexityAndPerformanceResult {
@@ -728,19 +650,12 @@ public class Graph {
 	public CalculateComplexityAndPerformanceResult calculateComplexityAndPerformance(
 		Codebase codebase,
 		Set<String> profileControllers,
-		List<Cluster> clusters,
-		List<Controller> controllers,
+		Map<String, Set<Cluster>> controllersClusters,
 		Constants.TraceType traceType,
 		int tracesMaxLimit
 	)
 		throws IOException
 	{
-		Map<String, List<Cluster>> controllerClusters = Utils.getControllerClusters(
-			profileControllers,
-			clusters,
-			controllers
-		);
-
 		ControllerTracesIterator iter = new ControllerTracesIterator(
 			codebase.getDatafilePath(),
 			tracesMaxLimit
@@ -752,20 +667,20 @@ public class Graph {
 		System.out.println("Calculating graph complexity and performance...");
 
 		for (String controllerName : profileControllers) {
-			// FIXME WIP only specific to dynamic analysis for now
-			GetLocalTransactionsGraphAndControllerPerformanceResult result = getLocalTransactionsGraphAndControllerPerformance(
+			GetLocalTransactionsGraphAndControllerPerformanceResult result2 = getLocalTransactionsGraphAndControllerPerformance(
 				iter,
 				controllerName,
 				traceType
 			);
 
-			int controllerPerformance = result.performance;
+			int controllerPerformance = result2.performance;
 
 			float controllerComplexity = Metrics.calculateControllerComplexityAndClusterDependencies(
 				this,
 				controllerName,
-				controllerClusters,
-				result.localTransactionsGraph
+				(Set<Controller>) codebase.getControllers().values(),
+				controllersClusters,
+				result2.localTransactionsGraph
 			);
 
 			Controller c = codebase.getControllers().get(controllerName);
@@ -777,7 +692,7 @@ public class Graph {
 			complexity += controllerComplexity;
 		}
 
-		int graphControllersAmount = controllerClusters.size();
+		int graphControllersAmount = controllersClusters.size();
 
 		complexity = BigDecimal
 			.valueOf(complexity / graphControllersAmount)
@@ -809,25 +724,18 @@ public class Graph {
 	}
 
 	public CalculateCouplingAndCohesionResult calculateCouplingAndCohesion(
-		Set<String> profileControllers,
 		List<Cluster> clusters,
-		List<Controller> controllers
+		Map<String, Set<Controller>> clustersControllers
 	) {
 		System.out.println("Calculating graph cohesion and coupling...");
 
 		float cohesion = 0;
 		float coupling = 0;
 
-		Map<String, List<Controller>> clusterControllers = Utils.getClusterControllers(
-			profileControllers,
-			clusters,
-			controllers
-		);
-
 		for (Cluster cluster : clusters) {
 			Metrics.calculateClusterComplexityAndCohesion(
 				cluster,
-				clusterControllers
+				clustersControllers
 			);
 
 			Metrics.calculateClusterCoupling(
@@ -861,9 +769,7 @@ public class Graph {
 		String cluster1ID,
 		String cluster2ID,
 		String newName
-	)
-		throws Exception
-	{
+	) {
 		Cluster cluster1 = getCluster(cluster1ID);
 		Cluster cluster2 = getCluster(cluster2ID);
 
@@ -875,16 +781,12 @@ public class Graph {
 		removeCluster(cluster2ID);
 
 		addCluster(mergedCluster);
-
-		calculateMetrics();
 	}
 
 	public void renameCluster(
 		String clusterID,
 		String newID
-	)
-		throws Exception
-	{
+	) {
 		if (clusterID.equals(newID)) return;
 
 		if (clusterExists(newID)) throw new KeyAlreadyExistsException("Cluster with ID: " + newID + " already exists");
@@ -894,17 +796,13 @@ public class Graph {
 		c.setName(newID);
 
 		addCluster(new Cluster(c));
-
-		calculateMetrics();
 	}
 
 	public void splitCluster(
 		String clusterID,
 		String newID,
 		String[] entities
-	)
-		throws Exception
-	{
+	) {
 		Cluster currentCluster = getCluster(clusterID);
 		Cluster newCluster = new Cluster(newID);
 
@@ -918,17 +816,13 @@ public class Graph {
 		}
 
 		addCluster(newCluster);
-
-		calculateMetrics();
 	}
 
 	public void transferEntities(
 		String fromClusterID,
 		String toClusterID,
 		String[] entities
-	)
-		throws Exception
-	{
+	) {
 		Cluster fromCluster = getCluster(fromClusterID);
 		Cluster toCluster = getCluster(toClusterID);
 
@@ -940,7 +834,5 @@ public class Graph {
 				fromCluster.removeEntity(entityID);
 			}
 		}
-
-		calculateMetrics();
 	}
 }

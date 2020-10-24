@@ -1,16 +1,13 @@
 package pt.ist.socialsoftware.mono2micro.utils;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
+import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
-import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
-import pt.ist.socialsoftware.mono2micro.dto.ReducedTraceElementDto;
-import pt.ist.socialsoftware.mono2micro.dto.RuleDto;
+import pt.ist.socialsoftware.mono2micro.dto.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -131,6 +128,178 @@ public class Utils {
         else
             return 0;
     }
+
+    public static class GetDataToBuildSimilarityMatrixResult {
+        public Set<Short> entities;
+        public Map<String, Integer> e1e2PairCount;
+        public Map<Short, List<Pair<String, Byte>>> entityControllers;
+
+        public GetDataToBuildSimilarityMatrixResult() {}
+
+        public GetDataToBuildSimilarityMatrixResult(
+            Set<Short> entities,
+            Map<String, Integer> e1e2PairCount, Map<Short,
+            List<Pair<String, Byte>>> entityControllers
+        ) {
+            this.entities = entities;
+            this.e1e2PairCount = e1e2PairCount;
+            this.entityControllers = entityControllers;
+        }
+    }
+
+    public static GetDataToBuildSimilarityMatrixResult getDataToBuildSimilarityMatrix(
+        Codebase codebase,
+        String profile,
+        int tracesMaxLimit,
+        Constants.TraceType traceType
+    )
+        throws IOException
+    {
+        System.out.println("Creating similarity matrix...");
+
+        Map<Short, List<Pair<String, Byte>>> entityControllers = new HashMap<>();
+        Map<String, Integer> e1e2PairCount = new HashMap<>();
+
+        ControllerTracesIterator iter = new ControllerTracesIterator(
+            codebase.getDatafilePath(),
+            tracesMaxLimit
+        );
+
+        TraceDto t;
+        Set<String> profileControllers = codebase.getProfile(profile);
+
+        for (String controllerName : profileControllers) {
+            iter.nextControllerWithName(controllerName);
+
+            switch (traceType) {
+                case LONGEST:
+                    // FIXME return accesses of longest trace instead of the trace itself
+                    t = iter.getLongestTrace();
+
+                    if (t != null) {
+                        Utils.fillEntityDataStructures(
+                            entityControllers,
+                            e1e2PairCount,
+                            t.expand(2),
+                            controllerName
+                        );
+                    }
+
+                    break;
+
+                case WITH_MORE_DIFFERENT_ACCESSES:
+                    t = iter.getTraceWithMoreDifferentAccesses();
+
+                    if (t != null) {
+                        Utils.fillEntityDataStructures(
+                            entityControllers,
+                            e1e2PairCount,
+                            t.expand(2),
+                            controllerName
+                        );
+                    }
+
+                    break;
+
+                case REPRESENTATIVE:
+                    Set<String> tracesIds = iter.getRepresentativeTraces();
+                    // FIXME probably here we create a second controllerTracesIterator
+                    iter.reset();
+
+                    while (iter.hasMoreTraces()) {
+                        t = iter.nextTrace();
+
+                        if (tracesIds.contains(String.valueOf(t.getId()))) {
+                            Utils.fillEntityDataStructures(
+                                entityControllers,
+                                e1e2PairCount,
+                                t.expand(2),
+                                controllerName
+                            );
+                        }
+                    }
+
+                    break;
+
+                default:
+                    while (iter.hasMoreTraces()) {
+                        t = iter.nextTrace();
+
+                        Utils.fillEntityDataStructures(
+                            entityControllers,
+                            e1e2PairCount,
+                            t.expand(2),
+                            controllerName
+                        );
+                    }
+            }
+
+            t = null; // release memory
+        }
+
+        iter = null; // release memory
+
+        Set<Short> entities = new TreeSet<>(entityControllers.keySet());
+
+        return new GetDataToBuildSimilarityMatrixResult(
+            entities,
+            e1e2PairCount,
+            entityControllers
+        );
+    }
+
+//    private static SimilarityMatrixDto getMatrixData(
+//        Set<Short> entityIDs,
+//        Map<String,Integer> e1e2PairCount,
+//        Map<Short, List<Pair<String, Byte>>> entityControllers,
+//        String linkageType
+//    ) {
+//
+//        SimilarityMatrixDto matrixData = new SimilarityMatrixDto();
+//
+//        List<List<List<Float>>> similarityMatrix = new ArrayList<>();
+//
+//        int maxNumberOfPairs = Utils.getMaxNumberOfPairs(e1e2PairCount);
+//
+//        for (short e1ID : entityIDs) {
+//            List<List<Float>> matrixRow = new ArrayList<>();
+//
+//            for (short e2ID : entityIDs) {
+//                List<Float> metric = new ArrayList<>();
+//
+//                if (e1ID == e2ID) {
+//                    metric.add((float) 1);
+//                    metric.add((float) 1);
+//                    metric.add((float) 1);
+//                    metric.add((float) 1);
+//
+//                    matrixRow.add(metric);
+//                    continue;
+//                }
+//
+//                float[] metrics = Utils.calculateSimilarityMatrixMetrics(
+//                    entityControllers,
+//                    e1e2PairCount,
+//                    e1ID,
+//                    e2ID,
+//                    maxNumberOfPairs
+//                );
+//
+//                metric.add(metrics[0]);
+//                metric.add(metrics[1]);
+//                metric.add(metrics[2]);
+//                metric.add(metrics[3]);
+//
+//                matrixRow.add(metric);
+//            }
+//            similarityMatrix.add(matrixRow);
+//        }
+//        matrixData.setMatrix(similarityMatrix);
+//        matrixData.setEntities(entityIDs);
+//        matrixData.setLinkageType(linkageType);
+//
+//        return matrixData;
+//    }
 
     public static float[] calculateSimilarityMatrixMetrics(
         Map<Short,List<Pair<String, Byte>>> entityControllers, // entityID -> [<controllerName, accessMode>, ...]
@@ -298,15 +467,22 @@ public class Utils {
     public static Map<String, List<Controller>> getClusterControllers(
         Set<String> profileControllers,
         List<Cluster> clusters,
-        List<Controller> controllers
-    ) {
+        Map<String, Controller> controllers
+    )
+        throws Exception
+    {
         Map<String, List<Controller>> clusterControllers = new HashMap<>();
 
         for (Cluster cluster : clusters) {
             List<Controller> touchedControllers = new ArrayList<>();
 
-            for (Controller controller : controllers) {
-                if (profileControllers.contains(controller.getName()) && !controller.getEntities().isEmpty()) {
+            for (String controllerName : profileControllers) {
+                Controller controller = controllers.get(controllerName);
+
+                if (controller == null)
+                    throw new Exception("Controller: " + controllerName + " not found");
+
+                if (!controller.getEntities().isEmpty()) {
                     for (short entityID : controller.getEntities().keySet()) {
                         if (cluster.containsEntity(entityID)) {
                             touchedControllers.add(controller);
@@ -324,12 +500,19 @@ public class Utils {
     public static Map<String, List<Cluster>> getControllerClusters(
         Set<String> profileControllers,
         List<Cluster> clusters,
-        List<Controller> controllers
-    ) {
+        Map<String, Controller> controllers
+    )
+        throws Exception
+    {
         Map<String, List<Cluster>> controllerClusters = new HashMap<>();
 
-        for (Controller controller : controllers) {
-            if (profileControllers.contains(controller.getName()) && !controller.getEntities().isEmpty()) {
+        for (String controllerName : profileControllers) {
+            Controller controller = controllers.get(controllerName);
+
+            if (controller == null)
+                throw new Exception("Controller: " + controllerName + " not found");
+
+            if (!controller.getEntities().isEmpty()) {
                 List<Cluster> touchedClusters = new ArrayList<>();
 
                 for (Cluster cluster : clusters) {
@@ -347,6 +530,79 @@ public class Utils {
         }
 
         return controllerClusters;
+    }
+
+    public static class GetControllersClustersAndClustersControllersResult {
+        public Map<String, Set<Cluster>> controllersClusters;
+        public Map<String, Set<Controller>> clustersControllers;
+
+        public GetControllersClustersAndClustersControllersResult(
+            Map<String, Set<Cluster>> controllersClusters,
+            Map<String, Set<Controller>> clustersControllers
+        ) {
+            this.controllersClusters = controllersClusters;
+            this.clustersControllers = clustersControllers;
+        }
+
+        public Map<String, Set<Cluster>> getControllersClusters() { return controllersClusters; }
+        public Map<String, Set<Controller>> getClustersControllers() { return clustersControllers; }
+    }
+
+    public static GetControllersClustersAndClustersControllersResult getControllersClustersAndClustersControllers(
+        Set<String> profileControllers,
+        List<Cluster> clusters,
+        Map<String, Controller> controllers
+    )
+        throws Exception
+    {
+        Map<String, Set<Cluster>> controllersClusters = new HashMap<>();
+        Map<String, Set<Controller>> clustersControllers = new HashMap<>();
+
+        for (Cluster cluster : clusters) {
+
+            Set<Controller> touchedControllers = new HashSet<>();
+
+            for (String controllerName : profileControllers) {
+                Controller controller = controllers.get(controllerName);
+
+                if (controller == null)
+                    throw new Exception("Controller: " + controllerName + " not found");
+
+                if (!controller.getEntities().isEmpty()) {
+                    for (short entityID : controller.getEntities().keySet()) {
+                        if (cluster.containsEntity(entityID)) {
+                            touchedControllers.add(controller);
+
+                            Set<Cluster> controllerClusters = controllersClusters.getOrDefault(
+                                controllerName,
+                                new HashSet<>()
+                            );
+
+                            if (!controllerClusters.contains(cluster)) {
+                                controllerClusters.add(cluster);
+
+                                controllersClusters.put(
+                                    controllerName,
+                                    controllerClusters
+                                );
+                            }
+
+                            break;
+                        }
+                    }
+                }
+            }
+
+            clustersControllers.put(
+                cluster.getName(),
+                touchedControllers
+            );
+        }
+
+        return new GetControllersClustersAndClustersControllersResult(
+            controllersClusters,
+            clustersControllers
+        );
     }
 
 }

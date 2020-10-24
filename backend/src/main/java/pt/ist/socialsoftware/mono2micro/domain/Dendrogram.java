@@ -9,8 +9,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
-import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
-import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
 import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
@@ -40,7 +38,7 @@ public class Dendrogram {
 	private float readMetricWeight;
 	private float sequenceMetricWeight;
 	private String profile;
-	private List<Graph> graphs = new ArrayList<>();
+	private List<Graph> graphs = new ArrayList<>(); // Might not be necessary if the folders structure gets better organized
 	private int tracesMaxLimit = 0;
 	private TraceType traceType = TraceType.ALL;
 
@@ -123,13 +121,9 @@ public class Dendrogram {
 	@JsonIgnore
 	public List<String> getGraphNames() { return this.graphs.stream().map(Graph::getName).collect(Collectors.toList()); }
 
+	@JsonIgnore
 	public Graph getGraph(String graphName) {
-		for (Graph graph : this.graphs) {
-			if (graph.getName().equals(graphName))
-				return graph;
-		}
-
-		return null;
+		return this.graphs.stream().filter(graph -> graph.getName().equals(graphName)).findAny().orElse(null);
 	}
 
 	public void addGraph(Graph graph) {
@@ -151,7 +145,12 @@ public class Dendrogram {
 		FileUtils.deleteDirectory(new File(CODEBASES_PATH + this.codebaseName + "/" + this.name + "/" + graphName));
 	}
 
-	public void createExpertCut(String expertName, Optional<MultipartFile> expertFile) throws Exception {
+	public Graph createExpertCut(
+		String expertName,
+		Optional<MultipartFile> expertFile
+	)
+		throws Exception
+	{
 		if (this.getGraphNames().contains(expertName))
 			throw new KeyAlreadyExistsException();
 
@@ -172,6 +171,7 @@ public class Dendrogram {
 				String clusterId = clusters.next();
 				JSONArray entities = expertCut.getJSONObject("clusters").getJSONArray(clusterId);
 				Cluster cluster = new Cluster(clusterId);
+
 				for (int i = 0; i < entities.length(); i++) {
 					short entityID = (short) entities.getInt(i);
 
@@ -184,7 +184,11 @@ public class Dendrogram {
 		} else {
 			Cluster cluster = new Cluster("Generic");
 
-			JSONObject similarityMatrixData = CodebaseManager.getInstance().getSimilarityMatrix(this.codebaseName, this.name);
+			JSONObject similarityMatrixData = CodebaseManager.getInstance().getSimilarityMatrix(
+				this.codebaseName,
+				this.name
+			);
+
 			JSONArray entities = similarityMatrixData.getJSONArray("entities");
 
 			for (int i = 0; i < entities.length(); i++) {
@@ -197,30 +201,25 @@ public class Dendrogram {
 			expertGraph.addCluster(cluster);
 		}
 
-		this.addGraph(expertGraph);
-		expertGraph.calculateMetrics();
+		return expertGraph;
 	}
 
-	private JSONObject getMatrixData(
-		List<Short> entitiesList,
+	public JSONObject getMatrixData(
+		Set<Short> entityIDs,
 		Map<String, Integer> e1e2PairCount,
 		Map<Short, List<Pair<String, Byte>>> entityControllers
-	) throws JSONException {
-
+	)
+		throws JSONException
+	{
 		JSONArray similarityMatrix = new JSONArray();
 		JSONObject matrixData = new JSONObject();
 
-		Collections.sort(entitiesList);
-
 		int maxNumberOfPairs = Utils.getMaxNumberOfPairs(e1e2PairCount);
 
-		for (int i = 0; i < entitiesList.size(); i++) {
-			short e1ID = entitiesList.get(i);
+		for (short e1ID : entityIDs) {
 			JSONArray matrixRow = new JSONArray();
 
-			for (int j = 0; j < entitiesList.size(); j++) {
-				short e2ID = entitiesList.get(j);
-
+			for (short e2ID : entityIDs) {
 				if (e1ID == e2ID) {
 					matrixRow.put(1);
 					continue;
@@ -244,157 +243,13 @@ public class Dendrogram {
 			similarityMatrix.put(matrixRow);
 		}
 		matrixData.put("matrix", similarityMatrix);
-		matrixData.put("entities", entitiesList);
+		matrixData.put("entities", entityIDs);
 		matrixData.put("linkageType", this.linkageType);
 
 		return matrixData;
 	}
 
-	public void calculateStaticSimilarityMatrix()
-		throws IOException, JSONException
-	{
-		System.out.println("Calculating similarity matrix...");
-
-		Map<Short, List<Pair<String, Byte>>> entityControllers = new HashMap<>();
-		Map<String, Integer> e1e2PairCount = new HashMap<>();
-
-		HashMap<String, ControllerDto> datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
-
-		Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
-			codebaseName,
-			new HashSet<String>() {{ add("profiles"); }}
-		);
-
-		List<String> profileControllers = codebase.getProfile(profile);
-
-		for (String controllerName : profileControllers) {
-			ControllerDto controllerDto = datafileJSON.get(controllerName);
-			List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
-
-			Utils.fillEntityDataStructures(
-				entityControllers,
-				e1e2PairCount,
-				controllerAccesses,
-				controllerName
-			);
-		}
-
-		CodebaseManager.getInstance().writeSimilarityMatrix(
-			this.codebaseName,
-			this.name,
-			getMatrixData(
-				new ArrayList<>(entityControllers.keySet()),
-				e1e2PairCount,
-				entityControllers
-			)
-		);
-	}
-
-	public void calculateDynamicSimilarityMatrix()
-		throws IOException, JSONException
-	{
-		System.out.println("Calculating similarity matrix...");
-
-		Map<Short, List<Pair<String, Byte>>> entityControllers = new HashMap<>();
-		Map<String,Integer> e1e2PairCount = new HashMap<>();
-
-		Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
-			codebaseName,
-			new HashSet<String>() {{ add("profiles"); add("datafilePath"); }}
-		);
-
-		ControllerTracesIterator iter = new ControllerTracesIterator(
-			codebase.getDatafilePath(),
-			tracesMaxLimit
-		);
-
-		TraceDto t;
-
-		List<String> profileControllers = codebase.getProfile(profile);
-
-		for (String controllerName : profileControllers) {
-			iter.nextControllerWithName(controllerName);
-
-			switch (this.traceType) {
-				case LONGEST:
-					t = iter.getLongestTrace();
-
-					if (t != null) {
-						Utils.fillEntityDataStructures(
-							entityControllers,
-							e1e2PairCount,
-							t.expand(2),
-							controllerName
-						);
-					}
-
-					break;
-
-				case WITH_MORE_DIFFERENT_ACCESSES:
-					t = iter.getTraceWithMoreDifferentAccesses();
-
-					if (t != null) {
-						Utils.fillEntityDataStructures(
-							entityControllers,
-							e1e2PairCount,
-							t.expand(2),
-							controllerName
-						);
-					}
-
-					break;
-
-				case REPRESENTATIVE:
-					Set<String> tracesIds = iter.getRepresentativeTraces();
-					// FIXME probably here we create a second controllerTracesIterator
-					iter.reset();
-
-					while (iter.hasMoreTraces()) {
-						t = iter.nextTrace();
-
-						if (tracesIds.contains(String.valueOf(t.getId()))) {
-							Utils.fillEntityDataStructures(
-								entityControllers,
-								e1e2PairCount,
-								t.expand(2),
-								controllerName
-							);
-						}
-
-					}
-
-					break;
-
-				default:
-					while (iter.hasMoreTraces()) {
-						t = iter.nextTrace();
-
-						Utils.fillEntityDataStructures(
-							entityControllers,
-							e1e2PairCount,
-							t.expand(2),
-							controllerName
-						);
-					}
-			}
-
-			t = null; // release memory
-		}
-
-		iter = null; // release memory
-
-		CodebaseManager.getInstance().writeSimilarityMatrix(
-			this.codebaseName,
-			this.name,
-			getMatrixData(
-				new ArrayList<>(entityControllers.keySet()),
-				e1e2PairCount,
-				entityControllers
-			)
-		);
-	}
-
-	public void cut(Graph graph) throws Exception {
+	public Graph cut(Graph graph) throws Exception {
 
 		String cutValue = Float.valueOf(graph.getCutValue()).toString().replaceAll("\\.?0*$", "");
 		if (this.getGraphNames().contains(graph.getCutType() + cutValue)) {
@@ -427,7 +282,11 @@ public class Dendrogram {
 		
 		p.waitFor();
 
-		JSONObject clustersJSON = CodebaseManager.getInstance().getClusters(this.codebaseName, this.name, graph.getName());
+		JSONObject clustersJSON = CodebaseManager.getInstance().getClusters(
+			this.codebaseName,
+			this.name,
+			graph.getName()
+		);
 
 		graph.setSilhouetteScore((float) clustersJSON.getDouble("silhouetteScore"));
 
@@ -455,7 +314,6 @@ public class Dendrogram {
 			graph.addCluster(cluster);
 		}
 
-		this.addGraph(graph);
-		graph.calculateMetrics();
+		return graph;
 	}
 }

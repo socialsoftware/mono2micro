@@ -10,11 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
-import pt.ist.socialsoftware.mono2micro.domain.Controller;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.dto.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
-import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 import pt.ist.socialsoftware.mono2micro.utils.mojoCalculator.src.main.java.MoJo;
@@ -34,8 +32,8 @@ import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 @RequestMapping(value = "/mono2micro")
 public class AnalysisController {
 
-    private static Logger logger = LoggerFactory.getLogger(AnalysisController.class);
-    private CodebaseManager codebaseManager = CodebaseManager.getInstance();
+    private static final Logger logger = LoggerFactory.getLogger(AnalysisController.class);
+    private final CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
 	@RequestMapping(value = "/codebase/{codebaseName}/analyser", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> analyser(
@@ -52,14 +50,16 @@ public class AnalysisController {
 
 			Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
 				codebaseName,
-				new HashSet<String>() {{ add("analysisType"); add("name"); add("profiles"); add("datafilePath"); }}
+				new HashSet<String>() {{
+					add("name");
+					add("profiles");
+					add("datafilePath");
+					add("controllers");
+				}}
 			);
-
-			HashMap<String, ControllerDto> datafileJSON = null;
 
 			int numberOfEntitiesPresentInCollection = getOrCreateSimilarityMatrix(
 				codebase,
-				datafileJSON, // yes but its content may change if codebase is static but CHECK!
 				analyser
 			);
 
@@ -69,6 +69,9 @@ public class AnalysisController {
 				codebaseName,
 				numberOfEntitiesPresentInCollection
 			);
+
+			// THIS FIRST PHASE EXISTS TO NOT PROCESS CUTS PREVIOUSLY PROCESSED
+			// BASICALLY IT'S A COPY OF THE PREVIOUS FILE INTO THE NEW FILE
 
 			File analyserCutsPath = new File(CODEBASES_PATH + codebaseName + "/analyser/cuts/");
 			File[] files = analyserCutsPath.listFiles();
@@ -136,6 +139,9 @@ public class AnalysisController {
 			short newRequestsCount = 0;
 			short count = 0;
 
+			// AFTER COPYING PREVIOUS RESULTS, NEXT CUTS WILL BE PROCESSED AND THEIR RESULTS
+			// WILL BE APPENDED TO THE NEW FILE
+
 			for (File file : files) {
 
 				String filename = FilenameUtils.getBaseName(file.getName());
@@ -150,8 +156,7 @@ public class AnalysisController {
 				Graph graph = buildGraphAndCalculateMetrics(
 					analyser,
 					codebase,
-					filename,
-					datafileJSON
+					filename
 				);
 
                 CutInfoDto cutInfo = assembleCutInformation(
@@ -185,7 +190,6 @@ public class AnalysisController {
 				fileToBeRenamed.renameTo(fileRenamed);
 			}
 
-//            codebaseManager.writeAnalyserResults(codebaseName, analyserJSON);
 			System.out.println("Analyser Complete");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -196,34 +200,41 @@ public class AnalysisController {
 
 	public int getOrCreateSimilarityMatrix(
 		Codebase codebase,
-		HashMap<String, ControllerDto> datafileJSON,
 		AnalyserDto analyser
-
 	)
 		throws IOException
 	{
+		SimilarityMatrixDto similarityMatrixDto;
+
 		if (!codebaseManager.analyserSimilarityMatrixFileAlreadyExists(codebase.getName())) {
-			System.out.println("Creating similarity matrix...");
 
-			if (codebase.isStatic()) {
-				datafileJSON = CodebaseManager.getInstance().getDatafile(codebase);
+			Utils.GetDataToBuildSimilarityMatrixResult result = Utils.getDataToBuildSimilarityMatrix(
+				codebase,
+				analyser.getProfile(),
+				analyser.getTracesMaxLimit(),
+				analyser.getTypeOfTraces()
+			);
 
-				return createStaticAnalyserSimilarityMatrix(
-					codebase,
-					analyser,
-					datafileJSON
-				);
-			}
+			// Unfortunately, the getMatrixData method differs from the one used in the Dendrogram
+			similarityMatrixDto = getMatrixData(
+				result.entities,
+				result.e1e2PairCount,
+				result.entityControllers
+			);
 
-			return createDynamicAnalyserSimilarityMatrix(codebase, analyser);
+			CodebaseManager.getInstance().writeAnalyserSimilarityMatrix(
+				codebase.getName(),
+				similarityMatrixDto
+			);
+
+		} else {
+			System.out.println("Similarity matrix already exists...");
+
+			similarityMatrixDto = CodebaseManager.getInstance().getSimilarityMatrixDtoWithFields(
+				codebase.getName(),
+				new HashSet<String>() {{ add("entities"); }}
+			);
 		}
-
-		System.out.println("Similarity matrix already exists...");
-
-		SimilarityMatrixDto similarityMatrixDto = CodebaseManager.getInstance().getSimilarityMatrixDtoWithFields(
-			codebase.getName(),
-			new HashSet<String>() {{ add("entities"); }}
-		);
 
 		return similarityMatrixDto.getEntities().size();
 	}
@@ -248,16 +259,14 @@ public class AnalysisController {
 		p.waitFor();
 
 		System.out.println("script execution has ended");
-
 	}
 
 	private Graph buildGraphAndCalculateMetrics(
 		AnalyserDto analyser,
-		Codebase codebase,
-		String filename,
-		HashMap<String, ControllerDto> datafileJSON
+		Codebase codebase, // requirements: name, profiles, datafilePath and controllers
+		String filename
 	)
-		throws IOException
+		throws Exception
 	{
 		Graph graph = new Graph();
 		graph.setCodebaseName(codebase.getName());
@@ -279,19 +288,12 @@ public class AnalysisController {
 			graph.addCluster(cluster);
 		}
 
-		if (codebase.isStatic()) {
-			graph.calculateAnalyserStaticMetrics(
-				analyser.getProfile(),
-				datafileJSON
-			);
-
-		} else {
-			graph.calculateAnalyserDynamicMetrics(
-				analyser.getProfile(),
-				analyser.getTracesMaxLimit(),
-				analyser.getTypeOfTraces()
-			);
-		}
+		graph.calculateMetrics(
+			codebase,
+			analyser.getProfile(),
+			analyser.getTracesMaxLimit(),
+			analyser.getTypeOfTraces()
+		);
 
 		return graph;
 	}
@@ -337,23 +339,25 @@ public class AnalysisController {
 		CutInfoDto cutInfo = new CutInfoDto();
 		cutInfo.setAnalyserResultDto(analyserResult);
 
-		HashMap<String, HashMap<String, Float>> controllerSpecs = new HashMap<>();
-		for (Controller controller : graph.getControllers()) {
-			controllerSpecs.put(
-				controller.getName(),
-				new HashMap<String, Float>() {{
-					put("complexity", controller.getComplexity());
-					put("performance", (float) controller.getPerformance());
-				}}
-			);
-		}
 
-		cutInfo.setControllerSpecs(controllerSpecs);
+		// FIXME TESTS, controller metrics may be biased from previous calculations
+//		HashMap<String, HashMap<String, Float>> controllerSpecs = new HashMap<>();
+//		for (Controller controller : graph.getControllers()) {
+//			controllerSpecs.put(
+//				controller.getName(),
+//				new HashMap<String, Float>() {{
+//					put("complexity", controller.getComplexity());
+//					put("performance", (float) controller.getPerformance());
+//				}}
+//			);
+//		}
+//
+//		cutInfo.setControllerSpecs(controllerSpecs);
 
 		return cutInfo;
 	}
 
-	private SimilarityMatrixDto getAnalyserMatrixData(
+	private static SimilarityMatrixDto getMatrixData(
 		Set<Short> entityIDs,
 		Map<String,Integer> e1e2PairCount,
 		Map<Short, List<Pair<String, Byte>>> entityControllers
@@ -404,147 +408,6 @@ public class AnalysisController {
 
 		return matrixData;
 	}
-	
-	private int createStaticAnalyserSimilarityMatrix(
-		Codebase codebase,
-		AnalyserDto analyser,
-		HashMap<String, ControllerDto> datafileJSON
-	)
-		throws IOException
-	{
-		Map<Short, List<Pair<String, Byte>>> entityControllers = new HashMap<>();
-		Map<String, Integer> e1e2PairCount = new HashMap<>();
-
-		List<String> profileControllers = codebase.getProfile(analyser.getProfile());
-
-		for (String controllerName : profileControllers) {
-			ControllerDto controllerDto = datafileJSON.get(controllerName);
-			List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
-
-			Utils.fillEntityDataStructures(
-				entityControllers,
-				e1e2PairCount,
-				controllerAccesses,
-				controllerName
-			);
-		}
-
-		Set<Short> entities = new TreeSet<>(entityControllers.keySet());
-
-		CodebaseManager.getInstance().writeAnalyserSimilarityMatrix(
-			codebase.getName(),
-			getAnalyserMatrixData(
-				entities,
-				e1e2PairCount,
-				entityControllers
-			)
-		);
-
-		return entities.size();
-	}
-
-	private int createDynamicAnalyserSimilarityMatrix(
-		Codebase codebase,
-		AnalyserDto analyser
-	)
-		throws IOException
-	{
-		Map<Short, List<Pair<String, Byte>>> entityControllers = new HashMap<>();
-		Map<String, Integer> e1e2PairCount = new HashMap<>();
-
-		ControllerTracesIterator iter = new ControllerTracesIterator(
-			codebase.getDatafilePath(),
-			analyser.getTracesMaxLimit()
-		);
-
-		TraceDto t;
-		List<String> profileControllers = codebase.getProfile(analyser.getProfile());
-
-		for (String controllerName : profileControllers) {
-			iter.nextControllerWithName(controllerName);
-
-			switch (analyser.getTypeOfTraces()) {
-				case LONGEST:
-					// FIXME return accesses of longest trace instead of the trace itself
-					t = iter.getLongestTrace();
-
-					if (t != null) {
-						Utils.fillEntityDataStructures(
-							entityControllers,
-							e1e2PairCount,
-							t.expand(2),
-							controllerName
-						);
-					}
-
-					break;
-
-				case WITH_MORE_DIFFERENT_ACCESSES:
-					t = iter.getTraceWithMoreDifferentAccesses();
-
-					if (t != null) {
-						Utils.fillEntityDataStructures(
-							entityControllers,
-							e1e2PairCount,
-							t.expand(2),
-							controllerName
-						);
-					}
-
-					break;
-
-				case REPRESENTATIVE:
-					Set<String> tracesIds = iter.getRepresentativeTraces();
-					// FIXME probably here we create a second controllerTracesIterator
-					iter.reset();
-
-					while (iter.hasMoreTraces()) {
-						t = iter.nextTrace();
-
-						if (tracesIds.contains(String.valueOf(t.getId()))) {
-							Utils.fillEntityDataStructures(
-								entityControllers,
-								e1e2PairCount,
-								t.expand(2),
-								controllerName
-							);
-						}
-					}
-
-					break;
-
-				default:
-					while (iter.hasMoreTraces()) {
-						t = iter.nextTrace();
-
-						Utils.fillEntityDataStructures(
-							entityControllers,
-							e1e2PairCount,
-							t.expand(2),
-							controllerName
-						);
-					}
-			}
-
-			t = null; // release memory
-		}
-
-		iter = null; // release memory
-
-		Set<Short> entities = new TreeSet<>(entityControllers.keySet());
-
-		CodebaseManager.getInstance().writeAnalyserSimilarityMatrix(
-			codebase.getName(),
-			getAnalyserMatrixData(
-				entities,
-				e1e2PairCount,
-				entityControllers
-			)
-		);
-
-		return entities.size();
-	}
-
 
 	@RequestMapping(value = "/analysis", method = RequestMethod.POST)
 	public ResponseEntity<AnalysisDto> getAnalysis(@RequestBody AnalysisDto analysis) throws IOException {
@@ -555,12 +418,12 @@ public class AnalysisController {
 		}
 
 		Map<String, Set<Short>> graph1 = new HashMap<>();
-		for (Cluster c : analysis.getGraph1().getClusters()) {
+		for (Cluster c : analysis.getGraph1().getClusters().values()) {
 			graph1.put(c.getName(), c.getEntities());
 		}
 
 		Map<String, Set<Short>> graph2_CommonEntitiesOnly = new HashMap<>();
-		for (Cluster c : analysis.getGraph2().getClusters()) {
+		for (Cluster c : analysis.getGraph2().getClusters().values()) {
 			graph2_CommonEntitiesOnly.put(c.getName(), c.getEntities());
 		}
 
@@ -782,6 +645,7 @@ public class AnalysisController {
 		for (Map.Entry<String, Set<Short>> clusterEntry : graph2.entrySet()) {
 			String clusterName = clusterEntry.getKey();
 			Set<Short> clusterEntities = clusterEntry.getValue();
+
 			for (short entityID : clusterEntities) {
 				if (entities.contains(entityID)) { // entity present in both graphs
 					sbTarget.append("contain " + clusterName + " " + entityID + "\n");
