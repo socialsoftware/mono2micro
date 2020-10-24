@@ -88,9 +88,9 @@ public class Graph {
 		}
 	}
 
+	private String name;
 	private String codebaseName;
 	private String dendrogramName;
-	private String name;
 	private boolean expert;
 	private float cutValue;
 	private String cutType;

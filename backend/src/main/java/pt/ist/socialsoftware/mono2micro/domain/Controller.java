@@ -2,7 +2,6 @@ package pt.ist.socialsoftware.mono2micro.domain;
 
 import java.util.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -17,7 +16,7 @@ public class Controller {
 	private float complexity;
 	private int performance; // number of hops between clusters
 	private Map<Short, Byte> entities = new HashMap<>(); // <entityID, mode>
-	@JsonIgnore
+//	@JsonIgnore
 //	private String entitiesSeq = "[]";
 //	private List<FunctionalityRedesign> functionalityRedesigns = new ArrayList<>();
 

@@ -14,6 +14,7 @@ import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class GraphDeserializer extends StdDeserializer<Graph> {
@@ -79,7 +80,11 @@ public class GraphDeserializer extends StdDeserializer<Graph> {
 							graph.setCoupling(jsonParser.getFloatValue());
 							break;
 						case "clusters":
-							graph.setClusters(jsonParser.readValueAs(new TypeReference<List<Cluster>>(){}));
+							graph.setClusters(
+								jsonParser.readValueAs(
+									new TypeReference<Map<String, Cluster>>(){}
+								)
+							);
 							break;
 						case "expert":
 							graph.setExpert(jsonParser.getBooleanValue());

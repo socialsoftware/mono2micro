@@ -57,7 +57,11 @@ public class ControllerDeserializer extends StdDeserializer<Controller> {
 							controller.setPerformance(jsonParser.getIntValue());
 							break;
 						case "entities":
-							controller.setEntities(jsonParser.readValueAs(new TypeReference<HashMap<Short, String>>() {}));
+							controller.setEntities(
+								jsonParser.readValueAs(
+									new TypeReference<HashMap<Short, Byte>>() {}
+								)
+							);
 							break;
 //						case "entitiesSeq":
 //							controller.setEntitiesSeq(jsonParser.getValueAsString());

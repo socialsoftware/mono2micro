@@ -591,16 +591,19 @@ public class AnalysisController {
 				graph1,
 				graph2_CommonEntitiesOnly.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
 		);
+
 		double mojoValueUnassignedInBiggest = getMojoValue(
 				graph2_UnassignedInBigger,
 				graph1,
 				graph2_UnassignedInBigger.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
 		);
+
 		double mojoValueUnassignedInNew = getMojoValue(
 				graph2_UnassignedInNew,
 				graph1,
 				graph2_UnassignedInNew.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
 		);
+
 		double mojoValueUnassignedInSingletons = getMojoValue(
 				graph2_UnassignedInSingletons,
 				graph1,
@@ -611,14 +614,18 @@ public class AnalysisController {
 		analysis.setMojoBiggest(mojoValueUnassignedInBiggest);
 		analysis.setMojoNew(mojoValueUnassignedInNew);
 		analysis.setMojoSingletons(mojoValueUnassignedInSingletons);
+
 		return new ResponseEntity<>(analysis, HttpStatus.OK);
 	}
 
 	private Map<String, Set<Short>> graphCopyOf(Map<String, Set<Short>> graph) {
 		HashMap<String, Set<Short>> copy = new HashMap<>();
-		for (Map.Entry<String, Set<Short>> entry : graph.entrySet()) {
-			copy.put(entry.getKey(), new HashSet<>(entry.getValue()));
-		}
+
+		for (Map.Entry<String, Set<Short>> entry : graph.entrySet())
+			copy.put(
+				entry.getKey(),
+				new HashSet<>(entry.getValue())
+			);
 
 		return copy;
 	}
@@ -636,7 +643,11 @@ public class AnalysisController {
 
 			for (short entityID : clusterEntities) {
 				if (entities.contains(entityID)) { // entity present in both graphs
-					sbSource.append("contain " + clusterName + " " + entityID + "\n");
+					sbSource.append("contain ")
+							.append(clusterName)
+							.append(" ")
+							.append(entityID)
+							.append("\n");
 				}
 			}
 		}
@@ -648,7 +659,11 @@ public class AnalysisController {
 
 			for (short entityID : clusterEntities) {
 				if (entities.contains(entityID)) { // entity present in both graphs
-					sbTarget.append("contain " + clusterName + " " + entityID + "\n");
+					sbTarget.append("contain ")
+							.append(clusterName)
+							.append(" ")
+							.append(entityID)
+							.append("\n");
 				}
 			}
 		}

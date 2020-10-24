@@ -30,13 +30,6 @@ public class Codebase {
         this.name = name;
 	}
 
-	public Codebase(
-		String name,
-		String analysisType
-	) {
-		this.name = name;
-	}
-
 	public String getName() {
 		return this.name;
 	}

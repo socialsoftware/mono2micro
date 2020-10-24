@@ -265,9 +265,10 @@ public class CodebaseManager {
 
 	public Codebase createCodebase(
 		String codebaseName,
-		Object datafile,
-		String analysisType
-	) throws IOException {
+		Object datafile
+	)
+		throws IOException
+	{
 
 		File codebaseJSONFile = new File(CODEBASES_PATH + codebaseName + "/codebase.json");
 
@@ -284,7 +285,7 @@ public class CodebaseManager {
 			codebasePath.mkdir();
 		}
 
-		Codebase codebase = new Codebase(codebaseName, analysisType);
+		Codebase codebase = new Codebase(codebaseName);
 
 		HashMap datafileJSON;
 

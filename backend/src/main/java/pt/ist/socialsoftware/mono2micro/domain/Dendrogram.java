@@ -9,9 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
-import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
-import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.DendrogramDeserializer;
@@ -30,8 +28,8 @@ import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
 @JsonDeserialize(using = DendrogramDeserializer.class)
 public class Dendrogram {
-	private String codebaseName;
 	private String name;
+	private String codebaseName;
 	private String linkageType;
 	private float accessMetricWeight;
 	private float writeMetricWeight;

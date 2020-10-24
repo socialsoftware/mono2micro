@@ -170,16 +170,14 @@ public class CodebaseController {
     @RequestMapping(value = "/codebase/create", method = RequestMethod.POST)
     public ResponseEntity<HttpStatus> createCodebase(
         @RequestParam String codebaseName,
-        @RequestParam Object datafile,
-        @RequestParam String analysisType
+        @RequestParam Object datafile
     ){
         logger.debug("createCodebase");
 
         try {
             Codebase codebase = codebaseManager.createCodebase(
             	codebaseName,
-				datafile,
-				analysisType
+				datafile
 			);
 
             codebaseManager.writeCodebase(codebase);
