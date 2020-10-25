@@ -634,7 +634,8 @@ public class AnalysisController {
 			Map<String, Set<Short>> graph1,
 			Map<String, Set<Short>> graph2,
 			Set<Short> entities
-	) throws IOException
+	)
+		throws IOException
 	{
 		StringBuilder sbSource = new StringBuilder();
 		for (Map.Entry<String, Set<Short>> clusterEntry : graph1.entrySet()) {

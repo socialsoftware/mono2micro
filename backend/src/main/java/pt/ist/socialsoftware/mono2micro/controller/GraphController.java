@@ -44,7 +44,6 @@ public class GraphController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
 		}
 	}
 

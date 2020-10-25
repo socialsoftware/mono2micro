@@ -17,7 +17,6 @@ import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
 import pt.ist.socialsoftware.mono2micro.dto.CutInfoDto;
 import pt.ist.socialsoftware.mono2micro.dto.SimilarityMatrixDto;
 import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
-import pt.ist.socialsoftware.mono2micro.utils.Utils;
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -144,7 +143,9 @@ public class CodebaseManager {
 	public List<Graph> getCodebaseGraphsWithFields(
 		String codebaseName,
 		Set<String> graphDeserializableFields
-	) throws Exception {
+	)
+		throws Exception
+	{
 
 		ObjectMapper objectMapper = new ObjectMapper();
 
@@ -173,7 +174,9 @@ public class CodebaseManager {
 		String codebaseName,
 		String dendrogramName,
 		Set<String> graphDeserializableFields
-	) throws Exception {
+	)
+		throws Exception
+	{
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		graphDeserializableFields.add("name");
@@ -207,7 +210,9 @@ public class CodebaseManager {
 		String dendrogramName,
 		String graphName,
 		Set<String> graphDeserializableFields
-	) throws Exception {
+	)
+		throws Exception
+	{
 
 		return getDendrogramGraphsWithFields(
 			codebaseName,
@@ -226,7 +231,9 @@ public class CodebaseManager {
 		String graphName,
 		Set<String> controllerDeserializableFields,
 		Set<String> clusterDeserializableFields
-	) throws Exception {
+	)
+		throws Exception
+	{
 
 		ObjectMapper objectMapper = new ObjectMapper();
 
@@ -311,13 +318,19 @@ public class CodebaseManager {
 			codebase.setDatafilePath((String) datafile);
 		}
 
-		codebase.addProfile("Generic", Utils.getJsonFileKeys(datafileFile));
-		codebase.setControllers(new HashMap<>()); // FiXME
+		GetControllersAndGenericProfileResult result = getCodebaseControllersAndGenericProfile(codebase);
+
+		codebase.addProfile("Generic", result.profile);
+		codebase.setControllers(result.controllers);
 
 		return codebase;
 	}
 
-	public Codebase getCodebase(String codebaseName) throws IOException {
+	public Codebase getCodebase(
+		String codebaseName
+	)
+		throws IOException
+	{
 		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/codebase.json");
 
 		Codebase codebase = objectMapper.readerFor(Codebase.class).readValue(is);
@@ -326,11 +339,28 @@ public class CodebaseManager {
 		return codebase;
 	}
 
-	public Map<String, Controller> getCodebaseControllers(
+	public static class GetControllersAndGenericProfileResult {
+		public Set<String> profile; // Array of controller names
+		public Map<String, Controller> controllers; // controller name -> controller object
+
+		public GetControllersAndGenericProfileResult(
+			Set<String> profile,
+			Map<String, Controller> controllers
+		) {
+			this.profile = profile;
+			this.controllers = controllers;
+		}
+	}
+
+	public GetControllersAndGenericProfileResult getCodebaseControllersAndGenericProfile(
 		Codebase codebase
 	)
 		throws IOException
 	{
+
+		Set<String> profile = new HashSet<>();
+		Map<String, Controller> controllers = new HashMap<>();
+
 		ControllerTracesIterator iter = new ControllerTracesIterator(
 			codebase.getDatafilePath(),
 			0
@@ -347,27 +377,18 @@ public class CodebaseManager {
 
 		if (controller.getEntities().size() > 0)
 			this.addController(controller);
+
+		return new GetControllersAndGenericProfileResult(
+			profile,
+			controllers
+		);
 	}
 
 	public void writeCodebase(Codebase codebase) throws IOException {
-		objectMapper.writeValue(new File(CODEBASES_PATH + codebase.getName() + "/codebase.json"), codebase);
-	}
-
-	public HashMap<String, ControllerDto> getDatafile(String codebaseName) throws IOException {
-		Codebase codebase = getCodebaseWithFields(
-			codebaseName,
-			new HashSet<String>() {{ add("datafilePath"); }}
+		objectMapper.writeValue(
+			new File(CODEBASES_PATH + codebase.getName() + "/codebase.json"),
+			codebase
 		);
-
-		InputStream is = new FileInputStream(codebase.getDatafilePath());
-
-		HashMap<String, ControllerDto> datafile = objectMapper.readerFor(
-			new TypeReference<HashMap<String, ControllerDto>>() {}
-		).readValue(is);
-
-		is.close();
-
-		return datafile;
 	}
 
 	public HashMap<String, ControllerDto> getDatafile(Codebase codebase) throws IOException {
@@ -382,7 +403,12 @@ public class CodebaseManager {
 		return datafile;
 	}
 
-	public void writeDatafile(String codebaseName, HashMap datafile) throws IOException {
+	public void writeDatafile(
+		String codebaseName,
+		HashMap datafile
+	)
+		throws IOException
+	{
 		objectMapper.writerWithDefaultPrettyPrinter().writeValue(
 			new File(CODEBASES_PATH + codebaseName + "/datafile.json"),
 			datafile

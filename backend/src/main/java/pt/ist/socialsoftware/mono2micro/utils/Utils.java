@@ -134,8 +134,6 @@ public class Utils {
         public Map<String, Integer> e1e2PairCount;
         public Map<Short, List<Pair<String, Byte>>> entityControllers;
 
-        public GetDataToBuildSimilarityMatrixResult() {}
-
         public GetDataToBuildSimilarityMatrixResult(
             Set<Short> entities,
             Map<String, Integer> e1e2PairCount, Map<Short,
@@ -247,59 +245,6 @@ public class Utils {
             entityControllers
         );
     }
-
-//    private static SimilarityMatrixDto getMatrixData(
-//        Set<Short> entityIDs,
-//        Map<String,Integer> e1e2PairCount,
-//        Map<Short, List<Pair<String, Byte>>> entityControllers,
-//        String linkageType
-//    ) {
-//
-//        SimilarityMatrixDto matrixData = new SimilarityMatrixDto();
-//
-//        List<List<List<Float>>> similarityMatrix = new ArrayList<>();
-//
-//        int maxNumberOfPairs = Utils.getMaxNumberOfPairs(e1e2PairCount);
-//
-//        for (short e1ID : entityIDs) {
-//            List<List<Float>> matrixRow = new ArrayList<>();
-//
-//            for (short e2ID : entityIDs) {
-//                List<Float> metric = new ArrayList<>();
-//
-//                if (e1ID == e2ID) {
-//                    metric.add((float) 1);
-//                    metric.add((float) 1);
-//                    metric.add((float) 1);
-//                    metric.add((float) 1);
-//
-//                    matrixRow.add(metric);
-//                    continue;
-//                }
-//
-//                float[] metrics = Utils.calculateSimilarityMatrixMetrics(
-//                    entityControllers,
-//                    e1e2PairCount,
-//                    e1ID,
-//                    e2ID,
-//                    maxNumberOfPairs
-//                );
-//
-//                metric.add(metrics[0]);
-//                metric.add(metrics[1]);
-//                metric.add(metrics[2]);
-//                metric.add(metrics[3]);
-//
-//                matrixRow.add(metric);
-//            }
-//            similarityMatrix.add(matrixRow);
-//        }
-//        matrixData.setMatrix(similarityMatrix);
-//        matrixData.setEntities(entityIDs);
-//        matrixData.setLinkageType(linkageType);
-//
-//        return matrixData;
-//    }
 
     public static float[] calculateSimilarityMatrixMetrics(
         Map<Short,List<Pair<String, Byte>>> entityControllers, // entityID -> [<controllerName, accessMode>, ...]
