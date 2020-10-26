@@ -47,6 +47,11 @@ public class ClusterController {
 				newName
 			);
 
+			graph.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+				codebase,
+				graph.getEntityIDToClusterName()
+			));
+
 			graph.calculateMetrics(
 				codebase,
 				dendrogram.getProfile(),
@@ -87,6 +92,13 @@ public class ClusterController {
 				clusterName,
 				newName
 			);
+
+			// it should not be necessary to do this due to just a renaming
+			// but for safety i'll keep the existent behaviour
+			graph.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+				codebase,
+				graph.getEntityIDToClusterName()
+			));
 
 			// it should not be necessary to recalculate metrics due to just a renaming
 			// but for safety i'll keep the existent behaviour
@@ -137,6 +149,11 @@ public class ClusterController {
 				entities.split(",")
 			);
 
+			graph.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+				codebase,
+				graph.getEntityIDToClusterName()
+			));
+
 			graph.calculateMetrics(
 				codebase,
 				dendrogram.getProfile(),
@@ -179,6 +196,11 @@ public class ClusterController {
 				toCluster,
 				entities.split(",")
 			);
+
+			graph.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+				codebase,
+				graph.getEntityIDToClusterName()
+			));
 
 			graph.calculateMetrics(
 				codebase,

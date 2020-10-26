@@ -100,8 +100,10 @@ public class Graph {
 	private float cohesion;
 	private float coupling;
 	private Map<String, Cluster> clusters = new HashMap<>(); // FIXME, should be Map<Short, Cluster>
-	@JsonIgnore
-	private final Map<Short, String> entityIDToClusterName = new HashMap<>();
+
+	private Map<String, Controller> controllers = new HashMap<>(); // <controllerName, Controller>
+
+	private Map<Short, String> entityIDToClusterName = new HashMap<>();
 
 	public Graph() { }
 
@@ -181,6 +183,12 @@ public class Graph {
 		this.coupling = coupling;
 	}
 
+	public Map<Short, String> getEntityIDToClusterName() {
+		return entityIDToClusterName;
+	}
+
+	public void setEntityIDToClusterName(Map<Short, String> entityIDToClusterName) { this.entityIDToClusterName = entityIDToClusterName; }
+
 	public void putEntity(short entityID, String clusterName) {
 		entityIDToClusterName.put(entityID, clusterName);
 	}
@@ -188,6 +196,9 @@ public class Graph {
 	public Map<String, Cluster> getClusters() { return this.clusters; }
 
 	public void setClusters(Map<String, Cluster> clusters) { this.clusters = clusters; }
+
+	public Map<String, Controller> getControllers() { return controllers; }
+	public void setControllers(Map<String, Controller> controllers) { this.controllers = controllers; }
 
 	public boolean clusterExists(String clusterID) { return this.clusters.containsKey(clusterID); }
 
@@ -589,7 +600,7 @@ public class Graph {
 	}
 
 	public void calculateMetrics(
-		Codebase codebase, // requirements: profiles, datafilePath and controllers
+		Codebase codebase, // requirements: profiles, datafilePath
 		String profile,
 		int tracesMaxLimit,
 		Constants.TraceType traceType
@@ -606,7 +617,7 @@ public class Graph {
 			Utils.getControllersClustersAndClustersControllers(
 				profileControllers,
 				clusters,
-				codebase.getControllers()
+				this.getControllers()
 			);
 
 		Map<String, Set<Cluster>> controllersClusters = result1.controllersClusters;
@@ -678,12 +689,12 @@ public class Graph {
 			float controllerComplexity = Metrics.calculateControllerComplexityAndClusterDependencies(
 				this,
 				controllerName,
-				(Set<Controller>) codebase.getControllers().values(),
+				(Set<Controller>) this.getControllers().values(),
 				controllersClusters,
 				result2.localTransactionsGraph
 			);
 
-			Controller c = codebase.getControllers().get(controllerName);
+			Controller c = this.getControllers().get(controllerName);
 			// This needs to be done because the cluster complexity calculation depends on this result
 			c.setPerformance(controllerPerformance);
 			c.setComplexity(controllerComplexity);
@@ -777,6 +788,12 @@ public class Graph {
 		mergedCluster.setEntities(cluster1.getEntities());
 		mergedCluster.setEntities(cluster2.getEntities());
 
+		for(short entityID : cluster1.getEntities())
+			entityIDToClusterName.replace(entityID, mergedCluster.getName());
+
+		for(short entityID : cluster2.getEntities())
+			entityIDToClusterName.replace(entityID, mergedCluster.getName());
+
 		removeCluster(cluster1ID);
 		removeCluster(cluster2ID);
 
@@ -791,11 +808,14 @@ public class Graph {
 
 		if (clusterExists(newID)) throw new KeyAlreadyExistsException("Cluster with ID: " + newID + " already exists");
 
-		Cluster c = removeCluster(clusterID);
+		Cluster removedCluster = removeCluster(clusterID);
 
-		c.setName(newID);
+		removedCluster.setName(newID);
 
-		addCluster(new Cluster(c));
+		for(short entityID : removedCluster.getEntities())
+			entityIDToClusterName.replace(entityID, removedCluster.getName());
+
+		addCluster(new Cluster(removedCluster));
 	}
 
 	public void splitCluster(
@@ -812,6 +832,7 @@ public class Graph {
 			if (currentCluster.containsEntity(entityID)) {
 				newCluster.addEntity(entityID);
 				currentCluster.removeEntity(entityID);
+				entityIDToClusterName.replace(entityID, newCluster.getName());
 			}
 		}
 
@@ -832,6 +853,7 @@ public class Graph {
 			if (fromCluster.containsEntity(entityID)) {
 				toCluster.addEntity(entityID);
 				fromCluster.removeEntity(entityID);
+				entityIDToClusterName.replace(entityID, toCluster.getName());
 			}
 		}
 	}

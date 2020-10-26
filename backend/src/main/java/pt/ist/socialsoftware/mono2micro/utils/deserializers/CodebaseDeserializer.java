@@ -66,14 +66,6 @@ public class CodebaseDeserializer extends StdDeserializer<Codebase> {
 							);
 							break;
 
-						case "controllers":
-							codebase.setControllers(
-								jsonParser.readValueAs(
-									new TypeReference<Map<String, Controller>>(){}
-								)
-							);
-							break;
-
 						case "datafilePath":
 							codebase.setDatafilePath(jsonParser.getValueAsString());
 							break;

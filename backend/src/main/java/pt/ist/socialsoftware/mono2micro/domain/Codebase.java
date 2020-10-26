@@ -20,7 +20,6 @@ import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 public class Codebase {
 	private String name;
 	private Map<String, Set<String>> profiles = new HashMap<>(); // e.g <Generic, ControllerNamesList> change to Set
-	private Map<String, Controller> controllers = new HashMap<>(); // <controllerName, Controller>
 	private List<Dendrogram> dendrograms = new ArrayList<>();
 	private String datafilePath;
 
@@ -37,10 +36,6 @@ public class Codebase {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public Map<String, Controller> getControllers() { return controllers; }
-
-	public void setControllers(Map<String, Controller> controllers) { this.controllers = controllers; }
 
 	public String getDatafilePath() {
 		return datafilePath;

@@ -86,6 +86,21 @@ public class GraphDeserializer extends StdDeserializer<Graph> {
 								)
 							);
 							break;
+
+						case "controllers":
+							graph.setControllers(
+								jsonParser.readValueAs(
+									new TypeReference<Map<String, Controller>>(){}
+								)
+							);
+
+							break;
+						case "entityIDToClusterName":
+							graph.setEntityIDToClusterName(
+								jsonParser.readValueAs(
+									new TypeReference<Map<Short, String>>(){}
+								)
+							);
 						case "expert":
 							graph.setExpert(jsonParser.getBooleanValue());
 							break;

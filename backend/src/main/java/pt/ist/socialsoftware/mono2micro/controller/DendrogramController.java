@@ -160,6 +160,11 @@ public class DendrogramController {
 			// FIXME Did not have the patience to code it well
 			Graph cutGraph = dendrogram.cut(graph);
 
+			graph.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+				codebase,
+				graph.getEntityIDToClusterName()
+			));
+
 			cutGraph.calculateMetrics(
 				codebase,
 				dendrogram.getProfile(),
@@ -198,6 +203,11 @@ public class DendrogramController {
             	expertName,
 				expertFile
 			);
+
+			graph.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+				codebase,
+				graph.getEntityIDToClusterName()
+			));
 
 			graph.calculateMetrics(
 				codebase,

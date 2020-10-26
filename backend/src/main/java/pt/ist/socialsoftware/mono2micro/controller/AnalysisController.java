@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
+import pt.ist.socialsoftware.mono2micro.domain.Controller;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.dto.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
@@ -54,7 +55,6 @@ public class AnalysisController {
 					add("name");
 					add("profiles");
 					add("datafilePath");
-					add("controllers");
 				}}
 			);
 
@@ -263,7 +263,7 @@ public class AnalysisController {
 
 	private Graph buildGraphAndCalculateMetrics(
 		AnalyserDto analyser,
-		Codebase codebase, // requirements: name, profiles, datafilePath and controllers
+		Codebase codebase, // requirements: name, profiles, datafilePath
 		String filename
 	)
 		throws Exception
@@ -287,6 +287,11 @@ public class AnalysisController {
 
 			graph.addCluster(cluster);
 		}
+
+		graph.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+			codebase,
+			graph.getEntityIDToClusterName()
+		));
 
 		graph.calculateMetrics(
 			codebase,
@@ -339,20 +344,18 @@ public class AnalysisController {
 		CutInfoDto cutInfo = new CutInfoDto();
 		cutInfo.setAnalyserResultDto(analyserResult);
 
+		HashMap<String, HashMap<String, Float>> controllerSpecs = new HashMap<>();
+		for (Controller controller : graph.getControllers().values()) {
+			controllerSpecs.put(
+				controller.getName(),
+				new HashMap<String, Float>() {{
+					put("complexity", controller.getComplexity());
+					put("performance", (float) controller.getPerformance());
+				}}
+			);
+		}
 
-		// FIXME TESTS, controller metrics may be biased from previous calculations
-//		HashMap<String, HashMap<String, Float>> controllerSpecs = new HashMap<>();
-//		for (Controller controller : graph.getControllers()) {
-//			controllerSpecs.put(
-//				controller.getName(),
-//				new HashMap<String, Float>() {{
-//					put("complexity", controller.getComplexity());
-//					put("performance", (float) controller.getPerformance());
-//				}}
-//			);
-//		}
-//
-//		cutInfo.setControllerSpecs(controllerSpecs);
+		cutInfo.setControllerSpecs(controllerSpecs);
 
 		return cutInfo;
 	}
@@ -362,7 +365,6 @@ public class AnalysisController {
 		Map<String,Integer> e1e2PairCount,
 		Map<Short, List<Pair<String, Byte>>> entityControllers
 	) {
-
 		SimilarityMatrixDto matrixData = new SimilarityMatrixDto();
 
 		List<List<List<Float>>> similarityMatrix = new ArrayList<>();

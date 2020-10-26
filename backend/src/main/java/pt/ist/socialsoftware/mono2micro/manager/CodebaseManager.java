@@ -1,5 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.manager;
 
+import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
@@ -13,10 +14,9 @@ import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.domain.Graph;
-import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
-import pt.ist.socialsoftware.mono2micro.dto.CutInfoDto;
-import pt.ist.socialsoftware.mono2micro.dto.SimilarityMatrixDto;
-import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
+import pt.ist.socialsoftware.mono2micro.dto.*;
+import pt.ist.socialsoftware.mono2micro.utils.Utils;
+
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -318,10 +318,7 @@ public class CodebaseManager {
 			codebase.setDatafilePath((String) datafile);
 		}
 
-		GetControllersAndGenericProfileResult result = getCodebaseControllersAndGenericProfile(codebase);
-
-		codebase.addProfile("Generic", result.profile);
-		codebase.setControllers(result.controllers);
+		codebase.addProfile("Generic", Utils.getJsonFileKeys(datafileFile));
 
 		return codebase;
 	}
@@ -337,51 +334,6 @@ public class CodebaseManager {
 		is.close();
 
 		return codebase;
-	}
-
-	public static class GetControllersAndGenericProfileResult {
-		public Set<String> profile; // Array of controller names
-		public Map<String, Controller> controllers; // controller name -> controller object
-
-		public GetControllersAndGenericProfileResult(
-			Set<String> profile,
-			Map<String, Controller> controllers
-		) {
-			this.profile = profile;
-			this.controllers = controllers;
-		}
-	}
-
-	public GetControllersAndGenericProfileResult getCodebaseControllersAndGenericProfile(
-		Codebase codebase
-	)
-		throws IOException
-	{
-
-		Set<String> profile = new HashSet<>();
-		Map<String, Controller> controllers = new HashMap<>();
-
-		ControllerTracesIterator iter = new ControllerTracesIterator(
-			codebase.getDatafilePath(),
-			0
-		);
-
-		while (iter.hasMoreControllers()) {
-			Controller controller = getNextDynamicController(
-				iter,
-				controllerName,
-				typeOfTraces
-			);
-
-		}
-
-		if (controller.getEntities().size() > 0)
-			this.addController(controller);
-
-		return new GetControllersAndGenericProfileResult(
-			profile,
-			controllers
-		);
 	}
 
 	public void writeCodebase(Codebase codebase) throws IOException {
@@ -403,18 +355,6 @@ public class CodebaseManager {
 		return datafile;
 	}
 
-	public void writeDatafile(
-		String codebaseName,
-		HashMap datafile
-	)
-		throws IOException
-	{
-		objectMapper.writerWithDefaultPrettyPrinter().writeValue(
-			new File(CODEBASES_PATH + codebaseName + "/datafile.json"),
-			datafile
-		);
-	}
-
 	public JSONObject getSimilarityMatrix(
 		String codebaseName,
 		String dendrogramName
@@ -428,6 +368,18 @@ public class CodebaseManager {
 		is.close();
 
 		return similarityMatrixJSON;
+	}
+
+	public void writeDatafile(
+		String codebaseName,
+		HashMap datafile
+	)
+		throws IOException
+	{
+		objectMapper.writerWithDefaultPrettyPrinter().writeValue(
+			new File(CODEBASES_PATH + codebaseName + "/datafile.json"),
+			datafile
+		);
 	}
 
 	public void writeDendrogramSimilarityMatrix(
@@ -564,5 +516,139 @@ public class CodebaseManager {
 			return null;
 
 		return reader.readValue(similarityMatrixFile);
+	}
+
+	public Map<String, Controller> getControllersWithCostlyAccesses(
+		Codebase codebase,
+		Map<Short, String> entityIDToClusterName
+	)
+		throws IOException {
+		Map<String, Controller> controllers = new HashMap<>();
+
+		File jsonFile = new File(codebase.getDatafilePath());
+
+		JsonFactory jsonfactory = objectMapper.getFactory();
+
+		JsonParser jsonParser = jsonfactory.createParser(jsonFile);
+		JsonToken jsonToken = jsonParser.nextValue(); // JsonToken.START_OBJECT
+
+		if (jsonToken != JsonToken.START_OBJECT) {
+			Utils.print("Json must start with a left curly brace", Utils.lineno());
+			System.exit(-1);
+		}
+
+		while (jsonParser.nextValue() != JsonToken.END_OBJECT) {
+			if (jsonParser.getCurrentToken() == JsonToken.START_OBJECT) {
+				Utils.print("Controller name: " + jsonParser.getCurrentName(), Utils.lineno());
+
+				Controller controller = new Controller(jsonParser.getCurrentName());
+
+				while (jsonParser.nextValue() != JsonToken.END_OBJECT) {
+					Utils.print("field name: " + jsonParser.getCurrentName(), Utils.lineno());
+
+					switch (jsonParser.getCurrentName()) {
+						case "f":
+							break;
+						case "t":
+							while (jsonParser.nextValue() != JsonToken.END_ARRAY) {
+
+								switch (jsonParser.getCurrentName()) {
+									case "id":
+									case "f":
+										break;
+									case "a":
+										Map<Short, Byte> entityIDToMode = new HashMap<>();
+										String previousCluster = "";
+										int i = 0;
+
+										while (jsonParser.nextValue() != JsonToken.END_ARRAY) {
+											ReducedTraceElementDto rte = jsonParser.readValueAs(
+												ReducedTraceElementDto.class
+											);
+
+											if (rte instanceof AccessDto) {
+												AccessDto access = (AccessDto) rte;
+												short entityID = access.getEntityID();
+												byte mode = access.getMode();
+												String cluster;
+
+												cluster = entityIDToClusterName.get(entityID);
+
+												if (cluster == null) {
+													System.err.println("Entity " + entityID + " is not assign to a cluster.");
+													System.exit(-1);
+												}
+
+												if (i == 0) {
+													entityIDToMode.put(entityID, mode);
+													controller.addEntity(entityID, mode);
+
+												} else {
+
+													if (cluster.equals(previousCluster)) {
+														boolean hasCost = false;
+														Byte savedMode = entityIDToMode.get(entityID);
+
+														if (savedMode == null) {
+															hasCost = true;
+
+														} else {
+															if (savedMode == 1 && mode == 2) // "R" -> 1, "W" -> 2
+																hasCost = true;
+														}
+
+														if (hasCost) {
+															entityIDToMode.put(entityID, mode);
+															controller.addEntity(entityID, mode);
+														}
+
+													} else {
+														controller.addEntity(entityID, mode);
+
+														entityIDToMode.clear();
+														entityIDToMode.put(entityID, mode);
+
+													}
+												}
+
+												previousCluster = cluster;
+												i++;
+											}
+										}
+
+										break;
+
+									default:
+										Utils.print(
+											"Unexpected field name when parsing Trace: " + jsonParser.getCurrentName(),
+											Utils.lineno()
+										);
+
+										System.exit(-1);
+								}
+							}
+
+							break;
+
+						default:
+							Utils.print(
+								"Unexpected field name when parsing Controller: " + jsonParser.getCurrentName(),
+								Utils.lineno()
+							);
+							System.exit(-1);
+					}
+				}
+
+				// only consider controllers that touch domain entities
+				if (!controller.getEntities().isEmpty()) {
+					controllers.put(
+						controller.getName(),
+						controller
+					);
+				}
+			}
+		}
+
+		return controllers;
 	}
 }

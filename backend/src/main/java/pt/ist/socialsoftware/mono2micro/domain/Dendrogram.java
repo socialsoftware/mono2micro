@@ -247,7 +247,9 @@ public class Dendrogram {
 		return matrixData;
 	}
 
-	public Graph cut(Graph graph) throws Exception {
+	public Graph cut(Graph graph)
+		throws Exception
+	{
 
 		String cutValue = Float.valueOf(graph.getCutValue()).toString().replaceAll("\\.?0*$", "");
 		if (this.getGraphNames().contains(graph.getCutType() + cutValue)) {
