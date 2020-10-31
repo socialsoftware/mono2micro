@@ -23,26 +23,26 @@ export class Dendrogram extends React.Component {
             newExpert: "",
             isUploaded: "",
             cutSuccess: "",
-            graphs: [],
+            decompositions: [],
             expertFile: null, 
         };
 
         this.handleHeightChange = this.handleHeightChange.bind(this);
         this.handleNumberClustersChange = this.handleNumberClustersChange.bind(this);
         this.handleChangeNewExpert = this.handleChangeNewExpert.bind(this);
-        this.handleDeleteGraph = this.handleDeleteGraph.bind(this);
+        this.handleDeleteDecomposition = this.handleDeleteDecomposition.bind(this);
         this.handleCutSubmit = this.handleCutSubmit.bind(this);
         this.handleExpertSubmit = this.handleExpertSubmit.bind(this);
         this.handleSelectNewExpertFile = this.handleSelectNewExpertFile.bind(this);
     }
 
     componentDidMount() {
-        this.loadGraphs();
+        this.loadDecompositions();
     }
 
-    loadGraphs() {
+    loadDecompositions() {
         const service = new RepositoryService();
-        service.getGraphs(
+        service.getDecompositions(
             this.state.codebaseName,
             this.state.dendrogramName,
             [
@@ -57,7 +57,7 @@ export class Dendrogram extends React.Component {
             ]
         ).then(response => {
             this.setState({
-                graphs: response.data
+                decompositions: response.data
             });
         });
     }
@@ -106,7 +106,7 @@ export class Dendrogram extends React.Component {
             cutType
         ).then(response => {
             if (response.status === HttpStatus.OK) {
-                this.loadGraphs();
+                this.loadDecompositions();
                 this.setState({
                     cutSuccess: "Dendrogram cut successful."
                 });
@@ -133,7 +133,7 @@ export class Dendrogram extends React.Component {
         const service = new RepositoryService();
         service.expertCut(this.state.codebaseName, this.state.dendrogramName, this.state.newExpert, this.state.expertFile).then(response => {
             if (response.status === HttpStatus.OK) {
-                this.loadGraphs();
+                this.loadDecompositions();
                 this.setState({
                     isUploaded: "Upload completed successfully."
                 });
@@ -156,10 +156,10 @@ export class Dendrogram extends React.Component {
         });
     }
 
-    handleDeleteGraph(graphName) {
+    handleDeleteDecomposition(decompositionName) {
         const service = new RepositoryService();
-        service.deleteGraph(this.state.codebaseName, this.state.dendrogramName, graphName).then(response => {
-            this.loadGraphs();
+        service.deleteDecomposition(this.state.codebaseName, this.state.dendrogramName, decompositionName).then(response => {
+            this.loadDecompositions();
         });
     }
 
@@ -281,22 +281,22 @@ export class Dendrogram extends React.Component {
         return (
             <Row>
                 {
-                    this.state.graphs.map(graph =>
-                        <Col key={graph.name} md="auto">
+                    this.state.decompositions.map(decomposition =>
+                        <Col key={decomposition.name} md="auto">
                             <Card style={{ width: '15rem', marginBottom: "16px" }}>
                                 <Card.Body>
                                     <Card.Title>
-                                        {graph.name}
+                                        {decomposition.name}
                                     </Card.Title>
                                     <Button
-                                        href={`/codebases/${this.state.codebaseName}/dendrograms/${this.state.dendrogramName}/graphs/${graph.name}`}
+                                        href={`/codebases/${this.state.codebaseName}/dendrograms/${this.state.dendrogramName}/decompositions/${decomposition.name}`}
                                         className="mb-2"
                                     >
-                                        Go to Graph
+                                        Go to Decomposition
                                     </Button>
                                     <br/>
                                     <Button
-                                        onClick={() => this.handleDeleteGraph(graph.name)}
+                                        onClick={() => this.handleDeleteDecomposition(decomposition.name)}
                                         variant="danger"
                                     >
                                         Delete
@@ -312,24 +312,24 @@ export class Dendrogram extends React.Component {
 
     render() {
 
-        const metricRows = this.state.graphs.map(graph => {
+        const metricRows = this.state.decompositions.map(decomposition => {
             return {
-                graph: graph.name,
-                clusters: graph.clusters.length,
-                singleton: graph.clusters.filter(c => Object.keys(c.entities).length === 1).length,
-                max_cluster_size: Math.max(...graph.clusters.map(c => Object.keys(c.entities).length)),
-                ss: graph.silhouetteScore,
-                cohesion: graph.cohesion,
-                coupling: graph.coupling,
-                complexity: graph.complexity,
-                performance: graph.performance
+                decomposition: decomposition.name,
+                clusters: decomposition.clusters.length,
+                singleton: decomposition.clusters.filter(c => Object.keys(c.entities).length === 1).length,
+                max_cluster_size: Math.max(...decomposition.clusters.map(c => Object.keys(c.entities).length)),
+                ss: decomposition.silhouetteScore,
+                cohesion: decomposition.cohesion,
+                coupling: decomposition.coupling,
+                complexity: decomposition.complexity,
+                performance: decomposition.performance
             } 
         });
 
         const metricColumns = [
             {
-                dataField: 'graph',
-                text: 'Graph',
+                dataField: 'decomposition',
+                text: 'Decomposition',
                 sort: true
             },
             {
@@ -389,10 +389,10 @@ export class Dendrogram extends React.Component {
                 <h4 style={{color: "#666666", marginTop: "16px" }}>Cuts</h4>
                 {this.renderCuts()}
 
-                {this.state.graphs.length > 0 &&
+                {this.state.decompositions.length > 0 &&
                     <div>
                         <h4 style={{color: "#666666"}}>Metrics</h4>
-                        <BootstrapTable bootstrap4 keyField='graph' data={ metricRows } columns={ metricColumns } />
+                        <BootstrapTable bootstrap4 keyField='decomposition' data={ metricRows } columns={ metricColumns } />
                     </div>
                 }
             </div>

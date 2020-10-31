@@ -91,14 +91,14 @@ export class ClusterView extends React.Component {
     }
 
     componentDidMount() {
-        this.loadGraph();
+        this.loadDecomposition();
     }
 
-    loadGraph() {
+    loadDecomposition() {
         const {
             codebaseName,
             dendrogramName,
-            graphName,
+            decompositionName,
         } = this.props;
 
         const service = new RepositoryService();
@@ -106,7 +106,7 @@ export class ClusterView extends React.Component {
         const firstRequest = service.getClusterControllers(
             codebaseName,
             dendrogramName,
-            graphName
+            decompositionName
         ).then(response => {
             this.setState({
                 clusterControllers: response.data
@@ -116,7 +116,7 @@ export class ClusterView extends React.Component {
         const secondRequest = service.getGraph(
             codebaseName,
             dendrogramName,
-            graphName,
+            decompositionName,
             ["clusters"]
         ).then(response => {
             this.setState({
@@ -311,7 +311,7 @@ export class ClusterView extends React.Component {
         const {
             codebaseName,
             dendrogramName,
-            graphName,
+            decompositionName,
         } = this.props;
 
         switch (operation) {
@@ -319,12 +319,12 @@ export class ClusterView extends React.Component {
                 service.renameCluster(
                     codebaseName,
                     dendrogramName,
-                    graphName,
+                    decompositionName,
                     selectedCluster.name,
                     inputValue
                 )
                     .then(() => {
-                        this.loadGraph();
+                        this.loadDecomposition();
 
                     }).catch((err) => {
                         this.setState({
@@ -339,13 +339,13 @@ export class ClusterView extends React.Component {
                 service.mergeClusters(
                     codebaseName,
                     dendrogramName,
-                    graphName,
+                    decompositionName,
                     selectedCluster.name,
                     mergeWithCluster.name,
                     inputValue
                 )
                     .then(() => {
-                        this.loadGraph();
+                        this.loadDecomposition();
                     }).catch((err) => {
 
                         this.setState({
@@ -362,13 +362,13 @@ export class ClusterView extends React.Component {
                 service.splitCluster(
                     codebaseName,
                     dendrogramName,
-                    graphName,
+                    decompositionName,
                     selectedCluster.name,
                     inputValue,
                     activeClusterEntitiesSplit
                 )
                     .then(() => {
-                        this.loadGraph();
+                        this.loadDecomposition();
 
                     }).catch((err) => {
                         this.setState({
@@ -385,13 +385,13 @@ export class ClusterView extends React.Component {
                 service.transferEntities(
                     codebaseName,
                     dendrogramName,
-                    graphName,
+                    decompositionName,
                     selectedCluster.name,
                     transferToCluster.name,
                     activeClusterEntitiesTransfer
                 )
                     .then(() => {
-                        this.loadGraph();
+                        this.loadDecomposition();
                     }).catch((err) => {
                         this.setState({
                             error: true,

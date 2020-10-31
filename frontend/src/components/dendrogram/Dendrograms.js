@@ -24,8 +24,8 @@ const metricColumns = [
         sort,
     },
     {
-        dataField: 'graph',
-        text: 'Graph',
+        dataField: 'decomposition',
+        text: 'Decomposition',
         sort,
     },
     {
@@ -75,7 +75,7 @@ export class Dendrograms extends React.Component {
         super(props);
         this.state = {
             dendrograms: [],
-            allGraphs: [],
+            allDecompositions: [],
             selectedProfiles: [],
             isUploaded: "",
             newDendrogramName: "",
@@ -106,7 +106,7 @@ export class Dendrograms extends React.Component {
 
     componentDidMount() {
         this.loadDendrograms();
-        this.loadGraphs();
+        this.loadDecompositions();
         this.loadCodebase();
     }
 
@@ -146,9 +146,9 @@ export class Dendrograms extends React.Component {
         });
     }
 
-    loadGraphs() {
+    loadDecompositions() {
         const service = new RepositoryService();
-        service.getCodebaseGraphs(
+        service.getCodebaseDecompositions(
             this.props.match.params.codebaseName,
             [
                 "name",
@@ -164,7 +164,7 @@ export class Dendrograms extends React.Component {
         ).then((response) => {
             if (response.data !== null) {
                 this.setState({
-                    allGraphs: response.data,
+                    allDecompositions: response.data,
                 });
             }
         });
@@ -205,7 +205,7 @@ export class Dendrograms extends React.Component {
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
                     this.loadDendrograms();
-                    this.loadGraphs();
+                    this.loadDecompositions();
                     this.setState({
                         isUploaded: "Upload completed successfully."
                     });
@@ -294,7 +294,7 @@ export class Dendrograms extends React.Component {
         const service = new RepositoryService();
         service.deleteDendrogram(this.props.match.params.codebaseName, dendrogramName).then(response => {
             this.loadDendrograms();
-            this.loadGraphs();
+            this.loadDecompositions();
         });
     }
 
@@ -600,19 +600,19 @@ export class Dendrograms extends React.Component {
     }
 
     render() {
-        const metricRows = this.state.allGraphs.map(graph => {
+        const metricRows = this.state.allDecompositions.map(decomposition => {
             return {
-                id: graph.dendrogramName + graph.name,
-                dendrogram: graph.dendrogramName,
-                graph: graph.name,
-                clusters: graph.clusters.length,
-                singleton: graph.clusters.filter(c => Object.keys(c.entities).length === 1).length,
-                max_cluster_size: Math.max(...graph.clusters.map(c => Object.keys(c.entities).length)),
-                ss: graph.silhouetteScore,
-                cohesion: graph.cohesion,
-                coupling: graph.coupling,
-                complexity: graph.complexity,
-                performance: graph.performance
+                id: decomposition.dendrogramName + decomposition.name,
+                dendrogram: decomposition.dendrogramName,
+                decomposition: decomposition.name,
+                clusters: decomposition.clusters.length,
+                singleton: decomposition.clusters.filter(c => Object.keys(c.entities).length === 1).length,
+                max_cluster_size: Math.max(...decomposition.clusters.map(c => Object.keys(c.entities).length)),
+                ss: decomposition.silhouetteScore,
+                cohesion: decomposition.cohesion,
+                coupling: decomposition.coupling,
+                complexity: decomposition.complexity,
+                performance: decomposition.performance
             }
         });
 
@@ -637,7 +637,7 @@ export class Dendrograms extends React.Component {
                 </h4>
 
                 {
-                    this.state.allGraphs.length > 0 &&
+                    this.state.allDecompositions.length > 0 &&
                     <BootstrapTable bootstrap4 keyField='id' data={metricRows} columns={metricColumns} />
                 }
             </div>

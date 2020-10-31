@@ -10,7 +10,7 @@ import Button from 'react-bootstrap/Button';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { numberFilter } from 'react-bootstrap-table2-filter';
-import { Codebase, Graph } from "../../type-declarations/types";
+import { Codebase, Decomposition } from "../../type-declarations/types";
 
 var HttpStatus = require('http-status-codes');
 
@@ -179,10 +179,10 @@ export class Analyser extends React.Component<any, any> {
         });
     }
 
-    loadCodebaseGraphs(codebaseName: string) {
+    loadCodebaseDecompositions(codebaseName: string) {
         const service = new RepositoryService();
         
-        service.getCodebaseGraphs(
+        service.getCodebaseDecompositions(
             codebaseName,
             [
                 "name",
@@ -193,7 +193,7 @@ export class Analyser extends React.Component<any, any> {
         ).then((response) => {
             if (response.data !== null) {
                 this.setState({
-                    experts: response.data.filter((graph: Graph) => graph.expert === true)
+                    experts: response.data.filter((decomposition: Decomposition) => decomposition.expert === true)
                 });
             }
         });
@@ -204,7 +204,7 @@ export class Analyser extends React.Component<any, any> {
             codebase: codebase,
         });
         
-        this.loadCodebaseGraphs(codebase.name!);
+        this.loadCodebaseDecompositions(codebase.name!);
     }
 
     selectProfile(profile: any) {

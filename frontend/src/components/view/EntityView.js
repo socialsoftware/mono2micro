@@ -81,22 +81,22 @@ export class EntityView extends React.Component {
         const {
             codebaseName,
             dendrogramName,
-            graphName,
+            decompositionName,
         } = this.props;
 
         const service = new RepositoryService();
         
-        service.getGraph(
+        service.getDecomposition(
             codebaseName,
             dendrogramName,
-            graphName,
+            decompositionName,
             [ "clusters", "controllers" ]
         ).then(response => {
 
             service.getClusterControllers(
                 codebaseName,
                 dendrogramName,
-                graphName
+                decompositionName
             ).then(response2 => {
                 this.setState({
                     clusters: response.data.clusters,

@@ -31,7 +31,7 @@ export class Views extends React.Component {
         this.state = {
             codebaseName: this.props.match.params.codebaseName,
             dendrogramName: this.props.match.params.dendrogramName,
-            graphName: this.props.match.params.graphName,
+            decompositionName: this.props.match.params.decompositionName,
             view: views.CLUSTERS
         }
 
@@ -66,7 +66,7 @@ export class Views extends React.Component {
                 <Breadcrumb.Item href={`/codebases/${this.state.codebaseName}`}>{this.state.codebaseName}</Breadcrumb.Item>
                 <Breadcrumb.Item href={`/codebases/${this.state.codebaseName}/dendrograms`}>Dendrograms</Breadcrumb.Item>
                 <Breadcrumb.Item href={`/codebases/${this.state.codebaseName}/dendrograms/${this.state.dendrogramName}`}>{this.state.dendrogramName}</Breadcrumb.Item>
-                <Breadcrumb.Item active>{this.state.graphName}</Breadcrumb.Item>
+                <Breadcrumb.Item active>{this.state.decompositionName}</Breadcrumb.Item>
             </Breadcrumb>
         );
     }
@@ -83,7 +83,7 @@ export class Views extends React.Component {
                 {this.renderBreadCrumbs()}
                 <Row className="mb-2">
                     <Col>
-                        <h4 style={{color: "#666666"}}>{this.state.graphName}</h4>
+                        <h4 style={{color: "#666666"}}>{this.state.decompositionName}</h4>
                     </Col>
                     <Col>
                         <OverlayTrigger trigger="click" placement="left" overlay={helpPopover}>
@@ -106,19 +106,19 @@ export class Views extends React.Component {
                             <ClusterView
                                 codebaseName={this.state.codebaseName}
                                 dendrogramName={this.state.dendrogramName} 
-                                graphName={this.state.graphName} />
+                                decompositionName={this.state.decompositionName} />
                         }
                         {this.state.view === views.TRANSACTION &&
                             <TransactionView
                                 codebaseName={this.state.codebaseName}
                                 dendrogramName={this.state.dendrogramName} 
-                                graphName={this.state.graphName} />
+                                decompositionName={this.state.decompositionName} />
                         }
                         {this.state.view === views.ENTITY &&
                             <EntityView
                                 codebaseName={this.state.codebaseName}
                                 dendrogramName={this.state.dendrogramName} 
-                                graphName={this.state.graphName} />
+                                decompositionName={this.state.decompositionName} />
                         }
                     </Col>
                 </Row>

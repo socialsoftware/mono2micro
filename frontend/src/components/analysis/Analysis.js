@@ -18,10 +18,10 @@ export class Analysis extends React.Component {
         this.state = {
             codebases: [],
             codebase: {},
-            graphs: [],
+            decompositions: [],
             isUploaded: "",
-            graph1: {},
-            graph2: {},
+            decomposition1: {},
+            decomposition2: {},
             resultData: {},
             falsePairs: []
         };
@@ -44,10 +44,10 @@ export class Analysis extends React.Component {
         });
     }
 
-    loadCodebaseGraphs(codebaseName) {
+    loadCodebaseDecompositions(codebaseName) {
         const service = new RepositoryService();
         
-        service.getCodebaseGraphs(
+        service.getCodebaseDecompositions(
             codebaseName,
             [
                 "name",
@@ -59,7 +59,7 @@ export class Analysis extends React.Component {
         ).then((response) => {
             if (response.data !== null) {
                 this.setState({
-                    graphs: response.data,
+                    decompositions: response.data,
                 });
             }
         });
@@ -70,18 +70,18 @@ export class Analysis extends React.Component {
             codebase: codebase,
         });
 
-        this.loadCodebaseGraphs(codebase.name);
+        this.loadCodebaseDecompositions(codebase.name);
     }
 
-    setGraph1(graph) {
+    setDecomposition1(decomposition) {
         this.setState({
-            graph1: graph
+            decomposition1: decomposition
         });
     }
 
-    setGraph2(graph) {
+    setDecomposition2(decomposition) {
         this.setState({
-            graph2: graph
+            decomposition2: decomposition
         });
     }
 
@@ -93,8 +93,8 @@ export class Analysis extends React.Component {
         });
 
         let requestData = {
-            "graph1": this.state.graph1,
-            "graph2": this.state.graph2
+            "decomposition1": this.state.decomposition1,
+            "decomposition2": this.state.decomposition2
         };
 
         const service = new RepositoryService();
@@ -134,9 +134,9 @@ export class Analysis extends React.Component {
             codebase,
             codebases,
             falsePairs,
-            graph1,
-            graph2,
-            graphs,
+            decomposition1,
+            decomposition2,
+            decompositions,
             isUploaded,
             resultData,
         } = this.state;
@@ -161,11 +161,11 @@ export class Analysis extends React.Component {
             sort: true
         }, {
             dataField: 'e1g1',
-            text: graph1.name,
+            text: decomposition1.name,
             sort: true
         }, {
             dataField: 'e1g2',
-            text: graph2.name,
+            text: decomposition2.name,
             sort: true
         }, {
             dataField: 'space',
@@ -176,11 +176,11 @@ export class Analysis extends React.Component {
             sort: true
         }, {
             dataField: 'e2g1',
-            text: graph1.name,
+            text: decomposition1.name,
             sort: true
         }, {
             dataField: 'e2g2',
-            text: graph2.name,
+            text: decomposition2.name,
             sort: true
         }];
 
@@ -220,29 +220,29 @@ export class Analysis extends React.Component {
                         <Col sm={5}>
                             <DropdownButton
                                 title={
-                                    Object.keys(graph1).length === 0 ?
+                                    Object.keys(decomposition1).length === 0 ?
                                         "Select Cut" :
-                                        graph1.name + " from " + graph1.dendrogramName
+                                        decomposition1.name + " from " + decomposition1.dendrogramName
                                 }
                             >
                                 {
-                                    graphs.filter(graph => graph.expert === true).map(graph =>
+                                    decompositions.filter(decomposition => decomposition.expert === true).map(decomposition =>
                                         <Dropdown.Item
-                                            key={graph.name}
-                                            onClick={() => this.setGraph1(graph)}
+                                            key={decomposition.name}
+                                            onClick={() => this.setDecomposition1(decomposition)}
                                         >
-                                            {graph.name + " from " + graph.dendrogramName}
+                                            {decomposition.name + " from " + decomposition.dendrogramName}
                                         </Dropdown.Item>
                                     )
                                 }
                                 <Dropdown.Divider />
                                 {
-                                    graphs.filter(graph => graph.expert === false).map(graph =>
+                                    decompositions.filter(decomposition => decomposition.expert === false).map(decomposition =>
                                         <Dropdown.Item
-                                            key={graph.name}
-                                            onClick={() => this.setGraph1(graph)}
+                                            key={decomposition.name}
+                                            onClick={() => this.setDecomposition1(decomposition)}
                                         >
-                                            {graph.name + " from " + graph.dendrogramName}
+                                            {decomposition.name + " from " + decomposition.dendrogramName}
                                         </Dropdown.Item>)
                                 }
                             </DropdownButton>
@@ -255,29 +255,29 @@ export class Analysis extends React.Component {
                         </Form.Label>
                         <Col sm={5}>
                             <DropdownButton
-                                title={Object.keys(graph2).length === 0 ?
+                                title={Object.keys(decomposition2).length === 0 ?
                                     "Select Cut" :
-                                    graph2.name + " from " + graph2.dendrogramName
+                                    decomposition2.name + " from " + decomposition2.dendrogramName
                                 }
                             >
                                 {
-                                    graphs.filter(graph => graph.expert === true).map(graph =>
+                                    decompositions.filter(decomposition => decomposition.expert === true).map(decomposition =>
                                         <Dropdown.Item
-                                            key={graph.name}
-                                            onClick={() => this.setGraph2(graph)}
+                                            key={decomposition.name}
+                                            onClick={() => this.setDecomposition2(decomposition)}
                                         >
-                                            {graph.name + " from " + graph.dendrogramName}
+                                            {decomposition.name + " from " + decomposition.dendrogramName}
                                         </Dropdown.Item>
                                     )
                                 }
                                 <Dropdown.Divider />
                                 {
-                                    graphs.filter(graph => graph.expert === false).map(graph =>
+                                    decompositions.filter(decomposition => decomposition.expert === false).map(decomposition =>
                                         <Dropdown.Item
-                                            key={graph.name}
-                                            onClick={() => this.setGraph2(graph)}
+                                            key={decomposition.name}
+                                            onClick={() => this.setDecomposition2(decomposition)}
                                         >
-                                            {graph.name + " from " + graph.dendrogramName}
+                                            {decomposition.name + " from " + decomposition.dendrogramName}
                                         </Dropdown.Item>
                                     )
                                 }
@@ -290,8 +290,8 @@ export class Analysis extends React.Component {
                             <Button
                                 type="submit"
                                 disabled={Object.keys(codebase).length === 0 ||
-                                    Object.keys(graph1).length === 0 ||
-                                    Object.keys(graph2).length === 0
+                                    Object.keys(decomposition1).length === 0 ||
+                                    Object.keys(decomposition2).length === 0
                                 }
                             >
                                 Submit
