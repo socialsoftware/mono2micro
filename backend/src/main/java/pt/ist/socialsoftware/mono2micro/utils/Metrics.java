@@ -8,7 +8,7 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 
 public class Metrics {
@@ -112,13 +112,13 @@ public class Metrics {
 //    }
 
     public static float calculateControllerComplexityAndClusterDependencies(
-	 	Graph graph,
+	 	Decomposition decomposition,
 		String controllerName,
 	 	Set<Controller> controllers,
 	 	Map<String, Set<Cluster>> controllerClusters,
-		DirectedAcyclicGraph<Graph.LocalTransaction, DefaultEdge> localTransactionsGraph
+		DirectedAcyclicGraph<Decomposition.LocalTransaction, DefaultEdge> localTransactionsGraph
 	) {
-		Set<Graph.LocalTransaction> allLocalTransactions = Graph.getAllLocalTransactions(localTransactionsGraph);
+		Set<Decomposition.LocalTransaction> allLocalTransactions = Decomposition.getAllLocalTransactions(localTransactionsGraph);
 
 		if (controllerClusters.get(controllerName).size() == 1) {
 			return 0;
@@ -130,17 +130,17 @@ public class Metrics {
 
 			float controllerComplexity = 0;
 
-			for (Graph.LocalTransaction lt : allLocalTransactions) {
+			for (Decomposition.LocalTransaction lt : allLocalTransactions) {
 				// ClusterDependencies
-				Cluster fromCluster = graph.getCluster(String.valueOf(lt.getClusterID()));
+				Cluster fromCluster = decomposition.getCluster(String.valueOf(lt.getClusterID()));
 
 				if (fromCluster != null) { // not root node
-					List<Graph.LocalTransaction> nextLocalTransactions = Graph.getNextLocalTransactions(
+					List<Decomposition.LocalTransaction> nextLocalTransactions = Decomposition.getNextLocalTransactions(
 						localTransactionsGraph,
 						lt
 					);
 
-					for (Graph.LocalTransaction nextLt : nextLocalTransactions)
+					for (Decomposition.LocalTransaction nextLt : nextLocalTransactions)
 						fromCluster.addCouplingDependencies(
 							String.valueOf(nextLt.getClusterID()),
 							nextLt.getFirstAccessedEntityIDs()

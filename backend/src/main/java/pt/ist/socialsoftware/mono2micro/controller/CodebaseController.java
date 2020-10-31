@@ -6,13 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -65,16 +64,16 @@ public class CodebaseController {
 		}
     }
 
-	@RequestMapping(value = "/codebase/{codebaseName}/graphs", method = RequestMethod.GET)
-	public ResponseEntity<List<Graph>> getCodebaseGraphs(
+	@RequestMapping(value = "/codebase/{codebaseName}/decompositions", method = RequestMethod.GET)
+	public ResponseEntity<List<Decomposition>> getCodebaseGraphs(
 		@PathVariable String codebaseName,
 		@RequestParam List<String> fieldNames
 	) {
-		logger.debug("getCodebaseGraphs");
+		logger.debug("getCodebaseDecompositions");
 
 		try {
 			return new ResponseEntity<>(
-				codebaseManager.getCodebaseGraphsWithFields(
+				codebaseManager.getCodebaseDecompositionsWithFields(
 					codebaseName,
 					new HashSet<>(fieldNames)
 				),

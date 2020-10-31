@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
@@ -144,7 +144,7 @@ public class DendrogramController {
 	public ResponseEntity<HttpStatus> cutDendrogram(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
-		@RequestBody Graph graph
+		@RequestBody Decomposition decomposition
 	) {
 		logger.debug("cutDendrogram");
 
@@ -156,23 +156,23 @@ public class DendrogramController {
 			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
 
 			// FIXME the graph given to the cut function shouldn't be a Graph
-			// FIXME The result of the cut function SHOULD be a graph/decomposition
+			// FIXME The result of the cut function SHOULD be a decomposition
 			// FIXME Did not have the patience to code it well
-			Graph cutGraph = dendrogram.cut(graph);
+			Decomposition cutDecomposition = dendrogram.cut(decomposition);
 
-			graph.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
 				codebase,
-				graph.getEntityIDToClusterName()
+				decomposition.getEntityIDToClusterName()
 			));
 
-			cutGraph.calculateMetrics(
+			cutDecomposition.calculateMetrics(
 				codebase,
 				dendrogram.getProfile(),
 				dendrogram.getTracesMaxLimit(),
 				dendrogram.getTypeOfTraces()
 			);
 
-			dendrogram.addGraph(cutGraph);
+			dendrogram.addDecomposition(cutDecomposition);
 
             codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -199,24 +199,24 @@ public class DendrogramController {
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
 
-			Graph graph = dendrogram.createExpertCut(
+			Decomposition decomposition = dendrogram.createExpertCut(
             	expertName,
 				expertFile
 			);
 
-			graph.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
 				codebase,
-				graph.getEntityIDToClusterName()
+				decomposition.getEntityIDToClusterName()
 			));
 
-			graph.calculateMetrics(
+			decomposition.calculateMetrics(
 				codebase,
 				dendrogram.getProfile(),
 				dendrogram.getTracesMaxLimit(),
 				dendrogram.getTypeOfTraces()
 			);
 
-			dendrogram.addGraph(graph);
+			dendrogram.addDecomposition(decomposition);
 
             codebaseManager.writeCodebase(codebase);
 

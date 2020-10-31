@@ -5,28 +5,24 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class GraphDeserializer extends StdDeserializer<Graph> {
+public class GraphDeserializer extends StdDeserializer<Decomposition> {
 
 	public GraphDeserializer() {
 		this(null);
 	}
 
-	public GraphDeserializer(Class<Graph> t) { super(t); }
+	public GraphDeserializer(Class<Decomposition> t) { super(t); }
 
 	@Override
-	public Graph deserialize(
+	public Decomposition deserialize(
 		JsonParser jsonParser,
 		DeserializationContext ctxt
 	) throws IOException {
@@ -44,43 +40,43 @@ public class GraphDeserializer extends StdDeserializer<Graph> {
 		} catch (Exception ignored) {}
 
 		if (jsonToken == JsonToken.START_OBJECT) {
-			Graph graph = new Graph();
+			Decomposition decomposition = new Decomposition();
 
 			while (jsonParser.nextValue() != JsonToken.END_OBJECT) {
 				if (deserializableFields == null || deserializableFields.contains(jsonParser.getCurrentName())) {
 					switch (jsonParser.getCurrentName()) {
 						case "name":
-							graph.setName(jsonParser.getValueAsString());
+							decomposition.setName(jsonParser.getValueAsString());
 							break;
 						case "codebaseName":
-							graph.setCodebaseName(jsonParser.getValueAsString());
+							decomposition.setCodebaseName(jsonParser.getValueAsString());
 							break;
 						case "dendrogramName":
-							graph.setDendrogramName(jsonParser.getValueAsString());
+							decomposition.setDendrogramName(jsonParser.getValueAsString());
 							break;
 						case "cutType":
-							graph.setCutType(jsonParser.getValueAsString());
+							decomposition.setCutType(jsonParser.getValueAsString());
 							break;
 						case "cutValue":
-							graph.setCutValue(jsonParser.getFloatValue());
+							decomposition.setCutValue(jsonParser.getFloatValue());
 							break;
 						case "silhouetteScore":
-							graph.setSilhouetteScore(jsonParser.getFloatValue());
+							decomposition.setSilhouetteScore(jsonParser.getFloatValue());
 							break;
 						case "complexity":
-							graph.setComplexity(jsonParser.getFloatValue());
+							decomposition.setComplexity(jsonParser.getFloatValue());
 							break;
 						case "performance":
-							graph.setPerformance(jsonParser.getFloatValue());
+							decomposition.setPerformance(jsonParser.getFloatValue());
 							break;
 						case "cohesion":
-							graph.setCohesion(jsonParser.getFloatValue());
+							decomposition.setCohesion(jsonParser.getFloatValue());
 							break;
 						case "coupling":
-							graph.setCoupling(jsonParser.getFloatValue());
+							decomposition.setCoupling(jsonParser.getFloatValue());
 							break;
 						case "clusters":
-							graph.setClusters(
+							decomposition.setClusters(
 								jsonParser.readValueAs(
 									new TypeReference<Map<String, Cluster>>(){}
 								)
@@ -88,7 +84,7 @@ public class GraphDeserializer extends StdDeserializer<Graph> {
 							break;
 
 						case "controllers":
-							graph.setControllers(
+							decomposition.setControllers(
 								jsonParser.readValueAs(
 									new TypeReference<Map<String, Controller>>(){}
 								)
@@ -96,13 +92,13 @@ public class GraphDeserializer extends StdDeserializer<Graph> {
 
 							break;
 						case "entityIDToClusterName":
-							graph.setEntityIDToClusterName(
+							decomposition.setEntityIDToClusterName(
 								jsonParser.readValueAs(
 									new TypeReference<Map<Short, String>>(){}
 								)
 							);
 						case "expert":
-							graph.setExpert(jsonParser.getBooleanValue());
+							decomposition.setExpert(jsonParser.getBooleanValue());
 							break;
 //						case "localTransactionsGraph": FIXME For now it's not necessary to deserialize LT graphs
 //							graph.setLocalTransactionsGraph(getGraph(jsonParser));
@@ -117,7 +113,7 @@ public class GraphDeserializer extends StdDeserializer<Graph> {
 				}
 			}
 
-			return graph;
+			return decomposition;
 		}
 
 		throw new IOException("Error deserializing Access");

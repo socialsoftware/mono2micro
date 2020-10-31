@@ -6,8 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
-import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 
 import java.io.IOException;
@@ -16,24 +15,24 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/mono2micro/codebase/{codebaseName}/dendrogram/{dendrogramName}")
-public class GraphController {
+public class DecompositionController {
 
-	private static Logger logger = LoggerFactory.getLogger(GraphController.class);
+	private static Logger logger = LoggerFactory.getLogger(DecompositionController.class);
 
     private CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
 
-	@RequestMapping(value = "/graphs", method = RequestMethod.GET)
-	public ResponseEntity<List<Graph>> getGraphs(
+	@RequestMapping(value = "/decompositions", method = RequestMethod.GET)
+	public ResponseEntity<List<Decomposition>> getDecompositions(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
 		@RequestParam List<String> fieldNames
 	) {
-		logger.debug("getGraphs");
+		logger.debug("getDecompositions");
 
 		try {
 			return new ResponseEntity<>(
-				codebaseManager.getDendrogramGraphsWithFields(
+				codebaseManager.getDendrogramDecompositionsWithFields(
 					codebaseName,
 					dendrogramName,
 					new HashSet<>(fieldNames)
@@ -47,21 +46,21 @@ public class GraphController {
 		}
 	}
 
-	@RequestMapping(value = "/graph/{graphName}", method = RequestMethod.GET)
-	public ResponseEntity<Graph> getGraph(
+	@RequestMapping(value = "/decomposition/{decompositionName}", method = RequestMethod.GET)
+	public ResponseEntity<Decomposition> getDecomposition(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
-		@PathVariable String graphName,
+		@PathVariable String decompositionName,
 		@RequestParam List<String> fieldNames
 	) {
-		logger.debug("getGraph");
+		logger.debug("getDecomposition");
 
 		try {
 			return new ResponseEntity<>(
-				codebaseManager.getDendrogramGraphWithFields(
+				codebaseManager.getDendrogramDecompositionWithFields(
 					codebaseName,
 					dendrogramName,
-					graphName,
+					decompositionName,
 					new HashSet<>(fieldNames)
 				),
 				HttpStatus.OK
@@ -73,20 +72,20 @@ public class GraphController {
 		}
 	}
 
-	@RequestMapping(value = "/graph/{graphName}/delete", method = RequestMethod.DELETE)
-	public ResponseEntity<HttpStatus> deleteGraph(
+	@RequestMapping(value = "/decomposition/{decompositionName}/delete", method = RequestMethod.DELETE)
+	public ResponseEntity<HttpStatus> deleteDecomposition(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
-		@PathVariable String graphName
+		@PathVariable String decompositionName
 	) {
-		logger.debug("deleteGraph");
+		logger.debug("deleteDecomposition");
 
 		try {
 			// FIXME The whole codebase needs to be fetched because it needs to be written as a whole again
 			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
-			// FIXME And each dendrogram directory could have its own graphs etc...
+			// FIXME And each dendrogram directory could have its own decompositions etc...
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-			codebase.getDendrogram(dendrogramName).deleteGraph(graphName);
+			codebase.getDendrogram(dendrogramName).deleteDecomposition(decompositionName);
 			codebaseManager.writeCodebase(codebase);
 
 			return new ResponseEntity<>(HttpStatus.OK);

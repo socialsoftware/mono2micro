@@ -20,7 +20,7 @@ import static org.jgrapht.Graphs.successorListOf;
 
 @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
 @JsonDeserialize(using = GraphDeserializer.class)
-public class Graph {
+public class Decomposition {
 
 	public static class LocalTransaction {
 		private int id; // transaction id to ensure that every node in the graph is unique
@@ -104,7 +104,7 @@ public class Graph {
 
 	private Map<Short, String> entityIDToClusterName = new HashMap<>();
 
-	public Graph() { }
+	public Decomposition() { }
 
 	public String getCodebaseName() { return this.codebaseName; }
 
@@ -487,6 +487,11 @@ public class Graph {
 		);
 	}
 
+	// FIXME this method can be used differently depending on the use case
+	// FIXME if a new metric needs to be calculated and the analyser has nothing to do with it
+	// FIXME then separate this method into 2 similar ones: one for the dendrogram and the other for the analyser
+	// FIXME and only then add the new calculation to the (new) respective method
+	// FIXME By doing the above, extra performance overhead won't be added to the analyser
 	public void calculateMetrics(
 		Codebase codebase, // requirements: profiles, datafilePath
 		String profile,

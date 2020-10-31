@@ -1,19 +1,19 @@
 package pt.ist.socialsoftware.mono2micro.dto;
 
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 public class AnalyserDto {
-    private Graph expert;
+    private Decomposition expert;
     private String profile;
     private int requestLimit;
     // only used when the codebase "is dynamic" aka !isStatic()
     private int tracesMaxLimit; // default is 0 which means, no limit
     private Constants.TraceType traceType = Constants.TraceType.ALL;
 
-    public Graph getExpert() { return expert; }
+    public Decomposition getExpert() { return expert; }
 
-    public void setExpert(Graph expert) {
+    public void setExpert(Decomposition expert) {
         this.expert = expert;
     }
 

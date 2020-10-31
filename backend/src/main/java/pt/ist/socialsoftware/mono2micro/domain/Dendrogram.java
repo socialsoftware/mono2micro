@@ -36,7 +36,7 @@ public class Dendrogram {
 	private float readMetricWeight;
 	private float sequenceMetricWeight;
 	private String profile;
-	private List<Graph> graphs = new ArrayList<>(); // Might not be necessary if the folders structure gets better organized
+	private List<Decomposition> decompositions = new ArrayList<>(); // Might not be necessary if the folders structure gets better organized
 	private int tracesMaxLimit = 0;
 	private TraceType traceType = TraceType.ALL;
 
@@ -102,11 +102,11 @@ public class Dendrogram {
 
 	public void setProfile(String profile) { this.profile = profile; }
 
-	public List<Graph> getGraphs() {
-		return this.graphs;
+	public List<Decomposition> getDecompositions() {
+		return this.decompositions;
 	}
 
-	public void setGraphs(List<Graph> graphs) { this.graphs = graphs; }
+	public void setDecompositions(List<Decomposition> decompositions) { this.decompositions = decompositions; }
 
 	public int getTracesMaxLimit() { return tracesMaxLimit; }
 
@@ -117,46 +117,51 @@ public class Dendrogram {
 	public void setTypeOfTraces(TraceType traceType) { this.traceType = traceType; }
 
 	@JsonIgnore
-	public List<String> getGraphNames() { return this.graphs.stream().map(Graph::getName).collect(Collectors.toList()); }
+	public List<String> getDecompositionNames() { return this.decompositions.stream().map(Decomposition::getName).collect(Collectors.toList()); }
 
 	@JsonIgnore
-	public Graph getGraph(String graphName) {
-		return this.graphs.stream().filter(graph -> graph.getName().equals(graphName)).findAny().orElse(null);
+	public Decomposition getDecomposition(String decompositionName) {
+		return this.decompositions.stream()
+			.filter(decomposition -> decomposition.getName().equals(decompositionName))
+			.findAny()
+			.orElse(null);
 	}
 
-	public void addGraph(Graph graph) {
-		this.graphs.add(graph);
+	public void addDecomposition(Decomposition decomposition) {
+		this.decompositions.add(decomposition);
 	}
 
-	public void deleteGraph(
-		String graphName
+	public void deleteDecomposition(
+		String decompositionName
 	)
 		throws IOException
 	{
-		for (int i = 0; i < this.graphs.size(); i++) {
-			if (this.graphs.get(i).getName().equals(graphName)) {
-				this.graphs.remove(i);
+		for (int i = 0; i < this.decompositions.size(); i++) {
+			if (this.decompositions.get(i).getName().equals(decompositionName)) {
+				this.decompositions.remove(i);
 				break;
 			}
 		}
 
-		FileUtils.deleteDirectory(new File(CODEBASES_PATH + this.codebaseName + "/" + this.name + "/" + graphName));
+		FileUtils.deleteDirectory(
+			new File(CODEBASES_PATH + this.codebaseName + "/" + this.name + "/" + decompositionName)
+		);
 	}
 
-	public Graph createExpertCut(
+	public Decomposition createExpertCut(
 		String expertName,
 		Optional<MultipartFile> expertFile
 	)
 		throws Exception
 	{
-		if (this.getGraphNames().contains(expertName))
+		if (this.getDecompositionNames().contains(expertName))
 			throw new KeyAlreadyExistsException();
 
-		Graph expertGraph = new Graph();
-		expertGraph.setExpert(true);
-		expertGraph.setCodebaseName(this.codebaseName);
-		expertGraph.setDendrogramName(this.name);
-		expertGraph.setName(expertName);
+		Decomposition expertDecomposition = new Decomposition();
+		expertDecomposition.setExpert(true);
+		expertDecomposition.setCodebaseName(this.codebaseName);
+		expertDecomposition.setDendrogramName(this.name);
+		expertDecomposition.setName(expertName);
 
 		if (expertFile.isPresent()) {
 			InputStream is = new BufferedInputStream(expertFile.get().getInputStream());
@@ -174,10 +179,10 @@ public class Dendrogram {
 					short entityID = (short) entities.getInt(i);
 
 					cluster.addEntity(entityID);
-					expertGraph.putEntity(entityID, clusterId);
+					expertDecomposition.putEntity(entityID, clusterId);
 				}
 
-				expertGraph.addCluster(cluster);
+				expertDecomposition.addCluster(cluster);
 			}
 		} else {
 			Cluster cluster = new Cluster("Generic");
@@ -193,13 +198,13 @@ public class Dendrogram {
 				short entityID = (short) entities.getInt(i);
 
 				cluster.addEntity(entityID);
-				expertGraph.putEntity(entityID, "Generic");
+				expertDecomposition.putEntity(entityID, "Generic");
 			}
 
-			expertGraph.addCluster(cluster);
+			expertDecomposition.addCluster(cluster);
 		}
 
-		return expertGraph;
+		return expertDecomposition;
 	}
 
 	public JSONObject getMatrixData(
@@ -247,24 +252,24 @@ public class Dendrogram {
 		return matrixData;
 	}
 
-	public Graph cut(Graph graph)
+	public Decomposition cut(Decomposition decomposition)
 		throws Exception
 	{
 
-		String cutValue = Float.valueOf(graph.getCutValue()).toString().replaceAll("\\.?0*$", "");
-		if (this.getGraphNames().contains(graph.getCutType() + cutValue)) {
+		String cutValue = Float.valueOf(decomposition.getCutValue()).toString().replaceAll("\\.?0*$", "");
+		if (this.getDecompositionNames().contains(decomposition.getCutType() + cutValue)) {
 			int i = 2;
-			while (this.getGraphNames().contains(graph.getCutType() + cutValue + "(" + i + ")")) {
+			while (this.getDecompositionNames().contains(decomposition.getCutType() + cutValue + "(" + i + ")")) {
 				i++;
 			}
-			graph.setName(graph.getCutType() + cutValue + "(" + i + ")");
+			decomposition.setName(decomposition.getCutType() + cutValue + "(" + i + ")");
 		} else {
-			graph.setName(graph.getCutType() + cutValue);
+			decomposition.setName(decomposition.getCutType() + cutValue);
 		}
 
-		File graphPath = new File(CODEBASES_PATH + this.codebaseName + "/" + this.name + "/" + graph.getName());
-		if (!graphPath.exists()) {
-			graphPath.mkdir();
+		File decompositionPath = new File(CODEBASES_PATH + this.codebaseName + "/" + this.name + "/" + decomposition.getName());
+		if (!decompositionPath.exists()) {
+			decompositionPath.mkdir();
 		}
 
 		Runtime r = Runtime.getRuntime();
@@ -275,9 +280,9 @@ public class Dendrogram {
 		cmd[2] = CODEBASES_PATH;
 		cmd[3] = this.codebaseName;
 		cmd[4] = this.name;
-		cmd[5] = graph.getName();
-		cmd[6] = graph.getCutType();
-		cmd[7] = Float.toString(graph.getCutValue());
+		cmd[5] = decomposition.getName();
+		cmd[6] = decomposition.getCutType();
+		cmd[7] = Float.toString(decomposition.getCutValue());
 		Process p = r.exec(cmd);
 		
 		p.waitFor();
@@ -285,10 +290,10 @@ public class Dendrogram {
 		JSONObject clustersJSON = CodebaseManager.getInstance().getClusters(
 			this.codebaseName,
 			this.name,
-			graph.getName()
+			decomposition.getName()
 		);
 
-		graph.setSilhouetteScore((float) clustersJSON.getDouble("silhouetteScore"));
+		decomposition.setSilhouetteScore((float) clustersJSON.getDouble("silhouetteScore"));
 
 		Iterator<String> clusters = clustersJSON.getJSONObject("clusters").sortedKeys();
 		ArrayList<Integer> clusterIds = new ArrayList<>();
@@ -308,12 +313,12 @@ public class Dendrogram {
 				short entityID = (short) entities.getInt(i);
 
 				cluster.addEntity(entityID);
-				graph.putEntity(entityID, clusterId);
+				decomposition.putEntity(entityID, clusterId);
 			}
 
-			graph.addCluster(cluster);
+			decomposition.addCluster(cluster);
 		}
 
-		return graph;
+		return decomposition;
 	}
 }

@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.dto.*;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
@@ -140,9 +140,9 @@ public class CodebaseManager {
 			.orElseThrow(() -> new Exception("Dendrogram " + dendrogramName + " not found"));
 	}
 
-	public List<Graph> getCodebaseGraphsWithFields(
+	public List<Decomposition> getCodebaseDecompositionsWithFields(
 		String codebaseName,
-		Set<String> graphDeserializableFields
+		Set<String> decompositionDeserializableFields
 	)
 		throws Exception
 	{
@@ -152,8 +152,8 @@ public class CodebaseManager {
 		objectMapper.setInjectableValues(
 			new InjectableValues.Std()
 				.addValue("codebaseDeserializableFields", new HashSet<String>() {{ add("dendrograms"); }})
-				.addValue("dendrogramDeserializableFields", new HashSet<String>() {{ add("graphs"); }})
-				.addValue("graphDeserializableFields", graphDeserializableFields)
+				.addValue("dendrogramDeserializableFields", new HashSet<String>() {{ add("decompositions"); }})
+				.addValue("decompositionDeserializableFields", decompositionDeserializableFields)
 		);
 
 		File codebaseJSONFile = new File(CODEBASES_PATH + codebaseName + "/codebase.json");
@@ -166,26 +166,26 @@ public class CodebaseManager {
 
 		return cb.getDendrograms()
 			.stream()
-			.flatMap(dendrogram -> dendrogram.getGraphs().stream())
+			.flatMap(dendrogram -> dendrogram.getDecompositions().stream())
 			.collect(Collectors.toList());
 	}
 
-	public List<Graph> getDendrogramGraphsWithFields(
+	public List<Decomposition> getDendrogramDecompositionsWithFields(
 		String codebaseName,
 		String dendrogramName,
-		Set<String> graphDeserializableFields
+		Set<String> decompositionDeserializableFields
 	)
 		throws Exception
 	{
 
 		ObjectMapper objectMapper = new ObjectMapper();
-		graphDeserializableFields.add("name");
+		decompositionDeserializableFields.add("name");
 
 		objectMapper.setInjectableValues(
 			new InjectableValues.Std()
 				.addValue("codebaseDeserializableFields", new HashSet<String>() {{ add("dendrograms"); }})
-				.addValue("dendrogramDeserializableFields", new HashSet<String>() {{ add("name"); add("graphs"); }})
-				.addValue("graphDeserializableFields", graphDeserializableFields)
+				.addValue("dendrogramDeserializableFields", new HashSet<String>() {{ add("name"); add("decompositions"); }})
+				.addValue("decompositionDeserializableFields", decompositionDeserializableFields)
 		);
 
 		File codebaseJSONFile = new File(CODEBASES_PATH + codebaseName + "/codebase.json");
@@ -202,33 +202,33 @@ public class CodebaseManager {
 							.findFirst()
 							.orElseThrow(() -> new Exception("Dendrogram " + dendrogramName + " not found"));
 
-		return d.getGraphs();
+		return d.getDecompositions();
 	}
 
-	public Graph getDendrogramGraphWithFields(
+	public Decomposition getDendrogramDecompositionWithFields(
 		String codebaseName,
 		String dendrogramName,
-		String graphName,
-		Set<String> graphDeserializableFields
+		String decompositionName,
+		Set<String> decompositionDeserializableFields
 	)
 		throws Exception
 	{
 
-		return getDendrogramGraphsWithFields(
+		return getDendrogramDecompositionsWithFields(
 			codebaseName,
 			dendrogramName,
-			graphDeserializableFields
+			decompositionDeserializableFields
 		)
 			.stream()
-			.filter(graph -> graph.getName().equals(graphName))
+			.filter(decomposition -> decomposition.getName().equals(decompositionName))
 			.findFirst()
-			.orElseThrow(() -> new Exception("Graph " + graphName + " not found"));
+			.orElseThrow(() -> new Exception("Graph " + decompositionName + " not found"));
 	}
 
-	public Graph getGraphWithControllersAndClustersWithFields(
+	public Decomposition getGraphWithControllersAndClustersWithFields(
 		String codebaseName,
 		String dendrogramName,
-		String graphName,
+		String decompositionName,
 		Set<String> controllerDeserializableFields,
 		Set<String> clusterDeserializableFields
 	)
@@ -240,8 +240,8 @@ public class CodebaseManager {
 		objectMapper.setInjectableValues(
 			new InjectableValues.Std()
 				.addValue("codebaseDeserializableFields", new HashSet<String>() {{ add("dendrograms"); }})
-				.addValue("dendrogramDeserializableFields", new HashSet<String>() {{ add("name"); add("graphs"); }})
-				.addValue("graphDeserializableFields", new HashSet<String>() {{ add("name"); add("controllers"); add("clusters"); }})
+				.addValue("dendrogramDeserializableFields", new HashSet<String>() {{ add("name"); add("decompositions"); }})
+				.addValue("decompositionDeserializableFields", new HashSet<String>() {{ add("name"); add("controllers"); add("clusters"); }})
 				.addValue("controllerDeserializableFields", controllerDeserializableFields)
 				.addValue("clusterDeserializableFields", clusterDeserializableFields)
 		);
@@ -260,10 +260,10 @@ public class CodebaseManager {
 						 .findFirst()
 						 .orElseThrow(() -> new Exception("Dendrogram " + dendrogramName + " not found"));
 
-		return d.getGraphs().stream()
-				.filter(graph -> graph.getName().equals(graphName))
+		return d.getDecompositions().stream()
+				.filter(decomposition -> decomposition.getName().equals(decompositionName))
 				.findFirst()
-				.orElseThrow(() -> new Exception("Graph " + graphName + " not found"));
+				.orElseThrow(() -> new Exception("Graph " + decompositionName + " not found"));
 	}
 
 	public void deleteCodebase(String codebaseName) throws IOException {
@@ -406,11 +406,11 @@ public class CodebaseManager {
 	public JSONObject getClusters(
 		String codebaseName,
 		String dendrogramName,
-		String graphName
+		String decompositionName
 	)
 		throws IOException, JSONException
 	{
-		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/" + dendrogramName + "/" + graphName + "/clusters.json");
+		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/" + dendrogramName + "/" + decompositionName + "/clusters.json");
 
 		JSONObject clustersJSON = new JSONObject(IOUtils.toString(is, StandardCharsets.UTF_8));
 

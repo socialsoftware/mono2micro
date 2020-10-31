@@ -1,13 +1,13 @@
 package pt.ist.socialsoftware.mono2micro.dto;
 
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AnalysisDto {
-    private Graph graph1;
-    private Graph graph2;
+    private Decomposition decomposition1;
+    private Decomposition decomposition2;
     private int truePositive;
     private int trueNegative;
     private int falsePositive;
@@ -36,20 +36,20 @@ public class AnalysisDto {
         this.complexity = complexity;
     }
 
-    public Graph getGraph2() {
-        return graph2;
+    public Decomposition getDecomposition2() {
+        return decomposition2;
     }
 
-    public void setGraph2(Graph graph2) {
-        this.graph2 = graph2;
+    public void setDecomposition2(Decomposition decomposition2) {
+        this.decomposition2 = decomposition2;
     }
 
-    public Graph getGraph1() {
-        return graph1;
+    public Decomposition getDecomposition1() {
+        return decomposition1;
     }
 
-    public void setGraph1(Graph graph1) {
-        this.graph1 = graph1;
+    public void setDecomposition1(Decomposition decomposition1) {
+        this.decomposition1 = decomposition1;
     }
 
     public float getSpecificity() {

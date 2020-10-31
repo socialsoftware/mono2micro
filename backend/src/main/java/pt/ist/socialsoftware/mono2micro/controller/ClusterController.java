@@ -39,20 +39,20 @@ public class ClusterController {
 
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
-			Graph graph = dendrogram.getGraph(graphName);
+			Decomposition decomposition = dendrogram.getDecomposition(graphName);
 
-			graph.mergeClusters(
+			decomposition.mergeClusters(
 				clusterName,
 				otherCluster,
 				newName
 			);
 
-			graph.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
 				codebase,
-				graph.getEntityIDToClusterName()
+				decomposition.getEntityIDToClusterName()
 			));
 
-			graph.calculateMetrics(
+			decomposition.calculateMetrics(
 				codebase,
 				dendrogram.getProfile(),
 				dendrogram.getTracesMaxLimit(),
@@ -86,23 +86,23 @@ public class ClusterController {
 
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
-			Graph graph = dendrogram.getGraph(graphName);
+			Decomposition decomposition = dendrogram.getDecomposition(graphName);
 
-			graph.renameCluster(
+			decomposition.renameCluster(
 				clusterName,
 				newName
 			);
 
 			// it should not be necessary to do this due to just a renaming
 			// but for safety i'll keep the existent behaviour
-			graph.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
 				codebase,
-				graph.getEntityIDToClusterName()
+				decomposition.getEntityIDToClusterName()
 			));
 
 			// it should not be necessary to recalculate metrics due to just a renaming
 			// but for safety i'll keep the existent behaviour
-			graph.calculateMetrics(
+			decomposition.calculateMetrics(
 				codebase,
 				dendrogram.getProfile(),
 				dendrogram.getTracesMaxLimit(),
@@ -141,20 +141,20 @@ public class ClusterController {
 
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
-			Graph graph = dendrogram.getGraph(graphName);
+			Decomposition decomposition = dendrogram.getDecomposition(graphName);
 
-			graph.splitCluster(
+			decomposition.splitCluster(
 				clusterName,
 				newName,
 				entities.split(",")
 			);
 
-			graph.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
 				codebase,
-				graph.getEntityIDToClusterName()
+				decomposition.getEntityIDToClusterName()
 			));
 
-			graph.calculateMetrics(
+			decomposition.calculateMetrics(
 				codebase,
 				dendrogram.getProfile(),
 				dendrogram.getTracesMaxLimit(),
@@ -189,20 +189,20 @@ public class ClusterController {
 
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
-			Graph graph = dendrogram.getGraph(graphName);
+			Decomposition decomposition = dendrogram.getDecomposition(graphName);
 
-			graph.transferEntities(
+			decomposition.transferEntities(
 				clusterName,
 				toCluster,
 				entities.split(",")
 			);
 
-			graph.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
 				codebase,
-				graph.getEntityIDToClusterName()
+				decomposition.getEntityIDToClusterName()
 			));
 
-			graph.calculateMetrics(
+			decomposition.calculateMetrics(
 				codebase,
 				dendrogram.getProfile(),
 				dendrogram.getTracesMaxLimit(),
@@ -241,7 +241,7 @@ public class ClusterController {
 
 			Set<String> profileControllers = codebase.getProfile(dendrogramProfile);
 
-			Graph graph = codebaseManager.getDendrogramGraphWithFields(
+			Decomposition decomposition = codebaseManager.getDendrogramDecompositionWithFields(
 				codebaseName,
 				dendrogramName,
 				graphName,
@@ -251,8 +251,8 @@ public class ClusterController {
 			Utils.GetControllersClustersAndClustersControllersResult result =
 				Utils.getControllersClustersAndClustersControllers(
 					profileControllers,
-					(List<Cluster>) graph.getClusters().values(),
-					graph.getControllers()
+					(List<Cluster>) decomposition.getClusters().values(),
+					decomposition.getControllers()
 				);
 
 			return new ResponseEntity<>(
@@ -288,7 +288,7 @@ public class ClusterController {
 
 			Set<String> profileControllers = codebase.getProfile(dendrogramProfile);
 
-			Graph graph = codebaseManager.getDendrogramGraphWithFields(
+			Decomposition decomposition = codebaseManager.getDendrogramDecompositionWithFields(
 				codebaseName,
 				dendrogramName,
 				graphName,
@@ -298,8 +298,8 @@ public class ClusterController {
 			Utils.GetControllersClustersAndClustersControllersResult result =
 				Utils.getControllersClustersAndClustersControllers(
 					profileControllers,
-					(List<Cluster>) graph.getClusters().values(),
-					graph.getControllers()
+					(List<Cluster>) decomposition.getClusters().values(),
+					decomposition.getControllers()
 				);
 
 			return new ResponseEntity<>(

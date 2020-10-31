@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.dto.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
@@ -153,7 +153,7 @@ public class AnalysisController {
                     continue;
                 }
 
-				Graph graph = buildGraphAndCalculateMetrics(
+				Decomposition decomposition = buildGraphAndCalculateMetrics(
 					analyser,
 					codebase,
 					filename
@@ -161,7 +161,7 @@ public class AnalysisController {
 
                 CutInfoDto cutInfo = assembleCutInformation(
                 	analyser,
-					graph,
+					decomposition,
 					filename
 				);
 
@@ -261,15 +261,15 @@ public class AnalysisController {
 		System.out.println("script execution has ended");
 	}
 
-	private Graph buildGraphAndCalculateMetrics(
+	private Decomposition buildGraphAndCalculateMetrics(
 		AnalyserDto analyser,
 		Codebase codebase, // requirements: name, profiles, datafilePath
 		String filename
 	)
 		throws Exception
 	{
-		Graph graph = new Graph();
-		graph.setCodebaseName(codebase.getName());
+		Decomposition decomposition = new Decomposition();
+		decomposition.setCodebaseName(codebase.getName());
 
 		HashMap<String, HashMap<String, Set<Short>>> analyserCut = codebaseManager.getAnalyserCut(
 			codebase.getName(),
@@ -283,36 +283,36 @@ public class AnalysisController {
 			Cluster cluster = new Cluster(clusterId, entities);
 
 			for (short entityID : entities)
-				graph.putEntity(entityID, clusterId);
+				decomposition.putEntity(entityID, clusterId);
 
-			graph.addCluster(cluster);
+			decomposition.addCluster(cluster);
 		}
 
-		graph.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+		decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
 			codebase,
-			graph.getEntityIDToClusterName()
+			decomposition.getEntityIDToClusterName()
 		));
 
-		graph.calculateMetrics(
+		decomposition.calculateMetrics(
 			codebase,
 			analyser.getProfile(),
 			analyser.getTracesMaxLimit(),
 			analyser.getTypeOfTraces()
 		);
 
-		return graph;
+		return decomposition;
 	}
 
 	private CutInfoDto assembleCutInformation(
 		AnalyserDto analyser,
-		Graph graph,
+		Decomposition decomposition,
 		String filename
 	)
 		throws IOException
 	{
 		AnalysisDto analysisDto = new AnalysisDto();
-		analysisDto.setGraph1(analyser.getExpert());
-		analysisDto.setGraph2(graph);
+		analysisDto.setDecomposition1(analyser.getExpert());
+		analysisDto.setDecomposition2(decomposition);
 
 		analysisDto = getAnalysis(analysisDto).getBody();
 
@@ -327,12 +327,12 @@ public class AnalysisController {
 		analyserResult.setMojoSingletons(analysisDto.getMojoSingletons());
 		analyserResult.setMojoNew(analysisDto.getMojoNew());
 
-		analyserResult.setComplexity(graph.getComplexity());
-		analyserResult.setCohesion(graph.getCohesion());
-		analyserResult.setCoupling(graph.getCoupling());
-		analyserResult.setPerformance(graph.getPerformance());
+		analyserResult.setComplexity(decomposition.getComplexity());
+		analyserResult.setCohesion(decomposition.getCohesion());
+		analyserResult.setCoupling(decomposition.getCoupling());
+		analyserResult.setPerformance(decomposition.getPerformance());
 
-		analyserResult.setMaxClusterSize(graph.maxClusterSize());
+		analyserResult.setMaxClusterSize(decomposition.maxClusterSize());
 
 		String[] similarityWeights = filename.split(",");
 		analyserResult.setAccessWeight(Float.parseFloat(similarityWeights[0]));
@@ -345,7 +345,7 @@ public class AnalysisController {
 		cutInfo.setAnalyserResultDto(analyserResult);
 
 		HashMap<String, HashMap<String, Float>> controllerSpecs = new HashMap<>();
-		for (Controller controller : graph.getControllers().values()) {
+		for (Controller controller : decomposition.getControllers().values()) {
 			controllerSpecs.put(
 				controller.getName(),
 				new HashMap<String, Float>() {{
@@ -415,28 +415,28 @@ public class AnalysisController {
 	public ResponseEntity<AnalysisDto> getAnalysis(@RequestBody AnalysisDto analysis) throws IOException {
 		logger.debug("getAnalysis");
 
-		if (analysis.getGraph1().getCodebaseName() == null) { // no expert cut from frontend
+		if (analysis.getDecomposition1().getCodebaseName() == null) { // no expert cut from frontend
 			return new ResponseEntity<>(analysis, HttpStatus.OK);
 		}
 
-		Map<String, Set<Short>> graph1 = new HashMap<>();
-		for (Cluster c : analysis.getGraph1().getClusters().values()) {
-			graph1.put(c.getName(), c.getEntities());
+		Map<String, Set<Short>> decomposition1 = new HashMap<>();
+		for (Cluster c : analysis.getDecomposition1().getClusters().values()) {
+			decomposition1.put(c.getName(), c.getEntities());
 		}
 
-		Map<String, Set<Short>> graph2_CommonEntitiesOnly = new HashMap<>();
-		for (Cluster c : analysis.getGraph2().getClusters().values()) {
-			graph2_CommonEntitiesOnly.put(c.getName(), c.getEntities());
+		Map<String, Set<Short>> decomposition2_CommonEntitiesOnly = new HashMap<>();
+		for (Cluster c : analysis.getDecomposition2().getClusters().values()) {
+			decomposition2_CommonEntitiesOnly.put(c.getName(), c.getEntities());
 		}
 
 		List<Short> entities = new ArrayList<>();
 		List<Short> notSharedEntities = new ArrayList<>();
 
-		for (Set<Short> l1 : graph1.values()) {
+		for (Set<Short> l1 : decomposition1.values()) {
 			for (short e1ID : l1) {
 				boolean inBoth = false;
 
-				for (Set<Short> l2 : graph2_CommonEntitiesOnly.values()) {
+				for (Set<Short> l2 : decomposition2_CommonEntitiesOnly.values()) {
 					if (l2.contains(e1ID)) {
 						inBoth = true;
 						break;
@@ -452,10 +452,10 @@ public class AnalysisController {
 		}
 
 		// ------------------------------------------------------------------------------------------
-		Map<String, Set<Short>> graph2_UnassignedInBigger = graphCopyOf(graph2_CommonEntitiesOnly);
+		Map<String, Set<Short>> decomposition2_UnassignedInBigger = decompositionCopyOf(decomposition2_CommonEntitiesOnly);
 		Map.Entry<String, Set<Short>> biggerClusterEntry = null;
 
-		for (Map.Entry<String, Set<Short>> clusterEntry : graph2_UnassignedInBigger.entrySet()) {
+		for (Map.Entry<String, Set<Short>> clusterEntry : decomposition2_UnassignedInBigger.entrySet()) {
 			if (biggerClusterEntry == null)
 				biggerClusterEntry = clusterEntry;
 
@@ -466,16 +466,16 @@ public class AnalysisController {
 		biggerClusterEntry.getValue().addAll(notSharedEntities);
 
 		// ------------------------------------------------------------------------------------------
-		Map<String, Set<Short>> graph2_UnassignedInNew = graphCopyOf(graph2_CommonEntitiesOnly);
+		Map<String, Set<Short>> decomposition2_UnassignedInNew = decompositionCopyOf(decomposition2_CommonEntitiesOnly);
 		Set<Short> newClusterForUnassignedEntities = new HashSet<>(notSharedEntities);
-		graph2_UnassignedInNew.put("newClusterForUnnasignedEntities", newClusterForUnassignedEntities);
+		decomposition2_UnassignedInNew.put("newClusterForUnnasignedEntities", newClusterForUnassignedEntities);
 
 		// ------------------------------------------------------------------------------------------
-		Map<String, Set<Short>> graph2_UnassignedInSingletons = graphCopyOf(graph2_CommonEntitiesOnly);
+		Map<String, Set<Short>> decomposition2_UnassignedInSingletons = decompositionCopyOf(decomposition2_CommonEntitiesOnly);
 		for (int i = 0; i < notSharedEntities.size(); i++) {
 			Set<Short> clusterSingletonEntity = new HashSet<>();
 			clusterSingletonEntity.add(notSharedEntities.get(i));
-			graph2_UnassignedInSingletons.put("singletonCluster" + i, clusterSingletonEntity);
+			decomposition2_UnassignedInSingletons.put("singletonCluster" + i, clusterSingletonEntity);
 		}
 
 		int truePositive = 0;
@@ -493,20 +493,20 @@ public class AnalysisController {
 				String e1ClusterG2 = "";
 				String e2ClusterG2 = "";
 
-				for (String cluster : graph1.keySet()) {
-					if (graph1.get(cluster).contains(e1ID)) {
+				for (String cluster : decomposition1.keySet()) {
+					if (decomposition1.get(cluster).contains(e1ID)) {
 						e1ClusterG1 = cluster;
 					}
-					if (graph1.get(cluster).contains(e2ID)) {
+					if (decomposition1.get(cluster).contains(e2ID)) {
 						e2ClusterG1 = cluster;
 					}
 				}
 
-				for (String cluster : graph2_CommonEntitiesOnly.keySet()) {
-					if (graph2_CommonEntitiesOnly.get(cluster).contains(e1ID)) {
+				for (String cluster : decomposition2_CommonEntitiesOnly.keySet()) {
+					if (decomposition2_CommonEntitiesOnly.get(cluster).contains(e1ID)) {
 						e1ClusterG2 = cluster;
 					}
-					if (graph2_CommonEntitiesOnly.get(cluster).contains(e2ID)) {
+					if (decomposition2_CommonEntitiesOnly.get(cluster).contains(e2ID)) {
 						e2ClusterG2 = cluster;
 					}
 				}
@@ -589,27 +589,27 @@ public class AnalysisController {
         *******************************************
         */
 		double mojoValueCommonOnly = getMojoValue(
-				graph2_CommonEntitiesOnly,
-				graph1,
-				graph2_CommonEntitiesOnly.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
+				decomposition2_CommonEntitiesOnly,
+				decomposition1,
+				decomposition2_CommonEntitiesOnly.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
 		);
 
 		double mojoValueUnassignedInBiggest = getMojoValue(
-				graph2_UnassignedInBigger,
-				graph1,
-				graph2_UnassignedInBigger.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
+				decomposition2_UnassignedInBigger,
+				decomposition1,
+				decomposition2_UnassignedInBigger.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
 		);
 
 		double mojoValueUnassignedInNew = getMojoValue(
-				graph2_UnassignedInNew,
-				graph1,
-				graph2_UnassignedInNew.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
+				decomposition2_UnassignedInNew,
+				decomposition1,
+				decomposition2_UnassignedInNew.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
 		);
 
 		double mojoValueUnassignedInSingletons = getMojoValue(
-				graph2_UnassignedInSingletons,
-				graph1,
-				graph2_UnassignedInSingletons.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
+				decomposition2_UnassignedInSingletons,
+				decomposition1,
+				decomposition2_UnassignedInSingletons.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
 		);
 
 		analysis.setMojoCommon(mojoValueCommonOnly);
@@ -620,10 +620,10 @@ public class AnalysisController {
 		return new ResponseEntity<>(analysis, HttpStatus.OK);
 	}
 
-	private Map<String, Set<Short>> graphCopyOf(Map<String, Set<Short>> graph) {
+	private Map<String, Set<Short>> decompositionCopyOf(Map<String, Set<Short>> decomposition) {
 		HashMap<String, Set<Short>> copy = new HashMap<>();
 
-		for (Map.Entry<String, Set<Short>> entry : graph.entrySet())
+		for (Map.Entry<String, Set<Short>> entry : decomposition.entrySet())
 			copy.put(
 				entry.getKey(),
 				new HashSet<>(entry.getValue())
@@ -633,19 +633,19 @@ public class AnalysisController {
 	}
 
 	private double getMojoValue(
-			Map<String, Set<Short>> graph1,
-			Map<String, Set<Short>> graph2,
+			Map<String, Set<Short>> decomposition1,
+			Map<String, Set<Short>> decomposition2,
 			Set<Short> entities
 	)
 		throws IOException
 	{
 		StringBuilder sbSource = new StringBuilder();
-		for (Map.Entry<String, Set<Short>> clusterEntry : graph1.entrySet()) {
+		for (Map.Entry<String, Set<Short>> clusterEntry : decomposition1.entrySet()) {
 			String clusterName = clusterEntry.getKey();
 			Set<Short> clusterEntities = clusterEntry.getValue();
 
 			for (short entityID : clusterEntities) {
-				if (entities.contains(entityID)) { // entity present in both graphs
+				if (entities.contains(entityID)) { // entity present in both decompositions
 					sbSource.append("contain ")
 							.append(clusterName)
 							.append(" ")
@@ -656,12 +656,12 @@ public class AnalysisController {
 		}
 
 		StringBuilder sbTarget = new StringBuilder();
-		for (Map.Entry<String, Set<Short>> clusterEntry : graph2.entrySet()) {
+		for (Map.Entry<String, Set<Short>> clusterEntry : decomposition2.entrySet()) {
 			String clusterName = clusterEntry.getKey();
 			Set<Short> clusterEntities = clusterEntry.getValue();
 
 			for (short entityID : clusterEntities) {
-				if (entities.contains(entityID)) { // entity present in both graphs
+				if (entities.contains(entityID)) { // entity present in both decompositions
 					sbTarget.append("contain ")
 							.append(clusterName)
 							.append(" ")

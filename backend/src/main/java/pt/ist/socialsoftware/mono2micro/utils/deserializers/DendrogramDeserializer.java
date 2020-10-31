@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.io.IOException;
@@ -69,10 +69,10 @@ public class DendrogramDeserializer extends StdDeserializer<Dendrogram> {
 						case "profile":
 							dendrogram.setProfile(jsonParser.getValueAsString());
 							break;
-						case "graphs":
-							dendrogram.setGraphs(
+						case "decompositions":
+							dendrogram.setDecompositions(
 								jsonParser.readValueAs(
-									new TypeReference<List<Graph>>(){}
+									new TypeReference<List<Decomposition>>(){}
 								)
 							);
 							break;

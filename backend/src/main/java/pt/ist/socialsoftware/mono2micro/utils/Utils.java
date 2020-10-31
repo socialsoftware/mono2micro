@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.dto.*;
 
 import java.io.File;
@@ -309,8 +309,8 @@ public class Utils {
 
     public static class GetLocalTransactionsSequenceAndCalculateTracePerformanceResult {
         public int performance = 0;
-        public Graph.LocalTransaction lastLocalTransaction = null;
-        public List<Graph.LocalTransaction> localTransactionsSequence = new ArrayList<>();
+        public Decomposition.LocalTransaction lastLocalTransaction = null;
+        public List<Decomposition.LocalTransaction> localTransactionsSequence = new ArrayList<>();
         public String firstAccessedClusterName = null;
         Map<Short, Byte> entityIDToMode = new HashMap<>();
 
@@ -318,8 +318,8 @@ public class Utils {
 
         public GetLocalTransactionsSequenceAndCalculateTracePerformanceResult(
             int performance,
-            Graph.LocalTransaction lastLocalTransaction,
-            List<Graph.LocalTransaction> localTransactionsSequence,
+            Decomposition.LocalTransaction lastLocalTransaction,
+            List<Decomposition.LocalTransaction> localTransactionsSequence,
             String firstAccessedClusterName,
             Map<Short, Byte> entityIDToMode
         ) {
@@ -333,7 +333,7 @@ public class Utils {
 
     public static GetLocalTransactionsSequenceAndCalculateTracePerformanceResult getLocalTransactionsSequenceAndCalculateTracePerformance(
         int lastLocalTransactionID,
-        Graph.LocalTransaction lastLocalTransaction,
+        Decomposition.LocalTransaction lastLocalTransaction,
         List<ReducedTraceElementDto> elements,
         Map<Short, String> entityIDToClusterName,
         Map<Short, Byte> entityIDToMode,
@@ -347,8 +347,8 @@ public class Utils {
         int performance = 0;
         String firstAccessedClusterName = null;
 
-        Graph.LocalTransaction currentLocalTransaction = lastLocalTransaction;
-        List<Graph.LocalTransaction> localTransactionsSequence = new ArrayList<>();
+        Decomposition.LocalTransaction currentLocalTransaction = lastLocalTransaction;
+        List<Decomposition.LocalTransaction> localTransactionsSequence = new ArrayList<>();
 
         int i = from;
 
@@ -423,7 +423,7 @@ public class Utils {
                 if (currentLocalTransaction == null) { // if it's the first element
                     performance++;
 
-                    currentLocalTransaction = new Graph.LocalTransaction(
+                    currentLocalTransaction = new Decomposition.LocalTransaction(
                         ++lastLocalTransactionID,
                         currentClusterID,
                         new HashSet<AccessDto>() {{ add(access); }},
@@ -456,10 +456,10 @@ public class Utils {
                         performance++;
 
                         localTransactionsSequence.add(
-                            new Graph.LocalTransaction(currentLocalTransaction)
+                            new Decomposition.LocalTransaction(currentLocalTransaction)
                         );
 
-                        currentLocalTransaction = new Graph.LocalTransaction(
+                        currentLocalTransaction = new Decomposition.LocalTransaction(
                             ++lastLocalTransactionID,
                             currentClusterID,
                             new HashSet<AccessDto>() {{ add(access); }},
