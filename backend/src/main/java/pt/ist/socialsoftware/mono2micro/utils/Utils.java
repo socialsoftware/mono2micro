@@ -343,75 +343,11 @@ public class Utils {
 
         if (numberOfElements == 0) return new CalculateTracePerformanceResult();
 
-        Graph.LocalTransaction currentLocalTransaction = lastLocalTransaction;
-        List<Graph.LocalTransaction> localTransactionsSequence = new ArrayList<>();
-
-        if (numberOfElements == 1) {
-            AccessDto access = ((AccessDto) elements.get(0));
-            short accessedEntityID = access.getEntityID();
-            byte accessMode = access.getMode();
-
-            short clusterID = Short.parseShort(
-                entityIDToClusterName.get(access.getEntityID())
-            );
-
-            if (currentLocalTransaction == null) { // this means that it's the first and only element
-                currentLocalTransaction = new Graph.LocalTransaction(
-                    ++lastLocalTransactionID,
-                    clusterID,
-                    new HashSet<AccessDto>() { { add(access); } },
-                    accessedEntityID
-                );
-
-                entityIDToMode.put(accessedEntityID, accessMode);
-
-            } else {
-                if (clusterID == currentLocalTransaction.getClusterID()) {
-                    // check if it is a costly access
-                    boolean hasCost = false;
-                    Byte savedMode = entityIDToMode.get(accessedEntityID);
-
-                    if (savedMode == null) {
-                        hasCost = true;
-
-                    } else {
-                        if (savedMode == 1 && accessMode == 2) // "R" -> 1, "W" -> 2
-                            hasCost = true;
-                    }
-
-                    if (hasCost) {
-                        currentLocalTransaction.addClusterAccess(access);
-                        entityIDToMode.put(accessedEntityID, accessMode);
-                    }
-
-                } else {
-                    localTransactionsSequence.add(
-                        new Graph.LocalTransaction(currentLocalTransaction)
-                    );
-
-                    currentLocalTransaction = new Graph.LocalTransaction(
-                        ++lastLocalTransactionID,
-                        clusterID,
-                        new HashSet<AccessDto>() {{ add(access); }},
-                        accessedEntityID
-                    );
-
-                    entityIDToMode.clear();
-                    entityIDToMode.put(accessedEntityID, accessMode);
-                }
-            }
-
-            return new CalculateTracePerformanceResult(
-                1,
-                currentLocalTransaction,
-                localTransactionsSequence,
-                String.valueOf(clusterID),
-                entityIDToMode
-            );
-        }
-
         int performance = 0;
         String firstAccessedClusterName = null;
+
+        Graph.LocalTransaction currentLocalTransaction = lastLocalTransaction;
+        List<Graph.LocalTransaction> localTransactionsSequence = new ArrayList<>();
 
         int i = from;
 
@@ -431,10 +367,6 @@ public class Utils {
                     i + 1 + r.getCount()
                 );
 
-//                lastLocalTransactionID = result.lastLocalTransaction.getId();
-//                currentLocalTransaction = result.lastLocalTransaction;
-//                localTransactionsSequence.addAll(result.localTransactionsSequence);
-
                 String sequenceFirstAccessedClusterName = result.firstAccessedClusterName;
                 int sequencePerformance = result.performance;
 
@@ -451,10 +383,6 @@ public class Utils {
 
                 // performance of the sequence multiplied by the number of times it occurs
                 performance += sequencePerformance * r.getOccurrences();
-
-                // Here we assume that a sequence will always have an access as its last element
-//                short sequenceLastAccessedEntityID = ((AccessDto) elements.get(i + r.getCount())).getEntityID();
-//                String sequenceLastAccessedClusterName = entityIDToClusterName.get(sequenceLastAccessedEntityID);
 
                 // update outdated variables
                 currentLocalTransaction = result.lastLocalTransaction;
@@ -479,14 +407,57 @@ public class Utils {
                 short accessedEntityID = access.getEntityID();
                 byte accessMode = access.getMode();
 
-                try {
-                    String currentClusterName = entityIDToClusterName.get(accessedEntityID);
-                    short currentClusterID = Short.parseShort(currentClusterName);
+                String currentClusterName = entityIDToClusterName.get(accessedEntityID);
 
-                    if (firstAccessedClusterName == null)
-                        firstAccessedClusterName = currentClusterName;
+                if (currentClusterName == null) {
+                    System.err.println("No assigned entity with ID " + accessedEntityID + " to a cluster.");
+                    System.exit(-1);
+                }
 
-                    if (currentLocalTransaction == null) { // this means that it's the first element
+                short currentClusterID = Short.parseShort(currentClusterName);
+
+                if (firstAccessedClusterName == null)
+                    firstAccessedClusterName = currentClusterName;
+
+                if (currentLocalTransaction == null) { // if it's the first element
+                    performance++;
+
+                    currentLocalTransaction = new Graph.LocalTransaction(
+                        ++lastLocalTransactionID,
+                        currentClusterID,
+                        new HashSet<AccessDto>() {{ add(access); }},
+                        accessedEntityID
+                    );
+
+                    entityIDToMode.put(accessedEntityID, accessMode);
+                }
+
+                else {
+                    if (currentClusterID == currentLocalTransaction.getClusterID()) {
+                        // check if it is a costly access
+                        boolean hasCost = false;
+                        Byte savedMode = entityIDToMode.get(accessedEntityID);
+
+                        if (savedMode == null) {
+                            hasCost = true;
+
+                        } else {
+                            if (savedMode == 1 && accessMode == 2) // "R" -> 1, "W" -> 2
+                                hasCost = true;
+                        }
+
+                        if (hasCost) {
+                            currentLocalTransaction.addClusterAccess(access);
+                            entityIDToMode.put(accessedEntityID, accessMode);
+                        }
+
+                    } else {
+                        performance++;
+
+                        localTransactionsSequence.add(
+                            new Graph.LocalTransaction(currentLocalTransaction)
+                        );
+
                         currentLocalTransaction = new Graph.LocalTransaction(
                             ++lastLocalTransactionID,
                             currentClusterID,
@@ -494,56 +465,25 @@ public class Utils {
                             accessedEntityID
                         );
 
+                        entityIDToMode.clear();
                         entityIDToMode.put(accessedEntityID, accessMode);
                     }
-
-                    else {
-                        if (currentClusterID == currentLocalTransaction.getClusterID()) {
-                            // check if it is a costly access
-                            boolean hasCost = false;
-                            Byte savedMode = entityIDToMode.get(accessedEntityID);
-
-                            if (savedMode == null) {
-                                hasCost = true;
-
-                            } else {
-                                if (savedMode == 1 && accessMode == 2) // "R" -> 1, "W" -> 2
-                                    hasCost = true;
-                            }
-
-                            if (hasCost) {
-                                currentLocalTransaction.addClusterAccess(access);
-                                entityIDToMode.put(accessedEntityID, accessMode);
-                            }
-
-                        } else {
-                            performance++;
-
-                            localTransactionsSequence.add(
-                                new Graph.LocalTransaction(currentLocalTransaction)
-                            );
-
-                            currentLocalTransaction = new Graph.LocalTransaction(
-                                ++lastLocalTransactionID,
-                                currentClusterID,
-                                new HashSet<AccessDto>() {{ add(access); }},
-                                accessedEntityID
-                            );
-
-                            entityIDToMode.clear();
-                            entityIDToMode.put(accessedEntityID, accessMode);
-                        }
-                    }
-
-                    i++;
                 }
 
-                catch (Exception e) {
-                    System.err.println("No assigned entity with ID " + accessedEntityID + " to a cluster.");
-                    throw e;
-                }
-
+                i++;
             }
+        }
+
+        // The current LT should be added at the end since there arent more accesses
+        // This happens when the "from" is equal to 0 meaning that it's the recursion
+        // main/first level of depth
+
+        if (from == 0) {
+            if (
+                currentLocalTransaction != null &&
+                currentLocalTransaction.getClusterAccesses().size() > 0
+            )
+                localTransactionsSequence.add(currentLocalTransaction);
         }
 
         return new CalculateTracePerformanceResult(
