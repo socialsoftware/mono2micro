@@ -245,16 +245,14 @@ public class ClusterController {
 				codebaseName,
 				dendrogramName,
 				graphName,
-				new HashSet<String>() {{ add("clusters"); }}
+				new HashSet<String>() {{ add("clusters"); add("controllers"); }}
 			);
-
-			List<Cluster> clusters = (List<Cluster>) graph.getClusters().values();
 
 			Utils.GetControllersClustersAndClustersControllersResult result =
 				Utils.getControllersClustersAndClustersControllers(
 					profileControllers,
-					clusters,
-					codebase.getControllers()
+					(List<Cluster>) graph.getClusters().values(),
+					graph.getControllers()
 				);
 
 			return new ResponseEntity<>(
@@ -285,7 +283,7 @@ public class ClusterController {
 
 			Codebase codebase = codebaseManager.getCodebaseWithFields(
 				codebaseName,
-				new HashSet<String>() {{ add("profiles"); add("controllers"); }}
+				new HashSet<String>() {{ add("profiles"); }}
 			);
 
 			Set<String> profileControllers = codebase.getProfile(dendrogramProfile);
@@ -294,16 +292,14 @@ public class ClusterController {
 				codebaseName,
 				dendrogramName,
 				graphName,
-				new HashSet<String>() {{ add("clusters"); }}
+				new HashSet<String>() {{ add("clusters"); add("controllers"); }}
 			);
-
-			List<Cluster> clusters = (List<Cluster>) graph.getClusters().values();
 
 			Utils.GetControllersClustersAndClustersControllersResult result =
 				Utils.getControllersClustersAndClustersControllers(
 					profileControllers,
-					clusters,
-					codebase.getControllers()
+					(List<Cluster>) graph.getClusters().values(),
+					graph.getControllers()
 				);
 
 			return new ResponseEntity<>(

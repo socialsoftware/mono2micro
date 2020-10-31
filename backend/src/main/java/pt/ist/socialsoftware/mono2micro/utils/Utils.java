@@ -200,25 +200,26 @@ public class Utils {
 
                     break;
 
-                case REPRESENTATIVE:
-                    Set<String> tracesIds = iter.getRepresentativeTraces();
-                    // FIXME probably here we create a second controllerTracesIterator
-                    iter.reset();
-
-                    while (iter.hasMoreTraces()) {
-                        t = iter.nextTrace();
-
-                        if (tracesIds.contains(String.valueOf(t.getId()))) {
-                            Utils.fillEntityDataStructures(
-                                entityControllers,
-                                e1e2PairCount,
-                                t.expand(2),
-                                controllerName
-                            );
-                        }
-                    }
-
-                    break;
+                    // FIXME not going to fix this since time is scarce
+//                case REPRESENTATIVE:
+//                    Set<String> tracesIds = iter.getRepresentativeTraces();
+//                    // FIXME probably here we create a second controllerTracesIterator
+//                    iter.reset();
+//
+//                    while (iter.hasMoreTraces()) {
+//                        t = iter.nextTrace();
+//
+//                        if (tracesIds.contains(String.valueOf(t.getId()))) {
+//                            Utils.fillEntityDataStructures(
+//                                entityControllers,
+//                                e1e2PairCount,
+//                                t.expand(2),
+//                                controllerName
+//                            );
+//                        }
+//                    }
+//
+//                    break;
 
                 default:
                     while (iter.hasMoreTraces()) {
@@ -306,16 +307,16 @@ public class Utils {
         };
     }
 
-    public static class CalculateTracePerformanceResult {
+    public static class GetLocalTransactionsSequenceAndCalculateTracePerformanceResult {
         public int performance = 0;
         public Graph.LocalTransaction lastLocalTransaction = null;
         public List<Graph.LocalTransaction> localTransactionsSequence = new ArrayList<>();
         public String firstAccessedClusterName = null;
         Map<Short, Byte> entityIDToMode = new HashMap<>();
 
-        public CalculateTracePerformanceResult() {}
+        public GetLocalTransactionsSequenceAndCalculateTracePerformanceResult() {}
 
-        public CalculateTracePerformanceResult(
+        public GetLocalTransactionsSequenceAndCalculateTracePerformanceResult(
             int performance,
             Graph.LocalTransaction lastLocalTransaction,
             List<Graph.LocalTransaction> localTransactionsSequence,
@@ -330,7 +331,7 @@ public class Utils {
         }
     }
 
-    public static CalculateTracePerformanceResult calculateTracePerformance(
+    public static GetLocalTransactionsSequenceAndCalculateTracePerformanceResult getLocalTransactionsSequenceAndCalculateTracePerformance(
         int lastLocalTransactionID,
         Graph.LocalTransaction lastLocalTransaction,
         List<ReducedTraceElementDto> elements,
@@ -341,7 +342,7 @@ public class Utils {
     ) {
         int numberOfElements = elements == null ? 0 : elements.size();
 
-        if (numberOfElements == 0) return new CalculateTracePerformanceResult();
+        if (numberOfElements == 0) return new GetLocalTransactionsSequenceAndCalculateTracePerformanceResult();
 
         int performance = 0;
         String firstAccessedClusterName = null;
@@ -357,7 +358,7 @@ public class Utils {
             if (element instanceof RuleDto) {
                 RuleDto r = (RuleDto) element;
 
-                CalculateTracePerformanceResult result = calculateTracePerformance(
+                GetLocalTransactionsSequenceAndCalculateTracePerformanceResult result = getLocalTransactionsSequenceAndCalculateTracePerformance(
                     lastLocalTransactionID,
                     currentLocalTransaction,
                     elements,
@@ -486,7 +487,7 @@ public class Utils {
                 localTransactionsSequence.add(currentLocalTransaction);
         }
 
-        return new CalculateTracePerformanceResult(
+        return new GetLocalTransactionsSequenceAndCalculateTracePerformanceResult(
             performance,
             currentLocalTransaction,
             localTransactionsSequence,

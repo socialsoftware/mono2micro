@@ -1,6 +1,5 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.jgrapht.graph.DefaultEdge;
@@ -248,109 +247,6 @@ public class Graph {
 		return successorListOf(localTransactionsGraph, lt);
 	}
 
-	public static List<LocalTransaction> getLocalTransactionsSequence(
-		int currentLocalTransactionId,
-		Map<Short, String> entityIDToClusterName,
-		List<AccessDto> accesses
-	) {
-		LocalTransaction lt = null;
-		List<LocalTransaction> localTransactionsSequence = new ArrayList<>();
-		Map<Short, Byte> entityIDToMode = new HashMap<>();
-
-		String previousCluster = ""; // IntelliJ is afraid. poor him
-
-		int localTransactionsCounter = currentLocalTransactionId;
-//		JSONArray entitiesSeq = new JSONArray();
-//		JSONObject clusterAccess = new JSONObject();
-
-		for (int i = 0; i < accesses.size(); i++) {
-			AccessDto access = accesses.get(i);
-			short entityID = access.getEntityID();
-			byte mode = access.getMode();
-			String cluster;
-
-			cluster = entityIDToClusterName.get(entityID);
-
-			if (cluster == null) {
-				System.err.println("Entity " + entityID + " is not assign to a cluster.");
-				System.exit(-1);
-			}
-
-			if (i == 0) {
-				lt = new LocalTransaction(
-					localTransactionsCounter++,
-					Short.parseShort(cluster),
-					new HashSet<AccessDto>() { { add(access); } },
-					entityID
-				);
-
-				entityIDToMode.put(entityID, mode);
-
-//				clusterAccess.put("cluster", cluster);
-//				clusterAccess.put("sequence", new JSONArray());
-//				clusterAccess.getJSONArray("sequence").put(
-//					new JSONArray().put(entity).put(mode)
-//				);
-
-			} else {
-
-				if (cluster.equals(previousCluster)) {
-					boolean hasCost = false;
-					Byte savedMode = entityIDToMode.get(entityID);
-
-					if (savedMode == null) {
-						hasCost = true;
-
-					} else {
-						if (savedMode == 1 && mode == 2) // "R" -> 1, "W" -> 2
-							hasCost = true;
-					}
-
-					if (hasCost) {
-						lt.addClusterAccess(access);
-						entityIDToMode.put(entityID, mode);
-
-//						clusterAccess.getJSONArray("sequence").put(
-//							new JSONArray().put(entity).put(mode)
-//						);
-					}
-
-				} else {
-					localTransactionsSequence.add(new LocalTransaction(lt));
-
-					lt = new LocalTransaction(
-						localTransactionsCounter++,
-						Short.parseShort(cluster),
-						new HashSet<AccessDto>() { { add(access); } },
-						entityID
-					);
-
-					entityIDToMode.clear();
-					entityIDToMode.put(entityID, mode);
-
-//					entitiesSeq.put(clusterAccess);
-//					clusterAccess = new JSONObject();
-//					clusterAccess.put("cluster", cluster);
-//					clusterAccess.put("sequence", new JSONArray());
-//					clusterAccess.getJSONArray("sequence").put(
-//						new JSONArray().put(entity).put(mode)
-//					);
-				}
-			}
-
-			previousCluster = cluster;
-		}
-
-//		entitiesSeq.put(clusterAccess);
-//		controller.addEntitiesSeq(entitiesSeq);
-//		controller.createFunctionalityRedesign(Constants.DEFAULT_REDESIGN_NAME, true);
-
-		if (lt != null && lt.getClusterAccesses().size() > 0)
-			localTransactionsSequence.add(lt);
-
-		return localTransactionsSequence;
-	}
-
 	public static void addLocalTransactionsSequenceToGraph(
 		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph,
 		List<LocalTransaction> localTransactionSequence
@@ -440,7 +336,6 @@ public class Graph {
 		throws IOException
 	{
 		TraceDto t;
-		List<AccessDto> traceAccesses;
 		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph = new DirectedAcyclicGraph<>(DefaultEdge.class);
 
 		localTransactionsGraph.addVertex( // root
@@ -450,7 +345,7 @@ public class Graph {
 			)
 		);
 
-		int localTransactionsCounter = 1;
+		int localTransactionsCounter = 1; // 1 because the root was already added with ID 0
 
 		iter.nextControllerWithName(controllerName);
 
@@ -462,31 +357,29 @@ public class Graph {
 				t = iter.getLongestTrace();
 
 				if (t != null) {
-					traceAccesses = t.expand(2);
+					List<ReducedTraceElementDto> traceElements = t.getElements();
 
-					if (traceAccesses.size() > 0) {
-						List<LocalTransaction> localTransactionSequence = getLocalTransactionsSequence(
+					if (traceElements != null && traceElements.size() > 0) {
+						Utils.GetLocalTransactionsSequenceAndCalculateTracePerformanceResult result = Utils.getLocalTransactionsSequenceAndCalculateTracePerformance(
 							localTransactionsCounter,
+							null,
+							traceElements,
 							entityIDToClusterName,
-							traceAccesses
+							new HashMap<>(),
+							0,
+							traceElements.size()
 						);
 
 						addLocalTransactionsSequenceToGraph(
 							localTransactionsGraph,
-							localTransactionSequence
+							result.localTransactionsSequence
 						);
 
+						controllerPerformance += result.performance;
 					}
-
-					Utils.CalculateTracePerformanceResult result = Utils.calculateTracePerformance(
-						t.getElements(),
-						entityIDToClusterName,
-						0,
-						t.getElements() == null ? 0 : t.getElements().size()
-					);
-
-					controllerPerformance += result.performance;
 				}
+
+				tracesCounter++;
 
 				break;
 
@@ -494,100 +387,95 @@ public class Graph {
 				t = iter.getTraceWithMoreDifferentAccesses();
 
 				if (t != null) {
-					traceAccesses = t.expand(2);
+					List<ReducedTraceElementDto> traceElements = t.getElements();
 
-					if (traceAccesses.size() > 0) {
-						List<LocalTransaction> localTransactionSequence = getLocalTransactionsSequence(
+					if (traceElements != null && traceElements.size() > 0) {
+						Utils.GetLocalTransactionsSequenceAndCalculateTracePerformanceResult result = Utils.getLocalTransactionsSequenceAndCalculateTracePerformance(
 							localTransactionsCounter,
+							null,
+							traceElements,
 							entityIDToClusterName,
-							traceAccesses
-						);
-
-						addLocalTransactionsSequenceToGraph(
-							localTransactionsGraph,
-							localTransactionSequence
-						);
-					}
-
-					Utils.CalculateTracePerformanceResult result = Utils.calculateTracePerformance(
-						t.getElements(),
-						entityIDToClusterName,
-						0,
-						t.getElements() == null ? 0 : t.getElements().size()
-					);
-
-					controllerPerformance += result.performance;
-				}
-
-				break;
-
-			case REPRESENTATIVE:
-				Set<String> tracesIds = iter.getRepresentativeTraces();
-				// FIXME probably here we create a second controllerTracesIterator
-				iter.reset();
-
-				while (iter.hasMoreTraces()) {
-					t = iter.nextTrace();
-					traceAccesses = t.expand(2);
-
-					if (tracesIds.contains(String.valueOf(t.getId())) && traceAccesses.size() > 0) {
-						List<LocalTransaction> localTransactionSequence = getLocalTransactionsSequence(
-							localTransactionsCounter,
-							entityIDToClusterName,
-							traceAccesses
-						);
-
-						addLocalTransactionsSequenceToGraph(
-							localTransactionsGraph,
-							localTransactionSequence
-						);
-
-						localTransactionsCounter += localTransactionSequence.size();
-
-						Utils.CalculateTracePerformanceResult result = Utils.calculateTracePerformance(
-							t.getElements(),
-							entityIDToClusterName,
+							new HashMap<>(),
 							0,
-							t.getElements() == null ? 0 : t.getElements().size()
+							traceElements.size()
+						);
+
+						addLocalTransactionsSequenceToGraph(
+							localTransactionsGraph,
+							result.localTransactionsSequence
 						);
 
 						controllerPerformance += result.performance;
 					}
 				}
 
+				tracesCounter++;
+
 				break;
 
-			default:
+			// FIXME not going to fix this since time is scarce
+//			case REPRESENTATIVE:
+//				Set<String> tracesIds = iter.getRepresentativeTraces();
+//				// FIXME probably here we create a second controllerTracesIterator
+//				iter.reset();
+//
+//				while (iter.hasMoreTraces()) {
+//					t = iter.nextTrace();
+//					traceAccesses = t.expand(2);
+//
+//					if (tracesIds.contains(String.valueOf(t.getId())) && traceAccesses.size() > 0) {
+//						List<LocalTransaction> localTransactionSequence = getLocalTransactionsSequence(
+//							localTransactionsCounter,
+//							entityIDToClusterName,
+//							traceAccesses
+//						);
+//
+//						addLocalTransactionsSequenceToGraph(
+//							localTransactionsGraph,
+//							localTransactionSequence
+//						);
+//
+//						localTransactionsCounter += localTransactionSequence.size();
+//
+//						Utils.GetLocalTransactionsSequenceAndCalculateTracePerformanceResult result = Utils.calculateTracePerformance(
+//							t.getElements(),
+//							entityIDToClusterName,
+//							0,
+//							t.getElements() == null ? 0 : t.getElements().size()
+//						);
+//
+//						controllerPerformance += result.performance;
+//					}
+//				}
+//
+//				break;
 
+			default:
 				while (iter.hasMoreTraces()) {
 					tracesCounter++;
 
 					t = iter.nextTrace();
-					traceAccesses = t.expand(2);
 
-					if (traceAccesses.size() > 0) {
-						List<LocalTransaction> localTransactionSequence = getLocalTransactionsSequence(
+					List<ReducedTraceElementDto> traceElements = t.getElements();
+
+					if (traceElements != null && traceElements.size() > 0) {
+						Utils.GetLocalTransactionsSequenceAndCalculateTracePerformanceResult result = Utils.getLocalTransactionsSequenceAndCalculateTracePerformance(
 							localTransactionsCounter,
+							null,
+							traceElements,
 							entityIDToClusterName,
-							traceAccesses
+							new HashMap<>(),
+							0,
+							traceElements.size()
 						);
 
 						addLocalTransactionsSequenceToGraph(
 							localTransactionsGraph,
-							localTransactionSequence
+							result.localTransactionsSequence
 						);
 
-						localTransactionsCounter += localTransactionSequence.size();
+						controllerPerformance += result.performance;
 					}
-
-					Utils.CalculateTracePerformanceResult result = Utils.calculateTracePerformance(
-						t.getElements(),
-						entityIDToClusterName,
-						0,
-						t.getElements() == null ? 0 : t.getElements().size()
-					);
-
-					controllerPerformance += result.performance;
 				}
 		}
 
