@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
+import pt.ist.socialsoftware.mono2micro.domain.Graph;
 import pt.ist.socialsoftware.mono2micro.dto.*;
 
 import java.io.File;
@@ -307,19 +308,34 @@ public class Utils {
 
     public static class CalculateTracePerformanceResult {
         public int performance = 0;
+        public Graph.LocalTransaction lastLocalTransaction = null;
+        public List<Graph.LocalTransaction> localTransactionsSequence = new ArrayList<>();
         public String firstAccessedClusterName = null;
+        Map<Short, Byte> entityIDToMode = new HashMap<>();
 
         public CalculateTracePerformanceResult() {}
 
-        public CalculateTracePerformanceResult(int performance, String firstAccessedClusterName) {
+        public CalculateTracePerformanceResult(
+            int performance,
+            Graph.LocalTransaction lastLocalTransaction,
+            List<Graph.LocalTransaction> localTransactionsSequence,
+            String firstAccessedClusterName,
+            Map<Short, Byte> entityIDToMode
+        ) {
             this.performance = performance;
+            this.lastLocalTransaction = lastLocalTransaction;
+            this.localTransactionsSequence = localTransactionsSequence;
             this.firstAccessedClusterName = firstAccessedClusterName;
+            this.entityIDToMode = entityIDToMode;
         }
     }
 
     public static CalculateTracePerformanceResult calculateTracePerformance(
+        int lastLocalTransactionID,
+        Graph.LocalTransaction lastLocalTransaction,
         List<ReducedTraceElementDto> elements,
         Map<Short, String> entityIDToClusterName,
+        Map<Short, Byte> entityIDToMode,
         int from,
         int to
     ) {
@@ -327,13 +343,74 @@ public class Utils {
 
         if (numberOfElements == 0) return new CalculateTracePerformanceResult();
 
-        if (numberOfElements == 1) return new CalculateTracePerformanceResult(
-            1,
-            entityIDToClusterName.get(((AccessDto) elements.get(0)).getEntityID())
-        );
+        Graph.LocalTransaction currentLocalTransaction = lastLocalTransaction;
+        List<Graph.LocalTransaction> localTransactionsSequence = new ArrayList<>();
+
+        if (numberOfElements == 1) {
+            AccessDto access = ((AccessDto) elements.get(0));
+            short accessedEntityID = access.getEntityID();
+            byte accessMode = access.getMode();
+
+            short clusterID = Short.parseShort(
+                entityIDToClusterName.get(access.getEntityID())
+            );
+
+            if (currentLocalTransaction == null) { // this means that it's the first and only element
+                currentLocalTransaction = new Graph.LocalTransaction(
+                    ++lastLocalTransactionID,
+                    clusterID,
+                    new HashSet<AccessDto>() { { add(access); } },
+                    accessedEntityID
+                );
+
+                entityIDToMode.put(accessedEntityID, accessMode);
+
+            } else {
+                if (clusterID == currentLocalTransaction.getClusterID()) {
+                    // check if it is a costly access
+                    boolean hasCost = false;
+                    Byte savedMode = entityIDToMode.get(accessedEntityID);
+
+                    if (savedMode == null) {
+                        hasCost = true;
+
+                    } else {
+                        if (savedMode == 1 && accessMode == 2) // "R" -> 1, "W" -> 2
+                            hasCost = true;
+                    }
+
+                    if (hasCost) {
+                        currentLocalTransaction.addClusterAccess(access);
+                        entityIDToMode.put(accessedEntityID, accessMode);
+                    }
+
+                } else {
+                    localTransactionsSequence.add(
+                        new Graph.LocalTransaction(currentLocalTransaction)
+                    );
+
+                    currentLocalTransaction = new Graph.LocalTransaction(
+                        ++lastLocalTransactionID,
+                        clusterID,
+                        new HashSet<AccessDto>() {{ add(access); }},
+                        accessedEntityID
+                    );
+
+                    entityIDToMode.clear();
+                    entityIDToMode.put(accessedEntityID, accessMode);
+                }
+            }
+
+            return new CalculateTracePerformanceResult(
+                1,
+                currentLocalTransaction,
+                localTransactionsSequence,
+                String.valueOf(clusterID),
+                entityIDToMode
+            );
+        }
 
         int performance = 0;
-        String previousClusterName = null;
         String firstAccessedClusterName = null;
 
         int i = from;
@@ -345,11 +422,18 @@ public class Utils {
                 RuleDto r = (RuleDto) element;
 
                 CalculateTracePerformanceResult result = calculateTracePerformance(
+                    lastLocalTransactionID,
+                    currentLocalTransaction,
                     elements,
                     entityIDToClusterName,
+                    entityIDToMode,
                     i + 1,
                     i + 1 + r.getCount()
                 );
+
+//                lastLocalTransactionID = result.lastLocalTransaction.getId();
+//                currentLocalTransaction = result.lastLocalTransaction;
+//                localTransactionsSequence.addAll(result.localTransactionsSequence);
 
                 String sequenceFirstAccessedClusterName = result.firstAccessedClusterName;
                 int sequencePerformance = result.performance;
@@ -358,55 +442,117 @@ public class Utils {
                     firstAccessedClusterName = sequenceFirstAccessedClusterName;
 
                 // hop between an access (previous cluster if it exists) and the sequence in question
-                if (previousClusterName != null && !previousClusterName.equals(sequenceFirstAccessedClusterName))
+                if (
+                    currentLocalTransaction != null && // this currentLT is already outdated that's why it's useful
+                    currentLocalTransaction.getClusterID() != Short.parseShort(sequenceFirstAccessedClusterName)
+                ) {
                     performance++;
+                }
 
                 // performance of the sequence multiplied by the number of times it occurs
                 performance += sequencePerformance * r.getOccurrences();
 
                 // Here we assume that a sequence will always have an access as its last element
-                short sequenceLastAccessedEntityID = ((AccessDto) elements.get(i + r.getCount())).getEntityID();
-                String sequenceLastAccessedClusterName = entityIDToClusterName.get(sequenceLastAccessedEntityID);
+//                short sequenceLastAccessedEntityID = ((AccessDto) elements.get(i + r.getCount())).getEntityID();
+//                String sequenceLastAccessedClusterName = entityIDToClusterName.get(sequenceLastAccessedEntityID);
 
-                previousClusterName = sequenceLastAccessedClusterName;
+                // update outdated variables
+                currentLocalTransaction = result.lastLocalTransaction;
+                lastLocalTransactionID = currentLocalTransaction.getId();
+                entityIDToMode = result.entityIDToMode;
+                localTransactionsSequence.addAll(result.localTransactionsSequence);
 
-                // If the rule has more than 1 occurrence, then we want to consider the hop between the final access and the first one
-                if (r.getOccurrences() > 1 && !sequenceFirstAccessedClusterName.equals(sequenceLastAccessedClusterName))
+                // If the rule has more than 1 occurrence,
+                // then we want to consider the hop between the final access and the first one
+                if (
+                    r.getOccurrences() > 1 &&
+                    Short.parseShort(sequenceFirstAccessedClusterName) != currentLocalTransaction.getClusterID()
+                ) {
                     performance += r.getOccurrences() - 1;
+                }
 
                 i += 1 + r.getCount();
 
             } else {
 
-                AccessDto a = (AccessDto) element;
-                short entityID = a.getEntityID();
+                AccessDto access = (AccessDto) element;
+                short accessedEntityID = access.getEntityID();
+                byte accessMode = access.getMode();
 
                 try {
-                    String currentClusterName = entityIDToClusterName.get(entityID);
+                    String currentClusterName = entityIDToClusterName.get(accessedEntityID);
+                    short currentClusterID = Short.parseShort(currentClusterName);
 
                     if (firstAccessedClusterName == null)
                         firstAccessedClusterName = currentClusterName;
 
-                    if (previousClusterName == null)
-                        previousClusterName = currentClusterName;
+                    if (currentLocalTransaction == null) { // this means that it's the first element
+                        currentLocalTransaction = new Graph.LocalTransaction(
+                            ++lastLocalTransactionID,
+                            currentClusterID,
+                            new HashSet<AccessDto>() {{ add(access); }},
+                            accessedEntityID
+                        );
 
-                    else if (!currentClusterName.equals(previousClusterName)) {
-                        performance++;
-                        previousClusterName = currentClusterName;
+                        entityIDToMode.put(accessedEntityID, accessMode);
+                    }
+
+                    else {
+                        if (currentClusterID == currentLocalTransaction.getClusterID()) {
+                            // check if it is a costly access
+                            boolean hasCost = false;
+                            Byte savedMode = entityIDToMode.get(accessedEntityID);
+
+                            if (savedMode == null) {
+                                hasCost = true;
+
+                            } else {
+                                if (savedMode == 1 && accessMode == 2) // "R" -> 1, "W" -> 2
+                                    hasCost = true;
+                            }
+
+                            if (hasCost) {
+                                currentLocalTransaction.addClusterAccess(access);
+                                entityIDToMode.put(accessedEntityID, accessMode);
+                            }
+
+                        } else {
+                            performance++;
+
+                            localTransactionsSequence.add(
+                                new Graph.LocalTransaction(currentLocalTransaction)
+                            );
+
+                            currentLocalTransaction = new Graph.LocalTransaction(
+                                ++lastLocalTransactionID,
+                                currentClusterID,
+                                new HashSet<AccessDto>() {{ add(access); }},
+                                accessedEntityID
+                            );
+
+                            entityIDToMode.clear();
+                            entityIDToMode.put(accessedEntityID, accessMode);
+                        }
                     }
 
                     i++;
                 }
 
                 catch (Exception e) {
-                    System.err.println("No assigned entity with ID " + entityID + " to a cluster.");
+                    System.err.println("No assigned entity with ID " + accessedEntityID + " to a cluster.");
                     throw e;
                 }
 
             }
         }
 
-        return new CalculateTracePerformanceResult(performance, firstAccessedClusterName);
+        return new CalculateTracePerformanceResult(
+            performance,
+            currentLocalTransaction,
+            localTransactionsSequence,
+            firstAccessedClusterName,
+            entityIDToMode
+        );
     }
 
     public static Map<String, List<Controller>> getClusterControllers(
