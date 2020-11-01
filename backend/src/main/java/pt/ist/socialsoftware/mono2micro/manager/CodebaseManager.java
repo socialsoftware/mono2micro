@@ -520,6 +520,7 @@ public class CodebaseManager {
 
 	public Map<String, Controller> getControllersWithCostlyAccesses(
 		Codebase codebase,
+		String profile,
 		Map<Short, String> entityIDToClusterName
 	)
 		throws IOException {
@@ -527,6 +528,7 @@ public class CodebaseManager {
 
 		File jsonFile = new File(codebase.getDatafilePath());
 
+		Set<String> profileControllers = codebase.getProfile(profile);
 		JsonFactory jsonfactory = objectMapper.getFactory();
 
 		JsonParser jsonParser = jsonfactory.createParser(jsonFile);
@@ -541,92 +543,102 @@ public class CodebaseManager {
 			if (jsonParser.getCurrentToken() == JsonToken.START_OBJECT) {
 				Utils.print("Controller name: " + jsonParser.getCurrentName(), Utils.lineno());
 
+				if (!profileControllers.contains(jsonParser.getCurrentName())) { // FIXME TEST ME
+					jsonParser.skipChildren();
+					continue;
+				}
+
 				Controller controller = new Controller(jsonParser.getCurrentName());
 
 				while (jsonParser.nextValue() != JsonToken.END_OBJECT) {
-					Utils.print("field name: " + jsonParser.getCurrentName(), Utils.lineno());
+//					Utils.print("field name: " + jsonParser.getCurrentName(), Utils.lineno());
 
 					switch (jsonParser.getCurrentName()) {
 						case "f":
 							break;
-						case "t":
-							while (jsonParser.nextValue() != JsonToken.END_ARRAY) {
+						case "t": // array of traces
 
-								switch (jsonParser.getCurrentName()) {
-									case "id":
-									case "f":
-										break;
-									case "a":
-										Map<Short, Byte> entityIDToMode = new HashMap<>();
-										String previousCluster = "";
-										int i = 0;
+							while (jsonParser.nextValue() != JsonToken.END_ARRAY) { // iterate over trace objects
+								while (jsonParser.nextValue() != JsonToken.END_OBJECT) { // iterate over trace object fields
 
-										while (jsonParser.nextValue() != JsonToken.END_ARRAY) {
-											ReducedTraceElementDto rte = jsonParser.readValueAs(
-												ReducedTraceElementDto.class
-											);
+									switch (jsonParser.getCurrentName()) {
+										case "id":
+										case "f":
+											break;
 
-											if (rte instanceof AccessDto) {
-												AccessDto access = (AccessDto) rte;
-												short entityID = access.getEntityID();
-												byte mode = access.getMode();
-												String cluster;
+										case "a":
+											Map<Short, Byte> entityIDToMode = new HashMap<>();
+											String previousCluster = "";
+											int i = 0;
 
-												cluster = entityIDToClusterName.get(entityID);
+											while (jsonParser.nextValue() != JsonToken.END_ARRAY) {
+												ReducedTraceElementDto rte = jsonParser.readValueAs(
+													ReducedTraceElementDto.class
+												);
 
-												if (cluster == null) {
-													System.err.println("Entity " + entityID + " is not assign to a cluster.");
-													System.exit(-1);
-												}
+												if (rte instanceof AccessDto) {
+													AccessDto access = (AccessDto) rte;
+													short entityID = access.getEntityID();
+													byte mode = access.getMode();
+													String cluster;
 
-												if (i == 0) {
-													entityIDToMode.put(entityID, mode);
-													controller.addEntity(entityID, mode);
+													cluster = entityIDToClusterName.get(entityID);
 
-												} else {
+													if (cluster == null) {
+														System.err.println("Entity " + entityID + " is not assign to a cluster.");
+														System.exit(-1);
+													}
 
-													if (cluster.equals(previousCluster)) {
-														boolean hasCost = false;
-														Byte savedMode = entityIDToMode.get(entityID);
-
-														if (savedMode == null) {
-															hasCost = true;
-
-														} else {
-															if (savedMode == 1 && mode == 2) // "R" -> 1, "W" -> 2
-																hasCost = true;
-														}
-
-														if (hasCost) {
-															entityIDToMode.put(entityID, mode);
-															controller.addEntity(entityID, mode);
-														}
-
-													} else {
+													if (i == 0) {
+														entityIDToMode.put(entityID, mode);
 														controller.addEntity(entityID, mode);
 
-														entityIDToMode.clear();
-														entityIDToMode.put(entityID, mode);
+													} else {
 
+														if (cluster.equals(previousCluster)) {
+															boolean hasCost = false;
+															Byte savedMode = entityIDToMode.get(entityID);
+
+															if (savedMode == null) {
+																hasCost = true;
+
+															} else {
+																if (savedMode == 1 && mode == 2) // "R" -> 1, "W" -> 2
+																	hasCost = true;
+															}
+
+															if (hasCost) {
+																entityIDToMode.put(entityID, mode);
+																controller.addEntity(entityID, mode);
+															}
+
+														} else {
+															controller.addEntity(entityID, mode);
+
+															entityIDToMode.clear();
+															entityIDToMode.put(entityID, mode);
+
+														}
 													}
+
+													previousCluster = cluster;
+													i++;
 												}
-
-												previousCluster = cluster;
-												i++;
 											}
-										}
 
-										break;
+											break;
 
-									default:
-										Utils.print(
-											"Unexpected field name when parsing Trace: " + jsonParser.getCurrentName(),
-											Utils.lineno()
-										);
+										default:
+											Utils.print(
+												"Unexpected field name when parsing Trace: " + jsonParser.getCurrentName(),
+												Utils.lineno()
+											);
 
-										System.exit(-1);
+											System.exit(-1);
+									}
 								}
 							}
+
 
 							break;
 

@@ -114,7 +114,6 @@ public class Metrics {
     public static float calculateControllerComplexityAndClusterDependencies(
 	 	Decomposition decomposition,
 		String controllerName,
-	 	Set<Controller> controllers,
 	 	Map<String, Set<Cluster>> controllerClusters,
 		DirectedAcyclicGraph<Decomposition.LocalTransaction, DefaultEdge> localTransactionsGraph
 	) {
@@ -124,7 +123,6 @@ public class Metrics {
 			return 0;
 
 		} else {
-
 			// < entity + mode, List<controllerName>> controllersThatTouchSameEntities for a given mode
 			Map<String, List<String>> cache = new HashMap<>();
 
@@ -132,9 +130,10 @@ public class Metrics {
 
 			for (Decomposition.LocalTransaction lt : allLocalTransactions) {
 				// ClusterDependencies
-				Cluster fromCluster = decomposition.getCluster(String.valueOf(lt.getClusterID()));
+				short clusterID = lt.getClusterID();
+				if (clusterID != -1) { // not root node
+					Cluster fromCluster = decomposition.getCluster(String.valueOf(clusterID));
 
-				if (fromCluster != null) { // not root node
 					List<Decomposition.LocalTransaction> nextLocalTransactions = Decomposition.getNextLocalTransactions(
 						localTransactionsGraph,
 						lt
@@ -161,7 +160,7 @@ public class Metrics {
 								controllerName,
 								entityID,
 								mode,
-								controllers,
+								decomposition.getControllers().values(),
 								controllerClusters
 							);
 
@@ -183,7 +182,7 @@ public class Metrics {
 		String controllerName,
 		short entityID,
 		byte mode,
-		Set<Controller> controllers,
+		Collection<Controller> controllers,
 		Map<String, Set<Cluster>> controllerClusters
 	) {
 		List<String> controllersThatTouchThisEntityAndMode = new ArrayList<>();

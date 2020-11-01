@@ -170,7 +170,6 @@ export class Analyser extends React.Component<any, any> {
             [
                 "name",
                 "profiles",
-                "analysisType"
             ]
         ).then(response => {
             this.setState({
@@ -392,89 +391,83 @@ export class Analyser extends React.Component<any, any> {
                             </DropdownButton>
                         </Col>
                     </Form.Group>
-                    {
-                        codebase?.analysisType === "dynamic" && (
-                            <>
-                                <Form.Group as={Row} controlId="amountOfTraces">
-                                    <Form.Label column sm={3}>
-                                        Amount of Traces per Controller
-                                    </Form.Label>
-                                    <Col sm={3}>
-                                        <FormControl 
-                                            type="number"
-                                            value={amountOfTraces}
-                                            onChange={this.handleChangeAmountOfTraces}
-                                            
-                                        />
-                                        <Form.Text className="text-muted">
-                                            If no number is inserted, 0 is assumed to be the default value meaning the maximum number of traces
-                                        </Form.Text>
-                                    </Col>
-                                </Form.Group>
-                                <Form.Group as={Row} className="align-items-center">
-                                    <Form.Label as="legend" column sm={3}>
-                                        Type of traces
-                                    </Form.Label>
-                                    <Col sm={3} style={{ paddingLeft: 0 }}>
-                                        <Col sm="auto">
-                                            <Form.Check
-                                                onClick={this.handleChangeTypeOfTraces}
-                                                name="typeOfTraces"
-                                                label="All"
-                                                type="radio"
-                                                id="allTraces"
-                                                value="ALL"
-                                                defaultChecked
-                                            />
-                                        </Col>
-                                        <Col sm="auto">
-                                            <Form.Check
-                                                onClick={this.handleChangeTypeOfTraces}
-                                                name="typeOfTraces"
-                                                label="Longest"
-                                                type="radio"
-                                                id="longest"
-                                                value="LONGEST"
-                                            />
-                                        </Col>
-                                        <Col sm="auto">
-                                            <Form.Check
-                                                onClick={this.handleChangeTypeOfTraces}
-                                                name="typeOfTraces"
-                                                label="With more different accesses"
-                                                type="radio"
-                                                id="withMoreDifferentTraces"
-                                                value="WITH_MORE_DIFFERENT_ACCESSES"
-                                            />
+                    <Form.Group as={Row} controlId="amountOfTraces">
+                        <Form.Label column sm={3}>
+                            Amount of Traces per Controller
+                        </Form.Label>
+                        <Col sm={3}>
+                            <FormControl 
+                                type="number"
+                                value={amountOfTraces}
+                                onChange={this.handleChangeAmountOfTraces}
+                                
+                            />
+                            <Form.Text className="text-muted">
+                                If no number is inserted, 0 is assumed to be the default value meaning the maximum number of traces
+                            </Form.Text>
+                        </Col>
+                    </Form.Group>
+                    <Form.Group as={Row} className="align-items-center">
+                        <Form.Label as="legend" column sm={3}>
+                            Type of traces
+                        </Form.Label>
+                        <Col sm={3} style={{ paddingLeft: 0 }}>
+                            <Col sm="auto">
+                                <Form.Check
+                                    onClick={this.handleChangeTypeOfTraces}
+                                    name="typeOfTraces"
+                                    label="All"
+                                    type="radio"
+                                    id="allTraces"
+                                    value="ALL"
+                                    defaultChecked
+                                />
+                            </Col>
+                            <Col sm="auto">
+                                <Form.Check
+                                    onClick={this.handleChangeTypeOfTraces}
+                                    name="typeOfTraces"
+                                    label="Longest"
+                                    type="radio"
+                                    id="longest"
+                                    value="LONGEST"
+                                />
+                            </Col>
+                            <Col sm="auto">
+                                <Form.Check
+                                    onClick={this.handleChangeTypeOfTraces}
+                                    name="typeOfTraces"
+                                    label="With more different accesses"
+                                    type="radio"
+                                    id="withMoreDifferentTraces"
+                                    value="WITH_MORE_DIFFERENT_ACCESSES"
+                                />
 
-                                        </Col>
-                                        <Col sm="auto">
-                                            <Form.Check
-                                                onClick={this.handleChangeTypeOfTraces}
-                                                name="typeOfTraces"
-                                                label="Representative (set of accesses)"
-                                                type="radio"
-                                                id="representativeSetOfAccesses"
-                                                value="REPRESENTATIVE"
-                                            />
-                                        </Col>
-                                        {/* WIP */}
-                                        <Col sm="auto">
-                                            <Form.Check
-                                                onClick={undefined}
-                                                name="typeOfTraces"
-                                                label="Representative (subsequence of accesses)"
-                                                type="radio"
-                                                id="complete"
-                                                value="?"
-                                                disabled
-                                            />
-                                        </Col>
-                                    </Col>
-                                </Form.Group>
-                            </>
-                        )
-                    }
+                            </Col>
+                            <Col sm="auto">
+                                <Form.Check
+                                    onClick={this.handleChangeTypeOfTraces}
+                                    name="typeOfTraces"
+                                    label="Representative (set of accesses)"
+                                    type="radio"
+                                    id="representativeSetOfAccesses"
+                                    value="REPRESENTATIVE"
+                                />
+                            </Col>
+                            {/* WIP */}
+                            <Col sm="auto">
+                                <Form.Check
+                                    onClick={undefined}
+                                    name="typeOfTraces"
+                                    label="Representative (subsequence of accesses)"
+                                    type="radio"
+                                    id="complete"
+                                    value="?"
+                                    disabled
+                                />
+                            </Col>
+                        </Col>
+                    </Form.Group>
                     <Form.Group as={Row} controlId="expert">
                         <Form.Label column sm={3}>
                             Expert
@@ -515,7 +508,7 @@ export class Analyser extends React.Component<any, any> {
                                     isUploaded === "Uploading..." ||
                                     selectedProfiles.length === 0 ||
                                     requestLimit === "" ||
-                                    (codebase.analysisType === "dynamic" && (typeOfTraces === "" || amountOfTraces === ""))
+                                    (typeOfTraces === "" || amountOfTraces === "")
                                 }
                             >
                                 Submit

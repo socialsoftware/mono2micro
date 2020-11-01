@@ -38,7 +38,7 @@ export class Codebases extends React.Component {
     loadCodebases() {
         const service = new RepositoryService();
         service.getCodebases(
-            ["name", "analysisType"],
+            ["name"],
         ).then(response => {
             this.setState({
                 codebases: response.data
@@ -103,9 +103,9 @@ export class Codebases extends React.Component {
         }
     }
 
-    doCreateCodebaseRequest(codebaseName, pathOrFile, analysisType) {
+    doCreateCodebaseRequest(codebaseName, pathOrFile) {
         const service = new RepositoryService();
-        service.createCodebase(codebaseName, pathOrFile, analysisType)
+        service.createCodebase(codebaseName, pathOrFile)
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
                     this.loadCodebases();

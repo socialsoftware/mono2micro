@@ -164,7 +164,7 @@ public class Codebase {
 			this,
 			dendrogram.getProfile(),
 			dendrogram.getTracesMaxLimit(),
-			dendrogram.getTypeOfTraces()
+			dendrogram.getTraceType()
 		);
 
 		CodebaseManager.getInstance().writeDendrogramSimilarityMatrix(

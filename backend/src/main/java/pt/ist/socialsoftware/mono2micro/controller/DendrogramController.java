@@ -162,14 +162,14 @@ public class DendrogramController {
 
 			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
 				codebase,
+				dendrogram.getProfile(),
 				decomposition.getEntityIDToClusterName()
 			));
 
 			cutDecomposition.calculateMetrics(
 				codebase,
-				dendrogram.getProfile(),
 				dendrogram.getTracesMaxLimit(),
-				dendrogram.getTypeOfTraces()
+				dendrogram.getTraceType()
 			);
 
 			dendrogram.addDecomposition(cutDecomposition);
@@ -206,14 +206,14 @@ public class DendrogramController {
 
 			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
 				codebase,
+				dendrogram.getProfile(),
 				decomposition.getEntityIDToClusterName()
 			));
 
 			decomposition.calculateMetrics(
 				codebase,
-				dendrogram.getProfile(),
 				dendrogram.getTracesMaxLimit(),
-				dendrogram.getTypeOfTraces()
+				dendrogram.getTraceType()
 			);
 
 			dendrogram.addDecomposition(decomposition);

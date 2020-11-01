@@ -9,7 +9,7 @@ import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Metrics;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
-import pt.ist.socialsoftware.mono2micro.utils.deserializers.GraphDeserializer;
+import pt.ist.socialsoftware.mono2micro.utils.deserializers.DecompositionDeserializer;
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -19,7 +19,7 @@ import java.util.*;
 import static org.jgrapht.Graphs.successorListOf;
 
 @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
-@JsonDeserialize(using = GraphDeserializer.class)
+@JsonDeserialize(using = DecompositionDeserializer.class)
 public class Decomposition {
 
 	public static class LocalTransaction {
@@ -493,8 +493,7 @@ public class Decomposition {
 	// FIXME and only then add the new calculation to the (new) respective method
 	// FIXME By doing the above, extra performance overhead won't be added to the analyser
 	public void calculateMetrics(
-		Codebase codebase, // requirements: profiles, datafilePath
-		String profile,
+		Codebase codebase, // requirements: datafilePath
 		int tracesMaxLimit,
 		Constants.TraceType traceType
 	)
@@ -502,15 +501,12 @@ public class Decomposition {
 	{
 		System.out.println("Calculating Dynamic metrics...");
 
-		Set<String> profileControllers = codebase.getProfile(profile);
-
-		List<Cluster> clusters = (List<Cluster>) this.getClusters().values();
+		Collection<Cluster> clusters = this.getClusters().values();
 
 		Utils.GetControllersClustersAndClustersControllersResult result1 =
 			Utils.getControllersClustersAndClustersControllers(
-				profileControllers,
 				clusters,
-				this.getControllers()
+				this.getControllers().values()
 			);
 
 		Map<String, Set<Cluster>> controllersClusters = result1.controllersClusters;
@@ -519,7 +515,6 @@ public class Decomposition {
 		// COMPLEXITY AND PERFORMANCE CALCULATION
 		CalculateComplexityAndPerformanceResult result2 = calculateComplexityAndPerformance(
 			codebase,
-			profileControllers,
 			controllersClusters,
 			traceType,
 			tracesMaxLimit
@@ -553,7 +548,6 @@ public class Decomposition {
 
 	public CalculateComplexityAndPerformanceResult calculateComplexityAndPerformance(
 		Codebase codebase,
-		Set<String> profileControllers,
 		Map<String, Set<Cluster>> controllersClusters,
 		Constants.TraceType traceType,
 		int tracesMaxLimit
@@ -570,7 +564,9 @@ public class Decomposition {
 
 		System.out.println("Calculating graph complexity and performance...");
 
-		for (String controllerName : profileControllers) {
+		for (Controller controller : this.getControllers().values()) {
+			String controllerName = controller.getName();
+
 			GetLocalTransactionsGraphAndControllerPerformanceResult result2 = getLocalTransactionsGraphAndControllerPerformance(
 				iter,
 				controllerName,
@@ -582,15 +578,13 @@ public class Decomposition {
 			float controllerComplexity = Metrics.calculateControllerComplexityAndClusterDependencies(
 				this,
 				controllerName,
-				(Set<Controller>) this.getControllers().values(),
 				controllersClusters,
 				result2.localTransactionsGraph
 			);
 
-			Controller c = this.getControllers().get(controllerName);
 			// This needs to be done because the cluster complexity calculation depends on this result
-			c.setPerformance(controllerPerformance);
-			c.setComplexity(controllerComplexity);
+			controller.setPerformance(controllerPerformance);
+			controller.setComplexity(controllerComplexity);
 
 			performance += controllerPerformance;
 			complexity += controllerComplexity;
@@ -628,7 +622,7 @@ public class Decomposition {
 	}
 
 	public CalculateCouplingAndCohesionResult calculateCouplingAndCohesion(
-		List<Cluster> clusters,
+		Collection<Cluster> clusters,
 		Map<String, Set<Controller>> clustersControllers
 	) {
 		System.out.println("Calculating graph cohesion and coupling...");

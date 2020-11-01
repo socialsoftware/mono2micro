@@ -581,12 +581,9 @@ public class Utils {
     }
 
     public static GetControllersClustersAndClustersControllersResult getControllersClustersAndClustersControllers(
-        Set<String> profileControllers,
-        List<Cluster> clusters,
-        Map<String, Controller> controllers
-    )
-        throws Exception
-    {
+        Collection<Cluster> clusters,
+        Collection<Controller> controllers
+    ) {
         Map<String, Set<Cluster>> controllersClusters = new HashMap<>();
         Map<String, Set<Controller>> clustersControllers = new HashMap<>();
 
@@ -594,11 +591,8 @@ public class Utils {
 
             Set<Controller> touchedControllers = new HashSet<>();
 
-            for (String controllerName : profileControllers) {
-                Controller controller = controllers.get(controllerName);
-
-                if (controller == null)
-                    throw new Exception("Controller: " + controllerName + " not found");
+            for (Controller controller : controllers) {
+                String controllerName = controller.getName();
 
                 if (!controller.getEntities().isEmpty()) {
                     for (short entityID : controller.getEntities().keySet()) {
@@ -636,7 +630,4 @@ public class Utils {
             clustersControllers
         );
     }
-
-
-
 }

@@ -49,14 +49,14 @@ public class ClusterController {
 
 			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
 				codebase,
+				dendrogram.getProfile(),
 				decomposition.getEntityIDToClusterName()
 			));
 
 			decomposition.calculateMetrics(
 				codebase,
-				dendrogram.getProfile(),
 				dendrogram.getTracesMaxLimit(),
-				dendrogram.getTypeOfTraces()
+				dendrogram.getTraceType()
 			);
 
 			codebaseManager.writeCodebase(codebase);
@@ -97,6 +97,7 @@ public class ClusterController {
 			// but for safety i'll keep the existent behaviour
 			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
 				codebase,
+				dendrogram.getProfile(),
 				decomposition.getEntityIDToClusterName()
 			));
 
@@ -104,9 +105,8 @@ public class ClusterController {
 			// but for safety i'll keep the existent behaviour
 			decomposition.calculateMetrics(
 				codebase,
-				dendrogram.getProfile(),
 				dendrogram.getTracesMaxLimit(),
-				dendrogram.getTypeOfTraces()
+				dendrogram.getTraceType()
 			);
 
 			codebaseManager.writeCodebase(codebase);
@@ -151,14 +151,14 @@ public class ClusterController {
 
 			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
 				codebase,
+				dendrogram.getProfile(),
 				decomposition.getEntityIDToClusterName()
 			));
 
 			decomposition.calculateMetrics(
 				codebase,
-				dendrogram.getProfile(),
 				dendrogram.getTracesMaxLimit(),
-				dendrogram.getTypeOfTraces()
+				dendrogram.getTraceType()
 			);
 
 			codebaseManager.writeCodebase(codebase);
@@ -199,14 +199,14 @@ public class ClusterController {
 
 			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
 				codebase,
+				dendrogram.getProfile(),
 				decomposition.getEntityIDToClusterName()
 			));
 
 			decomposition.calculateMetrics(
 				codebase,
-				dendrogram.getProfile(),
 				dendrogram.getTracesMaxLimit(),
-				dendrogram.getTypeOfTraces()
+				dendrogram.getTraceType()
 			);
 
 			codebaseManager.writeCodebase(codebase);
@@ -227,20 +227,6 @@ public class ClusterController {
 		logger.debug("getControllersClusters");
 
 		try {
-
-			String dendrogramProfile = codebaseManager.getCodebaseDendrogramWithFields(
-				codebaseName,
-				dendrogramName,
-				new HashSet<String>() {{ add("profile"); }}
-			).getProfile();
-
-			Codebase codebase = codebaseManager.getCodebaseWithFields(
-				codebaseName,
-				new HashSet<String>() {{ add("profiles"); add("controllers"); }}
-			);
-
-			Set<String> profileControllers = codebase.getProfile(dendrogramProfile);
-
 			Decomposition decomposition = codebaseManager.getDendrogramDecompositionWithFields(
 				codebaseName,
 				dendrogramName,
@@ -250,9 +236,8 @@ public class ClusterController {
 
 			Utils.GetControllersClustersAndClustersControllersResult result =
 				Utils.getControllersClustersAndClustersControllers(
-					profileControllers,
-					(List<Cluster>) decomposition.getClusters().values(),
-					decomposition.getControllers()
+					decomposition.getClusters().values(),
+					decomposition.getControllers().values()
 				);
 
 			return new ResponseEntity<>(
@@ -275,19 +260,6 @@ public class ClusterController {
 		logger.debug("getClustersControllers");
 
 		try {
-			String dendrogramProfile = codebaseManager.getCodebaseDendrogramWithFields(
-				codebaseName,
-				dendrogramName,
-				new HashSet<String>() {{ add("profile"); }}
-			).getProfile();
-
-			Codebase codebase = codebaseManager.getCodebaseWithFields(
-				codebaseName,
-				new HashSet<String>() {{ add("profiles"); }}
-			);
-
-			Set<String> profileControllers = codebase.getProfile(dendrogramProfile);
-
 			Decomposition decomposition = codebaseManager.getDendrogramDecompositionWithFields(
 				codebaseName,
 				dendrogramName,
@@ -297,9 +269,8 @@ public class ClusterController {
 
 			Utils.GetControllersClustersAndClustersControllersResult result =
 				Utils.getControllersClustersAndClustersControllers(
-					profileControllers,
-					(List<Cluster>) decomposition.getClusters().values(),
-					decomposition.getControllers()
+					decomposition.getClusters().values(),
+					decomposition.getControllers().values()
 				);
 
 			return new ResponseEntity<>(

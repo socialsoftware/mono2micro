@@ -112,9 +112,9 @@ public class Dendrogram {
 
 	public void setTracesMaxLimit(int tracesMaxLimit) { this.tracesMaxLimit = tracesMaxLimit; }
 
-	public TraceType getTypeOfTraces() { return traceType; }
+	public TraceType getTraceType() { return traceType; }
 
-	public void setTypeOfTraces(TraceType traceType) { this.traceType = traceType; }
+	public void setTraceType(TraceType traceType) { this.traceType = traceType; }
 
 	@JsonIgnore
 	public List<String> getDecompositionNames() { return this.decompositions.stream().map(Decomposition::getName).collect(Collectors.toList()); }

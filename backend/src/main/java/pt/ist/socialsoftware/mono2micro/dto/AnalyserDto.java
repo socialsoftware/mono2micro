@@ -29,7 +29,7 @@ public class AnalyserDto {
 
     public void setTracesMaxLimit(int tracesMaxLimit) { this.tracesMaxLimit = tracesMaxLimit; }
 
-    public Constants.TraceType getTypeOfTraces() { return traceType; }
+    public Constants.TraceType getTraceType() { return traceType; }
 
-    public void setTypeOfTraces(Constants.TraceType traceType) { this.traceType = traceType; }
+    public void setTraceType(Constants.TraceType traceType) { this.traceType = traceType; }
 }

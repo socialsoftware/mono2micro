@@ -212,7 +212,7 @@ public class AnalysisController {
 				codebase,
 				analyser.getProfile(),
 				analyser.getTracesMaxLimit(),
-				analyser.getTypeOfTraces()
+				analyser.getTraceType()
 			);
 
 			// Unfortunately, the getMatrixData method differs from the one used in the Dendrogram
@@ -290,14 +290,14 @@ public class AnalysisController {
 
 		decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
 			codebase,
+			analyser.getProfile(),
 			decomposition.getEntityIDToClusterName()
 		));
 
 		decomposition.calculateMetrics(
 			codebase,
-			analyser.getProfile(),
 			analyser.getTracesMaxLimit(),
-			analyser.getTypeOfTraces()
+			analyser.getTraceType()
 		);
 
 		return decomposition;

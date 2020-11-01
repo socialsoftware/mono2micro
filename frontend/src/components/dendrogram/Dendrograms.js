@@ -76,7 +76,7 @@ export class Dendrograms extends React.Component {
         this.state = {
             dendrograms: [],
             allDecompositions: [],
-            selectedProfiles: [],
+            selectedProfile: "",
             isUploaded: "",
             newDendrogramName: "",
             linkageType: "average",
@@ -88,7 +88,6 @@ export class Dendrograms extends React.Component {
             typeOfTraces: "ALL",
             codebase: {
                 profiles: [],
-                analysisType: "",
             },
         };
 
@@ -114,7 +113,7 @@ export class Dendrograms extends React.Component {
         const service = new RepositoryService();
         service.getCodebase(
             this.props.match.params.codebaseName,
-            ["profiles", "analysisType"]
+            ["profiles"]
         ).then(response => {
             if (response.data !== null) {
                 this.setState({ codebase: response.data });
@@ -184,7 +183,7 @@ export class Dendrograms extends React.Component {
             writeMetricWeight,
             readMetricWeight,
             sequenceMetricWeight,
-            selectedProfiles,
+            selectedProfile,
             amountOfTraces,
             typeOfTraces,
         } = this.state;
@@ -198,7 +197,7 @@ export class Dendrograms extends React.Component {
             Number(writeMetricWeight),
             Number(readMetricWeight),
             Number(sequenceMetricWeight),
-            selectedProfiles,
+            selectedProfile,
             Number(amountOfTraces),
             typeOfTraces,
         )
@@ -278,14 +277,13 @@ export class Dendrograms extends React.Component {
     }
 
     selectProfile(profile) {
-        if (this.state.selectedProfiles.includes(profile)) {
-            let filteredArray = this.state.selectedProfiles.filter(p => p !== profile);
+        if (this.state.selectedProfile !== profile) {
             this.setState({
-                selectedProfiles: filteredArray
+                selectedProfile: profile
             });
         } else {
             this.setState({
-                selectedProfiles: [...this.state.selectedProfiles, profile]
+                selectedProfile: "",
             });
         }
     }
@@ -316,13 +314,12 @@ export class Dendrograms extends React.Component {
             linkageType,
             newDendrogramName,
             readMetricWeight,
-            selectedProfiles,
+            selectedProfile,
             sequenceMetricWeight,
             writeMetricWeight,
             amountOfTraces,
             typeOfTraces,
             codebase: {
-                analysisType,
                 profiles,
             },
         } = this.state;
@@ -346,7 +343,7 @@ export class Dendrograms extends React.Component {
 
                 <Form.Group as={Row} controlId="selectControllerProfiles" className="align-items-center">
                     <Form.Label column sm={2}>
-                        Select Controller Profiles
+                        Select Codebase Profiles
                     </Form.Label>
                     <Col sm={2}>
                         <DropdownButton title={'Controller Profiles'}>
@@ -354,7 +351,7 @@ export class Dendrograms extends React.Component {
                                 <Dropdown.Item
                                     key={profile}
                                     onSelect={() => this.selectProfile(profile)}
-                                    active={selectedProfiles.includes(profile)}
+                                    active={selectedProfile === profile}
                                 >
                                     {profile}
                                 </Dropdown.Item>
@@ -362,90 +359,83 @@ export class Dendrograms extends React.Component {
                         </DropdownButton>
                     </Col>
                 </Form.Group>
+                <Form.Group as={Row} controlId="amountOfTraces">
+                    <Form.Label column sm={2}>
+                        Amount of Traces per Controller
+                    </Form.Label>
+                    <Col sm={2}>
+                        <FormControl
+                            type="number"
+                            value={amountOfTraces}
+                            onChange={this.handleChangeAmountOfTraces}
 
-                {
-                    analysisType === "dynamic" && (
-                        <>
-                            <Form.Group as={Row} controlId="amountOfTraces">
-                                <Form.Label column sm={2}>
-                                    Amount of Traces per Controller
-                                </Form.Label>
-                                <Col sm={2}>
-                                    <FormControl
-                                        type="number"
-                                        value={amountOfTraces}
-                                        onChange={this.handleChangeAmountOfTraces}
+                        />
+                        <Form.Text className="text-muted">
+                            If no number is inserted, 0 is assumed to be the default value meaning the maximum number of traces
+                        </Form.Text>
+                    </Col>
+                </Form.Group>
+                <Form.Group as={Row} className="align-items-center">
+                    <Form.Label as="legend" column sm={2}>
+                        Type of traces
+                    </Form.Label>
+                    <Col sm={3} style={{ paddingLeft: 0 }}>
+                        <Col sm="auto">
+                            <Form.Check
+                                onClick={this.handleChangeTypeOfTraces}
+                                name="typeOfTraces"
+                                label="All"
+                                type="radio"
+                                id="allTraces"
+                                value="ALL"
+                                defaultChecked
+                            />
+                        </Col>
+                        <Col sm="auto">
+                            <Form.Check
+                                onClick={this.handleChangeTypeOfTraces}
+                                name="typeOfTraces"
+                                label="Longest"
+                                type="radio"
+                                id="longest"
+                                value="LONGEST"
+                            />
+                        </Col>
+                        <Col sm="auto">
+                            <Form.Check
+                                onClick={this.handleChangeTypeOfTraces}
+                                name="typeOfTraces"
+                                label="With more different accesses"
+                                type="radio"
+                                id="withMoreDifferentTraces"
+                                value="WITH_MORE_DIFFERENT_ACCESSES"
+                            />
 
-                                    />
-                                    <Form.Text className="text-muted">
-                                        If no number is inserted, 0 is assumed to be the default value meaning the maximum number of traces
-                                    </Form.Text>
-                                </Col>
-                            </Form.Group>
-                            <Form.Group as={Row} className="align-items-center">
-                                <Form.Label as="legend" column sm={2}>
-                                    Type of traces
-                                </Form.Label>
-                                <Col sm={3} style={{ paddingLeft: 0 }}>
-                                    <Col sm="auto">
-                                        <Form.Check
-                                            onClick={this.handleChangeTypeOfTraces}
-                                            name="typeOfTraces"
-                                            label="All"
-                                            type="radio"
-                                            id="allTraces"
-                                            value="ALL"
-                                            defaultChecked
-                                        />
-                                    </Col>
-                                    <Col sm="auto">
-                                        <Form.Check
-                                            onClick={this.handleChangeTypeOfTraces}
-                                            name="typeOfTraces"
-                                            label="Longest"
-                                            type="radio"
-                                            id="longest"
-                                            value="LONGEST"
-                                        />
-                                    </Col>
-                                    <Col sm="auto">
-                                        <Form.Check
-                                            onClick={this.handleChangeTypeOfTraces}
-                                            name="typeOfTraces"
-                                            label="With more different accesses"
-                                            type="radio"
-                                            id="withMoreDifferentTraces"
-                                            value="WITH_MORE_DIFFERENT_ACCESSES"
-                                        />
-
-                                    </Col>
-                                    <Col sm="auto">
-                                        <Form.Check
-                                            onClick={this.handleChangeTypeOfTraces}
-                                            name="typeOfTraces"
-                                            label="Representative (set of accesses)"
-                                            type="radio"
-                                            id="representativeSetOfAccesses"
-                                            value="REPRESENTATIVE"
-                                        />
-                                    </Col>
-                                    {/* WIP */}
-                                    <Col sm="auto">
-                                        <Form.Check
-                                            onClick={undefined}
-                                            name="typeOfTraces"
-                                            label="Representative (subsequence of accesses)"
-                                            type="radio"
-                                            id="complete"
-                                            value="?"
-                                            disabled
-                                        />
-                                    </Col>
-                                </Col>
-                            </Form.Group>
-                        </>
-                    )
-                }
+                        </Col>
+                        <Col sm="auto">
+                            <Form.Check
+                                onClick={this.handleChangeTypeOfTraces}
+                                name="typeOfTraces"
+                                label="Representative (set of accesses)"
+                                type="radio"
+                                id="representativeSetOfAccesses"
+                                value="REPRESENTATIVE"
+                            />
+                        </Col>
+                        {/* WIP */}
+                        <Col sm="auto">
+                            <Form.Check
+                                onClick={undefined}
+                                name="typeOfTraces"
+                                label="Representative (subsequence of accesses)"
+                                type="radio"
+                                id="complete"
+                                value="?"
+                                disabled
+                            />
+                        </Col>
+                    </Col>
+                </Form.Group>
                 <Form.Group as={Row} className="align-items-center">
                     <Form.Label as="legend" column sm={2}>
                         Linkage Type
@@ -546,8 +536,8 @@ export class Dendrograms extends React.Component {
                                 readMetricWeight === "" ||
                                 sequenceMetricWeight === "" ||
                                 Number(accessMetricWeight) + Number(writeMetricWeight) + Number(readMetricWeight) + Number(sequenceMetricWeight) !== 100 ||
-                                selectedProfiles.length === 0 ||
-                                (analysisType === "dynamic" && (typeOfTraces === "" || amountOfTraces === ""))
+                                selectedProfile === "" ||
+                                (typeOfTraces === "" || amountOfTraces === "")
                             }
                         >
                             Create Dendrogram

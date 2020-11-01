@@ -127,7 +127,6 @@ export class RepositoryService {
     createCodebase(
         name: string,
         datafile: any,
-        analysisType: string,
     ) {
         const config = {
             headers: {
@@ -137,7 +136,6 @@ export class RepositoryService {
         var data = new FormData();
         data.append('codebaseName', name);
         data.append('datafile', datafile);
-        data.append('analysisType', analysisType);
         
         return this.axios.post<null>(
             "/codebase/create",

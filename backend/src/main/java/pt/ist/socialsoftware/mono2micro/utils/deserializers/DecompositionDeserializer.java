@@ -13,13 +13,13 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
-public class GraphDeserializer extends StdDeserializer<Decomposition> {
+public class DecompositionDeserializer extends StdDeserializer<Decomposition> {
 
-	public GraphDeserializer() {
+	public DecompositionDeserializer() {
 		this(null);
 	}
 
-	public GraphDeserializer(Class<Decomposition> t) { super(t); }
+	public DecompositionDeserializer(Class<Decomposition> t) { super(t); }
 
 	@Override
 	public Decomposition deserialize(
@@ -32,7 +32,7 @@ public class GraphDeserializer extends StdDeserializer<Decomposition> {
 
 		try {
 			deserializableFields = (Set<String>) ctxt.findInjectableValue(
-				"graphDeserializableFields",
+				"decompositionDeserializableFields",
 				null,
 				null
 			);
