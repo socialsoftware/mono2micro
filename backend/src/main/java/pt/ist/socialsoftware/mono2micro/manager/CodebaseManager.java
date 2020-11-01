@@ -523,7 +523,10 @@ public class CodebaseManager {
 		String profile,
 		Map<Short, String> entityIDToClusterName
 	)
-		throws IOException {
+		throws IOException
+	{
+		System.out.println("Getting controller with costly accesses...");
+
 		Map<String, Controller> controllers = new HashMap<>();
 
 		File jsonFile = new File(codebase.getDatafilePath());
@@ -541,7 +544,7 @@ public class CodebaseManager {
 
 		while (jsonParser.nextValue() != JsonToken.END_OBJECT) {
 			if (jsonParser.getCurrentToken() == JsonToken.START_OBJECT) {
-				Utils.print("Controller name: " + jsonParser.getCurrentName(), Utils.lineno());
+//				Utils.print("Controller name: " + jsonParser.getCurrentName(), Utils.lineno());
 
 				if (!profileControllers.contains(jsonParser.getCurrentName())) { // FIXME TEST ME
 					jsonParser.skipChildren();
