@@ -113,14 +113,14 @@ export class ClusterView extends React.Component {
             });
         });
 
-        const secondRequest = service.getGraph(
+        const secondRequest = service.getDecomposition(
             codebaseName,
             dendrogramName,
             decompositionName,
             ["clusters"]
         ).then(response => {
             this.setState({
-                clusters: response.data.clusters,
+                clusters: Object.values(response.data.clusters),
                 showMenu: false,
                 selectedCluster: {},
                 mergeWithCluster: {},

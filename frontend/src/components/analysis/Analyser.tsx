@@ -142,7 +142,7 @@ export class Analyser extends React.Component<any, any> {
             codebase: {
                 profiles: {}
             },
-            selectedProfiles: [],
+            selectedProfile: "",
             experts: [],
             expert: null,
             resultData: [],
@@ -206,15 +206,14 @@ export class Analyser extends React.Component<any, any> {
         this.loadCodebaseDecompositions(codebase.name!);
     }
 
-    selectProfile(profile: any) {
-        if (this.state.selectedProfiles.includes(profile)) {
-            let filteredArray = this.state.selectedProfiles.filter((p : any) => p !== profile);
+    selectProfile(profile: string) {
+        if (this.state.selectedProfile !== profile) {
             this.setState({
-                selectedProfiles: filteredArray
+                selectedProfile: profile,
             });
         } else {
             this.setState({
-                selectedProfiles: [...this.state.selectedProfiles, profile]
+                selectedProfile: "",
             });
         }
     }
@@ -236,7 +235,7 @@ export class Analyser extends React.Component<any, any> {
         service.analyser(
             this.state.codebase.name,
             this.state.expert,
-            this.state.selectedProfiles,
+            this.state.selectedProfile,
             Number(this.state.requestLimit),
             Number(this.state.amountOfTraces),
             this.state.typeOfTraces,
@@ -313,7 +312,7 @@ export class Analyser extends React.Component<any, any> {
             codebase,
             codebases,
             expert,
-            selectedProfiles,
+            selectedProfile,
             requestLimit,
             experts,
             isUploaded,
@@ -383,7 +382,7 @@ export class Analyser extends React.Component<any, any> {
                                     <Dropdown.Item
                                         key={profile}
                                         onSelect={() => this.selectProfile(profile)}
-                                        active={selectedProfiles.includes(profile)}
+                                        active={selectedProfile === profile}
                                     >
                                         {profile}
                                     </Dropdown.Item>
@@ -506,7 +505,7 @@ export class Analyser extends React.Component<any, any> {
                                 type="submit"
                                 disabled={
                                     isUploaded === "Uploading..." ||
-                                    selectedProfiles.length === 0 ||
+                                    selectedProfile.length === "" ||
                                     requestLimit === "" ||
                                     (typeOfTraces === "" || amountOfTraces === "")
                                 }

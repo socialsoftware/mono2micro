@@ -99,9 +99,9 @@ export class EntityView extends React.Component {
                 decompositionName
             ).then(response2 => {
                 this.setState({
-                    clusters: response.data.clusters,
-                    entities: response.data.clusters.map(c => c.entities).flat(),
-                    controllers: response.data.controllers,
+                    clusters: Object.values(response.data.clusters),
+                    entities: Object.values(response.data.clusters).map(c => c.entities).flat(),
+                    controllers: Object.values(response.data.controllers),
                     clusterControllers: response2.data,
                 }, () => {
                     let amountList = {};
