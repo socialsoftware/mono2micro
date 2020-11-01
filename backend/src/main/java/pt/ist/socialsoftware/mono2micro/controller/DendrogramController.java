@@ -87,7 +87,7 @@ public class DendrogramController {
 				.body(codebaseManager.getDendrogramImage(codebaseName, dendrogramName));
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}

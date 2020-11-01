@@ -97,6 +97,7 @@ public class DecompositionDeserializer extends StdDeserializer<Decomposition> {
 									new TypeReference<Map<Short, String>>(){}
 								)
 							);
+							break;
 						case "expert":
 							decomposition.setExpert(jsonParser.getBooleanValue());
 							break;

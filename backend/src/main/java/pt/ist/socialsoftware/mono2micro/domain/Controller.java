@@ -14,7 +14,7 @@ import pt.ist.socialsoftware.mono2micro.utils.serializers.ControllerSerializer;
 public class Controller {
 	private String name;
 	private float complexity;
-	private int performance; // number of hops between clusters
+	private float performance; // the average of the number of hops between clusters for all traces
 	private Map<Short, Byte> entities = new HashMap<>(); // <entityID, mode>
 //	@JsonIgnore
 //	private String entitiesSeq = "[]";
@@ -52,11 +52,11 @@ public class Controller {
 		this.complexity = complexity;
 	}
 
-	public int getPerformance() {
+	public float getPerformance() {
 		return performance;
 	}
 
-	public void setPerformance(int performance) {
+	public void setPerformance(float performance) {
 		this.performance = performance;
 	}
 

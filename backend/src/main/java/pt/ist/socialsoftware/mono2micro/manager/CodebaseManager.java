@@ -21,6 +21,7 @@ import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -400,7 +401,13 @@ public class CodebaseManager {
 	)
 		throws IOException
 	{
-		return Files.readAllBytes(Paths.get(CODEBASES_PATH + codebaseName + "/" + dendrogramName + "/dendrogramImage.png"));
+		String filePathname = CODEBASES_PATH + codebaseName + "/" + dendrogramName + "/dendrogramImage.png";
+		Path filePath = Paths.get(filePathname);
+
+		if (Files.exists(filePath)) return Files.readAllBytes(filePath);
+
+		throw new FileNotFoundException("File: " + filePathname + " not found");
+
 	}
 
 	public JSONObject getClusters(

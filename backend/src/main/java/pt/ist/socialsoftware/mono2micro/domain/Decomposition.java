@@ -315,11 +315,11 @@ public class Decomposition {
 	}
 
 	public static class GetLocalTransactionsGraphAndControllerPerformanceResult {
-		public int performance;
+		public float performance;
 		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph;
 
 		public GetLocalTransactionsGraphAndControllerPerformanceResult(
-			int performance,
+			float performance,
 			DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph
 		) {
 			this.performance = performance;
@@ -349,7 +349,7 @@ public class Decomposition {
 
 		iter.nextControllerWithName(controllerName);
 
-		int controllerPerformance = 0;
+		float controllerPerformance = 0;
 		int tracesCounter = 0;
 
 		switch (traceType) {
@@ -573,7 +573,7 @@ public class Decomposition {
 				traceType
 			);
 
-			int controllerPerformance = result2.performance;
+			float controllerPerformance = result2.performance;
 
 			float controllerComplexity = Metrics.calculateControllerComplexityAndClusterDependencies(
 				this,
@@ -582,12 +582,16 @@ public class Decomposition {
 				result2.localTransactionsGraph
 			);
 
-			// This needs to be done because the cluster complexity calculation depends on this result
-			controller.setPerformance(controllerPerformance);
-			controller.setComplexity(controllerComplexity);
 
 			performance += controllerPerformance;
 			complexity += controllerComplexity;
+
+			// This needs to be done because the cluster complexity calculation depends on this result
+			controller.setPerformance(
+				BigDecimal.valueOf(controllerPerformance).setScale(2, RoundingMode.HALF_UP).floatValue()
+			);
+
+			controller.setComplexity(controllerComplexity);
 		}
 
 		int graphControllersAmount = controllersClusters.size();

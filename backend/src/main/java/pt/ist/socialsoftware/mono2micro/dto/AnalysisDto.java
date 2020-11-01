@@ -18,7 +18,6 @@ public class AnalysisDto {
     private float recall;
     private float specificity;
     private float fmeasure;
-    private float complexity;
     private double mojoCommon;
     private double mojoBiggest;
     private double mojoNew;
@@ -26,14 +25,6 @@ public class AnalysisDto {
 
     public float getPrecision() {
         return precision;
-    }
-
-    public float getComplexity() {
-        return complexity;
-    }
-
-    public void setComplexity(float complexity) {
-        this.complexity = complexity;
     }
 
     public Decomposition getDecomposition2() {
