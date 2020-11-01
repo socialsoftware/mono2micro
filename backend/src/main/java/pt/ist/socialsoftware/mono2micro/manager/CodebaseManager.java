@@ -525,7 +525,7 @@ public class CodebaseManager {
 	)
 		throws IOException
 	{
-		System.out.println("Getting controller with costly accesses...");
+		System.out.println("Getting controllers with costly accesses...");
 
 		Map<String, Controller> controllers = new HashMap<>();
 

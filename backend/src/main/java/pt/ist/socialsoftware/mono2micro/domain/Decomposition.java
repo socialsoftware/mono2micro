@@ -499,7 +499,7 @@ public class Decomposition {
 	)
 		throws Exception
 	{
-		System.out.println("Calculating Dynamic metrics...");
+		System.out.println("Calculating metrics...");
 
 		Collection<Cluster> clusters = this.getClusters().values();
 
