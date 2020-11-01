@@ -316,8 +316,8 @@ export class Dendrogram extends React.Component {
             return {
                 decomposition: decomposition.name,
                 clusters: decomposition.clusters.length,
-                singleton: decomposition.clusters.filter(c => Object.keys(c.entities).length === 1).length,
-                max_cluster_size: Math.max(...decomposition.clusters.map(c => Object.keys(c.entities).length)),
+                singleton: Object.values(decomposition.clusters).filter(c => Object.keys(c.entities).length === 1).length,
+                max_cluster_size: Math.max(...Object.values(decomposition.clusters).map(c => Object.keys(c.entities).length)),
                 ss: decomposition.silhouetteScore,
                 cohesion: decomposition.cohesion,
                 coupling: decomposition.coupling,

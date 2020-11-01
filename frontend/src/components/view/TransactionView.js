@@ -249,7 +249,10 @@ export class TransactionView extends React.Component {
             ["clusters", "controllers"]
         ).then(response => {
             this.setState({
-                decomposition: response.data,
+                decomposition: {
+                    controllers: Object.values(response.data.controllers),
+                    clusters: Object.values(response.data.clusters),
+                },
             });
         });
     }
