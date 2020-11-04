@@ -19,7 +19,6 @@ export class Codebases extends React.Component {
             selectedFile: null,
             isUploaded: "",
             codebases: [],
-            checkedAnalysisType: "",
         };
 
         this.handleSelectedFile = this.handleSelectedFile.bind(this);
@@ -27,7 +26,6 @@ export class Codebases extends React.Component {
         this.handleChangeNewCodebaseName = this.handleChangeNewCodebaseName.bind(this);
         this.handleChangeNewDatafilePath = this.handleChangeNewDatafilePath.bind(this);
         this.handleDeleteCodebase = this.handleDeleteCodebase.bind(this);
-        this.handleSelectAnalysisType = this.handleSelectAnalysisType.bind(this);
         this.doCreateCodebaseRequest = this.doCreateCodebaseRequest.bind(this);
     }
 
@@ -59,12 +57,6 @@ export class Codebases extends React.Component {
         });
     }
 
-    handleSelectAnalysisType(event) {
-        this.setState({
-            checkedAnalysisType: event.target.value,
-        });
-    }
-
     handleChangeNewDatafilePath(event) {
         this.setState({
             newDatafilePath: event.target.value,
@@ -91,14 +83,12 @@ export class Codebases extends React.Component {
             this.doCreateCodebaseRequest(
                 this.state.newCodebaseName,
                 this.state.selectedFile,
-                this.state.checkedAnalysisType, // either static or dynamic
             );
         }
         else {
             this.doCreateCodebaseRequest(
                 this.state.newCodebaseName,
                 this.state.newDatafilePath,
-                this.state.checkedAnalysisType, // either static or dynamic
             );
         }
     }
@@ -189,32 +179,6 @@ export class Codebases extends React.Component {
                         <FormControl
                             type="file"
                             onChange={this.handleSelectedFile}/>
-                    </Col>
-                </Form.Group>
-
-                <Form.Group as={Row} key={"analysis-type-section"} className="align-items-center">
-                    <Form.Label column sm={2}>
-                        Analysis type
-                    </Form.Label>
-                    <Col sm={5} >
-                        <Form.Check
-                            inline
-                            id="static-analysis-radio-button"
-                            type="radio"
-                            value="static"
-                            label="Static analysis"
-                            onChange={this.handleSelectAnalysisType}
-                            checked={this.state.checkedAnalysisType === "static"}
-                        />
-                        <Form.Check
-                            inline
-                            id="dynamic-analysis-radio-button"
-                            type="radio"
-                            value="dynamic"
-                            label="Dynamic analysis"
-                            onChange={this.handleSelectAnalysisType}
-                            checked={this.state.checkedAnalysisType === "dynamic"}
-                        />
                     </Col>
                 </Form.Group>
                 <Form.Group as={Row}>
