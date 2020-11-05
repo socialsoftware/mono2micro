@@ -277,6 +277,20 @@ export class RepositoryService {
         );
     }
 
+    getLocalTransactionsGraphForController(
+        codebaseName: string,
+        dendrogramName: string,
+        decompositionName: string,
+        controllerName: string
+    ) {
+        return this.axios.get(
+            addSearchParamsToUrl(
+                "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/getLocalTransactionsGraphForController",
+                { controllerName },
+            )
+        );
+    }
+
     //Cluster
     mergeClusters(
         codebaseName: string,
@@ -362,7 +376,7 @@ export class RepositoryService {
         decompositionName: string,
     ) {
         return this.axios.get<Record<string, Cluster[]>>(
-            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/controllerClusters"
+            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/controllersClusters"
         );
     }
 
@@ -372,7 +386,7 @@ export class RepositoryService {
         decompositionName: string
     ) {
         return this.axios.get<Record<string, Controller[]>>(
-            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/clusterControllers"
+            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/clustersControllers"
         );
     }
 

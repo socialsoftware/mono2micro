@@ -182,7 +182,7 @@ export class TransactionView extends React.Component {
             visGraphSeq: {},
             redesignVisGraph: {},
             controller: {},
-            controllerClusters: [],
+            controllersClusters: [],
             showGraph: false,
             localTransactionsSequence: [],
             currentSubView: "Graph",
@@ -232,13 +232,13 @@ export class TransactionView extends React.Component {
 
         const service = new RepositoryService();
 
-        service.getControllerClusters(
+        service.getControllersClusters(
             codebaseName,
             dendrogramName,
             decompositionName
         ).then(response => {
             this.setState({
-                controllerClusters: response.data
+                controllersClusters: response.data
             });
         });
 
@@ -276,13 +276,13 @@ export class TransactionView extends React.Component {
     createTransactionDiagram() {
         const {
             controller,
-            controllerClusters,
+            controllersClusters,
         } = this.state;
 
 
         const visGraph = {
-            nodes: new DataSet(controllerClusters[controller.name].map(cluster => this.createNode(cluster))),
-            edges: new DataSet(controllerClusters[controller.name].map(cluster => this.createEdge(cluster)))
+            nodes: new DataSet(controllersClusters[controller.name].map(cluster => this.createNode(cluster))),
+            edges: new DataSet(controllersClusters[controller.name].map(cluster => this.createEdge(cluster)))
         };
         visGraph.nodes.add({
             id: controller.name,
@@ -605,7 +605,7 @@ export class TransactionView extends React.Component {
 
     handleSelectOperation(value){
         const {
-            controllerClusters,
+            controllersClusters,
             selectedLocalTransaction,
             controller,
         } = this.state;
@@ -617,13 +617,13 @@ export class TransactionView extends React.Component {
 
         if(value === redesignOperations.AC){
             this.setState({
-                modifiedEntities: controllerClusters[controller.name]
+                modifiedEntities: controllersClusters[controller.name]
                     .map(cluster => this.identifyModifiedEntities(cluster))
                     .filter(e => e.modifiedEntities.length > 0 && e.cluster !== selectedLocalTransaction.cluster)
             });
         } else if(value === redesignOperations.DCGI) {
             this.setState({
-                DCGIAvailableClusters: controllerClusters[controller.name]
+                DCGIAvailableClusters: controllersClusters[controller.name]
                     .filter(e => e.name !== selectedLocalTransaction.cluster)
                     .map(e => e.name),
                 DCGISelectedClusters: [selectedLocalTransaction.cluster]
@@ -980,7 +980,7 @@ export class TransactionView extends React.Component {
     render() {
 
         const {
-            controllerClusters,
+            controllersClusters,
             currentSubView,
             visGraph,
             visGraphSeq,
@@ -1009,7 +1009,7 @@ export class TransactionView extends React.Component {
         const metricsRows = controllers.map(controller => {
             return {
                 controller: controller.name,
-                clusters: controllerClusters[controller.name] === undefined ? 0 : controllerClusters[controller.name].length,
+                clusters: controllersClusters[controller.name] === undefined ? 0 : controllersClusters[controller.name].length,
                 complexity: controller.complexity,
                 functionalityComplexity: controller.functionalityComplexity,
                 systemComplexity: controller.systemComplexity,
@@ -1049,8 +1049,8 @@ export class TransactionView extends React.Component {
             text: 'Entities Accessed'
         }];
 
-        let controllerClustersAmount = Object.keys(controllerClusters).map(controller => controllerClusters[controller].length);
-        let averageClustersAccessed = controllerClustersAmount.reduce((a, b) => a + b, 0) / controllerClustersAmount.length;
+        let controllersClustersAmount = Object.keys(controllersClusters).map(controller => controllersClusters[controller].length);
+        let averageClustersAccessed = controllersClustersAmount.reduce((a, b) => a + b, 0) / controllersClustersAmount.length;
 
         return (
             <div>
@@ -1120,7 +1120,7 @@ export class TransactionView extends React.Component {
                         <span>
                             <TransactionOperationsMenu
                                 handleControllerSubmit={this.handleControllerSubmit}
-                                controllerClusters={controllerClusters}
+                                controllersClusters={controllersClusters}
                             />
                             <div style={{height: '700px'}}>
                                 <VisNetwork
@@ -1151,9 +1151,9 @@ export class TransactionView extends React.Component {
                         <div>
                             Number of Clusters : {clusters.length}
                             < br />
-                            Number of Controllers that access a single Cluster : {Object.keys(controllerClusters).filter(key => controllerClusters[key].length === 1).length}
+                            Number of Controllers that access a single Cluster : {Object.keys(controllersClusters).filter(key => controllersClusters[key].length === 1).length}
                             < br />
-                            Maximum number of Clusters accessed by a single Controller : {Math.max(...Object.keys(controllerClusters).map(key => controllerClusters[key].length))}
+                            Maximum number of Clusters accessed by a single Controller : {Math.max(...Object.keys(controllersClusters).map(key => controllersClusters[key].length))}
                             < br />
                             Average Number of Clusters accessed (Average number of microservices accessed during a transaction) : {Number(averageClustersAccessed.toFixed(2))}
                             <BootstrapTable

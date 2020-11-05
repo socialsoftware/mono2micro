@@ -64,7 +64,7 @@ export class EntityView extends React.Component {
             entities: [],
             clusters: [],
             controllers: [],
-            clusterControllers: {},
+            clustersControllers: {},
             showGraph: false,
             amountList: [],
             currentSubView: "Graph"
@@ -93,7 +93,7 @@ export class EntityView extends React.Component {
             [ "clusters", "controllers" ]
         ).then(response => {
 
-            service.getClusterControllers(
+            service.getClustersControllers(
                 codebaseName,
                 dendrogramName,
                 decompositionName
@@ -102,7 +102,7 @@ export class EntityView extends React.Component {
                     clusters: Object.values(response.data.clusters),
                     entities: Object.values(response.data.clusters).map(c => c.entities).flat(),
                     controllers: Object.values(response.data.controllers),
-                    clusterControllers: response2.data,
+                    clustersControllers: response2.data,
                 }, () => {
                     let amountList = {};
 
@@ -153,8 +153,8 @@ export class EntityView extends React.Component {
             .filter(controller => Object.keys(controller.entities).includes(entityName))
             .map(c => c.name);
 
-        let clusterControllers = this.state.clusterControllers[cluster.name].map(c => c.name);
-        return entityControllers.filter(c => clusterControllers.includes(c));
+        let clustersControllers = this.state.clustersControllers[cluster.name].map(c => c.name);
+        return entityControllers.filter(c => clustersControllers.includes(c));
     }
 
     loadGraph() {
