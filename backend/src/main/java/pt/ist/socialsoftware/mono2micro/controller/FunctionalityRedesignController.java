@@ -15,7 +15,7 @@ import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 //import pt.ist.socialsoftware.mono2micro.utils.Metrics;
 
 @RestController
-@RequestMapping(value = "/mono2micro/codebase/{codebaseName}/dendrogram/{dendrogramName}/graph/{graphName}")
+@RequestMapping(value = "/mono2micro/codebase/{codebaseName}/dendrogram/{dendrogramName}/decomposition/{decompositionName}")
 public class FunctionalityRedesignController {
 
     private static Logger logger = LoggerFactory.getLogger(FunctionalityRedesignController.class);
@@ -25,7 +25,7 @@ public class FunctionalityRedesignController {
 //    @RequestMapping(value = "/controller/{controllerName}/redesign/{redesignName}/addCompensating", method = RequestMethod.POST)
 //    public ResponseEntity<Controller> addCompensating(@PathVariable String codebaseName,
 //                                                      @PathVariable String dendrogramName,
-//                                                      @PathVariable String graphName,
+//                                                      @PathVariable String decompositionName,
 //                                                      @PathVariable String controllerName,
 //                                                      @PathVariable String redesignName,
 //                                                      @RequestBody HashMap<String, String> data) {
@@ -36,11 +36,11 @@ public class FunctionalityRedesignController {
 //            String clusterName = data.get("cluster");
 //            String entities = data.get("entities");
 //            Codebase codebase = codebaseManager.getCodebase(codebaseName);
-//            Graph graph = codebase.getDendrogram(dendrogramName).getGraph(graphName);
-//            Controller controller = graph.getController(controllerName);
+//            Graph decomposition = codebase.getDendrogram(dendrogramName).getGraph(decompositionName);
+//            Controller controller = decomposition.getController(controllerName);
 //            controller.getFunctionalityRedesign(redesignName).addCompensating(clusterName, entities, fromID);
 //
-//            Metrics metrics = new Metrics(graph);
+//            Metrics metrics = new Metrics(decomposition);
 //            metrics.calculateRedesignComplexities(controller, redesignName);
 //            codebaseManager.writeCodebase(codebase);
 //
@@ -54,7 +54,7 @@ public class FunctionalityRedesignController {
 //    @RequestMapping(value = "/controller/{controllerName}/redesign/{redesignName}/sequenceChange", method = RequestMethod.POST)
 //    public ResponseEntity<Controller> sequenceChange(@PathVariable String codebaseName,
 //                                                     @PathVariable String dendrogramName,
-//                                                     @PathVariable String graphName,
+//                                                     @PathVariable String decompositionName,
 //                                                     @PathVariable String controllerName,
 //                                                     @PathVariable String redesignName,
 //                                                     @RequestBody HashMap<String, String> data) {
@@ -64,11 +64,11 @@ public class FunctionalityRedesignController {
 //            String newCaller = data.get("newCaller");
 //
 //            Codebase codebase = codebaseManager.getCodebase(codebaseName);
-//            Graph graph = codebase.getDendrogram(dendrogramName).getGraph(graphName);
-//            Controller controller = codebase.getDendrogram(dendrogramName).getGraph(graphName).getController(controllerName);
+//            Graph decomposition = codebase.getDendrogram(dendrogramName).getGraph(decompositionName);
+//            Controller controller = codebase.getDendrogram(dendrogramName).getGraph(decompositionName).getController(controllerName);
 //            controller.getFunctionalityRedesign(redesignName).sequenceChange(localTransactionID, newCaller);
 //
-//            Metrics metrics = new Metrics(graph);
+//            Metrics metrics = new Metrics(decomposition);
 //            metrics.calculateRedesignComplexities(controller, redesignName);
 //            codebaseManager.writeCodebase(codebase);
 //            return new ResponseEntity<>(controller, HttpStatus.OK);
@@ -81,7 +81,7 @@ public class FunctionalityRedesignController {
 //    @RequestMapping(value = "/controller/{controllerName}/redesign/{redesignName}/dcgi", method = RequestMethod.POST)
 //    public ResponseEntity<Controller> dcgi(@PathVariable String codebaseName,
 //                                           @PathVariable String dendrogramName,
-//                                           @PathVariable String graphName,
+//                                           @PathVariable String decompositionName,
 //                                           @PathVariable String controllerName,
 //                                           @PathVariable String redesignName,
 //                                           @RequestBody HashMap<String, String> data) {
@@ -92,12 +92,12 @@ public class FunctionalityRedesignController {
 //            String localTransactions = data.get("localTransactions");
 //
 //            Codebase codebase = codebaseManager.getCodebase(codebaseName);
-//            Graph graph = codebase.getDendrogram(dendrogramName).getGraph(graphName);
-//            Controller controller = graph.getController(controllerName);
+//            Graph decomposition = codebase.getDendrogram(dendrogramName).getGraph(decompositionName);
+//            Controller controller = decomposition.getController(controllerName);
 //
 //            controller.getFunctionalityRedesign(redesignName).dcgi(fromCluster, toCluster, localTransactions);
 //
-//            Metrics metrics = new Metrics(graph);
+//            Metrics metrics = new Metrics(decomposition);
 //            metrics.calculateRedesignComplexities(controller, redesignName);
 //            codebaseManager.writeCodebase(codebase);
 //
@@ -112,7 +112,7 @@ public class FunctionalityRedesignController {
 //    @RequestMapping(value = "/controller/{controllerName}/redesign/{redesignName}/pivotTransaction", method = RequestMethod.POST)
 //    public ResponseEntity<Object> pivotTransaction(@PathVariable String codebaseName,
 //                                                       @PathVariable String dendrogramName,
-//                                                       @PathVariable String graphName,
+//                                                       @PathVariable String decompositionName,
 //                                                       @PathVariable String controllerName,
 //                                                       @PathVariable String redesignName,
 //                                                       @RequestParam String transactionID,
@@ -120,8 +120,8 @@ public class FunctionalityRedesignController {
 //        logger.debug("pivotTransaction");
 //        try {
 //            Codebase codebase = codebaseManager.getCodebase(codebaseName);
-//            Graph graph = codebase.getDendrogram(dendrogramName).getGraph(graphName);
-//            Controller controller = graph.getController(controllerName);
+//            Graph decomposition = codebase.getDendrogram(dendrogramName).getGraph(decompositionName);
+//            Controller controller = decomposition.getController(controllerName);
 //
 //            if(newRedesignName.isPresent())
 //                if(!controller.checkNameValidity(newRedesignName.get()))
@@ -129,7 +129,7 @@ public class FunctionalityRedesignController {
 //
 //
 //            controller.getFunctionalityRedesign(redesignName).definePivotTransaction(transactionID);
-//            Metrics metrics = new Metrics(graph);
+//            Metrics metrics = new Metrics(decomposition);
 //            metrics.calculateRedesignComplexities(controller, redesignName);
 //
 //            if(newRedesignName.isPresent()) {
@@ -151,7 +151,7 @@ public class FunctionalityRedesignController {
 //    @RequestMapping(value="/controller/{controllerName}/redesign/{redesignName}/changeLTName", method = RequestMethod.POST)
 //    public ResponseEntity<Controller> changeLTName(@PathVariable String codebaseName,
 //                                                   @PathVariable String dendrogramName,
-//                                                   @PathVariable String graphName,
+//                                                   @PathVariable String decompositionName,
 //                                                   @PathVariable String controllerName,
 //                                                   @PathVariable String redesignName,
 //                                                   @RequestParam String transactionID,
@@ -160,8 +160,8 @@ public class FunctionalityRedesignController {
 //        logger.debug("changeLTName");
 //        try {
 //            Codebase codebase = codebaseManager.getCodebase(codebaseName);
-//            Graph graph = codebase.getDendrogram(dendrogramName).getGraph(graphName);
-//            Controller controller = graph.getController(controllerName);
+//            Graph decomposition = codebase.getDendrogram(dendrogramName).getGraph(decompositionName);
+//            Controller controller = decomposition.getController(controllerName);
 //            controller.getFunctionalityRedesign(redesignName).changeLTName(transactionID, newName);
 //            codebaseManager.writeCodebase(codebase);
 //
@@ -175,14 +175,14 @@ public class FunctionalityRedesignController {
 //    @RequestMapping(value="/controller/{controllerName}/redesign/{redesignName}/deleteRedesign", method = RequestMethod.DELETE)
 //    public ResponseEntity<Controller> deleteRedesign(@PathVariable String codebaseName,
 //                                                     @PathVariable String dendrogramName,
-//                                                     @PathVariable String graphName,
+//                                                     @PathVariable String decompositionName,
 //                                                     @PathVariable String controllerName,
 //                                                     @PathVariable String redesignName) {
 //        logger.debug("deleteRedesign");
 //        try {
 //            Codebase codebase = codebaseManager.getCodebase(codebaseName);
-//            Graph graph = codebase.getDendrogram(dendrogramName).getGraph(graphName);
-//            Controller controller = graph.getController(controllerName);
+//            Graph decomposition = codebase.getDendrogram(dendrogramName).getGraph(decompositionName);
+//            Controller controller = decomposition.getController(controllerName);
 //            controller.deleteRedesign(redesignName);
 //            codebaseManager.writeCodebase(codebase);
 //
@@ -196,14 +196,14 @@ public class FunctionalityRedesignController {
 //    @RequestMapping(value="/controller/{controllerName}/redesign/{redesignName}/useForMetrics", method = RequestMethod.POST)
 //    public ResponseEntity<Controller> useForMetrics(@PathVariable String codebaseName,
 //                                                    @PathVariable String dendrogramName,
-//                                                    @PathVariable String graphName,
+//                                                    @PathVariable String decompositionName,
 //                                                    @PathVariable String controllerName,
 //                                                    @PathVariable String redesignName) {
 //        logger.debug("useForMetrics");
 //        try {
 //            Codebase codebase = codebaseManager.getCodebase(codebaseName);
-//            Graph graph = codebase.getDendrogram(dendrogramName).getGraph(graphName);
-//            Controller controller = graph.getController(controllerName);
+//            Graph decomposition = codebase.getDendrogram(dendrogramName).getGraph(decompositionName);
+//            Controller controller = decomposition.getController(controllerName);
 //            controller.changeFRUsedForMetrics(redesignName);
 //            codebaseManager.writeCodebase(codebase);
 //

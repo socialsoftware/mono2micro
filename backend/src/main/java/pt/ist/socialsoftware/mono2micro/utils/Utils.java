@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
@@ -15,6 +17,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+
+import static org.jgrapht.Graphs.successorListOf;
 
 public class Utils {
 
@@ -629,5 +633,46 @@ public class Utils {
             controllersClusters,
             clustersControllers
         );
+    }
+
+    public static class GetSerializableLocalTransactionsGraphResult {
+        public List<Decomposition.LocalTransaction> nodes;
+        public List<String> links;
+
+        public GetSerializableLocalTransactionsGraphResult(
+            List<Decomposition.LocalTransaction> nodes,
+            List<String> links
+        ) {
+            this.nodes = nodes;
+            this.links = links;
+        }
+
+        public List<Decomposition.LocalTransaction> getNodes() { return nodes; }
+        public List<String> getLinks() { return links; }
+    }
+
+    public static GetSerializableLocalTransactionsGraphResult getSerializableLocalTransactionsGraph(
+        DirectedAcyclicGraph<Decomposition.LocalTransaction, DefaultEdge> localTransactionsGraph
+    ) {
+        List<Decomposition.LocalTransaction> nodes = new ArrayList<>();
+        List<String> links = new ArrayList<>();
+        Iterator<Decomposition.LocalTransaction> iterator = localTransactionsGraph.iterator();
+
+        while (iterator.hasNext()) {
+            Decomposition.LocalTransaction lt = iterator.next();
+
+            List<Decomposition.LocalTransaction> ltChildren = successorListOf(localTransactionsGraph, lt);
+            for (Decomposition.LocalTransaction ltC : ltChildren)
+                links.add(lt.getId() + "->" + ltC.getId());
+
+            nodes.add(lt);
+        }
+
+        return new GetSerializableLocalTransactionsGraphResult(
+            nodes,
+            links
+        );
+
+
     }
 }

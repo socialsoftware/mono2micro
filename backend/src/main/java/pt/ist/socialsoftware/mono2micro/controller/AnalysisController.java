@@ -153,7 +153,7 @@ public class AnalysisController {
                     continue;
                 }
 
-				Decomposition decomposition = buildGraphAndCalculateMetrics(
+				Decomposition decomposition = buildDecompositionAndCalculateMetrics(
 					analyser,
 					codebase,
 					filename
@@ -261,7 +261,7 @@ public class AnalysisController {
 		System.out.println("script execution has ended");
 	}
 
-	private Decomposition buildGraphAndCalculateMetrics(
+	private Decomposition buildDecompositionAndCalculateMetrics(
 		AnalyserDto analyser,
 		Codebase codebase, // requirements: name, profiles, datafilePath
 		String filename

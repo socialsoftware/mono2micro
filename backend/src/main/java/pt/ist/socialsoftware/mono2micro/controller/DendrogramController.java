@@ -155,7 +155,7 @@ public class DendrogramController {
 
 			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
 
-			// FIXME the graph given to the cut function shouldn't be a Graph
+			// FIXME the graph given to the cut function shouldn't be a Decomposition
 			// FIXME The result of the cut function SHOULD be a decomposition
 			// FIXME Did not have the patience to code it well
 			Decomposition cutDecomposition = dendrogram.cut(decomposition);

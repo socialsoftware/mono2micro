@@ -147,7 +147,6 @@ public class CodebaseManager {
 	)
 		throws Exception
 	{
-
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		objectMapper.setInjectableValues(
@@ -178,7 +177,6 @@ public class CodebaseManager {
 	)
 		throws Exception
 	{
-
 		ObjectMapper objectMapper = new ObjectMapper();
 		decompositionDeserializableFields.add("name");
 
@@ -214,7 +212,6 @@ public class CodebaseManager {
 	)
 		throws Exception
 	{
-
 		return getDendrogramDecompositionsWithFields(
 			codebaseName,
 			dendrogramName,
@@ -223,10 +220,10 @@ public class CodebaseManager {
 			.stream()
 			.filter(decomposition -> decomposition.getName().equals(decompositionName))
 			.findFirst()
-			.orElseThrow(() -> new Exception("Graph " + decompositionName + " not found"));
+			.orElseThrow(() -> new Exception("Decomposition " + decompositionName + " not found"));
 	}
 
-	public Decomposition getGraphWithControllersAndClustersWithFields(
+	public Decomposition getDecompositionWithControllersAndClustersWithFields(
 		String codebaseName,
 		String dendrogramName,
 		String decompositionName,
@@ -235,7 +232,6 @@ public class CodebaseManager {
 	)
 		throws Exception
 	{
-
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		objectMapper.setInjectableValues(
@@ -264,7 +260,7 @@ public class CodebaseManager {
 		return d.getDecompositions().stream()
 				.filter(decomposition -> decomposition.getName().equals(decompositionName))
 				.findFirst()
-				.orElseThrow(() -> new Exception("Graph " + decompositionName + " not found"));
+				.orElseThrow(() -> new Exception("Decomposition " + decompositionName + " not found"));
 	}
 
 	public void deleteCodebase(String codebaseName) throws IOException {
@@ -277,7 +273,6 @@ public class CodebaseManager {
 	)
 		throws IOException
 	{
-
 		File codebaseJSONFile = new File(CODEBASES_PATH + codebaseName + "/codebase.json");
 
 		if (codebaseJSONFile.exists())
@@ -344,7 +339,11 @@ public class CodebaseManager {
 		);
 	}
 
-	public HashMap<String, ControllerDto> getDatafile(Codebase codebase) throws IOException {
+	public HashMap<String, ControllerDto> getDatafile(
+		Codebase codebase
+	)
+		throws IOException
+	{
 		InputStream is = new FileInputStream(codebase.getDatafilePath());
 
 		HashMap<String, ControllerDto> datafile = objectMapper.readerFor(

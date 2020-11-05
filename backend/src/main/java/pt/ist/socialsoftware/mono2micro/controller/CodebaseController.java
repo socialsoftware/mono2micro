@@ -65,7 +65,7 @@ public class CodebaseController {
     }
 
 	@RequestMapping(value = "/codebase/{codebaseName}/decompositions", method = RequestMethod.GET)
-	public ResponseEntity<List<Decomposition>> getCodebaseGraphs(
+	public ResponseEntity<List<Decomposition>> getCodebaseDecompositions(
 		@PathVariable String codebaseName,
 		@RequestParam List<String> fieldNames
 	) {

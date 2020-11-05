@@ -197,7 +197,10 @@ public class Decomposition {
 	public void setClusters(Map<String, Cluster> clusters) { this.clusters = clusters; }
 
 	public Map<String, Controller> getControllers() { return controllers; }
+
 	public void setControllers(Map<String, Controller> controllers) { this.controllers = controllers; }
+
+	public boolean controllerExists(String controllerName) { return this.controllers.containsKey(controllerName); }
 
 	public boolean clusterExists(String clusterID) { return this.clusters.containsKey(clusterID); }
 
@@ -327,7 +330,6 @@ public class Decomposition {
 		}
 	}
 
-	// FIXME MERGE getLocalTransactionsSequence AND calculateTracePerformance TO SPEED UP PROCESSING
 	public GetLocalTransactionsGraphAndControllerPerformanceResult getLocalTransactionsGraphAndControllerPerformance(
 		ControllerTracesIterator iter,
 		String controllerName,
@@ -544,6 +546,32 @@ public class Decomposition {
 			this.complexity = complexity;
 			this.performance = performance;
 		}
+	}
+
+	public DirectedAcyclicGraph<Decomposition.LocalTransaction, DefaultEdge> getControllerLocalTransactionsGraph(
+		Codebase codebase,
+		String controllerName,
+		Constants.TraceType traceType,
+		int tracesMaxLimit
+	)
+		throws IOException
+	{
+		if (!controllerExists(controllerName))
+			throw new Error("Controller: " + controllerName + " does not exist");
+
+		ControllerTracesIterator iter = new ControllerTracesIterator(
+			codebase.getDatafilePath(),
+			tracesMaxLimit
+		);
+
+		GetLocalTransactionsGraphAndControllerPerformanceResult result = getLocalTransactionsGraphAndControllerPerformance(
+			iter,
+			controllerName,
+			traceType
+		);
+
+		return result.localTransactionsGraph;
+
 	}
 
 	public CalculateComplexityAndPerformanceResult calculateComplexityAndPerformance(

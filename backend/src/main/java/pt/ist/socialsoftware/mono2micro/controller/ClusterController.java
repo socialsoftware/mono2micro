@@ -13,7 +13,7 @@ import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.*;
 
 @RestController
-@RequestMapping(value = "/mono2micro/codebase/{codebaseName}/dendrogram/{dendrogramName}/graph/{graphName}")
+@RequestMapping(value = "/mono2micro/codebase/{codebaseName}/dendrogram/{dendrogramName}/decomposition/{decompositionName}")
 public class ClusterController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ClusterController.class);
@@ -24,7 +24,7 @@ public class ClusterController {
 	public ResponseEntity<HttpStatus> mergeClusters(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
-		@PathVariable String graphName,
+		@PathVariable String decompositionName,
 		@PathVariable String clusterName,
 		@RequestParam String otherCluster,
 		@RequestParam String newName
@@ -39,7 +39,7 @@ public class ClusterController {
 
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
-			Decomposition decomposition = dendrogram.getDecomposition(graphName);
+			Decomposition decomposition = dendrogram.getDecomposition(decompositionName);
 
 			decomposition.mergeClusters(
 				clusterName,
@@ -72,7 +72,7 @@ public class ClusterController {
 	public ResponseEntity<HttpStatus> renameCluster(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
-		@PathVariable String graphName,
+		@PathVariable String decompositionName,
 		@PathVariable String clusterName,
 		@RequestParam String newName
 	) {
@@ -86,7 +86,7 @@ public class ClusterController {
 
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
-			Decomposition decomposition = dendrogram.getDecomposition(graphName);
+			Decomposition decomposition = dendrogram.getDecomposition(decompositionName);
 
 			decomposition.renameCluster(
 				clusterName,
@@ -126,7 +126,7 @@ public class ClusterController {
 	public ResponseEntity<HttpStatus> splitCluster(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
-		@PathVariable String graphName,
+		@PathVariable String decompositionName,
 		@PathVariable String clusterName,
 		@RequestParam String newName,
 		@RequestParam String entities
@@ -141,7 +141,7 @@ public class ClusterController {
 
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
-			Decomposition decomposition = dendrogram.getDecomposition(graphName);
+			Decomposition decomposition = dendrogram.getDecomposition(decompositionName);
 
 			decomposition.splitCluster(
 				clusterName,
@@ -174,7 +174,7 @@ public class ClusterController {
 	public ResponseEntity<HttpStatus> transferEntities(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
-		@PathVariable String graphName,
+		@PathVariable String decompositionName,
 		@PathVariable String clusterName,
 		@RequestParam String toCluster,
 		@RequestParam String entities
@@ -189,7 +189,7 @@ public class ClusterController {
 
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
-			Decomposition decomposition = dendrogram.getDecomposition(graphName);
+			Decomposition decomposition = dendrogram.getDecomposition(decompositionName);
 
 			decomposition.transferEntities(
 				clusterName,
@@ -222,7 +222,7 @@ public class ClusterController {
 	public ResponseEntity<Map<String, Set<Cluster>>> getControllersClusters(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
-		@PathVariable String graphName
+		@PathVariable String decompositionName
 	) {
 		logger.debug("getControllersClusters");
 
@@ -230,7 +230,7 @@ public class ClusterController {
 			Decomposition decomposition = codebaseManager.getDendrogramDecompositionWithFields(
 				codebaseName,
 				dendrogramName,
-				graphName,
+				decompositionName,
 				new HashSet<String>() {{ add("clusters"); add("controllers"); }}
 			);
 
@@ -255,7 +255,7 @@ public class ClusterController {
 	public ResponseEntity<Map<String, Set<Controller>>> getClustersControllers(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
-		@PathVariable String graphName
+		@PathVariable String decompositionName
 	) {
 		logger.debug("getClustersControllers");
 
@@ -263,7 +263,7 @@ public class ClusterController {
 			Decomposition decomposition = codebaseManager.getDendrogramDecompositionWithFields(
 				codebaseName,
 				dendrogramName,
-				graphName,
+				decompositionName,
 				new HashSet<String>() {{ add("clusters"); add("controllers"); }}
 			);
 
