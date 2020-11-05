@@ -8,7 +8,8 @@ import {
     TraceType,
     Dendrogram,
     Cluster,
-    Controller
+    Controller,
+    LocalTransactionsGraph
 } from "../type-declarations/types";
 import { addSearchParamsToUrl } from "../utils/url";
 
@@ -283,7 +284,7 @@ export class RepositoryService {
         decompositionName: string,
         controllerName: string
     ) {
-        return this.axios.get(
+        return this.axios.get<LocalTransactionsGraph>(
             addSearchParamsToUrl(
                 "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/getLocalTransactionsGraphForController",
                 { controllerName },

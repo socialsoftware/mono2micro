@@ -94,31 +94,49 @@ export class Views extends React.Component {
                 <Row className="mb-2">
                     <Col>
                         <DropdownButton title={this.state.view}>
-                            <Dropdown.Item onClick={() => this.handleSelectView(views.CLUSTERS)}>{views.CLUSTERS}</Dropdown.Item>
-                            <Dropdown.Item onClick={() => this.handleSelectView(views.TRANSACTION)}>{views.TRANSACTION}</Dropdown.Item>
-                            <Dropdown.Item onClick={() => this.handleSelectView(views.ENTITY)}>{views.ENTITY}</Dropdown.Item>
+                            <Dropdown.Item
+                                onClick={() => this.handleSelectView(views.CLUSTERS)}
+                            >
+                                {views.CLUSTERS}
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                                onClick={() => this.handleSelectView(views.TRANSACTION)}
+                            >
+                                {views.TRANSACTION}
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                                onClick={() => this.handleSelectView(views.ENTITY)}
+                            >
+                                {views.ENTITY}
+                            </Dropdown.Item>
                         </DropdownButton>
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        {this.state.view === views.CLUSTERS &&
-                            <ClusterView
-                                codebaseName={this.state.codebaseName}
-                                dendrogramName={this.state.dendrogramName} 
-                                decompositionName={this.state.decompositionName} />
+                        {
+                            this.state.view === views.CLUSTERS &&
+                                <ClusterView
+                                    codebaseName={this.state.codebaseName}
+                                    dendrogramName={this.state.dendrogramName} 
+                                    decompositionName={this.state.decompositionName}
+                                />
                         }
-                        {this.state.view === views.TRANSACTION &&
-                            <TransactionView
-                                codebaseName={this.state.codebaseName}
-                                dendrogramName={this.state.dendrogramName} 
-                                decompositionName={this.state.decompositionName} />
+                        {
+                            this.state.view === views.TRANSACTION &&
+                                <TransactionView
+                                    codebaseName={this.state.codebaseName}
+                                    dendrogramName={this.state.dendrogramName} 
+                                    decompositionName={this.state.decompositionName}
+                                />
                         }
-                        {this.state.view === views.ENTITY &&
-                            <EntityView
-                                codebaseName={this.state.codebaseName}
-                                dendrogramName={this.state.dendrogramName} 
-                                decompositionName={this.state.decompositionName} />
+                        {
+                            this.state.view === views.ENTITY &&
+                                <EntityView
+                                    codebaseName={this.state.codebaseName}
+                                    dendrogramName={this.state.dendrogramName} 
+                                    decompositionName={this.state.decompositionName}
+                                />
                         }
                     </Col>
                 </Row>

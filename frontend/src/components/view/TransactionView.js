@@ -122,7 +122,6 @@ const optionsSeq = {
     }
 };
 
-
 const optionsFunctionalityRedesign = {
     height: "700",
     layout: {
@@ -266,10 +265,26 @@ export class TransactionView extends React.Component {
     }
 
     loadGraph() {
+        const {
+            codebaseName,
+            dendrogramName,
+            decompositionName,
+        } = this.props;
+
         this.createTransactionDiagram();
-        this.createSequenceDiagram();
-        this.setState({
-            showGraph: true
+
+        const service = new RepositoryService();
+
+        service.getLocalTransactionsGraphForController(
+            codebaseName,
+            dendrogramName,
+            decompositionName,
+            this.state.controller.name
+        ).then(response => {
+            this.createSequenceDiagram(response.data);
+            this.setState({
+                showGraph: true
+            });
         });
     }
 
@@ -284,6 +299,7 @@ export class TransactionView extends React.Component {
             nodes: new DataSet(controllersClusters[controller.name].map(cluster => this.createNode(cluster))),
             edges: new DataSet(controllersClusters[controller.name].map(cluster => this.createEdge(cluster)))
         };
+
         visGraph.nodes.add({
             id: controller.name,
             title: Object.entries(controller.entities).map(e => e[0] + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(controller.entities).length,
@@ -326,7 +342,7 @@ export class TransactionView extends React.Component {
         };
     }
 
-    createSequenceDiagram() {
+    createSequenceDiagram(localTransactionsGraph) {
 
         const {
             controller,
@@ -354,7 +370,7 @@ export class TransactionView extends React.Component {
         let {
             nodes: localTransactionsList,
             links: linksList,
-        } = controller.localTransactionsGraph;
+        } = localTransactionsGraph;
 
 
         for (var i = 1; i < localTransactionsList.length; i++) {
@@ -519,7 +535,6 @@ export class TransactionView extends React.Component {
             DCGISelectedClusters
         } = this.state;
 
-        console.log(nodeId);
         if(nodeId === -1 && selectedOperation !== redesignOperations.SQ) return;
         if(compareRedesigns) return;
 

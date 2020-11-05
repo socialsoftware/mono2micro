@@ -13,6 +13,11 @@ export interface LocalTransaction {
     firstAccessedEntityIDs: number[];
 }
 
+export interface LocalTransactionsGraph {
+    nodes: LocalTransaction[];
+    links: string[];
+}
+
 export interface Controller {
     name?: string;
     complexity?: number;
