@@ -49,7 +49,7 @@ for file in files:
             df['measure'].append(iToChar(i))
 
 df = pd.DataFrame(df)
-for i in range(3, 11):
+for i in [3, 6, 9]:
     df_n = df[df.n == i]
     # fig1 = px.scatter(
     #     df_n,
@@ -100,38 +100,41 @@ for i in range(3, 11):
         title="Comparison between the weights given to the measures and the complexity achieved for N = " + str(i),
         labels={
             'complexity': 'Uniform Complexity',
-            "weight": "Measure Weight"
+            "weight": "Measure Weight",
+            'measure': 'Measure',
         }
     )
     boxFig.show()
     # boxFig.write_html('similarityMeasuresWeightsVsComplexity_N' + str(i) + '.html')
 
-    # boxFig = px.box(
-    #     df_n,
-    #     x="weight",
-    #     y="coupling",
-    #     color="measure",
-    #     range_y=[0, 1],
-    #     title="Comparison between the weights given to the measures and the coupling achieved for N = " + str(i),
-    #     labels={
-    #         'coupling': 'Coupling',
-    #         "weight": "Measure Weight"
-    #     }
-    # )
-    # boxFig.show()
-    # # boxFig.write_html('similarityMeasuresWeightsVsCoupling_N' + str(i) + '.html')
-    #
-    # boxFig = px.box(
-    #     df_n,
-    #     x="weight",
-    #     y="cohesion",
-    #     color="measure",
-    #     range_y=[0, 1],
-    #     title="Comparison between the weights given to the measures and the cohesion achieved for N = " + str(i),
-    #     labels={
-    #         'cohesion': 'Cohesion',
-    #         "weight": "Measure Weight"
-    #     }
-    # )
-    # boxFig.show()
-    # # boxFig.write_html('similarityMeasuresWeightsVsCohesion_N' + str(i) + '.html')
+    boxFig = px.box(
+        df_n,
+        x="weight",
+        y="coupling",
+        color="measure",
+        range_y=[0, 1],
+        title="Comparison between the weights given to the measures and the coupling achieved for N = " + str(i),
+        labels={
+            'coupling': 'Coupling',
+            "weight": "Measure Weight",
+            'measure': 'Measure',
+        }
+    )
+    boxFig.show()
+    # boxFig.write_html('similarityMeasuresWeightsVsCoupling_N' + str(i) + '.html')
+
+    boxFig = px.box(
+        df_n,
+        x="weight",
+        y="cohesion",
+        color="measure",
+        range_y=[0, 1],
+        title="Comparison between the weights given to the measures and the cohesion achieved for N = " + str(i),
+        labels={
+            'cohesion': 'Cohesion',
+            "weight": "Measure Weight",
+            'measure': 'Measure',
+        }
+    )
+    boxFig.show()
+    # boxFig.write_html('similarityMeasuresWeightsVsCohesion_N' + str(i) + '.html')

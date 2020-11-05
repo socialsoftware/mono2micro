@@ -1,9 +1,6 @@
 package collectors;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
 import spoon.DecompiledResource;
 import spoon.Launcher;
@@ -14,11 +11,10 @@ import spoon.reflect.declaration.*;
 import spoon.reflect.factory.Factory;
 import spoon.reflect.reference.CtExecutableReference;
 import spoon.reflect.reference.CtTypeReference;
-import util.Constants;
-import util.UnkownMethodException;
+import util.*;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.nio.file.Files;
@@ -28,7 +24,7 @@ import java.util.*;
 
 public abstract class SpoonCollector {
     private int controllerCount;
-    private JsonObject callSequence;
+    HashMap<String, Controller> controllerSequences;
     private String projectName;
 
     // all project classes
@@ -37,9 +33,10 @@ public abstract class SpoonCollector {
     // in FenixFramework: allDomainEntities = all classes that extend .*_Base
     // in collectors.JPA: allDomainEntities = all @Entities @Embeddable @MappedSuperClass
     protected Set<String> allDomainEntities;
+    protected LinkedHashMap<String, Integer> entitiesMap;
 
     protected HashSet<CtClass> controllers;
-    private JsonArray entitiesSequence;
+    private List<Access> controllerAccesses;
     protected Map<String, List<CtType>> abstractClassesAndInterfacesImplementorsMap;
 
     protected Factory factory;
@@ -55,10 +52,11 @@ public abstract class SpoonCollector {
             FileUtils.deleteDirectory(decompiledDir);
         }
 
-        callSequence = new JsonObject();
+        controllerSequences = new HashMap<>();
         controllers = new HashSet<>();
         allEntities = new HashSet<>();
-        allDomainEntities = new HashSet<>();
+        allDomainEntities = new TreeSet<>();
+        entitiesMap = new LinkedHashMap<>();
         abstractClassesAndInterfacesImplementorsMap = new HashMap<>();
 
         this.projectName = repoName;
@@ -125,8 +123,7 @@ public abstract class SpoonCollector {
         float elapsedTimeSec = elapsedTimeMillis/1000F;
         System.out.println("Complete. Elapsed time: " + elapsedTimeSec + " seconds");
 
-        String fileName = projectName + ".json";
-        storeJsonFile(Constants.COLLECTION_SAVE_PATH, fileName, callSequence);
+        storeJsonFile(Constants.COLLECTION_SAVE_PATH, projectName, controllerSequences);
 
         File file = new File(Constants.DECOMPILED_SOURCES_PATH);
         if (file.exists()) {
@@ -182,14 +179,16 @@ public abstract class SpoonCollector {
 
             String controllerFullName = controller.getSimpleName() + "." + controllerMethod.getSimpleName();
             System.out.println("Processing Controller: " + controllerFullName + "   " + controllerCount + "/" + controllers.size());
-            entitiesSequence = new JsonArray();
+            controllerAccesses = new ArrayList<>();
             Stack<SourcePosition> methodStack = new Stack<>();
 
             controllerMethodsCount++;
             methodCallDFS(controllerMethod, null, methodStack);
 
-            if (entitiesSequence.size() > 0) {
-                callSequence.add(controller.getSimpleName() + "." + controllerMethod.getSimpleName(), entitiesSequence);
+            if (controllerAccesses.size() > 0) {
+                List<Trace> traces = new ArrayList<>();
+                traces.add(new Trace(0, controllerAccesses));
+                controllerSequences.put(controllerFullName, new Controller(traces));
             }
         }
     }
@@ -206,18 +205,20 @@ public abstract class SpoonCollector {
         return false;
     }
 
-    private void storeJsonFile(String filepath, String fileName, JsonObject callSequence) {
+    private void storeJsonFile(String filepath, String fileName, HashMap<String, Controller> controllerSequences) {
         try {
             File filePath = new File(filepath);
             if (!filePath.exists()) {
                 filePath.mkdirs();
             }
 
-            FileWriter file = new FileWriter(new File(filePath, fileName));
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            file.write(gson.toJson(callSequence));
-            file.close();
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.writerWithDefaultPrettyPrinter().writeValue(new FileOutputStream(filepath+fileName + ".json"), controllerSequences);
+            mapper.writerWithDefaultPrettyPrinter().writeValue(new FileOutputStream(filepath+fileName+"_entityToID.json"), entitiesMap);
 
+            LinkedHashMap<Integer, String> idToEntityMap = new LinkedHashMap<>();
+            entitiesMap.forEach((s, integer) -> idToEntityMap.put(integer, s));
+            mapper.writerWithDefaultPrettyPrinter().writeValue(new FileOutputStream(filepath+fileName+"_IDToEntity.json"), idToEntityMap);
             System.out.println("File '" + fileName + "' created at: " + filepath);
         } catch (IOException e) {
             e.printStackTrace();
@@ -269,9 +270,10 @@ public abstract class SpoonCollector {
     }
 
     protected void addEntitiesSequenceAccess(String simpleName, String mode) {
-        JsonArray entityAccess = new JsonArray();
-        entityAccess.add(simpleName);
-        entityAccess.add(mode);
-        entitiesSequence.add(entityAccess);
+        controllerAccesses.add(new Access(mode, entityToID(simpleName)));
+    }
+
+    private Integer entityToID(String simpleName) {
+        return entitiesMap.get(simpleName);
     }
 }
