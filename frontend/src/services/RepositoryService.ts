@@ -370,7 +370,7 @@ export class RepositoryService {
         );
     }
 
-    getControllerClusters(
+    getControllersClusters(
         codebaseName: string,
         dendrogramName: string,
         decompositionName: string,
@@ -380,7 +380,7 @@ export class RepositoryService {
         );
     }
 
-    getClusterControllers(
+    getClustersControllers(
         codebaseName: string,
         dendrogramName: string,
         decompositionName: string
