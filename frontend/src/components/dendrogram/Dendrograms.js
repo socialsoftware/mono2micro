@@ -290,7 +290,12 @@ export class Dendrograms extends React.Component {
 
     handleDeleteDendrogram(dendrogramName) {
         const service = new RepositoryService();
-        service.deleteDendrogram(this.props.match.params.codebaseName, dendrogramName).then(response => {
+        
+        service.deleteDendrogram(
+            this.props.match.params.codebaseName,
+            dendrogramName
+        )
+        .then(response => {
             this.loadDendrograms();
             this.loadDecompositions();
         });
@@ -552,13 +557,17 @@ export class Dendrograms extends React.Component {
     }
 
     renderDendrograms = () => {
+        const { codebaseName } = this.props.match.params;
         return (
             <Row>
                 {
                     this.state.dendrograms.map(dendrogram =>
                         <Col key={dendrogram.name} md="auto">
                             <Card className="mb-4" style={{ width: '20rem' }}>
-                                <Card.Img variant="top" src={URL + "codebase/" + this.props.match.params.codebaseName + "/dendrogram/" + dendrogram.name + "/image?" + new Date().getTime()} />
+                                <Card.Img
+                                    variant="top"
+                                    src={URL + "codebase/" + codebaseName + "/dendrogram/" + dendrogram.name + "/image?" + new Date().getTime()}
+                                />
                                 <Card.Body>
                                     <Card.Title>{dendrogram.name}</Card.Title>
                                     <Card.Text>
@@ -570,13 +579,15 @@ export class Dendrograms extends React.Component {
                                         Read: {dendrogram.readMetricWeight}%< br />
                                         Sequence: {dendrogram.sequenceMetricWeight}%
                                     </Card.Text>
-                                    <Button href={`/codebases/${this.props.match.params.codebaseName}/dendrograms/${dendrogram.name}`}
+                                    <Button href={`/codebases/${codebaseName}/dendrograms/${dendrogram.name}`}
                                         className="mb-2">
                                         Go to Dendrogram
                                     </Button>
                                     <br />
-                                    <Button onClick={() => this.handleDeleteDendrogram(dendrogram.name)}
-                                        variant="danger">
+                                    <Button 
+                                        onClick={() => this.handleDeleteDendrogram(dendrogram.name)}
+                                        variant="danger"
+                                    >
                                         Delete
                                     </Button>
                                 </Card.Body>
@@ -591,13 +602,25 @@ export class Dendrograms extends React.Component {
 
     render() {
         const metricRows = this.state.allDecompositions.map(decomposition => {
+            
+            let amountOfSingletonClusters = 0;
+            let maxClusterSize = 0;
+
+            Object.values(decomposition.clusters).forEach(c => {
+                const numberOfEntities = c.entities.length;
+
+                if (numberOfEntities === 1) amountOfSingletonClusters++;
+
+                if (numberOfEntities > maxClusterSize) maxClusterSize = numberOfEntities;
+            })
+
             return {
                 id: decomposition.dendrogramName + decomposition.name,
                 dendrogram: decomposition.dendrogramName,
                 decomposition: decomposition.name,
-                clusters: decomposition.clusters.length,
-                singleton: Object.values(decomposition.clusters).filter(c => Object.keys(c.entities).length === 1).length,
-                max_cluster_size: Math.max(...Object.values(decomposition.clusters).map(c => Object.keys(c.entities).length)),
+                clusters: Object.keys(decomposition.clusters).length,
+                singleton: amountOfSingletonClusters,
+                max_cluster_size: maxClusterSize,
                 ss: decomposition.silhouetteScore,
                 cohesion: decomposition.cohesion,
                 coupling: decomposition.coupling,
