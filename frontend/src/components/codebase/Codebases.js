@@ -130,8 +130,12 @@ export class Codebases extends React.Component {
     renderBreadCrumbs = () => {
         return (
             <Breadcrumb>
-                <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-                <Breadcrumb.Item active>Codebases</Breadcrumb.Item>
+                <Breadcrumb.Item href="/">
+                    Home
+                </Breadcrumb.Item>
+                <Breadcrumb.Item active>
+                    Codebases
+                </Breadcrumb.Item>
             </Breadcrumb>
         );
     }
@@ -149,7 +153,8 @@ export class Codebases extends React.Component {
                             maxLength="256"
                             placeholder="Codebase Name"
                             value={this.state.newCodebaseName}
-                            onChange={this.handleChangeNewCodebaseName}/>
+                            onChange={this.handleChangeNewCodebaseName}
+                        />
                     </Col>
                 </Form.Group>
 
@@ -162,7 +167,8 @@ export class Codebases extends React.Component {
                             type="text"
                             placeholder="/home/example/datafile.json"
                             value={this.state.newDatafilePath}
-                            onChange={this.handleChangeNewDatafilePath}/>
+                            onChange={this.handleChangeNewDatafilePath}
+                        />
                     </Col>
                 </Form.Group>
 
@@ -183,13 +189,14 @@ export class Codebases extends React.Component {
                 </Form.Group>
                 <Form.Group as={Row}>
                     <Col sm={{ span: 5, offset: 2 }}>
-                        <Button type="submit"
-                                disabled={
-                                    this.state.isUploaded === "Uploading..." ||
-                                    this.state.newCodebaseName === "" ||
-                                    (this.state.selectedFile === null &&
-                                    this.state.newDatafilePath === "")
-                                }
+                        <Button 
+                            type="submit"
+                            disabled={
+                                this.state.isUploaded === "Uploading..." ||
+                                this.state.newCodebaseName === "" ||
+                                (this.state.selectedFile === null &&
+                                this.state.newDatafilePath === "")
+                            }
                         >
                             Create Codebase
                         </Button>
@@ -241,10 +248,14 @@ export class Codebases extends React.Component {
             <div>
                 {this.renderBreadCrumbs()}
                 
-                <h4 style={{color: "#666666"}}>Create Codebase</h4>
+                <h4 style={{color: "#666666"}}>
+                    Create Codebase
+                </h4>
                 {this.renderCreateCodebaseForm()}
 
-                <h4 style={{color: "#666666"}}>Codebases</h4>
+                <h4 style={{color: "#666666"}}>
+                    Codebases
+                </h4>
                 {this.renderCodebases()}
             </div>
         );
