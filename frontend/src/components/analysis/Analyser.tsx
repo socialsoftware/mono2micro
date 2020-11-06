@@ -192,7 +192,7 @@ export class Analyser extends React.Component<any, any> {
         ).then((response) => {
             if (response.data !== null) {
                 this.setState({
-                    experts: response.data.filter((decomposition: Decomposition) => decomposition.expert === true)
+                    experts: response.data.filter((decomposition: Decomposition) => decomposition.expert)
                 });
             }
         });
@@ -299,8 +299,12 @@ export class Analyser extends React.Component<any, any> {
     renderBreadCrumbs = () => {
         return (
             <Breadcrumb>
-                <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-                <Breadcrumb.Item active>Analyser</Breadcrumb.Item>
+                <Breadcrumb.Item href="/">
+                    Home
+                </Breadcrumb.Item>
+                <Breadcrumb.Item active>
+                    Analyser
+                </Breadcrumb.Item>
             </Breadcrumb>
         );
     }
@@ -349,7 +353,9 @@ export class Analyser extends React.Component<any, any> {
         return (
             <>
                 {this.renderBreadCrumbs()}
-                <h4 style={{color: "#666666"}}>Analyser</h4>
+                <h4 style={{color: "#666666"}}>
+                    Analyser
+                </h4>
 
                 <Form onSubmit={this.handleSubmit}>
                     <Form.Group as={Row} controlId="codebase">
@@ -399,7 +405,6 @@ export class Analyser extends React.Component<any, any> {
                                 type="number"
                                 value={amountOfTraces}
                                 onChange={this.handleChangeAmountOfTraces}
-                                
                             />
                             <Form.Text className="text-muted">
                                 If no number is inserted, 0 is assumed to be the default value meaning the maximum number of traces
@@ -413,56 +418,56 @@ export class Analyser extends React.Component<any, any> {
                         <Col sm={3} style={{ paddingLeft: 0 }}>
                             <Col sm="auto">
                                 <Form.Check
-                                    onClick={this.handleChangeTypeOfTraces}
-                                    name="typeOfTraces"
-                                    label="All"
-                                    type="radio"
+                                    defaultChecked
                                     id="allTraces"
                                     value="ALL"
-                                    defaultChecked
+                                    type="radio"
+                                    label="All"
+                                    name="typeOfTraces"
+                                    onClick={this.handleChangeTypeOfTraces}
                                 />
                             </Col>
                             <Col sm="auto">
                                 <Form.Check
-                                    onClick={this.handleChangeTypeOfTraces}
-                                    name="typeOfTraces"
-                                    label="Longest"
                                     type="radio"
                                     id="longest"
                                     value="LONGEST"
+                                    label="Longest"
+                                    name="typeOfTraces"
+                                    onClick={this.handleChangeTypeOfTraces}
                                 />
                             </Col>
                             <Col sm="auto">
                                 <Form.Check
-                                    onClick={this.handleChangeTypeOfTraces}
-                                    name="typeOfTraces"
-                                    label="With more different accesses"
-                                    type="radio"
                                     id="withMoreDifferentTraces"
                                     value="WITH_MORE_DIFFERENT_ACCESSES"
+                                    type="radio"
+                                    label="With more different accesses"
+                                    name="typeOfTraces"
+                                    onClick={this.handleChangeTypeOfTraces}
                                 />
 
                             </Col>
                             <Col sm="auto">
                                 <Form.Check
-                                    onClick={this.handleChangeTypeOfTraces}
-                                    name="typeOfTraces"
-                                    label="Representative (set of accesses)"
-                                    type="radio"
                                     id="representativeSetOfAccesses"
                                     value="REPRESENTATIVE"
+                                    type="radio"
+                                    label="Representative (set of accesses)"
+                                    name="typeOfTraces"
+                                    onClick={this.handleChangeTypeOfTraces}
                                 />
                             </Col>
                             {/* WIP */}
                             <Col sm="auto">
                                 <Form.Check
-                                    onClick={undefined}
-                                    name="typeOfTraces"
-                                    label="Representative (subsequence of accesses)"
-                                    type="radio"
+                                    disabled
                                     id="complete"
                                     value="?"
-                                    disabled
+                                    type="radio"
+                                    label="Representative (subsequence of accesses)"
+                                    name="typeOfTraces"
+                                    onClick={undefined}
                                 />
                             </Col>
                         </Col>

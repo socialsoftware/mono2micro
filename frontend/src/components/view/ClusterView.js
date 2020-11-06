@@ -198,6 +198,8 @@ export class ClusterView extends React.Component {
     }
 
     setClusterEntities(selectedCluster) {
+        console.log(selectedCluster);
+        
         this.setState({
             selectedCluster: selectedCluster,
             mergeWithCluster: {},
