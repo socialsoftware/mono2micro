@@ -197,7 +197,7 @@ public class Metrics {
 
 				List<String> entitiesWritten = otherController.entitiesTouchedInAGivenMode("W");
 				entitiesWritten.retainAll(entitiesRead);
-				List<String> clustersInCommon = otherController.clustersOfGivenEntities(entitiesWritten);
+				Set<String> clustersInCommon = otherController.clustersOfGivenEntities(entitiesWritten);
 
 				if(clustersInCommon.size() > 1){
 					functionalityRedesign.setInconsistencyComplexity(

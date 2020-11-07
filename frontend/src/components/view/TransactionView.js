@@ -630,6 +630,13 @@ export class TransactionView extends React.Component {
                 });
                 break;
             case redesignOperations.DCGI:
+                this.state.DCGISelectedLocalTransactions.sort((a,b) => {
+                   if(a.id <= b.id)
+                       return -1;
+                   else
+                       return 1;
+                });
+                console.log(this.state.DCGISelectedLocalTransactions);
                 service.dcgi(this.props.codebaseName, this.props.dendrogramName, this.props.graphName,
                     this.state.controller.name, this.state.selectedRedesign.name, this.state.DCGISelectedClusters[0], this.state.DCGISelectedClusters[1],
                     JSON.stringify(this.state.DCGISelectedLocalTransactions.map(e => e.id)))

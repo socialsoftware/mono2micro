@@ -234,7 +234,7 @@ public class Controller {
 	public void setLocalTransactionsGraph(DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph) {
 		this.localTransactionsGraph = localTransactionsGraph;
     }
-    
+
 	public void addEntitiesSeq(JSONArray entitiesSeq) throws JSONException {
 		this.setEntitiesSeq(entitiesSeq.toString());
 	}
@@ -318,8 +318,8 @@ public class Controller {
 		return entitiesTouchedInAGivenMode;
 	}
 
-	public List<String> clustersOfGivenEntities(List<String> entities){
-		List<String> clustersOfGivenEntities = new ArrayList<>();
+	public Set<String> clustersOfGivenEntities(List<String> entities){
+		Set<String> clustersOfGivenEntities = new HashSet<>();
 		for(String cluster : this.entitiesPerCluster.keySet()){
 			for(String entity : entities){
 				if(this.entitiesPerCluster.get(cluster).contains(entity))
