@@ -68,29 +68,39 @@ export class TransactionOperationsMenu extends React.Component {
 
     render() {
         const controllerAmountList = [...new Set(Object.keys(this.props.controllersClusters).map(key => this.props.controllersClusters[key].length))].sort((a, b) => a - b).map(amount =>
-            <Dropdown.Item key={amount} onClick={() => this.setControllerAmount(amount)}>{amount}</Dropdown.Item>
+            <Dropdown.Item key={amount} onClick={() => this.setControllerAmount(amount)}>
+                {amount}
+            </Dropdown.Item>
         );
 
         const controllersListDropdown = this.state.controllerList.map(c =>
-            <Dropdown.Item key={c} onClick={() => this.setController(c)}>{c}</Dropdown.Item>
+            <Dropdown.Item key={c} onClick={() => this.setController(c)}>
+                {c}
+            </Dropdown.Item>
         );
 
         return (
             <ButtonToolbar>
                 <DropdownButton className="mr-1" as={ButtonGroup} title={this.state.controllerAmount}>
-                    <Dropdown.Item key={"All"} onClick={() => this.setControllerAmount("All")}>{"All"}</Dropdown.Item>
+                    <Dropdown.Item key={"All"} onClick={() => this.setControllerAmount("All")}>
+                        {"All"}
+                    </Dropdown.Item>
                     {controllerAmountList}
                 </DropdownButton>
 
                 <Dropdown className="mr-1" as={ButtonGroup}>
-                    <Dropdown.Toggle>{this.state.controller}</Dropdown.Toggle>
+                    <Dropdown.Toggle>
+                        {this.state.controller}
+                    </Dropdown.Toggle>
                     <Dropdown.Menu as={CustomSearchMenuForwardingRef}>
                         {controllersListDropdown}
                     </Dropdown.Menu>
                 </Dropdown>
 
                 {this.state.showSubmit &&
-                <Button onClick={this.handleSubmit}>Create View</Button>
+                <Button onClick={this.handleSubmit}>
+                    Create View
+                </Button>
                 }
             </ButtonToolbar>
         );

@@ -513,12 +513,16 @@ export class TransactionView extends React.Component {
     }
 
     identifyModifiedEntities(cluster){
-        console.log(Object.entries(this.state.controller.entities));
+        const modifiedEntities = [];
+
+        Object.entries(this.state.controller.entities).forEach(e => {
+            if (cluster.entities.includes(e[0]) && e[1].includes("W"))
+                modifiedEntities.push(e[0]);
+        })
+
         return {
             cluster: cluster.name,
-            modifiedEntities: Object.entries(this.state.controller.entities)
-                .filter(e => cluster.entities.includes(e[0]) && e[1].includes("W"))
-                .map(e => e[0])
+            modifiedEntities,
         }
     }
 
@@ -631,16 +635,29 @@ export class TransactionView extends React.Component {
         });
 
         if(value === redesignOperations.AC){
+            const modifiedEntities = [];
+
+            controllersClusters[controller.name].forEach(cluster => {
+                const clusterModifiedEntities = this.identifyModifiedEntities(cluster);
+                
+                if (clusterModifiedEntities.modifiedEntities.length > 0 && clusterModifiedEntities.cluster !== selectedLocalTransaction.cluster)
+                    modifiedEntities.push(clusterModifiedEntities);
+            })
+
             this.setState({
-                modifiedEntities: controllersClusters[controller.name]
-                    .map(cluster => this.identifyModifiedEntities(cluster))
-                    .filter(e => e.modifiedEntities.length > 0 && e.cluster !== selectedLocalTransaction.cluster)
+                modifiedEntities,
             });
         } else if(value === redesignOperations.DCGI) {
+
+            const DCGIAvailableClusters = [];
+
+            controllersClusters[controller.name].forEach(cluster => {
+                if (cluster.name !== selectedLocalTransaction.cluster)
+                    DCGIAvailableClusters.push(cluster.name);
+            })
+
             this.setState({
-                DCGIAvailableClusters: controllersClusters[controller.name]
-                    .filter(e => e.name !== selectedLocalTransaction.cluster)
-                    .map(e => e.name),
+                DCGIAvailableClusters,
                 DCGISelectedClusters: [selectedLocalTransaction.cluster]
             });
         }
@@ -1204,8 +1221,10 @@ export class TransactionView extends React.Component {
                                 controller.functionalityRedesigns.length >= 2 & (
                                     <ButtonGroup className="mb-2">
                                         <Button>Compare Two Redesigns</Button>
-                                        <DropdownButton as={ButtonGroup}
-                                                        title={selectedRedesignsToCompare[0]}>
+                                        <DropdownButton
+                                            as={ButtonGroup}
+                                            title={selectedRedesignsToCompare[0]}
+                                        >
                                             {
                                                 controller.functionalityRedesigns.map(e =>
                                                     <Dropdown.Item
@@ -1215,17 +1234,25 @@ export class TransactionView extends React.Component {
                                                 )
                                             }
                                         </DropdownButton>
-                                        <DropdownButton as={ButtonGroup}
-                                                        title={selectedRedesignsToCompare[1]}>
+                                        <DropdownButton 
+                                            as={ButtonGroup}
+                                            title={selectedRedesignsToCompare[1]}
+                                        >
                                             {
-                                                controller.functionalityRedesigns.filter(
-                                                    e => selectedRedesignsToCompare[0] !== e.name
-                                                ).map(e =>
-                                                    <Dropdown.Item
-                                                        key={e.name}
-                                                        onSelect={() => this.setComparingRedesign(1, e.name)}>{e.name}
-                                                    </Dropdown.Item>
-                                                )
+                                                controller.functionalityRedesigns.reduce((acc, e) => {
+                                                    if (selectedRedesignsToCompare[0] !== e.name)
+                                                        return [
+                                                            ...acc, 
+                                                            (
+                                                                <Dropdown.Item
+                                                                    key={e.name}
+                                                                    onSelect={() => this.setComparingRedesign(1, e.name)}>{e.name}
+                                                                </Dropdown.Item>
+                                                            )
+                                                        ];
+
+                                                    return acc;
+                                                }, [])
                                             }
                                         </DropdownButton>
                                         <Button onClick={() => this.setState({compareRedesigns: true})}>Submit</Button>
