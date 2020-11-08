@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
+import pt.ist.socialsoftware.mono2micro.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
@@ -133,7 +134,7 @@ public class DecompositionController {
 				}}
 			);
 
-			DirectedAcyclicGraph<Decomposition.LocalTransaction, DefaultEdge> controllerLocalTransactionsGraph = decomposition.getControllerLocalTransactionsGraph(
+			DirectedAcyclicGraph<LocalTransaction, DefaultEdge> controllerLocalTransactionsGraph = decomposition.getControllerLocalTransactionsGraph(
 				codebase,
 				controllerName,
 				dendrogram.getTraceType(),

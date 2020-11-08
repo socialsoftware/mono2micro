@@ -6,9 +6,7 @@ import java.util.*;
 
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
-import pt.ist.socialsoftware.mono2micro.domain.Cluster;
-import pt.ist.socialsoftware.mono2micro.domain.Controller;
-import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.domain.*;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 
 public class Metrics {
@@ -115,9 +113,9 @@ public class Metrics {
 	 	Decomposition decomposition,
 		String controllerName,
 	 	Map<String, Set<Cluster>> controllerClusters,
-		DirectedAcyclicGraph<Decomposition.LocalTransaction, DefaultEdge> localTransactionsGraph
+		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph
 	) {
-		Set<Decomposition.LocalTransaction> allLocalTransactions = Decomposition.getAllLocalTransactions(localTransactionsGraph);
+		Set<LocalTransaction> allLocalTransactions = Decomposition.getAllLocalTransactions(localTransactionsGraph);
 
 		if (controllerClusters.get(controllerName).size() == 1) {
 			return 0;
@@ -128,18 +126,18 @@ public class Metrics {
 
 			float controllerComplexity = 0;
 
-			for (Decomposition.LocalTransaction lt : allLocalTransactions) {
+			for (LocalTransaction lt : allLocalTransactions) {
 				// ClusterDependencies
 				short clusterID = lt.getClusterID();
 				if (clusterID != -1) { // not root node
 					Cluster fromCluster = decomposition.getCluster(String.valueOf(clusterID));
 
-					List<Decomposition.LocalTransaction> nextLocalTransactions = Decomposition.getNextLocalTransactions(
+					List<LocalTransaction> nextLocalTransactions = Decomposition.getNextLocalTransactions(
 						localTransactionsGraph,
 						lt
 					);
 
-					for (Decomposition.LocalTransaction nextLt : nextLocalTransactions)
+					for (LocalTransaction nextLt : nextLocalTransactions)
 						fromCluster.addCouplingDependencies(
 							String.valueOf(nextLt.getClusterID()),
 							nextLt.getFirstAccessedEntityIDs()
@@ -268,66 +266,99 @@ public class Metrics {
 		c1.setCoupling(coupling);
 	}
 
-//	public void calculateRedesignComplexities(Controller controller, String redesignName){
-//		FunctionalityRedesign functionalityRedesign = controller.getFunctionalityRedesign(redesignName);
-//		functionalityRedesign.setFunctionalityComplexity(0);
-//		functionalityRedesign.setSystemComplexity(0);
-//
-//		for (int i = 0; i < functionalityRedesign.getRedesign().size(); i++) {
-//			LocalTransaction lt = functionalityRedesign.getRedesign().get(i);
-//
-//			if(!lt.getId().equals(String.valueOf(-1))){
-//				try {
-//					JSONArray sequence = new JSONArray(lt.getAccessedEntities());
-//					for(int j=0; j < sequence.length(); j++){
-//						String entity = sequence.getJSONArray(j).getString(0);
-//						String accessMode = sequence.getJSONArray(j).getString(1);
-//
-//						if(accessMode.contains("W")){
-//							if(lt.getType() == LocalTransactionTypes.COMPENSATABLE) {
-//								functionalityRedesign.setFunctionalityComplexity(functionalityRedesign.getFunctionalityComplexity() + 1);
-//								calculateSystemComplexity(entity, functionalityRedesign);
-//							}
-//						}
-//
-//						if (accessMode.contains("R")) {
-//							functionalityComplexityCostOfRead(entity, controller, functionalityRedesign);
-//						}
-//					}
-//				} catch (JSONException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		}
-//	}
+	public void calculateRedesignComplexities(Controller controller, String redesignName){
+		ControllerType type = controller.defineControllerType();
 
-//	private void calculateSystemComplexity(String entity, FunctionalityRedesign functionalityRedesign) {
-//		for (Controller otherController : this.graph.getControllers()) {
-//			if (!otherController.getName().equals(functionalityRedesign.getName()) &&
-//					otherController.containsEntity(entity) &&
-//					otherController.getEntities().get(entity).contains("R") &&
-//					this.controllerClusters.get(otherController.getName()).size() > 1) {
-//				functionalityRedesign.setSystemComplexity(functionalityRedesign.getSystemComplexity() + 1);
-//			}
-//		}
-//	}
+		if(type == ControllerType.QUERY)
+			calculateQueryRedesignComplexity(controller, redesignName);
+		else
+			calculateSAGASRedesignComplexities(controller, redesignName);
+	}
 
-//	private void functionalityComplexityCostOfRead(String entity, Controller controller, FunctionalityRedesign functionalityRedesign) throws JSONException {
-//		for (Controller otherController : this.graph.getControllers()) {
-//			if (!otherController.getName().equals(controller.getName()) &&
-//					otherController.containsEntity(entity) &&
-//					this.controllerClusters.get(otherController.getName()).size() > 1) {
-//
-//				if(otherController.getFunctionalityRedesigns().size() == 1 &&
-//						otherController.getEntities().get(entity).contains("W")){
-//					functionalityRedesign.setFunctionalityComplexity(functionalityRedesign.getFunctionalityComplexity() + 1);
-//				}
-//				else if(otherController.getFunctionalityRedesigns().size() > 1 &&
-//					otherController.frUsedForMetrics().semanticLockEntities().contains(entity)){
-//					functionalityRedesign.setFunctionalityComplexity(functionalityRedesign.getFunctionalityComplexity() + 1);
-//				}
-//
-//			}
-//		}
-//	}
+	private void calculateQueryRedesignComplexity(Controller controller, String redesignName) {
+		FunctionalityRedesign functionalityRedesign = controller.getFunctionalityRedesign(redesignName);
+		functionalityRedesign.setInconsistencyComplexity(0);
+
+		List<String> entitiesRead = controller.entitiesTouchedInAGivenMode("R");
+
+		for (Controller otherController : this.graph.getControllers()) {
+			if (!otherController.getName().equals(controller.getName()) &&
+				otherController.defineControllerType() == ControllerType.SAGA){
+
+				List<String> entitiesWritten = otherController.entitiesTouchedInAGivenMode("W");
+				entitiesWritten.retainAll(entitiesRead);
+				Set<String> clustersInCommon = otherController.clustersOfGivenEntities(entitiesWritten);
+
+				if(clustersInCommon.size() > 1){
+					functionalityRedesign.setInconsistencyComplexity(
+						functionalityRedesign.getInconsistencyComplexity() + clustersInCommon.size()
+					);
+				}
+			}
+		}
+	}
+
+	private void calculateSAGASRedesignComplexities(Controller controller,  String redesignName){
+		FunctionalityRedesign functionalityRedesign = controller.getFunctionalityRedesign(redesignName);
+		functionalityRedesign.setFunctionalityComplexity(0);
+		functionalityRedesign.setSystemComplexity(0);
+
+		for (int i = 0; i < functionalityRedesign.getRedesign().size(); i++) {
+			LocalTransaction lt = functionalityRedesign.getRedesign().get(i);
+
+			if(!lt.getId().equals(String.valueOf(-1))){
+				try {
+					JSONArray sequence = new JSONArray(lt.getAccessedEntities());
+					for(int j=0; j < sequence.length(); j++){
+						String entity = sequence.getJSONArray(j).getString(0);
+						String accessMode = sequence.getJSONArray(j).getString(1);
+
+						if(accessMode.contains("W")){
+							if(lt.getType() == LocalTransactionTypes.COMPENSATABLE) {
+								functionalityRedesign.setFunctionalityComplexity(functionalityRedesign.getFunctionalityComplexity() + 1);
+								calculateSystemComplexity(entity, controller, functionalityRedesign);
+							}
+						}
+
+						if (accessMode.contains("R")) {
+							functionalityComplexityCostOfRead(entity, controller, functionalityRedesign);
+						}
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	private void calculateSystemComplexity(String entity, Controller controller, FunctionalityRedesign functionalityRedesign) {
+		for (Controller otherController : this.graph.getControllers()) {
+			if (!otherController.getName().equals(controller.getName()) &&
+				otherController.containsEntity(entity) &&
+				otherController.getEntities().get(entity).contains("R") &&
+				this.controllerClusters.get(otherController.getName()).size() > 1) {
+				functionalityRedesign.setSystemComplexity(functionalityRedesign.getSystemComplexity() + 1);
+			}
+		}
+	}
+
+	private void functionalityComplexityCostOfRead(String entity, Controller controller, FunctionalityRedesign functionalityRedesign) throws JSONException {
+		for (Controller otherController : this.graph.getControllers()) {
+			if (!otherController.getName().equals(controller.getName()) &&
+				otherController.containsEntity(entity) &&
+				this.controllerClusters.get(otherController.getName()).size() > 1) {
+
+				if(otherController.getFunctionalityRedesigns().size() == 1 &&
+					otherController.getEntities().get(entity).contains("W")){
+					functionalityRedesign.setFunctionalityComplexity(functionalityRedesign.getFunctionalityComplexity() + 1);
+				}
+				else if(otherController.getFunctionalityRedesigns().size() > 1 &&
+					otherController.frUsedForMetrics().semanticLockEntities().contains(entity)){
+					functionalityRedesign.setFunctionalityComplexity(functionalityRedesign.getFunctionalityComplexity() + 1);
+				}
+
+			}
+		}
+	}
+}
 }

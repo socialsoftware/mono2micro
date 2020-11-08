@@ -21,72 +21,6 @@ import static org.jgrapht.Graphs.successorListOf;
 @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
 @JsonDeserialize(using = DecompositionDeserializer.class)
 public class Decomposition {
-
-	public static class LocalTransaction {
-		private int id; // transaction id to ensure that every node in the graph is unique
-		private short clusterID; // changed to short instead of String to minimize the memory footprint
-		private Set<AccessDto> clusterAccesses;
-		private Set<Short> firstAccessedEntityIDs; // to calculate the coupling dependencies
-
-		public LocalTransaction() {}
-
-		public LocalTransaction(int id) {
-			this.id = id;
-		}
-
-		public LocalTransaction(
-			int id,
-			short clusterID
-		) {
-			this.id = id;
-			this.clusterID = clusterID;
-		}
-
-		public LocalTransaction(
-			int id,
-			short clusterID,
-			Set<AccessDto> clusterAccesses,
-			short firstAccessedEntityID
-		) {
-			this.id = id;
-			this.clusterID = clusterID;
-			this.clusterAccesses = clusterAccesses;
-			this.firstAccessedEntityIDs = new HashSet<Short>() { { add(firstAccessedEntityID); } };
-		}
-
-		public LocalTransaction(LocalTransaction lt) {
-			this.id = lt.getId();
-			this.clusterID = lt.getClusterID();
-			this.clusterAccesses = new HashSet<>(lt.getClusterAccesses());
-			this.firstAccessedEntityIDs = new HashSet<>(lt.getFirstAccessedEntityIDs());
-		}
-
-		public int getId() { return id; }
-		public void setId(int id) { this.id = id; }
-		public short getClusterID() { return clusterID; }
-		public void setClusterID(short clusterID) { this.clusterID = clusterID; }
-		public Set<AccessDto> getClusterAccesses() { return clusterAccesses; }
-		public void setClusterAccesses(Set<AccessDto> clusterAccesses) { this.clusterAccesses = clusterAccesses; }
-		public void addClusterAccess(AccessDto a) { this.clusterAccesses.add(a); }
-		public Set<Short> getFirstAccessedEntityIDs() { return firstAccessedEntityIDs; }
-		public void setFirstAccessedEntityIDs(Set<Short> firstAccessedEntityIDs) { this.firstAccessedEntityIDs = firstAccessedEntityIDs; }
-
-		@Override
-		public boolean equals(Object other) {
-			if (other instanceof LocalTransaction) {
-				LocalTransaction that = (LocalTransaction) other;
-				return id == that.id;
-			}
-
-			return false;
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(id);
-		}
-	}
-
 	private String name;
 	private String codebaseName;
 	private String dendrogramName;
@@ -201,6 +135,14 @@ public class Decomposition {
 	public void setControllers(Map<String, Controller> controllers) { this.controllers = controllers; }
 
 	public boolean controllerExists(String controllerName) { return this.controllers.containsKey(controllerName); }
+
+	public Controller getController(String controllerName) {
+		Controller c = this.controllers.get(controllerName);
+
+		if (c == null) throw new Error("Controller with name: " + controllerName + " not found");
+
+		return c;
+	}
 
 	public boolean clusterExists(String clusterID) { return this.clusters.containsKey(clusterID); }
 
@@ -548,7 +490,7 @@ public class Decomposition {
 		}
 	}
 
-	public DirectedAcyclicGraph<Decomposition.LocalTransaction, DefaultEdge> getControllerLocalTransactionsGraph(
+	public DirectedAcyclicGraph<LocalTransaction, DefaultEdge> getControllerLocalTransactionsGraph(
 		Codebase codebase,
 		String controllerName,
 		Constants.TraceType traceType,
