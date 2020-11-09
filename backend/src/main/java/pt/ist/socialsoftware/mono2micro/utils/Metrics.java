@@ -6,6 +6,7 @@ import java.util.*;
 
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
+import org.json.JSONArray;
 import pt.ist.socialsoftware.mono2micro.domain.*;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 
@@ -266,28 +267,47 @@ public class Metrics {
 		c1.setCoupling(coupling);
 	}
 
-	public void calculateRedesignComplexities(Controller controller, String redesignName){
+	public static void calculateRedesignComplexities(
+			Controller controller,
+			String redesignName,
+			Decomposition decomposition
+	){
+		Utils.GetControllersClustersAndClustersControllersResult result =
+				Utils.getControllersClustersAndClustersControllers(
+						decomposition.getClusters().values(),
+						decomposition.getControllers().values()
+				);
+
 		ControllerType type = controller.defineControllerType();
 
 		if(type == ControllerType.QUERY)
-			calculateQueryRedesignComplexity(controller, redesignName);
+			calculateQueryRedesignComplexity(controller, redesignName, decomposition);
 		else
-			calculateSAGASRedesignComplexities(controller, redesignName);
+			calculateSAGASRedesignComplexities(
+					controller,
+					redesignName,
+					decomposition,
+					result.controllersClusters
+			);
 	}
 
-	private void calculateQueryRedesignComplexity(Controller controller, String redesignName) {
+	private static void calculateQueryRedesignComplexity(
+			Controller controller,
+			String redesignName,
+			Decomposition decomposition
+	) {
 		FunctionalityRedesign functionalityRedesign = controller.getFunctionalityRedesign(redesignName);
 		functionalityRedesign.setInconsistencyComplexity(0);
 
-		List<String> entitiesRead = controller.entitiesTouchedInAGivenMode("R");
+		Set<Short> entitiesRead = controller.entitiesTouchedInAGivenMode((byte) 1);
 
-		for (Controller otherController : this.graph.getControllers()) {
+		for (Controller otherController : decomposition.getControllers().values()) {
 			if (!otherController.getName().equals(controller.getName()) &&
 				otherController.defineControllerType() == ControllerType.SAGA){
 
-				List<String> entitiesWritten = otherController.entitiesTouchedInAGivenMode("W");
+				Set<Short> entitiesWritten = otherController.entitiesTouchedInAGivenMode((byte) 2);
 				entitiesWritten.retainAll(entitiesRead);
-				Set<String> clustersInCommon = otherController.clustersOfGivenEntities(entitiesWritten);
+				Set<Short> clustersInCommon = otherController.clustersOfGivenEntities(entitiesWritten);
 
 				if(clustersInCommon.size() > 1){
 					functionalityRedesign.setInconsistencyComplexity(
@@ -298,7 +318,12 @@ public class Metrics {
 		}
 	}
 
-	private void calculateSAGASRedesignComplexities(Controller controller,  String redesignName){
+	private static void calculateSAGASRedesignComplexities(
+			Controller controller,
+			String redesignName,
+			Decomposition decomposition,
+			Map<String, Set<Cluster>> controllerClusters
+	){
 		FunctionalityRedesign functionalityRedesign = controller.getFunctionalityRedesign(redesignName);
 		functionalityRedesign.setFunctionalityComplexity(0);
 		functionalityRedesign.setSystemComplexity(0);
@@ -306,50 +331,69 @@ public class Metrics {
 		for (int i = 0; i < functionalityRedesign.getRedesign().size(); i++) {
 			LocalTransaction lt = functionalityRedesign.getRedesign().get(i);
 
-			if(!lt.getId().equals(String.valueOf(-1))){
-				try {
-					JSONArray sequence = new JSONArray(lt.getAccessedEntities());
-					for(int j=0; j < sequence.length(); j++){
-						String entity = sequence.getJSONArray(j).getString(0);
-						String accessMode = sequence.getJSONArray(j).getString(1);
+			if(lt.getId() != 0){
+				for(AccessDto accessDto : lt.getClusterAccesses()) {
+					short entity = accessDto.getEntityID();
+					byte mode = accessDto.getMode();
 
-						if(accessMode.contains("W")){
-							if(lt.getType() == LocalTransactionTypes.COMPENSATABLE) {
-								functionalityRedesign.setFunctionalityComplexity(functionalityRedesign.getFunctionalityComplexity() + 1);
-								calculateSystemComplexity(entity, controller, functionalityRedesign);
-							}
-						}
-
-						if (accessMode.contains("R")) {
-							functionalityComplexityCostOfRead(entity, controller, functionalityRedesign);
+					if(mode >= 2){ // 2 -> W, 3 -> RW
+						if(lt.getType() == LocalTransactionTypes.COMPENSATABLE) {
+							functionalityRedesign.setFunctionalityComplexity(functionalityRedesign.getFunctionalityComplexity() + 1);
+							calculateSystemComplexity(
+									entity,
+									controller,
+									functionalityRedesign,
+									decomposition,
+									controllerClusters
+							);
 						}
 					}
-				} catch (JSONException e) {
-					e.printStackTrace();
+
+					if (mode != 2) { // 2 -> W - we want all the reads
+						functionalityComplexityCostOfRead(
+								entity,
+								controller,
+								functionalityRedesign,
+								decomposition,
+								controllerClusters
+						);
+					}
 				}
 			}
 		}
 	}
 
-	private void calculateSystemComplexity(String entity, Controller controller, FunctionalityRedesign functionalityRedesign) {
-		for (Controller otherController : this.graph.getControllers()) {
+	private static void calculateSystemComplexity(
+			short entity,
+			Controller controller,
+			FunctionalityRedesign functionalityRedesign,
+			Decomposition decomposition,
+			Map<String, Set<Cluster>> controllerClusters
+	) {
+		for (Controller otherController : decomposition.getControllers().values()) {
 			if (!otherController.getName().equals(controller.getName()) &&
 				otherController.containsEntity(entity) &&
-				otherController.getEntities().get(entity).contains("R") &&
-				this.controllerClusters.get(otherController.getName()).size() > 1) {
+					otherController.getEntities().get(entity) != 2 &&
+					controllerClusters.get(otherController.getName()).size() > 1) {
 				functionalityRedesign.setSystemComplexity(functionalityRedesign.getSystemComplexity() + 1);
 			}
 		}
 	}
 
-	private void functionalityComplexityCostOfRead(String entity, Controller controller, FunctionalityRedesign functionalityRedesign) throws JSONException {
-		for (Controller otherController : this.graph.getControllers()) {
+	private static void functionalityComplexityCostOfRead(
+			short entity,
+			Controller controller,
+			FunctionalityRedesign functionalityRedesign,
+			Decomposition decomposition,
+			Map<String, Set<Cluster>> controllerClusters
+	) {
+		for (Controller otherController : decomposition.getControllers().values()) {
 			if (!otherController.getName().equals(controller.getName()) &&
 				otherController.containsEntity(entity) &&
-				this.controllerClusters.get(otherController.getName()).size() > 1) {
+					controllerClusters.get(otherController.getName()).size() > 1) {
 
 				if(otherController.getFunctionalityRedesigns().size() == 1 &&
-					otherController.getEntities().get(entity).contains("W")){
+					otherController.getEntities().get(entity) >= 2){
 					functionalityRedesign.setFunctionalityComplexity(functionalityRedesign.getFunctionalityComplexity() + 1);
 				}
 				else if(otherController.getFunctionalityRedesigns().size() > 1 &&
@@ -360,5 +404,4 @@ public class Metrics {
 			}
 		}
 	}
-}
 }

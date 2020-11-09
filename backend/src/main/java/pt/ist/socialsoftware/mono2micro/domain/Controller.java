@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.traverse.BreadthFirstIterator;
-import org.json.JSONException;
+import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.utils.ControllerType;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.ControllerDeserializer;
 import pt.ist.socialsoftware.mono2micro.utils.serializers.ControllerSerializer;
@@ -25,7 +25,7 @@ public class Controller {
 	private Map<Short, Byte> entities = new HashMap<>(); // <entityID, mode>
 	private List<FunctionalityRedesign> functionalityRedesigns = new ArrayList<>();
 	private ControllerType type;
-	private Map<String, List<String>> entitiesPerCluster = new HashMap<>();
+	private Map<Short, Set<Short>> entitiesPerCluster = new HashMap<>();
 
 	public Controller() {}
 
@@ -104,9 +104,7 @@ public class Controller {
 		String name,
 		boolean usedForMetrics,
 		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph
-	)
-		throws JSONException
-	{
+	) {
 		FunctionalityRedesign functionalityRedesign = new FunctionalityRedesign(name);
 		functionalityRedesign.setUsedForMetrics(usedForMetrics);
 
@@ -134,6 +132,16 @@ public class Controller {
 			}
 
 			functionalityRedesign.getRedesign().add(lt);
+
+			for(AccessDto accessDto : lt.getClusterAccesses()){
+				if(this.entitiesPerCluster.containsKey(lt.getClusterID())){
+					this.entitiesPerCluster.get(lt.getClusterID()).add(accessDto.getEntityID());
+				} else {
+					Set<Short> entities = new HashSet<>();
+					entities.add(accessDto.getEntityID());
+					this.entitiesPerCluster.put(lt.getClusterID(), entities);
+				}
+			}
 		}
 
 		this.functionalityRedesigns.add(0, functionalityRedesign);
@@ -188,21 +196,21 @@ public class Controller {
 		this.type = type;
 	}
 
-	public List<Short> entitiesTouchedInAGivenMode(Byte mode){
-		List<Short> entitiesTouchedInAGivenMode = new ArrayList<>();
+	public Set<Short> entitiesTouchedInAGivenMode(byte mode){
+		Set<Short> entitiesTouchedInAGivenMode = new HashSet<>();
 		for(Short entity : this.entities.keySet()){
-			if(this.entities.get(entity) == mode)
+			if(this.entities.get(entity) == 3 || this.entities.get(entity) == mode) // 3 -> RW
 				entitiesTouchedInAGivenMode.add(entity);
 		}
 		return entitiesTouchedInAGivenMode;
 	}
 
-	public Set<String> clustersOfGivenEntities(List<Short> entities){
-		Set<String> clustersOfGivenEntities = new HashSet<>();
-		for(String cluster : this.entitiesPerCluster.keySet()){
-			for(String entity : entities){
-				if(this.entitiesPerCluster.get(cluster).contains(entity))
-					clustersOfGivenEntities.add(cluster);
+	public Set<Short> clustersOfGivenEntities(Set<Short> entities){
+		Set<Short> clustersOfGivenEntities = new HashSet<>();
+		for(Short clusterID : this.entitiesPerCluster.keySet()){
+			for(Short entityID : entities){
+				if(this.entitiesPerCluster.get(clusterID).contains(entityID))
+					clustersOfGivenEntities.add(clusterID);
 			}
 		}
 		return clustersOfGivenEntities;
@@ -226,13 +234,5 @@ public class Controller {
 
 	public boolean containsEntity(Short entity) {
 		return this.entities.containsKey(entity);
-	}
-
-	public Map<String, List<String>> getEntitiesPerCluster() {
-		return entitiesPerCluster;
-	}
-
-	public void setEntitiesPerCluster(Map<String, List<String>> entitiesPerCluster) {
-		this.entitiesPerCluster = entitiesPerCluster;
 	}
 }

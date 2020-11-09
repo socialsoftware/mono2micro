@@ -2,6 +2,7 @@ package pt.ist.socialsoftware.mono2micro.controller;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -41,7 +42,7 @@ public class FunctionalityRedesignController {
         try {
             String fromID = (String) data.get("fromID");
             String clusterName = (String) data.get("cluster");
-            Set<AccessDto> accesses = (Set<AccessDto>) data.get("accesses"); // FIXME should be called accesses
+            Set<Short> accesses = (Set<Short>) data.get("accesses");
 
             Codebase codebase = codebaseManager.getCodebase(codebaseName);
             Decomposition decomposition = codebase.getDendrogram(dendrogramName).getDecomposition(decompositionName);
@@ -49,8 +50,8 @@ public class FunctionalityRedesignController {
 
             controller.getFunctionalityRedesign(redesignName).addCompensating(clusterName, accesses, fromID);
 
-            Metrics metrics = new Metrics(decomposition);
-            metrics.calculateRedesignComplexities(controller, redesignName);
+
+            Metrics.calculateRedesignComplexities(controller, redesignName, decomposition);
             codebaseManager.writeCodebase(codebase);
 
             return new ResponseEntity<>(controller, HttpStatus.OK);
@@ -78,8 +79,7 @@ public class FunctionalityRedesignController {
             Controller controller = codebase.getDendrogram(dendrogramName).getDecomposition(decompositionName).getController(controllerName);
             controller.getFunctionalityRedesign(redesignName).sequenceChange(localTransactionID, newCaller);
 
-            Metrics metrics = new Metrics(decomposition);
-            metrics.calculateRedesignComplexities(controller, redesignName);
+            Metrics.calculateRedesignComplexities(controller, redesignName, decomposition);
             codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(controller, HttpStatus.OK);
 
@@ -111,8 +111,7 @@ public class FunctionalityRedesignController {
 
             controller.getFunctionalityRedesign(redesignName).dcgi(fromCluster, toCluster, localTransactions);
 
-            Metrics metrics = new Metrics(decomposition);
-            metrics.calculateRedesignComplexities(controller, redesignName);
+            Metrics.calculateRedesignComplexities(controller, redesignName, decomposition);
             codebaseManager.writeCodebase(codebase);
 
             return new ResponseEntity<>(controller, HttpStatus.OK);
@@ -148,8 +147,7 @@ public class FunctionalityRedesignController {
 
 
             controller.getFunctionalityRedesign(redesignName).definePivotTransaction(Integer.parseInt(transactionID));
-            Metrics metrics = new Metrics(decomposition);
-            metrics.calculateRedesignComplexities(controller, redesignName);
+            Metrics.calculateRedesignComplexities(controller, redesignName, decomposition);
 
             if(newRedesignName.isPresent()) {
                 controller.changeFunctionalityRedesignName(redesignName, newRedesignName.get());
@@ -168,7 +166,7 @@ public class FunctionalityRedesignController {
                 );
             }
 
-            metrics.calculateRedesignComplexities(controller, Constants.DEFAULT_REDESIGN_NAME);
+            Metrics.calculateRedesignComplexities(controller, Constants.DEFAULT_REDESIGN_NAME, decomposition);
             codebaseManager.writeCodebase(codebase);
 
             return new ResponseEntity<>(controller, HttpStatus.OK);

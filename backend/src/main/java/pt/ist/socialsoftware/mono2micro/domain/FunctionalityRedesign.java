@@ -67,7 +67,7 @@ public class FunctionalityRedesign {
 
     public List<LocalTransaction> addCompensating(
         String clusterName,
-        Set<AccessDto> accesses,
+        Set<Short> entities,
         String fromID
     )
         throws Exception
@@ -80,6 +80,13 @@ public class FunctionalityRedesign {
             if(!usedIDs.contains(i))
                 break;
         }
+
+        Set<AccessDto> accesses = entities.stream().map(e -> {
+            AccessDto accessDto = new AccessDto();
+            accessDto.setEntityID(e);
+            accessDto.setMode((byte) 2);
+            return  accessDto;
+        }).collect(Collectors.toSet());
 
         LocalTransaction newLT = new LocalTransaction(
             i,
