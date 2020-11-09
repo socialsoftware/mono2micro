@@ -220,6 +220,7 @@ export class TransactionView extends React.Component {
         this.setComparingRedesign = this.setComparingRedesign.bind(this);
         this.handleCompareRedesignSubmit = this.handleCompareRedesignSubmit(this);
         this.handleUseForMetrics = this.handleUseForMetrics.bind(this);
+        this.changeToRedesignMode = this.changeToRedesignMode.bind(this);
     }
 
     componentDidMount() {
@@ -1009,6 +1010,27 @@ export class TransactionView extends React.Component {
         });
     }
 
+    changeToRedesignMode(){
+        this.changeSubView("Functionality Redesign");
+        const service = new RepositoryService();
+        const {
+            codebaseName,
+            dendrogramName,
+            decompositionName,
+        } = this.props;
+
+        service.initRedesign(
+            codebaseName,
+            dendrogramName,
+            decompositionName,
+            this.state.controller.name
+        ).then(response => {
+            this.setState({
+                controller: response.data
+            });
+        });
+    }
+
     render() {
 
         const {
@@ -1123,12 +1145,12 @@ export class TransactionView extends React.Component {
                                 >
                                     Sequence Table
                                 </Button>
-                                {/* <Button
+                                <Button
                                     disabled={this.state.currentSubView === "Functionality Redesign"}
-                                    onClick={() => this.changeSubView("Functionality Redesign")}
+                                    onClick={this.changeToRedesignMode}
                                 >
                                     Functionality Redesign
-                                </Button> */}
+                                </Button>
                             </ButtonGroup>
                         </Col>
                         {

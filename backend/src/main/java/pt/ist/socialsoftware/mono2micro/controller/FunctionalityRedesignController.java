@@ -28,6 +28,42 @@ public class FunctionalityRedesignController {
 
     private CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
+
+    @RequestMapping(value = "/controller/{controllerName}/initRedesign", method = RequestMethod.GET)
+    public ResponseEntity<Controller> initRedesign(
+            @PathVariable String codebaseName,
+            @PathVariable String dendrogramName,
+            @PathVariable String decompositionName,
+            @PathVariable String controllerName
+    ) {
+
+        logger.debug("initRedesign");
+
+        try {
+            Codebase codebase = codebaseManager.getCodebase(codebaseName);
+            Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
+            Decomposition decomposition = dendrogram.getDecomposition(decompositionName);
+            Controller controller = decomposition.getController(controllerName);
+            controller.createFunctionalityRedesign(
+                    Constants.DEFAULT_REDESIGN_NAME,
+                    true,
+                    decomposition.getControllerLocalTransactionsGraph(
+                            codebase,
+                            controllerName,
+                            dendrogram.getTraceType(),
+                            dendrogram.getTracesMaxLimit()
+                    )
+            );
+
+            codebaseManager.writeCodebase(codebase);
+            return new ResponseEntity<>(controller, HttpStatus.OK);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @RequestMapping(value = "/controller/{controllerName}/redesign/{redesignName}/addCompensating", method = RequestMethod.POST)
     public ResponseEntity<Controller> addCompensating(
         @PathVariable String codebaseName,
@@ -49,8 +85,6 @@ public class FunctionalityRedesignController {
             Controller controller = decomposition.getController(controllerName);
 
             controller.getFunctionalityRedesign(redesignName).addCompensating(clusterName, accesses, fromID);
-
-
             Metrics.calculateRedesignComplexities(controller, redesignName, decomposition);
             codebaseManager.writeCodebase(codebase);
 
