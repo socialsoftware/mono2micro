@@ -9,6 +9,7 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.traverse.BreadthFirstIterator;
 import org.json.JSONException;
+import pt.ist.socialsoftware.mono2micro.utils.ControllerType;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.ControllerDeserializer;
 import pt.ist.socialsoftware.mono2micro.utils.serializers.ControllerSerializer;
 
@@ -23,6 +24,8 @@ public class Controller {
 	private float performance; // the average of the number of hops between clusters for all traces
 	private Map<Short, Byte> entities = new HashMap<>(); // <entityID, mode>
 	private List<FunctionalityRedesign> functionalityRedesigns = new ArrayList<>();
+	private ControllerType type;
+	private Map<String, List<String>> entitiesPerCluster = new HashMap<>();
 
 	public Controller() {}
 
@@ -175,5 +178,61 @@ public class Controller {
 			else if (fr.getName().equals(redesignName))
 				fr.setUsedForMetrics(true);
 		}
+	}
+
+	public ControllerType getType() {
+		return type;
+	}
+
+	public void setType(ControllerType type) {
+		this.type = type;
+	}
+
+	public List<Short> entitiesTouchedInAGivenMode(Byte mode){
+		List<Short> entitiesTouchedInAGivenMode = new ArrayList<>();
+		for(Short entity : this.entities.keySet()){
+			if(this.entities.get(entity) == mode)
+				entitiesTouchedInAGivenMode.add(entity);
+		}
+		return entitiesTouchedInAGivenMode;
+	}
+
+	public Set<String> clustersOfGivenEntities(List<Short> entities){
+		Set<String> clustersOfGivenEntities = new HashSet<>();
+		for(String cluster : this.entitiesPerCluster.keySet()){
+			for(String entity : entities){
+				if(this.entitiesPerCluster.get(cluster).contains(entity))
+					clustersOfGivenEntities.add(cluster);
+			}
+		}
+		return clustersOfGivenEntities;
+	}
+
+	public ControllerType defineControllerType(){
+		if(this.type != null) return this.type;
+
+		if(!this.entities.isEmpty()){
+			for(Short entity : this.entities.keySet()){
+				if(this.entities.get(entity) >= 2) { // 2 -> W , 3 -> RW
+					this.type = ControllerType.SAGA;
+					return this.type;
+				}
+
+			}
+			this.type = ControllerType.QUERY;
+		}
+		return this.type;
+	}
+
+	public boolean containsEntity(Short entity) {
+		return this.entities.containsKey(entity);
+	}
+
+	public Map<String, List<String>> getEntitiesPerCluster() {
+		return entitiesPerCluster;
+	}
+
+	public void setEntitiesPerCluster(Map<String, List<String>> entitiesPerCluster) {
+		this.entitiesPerCluster = entitiesPerCluster;
 	}
 }

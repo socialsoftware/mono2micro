@@ -16,6 +16,7 @@ public class FunctionalityRedesign {
     private List<LocalTransaction> redesign = new ArrayList<>();
     private int systemComplexity;
     private int functionalityComplexity;
+    private int inconsistencyComplexity;
     private int pivotTransaction = -1;
 
     public FunctionalityRedesign(){}
@@ -512,5 +513,13 @@ public class FunctionalityRedesign {
 
     public void setUsedForMetrics(boolean usedForMetrics) {
         this.usedForMetrics = usedForMetrics;
+    }
+
+    public int getInconsistencyComplexity() {
+        return inconsistencyComplexity;
+    }
+
+    public void setInconsistencyComplexity(int inconsistencyComplexity) {
+        this.inconsistencyComplexity = inconsistencyComplexity;
     }
 }
