@@ -67,8 +67,8 @@ public class FunctionalityRedesign {
 
     public List<LocalTransaction> addCompensating(
         String clusterName,
-        Set<Short> entities,
-        String fromID
+        List<Integer> entities,
+        int fromID
     )
         throws Exception
     {
@@ -83,7 +83,7 @@ public class FunctionalityRedesign {
 
         Set<AccessDto> accesses = entities.stream().map(e -> {
             AccessDto accessDto = new AccessDto();
-            accessDto.setEntityID(e);
+            accessDto.setEntityID((e.shortValue()));
             accessDto.setMode((byte) 2);
             return  accessDto;
         }).collect(Collectors.toSet());
@@ -98,7 +98,7 @@ public class FunctionalityRedesign {
 
         LocalTransaction caller = this.redesign
             .stream()
-            .filter(lt -> lt.getId() == Integer.parseInt(fromID))
+            .filter(lt -> lt.getId() == fromID)
             .findFirst()
             .orElseThrow(() -> new Exception("Transaction with id " + fromID + " not found"));
 
@@ -171,7 +171,7 @@ public class FunctionalityRedesign {
 
                     if(mode == null) { // map does not contain the entity
                         fromLTAccesses.put(accessedEntityID, accessedMode);
-                    } else if(mode == accessedMode){
+                    } else if(mode != accessedMode){
                         fromLTAccesses.put(accessedEntityID, (byte) 3); // 3 -> "RW"
                     }
                 }
@@ -181,7 +181,7 @@ public class FunctionalityRedesign {
 
                     if(mode == null) { // map does not contain the entity
                         toLTAccesses.put(accessedEntityID, accessedMode);
-                    } else if(mode == accessedMode){
+                    } else if(mode != accessedMode){
                         toLTAccesses.put(accessedEntityID, (byte) 3); // 3 -> "RW"
                     }
                 }
@@ -440,7 +440,7 @@ public class FunctionalityRedesign {
 
             if(mode == null) { // map does not contain the entity
                 ltAccesses.put(accessedEntityID, accessedMode);
-            } else if(mode == accessedMode){
+            } else if(mode != accessedMode){
                 ltAccesses.put(accessedEntityID, (byte) 3); // 3 -> "RW"
             }
         }
@@ -455,7 +455,7 @@ public class FunctionalityRedesign {
 
         for(LocalTransaction lt : this.redesign){
             if(lt.getRemoteInvocations().contains(lt1.getId())){
-                lt.getRemoteInvocations().remove(lt1.getId());
+                lt.getRemoteInvocations().remove((Integer) lt1.getId());
                 lt.getRemoteInvocations().add(min);
             }
         }

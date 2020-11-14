@@ -17,7 +17,7 @@ public class LocalTransaction {
     private Set<AccessDto> clusterAccesses;
     private List<Integer> remoteInvocations;
     private Set<Short> firstAccessedEntityIDs;
-    private LocalTransactionTypes type;
+    private LocalTransactionTypes type = LocalTransactionTypes.COMPENSATABLE;
 
     public LocalTransaction(){}
 
@@ -33,7 +33,6 @@ public class LocalTransaction {
         this.clusterID = clusterID;
         this.clusterAccesses = clusterAccesses;
         this.remoteInvocations = remoteInvocations;
-        this.type = LocalTransactionTypes.COMPENSATABLE;
     }
 
     public LocalTransaction(

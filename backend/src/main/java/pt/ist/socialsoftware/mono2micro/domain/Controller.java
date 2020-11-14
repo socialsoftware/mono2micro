@@ -132,14 +132,15 @@ public class Controller {
 			}
 
 			functionalityRedesign.getRedesign().add(lt);
-
-			for(AccessDto accessDto : lt.getClusterAccesses()){
-				if(this.entitiesPerCluster.containsKey(lt.getClusterID())){
-					this.entitiesPerCluster.get(lt.getClusterID()).add(accessDto.getEntityID());
-				} else {
-					Set<Short> entities = new HashSet<>();
-					entities.add(accessDto.getEntityID());
-					this.entitiesPerCluster.put(lt.getClusterID(), entities);
+			if(lt.getId() != 0){
+				for(AccessDto accessDto : lt.getClusterAccesses()){
+					if(this.entitiesPerCluster.containsKey(lt.getClusterID())){
+						this.entitiesPerCluster.get(lt.getClusterID()).add(accessDto.getEntityID());
+					} else {
+						Set<Short> entities = new HashSet<>();
+						entities.add(accessDto.getEntityID());
+						this.entitiesPerCluster.put(lt.getClusterID(), entities);
+					}
 				}
 			}
 		}
@@ -234,5 +235,13 @@ public class Controller {
 
 	public boolean containsEntity(Short entity) {
 		return this.entities.containsKey(entity);
+	}
+
+	public Map<Short, Set<Short>> getEntitiesPerCluster() {
+		return entitiesPerCluster;
+	}
+
+	public void setEntitiesPerCluster(Map<Short, Set<Short>> entitiesPerCluster) {
+		this.entitiesPerCluster = entitiesPerCluster;
 	}
 }

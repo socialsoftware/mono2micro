@@ -169,8 +169,9 @@ public class DendrogramController {
 			cutDecomposition.calculateMetrics(
 				codebase,
 				dendrogram.getTracesMaxLimit(),
-				dendrogram.getTraceType()
-			);
+				dendrogram.getTraceType(),
+					false);
+
 
 			dendrogram.addDecomposition(cutDecomposition);
 
@@ -213,8 +214,8 @@ public class DendrogramController {
 			decomposition.calculateMetrics(
 				codebase,
 				dendrogram.getTracesMaxLimit(),
-				dendrogram.getTraceType()
-			);
+				dendrogram.getTraceType(),
+					false);
 
 			dendrogram.addDecomposition(decomposition);
 

@@ -27,18 +27,20 @@ public class ControllerSerializer extends StdSerializer<Controller> {
 		jg.writeStringField("name", controller.getName());
 		jg.writeNumberField("complexity", controller.getComplexity());
 		jg.writeNumberField("performance", controller.getPerformance());
+		if(controller.getType() != null)
+			jg.writeStringField("type", controller.getType().name());
 		jg.writeObjectField("entities", controller.getEntities());
-//		jg.writeStringField("entitiesSeq", controller.getEntitiesSeq());
-//		jg.writeArrayFieldStart("functionalityRedesigns");
-//			controller.getFunctionalityRedesigns().forEach(fr -> {
-//				try {
-//					jg.writeObject(fr);
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			});
-//
-//		jg.writeEndArray();
+		jg.writeArrayFieldStart("functionalityRedesigns");
+			controller.getFunctionalityRedesigns().forEach(fr -> {
+				try {
+					jg.writeObject(fr);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+		jg.writeEndArray();
+
+		jg.writeObjectField("entitiesPerCluster", controller.getEntitiesPerCluster());
 
 //		// FIXME DEPRECATED - Left this here in case for some reason there is the need of serializing this type of graph
 //		jg.writeFieldName("localTransactionsGraph");

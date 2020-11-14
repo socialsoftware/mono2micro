@@ -220,7 +220,6 @@ export class TransactionView extends React.Component {
         this.setComparingRedesign = this.setComparingRedesign.bind(this);
         this.handleCompareRedesignSubmit = this.handleCompareRedesignSubmit(this);
         this.handleUseForMetrics = this.handleUseForMetrics.bind(this);
-        this.changeToRedesignMode = this.changeToRedesignMode.bind(this);
     }
 
     componentDidMount() {
@@ -453,7 +452,7 @@ export class TransactionView extends React.Component {
         let edges = [];
 
         nodes.push({
-            id: -1,
+            id: 0,
             title: Object.entries(this.state.controller.entities).map(e => e[0] + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(this.state.controller.entities).length,
             label: this.state.controller.name,
             level: -1,
@@ -461,47 +460,46 @@ export class TransactionView extends React.Component {
             type: types.CONTROLLER
         });
 
-        functionalityRedesign.redesign.find(e => e.id === (-1).toString())
+        functionalityRedesign.redesign.find(e => e.id === 0)
             .remoteInvocations.forEach((id) => {
-                const lt = functionalityRedesign.redesign.find(e => e.id === id.toString());
-                let cluster = this.state.decomposition.clusters.find(cluster => cluster.name === lt.cluster);
+                const lt = functionalityRedesign.redesign.find(e => e.id === id);
+                let cluster = this.state.decomposition.clusters.find(cluster => Number(cluster.name) === lt.clusterID);
                 nodes.push({
                     id: lt.id,
-                    title: cluster.entities.join('<br>') + "<br>Total: " + cluster.entities.length,
+                    title: lt.type,
                     label: lt.name,
                     level: 0,
                     type: types.CLUSTER
                 });
 
                 edges.push({
-                    from: -1,
+                    from: 0,
                     to: lt.id,
-                    title: JSON.parse(lt.accessedEntities).map(e => e.join(" ")).join('<br>'),
-                    label: JSON.parse(lt.accessedEntities).length.toString()
+                    title: lt.clusterAccesses.map(access => access.join(" ")).join('<br>'),
+                    label: lt.clusterAccesses.length.toString()
                 });
             });
 
         for(let i = 0; i < nodes.length; i++){
-            if(nodes[i].id >= 0) {
-                let localTransaction = functionalityRedesign.redesign.find(entry => entry.id === nodes[i].id.toString());
+            if(nodes[i].id > 0) {
+                let localTransaction = functionalityRedesign.redesign.find(lt => lt.id === nodes[i].id);
                 localTransaction.remoteInvocations.forEach((id) => {
-                    let lt = functionalityRedesign.redesign.find(e => e.id === id.toString());
-                    let cluster = this.state.decomposition.clusters.find(cluster => cluster.name === lt.cluster);
+                    let lt = functionalityRedesign.redesign.find(lt => lt.id === id);
+                    let cluster = this.state.decomposition.clusters.find(cluster => Number(cluster.name) === lt.clusterID);
 
                     nodes.push({
                         id: lt.id,
-                        title: cluster.entities.join('<br>') + "<br>Total: " + cluster.entities.length,
+                        title: lt.type,
                         label: lt.name,
                         level: nodes[i].level + 1,
                         type: types.CLUSTER
                     });
 
-                    let entitiesTouched = JSON.parse(lt.accessedEntities);
                     edges.push({
                         from: nodes[i].id,
                         to: id,
-                        title: Object.values(entitiesTouched).map(e => e.join(" ")).join('<br>'),
-                        label: entitiesTouched.length.toString()
+                        title: lt.clusterAccesses.map(access => access.join(" ")).join('<br>'),
+                        label: lt.clusterAccesses.length.toString()
                     });
                 });
             }
@@ -515,9 +513,10 @@ export class TransactionView extends React.Component {
 
     identifyModifiedEntities(cluster){
         const modifiedEntities = [];
-
+        console.log(this.state.controller.entities);
+        console.log(Object.entries(this.state.controller.entities));
         Object.entries(this.state.controller.entities).forEach(e => {
-            if (cluster.entities.includes(e[0]) && e[1].includes("W"))
+            if (cluster.entities.includes(parseInt(e[0])) && e[1] >= 2) // 2 -> W , 3 -> RW - we want all writes
                 modifiedEntities.push(e[0]);
         })
 
@@ -529,44 +528,34 @@ export class TransactionView extends React.Component {
 
 
     handleSelectNode(nodeId) {
-        const {
-            selectedOperation,
-            selectedRedesign,
-            compareRedesigns,
-            selectedLocalTransaction,
-            DCGIAvailableClusters,
-            DCGILocalTransactionsForTheSelectedClusters,
-            DCGISelectedLocalTransactions,
-            DCGISelectedClusters
-        } = this.state;
+        console.log(nodeId);
 
-        if(nodeId === -1 && selectedOperation !== redesignOperations.SQ) return;
-        if(compareRedesigns) return;
+        if(this.state.compareRedesigns) return;
 
-        if(selectedOperation === redesignOperations.NONE) {
+        if(this.state.selectedOperation === redesignOperations.NONE) {
             this.setState({
                 showMenu: true,
-                // selectedLocalTransaction: selectedRedesign.redesign.find(c => c.id === nodeId.toString())
+                selectedLocalTransaction: this.state.selectedRedesign.redesign.find(c => c.id === nodeId)
             });
+            return;
         }
 
-        if(selectedOperation === redesignOperations.SQ){
-            if(nodeId.toString() === selectedLocalTransaction.id){
+        if(nodeId === -1 && this.state.selectedOperation !== redesignOperations.SQ) return;
+
+        if(this.state.selectedOperation === redesignOperations.SQ){
+            if(nodeId === this.state.selectedLocalTransaction.id){
                 this.setState({
                     error: true,
                     errorMessage: "One local transaction cannot call itself"
                 });
-            } else if(
-                selectedRedesign.redesign.find(
-                    c => c.id === nodeId.toString()
-                ).remoteInvocations.includes(parseInt(selectedLocalTransaction.id))
-            ) {
-                const lt = selectedRedesign.redesign.find(e => e.id === nodeId.toString());
+            } else if(this.state.selectedRedesign.redesign.find(c => c.id === nodeId).remoteInvocations
+                .includes(parseInt(this.state.selectedLocalTransaction.id))) {
+                const lt = this.state.selectedRedesign.redesign.find(e => e.id === nodeId);
                 console.log(lt);
                 this.setState({
                     error: true,
                     errorMessage: "The local transaction " + lt.name
-                        + " is already invoking local transaction " + selectedLocalTransaction.name
+                        + " is already invoking local transaction " + this.state.selectedLocalTransaction.name
                 });
             } else if(this.checkTransitiveClosure(nodeId)){
                 this.setState({
@@ -575,23 +564,23 @@ export class TransactionView extends React.Component {
                 });
             } else {
                 this.setState({
-                   newCaller: selectedRedesign.redesign.find(c => c.id === nodeId.toString())
+                    newCaller: this.state.selectedRedesign.redesign.find(c => c.id === nodeId)
                 });
             }
         }
-        else if(selectedOperation === redesignOperations.DCGI &&
-                    DCGILocalTransactionsForTheSelectedClusters !== null){
-            const localTransaction = selectedRedesign.redesign.find(c => c.id === nodeId.toString());
+        else if(this.state.selectedOperation === redesignOperations.DCGI &&
+            this.state.DCGILocalTransactionsForTheSelectedClusters !== null){
+            const localTransaction = this.state.selectedRedesign.redesign.find(c => c.id === nodeId);
 
-            console.log(DCGIAvailableClusters);
+            console.log(this.state.DCGIAvailableClusters);
             console.log(localTransaction);
 
-            if(!DCGISelectedClusters.includes(localTransaction.cluster))
+            if(!this.state.DCGISelectedClusters.includes(localTransaction.clusterID))
                 return
 
-            if(!DCGISelectedLocalTransactions.map(e => e.id).includes(nodeId)){
-                const aux = DCGISelectedLocalTransactions;
-                aux.push(DCGILocalTransactionsForTheSelectedClusters.find(e => e.id === nodeId.toString()));
+            if(!this.state.DCGISelectedLocalTransactions.map(e => e.id).includes(nodeId)){
+                const aux = this.state.DCGISelectedLocalTransactions;
+                aux.push(this.state.DCGILocalTransactionsForTheSelectedClusters.find(e => e.id === nodeId));
                 this.setState({
                     DCGISelectedLocalTransactions: aux
                 });
@@ -608,7 +597,7 @@ export class TransactionView extends React.Component {
             
             transitiveClosure = transitiveClosure.concat(
                 this.state.selectedRedesign.redesign.find(
-                    e => e.id === transitiveClosure[i].toString()
+                    e => e.id === transitiveClosure[i]
                 ).remoteInvocations
             );
         }
@@ -630,7 +619,6 @@ export class TransactionView extends React.Component {
             controller,
         } = this.state;
 
-
         this.setState({
             selectedOperation: value
         });
@@ -639,12 +627,13 @@ export class TransactionView extends React.Component {
             const modifiedEntities = [];
 
             controllersClusters[controller.name].forEach(cluster => {
+                console.log(cluster);
                 const clusterModifiedEntities = this.identifyModifiedEntities(cluster);
                 
                 if (clusterModifiedEntities.modifiedEntities.length > 0 && clusterModifiedEntities.cluster !== selectedLocalTransaction.cluster)
                     modifiedEntities.push(clusterModifiedEntities);
             })
-
+            console.log(modifiedEntities);
             this.setState({
                 modifiedEntities,
             });
@@ -653,13 +642,13 @@ export class TransactionView extends React.Component {
             const DCGIAvailableClusters = [];
 
             controllersClusters[controller.name].forEach(cluster => {
-                if (cluster.name !== selectedLocalTransaction.cluster)
+                if (cluster.name !== selectedLocalTransaction.clusterID.toString())
                     DCGIAvailableClusters.push(cluster.name);
             })
 
             this.setState({
                 DCGIAvailableClusters,
-                DCGISelectedClusters: [selectedLocalTransaction.cluster]
+                DCGISelectedClusters: [selectedLocalTransaction.clusterID]
             });
         }
     }
@@ -685,13 +674,13 @@ export class TransactionView extends React.Component {
             selectedOperation,
             newCaller,
             DCGISelectedClusters,
-            DCGISelectedLocalTransactions,
         } = this.state;
 
         const service = new RepositoryService();
 
         switch (selectedOperation) {
             case redesignOperations.AC:
+                console.log(value);
                 service.addCompensating(
                     codebaseName,
                     dendrogramName,
@@ -736,6 +725,12 @@ export class TransactionView extends React.Component {
                 break;
 
             case redesignOperations.DCGI:
+                this.state.DCGISelectedLocalTransactions.sort((a,b) => {
+                    if(a.id <= b.id)
+                        return -1;
+                    else
+                        return 1;
+                });
                 service.dcgi(
                     codebaseName,
                     dendrogramName,
@@ -744,7 +739,7 @@ export class TransactionView extends React.Component {
                     selectedRedesign.name, 
                     DCGISelectedClusters[0], 
                     DCGISelectedClusters[1],
-                    JSON.stringify(DCGISelectedLocalTransactions.map(e => e.id))
+                    JSON.stringify(this.state.DCGISelectedLocalTransactions.map(e => e.id))
                 )
                     .then(response => {
                         this.rebuildRedesignGraph(response);
@@ -766,7 +761,7 @@ export class TransactionView extends React.Component {
                     controller.name, 
                     selectedRedesign.name, 
                     selectedLocalTransaction.id,
-                    selectedRedesign.pivotTransaction === "" ? value : null
+                    selectedRedesign.pivotTransaction === -1 ? value : null
                 )
                     .then(response => {
                         console.log(response);
@@ -862,10 +857,11 @@ export class TransactionView extends React.Component {
 
     DCGISelectCluster(value){
         const selectedClusters = this.state.DCGISelectedClusters;
-        selectedClusters.push(value);
+        selectedClusters.push(parseInt(value));
+        console.log(selectedClusters);
 
         const localTransactionsForTheSelectedClusters =
-            this.state.selectedRedesign.redesign.filter(e => selectedClusters.includes(e.cluster));
+            this.state.selectedRedesign.redesign.filter(e => selectedClusters.includes(e.clusterID));
 
         this.setState({
             DCGILocalTransactionsForTheSelectedClusters: localTransactionsForTheSelectedClusters,
@@ -895,16 +891,24 @@ export class TransactionView extends React.Component {
                 <Card className="mb-4" key={fr.name} style={{ width: "30rem" }}>
                     <Card.Body>
                         {fr.usedForMetrics ? <Card.Title>
-                            {fr.name + " (Used For Metrics)"}
-                        </Card.Title> :
+                                {fr.name + " (Used For Metrics)"}
+                            </Card.Title> :
                             <Card.Title>
                                 {fr.name}
                             </Card.Title>
                         }
-                        <Card.Text>
-                            Functionality Complexity: {fr.functionalityComplexity}< br/>
-                            System Complexity: {fr.systemComplexity}
-                        </Card.Text>
+                        {this.state.controller.type === "QUERY" ?
+                            <Card.Text>
+                                Type: Query <br/>
+                                Inconsistency Complexity: {fr.inconsistencyComplexity}
+                            </Card.Text>
+                            :
+                            <Card.Text>
+                                Type: Saga <br/>
+                                Functionality Complexity: {fr.functionalityComplexity}< br/>
+                                System Complexity: {fr.systemComplexity}
+                            </Card.Text>
+                        }
                         <Button onClick={() => this.handleSelectRedesign(fr)} className="mr-2">
                             {fr.name === DEFAULT_REDESIGN_NAME ? "Create a new Redesign" : "Go to Redesign"}
                         </Button>
@@ -1010,50 +1014,17 @@ export class TransactionView extends React.Component {
         });
     }
 
-    changeToRedesignMode(){
-        this.changeSubView("Functionality Redesign");
-        const service = new RepositoryService();
-        const {
-            codebaseName,
-            dendrogramName,
-            decompositionName,
-        } = this.props;
-
-        service.initRedesign(
-            codebaseName,
-            dendrogramName,
-            decompositionName,
-            this.state.controller.name
-        ).then(response => {
-            this.setState({
-                controller: response.data
-            });
-        });
-    }
-
     render() {
 
         const {
             controllersClusters,
             currentSubView,
-            visGraph,
             visGraphSeq,
             localTransactionsSequence,
             showGraph,
             controller,
             error,
             errorMessage,
-            DCGIAvailableClusters,
-            DCGILocalTransactionsForTheSelectedClusters,
-            DCGISelectedLocalTransactions,
-            compareRedesigns,
-            modifiedEntities,
-            newCaller,
-            redesignVisGraph,
-            selectedLocalTransaction,
-            selectedRedesign,
-            selectedRedesignsToCompare,
-            showMenu,
             decomposition: {
                 controllers,
                 clusters,
@@ -1061,13 +1032,24 @@ export class TransactionView extends React.Component {
         } = this.state;
 
         const metricsRows = controllers.map(controller => {
-            return {
-                controller: controller.name,
-                clusters: controllersClusters[controller.name] === undefined ? 0 : controllersClusters[controller.name].length,
-                complexity: controller.complexity,
-                functionalityComplexity: controller.functionalityComplexity,
-                systemComplexity: controller.systemComplexity,
-            }
+            return controller.type === "QUERY" ?
+                {
+                    controller: controller.name,
+                    clusters: this.state.controllersClusters[controller.name] === undefined ? 0 : this.state.controllersClusters[controller.name].length,
+                    type: controller.type,
+                    complexity: controller.complexity,
+                    inconsistencyComplexity: controller.functionalityRedesigns.find(fr => fr.usedForMetrics).inconsistencyComplexity
+                }
+                :
+                {
+                    controller: controller.name,
+                    clusters: this.state.controllersClusters[controller.name] === undefined ? 0 : this.state.controllersClusters[controller.name].length,
+                    type: controller.type,
+                    complexity: controller.complexity,
+                    functionalityComplexity: controller.functionalityRedesigns.find(fr => fr.usedForMetrics).functionalityComplexity,
+                    systemComplexity: controller.functionalityRedesigns.find(fr => fr.usedForMetrics).systemComplexity,
+                    total: controller.functionalityRedesigns.find(fr => fr.usedForMetrics).functionalityComplexity + controller.functionalityRedesigns.find(fr => fr.usedForMetrics).systemComplexity
+                }
         });
 
         const metricsColumns = [{
@@ -1083,6 +1065,10 @@ export class TransactionView extends React.Component {
             text: 'Complexity',
             sort: true
         }, {
+            dataField: 'type',
+            text: 'Type',
+            sort: true
+        }, {
             dataField: 'functionalityComplexity',
             text: 'Functionality Complexity',
             sort: true
@@ -1090,8 +1076,15 @@ export class TransactionView extends React.Component {
             dataField: 'systemComplexity',
             text: 'System Complexity',
             sort: true
+        }, {
+            dataField: 'total',
+            text: 'Total',
+            sort: true
+        },  {
+            dataField: 'inconsistencyComplexity',
+            text: 'Query Inconsistency Complexity',
+            sort: true
         }];
-
         const seqColumns = [{
             dataField: 'id',
             text: 'Order'
@@ -1147,232 +1140,194 @@ export class TransactionView extends React.Component {
                                 </Button>
                                 <Button
                                     disabled={this.state.currentSubView === "Functionality Redesign"}
-                                    onClick={this.changeToRedesignMode}
+                                    onClick={() => this.changeSubView("Functionality Redesign")}
                                 >
                                     Functionality Redesign
                                 </Button>
                             </ButtonGroup>
                         </Col>
-                        {
-                            selectedRedesign !== null && (
-                                <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
-                                    {
-                                        showGraph && currentSubView === "Functionality Redesign" && (
-                                            <h4 style={{color: "#666666", textAlign: "center"}}>
-                                                Functionality Complexity: {selectedRedesign.functionalityComplexity} - System Complexity: {selectedRedesign.systemComplexity}
-                                            </h4>
-                                        )
-                                    }
-                                </Col>
-                            )
+                        {this.state.selectedRedesign !== null &&
+                        <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
+                            {this.state.showGraph && this.state.currentSubView === "Functionality Redesign" &&
+                            this.state.controller.type === "SAGA" &&
+                            <h4 style={{color: "#666666", textAlign: "center"}}>
+                                Functionality Complexity: {this.state.selectedRedesign.functionalityComplexity} - System Complexity: {this.state.selectedRedesign.systemComplexity}
+                            </h4>
+                            }
+                            {this.state.showGraph && this.state.currentSubView === "Functionality Redesign" &&
+                            this.state.controller.type === "QUERY" &&
+                            <h4 style={{color: "#666666", textAlign: "center"}}>
+                                Query Inconsistency Complexity: {this.state.selectedRedesign.inconsistencyComplexity}
+                            </h4>
+                            }
+                        </Col>
                         }
                     </Row>
                 </Container>
-
-                {
-                    currentSubView === "Graph" && (
-                        <span>
-                            <TransactionOperationsMenu
-                                handleControllerSubmit={this.handleControllerSubmit}
-                                controllersClusters={controllersClusters}
-                            />
-                            <div style={{height: '700px'}}>
-                                <VisNetwork
-                                    visGraph={visGraph}
-                                    options={options}
-                                    onSelection={this.handleSelectNode}
-                                    onDeselection={this.handleDeselectNode}
-                                    view={views.TRANSACTION} />
-                            </div>
-                        </span>
-                    )
-                }
-                {
-                    currentSubView === "Sequence Graph" && (
+                {this.state.currentSubView === "Graph" &&
+                <span>
+                        <TransactionOperationsMenu
+                            handleControllerSubmit={this.handleControllerSubmit}
+                            controllersClusters={this.state.controllersClusters}
+                        />
                         <div style={{height: '700px'}}>
                             <VisNetwork
-                                visGraph={visGraphSeq}
-                                options={optionsSeq}
+                                visGraph={this.state.visGraph}
+                                options={options}
                                 onSelection={this.handleSelectNode}
                                 onDeselection={this.handleDeselectNode}
-                                view={views.TRANSACTION}
-                            />
+                                view={views.TRANSACTION} />
                         </div>
-                    )
+                    </span>
                 }
-                {
-                    currentSubView === "Metrics" && (
-                        <div>
-                            Number of Clusters : {clusters.length}
-                            < br />
-                            Number of Controllers that access a single Cluster : {Object.keys(controllersClusters).filter(key => controllersClusters[key].length === 1).length}
-                            < br />
-                            Maximum number of Clusters accessed by a single Controller : {Math.max(...Object.keys(controllersClusters).map(key => controllersClusters[key].length))}
-                            < br />
-                            Average Number of Clusters accessed (Average number of microservices accessed during a transaction) : {Number(averageClustersAccessed.toFixed(2))}
-                            <BootstrapTable
-                                bootstrap4
-                                keyField='controller'
-                                data={metricsRows}
-                                columns={metricsColumns}
-                            />
-                        </div>
-                    )
+                {this.state.currentSubView === "Sequence Graph" &&
+                <div style={{height: '700px'}}>
+                    <VisNetwork
+                        visGraph={visGraphSeq}
+                        options={optionsSeq}
+                        onSelection={this.handleSelectNode}
+                        onDeselection={this.handleDeselectNode}
+                        view={views.TRANSACTION}
+                    />
+                </div>
                 }
-                {
-                    showGraph && currentSubView === "Sequence Table" && (
-                        <>
-                            <h4>{controller.name}</h4>
-                            <BootstrapTable
-                                bootstrap4
-                                keyField='id'
-                                data={localTransactionsSequence}
-                                columns={seqColumns}
-                            />
-                        </>
-                    )
+                {currentSubView === "Metrics" &&
+                <div>
+                    Number of Clusters : {clusters.length}
+                    < br />
+                    Number of Controllers that access a single Cluster : {Object.keys(controllersClusters).filter(key => controllersClusters[key].length === 1).length}
+                    < br />
+                    Maximum number of Clusters accessed by a single Controller : {Math.max(...Object.keys(controllersClusters).map(key => controllersClusters[key].length))}
+                    < br />
+                    Average Number of Clusters accessed (Average number of microservices accessed during a transaction) : {Number(averageClustersAccessed.toFixed(2))}
+                    <BootstrapTable
+                        bootstrap4
+                        keyField='controller'
+                        data={metricsRows}
+                        columns={metricsColumns}
+                    />
+                </div>
                 }
-                {
-                    showGraph && currentSubView === "Functionality Redesign" && selectedRedesign === null && !compareRedesigns && (
-                        <div>
-                            <br/>
-
-                            <h4 style={{color: "#666666"}}>Redesigns</h4>
-
-                            {
-                                controller.functionalityRedesigns.length >= 2 & (
-                                    <ButtonGroup className="mb-2">
-                                        <Button>Compare Two Redesigns</Button>
-                                        <DropdownButton
-                                            as={ButtonGroup}
-                                            title={selectedRedesignsToCompare[0]}
-                                        >
-                                            {
-                                                controller.functionalityRedesigns.map(e =>
-                                                    <Dropdown.Item
-                                                        key={e.name}
-                                                        onSelect={() => this.setComparingRedesign(0, e.name)}>{e.name}
-                                                    </Dropdown.Item>
-                                                )
-                                            }
-                                        </DropdownButton>
-                                        <DropdownButton 
-                                            as={ButtonGroup}
-                                            title={selectedRedesignsToCompare[1]}
-                                        >
-                                            {
-                                                controller.functionalityRedesigns.reduce((acc, e) => {
-                                                    if (selectedRedesignsToCompare[0] !== e.name)
-                                                        return [
-                                                            ...acc, 
-                                                            (
-                                                                <Dropdown.Item
-                                                                    key={e.name}
-                                                                    onSelect={() => this.setComparingRedesign(1, e.name)}>{e.name}
-                                                                </Dropdown.Item>
-                                                            )
-                                                        ];
-
-                                                    return acc;
-                                                }, [])
-                                            }
-                                        </DropdownButton>
-                                        <Button onClick={() => this.setState({compareRedesigns: true})}>Submit</Button>
-                                    </ButtonGroup>
-                                )
-                            }
-                            <br/>
-                            <br/>
-                            {this.renderFunctionalityRedesigns()}
-                        </div>
-                    )
+                {showGraph && currentSubView === "Sequence Table" &&
+                <>
+                    <h4>{controller.name}</h4>
+                    <BootstrapTable
+                        bootstrap4
+                        keyField='id'
+                        data={localTransactionsSequence}
+                        columns={seqColumns}
+                    />
+                </>
                 }
-                {
-                    showGraph && currentSubView === "Functionality Redesign" && selectedRedesign === null && compareRedesigns && (
-                        <div>
+                {this.state.showGraph && this.state.currentSubView === "Functionality Redesign" && this.state.selectedRedesign === null &&
+                !this.state.compareRedesigns &&
+                <div>
+                    <br/>
+                    <h4 style={{color: "#666666"}}>{this.state.controller.name} Redesigns</h4>
+                    {this.state.controller.functionalityRedesigns.length >= 2 &&
+                    <ButtonGroup className="mb-2">
+                        <Button>Compare Two Redesigns</Button>
+                        <DropdownButton as={ButtonGroup}
+                                        title={this.state.selectedRedesignsToCompare[0]}>
+                            {this.state.controller.functionalityRedesigns.map(e =>
+                                <Dropdown.Item
+                                    key={e.name}
+                                    onSelect={() => this.setComparingRedesign(0, e.name)}>{e.name}
+                                </Dropdown.Item>)}
+                        </DropdownButton>
+                        <DropdownButton as={ButtonGroup}
+                                        title={this.state.selectedRedesignsToCompare[1]}>
+                            {this.state.controller.functionalityRedesigns.filter(e => this.state.selectedRedesignsToCompare[0] !== e.name).map(e =>
+                                <Dropdown.Item
+                                    key={e.name}
+                                    onSelect={() => this.setComparingRedesign(1, e.name)}>{e.name}
+                                </Dropdown.Item>)}
+                        </DropdownButton>
+                        <Button onClick={() => this.setState({compareRedesigns: true})}>Submit</Button>
+                    </ButtonGroup>
+                    }
+                    <br/>
+                    <br/>
+                    {this.renderFunctionalityRedesigns()}
+                </div>
+                }
+                {this.state.showGraph && this.state.currentSubView === "Functionality Redesign" && this.state.selectedRedesign === null &&
+                this.state.compareRedesigns &&
+                <div>
+                    <Button className="mb-2"
+                            onClick={() => this.setState({compareRedesigns: false, selectedRedesignsToCompare: ["Select a Redesign", "Select a Redesign"]})}>
+                        Back
+                    </Button>
+                    <Container fluid>
+                        <Row>
+                            <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
+                                {this.state.controller.type === "SAGA" ?
+                                    <div>
+                                        <h4 style={{color: "#666666", textAlign: "center"}}>
+                                            {this.state.selectedRedesignsToCompare[0]}
+                                        </h4>
+                                        <h4 style={{color: "#666666", textAlign: "center"}}>
+                                            Functionality Complexity: {this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[0])[0].functionalityComplexity} - System Complexity: {this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[0])[0].systemComplexity}
+                                        </h4>
+                                    </div>
+                                    :
+                                    <h4 style={{color: "#666666", textAlign: "center"}}>
+                                        Query Inconsistency Complexity: {this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[0])[0].inconsistencyComplexity}
+                                    </h4>
+                                }
+                                {this.renderRedesignGraph(this.createRedesignGraph(this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[0])[0]))}
+                            </Col>
+                            <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
+                                {this.state.controller.type === "SAGA" ?
+                                    <div>
+                                        <h4 style={{color: "#666666", textAlign: "center"}}>
+                                            {this.state.selectedRedesignsToCompare[1]}
+                                        </h4>
+                                        <h4 style={{color: "#666666", textAlign: "center"}}>
+                                            Functionality Complexity: {this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[1])[0].functionalityComplexity} - System Complexity: {this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[1])[0].systemComplexity}
+                                        </h4>
+                                    </div>
+                                    :
+                                    <h4 style={{color: "#666666", textAlign: "center"}}>
+                                        Query Inconsistency Complexity: {this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[1])[0].inconsistencyComplexity}
+                                    </h4>
+                                }
+                                {this.renderRedesignGraph(this.createRedesignGraph(this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[1])[0]))}
+                            </Col>
+                        </Row>
+                    </Container>
+                </div>
+                }
+                {this.state.showGraph && this.state.currentSubView === "Functionality Redesign" && this.state.selectedRedesign !== null &&
+                <Container fluid>
+                    <Row>
+                        <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
                             <Button className="mb-2"
-                                    onClick={() => this.setState({compareRedesigns: false, selectedRedesignsToCompare: ["Select a Redesign", "Select a Redesign"]})}>
+                                    onClick={() => this.setState({selectedRedesign: null}, () => this.handleCancel())}>
                                 Back
                             </Button>
-                            <Container fluid>
-                                <Row>
-                                    <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
-                                        <h4 style={{color: "#666666", textAlign: "center"}}>
-                                            {selectedRedesignsToCompare[0]}
-                                        </h4>
-                                        <h4 style={{color: "#666666", textAlign: "center"}}>
-                                            Functionality Complexity: {controller.functionalityRedesigns.find(
-                                                e => e.name === selectedRedesignsToCompare[0]
-                                            ).functionalityComplexity}
-                                            - System Complexity: {controller.functionalityRedesigns.find(
-                                                e => e.name === selectedRedesignsToCompare[0]
-                                            ).systemComplexity}
-                                        </h4>
-                                        {
-                                            this.renderRedesignGraph(
-                                                this.createRedesignGraph(controller.functionalityRedesigns.find(
-                                                    e => e.name === selectedRedesignsToCompare[0])
-                                                )
-                                            )
-                                        }
-                                    </Col>
-                                    <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
-                                        <h4 style={{color: "#666666", textAlign: "center"}}>
-                                            {selectedRedesignsToCompare[1]}
-                                        </h4>
-                                        <h4 style={{color: "#666666", textAlign: "center"}}>
-                                            Functionality Complexity: {controller.functionalityRedesigns.find(
-                                                e => e.name === selectedRedesignsToCompare[1]
-                                            ).functionalityComplexity}
-                                            - System Complexity: {controller.functionalityRedesigns.find(
-                                                e => e.name === selectedRedesignsToCompare[1]
-                                            ).systemComplexity}
-                                        </h4>
-                                        {
-                                            this.renderRedesignGraph(
-                                                this.createRedesignGraph(controller.functionalityRedesigns.find(
-                                                    e => e.name === selectedRedesignsToCompare[1]
-                                                ))
-                                            )
-                                        }
-                                    </Col>
-                                </Row>
-                            </Container>
-                        </div>
-                    )
-                }
-                {
-                    showGraph && currentSubView === "Functionality Redesign" && selectedRedesign !== null && (
-                        <Container fluid>
-                            <Row>
-                                <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
-                                    <Button className="mb-2"
-                                            onClick={() => this.setState({selectedRedesign: null}, () => this.handleCancel())}>
-                                        Back
-                                    </Button>
-                                    {showMenu &&
-                                        <FunctionalityRedesignMenu
-                                            selectedRedesign = {selectedRedesign}
-                                            selectedLocalTransaction = {selectedLocalTransaction}
-                                            newCaller = {newCaller}
-                                            modifiedEntities = {modifiedEntities}
-                                            DCGIAvailableClusters = {DCGIAvailableClusters}
-                                            DCGILocalTransactionsForTheSelectedClusters = {DCGILocalTransactionsForTheSelectedClusters}
-                                            DCGISelectedLocalTransactions = {DCGISelectedLocalTransactions}
-                                            handleSelectOperation = {this.handleSelectOperation}
-                                            handleCancel = {this.handleCancel}
-                                            handleSubmit = {this.handleSubmit}
-                                            DCGISelectCluser = {this.DCGISelectCluster}
-                                            handleDCGISelectLocalTransaction = {this.handleDCGISelectLocalTransaction}
-                                        />
-                                    }
-                                </Col>
-                                <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
-                                    {this.renderRedesignGraph(redesignVisGraph)}
-                                </Col>
-                            </Row>
-                        </Container>
-                    )
+                            {this.state.showMenu &&
+                            <FunctionalityRedesignMenu
+                                selectedRedesign = {this.state.selectedRedesign}
+                                selectedLocalTransaction = {this.state.selectedLocalTransaction}
+                                newCaller = {this.state.newCaller}
+                                modifiedEntities = {this.state.modifiedEntities}
+                                DCGIAvailableClusters = {this.state.DCGIAvailableClusters}
+                                DCGILocalTransactionsForTheSelectedClusters = {this.state.DCGILocalTransactionsForTheSelectedClusters}
+                                DCGISelectedLocalTransactions = {this.state.DCGISelectedLocalTransactions}
+                                handleSelectOperation = {this.handleSelectOperation}
+                                handleCancel = {this.handleCancel}
+                                handleSubmit = {this.handleSubmit}
+                                DCGISelectCluser = {this.DCGISelectCluster}
+                                handleDCGISelectLocalTransaction = {this.handleDCGISelectLocalTransaction}
+                            />
+                            }
+                        </Col>
+                        <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
+                            {this.renderRedesignGraph(this.state.redesignVisGraph)}
+                        </Col>
+                    </Row>
+                </Container>
                 }
             </div>
         );

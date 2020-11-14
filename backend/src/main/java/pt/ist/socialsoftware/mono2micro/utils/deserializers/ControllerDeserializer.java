@@ -8,9 +8,13 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
+import pt.ist.socialsoftware.mono2micro.domain.FunctionalityRedesign;
+import pt.ist.socialsoftware.mono2micro.utils.Constants;
+import pt.ist.socialsoftware.mono2micro.utils.ControllerType;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 public class ControllerDeserializer extends StdDeserializer<Controller> {
@@ -63,12 +67,22 @@ public class ControllerDeserializer extends StdDeserializer<Controller> {
 								)
 							);
 							break;
-//						case "entitiesSeq":
-//							controller.setEntitiesSeq(jsonParser.getValueAsString());
-//							break;
-//						case "functionalityRedesigns":
-//							controller.setFunctionalityRedesigns(jsonParser.readValueAs(new TypeReference<List<FunctionalityRedesign>>() {}));
-//							break;
+						case "functionalityRedesigns":
+							controller.setFunctionalityRedesigns(
+									jsonParser.readValueAs(
+											new TypeReference<List<FunctionalityRedesign>>() {}
+									));
+							break;
+						case "type":
+							controller.setType(ControllerType.valueOf(jsonParser.getValueAsString()));
+							break;
+						case "entitiesPerCluster":
+							controller.setEntitiesPerCluster(
+									jsonParser.readValueAs(
+											new TypeReference<HashMap<Short, Set<Short>>>() {}
+									)
+							);
+							break;
 
 						default:
 							throw new IOException("Attribute " + jsonParser.getCurrentName() + " does not exist on Controller object");

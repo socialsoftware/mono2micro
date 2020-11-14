@@ -439,7 +439,8 @@ public class Decomposition {
 	public void calculateMetrics(
 		Codebase codebase, // requirements: datafilePath
 		int tracesMaxLimit,
-		Constants.TraceType traceType
+		Constants.TraceType traceType,
+		boolean isAnalyser
 	)
 		throws Exception
 	{
@@ -457,12 +458,23 @@ public class Decomposition {
 		Map<String, Set<Controller>> clustersControllers = result1.clustersControllers;
 
 		// COMPLEXITY AND PERFORMANCE CALCULATION
-		CalculateComplexityAndPerformanceResult result2 = calculateComplexityAndPerformance(
-			codebase,
-			controllersClusters,
-			traceType,
-			tracesMaxLimit
-		);
+		CalculateComplexityAndPerformanceResult result2;
+
+		if(isAnalyser) {
+			result2 = calculateComplexityAndPerformance(
+					codebase,
+					controllersClusters,
+					traceType,
+					tracesMaxLimit
+			);
+		} else {
+			result2 = calculateComplexityAndPerformanceAndRedesignMetrics(
+					codebase,
+					controllersClusters,
+					traceType,
+					tracesMaxLimit
+			);
+		}
 
 		this.setPerformance(result2.performance);
 		this.setComplexity(result2.complexity);
@@ -579,6 +591,84 @@ public class Decomposition {
 		return new CalculateComplexityAndPerformanceResult(
 			complexity,
 			performance
+		);
+	}
+
+	public CalculateComplexityAndPerformanceResult calculateComplexityAndPerformanceAndRedesignMetrics(
+			Codebase codebase,
+			Map<String, Set<Cluster>> controllersClusters,
+			Constants.TraceType traceType,
+			int tracesMaxLimit
+	)
+			throws IOException
+	{
+		ControllerTracesIterator iter = new ControllerTracesIterator(
+				codebase.getDatafilePath(),
+				tracesMaxLimit
+		);
+
+		float complexity = 0;
+		float performance = 0;
+
+		System.out.println("Calculating graph complexity and performance...");
+
+		for (Controller controller : this.getControllers().values()) {
+			String controllerName = controller.getName();
+
+			GetLocalTransactionsGraphAndControllerPerformanceResult result2 = getLocalTransactionsGraphAndControllerPerformance(
+					iter,
+					controllerName,
+					traceType
+			);
+
+			float controllerPerformance = result2.performance;
+
+			float controllerComplexity = Metrics.calculateControllerComplexityAndClusterDependencies(
+					this,
+					controllerName,
+					controllersClusters,
+					result2.localTransactionsGraph
+			);
+
+
+			performance += controllerPerformance;
+			complexity += controllerComplexity;
+
+			// This needs to be done because the cluster complexity calculation depends on this result
+			controller.setPerformance(
+					BigDecimal.valueOf(controllerPerformance).setScale(2, RoundingMode.HALF_UP).floatValue()
+			);
+
+			controller.setComplexity(controllerComplexity);
+
+			controller.createFunctionalityRedesign(
+					Constants.DEFAULT_REDESIGN_NAME,
+					true,
+					result2.localTransactionsGraph
+			);
+
+			Metrics.calculateRedesignComplexities(
+					controller,
+					Constants.DEFAULT_REDESIGN_NAME,
+					this
+			);
+		}
+
+		int graphControllersAmount = controllersClusters.size();
+
+		complexity = BigDecimal
+				.valueOf(complexity / graphControllersAmount)
+				.setScale(2, RoundingMode.HALF_UP)
+				.floatValue();
+
+		performance = BigDecimal
+				.valueOf(performance / graphControllersAmount)
+				.setScale(2, RoundingMode.HALF_UP)
+				.floatValue();
+
+		return new CalculateComplexityAndPerformanceResult(
+				complexity,
+				performance
 		);
 	}
 

@@ -1,10 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.controller;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
@@ -29,32 +26,35 @@ public class FunctionalityRedesignController {
     private CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
 
-    @RequestMapping(value = "/controller/{controllerName}/initRedesign", method = RequestMethod.GET)
-    public ResponseEntity<Controller> initRedesign(
+    @RequestMapping(value = "/controller/{controllerName}/getOrCreateRedesign", method = RequestMethod.GET)
+    public ResponseEntity<Controller> getOrCreateRedesign(
             @PathVariable String codebaseName,
             @PathVariable String dendrogramName,
             @PathVariable String decompositionName,
             @PathVariable String controllerName
     ) {
 
-        logger.debug("initRedesign");
+        logger.debug("getOrCreateRedesign");
 
         try {
             Codebase codebase = codebaseManager.getCodebase(codebaseName);
             Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
             Decomposition decomposition = dendrogram.getDecomposition(decompositionName);
             Controller controller = decomposition.getController(controllerName);
-            controller.createFunctionalityRedesign(
-                    Constants.DEFAULT_REDESIGN_NAME,
-                    true,
-                    decomposition.getControllerLocalTransactionsGraph(
-                            codebase,
-                            controllerName,
-                            dendrogram.getTraceType(),
-                            dendrogram.getTracesMaxLimit()
-                    )
-            );
-
+            if(controller.getFunctionalityRedesigns()
+                    .stream()
+                    .noneMatch(e -> e.getName().equals(Constants.DEFAULT_REDESIGN_NAME))){
+                controller.createFunctionalityRedesign(
+                        Constants.DEFAULT_REDESIGN_NAME,
+                        true,
+                        decomposition.getControllerLocalTransactionsGraph(
+                                codebase,
+                                controllerName,
+                                dendrogram.getTraceType(),
+                                dendrogram.getTracesMaxLimit()
+                        )
+                );
+            };
             codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(controller, HttpStatus.OK);
 
@@ -76,9 +76,10 @@ public class FunctionalityRedesignController {
         logger.debug("addCompensating");
 
         try {
-            String fromID = (String) data.get("fromID");
+            int fromID = (Integer) data.get("fromID");
             String clusterName = (String) data.get("cluster");
-            Set<Short> accesses = (Set<Short>) data.get("accesses");
+            ArrayList<Integer> accesses = (ArrayList<Integer>) data.get("entities");
+
 
             Codebase codebase = codebaseManager.getCodebase(codebaseName);
             Decomposition decomposition = codebase.getDendrogram(dendrogramName).getDecomposition(decompositionName);
