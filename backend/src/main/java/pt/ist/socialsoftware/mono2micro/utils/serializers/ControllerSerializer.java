@@ -25,6 +25,7 @@ public class ControllerSerializer extends StdSerializer<Controller> {
 	) throws IOException {
 		jg.writeStartObject();
 		jg.writeStringField("name", controller.getName());
+		jg.writeObjectField("type", controller.getType());
 		jg.writeNumberField("complexity", controller.getComplexity());
 		jg.writeNumberField("performance", controller.getPerformance());
 		if(controller.getType() != null)

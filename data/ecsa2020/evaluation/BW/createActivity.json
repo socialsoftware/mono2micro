@@ -1,0 +1,121 @@
+{
+  "name" : "ActivityModelController.createActivity",
+  "type" : "SAGA",
+  "complexity" : 170.0,
+  "entities" : {
+    "BlendedWorkflow" : "RW",
+    "ActivityView" : "R",
+    "Position" : "R",
+    "ActivityModel" : "RW",
+    "Activity" : "RW",
+    "Specification" : "R"
+  },
+  "entitiesPerCluster" : {
+    "Design" : [ "BlendedWorkflow", "Specification" ],
+    "Models" : [ "ActivityModel", "Activity" ],
+    "View" : [ "ActivityView", "Position" ]
+  },
+  "entitiesSeq" : "[{\"cluster\":\"Design\",\"sequence\":[[\"BlendedWorkflow\",\"R\"],[\"BlendedWorkflow\",\"W\"],[\"Specification\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"ActivityModel\",\"R\"],[\"Activity\",\"W\"],[\"ActivityModel\",\"W\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Specification\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"Activity\",\"R\"]]},{\"cluster\":\"View\",\"sequence\":[[\"ActivityView\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"Activity\",\"R\"]]},{\"cluster\":\"View\",\"sequence\":[[\"ActivityView\",\"R\"],[\"Position\",\"R\"]]}]",
+  "functionalityRedesigns" : [ {
+    "name" : "Monolith Trace",
+    "usedForMetrics" : false,
+    "redesign" : [ {
+      "name" : "ActivityModelController.createActivity",
+      "id" : "-1",
+      "cluster" : "ActivityModelController.createActivity",
+      "accessedEntities" : "",
+      "remoteInvocations" : [ 0 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "0: Design",
+      "id" : "0",
+      "cluster" : "Design",
+      "accessedEntities" : "[[\"BlendedWorkflow\",\"R\"],[\"BlendedWorkflow\",\"W\"],[\"Specification\",\"R\"]]",
+      "remoteInvocations" : [ 1 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "1: Models",
+      "id" : "1",
+      "cluster" : "Models",
+      "accessedEntities" : "[[\"ActivityModel\",\"R\"],[\"Activity\",\"W\"],[\"ActivityModel\",\"W\"]]",
+      "remoteInvocations" : [ 2 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "2: Design",
+      "id" : "2",
+      "cluster" : "Design",
+      "accessedEntities" : "[[\"Specification\",\"R\"]]",
+      "remoteInvocations" : [ 3 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "3: Models",
+      "id" : "3",
+      "cluster" : "Models",
+      "accessedEntities" : "[[\"Activity\",\"R\"]]",
+      "remoteInvocations" : [ 4 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "4: View",
+      "id" : "4",
+      "cluster" : "View",
+      "accessedEntities" : "[[\"ActivityView\",\"R\"]]",
+      "remoteInvocations" : [ 5 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "5: Models",
+      "id" : "5",
+      "cluster" : "Models",
+      "accessedEntities" : "[[\"Activity\",\"R\"]]",
+      "remoteInvocations" : [ 6 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "6: View",
+      "id" : "6",
+      "cluster" : "View",
+      "accessedEntities" : "[[\"ActivityView\",\"R\"],[\"Position\",\"R\"]]",
+      "remoteInvocations" : [ ],
+      "type" : "COMPENSATABLE"
+    } ],
+    "systemComplexity" : 138,
+    "functionalityComplexity" : 164,
+    "inconsistencyComplexity" : 0,
+    "pivotTransaction" : ""
+  }, {
+    "name" : "thesis-evaluation",
+    "usedForMetrics" : true,
+    "redesign" : [ {
+      "name" : "ActivityModelController.createActivity",
+      "id" : "-1",
+      "cluster" : "ActivityModelController.createActivity",
+      "accessedEntities" : "",
+      "remoteInvocations" : [ 0 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "0: Design",
+      "id" : "0",
+      "cluster" : "Design",
+      "accessedEntities" : "[[\"BlendedWorkflow\",\"RW\"],[\"Specification\",\"R\"]]",
+      "remoteInvocations" : [ 1 ],
+      "type" : "PIVOT"
+    }, {
+      "name" : "1: Models",
+      "id" : "1",
+      "cluster" : "Models",
+      "accessedEntities" : "[[\"ActivityModel\",\"RW\"],[\"Activity\",\"RW\"]]",
+      "remoteInvocations" : [ 4 ],
+      "type" : "RETRIABLE"
+    }, {
+      "name" : "4: View",
+      "id" : "4",
+      "cluster" : "View",
+      "accessedEntities" : "[[\"ActivityView\",\"R\"],[\"Position\",\"R\"]]",
+      "remoteInvocations" : [ ],
+      "type" : "RETRIABLE"
+    } ],
+    "systemComplexity" : 0,
+    "functionalityComplexity" : 130,
+    "inconsistencyComplexity" : 0,
+    "pivotTransaction" : "0"
+  } ],
+  "localTransactionsGraph" : {"nodes":[{"id":0,"clusterName":null,"clusterAccesses":[]},{"id":1,"clusterName":"Design","clusterAccesses":[["BlendedWorkflow","R"],["BlendedWorkflow","W"],["Specification","R"]]},{"id":2,"clusterName":"Models","clusterAccesses":[["ActivityModel","R"],["Activity","W"],["ActivityModel","W"]]},{"id":3,"clusterName":"Design","clusterAccesses":[["Specification","R"]]},{"id":4,"clusterName":"Models","clusterAccesses":[["Activity","R"]]},{"id":5,"clusterName":"View","clusterAccesses":[["ActivityView","R"]]},{"id":6,"clusterName":"Models","clusterAccesses":[["Activity","R"]]},{"id":7,"clusterName":"View","clusterAccesses":[["ActivityView","R"],["Position","R"]]}],"links":["0->1","1->2","2->3","3->4","4->5","5->6","6->7"]}
+}

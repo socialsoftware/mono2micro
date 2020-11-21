@@ -448,12 +448,12 @@ export class ClusterView extends React.Component {
             clustersControllers,
             currentSubView,
             error,
-            clusterEntities,
             errorMessage,
             showMenu,
             selectedCluster,
             mergeWithCluster,
             transferToCluster,
+            clusterEntities,
             visGraph,
         } = this.state;
 

@@ -1,0 +1,87 @@
+{
+  "name" : "ConditionModelController.createEntityDependenceCondition",
+  "type" : "SAGA",
+  "complexity" : 162.0,
+  "entities" : {
+    "Path" : "R",
+    "Entity" : "R",
+    "ConditionModel" : "RW",
+    "BlendedWorkflow" : "RW",
+    "DataModel" : "R",
+    "Dependence" : "RW",
+    "Product" : "R",
+    "Specification" : "R"
+  },
+  "entitiesPerCluster" : {
+    "Design" : [ "BlendedWorkflow", "Specification", "DataModel", "Entity", "Product", "Dependence", "Path" ],
+    "Models" : [ "ConditionModel" ]
+  },
+  "entitiesSeq" : "[{\"cluster\":\"Design\",\"sequence\":[[\"BlendedWorkflow\",\"R\"],[\"BlendedWorkflow\",\"W\"],[\"Specification\",\"R\"],[\"DataModel\",\"R\"],[\"Entity\",\"R\"],[\"Product\",\"R\"],[\"Dependence\",\"R\"],[\"Path\",\"R\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"ConditionModel\",\"R\"],[\"ConditionModel\",\"W\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Dependence\",\"W\"],[\"DataModel\",\"R\"],[\"Specification\",\"R\"],[\"Product\",\"R\"],[\"Path\",\"R\"]]}]",
+  "functionalityRedesigns" : [ {
+    "name" : "Monolith Trace",
+    "usedForMetrics" : false,
+    "redesign" : [ {
+      "name" : "ConditionModelController.createEntityDependenceCondition",
+      "id" : "-1",
+      "cluster" : "ConditionModelController.createEntityDependenceCondition",
+      "accessedEntities" : "",
+      "remoteInvocations" : [ 0 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "0: Design",
+      "id" : "0",
+      "cluster" : "Design",
+      "accessedEntities" : "[[\"BlendedWorkflow\",\"R\"],[\"BlendedWorkflow\",\"W\"],[\"Specification\",\"R\"],[\"DataModel\",\"R\"],[\"Entity\",\"R\"],[\"Product\",\"R\"],[\"Dependence\",\"R\"],[\"Path\",\"R\"]]",
+      "remoteInvocations" : [ 1 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "1: Models",
+      "id" : "1",
+      "cluster" : "Models",
+      "accessedEntities" : "[[\"ConditionModel\",\"R\"],[\"ConditionModel\",\"W\"]]",
+      "remoteInvocations" : [ 2 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "2: Design",
+      "id" : "2",
+      "cluster" : "Design",
+      "accessedEntities" : "[[\"Dependence\",\"W\"],[\"DataModel\",\"R\"],[\"Specification\",\"R\"],[\"Product\",\"R\"],[\"Path\",\"R\"]]",
+      "remoteInvocations" : [ ],
+      "type" : "COMPENSATABLE"
+    } ],
+    "systemComplexity" : 150,
+    "functionalityComplexity" : 260,
+    "inconsistencyComplexity" : 0,
+    "pivotTransaction" : ""
+  }, {
+    "name" : "thesis-evaluation",
+    "usedForMetrics" : true,
+    "redesign" : [ {
+      "name" : "ConditionModelController.createEntityDependenceCondition",
+      "id" : "-1",
+      "cluster" : "ConditionModelController.createEntityDependenceCondition",
+      "accessedEntities" : "",
+      "remoteInvocations" : [ 0 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "0: Design",
+      "id" : "0",
+      "cluster" : "Design",
+      "accessedEntities" : "[[\"Path\",\"R\"],[\"Entity\",\"R\"],[\"BlendedWorkflow\",\"RW\"],[\"DataModel\",\"R\"],[\"Dependence\",\"RW\"],[\"Product\",\"R\"],[\"Specification\",\"R\"]]",
+      "remoteInvocations" : [ 1 ],
+      "type" : "PIVOT"
+    }, {
+      "name" : "1: Models",
+      "id" : "1",
+      "cluster" : "Models",
+      "accessedEntities" : "[[\"ConditionModel\",\"RW\"]]",
+      "remoteInvocations" : [ ],
+      "type" : "RETRIABLE"
+    } ],
+    "systemComplexity" : 0,
+    "functionalityComplexity" : 195,
+    "inconsistencyComplexity" : 0,
+    "pivotTransaction" : "0"
+  } ],
+  "localTransactionsGraph" : {"nodes":[{"id":0,"clusterName":null,"clusterAccesses":[]},{"id":1,"clusterName":"Design","clusterAccesses":[["BlendedWorkflow","R"],["BlendedWorkflow","W"],["Specification","R"],["DataModel","R"],["Entity","R"],["Product","R"],["Dependence","R"],["Path","R"]]},{"id":2,"clusterName":"Models","clusterAccesses":[["ConditionModel","R"],["ConditionModel","W"]]},{"id":3,"clusterName":"Design","clusterAccesses":[["Dependence","W"],["DataModel","R"],["Specification","R"],["Product","R"],["Path","R"]]}],"links":["0->1","1->2","2->3"]}
+}
