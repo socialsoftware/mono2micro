@@ -3,101 +3,143 @@ package pt.ist.socialsoftware.mono2micro.utils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 
 public class Metrics {
-    private final Graph graph;
-	private final Map<String,List<Cluster>> controllerClusters;
-	private final Map<String,List<Controller>> clusterControllers;
+//    public void calculateGraphMetrics(
+//    	Graph graph,
+//		DirectedAcyclicGraph<Graph.LocalTransaction, DefaultEdge> localTransactionsGraph
+//	) {
+//		float graphComplexity = 0;
+//		float graphCohesion = 0;
+//		float graphCoupling = 0;
+//		float graphPerformance = 0;
+//
+//		Map<String, Cluster> graphClusters = graph.getClusters();
+//
+//		System.out.println("Calculating graph complexity and performance...");
+//		// int graphNodes = 0;
+//		// int maxNumberOfNodes = 0;
+//
+//		Map<String, List<Cluster>> controllerClusters = Utils.getControllerClusters(
+//			(List<Cluster>) graphClusters.values(),
+//			controllers
+//		);
+//
+//		for (Controller controller : controllers) {
+//			calculateControllerComplexityAndClusterDependencies(
+//				graph,
+//				controller,
+//				controllerClusters,
+//				localTransactionsGraph
+//			);
+//
+////			calculateRedesignComplexities(controller, Constants.DEFAULT_REDESIGN_NAME);
+//			graphComplexity += controller.getComplexity();
+//			graphPerformance += controller.getPerformance();
+//			// graphNodes += controller.getAllLocalTransactions().size();
+//			// if (controller.getAllLocalTransactions().size() > maxNumberOfNodes)
+//			// 	maxNumberOfNodes = controller.getAllLocalTransactions().size();
+//		}
+//
+//		// System.out.println("Média de nós do grafo: " + graphNodes/graphControllers.size());
+//		// System.out.println("Máximo numero de nós: " + maxNumberOfNodes);
+//
+//		controllerClusters = null; // memory release
+//
+//		int graphControllersAmount = controllers.size();
+//
+//		graphComplexity = BigDecimal
+//							.valueOf(graphComplexity / graphControllersAmount)
+//							.setScale(2, RoundingMode.HALF_UP)
+//							.floatValue();
+//
+//		graph.setComplexity(graphComplexity);
+//
+//		graphPerformance = BigDecimal
+//							.valueOf(graphPerformance / graphControllersAmount)
+//							.setScale(2, RoundingMode.HALF_UP)
+//							.floatValue();
+//
+//		graph.setPerformance(graphPerformance);
+//
+//		System.out.println("Calculating graph cohesion and coupling");
+//
+//		Map<String, List<Controller>> clusterControllers = Utils.getClusterControllers(
+//			(List<Cluster>) graphClusters.values(),
+//			controllers
+//		);
+//
+//		for (Cluster cluster : graphClusters.values()) {
+//			calculateClusterComplexityAndCohesion(
+//				cluster,
+//				clusterControllers
+//			);
+//
+//			graphCohesion += cluster.getCohesion();
+//
+//			calculateClusterCoupling(
+//				cluster,
+//				graphClusters
+//			);
+//
+//			graphCoupling += cluster.getCoupling();
+//		}
+//
+//		clusterControllers = null; // memory release
+//
+//		int graphClustersAmount = graphClusters.size();
+//
+//		graphCohesion = BigDecimal
+//							.valueOf(graphCohesion / graphClustersAmount)
+//							.setScale(2, RoundingMode.HALF_UP)
+//							.floatValue();
+//
+//		graph.setCohesion(graphCohesion);
+//
+//		graphCoupling = BigDecimal
+//							.valueOf(graphCoupling / graphClustersAmount)
+//							.setScale(2, RoundingMode.HALF_UP)
+//							.floatValue();
+//
+//		graph.setCoupling(graphCoupling);
+//    }
 
-    public Metrics(Graph graph) {
-        this.graph = graph;
-		this.controllerClusters = graph.getControllerClusters();
-		this.clusterControllers = graph.getClusterControllers();
-    }
+    public static float calculateControllerComplexityAndClusterDependencies(
+	 	Decomposition decomposition,
+		String controllerName,
+	 	Map<String, Set<Cluster>> controllerClusters,
+		DirectedAcyclicGraph<Decomposition.LocalTransaction, DefaultEdge> localTransactionsGraph
+	) {
+		Set<Decomposition.LocalTransaction> allLocalTransactions = Decomposition.getAllLocalTransactions(localTransactionsGraph);
 
-    public void calculateMetrics() {
-		float graphComplexity = 0;
-		float graphCohesion = 0;
-		float graphCoupling = 0;
-		float graphPerformance = 0;
-
-		List<Controller> graphControllers = graph.getControllers();
-
-		System.out.println("Calculating graph complexity and performance...");
-		// int graphNodes = 0;
-		// int maxNumberOfNodes = 0;
-
-		for (Controller controller : graphControllers) {
-			calculateControllerComplexityAndClusterDependencies(controller);
-//			calculateRedesignComplexities(controller, Constants.DEFAULT_REDESIGN_NAME);
-			graphComplexity += controller.getComplexity();
-			graphPerformance += controller.getPerformance();
-			// graphNodes += controller.getAllLocalTransactions().size();
-			// if (controller.getAllLocalTransactions().size() > maxNumberOfNodes)
-			// 	maxNumberOfNodes = controller.getAllLocalTransactions().size();
-		}
-
-		// System.out.println("Média de nós do grafo: " + graphNodes/graphControllers.size());
-		// System.out.println("Máximo numero de nós: " + maxNumberOfNodes);
-
-		int graphControllersAmount = graphControllers.size();
-
-		graphComplexity /= graphControllersAmount;
-		graphComplexity = BigDecimal.valueOf(graphComplexity).setScale(2, RoundingMode.HALF_UP).floatValue();
-		this.graph.setComplexity(graphComplexity);
-
-		graphPerformance /= graphControllersAmount;
-		graphPerformance = BigDecimal.valueOf(graphPerformance).setScale(2, RoundingMode.HALF_UP).floatValue();
-		this.graph.setPerformance(graphPerformance);
-
-		List<Cluster> graphClusters = graph.getClusters();
-
-		System.out.println("Calculating graph cohesion and coupling");
-
-		for (Cluster cluster : graphClusters) {
-			calculateClusterComplexityAndCohesion(cluster);
-
-			graphCohesion += cluster.getCohesion();
-
-			calculateClusterCoupling(cluster);
-			graphCoupling += cluster.getCoupling();
-		}
-
-		int graphClustersAmount = graphClusters.size();
-
-		graphCohesion /= graphClustersAmount;
-		graphCohesion = BigDecimal.valueOf(graphCohesion).setScale(2, RoundingMode.HALF_UP).floatValue();
-		this.graph.setCohesion(graphCohesion);
-
-		graphCoupling /= graphClustersAmount;
-		graphCoupling = BigDecimal.valueOf(graphCoupling).setScale(2, RoundingMode.HALF_UP).floatValue();
-		this.graph.setCoupling(graphCoupling);
-
-    }
-
-    private void calculateControllerComplexityAndClusterDependencies(Controller controller) {
-		Set<Controller.LocalTransaction> allLocalTransactions = controller.getAllLocalTransactions();
-
-		if (this.controllerClusters.get(controller.getName()).size() == 1) {
-			controller.setComplexity(0);
+		if (controllerClusters.get(controllerName).size() == 1) {
+			return 0;
 
 		} else {
+			// < entity + mode, List<controllerName>> controllersThatTouchSameEntities for a given mode
+			Map<String, List<String>> cache = new HashMap<>();
 
-			Map<String, List<String>> cache = new HashMap<>(); // < entity + mode, List<controllerName>> controllersThatTouchSameEntities for a given mode
 			float controllerComplexity = 0;
 
-			for (Controller.LocalTransaction lt : allLocalTransactions) {
+			for (Decomposition.LocalTransaction lt : allLocalTransactions) {
 				// ClusterDependencies
-				Cluster fromCluster = graph.getCluster(String.valueOf(lt.getClusterID()));
+				short clusterID = lt.getClusterID();
+				if (clusterID != -1) { // not root node
+					Cluster fromCluster = decomposition.getCluster(String.valueOf(clusterID));
 
-				if (fromCluster != null) { // not root node
-					List<Controller.LocalTransaction> nextLocalTransactions = controller.getNextLocalTransactions(lt);
+					List<Decomposition.LocalTransaction> nextLocalTransactions = Decomposition.getNextLocalTransactions(
+						localTransactionsGraph,
+						lt
+					);
 
-					for (Controller.LocalTransaction nextLt : nextLocalTransactions)
+					for (Decomposition.LocalTransaction nextLt : nextLocalTransactions)
 						fromCluster.addCouplingDependencies(
 							String.valueOf(nextLt.getClusterID()),
 							nextLt.getFirstAccessedEntityIDs()
@@ -115,9 +157,11 @@ public class Metrics {
 
 						if (controllersThatTouchThisEntityAndMode == null) {
 							controllersThatTouchThisEntityAndMode = costOfAccess(
-								controller,
+								controllerName,
 								entityID,
-								mode
+								mode,
+								decomposition.getControllers().values(),
+								controllerClusters
 							);
 
 							cache.put(key, controllersThatTouchThisEntityAndMode);
@@ -130,27 +174,31 @@ public class Metrics {
 				}
 			}
 
-			controller.setComplexity(controllerComplexity);
+			return controllerComplexity;
 		}
 	}
 
-	private List<String> costOfAccess (
-		Controller controller,
+	private static List<String> costOfAccess(
+		String controllerName,
 		short entityID,
-		byte mode
+		byte mode,
+		Collection<Controller> controllers,
+		Map<String, Set<Cluster>> controllerClusters
 	) {
-
 		List<String> controllersThatTouchThisEntityAndMode = new ArrayList<>();
-		for (Controller otherController : this.graph.getControllers()) {
-			if (!otherController.getName().equals(controller.getName())) {
+
+		for (Controller otherController : controllers) {
+			String otherControllerName = otherController.getName();
+
+			if (!otherControllerName.equals(controllerName) && controllerClusters.containsKey(otherControllerName)) {
 				Byte savedMode = otherController.getEntities().get(entityID);
 
 				if (
 					savedMode != null &&
 					savedMode != mode &&
-					this.controllerClusters.get(otherController.getName()).size() > 1
+					controllerClusters.get(otherControllerName).size() > 1
 				) {
-					controllersThatTouchThisEntityAndMode.add(otherController.getName());
+					controllersThatTouchThisEntityAndMode.add(otherControllerName);
 				}
 			}
 		}
@@ -158,8 +206,11 @@ public class Metrics {
 		return controllersThatTouchThisEntityAndMode;
 	}
 
-    private void calculateClusterComplexityAndCohesion(Cluster cluster) {
-		List<Controller> controllersThatAccessThisCluster = this.clusterControllers.get(cluster.getName());
+    public static void calculateClusterComplexityAndCohesion(
+    	Cluster cluster,
+		Map<String, Set<Controller>> clusterControllers
+	) {
+		Set<Controller> controllersThatAccessThisCluster = clusterControllers.get(cluster.getName());
 
 		float complexity = 0;
 		float cohesion = 0;
@@ -183,7 +234,11 @@ public class Metrics {
 
 		// complexity calculus
 		complexity /= controllersThatAccessThisCluster.size();
-		complexity = BigDecimal.valueOf(complexity).setScale(2, RoundingMode.HALF_UP).floatValue();
+		complexity = BigDecimal
+						.valueOf(complexity)
+						.setScale(2, RoundingMode.HALF_UP)
+						.floatValue();
+
 		cluster.setComplexity(complexity);
 
 		// cohesion calculus
@@ -192,17 +247,24 @@ public class Metrics {
 		cluster.setCohesion(cohesion);
 	}
 
-	private void calculateClusterCoupling(Cluster c1) {
+	public static void calculateClusterCoupling(
+		Cluster c1,
+		Map<String, Cluster> clusters
+	) {
     	float coupling = 0;
 		Map<String, Set<Short>> couplingDependencies = c1.getCouplingDependencies();
 
     	for (String c2 : couplingDependencies.keySet())
-    		coupling += (float) couplingDependencies.get(c2).size() / graph.getCluster(c2).getEntities().size();
+    		coupling += (float) couplingDependencies.get(c2).size() / clusters.get(c2).getEntities().size();
 
-    	int graphClustersAmount = graph.getClusters().size();
+    	int graphClustersAmount = clusters.size();
 
 		coupling = graphClustersAmount == 1 ? 0 : coupling / (graphClustersAmount - 1);
-		coupling = BigDecimal.valueOf(coupling).setScale(2, RoundingMode.HALF_UP).floatValue();
+		coupling = BigDecimal
+					.valueOf(coupling)
+					.setScale(2, RoundingMode.HALF_UP)
+					.floatValue();
+
 		c1.setCoupling(coupling);
 	}
 

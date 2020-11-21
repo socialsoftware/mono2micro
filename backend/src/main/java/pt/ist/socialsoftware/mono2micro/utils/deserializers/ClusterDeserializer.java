@@ -57,10 +57,18 @@ public class ClusterDeserializer extends StdDeserializer<Cluster> {
 							cluster.setCoupling(jsonParser.getFloatValue());
 							break;
 						case "couplingDependencies":
-							cluster.setCouplingDependencies(jsonParser.readValueAs(new TypeReference<HashMap<String, Set<Short>>>() {}));
+							cluster.setCouplingDependencies(
+								jsonParser.readValueAs(
+									new TypeReference<HashMap<String, Set<Short>>>() {}
+								)
+							);
 							break;
 						case "entities":
-							cluster.setEntities(jsonParser.readValueAs(new TypeReference<Set<Short>>() {}));
+							cluster.setEntities(
+								jsonParser.readValueAs(
+									new TypeReference<Set<Short>>() {}
+								)
+							);
 							break;
 
 						default:

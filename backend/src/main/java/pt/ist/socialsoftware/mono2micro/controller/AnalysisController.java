@@ -3,7 +3,6 @@ package pt.ist.socialsoftware.mono2micro.controller;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FilenameUtils;
-import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -12,10 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.dto.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
-import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 import pt.ist.socialsoftware.mono2micro.utils.mojoCalculator.src.main.java.MoJo;
@@ -35,8 +33,8 @@ import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 @RequestMapping(value = "/mono2micro")
 public class AnalysisController {
 
-    private static Logger logger = LoggerFactory.getLogger(AnalysisController.class);
-    private CodebaseManager codebaseManager = CodebaseManager.getInstance();
+    private static final Logger logger = LoggerFactory.getLogger(AnalysisController.class);
+    private final CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
 	@RequestMapping(value = "/codebase/{codebaseName}/analyser", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> analyser(
@@ -53,14 +51,15 @@ public class AnalysisController {
 
 			Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
 				codebaseName,
-				new HashSet<String>() {{ add("analysisType"); add("name"); add("profiles"); add("datafilePath"); }}
+				new HashSet<String>() {{
+					add("name");
+					add("profiles");
+					add("datafilePath");
+				}}
 			);
-
-			HashMap<String, ControllerDto> datafileJSON = null;
 
 			int numberOfEntitiesPresentInCollection = getOrCreateSimilarityMatrix(
 				codebase,
-				datafileJSON, // yes but its content may change if codebase is static but CHECK!
 				analyser
 			);
 
@@ -70,6 +69,9 @@ public class AnalysisController {
 				codebaseName,
 				numberOfEntitiesPresentInCollection
 			);
+
+			// THIS FIRST PHASE EXISTS TO NOT PROCESS CUTS PREVIOUSLY PROCESSED
+			// BASICALLY IT'S A COPY OF THE PREVIOUS FILE INTO THE NEW FILE
 
 			File analyserCutsPath = new File(CODEBASES_PATH + codebaseName + "/analyser/cuts/");
 			File[] files = analyserCutsPath.listFiles();
@@ -137,6 +139,9 @@ public class AnalysisController {
 			short newRequestsCount = 0;
 			short count = 0;
 
+			// AFTER COPYING PREVIOUS RESULTS, NEXT CUTS WILL BE PROCESSED AND THEIR RESULTS
+			// WILL BE APPENDED TO THE NEW FILE
+
 			for (File file : files) {
 
 				String filename = FilenameUtils.getBaseName(file.getName());
@@ -148,16 +153,15 @@ public class AnalysisController {
                     continue;
                 }
 
-				Graph graph = buildGraphAndCalculateMetrics(
+				Decomposition decomposition = buildDecompositionAndCalculateMetrics(
 					analyser,
 					codebase,
-					filename,
-					datafileJSON
+					filename
 				);
 
                 CutInfoDto cutInfo = assembleCutInformation(
                 	analyser,
-					graph,
+					decomposition,
 					filename
 				);
 
@@ -186,7 +190,6 @@ public class AnalysisController {
 				fileToBeRenamed.renameTo(fileRenamed);
 			}
 
-//            codebaseManager.writeAnalyserResults(codebaseName, analyserJSON);
 			System.out.println("Analyser Complete");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -197,35 +200,41 @@ public class AnalysisController {
 
 	public int getOrCreateSimilarityMatrix(
 		Codebase codebase,
-		HashMap<String, ControllerDto> datafileJSON,
 		AnalyserDto analyser
-
 	)
 		throws IOException
 	{
+		SimilarityMatrixDto similarityMatrixDto;
 
 		if (!codebaseManager.analyserSimilarityMatrixFileAlreadyExists(codebase.getName())) {
-			System.out.println("Creating similarity matrix...");
 
-			if (codebase.isStatic()) {
-				datafileJSON = CodebaseManager.getInstance().getDatafile(codebase);
+			Utils.GetDataToBuildSimilarityMatrixResult result = Utils.getDataToBuildSimilarityMatrix(
+				codebase,
+				analyser.getProfile(),
+				analyser.getTracesMaxLimit(),
+				analyser.getTraceType()
+			);
 
-				return createStaticAnalyserSimilarityMatrix(
-					codebase,
-					analyser,
-					datafileJSON
-				);
-			}
+			// Unfortunately, the getMatrixData method differs from the one used in the Dendrogram
+			similarityMatrixDto = getMatrixData(
+				result.entities,
+				result.e1e2PairCount,
+				result.entityControllers
+			);
 
-			return createDynamicAnalyserSimilarityMatrix(codebase, analyser);
+			CodebaseManager.getInstance().writeAnalyserSimilarityMatrix(
+				codebase.getName(),
+				similarityMatrixDto
+			);
+
+		} else {
+			System.out.println("Similarity matrix already exists...");
+
+			similarityMatrixDto = CodebaseManager.getInstance().getSimilarityMatrixDtoWithFields(
+				codebase.getName(),
+				new HashSet<String>() {{ add("entities"); }}
+			);
 		}
-
-		System.out.println("Similarity matrix already exists...");
-
-		SimilarityMatrixDto similarityMatrixDto = CodebaseManager.getInstance().getSimilarityMatrixDtoWithFields(
-			codebase.getName(),
-			new HashSet<String>() {{ add("entities"); }}
-		);
 
 		return similarityMatrixDto.getEntities().size();
 	}
@@ -250,19 +259,17 @@ public class AnalysisController {
 		p.waitFor();
 
 		System.out.println("script execution has ended");
-
 	}
 
-	private Graph buildGraphAndCalculateMetrics(
+	private Decomposition buildDecompositionAndCalculateMetrics(
 		AnalyserDto analyser,
-		Codebase codebase,
-		String filename,
-		HashMap<String, ControllerDto> datafileJSON
+		Codebase codebase, // requirements: name, profiles, datafilePath
+		String filename
 	)
-		throws IOException
+		throws Exception
 	{
-		Graph graph = new Graph();
-		graph.setCodebaseName(codebase.getName());
+		Decomposition decomposition = new Decomposition();
+		decomposition.setCodebaseName(codebase.getName());
 
 		HashMap<String, HashMap<String, Set<Short>>> analyserCut = codebaseManager.getAnalyserCut(
 			codebase.getName(),
@@ -276,38 +283,36 @@ public class AnalysisController {
 			Cluster cluster = new Cluster(clusterId, entities);
 
 			for (short entityID : entities)
-				graph.putEntity(entityID, clusterId);
+				decomposition.putEntity(entityID, clusterId);
 
-			graph.addCluster(cluster);
+			decomposition.addCluster(cluster);
 		}
 
-		if (codebase.isStatic()) {
-			graph.calculateMetricsAnalyser(
-				analyser.getProfiles(),
-				datafileJSON
-			);
+		decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+			codebase,
+			analyser.getProfile(),
+			decomposition.getEntityIDToClusterName()
+		));
 
-		} else {
-			graph.calculateDynamicMetricsAnalyser(
-				analyser.getProfiles(),
-				analyser.getTracesMaxLimit(),
-				analyser.getTypeOfTraces()
-			);
-		}
+		decomposition.calculateMetrics(
+			codebase,
+			analyser.getTracesMaxLimit(),
+			analyser.getTraceType()
+		);
 
-		return graph;
+		return decomposition;
 	}
 
 	private CutInfoDto assembleCutInformation(
 		AnalyserDto analyser,
-		Graph graph,
+		Decomposition decomposition,
 		String filename
 	)
 		throws IOException
 	{
 		AnalysisDto analysisDto = new AnalysisDto();
-		analysisDto.setGraph1(analyser.getExpert());
-		analysisDto.setGraph2(graph);
+		analysisDto.setDecomposition1(analyser.getExpert());
+		analysisDto.setDecomposition2(decomposition);
 
 		analysisDto = getAnalysis(analysisDto).getBody();
 
@@ -322,12 +327,12 @@ public class AnalysisController {
 		analyserResult.setMojoSingletons(analysisDto.getMojoSingletons());
 		analyserResult.setMojoNew(analysisDto.getMojoNew());
 
-		analyserResult.setComplexity(graph.getComplexity());
-		analyserResult.setCohesion(graph.getCohesion());
-		analyserResult.setCoupling(graph.getCoupling());
-		analyserResult.setPerformance(graph.getPerformance());
+		analyserResult.setComplexity(decomposition.getComplexity());
+		analyserResult.setCohesion(decomposition.getCohesion());
+		analyserResult.setCoupling(decomposition.getCoupling());
+		analyserResult.setPerformance(decomposition.getPerformance());
 
-		analyserResult.setMaxClusterSize(graph.maxClusterSize());
+		analyserResult.setMaxClusterSize(decomposition.maxClusterSize());
 
 		String[] similarityWeights = filename.split(",");
 		analyserResult.setAccessWeight(Float.parseFloat(similarityWeights[0]));
@@ -340,7 +345,7 @@ public class AnalysisController {
 		cutInfo.setAnalyserResultDto(analyserResult);
 
 		HashMap<String, HashMap<String, Float>> controllerSpecs = new HashMap<>();
-		for (Controller controller : graph.getControllers()) {
+		for (Controller controller : decomposition.getControllers().values()) {
 			controllerSpecs.put(
 				controller.getName(),
 				new HashMap<String, Float>() {{
@@ -355,12 +360,11 @@ public class AnalysisController {
 		return cutInfo;
 	}
 
-	private SimilarityMatrixDto getAnalyserMatrixData(
+	private static SimilarityMatrixDto getMatrixData(
 		Set<Short> entityIDs,
 		Map<String,Integer> e1e2PairCount,
 		Map<Short, List<Pair<String, Byte>>> entityControllers
 	) {
-
 		SimilarityMatrixDto matrixData = new SimilarityMatrixDto();
 
 		List<List<List<Float>>> similarityMatrix = new ArrayList<>();
@@ -406,175 +410,33 @@ public class AnalysisController {
 
 		return matrixData;
 	}
-	
-	private int createStaticAnalyserSimilarityMatrix(
-		Codebase codebase,
-		AnalyserDto analyser,
-		HashMap<String, ControllerDto> datafileJSON
-	)
-		throws IOException
-	{
-		Map<Short, List<Pair<String, Byte>>> entityControllers = new HashMap<>();
-		Map<String, Integer> e1e2PairCount = new HashMap<>();
-
-		for (String profile : analyser.getProfiles()) {
-			for (String controllerName : codebase.getProfile(profile)) {
-				ControllerDto controllerDto = datafileJSON.get(controllerName);
-				List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
-
-				Utils.fillEntityDataStructures(
-					entityControllers,
-					e1e2PairCount,
-					controllerAccesses,
-					controllerName
-				);
-			}
-		}
-
-		Set<Short> entities = new TreeSet<>(entityControllers.keySet());
-
-		CodebaseManager.getInstance().writeAnalyserSimilarityMatrix(
-			codebase.getName(),
-			getAnalyserMatrixData(
-				entities,
-				e1e2PairCount,
-				entityControllers
-			)
-		);
-
-		return entities.size();
-	}
-
-	private int createDynamicAnalyserSimilarityMatrix(
-		Codebase codebase,
-		AnalyserDto analyser
-	)
-		throws IOException
-	{
-		Map<Short, List<Pair<String, Byte>>> entityControllers = new HashMap<>();
-		Map<String, Integer> e1e2PairCount = new HashMap<>();
-
-		ControllerTracesIterator iter = new ControllerTracesIterator(
-			codebase.getDatafilePath(),
-			analyser.getTracesMaxLimit()
-		);
-
-		TraceDto t;
-
-		for (String profile : analyser.getProfiles()) {
-			for (String controllerName : codebase.getProfile(profile)) {
-				iter.nextController(controllerName);
-
-				switch (analyser.getTypeOfTraces()) {
-					case LONGEST:
-						// FIXME return accesses of longest trace instead of the trace itself
-						t = iter.getLongestTrace();
-
-						if (t != null) {
-							Utils.fillEntityDataStructures(
-								entityControllers,
-								e1e2PairCount,
-								t.expand(2),
-								controllerName
-							);
-						}
-
-						break;
-
-					case WITH_MORE_DIFFERENT_ACCESSES:
-						t = iter.getTraceWithMoreDifferentAccesses();
-
-						if (t != null) {
-							Utils.fillEntityDataStructures(
-								entityControllers,
-								e1e2PairCount,
-								t.expand(2),
-								controllerName
-							);
-						}
-
-						break;
-
-					case REPRESENTATIVE:
-						Set<String> tracesIds = iter.getRepresentativeTraces();
-						// FIXME probably here we create a second controllerTracesIterator
-						iter.reset();
-
-						while (iter.hasMoreTraces()) {
-							t = iter.nextTrace();
-
-							if (tracesIds.contains(String.valueOf(t.getId()))) {
-								Utils.fillEntityDataStructures(
-									entityControllers,
-									e1e2PairCount,
-									t.expand(2),
-									controllerName
-								);
-							}
-						}
-
-						break;
-
-					default:
-						while (iter.hasMoreTraces()) {
-							t = iter.nextTrace();
-
-							Utils.fillEntityDataStructures(
-								entityControllers,
-								e1e2PairCount,
-								t.expand(2),
-								controllerName
-							);
-						}
-				}
-
-				t = null; // release memory
-			}
-		}
-
-		iter = null; // release memory
-
-		Set<Short> entities = new TreeSet<>(entityControllers.keySet());
-
-		CodebaseManager.getInstance().writeAnalyserSimilarityMatrix(
-			codebase.getName(),
-			getAnalyserMatrixData(
-				entities,
-				e1e2PairCount,
-				entityControllers
-			)
-		);
-
-		return entities.size();
-	}
-
 
 	@RequestMapping(value = "/analysis", method = RequestMethod.POST)
 	public ResponseEntity<AnalysisDto> getAnalysis(@RequestBody AnalysisDto analysis) throws IOException {
 		logger.debug("getAnalysis");
 
-		if (analysis.getGraph1().getCodebaseName() == null) { // no expert cut from frontend
+		if (analysis.getDecomposition1().getCodebaseName() == null) { // no expert cut from frontend
 			return new ResponseEntity<>(analysis, HttpStatus.OK);
 		}
 
-		Map<String, Set<Short>> graph1 = new HashMap<>();
-		for (Cluster c : analysis.getGraph1().getClusters()) {
-			graph1.put(c.getName(), c.getEntities());
+		Map<String, Set<Short>> decomposition1 = new HashMap<>();
+		for (Cluster c : analysis.getDecomposition1().getClusters().values()) {
+			decomposition1.put(c.getName(), c.getEntities());
 		}
 
-		Map<String, Set<Short>> graph2_CommonEntitiesOnly = new HashMap<>();
-		for (Cluster c : analysis.getGraph2().getClusters()) {
-			graph2_CommonEntitiesOnly.put(c.getName(), c.getEntities());
+		Map<String, Set<Short>> decomposition2_CommonEntitiesOnly = new HashMap<>();
+		for (Cluster c : analysis.getDecomposition2().getClusters().values()) {
+			decomposition2_CommonEntitiesOnly.put(c.getName(), c.getEntities());
 		}
 
 		List<Short> entities = new ArrayList<>();
 		List<Short> notSharedEntities = new ArrayList<>();
 
-		for (Set<Short> l1 : graph1.values()) {
+		for (Set<Short> l1 : decomposition1.values()) {
 			for (short e1ID : l1) {
 				boolean inBoth = false;
 
-				for (Set<Short> l2 : graph2_CommonEntitiesOnly.values()) {
+				for (Set<Short> l2 : decomposition2_CommonEntitiesOnly.values()) {
 					if (l2.contains(e1ID)) {
 						inBoth = true;
 						break;
@@ -590,10 +452,10 @@ public class AnalysisController {
 		}
 
 		// ------------------------------------------------------------------------------------------
-		Map<String, Set<Short>> graph2_UnassignedInBigger = graphCopyOf(graph2_CommonEntitiesOnly);
+		Map<String, Set<Short>> decomposition2_UnassignedInBigger = decompositionCopyOf(decomposition2_CommonEntitiesOnly);
 		Map.Entry<String, Set<Short>> biggerClusterEntry = null;
 
-		for (Map.Entry<String, Set<Short>> clusterEntry : graph2_UnassignedInBigger.entrySet()) {
+		for (Map.Entry<String, Set<Short>> clusterEntry : decomposition2_UnassignedInBigger.entrySet()) {
 			if (biggerClusterEntry == null)
 				biggerClusterEntry = clusterEntry;
 
@@ -604,16 +466,16 @@ public class AnalysisController {
 		biggerClusterEntry.getValue().addAll(notSharedEntities);
 
 		// ------------------------------------------------------------------------------------------
-		Map<String, Set<Short>> graph2_UnassignedInNew = graphCopyOf(graph2_CommonEntitiesOnly);
+		Map<String, Set<Short>> decomposition2_UnassignedInNew = decompositionCopyOf(decomposition2_CommonEntitiesOnly);
 		Set<Short> newClusterForUnassignedEntities = new HashSet<>(notSharedEntities);
-		graph2_UnassignedInNew.put("newClusterForUnnasignedEntities", newClusterForUnassignedEntities);
+		decomposition2_UnassignedInNew.put("newClusterForUnnasignedEntities", newClusterForUnassignedEntities);
 
 		// ------------------------------------------------------------------------------------------
-		Map<String, Set<Short>> graph2_UnassignedInSingletons = graphCopyOf(graph2_CommonEntitiesOnly);
+		Map<String, Set<Short>> decomposition2_UnassignedInSingletons = decompositionCopyOf(decomposition2_CommonEntitiesOnly);
 		for (int i = 0; i < notSharedEntities.size(); i++) {
 			Set<Short> clusterSingletonEntity = new HashSet<>();
 			clusterSingletonEntity.add(notSharedEntities.get(i));
-			graph2_UnassignedInSingletons.put("singletonCluster" + i, clusterSingletonEntity);
+			decomposition2_UnassignedInSingletons.put("singletonCluster" + i, clusterSingletonEntity);
 		}
 
 		int truePositive = 0;
@@ -631,20 +493,20 @@ public class AnalysisController {
 				String e1ClusterG2 = "";
 				String e2ClusterG2 = "";
 
-				for (String cluster : graph1.keySet()) {
-					if (graph1.get(cluster).contains(e1ID)) {
+				for (String cluster : decomposition1.keySet()) {
+					if (decomposition1.get(cluster).contains(e1ID)) {
 						e1ClusterG1 = cluster;
 					}
-					if (graph1.get(cluster).contains(e2ID)) {
+					if (decomposition1.get(cluster).contains(e2ID)) {
 						e2ClusterG1 = cluster;
 					}
 				}
 
-				for (String cluster : graph2_CommonEntitiesOnly.keySet()) {
-					if (graph2_CommonEntitiesOnly.get(cluster).contains(e1ID)) {
+				for (String cluster : decomposition2_CommonEntitiesOnly.keySet()) {
+					if (decomposition2_CommonEntitiesOnly.get(cluster).contains(e1ID)) {
 						e1ClusterG2 = cluster;
 					}
-					if (graph2_CommonEntitiesOnly.get(cluster).contains(e2ID)) {
+					if (decomposition2_CommonEntitiesOnly.get(cluster).contains(e2ID)) {
 						e2ClusterG2 = cluster;
 					}
 				}
@@ -727,67 +589,84 @@ public class AnalysisController {
         *******************************************
         */
 		double mojoValueCommonOnly = getMojoValue(
-				graph2_CommonEntitiesOnly,
-				graph1,
-				graph2_CommonEntitiesOnly.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
+				decomposition2_CommonEntitiesOnly,
+				decomposition1,
+				decomposition2_CommonEntitiesOnly.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
 		);
+
 		double mojoValueUnassignedInBiggest = getMojoValue(
-				graph2_UnassignedInBigger,
-				graph1,
-				graph2_UnassignedInBigger.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
+				decomposition2_UnassignedInBigger,
+				decomposition1,
+				decomposition2_UnassignedInBigger.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
 		);
+
 		double mojoValueUnassignedInNew = getMojoValue(
-				graph2_UnassignedInNew,
-				graph1,
-				graph2_UnassignedInNew.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
+				decomposition2_UnassignedInNew,
+				decomposition1,
+				decomposition2_UnassignedInNew.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
 		);
+
 		double mojoValueUnassignedInSingletons = getMojoValue(
-				graph2_UnassignedInSingletons,
-				graph1,
-				graph2_UnassignedInSingletons.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
+				decomposition2_UnassignedInSingletons,
+				decomposition1,
+				decomposition2_UnassignedInSingletons.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
 		);
 
 		analysis.setMojoCommon(mojoValueCommonOnly);
 		analysis.setMojoBiggest(mojoValueUnassignedInBiggest);
 		analysis.setMojoNew(mojoValueUnassignedInNew);
 		analysis.setMojoSingletons(mojoValueUnassignedInSingletons);
+
 		return new ResponseEntity<>(analysis, HttpStatus.OK);
 	}
 
-	private Map<String, Set<Short>> graphCopyOf(Map<String, Set<Short>> graph) {
+	private Map<String, Set<Short>> decompositionCopyOf(Map<String, Set<Short>> decomposition) {
 		HashMap<String, Set<Short>> copy = new HashMap<>();
-		for (Map.Entry<String, Set<Short>> entry : graph.entrySet()) {
-			copy.put(entry.getKey(), new HashSet<>(entry.getValue()));
-		}
+
+		for (Map.Entry<String, Set<Short>> entry : decomposition.entrySet())
+			copy.put(
+				entry.getKey(),
+				new HashSet<>(entry.getValue())
+			);
 
 		return copy;
 	}
 
 	private double getMojoValue(
-			Map<String, Set<Short>> graph1,
-			Map<String, Set<Short>> graph2,
+			Map<String, Set<Short>> decomposition1,
+			Map<String, Set<Short>> decomposition2,
 			Set<Short> entities
-	) throws IOException
+	)
+		throws IOException
 	{
 		StringBuilder sbSource = new StringBuilder();
-		for (Map.Entry<String, Set<Short>> clusterEntry : graph1.entrySet()) {
+		for (Map.Entry<String, Set<Short>> clusterEntry : decomposition1.entrySet()) {
 			String clusterName = clusterEntry.getKey();
 			Set<Short> clusterEntities = clusterEntry.getValue();
 
 			for (short entityID : clusterEntities) {
-				if (entities.contains(entityID)) { // entity present in both graphs
-					sbSource.append("contain " + clusterName + " " + entityID + "\n");
+				if (entities.contains(entityID)) { // entity present in both decompositions
+					sbSource.append("contain ")
+							.append(clusterName)
+							.append(" ")
+							.append(entityID)
+							.append("\n");
 				}
 			}
 		}
 
 		StringBuilder sbTarget = new StringBuilder();
-		for (Map.Entry<String, Set<Short>> clusterEntry : graph2.entrySet()) {
+		for (Map.Entry<String, Set<Short>> clusterEntry : decomposition2.entrySet()) {
 			String clusterName = clusterEntry.getKey();
 			Set<Short> clusterEntities = clusterEntry.getValue();
+
 			for (short entityID : clusterEntities) {
-				if (entities.contains(entityID)) { // entity present in both graphs
-					sbTarget.append("contain " + clusterName + " " + entityID + "\n");
+				if (entities.contains(entityID)) { // entity present in both decompositions
+					sbTarget.append("contain ")
+							.append(clusterName)
+							.append(" ")
+							.append(entityID)
+							.append("\n");
 				}
 			}
 		}

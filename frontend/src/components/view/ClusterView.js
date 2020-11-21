@@ -69,7 +69,7 @@ export class ClusterView extends React.Component {
         this.state = {
             visGraph: {},
             clusters: [],
-            clusterControllers: {},
+            clustersControllers: {},
             showMenu: false,
             selectedCluster: {},
             mergeWithCluster: {},
@@ -91,36 +91,36 @@ export class ClusterView extends React.Component {
     }
 
     componentDidMount() {
-        this.loadGraph();
+        this.loadDecomposition();
     }
 
-    loadGraph() {
+    loadDecomposition() {
         const {
             codebaseName,
             dendrogramName,
-            graphName,
+            decompositionName,
         } = this.props;
 
         const service = new RepositoryService();
 
-        const firstRequest = service.getClusterControllers(
+        const firstRequest = service.getClustersControllers(
             codebaseName,
             dendrogramName,
-            graphName
+            decompositionName
         ).then(response => {
             this.setState({
-                clusterControllers: response.data
+                clustersControllers: response.data
             });
         });
 
-        const secondRequest = service.getGraph(
+        const secondRequest = service.getDecomposition(
             codebaseName,
             dendrogramName,
-            graphName,
+            decompositionName,
             ["clusters"]
         ).then(response => {
             this.setState({
-                clusters: response.data.clusters,
+                clusters: Object.values(response.data.clusters),
                 showMenu: false,
                 selectedCluster: {},
                 mergeWithCluster: {},
@@ -158,16 +158,16 @@ export class ClusterView extends React.Component {
 
         const {
             clusters,
-            clusterControllers,
+            clustersControllers,
         } = this.state;
 
         for (var i = 0; i < clusters.length; i++) {
             let cluster1 = clusters[i];
-            let cluster1Controllers = clusterControllers[cluster1.name].map(c => c.name);
+            let cluster1Controllers = clustersControllers[cluster1.name].map(c => c.name);
 
             for (var j = i + 1; j < clusters.length; j++) {
                 let cluster2 = clusters[j];
-                let cluster2Controllers = clusterControllers[cluster2.name].map(c => c.name);
+                let cluster2Controllers = clustersControllers[cluster2.name].map(c => c.name);
 
                 let controllersInCommon = cluster1Controllers.filter(controllerName => cluster2Controllers.includes(controllerName))
 
@@ -198,6 +198,8 @@ export class ClusterView extends React.Component {
     }
 
     setClusterEntities(selectedCluster) {
+        console.log(selectedCluster);
+        
         this.setState({
             selectedCluster: selectedCluster,
             mergeWithCluster: {},
@@ -311,7 +313,7 @@ export class ClusterView extends React.Component {
         const {
             codebaseName,
             dendrogramName,
-            graphName,
+            decompositionName,
         } = this.props;
 
         switch (operation) {
@@ -319,12 +321,12 @@ export class ClusterView extends React.Component {
                 service.renameCluster(
                     codebaseName,
                     dendrogramName,
-                    graphName,
+                    decompositionName,
                     selectedCluster.name,
                     inputValue
                 )
                     .then(() => {
-                        this.loadGraph();
+                        this.loadDecomposition();
 
                     }).catch((err) => {
                         this.setState({
@@ -339,13 +341,13 @@ export class ClusterView extends React.Component {
                 service.mergeClusters(
                     codebaseName,
                     dendrogramName,
-                    graphName,
+                    decompositionName,
                     selectedCluster.name,
                     mergeWithCluster.name,
                     inputValue
                 )
                     .then(() => {
-                        this.loadGraph();
+                        this.loadDecomposition();
                     }).catch((err) => {
 
                         this.setState({
@@ -362,13 +364,13 @@ export class ClusterView extends React.Component {
                 service.splitCluster(
                     codebaseName,
                     dendrogramName,
-                    graphName,
+                    decompositionName,
                     selectedCluster.name,
                     inputValue,
                     activeClusterEntitiesSplit
                 )
                     .then(() => {
-                        this.loadGraph();
+                        this.loadDecomposition();
 
                     }).catch((err) => {
                         this.setState({
@@ -385,13 +387,13 @@ export class ClusterView extends React.Component {
                 service.transferEntities(
                     codebaseName,
                     dendrogramName,
-                    graphName,
+                    decompositionName,
                     selectedCluster.name,
                     transferToCluster.name,
                     activeClusterEntitiesTransfer
                 )
                     .then(() => {
-                        this.loadGraph();
+                        this.loadDecomposition();
                     }).catch((err) => {
                         this.setState({
                             error: true,
@@ -433,10 +435,16 @@ export class ClusterView extends React.Component {
     render() {
         const {
             clusters,
-            clusterControllers,
+            clustersControllers,
             currentSubView,
             error,
             errorMessage,
+            showMenu,
+            selectedCluster,
+            mergeWithCluster,
+            transferToCluster,
+            clusterEntities,
+            visGraph,
         } = this.state;
 
         const metricsRows = clusters.map(({
@@ -449,7 +457,7 @@ export class ClusterView extends React.Component {
             return {
                 cluster: name,
                 entities: entities.length,
-                controllers: clusterControllers[name] === undefined ? 0 : clusterControllers[name].length,
+                controllers: clustersControllers[name] === undefined ? 0 : clustersControllers[name].length,
                 cohesion: cohesion,
                 coupling: coupling,
                 complexity: complexity

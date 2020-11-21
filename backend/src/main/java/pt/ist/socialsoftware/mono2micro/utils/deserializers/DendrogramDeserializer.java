@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.io.IOException;
@@ -66,17 +66,21 @@ public class DendrogramDeserializer extends StdDeserializer<Dendrogram> {
 						case "sequenceMetricWeight":
 							dendrogram.setSequenceMetricWeight(jsonParser.getFloatValue());
 							break;
-						case "profiles":
-							dendrogram.setProfiles(jsonParser.readValueAs(new TypeReference<List<String>>(){}));
+						case "profile":
+							dendrogram.setProfile(jsonParser.getValueAsString());
 							break;
-						case "graphs":
-							dendrogram.setGraphs(jsonParser.readValueAs(new TypeReference<List<Graph>>(){}));
+						case "decompositions":
+							dendrogram.setDecompositions(
+								jsonParser.readValueAs(
+									new TypeReference<List<Decomposition>>(){}
+								)
+							);
 							break;
 						case "tracesMaxLimit":
 							dendrogram.setTracesMaxLimit(jsonParser.getIntValue());
 							break;
-						case "typeOfTraces":
-							dendrogram.setTypeOfTraces(Constants.TypeOfTraces.valueOf(jsonParser.getValueAsString()));
+						case "traceType":
+							dendrogram.setTraceType(Constants.TraceType.valueOf(jsonParser.getValueAsString()));
 							break;
 
 						default:

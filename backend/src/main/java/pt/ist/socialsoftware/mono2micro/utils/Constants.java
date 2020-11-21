@@ -12,7 +12,7 @@ public final class Constants {
   public static String PYTHON = PropertiesManager.getProperties().getProperty("python");
   public static final String DEFAULT_REDESIGN_NAME = "Monolith Trace";
 
-  public enum TypeOfTraces {
+  public enum TraceType {
     ALL,
     REPRESENTATIVE,
     LONGEST,

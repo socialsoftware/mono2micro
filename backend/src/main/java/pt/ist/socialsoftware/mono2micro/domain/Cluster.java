@@ -30,6 +30,15 @@ public class Cluster {
 		this.entities = entities;
 	}
 
+	public Cluster(Cluster c) {
+		this.name = c.getName();
+		this.complexity = c.getComplexity();
+		this.cohesion = c.getCohesion();
+		this.coupling = c.getCoupling();
+		this.couplingDependencies = c.getCouplingDependencies();
+		this.entities = c.getEntities();
+	}
+
 	public String getName() {
 		return this.name;
 	}

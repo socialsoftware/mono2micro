@@ -58,58 +58,100 @@ export class ClusterOperationsMenu extends React.Component {
     }
 
     render() {
-       return (
+        const {
+            mergeWithCluster,
+            transferToCluster,
+            clusterEntities,
+            handleSelectEntities,
+            selectedCluster,
+        } = this.props;
+
+        const {
+            operation,
+            inputValue,
+        } = this.state;
+
+        console.log(clusterEntities);
+
+        const numberOfActiveClusterEntities = clusterEntities.reduce((a, e) => e.active ? ++a : a, 0);
+
+        return (
             <ButtonToolbar>
-                {this.props.selectedCluster.name && <span>
-            
-                <Button className="mr-1">{this.props.selectedCluster.name}</Button>
-            
-                <DropdownButton className="mr-1" as={ButtonGroup}
-                    title={this.state.operation}>
-                    <Dropdown.Item eventKey="1" onClick={() => this.setOperation(operations.RENAME)}>{operations.RENAME}</Dropdown.Item>
-                    <Dropdown.Item eventKey="2" onClick={() => this.setOperation(operations.MERGE)}>{operations.MERGE}</Dropdown.Item>
-                    <Dropdown.Item eventKey="3" onClick={() => this.setOperation(operations.SPLIT)}>{operations.SPLIT}</Dropdown.Item>
-                    <Dropdown.Item eventKey="4" onClick={() => this.setOperation(operations.TRANSFER)}>{operations.TRANSFER}</Dropdown.Item>
-                </DropdownButton></span>}
+                {selectedCluster.name && 
+                    <span>
+                        <Button className="mr-1">{selectedCluster.name}</Button>
+                        <DropdownButton className="mr-1" as={ButtonGroup}
+                            title={operation}>
+                            <Dropdown.Item eventKey="1" onClick={() => this.setOperation(operations.RENAME)}>
+                                {operations.RENAME}
+                            </Dropdown.Item>
+                            <Dropdown.Item eventKey="2" onClick={() => this.setOperation(operations.MERGE)}>
+                                {operations.MERGE}
+                            </Dropdown.Item>
+                            <Dropdown.Item eventKey="3" onClick={() => this.setOperation(operations.SPLIT)}>
+                                {operations.SPLIT}
+                            </Dropdown.Item>
+                            <Dropdown.Item eventKey="4" onClick={() => this.setOperation(operations.TRANSFER)}>
+                                {operations.TRANSFER}
+                            </Dropdown.Item>
+                        </DropdownButton>
+                    </span>
+                }
 
-                {this.props.mergeWithCluster.name &&
-                <Button className="mr-1">{this.props.mergeWithCluster.name}</Button>}
+                {
+                    mergeWithCluster.name &&
+                        <Button className="mr-1">
+                            {mergeWithCluster.name}
+                        </Button>
+                }
 
-                {this.props.transferToCluster.name &&
-                <Button className="mr-1">{this.props.transferToCluster.name}</Button>}
+                {
+                    transferToCluster.name &&
+                        <Button className="mr-1">
+                            {transferToCluster.name}
+                        </Button>
+                }
 
-                {((this.state.operation === operations.SPLIT && this.props.clusterEntities) ||
-                 (this.state.operation === operations.TRANSFER && this.props.transferToCluster.name)) &&
+                {((operation === operations.SPLIT && clusterEntities) ||
+                 (operation === operations.TRANSFER && transferToCluster.name)) &&
                     <div style={{width: "200px"}}>
-                    <Select
-                        isMulti
-                        name="entities"
-                        options={this.props.clusterEntities}
-                        closeMenuOnSelect={false}
-                        onChange={this.props.handleSelectEntities}
-                        placeholder="entities"
-                    /></div>}
+                        <Select
+                            isMulti
+                            name="entities"
+                            options={clusterEntities}
+                            closeMenuOnSelect={false}
+                            onChange={handleSelectEntities}
+                            placeholder="entities"
+                        />
+                    </div>
+                }
                 
-                {(this.state.operation === operations.RENAME || this.props.mergeWithCluster.name || 
-                (this.props.clusterEntities &&
-                    this.props.clusterEntities.reduce((a, e) => e.active ? ++a : a, 0) > 0 && 
-                    this.props.clusterEntities.reduce((a, e) => e.active ? ++a : a, 0) < this.props.clusterEntities.length))
-                && this.state.operation !== operations.TRANSFER &&
-                <InputGroup className="mr-1">
-                    <FormControl
-                        type="text"
-                        label="Text"
-                        placeholder="name"
-                        value={this.state.inputValue}
-                        onChange={this.handleInputValueChange}/>
-                </InputGroup>}
+                {(operation === operations.RENAME || mergeWithCluster.name || (clusterEntities &&
+                    numberOfActiveClusterEntities > 0 && 
+                    numberOfActiveClusterEntities < clusterEntities.length))
+                    && operation !== operations.TRANSFER &&
+                    <InputGroup className="mr-1">
+                        <FormControl
+                            type="text"
+                            label="Text"
+                            placeholder="name"
+                            value={inputValue}
+                            onChange={this.handleInputValueChange}/>
+                    </InputGroup>
+                }
                 
-                {(this.state.inputValue.length > 0 || (this.state.operation === operations.TRANSFER && (this.props.clusterEntities &&
-                    this.props.clusterEntities.reduce((a, e) => e.active ? ++a : a, 0) > 0 && 
-                    this.props.clusterEntities.reduce((a, e) => e.active ? ++a : a, 0) < this.props.clusterEntities.length))) &&
-                <Button className="mr-1" onClick={this.handleSubmit}>Submit</Button>}
+                {(inputValue.length > 0 || (operation === operations.TRANSFER && (clusterEntities &&
+                    numberOfActiveClusterEntities > 0 && 
+                    numberOfActiveClusterEntities < clusterEntities.length))) &&
+                    
+                    <Button className="mr-1" onClick={this.handleSubmit}>
+                        Submit
+                    </Button>
+                }
 
-                <Button onClick={this.handleClose}>Cancel</Button>
+                <Button onClick={this.handleClose}>
+                    Cancel
+                </Button>
             </ButtonToolbar>
        );
     }

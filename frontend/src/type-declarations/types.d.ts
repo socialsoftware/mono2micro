@@ -7,20 +7,22 @@ export interface AccessDto {
 }
 
 export interface LocalTransaction {
-    id?: string;
-    clusterName?: string;
+    id?: number;
+    clusterID?: number;
     clusterAccesses?: AccessDto[];
+    firstAccessedEntityIDs: number[];
+}
+
+export interface LocalTransactionsGraph {
+    nodes: LocalTransaction[];
+    links: string[];
 }
 
 export interface Controller {
     name?: string;
     complexity?: number;
     performance?: number;
-    entities?: Record<string, string>; // <entityName, mode>
-    localTransactionsGraph?: {
-        nodes?: LocalTransaction[];
-        links?: string[];
-    }
+    entities?: Record<number, number>; // <entityID, mode>
 }
 
 export interface Cluster {
@@ -28,14 +30,14 @@ export interface Cluster {
     complexity?: number;
     cohesion?: number;
     coupling?: number;
-    couplingDependencies?: Record<string, string[]> // <clusterName, entities>
-    entities?: string[];
+    couplingDependencies?: Record<string, number[]> // <clusterName, entityIDs>
+    entities?: number[];
 }
 
-export interface Graph {
+export interface Decomposition {
+	name?: string;
     codebaseName?: string;
 	dendrogramName?: string;
-	name?: string;
 	expert?: boolean;
 	cutValue?: number;
 	cutType?: string;
@@ -44,8 +46,9 @@ export interface Graph {
     performance?: number;
 	cohesion?: number;
 	coupling?: number;
-	controllers?: Controller[];
-	clusters?: Cluster[];
+	controllers?: Record<string, Controller>;
+    clusters?: Record<string, Cluster>;
+    entityIDToClusterName?: Record<number, string>;
 }
 
 export interface Dendrogram {
@@ -57,30 +60,29 @@ export interface Dendrogram {
 	readMetricWeight?: number;
 	sequenceMetricWeight?: number;
 	tracesMaxLimit?: number;
-    graphs?: Graph[];
-    profiles?: string[];
-	typeOfTraces?: TypeOfTraces;
+    decompositions?: Decomposition[];
+    profile?: string;
+	traceType?: TraceType;
 }
 
 export interface Codebase {
     name?: string;
     profiles?: Record<string, string[]>; // e.g <Generic, ControllerNamesList>
     dendrograms?: Dendrogram[];
-    analysisType?: string;
     datafilePath?: string;
 }
 
 export interface AnalyserDto {
-    profiles?: String[];
+    profile?: string;
     requestLimit?: number;
     tracesMaxLimit?: number;
-    typeOfTraces?: TypeOfTraces;
-    expert?: Graph;
+    traceType?: TraceType;
+    expert?: Decomposition;
 }
 
 export interface AnalysisDto {
-    graph1?: Graph;
-    graph2?: Graph;
+    decomposition1?: Decomposition;
+    decomposition2?: Decomposition;
     truePositive?: number;
     trueNegative?: number;
     falsePositive?: number;
@@ -98,7 +100,7 @@ export interface AnalysisDto {
     mojoSingletons?: number;
 }
 
-export enum TypeOfTraces {
+export enum TraceType {
     ALL,
     REPRESENTATIVE,
     LONGEST,

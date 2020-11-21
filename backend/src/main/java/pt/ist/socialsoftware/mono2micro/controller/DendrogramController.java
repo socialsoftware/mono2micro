@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
@@ -87,7 +87,7 @@ public class DendrogramController {
 				.body(codebaseManager.getDendrogramImage(codebaseName, dendrogramName));
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -124,12 +124,7 @@ public class DendrogramController {
 			// FIXME The whole codebase needs to be fetched because it needs to be written as a whole again
 			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-
-			if (codebase.isStatic()) {
-				codebase.createStaticDendrogram(dendrogram);
-			} else {
-				codebase.createDynamicDendrogram(dendrogram);
-			}
+			codebase.createDendrogram(dendrogram);
 
             codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.CREATED);
@@ -149,7 +144,7 @@ public class DendrogramController {
 	public ResponseEntity<HttpStatus> cutDendrogram(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
-		@RequestBody Graph graph
+		@RequestBody Decomposition decomposition
 	) {
 		logger.debug("cutDendrogram");
 
@@ -158,7 +153,27 @@ public class DendrogramController {
 			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 
-            codebase.getDendrogram(dendrogramName).cut(graph);
+			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
+
+			// FIXME the graph given to the cut function shouldn't be a Decomposition
+			// FIXME The result of the cut function SHOULD be a decomposition
+			// FIXME Did not have the patience to code it well
+			Decomposition cutDecomposition = dendrogram.cut(decomposition);
+
+			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+				codebase,
+				dendrogram.getProfile(),
+				decomposition.getEntityIDToClusterName()
+			));
+
+			cutDecomposition.calculateMetrics(
+				codebase,
+				dendrogram.getTracesMaxLimit(),
+				dendrogram.getTraceType()
+			);
+
+			dendrogram.addDecomposition(cutDecomposition);
+
             codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.OK);
 
@@ -167,7 +182,6 @@ public class DendrogramController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 	}
-
 
 	@RequestMapping(value = "/dendrogram/{dendrogramName}/expertCut", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> createExpertCut(
@@ -183,7 +197,27 @@ public class DendrogramController {
 			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
 
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            codebase.getDendrogram(dendrogramName).createExpertCut(expertName, expertFile);
+			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
+
+			Decomposition decomposition = dendrogram.createExpertCut(
+            	expertName,
+				expertFile
+			);
+
+			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+				codebase,
+				dendrogram.getProfile(),
+				decomposition.getEntityIDToClusterName()
+			));
+
+			decomposition.calculateMetrics(
+				codebase,
+				dendrogram.getTracesMaxLimit(),
+				dendrogram.getTraceType()
+			);
+
+			dendrogram.addDecomposition(decomposition);
+
             codebaseManager.writeCodebase(codebase);
 
             return new ResponseEntity<>(HttpStatus.OK);

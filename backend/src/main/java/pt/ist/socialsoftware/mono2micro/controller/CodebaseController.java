@@ -6,13 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
-import pt.ist.socialsoftware.mono2micro.domain.Graph;
+import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -65,16 +64,16 @@ public class CodebaseController {
 		}
     }
 
-	@RequestMapping(value = "/codebase/{codebaseName}/graphs", method = RequestMethod.GET)
-	public ResponseEntity<List<Graph>> getCodebaseGraphs(
+	@RequestMapping(value = "/codebase/{codebaseName}/decompositions", method = RequestMethod.GET)
+	public ResponseEntity<List<Decomposition>> getCodebaseDecompositions(
 		@PathVariable String codebaseName,
 		@RequestParam List<String> fieldNames
 	) {
-		logger.debug("getCodebaseGraphs");
+		logger.debug("getCodebaseDecompositions");
 
 		try {
 			return new ResponseEntity<>(
-				codebaseManager.getCodebaseGraphsWithFields(
+				codebaseManager.getCodebaseDecompositionsWithFields(
 					codebaseName,
 					new HashSet<>(fieldNames)
 				),
@@ -104,12 +103,15 @@ public class CodebaseController {
 
 
     @RequestMapping(value = "/codebase/{codebaseName}/addProfile", method = RequestMethod.POST)
-	public ResponseEntity<HttpStatus> addProfile(@PathVariable String codebaseName, @RequestParam String profile) {
+	public ResponseEntity<HttpStatus> addProfile(
+		@PathVariable String codebaseName,
+		@RequestParam String profile
+	) {
         logger.debug("addProfile");
 
         try {
             Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            codebase.addProfile(profile, new ArrayList<>());
+            codebase.addProfile(profile, new HashSet<>());
             codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.OK);
 
@@ -125,7 +127,11 @@ public class CodebaseController {
 
 
     @RequestMapping(value = "/codebase/{codebaseName}/moveControllers", method = RequestMethod.POST)
-	public ResponseEntity<HttpStatus> moveControllers(@PathVariable String codebaseName, @RequestBody String[] controllers, @RequestParam String targetProfile) {
+	public ResponseEntity<HttpStatus> moveControllers(
+		@PathVariable String codebaseName,
+		@RequestBody String[] controllers,
+		@RequestParam String targetProfile
+	) {
 		logger.debug("moveControllers");
         
         try {
@@ -142,7 +148,10 @@ public class CodebaseController {
 
 
     @RequestMapping(value = "/codebase/{codebaseName}/deleteProfile", method = RequestMethod.DELETE)
-	public ResponseEntity<HttpStatus> deleteProfile(@PathVariable String codebaseName, @RequestParam String profile) {
+	public ResponseEntity<HttpStatus> deleteProfile(
+		@PathVariable String codebaseName,
+		@RequestParam String profile
+	) {
 		logger.debug("deleteProfile");
 
         try {
@@ -160,13 +169,16 @@ public class CodebaseController {
     @RequestMapping(value = "/codebase/create", method = RequestMethod.POST)
     public ResponseEntity<HttpStatus> createCodebase(
         @RequestParam String codebaseName,
-        @RequestParam Object datafile,
-        @RequestParam String analysisType
+        @RequestParam Object datafile
     ){
         logger.debug("createCodebase");
 
         try {
-            Codebase codebase = codebaseManager.createCodebase(codebaseName, datafile, analysisType);
+            Codebase codebase = codebaseManager.createCodebase(
+            	codebaseName,
+				datafile
+			);
+
             codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.CREATED);
 

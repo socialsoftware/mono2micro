@@ -122,7 +122,6 @@ const optionsSeq = {
     }
 };
 
-
 const optionsFunctionalityRedesign = {
     height: "700",
     layout: {
@@ -182,7 +181,7 @@ export class TransactionView extends React.Component {
             visGraphSeq: {},
             redesignVisGraph: {},
             controller: {},
-            controllerClusters: [],
+            controllersClusters: [],
             showGraph: false,
             localTransactionsSequence: [],
             currentSubView: "Graph",
@@ -200,7 +199,7 @@ export class TransactionView extends React.Component {
             DCGISelectedLocalTransactions: [],
             selectedRedesignsToCompare: ["Select a Redesign", "Select a Redesign"],
             compareRedesigns: false,
-            graph: {
+            decomposition: {
                 controllers: [],
                 clusters: [],
             }
@@ -227,61 +226,81 @@ export class TransactionView extends React.Component {
         const {
             codebaseName,
             dendrogramName,
-            graphName,
+            decompositionName,
         } = this.props;
 
         const service = new RepositoryService();
 
-        service.getControllerClusters(
+        service.getControllersClusters(
             codebaseName,
             dendrogramName,
-            graphName
+            decompositionName
         ).then(response => {
             console.log(response);
             this.setState({
-                controllerClusters: response.data
+                controllersClusters: response.data
             });
         });
 
-        service.getGraph(
+        service.getDecomposition(
             codebaseName,
             dendrogramName,
-            graphName,
+            decompositionName,
             ["clusters", "controllers"]
         ).then(response => {
             this.setState({
-                graph: response.data,
+                decomposition: {
+                    controllers: Object.values(response.data.controllers),
+                    clusters: Object.values(response.data.clusters),
+                },
             });
         });
     }
 
     handleControllerSubmit(value) {
         this.setState({
-            controller: this.state.graph.controllers.find(c => c.name === value),
+            controller: this.state.decomposition.controllers.find(c => c.name === value),
         }, () => {
             this.loadGraph();
         });
     }
 
     loadGraph() {
+        const {
+            codebaseName,
+            dendrogramName,
+            decompositionName,
+        } = this.props;
+
         this.createTransactionDiagram();
-        this.createSequenceDiagram();
-        this.setState({
-            showGraph: true
+
+        const service = new RepositoryService();
+
+        service.getLocalTransactionsGraphForController(
+            codebaseName,
+            dendrogramName,
+            decompositionName,
+            this.state.controller.name
+        ).then(response => {
+            this.createSequenceDiagram(response.data);
+            this.setState({
+                showGraph: true
+            });
         });
     }
 
     createTransactionDiagram() {
         const {
             controller,
-            controllerClusters,
+            controllersClusters,
         } = this.state;
 
 
         const visGraph = {
-            nodes: new DataSet(controllerClusters[controller.name].map(cluster => this.createNode(cluster))),
-            edges: new DataSet(controllerClusters[controller.name].map(cluster => this.createEdge(cluster)))
+            nodes: new DataSet(controllersClusters[controller.name].map(cluster => this.createNode(cluster))),
+            edges: new DataSet(controllersClusters[controller.name].map(cluster => this.createEdge(cluster)))
         };
+
         visGraph.nodes.add({
             id: controller.name,
             title: Object.entries(controller.entities).map(e => e[0] + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(controller.entities).length,
@@ -324,11 +343,11 @@ export class TransactionView extends React.Component {
         };
     }
 
-    createSequenceDiagram() {
+    createSequenceDiagram(localTransactionsGraph) {
 
         const {
             controller,
-            graph,
+            decomposition,
         } = this.state;
 
         let nodes = [];
@@ -352,7 +371,7 @@ export class TransactionView extends React.Component {
         let {
             nodes: localTransactionsList,
             links: linksList,
-        } = controller.localTransactionsGraph;
+        } = localTransactionsGraph;
 
 
         for (var i = 1; i < localTransactionsList.length; i++) {
@@ -366,7 +385,7 @@ export class TransactionView extends React.Component {
 
             localTransactionIdToClusterAccesses[localTransactionId] = clusterAccesses;
 
-            let cluster = graph.clusters.find(cluster => Number(cluster.name) === clusterID);
+            let cluster = decomposition.clusters.find(cluster => Number(cluster.name) === clusterID);
             const clusterEntityNames = cluster.entities;
 
             nodes.push({
@@ -493,26 +512,30 @@ export class TransactionView extends React.Component {
     }
 
     identifyModifiedEntities(cluster){
-        console.log(Object.entries(this.state.controller.entities));
+        const modifiedEntities = [];
+
+        Object.entries(this.state.controller.entities).forEach(e => {
+            if (cluster.entities.includes(e[0]) && e[1].includes("W"))
+                modifiedEntities.push(e[0]);
+        })
+
         return {
             cluster: cluster.name,
-            modifiedEntities: Object.entries(this.state.controller.entities)
-                .filter(e => cluster.entities.includes(e[0]) && e[1].includes("W"))
-                .map(e => e[0])
+            modifiedEntities,
         }
     }
 
 
     handleSelectNode(nodeId) {
+
         const {
-            selectedOperation,
-            selectedRedesign,
-            compareRedesigns,
-            selectedLocalTransaction,
             DCGIAvailableClusters,
             DCGILocalTransactionsForTheSelectedClusters,
             DCGISelectedLocalTransactions,
-            DCGISelectedClusters
+            selectedLocalTransaction,
+            selectedRedesign,
+            selectedOperation,
+            DCGISelectedClusters,
         } = this.state;
 
         if(this.state.compareRedesigns) return;
@@ -602,7 +625,7 @@ export class TransactionView extends React.Component {
 
     handleSelectOperation(value){
         const {
-            controllerClusters,
+            controllersClusters,
             selectedLocalTransaction,
             controller,
         } = this.state;
@@ -613,16 +636,29 @@ export class TransactionView extends React.Component {
         });
 
         if(value === redesignOperations.AC){
+            const modifiedEntities = [];
+
+            controllersClusters[controller.name].forEach(cluster => {
+                const clusterModifiedEntities = this.identifyModifiedEntities(cluster);
+                
+                if (clusterModifiedEntities.modifiedEntities.length > 0 && clusterModifiedEntities.cluster !== selectedLocalTransaction.cluster)
+                    modifiedEntities.push(clusterModifiedEntities);
+            })
+
             this.setState({
-                modifiedEntities: controllerClusters[controller.name]
-                    .map(cluster => this.identifyModifiedEntities(cluster))
-                    .filter(e => e.modifiedEntities.length > 0 && e.cluster !== selectedLocalTransaction.cluster)
+                modifiedEntities,
             });
         } else if(value === redesignOperations.DCGI) {
+
+            const DCGIAvailableClusters = [];
+
+            controllersClusters[controller.name].forEach(cluster => {
+                if (cluster.name !== selectedLocalTransaction.cluster)
+                    DCGIAvailableClusters.push(cluster.name);
+            })
+
             this.setState({
-                DCGIAvailableClusters: controllerClusters[controller.name]
-                    .filter(e => e.name !== selectedLocalTransaction.cluster)
-                    .map(e => e.name),
+                DCGIAvailableClusters,
                 DCGISelectedClusters: [selectedLocalTransaction.cluster]
             });
         }
@@ -639,7 +675,7 @@ export class TransactionView extends React.Component {
         const {
             codebaseName,
             dendrogramName,
-            graphName,
+            decompositionName,
         } = this.props;
 
         const {
@@ -648,8 +684,6 @@ export class TransactionView extends React.Component {
             controller,
             selectedOperation,
             newCaller,
-            DCGISelectedClusters,
-            DCGISelectedLocalTransactions,
         } = this.state;
 
         const service = new RepositoryService();
@@ -659,7 +693,7 @@ export class TransactionView extends React.Component {
                 service.addCompensating(
                     codebaseName,
                     dendrogramName,
-                    graphName,
+                    decompositionName,
                     controller.name,
                     selectedRedesign.name,
                     value.cluster,
@@ -681,7 +715,7 @@ export class TransactionView extends React.Component {
                 service.sequenceChange(
                     codebaseName,
                     dendrogramName,
-                    graphName,
+                    decompositionName,
                     controller.name,
                     selectedRedesign.name,
                     selectedLocalTransaction.id,
@@ -726,7 +760,7 @@ export class TransactionView extends React.Component {
                 service.selectPivotTransaction(
                     codebaseName, 
                     dendrogramName, 
-                    graphName,
+                    decompositionName,
                     controller.name, 
                     selectedRedesign.name, 
                     selectedLocalTransaction.id,
@@ -757,7 +791,7 @@ export class TransactionView extends React.Component {
                 service.changeLTName(
                     codebaseName,
                     dendrogramName,
-                    graphName,
+                    decompositionName,
                     controller.name,
                     selectedRedesign.name,
                     selectedLocalTransaction.id,
@@ -780,7 +814,6 @@ export class TransactionView extends React.Component {
     }
 
     rebuildRedesignGraph(value){
-        console.log(value);
         const controllers = this.state.graph.controllers;
         const index = controllers.indexOf(this.state.controller);
         controllers[index] = value.data;
@@ -798,7 +831,7 @@ export class TransactionView extends React.Component {
 
     handlePivotTransactionSubmit(value){
         console.log(value);
-        const controllers = this.state.graph.controllers;
+        const controllers = this.state.decomposition.controllers;
         const index = controllers.indexOf(this.state.controller);
         controllers[index] = value.data;
         
@@ -896,10 +929,10 @@ export class TransactionView extends React.Component {
     handleUseForMetrics(value){
         console.log(value);
         const service = new RepositoryService();
-        service.setUseForMetrics(this.props.codebaseName, this.props.dendrogramName, this.props.graphName,
+        service.setUseForMetrics(this.props.codebaseName, this.props.dendrogramName, this.props.decompositionName,
             this.state.controller.name, value.name)
             .then(response => {
-                const controllers = this.state.graph.controllers;
+                const controllers = this.state.decomposition.controllers;
                 const index = controllers.indexOf(this.state.controller);
                 controllers[index] = response.data;
                 this.setState({
@@ -925,10 +958,10 @@ export class TransactionView extends React.Component {
     handleDeleteRedesign(value){
         console.log(value);
         const service = new RepositoryService();
-        service.deleteRedesign(this.props.codebaseName, this.props.dendrogramName, this.props.graphName,
+        service.deleteRedesign(this.props.codebaseName, this.props.dendrogramName, this.props.decompositionName,
             this.state.controller.name, value.name)
             .then(response => {
-                const controllers = this.state.graph.controllers;
+                const controllers = this.state.decomposition.controllers;
                 const index = controllers.indexOf(this.state.controller);
                 controllers[index] = response.data;
                 this.setState({
@@ -985,7 +1018,7 @@ export class TransactionView extends React.Component {
     render() {
 
         const {
-            controllerClusters,
+            controllersClusters,
             currentSubView,
             visGraphSeq,
             localTransactionsSequence,
@@ -996,15 +1029,14 @@ export class TransactionView extends React.Component {
             DCGIAvailableClusters,
             DCGILocalTransactionsForTheSelectedClusters,
             DCGISelectedLocalTransactions,
-            compareRedesigns,
             modifiedEntities,
             newCaller,
             redesignVisGraph,
             selectedLocalTransaction,
             selectedRedesign,
-            selectedRedesignsToCompare,
             showMenu,
-            graph: {
+            visGraph,
+            decomposition: {
                 controllers,
                 clusters,
             },
@@ -1077,8 +1109,8 @@ export class TransactionView extends React.Component {
             text: 'Entities Accessed'
         }];
 
-        let controllerClustersAmount = Object.keys(controllerClusters).map(controller => controllerClusters[controller].length);
-        let averageClustersAccessed = controllerClustersAmount.reduce((a, b) => a + b, 0) / controllerClustersAmount.length;
+        let controllersClustersAmount = Object.keys(controllersClusters).map(controller => controllersClusters[controller].length);
+        let averageClustersAccessed = controllersClustersAmount.reduce((a, b) => a + b, 0) / controllersClustersAmount.length;
 
         return (
             <div>
@@ -1151,7 +1183,7 @@ export class TransactionView extends React.Component {
                         <span>
                             <TransactionOperationsMenu
                                 handleControllerSubmit={this.handleControllerSubmit}
-                                controllerClusters={controllerClusters}
+                                controllersClusters={controllersClusters}
                             />
                             <div style={{height: '700px'}}>
                                 <VisNetwork
@@ -1182,9 +1214,9 @@ export class TransactionView extends React.Component {
                         <div>
                             Number of Clusters : {clusters.length}
                             < br />
-                            Number of Controllers that access a single Cluster : {Object.keys(controllerClusters).filter(key => controllerClusters[key].length === 1).length}
+                            Number of Controllers that access a single Cluster : {Object.keys(controllersClusters).filter(key => controllersClusters[key].length === 1).length}
                             < br />
-                            Maximum number of Clusters accessed by a single Controller : {Math.max(...Object.keys(controllerClusters).map(key => controllerClusters[key].length))}
+                            Maximum number of Clusters accessed by a single Controller : {Math.max(...Object.keys(controllersClusters).map(key => controllersClusters[key].length))}
                             < br />
                             Average Number of Clusters accessed (Average number of microservices accessed during a transaction) : {Number(averageClustersAccessed.toFixed(2))}
                             <BootstrapTable

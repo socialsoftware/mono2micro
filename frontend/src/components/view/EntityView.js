@@ -64,7 +64,7 @@ export class EntityView extends React.Component {
             entities: [],
             clusters: [],
             controllers: [],
-            clusterControllers: {},
+            clustersControllers: {},
             showGraph: false,
             amountList: [],
             currentSubView: "Graph"
@@ -81,31 +81,30 @@ export class EntityView extends React.Component {
         const {
             codebaseName,
             dendrogramName,
-            graphName,
+            decompositionName,
         } = this.props;
 
         const service = new RepositoryService();
         
-        service.getGraph(
+        service.getDecomposition(
             codebaseName,
             dendrogramName,
-            graphName,
+            decompositionName,
             [ "clusters", "controllers" ]
         ).then(response => {
 
-            service.getClusterControllers(
+            service.getClustersControllers(
                 codebaseName,
                 dendrogramName,
-                graphName
+                decompositionName
             ).then(response2 => {
                 this.setState({
-                    clusters: response.data.clusters,
-                    entities: response.data.clusters.map(c => c.entities).flat(),
-                    controllers: response.data.controllers,
-                    clusterControllers: response2.data,
+                    clusters: Object.values(response.data.clusters),
+                    entities: Object.values(response.data.clusters).map(c => c.entities).flat(),
+                    controllers: Object.values(response.data.controllers),
+                    clustersControllers: response2.data,
                 }, () => {
                     let amountList = {};
-
                     const {
                         entities,
                         clusters,
@@ -114,7 +113,6 @@ export class EntityView extends React.Component {
                     for (var i = 0; i < entities.length; i++) {
                         let amount = 0;
                         let entityName = entities[i];
-
                         let entityCluster = clusters.find(c => c.entities.includes(entityName));
 
                         for (var j = 0; j < clusters.length; j++) {
@@ -148,13 +146,16 @@ export class EntityView extends React.Component {
     }
 
     //get controllers that access both an entity and another cluster
-    getCommonControllers(entityName, cluster) {
-        let entityControllers = this.state.controllers
-            .filter(controller => Object.keys(controller.entities).includes(entityName))
-            .map(c => c.name);
+    getCommonControllers(entity, cluster) {
+        let entityControllers = [];
+        let clustersControllers = this.state.clustersControllers[cluster.name].map(c => c.name);
 
-        let clusterControllers = this.state.clusterControllers[cluster.name].map(c => c.name);
-        return entityControllers.filter(c => clusterControllers.includes(c));
+        this.state.controllers.forEach(controller => {
+            if (controller.entities[entity] && clustersControllers.includes(controller.name))
+                entityControllers.push(controller.name);
+        })
+
+        return entityControllers;
     }
 
     loadGraph() {
@@ -167,10 +168,15 @@ export class EntityView extends React.Component {
 
         let nodes = [];
         let edges = [];
-        let entityControllers = controllers
-            .filter(controller => Object.keys(controller.entities).includes(entity))
-            .map(controller => controller.name + " " + controller.entities[entity]);
 
+        
+        let entityControllers = [];
+        
+        controllers.forEach(controller => {
+            if (controller.entities[entity])
+                entityControllers.push(controller.name + " " + controller.entities[entity]);
+        })
+        
         nodes.push({
             id: entity,
             label: entity,
@@ -230,7 +236,9 @@ export class EntityView extends React.Component {
     render() {
         const {
             entities,
-            currentSubView
+            currentSubView,
+            amountList,
+            visGraph,
         } = this.state;
 
         const metricsRows = entities.map(entity => {

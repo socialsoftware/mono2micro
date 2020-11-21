@@ -24,7 +24,7 @@ export class TransactionOperationsMenu extends React.Component {
     componentDidMount() {
         if (this.state.controllerAmount === "All") {
             this.setState({
-                controllerList: Object.keys(this.props.controllerClusters).sort()
+                controllerList: Object.keys(this.props.controllersClusters).sort()
             });
         }
     }
@@ -32,7 +32,7 @@ export class TransactionOperationsMenu extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (this.state.controllerAmount === "All") {
             this.setState({
-                controllerList: Object.keys(nextProps.controllerClusters).sort()
+                controllerList: Object.keys(nextProps.controllersClusters).sort()
             });
         }
     }
@@ -52,11 +52,11 @@ export class TransactionOperationsMenu extends React.Component {
         });
         if (value === "All") {
             this.setState({
-                controllerList: Object.keys(this.props.controllerClusters).sort()
+                controllerList: Object.keys(this.props.controllersClusters).sort()
             });
         } else {
             this.setState({
-                controllerList: Object.keys(this.props.controllerClusters).filter(key => this.props.controllerClusters[key].length === value).sort()
+                controllerList: Object.keys(this.props.controllersClusters).filter(key => this.props.controllersClusters[key].length === value).sort()
             });
         }
     }
@@ -67,30 +67,40 @@ export class TransactionOperationsMenu extends React.Component {
 
 
     render() {
-        const controllerAmountList = [...new Set(Object.keys(this.props.controllerClusters).map(key => this.props.controllerClusters[key].length))].sort((a, b) => a - b).map(amount =>
-            <Dropdown.Item key={amount} onClick={() => this.setControllerAmount(amount)}>{amount}</Dropdown.Item>
+        const controllerAmountList = [...new Set(Object.keys(this.props.controllersClusters).map(key => this.props.controllersClusters[key].length))].sort((a, b) => a - b).map(amount =>
+            <Dropdown.Item key={amount} onClick={() => this.setControllerAmount(amount)}>
+                {amount}
+            </Dropdown.Item>
         );
 
         const controllersListDropdown = this.state.controllerList.map(c =>
-            <Dropdown.Item key={c} onClick={() => this.setController(c)}>{c}</Dropdown.Item>
+            <Dropdown.Item key={c} onClick={() => this.setController(c)}>
+                {c}
+            </Dropdown.Item>
         );
 
         return (
             <ButtonToolbar>
                 <DropdownButton className="mr-1" as={ButtonGroup} title={this.state.controllerAmount}>
-                    <Dropdown.Item key={"All"} onClick={() => this.setControllerAmount("All")}>{"All"}</Dropdown.Item>
+                    <Dropdown.Item key={"All"} onClick={() => this.setControllerAmount("All")}>
+                        {"All"}
+                    </Dropdown.Item>
                     {controllerAmountList}
                 </DropdownButton>
 
                 <Dropdown className="mr-1" as={ButtonGroup}>
-                    <Dropdown.Toggle>{this.state.controller}</Dropdown.Toggle>
+                    <Dropdown.Toggle>
+                        {this.state.controller}
+                    </Dropdown.Toggle>
                     <Dropdown.Menu as={CustomSearchMenuForwardingRef}>
                         {controllersListDropdown}
                     </Dropdown.Menu>
                 </Dropdown>
 
                 {this.state.showSubmit &&
-                <Button onClick={this.handleSubmit}>Create View</Button>
+                <Button onClick={this.handleSubmit}>
+                    Create View
+                </Button>
                 }
             </ButtonToolbar>
         );

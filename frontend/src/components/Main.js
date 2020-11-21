@@ -19,7 +19,7 @@ export const Main = () => (
       <Route exact path='/codebases/:codebaseName' component={Codebase} />
       <Route exact path='/codebases/:codebaseName/dendrograms' component={Dendrograms} />
       <Route exact path='/codebases/:codebaseName/dendrograms/:dendrogramName' component={Dendrogram} />
-      <Route exact path='/codebases/:codebaseName/dendrograms/:dendrogramName/graphs/:graphName' component={Views} />
+      <Route exact path='/codebases/:codebaseName/dendrograms/:dendrogramName/decompositions/:decompositionName' component={Views} />
 
       <Route exact path='/codebases/:codebaseName/profiles' component={Profiles} />
 
