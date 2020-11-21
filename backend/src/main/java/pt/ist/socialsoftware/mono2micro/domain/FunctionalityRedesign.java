@@ -233,10 +233,7 @@ public class FunctionalityRedesign {
         }
 
         LocalTransaction firstLT = firstLocalTransactionInAMerge(ltsBeingMergedIDs);
-        for(i = 0; i < firstLT.getRemoteInvocations().size(); i++)
-            if(ltsBeingMergedIDs.contains(firstLT.getRemoteInvocations().get(i)))
-                firstLT.getRemoteInvocations().remove(i);
-
+        firstLT.getRemoteInvocations().removeAll(ltsBeingMergedIDs);
         firstLT.getRemoteInvocations().add(min);
 
         for (LocalTransaction lt : this.redesign)
