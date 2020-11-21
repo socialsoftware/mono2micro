@@ -73,6 +73,9 @@ public class FenixFrameworkCollector extends SpoonCollector {
             allEntities.add(clazz.getSimpleName());
         }
 
+        for (String e : allDomainEntities)
+            entitiesMap.put(e, entitiesMap.size() + 1);
+
         // 2nd iteration, to retrieve interface and abstract classes implementors and subclasses
         for(CtType<?> clazz : factory.Class().getAll()) {
             Set<CtTypeReference<?>> superInterfaces = clazz.getSuperInterfaces();

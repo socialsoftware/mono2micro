@@ -2,9 +2,7 @@ package pt.ist.socialsoftware.mono2micro.domain;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import pt.ist.socialsoftware.mono2micro.exceptions.BadConstructedRedesignException;
 import pt.ist.socialsoftware.mono2micro.utils.LocalTransactionTypes;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +15,7 @@ public class FunctionalityRedesign {
     private List<LocalTransaction> redesign = new ArrayList<>();
     private int systemComplexity;
     private int functionalityComplexity;
+    private int inconsistencyComplexity;
     private String pivotTransaction = "";
 
     public FunctionalityRedesign(){}
@@ -63,6 +62,14 @@ public class FunctionalityRedesign {
 
     public void setRedesign(List<LocalTransaction> redesign) {
         this.redesign = redesign;
+    }
+
+    public int getInconsistencyComplexity() {
+        return inconsistencyComplexity;
+    }
+
+    public void setInconsistencyComplexity(int inconsistencyComplexity) {
+        this.inconsistencyComplexity = inconsistencyComplexity;
     }
 
     public List<LocalTransaction> addCompensating(String clusterName, String entities, String fromID) {
@@ -169,11 +176,7 @@ public class FunctionalityRedesign {
         }
 
         LocalTransaction firstLT = firstLocalTransactionInAMerge(ltsBeingMergedIDs);
-        for(i = 0; i < firstLT.getRemoteInvocations().size(); i++){
-            if(ltsBeingMergedIDs.contains(firstLT.getRemoteInvocations().get(i))){
-                firstLT.getRemoteInvocations().remove(i);
-            }
-        }
+        firstLT.getRemoteInvocations().removeAll(ltsBeingMergedIDs);
         firstLT.getRemoteInvocations().add(min);
 
         for (LocalTransaction lt : this.redesign) {

@@ -1,0 +1,113 @@
+{
+  "name" : "SpecificationController.createSpec",
+  "type" : "SAGA",
+  "complexity" : 417.0,
+  "entities" : {
+    "GoalModel" : "W",
+    "ConditionModel" : "W",
+    "BlendedWorkflow" : "RW",
+    "DataModel" : "W",
+    "ActivityModel" : "W",
+    "Specification" : "RW"
+  },
+  "entitiesPerCluster" : {
+    "Design" : [ "BlendedWorkflow", "Specification", "DataModel" ],
+    "Models" : [ "ConditionModel", "ActivityModel", "GoalModel" ]
+  },
+  "entitiesSeq" : "[{\"cluster\":\"Design\",\"sequence\":[[\"BlendedWorkflow\",\"R\"],[\"BlendedWorkflow\",\"W\"],[\"Specification\",\"R\"],[\"Specification\",\"W\"],[\"DataModel\",\"W\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"ConditionModel\",\"W\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Specification\",\"W\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"ActivityModel\",\"W\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"Specification\",\"W\"]]},{\"cluster\":\"Models\",\"sequence\":[[\"GoalModel\",\"W\"]]},{\"cluster\":\"Design\",\"sequence\":[[\"BlendedWorkflow\",\"R\"],[\"BlendedWorkflow\",\"W\"],[\"Specification\",\"W\"]]}]",
+  "functionalityRedesigns" : [ {
+    "name" : "Monolith Trace",
+    "usedForMetrics" : false,
+    "redesign" : [ {
+      "name" : "SpecificationController.createSpec",
+      "id" : "-1",
+      "cluster" : "SpecificationController.createSpec",
+      "accessedEntities" : "",
+      "remoteInvocations" : [ 0 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "0: Design",
+      "id" : "0",
+      "cluster" : "Design",
+      "accessedEntities" : "[[\"BlendedWorkflow\",\"R\"],[\"BlendedWorkflow\",\"W\"],[\"Specification\",\"R\"],[\"Specification\",\"W\"],[\"DataModel\",\"W\"]]",
+      "remoteInvocations" : [ 1 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "1: Models",
+      "id" : "1",
+      "cluster" : "Models",
+      "accessedEntities" : "[[\"ConditionModel\",\"W\"]]",
+      "remoteInvocations" : [ 2 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "2: Design",
+      "id" : "2",
+      "cluster" : "Design",
+      "accessedEntities" : "[[\"Specification\",\"W\"]]",
+      "remoteInvocations" : [ 3 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "3: Models",
+      "id" : "3",
+      "cluster" : "Models",
+      "accessedEntities" : "[[\"ActivityModel\",\"W\"]]",
+      "remoteInvocations" : [ 4 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "4: Design",
+      "id" : "4",
+      "cluster" : "Design",
+      "accessedEntities" : "[[\"Specification\",\"W\"]]",
+      "remoteInvocations" : [ 5 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "5: Models",
+      "id" : "5",
+      "cluster" : "Models",
+      "accessedEntities" : "[[\"GoalModel\",\"W\"]]",
+      "remoteInvocations" : [ 6 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "6: Design",
+      "id" : "6",
+      "cluster" : "Design",
+      "accessedEntities" : "[[\"BlendedWorkflow\",\"R\"],[\"BlendedWorkflow\",\"W\"],[\"Specification\",\"W\"]]",
+      "remoteInvocations" : [ ],
+      "type" : "COMPENSATABLE"
+    } ],
+    "systemComplexity" : 632,
+    "functionalityComplexity" : 169,
+    "inconsistencyComplexity" : 0,
+    "pivotTransaction" : ""
+  }, {
+    "name" : "thesis-evaluation",
+    "usedForMetrics" : true,
+    "redesign" : [ {
+      "name" : "SpecificationController.createSpec",
+      "id" : "-1",
+      "cluster" : "SpecificationController.createSpec",
+      "accessedEntities" : "",
+      "remoteInvocations" : [ 0 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "0: Design",
+      "id" : "0",
+      "cluster" : "Design",
+      "accessedEntities" : "[[\"BlendedWorkflow\",\"RW\"],[\"DataModel\",\"W\"],[\"Specification\",\"RW\"]]",
+      "remoteInvocations" : [ 1 ],
+      "type" : "PIVOT"
+    }, {
+      "name" : "1: Models",
+      "id" : "1",
+      "cluster" : "Models",
+      "accessedEntities" : "[[\"GoalModel\",\"W\"],[\"ConditionModel\",\"W\"],[\"ActivityModel\",\"W\"]]",
+      "remoteInvocations" : [ ],
+      "type" : "RETRIABLE"
+    } ],
+    "systemComplexity" : 0,
+    "functionalityComplexity" : 79,
+    "inconsistencyComplexity" : 0,
+    "pivotTransaction" : "0"
+  } ],
+  "localTransactionsGraph" : {"nodes":[{"id":0,"clusterName":null,"clusterAccesses":[]},{"id":1,"clusterName":"Design","clusterAccesses":[["BlendedWorkflow","R"],["BlendedWorkflow","W"],["Specification","R"],["Specification","W"],["DataModel","W"]]},{"id":2,"clusterName":"Models","clusterAccesses":[["ConditionModel","W"]]},{"id":3,"clusterName":"Design","clusterAccesses":[["Specification","W"]]},{"id":4,"clusterName":"Models","clusterAccesses":[["ActivityModel","W"]]},{"id":5,"clusterName":"Design","clusterAccesses":[["Specification","W"]]},{"id":6,"clusterName":"Models","clusterAccesses":[["GoalModel","W"]]},{"id":7,"clusterName":"Design","clusterAccesses":[["BlendedWorkflow","R"],["BlendedWorkflow","W"],["Specification","W"]]}],"links":["0->1","1->2","2->3","3->4","4->5","5->6","6->7"]}
+}

@@ -1,0 +1,196 @@
+{
+  "name" : "VirtualEditionController.deleteTaxonomy",
+  "type" : "SAGA",
+  "complexity" : 580.0,
+  "entities" : {
+    "LdoDUser" : "W",
+    "Player" : "W",
+    "Category" : "RW",
+    "VirtualEditionInter" : "W",
+    "Taxonomy" : "RW",
+    "VirtualEdition" : "RW",
+    "ClassificationGameRound" : "RW",
+    "Tag" : "RW",
+    "ClassificationGameParticipant" : "RW",
+    "HumanAnnotation" : "W",
+    "ClassificationGame" : "RW"
+  },
+  "entitiesPerCluster" : {
+    "User" : [ "LdoDUser" ],
+    "VirtualEdition" : [ "Taxonomy", "VirtualEdition", "Category", "Tag", "VirtualEditionInter", "HumanAnnotation" ],
+    "ClassificationGame" : [ "ClassificationGame", "ClassificationGameParticipant", "Player", "ClassificationGameRound" ]
+  },
+  "entitiesSeq" : "[{\"cluster\":\"VirtualEdition\",\"sequence\":[[\"Taxonomy\",\"R\"],[\"VirtualEdition\",\"R\"],[\"Taxonomy\",\"W\"],[\"VirtualEdition\",\"W\"],[\"Category\",\"R\"],[\"Tag\",\"R\"],[\"Tag\",\"W\"],[\"VirtualEditionInter\",\"W\"],[\"Category\",\"W\"]]},{\"cluster\":\"User\",\"sequence\":[[\"LdoDUser\",\"W\"]]},{\"cluster\":\"VirtualEdition\",\"sequence\":[[\"Tag\",\"W\"],[\"HumanAnnotation\",\"W\"]]},{\"cluster\":\"ClassificationGame\",\"sequence\":[[\"ClassificationGame\",\"R\"]]},{\"cluster\":\"VirtualEdition\",\"sequence\":[[\"Tag\",\"W\"]]},{\"cluster\":\"ClassificationGame\",\"sequence\":[[\"ClassificationGame\",\"W\"]]},{\"cluster\":\"VirtualEdition\",\"sequence\":[[\"VirtualEdition\",\"W\"]]},{\"cluster\":\"ClassificationGame\",\"sequence\":[[\"ClassificationGame\",\"R\"]]},{\"cluster\":\"VirtualEdition\",\"sequence\":[[\"Tag\",\"R\"]]},{\"cluster\":\"ClassificationGame\",\"sequence\":[[\"ClassificationGame\",\"W\"]]},{\"cluster\":\"VirtualEdition\",\"sequence\":[[\"Tag\",\"W\"]]},{\"cluster\":\"ClassificationGame\",\"sequence\":[[\"ClassificationGame\",\"W\"]]},{\"cluster\":\"VirtualEdition\",\"sequence\":[[\"VirtualEditionInter\",\"W\"]]},{\"cluster\":\"ClassificationGame\",\"sequence\":[[\"ClassificationGame\",\"W\"]]},{\"cluster\":\"User\",\"sequence\":[[\"LdoDUser\",\"W\"]]},{\"cluster\":\"ClassificationGame\",\"sequence\":[[\"ClassificationGame\",\"R\"],[\"ClassificationGameParticipant\",\"R\"],[\"ClassificationGameParticipant\",\"W\"],[\"ClassificationGame\",\"W\"],[\"Player\",\"W\"],[\"ClassificationGameRound\",\"R\"],[\"ClassificationGameRound\",\"W\"]]},{\"cluster\":\"VirtualEdition\",\"sequence\":[[\"Category\",\"W\"],[\"Taxonomy\",\"W\"],[\"VirtualEdition\",\"W\"]]}]",
+  "functionalityRedesigns" : [ {
+    "name" : "Monolith Trace",
+    "usedForMetrics" : false,
+    "redesign" : [ {
+      "name" : "VirtualEditionController.deleteTaxonomy",
+      "id" : "-1",
+      "cluster" : "VirtualEditionController.deleteTaxonomy",
+      "accessedEntities" : "",
+      "remoteInvocations" : [ 0 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "0: VirtualEdition",
+      "id" : "0",
+      "cluster" : "VirtualEdition",
+      "accessedEntities" : "[[\"Taxonomy\",\"R\"],[\"VirtualEdition\",\"R\"],[\"Taxonomy\",\"W\"],[\"VirtualEdition\",\"W\"],[\"Category\",\"R\"],[\"Tag\",\"R\"],[\"Tag\",\"W\"],[\"VirtualEditionInter\",\"W\"],[\"Category\",\"W\"]]",
+      "remoteInvocations" : [ 1 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "1: User",
+      "id" : "1",
+      "cluster" : "User",
+      "accessedEntities" : "[[\"LdoDUser\",\"W\"]]",
+      "remoteInvocations" : [ 2 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "2: VirtualEdition",
+      "id" : "2",
+      "cluster" : "VirtualEdition",
+      "accessedEntities" : "[[\"Tag\",\"W\"],[\"HumanAnnotation\",\"W\"]]",
+      "remoteInvocations" : [ 3 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "3: ClassificationGame",
+      "id" : "3",
+      "cluster" : "ClassificationGame",
+      "accessedEntities" : "[[\"ClassificationGame\",\"R\"]]",
+      "remoteInvocations" : [ 4 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "4: VirtualEdition",
+      "id" : "4",
+      "cluster" : "VirtualEdition",
+      "accessedEntities" : "[[\"Tag\",\"W\"]]",
+      "remoteInvocations" : [ 5 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "5: ClassificationGame",
+      "id" : "5",
+      "cluster" : "ClassificationGame",
+      "accessedEntities" : "[[\"ClassificationGame\",\"W\"]]",
+      "remoteInvocations" : [ 6 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "6: VirtualEdition",
+      "id" : "6",
+      "cluster" : "VirtualEdition",
+      "accessedEntities" : "[[\"VirtualEdition\",\"W\"]]",
+      "remoteInvocations" : [ 7 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "7: ClassificationGame",
+      "id" : "7",
+      "cluster" : "ClassificationGame",
+      "accessedEntities" : "[[\"ClassificationGame\",\"R\"]]",
+      "remoteInvocations" : [ 8 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "8: VirtualEdition",
+      "id" : "8",
+      "cluster" : "VirtualEdition",
+      "accessedEntities" : "[[\"Tag\",\"R\"]]",
+      "remoteInvocations" : [ 9 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "9: ClassificationGame",
+      "id" : "9",
+      "cluster" : "ClassificationGame",
+      "accessedEntities" : "[[\"ClassificationGame\",\"W\"]]",
+      "remoteInvocations" : [ 10 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "10: VirtualEdition",
+      "id" : "10",
+      "cluster" : "VirtualEdition",
+      "accessedEntities" : "[[\"Tag\",\"W\"]]",
+      "remoteInvocations" : [ 11 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "11: ClassificationGame",
+      "id" : "11",
+      "cluster" : "ClassificationGame",
+      "accessedEntities" : "[[\"ClassificationGame\",\"W\"]]",
+      "remoteInvocations" : [ 12 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "12: VirtualEdition",
+      "id" : "12",
+      "cluster" : "VirtualEdition",
+      "accessedEntities" : "[[\"VirtualEditionInter\",\"W\"]]",
+      "remoteInvocations" : [ 13 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "13: ClassificationGame",
+      "id" : "13",
+      "cluster" : "ClassificationGame",
+      "accessedEntities" : "[[\"ClassificationGame\",\"W\"]]",
+      "remoteInvocations" : [ 14 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "14: User",
+      "id" : "14",
+      "cluster" : "User",
+      "accessedEntities" : "[[\"LdoDUser\",\"W\"]]",
+      "remoteInvocations" : [ 15 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "15: ClassificationGame",
+      "id" : "15",
+      "cluster" : "ClassificationGame",
+      "accessedEntities" : "[[\"ClassificationGame\",\"R\"],[\"ClassificationGameParticipant\",\"R\"],[\"ClassificationGameParticipant\",\"W\"],[\"ClassificationGame\",\"W\"],[\"Player\",\"W\"],[\"ClassificationGameRound\",\"R\"],[\"ClassificationGameRound\",\"W\"]]",
+      "remoteInvocations" : [ 16 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "16: VirtualEdition",
+      "id" : "16",
+      "cluster" : "VirtualEdition",
+      "accessedEntities" : "[[\"Category\",\"W\"],[\"Taxonomy\",\"W\"],[\"VirtualEdition\",\"W\"]]",
+      "remoteInvocations" : [ ],
+      "type" : "COMPENSATABLE"
+    } ],
+    "systemComplexity" : 761,
+    "functionalityComplexity" : 253,
+    "inconsistencyComplexity" : 0,
+    "pivotTransaction" : ""
+  }, {
+    "name" : "thesis-evaluation",
+    "usedForMetrics" : true,
+    "redesign" : [ {
+      "name" : "VirtualEditionController.deleteTaxonomy",
+      "id" : "-1",
+      "cluster" : "VirtualEditionController.deleteTaxonomy",
+      "accessedEntities" : "",
+      "remoteInvocations" : [ 0 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "2: ClassificationGame",
+      "id" : "2",
+      "cluster" : "ClassificationGame",
+      "accessedEntities" : "[[\"Player\",\"W\"],[\"ClassificationGameRound\",\"RW\"],[\"ClassificationGameParticipant\",\"RW\"],[\"ClassificationGame\",\"RW\"]]",
+      "remoteInvocations" : [ ],
+      "type" : "RETRIABLE"
+    }, {
+      "name" : "0: VirtualEdition",
+      "id" : "0",
+      "cluster" : "VirtualEdition",
+      "accessedEntities" : "[[\"Category\",\"RW\"],[\"VirtualEditionInter\",\"W\"],[\"Taxonomy\",\"RW\"],[\"VirtualEdition\",\"RW\"],[\"Tag\",\"RW\"],[\"HumanAnnotation\",\"W\"]]",
+      "remoteInvocations" : [ 1, 2 ],
+      "type" : "PIVOT"
+    }, {
+      "name" : "1: User",
+      "id" : "1",
+      "cluster" : "User",
+      "accessedEntities" : "[[\"LdoDUser\",\"W\"]]",
+      "remoteInvocations" : [ ],
+      "type" : "RETRIABLE"
+    } ],
+    "systemComplexity" : 0,
+    "functionalityComplexity" : 164,
+    "inconsistencyComplexity" : 0,
+    "pivotTransaction" : "0"
+  } ],
+  "localTransactionsGraph" : {"nodes":[{"id":0,"clusterName":null,"clusterAccesses":[]},{"id":1,"clusterName":"VirtualEdition","clusterAccesses":[["Taxonomy","R"],["VirtualEdition","R"],["Taxonomy","W"],["VirtualEdition","W"],["Category","R"],["Tag","R"],["Tag","W"],["VirtualEditionInter","W"],["Category","W"]]},{"id":2,"clusterName":"User","clusterAccesses":[["LdoDUser","W"]]},{"id":3,"clusterName":"VirtualEdition","clusterAccesses":[["Tag","W"],["HumanAnnotation","W"]]},{"id":4,"clusterName":"ClassificationGame","clusterAccesses":[["ClassificationGame","R"]]},{"id":5,"clusterName":"VirtualEdition","clusterAccesses":[["Tag","W"]]},{"id":6,"clusterName":"ClassificationGame","clusterAccesses":[["ClassificationGame","W"]]},{"id":7,"clusterName":"VirtualEdition","clusterAccesses":[["VirtualEdition","W"]]},{"id":8,"clusterName":"ClassificationGame","clusterAccesses":[["ClassificationGame","R"]]},{"id":9,"clusterName":"VirtualEdition","clusterAccesses":[["Tag","R"]]},{"id":10,"clusterName":"ClassificationGame","clusterAccesses":[["ClassificationGame","W"]]},{"id":11,"clusterName":"VirtualEdition","clusterAccesses":[["Tag","W"]]},{"id":12,"clusterName":"ClassificationGame","clusterAccesses":[["ClassificationGame","W"]]},{"id":13,"clusterName":"VirtualEdition","clusterAccesses":[["VirtualEditionInter","W"]]},{"id":14,"clusterName":"ClassificationGame","clusterAccesses":[["ClassificationGame","W"]]},{"id":15,"clusterName":"User","clusterAccesses":[["LdoDUser","W"]]},{"id":16,"clusterName":"ClassificationGame","clusterAccesses":[["ClassificationGame","R"],["ClassificationGameParticipant","R"],["ClassificationGameParticipant","W"],["ClassificationGame","W"],["Player","W"],["ClassificationGameRound","R"],["ClassificationGameRound","W"]]},{"id":17,"clusterName":"VirtualEdition","clusterAccesses":[["Category","W"],["Taxonomy","W"],["VirtualEdition","W"]]}],"links":["0->1","1->2","2->3","3->4","4->5","5->6","6->7","7->8","8->9","9->10","10->11","11->12","12->13","13->14","14->15","15->16","16->17"]}
+}

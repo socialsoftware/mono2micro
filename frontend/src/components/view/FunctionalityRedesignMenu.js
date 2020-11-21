@@ -180,16 +180,18 @@ export class FunctionalityRedesignMenu extends React.Component{
                return {value: e.id, label: e.id + ": " + e.cluster}
             });
 
+        const operationsToShow = this.props.selectedLocalTransaction.id === (-1).toString();
+
         return (
             <div>
                 <ButtonToolbar className="mb-2">
                     <Button className="mr-1">{this.props.selectedLocalTransaction.name}</Button>
                     <DropdownButton className="mr-1" as={ButtonGroup} title={this.state.operation}>
-                        <Dropdown.Item eventKey="1" onClick={() => this.setOperation(redesignOperations.SQ)}>{redesignOperations.SQ}</Dropdown.Item>
-                        <Dropdown.Item eventKey="2" onClick={() => this.setOperation(redesignOperations.AC)}>{redesignOperations.AC}</Dropdown.Item>
-                        <Dropdown.Item eventKey="3" onClick={() => this.setOperation(redesignOperations.DCGI)}>{redesignOperations.DCGI}</Dropdown.Item>
+                        <Dropdown.Item eventKey="1" disabled = {operationsToShow} onClick={() => this.setOperation(redesignOperations.SQ)}>{redesignOperations.SQ}</Dropdown.Item>
+                        <Dropdown.Item eventKey="2" disabled = {operationsToShow} onClick={() => this.setOperation(redesignOperations.AC)}>{redesignOperations.AC}</Dropdown.Item>
+                        <Dropdown.Item eventKey="3" disabled = {operationsToShow} onClick={() => this.setOperation(redesignOperations.DCGI)}>{redesignOperations.DCGI}</Dropdown.Item>
                         <Dropdown.Item eventKey="4" onClick={() => this.setOperation(redesignOperations.PIVOT)}>{redesignOperations.PIVOT}</Dropdown.Item>
-                        <Dropdown.Item eventKey="5" onClick={() => this.setOperation(redesignOperations.RENAME)}>{redesignOperations.RENAME}</Dropdown.Item>
+                        <Dropdown.Item eventKey="5" disabled = {operationsToShow} onClick={() => this.setOperation(redesignOperations.RENAME)}>{redesignOperations.RENAME}</Dropdown.Item>
                     </DropdownButton>
 
                     {this.props.newCaller !== null &&

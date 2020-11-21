@@ -267,6 +267,16 @@ public class Graph {
 				throw e;
 			}
 
+			if(!controller.getEntitiesPerCluster().containsKey(cluster)){
+				List<String> entities = new ArrayList<>();
+				entities.add(entity);
+				controller.getEntitiesPerCluster().put(cluster,entities);
+			}
+			else {
+				if(!controller.getEntitiesPerCluster().get(cluster).contains(entity))
+					controller.getEntitiesPerCluster().get(cluster).add(entity);
+			}
+
 			if (i == 0) {
 				lt = new Controller.LocalTransaction(
 					localTransactionsCounter++,

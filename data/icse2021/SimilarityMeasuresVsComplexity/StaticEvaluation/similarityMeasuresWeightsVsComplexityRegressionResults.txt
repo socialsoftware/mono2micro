@@ -1,0 +1,22 @@
+Regression results for the evaluation of the correlation between weights given to the four similarity measures, access (A), write (W), read(R) and sequence (S) and the number of clusters (N) of a decomposition with its Uniform Complexity. (uComplexity)
+
+
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:            uComplexity   R-squared:                       0.193
+Model:                            OLS   Adj. R-squared:                  0.193
+Method:                 Least Squares   F-statistic:                 1.191e+04
+No. Observations:              199056   Prob (F-statistic):               0.00
+Df Residuals:                  199051   Log-Likelihood:                 54090.
+Df Model:                           4   AIC:                        -1.082e+05
+Covariance Type:            nonrobust   BIC:                        -1.081e+05
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+const       3.016e-05    4.6e-07     65.531      0.000    2.93e-05    3.11e-05
+N              0.0353      0.000    199.484      0.000       0.035       0.036
+A          -1.721e-06   1.78e-05     -0.097      0.923   -3.65e-05    3.31e-05
+W              0.0014   1.78e-05     81.540      0.000       0.001       0.001
+R              0.0001   1.78e-05      7.215      0.000    9.33e-05       0.000
+S              0.0014   1.78e-05     81.180      0.000       0.001       0.001
+==============================================================================
