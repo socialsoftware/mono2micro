@@ -12,16 +12,71 @@ import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 
 var HttpStatus = require('http-status-codes');
 
+const metricsColumns = [
+    {
+        dataField: 'tp',
+        text: 'TP',
+    },
+    {
+        dataField: 'tn',
+        text: 'TN',
+    },
+    {
+        dataField: 'fp',
+        text: 'FP',
+    },
+    {
+        dataField: 'fn',
+        text: 'FN',
+    },
+    {
+        dataField: 'fscore',
+        text: 'F-Score',
+    },
+    {
+        dataField: 'accuracy',
+        text: 'Accuracy',
+    },
+    {
+        dataField: 'precision',
+        text: 'Precision',
+    },
+    {
+        dataField: 'recall',
+        text: 'Recall',
+    },
+    {
+        dataField: 'specificity',
+        text: 'Specificity',
+    },
+    {
+        dataField: 'mojoCommon',
+        text: 'MoJo Common Entities',
+    },
+    {
+        dataField: 'mojoBiggest',
+        text: 'MoJo Biggest Cluster',
+    },
+    {
+        dataField: 'mojoNew',
+        text: 'MoJo New Cluster',
+    },
+    {
+        dataField: 'mojoSingletons',
+        text: 'MoJo Singletons',
+    },
+];
+
 export class Analysis extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             codebases: [],
             codebase: {},
-            graphs: [],
+            decompositions: [],
             isUploaded: "",
-            graph1: {},
-            graph2: {},
+            decomposition1: {},
+            decomposition2: {},
             resultData: {},
             falsePairs: []
         };
@@ -44,10 +99,10 @@ export class Analysis extends React.Component {
         });
     }
 
-    loadCodebaseGraphs(codebaseName) {
+    loadCodebaseDecompositions(codebaseName) {
         const service = new RepositoryService();
         
-        service.getCodebaseGraphs(
+        service.getCodebaseDecompositions(
             codebaseName,
             [
                 "name",
@@ -59,7 +114,7 @@ export class Analysis extends React.Component {
         ).then((response) => {
             if (response.data !== null) {
                 this.setState({
-                    graphs: response.data,
+                    decompositions: response.data,
                 });
             }
         });
@@ -70,18 +125,18 @@ export class Analysis extends React.Component {
             codebase: codebase,
         });
 
-        this.loadCodebaseGraphs(codebase.name);
+        this.loadCodebaseDecompositions(codebase.name);
     }
 
-    setGraph1(graph) {
+    setDecomposition1(decomposition) {
         this.setState({
-            graph1: graph
+            decomposition1: decomposition
         });
     }
 
-    setGraph2(graph) {
+    setDecomposition2(decomposition) {
         this.setState({
-            graph2: graph
+            decomposition2: decomposition
         });
     }
 
@@ -93,8 +148,8 @@ export class Analysis extends React.Component {
         });
 
         let requestData = {
-            "graph1": this.state.graph1,
-            "graph2": this.state.graph2
+            "decomposition1": this.state.decomposition1,
+            "decomposition2": this.state.decomposition2
         };
 
         const service = new RepositoryService();
@@ -122,21 +177,25 @@ export class Analysis extends React.Component {
     renderBreadCrumbs = () => {
         return (
             <Breadcrumb>
-                <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-                <Breadcrumb.Item active>Microservice Analysis</Breadcrumb.Item>
+                <Breadcrumb.Item href="/">
+                    Home
+                </Breadcrumb.Item>
+                <Breadcrumb.Item active>
+                    Microservice Analysis
+                </Breadcrumb.Item>
             </Breadcrumb>
         );
     }
-
+    
     render() {
 
         const {
             codebase,
             codebases,
             falsePairs,
-            graph1,
-            graph2,
-            graphs,
+            decomposition1,
+            decomposition2,
+            decompositions,
             isUploaded,
             resultData,
         } = this.state;
@@ -153,19 +212,17 @@ export class Analysis extends React.Component {
             }
         });
 
-        const { SearchBar } = Search;
-
         const falsePairColumns = [{
             dataField: 'e1',
             text: 'Entity 1',
             sort: true
         }, {
             dataField: 'e1g1',
-            text: graph1.name,
+            text: decomposition1.name,
             sort: true
         }, {
             dataField: 'e1g2',
-            text: graph2.name,
+            text: decomposition2.name,
             sort: true
         }, {
             dataField: 'space',
@@ -176,13 +233,57 @@ export class Analysis extends React.Component {
             sort: true
         }, {
             dataField: 'e2g1',
-            text: graph1.name,
+            text: decomposition1.name,
             sort: true
         }, {
             dataField: 'e2g2',
-            text: graph2.name,
+            text: decomposition2.name,
             sort: true
         }];
+
+        const { SearchBar } = Search;
+
+        const expertDecompositionsForDecomposition1 = [];
+        const nonExpertDecompositionsForDecomposition1 = [];
+
+        decompositions.forEach((decomposition) => {
+            const dropdownItem = (
+                <Dropdown.Item
+                    key={decomposition.name}
+                    onClick={() => this.setDecomposition1(decomposition)}
+                >
+                    {decomposition.name + " from " + decomposition.dendrogramName}
+                </Dropdown.Item>
+            )
+
+            if (decomposition.expert) {
+                expertDecompositionsForDecomposition1.push(dropdownItem)
+                return;
+            }
+
+            nonExpertDecompositionsForDecomposition1.push(dropdownItem);
+        });
+
+        const expertDecompositionsForDecomposition2 = [];
+        const nonExpertDecompositionsForDecomposition2 = [];
+
+        decompositions.forEach((decomposition) => {
+            const dropdownItem = (
+                <Dropdown.Item
+                    key={decomposition.name}
+                    onClick={() => this.setDecomposition2(decomposition)}
+                >
+                    {decomposition.name + " from " + decomposition.dendrogramName}
+                </Dropdown.Item>
+            )
+
+            if (decomposition.expert) {
+                expertDecompositionsForDecomposition2.push(dropdownItem)
+                return;
+            }
+
+            nonExpertDecompositionsForDecomposition2.push(dropdownItem);
+        });
 
         return (
             <>
@@ -220,31 +321,14 @@ export class Analysis extends React.Component {
                         <Col sm={5}>
                             <DropdownButton
                                 title={
-                                    Object.keys(graph1).length === 0 ?
+                                    Object.keys(decomposition1).length === 0 ?
                                         "Select Cut" :
-                                        graph1.name + " from " + graph1.dendrogramName
+                                        decomposition1.name + " from " + decomposition1.dendrogramName
                                 }
                             >
-                                {
-                                    graphs.filter(graph => graph.expert === true).map(graph =>
-                                        <Dropdown.Item
-                                            key={graph.name}
-                                            onClick={() => this.setGraph1(graph)}
-                                        >
-                                            {graph.name + " from " + graph.dendrogramName}
-                                        </Dropdown.Item>
-                                    )
-                                }
+                                {expertDecompositionsForDecomposition1}
                                 <Dropdown.Divider />
-                                {
-                                    graphs.filter(graph => graph.expert === false).map(graph =>
-                                        <Dropdown.Item
-                                            key={graph.name}
-                                            onClick={() => this.setGraph1(graph)}
-                                        >
-                                            {graph.name + " from " + graph.dendrogramName}
-                                        </Dropdown.Item>)
-                                }
+                                {nonExpertDecompositionsForDecomposition1}
                             </DropdownButton>
                         </Col>
                     </Form.Group>
@@ -255,32 +339,14 @@ export class Analysis extends React.Component {
                         </Form.Label>
                         <Col sm={5}>
                             <DropdownButton
-                                title={Object.keys(graph2).length === 0 ?
+                                title={Object.keys(decomposition2).length === 0 ?
                                     "Select Cut" :
-                                    graph2.name + " from " + graph2.dendrogramName
+                                    decomposition2.name + " from " + decomposition2.dendrogramName
                                 }
                             >
-                                {
-                                    graphs.filter(graph => graph.expert === true).map(graph =>
-                                        <Dropdown.Item
-                                            key={graph.name}
-                                            onClick={() => this.setGraph2(graph)}
-                                        >
-                                            {graph.name + " from " + graph.dendrogramName}
-                                        </Dropdown.Item>
-                                    )
-                                }
+                                {nonExpertDecompositionsForDecomposition2}
                                 <Dropdown.Divider />
-                                {
-                                    graphs.filter(graph => graph.expert === false).map(graph =>
-                                        <Dropdown.Item
-                                            key={graph.name}
-                                            onClick={() => this.setGraph2(graph)}
-                                        >
-                                            {graph.name + " from " + graph.dendrogramName}
-                                        </Dropdown.Item>
-                                    )
-                                }
+                                {nonExpertDecompositionsForDecomposition2}
                             </DropdownButton>
                         </Col>
                     </Form.Group>
@@ -290,8 +356,8 @@ export class Analysis extends React.Component {
                             <Button
                                 type="submit"
                                 disabled={Object.keys(codebase).length === 0 ||
-                                    Object.keys(graph1).length === 0 ||
-                                    Object.keys(graph2).length === 0
+                                    Object.keys(decomposition1).length === 0 ||
+                                    Object.keys(decomposition2).length === 0
                                 }
                             >
                                 Submit
@@ -308,6 +374,7 @@ export class Analysis extends React.Component {
                         <h4 style={{ color: "#666666" }}> Metrics </h4>
                         <BootstrapTable
                             keyField='id'
+                            bootstrap4
                             data={[{
                                 id: "metrics",
                                 tp: resultData.truePositive,
@@ -325,61 +392,7 @@ export class Analysis extends React.Component {
                                 mojoSingletons: resultData.mojoSingletons,
                             }
                             ]}
-                            columns={[
-                                {
-                                    dataField: 'tp',
-                                    text: 'TP',
-                                },
-                                {
-                                    dataField: 'tn',
-                                    text: 'TN',
-                                },
-                                {
-                                    dataField: 'fp',
-                                    text: 'FP',
-                                },
-                                {
-                                    dataField: 'fn',
-                                    text: 'FN',
-                                },
-                                {
-                                    dataField: 'fscore',
-                                    text: 'F-Score',
-                                },
-                                {
-                                    dataField: 'accuracy',
-                                    text: 'Accuracy',
-                                },
-                                {
-                                    dataField: 'precision',
-                                    text: 'Precision',
-                                },
-                                {
-                                    dataField: 'recall',
-                                    text: 'Recall',
-                                },
-                                {
-                                    dataField: 'specificity',
-                                    text: 'Specificity',
-                                },
-                                {
-                                    dataField: 'mojoCommon',
-                                    text: 'MoJo Common Entities',
-                                },
-                                {
-                                    dataField: 'mojoBiggest',
-                                    text: 'MoJo Biggest Cluster',
-                                },
-                                {
-                                    dataField: 'mojoNew',
-                                    text: 'MoJo New Cluster',
-                                },
-                                {
-                                    dataField: 'mojoSingletons',
-                                    text: 'MoJo Singletons',
-                                },
-                            ]}
-                            bootstrap4
+                            columns={metricsColumns}
                         />
                         <hr />
                         <h4 style={{ color: "#666666" }}>False Pairs</h4>

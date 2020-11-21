@@ -4,15 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.apache.commons.io.FileUtils;
+import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
+import pt.ist.socialsoftware.mono2micro.utils.Utils;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.CodebaseDeserializer;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 
@@ -20,24 +19,14 @@ import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 @JsonDeserialize(using = CodebaseDeserializer.class)
 public class Codebase {
 	private String name;
-	private Map<String, List<String>> profiles = new HashMap<>(); // e.g <Generic, ControllerNamesList>
+	private Map<String, Set<String>> profiles = new HashMap<>(); // e.g <Generic, ControllerNamesList> change to Set
 	private List<Dendrogram> dendrograms = new ArrayList<>();
-	private String analysisType;
 	private String datafilePath;
 
 	public Codebase() {}
 
 	public Codebase(String name) {
         this.name = name;
-	}
-
-	public Codebase(String name, String analysisType) {
-		if (!analysisType.equals("static") && !analysisType.equals("dynamic")) {
-			throw new Error("Unknown analysis type: Please choose either 'static' or 'dynamic'");
-		}
-
-		this.name = name;
-		this.analysisType = analysisType;
 	}
 
 	public String getName() {
@@ -48,14 +37,6 @@ public class Codebase {
 		this.name = name;
 	}
 
-	public String getAnalysisType() { return this.analysisType; }
-
-	public void setAnalysisType(String analysisType) {
-		this.analysisType = analysisType;
-	}
-
-	@JsonIgnore
-	public boolean isStatic() { return this.analysisType.equals("static"); }
 	public String getDatafilePath() {
 		return datafilePath;
 	}
@@ -64,22 +45,24 @@ public class Codebase {
 		this.datafilePath = datafilePath;
 	}
 
-	public Map<String,List<String>> getProfiles() {
+	public Map<String, Set<String>> getProfiles() {
 		return this.profiles;
     }
-    
-    public List<String> getProfile(String profileName) {
-		return this.profiles.get(profileName);
-    }
 
-	public void setProfiles(Map<String,List<String>> profiles) {
+    public Set<String> getProfile(String profileName) { return this.profiles.get(profileName); }
+
+	public void setProfiles(Map<String, Set<String>> profiles) {
 		this.profiles = profiles;
 	}
 	
-	public void addProfile(String profileName, List<String> controllers) {
+	public void addProfile(
+		String profileName,
+		Set<String> controllers
+	) {
 		if (this.profiles.containsKey(profileName)) {
 			throw new KeyAlreadyExistsException();
 		}
+
 		this.profiles.put(profileName, controllers);
 	}
 	
@@ -87,12 +70,16 @@ public class Codebase {
 		this.profiles.remove(profileName);
 	}
 
-	public void moveControllers(String[] controllers, String targetProfile) {
+	public void moveControllers(
+		String[] controllers,
+		String targetProfile
+	) {
         for (String profile : this.profiles.keySet()) {
 			for (String controller : controllers) {
 				this.profiles.get(profile).remove(controller);
 			}
 		}
+
 		for (String controller : controllers)
 			this.profiles.get(targetProfile).add(controller);
 	}
@@ -110,6 +97,7 @@ public class Codebase {
 		for (Dendrogram dendrogram : this.dendrograms)
 			if (dendrogram.getName().equals(dendrogramName))
 				return dendrogram;
+
 		return null;
 	}
 
@@ -120,14 +108,17 @@ public class Codebase {
 				break;
 			}
 		}
+
 		FileUtils.deleteDirectory(new File(CODEBASES_PATH + this.name + "/" + dendrogramName));
 	}
 
 	@JsonIgnore
 	public List<String> getDendrogramNames() {
 		List<String> dendrogramNames = new ArrayList<>();
+
 		for (Dendrogram dendrogram : this.dendrograms)
 			dendrogramNames.add(dendrogram.getName());
+
 		return dendrogramNames;
 	}
 
@@ -135,7 +126,9 @@ public class Codebase {
 		this.dendrograms.add(dendrogram);
 	}
 
-	public void executeCreateDendrogramPythonScript(Dendrogram dendrogram)
+	public void executeCreateDendrogramPythonScript(
+		Dendrogram dendrogram
+	)
 		throws InterruptedException, IOException
 	{
 		//run python script to generate dendrogram image
@@ -152,7 +145,11 @@ public class Codebase {
 		p.waitFor();
 	}
 
-	public void createStaticDendrogram(Dendrogram dendrogram) throws Exception {
+	public void createDendrogram(
+		Dendrogram dendrogram
+	)
+		throws Exception
+	{
 		if (getDendrogram(dendrogram.getName()) != null)
 			throw new KeyAlreadyExistsException();
 
@@ -163,23 +160,22 @@ public class Codebase {
 
 		this.addDendrogram(dendrogram);
 
-		dendrogram.calculateStaticSimilarityMatrix();
+		Utils.GetDataToBuildSimilarityMatrixResult result = Utils.getDataToBuildSimilarityMatrix(
+			this,
+			dendrogram.getProfile(),
+			dendrogram.getTracesMaxLimit(),
+			dendrogram.getTraceType()
+		);
 
-		executeCreateDendrogramPythonScript(dendrogram);
-	}
-
-	public void createDynamicDendrogram(Dendrogram dendrogram) throws Exception {
-		if (getDendrogram(dendrogram.getName()) != null)
-			throw new KeyAlreadyExistsException();
-
-		File dendrogramPath = new File(CODEBASES_PATH + this.name + "/" + dendrogram.getName());
-		if (!dendrogramPath.exists()) {
-			dendrogramPath.mkdir();
-		}
-
-		this.addDendrogram(dendrogram);
-
-		dendrogram.calculateDynamicSimilarityMatrix();
+		CodebaseManager.getInstance().writeDendrogramSimilarityMatrix(
+			this.name,
+			dendrogram.getName(),
+			dendrogram.getMatrixData(
+				result.entities,
+				result.e1e2PairCount,
+				result.entityControllers
+			)
+		);
 
 		executeCreateDendrogramPythonScript(dendrogram);
 	}

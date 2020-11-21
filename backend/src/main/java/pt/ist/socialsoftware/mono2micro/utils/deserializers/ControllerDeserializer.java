@@ -9,7 +9,7 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
 import pt.ist.socialsoftware.mono2micro.domain.FunctionalityRedesign;
-import pt.ist.socialsoftware.mono2micro.domain.LocalTransaction;
+import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.ControllerType;
 
 import java.io.IOException;
@@ -57,23 +57,31 @@ public class ControllerDeserializer extends StdDeserializer<Controller> {
 						case "complexity":
 							controller.setComplexity(jsonParser.getFloatValue());
 							break;
-						case "type":
-							controller.setType(jsonParser.readValueAs(new TypeReference<ControllerType>() {}));
-							break;
-						case "entitiesPerCluster":
-							controller.setEntitiesPerCluster(jsonParser.readValueAs(new TypeReference<HashMap<String, List<String>>>() {}));
+						case "performance":
+							controller.setPerformance(jsonParser.getFloatValue());
 							break;
 						case "entities":
-							controller.setEntities(jsonParser.readValueAs(new TypeReference<HashMap<String, String>>() {}));
-							break;
-						case "entitiesSeq":
-							controller.setEntitiesSeq(jsonParser.getValueAsString());
+							controller.setEntities(
+								jsonParser.readValueAs(
+									new TypeReference<HashMap<Short, Byte>>() {}
+								)
+							);
 							break;
 						case "functionalityRedesigns":
-							controller.setFunctionalityRedesigns(jsonParser.readValueAs(new TypeReference<List<FunctionalityRedesign>>() {}));
+							controller.setFunctionalityRedesigns(
+									jsonParser.readValueAs(
+											new TypeReference<List<FunctionalityRedesign>>() {}
+									));
 							break;
-						case "localTransactionsGraph":
-							controller.setLocalTransactionsGraph(getGraph(jsonParser));
+						case "type":
+							controller.setType(ControllerType.valueOf(jsonParser.getValueAsString()));
+							break;
+						case "entitiesPerCluster":
+							controller.setEntitiesPerCluster(
+									jsonParser.readValueAs(
+											new TypeReference<HashMap<Short, Set<Short>>>() {}
+									)
+							);
 							break;
 
 						default:
@@ -89,31 +97,5 @@ public class ControllerDeserializer extends StdDeserializer<Controller> {
 		}
 
 		throw new IOException("Error deserializing Controller");
-	}
-
-	private DirectedAcyclicGraph<Controller.LocalTransaction, DefaultEdge> getGraph(JsonParser jsonParser) throws IOException {
-		DirectedAcyclicGraph<Controller.LocalTransaction, DefaultEdge> graph = new DirectedAcyclicGraph<>(DefaultEdge.class);
-
-		HashMap<Integer, Controller.LocalTransaction> idToVertexMap = new HashMap<>();
-
-		jsonParser.nextValue(); // nodes
-		while (jsonParser.nextValue() != JsonToken.END_ARRAY) {
-			Controller.LocalTransaction lt = jsonParser.readValueAs(Controller.LocalTransaction.class);
-			graph.addVertex(lt);
-			idToVertexMap.put(lt.getId(), lt);
-		}
-
-		jsonParser.nextValue(); // links
-		while (jsonParser.nextValue() != JsonToken.END_ARRAY) {
-			String link = jsonParser.getValueAsString();
-			int index = link.indexOf("->");
-			int fromId = Integer.parseInt(link.substring(0, index));
-			int toId = Integer.parseInt(link.substring(link.indexOf("->") + 2));
-			graph.addEdge(idToVertexMap.get(fromId), idToVertexMap.get(toId));
-		}
-
-		jsonParser.nextValue(); // Consume End Array
-
-		return graph;
 	}
 }

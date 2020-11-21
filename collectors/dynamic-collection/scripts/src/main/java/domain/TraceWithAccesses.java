@@ -10,10 +10,11 @@ import java.util.List;
 
 @JsonSerialize(using = TraceWithAccessesSerializer.class)
 public class TraceWithAccesses extends Trace {
-    private List<Access> accesses;
+    private final List<Access> accesses;
 
     public TraceWithAccesses(int id, int frequency) {
-        super(id, frequency);
+        this.id = id;
+        this.frequency = frequency;
         this.accesses = new ArrayList<>();
     }
 
@@ -21,13 +22,14 @@ public class TraceWithAccesses extends Trace {
     public TraceWithAccesses(
         @JsonProperty("id") int id,
         @JsonProperty("f") int frequency,
-        @JsonProperty("accs") List<Access> accesses)
+        @JsonProperty("a") List<Access> accesses)
     {
-        super(id, frequency);
+        this.id = id;
+        this.frequency = frequency;
         this.accesses = accesses;
     }
 
-    @JsonProperty("accs")
+    @JsonProperty("a")
     public List<Access> getAccesses() { return this.accesses; }
 
     public void addSingleAccess(Access access) {
@@ -189,9 +191,9 @@ public class TraceWithAccesses extends Trace {
     public String toString() {
         return "<Trace id="
                 .concat(String.valueOf(id))
-                .concat(" frequency=")
+                .concat(" f=")
                 .concat("" + frequency)
-                .concat(" accesses=")
+                .concat(" a=")
                 .concat("" + accesses)
                 .concat(">");
     }

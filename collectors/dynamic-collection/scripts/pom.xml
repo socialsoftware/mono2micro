@@ -31,6 +31,32 @@
             <artifactId>commons-cli</artifactId>
             <version>1.4</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.11.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-runner</artifactId>
+            <version>1.6.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.30</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -47,6 +73,10 @@
                     </configuration>
                 </plugin>
                 <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.22.2</version>
+                </plugin>
+                <plugin>
                     <artifactId>maven-assembly-plugin</artifactId>
                     <version>3.1.1</version>
                     <configuration>
@@ -60,6 +90,12 @@
 <!--                                <mainClass>JSONGenerator</mainClass>-->
 <!--                            </manifest>-->
 <!--                        </archive>-->
+                        <finalName>json-generator-and-compactorV3</finalName>
+                        <archive>
+                            <manifest>
+                                <mainClass>JSONGeneratorAndCompactor</mainClass>
+                            </manifest>
+                        </archive>
 <!--                        <finalName>json-reducer</finalName>-->
 <!--                        <archive>-->
 <!--                            <manifest>-->
@@ -73,12 +109,18 @@
 <!--                                <mainClass>JSONCompactor</mainClass>-->
 <!--                            </manifest>-->
 <!--                        </archive>-->
-                        <finalName>controller-entities</finalName>
-                        <archive>
-                            <manifest>
-                                <mainClass>ControllerEntities</mainClass>
-                            </manifest>
-                        </archive>
+<!--                        <finalName>controller-entities</finalName>-->
+<!--                        <archive>-->
+<!--                            <manifest>-->
+<!--                                <mainClass>ControllerEntities</mainClass>-->
+<!--                            </manifest>-->
+<!--                        </archive>-->
+<!--                        <finalName>json-evener</finalName>-->
+<!--                        <archive>-->
+<!--                            <manifest>-->
+<!--                                <mainClass>JSONEvener</mainClass>-->
+<!--                            </manifest>-->
+<!--                        </archive>-->
                     </configuration>
                 </plugin>
             </plugins>

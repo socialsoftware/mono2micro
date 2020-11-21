@@ -4,30 +4,34 @@ import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import deserializers.AccessDeserializer;
+import requitur.content.Content;
+import requitur.content.TraceElementContent;
 import serializers.AccessSerializer;
+
+import java.util.Arrays;
 
 @JsonSerialize(using = AccessSerializer.class)
 @JsonDeserialize(using = AccessDeserializer.class)
-public class Access implements Cloneable {
+public class Access extends Content implements Cloneable  {
     public enum Type {
         R, // Read
         W, // Write
     };
     
-    protected String entity;
+    protected short entityID;
     protected Type type;
 
     @JsonCreator
     public Access(
-        @JsonProperty("entity") String entity,
-        @JsonProperty("type") Type type
+        short entityID,
+        Type type
     ) {
-        this.entity = entity;
+        this.entityID = entityID;
         this.type = type;
     }
 
-    public String getEntity() {
-        return this.entity;
+    public short getEntityID() {
+        return this.entityID;
     }
 
     public Type getType() {
@@ -36,31 +40,25 @@ public class Access implements Cloneable {
 
     @Override
     public boolean equals(Object other) {
-//        Utils.print("Access X: " + this, Utils.lineno());
-//        Utils.print("Access Y: " + other, Utils.lineno());
-        if (this == other) {
-//            Utils.print("this Access == other Access", Utils.lineno());
-            return true;
+        if (other instanceof Access) {
+            Access that = (Access) other;
+            return this.entityID == that.entityID && this.type == that.type;
         }
 
-        if (other == null || !getClass().isAssignableFrom(other.getClass())) {
-//            Utils.print("Different classes", Utils.lineno());
-            return false;
-        }
+        return false;
+    }
 
-        Access that = (Access) other;
-
-        boolean isEqual = this.entity.equals(that.entity) && this.type == that.type;
-//        Utils.print("EQUAL accesses", Utils.lineno());
-        return isEqual;
+    @Override
+    public int hashCode() {
+        return this.entityID + this.type.hashCode();
     }
 
     @Override
     public String toString() {
-        return "<Access entity="
-                .concat(entity)
-                .concat(" type=")
+        return "["
+                .concat(String.valueOf(entityID))
+                .concat(",")
                 .concat(type.name())
-                .concat(">");
+                .concat("]");
     }
 }

@@ -112,7 +112,7 @@ export class VisNetwork extends Component {
             ]);
 
         } else {  // node selected
-            let touchedNodes = previousSelectedEdges.map(e => {
+            let touchedNodes = previousSelectedEdges.flatMap(e => {
                 return [
                     {
                         id: graphEdges.get(e).to,
@@ -125,7 +125,7 @@ export class VisNetwork extends Component {
                 ];
             });
 
-            graphNodes.update(touchedNodes.flat());
+            graphNodes.update(touchedNodes);
         }
 
         if (clickedEdges.length === 1) {

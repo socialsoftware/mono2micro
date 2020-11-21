@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import Card from 'react-bootstrap/Card';
@@ -14,9 +15,15 @@ export class Codebase extends React.Component {
     renderBreadCrumbs = () => {
         return (
             <Breadcrumb>
-                <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-                <Breadcrumb.Item href="/codebases">Codebases</Breadcrumb.Item>
-                <Breadcrumb.Item active>{this.state.codebaseName}</Breadcrumb.Item>
+                <Breadcrumb.Item href="/">
+                    Home
+                </Breadcrumb.Item>
+                <Breadcrumb.Item href="/codebases">
+                    Codebases
+                </Breadcrumb.Item>
+                <Breadcrumb.Item active>
+                    {this.state.codebaseName}
+                </Breadcrumb.Item>
             </Breadcrumb>
         );
     }

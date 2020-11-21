@@ -10,11 +10,16 @@ public class AnalyserResultDto {
     private float cohesion;
     private float coupling;
     private float complexity;
+    private float performance;
     private float accuracy;
     private float precision;
     private float recall;
     private float specificity;
     private float fmeasure;
+    private double mojoCommon;
+    private double mojoBiggest;
+    private double mojoNew;
+    private double mojoSingletons;
 
     public float getAccessWeight() {
         return accessWeight;
@@ -127,4 +132,24 @@ public class AnalyserResultDto {
     public void setAccessWeight(float accessWeight) {
         this.accessWeight = accessWeight;
     }
+
+    public double getMojoCommon() { return mojoCommon; }
+
+    public void setMojoCommon(double mojoCommon) { this.mojoCommon = mojoCommon; }
+
+    public double getMojoBiggest() { return mojoBiggest; }
+
+    public void setMojoBiggest(double mojoBiggest) { this.mojoBiggest = mojoBiggest; }
+
+    public double getMojoNew() { return mojoNew; }
+
+    public void setMojoNew(double mojoNew) { this.mojoNew = mojoNew; }
+
+    public double getMojoSingletons() { return mojoSingletons; }
+
+    public void setMojoSingletons(double mojoSingletons) { this.mojoSingletons = mojoSingletons; }
+
+    public float getPerformance() { return performance; }
+
+    public void setPerformance(float performance) { this.performance = performance; }
 }

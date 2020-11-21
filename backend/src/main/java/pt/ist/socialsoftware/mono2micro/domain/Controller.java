@@ -1,102 +1,46 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
-
 import java.util.*;
-import org.json.JSONArray;
-import org.json.JSONException;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
+import org.jgrapht.traverse.BreadthFirstIterator;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.utils.ControllerType;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.ControllerDeserializer;
 import pt.ist.socialsoftware.mono2micro.utils.serializers.ControllerSerializer;
-import static org.jgrapht.Graphs.successorListOf;
 
+import static org.jgrapht.Graphs.successorListOf;
 
 @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
 @JsonSerialize(using = ControllerSerializer.class)
 @JsonDeserialize(using = ControllerDeserializer.class)
 public class Controller {
-	public static class LocalTransaction {
-		private int id; // transaction id
-		private String clusterName; // actually is just an Id
-		private List<AccessDto> clusterAccesses;
-
-		public LocalTransaction() {}
-
-		public LocalTransaction(int id) {
-			this.id = id;
-		}
-
-		public LocalTransaction(
-			int id,
-			String clusterName,
-			List<AccessDto> clusterAccesses
-		) {
-			this.id = id;
-			this.clusterName = clusterName;
-			this.clusterAccesses = clusterAccesses;
-		}
-
-		public LocalTransaction(LocalTransaction lt) {
-			this.id = lt.getId();
-			this.clusterName = lt.getClusterName();
-			this.clusterAccesses = new ArrayList<>(lt.getClusterAccesses());
-		}
-
-		public int getId() { return id; }
-		public void setId(int id) { this.id = id; }
-		public String getClusterName() { return clusterName; }
-		public void setClusterName(String clusterName) { this.clusterName = clusterName; }
-		public List<AccessDto> getClusterAccesses() { return clusterAccesses; }
-		public void setClusterAccesses(List<AccessDto> clusterAccesses) { this.clusterAccesses = clusterAccesses; }
-		public void addClusterAccess(AccessDto a) { this.clusterAccesses.add(a); }
-
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
-			LocalTransaction that = (LocalTransaction) o;
-
-			return id == that.id;
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(id);
-		}
-	}
-
 	private String name;
 	private ControllerType type;
 	private float complexity;
-	private Map<String, String> entities = new HashMap<>(); // <entity, mode>
-	private Map<String, List<String>> entitiesPerCluster = new HashMap<>();
-	private DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph;
-	private String entitiesSeq = "[]";
+	private float performance; // the average of the number of hops between clusters for all traces
+	private Map<Short, Byte> entities = new HashMap<>(); // <entityID, mode>
 	private List<FunctionalityRedesign> functionalityRedesigns = new ArrayList<>();
+	private Map<Short, Set<Short>> entitiesPerCluster = new HashMap<>();
 
 	public Controller() {}
 
 	public Controller(String name) {
         this.name = name;
-		localTransactionsGraph = new DirectedAcyclicGraph<>(DefaultEdge.class);
-        localTransactionsGraph.addVertex(new LocalTransaction(0, null, new ArrayList<>()));
 	}
 
 	public Controller(
 		String name,
 		float complexity,
-		Map<String, String> entities,
-		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph
+		Map<Short, Byte> entities
 	) {
 		this.name = name;
 		this.complexity = complexity;
 		this.entities = entities;
-		this.localTransactionsGraph = localTransactionsGraph;
 	}
 
 	public String getName() {
@@ -115,162 +59,93 @@ public class Controller {
 		this.complexity = complexity;
 	}
 
-	public Map<String,String> getEntities() {
+	public float getPerformance() {
+		return performance;
+	}
+
+	public void setPerformance(float performance) {
+		this.performance = performance;
+	}
+
+	public Map<Short, Byte> getEntities() {
 		return this.entities;
 	}
 
-	public void setEntities(Map<String,String> entities) {
+	public void setEntities(Map<Short, Byte> entities) {
 		this.entities = entities;
 	}
 
-	public String getEntitiesSeq() { return entitiesSeq; }
+	public void addEntity(
+		short entityID,
+		byte mode
+	) {
+		Byte savedMode = this.entities.get(entityID);
 
-	public void setEntitiesSeq(String entitiesSeq) { this.entitiesSeq = entitiesSeq; }
-
-	public ControllerType getType() {
-		return type;
-	}
-
-	public void setType(ControllerType type) {
-		this.type = type;
-	}
-
-	public Map<String, List<String>> getEntitiesPerCluster() {
-		return entitiesPerCluster;
-	}
-
-	public void setEntitiesPerCluster(Map<String, List<String>> entitiesPerCluster) {
-		this.entitiesPerCluster = entitiesPerCluster;
-	}
-
-	public ControllerType defineControllerType(){
-		if(this.type != null) return this.type;
-
-		if(!this.entities.isEmpty()){
-			for(String entity : this.entities.keySet()){
-				if(this.entities.get(entity).contains("W")) {
-					this.type = ControllerType.SAGA;
-					return this.type;
-				}
-
-			}
-			this.type = ControllerType.QUERY;
-		}
-		return this.type;
-	}
-
-	public void addEntity(String entity, String mode) {
-		if (this.entities.containsKey(entity) && !this.entities.get(entity).equals(mode)) {
-			this.entities.put(entity, "RW");
-		} else if (!this.entities.containsKey(entity)) {
-			this.entities.put(entity, mode);
+		if (savedMode != null) {
+			if (savedMode != mode && savedMode != 3) // "RW" -> 3
+				this.entities.put(entityID, (byte) 3); // "RW" -> 3
+		} else {
+			this.entities.put(entityID, mode);
 		}
 	}
 
-	public boolean containsEntity(String entity) {
+	public boolean containsEntity(short entity) {
 		return this.entities.containsKey(entity);
 	}
 
-	public DirectedAcyclicGraph<LocalTransaction, DefaultEdge> getLocalTransactionsGraph() { return localTransactionsGraph; }
-
-	public void addLocalTransactionSequence(List<LocalTransaction> localTransactions) {
-		LocalTransaction current_lt = new LocalTransaction(0);
-
-		for (int i = 0; i < localTransactions.size(); i++) {
-			List<LocalTransaction> childrenLts = successorListOf(this.localTransactionsGraph, current_lt);
-
-			int childrenLtsSize = childrenLts.size();
-
-			if (childrenLtsSize == 0) {
-				createNewBranch(localTransactions, current_lt, i);
-				return;
-			}
-
-			for (int j = 0; j < childrenLtsSize; j++) {
-				LocalTransaction childLt = childrenLts.get(j);
-
-				if (localTransactions.get(i).equals(childLt)) {
-					current_lt = childLt;
-					break;
-
-				} else {
-					if (j == childrenLtsSize - 1) {
-						createNewBranch(localTransactions, current_lt, i);
-						return;
-					}
-				}
-			}
-		}
-	}
-
-	private void createNewBranch(
-		List<LocalTransaction> localTransactions,
-		LocalTransaction current_lt,
-		int i
-	) {
-		for (int k = i; k < localTransactions.size(); k++) {
-			this.localTransactionsGraph.addVertex(localTransactions.get(k));
-			this.localTransactionsGraph.addEdge(current_lt, localTransactions.get(k));
-			current_lt = localTransactions.get(k);
-		}
-	}
-
-	public Set<LocalTransaction> getAllLocalTransactions() {
-		return localTransactionsGraph.vertexSet();
-	}
-
-	public List<LocalTransaction> getNextLocalTransactions(LocalTransaction lt) {
-		return successorListOf(localTransactionsGraph, lt);
-	}
-
-	public List<FunctionalityRedesign> getFunctionalityRedesigns() {
-		return functionalityRedesigns;
-	}
+	public List<FunctionalityRedesign> getFunctionalityRedesigns() { return functionalityRedesigns; }
 
 	public void setFunctionalityRedesigns(List<FunctionalityRedesign> functionalityRedesigns) {
 		this.functionalityRedesigns = functionalityRedesigns;
 	}
 
-	public void setLocalTransactionsGraph(DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph) {
-		this.localTransactionsGraph = localTransactionsGraph;
-    }
 
-	public void addEntitiesSeq(JSONArray entitiesSeq) throws JSONException {
-		this.setEntitiesSeq(entitiesSeq.toString());
-	}
-
-	public void createFunctionalityRedesign(String name, boolean usedForMetrics) throws JSONException {
+	public void createFunctionalityRedesign(
+		String name,
+		boolean usedForMetrics,
+		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph
+	) {
 		FunctionalityRedesign functionalityRedesign = new FunctionalityRedesign(name);
 		functionalityRedesign.setUsedForMetrics(usedForMetrics);
 
-		JSONArray sequence = new JSONArray(this.entitiesSeq);
-		pt.ist.socialsoftware.mono2micro.domain.LocalTransaction lt = new pt.ist.socialsoftware.mono2micro.domain.LocalTransaction(
-				Integer.toString(-1),
-				this.name,
-				"",
-				new ArrayList<>(),
-				this.name
+		LocalTransaction graphRootLT = new LocalTransaction(0, (short) -1);
+
+		graphRootLT.setName(this.name);
+
+		Iterator<LocalTransaction> iterator = new BreadthFirstIterator<>(
+			localTransactionsGraph,
+			graphRootLT
 		);
 
-		lt.getRemoteInvocations().add(0);
-		functionalityRedesign.getRedesign().add(lt);
+		while (iterator.hasNext()) {
+			LocalTransaction lt = iterator.next();
+			lt.setRemoteInvocations(new ArrayList<>());
 
-		for(int i=0; i < sequence.length(); i++){
-			lt = new pt.ist.socialsoftware.mono2micro.domain.LocalTransaction(
-				Integer.toString(i),
-				sequence.getJSONObject(i).getString("cluster"),
-				sequence.getJSONObject(i).getString("sequence"),
-				new ArrayList<>(),
-					i + ": " + sequence.getJSONObject(i).getString("cluster")
+			List<LocalTransaction> graphChildrenLTs = successorListOf(
+				localTransactionsGraph,
+				lt
 			);
 
-			functionalityRedesign.getRedesign().add(lt);
+			for (LocalTransaction childLT : graphChildrenLTs) {
+				lt.addRemoteInvocations(childLT.getId());
+				childLT.setName(childLT.getId() + ": " + childLT.getClusterID());
+			}
 
-			if(i > 0) {
-				functionalityRedesign.getRedesign().get(i).getRemoteInvocations().add(i);
+			functionalityRedesign.getRedesign().add(lt);
+			if(lt.getId() != 0){
+				for(AccessDto accessDto : lt.getClusterAccesses()){
+					if(this.entitiesPerCluster.containsKey(lt.getClusterID())){
+						this.entitiesPerCluster.get(lt.getClusterID()).add(accessDto.getEntityID());
+					} else {
+						Set<Short> entities = new HashSet<>();
+						entities.add(accessDto.getEntityID());
+						this.entitiesPerCluster.put(lt.getClusterID(), entities);
+					}
+				}
 			}
 		}
-		this.functionalityRedesigns.add(0,functionalityRedesign);
+
+		this.functionalityRedesigns.add(0, functionalityRedesign);
 	}
 
 	public FunctionalityRedesign getFunctionalityRedesign(String redesignName){
@@ -278,7 +153,12 @@ public class Controller {
 	}
 
 	public boolean changeFunctionalityRedesignName(String oldName, String newName){
-		FunctionalityRedesign functionalityRedesign = this.functionalityRedesigns.stream().filter(fr -> fr.getName().equals(oldName)).findFirst().orElse(null);
+		FunctionalityRedesign functionalityRedesign = this.functionalityRedesigns
+			.stream()
+			.filter(fr -> fr.getName().equals(oldName))
+			.findFirst()
+			.orElse(null);
+
 		functionalityRedesign.setName(newName);
 		return true;
 	}
@@ -309,23 +189,59 @@ public class Controller {
 		}
 	}
 
-	public List<String> entitiesTouchedInAGivenMode(String mode){
-		List<String> entitiesTouchedInAGivenMode = new ArrayList<>();
-		for(String entity : this.entities.keySet()){
-			if(this.entities.get(entity).contains(mode))
+	public ControllerType getType() {
+		return type;
+	}
+
+	public void setType(ControllerType type) {
+		this.type = type;
+	}
+
+	public Set<Short> entitiesTouchedInAGivenMode(byte mode){
+		Set<Short> entitiesTouchedInAGivenMode = new HashSet<>();
+		for(Short entity : this.entities.keySet()){
+			if(this.entities.get(entity) == 3 || this.entities.get(entity) == mode) // 3 -> RW
 				entitiesTouchedInAGivenMode.add(entity);
 		}
 		return entitiesTouchedInAGivenMode;
 	}
 
-	public Set<String> clustersOfGivenEntities(List<String> entities){
-		Set<String> clustersOfGivenEntities = new HashSet<>();
-		for(String cluster : this.entitiesPerCluster.keySet()){
-			for(String entity : entities){
-				if(this.entitiesPerCluster.get(cluster).contains(entity))
-					clustersOfGivenEntities.add(cluster);
+	public Set<Short> clustersOfGivenEntities(Set<Short> entities){
+		Set<Short> clustersOfGivenEntities = new HashSet<>();
+		for(Short clusterID : this.entitiesPerCluster.keySet()){
+			for(Short entityID : entities){
+				if(this.entitiesPerCluster.get(clusterID).contains(entityID))
+					clustersOfGivenEntities.add(clusterID);
 			}
 		}
 		return clustersOfGivenEntities;
+	}
+
+	public ControllerType defineControllerType(){
+		if(this.type != null) return this.type;
+
+		if(!this.entities.isEmpty()){
+			for(Short entity : this.entities.keySet()){
+				if(this.entities.get(entity) >= 2) { // 2 -> W , 3 -> RW
+					this.type = ControllerType.SAGA;
+					return this.type;
+				}
+
+			}
+			this.type = ControllerType.QUERY;
+		}
+		return this.type;
+	}
+
+	public boolean containsEntity(Short entity) {
+		return this.entities.containsKey(entity);
+	}
+
+	public Map<Short, Set<Short>> getEntitiesPerCluster() {
+		return entitiesPerCluster;
+	}
+
+	public void setEntitiesPerCluster(Map<Short, Set<Short>> entitiesPerCluster) {
+		this.entitiesPerCluster = entitiesPerCluster;
 	}
 }

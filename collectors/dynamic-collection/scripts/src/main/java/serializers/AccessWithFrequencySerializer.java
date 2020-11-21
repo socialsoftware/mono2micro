@@ -25,8 +25,8 @@ public class AccessWithFrequencySerializer extends StdSerializer<AccessWithFrequ
 	) throws IOException {
 		jsonGenerator.writeStartArray();
 
-		jsonGenerator.writeString(accessWithFrequency.getEntity());
 		jsonGenerator.writeString(accessWithFrequency.getType().name());
+		jsonGenerator.writeNumber(accessWithFrequency.getEntityID());
 
 		if (accessWithFrequency.getFrequency() > 1) {
 			jsonGenerator.writeNumber(accessWithFrequency.getFrequency());

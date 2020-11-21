@@ -10,7 +10,7 @@ import Button from 'react-bootstrap/Button';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { numberFilter } from 'react-bootstrap-table2-filter';
-import { Codebase, Graph } from "../../type-declarations/types";
+import { Codebase, Decomposition } from "../../type-declarations/types";
 
 var HttpStatus = require('http-status-codes');
 
@@ -73,6 +73,12 @@ const metricColumns = [
         filter,
     }, 
     {
+        dataField: 'performance',
+        text: 'Performance',
+        sort,
+        filter,
+    }, 
+    {
         dataField: 'fmeasure',
         text: 'F-Score',
         sort,
@@ -101,6 +107,30 @@ const metricColumns = [
         text: 'Specificity',
         sort,
         filter,
+    },
+    {
+        dataField: 'mojoCommon',
+        text: 'MoJo Common',
+        sort,
+        filter,
+    },
+    {
+        dataField: 'mojoBiggest',
+        text: 'MoJo Biggest',
+        sort,
+        filter,
+    },
+    {
+        dataField: 'mojoNew',
+        text: 'MoJo New',
+        sort,
+        filter,
+    },
+    {
+        dataField: 'mojoSingletons',
+        text: 'MoJo Singletons',
+        sort,
+        filter,
     }
 ];
 
@@ -112,11 +142,11 @@ export class Analyser extends React.Component<any, any> {
             codebase: {
                 profiles: {}
             },
-            selectedProfiles: [],
+            selectedProfile: "",
             experts: [],
             expert: null,
             resultData: [],
-            requestLimit: "",
+            requestLimit: "0",
             importFile: null,
             amountOfTraces: "0",
             typeOfTraces: "ALL",
@@ -140,7 +170,6 @@ export class Analyser extends React.Component<any, any> {
             [
                 "name",
                 "profiles",
-                "analysisType"
             ]
         ).then(response => {
             this.setState({
@@ -149,10 +178,10 @@ export class Analyser extends React.Component<any, any> {
         });
     }
 
-    loadCodebaseGraphs(codebaseName: string) {
+    loadCodebaseDecompositions(codebaseName: string) {
         const service = new RepositoryService();
         
-        service.getCodebaseGraphs(
+        service.getCodebaseDecompositions(
             codebaseName,
             [
                 "name",
@@ -163,7 +192,7 @@ export class Analyser extends React.Component<any, any> {
         ).then((response) => {
             if (response.data !== null) {
                 this.setState({
-                    experts: response.data.filter((graph: Graph) => graph.expert === true)
+                    experts: response.data.filter((decomposition: Decomposition) => decomposition.expert)
                 });
             }
         });
@@ -174,18 +203,17 @@ export class Analyser extends React.Component<any, any> {
             codebase: codebase,
         });
         
-        this.loadCodebaseGraphs(codebase.name!);
+        this.loadCodebaseDecompositions(codebase.name!);
     }
 
-    selectProfile(profile: any) {
-        if (this.state.selectedProfiles.includes(profile)) {
-            let filteredArray = this.state.selectedProfiles.filter((p : any) => p !== profile);
+    selectProfile(profile: string) {
+        if (this.state.selectedProfile !== profile) {
             this.setState({
-                selectedProfiles: filteredArray
+                selectedProfile: profile,
             });
         } else {
             this.setState({
-                selectedProfiles: [...this.state.selectedProfiles, profile]
+                selectedProfile: "",
             });
         }
     }
@@ -207,7 +235,7 @@ export class Analyser extends React.Component<any, any> {
         service.analyser(
             this.state.codebase.name,
             this.state.expert,
-            this.state.selectedProfiles,
+            this.state.selectedProfile,
             Number(this.state.requestLimit),
             Number(this.state.amountOfTraces),
             this.state.typeOfTraces,
@@ -271,8 +299,12 @@ export class Analyser extends React.Component<any, any> {
     renderBreadCrumbs = () => {
         return (
             <Breadcrumb>
-                <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-                <Breadcrumb.Item active>Analyser</Breadcrumb.Item>
+                <Breadcrumb.Item href="/">
+                    Home
+                </Breadcrumb.Item>
+                <Breadcrumb.Item active>
+                    Analyser
+                </Breadcrumb.Item>
             </Breadcrumb>
         );
     }
@@ -284,7 +316,7 @@ export class Analyser extends React.Component<any, any> {
             codebase,
             codebases,
             expert,
-            selectedProfiles,
+            selectedProfile,
             requestLimit,
             experts,
             isUploaded,
@@ -305,18 +337,25 @@ export class Analyser extends React.Component<any, any> {
                 cohesion: data.cohesion,
                 coupling: data.coupling,
                 complexity: data.complexity,
+                performance: data.performance,
                 fmeasure: data.fmeasure,
                 accuracy: data.accuracy,
                 precision: data.precision,
                 recall: data.recall,
-                specificity: data.specificity
+                specificity: data.specificity,
+                mojoCommon: data.mojoCommon,
+                mojoBiggest: data.mojoBiggest,
+                mojoNew: data.mojoNew,
+                mojoSingletons: data.mojoSingletons
             } 
         });
 
         return (
             <>
                 {this.renderBreadCrumbs()}
-                <h4 style={{color: "#666666"}}>Analyser</h4>
+                <h4 style={{color: "#666666"}}>
+                    Analyser
+                </h4>
 
                 <Form onSubmit={this.handleSubmit}>
                     <Form.Group as={Row} controlId="codebase">
@@ -349,7 +388,7 @@ export class Analyser extends React.Component<any, any> {
                                     <Dropdown.Item
                                         key={profile}
                                         onSelect={() => this.selectProfile(profile)}
-                                        active={selectedProfiles.includes(profile)}
+                                        active={selectedProfile === profile}
                                     >
                                         {profile}
                                     </Dropdown.Item>
@@ -357,88 +396,82 @@ export class Analyser extends React.Component<any, any> {
                             </DropdownButton>
                         </Col>
                     </Form.Group>
-                    {
-                        codebase?.analysisType === "dynamic" && (
-                            <>
-                                <Form.Group as={Row} controlId="amountOfTraces">
-                                    <Form.Label column sm={3}>
-                                        Amount of Traces per Controller
-                                    </Form.Label>
-                                    <Col sm={3}>
-                                        <FormControl 
-                                            type="number"
-                                            value={amountOfTraces}
-                                            onChange={this.handleChangeAmountOfTraces}
-                                            
-                                        />
-                                        <Form.Text className="text-muted">
-                                            If no number is inserted, 0 is assumed to be the default value meaning the maximum number of traces
-                                        </Form.Text>
-                                    </Col>
-                                </Form.Group>
-                                <Form.Group as={Row} className="align-items-center">
-                                    <Form.Label as="legend" column sm={3}>
-                                        Type of traces
-                                    </Form.Label>
-                                    <Col sm={3} style={{ paddingLeft: 0 }}>
-                                        <Col sm="auto">
-                                            <Form.Check
-                                                onClick={this.handleChangeTypeOfTraces}
-                                                name="typeOfTraces"
-                                                label="All"
-                                                type="radio"
-                                                id="allTraces"
-                                                value="ALL"
-                                            />
-                                        </Col>
-                                        <Col sm="auto">
-                                            <Form.Check
-                                                onClick={this.handleChangeTypeOfTraces}
-                                                name="typeOfTraces"
-                                                label="Longest"
-                                                type="radio"
-                                                id="longest"
-                                                value="LONGEST"
-                                            />
-                                        </Col>
-                                        <Col sm="auto">
-                                            <Form.Check
-                                                onClick={this.handleChangeTypeOfTraces}
-                                                name="typeOfTraces"
-                                                label="With more different accesses"
-                                                type="radio"
-                                                id="withMoreDifferentTraces"
-                                                value="WITH_MORE_DIFFERENT_ACCESSES"
-                                            />
+                    <Form.Group as={Row} controlId="amountOfTraces">
+                        <Form.Label column sm={3}>
+                            Amount of Traces per Controller
+                        </Form.Label>
+                        <Col sm={3}>
+                            <FormControl 
+                                type="number"
+                                value={amountOfTraces}
+                                onChange={this.handleChangeAmountOfTraces}
+                            />
+                            <Form.Text className="text-muted">
+                                If no number is inserted, 0 is assumed to be the default value meaning the maximum number of traces
+                            </Form.Text>
+                        </Col>
+                    </Form.Group>
+                    <Form.Group as={Row} className="align-items-center">
+                        <Form.Label as="legend" column sm={3}>
+                            Type of traces
+                        </Form.Label>
+                        <Col sm={3} style={{ paddingLeft: 0 }}>
+                            <Col sm="auto">
+                                <Form.Check
+                                    defaultChecked
+                                    id="allTraces"
+                                    value="ALL"
+                                    type="radio"
+                                    label="All"
+                                    name="typeOfTraces"
+                                    onClick={this.handleChangeTypeOfTraces}
+                                />
+                            </Col>
+                            <Col sm="auto">
+                                <Form.Check
+                                    type="radio"
+                                    id="longest"
+                                    value="LONGEST"
+                                    label="Longest"
+                                    name="typeOfTraces"
+                                    onClick={this.handleChangeTypeOfTraces}
+                                />
+                            </Col>
+                            <Col sm="auto">
+                                <Form.Check
+                                    id="withMoreDifferentTraces"
+                                    value="WITH_MORE_DIFFERENT_ACCESSES"
+                                    type="radio"
+                                    label="With more different accesses"
+                                    name="typeOfTraces"
+                                    onClick={this.handleChangeTypeOfTraces}
+                                />
 
-                                        </Col>
-                                        <Col sm="auto">
-                                            <Form.Check
-                                                onClick={this.handleChangeTypeOfTraces}
-                                                name="typeOfTraces"
-                                                label="Representative (set of accesses)"
-                                                type="radio"
-                                                id="representativeSetOfAccesses"
-                                                value="REPRESENTATIVE"
-                                            />
-                                        </Col>
-                                        {/* WIP */}
-                                        <Col sm="auto">
-                                            <Form.Check
-                                                onClick={undefined}
-                                                name="typeOfTraces"
-                                                label="Representative (subsequence of accesses)"
-                                                type="radio"
-                                                id="complete"
-                                                value="?"
-                                                disabled
-                                            />
-                                        </Col>
-                                    </Col>
-                                </Form.Group>
-                            </>
-                        )
-                    }
+                            </Col>
+                            <Col sm="auto">
+                                <Form.Check
+                                    id="representativeSetOfAccesses"
+                                    value="REPRESENTATIVE"
+                                    type="radio"
+                                    label="Representative (set of accesses)"
+                                    name="typeOfTraces"
+                                    onClick={this.handleChangeTypeOfTraces}
+                                />
+                            </Col>
+                            {/* WIP */}
+                            <Col sm="auto">
+                                <Form.Check
+                                    disabled
+                                    id="complete"
+                                    value="?"
+                                    type="radio"
+                                    label="Representative (subsequence of accesses)"
+                                    name="typeOfTraces"
+                                    onClick={undefined}
+                                />
+                            </Col>
+                        </Col>
+                    </Form.Group>
                     <Form.Group as={Row} controlId="expert">
                         <Form.Label column sm={3}>
                             Expert
@@ -477,9 +510,9 @@ export class Analyser extends React.Component<any, any> {
                                 type="submit"
                                 disabled={
                                     isUploaded === "Uploading..." ||
-                                    selectedProfiles.length === 0 ||
+                                    selectedProfile.length === "" ||
                                     requestLimit === "" ||
-                                    (codebase.analysisType === "dynamic" && (typeOfTraces === "" || amountOfTraces === ""))
+                                    (typeOfTraces === "" || amountOfTraces === "")
                                 }
                             >
                                 Submit

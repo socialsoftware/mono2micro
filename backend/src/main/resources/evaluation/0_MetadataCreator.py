@@ -24,29 +24,37 @@ for folder in codebases:
 
     # if 'ldod' not in folder.lower() and "bw" not in folder:
     #     continue
+    analyserFolderPath = os.getcwd() + "/../codebases/" + folder + "/analyser/"
+    analyserResultFilePath = analyserFolderPath + "analyserResult.json"
+    similarityMatrixFilePath = analyserFolderPath + "similarityMatrix.json"
 
-    analyserPath = os.getcwd() + "/../codebases/" + folder + "/analyser/analyserResult.json"
-    similarityMatrixPath = os.getcwd() + "/../codebases/" + folder + "/analyser/similarityMatrix.json"
-
-    if os.path.exists(analyserPath):
+    if os.path.exists(analyserResultFilePath):
         print(folder)
 
-        dfSimilarity = pd.read_json(similarityMatrixPath)
+        dfAnalyser = pd.read_json(analyserResultFilePath)
+        dfSimilarity = pd.read_json(similarityMatrixFilePath)
+
         entitiesCount = len(dfSimilarity['entities'])
 
-        dfAnalyser = pd.read_json(analyserPath)
-
         maxComplexity = 0
+        maxPerformance = 0
         for entry in dfAnalyser:
             n = dfAnalyser[entry]['numberClusters']
+
             if n == entitiesCount:
                 maxComplexity = dfAnalyser[entry]['complexity']
 
-        csvFilePath = os.getcwd() + "/data/" + str(entitiesCount) + "_" + str(maxComplexity) + "_" + folder + ".csv"
-        analyser_data_file = open(csvFilePath, 'w')
-        csv_writer = csv.writer(analyser_data_file)
+            if n != entitiesCount and dfAnalyser[entry]['performance'] > maxPerformance:
+                maxPerformance = dfAnalyser[entry]['performance']
 
-        csv_writer.writerow(['n', 'A', 'W', 'R', 'S', 'cohesion', 'coupling', 'complexity', 'pComplexity'])
+        csvFilePath = os.getcwd() + "/data/" + str(entitiesCount) + "_" + str(maxComplexity) + "_" + folder + ".csv"
+        csv_file = open(csvFilePath, 'w')
+        csv_writer = csv.writer(csv_file)
+
+        csv_writer.writerow([
+            'n', 'A', 'W', 'R', 'S', 'cohesion', 'coupling', 'complexity', 'pComplexity', 'performance', 'pPerformance'
+        ])
+
         for entry in dfAnalyser:
             row = dfAnalyser[entry]
 
@@ -56,6 +64,10 @@ for folder in codebases:
             pComplexity = 0
             if maxComplexity != 0:
                 pComplexity = row['complexity'] / maxComplexity
+
+            pPerformance = 0
+            if maxPerformance != 0:
+                pPerformance = row['performance'] / maxPerformance
 
             csv_writer.writerow(
                 [
@@ -67,8 +79,10 @@ for folder in codebases:
                     row['cohesion'],
                     row['coupling'],
                     row['complexity'],
-                    pComplexity
+                    pComplexity,
+                    row['performance'],
+                    pPerformance
                 ]
             )
 
-        analyser_data_file.close()
+        csv_file.close()

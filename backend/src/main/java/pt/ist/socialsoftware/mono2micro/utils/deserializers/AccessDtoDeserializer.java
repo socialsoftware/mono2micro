@@ -21,27 +21,27 @@ public class AccessDtoDeserializer extends StdDeserializer<AccessDto> {
         JsonToken jsonToken = jsonParser.currentToken();
         if (jsonToken == JsonToken.START_ARRAY) {
             jsonParser.nextValue();
-            String entity = jsonParser.getValueAsString();
+            String mode = jsonParser.getValueAsString();
 
             jsonParser.nextValue();
-            String mode = jsonParser.getValueAsString();
+            short entityID = jsonParser.getShortValue();
 
             jsonParser.nextValue(); // consume END_ARRAY
 
-            int frequency = 0;
+            int occurrences = 0;
             if (jsonParser.getCurrentToken() == JsonToken.VALUE_NUMBER_INT) {
-                frequency = jsonParser.getValueAsInt();
+                occurrences = jsonParser.getValueAsInt();
                 jsonParser.nextToken();
             }
 
             if (jsonParser.getCurrentToken() != (JsonToken.END_ARRAY)) {
-                throw new IOException("Error deserializing Access w/ frequency");
+                throw new IOException("Error deserializing Access");
             }
 
             AccessDto accessDto = new AccessDto();
-            accessDto.setEntity(entity);
-            accessDto.setMode(mode);
-            accessDto.setFrequency(frequency);
+            accessDto.setMode((byte) (mode.equals("R") ? 1 : 2));
+            accessDto.setEntityID(entityID);
+            accessDto.setOccurrences(occurrences);
             return accessDto;
         }
         throw new IOException("Error deserializing Access");

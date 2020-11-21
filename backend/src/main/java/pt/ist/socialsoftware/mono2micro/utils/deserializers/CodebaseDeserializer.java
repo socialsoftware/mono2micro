@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
+import pt.ist.socialsoftware.mono2micro.domain.Controller;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
 
 import java.io.IOException;
@@ -48,18 +49,27 @@ public class CodebaseDeserializer extends StdDeserializer<Codebase> {
 						case "name":
 							codebase.setName(jsonParser.getValueAsString());
 							break;
-						case "analysisType":
-							codebase.setAnalysisType(jsonParser.getValueAsString());
-							break;
+
 						case "dendrograms":
-							codebase.setDendrograms(jsonParser.readValueAs(new TypeReference<List<Dendrogram>>(){}));
+							codebase.setDendrograms(
+								jsonParser.readValueAs(
+									new TypeReference<List<Dendrogram>>(){}
+								)
+							);
 							break;
+
 						case "profiles":
-							codebase.setProfiles(jsonParser.readValueAs(new TypeReference<Map<String, List<String>>>(){}));
+							codebase.setProfiles(
+								jsonParser.readValueAs(
+									new TypeReference<Map<String, Set<String>>>(){}
+								)
+							);
 							break;
+
 						case "datafilePath":
 							codebase.setDatafilePath(jsonParser.getValueAsString());
 							break;
+
 						default:
 							throw new IOException("Attribute " + jsonParser.getCurrentName() + " does not exist on Codebase object");
 					}

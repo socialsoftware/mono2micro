@@ -45,9 +45,9 @@ def getMinMedianAndMax(elementsList):
     return [minV, median, maxV]
 
 
-files = []
+csv_file_names = []
 for (dirpath, dirnames, filenames) in walk("./data/"):
-    files.extend(filenames)
+    csv_file_names.extend(filenames)
     break
 
 x_n = []
@@ -60,10 +60,10 @@ df = {
     'hover': []
 }
 
-for file in files:
-    print(file)
+for csv_file_name in csv_file_names:
+    print(csv_file_name)
 
-    data = pd.read_csv("./data/" + file)
+    data = pd.read_csv("./data/" + csv_file_name)
 
     dict1 = {}
     for entry in data.values:
@@ -73,7 +73,7 @@ for file in files:
 
         df['n'].append(entry[0])
         df['pComplexity'].append(entry[8])
-        df['hover'].append(file)
+        df['hover'].append(csv_file_name)
 
     x_data = list(dict1.keys())
     y_data = []

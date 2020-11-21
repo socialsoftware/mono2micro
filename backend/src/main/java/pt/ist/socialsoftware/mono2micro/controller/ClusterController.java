@@ -5,18 +5,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pt.ist.socialsoftware.mono2micro.domain.Cluster;
-import pt.ist.socialsoftware.mono2micro.domain.Codebase;
-import pt.ist.socialsoftware.mono2micro.domain.Controller;
+import pt.ist.socialsoftware.mono2micro.domain.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
+import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
-@RequestMapping(value = "/mono2micro/codebase/{codebaseName}/dendrogram/{dendrogramName}/graph/{graphName}")
+@RequestMapping(value = "/mono2micro/codebase/{codebaseName}/dendrogram/{dendrogramName}/decomposition/{decompositionName}")
 public class ClusterController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ClusterController.class);
@@ -27,7 +24,7 @@ public class ClusterController {
 	public ResponseEntity<HttpStatus> mergeClusters(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
-		@PathVariable String graphName,
+		@PathVariable String decompositionName,
 		@PathVariable String clusterName,
 		@RequestParam String otherCluster,
 		@RequestParam String newName
@@ -41,7 +38,27 @@ public class ClusterController {
 			// FIXME Each controller and cluster would have its own json file
 
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-			codebase.getDendrogram(dendrogramName).getGraph(graphName).mergeClusters(clusterName, otherCluster, newName);
+			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
+			Decomposition decomposition = dendrogram.getDecomposition(decompositionName);
+
+			decomposition.mergeClusters(
+				clusterName,
+				otherCluster,
+				newName
+			);
+
+			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+				codebase,
+				dendrogram.getProfile(),
+				decomposition.getEntityIDToClusterName()
+			));
+
+			decomposition.calculateMetrics(
+				codebase,
+				dendrogram.getTracesMaxLimit(),
+				dendrogram.getTraceType(),
+					false);
+
 			codebaseManager.writeCodebase(codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
 
@@ -55,7 +72,7 @@ public class ClusterController {
 	public ResponseEntity<HttpStatus> renameCluster(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
-		@PathVariable String graphName,
+		@PathVariable String decompositionName,
 		@PathVariable String clusterName,
 		@RequestParam String newName
 	) {
@@ -68,9 +85,31 @@ public class ClusterController {
 			// FIXME Each controller and cluster would have its own json file
 
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-			codebase.getDendrogram(dendrogramName).getGraph(graphName).renameCluster(clusterName, newName);
-			codebaseManager.writeCodebase(codebase);
+			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
+			Decomposition decomposition = dendrogram.getDecomposition(decompositionName);
 
+			decomposition.renameCluster(
+				clusterName,
+				newName
+			);
+
+			// it should not be necessary to do this due to just a renaming
+			// but for safety i'll keep the existent behaviour
+			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+				codebase,
+				dendrogram.getProfile(),
+				decomposition.getEntityIDToClusterName()
+			));
+
+			// it should not be necessary to recalculate metrics due to just a renaming
+			// but for safety i'll keep the existent behaviour
+			decomposition.calculateMetrics(
+				codebase,
+				dendrogram.getTracesMaxLimit(),
+				dendrogram.getTraceType(),
+					false);
+
+			codebaseManager.writeCodebase(codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (KeyAlreadyExistsException e) {
@@ -87,7 +126,7 @@ public class ClusterController {
 	public ResponseEntity<HttpStatus> splitCluster(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
-		@PathVariable String graphName,
+		@PathVariable String decompositionName,
 		@PathVariable String clusterName,
 		@RequestParam String newName,
 		@RequestParam String entities
@@ -101,9 +140,28 @@ public class ClusterController {
 			// FIXME Each controller and cluster would have its own json file
 
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-			codebase.getDendrogram(dendrogramName).getGraph(graphName).splitCluster(clusterName, newName, entities.split(","));
-			codebaseManager.writeCodebase(codebase);
+			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
+			Decomposition decomposition = dendrogram.getDecomposition(decompositionName);
 
+			decomposition.splitCluster(
+				clusterName,
+				newName,
+				entities.split(",")
+			);
+
+			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+				codebase,
+				dendrogram.getProfile(),
+				decomposition.getEntityIDToClusterName()
+			));
+
+			decomposition.calculateMetrics(
+				codebase,
+				dendrogram.getTracesMaxLimit(),
+				dendrogram.getTraceType(),
+					false);
+
+			codebaseManager.writeCodebase(codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -116,7 +174,7 @@ public class ClusterController {
 	public ResponseEntity<HttpStatus> transferEntities(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
-		@PathVariable String graphName,
+		@PathVariable String decompositionName,
 		@PathVariable String clusterName,
 		@RequestParam String toCluster,
 		@RequestParam String entities
@@ -130,9 +188,28 @@ public class ClusterController {
 			// FIXME Each controller and cluster would have its own json file
 
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-			codebase.getDendrogram(dendrogramName).getGraph(graphName).transferEntities(clusterName, toCluster, entities.split(","));
-			codebaseManager.writeCodebase(codebase);
+			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
+			Decomposition decomposition = dendrogram.getDecomposition(decompositionName);
 
+			decomposition.transferEntities(
+				clusterName,
+				toCluster,
+				entities.split(",")
+			);
+
+			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+				codebase,
+				dendrogram.getProfile(),
+				decomposition.getEntityIDToClusterName()
+			));
+
+			decomposition.calculateMetrics(
+				codebase,
+				dendrogram.getTracesMaxLimit(),
+				dendrogram.getTraceType(),
+					false);
+
+			codebaseManager.writeCodebase(codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -141,24 +218,30 @@ public class ClusterController {
 		}
 	}
 
-	@RequestMapping(value = "/controllerClusters", method = RequestMethod.GET)
-	public ResponseEntity<Map<String,List<Cluster>>> getControllerClusters(
+	@RequestMapping(value = "/controllersClusters", method = RequestMethod.GET)
+	public ResponseEntity<Map<String, Set<Cluster>>> getControllersClusters(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
-		@PathVariable String graphName
+		@PathVariable String decompositionName
 	) {
-		logger.debug("getControllerClusters");
+		logger.debug("getControllersClusters");
 
 		try {
+			Decomposition decomposition = codebaseManager.getDendrogramDecompositionWithFields(
+				codebaseName,
+				dendrogramName,
+				decompositionName,
+				new HashSet<String>() {{ add("clusters"); add("controllers"); }}
+			);
+
+			Utils.GetControllersClustersAndClustersControllersResult result =
+				Utils.getControllersClustersAndClustersControllers(
+					decomposition.getClusters().values(),
+					decomposition.getControllers().values()
+				);
+
 			return new ResponseEntity<>(
-				codebaseManager.getGraphWithControllersAndClustersWithFields(
-					codebaseName,
-					dendrogramName,
-					graphName,
-					new HashSet<String>() {{ add("name"); add("entities"); }},
-					new HashSet<String>() {{ add("name"); add("entities"); }}
-				)
-					.getControllerClusters(),
+				result.controllersClusters,
 				HttpStatus.OK
 			);
 
@@ -168,24 +251,30 @@ public class ClusterController {
 		}
 	}
 
-	@RequestMapping(value = "/clusterControllers", method = RequestMethod.GET)
-	public ResponseEntity<Map<String,List<Controller>>> getClusterControllers(
+	@RequestMapping(value = "/clustersControllers", method = RequestMethod.GET)
+	public ResponseEntity<Map<String, Set<Controller>>> getClustersControllers(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
-		@PathVariable String graphName
+		@PathVariable String decompositionName
 	) {
-		logger.debug("getClusterControllers");
+		logger.debug("getClustersControllers");
 
 		try {
+			Decomposition decomposition = codebaseManager.getDendrogramDecompositionWithFields(
+				codebaseName,
+				dendrogramName,
+				decompositionName,
+				new HashSet<String>() {{ add("clusters"); add("controllers"); }}
+			);
+
+			Utils.GetControllersClustersAndClustersControllersResult result =
+				Utils.getControllersClustersAndClustersControllers(
+					decomposition.getClusters().values(),
+					decomposition.getControllers().values()
+				);
+
 			return new ResponseEntity<>(
-				codebaseManager.getGraphWithControllersAndClustersWithFields(
-					codebaseName,
-					dendrogramName,
-					graphName,
-					new HashSet<String>() {{ add("name"); add("entities"); }},
-					new HashSet<String>() {{ add("name"); add("entities"); }}
-				)
-					.getClusterControllers(),
+				result.clustersControllers,
 				HttpStatus.OK
 			);
 

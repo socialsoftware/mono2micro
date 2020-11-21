@@ -9,12 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
-import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
-import pt.ist.socialsoftware.mono2micro.dto.ControllerDto;
-import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
-import pt.ist.socialsoftware.mono2micro.utils.Constants;
-import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.DendrogramDeserializer;
@@ -24,24 +19,26 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 
 @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
 @JsonDeserialize(using = DendrogramDeserializer.class)
 public class Dendrogram {
-	private String codebaseName;
 	private String name;
+	private String codebaseName;
 	private String linkageType;
 	private float accessMetricWeight;
 	private float writeMetricWeight;
 	private float readMetricWeight;
 	private float sequenceMetricWeight;
-	private List<String> profiles = new ArrayList<>();
-	private List<Graph> graphs = new ArrayList<>();
+	private String profile;
+	private List<Decomposition> decompositions = new ArrayList<>(); // Might not be necessary if the folders structure gets better organized
 	private int tracesMaxLimit = 0;
-	private Constants.TypeOfTraces typeOfTraces = Constants.TypeOfTraces.ALL;
+	private TraceType traceType = TraceType.ALL;
 
 	public Dendrogram() {}
 
@@ -101,68 +98,74 @@ public class Dendrogram {
 		this.sequenceMetricWeight = sequenceMetricWeight;
 	}
 
-	public List<String> getProfiles() { return profiles; }
+	public String getProfile() { return profile; }
 
-	public void setProfiles(List<String> profiles) {
-		this.profiles = profiles;
+	public void setProfile(String profile) { this.profile = profile; }
+
+	public List<Decomposition> getDecompositions() {
+		return this.decompositions;
 	}
 
-	public List<Graph> getGraphs() {
-		return this.graphs;
-	}
-
-	public void setGraphs(List<Graph> graphs) { this.graphs = graphs; }
+	public void setDecompositions(List<Decomposition> decompositions) { this.decompositions = decompositions; }
 
 	public int getTracesMaxLimit() { return tracesMaxLimit; }
 
 	public void setTracesMaxLimit(int tracesMaxLimit) { this.tracesMaxLimit = tracesMaxLimit; }
 
-	public Constants.TypeOfTraces getTypeOfTraces() { return typeOfTraces; }
+	public TraceType getTraceType() { return traceType; }
 
-	public void setTypeOfTraces(Constants.TypeOfTraces typeOfTraces) { this.typeOfTraces = typeOfTraces; }
+	public void setTraceType(TraceType traceType) { this.traceType = traceType; }
 
 	@JsonIgnore
-	public List<String> getGraphNames() {
-		List<String> graphNames = new ArrayList<>();
-		for (Graph graph : this.graphs)
-			graphNames.add(graph.getName());
-		return graphNames;
+	public List<String> getDecompositionNames() { return this.decompositions.stream().map(Decomposition::getName).collect(Collectors.toList()); }
+
+	@JsonIgnore
+	public Decomposition getDecomposition(String decompositionName) {
+		return this.decompositions.stream()
+			.filter(decomposition -> decomposition.getName().equals(decompositionName))
+			.findAny()
+			.orElse(null);
 	}
 
-	public Graph getGraph(String graphName) {
-		for (Graph graph : this.graphs) {
-			if (graph.getName().equals(graphName))
-				return graph;
-		}
-		return null;
+	public void addDecomposition(Decomposition decomposition) {
+		this.decompositions.add(decomposition);
 	}
 
-	public void addGraph(Graph graph) {
-		this.graphs.add(graph);
-	}
-
-	public void deleteGraph(String graphName) throws IOException {
-		for (int i = 0; i < this.graphs.size(); i++) {
-			if (this.graphs.get(i).getName().equals(graphName)) {
-				this.graphs.remove(i);
+	public void deleteDecomposition(
+		String decompositionName
+	)
+		throws IOException
+	{
+		for (int i = 0; i < this.decompositions.size(); i++) {
+			if (this.decompositions.get(i).getName().equals(decompositionName)) {
+				this.decompositions.remove(i);
 				break;
 			}
 		}
-		FileUtils.deleteDirectory(new File(CODEBASES_PATH + this.codebaseName + "/" + this.name + "/" + graphName));
+
+		FileUtils.deleteDirectory(
+			new File(CODEBASES_PATH + this.codebaseName + "/" + this.name + "/" + decompositionName)
+		);
 	}
 
-	public void createExpertCut(String expertName, Optional<MultipartFile> expertFile) throws Exception {
-		if (this.getGraphNames().contains(expertName))
+	public Decomposition createExpertCut(
+		String expertName,
+		Optional<MultipartFile> expertFile
+	)
+		throws Exception
+	{
+		if (this.getDecompositionNames().contains(expertName))
 			throw new KeyAlreadyExistsException();
 
-		Graph expert = new Graph();
-		expert.setExpert(true);
-		expert.setCodebaseName(this.codebaseName);
-		expert.setDendrogramName(this.name);
-		expert.setName(expertName);
+		Decomposition expertDecomposition = new Decomposition();
+		expertDecomposition.setExpert(true);
+		expertDecomposition.setCodebaseName(this.codebaseName);
+		expertDecomposition.setDendrogramName(this.name);
+		expertDecomposition.setName(expertName);
+
 		if (expertFile.isPresent()) {
 			InputStream is = new BufferedInputStream(expertFile.get().getInputStream());
-			JSONObject expertCut = new JSONObject(IOUtils.toString(is, "UTF-8"));
+			JSONObject expertCut = new JSONObject(IOUtils.toString(is, StandardCharsets.UTF_8));
 			is.close();
 
 			Iterator<String> clusters = expertCut.getJSONObject("clusters").keys();
@@ -171,49 +174,56 @@ public class Dendrogram {
 				String clusterId = clusters.next();
 				JSONArray entities = expertCut.getJSONObject("clusters").getJSONArray(clusterId);
 				Cluster cluster = new Cluster(clusterId);
+
 				for (int i = 0; i < entities.length(); i++) {
-					cluster.addEntity(entities.getString(i));
+					short entityID = (short) entities.getInt(i);
+
+					cluster.addEntity(entityID);
+					expertDecomposition.putEntity(entityID, clusterId);
 				}
-				expert.addCluster(cluster);
+
+				expertDecomposition.addCluster(cluster);
 			}
 		} else {
 			Cluster cluster = new Cluster("Generic");
 
-			JSONObject similarityMatrixData = CodebaseManager.getInstance().getSimilarityMatrix(this.codebaseName, this.name);
+			JSONObject similarityMatrixData = CodebaseManager.getInstance().getSimilarityMatrix(
+				this.codebaseName,
+				this.name
+			);
+
 			JSONArray entities = similarityMatrixData.getJSONArray("entities");
 
 			for (int i = 0; i < entities.length(); i++) {
-				cluster.addEntity(entities.getString(i));
+				short entityID = (short) entities.getInt(i);
+
+				cluster.addEntity(entityID);
+				expertDecomposition.putEntity(entityID, "Generic");
 			}
 
-			expert.addCluster(cluster);
+			expertDecomposition.addCluster(cluster);
 		}
 
-		this.addGraph(expert);
-		expert.calculateMetrics();
+		return expertDecomposition;
 	}
 
-	private JSONObject getMatrixData(
-		List<String> entitiesList,
-		Map<String,Integer> e1e2PairCount,
-		Map<String,List<Pair<String,String>>> entityControllers
-	) throws JSONException {
-
+	public JSONObject getMatrixData(
+		Set<Short> entityIDs,
+		Map<String, Integer> e1e2PairCount,
+		Map<Short, List<Pair<String, Byte>>> entityControllers
+	)
+		throws JSONException
+	{
 		JSONArray similarityMatrix = new JSONArray();
 		JSONObject matrixData = new JSONObject();
 
-		Collections.sort(entitiesList);
-
 		int maxNumberOfPairs = Utils.getMaxNumberOfPairs(e1e2PairCount);
 
-		for (int i = 0; i < entitiesList.size(); i++) {
-			String e1 = entitiesList.get(i);
+		for (short e1ID : entityIDs) {
 			JSONArray matrixRow = new JSONArray();
 
-			for (int j = 0; j < entitiesList.size(); j++) {
-				String e2 = entitiesList.get(j);
-
-				if (e1.equals(e2)) {
+			for (short e2ID : entityIDs) {
+				if (e1ID == e2ID) {
 					matrixRow.put(1);
 					continue;
 				}
@@ -221,8 +231,8 @@ public class Dendrogram {
 				float[] metrics = Utils.calculateSimilarityMatrixMetrics(
 					entityControllers,
 					e1e2PairCount,
-					e1,
-					e2,
+					e1ID,
+					e2ID,
 					maxNumberOfPairs
 				);
 
@@ -236,167 +246,30 @@ public class Dendrogram {
 			similarityMatrix.put(matrixRow);
 		}
 		matrixData.put("matrix", similarityMatrix);
-		matrixData.put("entities", entitiesList);
+		matrixData.put("entities", entityIDs);
 		matrixData.put("linkageType", this.linkageType);
 
 		return matrixData;
 	}
 
-	public void calculateStaticSimilarityMatrix() throws IOException, JSONException {
-		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
-		Map<String,Integer> e1e2PairCount = new HashMap<>();
-
-		HashMap<String, ControllerDto> datafileJSON = CodebaseManager.getInstance().getDatafile(this.codebaseName);
-
-		Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
-			codebaseName,
-			new HashSet<String>() {{ add("profiles"); }}
-		);
-
-		for (String profile : this.profiles) {
-			for (String controllerName : codebase.getProfile(profile)) {
-				ControllerDto controllerDto = datafileJSON.get(controllerName);
-				List<AccessDto> controllerAccesses = controllerDto.getControllerAccesses();
-
-				Utils.fillEntityDataStructures(
-					entityControllers,
-					e1e2PairCount,
-					controllerAccesses,
-					controllerName
-				);
-			}
-		}
-
-		CodebaseManager.getInstance().writeSimilarityMatrix(
-			this.codebaseName,
-			this.name,
-			getMatrixData(
-				new ArrayList<>(entityControllers.keySet()),
-				e1e2PairCount,
-				entityControllers
-			)
-		);
-	}
-
-	public void calculateDynamicSimilarityMatrix()
-		throws IOException, JSONException
+	public Decomposition cut(Decomposition decomposition)
+		throws Exception
 	{
-		Map<String,List<Pair<String,String>>> entityControllers = new HashMap<>();
-		Map<String,Integer> e1e2PairCount = new HashMap<>();
 
-		Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
-			codebaseName,
-			new HashSet<String>() {{ add("profiles"); add("datafilePath"); }}
-		);
-
-		ControllerTracesIterator iter;
-		TraceDto t;
-
-		for (String profile : this.profiles) {
-			for (String controllerName : codebase.getProfile(profile)) {
-				iter = new ControllerTracesIterator(
-					codebase.getDatafilePath(),
-					controllerName,
-					tracesMaxLimit
-				);
-
-				switch (this.typeOfTraces) {
-					case LONGEST:
-						t = iter.getLongestTrace();
-
-						if (t != null) {
-							Utils.fillEntityDataStructures(
-								entityControllers,
-								e1e2PairCount,
-								t.getAccesses(),
-								controllerName
-							);
-						}
-
-						break;
-
-					case WITH_MORE_DIFFERENT_ACCESSES:
-						t = iter.getTraceWithMoreDifferentAccesses();
-
-						if (t != null) {
-							Utils.fillEntityDataStructures(
-								entityControllers,
-								e1e2PairCount,
-								t.getAccesses(),
-								controllerName
-							);
-						}
-
-						break;
-
-					case REPRESENTATIVE:
-						Set<String> tracesIds = iter.getRepresentativeTraces();
-						iter.reset();
-
-						while (iter.hasMoreTraces()) {
-							t = iter.nextTrace();
-
-							if (tracesIds.contains(String.valueOf(t.getId()))) {
-								Utils.fillEntityDataStructures(
-									entityControllers,
-									e1e2PairCount,
-									t.getAccesses(),
-									controllerName
-								);
-							}
-
-						}
-
-
-
-						break;
-
-					default:
-						while (iter.hasMoreTraces()) {
-							t = iter.nextTrace();
-
-							Utils.fillEntityDataStructures(
-								entityControllers,
-								e1e2PairCount,
-								t.getAccesses(),
-								controllerName
-							);
-						}
-				}
-
-				t = null; // release memory
-			}
-		}
-
-		iter = null; // release memory
-
-		CodebaseManager.getInstance().writeSimilarityMatrix(
-			this.codebaseName,
-			this.name,
-			getMatrixData(
-				new ArrayList<>(entityControllers.keySet()),
-				e1e2PairCount,
-				entityControllers
-			)
-		);
-	}
-
-	public void cut(Graph graph) throws Exception {
-
-		String cutValue = Float.valueOf(graph.getCutValue()).toString().replaceAll("\\.?0*$", "");
-		if (this.getGraphNames().contains(graph.getCutType() + cutValue)) {
+		String cutValue = Float.valueOf(decomposition.getCutValue()).toString().replaceAll("\\.?0*$", "");
+		if (this.getDecompositionNames().contains(decomposition.getCutType() + cutValue)) {
 			int i = 2;
-			while (this.getGraphNames().contains(graph.getCutType() + cutValue + "(" + i + ")")) {
+			while (this.getDecompositionNames().contains(decomposition.getCutType() + cutValue + "(" + i + ")")) {
 				i++;
 			}
-			graph.setName(graph.getCutType() + cutValue + "(" + i + ")");
+			decomposition.setName(decomposition.getCutType() + cutValue + "(" + i + ")");
 		} else {
-			graph.setName(graph.getCutType() + cutValue);
+			decomposition.setName(decomposition.getCutType() + cutValue);
 		}
 
-		File graphPath = new File(CODEBASES_PATH + this.codebaseName + "/" + this.name + "/" + graph.getName());
-		if (!graphPath.exists()) {
-			graphPath.mkdir();
+		File decompositionPath = new File(CODEBASES_PATH + this.codebaseName + "/" + this.name + "/" + decomposition.getName());
+		if (!decompositionPath.exists()) {
+			decompositionPath.mkdir();
 		}
 
 		Runtime r = Runtime.getRuntime();
@@ -407,16 +280,20 @@ public class Dendrogram {
 		cmd[2] = CODEBASES_PATH;
 		cmd[3] = this.codebaseName;
 		cmd[4] = this.name;
-		cmd[5] = graph.getName();
-		cmd[6] = graph.getCutType();
-		cmd[7] = Float.toString(graph.getCutValue());
+		cmd[5] = decomposition.getName();
+		cmd[6] = decomposition.getCutType();
+		cmd[7] = Float.toString(decomposition.getCutValue());
 		Process p = r.exec(cmd);
 		
 		p.waitFor();
 
-		JSONObject clustersJSON = CodebaseManager.getInstance().getClusters(this.codebaseName, this.name, graph.getName());
+		JSONObject clustersJSON = CodebaseManager.getInstance().getClusters(
+			this.codebaseName,
+			this.name,
+			decomposition.getName()
+		);
 
-		graph.setSilhouetteScore((float) clustersJSON.getDouble("silhouetteScore"));
+		decomposition.setSilhouetteScore((float) clustersJSON.getDouble("silhouetteScore"));
 
 		Iterator<String> clusters = clustersJSON.getJSONObject("clusters").sortedKeys();
 		ArrayList<Integer> clusterIds = new ArrayList<>();
@@ -430,16 +307,18 @@ public class Dendrogram {
 		for (Integer id : clusterIds) {
 			String clusterId = String.valueOf(id);
 			JSONArray entities = clustersJSON.getJSONObject("clusters").getJSONArray(clusterId);
-			Cluster cluster = new Cluster("Cluster" + clusterId);
+			Cluster cluster = new Cluster(clusterId);
 
 			for (int i = 0; i < entities.length(); i++) {
-				cluster.addEntity(entities.getString(i));
+				short entityID = (short) entities.getInt(i);
+
+				cluster.addEntity(entityID);
+				decomposition.putEntity(entityID, clusterId);
 			}
 
-			graph.addCluster(cluster);
+			decomposition.addCluster(cluster);
 		}
 
-		this.addGraph(graph);
-		graph.calculateMetrics();
+		return decomposition;
 	}
 }

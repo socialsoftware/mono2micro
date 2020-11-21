@@ -15,7 +15,7 @@ public class Sequence<T extends Access> {
 
 	@JsonCreator
 	public Sequence(
-		@JsonProperty("accs") List<T> accesses,
+		@JsonProperty("a") List<T> accesses,
 		@JsonProperty("f") int frequency)
 	{
 		this.frequency = frequency;
@@ -27,7 +27,7 @@ public class Sequence<T extends Access> {
 		this.accesses = new ArrayList<>();
 	}
 
-	@JsonProperty("accs")
+	@JsonProperty("a")
 	public List<T> getAccesses() { return this.accesses; }
 
 	public void setAccesses(List<T> accesses) { this.accesses = accesses; }

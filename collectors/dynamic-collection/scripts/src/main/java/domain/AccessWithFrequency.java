@@ -15,20 +15,19 @@ public class AccessWithFrequency extends Access {
 
 	@JsonCreator
 	public AccessWithFrequency(
-		@JsonProperty("entity") String entity,
-		@JsonProperty("type") Type type,
-		@JsonProperty("f") int frequency
+		short entityID,
+		Type type,
+		int frequency
 	) {
-		super(entity, type);
+		super(entityID, type);
 		this.frequency = frequency;
 	}
 
 	public AccessWithFrequency(Access a, int frequency) {
-		super(a.getEntity(), a.getType());
+		super(a.getEntityID(), a.getType());
 		this.frequency = frequency;
 	}
 
-	@JsonProperty("f")
 	public int getFrequency() {
 		return this.frequency;
 	}
@@ -58,19 +57,19 @@ public class AccessWithFrequency extends Access {
 //        Utils.print("Access w/f X: " + this, Utils.lineno());
 //        Utils.print("Access w/f Y: " + other, Utils.lineno());
 
-		boolean isEqual = entity.equals(that.entity) && type == that.type;
+		boolean isEqual = entityID == that.entityID && type == that.type;
 //        Utils.print("EQUAL Accesses w/f", Utils.lineno());
 		return isEqual;
 	}
 
 	@Override
 	public String toString() {
-		return "<AccessWithFrequency entity="
-			.concat(entity)
-			.concat(" type=")
+		return "["
+			.concat(String.valueOf(entityID))
+			.concat(",")
 			.concat(type.name())
-			.concat(" frequency=")
-			.concat("" + frequency)
-			.concat(">");
+			.concat(",")
+			.concat(String.valueOf(frequency))
+			.concat("]");
 	}
 }

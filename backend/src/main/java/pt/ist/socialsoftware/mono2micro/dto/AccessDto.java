@@ -5,38 +5,42 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.AccessDtoDeserializer;
 import pt.ist.socialsoftware.mono2micro.utils.serializers.AccessDtoSerializer;
 
+import java.util.Objects;
+
 @JsonDeserialize(using = AccessDtoDeserializer.class)
 @JsonSerialize(using = AccessDtoSerializer.class)
-public class AccessDto {
-    private String entity;
-    private String mode;
-    private int frequency;
+public class AccessDto extends ReducedTraceElementDto {
+    private short entityID;
+    private byte mode; // "R" -> 1, "W" -> 2
 
     public AccessDto() {}
 
-    public String getEntity() {
-        return entity;
-    }
-    public void setEntity(String entity) {
-        this.entity = entity;
-    }
+    public short getEntityID() { return entityID; }
+    public void setEntityID(short entityID) { this.entityID = entityID; }
 
-    public String getMode() {
-        return mode;
-    }
-    public void setMode(String mode) {
-        this.mode = mode;
-    }
+    public byte getMode() { return mode; }
+    public void setMode(byte mode) { this.mode = mode; }
 
-    public int getFrequency() {
-        return frequency;
-    }
-    public void setFrequency(int frequency) {
-        this.frequency = frequency;
+    @Override
+	public boolean equals(final Object other) {
+        if (other instanceof AccessDto) {
+            AccessDto that = (AccessDto) other;
+            return this.entityID == that.entityID && this.mode == that.mode;
+        }
+        
+        return false;
     }
 
     @Override
     public String toString() {
-        return "[" + entity + ',' + mode + ']';
+        if (occurrences < 2)
+            return "[" + entityID + ',' + mode + ']';
+
+        return "[" + entityID + ',' + mode + ',' + occurrences + ']';
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(entityID, mode);
     }
 }

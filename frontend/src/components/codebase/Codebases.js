@@ -19,7 +19,6 @@ export class Codebases extends React.Component {
             selectedFile: null,
             isUploaded: "",
             codebases: [],
-            checkedAnalysisType: "",
         };
 
         this.handleSelectedFile = this.handleSelectedFile.bind(this);
@@ -27,7 +26,6 @@ export class Codebases extends React.Component {
         this.handleChangeNewCodebaseName = this.handleChangeNewCodebaseName.bind(this);
         this.handleChangeNewDatafilePath = this.handleChangeNewDatafilePath.bind(this);
         this.handleDeleteCodebase = this.handleDeleteCodebase.bind(this);
-        this.handleSelectAnalysisType = this.handleSelectAnalysisType.bind(this);
         this.doCreateCodebaseRequest = this.doCreateCodebaseRequest.bind(this);
     }
 
@@ -38,7 +36,7 @@ export class Codebases extends React.Component {
     loadCodebases() {
         const service = new RepositoryService();
         service.getCodebases(
-            ["name", "analysisType"],
+            ["name"],
         ).then(response => {
             this.setState({
                 codebases: response.data
@@ -56,12 +54,6 @@ export class Codebases extends React.Component {
     handleChangeNewCodebaseName(event) {
         this.setState({
             newCodebaseName: event.target.value
-        });
-    }
-
-    handleSelectAnalysisType(event) {
-        this.setState({
-            checkedAnalysisType: event.target.value,
         });
     }
 
@@ -91,21 +83,19 @@ export class Codebases extends React.Component {
             this.doCreateCodebaseRequest(
                 this.state.newCodebaseName,
                 this.state.selectedFile,
-                this.state.checkedAnalysisType, // either static or dynamic
             );
         }
         else {
             this.doCreateCodebaseRequest(
                 this.state.newCodebaseName,
                 this.state.newDatafilePath,
-                this.state.checkedAnalysisType, // either static or dynamic
             );
         }
     }
 
-    doCreateCodebaseRequest(codebaseName, pathOrFile, analysisType) {
+    doCreateCodebaseRequest(codebaseName, pathOrFile) {
         const service = new RepositoryService();
-        service.createCodebase(codebaseName, pathOrFile, analysisType)
+        service.createCodebase(codebaseName, pathOrFile)
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
                     this.loadCodebases();
@@ -140,8 +130,12 @@ export class Codebases extends React.Component {
     renderBreadCrumbs = () => {
         return (
             <Breadcrumb>
-                <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-                <Breadcrumb.Item active>Codebases</Breadcrumb.Item>
+                <Breadcrumb.Item href="/">
+                    Home
+                </Breadcrumb.Item>
+                <Breadcrumb.Item active>
+                    Codebases
+                </Breadcrumb.Item>
             </Breadcrumb>
         );
     }
@@ -159,7 +153,8 @@ export class Codebases extends React.Component {
                             maxLength="256"
                             placeholder="Codebase Name"
                             value={this.state.newCodebaseName}
-                            onChange={this.handleChangeNewCodebaseName}/>
+                            onChange={this.handleChangeNewCodebaseName}
+                        />
                     </Col>
                 </Form.Group>
 
@@ -172,7 +167,8 @@ export class Codebases extends React.Component {
                             type="text"
                             placeholder="/home/example/datafile.json"
                             value={this.state.newDatafilePath}
-                            onChange={this.handleChangeNewDatafilePath}/>
+                            onChange={this.handleChangeNewDatafilePath}
+                        />
                     </Col>
                 </Form.Group>
 
@@ -191,41 +187,16 @@ export class Codebases extends React.Component {
                             onChange={this.handleSelectedFile}/>
                     </Col>
                 </Form.Group>
-
-                <Form.Group as={Row} key={"analysis-type-section"} className="align-items-center">
-                    <Form.Label column sm={2}>
-                        Analysis type
-                    </Form.Label>
-                    <Col sm={5} >
-                        <Form.Check
-                            inline
-                            id="static-analysis-radio-button"
-                            type="radio"
-                            value="static"
-                            label="Static analysis"
-                            onChange={this.handleSelectAnalysisType}
-                            checked={this.state.checkedAnalysisType === "static"}
-                        />
-                        <Form.Check
-                            inline
-                            id="dynamic-analysis-radio-button"
-                            type="radio"
-                            value="dynamic"
-                            label="Dynamic analysis"
-                            onChange={this.handleSelectAnalysisType}
-                            checked={this.state.checkedAnalysisType === "dynamic"}
-                        />
-                    </Col>
-                </Form.Group>
                 <Form.Group as={Row}>
                     <Col sm={{ span: 5, offset: 2 }}>
-                        <Button type="submit"
-                                disabled={
-                                    this.state.isUploaded === "Uploading..." ||
-                                    this.state.newCodebaseName === "" ||
-                                    (this.state.selectedFile === null &&
-                                    this.state.newDatafilePath === "")
-                                }
+                        <Button 
+                            type="submit"
+                            disabled={
+                                this.state.isUploaded === "Uploading..." ||
+                                this.state.newCodebaseName === "" ||
+                                (this.state.selectedFile === null &&
+                                this.state.newDatafilePath === "")
+                            }
                         >
                             Create Codebase
                         </Button>
@@ -277,10 +248,14 @@ export class Codebases extends React.Component {
             <div>
                 {this.renderBreadCrumbs()}
                 
-                <h4 style={{color: "#666666"}}>Create Codebase</h4>
+                <h4 style={{color: "#666666"}}>
+                    Create Codebase
+                </h4>
                 {this.renderCreateCodebaseForm()}
 
-                <h4 style={{color: "#666666"}}>Codebases</h4>
+                <h4 style={{color: "#666666"}}>
+                    Codebases
+                </h4>
                 {this.renderCodebases()}
             </div>
         );

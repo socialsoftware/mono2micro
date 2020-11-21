@@ -7,6 +7,7 @@ import { views, types } from './Views';
 import BootstrapTable from 'react-bootstrap-table-next';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import AppContext from "./../AppContext";
 
 export const entityViewHelp = (<div>
     Hover entity to see controllers that access it.< br />
@@ -55,6 +56,8 @@ const options = {
 };
 
 export class EntityView extends React.Component {
+    static contextType = AppContext;
+
     constructor(props) {
         super(props);
 
@@ -64,7 +67,7 @@ export class EntityView extends React.Component {
             entities: [],
             clusters: [],
             controllers: [],
-            clusterControllers: {},
+            clustersControllers: {},
             showGraph: false,
             amountList: [],
             currentSubView: "Graph"
@@ -81,31 +84,30 @@ export class EntityView extends React.Component {
         const {
             codebaseName,
             dendrogramName,
-            graphName,
+            decompositionName,
         } = this.props;
 
         const service = new RepositoryService();
         
-        service.getGraph(
+        service.getDecomposition(
             codebaseName,
             dendrogramName,
-            graphName,
+            decompositionName,
             [ "clusters", "controllers" ]
         ).then(response => {
 
-            service.getClusterControllers(
+            service.getClustersControllers(
                 codebaseName,
                 dendrogramName,
-                graphName
+                decompositionName
             ).then(response2 => {
                 this.setState({
-                    clusters: response.data.clusters,
-                    entities: response.data.clusters.map(c => c.entities).flat(),
-                    controllers: response.data.controllers,
-                    clusterControllers: response2.data,
+                    clusters: Object.values(response.data.clusters),
+                    entities: Object.values(response.data.clusters).map(c => c.entities).flat(),
+                    controllers: Object.values(response.data.controllers),
+                    clustersControllers: response2.data,
                 }, () => {
                     let amountList = {};
-
                     const {
                         entities,
                         clusters,
@@ -114,7 +116,6 @@ export class EntityView extends React.Component {
                     for (var i = 0; i < entities.length; i++) {
                         let amount = 0;
                         let entityName = entities[i];
-
                         let entityCluster = clusters.find(c => c.entities.includes(entityName));
 
                         for (var j = 0; j < clusters.length; j++) {
@@ -148,13 +149,16 @@ export class EntityView extends React.Component {
     }
 
     //get controllers that access both an entity and another cluster
-    getCommonControllers(entityName, cluster) {
-        let entityControllers = this.state.controllers
-            .filter(controller => Object.keys(controller.entities).includes(entityName))
-            .map(c => c.name);
+    getCommonControllers(entity, cluster) {
+        let entityControllers = [];
+        let clustersControllers = this.state.clustersControllers[cluster.name].map(c => c.name);
 
-        let clusterControllers = this.state.clusterControllers[cluster.name].map(c => c.name);
-        return entityControllers.filter(c => clusterControllers.includes(c));
+        this.state.controllers.forEach(controller => {
+            if (controller.entities[entity] && clustersControllers.includes(controller.name))
+                entityControllers.push(controller.name);
+        })
+
+        return entityControllers;
     }
 
     loadGraph() {
@@ -165,15 +169,22 @@ export class EntityView extends React.Component {
             entity,
         } = this.state;
 
+        const { translateEntity } = this.context;
+
         let nodes = [];
         let edges = [];
-        let entityControllers = controllers
-            .filter(controller => Object.keys(controller.entities).includes(entity))
-            .map(controller => controller.name + " " + controller.entities[entity]);
 
+        
+        let entityControllers = [];
+        
+        controllers.forEach(controller => {
+            if (controller.entities[entity])
+                entityControllers.push(controller.name + " " + controller.entities[entity]);
+        })
+        
         nodes.push({
             id: entity,
-            label: entity,
+            label: translateEntity(entity),
             value: 1,
             level: 0,
             type: types.ENTITY,
@@ -194,7 +205,7 @@ export class EntityView extends React.Component {
                         value: clusterEntities.length,
                         level: 1,
                         type: types.CLUSTER,
-                        title: clusterEntities.map(e => e).join('<br>') + "<br>Total: " + clusterEntities.length
+                        title: clusterEntities.map(entityID => translateEntity(entityID)).join('<br>') + "<br>Total: " + clusterEntities.length
                     });
 
                     edges.push({
@@ -230,11 +241,14 @@ export class EntityView extends React.Component {
     render() {
         const {
             entities,
-            currentSubView
+            currentSubView,
+            amountList,
+            visGraph,
         } = this.state;
 
-        const metricsRows = entities.map(entity => {
-            return { entity };
+        const { translateEntity } = this.context;
+        const metricsRows = entities.sort((a, b) => a - b).map(entityID => {
+            return { entity: translateEntity(entityID) };
         });
 
         const metricsColumns = [{
@@ -264,13 +278,13 @@ export class EntityView extends React.Component {
                     <span>
                         <EntityOperationsMenu
                             handleEntitySubmit={this.handleEntitySubmit}
-                            entities={this.state.entities}
-                            amountList={this.state.amountList}
+                            entities={entities}
+                            amountList={amountList}
                         />
 
                         <div style={{height: '700px'}}>
                             <VisNetwork
-                                visGraph={this.state.visGraph}
+                                visGraph={visGraph}
                                 options={options}
                                 onSelection={this.handleSelectNode}
                                 onDeselection={this.handleDeselectNode}

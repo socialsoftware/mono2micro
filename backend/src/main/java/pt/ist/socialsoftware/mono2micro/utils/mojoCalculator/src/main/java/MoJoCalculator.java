@@ -448,7 +448,7 @@ public class MoJoCalculator {
         try {
             br_s = new BufferedReader(new FileReader(sourceFile));
         } catch (FileNotFoundException e) {
-            throw new RuntimeException("Could not open " + sourceFile);
+            throw new RuntimeException("Could not open " + sourceFile + " " + e.getMessage());
         }
         try {
             for (String line = br_s.readLine(); line != null; line = br_s
@@ -539,7 +539,7 @@ public class MoJoCalculator {
         try {
             br_s = new BufferedReader(new FileReader(sourceFile));
         } catch (FileNotFoundException e) {
-            throw new RuntimeException("Could not open " + sourceFile);
+            throw new RuntimeException("Could not open " + sourceFile + " " + e.getMessage());
         }
         extraInA = 0;
         try {
@@ -612,7 +612,7 @@ public class MoJoCalculator {
         try {
             br_r = new BufferedReader(new FileReader(relFile));
         } catch (FileNotFoundException e) {
-            throw new RuntimeException("Could not open " + relFile);
+            throw new RuntimeException("Could not open " + relFile  + " " + e.getMessage());
         }
         try {
             for (String line = br_r.readLine(); line != null; line = br_r
@@ -660,7 +660,7 @@ public class MoJoCalculator {
         try {
             br_t = new BufferedReader(new FileReader(targetFile));
         } catch (FileNotFoundException e) {
-            throw new RuntimeException("Could not open " + targetFile);
+            throw new RuntimeException("Could not open " + targetFile + " " + e.getMessage());
         }
         try {
             for (String line = br_t.readLine(); line != null; line = br_t
@@ -695,7 +695,7 @@ public class MoJoCalculator {
         try {
             br_t = new BufferedReader(new FileReader(targetFile));
         } catch (FileNotFoundException e) {
-            throw new RuntimeException("Could not open " + targetFile);
+            throw new RuntimeException("Could not open " + targetFile  + " " + e.getMessage());
         }
         try {
             for (String line = br_t.readLine(); line != null; line = br_t

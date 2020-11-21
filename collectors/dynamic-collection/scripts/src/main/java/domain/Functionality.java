@@ -8,11 +8,10 @@ import java.util.List;
 import java.util.ArrayList;
 
 @JsonSerialize(using = FunctionalitySerializer.class)
-public class Functionality<T extends Trace> {
+public class Functionality {
     private String label;
     private int frequency;
-    private List<T> traces;
-    private int numberOfSubsequencesFound = 0; // statistics
+    private final List<Trace> traces;
 
     public Functionality(String label, int frequency) {
         this.label = label;
@@ -23,7 +22,7 @@ public class Functionality<T extends Trace> {
     @JsonCreator
     public Functionality(
         @JsonProperty("f") int frequency,
-        @JsonProperty("traces") List<T> traces
+        @JsonProperty("t") List<Trace> traces
     ) {
         this.frequency = frequency;
         this.traces = traces;
@@ -40,7 +39,7 @@ public class Functionality<T extends Trace> {
     @JsonProperty("f")
     public int getFrequency() { return this.frequency; }
 
-    public List<T> getTraces() { return this.traces; }
+    public List<Trace> getTraces() { return this.traces; }
 
     public void setFrequency(int frequency) {
         this.frequency = frequency;
@@ -50,9 +49,7 @@ public class Functionality<T extends Trace> {
         this.frequency += 1;
     }
 
-    public int getNumberOfSubsequencesFound() { return this.numberOfSubsequencesFound; }
-
-    public void addTrace(T newTrace) {
+    public void addTrace(Trace newTrace) {
 //        Utils.print("Adding trace: " + newTrace.getLabel(), Utils.lineno());
         this.increaseFrequency();
 
@@ -60,7 +57,7 @@ public class Functionality<T extends Trace> {
         // instead of calculating the subsequence between each pair of traces until we discover that actually
         // the trace was already in the list
 
-        for (T savedTrace : traces) {
+        for (Trace savedTrace : traces) {
             if(savedTrace.equals(newTrace)){
 //                Utils.print("Trace already exists, raising its frequency...", Utils.lineno());
                 savedTrace.increaseFrequency(); // TODO FIXME calculating frequency only makes sense if the sub-sequence calculation isn't applied

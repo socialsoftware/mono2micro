@@ -1,6 +1,16 @@
 import axios, { AxiosInstance } from 'axios';
 import { URL } from '../constants/constants';
-import { AnalyserDto, Graph, AnalysisDto, Codebase, TypeOfTraces, Dendrogram, Cluster, Controller } from "../type-declarations/types";
+import {
+    AnalyserDto,
+    Decomposition,
+    AnalysisDto,
+    Codebase,
+    TraceType,
+    Dendrogram,
+    Cluster,
+    Controller,
+    LocalTransactionsGraph
+} from "../type-declarations/types";
 import { addSearchParamsToUrl } from "../utils/url";
 
 export class RepositoryService {
@@ -25,17 +35,17 @@ export class RepositoryService {
 
     analyser(
         codebaseName: string,
-        expert: Graph,
-        profiles: string[],
+        expert: Decomposition,
+        profile: string,
         requestLimit: number,
         amountOfTraces: number,
-        typeOfTraces: TypeOfTraces,
+        traceType: TraceType,
     ) {
         const analyserData: AnalyserDto = {
             expert: expert || {},
-            profiles,
+            profile,
             requestLimit,
-            typeOfTraces,
+            traceType,
             tracesMaxLimit: amountOfTraces,
         };
 
@@ -61,13 +71,13 @@ export class RepositoryService {
     }
 
     //Dendrograms
-    getCodebaseGraphs(
+    getCodebaseDecompositions(
         codebaseName: string,
         fieldNames?: string[],
     ) {
-        return this.axios.get<Graph[]>(
+        return this.axios.get<Decomposition[]>(
             addSearchParamsToUrl(
-                "/codebase/" + codebaseName + "/graphs",
+                "/codebase/" + codebaseName + "/decompositions",
                 fieldNames ? { fieldNames } : {},
             )
         );
@@ -118,7 +128,6 @@ export class RepositoryService {
     createCodebase(
         name: string,
         datafile: any,
-        analysisType: string,
     ) {
         const config = {
             headers: {
@@ -128,7 +137,6 @@ export class RepositoryService {
         var data = new FormData();
         data.append('codebaseName', name);
         data.append('datafile', datafile);
-        data.append('analysisType', analysisType);
         
         return this.axios.post<null>(
             "/codebase/create",
@@ -166,9 +174,9 @@ export class RepositoryService {
         writeMetricWeight: number,
         readMetricWeight: number,
         sequenceMetricWeight: number,
-        profiles: string[],
+        profile: string,
         amountOfTraces: number,
-        typeOfTraces: TypeOfTraces,
+        traceType: TraceType,
     ) {
         const dendrogramData: Dendrogram = {
             codebaseName,
@@ -178,9 +186,9 @@ export class RepositoryService {
             writeMetricWeight,
             readMetricWeight,
             sequenceMetricWeight,
-            profiles,
+            profile,
             tracesMaxLimit: amountOfTraces,
-            typeOfTraces,
+            traceType,
         };
         
         return this.axios.post<null>(
@@ -195,7 +203,7 @@ export class RepositoryService {
         cutValue: number,
         cutType: string,
     ) {
-        const graphData: Graph = {
+        const decompositionData: Decomposition = {
             codebaseName,
             dendrogramName,
             expert: false,
@@ -205,7 +213,7 @@ export class RepositoryService {
 
         return this.axios.post<null>(
             "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/cut",
-            graphData
+            decompositionData
         );
     }
 
@@ -231,236 +239,282 @@ export class RepositoryService {
         );
     }
 
-    //Graph
-    getGraphs(
+    //Decomposition
+    getDecompositions(
         codebaseName: string,
         dendrogramName: string,
         fieldNames?: string[],
     ) {
-        return this.axios.get<Graph[]>(
+        return this.axios.get<Decomposition[]>(
             addSearchParamsToUrl(
-                "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graphs",
+                "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decompositions",
                 fieldNames ? { fieldNames } : {},
             )
         );
     }
 
-    getGraph(
+    getDecomposition(
         codebaseName: string,
         dendrogramName: string,
-        graphName: string,
+        decompositionName: string,
         fieldNames?: string[],
     ) {
 
-        return this.axios.get<Graph>(
+        return this.axios.get<Decomposition>(
             addSearchParamsToUrl(
-                "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName,
+                "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName,
                 fieldNames ? { fieldNames } : {},
             )
         );
     }
 
-    deleteGraph(
+    deleteDecomposition(
         codebaseName: string,
         dendrogramName: string,
-        graphName: string,
+        decompositionName: string,
     ) {
-        return this.axios.delete<null>("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/delete");
+        return this.axios.delete<null>(
+            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/delete"
+        );
+    }
+
+    getLocalTransactionsGraphForController(
+        codebaseName: string,
+        dendrogramName: string,
+        decompositionName: string,
+        controllerName: string
+    ) {
+        return this.axios.get<LocalTransactionsGraph>(
+            addSearchParamsToUrl(
+                "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/getLocalTransactionsGraphForController",
+                { controllerName },
+            )
+        );
     }
 
     //Cluster
     mergeClusters(
         codebaseName: string,
         dendrogramName: string,
-        graphName: string,
+        decompositionName: string,
         clusterName: string,
         otherCluster: string,
         newName: string,
     ) {
         return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/cluster/" + clusterName + "/merge",
+            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/cluster/" + clusterName + "/merge",
             null,
             {
                 params: {
                     "otherCluster" : otherCluster,
                     "newName" : newName
                 }
-            });
+            }
+        );
     }
 
     renameCluster(
         codebaseName: string,
         dendrogramName: string,
-        graphName: string,
+        decompositionName: string,
         clusterName: string,
         newName: string
     ) {
         return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/cluster/" + clusterName + "/rename",
+            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/cluster/" + clusterName + "/rename",
             null,
             {
                 params: {
                     "newName" : newName
                 },
-            });
+            }
+        );
     }
 
     splitCluster(
         codebaseName: string,
         dendrogramName: string,
-        graphName: string,
+        decompositionName: string,
         clusterName: string,
         newName: string,
         entities: string,
     ) {
         return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/cluster/" + clusterName + "/split",
+            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/cluster/" + clusterName + "/split",
             null,
             {
                 params: {
                     "newName" : newName,
                     "entities" : entities
                 }
-            });
+            }
+        );
     }
 
     transferEntities(
         codebaseName: string,
         dendrogramName: string,
-        graphName: string,
+        decompositionName: string,
         clusterName: string,
         toCluster: string,
         entities: string,
     ) {
         return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/cluster/" + clusterName + "/transferEntities",
+            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/cluster/" + clusterName + "/transferEntities",
             null,
             {
                 params: {
                     "toCluster" : toCluster,
                     "entities" : entities
                 }
-            });
-    }
-
-    getControllerClusters(
-        codebaseName: string,
-        dendrogramName: string,
-        graphName: string,
-    ) {
-        return this.axios.get<Record<string, Cluster[]>>(
-            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controllerClusters"
+            }
         );
     }
 
-    getClusterControllers(
+    getControllersClusters(
         codebaseName: string,
         dendrogramName: string,
-        graphName: string
+        decompositionName: string,
+    ) {
+        return this.axios.get<Record<string, Cluster[]>>(
+            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/controllersClusters"
+        );
+    }
+
+    getClustersControllers(
+        codebaseName: string,
+        dendrogramName: string,
+        decompositionName: string
     ) {
         return this.axios.get<Record<string, Controller[]>>(
-            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/clusterControllers"
+            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/clustersControllers"
         );
     }
 
 
     //FunctionalityRedesign
 
+    getOrCreateRedesign(
+        codebaseName: string,
+        dendrogramName: string,
+        decompositionName: string,
+        controllerName: string
+    ) {
+        return this.axios.get<Controller>("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/controller/" + controllerName + "/getOrCreateRedesign");
+    }
+
+
     addCompensating(
         codebaseName: string,
         dendrogramName: string,
-        graphName: string,
+        decompositionName: string,
         controllerName: string,
         redesignName: string,
         clusterName: string,
         entities: string,
         fromID: string
     ) {
-        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controller/" + controllerName + "/redesign/" + redesignName + "/addCompensating",
+        return this.axios.post(
+            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/controller/" + controllerName + "/redesign/" + redesignName + "/addCompensating",
             {
                 fromID: fromID,
                 cluster : clusterName,
                 entities : entities
-            });
+            }
+        );
     }
 
     sequenceChange(
         codebaseName: string,
         dendrogramName: string,
-        graphName: string,
+        decompositionName: string,
         controllerName: string,
         redesignName: string,
         localTransaction: string,
         newCaller: string
     ) {
-        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controller/" + controllerName + "/redesign/" + redesignName + "/sequenceChange",
+        return this.axios.post(
+            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/controller/" + controllerName + "/redesign/" + redesignName + "/sequenceChange",
             {
                 localTransactionID: localTransaction,
                 newCaller: newCaller
-            });
+            }
+        );
     }
 
     dcgi(
         codebaseName: string,
         dendrogramName: string,
-        graphName: string,
+        decompositionName: string,
         controllerName: string,
         redesignName: string,
         fromCluster: string,
         toCluster: string,
         localTransactions: string
     ) {
-        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controller/" + controllerName + "/redesign/" + redesignName + "/dcgi",
+        return this.axios.post(
+            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/controller/" + controllerName + "/redesign/" + redesignName + "/dcgi",
             {
                 fromCluster: fromCluster,
                 toCluster: toCluster,
                 localTransactions: localTransactions
-            });
+            }
+        );
     }
 
     selectPivotTransaction(
         codebaseName: string,
         dendrogramName: string,
-        graphName: string,
+        decompositionName: string,
         controllerName: string,
         redesignName: string,
         transactionID: string,
         newRedesignName: string
     ) {
-        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controller/" + controllerName + "/redesign/" + redesignName + "/pivotTransaction",
-            null, { params: {"transactionID" : transactionID, "newRedesignName": newRedesignName}});
+        return this.axios.post(
+            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/controller/" + controllerName + "/redesign/" + redesignName + "/pivotTransaction",
+            null,
+            { params: {"transactionID" : transactionID, "newRedesignName": newRedesignName}}
+        );
     }
 
     changeLTName(
         codebaseName: string,
         dendrogramName: string,
-        graphName: string,
+        decompositionName: string,
         controllerName: string,
         redesignName: string,
         transactionID: string,
         newName: string
     ) {
-        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controller/" + controllerName + "/redesign/" + redesignName + "/changeLTName",
-            null, { params: {"transactionID" : transactionID, "newName": newName}});
+        return this.axios.post(
+            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/controller/" + controllerName + "/redesign/" + redesignName + "/changeLTName",
+            null,
+            { params: {"transactionID" : transactionID, "newName": newName}}
+        );
     }
 
     deleteRedesign(
         codebaseName: string,
         dendrogramName: string,
-        graphName: string,
+        decompositionName: string,
         controllerName: string,
         redesignName: string
     ){
-        return this.axios.delete("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controller/" + controllerName + "/redesign/" + redesignName + "/deleteRedesign");
+        return this.axios.delete(
+            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/controller/" + controllerName + "/redesign/" + redesignName + "/deleteRedesign"
+        );
     }
 
     setUseForMetrics(
         codebaseName: string,
         dendrogramName: string,
-        graphName: string,
+        decompositionName: string,
         controllerName: string,
         redesignName: string
     ){
-        return this.axios.post("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/graph/" + graphName + "/controller/" + controllerName + "/redesign/" + redesignName + "/useForMetrics");
+        return this.axios.post(
+            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/controller/" + controllerName + "/redesign/" + redesignName + "/useForMetrics"
+        );
     }
 }

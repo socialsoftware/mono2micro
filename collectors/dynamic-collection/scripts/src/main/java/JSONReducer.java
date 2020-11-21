@@ -1,5 +1,6 @@
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import domain.Trace;
 import org.apache.commons.cli.*;
 import domain.Functionality;
 import domain.TraceWithAccesses;
@@ -12,15 +13,15 @@ import java.util.HashMap;
 import java.util.List;
 
 public class JSONReducer {
-	static HashMap<String, Functionality<TraceWithAccesses>> json;
+	static HashMap<String, Functionality> json;
 
 	public static void reduceExecutionTraces() {
-		for (HashMap.Entry<String, Functionality<TraceWithAccesses>> entry : json.entrySet()) {
+		for (HashMap.Entry<String, Functionality> entry : json.entrySet()) {
 
 			System.out.println("Functionality: " + entry.getKey());
-			Functionality<TraceWithAccesses> f = entry.getValue();
+			Functionality f = entry.getValue();
 
-			List<TraceWithAccesses> functionalityTraces = f.getTraces();
+			List<Trace> functionalityTraces = f.getTraces();
 
 			boolean[] representativeTraces = new boolean[functionalityTraces.size()];
 			Arrays.fill(representativeTraces, true);
@@ -29,8 +30,8 @@ public class JSONReducer {
 				for (int i = 0; i < functionalityTraces.size(); i++) {
 					for (int j = i + 1; j < functionalityTraces.size(); j++) {
 						if (representativeTraces[i] || representativeTraces[j]) {
-							TraceWithAccesses currentTrace = functionalityTraces.get(i);
-							TraceWithAccesses otherTrace = functionalityTraces.get(j);
+							TraceWithAccesses currentTrace = (TraceWithAccesses) functionalityTraces.get(i);
+							TraceWithAccesses otherTrace = (TraceWithAccesses) functionalityTraces.get(j);
 
 							if (currentTrace.getAccesses() == null) {
 								representativeTraces[i] = false;
@@ -93,7 +94,7 @@ public class JSONReducer {
 				: "reduced.json";
 
 			ObjectMapper mapper = new ObjectMapper();
-			json = mapper.readValue(new FileInputStream(inputFileDir), new TypeReference<HashMap<String, Functionality<TraceWithAccesses>>>(){});
+			json = mapper.readValue(new FileInputStream(inputFileDir), new TypeReference<HashMap<String, Functionality>>(){});
 
 			reduceExecutionTraces();
 

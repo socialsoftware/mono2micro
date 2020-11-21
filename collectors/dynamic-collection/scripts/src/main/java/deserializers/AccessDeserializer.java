@@ -25,7 +25,7 @@ public class AccessDeserializer extends StdDeserializer<Access> {
 
 		if (jsonToken == JsonToken.START_ARRAY) {
 			jsonParser.nextValue();
-			String entity = jsonParser.getValueAsString();
+			short entityID = jsonParser.getShortValue();
 
 			jsonParser.nextValue();
 			String type = jsonParser.getValueAsString();
@@ -34,7 +34,7 @@ public class AccessDeserializer extends StdDeserializer<Access> {
 				throw new IOException("Error deserializing Access");
 			}
 
-			return new Access(entity, Access.Type.valueOf(type));
+			return new Access(entityID, Access.Type.valueOf(type));
 		}
 
 		throw new IOException("Error deserializing Access");
