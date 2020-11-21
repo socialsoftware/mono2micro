@@ -236,7 +236,9 @@ export class EntityView extends React.Component {
     render() {
         const {
             entities,
-            currentSubView
+            currentSubView,
+            amountList,
+            visGraph,
         } = this.state;
 
         const metricsRows = entities.map(entity => {

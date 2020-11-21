@@ -157,7 +157,6 @@ export class Profiles extends React.Component {
             isUploaded,
             codebase,
             moveToProfile,
-            codebaseName,
             selectedControllers,
         } = this.state;
 

@@ -527,6 +527,17 @@ export class TransactionView extends React.Component {
 
 
     handleSelectNode(nodeId) {
+
+        const {
+            DCGIAvailableClusters,
+            DCGILocalTransactionsForTheSelectedClusters,
+            DCGISelectedLocalTransactions,
+            selectedLocalTransaction,
+            selectedRedesign,
+            selectedOperation,
+            DCGISelectedClusters,
+        } = this.state;
+
         if(this.state.compareRedesigns) return;
 
         if(selectedOperation === redesignOperations.NONE) {
@@ -673,8 +684,6 @@ export class TransactionView extends React.Component {
             controller,
             selectedOperation,
             newCaller,
-            DCGISelectedClusters,
-            DCGISelectedLocalTransactions,
         } = this.state;
 
         const service = new RepositoryService();
@@ -1020,14 +1029,13 @@ export class TransactionView extends React.Component {
             DCGIAvailableClusters,
             DCGILocalTransactionsForTheSelectedClusters,
             DCGISelectedLocalTransactions,
-            compareRedesigns,
             modifiedEntities,
             newCaller,
             redesignVisGraph,
             selectedLocalTransaction,
             selectedRedesign,
-            selectedRedesignsToCompare,
             showMenu,
+            visGraph,
             decomposition: {
                 controllers,
                 clusters,

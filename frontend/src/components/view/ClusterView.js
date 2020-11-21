@@ -439,6 +439,12 @@ export class ClusterView extends React.Component {
             currentSubView,
             error,
             errorMessage,
+            showMenu,
+            selectedCluster,
+            mergeWithCluster,
+            transferToCluster,
+            clusterEntities,
+            visGraph,
         } = this.state;
 
         const metricsRows = clusters.map(({
