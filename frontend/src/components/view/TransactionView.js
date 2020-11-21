@@ -18,6 +18,7 @@ import {FunctionalityRedesignMenu, redesignOperations} from './FunctionalityRede
 import {ModalMessage} from "../util/ModalMessage";
 import {DEFAULT_REDESIGN_NAME} from "../../constants/constants";
 import {TransactionOperationsMenu} from "./TransactionOperationsMenu";
+import AppContext from "./../AppContext";
 
 const HttpStatus = require('http-status-codes');
 
@@ -173,6 +174,8 @@ const optionsFunctionalityRedesign = {
 
 
 export class TransactionView extends React.Component {
+    static contextType = AppContext;
+
     constructor(props) {
         super(props);
 
@@ -294,6 +297,7 @@ export class TransactionView extends React.Component {
             controllersClusters,
         } = this.state;
 
+        const { translateEntity } = this.context;
 
         const visGraph = {
             nodes: new DataSet(controllersClusters[controller.name].map(cluster => this.createNode(cluster))),
@@ -302,7 +306,7 @@ export class TransactionView extends React.Component {
 
         visGraph.nodes.add({
             id: controller.name,
-            title: Object.entries(controller.entities).map(e => e[0] + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(controller.entities).length,
+            title: Object.entries(controller.entities).map(e => translateEntity(e[0]) + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(controller.entities).length,
             label: controller.name,
             level: 0,
             value: 1,
@@ -315,9 +319,11 @@ export class TransactionView extends React.Component {
     }
 
     createNode(cluster) {
+        const { translateEntity } = this.context;
+
         return {
             id: cluster.name,
-            title: cluster.entities.join('<br>') + "<br>Total: " + cluster.entities.length,
+            title: cluster.entities.map((entityID) => translateEntity(entityID)).join('<br>') + "<br>Total: " + cluster.entities.length,
             label: cluster.name,
             value: cluster.entities,
             level: 1,
@@ -326,13 +332,14 @@ export class TransactionView extends React.Component {
     }
 
     createEdge(cluster) {
+        const { translateEntity } = this.context;
+
         const text = []
 
-        Object.entries(this.state.controller.entities).forEach(([key, value]) => {
-            if (cluster.entities.includes(Number(key)))
-                text.push(key + " " + value)
+        Object.entries(this.state.controller.entities).forEach(([entityID, value]) => {
+            if (cluster.entities.includes(Number(entityID)))
+                text.push(translateEntity(entityID) + " " + value)
         });
-
 
         return {
             from: this.state.controller.name,
@@ -349,6 +356,8 @@ export class TransactionView extends React.Component {
             decomposition,
         } = this.state;
 
+        const { translateEntity } = this.context;
+
         let nodes = [];
         let edges = [];
         let localTransactionsSequence = [];
@@ -361,7 +370,7 @@ export class TransactionView extends React.Component {
             value: 1,
             type: types.CONTROLLER,
             title: Object.entries(controller.entities)
-                .map(e => e[0] + " " + e[1])
+                .map(e => translateEntity(e[0]) + " " + e[1])
                 .join('<br>') + "<br>Total: " + Object.keys(controller.entities).length,
         });
 
@@ -381,7 +390,6 @@ export class TransactionView extends React.Component {
                 clusterAccesses,
             } = localTransactionsList[i];
 
-
             localTransactionIdToClusterAccesses[localTransactionId] = clusterAccesses;
 
             let cluster = decomposition.clusters.find(cluster => Number(cluster.name) === clusterID);
@@ -389,7 +397,7 @@ export class TransactionView extends React.Component {
 
             nodes.push({
                 id: localTransactionId,
-                title: clusterEntityNames.join('<br>') + "<br>Total: " + clusterEntityNames.length,
+                title: clusterEntityNames.map(entityID => translateEntity(entityID)).join('<br>') + "<br>Total: " + clusterEntityNames.length,
                 label: cluster.name,
                 value: clusterEntityNames.length,
                 level: 1,
@@ -399,7 +407,7 @@ export class TransactionView extends React.Component {
             localTransactionsSequence.push({
                 id: localTransactionId,
                 cluster: cluster.name,
-                entities: <pre>{clusterAccesses.map(acc => acc.join(" ")).join('\n')}</pre>
+                entities: <pre>{clusterAccesses.map(acc => `${acc[0]} ${translateEntity(acc[1])} ${acc[2] ?? ""}`).join('\n')}</pre>
             });
         }
 
@@ -414,7 +422,7 @@ export class TransactionView extends React.Component {
             edges.push({
                 from: Number(sourceNodeId),
                 to: Number(targetNodeId),
-                title: clusterAccesses.map(acc => acc.join(" ")).join('<br>'),
+                title: clusterAccesses.map(acc => `${acc[0]} ${translateEntity(acc[1])} ${acc[2] ?? ""}`).join('<br>'),
                 label: clusterAccesses.length.toString()
             })
 
@@ -448,12 +456,14 @@ export class TransactionView extends React.Component {
     }
 
     createRedesignGraph(functionalityRedesign){
+        const { translateEntity } = this.context;
+
         let nodes = [];
         let edges = [];
 
         nodes.push({
             id: 0,
-            title: Object.entries(this.state.controller.entities).map(e => e[0] + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(this.state.controller.entities).length,
+            title: Object.entries(this.state.controller.entities).map(e => translateEntity(e[0]) + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(this.state.controller.entities).length,
             label: this.state.controller.name,
             level: -1,
             value: 1,
@@ -463,7 +473,6 @@ export class TransactionView extends React.Component {
         functionalityRedesign.redesign.find(e => e.id === 0)
             .remoteInvocations.forEach((id) => {
                 const lt = functionalityRedesign.redesign.find(e => e.id === id);
-                let cluster = this.state.decomposition.clusters.find(cluster => Number(cluster.name) === lt.clusterID);
                 nodes.push({
                     id: lt.id,
                     title: lt.type,
@@ -475,7 +484,7 @@ export class TransactionView extends React.Component {
                 edges.push({
                     from: 0,
                     to: lt.id,
-                    title: lt.clusterAccesses.map(access => access.join(" ")).join('<br>'),
+                    title: lt.clusterAccesses.map(acc => `${acc[0]} ${translateEntity(acc[1])} ${acc[2] ?? ""}`).join('<br>'),
                     label: lt.clusterAccesses.length.toString()
                 });
             });
@@ -485,7 +494,6 @@ export class TransactionView extends React.Component {
                 let localTransaction = functionalityRedesign.redesign.find(lt => lt.id === nodes[i].id);
                 localTransaction.remoteInvocations.forEach((id) => {
                     let lt = functionalityRedesign.redesign.find(lt => lt.id === id);
-                    let cluster = this.state.decomposition.clusters.find(cluster => Number(cluster.name) === lt.clusterID);
 
                     nodes.push({
                         id: lt.id,
@@ -498,7 +506,7 @@ export class TransactionView extends React.Component {
                     edges.push({
                         from: nodes[i].id,
                         to: id,
-                        title: lt.clusterAccesses.map(access => access.join(" ")).join('<br>'),
+                        title: lt.clusterAccesses.map(acc => `${acc[0]} ${translateEntity(acc[1])} ${acc[2] ?? ""}`).join('<br>'),
                         label: lt.clusterAccesses.length.toString()
                     });
                 });
@@ -526,6 +534,8 @@ export class TransactionView extends React.Component {
 
 
     handleSelectNode(nodeId) {
+        if (this.state.currentSubView === "Sequence Graph") return;
+
         if(this.state.compareRedesigns) return;
 
         if(this.state.selectedOperation === redesignOperations.NONE) {
