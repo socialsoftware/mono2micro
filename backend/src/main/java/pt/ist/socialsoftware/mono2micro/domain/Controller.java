@@ -13,6 +13,7 @@ import pt.ist.socialsoftware.mono2micro.utils.serializers.ControllerSerializer;
 @JsonDeserialize(using = ControllerDeserializer.class)
 public class Controller {
 	private String name;
+	private ControllerType type;
 	private float complexity;
 	private float performance; // the average of the number of hops between clusters for all traces
 	private Map<Short, Byte> entities = new HashMap<>(); // <entityID, mode>

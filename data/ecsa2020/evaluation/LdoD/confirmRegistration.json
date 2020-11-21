@@ -1,0 +1,89 @@
+{
+  "name" : "SignupController.confirmRegistration",
+  "type" : "SAGA",
+  "complexity" : 130.0,
+  "entities" : {
+    "LdoDUser" : "RW",
+    "RegistrationToken" : "RW",
+    "LdoD" : "RW"
+  },
+  "entitiesPerCluster" : {
+    "User" : [ "RegistrationToken", "LdoDUser" ],
+    "Text" : [ "LdoD" ]
+  },
+  "entitiesSeq" : "[{\"cluster\":\"Text\",\"sequence\":[[\"LdoD\",\"R\"]]},{\"cluster\":\"User\",\"sequence\":[[\"RegistrationToken\",\"R\"],[\"LdoDUser\",\"R\"],[\"LdoDUser\",\"W\"],[\"RegistrationToken\",\"W\"]]},{\"cluster\":\"Text\",\"sequence\":[[\"LdoD\",\"W\"]]}]",
+  "functionalityRedesigns" : [ {
+    "name" : "Monolith Trace",
+    "usedForMetrics" : false,
+    "redesign" : [ {
+      "name" : "SignupController.confirmRegistration",
+      "id" : "-1",
+      "cluster" : "SignupController.confirmRegistration",
+      "accessedEntities" : "",
+      "remoteInvocations" : [ 0 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "0: Text",
+      "id" : "0",
+      "cluster" : "Text",
+      "accessedEntities" : "[[\"LdoD\",\"R\"]]",
+      "remoteInvocations" : [ 1 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "1: User",
+      "id" : "1",
+      "cluster" : "User",
+      "accessedEntities" : "[[\"RegistrationToken\",\"R\"],[\"LdoDUser\",\"R\"],[\"LdoDUser\",\"W\"],[\"RegistrationToken\",\"W\"]]",
+      "remoteInvocations" : [ 2 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "2: Text",
+      "id" : "2",
+      "cluster" : "Text",
+      "accessedEntities" : "[[\"LdoD\",\"W\"]]",
+      "remoteInvocations" : [ ],
+      "type" : "COMPENSATABLE"
+    } ],
+    "systemComplexity" : 106,
+    "functionalityComplexity" : 67,
+    "inconsistencyComplexity" : 0,
+    "pivotTransaction" : ""
+  }, {
+    "name" : "thesis-evaluation",
+    "usedForMetrics" : true,
+    "redesign" : [ {
+      "name" : "SignupController.confirmRegistration",
+      "id" : "-1",
+      "cluster" : "SignupController.confirmRegistration",
+      "accessedEntities" : "",
+      "remoteInvocations" : [ 0 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "0: Text",
+      "id" : "0",
+      "cluster" : "Text",
+      "accessedEntities" : "[[\"LdoD\",\"R\"]]",
+      "remoteInvocations" : [ 1 ],
+      "type" : "COMPENSATABLE"
+    }, {
+      "name" : "1: User",
+      "id" : "1",
+      "cluster" : "User",
+      "accessedEntities" : "[[\"RegistrationToken\",\"R\"],[\"LdoDUser\",\"R\"],[\"LdoDUser\",\"W\"],[\"RegistrationToken\",\"W\"]]",
+      "remoteInvocations" : [ 2 ],
+      "type" : "PIVOT"
+    }, {
+      "name" : "2: Text",
+      "id" : "2",
+      "cluster" : "Text",
+      "accessedEntities" : "[[\"LdoD\",\"W\"]]",
+      "remoteInvocations" : [ ],
+      "type" : "RETRIABLE"
+    } ],
+    "systemComplexity" : 0,
+    "functionalityComplexity" : 64,
+    "inconsistencyComplexity" : 0,
+    "pivotTransaction" : "1"
+  } ],
+  "localTransactionsGraph" : {"nodes":[{"id":0,"clusterName":null,"clusterAccesses":[]},{"id":1,"clusterName":"Text","clusterAccesses":[["LdoD","R"]]},{"id":2,"clusterName":"User","clusterAccesses":[["RegistrationToken","R"],["LdoDUser","R"],["LdoDUser","W"],["RegistrationToken","W"]]},{"id":3,"clusterName":"Text","clusterAccesses":[["LdoD","W"]]}],"links":["0->1","1->2","2->3"]}
+}

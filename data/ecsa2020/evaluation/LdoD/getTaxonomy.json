@@ -106,8 +106,8 @@
       "remoteInvocations" : [ ],
       "type" : "COMPENSATABLE"
     } ],
-    "systemComplexity" : 216,
-    "functionalityComplexity" : 303,
+    "systemComplexity" : 212,
+    "functionalityComplexity" : 317,
     "pivotTransaction" : ""
   }, {
     "name" : "ecsa",

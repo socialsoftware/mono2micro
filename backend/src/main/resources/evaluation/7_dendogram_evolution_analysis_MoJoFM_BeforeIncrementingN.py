@@ -184,10 +184,10 @@ for mojo, entityCount in zip(data_dict['mojoFM'], data_dict['entityCount']):
     else:
         entityCountLT80.append(entityCount)
 
-print('mean GE 80: ' + str(np.mean(entityCountGE80)))
+print('mean entityCount GE 80: ' + str(np.mean(entityCountGE80)))
 print('std GE 80: ' + str(np.std(entityCountGE80)))
-print('mean LT 80: ' + str(np.mean(entityCountLT80)))
-print('std LT 80: ' + str(np.std(entityCountLT80)))
+print('mean entityCount LT 80: ' + str(np.mean(entityCountLT80)))
+print('std entityCount LT 80: ' + str(np.std(entityCountLT80)))
 
 print()
 print("100 > mojoFM >= 90:")

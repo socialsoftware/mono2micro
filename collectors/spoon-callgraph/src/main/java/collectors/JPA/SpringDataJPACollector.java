@@ -93,6 +93,9 @@ public class SpringDataJPACollector extends SpoonCollector {
             allEntities.add(clazz.getSimpleName());
         }
 
+        for (String e : allDomainEntities)
+            entitiesMap.put(e, entitiesMap.size() + 1);
+
         // 2nd iteration, to retrieve collectors.JPA related information and interface explicit implementations
         for(CtType<?> clazz : factory.Class().getAll()) {
             Set<CtTypeReference<?>> superInterfaces = clazz.getSuperInterfaces();

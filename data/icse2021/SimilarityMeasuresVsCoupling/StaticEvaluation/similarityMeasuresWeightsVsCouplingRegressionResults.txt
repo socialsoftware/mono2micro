@@ -1,0 +1,22 @@
+Regression results for the evaluation of the correlation between weights given to the four similarity measures, access (A), write (W), read(R) and sequence (S) and the number of clusters (N) of a decomposition with its Coupling.
+
+
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:               coupling   R-squared:                       0.227
+Model:                            OLS   Adj. R-squared:                  0.227
+Method:                 Least Squares   F-statistic:                 1.464e+04
+No. Observations:              199056   Prob (F-statistic):               0.00
+Df Residuals:                  199051   Log-Likelihood:             1.1688e+05
+Df Model:                           4   AIC:                        -2.337e+05
+Covariance Type:            nonrobust   BIC:                        -2.337e+05
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+const          0.0002   3.36e-07    547.188      0.000       0.000       0.000
+n             -0.0290      0.000   -224.378      0.000      -0.029      -0.029
+A              0.0040    1.3e-05    311.653      0.000       0.004       0.004
+W              0.0052    1.3e-05    398.981      0.000       0.005       0.005
+R              0.0041    1.3e-05    318.088      0.000       0.004       0.004
+S              0.0050    1.3e-05    389.428      0.000       0.005       0.005
+==============================================================================
