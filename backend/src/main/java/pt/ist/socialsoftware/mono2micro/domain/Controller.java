@@ -25,7 +25,6 @@ public class Controller {
 	private float performance; // the average of the number of hops between clusters for all traces
 	private Map<Short, Byte> entities = new HashMap<>(); // <entityID, mode>
 	private List<FunctionalityRedesign> functionalityRedesigns = new ArrayList<>();
-	private ControllerType type;
 	private Map<Short, Set<Short>> entitiesPerCluster = new HashMap<>();
 
 	public Controller() {}
