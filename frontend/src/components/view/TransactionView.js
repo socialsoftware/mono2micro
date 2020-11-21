@@ -239,7 +239,6 @@ export class TransactionView extends React.Component {
             dendrogramName,
             decompositionName
         ).then(response => {
-            console.log(response);
             this.setState({
                 controllersClusters: response.data
             });
@@ -693,7 +692,8 @@ export class TransactionView extends React.Component {
                 )
                     .then(response => {
                         this.rebuildRedesignGraph(response);
-                    }).catch(() => {
+                    }).catch((err) => {
+                        console.error(err);
                         this.setState({
                             error: true,
                             errorMessage: 'ERROR: Add Compensating failed.'
@@ -796,7 +796,8 @@ export class TransactionView extends React.Component {
                     .then(response => {
                         this.rebuildRedesignGraph(response);
                     })
-                    .catch(() => {
+                    .catch((err) => {
+                        console.error(err);
                         this.setState({
                             error: true,
                             errorMessage: 'ERROR: Pivot selection failed.'
@@ -810,7 +811,7 @@ export class TransactionView extends React.Component {
     }
 
     rebuildRedesignGraph(value){
-        const controllers = this.state.graph.controllers;
+        const controllers = this.state.decomposition.controllers;
         const index = controllers.indexOf(this.state.controller);
         controllers[index] = value.data;
         const redesign = value.data.functionalityRedesigns.find(e => e.name === this.state.selectedRedesign.name);
