@@ -157,7 +157,6 @@ export class FunctionalityRedesignMenu extends React.Component{
     }
 
     render() {
-        console.log(this.props);
         let modifiedEntitiesClustersDropdown;
         if(this.state.addCompensatingCluster !== addCompensatingPlaceHolder){
             modifiedEntitiesClustersDropdown =

@@ -326,8 +326,8 @@ export class TransactionView extends React.Component {
     }
 
     createEdge(cluster) {
-        const text = []     
-        
+        const text = []
+
         Object.entries(this.state.controller.entities).forEach(([key, value]) => {
             if (cluster.entities.includes(Number(key)))
                 text.push(key + " " + value)
@@ -513,8 +513,6 @@ export class TransactionView extends React.Component {
 
     identifyModifiedEntities(cluster){
         const modifiedEntities = [];
-        console.log(this.state.controller.entities);
-        console.log(Object.entries(this.state.controller.entities));
         Object.entries(this.state.controller.entities).forEach(e => {
             if (cluster.entities.includes(parseInt(e[0])) && e[1] >= 2) // 2 -> W , 3 -> RW - we want all writes
                 modifiedEntities.push(e[0]);
@@ -528,8 +526,6 @@ export class TransactionView extends React.Component {
 
 
     handleSelectNode(nodeId) {
-        console.log(nodeId);
-
         if(this.state.compareRedesigns) return;
 
         if(this.state.selectedOperation === redesignOperations.NONE) {
@@ -551,7 +547,6 @@ export class TransactionView extends React.Component {
             } else if(this.state.selectedRedesign.redesign.find(c => c.id === nodeId).remoteInvocations
                 .includes(parseInt(this.state.selectedLocalTransaction.id))) {
                 const lt = this.state.selectedRedesign.redesign.find(e => e.id === nodeId);
-                console.log(lt);
                 this.setState({
                     error: true,
                     errorMessage: "The local transaction " + lt.name
@@ -572,9 +567,6 @@ export class TransactionView extends React.Component {
             this.state.DCGILocalTransactionsForTheSelectedClusters !== null){
             const localTransaction = this.state.selectedRedesign.redesign.find(c => c.id === nodeId);
 
-            console.log(this.state.DCGIAvailableClusters);
-            console.log(localTransaction);
-
             if(!this.state.DCGISelectedClusters.includes(localTransaction.clusterID))
                 return
 
@@ -590,11 +582,11 @@ export class TransactionView extends React.Component {
 
     checkTransitiveClosure(nodeId){
         let transitiveClosure = this.state.selectedLocalTransaction.remoteInvocations;
-        
+
         for(let i = 0; i < transitiveClosure.length; i++) {
             if(transitiveClosure[i] === parseInt(nodeId))
                 return true;
-            
+
             transitiveClosure = transitiveClosure.concat(
                 this.state.selectedRedesign.redesign.find(
                     e => e.id === transitiveClosure[i]
@@ -627,13 +619,11 @@ export class TransactionView extends React.Component {
             const modifiedEntities = [];
 
             controllersClusters[controller.name].forEach(cluster => {
-                console.log(cluster);
                 const clusterModifiedEntities = this.identifyModifiedEntities(cluster);
-                
+
                 if (clusterModifiedEntities.modifiedEntities.length > 0 && clusterModifiedEntities.cluster !== selectedLocalTransaction.cluster)
                     modifiedEntities.push(clusterModifiedEntities);
             })
-            console.log(modifiedEntities);
             this.setState({
                 modifiedEntities,
             });
@@ -680,7 +670,6 @@ export class TransactionView extends React.Component {
 
         switch (selectedOperation) {
             case redesignOperations.AC:
-                console.log(value);
                 service.addCompensating(
                     codebaseName,
                     dendrogramName,
@@ -735,9 +724,9 @@ export class TransactionView extends React.Component {
                     codebaseName,
                     dendrogramName,
                     decompositionName,
-                    controller.name, 
-                    selectedRedesign.name, 
-                    DCGISelectedClusters[0], 
+                    controller.name,
+                    selectedRedesign.name,
+                    DCGISelectedClusters[0],
                     DCGISelectedClusters[1],
                     JSON.stringify(this.state.DCGISelectedLocalTransactions.map(e => e.id))
                 )
@@ -755,21 +744,20 @@ export class TransactionView extends React.Component {
 
             case redesignOperations.PIVOT:
                 service.selectPivotTransaction(
-                    codebaseName, 
-                    dendrogramName, 
+                    codebaseName,
+                    dendrogramName,
                     decompositionName,
-                    controller.name, 
-                    selectedRedesign.name, 
+                    controller.name,
+                    selectedRedesign.name,
                     selectedLocalTransaction.id,
                     selectedRedesign.pivotTransaction === -1 ? value : null
                 )
                     .then(response => {
-                        console.log(response);
                         this.handlePivotTransactionSubmit(response);
 
                     }).catch(error => {
                         console.error(error.response)
-                        
+
                         if(error.response !== undefined && error.response.status === HttpStatus.FORBIDDEN){
                             this.setState({
                                 error: true,
@@ -815,7 +803,7 @@ export class TransactionView extends React.Component {
         const index = controllers.indexOf(this.state.controller);
         controllers[index] = value.data;
         const redesign = value.data.functionalityRedesigns.find(e => e.name === this.state.selectedRedesign.name);
-        
+
         this.setState({
             controllers: controllers,
             controller: value.data,
@@ -827,11 +815,10 @@ export class TransactionView extends React.Component {
     }
 
     handlePivotTransactionSubmit(value){
-        console.log(value);
         const controllers = this.state.decomposition.controllers;
         const index = controllers.indexOf(this.state.controller);
         controllers[index] = value.data;
-        
+
         this.setState({
             controllers: controllers,
             controller: value.data,
@@ -858,7 +845,6 @@ export class TransactionView extends React.Component {
     DCGISelectCluster(value){
         const selectedClusters = this.state.DCGISelectedClusters;
         selectedClusters.push(parseInt(value));
-        console.log(selectedClusters);
 
         const localTransactionsForTheSelectedClusters =
             this.state.selectedRedesign.redesign.filter(e => selectedClusters.includes(e.clusterID));
@@ -871,7 +857,6 @@ export class TransactionView extends React.Component {
     }
 
     handleDCGISelectLocalTransaction(value){
-        console.log(value);
         if(value === null || value.length === 0){
             this.setState({
                 DCGISelectedLocalTransactions: [],
@@ -925,7 +910,6 @@ export class TransactionView extends React.Component {
     }
 
     handleUseForMetrics(value){
-        console.log(value);
         const service = new RepositoryService();
         service.setUseForMetrics(this.props.codebaseName, this.props.dendrogramName, this.props.decompositionName,
             this.state.controller.name, value.name)
@@ -947,7 +931,6 @@ export class TransactionView extends React.Component {
     }
 
     handleSelectRedesign(value){
-        console.log(value);
         this.setState({
             selectedRedesign: value,
             redesignVisGraph: this.createRedesignGraph(value)
@@ -955,7 +938,6 @@ export class TransactionView extends React.Component {
     }
 
     handleDeleteRedesign(value){
-        console.log(value);
         const service = new RepositoryService();
         service.deleteRedesign(this.props.codebaseName, this.props.dendrogramName, this.props.decompositionName,
             this.state.controller.name, value.name)
