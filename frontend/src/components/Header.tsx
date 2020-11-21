@@ -4,6 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import AppContext from "./AppContext";
 import FormControl from 'react-bootstrap/FormControl';
+import Form from "react-bootstrap/Form";
 
 const Header: FunctionComponent = () => {
     const {
@@ -25,7 +26,7 @@ const Header: FunctionComponent = () => {
     }
 
     return (
-        <Navbar bg="dark" variant="dark">
+        <Navbar bg="dark" variant="dark" >
             <Navbar.Brand>
                 <Link to='/'>
                     Mono2Micro
@@ -45,10 +46,13 @@ const Header: FunctionComponent = () => {
                     </Nav.Link>
                 </Nav>
             </Navbar.Collapse>
-            <FormControl
-                type="file"
-                onChange={handleSelectedFile}
-            />
+            <Form inline>
+                <FormControl
+                    type="file"
+                    onChange={handleSelectedFile}
+                    style={{ color: "white" }}
+                />
+            </Form>
         </Navbar>
     );
 }
