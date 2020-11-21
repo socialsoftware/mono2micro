@@ -99,7 +99,6 @@ public class Controller {
 //		this.functionalityRedesigns = functionalityRedesigns;
 //	}
 
-
 //	public void addEntitiesSeq(JSONArray entitiesSeq) throws JSONException {
 //		this.setEntitiesSeq(entitiesSeq.toString());
 //	}
