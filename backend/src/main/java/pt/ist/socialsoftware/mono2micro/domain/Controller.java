@@ -5,8 +5,15 @@ import java.util.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DirectedAcyclicGraph;
+import org.jgrapht.traverse.BreadthFirstIterator;
+import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
+import pt.ist.socialsoftware.mono2micro.utils.ControllerType;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.ControllerDeserializer;
 import pt.ist.socialsoftware.mono2micro.utils.serializers.ControllerSerializer;
+
+import static org.jgrapht.Graphs.successorListOf;
 
 @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
 @JsonSerialize(using = ControllerSerializer.class)
@@ -17,9 +24,8 @@ public class Controller {
 	private float complexity;
 	private float performance; // the average of the number of hops between clusters for all traces
 	private Map<Short, Byte> entities = new HashMap<>(); // <entityID, mode>
-//	@JsonIgnore
-//	private String entitiesSeq = "[]";
-//	private List<FunctionalityRedesign> functionalityRedesigns = new ArrayList<>();
+	private List<FunctionalityRedesign> functionalityRedesigns = new ArrayList<>();
+	private Map<Short, Set<Short>> entitiesPerCluster = new HashMap<>();
 
 	public Controller() {}
 
@@ -69,10 +75,6 @@ public class Controller {
 		this.entities = entities;
 	}
 
-//	public String getEntitiesSeq() { return entitiesSeq; }
-//
-//	public void setEntitiesSeq(String entitiesSeq) { this.entitiesSeq = entitiesSeq; }
-
 	public void addEntity(
 		short entityID,
 		byte mode
@@ -91,85 +93,155 @@ public class Controller {
 		return this.entities.containsKey(entity);
 	}
 
-//	public List<FunctionalityRedesign> getFunctionalityRedesigns() {
-//		return functionalityRedesigns;
-//	}
-//
-//	public void setFunctionalityRedesigns(List<FunctionalityRedesign> functionalityRedesigns) {
-//		this.functionalityRedesigns = functionalityRedesigns;
-//	}
+	public List<FunctionalityRedesign> getFunctionalityRedesigns() { return functionalityRedesigns; }
 
-//	public void addEntitiesSeq(JSONArray entitiesSeq) throws JSONException {
-//		this.setEntitiesSeq(entitiesSeq.toString());
-//	}
+	public void setFunctionalityRedesigns(List<FunctionalityRedesign> functionalityRedesigns) {
+		this.functionalityRedesigns = functionalityRedesigns;
+	}
 
-//	public void createFunctionalityRedesign(String name, boolean usedForMetrics) throws JSONException {
-//		FunctionalityRedesign functionalityRedesign = new FunctionalityRedesign(name);
-//		functionalityRedesign.setUsedForMetrics(usedForMetrics);
-//
-//		JSONArray sequence = new JSONArray(this.entitiesSeq);
-//		pt.ist.socialsoftware.mono2micro.domain.LocalTransaction lt = new pt.ist.socialsoftware.mono2micro.domain.LocalTransaction(
-//				Integer.toString(-1),
-//				this.name,
-//				"",
-//				new ArrayList<>(),
-//				this.name
-//		);
-//
-//		lt.getRemoteInvocations().add(0);
-//		functionalityRedesign.getRedesign().add(lt);
-//
-//		for(int i=0; i < sequence.length(); i++){
-//			lt = new pt.ist.socialsoftware.mono2micro.domain.LocalTransaction(
-//				Integer.toString(i),
-//				sequence.getJSONObject(i).getString("cluster"),
-//				sequence.getJSONObject(i).getString("sequence"),
-//				new ArrayList<>(),
-//					i + ": " + sequence.getJSONObject(i).getString("cluster")
-//			);
-//
-//			functionalityRedesign.getRedesign().add(lt);
-//
-//			if(i > 0) {
-//				functionalityRedesign.getRedesign().get(i).getRemoteInvocations().add(i);
-//			}
-//		}
-//		this.functionalityRedesigns.add(0,functionalityRedesign);
-//	}
-//
-//	public FunctionalityRedesign getFunctionalityRedesign(String redesignName){
-//		return this.functionalityRedesigns.stream().filter(fr -> fr.getName().equals(redesignName)).findFirst().orElse(null);
-//	}
-//
-//	public boolean changeFunctionalityRedesignName(String oldName, String newName){
-//		FunctionalityRedesign functionalityRedesign = this.functionalityRedesigns.stream().filter(fr -> fr.getName().equals(oldName)).findFirst().orElse(null);
-//		functionalityRedesign.setName(newName);
-//		return true;
-//	}
-//
-//	public FunctionalityRedesign frUsedForMetrics(){
-//		for(FunctionalityRedesign fr : this.getFunctionalityRedesigns()){
-//			if(fr.isUsedForMetrics()) return fr;
-//		}
-//		return null;
-//	}
-//
-//	public boolean checkNameValidity(String name){
-//		return this.functionalityRedesigns.stream().filter(fr -> fr.getName().equals(name)).findFirst().orElse(null) == null;
-//	}
-//
-//	public void deleteRedesign(String redesignName){
-//		if(this.functionalityRedesigns.removeIf(fr -> fr.getName().equals(redesignName))){
-//			this.functionalityRedesigns.get(0).setUsedForMetrics(true);
-//		}
-//	}
-//
-//	public void changeFRUsedForMetrics(String redesignName){
-//		for(FunctionalityRedesign fr : this.getFunctionalityRedesigns()) {
-//			if (fr.isUsedForMetrics())
-//				fr.setUsedForMetrics(false);
-//			else if (fr.getName().equals(redesignName))
-//				fr.setUsedForMetrics(true);
-//		}
-//	}
+
+	public void createFunctionalityRedesign(
+		String name,
+		boolean usedForMetrics,
+		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph
+	) {
+		FunctionalityRedesign functionalityRedesign = new FunctionalityRedesign(name);
+		functionalityRedesign.setUsedForMetrics(usedForMetrics);
+
+		LocalTransaction graphRootLT = new LocalTransaction(0, (short) -1);
+
+		graphRootLT.setName(this.name);
+
+		Iterator<LocalTransaction> iterator = new BreadthFirstIterator<>(
+			localTransactionsGraph,
+			graphRootLT
+		);
+
+		while (iterator.hasNext()) {
+			LocalTransaction lt = iterator.next();
+			lt.setRemoteInvocations(new ArrayList<>());
+
+			List<LocalTransaction> graphChildrenLTs = successorListOf(
+				localTransactionsGraph,
+				lt
+			);
+
+			for (LocalTransaction childLT : graphChildrenLTs) {
+				lt.addRemoteInvocations(childLT.getId());
+				childLT.setName(childLT.getId() + ": " + childLT.getClusterID());
+			}
+
+			functionalityRedesign.getRedesign().add(lt);
+			if(lt.getId() != 0){
+				for(AccessDto accessDto : lt.getClusterAccesses()){
+					if(this.entitiesPerCluster.containsKey(lt.getClusterID())){
+						this.entitiesPerCluster.get(lt.getClusterID()).add(accessDto.getEntityID());
+					} else {
+						Set<Short> entities = new HashSet<>();
+						entities.add(accessDto.getEntityID());
+						this.entitiesPerCluster.put(lt.getClusterID(), entities);
+					}
+				}
+			}
+		}
+
+		this.functionalityRedesigns.add(0, functionalityRedesign);
+	}
+
+	public FunctionalityRedesign getFunctionalityRedesign(String redesignName){
+		return this.functionalityRedesigns.stream().filter(fr -> fr.getName().equals(redesignName)).findFirst().orElse(null);
+	}
+
+	public boolean changeFunctionalityRedesignName(String oldName, String newName){
+		FunctionalityRedesign functionalityRedesign = this.functionalityRedesigns
+			.stream()
+			.filter(fr -> fr.getName().equals(oldName))
+			.findFirst()
+			.orElse(null);
+
+		functionalityRedesign.setName(newName);
+		return true;
+	}
+
+	public FunctionalityRedesign frUsedForMetrics(){
+		for(FunctionalityRedesign fr : this.getFunctionalityRedesigns()){
+			if(fr.isUsedForMetrics()) return fr;
+		}
+		return null;
+	}
+
+	public boolean checkNameValidity(String name){
+		return this.functionalityRedesigns.stream().filter(fr -> fr.getName().equals(name)).findFirst().orElse(null) == null;
+	}
+
+	public void deleteRedesign(String redesignName){
+		if(this.functionalityRedesigns.removeIf(fr -> fr.getName().equals(redesignName))){
+			this.functionalityRedesigns.get(0).setUsedForMetrics(true);
+		}
+	}
+
+	public void changeFRUsedForMetrics(String redesignName){
+		for(FunctionalityRedesign fr : this.getFunctionalityRedesigns()) {
+			if (fr.isUsedForMetrics())
+				fr.setUsedForMetrics(false);
+			else if (fr.getName().equals(redesignName))
+				fr.setUsedForMetrics(true);
+		}
+	}
+
+	public ControllerType getType() {
+		return type;
+	}
+
+	public void setType(ControllerType type) {
+		this.type = type;
+	}
+
+	public Set<Short> entitiesTouchedInAGivenMode(byte mode){
+		Set<Short> entitiesTouchedInAGivenMode = new HashSet<>();
+		for(Short entity : this.entities.keySet()){
+			if(this.entities.get(entity) == 3 || this.entities.get(entity) == mode) // 3 -> RW
+				entitiesTouchedInAGivenMode.add(entity);
+		}
+		return entitiesTouchedInAGivenMode;
+	}
+
+	public Set<Short> clustersOfGivenEntities(Set<Short> entities){
+		Set<Short> clustersOfGivenEntities = new HashSet<>();
+		for(Short clusterID : this.entitiesPerCluster.keySet()){
+			for(Short entityID : entities){
+				if(this.entitiesPerCluster.get(clusterID).contains(entityID))
+					clustersOfGivenEntities.add(clusterID);
+			}
+		}
+		return clustersOfGivenEntities;
+	}
+
+	public ControllerType defineControllerType(){
+		if(this.type != null) return this.type;
+
+		if(!this.entities.isEmpty()){
+			for(Short entity : this.entities.keySet()){
+				if(this.entities.get(entity) >= 2) { // 2 -> W , 3 -> RW
+					this.type = ControllerType.SAGA;
+					return this.type;
+				}
+
+			}
+			this.type = ControllerType.QUERY;
+		}
+		return this.type;
+	}
+
+	public boolean containsEntity(Short entity) {
+		return this.entities.containsKey(entity);
+	}
+
+	public Map<Short, Set<Short>> getEntitiesPerCluster() {
+		return entitiesPerCluster;
+	}
+
+	public void setEntitiesPerCluster(Map<Short, Set<Short>> entitiesPerCluster) {
+		this.entitiesPerCluster = entitiesPerCluster;
+	}
 }

@@ -6,10 +6,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
-import pt.ist.socialsoftware.mono2micro.domain.Cluster;
-import pt.ist.socialsoftware.mono2micro.domain.Codebase;
-import pt.ist.socialsoftware.mono2micro.domain.Controller;
-import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.domain.*;
 import pt.ist.socialsoftware.mono2micro.dto.*;
 
 import java.io.File;
@@ -313,8 +310,8 @@ public class Utils {
 
     public static class GetLocalTransactionsSequenceAndCalculateTracePerformanceResult {
         public int performance = 0;
-        public Decomposition.LocalTransaction lastLocalTransaction = null;
-        public List<Decomposition.LocalTransaction> localTransactionsSequence = new ArrayList<>();
+        public LocalTransaction lastLocalTransaction = null;
+        public List<LocalTransaction> localTransactionsSequence = new ArrayList<>();
         public String firstAccessedClusterName = null;
         Map<Short, Byte> entityIDToMode = new HashMap<>();
 
@@ -322,8 +319,8 @@ public class Utils {
 
         public GetLocalTransactionsSequenceAndCalculateTracePerformanceResult(
             int performance,
-            Decomposition.LocalTransaction lastLocalTransaction,
-            List<Decomposition.LocalTransaction> localTransactionsSequence,
+            LocalTransaction lastLocalTransaction,
+            List<LocalTransaction> localTransactionsSequence,
             String firstAccessedClusterName,
             Map<Short, Byte> entityIDToMode
         ) {
@@ -337,7 +334,7 @@ public class Utils {
 
     public static GetLocalTransactionsSequenceAndCalculateTracePerformanceResult getLocalTransactionsSequenceAndCalculateTracePerformance(
         int lastLocalTransactionID,
-        Decomposition.LocalTransaction lastLocalTransaction,
+        LocalTransaction lastLocalTransaction,
         List<ReducedTraceElementDto> elements,
         Map<Short, String> entityIDToClusterName,
         Map<Short, Byte> entityIDToMode,
@@ -351,8 +348,8 @@ public class Utils {
         int performance = 0;
         String firstAccessedClusterName = null;
 
-        Decomposition.LocalTransaction currentLocalTransaction = lastLocalTransaction;
-        List<Decomposition.LocalTransaction> localTransactionsSequence = new ArrayList<>();
+        LocalTransaction currentLocalTransaction = lastLocalTransaction;
+        List<LocalTransaction> localTransactionsSequence = new ArrayList<>();
 
         int i = from;
 
@@ -427,7 +424,7 @@ public class Utils {
                 if (currentLocalTransaction == null) { // if it's the first element
                     performance++;
 
-                    currentLocalTransaction = new Decomposition.LocalTransaction(
+                    currentLocalTransaction = new LocalTransaction(
                         ++lastLocalTransactionID,
                         currentClusterID,
                         new HashSet<AccessDto>() {{ add(access); }},
@@ -460,10 +457,10 @@ public class Utils {
                         performance++;
 
                         localTransactionsSequence.add(
-                            new Decomposition.LocalTransaction(currentLocalTransaction)
+                            new LocalTransaction(currentLocalTransaction)
                         );
 
-                        currentLocalTransaction = new Decomposition.LocalTransaction(
+                        currentLocalTransaction = new LocalTransaction(
                             ++lastLocalTransactionID,
                             currentClusterID,
                             new HashSet<AccessDto>() {{ add(access); }},
@@ -636,33 +633,33 @@ public class Utils {
     }
 
     public static class GetSerializableLocalTransactionsGraphResult {
-        public List<Decomposition.LocalTransaction> nodes;
+        public List<LocalTransaction> nodes;
         public List<String> links;
 
         public GetSerializableLocalTransactionsGraphResult(
-            List<Decomposition.LocalTransaction> nodes,
+            List<LocalTransaction> nodes,
             List<String> links
         ) {
             this.nodes = nodes;
             this.links = links;
         }
 
-        public List<Decomposition.LocalTransaction> getNodes() { return nodes; }
+        public List<LocalTransaction> getNodes() { return nodes; }
         public List<String> getLinks() { return links; }
     }
 
     public static GetSerializableLocalTransactionsGraphResult getSerializableLocalTransactionsGraph(
-        DirectedAcyclicGraph<Decomposition.LocalTransaction, DefaultEdge> localTransactionsGraph
+        DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph
     ) {
-        List<Decomposition.LocalTransaction> nodes = new ArrayList<>();
+        List<LocalTransaction> nodes = new ArrayList<>();
         List<String> links = new ArrayList<>();
-        Iterator<Decomposition.LocalTransaction> iterator = localTransactionsGraph.iterator();
+        Iterator<LocalTransaction> iterator = localTransactionsGraph.iterator();
 
         while (iterator.hasNext()) {
-            Decomposition.LocalTransaction lt = iterator.next();
+            LocalTransaction lt = iterator.next();
 
-            List<Decomposition.LocalTransaction> ltChildren = successorListOf(localTransactionsGraph, lt);
-            for (Decomposition.LocalTransaction ltC : ltChildren)
+            List<LocalTransaction> ltChildren = successorListOf(localTransactionsGraph, lt);
+            for (LocalTransaction ltC : ltChildren)
                 links.add(lt.getId() + "->" + ltC.getId());
 
             nodes.add(lt);
@@ -672,7 +669,5 @@ public class Utils {
             nodes,
             links
         );
-
-
     }
 }

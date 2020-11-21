@@ -5,30 +5,24 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
-import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
-import static org.jgrapht.Graphs.successorListOf;
-
-public class LocalTransactionsGraphSerializer extends StdSerializer<DirectedAcyclicGraph<Decomposition.LocalTransaction, DefaultEdge>> {
+public class LocalTransactionsGraphSerializer extends StdSerializer<DirectedAcyclicGraph<LocalTransaction, DefaultEdge>> {
 
     public LocalTransactionsGraphSerializer() {
             this(null);
     }
 
-    public LocalTransactionsGraphSerializer(Class<DirectedAcyclicGraph<Decomposition.LocalTransaction, DefaultEdge>> t) {
+    public LocalTransactionsGraphSerializer(Class<DirectedAcyclicGraph<LocalTransaction, DefaultEdge>> t) {
         super(t);
     }
 
     @Override
     public void serialize(
-            DirectedAcyclicGraph<Decomposition.LocalTransaction, DefaultEdge> graph,
+            DirectedAcyclicGraph<LocalTransaction, DefaultEdge> graph,
             JsonGenerator jsonGenerator,
             SerializerProvider provider
     )

@@ -3,53 +3,99 @@ package pt.ist.socialsoftware.mono2micro.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
+import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.utils.LocalTransactionTypes;
 
 @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
 public class LocalTransaction {
 
     private String name;
-    private String id;
-    private String cluster;
-    private String accessedEntities = "";
-    private List<Integer> remoteInvocations = new ArrayList<>();
-    private LocalTransactionTypes type;
+    private int id;
+    private short clusterID;
+    private Set<AccessDto> clusterAccesses;
+    private List<Integer> remoteInvocations;
+    private Set<Short> firstAccessedEntityIDs;
+    private LocalTransactionTypes type = LocalTransactionTypes.COMPENSATABLE;
 
     public LocalTransaction(){}
 
-    public LocalTransaction(String id, String cluster, String entities, List<Integer> remoteInvocations, String name){
+    public LocalTransaction(
+        int id,
+        short clusterID,
+        Set<AccessDto> clusterAccesses,
+        List<Integer> remoteInvocations,
+        String name
+    ){
         this.id = id;
-        this.cluster = cluster;
-        this.accessedEntities = entities;
-        this.remoteInvocations = remoteInvocations;
-        this.type = LocalTransactionTypes.COMPENSATABLE;
         this.name = name;
+        this.clusterID = clusterID;
+        this.clusterAccesses = clusterAccesses;
+        this.remoteInvocations = remoteInvocations;
     }
 
-    public String getId() {
+    public LocalTransaction(
+        int id,
+        short clusterID
+    ) {
+        this.id = id;
+        this.clusterID = clusterID;
+    }
+
+    public LocalTransaction(
+        int id,
+        short clusterID,
+        Set<AccessDto> clusterAccesses,
+        short firstAccessedEntityID
+    ) {
+        this.id = id;
+        this.clusterID = clusterID;
+        this.clusterAccesses = clusterAccesses;
+        this.firstAccessedEntityIDs = new HashSet<Short>() {
+            { add(firstAccessedEntityID); }
+        };
+    }
+
+    public LocalTransaction(LocalTransaction lt) {
+        this.id = lt.getId();
+        this.clusterID = lt.getClusterID();
+        this.clusterAccesses = new HashSet<>(lt.getClusterAccesses());
+        this.firstAccessedEntityIDs = new HashSet<>(lt.getFirstAccessedEntityIDs());
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public String getCluster() {
-        return cluster;
+    public short getClusterID() {
+        return clusterID;
     }
 
-    public void setCluster(String cluster) {
-        this.cluster = cluster;
+    public void setClusterID(short clusterID) {
+        this.clusterID = clusterID;
     }
 
-    public String getAccessedEntities() {
-        return accessedEntities;
+    public Set<AccessDto> getClusterAccesses() {
+        return clusterAccesses;
     }
 
-    public void setAccessedEntities(String accessedEntities) {
-        this.accessedEntities = accessedEntities;
+    public void setClusterAccesses(Set<AccessDto> clusterAccesses) {
+        this.clusterAccesses = clusterAccesses;
+    }
+
+    public void addClusterAccess(AccessDto a) { this.clusterAccesses.add(a); }
+
+    public Set<Short> getFirstAccessedEntityIDs() {
+        return firstAccessedEntityIDs;
+    }
+
+    public void setFirstAccessedEntityIDs(Set<Short> firstAccessedEntityIDs) {
+        this.firstAccessedEntityIDs = firstAccessedEntityIDs;
     }
 
     public List<Integer> getRemoteInvocations() {
@@ -58,6 +104,10 @@ public class LocalTransaction {
 
     public void setRemoteInvocations(List<Integer> remoteInvocations) {
         this.remoteInvocations = remoteInvocations;
+    }
+
+    public void addRemoteInvocations(int remoteInvocation) {
+        this.remoteInvocations.add(remoteInvocation);
     }
 
     public LocalTransactionTypes getType() {
@@ -74,5 +124,20 @@ public class LocalTransaction {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof LocalTransaction) {
+            LocalTransaction that = (LocalTransaction) other;
+            return id == that.id;
+        }
+
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

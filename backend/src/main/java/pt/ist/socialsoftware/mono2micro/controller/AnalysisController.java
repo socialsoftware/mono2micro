@@ -297,7 +297,8 @@ public class AnalysisController {
 		decomposition.calculateMetrics(
 			codebase,
 			analyser.getTracesMaxLimit(),
-			analyser.getTraceType()
+			analyser.getTraceType(),
+			true
 		);
 
 		return decomposition;

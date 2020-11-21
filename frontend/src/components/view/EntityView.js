@@ -7,6 +7,7 @@ import { views, types } from './Views';
 import BootstrapTable from 'react-bootstrap-table-next';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import AppContext from "./../AppContext";
 
 export const entityViewHelp = (<div>
     Hover entity to see controllers that access it.< br />
@@ -55,6 +56,8 @@ const options = {
 };
 
 export class EntityView extends React.Component {
+    static contextType = AppContext;
+
     constructor(props) {
         super(props);
 
@@ -166,6 +169,8 @@ export class EntityView extends React.Component {
             entity,
         } = this.state;
 
+        const { translateEntity } = this.context;
+
         let nodes = [];
         let edges = [];
 
@@ -179,7 +184,7 @@ export class EntityView extends React.Component {
         
         nodes.push({
             id: entity,
-            label: entity,
+            label: translateEntity(entity),
             value: 1,
             level: 0,
             type: types.ENTITY,
@@ -200,7 +205,7 @@ export class EntityView extends React.Component {
                         value: clusterEntities.length,
                         level: 1,
                         type: types.CLUSTER,
-                        title: clusterEntities.map(e => e).join('<br>') + "<br>Total: " + clusterEntities.length
+                        title: clusterEntities.map(entityID => translateEntity(entityID)).join('<br>') + "<br>Total: " + clusterEntities.length
                     });
 
                     edges.push({
@@ -241,8 +246,9 @@ export class EntityView extends React.Component {
             visGraph,
         } = this.state;
 
-        const metricsRows = entities.map(entity => {
-            return { entity };
+        const { translateEntity } = this.context;
+        const metricsRows = entities.sort((a, b) => a - b).map(entityID => {
+            return { entity: translateEntity(entityID) };
         });
 
         const metricsColumns = [{

@@ -394,6 +394,16 @@ export class RepositoryService {
 
     //FunctionalityRedesign
 
+    getOrCreateRedesign(
+        codebaseName: string,
+        dendrogramName: string,
+        decompositionName: string,
+        controllerName: string
+    ) {
+        return this.axios.get<Controller>("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/controller/" + controllerName + "/getOrCreateRedesign");
+    }
+
+
     addCompensating(
         codebaseName: string,
         dendrogramName: string,

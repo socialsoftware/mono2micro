@@ -56,8 +56,8 @@ public class ClusterController {
 			decomposition.calculateMetrics(
 				codebase,
 				dendrogram.getTracesMaxLimit(),
-				dendrogram.getTraceType()
-			);
+				dendrogram.getTraceType(),
+					false);
 
 			codebaseManager.writeCodebase(codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -106,8 +106,8 @@ public class ClusterController {
 			decomposition.calculateMetrics(
 				codebase,
 				dendrogram.getTracesMaxLimit(),
-				dendrogram.getTraceType()
-			);
+				dendrogram.getTraceType(),
+					false);
 
 			codebaseManager.writeCodebase(codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -158,8 +158,8 @@ public class ClusterController {
 			decomposition.calculateMetrics(
 				codebase,
 				dendrogram.getTracesMaxLimit(),
-				dendrogram.getTraceType()
-			);
+				dendrogram.getTraceType(),
+					false);
 
 			codebaseManager.writeCodebase(codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -206,8 +206,8 @@ public class ClusterController {
 			decomposition.calculateMetrics(
 				codebase,
 				dendrogram.getTracesMaxLimit(),
-				dendrogram.getTraceType()
-			);
+				dendrogram.getTraceType(),
+					false);
 
 			codebaseManager.writeCodebase(codebase);
 			return new ResponseEntity<>(HttpStatus.OK);

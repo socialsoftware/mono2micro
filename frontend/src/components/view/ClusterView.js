@@ -8,6 +8,7 @@ import { views, types } from './Views';
 import BootstrapTable from 'react-bootstrap-table-next';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import AppContext from "./../AppContext";
 
 export const clusterViewHelp = (<div>
     Hover or double click cluster to see entities inside.<br />
@@ -63,6 +64,8 @@ const options = {
 };
 
 export class ClusterView extends React.Component {
+    static contextType = AppContext;
+    
     constructor(props) {
         super(props);
 
@@ -88,6 +91,7 @@ export class ClusterView extends React.Component {
         this.handleOperationSubmit = this.handleOperationSubmit.bind(this);
         this.handleOperationCancel = this.handleOperationCancel.bind(this);
         this.closeErrorMessageModal = this.closeErrorMessageModal.bind(this);
+        this.loadClusterGraph = this.loadClusterGraph.bind(this);
     }
 
     componentDidMount() {
@@ -131,21 +135,27 @@ export class ClusterView extends React.Component {
         });
 
         Promise.all([firstRequest, secondRequest]).then(() => {
-            const visGraph = {
-                nodes: new DataSet(this.state.clusters.map(cluster => this.convertClusterToNode(cluster))),
-                edges: new DataSet(this.createEdges())
-            };
+            this.loadClusterGraph();
+        });
+    }
 
-            this.setState({
-                visGraph: visGraph
-            });
+    loadClusterGraph() {
+        const visGraph = {
+            nodes: new DataSet(this.state.clusters.map(cluster => this.convertClusterToNode(cluster))),
+            edges: new DataSet(this.createEdges())
+        };
+
+        this.setState({
+            visGraph: visGraph
         });
     }
 
     convertClusterToNode(cluster) {
+        const { translateEntity } = this.context;
+
         return {
             id: cluster.name,
-            title: cluster.entities.sort().join('<br>') + "<br>Total: " + cluster.entities.length,
+            title: cluster.entities.sort((a, b) => a - b).map(entityID => translateEntity(entityID)).join('<br>') + "<br>Total: " + cluster.entities.length,
             label: cluster.name,
             value: cluster.entities.length,
             type: types.CLUSTER,

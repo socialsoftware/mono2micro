@@ -18,6 +18,7 @@ import {FunctionalityRedesignMenu, redesignOperations} from './FunctionalityRede
 import {ModalMessage} from "../util/ModalMessage";
 import {DEFAULT_REDESIGN_NAME} from "../../constants/constants";
 import {TransactionOperationsMenu} from "./TransactionOperationsMenu";
+import AppContext from "./../AppContext";
 
 const HttpStatus = require('http-status-codes');
 
@@ -173,6 +174,8 @@ const optionsFunctionalityRedesign = {
 
 
 export class TransactionView extends React.Component {
+    static contextType = AppContext;
+
     constructor(props) {
         super(props);
 
@@ -236,7 +239,6 @@ export class TransactionView extends React.Component {
             dendrogramName,
             decompositionName
         ).then(response => {
-            console.log(response);
             this.setState({
                 controllersClusters: response.data
             });
@@ -295,6 +297,7 @@ export class TransactionView extends React.Component {
             controllersClusters,
         } = this.state;
 
+        const { translateEntity } = this.context;
 
         const visGraph = {
             nodes: new DataSet(controllersClusters[controller.name].map(cluster => this.createNode(cluster))),
@@ -303,7 +306,7 @@ export class TransactionView extends React.Component {
 
         visGraph.nodes.add({
             id: controller.name,
-            title: Object.entries(controller.entities).map(e => e[0] + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(controller.entities).length,
+            title: Object.entries(controller.entities).map(e => translateEntity(e[0]) + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(controller.entities).length,
             label: controller.name,
             level: 0,
             value: 1,
@@ -316,9 +319,11 @@ export class TransactionView extends React.Component {
     }
 
     createNode(cluster) {
+        const { translateEntity } = this.context;
+
         return {
             id: cluster.name,
-            title: cluster.entities.join('<br>') + "<br>Total: " + cluster.entities.length,
+            title: cluster.entities.map((entityID) => translateEntity(entityID)).join('<br>') + "<br>Total: " + cluster.entities.length,
             label: cluster.name,
             value: cluster.entities,
             level: 1,
@@ -327,13 +332,14 @@ export class TransactionView extends React.Component {
     }
 
     createEdge(cluster) {
-        const text = []     
-        
-        Object.entries(this.state.controller.entities).forEach(([key, value]) => {
-            if (cluster.entities.includes(Number(key)))
-                text.push(key + " " + value)
-        });
+        const { translateEntity } = this.context;
 
+        const text = []
+
+        Object.entries(this.state.controller.entities).forEach(([entityID, value]) => {
+            if (cluster.entities.includes(Number(entityID)))
+                text.push(translateEntity(entityID) + " " + value)
+        });
 
         return {
             from: this.state.controller.name,
@@ -350,6 +356,8 @@ export class TransactionView extends React.Component {
             decomposition,
         } = this.state;
 
+        const { translateEntity } = this.context;
+
         let nodes = [];
         let edges = [];
         let localTransactionsSequence = [];
@@ -362,7 +370,7 @@ export class TransactionView extends React.Component {
             value: 1,
             type: types.CONTROLLER,
             title: Object.entries(controller.entities)
-                .map(e => e[0] + " " + e[1])
+                .map(e => translateEntity(e[0]) + " " + e[1])
                 .join('<br>') + "<br>Total: " + Object.keys(controller.entities).length,
         });
 
@@ -382,7 +390,6 @@ export class TransactionView extends React.Component {
                 clusterAccesses,
             } = localTransactionsList[i];
 
-
             localTransactionIdToClusterAccesses[localTransactionId] = clusterAccesses;
 
             let cluster = decomposition.clusters.find(cluster => Number(cluster.name) === clusterID);
@@ -390,7 +397,7 @@ export class TransactionView extends React.Component {
 
             nodes.push({
                 id: localTransactionId,
-                title: clusterEntityNames.join('<br>') + "<br>Total: " + clusterEntityNames.length,
+                title: clusterEntityNames.map(entityID => translateEntity(entityID)).join('<br>') + "<br>Total: " + clusterEntityNames.length,
                 label: cluster.name,
                 value: clusterEntityNames.length,
                 level: 1,
@@ -400,7 +407,7 @@ export class TransactionView extends React.Component {
             localTransactionsSequence.push({
                 id: localTransactionId,
                 cluster: cluster.name,
-                entities: <pre>{clusterAccesses.map(acc => acc.join(" ")).join('\n')}</pre>
+                entities: <pre>{clusterAccesses.map(acc => `${acc[0]} ${translateEntity(acc[1])} ${acc[2] ?? ""}`).join('\n')}</pre>
             });
         }
 
@@ -415,7 +422,7 @@ export class TransactionView extends React.Component {
             edges.push({
                 from: Number(sourceNodeId),
                 to: Number(targetNodeId),
-                title: clusterAccesses.map(acc => acc.join(" ")).join('<br>'),
+                title: clusterAccesses.map(acc => `${acc[0]} ${translateEntity(acc[1])} ${acc[2] ?? ""}`).join('<br>'),
                 label: clusterAccesses.length.toString()
             })
 
@@ -449,21 +456,23 @@ export class TransactionView extends React.Component {
     }
 
     createRedesignGraph(functionalityRedesign){
+        const { translateEntity } = this.context;
+
         let nodes = [];
         let edges = [];
 
         nodes.push({
-            id: -1,
-            title: Object.entries(this.state.controller.entities).map(e => e[0] + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(this.state.controller.entities).length,
+            id: 0,
+            title: Object.entries(this.state.controller.entities).map(e => translateEntity(e[0]) + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(this.state.controller.entities).length,
             label: this.state.controller.name,
             level: -1,
             value: 1,
             type: types.CONTROLLER
         });
 
-        functionalityRedesign.redesign.find(e => e.id === (-1).toString())
+        functionalityRedesign.redesign.find(e => e.id === 0)
             .remoteInvocations.forEach((id) => {
-                const lt = functionalityRedesign.redesign.find(e => e.id === id.toString());
+                const lt = functionalityRedesign.redesign.find(e => e.id === id);
                 nodes.push({
                     id: lt.id,
                     title: lt.type,
@@ -473,18 +482,18 @@ export class TransactionView extends React.Component {
                 });
 
                 edges.push({
-                    from: -1,
+                    from: 0,
                     to: lt.id,
-                    title: JSON.parse(lt.accessedEntities).map(e => e.join(" ")).join('<br>'),
-                    label: JSON.parse(lt.accessedEntities).length.toString()
+                    title: lt.clusterAccesses.map(acc => `${acc[0]} ${translateEntity(acc[1])} ${acc[2] ?? ""}`).join('<br>'),
+                    label: lt.clusterAccesses.length.toString()
                 });
             });
 
         for(let i = 0; i < nodes.length; i++){
-            if(nodes[i].id >= 0) {
-                let localTransaction = functionalityRedesign.redesign.find(entry => entry.id === nodes[i].id.toString());
+            if(nodes[i].id > 0) {
+                let localTransaction = functionalityRedesign.redesign.find(lt => lt.id === nodes[i].id);
                 localTransaction.remoteInvocations.forEach((id) => {
-                    let lt = functionalityRedesign.redesign.find(e => e.id === id.toString());
+                    let lt = functionalityRedesign.redesign.find(lt => lt.id === id);
 
                     nodes.push({
                         id: lt.id,
@@ -494,12 +503,11 @@ export class TransactionView extends React.Component {
                         type: types.CLUSTER
                     });
 
-                    let entitiesTouched = JSON.parse(lt.accessedEntities);
                     edges.push({
                         from: nodes[i].id,
                         to: id,
-                        title: Object.values(entitiesTouched).map(e => e.join(" ")).join('<br>'),
-                        label: entitiesTouched.length.toString()
+                        title: lt.clusterAccesses.map(acc => `${acc[0]} ${translateEntity(acc[1])} ${acc[2] ?? ""}`).join('<br>'),
+                        label: lt.clusterAccesses.length.toString()
                     });
                 });
             }
@@ -513,9 +521,8 @@ export class TransactionView extends React.Component {
 
     identifyModifiedEntities(cluster){
         const modifiedEntities = [];
-
         Object.entries(this.state.controller.entities).forEach(e => {
-            if (cluster.entities.includes(e[0]) && e[1].includes("W"))
+            if (cluster.entities.includes(parseInt(e[0])) && e[1] >= 2) // 2 -> W , 3 -> RW - we want all writes
                 modifiedEntities.push(e[0]);
         })
 
@@ -527,23 +534,14 @@ export class TransactionView extends React.Component {
 
 
     handleSelectNode(nodeId) {
-
-        const {
-            DCGIAvailableClusters,
-            DCGILocalTransactionsForTheSelectedClusters,
-            DCGISelectedLocalTransactions,
-            selectedLocalTransaction,
-            selectedRedesign,
-            selectedOperation,
-            DCGISelectedClusters,
-        } = this.state;
+        if (this.state.currentSubView === "Sequence Graph") return;
 
         if(this.state.compareRedesigns) return;
 
-        if(selectedOperation === redesignOperations.NONE) {
+        if(this.state.selectedOperation === redesignOperations.NONE) {
             this.setState({
                 showMenu: true,
-                // selectedLocalTransaction: selectedRedesign.redesign.find(c => c.id === nodeId.toString())
+                selectedLocalTransaction: this.state.selectedRedesign.redesign.find(c => c.id === nodeId)
             });
             return;
         }
@@ -551,22 +549,18 @@ export class TransactionView extends React.Component {
         if(nodeId === -1 && this.state.selectedOperation !== redesignOperations.SQ) return;
 
         if(this.state.selectedOperation === redesignOperations.SQ){
-            if(nodeId.toString() === this.state.selectedLocalTransaction.id){
+            if(nodeId === this.state.selectedLocalTransaction.id){
                 this.setState({
                     error: true,
                     errorMessage: "One local transaction cannot call itself"
                 });
-            } else if(
-                selectedRedesign.redesign.find(
-                    c => c.id === nodeId.toString()
-                ).remoteInvocations.includes(parseInt(selectedLocalTransaction.id))
-            ) {
-                const lt = selectedRedesign.redesign.find(e => e.id === nodeId.toString());
-                console.log(lt);
+            } else if(this.state.selectedRedesign.redesign.find(c => c.id === nodeId).remoteInvocations
+                .includes(parseInt(this.state.selectedLocalTransaction.id))) {
+                const lt = this.state.selectedRedesign.redesign.find(e => e.id === nodeId);
                 this.setState({
                     error: true,
                     errorMessage: "The local transaction " + lt.name
-                        + " is already invoking local transaction " + selectedLocalTransaction.name
+                        + " is already invoking local transaction " + this.state.selectedLocalTransaction.name
                 });
             } else if(this.checkTransitiveClosure(nodeId)){
                 this.setState({
@@ -575,23 +569,20 @@ export class TransactionView extends React.Component {
                 });
             } else {
                 this.setState({
-                   newCaller: selectedRedesign.redesign.find(c => c.id === nodeId.toString())
+                    newCaller: this.state.selectedRedesign.redesign.find(c => c.id === nodeId)
                 });
             }
         }
-        else if(selectedOperation === redesignOperations.DCGI &&
-                    DCGILocalTransactionsForTheSelectedClusters !== null){
-            const localTransaction = selectedRedesign.redesign.find(c => c.id === nodeId.toString());
+        else if(this.state.selectedOperation === redesignOperations.DCGI &&
+            this.state.DCGILocalTransactionsForTheSelectedClusters !== null){
+            const localTransaction = this.state.selectedRedesign.redesign.find(c => c.id === nodeId);
 
-            console.log(DCGIAvailableClusters);
-            console.log(localTransaction);
-
-            if(!DCGISelectedClusters.includes(localTransaction.cluster))
+            if(!this.state.DCGISelectedClusters.includes(localTransaction.clusterID))
                 return
 
-            if(!DCGISelectedLocalTransactions.map(e => e.id).includes(nodeId)){
-                const aux = DCGISelectedLocalTransactions;
-                aux.push(DCGILocalTransactionsForTheSelectedClusters.find(e => e.id === nodeId.toString()));
+            if(!this.state.DCGISelectedLocalTransactions.map(e => e.id).includes(nodeId)){
+                const aux = this.state.DCGISelectedLocalTransactions;
+                aux.push(this.state.DCGILocalTransactionsForTheSelectedClusters.find(e => e.id === nodeId));
                 this.setState({
                     DCGISelectedLocalTransactions: aux
                 });
@@ -601,14 +592,14 @@ export class TransactionView extends React.Component {
 
     checkTransitiveClosure(nodeId){
         let transitiveClosure = this.state.selectedLocalTransaction.remoteInvocations;
-        
+
         for(let i = 0; i < transitiveClosure.length; i++) {
             if(transitiveClosure[i] === parseInt(nodeId))
                 return true;
-            
+
             transitiveClosure = transitiveClosure.concat(
                 this.state.selectedRedesign.redesign.find(
-                    e => e.id === transitiveClosure[i].toString()
+                    e => e.id === transitiveClosure[i]
                 ).remoteInvocations
             );
         }
@@ -630,7 +621,6 @@ export class TransactionView extends React.Component {
             controller,
         } = this.state;
 
-
         this.setState({
             selectedOperation: value
         });
@@ -640,11 +630,10 @@ export class TransactionView extends React.Component {
 
             controllersClusters[controller.name].forEach(cluster => {
                 const clusterModifiedEntities = this.identifyModifiedEntities(cluster);
-                
+
                 if (clusterModifiedEntities.modifiedEntities.length > 0 && clusterModifiedEntities.cluster !== selectedLocalTransaction.cluster)
                     modifiedEntities.push(clusterModifiedEntities);
             })
-
             this.setState({
                 modifiedEntities,
             });
@@ -653,13 +642,13 @@ export class TransactionView extends React.Component {
             const DCGIAvailableClusters = [];
 
             controllersClusters[controller.name].forEach(cluster => {
-                if (cluster.name !== selectedLocalTransaction.cluster)
+                if (cluster.name !== selectedLocalTransaction.clusterID.toString())
                     DCGIAvailableClusters.push(cluster.name);
             })
 
             this.setState({
                 DCGIAvailableClusters,
-                DCGISelectedClusters: [selectedLocalTransaction.cluster]
+                DCGISelectedClusters: [selectedLocalTransaction.clusterID]
             });
         }
     }
@@ -684,6 +673,7 @@ export class TransactionView extends React.Component {
             controller,
             selectedOperation,
             newCaller,
+            DCGISelectedClusters,
         } = this.state;
 
         const service = new RepositoryService();
@@ -702,7 +692,8 @@ export class TransactionView extends React.Component {
                 )
                     .then(response => {
                         this.rebuildRedesignGraph(response);
-                    }).catch(() => {
+                    }).catch((err) => {
+                        console.error(err);
                         this.setState({
                             error: true,
                             errorMessage: 'ERROR: Add Compensating failed.'
@@ -735,15 +726,21 @@ export class TransactionView extends React.Component {
 
             case redesignOperations.DCGI:
                 this.state.DCGISelectedLocalTransactions.sort((a,b) => {
-                   if(a.id <= b.id)
-                       return -1;
-                   else
-                       return 1;
+                    if(a.id <= b.id)
+                        return -1;
+                    else
+                        return 1;
                 });
-                
-                service.dcgi(this.props.codebaseName, this.props.dendrogramName, this.props.graphName,
-                    this.state.controller.name, this.state.selectedRedesign.name, this.state.DCGISelectedClusters[0], this.state.DCGISelectedClusters[1],
-                    JSON.stringify(this.state.DCGISelectedLocalTransactions.map(e => e.id)))
+                service.dcgi(
+                    codebaseName,
+                    dendrogramName,
+                    decompositionName,
+                    controller.name,
+                    selectedRedesign.name,
+                    DCGISelectedClusters[0],
+                    DCGISelectedClusters[1],
+                    JSON.stringify(this.state.DCGISelectedLocalTransactions.map(e => e.id))
+                )
                     .then(response => {
                         this.rebuildRedesignGraph(response);
                     }).catch((err) => {
@@ -758,21 +755,20 @@ export class TransactionView extends React.Component {
 
             case redesignOperations.PIVOT:
                 service.selectPivotTransaction(
-                    codebaseName, 
-                    dendrogramName, 
+                    codebaseName,
+                    dendrogramName,
                     decompositionName,
-                    controller.name, 
-                    selectedRedesign.name, 
+                    controller.name,
+                    selectedRedesign.name,
                     selectedLocalTransaction.id,
-                    selectedRedesign.pivotTransaction === "" ? value : null
+                    selectedRedesign.pivotTransaction === -1 ? value : null
                 )
                     .then(response => {
-                        console.log(response);
                         this.handlePivotTransactionSubmit(response);
 
                     }).catch(error => {
                         console.error(error.response)
-                        
+
                         if(error.response !== undefined && error.response.status === HttpStatus.FORBIDDEN){
                             this.setState({
                                 error: true,
@@ -800,7 +796,8 @@ export class TransactionView extends React.Component {
                     .then(response => {
                         this.rebuildRedesignGraph(response);
                     })
-                    .catch(() => {
+                    .catch((err) => {
+                        console.error(err);
                         this.setState({
                             error: true,
                             errorMessage: 'ERROR: Pivot selection failed.'
@@ -814,11 +811,11 @@ export class TransactionView extends React.Component {
     }
 
     rebuildRedesignGraph(value){
-        const controllers = this.state.graph.controllers;
+        const controllers = this.state.decomposition.controllers;
         const index = controllers.indexOf(this.state.controller);
         controllers[index] = value.data;
         const redesign = value.data.functionalityRedesigns.find(e => e.name === this.state.selectedRedesign.name);
-        
+
         this.setState({
             controllers: controllers,
             controller: value.data,
@@ -830,11 +827,10 @@ export class TransactionView extends React.Component {
     }
 
     handlePivotTransactionSubmit(value){
-        console.log(value);
         const controllers = this.state.decomposition.controllers;
         const index = controllers.indexOf(this.state.controller);
         controllers[index] = value.data;
-        
+
         this.setState({
             controllers: controllers,
             controller: value.data,
@@ -860,10 +856,10 @@ export class TransactionView extends React.Component {
 
     DCGISelectCluster(value){
         const selectedClusters = this.state.DCGISelectedClusters;
-        selectedClusters.push(value);
+        selectedClusters.push(parseInt(value));
 
         const localTransactionsForTheSelectedClusters =
-            this.state.selectedRedesign.redesign.filter(e => selectedClusters.includes(e.cluster));
+            this.state.selectedRedesign.redesign.filter(e => selectedClusters.includes(e.clusterID));
 
         this.setState({
             DCGILocalTransactionsForTheSelectedClusters: localTransactionsForTheSelectedClusters,
@@ -873,7 +869,6 @@ export class TransactionView extends React.Component {
     }
 
     handleDCGISelectLocalTransaction(value){
-        console.log(value);
         if(value === null || value.length === 0){
             this.setState({
                 DCGISelectedLocalTransactions: [],
@@ -893,8 +888,8 @@ export class TransactionView extends React.Component {
                 <Card className="mb-4" key={fr.name} style={{ width: "30rem" }}>
                     <Card.Body>
                         {fr.usedForMetrics ? <Card.Title>
-                            {fr.name + " (Used For Metrics)"}
-                        </Card.Title> :
+                                {fr.name + " (Used For Metrics)"}
+                            </Card.Title> :
                             <Card.Title>
                                 {fr.name}
                             </Card.Title>
@@ -927,7 +922,6 @@ export class TransactionView extends React.Component {
     }
 
     handleUseForMetrics(value){
-        console.log(value);
         const service = new RepositoryService();
         service.setUseForMetrics(this.props.codebaseName, this.props.dendrogramName, this.props.decompositionName,
             this.state.controller.name, value.name)
@@ -956,7 +950,6 @@ export class TransactionView extends React.Component {
     }
 
     handleDeleteRedesign(value){
-        console.log(value);
         const service = new RepositoryService();
         service.deleteRedesign(this.props.codebaseName, this.props.dendrogramName, this.props.decompositionName,
             this.state.controller.name, value.name)
@@ -1026,16 +1019,6 @@ export class TransactionView extends React.Component {
             controller,
             error,
             errorMessage,
-            DCGIAvailableClusters,
-            DCGILocalTransactionsForTheSelectedClusters,
-            DCGISelectedLocalTransactions,
-            modifiedEntities,
-            newCaller,
-            redesignVisGraph,
-            selectedLocalTransaction,
-            selectedRedesign,
-            showMenu,
-            visGraph,
             decomposition: {
                 controllers,
                 clusters,
@@ -1044,24 +1027,23 @@ export class TransactionView extends React.Component {
 
         const metricsRows = controllers.map(controller => {
             return controller.type === "QUERY" ?
-            {
-                controller: controller.name,
-                clusters: this.state.controllerClusters[controller.name] === undefined ? 0 : this.state.controllerClusters[controller.name].length,
-                type: controller.type,
-                complexity: controller.complexity,
-                inconsistencyComplexity: controller.functionalityRedesigns.find(fr => fr.usedForMetrics).inconsistencyComplexity
-
-            }
-            :
-            {
-                controller: controller.name,
-                clusters: this.state.controllerClusters[controller.name] === undefined ? 0 : this.state.controllerClusters[controller.name].length,
-                type: controller.type,
-                complexity: controller.complexity,
-                functionalityComplexity: controller.functionalityRedesigns.find(fr => fr.usedForMetrics).functionalityComplexity,
-                systemComplexity: controller.functionalityRedesigns.find(fr => fr.usedForMetrics).systemComplexity,
-                total: controller.functionalityRedesigns.find(fr => fr.usedForMetrics).functionalityComplexity + controller.functionalityRedesigns.find(fr => fr.usedForMetrics).systemComplexity
-            }
+                {
+                    controller: controller.name,
+                    clusters: this.state.controllersClusters[controller.name] === undefined ? 0 : this.state.controllersClusters[controller.name].length,
+                    type: controller.type,
+                    complexity: controller.complexity,
+                    inconsistencyComplexity: controller.functionalityRedesigns.find(fr => fr.usedForMetrics).inconsistencyComplexity
+                }
+                :
+                {
+                    controller: controller.name,
+                    clusters: this.state.controllersClusters[controller.name] === undefined ? 0 : this.state.controllersClusters[controller.name].length,
+                    type: controller.type,
+                    complexity: controller.complexity,
+                    functionalityComplexity: controller.functionalityRedesigns.find(fr => fr.usedForMetrics).functionalityComplexity,
+                    systemComplexity: controller.functionalityRedesigns.find(fr => fr.usedForMetrics).systemComplexity,
+                    total: controller.functionalityRedesigns.find(fr => fr.usedForMetrics).functionalityComplexity + controller.functionalityRedesigns.find(fr => fr.usedForMetrics).systemComplexity
+                }
         });
 
         const metricsColumns = [{
@@ -1097,7 +1079,6 @@ export class TransactionView extends React.Component {
             text: 'Query Inconsistency Complexity',
             sort: true
         }];
-
         const seqColumns = [{
             dataField: 'id',
             text: 'Order'
@@ -1151,130 +1132,118 @@ export class TransactionView extends React.Component {
                                 >
                                     Sequence Table
                                 </Button>
-                                {/* <Button
+                                <Button
                                     disabled={this.state.currentSubView === "Functionality Redesign"}
                                     onClick={() => this.changeSubView("Functionality Redesign")}
                                 >
                                     Functionality Redesign
-                                </Button> */}
+                                </Button>
                             </ButtonGroup>
                         </Col>
                         {this.state.selectedRedesign !== null &&
-                            <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
-                                {this.state.showGraph && this.state.currentSubView === "Functionality Redesign" &&
-                                    this.state.controller.type === "SAGA" &&
-                                <h4 style={{color: "#666666", textAlign: "center"}}>
-                                    Functionality Complexity: {this.state.selectedRedesign.functionalityComplexity} - System Complexity: {this.state.selectedRedesign.systemComplexity}
-                                </h4>
-                                }
-                                {this.state.showGraph && this.state.currentSubView === "Functionality Redesign" &&
-                                this.state.controller.type === "QUERY" &&
-                                <h4 style={{color: "#666666", textAlign: "center"}}>
-                                    Query Inconsistency Complexity: {this.state.selectedRedesign.inconsistencyComplexity}
-                                </h4>
-                                }
-                            </Col>
+                        <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
+                            {this.state.showGraph && this.state.currentSubView === "Functionality Redesign" &&
+                            this.state.controller.type === "SAGA" &&
+                            <h4 style={{color: "#666666", textAlign: "center"}}>
+                                Functionality Complexity: {this.state.selectedRedesign.functionalityComplexity} - System Complexity: {this.state.selectedRedesign.systemComplexity}
+                            </h4>
+                            }
+                            {this.state.showGraph && this.state.currentSubView === "Functionality Redesign" &&
+                            this.state.controller.type === "QUERY" &&
+                            <h4 style={{color: "#666666", textAlign: "center"}}>
+                                Query Inconsistency Complexity: {this.state.selectedRedesign.inconsistencyComplexity}
+                            </h4>
+                            }
+                        </Col>
                         }
                     </Row>
                 </Container>
-
-                {
-                    currentSubView === "Graph" && (
-                        <span>
-                            <TransactionOperationsMenu
-                                handleControllerSubmit={this.handleControllerSubmit}
-                                controllersClusters={controllersClusters}
-                            />
-                            <div style={{height: '700px'}}>
-                                <VisNetwork
-                                    visGraph={visGraph}
-                                    options={options}
-                                    onSelection={this.handleSelectNode}
-                                    onDeselection={this.handleDeselectNode}
-                                    view={views.TRANSACTION} />
-                            </div>
-                        </span>
-                    )
-                }
-                {
-                    currentSubView === "Sequence Graph" && (
+                {this.state.currentSubView === "Graph" &&
+                <span>
+                        <TransactionOperationsMenu
+                            handleControllerSubmit={this.handleControllerSubmit}
+                            controllersClusters={this.state.controllersClusters}
+                        />
                         <div style={{height: '700px'}}>
                             <VisNetwork
-                                visGraph={visGraphSeq}
-                                options={optionsSeq}
+                                visGraph={this.state.visGraph}
+                                options={options}
                                 onSelection={this.handleSelectNode}
                                 onDeselection={this.handleDeselectNode}
-                                view={views.TRANSACTION}
-                            />
+                                view={views.TRANSACTION} />
                         </div>
-                    )
+                    </span>
                 }
-                {
-                    currentSubView === "Metrics" && (
-                        <div>
-                            Number of Clusters : {clusters.length}
-                            < br />
-                            Number of Controllers that access a single Cluster : {Object.keys(controllersClusters).filter(key => controllersClusters[key].length === 1).length}
-                            < br />
-                            Maximum number of Clusters accessed by a single Controller : {Math.max(...Object.keys(controllersClusters).map(key => controllersClusters[key].length))}
-                            < br />
-                            Average Number of Clusters accessed (Average number of microservices accessed during a transaction) : {Number(averageClustersAccessed.toFixed(2))}
-                            <BootstrapTable
-                                bootstrap4
-                                keyField='controller'
-                                data={metricsRows}
-                                columns={metricsColumns}
-                            />
-                        </div>
-                    )
+                {this.state.currentSubView === "Sequence Graph" &&
+                <div style={{height: '700px'}}>
+                    <VisNetwork
+                        visGraph={visGraphSeq}
+                        options={optionsSeq}
+                        onSelection={this.handleSelectNode}
+                        onDeselection={this.handleDeselectNode}
+                        view={views.TRANSACTION}
+                    />
+                </div>
                 }
-                {
-                    showGraph && currentSubView === "Sequence Table" && (
-                        <>
-                            <h4>{controller.name}</h4>
-                            <BootstrapTable
-                                bootstrap4
-                                keyField='id'
-                                data={localTransactionsSequence}
-                                columns={seqColumns}
-                            />
-                        </>
-                    )
+                {currentSubView === "Metrics" &&
+                <div>
+                    Number of Clusters : {clusters.length}
+                    < br />
+                    Number of Controllers that access a single Cluster : {Object.keys(controllersClusters).filter(key => controllersClusters[key].length === 1).length}
+                    < br />
+                    Maximum number of Clusters accessed by a single Controller : {Math.max(...Object.keys(controllersClusters).map(key => controllersClusters[key].length))}
+                    < br />
+                    Average Number of Clusters accessed (Average number of microservices accessed during a transaction) : {Number(averageClustersAccessed.toFixed(2))}
+                    <BootstrapTable
+                        bootstrap4
+                        keyField='controller'
+                        data={metricsRows}
+                        columns={metricsColumns}
+                    />
+                </div>
                 }
-
+                {showGraph && currentSubView === "Sequence Table" &&
+                <>
+                    <h4>{controller.name}</h4>
+                    <BootstrapTable
+                        bootstrap4
+                        keyField='id'
+                        data={localTransactionsSequence}
+                        columns={seqColumns}
+                    />
+                </>
+                }
                 {this.state.showGraph && this.state.currentSubView === "Functionality Redesign" && this.state.selectedRedesign === null &&
                 !this.state.compareRedesigns &&
-                    <div>
-                        <br/>
-
-                        <h4 style={{color: "#666666"}}>{this.state.controller.name} Redesigns</h4>
-
-                        {this.state.controller.functionalityRedesigns.length >= 2 &&
-                        <ButtonGroup className="mb-2">
-                            <Button>Compare Two Redesigns</Button>
-                            <DropdownButton as={ButtonGroup}
-                                            title={this.state.selectedRedesignsToCompare[0]}>
-                                {this.state.controller.functionalityRedesigns.map(e =>
-                                    <Dropdown.Item
-                                        key={e.name}
-                                        onSelect={() => this.setComparingRedesign(0, e.name)}>{e.name}
-                                    </Dropdown.Item>)}
-                            </DropdownButton>
-                            <DropdownButton as={ButtonGroup}
-                                            title={this.state.selectedRedesignsToCompare[1]}>
-                                {this.state.controller.functionalityRedesigns.filter(e => this.state.selectedRedesignsToCompare[0] !== e.name).map(e =>
-                                    <Dropdown.Item
-                                        key={e.name}
-                                        onSelect={() => this.setComparingRedesign(1, e.name)}>{e.name}
-                                    </Dropdown.Item>)}
-                            </DropdownButton>
-                            <Button onClick={() => this.setState({compareRedesigns: true})}>Submit</Button>
-                        </ButtonGroup>
-                        }
-                        <br/>
-                        <br/>
-                        {this.renderFunctionalityRedesigns()}
-                    </div>
+                <div>
+                    <br/>
+                    <h4 style={{color: "#666666"}}>{this.state.controller.name} Redesigns</h4>
+                    {this.state.controller.functionalityRedesigns.length >= 2 &&
+                    <ButtonGroup className="mb-2">
+                        <Button>Compare Two Redesigns</Button>
+                        <DropdownButton as={ButtonGroup}
+                                        title={this.state.selectedRedesignsToCompare[0]}>
+                            {this.state.controller.functionalityRedesigns.map(e =>
+                                <Dropdown.Item
+                                    key={e.name}
+                                    onSelect={() => this.setComparingRedesign(0, e.name)}>{e.name}
+                                </Dropdown.Item>)}
+                        </DropdownButton>
+                        <DropdownButton as={ButtonGroup}
+                                        title={this.state.selectedRedesignsToCompare[1]}>
+                            {this.state.controller.functionalityRedesigns.filter(e => this.state.selectedRedesignsToCompare[0] !== e.name).map(e =>
+                                <Dropdown.Item
+                                    key={e.name}
+                                    onSelect={() => this.setComparingRedesign(1, e.name)}>{e.name}
+                                </Dropdown.Item>)}
+                        </DropdownButton>
+                        <Button onClick={() => this.setState({compareRedesigns: true})}>Submit</Button>
+                    </ButtonGroup>
+                    }
+                    <br/>
+                    <br/>
+                    {this.renderFunctionalityRedesigns()}
+                </div>
                 }
                 {this.state.showGraph && this.state.currentSubView === "Functionality Redesign" && this.state.selectedRedesign === null &&
                 this.state.compareRedesigns &&
@@ -1304,18 +1273,18 @@ export class TransactionView extends React.Component {
                             </Col>
                             <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
                                 {this.state.controller.type === "SAGA" ?
-                                <div>
+                                    <div>
+                                        <h4 style={{color: "#666666", textAlign: "center"}}>
+                                            {this.state.selectedRedesignsToCompare[1]}
+                                        </h4>
+                                        <h4 style={{color: "#666666", textAlign: "center"}}>
+                                            Functionality Complexity: {this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[1])[0].functionalityComplexity} - System Complexity: {this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[1])[0].systemComplexity}
+                                        </h4>
+                                    </div>
+                                    :
                                     <h4 style={{color: "#666666", textAlign: "center"}}>
-                                        {this.state.selectedRedesignsToCompare[1]}
+                                        Query Inconsistency Complexity: {this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[1])[0].inconsistencyComplexity}
                                     </h4>
-                                    <h4 style={{color: "#666666", textAlign: "center"}}>
-                                        Functionality Complexity: {this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[1])[0].functionalityComplexity} - System Complexity: {this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[1])[0].systemComplexity}
-                                    </h4>
-                                </div>
-                                :
-                                <h4 style={{color: "#666666", textAlign: "center"}}>
-                                    Query Inconsistency Complexity: {this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[1])[0].inconsistencyComplexity}
-                                </h4>
                                 }
                                 {this.renderRedesignGraph(this.createRedesignGraph(this.state.controller.functionalityRedesigns.filter(e => e.name === this.state.selectedRedesignsToCompare[1])[0]))}
                             </Col>
@@ -1323,38 +1292,36 @@ export class TransactionView extends React.Component {
                     </Container>
                 </div>
                 }
-                {
-                    showGraph && currentSubView === "Functionality Redesign" && selectedRedesign !== null && (
-                        <Container fluid>
-                            <Row>
-                                <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
-                                    <Button className="mb-2"
-                                            onClick={() => this.setState({selectedRedesign: null}, () => this.handleCancel())}>
-                                        Back
-                                    </Button>
-                                    {showMenu &&
-                                        <FunctionalityRedesignMenu
-                                            selectedRedesign = {selectedRedesign}
-                                            selectedLocalTransaction = {selectedLocalTransaction}
-                                            newCaller = {newCaller}
-                                            modifiedEntities = {modifiedEntities}
-                                            DCGIAvailableClusters = {DCGIAvailableClusters}
-                                            DCGILocalTransactionsForTheSelectedClusters = {DCGILocalTransactionsForTheSelectedClusters}
-                                            DCGISelectedLocalTransactions = {DCGISelectedLocalTransactions}
-                                            handleSelectOperation = {this.handleSelectOperation}
-                                            handleCancel = {this.handleCancel}
-                                            handleSubmit = {this.handleSubmit}
-                                            DCGISelectCluser = {this.DCGISelectCluster}
-                                            handleDCGISelectLocalTransaction = {this.handleDCGISelectLocalTransaction}
-                                        />
-                                    }
-                                </Col>
-                                <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
-                                    {this.renderRedesignGraph(redesignVisGraph)}
-                                </Col>
-                            </Row>
-                        </Container>
-                    )
+                {this.state.showGraph && this.state.currentSubView === "Functionality Redesign" && this.state.selectedRedesign !== null &&
+                <Container fluid>
+                    <Row>
+                        <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
+                            <Button className="mb-2"
+                                    onClick={() => this.setState({selectedRedesign: null}, () => this.handleCancel())}>
+                                Back
+                            </Button>
+                            {this.state.showMenu &&
+                            <FunctionalityRedesignMenu
+                                selectedRedesign = {this.state.selectedRedesign}
+                                selectedLocalTransaction = {this.state.selectedLocalTransaction}
+                                newCaller = {this.state.newCaller}
+                                modifiedEntities = {this.state.modifiedEntities}
+                                DCGIAvailableClusters = {this.state.DCGIAvailableClusters}
+                                DCGILocalTransactionsForTheSelectedClusters = {this.state.DCGILocalTransactionsForTheSelectedClusters}
+                                DCGISelectedLocalTransactions = {this.state.DCGISelectedLocalTransactions}
+                                handleSelectOperation = {this.handleSelectOperation}
+                                handleCancel = {this.handleCancel}
+                                handleSubmit = {this.handleSubmit}
+                                DCGISelectCluser = {this.DCGISelectCluster}
+                                handleDCGISelectLocalTransaction = {this.handleDCGISelectLocalTransaction}
+                            />
+                            }
+                        </Col>
+                        <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
+                            {this.renderRedesignGraph(this.state.redesignVisGraph)}
+                        </Col>
+                    </Row>
+                </Container>
                 }
             </div>
         );

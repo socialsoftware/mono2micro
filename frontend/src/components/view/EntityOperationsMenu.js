@@ -5,14 +5,17 @@ import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
+import AppContext from "./../AppContext";
 
 export class EntityOperationsMenu extends React.Component {
+    static contextType = AppContext;
+
     constructor(props) {
         super(props);
         this.state = {
             showSubmit: false,
             entityList: [],
-            entity: 'Select Entity',
+            entityID: -1,
             entityAmount: "All"
         }
         this.setEntity = this.setEntity.bind(this);
@@ -38,7 +41,7 @@ export class EntityOperationsMenu extends React.Component {
     setEntity(value) {
         this.setState({
             showSubmit: true,
-            entity: value
+            entityID: value
         });
     }
 
@@ -46,7 +49,7 @@ export class EntityOperationsMenu extends React.Component {
         this.setState({
             entityAmount: value,
             showSubmit: false,
-            entity: "Select Entity"
+            entityID: -1
         });
         if (value === "All") {
             this.setState({
@@ -60,17 +63,19 @@ export class EntityOperationsMenu extends React.Component {
     }
 
     handleSubmit() {
-        this.props.handleEntitySubmit(this.state.entity);
+        this.props.handleEntitySubmit(this.state.entityID);
     }
 
 
     render() {
         const {
-            entity,
+            entityID,
             entityAmount,
             entityList,
             showSubmit,
         } = this.state;
+
+        const { translateEntity } = this.context;
 
         const entityAmountList = [...new Set(Object.values(this.props.amountList))].sort((a, b) => a - b).map(amount =>
             <Dropdown.Item
@@ -81,12 +86,12 @@ export class EntityOperationsMenu extends React.Component {
             </Dropdown.Item>
         );
 
-        const entitiesListDropdown = entityList.map(e =>
+        const entitiesListDropdown = entityList.map(entityID =>
             <Dropdown.Item
-                key={e}
-                onClick={() => this.setEntity(e)}
+                key={entityID}
+                onClick={() => this.setEntity(entityID)}
             >
-                {e}
+                {translateEntity(entityID)}
             </Dropdown.Item>
         );
         return (
@@ -103,7 +108,11 @@ export class EntityOperationsMenu extends React.Component {
 
                 <Dropdown className="mr-1" as={ButtonGroup}>
                     <Dropdown.Toggle>
-                        {entity}
+                        {
+                            entityID === -1 
+                            ? "Select Entity"
+                            : translateEntity(entityID)
+                        }
                     </Dropdown.Toggle>
                     <Dropdown.Menu as={CustomSearchMenuForwardingRef}>
                         {entitiesListDropdown}
