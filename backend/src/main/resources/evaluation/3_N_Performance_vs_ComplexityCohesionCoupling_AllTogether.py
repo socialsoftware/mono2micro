@@ -69,38 +69,38 @@ df['n'] = df['n'].astype(str)
 # )
 # fig1.show()
 #
-fig1 = px.scatter(
-    df,
-    x='pPerformance',
-    y='pComplexity',
-    color='n',
-    title="Performance X Complexity",
-    range_y=[0, 1],
-    trendline="ols",
-    labels={'pPerformance': 'Uniform Performance', 'pComplexity': 'Uniform Complexity'}
-)
-fig1.show()
+# fig1 = px.scatter(
+#     df,
+#     x='pPerformance',
+#     y='pComplexity',
+#     color='n',
+#     title="Performance X Complexity",
+#     range_y=[0, 1],
+#     trendline="ols",
+#     labels={'pPerformance': 'Uniform Performance', 'pComplexity': 'Uniform Complexity'}
+# )
+# fig1.show()
 
 df['n'] = df['n'].astype(float)
 
-# # Cohesion OLS Regression
-# X = df.loc[:, ['n', 'pPerformance']]
-# y = df.loc[:, 'coh']
-# X = sm.add_constant(X)
-# model = sm.OLS(y, X)
-# results = model.fit()
-# print(results.summary())
-# print()
-#
-#
+# Cohesion OLS Regression
+X = df.loc[:, ['n', 'pPerformance']]
+y = df.loc[:, 'coh']
+X = sm.add_constant(X)
+model = sm.OLS(y, X)
+results = model.fit()
+print(results.summary())
+print()
+
+
 # Coupling OLS Regression
-# X = df.loc[:, ['n', 'pPerformance']]
-# y = df.loc[:, 'coup']
-# X = sm.add_constant(X)
-# model = sm.OLS(y, X)
-# results = model.fit()
-# print(results.summary())
-# print()
+X = df.loc[:, ['n', 'pPerformance']]
+y = df.loc[:, 'coup']
+X = sm.add_constant(X)
+model = sm.OLS(y, X)
+results = model.fit()
+print(results.summary())
+print()
 
 # Complexity OLS Regression
 X = df.loc[:, ['n', 'pPerformance']]

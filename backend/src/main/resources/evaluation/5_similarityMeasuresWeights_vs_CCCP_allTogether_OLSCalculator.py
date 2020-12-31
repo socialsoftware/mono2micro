@@ -2,16 +2,24 @@ from os import walk
 
 import pandas as pd
 import statsmodels.api as sm
+import sys
 
 
 # OLS Regression Model calculator
 # Estimates the complexity values based on the N value and
 # the weights given to each similarity measure
 
-files = []
-for (dirpath, dirnames, filenames) in walk("./data/"):
-    files.extend(filenames)
-    break
+files = [
+# "45_11275.42_bw-simulation.csv",
+# "49_81574.52_bw-maven.csv",
+"58_3968.0_LdoD-test.csv",
+# "57_43122.39_LdoD-simulation-5fragments.csv",
+# "69_99631.32_ldod-maven.csv",
+]
+# for (dirpath, dirnames, filenames) in walk("./data/"):
+#     files.extend(filenames)
+#     print(filenames)
+#     break
 
 df = {
     'n': [],
