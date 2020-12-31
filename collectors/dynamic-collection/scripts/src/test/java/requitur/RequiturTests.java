@@ -348,14 +348,12 @@ public class RequiturTests {
 	@Order(9)
 	public void testUselessRulesThatOnlyOccurOnce() {
 		final List<String> mytrace = new ArrayList<>();
-		Collections.addAll(mytrace, "A","A","B","B","C","C","B","D","D","D","E","D","E","E","D","E","E","B","C","C","B","C","C","B","C","C","B","C","C");
+		Collections.addAll(mytrace, "B","B","C","C","B","D","D","D","E","D","E","E","D","E","E","B","C","C","B","C","C","B","C","C","B","C","C");
 
 		final Sequitur seg = new Sequitur();
 		seg.addStringElements(mytrace);
 
 		System.out.println("trace: " + mytrace);
-		System.out.println("Sequitur trace: " + seg.getTrace());
-		System.out.println("Sequitur rules: " + seg.getRules());
 
 		final RunLengthEncodingSequitur runLengthEncodingSequitur = new RunLengthEncodingSequitur(seg);
 		runLengthEncodingSequitur.reduce();
@@ -363,12 +361,9 @@ public class RequiturTests {
 		final List<ReducedTraceElement> trace = runLengthEncodingSequitur.getReadableRLETrace();
 		System.out.println("Readable trace: " + trace);
 
-		final List<ReducedTraceElement> trace2 = runLengthEncodingSequitur.getReadableRLETrace();
-		System.out.println("Readable trace2: " + trace2);
+		assertEquals(13, trace.size());
 
 		final List<Content> uncompressedTrace = seg.getUncompressedTrace();
-		System.out.println("uncompressedTrace: " + uncompressedTrace);
-		assertEquals(15, uncompressedTrace.size());
 
 		final List<Content> expandedTrace = TraceStateTester.expandContentTrace(uncompressedTrace, seg.getRules());
 		System.out.println("expandedTrace: " + expandedTrace);

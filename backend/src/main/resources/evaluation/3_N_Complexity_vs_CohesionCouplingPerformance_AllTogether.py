@@ -9,7 +9,6 @@ import plotly.express as px
 # OLS Regression Model calculator
 # Estimates the coupling values based on the N and Complexity
 # Estimates the cohesion values based on the N and Complexity
-# Estimates the performance values based on the N and Complexity
 
 files = []
 for (dirpath, dirnames, filenames) in walk("./data/"):
@@ -21,7 +20,6 @@ df = {
     'coup': [],
     'coh': [],
     'pComplexity': [],
-    'pPerformance': []
 }
 
 for file in files:
@@ -32,7 +30,6 @@ for file in files:
         df['coh'].append(entry[5])
         df['coup'].append(entry[6])
         df['pComplexity'].append(entry[8])
-        df['pPerformance'].append(entry[10])
 
 df = pd.DataFrame(df)
 
@@ -66,18 +63,6 @@ fig1 = px.scatter(
 )
 fig1.show()
 
-fig1 = px.scatter(
-    df,
-    x='pComplexity',
-    y='pPerformance',
-    color='n',
-    title="Complexity X Performance",
-    range_y=[0, 1],
-    trendline="ols",
-    labels={'pComplexity': 'Uniform Complexity', 'pPerformance': 'Uniform Performance'}
-)
-fig1.show()
-
 df['n'] = df['n'].astype(float)
 
 # Cohesion OLS Regression
@@ -98,13 +83,3 @@ model = sm.OLS(y, X)
 results = model.fit()
 print(results.summary())
 print()
-
-# Performance OLS Regression
-X = df.loc[:, ['n', 'pComplexity']]
-y = df.loc[:, 'pPerformance']
-X = sm.add_constant(X)
-model = sm.OLS(y, X)
-results = model.fit()
-print(results.summary())
-print()
-
