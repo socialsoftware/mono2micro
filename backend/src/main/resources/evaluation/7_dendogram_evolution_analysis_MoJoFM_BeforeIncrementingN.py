@@ -165,7 +165,7 @@ boxFig = px.box(
     # hover_name='hoverText',
     title='Transition From Best N\'s decomposition to N+1\'s closest parent',
     labels={
-        'transition': 'N to N+1\'s Parent Transition',
+        'transition': 'Transition',
         'mojoFM': 'MoJoFM'
     }
     # points='all',
@@ -198,3 +198,6 @@ print(data_dict[(data_dict['mojoFM'] < 90) & (data_dict['mojoFM'] >= 80)].count(
 print()
 print("80 > mojoFM:")
 print(data_dict[(data_dict['mojoFM'] < 80)].count() / data_dict[:].count())
+print()
+print("mojoFM == 100%:")
+print(data_dict[(data_dict['mojoFM'] == 100)].count() / data_dict[:].count())

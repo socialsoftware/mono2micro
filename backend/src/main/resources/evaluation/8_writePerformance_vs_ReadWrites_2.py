@@ -5,9 +5,12 @@ import statsmodels.api as sm
 import plotly.express as px
 
 
+# Studies the relation between the performance of the Write similarity measure
+# with the number of Write Accesses that the datafile has
+
 # OLS Regression Model calculator
-# Estimates the complexity values based on the N value and
-# the weights given to each similarity measure
+# Estimates the performance of the Write Similarity measure
+# given the percentage of write accesses the datafile has
 
 files = []
 for (dirpath, dirnames, filenames) in walk("./data/"):
@@ -84,5 +87,6 @@ fig = px.scatter(
     y='wPerformance',
     hover_name='file',
     trendline='ols',
+    labels={"writePercentage": "Write Accesses Percentage", "wPerformance": "Write Sim. Measure Performance"}
 )
 fig.show()
