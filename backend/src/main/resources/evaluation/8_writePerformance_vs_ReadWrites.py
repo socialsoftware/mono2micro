@@ -1,9 +1,8 @@
-import json
 from os import walk
-
+import json
 import pandas as pd
-import plotly.express as px
 import statsmodels.api as sm
+import plotly.express as px
 
 
 # Studies the relation between the performance of the Write similarity measure
@@ -13,100 +12,82 @@ import statsmodels.api as sm
 # Estimates the performance of the Write Similarity measure
 # given the percentage of write accesses the datafile has
 
-df = {
-    'n': [],
-    'wSlope': [],
-    'writePercentage': [],
-    'hover': []
-}
-
 files = []
 for (dirpath, dirnames, filenames) in walk("./data/"):
     files.extend(filenames)
     break
 
+
+df_writes = {
+    'writePercentage': [],
+    'wPerformance': [],
+    'file': []
+}
 for file in files:
     print(file)
-
     data = pd.read_csv("./data/" + file)
 
-    for n in range(3, 11):
+    df = {
+        'n': [],
+        'A': [],
+        'W': [],
+        'R': [],
+        'S': [],
+        'complexity': [],
+    }
 
-        temp = {
-            'writeWeight': [],
-            'pComplexity': []
-        }
+    for entry in data.values:
+        df['n'].append(entry[0])
+        df['A'].append(entry[1])
+        df['W'].append(entry[2])
+        df['R'].append(entry[3])
+        df['S'].append(entry[4])
+        df['complexity'].append(entry[8])
 
-        for entry in data.values:
-            if entry[0] != n:
-                continue
+    df = pd.DataFrame(df)
 
-            temp['writeWeight'].append(entry[2])
-            temp['pComplexity'].append(entry[8])
+    X = df.loc[:, ['n', 'A', 'W', 'R', 'S']]
+    y = df.loc[:, 'complexity']
+    X = sm.add_constant(X)
+    model = sm.OLS(y, X)
+    results = model.fit()
+    # print(results.summary())
+    # print()
 
-        temp = pd.DataFrame(temp)
+    accessesCount = 0
+    writes = 0
+    parsedFileName = "_".join(file.split("_")[2:])
+    parsedFileName = parsedFileName[0:len(parsedFileName) - 4]
+    with open('../codebases/' +
+              parsedFileName + '/datafile.json') as f:
 
-        try:
-            fig = px.scatter(
-                temp,
-                x='writeWeight',
-                y='pComplexity',
-                range_y=[0, 1],
-                trendline='ols'
-            )
-            # fig.show()
-            results = px.get_trendline_results(fig)
-            slope = results.px_fit_results.iloc[0].params[1]
-            # cons = results.px_fit_results.iloc[0].params[0]
+        dataFile = json.load(f)
+        for controller in dataFile:
+            accessList = dataFile[controller]['t'][0]['a']
+            for access in accessList:
+                accessesCount += 1
+                if access[0] == 'W':
+                    writes += 1
 
-            accessesCount = 0
-            writes = 0
-            parsedFileName = "_".join(file.split("_")[2:])
-            parsedFileName = parsedFileName[0:len(parsedFileName) - 4]
-            with open('../codebases/' +
-                      parsedFileName + '/datafile.json') as f:
+    df_writes['wPerformance'].append(results.params['W'])
+    df_writes['writePercentage'].append(writes / accessesCount)
+    df_writes['file'].append(parsedFileName)
 
-                dataFile = json.load(f)
-                for entry in dataFile.values():
-                    for accessList in entry:
-                        accessesCount += 1
-                        if accessList[1] == 'W':
-                            writes += 1
-
-            df['n'].append(n)
-            df['wSlope'].append(slope)
-            df['writePercentage'].append(writes / accessesCount)
-            df['hover'].append(parsedFileName)
-
-        except Exception:
-            pass
-
-df = pd.DataFrame(df)
-
-X = df.loc[:, ['n', 'writePercentage']]
-y = df.loc[:, 'wSlope']
+df_writes = pd.DataFrame(df_writes)
+X = df_writes.loc[:, ['writePercentage']]
+y = df_writes.loc[:, 'wPerformance']
 X = sm.add_constant(X)
 model = sm.OLS(y, X)
 results = model.fit()
 print(results.summary())
 print()
 
-X = df.loc[:, ['writePercentage']]
-y = df.loc[:, 'wSlope']
-X = sm.add_constant(X)
-model = sm.OLS(y, X)
-results = model.fit()
-print(results.summary())
-print()
-
-df['n'] = df['n'].astype(str)
 fig = px.scatter(
-    df,
+    df_writes,
     x='writePercentage',
-    y='wSlope',
-    color='n',
-    hover_name='hover',
+    y='wPerformance',
+    hover_name='file',
     trendline='ols',
-    range_y=[-0.007, 0.01]
+    labels={"writePercentage": "Write Accesses Percentage", "wPerformance": "Write Sim. Measure Performance"}
 )
 fig.show()
