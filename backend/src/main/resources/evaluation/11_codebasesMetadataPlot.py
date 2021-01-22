@@ -7,7 +7,7 @@ import numpy as np
 home = str(Path.home())
 plotly.io.orca.config.executable = home + '/anaconda3/bin/orca'
 
-file = '/home/samuel/Desktop/lineCounter/codebasesMetadata.csv'
+file = '../../../../../data/static/CodebasesDetails/codebasesMetadata.csv'
 data = pd.read_csv(file)
 
 fig1 = px.scatter(
