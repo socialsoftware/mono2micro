@@ -36,7 +36,7 @@ def getClusters(complexityWeights):
         ]
     ) + ".json"
 
-    with open('/home/samuel/ProjetoTese/mono2micro/backend/src/main/resources/codebases/' +
+    with open('../codebases/' +
               parsedFileName + '/analyser/cuts/' + cutName) as f:
         dataFile = json.load(f)
         return dataFile['clusters']
@@ -59,7 +59,7 @@ def calculateTransitionMoJos(clustersForN):
         for clusterKey in clustersNLess1.keys():
             for entity in clustersNLess1[clusterKey]:
                 entityCount1 += 1
-                distrSrc += "contain " + clusterKey + " " + entity + "\n"
+                distrSrc += "contain " + clusterKey + " " + str(entity) + "\n"
 
         text_file = open(DISTR_SRC_FILE_PATH, "w+")
         text_file.write(distrSrc)
@@ -68,7 +68,7 @@ def calculateTransitionMoJos(clustersForN):
         distrTarget = ""
         for clusterKey in clustersN.keys():
             for entity in clustersN[clusterKey]:
-                distrTarget += "contain " + clusterKey + " " + entity + "\n"
+                distrTarget += "contain " + clusterKey + " " + str(entity) + "\n"
 
         text_file = open(DISTR_TARGET_FILE_PATH, "w+")
         text_file.write(distrTarget)

@@ -76,7 +76,7 @@ def calculateTransitionMoJos(clustersForN):
         for clusterKey in clustersNLess1.keys():
             for entity in clustersNLess1[clusterKey]:
                 entityCount1 += 1
-                distrSrc += "contain " + clusterKey + " " + entity + "\n"
+                distrSrc += "contain " + clusterKey + " " + str(entity) + "\n"
 
         text_file = open(DISTR_SRC_FILE_PATH, "w+")
         text_file.write(distrSrc)
@@ -90,7 +90,7 @@ def calculateTransitionMoJos(clustersForN):
             for j in range(0, len(clustersAggregate)):
                 clusterI = clustersAggregate[j]
                 for entity in clusterI:
-                    distrTarget += "contain " + str(j) + " " + entity + "\n"
+                    distrTarget += "contain " + str(j) + " " + str(entity) + "\n"
 
             # possible decomposition obtained
             # Calculate de MojoFM between src and target

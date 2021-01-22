@@ -175,7 +175,8 @@ def calculateMoJoBetweenBestOfStaticAndBestOfDynamic():
 
         for clusterKey in bestDecompositionForN.keys():
             for entity in bestDecompositionForN[clusterKey]:
-                distrTarget += "contain " + clusterKey + " " + str(bw_entities_to_id[entity]) + "\n"
+                distrTarget += "contain " + clusterKey + " " + str(entity) + "\n"
+                # distrTarget += "contain " + clusterKey + " " + str(bw_entities_to_id[entity]) + "\n"
 
         text_file = open(DISTR_TARGET_FILE_PATH, "w+")
         text_file.write(distrTarget)
@@ -209,11 +210,11 @@ def getClusters(complexityWeights):
         return dataFile['clusters']
 
 
-# the two csv files two compare
+# the two csv files to compare
 # if comparing Dynamic to Static dynamic has to be on index 0
 files = [
-    '45_83104.77_bw-simulation.csv',
-    '45_61179.04_bwRebaixadoADynamicExpert.csv'
+    '58_3968.0_ldod-test.csv',
+    '69_99631.32_ldod-static.csv'
 ]
 bestDecompositionsOfFile = []
 
