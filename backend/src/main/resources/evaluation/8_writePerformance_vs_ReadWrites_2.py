@@ -62,10 +62,11 @@ for file in files:
               parsedFileName + '/datafile.json') as f:
 
         dataFile = json.load(f)
-        for entry in dataFile.values():
-            for accessList in entry:
+        for controller in dataFile:
+            accessList = dataFile[controller]['t'][0]['a']
+            for access in accessList:
                 accessesCount += 1
-                if accessList[1] == 'W':
+                if access[0] == 'W':
                     writes += 1
 
     df_writes['wPerformance'].append(results.params['W'])
