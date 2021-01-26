@@ -1,0 +1,5 @@
+1886,AdminController.loadTEIFragmentsStepByStep
+1753,AdminController.loadTEIFragmentsAtOnce
+986,AdminController.generateCitations
+422,SignupController.signup
+370,VirtualEditionController.editVirtualEdition

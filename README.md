@@ -2,7 +2,7 @@
 
 Tools to migrate a monolith to a microservices architecture, focusing on microservices identification, where the set of identified microservices minimizes the number of system transactions (microservices) associated with a business transaction, aiming to control introduction of relaxed consistency in the system.
 
-Currently implemented for systems that use the FénixFramework ORM and Spring-Boot, but can be generalized for any monolith technology.
+Currently implemented for Spring-Boot monoliths that use FenixFramework and Spring Data ORMs.
 
 ### Pre-Requisites
 
@@ -15,6 +15,11 @@ Currently implemented for systems that use the FénixFramework ORM and Spring-Bo
 
 ### Run
 
+To run the collectors:
+
+	cd collectors/
+	see README.md for each collector
+
 To run the backend:
 	
 	cd backend/
@@ -26,3 +31,11 @@ To run the frontend:
 	cd frontend/
 	npm install
 	npm start
+
+## Publications Data
+- [ECSA2019](https://doi.org/10.1007/978-3-030-29983-5_3): [Collector Tool](https://github.com/socialsoftware/mono2micro/tree/master/collectors/java-callgraph)
+- [ICSA2020](https://doi.org/10.1109/ICSA47634.2020.00024): [Replication Package](https://github.com/socialsoftware/mono2micro/tree/master/data/icsa2020)
+- [ECSA2020](https://doi.org/10.1007/978-3-030-58923-3_3): [Evaluation Data](https://github.com/socialsoftware/mono2micro/tree/master/data/ecsa2020/evaluation)
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/socialsoftware/mono2micro/blob/master/LICENSE) file for details.

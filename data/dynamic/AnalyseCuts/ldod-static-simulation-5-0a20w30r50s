@@ -1,0 +1,64 @@
+AddText
+AltText
+AltTextWeight
+AnnexNote
+AppText
+DelText
+ExpertEdition
+ExpertEditionInter
+Facsimile
+FragInter
+Fragment
+Heteronym
+LbText
+LdoDDate
+ManuscriptSource
+NoteText
+PbText
+PrintedSource
+RdgGrpText
+RdgText
+Rend
+SegText
+SimpleText
+Source
+SourceInter
+SpaceText
+Surface
+TextPortion
+Total: 28
+
+Annotation
+Category
+ClassificationGame
+ClassificationGameParticipant
+ClassificationGameRound
+Edition
+HumanAnnotation
+LastTwitterID
+LdoD
+LdoDUser
+Member
+Player
+Range
+RecommendationWeights
+RegistrationToken
+Role
+Section
+Tag
+Taxonomy
+UserConnection
+VirtualEdition
+VirtualEditionInter
+Total: 22
+
+Dimensions
+HandNote
+TypeNote
+Total: 3
+
+NullHeteronym
+Total: 1
+
+NullEdition
+Total: 1

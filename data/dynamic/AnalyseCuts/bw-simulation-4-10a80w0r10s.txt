@@ -1,0 +1,52 @@
+Activity
+ActivityModel
+ActivityWorkItem
+AssociationGoal
+Attribute
+AttributeBoolCondition
+AttributeInstance
+AttributeValueExpression
+Cardinality
+Comparison
+ConditionModel
+DataModel
+DefAttributeCondition
+DefEntityCondition
+DefPathCondition
+DefProductCondition
+Dependence
+Entity
+EntityInstance
+Goal
+GoalModel
+GoalWorkItem
+MulCondition
+NotCondition
+OrCondition
+Path
+PostWorkItemArgument
+PreWorkItemArgument
+ProductGoal
+RelationBW
+RelationInstance
+Rule
+Specification
+WorkItem
+WorkflowInstance
+Total: 35
+
+AndCondition
+BinaryExpression
+BoolComparison
+Product
+Total: 4
+
+ActivityView
+BlendedWorkflow
+Expression
+Total: 3
+
+GoalView
+Position
+View
+Total: 3
