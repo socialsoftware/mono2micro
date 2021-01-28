@@ -26,3 +26,6 @@ To run the frontend:
 	cd frontend/
 	npm install
 	npm start
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/socialsoftware/mono2micro/blob/icsa2020/LICENSE) file for details.
