@@ -26,13 +26,11 @@ Three ways to replicate the results in the paper:
 ## Start the application
 ### Pre-Requisites
 - Install Docker and Docker-Compose  
-- python 3.5+   (```python --version```)
 - Create the file ```specific.properties``` in `./backend/src/main/resources` with the line `python=python3`
-- Create the directory ```codebases``` in `.` 
 ### Run
 - `docker-compose build`
 - `docker-compose up`
-- Open `http://localhost:3001/` in a browser
+- Open `http://localhost:3000/` in a browser
 
 ## Analysis
 
