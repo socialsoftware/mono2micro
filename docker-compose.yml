@@ -1,0 +1,34 @@
+version: '3.7'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    image: mono2micro-backend
+    container_name: backend
+    hostname: 'localhost'
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+    volumes:
+      - ./codebases:/codebases
+
+  frontend:
+    build:
+      context:  ./frontend/
+    image: mono2micro-frontend                                                     
+    container_name: frontend
+    depends_on:
+      - backend
+    links:
+      - backend
+    ports:
+      - 3001:3000
+    stdin_open: true
+    restart: unless-stopped
+    volumes:
+      - './frontend/:/app'
+      - '/app/node_modules'
+    environment:
+      - CHOKIDAR_USEPOLLING=true

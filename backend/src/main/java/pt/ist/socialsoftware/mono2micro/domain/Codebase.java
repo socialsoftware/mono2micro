@@ -1,9 +1,5 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.PYTHON;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.RESOURCES_PATH;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,6 +10,8 @@ import java.util.Map;
 import javax.management.openmbean.KeyAlreadyExistsException;
 
 import org.apache.commons.io.FileUtils;
+
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 
 public class Codebase {
 	private String name;
@@ -121,7 +119,7 @@ public class Codebase {
 
 		//run python script to generate dendrogram image
 		Runtime r = Runtime.getRuntime();
-		String pythonScriptPath = RESOURCES_PATH + "createDendrogram.py";
+		String pythonScriptPath = SCRIPTS_PATH + "createDendrogram.py";
 		String[] cmd = new String[5];
 		cmd[0] = PYTHON;
 		cmd[1] = pythonScriptPath;

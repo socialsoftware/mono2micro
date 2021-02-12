@@ -7,7 +7,6 @@ import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
 
-
 codebasesPath = str(sys.argv[1])
 codebaseName = str(sys.argv[2])
 dendrogramName = str(sys.argv[3])

@@ -27,5 +27,10 @@ To run the frontend:
 	npm install
 	npm start
 
+OR, using Docker and Docker-Compose:
+
+    docker-compose build
+    docker-compose up
+
 ## License
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/socialsoftware/mono2micro/blob/icsa2020/LICENSE) file for details.

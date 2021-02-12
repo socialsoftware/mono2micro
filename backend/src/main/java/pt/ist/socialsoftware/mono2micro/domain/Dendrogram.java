@@ -2,7 +2,7 @@ package pt.ist.socialsoftware.mono2micro.domain;
 
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.PYTHON;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.RESOURCES_PATH;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.SCRIPTS_PATH;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -308,7 +308,7 @@ public class Dendrogram {
 		}
 
 		Runtime r = Runtime.getRuntime();
-		String pythonScriptPath = RESOURCES_PATH + "cutDendrogram.py";
+		String pythonScriptPath = SCRIPTS_PATH + "cutDendrogram.py";
 		String[] cmd = new String[8];
 		cmd[0] = PYTHON;
 		cmd[1] = pythonScriptPath;

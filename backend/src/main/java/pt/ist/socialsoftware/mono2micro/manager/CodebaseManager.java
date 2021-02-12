@@ -1,7 +1,5 @@
 package pt.ist.socialsoftware.mono2micro.manager;
 
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,6 +26,8 @@ import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
+
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 
 public class CodebaseManager {
 
@@ -71,6 +71,8 @@ public class CodebaseManager {
 		
 		if (getCodebase(codebaseName) != null)
 			throw new KeyAlreadyExistsException();
+
+		System.out.println(CODEBASES_PATH);
 
 		File codebasesPath = new File(CODEBASES_PATH);
 		if (!codebasesPath.exists()) {

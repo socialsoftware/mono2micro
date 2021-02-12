@@ -2,12 +2,10 @@ package pt.ist.socialsoftware.mono2micro.controller;
 
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.PYTHON;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.RESOURCES_PATH;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.SCRIPTS_PATH;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -29,7 +27,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pt.ist.socialsoftware.mono2micro.domain.*;
@@ -67,7 +64,7 @@ public class AnalysisController {
             createAnalyserSimilarityMatrix(codebaseName, analyser);
 
 			Runtime r = Runtime.getRuntime();
-			String pythonScriptPath = RESOURCES_PATH + "analyser.py";
+			String pythonScriptPath = SCRIPTS_PATH + "analyser.py";
 			String[] cmd = new String[4];
 			cmd[0] = PYTHON;
 			cmd[1] = pythonScriptPath;
