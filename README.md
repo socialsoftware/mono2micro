@@ -34,3 +34,6 @@ OR, using Docker and Docker-Compose:
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/socialsoftware/mono2micro/blob/icsa2020/LICENSE) file for details.
+
+## DOI
+[![DOI](https://zenodo.org/badge/167210009.svg)](https://zenodo.org/badge/latestdoi/167210009)
