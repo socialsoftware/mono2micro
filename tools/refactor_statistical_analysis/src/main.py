@@ -4,7 +4,7 @@ from modules.configuration.orchestrator_data import OrchestratorsData
 
 
 def main():
-    datasets_folder = "../../output"
+    datasets_folder = "../../functionality_refactor/output"
 
     config = Extraction(
         complexities_csv=f"{datasets_folder}/all-complexities-2021-05-12-17-18-17.csv",
