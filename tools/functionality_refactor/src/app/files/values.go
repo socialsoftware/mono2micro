@@ -26,7 +26,7 @@ type Dendogram struct {
 	Decompositions []*Decomposition `json:"decompositions,omitempty"`
 }
 
-func (d *Dendogram) GetDecomposition(cutValue float32, expert bool) *Decomposition {
+func (d *Dendogram) GetDecomposition(cutValue float32, useExpert bool) *Decomposition {
 	if len(d.Decompositions) == 1 {
 		return d.Decompositions[0]
 	}
@@ -36,7 +36,7 @@ func (d *Dendogram) GetDecomposition(cutValue float32, expert bool) *Decompositi
 			return decomposition
 		}
 
-		if expert && decomposition.Expert {
+		if useExpert && decomposition.Expert {
 			return decomposition
 		}
 	}
@@ -262,67 +262,4 @@ func MapAccessTypeToMode(accessType string) int {
 	}
 
 	return modeMap[accessType]
-}
-
-type Datasets struct {
-	MetricsDataset      [][]string `json:"metrics_dataset,omitempty"`
-	ComplexitiesDataset [][]string `json:"complexities_dataset,omitempty"`
-}
-
-func InitializeDatasets() *Datasets {
-	return &Datasets{
-		MetricsDataset: [][]string{
-			{
-				"Codebase",
-				"Feature",
-				"Cluster",
-				//"Entities",
-				"CLIP",
-				"CRIP",
-				"CROP",
-				"CWOP",
-				"CIP",
-				"CDDIP",
-				"COP",
-				"CPIF",
-				"CIOF",
-				"SCCP",
-				"FCCP",
-				"Orchestrator",
-			},
-		},
-		ComplexitiesDataset: [][]string{
-			{
-				"Codebase",
-				"Feature",
-				"Orchestrator",
-				"Entities",
-				"Initial System Complexity",
-				"Final System Complexity",
-				"System Complexity Reduction",
-				"Initial Functionality Complexity",
-				"Final Functionality Complexity",
-				"Functionality Complexity Reduction",
-				"Initial Invocations Count",
-				"Initial Invocations Count W/ Empties",
-				"Final Invocations Count",
-				"Total Invocation Merges",
-				"Initial Accesses count",
-				"Final Accesses count",
-				"Total Trace Sweeps w/ Merges",
-				"Clusters with multiple invocations",
-				"CLIP",
-				"CRIP",
-				"CROP",
-				"CWOP",
-				"CIP",
-				"CDDIP",
-				"COP",
-				"CPIF",
-				"CIOF",
-				"SCCP",
-				"FCCP",
-			},
-		},
-	}
 }
