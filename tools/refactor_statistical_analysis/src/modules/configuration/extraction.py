@@ -1,11 +1,15 @@
 from typing import List
 from ..datasets.helpers import read_dataset, mean, stdev
+from ..plots.metrics.plot_reduction_per_merge_percentage import plot_complexity_reduction_per_merge_percentage
 
 
 class RowData:
-    initial_complexity_row="Initial Functionality Complexity"
-    final_complexity_row="Final Functionality Complexity"
-    complexity_reduction_row="Functionality Complexity Reduction"
+    initial_frc_row="Initial Functionality Complexity"
+    final_frc_row="Final Functionality Complexity"
+    frc_reduction_row="Functionality Complexity Reduction"
+    initial_sac_row="Initial System Complexity"
+    final_sac_row="Final System Complexity"
+    sac_reduction_row="System Complexity Reduction"
     initial_invocations_row="Initial Invocations Count W/ Empties"
     final_invocations_row="Final Invocations Count"
     merges_row="Total Invocation Merges"
@@ -13,15 +17,6 @@ class RowData:
     sweeps_row="Total Trace Sweeps w/ Merges"
     initial_accesses_row="Initial Accesses count"
     final_accesses_row="Final Accesses count"
-
-    def __init__(
-        self,
-        use_system_complexity: bool = False,
-    ):
-        if use_system_complexity:
-            self.initial_complexity_row="Initial System Complexity"
-            self.final_complexity_row="Final System Complexity"
-            self.complexity_reduction_row="System Complexity Reduction"
 
 
 class Extraction:
@@ -48,7 +43,7 @@ class Extraction:
         self.complexities_dataset = None
         self.training_dataset = None
         
-        self.rows = RowData(use_system_complexity)
+        self.rows = RowData()
 
         self._read_datasets()
     
@@ -57,19 +52,32 @@ class Extraction:
         self.training_dataset = read_dataset(self.training_csv, self.training_csv_rows, self.functionality, self.codebase)
 
     def do_stuff(self, best_clusters, other_clusters):
-        print("Functionalities: " + str(len(best_clusters.complexity_reductions)))
+        print("Functionalities: " + str(best_clusters.total_features_including_zero_complexity_reduction))
         
-        print("\nInitial Complexity:")
-        print("Average " + str(mean(best_clusters.initial_complexities)))
-        print("Stdev " + str(stdev(best_clusters.initial_complexities)))
+        print("\nInitial FRC:")
+        print("Average " + str(mean(best_clusters.initial_frc_complexities)))
+        print("Stdev " + str(stdev(best_clusters.initial_frc_complexities)))
 
-        print("\nFinal Complexity:")
-        print("Average " + str(mean(best_clusters.final_complexities)))
-        print("Stdev " + str(stdev(best_clusters.final_complexities)))
+        print("\nFinal FRC:")
+        print("Average " + str(mean(best_clusters.final_frc_complexities)))
+        print("Stdev " + str(stdev(best_clusters.final_frc_complexities)))
 
-        print("\nReduction %:")
-        print("Average " + str(mean(best_clusters.complexity_reductions)))
-        print("Stdev " + str(stdev(best_clusters.complexity_reductions)))
+        print("\nFRC Reduction %:")
+        print("Average " + str(mean(best_clusters.frc_reductions)))
+        print("Stdev " + str(stdev(best_clusters.frc_reductions)))
+
+
+        print("\nInitial SAC:")
+        print("Average " + str(mean(best_clusters.initial_sac_complexities)))
+        print("Stdev " + str(stdev(best_clusters.initial_sac_complexities)))
+
+        print("\nFinal SAC:")
+        print("Average " + str(mean(best_clusters.final_sac_complexities)))
+        print("Stdev " + str(stdev(best_clusters.final_sac_complexities)))
+
+        print("\nSAC Reduction %:")
+        print("Average " + str(mean(best_clusters.sac_reductions)))
+        print("Stdev " + str(stdev(best_clusters.sac_reductions)))
 
 
         print("\nInitial invocations count:")
@@ -106,3 +114,5 @@ class Extraction:
         print("Average " + str(mean(best_clusters.sweeps)))
         print("Stdev " + str(stdev(best_clusters.sweeps)))
 
+
+        plot_complexity_reduction_per_merge_percentage(best_clusters)

@@ -9,10 +9,15 @@ class OrchestratorsData:
         self.row_data = row_data
         self.features = features
 
+        self.total_features_including_zero_complexity_reduction = 0
+
         self.metrics = {}
-        self.initial_complexities = []
-        self.final_complexities = []
-        self.complexity_reductions = []
+        self.initial_frc_complexities = []
+        self.final_frc_complexities = []
+        self.frc_reductions = []
+        self.initial_sac_complexities = []
+        self.final_sac_complexities = []
+        self.sac_reductions = []
         self.functionality_names = []
         self.initial_invocations_count = []
         self.final_invocations_count = []
@@ -44,17 +49,28 @@ class OrchestratorsData:
     def _set_metrics(self, index: int):
         complexities_dataset = self.config.complexities_dataset
 
-        self.initial_complexities.append(complexities_dataset[self.row_data.initial_complexity_row][index])
-        self.final_complexities.append(complexities_dataset[self.row_data.final_complexity_row][index])
-
         reduction_percentage = (
-            complexities_dataset[self.row_data.complexity_reduction_row][index] * 100
-        )/complexities_dataset[self.row_data.initial_complexity_row][index]
+            complexities_dataset[self.row_data.frc_reduction_row][index] * 100
+        )/complexities_dataset[self.row_data.initial_frc_row][index]
+
+        self.total_features_including_zero_complexity_reduction += 1
 
         if reduction_percentage <= 0:
             return
+        
+        self.initial_frc_complexities.append(complexities_dataset[self.row_data.initial_frc_row][index])
+        self.final_frc_complexities.append(complexities_dataset[self.row_data.final_frc_row][index])
 
-        self.complexity_reductions.append(reduction_percentage)
+        self.frc_reductions.append(reduction_percentage)
+
+        self.initial_sac_complexities.append(complexities_dataset[self.row_data.initial_sac_row][index])
+        self.final_sac_complexities.append(complexities_dataset[self.row_data.final_sac_row][index])
+
+        reduction_percentage = (
+            complexities_dataset[self.row_data.sac_reduction_row][index] * 100
+        )/complexities_dataset[self.row_data.initial_sac_row][index]
+
+        self.sac_reductions.append(reduction_percentage)
 
         self.merges.append(complexities_dataset[self.row_data.merges_row][index])
         self.merge_percentages.append(
