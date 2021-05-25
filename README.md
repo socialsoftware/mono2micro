@@ -13,7 +13,7 @@ Currently implemented for Spring-Boot monoliths that use FenixFramework and Spri
 - Run: ```pip install -r backend/src/main/resources/requirements.txt```
 - Create the file ```specific.properties``` in backend/src/main/resources with the correct python command (example in file ```specific.properties.example```)
 
-### Run
+## Run manually
 
 To run the collectors:
 
@@ -31,6 +31,14 @@ To run the frontend:
 	cd frontend/
 	npm install
 	npm start
+
+## Run using Docker
+
+    docker-compose build
+    docker-compose up
+
+
+Due to a limitation in SpringBoot documented in https://github.com/spring-projects/spring-boot/issues/2895, .jar files cannot be generated with more than 655535 total files inside. Due to this, make sure the folder ```backend/src/main/resources/codebases``` is empty before building the project.
 
 ## Publications Data
 - [ECSA2019](https://doi.org/10.1007/978-3-030-29983-5_3): [Collector Tool](https://github.com/socialsoftware/mono2micro/tree/master/collectors/java-callgraph)

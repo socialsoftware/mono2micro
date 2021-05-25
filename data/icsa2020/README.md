@@ -23,27 +23,13 @@ Three ways to replicate the results in the paper:
   and of all the combinations of similarity measures and cluster cuts. Do the first and last step of **(D)**. 
   It allows to replicate the evaluation in the paper, except Table II.
 
-## Start the backend application
+## Start the application
 ### Pre-Requisites
-- java 8+     (```java --version```)
-- python 3.5+   (```python --version```)
-- Run: ```pip install -r backend/src/main/resources/requirements.txt``` or install each of the packages in
-  `requirements.txt` using pip
-- Create the file ```specific.properties``` in `backend/src/main/resources` with the correct python command 
-  (example in file ```specific.properties.example```)
+- Install Docker and Docker-Compose  
+- Create the file ```specific.properties``` in `./backend/src/main/resources` with the line `python=python3`
 ### Run
-- `cd backend`
-- `mvn clean install -DskipTests`
-- `mvn spring-boot:run`
-
-## Start the front application
-### Pre-Requisites
-- nodejs 10+  (```node --version```)
-- npm 6+      (```npm --version```)
-### Run
-- `cd frontend`
-- `npm install`
-- `npm start`
+- `docker-compose build`
+- `docker-compose up`
 - Open `http://localhost:3000/` in a browser
 
 ## Analysis
@@ -72,7 +58,7 @@ Three ways to replicate the results in the paper:
 - Under the `Analyser` tab: `Select Codebase`, `Controller Profiles` -> `Generic`, `Request Limit = 0`, `Submit`
 - Wait until all decompositions are generated (it takes several minutes... observe the Spring-Boot log)
 - Under the 'Analyser' tab, to observe the evaluation results, `Import Analyser Results` using the file generated that
-  is in `backend/src/main/resources/codebasees/codebase/analyser/analyserResult.json`, or pre-generated file from
+  is in `./codebases/codebase/analyser/analyserResult.json`, or pre-generated file from
   `data/icsa2020/evaluation`
 
 ## Data in paper

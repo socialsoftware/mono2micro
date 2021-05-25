@@ -133,7 +133,7 @@ public class Codebase {
 	{
 		//run python script to generate dendrogram image
 		Runtime r = Runtime.getRuntime();
-		String pythonScriptPath = RESOURCES_PATH + "createDendrogram.py";
+		String pythonScriptPath = SCRIPTS_PATH + "createDendrogram.py";
 		String[] cmd = new String[5];
 		cmd[0] = PYTHON;
 		cmd[1] = pythonScriptPath;
