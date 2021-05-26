@@ -248,7 +248,7 @@ public class AnalysisController {
 		System.out.println("Executing analyser.py to create cuts...");
 
 		Runtime r = Runtime.getRuntime();
-		String pythonScriptPath = RESOURCES_PATH + "analyser.py";
+		String pythonScriptPath = SCRIPTS_PATH + "analyser.py";
 		String[] cmd = new String[5];
 		cmd[0] = PYTHON;
 		cmd[1] = pythonScriptPath;

@@ -273,7 +273,7 @@ public class Dendrogram {
 		}
 
 		Runtime r = Runtime.getRuntime();
-		String pythonScriptPath = RESOURCES_PATH + "cutDendrogram.py";
+		String pythonScriptPath = SCRIPTS_PATH + "cutDendrogram.py";
 		String[] cmd = new String[8];
 		cmd[0] = PYTHON;
 		cmd[1] = pythonScriptPath;
