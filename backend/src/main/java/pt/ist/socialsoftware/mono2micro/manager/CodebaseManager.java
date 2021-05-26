@@ -26,7 +26,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 
 public class CodebaseManager {
 
