@@ -26,17 +26,9 @@ type Dendogram struct {
 	Decompositions []*Decomposition `json:"decompositions,omitempty"`
 }
 
-func (d *Dendogram) GetDecomposition(cutValue float32, useExpert bool) *Decomposition {
-	if len(d.Decompositions) == 1 {
-		return d.Decompositions[0]
-	}
-
+func (d *Dendogram) GetDecomposition(name string) *Decomposition {
 	for _, decomposition := range d.Decompositions {
-		if cutValue == decomposition.CutValue {
-			return decomposition
-		}
-
-		if useExpert && decomposition.Expert {
+		if decomposition.Name == name {
 			return decomposition
 		}
 	}

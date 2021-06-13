@@ -1,0 +1,14 @@
+linters:
+  enable:
+    - goimports
+    - stylecheck
+    - lll
+  disable:
+    - errcheck
+    - gosimple
+
+issues:
+  exclude-rules:
+    - linters:
+        - lll
+      source: "\\`(json:\"[\\w,]+\")?\\s*(bson:\"[\\w,]+\")?\\s*(graphql:\"[\\w\\s$.,:(){}]+\")?`"

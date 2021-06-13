@@ -1,56 +1,124 @@
-package redesign
+package refactor
 
 import (
-	"app/configuration"
-	"app/files"
-	"app/metrics"
-	"app/training"
 	"fmt"
+	"functionality_refactor/app/files"
+	"functionality_refactor/app/metrics"
+	"functionality_refactor/app/refactor/values"
+	"functionality_refactor/app/training"
 	"sort"
 	"strconv"
 	"sync"
+	"time"
 
 	"github.com/go-kit/kit/log"
 )
 
-var (
-	wg       sync.WaitGroup
-	mapMutex = sync.RWMutex{}
-)
-
 const (
-	ONLY_LAST_INVOCATION     = 0
-	ALL_PREVIOUS_INVOCATIONS = -1
+	OnlyLastInvocation                   = 0
+	AllPreviousInvocations               = -1
+	ControllerRefactorRoutineTimeoutSecs = 10
 )
 
-type RedesignHandler interface {
-	EstimateCodebaseOrchestrators(*files.Codebase, map[string]string, configuration.CodebaseConfiguration) *configuration.Datasets
-	CreateSagaRedesigns(*files.Decomposition, *files.Controller, *files.FunctionalityRedesign) ([]*files.FunctionalityRedesign, error)
-	RefactorController(*files.Controller, *files.FunctionalityRedesign, *files.Cluster) *files.FunctionalityRedesign
+type RefactorHandler interface {
+	RefactorDecomposition(*files.Decomposition, *values.RefactorCodebaseRequest) []*values.Controller
 }
 
 type DefaultHandler struct {
 	logger          log.Logger
 	metricsHandler  metrics.MetricsHandler
 	trainingHandler training.TrainingHandler
-	execution       configuration.Execution
 }
 
 func New(
-	logger log.Logger, metricsHandler metrics.MetricsHandler, trainingHandler training.TrainingHandler, execution configuration.Execution,
-) RedesignHandler {
+	logger log.Logger, metricsHandler metrics.MetricsHandler, trainingHandler training.TrainingHandler,
+) RefactorHandler {
 	return &DefaultHandler{
-		logger:          log.With(logger, "module", "redesignHandler"),
+		logger:          log.With(logger, "module", "RefactorHandler"),
 		metricsHandler:  metricsHandler,
 		trainingHandler: trainingHandler,
-		execution:       execution,
 	}
 }
 
-func (svc *DefaultHandler) extractValidControllers(decomposition *files.Decomposition, codebaseConfig configuration.CodebaseConfiguration) map[string]*files.Controller {
+func (svc *DefaultHandler) RefactorDecomposition(
+	decomposition *files.Decomposition, request *values.RefactorCodebaseRequest,
+) []*values.Controller {
+	// Add to each cluster, the list of controllers that use it
+	validControllers := svc.extractValidControllers(decomposition, request)
+
+	svc.logger.Log("codebase", request.CodebaseName, "validControllers", len(validControllers))
+
+	refactoredControllers := []*values.Controller{}
+
+	var wg sync.WaitGroup
+
+	for _, controller := range validControllers {
+		wg.Add(1)
+		go func(decomposition *files.Decomposition, controller *files.Controller, wg *sync.WaitGroup) {
+			defer wg.Done()
+			initialRedesign := controller.GetFunctionalityRedesign()
+
+			svc.logger.Log("codebase", request.CodebaseName, "controller", controller.Name, "status", "refactoring...")
+
+			timeoutChannel := make(chan bool, 1)
+			redesignChannel := make(chan []*files.FunctionalityRedesign, 1)
+
+			go func() {
+				svc.metricsHandler.CalculateDecompositionMetrics(decomposition, controller, initialRedesign)
+
+				redesignChannel <- svc.createSagaRedesigns(request, decomposition, controller, initialRedesign)
+			}()
+
+			go func() {
+				time.Sleep(ControllerRefactorRoutineTimeoutSecs * time.Second)
+				timeoutChannel <- true
+			}()
+
+			// if the controller takes too long to be refactored we want to timeout
+			select {
+			case sagaRedesigns := <-redesignChannel:
+				svc.logger.Log("codebase", request.CodebaseName, "controller", controller.Name, "status", "finished refactoring!")
+
+				bestRedesign := sagaRedesigns[0]
+
+				refactoredController := svc.createFinalControllerData(controller, initialRedesign, bestRedesign)
+				refactoredControllers = append(refactoredControllers, refactoredController)
+				return
+			case <-timeoutChannel:
+				err := fmt.Sprintf("refactor operation timed out after %d seconds!", ControllerRefactorRoutineTimeoutSecs)
+				svc.logger.Log("codebase", request.CodebaseName, "controller", controller.Name, "error", err)
+
+				refactoredControllers = append(refactoredControllers, &values.Controller{
+					Name: controller.Name,
+					Monolith: &values.Monolith{
+						ComplexityMetrics: &values.ComplexityMetrics{
+							SystemComplexity:        initialRedesign.SystemComplexity,
+							FunctionalityComplexity: initialRedesign.FunctionalityComplexity,
+							InvocationsCount:        initialRedesign.InvocationsCount,
+							AccessesCount:           initialRedesign.AccessesCount,
+						},
+					},
+					Error: err,
+				})
+				return
+			}
+
+		}(decomposition, controller, &wg)
+	}
+	wg.Wait()
+
+	return refactoredControllers
+}
+
+func (svc *DefaultHandler) extractValidControllers(
+	decomposition *files.Decomposition, request *values.RefactorCodebaseRequest,
+) map[string]*files.Controller {
 	validControllers := map[string]*files.Controller{}
+	var wg sync.WaitGroup
+	mapMutex := sync.RWMutex{}
+
 	for _, controller := range decomposition.Controllers {
-		if !codebaseConfig.ShouldRefactorController(controller.Name, controller.Type, len(controller.EntitiesPerCluster)) {
+		if !request.ShouldRefactorController(controller) {
 			continue
 		}
 
@@ -73,159 +141,18 @@ func (svc *DefaultHandler) extractValidControllers(decomposition *files.Decompos
 	return validControllers
 }
 
-func (svc *DefaultHandler) EstimateCodebaseOrchestrators(
-	codebase *files.Codebase, idToEntityMap map[string]string, codebaseConfig configuration.CodebaseConfiguration,
-) *configuration.Datasets {
-	datasets := &configuration.Datasets{
-		MetricsDataset:      [][]string{},
-		ComplexitiesDataset: [][]string{},
-	}
-
-	for _, dendogram := range codebase.Dendrograms {
-		decomposition := dendogram.GetDecomposition(
-			codebaseConfig.CutValue, codebaseConfig.UseExpertDecompositions,
-		)
-		if decomposition == nil {
-			svc.logger.Log("Failed to get decomposition from dendogram")
-			continue
-		}
-
-		// Add to each cluster, the list of controllers that use it
-		validControllers := svc.extractValidControllers(decomposition, codebaseConfig)
-
-		for _, controller := range validControllers {
-			wg.Add(1)
-			go func(controller *files.Controller) {
-				defer wg.Done()
-				initialRedesign := controller.GetFunctionalityRedesign()
-				svc.metricsHandler.CalculateDecompositionMetrics(decomposition, controller, initialRedesign)
-				controllerTrainingFeatures := svc.trainingHandler.CalculateControllerTrainingFeatures(initialRedesign)
-
-				sagaRedesigns, _ := svc.CreateSagaRedesigns(decomposition, controller, initialRedesign)
-
-				// check if the distance of the best and second best is high enough
-				// if not, remove from dataset
-				if svc.execution.Configuration.ExcludeLowDistanceRedesigns {
-					bestRedesign := sagaRedesigns[0]
-					secondBestRedesign := sagaRedesigns[1]
-					worstRedesign := sagaRedesigns[len(sagaRedesigns)-1]
-					distance := float32(secondBestRedesign.FunctionalityComplexity-bestRedesign.FunctionalityComplexity) / float32(worstRedesign.FunctionalityComplexity-bestRedesign.FunctionalityComplexity)
-					if distance < svc.execution.Configuration.AcceptableComplexityDistanceThreshold {
-						fmt.Printf("\nWill not add functionality %s to dataset\n", controller.Name)
-						return
-					}
-				}
-
-				for idx, redesign := range sagaRedesigns {
-					if idx == 0 {
-						datasets.MetricsDataset = svc.trainingHandler.AddDataToTrainingDataset(datasets.MetricsDataset, codebase, controller, controllerTrainingFeatures, redesign, idToEntityMap)
-					}
-
-					datasets.ComplexitiesDataset = svc.addResultToDataset(
-						datasets.ComplexitiesDataset,
-						codebase,
-						controller,
-						initialRedesign,
-						redesign,
-						redesign.OrchestratorID,
-						idToEntityMap,
-						controllerTrainingFeatures,
-					)
-
-					if svc.execution.Configuration.PrintTraces && ((svc.execution.Configuration.PrintSpecificFunctionality == "" && idx == 0) || (controller.Name == svc.execution.Configuration.PrintSpecificFunctionality)) {
-						fmt.Printf("\n\n---------- %v ----------\n\n", controller.Name)
-						fmt.Printf("Initial redesign\n\n")
-						svc.printRedesignTrace(initialRedesign.Redesign, idToEntityMap)
-
-						fmt.Printf("\n\nSAGA\n")
-						svc.printRedesignTrace(redesign.Redesign, idToEntityMap)
-
-						fmt.Printf("\nFunctionality Complexity: %v\n", redesign.FunctionalityComplexity)
-					}
-
-					if svc.execution.Configuration.OnlyExportBestRedesign {
-						break
-					}
-				}
-			}(controller)
-		}
-		wg.Wait()
-	}
-
-	return datasets
-}
-
-func (svc *DefaultHandler) printRedesignTrace(invocations []*files.Invocation, idToEntityMap map[string]string) {
-	for _, invocation := range invocations {
-		fmt.Printf("\n- %v  (%v)\n", invocation.ClusterID, invocation.Type)
-		for idx, _ := range invocation.ClusterAccesses {
-			fmt.Printf("%v (%v) | ", idToEntityMap[strconv.Itoa(invocation.GetAccessEntityID(idx))], invocation.GetAccessType(idx))
-		}
-	}
-}
-
-func (svc *DefaultHandler) addResultToDataset(
-	data [][]string, codebase *files.Codebase, controller *files.Controller, initialRedesign *files.FunctionalityRedesign,
-	bestRedesign *files.FunctionalityRedesign, orchestratorID int, idToEntityMap map[string]string, initialMetrics map[int]*training.ClusterMetrics,
-) [][]string {
-	clusterName := strconv.Itoa(orchestratorID)
-	entityNames := []string{}
-	for _, entityID := range controller.EntitiesPerCluster[clusterName] {
-		entityNames = append(entityNames, idToEntityMap[strconv.Itoa(entityID)])
-	}
-
-	entityNamesCSVFormat := ""
-	for _, name := range entityNames {
-		entityNamesCSVFormat += name + ", "
-	}
-
-	systemComplexityReduction := initialRedesign.SystemComplexity - bestRedesign.SystemComplexity
-	functionalityComplexityReduction := initialRedesign.FunctionalityComplexity - bestRedesign.FunctionalityComplexity
-
-	orchestratorMetrics := initialMetrics[orchestratorID]
-
-	data = append(data, []string{
-		codebase.Name,
-		controller.Name,
-		strconv.Itoa(orchestratorID),
-		entityNamesCSVFormat,
-		strconv.Itoa(initialRedesign.SystemComplexity),
-		strconv.Itoa(bestRedesign.SystemComplexity),
-		strconv.Itoa(systemComplexityReduction),
-		strconv.Itoa(initialRedesign.FunctionalityComplexity),
-		strconv.Itoa(bestRedesign.FunctionalityComplexity),
-		strconv.Itoa(functionalityComplexityReduction),
-		strconv.Itoa(initialRedesign.InvocationsCount),
-		strconv.Itoa(bestRedesign.InitialInvocationsCount),
-		strconv.Itoa(bestRedesign.InvocationsCount),
-		strconv.Itoa(bestRedesign.MergedInvocationsCount),
-		strconv.Itoa(initialRedesign.AccessesCount),
-		strconv.Itoa(bestRedesign.AccessesCount),
-		strconv.Itoa(bestRedesign.RecursiveIterations),
-		strconv.Itoa(bestRedesign.ClustersBesidesOrchestratorWithMultipleInvocations),
-		fmt.Sprintf("%f", orchestratorMetrics.LockInvocationProbability),
-		fmt.Sprintf("%f", orchestratorMetrics.ReadInvocationProbability),
-		fmt.Sprintf("%f", orchestratorMetrics.ReadOperationProbability),
-		fmt.Sprintf("%f", orchestratorMetrics.WriteOperationProbability),
-		fmt.Sprintf("%f", orchestratorMetrics.InvocationProbability),
-		fmt.Sprintf("%f", orchestratorMetrics.DataDependentInvocationProbability),
-		fmt.Sprintf("%f", orchestratorMetrics.OperationProbability),
-		fmt.Sprintf("%f", orchestratorMetrics.PivotInvocationFactor),
-		fmt.Sprintf("%f", orchestratorMetrics.InvocationOperationFactor),
-		fmt.Sprintf("%f", orchestratorMetrics.SystemComplexityContributionPercentage),
-		fmt.Sprintf("%f", orchestratorMetrics.FunctionalityComplexityContributionPercentage),
-	})
-
-	return data
-}
-
-func (svc *DefaultHandler) CreateSagaRedesigns(decomposition *files.Decomposition, controller *files.Controller, initialRedesign *files.FunctionalityRedesign) ([]*files.FunctionalityRedesign, error) {
+func (svc *DefaultHandler) createSagaRedesigns(
+	request *values.RefactorCodebaseRequest,
+	decomposition *files.Decomposition,
+	controller *files.Controller,
+	initialRedesign *files.FunctionalityRedesign,
+) []*files.FunctionalityRedesign {
 	sagaRedesigns := []*files.FunctionalityRedesign{}
 
 	for clusterName := range controller.EntitiesPerCluster {
 		cluster := decomposition.Clusters[clusterName]
 
-		redesign := svc.RefactorController(controller, initialRedesign, cluster)
+		redesign := svc.refactorController(request, controller, initialRedesign, cluster)
 
 		svc.metricsHandler.CalculateDecompositionMetrics(decomposition, controller, redesign)
 
@@ -237,7 +164,7 @@ func (svc *DefaultHandler) CreateSagaRedesigns(decomposition *files.Decompositio
 
 	// order the redesigns by ascending complexity
 	sort.Slice(sagaRedesigns, func(i, j int) bool {
-		if svc.execution.Configuration.MinimizeSumBothComplexities {
+		if request.MinimizeSumOfComplexities {
 			return sagaRedesigns[i].FunctionalityComplexity+sagaRedesigns[i].SystemComplexity < sagaRedesigns[j].FunctionalityComplexity+sagaRedesigns[j].SystemComplexity
 		}
 
@@ -248,10 +175,15 @@ func (svc *DefaultHandler) CreateSagaRedesigns(decomposition *files.Decompositio
 		return sagaRedesigns[i].FunctionalityComplexity < sagaRedesigns[j].FunctionalityComplexity
 	})
 
-	return sagaRedesigns, nil
+	return sagaRedesigns
 }
 
-func (svc *DefaultHandler) RefactorController(controller *files.Controller, initialRedesign *files.FunctionalityRedesign, orchestrator *files.Cluster) *files.FunctionalityRedesign {
+func (svc *DefaultHandler) refactorController(
+	request *values.RefactorCodebaseRequest,
+	controller *files.Controller,
+	initialRedesign *files.FunctionalityRedesign,
+	orchestrator *files.Cluster,
+) *files.FunctionalityRedesign {
 	redesign := &files.FunctionalityRedesign{
 		Name:                    controller.Name,
 		UsedForMetrics:          true,
@@ -270,9 +202,7 @@ func (svc *DefaultHandler) RefactorController(controller *files.Controller, init
 	var mergedInvocations int
 	iterate := true
 	for iterate {
-		fmt.Println("Doing merge iteration for controller ", controller.Name)
-
-		redesign.Redesign, mergedInvocations = svc.mergeAllPossibleInvocations(redesign)
+		redesign.Redesign, mergedInvocations = svc.mergeAllPossibleInvocations(request, redesign)
 		redesign.RecursiveIterations += 1
 
 		if mergedInvocations < 1 {
@@ -296,16 +226,17 @@ func (svc *DefaultHandler) addOrchestratorPivotInvocations(
 		// if this one or the previous is not the orchestrator
 		if initialInvocation.ClusterID != orchestratorID && (prevInvocation == nil || prevInvocation.ClusterID != orchestratorID) {
 			// add empty orchestrator invocation
-			invocation := &files.Invocation{
-				Name:              fmt.Sprintf("%d: %d", invocationID, orchestratorID),
-				ID:                invocationID,
-				ClusterID:         orchestratorID,
-				ClusterAccesses:   [][]interface{}{},
-				RemoteInvocations: []int{},
-				Type:              "COMPENSATABLE",
-			}
-
-			newRedesign.Redesign = append(newRedesign.Redesign, invocation)
+			newRedesign.Redesign = append(
+				newRedesign.Redesign,
+				&files.Invocation{
+					Name:              fmt.Sprintf("%d: %d", invocationID, orchestratorID),
+					ID:                invocationID,
+					ClusterID:         orchestratorID,
+					ClusterAccesses:   [][]interface{}{},
+					RemoteInvocations: []int{},
+					Type:              "COMPENSATABLE",
+				},
+			)
 			invocationID++
 		}
 
@@ -329,7 +260,9 @@ func (svc *DefaultHandler) addOrchestratorPivotInvocations(
 	return newRedesign
 }
 
-func (svc *DefaultHandler) mergeAllPossibleInvocations(redesign *files.FunctionalityRedesign) ([]*files.Invocation, int) {
+func (svc *DefaultHandler) mergeAllPossibleInvocations(
+	request *values.RefactorCodebaseRequest, redesign *files.FunctionalityRedesign,
+) ([]*files.Invocation, int) {
 	var mergeCount int
 	var deleted int
 	prevClusterInvocations := map[int][]int{}
@@ -347,7 +280,7 @@ func (svc *DefaultHandler) mergeAllPossibleInvocations(redesign *files.Functiona
 		} else {
 			destinyInvocationIdx := prevInvocations[len(prevInvocations)-1]
 
-			if svc.isMergeForbidden(invocations, destinyInvocationIdx, originalInvocationIdx) {
+			if svc.isMergeForbidden(request, invocations, destinyInvocationIdx, originalInvocationIdx) {
 				addToPreviousInvocations = true
 			} else {
 				invocations, prevClusterInvocations, deleted = svc.mergeInvocations(invocations, prevClusterInvocations, destinyInvocationIdx, originalInvocationIdx)
@@ -378,7 +311,7 @@ func (svc *DefaultHandler) mergeAllPossibleInvocations(redesign *files.Functiona
 }
 
 func (svc *DefaultHandler) isMergeForbidden(
-	invocations []*files.Invocation, destinyInvocationIdx int, originalInvocationIdx int,
+	request *values.RefactorCodebaseRequest, invocations []*files.Invocation, destinyInvocationIdx int, originalInvocationIdx int,
 ) bool {
 	var isLastInvocation bool
 	if originalInvocationIdx == len(invocations)-1 {
@@ -407,7 +340,7 @@ func (svc *DefaultHandler) isMergeForbidden(
 			continue
 		}
 
-		if svc.execution.Configuration.DataDependenceThreshold == ONLY_LAST_INVOCATION {
+		if request.DataDependenceThreshold == OnlyLastInvocation {
 			mergeForbidden = pivotInvocation.ContainsRead()
 			break
 		} else {
@@ -416,7 +349,7 @@ func (svc *DefaultHandler) isMergeForbidden(
 				break
 			}
 
-			if (svc.execution.Configuration.DataDependenceThreshold != ALL_PREVIOUS_INVOCATIONS) && (originalInvocationIdx-idx == svc.execution.Configuration.DataDependenceThreshold) {
+			if (request.DataDependenceThreshold != AllPreviousInvocations) && (originalInvocationIdx-idx == request.DataDependenceThreshold) {
 				break
 			}
 		}
@@ -509,6 +442,46 @@ func (svc *DefaultHandler) pruneInvocationAccesses(invocation *files.Invocation)
 	} else {
 		invocation.Type = "RETRIABLE"
 	}
+
 	invocation.ClusterAccesses = newAccesses
-	return
+}
+
+func (svc *DefaultHandler) createFinalControllerData(
+	controller *files.Controller, initialRedesign *files.FunctionalityRedesign, sagaRedesign *files.FunctionalityRedesign,
+) *values.Controller {
+	systemComplexityReduction := initialRedesign.SystemComplexity - sagaRedesign.SystemComplexity
+	functionalityComplexityReduction := initialRedesign.FunctionalityComplexity - sagaRedesign.FunctionalityComplexity
+
+	orchestratorID := sagaRedesign.Redesign[0].ClusterID
+	orchestratorName := strconv.Itoa(orchestratorID)
+
+	return &values.Controller{
+		Name: controller.Name,
+		Monolith: &values.Monolith{
+			ComplexityMetrics: &values.ComplexityMetrics{
+				SystemComplexity:        initialRedesign.SystemComplexity,
+				FunctionalityComplexity: initialRedesign.FunctionalityComplexity,
+				InvocationsCount:        initialRedesign.InvocationsCount,
+				AccessesCount:           initialRedesign.AccessesCount,
+			},
+		},
+		Refactor: &values.Refactor{
+			Orchestrator: &values.Cluster{
+				Name:     orchestratorName,
+				ID:       orchestratorID,
+				Entities: controller.EntitiesPerCluster[orchestratorName],
+			},
+			ComplexityMetrics: &values.ComplexityMetrics{
+				SystemComplexity:        sagaRedesign.SystemComplexity,
+				FunctionalityComplexity: sagaRedesign.FunctionalityComplexity,
+				InvocationsCount:        sagaRedesign.InvocationsCount,
+				AccessesCount:           sagaRedesign.AccessesCount,
+			},
+			ExecutionMetrics: &values.ExecutionMetrics{
+				SystemComplexityReduction:        systemComplexityReduction,
+				FunctionalityComplexityReduction: functionalityComplexityReduction,
+				InvocationMerges:                 sagaRedesign.MergedInvocationsCount,
+			},
+		},
+	}
 }

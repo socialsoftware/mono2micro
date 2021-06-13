@@ -1,8 +1,8 @@
 package training
 
 import (
-	"app/files"
 	"fmt"
+	"functionality_refactor/app/files"
 	"strconv"
 
 	"github.com/go-kit/kit/log"
@@ -10,7 +10,12 @@ import (
 
 type TrainingHandler interface {
 	CalculateControllerTrainingFeatures(*files.FunctionalityRedesign) map[int]*ClusterMetrics
-	AddDataToTrainingDataset([][]string, *files.Codebase, *files.Controller, map[int]*ClusterMetrics, *files.FunctionalityRedesign, map[string]string) [][]string
+	AddDataToTrainingDataset(
+		[][]string, *files.Codebase,
+		*files.Controller,
+		map[int]*ClusterMetrics,
+		*files.FunctionalityRedesign, map[string]string,
+	) [][]string
 }
 
 type DefaultHandler struct {
@@ -23,7 +28,9 @@ func New(logger log.Logger) TrainingHandler {
 	}
 }
 
-func (svc *DefaultHandler) CalculateControllerTrainingFeatures(redesign *files.FunctionalityRedesign) map[int]*ClusterMetrics {
+func (svc *DefaultHandler) CalculateControllerTrainingFeatures(
+	redesign *files.FunctionalityRedesign,
+) map[int]*ClusterMetrics {
 	featureMetrics := FeatureMetrics{}
 	clusterMetrics := make(map[int]*ClusterMetrics)
 
@@ -87,7 +94,9 @@ func (svc *DefaultHandler) CalculateControllerTrainingFeatures(redesign *files.F
 	return clusterMetrics
 }
 
-func (svc *DefaultHandler) calculateFinalClusterMetrics(featureMetrics *FeatureMetrics, clusterMetrics map[int]*ClusterMetrics, redesign *files.FunctionalityRedesign) {
+func (svc *DefaultHandler) calculateFinalClusterMetrics(
+	featureMetrics *FeatureMetrics, clusterMetrics map[int]*ClusterMetrics, redesign *files.FunctionalityRedesign,
+) {
 	for _, metrics := range clusterMetrics {
 		metrics.PivotInvocations = featureMetrics.Invocations - metrics.Invocations - metrics.InvocationIds[0] - (featureMetrics.Invocations - metrics.InvocationIds[len(metrics.InvocationIds)-1] - 1)
 
@@ -123,7 +132,12 @@ func (svc *DefaultHandler) calculateFinalClusterMetrics(featureMetrics *FeatureM
 }
 
 func (svc *DefaultHandler) AddDataToTrainingDataset(
-	data [][]string, codebase *files.Codebase, controller *files.Controller, clusterMetrics map[int]*ClusterMetrics, redesign *files.FunctionalityRedesign, idToEntityMap map[string]string,
+	data [][]string,
+	codebase *files.Codebase,
+	controller *files.Controller,
+	clusterMetrics map[int]*ClusterMetrics,
+	redesign *files.FunctionalityRedesign,
+	idToEntityMap map[string]string,
 ) [][]string {
 	for cluster, metrics := range clusterMetrics {
 		var result int
