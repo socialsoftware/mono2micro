@@ -14,6 +14,19 @@ services:
     volumes:
       - ./codebases:/codebases
 
+  functionality_refactor:
+    build:
+      context: ./tools/functionality_refactor/src
+    image: functionality_refactor
+    container_name: functionality_refactor
+    command: /app/web_service
+    hostname: 'localhost'
+    ports:
+      - 5001:5001
+    restart: unless-stopped
+    volumes:
+      - ./codebases:/codebases
+
   frontend:
     build:
       context: ./frontend/

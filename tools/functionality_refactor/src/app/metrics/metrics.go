@@ -1,7 +1,7 @@
 package metrics
 
 import (
-	"app/files"
+	"functionality_refactor/app/files"
 	"strconv"
 	"sync"
 
@@ -23,9 +23,6 @@ var (
 
 type MetricsHandler interface {
 	CalculateDecompositionMetrics(*files.Decomposition, *files.Controller, *files.FunctionalityRedesign)
-	CalculateControllerComplexityAndDependencies(*files.Decomposition, *files.Controller, *files.FunctionalityRedesign)
-	CalculateClusterComplexityAndCohesion(*files.Cluster)
-	CalculateRedesignComplexities(*files.Decomposition, *files.Controller, *files.FunctionalityRedesign)
 }
 
 type DefaultHandler struct {
@@ -38,26 +35,28 @@ func New(logger log.Logger) MetricsHandler {
 	}
 }
 
-func (svc *DefaultHandler) CalculateDecompositionMetrics(decomposition *files.Decomposition, controller *files.Controller, redesign *files.FunctionalityRedesign) {
+func (svc *DefaultHandler) CalculateDecompositionMetrics(
+	decomposition *files.Decomposition, controller *files.Controller, redesign *files.FunctionalityRedesign,
+) {
 	var complexity float32
 	var cohesion float32
 	var coupling float32
 
 	for _, controller := range decomposition.Controllers {
-		svc.CalculateControllerComplexityAndDependencies(decomposition, controller, redesign)
-		svc.CalculateRedesignComplexities(decomposition, controller, redesign)
+		svc.calculateControllerComplexityAndDependencies(decomposition, controller, redesign)
+		svc.calculateRedesignComplexities(decomposition, controller, redesign)
 		complexity += controller.Complexity
 	}
 
 	for _, cluster := range decomposition.Clusters {
-		svc.CalculateClusterComplexityAndCohesion(cluster)
+		svc.calculateClusterComplexityAndCohesion(cluster)
 		cohesion += cluster.Cohesion
 
 		// svc.CalculateClusterCoupling(cluster)
 		// coupling += cluster.Coupling
 	}
 
-	cluster_invocations := map[int]int{}
+	clusterInvocations := map[int]int{}
 	for _, invocation := range redesign.Redesign {
 		redesign.AccessesCount += len(invocation.ClusterAccesses)
 
@@ -65,16 +64,16 @@ func (svc *DefaultHandler) CalculateDecompositionMetrics(decomposition *files.De
 			redesign.InvocationsCount += 1
 		}
 
-		_, exists := cluster_invocations[invocation.ClusterID]
+		_, exists := clusterInvocations[invocation.ClusterID]
 		if !exists {
-			cluster_invocations[invocation.ClusterID] = 1
+			clusterInvocations[invocation.ClusterID] = 1
 		} else {
-			cluster_invocations[invocation.ClusterID] += 1
+			clusterInvocations[invocation.ClusterID] += 1
 		}
 	}
 
-	for cluster_id, count := range cluster_invocations {
-		if count > 1 && cluster_id != redesign.OrchestratorID {
+	for clusterID, count := range clusterInvocations {
+		if count > 1 && clusterID != redesign.OrchestratorID {
 			redesign.ClustersBesidesOrchestratorWithMultipleInvocations += 1
 		}
 	}
@@ -84,7 +83,9 @@ func (svc *DefaultHandler) CalculateDecompositionMetrics(decomposition *files.De
 	decomposition.Coupling = coupling / float32(len(decomposition.Clusters))
 }
 
-func (svc *DefaultHandler) CalculateControllerComplexityAndDependencies(decomposition *files.Decomposition, controller *files.Controller, redesign *files.FunctionalityRedesign) {
+func (svc *DefaultHandler) calculateControllerComplexityAndDependencies(
+	decomposition *files.Decomposition, controller *files.Controller, redesign *files.FunctionalityRedesign,
+) {
 	if len(controller.EntitiesPerCluster) <= 1 {
 		controller.Complexity = 0
 		return
@@ -131,7 +132,9 @@ func (svc *DefaultHandler) CalculateControllerComplexityAndDependencies(decompos
 	return
 }
 
-func (svc *DefaultHandler) controllersThatTouchEntity(decomposition *files.Decomposition, controller *files.Controller, entityID int, mode int) []string {
+func (svc *DefaultHandler) controllersThatTouchEntity(
+	decomposition *files.Decomposition, controller *files.Controller, entityID int, mode int,
+) []string {
 	var controllers []string
 
 	for _, otherController := range decomposition.Controllers {
@@ -148,7 +151,7 @@ func (svc *DefaultHandler) controllersThatTouchEntity(decomposition *files.Decom
 	return controllers
 }
 
-func (svc *DefaultHandler) CalculateClusterComplexityAndCohesion(cluster *files.Cluster) {
+func (svc *DefaultHandler) calculateClusterComplexityAndCohesion(cluster *files.Cluster) {
 	var complexity float32
 	var cohesion float32
 	var numberEntitiesTouched float32
@@ -173,7 +176,9 @@ func (svc *DefaultHandler) CalculateClusterComplexityAndCohesion(cluster *files.
 	return
 }
 
-func (svc *DefaultHandler) CalculateRedesignComplexities(decomposition *files.Decomposition, controller *files.Controller, redesign *files.FunctionalityRedesign) {
+func (svc *DefaultHandler) calculateRedesignComplexities(
+	decomposition *files.Decomposition, controller *files.Controller, redesign *files.FunctionalityRedesign,
+) {
 	if controller.Type == Query {
 		svc.queryRedesignComplexity(decomposition, controller, redesign)
 	} else {
@@ -181,7 +186,9 @@ func (svc *DefaultHandler) CalculateRedesignComplexities(decomposition *files.De
 	}
 }
 
-func (svc *DefaultHandler) queryRedesignComplexity(decomposition *files.Decomposition, controller *files.Controller, redesign *files.FunctionalityRedesign) {
+func (svc *DefaultHandler) queryRedesignComplexity(
+	decomposition *files.Decomposition, controller *files.Controller, redesign *files.FunctionalityRedesign,
+) {
 	entitiesRead := controller.EntitiesTouchedInMode(files.MapAccessTypeToMode("R"))
 
 	var inconsistencyComplexity int
@@ -214,7 +221,9 @@ func (svc *DefaultHandler) queryRedesignComplexity(decomposition *files.Decompos
 	redesign.InconsistencyComplexity = inconsistencyComplexity
 }
 
-func (svc *DefaultHandler) sagasRedesignComplexity(decomposition *files.Decomposition, controller *files.Controller, redesign *files.FunctionalityRedesign) {
+func (svc *DefaultHandler) sagasRedesignComplexity(
+	decomposition *files.Decomposition, controller *files.Controller, redesign *files.FunctionalityRedesign,
+) {
 	var functionalityComplexity int
 	var systemComplexity int
 
@@ -254,7 +263,9 @@ func (svc *DefaultHandler) sagasRedesignComplexity(decomposition *files.Decompos
 	redesign.SystemComplexity = systemComplexity
 }
 
-func (svc *DefaultHandler) systemComplexity(decomposition *files.Decomposition, controller *files.Controller, redesign *files.FunctionalityRedesign, entity int) int {
+func (svc *DefaultHandler) systemComplexity(
+	decomposition *files.Decomposition, controller *files.Controller, redesign *files.FunctionalityRedesign, entity int,
+) int {
 	var systemComplexity int
 
 	for _, otherController := range decomposition.Controllers {
@@ -269,7 +280,9 @@ func (svc *DefaultHandler) systemComplexity(decomposition *files.Decomposition, 
 	return systemComplexity
 }
 
-func (svc *DefaultHandler) costOfRead(decomposition *files.Decomposition, controller *files.Controller, redesign *files.FunctionalityRedesign, entity int) int {
+func (svc *DefaultHandler) costOfRead(
+	decomposition *files.Decomposition, controller *files.Controller, redesign *files.FunctionalityRedesign, entity int,
+) int {
 	var functionalityComplexity int
 
 	for _, otherController := range decomposition.Controllers {
@@ -278,8 +291,7 @@ func (svc *DefaultHandler) costOfRead(decomposition *files.Decomposition, contro
 			continue
 		}
 
-		mode, exists := otherController.GetEntityMode(entity)
-		if exists && mode >= WriteMode {
+		if mode >= WriteMode {
 			functionalityComplexity++
 		}
 	}

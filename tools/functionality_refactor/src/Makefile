@@ -13,3 +13,6 @@ lint: bin/golangci-lint
 
 bin/golangci-lint:
 	wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.32.0
+
+build:
+	./scripts/compile.sh
