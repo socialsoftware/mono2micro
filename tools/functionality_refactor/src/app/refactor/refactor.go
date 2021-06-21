@@ -15,13 +15,13 @@ import (
 )
 
 const (
-	OnlyLastInvocation                   = 0
-	AllPreviousInvocations               = -1
-	ControllerRefactorRoutineTimeoutSecs = 10
+	OnlyLastInvocation                = 0
+	AllPreviousInvocations            = -1
+	DefaultRefactorRoutineTimeoutSecs = 10
 )
 
 type RefactorHandler interface {
-	RefactorDecomposition(*files.Decomposition, *values.RefactorCodebaseRequest) []*values.Controller
+	RefactorDecomposition(*files.Decomposition, *values.RefactorCodebaseRequest) map[string]*values.Controller
 }
 
 type DefaultHandler struct {
@@ -42,15 +42,22 @@ func New(
 
 func (svc *DefaultHandler) RefactorDecomposition(
 	decomposition *files.Decomposition, request *values.RefactorCodebaseRequest,
-) []*values.Controller {
+) map[string]*values.Controller {
 	// Add to each cluster, the list of controllers that use it
 	validControllers := svc.extractValidControllers(decomposition, request)
 
 	svc.logger.Log("codebase", request.CodebaseName, "validControllers", len(validControllers))
 
-	refactoredControllers := []*values.Controller{}
+	refactoredControllers := map[string]*values.Controller{}
 
 	var wg sync.WaitGroup
+
+	refactorTimeout := DefaultRefactorRoutineTimeoutSecs
+	svc.logger.Log("codebase", request.CodebaseName, "refactorTimeout", request.RefactorTimeOutSecs)
+
+	if request.RefactorTimeOutSecs != 0 {
+		refactorTimeout = request.RefactorTimeOutSecs
+	}
 
 	for _, controller := range validControllers {
 		wg.Add(1)
@@ -70,7 +77,7 @@ func (svc *DefaultHandler) RefactorDecomposition(
 			}()
 
 			go func() {
-				time.Sleep(ControllerRefactorRoutineTimeoutSecs * time.Second)
+				time.Sleep(time.Duration(refactorTimeout) * time.Second)
 				timeoutChannel <- true
 			}()
 
@@ -82,13 +89,13 @@ func (svc *DefaultHandler) RefactorDecomposition(
 				bestRedesign := sagaRedesigns[0]
 
 				refactoredController := svc.createFinalControllerData(controller, initialRedesign, bestRedesign)
-				refactoredControllers = append(refactoredControllers, refactoredController)
+				refactoredControllers[controller.Name] = refactoredController
 				return
 			case <-timeoutChannel:
-				err := fmt.Sprintf("refactor operation timed out after %d seconds!", ControllerRefactorRoutineTimeoutSecs)
+				err := fmt.Sprintf("refactor operation timed out after %d seconds!", refactorTimeout)
 				svc.logger.Log("codebase", request.CodebaseName, "controller", controller.Name, "error", err)
 
-				refactoredControllers = append(refactoredControllers, &values.Controller{
+				refactoredControllers[controller.Name] = &values.Controller{
 					Name: controller.Name,
 					Monolith: &values.Monolith{
 						ComplexityMetrics: &values.ComplexityMetrics{
@@ -99,7 +106,7 @@ func (svc *DefaultHandler) RefactorDecomposition(
 						},
 					},
 					Error: err,
-				})
+				}
 				return
 			}
 

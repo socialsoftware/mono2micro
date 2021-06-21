@@ -100,6 +100,16 @@ export interface AnalysisDto {
     mojoSingletons?: number;
 }
 
+export interface RefactorCodebase {
+    codebase_name?: string;
+    dendrogram_name?: string;
+    decomposition_name?: string;
+    controller_names?: string[];
+    data_dependence_threshold?: number;
+    minimize_sum_of_complexities?: boolean;
+    refactor_time_out_secs?: number;
+}
+
 export enum TraceType {
     ALL,
     REPRESENTATIVE,

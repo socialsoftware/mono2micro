@@ -2,6 +2,7 @@ import React from 'react';
 import { ClusterView, clusterViewHelp } from './ClusterView';
 import { TransactionView, transactionViewHelp } from './TransactionView';
 import { EntityView, entityViewHelp } from './EntityView';
+import {FunctionalityRefactorToolMenu} from './FunctionalityRefactorToolMenu';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Popover from 'react-bootstrap/Popover';
@@ -16,6 +17,7 @@ export const views = {
     CLUSTERS: 'Clusters View',
     TRANSACTION: 'Transaction View',
     ENTITY: 'Entity View',
+    REFACTOR: 'Refactorization Tool',
 };
 
 export const types = {
@@ -32,7 +34,7 @@ export class Views extends React.Component {
             codebaseName: this.props.match.params.codebaseName,
             dendrogramName: this.props.match.params.dendrogramName,
             decompositionName: this.props.match.params.decompositionName,
-            view: views.CLUSTERS
+            view: views.REFACTOR
         }
 
         this.handleSelectView = this.handleSelectView.bind(this);
@@ -137,6 +139,11 @@ export class Views extends React.Component {
                             >
                                 {views.ENTITY}
                             </Dropdown.Item>
+                            <Dropdown.Item
+                                onClick={() => this.handleSelectView(views.REFACTOR)}
+                            >
+                                {views.REFACTOR}
+                            </Dropdown.Item>
                         </DropdownButton>
                     </Col>
                     <Col sm={1}>
@@ -172,6 +179,14 @@ export class Views extends React.Component {
                                     codebaseName={this.state.codebaseName}
                                     dendrogramName={this.state.dendrogramName} 
                                     decompositionName={this.state.decompositionName}
+                                />
+                        }
+                        {
+                            this.state.view === views.REFACTOR &&
+                                <FunctionalityRefactorToolMenu 
+                                    codebaseName = {this.state.codebaseName}
+                                    dendrogramName = {this.state.dendrogramName}
+                                    decompositionName = {this.state.decompositionName}
                                 />
                         }
                     </Col>
