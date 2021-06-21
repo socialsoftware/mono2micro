@@ -3,12 +3,13 @@ package values
 import "functionality_refactor/app/files"
 
 type RefactorCodebaseRequest struct {
-	CodebaseName              string   `json:"codebase_name,omitempty"`
-	DendogramName             string   `json:"dendogram_name,omitempty"`
-	DecompositionName         string   `json:"decomposition_name,omitempty"`
-	ControllerNames           []string `json:"controller_names,omitempty"`
-	DataDependenceThreshold   int      `json:"data_dependence_threshold,omitempty"`
-	MinimizeSumOfComplexities bool     `json:"minimize_sum_of_complexities,omitempty"`
+	CodebaseName              string   `json:"codebase_name"`
+	DendrogramName            string   `json:"dendrogram_name"`
+	DecompositionName         string   `json:"decomposition_name"`
+	ControllerNames           []string `json:"controller_names"`
+	DataDependenceThreshold   int      `json:"data_dependence_threshold"`
+	MinimizeSumOfComplexities bool     `json:"minimize_sum_of_complexities"`
+	RefactorTimeOutSecs       int      `json:"refactor_time_out_secs"`
 }
 
 func (r *RefactorCodebaseRequest) ShouldRefactorController(controller *files.Controller) bool {
@@ -32,11 +33,11 @@ func (r *RefactorCodebaseRequest) ShouldRefactorController(controller *files.Con
 }
 
 type RefactorCodebaseResponse struct {
-	CodebaseName            string        `json:"codebase_name"`
-	DendogramName           string        `json:"dendogram_name"`
-	DecompositionName       string        `json:"decomposition_name"`
-	Controllers             []*Controller `json:"controllers"`
-	DataDependenceThreshold int           `json:"data_dependence_threshold"`
+	CodebaseName            string                 `json:"codebase_name"`
+	DendrogramName          string                 `json:"dendogram_name"`
+	DecompositionName       string                 `json:"decomposition_name"`
+	Controllers             map[string]*Controller `json:"controllers"`
+	DataDependenceThreshold int                    `json:"data_dependence_threshold"`
 }
 
 type Controller struct {

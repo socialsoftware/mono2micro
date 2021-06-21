@@ -1,5 +1,8 @@
 import axios, { AxiosInstance } from 'axios';
-import { URL } from '../constants/constants';
+import { 
+    URL,
+    REFACTORIZATION_TOOL_URL,
+} from '../constants/constants';
 import {
     AnalyserDto,
     Decomposition,
@@ -9,12 +12,15 @@ import {
     Dendrogram,
     Cluster,
     Controller,
-    LocalTransactionsGraph
+    LocalTransactionsGraph,
+    RefactorCodebase,
 } from "../type-declarations/types";
 import { addSearchParamsToUrl } from "../utils/url";
 
 export class RepositoryService {
     axios: AxiosInstance;
+
+    refactorizationToolAxios: AxiosInstance;
 
     constructor() {
         var headers = {
@@ -23,6 +29,12 @@ export class RepositoryService {
 
         this.axios = axios.create({
             baseURL: URL,
+            timeout: 0,
+            headers: headers,
+        });
+
+        this.refactorizationToolAxios = axios.create({
+            baseURL: REFACTORIZATION_TOOL_URL,
             timeout: 0,
             headers: headers,
         });
@@ -515,6 +527,34 @@ export class RepositoryService {
     ){
         return this.axios.post(
             "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/controller/" + controllerName + "/redesign/" + redesignName + "/useForMetrics"
+        );
+    }
+
+    refactorCodebase(
+        codebaseName: string,
+        dendrogramName: string,
+        decompositionName: string,
+        controllerNames: string[],
+        dataDependenceThreshold: number,
+        minimizeSumOfComplexities: boolean,
+        timeOut: number,
+    ) {
+
+        const refactorRequest: RefactorCodebase = {
+            codebase_name: codebaseName,
+            dendrogram_name: dendrogramName,
+            decomposition_name: decompositionName,
+            controller_names: controllerNames,
+            data_dependence_threshold: dataDependenceThreshold,
+            minimize_sum_of_complexities: minimizeSumOfComplexities,
+            refactor_time_out_secs: timeOut,
+        };
+
+        console.log(refactorRequest)
+        
+        return this.refactorizationToolAxios.post(
+            "/refactor",
+            refactorRequest
         );
     }
 }

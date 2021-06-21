@@ -3,6 +3,7 @@ package transport
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"functionality_refactor/app/refactor/values"
@@ -29,6 +30,17 @@ func (r *RefactorCodebaseHTTPHandler) ServeHTTP(w http.ResponseWriter, req *http
 	if err != nil {
 		r.logger.Log("transport", "refactor/decode", "error", err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err = r.validateRequest(&payload)
+	if err != nil {
+		r.logger.Log("transport", "refactor/validate", "error", err.Error())
+		http.Error(
+			w,
+			err.Error(),
+			http.StatusBadRequest,
+		)
 		return
 	}
 
@@ -59,4 +71,17 @@ func (r *RefactorCodebaseHTTPHandler) ServeHTTP(w http.ResponseWriter, req *http
 	w.Write(data)
 
 	r.logger.Log("transport", "refactor/HTTP")
+}
+
+func (r *RefactorCodebaseHTTPHandler) validateRequest(req *values.RefactorCodebaseRequest) error {
+	if req.CodebaseName == "" {
+		return fmt.Errorf("A codebase name must be set.")
+	}
+	if req.DecompositionName == "" {
+		return fmt.Errorf("A decomposition name must be set.")
+	}
+	if req.DendrogramName == "" {
+		return fmt.Errorf("A dendrogram name must be set.")
+	}
+	return nil
 }

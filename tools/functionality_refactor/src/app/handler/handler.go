@@ -45,16 +45,16 @@ func (svc *DefaultHandler) HandleRefactorCodebase(ctx context.Context, request *
 		return nil, fmt.Errorf("failed to read codebase %s", request.CodebaseName)
 	}
 
-	dendogram := codebase.GetDendogram(request.DendogramName)
+	dendogram := codebase.GetDendogram(request.DendrogramName)
 	if dendogram == nil {
 		svc.logger.Log("codebase", request.CodebaseName, "error", "failed to read dendogram")
-		return nil, fmt.Errorf("failed to read dendogram %s from codebase %s", request.DendogramName, request.CodebaseName)
+		return nil, fmt.Errorf("failed to read dendogram %s from codebase %s", request.DendrogramName, request.CodebaseName)
 	}
 
 	decomposition := dendogram.GetDecomposition(request.DecompositionName)
 	if decomposition == nil {
 		svc.logger.Log("codebase", request.CodebaseName, "error", "failed to read decomposition")
-		return nil, fmt.Errorf("failed to read decomposition %s from dendogram %s", request.DecompositionName, request.DendogramName)
+		return nil, fmt.Errorf("failed to read decomposition %s from dendogram %s", request.DecompositionName, request.DendrogramName)
 	}
 
 	controllers := svc.refactorHandler.RefactorDecomposition(
@@ -64,7 +64,7 @@ func (svc *DefaultHandler) HandleRefactorCodebase(ctx context.Context, request *
 
 	response := &values.RefactorCodebaseResponse{
 		CodebaseName:            codebase.Name,
-		DendogramName:           dendogram.Name,
+		DendrogramName:          dendogram.Name,
 		DecompositionName:       decomposition.Name,
 		Controllers:             controllers,
 		DataDependenceThreshold: request.DataDependenceThreshold,
