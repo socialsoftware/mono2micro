@@ -108,6 +108,7 @@ export interface RefactorCodebase {
     data_dependence_threshold?: number;
     minimize_sum_of_complexities?: boolean;
     refactor_time_out_secs?: number;
+    override_previous?: boolean;
 }
 
 export enum TraceType {

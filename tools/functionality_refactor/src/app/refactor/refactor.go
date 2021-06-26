@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"functionality_refactor/app/files"
 	"functionality_refactor/app/metrics"
+	"functionality_refactor/app/mono2micro"
 	"functionality_refactor/app/refactor/values"
+
 	"functionality_refactor/app/training"
 	"sort"
 	"strconv"
@@ -17,58 +19,60 @@ import (
 const (
 	OnlyLastInvocation                = 0
 	AllPreviousInvocations            = -1
-	DefaultRefactorRoutineTimeoutSecs = 10
+	DefaultRefactorRoutineTimeoutSecs = 60
 )
 
 type RefactorHandler interface {
-	RefactorDecomposition(*files.Decomposition, *values.RefactorCodebaseRequest) map[string]*values.Controller
+	RefactorDecomposition(*mono2micro.Decomposition, *values.RefactorCodebaseRequest) *values.RefactorCodebaseResponse
 }
 
 type DefaultHandler struct {
 	logger          log.Logger
 	metricsHandler  metrics.MetricsHandler
 	trainingHandler training.TrainingHandler
+	filesHandler    files.FilesHandler
 }
 
 func New(
-	logger log.Logger, metricsHandler metrics.MetricsHandler, trainingHandler training.TrainingHandler,
+	logger log.Logger, metricsHandler metrics.MetricsHandler, trainingHandler training.TrainingHandler, filesHandler files.FilesHandler,
 ) RefactorHandler {
 	return &DefaultHandler{
 		logger:          log.With(logger, "module", "RefactorHandler"),
 		metricsHandler:  metricsHandler,
 		trainingHandler: trainingHandler,
+		filesHandler:    filesHandler,
 	}
 }
 
 func (svc *DefaultHandler) RefactorDecomposition(
-	decomposition *files.Decomposition, request *values.RefactorCodebaseRequest,
-) map[string]*values.Controller {
+	decomposition *mono2micro.Decomposition, request *values.RefactorCodebaseRequest,
+) *values.RefactorCodebaseResponse {
 	// Add to each cluster, the list of controllers that use it
 	validControllers := svc.extractValidControllers(decomposition, request)
 
+	// store the initial decomposition data in the file system
+	decompositionData := svc.createInitialDecompositionData(request, validControllers)
+	err := svc.filesHandler.StoreDecompositionRefactorization(decompositionData)
+	if err != nil {
+		svc.logger.Log("codebase", request.CodebaseName, "validControllers", len(validControllers), "error", err)
+		return nil
+	}
+
 	svc.logger.Log("codebase", request.CodebaseName, "validControllers", len(validControllers))
 
-	refactoredControllers := map[string]*values.Controller{}
-
-	var wg sync.WaitGroup
-
 	refactorTimeout := DefaultRefactorRoutineTimeoutSecs
-	svc.logger.Log("codebase", request.CodebaseName, "refactorTimeout", request.RefactorTimeOutSecs)
-
 	if request.RefactorTimeOutSecs != 0 {
 		refactorTimeout = request.RefactorTimeOutSecs
 	}
 
 	for _, controller := range validControllers {
-		wg.Add(1)
-		go func(decomposition *files.Decomposition, controller *files.Controller, wg *sync.WaitGroup) {
-			defer wg.Done()
+		go func(request *values.RefactorCodebaseRequest, decomposition *mono2micro.Decomposition, controller *mono2micro.Controller) {
 			initialRedesign := controller.GetFunctionalityRedesign()
 
 			svc.logger.Log("codebase", request.CodebaseName, "controller", controller.Name, "status", "refactoring...")
 
 			timeoutChannel := make(chan bool, 1)
-			redesignChannel := make(chan []*files.FunctionalityRedesign, 1)
+			redesignChannel := make(chan []*mono2micro.FunctionalityRedesign, 1)
 
 			go func() {
 				svc.metricsHandler.CalculateDecompositionMetrics(decomposition, controller, initialRedesign)
@@ -88,39 +92,48 @@ func (svc *DefaultHandler) RefactorDecomposition(
 
 				bestRedesign := sagaRedesigns[0]
 
-				refactoredController := svc.createFinalControllerData(controller, initialRedesign, bestRedesign)
-				refactoredControllers[controller.Name] = refactoredController
+				// TODO: multiple goroutines could try to write in the file at the same time !!!!
+				svc.filesHandler.UpdateControllerRefactorization(
+					request.CodebaseName,
+					request.DendrogramName,
+					request.DecompositionName,
+					svc.createFinalControllerData(controller, initialRedesign, bestRedesign),
+				)
 				return
 			case <-timeoutChannel:
 				err := fmt.Sprintf("refactor operation timed out after %d seconds!", refactorTimeout)
 				svc.logger.Log("codebase", request.CodebaseName, "controller", controller.Name, "error", err)
-
-				refactoredControllers[controller.Name] = &values.Controller{
-					Name: controller.Name,
-					Monolith: &values.Monolith{
-						ComplexityMetrics: &values.ComplexityMetrics{
-							SystemComplexity:        initialRedesign.SystemComplexity,
-							FunctionalityComplexity: initialRedesign.FunctionalityComplexity,
-							InvocationsCount:        initialRedesign.InvocationsCount,
-							AccessesCount:           initialRedesign.AccessesCount,
+				svc.filesHandler.UpdateControllerRefactorization(
+					request.CodebaseName,
+					request.DendrogramName,
+					request.DecompositionName,
+					&values.Controller{
+						Name: controller.Name,
+						Monolith: &values.Monolith{
+							ComplexityMetrics: &values.ComplexityMetrics{
+								SystemComplexity:        initialRedesign.SystemComplexity,
+								FunctionalityComplexity: initialRedesign.FunctionalityComplexity,
+								InvocationsCount:        initialRedesign.InvocationsCount,
+								AccessesCount:           initialRedesign.AccessesCount,
+							},
 						},
+						Error:  err,
+						Status: values.ControllerRefactorTimedOut.String(),
 					},
-					Error: err,
-				}
+				)
 				return
 			}
 
-		}(decomposition, controller, &wg)
+		}(request, decomposition, controller)
 	}
-	wg.Wait()
 
-	return refactoredControllers
+	return decompositionData
 }
 
 func (svc *DefaultHandler) extractValidControllers(
-	decomposition *files.Decomposition, request *values.RefactorCodebaseRequest,
-) map[string]*files.Controller {
-	validControllers := map[string]*files.Controller{}
+	decomposition *mono2micro.Decomposition, request *values.RefactorCodebaseRequest,
+) map[string]*mono2micro.Controller {
+	validControllers := map[string]*mono2micro.Controller{}
 	var wg sync.WaitGroup
 	mapMutex := sync.RWMutex{}
 
@@ -130,7 +143,7 @@ func (svc *DefaultHandler) extractValidControllers(
 		}
 
 		wg.Add(1)
-		go func(controller *files.Controller, validControllers map[string]*files.Controller) {
+		go func(controller *mono2micro.Controller, validControllers map[string]*mono2micro.Controller) {
 			defer wg.Done()
 			for clusterName := range controller.EntitiesPerCluster {
 				clusterID, _ := strconv.Atoi(clusterName)
@@ -150,11 +163,11 @@ func (svc *DefaultHandler) extractValidControllers(
 
 func (svc *DefaultHandler) createSagaRedesigns(
 	request *values.RefactorCodebaseRequest,
-	decomposition *files.Decomposition,
-	controller *files.Controller,
-	initialRedesign *files.FunctionalityRedesign,
-) []*files.FunctionalityRedesign {
-	sagaRedesigns := []*files.FunctionalityRedesign{}
+	decomposition *mono2micro.Decomposition,
+	controller *mono2micro.Controller,
+	initialRedesign *mono2micro.FunctionalityRedesign,
+) []*mono2micro.FunctionalityRedesign {
+	sagaRedesigns := []*mono2micro.FunctionalityRedesign{}
 
 	for clusterName := range controller.EntitiesPerCluster {
 		cluster := decomposition.Clusters[clusterName]
@@ -187,14 +200,14 @@ func (svc *DefaultHandler) createSagaRedesigns(
 
 func (svc *DefaultHandler) refactorController(
 	request *values.RefactorCodebaseRequest,
-	controller *files.Controller,
-	initialRedesign *files.FunctionalityRedesign,
-	orchestrator *files.Cluster,
-) *files.FunctionalityRedesign {
-	redesign := &files.FunctionalityRedesign{
+	controller *mono2micro.Controller,
+	initialRedesign *mono2micro.FunctionalityRedesign,
+	orchestrator *mono2micro.Cluster,
+) *mono2micro.FunctionalityRedesign {
+	redesign := &mono2micro.FunctionalityRedesign{
 		Name:                    controller.Name,
 		UsedForMetrics:          true,
-		Redesign:                []*files.Invocation{},
+		Redesign:                []*mono2micro.Invocation{},
 		SystemComplexity:        0,
 		FunctionalityComplexity: 0,
 		InconsistencyComplexity: 0,
@@ -221,10 +234,10 @@ func (svc *DefaultHandler) refactorController(
 }
 
 func (svc *DefaultHandler) addOrchestratorPivotInvocations(
-	orchestratorID int, initialRedesign *files.FunctionalityRedesign, newRedesign *files.FunctionalityRedesign,
-) *files.FunctionalityRedesign {
+	orchestratorID int, initialRedesign *mono2micro.FunctionalityRedesign, newRedesign *mono2micro.FunctionalityRedesign,
+) *mono2micro.FunctionalityRedesign {
 	var invocationID int
-	var prevInvocation *files.Invocation
+	var prevInvocation *mono2micro.Invocation
 	for _, initialInvocation := range initialRedesign.Redesign {
 		if initialInvocation.ClusterID == -1 {
 			continue
@@ -235,7 +248,7 @@ func (svc *DefaultHandler) addOrchestratorPivotInvocations(
 			// add empty orchestrator invocation
 			newRedesign.Redesign = append(
 				newRedesign.Redesign,
-				&files.Invocation{
+				&mono2micro.Invocation{
 					Name:              fmt.Sprintf("%d: %d", invocationID, orchestratorID),
 					ID:                invocationID,
 					ClusterID:         orchestratorID,
@@ -249,7 +262,7 @@ func (svc *DefaultHandler) addOrchestratorPivotInvocations(
 
 		// add actual invocation
 		invocationType := initialInvocation.GetTypeFromAccesses()
-		invocation := &files.Invocation{
+		invocation := &mono2micro.Invocation{
 			Name:              fmt.Sprintf("%d: %d", invocationID, initialInvocation.ClusterID),
 			ID:                invocationID,
 			ClusterID:         initialInvocation.ClusterID,
@@ -268,8 +281,8 @@ func (svc *DefaultHandler) addOrchestratorPivotInvocations(
 }
 
 func (svc *DefaultHandler) mergeAllPossibleInvocations(
-	request *values.RefactorCodebaseRequest, redesign *files.FunctionalityRedesign,
-) ([]*files.Invocation, int) {
+	request *values.RefactorCodebaseRequest, redesign *mono2micro.FunctionalityRedesign,
+) ([]*mono2micro.Invocation, int) {
 	var mergeCount int
 	var deleted int
 	prevClusterInvocations := map[int][]int{}
@@ -318,7 +331,7 @@ func (svc *DefaultHandler) mergeAllPossibleInvocations(
 }
 
 func (svc *DefaultHandler) isMergeForbidden(
-	request *values.RefactorCodebaseRequest, invocations []*files.Invocation, destinyInvocationIdx int, originalInvocationIdx int,
+	request *values.RefactorCodebaseRequest, invocations []*mono2micro.Invocation, destinyInvocationIdx int, originalInvocationIdx int,
 ) bool {
 	var isLastInvocation bool
 	if originalInvocationIdx == len(invocations)-1 {
@@ -366,9 +379,9 @@ func (svc *DefaultHandler) isMergeForbidden(
 }
 
 func (svc *DefaultHandler) mergeInvocations(
-	invocations []*files.Invocation, prevInvocations map[int][]int, destinyInvocationIdx int, originalInvocationIdx int,
-) ([]*files.Invocation, map[int][]int, int) {
-	newInvocations := []*files.Invocation{}
+	invocations []*mono2micro.Invocation, prevInvocations map[int][]int, destinyInvocationIdx int, originalInvocationIdx int,
+) ([]*mono2micro.Invocation, map[int][]int, int) {
+	newInvocations := []*mono2micro.Invocation{}
 	var invocationID int
 	var deletedCount int
 
@@ -407,7 +420,7 @@ func (svc *DefaultHandler) mergeInvocations(
 	return newInvocations, prevInvocations, deletedCount
 }
 
-func (svc *DefaultHandler) pruneInvocationAccesses(invocation *files.Invocation) {
+func (svc *DefaultHandler) pruneInvocationAccesses(invocation *mono2micro.Invocation) {
 	previousEntityAccesses := map[int]string{}
 	newAccesses := [][]interface{}{}
 
@@ -453,14 +466,56 @@ func (svc *DefaultHandler) pruneInvocationAccesses(invocation *files.Invocation)
 	invocation.ClusterAccesses = newAccesses
 }
 
+func (svc *DefaultHandler) createInitialDecompositionData(
+	request *values.RefactorCodebaseRequest, controllers map[string]*mono2micro.Controller,
+) *values.RefactorCodebaseResponse {
+
+	controllersData := map[string]*values.Controller{}
+
+	for name, _ := range controllers {
+		controllersData[name] = &values.Controller{
+			Name:     name,
+			Monolith: &values.Monolith{},
+			Refactor: &values.Refactor{},
+			Error:    "",
+			Status:   values.RefactoringController.String(),
+		}
+	}
+
+	return &values.RefactorCodebaseResponse{
+		CodebaseName:            request.CodebaseName,
+		DendrogramName:          request.DendrogramName,
+		DecompositionName:       request.DecompositionName,
+		Controllers:             controllersData,
+		DataDependenceThreshold: request.DataDependenceThreshold,
+		Status:                  values.RefactoringCodebase.String(),
+	}
+}
+
 func (svc *DefaultHandler) createFinalControllerData(
-	controller *files.Controller, initialRedesign *files.FunctionalityRedesign, sagaRedesign *files.FunctionalityRedesign,
+	controller *mono2micro.Controller, initialRedesign *mono2micro.FunctionalityRedesign, sagaRedesign *mono2micro.FunctionalityRedesign,
 ) *values.Controller {
 	systemComplexityReduction := initialRedesign.SystemComplexity - sagaRedesign.SystemComplexity
 	functionalityComplexityReduction := initialRedesign.FunctionalityComplexity - sagaRedesign.FunctionalityComplexity
 
 	orchestratorID := sagaRedesign.Redesign[0].ClusterID
 	orchestratorName := strconv.Itoa(orchestratorID)
+
+	invocations := []values.Invocation{}
+	for _, invocation := range sagaRedesign.Redesign {
+		accesses := []values.Access{}
+		for idx, _ := range invocation.ClusterAccesses {
+			accesses = append(accesses, values.Access{
+				EntityID: invocation.GetAccessEntityID(idx),
+				Type:     invocation.GetAccessType(idx),
+			})
+		}
+
+		invocations = append(invocations, values.Invocation{
+			ClusterID: invocation.ClusterID,
+			Accesses:  accesses,
+		})
+	}
 
 	return &values.Controller{
 		Name: controller.Name,
@@ -489,6 +544,8 @@ func (svc *DefaultHandler) createFinalControllerData(
 				FunctionalityComplexityReduction: functionalityComplexityReduction,
 				InvocationMerges:                 sagaRedesign.MergedInvocationsCount,
 			},
+			Invocations: invocations,
 		},
+		Status: values.ControllerRefactorComplete.String(),
 	}
 }

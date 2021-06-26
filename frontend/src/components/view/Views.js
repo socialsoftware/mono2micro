@@ -2,7 +2,7 @@ import React from 'react';
 import { ClusterView, clusterViewHelp } from './ClusterView';
 import { TransactionView, transactionViewHelp } from './TransactionView';
 import { EntityView, entityViewHelp } from './EntityView';
-import {FunctionalityRefactorToolMenu} from './FunctionalityRefactorToolMenu';
+import {FunctionalityRefactorToolMenu, refactorToolHelp} from './FunctionalityRefactorToolMenu';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Popover from 'react-bootstrap/Popover';
@@ -56,6 +56,8 @@ export class Views extends React.Component {
                 return transactionViewHelp;
             case views.ENTITY:
                 return entityViewHelp;
+            case views.REFACTOR:
+                return refactorToolHelp;
             default:
                 return null;
         }

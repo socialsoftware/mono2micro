@@ -2,9 +2,23 @@ import React from 'react';
 import {RepositoryService} from '../../services/RepositoryService';
 import BootstrapTable from 'react-bootstrap-table-next';
 import Button from '@material-ui/core/Button';
-import LinearProgress from '@material-ui/core/LinearProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Slider from '@material-ui/core/Slider';
 
+export const refactorToolHelp = (
+<div>
+    A brute-force heuristic algorithm to estimate the best Saga redesign for each one of the controllers of a given decomposition.
+
+    <br></br>
+
+    <b>Data dependence:</b> the number of previous entity accesses that will be taken into account when deciding if two invocations can be merged.
+    If set to 0, every Read access before the invocation being analyzed until the previous invocation of the same cluster, will be considered as a data dependence of a Write in the first.
+
+    <br></br>
+
+    <b>Refactorization timeout:</b> the maximum number of seconds until the refactorization operation of a controller is killed.
+</div>
+);
 
 export class FunctionalityRefactorToolMenu extends React.Component{
 
@@ -23,64 +37,74 @@ export class FunctionalityRefactorToolMenu extends React.Component{
                 {
                     dataField: 'controller',
                     text: 'Controller',
-                    sortable: true
+                    sort: true,
                 }, {
                     dataField: 'status',
                     text: 'Status',
-                    sortable: false,
+                    sort: true,
+                }, {
+                    dataField: 'error',
+                    text: 'Error',
+                    sort: false,
+                    hidden: true,
                 }, {
                     dataField: 'functionalityComplexity',
                     text: 'Functionality Complexity',
-                    sortable: true
+                    sort: true,
+                    hidden: true
                 }, {
                     dataField: 'systemComplexity',
                     text: 'System Complexity',
-                    sortable: true
+                    sort: true,
+                    hidden: true,
                 }, {
                     dataField: 'invocations',
                     text: 'Invocations',
-                    sortable: true
+                    sort: true,
+                    hidden: true
                 }, {
                     dataField: 'accesses',
                     text: 'Accesses',
-                    sortable: true
+                    sort: true,
+                    hidden: true
                 }, {
                     dataField: 'sagaOrchestrator',
-                    text: 'Orchestrator',
-                    sortable: true
+                    text: 'Orch.',
+                    sort: true
                 }, {
                     dataField: 'sagaFunctionalityComplexity',
-                    text: 'SAGA Functionality Complexity',
-                    sortable: true
+                    text: 'FRC',
+                    sort: true
                 },  {
                     dataField: 'sagaSystemComplexity',
-                    text: 'SAGA System Complexity',
-                    sortable: true
+                    text: 'SAC',
+                    sort: true
                 },  {
                     dataField: 'sagaInvocations',
-                    text: 'SAGA Invocations',
-                    sortable: true
+                    text: 'Invocations',
+                    sort: true
                 },  {
                     dataField: 'sagaAccesses',
-                    text: 'SAGA Accesses',
-                    sortable: true
+                    text: 'Accesses',
+                    sort: true
                 },  {
                     dataField: 'functionalityComplexityReduction',
-                    text: 'Functionality Complexity Reduction',
-                    sortable: true
+                    text: 'FRC Reduction',
+                    sort: true
                 },  {
                     dataField: 'systemComplexityReduction',
-                    text: 'System Complexity Reduction',
-                    sortable: true
+                    text: 'SAC Reduction',
+                    sort: true
                 },  {
                     dataField: 'invocationMerges',
-                    text: 'Invocation Merges',
-                    sortable: true
+                    text: 'Merges',
+                    sort: true
                 }
             ],
         };
 
-        this.handleRefactorCodebase = this.handleRefactorCodebase.bind(this);
+        this.requestCodebaseRefactor = this.requestCodebaseRefactor.bind(this);
+        this.viewCodebaseRefactor = this.viewCodebaseRefactor.bind(this);
     }
 
     handleChangeThreshold(event, newValue) {
@@ -97,23 +121,31 @@ export class FunctionalityRefactorToolMenu extends React.Component{
 
         try {
             for(const [key, controller] of Object.entries(data['controllers'])) {
-                var refactorizationRows = refactorizationRows.concat({
-                    controller: key,
-                    functionalityComplexity: controller['monolith']['complexity_metrics']['functionality_complexity'],
-                    systemComplexity: controller['monolith']['complexity_metrics']['system_complexity'],
-                    invocations: controller['monolith']['complexity_metrics']['invocations_count'] === undefined ? 0 : controller['monolith']['complexity_metrics']['invocations_count'],
-                    accesses: controller['monolith']['complexity_metrics']['accesses_count'] === undefined ? 0 : controller['monolith']['complexity_metrics']['accesses_count'],
-                    sagaOrchestrator: controller['refactor'] === undefined ? 0 : controller['refactor']['orchestrator']['name'],
-                    sagaFunctionalityComplexity: controller['refactor'] === undefined ? 0 : controller['refactor']['complexity_metrics']['functionality_complexity'],
-                    sagaSystemComplexity: controller['refactor'] === undefined ? 0 : controller['refactor']['complexity_metrics']['system_complexity'],
-                    sagaInvocations: controller['refactor'] === undefined ? 0 : controller['refactor']['complexity_metrics']['invocations_count'],
-                    sagaAccesses: controller['refactor'] === undefined ? 0 : controller['refactor']['complexity_metrics']['accesses_count'],
-                    functionalityComplexityReduction: controller['refactor'] === undefined ? 0 : controller['refactor']['execution_metrics']['functionality_complexity_reduction'],
-                    systemComplexityReduction: controller['refactor'] === undefined ? 0 : controller['refactor']['execution_metrics']['system_complexity_reduction'],
-                    invocationMerges: controller['refactor'] === undefined ? 0 : controller['refactor']['execution_metrics']['invocation_merges'],
-                    status: controller['error'] === undefined ? 'refactored' : 'timed out',
-                })
-                var id = id + 1
+                var controllerData = {};
+                if(controller['status'] === "COMPLETED") {
+                    controllerData = {
+                        functionalityComplexity: controller['monolith']['complexity_metrics']['functionality_complexity'],
+                        systemComplexity: controller['monolith']['complexity_metrics']['system_complexity'],
+                        invocations: controller['monolith']['complexity_metrics']['invocations_count'] === undefined ? 0 : controller['monolith']['complexity_metrics']['invocations_count'],
+                        accesses: controller['monolith']['complexity_metrics']['accesses_count'] === undefined ? 0 : controller['monolith']['complexity_metrics']['accesses_count'],
+                        sagaOrchestrator: controller['refactor'] === undefined ? 0 : controller['refactor']['orchestrator']['name'],
+                        sagaFunctionalityComplexity: controller['refactor'] === undefined ? 0 : controller['refactor']['complexity_metrics']['functionality_complexity'],
+                        sagaSystemComplexity: controller['refactor'] === undefined ? 0 : controller['refactor']['complexity_metrics']['system_complexity'],
+                        sagaInvocations: controller['refactor'] === undefined ? 0 : controller['refactor']['complexity_metrics']['invocations_count'],
+                        sagaAccesses: controller['refactor'] === undefined ? 0 : controller['refactor']['complexity_metrics']['accesses_count'],
+                        functionalityComplexityReduction: controller['refactor'] === undefined ? 0 : controller['refactor']['execution_metrics']['functionality_complexity_reduction'],
+                        systemComplexityReduction: controller['refactor'] === undefined ? 0 : controller['refactor']['execution_metrics']['system_complexity_reduction'],
+                        invocationMerges: controller['refactor'] === undefined ? 0 : controller['refactor']['execution_metrics']['invocation_merges'],
+                        callGraph: controller['refactor'] === undefined ? 0 : controller['refactor']['call_graph'],
+                    };
+                }
+
+                controllerData["controller"] = key;
+                controllerData["error"] = controller['error'];
+                controllerData["status"] = controller['status'];
+
+                refactorizationRows = refactorizationRows.concat(controllerData)
+                id = id + 1
             }
 
             this.setState({
@@ -126,7 +158,32 @@ export class FunctionalityRefactorToolMenu extends React.Component{
         }
     }
 
-    handleRefactorCodebase(){
+    viewCodebaseRefactor(){
+        const service = new RepositoryService();
+
+        this.setState({
+            waitingResponse: true,
+        });
+
+        service.viewRefactor(this.props.codebaseName, this.props.dendrogramName, this.props.decompositionName)
+            .then(response => {
+                this.setState({
+                    waitingResponse: false,
+                    refactorizationExists: true,
+                });
+                this.handleDataParsing(response.data)
+            }).catch(() => {
+                this.setState({
+                    error: true,
+                    errorMessage: 'ERROR: Failed to view refactorization of the codebase.',
+                    waitingResponse: false,
+                    refactorizationExists: false,
+                });
+            }
+        );
+    }
+
+    requestCodebaseRefactor(newRefactor){
         const service = new RepositoryService();
 
         this.setState({
@@ -134,10 +191,11 @@ export class FunctionalityRefactorToolMenu extends React.Component{
         });
 
         service.refactorCodebase(this.props.codebaseName, this.props.dendrogramName, this.props.decompositionName,
-            this.state.controllers, Number(this.state.dataDependenceThreshold), this.state.minimizeSumOfComplexities, Number(this.state.timeoutSecs))
+            this.state.controllers, Number(this.state.dataDependenceThreshold), this.state.minimizeSumOfComplexities, Number(this.state.timeoutSecs), newRefactor)
             .then(response => {
                 this.setState({
                     waitingResponse: false,
+                    refactorizationExists: true,
                 });
                 this.handleDataParsing(response.data)
             }).catch(() => {
@@ -150,68 +208,146 @@ export class FunctionalityRefactorToolMenu extends React.Component{
         );
     }
 
+    componentDidMount() {
+        this.viewCodebaseRefactor()
+    }
+
     render() {
         let waitingResponse = this.state.waitingResponse
+        let refactorizationExists = this.state.refactorizationExists
+
+        const rowEvents = {
+            onMouseEnter: (e, row, rowIndex) => {
+                document.body.style.cursor = 'pointer';
+            },
+            onMouseLeave: (e, row, rowIndex) => {
+                document.body.style.cursor = 'default';
+            }
+        };
+
+        const expandRow = {
+            renderer: row => (
+                <div>
+                    {row["error"] != "" ? <div><b>Error:</b> {row["error"]}</div> : ""}
+
+                    <h6><b>Initial monolith decomposition metrics:</b></h6>
+                    <div>Functionality Redesign Complexity: <b>{row["functionalityComplexity"]}</b></div>
+                    <div>System Added Complexity: <b>{row["systemComplexity"]}</b></div>
+                    <div>Cluster Invocations: <b>{row["invocations"]}</b></div>
+                    <div>Entity Accesses: <b>{row["accesses"]}</b></div>
+
+                    <br></br>
+
+                    <h6><b>Saga Redesign:</b></h6>
+                    <div><pre>{JSON.stringify(row["callGraph"], null, 2) }</pre></div>;
+
+                </div>
+            )
+        };
+
+        const defaultSorted = [{
+            dataField: 'status',
+            order: 'asc' // desc or asc
+          }];          
 
         return (
             <div>
-                <label>
-                    Data dependence threshold:
-                </label>
+                <div style={
+                    {
+                        margin: "auto",
+                        width: "50%",
+                        border: "1px solid grey",
+                        borderRadius: "10px",
+                        padding: "10px",
+                        textAlign: "center",
+                        padding: "20px" 
+                    }
+                }>
+                    <label>
+                        Data dependence:
+                    </label>
 
-                <div style={{width: "300px"}}>
-                    <Slider
-                        onChange={this.handleChangeThreshold.bind(this)}
-                        defaultValue={0}
-                        aria-labelledby="discrete-slider"
-                        valueLabelDisplay="auto"
-                        step={1}
-                        marks
-                        min={0}
-                        max={5}
-                    />
+                    <div style={{width: "50%", marginLeft: "25%"}}>
+                        <Slider
+                            onChange={this.handleChangeThreshold.bind(this)}
+                            defaultValue={0}
+                            aria-labelledby="discrete-slider"
+                            valueLabelDisplay="auto"
+                            step={1}
+                            marks
+                            min={0}
+                            max={5}
+                        />
+                    </div>
+
+                    <br></br>
+
+                    <label>
+                        Refactorization timeout (seconds):
+                    </label>
+
+                    <div style={{width: "50%", marginLeft: "25%"}}>
+                        <Slider
+                            onChange={this.handleChangeTimeout.bind(this)}
+                            defaultValue={0}
+                            aria-labelledby="continuous-slider"
+                            valueLabelDisplay="auto"
+                            step={10}
+                            min={60}
+                            max={1000}
+                        />
+                    </div>
+                    
+                    <br></br>
+
+                    <Button 
+                        onClick={ () => this.requestCodebaseRefactor(true) } 
+                        variant="contained" 
+                        color="primary"
+                    >
+                        New estimation
+                    </Button>
                 </div>
 
                 <br></br>
 
-                <label>
-                    Controller refactor time out seconds:
-                </label>
-                
-                <div style={{width: "300px"}}>
-                    <Slider
-                        onChange={this.handleChangeTimeout.bind(this)}
-                        defaultValue={0}
-                        aria-labelledby="continuous-slider"
-                        valueLabelDisplay="auto"
-                        step={5}
-                        min={10}
-                        max={1000}
-                    />
-                </div>
-                
-                <br></br>
+                {waitingResponse && 
+                    <div style={
+                        {
+                            margin: "auto",
+                            textAlign: "center",
+                        }
+                    }>
+                        <CircularProgress />
+                    </div>
+                }
 
-                <Button 
-                    onClick={ () => this.handleRefactorCodebase() } 
-                    variant="contained" 
-                    color="primary"
-                >
-                    Estimate Sagas
-                </Button>
+                {refactorizationExists &&
+                    <div>
+                        <Button 
+                            onClick={ () => this.viewCodebaseRefactor() } 
+                            variant="contained" 
+                            color="primary"
+                        >
+                            Update table
+                        </Button>
 
-                <br></br>
-
-                {waitingResponse && <LinearProgress />}
-
-                <br></br>
-
-                {<BootstrapTable
-                    bootstrap4
-                    keyField='controller'
-                    data={this.state.refactorizationRows}
-                    columns={this.state.refactorizationColumns}
-                />}            
+                        <br></br>
+            
+                        <BootstrapTable
+                            bootstrap4
+                            keyField='controller'
+                            data={this.state.refactorizationRows}
+                            columns={this.state.refactorizationColumns}
+                            expandRow={ expandRow }
+                            caption={"Results of last estimation for the valid Saga controllers:"}
+                            bordered={false}
+                            hover={true}
+                            defaultSorted={defaultSorted}
+                            rowEvents={rowEvents}
+                        />
+                    </div>
+                }
             </div>
         )
     }

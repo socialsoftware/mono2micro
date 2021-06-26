@@ -2,19 +2,19 @@ package training
 
 import (
 	"fmt"
-	"functionality_refactor/app/files"
+	"functionality_refactor/app/mono2micro"
 	"strconv"
 
 	"github.com/go-kit/kit/log"
 )
 
 type TrainingHandler interface {
-	CalculateControllerTrainingFeatures(*files.FunctionalityRedesign) map[int]*ClusterMetrics
+	CalculateControllerTrainingFeatures(*mono2micro.FunctionalityRedesign) map[int]*ClusterMetrics
 	AddDataToTrainingDataset(
-		[][]string, *files.Codebase,
-		*files.Controller,
+		[][]string, *mono2micro.Codebase,
+		*mono2micro.Controller,
 		map[int]*ClusterMetrics,
-		*files.FunctionalityRedesign, map[string]string,
+		*mono2micro.FunctionalityRedesign, map[string]string,
 	) [][]string
 }
 
@@ -29,7 +29,7 @@ func New(logger log.Logger) TrainingHandler {
 }
 
 func (svc *DefaultHandler) CalculateControllerTrainingFeatures(
-	redesign *files.FunctionalityRedesign,
+	redesign *mono2micro.FunctionalityRedesign,
 ) map[int]*ClusterMetrics {
 	featureMetrics := FeatureMetrics{}
 	clusterMetrics := make(map[int]*ClusterMetrics)
@@ -95,7 +95,7 @@ func (svc *DefaultHandler) CalculateControllerTrainingFeatures(
 }
 
 func (svc *DefaultHandler) calculateFinalClusterMetrics(
-	featureMetrics *FeatureMetrics, clusterMetrics map[int]*ClusterMetrics, redesign *files.FunctionalityRedesign,
+	featureMetrics *FeatureMetrics, clusterMetrics map[int]*ClusterMetrics, redesign *mono2micro.FunctionalityRedesign,
 ) {
 	for _, metrics := range clusterMetrics {
 		metrics.PivotInvocations = featureMetrics.Invocations - metrics.Invocations - metrics.InvocationIds[0] - (featureMetrics.Invocations - metrics.InvocationIds[len(metrics.InvocationIds)-1] - 1)
@@ -133,10 +133,10 @@ func (svc *DefaultHandler) calculateFinalClusterMetrics(
 
 func (svc *DefaultHandler) AddDataToTrainingDataset(
 	data [][]string,
-	codebase *files.Codebase,
-	controller *files.Controller,
+	codebase *mono2micro.Codebase,
+	controller *mono2micro.Controller,
 	clusterMetrics map[int]*ClusterMetrics,
-	redesign *files.FunctionalityRedesign,
+	redesign *mono2micro.FunctionalityRedesign,
 	idToEntityMap map[string]string,
 ) [][]string {
 	for cluster, metrics := range clusterMetrics {
