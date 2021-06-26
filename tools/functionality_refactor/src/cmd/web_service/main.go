@@ -24,23 +24,24 @@ import (
 const (
 	httpPort      = ":5001"
 	allowedOrigin = "*"
+	codebasesPath = "../../../../../codebases/"
 )
 
 func main() {
 	logger := log.NewLogger()
 
-	filesHandler := files.New(logger)
+	filesHandler := files.New(logger, codebasesPath)
 	refactorHandler := refactor.New(
 		logger,
 		metrics.New(logger),
 		training.New(logger),
+		filesHandler,
 	)
 
 	svc := handler.New(
 		logger,
 		filesHandler,
 		refactorHandler,
-		"../../../../../codebases/",
 	)
 
 	var g group.Group

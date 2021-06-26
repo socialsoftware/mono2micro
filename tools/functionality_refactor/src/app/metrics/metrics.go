@@ -1,7 +1,7 @@
 package metrics
 
 import (
-	"functionality_refactor/app/files"
+	"functionality_refactor/app/mono2micro"
 	"strconv"
 	"sync"
 
@@ -22,7 +22,7 @@ var (
 )
 
 type MetricsHandler interface {
-	CalculateDecompositionMetrics(*files.Decomposition, *files.Controller, *files.FunctionalityRedesign)
+	CalculateDecompositionMetrics(*mono2micro.Decomposition, *mono2micro.Controller, *mono2micro.FunctionalityRedesign)
 }
 
 type DefaultHandler struct {
@@ -36,7 +36,7 @@ func New(logger log.Logger) MetricsHandler {
 }
 
 func (svc *DefaultHandler) CalculateDecompositionMetrics(
-	decomposition *files.Decomposition, controller *files.Controller, redesign *files.FunctionalityRedesign,
+	decomposition *mono2micro.Decomposition, controller *mono2micro.Controller, redesign *mono2micro.FunctionalityRedesign,
 ) {
 	var complexity float32
 	var cohesion float32
@@ -84,7 +84,7 @@ func (svc *DefaultHandler) CalculateDecompositionMetrics(
 }
 
 func (svc *DefaultHandler) calculateControllerComplexityAndDependencies(
-	decomposition *files.Decomposition, controller *files.Controller, redesign *files.FunctionalityRedesign,
+	decomposition *mono2micro.Decomposition, controller *mono2micro.Controller, redesign *mono2micro.FunctionalityRedesign,
 ) {
 	if len(controller.EntitiesPerCluster) <= 1 {
 		controller.Complexity = 0
@@ -115,7 +115,7 @@ func (svc *DefaultHandler) calculateControllerComplexityAndDependencies(
 
 		controllersTouchingSameEntities := map[string]bool{}
 		for i := range invocation.ClusterAccesses {
-			mode := files.MapAccessTypeToMode(invocation.GetAccessType(i))
+			mode := mono2micro.MapAccessTypeToMode(invocation.GetAccessType(i))
 			controllers := svc.controllersThatTouchEntity(decomposition, controller, invocation.GetAccessEntityID(i), mode)
 
 			for _, controller := range controllers {
@@ -133,7 +133,7 @@ func (svc *DefaultHandler) calculateControllerComplexityAndDependencies(
 }
 
 func (svc *DefaultHandler) controllersThatTouchEntity(
-	decomposition *files.Decomposition, controller *files.Controller, entityID int, mode int,
+	decomposition *mono2micro.Decomposition, controller *mono2micro.Controller, entityID int, mode int,
 ) []string {
 	var controllers []string
 
@@ -151,7 +151,7 @@ func (svc *DefaultHandler) controllersThatTouchEntity(
 	return controllers
 }
 
-func (svc *DefaultHandler) calculateClusterComplexityAndCohesion(cluster *files.Cluster) {
+func (svc *DefaultHandler) calculateClusterComplexityAndCohesion(cluster *mono2micro.Cluster) {
 	var complexity float32
 	var cohesion float32
 	var numberEntitiesTouched float32
@@ -177,7 +177,7 @@ func (svc *DefaultHandler) calculateClusterComplexityAndCohesion(cluster *files.
 }
 
 func (svc *DefaultHandler) calculateRedesignComplexities(
-	decomposition *files.Decomposition, controller *files.Controller, redesign *files.FunctionalityRedesign,
+	decomposition *mono2micro.Decomposition, controller *mono2micro.Controller, redesign *mono2micro.FunctionalityRedesign,
 ) {
 	if controller.Type == Query {
 		svc.queryRedesignComplexity(decomposition, controller, redesign)
@@ -187,20 +187,20 @@ func (svc *DefaultHandler) calculateRedesignComplexities(
 }
 
 func (svc *DefaultHandler) queryRedesignComplexity(
-	decomposition *files.Decomposition, controller *files.Controller, redesign *files.FunctionalityRedesign,
+	decomposition *mono2micro.Decomposition, controller *mono2micro.Controller, redesign *mono2micro.FunctionalityRedesign,
 ) {
-	entitiesRead := controller.EntitiesTouchedInMode(files.MapAccessTypeToMode("R"))
+	entitiesRead := controller.EntitiesTouchedInMode(mono2micro.MapAccessTypeToMode("R"))
 
 	var inconsistencyComplexity int
 	for _, otherController := range decomposition.Controllers {
 		var entitiesReadThatAreWrittenInOther []int
-		var clustersInCommon []*files.Cluster
+		var clustersInCommon []*mono2micro.Cluster
 
 		if otherController.Name == controller.Name || len(otherController.EntitiesPerCluster) <= 1 || otherController.Type != "SAGA" {
 			continue
 		}
 
-		entitiesWritten := otherController.EntitiesTouchedInMode(files.MapAccessTypeToMode("W"))
+		entitiesWritten := otherController.EntitiesTouchedInMode(mono2micro.MapAccessTypeToMode("W"))
 		for entity := range entitiesRead {
 			_, written := entitiesWritten[entity]
 			if written {
@@ -222,7 +222,7 @@ func (svc *DefaultHandler) queryRedesignComplexity(
 }
 
 func (svc *DefaultHandler) sagasRedesignComplexity(
-	decomposition *files.Decomposition, controller *files.Controller, redesign *files.FunctionalityRedesign,
+	decomposition *mono2micro.Decomposition, controller *mono2micro.Controller, redesign *mono2micro.FunctionalityRedesign,
 ) {
 	var functionalityComplexity int
 	var systemComplexity int
@@ -233,7 +233,7 @@ func (svc *DefaultHandler) sagasRedesignComplexity(
 
 		for i := range invocation.ClusterAccesses {
 			entity := invocation.GetAccessEntityID(i)
-			mode := files.MapAccessTypeToMode(invocation.GetAccessType(i))
+			mode := mono2micro.MapAccessTypeToMode(invocation.GetAccessType(i))
 
 			if mode >= WriteMode { // 2 -> W, 3 -> RW
 				if invocation.Type == "COMPENSATABLE" {
@@ -264,7 +264,7 @@ func (svc *DefaultHandler) sagasRedesignComplexity(
 }
 
 func (svc *DefaultHandler) systemComplexity(
-	decomposition *files.Decomposition, controller *files.Controller, redesign *files.FunctionalityRedesign, entity int,
+	decomposition *mono2micro.Decomposition, controller *mono2micro.Controller, redesign *mono2micro.FunctionalityRedesign, entity int,
 ) int {
 	var systemComplexity int
 
@@ -281,7 +281,7 @@ func (svc *DefaultHandler) systemComplexity(
 }
 
 func (svc *DefaultHandler) costOfRead(
-	decomposition *files.Decomposition, controller *files.Controller, redesign *files.FunctionalityRedesign, entity int,
+	decomposition *mono2micro.Decomposition, controller *mono2micro.Controller, redesign *mono2micro.FunctionalityRedesign, entity int,
 ) int {
 	var functionalityComplexity int
 

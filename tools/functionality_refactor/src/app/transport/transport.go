@@ -19,5 +19,9 @@ func BuildEndpointRegister(
 			Path("/refactor").
 			Handler(NewRefactorCodebaseHandler(logger, svc))
 
+		router.Methods("GET").
+			Path("/refactor/{codebase}/dendrogram/{dendrogram}/decomposition/{decomposition}/").
+			Handler(NewViewRefactorizationHandler(logger, svc))
+
 	}
 }

@@ -538,6 +538,7 @@ export class RepositoryService {
         dataDependenceThreshold: number,
         minimizeSumOfComplexities: boolean,
         timeOut: number,
+        newRefactor: boolean,
     ) {
 
         const refactorRequest: RefactorCodebase = {
@@ -548,13 +549,23 @@ export class RepositoryService {
             data_dependence_threshold: dataDependenceThreshold,
             minimize_sum_of_complexities: minimizeSumOfComplexities,
             refactor_time_out_secs: timeOut,
+            override_previous: newRefactor,
         };
 
-        console.log(refactorRequest)
-        
         return this.refactorizationToolAxios.post(
             "/refactor",
             refactorRequest
+        );
+    }
+
+    viewRefactor(
+        codebaseName: string,
+        dendrogramName: string,
+        decompositionName: string,
+    ) {
+
+        return this.refactorizationToolAxios.get(
+            "/refactor/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName ,
         );
     }
 }
