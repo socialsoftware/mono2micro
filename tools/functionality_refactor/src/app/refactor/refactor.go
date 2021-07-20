@@ -19,7 +19,7 @@ import (
 const (
 	OnlyLastInvocation                = 0
 	AllPreviousInvocations            = -1
-	DefaultRefactorRoutineTimeoutSecs = 60
+	DefaultRefactorRoutineTimeoutSecs = 1440
 )
 
 type RefactorHandler interface {
