@@ -28,9 +28,14 @@ func (r *RefactorCodebaseRequest) ShouldRefactorController(controller *mono2micr
 	}
 
 	shouldRefactor = true
-	if controller.Type == "QUERY" || len(controller.EntitiesPerCluster) <= 2 {
-		fmt.Printf("wont refactor %s\n", controller.Name)
-		shouldRefactor = false
+	if controller.Type == "QUERY" {
+		fmt.Printf("wont refactor %s because its a Query\n", controller.Name)
+		return false
+	}
+
+	if len(controller.EntitiesPerCluster) <= 2 {
+		fmt.Printf("wont refactor %s because it has less than 3 clusters\n", controller.Name)
+		return false
 	}
 
 	return shouldRefactor
@@ -91,11 +96,11 @@ type ClusterMetrics struct {
 }
 
 type Invocation struct {
-	ClusterID int      `json:"cluster_id,omitempty"`
+	ClusterID int      `json:"cluster_id"`
 	Accesses  []Access `json:"accesses"`
 }
 
 type Access struct {
-	EntityID int    `json:"entity_id,omitempty"`
-	Type     string `json:"type,omitempty"`
+	EntityID int    `json:"entity_id"`
+	Type     string `json:"type"`
 }
