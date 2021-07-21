@@ -6,7 +6,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Slider from '@material-ui/core/Slider';
 import Divider from '@material-ui/core/Divider';
 import GrainIcon from '@material-ui/icons/Grain';
-import { blue } from '@material-ui/core/colors';
 
 export const refactorToolHelp = (
 <div>
