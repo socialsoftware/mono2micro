@@ -1,5 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.controller;
 
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -169,14 +170,16 @@ public class CodebaseController {
     @RequestMapping(value = "/codebase/create", method = RequestMethod.POST)
     public ResponseEntity<HttpStatus> createCodebase(
         @RequestParam String codebaseName,
-        @RequestParam Object datafile
+        @RequestParam Object datafile,
+        @RequestParam Object translationFile
     ){
         logger.debug("createCodebase");
 
         try {
             Codebase codebase = codebaseManager.createCodebase(
             	codebaseName,
-				datafile
+				datafile,
+				translationFile
 			);
 
             codebaseManager.writeCodebase(codebase);
@@ -195,4 +198,19 @@ public class CodebaseController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+	@RequestMapping(value = "/codebase/{codebaseName}/translation", method = RequestMethod.GET)
+	public ResponseEntity<String> getTranslation(
+			@PathVariable String codebaseName
+	) {
+		logger.debug("getTranslation");
+
+		try {
+			return new ResponseEntity<>(codebaseManager.getTranslation(codebaseName), HttpStatus.OK);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
 }

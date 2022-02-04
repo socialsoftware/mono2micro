@@ -12,6 +12,8 @@ import Button from 'react-bootstrap/Button';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
+import {RepositoryService} from "../../services/RepositoryService";
+import AppContext from "./../AppContext";
 
 export const views = {
     CLUSTERS: 'Clusters View',
@@ -27,6 +29,8 @@ export const types = {
 };
 
 export class Views extends React.Component {
+    static contextType = AppContext;
+
     constructor(props) {
         super(props);
 
@@ -36,6 +40,15 @@ export class Views extends React.Component {
             decompositionName: this.props.match.params.decompositionName,
             view: views.REFACTOR
         }
+
+        const service = new RepositoryService();
+        service.getTranslation(this.state.codebaseName).then(response => {
+            const { updateEntityTranslationFile } = this.context;
+            updateEntityTranslationFile(response.data);
+        })
+        .catch(error => {
+            console.log(error);
+        });
 
         this.handleSelectView = this.handleSelectView.bind(this);
         this.getHelpText = this.getHelpText.bind(this);

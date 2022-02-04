@@ -82,6 +82,10 @@ export class RepositoryService {
         ));
     }
 
+    getTranslation(codebaseName: string) {
+        return this.axios.get<string>("/codebase/" + codebaseName + "/translation");
+    }
+
     //Dendrograms
     getCodebaseDecompositions(
         codebaseName: string,
@@ -140,6 +144,7 @@ export class RepositoryService {
     createCodebase(
         name: string,
         datafile: any,
+        translationFile: any
     ) {
         const config = {
             headers: {
@@ -149,7 +154,10 @@ export class RepositoryService {
         var data = new FormData();
         data.append('codebaseName', name);
         data.append('datafile', datafile);
-        
+        if (translationFile !== null)
+            data.append('translationFile', translationFile);
+        else data.append('translationFile', "");
+
         return this.axios.post<null>(
             "/codebase/create",
             data,

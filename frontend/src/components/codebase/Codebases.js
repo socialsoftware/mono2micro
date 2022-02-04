@@ -17,12 +17,13 @@ export class Codebases extends React.Component {
             newCodebaseName: "",
             newDatafilePath: "",
             selectedFile: null,
+            translationFile: null,
             isUploaded: "",
             codebases: [],
         };
 
         this.handleSelectedFile = this.handleSelectedFile.bind(this);
-        this.handleSubmit= this.handleSubmit.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChangeNewCodebaseName = this.handleChangeNewCodebaseName.bind(this);
         this.handleChangeNewDatafilePath = this.handleChangeNewDatafilePath.bind(this);
         this.handleDeleteCodebase = this.handleDeleteCodebase.bind(this);
@@ -45,9 +46,18 @@ export class Codebases extends React.Component {
     }
 
     handleSelectedFile(event) {
+        if (event.target.files.length !== 2) {
+            this.setState({
+                isUploaded: "Data Collection File and ID to Entity File need to be uploaded simultaneously."
+            });
+            return;
+        }
+
         this.setState({
             selectedFile: event.target.files[0],
-            newDatafilePath: ""
+            translationFile: event.target.files[1],
+            newDatafilePath: "",
+            isUploaded: ""
         });
     }
 
@@ -79,10 +89,11 @@ export class Codebases extends React.Component {
             isUploaded: "Uploading..."
         });
 
-        if (this.state.selectedFile !== null) {
+        if (this.state.selectedFile !== null && this.state.translationFile !== null) {
             this.doCreateCodebaseRequest(
                 this.state.newCodebaseName,
                 this.state.selectedFile,
+                this.state.translationFile
             );
         }
         else {
@@ -93,9 +104,9 @@ export class Codebases extends React.Component {
         }
     }
 
-    doCreateCodebaseRequest(codebaseName, pathOrFile) {
+    doCreateCodebaseRequest(codebaseName, pathOrFile, translationFile = null) {
         const service = new RepositoryService();
-        service.createCodebase(codebaseName, pathOrFile)
+        service.createCodebase(codebaseName, pathOrFile, translationFile)
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
                     this.loadCodebases();
@@ -179,14 +190,17 @@ export class Codebases extends React.Component {
 
                 <Form.Group as={Row} controlId="datafile">
                     <Form.Label column sm={2}>
-                        Data Collection File
+                        Data Collection File and
+                        ID to Entity File
                     </Form.Label>
                     <Col sm={5}>
                         <FormControl
                             type="file"
+                            multiple
                             onChange={this.handleSelectedFile}/>
                     </Col>
                 </Form.Group>
+
                 <Form.Group as={Row}>
                     <Col sm={{ span: 5, offset: 2 }}>
                         <Button 
@@ -194,7 +208,7 @@ export class Codebases extends React.Component {
                             disabled={
                                 this.state.isUploaded === "Uploading..." ||
                                 this.state.newCodebaseName === "" ||
-                                (this.state.selectedFile === null &&
+                                ((this.state.translationFile === null || this.state.selectedFile === null) &&
                                 this.state.newDatafilePath === "")
                             }
                         >

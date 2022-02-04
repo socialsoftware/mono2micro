@@ -269,7 +269,8 @@ public class CodebaseManager {
 
 	public Codebase createCodebase(
 		String codebaseName,
-		Object datafile
+		Object datafile,
+		Object translationFile
 	)
 		throws IOException
 	{
@@ -299,6 +300,11 @@ public class CodebaseManager {
 			InputStream datafileInputStream = ((MultipartFile) datafile).getInputStream();
 			datafileJSON = objectMapper.readValue(datafileInputStream, HashMap.class);
 			datafileInputStream.close();
+
+			InputStream translationFileInputStream = ((MultipartFile) translationFile).getInputStream();
+			HashMap translationFileJSON = objectMapper.readValue(translationFileInputStream, HashMap.class);
+			translationFileInputStream.close();
+			this.writeTranslationFile(codebaseName, translationFileJSON);
 
 			this.writeDatafile(codebaseName, datafileJSON);
 			datafileFile = new File(CODEBASES_PATH + codebaseName + "/datafile.json");
@@ -368,6 +374,33 @@ public class CodebaseManager {
 		is.close();
 
 		return similarityMatrixJSON;
+	}
+
+	public void writeTranslationFile(
+			String codebaseName,
+			HashMap translationFile
+	)
+			throws IOException
+	{
+		objectMapper.writerWithDefaultPrettyPrinter().writeValue(
+				new File(CODEBASES_PATH + codebaseName + "/translation.json"),
+				translationFile
+		);
+	}
+
+	public String getTranslation(
+			String codebaseName
+	)
+		throws IOException
+	{
+
+		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/translation.json");
+
+		String translation = IOUtils.toString(is, "UTF-8");
+
+		is.close();
+
+		return translation;
 	}
 
 	public void writeDatafile(
