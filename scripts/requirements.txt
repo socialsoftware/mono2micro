@@ -2,3 +2,5 @@ numpy==1.17.2
 matplotlib==3.0.3
 scikit-learn==0.24.0
 scipy==1.6.0
+fastapi==0.73.0
+uvicorn==0.17.4

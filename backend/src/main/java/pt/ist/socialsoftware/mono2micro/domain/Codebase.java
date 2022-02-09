@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.apache.commons.io.FileUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.reactive.function.client.WebClient;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.CodebaseDeserializer;
@@ -126,23 +128,16 @@ public class Codebase {
 		this.dendrograms.add(dendrogram);
 	}
 
-	public void executeCreateDendrogramPythonScript(
-		Dendrogram dendrogram
-	)
-		throws InterruptedException, IOException
+	public void executeCreateDendrogram(Dendrogram dendrogram)
 	{
-		//run python script to generate dendrogram image
-		Runtime r = Runtime.getRuntime();
-		String pythonScriptPath = SCRIPTS_PATH + "createDendrogram.py";
-		String[] cmd = new String[5];
-		cmd[0] = PYTHON;
-		cmd[1] = pythonScriptPath;
-		cmd[2] = CODEBASES_PATH;
-		cmd[3] = this.name;
-		cmd[4] = dendrogram.getName();
+		WebClient client = WebClient.create(SCRIPTS_ADDRESS);
 
-		Process p = r.exec(cmd);
-		p.waitFor();
+		client.get()
+				.uri("/scipy/{codebaseName}/{dendrogramName}/createDendrogram",this.name, dendrogram.getName())
+				.exchange()
+				.doOnSuccess(clientResponse -> { if (clientResponse.statusCode() != HttpStatus.OK)
+					throw new RuntimeException("Error Code:" + clientResponse.statusCode());})
+				.block();
 	}
 
 	public void createDendrogram(
@@ -177,7 +172,7 @@ public class Codebase {
 			)
 		);
 
-		executeCreateDendrogramPythonScript(dendrogram);
+		executeCreateDendrogram(dendrogram);
 	}
 
 

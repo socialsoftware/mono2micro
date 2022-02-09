@@ -1,21 +1,43 @@
 package pt.ist.socialsoftware.mono2micro.utils;
 
-import java.io.IOException;
-import java.util.Properties;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
+@Configuration
+@PropertySource(value = { "classpath:application.properties", "classpath:specific.properties" })
 public class PropertiesManager {
-	private static final Properties properties = new Properties();
 
-	static {
-		try {
-            properties.load(PropertiesManager.class.getResourceAsStream("/application.properties"));
-			properties.load(PropertiesManager.class.getResourceAsStream("/specific.properties"));
-		} catch (IOException e) {
-			throw new RuntimeException("Unable to load properties files.", e);
-		}
+	@Value("${scripts.path}")
+	private String scriptsPath;
+
+	@Value("${scripts.address}")
+	private String scriptsAddress;
+
+	@Value("${codebases.path}")
+	private String codebasesPath;
+
+	@Value("${python}")
+	private String python;
+
+	@Bean(name="scriptsPath")
+	public String getScriptsPath() {
+		return scriptsPath;
 	}
 
-	public static Properties getProperties() {
-		return properties;
+	@Bean(name="scriptsAddress")
+	public String getScriptsAddress() {
+		return scriptsAddress;
+	}
+
+	@Bean(name="codebasesPath")
+	public String getCodebasesPath() {
+		return codebasesPath;
+	}
+
+	@Bean(name="python")
+	public String getPython() {
+		return python;
 	}
 }
