@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.client.WebClient;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
@@ -65,7 +66,7 @@ public class AnalysisController {
 
 			System.out.println("Codebase: " + codebaseName + " has " + numberOfEntitiesPresentInCollection + " entities");
 
-			executeCreateCutsPythonScript(
+			executeCreateCuts(
 				codebaseName,
 				numberOfEntitiesPresentInCollection
 			);
@@ -239,24 +240,22 @@ public class AnalysisController {
 		return similarityMatrixDto.getEntities().size();
 	}
 
-	private void executeCreateCutsPythonScript(
+	private void executeCreateCuts(
 		String codebaseName,
 		int numberOfEntitiesPresentInCollection
 	)
-		throws InterruptedException, IOException
 	{
-		System.out.println("Executing analyser.py to create cuts...");
+		System.out.println("Executing analyser to create cuts...");
 
-		Runtime r = Runtime.getRuntime();
-		String pythonScriptPath = SCRIPTS_PATH + "analyser.py";
-		String[] cmd = new String[5];
-		cmd[0] = PYTHON;
-		cmd[1] = pythonScriptPath;
-		cmd[2] = CODEBASES_PATH;
-		cmd[3] = codebaseName;
-		cmd[4] = String.valueOf(numberOfEntitiesPresentInCollection);
-		Process p = r.exec(cmd);
-		p.waitFor();
+		WebClient.create(SCRIPTS_ADDRESS)
+				.get()
+				.uri("/scipy/{codebaseName}/{totalNumberOfEntities}/analyser",
+						codebaseName, String.valueOf(numberOfEntitiesPresentInCollection))
+				.exchange()
+				.doOnSuccess(clientResponse -> {
+					if (clientResponse.statusCode() != HttpStatus.OK)
+						throw new RuntimeException("Error Code:" + clientResponse.statusCode());
+				}).block();
 
 		System.out.println("script execution has ended");
 	}
@@ -566,6 +565,7 @@ public class AnalysisController {
 			accuracy = BigDecimal.valueOf(accuracy).setScale(2, RoundingMode.HALF_UP).floatValue();
 
 			precision = (float)truePositive / (truePositive + falsePositive);
+			System.out.println("Precision:" + precision + " truePositive:" + truePositive + " trueNegative:" + trueNegative + " falsePositive:" + falsePositive + " falseNegative:" + falseNegative);
 			precision = BigDecimal.valueOf(precision).setScale(2, RoundingMode.HALF_UP).floatValue();
 
 			recall = (float)truePositive / (truePositive + falseNegative);

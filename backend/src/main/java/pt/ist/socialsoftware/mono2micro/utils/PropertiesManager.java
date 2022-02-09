@@ -9,22 +9,11 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource(value = { "classpath:application.properties", "classpath:specific.properties" })
 public class PropertiesManager {
 
-	@Value("${scripts.path}")
-	private String scriptsPath;
-
 	@Value("${scripts.address}")
 	private String scriptsAddress;
 
 	@Value("${codebases.path}")
 	private String codebasesPath;
-
-	@Value("${python}")
-	private String python;
-
-	@Bean(name="scriptsPath")
-	public String getScriptsPath() {
-		return scriptsPath;
-	}
 
 	@Bean(name="scriptsAddress")
 	public String getScriptsAddress() {
@@ -34,10 +23,5 @@ public class PropertiesManager {
 	@Bean(name="codebasesPath")
 	public String getCodebasesPath() {
 		return codebasesPath;
-	}
-
-	@Bean(name="python")
-	public String getPython() {
-		return python;
 	}
 }

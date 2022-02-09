@@ -130,14 +130,14 @@ public class Codebase {
 
 	public void executeCreateDendrogram(Dendrogram dendrogram)
 	{
-		WebClient client = WebClient.create(SCRIPTS_ADDRESS);
-
-		client.get()
+		WebClient.create(SCRIPTS_ADDRESS)
+				.get()
 				.uri("/scipy/{codebaseName}/{dendrogramName}/createDendrogram",this.name, dendrogram.getName())
 				.exchange()
-				.doOnSuccess(clientResponse -> { if (clientResponse.statusCode() != HttpStatus.OK)
-					throw new RuntimeException("Error Code:" + clientResponse.statusCode());})
-				.block();
+				.doOnSuccess(clientResponse -> {
+					if (clientResponse.statusCode() != HttpStatus.OK)
+						throw new RuntimeException("Error Code:" + clientResponse.statusCode());
+				}).block();
 	}
 
 	public void createDendrogram(

@@ -10,12 +10,10 @@ public final class Constants {
 
   static ApplicationContext context = new AnnotationConfigApplicationContext(PropertiesManager.class);
 
-  public static String SCRIPTS_PATH = (String) context.getBean("scriptsPath");
   public static String SCRIPTS_ADDRESS = (String) context.getBean("scriptsAddress");
   public static String CODEBASES_PATH = (String) context.getBean("codebasesPath");
   public static String MOJO_RESOURCES_PATH = "src/main/java/pt/ist/socialsoftware/mono2micro/utils/mojoCalculator/" +
           "src/main/resources/";
-  public static String PYTHON = (String) context.getBean("python");
   public static final String DEFAULT_REDESIGN_NAME = "Monolith Trace";
 
   public enum TraceType {

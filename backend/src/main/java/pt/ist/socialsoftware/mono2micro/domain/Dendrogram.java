@@ -8,7 +8,9 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.client.WebClient;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
@@ -272,20 +274,15 @@ public class Dendrogram {
 			decompositionPath.mkdir();
 		}
 
-		Runtime r = Runtime.getRuntime();
-		String pythonScriptPath = SCRIPTS_PATH + "cutDendrogram.py";
-		String[] cmd = new String[8];
-		cmd[0] = PYTHON;
-		cmd[1] = pythonScriptPath;
-		cmd[2] = CODEBASES_PATH;
-		cmd[3] = this.codebaseName;
-		cmd[4] = this.name;
-		cmd[5] = decomposition.getName();
-		cmd[6] = decomposition.getCutType();
-		cmd[7] = Float.toString(decomposition.getCutValue());
-		Process p = r.exec(cmd);
-		
-		p.waitFor();
+		WebClient.create(SCRIPTS_ADDRESS)
+				.get()
+				.uri("/scipy/{codebaseName}/{dendrogramName}/{graphName}/{cutType}/{cutValue}/cut",
+						this.codebaseName, this.name, decomposition.getName(), decomposition.getCutType(), Float.toString(decomposition.getCutValue()))
+				.exchange()
+				.doOnSuccess(clientResponse -> {
+					if (clientResponse.statusCode() != HttpStatus.OK)
+						throw new RuntimeException("Error Code:" + clientResponse.statusCode());
+				}).block();
 
 		JSONObject clustersJSON = CodebaseManager.getInstance().getClusters(
 			this.codebaseName,
