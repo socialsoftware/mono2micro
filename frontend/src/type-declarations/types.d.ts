@@ -26,16 +26,18 @@ export interface Controller {
 }
 
 export interface Cluster {
+    id?: number;
     name?: string;
     complexity?: number;
     cohesion?: number;
     coupling?: number;
-    couplingDependencies?: Record<string, number[]> // <clusterName, entityIDs>
+    couplingDependencies?: Record<number, number[]> // <clusterID, entityIDs>
     entities?: number[];
 }
 
 export interface Decomposition {
 	name?: string;
+    nextClusterID?: number;
     codebaseName?: string;
 	dendrogramName?: string;
 	expert?: boolean;
@@ -47,8 +49,8 @@ export interface Decomposition {
 	cohesion?: number;
 	coupling?: number;
 	controllers?: Record<string, Controller>;
-    clusters?: Record<string, Cluster>;
-    entityIDToClusterName?: Record<number, string>;
+    clusters?: Record<number, Cluster>;
+    entityIDToClusterID?: Record<number, number>;
 }
 
 export interface Dendrogram {

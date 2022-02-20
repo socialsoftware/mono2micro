@@ -277,9 +277,12 @@ public class AnalysisController {
 
 		Set<String> clusterIDs = analyserCut.get("clusters").keySet();
 
-		for (String clusterId : clusterIDs) {
-			Set<Short> entities = analyserCut.get("clusters").get(clusterId);
-			Cluster cluster = new Cluster(clusterId, entities);
+		decomposition.setNextClusterID(Integer.valueOf(clusterIDs.size()).shortValue());
+
+		for (String clusterName : clusterIDs) {
+			Short clusterId = Short.parseShort(clusterName);
+			Set<Short> entities = analyserCut.get("clusters").get(clusterName);
+			Cluster cluster = new Cluster(clusterId, clusterName, entities);
 
 			for (short entityID : entities)
 				decomposition.putEntity(entityID, clusterId);
@@ -290,7 +293,7 @@ public class AnalysisController {
 		decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
 			codebase,
 			analyser.getProfile(),
-			decomposition.getEntityIDToClusterName()
+			decomposition.getEntityIDToClusterID()
 		));
 
 		decomposition.calculateMetrics(

@@ -205,12 +205,12 @@ export class Profiles extends React.Component {
                 {Object.keys(codebase).length &&
                     <div>
                         <ButtonToolbar>
-                            <Button className="mr-1">Move selected controllers to</Button>
+                            <Button className="me-1">Move selected controllers to</Button>
 
                             <DropdownButton 
                                 as={ButtonGroup} 
                                 title={moveToProfile === "" ? "Controller Profile" : moveToProfile} 
-                                className="mr-1"
+                                className="me-1"
                             >
                                 {Object.keys(codebase.profiles).map(profile =>
                                     <Dropdown.Item 
@@ -237,7 +237,7 @@ export class Profiles extends React.Component {
                                     {!codebase.profiles[profile].length && 
                                         <Button 
                                             onClick={() => this.handleDeleteProfile(profile)} 
-                                            className="ml-2"
+                                            className="ms-2"
                                             variant="danger" 
                                             size="sm"
                                         >

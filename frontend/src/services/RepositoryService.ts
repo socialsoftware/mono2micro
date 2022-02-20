@@ -23,7 +23,7 @@ export class RepositoryService {
     refactorizationToolAxios: AxiosInstance;
 
     constructor() {
-        var headers = {
+        const headers = {
             'X-Custom-Header': 'Mono2Micro',
         };
 
@@ -151,7 +151,7 @@ export class RepositoryService {
                 'content-type': 'multipart/form-data'
             }
         }
-        var data = new FormData();
+        const data = new FormData();
         data.append('codebaseName', name);
         data.append('datafile', datafile);
         if (translationFile !== null)
@@ -248,7 +248,7 @@ export class RepositoryService {
                 'content-type': 'multipart/form-data'
             }
         }
-        var data = new FormData();
+        const data = new FormData();
         data.append('expertName', expertName);
         data.append('expertFile', expertFile);
 
@@ -317,16 +317,16 @@ export class RepositoryService {
         codebaseName: string,
         dendrogramName: string,
         decompositionName: string,
-        clusterName: string,
-        otherCluster: string,
+        clusterID: number,
+        otherClusterID: number,
         newName: string,
     ) {
         return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/cluster/" + clusterName + "/merge",
+            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/cluster/" + clusterID + "/merge",
             null,
             {
                 params: {
-                    "otherCluster" : otherCluster,
+                    "otherClusterID" : otherClusterID,
                     "newName" : newName
                 }
             }
@@ -337,11 +337,11 @@ export class RepositoryService {
         codebaseName: string,
         dendrogramName: string,
         decompositionName: string,
-        clusterName: string,
+        clusterID: number,
         newName: string
     ) {
         return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/cluster/" + clusterName + "/rename",
+            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/cluster/" + clusterID + "/rename",
             null,
             {
                 params: {
@@ -355,12 +355,12 @@ export class RepositoryService {
         codebaseName: string,
         dendrogramName: string,
         decompositionName: string,
-        clusterName: string,
+        clusterID: number,
         newName: string,
         entities: string,
     ) {
         return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/cluster/" + clusterName + "/split",
+            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/cluster/" + clusterID + "/split",
             null,
             {
                 params: {
@@ -375,16 +375,16 @@ export class RepositoryService {
         codebaseName: string,
         dendrogramName: string,
         decompositionName: string,
-        clusterName: string,
-        toCluster: string,
+        clusterID: number,
+        toClusterID: number,
         entities: string,
     ) {
         return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/cluster/" + clusterName + "/transferEntities",
+            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/cluster/" + clusterID + "/transferEntities",
             null,
             {
                 params: {
-                    "toCluster" : toCluster,
+                    "toClusterID" : toClusterID,
                     "entities" : entities
                 }
             }
@@ -406,7 +406,7 @@ export class RepositoryService {
         dendrogramName: string,
         decompositionName: string
     ) {
-        return this.axios.get<Record<string, Controller[]>>(
+        return this.axios.get<Record<number, Controller[]>>(
             "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/clustersControllers"
         );
     }
@@ -430,7 +430,7 @@ export class RepositoryService {
         decompositionName: string,
         controllerName: string,
         redesignName: string,
-        clusterName: string,
+        clusterID: number,
         entities: string,
         fromID: string
     ) {
@@ -438,7 +438,7 @@ export class RepositoryService {
             "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/controller/" + controllerName + "/redesign/" + redesignName + "/addCompensating",
             {
                 fromID: fromID,
-                cluster : clusterName,
+                cluster : clusterID,
                 entities : entities
             }
         );
@@ -468,15 +468,15 @@ export class RepositoryService {
         decompositionName: string,
         controllerName: string,
         redesignName: string,
-        fromCluster: string,
-        toCluster: string,
+        fromClusterID: number,
+        toClusterID: number,
         localTransactions: string
     ) {
         return this.axios.post(
             "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/controller/" + controllerName + "/redesign/" + redesignName + "/dcgi",
             {
-                fromCluster: fromCluster,
-                toCluster: toCluster,
+                fromCluster: fromClusterID,
+                toCluster: toClusterID,
                 localTransactions: localTransactions
             }
         );

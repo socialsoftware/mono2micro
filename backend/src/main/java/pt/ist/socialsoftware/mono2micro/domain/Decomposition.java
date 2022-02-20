@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.jgrapht.Graphs.successorListOf;
 
@@ -22,6 +23,7 @@ import static org.jgrapht.Graphs.successorListOf;
 @JsonDeserialize(using = DecompositionDeserializer.class)
 public class Decomposition {
 	private String name;
+	private Short nextClusterID;
 	private String codebaseName;
 	private String dendrogramName;
 	private boolean expert;
@@ -32,13 +34,21 @@ public class Decomposition {
 	private float performance;
 	private float cohesion;
 	private float coupling;
-	private Map<String, Cluster> clusters = new HashMap<>(); // FIXME, should be Map<Short, Cluster>
+	private Map<Short, Cluster> clusters = new HashMap<>();
 
 	private Map<String, Controller> controllers = new HashMap<>(); // <controllerName, Controller>
 
-	private Map<Short, String> entityIDToClusterName = new HashMap<>();
+	private Map<Short, Short> entityIDToClusterID = new HashMap<>();
 
 	public Decomposition() { }
+
+	public Short getNextClusterID() {
+		return nextClusterID;
+	}
+
+	public void setNextClusterID(Short nextClusterID) {
+		this.nextClusterID = nextClusterID;
+	}
 
 	public String getCodebaseName() { return this.codebaseName; }
 
@@ -116,19 +126,19 @@ public class Decomposition {
 		this.coupling = coupling;
 	}
 
-	public Map<Short, String> getEntityIDToClusterName() {
-		return entityIDToClusterName;
+	public Map<Short, Short> getEntityIDToClusterID() {
+		return entityIDToClusterID;
 	}
 
-	public void setEntityIDToClusterName(Map<Short, String> entityIDToClusterName) { this.entityIDToClusterName = entityIDToClusterName; }
+	public void setEntityIDToClusterID(Map<Short, Short> entityIDToClusterID) { this.entityIDToClusterID = entityIDToClusterID; }
 
-	public void putEntity(short entityID, String clusterName) {
-		entityIDToClusterName.put(entityID, clusterName);
+	public void putEntity(short entityID, Short clusterID) {
+		entityIDToClusterID.put(entityID, clusterID);
 	}
 
-	public Map<String, Cluster> getClusters() { return this.clusters; }
+	public Map<Short, Cluster> getClusters() { return this.clusters; }
 
-	public void setClusters(Map<String, Cluster> clusters) { this.clusters = clusters; }
+	public void setClusters(Map<Short, Cluster> clusters) { this.clusters = clusters; }
 
 	public Map<String, Controller> getControllers() { return controllers; }
 
@@ -144,15 +154,20 @@ public class Decomposition {
 		return c;
 	}
 
-	public boolean clusterExists(String clusterID) { return this.clusters.containsKey(clusterID); }
-
-	public void addCluster(Cluster cluster) {
-		Cluster c = this.clusters.putIfAbsent(cluster.getName(), cluster);
-
-		if (c != null) throw new Error("Cluster with ID: " + cluster.getName() + " already exists");
+	public boolean clusterNameExists(String clusterName) {
+		for (Map.Entry<Short, Cluster> cluster :this.clusters.entrySet())
+			if (cluster.getValue().getName().equals(clusterName))
+				return true;
+		return false;
 	}
 
-	public Cluster removeCluster(String clusterID) {
+	public void addCluster(Cluster cluster) {
+		Cluster c = this.clusters.putIfAbsent(cluster.getID(), cluster);
+
+		if (c != null) throw new Error("Cluster with ID: " + cluster.getID() + " already exists");
+	}
+
+	public Cluster removeCluster(Short clusterID) {
 		Cluster c = this.clusters.remove(clusterID);
 
 		if (c == null) throw new Error("Cluster with ID: " + clusterID + " not found");
@@ -160,7 +175,7 @@ public class Decomposition {
 		return c;
 	}
 
-	public Cluster getCluster(String clusterID) {
+	public Cluster getCluster(Short clusterID) {
 		Cluster c = this.clusters.get(clusterID);
 
 		if (c == null) throw new Error("Cluster with ID: " + clusterID + " not found");
@@ -308,7 +323,7 @@ public class Decomposition {
 							localTransactionsCounter,
 							null,
 							traceElements,
-							entityIDToClusterName,
+								entityIDToClusterID,
 							new HashMap<>(),
 							0,
 							traceElements.size()
@@ -338,7 +353,7 @@ public class Decomposition {
 							localTransactionsCounter,
 							null,
 							traceElements,
-							entityIDToClusterName,
+								entityIDToClusterID,
 							new HashMap<>(),
 							0,
 							traceElements.size()
@@ -407,7 +422,7 @@ public class Decomposition {
 							localTransactionsCounter,
 							null,
 							traceElements,
-							entityIDToClusterName,
+								entityIDToClusterID,
 							new HashMap<>(),
 							0,
 							traceElements.size()
@@ -455,7 +470,8 @@ public class Decomposition {
 			);
 
 		Map<String, Set<Cluster>> controllersClusters = result1.controllersClusters;
-		Map<String, Set<Controller>> clustersControllers = result1.clustersControllers;
+		Map<Short, Set<Controller>> clustersControllers = result1.clustersControllers;
+		System.out.println("clustersControllers" + clustersControllers.size() + " controllersClusters" + controllersClusters.size());
 
 		// COMPLEXITY AND PERFORMANCE CALCULATION
 		CalculateComplexityAndPerformanceResult result2;
@@ -687,7 +703,7 @@ public class Decomposition {
 
 	public CalculateCouplingAndCohesionResult calculateCouplingAndCohesion(
 		Collection<Cluster> clusters,
-		Map<String, Set<Controller>> clustersControllers
+		Map<Short, Set<Controller>> clustersControllers
 	) {
 		System.out.println("Calculating graph cohesion and coupling...");
 
@@ -728,54 +744,58 @@ public class Decomposition {
 	}
 
 	public void mergeClusters(
-		String cluster1ID,
-		String cluster2ID,
+		Short cluster1ID,
+		Short cluster2ID,
 		String newName
 	) {
 		Cluster cluster1 = getCluster(cluster1ID);
 		Cluster cluster2 = getCluster(cluster2ID);
 
-		Cluster mergedCluster = new Cluster(newName);
-		mergedCluster.setEntities(cluster1.getEntities());
-		mergedCluster.setEntities(cluster2.getEntities());
+		Cluster mergedCluster = new Cluster(nextClusterID++, newName);
 
-		for(short entityID : cluster1.getEntities())
-			entityIDToClusterName.replace(entityID, mergedCluster.getName());
+		for(short entityID : cluster1.getEntities()) {
+			entityIDToClusterID.replace(entityID, mergedCluster.getID());
+			removeControllerWithEntity(entityID);
+		}
 
-		for(short entityID : cluster2.getEntities())
-			entityIDToClusterName.replace(entityID, mergedCluster.getName());
+		for(short entityID : cluster2.getEntities()) {
+			entityIDToClusterID.replace(entityID, mergedCluster.getID());
+			removeControllerWithEntity(entityID);
+		}
+
+		Set<Short> allEntities = new HashSet<>(cluster1.getEntities());
+		allEntities.addAll(cluster2.getEntities());
+		mergedCluster.setEntities(allEntities);
 
 		removeCluster(cluster1ID);
 		removeCluster(cluster2ID);
+
+		transferCouplingDependencies(cluster1.getEntities(), cluster1.getID(), mergedCluster.getID());
+		transferCouplingDependencies(cluster2.getEntities(), cluster2.getID(), mergedCluster.getID());
 
 		addCluster(mergedCluster);
 	}
 
 	public void renameCluster(
-		String clusterID,
-		String newID
+		Short clusterID,
+		String newName
 	) {
-		if (clusterID.equals(newID)) return;
-
-		if (clusterExists(newID)) throw new KeyAlreadyExistsException("Cluster with ID: " + newID + " already exists");
+		if (clusterNameExists(newName)) throw new KeyAlreadyExistsException("Cluster with name: " + newName + " already exists");
 
 		Cluster removedCluster = removeCluster(clusterID);
 
-		removedCluster.setName(newID);
-
-		for(short entityID : removedCluster.getEntities())
-			entityIDToClusterName.replace(entityID, removedCluster.getName());
+		removedCluster.setName(newName);
 
 		addCluster(new Cluster(removedCluster));
 	}
 
 	public void splitCluster(
-		String clusterID,
-		String newID,
+		Short clusterID,
+		String newName,
 		String[] entities
 	) {
 		Cluster currentCluster = getCluster(clusterID);
-		Cluster newCluster = new Cluster(newID);
+		Cluster newCluster = new Cluster(nextClusterID++, newName);
 
 		for (String stringifiedEntityID : entities) {
 			short entityID = Short.parseShort(stringifiedEntityID);
@@ -783,29 +803,46 @@ public class Decomposition {
 			if (currentCluster.containsEntity(entityID)) {
 				newCluster.addEntity(entityID);
 				currentCluster.removeEntity(entityID);
-				entityIDToClusterName.replace(entityID, newCluster.getName());
+				entityIDToClusterID.replace(entityID, newCluster.getID());
+				removeControllerWithEntity(entityID);
 			}
 		}
-
+		transferCouplingDependencies(newCluster.getEntities(), currentCluster.getID(), newCluster.getID());
 		addCluster(newCluster);
 	}
 
+	//TODO: if possible, use something more fine grained
+	private void removeControllerWithEntity(short entityID) {
+		this.setControllers(this.getControllers().entrySet()
+						.stream()
+						.filter(controllerEntry -> !controllerEntry.getValue().containsEntity(entityID))
+						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+	}
+
+	private void transferCouplingDependencies(Set<Short> entities, short currentClusterID, short newClusterID) {
+		this.getCluster(currentClusterID).clearCouplingDependencies(); //Removes dependencies since access sequence changes for this cluster
+		for (Cluster cluster : this.getClusters().values())
+			cluster.transferCouplingDependencies(entities, currentClusterID, newClusterID);
+	}
+
 	public void transferEntities(
-		String fromClusterID,
-		String toClusterID,
-		String[] entities
+		Short fromClusterID,
+		Short toClusterID,
+		String[] entitiesString
 	) {
 		Cluster fromCluster = getCluster(fromClusterID);
 		Cluster toCluster = getCluster(toClusterID);
+		Set<Short> entities = Arrays.stream(entitiesString).map(Short::valueOf).collect(Collectors.toSet());
 
-		for (String stringifiedEntityID : entities) {
-			short entityID = Short.parseShort(stringifiedEntityID);
+		for (Short entityID : entities) {
 
 			if (fromCluster.containsEntity(entityID)) {
 				toCluster.addEntity(entityID);
 				fromCluster.removeEntity(entityID);
-				entityIDToClusterName.replace(entityID, toCluster.getName());
+				entityIDToClusterID.replace(entityID, toCluster.getID());
+				removeControllerWithEntity(entityID);
 			}
 		}
+		transferCouplingDependencies(entities, fromClusterID, toClusterID);
 	}
 }

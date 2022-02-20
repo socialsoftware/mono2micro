@@ -130,7 +130,7 @@ public class DecompositionController {
 				dendrogramName,
 				decompositionName,
 				new HashSet<String>() {{
-					add("controllers"); add("entityIDToClusterName");
+					add("controllers"); add("entityIDToClusterID");
 				}}
 			);
 

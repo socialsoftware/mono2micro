@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
 import { URL } from '../../constants/constants';
 import Row from 'react-bootstrap/Row';
@@ -9,8 +9,9 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import BootstrapTable from 'react-bootstrap-table-next';
+import {useParams} from "react-router-dom";
 
-var HttpStatus = require('http-status-codes');
+const HttpStatus = require('http-status-codes');
 
 const metricColumns = [
     {
@@ -60,39 +61,25 @@ const metricColumns = [
     }
 ];
 
-export class Dendrogram extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            codebaseName: this.props.match.params.codebaseName,
-            dendrogramName: this.props.match.params.dendrogramName,
-            height: "",
-            numberClusters: "",
-            newExpert: "",
-            isUploaded: "",
-            cutSuccess: "",
-            decompositions: [],
-            expertFile: null, 
-        };
+export const Dendrogram = () => {
+    let { codebaseName, dendrogramName } = useParams();
 
-        this.handleHeightChange = this.handleHeightChange.bind(this);
-        this.handleNumberClustersChange = this.handleNumberClustersChange.bind(this);
-        this.handleChangeNewExpert = this.handleChangeNewExpert.bind(this);
-        this.handleDeleteDecomposition = this.handleDeleteDecomposition.bind(this);
-        this.handleCutSubmit = this.handleCutSubmit.bind(this);
-        this.handleExpertSubmit = this.handleExpertSubmit.bind(this);
-        this.handleSelectNewExpertFile = this.handleSelectNewExpertFile.bind(this);
-    }
+    const [height, setHeight] = useState("");
+    const [numberClusters, setNumberClusters] = useState("");
+    const [newExpert, setNewExpert] = useState("");
+    const [isUploaded, setIsUploaded] = useState("");
+    const [cutSuccess, setCutSuccess] = useState("");
+    const [decompositions, setDecompositions] = useState([]);
+    const [expertFile, setExpertFile] = useState(null);
 
-    componentDidMount() {
-        this.loadDecompositions();
-    }
+    //Executed on mount
+    useEffect(() => loadDecompositions(), []);
 
-    loadDecompositions() {
+    function loadDecompositions() {
         const service = new RepositoryService();
         service.getDecompositions(
-            this.state.codebaseName,
-            this.state.dendrogramName,
+            codebaseName,
+            dendrogramName,
             [
                 "name",
                 "clusters",
@@ -104,125 +91,97 @@ export class Dendrogram extends React.Component {
                 "performance"
             ]
         ).then(response => {
-            this.setState({
-                decompositions: response.data
-            });
+            setDecompositions(response.data);
         });
     }
 
-    handleHeightChange(event) {
-        this.setState({
-            height: event.target.value
-        });
+    function handleHeightChange(event) {
+        setHeight(event.target.value);
     }
 
-    handleNumberClustersChange(event) {
-        this.setState({
-            numberClusters: event.target.value
-        });
+    function handleNumberClustersChange(event) {
+        setNumberClusters(event.target.value);
     }
 
-    handleChangeNewExpert(event) {
-        this.setState({ 
-            newExpert: event.target.value 
-        });
+    function handleChangeNewExpert(event) {
+        setNewExpert(event.target.value);
     }
     
-    handleCutSubmit(event) {
+    function handleCutSubmit(event) {
         event.preventDefault();
         
-        this.setState({
-            cutSuccess: "Processing..."
-        });
+        setCutSuccess("Processing...");
 
         let cutType;
         let cutValue;
-        if (this.state.height !== "") {
+        if (height !== "") {
             cutType = "H";
-            cutValue = Number(this.state.height);
+            cutValue = Number(height);
         } else {
             cutType = "N";
-            cutValue = Number(this.state.numberClusters);
+            cutValue = Number(numberClusters);
         }
 
         const service = new RepositoryService();
         
         service.cutDendrogram(
-            this.state.codebaseName,
-            this.state.dendrogramName,
+            codebaseName,
+            dendrogramName,
             cutValue,
             cutType
         ).then(response => {
             if (response.status === HttpStatus.OK) {
-                this.loadDecompositions();
-                this.setState({
-                    cutSuccess: "Dendrogram cut successful."
-                });
+                loadDecompositions();
+                setCutSuccess("Dendrogram cut successful.");
             } else {
-                this.setState({
-                    cutSuccess: "Failed to cut dendrogram."
-                });
+                setCutSuccess("Failed to cut dendrogram.");
             }
         })
         .catch(error => {
-            this.setState({
-                cutSuccess: "Failed to cut dendrogram."
-            });
+            setCutSuccess("Failed to cut dendrogram.");
         });
     }
 
-    handleExpertSubmit(event){
+    function handleExpertSubmit(event){
         event.preventDefault();
 
-        this.setState({
-            isUploaded: "Uploading..."
-        });
+        setIsUploaded("Uploading...");
 
         const service = new RepositoryService();
         service.expertCut(
-            this.state.codebaseName,
-            this.state.dendrogramName,
-            this.state.newExpert,
-            this.state.expertFile
+            codebaseName,
+            dendrogramName,
+            newExpert,
+            expertFile
         ).then(response => {
             if (response.status === HttpStatus.OK) {
-                this.loadDecompositions();
-                this.setState({
-                    isUploaded: "Upload completed successfully."
-                });
+                loadDecompositions();
+                setIsUploaded("Upload completed successfully.");
             } else {
-                this.setState({
-                    isUploaded: "Upload failed."
-                });
+                setIsUploaded("Upload failed.");
             }
         })
         .catch(error => {
             if (error.response !== undefined && error.response.status === HttpStatus.UNAUTHORIZED) {
-                this.setState({
-                    isUploaded: "Upload failed. Expert name already exists."
-                });
+                setIsUploaded("Upload failed. Expert name already exists.");
             } else {
-                this.setState({
-                    isUploaded: "Upload failed."
-                });
+                setIsUploaded("Upload failed.");
             }
         });
     }
 
-    handleDeleteDecomposition(decompositionName) {
+    function handleDeleteDecomposition(decompositionName) {
         const service = new RepositoryService();
-        service.deleteDecomposition(this.state.codebaseName, this.state.dendrogramName, decompositionName).then(response => {
-            this.loadDecompositions();
+        service.deleteDecomposition(codebaseName, dendrogramName, decompositionName).then(response => {
+            loadDecompositions();
         });
     }
 
-    handleSelectNewExpertFile(event) {
-        this.setState({
-            expertFile: event.target.files[0]
-        });
+    function handleSelectNewExpertFile(event) {
+        setExpertFile(event.target.files[0]);
     }
 
-    renderBreadCrumbs = () => {
+    function renderBreadCrumbs() {
         return (
             <Breadcrumb>
                 <Breadcrumb.Item href="/">
@@ -231,22 +190,22 @@ export class Dendrogram extends React.Component {
                 <Breadcrumb.Item href="/codebases">
                     Codebases
                 </Breadcrumb.Item>
-                <Breadcrumb.Item href={`/codebases/${this.state.codebaseName}`}>
-                    {this.state.codebaseName}
+                <Breadcrumb.Item href={`/codebases/${codebaseName}`}>
+                    {codebaseName}
                 </Breadcrumb.Item>
-                <Breadcrumb.Item href={`/codebases/${this.state.codebaseName}/dendrograms`}>
+                <Breadcrumb.Item href={`/codebases/${codebaseName}/dendrograms`}>
                     Dendrograms
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>
-                    {this.state.dendrogramName}
+                    {dendrogramName}
                 </Breadcrumb.Item>
             </Breadcrumb>
         );
     }
 
-    renderCutForm = () => {
+    function renderCutForm() {
         return (
-            <Form onSubmit={this.handleCutSubmit}>
+            <Form onSubmit={handleCutSubmit}>
                 <Form.Group as={Row} controlId="height">
                     <Form.Label column sm={2}>
                         Height
@@ -255,8 +214,8 @@ export class Dendrogram extends React.Component {
                         <FormControl 
                             type="number"
                             placeholder="Cut Height"
-                            value={this.state.height}
-                            onChange={this.handleHeightChange}/>
+                            value={height}
+                            onChange={handleHeightChange}/>
                     </Col>
                 </Form.Group>
 
@@ -274,21 +233,21 @@ export class Dendrogram extends React.Component {
                         <FormControl 
                             type="number"
                             placeholder="Number of Clusters in Cut"
-                            value={this.state.numberClusters}
-                            onChange={this.handleNumberClustersChange}/>
+                            value={numberClusters}
+                            onChange={handleNumberClustersChange}/>
                     </Col>
                 </Form.Group>
 
                 <Form.Group as={Row}>
                     <Col sm={{ span: 5, offset: 2 }}>
                         <Button type="submit"
-                                disabled={(this.state.height !== "" && this.state.numberClusters !== "") || 
-                                            (this.state.height === "" && this.state.numberClusters === "") ||
-                                            this.state.cutSuccess === "Processing..."}>
+                                disabled={(height !== "" && numberClusters !== "") ||
+                                            (height === "" && numberClusters === "") ||
+                                            cutSuccess === "Processing..."}>
                             Cut
                         </Button>
                         <Form.Text>
-                            {this.state.cutSuccess}
+                            {cutSuccess}
                         </Form.Text>
                     </Col>
                 </Form.Group>
@@ -296,9 +255,9 @@ export class Dendrogram extends React.Component {
         );
     }
 
-    renderExpertForm = () => {
+    function renderExpertForm() {
         return (
-            <Form onSubmit={this.handleExpertSubmit}>
+            <Form onSubmit={handleExpertSubmit}>
                 <Form.Group as={Row} controlId="newExpertName">
                     <Form.Label column sm={2}>
                         Expert Name
@@ -308,8 +267,8 @@ export class Dendrogram extends React.Component {
                             type="text"
                             maxLength="30"
                             placeholder="Expert Name"
-                            value={this.state.newExpert}
-                            onChange={this.handleChangeNewExpert}/>
+                            value={newExpert}
+                            onChange={handleChangeNewExpert}/>
                     </Col>
                 </Form.Group>
 
@@ -320,7 +279,7 @@ export class Dendrogram extends React.Component {
                     <Col sm={5}>
                         <FormControl 
                             type="file"
-                            onChange={this.handleSelectNewExpertFile}
+                            onChange={handleSelectNewExpertFile}
                         />
                     </Col>
                 </Form.Group>
@@ -329,12 +288,12 @@ export class Dendrogram extends React.Component {
                     <Col sm={{ span: 5, offset: 2 }}>
                         <Button 
                             type="submit"
-                            disabled={this.state.isUploaded === "Uploading..." || this.state.newExpert === ""}
+                            disabled={isUploaded === "Uploading..." || newExpert === ""}
                         >
                             Create Expert
                         </Button>
                         <Form.Text>
-                            {this.state.isUploaded}
+                            {isUploaded}
                         </Form.Text>
                     </Col>
                 </Form.Group>
@@ -342,11 +301,11 @@ export class Dendrogram extends React.Component {
         );
     }
 
-    renderCuts = () => {
+    function renderCuts() {
         return (
             <Row>
                 {
-                    this.state.decompositions.map(decomposition =>
+                    decompositions.map(decomposition =>
                         <Col key={decomposition.name} md="auto">
                             <Card style={{ width: '15rem', marginBottom: "16px" }}>
                                 <Card.Body>
@@ -354,14 +313,14 @@ export class Dendrogram extends React.Component {
                                         {decomposition.name}
                                     </Card.Title>
                                     <Button
-                                        href={`/codebases/${this.state.codebaseName}/dendrograms/${this.state.dendrogramName}/decompositions/${decomposition.name}`}
+                                        href={`/codebases/${codebaseName}/dendrograms/${dendrogramName}/decompositions/${decomposition.name}`}
                                         className="mb-2"
                                     >
                                         Go to Decomposition
                                     </Button>
                                     <br/>
                                     <Button
-                                        onClick={() => this.handleDeleteDecomposition(decomposition.name)}
+                                        onClick={() => handleDeleteDecomposition(decomposition.name)}
                                         variant="danger"
                                     >
                                         Delete
@@ -375,72 +334,69 @@ export class Dendrogram extends React.Component {
         );
     }
 
-    render() {
+    const metricRows = decompositions.map(decomposition => {
 
-        const metricRows = this.state.decompositions.map(decomposition => {
-            
-            let amountOfSingletonClusters = 0;
-            let maxClusterSize = 0;
+        let amountOfSingletonClusters = 0;
+        let maxClusterSize = 0;
 
-            Object.values(decomposition.clusters).forEach(c => {
-                const numberOfEntities = c.entities.length;
+        Object.values(decomposition.clusters).forEach(c => {
+            const numberOfEntities = c.entities.length;
 
-                if (numberOfEntities === 1) amountOfSingletonClusters++;
+            if (numberOfEntities === 1) amountOfSingletonClusters++;
 
-                if (numberOfEntities > maxClusterSize) maxClusterSize = numberOfEntities;
-            })
-            
-            return {
-                decomposition: decomposition.name,
-                clusters: Object.keys(decomposition.clusters).length,
-                singleton: amountOfSingletonClusters,
-                max_cluster_size: maxClusterSize,
-                ss: decomposition.silhouetteScore,
-                cohesion: decomposition.cohesion,
-                coupling: decomposition.coupling,
-                complexity: decomposition.complexity,
-                performance: decomposition.performance
-            } 
-        });
+            if (numberOfEntities > maxClusterSize) maxClusterSize = numberOfEntities;
+        })
 
-        return (
-            <div>
-                {this.renderBreadCrumbs()}
-                
-                <h4 style={{color: "#666666"}}>
-                    Cut Dendrogram
-                </h4>
+        return {
+            decomposition: decomposition.name,
+            clusters: Object.keys(decomposition.clusters).length,
+            singleton: amountOfSingletonClusters,
+            max_cluster_size: maxClusterSize,
+            ss: decomposition.silhouetteScore,
+            cohesion: decomposition.cohesion,
+            coupling: decomposition.coupling,
+            complexity: decomposition.complexity,
+            performance: decomposition.performance
+        }
+    });
 
-                {this.renderCutForm()}
+    return (
+        <div>
+            {renderBreadCrumbs()}
 
-                <h4 style={{color: "#666666"}}>
-                    Create Expert Cut
-                </h4>
+            <h4 style={{color: "#666666"}}>
+                Cut Dendrogram
+            </h4>
 
-                {this.renderExpertForm()}
+            {renderCutForm()}
 
-                <img 
-                    width="100%" 
-                    src={URL + "codebase/" + this.state.codebaseName + "/dendrogram/" + this.state.dendrogramName + "/image?" + new Date().getTime()} 
-                    alt="Dendrogram"
-                />
+            <h4 style={{color: "#666666"}}>
+                Create Expert Cut
+            </h4>
 
-                <h4 style={{color: "#666666", marginTop: "16px" }}>
-                    Cuts
-                </h4>
+            {renderExpertForm()}
 
-                {this.renderCuts()}
+            <img
+                width="100%"
+                src={URL + "codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/image?" + new Date().getTime()}
+                alt="Dendrogram"
+            />
 
-                <h4 style={{color: "#666666"}}>
-                    Metrics
-                </h4>
-                
-                {this.state.decompositions.length > 0 &&
-                    <div>
-                        <BootstrapTable bootstrap4 keyField='decomposition' data={ metricRows } columns={ metricColumns } />
-                    </div>
-                }
-            </div>
-        );
-    };
+            <h4 style={{color: "#666666", marginTop: "16px" }}>
+                Cuts
+            </h4>
+
+            {renderCuts()}
+
+            <h4 style={{color: "#666666"}}>
+                Metrics
+            </h4>
+
+            {decompositions.length > 0 &&
+                <div>
+                    <BootstrapTable bootstrap4 keyField='decomposition' data={ metricRows } columns={ metricColumns } />
+                </div>
+            }
+        </div>
+    );
 }

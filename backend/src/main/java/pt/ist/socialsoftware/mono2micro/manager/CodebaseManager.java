@@ -560,7 +560,7 @@ public class CodebaseManager {
 	public Map<String, Controller> getControllersWithCostlyAccesses(
 		Codebase codebase,
 		String profile,
-		Map<Short, String> entityIDToClusterName
+		Map<Short, Short> entityIDToClusterID
 	)
 		throws IOException
 	{
@@ -610,7 +610,7 @@ public class CodebaseManager {
 
 										case "a":
 											Map<Short, Byte> entityIDToMode = new HashMap<>();
-											String previousCluster = "";
+											short previousCluster = -2;
 											int i = 0;
 
 											while (jsonParser.nextValue() != JsonToken.END_ARRAY) {
@@ -622,9 +622,9 @@ public class CodebaseManager {
 													AccessDto access = (AccessDto) rte;
 													short entityID = access.getEntityID();
 													byte mode = access.getMode();
-													String cluster;
+													Short cluster;
 
-													cluster = entityIDToClusterName.get(entityID);
+													cluster = entityIDToClusterID.get(entityID);
 
 													if (cluster == null) {
 														System.err.println("Entity " + entityID + " is not assign to a cluster.");
@@ -637,7 +637,7 @@ public class CodebaseManager {
 
 													} else {
 
-														if (cluster.equals(previousCluster)) {
+														if (cluster == previousCluster) {
 															boolean hasCost = false;
 															Byte savedMode = entityIDToMode.get(entityID);
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { Home } from './Home';
 import { Dendrogram } from './dendrogram/Dendrogram';
 import { Views } from './view/Views';
@@ -12,19 +12,19 @@ import { Profiles } from './profile/Profiles';
 
 export const Main = () => (
   <main>
-    <Switch>
-      <Route exact path='/' component={Home}/>
+    <Routes>
+      <Route exact path='/' element={<Home/>}/>
 
-      <Route exact path='/codebases' component={Codebases} />
-      <Route exact path='/codebases/:codebaseName' component={Codebase} />
-      <Route exact path='/codebases/:codebaseName/dendrograms' component={Dendrograms} />
-      <Route exact path='/codebases/:codebaseName/dendrograms/:dendrogramName' component={Dendrogram} />
-      <Route exact path='/codebases/:codebaseName/dendrograms/:dendrogramName/decompositions/:decompositionName' component={Views} />
+      <Route exact path='/codebases' element={<Codebases/>} />
+      <Route exact path='/codebases/:codebaseName' element={<Codebase/>} />
+      <Route exact path='/codebases/:codebaseName/dendrograms' element={<Dendrograms/>} />
+      <Route exact path='/codebases/:codebaseName/dendrograms/:dendrogramName' element={<Dendrogram/>} />
+      <Route exact path='/codebases/:codebaseName/dendrograms/:dendrogramName/decompositions/:decompositionName' element={<Views/>} />
 
-      <Route exact path='/codebases/:codebaseName/profiles' component={Profiles} />
+      <Route exact path='/codebases/:codebaseName/profiles' element={<Profiles/>} />
 
-      <Route exact path='/analysis' component={Analysis} />
-      <Route exact path='/analyser' component={Analyser} />
-    </Switch>
+      <Route exact path='/analysis' element={<Analysis/>} />
+      <Route exact path='/analyser' element={<Analyser/>} />
+    </Routes>
   </main>
 )

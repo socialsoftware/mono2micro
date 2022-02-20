@@ -48,6 +48,9 @@ public class DecompositionDeserializer extends StdDeserializer<Decomposition> {
 						case "name":
 							decomposition.setName(jsonParser.getValueAsString());
 							break;
+						case "nextClusterID":
+							decomposition.setNextClusterID(jsonParser.getShortValue());
+							break;
 						case "codebaseName":
 							decomposition.setCodebaseName(jsonParser.getValueAsString());
 							break;
@@ -78,7 +81,7 @@ public class DecompositionDeserializer extends StdDeserializer<Decomposition> {
 						case "clusters":
 							decomposition.setClusters(
 								jsonParser.readValueAs(
-									new TypeReference<Map<String, Cluster>>(){}
+									new TypeReference<Map<Short, Cluster>>(){}
 								)
 							);
 							break;
@@ -91,10 +94,10 @@ public class DecompositionDeserializer extends StdDeserializer<Decomposition> {
 							);
 
 							break;
-						case "entityIDToClusterName":
-							decomposition.setEntityIDToClusterName(
+						case "entityIDToClusterID":
+							decomposition.setEntityIDToClusterID(
 								jsonParser.readValueAs(
-									new TypeReference<Map<Short, String>>(){}
+									new TypeReference<Map<Short, Short>>(){}
 								)
 							);
 							break;

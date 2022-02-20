@@ -1,12 +1,12 @@
-FROM node:12.14-alpine3.9 as build-stage
+FROM node:16-alpine3.14
 
 WORKDIR /app
 
-ENV PATH /app/node_modules/.bin:$PATH
-
 COPY package.json ./
 
-RUN npm install
+RUN npm install --legacy-peer-deps
+
+RUN mkdir -p node_modules/.cache && chmod -R 777 node_modules/.cache
 
 COPY . .
 

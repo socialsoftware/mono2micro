@@ -172,22 +172,28 @@ public class Dendrogram {
 
 			Iterator<String> clusters = expertCut.getJSONObject("clusters").keys();
 
+			short clusterID = 0;
 			while (clusters.hasNext()) {
-				String clusterId = clusters.next();
-				JSONArray entities = expertCut.getJSONObject("clusters").getJSONArray(clusterId);
-				Cluster cluster = new Cluster(clusterId);
+				String clusterName = clusters.next();
+				JSONArray entities = expertCut.getJSONObject("clusters").getJSONArray(clusterName);
+				Cluster cluster = new Cluster(clusterID++, clusterName);
 
 				for (int i = 0; i < entities.length(); i++) {
 					short entityID = (short) entities.getInt(i);
 
 					cluster.addEntity(entityID);
-					expertDecomposition.putEntity(entityID, clusterId);
+					expertDecomposition.putEntity(entityID, cluster.getID());
 				}
 
 				expertDecomposition.addCluster(cluster);
 			}
+
+			expertDecomposition.setNextClusterID(clusterID);
+
 		} else {
-			Cluster cluster = new Cluster("Generic");
+			Cluster cluster = new Cluster((short) 0, "Generic");
+
+			expertDecomposition.setNextClusterID((short) 1);
 
 			JSONObject similarityMatrixData = CodebaseManager.getInstance().getSimilarityMatrix(
 				this.codebaseName,
@@ -200,7 +206,7 @@ public class Dendrogram {
 				short entityID = (short) entities.getInt(i);
 
 				cluster.addEntity(entityID);
-				expertDecomposition.putEntity(entityID, "Generic");
+				expertDecomposition.putEntity(entityID, cluster.getID());
 			}
 
 			expertDecomposition.addCluster(cluster);
@@ -293,28 +299,30 @@ public class Dendrogram {
 		decomposition.setSilhouetteScore((float) clustersJSON.getDouble("silhouetteScore"));
 
 		Iterator<String> clusters = clustersJSON.getJSONObject("clusters").sortedKeys();
-		ArrayList<Integer> clusterIds = new ArrayList<>();
+		ArrayList<Short> clusterIds = new ArrayList<>();
 
 		while(clusters.hasNext()) {
-			clusterIds.add(Integer.parseInt(clusters.next()));
+			clusterIds.add(Short.parseShort(clusters.next()));
 		}
 
 		Collections.sort(clusterIds);
 
-		for (Integer id : clusterIds) {
-			String clusterId = String.valueOf(id);
-			JSONArray entities = clustersJSON.getJSONObject("clusters").getJSONArray(clusterId);
-			Cluster cluster = new Cluster(clusterId);
+		for (Short id : clusterIds) {
+			String clusterName = String.valueOf(id);
+			JSONArray entities = clustersJSON.getJSONObject("clusters").getJSONArray(id.toString());
+			Cluster cluster = new Cluster(id, clusterName);
 
 			for (int i = 0; i < entities.length(); i++) {
 				short entityID = (short) entities.getInt(i);
 
 				cluster.addEntity(entityID);
-				decomposition.putEntity(entityID, clusterId);
+				decomposition.putEntity(entityID, id);
 			}
 
 			decomposition.addCluster(cluster);
 		}
+
+		decomposition.setNextClusterID(Integer.valueOf(clusterIds.size()).shortValue());
 
 		return decomposition;
 	}

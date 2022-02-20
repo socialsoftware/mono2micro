@@ -20,13 +20,13 @@ public class ClusterController {
 
 	private final CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
-	@RequestMapping(value = "/cluster/{clusterName}/merge", method = RequestMethod.POST)
+	@RequestMapping(value = "/cluster/{clusterNameID}/merge", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> mergeClusters(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
 		@PathVariable String decompositionName,
-		@PathVariable String clusterName,
-		@RequestParam String otherCluster,
+		@PathVariable Short clusterNameID,
+		@RequestParam Short otherClusterID,
 		@RequestParam String newName
 	) {
 		logger.debug("mergeClusters");
@@ -42,15 +42,15 @@ public class ClusterController {
 			Decomposition decomposition = dendrogram.getDecomposition(decompositionName);
 
 			decomposition.mergeClusters(
-				clusterName,
-				otherCluster,
+				clusterNameID,
+				otherClusterID,
 				newName
 			);
 
 			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
 				codebase,
 				dendrogram.getProfile(),
-				decomposition.getEntityIDToClusterName()
+				decomposition.getEntityIDToClusterID()
 			));
 
 			decomposition.calculateMetrics(
@@ -68,12 +68,12 @@ public class ClusterController {
 		}
 	}
 
-	@RequestMapping(value = "/cluster/{clusterName}/rename", method = RequestMethod.POST)
+	@RequestMapping(value = "/cluster/{clusterID}/rename", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> renameCluster(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
 		@PathVariable String decompositionName,
-		@PathVariable String clusterName,
+		@PathVariable Short clusterID,
 		@RequestParam String newName
 	) {
 		logger.debug("renameCluster");
@@ -89,25 +89,9 @@ public class ClusterController {
 			Decomposition decomposition = dendrogram.getDecomposition(decompositionName);
 
 			decomposition.renameCluster(
-				clusterName,
+				clusterID,
 				newName
 			);
-
-			// it should not be necessary to do this due to just a renaming
-			// but for safety i'll keep the existent behaviour
-			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
-				codebase,
-				dendrogram.getProfile(),
-				decomposition.getEntityIDToClusterName()
-			));
-
-			// it should not be necessary to recalculate metrics due to just a renaming
-			// but for safety i'll keep the existent behaviour
-			decomposition.calculateMetrics(
-				codebase,
-				dendrogram.getTracesMaxLimit(),
-				dendrogram.getTraceType(),
-					false);
 
 			codebaseManager.writeCodebase(codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -122,12 +106,12 @@ public class ClusterController {
 		}
 	}
 
-	@RequestMapping(value = "/cluster/{clusterName}/split", method = RequestMethod.POST)
+	@RequestMapping(value = "/cluster/{clusterID}/split", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> splitCluster(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
 		@PathVariable String decompositionName,
-		@PathVariable String clusterName,
+		@PathVariable Short clusterID,
 		@RequestParam String newName,
 		@RequestParam String entities
 	) {
@@ -144,7 +128,7 @@ public class ClusterController {
 			Decomposition decomposition = dendrogram.getDecomposition(decompositionName);
 
 			decomposition.splitCluster(
-				clusterName,
+				clusterID,
 				newName,
 				entities.split(",")
 			);
@@ -152,7 +136,7 @@ public class ClusterController {
 			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
 				codebase,
 				dendrogram.getProfile(),
-				decomposition.getEntityIDToClusterName()
+				decomposition.getEntityIDToClusterID()
 			));
 
 			decomposition.calculateMetrics(
@@ -170,13 +154,13 @@ public class ClusterController {
 		}
 	}
 
-	@RequestMapping(value = "/cluster/{clusterName}/transferEntities", method = RequestMethod.POST)
+	@RequestMapping(value = "/cluster/{clusterID}/transferEntities", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> transferEntities(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
 		@PathVariable String decompositionName,
-		@PathVariable String clusterName,
-		@RequestParam String toCluster,
+		@PathVariable Short clusterID,
+		@RequestParam Short toClusterID,
 		@RequestParam String entities
 	) {
 		logger.debug("transferEntities");
@@ -192,15 +176,15 @@ public class ClusterController {
 			Decomposition decomposition = dendrogram.getDecomposition(decompositionName);
 
 			decomposition.transferEntities(
-				clusterName,
-				toCluster,
+				clusterID,
+				toClusterID,
 				entities.split(",")
 			);
 
 			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
 				codebase,
 				dendrogram.getProfile(),
-				decomposition.getEntityIDToClusterName()
+				decomposition.getEntityIDToClusterID()
 			));
 
 			decomposition.calculateMetrics(
@@ -252,7 +236,7 @@ public class ClusterController {
 	}
 
 	@RequestMapping(value = "/clustersControllers", method = RequestMethod.GET)
-	public ResponseEntity<Map<String, Set<Controller>>> getClustersControllers(
+	public ResponseEntity<Map<Short, Set<Controller>>> getClustersControllers(
 		@PathVariable String codebaseName,
 		@PathVariable String dendrogramName,
 		@PathVariable String decompositionName

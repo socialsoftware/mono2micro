@@ -3,7 +3,6 @@ package pt.ist.socialsoftware.mono2micro.domain;
 import org.json.JSONArray;
 import org.json.JSONException;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
-import pt.ist.socialsoftware.mono2micro.exceptions.BadConstructedRedesignException;
 import pt.ist.socialsoftware.mono2micro.utils.LocalTransactionTypes;
 
 import java.util.*;
@@ -66,7 +65,7 @@ public class FunctionalityRedesign {
     }
 
     public List<LocalTransaction> addCompensating(
-        String clusterName,
+        Short clusterID,
         List<Integer> entities,
         int fromID
     )
@@ -90,10 +89,10 @@ public class FunctionalityRedesign {
 
         LocalTransaction newLT = new LocalTransaction(
             i,
-            Short.parseShort(clusterName),
+            clusterID,
             accesses,
             new ArrayList<>(),
-            i + ": " + clusterName
+            i + ": " + clusterID
         );
 
         LocalTransaction caller = this.redesign
@@ -133,15 +132,12 @@ public class FunctionalityRedesign {
     }
 
     public List<LocalTransaction> dcgi(
-        String fromCluster,
-        String toCluster,
+        Short fromClusterID,
+        Short toClusterID,
         String localTransactions
     )
         throws Exception
     {
-        short fromClusterID = Short.parseShort(fromCluster);
-        short toClusterID = Short.parseShort(toCluster);
-
         JSONArray lts = new JSONArray(localTransactions);
 
         HashMap<Short, Byte> fromLTAccesses = new HashMap<>();
@@ -246,7 +242,7 @@ public class FunctionalityRedesign {
             fromClusterID,
             constructSequence(fromLTAccesses),
             fromRemoteInvocations,
-            min + ": " + fromCluster
+            min + ": " + fromClusterID
         );
 
         LocalTransaction newToLT = new LocalTransaction(
@@ -254,7 +250,7 @@ public class FunctionalityRedesign {
             toClusterID,
             constructSequence(toLTAccesses),
             toRemoteInvocations,
-            secondMin + ": " + toCluster
+            secondMin + ": " + toClusterID
         );
 
         this.redesign.add(newFromLT);
@@ -282,7 +278,7 @@ public class FunctionalityRedesign {
 
             if(lt.getRemoteInvocations()
                 .stream()
-                .filter(ri -> ltsBeingMergedIDs.contains(ri))
+                .filter(ltsBeingMergedIDs::contains)
                 .findAny()
                 .orElse(null) != null
             )

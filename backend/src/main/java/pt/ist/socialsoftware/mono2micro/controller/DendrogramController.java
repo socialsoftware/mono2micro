@@ -163,7 +163,7 @@ public class DendrogramController {
 			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
 				codebase,
 				dendrogram.getProfile(),
-				decomposition.getEntityIDToClusterName()
+				decomposition.getEntityIDToClusterID()
 			));
 
 			cutDecomposition.calculateMetrics(
@@ -208,7 +208,7 @@ public class DendrogramController {
 			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
 				codebase,
 				dendrogram.getProfile(),
-				decomposition.getEntityIDToClusterName()
+				decomposition.getEntityIDToClusterID()
 			));
 
 			decomposition.calculateMetrics(

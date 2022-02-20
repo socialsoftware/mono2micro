@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import FormControl from 'react-bootstrap/FormControl';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import Button from 'react-bootstrap/Button';
@@ -7,171 +7,122 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import AppContext from "./../AppContext";
 
-export class EntityOperationsMenu extends React.Component {
-    static contextType = AppContext;
+export const EntityOperationsMenu = ({handleEntitySubmit, entities, amountList}) => {
+    const context = useContext(AppContext);
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            showSubmit: false,
-            entityList: [],
-            entityID: -1,
-            entityAmount: "All"
+    const [showSubmit, setShowSubmit] = useState(false);
+    const [entityList, setEntityList] = useState([]);
+    const [entityID, setEntityID] = useState(-1);
+    const [entityAmount, setEntityAmount] = useState("All");
+
+    //Executed on mount
+    useEffect(() => {
+        if (entityAmount === "All") {
+            setEntityList(entities.sort());
         }
-        this.setEntity = this.setEntity.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
+    }, []);
 
-    componentDidMount() {
-        if (this.state.entityAmount === "All") {
-            this.setState({
-                entityList: this.props.entities.sort()
-            });
+    function componentWillReceiveProps(nextProps) {
+        if (entityAmount === "All") {
+            setEntityList(nextProps.entities.sort());
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.state.entityAmount === "All") {
-            this.setState({
-                entityList: nextProps.entities.sort()
-            });
-        }
-    }
-
-    setEntity(value) {
-        this.setState({
-            showSubmit: true,
-            entityID: value
-        });
-    }
-
-    setEntityAmount(value) {
-        this.setState({
-            entityAmount: value,
-            showSubmit: false,
-            entityID: -1
-        });
+    function changeEntityAmount(value) {
+        setEntityAmount(value);
+        setShowSubmit(false);
+        setEntityID(-1);
         if (value === "All") {
-            this.setState({
-                entityList: this.props.entities.sort()
-            });
+            setEntityList(entities.sort());
         } else {
-            this.setState({
-                entityList: this.props.entities.filter(e => this.props.amountList[e] === value).sort()
-            });
+            setEntityList(entities.filter(e => amountList[e] === value).sort());
         }
     }
 
-    handleSubmit() {
-        this.props.handleEntitySubmit(this.state.entityID);
+    function handleSubmit() {
+        handleEntitySubmit(entityID);
     }
 
+    const { translateEntity } = context;
 
-    render() {
-        const {
-            entityID,
-            entityAmount,
-            entityList,
-            showSubmit,
-        } = this.state;
+    const entityAmountList = [...new Set(Object.values(amountList))].sort((a, b) => a - b).map(amount =>
+        <Dropdown.Item
+            key={amount}
+            onClick={() => changeEntityAmount(amount)}
+        >
+            {amount}
+        </Dropdown.Item>
+    );
 
-        const { translateEntity } = this.context;
+    const entitiesListDropdown = entityList.map(entityID =>
+        <Dropdown.Item
+            key={entityID}
+            onClick={() => { setShowSubmit(true); setEntityID(entityID); } }
+        >
+            {translateEntity(entityID)}
+        </Dropdown.Item>
+    );
 
-        const entityAmountList = [...new Set(Object.values(this.props.amountList))].sort((a, b) => a - b).map(amount =>
-            <Dropdown.Item
-                key={amount}
-                onClick={() => this.setEntityAmount(amount)}
-            >
-                {amount}
-            </Dropdown.Item>
-        );
+    return (
+        <ButtonToolbar>
+            <DropdownButton className="me-1" as={ButtonGroup} title={entityAmount}>
+                <Dropdown.Item
+                    key={"All"}
+                    onClick={() => changeEntityAmount("All")}
+                >
+                    {"All"}
+                </Dropdown.Item>
+                {entityAmountList}
+            </DropdownButton>
 
-        const entitiesListDropdown = entityList.map(entityID =>
-            <Dropdown.Item
-                key={entityID}
-                onClick={() => this.setEntity(entityID)}
-            >
-                {translateEntity(entityID)}
-            </Dropdown.Item>
-        );
-        return (
-            <ButtonToolbar>
-                <DropdownButton className="mr-1" as={ButtonGroup} title={entityAmount}>
-                    <Dropdown.Item
-                        key={"All"}
-                        onClick={() => this.setEntityAmount("All")}
-                    >
-                        {"All"}
-                    </Dropdown.Item>
-                    {entityAmountList}
-                </DropdownButton>
-
-                <Dropdown className="mr-1" as={ButtonGroup}>
-                    <Dropdown.Toggle>
-                        {
-                            entityID === -1 
-                            ? "Select Entity"
-                            : translateEntity(entityID)
-                        }
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu as={CustomSearchMenuForwardingRef}>
-                        {entitiesListDropdown}
-                    </Dropdown.Menu>
-                </Dropdown>
-                {
-                    showSubmit && 
-                    <Button
-                        onClick={this.handleSubmit}
-                    >
-                        Create View
-                    </Button>
-                }
-            </ButtonToolbar>
-        );
-    }
+            <Dropdown className="me-1" as={ButtonGroup}>
+                <Dropdown.Toggle>
+                    {
+                        entityID === -1
+                        ? "Select Entity"
+                        : translateEntity(entityID)
+                    }
+                </Dropdown.Toggle>
+                <Dropdown.Menu as={CustomSearchMenuForwardingRef}>
+                    {entitiesListDropdown}
+                </Dropdown.Menu>
+            </Dropdown>
+            {
+                showSubmit &&
+                <Button
+                    onClick={handleSubmit}
+                >
+                    Create View
+                </Button>
+            }
+        </ButtonToolbar>
+    );
 }
 
-class CustomSearchMenu extends React.Component {
-    constructor(props, context) {
-        super(props, context);
+const CustomSearchMenu = ({ children, style, className, 'aria-labelledby': labeledBy, innerRef }) => {
+    const [value, setValue] = useState('');
 
-        this.handleChange = this.handleChange.bind(this);
-
-        this.state = { value: '' };
+    function handleChange(e) {
+        setValue(e.target.value.toLowerCase().trim());
     }
 
-    handleChange(e) {
-        this.setState({ value: e.target.value.toLowerCase().trim() });
-    }
-
-    render() {
-        const {
-            children,
-            style,
-            className,
-            'aria-labelledby': labeledBy,
-        } = this.props;
-
-        const { value } = this.state;
-        return (
-            <div style={style} className={className} aria-labelledby={labeledBy} ref={this.props.innerRef}>
-                <FormControl
-                    autoFocus
-                    className="mx-3 my-2 w-auto"
-                    placeholder="Type to filter..."
-                    onChange={this.handleChange}
-                    value={value}
-                />
-                <ul className="list-unstyled">
-                    {React.Children.toArray(children).filter(
-                        child =>
-                            !value || child.props.children.toLowerCase().includes(value),
-                    )}
-                </ul>
-            </div>
-        );
-    }
-
+    return (
+        <div style={style} className={className} aria-labelledby={labeledBy} ref={innerRef}>
+            <FormControl
+                autoFocus
+                className="mx-3 my-2 w-auto"
+                placeholder="Type to filter..."
+                onChange={handleChange}
+                value={value}
+            />
+            <ul className="list-unstyled">
+                {React.Children.toArray(children).filter(
+                    child =>
+                        !value || child.props.children.toLowerCase().includes(value),
+                )}
+            </ul>
+        </div>
+    );
 }
 
 const CustomSearchMenuForwardingRef = React.forwardRef((props, ref) => (

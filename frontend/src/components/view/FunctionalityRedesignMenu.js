@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext, useState} from 'react';
 import {
     Button,
     ButtonGroup,
@@ -10,6 +10,7 @@ import {
     InputGroup
 } from "react-bootstrap";
 import Select from 'react-select';
+import AppContext from "../AppContext";
 
 export const redesignOperations = {
     NONE: 'operation',
@@ -26,66 +27,58 @@ const selectStyles = {
 
 const addCompensatingPlaceHolder = "Cluster";
 
-export class FunctionalityRedesignMenu extends React.Component{
+export const FunctionalityRedesignMenu = ({
+    selectedRedesign,
+    selectedLocalTransaction,
+    newCaller,
+    modifiedEntities,
+    DCGIAvailableClusters,
+    DCGILocalTransactionsForTheSelectedClusters,
+    DCGISelectedLocalTransactions,
+    handleSelectOperation,
+    handleCancel,
+    handleSubmit,
+    DCGISelectCluster,
+    handleDCGISelectLocalTransaction}) => {
 
-    constructor(props) {
-        super(props);
+    const context = useContext(AppContext);
+    const { translateEntity } = context;
+    const [operation, setOperation] = useState(redesignOperations.NONE);
+    const [addCompensatingEntities, setAddCompensatingEntities] = useState([]);
+    const [addCompensatingCluster, setAddCompensatingCluster] = useState(addCompensatingPlaceHolder);
+    const [showSubmit, setShowSubmit] = useState(false);
+    const [DCGICluster, setDCGICluster] = useState("");
+    const [inputValue, setInputValue] = useState('');
 
-        this.state = {
-            operation: redesignOperations.NONE,
-            addCompensatingEntities: [],
-            addCompensatingCluster: addCompensatingPlaceHolder,
-            showSubmit: false,
-            DCGICluster: "",
-            selectPivotTransaction: redesignOperations.PIVOT,
-            inputValue: ''
-        };
+    function changeOperation(value){
+        handleSelectOperation(value);
 
-        this.handleCancel = this.handleCancel.bind(this);
-        this.setOperation = this.setOperation.bind(this);
-        this.setCompensatingCluster = this.setCompensatingCluster.bind(this);
-        this.handleSelectAddCompensatingEntities = this.handleSelectAddCompensatingEntities.bind(this);
-        this.DCGISelectCluster = this.DCGISelectCluster.bind(this);
-        this.handleDCGILocalTransactionSelect = this.handleDCGILocalTransactionSelect.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleInputValueChange = this.handleInputValueChange.bind(this);
+        setOperation(value);
     }
 
-    setOperation(value){
-        this.props.handleSelectOperation(value);
-
-        this.setState({
-            operation: value
-        });
+    function changeCompensatingCluster(value){
+        setAddCompensatingCluster(value.cluster);
     }
 
-    setCompensatingCluster(value){
-        this.setState({ addCompensatingCluster: value.cluster})
-    }
-
-    handleSelectAddCompensatingEntities(value){
+    function handleSelectAddCompensatingEntities(value){
         if(value === null || value.length === 0){
-            this.setState({
-                addCompensatingEntities: value,
-                showSubmit: false
-            });
+            setAddCompensatingEntities(value);
+            setShowSubmit(false);
         } else {
             const entities = [];
             value.forEach(e => entities.push(parseInt(e.value)));
-            this.setState({
-                addCompensatingEntities: entities,
-                showSubmit: true
-            });
+            setAddCompensatingEntities(entities);
+            setShowSubmit(true);
         }
     }
 
-    handleSubmit(){
+    function handleFunctionalitySubmit(){
         let input;
-        switch (this.state.operation) {
+        switch (operation) {
             case redesignOperations.AC:
                 input = {
-                    cluster: this.state.addCompensatingCluster,
-                    entities: this.state.addCompensatingEntities
+                    cluster: addCompensatingCluster,
+                    entities: addCompensatingEntities
                 }
                 break;
 
@@ -97,206 +90,202 @@ export class FunctionalityRedesignMenu extends React.Component{
                 break;
 
             case redesignOperations.PIVOT:
-                input = this.state.inputValue;
+                input = inputValue;
                 break;
 
             case redesignOperations.RENAME:
-                input = this.state.inputValue;
+                input = inputValue;
                 break;
 
             default:
                 break;
         }
-        this.props.handleSubmit(input);
-        this.handleCancel();
+        handleSubmit(input);
+        handleFunctionalityCancel();
     }
 
-    handleCancel(){
-        this.props.handleCancel();
-        this.setState({
-            operation: redesignOperations.NONE,
-            addCompensatingEntities: [],
-            addCompensatingCluster: addCompensatingPlaceHolder,
-            showSubmit: false,
-            DCGICluster: ""
-        });
+    function handleFunctionalityCancel(){
+        handleCancel();
+        setOperation(redesignOperations.NONE);
+        setAddCompensatingEntities([]);
+        setAddCompensatingCluster(addCompensatingPlaceHolder);
+        setShowSubmit(false);
+        setDCGICluster("");
     }
 
-    showSubmit(){
-        if(this.state.showSubmit === true)
+    function disableShowSubmit(){
+        if(showSubmit === true)
             return false;
-        else if(this.props.newCaller !== null)
+        else if(newCaller !== null)
             return false;
-        else if(this.props.DCGISelectedLocalTransactions.length !== 0){
+        else if(DCGISelectedLocalTransactions.length !== 0){
             const selectedClustersSet = new Set();
-            this.props.DCGISelectedLocalTransactions.forEach(e => selectedClustersSet.add(e.clusterID));
-            if(selectedClustersSet.size === 2 && this.props.DCGISelectedLocalTransactions.length >= 3){
+            DCGISelectedLocalTransactions.forEach(e => selectedClustersSet.add(e.clusterID));
+            if(selectedClustersSet.size === 2 && DCGISelectedLocalTransactions.length >= 3){
                 return false;
             }
         }
-        else if(this.state.operation === redesignOperations.RENAME && this.state.inputValue !== '')
+        else if(operation === redesignOperations.RENAME && inputValue !== '')
             return false;
 
         return true;
     }
 
-    DCGISelectCluster(value){
-        this.setState({
-            DCGICluster: value
+    function selectDCGISelectCluster(value){
+        setDCGICluster(value);
+
+        DCGISelectCluster(value);
+    }
+
+    function handleDCGILocalTransactionSelect(value){
+        handleDCGISelectLocalTransaction(value);
+    }
+
+    function handleInputValueChange(event) {
+        setInputValue(event.target.value);
+    }
+
+
+
+    let modifiedEntitiesClustersDropdown;
+    if(addCompensatingCluster !== addCompensatingPlaceHolder){
+        modifiedEntitiesClustersDropdown =
+            modifiedEntities.find(e => e.cluster === addCompensatingCluster).modifiedEntities
+                .map((e) => {
+                    return {value: e, label: translateEntity(e)};
+                });
+    }
+
+    let DCGILocalTransactionsDropdown;
+    if(DCGILocalTransactionsForTheSelectedClusters !== null){
+        DCGILocalTransactionsDropdown =
+            DCGILocalTransactionsForTheSelectedClusters
+                .filter(e => !DCGISelectedLocalTransactions.map(entry => entry.id).includes(e.id))
+                .map((e) => {
+                    return {value: e.id, label: e.name};
+                });
+    }
+
+    let DCGIAlreadySelectedLocalTransactions = DCGISelectedLocalTransactions
+        .map((e) => {
+            return {value: e.id, label: e.name}
         });
 
-        this.props.DCGISelectCluser(value);
-    }
+    const operationsToShow = selectedLocalTransaction.id === (-1).toString();
 
-    handleDCGILocalTransactionSelect(value){
-        this.props.handleDCGISelectLocalTransaction(value);
-    }
+    return (
+        <div>
+            <ButtonToolbar className="mb-2">
+                <Button className="me-1">{selectedLocalTransaction.name}</Button>
+                <DropdownButton className="me-1" as={ButtonGroup} title={operation}>
+                    <Dropdown.Item eventKey="1" disabled = {operationsToShow} onClick={() => changeOperation(redesignOperations.SQ)}>{redesignOperations.SQ}</Dropdown.Item>
+                    <Dropdown.Item eventKey="2" disabled = {operationsToShow} onClick={() => changeOperation(redesignOperations.AC)}>{redesignOperations.AC}</Dropdown.Item>
+                    <Dropdown.Item eventKey="3" disabled = {operationsToShow} onClick={() => changeOperation(redesignOperations.DCGI)}>{redesignOperations.DCGI}</Dropdown.Item>
+                    <Dropdown.Item eventKey="4" onClick={() => changeOperation(redesignOperations.PIVOT)}>{redesignOperations.PIVOT}</Dropdown.Item>
+                    <Dropdown.Item eventKey="5" disabled = {operationsToShow} onClick={() => changeOperation(redesignOperations.RENAME)}>{redesignOperations.RENAME}</Dropdown.Item>
+                </DropdownButton>
 
-    handleInputValueChange(event) {
-        this.setState({ inputValue: event.target.value });
-    }
-
-    render() {
-        let modifiedEntitiesClustersDropdown;
-        if(this.state.addCompensatingCluster !== addCompensatingPlaceHolder){
-            modifiedEntitiesClustersDropdown =
-                this.props.modifiedEntities.find(e => e.cluster === this.state.addCompensatingCluster).modifiedEntities
-                    .map((e) => {
-                        return {value: e, label: e};
-                    });
-        }
-
-        let DCGILocalTransactionsDropdown;
-        if(this.props.DCGILocalTransactionsForTheSelectedClusters !== null){
-            DCGILocalTransactionsDropdown =
-                this.props.DCGILocalTransactionsForTheSelectedClusters
-                    .filter(e => !this.props.DCGISelectedLocalTransactions.map(entry => entry.id).includes(e.id))
-                    .map((e) => {
-                        return {value: e.id, label: e.id + ": " + e.clusterID};
-                    });
-        }
-
-        let DCGIAlreadySelectedLocalTransactions = this.props.DCGISelectedLocalTransactions
-            .map((e) => {
-                return {value: e.id, label: e.id + ": " + e.clusterID}
-            });
-
-        const operationsToShow = this.props.selectedLocalTransaction.id === (-1).toString();
-
-        return (
-            <div>
-                <ButtonToolbar className="mb-2">
-                    <Button className="mr-1">{this.props.selectedLocalTransaction.name}</Button>
-                    <DropdownButton className="mr-1" as={ButtonGroup} title={this.state.operation}>
-                        <Dropdown.Item eventKey="1" disabled = {operationsToShow} onClick={() => this.setOperation(redesignOperations.SQ)}>{redesignOperations.SQ}</Dropdown.Item>
-                        <Dropdown.Item eventKey="2" disabled = {operationsToShow} onClick={() => this.setOperation(redesignOperations.AC)}>{redesignOperations.AC}</Dropdown.Item>
-                        <Dropdown.Item eventKey="3" disabled = {operationsToShow} onClick={() => this.setOperation(redesignOperations.DCGI)}>{redesignOperations.DCGI}</Dropdown.Item>
-                        <Dropdown.Item eventKey="4" onClick={() => this.setOperation(redesignOperations.PIVOT)}>{redesignOperations.PIVOT}</Dropdown.Item>
-                        <Dropdown.Item eventKey="5" disabled = {operationsToShow} onClick={() => this.setOperation(redesignOperations.RENAME)}>{redesignOperations.RENAME}</Dropdown.Item>
-                    </DropdownButton>
-
-                    {this.props.newCaller !== null &&
-                    <ButtonGroup className="mr-1">
-                        <ListGroup>
-                            <ListGroup.Item>New caller: {this.props.newCaller.name}</ListGroup.Item>
-                        </ListGroup>
-                    </ButtonGroup>
-                    }
-
-                    {this.props.modifiedEntities !== null &&
-                    <DropdownButton className="mr-1" as={ButtonGroup} title={this.state.addCompensatingCluster}>
-                        {this.props.modifiedEntities.map(e =>
-                            <Dropdown.Item
-                                key={e.cluster}
-                                onSelect={() => this.setCompensatingCluster(e)}>{e.cluster}</Dropdown.Item>)}
-                    </DropdownButton>
-                    }
-
-                    {this.state.operation === redesignOperations.DCGI &&
-                    <Button className="mr-1">{"From Cluster: " + this.props.selectedLocalTransaction.clusterID}</Button>
-                    }
-
-                    {this.props.DCGIAvailableClusters !== null &&
-                    <DropdownButton className="mr-1" as={ButtonGroup} title={"To Cluster: " + this.state.DCGICluster}>
-                        {this.props.DCGIAvailableClusters.map(e =>
-                            <Dropdown.Item
-                                key={e}
-                                onSelect={() => this.DCGISelectCluster(e)}>{e}</Dropdown.Item>)}
-                    </DropdownButton>
-                    }
-
-                    {this.state.operation === redesignOperations.RENAME &&
-                    <InputGroup className="mr-1">
-                        <FormControl
-                            type="text"
-                            label="Text"
-                            placeholder="name"
-                            value={this.state.inputValue}
-                            onChange={this.handleInputValueChange}/>
-                    </InputGroup>
-                    }
-                </ButtonToolbar>
-
-                {this.state.addCompensatingCluster !== addCompensatingPlaceHolder &&
-                <Select
-                    isMulti
-                    options={modifiedEntitiesClustersDropdown}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                    styles={selectStyles}
-                    placeholder="Entities"
-                    onChange={this.handleSelectAddCompensatingEntities}
-                />
+                {newCaller !== null &&
+                <ButtonGroup className="me-1">
+                    <ListGroup>
+                        <ListGroup.Item>New caller: {newCaller.name}</ListGroup.Item>
+                    </ListGroup>
+                </ButtonGroup>
                 }
 
-                {this.props.DCGILocalTransactionsForTheSelectedClusters !== null &&
-                <Select
-                    value={DCGIAlreadySelectedLocalTransactions}
-                    isMulti
-                    options={DCGILocalTransactionsDropdown}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                    styles={selectStyles}
-                    placeholder="Local Transactions"
-                    onChange={this.handleDCGILocalTransactionSelect}
-                />
+                {modifiedEntities !== null &&
+                <DropdownButton className="me-1" as={ButtonGroup} title={addCompensatingCluster}>
+                    {modifiedEntities.map(e =>
+                        <Dropdown.Item
+                            key={e.cluster}
+                            onClick={() => changeCompensatingCluster(e)}>{e.cluster}</Dropdown.Item>)}
+                </DropdownButton>
                 }
 
-                {this.state.operation === redesignOperations.PIVOT && this.props.selectedRedesign.pivotTransaction === -1 &&
-                <InputGroup className="mb-2">
+                {operation === redesignOperations.DCGI &&
+                <Button className="me-1">{"From Cluster: " + selectedLocalTransaction.clusterID}</Button>
+                }
+
+                {DCGIAvailableClusters !== null &&
+                <DropdownButton className="me-1" as={ButtonGroup} title={"To Cluster: " + DCGICluster}>
+                    {DCGIAvailableClusters.map(e =>
+                        <Dropdown.Item
+                            key={e}
+                            onClick={() => selectDCGISelectCluster(e)}>{e}</Dropdown.Item>)}
+                </DropdownButton>
+                }
+
+                {operation === redesignOperations.RENAME &&
+                <InputGroup className="me-1">
                     <FormControl
                         type="text"
                         label="Text"
-                        placeholder="Specify a name for your redesign"
-                        value={this.state.inputValue}
-                        onChange={this.handleInputValueChange}/>
+                        placeholder="name"
+                        value={inputValue}
+                        onChange={handleInputValueChange}/>
                 </InputGroup>
                 }
+            </ButtonToolbar>
 
-                <div>
-                    {(this.state.operation === redesignOperations.SQ || this.state.operation === redesignOperations.AC ||
-                        this.state.operation === redesignOperations.DCGI || this.state.operation === redesignOperations.RENAME) &&
-                    <Button
-                        disabled={this.showSubmit()}
-                        className="mr-1"
-                        onClick={this.handleSubmit}>Submit
-                    </Button>
-                    }
+            {addCompensatingCluster !== addCompensatingPlaceHolder &&
+            <Select
+                isMulti
+                options={modifiedEntitiesClustersDropdown}
+                className="basic-multi-select"
+                classNamePrefix="select"
+                styles={selectStyles}
+                placeholder="Entities"
+                onChange={handleSelectAddCompensatingEntities}
+            />
+            }
 
-                    {this.state.operation === redesignOperations.PIVOT &&
-                    <Button
-                        className="mr-1"
-                        variant="warning"
-                        onClick={this.handleSubmit}
-                        disabled={this.props.selectedRedesign.pivotTransaction === "" && this.state.inputValue === ""}> Finish Redesign
-                    </Button>
-                    }
+            {DCGILocalTransactionsForTheSelectedClusters !== null &&
+            <Select
+                value={DCGIAlreadySelectedLocalTransactions}
+                isMulti
+                options={DCGILocalTransactionsDropdown}
+                className="basic-multi-select"
+                classNamePrefix="select"
+                styles={selectStyles}
+                placeholder="Local Transactions"
+                onChange={handleDCGILocalTransactionSelect}
+            />
+            }
 
-                    {this.state.operation !== redesignOperations.NONE  &&
-                    <Button className="mr-1" onClick={this.handleCancel}>Cancel</Button>
-                    }
-                </div>
+            {operation === redesignOperations.PIVOT && selectedRedesign.pivotTransaction === -1 &&
+            <InputGroup className="mb-2">
+                <FormControl
+                    type="text"
+                    label="Text"
+                    placeholder="Specify a name for your redesign"
+                    value={inputValue}
+                    onChange={handleInputValueChange}/>
+            </InputGroup>
+            }
+
+            <div>
+                {(operation === redesignOperations.SQ || operation === redesignOperations.AC ||
+                    operation === redesignOperations.DCGI || operation === redesignOperations.RENAME) &&
+                <Button
+                    disabled={disableShowSubmit()}
+                    className="me-1"
+                    onClick={handleFunctionalitySubmit}>Submit
+                </Button>
+                }
+
+                {operation === redesignOperations.PIVOT &&
+                <Button
+                    className="me-1"
+                    variant="warning"
+                    onClick={handleFunctionalitySubmit}
+                    disabled={selectedRedesign.pivotTransaction === "" && inputValue === ""}> Finish Redesign
+                </Button>
+                }
+
+                {operation !== redesignOperations.NONE  &&
+                <Button className="me-1" onClick={handleFunctionalityCancel}>Cancel</Button>
+                }
             </div>
-        )
-    }
+        </div>
+    )
 }

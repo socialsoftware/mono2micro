@@ -58,7 +58,7 @@ services:
     stdin_open: true
     restart: unless-stopped
     volumes:
-      - './frontend/:/app'
       - '/app/node_modules'
+      - './frontend/:/app'
     environment:
       - CHOKIDAR_USEPOLLING=true

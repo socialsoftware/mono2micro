@@ -77,7 +77,7 @@ public class FunctionalityRedesignController {
 
         try {
             int fromID = (Integer) data.get("fromID");
-            String clusterName = (String) data.get("cluster");
+            Short clusterID = ((Integer) data.get("cluster")).shortValue();
             ArrayList<Integer> accesses = (ArrayList<Integer>) data.get("entities");
 
 
@@ -85,7 +85,7 @@ public class FunctionalityRedesignController {
             Decomposition decomposition = codebase.getDendrogram(dendrogramName).getDecomposition(decompositionName);
             Controller controller = decomposition.getController(controllerName);
 
-            controller.getFunctionalityRedesign(redesignName).addCompensating(clusterName, accesses, fromID);
+            controller.getFunctionalityRedesign(redesignName).addCompensating(clusterID, accesses, fromID);
             Metrics.calculateRedesignComplexities(controller, redesignName, decomposition);
             codebaseManager.writeCodebase(codebase);
 
@@ -136,15 +136,15 @@ public class FunctionalityRedesignController {
     ) {
         logger.debug("dcgi");
         try {
-            String fromCluster = data.get("fromCluster");
-            String toCluster = data.get("toCluster");
+            Short fromClusterID = Short.parseShort(data.get("fromCluster"));
+            Short toClusterID = Short.parseShort(data.get("toCluster"));
             String localTransactions = data.get("localTransactions");
 
             Codebase codebase = codebaseManager.getCodebase(codebaseName);
             Decomposition decomposition = codebase.getDendrogram(dendrogramName).getDecomposition(decompositionName);
             Controller controller = decomposition.getController(controllerName);
 
-            controller.getFunctionalityRedesign(redesignName).dcgi(fromCluster, toCluster, localTransactions);
+            controller.getFunctionalityRedesign(redesignName).dcgi(fromClusterID, toClusterID, localTransactions);
 
             Metrics.calculateRedesignComplexities(controller, redesignName, decomposition);
             codebaseManager.writeCodebase(codebase);

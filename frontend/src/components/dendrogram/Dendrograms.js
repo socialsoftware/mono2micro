@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -12,8 +12,9 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 
 import { URL } from '../../constants/constants';
 import BootstrapTable from 'react-bootstrap-table-next';
+import {useParams} from "react-router-dom";
 
-var HttpStatus = require('http-status-codes');
+const HttpStatus = require('http-status-codes');
 
 const sort = true;
 
@@ -70,61 +71,46 @@ const metricColumns = [
     }
 ];
 
-export class Dendrograms extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            dendrograms: [],
-            allDecompositions: [],
-            selectedProfile: "",
-            isUploaded: "",
-            newDendrogramName: "",
-            linkageType: "average",
-            accessMetricWeight: "25",
-            writeMetricWeight: "25",
-            readMetricWeight: "25",
-            sequenceMetricWeight: "25",
-            amountOfTraces: "0",
-            typeOfTraces: "ALL",
-            codebase: {
-                profiles: [],
-            },
-        };
+export const Dendrograms = () => {
+    const [dendrograms, setDendrograms] = useState([]);
+    const [allDecompositions, setAllDecompositions] = useState([]);
+    const [selectedProfile, setSelectedProfile] = useState("");
+    const [isUploaded, setIsUploaded] = useState("");
+    const [newDendrogramName, setNewDendrogramName] = useState("");
+    const [linkageType, setLinkageType] = useState("average");
+    const [accessMetricWeight, setAccessMetricWeight] = useState("25");
+    const [writeMetricWeight, setWriteMetricWeight] = useState("25");
+    const [readMetricWeight, setReadMetricWeight] = useState("25");
+    const [sequenceMetricWeight, setSequenceMetricWeight] = useState("25");
+    const [amountOfTraces, setAmountOfTraces] = useState("0");
+    const [typeOfTraces, setTypeOfTraces] = useState("ALL");
+    const [codebase, setCodebase] = useState({ profiles: [], });
 
-        this.handleDeleteDendrogram = this.handleDeleteDendrogram.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleChangeNewDendrogramName = this.handleChangeNewDendrogramName.bind(this);
-        this.handleLinkageType = this.handleLinkageType.bind(this);
-        this.handleChangeAccessMetricWeight = this.handleChangeAccessMetricWeight.bind(this);
-        this.handleChangeWriteMetricWeight = this.handleChangeWriteMetricWeight.bind(this);
-        this.handleChangeReadMetricWeight = this.handleChangeReadMetricWeight.bind(this);
-        this.handleChangeSequenceMetricWeight = this.handleChangeSequenceMetricWeight.bind(this);
-        this.handleChangeAmountOfTraces = this.handleChangeAmountOfTraces.bind(this);
-        this.handleChangeTypeOfTraces = this.handleChangeTypeOfTraces.bind(this);
-    }
+    let { codebaseName } = useParams();
 
-    componentDidMount() {
-        this.loadDendrograms();
-        this.loadDecompositions();
-        this.loadCodebase();
-    }
+    //Executed on mount
+    useEffect(() => {
+        loadDendrograms();
+        loadDecompositions();
+        loadCodebase();
+    }, []);
 
-    loadCodebase() {
+    function loadCodebase() {
         const service = new RepositoryService();
         service.getCodebase(
-            this.props.match.params.codebaseName,
+            codebaseName,
             ["profiles"]
         ).then(response => {
             if (response.data !== null) {
-                this.setState({ codebase: response.data });
+                setCodebase(response.data);
             }
         });
     }
 
-    loadDendrograms() {
+    function loadDendrograms() {
         const service = new RepositoryService();
         service.getDendrograms(
-            this.props.match.params.codebaseName,
+            codebaseName,
             [
                 "name",
                 "profiles",
@@ -138,17 +124,15 @@ export class Dendrograms extends React.Component {
             ]
         ).then((response) => {
             if (response.data !== null) {
-                this.setState({
-                    dendrograms: response.data,
-                });
+                setDendrograms(response.data);
             }
         });
     }
 
-    loadDecompositions() {
+    function loadDecompositions() {
         const service = new RepositoryService();
         service.getCodebaseDecompositions(
-            this.props.match.params.codebaseName,
+            codebaseName,
             [
                 "name",
                 "dendrogramName",
@@ -162,35 +146,18 @@ export class Dendrograms extends React.Component {
             ]
         ).then((response) => {
             if (response.data !== null) {
-                this.setState({
-                    allDecompositions: response.data,
-                });
+                setAllDecompositions(response.data);
             }
         });
     }
 
-    handleSubmit(event) {
+    function handleSubmit(event) {
         event.preventDefault()
-
-        this.setState({
-            isUploaded: "Uploading..."
-        });
-
-        const {
-            newDendrogramName,
-            linkageType,
-            accessMetricWeight,
-            writeMetricWeight,
-            readMetricWeight,
-            sequenceMetricWeight,
-            selectedProfile,
-            amountOfTraces,
-            typeOfTraces,
-        } = this.state;
+        setIsUploaded("Uploading...");
 
         const service = new RepositoryService();
         service.createDendrogram(
-            this.props.match.params.codebaseName,
+            codebaseName,
             newDendrogramName,
             linkageType,
             Number(accessMetricWeight),
@@ -203,134 +170,90 @@ export class Dendrograms extends React.Component {
         )
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
-                    this.loadDendrograms();
-                    this.loadDecompositions();
-                    this.setState({
-                        isUploaded: "Upload completed successfully."
-                    });
+                    loadDendrograms();
+                    loadDecompositions();
+                    setIsUploaded("Upload completed successfully.");
                 } else {
-                    this.setState({
-                        isUploaded: "Upload failed."
-                    });
+                    setIsUploaded("Upload failed.");
                 }
             })
             .catch(error => {
                 if (error.response !== undefined && error.response.status === HttpStatus.UNAUTHORIZED) {
-                    this.setState({
-                        isUploaded: "Upload failed. Dendrogram name already exists."
-                    });
+                    setIsUploaded("Upload failed. Dendrogram name already exists.");
                 } else {
-                    this.setState({
-                        isUploaded: "Upload failed."
-                    });
+                    setIsUploaded("Upload failed.");
                 }
             });
     }
 
-    handleChangeNewDendrogramName(event) {
-        this.setState({
-            newDendrogramName: event.target.value
-        });
+    function handleChangeNewDendrogramName(event) {
+        setNewDendrogramName(event.target.value);
     }
 
-    handleLinkageType(event) {
-        console.log(event.target.id)
-        this.setState({
-            linkageType: event.target.id
-        });
+    function handleLinkageType(event) {
+        setLinkageType(event.target.id);
     }
 
-    handleChangeAccessMetricWeight(event) {
-        this.setState({
-            accessMetricWeight: event.target.value
-        });
+    function handleChangeAccessMetricWeight(event) {
+        setAccessMetricWeight(event.target.value);
     }
 
-    handleChangeWriteMetricWeight(event) {
-        this.setState({
-            writeMetricWeight: event.target.value
-        });
+    function handleChangeWriteMetricWeight(event) {
+        setWriteMetricWeight(event.target.value);
     }
 
-    handleChangeReadMetricWeight(event) {
-        this.setState({
-            readMetricWeight: event.target.value
-        });
+    function handleChangeReadMetricWeight(event) {
+        setReadMetricWeight(event.target.value);
     }
 
-    handleChangeSequenceMetricWeight(event) {
-        this.setState({
-            sequenceMetricWeight: event.target.value
-        });
+    function handleChangeSequenceMetricWeight(event) {
+        setSequenceMetricWeight(event.target.value);
     }
 
-    handleChangeAmountOfTraces(event) {
-        this.setState({
-            amountOfTraces: event.target.value
-        });
+    function handleChangeAmountOfTraces(event) {
+        setAmountOfTraces(event.target.value);
     }
 
-    handleChangeTypeOfTraces(event) {
-        this.setState({
-            typeOfTraces: event.target.value
-        });
+    function handleChangeTypeOfTraces(event) {
+        setTypeOfTraces(event.target.value);
     }
 
-    selectProfile(profile) {
-        if (this.state.selectedProfile !== profile) {
-            this.setState({
-                selectedProfile: profile
-            });
+    function selectProfile(profile) {
+        if (selectedProfile !== profile) {
+            setSelectedProfile(profile);
         } else {
-            this.setState({
-                selectedProfile: "",
-            });
+            setSelectedProfile("");
         }
     }
 
-    handleDeleteDendrogram(dendrogramName) {
+    function handleDeleteDendrogram(dendrogramName) {
         const service = new RepositoryService();
         
         service.deleteDendrogram(
-            this.props.match.params.codebaseName,
+            codebaseName,
             dendrogramName
         )
         .then(response => {
-            this.loadDendrograms();
-            this.loadDecompositions();
+            loadDendrograms();
+            loadDecompositions();
         });
     }
 
-    renderBreadCrumbs = () => {
+    function renderBreadCrumbs() {
         return (
             <Breadcrumb>
                 <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
                 <Breadcrumb.Item href="/codebases">Codebases</Breadcrumb.Item>
-                <Breadcrumb.Item href={`/codebases/${this.props.match.params.codebaseName}`}>{this.props.match.params.codebaseName}</Breadcrumb.Item>
+                <Breadcrumb.Item href={`/codebases/${codebaseName}`}>{codebaseName}</Breadcrumb.Item>
                 <Breadcrumb.Item active>Dendrograms</Breadcrumb.Item>
             </Breadcrumb>
         );
     }
 
-    renderCreateDendrogramForm = () => {
-        const {
-            accessMetricWeight,
-            isUploaded,
-            linkageType,
-            newDendrogramName,
-            readMetricWeight,
-            selectedProfile,
-            sequenceMetricWeight,
-            writeMetricWeight,
-            amountOfTraces,
-            typeOfTraces,
-            codebase: {
-                profiles,
-            },
-        } = this.state;
-
+    function renderCreateDendrogramForm() {
+        const profiles = codebase["profiles"];
         return (
-            <Form onSubmit={this.handleSubmit}>
+            <Form onSubmit={handleSubmit}>
                 <Form.Group as={Row} controlId="newDendrogramName" className="align-items-center">
                     <Form.Label column sm={2}>
                         Dendrogram Name
@@ -341,7 +264,7 @@ export class Dendrograms extends React.Component {
                             maxLength="30"
                             placeholder="Dendrogram Name"
                             value={newDendrogramName}
-                            onChange={this.handleChangeNewDendrogramName}
+                            onChange={handleChangeNewDendrogramName}
                         />
                     </Col>
                 </Form.Group>
@@ -355,7 +278,7 @@ export class Dendrograms extends React.Component {
                             {Object.keys(profiles).map(profile =>
                                 <Dropdown.Item
                                     key={profile}
-                                    onSelect={() => this.selectProfile(profile)}
+                                    onClick={() => selectProfile(profile)}
                                     active={selectedProfile === profile}
                                 >
                                     {profile}
@@ -372,7 +295,7 @@ export class Dendrograms extends React.Component {
                         <FormControl
                             type="number"
                             value={amountOfTraces}
-                            onChange={this.handleChangeAmountOfTraces}
+                            onChange={handleChangeAmountOfTraces}
 
                         />
                         <Form.Text className="text-muted">
@@ -387,7 +310,7 @@ export class Dendrograms extends React.Component {
                     <Col sm={3} style={{ paddingLeft: 0 }}>
                         <Col sm="auto">
                             <Form.Check
-                                onClick={this.handleChangeTypeOfTraces}
+                                onClick={handleChangeTypeOfTraces}
                                 name="typeOfTraces"
                                 label="All"
                                 type="radio"
@@ -398,7 +321,7 @@ export class Dendrograms extends React.Component {
                         </Col>
                         <Col sm="auto">
                             <Form.Check
-                                onClick={this.handleChangeTypeOfTraces}
+                                onClick={handleChangeTypeOfTraces}
                                 name="typeOfTraces"
                                 label="Longest"
                                 type="radio"
@@ -408,7 +331,7 @@ export class Dendrograms extends React.Component {
                         </Col>
                         <Col sm="auto">
                             <Form.Check
-                                onClick={this.handleChangeTypeOfTraces}
+                                onClick={handleChangeTypeOfTraces}
                                 name="typeOfTraces"
                                 label="With more different accesses"
                                 type="radio"
@@ -419,7 +342,7 @@ export class Dendrograms extends React.Component {
                         </Col>
                         <Col sm="auto">
                             <Form.Check
-                                onClick={this.handleChangeTypeOfTraces}
+                                onClick={handleChangeTypeOfTraces}
                                 name="typeOfTraces"
                                 label="Representative (set of accesses)"
                                 type="radio"
@@ -447,7 +370,7 @@ export class Dendrograms extends React.Component {
                     </Form.Label>
                     <Col sm="auto">
                         <Form.Check
-                            onClick={this.handleLinkageType}
+                            onClick={handleLinkageType}
                             name="linkageType"
                             label="Average"
                             type="radio"
@@ -457,7 +380,7 @@ export class Dendrograms extends React.Component {
                     </Col>
                     <Col sm="auto">
                         <Form.Check
-                            onClick={this.handleLinkageType}
+                            onClick={handleLinkageType}
                             name="linkageType"
                             label="Single"
                             type="radio"
@@ -467,7 +390,7 @@ export class Dendrograms extends React.Component {
                     </Col>
                     <Col sm="auto">
                         <Form.Check
-                            onClick={this.handleLinkageType}
+                            onClick={handleLinkageType}
                             name="linkageType"
                             label="Complete"
                             type="radio"
@@ -485,7 +408,7 @@ export class Dendrograms extends React.Component {
                             type="number"
                             placeholder="0-100"
                             value={accessMetricWeight}
-                            onChange={this.handleChangeAccessMetricWeight} />
+                            onChange={handleChangeAccessMetricWeight} />
                     </Col>
                 </Form.Group>
 
@@ -498,7 +421,7 @@ export class Dendrograms extends React.Component {
                             type="number"
                             placeholder="0-100"
                             value={writeMetricWeight}
-                            onChange={this.handleChangeWriteMetricWeight} />
+                            onChange={handleChangeWriteMetricWeight} />
                     </Col>
                 </Form.Group>
 
@@ -511,7 +434,7 @@ export class Dendrograms extends React.Component {
                             type="number"
                             placeholder="0-100"
                             value={readMetricWeight}
-                            onChange={this.handleChangeReadMetricWeight} />
+                            onChange={handleChangeReadMetricWeight} />
                     </Col>
                 </Form.Group>
 
@@ -524,7 +447,7 @@ export class Dendrograms extends React.Component {
                             type="number"
                             placeholder="0-100"
                             value={sequenceMetricWeight}
-                            onChange={this.handleChangeSequenceMetricWeight} />
+                            onChange={handleChangeSequenceMetricWeight} />
                     </Col>
                 </Form.Group>
 
@@ -556,12 +479,11 @@ export class Dendrograms extends React.Component {
         );
     }
 
-    renderDendrograms = () => {
-        const { codebaseName } = this.props.match.params;
+    function renderDendrograms() {
         return (
             <Row>
                 {
-                    this.state.dendrograms.map(dendrogram =>
+                    dendrograms.map(dendrogram =>
                         <Col key={dendrogram.name} md="auto">
                             <Card className="mb-4" style={{ width: '20rem' }}>
                                 <Card.Img
@@ -585,7 +507,7 @@ export class Dendrograms extends React.Component {
                                     </Button>
                                     <br />
                                     <Button 
-                                        onClick={() => this.handleDeleteDendrogram(dendrogram.name)}
+                                        onClick={() => handleDeleteDendrogram(dendrogram.name)}
                                         variant="danger"
                                     >
                                         Delete
@@ -600,60 +522,58 @@ export class Dendrograms extends React.Component {
         );
     }
 
-    render() {
-        const metricRows = this.state.allDecompositions.map(decomposition => {
-            
-            let amountOfSingletonClusters = 0;
-            let maxClusterSize = 0;
+    const metricRows = allDecompositions.map(decomposition => {
 
-            Object.values(decomposition.clusters).forEach(c => {
-                const numberOfEntities = c.entities.length;
+        let amountOfSingletonClusters = 0;
+        let maxClusterSize = 0;
 
-                if (numberOfEntities === 1) amountOfSingletonClusters++;
+        Object.values(decomposition.clusters).forEach(c => {
+            const numberOfEntities = c.entities.length;
 
-                if (numberOfEntities > maxClusterSize) maxClusterSize = numberOfEntities;
-            })
+            if (numberOfEntities === 1) amountOfSingletonClusters++;
 
-            return {
-                id: decomposition.dendrogramName + decomposition.name,
-                dendrogram: decomposition.dendrogramName,
-                decomposition: decomposition.name,
-                clusters: Object.keys(decomposition.clusters).length,
-                singleton: amountOfSingletonClusters,
-                max_cluster_size: maxClusterSize,
-                ss: decomposition.silhouetteScore,
-                cohesion: decomposition.cohesion,
-                coupling: decomposition.coupling,
-                complexity: decomposition.complexity,
-                performance: decomposition.performance
+            if (numberOfEntities > maxClusterSize) maxClusterSize = numberOfEntities;
+        })
+
+        return {
+            id: decomposition.dendrogramName + decomposition.name,
+            dendrogram: decomposition.dendrogramName,
+            decomposition: decomposition.name,
+            clusters: Object.keys(decomposition.clusters).length,
+            singleton: amountOfSingletonClusters,
+            max_cluster_size: maxClusterSize,
+            ss: decomposition.silhouetteScore,
+            cohesion: decomposition.cohesion,
+            coupling: decomposition.coupling,
+            complexity: decomposition.complexity,
+            performance: decomposition.performance
+        }
+    });
+
+    return (
+        <div>
+            {renderBreadCrumbs()}
+
+            <h4 style={{ color: "#666666" }}>
+                Create Dendrogram
+            </h4>
+
+            {renderCreateDendrogramForm()}
+
+            <h4 style={{ color: "#666666" }}>
+                Dendrograms
+            </h4>
+
+            {renderDendrograms()}
+
+            <h4 style={{ color: "#666666" }}>
+                Metrics
+            </h4>
+
+            {
+                allDecompositions.length > 0 &&
+                <BootstrapTable bootstrap4 keyField='id' data={metricRows} columns={metricColumns} />
             }
-        });
-
-        return (
-            <div>
-                {this.renderBreadCrumbs()}
-
-                <h4 style={{ color: "#666666" }}>
-                    Create Dendrogram
-                </h4>
-
-                {this.renderCreateDendrogramForm()}
-
-                <h4 style={{ color: "#666666" }}>
-                    Dendrograms
-                </h4>
-
-                {this.renderDendrograms()}
-
-                <h4 style={{ color: "#666666" }}>
-                    Metrics
-                </h4>
-
-                {
-                    this.state.allDecompositions.length > 0 &&
-                    <BootstrapTable bootstrap4 keyField='id' data={metricRows} columns={metricColumns} />
-                }
-            </div>
-        )
-    }
+        </div>
+    )
 }

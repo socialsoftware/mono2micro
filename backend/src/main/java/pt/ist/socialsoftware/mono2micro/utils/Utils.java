@@ -312,7 +312,7 @@ public class Utils {
         public int performance = 0;
         public LocalTransaction lastLocalTransaction = null;
         public List<LocalTransaction> localTransactionsSequence = new ArrayList<>();
-        public String firstAccessedClusterName = null;
+        public Short firstAccessedClusterID = null;
         Map<Short, Byte> entityIDToMode = new HashMap<>();
 
         public GetLocalTransactionsSequenceAndCalculateTracePerformanceResult() {}
@@ -321,13 +321,13 @@ public class Utils {
             int performance,
             LocalTransaction lastLocalTransaction,
             List<LocalTransaction> localTransactionsSequence,
-            String firstAccessedClusterName,
+            Short firstAccessedClusterID,
             Map<Short, Byte> entityIDToMode
         ) {
             this.performance = performance;
             this.lastLocalTransaction = lastLocalTransaction;
             this.localTransactionsSequence = localTransactionsSequence;
-            this.firstAccessedClusterName = firstAccessedClusterName;
+            this.firstAccessedClusterID = firstAccessedClusterID;
             this.entityIDToMode = entityIDToMode;
         }
     }
@@ -336,7 +336,7 @@ public class Utils {
         int lastLocalTransactionID,
         LocalTransaction lastLocalTransaction,
         List<ReducedTraceElementDto> elements,
-        Map<Short, String> entityIDToClusterName,
+        Map<Short, Short> entityIDToClusterID,
         Map<Short, Byte> entityIDToMode,
         int from,
         int to
@@ -346,7 +346,7 @@ public class Utils {
         if (numberOfElements == 0) return new GetLocalTransactionsSequenceAndCalculateTracePerformanceResult();
 
         int performance = 0;
-        String firstAccessedClusterName = null;
+        Short firstAccessedClusterID = null;
 
         LocalTransaction currentLocalTransaction = lastLocalTransaction;
         List<LocalTransaction> localTransactionsSequence = new ArrayList<>();
@@ -363,22 +363,22 @@ public class Utils {
                     lastLocalTransactionID,
                     currentLocalTransaction,
                     elements,
-                    entityIDToClusterName,
+                    entityIDToClusterID,
                     entityIDToMode,
                     i + 1,
                     i + 1 + r.getCount()
                 );
 
-                String sequenceFirstAccessedClusterName = result.firstAccessedClusterName;
+                Short sequenceFirstAccessedClusterID = result.firstAccessedClusterID;
                 int sequencePerformance = result.performance;
 
-                if (firstAccessedClusterName == null)
-                    firstAccessedClusterName = sequenceFirstAccessedClusterName;
+                if (firstAccessedClusterID == null)
+                    firstAccessedClusterID = sequenceFirstAccessedClusterID;
 
                 // hop between an access (previous cluster if it exists) and the sequence in question
                 if (
                     currentLocalTransaction != null && // this currentLT is already outdated that's why it's useful
-                    currentLocalTransaction.getClusterID() != Short.parseShort(sequenceFirstAccessedClusterName)
+                    currentLocalTransaction.getClusterID() != sequenceFirstAccessedClusterID
                 ) {
                     performance++;
                 }
@@ -396,7 +396,7 @@ public class Utils {
                 // then we want to consider the hop between the final access and the first one
                 if (
                     r.getOccurrences() > 1 &&
-                    Short.parseShort(sequenceFirstAccessedClusterName) != currentLocalTransaction.getClusterID()
+                    sequenceFirstAccessedClusterID != currentLocalTransaction.getClusterID()
                 ) {
                     performance += r.getOccurrences() - 1;
                 }
@@ -409,17 +409,15 @@ public class Utils {
                 short accessedEntityID = access.getEntityID();
                 byte accessMode = access.getMode();
 
-                String currentClusterName = entityIDToClusterName.get(accessedEntityID);
+                Short currentClusterID = entityIDToClusterID.get(accessedEntityID);
 
-                if (currentClusterName == null) {
+                if (currentClusterID == null) {
                     System.err.println("No assigned entity with ID " + accessedEntityID + " to a cluster.");
                     System.exit(-1);
                 }
 
-                short currentClusterID = Short.parseShort(currentClusterName);
-
-                if (firstAccessedClusterName == null)
-                    firstAccessedClusterName = currentClusterName;
+                if (firstAccessedClusterID == null)
+                    firstAccessedClusterID = currentClusterID;
 
                 if (currentLocalTransaction == null) { // if it's the first element
                     performance++;
@@ -492,93 +490,25 @@ public class Utils {
             performance,
             currentLocalTransaction,
             localTransactionsSequence,
-            firstAccessedClusterName,
+            firstAccessedClusterID,
             entityIDToMode
         );
     }
 
-    public static Map<String, List<Controller>> getClusterControllers(
-        Set<String> profileControllers,
-        List<Cluster> clusters,
-        Map<String, Controller> controllers
-    )
-        throws Exception
-    {
-        Map<String, List<Controller>> clusterControllers = new HashMap<>();
-
-        for (Cluster cluster : clusters) {
-            List<Controller> touchedControllers = new ArrayList<>();
-
-            for (String controllerName : profileControllers) {
-                Controller controller = controllers.get(controllerName);
-
-                if (controller == null)
-                    throw new Exception("Controller: " + controllerName + " not found");
-
-                if (!controller.getEntities().isEmpty()) {
-                    for (short entityID : controller.getEntities().keySet()) {
-                        if (cluster.containsEntity(entityID)) {
-                            touchedControllers.add(controller);
-                            break;
-                        }
-                    }
-                }
-            }
-
-            clusterControllers.put(cluster.getName(), touchedControllers);
-        }
-        return clusterControllers;
-    }
-
-    public static Map<String, List<Cluster>> getControllerClusters(
-        Set<String> profileControllers,
-        List<Cluster> clusters,
-        Map<String, Controller> controllers
-    )
-        throws Exception
-    {
-        Map<String, List<Cluster>> controllerClusters = new HashMap<>();
-
-        for (String controllerName : profileControllers) {
-            Controller controller = controllers.get(controllerName);
-
-            if (controller == null)
-                throw new Exception("Controller: " + controllerName + " not found");
-
-            if (!controller.getEntities().isEmpty()) {
-                List<Cluster> touchedClusters = new ArrayList<>();
-
-                for (Cluster cluster : clusters) {
-
-                    for (short entityID : cluster.getEntities()) {
-                        if (controller.containsEntity(entityID)) {
-                            touchedClusters.add(cluster);
-                            break;
-                        }
-                    }
-                }
-
-                controllerClusters.put(controller.getName(), touchedClusters);
-            }
-        }
-
-        return controllerClusters;
-    }
-
     public static class GetControllersClustersAndClustersControllersResult {
         public Map<String, Set<Cluster>> controllersClusters;
-        public Map<String, Set<Controller>> clustersControllers;
+        public Map<Short, Set<Controller>> clustersControllers;
 
         public GetControllersClustersAndClustersControllersResult(
             Map<String, Set<Cluster>> controllersClusters,
-            Map<String, Set<Controller>> clustersControllers
+            Map<Short, Set<Controller>> clustersControllers
         ) {
             this.controllersClusters = controllersClusters;
             this.clustersControllers = clustersControllers;
         }
 
         public Map<String, Set<Cluster>> getControllersClusters() { return controllersClusters; }
-        public Map<String, Set<Controller>> getClustersControllers() { return clustersControllers; }
+        public Map<Short, Set<Controller>> getClustersControllers() { return clustersControllers; }
     }
 
     public static GetControllersClustersAndClustersControllersResult getControllersClustersAndClustersControllers(
@@ -586,7 +516,7 @@ public class Utils {
         Collection<Controller> controllers
     ) {
         Map<String, Set<Cluster>> controllersClusters = new HashMap<>();
-        Map<String, Set<Controller>> clustersControllers = new HashMap<>();
+        Map<Short, Set<Controller>> clustersControllers = new HashMap<>();
 
         for (Cluster cluster : clusters) {
 
@@ -621,7 +551,7 @@ public class Utils {
             }
 
             clustersControllers.put(
-                cluster.getName(),
+                cluster.getID(),
                 touchedControllers
             );
         }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import FormControl from 'react-bootstrap/FormControl';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import Button from 'react-bootstrap/Button';
@@ -6,148 +6,104 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 
-export class TransactionOperationsMenu extends React.Component {
-    constructor(props) {
-        super(props);
+export const TransactionOperationsMenu = ({handleControllerSubmit, controllersClusters}) => {
+    const [showSubmit, setShowSubmit] = useState(false);
+    const [controllerList, setControllerList] = useState([]);
+    const [controller, setController] = useState('Select Controller');
+    const [controllerAmount, setControllerAmount] = useState("All");
 
-        this.state = {
-            showSubmit: false,
-            controllerList: [],
-            controller: 'Select Controller',
-            controllerAmount: "All"
-        }
+    useEffect(() => onMount(), []);
 
-        this.setController = this.setController.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
-    componentDidMount() {
-        if (this.state.controllerAmount === "All") {
-            this.setState({
-                controllerList: Object.keys(this.props.controllersClusters).sort()
-            });
+    function onMount() {
+        if (controllerAmount === "All") {
+            setControllerList(Object.keys(controllersClusters).sort());
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.state.controllerAmount === "All") {
-            this.setState({
-                controllerList: Object.keys(nextProps.controllersClusters).sort()
-            });
+    function componentWillReceiveProps(nextProps) {
+        if (controllerAmount === "All") {
+            setControllerList(Object.keys(nextProps.controllersClusters).sort());
         }
     }
 
-    setController(value) {
-        this.setState({
-            showSubmit: true,
-            controller: value
-        });
+    function changeControllerAmount(value) {
+        setControllerAmount(value);
+        setShowSubmit(false);
+        setController("Select Controller");
+        if (value === "All")
+            setControllerList(Object.keys(controllersClusters).sort());
+        else
+            setControllerList(Object.keys(controllersClusters).filter(key => controllersClusters[key].length === value).sort());
     }
 
-    setControllerAmount(value) {
-        this.setState({
-            controllerAmount: value,
-            showSubmit: false,
-            controller: "Select Controller"
-        });
-        if (value === "All") {
-            this.setState({
-                controllerList: Object.keys(this.props.controllersClusters).sort()
-            });
-        } else {
-            this.setState({
-                controllerList: Object.keys(this.props.controllersClusters).filter(key => this.props.controllersClusters[key].length === value).sort()
-            });
-        }
-    }
-
-    handleSubmit() {
-        this.props.handleControllerSubmit(this.state.controller);
+    function handleSubmit() {
+        handleControllerSubmit(controller);
     }
 
 
-    render() {
-        const controllerAmountList = [...new Set(Object.keys(this.props.controllersClusters).map(key => this.props.controllersClusters[key].length))].sort((a, b) => a - b).map(amount =>
-            <Dropdown.Item key={amount} onClick={() => this.setControllerAmount(amount)}>
-                {amount}
-            </Dropdown.Item>
-        );
+    const controllerAmountList = [...new Set(Object.keys(controllersClusters).map(key => controllersClusters[key].length))].sort((a, b) => a - b).map(amount =>
+        <Dropdown.Item key={amount} onClick={() => changeControllerAmount(amount)}>
+            {amount}
+        </Dropdown.Item>
+    );
 
-        const controllersListDropdown = this.state.controllerList.map(c =>
-            <Dropdown.Item key={c} onClick={() => this.setController(c)}>
-                {c}
-            </Dropdown.Item>
-        );
+    const controllersListDropdown = controllerList.map(c =>
+        <Dropdown.Item key={c} onClick={() => {setShowSubmit(true); setController(c);}}>
+            {c}
+        </Dropdown.Item>
+    );
 
-        return (
-            <ButtonToolbar>
-                <DropdownButton className="mr-1" as={ButtonGroup} title={this.state.controllerAmount}>
-                    <Dropdown.Item key={"All"} onClick={() => this.setControllerAmount("All")}>
-                        {"All"}
-                    </Dropdown.Item>
-                    {controllerAmountList}
-                </DropdownButton>
+    return (
+        <ButtonToolbar>
+            <DropdownButton className="me-1" as={ButtonGroup} title={controllerAmount}>
+                <Dropdown.Item key={"All"} onClick={() => changeControllerAmount("All")}>
+                    {"All"}
+                </Dropdown.Item>
+                {controllerAmountList}
+            </DropdownButton>
 
-                <Dropdown className="mr-1" as={ButtonGroup}>
-                    <Dropdown.Toggle>
-                        {this.state.controller}
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu as={CustomSearchMenuForwardingRef}>
-                        {controllersListDropdown}
-                    </Dropdown.Menu>
-                </Dropdown>
+            <Dropdown className="me-1" as={ButtonGroup}>
+                <Dropdown.Toggle>
+                    {controller}
+                </Dropdown.Toggle>
+                <Dropdown.Menu as={CustomSearchMenuForwardingRef}>
+                    {controllersListDropdown}
+                </Dropdown.Menu>
+            </Dropdown>
 
-                {this.state.showSubmit &&
-                <Button onClick={this.handleSubmit}>
-                    Create View
-                </Button>
-                }
-            </ButtonToolbar>
-        );
-    }
+            {showSubmit &&
+            <Button onClick={handleSubmit}>
+                Create View
+            </Button>
+            }
+        </ButtonToolbar>
+    );
 }
 
-class CustomSearchMenu extends React.Component {
-    constructor(props, context) {
-        super(props, context);
+const CustomSearchMenu = ({ children, style, className, 'aria-labelledby': labeledBy, innerRef }) => {
+    const [value, setValue] = useState('');
 
-        this.handleChange = this.handleChange.bind(this);
-
-        this.state = { value: '' };
+    function handleChange(e) {
+        setValue(e.target.value.toLowerCase().trim());
     }
 
-    handleChange(e) {
-        this.setState({ value: e.target.value.toLowerCase().trim() });
-    }
-
-    render() {
-        const {
-            children,
-            style,
-            className,
-            'aria-labelledby': labeledBy,
-        } = this.props;
-
-        const { value } = this.state;
-
-        return (
-            <div style={style} className={className} aria-labelledby={labeledBy} ref={this.props.innerRef}>
-                <FormControl
-                    autoFocus
-                    className="mx-3 my-2 w-auto"
-                    placeholder="Type to filter..."
-                    onChange={this.handleChange}
-                    value={value}
-                />
-                <ul className="list-unstyled">
-                    {React.Children.toArray(children).filter(
-                        child =>
-                            !value || child.props.children.toLowerCase().includes(value),
-                    )}
-                </ul>
-            </div>
-        );
-    }
+    return (
+        <div style={style} className={className} aria-labelledby={labeledBy} ref={innerRef}>
+            <FormControl
+                autoFocus
+                className="mx-3 my-2 w-auto"
+                placeholder="Type to filter..."
+                onChange={handleChange}
+                value={value}
+            />
+            <ul className="list-unstyled">
+                {React.Children.toArray(children).filter(
+                    child =>
+                        !value || child.props.children.toLowerCase().includes(value),
+                )}
+            </ul>
+        </div>
+    );
 }
 
 const CustomSearchMenuForwardingRef = React.forwardRef((props, ref) => (

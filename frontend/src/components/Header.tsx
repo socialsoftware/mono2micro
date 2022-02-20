@@ -7,7 +7,7 @@ const Header: FunctionComponent = () => {
 
     return (
         <Navbar bg="dark" variant="dark" >
-            <Navbar.Brand>
+            <Navbar.Brand id="home">
                 <Link to='/'>
                     Mono2Micro
                 </Link>
