@@ -11,7 +11,7 @@ services:
     ports:
       - 8080:8080
     environment:
-      - SCRIPTS_PORT=5002
+      - SCRIPTS_ADDRESS=http://scripts:5002
     restart: unless-stopped
     volumes:
       - ./codebases:/codebases

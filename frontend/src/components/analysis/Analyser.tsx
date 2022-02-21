@@ -14,7 +14,7 @@ import {Codebase, Decomposition, TraceType} from "../../type-declarations/types.
 
 const HttpStatus = require('http-status-codes');
 
-const filter = numberFilter({});
+const filter = numberFilter({placeholder: "filter"});
 const sort = true;
 
 const metricColumns = [
@@ -171,6 +171,7 @@ export const Analyser = () => {
                 "expert",
                 "codebaseName",
                 "clusters",
+                "nextClusterID"
             ]
         ).then((response) => {
             if (response.data !== null) {

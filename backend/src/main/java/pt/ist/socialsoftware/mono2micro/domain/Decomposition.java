@@ -471,7 +471,6 @@ public class Decomposition {
 
 		Map<String, Set<Cluster>> controllersClusters = result1.controllersClusters;
 		Map<Short, Set<Controller>> clustersControllers = result1.clustersControllers;
-		System.out.println("clustersControllers" + clustersControllers.size() + " controllersClusters" + controllersClusters.size());
 
 		// COMPLEXITY AND PERFORMANCE CALCULATION
 		CalculateComplexityAndPerformanceResult result2;

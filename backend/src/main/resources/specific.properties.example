@@ -1,1 +1,8 @@
-# scripts.address=http://localhost:5002
+# Use this file as a template for specific.properties
+
+
+
+# If a SCRIPTS_ADDRESS environment variable exists in the machine, it will be used,
+# otherwise, it will default to http://localhost:5002
+
+scripts.address=${SCRIPTS_ADDRESS:http://localhost:5002}

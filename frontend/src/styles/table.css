@@ -191,3 +191,7 @@ a {
     overflow: hidden;
     transition: max-height .4s cubic-bezier(0, .95, 0, .95)
 }
+
+.react-bootstrap-table .sr-only {
+    display: none;
+}

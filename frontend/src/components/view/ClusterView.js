@@ -66,6 +66,7 @@ const options = {
 
 export const ClusterView = () => {
     const context = useContext(AppContext);
+    const { translateEntity } = context;
     let { codebaseName, dendrogramName, decompositionName } = useParams();
 
     const [visGraph, setVisGraph] = useState({});
@@ -125,7 +126,6 @@ export const ClusterView = () => {
     }
 
     function convertClusterToNode(cluster) {
-        const { translateEntity } = context;
 
         return {
             id: cluster.id,

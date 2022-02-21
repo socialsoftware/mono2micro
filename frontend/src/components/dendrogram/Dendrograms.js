@@ -135,6 +135,7 @@ export const Dendrograms = () => {
             codebaseName,
             [
                 "name",
+                "nextClusterID",
                 "dendrogramName",
                 "clusters",
                 "tracesMaxlimit",
