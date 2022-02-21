@@ -1054,7 +1054,7 @@ export const TransactionView = () => {
                         {controller.functionalityRedesigns.map(e =>
                             <Dropdown.Item
                                 key={e.name}
-                                onSelect={() => setComparingRedesign(0, e.name)}>{e.name}
+                                onClick={() => setComparingRedesign(0, e.name)}>{e.name}
                             </Dropdown.Item>)}
                     </DropdownButton>
                     <DropdownButton as={ButtonGroup}
@@ -1062,7 +1062,7 @@ export const TransactionView = () => {
                         {controller.functionalityRedesigns.filter(e => selectedRedesignsToCompare[0] !== e.name).map(e =>
                             <Dropdown.Item
                                 key={e.name}
-                                onSelect={() => setComparingRedesign(1, e.name)}>{e.name}
+                                onClick={() => setComparingRedesign(1, e.name)}>{e.name}
                             </Dropdown.Item>)}
                     </DropdownButton>
                     <Button onClick={() => setCompareRedesigns(true)}>Submit</Button>

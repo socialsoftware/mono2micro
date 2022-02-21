@@ -1,5 +1,5 @@
-import React from 'react';
-import { RepositoryService } from '../../services/RepositoryService';
+import React, {useEffect, useState} from 'react';
+import {RepositoryService} from '../../services/RepositoryService';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
@@ -9,10 +9,10 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import Button from 'react-bootstrap/Button';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import BootstrapTable from 'react-bootstrap-table-next';
-import filterFactory, { numberFilter } from 'react-bootstrap-table2-filter';
-import { Codebase, Decomposition } from "../../type-declarations/types";
+import filterFactory, {numberFilter} from 'react-bootstrap-table2-filter';
+import {Codebase, Decomposition, TraceType} from "../../type-declarations/types.d";
 
-var HttpStatus = require('http-status-codes');
+const HttpStatus = require('http-status-codes');
 
 const filter = numberFilter({});
 const sort = true;
@@ -134,37 +134,22 @@ const metricColumns = [
     }
 ];
 
-export class Analyser extends React.Component<any, any> {
-    constructor(props: any) {
-        super(props);
-        this.state = {
-            codebases: [],
-            codebase: {
-                profiles: {}
-            },
-            selectedProfile: "",
-            experts: [],
-            expert: null,
-            resultData: [],
-            requestLimit: "0",
-            importFile: null,
-            amountOfTraces: "0",
-            typeOfTraces: "ALL",
-        };
+export const Analyser = () => {
+    const [codebases, setCodebases] = useState<Codebase[]>([]);
+    const [codebase, setCodebase] = useState<Codebase>({ profiles: {} });
+    const [selectedProfile, setSelectedProfile] = useState("");
+    const [experts, setExperts] = useState<Decomposition[]>([]);
+    const [expert, setExpert] = useState<Decomposition>({});
+    const [resultData, setResultData] = useState([]);
+    const [requestLimit, setRequestLimit] = useState("0");
+    const [importFile, setImportFile] = useState(null);
+    const [amountOfTraces, setAmountOfTraces] = useState("0");
+    const [typeOfTraces, setTypeOfTraces] = useState<TraceType>(TraceType.ALL);
+    const [isUploaded, setIsUploaded] = useState("");
 
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleImportSubmit = this.handleImportSubmit.bind(this);
-        this.handleRequestLimitChange = this.handleRequestLimitChange.bind(this);
-        this.handleSelectImportFile = this.handleSelectImportFile.bind(this);
-        this.handleChangeAmountOfTraces = this.handleChangeAmountOfTraces.bind(this);
-        this.handleChangeTypeOfTraces = this.handleChangeTypeOfTraces.bind(this);
-    }
+    useEffect(() => loadCodebases(), []);
 
-    componentDidMount() {
-        this.loadCodebases()
-    }
-
-    loadCodebases() {
+    function loadCodebases() {
         const service = new RepositoryService();
         service.getCodebases(
             [
@@ -172,13 +157,11 @@ export class Analyser extends React.Component<any, any> {
                 "profiles",
             ]
         ).then(response => {
-            this.setState({
-                codebases: response.data
-            });
+            return setCodebases(response.data);
         });
     }
 
-    loadCodebaseDecompositions(codebaseName: string) {
+    function loadCodebaseDecompositions(codebaseName: string) {
         const service = new RepositoryService();
         
         service.getCodebaseDecompositions(
@@ -191,112 +174,92 @@ export class Analyser extends React.Component<any, any> {
             ]
         ).then((response) => {
             if (response.data !== null) {
-                this.setState({
-                    experts: response.data.filter((decomposition: Decomposition) => decomposition.expert)
-                });
+                setExperts(response.data.filter((decomposition: Decomposition) => decomposition.expert));
             }
         });
     }
 
-    setCodebase(codebase: Pick<Codebase, "name" | "profiles">) {
-        this.setState({
-            codebase: codebase,
-        });
-        
-        this.loadCodebaseDecompositions(codebase.name!);
+    function changeCodebase(codebase: Pick<Codebase, "name" | "profiles">) {
+        setCodebase(codebase);
+
+        loadCodebaseDecompositions(codebase.name!);
     }
 
-    selectProfile(profile: string) {
-        if (this.state.selectedProfile !== profile) {
-            this.setState({
-                selectedProfile: profile,
-            });
+    function selectProfile(profile: string) {
+        if (selectedProfile !== profile) {
+            setSelectedProfile(profile);
         } else {
-            this.setState({
-                selectedProfile: "",
-            });
+            setSelectedProfile("");
         }
     }
 
-    setExpert(expert: any) {
-        this.setState({
-            expert: expert
-        });
+    function changeExpert(expert: any) {
+        setExpert(expert);
     }
 
-    handleSubmit(event: any) {
+    function handleSubmit(event: any) {
         event.preventDefault()
 
-        this.setState({
-            isUploaded: "Uploading..."
-        });
+        setIsUploaded("Uploading...");
+
+        if (codebase.name == undefined) {
+            setIsUploaded("Upload failed.");
+            return;
+        }
 
         const service = new RepositoryService();
         service.analyser(
-            this.state.codebase.name,
-            this.state.expert,
-            this.state.selectedProfile,
-            Number(this.state.requestLimit),
-            Number(this.state.amountOfTraces),
-            this.state.typeOfTraces,
+            codebase.name,
+            expert,
+            selectedProfile,
+            Number(requestLimit),
+            Number(amountOfTraces),
+            typeOfTraces,
         )
         .then(response => {
             if (response.status === HttpStatus.OK) {
-                this.setState({
-                    isUploaded: "Upload completed successfully."
-                });
+                setIsUploaded("Upload completed successfully.");
             } else {
-                this.setState({
-                    isUploaded: "Upload failed."
-                });
+                setIsUploaded("Upload failed.");
             }
         })
         .catch(error => {
-            this.setState({
-                isUploaded: "Upload failed."
-            });
+            setIsUploaded("Upload failed.");
         });
     }
 
-    handleRequestLimitChange(event: any) {
-        this.setState({
-            requestLimit: event.target.value
-        });
+    function handleRequestLimitChange(event: any) {
+        setRequestLimit(event.target.value);
     }
 
-    handleImportSubmit(event: any) {
+    function handleImportSubmit(event: any) {
         event.preventDefault();
-        this.setState({
-            resultData: Object.values(JSON.parse(this.state.importFile))
-        });
+        if (importFile == null) {
+            setIsUploaded("Upload failed: No import file found.");
+            return;
+        }
+        setResultData(Object.values(JSON.parse(importFile)));
     }
 
-    handleSelectImportFile(event: any) {
-        let that = this;
+    function handleSelectImportFile(event: any) {
         let reader = new FileReader();
         reader.onload = function(e: any) {
-            that.setState({
-                importFile: e.target.result
-            });
+            setImportFile(e.target.result);
         };
         
         if (event.target.files.length > 0)
             reader.readAsText(event.target.files[0]);
     }
 
-    handleChangeAmountOfTraces(event: any) {
-        this.setState({
-           amountOfTraces: event.target.value
-        });
+    function handleChangeAmountOfTraces(event: any) {
+       setAmountOfTraces(event.target.value);
     }
 
-    handleChangeTypeOfTraces(event: any) {
-        this.setState({
-            typeOfTraces: event.target.value
-        });
+    function handleChangeTypeOfTraces(event: any) {
+        setTypeOfTraces(event.target.value);
     }
 
-    renderBreadCrumbs = () => {
+    const renderBreadCrumbs = () => {
         return (
             <Breadcrumb>
                 <Breadcrumb.Item href="/">
@@ -309,252 +272,235 @@ export class Analyser extends React.Component<any, any> {
         );
     }
 
-    render() {
+    const metricRows = resultData.map((data: any, index: number) => {
+        return {
+            id: index,
+            access: data.accessWeight,
+            write: data.writeWeight,
+            read: data.readWeight,
+            sequence: data.sequenceWeight,
+            numberClusters: data.numberClusters,
+            maxClusterSize: data.maxClusterSize,
+            cohesion: data.cohesion,
+            coupling: data.coupling,
+            complexity: data.complexity,
+            performance: data.performance,
+            fmeasure: data.fmeasure,
+            accuracy: data.accuracy,
+            precision: data.precision,
+            recall: data.recall,
+            specificity: data.specificity,
+            mojoCommon: data.mojoCommon,
+            mojoBiggest: data.mojoBiggest,
+            mojoNew: data.mojoNew,
+            mojoSingletons: data.mojoSingletons
+        }
+    });
 
-        const {
-            resultData,
-            codebase,
-            codebases,
-            expert,
-            selectedProfile,
-            requestLimit,
-            experts,
-            isUploaded,
-            importFile,
-            amountOfTraces,
-            typeOfTraces,
-        } = this.state;
+    return (
+        <>
+            {renderBreadCrumbs()}
+            <h4 style={{color: "#666666"}}>
+                Analyser
+            </h4>
 
-        const metricRows = resultData.map((data: any, index: number) => {
-            return {
-                id: index,
-                access: data.accessWeight,
-                write: data.writeWeight,
-                read: data.readWeight,
-                sequence: data.sequenceWeight,
-                numberClusters: data.numberClusters,
-                maxClusterSize: data.maxClusterSize,
-                cohesion: data.cohesion,
-                coupling: data.coupling,
-                complexity: data.complexity,
-                performance: data.performance,
-                fmeasure: data.fmeasure,
-                accuracy: data.accuracy,
-                precision: data.precision,
-                recall: data.recall,
-                specificity: data.specificity,
-                mojoCommon: data.mojoCommon,
-                mojoBiggest: data.mojoBiggest,
-                mojoNew: data.mojoNew,
-                mojoSingletons: data.mojoSingletons
-            } 
-        });
-
-        return (
-            <>
-                {this.renderBreadCrumbs()}
-                <h4 style={{color: "#666666"}}>
-                    Analyser
-                </h4>
-
-                <Form onSubmit={this.handleSubmit}>
-                    <Form.Group as={Row} controlId="codebase">
-                        <Form.Label column sm={3}>
-                            Codebase
-                        </Form.Label>
-                        <Col sm={3}>
-                            <DropdownButton title={codebase?.name || "Select Codebase"}>
-                                {
-                                    codebases.map((codebase: any) => 
-                                        <Dropdown.Item 
-                                            key={codebase.name}
-                                            onClick={() => this.setCodebase(codebase)}
-                                        >
-                                            {codebase.name}
-                                        </Dropdown.Item>
-                                    )
-                                }
-                            </DropdownButton>
-                        </Col>
-                    </Form.Group>
-
-                    <Form.Group as={Row} controlId="selectControllerProfiles">
-                        <Form.Label column sm={3}>
-                            Select Controller Profiles
-                        </Form.Label>
-                        <Col sm={3}>
-                            <DropdownButton title={'Controller Profiles'}>
-                                {Object.keys(codebase.profiles).map((profile: any) =>
+            <Form onSubmit={handleSubmit}>
+                <Form.Group as={Row} controlId="codebase">
+                    <Form.Label column sm={3}>
+                        Codebase
+                    </Form.Label>
+                    <Col sm={3}>
+                        <DropdownButton title={codebase?.name || "Select Codebase"}>
+                            {
+                                codebases.map((codebase: any) =>
                                     <Dropdown.Item
-                                        key={profile}
-                                        onSelect={() => this.selectProfile(profile)}
-                                        active={selectedProfile === profile}
+                                        key={codebase.name}
+                                        onClick={() => changeCodebase(codebase)}
                                     >
-                                        {profile}
+                                        {codebase.name}
                                     </Dropdown.Item>
-                                )}
-                            </DropdownButton>
-                        </Col>
-                    </Form.Group>
-                    <Form.Group as={Row} controlId="amountOfTraces">
-                        <Form.Label column sm={3}>
-                            Amount of Traces per Controller
-                        </Form.Label>
-                        <Col sm={3}>
-                            <FormControl 
-                                type="number"
-                                value={amountOfTraces}
-                                onChange={this.handleChangeAmountOfTraces}
-                            />
-                            <Form.Text className="text-muted">
-                                If no number is inserted, 0 is assumed to be the default value meaning the maximum number of traces
-                            </Form.Text>
-                        </Col>
-                    </Form.Group>
-                    <Form.Group as={Row} className="align-items-center">
-                        <Form.Label as="legend" column sm={3}>
-                            Type of traces
-                        </Form.Label>
-                        <Col sm={3} style={{ paddingLeft: 0 }}>
-                            <Col sm="auto">
-                                <Form.Check
-                                    defaultChecked
-                                    id="allTraces"
-                                    value="ALL"
-                                    type="radio"
-                                    label="All"
-                                    name="typeOfTraces"
-                                    onClick={this.handleChangeTypeOfTraces}
-                                />
-                            </Col>
-                            <Col sm="auto">
-                                <Form.Check
-                                    type="radio"
-                                    id="longest"
-                                    value="LONGEST"
-                                    label="Longest"
-                                    name="typeOfTraces"
-                                    onClick={this.handleChangeTypeOfTraces}
-                                />
-                            </Col>
-                            <Col sm="auto">
-                                <Form.Check
-                                    id="withMoreDifferentTraces"
-                                    value="WITH_MORE_DIFFERENT_ACCESSES"
-                                    type="radio"
-                                    label="With more different accesses"
-                                    name="typeOfTraces"
-                                    onClick={this.handleChangeTypeOfTraces}
-                                />
+                                )
+                            }
+                        </DropdownButton>
+                    </Col>
+                </Form.Group>
 
-                            </Col>
-                            <Col sm="auto">
-                                <Form.Check
-                                    id="representativeSetOfAccesses"
-                                    value="REPRESENTATIVE"
-                                    type="radio"
-                                    label="Representative (set of accesses)"
-                                    name="typeOfTraces"
-                                    onClick={this.handleChangeTypeOfTraces}
-                                />
-                            </Col>
-                            {/* WIP */}
-                            <Col sm="auto">
-                                <Form.Check
-                                    disabled
-                                    id="complete"
-                                    value="?"
-                                    type="radio"
-                                    label="Representative (subsequence of accesses)"
-                                    name="typeOfTraces"
-                                    onClick={undefined}
-                                />
-                            </Col>
-                        </Col>
-                    </Form.Group>
-                    <Form.Group as={Row} controlId="expert">
-                        <Form.Label column sm={3}>
-                            Expert
-                        </Form.Label>
-                        <Col sm={3}>
-                            <DropdownButton title={expert?.name || "Select Expert Cut"}>
-                                {experts.map((expert: any) => 
-                                    <Dropdown.Item 
-                                        key={expert.name}
-                                        onClick={() => this.setExpert(expert)}
-                                    >
-                                        {expert.name}
-                                    </Dropdown.Item>
-                                )}
-                            </DropdownButton>
-                        </Col>
-                    </Form.Group>
-
-                    <Form.Group as={Row} controlId="requestLimit">
-                        <Form.Label column sm={3}>
-                            Request limit
-                        </Form.Label>
-                        <Col sm={3}>
-                            <FormControl 
-                                type="number"
-                                placeholder="Request Limit"
-                                value={requestLimit}
-                                onChange={this.handleRequestLimitChange}
+                <Form.Group as={Row} controlId="selectControllerProfiles">
+                    <Form.Label column sm={3}>
+                        Select Controller Profiles
+                    </Form.Label>
+                    <Col sm={3}>
+                        <DropdownButton title={'Controller Profiles'}>
+                            {codebase.profiles && Object.keys(codebase.profiles).map((profile: any) =>
+                                <Dropdown.Item
+                                    key={profile}
+                                    onClick={() => selectProfile(profile)}
+                                    active={selectedProfile === profile}
+                                >
+                                    {profile}
+                                </Dropdown.Item>
+                            )}
+                        </DropdownButton>
+                    </Col>
+                </Form.Group>
+                <Form.Group as={Row} controlId="amountOfTraces">
+                    <Form.Label column sm={3}>
+                        Amount of Traces per Controller
+                    </Form.Label>
+                    <Col sm={3}>
+                        <FormControl
+                            type="number"
+                            value={amountOfTraces}
+                            onChange={handleChangeAmountOfTraces}
+                        />
+                        <Form.Text className="text-muted">
+                            If no number is inserted, 0 is assumed to be the default value meaning the maximum number of traces
+                        </Form.Text>
+                    </Col>
+                </Form.Group>
+                <Form.Group as={Row} className="align-items-center">
+                    <Form.Label as="legend" column sm={3}>
+                        Type of traces
+                    </Form.Label>
+                    <Col sm={3} style={{ paddingLeft: 0 }}>
+                        <Col sm="auto">
+                            <Form.Check
+                                defaultChecked
+                                id="allTraces"
+                                value="ALL"
+                                type="radio"
+                                label="All"
+                                name="typeOfTraces"
+                                onClick={handleChangeTypeOfTraces}
                             />
                         </Col>
-                    </Form.Group>
-
-                    <Form.Group as={Row}>
-                        <Col sm={{ span: 5, offset: 3 }}>
-                            <Button 
-                                type="submit"
-                                disabled={
-                                    isUploaded === "Uploading..." ||
-                                    selectedProfile.length === "" ||
-                                    requestLimit === "" ||
-                                    (typeOfTraces === "" || amountOfTraces === "")
-                                }
-                            >
-                                Submit
-                            </Button>
-                            <Form.Text>
-                                {isUploaded}
-                            </Form.Text>
-                        </Col>
-                    </Form.Group>
-                </Form>
-                <br />
-                <Form onSubmit={this.handleImportSubmit}>
-                    <Form.Group as={Row} controlId="importFile">
-                        <Form.Label column sm={3}>
-                            Import Analyser Results from File
-                        </Form.Label>
-                        <Col sm={3}>
-                            <FormControl 
-                                type="file"
-                                onChange={this.handleSelectImportFile}
+                        <Col sm="auto">
+                            <Form.Check
+                                type="radio"
+                                id="longest"
+                                value="LONGEST"
+                                label="Longest"
+                                name="typeOfTraces"
+                                onClick={handleChangeTypeOfTraces}
                             />
                         </Col>
-                    </Form.Group>
+                        <Col sm="auto">
+                            <Form.Check
+                                id="withMoreDifferentTraces"
+                                value="WITH_MORE_DIFFERENT_ACCESSES"
+                                type="radio"
+                                label="With more different accesses"
+                                name="typeOfTraces"
+                                onClick={handleChangeTypeOfTraces}
+                            />
 
-                    <Form.Group as={Row}>
-                        <Col sm={{ span: 5, offset: 3 }}>
-                            <Button 
-                                type="submit"
-                                disabled={ importFile === null }
-                            >
-                                Import Analyser Results
-                            </Button>
                         </Col>
-                    </Form.Group>
-                </Form>
-                <BootstrapTable
-                    keyField='id'
-                    data={ metricRows }
-                    columns={ metricColumns }
-                    filter={ filterFactory() }
-                />
-            </>
-        )
-    }
+                        <Col sm="auto">
+                            <Form.Check
+                                id="representativeSetOfAccesses"
+                                value="REPRESENTATIVE"
+                                type="radio"
+                                label="Representative (set of accesses)"
+                                name="typeOfTraces"
+                                onClick={handleChangeTypeOfTraces}
+                            />
+                        </Col>
+                        {/* WIP */}
+                        <Col sm="auto">
+                            <Form.Check
+                                disabled
+                                id="complete"
+                                value="?"
+                                type="radio"
+                                label="Representative (subsequence of accesses)"
+                                name="typeOfTraces"
+                                onClick={undefined}
+                            />
+                        </Col>
+                    </Col>
+                </Form.Group>
+                <Form.Group as={Row} controlId="expert">
+                    <Form.Label column sm={3}>
+                        Expert
+                    </Form.Label>
+                    <Col sm={3}>
+                        <DropdownButton title={expert?.name || "Select Expert Cut"}>
+                            {experts.map((expert: any) =>
+                                <Dropdown.Item
+                                    key={expert.name}
+                                    onClick={() => changeExpert(expert)}
+                                >
+                                    {expert.name}
+                                </Dropdown.Item>
+                            )}
+                        </DropdownButton>
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} controlId="requestLimit">
+                    <Form.Label column sm={3}>
+                        Request limit
+                    </Form.Label>
+                    <Col sm={3}>
+                        <FormControl
+                            type="number"
+                            placeholder="Request Limit"
+                            value={requestLimit}
+                            onChange={handleRequestLimitChange}
+                        />
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row}>
+                    <Col sm={{ span: 5, offset: 3 }}>
+                        <Button
+                            type="submit"
+                            disabled={
+                                isUploaded === "Uploading..." ||
+                                selectedProfile === "" ||
+                                requestLimit === "" ||
+                                (typeOfTraces === undefined || amountOfTraces === "")
+                            }
+                        >
+                            Submit
+                        </Button>
+                        <Form.Text>
+                            {isUploaded}
+                        </Form.Text>
+                    </Col>
+                </Form.Group>
+            </Form>
+            <br />
+            <Form onSubmit={handleImportSubmit}>
+                <Form.Group as={Row} controlId="importFile">
+                    <Form.Label column sm={3}>
+                        Import Analyser Results from File
+                    </Form.Label>
+                    <Col sm={3}>
+                        <FormControl
+                            type="file"
+                            onChange={handleSelectImportFile}
+                        />
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row}>
+                    <Col sm={{ span: 5, offset: 3 }}>
+                        <Button
+                            type="submit"
+                            disabled={ importFile === null }
+                        >
+                            Import Analyser Results
+                        </Button>
+                    </Col>
+                </Form.Group>
+            </Form>
+            <BootstrapTable
+                keyField='id'
+                data={ metricRows }
+                columns={ metricColumns }
+                filter={ filterFactory() }
+            />
+        </>
+    )
 }
