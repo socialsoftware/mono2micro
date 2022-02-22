@@ -206,7 +206,7 @@ export const Dendrogram = () => {
     function renderCutForm() {
         return (
             <Form onSubmit={handleCutSubmit}>
-                <Form.Group as={Row} controlId="height">
+                <Form.Group as={Row} controlId="height" className="mb-3">
                     <Form.Label column sm={2}>
                         Height
                     </Form.Label>
@@ -219,13 +219,13 @@ export const Dendrogram = () => {
                     </Col>
                 </Form.Group>
 
-                <Form.Group as={Row} controlId="or">
+                <Form.Group as={Row} controlId="or" className="mb-3">
                     <Form.Label column sm={2}>
                         OR
                     </Form.Label>
                 </Form.Group>
 
-                <Form.Group as={Row} controlId="numberOfClusters">
+                <Form.Group as={Row} controlId="numberOfClusters" className="mb-3">
                     <Form.Label column sm={2}>
                         Number of Clusters
                     </Form.Label>
@@ -238,7 +238,7 @@ export const Dendrogram = () => {
                     </Col>
                 </Form.Group>
 
-                <Form.Group as={Row}>
+                <Form.Group as={Row} className="mb-3">
                     <Col sm={{ span: 5, offset: 2 }}>
                         <Button type="submit"
                                 disabled={(height !== "" && numberClusters !== "") ||
@@ -246,7 +246,7 @@ export const Dendrogram = () => {
                                             cutSuccess === "Processing..."}>
                             Cut
                         </Button>
-                        <Form.Text>
+                        <Form.Text className="ms-2">
                             {cutSuccess}
                         </Form.Text>
                     </Col>
@@ -258,7 +258,7 @@ export const Dendrogram = () => {
     function renderExpertForm() {
         return (
             <Form onSubmit={handleExpertSubmit}>
-                <Form.Group as={Row} controlId="newExpertName">
+                <Form.Group as={Row} controlId="newExpertName" className="mb-3">
                     <Form.Label column sm={2}>
                         Expert Name
                     </Form.Label>
@@ -272,7 +272,7 @@ export const Dendrogram = () => {
                     </Col>
                 </Form.Group>
 
-                <Form.Group as={Row} controlId="newExpertFile">
+                <Form.Group as={Row} controlId="newExpertFile" className="mb-3">
                     <Form.Label column sm={2}>
                         Expert File (Optional)
                     </Form.Label>
@@ -284,7 +284,7 @@ export const Dendrogram = () => {
                     </Col>
                 </Form.Group>
 
-                <Form.Group as={Row}>
+                <Form.Group as={Row} className="mb-4">
                     <Col sm={{ span: 5, offset: 2 }}>
                         <Button 
                             type="submit"
@@ -292,7 +292,7 @@ export const Dendrogram = () => {
                         >
                             Create Expert
                         </Button>
-                        <Form.Text>
+                        <Form.Text className="ms-2">
                             {isUploaded}
                         </Form.Text>
                     </Col>

@@ -255,7 +255,7 @@ export const Dendrograms = () => {
         const profiles = codebase["profiles"];
         return (
             <Form onSubmit={handleSubmit}>
-                <Form.Group as={Row} controlId="newDendrogramName" className="align-items-center">
+                <Form.Group as={Row} controlId="newDendrogramName" className="align-items-center mb-3">
                     <Form.Label column sm={2}>
                         Dendrogram Name
                     </Form.Label>
@@ -270,7 +270,7 @@ export const Dendrograms = () => {
                     </Col>
                 </Form.Group>
 
-                <Form.Group as={Row} controlId="selectControllerProfiles" className="align-items-center">
+                <Form.Group as={Row} controlId="selectControllerProfiles" className="align-items-center mb-3">
                     <Form.Label column sm={2}>
                         Select Codebase Profiles
                     </Form.Label>
@@ -288,7 +288,7 @@ export const Dendrograms = () => {
                         </DropdownButton>
                     </Col>
                 </Form.Group>
-                <Form.Group as={Row} controlId="amountOfTraces">
+                <Form.Group as={Row} controlId="amountOfTraces" className="mb-3">
                     <Form.Label column sm={2}>
                         Amount of Traces per Controller
                     </Form.Label>
@@ -304,7 +304,7 @@ export const Dendrograms = () => {
                         </Form.Text>
                     </Col>
                 </Form.Group>
-                <Form.Group as={Row} className="align-items-center">
+                <Form.Group as={Row} className="align-items-center mb-3">
                     <Form.Label as="legend" column sm={2}>
                         Type of traces
                     </Form.Label>
@@ -365,7 +365,7 @@ export const Dendrograms = () => {
                         </Col>
                     </Col>
                 </Form.Group>
-                <Form.Group as={Row} className="align-items-center">
+                <Form.Group as={Row} className="align-items-center mb-3">
                     <Form.Label as="legend" column sm={2}>
                         Linkage Type
                     </Form.Label>
@@ -400,7 +400,7 @@ export const Dendrograms = () => {
                     </Col>
                 </Form.Group>
 
-                <Form.Group as={Row} controlId="access" className="align-items-center">
+                <Form.Group as={Row} controlId="access" className="align-items-center mb-3">
                     <Form.Label column sm={2}>
                         Access Metric Weight (%)
                     </Form.Label>
@@ -413,7 +413,7 @@ export const Dendrograms = () => {
                     </Col>
                 </Form.Group>
 
-                <Form.Group as={Row} controlId="write" className="align-items-center">
+                <Form.Group as={Row} controlId="write" className="align-items-center mb-3">
                     <Form.Label column sm={2}>
                         Write Metric Weight (%)
                     </Form.Label>
@@ -426,7 +426,7 @@ export const Dendrograms = () => {
                     </Col>
                 </Form.Group>
 
-                <Form.Group as={Row} controlId="read" className="align-items-center">
+                <Form.Group as={Row} controlId="read" className="align-items-center mb-3">
                     <Form.Label column sm={2}>
                         Read Metric Weight (%)
                     </Form.Label>
@@ -439,7 +439,7 @@ export const Dendrograms = () => {
                     </Col>
                 </Form.Group>
 
-                <Form.Group as={Row} controlId="sequence" className="align-items-center">
+                <Form.Group as={Row} controlId="sequence" className="align-items-center mb-3">
                     <Form.Label column sm={2}>
                         Sequence Metric Weight (%)
                     </Form.Label>
@@ -471,7 +471,7 @@ export const Dendrograms = () => {
                         >
                             Create Dendrogram
                         </Button>
-                        <Form.Text>
+                        <Form.Text className="ms-2">
                             {isUploaded}
                         </Form.Text>
                     </Col>

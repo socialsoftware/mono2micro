@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -10,129 +10,94 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
+import {useParams} from "react-router-dom";
 
-var HttpStatus = require('http-status-codes');
+const HttpStatus = require('http-status-codes');
 
-export class Profiles extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            codebaseName: this.props.match.params.codebaseName,
-            codebase: {},
-            newProfileName: "",
-            moveToProfile: "",
-            selectedControllers: [],
-            isUploaded: ""
-        };
+export const Profiles = () => {
+    let { codebaseName } = useParams();
+    const [codebase, setCodebase] = useState({});
+    const [newProfileName, setNewProfileName] = useState("");
+    const [moveToProfile, setMoveToProfile] = useState("");
+    const [selectedControllers, setSelectedControllers] = useState([]);
+    const [isUploaded, setIsUploaded] = useState("");
 
-        this.handleChangeNewProfileName = this.handleChangeNewProfileName.bind(this);
-        this.handleNewProfileSubmit = this.handleNewProfileSubmit.bind(this);
-        this.handleMoveControllersSubmit = this.handleMoveControllersSubmit.bind(this);
-        this.handleSelectController = this.handleSelectController.bind(this);
-    }
+    useEffect(() => loadCodebase(), []);
 
-    componentDidMount() {
-        this.loadCodebase();
-    }
-
-    loadCodebase() {
+    function loadCodebase() {
         const service = new RepositoryService();
-        service.getCodebase(this.state.codebaseName).then(response => {
-            this.setState({
-                codebase: response.data === null ? {} : response.data
-            });
+        service.getCodebase(codebaseName, ["profiles"]).then(response => {
+            setCodebase(response.data === null ? {} : response.data);
         });
     }
 
-    handleChangeNewProfileName(event) {
-        this.setState({
-            newProfileName: event.target.value
-        });
+    function handleChangeNewProfileName(event) {
+        setNewProfileName(event.target.value);
     }
 
-    handleNewProfileSubmit(event) {
+    function handleNewProfileSubmit(event) {
         event.preventDefault();
 
-        this.setState({
-            isUploaded: "Uploading..."
-        });
+        setIsUploaded("Uploading...");
 
         const service = new RepositoryService();
-        service.addProfile(this.state.codebaseName, this.state.newProfileName).then(response => {
+        service.addProfile(codebaseName, newProfileName).then(response => {
             if (response.status === HttpStatus.OK) {
-                this.loadCodebase();
-                this.setState({
-                    isUploaded: "Upload completed successfully."
-                });
+                loadCodebase();
+                setIsUploaded("Upload completed successfully.");
             } else {
-                this.setState({
-                    isUploaded: "Upload failed."
-                });
+                setIsUploaded("Upload failed.");
             }
         })
         .catch(error => {
             if (error.response?.status === HttpStatus.UNAUTHORIZED) {
-                this.setState({
-                    isUploaded: "Upload failed. Profile name already exists."
-                });
+                setIsUploaded("Upload failed. Profile name already exists.");
             } else {
-                this.setState({
-                    isUploaded: "Upload failed."
-                });
+                setIsUploaded("Upload failed.");
             }
         });
     }
 
-    handleMoveToProfile(profile) {
-        this.setState({
-            moveToProfile: profile
-        });
+    function handleMoveToProfile(profile) {
+        setMoveToProfile(profile);
     }
 
-    handleMoveControllersSubmit() {
+    function handleMoveControllersSubmit() {
         const service = new RepositoryService();
         
         service.moveControllers(
-            this.state.codebaseName, 
-            this.state.selectedControllers, 
-            this.state.moveToProfile
-        ).then(response => {
-            this.setState({
-                selectedControllers: []
-            });
-            this.loadCodebase();
+            codebaseName,
+            selectedControllers,
+            moveToProfile
+        ).then(() => {
+            setSelectedControllers([]);
+            loadCodebase();
         });
     }
 
-    handleDeleteProfile(profile) {
+    function handleDeleteProfile(profile) {
         const service = new RepositoryService();
         
         service.deleteProfile(
-            this.state.codebaseName,
+            codebaseName,
             profile
-        ).then(response => {
-            this.loadCodebase();
+        ).then(() => {
+            loadCodebase();
         });
     }
 
-    handleSelectController(event) {
+    function handleSelectController(event) {
         const eventTargetId = event.target.id;
-        const { selectedControllers } = this.state;
 
         if (selectedControllers.includes(eventTargetId)) {
-            this.setState({
-                selectedControllers: selectedControllers.filter(c => c !== eventTargetId)
-            });
-
+            setSelectedControllers(selectedControllers.filter(c => c !== eventTargetId));
             return;
         }
 
-        this.setState({
-            selectedControllers: [...selectedControllers, eventTargetId]
-        });
+        setSelectedControllers([...selectedControllers, eventTargetId]);
     }
 
-    renderBreadCrumbs = () => {
+    const renderBreadCrumbs = () => {
         return (
             <Breadcrumb>
                 <Breadcrumb.Item href="/">
@@ -141,8 +106,8 @@ export class Profiles extends React.Component {
                 <Breadcrumb.Item href="/codebases">
                     Codebases
                 </Breadcrumb.Item>
-                <Breadcrumb.Item href={`/codebases/${this.state.codebaseName}`}>
-                    {this.state.codebaseName}
+                <Breadcrumb.Item href={`/codebases/${codebaseName}`}>
+                    {codebaseName}
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>
                     Profiles
@@ -151,117 +116,106 @@ export class Profiles extends React.Component {
         );
     }
 
-    render() {
-        const {
-            newProfileName,
-            isUploaded,
-            codebase,
-            moveToProfile,
-            selectedControllers,
-        } = this.state;
+    return (
+        <div>
+            {renderBreadCrumbs()}
+            <h4 style={{color: "#666666"}}>
+                Create Controller Profile
+            </h4>
 
+            <Form onSubmit={handleNewProfileSubmit}>
+                <Form.Group className="mb-3" as={Row} controlId="newProfileName">
+                    <Form.Label column sm={2}>
+                        Profile Name
+                    </Form.Label>
+                    <Col sm={5}>
+                        <FormControl
+                            type="text"
+                            maxLength="30"
+                            placeholder="Profile Name"
+                            value={newProfileName}
+                            onChange={handleChangeNewProfileName}
+                        />
+                    </Col>
+                </Form.Group>
 
-        return (
-            <div>
-                {this.renderBreadCrumbs()}
-                <h4 style={{color: "#666666"}}>
-                    Create Controller Profile
-                </h4>
+                <Form.Group as={Row}>
+                    <Col sm={{ span: 5, offset: 2 }}>
+                        <Button
+                            type="submit"
+                            disabled={isUploaded === "Uploading..." || newProfileName === ""}
+                        >
+                            Create Profile
+                        </Button>
+                        <Form.Text>
+                            {isUploaded}
+                        </Form.Text>
+                    </Col>
+                </Form.Group>
+            </Form>
 
-                <Form onSubmit={this.handleNewProfileSubmit}>
-                    <Form.Group as={Row} controlId="newProfileName">
-                        <Form.Label column sm={2}>
-                            Profile Name
-                        </Form.Label>
-                        <Col sm={5}>
-                            <FormControl 
-                                type="text"
-                                maxLength="30"
-                                placeholder="Profile Name"
-                                value={newProfileName}
-                                onChange={this.handleChangeNewProfileName}
-                            />
-                        </Col>
-                    </Form.Group>
+            <h4 style={{color: "#666666"}}>
+                Controller Profiles
+            </h4>
+            {Object.keys(codebase).length &&
+                <div>
+                    <ButtonToolbar>
+                        <Button className="me-1">Move selected controllers to</Button>
 
-                    <Form.Group as={Row}>
-                        <Col sm={{ span: 5, offset: 2 }}>
-                            <Button 
-                                type="submit"
-                                disabled={isUploaded === "Uploading..." || newProfileName === ""}
-                            >
-                                Create Profile
-                            </Button>
-                            <Form.Text>
-                                {isUploaded}
-                            </Form.Text>
-                        </Col>
-                    </Form.Group>
-                </Form>
+                        <DropdownButton
+                            as={ButtonGroup}
+                            title={moveToProfile === "" ? "Controller Profile" : moveToProfile}
+                            className="me-1"
+                        >
+                            {Object.keys(codebase.profiles).map(profile =>
+                                <Dropdown.Item
+                                    key={profile}
+                                    onClick={() => handleMoveToProfile(profile)}
+                                >
+                                        {profile}
+                                </Dropdown.Item>
+                            )}
+                        </DropdownButton>
 
-                <h4 style={{color: "#666666"}}>
-                    Controller Profiles
-                </h4>
-                {Object.keys(codebase).length &&
-                    <div>
-                        <ButtonToolbar>
-                            <Button className="me-1">Move selected controllers to</Button>
+                        <Button
+                            disabled={selectedControllers.length === 0 || moveToProfile === ""}
+                            onClick={handleMoveControllersSubmit}
+                        >
+                            Submit
+                        </Button>
+                    </ButtonToolbar>
 
-                            <DropdownButton 
-                                as={ButtonGroup} 
-                                title={moveToProfile === "" ? "Controller Profile" : moveToProfile} 
-                                className="me-1"
-                            >
-                                {Object.keys(codebase.profiles).map(profile =>
-                                    <Dropdown.Item 
-                                        key={profile}
-                                        onSelect={() => this.handleMoveToProfile(profile)}
+                    {Object.keys(codebase.profiles).map(profile =>
+                        <div key={profile}>
+                            <div style={{fontSize: '25px'}}>
+                                {profile}
+                                {!codebase.profiles[profile].length &&
+                                    <Button
+                                        onClick={() => handleDeleteProfile(profile)}
+                                        className="ms-2"
+                                        variant="danger"
+                                        size="sm"
                                     >
-                                            {profile}
-                                    </Dropdown.Item>
-                                )}
-                            </DropdownButton>
-
-                            <Button 
-                                disabled={selectedControllers.length === 0 || moveToProfile === ""} 
-                                onClick={this.handleMoveControllersSubmit}
-                            >
-                                Submit
-                            </Button>
-                        </ButtonToolbar>
-
-                        {Object.keys(codebase.profiles).map(profile =>
-                            <div key={profile}>
-                                <div style={{fontSize: '25px'}}>
-                                    {profile}
-                                    {!codebase.profiles[profile].length && 
-                                        <Button 
-                                            onClick={() => this.handleDeleteProfile(profile)} 
-                                            className="ms-2"
-                                            variant="danger" 
-                                            size="sm"
-                                        >
-                                            -
-                                        </Button>
-                                    }
-                                </div>
-                            
-                                {codebase.profiles[profile].map(controller =>
-                                    <Form.Check
-                                        id={controller}
-                                        key={controller}
-                                        type="checkbox" 
-                                        label={controller} 
-                                        checked={selectedControllers.includes(controller)} 
-                                        onChange={this.handleSelectController} 
-                                        style={{ paddingLeft: "3em" }} 
-                                    />
-                                )}
+                                        -
+                                    </Button>
+                                }
                             </div>
-                        )}
-                    </div>
-                }
-            </div>
-        );
-    }
+
+                            {codebase.profiles[profile].map(controller =>
+                                <Form.Check
+                                    id={controller}
+                                    key={controller}
+                                    type="checkbox"
+                                    label={controller}
+                                    checked={selectedControllers.includes(controller)}
+                                    onChange={handleSelectController}
+                                    style={{ paddingLeft: "3em" }}
+                                />
+                            )}
+                        </div>
+                    )}
+                </div>
+            }
+        </div>
+    );
 }

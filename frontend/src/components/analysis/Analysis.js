@@ -269,6 +269,7 @@ export const Analysis = () => {
                     </Form.Label>
                     <Col sm={5}>
                         <DropdownButton
+                            className="mb-2"
                             title={Object.keys(codebase).length === 0 ?
                                 "Select Codebase" :
                                 codebase.name
@@ -292,6 +293,7 @@ export const Analysis = () => {
                     </Form.Label>
                     <Col sm={5}>
                         <DropdownButton
+                            className="mb-2"
                             title={
                                 Object.keys(decomposition1).length === 0 ?
                                     "Select Cut" :
@@ -311,13 +313,12 @@ export const Analysis = () => {
                     </Form.Label>
                     <Col sm={5}>
                         <DropdownButton
+                            className="mb-2"
                             title={Object.keys(decomposition2).length === 0 ?
                                 "Select Cut" :
                                 decomposition2.name + " from " + decomposition2.dendrogramName
                             }
                         >
-                            {nonExpertDecompositionsForDecomposition2}
-                            <Dropdown.Divider />
                             {nonExpertDecompositionsForDecomposition2}
                         </DropdownButton>
                     </Col>
@@ -326,6 +327,7 @@ export const Analysis = () => {
                 <Form.Group as={Row}>
                     <Col sm={{ span: 5, offset: 2 }}>
                         <Button
+                            className="me-2 mb-3"
                             type="submit"
                             disabled={Object.keys(codebase).length === 0 ||
                                 Object.keys(decomposition1).length === 0 ||

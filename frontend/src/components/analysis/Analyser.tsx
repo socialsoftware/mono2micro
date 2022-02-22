@@ -306,7 +306,7 @@ export const Analyser = () => {
             </h4>
 
             <Form onSubmit={handleSubmit}>
-                <Form.Group as={Row} controlId="codebase">
+                <Form.Group as={Row} controlId="codebase" className="mb-3">
                     <Form.Label column sm={3}>
                         Codebase
                     </Form.Label>
@@ -326,7 +326,7 @@ export const Analyser = () => {
                     </Col>
                 </Form.Group>
 
-                <Form.Group as={Row} controlId="selectControllerProfiles">
+                <Form.Group as={Row} controlId="selectControllerProfiles" className="mb-3">
                     <Form.Label column sm={3}>
                         Select Controller Profiles
                     </Form.Label>
@@ -344,7 +344,7 @@ export const Analyser = () => {
                         </DropdownButton>
                     </Col>
                 </Form.Group>
-                <Form.Group as={Row} controlId="amountOfTraces">
+                <Form.Group as={Row} controlId="amountOfTraces" className="mb-3">
                     <Form.Label column sm={3}>
                         Amount of Traces per Controller
                     </Form.Label>
@@ -359,7 +359,7 @@ export const Analyser = () => {
                         </Form.Text>
                     </Col>
                 </Form.Group>
-                <Form.Group as={Row} className="align-items-center">
+                <Form.Group as={Row} className="align-items-center mb-3">
                     <Form.Label as="legend" column sm={3}>
                         Type of traces
                     </Form.Label>
@@ -420,7 +420,7 @@ export const Analyser = () => {
                         </Col>
                     </Col>
                 </Form.Group>
-                <Form.Group as={Row} controlId="expert">
+                <Form.Group as={Row} controlId="expert" className="mb-3">
                     <Form.Label column sm={3}>
                         Expert
                     </Form.Label>
@@ -438,7 +438,7 @@ export const Analyser = () => {
                     </Col>
                 </Form.Group>
 
-                <Form.Group as={Row} controlId="requestLimit">
+                <Form.Group as={Row} controlId="requestLimit" className="mb-3">
                     <Form.Label column sm={3}>
                         Request limit
                     </Form.Label>
@@ -465,7 +465,7 @@ export const Analyser = () => {
                         >
                             Submit
                         </Button>
-                        <Form.Text>
+                        <Form.Text className="ms-2">
                             {isUploaded}
                         </Form.Text>
                     </Col>
@@ -473,7 +473,7 @@ export const Analyser = () => {
             </Form>
             <br />
             <Form onSubmit={handleImportSubmit}>
-                <Form.Group as={Row} controlId="importFile">
+                <Form.Group as={Row} controlId="importFile" className="mb-3">
                     <Form.Label column sm={3}>
                         Import Analyser Results from File
                     </Form.Label>
@@ -485,7 +485,7 @@ export const Analyser = () => {
                     </Col>
                 </Form.Group>
 
-                <Form.Group as={Row}>
+                <Form.Group as={Row} className="mb-4">
                     <Col sm={{ span: 5, offset: 3 }}>
                         <Button
                             type="submit"

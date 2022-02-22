@@ -201,7 +201,8 @@ export const TransactionView = () => {
     const [DCGIAvailableClusters, setDCGIAvailableClusters] = useState(null);
     const [DCGILocalTransactionsForTheSelectedClusters, setDCGILocalTransactionsForTheSelectedClusters] = useState(null);
     const [DCGISelectedLocalTransactions, setDCGISelectedLocalTransactions] = useState([]);
-    const [selectedRedesignsToCompare, setSelectedRedesignsToCompare] = useState(["Select a Redesign", "Select a Redesign"]);
+    const [selectedRedesignsToCompare1, setSelectedRedesignsToCompare1] = useState("Select a Redesign");
+    const [selectedRedesignsToCompare2, setSelectedRedesignsToCompare2] = useState("Select a Redesign");
     const [compareRedesigns, setCompareRedesigns] = useState(false);
 
     useEffect(() => loadTransaction(), []);
@@ -748,7 +749,7 @@ export const TransactionView = () => {
     function renderFunctionalityRedesigns(){
         return <CardGroup style={{ width: "fit-content" }}>
             {controller.functionalityRedesigns.map(fr =>
-                <Card className="mb-4" key={fr.name} style={{ width: "30rem" }}>
+                <Card className="me-4 mb-4" key={fr.name} style={{ width: "30rem" }}>
                     <Card.Body>
                         {fr.usedForMetrics ? <Card.Title>
                                 {fr.name + " (Used For Metrics)"}
@@ -847,12 +848,6 @@ export const TransactionView = () => {
         </div>
     }
 
-    function setComparingRedesign(index, name){
-        const selectedRedesigns = selectedRedesignsToCompare;
-        selectedRedesigns[index] = name;
-        setSelectedRedesignsToCompare(selectedRedesigns);
-    }
-
     const metricsRows = controllers.map(controller => {
         return controller.type === "QUERY" ?
             {
@@ -932,9 +927,9 @@ export const TransactionView = () => {
                     />
                 )
             }
-            <Container fluid>
+            <Container fluid style={{paddingLeft:"0px", paddingRight:"0px"}}>
                 <Row>
-                    <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
+                    <Col>
                         <ButtonGroup className="mb-2">
                             <Button
                                 disabled={currentSubView === "Graph"}
@@ -1050,22 +1045,23 @@ export const TransactionView = () => {
                 <ButtonGroup className="mb-2">
                     <Button>Compare Two Redesigns</Button>
                     <DropdownButton as={ButtonGroup}
-                                    title={selectedRedesignsToCompare[0]}>
+                                    title={selectedRedesignsToCompare1}>
                         {controller.functionalityRedesigns.map(e =>
                             <Dropdown.Item
                                 key={e.name}
-                                onClick={() => setComparingRedesign(0, e.name)}>{e.name}
+                                onClick={() => setSelectedRedesignsToCompare1(e.name)}>{e.name}
                             </Dropdown.Item>)}
                     </DropdownButton>
                     <DropdownButton as={ButtonGroup}
-                                    title={selectedRedesignsToCompare[1]}>
-                        {controller.functionalityRedesigns.filter(e => selectedRedesignsToCompare[0] !== e.name).map(e =>
+                                    title={selectedRedesignsToCompare2}>
+                        {controller.functionalityRedesigns.filter(e => selectedRedesignsToCompare1 !== e.name).map(e =>
                             <Dropdown.Item
                                 key={e.name}
-                                onClick={() => setComparingRedesign(1, e.name)}>{e.name}
+                                onClick={() => setSelectedRedesignsToCompare2(e.name)}>{e.name}
                             </Dropdown.Item>)}
                     </DropdownButton>
-                    <Button onClick={() => setCompareRedesigns(true)}>Submit</Button>
+                    <Button disabled={selectedRedesignsToCompare1 === "Select a Redesign" || selectedRedesignsToCompare2 === "Select a Redesign"}
+                            onClick={() => setCompareRedesigns(true)}>Submit</Button>
                 </ButtonGroup>
                 }
                 <br/>
@@ -1077,53 +1073,53 @@ export const TransactionView = () => {
             compareRedesigns &&
             <div>
                 <Button className="mb-2"
-                        onClick={() => {setCompareRedesigns(false); setSelectedRedesignsToCompare(["Select a Redesign", "Select a Redesign"]);}}>
+                        onClick={() => {setCompareRedesigns(false); setSelectedRedesignsToCompare1("Select a Redesign"); setSelectedRedesignsToCompare2("Select a Redesign");}}>
                     Back
                 </Button>
-                <Container fluid>
+                <Container fluid style={{paddingLeft:"0px", paddingRight:"0px"}}>
                     <Row>
-                        <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
+                        <Col>
                             {controller.type === "SAGA" ?
                                 <div>
                                     <h4 style={{color: "#666666", textAlign: "center"}}>
-                                        {selectedRedesignsToCompare[0]}
+                                        {selectedRedesignsToCompare1}
                                     </h4>
                                     <h4 style={{color: "#666666", textAlign: "center"}}>
-                                        Functionality Complexity: {controller.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare[0])[0].functionalityComplexity} - System Complexity: {controller.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare[0])[0].systemComplexity}
+                                        Functionality Complexity: {controller.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare1)[0].functionalityComplexity} - System Complexity: {controller.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare1)[0].systemComplexity}
                                     </h4>
                                 </div>
                                 :
                                 <h4 style={{color: "#666666", textAlign: "center"}}>
-                                    Query Inconsistency Complexity: {controller.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare[0])[0].inconsistencyComplexity}
+                                    Query Inconsistency Complexity: {controller.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare1)[0].inconsistencyComplexity}
                                 </h4>
                             }
-                            {renderRedesignGraph(createRedesignGraph(controller.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare[0])[0], controller))}
+                            {renderRedesignGraph(createRedesignGraph(controller.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare1)[0], controller))}
                         </Col>
                         <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
                             {controller.type === "SAGA" ?
                                 <div>
                                     <h4 style={{color: "#666666", textAlign: "center"}}>
-                                        {selectedRedesignsToCompare[1]}
+                                        {selectedRedesignsToCompare2}
                                     </h4>
                                     <h4 style={{color: "#666666", textAlign: "center"}}>
-                                        Functionality Complexity: {controller.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare[1])[0].functionalityComplexity} - System Complexity: {controller.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare[1])[0].systemComplexity}
+                                        Functionality Complexity: {controller.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare2)[0].functionalityComplexity} - System Complexity: {controller.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare2)[0].systemComplexity}
                                     </h4>
                                 </div>
                                 :
                                 <h4 style={{color: "#666666", textAlign: "center"}}>
-                                    Query Inconsistency Complexity: {controller.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare[1])[0].inconsistencyComplexity}
+                                    Query Inconsistency Complexity: {controller.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare2)[0].inconsistencyComplexity}
                                 </h4>
                             }
-                            {renderRedesignGraph(createRedesignGraph(controller.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare[1])[0], controller))}
+                            {renderRedesignGraph(createRedesignGraph(controller.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare2)[0], controller))}
                         </Col>
                     </Row>
                 </Container>
             </div>
             }
             {showGraph && currentSubView === "Functionality Redesign" && selectedRedesign !== null &&
-            <Container fluid>
+            <Container fluid style={{paddingLeft:"0px", paddingRight:"0px"}}>
                 <Row>
-                    <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
+                    <Col>
                         <Button className="mb-2"
                                 onClick={() => {setSelectedRedesign(null); handleCancel();}}>
                             Back

@@ -568,8 +568,7 @@ public class AnalysisController {
 			accuracy = BigDecimal.valueOf(accuracy).setScale(2, RoundingMode.HALF_UP).floatValue();
 
 			precision = (float)truePositive / (truePositive + falsePositive);
-			System.out.println("Precision:" + precision + " truePositive:" + truePositive + " trueNegative:" + trueNegative + " falsePositive:" + falsePositive + " falseNegative:" + falseNegative);
-			precision = BigDecimal.valueOf(precision).setScale(2, RoundingMode.HALF_UP).floatValue();
+			precision = Float.isNaN(precision) ? -1 : BigDecimal.valueOf(precision).setScale(2, RoundingMode.HALF_UP).floatValue();
 
 			recall = (float)truePositive / (truePositive + falseNegative);
 			recall = BigDecimal.valueOf(recall).setScale(2, RoundingMode.HALF_UP).floatValue();
@@ -577,8 +576,8 @@ public class AnalysisController {
 			specificity = (float)trueNegative / (trueNegative + falsePositive);
 			specificity = Float.isNaN(specificity) ? -1 : BigDecimal.valueOf(specificity).setScale(2, RoundingMode.HALF_UP).floatValue();
 
-			fmeasure = 2*precision*recall / (precision + recall);
-			fmeasure = BigDecimal.valueOf(fmeasure).setScale(2, RoundingMode.HALF_UP).floatValue();
+			fmeasure = 2 * precision * recall / (precision + recall);
+			fmeasure = Float.isNaN(precision) ? -1 : BigDecimal.valueOf(fmeasure).setScale(2, RoundingMode.HALF_UP).floatValue();
 		}
 
 		analysis.setAccuracy(accuracy);
