@@ -30,6 +30,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./codebases:/codebases
+      - './scripts/:/app'
 
   functionality_refactor:
     build:

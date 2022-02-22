@@ -11,4 +11,4 @@ app.include_router(scipyController.scipyRouter)
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=env.PORT)
+    uvicorn.run("main:app", reload=True, host="0.0.0.0", port=env.PORT)
