@@ -20,7 +20,6 @@ yarn-error.log*
 .project
 .settings
 .idea
-target/
 *.iml
 
 #tmpDirCreatedBySpoon
@@ -30,3 +29,6 @@ tmpDecompiledSources/
 collectors/spoon-callgraph/data/collection/Untitled Folder
 collectors/spoon-callgraph/testData.txt
 collectors/spoon-callgraph/data/collection/*.json
+
+# local codebases
+codebases/
