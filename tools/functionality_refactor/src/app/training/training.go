@@ -145,9 +145,8 @@ func (svc *DefaultHandler) AddDataToTrainingDataset(
 			result = 1
 		}
 
-		clusterName := strconv.Itoa(cluster)
 		entityNames := []string{}
-		for _, entityID := range controller.EntitiesPerCluster[clusterName] {
+		for _, entityID := range controller.EntitiesPerCluster[cluster] {
 			entityNames = append(entityNames, idToEntityMap[strconv.Itoa(entityID)])
 		}
 

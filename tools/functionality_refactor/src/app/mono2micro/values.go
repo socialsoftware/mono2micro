@@ -36,23 +36,22 @@ func (d *Dendogram) GetDecomposition(name string) *Decomposition {
 }
 
 type Decomposition struct {
-	Name                  string                 `json:"name,omitempty"`
-	CodebaseName          string                 `json:"codebaseName,omitempty"`
-	DendogramName         string                 `json:"dendrogramName,omitempty"`
-	Expert                bool                   `json:"expert,omitempty"`
-	CutValue              float32                `json:"cutValue,omitempty"`
-	Complexity            float32                `json:"complexity,omitempty"`
-	Cohesion              float32                `json:"cohesion,omitempty"`
-	Coupling              float32                `json:"coupling,omitempty"`
-	Clusters              map[string]*Cluster    `json:"clusters,omitempty"`
-	Controllers           map[string]*Controller `json:"controllers,omitempty"`
-	EntityIDToClusterName map[string]string      `json:"entityIDToClusterName,omitempty"`
+	Name                string                 `json:"name,omitempty"`
+	CodebaseName        string                 `json:"codebaseName,omitempty"`
+	DendogramName       string                 `json:"dendrogramName,omitempty"`
+	Expert              bool                   `json:"expert,omitempty"`
+	CutValue            float32                `json:"cutValue,omitempty"`
+	Complexity          float32                `json:"complexity,omitempty"`
+	Cohesion            float32                `json:"cohesion,omitempty"`
+	Coupling            float32                `json:"coupling,omitempty"`
+	Clusters            map[int]*Cluster       `json:"clusters,omitempty"`
+	Controllers         map[string]*Controller `json:"controllers,omitempty"`
+	EntityIDToClusterID map[int]int            `json:"entityIDToClusterID,omitempty"`
 }
 
 func (d *Decomposition) GetClusterFromID(clusterID int) *Cluster {
-	clusterName := strconv.Itoa(clusterID)
-	for name, cluster := range d.Clusters {
-		if name == clusterName {
+	for id, cluster := range d.Clusters {
+		if id == clusterID {
 			return cluster
 		}
 	}
@@ -60,13 +59,12 @@ func (d *Decomposition) GetClusterFromID(clusterID int) *Cluster {
 }
 
 func (d *Decomposition) GetEntityCluster(id int) *Cluster {
-	entityName := strconv.Itoa(id)
-	clusterName, found := d.EntityIDToClusterName[entityName]
+	clusterID, found := d.EntityIDToClusterID[id]
 	if !found {
 		return nil
 	}
 
-	cluster, found := d.Clusters[clusterName]
+	cluster, found := d.Clusters[clusterID]
 	if !found {
 		return nil
 	}
@@ -75,21 +73,20 @@ func (d *Decomposition) GetEntityCluster(id int) *Cluster {
 }
 
 type Cluster struct {
-	Name                 string                 `json:"name,omitempty"`
+	Id                   int                    `json:"id,omitempty"`
 	Complexity           float32                `json:"complexity,omitempty"`
 	Cohesion             float32                `json:"cohesion,omitempty"`
 	Coupling             float32                `json:"coupling,omitempty"`
-	CouplingDependencies map[string][]int       `json:"couplingDependencies,omitempty"`
+	CouplingDependencies map[int][]int          `json:"couplingDependencies,omitempty"`
 	Entities             []int                  `json:"entities,omitempty"`
 	Controllers          map[string]*Controller `json:"controllers,omitempty"`
 }
 
 func (c *Cluster) AddCouplingDependency(clusterID int, entityID int) {
-	clusterName := strconv.Itoa(clusterID)
 
-	clusterDependencies, ok := c.CouplingDependencies[clusterName]
+	clusterDependencies, ok := c.CouplingDependencies[clusterID]
 	if !ok {
-		c.CouplingDependencies[clusterName] = []int{entityID}
+		c.CouplingDependencies[clusterID] = []int{entityID}
 		return
 	}
 
@@ -99,7 +96,7 @@ func (c *Cluster) AddCouplingDependency(clusterID int, entityID int) {
 		}
 	}
 
-	c.CouplingDependencies[clusterName] = append(c.CouplingDependencies[clusterName], entityID)
+	c.CouplingDependencies[clusterID] = append(c.CouplingDependencies[clusterID], entityID)
 	return
 }
 
@@ -133,7 +130,7 @@ type Controller struct {
 	Performance            float32                  `json:"performance,omitempty"`
 	Entities               map[string]int           `json:"entities,omitempty"`
 	FunctionalityRedesigns []*FunctionalityRedesign `json:"functionalityRedesigns,omitempty"`
-	EntitiesPerCluster     map[string][]int         `json:"entitiesPerCluster,omitempty"`
+	EntitiesPerCluster     map[int][]int            `json:"entitiesPerCluster,omitempty"`
 }
 
 func (c *Controller) GetFunctionalityRedesign() *FunctionalityRedesign {

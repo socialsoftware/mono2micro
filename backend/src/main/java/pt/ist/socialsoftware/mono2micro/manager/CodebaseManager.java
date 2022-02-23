@@ -383,7 +383,7 @@ public class CodebaseManager {
 			throws IOException
 	{
 		objectMapper.writerWithDefaultPrettyPrinter().writeValue(
-				new File(CODEBASES_PATH + codebaseName + "/translation.json"),
+				new File(CODEBASES_PATH + codebaseName + "/IDToEntity.json"),
 				translationFile
 		);
 	}
@@ -394,7 +394,7 @@ public class CodebaseManager {
 		throws IOException
 	{
 
-		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/translation.json");
+		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/IDToEntity.json");
 
 		String translation = IOUtils.toString(is, "UTF-8");
 

@@ -6,10 +6,10 @@ import (
 	"functionality_refactor/app/metrics"
 	"functionality_refactor/app/mono2micro"
 	"functionality_refactor/app/refactor/values"
+	"strconv"
 
 	"functionality_refactor/app/training"
 	"sort"
-	"strconv"
 	"sync"
 	"time"
 
@@ -145,8 +145,7 @@ func (svc *DefaultHandler) extractValidControllers(
 		wg.Add(1)
 		go func(controller *mono2micro.Controller, validControllers map[string]*mono2micro.Controller) {
 			defer wg.Done()
-			for clusterName := range controller.EntitiesPerCluster {
-				clusterID, _ := strconv.Atoi(clusterName)
+			for clusterID := range controller.EntitiesPerCluster {
 				cluster := decomposition.GetClusterFromID(clusterID)
 				mapMutex.Lock()
 				cluster.AddController(controller)
@@ -169,15 +168,14 @@ func (svc *DefaultHandler) createSagaRedesigns(
 ) []*mono2micro.FunctionalityRedesign {
 	sagaRedesigns := []*mono2micro.FunctionalityRedesign{}
 
-	for clusterName := range controller.EntitiesPerCluster {
-		cluster := decomposition.Clusters[clusterName]
+	for clusterID := range controller.EntitiesPerCluster {
+		cluster := decomposition.Clusters[clusterID]
 
 		redesign := svc.refactorController(request, controller, initialRedesign, cluster)
 
 		svc.metricsHandler.CalculateDecompositionMetrics(decomposition, controller, redesign)
 
-		orchestratorID, _ := strconv.Atoi(clusterName)
-		redesign.OrchestratorID = orchestratorID
+		redesign.OrchestratorID = clusterID
 
 		sagaRedesigns = append(sagaRedesigns, redesign)
 	}
@@ -215,8 +213,7 @@ func (svc *DefaultHandler) refactorController(
 	}
 
 	// Initialize Invocation, set dependencies and orchestrator
-	orchestratorID, _ := strconv.Atoi(orchestrator.Name)
-	redesign = svc.addOrchestratorPivotInvocations(orchestratorID, initialRedesign, redesign)
+	redesign = svc.addOrchestratorPivotInvocations(orchestrator.Id, initialRedesign, redesign)
 
 	// while any merge is done, iterate all the invocations
 	var mergedInvocations int
@@ -531,7 +528,7 @@ func (svc *DefaultHandler) createFinalControllerData(
 			Orchestrator: &values.Cluster{
 				Name:     orchestratorName,
 				ID:       orchestratorID,
-				Entities: controller.EntitiesPerCluster[orchestratorName],
+				Entities: controller.EntitiesPerCluster[orchestratorID],
 			},
 			ComplexityMetrics: &values.ComplexityMetrics{
 				SystemComplexity:        sagaRedesign.SystemComplexity,
