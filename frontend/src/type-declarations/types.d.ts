@@ -65,6 +65,8 @@ export interface Dendrogram {
     decompositions?: Decomposition[];
     profile?: string;
 	traceType?: TraceType;
+    similarityGeneratorType?: SimilarityGeneratorType;
+    clusteringAlgorithmType?: ClusteringAlgorithmType;
 }
 
 export interface Codebase {
@@ -80,6 +82,8 @@ export interface AnalyserDto {
     tracesMaxLimit?: number;
     traceType?: TraceType;
     expert?: Decomposition;
+    similarityGeneratorType?: SimilarityGeneratorType;
+    clusteringAlgorithmType?: ClusteringAlgorithmType;
 }
 
 export interface AnalysisDto {
@@ -114,8 +118,16 @@ export interface RefactorCodebase {
 }
 
 export enum TraceType {
-    ALL,
-    REPRESENTATIVE,
-    LONGEST,
-    WITH_MORE_DIFFERENT_ACCESSES,
+    ALL = "ALL",
+    REPRESENTATIVE = "REPRESENTATIVE",
+    LONGEST = "LONGEST",
+    WITH_MORE_DIFFERENT_ACCESSES = "WITH_MORE_DIFFERENT_ACCESSES",
+}
+
+export enum SimilarityGeneratorType {
+    DEFAULT = "DEFAULT"
+}
+
+export enum ClusteringAlgorithmType {
+    SCIPY = "SCIPY"
 }

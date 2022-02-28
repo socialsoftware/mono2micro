@@ -13,7 +13,7 @@ import {
     Cluster,
     Controller,
     LocalTransactionsGraph,
-    RefactorCodebase,
+    RefactorCodebase, SimilarityGeneratorType, ClusteringAlgorithmType,
 } from "../type-declarations/types";
 import { addSearchParamsToUrl } from "../utils/url";
 
@@ -52,6 +52,8 @@ export class RepositoryService {
         requestLimit: number,
         amountOfTraces: number,
         traceType: TraceType,
+        similarityGeneratorType: SimilarityGeneratorType,
+        clusteringAlgorithmType: ClusteringAlgorithmType
     ) {
         const analyserData: AnalyserDto = {
             expert: expert || {},
@@ -59,6 +61,8 @@ export class RepositoryService {
             requestLimit,
             traceType,
             tracesMaxLimit: amountOfTraces,
+            similarityGeneratorType,
+            clusteringAlgorithmType
         };
 
         return this.axios.post<null>(
@@ -197,6 +201,8 @@ export class RepositoryService {
         profile: string,
         amountOfTraces: number,
         traceType: TraceType,
+        similarityGeneratorType: SimilarityGeneratorType,
+        clusteringAlgorithmType: ClusteringAlgorithmType
     ) {
         const dendrogramData: Dendrogram = {
             codebaseName,
@@ -209,6 +215,8 @@ export class RepositoryService {
             profile,
             tracesMaxLimit: amountOfTraces,
             traceType,
+            similarityGeneratorType,
+            clusteringAlgorithmType
         };
         
         return this.axios.post<null>(

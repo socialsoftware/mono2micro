@@ -6,9 +6,9 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
-import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
-import pt.ist.socialsoftware.mono2micro.utils.Utils;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.CodebaseDeserializer;
+import pt.ist.socialsoftware.mono2micro.utils.similarityGenerators.DefaultSimilarityGenerator;
+import pt.ist.socialsoftware.mono2micro.utils.similarityGenerators.SimilarityGenerator;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.File;
@@ -155,22 +155,15 @@ public class Codebase {
 
 		this.addDendrogram(dendrogram);
 
-		Utils.GetDataToBuildSimilarityMatrixResult result = Utils.getDataToBuildSimilarityMatrix(
-			this,
-			dendrogram.getProfile(),
-			dendrogram.getTracesMaxLimit(),
-			dendrogram.getTraceType()
-		);
-
-		CodebaseManager.getInstance().writeDendrogramSimilarityMatrix(
-			this.name,
-			dendrogram.getName(),
-			dendrogram.getMatrixData(
-				result.entities,
-				result.e1e2PairCount,
-				result.entityControllers
-			)
-		);
+		SimilarityGenerator similarityGenerator;
+		switch (dendrogram.getSimilarityGeneratorType()) {
+			case DEFAULT:
+			default:
+				similarityGenerator = new DefaultSimilarityGenerator(this, dendrogram);
+				break;
+		}
+		similarityGenerator.buildMatrix();
+		similarityGenerator.writeSimilarityMatrix();
 
 		executeCreateDendrogram(dendrogram);
 	}

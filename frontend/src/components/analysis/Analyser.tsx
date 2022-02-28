@@ -10,7 +10,13 @@ import Button from 'react-bootstrap/Button';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, {numberFilter} from 'react-bootstrap-table2-filter';
-import {Codebase, Decomposition, TraceType} from "../../type-declarations/types.d";
+import {
+    ClusteringAlgorithmType,
+    Codebase,
+    Decomposition,
+    SimilarityGeneratorType,
+    TraceType
+} from "../../type-declarations/types.d";
 
 const HttpStatus = require('http-status-codes');
 
@@ -144,7 +150,9 @@ export const Analyser = () => {
     const [requestLimit, setRequestLimit] = useState("0");
     const [importFile, setImportFile] = useState(null);
     const [amountOfTraces, setAmountOfTraces] = useState("0");
-    const [typeOfTraces, setTypeOfTraces] = useState<TraceType>(TraceType.ALL);
+    const [traceType, setTraceType] = useState<TraceType>(TraceType.ALL);
+    const [similarityGenerator, setSimilarityGenerator] = useState(SimilarityGeneratorType.DEFAULT);
+    const [clusteringAlgorithm, setClusteringAlgorithm] = useState(ClusteringAlgorithmType.SCIPY);
     const [isUploaded, setIsUploaded] = useState("");
 
     useEffect(() => loadCodebases(), []);
@@ -215,7 +223,9 @@ export const Analyser = () => {
             selectedProfile,
             Number(requestLimit),
             Number(amountOfTraces),
-            typeOfTraces,
+            traceType,
+            similarityGenerator,
+            clusteringAlgorithm
         )
         .then(response => {
             if (response.status === HttpStatus.OK) {
@@ -256,8 +266,16 @@ export const Analyser = () => {
        setAmountOfTraces(event.target.value);
     }
 
-    function handleChangeTypeOfTraces(event: any) {
-        setTypeOfTraces(event.target.value);
+    function handleChangeTraceType(event: any) {
+        setTraceType(event.target.value);
+    }
+
+    function handleChangeSimilarityGenerator(event: any) {
+        setSimilarityGenerator(event.target.value);
+    }
+
+    function handleChangeClusteringAlgorithm(event: any) {
+        setClusteringAlgorithm(event.target.value);
     }
 
     const renderBreadCrumbs = () => {
@@ -371,8 +389,8 @@ export const Analyser = () => {
                                 value="ALL"
                                 type="radio"
                                 label="All"
-                                name="typeOfTraces"
-                                onClick={handleChangeTypeOfTraces}
+                                name="traceType"
+                                onClick={handleChangeTraceType}
                             />
                         </Col>
                         <Col sm="auto">
@@ -381,8 +399,8 @@ export const Analyser = () => {
                                 id="longest"
                                 value="LONGEST"
                                 label="Longest"
-                                name="typeOfTraces"
-                                onClick={handleChangeTypeOfTraces}
+                                name="traceType"
+                                onClick={handleChangeTraceType}
                             />
                         </Col>
                         <Col sm="auto">
@@ -391,8 +409,8 @@ export const Analyser = () => {
                                 value="WITH_MORE_DIFFERENT_ACCESSES"
                                 type="radio"
                                 label="With more different accesses"
-                                name="typeOfTraces"
-                                onClick={handleChangeTypeOfTraces}
+                                name="traceType"
+                                onClick={handleChangeTraceType}
                             />
 
                         </Col>
@@ -402,8 +420,8 @@ export const Analyser = () => {
                                 value="REPRESENTATIVE"
                                 type="radio"
                                 label="Representative (set of accesses)"
-                                name="typeOfTraces"
-                                onClick={handleChangeTypeOfTraces}
+                                name="traceType"
+                                onClick={handleChangeTraceType}
                             />
                         </Col>
                         {/* WIP */}
@@ -414,12 +432,51 @@ export const Analyser = () => {
                                 value="?"
                                 type="radio"
                                 label="Representative (subsequence of accesses)"
-                                name="typeOfTraces"
+                                name="traceType"
                                 onClick={undefined}
                             />
                         </Col>
                     </Col>
                 </Form.Group>
+
+                <Form.Group as={Row} className="align-items-center mb-3">
+                    <Form.Label as="legend" column sm={3}>
+                        Similarity Generator
+                    </Form.Label>
+                    <Col sm={3} style={{ paddingLeft: 0 }}>
+                        <Col sm="auto">
+                            <Form.Check
+                                defaultChecked
+                                id="default"
+                                value="DEFAULT"
+                                type="radio"
+                                label="Default"
+                                name="similarityGenerator"
+                                onClick={handleChangeSimilarityGenerator}
+                            />
+                        </Col>
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} className="align-items-center mb-3">
+                    <Form.Label as="legend" column sm={3}>
+                        Clustering Algorithm
+                    </Form.Label>
+                    <Col sm={3} style={{ paddingLeft: 0 }}>
+                        <Col sm="auto">
+                            <Form.Check
+                                defaultChecked
+                                id="scipy"
+                                value="SCIPY"
+                                type="radio"
+                                label="SciPy"
+                                name="clusteringAlgorithm"
+                                onClick={handleChangeClusteringAlgorithm}
+                            />
+                        </Col>
+                    </Col>
+                </Form.Group>
+
                 <Form.Group as={Row} controlId="expert" className="mb-3">
                     <Form.Label column sm={3}>
                         Expert
@@ -460,7 +517,9 @@ export const Analyser = () => {
                                 isUploaded === "Uploading..." ||
                                 selectedProfile === "" ||
                                 requestLimit === "" ||
-                                (typeOfTraces === undefined || amountOfTraces === "")
+                                (traceType === undefined || amountOfTraces === "") ||
+                                similarityGenerator === undefined ||
+                                clusteringAlgorithm === undefined
                             }
                         >
                             Submit

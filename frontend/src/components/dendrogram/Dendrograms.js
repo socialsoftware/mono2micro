@@ -13,6 +13,7 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import { URL } from '../../constants/constants';
 import BootstrapTable from 'react-bootstrap-table-next';
 import {useParams} from "react-router-dom";
+import {ClusteringAlgorithmType, SimilarityGeneratorType, TraceType} from "../../type-declarations/types.d";
 
 const HttpStatus = require('http-status-codes');
 
@@ -83,7 +84,9 @@ export const Dendrograms = () => {
     const [readMetricWeight, setReadMetricWeight] = useState("25");
     const [sequenceMetricWeight, setSequenceMetricWeight] = useState("25");
     const [amountOfTraces, setAmountOfTraces] = useState("0");
-    const [typeOfTraces, setTypeOfTraces] = useState("ALL");
+    const [traceType, setTraceType] = useState(TraceType.ALL);
+    const [similarityGenerator, setSimilarityGenerator] = useState(SimilarityGeneratorType.DEFAULT);
+    const [clusteringAlgorithm, setClusteringAlgorithm] = useState(ClusteringAlgorithmType.SCIPY);
     const [codebase, setCodebase] = useState({ profiles: [], });
 
     let { codebaseName } = useParams();
@@ -116,7 +119,7 @@ export const Dendrograms = () => {
                 "profiles",
                 "linkageType",
                 "tracesMaxlimit",
-                "typeOfTraces",
+                "traceType",
                 "accessMetricWeight",
                 "writeMetricWeight",
                 "readMetricWeight",
@@ -167,7 +170,9 @@ export const Dendrograms = () => {
             Number(sequenceMetricWeight),
             selectedProfile,
             Number(amountOfTraces),
-            typeOfTraces,
+            traceType,
+            similarityGenerator,
+            clusteringAlgorithm
         )
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
@@ -215,8 +220,16 @@ export const Dendrograms = () => {
         setAmountOfTraces(event.target.value);
     }
 
-    function handleChangeTypeOfTraces(event) {
-        setTypeOfTraces(event.target.value);
+    function handleChangeTraceType(event) {
+        setTraceType(event.target.value);
+    }
+
+    function handleChangeSimilarityGeneratorType(event) {
+        setSimilarityGenerator(event.target.value);
+    }
+
+    function handleChangeClusteringAlgorithmType(event) {
+        setClusteringAlgorithm(event.target.value);
     }
 
     function selectProfile(profile) {
@@ -311,8 +324,8 @@ export const Dendrograms = () => {
                     <Col sm={3} style={{ paddingLeft: 0 }}>
                         <Col sm="auto">
                             <Form.Check
-                                onClick={handleChangeTypeOfTraces}
-                                name="typeOfTraces"
+                                onClick={handleChangeTraceType}
+                                name="traceType"
                                 label="All"
                                 type="radio"
                                 id="allTraces"
@@ -322,8 +335,8 @@ export const Dendrograms = () => {
                         </Col>
                         <Col sm="auto">
                             <Form.Check
-                                onClick={handleChangeTypeOfTraces}
-                                name="typeOfTraces"
+                                onClick={handleChangeTraceType}
+                                name="traceType"
                                 label="Longest"
                                 type="radio"
                                 id="longest"
@@ -332,8 +345,8 @@ export const Dendrograms = () => {
                         </Col>
                         <Col sm="auto">
                             <Form.Check
-                                onClick={handleChangeTypeOfTraces}
-                                name="typeOfTraces"
+                                onClick={handleChangeTraceType}
+                                name="traceType"
                                 label="With more different accesses"
                                 type="radio"
                                 id="withMoreDifferentTraces"
@@ -343,8 +356,8 @@ export const Dendrograms = () => {
                         </Col>
                         <Col sm="auto">
                             <Form.Check
-                                onClick={handleChangeTypeOfTraces}
-                                name="typeOfTraces"
+                                onClick={handleChangeTraceType}
+                                name="traceType"
                                 label="Representative (set of accesses)"
                                 type="radio"
                                 id="representativeSetOfAccesses"
@@ -355,7 +368,7 @@ export const Dendrograms = () => {
                         <Col sm="auto">
                             <Form.Check
                                 onClick={undefined}
-                                name="typeOfTraces"
+                                name="traceType"
                                 label="Representative (subsequence of accesses)"
                                 type="radio"
                                 id="complete"
@@ -397,6 +410,44 @@ export const Dendrograms = () => {
                             type="radio"
                             id="complete"
                         />
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} className="align-items-center mb-3">
+                    <Form.Label as="legend" column sm={2}>
+                        Similarity Generator
+                    </Form.Label>
+                    <Col sm={3} style={{ paddingLeft: 0 }}>
+                        <Col sm="auto">
+                            <Form.Check
+                                onClick={handleChangeSimilarityGeneratorType}
+                                name="similarityGenerator"
+                                label="Default"
+                                type="radio"
+                                id="default"
+                                value="DEFAULT"
+                                defaultChecked
+                            />
+                        </Col>
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} className="align-items-center mb-3">
+                    <Form.Label as="legend" column sm={2}>
+                        Clustering Algorithm
+                    </Form.Label>
+                    <Col sm={3} style={{ paddingLeft: 0 }}>
+                        <Col sm="auto">
+                            <Form.Check
+                                onClick={handleChangeClusteringAlgorithmType}
+                                name="clusteringAlgorithm"
+                                label="SciPy"
+                                type="radio"
+                                id="scipy"
+                                value="SCIPY"
+                                defaultChecked
+                            />
+                        </Col>
                     </Col>
                 </Form.Group>
 
@@ -466,7 +517,9 @@ export const Dendrograms = () => {
                                 sequenceMetricWeight === "" ||
                                 Number(accessMetricWeight) + Number(writeMetricWeight) + Number(readMetricWeight) + Number(sequenceMetricWeight) !== 100 ||
                                 selectedProfile === "" ||
-                                (typeOfTraces === "" || amountOfTraces === "")
+                                (traceType === "" || amountOfTraces === "") ||
+                                similarityGenerator === "" ||
+                                clusteringAlgorithm === ""
                             }
                         >
                             Create Dendrogram
@@ -496,7 +549,7 @@ export const Dendrograms = () => {
                                     <Card.Text>
                                         Linkage Type: {dendrogram.linkageType}< br />
                                         AmountOfTraces: {dendrogram.tracesMaxLimit} <br />
-                                        Type of traces: {dendrogram.typeOfTraces} <br />
+                                        Type of traces: {dendrogram.traceType} <br />
                                         Access: {dendrogram.accessMetricWeight}%< br />
                                         Write: {dendrogram.writeMetricWeight}%< br />
                                         Read: {dendrogram.readMetricWeight}%< br />

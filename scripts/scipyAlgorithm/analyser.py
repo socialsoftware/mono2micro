@@ -54,6 +54,19 @@ def analyser(codebasesPath, codebaseName, totalNumberOfEntities):
         print(e)
 
 
+def sendRequest(a, w, r, s, maxClusterCut, totalNumberOfEntities, codebase, entities, linkageType):
+    a *= multiplier
+    w *= multiplier
+    r *= multiplier
+    s *= multiplier
+
+    if maxClusterCut:
+        createCut(a, w, r, s, totalNumberOfEntities, codebase, entities, linkageType)
+    else:
+        for n in range(minClusters, maxClusters + 1, clusterStep):
+            createCut(a, w, r, s, n, codebase, entities, linkageType)
+
+
 def createCut(a, w, r, s, n, codebase, entities, linkageType):
     name = ','.join(map(str, [a, w, r, s, n]))
 
@@ -91,18 +104,3 @@ def createCut(a, w, r, s, n, codebase, entities, linkageType):
 
     with open(filePath, 'w') as outfile:
         outfile.write(json.dumps(clustersJSON, indent=4))
-
-
-def sendRequest(a, w, r, s, maxClusterCut, totalNumberOfEntities, codebase, entities, linkageType):
-    a *= multiplier
-    w *= multiplier
-    r *= multiplier
-    s *= multiplier
-
-    if maxClusterCut:
-        createCut(a, w, r, s, totalNumberOfEntities, codebase, entities, linkageType)
-    else:
-        for n in range(minClusters, maxClusters + 1, clusterStep):
-            createCut(a, w, r, s, n, codebase, entities, linkageType)
-
-

@@ -510,51 +510,10 @@ public class CodebaseManager {
 		return value;
 	}
 
-	public void writeAnalyserSimilarityMatrix(
-		String codebaseName,
-		SimilarityMatrixDto similarityMatrix
-	)
-		throws IOException
-	{
-		DefaultPrettyPrinter pp = new DefaultPrettyPrinter();
-		pp.indentArraysWith( DefaultIndenter.SYSTEM_LINEFEED_INSTANCE );
-		ObjectWriter writer = objectMapper.writer(pp);
-
-		OutputStream os = new FileOutputStream(CODEBASES_PATH + codebaseName + "/analyser/similarityMatrix.json");
-
-		writer.writeValue(os, similarityMatrix);
-		os.close();
-	}
-
 	public boolean analyserSimilarityMatrixFileAlreadyExists(
 		String codebaseName
 	) {
 		return new File(CODEBASES_PATH + codebaseName + "/analyser/similarityMatrix.json").exists();
-	}
-
-	public SimilarityMatrixDto getSimilarityMatrixDtoWithFields(
-		String codebaseName,
-		Set<String> deserializableFields
-	)
-		throws IOException
-	{
-		ObjectMapper objectMapper = new ObjectMapper();
-
-		objectMapper.setInjectableValues(
-			new InjectableValues.Std().addValue(
-				"similarityMatrixDtoDeserializableFields",
-				deserializableFields
-			)
-		);
-
-		ObjectReader reader = objectMapper.readerFor(SimilarityMatrixDto.class);
-
-		File similarityMatrixFile = new File(CODEBASES_PATH + codebaseName + "/analyser/similarityMatrix.json");
-
-		if (!similarityMatrixFile.exists())
-			return null;
-
-		return reader.readValue(similarityMatrixFile);
 	}
 
 	public Map<String, Controller> getControllersWithCostlyAccesses(

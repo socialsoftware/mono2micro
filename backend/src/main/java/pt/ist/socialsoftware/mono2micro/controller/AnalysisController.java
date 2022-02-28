@@ -3,6 +3,7 @@ package pt.ist.socialsoftware.mono2micro.controller;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FilenameUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -15,9 +16,10 @@ import pt.ist.socialsoftware.mono2micro.domain.Controller;
 import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.dto.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
-import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 import pt.ist.socialsoftware.mono2micro.utils.mojoCalculator.src.main.java.MoJo;
+import pt.ist.socialsoftware.mono2micro.utils.similarityGenerators.DefaultSimilarityGenerator;
+import pt.ist.socialsoftware.mono2micro.utils.similarityGenerators.SimilarityGenerator;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -203,41 +205,25 @@ public class AnalysisController {
 		Codebase codebase,
 		AnalyserDto analyser
 	)
-		throws IOException
+		throws Exception
 	{
-		SimilarityMatrixDto similarityMatrixDto;
-
 		if (!codebaseManager.analyserSimilarityMatrixFileAlreadyExists(codebase.getName())) {
 
-			Utils.GetDataToBuildSimilarityMatrixResult result = Utils.getDataToBuildSimilarityMatrix(
-				codebase,
-				analyser.getProfile(),
-				analyser.getTracesMaxLimit(),
-				analyser.getTraceType()
-			);
+			SimilarityGenerator similarityGenerator;
+			switch (analyser.getSimilarityGeneratorType()) {
+				case DEFAULT:
+				default:
+					similarityGenerator = new DefaultSimilarityGenerator(codebase, analyser);
+					break;
+			}
+			similarityGenerator.buildMatrix();
 
-			// Unfortunately, the getMatrixData method differs from the one used in the Dendrogram
-			similarityMatrixDto = getMatrixData(
-				result.entities,
-				result.e1e2PairCount,
-				result.entityControllers
-			);
+			similarityGenerator.writeSimilarityMatrix();
 
-			CodebaseManager.getInstance().writeAnalyserSimilarityMatrix(
-				codebase.getName(),
-				similarityMatrixDto
-			);
+		} else System.out.println("Similarity matrix already exists...");
 
-		} else {
-			System.out.println("Similarity matrix already exists...");
-
-			similarityMatrixDto = CodebaseManager.getInstance().getSimilarityMatrixDtoWithFields(
-				codebase.getName(),
-				new HashSet<String>() {{ add("entities"); }}
-			);
-		}
-
-		return similarityMatrixDto.getEntities().size();
+		JSONObject similarityMatrix = CodebaseManager.getInstance().getSimilarityMatrix(codebase.getName(), "analyser");
+		return similarityMatrix.getJSONArray("entities").length();
 	}
 
 	private void executeCreateCuts(
@@ -361,57 +347,6 @@ public class AnalysisController {
 		cutInfo.setControllerSpecs(controllerSpecs);
 
 		return cutInfo;
-	}
-
-	private static SimilarityMatrixDto getMatrixData(
-		Set<Short> entityIDs,
-		Map<String,Integer> e1e2PairCount,
-		Map<Short, List<Pair<String, Byte>>> entityControllers
-	) {
-		SimilarityMatrixDto matrixData = new SimilarityMatrixDto();
-
-		List<List<List<Float>>> similarityMatrix = new ArrayList<>();
-
-		int maxNumberOfPairs = Utils.getMaxNumberOfPairs(e1e2PairCount);
-
-		for (short e1ID : entityIDs) {
-			List<List<Float>> matrixRow = new ArrayList<>();
-
-			for (short e2ID : entityIDs) {
-				List<Float> metric = new ArrayList<>();
-
-				if (e1ID == e2ID) {
-					metric.add((float) 1);
-					metric.add((float) 1);
-					metric.add((float) 1);
-					metric.add((float) 1);
-
-					matrixRow.add(metric);
-					continue;
-				}
-
-				float[] metrics = Utils.calculateSimilarityMatrixMetrics(
-					entityControllers,
-					e1e2PairCount,
-					e1ID,
-					e2ID,
-					maxNumberOfPairs
-				);
-
-				metric.add(metrics[0]);
-				metric.add(metrics[1]);
-				metric.add(metrics[2]);
-				metric.add(metrics[3]);
-
-				matrixRow.add(metric);
-			}
-			similarityMatrix.add(matrixRow);
-		}
-		matrixData.setMatrix(similarityMatrix);
-		matrixData.setEntities(entityIDs);
-		matrixData.setLinkageType("average");
-
-		return matrixData;
 	}
 
 	@RequestMapping(value = "/analysis", method = RequestMethod.POST)

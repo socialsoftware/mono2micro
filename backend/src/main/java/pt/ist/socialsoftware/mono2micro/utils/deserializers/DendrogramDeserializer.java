@@ -7,7 +7,9 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.utils.ClusteringAlgorithmType;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
+import pt.ist.socialsoftware.mono2micro.utils.similarityGenerators.SimilarityGeneratorType;
 
 import java.io.IOException;
 import java.util.List;
@@ -81,6 +83,12 @@ public class DendrogramDeserializer extends StdDeserializer<Dendrogram> {
 							break;
 						case "traceType":
 							dendrogram.setTraceType(Constants.TraceType.valueOf(jsonParser.getValueAsString()));
+							break;
+						case "similarityGeneratorType":
+							dendrogram.setSimilarityGeneratorType(SimilarityGeneratorType.valueOf(jsonParser.getValueAsString()));
+							break;
+						case "clusteringAlgorithmType":
+							dendrogram.setClusteringAlgorithmType(ClusteringAlgorithmType.valueOf(jsonParser.getValueAsString()));
 							break;
 
 						default:

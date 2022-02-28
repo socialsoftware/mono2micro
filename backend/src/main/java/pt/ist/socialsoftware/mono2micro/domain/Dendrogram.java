@@ -6,15 +6,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
-import pt.ist.socialsoftware.mono2micro.utils.Pair;
-import pt.ist.socialsoftware.mono2micro.utils.Utils;
+import pt.ist.socialsoftware.mono2micro.utils.ClusteringAlgorithmType;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.DendrogramDeserializer;
+import pt.ist.socialsoftware.mono2micro.utils.similarityGenerators.SimilarityGeneratorType;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.BufferedInputStream;
@@ -41,6 +40,8 @@ public class Dendrogram {
 	private List<Decomposition> decompositions = new ArrayList<>(); // Might not be necessary if the folders structure gets better organized
 	private int tracesMaxLimit = 0;
 	private TraceType traceType = TraceType.ALL;
+	private SimilarityGeneratorType similarityGeneratorType;
+	private ClusteringAlgorithmType clusteringAlgorithmType;
 
 	public Dendrogram() {}
 
@@ -117,6 +118,22 @@ public class Dendrogram {
 	public TraceType getTraceType() { return traceType; }
 
 	public void setTraceType(TraceType traceType) { this.traceType = traceType; }
+
+	public SimilarityGeneratorType getSimilarityGeneratorType() {
+		return similarityGeneratorType;
+	}
+
+	public void setSimilarityGeneratorType(SimilarityGeneratorType similarityGenerator) {
+		this.similarityGeneratorType = similarityGenerator;
+	}
+
+	public ClusteringAlgorithmType getClusteringAlgorithmType() {
+		return clusteringAlgorithmType;
+	}
+
+	public void setClusteringAlgorithmType(ClusteringAlgorithmType clusteringAlgorithmType) {
+		this.clusteringAlgorithmType = clusteringAlgorithmType;
+	}
 
 	@JsonIgnore
 	public List<String> getDecompositionNames() { return this.decompositions.stream().map(Decomposition::getName).collect(Collectors.toList()); }
@@ -213,51 +230,6 @@ public class Dendrogram {
 		}
 
 		return expertDecomposition;
-	}
-
-	public JSONObject getMatrixData(
-		Set<Short> entityIDs,
-		Map<String, Integer> e1e2PairCount,
-		Map<Short, List<Pair<String, Byte>>> entityControllers
-	)
-		throws JSONException
-	{
-		JSONArray similarityMatrix = new JSONArray();
-		JSONObject matrixData = new JSONObject();
-
-		int maxNumberOfPairs = Utils.getMaxNumberOfPairs(e1e2PairCount);
-
-		for (short e1ID : entityIDs) {
-			JSONArray matrixRow = new JSONArray();
-
-			for (short e2ID : entityIDs) {
-				if (e1ID == e2ID) {
-					matrixRow.put(1);
-					continue;
-				}
-
-				float[] metrics = Utils.calculateSimilarityMatrixMetrics(
-					entityControllers,
-					e1e2PairCount,
-					e1ID,
-					e2ID,
-					maxNumberOfPairs
-				);
-
-				float metric = metrics[0] * this.accessMetricWeight / 100 +
-					metrics[1] * this.writeMetricWeight / 100 +
-					metrics[2] * this.readMetricWeight / 100 +
-					metrics[3] * this.sequenceMetricWeight / 100;
-
-				matrixRow.put(metric);
-			}
-			similarityMatrix.put(matrixRow);
-		}
-		matrixData.put("matrix", similarityMatrix);
-		matrixData.put("entities", entityIDs);
-		matrixData.put("linkageType", this.linkageType);
-
-		return matrixData;
 	}
 
 	public Decomposition cut(Decomposition decomposition)

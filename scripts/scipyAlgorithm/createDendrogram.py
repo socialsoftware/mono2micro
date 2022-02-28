@@ -11,8 +11,22 @@ def createDendrogram(codebasesPath, codebaseName, dendrogramName):
         similarityMatrix = json.load(f)
 
     entities = similarityMatrix["entities"]
-    matrix = np.array(similarityMatrix["matrix"])
     linkageType = similarityMatrix["linkageType"]
+
+    a = similarityMatrix["access"]
+    w = similarityMatrix["write"]
+    r = similarityMatrix["read"]
+    s = similarityMatrix["sequence"]
+
+    matrix = similarityMatrix["matrix"]
+    for i in range(len(matrix)):
+        for j in range(len(matrix)):
+            matrix[i][j] = matrix[i][j][0] * a / 100 + \
+                           matrix[i][j][1] * w / 100 + \
+                           matrix[i][j][2] * r / 100 + \
+                           matrix[i][j][3] * s / 100
+
+    matrix = np.array(matrix)
 
     hierarc = hierarchy.linkage(y=matrix, method=linkageType)
 
