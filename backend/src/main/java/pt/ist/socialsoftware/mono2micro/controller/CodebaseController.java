@@ -1,6 +1,5 @@
 package pt.ist.socialsoftware.mono2micro.controller;
 
-import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

@@ -16,6 +16,7 @@ import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.dto.*;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
+import pt.ist.socialsoftware.mono2micro.utils.similarityGenerators.SimilarityGeneratorType;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.*;
@@ -293,32 +294,19 @@ public class CodebaseManager {
 
 		HashMap datafileJSON;
 
-		File datafileFile = null;
+		// read datafile
+		InputStream datafileInputStream = ((MultipartFile) datafile).getInputStream();
+		datafileJSON = objectMapper.readValue(datafileInputStream, HashMap.class);
+		datafileInputStream.close();
 
-		if (datafile instanceof MultipartFile) {
-			// read datafile
-			InputStream datafileInputStream = ((MultipartFile) datafile).getInputStream();
-			datafileJSON = objectMapper.readValue(datafileInputStream, HashMap.class);
-			datafileInputStream.close();
+		InputStream translationFileInputStream = ((MultipartFile) translationFile).getInputStream();
+		HashMap translationFileJSON = objectMapper.readValue(translationFileInputStream, HashMap.class);
+		translationFileInputStream.close();
+		this.writeTranslationFile(codebaseName, translationFileJSON);
 
-			InputStream translationFileInputStream = ((MultipartFile) translationFile).getInputStream();
-			HashMap translationFileJSON = objectMapper.readValue(translationFileInputStream, HashMap.class);
-			translationFileInputStream.close();
-			this.writeTranslationFile(codebaseName, translationFileJSON);
-
-			this.writeDatafile(codebaseName, datafileJSON);
-			datafileFile = new File(CODEBASES_PATH + codebaseName + "/datafile.json");
-			codebase.setDatafilePath(datafileFile.getAbsolutePath());
-		}
-
-		else if (datafile instanceof String) {
-			datafileFile = new File((String) datafile);
-
-			if (!datafileFile.exists())
-				throw new FileNotFoundException();
-
-			codebase.setDatafilePath((String) datafile);
-		}
+		this.writeDatafile(codebaseName, datafileJSON);
+		File datafileFile = new File(CODEBASES_PATH + codebaseName + "/datafile.json");
+		codebase.setDatafilePath(datafileFile.getAbsolutePath());
 
 		codebase.addProfile("Generic", Utils.getJsonFileKeys(datafileFile));
 

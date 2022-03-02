@@ -19,8 +19,7 @@ async def cutDendrogram(codebaseName, dendrogramName, graphName, cutType, cutVal
     return {"codebaseName": codebaseName, "dendrogramName": dendrogramName, "graphName": graphName,
             "cutType": cutType, "cutValue": cutValue, "operation": "cutDendrogram"}
 
-
-@scipyRouter.get("/scipy/{codebaseName}/{totalNumberOfEntities}/analyser")
-async def anayser(codebaseName, totalNumberOfEntities):
-    analyserScipy(env.CODEBASES_PATH, codebaseName, int(totalNumberOfEntities))
-    return {"codebaseName": codebaseName, "totalNumberOfEntities": totalNumberOfEntities, "operation": "analyser"}
+# @scipyRouter.get("/scipy/{codebaseName}/{totalNumberOfEntities}/analyser")
+# async def anayser(codebaseName, totalNumberOfEntities):
+#    analyserScipy(env.CODEBASES_PATH, codebaseName, int(totalNumberOfEntities))
+#    return {"codebaseName": codebaseName, "totalNumberOfEntities": totalNumberOfEntities, "operation": "analyser"}

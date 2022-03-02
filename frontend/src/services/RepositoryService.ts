@@ -13,7 +13,7 @@ import {
     Cluster,
     Controller,
     LocalTransactionsGraph,
-    RefactorCodebase, SimilarityGeneratorType, ClusteringAlgorithmType,
+    RefactorCodebase
 } from "../type-declarations/types";
 import { addSearchParamsToUrl } from "../utils/url";
 
@@ -52,8 +52,8 @@ export class RepositoryService {
         requestLimit: number,
         amountOfTraces: number,
         traceType: TraceType,
-        similarityGeneratorType: SimilarityGeneratorType,
-        clusteringAlgorithmType: ClusteringAlgorithmType
+        similarityGeneratorType: string,
+        clusteringAlgorithmType: string
     ) {
         const analyserData: AnalyserDto = {
             expert: expert || {},
@@ -201,8 +201,8 @@ export class RepositoryService {
         profile: string,
         amountOfTraces: number,
         traceType: TraceType,
-        similarityGeneratorType: SimilarityGeneratorType,
-        clusteringAlgorithmType: ClusteringAlgorithmType
+        similarityGeneratorType: string,
+        clusteringAlgorithmType: string
     ) {
         const dendrogramData: Dendrogram = {
             codebaseName,

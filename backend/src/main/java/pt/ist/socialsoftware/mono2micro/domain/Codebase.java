@@ -132,7 +132,7 @@ public class Codebase {
 	{
 		WebClient.create(SCRIPTS_ADDRESS)
 				.get()
-				.uri("/scipy/{codebaseName}/{dendrogramName}/createDendrogram",this.name, dendrogram.getName())
+				.uri("/scipy/{codebaseName}/{dendrogramName}/createDendrogram", this.name, dendrogram.getName())
 				.exchange()
 				.doOnSuccess(clientResponse -> {
 					if (clientResponse.statusCode() != HttpStatus.OK)
@@ -157,16 +157,15 @@ public class Codebase {
 
 		SimilarityGenerator similarityGenerator;
 		switch (dendrogram.getSimilarityGeneratorType()) {
-			case DEFAULT:
-			default:
+			case ACCESSES_LOG:
 				similarityGenerator = new DefaultSimilarityGenerator(this, dendrogram);
 				break;
+			default:
+				throw new RuntimeException("Requested similarity generator does not exist.");
 		}
 		similarityGenerator.buildMatrix();
 		similarityGenerator.writeSimilarityMatrix();
 
 		executeCreateDendrogram(dendrogram);
 	}
-
-
 }

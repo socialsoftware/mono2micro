@@ -12,7 +12,6 @@ const HttpStatus = require('http-status-codes');
 
 export const Codebases = () => {
     const [newCodebaseName, setNewCodebaseName] = useState("");
-    const [newDatafilePath, setNewDatafilePath] = useState("");
     const [selectedFile, setSelectedFile] = useState(null);
     const [translationFile, setTranslationFile] = useState(null);
     const [isUploaded, setIsUploaded] = useState("");
@@ -37,18 +36,11 @@ export const Codebases = () => {
         }
         setSelectedFile(event.target.files[0]);
         setTranslationFile(event.target.files[1]);
-        setNewDatafilePath("");
         setIsUploaded("");
     }
 
     function handleChangeNewCodebaseName(event) {
         setNewCodebaseName(event.target.value);
-    }
-
-    function handleChangeNewDatafilePath(event) {
-        setNewDatafilePath(event.target.value);
-        setSelectedFile(null);
-        setTranslationFile(null);
     }
 
     function handleDeleteCodebase(codebaseName) {
@@ -64,45 +56,31 @@ export const Codebases = () => {
         setIsUploaded("Uploading...");
 
         if (selectedFile !== null && translationFile !== null) {
-            doCreateCodebaseRequest(
-                newCodebaseName,
-                selectedFile,
-                translationFile
-            );
+            const service = new RepositoryService();
+            service.createCodebase(newCodebaseName, selectedFile, translationFile)
+                .then(response => {
+                    if (response.status === HttpStatus.CREATED) {
+                        loadCodebases();
+                        setIsUploaded("Upload completed successfully.");
+                    } else {
+                        setIsUploaded("Upload failed.");
+                    }
+                })
+                .catch(error => {
+                    if (error.response !== undefined && error.response.status === HttpStatus.UNAUTHORIZED) {
+                        setIsUploaded("Upload failed. Codebase name already exists.");
+                    }
+                    else if (error.response !== undefined && error.response.status === HttpStatus.NOT_FOUND) {
+                        setIsUploaded("Upload failed. Invalid datafile path.");
+                    }
+                    else {
+                        setIsUploaded("Upload failed.");
+                    }
+                });
+            setNewCodebaseName("");
+            setSelectedFile(null);
+            setTranslationFile(null);
         }
-        else {
-            doCreateCodebaseRequest(
-                newCodebaseName,
-                newDatafilePath,
-            );
-        }
-    }
-
-    function doCreateCodebaseRequest(codebaseName, pathOrFile, translationFile = null) {
-        const service = new RepositoryService();
-        service.createCodebase(codebaseName, pathOrFile, translationFile)
-            .then(response => {
-                if (response.status === HttpStatus.CREATED) {
-                    loadCodebases();
-                    setIsUploaded("Upload completed successfully.");
-                } else {
-                    setIsUploaded("Upload failed.");
-                }
-            })
-            .catch(error => {
-                if (error.response !== undefined && error.response.status === HttpStatus.UNAUTHORIZED) {
-                    setIsUploaded("Upload failed. Codebase name already exists.");
-                }
-                else if (error.response !== undefined && error.response.status === HttpStatus.NOT_FOUND) {
-                    setIsUploaded("Upload failed. Invalid datafile path.");
-                }
-                else {
-                    setIsUploaded("Upload failed.");
-                }
-            });
-        setNewCodebaseName("");
-        setSelectedFile(null);
-        setTranslationFile(null);
     }
 
     function renderCodebases() {
@@ -156,25 +134,6 @@ export const Codebases = () => {
                     </Col>
                 </Form.Group>
 
-                <Form.Group as={Row} controlId="datafilePath" className="mb-3">
-                    <Form.Label column sm={2}>
-                        Datafile Absolute Path
-                    </Form.Label>
-                    <Col sm={5}>
-                        <FormControl
-                            type="text"
-                            placeholder="/home/example/datafile.json"
-                            value={newDatafilePath}
-                            onChange={handleChangeNewDatafilePath}
-                        />
-                    </Col>
-                </Form.Group>
-
-                <Form.Group as={Row} controlId="OR" className="mb-3">
-                    <Form.Label column sm={2}></Form.Label>
-                    <Col sm={5}> OR </Col>
-                </Form.Group>
-
                 <Form.Group as={Row} controlId="datafile" className="mb-3">
                     <Form.Label column sm={2}>
                         Data Collection File and
@@ -195,8 +154,7 @@ export const Codebases = () => {
                             disabled={
                                 isUploaded === "Uploading..." ||
                                 newCodebaseName === "" ||
-                                ((translationFile === null || selectedFile === null) &&
-                                    newDatafilePath === "")
+                                translationFile === null || selectedFile === null
                             }
                         >
                             Create Codebase

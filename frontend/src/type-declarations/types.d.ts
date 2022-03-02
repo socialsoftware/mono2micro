@@ -1,5 +1,3 @@
-import { Dendrogram } from "../components/dendrogram/Dendrogram";
-
 export interface AccessDto {
     entity?: string;
     mode?: string;
@@ -122,12 +120,4 @@ export enum TraceType {
     REPRESENTATIVE = "REPRESENTATIVE",
     LONGEST = "LONGEST",
     WITH_MORE_DIFFERENT_ACCESSES = "WITH_MORE_DIFFERENT_ACCESSES",
-}
-
-export enum SimilarityGeneratorType {
-    DEFAULT = "DEFAULT"
-}
-
-export enum ClusteringAlgorithmType {
-    SCIPY = "SCIPY"
 }

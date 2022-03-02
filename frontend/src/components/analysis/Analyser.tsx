@@ -11,10 +11,8 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, {numberFilter} from 'react-bootstrap-table2-filter';
 import {
-    ClusteringAlgorithmType,
     Codebase,
     Decomposition,
-    SimilarityGeneratorType,
     TraceType
 } from "../../type-declarations/types.d";
 
@@ -151,8 +149,8 @@ export const Analyser = () => {
     const [importFile, setImportFile] = useState(null);
     const [amountOfTraces, setAmountOfTraces] = useState("0");
     const [traceType, setTraceType] = useState<TraceType>(TraceType.ALL);
-    const [similarityGenerator, setSimilarityGenerator] = useState(SimilarityGeneratorType.DEFAULT);
-    const [clusteringAlgorithm, setClusteringAlgorithm] = useState(ClusteringAlgorithmType.SCIPY);
+    const [similarityGenerator, setSimilarityGenerator] = useState("ACCESSES_LOG");
+    const [clusteringAlgorithm, setClusteringAlgorithm] = useState("SCIPY");
     const [isUploaded, setIsUploaded] = useState("");
 
     useEffect(() => loadCodebases(), []);

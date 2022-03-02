@@ -211,7 +211,7 @@ public class AnalysisController {
 
 			SimilarityGenerator similarityGenerator;
 			switch (analyser.getSimilarityGeneratorType()) {
-				case DEFAULT:
+				case ACCESSES_LOG:
 				default:
 					similarityGenerator = new DefaultSimilarityGenerator(codebase, analyser);
 					break;

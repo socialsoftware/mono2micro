@@ -33,7 +33,7 @@ export const Views = () => {
     const context = useContext(AppContext);
     let { codebaseName, dendrogramName, decompositionName } = useParams();
 
-    const [view, setView] = useState(views.REFACTOR);
+    const [view, setView] = useState(views.CLUSTERS);
 
     useEffect(() => {
         loadTranslation();

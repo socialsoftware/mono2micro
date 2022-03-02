@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import { RepositoryService } from '../../services/RepositoryService';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -10,10 +10,10 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 
-import { URL } from '../../constants/constants';
+import {CLUSTERING_ALGORITHMS, POSSIBLE_DECOMPOSITIONS, SIMILARITY_GENERATORS, URL} from '../../constants/constants';
 import BootstrapTable from 'react-bootstrap-table-next';
 import {useParams} from "react-router-dom";
-import {ClusteringAlgorithmType, SimilarityGeneratorType, TraceType} from "../../type-declarations/types.d";
+import {TraceType} from "../../type-declarations/types.d";
 
 const HttpStatus = require('http-status-codes');
 
@@ -85,9 +85,9 @@ export const Dendrograms = () => {
     const [sequenceMetricWeight, setSequenceMetricWeight] = useState("25");
     const [amountOfTraces, setAmountOfTraces] = useState("0");
     const [traceType, setTraceType] = useState(TraceType.ALL);
-    const [similarityGenerator, setSimilarityGenerator] = useState(SimilarityGeneratorType.DEFAULT);
-    const [clusteringAlgorithm, setClusteringAlgorithm] = useState(ClusteringAlgorithmType.SCIPY);
-    const [codebase, setCodebase] = useState({ profiles: [], });
+    const [similarityGenerator, setSimilarityGenerator] = useState(undefined);
+    const [clusteringAlgorithm, setClusteringAlgorithm] = useState(undefined);
+    const [profiles, setProfiles] = useState([]);
 
     let { codebaseName } = useParams();
 
@@ -102,10 +102,11 @@ export const Dendrograms = () => {
         const service = new RepositoryService();
         service.getCodebase(
             codebaseName,
-            ["profiles"]
+            ["profiles", "similarityGeneratorType"]
         ).then(response => {
             if (response.data !== null) {
-                setCodebase(response.data);
+                setProfiles(response.data.profiles);
+                setSimilarityGenerator(SIMILARITY_GENERATORS[response.data.similarityGeneratorType]);
             }
         });
     }
@@ -171,8 +172,8 @@ export const Dendrograms = () => {
             selectedProfile,
             Number(amountOfTraces),
             traceType,
-            similarityGenerator,
-            clusteringAlgorithm
+            similarityGenerator.value,
+            clusteringAlgorithm.value
         )
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
@@ -224,20 +225,21 @@ export const Dendrograms = () => {
         setTraceType(event.target.value);
     }
 
-    function handleChangeSimilarityGeneratorType(event) {
-        setSimilarityGenerator(event.target.value);
-    }
-
-    function handleChangeClusteringAlgorithmType(event) {
-        setClusteringAlgorithm(event.target.value);
-    }
-
     function selectProfile(profile) {
         if (selectedProfile !== profile) {
             setSelectedProfile(profile);
         } else {
             setSelectedProfile("");
         }
+    }
+
+    function selectSimilarityGenerator(algorithm) {
+        setSimilarityGenerator(algorithm);
+        setClusteringAlgorithm(undefined);
+    }
+
+    function selectClusteringAlgorithm(algorithm) {
+        setClusteringAlgorithm(algorithm);
     }
 
     function handleDeleteDendrogram(dendrogramName) {
@@ -264,10 +266,62 @@ export const Dendrograms = () => {
         );
     }
 
-    function renderCreateDendrogramForm() {
-        const profiles = codebase["profiles"];
+    function renderClusteringAlgorithm() {
         return (
-            <Form onSubmit={handleSubmit}>
+            <Fragment>
+                <h4 className="mb-3 mt-3" style={{ color: "#666666" }}>
+                    Clustering Algorithm
+                </h4>
+                <Form.Group as={Row} controlId="selectClusteringAlgorithm" className="align-items-center mb-3">
+                    <Col sm={2}>
+                        <DropdownButton title={clusteringAlgorithm === undefined? "Select Clustering Algorithm" : clusteringAlgorithm.name}>
+                            {Object.keys(POSSIBLE_DECOMPOSITIONS[similarityGenerator.value])
+                                .map(algorithmValue => CLUSTERING_ALGORITHMS[algorithmValue])
+                                .map(algorithm =>
+                                <Dropdown.Item
+                                    key={algorithm.value}
+                                    onClick={() => selectClusteringAlgorithm(algorithm)}
+                                >
+                                    {algorithm.name}
+                                </Dropdown.Item>
+                            )}
+                        </DropdownButton>
+                    </Col>
+                </Form.Group>
+            </Fragment>
+        );
+    }
+
+    function renderSimilarityGenerator() {
+        return (
+            <Form.Group as={Row} controlId="selectSimilarityGenerator" className="align-items-center mb-3">
+                <h4 className="mb-3 mt-3" style={{ color: "#666666" }}>
+                    Similarity Generator
+                </h4>
+                <Col sm={2}>
+                    <DropdownButton title={similarityGenerator === undefined? "Select Similarity Generator" : similarityGenerator.name}>
+                        {Object.values(SIMILARITY_GENERATORS)
+                            .map(generator =>
+                                <Dropdown.Item
+                                    key={generator.value}
+                                    onClick={() => selectSimilarityGenerator(generator)}
+                                >
+                                    {generator.name}
+                                </Dropdown.Item>
+                            )
+                        }
+                    </DropdownButton>
+                </Col>
+            </Form.Group>
+        );
+    }
+
+    function renderCreateDendrogramForm() {
+        return (
+            <Fragment>
+                <h4 className="mb-3 mt-3" style={{ color: "#666666" }}>
+                    Dendrogram
+                </h4>
                 <Form.Group as={Row} controlId="newDendrogramName" className="align-items-center mb-3">
                     <Form.Label column sm={2}>
                         Dendrogram Name
@@ -283,6 +337,20 @@ export const Dendrograms = () => {
                     </Col>
                 </Form.Group>
 
+                {/*Add render of each similarity generator like the next line to request the required elements for the dendrogram's creation*/}
+                { similarityGenerator.value === "ACCESSES_LOG" && renderAccessLogParameters() }
+
+                {/*Add the rules to disable each button in disableDendrogramSubmit*/}
+                { renderCreateDendrogramButton() }
+
+                { dendrograms.length !== 0 && renderDendrograms() }
+            </Fragment>
+        );
+    }
+
+    function renderAccessLogParameters() {
+        return (
+            <Fragment>
                 <Form.Group as={Row} controlId="selectControllerProfiles" className="align-items-center mb-3">
                     <Form.Label column sm={2}>
                         Select Codebase Profiles
@@ -413,44 +481,6 @@ export const Dendrograms = () => {
                     </Col>
                 </Form.Group>
 
-                <Form.Group as={Row} className="align-items-center mb-3">
-                    <Form.Label as="legend" column sm={2}>
-                        Similarity Generator
-                    </Form.Label>
-                    <Col sm={3} style={{ paddingLeft: 0 }}>
-                        <Col sm="auto">
-                            <Form.Check
-                                onClick={handleChangeSimilarityGeneratorType}
-                                name="similarityGenerator"
-                                label="Default"
-                                type="radio"
-                                id="default"
-                                value="DEFAULT"
-                                defaultChecked
-                            />
-                        </Col>
-                    </Col>
-                </Form.Group>
-
-                <Form.Group as={Row} className="align-items-center mb-3">
-                    <Form.Label as="legend" column sm={2}>
-                        Clustering Algorithm
-                    </Form.Label>
-                    <Col sm={3} style={{ paddingLeft: 0 }}>
-                        <Col sm="auto">
-                            <Form.Check
-                                onClick={handleChangeClusteringAlgorithmType}
-                                name="clusteringAlgorithm"
-                                label="SciPy"
-                                type="radio"
-                                id="scipy"
-                                value="SCIPY"
-                                defaultChecked
-                            />
-                        </Col>
-                    </Col>
-                </Form.Group>
-
                 <Form.Group as={Row} controlId="access" className="align-items-center mb-3">
                     <Form.Label column sm={2}>
                         Access Metric Weight (%)
@@ -502,75 +532,94 @@ export const Dendrograms = () => {
                             onChange={handleChangeSequenceMetricWeight} />
                     </Col>
                 </Form.Group>
-
-                <Form.Group as={Row} className="align-items-center">
-                    <Col sm={{ offset: 2 }}>
-                        <Button
-                            type="submit"
-                            disabled={
-                                isUploaded === "Uploading..." ||
-                                newDendrogramName === "" ||
-                                linkageType === "" ||
-                                accessMetricWeight === "" ||
-                                writeMetricWeight === "" ||
-                                readMetricWeight === "" ||
-                                sequenceMetricWeight === "" ||
-                                Number(accessMetricWeight) + Number(writeMetricWeight) + Number(readMetricWeight) + Number(sequenceMetricWeight) !== 100 ||
-                                selectedProfile === "" ||
-                                (traceType === "" || amountOfTraces === "") ||
-                                similarityGenerator === "" ||
-                                clusteringAlgorithm === ""
-                            }
-                        >
-                            Create Dendrogram
-                        </Button>
-                        <Form.Text className="ms-2">
-                            {isUploaded}
-                        </Form.Text>
-                    </Col>
-                </Form.Group>
-            </Form>
+            </Fragment>
         );
+    }
+
+    function renderCreateDendrogramButton() {
+        return(
+            <Form.Group as={Row} className="align-items-center">
+                <Col sm={{ offset: 2 }}>
+                    <Button
+                        type="submit"
+                        disabled={ disableDendrogramSubmit() }
+                    >
+                        Create Dendrogram
+                    </Button>
+                    <Form.Text className="ms-2">
+                        {isUploaded}
+                    </Form.Text>
+                </Col>
+            </Form.Group>
+        );
+    }
+
+    function disableDendrogramSubmit() {
+        switch (similarityGenerator.value) {
+            case "ACCESSES_LOG":
+                return isUploaded === "Uploading..." ||
+                    newDendrogramName === "" ||
+                    linkageType === "" ||
+                    accessMetricWeight === "" ||
+                    writeMetricWeight === "" ||
+                    readMetricWeight === "" ||
+                    sequenceMetricWeight === "" ||
+                    Number(accessMetricWeight) + Number(writeMetricWeight) + Number(readMetricWeight) + Number(sequenceMetricWeight) !== 100 ||
+                    selectedProfile === "" ||
+                    (traceType === "" || amountOfTraces === "");
+            default:
+                return false;
+
+        }
     }
 
     function renderDendrograms() {
         return (
             <Row>
-                {
-                    dendrograms.map(dendrogram =>
-                        <Col key={dendrogram.name} md="auto">
-                            <Card className="mb-4" style={{ width: '20rem' }}>
-                                <Card.Img
-                                    variant="top"
-                                    src={URL + "codebase/" + codebaseName + "/dendrogram/" + dendrogram.name + "/image?" + new Date().getTime()}
-                                />
-                                <Card.Body>
-                                    <Card.Title>{dendrogram.name}</Card.Title>
-                                    <Card.Text>
-                                        Linkage Type: {dendrogram.linkageType}< br />
-                                        AmountOfTraces: {dendrogram.tracesMaxLimit} <br />
-                                        Type of traces: {dendrogram.traceType} <br />
-                                        Access: {dendrogram.accessMetricWeight}%< br />
-                                        Write: {dendrogram.writeMetricWeight}%< br />
-                                        Read: {dendrogram.readMetricWeight}%< br />
-                                        Sequence: {dendrogram.sequenceMetricWeight}%
-                                    </Card.Text>
-                                    <Button href={`/codebases/${codebaseName}/dendrograms/${dendrogram.name}`}
-                                        className="mb-2">
-                                        Go to Dendrogram
-                                    </Button>
-                                    <br />
-                                    <Button 
-                                        onClick={() => handleDeleteDendrogram(dendrogram.name)}
-                                        variant="danger"
-                                    >
-                                        Delete
-                                    </Button>
-                                </Card.Body>
-                            </Card>
-                            <br />
-                        </Col>
-                    )
+                <h4 style={{ color: "#666666" }}>
+                    Dendrograms
+                </h4>
+                {dendrograms.map(dendrogram =>
+                    <Col key={dendrogram.name} md="auto">
+                        <Card className="mb-4" style={{ width: '20rem' }}>
+                            <Card.Img
+                                variant="top"
+                                src={URL + "codebase/" + codebaseName + "/dendrogram/" + dendrogram.name + "/image?" + new Date().getTime()}
+                            />
+                            <Card.Body>
+                                <Card.Title>{dendrogram.name}</Card.Title>
+                                <Card.Text>
+                                    Linkage Type: {dendrogram.linkageType}< br />
+                                    AmountOfTraces: {dendrogram.tracesMaxLimit} <br />
+                                    Type of traces: {dendrogram.traceType} <br />
+                                    Access: {dendrogram.accessMetricWeight}%< br />
+                                    Write: {dendrogram.writeMetricWeight}%< br />
+                                    Read: {dendrogram.readMetricWeight}%< br />
+                                    Sequence: {dendrogram.sequenceMetricWeight}%
+                                </Card.Text>
+                                <Button href={`/codebases/${codebaseName}/dendrograms/${dendrogram.name}`}
+                                    className="mb-2">
+                                    Go to Dendrogram
+                                </Button>
+                                <br />
+                                <Button
+                                    onClick={() => handleDeleteDendrogram(dendrogram.name)}
+                                    variant="danger"
+                                >
+                                    Delete
+                                </Button>
+                            </Card.Body>
+                        </Card>
+                        <br />
+                    </Col>
+                )}
+
+                <h4 style={{ color: "#666666" }}>
+                    Metrics
+                </h4>
+
+                { allDecompositions.length > 0 &&
+                    <BootstrapTable bootstrap4 keyField='id' data={metricRows} columns={metricColumns} />
                 }
             </Row>
         );
@@ -608,26 +657,13 @@ export const Dendrograms = () => {
         <div>
             {renderBreadCrumbs()}
 
-            <h4 style={{ color: "#666666" }}>
-                Create Dendrogram
-            </h4>
+            <Form onSubmit={handleSubmit} className="mb-3">
+                { renderSimilarityGenerator() }
 
-            {renderCreateDendrogramForm()}
+                { similarityGenerator !== undefined && renderClusteringAlgorithm() }
 
-            <h4 style={{ color: "#666666" }}>
-                Dendrograms
-            </h4>
-
-            {renderDendrograms()}
-
-            <h4 style={{ color: "#666666" }}>
-                Metrics
-            </h4>
-
-            {
-                allDecompositions.length > 0 &&
-                <BootstrapTable bootstrap4 keyField='id' data={metricRows} columns={metricColumns} />
-            }
+                { clusteringAlgorithm !== undefined && clusteringAlgorithm.hasDendrograms && renderCreateDendrogramForm() }
+            </Form>
         </div>
     )
 }

@@ -136,7 +136,6 @@ public class DefaultSimilarityGenerator implements SimilarityGenerator {
         entities.addAll(entityControllers.keySet());
     }
 
-    @Override
     public JSONObject getSciPyMatrixAsJSONObject()
             throws Exception
     {
@@ -149,13 +148,8 @@ public class DefaultSimilarityGenerator implements SimilarityGenerator {
             JSONArray matrixRow = new JSONArray();
 
             for (short e2ID : entities) {
-                JSONArray weightsCell = new JSONArray();
                 if (e1ID == e2ID) {
-                    weightsCell.put(1);
-                    weightsCell.put(1);
-                    weightsCell.put(1);
-                    weightsCell.put(1);
-                    matrixRow.put(weightsCell);
+                    matrixRow.put(1);
                     continue;
                 }
 
@@ -167,25 +161,17 @@ public class DefaultSimilarityGenerator implements SimilarityGenerator {
                         maxNumberOfPairs
                 );
 
-                weightsCell.put(weights[0]);
-                weightsCell.put(weights[1]);
-                weightsCell.put(weights[2]);
-                weightsCell.put(weights[3]);
+                float metric = weights[0] * dendrogram.getAccessMetricWeight() / 100 +
+                        weights[1] * dendrogram.getWriteMetricWeight() / 100 +
+                        weights[2] * dendrogram.getReadMetricWeight() / 100 +
+                        weights[3] * dendrogram.getSequenceMetricWeight() / 100;
 
-                matrixRow.put(weightsCell);
+                matrixRow.put(metric);
             }
             similarityMatrixJSON.put(matrixRow);
         }
 
-        if (dendrogram != null) { //Analyser does not have dendrogram
-            matrixData.put("access", dendrogram.getAccessMetricWeight());
-            matrixData.put("write", dendrogram.getWriteMetricWeight());
-            matrixData.put("read", dendrogram.getReadMetricWeight());
-            matrixData.put("sequence", dendrogram.getSequenceMetricWeight());
-            matrixData.put("linkageType", dendrogram.getLinkageType());
-        }
-        else matrixData.put("linkageType", "average");
-
+        matrixData.put("linkageType", dendrogram.getLinkageType());
         matrixData.put("matrix", similarityMatrixJSON);
         matrixData.put("entities", entities);
 
