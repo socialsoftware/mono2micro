@@ -14,11 +14,7 @@ export const SIMILARITY_GENERATORS = {
 }
 
 export const POSSIBLE_DECOMPOSITIONS = {
-    "ACCESSES_LOG": {
-        "SCIPY": {
-            properties: {
-
-            }
-        }
-    }
+    "ACCESSES_LOG": [
+        "SCIPY"
+    ]
 }

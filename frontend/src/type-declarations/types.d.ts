@@ -63,8 +63,8 @@ export interface Dendrogram {
     decompositions?: Decomposition[];
     profile?: string;
 	traceType?: TraceType;
-    similarityGeneratorType?: SimilarityGeneratorType;
-    clusteringAlgorithmType?: ClusteringAlgorithmType;
+    similarityGeneratorType?: string;
+    clusteringAlgorithmType?: string;
 }
 
 export interface Codebase {
@@ -80,8 +80,8 @@ export interface AnalyserDto {
     tracesMaxLimit?: number;
     traceType?: TraceType;
     expert?: Decomposition;
-    similarityGeneratorType?: SimilarityGeneratorType;
-    clusteringAlgorithmType?: ClusteringAlgorithmType;
+    similarityGeneratorType?: string;
+    clusteringAlgorithmType?: string;
 }
 
 export interface AnalysisDto {

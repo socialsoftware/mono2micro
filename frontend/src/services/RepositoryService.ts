@@ -191,37 +191,11 @@ export class RepositoryService {
     }
     
     createDendrogram(
-        codebaseName: string,
-        dendrogramName: string,
-        linkageType: string,
-        accessMetricWeight: number,
-        writeMetricWeight: number,
-        readMetricWeight: number,
-        sequenceMetricWeight: number,
-        profile: string,
-        amountOfTraces: number,
-        traceType: TraceType,
-        similarityGeneratorType: string,
-        clusteringAlgorithmType: string
+        request: Dendrogram
     ) {
-        const dendrogramData: Dendrogram = {
-            codebaseName,
-            name: dendrogramName,
-            linkageType,
-            accessMetricWeight,
-            writeMetricWeight,
-            readMetricWeight,
-            sequenceMetricWeight,
-            profile,
-            tracesMaxLimit: amountOfTraces,
-            traceType,
-            similarityGeneratorType,
-            clusteringAlgorithmType
-        };
-        
         return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/dendrogram/create",
-            dendrogramData
+            "/codebase/" + request.codebaseName + "/dendrogram/create",
+            request
         );
     }
 
