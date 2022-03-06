@@ -83,6 +83,22 @@ public class JavaParserCollector {
 		}
 	}
 
+	public static String parseConstructorToMethod(ConstructorDeclaration constructorDeclaration) {
+		String body = constructorDeclaration.getAccessSpecifier().toString().toLowerCase();
+		body += " void " + constructorDeclaration.getNameAsString() + "(";
+		int length = constructorDeclaration.getParameters().size();
+		for (int i = 0; i < length; i++) {
+			if (i == 0) {
+				body += constructorDeclaration.getParameter(i).toString();
+			} else {
+				body += ", " + constructorDeclaration.getParameter(i).toString();
+			}
+		}
+		body += ") " + constructorDeclaration.getBody().toString();
+		// TODO: Can't have super() method calls inside methods... 
+		return body;
+	}
+
 	public static void extractMethods(File file, JavaParserFacade jpf, Project project) {
 
 		try {
@@ -255,6 +271,8 @@ public class JavaParserCollector {
 					Boolean successfulPrediction = false;
 
 					try {
+
+						body = parseConstructorToMethod(constructorDeclaration);
 						
 						MethodPredict mp = predict(signature, body);
 
