@@ -73,6 +73,7 @@ const metricColumns = [
 
 export const Dendrograms = () => {
     const [dendrograms, setDendrograms] = useState([]);
+    const [dendrogramBase, setDendrogramBase] = useState("COMMIT");
     const [allDecompositions, setAllDecompositions] = useState([]);
     const [selectedProfile, setSelectedProfile] = useState("");
     const [isUploaded, setIsUploaded] = useState("");
@@ -160,6 +161,7 @@ export const Dendrograms = () => {
         service.createDendrogram(
             codebaseName,
             newDendrogramName,
+            dendrogramBase,
             linkageType,
             Number(accessMetricWeight),
             Number(writeMetricWeight),
@@ -189,6 +191,10 @@ export const Dendrograms = () => {
 
     function handleChangeNewDendrogramName(event) {
         setNewDendrogramName(event.target.value);
+    }
+
+    function handleChangeDendrogramBase(event) {
+        setDendrogramBase(event.target.value);
     }
 
     function handleLinkageType(event) {
@@ -270,6 +276,35 @@ export const Dendrograms = () => {
                     </Col>
                 </Form.Group>
 
+                <Form.Group as={Row} controlId="dendrogramBase" className="align-items-center mb-3">
+                    <Form.Label column sm={2}>
+                        Data source for dendrogram
+                    </Form.Label>
+                    <Col sm={3} style={{ paddingLeft: 0 }}>
+                        <Col sm="auto">
+                            <Form.Check
+                                onClick={handleChangeDendrogramBase}
+                                name="dendrogram-base"
+                                label="Commit"
+                                type="radio"
+                                id="commit"
+                                value="COMMIT"
+                                defaultChecked
+                            />
+                        </Col>
+                        <Col sm="auto">
+                            <Form.Check
+                                onClick={handleChangeDendrogramBase}
+                                name="dendrogram-base"
+                                label="Static"
+                                type="radio"
+                                id="static"
+                                value="STATIC"
+                            />
+                        </Col>
+                    </Col>
+                </Form.Group>
+
                 <Form.Group as={Row} controlId="selectControllerProfiles" className="align-items-center mb-3">
                     <Form.Label column sm={2}>
                         Select Codebase Profiles
@@ -297,6 +332,7 @@ export const Dendrograms = () => {
                             type="number"
                             value={amountOfTraces}
                             onChange={handleChangeAmountOfTraces}
+                            disabled={dendrogramBase == "COMMIT"}
 
                         />
                         <Form.Text className="text-muted">
@@ -318,6 +354,7 @@ export const Dendrograms = () => {
                                 id="allTraces"
                                 value="ALL"
                                 defaultChecked
+                                disabled={dendrogramBase == "COMMIT"}
                             />
                         </Col>
                         <Col sm="auto">
@@ -328,6 +365,7 @@ export const Dendrograms = () => {
                                 type="radio"
                                 id="longest"
                                 value="LONGEST"
+                                disabled={dendrogramBase == "COMMIT"}
                             />
                         </Col>
                         <Col sm="auto">
@@ -338,6 +376,7 @@ export const Dendrograms = () => {
                                 type="radio"
                                 id="withMoreDifferentTraces"
                                 value="WITH_MORE_DIFFERENT_ACCESSES"
+                                disabled={dendrogramBase == "COMMIT"}
                             />
 
                         </Col>
@@ -349,6 +388,7 @@ export const Dendrograms = () => {
                                 type="radio"
                                 id="representativeSetOfAccesses"
                                 value="REPRESENTATIVE"
+                                disabled={dendrogramBase == "COMMIT"}
                             />
                         </Col>
                         {/* WIP */}
@@ -409,7 +449,8 @@ export const Dendrograms = () => {
                             type="number"
                             placeholder="0-100"
                             value={accessMetricWeight}
-                            onChange={handleChangeAccessMetricWeight} />
+                            onChange={handleChangeAccessMetricWeight}
+                            disabled={dendrogramBase == "COMMIT"} />
                     </Col>
                 </Form.Group>
 
@@ -422,7 +463,8 @@ export const Dendrograms = () => {
                             type="number"
                             placeholder="0-100"
                             value={writeMetricWeight}
-                            onChange={handleChangeWriteMetricWeight} />
+                            onChange={handleChangeWriteMetricWeight}
+                            disabled={dendrogramBase == "COMMIT"} />
                     </Col>
                 </Form.Group>
 
@@ -435,7 +477,8 @@ export const Dendrograms = () => {
                             type="number"
                             placeholder="0-100"
                             value={readMetricWeight}
-                            onChange={handleChangeReadMetricWeight} />
+                            onChange={handleChangeReadMetricWeight}
+                            disabled={dendrogramBase == "COMMIT"} />
                     </Col>
                 </Form.Group>
 
@@ -448,7 +491,8 @@ export const Dendrograms = () => {
                             type="number"
                             placeholder="0-100"
                             value={sequenceMetricWeight}
-                            onChange={handleChangeSequenceMetricWeight} />
+                            onChange={handleChangeSequenceMetricWeight}
+                            disabled={dendrogramBase == "COMMIT"} />
                     </Col>
                 </Form.Group>
 
