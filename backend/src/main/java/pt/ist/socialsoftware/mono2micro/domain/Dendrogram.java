@@ -261,6 +261,38 @@ public class Dendrogram {
 		return matrixData;
 	}
 
+	public JSONObject getCommitMatrix(HashMap<String,ArrayList<String>> commitChanges) throws JSONException {
+		JSONArray similarityMatrix = new JSONArray();
+		JSONObject matrixData = new JSONObject();
+
+		for (String file1 : commitChanges.keySet()) {
+			JSONArray matrixRow = new JSONArray();
+
+			for (String file2 : commitChanges.keySet()) {
+				if (file1.equals(file2)) {
+					matrixRow.put(1);
+					continue;
+				}
+				// Metric is given by the number of times file2 appears in file1's array. We don't need to check the
+				// number of times file1 appears in file2's array, because it should be the same value.
+				int metric = 0;
+				for (String fileInFile1Changes : commitChanges.get(file1)) {
+					if (fileInFile1Changes.equals(file2)) {
+						metric += 1;
+					}
+				}
+				matrixRow.put(metric);
+			}
+			similarityMatrix.put(matrixRow);
+		}
+		matrixData.put("matrix", similarityMatrix);
+		matrixData.put("entities", commitChanges.keySet());
+		matrixData.put("linkageType", this.linkageType);
+		//System.out.print(matrixData);
+
+		return matrixData;
+	}
+
 	public Decomposition cut(Decomposition decomposition)
 		throws Exception
 	{
@@ -330,5 +362,13 @@ public class Dendrogram {
 
 	public void setBase(String base) {
 		this.base = base;
+	}
+
+	public String getBase() {
+		return this.base;
+	}
+
+	public boolean commitBased() {
+		return this.getBase().equals("COMMIT");
 	}
 }

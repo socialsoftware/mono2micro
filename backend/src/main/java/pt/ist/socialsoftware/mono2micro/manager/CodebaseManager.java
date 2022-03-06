@@ -421,6 +421,20 @@ public class CodebaseManager {
 		return translation;
 	}
 
+	public String getCommitChanges(
+			String codebaseName
+	)
+		throws IOException
+	{
+		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/commitChanges.json");
+
+		String commitChanges = IOUtils.toString(is, "UTF-8");
+
+		is.close();
+
+		return commitChanges;
+	}
+
 	public void writeDatafile(
 		String codebaseName,
 		HashMap datafile

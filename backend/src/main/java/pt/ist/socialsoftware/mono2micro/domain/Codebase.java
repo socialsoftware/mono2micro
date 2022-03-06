@@ -2,6 +2,7 @@ package pt.ist.socialsoftware.mono2micro.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpStatus;
@@ -136,7 +137,7 @@ public class Codebase {
 				.exchange()
 				.doOnSuccess(clientResponse -> {
 					if (clientResponse.statusCode() != HttpStatus.OK)
-						throw new RuntimeException("Error Code:" + clientResponse.statusCode());
+						throw new RuntimeException("Error Code:" + clientResponse.statusCode() + clientResponse);
 				}).block();
 	}
 
@@ -155,22 +156,35 @@ public class Codebase {
 
 		this.addDendrogram(dendrogram);
 
-		Utils.GetDataToBuildSimilarityMatrixResult result = Utils.getDataToBuildSimilarityMatrix(
-			this,
-			dendrogram.getProfile(),
-			dendrogram.getTracesMaxLimit(),
-			dendrogram.getTraceType()
-		);
+		if (dendrogram.commitBased()) {
+			// We want to create the dendrogram by using the commit change JSON
+			File commitChangesPath = new File(CODEBASES_PATH + this.name + "/" + "commitChanges.json");
+			HashMap<String,ArrayList<String>> commitChanges =
+					new ObjectMapper().readValue(commitChangesPath, HashMap.class);
 
-		CodebaseManager.getInstance().writeDendrogramSimilarityMatrix(
-			this.name,
-			dendrogram.getName(),
-			dendrogram.getMatrixData(
-				result.entities,
-				result.e1e2PairCount,
-				result.entityControllers
-			)
-		);
+			CodebaseManager.getInstance().writeDendrogramSimilarityMatrix(
+					this.name,
+					dendrogram.getName(),
+					dendrogram.getCommitMatrix(commitChanges)
+			);
+		} else {
+			Utils.GetDataToBuildSimilarityMatrixResult result = Utils.getDataToBuildSimilarityMatrix(
+					this,
+					dendrogram.getProfile(),
+					dendrogram.getTracesMaxLimit(),
+					dendrogram.getTraceType()
+			);
+
+			CodebaseManager.getInstance().writeDendrogramSimilarityMatrix(
+					this.name,
+					dendrogram.getName(),
+					dendrogram.getMatrixData(
+							result.entities,
+							result.e1e2PairCount,
+							result.entityControllers
+					)
+			);
+		}
 
 		executeCreateDendrogram(dendrogram);
 	}
