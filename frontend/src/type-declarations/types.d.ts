@@ -56,6 +56,7 @@ export interface Decomposition {
 export interface Dendrogram {
     codebaseName?: string;
     name?: string;
+    base?: string;
     linkageType?: string;
     accessMetricWeight?: number;
     writeMetricWeight?: number;

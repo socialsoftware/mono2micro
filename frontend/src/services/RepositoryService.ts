@@ -193,6 +193,7 @@ export class RepositoryService {
     createDendrogram(
         codebaseName: string,
         dendrogramName: string,
+        dendrogramBase: string,
         linkageType: string,
         accessMetricWeight: number,
         writeMetricWeight: number,
@@ -205,6 +206,7 @@ export class RepositoryService {
         const dendrogramData: Dendrogram = {
             codebaseName,
             name: dendrogramName,
+            base: dendrogramBase,
             linkageType,
             accessMetricWeight,
             writeMetricWeight,

@@ -32,6 +32,7 @@ import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 public class Dendrogram {
 	private String name;
 	private String codebaseName;
+	private String base; // Describes if the dendrogram should be created based on commit data or static data.
 	private String linkageType;
 	private float accessMetricWeight;
 	private float writeMetricWeight;
@@ -325,5 +326,9 @@ public class Dendrogram {
 		decomposition.setNextClusterID(Integer.valueOf(clusterIds.size()).shortValue());
 
 		return decomposition;
+	}
+
+	public void setBase(String base) {
+		this.base = base;
 	}
 }

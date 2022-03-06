@@ -51,6 +51,8 @@ public class DendrogramDeserializer extends StdDeserializer<Dendrogram> {
 						case "codebaseName":
 							dendrogram.setCodebaseName(jsonParser.getValueAsString());
 							break;
+						case "base":
+							dendrogram.setBase(jsonParser.getValueAsString());
 						case "linkageType":
 							dendrogram.setLinkageType(jsonParser.getValueAsString());
 							break;
