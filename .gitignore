@@ -32,3 +32,4 @@ collectors/spoon-callgraph/data/collection/*.json
 
 # local codebases
 codebases/
+repos/

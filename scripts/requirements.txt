@@ -3,6 +3,6 @@ matplotlib==3.0.3
 scikit-learn==0.24.0
 scipy==1.6.0
 fastapi==0.73.0
-uvicorn==0.17.4
+uvicorn[standard]==0.13.4
 tensorflow==2.8.0
 pydantic==1.9.0

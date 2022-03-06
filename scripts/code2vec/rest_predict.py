@@ -87,4 +87,4 @@ class InteractivePredictor:
 
         except ValueError as e:
             print(e)
-            return []
+            return None
