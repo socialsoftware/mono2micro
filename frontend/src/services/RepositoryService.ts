@@ -144,7 +144,8 @@ export class RepositoryService {
     createCodebase(
         name: string,
         datafile: any,
-        translationFile: any
+        translationFile: any,
+        commitFile: any
     ) {
         const config = {
             headers: {
@@ -157,6 +158,9 @@ export class RepositoryService {
         if (translationFile !== null)
             data.append('translationFile', translationFile);
         else data.append('translationFile', "");
+        if (commitFile !== null)
+            data.append('commitFile', commitFile);
+        else data.append('commitFile', "");
 
         return this.axios.post<null>(
             "/codebase/create",

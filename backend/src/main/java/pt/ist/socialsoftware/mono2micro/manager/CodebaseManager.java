@@ -270,7 +270,8 @@ public class CodebaseManager {
 	public Codebase createCodebase(
 		String codebaseName,
 		Object datafile,
-		Object translationFile
+		Object translationFile,
+		Object commitFile
 	)
 		throws IOException
 	{
@@ -304,9 +305,14 @@ public class CodebaseManager {
 			InputStream translationFileInputStream = ((MultipartFile) translationFile).getInputStream();
 			HashMap translationFileJSON = objectMapper.readValue(translationFileInputStream, HashMap.class);
 			translationFileInputStream.close();
-			this.writeTranslationFile(codebaseName, translationFileJSON);
+
+			InputStream commitFileInputStream = ((MultipartFile) commitFile).getInputStream();
+			HashMap commitFileJSON = objectMapper.readValue(commitFileInputStream, HashMap.class);
+			translationFileInputStream.close();
 
 			this.writeDatafile(codebaseName, datafileJSON);
+			this.writeTranslationFile(codebaseName, translationFileJSON);
+			this.writeCommitFile(codebaseName, commitFileJSON);
 			datafileFile = new File(CODEBASES_PATH + codebaseName + "/datafile.json");
 			codebase.setDatafilePath(datafileFile.getAbsolutePath());
 		}
@@ -385,6 +391,18 @@ public class CodebaseManager {
 		objectMapper.writerWithDefaultPrettyPrinter().writeValue(
 				new File(CODEBASES_PATH + codebaseName + "/IDToEntity.json"),
 				translationFile
+		);
+	}
+
+	public void writeCommitFile(
+			String codebaseName,
+			HashMap commitFile
+	)
+		throws IOException
+	{
+		objectMapper.writerWithDefaultPrettyPrinter().writeValue(
+				new File(CODEBASES_PATH + codebaseName + "/commitChanges.json"),
+				commitFile
 		);
 	}
 

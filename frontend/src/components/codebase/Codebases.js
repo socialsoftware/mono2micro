@@ -15,6 +15,7 @@ export const Codebases = () => {
     const [newDatafilePath, setNewDatafilePath] = useState("");
     const [selectedFile, setSelectedFile] = useState(null);
     const [translationFile, setTranslationFile] = useState(null);
+    const [commitFile, setCommitFile] = useState(null);
     const [isUploaded, setIsUploaded] = useState("");
     const [codebases, setCodebases] = useState([]);
 
@@ -31,12 +32,31 @@ export const Codebases = () => {
     }
 
     function handleSelectedFile(event) {
-        if (event.target.files.length !== 2) {
-            setIsUploaded("Data Collection File and ID to Entity File need to be uploaded simultaneously.");
+        if (event.target.files.length !== 3) {
+            setIsUploaded("Data Collection File, ID to Entity File, and Commit Collection File need to be uploaded simultaneously.");
             return;
         }
         setSelectedFile(event.target.files[0]);
         setTranslationFile(event.target.files[1]);
+        setCommitFile(event.target.files[2]);
+        setNewDatafilePath("");
+        setIsUploaded("");
+    }
+
+    function handleStaticFile(event) {
+        setSelectedFile(event.target.files[0]);
+        setNewDatafilePath("");
+        setIsUploaded("");
+    }
+
+    function handleCommitFile(event) {
+        setCommitFile(event.target.files[0]);
+        setNewDatafilePath("");
+        setIsUploaded("");
+    }
+
+    function handleIDToEntityFile(event) {
+        setTranslationFile(event.target.files[0]);
         setNewDatafilePath("");
         setIsUploaded("");
     }
@@ -49,6 +69,7 @@ export const Codebases = () => {
         setNewDatafilePath(event.target.value);
         setSelectedFile(null);
         setTranslationFile(null);
+        setCommitFile(null);
     }
 
     function handleDeleteCodebase(codebaseName) {
@@ -63,11 +84,12 @@ export const Codebases = () => {
 
         setIsUploaded("Uploading...");
 
-        if (selectedFile !== null && translationFile !== null) {
+        if (selectedFile !== null && translationFile !== null && commitFile !== null) {
             doCreateCodebaseRequest(
                 newCodebaseName,
                 selectedFile,
-                translationFile
+                translationFile,
+                commitFile
             );
         }
         else {
@@ -78,9 +100,9 @@ export const Codebases = () => {
         }
     }
 
-    function doCreateCodebaseRequest(codebaseName, pathOrFile, translationFile = null) {
+    function doCreateCodebaseRequest(codebaseName, pathOrFile, translationFile = null, commitFile = null) {
         const service = new RepositoryService();
-        service.createCodebase(codebaseName, pathOrFile, translationFile)
+        service.createCodebase(codebaseName, pathOrFile, translationFile, commitFile)
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
                     loadCodebases();
@@ -103,6 +125,7 @@ export const Codebases = () => {
         setNewCodebaseName("");
         setSelectedFile(null);
         setTranslationFile(null);
+        setCommitFile(null);
     }
 
     function renderCodebases() {
@@ -175,16 +198,36 @@ export const Codebases = () => {
                     <Col sm={5}> OR </Col>
                 </Form.Group>
 
-                <Form.Group as={Row} controlId="datafile" className="mb-3">
+                <Form.Group as={Row} controlId="static-data-collection" className="mb-3">
                     <Form.Label column sm={2}>
-                        Data Collection File and
+                        Data Collection File
+                    </Form.Label>
+                    <Col sm={5}>
+                        <Form.Control
+                            type="file"
+                            onChange={handleStaticFile}/>
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} controlId="commit-data-collection" className="mb-3">
+                    <Form.Label column sm={2}>
+                        Commit Collection File
+                    </Form.Label>
+                    <Col sm={5}>
+                        <Form.Control
+                            type="file"
+                            onChange={handleCommitFile}/>
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} controlId="id-to-entity" className="mb-3">
+                    <Form.Label column sm={2}>
                         ID to Entity File
                     </Form.Label>
                     <Col sm={5}>
                         <Form.Control
                             type="file"
-                            multiple
-                            onChange={handleSelectedFile}/>
+                            onChange={handleIDToEntityFile}/>
                     </Col>
                 </Form.Group>
 
