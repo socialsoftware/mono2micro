@@ -13,11 +13,11 @@ async def createDendrogram(codebaseName, dendrogramName):
     return {"codebaseName": codebaseName, "dendrogramName": dendrogramName, "operation": "createDendrogram"}
 
 
-@scipyRouter.get("/scipy/{codebaseName}/{dendrogramName}/{graphName}/{cutType}/{cutValue}/cut")
-async def cutDendrogram(codebaseName, dendrogramName, graphName, cutType, cutValue):
-    cutDendrogramScipy(env.CODEBASES_PATH, codebaseName, dendrogramName, graphName, cutType, float(cutValue))
+@scipyRouter.get("/scipy/{codebaseName}/{dendrogramName}/{graphName}/{cutType}/{cutValue}/{commitBased}/cut")
+async def cutDendrogram(codebaseName, dendrogramName, graphName, cutType, cutValue, commitBased):
+    cutDendrogramScipy(env.CODEBASES_PATH, codebaseName, dendrogramName, graphName, cutType, float(cutValue), commitBased)
     return {"codebaseName": codebaseName, "dendrogramName": dendrogramName, "graphName": graphName,
-            "cutType": cutType, "cutValue": cutValue, "operation": "cutDendrogram"}
+            "cutType": cutType, "cutValue": cutValue, "base": commitBased, "operation": "cutDendrogram"}
 
 
 @scipyRouter.get("/scipy/{codebaseName}/{totalNumberOfEntities}/analyser")

@@ -315,8 +315,9 @@ public class Dendrogram {
 
 		WebClient.create(SCRIPTS_ADDRESS)
 				.get()
-				.uri("/scipy/{codebaseName}/{dendrogramName}/{graphName}/{cutType}/{cutValue}/cut",
-						this.codebaseName, this.name, decomposition.getName(), decomposition.getCutType(), Float.toString(decomposition.getCutValue()))
+				.uri("/scipy/{codebaseName}/{dendrogramName}/{graphName}/{cutType}/{cutValue}/{commitBased}/cut",
+						this.codebaseName, this.name, decomposition.getName(), decomposition.getCutType(), Float.toString(decomposition.getCutValue()),
+						this.commitBased())
 				.exchange()
 				.doOnSuccess(clientResponse -> {
 					if (clientResponse.statusCode() != HttpStatus.OK)
