@@ -21,20 +21,22 @@ def cutDendrogram(codebasesPath, codebaseName, dendrogramName, graphName, cutTyp
     elif cutType == "N":
         cut = hierarchy.cut_tree(hierarc, n_clusters=cutValue)
 
-    clusters = {}
+    commit_clusters = {} # contains all the files
     for i in range(len(cut)):
-        if str(cut[i][0]) in clusters.keys():
-            clusters[str(cut[i][0])] += [entities[i]]
+        if str(cut[i][0]) in commit_clusters.keys():
+            commit_clusters[str(cut[i][0])] += [entities[i]]
         else:
-            clusters[str(cut[i][0])] = [entities[i]]
+            commit_clusters[str(cut[i][0])] = [entities[i]]
 
     if commitBased == 'true':
-        # When the base is "commits", we want to remove from the clusters non-domain entities
-
+        clusters = {} # contains only domain entities
         with open(codebasesPath + codebaseName + "/IDToEntity.json") as f:
-            entity_to_id = json.load(f)
+            id_to_entity = json.load(f)
+            entity_to_id = {}
+            for _id, entity in id_to_entity.items():
+                entity_to_id[entity] = _id
 
-        for cluster_id, cluster_entities in clusters.items():
+        for cluster_id, cluster_entities in commit_clusters.items():
             reduced_cluster_entities = []
             for entity in cluster_entities:
                 entity_name = os.path.basename(entity).replace(".java", "")
@@ -43,6 +45,12 @@ def cutDendrogram(codebasesPath, codebaseName, dendrogramName, graphName, cutTyp
 
             clusters[cluster_id] = reduced_cluster_entities
 
+    commit_nodes = hierarchy.fcluster(hierarc, len(commit_clusters), criterion="maxclust")
+    try:
+        commitSilhouetteScore = metrics.silhouette_score(matrix, commit_nodes)
+    except:
+        commitSilhouetteScore = 0
+
     nodes = hierarchy.fcluster(hierarc, len(clusters), criterion="maxclust")
     try:
         silhouetteScore = metrics.silhouette_score(matrix, nodes)
@@ -50,6 +58,11 @@ def cutDendrogram(codebasesPath, codebaseName, dendrogramName, graphName, cutTyp
         silhouetteScore = 0
 
     clustersJSON = {"silhouetteScore": "{0:.2f}".format(silhouetteScore), "clusters": clusters}
+    commitClustersJSON = {"silhouetteScore": "{0:.2f}".format(commitSilhouetteScore), "clusters": commit_clusters}
 
     with open(codebasesPath + codebaseName + "/" + dendrogramName + "/" + graphName + "/clusters.json", 'w') as outfile:
         outfile.write(json.dumps(clustersJSON, indent=4))
+
+    with open(codebasesPath + codebaseName + "/" + dendrogramName + "/" + graphName + "/commit-clusters.json", 'w') as outfile:
+        outfile.write(json.dumps(commitClustersJSON, indent=4))
+        
