@@ -417,6 +417,15 @@ export class RepositoryService {
         );
     }
 
+    getCommitClusters(
+        codebaseName: string,
+        dendrogramName: string,
+        decompositionName: string
+    ) {
+        return this.axios.get<Record<number, Controller[]>>(
+            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/clustersCommits"
+        );
+    }
 
     //FunctionalityRedesign
 

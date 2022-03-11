@@ -161,6 +161,7 @@ export class VisNetwork extends Component {
         const showModalMessage = true;
         let ModalMessageTitle;
         let ModalMessageText;
+
         
         if (clickedNodes.length === 0 && clickedEdges.length > 0) {  // edge double click
             const edge = graphEdges.get(clickedEdges[0]);
@@ -185,6 +186,10 @@ export class VisNetwork extends Component {
             } else if (view === views.ENTITY) {
                 ModalMessageTitle = 'Controllers that access entity ' + fromNode.label + ' and cluster ' + toNode.label;
             }
+              else if (view === views.COMMIT_CLUSTERS) {
+                ModalMessageTitle = 'Files of cluster ' + toNode.label;
+            }
+
 
         } else if (clickedNodes.length > 0) {  // node double click
             const node = graphNodes.get(clickedNodes[0]);
@@ -211,6 +216,9 @@ export class VisNetwork extends Component {
                 } else if (clickedNodeType === types.CLUSTER) {
                     ModalMessageTitle = 'Entities of ' + clickedNodeLabel;
                 }
+            }
+            else if (view === views.COMMIT_CLUSTERS) {
+                ModalMessageTitle = 'Files of ' + node.label;
             }
         }
 

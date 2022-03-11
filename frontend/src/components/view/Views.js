@@ -1,5 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { ClusterView, clusterViewHelp } from './ClusterView';
+import { CommitClusterView, commitClusterViewHelp } from './CommitClusterView';
+
 import { TransactionView, transactionViewHelp } from './TransactionView';
 import { EntityView, entityViewHelp } from './EntityView';
 import {FunctionalityRefactorToolMenu, refactorToolHelp} from './FunctionalityRefactorToolMenu';
@@ -18,6 +20,7 @@ import {useParams} from "react-router-dom";
 
 export const views = {
     CLUSTERS: 'Clusters View',
+    COMMIT_CLUSTERS: 'Commit Clusters View',
     TRANSACTION: 'Transaction View',
     ENTITY: 'Entity View',
     REFACTOR: 'Refactorization Tool',
@@ -26,14 +29,15 @@ export const views = {
 export const types = {
     CLUSTER: 0,
     CONTROLLER: 1,
-    ENTITY: 2
+    ENTITY: 2,
+    FILE: 3
 };
 
 export const Views = () => {
     const context = useContext(AppContext);
     let { codebaseName, dendrogramName, decompositionName } = useParams();
 
-    const [view, setView] = useState(views.REFACTOR);
+    const [view, setView] = useState(views.COMMIT_CLUSTERS);
 
     useEffect(() => {
         loadTranslation();
@@ -121,6 +125,11 @@ export const Views = () => {
                             {views.CLUSTERS}
                         </Dropdown.Item>
                         <Dropdown.Item
+                            onClick={() => handleSelectView(views.COMMIT_CLUSTERS)}
+                        >
+                            {views.COMMIT_CLUSTERS}
+                        </Dropdown.Item>
+                        <Dropdown.Item
                             onClick={() => handleSelectView(views.TRANSACTION)}
                         >
                             {views.TRANSACTION}
@@ -143,6 +152,14 @@ export const Views = () => {
                     {
                         view === views.CLUSTERS &&
                             <ClusterView
+                                codebaseName={codebaseName}
+                                dendrogramName={dendrogramName}
+                                decompositionName={decompositionName}
+                            />
+                    }
+                    {
+                        view === views.COMMIT_CLUSTERS &&
+                            <CommitClusterView
                                 codebaseName={codebaseName}
                                 dendrogramName={dendrogramName}
                                 decompositionName={decompositionName}

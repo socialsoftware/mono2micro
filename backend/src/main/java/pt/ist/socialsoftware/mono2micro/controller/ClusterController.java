@@ -1,16 +1,23 @@
 package pt.ist.socialsoftware.mono2micro.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.domain.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.*;
+
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
 
 @RestController
 @RequestMapping(value = "/mono2micro/codebase/{codebaseName}/dendrogram/{dendrogramName}/decomposition/{decompositionName}")
@@ -260,6 +267,39 @@ public class ClusterController {
 			return new ResponseEntity<>(
 				result.clustersControllers,
 				HttpStatus.OK
+			);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@RequestMapping(value = "/clustersCommits", method = RequestMethod.GET)
+	public ResponseEntity<String> getClustersCommits(
+			@PathVariable String codebaseName,
+			@PathVariable String dendrogramName,
+			@PathVariable String decompositionName
+	) {
+		logger.debug("getClustersCommits");
+
+		try {
+			Decomposition decomposition = codebaseManager.getDendrogramDecompositionWithFields(
+					codebaseName,
+					dendrogramName,
+					decompositionName,
+					new HashSet<String>() {{ add("clusters"); add("controllers"); }}
+			);
+			ObjectMapper objectMapper = new ObjectMapper();
+
+			// Open and extract the commit cluster json file
+			InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/" + dendrogramName + "/" + decompositionName + "/commit-clusters.json");
+			String commitClusters = IOUtils.toString(is, "UTF-8");
+			is.close();
+
+			return new ResponseEntity<>(
+					commitClusters,
+					HttpStatus.OK
 			);
 
 		} catch (Exception e) {

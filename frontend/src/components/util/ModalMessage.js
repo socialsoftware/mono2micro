@@ -27,7 +27,7 @@ export class ModalMessage extends React.Component {
   
     render() {  
       return (
-          <Modal show={this.state.show} onHide={this.handleClose}>
+          <Modal show={this.state.show} onHide={this.handleClose} size="lg">
             <Modal.Header closeButton>
               <Modal.Title>
                   {this.props.title}
