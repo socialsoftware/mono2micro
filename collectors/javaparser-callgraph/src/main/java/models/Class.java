@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.ArrayList;
 import org.json.*;
 
-import models.Method;
-
 public class Class {
 
 	private String _name;

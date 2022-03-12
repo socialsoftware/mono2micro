@@ -15,6 +15,7 @@ export const Codebases = () => {
     const [newDatafilePath, setNewDatafilePath] = useState("");
     const [selectedFile, setSelectedFile] = useState(null);
     const [translationFile, setTranslationFile] = useState(null);
+    const [codeEmbeddingsFile, setCodeEmbeddingsFile] = useState(null);
     const [isUploaded, setIsUploaded] = useState("");
     const [codebases, setCodebases] = useState([]);
 
@@ -41,6 +42,12 @@ export const Codebases = () => {
         setIsUploaded("");
     }
 
+    function handleCodeEmbeddingsFile(event) {
+        if (event.target.files.length > 0) {
+            setCodeEmbeddingsFile(event.target.files[0]);
+        }
+    }
+
     function handleChangeNewCodebaseName(event) {
         setNewCodebaseName(event.target.value);
     }
@@ -49,6 +56,7 @@ export const Codebases = () => {
         setNewDatafilePath(event.target.value);
         setSelectedFile(null);
         setTranslationFile(null);
+        setCodeEmbeddingsFile(null);
     }
 
     function handleDeleteCodebase(codebaseName) {
@@ -64,11 +72,20 @@ export const Codebases = () => {
         setIsUploaded("Uploading...");
 
         if (selectedFile !== null && translationFile !== null) {
-            doCreateCodebaseRequest(
-                newCodebaseName,
-                selectedFile,
-                translationFile
-            );
+            if (codeEmbeddingsFile !== null) {
+                doCreateCodebaseRequest(
+                    newCodebaseName,
+                    selectedFile,
+                    translationFile,
+                    codeEmbeddingsFile
+                );
+            } else {
+                doCreateCodebaseRequest(
+                    newCodebaseName,
+                    selectedFile,
+                    translationFile
+                );
+            }
         }
         else {
             doCreateCodebaseRequest(
@@ -78,9 +95,9 @@ export const Codebases = () => {
         }
     }
 
-    function doCreateCodebaseRequest(codebaseName, pathOrFile, translationFile = null) {
+    function doCreateCodebaseRequest(codebaseName, pathOrFile, translationFile = null, embeddingsFile = null) {
         const service = new RepositoryService();
-        service.createCodebase(codebaseName, pathOrFile, translationFile)
+        service.createCodebase(codebaseName, pathOrFile, translationFile, embeddingsFile)
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
                     loadCodebases();
@@ -103,6 +120,7 @@ export const Codebases = () => {
         setNewCodebaseName("");
         setSelectedFile(null);
         setTranslationFile(null);
+        setCodeEmbeddingsFile(null);
     }
 
     function renderCodebases() {
@@ -177,14 +195,25 @@ export const Codebases = () => {
 
                 <Form.Group as={Row} controlId="datafile" className="mb-3">
                     <Form.Label column sm={2}>
-                        Data Collection File and
-                        ID to Entity File
+                        Data Collection File and ID to Entity File
                     </Form.Label>
                     <Col sm={5}>
                         <Form.Control
                             type="file"
                             multiple
                             onChange={handleSelectedFile}/>
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} controlId="codeEmbeddingsFile" className="mb-3">
+                    <Form.Label column sm={2}>
+                        Optional Code Embeddings File
+                    </Form.Label>
+                    <Col sm={5}>
+                        <Form.Control
+                            type="file"
+                            multiple
+                            onChange={handleCodeEmbeddingsFile}/>
                     </Col>
                 </Form.Group>
 

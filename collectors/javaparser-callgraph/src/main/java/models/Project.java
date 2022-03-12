@@ -11,8 +11,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import org.json.*;
 
-import models.Package;
-
 public class Project {
 
 	private String _name;
@@ -21,9 +19,11 @@ public class Project {
 
 	public Project(String repo) {
 		_name = repo;
-		File dir = new File("../../codebases/" + repo);
+		File dir = new File("data/");
 		dir.mkdir();
-		_outputFile = "../../codebases/" + repo + "/code2vec.json";
+		dir = new File("data/collection/");
+		dir.mkdir();
+		_outputFile = "data/collection/" + repo + "_code_embeddings.json";
 		_packages = new HashMap<String, Package>();
 	}
 

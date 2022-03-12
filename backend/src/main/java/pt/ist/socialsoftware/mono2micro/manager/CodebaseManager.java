@@ -270,7 +270,8 @@ public class CodebaseManager {
 	public Codebase createCodebase(
 		String codebaseName,
 		Object datafile,
-		Object translationFile
+		Object translationFile,
+		Object codeEmbeddingsFile
 	)
 		throws IOException
 	{
@@ -305,6 +306,13 @@ public class CodebaseManager {
 			HashMap translationFileJSON = objectMapper.readValue(translationFileInputStream, HashMap.class);
 			translationFileInputStream.close();
 			this.writeTranslationFile(codebaseName, translationFileJSON);
+
+			if (codeEmbeddingsFile instanceof MultipartFile) {
+				InputStream codeEmbeddingsFileInputStream = ((MultipartFile) codeEmbeddingsFile).getInputStream();
+				HashMap codeEmbeddingsFileJSON = objectMapper.readValue(codeEmbeddingsFileInputStream, HashMap.class);
+				codeEmbeddingsFileInputStream.close();
+				this.writeCodeEmbeddingsFile(codebaseName, codeEmbeddingsFileJSON);
+			}
 
 			this.writeDatafile(codebaseName, datafileJSON);
 			datafileFile = new File(CODEBASES_PATH + codebaseName + "/datafile.json");
@@ -401,6 +409,18 @@ public class CodebaseManager {
 		is.close();
 
 		return translation;
+	}
+
+	public void writeCodeEmbeddingsFile(
+		String codebaseName,
+		HashMap codeEmbeddingsFileJSON
+	)
+		throws IOException
+	{
+		objectMapper.writerWithDefaultPrettyPrinter().writeValue(
+				new File(CODEBASES_PATH + codebaseName + "/code_embeddings.json"),
+				codeEmbeddingsFileJSON
+		);
 	}
 
 	public void writeDatafile(

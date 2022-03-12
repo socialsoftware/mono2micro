@@ -6,9 +6,6 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import dto.NamePrediction;
-import dto.AttentionPath;
-
 public class MethodPredict {
 
     public String name;

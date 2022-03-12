@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.ArrayList;
 import org.json.*;
 
-import models.MethodCall;
-
 public class Method {
 
 	private String _signature;

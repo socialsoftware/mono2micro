@@ -8,8 +8,6 @@ import java.util.HashMap;
 
 import org.json.*;
 
-import models.Class;
-
 public class Package {
 
 	private String _name;

@@ -171,7 +171,8 @@ public class CodebaseController {
     public ResponseEntity<HttpStatus> createCodebase(
         @RequestParam String codebaseName,
         @RequestParam Object datafile,
-        @RequestParam Object translationFile
+        @RequestParam Object translationFile,
+		@RequestParam Object codeEmbeddingsFile
     ){
         logger.debug("createCodebase");
 
@@ -179,7 +180,8 @@ public class CodebaseController {
             Codebase codebase = codebaseManager.createCodebase(
             	codebaseName,
 				datafile,
-				translationFile
+				translationFile,
+				codeEmbeddingsFile
 			);
 
             codebaseManager.writeCodebase(codebase);
