@@ -149,7 +149,7 @@ public class JavaParserCollector {
 						ResolvedMethodDeclaration resolvedMetDecl = methodDeclaration.resolve();
 						if (resolvedMetDecl != null)
 							signature = resolvedMetDecl.getQualifiedSignature();
-					} catch(Exception _) {}
+					} catch(Exception _err) {}
 
 					String body = methodDeclaration.toString();
 					//  	.replaceAll("[\\r\\n\\t]", ""); //Code after comments unreachable
@@ -263,7 +263,7 @@ public class JavaParserCollector {
 						ResolvedConstructorDeclaration resolvedConstDecl = constructorDeclaration.resolve();
 						if (resolvedConstDecl != null)
 							signature = resolvedConstDecl.getQualifiedSignature();
-					} catch(Exception _) {}
+					} catch(Exception _err) {}
 
 					String body = constructorDeclaration.toString();
 					String type = "Constructor";

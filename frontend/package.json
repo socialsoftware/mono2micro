@@ -5,8 +5,8 @@
   "dependencies": {
     "@mui/material": "^5.4.1",
     "@mui/icons-material": "^5.4.1",
-    "@emotion/core":"10.3.0",
-    "@emotion/styled":"10.3.0",
+    "@emotion/core": "10.3.0",
+    "@emotion/styled": "10.3.0",
     "@types/react": "^17.0.39",
     "@types/react-bootstrap": "^0.32.29",
     "@types/react-bootstrap-table-next": "^4.0.17",

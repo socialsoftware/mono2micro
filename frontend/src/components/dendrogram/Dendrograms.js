@@ -85,6 +85,8 @@ export const Dendrograms = () => {
     const [amountOfTraces, setAmountOfTraces] = useState("0");
     const [typeOfTraces, setTypeOfTraces] = useState("ALL");
     const [codebase, setCodebase] = useState({ profiles: [], });
+    const [analysisType, setAnalysisType] = useState("static");
+    const [featureVectorizationStrategy, setFeatureVectorizationStrategy] = useState("methodCalls");
 
     let { codebaseName } = useParams();
 
@@ -187,6 +189,13 @@ export const Dendrograms = () => {
             });
     }
 
+    function handleCode2vecSubmit(event) {
+        event.preventDefault()
+        setIsUploaded("Uploading...");
+        const service = new RepositoryService();
+        // TODO: Request code2vec analysis service
+    }
+
     function handleChangeNewDendrogramName(event) {
         setNewDendrogramName(event.target.value);
     }
@@ -227,6 +236,14 @@ export const Dendrograms = () => {
         }
     }
 
+    function handleAnalysisType(event) {
+        setAnalysisType(event.target.id);
+    }
+
+    function handleChangeFeatureVectorizationStrategy(event) {
+        setFeatureVectorizationStrategy(event.target.id);
+    }
+
     function handleDeleteDendrogram(dendrogramName) {
         const service = new RepositoryService();
         
@@ -251,7 +268,36 @@ export const Dendrograms = () => {
         );
     }
 
-    function renderCreateDendrogramForm() {
+    function renderAnalysisType() {
+        return (
+            <Form.Group as={Row} className="align-items-center">
+                <Form.Label as="legend" column sm={2}>
+                    Analysis Type
+                </Form.Label>
+                <Col sm="auto">
+                    <Form.Check
+                        onClick={handleAnalysisType}
+                        name="analysisType"
+                        label="Static"
+                        type="radio"
+                        id="static"
+                        defaultChecked
+                    />
+                </Col>
+                <Col sm="auto">
+                    <Form.Check
+                        onClick={handleAnalysisType}
+                        name="analysisType"
+                        label="Code2vec"
+                        type="radio"
+                        id="code2vec"
+                    />
+                </Col>
+            </Form.Group>
+        );
+    }
+
+    function renderCreateStaticDendrogramForm() {
         const profiles = codebase["profiles"];
         return (
             <Form onSubmit={handleSubmit}>
@@ -480,6 +526,100 @@ export const Dendrograms = () => {
         );
     }
 
+    function renderCreateCode2vecDendrogramForm() {
+        const profiles = codebase["profiles"];
+        return (
+            <Form onSubmit={handleCode2vecSubmit}>
+                <Form.Group as={Row} controlId="newDendrogramName" className="align-items-center">
+                    <Form.Label column sm={2}>
+                        Dendrogram Name
+                    </Form.Label>
+                    <Col sm={2}>
+                        <FormControl
+                            type="text"
+                            maxLength="30"
+                            placeholder="Dendrogram Name"
+                            value={newDendrogramName}
+                            onChange={handleChangeNewDendrogramName}
+                        />
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} controlId="selectControllerProfiles" className="align-items-center">
+                    <Form.Label column sm={2}>
+                        Select Codebase Profiles
+                    </Form.Label>
+                    <Col sm={2}>
+                        <DropdownButton title={'Controller Profiles'}>
+                            {Object.keys(profiles).map(profile =>
+                                <Dropdown.Item
+                                    key={profile}
+                                    onClick={() => selectProfile(profile)}
+                                    active={selectedProfile === profile}
+                                >
+                                    {profile}
+                                </Dropdown.Item>
+                            )}
+                        </DropdownButton>
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} controlId="selectFeatureVectorizationStrategy" className="align-items-center">
+                    <Form.Label column sm={2}>
+                        Select Feature Vectorization Strategy
+                    </Form.Label>
+                    <Col sm="auto">
+                        <Form.Check
+                            onClick={handleChangeFeatureVectorizationStrategy}
+                            name="featureVectorizationStrategy"
+                            label="Method Calls"
+                            type="radio"
+                            id="methodCalls"
+                            defaultChecked
+                        />
+                    </Col>
+                    <Col sm="auto">
+                        <Form.Check
+                            onClick={handleChangeFeatureVectorizationStrategy}
+                            name="featureVectorizationStrategy"
+                            label="Entities"
+                            type="radio"
+                            id="entities"
+                        />
+
+                    </Col>
+                    <Col sm="auto">
+                        <Form.Check
+                            onClick={handleChangeFeatureVectorizationStrategy}
+                            name="featureVectorizationStrategy"
+                            label="Mixed"
+                            type="radio"
+                            id="mixed"
+                        />
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} className="align-items-center">
+                    <Col sm={{ offset: 2 }}>
+                        <Button
+                            type="submit"
+                            disabled={
+                                isUploaded === "Uploading..." ||
+                                newDendrogramName === "" ||
+                                selectedProfile === ""
+                            }
+                        >
+                            Create Dendrogram
+                        </Button>
+                        <Form.Text>
+                            {isUploaded}
+                        </Form.Text>
+                    </Col>
+                </Form.Group>
+            </Form>
+        );
+    }
+
     function renderDendrograms() {
         return (
             <Row>
@@ -556,10 +696,16 @@ export const Dendrograms = () => {
             {renderBreadCrumbs()}
 
             <h4 style={{ color: "#666666" }}>
+                Choose the Analysis Type
+            </h4>
+
+            {renderAnalysisType()}
+
+            <h4 style={{ color: "#666666" }}>
                 Create Dendrogram
             </h4>
 
-            {renderCreateDendrogramForm()}
+            {analysisType == "static" ? renderCreateStaticDendrogramForm() : renderCreateCode2vecDendrogramForm()}
 
             <h4 style={{ color: "#666666" }}>
                 Dendrograms
