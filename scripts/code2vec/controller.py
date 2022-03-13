@@ -19,6 +19,7 @@ router = APIRouter()
 
 @router.post("/predict", response_model=MethodPredict)
 async def predict(req: MethodDeclaration):
+    global model, predictor
     print("[+] Predicting code embedding for method: " + req.name)
     if model == None:
         model = Code2VecModel(config)
@@ -28,5 +29,7 @@ async def predict(req: MethodDeclaration):
 
 @router.on_event("shutdown")
 def shut_down():
-    print("[+] Closing code2vec session...")
-    model.close_session()
+    global model
+    if model != None:
+        print("[+] Closing code2vec session...")
+        model.close_session()

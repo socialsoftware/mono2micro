@@ -225,12 +225,14 @@ export class RepositoryService {
     createDendrogramByFeatures(
         codebaseName: string,
         dendrogramName: string,
-        profile: string
+        profile: string,
+        linkageType: string
     ) {
         const dendrogramData: Dendrogram = {
             codebaseName,
             name: dendrogramName,
             profile,
+            linkageType
         };
         
         return this.axios.post<null>(
@@ -242,12 +244,14 @@ export class RepositoryService {
     createDendrogramByClass(
         codebaseName: string,
         dendrogramName: string,
-        profile: string
+        profile: string,
+        linkageType: string
     ) {
         const dendrogramData: Dendrogram = {
             codebaseName,
             name: dendrogramName,
             profile,
+            linkageType
         };
         
         return this.axios.post<null>(

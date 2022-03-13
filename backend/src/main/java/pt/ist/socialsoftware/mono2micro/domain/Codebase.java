@@ -263,6 +263,7 @@ public class Codebase {
 			}
 		}
 
+		classes_json.put("linkageType", dendrogram.getLinkageType());
 		classes_json.put("classes", classesVectors);
 
 		CodebaseManager.getInstance().writeClassesCodeVectorsFile(this.name, classes_json);

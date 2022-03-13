@@ -152,7 +152,7 @@ public class DendrogramController {
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 			codebase.createDendrogramByFeatures(dendrogram);
 
-            // codebaseManager.writeCodebase(codebase);
+            codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.CREATED);
 
 		} catch (KeyAlreadyExistsException e) {
@@ -178,7 +178,7 @@ public class DendrogramController {
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 			codebase.createDendrogramByClass(dendrogram);
 
-            // codebaseManager.writeCodebase(codebase);
+            codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.CREATED);
 
 		} catch (KeyAlreadyExistsException e) {

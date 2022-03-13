@@ -197,6 +197,7 @@ export const Dendrograms = () => {
             codebaseName,
             newDendrogramName,
             selectedProfile,
+            linkageType
         )
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
@@ -224,6 +225,7 @@ export const Dendrograms = () => {
             codebaseName,
             newDendrogramName,
             selectedProfile,
+            linkageType
         )
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
@@ -683,6 +685,43 @@ export const Dendrograms = () => {
                 <br/>
 
                 <Form.Group as={Row} className="align-items-center">
+                    <Form.Label as="legend" column sm={2}>
+                        Linkage Type
+                    </Form.Label>
+                    <Col sm="auto">
+                        <Form.Check
+                            onClick={handleLinkageType}
+                            name="linkageType"
+                            label="Average"
+                            type="radio"
+                            id="average"
+                            defaultChecked
+                        />
+                    </Col>
+                    <Col sm="auto">
+                        <Form.Check
+                            onClick={handleLinkageType}
+                            name="linkageType"
+                            label="Single"
+                            type="radio"
+                            id="single"
+                        />
+
+                    </Col>
+                    <Col sm="auto">
+                        <Form.Check
+                            onClick={handleLinkageType}
+                            name="linkageType"
+                            label="Complete"
+                            type="radio"
+                            id="complete"
+                        />
+                    </Col>
+                </Form.Group>
+
+                <br/>
+
+                <Form.Group as={Row} className="align-items-center">
                     <Col sm={{ offset: 2 }}>
                         <Button
                             type="submit"
@@ -740,6 +779,43 @@ export const Dendrograms = () => {
                                 </Dropdown.Item>
                             )}
                         </DropdownButton>
+                    </Col>
+                </Form.Group>
+
+                <br/>
+
+                <Form.Group as={Row} className="align-items-center">
+                    <Form.Label as="legend" column sm={2}>
+                        Linkage Type
+                    </Form.Label>
+                    <Col sm="auto">
+                        <Form.Check
+                            onClick={handleLinkageType}
+                            name="linkageType"
+                            label="Average"
+                            type="radio"
+                            id="average"
+                            defaultChecked
+                        />
+                    </Col>
+                    <Col sm="auto">
+                        <Form.Check
+                            onClick={handleLinkageType}
+                            name="linkageType"
+                            label="Single"
+                            type="radio"
+                            id="single"
+                        />
+
+                    </Col>
+                    <Col sm="auto">
+                        <Form.Check
+                            onClick={handleLinkageType}
+                            name="linkageType"
+                            label="Complete"
+                            type="radio"
+                            id="complete"
+                        />
                     </Col>
                 </Form.Group>
 
