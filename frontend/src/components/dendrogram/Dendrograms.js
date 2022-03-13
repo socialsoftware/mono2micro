@@ -189,11 +189,58 @@ export const Dendrograms = () => {
             });
     }
 
-    function handleCode2vecSubmit(event) {
+    function handleCreateDendrogramByFeaturesSubmit(event) {
         event.preventDefault()
         setIsUploaded("Uploading...");
         const service = new RepositoryService();
-        // TODO: Request code2vec analysis service
+        service.createDendrogramByFeatures(
+            codebaseName,
+            newDendrogramName,
+            selectedProfile,
+        )
+            .then(response => {
+                if (response.status === HttpStatus.CREATED) {
+                    // loadDendrograms();
+                    // loadDecompositions();
+                    setIsUploaded("Upload completed successfully.");
+                } else {
+                    setIsUploaded("Upload failed.");
+                }
+            })
+            .catch(error => {
+                if (error.response !== undefined && error.response.status === HttpStatus.UNAUTHORIZED) {
+                    setIsUploaded("Upload failed. Dendrogram name already exists.");
+                } else {
+                    setIsUploaded("Upload failed.");
+                }
+            });
+    }
+
+    function handleCreateDendrogramByClassesSubmit(event) {
+        event.preventDefault()
+        setIsUploaded("Uploading...");
+        const service = new RepositoryService();
+        service.createDendrogramByClass(
+            codebaseName,
+            newDendrogramName,
+            selectedProfile,
+        )
+            .then(response => {
+                if (response.status === HttpStatus.CREATED) {
+                    // loadDendrograms();
+                    // loadDecompositions();
+                    setIsUploaded("Upload completed successfully.");
+                } else {
+                    setIsUploaded("Upload failed.");
+                }
+            })
+            .catch(error => {
+                if (error.response !== undefined && error.response.status === HttpStatus.UNAUTHORIZED) {
+                    setIsUploaded("Upload failed. Dendrogram name already exists.");
+                } else {
+                    setIsUploaded("Upload failed.");
+                }
+            });
     }
 
     function handleChangeNewDendrogramName(event) {
@@ -288,9 +335,18 @@ export const Dendrograms = () => {
                     <Form.Check
                         onClick={handleAnalysisType}
                         name="analysisType"
-                        label="Code2vec"
+                        label="Feature Aggregation"
                         type="radio"
-                        id="code2vec"
+                        id="feature"
+                    />
+                </Col>
+                <Col sm="auto">
+                    <Form.Check
+                        onClick={handleAnalysisType}
+                        name="analysisType"
+                        label="Class Aggregation"
+                        type="radio"
+                        id="class"
                     />
                 </Col>
             </Form.Group>
@@ -316,6 +372,8 @@ export const Dendrograms = () => {
                     </Col>
                 </Form.Group>
 
+                <br/>
+
                 <Form.Group as={Row} controlId="selectControllerProfiles" className="align-items-center">
                     <Form.Label column sm={2}>
                         Select Codebase Profiles
@@ -334,6 +392,9 @@ export const Dendrograms = () => {
                         </DropdownButton>
                     </Col>
                 </Form.Group>
+
+                <br/>
+
                 <Form.Group as={Row} controlId="amountOfTraces">
                     <Form.Label column sm={2}>
                         Amount of Traces per Controller
@@ -350,6 +411,9 @@ export const Dendrograms = () => {
                         </Form.Text>
                     </Col>
                 </Form.Group>
+
+                <br/>
+
                 <Form.Group as={Row} className="align-items-center">
                     <Form.Label as="legend" column sm={2}>
                         Type of traces
@@ -411,6 +475,9 @@ export const Dendrograms = () => {
                         </Col>
                     </Col>
                 </Form.Group>
+
+                <br/>
+
                 <Form.Group as={Row} className="align-items-center">
                     <Form.Label as="legend" column sm={2}>
                         Linkage Type
@@ -446,6 +513,8 @@ export const Dendrograms = () => {
                     </Col>
                 </Form.Group>
 
+                <br/>
+
                 <Form.Group as={Row} controlId="access" className="align-items-center">
                     <Form.Label column sm={2}>
                         Access Metric Weight (%)
@@ -458,6 +527,8 @@ export const Dendrograms = () => {
                             onChange={handleChangeAccessMetricWeight} />
                     </Col>
                 </Form.Group>
+
+                <br/>
 
                 <Form.Group as={Row} controlId="write" className="align-items-center">
                     <Form.Label column sm={2}>
@@ -472,6 +543,8 @@ export const Dendrograms = () => {
                     </Col>
                 </Form.Group>
 
+                <br/>
+
                 <Form.Group as={Row} controlId="read" className="align-items-center">
                     <Form.Label column sm={2}>
                         Read Metric Weight (%)
@@ -485,6 +558,8 @@ export const Dendrograms = () => {
                     </Col>
                 </Form.Group>
 
+                <br/>
+
                 <Form.Group as={Row} controlId="sequence" className="align-items-center">
                     <Form.Label column sm={2}>
                         Sequence Metric Weight (%)
@@ -497,6 +572,8 @@ export const Dendrograms = () => {
                             onChange={handleChangeSequenceMetricWeight} />
                     </Col>
                 </Form.Group>
+
+                <br/>
 
                 <Form.Group as={Row} className="align-items-center">
                     <Col sm={{ offset: 2 }}>
@@ -526,10 +603,10 @@ export const Dendrograms = () => {
         );
     }
 
-    function renderCreateCode2vecDendrogramForm() {
+    function renderCreateFeatureDendrogramForm() {
         const profiles = codebase["profiles"];
         return (
-            <Form onSubmit={handleCode2vecSubmit}>
+            <Form onSubmit={handleCreateDendrogramByFeaturesSubmit}>
                 <Form.Group as={Row} controlId="newDendrogramName" className="align-items-center">
                     <Form.Label column sm={2}>
                         Dendrogram Name
@@ -544,6 +621,8 @@ export const Dendrograms = () => {
                         />
                     </Col>
                 </Form.Group>
+
+                <br/>
 
                 <Form.Group as={Row} controlId="selectControllerProfiles" className="align-items-center">
                     <Form.Label column sm={2}>
@@ -563,6 +642,8 @@ export const Dendrograms = () => {
                         </DropdownButton>
                     </Col>
                 </Form.Group>
+
+                <br/>
 
                 <Form.Group as={Row} controlId="selectFeatureVectorizationStrategy" className="align-items-center">
                     <Form.Label column sm={2}>
@@ -598,6 +679,71 @@ export const Dendrograms = () => {
                         />
                     </Col>
                 </Form.Group>
+
+                <br/>
+
+                <Form.Group as={Row} className="align-items-center">
+                    <Col sm={{ offset: 2 }}>
+                        <Button
+                            type="submit"
+                            disabled={
+                                isUploaded === "Uploading..." ||
+                                newDendrogramName === "" ||
+                                selectedProfile === ""
+                            }
+                        >
+                            Create Dendrogram
+                        </Button>
+                        <Form.Text>
+                            {isUploaded}
+                        </Form.Text>
+                    </Col>
+                </Form.Group>
+            </Form>
+        );
+    }
+
+    function renderCreateClassDendrogramForm() {
+        const profiles = codebase["profiles"];
+        return (
+            <Form onSubmit={handleCreateDendrogramByClassesSubmit}>
+                <Form.Group as={Row} controlId="newDendrogramName" className="align-items-center">
+                    <Form.Label column sm={2}>
+                        Dendrogram Name
+                    </Form.Label>
+                    <Col sm={2}>
+                        <FormControl
+                            type="text"
+                            maxLength="30"
+                            placeholder="Dendrogram Name"
+                            value={newDendrogramName}
+                            onChange={handleChangeNewDendrogramName}
+                        />
+                    </Col>
+                </Form.Group>
+
+                <br/>
+
+                <Form.Group as={Row} controlId="selectControllerProfiles" className="align-items-center">
+                    <Form.Label column sm={2}>
+                        Select Codebase Profiles
+                    </Form.Label>
+                    <Col sm={2}>
+                        <DropdownButton title={'Controller Profiles'}>
+                            {Object.keys(profiles).map(profile =>
+                                <Dropdown.Item
+                                    key={profile}
+                                    onClick={() => selectProfile(profile)}
+                                    active={selectedProfile === profile}
+                                >
+                                    {profile}
+                                </Dropdown.Item>
+                            )}
+                        </DropdownButton>
+                    </Col>
+                </Form.Group>
+
+                <br/>
 
                 <Form.Group as={Row} className="align-items-center">
                     <Col sm={{ offset: 2 }}>
@@ -701,11 +847,17 @@ export const Dendrograms = () => {
 
             {renderAnalysisType()}
 
+            <br/>
+
             <h4 style={{ color: "#666666" }}>
                 Create Dendrogram
             </h4>
 
-            {analysisType == "static" ? renderCreateStaticDendrogramForm() : renderCreateCode2vecDendrogramForm()}
+            {analysisType == "static" ? renderCreateStaticDendrogramForm() : <div></div>}
+            {analysisType == "feature" ? renderCreateFeatureDendrogramForm() : <div></div>}
+            {analysisType == "class" ? renderCreateClassDendrogramForm() : <div></div>}
+
+            <br/>
 
             <h4 style={{ color: "#666666" }}>
                 Dendrograms

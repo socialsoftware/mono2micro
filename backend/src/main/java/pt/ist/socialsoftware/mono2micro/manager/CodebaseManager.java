@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
@@ -420,6 +421,33 @@ public class CodebaseManager {
 		objectMapper.writerWithDefaultPrettyPrinter().writeValue(
 				new File(CODEBASES_PATH + codebaseName + "/code_embeddings.json"),
 				codeEmbeddingsFileJSON
+		);
+	}
+
+	public JSONObject getCodeEmbeddings(
+			String codebaseName
+	)
+		throws IOException, JSONException
+	{
+
+		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/code_embeddings.json");
+
+		JSONObject codeEmbeddings = new JSONObject(IOUtils.toString(is, StandardCharsets.UTF_8));
+
+		is.close();
+
+		return codeEmbeddings;
+	}
+
+	public void writeClassesCodeVectorsFile(
+		String codebaseName,
+		HashMap classesCodeVectorsFileJSON
+	)
+		throws IOException
+	{
+		objectMapper.writerWithDefaultPrettyPrinter().writeValue(
+				new File(CODEBASES_PATH + codebaseName + "/classes_embeddings.json"),
+				classesCodeVectorsFileJSON
 		);
 	}
 

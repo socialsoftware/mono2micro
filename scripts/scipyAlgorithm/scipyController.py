@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from scipyAlgorithm.createDendrogram import createDendrogram as createDendrogramScipy
+from scipyAlgorithm.createDendrogramByClassesScipy import createDendrogramByClassesScipy as createDendrogramByClassesScipy
 from scipyAlgorithm.cutDendrogram import cutDendrogram as cutDendrogramScipy
 from scipyAlgorithm.analyser import analyser as analyserScipy
 import env
@@ -10,6 +11,12 @@ scipyRouter = APIRouter()
 @scipyRouter.get("/scipy/{codebaseName}/{dendrogramName}/createDendrogram")
 async def createDendrogram(codebaseName, dendrogramName):
     createDendrogramScipy(env.CODEBASES_PATH, codebaseName, dendrogramName)
+    return {"codebaseName": codebaseName, "dendrogramName": dendrogramName, "operation": "createDendrogram"}
+
+
+@scipyRouter.get("/scipy/{codebaseName}/{dendrogramName}/createDendrogram/classes")
+async def createDendrogramByClasses(codebaseName, dendrogramName):
+    createDendrogramByClassesScipy(env.CODEBASES_PATH, codebaseName, dendrogramName)
     return {"codebaseName": codebaseName, "dendrogramName": dendrogramName, "operation": "createDendrogram"}
 
 

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.apache.commons.io.FileUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
@@ -128,11 +130,11 @@ public class Codebase {
 		this.dendrograms.add(dendrogram);
 	}
 
-	public void executeCreateDendrogram(Dendrogram dendrogram)
+	public void executeCreateDendrogram(Dendrogram dendrogram, String type)
 	{
 		WebClient.create(SCRIPTS_ADDRESS)
 				.get()
-				.uri("/scipy/{codebaseName}/{dendrogramName}/createDendrogram",this.name, dendrogram.getName())
+				.uri("/scipy/{codebaseName}/{dendrogramName}/createDendrogram" + type,this.name, dendrogram.getName())
 				.exchange()
 				.doOnSuccess(clientResponse -> {
 					if (clientResponse.statusCode() != HttpStatus.OK)
@@ -172,8 +174,102 @@ public class Codebase {
 			)
 		);
 
-		executeCreateDendrogram(dendrogram);
+		executeCreateDendrogram(dendrogram, "");
 	}
 
+	public void createDendrogramByFeatures(
+		Dendrogram dendrogram
+	)
+		throws Exception
+	{
+		if (getDendrogram(dendrogram.getName()) != null)
+			throw new KeyAlreadyExistsException();
+
+		File dendrogramPath = new File(CODEBASES_PATH + this.name + "/" + dendrogram.getName());
+		if (!dendrogramPath.exists()) {
+			dendrogramPath.mkdir();
+		}
+
+		JSONObject codeEmbeddings = CodebaseManager.getInstance().getCodeEmbeddings(this.name);
+
+		this.addDendrogram(dendrogram);
+
+		System.out.println("Creating dendrogram by features...");
+		// TODO: To implement
+	}
+
+	public List<Double> calculateClassVector(List<List<Double>> class_methods_vectors) {
+		List<Double> class_vector = new ArrayList<Double>();
+
+		int len = class_methods_vectors.get(0).size();
+
+		Double sum = 0.0;
+
+		for (int i = 0; i < len; i++) {
+			for (int j = 0; j < class_methods_vectors.size(); j++) {
+				sum += class_methods_vectors.get(j).get(i);
+			}
+			class_vector.add(sum / class_methods_vectors.size());
+			sum = 0.0;
+		}
+
+		return class_vector;
+	}
+
+	public void createDendrogramByClass(
+		Dendrogram dendrogram
+	)
+		throws Exception
+	{
+		if (getDendrogram(dendrogram.getName()) != null)
+			throw new KeyAlreadyExistsException();
+
+		File dendrogramPath = new File(CODEBASES_PATH + this.name + "/" + dendrogram.getName());
+		if (!dendrogramPath.exists()) {
+			dendrogramPath.mkdir();
+		}
+
+		JSONObject codeEmbeddings = CodebaseManager.getInstance().getCodeEmbeddings(this.name);
+		HashMap<String, Object> classes_json = new HashMap<String, Object>();
+		classes_json.put("name", codeEmbeddings.getString("name"));
+
+		List<HashMap> classesVectors = new ArrayList<>();
+
+		JSONArray packages = codeEmbeddings.getJSONArray("packages");
+
+		for (int i = 0; i < packages.length(); i++) {
+			JSONObject pack = packages.getJSONObject(i);
+			JSONArray classes = pack.optJSONArray("classes");
+			for (int j = 0; j < classes.length(); j++) {
+				JSONObject cls = classes.getJSONObject(j);
+				JSONArray methods = cls.optJSONArray("methods");
+				List<List<Double>> class_methods_vectors = new ArrayList<List<Double>>();
+				for (int k = 0; k < methods.length(); k++) {
+					JSONObject method = methods.getJSONObject(k);
+					JSONArray code_vector_array = method.optJSONArray("codeVector");
+					List<Double> code_vector = new ArrayList<Double>();
+					for (int l = 0; l < code_vector_array.length(); l++) {
+						code_vector.add(code_vector_array.getDouble(l));
+					}
+					class_methods_vectors.add(code_vector);
+				}
+				List<Double> class_vector = calculateClassVector(class_methods_vectors);
+				HashMap<String, Object> classEmbeddings = new HashMap<String, Object>();
+				classEmbeddings.put("package", pack.getString("name"));
+				classEmbeddings.put("name", cls.getString("name"));
+				classEmbeddings.put("type", cls.getString("type"));
+				classEmbeddings.put("codeVector", class_vector);
+				classesVectors.add(classEmbeddings);
+			}
+		}
+
+		classes_json.put("classes", classesVectors);
+
+		CodebaseManager.getInstance().writeClassesCodeVectorsFile(this.name, classes_json);
+
+		this.addDendrogram(dendrogram);
+
+		executeCreateDendrogram(dendrogram, "/classes");
+	}
 
 }

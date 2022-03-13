@@ -139,6 +139,57 @@ public class DendrogramController {
         }
 	}
 
+	@RequestMapping(value = "/dendrogram/create/features", method = RequestMethod.POST)
+	public ResponseEntity<HttpStatus> createDendrogramByFeatures(
+		@PathVariable String codebaseName,
+		@RequestBody Dendrogram dendrogram
+	) {
+		logger.debug("createDendrogramByFeatures");
+
+		try {
+			// FIXME The whole codebase needs to be fetched because it needs to be written as a whole again
+			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
+			Codebase codebase = codebaseManager.getCodebase(codebaseName);
+			codebase.createDendrogramByFeatures(dendrogram);
+
+            // codebaseManager.writeCodebase(codebase);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+
+		} catch (KeyAlreadyExistsException e) {
+			e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+	}
+
+	@RequestMapping(value = "/dendrogram/create/class", method = RequestMethod.POST)
+	public ResponseEntity<HttpStatus> createDendrogramByClass(
+		@PathVariable String codebaseName,
+		@RequestBody Dendrogram dendrogram
+	) {
+		logger.debug("createDendrogramByClass");
+
+		try {
+			// FIXME The whole codebase needs to be fetched because it needs to be written as a whole again
+			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
+			Codebase codebase = codebaseManager.getCodebase(codebaseName);
+			codebase.createDendrogramByClass(dendrogram);
+
+            // codebaseManager.writeCodebase(codebase);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+
+		} catch (KeyAlreadyExistsException e) {
+			e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+	}
 
 	@RequestMapping(value = "/dendrogram/{dendrogramName}/cut", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> cutDendrogram(

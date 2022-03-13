@@ -222,6 +222,40 @@ export class RepositoryService {
         );
     }
 
+    createDendrogramByFeatures(
+        codebaseName: string,
+        dendrogramName: string,
+        profile: string
+    ) {
+        const dendrogramData: Dendrogram = {
+            codebaseName,
+            name: dendrogramName,
+            profile,
+        };
+        
+        return this.axios.post<null>(
+            "/codebase/" + codebaseName + "/dendrogram/create/features",
+            dendrogramData
+        );
+    }
+
+    createDendrogramByClass(
+        codebaseName: string,
+        dendrogramName: string,
+        profile: string
+    ) {
+        const dendrogramData: Dendrogram = {
+            codebaseName,
+            name: dendrogramName,
+            profile,
+        };
+        
+        return this.axios.post<null>(
+            "/codebase/" + codebaseName + "/dendrogram/create/class",
+            dendrogramData
+        );
+    }
+
     cutDendrogram(
         codebaseName: string,
         dendrogramName: string,
