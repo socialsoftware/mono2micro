@@ -1,99 +1,87 @@
-package pt.ist.socialsoftware.mono2micro.utils.similarityGenerators;
+package pt.ist.socialsoftware.mono2micro.domain.similarityGenerators;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import pt.ist.socialsoftware.mono2micro.domain.Codebase;
-import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
+import pt.ist.socialsoftware.mono2micro.domain.source.AccessesSource;
+import pt.ist.socialsoftware.mono2micro.domain.strategy.AccessesSciPyStrategy;
+import pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
-import pt.ist.socialsoftware.mono2micro.dto.AnalyserDto;
 import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
-import pt.ist.socialsoftware.mono2micro.utils.Constants.TraceType;
-import pt.ist.socialsoftware.mono2micro.utils.ClusteringAlgorithmType;
 import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 
 import java.io.IOException;
 import java.util.*;
 
-public class DefaultSimilarityGenerator implements SimilarityGenerator {
-    private final Codebase codebase;
-    private final String profile;
-    private final int tracesMaxLimit;
-    private final TraceType traceType;
-    private final Dendrogram dendrogram;
-    private final ClusteringAlgorithmType clusteringAlgorithm;
+import static pt.ist.socialsoftware.mono2micro.domain.source.Source.SourceType.ACCESSES;
+import static pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy.StrategyType.*;
+
+public class AccessesSimilarityGenerator implements SimilarityGenerator {
 
     private final Set<Short> entities = new TreeSet<>();
     private final Map<String, Integer> e1e2PairCount = new HashMap<>();
     private final Map<Short, List<Pair<String, Byte>>> entityControllers = new HashMap<>();
 
 
-    public DefaultSimilarityGenerator(Codebase codebase, Dendrogram dendrogram) {
-        this.codebase = codebase;
-        this.profile = dendrogram.getProfile();
-        this.tracesMaxLimit = dendrogram.getTracesMaxLimit();
-        this.traceType = dendrogram.getTraceType();
-        this.clusteringAlgorithm = dendrogram.getClusteringAlgorithmType();
-        this.dendrogram = dendrogram;
-    }
-
-    public DefaultSimilarityGenerator(Codebase codebase, AnalyserDto analyser) {
-        this.codebase = codebase;
-        this.profile = analyser.getProfile();
-        this.tracesMaxLimit = analyser.getTracesMaxLimit();
-        this.traceType = analyser.getTraceType();
-        this.clusteringAlgorithm = analyser.getClusteringAlgorithmType();
-        this.dendrogram = null;
-    }
+    public AccessesSimilarityGenerator() {}
 
     @Override
-    public void buildMatrix()
+    public void createSimilarityMatrix(Strategy strategy) throws Exception {
+        switch (strategy.getType()) { // Needs to know the specific output format
+            case ACCESSES_SCIPY:
+                createSimilarityMatrixForSciPy((AccessesSciPyStrategy) strategy);
+                break;
+            default:
+                throw new RuntimeException("No clustering algorithm type provided. Cannot infer the matrix format.");
+        }
+
+    }
+
+
+    private void createSimilarityMatrixForSciPy(AccessesSciPyStrategy strategy) throws Exception {
+        CodebaseManager codebaseManager = CodebaseManager.getInstance();
+
+        fillMatrix(strategy);
+        JSONObject matrixJSON = getSciPyMatrixAsJSONObject(strategy);
+        codebaseManager.writeSimilarityMatrix(strategy.getCodebaseName(), strategy.getName(), matrixJSON);
+    }
+
+    private void fillMatrix(AccessesSciPyStrategy strategy)
         throws IOException
     {
         System.out.println("Creating similarity matrix...");
 
+        CodebaseManager codebaseManager = CodebaseManager.getInstance();
+        AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(strategy.getCodebaseName(), ACCESSES);
+
         ControllerTracesIterator iter = new ControllerTracesIterator(
-                codebase.getDatafilePath(),
-                tracesMaxLimit
+                source.getInputFilePath(),
+                strategy.getTracesMaxLimit()
         );
 
         TraceDto t;
-        Set<String> profileControllers = codebase.getProfile(profile);
+        Set<String> profileControllers = source.getProfile(strategy.getProfile());
 
         for (String controllerName : profileControllers) {
             iter.nextControllerWithName(controllerName);
 
-            switch (traceType) {
+            switch (strategy.getTraceType()) {
                 case LONGEST:
                     // FIXME return accesses of longest trace instead of the trace itself
                     t = iter.getLongestTrace();
 
-                    if (t != null) {
-                        fillEntityDataStructures(
-                                entityControllers,
-                                e1e2PairCount,
-                                t.expand(2),
-                                controllerName
-                        );
-                    }
+                    if (t != null)
+                        fillEntityDataStructures(entityControllers, e1e2PairCount, t.expand(2), controllerName);
 
                     break;
-
                 case WITH_MORE_DIFFERENT_ACCESSES:
                     t = iter.getTraceWithMoreDifferentAccesses();
 
-                    if (t != null) {
-                        fillEntityDataStructures(
-                                entityControllers,
-                                e1e2PairCount,
-                                t.expand(2),
-                                controllerName
-                        );
-                    }
+                    if (t != null)
+                        fillEntityDataStructures(entityControllers, e1e2PairCount, t.expand(2), controllerName);
 
                     break;
-
                 // FIXME not going to fix this since time is scarce
 //                case REPRESENTATIVE:
 //                    Set<String> tracesIds = iter.getRepresentativeTraces();
@@ -103,40 +91,25 @@ public class DefaultSimilarityGenerator implements SimilarityGenerator {
 //                    while (iter.hasMoreTraces()) {
 //                        t = iter.nextTrace();
 //
-//                        if (tracesIds.contains(String.valueOf(t.getId()))) {
-//                            fillEntityDataStructures(
-//                                entityControllers,
-//                                e1e2PairCount,
-//                                t.expand(2),
-//                                controllerName
-//                            );
-//                        }
+//                        if (tracesIds.contains(String.valueOf(t.getId())))
+//                            fillEntityDataStructures(entityControllers, e1e2PairCount, t.expand(2), controllerName);
 //                    }
-//
 //                    break;
-
                 default:
                     while (iter.hasMoreTraces()) {
                         t = iter.nextTrace();
 
-                        fillEntityDataStructures(
-                                entityControllers,
-                                e1e2PairCount,
-                                t.expand(2),
-                                controllerName
-                        );
+                        fillEntityDataStructures(entityControllers, e1e2PairCount, t.expand(2), controllerName);
                     }
             }
-
             t = null; // release memory
         }
-
         iter = null; // release memory
 
         entities.addAll(entityControllers.keySet());
     }
 
-    public JSONObject getSciPyMatrixAsJSONObject()
+    private JSONObject getSciPyMatrixAsJSONObject(AccessesSciPyStrategy strategy)
             throws Exception
     {
         JSONObject matrixData = new JSONObject();
@@ -161,46 +134,31 @@ public class DefaultSimilarityGenerator implements SimilarityGenerator {
                         maxNumberOfPairs
                 );
 
-                float metric = weights[0] * dendrogram.getAccessMetricWeight() / 100 +
-                        weights[1] * dendrogram.getWriteMetricWeight() / 100 +
-                        weights[2] * dendrogram.getReadMetricWeight() / 100 +
-                        weights[3] * dendrogram.getSequenceMetricWeight() / 100;
+                float metric = weights[0] * strategy.getAccessMetricWeight() / 100 +
+                        weights[1] * strategy.getWriteMetricWeight() / 100 +
+                        weights[2] * strategy.getReadMetricWeight() / 100 +
+                        weights[3] * strategy.getSequenceMetricWeight() / 100;
 
                 matrixRow.put(metric);
             }
             similarityMatrixJSON.put(matrixRow);
         }
 
-        matrixData.put("linkageType", dendrogram.getLinkageType());
+        matrixData.put("linkageType", strategy.getLinkageType());
         matrixData.put("matrix", similarityMatrixJSON);
         matrixData.put("entities", entities);
 
         return matrixData;
     }
 
-    @Override
-    public void writeSimilarityMatrix() throws Exception {
-        switch (clusteringAlgorithm) {
-            case SCIPY:
-                CodebaseManager.getInstance().writeDendrogramSimilarityMatrix(
-                        codebase.getName(),
-                        dendrogram != null ? dendrogram.getName() : "analyser",
-                        getSciPyMatrixAsJSONObject()
-                );
-                break;
-
-            //Add other printing formats here
-        }
-    }
-
-    public static int getMaxNumberOfPairs(Map<String,Integer> e1e2PairCount) {
+    private static int getMaxNumberOfPairs(Map<String,Integer> e1e2PairCount) {
         if (!e1e2PairCount.values().isEmpty())
             return Collections.max(e1e2PairCount.values());
         else
             return 0;
     }
 
-    public static float[] calculateSimilarityMatrixWeights(
+    private static float[] calculateSimilarityMatrixWeights(
             Map<Short,List<Pair<String, Byte>>> entityControllers, // entityID -> [<controllerName, accessMode>, ...]
             Map<String,Integer> e1e2PairCount,
             short e1ID,
@@ -259,7 +217,7 @@ public class DefaultSimilarityGenerator implements SimilarityGenerator {
         };
     }
 
-    public static void fillEntityDataStructures(
+    private static void fillEntityDataStructures(
             Map<Short, List<Pair<String, Byte>>> entityControllers,
             Map<String, Integer> e1e2PairCount,
             List<AccessDto> accessesList,
@@ -286,23 +244,12 @@ public class DefaultSimilarityGenerator implements SimilarityGenerator {
                 }
 
                 if (!containsController) {
-                    entityControllers.get(entityID).add(
-                            new Pair<>(
-                                    controllerName,
-                                    mode
-                            )
-                    );
+                    entityControllers.get(entityID).add(new Pair<>(controllerName, mode));
                 }
 
             } else {
                 List<Pair<String, Byte>> controllersPairs = new ArrayList<>();
-                controllersPairs.add(
-                        new Pair<>(
-                                controllerName,
-                                mode
-                        )
-                );
-
+                controllersPairs.add(new Pair<>(controllerName, mode));
 
                 entityControllers.put(entityID, controllersPairs);
             }

@@ -13,12 +13,13 @@ import {RepositoryService} from "../../services/RepositoryService";
 import {TraceType} from "../../type-declarations/types.d";
 
 
-export const AccessesScipyDendrogram = ({codebaseName, profiles, isUploaded, update, setRequest}) => {
+export const AccessesSciPyStrategies = ({codebaseName, profiles, isUploaded, update, setRequest}) => {
 
-    const [dendrograms, setDendrograms] = useState([]);
+    const ACCESSES_SCIPY = "ACCESSES_SCIPY";
+
+    const [strategies, setStrategies] = useState([]);
     const [allDecompositions, setAllDecompositions] = useState([]);
     const [selectedProfile, setSelectedProfile] = useState("");
-    const [newDendrogramName, setNewDendrogramName] = useState("");
     const [linkageType, setLinkageType] = useState("average");
     const [accessMetricWeight, setAccessMetricWeight] = useState("25");
     const [writeMetricWeight, setWriteMetricWeight] = useState("25");
@@ -29,15 +30,16 @@ export const AccessesScipyDendrogram = ({codebaseName, profiles, isUploaded, upd
 
     // Executes it is informed that there is information to be updated
     useEffect(() => {
-        loadDendrograms();
+        //TODO: FAZER LOAD APENAS DAS STRATEGIES QUE INTERESSAM E VER QUANTO AS CODEBASES E PROFILES
+        loadStrategies();
         loadDecompositions();
     }, [update])
 
-    // Updates the request for dendrogram creation
+    // Updates the request for strategy creation
     useEffect(() => {
         setRequest({
+            type: ACCESSES_SCIPY,
             codebaseName,
-            name: newDendrogramName,
             accessMetricWeight: Number(accessMetricWeight),
             writeMetricWeight: Number(writeMetricWeight),
             readMetricWeight: Number(readMetricWeight),
@@ -46,29 +48,16 @@ export const AccessesScipyDendrogram = ({codebaseName, profiles, isUploaded, upd
             linkageType,
             tracesMaxLimit: Number(amountOfTraces),
             traceType,
-            similarityGeneratorType: "ACCESSES_LOG",
-            clusteringAlgorithmType: "SCIPY"
-        });}, [newDendrogramName, linkageType, accessMetricWeight, writeMetricWeight, readMetricWeight, sequenceMetricWeight, selectedProfile, amountOfTraces, traceType]);
+        });}, [linkageType, accessMetricWeight, writeMetricWeight, readMetricWeight, sequenceMetricWeight, selectedProfile, amountOfTraces, traceType]);
 
-    function loadDendrograms() {
+    function loadStrategies() {
         const service = new RepositoryService();
-        service.getDendrograms(
+        service.getStrategies(
             codebaseName,
-            [
-                "name",
-                "profiles",
-                "linkageType",
-                "tracesMaxlimit",
-                "traceType",
-                "accessMetricWeight",
-                "writeMetricWeight",
-                "readMetricWeight",
-                "sequenceMetricWeight"
-            ]
+            ACCESSES_SCIPY
         ).then((response) => {
-            if (response.data !== null) {
-                setDendrograms(response.data);
-            }
+            if (response.data !== null)
+                setStrategies(response.data);
         });
     }
 
@@ -76,12 +65,11 @@ export const AccessesScipyDendrogram = ({codebaseName, profiles, isUploaded, upd
         const service = new RepositoryService();
         service.getCodebaseDecompositions(
             codebaseName,
+            ACCESSES_SCIPY,
             [
                 "name",
-                "nextClusterID",
-                "dendrogramName",
+                "strategyName",
                 "clusters",
-                "tracesMaxlimit",
                 "silhouetteScore",
                 "cohesion",
                 "coupling",
@@ -96,8 +84,8 @@ export const AccessesScipyDendrogram = ({codebaseName, profiles, isUploaded, upd
     }
 
 
-    const metricColumns = [
-        { dataField: 'dendrogram',        text: 'Dendrogram',                    sort: true },
+    const decompositionColumns = [
+        { dataField: 'strategy',          text: 'Strategy Name',                 sort: true },
         { dataField: 'decomposition',     text: 'Decomposition',                 sort: true },
         { dataField: 'clusters',          text: 'Number of Retrieved Clusters',  sort: true },
         { dataField: 'singleton',         text: 'Number of Singleton Clusters',  sort: true },
@@ -109,7 +97,7 @@ export const AccessesScipyDendrogram = ({codebaseName, profiles, isUploaded, upd
         { dataField: 'performance',       text: 'Performance',                   sort: true }
     ];
 
-    const metricRows = allDecompositions.map(decomposition => {
+    const decompositionRows = allDecompositions.map(decomposition => {
         let amountOfSingletonClusters = 0;
         let maxClusterSize = 0;
 
@@ -122,8 +110,8 @@ export const AccessesScipyDendrogram = ({codebaseName, profiles, isUploaded, upd
         })
 
         return {
-            id: decomposition.dendrogramName + decomposition.name,
-            dendrogram: decomposition.dendrogramName,
+            id: decomposition.strategyName + decomposition.name,
+            strategy: decomposition.strategyName,
             decomposition: decomposition.name,
             clusters: Object.keys(decomposition.clusters).length,
             singleton: amountOfSingletonClusters,
@@ -136,10 +124,6 @@ export const AccessesScipyDendrogram = ({codebaseName, profiles, isUploaded, upd
         }
     });
 
-
-    function handleChangeNewDendrogramName(event) {
-        setNewDendrogramName(event.target.value);
-    }
 
     function handleLinkageType(event) {
         setLinkageType(event.target.id);
@@ -170,22 +154,18 @@ export const AccessesScipyDendrogram = ({codebaseName, profiles, isUploaded, upd
     }
 
     function handleSelectProfile(profile) {
-        if (selectedProfile !== profile) {
-            setSelectedProfile(profile);
-        } else {
-            setSelectedProfile("");
-        }
+        setSelectedProfile(profile);
     }
 
-    function handleDeleteDendrogram(dendrogramName) {
+    function handleDeleteStrategy(strategyName) {
         const service = new RepositoryService();
 
-        service.deleteDendrogram(
+        service.deleteStrategy(
             codebaseName,
-            dendrogramName
+            strategyName
         )
             .then(() => {
-                loadDendrograms();
+                loadStrategies();
                 loadDecompositions();
             });
     }
@@ -194,29 +174,15 @@ export const AccessesScipyDendrogram = ({codebaseName, profiles, isUploaded, upd
     return (
         <Fragment>
             <h4 className="mb-3 mt-3" style={{ color: "#666666" }}>
-                Dendrogram
+                Create Strategy
             </h4>
-            <Form.Group as={Row} controlId="newDendrogramName" className="align-items-center mb-3">
-                <Form.Label column sm={2}>
-                    Dendrogram Name
-                </Form.Label>
-                <Col sm={2}>
-                    <FormControl
-                        type="text"
-                        maxLength="30"
-                        placeholder="Dendrogram Name"
-                        value={newDendrogramName}
-                        onChange={handleChangeNewDendrogramName}
-                    />
-                </Col>
-            </Form.Group>
             <Form.Group as={Row} controlId="selectControllerProfiles" className="align-items-center mb-3">
                 <Form.Label column sm={2}>
-                    Select Codebase Profiles
+                    Select Codebase Profile
                 </Form.Label>
                 <Col sm={2}>
-                    <DropdownButton title={'Controller Profiles'}>
-                        {Object.keys(profiles).map(profile =>
+                    <DropdownButton title={selectedProfile === ""? 'Controller Profiles': selectedProfile}>
+                        {profiles !== [] && Object.keys(profiles).map(profile =>
                             <Dropdown.Item
                                 key={profile}
                                 onClick={() => handleSelectProfile(profile)}
@@ -397,7 +363,6 @@ export const AccessesScipyDendrogram = ({codebaseName, profiles, isUploaded, upd
                     <Button
                         type="submit"
                         disabled={ isUploaded === "Uploading..." ||
-                            newDendrogramName === "" ||
                             linkageType === "" ||
                             accessMetricWeight === "" ||
                             writeMetricWeight === "" ||
@@ -408,7 +373,7 @@ export const AccessesScipyDendrogram = ({codebaseName, profiles, isUploaded, upd
                             (traceType === "" || amountOfTraces === "")
                         }
                     >
-                        Create Dendrogram
+                        Create Strategy
                     </Button>
                     <Form.Text className="ms-2">
                         {isUploaded}
@@ -416,34 +381,34 @@ export const AccessesScipyDendrogram = ({codebaseName, profiles, isUploaded, upd
                 </Col>
             </Form.Group>
             <Row>
-                <h4 style={{ color: "#666666" }}>
-                    Dendrograms
+                <h4 className="mt-4" style={{ color: "#666666" }}>
+                    Strategies with Accesses Log and SciPy
                 </h4>
-                {dendrograms.map(d =>
-                    <Col key={d.name} md="auto">
+                {strategies.map(s =>
+                    <Col key={s.name} md="auto">
                         <Card className="mb-4" style={{ width: '20rem' }}>
                             <Card.Img
                                 variant="top"
-                                src={URL + "codebase/" + codebaseName + "/dendrogram/" + d.name + "/image?" + new Date().getTime()}
+                                src={URL + "codebase/" + codebaseName + "/strategy/" + s.name + "/image?" + new Date().getTime()}
                             />
                             <Card.Body>
-                                <Card.Title>{d.name}</Card.Title>
+                                <Card.Title>{s.name}</Card.Title>
                                 <Card.Text>
-                                    Linkage Type: {d.linkageType}< br />
-                                    AmountOfTraces: {d.tracesMaxLimit} <br />
-                                    Type of traces: {d.traceType} <br />
-                                    Access: {d.accessMetricWeight}%< br />
-                                    Write: {d.writeMetricWeight}%< br />
-                                    Read: {d.readMetricWeight}%< br />
-                                    Sequence: {d.sequenceMetricWeight}%
+                                    Linkage Type: {s.linkageType}< br />
+                                    AmountOfTraces: {s.tracesMaxLimit} <br />
+                                    Type of traces: {s.traceType} <br />
+                                    Access: {s.accessMetricWeight}%< br />
+                                    Write: {s.writeMetricWeight}%< br />
+                                    Read: {s.readMetricWeight}%< br />
+                                    Sequence: {s.sequenceMetricWeight}%
                                 </Card.Text>
-                                <Button href={`/codebases/${codebaseName}/dendrograms/${d.name}`}
+                                <Button href={`/codebases/${codebaseName}/strategies/${s.name}`}
                                         className="mb-2">
-                                    Go to Dendrogram
+                                    Go to Strategy
                                 </Button>
                                 <br />
                                 <Button
-                                    onClick={() => handleDeleteDendrogram(d.name)}
+                                    onClick={() => handleDeleteStrategy(s.name)}
                                     variant="danger"
                                 >
                                     Delete
@@ -455,10 +420,10 @@ export const AccessesScipyDendrogram = ({codebaseName, profiles, isUploaded, upd
                 )}
 
                 <h4 style={{ color: "#666666" }}>
-                    Metrics
+                    Decompositions
                 </h4>
 
-                { allDecompositions.length > 0 && <BootstrapTable bootstrap4 keyField='id' data={metricRows} columns={metricColumns} /> }
+                { allDecompositions.length > 0 && <BootstrapTable bootstrap4 keyField='id' data={decompositionRows} columns={decompositionColumns} /> }
             </Row>
         </Fragment>
     );

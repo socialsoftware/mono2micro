@@ -97,13 +97,13 @@ export const Analysis = () => {
         
         service.getCodebaseDecompositions(
             codebaseName,
+            undefined,
             [
                 "name",
                 "dendrogramName",
                 "expert",
                 "codebaseName",
-                "clusters",
-                "nextClusterID"
+                "clusters"
             ]
         ).then((response) => {
             if (response.data !== null) {

@@ -6,8 +6,8 @@ matplotlib.use('agg')
 import matplotlib.pyplot as plt
 
 
-def createDendrogram(codebasesPath, codebaseName, dendrogramName):
-    with open(codebasesPath + codebaseName + "/" + dendrogramName + "/similarityMatrix.json") as f:
+def createDendrogram(codebasesPath, codebaseName, strategyName):
+    with open(codebasesPath + codebaseName + "/strategies/" + strategyName + "/similarityMatrix.json") as f:
         similarityMatrix = json.load(f)
 
     entities = similarityMatrix["entities"]
@@ -19,5 +19,5 @@ def createDendrogram(codebasesPath, codebaseName, dendrogramName):
     fig = plt.figure(figsize=(25, 10))
 
     hierarchy.dendrogram(hierarc, labels=entities, distance_sort='descending')
-    plt.savefig(codebasesPath + codebaseName + "/" + dendrogramName + "/dendrogramImage.png", format="png",
+    plt.savefig(codebasesPath + codebaseName + "/strategies/" + strategyName + "/dendrogramImage.png", format="png",
                 bbox_inches='tight')

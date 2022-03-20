@@ -8,11 +8,11 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 
 import {CLUSTERING_ALGORITHMS, POSSIBLE_DECOMPOSITIONS, SIMILARITY_GENERATORS} from '../../constants/constants';
 import {useParams} from "react-router-dom";
-import {AccessesScipyDendrogram} from "./AccessesScipyDendrogram";
+import {AccessesSciPyStrategies} from "./AccessesSciPyStrategies";
 import {RepositoryService} from "../../services/RepositoryService";
 import HttpStatus from "http-status-codes";
 
-export const Dendrograms = () => {
+export const Strategies = () => {
 
     let { codebaseName } = useParams();
 
@@ -34,8 +34,9 @@ export const Dendrograms = () => {
             codebaseName,
             ["profiles"]
         ).then(response => {
-            if (response.data !== null) {
-                setProfiles(response.data.profiles);
+            if (response.data !== undefined) {
+                //setProfiles(response.data.profiles);
+                setProfiles(["Generic"]);
             }
         });
     }
@@ -45,7 +46,7 @@ export const Dendrograms = () => {
         setIsUploaded("Uploading...");
 
         const service = new RepositoryService();
-        service.createDendrogram(request)
+        service.createStrategy(request)
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
                     requestUpdate(update + 1); // Informs the Form that the information needs to be updated
@@ -80,12 +81,13 @@ export const Dendrograms = () => {
                 <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
                 <Breadcrumb.Item href="/codebases">Codebases</Breadcrumb.Item>
                 <Breadcrumb.Item href={`/codebases/${codebaseName}`}>{codebaseName}</Breadcrumb.Item>
-                <Breadcrumb.Item active>Dendrograms</Breadcrumb.Item>
+                <Breadcrumb.Item active>Strategies</Breadcrumb.Item>
             </Breadcrumb>
         );
     }
 
     function renderSimilarityGenerator() {
+        /*ADD NEW CLUSTERING ALGORITHMS AND SIMILARITY GENERATORS INTO THE POSSIBLE DECOMPOSITIONS*/
         return (
             <Form.Group as={Row} controlId="selectSimilarityGenerator" className="align-items-center mb-3">
                 <h4 className="mb-3 mt-3" style={{ color: "#666666" }}>
@@ -110,6 +112,7 @@ export const Dendrograms = () => {
     }
 
     function renderClusteringAlgorithm() {
+        /*ADD NEW CLUSTERING ALGORITHMS AND SIMILARITY GENERATORS INTO THE POSSIBLE DECOMPOSITIONS*/
         return (
             <Fragment>
                 <h4 className="mb-3 mt-3" style={{ color: "#666666" }}>
@@ -135,20 +138,6 @@ export const Dendrograms = () => {
         );
     }
 
-    function renderAccessScipyForm() {
-        return (
-            <Fragment>
-                <AccessesScipyDendrogram
-                    codebaseName={codebaseName}
-                    profiles={profiles}
-                    isUploaded={isUploaded}
-                    update={update}
-                    setRequest={setRequest}
-                />
-            </Fragment>
-        );
-    }
-
     return (
         <div>
             {renderBreadCrumbs()}
@@ -162,7 +151,13 @@ export const Dendrograms = () => {
                 {
                     clusteringAlgorithm !== undefined && clusteringAlgorithm.hasDendrograms &&
                     similarityGenerator.value === "ACCESSES_LOG" && clusteringAlgorithm.value === "SCIPY" &&
-                    renderAccessScipyForm()
+                    <AccessesSciPyStrategies
+                        codebaseName={codebaseName}
+                        profiles={profiles}
+                        isUploaded={isUploaded}
+                        update={update}
+                        setRequest={setRequest}
+                    />
                 }
             </Form>
         </div>

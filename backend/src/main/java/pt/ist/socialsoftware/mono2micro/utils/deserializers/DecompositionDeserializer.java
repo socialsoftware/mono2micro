@@ -19,12 +19,14 @@ public class DecompositionDeserializer extends StdDeserializer<Decomposition> {
 		this(null);
 	}
 
-	public DecompositionDeserializer(Class<Decomposition> t) { super(t); }
+	public DecompositionDeserializer(Class<Decomposition> t) {
+		super(t);
+	}
 
 	@Override
 	public Decomposition deserialize(
-		JsonParser jsonParser,
-		DeserializationContext ctxt
+			JsonParser jsonParser,
+			DeserializationContext ctxt
 	) throws IOException {
 		JsonToken jsonToken = jsonParser.currentToken();
 
@@ -32,12 +34,13 @@ public class DecompositionDeserializer extends StdDeserializer<Decomposition> {
 
 		try {
 			deserializableFields = (Set<String>) ctxt.findInjectableValue(
-				"decompositionDeserializableFields",
-				null,
-				null
+					"decompositionDeserializableFields",
+					null,
+					null
 			);
 
-		} catch (Exception ignored) {}
+		} catch (Exception ignored) {
+		}
 
 		if (jsonToken == JsonToken.START_OBJECT) {
 			Decomposition decomposition = new Decomposition();
@@ -48,20 +51,11 @@ public class DecompositionDeserializer extends StdDeserializer<Decomposition> {
 						case "name":
 							decomposition.setName(jsonParser.getValueAsString());
 							break;
-						case "nextClusterID":
-							decomposition.setNextClusterID(jsonParser.getShortValue());
-							break;
 						case "codebaseName":
 							decomposition.setCodebaseName(jsonParser.getValueAsString());
 							break;
-						case "dendrogramName":
-							decomposition.setDendrogramName(jsonParser.getValueAsString());
-							break;
-						case "cutType":
-							decomposition.setCutType(jsonParser.getValueAsString());
-							break;
-						case "cutValue":
-							decomposition.setCutValue(jsonParser.getFloatValue());
+						case "strategyName":
+							decomposition.setStrategyName(jsonParser.getValueAsString());
 							break;
 						case "silhouetteScore":
 							decomposition.setSilhouetteScore(jsonParser.getFloatValue());
@@ -104,15 +98,11 @@ public class DecompositionDeserializer extends StdDeserializer<Decomposition> {
 						case "expert":
 							decomposition.setExpert(jsonParser.getBooleanValue());
 							break;
-//						case "localTransactionsGraph": FIXME For now it's not necessary to deserialize LT graphs
-//							graph.setLocalTransactionsGraph(getGraph(jsonParser));
-//							break;
 
 						default:
-							throw new IOException("Attribute " + jsonParser.getCurrentName() + " does not exist on Graph object");
+							throw new IOException("Attribute " + jsonParser.getCurrentName() + " does not exist on Decomposition object");
 					}
-				}
-				else {
+				} else {
 					jsonParser.skipChildren();
 				}
 			}
@@ -122,36 +112,4 @@ public class DecompositionDeserializer extends StdDeserializer<Decomposition> {
 
 		throw new IOException("Error deserializing Access");
 	}
-
-	// FIXME DEPRECATED - NOT BEING USED
-//	private DirectedAcyclicGraph<Graph.LocalTransaction, DefaultEdge> getGraph(
-//		JsonParser jsonParser
-//	)
-//		throws IOException
-//	{
-//		DirectedAcyclicGraph<Graph.LocalTransaction, DefaultEdge> graph = new DirectedAcyclicGraph<>(DefaultEdge.class);
-//
-//		HashMap<Integer, Graph.LocalTransaction> idToVertexMap = new HashMap<>();
-//
-//		jsonParser.nextValue(); // nodes
-//		while (jsonParser.nextValue() != JsonToken.END_ARRAY) {
-//			Graph.LocalTransaction lt = jsonParser.readValueAs(Graph.LocalTransaction.class);
-//			graph.addVertex(lt);
-//			idToVertexMap.put(lt.getId(), lt);
-//		}
-//
-//		jsonParser.nextValue(); // links
-//		while (jsonParser.nextValue() != JsonToken.END_ARRAY) {
-//			String link = jsonParser.getValueAsString();
-//			int index = link.indexOf("->");
-//			int fromId = Integer.parseInt(link.substring(0, index));
-//			int toId = Integer.parseInt(link.substring(link.indexOf("->") + 2));
-//			graph.addEdge(idToVertexMap.get(fromId), idToVertexMap.get(toId));
-//		}
-//
-//		jsonParser.nextValue(); // Consume End Array
-//
-//		return graph;
-//	}
 }
-

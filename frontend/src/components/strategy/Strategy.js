@@ -61,14 +61,14 @@ const metricColumns = [
     }
 ];
 
-export const Dendrogram = () => {
-    let { codebaseName, dendrogramName } = useParams();
+export const Strategy = () => {
+    let { codebaseName, strategyName } = useParams();
 
     const [height, setHeight] = useState("");
     const [numberClusters, setNumberClusters] = useState("");
     const [newExpert, setNewExpert] = useState("");
+    const [cutSuccess, setCreationSuccess] = useState("");
     const [isUploaded, setIsUploaded] = useState("");
-    const [cutSuccess, setCutSuccess] = useState("");
     const [decompositions, setDecompositions] = useState([]);
     const [expertFile, setExpertFile] = useState(null);
 
@@ -79,7 +79,7 @@ export const Dendrogram = () => {
         const service = new RepositoryService();
         service.getDecompositions(
             codebaseName,
-            dendrogramName,
+            strategyName,
             [
                 "name",
                 "clusters",
@@ -107,10 +107,10 @@ export const Dendrogram = () => {
         setNewExpert(event.target.value);
     }
     
-    function handleCutSubmit(event) {
+    function handleCreationSubmit(event) {
         event.preventDefault();
         
-        setCutSuccess("Processing...");
+        setCreationSuccess("Processing...");
 
         let cutType;
         let cutValue;
@@ -123,22 +123,21 @@ export const Dendrogram = () => {
         }
 
         const service = new RepositoryService();
-        
-        service.cutDendrogram(
+
+        service.createDecomposition(
             codebaseName,
-            dendrogramName,
-            cutValue,
-            cutType
+            strategyName,
+            {type: "ACCESSES_SCIPY", expertName: newExpert, cutValue: cutValue, cutType: cutType, expertFile: expertFile}
         ).then(response => {
             if (response.status === HttpStatus.OK) {
                 loadDecompositions();
-                setCutSuccess("Dendrogram cut successful.");
+                setCreationSuccess("Decomposition creation successful.");
             } else {
-                setCutSuccess("Failed to cut dendrogram.");
+                setCreationSuccess("Failed to create decomposition.");
             }
         })
         .catch(error => {
-            setCutSuccess("Failed to cut dendrogram.");
+            setCreationSuccess("Failed to create decomposition.");
         });
     }
 
@@ -148,9 +147,10 @@ export const Dendrogram = () => {
         setIsUploaded("Uploading...");
 
         const service = new RepositoryService();
-        service.expertCut(
+        service.createExpertDecomposition(
             codebaseName,
-            dendrogramName,
+            strategyName,
+            "ACCESSES_SCIPY",
             newExpert,
             expertFile
         ).then(response => {
@@ -161,18 +161,18 @@ export const Dendrogram = () => {
                 setIsUploaded("Upload failed.");
             }
         })
-        .catch(error => {
-            if (error.response !== undefined && error.response.status === HttpStatus.UNAUTHORIZED) {
-                setIsUploaded("Upload failed. Expert name already exists.");
-            } else {
-                setIsUploaded("Upload failed.");
-            }
-        });
+            .catch(error => {
+                if (error.response !== undefined && error.response.status === HttpStatus.UNAUTHORIZED) {
+                    setIsUploaded("Upload failed. Expert name already exists.");
+                } else {
+                    setIsUploaded("Upload failed.");
+                }
+            });
     }
 
     function handleDeleteDecomposition(decompositionName) {
         const service = new RepositoryService();
-        service.deleteDecomposition(codebaseName, dendrogramName, decompositionName).then(response => {
+        service.deleteDecomposition(codebaseName, strategyName, decompositionName).then(response => {
             loadDecompositions();
         });
     }
@@ -193,11 +193,11 @@ export const Dendrogram = () => {
                 <Breadcrumb.Item href={`/codebases/${codebaseName}`}>
                     {codebaseName}
                 </Breadcrumb.Item>
-                <Breadcrumb.Item href={`/codebases/${codebaseName}/dendrograms`}>
-                    Dendrograms
+                <Breadcrumb.Item href={`/codebases/${codebaseName}/strategies`}>
+                    Strategies
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>
-                    {dendrogramName}
+                    {strategyName}
                 </Breadcrumb.Item>
             </Breadcrumb>
         );
@@ -205,7 +205,7 @@ export const Dendrogram = () => {
 
     function renderCutForm() {
         return (
-            <Form onSubmit={handleCutSubmit}>
+            <Form onSubmit={handleCreationSubmit}>
                 <Form.Group as={Row} controlId="height" className="mb-3">
                     <Form.Label column sm={2}>
                         Height
@@ -313,7 +313,7 @@ export const Dendrogram = () => {
                                         {decomposition.name}
                                     </Card.Title>
                                     <Button
-                                        href={`/codebases/${codebaseName}/dendrograms/${dendrogramName}/decompositions/${decomposition.name}`}
+                                        href={`/codebases/${codebaseName}/strategies/${strategyName}/decompositions/${decomposition.name}`}
                                         className="mb-2"
                                     >
                                         Go to Decomposition
@@ -378,8 +378,8 @@ export const Dendrogram = () => {
 
             <img
                 width="100%"
-                src={URL + "codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/image?" + new Date().getTime()}
-                alt="Dendrogram"
+                src={URL + "codebase/" + codebaseName + "/strategy/" + strategyName + "/image?" + new Date().getTime()}
+                alt="Strategy"
             />
 
             <h4 style={{color: "#666666", marginTop: "16px" }}>

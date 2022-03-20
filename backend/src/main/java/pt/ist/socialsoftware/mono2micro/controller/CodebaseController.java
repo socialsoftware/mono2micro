@@ -7,10 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.domain.source.Source;
+import pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -64,9 +65,39 @@ public class CodebaseController {
 		}
     }
 
+	@RequestMapping(value = "/codebase/{codebaseName}/strategies", method = RequestMethod.GET)
+	public ResponseEntity<List<Strategy>> getCodebaseStrategies(
+			@PathVariable String codebaseName,
+			@RequestParam(required = false, defaultValue = "") String strategyType
+	) {
+		logger.debug("getCodebaseStrategies");
+
+		try {
+			return new ResponseEntity<>(codebaseManager.getCodebaseStrategies(codebaseName, strategyType), HttpStatus.OK);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@RequestMapping(value = "/codebase/{codebaseName}/sources", method = RequestMethod.GET)
+	public ResponseEntity<List<Source>> getCodebaseSources(@PathVariable String codebaseName) {
+		logger.debug("getCodebaseSources");
+
+		try {
+			return new ResponseEntity<>(codebaseManager.getCodebaseSources(codebaseName), HttpStatus.OK);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
 	@RequestMapping(value = "/codebase/{codebaseName}/decompositions", method = RequestMethod.GET)
 	public ResponseEntity<List<Decomposition>> getCodebaseDecompositions(
 		@PathVariable String codebaseName,
+		@RequestParam(required = false, defaultValue = "") String strategyType,
 		@RequestParam List<String> fieldNames
 	) {
 		logger.debug("getCodebaseDecompositions");
@@ -75,6 +106,7 @@ public class CodebaseController {
 			return new ResponseEntity<>(
 				codebaseManager.getCodebaseDecompositionsWithFields(
 					codebaseName,
+					strategyType,
 					new HashSet<>(fieldNames)
 				),
 				HttpStatus.OK
@@ -101,85 +133,14 @@ public class CodebaseController {
         }
     }
 
-
-    @RequestMapping(value = "/codebase/{codebaseName}/addProfile", method = RequestMethod.POST)
-	public ResponseEntity<HttpStatus> addProfile(
-		@PathVariable String codebaseName,
-		@RequestParam String profile
-	) {
-        logger.debug("addProfile");
-
-        try {
-            Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            codebase.addProfile(profile, new HashSet<>());
-            codebaseManager.writeCodebase(codebase);
-            return new ResponseEntity<>(HttpStatus.OK);
-
-        } catch (KeyAlreadyExistsException e) {
-			e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
-        } catch (IOException e) {
-			e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-
-    @RequestMapping(value = "/codebase/{codebaseName}/moveControllers", method = RequestMethod.POST)
-	public ResponseEntity<HttpStatus> moveControllers(
-		@PathVariable String codebaseName,
-		@RequestBody String[] controllers,
-		@RequestParam String targetProfile
-	) {
-		logger.debug("moveControllers");
-        
-        try {
-            Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            codebase.moveControllers(controllers, targetProfile);
-            codebaseManager.writeCodebase(codebase);
-            return new ResponseEntity<>(HttpStatus.OK);
-
-        } catch (IOException e) {
-			e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-
-    @RequestMapping(value = "/codebase/{codebaseName}/deleteProfile", method = RequestMethod.DELETE)
-	public ResponseEntity<HttpStatus> deleteProfile(
-		@PathVariable String codebaseName,
-		@RequestParam String profile
-	) {
-		logger.debug("deleteProfile");
-
-        try {
-            Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            codebase.deleteProfile(profile);
-            codebaseManager.writeCodebase(codebase);
-            return new ResponseEntity<>(HttpStatus.OK);
-
-        } catch (IOException e) {
-			e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
     @RequestMapping(value = "/codebase/create", method = RequestMethod.POST)
     public ResponseEntity<HttpStatus> createCodebase(
-        @RequestParam String codebaseName,
-        @RequestParam Object datafile,
-        @RequestParam Object translationFile
+        @RequestParam String codebaseName
     ){
         logger.debug("createCodebase");
 
         try {
-            Codebase codebase = codebaseManager.createCodebase(
-            	codebaseName,
-				datafile,
-				translationFile
-			);
+            Codebase codebase = codebaseManager.createCodebase(codebaseName);
 
             codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.CREATED);
@@ -188,28 +149,9 @@ public class CodebaseController {
         	e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        } catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
         } catch (Exception e) {
 			e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-
-	@RequestMapping(value = "/codebase/{codebaseName}/translation", method = RequestMethod.GET)
-	public ResponseEntity<String> getTranslation(
-			@PathVariable String codebaseName
-	) {
-		logger.debug("getTranslation");
-
-		try {
-			return new ResponseEntity<>(codebaseManager.getTranslation(codebaseName), HttpStatus.OK);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
-	}
 }

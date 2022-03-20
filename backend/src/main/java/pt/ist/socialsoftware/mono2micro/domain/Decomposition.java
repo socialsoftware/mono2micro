@@ -23,17 +23,22 @@ import static org.jgrapht.Graphs.successorListOf;
 @JsonDeserialize(using = DecompositionDeserializer.class)
 public class Decomposition {
 	private String name;
-	private Short nextClusterID;
 	private String codebaseName;
-	private String dendrogramName;
+	private String strategyName;
 	private boolean expert;
-	private float cutValue;
-	private String cutType;
 	private float silhouetteScore;
 	private float complexity;
 	private float performance;
 	private float cohesion;
 	private float coupling;
+	//private List<Metric> metrics;
+
+	// fazer subclasse
+	// private float cutValue;
+	// private String cutType;
+
+	//Metric tem referencia para model e outra para decomposition
+
 	private Map<Short, Cluster> clusters = new HashMap<>();
 
 	private Map<String, Controller> controllers = new HashMap<>(); // <controllerName, Controller>
@@ -42,22 +47,14 @@ public class Decomposition {
 
 	public Decomposition() { }
 
-	public Short getNextClusterID() {
-		return nextClusterID;
-	}
-
-	public void setNextClusterID(Short nextClusterID) {
-		this.nextClusterID = nextClusterID;
-	}
-
 	public String getCodebaseName() { return this.codebaseName; }
 
 	public void setCodebaseName(String codebaseName) { this.codebaseName = codebaseName; }
 
-	public String getDendrogramName() { return this.dendrogramName; }
+	public String getStrategyName() { return this.strategyName; }
 
-	public void setDendrogramName(String dendrogramName) {
-		this.dendrogramName = dendrogramName;
+	public void setStrategyName(String strategyName) {
+		this.strategyName = strategyName;
 	}
 
 	public String getName() { return this.name; }
@@ -72,22 +69,6 @@ public class Decomposition {
 
 	public void setExpert(boolean expert) {
 		this.expert = expert;
-	}
-
-	public float getCutValue() {
-		return this.cutValue;
-	}
-
-	public void setCutValue(float cutValue) {
-		this.cutValue = cutValue;
-	}
-
-	public String getCutType() {
-		return cutType;
-	}
-
-	public void setCutType(String cutType) {
-		this.cutType = cutType;
 	}
 
 	public float getSilhouetteScore() {
@@ -452,7 +433,7 @@ public class Decomposition {
 	// FIXME and only then add the new calculation to the (new) respective method
 	// FIXME By doing the above, extra performance overhead won't be added to the analyser
 	public void calculateMetrics(
-		Codebase codebase, // requirements: datafilePath
+		String inputFilePath,
 		int tracesMaxLimit,
 		Constants.TraceType traceType,
 		boolean isAnalyser
@@ -477,14 +458,14 @@ public class Decomposition {
 
 		if(isAnalyser) {
 			result2 = calculateComplexityAndPerformance(
-					codebase,
+					inputFilePath,
 					controllersClusters,
 					traceType,
 					tracesMaxLimit
 			);
 		} else {
 			result2 = calculateComplexityAndPerformanceAndRedesignMetrics(
-					codebase,
+					inputFilePath,
 					controllersClusters,
 					traceType,
 					tracesMaxLimit
@@ -518,7 +499,7 @@ public class Decomposition {
 	}
 
 	public DirectedAcyclicGraph<LocalTransaction, DefaultEdge> getControllerLocalTransactionsGraph(
-		Codebase codebase,
+		String inputFilePath,
 		String controllerName,
 		Constants.TraceType traceType,
 		int tracesMaxLimit
@@ -529,7 +510,7 @@ public class Decomposition {
 			throw new Error("Controller: " + controllerName + " does not exist");
 
 		ControllerTracesIterator iter = new ControllerTracesIterator(
-			codebase.getDatafilePath(),
+			inputFilePath,
 			tracesMaxLimit
 		);
 
@@ -544,7 +525,7 @@ public class Decomposition {
 	}
 
 	public CalculateComplexityAndPerformanceResult calculateComplexityAndPerformance(
-		Codebase codebase,
+		String inputFilePath,
 		Map<String, Set<Cluster>> controllersClusters,
 		Constants.TraceType traceType,
 		int tracesMaxLimit
@@ -552,7 +533,7 @@ public class Decomposition {
 		throws IOException
 	{
 		ControllerTracesIterator iter = new ControllerTracesIterator(
-			codebase.getDatafilePath(),
+			inputFilePath,
 			tracesMaxLimit
 		);
 
@@ -610,7 +591,7 @@ public class Decomposition {
 	}
 
 	public CalculateComplexityAndPerformanceResult calculateComplexityAndPerformanceAndRedesignMetrics(
-			Codebase codebase,
+			String inputFilePath,
 			Map<String, Set<Cluster>> controllersClusters,
 			Constants.TraceType traceType,
 			int tracesMaxLimit
@@ -618,7 +599,7 @@ public class Decomposition {
 			throws IOException
 	{
 		ControllerTracesIterator iter = new ControllerTracesIterator(
-				codebase.getDatafilePath(),
+				inputFilePath,
 				tracesMaxLimit
 		);
 
@@ -742,6 +723,10 @@ public class Decomposition {
 		);
 	}
 
+	public short getNewClusterID() {
+		return (short) (Collections.max(clusters.keySet()) + 1);
+	}
+
 	public void mergeClusters(
 		Short cluster1ID,
 		Short cluster2ID,
@@ -750,7 +735,7 @@ public class Decomposition {
 		Cluster cluster1 = getCluster(cluster1ID);
 		Cluster cluster2 = getCluster(cluster2ID);
 
-		Cluster mergedCluster = new Cluster(nextClusterID++, newName);
+		Cluster mergedCluster = new Cluster(getNewClusterID(), newName);
 
 		for(short entityID : cluster1.getEntities()) {
 			entityIDToClusterID.replace(entityID, mergedCluster.getID());
@@ -794,7 +779,7 @@ public class Decomposition {
 		String[] entities
 	) {
 		Cluster currentCluster = getCluster(clusterID);
-		Cluster newCluster = new Cluster(nextClusterID++, newName);
+		Cluster newCluster = new Cluster(getNewClusterID(), newName);
 
 		for (String stringifiedEntityID : entities) {
 			short entityID = Short.parseShort(stringifiedEntityID);

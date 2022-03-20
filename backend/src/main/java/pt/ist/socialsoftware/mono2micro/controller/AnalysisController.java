@@ -3,7 +3,6 @@ package pt.ist.socialsoftware.mono2micro.controller;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FilenameUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -14,12 +13,11 @@ import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
 import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.domain.source.AccessesSource;
 import pt.ist.socialsoftware.mono2micro.dto.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 import pt.ist.socialsoftware.mono2micro.utils.mojoCalculator.src.main.java.MoJo;
-import pt.ist.socialsoftware.mono2micro.utils.similarityGenerators.DefaultSimilarityGenerator;
-import pt.ist.socialsoftware.mono2micro.utils.similarityGenerators.SimilarityGenerator;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,6 +28,7 @@ import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static pt.ist.socialsoftware.mono2micro.domain.source.Source.SourceType.ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 
 @RestController
@@ -207,23 +206,24 @@ public class AnalysisController {
 	)
 		throws Exception
 	{
-		if (!codebaseManager.analyserSimilarityMatrixFileAlreadyExists(codebase.getName())) {
+		//if (!codebaseManager.analyserSimilarityMatrixFileAlreadyExists(codebase.getName())) {
 
-			SimilarityGenerator similarityGenerator;
-			switch (analyser.getSimilarityGeneratorType()) {
-				case ACCESSES_LOG:
-				default:
-					similarityGenerator = new DefaultSimilarityGenerator(codebase, analyser);
-					break;
-			}
-			similarityGenerator.buildMatrix();
+		//	SimilarityGenerator similarityGenerator;
+		//	switch (analyser.getSimilarityGeneratorType()) {
+		//		case ACCESSES_LOG:
+		//		default:
+		//			similarityGenerator = new DefaultSimilarityGenerator(codebase, analyser);
+		//			break;
+		//	}
+		//	similarityGenerator.buildMatrix();
 
-			similarityGenerator.writeSimilarityMatrix();
+		//	similarityGenerator.writeSimilarityMatrix();
 
-		} else System.out.println("Similarity matrix already exists...");
+		//} else System.out.println("Similarity matrix already exists...");
 
-		JSONObject similarityMatrix = CodebaseManager.getInstance().getSimilarityMatrix(codebase.getName(), "analyser");
-		return similarityMatrix.getJSONArray("entities").length();
+		//JSONObject similarityMatrix = CodebaseManager.getInstance().getSimilarityMatrix(codebase.getName(), "analyser");
+		//return similarityMatrix.getJSONArray("entities").length();
+		return 0;
 	}
 
 	private void executeCreateCuts(
@@ -263,8 +263,6 @@ public class AnalysisController {
 
 		Set<String> clusterIDs = analyserCut.get("clusters").keySet();
 
-		decomposition.setNextClusterID(Integer.valueOf(clusterIDs.size()).shortValue());
-
 		for (String clusterName : clusterIDs) {
 			Short clusterId = Short.parseShort(clusterName);
 			Set<Short> entities = analyserCut.get("clusters").get(clusterName);
@@ -276,14 +274,16 @@ public class AnalysisController {
 			decomposition.addCluster(cluster);
 		}
 
+		AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(codebase.getName(), ACCESSES);
+
 		decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
-			codebase,
-			analyser.getProfile(),
+			source.getInputFilePath(),
+			source.getProfile(analyser.getProfile()),
 			decomposition.getEntityIDToClusterID()
 		));
 
 		decomposition.calculateMetrics(
-			codebase,
+			source.getInputFilePath(),
 			analyser.getTracesMaxLimit(),
 			analyser.getTraceType(),
 			true

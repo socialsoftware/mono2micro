@@ -102,11 +102,11 @@ export const Views = () => {
     return (
         <Container fluid>
             {renderBreadCrumbs()}
-            <Row className="mb-2 me-5">
+            <Row className="mb-2">
                 <Col>
                     <h4 style={{color: "#666666"}}>{decompositionName}</h4>
                 </Col>
-                <Col>
+                <Col className="me-5">
                     <OverlayTrigger trigger="click" placement="left" overlay={helpPopover}>
                         <Button className="float-end" variant="success">Help</Button>
                     </OverlayTrigger>

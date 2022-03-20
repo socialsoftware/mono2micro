@@ -6,14 +6,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.domain.*;
+import pt.ist.socialsoftware.mono2micro.domain.source.AccessesSource;
+import pt.ist.socialsoftware.mono2micro.domain.strategy.AccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.*;
 
+import static pt.ist.socialsoftware.mono2micro.domain.source.Source.SourceType.ACCESSES;
+
 @RestController
-@RequestMapping(value = "/mono2micro/codebase/{codebaseName}/dendrogram/{dendrogramName}/decomposition/{decompositionName}")
+@RequestMapping(value = "/mono2micro/codebase/{codebaseName}/strategy/{strategyName}/decomposition/{decompositionName}")
 public class ClusterController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ClusterController.class);
@@ -23,7 +27,7 @@ public class ClusterController {
 	@RequestMapping(value = "/cluster/{clusterNameID}/merge", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> mergeClusters(
 		@PathVariable String codebaseName,
-		@PathVariable String dendrogramName,
+		@PathVariable String strategyName,
 		@PathVariable String decompositionName,
 		@PathVariable Short clusterNameID,
 		@RequestParam Short otherClusterID,
@@ -32,14 +36,12 @@ public class ClusterController {
 		logger.debug("mergeClusters");
 
 		try {
-			// FIXME The whole codebase needs to be fetched because it needs to be written as a whole again
-			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
 			// FIXME Each dendrogram directory would have a folder for controllers and another for clusters
 			// FIXME Each controller and cluster would have its own json file
 
-			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
-			Decomposition decomposition = dendrogram.getDecomposition(decompositionName);
+			AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
+			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
+			Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, null);
 
 			decomposition.mergeClusters(
 				clusterNameID,
@@ -48,18 +50,18 @@ public class ClusterController {
 			);
 
 			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
-				codebase,
-				dendrogram.getProfile(),
+				source.getInputFilePath(),
+				source.getProfile(strategy.getProfile()),
 				decomposition.getEntityIDToClusterID()
 			));
 
 			decomposition.calculateMetrics(
-				codebase,
-				dendrogram.getTracesMaxLimit(),
-				dendrogram.getTraceType(),
+				source.getInputFilePath(),
+				strategy.getTracesMaxLimit(),
+				strategy.getTraceType(),
 					false);
 
-			codebaseManager.writeCodebase(codebase);
+			codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -71,7 +73,7 @@ public class ClusterController {
 	@RequestMapping(value = "/cluster/{clusterID}/rename", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> renameCluster(
 		@PathVariable String codebaseName,
-		@PathVariable String dendrogramName,
+		@PathVariable String strategyName,
 		@PathVariable String decompositionName,
 		@PathVariable Short clusterID,
 		@RequestParam String newName
@@ -79,21 +81,17 @@ public class ClusterController {
 		logger.debug("renameCluster");
 
 		try {
-			// FIXME The whole codebase needs to be fetched because it needs to be written as a whole again
-			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
 			// FIXME Each dendrogram directory would have a folder for controllers and another for clusters
 			// FIXME Each controller and cluster would have its own json file
 
-			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
-			Decomposition decomposition = dendrogram.getDecomposition(decompositionName);
+			Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, null);
 
 			decomposition.renameCluster(
 				clusterID,
 				newName
 			);
 
-			codebaseManager.writeCodebase(codebase);
+			codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (KeyAlreadyExistsException e) {
@@ -109,7 +107,7 @@ public class ClusterController {
 	@RequestMapping(value = "/cluster/{clusterID}/split", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> splitCluster(
 		@PathVariable String codebaseName,
-		@PathVariable String dendrogramName,
+		@PathVariable String strategyName,
 		@PathVariable String decompositionName,
 		@PathVariable Short clusterID,
 		@RequestParam String newName,
@@ -118,14 +116,12 @@ public class ClusterController {
 		logger.debug("splitCluster");
 
 		try {
-			// FIXME The whole codebase needs to be fetched because it needs to be written as a whole again
-			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
 			// FIXME Each dendrogram directory would have a folder for controllers and another for clusters
 			// FIXME Each controller and cluster would have its own json file
 
-			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
-			Decomposition decomposition = dendrogram.getDecomposition(decompositionName);
+			AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
+			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
+			Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, null);
 
 			decomposition.splitCluster(
 				clusterID,
@@ -134,18 +130,18 @@ public class ClusterController {
 			);
 
 			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
-				codebase,
-				dendrogram.getProfile(),
-				decomposition.getEntityIDToClusterID()
+					source.getInputFilePath(),
+					source.getProfile(strategy.getProfile()),
+					decomposition.getEntityIDToClusterID()
 			));
 
 			decomposition.calculateMetrics(
-				codebase,
-				dendrogram.getTracesMaxLimit(),
-				dendrogram.getTraceType(),
+					source.getInputFilePath(),
+					strategy.getTracesMaxLimit(),
+					strategy.getTraceType(),
 					false);
 
-			codebaseManager.writeCodebase(codebase);
+			codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -157,7 +153,7 @@ public class ClusterController {
 	@RequestMapping(value = "/cluster/{clusterID}/transferEntities", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> transferEntities(
 		@PathVariable String codebaseName,
-		@PathVariable String dendrogramName,
+		@PathVariable String strategyName,
 		@PathVariable String decompositionName,
 		@PathVariable Short clusterID,
 		@RequestParam Short toClusterID,
@@ -166,14 +162,12 @@ public class ClusterController {
 		logger.debug("transferEntities");
 
 		try {
-			// FIXME The whole codebase needs to be fetched because it needs to be written as a whole again
-			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
 			// FIXME Each dendrogram directory would have a folder for controllers and another for clusters
 			// FIXME Each controller and cluster would have its own json file
 
-			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
-			Decomposition decomposition = dendrogram.getDecomposition(decompositionName);
+			AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
+			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
+			Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, null);
 
 			decomposition.transferEntities(
 				clusterID,
@@ -182,18 +176,18 @@ public class ClusterController {
 			);
 
 			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
-				codebase,
-				dendrogram.getProfile(),
+				source.getInputFilePath(),
+				source.getProfile(strategy.getProfile()),
 				decomposition.getEntityIDToClusterID()
 			));
 
 			decomposition.calculateMetrics(
-				codebase,
-				dendrogram.getTracesMaxLimit(),
-				dendrogram.getTraceType(),
+				source.getInputFilePath(),
+				strategy.getTracesMaxLimit(),
+				strategy.getTraceType(),
 					false);
 
-			codebaseManager.writeCodebase(codebase);
+			codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -205,15 +199,15 @@ public class ClusterController {
 	@RequestMapping(value = "/controllersClusters", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, Set<Cluster>>> getControllersClusters(
 		@PathVariable String codebaseName,
-		@PathVariable String dendrogramName,
+		@PathVariable String strategyName,
 		@PathVariable String decompositionName
 	) {
 		logger.debug("getControllersClusters");
 
 		try {
-			Decomposition decomposition = codebaseManager.getDendrogramDecompositionWithFields(
+			Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(
 				codebaseName,
-				dendrogramName,
+				strategyName,
 				decompositionName,
 				new HashSet<String>() {{ add("clusters"); add("controllers"); }}
 			);
@@ -238,15 +232,15 @@ public class ClusterController {
 	@RequestMapping(value = "/clustersControllers", method = RequestMethod.GET)
 	public ResponseEntity<Map<Short, Set<Controller>>> getClustersControllers(
 		@PathVariable String codebaseName,
-		@PathVariable String dendrogramName,
+		@PathVariable String strategyName,
 		@PathVariable String decompositionName
 	) {
 		logger.debug("getClustersControllers");
 
 		try {
-			Decomposition decomposition = codebaseManager.getDendrogramDecompositionWithFields(
+			Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(
 				codebaseName,
-				dendrogramName,
+				strategyName,
 				decompositionName,
 				new HashSet<String>() {{ add("clusters"); add("controllers"); }}
 			);

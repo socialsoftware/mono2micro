@@ -12,10 +12,8 @@ const HttpStatus = require('http-status-codes');
 
 export const Codebases = () => {
     const [newCodebaseName, setNewCodebaseName] = useState("");
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [translationFile, setTranslationFile] = useState(null);
-    const [isUploaded, setIsUploaded] = useState("");
     const [codebases, setCodebases] = useState([]);
+    const [isCreated, setIsCreated] = useState("");
 
     //Executed on mount
     useEffect(() => loadCodebases(), []);
@@ -29,16 +27,6 @@ export const Codebases = () => {
         });
     }
 
-    function handleSelectedFile(event) {
-        if (event.target.files.length !== 2) {
-            setIsUploaded("Data Collection File and ID to Entity File need to be uploaded simultaneously.");
-            return;
-        }
-        setSelectedFile(event.target.files[0]);
-        setTranslationFile(event.target.files[1]);
-        setIsUploaded("");
-    }
-
     function handleChangeNewCodebaseName(event) {
         setNewCodebaseName(event.target.value);
     }
@@ -48,39 +36,6 @@ export const Codebases = () => {
         service.deleteCodebase(codebaseName).then(response => {
             loadCodebases();
         });
-    }
-
-    function handleSubmit(event){
-        event.preventDefault()
-
-        setIsUploaded("Uploading...");
-
-        if (selectedFile !== null && translationFile !== null) {
-            const service = new RepositoryService();
-            service.createCodebase(newCodebaseName, selectedFile, translationFile)
-                .then(response => {
-                    if (response.status === HttpStatus.CREATED) {
-                        loadCodebases();
-                        setIsUploaded("Upload completed successfully.");
-                    } else {
-                        setIsUploaded("Upload failed.");
-                    }
-                })
-                .catch(error => {
-                    if (error.response !== undefined && error.response.status === HttpStatus.UNAUTHORIZED) {
-                        setIsUploaded("Upload failed. Codebase name already exists.");
-                    }
-                    else if (error.response !== undefined && error.response.status === HttpStatus.NOT_FOUND) {
-                        setIsUploaded("Upload failed. Invalid datafile path.");
-                    }
-                    else {
-                        setIsUploaded("Upload failed.");
-                    }
-                });
-            setNewCodebaseName("");
-            setSelectedFile(null);
-            setTranslationFile(null);
-        }
     }
 
     function renderCodebases() {
@@ -116,6 +71,29 @@ export const Codebases = () => {
         );
     }
 
+    function handleSubmit() {
+        event.preventDefault()
+
+        setIsCreated("Creating...");
+
+        const service = new RepositoryService();
+        service.createCodebase(newCodebaseName)
+            .then(response => {
+                if (response.status === HttpStatus.CREATED) {
+                    loadCodebases();
+                    setIsCreated("Creation completed successfully.");
+                } else {
+                    setIsCreated("Creation failed.");
+                }
+            })
+            .catch(error => {
+                if (error.response !== undefined && error.response.status === HttpStatus.UNAUTHORIZED) {
+                    setIsCreated("Creation failed. Codebase name already exists.");
+                }
+                else setIsCreated("Creation failed.");
+            });
+    }
+
     function renderCreateCodebaseForm() {
         return (
             <Form onSubmit={handleSubmit}>
@@ -134,33 +112,19 @@ export const Codebases = () => {
                     </Col>
                 </Form.Group>
 
-                <Form.Group as={Row} controlId="datafile" className="mb-3">
-                    <Form.Label column sm={2}>
-                        Data Collection File and
-                        ID to Entity File
-                    </Form.Label>
-                    <Col sm={5}>
-                        <Form.Control
-                            type="file"
-                            multiple
-                            onChange={handleSelectedFile}/>
-                    </Col>
-                </Form.Group>
-
                 <Form.Group as={Row} className="mb-3">
                     <Col sm={{ span: 5, offset: 2 }}>
                         <Button
                             type="submit"
                             disabled={
-                                isUploaded === "Uploading..." ||
-                                newCodebaseName === "" ||
-                                translationFile === null || selectedFile === null
+                                isCreated === "Creating..." ||
+                                newCodebaseName === ""
                             }
                         >
                             Create Codebase
                         </Button>
                         <Form.Text className="ms-3">
-                            {isUploaded}
+                            {isCreated}
                         </Form.Text>
                     </Col>
                 </Form.Group>

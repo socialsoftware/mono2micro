@@ -4,9 +4,9 @@ from sklearn import metrics
 import json
 
 
-def cutDendrogram(codebasesPath, codebaseName, dendrogramName, graphName, cutType, cutValue):
+def createDecomposition(codebasesPath, codebaseName, strategyName, graphName, cutType, cutValue):
 
-    with open(codebasesPath + codebaseName + "/" + dendrogramName + "/similarityMatrix.json") as f:
+    with open(codebasesPath + codebaseName + "/strategies/" + strategyName + "/similarityMatrix.json") as f:
         similarityMatrix = json.load(f)
 
     entities = similarityMatrix["entities"]
@@ -35,5 +35,5 @@ def cutDendrogram(codebasesPath, codebaseName, dendrogramName, graphName, cutTyp
 
     clustersJSON = {"silhouetteScore": "{0:.2f}".format(silhouetteScore), "clusters": clusters}
 
-    with open(codebasesPath + codebaseName + "/" + dendrogramName + "/" + graphName + "/clusters.json", 'w') as outfile:
+    with open(codebasesPath + codebaseName + "/strategies/" + strategyName + "/decompositions/" + graphName + "/clusters.json", 'w') as outfile:
         outfile.write(json.dumps(clustersJSON, indent=4))

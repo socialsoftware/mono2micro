@@ -149,8 +149,6 @@ export const Analyser = () => {
     const [importFile, setImportFile] = useState(null);
     const [amountOfTraces, setAmountOfTraces] = useState("0");
     const [traceType, setTraceType] = useState<TraceType>(TraceType.ALL);
-    const [similarityGenerator, setSimilarityGenerator] = useState("ACCESSES_LOG");
-    const [clusteringAlgorithm, setClusteringAlgorithm] = useState("SCIPY");
     const [isUploaded, setIsUploaded] = useState("");
 
     useEffect(() => loadCodebases(), []);
@@ -172,12 +170,12 @@ export const Analyser = () => {
         
         service.getCodebaseDecompositions(
             codebaseName,
+            undefined,
             [
                 "name",
                 "expert",
                 "codebaseName",
-                "clusters",
-                "nextClusterID"
+                "clusters"
             ]
         ).then((response) => {
             if (response.data !== null) {
@@ -221,9 +219,7 @@ export const Analyser = () => {
             selectedProfile,
             Number(requestLimit),
             Number(amountOfTraces),
-            traceType,
-            similarityGenerator,
-            clusteringAlgorithm
+            traceType
         )
         .then(response => {
             if (response.status === HttpStatus.OK) {
@@ -266,14 +262,6 @@ export const Analyser = () => {
 
     function handleChangeTraceType(event: any) {
         setTraceType(event.target.value);
-    }
-
-    function handleChangeSimilarityGenerator(event: any) {
-        setSimilarityGenerator(event.target.value);
-    }
-
-    function handleChangeClusteringAlgorithm(event: any) {
-        setClusteringAlgorithm(event.target.value);
     }
 
     const renderBreadCrumbs = () => {
@@ -450,7 +438,6 @@ export const Analyser = () => {
                                 type="radio"
                                 label="Default"
                                 name="similarityGenerator"
-                                onClick={handleChangeSimilarityGenerator}
                             />
                         </Col>
                     </Col>
@@ -469,7 +456,6 @@ export const Analyser = () => {
                                 type="radio"
                                 label="SciPy"
                                 name="clusteringAlgorithm"
-                                onClick={handleChangeClusteringAlgorithm}
                             />
                         </Col>
                     </Col>
@@ -515,9 +501,7 @@ export const Analyser = () => {
                                 isUploaded === "Uploading..." ||
                                 selectedProfile === "" ||
                                 requestLimit === "" ||
-                                (traceType === undefined || amountOfTraces === "") ||
-                                similarityGenerator === undefined ||
-                                clusteringAlgorithm === undefined
+                                (traceType === undefined || amountOfTraces === "")
                             }
                         >
                             Submit

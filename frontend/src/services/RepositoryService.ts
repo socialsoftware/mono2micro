@@ -9,13 +9,14 @@ import {
     AnalysisDto,
     Codebase,
     TraceType,
-    Dendrogram,
     Cluster,
     Controller,
     LocalTransactionsGraph,
-    RefactorCodebase
+    RefactorCodebase,
+    Strategy
 } from "../type-declarations/types";
 import { addSearchParamsToUrl } from "../utils/url";
+import {SourceFactory} from "../models/sources/SourceFactory";
 
 export class RepositoryService {
     axios: AxiosInstance;
@@ -52,17 +53,13 @@ export class RepositoryService {
         requestLimit: number,
         amountOfTraces: number,
         traceType: TraceType,
-        similarityGeneratorType: string,
-        clusteringAlgorithmType: string
     ) {
         const analyserData: AnalyserDto = {
             expert: expert || {},
             profile,
             requestLimit,
             traceType,
-            tracesMaxLimit: amountOfTraces,
-            similarityGeneratorType,
-            clusteringAlgorithmType
+            tracesMaxLimit: amountOfTraces
         };
 
         return this.axios.post<null>(
@@ -90,15 +87,20 @@ export class RepositoryService {
         return this.axios.get<string>("/codebase/" + codebaseName + "/translation");
     }
 
-    //Dendrograms
     getCodebaseDecompositions(
         codebaseName: string,
+        strategyType?: string,
         fieldNames?: string[],
     ) {
+        let params: {[key:string]: string[] | string} = {};
+        if (strategyType)
+            params.strategyType = strategyType;
+        if (fieldNames)
+            params.fieldNames = fieldNames;
         return this.axios.get<Decomposition[]>(
             addSearchParamsToUrl(
                 "/codebase/" + codebaseName + "/decompositions",
-                fieldNames ? { fieldNames } : {},
+                params,
             )
         );
     }
@@ -145,10 +147,17 @@ export class RepositoryService {
         );
     }
 
-    createCodebase(
-        name: string,
-        datafile: any,
-        translationFile: any
+    createCodebase(codebaseName: string) {
+        const data = new FormData();
+        data.append('codebaseName', codebaseName);
+        return this.axios.post<null>("/codebase/create", data);
+    }
+
+    //Sources
+    addSource(
+        codebaseName: string,
+        sourceType: string,
+        inputFile: any
     ) {
         const config = {
             headers: {
@@ -156,74 +165,57 @@ export class RepositoryService {
             }
         }
         const data = new FormData();
-        data.append('codebaseName', name);
-        data.append('datafile', datafile);
-        if (translationFile !== null)
-            data.append('translationFile', translationFile);
-        else data.append('translationFile', "");
+        data.append('sourceType', sourceType);
+        data.append('inputFile', inputFile);
 
-        return this.axios.post<null>(
-            "/codebase/create",
-            data,
-            config,
-        );
+        return this.axios.post<null>("/codebase/" + codebaseName + "/addSource", data, config);
     }
 
-    //Dendrograms
-    getDendrograms(
-        codebaseName: string,
-        fieldNames?: string[],
-    ) {
-        return this.axios.get<Dendrogram[]>(
-            addSearchParamsToUrl(
-                "/codebase/" + codebaseName + "/dendrograms",
-                fieldNames ? { fieldNames } : {}
-            )
-        );
+    getSources(codebaseName: string) {
+        return this.axios.get("/codebase/" + codebaseName + "/sources")
+            .then((response) => {
+                return response.data.map((source: any) => SourceFactory.getSource(source))
+            });
     }
 
-    getDendrogram(codebaseName: string, dendrogramName: string) {
-        return this.axios.get<Dendrogram>("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName);
+    //Strategies
+    getStrategies(codebaseName: string, strategyType?: string) {
+        return this.axios.get<Strategy[]>(addSearchParamsToUrl(
+            "/codebase/" + codebaseName + "/strategies",
+            strategyType? {strategyType} : {},
+        ));
     }
 
-    deleteDendrogram(codebaseName: string, dendrogramName: string) {
-        return this.axios.delete<null>("/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/delete");
+    getStrategy(codebaseName: string, strategyName: string) {
+        return this.axios.get<Strategy>("/codebase/" + codebaseName + "/strategy/" + strategyName);
+    }
+
+    deleteStrategy(codebaseName: string, strategyName: string) {
+        return this.axios.delete<null>("/codebase/" + codebaseName + "/strategy/" + strategyName + "/delete");
     }
     
-    createDendrogram(
-        request: Dendrogram
+    createStrategy(request: Strategy) {
+        return this.axios.post<null>("/codebase/" + request.codebaseName + "/strategy/createStrategy", request);
+    }
+
+    createDecomposition(
+        codebaseName: string,
+        strategyName: string,
+        request: any
     ) {
+
         return this.axios.post<null>(
-            "/codebase/" + request.codebaseName + "/dendrogram/create",
+            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/createDecomposition",
             request
         );
     }
 
-    cutDendrogram(
+    createExpertDecomposition(
         codebaseName: string,
-        dendrogramName: string,
-        cutValue: number,
-        cutType: string,
-    ) {
-        const decompositionData: Decomposition = {
-            codebaseName,
-            dendrogramName,
-            expert: false,
-            cutValue,
-            cutType,
-        };
-
-        return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/cut",
-            decompositionData
-        );
-    }
-
-    expertCut(
-        codebaseName: string,
-        dendrogramName: string,
+        strategyName: string,
+        type: string,
         expertName: string,
-        expertFile: any,
+        expertFile: any
     ) {
         const config = {
             headers: {
@@ -231,11 +223,12 @@ export class RepositoryService {
             }
         }
         const data = new FormData();
+        data.append('type', type);
         data.append('expertName', expertName);
         data.append('expertFile', expertFile);
 
         return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/expertCut",
+            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/createExpertDecomposition",
             data,
             config
         );
@@ -244,12 +237,12 @@ export class RepositoryService {
     //Decomposition
     getDecompositions(
         codebaseName: string,
-        dendrogramName: string,
+        strategyName: string,
         fieldNames?: string[],
     ) {
         return this.axios.get<Decomposition[]>(
             addSearchParamsToUrl(
-                "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decompositions",
+                "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decompositions",
                 fieldNames ? { fieldNames } : {},
             )
         );
@@ -257,14 +250,14 @@ export class RepositoryService {
 
     getDecomposition(
         codebaseName: string,
-        dendrogramName: string,
+        strategyName: string,
         decompositionName: string,
         fieldNames?: string[],
     ) {
 
         return this.axios.get<Decomposition>(
             addSearchParamsToUrl(
-                "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName,
+                "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName,
                 fieldNames ? { fieldNames } : {},
             )
         );
@@ -272,11 +265,11 @@ export class RepositoryService {
 
     deleteDecomposition(
         codebaseName: string,
-        dendrogramName: string,
+        strategyName: string,
         decompositionName: string,
     ) {
         return this.axios.delete<null>(
-            "/codebase/" + codebaseName + "/dendrogram/" + dendrogramName + "/decomposition/" + decompositionName + "/delete"
+            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/delete"
         );
     }
 

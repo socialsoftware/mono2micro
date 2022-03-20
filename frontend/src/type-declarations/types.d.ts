@@ -35,12 +35,9 @@ export interface Cluster {
 
 export interface Decomposition {
 	name?: string;
-    nextClusterID?: number;
     codebaseName?: string;
-	dendrogramName?: string;
+    strategyName?:string;
 	expert?: boolean;
-	cutValue?: number;
-	cutType?: string;
 	silhouetteScore?: number;
     complexity?: number;
     performance?: number;
@@ -51,26 +48,27 @@ export interface Decomposition {
     entityIDToClusterID?: Record<number, number>;
 }
 
-export interface Dendrogram {
+export interface Strategy {
+    type: string;
     codebaseName?: string;
     name?: string;
-    linkageType?: string;
+    decompositionsNames?: string[];
+}
+
+export interface AccessesSciPyStrategy extends Strategy {
+    profile?: string;
+    tracesMaxLimit?: number;
+    traceType?: TraceType;
     accessMetricWeight?: number;
     writeMetricWeight?: number;
 	readMetricWeight?: number;
 	sequenceMetricWeight?: number;
-	tracesMaxLimit?: number;
-    decompositions?: Decomposition[];
-    profile?: string;
-	traceType?: TraceType;
-    similarityGeneratorType?: string;
-    clusteringAlgorithmType?: string;
+    linkageType?: string;
 }
 
 export interface Codebase {
     name?: string;
     profiles?: Record<string, string[]>; // e.g <Generic, ControllerNamesList>
-    dendrograms?: Dendrogram[];
     datafilePath?: string;
 }
 
@@ -80,8 +78,6 @@ export interface AnalyserDto {
     tracesMaxLimit?: number;
     traceType?: TraceType;
     expert?: Decomposition;
-    similarityGeneratorType?: string;
-    clusteringAlgorithmType?: string;
 }
 
 export interface AnalysisDto {

@@ -7,19 +7,30 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pt.ist.socialsoftware.mono2micro.domain.Codebase;
+import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.domain.LocalTransaction;
+import pt.ist.socialsoftware.mono2micro.domain.clusteringAlgorithm.ClusteringAlgorithm;
+import pt.ist.socialsoftware.mono2micro.domain.clusteringAlgorithm.ClusteringAlgorithmFactory;
+import pt.ist.socialsoftware.mono2micro.domain.source.Source;
+import pt.ist.socialsoftware.mono2micro.domain.strategy.AccessesSciPyStrategy;
+import pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy;
+import pt.ist.socialsoftware.mono2micro.dto.decompositionDto.AccessesSciPyInfoDto;
+import pt.ist.socialsoftware.mono2micro.dto.decompositionDto.InfoDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
+import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+
+import static pt.ist.socialsoftware.mono2micro.domain.source.Source.SourceType.ACCESSES;
+import static pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy.StrategyType.*;
 
 @RestController
-@RequestMapping(value = "/mono2micro/codebase/{codebaseName}/dendrogram/{dendrogramName}")
+@RequestMapping(value = "/mono2micro/codebase/{codebaseName}/strategy/{strategyName}")
 public class DecompositionController {
 
 	private static final Logger logger = LoggerFactory.getLogger(DecompositionController.class);
@@ -27,19 +38,82 @@ public class DecompositionController {
     private final CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
 
+	@RequestMapping(value = "/createDecomposition", method = RequestMethod.POST)
+	public ResponseEntity<HttpStatus> createDecomposition(
+			@PathVariable String codebaseName,
+			@PathVariable String strategyName,
+			@RequestBody InfoDto infoDto
+	) {
+		logger.debug("createDecomposition");
+
+		try {
+			Strategy strategy = codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
+			ClusteringAlgorithm clusteringAlgorithm = ClusteringAlgorithmFactory.getFactory().getClusteringAlgorithm(strategy.getType());
+			clusteringAlgorithm.createDecomposition(strategy, infoDto);
+
+			return new ResponseEntity<>(HttpStatus.OK);
+
+
+		} catch (KeyAlreadyExistsException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	// Unfortunately, Multipart files do not work well with JsonSubTypes, so this controller had to be created
+	@RequestMapping(value = "/createExpertDecomposition", method = RequestMethod.POST)
+	public ResponseEntity<HttpStatus> createExpertDecomposition(
+			@PathVariable String codebaseName,
+			@PathVariable String strategyName,
+			@RequestParam String type,
+			@RequestParam String expertName,
+			@RequestParam Optional<MultipartFile> expertFile
+	) {
+		logger.debug("createExpertDecomposition");
+
+		try {
+			InfoDto infoDto;
+
+			switch (type) {
+				case ACCESSES_SCIPY:
+					infoDto = new AccessesSciPyInfoDto(expertName, expertFile);
+					break;
+				default:
+					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+
+			Strategy strategy = codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
+			ClusteringAlgorithm clusteringAlgorithm = ClusteringAlgorithmFactory.getFactory().getClusteringAlgorithm(strategy.getType());
+			clusteringAlgorithm.createDecomposition(strategy, infoDto);
+			return new ResponseEntity<>(HttpStatus.OK);
+
+		} catch (KeyAlreadyExistsException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
 	@RequestMapping(value = "/decompositions", method = RequestMethod.GET)
 	public ResponseEntity<List<Decomposition>> getDecompositions(
 		@PathVariable String codebaseName,
-		@PathVariable String dendrogramName,
+		@PathVariable String strategyName,
 		@RequestParam List<String> fieldNames
 	) {
 		logger.debug("getDecompositions");
 
 		try {
 			return new ResponseEntity<>(
-				codebaseManager.getDendrogramDecompositionsWithFields(
+				codebaseManager.getStrategyDecompositionsWithFields(
 					codebaseName,
-					dendrogramName,
+					strategyName,
 					new HashSet<>(fieldNames)
 				),
 				HttpStatus.OK
@@ -54,7 +128,7 @@ public class DecompositionController {
 	@RequestMapping(value = "/decomposition/{decompositionName}", method = RequestMethod.GET)
 	public ResponseEntity<Decomposition> getDecomposition(
 		@PathVariable String codebaseName,
-		@PathVariable String dendrogramName,
+		@PathVariable String strategyName,
 		@PathVariable String decompositionName,
 		@RequestParam List<String> fieldNames
 	) {
@@ -62,9 +136,9 @@ public class DecompositionController {
 
 		try {
 			return new ResponseEntity<>(
-				codebaseManager.getDendrogramDecompositionWithFields(
+				codebaseManager.getStrategyDecompositionWithFields(
 					codebaseName,
-					dendrogramName,
+					strategyName,
 					decompositionName,
 					new HashSet<>(fieldNames)
 				),
@@ -80,18 +154,16 @@ public class DecompositionController {
 	@RequestMapping(value = "/decomposition/{decompositionName}/delete", method = RequestMethod.DELETE)
 	public ResponseEntity<HttpStatus> deleteDecomposition(
 		@PathVariable String codebaseName,
-		@PathVariable String dendrogramName,
+		@PathVariable String strategyName,
 		@PathVariable String decompositionName
 	) {
 		logger.debug("deleteDecomposition");
 
 		try {
-			// FIXME The whole codebase needs to be fetched because it needs to be written as a whole again
-			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
-			// FIXME And each dendrogram directory could have its own decompositions etc...
-			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-			codebase.getDendrogram(dendrogramName).deleteDecomposition(decompositionName);
-			codebaseManager.writeCodebase(codebase);
+			codebaseManager.deleteStrategyDecomposition(codebaseName, strategyName, decompositionName);
+			Strategy strategy = codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
+			strategy.removeDecompositionName(decompositionName);
+			codebaseManager.writeCodebaseStrategy(codebaseName, strategy);
 
 			return new ResponseEntity<>(HttpStatus.OK);
 
@@ -104,7 +176,7 @@ public class DecompositionController {
 	@RequestMapping(value = "/decomposition/{decompositionName}/getLocalTransactionsGraphForController", method = RequestMethod.GET)
 	public ResponseEntity<Utils.GetSerializableLocalTransactionsGraphResult> getControllerLocalTransactionsGraph(
 		@PathVariable String codebaseName,
-		@PathVariable String dendrogramName,
+		@PathVariable String strategyName,
 		@PathVariable String decompositionName,
 		@RequestParam String controllerName
 	) {
@@ -112,33 +184,25 @@ public class DecompositionController {
 
 		try {
 
-			Codebase codebase = codebaseManager.getCodebaseWithFields(
-				codebaseName,
-				new HashSet<String>() {{ add("datafilePath"); }}
-			);
+			// TODO: abstract strategy call to make this a generic function, probably needs decompositions with subclasses
+			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
 
-			Dendrogram dendrogram = codebaseManager.getCodebaseDendrogramWithFields(
+			Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(
 				codebaseName,
-				dendrogramName,
-				new HashSet<String>() {{
-					add("tracesMaxLimit"); add("traceType");
-				}}
-			);
-
-			Decomposition decomposition = codebaseManager.getDendrogramDecompositionWithFields(
-				codebaseName,
-				dendrogramName,
+				strategyName,
 				decompositionName,
 				new HashSet<String>() {{
 					add("controllers"); add("entityIDToClusterID");
 				}}
 			);
 
+			Source source = codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
+
 			DirectedAcyclicGraph<LocalTransaction, DefaultEdge> controllerLocalTransactionsGraph = decomposition.getControllerLocalTransactionsGraph(
-				codebase,
+				source.getInputFilePath(),
 				controllerName,
-				dendrogram.getTraceType(),
-				dendrogram.getTracesMaxLimit()
+				strategy.getTraceType(),
+				strategy.getTracesMaxLimit()
 			);
 
 			return new ResponseEntity<>(

@@ -1,24 +1,25 @@
 package pt.ist.socialsoftware.mono2micro.controller;
 
-import java.io.IOException;
 import java.util.*;
 
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
-import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.domain.*;
-import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
+import pt.ist.socialsoftware.mono2micro.domain.source.Source;
+import pt.ist.socialsoftware.mono2micro.domain.strategy.AccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.Metrics;
 
+import static pt.ist.socialsoftware.mono2micro.domain.source.Source.SourceType.ACCESSES;
+
 @RestController
-@RequestMapping(value = "/mono2micro/codebase/{codebaseName}/dendrogram/{dendrogramName}/decomposition/{decompositionName}")
+@RequestMapping(value = "/mono2micro/codebase/{codebaseName}/strategy/{strategyName}/decomposition/{decompositionName}")
 public class FunctionalityRedesignController {
 
     private static Logger logger = LoggerFactory.getLogger(FunctionalityRedesignController.class);
@@ -29,7 +30,7 @@ public class FunctionalityRedesignController {
     @RequestMapping(value = "/controller/{controllerName}/getOrCreateRedesign", method = RequestMethod.GET)
     public ResponseEntity<Controller> getOrCreateRedesign(
             @PathVariable String codebaseName,
-            @PathVariable String dendrogramName,
+            @PathVariable String strategyName,
             @PathVariable String decompositionName,
             @PathVariable String controllerName
     ) {
@@ -37,10 +38,14 @@ public class FunctionalityRedesignController {
         logger.debug("getOrCreateRedesign");
 
         try {
-            Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
-            Decomposition decomposition = dendrogram.getDecomposition(decompositionName);
+            // TODO: abstract strategy call to make this a generic function, probably needs decompositions with subclasses
+            AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
+
+            Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, null);
             Controller controller = decomposition.getController(controllerName);
+
+            Source source = codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
+
             if(controller.getFunctionalityRedesigns()
                     .stream()
                     .noneMatch(e -> e.getName().equals(Constants.DEFAULT_REDESIGN_NAME))){
@@ -48,17 +53,17 @@ public class FunctionalityRedesignController {
                         Constants.DEFAULT_REDESIGN_NAME,
                         true,
                         decomposition.getControllerLocalTransactionsGraph(
-                                codebase,
+                                source.getInputFilePath(),
                                 controllerName,
-                                dendrogram.getTraceType(),
-                                dendrogram.getTracesMaxLimit()
+                                strategy.getTraceType(),
+                                strategy.getTracesMaxLimit()
                         )
                 );
             };
-            codebaseManager.writeCodebase(codebase);
+            codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
             return new ResponseEntity<>(controller, HttpStatus.OK);
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -67,7 +72,7 @@ public class FunctionalityRedesignController {
     @RequestMapping(value = "/controller/{controllerName}/redesign/{redesignName}/addCompensating", method = RequestMethod.POST)
     public ResponseEntity<Controller> addCompensating(
         @PathVariable String codebaseName,
-        @PathVariable String dendrogramName,
+        @PathVariable String strategyName,
         @PathVariable String decompositionName,
         @PathVariable String controllerName,
         @PathVariable String redesignName,
@@ -81,13 +86,12 @@ public class FunctionalityRedesignController {
             ArrayList<Integer> accesses = (ArrayList<Integer>) data.get("entities");
 
 
-            Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            Decomposition decomposition = codebase.getDendrogram(dendrogramName).getDecomposition(decompositionName);
+            Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, null);
             Controller controller = decomposition.getController(controllerName);
 
             controller.getFunctionalityRedesign(redesignName).addCompensating(clusterID, accesses, fromID);
             Metrics.calculateRedesignComplexities(controller, redesignName, decomposition);
-            codebaseManager.writeCodebase(codebase);
+            codebaseManager.writeStrategyDecomposition(decompositionName, strategyName, decomposition);
 
             return new ResponseEntity<>(controller, HttpStatus.OK);
 
@@ -99,7 +103,7 @@ public class FunctionalityRedesignController {
 
     @RequestMapping(value = "/controller/{controllerName}/redesign/{redesignName}/sequenceChange", method = RequestMethod.POST)
     public ResponseEntity<Controller> sequenceChange(@PathVariable String codebaseName,
-                                                     @PathVariable String dendrogramName,
+                                                     @PathVariable String strategyName,
                                                      @PathVariable String decompositionName,
                                                      @PathVariable String controllerName,
                                                      @PathVariable String redesignName,
@@ -109,13 +113,12 @@ public class FunctionalityRedesignController {
             String localTransactionID = data.get("localTransactionID");
             String newCaller = data.get("newCaller");
 
-            Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            Decomposition decomposition = codebase.getDendrogram(dendrogramName).getDecomposition(decompositionName);
-            Controller controller = codebase.getDendrogram(dendrogramName).getDecomposition(decompositionName).getController(controllerName);
+            Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, null);
+            Controller controller = decomposition.getController(controllerName);
             controller.getFunctionalityRedesign(redesignName).sequenceChange(localTransactionID, newCaller);
 
             Metrics.calculateRedesignComplexities(controller, redesignName, decomposition);
-            codebaseManager.writeCodebase(codebase);
+            codebaseManager.writeStrategyDecomposition(decompositionName, strategyName, decomposition);
             return new ResponseEntity<>(controller, HttpStatus.OK);
 
         } catch (Exception e) {
@@ -128,7 +131,7 @@ public class FunctionalityRedesignController {
     @RequestMapping(value = "/controller/{controllerName}/redesign/{redesignName}/dcgi", method = RequestMethod.POST)
     public ResponseEntity<Controller> dcgi(
         @PathVariable String codebaseName,
-        @PathVariable String dendrogramName,
+        @PathVariable String strategyName,
         @PathVariable String decompositionName,
         @PathVariable String controllerName,
         @PathVariable String redesignName,
@@ -140,29 +143,26 @@ public class FunctionalityRedesignController {
             Short toClusterID = Short.parseShort(data.get("toCluster"));
             String localTransactions = data.get("localTransactions");
 
-            Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            Decomposition decomposition = codebase.getDendrogram(dendrogramName).getDecomposition(decompositionName);
+            Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, null);
             Controller controller = decomposition.getController(controllerName);
 
             controller.getFunctionalityRedesign(redesignName).dcgi(fromClusterID, toClusterID, localTransactions);
 
             Metrics.calculateRedesignComplexities(controller, redesignName, decomposition);
-            codebaseManager.writeCodebase(codebase);
+            codebaseManager.writeStrategyDecomposition(decompositionName, strategyName, decomposition);
 
             return new ResponseEntity<>(controller, HttpStatus.OK);
 
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
         }
-
     }
 
     @RequestMapping(value = "/controller/{controllerName}/redesign/{redesignName}/pivotTransaction", method = RequestMethod.POST)
     public ResponseEntity<Object> pivotTransaction(
         @PathVariable String codebaseName,
-        @PathVariable String dendrogramName,
+        @PathVariable String strategyName,
         @PathVariable String decompositionName,
         @PathVariable String controllerName,
         @PathVariable String redesignName,
@@ -171,9 +171,10 @@ public class FunctionalityRedesignController {
     ) {
         logger.debug("pivotTransaction");
         try {
-            Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
-            Decomposition decomposition = dendrogram.getDecomposition(decompositionName);
+            // TODO: abstract strategy call to make this a generic function, probably needs decompositions with subclasses
+            AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
+
+            Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, null);
             Controller controller = decomposition.getController(controllerName);
 
             if(newRedesignName.isPresent())
@@ -187,11 +188,13 @@ public class FunctionalityRedesignController {
             if(newRedesignName.isPresent()) {
                 controller.changeFunctionalityRedesignName(redesignName, newRedesignName.get());
 
+                Source source = codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
+
                 DirectedAcyclicGraph<LocalTransaction, DefaultEdge> controllerLocalTransactionsGraph = decomposition.getControllerLocalTransactionsGraph(
-                    codebase,
+                    source.getInputFilePath(),
                     controllerName,
-                    dendrogram.getTraceType(),
-                    dendrogram.getTracesMaxLimit()
+                    strategy.getTraceType(),
+                    strategy.getTracesMaxLimit()
                 );
 
                 controller.createFunctionalityRedesign(
@@ -202,10 +205,10 @@ public class FunctionalityRedesignController {
             }
 
             Metrics.calculateRedesignComplexities(controller, Constants.DEFAULT_REDESIGN_NAME, decomposition);
-            codebaseManager.writeCodebase(codebase);
+            codebaseManager.writeStrategyDecomposition(decompositionName, strategyName, decomposition);
 
             return new ResponseEntity<>(controller, HttpStatus.OK);
-        } catch (IOException | JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -215,7 +218,7 @@ public class FunctionalityRedesignController {
     @RequestMapping(value="/controller/{controllerName}/redesign/{redesignName}/changeLTName", method = RequestMethod.POST)
     public ResponseEntity<Controller> changeLTName(
         @PathVariable String codebaseName,
-        @PathVariable String dendrogramName,
+        @PathVariable String strategyName,
         @PathVariable String decompositionName,
         @PathVariable String controllerName,
         @PathVariable String redesignName,
@@ -224,14 +227,13 @@ public class FunctionalityRedesignController {
     ){
         logger.debug("changeLTName");
         try {
-            Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            Decomposition decomposition = codebase.getDendrogram(dendrogramName).getDecomposition(decompositionName);
+            Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, null);
             Controller controller = decomposition.getController(controllerName);
             controller.getFunctionalityRedesign(redesignName).changeLTName(transactionID, newName);
-            codebaseManager.writeCodebase(codebase);
+            codebaseManager.writeStrategyDecomposition(decompositionName, strategyName, decomposition);
 
             return new ResponseEntity<>(controller, HttpStatus.OK);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -240,21 +242,20 @@ public class FunctionalityRedesignController {
     @RequestMapping(value="/controller/{controllerName}/redesign/{redesignName}/deleteRedesign", method = RequestMethod.DELETE)
     public ResponseEntity<Controller> deleteRedesign(
         @PathVariable String codebaseName,
-        @PathVariable String dendrogramName,
+        @PathVariable String strategyName,
         @PathVariable String decompositionName,
         @PathVariable String controllerName,
         @PathVariable String redesignName
     ) {
         logger.debug("deleteRedesign");
         try {
-            Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            Decomposition decomposition = codebase.getDendrogram(dendrogramName).getDecomposition(decompositionName);
+            Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, null);
             Controller controller = decomposition.getController(controllerName);
             controller.deleteRedesign(redesignName);
-            codebaseManager.writeCodebase(codebase);
+            codebaseManager.writeStrategyDecomposition(decompositionName, strategyName, decomposition);
 
             return new ResponseEntity<>(controller, HttpStatus.OK);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -263,24 +264,22 @@ public class FunctionalityRedesignController {
     @RequestMapping(value="/controller/{controllerName}/redesign/{redesignName}/useForMetrics", method = RequestMethod.POST)
     public ResponseEntity<Controller> useForMetrics(
         @PathVariable String codebaseName,
-        @PathVariable String dendrogramName,
+        @PathVariable String strategyName,
         @PathVariable String decompositionName,
         @PathVariable String controllerName,
         @PathVariable String redesignName
     ) {
         logger.debug("useForMetrics");
         try {
-            Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            Decomposition decomposition = codebase.getDendrogram(dendrogramName).getDecomposition(decompositionName);
+            Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, null);
             Controller controller = decomposition.getController(controllerName);
             controller.changeFRUsedForMetrics(redesignName);
-            codebaseManager.writeCodebase(codebase);
+            codebaseManager.writeStrategyDecomposition(decompositionName, strategyName, decomposition);
 
             return new ResponseEntity<>(controller, HttpStatus.OK);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-
 }
