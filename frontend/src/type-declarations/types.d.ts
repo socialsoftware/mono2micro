@@ -65,6 +65,16 @@ export interface Dendrogram {
     decompositions?: Decomposition[];
     profile?: string;
 	traceType?: TraceType;
+    featureVectorizationStrategy?: string;
+    maxDepth?: number;
+    servicesWeight?: number;
+    intermediateMethodsWeight?: number;
+    entitiesWeight?: number;
+    constructorWeight?: number;
+    gettersWeight?: number;
+    settersWeight?: number;
+    regularMethodsWeight?: number;
+    methodsWeight?: number;
 }
 
 export interface Codebase {

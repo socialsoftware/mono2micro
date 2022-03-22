@@ -41,6 +41,16 @@ public class Dendrogram {
 	private List<Decomposition> decompositions = new ArrayList<>(); // Might not be necessary if the folders structure gets better organized
 	private int tracesMaxLimit = 0;
 	private TraceType traceType = TraceType.ALL;
+	private String featureVectorizationStrategy;
+    private int maxDepth;
+    private float servicesWeight;
+    private float intermediateMethodsWeight;
+    private float entitiesWeight;
+    private float constructorWeight;
+    private float gettersWeight;
+    private float settersWeight;
+	private float regularMethodsWeight;
+    private float methodsWeight;
 
 	public Dendrogram() {}
 
@@ -117,6 +127,86 @@ public class Dendrogram {
 	public TraceType getTraceType() { return traceType; }
 
 	public void setTraceType(TraceType traceType) { this.traceType = traceType; }
+
+	public String getFeatureVectorizationStrategy() {
+		return featureVectorizationStrategy;
+	}
+
+	public void setFeatureVectorizationStrategy(String featureVectorizationStrategy) {
+		this.featureVectorizationStrategy = featureVectorizationStrategy;
+	}
+
+	public int getMaxDepth() {
+		return maxDepth;
+	}
+
+	public void setMaxDepth(int maxDepth) {
+		this.maxDepth = maxDepth;
+	}
+
+	public float getServicesWeight() {
+		return servicesWeight;
+	}
+
+	public void setServicesWeight(float servicesWeight) {
+		this.servicesWeight = servicesWeight;
+	}
+
+	public float getIntermediateMethodsWeight() {
+		return intermediateMethodsWeight;
+	}
+
+	public void setIntermediateMethodsWeight(float intermediateMethodsWeight) {
+		this.intermediateMethodsWeight = intermediateMethodsWeight;
+	}
+
+	public float getEntitiesWeight() {
+		return entitiesWeight;
+	}
+
+	public void setEntitiesWeight(float entitiesWeight) {
+		this.entitiesWeight = entitiesWeight;
+	}
+
+	public float getConstructorWeight() {
+		return constructorWeight;
+	}
+
+	public void setConstructorWeight(float constructorWeight) {
+		this.constructorWeight = constructorWeight;
+	}
+
+	public float getGettersWeight() {
+		return gettersWeight;
+	}
+
+	public void setGettersWeight(float gettersWeight) {
+		this.gettersWeight = gettersWeight;
+	}
+
+	public float getSettersWeight() {
+		return settersWeight;
+	}
+
+	public void setSettersWeight(float settersWeight) {
+		this.settersWeight = settersWeight;
+	}
+
+	public float getRegularMethodsWeight() {
+		return regularMethodsWeight;
+	}
+
+	public void setRegularMethodsWeight(float regularMethodsWeight) {
+		this.regularMethodsWeight = regularMethodsWeight;
+	}
+
+	public float getMethodsWeight() {
+		return methodsWeight;
+	}
+
+	public void setMethodsWeight(float methodsWeight) {
+		this.methodsWeight = methodsWeight;
+	}
 
 	@JsonIgnore
 	public List<String> getDecompositionNames() { return this.decompositions.stream().map(Decomposition::getName).collect(Collectors.toList()); }

@@ -226,13 +226,33 @@ export class RepositoryService {
         codebaseName: string,
         dendrogramName: string,
         profile: string,
-        linkageType: string
+        linkageType: string,
+        featureVectorizationStrategy: string,
+        maxDepth: number,
+        servicesWeight: number,
+        intermediateMethodsWeight: number,
+        entitiesWeight: number,
+        constructorWeight: number,
+        gettersWeight: number,
+        settersWeight: number,
+        regularMethodsWeight: number,
+        methodsWeight: number
     ) {
         const dendrogramData: Dendrogram = {
             codebaseName,
             name: dendrogramName,
             profile,
-            linkageType
+            linkageType,
+            featureVectorizationStrategy,
+            maxDepth,
+            servicesWeight,
+            intermediateMethodsWeight,
+            entitiesWeight,
+            constructorWeight,
+            gettersWeight,
+            settersWeight,
+            regularMethodsWeight,
+            methodsWeight
         };
         
         return this.axios.post<null>(

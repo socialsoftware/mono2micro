@@ -83,6 +83,46 @@ public class DendrogramDeserializer extends StdDeserializer<Dendrogram> {
 							dendrogram.setTraceType(Constants.TraceType.valueOf(jsonParser.getValueAsString()));
 							break;
 
+						case "featureVectorizationStrategy":
+							dendrogram.setFeatureVectorizationStrategy(jsonParser.getValueAsString());
+							break;
+
+						case "maxDepth":
+							dendrogram.setMaxDepth(jsonParser.getIntValue());
+							break;
+
+						case "servicesWeight":
+							dendrogram.setServicesWeight(jsonParser.getIntValue());
+							break;
+
+						case "intermediateMethodsWeight":
+							dendrogram.setIntermediateMethodsWeight(jsonParser.getIntValue());
+							break;
+
+						case "entitiesWeight":
+							dendrogram.setEntitiesWeight(jsonParser.getIntValue());
+							break;
+
+						case "constructorWeight":
+							dendrogram.setConstructorWeight(jsonParser.getIntValue());
+							break;
+
+						case "gettersWeight":
+							dendrogram.setGettersWeight(jsonParser.getIntValue());
+							break;
+
+						case "settersWeight":
+							dendrogram.setSettersWeight(jsonParser.getIntValue());
+							break;
+
+						case "regularMethodsWeight":
+							dendrogram.setRegularMethodsWeight(jsonParser.getIntValue());
+							break;
+
+						case "methodsWeight":
+							dendrogram.setMethodsWeight(jsonParser.getIntValue());
+							break;
+
 						default:
 							throw new IOException("Attribute " + jsonParser.getCurrentName() + " does not exist on Dendrogram object");
 					}

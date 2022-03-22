@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -177,6 +178,108 @@ public class Codebase {
 		executeCreateDendrogram(dendrogram, "");
 	}
 
+	public JSONObject getMethodCall(JSONArray packages, String callPackage, String callClass, String callSignature)
+		throws JSONException
+	{
+		for (int i = 0; i < packages.length(); i++) {
+			JSONObject pack = packages.getJSONObject(i);
+
+			if (pack.getString("name").equals(callPackage)) {
+				JSONArray classes = pack.optJSONArray("classes");
+
+				for (int j = 0; j < classes.length(); j++) {
+					JSONObject cls = classes.getJSONObject(j);
+
+					if (cls.getString("name").equals(callClass)) {
+						JSONArray methods = cls.optJSONArray("methods");
+
+						for (int k = 0; k < methods.length(); k++) {
+							JSONObject method = methods.getJSONObject(k);
+
+							if (method.getString("signature").equals(callSignature)) {
+								return method;
+							}
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	public void vectorSum(ArrayList<Double> vector, JSONArray array)
+		throws JSONException
+	{
+		for (int i = 0; i < array.length(); i++) {
+			vector.set(i, vector.get(i) + array.getDouble(i));
+		}
+	}
+
+	public void vectorSum(ArrayList<Double> vector, ArrayList<Double> array)
+	{
+		for (int i = 0; i < array.size(); i++) {
+			vector.set(i, vector.get(i) + array.get(i));
+		}
+	}
+
+	public void vectorDivision(ArrayList<Double> vector, int count) {
+		for (int i = 0; i < vector.size(); i++) {
+			vector.set(i, vector.get(i) / count);
+		}
+	}
+
+	class Acumulator {
+		ArrayList<Double> sum;
+		int count;
+
+		Acumulator(ArrayList<Double> sum, int count) {
+			this.sum = sum;
+			this.count = count;
+		}
+	};
+
+	public Acumulator getMethodCallsVectors(JSONArray packages, JSONObject method, int maxDepth)
+		throws JSONException
+	{
+		ArrayList<Double> vector = new ArrayList<Double>();
+		JSONArray code_vector = method.getJSONArray("codeVector");
+		JSONArray methodCalls = method.optJSONArray("methodCalls");
+		for (int idx = 0; idx < 384; idx++) vector.add(code_vector.getDouble(idx));
+		int count = 1;
+
+		if (maxDepth == 0 || methodCalls.length() == 0) {
+			return new Acumulator(vector, count);
+		}
+
+		for (int l = 0; l < methodCalls.length(); l++) {
+			JSONObject methodCall = methodCalls.getJSONObject(l);
+
+			try {
+				JSONObject met = getMethodCall(
+					packages,
+					methodCall.getString("packageName"),
+					methodCall.getString("className"),
+					methodCall.getString("signature")
+				);
+
+				if (met != null) {
+
+					Acumulator acum = getMethodCallsVectors(packages, met, maxDepth - 1);
+				
+					vectorSum(vector, acum.sum);
+					count += acum.count;
+
+				} else {
+					System.err.println("[ - ] Cannot get method call for method: " + methodCall.getString("signature"));
+				}
+			} catch (JSONException je) {
+				System.err.println("[ - ] Cannot get method call for method: " + methodCall.getString("signature"));
+			}
+		}
+
+		return new Acumulator(vector, count);
+	}
+
 	public void createDendrogramByFeatures(
 		Dendrogram dendrogram
 	)
@@ -191,11 +294,100 @@ public class Codebase {
 		}
 
 		JSONObject codeEmbeddings = CodebaseManager.getInstance().getCodeEmbeddings(this.name);
+		HashMap<String, Object> featuresJson = new HashMap<String, Object>();
+		featuresJson.put("name", codeEmbeddings.getString("name"));
+		List<HashMap> featuresVectors = new ArrayList<>();
+
+		JSONArray packages = codeEmbeddings.getJSONArray("packages");
+
+		for (int i = 0; i < packages.length(); i++) {
+			JSONObject pack = packages.getJSONObject(i);
+			JSONArray classes = pack.optJSONArray("classes");
+
+			for (int j = 0; j < classes.length(); j++) {
+				JSONObject cls = classes.getJSONObject(j);
+				JSONArray methods = cls.optJSONArray("methods");
+
+				for (int k = 0; k < methods.length(); k++) {
+					JSONObject method = methods.getJSONObject(k);
+
+					if (method.getString("type").equals("Controller")) {
+						System.out.println("Controller: " + method.getString("signature"));
+
+						Acumulator acumulator = getMethodCallsVectors(packages, method, dendrogram.getMaxDepth());
+
+						if (acumulator.count > 0) {
+							vectorDivision(acumulator.sum, acumulator.count);
+
+							HashMap<String, Object> featureEmbeddings = new HashMap<String, Object>();
+							featureEmbeddings.put("package", pack.getString("name"));
+							featureEmbeddings.put("class", cls.getString("name"));
+							featureEmbeddings.put("signature", method.getString("signature"));
+							featureEmbeddings.put("codeVector", acumulator.sum);
+							featuresVectors.add(featureEmbeddings);
+						}
+
+						/*
+						// DEPTH 0
+						ArrayList<Double> vector = new ArrayList<Double>();
+						JSONArray code_vector = method.getJSONArray("codeVector");
+						for (int idx = 0; idx < 384; idx++) vector.add(code_vector.getDouble(idx));
+                    	int count = 1;
+						JSONArray methodCalls = method.optJSONArray("methodCalls");
+
+						// DEPTH 1
+						for (int l = 0; l < methodCalls.length(); l++) {
+							JSONObject methodCall = methodCalls.getJSONObject(l);
+
+							JSONObject met = getMethodCall(
+								packages,
+								methodCall.getString("packageName"),
+								methodCall.getString("className"),
+								methodCall.getString("signature")
+							);
+
+							if (met != null) {
+
+								count++;
+								vectorSum(vector, met.getJSONArray("codeVector"));
+
+								// DEPTH 2
+								// ...
+
+							} else {
+								System.out.println("[ - ] Cannot get method call for method: " + methodCall.getString("signature"));
+							}
+						}
+
+						if (count > 0) {
+							vectorDivision(vector, count);
+
+							HashMap<String, Object> featureEmbeddings = new HashMap<String, Object>();
+							featureEmbeddings.put("package", pack.getString("name"));
+							featureEmbeddings.put("class", cls.getString("name"));
+							featureEmbeddings.put("signature", method.getString("signature"));
+							featureEmbeddings.put("codeVector", vector);
+							featuresVectors.add(featureEmbeddings);
+						}
+						*/
+
+					}
+
+				}
+
+			}
+
+		}
+
+		featuresJson.put("linkageType", dendrogram.getLinkageType());
+		featuresJson.put("features", featuresVectors);
+
+		CodebaseManager.getInstance().writeFeaturesCodeVectorsFile(this.name, featuresJson);
 
 		this.addDendrogram(dendrogram);
 
-		System.out.println("Creating dendrogram by features...");
-		// TODO: To implement
+		executeCreateDendrogram(dendrogram, "/features");
+
 	}
 
 	public List<Double> calculateClassVector(List<List<Double>> class_methods_vectors) {

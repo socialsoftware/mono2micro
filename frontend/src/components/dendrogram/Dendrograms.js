@@ -87,6 +87,15 @@ export const Dendrograms = () => {
     const [codebase, setCodebase] = useState({ profiles: [], });
     const [analysisType, setAnalysisType] = useState("static");
     const [featureVectorizationStrategy, setFeatureVectorizationStrategy] = useState("methodCalls");
+    const [maxDepth, setMaxDepth] = useState("0");
+    const [servicesWeight, setServicesWeight] = useState("100");
+    const [intermediateMethodsWeight, setIntermediateMethodsWeight] = useState("100");
+    const [entitiesWeight, setEntitiesWeight] = useState("100");
+    const [constructorWeight, setConstructorWeight] = useState("100");
+    const [gettersWeight, setGettersWeight] = useState("100");
+    const [settersWeight, setSettersWeight] = useState("100");
+    const [regularMethodsWeight, setRegularMethodsWeight] = useState("100");
+    const [methodsWeight, setMethodsWeight] = useState("100");
 
     let { codebaseName } = useParams();
 
@@ -197,12 +206,22 @@ export const Dendrograms = () => {
             codebaseName,
             newDendrogramName,
             selectedProfile,
-            linkageType
+            linkageType,
+            featureVectorizationStrategy,
+            Number(maxDepth),
+            Number(servicesWeight),
+            Number(intermediateMethodsWeight),
+            Number(entitiesWeight),
+            Number(constructorWeight),
+            Number(gettersWeight),
+            Number(settersWeight),
+            Number(regularMethodsWeight),
+            Number(methodsWeight)
         )
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
-                    // loadDendrograms();
-                    // loadDecompositions();
+                    loadDendrograms();
+                    loadDecompositions();
                     setIsUploaded("Upload completed successfully.");
                 } else {
                     setIsUploaded("Upload failed.");
@@ -229,8 +248,8 @@ export const Dendrograms = () => {
         )
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
-                    // loadDendrograms();
-                    // loadDecompositions();
+                    loadDendrograms();
+                    loadDecompositions();
                     setIsUploaded("Upload completed successfully.");
                 } else {
                     setIsUploaded("Upload failed.");
@@ -291,6 +310,42 @@ export const Dendrograms = () => {
 
     function handleChangeFeatureVectorizationStrategy(event) {
         setFeatureVectorizationStrategy(event.target.id);
+    }
+
+    function handleChangeMaxDepth(event) {
+        setMaxDepth(event.target.value);
+    }
+
+    function handleChangeServicesWeight(event) {
+        setServicesWeight(event.target.value);
+    }
+
+    function handleChangeIntermediateMethodsWeight(event) {
+        setIntermediateMethodsWeight(event.target.value);
+    }
+
+    function handleChangeEntitiesWeight(event) {
+        setEntitiesWeight(event.target.value);
+    }
+
+    function handleChangeConstructorWeight(event) {
+        setConstructorWeight(event.target.value);
+    }
+
+    function handleChangeGettersWeight(event) {
+        setGettersWeight(event.target.value);
+    }
+
+    function handleChangeSettersWeight(event) {
+        setSettersWeight(event.target.value);
+    }
+
+    function handleChangeRegularMethodsWeight(event) {
+        setRegularMethodsWeight(event.target.value);
+    }
+
+    function handleChangeMethodsWeight(event) {
+        setMethodsWeight(event.target.value);
     }
 
     function handleDeleteDendrogram(dendrogramName) {
@@ -647,43 +702,6 @@ export const Dendrograms = () => {
 
                 <br/>
 
-                <Form.Group as={Row} controlId="selectFeatureVectorizationStrategy" className="align-items-center">
-                    <Form.Label column sm={2}>
-                        Select Feature Vectorization Strategy
-                    </Form.Label>
-                    <Col sm="auto">
-                        <Form.Check
-                            onClick={handleChangeFeatureVectorizationStrategy}
-                            name="featureVectorizationStrategy"
-                            label="Method Calls"
-                            type="radio"
-                            id="methodCalls"
-                            defaultChecked
-                        />
-                    </Col>
-                    <Col sm="auto">
-                        <Form.Check
-                            onClick={handleChangeFeatureVectorizationStrategy}
-                            name="featureVectorizationStrategy"
-                            label="Entities"
-                            type="radio"
-                            id="entities"
-                        />
-
-                    </Col>
-                    <Col sm="auto">
-                        <Form.Check
-                            onClick={handleChangeFeatureVectorizationStrategy}
-                            name="featureVectorizationStrategy"
-                            label="Mixed"
-                            type="radio"
-                            id="mixed"
-                        />
-                    </Col>
-                </Form.Group>
-
-                <br/>
-
                 <Form.Group as={Row} className="align-items-center">
                     <Form.Label as="legend" column sm={2}>
                         Linkage Type
@@ -721,6 +739,49 @@ export const Dendrograms = () => {
 
                 <br/>
 
+                <Form.Group as={Row} controlId="selectFeatureVectorizationStrategy" className="align-items-center">
+                    <Form.Label column sm={2}>
+                        Select Feature Vectorization Strategy
+                    </Form.Label>
+                    <Col sm="auto">
+                        <Form.Check
+                            onClick={handleChangeFeatureVectorizationStrategy}
+                            name="featureVectorizationStrategy"
+                            label="Method Calls"
+                            type="radio"
+                            id="methodCalls"
+                            defaultChecked
+                        />
+                    </Col>
+                    <Col sm="auto">
+                        <Form.Check
+                            onClick={handleChangeFeatureVectorizationStrategy}
+                            name="featureVectorizationStrategy"
+                            label="Entities"
+                            type="radio"
+                            id="entities"
+                        />
+
+                    </Col>
+                    <Col sm="auto">
+                        <Form.Check
+                            onClick={handleChangeFeatureVectorizationStrategy}
+                            name="featureVectorizationStrategy"
+                            label="Mixed"
+                            type="radio"
+                            id="mixed"
+                        />
+                    </Col>
+                </Form.Group>
+
+                <br/>
+
+                {featureVectorizationStrategy == "methodCalls" ? renderMethodCallsStrategyForm() : <div></div>}
+                {featureVectorizationStrategy == "entities" ? renderEntitiesStrategyForm() : <div></div>}
+                {featureVectorizationStrategy == "mixed" ? renderMixedStrategyForm() : <div></div>}
+
+                <br/>
+
                 <Form.Group as={Row} className="align-items-center">
                     <Col sm={{ offset: 2 }}>
                         <Button
@@ -739,6 +800,176 @@ export const Dendrograms = () => {
                     </Col>
                 </Form.Group>
             </Form>
+        );
+    }
+
+    function renderMethodCallsStrategyForm() {
+        // Max depth
+        // Service Weight, Auxiliar Weights, Entity weights
+        return (
+            <div>
+                <Form.Group as={Row} controlId="maxDepth">
+                    <Form.Label column sm={2}>
+                        Maximum depth
+                    </Form.Label>
+                    <Col sm={2}>
+                        <FormControl
+                            type="number"
+                            value={maxDepth}
+                            onChange={handleChangeMaxDepth}
+                        />
+                    </Col>
+                </Form.Group>
+
+                <br/>
+
+                <Form.Group as={Row} controlId="servicesWeight" className="align-items-center">
+                    <Form.Label column sm={2}>
+                        Services Weight (%)
+                    </Form.Label>
+                    <Col sm={2}>
+                        <FormControl
+                            type="number"
+                            placeholder="0-100"
+                            value={servicesWeight}
+                            onChange={handleChangeServicesWeight} />
+                    </Col>
+                </Form.Group>
+
+                <br/>
+
+                <Form.Group as={Row} controlId="intermediateMethodsWeight" className="align-items-center">
+                    <Form.Label column sm={2}>
+                        Intermediate Methods Weight (%)
+                    </Form.Label>
+                    <Col sm={2}>
+                        <FormControl
+                            type="number"
+                            placeholder="0-100"
+                            value={intermediateMethodsWeight}
+                            onChange={handleChangeIntermediateMethodsWeight} />
+                    </Col>
+                </Form.Group>
+
+                <br/>
+
+                <Form.Group as={Row} controlId="entitiesWeight" className="align-items-center">
+                    <Form.Label column sm={2}>
+                        Entities Weight (%)
+                    </Form.Label>
+                    <Col sm={2}>
+                        <FormControl
+                            type="number"
+                            placeholder="0-100"
+                            value={entitiesWeight}
+                            onChange={handleChangeEntitiesWeight} />
+                    </Col>
+                </Form.Group>
+
+            </div>
+        );
+    }
+
+    function renderEntitiesStrategyForm() {
+        // Number of accesses already present, since multiple accesses count multiple times
+        // Constructor Weights, Getters Weights, Setters Weights, Other Methods Weights
+        // Transformers (toString), Recognizers(isSomething) , testers (equals) ???
+        return (
+            <div>
+                <Form.Group as={Row} controlId="constructorWeight" className="align-items-center">
+                    <Form.Label column sm={2}>
+                        Constructor Weight (%)
+                    </Form.Label>
+                    <Col sm={2}>
+                        <FormControl
+                            type="number"
+                            placeholder="0-100"
+                            value={constructorWeight}
+                            onChange={handleChangeConstructorWeight} />
+                    </Col>
+                </Form.Group>
+
+                <br/>
+
+                <Form.Group as={Row} controlId="gettersWeight" className="align-items-center">
+                    <Form.Label column sm={2}>
+                        Getters Weight (%)
+                    </Form.Label>
+                    <Col sm={2}>
+                        <FormControl
+                            type="number"
+                            placeholder="0-100"
+                            value={gettersWeight}
+                            onChange={handleChangeGettersWeight} />
+                    </Col>
+                </Form.Group>
+
+                <br/>
+
+                <Form.Group as={Row} controlId="settersWeight" className="align-items-center">
+                    <Form.Label column sm={2}>
+                        Setters Weight (%)
+                    </Form.Label>
+                    <Col sm={2}>
+                        <FormControl
+                            type="number"
+                            placeholder="0-100"
+                            value={settersWeight}
+                            onChange={handleChangeSettersWeight} />
+                    </Col>
+                </Form.Group>
+                
+                <br/>
+
+                <Form.Group as={Row} controlId="regularMethodsWeight" className="align-items-center">
+                    <Form.Label column sm={2}>
+                        Regular Methods Weight (%)
+                    </Form.Label>
+                    <Col sm={2}>
+                        <FormControl
+                            type="number"
+                            placeholder="0-100"
+                            value={regularMethodsWeight}
+                            onChange={handleChangeRegularMethodsWeight} />
+                    </Col>
+                </Form.Group>
+            </div>
+        );
+    }
+
+    function renderMixedStrategyForm() {
+        // Equal Weights
+        // Entities Weights, Method Calls Weights
+        return (
+            <div>
+                <Form.Group as={Row} controlId="entitiesWeight" className="align-items-center">
+                    <Form.Label column sm={2}>
+                        Entities Weight (%)
+                    </Form.Label>
+                    <Col sm={2}>
+                        <FormControl
+                            type="number"
+                            placeholder="0-100"
+                            value={entitiesWeight}
+                            onChange={handleChangeEntitiesWeight} />
+                    </Col>
+                </Form.Group>
+
+                <br/>
+
+                <Form.Group as={Row} controlId="methodsWeight" className="align-items-center">
+                    <Form.Label column sm={2}>
+                        Methods Weight (%)
+                    </Form.Label>
+                    <Col sm={2}>
+                        <FormControl
+                            type="number"
+                            placeholder="0-100"
+                            value={methodsWeight}
+                            onChange={handleChangeMethodsWeight} />
+                    </Col>
+                </Form.Group>
+            </div>
         );
     }
 

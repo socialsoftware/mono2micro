@@ -439,6 +439,18 @@ public class CodebaseManager {
 		return codeEmbeddings;
 	}
 
+	public void writeFeaturesCodeVectorsFile(
+		String codebaseName,
+		HashMap featuresCodeVectorsFileJSON
+	)
+		throws IOException
+	{
+		objectMapper.writerWithDefaultPrettyPrinter().writeValue(
+				new File(CODEBASES_PATH + codebaseName + "/features_embeddings.json"),
+				featuresCodeVectorsFileJSON
+		);
+	}
+
 	public void writeClassesCodeVectorsFile(
 		String codebaseName,
 		HashMap classesCodeVectorsFileJSON
