@@ -6,11 +6,12 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 
-import {CLUSTERING_ALGORITHMS, POSSIBLE_DECOMPOSITIONS, SIMILARITY_GENERATORS} from '../../constants/constants';
+import {POSSIBLE_STRATEGIES} from '../../constants/constants';
 import {useParams} from "react-router-dom";
 import {AccessesSciPyStrategies} from "./AccessesSciPyStrategies";
 import {RepositoryService} from "../../services/RepositoryService";
 import HttpStatus from "http-status-codes";
+import {CollectorFactory} from "../../models/collectors/CollectorFactory";
 
 export const Strategies = () => {
 
@@ -19,13 +20,14 @@ export const Strategies = () => {
     const [profiles, setProfiles] = useState([]);
     const [isUploaded, setIsUploaded] = useState("");
     const [update, requestUpdate] = useState(0);
-    const [similarityGenerator, setSimilarityGenerator] = useState(undefined);
-    const [clusteringAlgorithm, setClusteringAlgorithm] = useState(undefined);
+    const [collectors, setCollectors] = useState([]);
+    const [strategy, setStrategy] = useState(undefined);
     const [request, setRequest] = useState(undefined);
 
     // Executes on mount
     useEffect(() => {
         loadCodebase();
+        loadCollectors();
     }, []);
 
     function loadCodebase() {
@@ -39,6 +41,17 @@ export const Strategies = () => {
                 setProfiles(["Generic"]);
             }
         });
+    }
+
+    function loadCollectors() {
+        const service = new RepositoryService();
+        service.getCodebase(codebaseName, ['collectors'])
+            .then(response => {
+                if (response.data !== undefined)
+                    setCollectors(response.data.collectors.map(collector =>
+                        CollectorFactory.getCollector(codebaseName, collector))
+                    );
+            });
     }
 
     function handleSubmit(event) {
@@ -64,14 +77,8 @@ export const Strategies = () => {
             });
     }
 
-    function selectSimilarityGenerator(generator) {
-        setSimilarityGenerator(generator);
-        setClusteringAlgorithm(undefined);
-        setRequest(undefined);
-    }
-
-    function selectClusteringAlgorithm(algorithm) {
-        setClusteringAlgorithm(algorithm);
+    function handleSelectStrategy(strategy) {
+        setStrategy(strategy);
         setRequest(undefined);
     }
 
@@ -86,22 +93,22 @@ export const Strategies = () => {
         );
     }
 
-    function renderSimilarityGenerator() {
-        /*ADD NEW CLUSTERING ALGORITHMS AND SIMILARITY GENERATORS INTO THE POSSIBLE DECOMPOSITIONS*/
+    function renderStrategies() {
         return (
-            <Form.Group as={Row} controlId="selectSimilarityGenerator" className="align-items-center mb-3">
+            <Form.Group as={Row} controlId="selectStrategy" className="align-items-center mb-3">
                 <h4 className="mb-3 mt-3" style={{ color: "#666666" }}>
-                    Similarity Generator
+                    Similarity Generator and Clustering Algorithm
                 </h4>
                 <Col sm={2}>
-                    <DropdownButton title={similarityGenerator === undefined? "Select Similarity Generator" : similarityGenerator.name}>
-                        {Object.values(SIMILARITY_GENERATORS)
-                            .map(generator =>
+                    <DropdownButton title={strategy === undefined? "Select Similarity Generator and Clustering Algorithm" : POSSIBLE_STRATEGIES[strategy]}>
+                        {collectors.flatMap(collector => collector.possibleStrategies)
+                            .filter((x, i, a) =>  a.indexOf(x) === i) // filter repeated values
+                            .map(possibleStrategy =>
                                 <Dropdown.Item
-                                    key={generator.value}
-                                    onClick={() => selectSimilarityGenerator(generator)}
+                                    key={possibleStrategy}
+                                    onClick={() => handleSelectStrategy(possibleStrategy)}
                                 >
-                                    {generator.name}
+                                    {POSSIBLE_STRATEGIES[possibleStrategy]}
                                 </Dropdown.Item>
                             )
                         }
@@ -111,46 +118,16 @@ export const Strategies = () => {
         );
     }
 
-    function renderClusteringAlgorithm() {
-        /*ADD NEW CLUSTERING ALGORITHMS AND SIMILARITY GENERATORS INTO THE POSSIBLE DECOMPOSITIONS*/
-        return (
-            <Fragment>
-                <h4 className="mb-3 mt-3" style={{ color: "#666666" }}>
-                    Clustering Algorithm
-                </h4>
-                <Form.Group as={Row} controlId="selectClusteringAlgorithm" className="align-items-center mb-3">
-                    <Col sm={2}>
-                        <DropdownButton title={clusteringAlgorithm === undefined? "Select Clustering Algorithm" : clusteringAlgorithm.name}>
-                            {POSSIBLE_DECOMPOSITIONS[similarityGenerator.value]
-                                .map(algorithmValue => CLUSTERING_ALGORITHMS[algorithmValue])
-                                .map(algorithm =>
-                                <Dropdown.Item
-                                    key={algorithm.value}
-                                    onClick={() => selectClusteringAlgorithm(algorithm)}
-                                >
-                                    {algorithm.name}
-                                </Dropdown.Item>
-                            )}
-                        </DropdownButton>
-                    </Col>
-                </Form.Group>
-            </Fragment>
-        );
-    }
-
     return (
         <div>
             {renderBreadCrumbs()}
 
             <Form onSubmit={handleSubmit} className="mb-3">
-                { renderSimilarityGenerator() }
+                { renderStrategies() }
 
-                { similarityGenerator !== undefined && renderClusteringAlgorithm() }
-
-                {/*Add render of each similarity generator like the next line to request the required elements for the dendrogram's creation*/}
+                {/*Add render of each strategy like the next line to request the required elements for its creation*/}
                 {
-                    clusteringAlgorithm !== undefined && clusteringAlgorithm.hasDendrograms &&
-                    similarityGenerator.value === "ACCESSES_LOG" && clusteringAlgorithm.value === "SCIPY" &&
+                    strategy !== undefined && strategy === 'ACCESSES_SCIPY' &&
                     <AccessesSciPyStrategies
                         codebaseName={codebaseName}
                         profiles={profiles}

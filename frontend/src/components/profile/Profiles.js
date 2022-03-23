@@ -15,19 +15,19 @@ import {useParams} from "react-router-dom";
 const HttpStatus = require('http-status-codes');
 
 export const Profiles = () => {
-    let { codebaseName } = useParams();
-    const [codebase, setCodebase] = useState({});
+    let { codebaseName, sourceType } = useParams();
+    const [source, setSource] = useState({});
     const [newProfileName, setNewProfileName] = useState("");
     const [moveToProfile, setMoveToProfile] = useState("");
     const [selectedControllers, setSelectedControllers] = useState([]);
     const [isUploaded, setIsUploaded] = useState("");
 
-    useEffect(() => loadCodebase(), []);
+    useEffect(() => loadSource(), []);
 
-    function loadCodebase() {
+    function loadSource() {
         const service = new RepositoryService();
-        service.getCodebase(codebaseName, ["profiles"]).then(response => {
-            setCodebase(response.data === null ? {} : response.data);
+        service.getSource(codebaseName, sourceType).then(response => {
+            setSource(response === null ? {} : response);
         });
     }
 
@@ -41,9 +41,9 @@ export const Profiles = () => {
         setIsUploaded("Uploading...");
 
         const service = new RepositoryService();
-        service.addProfile(codebaseName, newProfileName).then(response => {
+        service.addProfile(codebaseName, sourceType, newProfileName).then(response => {
             if (response.status === HttpStatus.OK) {
-                loadCodebase();
+                loadSource();
                 setIsUploaded("Upload completed successfully.");
             } else {
                 setIsUploaded("Upload failed.");
@@ -64,25 +64,27 @@ export const Profiles = () => {
 
     function handleMoveControllersSubmit() {
         const service = new RepositoryService();
-        
+
         service.moveControllers(
             codebaseName,
+            sourceType,
             selectedControllers,
             moveToProfile
         ).then(() => {
             setSelectedControllers([]);
-            loadCodebase();
+            loadSource();
         });
     }
 
     function handleDeleteProfile(profile) {
         const service = new RepositoryService();
-        
+
         service.deleteProfile(
             codebaseName,
+            sourceType,
             profile
         ).then(() => {
-            loadCodebase();
+            loadSource();
         });
     }
 
@@ -108,6 +110,12 @@ export const Profiles = () => {
                 </Breadcrumb.Item>
                 <Breadcrumb.Item href={`/codebases/${codebaseName}`}>
                     {codebaseName}
+                </Breadcrumb.Item>
+                <Breadcrumb.Item href={`/codebases/${codebaseName}`}>
+                    Source
+                </Breadcrumb.Item>
+                <Breadcrumb.Item href={`/codebases/${codebaseName}`}>
+                    {sourceType}
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>
                     Profiles
@@ -147,7 +155,7 @@ export const Profiles = () => {
                         >
                             Create Profile
                         </Button>
-                        <Form.Text>
+                        <Form.Text className={"ms-2"}>
                             {isUploaded}
                         </Form.Text>
                     </Col>
@@ -157,7 +165,7 @@ export const Profiles = () => {
             <h4 style={{color: "#666666"}}>
                 Controller Profiles
             </h4>
-            {Object.keys(codebase).length &&
+            {Object.keys(source).length &&
                 <div>
                     <ButtonToolbar>
                         <Button className="me-1">Move selected controllers to</Button>
@@ -167,7 +175,7 @@ export const Profiles = () => {
                             title={moveToProfile === "" ? "Controller Profile" : moveToProfile}
                             className="me-1"
                         >
-                            {Object.keys(codebase.profiles).map(profile =>
+                            {Object.keys(source.profiles).map(profile =>
                                 <Dropdown.Item
                                     key={profile}
                                     onClick={() => handleMoveToProfile(profile)}
@@ -185,11 +193,11 @@ export const Profiles = () => {
                         </Button>
                     </ButtonToolbar>
 
-                    {Object.keys(codebase.profiles).map(profile =>
+                    {Object.keys(source.profiles).map(profile =>
                         <div key={profile}>
                             <div style={{fontSize: '25px'}}>
                                 {profile}
-                                {!codebase.profiles[profile].length &&
+                                {!source.profiles[profile].length &&
                                     <Button
                                         onClick={() => handleDeleteProfile(profile)}
                                         className="ms-2"
@@ -201,7 +209,7 @@ export const Profiles = () => {
                                 }
                             </div>
 
-                            {codebase.profiles[profile].map(controller =>
+                            {source.profiles[profile].map(controller =>
                                 <Form.Check
                                     id={controller}
                                     key={controller}

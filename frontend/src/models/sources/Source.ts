@@ -8,9 +8,6 @@ export default abstract class Source {
         this.inputFilePath = inputFilePath;
         this.codebaseName = codebaseName;
     }
-
-    // This function is used to display a source belonging to a codebase
-    abstract printCard(): JSX.Element;
 }
 
 export enum SourceType {

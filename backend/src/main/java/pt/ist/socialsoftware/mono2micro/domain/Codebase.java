@@ -12,7 +12,7 @@ import java.util.List;
 @JsonDeserialize(using = CodebaseDeserializer.class)
 public class Codebase {
 	private String name;
-	private List<String> sourceTypes = new ArrayList<>();
+	private List<String> collectors = new ArrayList<>();
 
 	public Codebase() {}
 
@@ -28,15 +28,19 @@ public class Codebase {
 		this.name = name;
 	}
 
-	public List<String> getSourceTypes() {
-		return sourceTypes;
+	public List<String> getCollectors() {
+		return collectors;
 	}
 
-	public void setSourceTypes(List<String> sourceTypes) {
-		this.sourceTypes = sourceTypes;
+	public void setCollectors(List<String> collectors) {
+		this.collectors = collectors;
 	}
 
-	public void addSourceType(String sourceType) {
-		this.sourceTypes.add(sourceType);
+	public void addCollector(String collector) {
+		this.collectors.add(collector);
+	}
+
+	public void removeCollector(String collector) {
+		this.collectors.remove(collector);
 	}
 }

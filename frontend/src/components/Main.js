@@ -21,7 +21,7 @@ export const Main = () => (
       <Route exact path='/codebases/:codebaseName/strategies/:strategyName' element={<Strategy/>} />
       <Route exact path='/codebases/:codebaseName/strategies/:strategyName/decompositions/:decompositionName' element={<Views/>} />
 
-      <Route exact path='/codebases/:codebaseName/profiles' element={<Profiles/>} />
+      <Route exact path='/codebases/:codebaseName/source/:sourceType/profiles' element={<Profiles/>} />
 
       <Route exact path='/analysis' element={<Analysis/>} />
       <Route exact path='/analyser' element={<Analyser/>} />

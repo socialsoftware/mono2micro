@@ -287,6 +287,11 @@ public class CodebaseManager {
 		objectMapper.writeValue( new File(CODEBASES_PATH + codebaseName + "/sources/" + sourceType + "/source.json"), source);
 	}
 
+	public void deleteSources(String codebaseName, List<String> sources) throws IOException {
+		for (String source : sources)
+			FileUtils.deleteDirectory(new File(CODEBASES_PATH + codebaseName + "/sources/" + source));
+	}
+
 	public List<Source> getCodebaseSources(String codebaseName) throws IOException {
 		List<Source> sources = new ArrayList<>();
 

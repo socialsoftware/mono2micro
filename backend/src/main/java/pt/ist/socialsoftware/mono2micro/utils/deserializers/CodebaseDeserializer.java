@@ -47,8 +47,8 @@ public class CodebaseDeserializer extends StdDeserializer<Codebase> {
 							codebase.setName(jsonParser.getValueAsString());
 							break;
 
-						case "sourceTypes":
-							codebase.setSourceTypes(jsonParser.readValueAs(new TypeReference<List<String>>(){}));
+						case "collectors":
+							codebase.setCollectors(jsonParser.readValueAs(new TypeReference<List<String>>(){}));
 							break;
 
 						default:

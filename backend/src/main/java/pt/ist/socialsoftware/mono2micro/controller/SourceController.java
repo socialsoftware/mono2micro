@@ -5,14 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.source.AccessesSource;
 import pt.ist.socialsoftware.mono2micro.domain.source.Source;
-import pt.ist.socialsoftware.mono2micro.domain.source.SourceFactory;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashSet;
 
@@ -26,30 +23,12 @@ public class SourceController {
 
     private final CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
-    @RequestMapping(value = "/addSource", method = RequestMethod.POST)
-    public ResponseEntity<HttpStatus> addSource(
-            @PathVariable String codebaseName,
-            @RequestParam String sourceType,
-            @RequestParam Object inputFile
-    ){
-        logger.debug("addSource");
+    @RequestMapping(value = "/source/{sourceType}/getSource", method = RequestMethod.GET)
+    public ResponseEntity<Source> getSource(@PathVariable String codebaseName, @PathVariable String sourceType) {
+        logger.debug("getSource");
 
         try {
-            Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            if (codebase.getSourceTypes().contains(sourceType))
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
-            Source source = SourceFactory.getFactory().getSource(sourceType);
-            source.init(codebaseName, inputFile);
-            codebaseManager.writeSource(codebaseName, sourceType, source);
-
-            codebase.addSourceType(sourceType);
-            codebaseManager.writeCodebase(codebase);
-            return new ResponseEntity<>(HttpStatus.CREATED);
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(codebaseManager.getCodebaseSource(codebaseName, sourceType), HttpStatus.OK);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -150,10 +129,6 @@ public class SourceController {
         logger.debug("getInputFile");
 
         try {
-            Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            if (!codebase.getSourceTypes().contains(sourceType))
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
             return new ResponseEntity<>(codebaseManager.getInputFile(codebaseName, sourceType), HttpStatus.OK);
 
         } catch (IOException e) {

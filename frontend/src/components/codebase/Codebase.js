@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import Button from 'react-bootstrap/Button';
 import {useParams} from "react-router-dom";
@@ -6,19 +6,14 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import DropdownButton from "react-bootstrap/DropdownButton";
-import {
-    CLUSTERING_ALGORITHMS,
-    POSSIBLE_DECOMPOSITIONS,
-    SIMILARITY_GENERATORS,
-    SOURCES
-} from "../../constants/constants";
 import Dropdown from "react-bootstrap/Dropdown";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
 import {RepositoryService} from "../../services/RepositoryService";
 import HttpStatus from "http-status-codes";
-import ButtonToolbar from "react-bootstrap/ButtonToolbar";
-import {AccessesSciPyStrategies} from "../strategy/AccessesSciPyStrategies";
+import {CollectorType} from "../../models/collectors/Collector";
+import {CollectorFactory} from "../../models/collectors/CollectorFactory";
+import {Modal, ModalBody, ModalFooter, ModalTitle} from "react-bootstrap";
 
 function renderBreadCrumbs(codebaseName) {
     return (
@@ -38,170 +33,158 @@ function renderBreadCrumbs(codebaseName) {
 
 export function Codebase() {
     let { codebaseName } = useParams();
-    const [similarityGenerator, setSimilarityGenerator] = useState(undefined);
-    const [clusteringAlgorithm, setClusteringAlgorithm] = useState(undefined);
-    const [selectedSource, setSelectedSource] = useState(undefined);
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [sources, setSources] = useState([]);
-    const [strategies, setStrategies] = useState([]);
+    const [showPopup, setShowPopup] = useState(false);
+    const [collectorToDelete, setCollectorToDelete] = useState(undefined);
+    const [selectedCollector, setSelectedCollector] = useState(undefined);
+    const [collectors, setCollectors] = useState([]);
     const [isUploaded, setIsUploaded] = useState("");
 
     //Executed on mount
     useEffect(() => {
-        loadStrategies();
-        loadSources();
+        loadCollectors()
     }, []);
 
-    function loadSources() {
+    function loadCollectors() {
         const service = new RepositoryService();
-        service.getSources(codebaseName)
+        service.getCodebase(codebaseName, ['collectors'])
             .then(response => {
-                setSources(response);
+                if (response.data !== undefined)
+                    setCollectors(response.data.collectors.map(collector =>
+                        CollectorFactory.getCollector(codebaseName, collector))
+                    );
             });
     }
 
-    function loadStrategies() {
-        const service = new RepositoryService();
-        service.getStrategies(codebaseName)
-            .then(response => {
-                setStrategies(response.data);
-                console.log(response.data);
-            });
-    }
-
-    function handleSourceSubmit(event) {
+    function handleCollectorSubmit(event) {
         event.preventDefault()
 
         setIsUploaded("Uploading...");
 
-        if (selectedFile !== null) {
-            const service = new RepositoryService();
-            service.addSource(codebaseName, selectedSource.value, selectedFile)
-                .then(response => {
-                    if (response.status === HttpStatus.CREATED) {
-                        loadSources();
-                        setIsUploaded("Upload completed successfully.");
-                    } else {
-                        setIsUploaded("Upload failed.");
-                    }
-                })
-                .catch(error => {
-                    if (error.response !== undefined && error.response.status === HttpStatus.UNAUTHORIZED) {
-                        setIsUploaded("Upload failed. Source already submitted.");
-                    }
-                    else if (error.response !== undefined && error.response.status === HttpStatus.NOT_FOUND) {
-                        setIsUploaded("Upload failed. Invalid datafile path.");
-                    }
-                    else {
-                        setIsUploaded("Upload failed.");
-                    }
-                });
-            setSelectedFile(null);
-        }
+        const service = new RepositoryService();
+        service.addCollector(codebaseName, selectedCollector.type, selectedCollector.addedSources)
+            .then(response => {
+                if (response.status === HttpStatus.CREATED) {
+                    loadCollectors();
+                    setSelectedCollector(undefined);
+                    setIsUploaded("");
+                } else {
+                    setIsUploaded("Upload failed.");
+                }
+            })
+            .catch(error => {
+                if (error.response !== undefined && error.response.status === HttpStatus.UNAUTHORIZED) {
+                    setIsUploaded("Upload failed. Collector already submitted.");
+                }
+                else if (error.response !== undefined && error.response.status === HttpStatus.NOT_FOUND) {
+                    setIsUploaded("Upload failed. Invalid datafile path.");
+                }
+                else {
+                    setIsUploaded("Upload failed.");
+                }
+            });
     }
 
     const getHelpText = (
         <Popover id="helpPopover">
-            <div> Select the Similarity Generator and<br/>the Clustering Algorithm to create<br/>a new Strategy</div>
+            <div> Select a Collector type and<br/>add the required files,<br/>then proceed to the Strategies or<br/>customize the collector if possible</div>
         </Popover>
     );
 
-    function handleSimilarityGenerator(generator) {
-        setSimilarityGenerator(generator);
-        setClusteringAlgorithm(undefined);
+    function handleSelectedCollector(collectorType) {
+        setSelectedCollector(CollectorFactory.getCollector(codebaseName, collectorType));
     }
 
-    function handleClusteringAlgorithm(algorithm) {
-        setClusteringAlgorithm(algorithm);
+    function handleCollectorDelete(collectorToDelete) {
+        setCollectorToDelete(collectorToDelete);
+        setShowPopup(true);
     }
 
-    function handleSelectedSource(source) {
-        setSelectedSource(source);
+    function confirmCollectorDelete() {
+        setShowPopup(false);
+
+        const service = new RepositoryService();
+        service.deleteCollector(
+            collectorToDelete.codebaseName,
+            collectorToDelete.type,
+            collectorToDelete.sources
+        ).then(() => {
+            loadCollectors()
+        });
     }
 
-    function handleSelectedFile(event) {
-        setSelectedFile(event.target.files[0]);
-        setIsUploaded("");
-    }
-
-    function renderSources() {
+    function renderCollectors() {
         return (
-            <Form onSubmit={handleSourceSubmit}>
+            <Form onSubmit={handleCollectorSubmit}>
                 <Form.Group as={Row} controlId="selectSource" className="align-items-center mb-3">
-                    <h4 className="mb-3 mt-3" style={{ color: "#666666" }}> Source Files </h4>
                     <Col sm={2}>
-                        <DropdownButton title={selectedSource === undefined? "Select Source" : selectedSource.name}>
-                            {Object.values(SOURCES)
-                                .map(source =>
+                        <DropdownButton title={selectedCollector === undefined? "Add Collector" : selectedCollector.type}>
+                            {Object.values(CollectorType).filter(collectorType => !collectors.find(collector => collector.type === collectorType))
+                                .map(collectorType =>
                                     <Dropdown.Item
-                                        key={source.value}
-                                        onClick={() => handleSelectedSource(source)}
+                                        key={collectorType}
+                                        onClick={() => handleSelectedCollector(collectorType)}
                                     >
-                                        {source.name}
+                                        {collectorType}
                                     </Dropdown.Item>
-                                )
-                            }
+                            )}
                         </DropdownButton>
                     </Col>
-                    {selectedSource !== undefined &&
-                        <Col sm={4}>
-                            <Form.Control
-                                type="file"
-                                onChange={handleSelectedFile}/>
-                        </Col>
-                    }
-                    {selectedFile !== null &&
-                        <Col sm={1}><Button type="submit" className="">Submit</Button></Col>
-                    }
-                    {isUploaded}
                 </Form.Group>
 
+                {selectedCollector !== undefined &&                                     // Show sources request form
+                    selectedCollector.printForm()
+                }
+
+                {selectedCollector !== undefined &&                                     // Submit button
+                    <Form.Group as={Row} className="align-items-center mb-4">
+                        <Col sm={{ offset: 2 }}>
+                            <Button type="submit" disabled={selectedCollector.canSubmit()}>Submit</Button>
+                            <Form.Text className="ms-2">
+                                {isUploaded}
+                            </Form.Text>
+                        </Col>
+                    </Form.Group>
+                }
+
+                {collectors.length !== 0 && <h4 className="mb-3" style={{ color: "#666666" }}> Collectors </h4>}
+
                 <div className={"d-flex flex-wrap"} style={{gap: '1rem 1rem'}}>
-                    {sources.map(source => source.printCard())}
+                    {collectors.map(collector => collector.printCard(handleCollectorDelete))}
                 </div>
             </Form>
         );
     }
 
-    function renderSimilarityGenerator() {
-        return (
-            <ButtonToolbar  style={{gap: '.5rem .5rem'}}>
-                <DropdownButton title={similarityGenerator === undefined? "Select Similarity Generator" : similarityGenerator.name}>
-                    {Object.values(SIMILARITY_GENERATORS)
-                        .map(generator =>
-                            <Dropdown.Item
-                                key={generator.value}
-                                onClick={() => handleSimilarityGenerator(generator)}
-                            >
-                                {generator.name}
-                            </Dropdown.Item>
-                        )
-                    }
-                </DropdownButton>
-                {similarityGenerator !== undefined &&
-                    <DropdownButton title={clusteringAlgorithm === undefined? "Select Clustering Algorithm" : clusteringAlgorithm.name}>
-                        {POSSIBLE_DECOMPOSITIONS[similarityGenerator.value]
-                            .map(algorithmValue => CLUSTERING_ALGORITHMS[algorithmValue])
-                            .map(algorithm =>
-                                <Dropdown.Item
-                                    key={algorithm.value}
-                                    onClick={() => handleClusteringAlgorithm(algorithm)}
-                                >
-                                    {algorithm.name}
-                                </Dropdown.Item>
-                            )}
-                    </DropdownButton>
-                }
-            </ButtonToolbar>
-        );
+    function renderDeletePopup() {
+        const closePopup = function () {setShowPopup(false); setCollectorToDelete(undefined)};
+
+        return <Modal
+                show={showPopup}
+                onHide={() => closePopup()}
+                backdrop="static"
+            >
+                <ModalTitle>&ensp;Collector Deletion</ModalTitle>
+                <ModalBody>
+                    Strategies created from this collector will be deleted.<br/>Are you sure you want to delete this Collector?
+                </ModalBody>
+                <ModalFooter>
+                    <Button variant="secondary" onClick={() => closePopup()}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={() => confirmCollectorDelete()}>Delete</Button>
+                </ModalFooter>
+            </Modal>;
     }
 
     return (
         <div>
-            {renderBreadCrumbs(codebaseName)}
+            { renderDeletePopup() }
+
+            { renderBreadCrumbs(codebaseName) }
+
             <Row className="mt-4">
                 <Col>
-                    <h3 style={{color: "#666666"}}>Codebase</h3>
+                    <h3 style={{color: "#666666"}}>{codebaseName}</h3>
                 </Col>
                 <Col className="me-5">
                     <OverlayTrigger trigger="click" placement="left" overlay={getHelpText}>
@@ -210,24 +193,16 @@ export function Codebase() {
                 </Col>
             </Row>
 
-            { renderSources() }
-
-            <h4 className="mb-3 mt-3" style={{ color: "#666666" }}> Strategy </h4>
-
-            { renderSimilarityGenerator() }
-
-            {/*Add render of each similarity generator like the next line to request the required elements for the dendrogram's creation*/}
-            {
-                clusteringAlgorithm !== undefined && clusteringAlgorithm.hasDendrograms &&
-                similarityGenerator.value === "ACCESSES_LOG" && clusteringAlgorithm.value === "SCIPY" &&
-                <AccessesSciPyStrategies
-                    codebaseName={codebaseName}
-                    profiles={profiles}
-                    isUploaded={isUploaded}
-                    update={update}
-                    setRequest={setRequest}
-                />
+            {collectors.length !== 0 &&
+                <Button
+                    href={`/codebases/${codebaseName}/strategies`}
+                    className="mt-2 mb-3"
+                >
+                    Go to Strategies
+                </Button>
             }
+
+            { renderCollectors() }
         </div>
     );
 }

@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.domain.source.Source;
+import pt.ist.socialsoftware.mono2micro.domain.source.SourceFactory;
 import pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -154,4 +156,62 @@ public class CodebaseController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+	@RequestMapping(value = "/codebase/{codebaseName}/addCollector", method = RequestMethod.POST)
+	public ResponseEntity<HttpStatus> addCollector(
+		@PathVariable String codebaseName,
+		@RequestParam String collectorName,
+		@RequestParam List<String> sourceTypes,
+		@RequestParam List<Object> sources
+	){
+		logger.debug("addCollector");
+
+		try {
+			if (sourceTypes.size() != sources.size())
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+			Codebase codebase = codebaseManager.getCodebase(codebaseName);
+			if (codebase.getCollectors().contains(collectorName))
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			for(int i = 0; i < sourceTypes.size(); i++) {
+				String sourceType = sourceTypes.get(i);
+				Object inputFile = sources.get(i);
+				Source source = SourceFactory.getFactory().getSource(sourceType);
+				source.init(codebaseName, inputFile);
+				codebaseManager.writeSource(codebaseName, sourceType, source);
+			}
+			codebase.addCollector(collectorName);
+			codebaseManager.writeCodebase(codebase);
+			return new ResponseEntity<>(HttpStatus.CREATED);
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@RequestMapping(value = "/codebase/{codebaseName}/collector/{collectorType}/delete", method = RequestMethod.DELETE)
+	public ResponseEntity<HttpStatus> deleteCollector(
+			@PathVariable String codebaseName,
+			@PathVariable String collectorType,
+			@RequestParam List<String> sources) {
+		logger.debug("deleteCollector");
+
+		try {
+			Codebase codebase = codebaseManager.getCodebase(codebaseName);
+			codebaseManager.deleteSources(codebaseName, sources);
+			codebase.removeCollector(collectorType);
+			codebaseManager.writeCodebase(codebase);
+			return new ResponseEntity<>(HttpStatus.OK);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
 }

@@ -109,9 +109,16 @@ export class RepositoryService {
         return this.axios.delete<null>("/codebase/" + name + "/delete");
     }
 
-    addProfile(codebaseName: string, profile: string) {
+    createCodebase(codebaseName: string) {
+        const data = new FormData();
+        data.append('codebaseName', codebaseName);
+        return this.axios.post<null>("/codebase/create", data);
+    }
+
+    // Profiles
+    addProfile(codebaseName: string, sourceType: string, profile: string) {
         return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/addProfile",
+            "/codebase/" + codebaseName + "/source/" + sourceType + "/addProfile",
             null,
             {
                 params: {
@@ -122,11 +129,12 @@ export class RepositoryService {
 
     moveControllers(
         codebaseName: string,
+        sourceType: string,
         controllers: string[],
         targetProfile: string,
     ) {
         return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/moveControllers", 
+            "/codebase/" + codebaseName + "/source/" + sourceType + "/moveControllers",
             controllers,
             {
                 params: {
@@ -136,9 +144,9 @@ export class RepositoryService {
         );
     }
 
-    deleteProfile(codebaseName: string, profile: string) {
+    deleteProfile(codebaseName: string, sourceType: string, profile: string) {
         return this.axios.delete<null>(
-            "/codebase/" + codebaseName + "/deleteProfile", 
+            "/codebase/" + codebaseName + "/source/" + sourceType + "/deleteProfile",
             {
                 params: {
                     "profile" : profile
@@ -147,13 +155,28 @@ export class RepositoryService {
         );
     }
 
-    createCodebase(codebaseName: string) {
+    //Sources
+    addCollector(
+        codebaseName: string,
+        collectorName: string,
+        sources: Map<string, File>
+    ) {
+        const config = {
+            headers: {
+                'content-type': 'multipart/form-data'
+            }
+        }
         const data = new FormData();
-        data.append('codebaseName', codebaseName);
-        return this.axios.post<null>("/codebase/create", data);
+        data.append("collectorName", collectorName);
+        Object.entries(sources).forEach((entry) => {data.append("sourceTypes", entry[0]); data.append("sources", entry[1])});
+
+        return this.axios.post<null>("/codebase/" + codebaseName + "/addCollector", data, config);
     }
 
-    //Sources
+    deleteCollector(codebaseName: string, collectorType: string, sources: string[]) {
+        return this.axios.delete<null>(addSearchParamsToUrl("/codebase/" + codebaseName + "/collector/" + collectorType + "/delete", {sources}));
+    }
+
     addSource(
         codebaseName: string,
         sourceType: string,
@@ -171,12 +194,13 @@ export class RepositoryService {
         return this.axios.post<null>("/codebase/" + codebaseName + "/addSource", data, config);
     }
 
-    getSources(codebaseName: string) {
-        return this.axios.get("/codebase/" + codebaseName + "/sources")
+    getSource(codebaseName: string, sourceType: string) {
+        return this.axios.get("/codebase/" + codebaseName + "/source/" + sourceType + "/getSource")
             .then((response) => {
-                return response.data.map((source: any) => SourceFactory.getSource(source))
+                return SourceFactory.getSource(response.data);
             });
     }
+
 
     //Strategies
     getStrategies(codebaseName: string, strategyType?: string) {
