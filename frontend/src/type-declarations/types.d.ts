@@ -48,24 +48,6 @@ export interface Decomposition {
     entityIDToClusterID?: Record<number, number>;
 }
 
-export interface Strategy {
-    type: string;
-    codebaseName?: string;
-    name?: string;
-    decompositionsNames?: string[];
-}
-
-export interface AccessesSciPyStrategy extends Strategy {
-    profile?: string;
-    tracesMaxLimit?: number;
-    traceType?: TraceType;
-    accessMetricWeight?: number;
-    writeMetricWeight?: number;
-	readMetricWeight?: number;
-	sequenceMetricWeight?: number;
-    linkageType?: string;
-}
-
 export interface Codebase {
     name?: string;
     profiles?: Record<string, string[]>; // e.g <Generic, ControllerNamesList>
@@ -112,6 +94,7 @@ export interface RefactorCodebase {
 }
 
 export enum TraceType {
+    NONE = "",
     ALL = "ALL",
     REPRESENTATIVE = "REPRESENTATIVE",
     LONGEST = "LONGEST",

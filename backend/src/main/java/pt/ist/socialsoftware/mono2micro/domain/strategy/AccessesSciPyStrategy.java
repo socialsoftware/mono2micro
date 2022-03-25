@@ -17,11 +17,6 @@ public class AccessesSciPyStrategy extends Strategy {
     // Used in Clustering Algorithm
     private String linkageType;
 
-    //Meter num Dto
-    //private String decompositionName;
-    //private float cutValue;
-    //private String cutTypes;
-
     public AccessesSciPyStrategy() {}
 
     public String getType() {

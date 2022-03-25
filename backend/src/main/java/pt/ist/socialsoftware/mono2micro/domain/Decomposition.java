@@ -33,10 +33,6 @@ public class Decomposition {
 	private float coupling;
 	//private List<Metric> metrics;
 
-	// fazer subclasse
-	// private float cutValue;
-	// private String cutType;
-
 	//Metric tem referencia para model e outra para decomposition
 
 	private Map<Short, Cluster> clusters = new HashMap<>();

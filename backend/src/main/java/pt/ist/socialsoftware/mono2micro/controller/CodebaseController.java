@@ -70,12 +70,12 @@ public class CodebaseController {
 	@RequestMapping(value = "/codebase/{codebaseName}/strategies", method = RequestMethod.GET)
 	public ResponseEntity<List<Strategy>> getCodebaseStrategies(
 			@PathVariable String codebaseName,
-			@RequestParam(required = false, defaultValue = "") String strategyType
+			@RequestParam(required = false) List<String> strategyTypes
 	) {
 		logger.debug("getCodebaseStrategies");
 
 		try {
-			return new ResponseEntity<>(codebaseManager.getCodebaseStrategies(codebaseName, strategyType), HttpStatus.OK);
+			return new ResponseEntity<>(codebaseManager.getCodebaseStrategies(codebaseName, strategyTypes), HttpStatus.OK);
 
 		} catch (Exception e) {
 			e.printStackTrace();

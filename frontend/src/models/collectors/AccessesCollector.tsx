@@ -7,6 +7,7 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import FormControl from "react-bootstrap/FormControl";
+import {StrategyType} from "../strategies/Strategy";
 
 export default class AccessesCollector extends Collector {
     addedSources: Map<string, File> | undefined;
@@ -18,7 +19,7 @@ export default class AccessesCollector extends Collector {
                 SourceType.IDTOENTITIY
             ],
             [
-                'ACCESSES_SCIPY',
+                StrategyType.ACCESSES_SCIPY,
             ]
         );
     }

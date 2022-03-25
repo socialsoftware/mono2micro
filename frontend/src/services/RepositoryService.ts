@@ -12,11 +12,12 @@ import {
     Cluster,
     Controller,
     LocalTransactionsGraph,
-    RefactorCodebase,
-    Strategy
+    RefactorCodebase
 } from "../type-declarations/types";
 import { addSearchParamsToUrl } from "../utils/url";
 import {SourceFactory} from "../models/sources/SourceFactory";
+import Strategy from "../models/strategies/Strategy";
+import {StrategyFactory} from "../models/strategies/StrategyFactory";
 
 export class RepositoryService {
     axios: AxiosInstance;
@@ -203,11 +204,17 @@ export class RepositoryService {
 
 
     //Strategies
-    getStrategies(codebaseName: string, strategyType?: string) {
-        return this.axios.get<Strategy[]>(addSearchParamsToUrl(
+    getStrategies(codebaseName: string, strategyTypes?: string[]) {
+        return this.axios.get(addSearchParamsToUrl(
             "/codebase/" + codebaseName + "/strategies",
-            strategyType? {strategyType} : {},
-        ));
+            strategyTypes? {strategyTypes} : {},
+        )).then((responseList) => {
+            if (responseList.data.length == 0)
+                return responseList.data;
+            return responseList.data.map((response: any) => {
+                return StrategyFactory.getStrategy(response);
+            });
+        });
     }
 
     getStrategy(codebaseName: string, strategyName: string) {
@@ -218,8 +225,8 @@ export class RepositoryService {
         return this.axios.delete<null>("/codebase/" + codebaseName + "/strategy/" + strategyName + "/delete");
     }
     
-    createStrategy(request: Strategy) {
-        return this.axios.post<null>("/codebase/" + request.codebaseName + "/strategy/createStrategy", request);
+    createStrategy(strategy: Strategy) {
+        return this.axios.post<null>("/codebase/" + strategy.codebaseName + "/strategy/createStrategy", strategy);
     }
 
     createDecomposition(

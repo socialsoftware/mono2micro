@@ -101,7 +101,7 @@ public class CodebaseManager {
 
 	public List<Strategy> getCodebaseStrategies(
 			String codebaseName,
-			String strategyType			// Use "" when specifying all strategy types
+			List<String> strategyTypes			// Use null when specifying all strategy types
 	)
 			throws IOException
 	{
@@ -115,7 +115,7 @@ public class CodebaseManager {
 			Arrays.sort(files, Comparator.comparingLong(File::lastModified));
 
 			for (File file : files) {
-				if (file.isDirectory() && file.getName().startsWith(strategyType)) {
+				if (file.isDirectory() && sameType(file.getName(), strategyTypes)) {
 					Strategy strategy = getCodebaseStrategy(codebaseName, file.getName());
 
 					if (strategy != null)
@@ -125,6 +125,15 @@ public class CodebaseManager {
 		}
 
 		return strategies;
+	}
+
+	public boolean sameType(String strategyName, List<String> strategyTypes) {
+		if (strategyTypes == null) return true;
+
+		for (String strategyType: strategyTypes)
+			if (strategyName.startsWith(strategyType))
+				return true;
+		return false;
 	}
 
 	public void deleteCodebaseStrategy(String codebaseName, String strategyName) throws IOException {

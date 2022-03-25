@@ -3,6 +3,7 @@ package pt.ist.socialsoftware.mono2micro.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.domain.clusteringAlgorithm.ClusteringAlgorithm;
@@ -12,6 +13,8 @@ import pt.ist.socialsoftware.mono2micro.domain.similarityGenerators.SimilarityGe
 import pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -29,7 +32,7 @@ public class StrategyController {
 		logger.debug("Create Strategy");
 
 		try {
-			List<Strategy> strategies = codebaseManager.getCodebaseStrategies(codebaseName, strategyInformation.getType());
+			List<Strategy> strategies = codebaseManager.getCodebaseStrategies(codebaseName, Arrays.asList(strategyInformation.getType()));
 			if (strategies.stream().anyMatch(strategy -> strategy.equals(strategyInformation)))
 				return new ResponseEntity<>(HttpStatus.CREATED);
 
@@ -64,6 +67,27 @@ public class StrategyController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+
+
+	// Specific to accesses similarity generator with SciPy clustering algorithm
+	@RequestMapping(value = "/strategy/{strategyName}/image", method = RequestMethod.GET)
+	public ResponseEntity<byte[]> getDendrogramImage(
+			@PathVariable String codebaseName,
+			@PathVariable String strategyName
+	) {
+		logger.debug("getDendrogramImage");
+
+		try {
+			return ResponseEntity.ok()
+					.contentType(MediaType.IMAGE_PNG)
+					.body(codebaseManager.getDendrogramImage(codebaseName, strategyName));
+
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
