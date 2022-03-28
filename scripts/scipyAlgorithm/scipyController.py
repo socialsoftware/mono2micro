@@ -3,6 +3,8 @@ from scipyAlgorithm.createDendrogram import createDendrogram as createDendrogram
 from scipyAlgorithm.createDendrogramByClassesScipy import createDendrogramByClassesScipy as createDendrogramByClassesScipy
 from scipyAlgorithm.createDendrogramByFeaturesScipy import createDendrogramByFeaturesScipy as createDendrogramByFeaturesScipy
 from scipyAlgorithm.cutDendrogram import cutDendrogram as cutDendrogramScipy
+from scipyAlgorithm.cutDendrogramByClassesScipy import cutDendrogramByClasses as cutDendrogramByClassesScipy
+from scipyAlgorithm.cutDendrogramByFeaturesScipy import cutDendrogramByFeatures as cutDendrogramByFeaturesScipy
 from scipyAlgorithm.analyser import analyser as analyserScipy
 import env
 
@@ -30,6 +32,19 @@ async def createDendrogramByFeatures(codebaseName, dendrogramName):
 @scipyRouter.get("/scipy/{codebaseName}/{dendrogramName}/{graphName}/{cutType}/{cutValue}/cut")
 async def cutDendrogram(codebaseName, dendrogramName, graphName, cutType, cutValue):
     cutDendrogramScipy(env.CODEBASES_PATH, codebaseName, dendrogramName, graphName, cutType, float(cutValue))
+    return {"codebaseName": codebaseName, "dendrogramName": dendrogramName, "graphName": graphName,
+            "cutType": cutType, "cutValue": cutValue, "operation": "cutDendrogram"}
+
+@scipyRouter.get("/scipy/{codebaseName}/{dendrogramName}/{graphName}/{cutType}/{cutValue}/cut/classes")
+async def cutDendrogramByClasses(codebaseName, dendrogramName, graphName, cutType, cutValue):
+    cutDendrogramByClassesScipy(env.CODEBASES_PATH, codebaseName, dendrogramName, graphName, cutType, float(cutValue))
+    return {"codebaseName": codebaseName, "dendrogramName": dendrogramName, "graphName": graphName,
+            "cutType": cutType, "cutValue": cutValue, "operation": "cutDendrogram"}
+
+
+@scipyRouter.get("/scipy/{codebaseName}/{dendrogramName}/{graphName}/{cutType}/{cutValue}/cut/features")
+async def cutDendrogramByFeatures(codebaseName, dendrogramName, graphName, cutType, cutValue):
+    cutDendrogramByFeaturesScipy(env.CODEBASES_PATH, codebaseName, dendrogramName, graphName, cutType, float(cutValue))
     return {"codebaseName": codebaseName, "dendrogramName": dendrogramName, "graphName": graphName,
             "cutType": cutType, "cutValue": cutValue, "operation": "cutDendrogram"}
 

@@ -33,6 +33,7 @@ public class Dendrogram {
 	private String name;
 	private String codebaseName;
 	private String linkageType;
+	private String analysisType;
 	private float accessMetricWeight;
 	private float writeMetricWeight;
 	private float readMetricWeight;
@@ -43,6 +44,7 @@ public class Dendrogram {
 	private TraceType traceType = TraceType.ALL;
 	private String featureVectorizationStrategy;
     private int maxDepth;
+	private float controllersWeight;
     private float servicesWeight;
     private float intermediateMethodsWeight;
     private float entitiesWeight;
@@ -76,6 +78,14 @@ public class Dendrogram {
 
 	public void setLinkageType(String linkageType) {
 		this.linkageType = linkageType;
+	}
+
+	public String getAnalysisType() {
+		return analysisType;
+	}
+
+	public void setAnalysisType(String analysisType) {
+		this.analysisType = analysisType;
 	}
 
 	public float getAccessMetricWeight() {
@@ -142,6 +152,14 @@ public class Dendrogram {
 
 	public void setMaxDepth(int maxDepth) {
 		this.maxDepth = maxDepth;
+	}
+
+	public float getControllersWeight() {
+		return controllersWeight;
+	}
+
+	public void setControllersWeight(float controllersWeight) {
+		this.controllersWeight = controllersWeight;
 	}
 
 	public float getServicesWeight() {
@@ -373,6 +391,140 @@ public class Dendrogram {
 		WebClient.create(SCRIPTS_ADDRESS)
 				.get()
 				.uri("/scipy/{codebaseName}/{dendrogramName}/{graphName}/{cutType}/{cutValue}/cut",
+						this.codebaseName, this.name, decomposition.getName(), decomposition.getCutType(), Float.toString(decomposition.getCutValue()))
+				.exchange()
+				.doOnSuccess(clientResponse -> {
+					if (clientResponse.statusCode() != HttpStatus.OK)
+						throw new RuntimeException("Error Code:" + clientResponse.statusCode());
+				}).block();
+
+		JSONObject clustersJSON = CodebaseManager.getInstance().getClusters(
+			this.codebaseName,
+			this.name,
+			decomposition.getName()
+		);
+
+		decomposition.setSilhouetteScore((float) clustersJSON.getDouble("silhouetteScore"));
+
+		Iterator<String> clusters = clustersJSON.getJSONObject("clusters").sortedKeys();
+		ArrayList<Short> clusterIds = new ArrayList<>();
+
+		while(clusters.hasNext()) {
+			clusterIds.add(Short.parseShort(clusters.next()));
+		}
+
+		Collections.sort(clusterIds);
+
+		for (Short id : clusterIds) {
+			String clusterName = String.valueOf(id);
+			JSONArray entities = clustersJSON.getJSONObject("clusters").getJSONArray(id.toString());
+			Cluster cluster = new Cluster(id, clusterName);
+
+			for (int i = 0; i < entities.length(); i++) {
+				short entityID = (short) entities.getInt(i);
+
+				cluster.addEntity(entityID);
+				decomposition.putEntity(entityID, id);
+			}
+
+			decomposition.addCluster(cluster);
+		}
+
+		decomposition.setNextClusterID(Integer.valueOf(clusterIds.size()).shortValue());
+
+		return decomposition;
+	}
+	
+	public Decomposition cutClassesAnalysis(Decomposition decomposition)
+		throws Exception
+	{
+
+		String cutValue = Float.valueOf(decomposition.getCutValue()).toString().replaceAll("\\.?0*$", "");
+		if (this.getDecompositionNames().contains(decomposition.getCutType() + cutValue)) {
+			int i = 2;
+			while (this.getDecompositionNames().contains(decomposition.getCutType() + cutValue + "(" + i + ")")) {
+				i++;
+			}
+			decomposition.setName(decomposition.getCutType() + cutValue + "(" + i + ")");
+		} else {
+			decomposition.setName(decomposition.getCutType() + cutValue);
+		}
+
+		File decompositionPath = new File(CODEBASES_PATH + this.codebaseName + "/" + this.name + "/" + decomposition.getName());
+		if (!decompositionPath.exists()) {
+			decompositionPath.mkdir();
+		}
+
+		WebClient.create(SCRIPTS_ADDRESS)
+				.get()
+				.uri("/scipy/{codebaseName}/{dendrogramName}/{graphName}/{cutType}/{cutValue}/cut/classes",
+						this.codebaseName, this.name, decomposition.getName(), decomposition.getCutType(), Float.toString(decomposition.getCutValue()))
+				.exchange()
+				.doOnSuccess(clientResponse -> {
+					if (clientResponse.statusCode() != HttpStatus.OK)
+						throw new RuntimeException("Error Code:" + clientResponse.statusCode());
+				}).block();
+
+		JSONObject clustersJSON = CodebaseManager.getInstance().getClusters(
+			this.codebaseName,
+			this.name,
+			decomposition.getName()
+		);
+
+		decomposition.setSilhouetteScore((float) clustersJSON.getDouble("silhouetteScore"));
+
+		Iterator<String> clusters = clustersJSON.getJSONObject("clusters").sortedKeys();
+		ArrayList<Short> clusterIds = new ArrayList<>();
+
+		while(clusters.hasNext()) {
+			clusterIds.add(Short.parseShort(clusters.next()));
+		}
+
+		Collections.sort(clusterIds);
+
+		for (Short id : clusterIds) {
+			String clusterName = String.valueOf(id);
+			JSONArray entities = clustersJSON.getJSONObject("clusters").getJSONArray(id.toString());
+			Cluster cluster = new Cluster(id, clusterName);
+
+			for (int i = 0; i < entities.length(); i++) {
+				short entityID = (short) entities.getInt(i);
+
+				cluster.addEntity(entityID);
+				decomposition.putEntity(entityID, id);
+			}
+
+			decomposition.addCluster(cluster);
+		}
+
+		decomposition.setNextClusterID(Integer.valueOf(clusterIds.size()).shortValue());
+
+		return decomposition;
+	}
+
+	public Decomposition cutFeaturesAnalysis(Decomposition decomposition)
+		throws Exception
+	{
+
+		String cutValue = Float.valueOf(decomposition.getCutValue()).toString().replaceAll("\\.?0*$", "");
+		if (this.getDecompositionNames().contains(decomposition.getCutType() + cutValue)) {
+			int i = 2;
+			while (this.getDecompositionNames().contains(decomposition.getCutType() + cutValue + "(" + i + ")")) {
+				i++;
+			}
+			decomposition.setName(decomposition.getCutType() + cutValue + "(" + i + ")");
+		} else {
+			decomposition.setName(decomposition.getCutType() + cutValue);
+		}
+
+		File decompositionPath = new File(CODEBASES_PATH + this.codebaseName + "/" + this.name + "/" + decomposition.getName());
+		if (!decompositionPath.exists()) {
+			decompositionPath.mkdir();
+		}
+
+		WebClient.create(SCRIPTS_ADDRESS)
+				.get()
+				.uri("/scipy/{codebaseName}/{dendrogramName}/{graphName}/{cutType}/{cutValue}/cut/features",
 						this.codebaseName, this.name, decomposition.getName(), decomposition.getCutType(), Float.toString(decomposition.getCutValue()))
 				.exchange()
 				.doOnSuccess(clientResponse -> {

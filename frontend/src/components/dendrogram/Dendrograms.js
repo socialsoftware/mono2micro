@@ -88,6 +88,7 @@ export const Dendrograms = () => {
     const [analysisType, setAnalysisType] = useState("static");
     const [featureVectorizationStrategy, setFeatureVectorizationStrategy] = useState("methodCalls");
     const [maxDepth, setMaxDepth] = useState("0");
+    const [controllersWeight, setControllersWeight] = useState("100");
     const [servicesWeight, setServicesWeight] = useState("100");
     const [intermediateMethodsWeight, setIntermediateMethodsWeight] = useState("100");
     const [entitiesWeight, setEntitiesWeight] = useState("100");
@@ -126,12 +127,24 @@ export const Dendrograms = () => {
                 "name",
                 "profiles",
                 "linkageType",
+                "analysisType",
                 "tracesMaxlimit",
                 "typeOfTraces",
                 "accessMetricWeight",
                 "writeMetricWeight",
                 "readMetricWeight",
-                "sequenceMetricWeight"
+                "sequenceMetricWeight",
+                "featureVectorizationStrategy",
+                "maxDepth",
+                "controllersWeight",
+                "servicesWeight",
+                "intermediateMethodsWeight",
+                "entitiesWeight",
+                "constructorWeight",
+                "gettersWeight",
+                "settersWeight",
+                "regularMethodsWeight",
+                "methodsWeight"
             ]
         ).then((response) => {
             if (response.data !== null) {
@@ -172,6 +185,7 @@ export const Dendrograms = () => {
             codebaseName,
             newDendrogramName,
             linkageType,
+            analysisType,
             Number(accessMetricWeight),
             Number(writeMetricWeight),
             Number(readMetricWeight),
@@ -207,9 +221,11 @@ export const Dendrograms = () => {
             newDendrogramName,
             selectedProfile,
             linkageType,
+            analysisType,
             featureVectorizationStrategy,
             Number(maxDepth),
             Number(servicesWeight),
+            Number(controllersWeight),
             Number(intermediateMethodsWeight),
             Number(entitiesWeight),
             Number(constructorWeight),
@@ -244,7 +260,8 @@ export const Dendrograms = () => {
             codebaseName,
             newDendrogramName,
             selectedProfile,
-            linkageType
+            linkageType,
+            analysisType
         )
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
@@ -314,6 +331,10 @@ export const Dendrograms = () => {
 
     function handleChangeMaxDepth(event) {
         setMaxDepth(event.target.value);
+    }
+
+    function handleChangeControllersWeight(event) {
+        setControllersWeight(event.target.value);
     }
 
     function handleChangeServicesWeight(event) {
@@ -823,6 +844,21 @@ export const Dendrograms = () => {
 
                 <br/>
 
+                <Form.Group as={Row} controlId="controllersWeight" className="align-items-center">
+                    <Form.Label column sm={2}>
+                        Controllers Weight (%)
+                    </Form.Label>
+                    <Col sm={2}>
+                        <FormControl
+                            type="number"
+                            placeholder="0-100"
+                            value={controllersWeight}
+                            onChange={handleChangeControllersWeight} />
+                    </Col>
+                </Form.Group>
+
+                <br/>
+
                 <Form.Group as={Row} controlId="servicesWeight" className="align-items-center">
                     <Form.Label column sm={2}>
                         Services Weight (%)
@@ -1086,15 +1122,46 @@ export const Dendrograms = () => {
                                 />
                                 <Card.Body>
                                     <Card.Title>{dendrogram.name}</Card.Title>
-                                    <Card.Text>
-                                        Linkage Type: {dendrogram.linkageType}< br />
-                                        AmountOfTraces: {dendrogram.tracesMaxLimit} <br />
-                                        Type of traces: {dendrogram.typeOfTraces} <br />
-                                        Access: {dendrogram.accessMetricWeight}%< br />
-                                        Write: {dendrogram.writeMetricWeight}%< br />
-                                        Read: {dendrogram.readMetricWeight}%< br />
-                                        Sequence: {dendrogram.sequenceMetricWeight}%
-                                    </Card.Text>
+                                        
+                                        {dendrogram.featureVectorizationStrategy == "methodCalls" ? 
+                                        <Card.Text>
+                                            Linkage Type: {dendrogram.linkageType}<br/>
+                                            AmountOfTraces: {dendrogram.tracesMaxLimit} <br/>
+                                            Type of traces: {dendrogram.typeOfTraces} <br/>
+                                            Access: {dendrogram.accessMetricWeight}%, Write: {dendrogram.writeMetricWeight}%<br/>
+                                            Read: {dendrogram.readMetricWeight}%, Sequence: {dendrogram.sequenceMetricWeight}%<br/>
+                                            Strategy: {dendrogram.featureVectorizationStrategy}<br/>
+                                            Max Depth: {dendrogram.maxDepth}<br/>
+                                            Controllers Weight: {dendrogram.controllersWeight}%<br/>
+                                            Services Weight: {dendrogram.servicesWeight}%<br/>
+                                            Intermediate Weight: {dendrogram.intermediateMethodsWeight}%<br/>
+                                            Entities Weight: {dendrogram.entitiesWeight}%
+                                        </Card.Text>
+                                        : dendrogram.featureVectorizationStrategy == "methodCalls" ? 
+                                        <Card.Text>
+                                            Linkage Type: {dendrogram.linkageType}<br/>
+                                            AmountOfTraces: {dendrogram.tracesMaxLimit} <br/>
+                                            Type of traces: {dendrogram.typeOfTraces} <br/>
+                                            Access: {dendrogram.accessMetricWeight}%, Write: {dendrogram.writeMetricWeight}%<br/>
+                                            Read: {dendrogram.readMetricWeight}%, Sequence: {dendrogram.sequenceMetricWeight}%<br/>
+                                            Strategy: {dendrogram.featureVectorizationStrategy}<br/>
+                                            Constructor Weight: {dendrogram.constructorWeight}%<br/>
+                                            Getters Weight: {dendrogram.gettersWeight}%<br/>
+                                            Setters Weight: {dendrogram.settersWeight}%<br/>
+                                            Regular Weight: {dendrogram.regularMethodsWeight}%
+                                        </Card.Text>
+                                        :
+                                        <Card.Text>
+                                            Linkage Type: {dendrogram.linkageType}<br/>
+                                            AmountOfTraces: {dendrogram.tracesMaxLimit} <br/>
+                                            Type of traces: {dendrogram.typeOfTraces} <br/>
+                                            Access: {dendrogram.accessMetricWeight}%, Write: {dendrogram.writeMetricWeight}%<br/>
+                                            Read: {dendrogram.readMetricWeight}%, Sequence: {dendrogram.sequenceMetricWeight}%<br/>
+                                            Strategy: {dendrogram.featureVectorizationStrategy}<br/>
+                                            Entities Weight: {dendrogram.entitiesWeight}%<br/>
+                                            Methods Weight: {dendrogram.methodsWeight}%
+                                        </Card.Text>
+                                        }
                                     <Button href={`/codebases/${codebaseName}/dendrograms/${dendrogram.name}`}
                                         className="mb-2">
                                         Go to Dendrogram

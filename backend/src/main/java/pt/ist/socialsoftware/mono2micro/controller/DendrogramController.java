@@ -209,7 +209,16 @@ public class DendrogramController {
 			// FIXME the graph given to the cut function shouldn't be a Decomposition
 			// FIXME The result of the cut function SHOULD be a decomposition
 			// FIXME Did not have the patience to code it well
-			Decomposition cutDecomposition = dendrogram.cut(decomposition);
+
+			Decomposition cutDecomposition;
+
+			if (dendrogram.getAnalysisType().equals("static")) {
+				cutDecomposition = dendrogram.cut(decomposition);
+			} else if (dendrogram.getAnalysisType().equals("feature")) {
+				cutDecomposition = dendrogram.cutFeaturesAnalysis(decomposition);
+			} else {
+				cutDecomposition = dendrogram.cutClassesAnalysis(decomposition);
+			}
 
 			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
 				codebase,
@@ -221,7 +230,8 @@ public class DendrogramController {
 				codebase,
 				dendrogram.getTracesMaxLimit(),
 				dendrogram.getTraceType(),
-					false);
+				false
+			);
 
 
 			dendrogram.addDecomposition(cutDecomposition);

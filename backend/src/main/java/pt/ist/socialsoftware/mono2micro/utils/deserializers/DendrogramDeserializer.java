@@ -54,6 +54,9 @@ public class DendrogramDeserializer extends StdDeserializer<Dendrogram> {
 						case "linkageType":
 							dendrogram.setLinkageType(jsonParser.getValueAsString());
 							break;
+						case "analysisType":
+							dendrogram.setAnalysisType(jsonParser.getValueAsString());
+							break;
 						case "accessMetricWeight":
 							dendrogram.setAccessMetricWeight(jsonParser.getFloatValue());
 							break;
@@ -89,6 +92,10 @@ public class DendrogramDeserializer extends StdDeserializer<Dendrogram> {
 
 						case "maxDepth":
 							dendrogram.setMaxDepth(jsonParser.getIntValue());
+							break;
+
+						case "controllersWeight":
+							dendrogram.setControllersWeight(jsonParser.getIntValue());
 							break;
 
 						case "servicesWeight":

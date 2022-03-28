@@ -18,6 +18,6 @@ def createDendrogram(codebasesPath, codebaseName, dendrogramName):
 
     fig = plt.figure(figsize=(25, 10))
 
-    hierarchy.dendrogram(hierarc, labels=entities, distance_sort='descending')
+    hierarchy.dendrogram(hierarc, labels=entities, leaf_rotation=90.0, distance_sort='descending')
     plt.savefig(codebasesPath + codebaseName + "/" + dendrogramName + "/dendrogramImage.png", format="png",
                 bbox_inches='tight')

@@ -57,6 +57,7 @@ export interface Dendrogram {
     codebaseName?: string;
     name?: string;
     linkageType?: string;
+    analysisType?: string;
     accessMetricWeight?: number;
     writeMetricWeight?: number;
 	readMetricWeight?: number;
@@ -68,6 +69,7 @@ export interface Dendrogram {
     featureVectorizationStrategy?: string;
     maxDepth?: number;
     servicesWeight?: number;
+    controllersWeight?: number;
     intermediateMethodsWeight?: number;
     entitiesWeight?: number;
     constructorWeight?: number;

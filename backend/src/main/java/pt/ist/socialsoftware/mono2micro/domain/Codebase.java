@@ -189,6 +189,7 @@ public class Codebase {
 
 				for (int j = 0; j < classes.length(); j++) {
 					JSONObject cls = classes.getJSONObject(j);
+					String classType = cls.getString("type");
 
 					if (cls.getString("name").equals(callClass)) {
 						JSONArray methods = cls.optJSONArray("methods");
@@ -197,6 +198,7 @@ public class Codebase {
 							JSONObject method = methods.getJSONObject(k);
 
 							if (method.getString("signature").equals(callSignature)) {
+								method.put("classType", classType);
 								return method;
 							}
 						}
@@ -222,7 +224,7 @@ public class Codebase {
 		}
 	}
 
-	public void vectorDivision(ArrayList<Double> vector, int count) {
+	public void vectorDivision(ArrayList<Double> vector, float count) {
 		for (int i = 0; i < vector.size(); i++) {
 			vector.set(i, vector.get(i) / count);
 		}
@@ -230,22 +232,42 @@ public class Codebase {
 
 	class Acumulator {
 		ArrayList<Double> sum;
-		int count;
+		float count;
 
-		Acumulator(ArrayList<Double> sum, int count) {
+		Acumulator(ArrayList<Double> sum, float count) {
 			this.sum = sum;
 			this.count = count;
 		}
 	};
 
-	public Acumulator getMethodCallsVectors(JSONArray packages, JSONObject method, int maxDepth)
+	public Acumulator getMethodCallsVectors(
+		Dendrogram dendrogram,
+		JSONArray packages,
+		String classType,
+		JSONObject method,
+		int maxDepth
+	)
 		throws JSONException
 	{
+		float count = 0;
 		ArrayList<Double> vector = new ArrayList<Double>();
 		JSONArray code_vector = method.getJSONArray("codeVector");
 		JSONArray methodCalls = method.optJSONArray("methodCalls");
-		for (int idx = 0; idx < 384; idx++) vector.add(code_vector.getDouble(idx));
-		int count = 1;
+		String methodType = method.getString("type");
+
+		if (methodType.equals("Controller")) {
+			count = dendrogram.getControllersWeight();
+		} else if (classType.equals("Service") || methodType.equals("Service")) {
+			count = dendrogram.getServicesWeight();
+		} else if (classType.equals("Entity")) {
+			count = dendrogram.getEntitiesWeight();
+		} else {
+			count = dendrogram.getIntermediateMethodsWeight();
+		}
+
+		for (int idx = 0; idx < 384; idx++) {
+			vector.add(count * code_vector.getDouble(idx));
+		}
 
 		if (maxDepth == 0 || methodCalls.length() == 0) {
 			return new Acumulator(vector, count);
@@ -264,7 +286,13 @@ public class Codebase {
 
 				if (met != null) {
 
-					Acumulator acum = getMethodCallsVectors(packages, met, maxDepth - 1);
+					Acumulator acum = getMethodCallsVectors(
+						dendrogram,
+						packages,
+						met.getString("classType"),
+						met,
+						maxDepth - 1
+					);
 				
 					vectorSum(vector, acum.sum);
 					count += acum.count;
@@ -280,25 +308,14 @@ public class Codebase {
 		return new Acumulator(vector, count);
 	}
 
-	public void createDendrogramByFeatures(
-		Dendrogram dendrogram
-	)
-		throws Exception
+	public void methodCallsFeaturesAnalysis(Dendrogram dendrogram)
+		throws JSONException, IOException
 	{
-		if (getDendrogram(dendrogram.getName()) != null)
-			throw new KeyAlreadyExistsException();
-
-		File dendrogramPath = new File(CODEBASES_PATH + this.name + "/" + dendrogram.getName());
-		if (!dendrogramPath.exists()) {
-			dendrogramPath.mkdir();
-		}
-
-		JSONObject codeEmbeddings = CodebaseManager.getInstance().getCodeEmbeddings(this.name);
-		HashMap<String, Object> featuresJson = new HashMap<String, Object>();
-		featuresJson.put("name", codeEmbeddings.getString("name"));
 		List<HashMap> featuresVectors = new ArrayList<>();
-
+		HashMap<String, Object> featuresJson = new HashMap<String, Object>();
+		JSONObject codeEmbeddings = CodebaseManager.getInstance().getCodeEmbeddings(this.name);
 		JSONArray packages = codeEmbeddings.getJSONArray("packages");
+		featuresJson.put("name", codeEmbeddings.getString("name"));
 
 		for (int i = 0; i < packages.length(); i++) {
 			JSONObject pack = packages.getJSONObject(i);
@@ -307,6 +324,7 @@ public class Codebase {
 			for (int j = 0; j < classes.length(); j++) {
 				JSONObject cls = classes.getJSONObject(j);
 				JSONArray methods = cls.optJSONArray("methods");
+				String classType = cls.getString("type");
 
 				for (int k = 0; k < methods.length(); k++) {
 					JSONObject method = methods.getJSONObject(k);
@@ -314,7 +332,7 @@ public class Codebase {
 					if (method.getString("type").equals("Controller")) {
 						System.out.println("Controller: " + method.getString("signature"));
 
-						Acumulator acumulator = getMethodCallsVectors(packages, method, dendrogram.getMaxDepth());
+						Acumulator acumulator = getMethodCallsVectors(dendrogram ,packages, classType, method, dendrogram.getMaxDepth());
 
 						if (acumulator.count > 0) {
 							vectorDivision(acumulator.sum, acumulator.count);
@@ -326,50 +344,6 @@ public class Codebase {
 							featureEmbeddings.put("codeVector", acumulator.sum);
 							featuresVectors.add(featureEmbeddings);
 						}
-
-						/*
-						// DEPTH 0
-						ArrayList<Double> vector = new ArrayList<Double>();
-						JSONArray code_vector = method.getJSONArray("codeVector");
-						for (int idx = 0; idx < 384; idx++) vector.add(code_vector.getDouble(idx));
-                    	int count = 1;
-						JSONArray methodCalls = method.optJSONArray("methodCalls");
-
-						// DEPTH 1
-						for (int l = 0; l < methodCalls.length(); l++) {
-							JSONObject methodCall = methodCalls.getJSONObject(l);
-
-							JSONObject met = getMethodCall(
-								packages,
-								methodCall.getString("packageName"),
-								methodCall.getString("className"),
-								methodCall.getString("signature")
-							);
-
-							if (met != null) {
-
-								count++;
-								vectorSum(vector, met.getJSONArray("codeVector"));
-
-								// DEPTH 2
-								// ...
-
-							} else {
-								System.out.println("[ - ] Cannot get method call for method: " + methodCall.getString("signature"));
-							}
-						}
-
-						if (count > 0) {
-							vectorDivision(vector, count);
-
-							HashMap<String, Object> featureEmbeddings = new HashMap<String, Object>();
-							featureEmbeddings.put("package", pack.getString("name"));
-							featureEmbeddings.put("class", cls.getString("name"));
-							featureEmbeddings.put("signature", method.getString("signature"));
-							featureEmbeddings.put("codeVector", vector);
-							featuresVectors.add(featureEmbeddings);
-						}
-						*/
 
 					}
 
@@ -387,6 +361,40 @@ public class Codebase {
 		this.addDendrogram(dendrogram);
 
 		executeCreateDendrogram(dendrogram, "/features");
+	}
+
+	public void entitiesFeaturesAnalysis(Dendrogram dendrogram)
+		throws JSONException, IOException
+	{
+
+	}
+
+	public void mixedFeaturesAnalysis(Dendrogram dendrogram)
+		throws JSONException, IOException
+	{
+
+	}
+
+	public void createDendrogramByFeatures(
+		Dendrogram dendrogram
+	)
+		throws Exception
+	{
+		if (getDendrogram(dendrogram.getName()) != null)
+			throw new KeyAlreadyExistsException();
+
+		File dendrogramPath = new File(CODEBASES_PATH + this.name + "/" + dendrogram.getName());
+		if (!dendrogramPath.exists()) {
+			dendrogramPath.mkdir();
+		}
+
+		if (dendrogram.getFeatureVectorizationStrategy().equals("methodCalls")) {
+			this.methodCallsFeaturesAnalysis(dendrogram);
+		} else if (dendrogram.getFeatureVectorizationStrategy().equals("entities")) {
+			this.entitiesFeaturesAnalysis(dendrogram);
+		} else {
+			this.mixedFeaturesAnalysis(dendrogram);
+		}
 
 	}
 
