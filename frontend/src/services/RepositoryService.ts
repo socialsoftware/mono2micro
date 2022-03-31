@@ -145,6 +145,7 @@ export class RepositoryService {
         name: string,
         datafile: any,
         translationFile: any,
+        translationEntityToIdFile: any,
         codeEmbeddingsFile: any
     ) {
         const config = {
@@ -158,6 +159,10 @@ export class RepositoryService {
         if (translationFile !== null)
             data.append('translationFile', translationFile);
         else data.append('translationFile', "");
+
+        if (translationEntityToIdFile !== null)
+            data.append('translationEntityToIdFile', translationEntityToIdFile);
+        else data.append('translationEntityToIdFile', "");
 
         if (codeEmbeddingsFile !== null)
             data.append('codeEmbeddingsFile', codeEmbeddingsFile);
@@ -202,7 +207,7 @@ export class RepositoryService {
         sequenceMetricWeight: number,
         profile: string,
         amountOfTraces: number,
-        traceType: TraceType,
+        traceType: TraceType
     ) {
         const dendrogramData: Dendrogram = {
             codebaseName,
@@ -240,7 +245,8 @@ export class RepositoryService {
         gettersWeight: number,
         settersWeight: number,
         regularMethodsWeight: number,
-        methodsWeight: number
+        methodsWeight: number,
+        entitiesDendrogram: boolean
     ) {
         const dendrogramData: Dendrogram = {
             codebaseName,
@@ -262,7 +268,7 @@ export class RepositoryService {
         };
         
         return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/dendrogram/create/features",
+            "/codebase/" + codebaseName + "/dendrogram/create/features?entitiesDendrogram=" + entitiesDendrogram,
             dendrogramData
         );
     }

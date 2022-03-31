@@ -172,6 +172,7 @@ public class CodebaseController {
         @RequestParam String codebaseName,
         @RequestParam Object datafile,
         @RequestParam Object translationFile,
+		@RequestParam Object translationEntityToIdFile,
 		@RequestParam Object codeEmbeddingsFile
     ){
         logger.debug("createCodebase");
@@ -181,6 +182,7 @@ public class CodebaseController {
             	codebaseName,
 				datafile,
 				translationFile,
+				translationEntityToIdFile,
 				codeEmbeddingsFile
 			);
 

@@ -272,9 +272,10 @@ public class CodebaseManager {
 		String codebaseName,
 		Object datafile,
 		Object translationFile,
+		Object translationEntityToIdFile,
 		Object codeEmbeddingsFile
 	)
-		throws IOException
+		throws IOException, JSONException
 	{
 		File codebaseJSONFile = new File(CODEBASES_PATH + codebaseName + "/codebase.json");
 
@@ -308,11 +309,24 @@ public class CodebaseManager {
 			translationFileInputStream.close();
 			this.writeTranslationFile(codebaseName, translationFileJSON);
 
+			if (translationEntityToIdFile instanceof MultipartFile) {
+				InputStream translationEntityToIdFileInputStream = ((MultipartFile) translationEntityToIdFile).getInputStream();
+
+				HashMap translationEntityToIdFileJSON = objectMapper.readValue(translationEntityToIdFileInputStream, HashMap.class);
+
+				translationEntityToIdFileInputStream.close();
+				this.writeTranslationEntityToIdFile(codebaseName, translationEntityToIdFileJSON);
+			}
+
 			if (codeEmbeddingsFile instanceof MultipartFile) {
 				InputStream codeEmbeddingsFileInputStream = ((MultipartFile) codeEmbeddingsFile).getInputStream();
-				HashMap codeEmbeddingsFileJSON = objectMapper.readValue(codeEmbeddingsFileInputStream, HashMap.class);
+				
+				JSONObject codeEmbeddings = new JSONObject(IOUtils.toString(codeEmbeddingsFileInputStream, StandardCharsets.UTF_8));
+				
+				matchEntitiesTranslationIds(codebaseName, codeEmbeddings);
+
 				codeEmbeddingsFileInputStream.close();
-				this.writeCodeEmbeddingsFile(codebaseName, codeEmbeddingsFileJSON);
+				this.writeCodeEmbeddingsFile(codebaseName, objectMapper.readValue(codeEmbeddings.toString(), HashMap.class));
 			}
 
 			this.writeDatafile(codebaseName, datafileJSON);
@@ -410,6 +424,33 @@ public class CodebaseManager {
 		is.close();
 
 		return translation;
+	}
+
+	public void writeTranslationEntityToIdFile(
+		String codebaseName,
+		HashMap translationEntityToIdFile
+	)
+		throws IOException
+	{
+		objectMapper.writerWithDefaultPrettyPrinter().writeValue(
+			new File(CODEBASES_PATH + codebaseName + "/translationEntityToId.json"),
+			translationEntityToIdFile
+		);
+	}
+
+	public String getTranslationEntityToId(
+			String codebaseName
+	)
+		throws IOException
+	{
+
+		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/translationEntityToId.json");
+
+		String translationEntityToId = IOUtils.toString(is, "UTF-8");
+
+		is.close();
+
+		return translationEntityToId;
 	}
 
 	public void writeCodeEmbeddingsFile(
@@ -765,4 +806,30 @@ public class CodebaseManager {
 
 		return controllers;
 	}
+
+	public void matchEntitiesTranslationIds(String codebaseName, JSONObject codeEmbeddings)
+		throws JSONException, IOException
+	{
+		JSONArray packages = codeEmbeddings.getJSONArray("packages");
+		for (int i = 0; i < packages.length(); i++) {
+			JSONObject pack = packages.getJSONObject(i);
+			JSONArray classes = pack.optJSONArray("classes");
+
+			for (int j = 0; j < classes.length(); j++) {
+				JSONObject cls = classes.getJSONObject(j);
+				String classType = cls.getString("type");
+				String className = cls.getString("name");
+
+				if (classType.equals("Entity")) {
+					String translationEntityToIdFile = getTranslationEntityToId(codebaseName);
+					JSONObject translationEntityToIdJson = new JSONObject(translationEntityToIdFile);
+
+					if (translationEntityToIdJson.has(className)) {
+						int entityId = translationEntityToIdJson.getInt(className);
+						cls.put("translationID", entityId);
+					}
+				}
+			}
+		}
+	} 
 }

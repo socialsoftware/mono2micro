@@ -233,16 +233,19 @@ public class Codebase {
 	class Acumulator {
 		ArrayList<Double> sum;
 		float count;
+		// HashMap<String, Integer> usedEntities;
 
 		Acumulator(ArrayList<Double> sum, float count) {
 			this.sum = sum;
 			this.count = count;
+			// this.usedEntities = usedEntities;
 		}
 	};
 
 	public Acumulator getMethodCallsVectors(
 		Dendrogram dendrogram,
 		JSONArray packages,
+		String className,
 		String classType,
 		JSONObject method,
 		int maxDepth
@@ -254,6 +257,7 @@ public class Codebase {
 		JSONArray code_vector = method.getJSONArray("codeVector");
 		JSONArray methodCalls = method.optJSONArray("methodCalls");
 		String methodType = method.getString("type");
+		// HashMap<String, Integer> usedEntities = new HashMap<>();
 
 		if (methodType.equals("Controller")) {
 			count = dendrogram.getControllersWeight();
@@ -270,6 +274,10 @@ public class Codebase {
 		}
 
 		if (maxDepth == 0 || methodCalls.length() == 0) {
+			// if (classType.equals("Entity")) {
+			// 	usedEntities = new HashMap<>();
+			// 	usedEntities.put(className, 1);
+			// }
 			return new Acumulator(vector, count);
 		}
 
@@ -289,6 +297,7 @@ public class Codebase {
 					Acumulator acum = getMethodCallsVectors(
 						dendrogram,
 						packages,
+						methodCall.getString("className"),
 						met.getString("classType"),
 						met,
 						maxDepth - 1
@@ -296,6 +305,7 @@ public class Codebase {
 				
 					vectorSum(vector, acum.sum);
 					count += acum.count;
+					// usedEntities = acum.usedEntities;
 
 				} else {
 					System.err.println("[ - ] Cannot get method call for method: " + methodCall.getString("signature"));
@@ -304,6 +314,14 @@ public class Codebase {
 				System.err.println("[ - ] Cannot get method call for method: " + methodCall.getString("signature"));
 			}
 		}
+
+		// if (classType.equals("Entity")) {
+		// 	if (usedEntities.containsKey(className)) {
+		// 		usedEntities.put(className, usedEntities.get(className) + 1);
+		// 	} else {
+		// 		usedEntities.put(className, 1);
+		//	}
+		// }
 
 		return new Acumulator(vector, count);
 	}
@@ -324,6 +342,7 @@ public class Codebase {
 			for (int j = 0; j < classes.length(); j++) {
 				JSONObject cls = classes.getJSONObject(j);
 				JSONArray methods = cls.optJSONArray("methods");
+				String className = cls.getString("name");
 				String classType = cls.getString("type");
 
 				for (int k = 0; k < methods.length(); k++) {
@@ -332,7 +351,7 @@ public class Codebase {
 					if (method.getString("type").equals("Controller")) {
 						System.out.println("Controller: " + method.getString("signature"));
 
-						Acumulator acumulator = getMethodCallsVectors(dendrogram ,packages, classType, method, dendrogram.getMaxDepth());
+						Acumulator acumulator = getMethodCallsVectors(dendrogram, packages, className, classType, method, dendrogram.getMaxDepth());
 
 						if (acumulator.count > 0) {
 							vectorDivision(acumulator.sum, acumulator.count);
@@ -341,6 +360,7 @@ public class Codebase {
 							featureEmbeddings.put("package", pack.getString("name"));
 							featureEmbeddings.put("class", cls.getString("name"));
 							featureEmbeddings.put("signature", method.getString("signature"));
+							// featureEmbeddings.put("usedEntities", acumulator.usedEntities);
 							featureEmbeddings.put("codeVector", acumulator.sum);
 							featuresVectors.add(featureEmbeddings);
 						}
