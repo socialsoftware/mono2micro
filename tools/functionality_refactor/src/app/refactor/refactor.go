@@ -95,7 +95,7 @@ func (svc *DefaultHandler) RefactorDecomposition(
 				// TODO: multiple goroutines could try to write in the file at the same time !!!!
 				svc.filesHandler.UpdateControllerRefactorization(
 					request.CodebaseName,
-					request.DendrogramName,
+					request.StrategyName,
 					request.DecompositionName,
 					svc.createFinalControllerData(controller, initialRedesign, bestRedesign),
 				)
@@ -105,7 +105,7 @@ func (svc *DefaultHandler) RefactorDecomposition(
 				svc.logger.Log("codebase", request.CodebaseName, "controller", controller.Name, "error", err)
 				svc.filesHandler.UpdateControllerRefactorization(
 					request.CodebaseName,
-					request.DendrogramName,
+					request.StrategyName,
 					request.DecompositionName,
 					&values.Controller{
 						Name: controller.Name,
@@ -481,7 +481,7 @@ func (svc *DefaultHandler) createInitialDecompositionData(
 
 	return &values.RefactorCodebaseResponse{
 		CodebaseName:            request.CodebaseName,
-		DendrogramName:          request.DendrogramName,
+		StrategyName:            request.StrategyName,
 		DecompositionName:       request.DecompositionName,
 		Controllers:             controllersData,
 		DataDependenceThreshold: request.DataDependenceThreshold,

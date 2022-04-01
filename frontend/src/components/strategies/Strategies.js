@@ -7,7 +7,7 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 
 import {useParams} from "react-router-dom";
-import {AccessesSciPyForm} from "./forms/AccessesSciPyForm";
+import {AccessesSciPyStrategyForm} from "./forms/AccessesSciPyStrategyForm";
 import {RepositoryService} from "../../services/RepositoryService";
 import HttpStatus from "http-status-codes";
 import {CollectorFactory} from "../../models/collectors/CollectorFactory";
@@ -36,7 +36,7 @@ export const Strategies = () => {
             .then(response => {
                 if (response.data !== undefined)
                     setCollectors(response.data.collectors.map(collector =>
-                        CollectorFactory.getCollector(codebaseName, collector)));
+                        CollectorFactory.getCollector({type: collector, codebaseName})));
             });
     }
 
@@ -59,6 +59,7 @@ export const Strategies = () => {
         service.createStrategy(strategy)
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
+                    loadStrategies();
                     setStrategy(undefined);
                     setIsUploaded("");
                 } else {
@@ -104,7 +105,7 @@ export const Strategies = () => {
 
     function renderCreateStrategies() {
         return (
-            <Form.Group as={Row} controlId="selectStrategy" className="align-items-center mb-3">
+            <Form.Group as={Row} controlId="selectStrategy" className="align-items-center mw-100 mb-3">
                 <h4 className="mb-3 mt-3" style={{ color: "#666666" }}>
                     Similarity Generator and Clustering Algorithm
                 </h4>
@@ -132,18 +133,9 @@ export const Strategies = () => {
             <h4 className="mt-4" style={{ color: "#666666" }}>
                 Strategies
             </h4>
-            <div className={"d-flex flex-wrap"} style={{gap: '1rem 1rem'}}>
+            <div className={"d-flex flex-wrap mw-100"} style={{gap: '1rem 1rem'}}>
                 {strategies.map(s => s.printCard(handleDeleteStrategy))}
             </div>
-
-            <h4 style={{ color: "#666666" }}>
-                Decompositions
-            </h4>
-
-            {
-                //TODO: Decide what to do with the decomposition table
-                //allDecompositions.length > 0 && <BootstrapTable bootstrap4 keyField='id' data={decompositionRows} columns={decompositionColumns} />
-            }
         </Row>
     }
 
@@ -157,7 +149,7 @@ export const Strategies = () => {
                 {/*Add render of each strategy like the next line to request the required elements for its creation*/}
                 {
                     strategy !== undefined && strategy.type === StrategyType.ACCESSES_SCIPY &&
-                    <AccessesSciPyForm
+                    <AccessesSciPyStrategyForm
                         strategy={strategy}
                         setStrategy={setStrategy}
                     />

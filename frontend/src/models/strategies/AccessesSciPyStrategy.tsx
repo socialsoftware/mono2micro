@@ -58,6 +58,7 @@ export default class AccessesSciPyStrategy extends Strategy {
                     Sequence: {this.sequenceMetricWeight}%
                 </Card.Text>
                 <Button href={`/codebases/${this.codebaseName}/strategies/${this.name}`}
+                        variant={"success"}
                         className="mb-2">
                     Go to Strategy
                 </Button>

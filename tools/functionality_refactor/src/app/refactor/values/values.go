@@ -7,7 +7,7 @@ import (
 
 type RefactorCodebaseRequest struct {
 	CodebaseName              string   `json:"codebase_name,omitempty"`
-	DendrogramName            string   `json:"dendrogram_name,omitempty"`
+	StrategyName              string   `json:"strategy_name,omitempty"`
 	DecompositionName         string   `json:"decomposition_name,omitempty"`
 	ControllerNames           []string `json:"controller_names,omitempty"`
 	DataDependenceThreshold   int      `json:"data_dependence_threshold,omitempty"`
@@ -43,7 +43,7 @@ func (r *RefactorCodebaseRequest) ShouldRefactorController(controller *mono2micr
 
 type RefactorCodebaseResponse struct {
 	CodebaseName            string                 `json:"codebase_name"`
-	DendrogramName          string                 `json:"dendogram_name"`
+	StrategyName            string                 `json:"strategy_name"`
 	DecompositionName       string                 `json:"decomposition_name"`
 	Controllers             map[string]*Controller `json:"controllers"`
 	DataDependenceThreshold int                    `json:"data_dependence_threshold"`

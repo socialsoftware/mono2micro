@@ -9,7 +9,7 @@ import {RepositoryService} from "../../../services/RepositoryService";
 import {SourceType} from "../../../models/sources/Source";
 
 
-export const AccessesSciPyForm = ({strategy, setStrategy}) => {
+export const AccessesSciPyStrategyForm = ({strategy, setStrategy}) => {
 
     const [profiles, setProfiles] = useState([]);
 
@@ -18,74 +18,11 @@ export const AccessesSciPyForm = ({strategy, setStrategy}) => {
         loadProfiles();
     }, [])
 
-    //function loadDecompositions() {
-    //    const service = new RepositoryService();
-    //    service.getCodebaseDecompositions(
-    //        strategy.codebaseName,
-    //        StrategyType.ACCESSES_SCIPY,
-    //        [
-    //            "name",
-    //            "strategyName",
-    //            "clusters",
-    //            "silhouetteScore",
-    //            "cohesion",
-    //            "coupling",
-    //            "complexity",
-    //            "performance"
-    //        ]
-    //    ).then((response) => {
-    //        if (response.data !== null) {
-    //            setAllDecompositions(response.data);
-    //        }
-    //    });
-    //}
-
     function loadProfiles() {
         const service = new RepositoryService();
         service.getSource(strategy.codebaseName, SourceType.ACCESSES)
             .then((response) => setProfiles(response.profiles));
     }
-
-
-    //const decompositionColumns = [
-    //    { dataField: 'strategy',          text: 'Strategy Name',                 sort: true },
-    //    { dataField: 'decomposition',     text: 'Decomposition',                 sort: true },
-    //    { dataField: 'clusters',          text: 'Number of Retrieved Clusters',  sort: true },
-    //    { dataField: 'singleton',         text: 'Number of Singleton Clusters',  sort: true },
-    //    { dataField: 'max_cluster_size',  text: 'Maximum Cluster Size',          sort: true },
-    //    { dataField: 'ss',                text: 'Silhouette Score',              sort: true },
-    //    { dataField: 'cohesion',          text: 'Cohesion',                      sort: true },
-    //    { dataField: 'coupling',          text: 'Coupling',                      sort: true },
-    //    { dataField: 'complexity',        text: 'Complexity',                    sort: true },
-    //    { dataField: 'performance',       text: 'Performance',                   sort: true }
-    //];
-
-    //const decompositionRows = allDecompositions.map(decomposition => {
-    //    let amountOfSingletonClusters = 0;
-    //    let maxClusterSize = 0;
-
-    //    Object.values(decomposition.clusters).forEach(c => {
-    //        const numberOfEntities = c.entities.length;
-
-    //        if (numberOfEntities === 1) amountOfSingletonClusters++;
-
-    //        if (numberOfEntities > maxClusterSize) maxClusterSize = numberOfEntities;
-    //    })
-
-    //    return {
-    //        id: decomposition.strategyName + decomposition.name,
-    //        strategy: decomposition.strategyName,
-    //        decomposition: decomposition.name,
-    //        clusters: Object.keys(decomposition.clusters).length,
-    //        singleton: amountOfSingletonClusters,
-    //        max_cluster_size: maxClusterSize,
-    //        ss: decomposition.silhouetteScore,
-    //        cohesion: decomposition.cohesion,
-    //        coupling: decomposition.coupling,
-    //        complexity: decomposition.complexity,
-    //        performance: decomposition.performance
-    //    }
-    //});
 
     function handleChangeAccessMetricWeight(event) {
         let newStrategy = strategy.copy();
@@ -324,14 +261,4 @@ export const AccessesSciPyForm = ({strategy, setStrategy}) => {
             </Form.Group>
         </Fragment>
     );
-
-        //function placeholder() {
-        //    return <h4 style={{ color: "#666666" }}>
-        //            Decompositions
-        //        </h4>
-
-        //        { //allDecompositions.length > 0 && <BootstrapTable bootstrap4 keyField='id' data={decompositionRows} columns={decompositionColumns} />
-        //        }
-        //    </Row>
-        //}
 }

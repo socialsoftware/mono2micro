@@ -101,7 +101,7 @@ const functionalityRedesignColumns = [
 ];
 
 export const FunctionalityRefactorToolMenu = () => {
-    let { codebaseName, dendrogramName, decompositionName } = useParams();
+    let { codebaseName, strategyName, decompositionName } = useParams();
 
     const[waitingResponse, setWaitingResponse] = useState(false);
     const[controllers, setControllers] = useState([]);
@@ -206,7 +206,7 @@ export const FunctionalityRefactorToolMenu = () => {
 
         setWaitingResponse(true);
 
-        service.viewRefactor(codebaseName, dendrogramName, decompositionName)
+        service.viewRefactor(codebaseName, strategyName, decompositionName)
             .then(response => {
                 setWaitingResponse(false);
                 setRefactorizationExists(true);
@@ -225,7 +225,7 @@ export const FunctionalityRefactorToolMenu = () => {
 
         setWaitingResponse(true);
 
-        service.refactorCodebase(codebaseName, dendrogramName, decompositionName,
+        service.refactorCodebase(codebaseName, strategyName, decompositionName,
             controllers, Number(dataDependenceThreshold), minimizeSumOfComplexities, Number(timeoutSecs), newRefactor)
             .then(response => {
                 setWaitingResponse(false);

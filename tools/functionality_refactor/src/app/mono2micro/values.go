@@ -5,42 +5,38 @@ import (
 )
 
 type Codebase struct {
-	Name        string              `json:"name,omitempty"`
-	Profiles    map[string][]string `json:"profiles,omitempty"`
-	Dendrograms []*Dendogram        `json:"dendrograms,omitempty"`
-	File        string              `json:"file,omitempty"`
+	Name       string    `json:"name,omitempty"`
+	Collectors []*string `json:"collectors,omitempty"`
 }
 
-func (c *Codebase) GetDendogram(name string) *Dendogram {
-	for _, dendogram := range c.Dendrograms {
-		if dendogram.Name == name {
-			return dendogram
-		}
-	}
-	return nil
+type Source struct {
+	Type          string              `json:"type,omitempty"`
+	CodebaseName  string              `json:"codebaseName,omitempty"`
+	InputFilePath string              `json:"inputFilePath,omitempty"`
+	Profiles      map[string][]string `json:"profiles,omitempty"`
 }
 
-type Dendogram struct {
-	Name           string           `json:"name,omitempty"`
-	CodebaseName   string           `json:"codebaseName,omitempty"`
-	Decompositions []*Decomposition `json:"decompositions,omitempty"`
-}
-
-func (d *Dendogram) GetDecomposition(name string) *Decomposition {
-	for _, decomposition := range d.Decompositions {
-		if decomposition.Name == name {
-			return decomposition
-		}
-	}
-	return nil
+type Strategy struct {
+	Type                 string   `json:"type,omitempty"`
+	Name                 string   `json:"name,omitempty"`
+	CodebaseName         string   `json:"codebaseName,omitempty"`
+	DecompositionsNames  []string `json:"decompositionsNames,omitempty"`
+	Profile              string   `json:"profile,omitempty"`
+	TracesMaxLimit       string   `json:"tracesMaxLimit,omitempty"`
+	TraceType            string   `json:"traceType,omitempty"`
+	AccessMetricWeight   string   `json:"accessMetricWeight,omitempty"`
+	WriteMetricWeight    string   `json:"writeMetricWeight,omitempty"`
+	ReadMetricWeight     string   `json:"readMetricWeight,omitempty"`
+	SequenceMetricWeight string   `json:"sequenceMetricWeight,omitempty"`
+	LinkageType          string   `json:"linkageType,omitempty"`
 }
 
 type Decomposition struct {
+	StrategyType        string                 `json:"strategyType,omitempty"`
 	Name                string                 `json:"name,omitempty"`
 	CodebaseName        string                 `json:"codebaseName,omitempty"`
-	DendogramName       string                 `json:"dendrogramName,omitempty"`
+	StrategyName        string                 `json:"strategyName,omitempty"`
 	Expert              bool                   `json:"expert,omitempty"`
-	CutValue            float32                `json:"cutValue,omitempty"`
 	Complexity          float32                `json:"complexity,omitempty"`
 	Cohesion            float32                `json:"cohesion,omitempty"`
 	Coupling            float32                `json:"coupling,omitempty"`

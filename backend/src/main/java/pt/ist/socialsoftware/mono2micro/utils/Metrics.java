@@ -7,17 +7,18 @@ import java.util.*;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.domain.*;
+import pt.ist.socialsoftware.mono2micro.domain.decomposition.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 
 public class Metrics {
 
     public static float calculateControllerComplexityAndClusterDependencies(
-	 	Decomposition decomposition,
+	 	AccessesSciPyDecomposition decomposition,
 		String controllerName,
 	 	Map<String, Set<Cluster>> controllerClusters,
 		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph
 	) {
-		Set<LocalTransaction> allLocalTransactions = Decomposition.getAllLocalTransactions(localTransactionsGraph);
+		Set<LocalTransaction> allLocalTransactions = AccessesSciPyDecomposition.getAllLocalTransactions(localTransactionsGraph);
 
 		if (controllerClusters.get(controllerName).size() == 1) {
 			return 0;
@@ -34,7 +35,7 @@ public class Metrics {
 				if (clusterID != -1) { // not root node
 					Cluster fromCluster = decomposition.getCluster(clusterID);
 
-					List<LocalTransaction> nextLocalTransactions = Decomposition.getNextLocalTransactions(
+					List<LocalTransaction> nextLocalTransactions = AccessesSciPyDecomposition.getNextLocalTransactions(
 						localTransactionsGraph,
 						lt
 					);
@@ -171,7 +172,7 @@ public class Metrics {
 	public static void calculateRedesignComplexities(
 			Controller controller,
 			String redesignName,
-			Decomposition decomposition
+			AccessesSciPyDecomposition decomposition
 	){
 		Utils.GetControllersClustersAndClustersControllersResult result =
 				Utils.getControllersClustersAndClustersControllers(
@@ -195,7 +196,7 @@ public class Metrics {
 	private static void calculateQueryRedesignComplexity(
 			Controller controller,
 			String redesignName,
-			Decomposition decomposition
+			AccessesSciPyDecomposition decomposition
 	) {
 		FunctionalityRedesign functionalityRedesign = controller.getFunctionalityRedesign(redesignName);
 		functionalityRedesign.setInconsistencyComplexity(0);
@@ -222,7 +223,7 @@ public class Metrics {
 	private static void calculateSAGASRedesignComplexities(
 			Controller controller,
 			String redesignName,
-			Decomposition decomposition,
+			AccessesSciPyDecomposition decomposition,
 			Map<String, Set<Cluster>> controllerClusters
 	){
 		FunctionalityRedesign functionalityRedesign = controller.getFunctionalityRedesign(redesignName);
@@ -268,7 +269,7 @@ public class Metrics {
 			short entity,
 			Controller controller,
 			FunctionalityRedesign functionalityRedesign,
-			Decomposition decomposition,
+			AccessesSciPyDecomposition decomposition,
 			Map<String, Set<Cluster>> controllerClusters
 	) {
 		for (Controller otherController : decomposition.getControllers().values()) {
@@ -285,7 +286,7 @@ public class Metrics {
 			short entity,
 			Controller controller,
 			FunctionalityRedesign functionalityRedesign,
-			Decomposition decomposition,
+			AccessesSciPyDecomposition decomposition,
 			Map<String, Set<Cluster>> controllerClusters
 	) {
 		for (Controller otherController : decomposition.getControllers().values()) {

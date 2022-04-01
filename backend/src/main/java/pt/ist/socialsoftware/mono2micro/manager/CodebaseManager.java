@@ -12,7 +12,7 @@ import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
-import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.domain.decomposition.Decomposition;
 import pt.ist.socialsoftware.mono2micro.domain.source.Source;
 import pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy;
 import pt.ist.socialsoftware.mono2micro.dto.*;
@@ -140,14 +140,28 @@ public class CodebaseManager {
 		FileUtils.deleteDirectory(new File(CODEBASES_PATH + codebaseName + "/strategies/" + strategyName));
 	}
 
+	public void deleteCodebaseStrategies(String codebaseName, List<String> possibleStrategies) throws IOException {
+
+		File strategiesPath = new File(CODEBASES_PATH + codebaseName + "/strategies");
+
+		File[] files = strategiesPath.listFiles();
+
+		if (files != null) {
+			Arrays.sort(files, Comparator.comparingLong(File::lastModified));
+
+			for (File file : files)
+				if (file.isDirectory() && sameType(file.getName(), possibleStrategies))
+					FileUtils.deleteDirectory(new File(CODEBASES_PATH + codebaseName + "/strategies/" + file.getName()));
+		}
+	}
+
 	public void deleteStrategyDecomposition(String codebaseName, String strategyName, String decompositionName) throws IOException {
 		FileUtils.deleteDirectory(new File(CODEBASES_PATH + codebaseName + "/strategies/" + strategyName + "/decompositions/" + decompositionName));
 	}
 
-	public List<Decomposition> getCodebaseDecompositionsWithFields(
+	public List<Decomposition> getCodebaseDecompositions(
 		String codebaseName,
-		String strategyType,			// Use "" when specifying all strategy types
-		Set<String> decompositionDeserializableFields
+		String strategyType			// Use "" when specifying all strategy types
 	)
 		throws Exception
 	{
@@ -162,7 +176,7 @@ public class CodebaseManager {
 
 			for (File file : files) {
 				if (file.isDirectory() && file.getName().startsWith(strategyType)) {
-					List<Decomposition> strategyDecompositions = getStrategyDecompositionsWithFields(codebaseName, file.getName(), decompositionDeserializableFields);
+					List<Decomposition> strategyDecompositions = getStrategyDecompositions(codebaseName, file.getName());
 
 					if (!strategyDecompositions.isEmpty())
 						decompositions.addAll(strategyDecompositions);
@@ -173,30 +187,24 @@ public class CodebaseManager {
 		return decompositions;
 	}
 
-	public Decomposition getStrategyDecompositionWithFields(
+	public Decomposition getStrategyDecomposition(
 		String codebaseName,
 		String strategyName,
-		String decompositionName,
-		Set<String> decompositionDeserializableFields
+		String decompositionName
 	)
 		throws Exception
 	{
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.setInjectableValues(new InjectableValues.Std().addValue("decompositionDeserializableFields", decompositionDeserializableFields));
+		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/strategies/" + strategyName + "/decompositions/" + decompositionName + "/decomposition.json");
 
-		File decompositionJSONFile = new File(CODEBASES_PATH + codebaseName + "/strategies/" + strategyName + "/decompositions/" + decompositionName + "/decomposition.json");
+		Decomposition decomposition = objectMapper.readerFor(Decomposition.class).readValue(is);
+		is.close();
 
-		if (!decompositionJSONFile.exists())
-			return null;
-
-		ObjectReader reader = objectMapper.readerFor(Decomposition.class);
-		return reader.readValue(decompositionJSONFile);
+		return decomposition;
 	}
 
-	public List<Decomposition> getStrategyDecompositionsWithFields(
+	public List<Decomposition> getStrategyDecompositions(
 		String codebaseName,
-		String strategyName,
-		Set<String> decompositionDeserializableFields
+		String strategyName
 	)
 		throws Exception
 	{
@@ -205,7 +213,7 @@ public class CodebaseManager {
 		return strategy.getDecompositionsNames().stream()
 				.map(decompositionName -> {
 					try {
-						return getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, decompositionDeserializableFields);
+						return getStrategyDecomposition(codebaseName, strategyName, decompositionName);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

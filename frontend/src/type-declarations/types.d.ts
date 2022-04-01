@@ -84,7 +84,7 @@ export interface AnalysisDto {
 
 export interface RefactorCodebase {
     codebase_name?: string;
-    dendrogram_name?: string;
+    strategy_name?: string;
     decomposition_name?: string;
     controller_names?: string[];
     data_dependence_threshold?: number;

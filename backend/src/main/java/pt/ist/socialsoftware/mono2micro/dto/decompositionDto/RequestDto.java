@@ -8,7 +8,7 @@ import static pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy.Strategy
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = AccessesSciPyInfoDto.class, name = ACCESSES_SCIPY)
+        @JsonSubTypes.Type(value = AccessesSciPyRequestDto.class, name = ACCESSES_SCIPY)
 })
-public interface InfoDto {
+public interface RequestDto {
 }

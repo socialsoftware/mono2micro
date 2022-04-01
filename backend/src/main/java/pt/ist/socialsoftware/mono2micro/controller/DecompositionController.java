@@ -8,21 +8,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.domain.decomposition.AccessesSciPyDecomposition;
+import pt.ist.socialsoftware.mono2micro.domain.decomposition.Decomposition;
 import pt.ist.socialsoftware.mono2micro.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.domain.clusteringAlgorithm.ClusteringAlgorithm;
 import pt.ist.socialsoftware.mono2micro.domain.clusteringAlgorithm.ClusteringAlgorithmFactory;
 import pt.ist.socialsoftware.mono2micro.domain.source.Source;
 import pt.ist.socialsoftware.mono2micro.domain.strategy.AccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy;
-import pt.ist.socialsoftware.mono2micro.dto.decompositionDto.AccessesSciPyInfoDto;
-import pt.ist.socialsoftware.mono2micro.dto.decompositionDto.InfoDto;
+import pt.ist.socialsoftware.mono2micro.dto.decompositionDto.AccessesSciPyRequestDto;
+import pt.ist.socialsoftware.mono2micro.dto.decompositionDto.RequestDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,14 +42,14 @@ public class DecompositionController {
 	public ResponseEntity<HttpStatus> createDecomposition(
 			@PathVariable String codebaseName,
 			@PathVariable String strategyName,
-			@RequestBody InfoDto infoDto
+			@RequestBody RequestDto requestDto
 	) {
 		logger.debug("createDecomposition");
 
 		try {
 			Strategy strategy = codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
 			ClusteringAlgorithm clusteringAlgorithm = ClusteringAlgorithmFactory.getFactory().getClusteringAlgorithm(strategy.getType());
-			clusteringAlgorithm.createDecomposition(strategy, infoDto);
+			clusteringAlgorithm.createDecomposition(strategy, requestDto);
 
 			return new ResponseEntity<>(HttpStatus.OK);
 
@@ -76,11 +76,11 @@ public class DecompositionController {
 		logger.debug("createExpertDecomposition");
 
 		try {
-			InfoDto infoDto;
+			RequestDto requestDto;
 
 			switch (type) {
 				case ACCESSES_SCIPY:
-					infoDto = new AccessesSciPyInfoDto(expertName, expertFile);
+					requestDto = new AccessesSciPyRequestDto(expertName, expertFile);
 					break;
 				default:
 					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -88,7 +88,7 @@ public class DecompositionController {
 
 			Strategy strategy = codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
 			ClusteringAlgorithm clusteringAlgorithm = ClusteringAlgorithmFactory.getFactory().getClusteringAlgorithm(strategy.getType());
-			clusteringAlgorithm.createDecomposition(strategy, infoDto);
+			clusteringAlgorithm.createDecomposition(strategy, requestDto);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (KeyAlreadyExistsException e) {
@@ -104,17 +104,15 @@ public class DecompositionController {
 	@RequestMapping(value = "/decompositions", method = RequestMethod.GET)
 	public ResponseEntity<List<Decomposition>> getDecompositions(
 		@PathVariable String codebaseName,
-		@PathVariable String strategyName,
-		@RequestParam List<String> fieldNames
+		@PathVariable String strategyName
 	) {
 		logger.debug("getDecompositions");
 
 		try {
 			return new ResponseEntity<>(
-				codebaseManager.getStrategyDecompositionsWithFields(
+				codebaseManager.getStrategyDecompositions(
 					codebaseName,
-					strategyName,
-					new HashSet<>(fieldNames)
+					strategyName
 				),
 				HttpStatus.OK
 			);
@@ -129,18 +127,16 @@ public class DecompositionController {
 	public ResponseEntity<Decomposition> getDecomposition(
 		@PathVariable String codebaseName,
 		@PathVariable String strategyName,
-		@PathVariable String decompositionName,
-		@RequestParam List<String> fieldNames
+		@PathVariable String decompositionName
 	) {
 		logger.debug("getDecomposition");
 
 		try {
 			return new ResponseEntity<>(
-				codebaseManager.getStrategyDecompositionWithFields(
+				codebaseManager.getStrategyDecomposition(
 					codebaseName,
 					strategyName,
-					decompositionName,
-					new HashSet<>(fieldNames)
+					decompositionName
 				),
 				HttpStatus.OK
 			);
@@ -187,13 +183,10 @@ public class DecompositionController {
 			// TODO: abstract strategy call to make this a generic function, probably needs decompositions with subclasses
 			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
 
-			Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(
+			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
 				codebaseName,
 				strategyName,
-				decompositionName,
-				new HashSet<String>() {{
-					add("controllers"); add("entityIDToClusterID");
-				}}
+				decompositionName
 			);
 
 			Source source = codebaseManager.getCodebaseSource(codebaseName, ACCESSES);

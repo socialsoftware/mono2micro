@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import { Home } from './Home';
 import { Strategy } from './strategy/Strategy';
 import { Views } from './view/Views';
-import { Strategies } from './strategy/Strategies'
+import { Strategies } from './strategies/Strategies'
 import { Codebases } from './codebase/Codebases';
 import { Codebase } from './codebase/Codebase';
 import { Analysis } from './analysis/Analysis';

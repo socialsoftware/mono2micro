@@ -67,7 +67,7 @@ const options = {
 export const ClusterView = () => {
     const context = useContext(AppContext);
     const { translateEntity } = context;
-    let { codebaseName, dendrogramName, decompositionName } = useParams();
+    let { codebaseName, strategyName, decompositionName } = useParams();
 
     const [visGraph, setVisGraph] = useState({});
     const [clusters, setClusters] = useState([]);
@@ -91,7 +91,7 @@ export const ClusterView = () => {
 
         const firstRequest = service.getClustersControllers(
             codebaseName,
-            dendrogramName,
+            strategyName,
             decompositionName
         ).then(response => {
             clustersControllers = response.data;
@@ -99,9 +99,8 @@ export const ClusterView = () => {
 
         const secondRequest = service.getDecomposition(
             codebaseName,
-            dendrogramName,
-            decompositionName,
-            ["clusters"]
+            strategyName,
+            decompositionName
         ).then(response => {
             clusters = Object.values(response.data.clusters)
             clusters = clusters.sort((a, b) => a.name - b.name);
@@ -250,7 +249,7 @@ export const ClusterView = () => {
             case operations.RENAME:
                 service.renameCluster(
                     codebaseName,
-                    dendrogramName,
+                    strategyName,
                     decompositionName,
                     selectedCluster.id,
                     inputValue
@@ -266,7 +265,7 @@ export const ClusterView = () => {
             case operations.MERGE:
                 service.mergeClusters(
                     codebaseName,
-                    dendrogramName,
+                    strategyName,
                     decompositionName,
                     selectedCluster.id,
                     mergeWithCluster.id,
@@ -285,7 +284,7 @@ export const ClusterView = () => {
                 
                 service.splitCluster(
                     codebaseName,
-                    dendrogramName,
+                    strategyName,
                     decompositionName,
                     selectedCluster.id,
                     inputValue,
@@ -304,7 +303,7 @@ export const ClusterView = () => {
 
                 service.transferEntities(
                     codebaseName,
-                    dendrogramName,
+                    strategyName,
                     decompositionName,
                     selectedCluster.id,
                     transferToCluster.id,

@@ -4,13 +4,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
-public class AccessesSciPyInfoDto implements InfoDto {
+public class AccessesSciPyRequestDto implements RequestDto {
     private String expertName;
     private float cutValue;
     private String cutType;
     private Optional<MultipartFile> expertFile;
 
-    public AccessesSciPyInfoDto(String expertName, Optional<MultipartFile> expertFile) {
+    public AccessesSciPyRequestDto(String expertName, Optional<MultipartFile> expertFile) {
         this.expertName = expertName;
         this.expertFile = expertFile;
     }

@@ -170,13 +170,7 @@ export const Analyser = () => {
         
         service.getCodebaseDecompositions(
             codebaseName,
-            undefined,
-            [
-                "name",
-                "expert",
-                "codebaseName",
-                "clusters"
-            ]
+            undefined
         ).then((response) => {
             if (response.data !== null) {
                 setExperts(response.data.filter((decomposition: Decomposition) => decomposition.expert));

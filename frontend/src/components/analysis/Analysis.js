@@ -10,6 +10,7 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import BootstrapTable from 'react-bootstrap-table-next';
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import AppContext from "../AppContext";
+import {SourceType} from "../../models/sources/Source";
 
 const HttpStatus = require('http-status-codes');
 
@@ -111,7 +112,7 @@ export const Analysis = () => {
             }
         });
 
-        service.getTranslation(codebaseName).then(response => {
+        service.getInputFile(codebaseName, SourceType.IDTOENTITIY).then(response => {
             const { updateEntityTranslationFile } = context;
             updateEntityTranslationFile(response.data);
         }).catch(error => {

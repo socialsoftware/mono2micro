@@ -1,6 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.dto;
 
-import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.domain.decomposition.Decomposition;
 
 import java.util.ArrayList;
 import java.util.List;

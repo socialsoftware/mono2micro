@@ -7,13 +7,12 @@ import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
-import pt.ist.socialsoftware.mono2micro.domain.Codebase;
-import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.domain.decomposition.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.domain.source.AccessesSource;
 import pt.ist.socialsoftware.mono2micro.domain.strategy.AccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy;
-import pt.ist.socialsoftware.mono2micro.dto.decompositionDto.AccessesSciPyInfoDto;
-import pt.ist.socialsoftware.mono2micro.dto.decompositionDto.InfoDto;
+import pt.ist.socialsoftware.mono2micro.dto.decompositionDto.AccessesSciPyRequestDto;
+import pt.ist.socialsoftware.mono2micro.dto.decompositionDto.RequestDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
@@ -47,36 +46,43 @@ public class SciPyClusteringAlgorithm implements ClusteringAlgorithm {
     }
 
     @Override
-    public void createDecomposition(Strategy strategy, InfoDto infoDto) throws Exception {
+    public void createDecomposition(Strategy strategy, RequestDto requestDto) throws Exception {
         CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
-        AccessesSciPyInfoDto accessesSciPyCutDto = (AccessesSciPyInfoDto) infoDto;
-        AccessesSciPyStrategy accessesSciPyStrategy = (AccessesSciPyStrategy) strategy;
-        AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(accessesSciPyStrategy.getCodebaseName(), ACCESSES);
+        switch (strategy.getType()) {
+            case Strategy.StrategyType.ACCESSES_SCIPY:
+                AccessesSciPyRequestDto accessesSciPyCutDto = (AccessesSciPyRequestDto) requestDto;
+                AccessesSciPyStrategy accessesSciPyStrategy = (AccessesSciPyStrategy) strategy;
+                AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(accessesSciPyStrategy.getCodebaseName(), ACCESSES);
 
-        Decomposition decomposition = cut(accessesSciPyStrategy, accessesSciPyCutDto);
+                AccessesSciPyDecomposition decomposition = cut(accessesSciPyStrategy, accessesSciPyCutDto);
 
-        decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
-                source.getInputFilePath(),
-                source.getProfile(accessesSciPyStrategy.getProfile()),
-                decomposition.getEntityIDToClusterID()
-        ));
+                decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+                        source.getInputFilePath(),
+                        source.getProfile(accessesSciPyStrategy.getProfile()),
+                        decomposition.getEntityIDToClusterID()
+                ));
 
-        decomposition.calculateMetrics(
-                source.getInputFilePath(),
-                accessesSciPyStrategy.getTracesMaxLimit(),
-                accessesSciPyStrategy.getTraceType(),
-                false);
+                decomposition.calculateMetrics(
+                        source.getInputFilePath(),
+                        accessesSciPyStrategy.getTracesMaxLimit(),
+                        accessesSciPyStrategy.getTraceType(),
+                        false);
 
-        codebaseManager.writeStrategyDecomposition(accessesSciPyStrategy.getCodebaseName(), accessesSciPyStrategy.getName(), decomposition);
-        accessesSciPyStrategy.addDecompositionName(decomposition.getName());
-        codebaseManager.writeCodebaseStrategy(accessesSciPyStrategy.getCodebaseName(), accessesSciPyStrategy);
+                codebaseManager.writeStrategyDecomposition(accessesSciPyStrategy.getCodebaseName(), accessesSciPyStrategy.getName(), decomposition);
+                accessesSciPyStrategy.addDecompositionName(decomposition.getName());
+                codebaseManager.writeCodebaseStrategy(accessesSciPyStrategy.getCodebaseName(), accessesSciPyStrategy);
+                break;
+
+            default:
+                throw new RuntimeException("Unknown strategy type when creating a decomposition: " + strategy.getType());
+        }
     }
 
-    private Decomposition cut(AccessesSciPyStrategy strategy, AccessesSciPyInfoDto cutDto)
+    private AccessesSciPyDecomposition cut(AccessesSciPyStrategy strategy, AccessesSciPyRequestDto cutDto)
             throws Exception
     {
-        Decomposition decomposition = new Decomposition();
+        AccessesSciPyDecomposition decomposition = new AccessesSciPyDecomposition();
         //TODO: make a subclass of Decomposition to save this values
         //decomposition.setCutValue(cutDto.getCutValue());
         //decomposition.setCutType(cutDto.getCutValue());
@@ -84,7 +90,7 @@ public class SciPyClusteringAlgorithm implements ClusteringAlgorithm {
         decomposition.setStrategyName(strategy.getName());
 
         JSONObject clustersJSON;
-        if (cutDto.getExpertName().equals("")) { // Decomposition produced by a cut in the dendrogram
+        if (cutDto.getExpertName() == null) { // Decomposition produced by a cut in the dendrogram
             decomposition.setName(getDecompositionName(strategy, cutDto));
             createDecompositionDirectory(decomposition.getCodebaseName(), decomposition.getStrategyName(), decomposition.getName());
 
@@ -121,7 +127,7 @@ public class SciPyClusteringAlgorithm implements ClusteringAlgorithm {
         new File(CODEBASES_PATH + codebaseName + "/strategies/" + strategyName + "/decompositions/" + decompositionName).mkdir();
     }
 
-    private void createGenericDecomposition(AccessesSciPyStrategy strategy, Decomposition decomposition) throws Exception {
+    private void createGenericDecomposition(AccessesSciPyStrategy strategy, AccessesSciPyDecomposition decomposition) throws Exception {
         Cluster cluster = new Cluster((short) 0, "Generic");
 
         JSONObject similarityMatrixData = CodebaseManager.getInstance().getSimilarityMatrix(
@@ -141,7 +147,7 @@ public class SciPyClusteringAlgorithm implements ClusteringAlgorithm {
         decomposition.addCluster(cluster);
     }
 
-    private void invokePythonCut(AccessesSciPyStrategy strategy, String decompositionName, AccessesSciPyInfoDto cutDto) {
+    private void invokePythonCut(AccessesSciPyStrategy strategy, String decompositionName, AccessesSciPyRequestDto cutDto) {
 
         WebClient.create(SCRIPTS_ADDRESS)
                 .get()
@@ -154,7 +160,7 @@ public class SciPyClusteringAlgorithm implements ClusteringAlgorithm {
                 }).block();
     }
 
-    private String getDecompositionName(AccessesSciPyStrategy strategy, AccessesSciPyInfoDto cutDto) {
+    private String getDecompositionName(AccessesSciPyStrategy strategy, AccessesSciPyRequestDto cutDto) {
         String cutValueString = Float.valueOf(cutDto.getCutValue()).toString().replaceAll("\\.?0*$", "");
 
         if (strategy.getDecompositionsNames().contains(cutDto.getCutType() + cutValueString)) {
@@ -166,7 +172,7 @@ public class SciPyClusteringAlgorithm implements ClusteringAlgorithm {
         } else return cutDto.getCutType() + cutValueString;
     }
 
-    private void addClustersAndEntities(Decomposition decomposition, JSONObject clustersJSON) throws JSONException {
+    private void addClustersAndEntities(AccessesSciPyDecomposition decomposition, JSONObject clustersJSON) throws JSONException {
         Iterator<String> clusters = clustersJSON.getJSONObject("clusters").sortedKeys();
         ArrayList<String> clusterNames = new ArrayList<>();
 

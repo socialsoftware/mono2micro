@@ -14,6 +14,7 @@ import HttpStatus from "http-status-codes";
 import {CollectorType} from "../../models/collectors/Collector";
 import {CollectorFactory} from "../../models/collectors/CollectorFactory";
 import {Modal, ModalBody, ModalFooter, ModalTitle} from "react-bootstrap";
+import {AccessesCollectorForm} from "./forms/AccessesCollectorForm";
 
 function renderBreadCrumbs(codebaseName) {
     return (
@@ -50,7 +51,7 @@ export function Codebase() {
             .then(response => {
                 if (response.data !== undefined)
                     setCollectors(response.data.collectors.map(collector =>
-                        CollectorFactory.getCollector(codebaseName, collector))
+                        CollectorFactory.getCollector({type:collector, codebaseName}))
                     );
             });
     }
@@ -91,7 +92,7 @@ export function Codebase() {
     );
 
     function handleSelectedCollector(collectorType) {
-        setSelectedCollector(CollectorFactory.getCollector(codebaseName, collectorType));
+        setSelectedCollector(CollectorFactory.getCollector({type: collectorType, codebaseName}));
     }
 
     function handleCollectorDelete(collectorToDelete) {
@@ -106,7 +107,8 @@ export function Codebase() {
         service.deleteCollector(
             collectorToDelete.codebaseName,
             collectorToDelete.type,
-            collectorToDelete.sources
+            collectorToDelete.sources,
+            collectorToDelete.possibleStrategies
         ).then(() => {
             loadCollectors()
         });
@@ -132,13 +134,16 @@ export function Codebase() {
                 </Form.Group>
 
                 {selectedCollector !== undefined &&                                     // Show sources request form
-                    selectedCollector.printForm()
+                    <AccessesCollectorForm
+                        collector={selectedCollector}
+                        setCollector={setSelectedCollector}
+                    />
                 }
 
                 {selectedCollector !== undefined &&                                     // Submit button
                     <Form.Group as={Row} className="align-items-center mb-4">
                         <Col sm={{ offset: 2 }}>
-                            <Button type="submit" disabled={selectedCollector.canSubmit()}>Submit</Button>
+                            <Button type="submit" disabled={!selectedCollector.canSubmit()}>Submit</Button>
                             <Form.Text className="ms-2">
                                 {isUploaded}
                             </Form.Text>
@@ -148,7 +153,7 @@ export function Codebase() {
 
                 {collectors.length !== 0 && <h4 className="mb-3" style={{ color: "#666666" }}> Collectors </h4>}
 
-                <div className={"d-flex flex-wrap"} style={{gap: '1rem 1rem'}}>
+                <div className={"d-flex flex-wrap mw-100"} style={{gap: '1rem 1rem'}}>
                     {collectors.map(collector => collector.printCard(handleCollectorDelete))}
                 </div>
             </Form>
@@ -193,14 +198,14 @@ export function Codebase() {
                 </Col>
             </Row>
 
-            {collectors.length !== 0 &&
-                <Button
-                    href={`/codebases/${codebaseName}/strategies`}
-                    className="mt-2 mb-3"
-                >
-                    Go to Strategies
-                </Button>
-            }
+            <Button
+                href={`/codebases/${codebaseName}/strategies`}
+                className="mt-2 mb-3"
+                disabled={collectors.length === 0}
+                variant={"success"}
+            >
+                Go to Strategies
+            </Button>
 
             { renderCollectors() }
         </div>

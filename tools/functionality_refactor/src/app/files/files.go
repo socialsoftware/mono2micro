@@ -16,7 +16,9 @@ import (
 
 const (
 	codebaseFileName              = "/codebase.json"
-	refactorizationFileNameFormat = "/refactorization_%s_%s.json"
+	strategyFileName              = "/strategy.json"
+	decompositionFileName         = "/decomposition.json"
+	refactorizationFileNameFormat = "/strategies/%s/decompositions/%s/refactorization.json"
 	idToEntityFileName            = "/IDToEntity.json"
 )
 
@@ -24,6 +26,8 @@ var fileMutex sync.Mutex
 
 type FilesHandler interface {
 	ReadCodebase(string) (*mono2micro.Codebase, error)
+	ReadStrategy(string, string) (*mono2micro.Strategy, error)
+	ReadDecomposition(string, string, string) (*mono2micro.Decomposition, error)
 	ReadDecompositionRefactorization(string, string, string) (*values.RefactorCodebaseResponse, error)
 	StoreDecompositionRefactorization(*values.RefactorCodebaseResponse) error
 	UpdateControllerRefactorization(string, string, string, *values.Controller) error
@@ -60,8 +64,44 @@ func (svc *DefaultHandler) ReadCodebase(codebaseFolder string) (*mono2micro.Code
 	return &codebase, nil
 }
 
-func (svc *DefaultHandler) ReadDecompositionRefactorization(codebaseFolder string, dendrogramName string, decompositionName string) (*values.RefactorCodebaseResponse, error) {
-	refactorizationFileName := fmt.Sprintf(refactorizationFileNameFormat, dendrogramName, decompositionName)
+func (svc *DefaultHandler) ReadStrategy(codebaseFolder string, strategyFolder string) (*mono2micro.Strategy, error) {
+	path, _ := filepath.Abs(svc.codebasesPath + codebaseFolder + "/strategies/" + strategyFolder + strategyFileName)
+	byteValue, err := svc.readFile(path)
+	if err != nil {
+		svc.logger.Log(err)
+		return nil, err
+	}
+
+	var strategy mono2micro.Strategy
+	err = json.Unmarshal(byteValue, &strategy)
+	if err != nil {
+		svc.logger.Log(err)
+		return nil, err
+	}
+
+	return &strategy, nil
+}
+
+func (svc *DefaultHandler) ReadDecomposition(codebaseFolder string, strategyFolder string, decompositionFolder string) (*mono2micro.Decomposition, error) {
+	path, _ := filepath.Abs(svc.codebasesPath + codebaseFolder + "/strategies/" + strategyFolder + "/decompositions/" + decompositionFolder + decompositionFileName)
+	byteValue, err := svc.readFile(path)
+	if err != nil {
+		svc.logger.Log(err)
+		return nil, err
+	}
+
+	var decomposition mono2micro.Decomposition
+	err = json.Unmarshal(byteValue, &decomposition)
+	if err != nil {
+		svc.logger.Log(err)
+		return nil, err
+	}
+
+	return &decomposition, nil
+}
+
+func (svc *DefaultHandler) ReadDecompositionRefactorization(codebaseFolder string, strategyName string, decompositionName string) (*values.RefactorCodebaseResponse, error) {
+	refactorizationFileName := fmt.Sprintf(refactorizationFileNameFormat, strategyName, decompositionName)
 
 	path, _ := filepath.Abs(svc.codebasesPath + codebaseFolder + refactorizationFileName)
 	byteValue, err := svc.readFile(path)
@@ -87,18 +127,18 @@ func (svc *DefaultHandler) StoreDecompositionRefactorization(refactorization *va
 		return err
 	}
 
-	refactorizationFileName := fmt.Sprintf(refactorizationFileNameFormat, refactorization.DendrogramName, refactorization.DecompositionName)
+	refactorizationFileName := fmt.Sprintf(refactorizationFileNameFormat, refactorization.StrategyName, refactorization.DecompositionName)
 
 	path, _ := filepath.Abs(svc.codebasesPath + refactorization.CodebaseName + refactorizationFileName)
 	return ioutil.WriteFile(path, file, 0644)
 }
 
-func (svc *DefaultHandler) UpdateControllerRefactorization(codebaseName string, dendrogramName string, decompositionName string, refactorization *values.Controller) error {
+func (svc *DefaultHandler) UpdateControllerRefactorization(codebaseName string, strategyName string, decompositionName string, refactorization *values.Controller) error {
 	// we lock the mutex so that only one goroutine reads and updates the file at a time
 	fileMutex.Lock()
 	defer fileMutex.Unlock()
 
-	codebase, err := svc.ReadDecompositionRefactorization(codebaseName, dendrogramName, decompositionName)
+	codebase, err := svc.ReadDecompositionRefactorization(codebaseName, strategyName, decompositionName)
 	if err != nil {
 		svc.logger.Log(err)
 		return err

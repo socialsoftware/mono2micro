@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
-import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.domain.decomposition.Decomposition;
 import pt.ist.socialsoftware.mono2micro.domain.source.Source;
 import pt.ist.socialsoftware.mono2micro.domain.source.SourceFactory;
 import pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy;
@@ -99,17 +99,15 @@ public class CodebaseController {
 	@RequestMapping(value = "/codebase/{codebaseName}/decompositions", method = RequestMethod.GET)
 	public ResponseEntity<List<Decomposition>> getCodebaseDecompositions(
 		@PathVariable String codebaseName,
-		@RequestParam(required = false, defaultValue = "") String strategyType,
-		@RequestParam List<String> fieldNames
+		@RequestParam(required = false, defaultValue = "") String strategyType
 	) {
 		logger.debug("getCodebaseDecompositions");
 
 		try {
 			return new ResponseEntity<>(
-				codebaseManager.getCodebaseDecompositionsWithFields(
+				codebaseManager.getCodebaseDecompositions(
 					codebaseName,
-					strategyType,
-					new HashSet<>(fieldNames)
+					strategyType
 				),
 				HttpStatus.OK
 			);
@@ -197,14 +195,17 @@ public class CodebaseController {
 
 	@RequestMapping(value = "/codebase/{codebaseName}/collector/{collectorType}/delete", method = RequestMethod.DELETE)
 	public ResponseEntity<HttpStatus> deleteCollector(
-			@PathVariable String codebaseName,
-			@PathVariable String collectorType,
-			@RequestParam List<String> sources) {
+		@PathVariable String codebaseName,
+		@PathVariable String collectorType,
+		@RequestParam List<String> sources,
+		@RequestParam List<String> possibleStrategies
+	) {
 		logger.debug("deleteCollector");
 
 		try {
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
 			codebaseManager.deleteSources(codebaseName, sources);
+			codebaseManager.deleteCodebaseStrategies(codebaseName, possibleStrategies);
 			codebase.removeCollector(collectorType);
 			codebaseManager.writeCodebase(codebase);
 			return new ResponseEntity<>(HttpStatus.OK);

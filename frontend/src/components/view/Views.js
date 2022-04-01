@@ -15,6 +15,7 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import {RepositoryService} from "../../services/RepositoryService";
 import AppContext from "./../AppContext";
 import {useParams} from "react-router-dom";
+import {SourceType} from "../../models/sources/Source";
 
 export const views = {
     CLUSTERS: 'Clusters View',
@@ -31,19 +32,19 @@ export const types = {
 
 export const Views = () => {
     const context = useContext(AppContext);
-    let { codebaseName, dendrogramName, decompositionName } = useParams();
+    let { codebaseName, strategyName, decompositionName } = useParams();
 
     const [view, setView] = useState(views.CLUSTERS);
 
     useEffect(() => {
-        loadTranslation();
+        //loadTranslation();
     },[]);
 
     function loadTranslation() {
         const service = new RepositoryService();
-        service.getTranslation(codebaseName).then(response => {
+        service.getInputFile(codebaseName, SourceType.IDTOENTITIY).then(source => {
             const { updateEntityTranslationFile } = context;
-            updateEntityTranslationFile(response.data);
+            updateEntityTranslationFile(source.data);
         }).catch(error => {
             console.log(error);
         });
@@ -80,11 +81,11 @@ export const Views = () => {
                 <Breadcrumb.Item href={`/codebases/${codebaseName}`}>
                     {codebaseName}
                 </Breadcrumb.Item>
-                <Breadcrumb.Item href={`/codebases/${codebaseName}/dendrograms`}>
-                    Dendrograms
+                <Breadcrumb.Item href={`/codebases/${codebaseName}/strategies`}>
+                    Strategies
                 </Breadcrumb.Item>
-                <Breadcrumb.Item href={`/codebases/${codebaseName}/dendrograms/${dendrogramName}`}>
-                    {dendrogramName}
+                <Breadcrumb.Item href={`/codebases/${codebaseName}/strategies/${strategyName}`}>
+                    {strategyName}
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>
                     {decompositionName}
@@ -144,7 +145,7 @@ export const Views = () => {
                         view === views.CLUSTERS &&
                             <ClusterView
                                 codebaseName={codebaseName}
-                                dendrogramName={dendrogramName}
+                                strategyName={strategyName}
                                 decompositionName={decompositionName}
                             />
                     }
@@ -152,7 +153,7 @@ export const Views = () => {
                         view === views.TRANSACTION &&
                             <TransactionView
                                 codebaseName={codebaseName}
-                                dendrogramName={dendrogramName}
+                                strategyName={strategyName}
                                 decompositionName={decompositionName}
                             />
                     }
@@ -160,7 +161,7 @@ export const Views = () => {
                         view === views.ENTITY &&
                             <EntityView
                                 codebaseName={codebaseName}
-                                dendrogramName={dendrogramName}
+                                strategyName={strategyName}
                                 decompositionName={decompositionName}
                             />
                     }
@@ -168,7 +169,7 @@ export const Views = () => {
                         view === views.REFACTOR &&
                             <FunctionalityRefactorToolMenu
                                 codebaseName = {codebaseName}
-                                dendrogramName = {dendrogramName}
+                                strategyName = {strategyName}
                                 decompositionName = {decompositionName}
                             />
                     }

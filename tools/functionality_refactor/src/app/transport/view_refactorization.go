@@ -26,7 +26,7 @@ func NewViewRefactorizationHandler(logger log.Logger, view ViewRefactorizationPr
 }
 
 func (r *ViewRefactorizationHTTPHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	codebase, dendrogram, decomposition, err := r.extractParameters(req)
+	codebase, strategy, decomposition, err := r.extractParameters(req)
 	if err != nil {
 		r.logger.Log("transport", "view/HTTP", "error", err.Error())
 		http.Error(
@@ -37,7 +37,7 @@ func (r *ViewRefactorizationHTTPHandler) ServeHTTP(w http.ResponseWriter, req *h
 		return
 	}
 
-	response, err := r.view.HandleViewRefactorization(req.Context(), codebase, dendrogram, decomposition)
+	response, err := r.view.HandleViewRefactorization(req.Context(), codebase, strategy, decomposition)
 	if err != nil {
 		r.logger.Log("transport", "refactor/handleViewRefactorization", "error", err.Error())
 		http.Error(
@@ -74,17 +74,17 @@ func (r *ViewRefactorizationHTTPHandler) extractParameters(req *http.Request) (s
 		return "", "", "", err
 	}
 
-	dendrogram, ok := vars["dendrogram"]
+	strategy, ok := vars["strategy"]
 	if !ok {
-		err := fmt.Errorf("no dendrogram provided as a path variable")
+		err := fmt.Errorf("no strategy provided as a path variable")
 		return codebase, "", "", err
 	}
 
 	decomposition, ok := vars["decomposition"]
 	if !ok {
 		err := fmt.Errorf("no decomposition provided as a path variable")
-		return codebase, dendrogram, "", err
+		return codebase, strategy, "", err
 	}
 
-	return codebase, dendrogram, decomposition, nil
+	return codebase, strategy, decomposition, nil
 }

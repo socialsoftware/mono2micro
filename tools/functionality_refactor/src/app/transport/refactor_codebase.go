@@ -80,8 +80,8 @@ func (r *RefactorCodebaseHTTPHandler) validateRequest(req *values.RefactorCodeba
 	if req.DecompositionName == "" {
 		return fmt.Errorf("A decomposition name must be set.")
 	}
-	if req.DendrogramName == "" {
-		return fmt.Errorf("A dendrogram name must be set.")
+	if req.StrategyName == "" {
+		return fmt.Errorf("A strategy name must be set.")
 	}
 	return nil
 }

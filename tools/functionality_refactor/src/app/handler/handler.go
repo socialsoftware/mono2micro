@@ -37,22 +37,10 @@ func New(
 }
 
 func (svc *DefaultHandler) HandleRefactorCodebase(ctx context.Context, request *values.RefactorCodebaseRequest) (*values.RefactorCodebaseResponse, error) {
-	codebase, err := svc.filesHandler.ReadCodebase(request.CodebaseName)
+	decomposition, err := svc.filesHandler.ReadDecomposition(request.CodebaseName, request.StrategyName, request.DecompositionName)
 	if err != nil {
-		svc.logger.Log("codebase", request.CodebaseName, "error", err.Error())
-		return nil, fmt.Errorf("failed to read codebase %s", request.CodebaseName)
-	}
-
-	dendogram := codebase.GetDendogram(request.DendrogramName)
-	if dendogram == nil {
-		svc.logger.Log("codebase", request.CodebaseName, "error", "failed to read dendogram")
-		return nil, fmt.Errorf("failed to read dendogram %s from codebase %s", request.DendrogramName, request.CodebaseName)
-	}
-
-	decomposition := dendogram.GetDecomposition(request.DecompositionName)
-	if decomposition == nil {
 		svc.logger.Log("codebase", request.CodebaseName, "error", "failed to read decomposition")
-		return nil, fmt.Errorf("failed to read decomposition %s from dendogram %s", request.DecompositionName, request.DendrogramName)
+		return nil, fmt.Errorf("failed to read decomposition %s from strategy %s of codebase %s", request.DecompositionName, request.StrategyName, request.CodebaseName)
 	}
 
 	response := svc.refactorHandler.RefactorDecomposition(
@@ -63,6 +51,6 @@ func (svc *DefaultHandler) HandleRefactorCodebase(ctx context.Context, request *
 	return response, nil
 }
 
-func (svc *DefaultHandler) HandleViewRefactorization(ctx context.Context, codebaseName string, dendrogramName string, decompositionName string) (*values.RefactorCodebaseResponse, error) {
-	return svc.filesHandler.ReadDecompositionRefactorization(codebaseName, dendrogramName, decompositionName)
+func (svc *DefaultHandler) HandleViewRefactorization(ctx context.Context, codebaseName string, strategyName string, decompositionName string) (*values.RefactorCodebaseResponse, error) {
+	return svc.filesHandler.ReadDecompositionRefactorization(codebaseName, strategyName, decompositionName)
 }

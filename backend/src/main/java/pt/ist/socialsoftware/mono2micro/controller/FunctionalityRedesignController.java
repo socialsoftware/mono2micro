@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.domain.*;
+import pt.ist.socialsoftware.mono2micro.domain.decomposition.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.domain.source.Source;
 import pt.ist.socialsoftware.mono2micro.domain.strategy.AccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
@@ -41,7 +42,9 @@ public class FunctionalityRedesignController {
             // TODO: abstract strategy call to make this a generic function, probably needs decompositions with subclasses
             AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
 
-            Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, null);
+            AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+                    codebaseName, strategyName, decompositionName
+            );
             Controller controller = decomposition.getController(controllerName);
 
             Source source = codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
@@ -86,12 +89,14 @@ public class FunctionalityRedesignController {
             ArrayList<Integer> accesses = (ArrayList<Integer>) data.get("entities");
 
 
-            Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, null);
+            AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+                    codebaseName, strategyName, decompositionName
+            );
             Controller controller = decomposition.getController(controllerName);
 
             controller.getFunctionalityRedesign(redesignName).addCompensating(clusterID, accesses, fromID);
             Metrics.calculateRedesignComplexities(controller, redesignName, decomposition);
-            codebaseManager.writeStrategyDecomposition(decompositionName, strategyName, decomposition);
+            codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
 
             return new ResponseEntity<>(controller, HttpStatus.OK);
 
@@ -113,12 +118,14 @@ public class FunctionalityRedesignController {
             String localTransactionID = data.get("localTransactionID");
             String newCaller = data.get("newCaller");
 
-            Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, null);
+            AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+                    codebaseName, strategyName, decompositionName
+            );
             Controller controller = decomposition.getController(controllerName);
             controller.getFunctionalityRedesign(redesignName).sequenceChange(localTransactionID, newCaller);
 
             Metrics.calculateRedesignComplexities(controller, redesignName, decomposition);
-            codebaseManager.writeStrategyDecomposition(decompositionName, strategyName, decomposition);
+            codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
             return new ResponseEntity<>(controller, HttpStatus.OK);
 
         } catch (Exception e) {
@@ -143,13 +150,15 @@ public class FunctionalityRedesignController {
             Short toClusterID = Short.parseShort(data.get("toCluster"));
             String localTransactions = data.get("localTransactions");
 
-            Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, null);
+            AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+                    codebaseName, strategyName, decompositionName
+            );
             Controller controller = decomposition.getController(controllerName);
 
             controller.getFunctionalityRedesign(redesignName).dcgi(fromClusterID, toClusterID, localTransactions);
 
             Metrics.calculateRedesignComplexities(controller, redesignName, decomposition);
-            codebaseManager.writeStrategyDecomposition(decompositionName, strategyName, decomposition);
+            codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
 
             return new ResponseEntity<>(controller, HttpStatus.OK);
 
@@ -174,7 +183,9 @@ public class FunctionalityRedesignController {
             // TODO: abstract strategy call to make this a generic function, probably needs decompositions with subclasses
             AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
 
-            Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, null);
+            AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+                    codebaseName, strategyName, decompositionName
+            );
             Controller controller = decomposition.getController(controllerName);
 
             if(newRedesignName.isPresent())
@@ -205,7 +216,7 @@ public class FunctionalityRedesignController {
             }
 
             Metrics.calculateRedesignComplexities(controller, Constants.DEFAULT_REDESIGN_NAME, decomposition);
-            codebaseManager.writeStrategyDecomposition(decompositionName, strategyName, decomposition);
+            codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
 
             return new ResponseEntity<>(controller, HttpStatus.OK);
         } catch (Exception e) {
@@ -227,10 +238,12 @@ public class FunctionalityRedesignController {
     ){
         logger.debug("changeLTName");
         try {
-            Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, null);
+            AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+                    codebaseName, strategyName, decompositionName
+            );
             Controller controller = decomposition.getController(controllerName);
             controller.getFunctionalityRedesign(redesignName).changeLTName(transactionID, newName);
-            codebaseManager.writeStrategyDecomposition(decompositionName, strategyName, decomposition);
+            codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
 
             return new ResponseEntity<>(controller, HttpStatus.OK);
         } catch (Exception e) {
@@ -249,10 +262,12 @@ public class FunctionalityRedesignController {
     ) {
         logger.debug("deleteRedesign");
         try {
-            Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, null);
+            AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+                    codebaseName, strategyName, decompositionName
+            );
             Controller controller = decomposition.getController(controllerName);
             controller.deleteRedesign(redesignName);
-            codebaseManager.writeStrategyDecomposition(decompositionName, strategyName, decomposition);
+            codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
 
             return new ResponseEntity<>(controller, HttpStatus.OK);
         } catch (Exception e) {
@@ -271,10 +286,12 @@ public class FunctionalityRedesignController {
     ) {
         logger.debug("useForMetrics");
         try {
-            Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, null);
+            AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+                    codebaseName, strategyName, decompositionName
+            );
             Controller controller = decomposition.getController(controllerName);
             controller.changeFRUsedForMetrics(redesignName);
-            codebaseManager.writeStrategyDecomposition(decompositionName, strategyName, decomposition);
+            codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
 
             return new ResponseEntity<>(controller, HttpStatus.OK);
         } catch (Exception e) {

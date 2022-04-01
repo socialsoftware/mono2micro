@@ -124,7 +124,7 @@ public class Cluster {
 		if (dependencyEntities == null) return;
 
 		for (short entity : entities)
-			if (dependencyEntities.remove(entity))
+			if (dependencyEntities.remove(entity) && newClusterID != id)
 				addCouplingDependency(newClusterID, entity);
 		if (dependencyEntities.isEmpty())
 			this.couplingDependencies.remove(currentClusterID);

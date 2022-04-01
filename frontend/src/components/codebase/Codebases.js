@@ -52,6 +52,7 @@ export const Codebases = () => {
                                     <Button
                                         href={`/codebases/${codebase.name}`}
                                         className="mb-2"
+                                        variant={"success"}
                                     >
                                         Go to Codebase
                                     </Button>

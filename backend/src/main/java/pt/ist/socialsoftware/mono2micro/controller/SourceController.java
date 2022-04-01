@@ -19,7 +19,7 @@ import static pt.ist.socialsoftware.mono2micro.domain.source.Source.SourceType.*
 @RequestMapping(value = "/mono2micro/codebase/{codebaseName}")
 public class SourceController {
 
-    private static Logger logger = LoggerFactory.getLogger(SourceController.class);
+    private static final Logger logger = LoggerFactory.getLogger(SourceController.class);
 
     private final CodebaseManager codebaseManager = CodebaseManager.getInstance();
 

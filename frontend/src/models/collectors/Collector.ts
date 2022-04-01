@@ -12,13 +12,13 @@ export default abstract class Collector {
     }
 
     // This function is used to display the collector
-    abstract printForm(): JSX.Element;
-
-    // This function is used to display the collector
     abstract printCard(handleDeleteCollector: (collector: Collector) => void): JSX.Element;
 
     // This function is used to verify if conditions are met to submit
     abstract canSubmit(): boolean;
+
+    // Required for creating a new copy when updating the state
+    abstract copy(): Collector;
 }
 
 export enum CollectorType {

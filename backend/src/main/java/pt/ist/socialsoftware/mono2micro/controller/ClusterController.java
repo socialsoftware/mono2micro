@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.domain.*;
+import pt.ist.socialsoftware.mono2micro.domain.decomposition.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.domain.source.AccessesSource;
 import pt.ist.socialsoftware.mono2micro.domain.strategy.AccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
@@ -41,7 +42,9 @@ public class ClusterController {
 
 			AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
 			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
-			Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, null);
+			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+					codebaseName, strategyName, decompositionName
+			);
 
 			decomposition.mergeClusters(
 				clusterNameID,
@@ -84,7 +87,9 @@ public class ClusterController {
 			// FIXME Each dendrogram directory would have a folder for controllers and another for clusters
 			// FIXME Each controller and cluster would have its own json file
 
-			Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, null);
+			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+					codebaseName, strategyName, decompositionName
+			);
 
 			decomposition.renameCluster(
 				clusterID,
@@ -121,7 +126,9 @@ public class ClusterController {
 
 			AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
 			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
-			Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, null);
+			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+					codebaseName, strategyName, decompositionName
+			);
 
 			decomposition.splitCluster(
 				clusterID,
@@ -167,7 +174,9 @@ public class ClusterController {
 
 			AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
 			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
-			Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(codebaseName, strategyName, decompositionName, null);
+			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+					codebaseName, strategyName, decompositionName
+			);
 
 			decomposition.transferEntities(
 				clusterID,
@@ -205,11 +214,10 @@ public class ClusterController {
 		logger.debug("getControllersClusters");
 
 		try {
-			Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(
+			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
 				codebaseName,
 				strategyName,
-				decompositionName,
-				new HashSet<String>() {{ add("clusters"); add("controllers"); }}
+				decompositionName
 			);
 
 			Utils.GetControllersClustersAndClustersControllersResult result =
@@ -238,11 +246,10 @@ public class ClusterController {
 		logger.debug("getClustersControllers");
 
 		try {
-			Decomposition decomposition = codebaseManager.getStrategyDecompositionWithFields(
+			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
 				codebaseName,
 				strategyName,
-				decompositionName,
-				new HashSet<String>() {{ add("clusters"); add("controllers"); }}
+				decompositionName
 			);
 
 			Utils.GetControllersClustersAndClustersControllersResult result =

@@ -12,7 +12,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Controller;
-import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.domain.decomposition.AccessesSciPyDecomposition;
+import pt.ist.socialsoftware.mono2micro.domain.decomposition.Decomposition;
 import pt.ist.socialsoftware.mono2micro.domain.source.AccessesSource;
 import pt.ist.socialsoftware.mono2micro.dto.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
@@ -155,7 +156,7 @@ public class AnalysisController {
                     continue;
                 }
 
-				Decomposition decomposition = buildDecompositionAndCalculateMetrics(
+				AccessesSciPyDecomposition decomposition = buildDecompositionAndCalculateMetrics(
 					analyser,
 					codebase,
 					filename
@@ -246,14 +247,14 @@ public class AnalysisController {
 		System.out.println("script execution has ended");
 	}
 
-	private Decomposition buildDecompositionAndCalculateMetrics(
+	private AccessesSciPyDecomposition buildDecompositionAndCalculateMetrics(
 		AnalyserDto analyser,
 		Codebase codebase, // requirements: name, profiles, datafilePath
 		String filename
 	)
 		throws Exception
 	{
-		Decomposition decomposition = new Decomposition();
+		AccessesSciPyDecomposition decomposition = new AccessesSciPyDecomposition();
 		decomposition.setCodebaseName(codebase.getName());
 
 		HashMap<String, HashMap<String, Set<Short>>> analyserCut = codebaseManager.getAnalyserCut(
@@ -294,7 +295,7 @@ public class AnalysisController {
 
 	private CutInfoDto assembleCutInformation(
 		AnalyserDto analyser,
-		Decomposition decomposition,
+		AccessesSciPyDecomposition decomposition,
 		String filename
 	)
 		throws IOException
@@ -358,12 +359,12 @@ public class AnalysisController {
 		}
 
 		Map<String, Set<Short>> decomposition1 = new HashMap<>();
-		for (Cluster c : analysis.getDecomposition1().getClusters().values()) {
+		for (Cluster c : ((AccessesSciPyDecomposition) analysis.getDecomposition1()).getClusters().values()) {
 			decomposition1.put(c.getName(), c.getEntities());
 		}
 
 		Map<String, Set<Short>> decomposition2_CommonEntitiesOnly = new HashMap<>();
-		for (Cluster c : analysis.getDecomposition2().getClusters().values()) {
+		for (Cluster c : ((AccessesSciPyDecomposition) analysis.getDecomposition2()).getClusters().values()) {
 			decomposition2_CommonEntitiesOnly.put(c.getName(), c.getEntities());
 		}
 

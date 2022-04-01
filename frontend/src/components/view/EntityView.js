@@ -59,7 +59,7 @@ const options = {
 export const EntityView = () => {
     const context = useContext(AppContext);
     const { translateEntity } = context;
-    let { codebaseName, dendrogramName, decompositionName } = useParams();
+    let { codebaseName, strategyName, decompositionName } = useParams();
 
     const [state, changeState] = useState({
         visGraph: {},
@@ -78,13 +78,12 @@ export const EntityView = () => {
 
         service.getDecomposition(
             codebaseName,
-            dendrogramName,
-            decompositionName,
-            [ "clusters", "controllers" ]
+            strategyName,
+            decompositionName
         ).then(response => {
             service.getClustersControllers(
                 codebaseName,
-                dendrogramName,
+                strategyName,
                 decompositionName
             ).then(response2 => {
                 let entities = Object.values(response.data.clusters).map(c => c.entities).flat();

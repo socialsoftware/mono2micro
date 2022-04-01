@@ -14,7 +14,7 @@ import pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -32,7 +32,7 @@ public class StrategyController {
 		logger.debug("Create Strategy");
 
 		try {
-			List<Strategy> strategies = codebaseManager.getCodebaseStrategies(codebaseName, Arrays.asList(strategyInformation.getType()));
+			List<Strategy> strategies = codebaseManager.getCodebaseStrategies(codebaseName, Collections.singletonList(strategyInformation.getType()));
 			if (strategies.stream().anyMatch(strategy -> strategy.equals(strategyInformation)))
 				return new ResponseEntity<>(HttpStatus.CREATED);
 

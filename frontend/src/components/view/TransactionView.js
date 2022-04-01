@@ -177,7 +177,7 @@ const optionsFunctionalityRedesign = {
 export const TransactionView = () => {
     const context = useContext(AppContext);
     const { translateEntity } = context;
-    let { codebaseName, dendrogramName, decompositionName } = useParams();
+    let { codebaseName, strategyName, decompositionName } = useParams();
 
     const [visGraph, setVisGraph] = useState({});
     const [visGraphSeq, setVisGraphSeq] = useState({});
@@ -212,15 +212,14 @@ export const TransactionView = () => {
 
         service.getControllersClusters(
             codebaseName,
-            dendrogramName,
+            strategyName,
             decompositionName
         ).then(response => { setControllersClusters(response.data); });
 
         service.getDecomposition(
             codebaseName,
-            dendrogramName,
-            decompositionName,
-            ["clusters", "controllers"]
+            strategyName,
+            decompositionName
         ).then(response => {
             setControllers(Object.values(response.data.controllers));
             setClusters(Object.values(response.data.clusters));
@@ -240,7 +239,7 @@ export const TransactionView = () => {
 
         service.getLocalTransactionsGraphForController(
             codebaseName,
-            dendrogramName,
+            strategyName,
             decompositionName,
             currentController.name
         ).then(response => {
@@ -572,7 +571,7 @@ export const TransactionView = () => {
             case redesignOperations.AC:
                 service.addCompensating(
                     codebaseName,
-                    dendrogramName,
+                    strategyName,
                     decompositionName,
                     controller.name,
                     selectedRedesign.name,
@@ -593,7 +592,7 @@ export const TransactionView = () => {
             case redesignOperations.SQ:
                 service.sequenceChange(
                     codebaseName,
-                    dendrogramName,
+                    strategyName,
                     decompositionName,
                     controller.name,
                     selectedRedesign.name,
@@ -619,7 +618,7 @@ export const TransactionView = () => {
                 });
                 service.dcgi(
                     codebaseName,
-                    dendrogramName,
+                    strategyName,
                     decompositionName,
                     controller.name,
                     selectedRedesign.name,
@@ -640,7 +639,7 @@ export const TransactionView = () => {
             case redesignOperations.PIVOT:
                 service.selectPivotTransaction(
                     codebaseName,
-                    dendrogramName,
+                    strategyName,
                     decompositionName,
                     controller.name,
                     selectedRedesign.name,
@@ -666,7 +665,7 @@ export const TransactionView = () => {
             case redesignOperations.RENAME:
                 service.changeLTName(
                     codebaseName,
-                    dendrogramName,
+                    strategyName,
                     decompositionName,
                     controller.name,
                     selectedRedesign.name,
@@ -787,7 +786,7 @@ export const TransactionView = () => {
 
     function handleUseForMetrics(value){
         const service = new RepositoryService();
-        service.setUseForMetrics(codebaseName, dendrogramName, decompositionName,
+        service.setUseForMetrics(codebaseName, strategyName, decompositionName,
             controller.name, value.name)
             .then(response => {
                 const tempControllers = controllers;
@@ -809,7 +808,7 @@ export const TransactionView = () => {
 
     function handleDeleteRedesign(value){
         const service = new RepositoryService();
-        service.deleteRedesign(codebaseName, dendrogramName, decompositionName,
+        service.deleteRedesign(codebaseName, strategyName, decompositionName,
             controller.name, value.name)
             .then(response => {
                 const tempControllers = controllers;
