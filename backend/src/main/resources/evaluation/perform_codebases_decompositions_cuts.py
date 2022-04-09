@@ -195,5 +195,5 @@ def main():
         print("\033[1m Commit Dendrograms/Cuts: \033[0m")
         do_commit_analysis_cuts(best_cuts, folder)
 
-
-main()
+if __name__ == "__main__":
+    main()
