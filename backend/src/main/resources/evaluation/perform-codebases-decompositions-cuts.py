@@ -90,6 +90,93 @@ def cut_exists(cut, codebase_name):
     return os.path.exists(codebases_path + "/" + codebase_name + "/" + get_filename_from_cut(cut) + "/N" + str(cut[-1]))
 
 
+def do_static_analysis_cuts(best_cuts, codebase_name):
+    for cut in best_cuts:
+        if not dendrogram_exists(cut, codebase_name):
+            print("  + Creating Dendrogram with name {}...".format(get_filename_from_cut(cut)), end="")
+            status = create_dendrogram(cut, codebase_name)
+            if status == 201:
+                print("\033[92m Success. \033[0m")
+            else:
+                print(f"\033[91m Unexpected status code {status}, was expecting 201. \033[0m")
+        else:
+            print("  - Dendrogram with name {} already exists.".format(get_filename_from_cut(cut)))
+
+        if not cut_exists(cut, codebase_name):
+            print("  + Creating cut with {} clusters...".format(cut[-1]), end="")
+            status = create_cut(cut, codebase_name)
+            if status == 200:
+                print("\033[92m Success. \033[0m")
+            else:
+                print(f"\033[91m Unexpected status code {status}, was expecting 200. \033[0m")
+        else:
+            print("  - Cut with {} clusters already exists.".format(cut[-1]))
+
+
+def create_commit_dendrogram(codebase_name):
+    data = {
+        "codebaseName": codebase_name,
+        "name": "commit",
+        "base": "COMMIT",
+        "linkageType": "average",
+        "accessMetricWeight": 25,
+        "writeMetricWeight": 25,
+        "readMetricWeight": 25,
+        "sequenceMetricWeight": 25,
+        "profile": "Generic",
+        "tracesMaxLimit": 0,
+        "traceType": "ALL"
+    }
+    r = requests.post(url=create_dendrogram_url.format(codebase_name), json=data)
+    return r.status_code
+
+
+def create_commit_cut(cut, codebase_name):
+    data = {
+        "codebaseName": codebase_name,
+        "dendrogramName": "commit",
+        "expert": False,
+        "cutValue": cut[-1],
+        "cutType": "N"
+    }
+
+    r = requests.post(url=create_cut_url.format(codebase_name, "commit"), json=data)
+    return r.status_code
+
+
+def commit_dendrogram_exists(codebase_name):
+    return os.path.exists(codebases_path + "/" + codebase_name + "/commit")
+
+
+def commit_cut_exists(cut, codebase_name):
+    return os.path.exists(codebases_path + "/" + codebase_name + "/commit/N" + str(cut[-1]))
+
+
+def do_commit_analysis_cuts(best_cuts, codebase_name):
+    # There is only one dendrogram for all cuts, so create it if it does not exist
+    if not commit_dendrogram_exists(codebase_name):
+        print("  + Creating commit Dendrogram...", end="")
+        status = create_commit_dendrogram(codebase_name)
+        if status == 201:
+            print("\033[92m Success. \033[0m")
+        else:
+            print(f"\033[91m Unexpected status code {status}, was expecting 201. \033[0m")
+    else:
+        print("  - Commit Dendrogram already exists.")
+
+    for cut in best_cuts:
+        if not commit_cut_exists(cut, codebase_name):
+            print("  + Creating cut with {} clusters...".format(cut[-1]), end="")
+            status = create_commit_cut(cut, codebase_name)
+            if status == 200:
+                print("\033[92m Success. \033[0m")
+            else:
+                print(f"\033[91m Unexpected status code {status}, was expecting 200. \033[0m")
+        else:
+            print("  - Cut with {} clusters already exists.".format(cut[-1]))
+
+
+
 def main():
     if len(os.listdir("data/")) == 0:
         print("Creating csv files from analyzer...")
@@ -97,31 +184,16 @@ def main():
 
     for folder in os.listdir(codebases_path):
         print(f"Codebase: {folder}")
+        print("\033[1m Static Dendrograms/Cuts: \033[0m")
         best_cuts = best_cuts_for_codebase(folder)
         if best_cuts is None:
             print("Something went wrong computing the best cuts. Are the .csv files from the MetadataCreator properly "
                   "formatted?")
 
-        for cut in best_cuts:
-            if not dendrogram_exists(cut, folder):
-                print("  + Creating Dendrogram with name {}.json...".format(get_filename_from_cut(cut)), end="")
-                status = create_dendrogram(cut, folder)
-                if status == 201:
-                    print("\033[92m Success. \033[0m")
-                else:
-                    print(f"\033[91m Unexpected status code {status}, was expecting 201. \033[0m")
-            else:
-                print("  - Dendrogram with name {}.json already exists.".format(get_filename_from_cut(cut)))
+        do_static_analysis_cuts(best_cuts, folder)
 
-            if not cut_exists(cut, folder):
-                print("  + Creating cut with {} clusters...".format(cut[-1]), end="")
-                status = create_cut(cut, folder)
-                if status == 200:
-                    print("\033[92m Success. \033[0m")
-                else:
-                    print(f"\033[91m Unexpected status code {status}, was expecting 200. \033[0m")
-            else:
-                print("  - Cut with {} clusters already exists.".format(cut[-1]))
+        print("\033[1m Commit Dendrograms/Cuts: \033[0m")
+        do_commit_analysis_cuts(best_cuts, folder)
 
 
 main()
