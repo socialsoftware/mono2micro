@@ -460,26 +460,33 @@ public class Codebase {
 		for (int i = 0; i < packages.length(); i++) {
 			JSONObject pack = packages.getJSONObject(i);
 			JSONArray classes = pack.optJSONArray("classes");
+
 			for (int j = 0; j < classes.length(); j++) {
 				JSONObject cls = classes.getJSONObject(j);
 				JSONArray methods = cls.optJSONArray("methods");
 				List<List<Double>> class_methods_vectors = new ArrayList<List<Double>>();
+
 				for (int k = 0; k < methods.length(); k++) {
 					JSONObject method = methods.getJSONObject(k);
 					JSONArray code_vector_array = method.optJSONArray("codeVector");
 					List<Double> code_vector = new ArrayList<Double>();
+
 					for (int l = 0; l < code_vector_array.length(); l++) {
 						code_vector.add(code_vector_array.getDouble(l));
 					}
 					class_methods_vectors.add(code_vector);
 				}
-				List<Double> class_vector = calculateClassVector(class_methods_vectors);
-				HashMap<String, Object> classEmbeddings = new HashMap<String, Object>();
-				classEmbeddings.put("package", pack.getString("name"));
-				classEmbeddings.put("name", cls.getString("name"));
-				classEmbeddings.put("type", cls.getString("type"));
-				classEmbeddings.put("codeVector", class_vector);
-				classesVectors.add(classEmbeddings);
+
+				if (!class_methods_vectors.isEmpty()) {
+					List<Double> class_vector = calculateClassVector(class_methods_vectors);
+					HashMap<String, Object> classEmbeddings = new HashMap<String, Object>();
+					classEmbeddings.put("package", pack.getString("name"));
+					classEmbeddings.put("name", cls.getString("name"));
+					classEmbeddings.put("type", cls.getString("type"));
+					if (cls.has("translationID")) classEmbeddings.put("translationID", cls.getInt("translationID"));
+					classEmbeddings.put("codeVector", class_vector);
+					classesVectors.add(classEmbeddings);
+				}
 			}
 		}
 

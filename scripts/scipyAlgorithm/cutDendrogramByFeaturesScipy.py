@@ -80,16 +80,13 @@ def cutDendrogramByFeatures(codebasesPath, codebaseName, dendrogramName, graphNa
         else:
             entities_cluster[attr_cluster] = [entity]
 
+    nodes = hierarchy.fcluster(hierarc, len(clusters), criterion="maxclust")
+    try:
+        silhouetteScore = metrics.silhouette_score(matrix, nodes)
+    except:
+        silhouetteScore = 0
 
-    # nodes = hierarchy.fcluster(hierarc, len(clusters), criterion="maxclust")
-    #try:
-    #    silhouetteScore = metrics.silhouette_score(matrix, nodes)
-    #except:
-    #    silhouetteScore = 0
-
-    # clustersJSON = {"silhouetteScore": "{0:.2f}".format(silhouetteScore), "clusters": clusters}
-
-    clustersJSON = {"clusters": entities_cluster}
+    clustersJSON = {"silhouetteScore": "{0:.2f}".format(silhouetteScore), "clusters": entities_cluster}
 
     with open(codebasesPath + codebaseName + "/" + dendrogramName + "/" + graphName + "/clusters.json", 'w') as outfile:
         outfile.write(json.dumps(clustersJSON, indent=4))

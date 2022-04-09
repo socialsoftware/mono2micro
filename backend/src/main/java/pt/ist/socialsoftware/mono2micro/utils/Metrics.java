@@ -133,17 +133,26 @@ public class Metrics {
 		}
 
 		// complexity calculus
-		complexity /= controllersThatAccessThisCluster.size();
-		complexity = BigDecimal
-						.valueOf(complexity)
-						.setScale(2, RoundingMode.HALF_UP)
-						.floatValue();
+		if (controllersThatAccessThisCluster.size() > 0) {
+			complexity /= controllersThatAccessThisCluster.size();
+			complexity = BigDecimal
+					.valueOf(complexity)
+					.setScale(2, RoundingMode.HALF_UP)
+					.floatValue();
+		} else {
+			complexity = 0;
+		}
 
 		cluster.setComplexity(complexity);
 
 		// cohesion calculus
-		cohesion /= controllersThatAccessThisCluster.size();
-		cohesion = BigDecimal.valueOf(cohesion).setScale(2, RoundingMode.HALF_UP).floatValue();
+		if (controllersThatAccessThisCluster.size() > 0) {
+			cohesion /= controllersThatAccessThisCluster.size();
+			cohesion = BigDecimal.valueOf(cohesion).setScale(2, RoundingMode.HALF_UP).floatValue();
+		} else {
+			cohesion = 0;
+		}
+
 		cluster.setCohesion(cohesion);
 	}
 

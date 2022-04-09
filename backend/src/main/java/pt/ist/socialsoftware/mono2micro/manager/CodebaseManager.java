@@ -810,24 +810,22 @@ public class CodebaseManager {
 	public void matchEntitiesTranslationIds(String codebaseName, JSONObject codeEmbeddings)
 		throws JSONException, IOException
 	{
+		String translationEntityToIdFile = getTranslationEntityToId(codebaseName);
+		JSONObject translationEntityToIdJson = new JSONObject(translationEntityToIdFile);
 		JSONArray packages = codeEmbeddings.getJSONArray("packages");
+		
 		for (int i = 0; i < packages.length(); i++) {
 			JSONObject pack = packages.getJSONObject(i);
 			JSONArray classes = pack.optJSONArray("classes");
 
 			for (int j = 0; j < classes.length(); j++) {
 				JSONObject cls = classes.getJSONObject(j);
-				String classType = cls.getString("type");
 				String className = cls.getString("name");
 
-				if (classType.equals("Entity")) {
-					String translationEntityToIdFile = getTranslationEntityToId(codebaseName);
-					JSONObject translationEntityToIdJson = new JSONObject(translationEntityToIdFile);
-
-					if (translationEntityToIdJson.has(className)) {
-						int entityId = translationEntityToIdJson.getInt(className);
-						cls.put("translationID", entityId);
-					}
+				if (translationEntityToIdJson.has(className)) {
+					int entityId = translationEntityToIdJson.getInt(className);
+					cls.put("type", "Entity");
+					cls.put("translationID", entityId);
 				}
 			}
 		}
