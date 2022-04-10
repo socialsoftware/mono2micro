@@ -492,6 +492,18 @@ public class CodebaseManager {
 		);
 	}
 
+	public void writeEntitiesCodeVectorsFile(
+			String codebaseName,
+			HashMap entitiesCodeVectorsFileJSON
+	)
+			throws IOException
+	{
+		objectMapper.writerWithDefaultPrettyPrinter().writeValue(
+				new File(CODEBASES_PATH + codebaseName + "/entities_embeddings.json"),
+				entitiesCodeVectorsFileJSON
+		);
+	}
+
 	public void writeClassesCodeVectorsFile(
 		String codebaseName,
 		HashMap classesCodeVectorsFileJSON

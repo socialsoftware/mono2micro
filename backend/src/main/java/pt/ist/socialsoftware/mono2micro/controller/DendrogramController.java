@@ -215,7 +215,7 @@ public class DendrogramController {
 			if (dendrogram.getAnalysisType().equals("static")) {
 				cutDecomposition = dendrogram.cut(decomposition);
 			} else if (dendrogram.getAnalysisType().equals("feature")) {
-				cutDecomposition = dendrogram.cutFeaturesAnalysis(decomposition);
+				cutDecomposition = dendrogram.cutFeaturesAnalysis(decomposition, dendrogram.getFeatureVectorizationStrategy());
 			} else {
 				cutDecomposition = dendrogram.cutClassesAnalysis(decomposition);
 			}

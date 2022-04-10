@@ -4,7 +4,7 @@ from sklearn import metrics
 import json
 
 
-def cutDendrogramByFeatures(codebasesPath, codebaseName, dendrogramName, graphName, cutType, cutValue):
+def cutDendrogramByFeaturesMethodCalls(codebasesPath, codebaseName, dendrogramName, graphName, cutType, cutValue):
 
     with open(codebasesPath + codebaseName + "/features_embeddings.json") as f:
         features_embeddings = json.load(f)

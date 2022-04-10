@@ -6,19 +6,19 @@ matplotlib.use('agg')
 import matplotlib.pyplot as plt
 
 
-def createDendrogramByFeaturesScipy(codebasesPath, codebaseName, dendrogramName):
-    with open(codebasesPath + codebaseName + "/features_embeddings.json") as f:
-        features_embeddings = json.load(f)
+def createDendrogramByFeaturesEntitiesScipy(codebasesPath, codebaseName, dendrogramName):
+    with open(codebasesPath + codebaseName + "/entities_embeddings.json") as f:
+        entities_embeddings = json.load(f)
 
     names = []
     vectors = []
-    for feature in features_embeddings['features']:
-        names += [feature['signature'].split("(")[0].split(".")[-1]]
-        vectors += [feature['codeVector']]
+    for entity in entities_embeddings['entities']:
+        names += [entity['name']]
+        vectors += [entity['codeVector']]
 
     matrix = np.array(vectors)
 
-    linkageType = features_embeddings['linkageType']
+    linkageType = entities_embeddings['linkageType']
 
     hierarc = hierarchy.linkage(y=matrix, method=linkageType)
 

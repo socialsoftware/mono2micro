@@ -380,13 +380,68 @@ public class Codebase {
 
 		this.addDendrogram(dendrogram);
 
-		executeCreateDendrogram(dendrogram, "/features");
+		executeCreateDendrogram(dendrogram, "/features/methodsCalls");
 	}
 
 	public void entitiesFeaturesAnalysis(Dendrogram dendrogram)
 		throws JSONException, IOException
 	{
+		List<HashMap> entitiesVectors = new ArrayList<>();
+		HashMap<String, Object> entitiesJson = new HashMap<String, Object>();
+		JSONObject codeEmbeddings = CodebaseManager.getInstance().getCodeEmbeddings(this.name);
+		JSONArray packages = codeEmbeddings.getJSONArray("packages");
+		entitiesJson.put("name", codeEmbeddings.getString("name"));
+		entitiesJson.put("linkageType", dendrogram.getLinkageType());
 
+		for (int i = 0; i < packages.length(); i++) {
+			JSONObject pack = packages.getJSONObject(i);
+			JSONArray classes = pack.optJSONArray("classes");
+
+			for (int j = 0; j < classes.length(); j++) {
+				JSONObject cls = classes.getJSONObject(j);
+				JSONArray methods = cls.optJSONArray("methods");
+				String classType = cls.getString("type");
+
+				if (classType.equals("Entity")) {
+					float count = 0;
+					ArrayList<Double> vector = new ArrayList<Double>();
+					for (int idx = 0; idx < 384; idx++) {
+						vector.add(0.0);
+					}
+
+					for (int k = 0; k < methods.length(); k++) {
+						JSONObject method = methods.getJSONObject(k);
+						JSONArray code_vector = method.getJSONArray("codeVector");
+						for (int idx = 0; idx < 384; idx++) {
+							vector.set(idx, vector.get(idx) + dendrogram.getConstructorWeight() * code_vector.getDouble(idx));
+						}
+						count += dendrogram.getConstructorWeight();
+					}
+
+					if (count > 0) {
+						vectorDivision(vector, count);
+
+						HashMap<String, Object> entityEmbeddings = new HashMap<String, Object>();
+						entityEmbeddings.put("package", pack.getString("name"));
+						entityEmbeddings.put("name", cls.getString("name"));
+						entityEmbeddings.put("translationID", cls.getInt("translationID"));
+						entityEmbeddings.put("codeVector", vector);
+						entitiesVectors.add(entityEmbeddings);
+					}
+
+				}
+
+			}
+
+		}
+
+		entitiesJson.put("entities", entitiesVectors);
+
+		CodebaseManager.getInstance().writeEntitiesCodeVectorsFile(this.name, entitiesJson);
+
+		this.addDendrogram(dendrogram);
+
+		executeCreateDendrogram(dendrogram, "/features/entities");
 	}
 
 	public void mixedFeaturesAnalysis(Dendrogram dendrogram)

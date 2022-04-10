@@ -502,7 +502,7 @@ public class Dendrogram {
 		return decomposition;
 	}
 
-	public Decomposition cutFeaturesAnalysis(Decomposition decomposition)
+	public Decomposition cutFeaturesAnalysis(Decomposition decomposition, String strategy)
 		throws Exception
 	{
 
@@ -524,7 +524,7 @@ public class Dendrogram {
 
 		WebClient.create(SCRIPTS_ADDRESS)
 				.get()
-				.uri("/scipy/{codebaseName}/{dendrogramName}/{graphName}/{cutType}/{cutValue}/cut/features",
+				.uri("/scipy/{codebaseName}/{dendrogramName}/{graphName}/{cutType}/{cutValue}/cut/features/" + strategy,
 						this.codebaseName, this.name, decomposition.getName(), decomposition.getCutType(), Float.toString(decomposition.getCutValue()))
 				.exchange()
 				.doOnSuccess(clientResponse -> {

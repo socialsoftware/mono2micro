@@ -51,10 +51,10 @@ class InteractivePredictor:
 
             for raw_prediction, method_prediction in zip(raw_prediction_results, method_prediction_results):
                 
-                print('[+] Original name:\t' + original_name)
+                # print('[+] Original name:\t' + original_name)
                 namePredictions = []
                 for name_prob_pair in method_prediction.predictions:
-                    print('\t(%f) predicted: %s' % (name_prob_pair['probability'], name_prob_pair['name']))
+                    # print('\t(%f) predicted: %s' % (name_prob_pair['probability'], name_prob_pair['name']))
                     namePredictions.append(
                         NamePrediction(
                             probability=name_prob_pair['probability'],
@@ -62,11 +62,11 @@ class InteractivePredictor:
                         )
                     )
                 
-                print('[+] Attention:')
+                # print('[+] Attention:')
                 attentionPaths = []
                 for attention_obj in method_prediction.attention_paths:
-                    print('%f\tcontext: %s,%s,%s' % (
-                    attention_obj['score'], attention_obj['token1'], attention_obj['path'], attention_obj['token2']))
+                    # print('%f\tcontext: %s,%s,%s' % (
+                    # attention_obj['score'], attention_obj['token1'], attention_obj['path'], attention_obj['token2']))
                     attentionPaths.append(
                         AttentionPath(
                             score=attention_obj['score'],
@@ -76,8 +76,8 @@ class InteractivePredictor:
                         )
                     )
                 if self.config.EXPORT_CODE_VECTORS:
-                    print('[+] Code vector: ')
-                    print(' '.join(map(str, raw_prediction.code_vector)))
+                    # print('[+] Code vector: ')
+                    # print(' '.join(map(str, raw_prediction.code_vector)))
                     return MethodPredict(
                         name=original_name,
                         namePredictions=namePredictions,
