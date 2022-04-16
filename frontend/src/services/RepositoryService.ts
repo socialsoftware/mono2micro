@@ -145,7 +145,8 @@ export class RepositoryService {
         name: string,
         datafile: any,
         translationFile: any,
-        commitFile: any
+        commitFile: any,
+        authorFile: any
     ) {
         const config = {
             headers: {
@@ -161,6 +162,9 @@ export class RepositoryService {
         if (commitFile !== null)
             data.append('commitFile', commitFile);
         else data.append('commitFile', "");
+        if (authorFile !== null)
+            data.append("authorFile", authorFile);
+        console.log("author file is: "+authorFile);
 
         return this.axios.post<null>(
             "/codebase/create",

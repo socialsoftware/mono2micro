@@ -16,6 +16,7 @@ export const Codebases = () => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [translationFile, setTranslationFile] = useState(null);
     const [commitFile, setCommitFile] = useState(null);
+    const [authorFile, setAuthorFile] = useState(null);
     const [isUploaded, setIsUploaded] = useState("");
     const [codebases, setCodebases] = useState([]);
 
@@ -32,13 +33,14 @@ export const Codebases = () => {
     }
 
     function handleSelectedFile(event) {
-        if (event.target.files.length !== 3) {
-            setIsUploaded("Data Collection File, ID to Entity File, and Commit Collection File need to be uploaded simultaneously.");
+        if (event.target.files.length !== 4) {
+            setIsUploaded("Data Collection File, ID to Entity File, Commit Collection File and Author Collection File need to be uploaded simultaneously.");
             return;
         }
         setSelectedFile(event.target.files[0]);
         setTranslationFile(event.target.files[1]);
         setCommitFile(event.target.files[2]);
+        setAuthorFile(event.target.files[3]);
         setNewDatafilePath("");
         setIsUploaded("");
     }
@@ -51,6 +53,13 @@ export const Codebases = () => {
 
     function handleCommitFile(event) {
         setCommitFile(event.target.files[0]);
+        setNewDatafilePath("");
+        setIsUploaded("");
+    }
+
+    function handleAuthorFile(event) {
+        console.log(event.target.files[0]);
+        setAuthorFile(event.target.files[0]);
         setNewDatafilePath("");
         setIsUploaded("");
     }
@@ -84,12 +93,13 @@ export const Codebases = () => {
 
         setIsUploaded("Uploading...");
 
-        if (selectedFile !== null && translationFile !== null && commitFile !== null) {
+        if (selectedFile !== null && translationFile !== null && commitFile !== null && authorFile !== null) {
             doCreateCodebaseRequest(
                 newCodebaseName,
                 selectedFile,
                 translationFile,
-                commitFile
+                commitFile,
+                authorFile
             );
         }
         else {
@@ -100,9 +110,9 @@ export const Codebases = () => {
         }
     }
 
-    function doCreateCodebaseRequest(codebaseName, pathOrFile, translationFile = null, commitFile = null) {
+    function doCreateCodebaseRequest(codebaseName, pathOrFile, translationFile = null, commitFile = null, authorFile = null) {
         const service = new RepositoryService();
-        service.createCodebase(codebaseName, pathOrFile, translationFile, commitFile)
+        service.createCodebase(codebaseName, pathOrFile, translationFile, commitFile, authorFile)
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
                     loadCodebases();
@@ -126,6 +136,7 @@ export const Codebases = () => {
         setSelectedFile(null);
         setTranslationFile(null);
         setCommitFile(null);
+        setAuthorFile(null)
     }
 
     function renderCodebases() {
@@ -217,6 +228,17 @@ export const Codebases = () => {
                         <Form.Control
                             type="file"
                             onChange={handleCommitFile}/>
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} controlId="author-data-collection" className="mb-3">
+                    <Form.Label column sm={2}>
+                        Author Collection File
+                    </Form.Label>
+                    <Col sm={5}>
+                        <Form.Control
+                            type="file"
+                            onChange={handleAuthorFile}/>
                     </Col>
                 </Form.Group>
 

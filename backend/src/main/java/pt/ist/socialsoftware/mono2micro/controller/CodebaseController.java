@@ -172,7 +172,8 @@ public class CodebaseController {
         @RequestParam String codebaseName,
         @RequestParam Object datafile,
         @RequestParam Object translationFile,
-		@RequestParam Object commitFile
+		@RequestParam Object commitFile,
+		@RequestParam Object authorFile
     ){
         logger.debug("createCodebase");
 
@@ -181,7 +182,8 @@ public class CodebaseController {
             	codebaseName,
 				datafile,
 				translationFile,
-				commitFile
+				commitFile,
+				authorFile
 			);
 
             codebaseManager.writeCodebase(codebase);
