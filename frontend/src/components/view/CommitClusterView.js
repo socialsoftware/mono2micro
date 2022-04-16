@@ -22,23 +22,8 @@ const options = {
     layout: {
         hierarchical: false
     },
-    edges: {
-        smooth: false,
-        width: 0.5,
-        arrows: {
-            from: {
-                enabled: false,
-                scaleFactor: 0.5
-            }
-        },
-        color: {
-            color: "#2B7CE9",
-            hover: "#2B7CE9",
-            highlight: "#FFA500"
-        }
-    },
     nodes: {
-        shape: 'ellipse',
+        shape: 'square',
         color: {
             border: "#2B7CE9",
             background: "#D2E5FF",
@@ -50,17 +35,6 @@ const options = {
     },
     interaction: {
         hover: true
-    },
-    physics: {
-        enabled: true,
-        hierarchicalRepulsion: {
-            centralGravity: 0.0,
-            springLength: 500,
-            springConstant: 0.01,
-            nodeDistance: 100,
-            damping: 0.09
-        },
-        solver: 'hierarchicalRepulsion'
     },
 };
 
@@ -116,12 +90,17 @@ export const CommitClusterView = () => {
     }
 
     function convertClusterToNode(cluster_number, cluster_files) {
+        console.log("Setting value to: " + cluster_files['entityFiles'].length + cluster_files['otherFiles'].length)
         return {
             id: cluster_number,
-            title: cluster_files.sort().join('<br>'),
-            label: "Cluster " + cluster_number + " [" + cluster_files.length + " files]",
-            value: cluster_files.length/100,
-            type: types.CLUSTER
+            title:  `${cluster_files['entityFiles'].length} entity files, ${cluster_files['otherFiles'].length} others`,
+            label: cluster_number,
+            type: types.CLUSTER,
+            color: cluster_files['entityFiles'].length > 0 ? "#36cc0c" : "#D2E5FF",
+            value: cluster_files['entityFiles'].length,
+            entities: cluster_files['entityFiles'],
+            others: cluster_files['otherFiles'],
+            shape: 'square'
         }
         // return {
         //     id: cluster.id,
