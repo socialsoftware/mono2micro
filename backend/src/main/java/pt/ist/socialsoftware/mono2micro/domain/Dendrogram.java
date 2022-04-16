@@ -38,6 +38,8 @@ public class Dendrogram {
 	private float writeMetricWeight;
 	private float readMetricWeight;
 	private float sequenceMetricWeight;
+	private float commitMetricWeight;
+	private float authorMetricWeight;
 	private String profile;
 	private List<Decomposition> decompositions = new ArrayList<>(); // Might not be necessary if the folders structure gets better organized
 	private int tracesMaxLimit = 0;
@@ -100,6 +102,10 @@ public class Dendrogram {
 	public void setSequenceMetricWeight(float sequenceMetricWeight) {
 		this.sequenceMetricWeight = sequenceMetricWeight;
 	}
+
+	public void setCommitMetricWeight(float commitMetricWeight) { this.commitMetricWeight = commitMetricWeight; }
+
+	public void setAuthorMetricWeight(float authorMetricWeight) { this.authorMetricWeight = authorMetricWeight; }
 
 	public String getProfile() { return profile; }
 
@@ -261,7 +267,7 @@ public class Dendrogram {
 		return matrixData;
 	}
 
-	public JSONObject getCommitMatrix(HashMap<String,ArrayList<String>> commitChanges) throws JSONException {
+	public JSONObject getCommitMatrix(HashMap<String,ArrayList<String>> commitChanges, HashMap<String,ArrayList<String>> authorChanges) throws JSONException {
 		JSONArray similarityMatrix = new JSONArray();
 		JSONObject matrixData = new JSONObject();
 
@@ -276,15 +282,18 @@ public class Dendrogram {
 				// Metric is given by the number of times file2 appears in file1's array. We don't need to check the
 				// number of times file1 appears in file2's array, because it should be the same value.
 				int metric = 0;
+				metric += (int) authorChanges.get(file1).stream().filter(authorChanges.get(file2)::contains).count() * this.authorMetricWeight;
 				for (String fileInFile1Changes : commitChanges.get(file1)) {
 					if (fileInFile1Changes.equals(file2)) {
-						metric += 1;
+						metric += 1*this.commitMetricWeight;
 					}
 				}
+
 				matrixRow.put(metric);
 			}
 			similarityMatrix.put(matrixRow);
 		}
+		// In some cases, entities may be missing from the commitChanges keyset.
 		matrixData.put("matrix", similarityMatrix);
 		matrixData.put("entities", commitChanges.keySet());
 		matrixData.put("linkageType", this.linkageType);

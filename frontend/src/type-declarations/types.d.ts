@@ -62,6 +62,8 @@ export interface Dendrogram {
     writeMetricWeight?: number;
 	readMetricWeight?: number;
 	sequenceMetricWeight?: number;
+    commitMetricWeight?: number;
+    authorMetricWeight?: number;
 	tracesMaxLimit?: number;
     decompositions?: Decomposition[];
     profile?: string;

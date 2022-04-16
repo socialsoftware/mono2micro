@@ -159,13 +159,17 @@ public class Codebase {
 		if (dendrogram.commitBased()) {
 			// We want to create the dendrogram by using the commit change JSON
 			File commitChangesPath = new File(CODEBASES_PATH + this.name + "/" + "commitChanges.json");
-			HashMap<String,ArrayList<String>> commitChanges =
+			HashMap commitChanges =
 					new ObjectMapper().readValue(commitChangesPath, HashMap.class);
+
+			File authorChangesPath = new File(CODEBASES_PATH + this.name + "/filesAuthors.json");
+			HashMap authorChanges =
+					new ObjectMapper().readValue(authorChangesPath, HashMap.class);
 
 			CodebaseManager.getInstance().writeDendrogramSimilarityMatrix(
 					this.name,
 					dendrogram.getName(),
-					dendrogram.getCommitMatrix(commitChanges)
+					dendrogram.getCommitMatrix(commitChanges, authorChanges)
 			);
 		} else {
 			Utils.GetDataToBuildSimilarityMatrixResult result = Utils.getDataToBuildSimilarityMatrix(

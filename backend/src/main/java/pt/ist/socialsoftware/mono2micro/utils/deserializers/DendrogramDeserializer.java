@@ -69,6 +69,12 @@ public class DendrogramDeserializer extends StdDeserializer<Dendrogram> {
 						case "sequenceMetricWeight":
 							dendrogram.setSequenceMetricWeight(jsonParser.getFloatValue());
 							break;
+						case "commitMetricWeight":
+							dendrogram.setCommitMetricWeight(jsonParser.getFloatValue());
+							break;
+						case "authorMetricWeight":
+							dendrogram.setAuthorMetricWeight(jsonParser.getFloatValue());
+							break;
 						case "profile":
 							dendrogram.setProfile(jsonParser.getValueAsString());
 							break;
