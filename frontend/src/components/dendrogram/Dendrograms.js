@@ -83,6 +83,8 @@ export const Dendrograms = () => {
     const [writeMetricWeight, setWriteMetricWeight] = useState("25");
     const [readMetricWeight, setReadMetricWeight] = useState("25");
     const [sequenceMetricWeight, setSequenceMetricWeight] = useState("25");
+    const [commitMetricWeight, setCommitMetricWeight] = useState("50");
+    const [authorMetricWeight, setAuthorMetricWeight] = useState("50");
     const [amountOfTraces, setAmountOfTraces] = useState("0");
     const [typeOfTraces, setTypeOfTraces] = useState("ALL");
     const [codebase, setCodebase] = useState({ profiles: [], });
@@ -216,6 +218,14 @@ export const Dendrograms = () => {
 
     function handleChangeSequenceMetricWeight(event) {
         setSequenceMetricWeight(event.target.value);
+    }
+
+    function handleChangeCommitMetricWeight(event) {
+        setCommitMetricWeight(event.target.value);
+    }
+
+    function handleChangeAuthorMetricWeight(event) {
+        setAuthorMetricWeight(event.target.value);
     }
 
     function handleChangeAmountOfTraces(event) {
@@ -440,62 +450,91 @@ export const Dendrograms = () => {
                         />
                     </Col>
                 </Form.Group>
+                <div style={dendrogramBase=="COMMIT" ? {display: 'none'} : {}}>
+                    <Form.Group as={Row} controlId="access" className="align-items-center mb-3">
+                        <Form.Label column sm={2}>
+                            Access Metric Weight (%)
+                        </Form.Label>
+                        <Col sm={2}>
+                            <FormControl
+                                type="number"
+                                placeholder="0-100"
+                                value={accessMetricWeight}
+                                onChange={handleChangeAccessMetricWeight}
+                                disabled={dendrogramBase == "COMMIT"} />
+                        </Col>
+                    </Form.Group>
 
-                <Form.Group as={Row} controlId="access" className="align-items-center mb-3">
-                    <Form.Label column sm={2}>
-                        Access Metric Weight (%)
-                    </Form.Label>
-                    <Col sm={2}>
-                        <FormControl
-                            type="number"
-                            placeholder="0-100"
-                            value={accessMetricWeight}
-                            onChange={handleChangeAccessMetricWeight}
-                            disabled={dendrogramBase == "COMMIT"} />
-                    </Col>
-                </Form.Group>
+                    <Form.Group as={Row} controlId="write" className="align-items-center mb-3">
+                        <Form.Label column sm={2}>
+                            Write Metric Weight (%)
+                        </Form.Label>
+                        <Col sm={2}>
+                            <FormControl
+                                type="number"
+                                placeholder="0-100"
+                                value={writeMetricWeight}
+                                onChange={handleChangeWriteMetricWeight}
+                                disabled={dendrogramBase == "COMMIT"} />
+                        </Col>
+                    </Form.Group>
 
-                <Form.Group as={Row} controlId="write" className="align-items-center mb-3">
-                    <Form.Label column sm={2}>
-                        Write Metric Weight (%)
-                    </Form.Label>
-                    <Col sm={2}>
-                        <FormControl
-                            type="number"
-                            placeholder="0-100"
-                            value={writeMetricWeight}
-                            onChange={handleChangeWriteMetricWeight}
-                            disabled={dendrogramBase == "COMMIT"} />
-                    </Col>
-                </Form.Group>
+                    <Form.Group as={Row} controlId="read" className="align-items-center mb-3">
+                        <Form.Label column sm={2}>
+                            Read Metric Weight (%)
+                        </Form.Label>
+                        <Col sm={2}>
+                            <FormControl
+                                type="number"
+                                placeholder="0-100"
+                                value={readMetricWeight}
+                                onChange={handleChangeReadMetricWeight}
+                                disabled={dendrogramBase == "COMMIT"} />
+                        </Col>
+                    </Form.Group>
 
-                <Form.Group as={Row} controlId="read" className="align-items-center mb-3">
-                    <Form.Label column sm={2}>
-                        Read Metric Weight (%)
-                    </Form.Label>
-                    <Col sm={2}>
-                        <FormControl
-                            type="number"
-                            placeholder="0-100"
-                            value={readMetricWeight}
-                            onChange={handleChangeReadMetricWeight}
-                            disabled={dendrogramBase == "COMMIT"} />
-                    </Col>
-                </Form.Group>
+                    <Form.Group as={Row} controlId="sequence" className="align-items-center mb-3">
+                        <Form.Label column sm={2}>
+                            Sequence Metric Weight (%)
+                        </Form.Label>
+                        <Col sm={2}>
+                            <FormControl
+                                type="number"
+                                placeholder="0-100"
+                                value={sequenceMetricWeight}
+                                onChange={handleChangeSequenceMetricWeight}
+                                disabled={dendrogramBase == "COMMIT"} />
+                        </Col>
+                    </Form.Group>
+                </div>
 
-                <Form.Group as={Row} controlId="sequence" className="align-items-center mb-3">
-                    <Form.Label column sm={2}>
-                        Sequence Metric Weight (%)
-                    </Form.Label>
-                    <Col sm={2}>
-                        <FormControl
-                            type="number"
-                            placeholder="0-100"
-                            value={sequenceMetricWeight}
-                            onChange={handleChangeSequenceMetricWeight}
-                            disabled={dendrogramBase == "COMMIT"} />
-                    </Col>
-                </Form.Group>
+                <div style={dendrogramBase=="STATIC" ? {display: 'none'} : {}}>
+                    <Form.Group as={Row} controlId="commit" className="align-items-center mb-3">
+                        <Form.Label column sm={2}>
+                            Commit Metric Weight (%)
+                        </Form.Label>
+                        <Col sm={2}>
+                            <FormControl
+                                type="number"
+                                placeholder="0-100"
+                                value={commitMetricWeight}
+                                onChange={handleChangeCommitMetricWeight}/>
+                        </Col>
+                    </Form.Group>
+
+                    <Form.Group as={Row} controlId="author" className="align-items-center mb-3">
+                        <Form.Label column sm={2}>
+                            Author Metric Weight (%)
+                        </Form.Label>
+                        <Col sm={2}>
+                            <FormControl
+                                type="number"
+                                placeholder="0-100"
+                                value={authorMetricWeight}
+                                onChange={handleChangeAuthorMetricWeight}/>
+                        </Col>
+                    </Form.Group>
+                </div>
 
                 <Form.Group as={Row} className="align-items-center">
                     <Col sm={{ offset: 2 }}>
@@ -522,6 +561,7 @@ export const Dendrograms = () => {
                     </Col>
                 </Form.Group>
             </Form>
+
         );
     }
 
