@@ -219,6 +219,17 @@ export class VisNetwork extends Component {
             }
             else if (view === views.COMMIT_CLUSTERS) {
                 ModalMessageTitle = 'Files of ' + node.label;
+                ModalMessageText = "<b> Entities: </b> <br/>";
+                for (let entity of node.entities) {
+                    ModalMessageText += entity + "<br/>";
+                }
+                ModalMessageText += "<br/>"
+                if (node.others.length > 0) {
+                    ModalMessageText += "<b> Other files: </b> <br/>";
+                    for (let other of node.others) {
+                        ModalMessageText += other + "<br/>";
+                    }
+                }
             }
         }
 
