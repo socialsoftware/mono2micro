@@ -170,6 +170,8 @@ export const Dendrograms = () => {
             Number(writeMetricWeight),
             Number(readMetricWeight),
             Number(sequenceMetricWeight),
+            Number(commitMetricWeight),
+            Number(authorMetricWeight),
             selectedProfile,
             Number(amountOfTraces),
             typeOfTraces,
