@@ -1,6 +1,5 @@
 package pt.ist.socialsoftware.mono2micro.manager;
 
-import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
@@ -11,12 +10,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
-import pt.ist.socialsoftware.mono2micro.domain.Controller;
 import pt.ist.socialsoftware.mono2micro.domain.decomposition.Decomposition;
 import pt.ist.socialsoftware.mono2micro.domain.source.Source;
 import pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy;
 import pt.ist.socialsoftware.mono2micro.dto.*;
-import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.*;
@@ -33,7 +30,7 @@ public class CodebaseManager {
 
 	private static CodebaseManager instance = null;
 
-    private ObjectMapper objectMapper = null;
+    private final ObjectMapper objectMapper;
 
 	private CodebaseManager() {
 		objectMapper = new ObjectMapper();
@@ -192,7 +189,7 @@ public class CodebaseManager {
 		String strategyName,
 		String decompositionName
 	)
-		throws Exception
+		throws IOException
 	{
 		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/strategies/" + strategyName + "/decompositions/" + decompositionName + "/decomposition.json");
 
@@ -230,17 +227,17 @@ public class CodebaseManager {
 		);
 	}
 
-	public Decomposition getDecompositionWithControllersAndClustersWithFields(
+	public Decomposition getDecompositionWithFunctionalitiesAndClustersWithFields(
 		String codebaseName,
 		String decompositionName,
-		Set<String> controllerDeserializableFields,
+		Set<String> functionalityDeserializableFields,
 		Set<String> clusterDeserializableFields
 	)
 		throws Exception
 	{
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.setInjectableValues( new InjectableValues.Std()
-				.addValue("controllerDeserializableFields", controllerDeserializableFields)
+				.addValue("functionalityDeserializableFields", functionalityDeserializableFields)
 				.addValue("clusterDeserializableFields", clusterDeserializableFields)
 		);
 
@@ -521,151 +518,152 @@ public class CodebaseManager {
 		return value;
 	}
 
-	public Map<String, Controller> getControllersWithCostlyAccesses(
-		String inputFilePath,
-		Set<String> profileControllers,
-		Map<Short, Short> entityIDToClusterID
-	)
-		throws IOException
-	{
-		System.out.println("Getting controllers with costly accesses...");
-
-		Map<String, Controller> controllers = new HashMap<>();
-
-		File jsonFile = new File(inputFilePath);
-
-		JsonFactory jsonfactory = objectMapper.getFactory();
-
-		JsonParser jsonParser = jsonfactory.createParser(jsonFile);
-		JsonToken jsonToken = jsonParser.nextValue(); // JsonToken.START_OBJECT
-
-		if (jsonToken != JsonToken.START_OBJECT) {
-			Utils.print("Json must start with a left curly brace", Utils.lineno());
-			System.exit(-1);
-		}
-
-		while (jsonParser.nextValue() != JsonToken.END_OBJECT) {
-			if (jsonParser.getCurrentToken() == JsonToken.START_OBJECT) {
-//				Utils.print("Controller name: " + jsonParser.getCurrentName(), Utils.lineno());
-
-				if (!profileControllers.contains(jsonParser.getCurrentName())) { // FIXME TEST ME
-					jsonParser.skipChildren();
-					continue;
-				}
-
-				Controller controller = new Controller(jsonParser.getCurrentName());
-
-				while (jsonParser.nextValue() != JsonToken.END_OBJECT) {
-//					Utils.print("field name: " + jsonParser.getCurrentName(), Utils.lineno());
-
-					switch (jsonParser.getCurrentName()) {
-						case "f":
-							break;
-						case "t": // array of traces
-
-							while (jsonParser.nextValue() != JsonToken.END_ARRAY) { // iterate over trace objects
-								while (jsonParser.nextValue() != JsonToken.END_OBJECT) { // iterate over trace object fields
-
-									switch (jsonParser.getCurrentName()) {
-										case "id":
-										case "f":
-											break;
-
-										case "a":
-											Map<Short, Byte> entityIDToMode = new HashMap<>();
-											short previousCluster = -2;
-											int i = 0;
-
-											while (jsonParser.nextValue() != JsonToken.END_ARRAY) {
-												ReducedTraceElementDto rte = jsonParser.readValueAs(
-													ReducedTraceElementDto.class
-												);
-
-												if (rte instanceof AccessDto) {
-													AccessDto access = (AccessDto) rte;
-													short entityID = access.getEntityID();
-													byte mode = access.getMode();
-													Short cluster;
-
-													cluster = entityIDToClusterID.get(entityID);
-
-													if (cluster == null) {
-														System.err.println("Entity " + entityID + " is not assign to a cluster.");
-														System.exit(-1);
-													}
-
-													if (i == 0) {
-														entityIDToMode.put(entityID, mode);
-														controller.addEntity(entityID, mode);
-
-													} else {
-
-														if (cluster == previousCluster) {
-															boolean hasCost = false;
-															Byte savedMode = entityIDToMode.get(entityID);
-
-															if (savedMode == null) {
-																hasCost = true;
-
-															} else {
-																if (savedMode == 1 && mode == 2) // "R" -> 1, "W" -> 2
-																	hasCost = true;
-															}
-
-															if (hasCost) {
-																entityIDToMode.put(entityID, mode);
-																controller.addEntity(entityID, mode);
-															}
-
-														} else {
-															controller.addEntity(entityID, mode);
-
-															entityIDToMode.clear();
-															entityIDToMode.put(entityID, mode);
-
-														}
-													}
-
-													previousCluster = cluster;
-													i++;
-												}
-											}
-
-											break;
-
-										default:
-											Utils.print(
-												"Unexpected field name when parsing Trace: " + jsonParser.getCurrentName(),
-												Utils.lineno()
-											);
-
-											System.exit(-1);
-									}
-								}
-							}
-
-
-							break;
-
-						default:
-							Utils.print(
-								"Unexpected field name when parsing Controller: " + jsonParser.getCurrentName(),
-								Utils.lineno()
-							);
-							System.exit(-1);
-					}
-				}
-
-				// only consider controllers that touch domain entities
-				if (!controller.getEntities().isEmpty()) {
-					controllers.put(
-						controller.getName(),
-						controller
-					);
-				}
-			}
-		}
-
-		return controllers;
-	}
+//	FIXME CODE NO LONGER IN USE, FunctionalityTracesIterator is used now instead
+//	public Map<String, Functionality> getFunctionalitiesWithCostlyAccesses(
+//			String inputFilePath,
+//			Set<String> profileFunctionalities,
+//			Map<Short, Short> entityIDToClusterID
+//	)
+//			throws IOException
+//	{
+//		System.out.println("Getting functionalities with costly accesses...");
+//
+//		Map<String, Functionality> functionalities = new HashMap<>();
+//
+//		File jsonFile = new File(inputFilePath);
+//
+//		JsonFactory jsonfactory = objectMapper.getFactory();
+//
+//		JsonParser jsonParser = jsonfactory.createParser(jsonFile);
+//		JsonToken jsonToken = jsonParser.nextValue(); // JsonToken.START_OBJECT
+//
+//		if (jsonToken != JsonToken.START_OBJECT) {
+//			Utils.print("Json must start with a left curly brace", Utils.lineno());
+//			System.exit(-1);
+//		}
+//
+//		while (jsonParser.nextValue() != JsonToken.END_OBJECT) {
+//			if (jsonParser.getCurrentToken() == JsonToken.START_OBJECT) {
+////				Utils.print("Functionality name: " + jsonParser.getCurrentName(), Utils.lineno());
+//
+//				if (!profileFunctionalities.contains(jsonParser.getCurrentName())) { // FIXME TEST ME
+//					jsonParser.skipChildren();
+//					continue;
+//				}
+//
+//				Functionality functionality = new Functionality(jsonParser.getCurrentName());
+//
+//				while (jsonParser.nextValue() != JsonToken.END_OBJECT) {
+////					Utils.print("field name: " + jsonParser.getCurrentName(), Utils.lineno());
+//
+//					switch (jsonParser.getCurrentName()) {
+//						case "f":
+//							break;
+//						case "t": // array of traces
+//
+//							while (jsonParser.nextValue() != JsonToken.END_ARRAY) { // iterate over trace objects
+//								while (jsonParser.nextValue() != JsonToken.END_OBJECT) { // iterate over trace object fields
+//
+//									switch (jsonParser.getCurrentName()) {
+//										case "id":
+//										case "f":
+//											break;
+//
+//										case "a":
+//											Map<Short, Byte> entityIDToMode = new HashMap<>();
+//											short previousCluster = -2;
+//											int i = 0;
+//
+//											while (jsonParser.nextValue() != JsonToken.END_ARRAY) {
+//												ReducedTraceElementDto rte = jsonParser.readValueAs(
+//													ReducedTraceElementDto.class
+//												);
+//
+//												if (rte instanceof AccessDto) {
+//													AccessDto access = (AccessDto) rte;
+//													short entityID = access.getEntityID();
+//													byte mode = access.getMode();
+//													Short cluster;
+//
+//													cluster = entityIDToClusterID.get(entityID);
+//
+//													if (cluster == null) {
+//														System.err.println("Entity " + entityID + " is not assign to a cluster.");
+//														System.exit(-1);
+//													}
+//
+//													if (i == 0) {
+//														entityIDToMode.put(entityID, mode);
+//														functionality.addEntity(entityID, mode);
+//
+//													} else {
+//
+//														if (cluster == previousCluster) {
+//															boolean hasCost = false;
+//															Byte savedMode = entityIDToMode.get(entityID);
+//
+//															if (savedMode == null) {
+//																hasCost = true;
+//
+//															} else {
+//																if (savedMode == 1 && mode == 2) // "R" -> 1, "W" -> 2
+//																	hasCost = true;
+//															}
+//
+//															if (hasCost) {
+//																entityIDToMode.put(entityID, mode);
+//																functionality.addEntity(entityID, mode);
+//															}
+//
+//														} else {
+//															functionality.addEntity(entityID, mode);
+//
+//															entityIDToMode.clear();
+//															entityIDToMode.put(entityID, mode);
+//
+//														}
+//													}
+//
+//													previousCluster = cluster;
+//													i++;
+//												}
+//											}
+//
+//											break;
+//
+//										default:
+//											Utils.print(
+//												"Unexpected field name when parsing Trace: " + jsonParser.getCurrentName(),
+//												Utils.lineno()
+//											);
+//
+//											System.exit(-1);
+//									}
+//								}
+//							}
+//
+//
+//							break;
+//
+//						default:
+//							Utils.print(
+//								"Unexpected field name when parsing Functionality: " + jsonParser.getCurrentName(),
+//								Utils.lineno()
+//							);
+//							System.exit(-1);
+//					}
+//				}
+//
+//				// only consider functionalities that touch domain entities
+//				if (!functionality.getEntities().isEmpty()) {
+//					functionalities.put(
+//						functionality.getName(),
+//							functionality
+//					);
+//				}
+//			}
+//		}
+//
+//		return functionalities;
+//	}
 }

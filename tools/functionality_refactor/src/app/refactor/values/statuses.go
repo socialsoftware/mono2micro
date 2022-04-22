@@ -21,25 +21,25 @@ func (status CodebaseStatuses) String() string {
 	return codebaseStatusesNames[status]
 }
 
-type ControllerStatuses int
+type FunctionalityStatuses int
 
 const (
-	UnknownControllerStatus ControllerStatuses = iota
-	RefactoringController
-	ControllerRefactorComplete
-	ControllerRefactorTimedOut
+	UnknownFunctionalityStatus FunctionalityStatuses = iota
+	RefactoringFunctionality
+	FunctionalityRefactorComplete
+	FunctionalityRefactorTimedOut
 )
 
-var controllerStatusesNames = []string{
+var functionalityStatusesNames = []string{
 	"UNKNOWN",
 	"REFACTORING",
 	"COMPLETED",
 	"TIMED_OUT",
 }
 
-func (status ControllerStatuses) String() string {
-	if status < UnknownControllerStatus || status > ControllerRefactorTimedOut {
+func (status FunctionalityStatuses) String() string {
+	if status < UnknownFunctionalityStatus || status > FunctionalityRefactorTimedOut {
 		return "UNKNOWN"
 	}
-	return controllerStatusesNames[status]
+	return functionalityStatusesNames[status]
 }

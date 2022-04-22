@@ -244,71 +244,50 @@ public class Utils {
         );
     }
 
-    public static class GetControllersClustersAndClustersControllersResult {
-        public Map<String, Set<Cluster>> controllersClusters;
-        public Map<Short, Set<Controller>> clustersControllers;
-
-        public GetControllersClustersAndClustersControllersResult(
-            Map<String, Set<Cluster>> controllersClusters,
-            Map<Short, Set<Controller>> clustersControllers
-        ) {
-            this.controllersClusters = controllersClusters;
-            this.clustersControllers = clustersControllers;
-        }
-
-        public Map<String, Set<Cluster>> getControllersClusters() { return controllersClusters; }
-        public Map<Short, Set<Controller>> getClustersControllers() { return clustersControllers; }
-    }
-
-    public static GetControllersClustersAndClustersControllersResult getControllersClustersAndClustersControllers(
-        Collection<Cluster> clusters,
-        Collection<Controller> controllers
+    public static Map<String, Set<Cluster>> getFunctionalitiesClusters(
+            Map<Short, Short> entityIDToClusterID,
+            Map<Short, Cluster> clusters,
+            Collection<Functionality> functionalities
     ) {
-        Map<String, Set<Cluster>> controllersClusters = new HashMap<>();
-        Map<Short, Set<Controller>> clustersControllers = new HashMap<>();
+        Map<String, Set<Cluster>> functionalitiesClusters = new HashMap<>();
 
-        for (Cluster cluster : clusters) {
+        for (Functionality functionality : functionalities) {
+            String functionalityName = functionality.getName();
 
-            Set<Controller> touchedControllers = new HashSet<>();
+            Set<Cluster> functionalityClusters = new HashSet<>();
 
-            for (Controller controller : controllers) {
-                String controllerName = controller.getName();
-
-                if (!controller.getEntities().isEmpty()) {
-                    for (short entityID : controller.getEntities().keySet()) {
-                        if (cluster.containsEntity(entityID)) {
-                            touchedControllers.add(controller);
-
-                            Set<Cluster> controllerClusters = controllersClusters.getOrDefault(
-                                controllerName,
-                                new HashSet<>()
-                            );
-
-                            if (!controllerClusters.contains(cluster)) {
-                                controllerClusters.add(cluster);
-
-                                controllersClusters.put(
-                                    controllerName,
-                                    controllerClusters
-                                );
-                            }
-
-                            break;
-                        }
-                    }
-                }
+            for (short entityID : functionality.getEntities().keySet()) {
+                Cluster cluster = clusters.get(entityIDToClusterID.get(entityID));
+                functionalityClusters.add(cluster);
             }
 
-            clustersControllers.put(
-                cluster.getID(),
-                touchedControllers
+            functionalitiesClusters.put(
+                    functionalityName,
+                    functionalityClusters
             );
         }
 
-        return new GetControllersClustersAndClustersControllersResult(
-            controllersClusters,
-            clustersControllers
-        );
+        return functionalitiesClusters;
+    }
+
+    public static Map<Short, Set<Functionality>> getClustersFunctionalities(
+            Map<Short, Short> entityIDToClusterID,
+            Map<Short, Cluster> clusters,
+            Collection<Functionality> functionalities
+    ) {
+        Map<Short, Set<Functionality>> clustersFunctionalities = new HashMap<>();
+
+        for (Functionality functionality : functionalities) {
+            for (short entityID : functionality.getEntities().keySet()) {
+                Cluster cluster = clusters.get(entityIDToClusterID.get(entityID));
+
+                Set<Functionality> clusterFunctionalities = clustersFunctionalities.getOrDefault(cluster.getID(), new HashSet<>());
+                clusterFunctionalities.add(functionality);
+                clustersFunctionalities.put(cluster.getID(), clusterFunctionalities);
+            }
+        }
+
+        return clustersFunctionalities;
     }
 
     public static class GetSerializableLocalTransactionsGraphResult {

@@ -32,17 +32,17 @@ type Strategy struct {
 }
 
 type Decomposition struct {
-	StrategyType        string                 `json:"strategyType,omitempty"`
-	Name                string                 `json:"name,omitempty"`
-	CodebaseName        string                 `json:"codebaseName,omitempty"`
-	StrategyName        string                 `json:"strategyName,omitempty"`
-	Expert              bool                   `json:"expert,omitempty"`
-	Complexity          float32                `json:"complexity,omitempty"`
-	Cohesion            float32                `json:"cohesion,omitempty"`
-	Coupling            float32                `json:"coupling,omitempty"`
-	Clusters            map[int]*Cluster       `json:"clusters,omitempty"`
-	Controllers         map[string]*Controller `json:"controllers,omitempty"`
-	EntityIDToClusterID map[int]int            `json:"entityIDToClusterID,omitempty"`
+	StrategyType        string                    `json:"strategyType,omitempty"`
+	Name                string                    `json:"name,omitempty"`
+	CodebaseName        string                    `json:"codebaseName,omitempty"`
+	StrategyName        string                    `json:"strategyName,omitempty"`
+	Expert              bool                      `json:"expert,omitempty"`
+	Complexity          float32                   `json:"complexity,omitempty"`
+	Cohesion            float32                   `json:"cohesion,omitempty"`
+	Coupling            float32                   `json:"coupling,omitempty"`
+	Clusters            map[int]*Cluster          `json:"clusters,omitempty"`
+	Functionalities     map[string]*Functionality `json:"functionalities,omitempty"`
+	EntityIDToClusterID map[int]int               `json:"entityIDToClusterID,omitempty"`
 }
 
 func (d *Decomposition) GetClusterFromID(clusterID int) *Cluster {
@@ -69,13 +69,13 @@ func (d *Decomposition) GetEntityCluster(id int) *Cluster {
 }
 
 type Cluster struct {
-	Id                   int                    `json:"id,omitempty"`
-	Complexity           float32                `json:"complexity,omitempty"`
-	Cohesion             float32                `json:"cohesion,omitempty"`
-	Coupling             float32                `json:"coupling,omitempty"`
-	CouplingDependencies map[int][]int          `json:"couplingDependencies,omitempty"`
-	Entities             []int                  `json:"entities,omitempty"`
-	Controllers          map[string]*Controller `json:"controllers,omitempty"`
+	Id                   int                       `json:"id,omitempty"`
+	Complexity           float32                   `json:"complexity,omitempty"`
+	Cohesion             float32                   `json:"cohesion,omitempty"`
+	Coupling             float32                   `json:"coupling,omitempty"`
+	CouplingDependencies map[int][]int             `json:"couplingDependencies,omitempty"`
+	Entities             []int                     `json:"entities,omitempty"`
+	Functionalities      map[string]*Functionality `json:"functionalities,omitempty"`
 }
 
 func (c *Cluster) AddCouplingDependency(clusterID int, entityID int) {
@@ -96,17 +96,17 @@ func (c *Cluster) AddCouplingDependency(clusterID int, entityID int) {
 	return
 }
 
-func (c *Cluster) AddController(controller *Controller) {
-	if c.Controllers == nil {
-		c.Controllers = map[string]*Controller{}
+func (c *Cluster) AddFunctionality(functionality *Functionality) {
+	if c.Functionalities == nil {
+		c.Functionalities = map[string]*Functionality{}
 	}
 
-	_, exists := c.Controllers[controller.Name]
+	_, exists := c.Functionalities[functionality.Name]
 	if exists {
 		return
 	}
 
-	c.Controllers[controller.Name] = controller
+	c.Functionalities[functionality.Name] = functionality
 	return
 }
 
@@ -119,7 +119,7 @@ func (c *Cluster) ContainsEntity(id int) bool {
 	return false
 }
 
-type Controller struct {
+type Functionality struct {
 	Name                   string                   `json:"name,omitempty"`
 	Type                   string                   `json:"type,omitempty"`
 	Complexity             float32                  `json:"complexity,omitempty"`
@@ -129,7 +129,7 @@ type Controller struct {
 	EntitiesPerCluster     map[int][]int            `json:"entitiesPerCluster,omitempty"`
 }
 
-func (c *Controller) GetFunctionalityRedesign() *FunctionalityRedesign {
+func (c *Functionality) GetFunctionalityRedesign() *FunctionalityRedesign {
 	for _, redesign := range c.FunctionalityRedesigns {
 		if redesign.UsedForMetrics {
 			return redesign
@@ -138,13 +138,13 @@ func (c *Controller) GetFunctionalityRedesign() *FunctionalityRedesign {
 	return nil
 }
 
-func (c *Controller) GetEntityMode(id int) (int, bool) {
+func (c *Functionality) GetEntityMode(id int) (int, bool) {
 	entityName := strconv.Itoa(id)
 	mode, exists := c.Entities[entityName]
 	return mode, exists
 }
 
-func (c *Controller) EntitiesTouchedInMode(mode int) map[int]int {
+func (c *Functionality) EntitiesTouchedInMode(mode int) map[int]int {
 	results := map[int]int{}
 	for entity, accessMode := range c.Entities {
 		if accessMode == mode {
@@ -177,14 +177,14 @@ func (f *FunctionalityRedesign) GetInvocation(idx int) *Invocation {
 }
 
 type Invocation struct {
-	Name                                  string          `json:"name,omitempty"`
-	ID                                    int             `json:"id,omitempty"`
-	ClusterID                             int             `json:"clusterID,omitempty"`
-	ClusterAccesses                       [][]interface{} `json:"clusterAccesses,omitempty"`
-	RemoteInvocations                     []int           `json:"remoteInvocations,omitempty"`
-	Type                                  string          `json:"type,omitempty"`
-	ControllerstThatReadInWrittenEntities int             `json:"controllerst_that_read_in_written_entities,omitempty"`
-	ControllersThatWriteInReadEntities    int             `json:"controllers_that_write_in_read_entities,omitempty"`
+	Name                                     string          `json:"name,omitempty"`
+	ID                                       int             `json:"id,omitempty"`
+	ClusterID                                int             `json:"clusterID,omitempty"`
+	ClusterAccesses                          [][]interface{} `json:"clusterAccesses,omitempty"`
+	RemoteInvocations                        []int           `json:"remoteInvocations,omitempty"`
+	Type                                     string          `json:"type,omitempty"`
+	FunctionalitiesThatReadInWrittenEntities int             `json:"functionalities_that_read_in_written_entities,omitempty"`
+	FunctionalitiesThatWriteInReadEntities   int             `json:"functionalities_that_write_in_read_entities,omitempty"`
 }
 
 func (i *Invocation) AddPrunedAccess(entity int, accessType string) {

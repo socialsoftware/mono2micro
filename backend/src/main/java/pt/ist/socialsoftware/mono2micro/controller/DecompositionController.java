@@ -169,14 +169,14 @@ public class DecompositionController {
 		}
 	}
 
-	@RequestMapping(value = "/decomposition/{decompositionName}/getLocalTransactionsGraphForController", method = RequestMethod.GET)
-	public ResponseEntity<Utils.GetSerializableLocalTransactionsGraphResult> getControllerLocalTransactionsGraph(
+	@RequestMapping(value = "/decomposition/{decompositionName}/getLocalTransactionsGraphForFunctionality", method = RequestMethod.GET)
+	public ResponseEntity<Utils.GetSerializableLocalTransactionsGraphResult> getFunctionalityLocalTransactionsGraph(
 		@PathVariable String codebaseName,
 		@PathVariable String strategyName,
 		@PathVariable String decompositionName,
-		@RequestParam String controllerName
+		@RequestParam String functionalityName
 	) {
-		logger.debug("getControllerLocalTransactionsGraph");
+		logger.debug("getFunctionalityLocalTransactionsGraph");
 
 		try {
 
@@ -191,15 +191,15 @@ public class DecompositionController {
 
 			Source source = codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
 
-			DirectedAcyclicGraph<LocalTransaction, DefaultEdge> controllerLocalTransactionsGraph = decomposition.getControllerLocalTransactionsGraph(
-				source.getInputFilePath(),
-				controllerName,
-				strategy.getTraceType(),
-				strategy.getTracesMaxLimit()
-			);
+			DirectedAcyclicGraph<LocalTransaction, DefaultEdge> functionalityLocalTransactionsGraph = decomposition.getFunctionality(functionalityName)
+					.createLocalTransactionGraphFromScratch(
+							source.getInputFilePath(),
+							strategy.getTracesMaxLimit(),
+							strategy.getTraceType(),
+							decomposition.getEntityIDToClusterID());
 
 			return new ResponseEntity<>(
-				Utils.getSerializableLocalTransactionsGraph(controllerLocalTransactionsGraph),
+				Utils.getSerializableLocalTransactionsGraph(functionalityLocalTransactionsGraph),
 				HttpStatus.OK
 			);
 

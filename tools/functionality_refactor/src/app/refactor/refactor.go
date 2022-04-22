@@ -47,37 +47,37 @@ func New(
 func (svc *DefaultHandler) RefactorDecomposition(
 	decomposition *mono2micro.Decomposition, request *values.RefactorCodebaseRequest,
 ) *values.RefactorCodebaseResponse {
-	// Add to each cluster, the list of controllers that use it
-	validControllers := svc.extractValidControllers(decomposition, request)
+	// Add to each cluster, the list of functionalities that use it
+	validFunctionalities := svc.extractValidFunctionalities(decomposition, request)
 
 	// store the initial decomposition data in the file system
-	decompositionData := svc.createInitialDecompositionData(request, validControllers)
+	decompositionData := svc.createInitialDecompositionData(request, validFunctionalities)
 	err := svc.filesHandler.StoreDecompositionRefactorization(decompositionData)
 	if err != nil {
-		svc.logger.Log("codebase", request.CodebaseName, "validControllers", len(validControllers), "error", err)
+		svc.logger.Log("codebase", request.CodebaseName, "validFunctionalities", len(validFunctionalities), "error", err)
 		return nil
 	}
 
-	svc.logger.Log("codebase", request.CodebaseName, "validControllers", len(validControllers))
+	svc.logger.Log("codebase", request.CodebaseName, "validFunctionalities", len(validFunctionalities))
 
 	refactorTimeout := DefaultRefactorRoutineTimeoutSecs
 	if request.RefactorTimeOutSecs != 0 {
 		refactorTimeout = request.RefactorTimeOutSecs
 	}
 
-	for _, controller := range validControllers {
-		go func(request *values.RefactorCodebaseRequest, decomposition *mono2micro.Decomposition, controller *mono2micro.Controller) {
-			initialRedesign := controller.GetFunctionalityRedesign()
+	for _, functionality := range validFunctionalities {
+		go func(request *values.RefactorCodebaseRequest, decomposition *mono2micro.Decomposition, functionality *mono2micro.Functionality) {
+			initialRedesign := functionality.GetFunctionalityRedesign()
 
-			svc.logger.Log("codebase", request.CodebaseName, "controller", controller.Name, "status", "refactoring...")
+			svc.logger.Log("codebase", request.CodebaseName, "functionality", functionality.Name, "status", "refactoring...")
 
 			timeoutChannel := make(chan bool, 1)
 			redesignChannel := make(chan []*mono2micro.FunctionalityRedesign, 1)
 
 			go func() {
-				svc.metricsHandler.CalculateDecompositionMetrics(decomposition, controller, initialRedesign)
+				svc.metricsHandler.CalculateDecompositionMetrics(decomposition, functionality, initialRedesign)
 
-				redesignChannel <- svc.createSagaRedesigns(request, decomposition, controller, initialRedesign)
+				redesignChannel <- svc.createSagaRedesigns(request, decomposition, functionality, initialRedesign)
 			}()
 
 			go func() {
@@ -85,30 +85,30 @@ func (svc *DefaultHandler) RefactorDecomposition(
 				timeoutChannel <- true
 			}()
 
-			// if the controller takes too long to be refactored we want to timeout
+			// if the functionality takes too long to be refactored we want to timeout
 			select {
 			case sagaRedesigns := <-redesignChannel:
-				svc.logger.Log("codebase", request.CodebaseName, "controller", controller.Name, "status", "finished refactoring!")
+				svc.logger.Log("codebase", request.CodebaseName, "functionality", functionality.Name, "status", "finished refactoring!")
 
 				bestRedesign := sagaRedesigns[0]
 
 				// TODO: multiple goroutines could try to write in the file at the same time !!!!
-				svc.filesHandler.UpdateControllerRefactorization(
+				svc.filesHandler.UpdateFunctionalityRefactorization(
 					request.CodebaseName,
 					request.StrategyName,
 					request.DecompositionName,
-					svc.createFinalControllerData(controller, initialRedesign, bestRedesign),
+					svc.createFinalFunctionalityData(functionality, initialRedesign, bestRedesign),
 				)
 				return
 			case <-timeoutChannel:
 				err := fmt.Sprintf("refactor operation timed out after %d seconds!", refactorTimeout)
-				svc.logger.Log("codebase", request.CodebaseName, "controller", controller.Name, "error", err)
-				svc.filesHandler.UpdateControllerRefactorization(
+				svc.logger.Log("codebase", request.CodebaseName, "functionality", functionality.Name, "error", err)
+				svc.filesHandler.UpdateFunctionalityRefactorization(
 					request.CodebaseName,
 					request.StrategyName,
 					request.DecompositionName,
-					&values.Controller{
-						Name: controller.Name,
+					&values.Functionality{
+						Name: functionality.Name,
 						Monolith: &values.Monolith{
 							ComplexityMetrics: &values.ComplexityMetrics{
 								SystemComplexity:        initialRedesign.SystemComplexity,
@@ -118,62 +118,62 @@ func (svc *DefaultHandler) RefactorDecomposition(
 							},
 						},
 						Error:  err,
-						Status: values.ControllerRefactorTimedOut.String(),
+						Status: values.FunctionalityRefactorTimedOut.String(),
 					},
 				)
 				return
 			}
 
-		}(request, decomposition, controller)
+		}(request, decomposition, functionality)
 	}
 
 	return decompositionData
 }
 
-func (svc *DefaultHandler) extractValidControllers(
+func (svc *DefaultHandler) extractValidFunctionalities(
 	decomposition *mono2micro.Decomposition, request *values.RefactorCodebaseRequest,
-) map[string]*mono2micro.Controller {
-	validControllers := map[string]*mono2micro.Controller{}
+) map[string]*mono2micro.Functionality {
+	validFunctionalities := map[string]*mono2micro.Functionality{}
 	var wg sync.WaitGroup
 	mapMutex := sync.RWMutex{}
 
-	for _, controller := range decomposition.Controllers {
-		if !request.ShouldRefactorController(controller) {
+	for _, functionality := range decomposition.Functionalities {
+		if !request.ShouldRefactorFunctionality(functionality) {
 			continue
 		}
 
 		wg.Add(1)
-		go func(controller *mono2micro.Controller, validControllers map[string]*mono2micro.Controller) {
+		go func(functionality *mono2micro.Functionality, validFunctionalities map[string]*mono2micro.Functionality) {
 			defer wg.Done()
-			for clusterID := range controller.EntitiesPerCluster {
+			for clusterID := range functionality.EntitiesPerCluster {
 				cluster := decomposition.GetClusterFromID(clusterID)
 				mapMutex.Lock()
-				cluster.AddController(controller)
+				cluster.AddFunctionality(functionality)
 				mapMutex.Unlock()
 			}
 			mapMutex.Lock()
-			validControllers[controller.Name] = controller
+			validFunctionalities[functionality.Name] = functionality
 			mapMutex.Unlock()
-		}(controller, validControllers)
+		}(functionality, validFunctionalities)
 	}
 	wg.Wait()
-	return validControllers
+	return validFunctionalities
 }
 
 func (svc *DefaultHandler) createSagaRedesigns(
 	request *values.RefactorCodebaseRequest,
 	decomposition *mono2micro.Decomposition,
-	controller *mono2micro.Controller,
+	functionality *mono2micro.Functionality,
 	initialRedesign *mono2micro.FunctionalityRedesign,
 ) []*mono2micro.FunctionalityRedesign {
 	sagaRedesigns := []*mono2micro.FunctionalityRedesign{}
 
-	for clusterID := range controller.EntitiesPerCluster {
+	for clusterID := range functionality.EntitiesPerCluster {
 		cluster := decomposition.Clusters[clusterID]
 
-		redesign := svc.refactorController(request, controller, initialRedesign, cluster)
+		redesign := svc.refactorFunctionality(request, functionality, initialRedesign, cluster)
 
-		svc.metricsHandler.CalculateDecompositionMetrics(decomposition, controller, redesign)
+		svc.metricsHandler.CalculateDecompositionMetrics(decomposition, functionality, redesign)
 
 		redesign.OrchestratorID = clusterID
 
@@ -196,14 +196,14 @@ func (svc *DefaultHandler) createSagaRedesigns(
 	return sagaRedesigns
 }
 
-func (svc *DefaultHandler) refactorController(
+func (svc *DefaultHandler) refactorFunctionality(
 	request *values.RefactorCodebaseRequest,
-	controller *mono2micro.Controller,
+	functionality *mono2micro.Functionality,
 	initialRedesign *mono2micro.FunctionalityRedesign,
 	orchestrator *mono2micro.Cluster,
 ) *mono2micro.FunctionalityRedesign {
 	redesign := &mono2micro.FunctionalityRedesign{
-		Name:                    controller.Name,
+		Name:                    functionality.Name,
 		UsedForMetrics:          true,
 		Redesign:                []*mono2micro.Invocation{},
 		SystemComplexity:        0,
@@ -464,18 +464,18 @@ func (svc *DefaultHandler) pruneInvocationAccesses(invocation *mono2micro.Invoca
 }
 
 func (svc *DefaultHandler) createInitialDecompositionData(
-	request *values.RefactorCodebaseRequest, controllers map[string]*mono2micro.Controller,
+	request *values.RefactorCodebaseRequest, functionalities map[string]*mono2micro.Functionality,
 ) *values.RefactorCodebaseResponse {
 
-	controllersData := map[string]*values.Controller{}
+	functionalitiesData := map[string]*values.Functionality{}
 
-	for name, _ := range controllers {
-		controllersData[name] = &values.Controller{
+	for name, _ := range functionalities {
+		functionalitiesData[name] = &values.Functionality{
 			Name:     name,
 			Monolith: &values.Monolith{},
 			Refactor: &values.Refactor{},
 			Error:    "",
-			Status:   values.RefactoringController.String(),
+			Status:   values.RefactoringFunctionality.String(),
 		}
 	}
 
@@ -483,15 +483,15 @@ func (svc *DefaultHandler) createInitialDecompositionData(
 		CodebaseName:            request.CodebaseName,
 		StrategyName:            request.StrategyName,
 		DecompositionName:       request.DecompositionName,
-		Controllers:             controllersData,
+		Functionalities:         functionalitiesData,
 		DataDependenceThreshold: request.DataDependenceThreshold,
 		Status:                  values.RefactoringCodebase.String(),
 	}
 }
 
-func (svc *DefaultHandler) createFinalControllerData(
-	controller *mono2micro.Controller, initialRedesign *mono2micro.FunctionalityRedesign, sagaRedesign *mono2micro.FunctionalityRedesign,
-) *values.Controller {
+func (svc *DefaultHandler) createFinalFunctionalityData(
+	functionality *mono2micro.Functionality, initialRedesign *mono2micro.FunctionalityRedesign, sagaRedesign *mono2micro.FunctionalityRedesign,
+) *values.Functionality {
 	systemComplexityReduction := initialRedesign.SystemComplexity - sagaRedesign.SystemComplexity
 	functionalityComplexityReduction := initialRedesign.FunctionalityComplexity - sagaRedesign.FunctionalityComplexity
 
@@ -514,8 +514,8 @@ func (svc *DefaultHandler) createFinalControllerData(
 		})
 	}
 
-	return &values.Controller{
-		Name: controller.Name,
+	return &values.Functionality{
+		Name: functionality.Name,
 		Monolith: &values.Monolith{
 			ComplexityMetrics: &values.ComplexityMetrics{
 				SystemComplexity:        initialRedesign.SystemComplexity,
@@ -528,7 +528,7 @@ func (svc *DefaultHandler) createFinalControllerData(
 			Orchestrator: &values.Cluster{
 				Name:     orchestratorName,
 				ID:       orchestratorID,
-				Entities: controller.EntitiesPerCluster[orchestratorID],
+				Entities: functionality.EntitiesPerCluster[orchestratorID],
 			},
 			ComplexityMetrics: &values.ComplexityMetrics{
 				SystemComplexity:        sagaRedesign.SystemComplexity,
@@ -543,6 +543,6 @@ func (svc *DefaultHandler) createFinalControllerData(
 			},
 			Invocations: invocations,
 		},
-		Status: values.ControllerRefactorComplete.String(),
+		Status: values.FunctionalityRefactorComplete.String(),
 	}
 }

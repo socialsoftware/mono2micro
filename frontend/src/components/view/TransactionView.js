@@ -20,12 +20,13 @@ import {DEFAULT_REDESIGN_NAME} from "../../constants/constants";
 import {TransactionOperationsMenu} from "./TransactionOperationsMenu";
 import AppContext from "./../AppContext";
 import {useParams} from "react-router-dom";
+import {MetricType} from "../../type-declarations/types.d";
 
 const HttpStatus = require('http-status-codes');
 
 export const transactionViewHelp = (<div>
     Hover or double click cluster to see entities inside.<br />
-    Hover or double click controller to see entities accessed.<br />
+    Hover or double click functionality to see entities accessed.<br />
     Hover or double click edge to see entities accessed in a cluster.<br />
 </div>);
 
@@ -183,9 +184,9 @@ export const TransactionView = () => {
     const [visGraphSeq, setVisGraphSeq] = useState({});
     const [redesignVisGraph, setRedesignVisGraph] = useState({});
     const [clusters, setClusters] = useState([]);
-    const [controller, setController] = useState({});
-    const [controllers, setControllers] = useState([]);
-    const [controllersClusters, setControllersClusters] = useState([]);
+    const [functionality, setFunctionality] = useState({});
+    const [functionalities, setFunctionalities] = useState([]);
+    const [functionalitiesClusters, setFunctionalitiesClusters] = useState([]);
     const [showGraph, setShowGraph] = useState(false);
     const [localTransactionsSequence, setLocalTransactionsSequence] = useState([]);
     const [currentSubView, setCurrentSubView] = useState("Graph");
@@ -210,57 +211,57 @@ export const TransactionView = () => {
     function loadTransaction() {
         const service = new RepositoryService();
 
-        service.getControllersClusters(
+        service.getFunctionalitiesClusters(
             codebaseName,
             strategyName,
             decompositionName
-        ).then(response => { setControllersClusters(response.data); });
+        ).then(response => { setFunctionalitiesClusters(response.data); });
 
         service.getDecomposition(
             codebaseName,
             strategyName,
             decompositionName
         ).then(response => {
-            setControllers(Object.values(response.data.controllers));
+            setFunctionalities(Object.values(response.data.functionalities));
             setClusters(Object.values(response.data.clusters));
         });
     }
 
-    function handleControllerSubmit(value) {
-        const currentController = controllers.find(c => c.name === value);
-        setController(currentController);
-        loadGraph(currentController);
+    function handleFunctionalitySubmit(value) {
+        const currentFunctionality = functionalities.find(c => c.name === value);
+        setFunctionality(currentFunctionality);
+        loadGraph(currentFunctionality);
     }
 
-    function loadGraph(currentController) {
-        createTransactionDiagram(currentController);
+    function loadGraph(currentFunctionality) {
+        createTransactionDiagram(currentFunctionality);
 
         const service = new RepositoryService();
 
-        service.getLocalTransactionsGraphForController(
+        service.getLocalTransactionsGraphForFunctionality(
             codebaseName,
             strategyName,
             decompositionName,
-            currentController.name
+            currentFunctionality.name
         ).then(response => {
-            createSequenceDiagram(response.data, currentController);
+            createSequenceDiagram(response.data, currentFunctionality);
             setShowGraph(true);
         });
     }
 
-    function createTransactionDiagram(currentController) {
+    function createTransactionDiagram(currentFunctionality) {
         const visGraph = {
-            nodes: new DataSet(controllersClusters[currentController.name].map(cluster => createNode(cluster))),
-            edges: new DataSet(controllersClusters[currentController.name].map(cluster => createEdge(cluster, currentController)))
+            nodes: new DataSet(functionalitiesClusters[currentFunctionality.name].map(cluster => createNode(cluster))),
+            edges: new DataSet(functionalitiesClusters[currentFunctionality.name].map(cluster => createEdge(cluster, currentFunctionality)))
         };
 
         visGraph.nodes.add({
-            id: currentController.name,
-            title: Object.entries(currentController.entities).map(e => translateEntity(e[0]) + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(currentController.entities).length,
-            label: currentController.name,
+            id: currentFunctionality.name,
+            title: Object.entries(currentFunctionality.entities).map(e => translateEntity(e[0]) + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(currentFunctionality.entities).length,
+            label: currentFunctionality.name,
             level: 0,
             value: 1,
-            type: types.CONTROLLER
+            type: types.FUNCTIONALITY
         });
 
         setVisGraph(visGraph);
@@ -277,23 +278,23 @@ export const TransactionView = () => {
         };
     }
 
-    function createEdge(cluster, currentController) {
+    function createEdge(cluster, currentFunctionality) {
         const text = [];
 
-        Object.entries(currentController.entities).forEach(([entityID, value]) => {
+        Object.entries(currentFunctionality.entities).forEach(([entityID, value]) => {
             if (cluster.entities.includes(Number(entityID)))
                 text.push(translateEntity(entityID) + " " + value)
         });
 
         return {
-            from: currentController.name,
+            from: currentFunctionality.name,
             to: cluster.id,
             label: text.length.toString(),
             title: text.join('<br>')
         };
     }
 
-    function createSequenceDiagram(localTransactionsGraph, currentController) {
+    function createSequenceDiagram(localTransactionsGraph, currentFunctionality) {
         let nodes = [];
         let edges = [];
         let localTransactionsSequence = [];
@@ -301,13 +302,13 @@ export const TransactionView = () => {
 
         nodes.push({
             id: 0,
-            label: currentController.name,
+            label: currentFunctionality.name,
             level: 0,
             value: 1,
-            type: types.CONTROLLER,
-            title: Object.entries(currentController.entities)
+            type: types.FUNCTIONALITY,
+            title: Object.entries(currentFunctionality.entities)
                 .map(e => translateEntity(e[0]) + " " + e[1])
-                .join('<br>') + "<br>Total: " + Object.keys(currentController.entities).length,
+                .join('<br>') + "<br>Total: " + Object.keys(currentFunctionality.entities).length,
         });
 
         localTransactionIdToClusterAccesses[0] = [];
@@ -389,17 +390,17 @@ export const TransactionView = () => {
         setLocalTransactionsSequence(localTransactionsSequence);
     }
 
-    function createRedesignGraph(functionalityRedesign, controller){
+    function createRedesignGraph(functionalityRedesign, functionality){
         let nodes = [];
         let edges = [];
 
         nodes.push({
             id: 0,
-            title: Object.entries(controller.entities).map(e => translateEntity(e[0]) + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(controller.entities).length,
-            label: controller.name,
+            title: Object.entries(functionality.entities).map(e => translateEntity(e[0]) + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(functionality.entities).length,
+            label: functionality.name,
             level: -1,
             value: 1,
-            type: types.CONTROLLER
+            type: types.FUNCTIONALITY
         });
 
         functionalityRedesign.redesign.find(e => e.id === 0)
@@ -453,7 +454,7 @@ export const TransactionView = () => {
 
     function identifyModifiedEntities(cluster){
         const modifiedEntities = [];
-        Object.entries(controller.entities).forEach(e => {
+        Object.entries(functionality.entities).forEach(e => {
             if (cluster.entities.includes(parseInt(e[0])) && e[1] >= 2) // 2 -> W , 3 -> RW - we want all writes
                 modifiedEntities.push(e[0]);
         })
@@ -538,7 +539,7 @@ export const TransactionView = () => {
         if(value === redesignOperations.AC){
             const modifiedEntities = [];
 
-            controllersClusters[controller.name].forEach(cluster => {
+            functionalitiesClusters[functionality.name].forEach(cluster => {
                 const clusterModifiedEntities = identifyModifiedEntities(cluster);
 
                 if (clusterModifiedEntities.modifiedEntities.length > 0 && clusterModifiedEntities.cluster !== selectedLocalTransaction.cluster)
@@ -549,7 +550,7 @@ export const TransactionView = () => {
 
             const DCGIAvailableClusters = [];
 
-            controllersClusters[controller.name].forEach(cluster => {
+            functionalitiesClusters[functionality.name].forEach(cluster => {
                 if (cluster.id !== selectedLocalTransaction.clusterID)
                     DCGIAvailableClusters.push(cluster.id);
             })
@@ -573,7 +574,7 @@ export const TransactionView = () => {
                     codebaseName,
                     strategyName,
                     decompositionName,
-                    controller.name,
+                    functionality.name,
                     selectedRedesign.name,
                     value.cluster,
                     value.entities,
@@ -594,7 +595,7 @@ export const TransactionView = () => {
                     codebaseName,
                     strategyName,
                     decompositionName,
-                    controller.name,
+                    functionality.name,
                     selectedRedesign.name,
                     selectedLocalTransaction.id,
                     newCaller.id
@@ -620,7 +621,7 @@ export const TransactionView = () => {
                     codebaseName,
                     strategyName,
                     decompositionName,
-                    controller.name,
+                    functionality.name,
                     selectedRedesign.name,
                     DCGISelectedClusters[0],
                     DCGISelectedClusters[1],
@@ -641,7 +642,7 @@ export const TransactionView = () => {
                     codebaseName,
                     strategyName,
                     decompositionName,
-                    controller.name,
+                    functionality.name,
                     selectedRedesign.name,
                     selectedLocalTransaction.id,
                     selectedRedesign.pivotTransaction === -1 ? value : null
@@ -667,7 +668,7 @@ export const TransactionView = () => {
                     codebaseName,
                     strategyName,
                     decompositionName,
-                    controller.name,
+                    functionality.name,
                     selectedRedesign.name,
                     selectedLocalTransaction.id,
                     value
@@ -688,25 +689,25 @@ export const TransactionView = () => {
     }
 
     function rebuildRedesignGraph(value){
-        const tempControllers = controllers;
-        const index = tempControllers.indexOf(controller);
-        tempControllers[index] = value.data;
+        const tempFunctionalities = functionalities;
+        const index = tempFunctionalities.indexOf(functionality);
+        tempFunctionalities[index] = value.data;
         const redesign = value.data.functionalityRedesigns.find(e => e.name === selectedRedesign.name);
 
-        setControllers(tempControllers);
-        setController(value.data);
+        setFunctionalities(tempFunctionalities);
+        setFunctionality(value.data);
         setSelectedRedesign(redesign);
         setRedesignVisGraph(createRedesignGraph(redesign, value.data));
         handleCancel();
     }
 
     function handlePivotTransactionSubmit(value){
-        const tempControllers = controllers;
-        const index = tempControllers.indexOf(controller);
-        tempControllers[index] = value.data;
+        const tempFunctionalities = functionalities;
+        const index = tempFunctionalities.indexOf(functionality);
+        tempFunctionalities[index] = value.data;
 
-        setControllers(tempControllers);
-        setController(value.data);
+        setFunctionalities(tempFunctionalities);
+        setFunctionality(value.data);
         setSelectedRedesign(null);
         handleCancel();
     }
@@ -747,7 +748,7 @@ export const TransactionView = () => {
 
     function renderFunctionalityRedesigns(){
         return <CardGroup style={{ width: "fit-content" }}>
-            {controller.functionalityRedesigns.map(fr =>
+            {functionality.functionalityRedesigns.map(fr =>
                 <Card className="me-4 mb-4" key={fr.name} style={{ width: "30rem" }}>
                     <Card.Body>
                         {fr.usedForMetrics ? <Card.Title>
@@ -757,16 +758,16 @@ export const TransactionView = () => {
                                 {fr.name}
                             </Card.Title>
                         }
-                        {controller.type === "QUERY" ?
+                        {functionality.type === "QUERY" ?
                             <Card.Text>
                                 Type: Query <br/>
-                                Inconsistency Complexity: {fr.inconsistencyComplexity}
+                                Inconsistency Complexity: {fr.metrics.filter(metric => metric.type === MetricType.INCONSISTENCY_COMPLEXITY)[0].value}
                             </Card.Text>
                             :
                             <Card.Text>
                                 Type: Saga <br/>
-                                Functionality Complexity: {fr.functionalityComplexity}< br/>
-                                System Complexity: {fr.systemComplexity}
+                                Functionality Complexity: {fr.metrics.filter(metric => metric.type === MetricType.FUNCTIONALITY_COMPLEXITY)[0].value}< br/>
+                                System Complexity: {fr.metrics.filter(metric => metric.type === MetricType.SYSTEM_COMPLEXITY)[0].value}
                             </Card.Text>
                         }
                         <Button onClick={() => handleSelectRedesign(fr)} className="me-2">
@@ -787,13 +788,13 @@ export const TransactionView = () => {
     function handleUseForMetrics(value){
         const service = new RepositoryService();
         service.setUseForMetrics(codebaseName, strategyName, decompositionName,
-            controller.name, value.name)
+            functionality.name, value.name)
             .then(response => {
-                const tempControllers = controllers;
-                const index = tempControllers.indexOf(controller);
-                tempControllers[index] = response.data;
-                setControllers(tempControllers);
-                setController(response.data);
+                const tempFunctionalities = functionalities;
+                const index = tempFunctionalities.indexOf(functionality);
+                tempFunctionalities[index] = response.data;
+                setFunctionalities(tempFunctionalities);
+                setFunctionality(response.data);
             }).catch(() => {
                 setError(true);
                 setErrorMessage('ERROR: Change Functionality Used for Metrics failed.');
@@ -803,19 +804,19 @@ export const TransactionView = () => {
 
     function handleSelectRedesign(value){
         setSelectedRedesign(value);
-        setRedesignVisGraph(createRedesignGraph(value, controller));
+        setRedesignVisGraph(createRedesignGraph(value, functionality));
     }
 
     function handleDeleteRedesign(value){
         const service = new RepositoryService();
         service.deleteRedesign(codebaseName, strategyName, decompositionName,
-            controller.name, value.name)
+            functionality.name, value.name)
             .then(response => {
-                const tempControllers = controllers;
-                const index = tempControllers.indexOf(controller);
-                tempControllers[index] = response.data;
-                setControllers(tempControllers);
-                setController(response.data);
+                const tempFunctionalities = functionalities;
+                const index = tempFunctionalities.indexOf(functionality);
+                tempFunctionalities[index] = response.data;
+                setFunctionalities(tempFunctionalities);
+                setFunctionality(response.data);
             }).catch(() => {
                 setError(true);
                 setErrorMessage('ERROR: Delete Redesign failed.');
@@ -847,30 +848,31 @@ export const TransactionView = () => {
         </div>
     }
 
-    const metricsRows = controllers.map(controller => {
-        return controller.type === "QUERY" ?
+    const metricsRows = functionalities.map(functionalities => {
+        let metrics = functionalities.functionalityRedesigns.find(fr => fr.usedForMetrics).metrics;
+        return functionalities.type === "QUERY" ?
             {
-                controller: controller.name,
-                clusters: controllersClusters[controller.name] === undefined ? 0 : controllersClusters[controller.name].length,
-                type: controller.type,
-                complexity: controller.complexity,
-                inconsistencyComplexity: controller.functionalityRedesigns.find(fr => fr.usedForMetrics).inconsistencyComplexity
+                functionality: functionalities.name,
+                clusters: functionalitiesClusters[functionalities.name] === undefined ? 0 : functionalitiesClusters[functionalities.name].length,
+                type: functionalities.type,
+                complexity: functionalities.metrics.filter(metric => metric.type === MetricType.COMPLEXITY)[0].value,
+                inconsistencyComplexity: metrics.filter(metric => metric.type === MetricType.INCONSISTENCY_COMPLEXITY)[0].value
             }
             :
             {
-                controller: controller.name,
-                clusters: controllersClusters[controller.name] === undefined ? 0 : controllersClusters[controller.name].length,
-                type: controller.type,
-                complexity: controller.complexity,
-                functionalityComplexity: controller.functionalityRedesigns.find(fr => fr.usedForMetrics).functionalityComplexity,
-                systemComplexity: controller.functionalityRedesigns.find(fr => fr.usedForMetrics).systemComplexity,
-                total: controller.functionalityRedesigns.find(fr => fr.usedForMetrics).functionalityComplexity + controller.functionalityRedesigns.find(fr => fr.usedForMetrics).systemComplexity
+                functionality: functionalities.name,
+                clusters: functionalitiesClusters[functionalities.name] === undefined ? 0 : functionalitiesClusters[functionalities.name].length,
+                type: functionalities.type,
+                complexity: functionalities.metrics.filter(metric => metric.type === MetricType.COMPLEXITY)[0].value,
+                functionalityComplexity: metrics.filter(metric => metric.type === MetricType.FUNCTIONALITY_COMPLEXITY)[0].value,
+                systemComplexity: metrics.filter(metric => metric.type === MetricType.SYSTEM_COMPLEXITY)[0].value,
+                total: metrics.filter(metric => metric.type === MetricType.FUNCTIONALITY_COMPLEXITY)[0].value + metrics.filter(metric => metric.type === MetricType.SYSTEM_COMPLEXITY)[0].value
             }
     });
 
     const metricsColumns = [{
-        dataField: 'controller',
-        text: 'Controller',
+        dataField: 'functionality',
+        text: 'Functionality',
         sort: true
     }, {
         dataField: 'clusters',
@@ -912,8 +914,8 @@ export const TransactionView = () => {
         text: 'Entities Accessed'
     }];
 
-    let controllersClustersAmount = Object.keys(controllersClusters).map(controller => controllersClusters[controller].length);
-    let averageClustersAccessed = controllersClustersAmount.reduce((a, b) => a + b, 0) / controllersClustersAmount.length;
+    let functionalitiesClustersAmount = Object.keys(functionalitiesClusters).map(functionality => functionalitiesClusters[functionality].length);
+    let averageClustersAccessed = functionalitiesClustersAmount.reduce((a, b) => a + b, 0) / functionalitiesClustersAmount.length;
 
     return (
         <div>
@@ -965,15 +967,15 @@ export const TransactionView = () => {
                     {selectedRedesign !== null &&
                     <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
                         {showGraph && currentSubView === "Functionality Redesign" &&
-                        controller.type === "SAGA" &&
+                        functionality.type === "SAGA" &&
                         <h4 style={{color: "#666666", textAlign: "center"}}>
-                            Functionality Complexity: {selectedRedesign.functionalityComplexity} - System Complexity: {selectedRedesign.systemComplexity}
+                            Functionality Complexity: {selectedRedesign.metrics.filter(metric => metric.type === MetricType.FUNCTIONALITY_COMPLEXITY)[0].value} - System Complexity: {selectedRedesign.metrics.filter(metric => metric.type === MetricType.SYSTEM_COMPLEXITY)[0].value}
                         </h4>
                         }
                         {showGraph && currentSubView === "Functionality Redesign" &&
-                        controller.type === "QUERY" &&
+                        functionality.type === "QUERY" &&
                         <h4 style={{color: "#666666", textAlign: "center"}}>
-                            Query Inconsistency Complexity: {selectedRedesign.inconsistencyComplexity}
+                            Query Inconsistency Complexity: {selectedRedesign.metrics.filter(metric => metric.type === MetricType.INCONSISTENCY_COMPLEXITY)[0].value}
                         </h4>
                         }
                     </Col>
@@ -983,8 +985,8 @@ export const TransactionView = () => {
             {currentSubView === "Graph" &&
             <span>
                     <TransactionOperationsMenu
-                        handleControllerSubmit={handleControllerSubmit}
-                        controllersClusters={controllersClusters}
+                        handleFunctionalitySubmit={handleFunctionalitySubmit}
+                        functionalitiesClusters={functionalitiesClusters}
                     />
                     <div style={{height: '700px'}}>
                         <VisNetwork
@@ -1011,14 +1013,14 @@ export const TransactionView = () => {
             <div>
                 Number of Clusters : {clusters.length}
                 < br />
-                Number of Controllers that access a single Cluster : {Object.keys(controllersClusters).filter(key => controllersClusters[key].length === 1).length}
+                Number of Functionalities that access a single Cluster : {Object.keys(functionalitiesClusters).filter(key => functionalitiesClusters[key].length === 1).length}
                 < br />
-                Maximum number of Clusters accessed by a single Controller : {Math.max(...Object.keys(controllersClusters).map(key => controllersClusters[key].length))}
+                Maximum number of Clusters accessed by a single Functionality : {Math.max(...Object.keys(functionalitiesClusters).map(key => functionalitiesClusters[key].length))}
                 < br />
                 Average Number of Clusters accessed (Average number of microservices accessed during a transaction) : {Number(averageClustersAccessed.toFixed(2))}
                 <BootstrapTable
                     bootstrap4
-                    keyField='controller'
+                    keyField='functionality'
                     data={metricsRows}
                     columns={metricsColumns}
                 />
@@ -1026,7 +1028,7 @@ export const TransactionView = () => {
             }
             {showGraph && currentSubView === "Sequence Table" &&
             <>
-                <h4>{controller.name}</h4>
+                <h4>{functionality.name}</h4>
                 <BootstrapTable
                     bootstrap4
                     keyField='id'
@@ -1039,13 +1041,13 @@ export const TransactionView = () => {
             !compareRedesigns &&
             <div>
                 <br/>
-                <h4 style={{color: "#666666"}}>{controller.name} Redesigns</h4>
-                {controller.functionalityRedesigns.length >= 2 &&
+                <h4 style={{color: "#666666"}}>{functionality.name} Redesigns</h4>
+                {functionality.functionalityRedesigns.length >= 2 &&
                 <ButtonGroup className="mb-2">
                     <Button>Compare Two Redesigns</Button>
                     <DropdownButton as={ButtonGroup}
                                     title={selectedRedesignsToCompare1}>
-                        {controller.functionalityRedesigns.map(e =>
+                        {functionality.functionalityRedesigns.map(e =>
                             <Dropdown.Item
                                 key={e.name}
                                 onClick={() => setSelectedRedesignsToCompare1(e.name)}>{e.name}
@@ -1053,7 +1055,7 @@ export const TransactionView = () => {
                     </DropdownButton>
                     <DropdownButton as={ButtonGroup}
                                     title={selectedRedesignsToCompare2}>
-                        {controller.functionalityRedesigns.filter(e => selectedRedesignsToCompare1 !== e.name).map(e =>
+                        {functionality.functionalityRedesigns.filter(e => selectedRedesignsToCompare1 !== e.name).map(e =>
                             <Dropdown.Item
                                 key={e.name}
                                 onClick={() => setSelectedRedesignsToCompare2(e.name)}>{e.name}
@@ -1078,38 +1080,38 @@ export const TransactionView = () => {
                 <Container fluid style={{paddingLeft:"0px", paddingRight:"0px"}}>
                     <Row>
                         <Col>
-                            {controller.type === "SAGA" ?
+                            {functionality.type === "SAGA" ?
                                 <div>
                                     <h4 style={{color: "#666666", textAlign: "center"}}>
                                         {selectedRedesignsToCompare1}
                                     </h4>
                                     <h4 style={{color: "#666666", textAlign: "center"}}>
-                                        Functionality Complexity: {controller.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare1)[0].functionalityComplexity} - System Complexity: {controller.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare1)[0].systemComplexity}
+                                        Functionality Complexity: {functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare1)[0].metrics.filter(metric => metric.type === MetricType.FUNCTIONALITY_COMPLEXITY)[0].value} - System Complexity: {functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare1)[0].metrics.filter(metric => metric.type === MetricType.SYSTEM_COMPLEXITY)[0].value}
                                     </h4>
                                 </div>
                                 :
                                 <h4 style={{color: "#666666", textAlign: "center"}}>
-                                    Query Inconsistency Complexity: {controller.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare1)[0].inconsistencyComplexity}
+                                    Query Inconsistency Complexity: {functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare1)[0].metrics.filter(metric => metric.type === MetricType.INCONSISTENCY_COMPLEXITY)[0].value}
                                 </h4>
                             }
-                            {renderRedesignGraph(createRedesignGraph(controller.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare1)[0], controller))}
+                            {renderRedesignGraph(createRedesignGraph(functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare1)[0], functionality))}
                         </Col>
                         <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
-                            {controller.type === "SAGA" ?
+                            {functionality.type === "SAGA" ?
                                 <div>
                                     <h4 style={{color: "#666666", textAlign: "center"}}>
                                         {selectedRedesignsToCompare2}
                                     </h4>
                                     <h4 style={{color: "#666666", textAlign: "center"}}>
-                                        Functionality Complexity: {controller.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare2)[0].functionalityComplexity} - System Complexity: {controller.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare2)[0].systemComplexity}
+                                        Functionality Complexity: {functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare2)[0].metrics.filter(metric => metric.type === MetricType.FUNCTIONALITY_COMPLEXITY)[0].value} - System Complexity: {functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare2)[0].metrics.filter(metric => metric.type === MetricType.SYSTEM_COMPLEXITY)[0].value}
                                     </h4>
                                 </div>
                                 :
                                 <h4 style={{color: "#666666", textAlign: "center"}}>
-                                    Query Inconsistency Complexity: {controller.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare2)[0].inconsistencyComplexity}
+                                    Query Inconsistency Complexity: {functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare2)[0].metrics.filter(metric => metric.type === MetricType.INCONSISTENCY_COMPLEXITY)[0].value}
                                 </h4>
                             }
-                            {renderRedesignGraph(createRedesignGraph(controller.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare2)[0], controller))}
+                            {renderRedesignGraph(createRedesignGraph(functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare2)[0], functionality))}
                         </Col>
                     </Row>
                 </Container>

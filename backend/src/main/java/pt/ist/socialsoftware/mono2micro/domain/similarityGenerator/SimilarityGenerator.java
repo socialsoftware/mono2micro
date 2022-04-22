@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.domain.similarityGenerators;
+package pt.ist.socialsoftware.mono2micro.domain.similarityGenerator;
 
 import pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy;
 

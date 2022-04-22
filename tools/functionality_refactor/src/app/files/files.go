@@ -30,7 +30,7 @@ type FilesHandler interface {
 	ReadDecomposition(string, string, string) (*mono2micro.Decomposition, error)
 	ReadDecompositionRefactorization(string, string, string) (*values.RefactorCodebaseResponse, error)
 	StoreDecompositionRefactorization(*values.RefactorCodebaseResponse) error
-	UpdateControllerRefactorization(string, string, string, *values.Controller) error
+	UpdateFunctionalityRefactorization(string, string, string, *values.Functionality) error
 	ReadIDToEntityFile(string, string) (map[string]string, error)
 }
 
@@ -133,7 +133,7 @@ func (svc *DefaultHandler) StoreDecompositionRefactorization(refactorization *va
 	return ioutil.WriteFile(path, file, 0644)
 }
 
-func (svc *DefaultHandler) UpdateControllerRefactorization(codebaseName string, strategyName string, decompositionName string, refactorization *values.Controller) error {
+func (svc *DefaultHandler) UpdateFunctionalityRefactorization(codebaseName string, strategyName string, decompositionName string, refactorization *values.Functionality) error {
 	// we lock the mutex so that only one goroutine reads and updates the file at a time
 	fileMutex.Lock()
 	defer fileMutex.Unlock()
@@ -144,7 +144,7 @@ func (svc *DefaultHandler) UpdateControllerRefactorization(codebaseName string, 
 		return err
 	}
 
-	codebase.Controllers[refactorization.Name] = refactorization
+	codebase.Functionalities[refactorization.Name] = refactorization
 	return svc.StoreDecompositionRefactorization(codebase)
 }
 

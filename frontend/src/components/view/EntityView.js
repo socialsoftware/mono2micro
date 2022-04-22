@@ -11,8 +11,8 @@ import AppContext from "./../AppContext";
 import {useParams} from "react-router-dom";
 
 export const entityViewHelp = (<div>
-    Hover entity to see controllers that access it.< br />
-    Hover edge to see controllers that access the entity and the cluster.< br />
+    Hover entity to see functionalities that access it.< br />
+    Hover edge to see functionalities that access the entity and the cluster.< br />
     Hover cluster to see entities inside.< br />
 </div>);
 
@@ -66,8 +66,8 @@ export const EntityView = () => {
         entity: "",
         entities: [],
         clusters: [],
-        controllers: [],
-        clustersControllers: {},
+        functionalities: [],
+        clustersFunctionalities: {},
         amountList: [],
         currentSubView: "Graph"
     });
@@ -81,15 +81,15 @@ export const EntityView = () => {
             strategyName,
             decompositionName
         ).then(response => {
-            service.getClustersControllers(
+            service.getClustersFunctionalities(
                 codebaseName,
                 strategyName,
                 decompositionName
             ).then(response2 => {
                 let entities = Object.values(response.data.clusters).map(c => c.entities).flat();
                 let clusters = Object.values(response.data.clusters);
-                let controllers = Object.values(response.data.controllers);
-                let clustersControllers = response2.data;
+                let functionalities = Object.values(response.data.functionalities);
+                let clustersFunctionalities = response2.data;
 
                 let amountListTemp = {};
 
@@ -100,9 +100,9 @@ export const EntityView = () => {
 
                     for (let j = 0; j < clusters.length; j++) {
                         let cluster = clusters[j];
-                        let commonControllers = getCommonControllers(entityName, cluster, controllers, clustersControllers);
+                        let commonFunctionalities = getCommonFunctionalities(entityName, cluster, functionalities, clustersFunctionalities);
 
-                        if (cluster.id !== entityCluster.id && commonControllers.length > 0) {
+                        if (cluster.id !== entityCluster.id && commonFunctionalities.length > 0) {
                             amount += 1;
                         }
                     }
@@ -111,8 +111,8 @@ export const EntityView = () => {
                 changeState(state => ({...state,
                     clusters: clusters,
                     entities: entities,
-                    controllers: controllers,
-                    clustersControllers: clustersControllers,
+                    functionalities: functionalities,
+                    clustersFunctionalities: clustersFunctionalities,
                     amountList: amountListTemp
                 }));
             });
@@ -125,11 +125,11 @@ export const EntityView = () => {
         let nodes = [];
         let edges = [];
 
-        let entityControllers = [];
+        let entityFunctionalities = [];
 
-        state.controllers.forEach(controller => {
-            if (controller.entities[entity])
-                entityControllers.push(controller.name + " " + controller.entities[entity]);
+        state.functionalities.forEach(functionality => {
+            if (functionality.entities[entity])
+                entityFunctionalities.push(functionality.name + " " + functionality.entities[entity]);
         })
 
         nodes.push({
@@ -138,7 +138,7 @@ export const EntityView = () => {
             value: 1,
             level: 0,
             type: types.ENTITY,
-            title: entityControllers.join('<br>')
+            title: entityFunctionalities.join('<br>')
         });
 
         for (let i = 0; i < state.clusters.length; i++) {
@@ -146,9 +146,9 @@ export const EntityView = () => {
             let clusterEntities = cluster.entities;
 
             if (cluster.id !== entityCluster.id) {
-                let commonControllers = getCommonControllers(entity, cluster, state.controllers, state.clustersControllers);
+                let commonFunctionalities = getCommonFunctionalities(entity, cluster, state.functionalities, state.clustersFunctionalities);
 
-                if (commonControllers.length > 0) {
+                if (commonFunctionalities.length > 0) {
                     nodes.push({
                         id: cluster.id,
                         label: cluster.name,
@@ -161,8 +161,8 @@ export const EntityView = () => {
                     edges.push({
                         from: translateEntity(entity),
                         to: cluster.id,
-                        label: commonControllers.length.toString(),
-                        title: commonControllers.join('<br>')
+                        label: commonFunctionalities.length.toString(),
+                        title: commonFunctionalities.join('<br>')
                     })
                 }
             }
@@ -177,17 +177,17 @@ export const EntityView = () => {
         }}));
     }
 
-    //get controllers that access both an entity and another cluster
-    function getCommonControllers(entityName, cluster, controllers, clustersControllers) {
-        let entityControllers = [];
-        let clusterControllers = clustersControllers[cluster.id].map(c => c.name);
+    //get functionalities that access both an entity and another cluster
+    function getCommonFunctionalities(entityName, cluster, functionalities, clustersFunctionalities) {
+        let entityFunctionalities = [];
+        let clusterFunctionalities = clustersFunctionalities[cluster.id].map(c => c.name);
 
-        controllers.forEach(controller => {
-            if (controller.entities[entityName] && clusterControllers.includes(controller.name))
-                entityControllers.push(controller.name);
+        functionalities.forEach(functionality => {
+            if (functionality.entities[entityName] && clusterFunctionalities.includes(functionality.name))
+                entityFunctionalities.push(functionality.name);
         })
 
-        return entityControllers;
+        return entityFunctionalities;
     }
 
     function handleSelectNode(nodeId) { }

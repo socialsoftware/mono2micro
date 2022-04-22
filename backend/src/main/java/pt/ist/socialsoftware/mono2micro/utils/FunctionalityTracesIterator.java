@@ -10,13 +10,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
 
-public class ControllerTracesIterator {
+public class FunctionalityTracesIterator {
 	private JsonParser jsonParser;
 	private int limit = 0; // 0 means no limit aka all traces will be parsed
 	private int tracesCounter; // #traces
 	String filePath;
 
-	public ControllerTracesIterator(
+	public FunctionalityTracesIterator(
 		String filePath,
 		int limit
 	) throws IOException {
@@ -65,19 +65,28 @@ public class ControllerTracesIterator {
 		return t;
 	}
 
-	public void nextControllerWithName(
-		String controllerName
+	public void jumpToNextFunctionality() throws IOException {
+		while (jsonParser.getCurrentName() != null && jsonParser.getCurrentToken() != JsonToken.START_OBJECT ||					// Either finds beginning of other functionality
+				jsonParser.getCurrentName() == null && jsonParser.getCurrentToken() != JsonToken.END_OBJECT) { 					// Or finds the end of the file
+			jsonParser.nextValue();
+		}
+	}
+
+	public String nextFunctionalityWithName(
+		String functionalityName
 	)
 		throws IOException
 	{
 		tracesCounter = 0;
+		String name;
 
 		while (true) {
 			if (jsonParser.getCurrentToken() == JsonToken.START_OBJECT) {
 				if (
 					jsonParser.getCurrentName() != null &&
-					(controllerName == null || jsonParser.getCurrentName().equals(controllerName)) // null means every controller is acceptable
+					(functionalityName == null || jsonParser.getCurrentName().equals(functionalityName)) // null means every functionality is acceptable
 				) {
+					name = jsonParser.getCurrentName();
 					break;
 				}
 
@@ -109,10 +118,33 @@ public class ControllerTracesIterator {
 					throw new IOException();
 			}
 		}
+		return name;
 	}
 
-	public boolean hasMoreControllers() {
-		return jsonParser.getCurrentToken() != JsonToken.END_OBJECT; // FIXME TEST ME
+	// Be sure this iterator is already positioned to read the traces of a certain functionality
+	public List<TraceDto> getTracesByType(Constants.TraceType traceType) throws IOException {
+		List<TraceDto> traceDtos = new ArrayList<>();
+
+		// Get traces according to trace type
+		switch(traceType) {
+			case LONGEST:
+				traceDtos.add(this.getLongestTrace());
+				break;
+			case WITH_MORE_DIFFERENT_ACCESSES:
+				traceDtos.add(this.getTraceWithMoreDifferentAccesses());
+				break;
+			default:
+				while (this.hasMoreTraces())
+					traceDtos.add(this.nextTrace());
+		}
+		if (traceDtos.size() == 0)
+			throw new IOException("Functionality does not contain any trace.");
+
+		return traceDtos;
+	}
+
+	public boolean hasMoreFunctionalities() throws IOException {
+		return !(jsonParser.getCurrentName() == null && jsonParser.getCurrentToken() == JsonToken.END_OBJECT);
 	}
 
 	public boolean hasMoreTraces() {
@@ -163,42 +195,5 @@ public class ControllerTracesIterator {
 		}
 
 		return null;
-	}
-
-	public Set<String> getRepresentativeTraces() throws IOException {
-		Map<String, HashSet<String>> traceIdToAccessesMap = new HashMap<>();
-
-		if (this.hasMoreTraces()) {
-			TraceDto t1 = this.nextTrace();
-			traceIdToAccessesMap.put(String.valueOf(t1.getId()), t1.getAccessesSet());
-
-			while (this.hasMoreTraces()) {
-				TraceDto t2 = this.nextTrace();
-				HashSet<String> t2AccessesSet = t2.getAccessesSet();
-
-				Iterator<Map.Entry<String, HashSet<String>>> iter = traceIdToAccessesMap.entrySet().iterator();
-				boolean t2IsRepresentative = true;
-
-				while (iter.hasNext()) {
-					Map.Entry<String, HashSet<String>> entry = iter.next();
-
-					if (entry.getValue().containsAll(t2AccessesSet)) { // t2 C t[i] => t2 is not representative
-						t2IsRepresentative = false;
-						break;
-					}
-
-					else if(t2AccessesSet.containsAll(entry.getValue())) { // t[i] C t2 => t2 is representative and t[i] isn't
-						iter.remove();
-					}
-
-					// unnecessary else statement cuz both t[i] and t2 are representative
-				}
-
-				if (t2IsRepresentative)
-					traceIdToAccessesMap.put(String.valueOf(t2.getId()), t2AccessesSet);
-			}
-		}
-
-		return traceIdToAccessesMap.keySet();
 	}
 }

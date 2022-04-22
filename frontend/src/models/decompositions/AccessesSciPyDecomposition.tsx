@@ -2,34 +2,20 @@ import Decomposition from "./Decomposition";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import React from "react";
+import {Metric} from "../../type-declarations/types.d";
 
 export default class AccessesSciPyDecomposition extends Decomposition {
     expert: boolean;
-    silhouetteScore: number;
-    complexity: number;
-    performance: number;
-    cohesion: number;
-    coupling: number;
     clusters: any;
-    controllers: any;
+    functionalities: any;
     entityIDToClusterID: any;
 
     constructor(decomposition: any) {
-        super(
-            decomposition.name,
-            decomposition.codebaseName,
-            decomposition.strategyName,
-            decomposition.strategyType
-        );
+        super(decomposition);
 
         this.expert = decomposition.expert;
-        this.silhouetteScore = decomposition.silhouetteScore;
-        this.complexity = decomposition.complexity;
-        this.performance = decomposition.performance;
-        this.cohesion = decomposition.cohesion;
-        this.coupling = decomposition.coupling;
         this.clusters = decomposition.clusters;
-        this.controllers = decomposition.controllers;
+        this.functionalities = decomposition.functionalities;
         this.entityIDToClusterID = decomposition.entityIDToClusterID;
     }
 
@@ -44,7 +30,7 @@ export default class AccessesSciPyDecomposition extends Decomposition {
         })
 
         return (
-            <Card key={this.name} style={{ width: '15rem', marginBottom: "16px" }}>
+            <Card key={this.name} style={{ width: '16rem', marginBottom: "16px" }}>
                 <Card.Body>
                     <Card.Title>
                         {this.name}
@@ -53,10 +39,7 @@ export default class AccessesSciPyDecomposition extends Decomposition {
                         Number of Clusters: {Object.values(this.clusters).length} <br />
                         Singleton Servers: {amountOfSingletonClusters} <br />
                         Maximum Cluster Size: {maxClusterSize} <br />
-                        Complexity: {this.complexity} <br />
-                        Performance: {this.performance} <br />
-                        Cohesion: {this.cohesion} <br />
-                        Coupling: {this.coupling} < br />
+                        {this.metrics.map((metric: Metric) => <React.Fragment key={metric.type}>{metric.type}: {metric.value}<br/></React.Fragment>)}
                     </Card.Text>
                     <Button
                     href={`/codebases/${this.codebaseName}/strategies/${this.strategyName}/decompositions/${this.name}`}

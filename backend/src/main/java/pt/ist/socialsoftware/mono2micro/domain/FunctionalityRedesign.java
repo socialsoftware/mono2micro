@@ -2,7 +2,11 @@ package pt.ist.socialsoftware.mono2micro.domain;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import pt.ist.socialsoftware.mono2micro.domain.decomposition.Decomposition;
+import pt.ist.socialsoftware.mono2micro.domain.metrics.Metric;
+import pt.ist.socialsoftware.mono2micro.domain.metrics.MetricFactory;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
+import pt.ist.socialsoftware.mono2micro.utils.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.utils.LocalTransactionTypes;
 
 import java.util.*;
@@ -13,10 +17,17 @@ public class FunctionalityRedesign {
     private String name;
     private boolean usedForMetrics;
     private List<LocalTransaction> redesign = new ArrayList<>();
-    private int systemComplexity;
-    private int functionalityComplexity;
-    private int inconsistencyComplexity;
     private int pivotTransaction = -1;
+    private List<Metric> metrics = new ArrayList<>();
+
+    private static final String[] queryMetrics = {
+            Metric.MetricType.INCONSISTENCY_COMPLEXITY,
+    };
+
+    private static final String[] sagaMetrics = {
+            Metric.MetricType.SYSTEM_COMPLEXITY,
+            Metric.MetricType.FUNCTIONALITY_COMPLEXITY,
+    };
 
     public FunctionalityRedesign(){}
 
@@ -24,20 +35,41 @@ public class FunctionalityRedesign {
         this.name = name;
     }
 
-    public int getSystemComplexity() {
-        return systemComplexity;
+    public List<Metric> getMetrics() {
+        return metrics;
     }
 
-    public void setSystemComplexity(int systemComplexity) {
-        this.systemComplexity = systemComplexity;
+    public void setMetrics(List<Metric> metrics) {
+        this.metrics = metrics;
     }
 
-    public int getFunctionalityComplexity() {
-        return functionalityComplexity;
+    public void addMetric(Metric metric) {
+        this.metrics.add(metric);
     }
 
-    public void setFunctionalityComplexity(int functionalityComplexity) {
-        this.functionalityComplexity = functionalityComplexity;
+    public Metric searchMetricByType(String metricType) {
+        for (Metric metric: this.getMetrics())
+            if (metric.getType().equals(metricType))
+                return metric;
+        return null;
+    }
+
+    public void calculateMetrics(Decomposition decomposition, Functionality functionality) throws Exception {
+        String[] metricList;
+        if (functionality.getType() == FunctionalityType.QUERY)
+            metricList = queryMetrics;
+        else if (functionality.getType() == FunctionalityType.SAGA)
+            metricList = sagaMetrics;
+        else throw new RuntimeException("Unknown functionality type.");
+
+        for(String metricType: metricList) {
+            Metric metric = searchMetricByType(metricType);
+            if (metric == null) {
+                metric = MetricFactory.getFactory().getMetric(metricType);
+                this.addMetric(metric);
+            }
+            metric.calculateMetric(decomposition, functionality, this);
+        }
     }
 
     public int getPivotTransaction() {
@@ -513,13 +545,5 @@ public class FunctionalityRedesign {
 
     public void setUsedForMetrics(boolean usedForMetrics) {
         this.usedForMetrics = usedForMetrics;
-    }
-
-    public int getInconsistencyComplexity() {
-        return inconsistencyComplexity;
-    }
-
-    public void setInconsistencyComplexity(int inconsistencyComplexity) {
-        this.inconsistencyComplexity = inconsistencyComplexity;
     }
 }

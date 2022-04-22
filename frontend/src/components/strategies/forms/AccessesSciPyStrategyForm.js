@@ -77,12 +77,12 @@ export const AccessesSciPyStrategyForm = ({strategy, setStrategy}) => {
             <h4 className="mb-3 mt-3" style={{ color: "#666666" }}>
                 Create Strategy
             </h4>
-            <Form.Group as={Row} controlId="selectControllerProfiles" className="align-items-center mb-3">
+            <Form.Group as={Row} controlId="selectFunctionalityProfiles" className="align-items-center mb-3">
                 <Form.Label column sm={2}>
                     Select Codebase Profile
                 </Form.Label>
                 <Col sm={2}>
-                    <DropdownButton title={strategy.profile === ""? 'Controller Profiles': strategy.profile}>
+                    <DropdownButton title={strategy.profile === ""? 'Functionality Profiles': strategy.profile}>
                         {profiles !== [] && Object.keys(profiles).map(profile =>
                             <Dropdown.Item
                                 key={profile}
@@ -97,7 +97,7 @@ export const AccessesSciPyStrategyForm = ({strategy, setStrategy}) => {
             </Form.Group>
             <Form.Group as={Row} controlId="amountOfTraces" className="mb-3">
                 <Form.Label column sm={2}>
-                    Amount of Traces per Controller
+                    Amount of Traces per Functionality
                 </Form.Label>
                 <Col sm={2}>
                     <FormControl
@@ -148,28 +148,6 @@ export const AccessesSciPyStrategyForm = ({strategy, setStrategy}) => {
                             value="WITH_MORE_DIFFERENT_ACCESSES"
                         />
 
-                    </Col>
-                    <Col sm="auto">
-                        <Form.Check
-                            onClick={handleChangeTraceType}
-                            name="traceType"
-                            label="Representative (set of accesses)"
-                            type="radio"
-                            id="representativeSetOfAccesses"
-                            value="REPRESENTATIVE"
-                        />
-                    </Col>
-                    {/* WIP */}
-                    <Col sm="auto">
-                        <Form.Check
-                            onClick={undefined}
-                            name="traceType"
-                            label="Representative (subsequence of accesses)"
-                            type="radio"
-                            id="complete"
-                            value="?"
-                            disabled
-                        />
                     </Col>
                 </Col>
             </Form.Group>

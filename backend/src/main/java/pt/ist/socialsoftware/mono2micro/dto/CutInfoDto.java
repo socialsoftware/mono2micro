@@ -13,7 +13,7 @@ public class CutInfoDto {
 
     private AnalyserResultDto analyserResultDto;
 
-    private HashMap<String, HashMap<String, Float>> controllerSpecs;
+    private HashMap<String, HashMap<String, Float>> functionalitySpecs;
 
     public CutInfoDto() {}
 
@@ -25,11 +25,11 @@ public class CutInfoDto {
         this.analyserResultDto = analyserResultDto;
     }
 
-    public HashMap<String, HashMap<String, Float>> getControllerSpecs() {
-        return controllerSpecs;
+    public HashMap<String, HashMap<String, Float>> getFunctionalitySpecs() {
+        return functionalitySpecs;
     }
 
-    public void setControllerSpecs(HashMap<String, HashMap<String, Float>> controllerSpecs) {
-        this.controllerSpecs = controllerSpecs;
+    public void setFunctionalitySpecs(HashMap<String, HashMap<String, Float>> functionalitySpecs) {
+        this.functionalitySpecs = functionalitySpecs;
     }
 }

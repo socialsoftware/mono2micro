@@ -5,12 +5,11 @@ import {
 } from '../constants/constants';
 import {
     AnalyserDto,
-    Decomposition,
     AnalysisDto,
     Codebase,
     TraceType,
     Cluster,
-    Controller,
+    Functionality,
     LocalTransactionsGraph,
     RefactorCodebase
 } from "../type-declarations/types";
@@ -19,6 +18,7 @@ import {SourceFactory} from "../models/sources/SourceFactory";
 import Strategy from "../models/strategies/Strategy";
 import {StrategyFactory} from "../models/strategies/StrategyFactory";
 import {DecompositionFactory} from "../models/decompositions/DecompositionFactory";
+import Decomposition from "../models/decompositions/Decomposition";
 
 export class RepositoryService {
     axios: AxiosInstance;
@@ -119,15 +119,15 @@ export class RepositoryService {
             });
     }
 
-    moveControllers(
+    moveFunctionalities(
         codebaseName: string,
         sourceType: string,
-        controllers: string[],
+        functionalities: string[],
         targetProfile: string,
     ) {
         return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/source/" + sourceType + "/moveControllers",
-            controllers,
+            "/codebase/" + codebaseName + "/source/" + sourceType + "/moveFunctionalities",
+            functionalities,
             {
                 params: {
                     "targetProfile" : targetProfile
@@ -296,16 +296,16 @@ export class RepositoryService {
         );
     }
 
-    getLocalTransactionsGraphForController(
+    getLocalTransactionsGraphForFunctionality(
         codebaseName: string,
         strategyName: string,
         decompositionName: string,
-        controllerName: string
+        functionalityName: string
     ) {
         return this.axios.get<LocalTransactionsGraph>(
             addSearchParamsToUrl(
-                "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/getLocalTransactionsGraphForController",
-                { controllerName },
+                "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/getLocalTransactionsGraphForFunctionality",
+                { functionalityName: functionalityName },
             )
         );
     }
@@ -389,23 +389,23 @@ export class RepositoryService {
         );
     }
 
-    getControllersClusters(
+    getFunctionalitiesClusters(
         codebaseName: string,
         strategyName: string,
         decompositionName: string,
     ) {
         return this.axios.get<Record<string, Cluster[]>>(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/controllersClusters"
+            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/functionalitiesClusters"
         );
     }
 
-    getClustersControllers(
+    getClustersFunctionalities(
         codebaseName: string,
         strategyName: string,
         decompositionName: string
     ) {
-        return this.axios.get<Record<number, Controller[]>>(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/clustersControllers"
+        return this.axios.get<Record<number, Functionality[]>>(
+            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/clustersFunctionalities"
         );
     }
 
@@ -416,9 +416,9 @@ export class RepositoryService {
         codebaseName: string,
         strategyName: string,
         decompositionName: string,
-        controllerName: string
+        functionalityName: string
     ) {
-        return this.axios.get<Controller>("/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/controller/" + controllerName + "/getOrCreateRedesign");
+        return this.axios.get<Functionality>("/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/functionality/" + functionalityName + "/getOrCreateRedesign");
     }
 
 
@@ -426,14 +426,14 @@ export class RepositoryService {
         codebaseName: string,
         strategyName: string,
         decompositionName: string,
-        controllerName: string,
+        functionalityName: string,
         redesignName: string,
         clusterID: number,
         entities: string,
         fromID: string
     ) {
         return this.axios.post(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/controller/" + controllerName + "/redesign/" + redesignName + "/addCompensating",
+            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/functionality/" + functionalityName + "/redesign/" + redesignName + "/addCompensating",
             {
                 fromID: fromID,
                 cluster : clusterID,
@@ -446,13 +446,13 @@ export class RepositoryService {
         codebaseName: string,
         strategyName: string,
         decompositionName: string,
-        controllerName: string,
+        functionalityName: string,
         redesignName: string,
         localTransaction: string,
         newCaller: string
     ) {
         return this.axios.post(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/controller/" + controllerName + "/redesign/" + redesignName + "/sequenceChange",
+            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/functionality/" + functionalityName + "/redesign/" + redesignName + "/sequenceChange",
             {
                 localTransactionID: localTransaction,
                 newCaller: newCaller
@@ -464,14 +464,14 @@ export class RepositoryService {
         codebaseName: string,
         strategyName: string,
         decompositionName: string,
-        controllerName: string,
+        functionalityName: string,
         redesignName: string,
         fromClusterID: number,
         toClusterID: number,
         localTransactions: string
     ) {
         return this.axios.post(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/controller/" + controllerName + "/redesign/" + redesignName + "/dcgi",
+            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/functionality/" + functionalityName + "/redesign/" + redesignName + "/dcgi",
             {
                 fromCluster: fromClusterID,
                 toCluster: toClusterID,
@@ -484,13 +484,13 @@ export class RepositoryService {
         codebaseName: string,
         strategyName: string,
         decompositionName: string,
-        controllerName: string,
+        functionalityName: string,
         redesignName: string,
         transactionID: string,
         newRedesignName: string
     ) {
         return this.axios.post(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/controller/" + controllerName + "/redesign/" + redesignName + "/pivotTransaction",
+            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/functionality/" + functionalityName + "/redesign/" + redesignName + "/pivotTransaction",
             null,
             { params: {"transactionID" : transactionID, "newRedesignName": newRedesignName}}
         );
@@ -500,13 +500,13 @@ export class RepositoryService {
         codebaseName: string,
         strategyName: string,
         decompositionName: string,
-        controllerName: string,
+        functionalityName: string,
         redesignName: string,
         transactionID: string,
         newName: string
     ) {
         return this.axios.post(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/controller/" + controllerName + "/redesign/" + redesignName + "/changeLTName",
+            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/functionality/" + functionalityName + "/redesign/" + redesignName + "/changeLTName",
             null,
             { params: {"transactionID" : transactionID, "newName": newName}}
         );
@@ -516,11 +516,11 @@ export class RepositoryService {
         codebaseName: string,
         strategyName: string,
         decompositionName: string,
-        controllerName: string,
+        functionalityName: string,
         redesignName: string
     ){
         return this.axios.delete(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/controller/" + controllerName + "/redesign/" + redesignName + "/deleteRedesign"
+            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/functionality/" + functionalityName + "/redesign/" + redesignName + "/deleteRedesign"
         );
     }
 
@@ -528,11 +528,11 @@ export class RepositoryService {
         codebaseName: string,
         strategyName: string,
         decompositionName: string,
-        controllerName: string,
+        functionalityName: string,
         redesignName: string
     ){
         return this.axios.post(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/controller/" + controllerName + "/redesign/" + redesignName + "/useForMetrics"
+            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/functionality/" + functionalityName + "/redesign/" + redesignName + "/useForMetrics"
         );
     }
 
@@ -540,7 +540,7 @@ export class RepositoryService {
         codebaseName: string,
         strategyName: string,
         decompositionName: string,
-        controllerNames: string[],
+        functionalityNames: string[],
         dataDependenceThreshold: number,
         minimizeSumOfComplexities: boolean,
         timeOut: number,
@@ -551,7 +551,7 @@ export class RepositoryService {
             codebase_name: codebaseName,
             strategy_name: strategyName,
             decomposition_name: decompositionName,
-            controller_names: controllerNames,
+            functionality_names: functionalityNames,
             data_dependence_threshold: dataDependenceThreshold,
             minimize_sum_of_complexities: minimizeSumOfComplexities,
             refactor_time_out_secs: timeOut,

@@ -1,3 +1,5 @@
+import Decomposition from "../models/decompositions/Decomposition";
+
 export interface AccessDto {
     entity?: string;
     mode?: string;
@@ -8,6 +10,7 @@ export interface LocalTransaction {
     id?: number;
     clusterID?: number;
     clusterAccesses?: AccessDto[];
+    remoteInvocations?: number[];
     firstAccessedEntityIDs: number[];
 }
 
@@ -16,11 +19,35 @@ export interface LocalTransactionsGraph {
     links: string[];
 }
 
-export interface Controller {
+export interface Functionality {
     name?: string;
-    complexity?: number;
-    performance?: number;
+    metrics?: Metric[];
     entities?: Record<number, number>; // <entityID, mode>
+    functionalityRedesigns: FunctionalityRedesign[];
+}
+
+export interface FunctionalityRedesign {
+    name?: string;
+    usedForMetrics?: boolean;
+    metrics?: Metric[];
+    redesign?: LocalTransaction[];
+    pivotTransaction?: number;
+}
+
+export interface Metric {
+    type: string,
+    value: any
+}
+
+export enum MetricType {
+    COHESION = "Cohesion",
+    COMPLEXITY = "Complexity",
+    COUPLING = "Coupling",
+    PERFORMANCE = "Performance",
+    SILHOUETTE_SCORE = "Silhouette Score",
+    SYSTEM_COMPLEXITY = "System Complexity",
+    FUNCTIONALITY_COMPLEXITY = "Functionality Complexity",
+    INCONSISTENCY_COMPLEXITY = "Inconsistency Complexity"
 }
 
 export interface Cluster {
@@ -33,24 +60,9 @@ export interface Cluster {
     entities?: number[];
 }
 
-export interface Decomposition {
-	name?: string;
-    codebaseName?: string;
-    strategyName?:string;
-	expert?: boolean;
-	silhouetteScore?: number;
-    complexity?: number;
-    performance?: number;
-	cohesion?: number;
-	coupling?: number;
-	controllers?: Record<string, Controller>;
-    clusters?: Record<number, Cluster>;
-    entityIDToClusterID?: Record<number, number>;
-}
-
 export interface Codebase {
     name?: string;
-    profiles?: Record<string, string[]>; // e.g <Generic, ControllerNamesList>
+    profiles?: Record<string, string[]>; // e.g <Generic, FunctionalityNamesList>
     datafilePath?: string;
 }
 
@@ -86,7 +98,7 @@ export interface RefactorCodebase {
     codebase_name?: string;
     strategy_name?: string;
     decomposition_name?: string;
-    controller_names?: string[];
+    functionality_names?: string[];
     data_dependence_threshold?: number;
     minimize_sum_of_complexities?: boolean;
     refactor_time_out_secs?: number;
@@ -96,7 +108,6 @@ export interface RefactorCodebase {
 export enum TraceType {
     NONE = "",
     ALL = "ALL",
-    REPRESENTATIVE = "REPRESENTATIVE",
     LONGEST = "LONGEST",
     WITH_MORE_DIFFERENT_ACCESSES = "WITH_MORE_DIFFERENT_ACCESSES",
 }

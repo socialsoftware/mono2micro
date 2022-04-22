@@ -1,6 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.utils;
 
-public enum ControllerType {
+public enum FunctionalityType {
     SAGA,
     QUERY
 }

@@ -26,7 +26,7 @@ export const views = {
 
 export const types = {
     CLUSTER: 0,
-    CONTROLLER: 1,
+    FUNCTIONALITY: 1,
     ENTITY: 2
 };
 
@@ -37,7 +37,7 @@ export const Views = () => {
     const [view, setView] = useState(views.CLUSTERS);
 
     useEffect(() => {
-        //loadTranslation();
+        loadTranslation();
     },[]);
 
     function loadTranslation() {

@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.domain.similarityGenerators;
+package pt.ist.socialsoftware.mono2micro.domain.similarityGenerator;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -8,7 +8,7 @@ import pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
-import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
+import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 
 import java.io.IOException;
@@ -21,7 +21,7 @@ public class AccessesSimilarityGenerator implements SimilarityGenerator {
 
     private final Set<Short> entities = new TreeSet<>();
     private final Map<String, Integer> e1e2PairCount = new HashMap<>();
-    private final Map<Short, List<Pair<String, Byte>>> entityControllers = new HashMap<>();
+    private final Map<Short, List<Pair<String, Byte>>> entityFunctionalities = new HashMap<>(); // Map<entityID, List<Pair<functionalityName, accessMode>>>
 
 
     public AccessesSimilarityGenerator() {}
@@ -55,58 +55,42 @@ public class AccessesSimilarityGenerator implements SimilarityGenerator {
         CodebaseManager codebaseManager = CodebaseManager.getInstance();
         AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(strategy.getCodebaseName(), ACCESSES);
 
-        ControllerTracesIterator iter = new ControllerTracesIterator(
+        FunctionalityTracesIterator iter = new FunctionalityTracesIterator(
                 source.getInputFilePath(),
                 strategy.getTracesMaxLimit()
         );
 
         TraceDto t;
-        Set<String> profileControllers = source.getProfile(strategy.getProfile());
+        Set<String> profileFunctionalities = source.getProfile(strategy.getProfile());
 
-        for (String controllerName : profileControllers) {
-            iter.nextControllerWithName(controllerName);
+        for (String functionalityName : profileFunctionalities) {
+            iter.nextFunctionalityWithName(functionalityName);
 
             switch (strategy.getTraceType()) {
                 case LONGEST:
-                    // FIXME return accesses of longest trace instead of the trace itself
                     t = iter.getLongestTrace();
 
                     if (t != null)
-                        fillEntityDataStructures(entityControllers, e1e2PairCount, t.expand(2), controllerName);
+                        fillEntityDataStructures(t.expand(2), functionalityName);
 
                     break;
                 case WITH_MORE_DIFFERENT_ACCESSES:
                     t = iter.getTraceWithMoreDifferentAccesses();
 
                     if (t != null)
-                        fillEntityDataStructures(entityControllers, e1e2PairCount, t.expand(2), controllerName);
+                        fillEntityDataStructures(t.expand(2), functionalityName);
 
                     break;
-                // FIXME not going to fix this since time is scarce
-//                case REPRESENTATIVE:
-//                    Set<String> tracesIds = iter.getRepresentativeTraces();
-//                    // FIXME probably here we create a second controllerTracesIterator
-//                    iter.reset();
-//
-//                    while (iter.hasMoreTraces()) {
-//                        t = iter.nextTrace();
-//
-//                        if (tracesIds.contains(String.valueOf(t.getId())))
-//                            fillEntityDataStructures(entityControllers, e1e2PairCount, t.expand(2), controllerName);
-//                    }
-//                    break;
                 default:
                     while (iter.hasMoreTraces()) {
                         t = iter.nextTrace();
 
-                        fillEntityDataStructures(entityControllers, e1e2PairCount, t.expand(2), controllerName);
+                        fillEntityDataStructures(t.expand(2), functionalityName);
                     }
             }
-            t = null; // release memory
         }
-        iter = null; // release memory
 
-        entities.addAll(entityControllers.keySet());
+        entities.addAll(entityFunctionalities.keySet());
     }
 
     private JSONObject getSciPyMatrixAsJSONObject(AccessesSciPyStrategy strategy)
@@ -127,8 +111,6 @@ public class AccessesSimilarityGenerator implements SimilarityGenerator {
                 }
 
                 float[] weights = calculateSimilarityMatrixWeights(
-                        entityControllers,
-                        e1e2PairCount,
                         e1ID,
                         e2ID,
                         maxNumberOfPairs
@@ -158,9 +140,7 @@ public class AccessesSimilarityGenerator implements SimilarityGenerator {
             return 0;
     }
 
-    private static float[] calculateSimilarityMatrixWeights(
-            Map<Short,List<Pair<String, Byte>>> entityControllers, // entityID -> [<controllerName, accessMode>, ...]
-            Map<String,Integer> e1e2PairCount,
+    private float[] calculateSimilarityMatrixWeights(
             short e1ID,
             short e2ID,
             int maxNumberOfPairs
@@ -169,35 +149,35 @@ public class AccessesSimilarityGenerator implements SimilarityGenerator {
         float inCommon = 0;
         float inCommonW = 0;
         float inCommonR = 0;
-        float e1ControllersW = 0;
-        float e1ControllersR = 0;
+        float e1FunctionalitiesW = 0;
+        float e1FunctionalitiesR = 0;
 
-        for (Pair<String, Byte> e1Controller : entityControllers.get(e1ID)) {
-            for (Pair<String, Byte> e2Controller : entityControllers.get(e2ID)) {
-                if (e1Controller.getFirst().equals(e2Controller.getFirst())) {
+        for (Pair<String, Byte> e1Functionalities : entityFunctionalities.get(e1ID)) {
+            for (Pair<String, Byte> e2Functionalities : entityFunctionalities.get(e2ID)) {
+                if (e1Functionalities.getFirst().equals(e2Functionalities.getFirst())) {
                     inCommon++;
                     // != 1 == contains("W") -> "W" or "RW"
-                    if (e1Controller.getSecond() != 1 && e2Controller.getSecond() != 1)
+                    if (e1Functionalities.getSecond() != 1 && e2Functionalities.getSecond() != 1)
                         inCommonW++;
 
                     // != 2 == contains("R") -> "R" or "RW"
-                    if (e1Controller.getSecond() != 2 && e2Controller.getSecond() != 2)
+                    if (e1Functionalities.getSecond() != 2 && e2Functionalities.getSecond() != 2)
                         inCommonR++;
                 }
             }
 
             // != 1 == contains("W") -> "W" or "RW"
-            if (e1Controller.getSecond() != 1)
-                e1ControllersW++;
+            if (e1Functionalities.getSecond() != 1)
+                e1FunctionalitiesW++;
 
             // != 2 == contains("R") -> "R" or "RW"
-            if (e1Controller.getSecond() != 2)
-                e1ControllersR++;
+            if (e1Functionalities.getSecond() != 2)
+                e1FunctionalitiesR++;
         }
 
-        float accessWeight = inCommon / entityControllers.get(e1ID).size();
-        float writeWeight = e1ControllersW == 0 ? 0 : inCommonW / e1ControllersW;
-        float readWeight = e1ControllersR == 0 ? 0 : inCommonR / e1ControllersR;
+        float accessWeight = inCommon / entityFunctionalities.get(e1ID).size();
+        float writeWeight = e1FunctionalitiesW == 0 ? 0 : inCommonW / e1FunctionalitiesW;
+        float readWeight = e1FunctionalitiesR == 0 ? 0 : inCommonR / e1FunctionalitiesR;
 
         String e1e2 = e1ID + "->" + e2ID;
         float e1e2Count = e1e2PairCount.getOrDefault(e1e2, 0);
@@ -217,11 +197,9 @@ public class AccessesSimilarityGenerator implements SimilarityGenerator {
         };
     }
 
-    private static void fillEntityDataStructures(
-            Map<Short, List<Pair<String, Byte>>> entityControllers,
-            Map<String, Integer> e1e2PairCount,
+    private void fillEntityDataStructures(
             List<AccessDto> accessesList,
-            String controllerName
+            String functionalityName
     ) {
 
         for (int i = 0; i < accessesList.size(); i++) {
@@ -229,29 +207,29 @@ public class AccessesSimilarityGenerator implements SimilarityGenerator {
             short entityID = access.getEntityID();
             byte mode = access.getMode();
 
-            if (entityControllers.containsKey(entityID)) {
-                boolean containsController = false;
+            if (entityFunctionalities.containsKey(entityID)) {
+                boolean containsFunctionality = false;
 
-                for (Pair<String, Byte> controllerPair : entityControllers.get(entityID)) {
-                    if (controllerPair.getFirst().equals(controllerName)) {
-                        containsController = true;
+                for (Pair<String, Byte> functionalityPair : entityFunctionalities.get(entityID)) {
+                    if (functionalityPair.getFirst().equals(functionalityName)) {
+                        containsFunctionality = true;
 
-                        if (controllerPair.getSecond() != 3 && controllerPair.getSecond() != mode)
-                            controllerPair.setSecond((byte) 3); // "RW" -> 3
+                        if (functionalityPair.getSecond() != 3 && functionalityPair.getSecond() != mode)
+                            functionalityPair.setSecond((byte) 3); // "RW" -> 3
 
                         break;
                     }
                 }
 
-                if (!containsController) {
-                    entityControllers.get(entityID).add(new Pair<>(controllerName, mode));
+                if (!containsFunctionality) {
+                    entityFunctionalities.get(entityID).add(new Pair<>(functionalityName, mode));
                 }
 
             } else {
-                List<Pair<String, Byte>> controllersPairs = new ArrayList<>();
-                controllersPairs.add(new Pair<>(controllerName, mode));
+                List<Pair<String, Byte>> functionalitiesPairs = new ArrayList<>();
+                functionalitiesPairs.add(new Pair<>(functionalityName, mode));
 
-                entityControllers.put(entityID, controllersPairs);
+                entityFunctionalities.put(entityID, functionalitiesPairs);
             }
 
             if (i < accessesList.size() - 1) {

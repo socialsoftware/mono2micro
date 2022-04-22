@@ -45,7 +45,7 @@ public class CutInfoDtoSerializer extends StdSerializer<CutInfoDto> {
         gen.writeObjectField("mojoBiggest", analyserResultDto.getMojoBiggest());
         gen.writeObjectField("mojoNew", analyserResultDto.getMojoNew());
         gen.writeObjectField("mojoSingletons", analyserResultDto.getMojoSingletons());
-        gen.writeObjectField("controllerSpecs", value.getControllerSpecs());
+        gen.writeObjectField("functionalitySpecs", value.getFunctionalitySpecs());
 
         gen.writeEndObject();
     }

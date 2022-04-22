@@ -9,18 +9,18 @@ type RefactorCodebaseRequest struct {
 	CodebaseName              string   `json:"codebase_name,omitempty"`
 	StrategyName              string   `json:"strategy_name,omitempty"`
 	DecompositionName         string   `json:"decomposition_name,omitempty"`
-	ControllerNames           []string `json:"controller_names,omitempty"`
+	FunctionalityNames        []string `json:"functionality_names,omitempty"`
 	DataDependenceThreshold   int      `json:"data_dependence_threshold,omitempty"`
 	MinimizeSumOfComplexities bool     `json:"minimize_sum_of_complexities,omitempty"`
 	RefactorTimeOutSecs       int      `json:"refactor_time_out_secs,omitempty"`
 }
 
-func (r *RefactorCodebaseRequest) ShouldRefactorController(controller *mono2micro.Controller) bool {
+func (r *RefactorCodebaseRequest) ShouldRefactorFunctionality(functionality *mono2micro.Functionality) bool {
 	var shouldRefactor bool
 
-	if len(r.ControllerNames) > 0 {
-		for _, controllerName := range r.ControllerNames {
-			if controller.Name == controllerName {
+	if len(r.FunctionalityNames) > 0 {
+		for _, functionalityName := range r.FunctionalityNames {
+			if functionality.Name == functionalityName {
 				shouldRefactor = true
 			}
 		}
@@ -28,13 +28,13 @@ func (r *RefactorCodebaseRequest) ShouldRefactorController(controller *mono2micr
 	}
 
 	shouldRefactor = true
-	if controller.Type == "QUERY" {
-		fmt.Printf("wont refactor %s because its a Query\n", controller.Name)
+	if functionality.Type == "QUERY" {
+		fmt.Printf("wont refactor %s because its a Query\n", functionality.Name)
 		return false
 	}
 
-	if len(controller.EntitiesPerCluster) <= 2 {
-		fmt.Printf("wont refactor %s because it has less than 3 clusters\n", controller.Name)
+	if len(functionality.EntitiesPerCluster) <= 2 {
+		fmt.Printf("wont refactor %s because it has less than 3 clusters\n", functionality.Name)
 		return false
 	}
 
@@ -42,15 +42,15 @@ func (r *RefactorCodebaseRequest) ShouldRefactorController(controller *mono2micr
 }
 
 type RefactorCodebaseResponse struct {
-	CodebaseName            string                 `json:"codebase_name"`
-	StrategyName            string                 `json:"strategy_name"`
-	DecompositionName       string                 `json:"decomposition_name"`
-	Controllers             map[string]*Controller `json:"controllers"`
-	DataDependenceThreshold int                    `json:"data_dependence_threshold"`
-	Status                  string                 `json:"status"`
+	CodebaseName            string                    `json:"codebase_name"`
+	StrategyName            string                    `json:"strategy_name"`
+	DecompositionName       string                    `json:"decomposition_name"`
+	Functionalities         map[string]*Functionality `json:"functionalities"`
+	DataDependenceThreshold int                       `json:"data_dependence_threshold"`
+	Status                  string                    `json:"status"`
 }
 
-type Controller struct {
+type Functionality struct {
 	Name     string    `json:"name,omitempty"`
 	Monolith *Monolith `json:"monolith,omitempty"`
 	Refactor *Refactor `json:"refactor,omitempty"`

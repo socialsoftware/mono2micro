@@ -11,9 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
-import pt.ist.socialsoftware.mono2micro.domain.Controller;
+import pt.ist.socialsoftware.mono2micro.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.domain.decomposition.AccessesSciPyDecomposition;
-import pt.ist.socialsoftware.mono2micro.domain.decomposition.Decomposition;
 import pt.ist.socialsoftware.mono2micro.domain.source.AccessesSource;
 import pt.ist.socialsoftware.mono2micro.dto.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
@@ -277,17 +276,17 @@ public class AnalysisController {
 
 		AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(codebase.getName(), ACCESSES);
 
-		decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
-			source.getInputFilePath(),
-			source.getProfile(analyser.getProfile()),
-			decomposition.getEntityIDToClusterID()
-		));
+		decomposition.setupFunctionalities(
+				source.getInputFilePath(),
+				source.getProfile(analyser.getProfile()),
+				analyser.getTracesMaxLimit(),
+				analyser.getTraceType());
 
 		decomposition.calculateMetrics(
-			source.getInputFilePath(),
-			analyser.getTracesMaxLimit(),
-			analyser.getTraceType(),
-			true
+			//source.getInputFilePath(),
+			//analyser.getTracesMaxLimit(),
+			//analyser.getTraceType(),
+			//true
 		);
 
 		return decomposition;
@@ -317,10 +316,10 @@ public class AnalysisController {
 		analyserResult.setMojoSingletons(analysisDto.getMojoSingletons());
 		analyserResult.setMojoNew(analysisDto.getMojoNew());
 
-		analyserResult.setComplexity(decomposition.getComplexity());
-		analyserResult.setCohesion(decomposition.getCohesion());
-		analyserResult.setCoupling(decomposition.getCoupling());
-		analyserResult.setPerformance(decomposition.getPerformance());
+		//analyserResult.setComplexity(decomposition.getComplexity());
+		//analyserResult.setCohesion(decomposition.getCohesion());
+		//analyserResult.setCoupling(decomposition.getCoupling());
+		//analyserResult.setPerformance(decomposition.getPerformance());
 
 		analyserResult.setMaxClusterSize(decomposition.maxClusterSize());
 
@@ -334,18 +333,18 @@ public class AnalysisController {
 		CutInfoDto cutInfo = new CutInfoDto();
 		cutInfo.setAnalyserResultDto(analyserResult);
 
-		HashMap<String, HashMap<String, Float>> controllerSpecs = new HashMap<>();
-		for (Controller controller : decomposition.getControllers().values()) {
-			controllerSpecs.put(
-				controller.getName(),
+		HashMap<String, HashMap<String, Float>> functionalitySpecs = new HashMap<>();
+		for (Functionality functionality : decomposition.getFunctionalities().values()) {
+			functionalitySpecs.put(
+				functionality.getName(),
 				new HashMap<String, Float>() {{
-					put("complexity", controller.getComplexity());
-					put("performance", (float) controller.getPerformance());
+					//put("complexity", functionality.getComplexity());
+					//put("performance", (float) functionality.getPerformance());
 				}}
 			);
 		}
 
-		cutInfo.setControllerSpecs(controllerSpecs);
+		cutInfo.setFunctionalitySpecs(functionalitySpecs);
 
 		return cutInfo;
 	}

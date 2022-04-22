@@ -173,17 +173,17 @@ export class VisNetwork extends Component {
             const toNode = graphNodes.get(toNodeId);
 
             if (view === views.CLUSTERS) {
-                ModalMessageTitle = 'Controllers in common';
+                ModalMessageTitle = 'Functionalities in common';
             
             } else if (view === views.TRANSACTION) {
 
                 ModalMessageTitle = 'Entities of cluster ' + 
                                     toNode.label + ' accessed by ' +
-                                    `${fromNode.type === types.CONTROLLER ? "controller " : "cluster "}` +
+                                    `${fromNode.type === types.FUNCTIONALITY ? "functionality " : "cluster "}` +
                                     fromNode.label;
                 
             } else if (view === views.ENTITY) {
-                ModalMessageTitle = 'Controllers that access entity ' + fromNode.label + ' and cluster ' + toNode.label;
+                ModalMessageTitle = 'Functionalities that access entity ' + fromNode.label + ' and cluster ' + toNode.label;
             }
 
         } else if (clickedNodes.length > 0) {  // node double click
@@ -200,13 +200,13 @@ export class VisNetwork extends Component {
                 if (clickedNodeType === types.CLUSTER) {
                     ModalMessageTitle = 'Entities of ' + clickedNodeLabel;
 
-                } else if (clickedNodeType === types.CONTROLLER) {
-                    ModalMessageTitle = 'Entities accessed by controller ' + clickedNodeLabel;
+                } else if (clickedNodeType === types.FUNCTIONALITY) {
+                    ModalMessageTitle = 'Entities accessed by functionality ' + clickedNodeLabel;
                 }
 
             } else if (view === views.ENTITY) {
                 if (clickedNodeType === types.ENTITY) {
-                    ModalMessageTitle = 'Controllers that access ' + clickedNodeLabel;
+                    ModalMessageTitle = 'Functionalities that access ' + clickedNodeLabel;
 
                 } else if (clickedNodeType === types.CLUSTER) {
                     ModalMessageTitle = 'Entities of ' + clickedNodeLabel;

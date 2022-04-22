@@ -57,17 +57,14 @@ public class SciPyClusteringAlgorithm implements ClusteringAlgorithm {
 
                 AccessesSciPyDecomposition decomposition = cut(accessesSciPyStrategy, accessesSciPyCutDto);
 
-                decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+                decomposition.setupFunctionalities(
                         source.getInputFilePath(),
                         source.getProfile(accessesSciPyStrategy.getProfile()),
-                        decomposition.getEntityIDToClusterID()
-                ));
-
-                decomposition.calculateMetrics(
-                        source.getInputFilePath(),
                         accessesSciPyStrategy.getTracesMaxLimit(),
-                        accessesSciPyStrategy.getTraceType(),
-                        false);
+                        accessesSciPyStrategy.getTraceType());
+
+                // Calculate decomposition's metrics
+                decomposition.calculateMetrics();
 
                 codebaseManager.writeStrategyDecomposition(accessesSciPyStrategy.getCodebaseName(), accessesSciPyStrategy.getName(), decomposition);
                 accessesSciPyStrategy.addDecompositionName(decomposition.getName());
@@ -83,7 +80,8 @@ public class SciPyClusteringAlgorithm implements ClusteringAlgorithm {
             throws Exception
     {
         AccessesSciPyDecomposition decomposition = new AccessesSciPyDecomposition();
-        //TODO: make a subclass of Decomposition to save this values
+        // If these values are needed, these next lines could be added to the decomposition,
+        // but since the name of the decomposition is composed of these values, they are ignored
         //decomposition.setCutValue(cutDto.getCutValue());
         //decomposition.setCutType(cutDto.getCutValue());
         decomposition.setCodebaseName(strategy.getCodebaseName());
@@ -97,7 +95,6 @@ public class SciPyClusteringAlgorithm implements ClusteringAlgorithm {
             invokePythonCut(strategy, decomposition.getName(), cutDto);
 
             clustersJSON = CodebaseManager.getInstance().getClusters(strategy.getCodebaseName(), strategy.getName(), decomposition.getName());
-            decomposition.setSilhouetteScore((float) clustersJSON.getDouble("silhouetteScore"));
         }
         else { // When in an expert decomposition
             if (strategy.getDecompositionsNames().contains(cutDto.getExpertName()))

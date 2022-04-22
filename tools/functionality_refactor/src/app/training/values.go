@@ -33,8 +33,8 @@ type ClusterMetrics struct {
 	OperationProbability                          float32 `json:"operation_probability,omitempty"`
 	PivotInvocationFactor                         float32 `json:"pivot_invocation_factor,omitempty"`
 	InvocationOperationFactor                     float32 `json:"invocation_operation_factor,omitempty"`
-	ControllerstThatReadInWrittenEntities         int     `json:"controllerst_that_read_in_written_entities,omitempty"`
-	ControllersThatWriteInReadEntities            int     `json:"controllers_that_write_in_read_entities,omitempty"`
+	FunctionalitiesThatReadInWrittenEntities      int     `json:"functionalities_that_read_in_written_entities,omitempty"`
+	FunctionalitiesThatWriteInReadEntities        int     `json:"functionalities_that_write_in_read_entities,omitempty"`
 	FunctionalityComplexityContributionPercentage float32
 	SystemComplexityContributionPercentage        float32
 }

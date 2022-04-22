@@ -52,17 +52,13 @@ public class ClusterController {
 				newName
 			);
 
-			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+			decomposition.setupFunctionalities(
 				source.getInputFilePath(),
 				source.getProfile(strategy.getProfile()),
-				decomposition.getEntityIDToClusterID()
-			));
-
-			decomposition.calculateMetrics(
-				source.getInputFilePath(),
 				strategy.getTracesMaxLimit(),
-				strategy.getTraceType(),
-					false);
+				strategy.getTraceType());
+
+			decomposition.calculateMetrics();
 
 			codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -136,17 +132,13 @@ public class ClusterController {
 				entities.split(",")
 			);
 
-			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+			decomposition.setupFunctionalities(
 					source.getInputFilePath(),
 					source.getProfile(strategy.getProfile()),
-					decomposition.getEntityIDToClusterID()
-			));
-
-			decomposition.calculateMetrics(
-					source.getInputFilePath(),
 					strategy.getTracesMaxLimit(),
-					strategy.getTraceType(),
-					false);
+					strategy.getTraceType());
+
+			decomposition.calculateMetrics();
 
 			codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -184,17 +176,13 @@ public class ClusterController {
 				entities.split(",")
 			);
 
-			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
-				source.getInputFilePath(),
-				source.getProfile(strategy.getProfile()),
-				decomposition.getEntityIDToClusterID()
-			));
+			decomposition.setupFunctionalities(
+					source.getInputFilePath(),
+					source.getProfile(strategy.getProfile()),
+					strategy.getTracesMaxLimit(),
+					strategy.getTraceType());
 
-			decomposition.calculateMetrics(
-				source.getInputFilePath(),
-				strategy.getTracesMaxLimit(),
-				strategy.getTraceType(),
-					false);
+			decomposition.calculateMetrics();
 
 			codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -205,13 +193,13 @@ public class ClusterController {
 		}
 	}
 
-	@RequestMapping(value = "/controllersClusters", method = RequestMethod.GET)
-	public ResponseEntity<Map<String, Set<Cluster>>> getControllersClusters(
+	@RequestMapping(value = "/functionalitiesClusters", method = RequestMethod.GET)
+	public ResponseEntity<Map<String, Set<Cluster>>> getFunctionalitiesClusters(
 		@PathVariable String codebaseName,
 		@PathVariable String strategyName,
 		@PathVariable String decompositionName
 	) {
-		logger.debug("getControllersClusters");
+		logger.debug("getFunctionalitiesClusters");
 
 		try {
 			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
@@ -220,14 +208,14 @@ public class ClusterController {
 				decompositionName
 			);
 
-			Utils.GetControllersClustersAndClustersControllersResult result =
-				Utils.getControllersClustersAndClustersControllers(
-					decomposition.getClusters().values(),
-					decomposition.getControllers().values()
-				);
+			Map<String, Set<Cluster>> functionalitiesClusters = Utils.getFunctionalitiesClusters(
+					decomposition.getEntityIDToClusterID(),
+					decomposition.getClusters(),
+					decomposition.getFunctionalities().values()
+			);
 
 			return new ResponseEntity<>(
-				result.controllersClusters,
+				functionalitiesClusters,
 				HttpStatus.OK
 			);
 
@@ -237,13 +225,13 @@ public class ClusterController {
 		}
 	}
 
-	@RequestMapping(value = "/clustersControllers", method = RequestMethod.GET)
-	public ResponseEntity<Map<Short, Set<Controller>>> getClustersControllers(
+	@RequestMapping(value = "/clustersFunctionalities", method = RequestMethod.GET)
+	public ResponseEntity<Map<Short, Set<Functionality>>> getClustersFunctionalities(
 		@PathVariable String codebaseName,
 		@PathVariable String strategyName,
 		@PathVariable String decompositionName
 	) {
-		logger.debug("getClustersControllers");
+		logger.debug("getClustersFunctionalities");
 
 		try {
 			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
@@ -252,14 +240,14 @@ public class ClusterController {
 				decompositionName
 			);
 
-			Utils.GetControllersClustersAndClustersControllersResult result =
-				Utils.getControllersClustersAndClustersControllers(
-					decomposition.getClusters().values(),
-					decomposition.getControllers().values()
-				);
+			Map<Short, Set<Functionality>> clustersFunctionalities = Utils.getClustersFunctionalities(
+					decomposition.getEntityIDToClusterID(),
+					decomposition.getClusters(),
+					decomposition.getFunctionalities().values()
+			);
 
 			return new ResponseEntity<>(
-				result.clustersControllers,
+				clustersFunctionalities,
 				HttpStatus.OK
 			);
 

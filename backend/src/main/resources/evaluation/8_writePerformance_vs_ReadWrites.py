@@ -62,8 +62,8 @@ for file in files:
               parsedFileName + '/datafile.json') as f:
 
         dataFile = json.load(f)
-        for controller in dataFile:
-            accessList = dataFile[controller]['t'][0]['a']
+        for functionality in dataFile:
+            accessList = dataFile[functionality]['t'][0]['a']
             for access in accessList:
                 accessesCount += 1
                 if access[0] == 'W':

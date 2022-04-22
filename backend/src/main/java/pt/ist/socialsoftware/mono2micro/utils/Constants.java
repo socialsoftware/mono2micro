@@ -18,7 +18,6 @@ public final class Constants {
 
   public enum TraceType {
     ALL,
-    REPRESENTATIVE,
     LONGEST,
     WITH_MORE_DIFFERENT_ACCESSES,
   }

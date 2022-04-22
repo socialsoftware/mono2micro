@@ -4,19 +4,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
-import pt.ist.socialsoftware.mono2micro.domain.Controller;
+import pt.ist.socialsoftware.mono2micro.domain.Functionality;
+import pt.ist.socialsoftware.mono2micro.domain.FunctionalityRedesign;
 import pt.ist.socialsoftware.mono2micro.domain.LocalTransaction;
-import pt.ist.socialsoftware.mono2micro.dto.ReducedTraceElementDto;
+import pt.ist.socialsoftware.mono2micro.domain.metrics.Metric;
+import pt.ist.socialsoftware.mono2micro.domain.metrics.MetricFactory;
 import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
-import pt.ist.socialsoftware.mono2micro.utils.ControllerTracesIterator;
-import pt.ist.socialsoftware.mono2micro.utils.Metrics;
-import pt.ist.socialsoftware.mono2micro.utils.Utils;
+import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,19 +22,19 @@ import static pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy.Strategy
 
 public class AccessesSciPyDecomposition extends Decomposition {
 
-    //private List<Metric> metrics;
-    private float silhouetteScore;
-    private float complexity;
-    private float performance;
-    private float cohesion;
-    private float coupling;
+    private static final String[] availableMetrics = {
+            Metric.MetricType.COMPLEXITY,
+            Metric.MetricType.PERFORMANCE,
+            Metric.MetricType.COHESION,
+            Metric.MetricType.COUPLING,
+            Metric.MetricType.SILHOUETTE_SCORE
+    };
 
-    //Metric tem referencia para model e outra para decomposition
     private boolean expert;
 
     private Map<Short, Cluster> clusters = new HashMap<>();
 
-    private Map<String, Controller> controllers = new HashMap<>(); // <controllerName, Controller>
+    private Map<String, Functionality> functionalities = new HashMap<>(); // <functionalityName, Functionality>
 
     private Map<Short, Short> entityIDToClusterID = new HashMap<>();
 
@@ -54,42 +51,6 @@ public class AccessesSciPyDecomposition extends Decomposition {
         this.expert = expert;
     }
 
-    public float getSilhouetteScore() {
-        return this.silhouetteScore;
-    }
-
-    public void setSilhouetteScore(float silhouetteScore) {
-        this.silhouetteScore = silhouetteScore;
-    }
-
-    public float getComplexity() {
-        return complexity;
-    }
-
-    public void setComplexity(float complexity) {
-        this.complexity = complexity;
-    }
-
-    public float getPerformance() { return performance; }
-
-    public void setPerformance(float performance) { this.performance = performance; }
-
-    public float getCohesion() {
-        return cohesion;
-    }
-
-    public void setCohesion(float cohesion) {
-        this.cohesion = cohesion;
-    }
-
-    public float getCoupling() {
-        return coupling;
-    }
-
-    public void setCoupling(float coupling) {
-        this.coupling = coupling;
-    }
-
     public Map<Short, Short> getEntityIDToClusterID() {
         return entityIDToClusterID;
     }
@@ -104,16 +65,18 @@ public class AccessesSciPyDecomposition extends Decomposition {
 
     public void setClusters(Map<Short, Cluster> clusters) { this.clusters = clusters; }
 
-    public Map<String, Controller> getControllers() { return controllers; }
+    public Map<String, Functionality> getFunctionalities() { return functionalities; }
 
-    public void setControllers(Map<String, Controller> controllers) { this.controllers = controllers; }
+    public void setFunctionalities(Map<String, Functionality> functionalities) { this.functionalities = functionalities; }
 
-    public boolean controllerExists(String controllerName) { return this.controllers.containsKey(controllerName); }
+    public void addFunctionality(Functionality functionality) { this.functionalities.put(functionality.getName(), functionality); }
 
-    public Controller getController(String controllerName) {
-        Controller c = this.controllers.get(controllerName);
+    public boolean functionalityExists(String functionalityName) { return this.functionalities.containsKey(functionalityName); }
 
-        if (c == null) throw new Error("Controller with name: " + controllerName + " not found");
+    public Functionality getFunctionality(String functionalityName) {
+        Functionality c = this.functionalities.get(functionalityName);
+
+        if (c == null) throw new Error("Functionality with name: " + functionalityName + " not found");
 
         return c;
     }
@@ -238,472 +201,93 @@ public class AccessesSciPyDecomposition extends Decomposition {
         }
     }
 
-    public static class GetLocalTransactionsGraphAndControllerPerformanceResult {
-        public float performance;
-        DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph;
-
-        public GetLocalTransactionsGraphAndControllerPerformanceResult(
-                float performance,
-                DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph
-        ) {
-            this.performance = performance;
-            this.localTransactionsGraph = localTransactionsGraph;
-        }
-    }
-
-    public GetLocalTransactionsGraphAndControllerPerformanceResult getLocalTransactionsGraphAndControllerPerformance(
-            ControllerTracesIterator iter,
-            String controllerName,
-            Constants.TraceType traceType
-    )
-            throws IOException
-    {
-        TraceDto t;
-        DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph = new DirectedAcyclicGraph<>(DefaultEdge.class);
-
-        localTransactionsGraph.addVertex( // root
-                new LocalTransaction(
-                        0,
-                        (short) -1
-                )
-        );
-
-        int localTransactionsCounter = 1; // 1 because the root was already added with ID 0
-
-        iter.nextControllerWithName(controllerName);
-
-        float controllerPerformance = 0;
-        int tracesCounter = 0;
-
-        switch (traceType) {
-            case LONGEST:
-                t = iter.getLongestTrace();
-
-                if (t != null) {
-                    List<ReducedTraceElementDto> traceElements = t.getElements();
-
-                    if (traceElements != null && traceElements.size() > 0) {
-                        Utils.GetLocalTransactionsSequenceAndCalculateTracePerformanceResult result = Utils.getLocalTransactionsSequenceAndCalculateTracePerformance(
-                                localTransactionsCounter,
-                                null,
-                                traceElements,
-                                entityIDToClusterID,
-                                new HashMap<>(),
-                                0,
-                                traceElements.size()
-                        );
-
-                        addLocalTransactionsSequenceToGraph(
-                                localTransactionsGraph,
-                                result.localTransactionsSequence
-                        );
-
-                        controllerPerformance += result.performance;
-                    }
-                }
-
-                tracesCounter++;
-
-                break;
-
-            case WITH_MORE_DIFFERENT_ACCESSES:
-                t = iter.getTraceWithMoreDifferentAccesses();
-
-                if (t != null) {
-                    List<ReducedTraceElementDto> traceElements = t.getElements();
-
-                    if (traceElements != null && traceElements.size() > 0) {
-                        Utils.GetLocalTransactionsSequenceAndCalculateTracePerformanceResult result = Utils.getLocalTransactionsSequenceAndCalculateTracePerformance(
-                                localTransactionsCounter,
-                                null,
-                                traceElements,
-                                entityIDToClusterID,
-                                new HashMap<>(),
-                                0,
-                                traceElements.size()
-                        );
-
-                        addLocalTransactionsSequenceToGraph(
-                                localTransactionsGraph,
-                                result.localTransactionsSequence
-                        );
-
-                        controllerPerformance += result.performance;
-                    }
-                }
-
-                tracesCounter++;
-
-                break;
-
-            // FIXME not going to fix this since time is scarce
-//			case REPRESENTATIVE:
-//				Set<String> tracesIds = iter.getRepresentativeTraces();
-//				// FIXME probably here we create a second controllerTracesIterator
-//				iter.reset();
-//
-//				while (iter.hasMoreTraces()) {
-//					t = iter.nextTrace();
-//					traceAccesses = t.expand(2);
-//
-//					if (tracesIds.contains(String.valueOf(t.getId())) && traceAccesses.size() > 0) {
-//						List<LocalTransaction> localTransactionSequence = getLocalTransactionsSequence(
-//							localTransactionsCounter,
-//							entityIDToClusterName,
-//							traceAccesses
-//						);
-//
-//						addLocalTransactionsSequenceToGraph(
-//							localTransactionsGraph,
-//							localTransactionSequence
-//						);
-//
-//						localTransactionsCounter += localTransactionSequence.size();
-//
-//						Utils.GetLocalTransactionsSequenceAndCalculateTracePerformanceResult result = Utils.calculateTracePerformance(
-//							t.getElements(),
-//							entityIDToClusterName,
-//							0,
-//							t.getElements() == null ? 0 : t.getElements().size()
-//						);
-//
-//						controllerPerformance += result.performance;
-//					}
-//				}
-//
-//				break;
-
-            default:
-                while (iter.hasMoreTraces()) {
-                    tracesCounter++;
-
-                    t = iter.nextTrace();
-
-                    List<ReducedTraceElementDto> traceElements = t.getElements();
-
-                    if (traceElements != null && traceElements.size() > 0) {
-                        Utils.GetLocalTransactionsSequenceAndCalculateTracePerformanceResult result = Utils.getLocalTransactionsSequenceAndCalculateTracePerformance(
-                                localTransactionsCounter,
-                                null,
-                                traceElements,
-                                entityIDToClusterID,
-                                new HashMap<>(),
-                                0,
-                                traceElements.size()
-                        );
-
-                        addLocalTransactionsSequenceToGraph(
-                                localTransactionsGraph,
-                                result.localTransactionsSequence
-                        );
-
-                        controllerPerformance += result.performance;
-                    }
-                }
-        }
-
-        controllerPerformance /= tracesCounter;
-
-        return new GetLocalTransactionsGraphAndControllerPerformanceResult(
-                controllerPerformance,
-                localTransactionsGraph
-        );
-    }
-
-    // FIXME this method can be used differently depending on the use case
-    // FIXME if a new metric needs to be calculated and the analyser has nothing to do with it
-    // FIXME then separate this method into 2 similar ones: one for the dendrogram and the other for the analyser
-    // FIXME and only then add the new calculation to the (new) respective method
-    // FIXME By doing the above, extra performance overhead won't be added to the analyser
-    public void calculateMetrics(
+    public void setupFunctionalities(
             String inputFilePath,
+            Set<String> profileFunctionalities,
             int tracesMaxLimit,
-            Constants.TraceType traceType,
-            boolean isAnalyser
-    )
-            throws Exception
-    {
-        System.out.println("Calculating metrics...");
+            Constants.TraceType traceType
+    ) throws Exception {
+        FunctionalityTracesIterator iter = new FunctionalityTracesIterator(inputFilePath, tracesMaxLimit);
+        Map<String, DirectedAcyclicGraph<LocalTransaction, DefaultEdge>> localTransactionsGraphs = new HashMap<>();
 
-        Collection<Cluster> clusters = this.getClusters().values();
+        do {
+            String functionalityName = iter.nextFunctionalityWithName(null);
+            if (!profileFunctionalities.contains(functionalityName)) {
+                iter.jumpToNextFunctionality();
+                continue;
+            }
 
-        Utils.GetControllersClustersAndClustersControllersResult result1 =
-                Utils.getControllersClustersAndClustersControllers(
-                        clusters,
-                        this.getControllers().values()
-                );
+            Functionality functionality = new Functionality(functionalityName);
 
-        Map<String, Set<Cluster>> controllersClusters = result1.controllersClusters;
-        Map<Short, Set<Controller>> clustersControllers = result1.clustersControllers;
+            // Get traces according to trace type
+            List<TraceDto> traceDtos = iter.getTracesByType(traceType);
+            functionality.setTraces(traceDtos);
 
-        // COMPLEXITY AND PERFORMANCE CALCULATION
-        CalculateComplexityAndPerformanceResult result2;
+            DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionGraph = functionality.createLocalTransactionGraph(this.getEntityIDToClusterID());
 
-        if(isAnalyser) {
-            result2 = calculateComplexityAndPerformance(
-                    inputFilePath,
-                    controllersClusters,
-                    traceType,
-                    tracesMaxLimit
-            );
-        } else {
-            result2 = calculateComplexityAndPerformanceAndRedesignMetrics(
-                    inputFilePath,
-                    controllersClusters,
-                    traceType,
-                    tracesMaxLimit
-            );
-        }
+            localTransactionsGraphs.put(functionality.getName(), localTransactionGraph);
 
-        this.setPerformance(result2.performance);
-        this.setComplexity(result2.complexity);
+            findClusterDependencies(localTransactionGraph);
 
-        // COUPLING AND COHESION CALCULATION
-        CalculateCouplingAndCohesionResult result3 = calculateCouplingAndCohesion(
-                clusters,
-                clustersControllers
-        );
+            addFunctionality(functionality);
 
-        this.setCohesion(result3.cohesion);
-        this.setCoupling(result3.coupling);
-    }
+            iter.jumpToNextFunctionality();
+        } while (iter.hasMoreFunctionalities());
 
-    public static class CalculateComplexityAndPerformanceResult {
-        public float complexity;
-        public float performance;
+        System.out.println("Calculating functionality metrics...");
 
-        public CalculateComplexityAndPerformanceResult(
-                float complexity,
-                float performance
-        ) {
-            this.complexity = complexity;
-            this.performance = performance;
-        }
-    }
+        for (Functionality functionality: functionalities.values()) {
+            functionality.defineFunctionalityType();
+            functionality.calculateMetrics(this);
 
-    public DirectedAcyclicGraph<LocalTransaction, DefaultEdge> getControllerLocalTransactionsGraph(
-            String inputFilePath,
-            String controllerName,
-            Constants.TraceType traceType,
-            int tracesMaxLimit
-    )
-            throws IOException
-    {
-        if (!controllerExists(controllerName))
-            throw new Error("Controller: " + controllerName + " does not exist");
-
-        ControllerTracesIterator iter = new ControllerTracesIterator(
-                inputFilePath,
-                tracesMaxLimit
-        );
-
-        GetLocalTransactionsGraphAndControllerPerformanceResult result = getLocalTransactionsGraphAndControllerPerformance(
-                iter,
-                controllerName,
-                traceType
-        );
-
-        return result.localTransactionsGraph;
-
-    }
-
-    public CalculateComplexityAndPerformanceResult calculateComplexityAndPerformance(
-            String inputFilePath,
-            Map<String, Set<Cluster>> controllersClusters,
-            Constants.TraceType traceType,
-            int tracesMaxLimit
-    )
-            throws IOException
-    {
-        ControllerTracesIterator iter = new ControllerTracesIterator(
-                inputFilePath,
-                tracesMaxLimit
-        );
-
-        float complexity = 0;
-        float performance = 0;
-
-        System.out.println("Calculating graph complexity and performance...");
-
-        for (Controller controller : this.getControllers().values()) {
-            String controllerName = controller.getName();
-
-            GetLocalTransactionsGraphAndControllerPerformanceResult result2 = getLocalTransactionsGraphAndControllerPerformance(
-                    iter,
-                    controllerName,
-                    traceType
-            );
-
-            float controllerPerformance = result2.performance;
-
-            float controllerComplexity = Metrics.calculateControllerComplexityAndClusterDependencies(
-                    this,
-                    controllerName,
-                    controllersClusters,
-                    result2.localTransactionsGraph
-            );
-
-
-            performance += controllerPerformance;
-            complexity += controllerComplexity;
-
-            // This needs to be done because the cluster complexity calculation depends on this result
-            controller.setPerformance(
-                    BigDecimal.valueOf(controllerPerformance).setScale(2, RoundingMode.HALF_UP).floatValue()
-            );
-
-            controller.setComplexity(controllerComplexity);
-        }
-
-        int graphControllersAmount = controllersClusters.size();
-
-        complexity = BigDecimal
-                .valueOf(complexity / graphControllersAmount)
-                .setScale(2, RoundingMode.HALF_UP)
-                .floatValue();
-
-        performance = BigDecimal
-                .valueOf(performance / graphControllersAmount)
-                .setScale(2, RoundingMode.HALF_UP)
-                .floatValue();
-
-        return new CalculateComplexityAndPerformanceResult(
-                complexity,
-                performance
-        );
-    }
-
-    public CalculateComplexityAndPerformanceResult calculateComplexityAndPerformanceAndRedesignMetrics(
-            String inputFilePath,
-            Map<String, Set<Cluster>> controllersClusters,
-            Constants.TraceType traceType,
-            int tracesMaxLimit
-    )
-            throws IOException
-    {
-        ControllerTracesIterator iter = new ControllerTracesIterator(
-                inputFilePath,
-                tracesMaxLimit
-        );
-
-        float complexity = 0;
-        float performance = 0;
-
-        System.out.println("Calculating graph complexity and performance...");
-
-        for (Controller controller : this.getControllers().values()) {
-            String controllerName = controller.getName();
-
-            GetLocalTransactionsGraphAndControllerPerformanceResult result2 = getLocalTransactionsGraphAndControllerPerformance(
-                    iter,
-                    controllerName,
-                    traceType
-            );
-
-            float controllerPerformance = result2.performance;
-
-            float controllerComplexity = Metrics.calculateControllerComplexityAndClusterDependencies(
-                    this,
-                    controllerName,
-                    controllersClusters,
-                    result2.localTransactionsGraph
-            );
-
-
-            performance += controllerPerformance;
-            complexity += controllerComplexity;
-
-            // This needs to be done because the cluster complexity calculation depends on this result
-            controller.setPerformance(
-                    BigDecimal.valueOf(controllerPerformance).setScale(2, RoundingMode.HALF_UP).floatValue()
-            );
-
-            controller.setComplexity(controllerComplexity);
-
-            controller.createFunctionalityRedesign(
+            // Functionality Redesigns
+            FunctionalityRedesign functionalityRedesign = functionality.createFunctionalityRedesign(
                     Constants.DEFAULT_REDESIGN_NAME,
                     true,
-                    result2.localTransactionsGraph
-            );
+                    localTransactionsGraphs.get(functionality.getName()));
 
-            Metrics.calculateRedesignComplexities(
-                    controller,
-                    Constants.DEFAULT_REDESIGN_NAME,
-                    this
-            );
-        }
-
-        int graphControllersAmount = controllersClusters.size();
-
-        complexity = BigDecimal
-                .valueOf(complexity / graphControllersAmount)
-                .setScale(2, RoundingMode.HALF_UP)
-                .floatValue();
-
-        performance = BigDecimal
-                .valueOf(performance / graphControllersAmount)
-                .setScale(2, RoundingMode.HALF_UP)
-                .floatValue();
-
-        return new CalculateComplexityAndPerformanceResult(
-                complexity,
-                performance
-        );
-    }
-
-    public static class CalculateCouplingAndCohesionResult {
-        public float coupling;
-        public float cohesion;
-
-        public CalculateCouplingAndCohesionResult(
-                float coupling,
-                float cohesion
-        ) {
-            this.coupling = coupling;
-            this.cohesion = cohesion;
+            functionalityRedesign.calculateMetrics(this, functionality);
         }
     }
 
-    public CalculateCouplingAndCohesionResult calculateCouplingAndCohesion(
-            Collection<Cluster> clusters,
-            Map<Short, Set<Controller>> clustersControllers
-    ) {
-        System.out.println("Calculating graph cohesion and coupling...");
+    public void findClusterDependencies(DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph) {
+        Set<LocalTransaction> allLocalTransactions = AccessesSciPyDecomposition.getAllLocalTransactions(localTransactionsGraph);
 
-        float cohesion = 0;
-        float coupling = 0;
+        for (LocalTransaction lt : allLocalTransactions) {
+            // ClusterDependencies
+            short clusterID = lt.getClusterID();
+            if (clusterID != -1) { // not root node
+                Cluster fromCluster = this.getCluster(clusterID);
 
-        for (Cluster cluster : clusters) {
-            Metrics.calculateClusterComplexityAndCohesion(
-                    cluster,
-                    clustersControllers
-            );
+                List<LocalTransaction> nextLocalTransactions = AccessesSciPyDecomposition.getNextLocalTransactions(
+                        localTransactionsGraph,
+                        lt);
 
-            Metrics.calculateClusterCoupling(
-                    cluster,
-                    this.getClusters()
-            );
-
-            coupling += cluster.getCoupling();
-            cohesion += cluster.getCohesion();
+                for (LocalTransaction nextLt : nextLocalTransactions)
+                    fromCluster.addCouplingDependencies(nextLt.getClusterID(), nextLt.getFirstAccessedEntityIDs());
+            }
         }
+    }
 
-        int graphClustersAmount = clusters.size();
 
-        cohesion = BigDecimal
-                .valueOf(cohesion / graphClustersAmount)
-                .setScale(2, RoundingMode.HALF_UP)
-                .floatValue();
+    public Metric searchMetricByType(String metricType) {
+        for (Metric metric: this.getMetrics())
+            if (metric.getType().equals(metricType))
+                return metric;
+        return null;
+    }
 
-        coupling = BigDecimal
-                .valueOf(coupling / graphClustersAmount)
-                .setScale(2, RoundingMode.HALF_UP)
-                .floatValue();
+    public void calculateMetrics() throws Exception {
+        System.out.println("Calculating decomposition metrics...");
 
-        return new CalculateCouplingAndCohesionResult(
-                coupling,
-                cohesion
-        );
+        for(String metricType: availableMetrics) {
+            Metric metric = searchMetricByType(metricType);
+            if (metric == null) {
+                metric = MetricFactory.getFactory().getMetric(metricType);
+                this.addMetric(metric);
+            }
+            metric.calculateMetric(this);
+        }
     }
 
     @JsonIgnore
@@ -723,12 +307,12 @@ public class AccessesSciPyDecomposition extends Decomposition {
 
         for(short entityID : cluster1.getEntities()) {
             entityIDToClusterID.replace(entityID, mergedCluster.getID());
-            removeControllerWithEntity(entityID);
+            removeFunctionalityWithEntity(entityID);
         }
 
         for(short entityID : cluster2.getEntities()) {
             entityIDToClusterID.replace(entityID, mergedCluster.getID());
-            removeControllerWithEntity(entityID);
+            removeFunctionalityWithEntity(entityID);
         }
 
         Set<Short> allEntities = new HashSet<>(cluster1.getEntities());
@@ -772,7 +356,7 @@ public class AccessesSciPyDecomposition extends Decomposition {
                 newCluster.addEntity(entityID);
                 currentCluster.removeEntity(entityID);
                 entityIDToClusterID.replace(entityID, newCluster.getID());
-                removeControllerWithEntity(entityID);
+                removeFunctionalityWithEntity(entityID);
             }
         }
         transferCouplingDependencies(newCluster.getEntities(), currentCluster.getID(), newCluster.getID());
@@ -780,10 +364,10 @@ public class AccessesSciPyDecomposition extends Decomposition {
     }
 
     //TODO: if possible, use something more fine grained
-    private void removeControllerWithEntity(short entityID) {
-        this.setControllers(this.getControllers().entrySet()
+    private void removeFunctionalityWithEntity(short entityID) {
+        this.setFunctionalities(this.getFunctionalities().entrySet()
                 .stream()
-                .filter(controllerEntry -> !controllerEntry.getValue().containsEntity(entityID))
+                .filter(functionalityEntry -> !functionalityEntry.getValue().containsEntity(entityID))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
     }
 
@@ -807,7 +391,7 @@ public class AccessesSciPyDecomposition extends Decomposition {
                 toCluster.addEntity(entityID);
                 fromCluster.removeEntity(entityID);
                 entityIDToClusterID.replace(entityID, toCluster.getID());
-                removeControllerWithEntity(entityID);
+                removeFunctionalityWithEntity(entityID);
             }
         }
         transferCouplingDependencies(entities, fromClusterID, toClusterID);

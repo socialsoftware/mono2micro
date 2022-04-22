@@ -11,7 +11,7 @@ import {ModalMessage} from "../util/ModalMessage";
 
 export const refactorToolHelp = (
 <div>
-    A brute-force heuristic algorithm to estimate the best Saga redesign for each one of the controllers of a given decomposition.
+    A brute-force heuristic algorithm to estimate the best Saga redesign for each one of the functionalities of a given decomposition.
 
     <br></br>
 
@@ -22,8 +22,8 @@ export const refactorToolHelp = (
 
 const refactorizationColumns = [
     {
-        dataField: 'controller',
-        text: 'Controller',
+        dataField: 'functionality',
+        text: 'Functionality',
         sort: true,
     }, {
         dataField: 'status',
@@ -104,7 +104,7 @@ export const FunctionalityRefactorToolMenu = () => {
     let { codebaseName, strategyName, decompositionName } = useParams();
 
     const[waitingResponse, setWaitingResponse] = useState(false);
-    const[controllers, setControllers] = useState([]);
+    const[functionalities, setFunctionalities] = useState([]);
     const[dataDependenceThreshold, setDataDependenceThreshold] = useState(0);
     const[timeoutSecs, setTimeoutSecs] = useState(null);
     const[minimizeSumOfComplexities, setMinimizeSumOfComplexities] = useState(false);
@@ -134,35 +134,35 @@ export const FunctionalityRefactorToolMenu = () => {
         let refactorizationRows = [];
 
         try {
-            for(const [key, controller] of Object.entries(data['controllers'])) {
-                let controllerData = {};
-                if(controller['status'] === "COMPLETED") {
-                    controllerData = {
+            for(const [key, functionality] of Object.entries(data['functionalities'])) {
+                let functionalityData = {};
+                if(functionality['status'] === "COMPLETED") {
+                    functionalityData = {
                         name: key,
-                        functionalityComplexity: controller['monolith']['complexity_metrics']['functionality_complexity'],
-                        systemComplexity: controller['monolith']['complexity_metrics']['system_complexity'],
-                        invocations: controller['monolith']['complexity_metrics']['invocations_count'] === undefined ? 0 : controller['monolith']['complexity_metrics']['invocations_count'],
-                        accesses: controller['monolith']['complexity_metrics']['accesses_count'] === undefined ? 0 : controller['monolith']['complexity_metrics']['accesses_count'],
-                        sagaOrchestrator: controller['refactor'] === undefined ? 0 : controller['refactor']['orchestrator']['name'],
-                        sagaFunctionalityComplexity: controller['refactor'] === undefined ? 0 : controller['refactor']['complexity_metrics']['functionality_complexity'],
-                        sagaSystemComplexity: controller['refactor'] === undefined ? 0 : controller['refactor']['complexity_metrics']['system_complexity'],
-                        sagaInvocations: controller['refactor'] === undefined ? 0 : controller['refactor']['complexity_metrics']['invocations_count'],
-                        sagaAccesses: controller['refactor'] === undefined ? 0 : controller['refactor']['complexity_metrics']['accesses_count'],
-                        functionalityComplexityReduction: controller['refactor'] === undefined ? 0 : controller['refactor']['execution_metrics']['functionality_complexity_reduction'],
-                        systemComplexityReduction: controller['refactor'] === undefined ? 0 : controller['refactor']['execution_metrics']['system_complexity_reduction'],
-                        invocationMerges: controller['refactor'] === undefined ? 0 : controller['refactor']['execution_metrics']['invocation_merges'],
-                        callGraph: controller['refactor'] === undefined ? 0 : controller['refactor']['call_graph'],
+                        functionalityComplexity: functionality['monolith']['complexity_metrics']['functionality_complexity'],
+                        systemComplexity: functionality['monolith']['complexity_metrics']['system_complexity'],
+                        invocations: functionality['monolith']['complexity_metrics']['invocations_count'] === undefined ? 0 : functionality['monolith']['complexity_metrics']['invocations_count'],
+                        accesses: functionality['monolith']['complexity_metrics']['accesses_count'] === undefined ? 0 : functionality['monolith']['complexity_metrics']['accesses_count'],
+                        sagaOrchestrator: functionality['refactor'] === undefined ? 0 : functionality['refactor']['orchestrator']['name'],
+                        sagaFunctionalityComplexity: functionality['refactor'] === undefined ? 0 : functionality['refactor']['complexity_metrics']['functionality_complexity'],
+                        sagaSystemComplexity: functionality['refactor'] === undefined ? 0 : functionality['refactor']['complexity_metrics']['system_complexity'],
+                        sagaInvocations: functionality['refactor'] === undefined ? 0 : functionality['refactor']['complexity_metrics']['invocations_count'],
+                        sagaAccesses: functionality['refactor'] === undefined ? 0 : functionality['refactor']['complexity_metrics']['accesses_count'],
+                        functionalityComplexityReduction: functionality['refactor'] === undefined ? 0 : functionality['refactor']['execution_metrics']['functionality_complexity_reduction'],
+                        systemComplexityReduction: functionality['refactor'] === undefined ? 0 : functionality['refactor']['execution_metrics']['system_complexity_reduction'],
+                        invocationMerges: functionality['refactor'] === undefined ? 0 : functionality['refactor']['execution_metrics']['invocation_merges'],
+                        callGraph: functionality['refactor'] === undefined ? 0 : functionality['refactor']['call_graph'],
                     };
 
-                    handleRedesignDataParsing(key, controller['refactor']["call_graph"])
+                    handleRedesignDataParsing(key, functionality['refactor']["call_graph"])
                 }
 
 
-                controllerData["controller"] = key;
-                controllerData["error"] = controller['error'];
-                controllerData["status"] = controller['status'];
+                functionalityData["functionality"] = key;
+                functionalityData["error"] = functionality['error'];
+                functionalityData["status"] = functionality['status'];
 
-                refactorizationRows = refactorizationRows.concat(controllerData)
+                refactorizationRows = refactorizationRows.concat(functionalityData)
             }
 
             setRefactorizationRows(refactorizationRows);
@@ -226,7 +226,7 @@ export const FunctionalityRefactorToolMenu = () => {
         setWaitingResponse(true);
 
         service.refactorCodebase(codebaseName, strategyName, decompositionName,
-            controllers, Number(dataDependenceThreshold), minimizeSumOfComplexities, Number(timeoutSecs), newRefactor)
+            functionalities, Number(dataDependenceThreshold), minimizeSumOfComplexities, Number(timeoutSecs), newRefactor)
             .then(response => {
                 setWaitingResponse(false);
                 setRefactorizationExists(true);
@@ -263,7 +263,7 @@ export const FunctionalityRefactorToolMenu = () => {
                     {
                         row['status'] === "COMPLETED" ? <BootstrapTable
                                 bootstrap4
-                                keyField='controller'
+                                keyField='functionality'
                                 data={functionalitiesRedesignRows[row["name"]]}
                                 columns={functionalityRedesignColumns}
                                 expandRow={ expandRow }
@@ -443,11 +443,11 @@ between the one being analyzed and the last one from the same cluster.</p>
 
                     <BootstrapTable
                         bootstrap4
-                        keyField='controller'
+                        keyField='functionality'
                         data={refactorizationRows}
                         columns={refactorizationColumns}
                         expandRow={ expandRow }
-                        caption={"Results of last estimation for the valid Saga controllers:"}
+                        caption={"Results of last estimation for the valid Saga functionalities:"}
                         bordered={false}
                         hover={true}
                         defaultSorted={defaultSorted}

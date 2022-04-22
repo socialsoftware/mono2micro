@@ -12,7 +12,7 @@ import java.util.Set;
 import static pt.ist.socialsoftware.mono2micro.domain.source.Source.SourceType.ACCESSES;
 
 public class AccessesSource extends Source {
-    private Map<String, Set<String>> profiles = new HashMap<>(); // e.g <Generic, ControllerNamesList> change to Set
+    private Map<String, Set<String>> profiles = new HashMap<>(); // e.g <Generic, FunctionalityNamesList> change to Set
 
     @Override
     public void init(String codebaseName, Object inputFile) throws Exception {
@@ -39,23 +39,23 @@ public class AccessesSource extends Source {
         this.profiles = profiles;
     }
 
-    public void addProfile(String profileName, Set<String> controllers) {
+    public void addProfile(String profileName, Set<String> functionalities) {
         if (this.profiles.containsKey(profileName))
             throw new KeyAlreadyExistsException();
 
-        this.profiles.put(profileName, controllers);
+        this.profiles.put(profileName, functionalities);
     }
 
     public void deleteProfile(String profileName) {
         this.profiles.remove(profileName);
     }
 
-    public void moveControllers(String[] controllers, String targetProfile) {
+    public void moveFunctionalities(String[] functionalities, String targetProfile) {
         for (String profile : this.profiles.keySet())
-            for (String controller : controllers)
-                this.profiles.get(profile).remove(controller);
+            for (String functionality : functionalities)
+                this.profiles.get(profile).remove(functionality);
 
-        for (String controller : controllers)
-            this.profiles.get(targetProfile).add(controller);
+        for (String functionality : functionalities)
+            this.profiles.get(targetProfile).add(functionality);
     }
 }

@@ -30,7 +30,7 @@ export default class AccessesCollector extends Collector {
     }
 
     printCard(handleDeleteCollector: (collector: Collector) => void): JSX.Element {
-        return <Card key={this.type} style={{width: '16rem'}}>
+        return <Card key={this.type} style={{width: '13rem'}}>
             <Card.Body>
                 <Card.Title>
                     {this.type}
@@ -39,7 +39,7 @@ export default class AccessesCollector extends Collector {
                     href={`/codebases/${this.codebaseName}/source/Accesses/profiles`}
                     className="mb-2"
                 >
-                    Change Controller Profiles
+                    Change Profile
                 </Button>
                 <br/>
                 <Button

@@ -19,7 +19,7 @@ export const Profiles = () => {
     const [source, setSource] = useState({});
     const [newProfileName, setNewProfileName] = useState("");
     const [moveToProfile, setMoveToProfile] = useState("");
-    const [selectedControllers, setSelectedControllers] = useState([]);
+    const [selectedFunctionalities, setSelectedFunctionalities] = useState([]);
     const [isUploaded, setIsUploaded] = useState("");
 
     useEffect(() => loadSource(), []);
@@ -62,16 +62,16 @@ export const Profiles = () => {
         setMoveToProfile(profile);
     }
 
-    function handleMoveControllersSubmit() {
+    function handleMoveFunctionalitiesSubmit() {
         const service = new RepositoryService();
 
-        service.moveControllers(
+        service.moveFunctionalities(
             codebaseName,
             sourceType,
-            selectedControllers,
+            selectedFunctionalities,
             moveToProfile
         ).then(() => {
-            setSelectedControllers([]);
+            setSelectedFunctionalities([]);
             loadSource();
         });
     }
@@ -88,15 +88,15 @@ export const Profiles = () => {
         });
     }
 
-    function handleSelectController(event) {
+    function handleSelectFunctionality(event) {
         const eventTargetId = event.target.id;
 
-        if (selectedControllers.includes(eventTargetId)) {
-            setSelectedControllers(selectedControllers.filter(c => c !== eventTargetId));
+        if (selectedFunctionalities.includes(eventTargetId)) {
+            setSelectedFunctionalities(selectedFunctionalities.filter(c => c !== eventTargetId));
             return;
         }
 
-        setSelectedControllers([...selectedControllers, eventTargetId]);
+        setSelectedFunctionalities([...selectedFunctionalities, eventTargetId]);
     }
 
     const renderBreadCrumbs = () => {
@@ -128,7 +128,7 @@ export const Profiles = () => {
         <div>
             {renderBreadCrumbs()}
             <h4 style={{color: "#666666"}}>
-                Create Controller Profile
+                Create Functionality Profile
             </h4>
 
             <Form onSubmit={handleNewProfileSubmit}>
@@ -163,16 +163,16 @@ export const Profiles = () => {
             </Form>
 
             <h4 style={{color: "#666666"}}>
-                Controller Profiles
+                Functionality Profiles
             </h4>
             {Object.keys(source).length &&
                 <div>
                     <ButtonToolbar>
-                        <Button className="me-1">Move selected controllers to</Button>
+                        <Button className="me-1">Move selected functionalities to</Button>
 
                         <DropdownButton
                             as={ButtonGroup}
-                            title={moveToProfile === "" ? "Controller Profile" : moveToProfile}
+                            title={moveToProfile === "" ? "Functionality Profile" : moveToProfile}
                             className="me-1"
                         >
                             {Object.keys(source.profiles).map(profile =>
@@ -186,8 +186,8 @@ export const Profiles = () => {
                         </DropdownButton>
 
                         <Button
-                            disabled={selectedControllers.length === 0 || moveToProfile === ""}
-                            onClick={handleMoveControllersSubmit}
+                            disabled={selectedFunctionalities.length === 0 || moveToProfile === ""}
+                            onClick={handleMoveFunctionalitiesSubmit}
                         >
                             Submit
                         </Button>
@@ -209,14 +209,14 @@ export const Profiles = () => {
                                 }
                             </div>
 
-                            {source.profiles[profile].map(controller =>
+                            {source.profiles[profile].map(functionality =>
                                 <Form.Check
-                                    id={controller}
-                                    key={controller}
+                                    id={functionality}
+                                    key={functionality}
                                     type="checkbox"
-                                    label={controller}
-                                    checked={selectedControllers.includes(controller)}
-                                    onChange={handleSelectController}
+                                    label={functionality}
+                                    checked={selectedFunctionalities.includes(functionality)}
+                                    onChange={handleSelectFunctionality}
                                     style={{ paddingLeft: "3em" }}
                                 />
                             )}

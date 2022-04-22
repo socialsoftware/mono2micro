@@ -9,10 +9,10 @@ import (
 )
 
 type TrainingHandler interface {
-	CalculateControllerTrainingFeatures(*mono2micro.FunctionalityRedesign) map[int]*ClusterMetrics
+	CalculateFunctionalityTrainingFeatures(*mono2micro.FunctionalityRedesign) map[int]*ClusterMetrics
 	AddDataToTrainingDataset(
 		[][]string, *mono2micro.Codebase,
-		*mono2micro.Controller,
+		*mono2micro.Functionality,
 		map[int]*ClusterMetrics,
 		*mono2micro.FunctionalityRedesign, map[string]string,
 	) [][]string
@@ -28,7 +28,7 @@ func New(logger log.Logger) TrainingHandler {
 	}
 }
 
-func (svc *DefaultHandler) CalculateControllerTrainingFeatures(
+func (svc *DefaultHandler) CalculateFunctionalityTrainingFeatures(
 	redesign *mono2micro.FunctionalityRedesign,
 ) map[int]*ClusterMetrics {
 	featureMetrics := FeatureMetrics{}
@@ -54,8 +54,8 @@ func (svc *DefaultHandler) CalculateControllerTrainingFeatures(
 
 		metrics.InvocationIds = append(metrics.InvocationIds, index)
 
-		metrics.ControllersThatWriteInReadEntities += invocation.ControllersThatWriteInReadEntities
-		metrics.ControllerstThatReadInWrittenEntities += invocation.ControllerstThatReadInWrittenEntities
+		metrics.FunctionalitiesThatWriteInReadEntities += invocation.FunctionalitiesThatWriteInReadEntities
+		metrics.FunctionalitiesThatReadInWrittenEntities += invocation.FunctionalitiesThatReadInWrittenEntities
 
 		var containsSemanticLock bool
 		for idx := range invocation.ClusterAccesses {
@@ -126,15 +126,15 @@ func (svc *DefaultHandler) calculateFinalClusterMetrics(
 		metrics.PivotInvocationFactor = float32(metrics.AveragePivotInvocations) / float32(featureMetrics.AveragePivotInvocations)
 		metrics.InvocationOperationFactor = float32(metrics.AverageInvocationOperations) / float32(featureMetrics.AverageInvocationOperations)
 
-		metrics.SystemComplexityContributionPercentage = float32(metrics.ControllerstThatReadInWrittenEntities) / float32(redesign.SystemComplexity)
-		metrics.FunctionalityComplexityContributionPercentage = float32(metrics.ControllersThatWriteInReadEntities) / float32(redesign.FunctionalityComplexity)
+		metrics.SystemComplexityContributionPercentage = float32(metrics.FunctionalitiesThatReadInWrittenEntities) / float32(redesign.SystemComplexity)
+		metrics.FunctionalityComplexityContributionPercentage = float32(metrics.FunctionalitiesThatWriteInReadEntities) / float32(redesign.FunctionalityComplexity)
 	}
 }
 
 func (svc *DefaultHandler) AddDataToTrainingDataset(
 	data [][]string,
 	codebase *mono2micro.Codebase,
-	controller *mono2micro.Controller,
+	functionality *mono2micro.Functionality,
 	clusterMetrics map[int]*ClusterMetrics,
 	redesign *mono2micro.FunctionalityRedesign,
 	idToEntityMap map[string]string,
@@ -146,7 +146,7 @@ func (svc *DefaultHandler) AddDataToTrainingDataset(
 		}
 
 		entityNames := []string{}
-		for _, entityID := range controller.EntitiesPerCluster[cluster] {
+		for _, entityID := range functionality.EntitiesPerCluster[cluster] {
 			entityNames = append(entityNames, idToEntityMap[strconv.Itoa(entityID)])
 		}
 
@@ -157,8 +157,8 @@ func (svc *DefaultHandler) AddDataToTrainingDataset(
 
 		data = append(data, []string{
 			codebase.Name,
-			controller.Name,
-			//controller.Type,
+			functionality.Name,
+			//functionality.Type,
 			strconv.Itoa(cluster),
 			//entityNamesCSVFormat,
 			fmt.Sprintf("%f", metrics.LockInvocationProbability),

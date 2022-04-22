@@ -67,20 +67,20 @@ public class SourceController {
     }
 
 
-    @RequestMapping(value = "/source/{sourceType}/moveControllers", method = RequestMethod.POST)
-    public ResponseEntity<HttpStatus> moveControllers(
+    @RequestMapping(value = "/source/{sourceType}/moveFunctionalities", method = RequestMethod.POST)
+    public ResponseEntity<HttpStatus> moveFunctionalities(
             @PathVariable String codebaseName,
             @PathVariable String sourceType,
-            @RequestBody String[] controllers,
+            @RequestBody String[] functionalities,
             @RequestParam String targetProfile
     ) {
-        logger.debug("moveControllers");
+        logger.debug("moveFunctionalities");
 
         try {
             switch (sourceType) {
                 case ACCESSES:
                     AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(codebaseName, sourceType);
-                    source.moveControllers(controllers, targetProfile);
+                    source.moveFunctionalities(functionalities, targetProfile);
                     codebaseManager.writeSource(codebaseName, source.getType(), source);
                     break;
                 default:

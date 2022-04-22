@@ -83,8 +83,8 @@ public class CutInfoDtoDeserializer extends StdDeserializer<CutInfoDto> {
                     case "mojoSingletons":
                         analyserResultDto.setMojoSingletons(jsonParser.getDoubleValue());
                         break;
-                    case "controllerSpecs":
-                        cutInfoDto.setControllerSpecs(jsonParser.readValueAs(new TypeReference<HashMap<String, HashMap<String, Float>>>() {}));
+                    case "functionalitySpecs":
+                        cutInfoDto.setFunctionalitySpecs(jsonParser.readValueAs(new TypeReference<HashMap<String, HashMap<String, Float>>>() {}));
                         break;
                     default:
                         throw new IOException();

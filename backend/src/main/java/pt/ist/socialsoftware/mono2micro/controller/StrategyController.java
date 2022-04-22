@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.domain.clusteringAlgorithm.ClusteringAlgorithm;
 import pt.ist.socialsoftware.mono2micro.domain.clusteringAlgorithm.ClusteringAlgorithmFactory;
-import pt.ist.socialsoftware.mono2micro.domain.similarityGenerators.SimilarityGenerator;
-import pt.ist.socialsoftware.mono2micro.domain.similarityGenerators.SimilarityGeneratorFactory;
+import pt.ist.socialsoftware.mono2micro.domain.similarityGenerator.SimilarityGenerator;
+import pt.ist.socialsoftware.mono2micro.domain.similarityGenerator.SimilarityGeneratorFactory;
 import pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 

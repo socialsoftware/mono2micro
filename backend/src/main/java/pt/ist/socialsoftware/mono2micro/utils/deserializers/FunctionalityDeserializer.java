@@ -5,30 +5,28 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.DirectedAcyclicGraph;
-import pt.ist.socialsoftware.mono2micro.domain.Controller;
+import pt.ist.socialsoftware.mono2micro.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.domain.FunctionalityRedesign;
-import pt.ist.socialsoftware.mono2micro.utils.Constants;
-import pt.ist.socialsoftware.mono2micro.utils.ControllerType;
+import pt.ist.socialsoftware.mono2micro.domain.metrics.Metric;
+import pt.ist.socialsoftware.mono2micro.utils.FunctionalityType;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-public class ControllerDeserializer extends StdDeserializer<Controller> {
+public class FunctionalityDeserializer extends StdDeserializer<Functionality> {
 
-	public ControllerDeserializer() {
+	public FunctionalityDeserializer() {
 		this(null);
 	}
 
-	public ControllerDeserializer(Class<Controller> t) {
+	public FunctionalityDeserializer(Class<Functionality> t) {
 		super(t);
 	}
 
 	@Override
-	public Controller deserialize(
+	public Functionality deserialize(
 		JsonParser jsonParser,
 		DeserializationContext ctxt
 	) throws IOException {
@@ -38,7 +36,7 @@ public class ControllerDeserializer extends StdDeserializer<Controller> {
 
 		try {
 			deserializableFields = (Set<String>) ctxt.findInjectableValue(
-				"controllerDeserializableFields",
+				"functionalityDeserializableFields",
 				null,
 				null
 			);
@@ -47,37 +45,38 @@ public class ControllerDeserializer extends StdDeserializer<Controller> {
 
 		if (jsonToken == JsonToken.START_OBJECT) {
 
-			Controller controller = new Controller();
+			Functionality functionality = new Functionality();
 			while (jsonParser.nextValue() != JsonToken.END_OBJECT) {
 				if (deserializableFields == null || deserializableFields.contains(jsonParser.getCurrentName())) {
 					switch (jsonParser.getCurrentName()) {
 						case "name":
-							controller.setName(jsonParser.getValueAsString());
+							functionality.setName(jsonParser.getValueAsString());
 							break;
-						case "complexity":
-							controller.setComplexity(jsonParser.getFloatValue());
-							break;
-						case "performance":
-							controller.setPerformance(jsonParser.getFloatValue());
+						case "metrics":
+							functionality.setMetrics(
+								jsonParser.readValueAs(
+									new TypeReference<List<Metric>>() {}
+								)
+							);
 							break;
 						case "entities":
-							controller.setEntities(
+							functionality.setEntities(
 								jsonParser.readValueAs(
 									new TypeReference<HashMap<Short, Byte>>() {}
 								)
 							);
 							break;
 						case "functionalityRedesigns":
-							controller.setFunctionalityRedesigns(
+							functionality.setFunctionalityRedesigns(
 									jsonParser.readValueAs(
 											new TypeReference<List<FunctionalityRedesign>>() {}
 									));
 							break;
 						case "type":
-							controller.setType(ControllerType.valueOf(jsonParser.getValueAsString()));
+							functionality.setType(FunctionalityType.valueOf(jsonParser.getValueAsString()));
 							break;
 						case "entitiesPerCluster":
-							controller.setEntitiesPerCluster(
+							functionality.setEntitiesPerCluster(
 									jsonParser.readValueAs(
 											new TypeReference<HashMap<Short, Set<Short>>>() {}
 									)
@@ -85,7 +84,7 @@ public class ControllerDeserializer extends StdDeserializer<Controller> {
 							break;
 
 						default:
-							throw new IOException("Attribute " + jsonParser.getCurrentName() + " does not exist on Controller object");
+							throw new IOException("Attribute " + jsonParser.getCurrentName() + " does not exist on Functionality object");
 					}
 				}
 				else {
@@ -93,9 +92,9 @@ public class ControllerDeserializer extends StdDeserializer<Controller> {
 				}
 			}
 
-			return controller;
+			return functionality;
 		}
 
-		throw new IOException("Error deserializing Controller");
+		throw new IOException("Error deserializing Functionality");
 	}
 }

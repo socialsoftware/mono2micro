@@ -6,68 +6,68 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 
-export const TransactionOperationsMenu = ({handleControllerSubmit, controllersClusters}) => {
+export const TransactionOperationsMenu = ({handleFunctionalitySubmit, functionalitiesClusters}) => {
     const [showSubmit, setShowSubmit] = useState(false);
-    const [controllerList, setControllerList] = useState([]);
-    const [controller, setController] = useState('Select Controller');
-    const [controllerAmount, setControllerAmount] = useState("All");
+    const [functionalityList, setFunctionalityList] = useState([]);
+    const [functionality, setFunctionality] = useState('Select Functionality');
+    const [functionalityAmount, setFunctionalityAmount] = useState("All");
 
     useEffect(() => onMount(), []);
 
     function onMount() {
-        if (controllerAmount === "All") {
-            setControllerList(Object.keys(controllersClusters).sort());
+        if (functionalityAmount === "All") {
+            setFunctionalityList(Object.keys(functionalitiesClusters).sort());
         }
     }
 
     function componentWillReceiveProps(nextProps) {
-        if (controllerAmount === "All") {
-            setControllerList(Object.keys(nextProps.controllersClusters).sort());
+        if (functionalityAmount === "All") {
+            setFunctionalityList(Object.keys(nextProps.functionalitiesClusters).sort());
         }
     }
 
-    function changeControllerAmount(value) {
-        setControllerAmount(value);
+    function changeFunctionalityAmount(value) {
+        setFunctionalityAmount(value);
         setShowSubmit(false);
-        setController("Select Controller");
+        setFunctionality("Select Functionality");
         if (value === "All")
-            setControllerList(Object.keys(controllersClusters).sort());
+            setFunctionalityList(Object.keys(functionalitiesClusters).sort());
         else
-            setControllerList(Object.keys(controllersClusters).filter(key => controllersClusters[key].length === value).sort());
+            setFunctionalityList(Object.keys(functionalitiesClusters).filter(key => functionalitiesClusters[key].length === value).sort());
     }
 
     function handleSubmit() {
-        handleControllerSubmit(controller);
+        handleFunctionalitySubmit(functionality);
     }
 
 
-    const controllerAmountList = [...new Set(Object.keys(controllersClusters).map(key => controllersClusters[key].length))].sort((a, b) => a - b).map(amount =>
-        <Dropdown.Item key={amount} onClick={() => changeControllerAmount(amount)}>
+    const functionalityAmountList = [...new Set(Object.keys(functionalitiesClusters).map(key => functionalitiesClusters[key].length))].sort((a, b) => a - b).map(amount =>
+        <Dropdown.Item key={amount} onClick={() => changeFunctionalityAmount(amount)}>
             {amount}
         </Dropdown.Item>
     );
 
-    const controllersListDropdown = controllerList.map(c =>
-        <Dropdown.Item key={c} onClick={() => {setShowSubmit(true); setController(c);}}>
+    const functionalitiesListDropdown = functionalityList.map(c =>
+        <Dropdown.Item key={c} onClick={() => {setShowSubmit(true); setFunctionality(c);}}>
             {c}
         </Dropdown.Item>
     );
 
     return (
         <ButtonToolbar>
-            <DropdownButton className="me-1" as={ButtonGroup} title={controllerAmount}>
-                <Dropdown.Item key={"All"} onClick={() => changeControllerAmount("All")}>
+            <DropdownButton className="me-1" as={ButtonGroup} title={functionalityAmount}>
+                <Dropdown.Item key={"All"} onClick={() => changeFunctionalityAmount("All")}>
                     {"All"}
                 </Dropdown.Item>
-                {controllerAmountList}
+                {functionalityAmountList}
             </DropdownButton>
 
             <Dropdown className="me-1" as={ButtonGroup}>
                 <Dropdown.Toggle>
-                    {controller}
+                    {functionality}
                 </Dropdown.Toggle>
                 <Dropdown.Menu as={CustomSearchMenuForwardingRef}>
-                    {controllersListDropdown}
+                    {functionalitiesListDropdown}
                 </Dropdown.Menu>
             </Dropdown>
 

@@ -13,7 +13,7 @@ import {useParams} from "react-router-dom";
 
 export const clusterViewHelp = (<div>
     Hover or double click cluster to see entities inside.<br />
-    Hover or double click edge to see controllers in common.<br />
+    Hover or double click edge to see functionalities in common.<br />
     Select cluster or edge for highlight and to open operation menu.
 </div>);
 
@@ -71,7 +71,7 @@ export const ClusterView = () => {
 
     const [visGraph, setVisGraph] = useState({});
     const [clusters, setClusters] = useState([]);
-    const [clustersControllers, setClustersControllers] = useState({});
+    const [clustersFunctionalities, setClustersFunctionalities] = useState({});
     const [showMenu, setShowMenu] = useState(false);
     const [selectedCluster, setSelectedCluster] = useState({});
     const [mergeWithCluster, setMergeWithCluster] = useState({});
@@ -86,15 +86,15 @@ export const ClusterView = () => {
     useEffect(() => loadDecomposition(), []);
 
     function loadDecomposition() {
-        let clusters, clustersControllers;
+        let clusters, clustersFunctionalities;
         const service = new RepositoryService();
 
-        const firstRequest = service.getClustersControllers(
+        const firstRequest = service.getClustersFunctionalities(
             codebaseName,
             strategyName,
             decompositionName
         ).then(response => {
-            clustersControllers = response.data;
+            clustersFunctionalities = response.data;
         });
 
         const secondRequest = service.getDecomposition(
@@ -116,10 +116,10 @@ export const ClusterView = () => {
         Promise.all([firstRequest, secondRequest]).then(() => {
             const visGraph = {
                 nodes: new DataSet(clusters.map(cluster => convertClusterToNode(cluster))),
-                edges: new DataSet(createEdges(clusters, clustersControllers))
+                edges: new DataSet(createEdges(clusters, clustersFunctionalities))
             };
 
-            setClustersControllers(clustersControllers);
+            setClustersFunctionalities(clustersFunctionalities);
             setVisGraph(visGraph);
         });
     }
@@ -135,40 +135,40 @@ export const ClusterView = () => {
         };
     }
 
-    function createEdges(clusters, clustersControllers) {
+    function createEdges(clusters, clustersFunctionalities) {
         let edges = [];
         let edgeLengthFactor = 1000;
 
         for (let i = 0; i < clusters.length; i++) {
             let cluster1 = clusters[i];
-            let cluster1Controllers = clustersControllers[cluster1.id].map(c => c.name);
+            let cluster1Functionalities = clustersFunctionalities[cluster1.id].map(c => c.name);
 
             for (let j = i + 1; j < clusters.length; j++) {
                 let cluster2 = clusters[j];
-                let cluster2Controllers = clustersControllers[cluster2.id].map(c => c.name);
+                let cluster2Functionalities = clustersFunctionalities[cluster2.id].map(c => c.name);
 
-                let controllersInCommon = cluster1Controllers.filter(controllerName => cluster2Controllers.includes(controllerName))
+                let functionalitiesInCommon = cluster1Functionalities.filter(functionalityName => cluster2Functionalities.includes(functionalityName))
 
                 let couplingC1C2 = cluster1.couplingDependencies[cluster2.id] === undefined ? 0 : cluster1.couplingDependencies[cluster2.id].length;
                 let couplingC2C1 = cluster2.couplingDependencies[cluster1.id] === undefined ? 0 : cluster2.couplingDependencies[cluster1.id].length;
 
                 let edgeTitle = cluster1.name + " -> " + cluster2.name + " , Coupling: " + couplingC1C2 + "<br>";
                 edgeTitle += cluster2.name + " -> " + cluster1.name + " , Coupling: " + couplingC2C1 + "<br>";
-                edgeTitle += "Controllers in common:<br>"
+                edgeTitle += "Functionalities in common:<br>"
 
-                let edgeLength = (1 / controllersInCommon.length) * edgeLengthFactor;
+                let edgeLength = (1 / functionalitiesInCommon.length) * edgeLengthFactor;
                 if (edgeLength < 100) edgeLength = 300;
                 else if (edgeLength > 500) edgeLength = 500;
 
-                controllersInCommon.sort()
-                if (controllersInCommon.length > 0)
+                functionalitiesInCommon.sort()
+                if (functionalitiesInCommon.length > 0)
                     edges.push({
                         from: cluster1.id,
                         to: cluster2.id,
                         length: edgeLength,
-                        value: controllersInCommon.length,
-                        label: controllersInCommon.length.toString(),
-                        title: edgeTitle + controllersInCommon.join('<br>')
+                        value: functionalitiesInCommon.length,
+                        label: functionalitiesInCommon.length.toString(),
+                        title: edgeTitle + functionalitiesInCommon.join('<br>')
                     });
             }
         }
@@ -344,7 +344,7 @@ export const ClusterView = () => {
         return {
             cluster: name,
             entities: entities.length,
-            controllers: clustersControllers[id] === undefined ? 0 : clustersControllers[id].length,
+            functionalities: clustersFunctionalities[id] === undefined ? 0 : clustersFunctionalities[id].length,
             cohesion: cohesion,
             coupling: coupling,
             complexity: complexity
@@ -360,8 +360,8 @@ export const ClusterView = () => {
         text: 'Entities',
         sort: true
     }, {
-        dataField: 'controllers',
-        text: 'Controllers',
+        dataField: 'functionalities',
+        text: 'Functionalities',
         sort: true
     }, {
         dataField: 'cohesion',

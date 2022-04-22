@@ -12,9 +12,12 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, {numberFilter} from 'react-bootstrap-table2-filter';
 import {
     Codebase,
-    Decomposition,
     TraceType
 } from "../../type-declarations/types.d";
+import Decomposition from "../../models/decompositions/Decomposition";
+import AccessesSciPyDecomposition from "../../models/decompositions/AccessesSciPyDecomposition";
+import {StrategyType} from "../../models/strategies/Strategy";
+import {DecompositionFactory} from "../../models/decompositions/DecompositionFactory";
 
 const HttpStatus = require('http-status-codes');
 
@@ -143,7 +146,7 @@ export const Analyser = () => {
     const [codebase, setCodebase] = useState<Codebase>({ profiles: {} });
     const [selectedProfile, setSelectedProfile] = useState("");
     const [experts, setExperts] = useState<Decomposition[]>([]);
-    const [expert, setExpert] = useState<Decomposition>({});
+    const [expert, setExpert] = useState<Decomposition>(DecompositionFactory.getDecomposition(StrategyType.ACCESSES_SCIPY));
     const [resultData, setResultData] = useState([]);
     const [requestLimit, setRequestLimit] = useState("0");
     const [importFile, setImportFile] = useState(null);
@@ -173,7 +176,13 @@ export const Analyser = () => {
             undefined
         ).then((response) => {
             if (response.data !== null) {
-                setExperts(response.data.filter((decomposition: Decomposition) => decomposition.expert));
+                setExperts(response.data.filter((decomposition: Decomposition) => {
+                    if (decomposition.strategyType == StrategyType.ACCESSES_SCIPY) {
+                        let accessesDecomposition = decomposition as AccessesSciPyDecomposition;
+                        return accessesDecomposition.expert;
+                    }
+                    return false;
+                }));
             }
         });
     }
@@ -324,12 +333,12 @@ export const Analyser = () => {
                     </Col>
                 </Form.Group>
 
-                <Form.Group as={Row} controlId="selectControllerProfiles" className="mb-3">
+                <Form.Group as={Row} controlId="selectFunctionalityProfiles" className="mb-3">
                     <Form.Label column sm={3}>
-                        Select Controller Profiles
+                        Select Functionality Profiles
                     </Form.Label>
                     <Col sm={3}>
-                        <DropdownButton title={'Controller Profiles'}>
+                        <DropdownButton title={'Functionality Profiles'}>
                             {codebase.profiles && Object.keys(codebase.profiles).map((profile: any) =>
                                 <Dropdown.Item
                                     key={profile}
@@ -344,7 +353,7 @@ export const Analyser = () => {
                 </Form.Group>
                 <Form.Group as={Row} controlId="amountOfTraces" className="mb-3">
                     <Form.Label column sm={3}>
-                        Amount of Traces per Controller
+                        Amount of Traces per Functionality
                     </Form.Label>
                     <Col sm={3}>
                         <FormControl
@@ -393,28 +402,6 @@ export const Analyser = () => {
                                 onClick={handleChangeTraceType}
                             />
 
-                        </Col>
-                        <Col sm="auto">
-                            <Form.Check
-                                id="representativeSetOfAccesses"
-                                value="REPRESENTATIVE"
-                                type="radio"
-                                label="Representative (set of accesses)"
-                                name="traceType"
-                                onClick={handleChangeTraceType}
-                            />
-                        </Col>
-                        {/* WIP */}
-                        <Col sm="auto">
-                            <Form.Check
-                                disabled
-                                id="complete"
-                                value="?"
-                                type="radio"
-                                label="Representative (subsequence of accesses)"
-                                name="traceType"
-                                onClick={undefined}
-                            />
                         </Col>
                     </Col>
                 </Form.Group>
