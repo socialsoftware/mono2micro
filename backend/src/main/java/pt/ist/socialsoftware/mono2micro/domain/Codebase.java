@@ -383,7 +383,7 @@ public class Codebase {
 		executeCreateDendrogram(dendrogram, "/features/methodsCalls");
 	}
 
-	public void entitiesFeaturesAnalysis(Dendrogram dendrogram)
+	public void entitiesTracesFeaturesAnalysis(Dendrogram dendrogram)
 		throws JSONException, IOException
 	{
 		List<HashMap> entitiesVectors = new ArrayList<>();
@@ -413,9 +413,186 @@ public class Codebase {
 						JSONObject method = methods.getJSONObject(k);
 						JSONArray code_vector = method.getJSONArray("codeVector");
 						for (int idx = 0; idx < 384; idx++) {
-							vector.set(idx, vector.get(idx) + dendrogram.getConstructorWeight() * code_vector.getDouble(idx));
+							vector.set(idx, vector.get(idx) + code_vector.getDouble(idx));
 						}
-						count += dendrogram.getConstructorWeight();
+						count += 1;
+					}
+
+					if (count > 0) {
+						vectorDivision(vector, count);
+
+						HashMap<String, Object> entityEmbeddings = new HashMap<String, Object>();
+						entityEmbeddings.put("package", pack.getString("name"));
+						entityEmbeddings.put("name", cls.getString("name"));
+						entityEmbeddings.put("translationID", cls.getInt("translationID"));
+						entityEmbeddings.put("codeVector", vector);
+						entitiesVectors.add(entityEmbeddings);
+					}
+
+				}
+
+			}
+
+		}
+
+		entitiesJson.put("entities", entitiesVectors);
+
+		CodebaseManager.getInstance().writeEntitiesCodeVectorsFile(this.name, entitiesJson);
+
+		List<HashMap> tracesVectors = new ArrayList<>();
+		HashMap<String, Object> tracesJson = new HashMap<String, Object>();
+		tracesJson.put("name", codeEmbeddings.getString("name"));
+		tracesJson.put("linkageType", dendrogram.getLinkageType());
+		JSONObject functionalityTraces = CodebaseManager.getInstance().getFunctionalityTraces(this.name);
+		Iterator<String> keys = functionalityTraces.keys();
+
+		while (keys.hasNext()) {
+			String key = keys.next();
+			if (functionalityTraces.get(key) instanceof JSONObject) {
+				JSONObject traces = (JSONObject) functionalityTraces.get(key);
+				JSONArray trace = traces.getJSONArray("t");
+				JSONObject trace_obj  = trace.getJSONObject(0);
+				JSONArray accesses = trace_obj.getJSONArray("a");
+
+				float count = 0;
+				ArrayList<Double> vector = new ArrayList<Double>();
+				for (int idx = 0; idx < 384; idx++) {
+					vector.add(0.0);
+				}
+
+				for (int i = 0; i < accesses.length(); i++) {
+					JSONArray access = accesses.getJSONArray(i);
+					String accessType = access.getString(0);
+					Integer entityId = access.getInt(1);
+					float weight = 0;
+
+					if (accessType.equals("R")) {
+						weight = dendrogram.getReadMetricWeight();
+					} else {
+						weight = dendrogram.getWriteMetricWeight();
+					}
+
+					for (HashMap entity : entitiesVectors) {
+						if (entity.get("translationID") == entityId) {
+							ArrayList<Double> code_vector = (ArrayList<Double>) entity.get("codeVector");
+							for (int idx = 0; idx < 384; idx++) {
+								vector.set(idx, vector.get(idx) + weight * code_vector.get(idx));
+							}
+
+							count += weight;
+							break;
+						}
+					}
+				}
+				if (count > 0) {
+					vectorDivision(vector, count);
+					HashMap<String, Object> traceEmbeddings = new HashMap<String, Object>();
+					traceEmbeddings.put("name", key);
+					traceEmbeddings.put("codeVector", vector);
+					tracesVectors.add(traceEmbeddings);
+				}
+			}
+		}
+
+		tracesJson.put("traces", tracesVectors);
+
+		CodebaseManager.getInstance().writeEntitiesTracesCodeVectorsFile(this.name, tracesJson);
+
+		this.addDendrogram(dendrogram);
+
+		executeCreateDendrogram(dendrogram, "/features/entitiesTraces");
+	}
+
+	public void mixedFeaturesAnalysis(Dendrogram dendrogram)
+		throws JSONException, IOException
+	{
+
+	}
+
+	public void createDendrogramByFeatures(
+		Dendrogram dendrogram
+	)
+		throws Exception
+	{
+		if (getDendrogram(dendrogram.getName()) != null)
+			throw new KeyAlreadyExistsException();
+
+		File dendrogramPath = new File(CODEBASES_PATH + this.name + "/" + dendrogram.getName());
+		if (!dendrogramPath.exists()) {
+			dendrogramPath.mkdir();
+		}
+
+		if (dendrogram.getFeatureVectorizationStrategy().equals("methodCalls")) {
+			this.methodCallsFeaturesAnalysis(dendrogram);
+		} else if (dendrogram.getFeatureVectorizationStrategy().equals("entitiesTraces")) {
+			this.entitiesTracesFeaturesAnalysis(dendrogram);
+		} else {
+			this.mixedFeaturesAnalysis(dendrogram);
+		}
+
+	}
+
+	public List<Double> calculateClassVector(List<List<Double>> class_methods_vectors) {
+		List<Double> class_vector = new ArrayList<Double>();
+
+		int len = class_methods_vectors.get(0).size();
+
+		Double sum = 0.0;
+
+		for (int i = 0; i < len; i++) {
+			for (int j = 0; j < class_methods_vectors.size(); j++) {
+				sum += class_methods_vectors.get(j).get(i);
+			}
+			class_vector.add(sum / class_methods_vectors.size());
+			sum = 0.0;
+		}
+
+		return class_vector;
+	}
+
+	public void createDendrogramByEntities(
+			Dendrogram dendrogram
+	)
+			throws Exception
+	{
+		if (getDendrogram(dendrogram.getName()) != null)
+			throw new KeyAlreadyExistsException();
+
+		File dendrogramPath = new File(CODEBASES_PATH + this.name + "/" + dendrogram.getName());
+		if (!dendrogramPath.exists()) {
+			dendrogramPath.mkdir();
+		}
+
+		List<HashMap> entitiesVectors = new ArrayList<>();
+		HashMap<String, Object> entitiesJson = new HashMap<String, Object>();
+		JSONObject codeEmbeddings = CodebaseManager.getInstance().getCodeEmbeddings(this.name);
+		JSONArray packages = codeEmbeddings.getJSONArray("packages");
+		entitiesJson.put("name", codeEmbeddings.getString("name"));
+		entitiesJson.put("linkageType", dendrogram.getLinkageType());
+
+		for (int i = 0; i < packages.length(); i++) {
+			JSONObject pack = packages.getJSONObject(i);
+			JSONArray classes = pack.optJSONArray("classes");
+
+			for (int j = 0; j < classes.length(); j++) {
+				JSONObject cls = classes.getJSONObject(j);
+				JSONArray methods = cls.optJSONArray("methods");
+				String classType = cls.getString("type");
+
+				if (classType.equals("Entity")) {
+					float count = 0;
+					ArrayList<Double> vector = new ArrayList<Double>();
+					for (int idx = 0; idx < 384; idx++) {
+						vector.add(0.0);
+					}
+
+					for (int k = 0; k < methods.length(); k++) {
+						JSONObject method = methods.getJSONObject(k);
+						JSONArray code_vector = method.getJSONArray("codeVector");
+						for (int idx = 0; idx < 384; idx++) {
+							vector.set(idx, vector.get(idx) + code_vector.getDouble(idx));
+						}
+						count += 1;
 					}
 
 					if (count > 0) {
@@ -441,54 +618,7 @@ public class Codebase {
 
 		this.addDendrogram(dendrogram);
 
-		executeCreateDendrogram(dendrogram, "/features/entities");
-	}
-
-	public void mixedFeaturesAnalysis(Dendrogram dendrogram)
-		throws JSONException, IOException
-	{
-
-	}
-
-	public void createDendrogramByFeatures(
-		Dendrogram dendrogram
-	)
-		throws Exception
-	{
-		if (getDendrogram(dendrogram.getName()) != null)
-			throw new KeyAlreadyExistsException();
-
-		File dendrogramPath = new File(CODEBASES_PATH + this.name + "/" + dendrogram.getName());
-		if (!dendrogramPath.exists()) {
-			dendrogramPath.mkdir();
-		}
-
-		if (dendrogram.getFeatureVectorizationStrategy().equals("methodCalls")) {
-			this.methodCallsFeaturesAnalysis(dendrogram);
-		} else if (dendrogram.getFeatureVectorizationStrategy().equals("entities")) {
-			this.entitiesFeaturesAnalysis(dendrogram);
-		} else {
-			this.mixedFeaturesAnalysis(dendrogram);
-		}
-
-	}
-
-	public List<Double> calculateClassVector(List<List<Double>> class_methods_vectors) {
-		List<Double> class_vector = new ArrayList<Double>();
-
-		int len = class_methods_vectors.get(0).size();
-
-		Double sum = 0.0;
-
-		for (int i = 0; i < len; i++) {
-			for (int j = 0; j < class_methods_vectors.size(); j++) {
-				sum += class_methods_vectors.get(j).get(i);
-			}
-			class_vector.add(sum / class_methods_vectors.size());
-			sum = 0.0;
-		}
-
-		return class_vector;
+		executeCreateDendrogram(dendrogram, "/entities");
 	}
 
 	public void createDendrogramByClass(

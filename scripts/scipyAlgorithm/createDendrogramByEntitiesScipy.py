@@ -6,7 +6,7 @@ matplotlib.use('agg')
 import matplotlib.pyplot as plt
 
 
-def createDendrogramByFeaturesEntitiesScipy(codebasesPath, codebaseName, dendrogramName):
+def createDendrogramByEntitiesScipy(codebasesPath, codebaseName, dendrogramName):
     with open(codebasesPath + codebaseName + "/entities_embeddings.json") as f:
         entities_embeddings = json.load(f)
 

@@ -13,10 +13,12 @@ def cutDendrogramByClasses(codebasesPath, codebaseName, dendrogramName, graphNam
     ids = []
     vectors = []
     for cls in classes_embeddings['classes']:
+        names += [cls['name']]
+        vectors += [cls['codeVector']]
         if 'translationID' in cls.keys():
-            names += [cls['name']]
             ids += [cls['translationID']]
-            vectors += [cls['codeVector']]
+        else:
+            ids += [-1]
 
     matrix = np.array(vectors)
     linkageType = classes_embeddings['linkageType']
@@ -31,9 +33,13 @@ def cutDendrogramByClasses(codebasesPath, codebaseName, dendrogramName, graphNam
     clusters = {}
     for i in range(len(cut)):
         if str(cut[i][0]) in clusters.keys():
-            clusters[str(cut[i][0])] += [ids[i]]
+            if ids[i] != -1:
+                clusters[str(cut[i][0])] += [ids[i]]
         else:
-            clusters[str(cut[i][0])] = [ids[i]]
+            if ids[i] != -1:
+                clusters[str(cut[i][0])] = [ids[i]]
+            else:
+                clusters[str(cut[i][0])] = []
 
     nodes = hierarchy.fcluster(hierarc, len(clusters), criterion="maxclust")
     try:

@@ -504,6 +504,18 @@ public class CodebaseManager {
 		);
 	}
 
+	public void writeEntitiesTracesCodeVectorsFile(
+			String codebaseName,
+			HashMap entitiesTracesCodeVectorsFileJSON
+	)
+			throws IOException
+	{
+		objectMapper.writerWithDefaultPrettyPrinter().writeValue(
+				new File(CODEBASES_PATH + codebaseName + "/entities_traces_embeddings.json"),
+				entitiesTracesCodeVectorsFileJSON
+		);
+	}
+
 	public void writeClassesCodeVectorsFile(
 		String codebaseName,
 		HashMap classesCodeVectorsFileJSON
@@ -526,6 +538,21 @@ public class CodebaseManager {
 			new File(CODEBASES_PATH + codebaseName + "/datafile.json"),
 			datafile
 		);
+	}
+
+	public JSONObject getFunctionalityTraces(
+			String codebaseName
+	)
+			throws IOException, JSONException
+	{
+
+		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/datafile.json");
+
+		JSONObject codeEmbeddings = new JSONObject(IOUtils.toString(is, StandardCharsets.UTF_8));
+
+		is.close();
+
+		return codeEmbeddings;
 	}
 
 	public void writeDendrogramSimilarityMatrix(

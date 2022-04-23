@@ -92,10 +92,6 @@ export const Dendrograms = () => {
     const [servicesWeight, setServicesWeight] = useState("100");
     const [intermediateMethodsWeight, setIntermediateMethodsWeight] = useState("100");
     const [entitiesWeight, setEntitiesWeight] = useState("100");
-    const [constructorWeight, setConstructorWeight] = useState("100");
-    const [gettersWeight, setGettersWeight] = useState("100");
-    const [settersWeight, setSettersWeight] = useState("100");
-    const [regularMethodsWeight, setRegularMethodsWeight] = useState("100");
     const [methodsWeight, setMethodsWeight] = useState("100");
 
     let { codebaseName } = useParams();
@@ -140,10 +136,6 @@ export const Dendrograms = () => {
                 "servicesWeight",
                 "intermediateMethodsWeight",
                 "entitiesWeight",
-                "constructorWeight",
-                "gettersWeight",
-                "settersWeight",
-                "regularMethodsWeight",
                 "methodsWeight"
             ]
         ).then((response) => {
@@ -228,11 +220,38 @@ export const Dendrograms = () => {
             Number(controllersWeight),
             Number(intermediateMethodsWeight),
             Number(entitiesWeight),
-            Number(constructorWeight),
-            Number(gettersWeight),
-            Number(settersWeight),
-            Number(regularMethodsWeight),
-            Number(methodsWeight)
+            Number(methodsWeight),
+            Number(writeMetricWeight),
+            Number(readMetricWeight)
+        )
+            .then(response => {
+                if (response.status === HttpStatus.CREATED) {
+                    loadDendrograms();
+                    loadDecompositions();
+                    setIsUploaded("Upload completed successfully.");
+                } else {
+                    setIsUploaded("Upload failed.");
+                }
+            })
+            .catch(error => {
+                if (error.response !== undefined && error.response.status === HttpStatus.UNAUTHORIZED) {
+                    setIsUploaded("Upload failed. Dendrogram name already exists.");
+                } else {
+                    setIsUploaded("Upload failed.");
+                }
+            });
+    }
+
+    function handleCreateDendrogramByEntitiesSubmit(event) {
+        event.preventDefault()
+        setIsUploaded("Uploading...");
+        const service = new RepositoryService();
+        service.createDendrogramByEntities(
+            codebaseName,
+            newDendrogramName,
+            selectedProfile,
+            linkageType,
+            analysisType
         )
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
@@ -349,22 +368,6 @@ export const Dendrograms = () => {
         setEntitiesWeight(event.target.value);
     }
 
-    function handleChangeConstructorWeight(event) {
-        setConstructorWeight(event.target.value);
-    }
-
-    function handleChangeGettersWeight(event) {
-        setGettersWeight(event.target.value);
-    }
-
-    function handleChangeSettersWeight(event) {
-        setSettersWeight(event.target.value);
-    }
-
-    function handleChangeRegularMethodsWeight(event) {
-        setRegularMethodsWeight(event.target.value);
-    }
-
     function handleChangeMethodsWeight(event) {
         setMethodsWeight(event.target.value);
     }
@@ -416,6 +419,15 @@ export const Dendrograms = () => {
                         label="Feature Aggregation"
                         type="radio"
                         id="feature"
+                    />
+                </Col>
+                <Col sm="auto">
+                    <Form.Check
+                        onClick={handleAnalysisType}
+                        name="analysisType"
+                        label="Entities Aggregation"
+                        type="radio"
+                        id="entities"
                     />
                 </Col>
                 <Col sm="auto">
@@ -780,7 +792,7 @@ export const Dendrograms = () => {
                             name="featureVectorizationStrategy"
                             label="Entities"
                             type="radio"
-                            id="entities"
+                            id="entitiesTraces"
                         />
 
                     </Col>
@@ -798,7 +810,7 @@ export const Dendrograms = () => {
                 <br/>
 
                 {featureVectorizationStrategy == "methodCalls" ? renderMethodCallsStrategyForm() : <div></div>}
-                {featureVectorizationStrategy == "entities" ? renderEntitiesStrategyForm() : <div></div>}
+                {featureVectorizationStrategy == "entitiesTraces" ? renderEntitiesTracesStrategyForm() : <div></div>}
                 {featureVectorizationStrategy == "mixed" ? renderMixedStrategyForm() : <div></div>}
 
                 <br/>
@@ -907,66 +919,43 @@ export const Dendrograms = () => {
     }
 
     function renderEntitiesStrategyForm() {
+        return (
+            <div>
+            </div>
+        );
+    }
+
+    function renderEntitiesTracesStrategyForm() {
         // Number of accesses already present, since multiple accesses count multiple times
-        // Constructor Weights, Getters Weights, Setters Weights, Other Methods Weights
+        // Read access Weight, Write access Weight
         // Transformers (toString), Recognizers(isSomething) , testers (equals) ???
         return (
             <div>
-                <Form.Group as={Row} controlId="constructorWeight" className="align-items-center">
+                <Form.Group as={Row} controlId="writeMetricWeight" className="align-items-center">
                     <Form.Label column sm={2}>
-                        Constructor Weight (%)
+                    Write Metric Weight (%)
                     </Form.Label>
                     <Col sm={2}>
                         <FormControl
                             type="number"
                             placeholder="0-100"
-                            value={constructorWeight}
-                            onChange={handleChangeConstructorWeight} />
+                            value={writeMetricWeight}
+                            onChange={handleChangeWriteMetricWeight} />
                     </Col>
                 </Form.Group>
 
                 <br/>
 
-                <Form.Group as={Row} controlId="gettersWeight" className="align-items-center">
+                <Form.Group as={Row} controlId="readMetricWeight" className="align-items-center">
                     <Form.Label column sm={2}>
-                        Getters Weight (%)
+                    Read Metric Weight (%)
                     </Form.Label>
                     <Col sm={2}>
                         <FormControl
                             type="number"
                             placeholder="0-100"
-                            value={gettersWeight}
-                            onChange={handleChangeGettersWeight} />
-                    </Col>
-                </Form.Group>
-
-                <br/>
-
-                <Form.Group as={Row} controlId="settersWeight" className="align-items-center">
-                    <Form.Label column sm={2}>
-                        Setters Weight (%)
-                    </Form.Label>
-                    <Col sm={2}>
-                        <FormControl
-                            type="number"
-                            placeholder="0-100"
-                            value={settersWeight}
-                            onChange={handleChangeSettersWeight} />
-                    </Col>
-                </Form.Group>
-                
-                <br/>
-
-                <Form.Group as={Row} controlId="regularMethodsWeight" className="align-items-center">
-                    <Form.Label column sm={2}>
-                        Regular Methods Weight (%)
-                    </Form.Label>
-                    <Col sm={2}>
-                        <FormControl
-                            type="number"
-                            placeholder="0-100"
-                            value={regularMethodsWeight}
-                            onChange={handleChangeRegularMethodsWeight} />
+                            value={readMetricWeight}
+                            onChange={handleChangeReadMetricWeight} />
                     </Col>
                 </Form.Group>
             </div>
@@ -1006,6 +995,106 @@ export const Dendrograms = () => {
                     </Col>
                 </Form.Group>
             </div>
+        );
+    }
+
+    function renderCreateEntitiesDendrogramForm() {
+        const profiles = codebase["profiles"];
+        return (
+            <Form onSubmit={handleCreateDendrogramByEntitiesSubmit}>
+                <Form.Group as={Row} controlId="newDendrogramName" className="align-items-center">
+                    <Form.Label column sm={2}>
+                        Dendrogram Name
+                    </Form.Label>
+                    <Col sm={2}>
+                        <FormControl
+                            type="text"
+                            maxLength="30"
+                            placeholder="Dendrogram Name"
+                            value={newDendrogramName}
+                            onChange={handleChangeNewDendrogramName}
+                        />
+                    </Col>
+                </Form.Group>
+
+                <br/>
+
+                <Form.Group as={Row} controlId="selectControllerProfiles" className="align-items-center">
+                    <Form.Label column sm={2}>
+                        Select Codebase Profiles
+                    </Form.Label>
+                    <Col sm={2}>
+                        <DropdownButton title={'Controller Profiles'}>
+                            {Object.keys(profiles).map(profile =>
+                                <Dropdown.Item
+                                    key={profile}
+                                    onClick={() => selectProfile(profile)}
+                                    active={selectedProfile === profile}
+                                >
+                                    {profile}
+                                </Dropdown.Item>
+                            )}
+                        </DropdownButton>
+                    </Col>
+                </Form.Group>
+
+                <br/>
+
+                <Form.Group as={Row} className="align-items-center">
+                    <Form.Label as="legend" column sm={2}>
+                        Linkage Type
+                    </Form.Label>
+                    <Col sm="auto">
+                        <Form.Check
+                            onClick={handleLinkageType}
+                            name="linkageType"
+                            label="Average"
+                            type="radio"
+                            id="average"
+                            defaultChecked
+                        />
+                    </Col>
+                    <Col sm="auto">
+                        <Form.Check
+                            onClick={handleLinkageType}
+                            name="linkageType"
+                            label="Single"
+                            type="radio"
+                            id="single"
+                        />
+
+                    </Col>
+                    <Col sm="auto">
+                        <Form.Check
+                            onClick={handleLinkageType}
+                            name="linkageType"
+                            label="Complete"
+                            type="radio"
+                            id="complete"
+                        />
+                    </Col>
+                </Form.Group>
+
+                <br/>
+
+                <Form.Group as={Row} className="align-items-center">
+                    <Col sm={{ offset: 2 }}>
+                        <Button
+                            type="submit"
+                            disabled={
+                                isUploaded === "Uploading..." ||
+                                newDendrogramName === "" ||
+                                selectedProfile === ""
+                            }
+                        >
+                            Create Dendrogram
+                        </Button>
+                        <Form.Text>
+                            {isUploaded}
+                        </Form.Text>
+                    </Col>
+                </Form.Group>
+            </Form>
         );
     }
 
@@ -1122,14 +1211,21 @@ export const Dendrograms = () => {
                                 />
                                 <Card.Body>
                                     <Card.Title>{dendrogram.name}</Card.Title>
-                                        
-                                        {dendrogram.featureVectorizationStrategy == "methodCalls" ? 
+                                        {dendrogram.analysisType == "static" ?
                                         <Card.Text>
+                                            Analysis Type: {dendrogram.analysisType}<br/>
                                             Linkage Type: {dendrogram.linkageType}<br/>
                                             AmountOfTraces: {dendrogram.tracesMaxLimit} <br/>
                                             Type of traces: {dendrogram.typeOfTraces} <br/>
-                                            Access: {dendrogram.accessMetricWeight}%, Write: {dendrogram.writeMetricWeight}%<br/>
-                                            Read: {dendrogram.readMetricWeight}%, Sequence: {dendrogram.sequenceMetricWeight}%<br/>
+                                            Access: {dendrogram.accessMetricWeight}%<br/>
+                                            Write: {dendrogram.writeMetricWeight}%<br/>
+                                            Read: {dendrogram.readMetricWeight}%<br/>
+                                            Sequence: {dendrogram.sequenceMetricWeight}%
+                                        </Card.Text>
+                                        : dendrogram.analysisType == "feature" && dendrogram.featureVectorizationStrategy == "methodCalls" ? 
+                                        <Card.Text>
+                                            Analysis Type: {dendrogram.analysisType}<br/>
+                                            Linkage Type: {dendrogram.linkageType}<br/>
                                             Strategy: {dendrogram.featureVectorizationStrategy}<br/>
                                             Max Depth: {dendrogram.maxDepth}<br/>
                                             Controllers Weight: {dendrogram.controllersWeight}%<br/>
@@ -1137,21 +1233,17 @@ export const Dendrograms = () => {
                                             Intermediate Weight: {dendrogram.intermediateMethodsWeight}%<br/>
                                             Entities Weight: {dendrogram.entitiesWeight}%
                                         </Card.Text>
-                                        : dendrogram.featureVectorizationStrategy == "methodCalls" ? 
+                                        : dendrogram.analysisType == "feature" && dendrogram.featureVectorizationStrategy == "entitiesTraces" ? 
                                         <Card.Text>
+                                            Analysis Type: {dendrogram.analysisType}<br/>
                                             Linkage Type: {dendrogram.linkageType}<br/>
-                                            AmountOfTraces: {dendrogram.tracesMaxLimit} <br/>
-                                            Type of traces: {dendrogram.typeOfTraces} <br/>
-                                            Access: {dendrogram.accessMetricWeight}%, Write: {dendrogram.writeMetricWeight}%<br/>
-                                            Read: {dendrogram.readMetricWeight}%, Sequence: {dendrogram.sequenceMetricWeight}%<br/>
                                             Strategy: {dendrogram.featureVectorizationStrategy}<br/>
-                                            Constructor Weight: {dendrogram.constructorWeight}%<br/>
-                                            Getters Weight: {dendrogram.gettersWeight}%<br/>
-                                            Setters Weight: {dendrogram.settersWeight}%<br/>
-                                            Regular Weight: {dendrogram.regularMethodsWeight}%
+                                            Write Weight: {dendrogram.writeMetricWeight}%<br/>
+                                            Read Weight: {dendrogram.readMetricWeight}%
                                         </Card.Text>
-                                        :
+                                        : dendrogram.analysisType == "feature" && dendrogram.featureVectorizationStrategy == "mixed" ? 
                                         <Card.Text>
+                                            Analysis Type: {dendrogram.analysisType}<br/>
                                             Linkage Type: {dendrogram.linkageType}<br/>
                                             AmountOfTraces: {dendrogram.tracesMaxLimit} <br/>
                                             Type of traces: {dendrogram.typeOfTraces} <br/>
@@ -1160,6 +1252,11 @@ export const Dendrograms = () => {
                                             Strategy: {dendrogram.featureVectorizationStrategy}<br/>
                                             Entities Weight: {dendrogram.entitiesWeight}%<br/>
                                             Methods Weight: {dendrogram.methodsWeight}%
+                                        </Card.Text>
+                                        :
+                                        <Card.Text>
+                                            Analysis Type: {dendrogram.analysisType}<br/>
+                                            Linkage Type: {dendrogram.linkageType}<br/>
                                         </Card.Text>
                                         }
                                     <Button href={`/codebases/${codebaseName}/dendrograms/${dendrogram.name}`}
@@ -1229,6 +1326,7 @@ export const Dendrograms = () => {
 
             {analysisType == "static" ? renderCreateStaticDendrogramForm() : <div></div>}
             {analysisType == "feature" ? renderCreateFeatureDendrogramForm() : <div></div>}
+            {analysisType == "entities" ? renderCreateEntitiesDendrogramForm() : <div></div>}
             {analysisType == "class" ? renderCreateClassDendrogramForm() : <div></div>}
 
             <br/>

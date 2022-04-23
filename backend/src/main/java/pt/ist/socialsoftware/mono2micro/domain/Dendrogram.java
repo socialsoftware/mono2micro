@@ -48,10 +48,6 @@ public class Dendrogram {
     private float servicesWeight;
     private float intermediateMethodsWeight;
     private float entitiesWeight;
-    private float constructorWeight;
-    private float gettersWeight;
-    private float settersWeight;
-	private float regularMethodsWeight;
     private float methodsWeight;
 
 	public Dendrogram() {}
@@ -184,38 +180,6 @@ public class Dendrogram {
 
 	public void setEntitiesWeight(float entitiesWeight) {
 		this.entitiesWeight = entitiesWeight;
-	}
-
-	public float getConstructorWeight() {
-		return constructorWeight;
-	}
-
-	public void setConstructorWeight(float constructorWeight) {
-		this.constructorWeight = constructorWeight;
-	}
-
-	public float getGettersWeight() {
-		return gettersWeight;
-	}
-
-	public void setGettersWeight(float gettersWeight) {
-		this.gettersWeight = gettersWeight;
-	}
-
-	public float getSettersWeight() {
-		return settersWeight;
-	}
-
-	public void setSettersWeight(float settersWeight) {
-		this.settersWeight = settersWeight;
-	}
-
-	public float getRegularMethodsWeight() {
-		return regularMethodsWeight;
-	}
-
-	public void setRegularMethodsWeight(float regularMethodsWeight) {
-		this.regularMethodsWeight = regularMethodsWeight;
 	}
 
 	public float getMethodsWeight() {
@@ -469,6 +433,73 @@ public class Dendrogram {
 			this.codebaseName,
 			this.name,
 			decomposition.getName()
+		);
+
+		decomposition.setSilhouetteScore((float) clustersJSON.getDouble("silhouetteScore"));
+
+		Iterator<String> clusters = clustersJSON.getJSONObject("clusters").sortedKeys();
+		ArrayList<Short> clusterIds = new ArrayList<>();
+
+		while(clusters.hasNext()) {
+			clusterIds.add(Short.parseShort(clusters.next()));
+		}
+
+		Collections.sort(clusterIds);
+
+		for (Short id : clusterIds) {
+			String clusterName = String.valueOf(id);
+			JSONArray entities = clustersJSON.getJSONObject("clusters").getJSONArray(id.toString());
+			Cluster cluster = new Cluster(id, clusterName);
+
+			for (int i = 0; i < entities.length(); i++) {
+				short entityID = (short) entities.getInt(i);
+
+				cluster.addEntity(entityID);
+				decomposition.putEntity(entityID, id);
+			}
+
+			decomposition.addCluster(cluster);
+		}
+
+		decomposition.setNextClusterID(Integer.valueOf(clusterIds.size()).shortValue());
+
+		return decomposition;
+	}
+
+	public Decomposition cutEntitiesAnalysis(Decomposition decomposition)
+			throws Exception
+	{
+
+		String cutValue = Float.valueOf(decomposition.getCutValue()).toString().replaceAll("\\.?0*$", "");
+		if (this.getDecompositionNames().contains(decomposition.getCutType() + cutValue)) {
+			int i = 2;
+			while (this.getDecompositionNames().contains(decomposition.getCutType() + cutValue + "(" + i + ")")) {
+				i++;
+			}
+			decomposition.setName(decomposition.getCutType() + cutValue + "(" + i + ")");
+		} else {
+			decomposition.setName(decomposition.getCutType() + cutValue);
+		}
+
+		File decompositionPath = new File(CODEBASES_PATH + this.codebaseName + "/" + this.name + "/" + decomposition.getName());
+		if (!decompositionPath.exists()) {
+			decompositionPath.mkdir();
+		}
+
+		WebClient.create(SCRIPTS_ADDRESS)
+				.get()
+				.uri("/scipy/{codebaseName}/{dendrogramName}/{graphName}/{cutType}/{cutValue}/cut/entities",
+						this.codebaseName, this.name, decomposition.getName(), decomposition.getCutType(), Float.toString(decomposition.getCutValue()))
+				.exchange()
+				.doOnSuccess(clientResponse -> {
+					if (clientResponse.statusCode() != HttpStatus.OK)
+						throw new RuntimeException("Error Code:" + clientResponse.statusCode());
+				}).block();
+
+		JSONObject clustersJSON = CodebaseManager.getInstance().getClusters(
+				this.codebaseName,
+				this.name,
+				decomposition.getName()
 		);
 
 		decomposition.setSilhouetteScore((float) clustersJSON.getDouble("silhouetteScore"));

@@ -165,6 +165,32 @@ public class DendrogramController {
         }
 	}
 
+	@RequestMapping(value = "/dendrogram/create/entities", method = RequestMethod.POST)
+	public ResponseEntity<HttpStatus> createDendrogramByEntities(
+			@PathVariable String codebaseName,
+			@RequestBody Dendrogram dendrogram
+	) {
+		logger.debug("createDendrogramByClass");
+
+		try {
+			// FIXME The whole codebase needs to be fetched because it needs to be written as a whole again
+			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
+			Codebase codebase = codebaseManager.getCodebase(codebaseName);
+			codebase.createDendrogramByEntities(dendrogram);
+
+			codebaseManager.writeCodebase(codebase);
+			return new ResponseEntity<>(HttpStatus.CREATED);
+
+		} catch (KeyAlreadyExistsException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
 	@RequestMapping(value = "/dendrogram/create/class", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> createDendrogramByClass(
 		@PathVariable String codebaseName,
@@ -216,6 +242,8 @@ public class DendrogramController {
 				cutDecomposition = dendrogram.cut(decomposition);
 			} else if (dendrogram.getAnalysisType().equals("feature")) {
 				cutDecomposition = dendrogram.cutFeaturesAnalysis(decomposition, dendrogram.getFeatureVectorizationStrategy());
+			} else if (dendrogram.getAnalysisType().equals("entities")) {
+				cutDecomposition = dendrogram.cutEntitiesAnalysis(decomposition);
 			} else {
 				cutDecomposition = dendrogram.cutClassesAnalysis(decomposition);
 			}

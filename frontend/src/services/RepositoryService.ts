@@ -241,12 +241,9 @@ export class RepositoryService {
         controllersWeight: number,
         intermediateMethodsWeight: number,
         entitiesWeight: number,
-        constructorWeight: number,
-        gettersWeight: number,
-        settersWeight: number,
-        regularMethodsWeight: number,
         methodsWeight: number,
-        entitiesDendrogram: boolean
+        writeMetricWeight: number,
+        readMetricWeight: number
     ) {
         const dendrogramData: Dendrogram = {
             codebaseName,
@@ -260,15 +257,34 @@ export class RepositoryService {
             controllersWeight,
             intermediateMethodsWeight,
             entitiesWeight,
-            constructorWeight,
-            gettersWeight,
-            settersWeight,
-            regularMethodsWeight,
-            methodsWeight
+            methodsWeight,
+            writeMetricWeight,
+            readMetricWeight
         };
         
         return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/dendrogram/create/features?entitiesDendrogram=" + entitiesDendrogram,
+            "/codebase/" + codebaseName + "/dendrogram/create/features",
+            dendrogramData
+        );
+    }
+
+    createDendrogramByEntities(
+        codebaseName: string,
+        dendrogramName: string,
+        profile: string,
+        linkageType: string,
+        analysisType: string
+    ) {
+        const dendrogramData: Dendrogram = {
+            codebaseName,
+            name: dendrogramName,
+            profile,
+            linkageType,
+            analysisType
+        };
+        
+        return this.axios.post<null>(
+            "/codebase/" + codebaseName + "/dendrogram/create/entities",
             dendrogramData
         );
     }

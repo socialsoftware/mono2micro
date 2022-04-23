@@ -4,7 +4,7 @@ from sklearn import metrics
 import json
 
 
-def cutDendrogramByFeaturesEntities(codebasesPath, codebaseName, dendrogramName, graphName, cutType, cutValue):
+def cutDendrogramByEntities(codebasesPath, codebaseName, dendrogramName, graphName, cutType, cutValue):
     with open(codebasesPath + codebaseName + "/entities_embeddings.json") as f:
         entities_embeddings = json.load(f)
 
@@ -12,10 +12,12 @@ def cutDendrogramByFeaturesEntities(codebasesPath, codebaseName, dendrogramName,
     ids = []
     vectors = []
     for cls in entities_embeddings['entities']:
+        names += [cls['name']]
+        vectors += [cls['codeVector']]
         if 'translationID' in cls.keys():
-            names += [cls['name']]
             ids += [cls['translationID']]
-            vectors += [cls['codeVector']]
+        else:
+            ids += [-1]
 
     matrix = np.array(vectors)
     linkageType = entities_embeddings['linkageType']
@@ -30,9 +32,13 @@ def cutDendrogramByFeaturesEntities(codebasesPath, codebaseName, dendrogramName,
     clusters = {}
     for i in range(len(cut)):
         if str(cut[i][0]) in clusters.keys():
-            clusters[str(cut[i][0])] += [ids[i]]
+            if ids[i] != -1:
+                clusters[str(cut[i][0])] += [ids[i]]
         else:
-            clusters[str(cut[i][0])] = [ids[i]]
+            if ids[i] != -1:
+                clusters[str(cut[i][0])] = [ids[i]]
+            else:
+                clusters[str(cut[i][0])] = []
 
     nodes = hierarchy.fcluster(hierarc, len(clusters), criterion="maxclust")
     try:

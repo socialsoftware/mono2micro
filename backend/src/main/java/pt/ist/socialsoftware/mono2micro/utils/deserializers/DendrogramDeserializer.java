@@ -110,22 +110,6 @@ public class DendrogramDeserializer extends StdDeserializer<Dendrogram> {
 							dendrogram.setEntitiesWeight(jsonParser.getIntValue());
 							break;
 
-						case "constructorWeight":
-							dendrogram.setConstructorWeight(jsonParser.getIntValue());
-							break;
-
-						case "gettersWeight":
-							dendrogram.setGettersWeight(jsonParser.getIntValue());
-							break;
-
-						case "settersWeight":
-							dendrogram.setSettersWeight(jsonParser.getIntValue());
-							break;
-
-						case "regularMethodsWeight":
-							dendrogram.setRegularMethodsWeight(jsonParser.getIntValue());
-							break;
-
 						case "methodsWeight":
 							dendrogram.setMethodsWeight(jsonParser.getIntValue());
 							break;

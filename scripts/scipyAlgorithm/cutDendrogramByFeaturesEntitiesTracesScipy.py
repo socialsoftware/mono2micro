@@ -4,24 +4,22 @@ from sklearn import metrics
 import json
 
 
-def cutDendrogramByFeaturesMethodCalls(codebasesPath, codebaseName, dendrogramName, graphName, cutType, cutValue):
-
-    with open(codebasesPath + codebaseName + "/features_embeddings.json") as f:
-        features_embeddings = json.load(f)
+def cutDendrogramByFeaturesEntitiesTraces(codebasesPath, codebaseName, dendrogramName, graphName, cutType, cutValue):
+    with open(codebasesPath + codebaseName + "/entities_traces_embeddings.json") as f:
+        entities_traces_embeddings = json.load(f)
 
     with open(codebasesPath + codebaseName + "/datafile.json") as f:
         features_entities_accesses = json.load(f)
 
     names = []
-    classes = []
+    ids = []
     vectors = []
-    for feature in features_embeddings['features']:
-        names += [feature['signature'].split("(")[0].split(".")[-1]]
-        classes += [feature['class']]
-        vectors += [feature['codeVector']]
+    for cls in entities_traces_embeddings['traces']:
+        names += [cls['name']]
+        vectors += [cls['codeVector']]
 
     matrix = np.array(vectors)
-    linkageType = features_embeddings['linkageType']
+    linkageType = entities_traces_embeddings['linkageType']
 
     hierarc = hierarchy.linkage(y=matrix, method=linkageType)
 
@@ -42,7 +40,7 @@ def cutDendrogramByFeaturesMethodCalls(codebasesPath, codebaseName, dendrogramNa
     for cluster in clusters.keys():
 
         for idx in clusters[cluster]:
-            feature = classes[idx] + "." + names[idx]
+            feature = names[idx]
 
             if feature in features_entities_accesses.keys():
                 accesses = features_entities_accesses[feature]['t'][0]['a']
