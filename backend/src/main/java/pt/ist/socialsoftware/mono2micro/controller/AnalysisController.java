@@ -5,16 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
-import pt.ist.socialsoftware.mono2micro.domain.Cluster;
-import pt.ist.socialsoftware.mono2micro.domain.Codebase;
-import pt.ist.socialsoftware.mono2micro.domain.Controller;
-import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.domain.*;
 import pt.ist.socialsoftware.mono2micro.dto.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
+import pt.ist.socialsoftware.mono2micro.services.AnalysisService;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 import pt.ist.socialsoftware.mono2micro.utils.mojoCalculator.src.main.java.MoJo;
@@ -36,6 +35,9 @@ public class AnalysisController {
 
     private static final Logger logger = LoggerFactory.getLogger(AnalysisController.class);
     private final CodebaseManager codebaseManager = CodebaseManager.getInstance();
+
+	@Autowired
+	AnalysisService analysisService;
 
 	@RequestMapping(value = "/codebase/{codebaseName}/analyser", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> analyser(
@@ -192,6 +194,22 @@ public class AnalysisController {
 			}
 
 			System.out.println("Analyser Complete");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/codebase/{codebaseName}/analyser/features/methodCalls", method = RequestMethod.POST)
+	public ResponseEntity<HttpStatus> methodCallsFeaturesAnalyser(
+			@PathVariable String codebaseName,
+			@RequestBody AnalyserDto analyserDto
+	) {
+		try {
+
+			analysisService.featureMethodCallsAnalysis(codebaseName, analyserDto);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

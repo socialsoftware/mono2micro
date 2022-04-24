@@ -10,6 +10,7 @@ public class AnalyserDto {
     // only used when the codebase "is dynamic" aka !isStatic()
     private int tracesMaxLimit; // default is 0 which means, no limit
     private Constants.TraceType traceType = Constants.TraceType.ALL;
+    private String linkageType;
 
     public Decomposition getExpert() { return expert; }
 
@@ -32,4 +33,12 @@ public class AnalyserDto {
     public Constants.TraceType getTraceType() { return traceType; }
 
     public void setTraceType(Constants.TraceType traceType) { this.traceType = traceType; }
+
+    public String getLinkageType() {
+        return linkageType;
+    }
+
+    public void setLinkageType(String linkageType) {
+        this.linkageType = linkageType;
+    }
 }

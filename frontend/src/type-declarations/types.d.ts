@@ -88,6 +88,7 @@ export interface AnalyserDto {
     tracesMaxLimit?: number;
     traceType?: TraceType;
     expert?: Decomposition;
+    linkageType?: string;
 }
 
 export interface AnalysisDto {

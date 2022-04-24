@@ -67,6 +67,24 @@ export class RepositoryService {
         );
     }
 
+    methodCallsFeaturesAnalyser(
+        codebaseName: string,
+        expert: Decomposition,
+        profile: string,
+        linkageType: string
+    ) {
+        const analyserData: AnalyserDto = {
+            expert: expert || {},
+            profile,
+            linkageType
+        };
+
+        return this.axios.post<null>(
+            "/codebase/" + codebaseName + "/analyser/features/methodCalls",
+            analyserData
+        );
+    }
+
     //Codebases
     getCodebases(fieldNames?: string[]) {
         return this.axios.get<Codebase[]>(addSearchParamsToUrl(

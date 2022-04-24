@@ -12,6 +12,7 @@ from scipyAlgorithm.cutDendrogramByFeaturesMethodCallsScipy import cutDendrogram
 from scipyAlgorithm.cutDendrogramByFeaturesEntitiesTracesScipy import cutDendrogramByFeaturesEntitiesTraces as cutDendrogramByFeaturesEntitiesTracesScipy
 from scipyAlgorithm.cutDendrogramByFeaturesMixedScipy import cutDendrogramByFeaturesMixed as cutDendrogramByFeaturesMixedScipy
 from scipyAlgorithm.analyser import analyser as analyserScipy
+from scipyAlgorithm.featureMethodCallsAnalyser import analyser as featureMethodCallsAnalyserScipy
 import env
 
 scipyRouter = APIRouter()
@@ -86,6 +87,11 @@ async def cutDendrogramByFeaturesMixed(codebaseName, dendrogramName, graphName, 
             "cutType": cutType, "cutValue": cutValue, "operation": "cutDendrogram"}
 
 @scipyRouter.get("/scipy/{codebaseName}/{totalNumberOfEntities}/analyser")
-async def anayser(codebaseName, totalNumberOfEntities):
+async def analyser(codebaseName, totalNumberOfEntities):
     analyserScipy(env.CODEBASES_PATH, codebaseName, int(totalNumberOfEntities))
     return {"codebaseName": codebaseName, "totalNumberOfEntities": totalNumberOfEntities, "operation": "analyser"}
+
+@scipyRouter.get("/scipy/{codebaseName}/analyser/features/methodCalls")
+async def featureMethodCallsAnalyser(codebaseName):
+    featureMethodCallsAnalyserScipy(env.CODEBASES_PATH, codebaseName)
+    return {"codebaseName": codebaseName, "operation": "featureMethodCallsAnalyser"}

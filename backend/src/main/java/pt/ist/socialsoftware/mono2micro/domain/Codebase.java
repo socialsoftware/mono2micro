@@ -326,10 +326,11 @@ public class Codebase {
 		return new Acumulator(vector, count);
 	}
 
-	public void methodCallsFeaturesAnalysis(Dendrogram dendrogram)
+	public void methodCallsFeaturesAnalysis(Dendrogram dendrogram, Boolean analysisMode)
 		throws JSONException, IOException
 	{
 		List<HashMap> featuresVectors = new ArrayList<>();
+		Integer numberOfEntities = 0;
 		HashMap<String, Object> featuresJson = new HashMap<String, Object>();
 		JSONObject codeEmbeddings = CodebaseManager.getInstance().getCodeEmbeddings(this.name);
 		JSONArray packages = codeEmbeddings.getJSONArray("packages");
@@ -344,6 +345,10 @@ public class Codebase {
 				JSONArray methods = cls.optJSONArray("methods");
 				String className = cls.getString("name");
 				String classType = cls.getString("type");
+
+				if (classType.equals("Entity")) {
+					numberOfEntities++;
+				}
 
 				for (int k = 0; k < methods.length(); k++) {
 					JSONObject method = methods.getJSONObject(k);
@@ -373,14 +378,21 @@ public class Codebase {
 
 		}
 
+		featuresJson.put("maxDepth", dendrogram.getMaxDepth());
+		featuresJson.put("controllersWeight", dendrogram.getControllersWeight());
+		featuresJson.put("servicesWeight", dendrogram.getServicesWeight());
+		featuresJson.put("intermediateMethodsWeight", dendrogram.getIntermediateMethodsWeight());
+		featuresJson.put("entitiesWeight", dendrogram.getEntitiesWeight());
 		featuresJson.put("linkageType", dendrogram.getLinkageType());
+		featuresJson.put("numberOfEntities", numberOfEntities);
 		featuresJson.put("features", featuresVectors);
 
 		CodebaseManager.getInstance().writeFeaturesCodeVectorsFile(this.name, featuresJson);
 
-		this.addDendrogram(dendrogram);
-
-		executeCreateDendrogram(dendrogram, "/features/methodsCalls");
+		if (!analysisMode) {
+			this.addDendrogram(dendrogram);
+			executeCreateDendrogram(dendrogram, "/features/methodsCalls");
+		}
 	}
 
 	public void entitiesTracesFeaturesAnalysis(Dendrogram dendrogram)
@@ -510,7 +522,8 @@ public class Codebase {
 	}
 
 	public void createDendrogramByFeatures(
-		Dendrogram dendrogram
+		Dendrogram dendrogram,
+		Boolean analysisMode
 	)
 		throws Exception
 	{
@@ -523,7 +536,7 @@ public class Codebase {
 		}
 
 		if (dendrogram.getFeatureVectorizationStrategy().equals("methodCalls")) {
-			this.methodCallsFeaturesAnalysis(dendrogram);
+			this.methodCallsFeaturesAnalysis(dendrogram, analysisMode);
 		} else if (dendrogram.getFeatureVectorizationStrategy().equals("entitiesTraces")) {
 			this.entitiesTracesFeaturesAnalysis(dendrogram);
 		} else {

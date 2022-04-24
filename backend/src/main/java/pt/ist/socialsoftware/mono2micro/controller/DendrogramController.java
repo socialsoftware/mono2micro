@@ -150,7 +150,7 @@ public class DendrogramController {
 			// FIXME The whole codebase needs to be fetched because it needs to be written as a whole again
 			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-			codebase.createDendrogramByFeatures(dendrogram);
+			codebase.createDendrogramByFeatures(dendrogram, false);
 
             codebaseManager.writeCodebase(codebase);
             return new ResponseEntity<>(HttpStatus.CREATED);
