@@ -2,6 +2,7 @@ package pt.ist.socialsoftware.mono2micro.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,8 @@ import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
+import pt.ist.socialsoftware.mono2micro.services.DendrogramCutService;
+import pt.ist.socialsoftware.mono2micro.services.DendrogramService;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.IOException;
@@ -21,6 +24,12 @@ import java.util.Optional;
 @RestController
 @RequestMapping(value = "/mono2micro/codebase/{codebaseName}")
 public class DendrogramController {
+
+	@Autowired
+	DendrogramService dendrogramService;
+
+	@Autowired
+	DendrogramCutService dendrogramCutService;
 
 	private static final Logger logger = LoggerFactory.getLogger(DendrogramController.class);
 
@@ -147,12 +156,9 @@ public class DendrogramController {
 		logger.debug("createDendrogramByFeatures");
 
 		try {
-			// FIXME The whole codebase needs to be fetched because it needs to be written as a whole again
-			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
-			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-			codebase.createDendrogramByFeatures(dendrogram, false);
 
-            codebaseManager.writeCodebase(codebase);
+			dendrogramService.createDendrogramByFeatures(codebaseName, dendrogram, false);
+
             return new ResponseEntity<>(HttpStatus.CREATED);
 
 		} catch (KeyAlreadyExistsException e) {
@@ -170,15 +176,12 @@ public class DendrogramController {
 			@PathVariable String codebaseName,
 			@RequestBody Dendrogram dendrogram
 	) {
-		logger.debug("createDendrogramByClass");
+		logger.debug("createDendrogramByEntities");
 
 		try {
-			// FIXME The whole codebase needs to be fetched because it needs to be written as a whole again
-			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
-			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-			codebase.createDendrogramByEntities(dendrogram);
 
-			codebaseManager.writeCodebase(codebase);
+			dendrogramService.createDendrogramByEntitiesStrategy(codebaseName, dendrogram, false);
+
 			return new ResponseEntity<>(HttpStatus.CREATED);
 
 		} catch (KeyAlreadyExistsException e) {
@@ -199,12 +202,9 @@ public class DendrogramController {
 		logger.debug("createDendrogramByClass");
 
 		try {
-			// FIXME The whole codebase needs to be fetched because it needs to be written as a whole again
-			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
-			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-			codebase.createDendrogramByClass(dendrogram);
 
-            codebaseManager.writeCodebase(codebase);
+			dendrogramService.createDendrogramByClassesStrategy(codebaseName, dendrogram, false);
+
             return new ResponseEntity<>(HttpStatus.CREATED);
 
 		} catch (KeyAlreadyExistsException e) {
@@ -229,7 +229,6 @@ public class DendrogramController {
 			// FIXME The whole codebase needs to be fetched because it needs to be written as a whole again
 			// FIXME The best solution would be each "dendrogram directory could also have a dendrogram.json"
 			Codebase codebase = codebaseManager.getCodebase(codebaseName);
-
 			Dendrogram dendrogram = codebase.getDendrogram(dendrogramName);
 
 			// FIXME the graph given to the cut function shouldn't be a Decomposition
@@ -241,11 +240,11 @@ public class DendrogramController {
 			if (dendrogram.getAnalysisType().equals("static")) {
 				cutDecomposition = dendrogram.cut(decomposition);
 			} else if (dendrogram.getAnalysisType().equals("feature")) {
-				cutDecomposition = dendrogram.cutFeaturesAnalysis(decomposition, dendrogram.getFeatureVectorizationStrategy());
+				cutDecomposition = dendrogramCutService.cutFeaturesAnalysis(dendrogram, decomposition, dendrogram.getFeatureVectorizationStrategy());
 			} else if (dendrogram.getAnalysisType().equals("entities")) {
-				cutDecomposition = dendrogram.cutEntitiesAnalysis(decomposition);
+				cutDecomposition = dendrogramCutService.cutEntitiesAnalysis(dendrogram, decomposition);
 			} else {
-				cutDecomposition = dendrogram.cutClassesAnalysis(decomposition);
+				cutDecomposition = dendrogramCutService.cutClassesAnalysis(dendrogram, decomposition);
 			}
 
 			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(

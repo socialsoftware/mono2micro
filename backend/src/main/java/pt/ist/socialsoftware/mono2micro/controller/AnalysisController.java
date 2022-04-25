@@ -52,7 +52,7 @@ public class AnalysisController {
 				analyserPath.mkdirs();
 			}
 
-			Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
+			Codebase codebase = codebaseManager.getCodebaseWithFields(
 				codebaseName,
 				new HashSet<String>() {{
 					add("name");
@@ -241,7 +241,7 @@ public class AnalysisController {
 				result.entityControllers
 			);
 
-			CodebaseManager.getInstance().writeAnalyserSimilarityMatrix(
+			codebaseManager.writeAnalyserSimilarityMatrix(
 				codebase.getName(),
 				similarityMatrixDto
 			);
@@ -249,7 +249,7 @@ public class AnalysisController {
 		} else {
 			System.out.println("Similarity matrix already exists...");
 
-			similarityMatrixDto = CodebaseManager.getInstance().getSimilarityMatrixDtoWithFields(
+			similarityMatrixDto = codebaseManager.getSimilarityMatrixDtoWithFields(
 				codebase.getName(),
 				new HashSet<String>() {{ add("entities"); }}
 			);

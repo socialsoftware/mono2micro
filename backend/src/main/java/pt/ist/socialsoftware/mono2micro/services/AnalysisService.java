@@ -85,7 +85,7 @@ public class AnalysisService {
                             dendrogram.setIntermediateMethodsWeight(iw);
                             for (int ew = MIN_WEIGHT; ew <= MAX_WEIGHT; ew += WEIGHT_STEP) {
                                 dendrogram.setEntitiesWeight(ew);
-                                dendrogramService.createDendrogramByFeatures(codebaseName, dendrogram);
+                                dendrogramService.createDendrogramByFeatures(codebaseName, dendrogram, true);
                                 clusterService.executeClusterAnalysis(codebaseName);
                             }
                         }

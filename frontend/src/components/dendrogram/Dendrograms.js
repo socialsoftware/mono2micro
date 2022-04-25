@@ -87,7 +87,7 @@ export const Dendrograms = () => {
     const [codebase, setCodebase] = useState({ profiles: [], });
     const [analysisType, setAnalysisType] = useState("static");
     const [featureVectorizationStrategy, setFeatureVectorizationStrategy] = useState("methodCalls");
-    const [maxDepth, setMaxDepth] = useState("0");
+    const [maxDepth, setMaxDepth] = useState("3");
     const [controllersWeight, setControllersWeight] = useState("100");
     const [servicesWeight, setServicesWeight] = useState("100");
     const [intermediateMethodsWeight, setIntermediateMethodsWeight] = useState("100");
