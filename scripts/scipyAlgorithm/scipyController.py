@@ -12,7 +12,11 @@ from scipyAlgorithm.cutDendrogramByFeaturesMethodCallsScipy import cutDendrogram
 from scipyAlgorithm.cutDendrogramByFeaturesEntitiesTracesScipy import cutDendrogramByFeaturesEntitiesTraces as cutDendrogramByFeaturesEntitiesTracesScipy
 from scipyAlgorithm.cutDendrogramByFeaturesMixedScipy import cutDendrogramByFeaturesMixed as cutDendrogramByFeaturesMixedScipy
 from scipyAlgorithm.analyser import analyser as analyserScipy
+from scipyAlgorithm.entitiesAnalyser import analyser as entitiesAnalyserScipy
+from scipyAlgorithm.classesAnalyser import analyser as classesAnalyserScipy
 from scipyAlgorithm.featureMethodCallsAnalyser import analyser as featureMethodCallsAnalyserScipy
+from scipyAlgorithm.featureEntitiesTracesAnalyser import analyser as featureEntitiesTracesAnalyserScipy
+from scipyAlgorithm.featureMixedAnalyser import analyser as featureMixedAnalyserScipy
 import env
 
 scipyRouter = APIRouter()
@@ -91,7 +95,27 @@ async def analyser(codebaseName, totalNumberOfEntities):
     analyserScipy(env.CODEBASES_PATH, codebaseName, int(totalNumberOfEntities))
     return {"codebaseName": codebaseName, "totalNumberOfEntities": totalNumberOfEntities, "operation": "analyser"}
 
+@scipyRouter.get("/scipy/{codebaseName}/analyser/entities")
+async def entitiesAnalyser(codebaseName):
+    entitiesAnalyserScipy(env.CODEBASES_PATH, codebaseName)
+    return {"codebaseName": codebaseName, "operation": "entitiesAnalyser"}
+
+@scipyRouter.get("/scipy/{codebaseName}/analyser/classes")
+async def classesAnalyser(codebaseName):
+    classesAnalyserScipy(env.CODEBASES_PATH, codebaseName)
+    return {"codebaseName": codebaseName, "operation": "classesAnalyser"}
+
 @scipyRouter.get("/scipy/{codebaseName}/analyser/features/methodCalls")
 async def featureMethodCallsAnalyser(codebaseName):
     featureMethodCallsAnalyserScipy(env.CODEBASES_PATH, codebaseName)
     return {"codebaseName": codebaseName, "operation": "featureMethodCallsAnalyser"}
+
+@scipyRouter.get("/scipy/{codebaseName}/analyser/features/entitiesTraces")
+async def featureEntitiesTracesAnalyser(codebaseName):
+    featureEntitiesTracesAnalyserScipy(env.CODEBASES_PATH, codebaseName)
+    return {"codebaseName": codebaseName, "operation": "featureEntitiesTracesAnalyser"}
+
+@scipyRouter.get("/scipy/{codebaseName}/analyser/features/mixed")
+async def featureMixedAnalyser(codebaseName):
+    featureMixedAnalyserScipy(env.CODEBASES_PATH, codebaseName)
+    return {"codebaseName": codebaseName, "operation": "featureMixedAnalyser"}

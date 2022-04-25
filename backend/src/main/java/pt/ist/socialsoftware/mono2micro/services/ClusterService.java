@@ -35,11 +35,12 @@ public class ClusterService {
     }
 
     public void executeClusterAnalysis(
-            String codebaseName
+            String codebaseName,
+            String type
     ) {
         WebClient.create(SCRIPTS_ADDRESS)
                 .get()
-                .uri("/scipy/{codebaseName}/analyser/features/methodCalls", codebaseName)
+                .uri("/scipy/{codebaseName}/analyser" + type, codebaseName)
                 .exchange()
                 .doOnSuccess(clientResponse -> {
                     if (clientResponse.statusCode() != HttpStatus.OK)

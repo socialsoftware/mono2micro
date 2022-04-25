@@ -201,6 +201,38 @@ public class AnalysisController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
+	@RequestMapping(value = "/codebase/{codebaseName}/analyser/entities", method = RequestMethod.POST)
+	public ResponseEntity<HttpStatus> entitiesAnalyser(
+			@PathVariable String codebaseName,
+			@RequestBody AnalyserDto analyserDto
+	) {
+		try {
+
+			analysisService.analyzeDendrogramCutsByEntitiesStrategy(codebaseName, analyserDto);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/codebase/{codebaseName}/analyser/classes", method = RequestMethod.POST)
+	public ResponseEntity<HttpStatus> classesAnalyser(
+			@PathVariable String codebaseName,
+			@RequestBody AnalyserDto analyserDto
+	) {
+		try {
+
+			analysisService.analyzeDendrogramCutsByClassesStrategy(codebaseName, analyserDto);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
 	@RequestMapping(value = "/codebase/{codebaseName}/analyser/features/methodCalls", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> methodCallsFeaturesAnalyser(
 			@PathVariable String codebaseName,
@@ -208,7 +240,23 @@ public class AnalysisController {
 	) {
 		try {
 
-			analysisService.featureMethodCallsAnalysis(codebaseName, analyserDto);
+			analysisService.analyzeDendrogramCutsByMethodCallsStrategy(codebaseName, analyserDto);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/codebase/{codebaseName}/analyser/features/entitiesTraces", method = RequestMethod.POST)
+	public ResponseEntity<HttpStatus> entitiesTracesFeaturesAnalyser(
+			@PathVariable String codebaseName,
+			@RequestBody AnalyserDto analyserDto
+	) {
+		try {
+
+			analysisService.analyzeDendrogramCutsByEntitiesTracesStrategy(codebaseName, analyserDto);
 
 		} catch (Exception e) {
 			e.printStackTrace();

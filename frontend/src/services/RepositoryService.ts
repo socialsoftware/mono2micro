@@ -67,6 +67,42 @@ export class RepositoryService {
         );
     }
 
+    entitiesAnalyser(
+        codebaseName: string,
+        expert: Decomposition,
+        profile: string,
+        linkageType: string
+    ) {
+        const analyserData: AnalyserDto = {
+            expert: expert || {},
+            profile,
+            linkageType
+        };
+
+        return this.axios.post<null>(
+            "/codebase/" + codebaseName + "/analyser/entities",
+            analyserData
+        );
+    }
+
+    classesAnalyser(
+        codebaseName: string,
+        expert: Decomposition,
+        profile: string,
+        linkageType: string
+    ) {
+        const analyserData: AnalyserDto = {
+            expert: expert || {},
+            profile,
+            linkageType
+        };
+
+        return this.axios.post<null>(
+            "/codebase/" + codebaseName + "/analyser/classes",
+            analyserData
+        );
+    }
+
     methodCallsFeaturesAnalyser(
         codebaseName: string,
         expert: Decomposition,
@@ -81,6 +117,24 @@ export class RepositoryService {
 
         return this.axios.post<null>(
             "/codebase/" + codebaseName + "/analyser/features/methodCalls",
+            analyserData
+        );
+    }
+
+    entitiesTracesFeaturesAnalyser(
+        codebaseName: string,
+        expert: Decomposition,
+        profile: string,
+        linkageType: string
+    ) {
+        const analyserData: AnalyserDto = {
+            expert: expert || {},
+            profile,
+            linkageType
+        };
+
+        return this.axios.post<null>(
+            "/codebase/" + codebaseName + "/analyser/features/entitiesTraces",
             analyserData
         );
     }

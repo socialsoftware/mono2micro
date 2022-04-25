@@ -77,7 +77,8 @@ public class DendrogramService {
 
         List<HashMap> entitiesVectors = new ArrayList<>();
         HashMap<String, Object> entitiesJson = new HashMap<String, Object>();
-        JSONObject codeEmbeddings = CodebaseManager.getInstance().getCodeEmbeddings(codebase.getName());
+        Integer numberOfEntities = 0;
+        JSONObject codeEmbeddings = codebaseManager.getCodeEmbeddings(codebase.getName());
         JSONArray packages = codeEmbeddings.getJSONArray("packages");
         entitiesJson.put("name", codeEmbeddings.getString("name"));
         entitiesJson.put("linkageType", dendrogram.getLinkageType());
@@ -92,6 +93,7 @@ public class DendrogramService {
                 String classType = cls.getString("type");
 
                 if (classType.equals("Entity")) {
+                    numberOfEntities++;
                     float count = 0;
                     ArrayList<Double> vector = new ArrayList<Double>();
                     for (int idx = 0; idx < 384; idx++) {
@@ -124,6 +126,7 @@ public class DendrogramService {
 
         }
 
+        entitiesJson.put("numberOfEntities", numberOfEntities);
         entitiesJson.put("entities", entitiesVectors);
 
         codebaseManager.writeEntitiesCodeVectorsFile(codebase.getName(), entitiesJson);
@@ -152,9 +155,10 @@ public class DendrogramService {
             dendrogramPath.mkdir();
         }
 
-        JSONObject codeEmbeddings = CodebaseManager.getInstance().getCodeEmbeddings(codebase.getName());
-        HashMap<String, Object> classes_json = new HashMap<String, Object>();
-        classes_json.put("name", codeEmbeddings.getString("name"));
+        JSONObject codeEmbeddings = codebaseManager.getCodeEmbeddings(codebase.getName());
+        Integer numberOfEntities = 0;
+        HashMap<String, Object> classesJson = new HashMap<String, Object>();
+        classesJson.put("name", codeEmbeddings.getString("name"));
 
         List<HashMap> classesVectors = new ArrayList<>();
 
@@ -166,37 +170,43 @@ public class DendrogramService {
 
             for (int j = 0; j < classes.length(); j++) {
                 JSONObject cls = classes.getJSONObject(j);
+                String classType = cls.getString("type");
                 JSONArray methods = cls.optJSONArray("methods");
-                List<List<Double>> class_methods_vectors = new ArrayList<List<Double>>();
+                List<List<Double>> classMethodsVectors = new ArrayList<List<Double>>();
+
+                if (classType.equals("Entity")) {
+                    numberOfEntities++;
+                }
 
                 for (int k = 0; k < methods.length(); k++) {
                     JSONObject method = methods.getJSONObject(k);
-                    JSONArray code_vector_array = method.optJSONArray("codeVector");
-                    List<Double> code_vector = new ArrayList<Double>();
+                    JSONArray codeVectorArray = method.optJSONArray("codeVector");
+                    List<Double> codeVector = new ArrayList<Double>();
 
-                    for (int l = 0; l < code_vector_array.length(); l++) {
-                        code_vector.add(code_vector_array.getDouble(l));
+                    for (int l = 0; l < codeVectorArray.length(); l++) {
+                        codeVector.add(codeVectorArray.getDouble(l));
                     }
-                    class_methods_vectors.add(code_vector);
+                    classMethodsVectors.add(codeVector);
                 }
 
-                if (!class_methods_vectors.isEmpty()) {
-                    List<Double> class_vector = calculateClassVector(class_methods_vectors);
+                if (!classMethodsVectors.isEmpty()) {
+                    List<Double> classVector = calculateClassVector(classMethodsVectors);
                     HashMap<String, Object> classEmbeddings = new HashMap<String, Object>();
                     classEmbeddings.put("package", pack.getString("name"));
                     classEmbeddings.put("name", cls.getString("name"));
                     classEmbeddings.put("type", cls.getString("type"));
                     if (cls.has("translationID")) classEmbeddings.put("translationID", cls.getInt("translationID"));
-                    classEmbeddings.put("codeVector", class_vector);
+                    classEmbeddings.put("codeVector", classVector);
                     classesVectors.add(classEmbeddings);
                 }
             }
         }
 
-        classes_json.put("linkageType", dendrogram.getLinkageType());
-        classes_json.put("classes", classesVectors);
+        classesJson.put("numberOfEntities", numberOfEntities);
+        classesJson.put("linkageType", dendrogram.getLinkageType());
+        classesJson.put("classes", classesVectors);
 
-        codebaseManager.writeClassesCodeVectorsFile(codebase.getName(), classes_json);
+        codebaseManager.writeClassesCodeVectorsFile(codebase.getName(), classesJson);
 
         if (!analysisMode) {
             codebase.addDendrogram(dendrogram);
@@ -275,6 +285,7 @@ public class DendrogramService {
             throws JSONException, IOException
     {
         List<HashMap> entitiesVectors = new ArrayList<>();
+        Integer numberOfEntities = 0;
         HashMap<String, Object> entitiesJson = new HashMap<String, Object>();
         JSONObject codeEmbeddings = codebaseManager.getCodeEmbeddings(codebase.getName());
         JSONArray packages = codeEmbeddings.getJSONArray("packages");
@@ -291,6 +302,7 @@ public class DendrogramService {
                 String classType = cls.getString("type");
 
                 if (classType.equals("Entity")) {
+                    numberOfEntities++;
                     float count = 0;
                     ArrayList<Double> vector = new ArrayList<Double>();
                     for (int idx = 0; idx < 384; idx++) {
@@ -379,6 +391,9 @@ public class DendrogramService {
             }
         }
 
+        tracesJson.put("writeMetricWeight", dendrogram.getWriteMetricWeight());
+        tracesJson.put("readMetricWeight", dendrogram.getReadMetricWeight());
+        tracesJson.put("numberOfEntities", numberOfEntities);
         tracesJson.put("traces", tracesVectors);
 
         codebaseManager.writeEntitiesTracesCodeVectorsFile(codebase.getName(), tracesJson);

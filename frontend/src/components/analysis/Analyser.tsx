@@ -251,6 +251,192 @@ const featuresMethodCallsMetricColumns = [
     }
 ];
 
+const featuresEntitiesTracesMetricColumns = [
+    {
+        dataField: 'writeMetricWeight',
+        text: 'Write Weight',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'readMetricWeight',
+        text: 'Read Weight',
+        sort,
+        filter,
+    },
+    {
+        dataField: 'numberClusters',
+        text: 'Number Clusters',
+        sort,
+        filter,
+    },
+    {
+        dataField: 'cohesion',
+        text: 'Cohesion',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'coupling',
+        text: 'Coupling',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'complexity',
+        text: 'Complexity',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'performance',
+        text: 'Performance',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'fmeasure',
+        text: 'F-Score',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'accuracy',
+        text: 'Accuracy',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'precision',
+        text: 'Precision',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'recall',
+        text: 'Recall',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'specificity',
+        text: 'Specificity',
+        sort,
+        filter,
+    },
+    {
+        dataField: 'mojoCommon',
+        text: 'MoJo Common',
+        sort,
+        filter,
+    },
+    {
+        dataField: 'mojoBiggest',
+        text: 'MoJo Biggest',
+        sort,
+        filter,
+    },
+    {
+        dataField: 'mojoNew',
+        text: 'MoJo New',
+        sort,
+        filter,
+    },
+    {
+        dataField: 'mojoSingletons',
+        text: 'MoJo Singletons',
+        sort,
+        filter,
+    }
+];
+
+const otherMetricColumns = [
+    {
+        dataField: 'numberClusters',
+        text: 'Number Clusters',
+        sort,
+        filter,
+    },
+    {
+        dataField: 'cohesion',
+        text: 'Cohesion',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'coupling',
+        text: 'Coupling',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'complexity',
+        text: 'Complexity',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'performance',
+        text: 'Performance',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'fmeasure',
+        text: 'F-Score',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'accuracy',
+        text: 'Accuracy',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'precision',
+        text: 'Precision',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'recall',
+        text: 'Recall',
+        sort,
+        filter,
+    }, 
+    {
+        dataField: 'specificity',
+        text: 'Specificity',
+        sort,
+        filter,
+    },
+    {
+        dataField: 'mojoCommon',
+        text: 'MoJo Common',
+        sort,
+        filter,
+    },
+    {
+        dataField: 'mojoBiggest',
+        text: 'MoJo Biggest',
+        sort,
+        filter,
+    },
+    {
+        dataField: 'mojoNew',
+        text: 'MoJo New',
+        sort,
+        filter,
+    },
+    {
+        dataField: 'mojoSingletons',
+        text: 'MoJo Singletons',
+        sort,
+        filter,
+    }
+];
+
 export const Analyser = () => {
     const [analysisType, setAnalysisType] = useState("static");
     const [featureVectorizationStrategy, setFeatureVectorizationStrategy] = useState("methodCalls");
@@ -361,7 +547,7 @@ export const Analyser = () => {
         });
     }
 
-    function handleFeatureSubmit(event: any) {
+    function handleEntitiesSubmit(event: any) {
         event.preventDefault()
 
         setIsUploaded("Uploading...");
@@ -372,7 +558,8 @@ export const Analyser = () => {
         }
 
         const service = new RepositoryService();
-        service.methodCallsFeaturesAnalyser(
+
+        service.entitiesAnalyser(
             codebase.name,
             expert,
             selectedProfile,
@@ -388,6 +575,86 @@ export const Analyser = () => {
         .catch(error => {
             setIsUploaded("Upload failed.");
         });
+    }
+
+    function handleClassesSubmit(event: any) {
+        event.preventDefault()
+
+        setIsUploaded("Uploading...");
+
+        if (codebase.name == undefined) {
+            setIsUploaded("Upload failed.");
+            return;
+        }
+
+        const service = new RepositoryService();
+
+        service.classesAnalyser(
+            codebase.name,
+            expert,
+            selectedProfile,
+            linkageType
+        )
+        .then(response => {
+            if (response.status === HttpStatus.OK) {
+                setIsUploaded("Upload completed successfully.");
+            } else {
+                setIsUploaded("Upload failed.");
+            }
+        })
+        .catch(error => {
+            setIsUploaded("Upload failed.");
+        });
+    }
+
+    function handleFeatureSubmit(event: any) {
+        event.preventDefault()
+
+        setIsUploaded("Uploading...");
+
+        if (codebase.name == undefined) {
+            setIsUploaded("Upload failed.");
+            return;
+        }
+
+        const service = new RepositoryService();
+
+        if (featureVectorizationStrategy == "methodCalls") {
+            service.methodCallsFeaturesAnalyser(
+                codebase.name,
+                expert,
+                selectedProfile,
+                linkageType
+            )
+            .then(response => {
+                if (response.status === HttpStatus.OK) {
+                    setIsUploaded("Upload completed successfully.");
+                } else {
+                    setIsUploaded("Upload failed.");
+                }
+            })
+            .catch(error => {
+                setIsUploaded("Upload failed.");
+            });
+        } else if (featureVectorizationStrategy == "entitiesTraces") {
+            service.entitiesTracesFeaturesAnalyser(
+                codebase.name,
+                expert,
+                selectedProfile,
+                linkageType
+            )
+            .then(response => {
+                if (response.status === HttpStatus.OK) {
+                    setIsUploaded("Upload completed successfully.");
+                } else {
+                    setIsUploaded("Upload failed.");
+                }
+            })
+            .catch(error => {
+                setIsUploaded("Upload failed.");
+            });
+        }
+        
     }
 
     function handleRequestLimitChange(event: any) {
@@ -668,41 +935,6 @@ export const Analyser = () => {
         );
     }
 
-    function renderMethodCallsStrategyAnalyserForm() {
-        return (
-            <Form.Group as={Row}>
-                <Col sm={{ span: 5, offset: 3 }}>
-                    <Button
-                        type="submit"
-                        disabled={
-                            isUploaded === "Uploading..." ||
-                            selectedProfile === "" ||
-                            requestLimit === "" ||
-                            (typeOfTraces === undefined || amountOfTraces === "")
-                        }
-                    >
-                        Submit
-                    </Button>
-                    <Form.Text>
-                        {isUploaded}
-                    </Form.Text>
-                </Col>
-            </Form.Group>
-        );
-    }
-
-    function renderEntitiesTracesStrategyAnalyserForm() {
-        return (
-            <div></div>
-        );
-    }
-
-    function renderMixedStrategyAnalyserForm() {
-        return (
-            <div></div>
-        );
-    }
-
     function renderFeatureAnalyser() {
         return (
             <Form onSubmit={handleFeatureSubmit}>
@@ -824,9 +1056,24 @@ export const Analyser = () => {
 
                 <br/>
 
-                {featureVectorizationStrategy == "methodCalls" ? renderMethodCallsStrategyAnalyserForm() : <div></div>}
-                {featureVectorizationStrategy == "entitiesTraces" ? renderEntitiesTracesStrategyAnalyserForm() : <div></div>}
-                {featureVectorizationStrategy == "mixed" ? renderMixedStrategyAnalyserForm() : <div></div>}
+                <Form.Group as={Row}>
+                <Col sm={{ span: 5, offset: 3 }}>
+                    <Button
+                        type="submit"
+                        disabled={
+                            isUploaded === "Uploading..." ||
+                            selectedProfile === "" ||
+                            requestLimit === "" ||
+                            (typeOfTraces === undefined || amountOfTraces === "")
+                        }
+                    >
+                        Submit
+                    </Button>
+                    <Form.Text>
+                        {isUploaded}
+                    </Form.Text>
+                </Col>
+                </Form.Group>
 
             </Form>
         );
@@ -834,7 +1081,7 @@ export const Analyser = () => {
 
     function renderEntitiesAnalyser() {
         return (
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={handleEntitiesSubmit}>
 
             <Form.Group as={Row} controlId="codebase">
                 <Form.Label column sm={3}>
@@ -878,6 +1125,25 @@ export const Analyser = () => {
             </Form.Group>
 
             <br/>
+
+                <Form.Group as={Row}>
+                <Col sm={{ span: 5, offset: 3 }}>
+                    <Button
+                        type="submit"
+                        disabled={
+                            isUploaded === "Uploading..." ||
+                            selectedProfile === "" ||
+                            requestLimit === "" ||
+                            (typeOfTraces === undefined || amountOfTraces === "")
+                        }
+                    >
+                        Submit
+                    </Button>
+                    <Form.Text>
+                        {isUploaded}
+                    </Form.Text>
+                </Col>
+                </Form.Group>
             
             </Form>
         );
@@ -885,7 +1151,7 @@ export const Analyser = () => {
 
     function renderClassAnalyser() {
         return (
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={handleClassesSubmit}>
 
             <Form.Group as={Row} controlId="codebase">
                 <Form.Label column sm={3}>
@@ -929,6 +1195,25 @@ export const Analyser = () => {
             </Form.Group>
 
             <br/>
+
+                <Form.Group as={Row}>
+                <Col sm={{ span: 5, offset: 3 }}>
+                    <Button
+                        type="submit"
+                        disabled={
+                            isUploaded === "Uploading..." ||
+                            selectedProfile === "" ||
+                            requestLimit === "" ||
+                            (typeOfTraces === undefined || amountOfTraces === "")
+                        }
+                    >
+                        Submit
+                    </Button>
+                    <Form.Text>
+                        {isUploaded}
+                    </Form.Text>
+                </Col>
+                </Form.Group>
             
             </Form>
         );
@@ -967,6 +1252,48 @@ export const Analyser = () => {
             servicesWeight: data.servicesWeight,
             intermediateMethodsWeight: data.intermediateMethodsWeight,
             entitiesWeight: data.entitiesWeight,
+            numberClusters: data.numberClusters,
+            cohesion: data.cohesion.toFixed(2),
+            coupling: data.coupling.toFixed(2),
+            complexity: data.complexity.toFixed(2),
+            performance: data.performance.toFixed(2),
+            fmeasure: data.fmeasure,
+            accuracy: data.accuracy,
+            precision: data.precision,
+            recall: data.recall,
+            specificity: data.specificity,
+            mojoCommon: data.mojoCommon,
+            mojoBiggest: data.mojoBiggest,
+            mojoNew: data.mojoNew,
+            mojoSingletons: data.mojoSingletons
+        }
+    });
+
+    const featuresEntitiesTracesMetricRows = resultData.map((data: any, index: number) => {
+        return {
+            id: index,
+            writeMetricWeight: data.writeMetricWeight,
+            readMetricWeight: data.readMetricWeight,
+            numberClusters: data.numberClusters,
+            cohesion: data.cohesion.toFixed(2),
+            coupling: data.coupling.toFixed(2),
+            complexity: data.complexity.toFixed(2),
+            performance: data.performance.toFixed(2),
+            fmeasure: data.fmeasure,
+            accuracy: data.accuracy,
+            precision: data.precision,
+            recall: data.recall,
+            specificity: data.specificity,
+            mojoCommon: data.mojoCommon,
+            mojoBiggest: data.mojoBiggest,
+            mojoNew: data.mojoNew,
+            mojoSingletons: data.mojoSingletons
+        }
+    });
+
+    const otherMetricRows = resultData.map((data: any, index: number) => {
+        return {
+            id: index,
             numberClusters: data.numberClusters,
             cohesion: data.cohesion.toFixed(2),
             coupling: data.coupling.toFixed(2),
@@ -1045,7 +1372,7 @@ export const Analyser = () => {
             />
             : <div></div>}
 
-            {analysisType == "feature" ?
+            {analysisType == "feature" && featureVectorizationStrategy == "methodCalls" ?
             <BootstrapTable
                 keyField='id'
                 data={ featuresMethodCallsMetricRows }
@@ -1054,7 +1381,23 @@ export const Analyser = () => {
             />
             : <div></div>}
 
-            
+            {analysisType == "feature" && featureVectorizationStrategy == "entitiesTraces" ?
+            <BootstrapTable
+                keyField='id'
+                data={ featuresEntitiesTracesMetricRows }
+                columns={ featuresEntitiesTracesMetricColumns }
+                filter={ filterFactory() }
+            />
+            : <div></div>}
+
+            {analysisType == "class" || analysisType == "entities" ?
+            <BootstrapTable
+                keyField='id'
+                data={ otherMetricRows }
+                columns={ otherMetricColumns }
+                filter={ filterFactory() }
+            />
+            : <div></div>}
         </>
     )
 }
