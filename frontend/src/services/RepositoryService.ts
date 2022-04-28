@@ -70,13 +70,11 @@ export class RepositoryService {
     entitiesAnalyser(
         codebaseName: string,
         expert: Decomposition,
-        profile: string,
-        linkageType: string
+        profile: string
     ) {
         const analyserData: AnalyserDto = {
             expert: expert || {},
-            profile,
-            linkageType
+            profile
         };
 
         return this.axios.post<null>(
@@ -88,13 +86,11 @@ export class RepositoryService {
     classesAnalyser(
         codebaseName: string,
         expert: Decomposition,
-        profile: string,
-        linkageType: string
+        profile: string
     ) {
         const analyserData: AnalyserDto = {
             expert: expert || {},
-            profile,
-            linkageType
+            profile
         };
 
         return this.axios.post<null>(
@@ -106,13 +102,11 @@ export class RepositoryService {
     methodCallsFeaturesAnalyser(
         codebaseName: string,
         expert: Decomposition,
-        profile: string,
-        linkageType: string
+        profile: string
     ) {
         const analyserData: AnalyserDto = {
             expert: expert || {},
-            profile,
-            linkageType
+            profile
         };
 
         return this.axios.post<null>(
@@ -124,13 +118,11 @@ export class RepositoryService {
     entitiesTracesFeaturesAnalyser(
         codebaseName: string,
         expert: Decomposition,
-        profile: string,
-        linkageType: string
+        profile: string
     ) {
         const analyserData: AnalyserDto = {
             expert: expert || {},
-            profile,
-            linkageType
+            profile
         };
 
         return this.axios.post<null>(

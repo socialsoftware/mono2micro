@@ -25,14 +25,14 @@ def analyser(codebasesPath, codebaseName):
         raise Exception("Number of entities is too small (less than 4)")
 
     try:
-        for clusterSize in range(minClusters, maxClusters + 1, clusterStep):
+        for clusterSize in range(minClusters, maxClusters + 1, clusterStep, totalNumberOfEntities):
             createCut(codebasesPath, codebaseName, clusterSize)
             
     except Exception as e:
         print(e)
 
 
-def createCut(codebasesPath, codebaseName, clusterSize):
+def createCut(codebasesPath, codebaseName, clusterSize, totalNumberOfEntities):
 
     with open(codebasesPath + codebaseName + "/entities_traces_embeddings.json") as f:
         entities_traces_embeddings = json.load(f)
@@ -40,9 +40,10 @@ def createCut(codebasesPath, codebaseName, clusterSize):
     with open(codebasesPath + codebaseName + "/datafile.json") as f:
         features_entities_accesses = json.load(f)
 
+    linkageType = entities_traces_embeddings['linkageType']
     writeMetricWeight = entities_traces_embeddings['writeMetricWeight']
     readMetricWeight = entities_traces_embeddings['readMetricWeight']
-    name = ','.join(map(str, [writeMetricWeight, readMetricWeight, clusterSize]))
+    name = ','.join(map(str, [linkageType, writeMetricWeight, readMetricWeight, clusterSize]))
 
     filePath = codebasesPath + codebaseName + "/analyser/features/entitiesTraces/cuts/" + name + ".json"
 
@@ -56,7 +57,6 @@ def createCut(codebasesPath, codebaseName, clusterSize):
         vectors += [cls['codeVector']]
 
     matrix = np.array(vectors)
-    linkageType = entities_traces_embeddings['linkageType']
 
     hierarc = hierarchy.linkage(y=matrix, method=linkageType)
     cut = hierarchy.cut_tree(hierarc, n_clusters=clusterSize)
@@ -69,6 +69,10 @@ def createCut(codebasesPath, codebaseName, clusterSize):
             clusters[str(cut[i][0])] = [i]
 
     entities_clusters_accesses = {}
+    for entity in range(1, totalNumberOfEntities + 1):
+        entities_clusters_accesses[entity] = {}
+        for cluster in clusters.keys():
+            entities_clusters_accesses[entity][cluster] = { "R" : 0, "W" : 0}
 
     for cluster in clusters.keys():
 
@@ -81,18 +85,7 @@ def createCut(codebasesPath, codebaseName, clusterSize):
                 for access in accesses:
                     access_type = access[0]
                     entity = access[1]
-
-                    if entity in entities_clusters_accesses.keys():
-
-                        if cluster not in entities_clusters_accesses[entity].keys():
-                            entities_clusters_accesses[entity][cluster] = { "R" : 0, "W" : 0}
-
-                        entities_clusters_accesses[entity][cluster][access_type] += 1
-
-                    else:
-                        entities_clusters_accesses[entity] = {}
-                        entities_clusters_accesses[entity][cluster] = { "R" : 0, "W" : 0}
-                        entities_clusters_accesses[entity][cluster][access_type] = 1
+                    entities_clusters_accesses[entity][cluster][access_type] += 1
 
     entities_cluster = {}
     for entity in entities_clusters_accesses.keys():
@@ -115,7 +108,12 @@ def createCut(codebasesPath, codebaseName, clusterSize):
         if cluster not in entities_cluster.keys():
             entities_cluster[cluster] = []
 
-    clustersJSON = {"clusters": entities_cluster}
+    numberOfEntitiesClusters = 0
+    for k in entities_cluster.keys():
+        if len(entities_cluster[k]) != 0:
+            numberOfEntitiesClusters += 1
+
+    clustersJSON = {"clusters": entities_cluster, "numberOfEntitiesClusters": numberOfEntitiesClusters}
 
     with open(filePath, 'w') as outfile:
         outfile.write(json.dumps(clustersJSON, indent=4))

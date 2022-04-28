@@ -107,8 +107,13 @@ async def classesAnalyser(codebaseName):
 
 @scipyRouter.get("/scipy/{codebaseName}/analyser/features/methodCalls")
 async def featureMethodCallsAnalyser(codebaseName):
-    featureMethodCallsAnalyserScipy(env.CODEBASES_PATH, codebaseName)
+    featureMethodCallsAnalyserScipy(env.CODEBASES_PATH, codebaseName, None)
     return {"codebaseName": codebaseName, "operation": "featureMethodCallsAnalyser"}
+
+@scipyRouter.get("/scipy/{codebaseName}/analyser/features/methodCalls/{threadNumber}")
+async def concurrentFeatureMethodCallsAnalyser(codebaseName, threadNumber):
+    featureMethodCallsAnalyserScipy(env.CODEBASES_PATH, codebaseName, threadNumber)
+    return {"codebaseName": codebaseName, "operation": "concurrentFeatureMethodCallsAnalyser"}
 
 @scipyRouter.get("/scipy/{codebaseName}/analyser/features/entitiesTraces")
 async def featureEntitiesTracesAnalyser(codebaseName):

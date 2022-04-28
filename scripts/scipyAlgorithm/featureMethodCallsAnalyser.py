@@ -7,7 +7,7 @@ minClusters = 3
 clusterStep = 1
 maxClusters = -1
 
-def analyser(codebasesPath, codebaseName):
+def analyser(codebasesPath, codebaseName, threadNumber):
     global maxClusters
 
     with open(codebasesPath + codebaseName + "/features_embeddings.json") as f:
@@ -26,28 +26,33 @@ def analyser(codebasesPath, codebaseName):
 
     try:
         for clusterSize in range(minClusters, maxClusters + 1, clusterStep):
-            createCut(codebasesPath, codebaseName, clusterSize)
+            createCut(codebasesPath, codebaseName, clusterSize, totalNumberOfEntities, threadNumber)
             
     except Exception as e:
         print(e)
 
 
-def createCut(codebasesPath, codebaseName, clusterSize):
+def createCut(codebasesPath, codebaseName, clusterSize, totalNumberOfEntities, threadNumber):
+
+    features_embeddings_fileName = "/features_embeddings"
+    if (threadNumber != None):
+        features_embeddings_fileName += "_t" + str(threadNumber)
+    features_embeddings_fileName += ".json"
     
-    with open(codebasesPath + codebaseName + "/features_embeddings.json") as f:
+    with open(codebasesPath + codebaseName + features_embeddings_fileName) as f:
         features_embeddings = json.load(f)
 
     with open(codebasesPath + codebaseName + "/datafile.json") as f:
         features_entities_accesses = json.load(f)
 
+    linkageType = features_embeddings['linkageType']
     maxDepth = features_embeddings['maxDepth']
     controllersWeight = features_embeddings['controllersWeight']
     servicesWeight = features_embeddings['servicesWeight']
     intermediateMethodsWeight = features_embeddings['intermediateMethodsWeight']
     entitiesWeight = features_embeddings['entitiesWeight']
-    linkageType = features_embeddings['linkageType']
 
-    name = ','.join(map(str, [maxDepth, controllersWeight, servicesWeight, intermediateMethodsWeight, entitiesWeight, clusterSize]))
+    name = ','.join(map(str, [linkageType, maxDepth, controllersWeight, servicesWeight, intermediateMethodsWeight, entitiesWeight, clusterSize]))
 
     filePath = codebasesPath + codebaseName + "/analyser/features/methodCalls/cuts/" + name + ".json"
 
@@ -75,6 +80,10 @@ def createCut(codebasesPath, codebaseName, clusterSize):
             clusters[str(cut[i][0])] = [i]
 
     entities_clusters_accesses = {}
+    for entity in range(1, totalNumberOfEntities + 1):
+        entities_clusters_accesses[entity] = {}
+        for cluster in clusters.keys():
+            entities_clusters_accesses[entity][cluster] = { "R" : 0, "W" : 0}
 
     for cluster in clusters.keys():
 
@@ -87,18 +96,7 @@ def createCut(codebasesPath, codebaseName, clusterSize):
                 for access in accesses:
                     access_type = access[0]
                     entity = access[1]
-
-                    if entity in entities_clusters_accesses.keys():
-
-                        if cluster not in entities_clusters_accesses[entity].keys():
-                            entities_clusters_accesses[entity][cluster] = { "R" : 0, "W" : 0}
-
-                        entities_clusters_accesses[entity][cluster][access_type] += 1
-
-                    else:
-                        entities_clusters_accesses[entity] = {}
-                        entities_clusters_accesses[entity][cluster] = { "R" : 0, "W" : 0}
-                        entities_clusters_accesses[entity][cluster][access_type] = 1
+                    entities_clusters_accesses[entity][cluster][access_type] += 1
 
     entities_cluster = {}
     for entity in entities_clusters_accesses.keys():
@@ -121,7 +119,12 @@ def createCut(codebasesPath, codebaseName, clusterSize):
         if cluster not in entities_cluster.keys():
             entities_cluster[cluster] = []
 
-    clustersJSON = {"clusters": entities_cluster}
+    numberOfEntitiesClusters = 0
+    for k in entities_cluster.keys():
+        if len(entities_cluster[k]) != 0:
+            numberOfEntitiesClusters += 1
+
+    clustersJSON = {"clusters": entities_cluster, "numberOfEntitiesClusters": numberOfEntitiesClusters}
 
     with open(filePath, 'w') as outfile:
         outfile.write(json.dumps(clustersJSON, indent=4))

@@ -482,12 +482,20 @@ public class CodebaseManager {
 
 	public void writeFeaturesCodeVectorsFile(
 		String codebaseName,
-		HashMap featuresCodeVectorsFileJSON
+		HashMap featuresCodeVectorsFileJSON,
+		Integer threadNumber
 	)
 		throws IOException
 	{
+		String featuresEmbeddingsFileName = "/features_embeddings";
+
+		if (threadNumber != null) {
+			featuresEmbeddingsFileName += "_t" + threadNumber.toString();
+		}
+
+		featuresEmbeddingsFileName += ".json";
 		objectMapper.writerWithDefaultPrettyPrinter().writeValue(
-				new File(CODEBASES_PATH + codebaseName + "/features_embeddings.json"),
+				new File(CODEBASES_PATH + codebaseName + featuresEmbeddingsFileName),
 				featuresCodeVectorsFileJSON
 		);
 	}

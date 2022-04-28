@@ -12,6 +12,10 @@ def cutDendrogramByFeaturesMethodCalls(codebasesPath, codebaseName, dendrogramNa
     with open(codebasesPath + codebaseName + "/datafile.json") as f:
         features_entities_accesses = json.load(f)
 
+    with open(codebasesPath + codebaseName + "/translation.json") as f:
+        translation_json = json.load(f)
+
+    totalNumberOfEntities = len(translation_json.keys())
     names = []
     classes = []
     vectors = []
@@ -38,6 +42,10 @@ def cutDendrogramByFeaturesMethodCalls(codebasesPath, codebaseName, dendrogramNa
             clusters[str(cut[i][0])] = [i]
 
     entities_clusters_accesses = {}
+    for entity in range(1, totalNumberOfEntities + 1):
+        entities_clusters_accesses[entity] = {}
+        for cluster in clusters.keys():
+            entities_clusters_accesses[entity][cluster] = { "R" : 0, "W" : 0}
 
     for cluster in clusters.keys():
 
@@ -50,18 +58,7 @@ def cutDendrogramByFeaturesMethodCalls(codebasesPath, codebaseName, dendrogramNa
                 for access in accesses:
                     access_type = access[0]
                     entity = access[1]
-
-                    if entity in entities_clusters_accesses.keys():
-
-                        if cluster not in entities_clusters_accesses[entity].keys():
-                            entities_clusters_accesses[entity][cluster] = { "R" : 0, "W" : 0}
-
-                        entities_clusters_accesses[entity][cluster][access_type] += 1
-
-                    else:
-                        entities_clusters_accesses[entity] = {}
-                        entities_clusters_accesses[entity][cluster] = { "R" : 0, "W" : 0}
-                        entities_clusters_accesses[entity][cluster][access_type] = 1
+                    entities_clusters_accesses[entity][cluster][access_type] += 1
 
     entities_cluster = {}
     for entity in entities_clusters_accesses.keys():

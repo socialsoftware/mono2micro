@@ -37,7 +37,8 @@ def createCut(codebasesPath, codebaseName, clusterSize):
     with open(codebasesPath + codebaseName + "/entities_embeddings.json") as f:
         entities_embeddings = json.load(f)
 
-    name = ','.join(map(str, [clusterSize]))
+    linkageType = entities_embeddings['linkageType']
+    name = ','.join(map(str, [linkageType, clusterSize]))
 
     filePath = codebasesPath + codebaseName + "/analyser/entities/cuts/" + name + ".json"
 
@@ -56,7 +57,6 @@ def createCut(codebasesPath, codebaseName, clusterSize):
             ids += [-1]
 
     matrix = np.array(vectors)
-    linkageType = entities_embeddings['linkageType']
 
     hierarc = hierarchy.linkage(y=matrix, method=linkageType)
     cut = hierarchy.cut_tree(hierarc, n_clusters=clusterSize)
@@ -72,7 +72,12 @@ def createCut(codebasesPath, codebaseName, clusterSize):
             else:
                 clusters[str(cut[i][0])] = []
 
-    clustersJSON = {"clusters": clusters}
+    numberOfEntitiesClusters = 0
+    for k in clusters.keys():
+        if len(clusters[k]) != 0:
+            numberOfEntitiesClusters += 1
+
+    clustersJSON = {"clusters": clusters, "numberOfEntitiesClusters": numberOfEntitiesClusters}
 
     with open(filePath, 'w') as outfile:
         outfile.write(json.dumps(clustersJSON, indent=4))

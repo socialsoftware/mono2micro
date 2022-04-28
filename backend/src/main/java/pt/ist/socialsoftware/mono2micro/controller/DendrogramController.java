@@ -157,7 +157,7 @@ public class DendrogramController {
 
 		try {
 
-			dendrogramService.createDendrogramByFeatures(codebaseName, dendrogram, false);
+			dendrogramService.createDendrogramByFeatures(codebaseName, dendrogram, false, null);
 
             return new ResponseEntity<>(HttpStatus.CREATED);
 

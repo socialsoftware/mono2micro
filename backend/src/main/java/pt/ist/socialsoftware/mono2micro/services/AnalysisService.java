@@ -20,9 +20,9 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.*;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.RecursiveAction;
 
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
 
@@ -39,11 +39,12 @@ public class AnalysisService {
 
     private ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
-    private final Integer MIN_DEPTH = 3;
-    private final Integer MAX_DEPTH = 4;
+    private final List<String> LINKAGE_TYPES = Arrays.asList(new String[]{"average", "single", "complete"});
+    private final Integer MIN_DEPTH = 1;
+    private final Integer MAX_DEPTH = 6;
     private final Integer MIN_WEIGHT = 0;
     private final Integer MAX_WEIGHT = 100;
-    private final Integer WEIGHT_STEP = 50;
+    private final Integer WEIGHT_STEP = 10;
     private final Integer DEPTH_STEP = 1;
 
     public void analyzeDendrogramCutsByEntitiesStrategy(
@@ -55,7 +56,6 @@ public class AnalysisService {
             Dendrogram dendrogram = new Dendrogram();
             dendrogram.setAnalysisType("entities");
             dendrogram.setProfile(analyserDto.getProfile());
-            dendrogram.setLinkageType(analyserDto.getLinkageType());
 
             File analyserFeaturesPath = new File(CODEBASES_PATH + codebaseName + "/analyser/entities");
             if (!analyserFeaturesPath.exists()) {
@@ -67,12 +67,17 @@ public class AnalysisService {
                 analyserPath.mkdirs();
             }
 
-            dendrogramService.createDendrogramByEntitiesStrategy(codebaseName, dendrogram, true);
-            clusterService.executeClusterAnalysis(codebaseName, "/entities");
+            for (String lt : LINKAGE_TYPES) {
+                dendrogram.setLinkageType(lt);
+                dendrogramService.createDendrogramByEntitiesStrategy(codebaseName, dendrogram, true);
+                clusterService.executeClusterAnalysis(codebaseName, "/entities");
+            }
 
             JSONObject analyserResult = getAnalyserResult(
                     codebase,
-                    dendrogram,
+                    dendrogram.getAnalysisType(),
+                    dendrogram.getFeatureVectorizationStrategy(),
+                    dendrogram.getProfile(),
                     analyserDto,
                     "/analyser/entities/cuts/"
             );
@@ -94,7 +99,6 @@ public class AnalysisService {
             Dendrogram dendrogram = new Dendrogram();
             dendrogram.setAnalysisType("class");
             dendrogram.setProfile(analyserDto.getProfile());
-            dendrogram.setLinkageType(analyserDto.getLinkageType());
 
             File analyserFeaturesPath = new File(CODEBASES_PATH + codebaseName + "/analyser/classes/");
             if (!analyserFeaturesPath.exists()) {
@@ -106,12 +110,17 @@ public class AnalysisService {
                 analyserPath.mkdirs();
             }
 
-            dendrogramService.createDendrogramByClassesStrategy(codebaseName, dendrogram, true);
-            clusterService.executeClusterAnalysis(codebaseName, "/classes");
+            for (String lt : LINKAGE_TYPES) {
+                dendrogram.setLinkageType(lt);
+                dendrogramService.createDendrogramByClassesStrategy(codebaseName, dendrogram, true);
+                clusterService.executeClusterAnalysis(codebaseName, "/classes");
+            }
 
             JSONObject analyserResult = getAnalyserResult(
                     codebase,
-                    dendrogram,
+                    dendrogram.getAnalysisType(),
+                    dendrogram.getFeatureVectorizationStrategy(),
+                    dendrogram.getProfile(),
                     analyserDto,
                     "/analyser/classes/cuts/"
             );
@@ -124,6 +133,54 @@ public class AnalysisService {
         }
     }
 
+    private class ConcurrentMethodCallsAnalysisThread extends Thread {
+
+        AnalyserDto analyserDto;
+        String codebaseName;
+        String linkageType;
+        Integer threadNumber;
+
+        ConcurrentMethodCallsAnalysisThread(
+              AnalyserDto analyserDto,
+              String codebaseName,
+              String linkageType,
+              Integer threadNumber
+        ) {
+            this.analyserDto = analyserDto;
+            this.codebaseName = codebaseName;
+            this.linkageType = linkageType;
+            this.threadNumber = threadNumber;
+        }
+
+        @Override
+        public void run() {
+            Dendrogram dendrogram = new Dendrogram();
+            dendrogram.setAnalysisType("feature");
+            dendrogram.setFeatureVectorizationStrategy("methodCalls");
+            dendrogram.setProfile(analyserDto.getProfile());
+            dendrogram.setLinkageType(linkageType);
+            for (int d = MIN_DEPTH; d <= MAX_DEPTH; d += DEPTH_STEP) {
+                dendrogram.setMaxDepth(d);
+                for (int cw = MIN_WEIGHT; cw <= MAX_WEIGHT; cw += WEIGHT_STEP) {
+                    dendrogram.setControllersWeight(cw);
+                    for (int sw = MIN_WEIGHT; sw <= MAX_WEIGHT; sw += WEIGHT_STEP) {
+                        dendrogram.setServicesWeight(sw);
+                        for (int iw = MIN_WEIGHT; iw <= MAX_WEIGHT; iw += WEIGHT_STEP) {
+                            dendrogram.setIntermediateMethodsWeight(iw);
+                            for (int ew = MIN_WEIGHT; ew <= MAX_WEIGHT; ew += WEIGHT_STEP) {
+                                if (cw + sw + iw + ew == 100) {
+                                    dendrogram.setEntitiesWeight(ew);
+                                    dendrogramService.createDendrogramByFeatures(codebaseName, dendrogram, true, threadNumber);
+                                    clusterService.executeClusterAnalysis(codebaseName, "/features/methodCalls/" + threadNumber.toString());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public void analyzeDendrogramCutsByMethodCallsStrategy(
             String codebaseName,
             AnalyserDto analyserDto
@@ -131,11 +188,7 @@ public class AnalysisService {
         try {
 
             Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            Dendrogram dendrogram = new Dendrogram();
-            dendrogram.setAnalysisType("feature");
-            dendrogram.setFeatureVectorizationStrategy("methodCalls");
-            dendrogram.setProfile(analyserDto.getProfile());
-            dendrogram.setLinkageType(analyserDto.getLinkageType());
+            Integer threadNumber = 1;
 
             File analyserFeaturesPath = new File(CODEBASES_PATH + codebaseName + "/analyser/features/");
             if (!analyserFeaturesPath.exists()) {
@@ -152,27 +205,50 @@ public class AnalysisService {
                 analyserPath.mkdirs();
             }
 
-            for (int d = MIN_DEPTH; d <= MAX_DEPTH; d += DEPTH_STEP) {
-                dendrogram.setMaxDepth(d);
-                for (int cw = MIN_WEIGHT; cw <= MAX_WEIGHT; cw += WEIGHT_STEP) {
-                    dendrogram.setControllersWeight(cw);
-                    for (int sw = MIN_WEIGHT; sw <= MAX_WEIGHT; sw += WEIGHT_STEP) {
-                        dendrogram.setServicesWeight(sw);
-                        for (int iw = MIN_WEIGHT; iw <= MAX_WEIGHT; iw += WEIGHT_STEP) {
-                            dendrogram.setIntermediateMethodsWeight(iw);
-                            for (int ew = MIN_WEIGHT; ew <= MAX_WEIGHT; ew += WEIGHT_STEP) {
-                                dendrogram.setEntitiesWeight(ew);
-                                dendrogramService.createDendrogramByFeatures(codebaseName, dendrogram, true);
-                                clusterService.executeClusterAnalysis(codebaseName, "/features/methodCalls");
-                            }
-                        }
-                    }
+            /*
+
+            List<ConcurrentMethodCallsAnalysisThread> threadsPool = new ArrayList<>();
+            for (String lt: LINKAGE_TYPES) {
+                ConcurrentMethodCallsAnalysisThread thread = new ConcurrentMethodCallsAnalysisThread(analyserDto, codebaseName, lt, threadNumber);
+                threadsPool.add(thread);
+                threadNumber++;
+            }
+
+            try {
+                for (ConcurrentMethodCallsAnalysisThread thread : threadsPool) {
+                    thread.start();
+                }
+                for (ConcurrentMethodCallsAnalysisThread thread : threadsPool) {
+                    thread.join();
+                }
+            } catch(InterruptedException ie) {
+                ie.printStackTrace();
+            }
+
+            // Test with the same weights
+            for (String lt: LINKAGE_TYPES) {
+                Dendrogram dendrogram = new Dendrogram();
+                dendrogram.setAnalysisType("feature");
+                dendrogram.setFeatureVectorizationStrategy("methodCalls");
+                dendrogram.setProfile(analyserDto.getProfile());
+                dendrogram.setLinkageType(lt);
+                for (int d = MIN_DEPTH; d <= MAX_DEPTH; d += DEPTH_STEP) {
+                    dendrogram.setMaxDepth(d);
+                    dendrogram.setControllersWeight(25);
+                    dendrogram.setServicesWeight(25);
+                    dendrogram.setIntermediateMethodsWeight(25);
+                    dendrogram.setEntitiesWeight(25);
+                    dendrogramService.createDendrogramByFeatures(codebaseName, dendrogram, true, null);
+                    clusterService.executeClusterAnalysis(codebaseName, "/features/methodCalls");
                 }
             }
+             */
 
             JSONObject analyserResult = getAnalyserResult(
                     codebase,
-                    dendrogram,
+                    "feature",
+                    "methodCalls",
+                    analyserDto.getProfile(),
                     analyserDto,
                     "/analyser/features/methodCalls/cuts/"
             );
@@ -196,7 +272,6 @@ public class AnalysisService {
             dendrogram.setAnalysisType("feature");
             dendrogram.setFeatureVectorizationStrategy("entitiesTraces");
             dendrogram.setProfile(analyserDto.getProfile());
-            dendrogram.setLinkageType(analyserDto.getLinkageType());
 
             File analyserFeaturesPath = new File(CODEBASES_PATH + codebaseName + "/analyser/features/");
             if (!analyserFeaturesPath.exists()) {
@@ -213,18 +288,25 @@ public class AnalysisService {
                 analyserPath.mkdirs();
             }
 
-            for (int wmw = MIN_WEIGHT; wmw <= MAX_WEIGHT; wmw += WEIGHT_STEP) {
-                dendrogram.setWriteMetricWeight(wmw);
-                for (int rmw = MIN_WEIGHT; rmw <= MAX_WEIGHT; rmw += WEIGHT_STEP) {
-                    dendrogram.setReadMetricWeight(rmw);
-                    dendrogramService.createDendrogramByFeatures(codebaseName, dendrogram, true);
-                    clusterService.executeClusterAnalysis(codebaseName, "/features/entitiesTraces");
+            for (String lt : LINKAGE_TYPES) {
+                dendrogram.setLinkageType(lt);
+                for (int wmw = MIN_WEIGHT; wmw <= MAX_WEIGHT; wmw += WEIGHT_STEP) {
+                    dendrogram.setWriteMetricWeight(wmw);
+                    for (int rmw = MIN_WEIGHT; rmw <= MAX_WEIGHT; rmw += WEIGHT_STEP) {
+                        if (wmw + rmw == 100) {
+                            dendrogram.setReadMetricWeight(rmw);
+                            dendrogramService.createDendrogramByFeatures(codebaseName, dendrogram, true, null);
+                            clusterService.executeClusterAnalysis(codebaseName, "/features/entitiesTraces");
+                        }
+                    }
                 }
             }
 
             JSONObject analyserResult = getAnalyserResult(
                     codebase,
-                    dendrogram,
+                    dendrogram.getAnalysisType(),
+                    dendrogram.getFeatureVectorizationStrategy(),
+                    dendrogram.getProfile(),
                     analyserDto,
                     "/analyser/features/entitiesTraces/cuts/"
             );
@@ -254,7 +336,9 @@ public class AnalysisService {
 
     private JSONObject getAnalyserResult(
             Codebase codebase,
-            Dendrogram dendrogram,
+            String analysisType,
+            String featureVectorizationStrategy,
+            String profile,
             AnalyserDto analyserDto,
             String cutsPath
     ) throws Exception {
@@ -273,6 +357,7 @@ public class AnalysisService {
             JSONObject clustersJSON = new JSONObject(IOUtils.toString(is, StandardCharsets.UTF_8));
             is.close();
 
+            Integer numberOfEntitiesClusters = clustersJSON.getInt("numberOfEntitiesClusters");
             Iterator<String> clusters = clustersJSON.getJSONObject("clusters").sortedKeys();
             ArrayList<Short> clusterIds = new ArrayList<>();
             while(clusters.hasNext()) {
@@ -298,7 +383,7 @@ public class AnalysisService {
 
             cutDecomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
                     codebase,
-                    dendrogram.getProfile(),
+                    profile,
                     cutDecomposition.getEntityIDToClusterID()
             ));
 
@@ -311,35 +396,44 @@ public class AnalysisService {
 
             JSONObject metrics = new JSONObject();
 
-            if (dendrogram.getAnalysisType().equals("feature") && dendrogram.getFeatureVectorizationStrategy().equals("methodCalls")) {
+            if (analysisType.equals("feature") && featureVectorizationStrategy.equals("methodCalls")) {
                 String[] weights = filename.split(",");
-                Float maxDepth = Float.parseFloat(weights[0]);
-                Float controllersWeight = Float.parseFloat(weights[1]);
-                Float servicesWeight = Float.parseFloat(weights[2]);
-                Float intermediateMethodsWeight = Float.parseFloat(weights[3]);
-                Float entitiesWeight = Float.parseFloat(weights[4]);
-                Integer clusterSize = Integer.parseInt(weights[5]);
+                String linkageType = weights[0];
+                Float maxDepth = Float.parseFloat(weights[1]);
+                Float controllersWeight = Float.parseFloat(weights[2]);
+                Float servicesWeight = Float.parseFloat(weights[3]);
+                Float intermediateMethodsWeight = Float.parseFloat(weights[4]);
+                Float entitiesWeight = Float.parseFloat(weights[5]);
+                Integer clusterSize = Integer.parseInt(weights[6]);
 
+                metrics.put("linkageType", linkageType);
                 metrics.put("maxDepth", maxDepth);
                 metrics.put("controllersWeight", controllersWeight);
                 metrics.put("servicesWeight", servicesWeight);
                 metrics.put("intermediateMethodsWeight", intermediateMethodsWeight);
                 metrics.put("entitiesWeight", entitiesWeight);
                 metrics.put("numberClusters", clusterSize);
-            } else if (dendrogram.getAnalysisType().equals("feature") && dendrogram.getFeatureVectorizationStrategy().equals("entitiesTraces")) {
+            } else if (analysisType.equals("feature") && featureVectorizationStrategy.equals("entitiesTraces")) {
                 String[] weights = filename.split(",");
-                Float writeMetricWeight = Float.parseFloat(weights[0]);
-                Float readMetricWeight = Float.parseFloat(weights[1]);
-                Integer clusterSize = Integer.parseInt(weights[2]);
+                String linkageType = weights[0];
+                Float writeMetricWeight = Float.parseFloat(weights[1]);
+                Float readMetricWeight = Float.parseFloat(weights[2]);
+                Integer clusterSize = Integer.parseInt(weights[3]);
 
+                metrics.put("linkageType", linkageType);
                 metrics.put("writeMetricWeight", writeMetricWeight);
                 metrics.put("readMetricWeight", readMetricWeight);
                 metrics.put("numberClusters", clusterSize);
             } else {
-                Integer clusterSize = Integer.parseInt(filename);
+                String[] weights = filename.split(",");
+                String linkageType = weights[0];
+                Integer clusterSize = Integer.parseInt(weights[1]);
+
+                metrics.put("linkageType", linkageType);
                 metrics.put("numberClusters", clusterSize);
             }
 
+            metrics.put("numberOfEntitiesClusters", numberOfEntitiesClusters);
             metrics.put("cohesion", cutDecomposition.getCohesion());
             metrics.put("coupling", cutDecomposition.getCoupling());
             metrics.put("complexity", cutDecomposition.getComplexity());

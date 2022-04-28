@@ -31,7 +31,8 @@ public class DendrogramService {
     public Dendrogram createDendrogramByFeatures(
             String codebaseName,
             Dendrogram dendrogram,
-            Boolean analysisMode
+            Boolean analysisMode,
+            Integer threadNumber
     ) {
         try {
             Codebase codebase = codebaseManager.getCodebase(codebaseName);
@@ -45,7 +46,7 @@ public class DendrogramService {
             }
 
             if (dendrogram.getFeatureVectorizationStrategy().equals("methodCalls")) {
-                this.createDendrogramByMethodCallsStrategy(codebase, dendrogram, analysisMode);
+                this.createDendrogramByMethodCallsStrategy(codebase, dendrogram, analysisMode, threadNumber);
             } else if (dendrogram.getFeatureVectorizationStrategy().equals("entitiesTraces")) {
                 this.createDendrogramByEntitiesTracesStrategy(codebase, dendrogram, analysisMode);
             } else {
@@ -215,7 +216,12 @@ public class DendrogramService {
         }
     }
 
-    public void createDendrogramByMethodCallsStrategy(Codebase codebase, Dendrogram dendrogram, Boolean analysisMode)
+    public void createDendrogramByMethodCallsStrategy(
+            Codebase codebase,
+            Dendrogram dendrogram,
+            Boolean analysisMode,
+            Integer threadNumber
+    )
             throws JSONException, IOException
     {
 
@@ -272,7 +278,7 @@ public class DendrogramService {
         featuresJson.put("numberOfEntities", numberOfEntities);
         featuresJson.put("features", featuresVectors);
 
-        codebaseManager.writeFeaturesCodeVectorsFile(codebase.getName(), featuresJson);
+        codebaseManager.writeFeaturesCodeVectorsFile(codebase.getName(), featuresJson, threadNumber);
 
         if (!analysisMode) {
             codebase.addDendrogram(dendrogram);
@@ -281,7 +287,11 @@ public class DendrogramService {
         }
     }
 
-    public void createDendrogramByEntitiesTracesStrategy(Codebase codebase, Dendrogram dendrogram, Boolean analysisMode)
+    public void createDendrogramByEntitiesTracesStrategy(
+            Codebase codebase,
+            Dendrogram dendrogram,
+            Boolean analysisMode
+    )
             throws JSONException, IOException
     {
         List<HashMap> entitiesVectors = new ArrayList<>();

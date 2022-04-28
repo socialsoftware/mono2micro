@@ -136,6 +136,12 @@ const metricColumns = [
 
 const featuresMethodCallsMetricColumns = [
     {
+        dataField: 'linkageType',
+        text: 'Linkage Type',
+        sort,
+        filter,
+    }, 
+    {
         dataField: 'maxDepth',
         text: 'Max Depth',
         sort,
@@ -168,6 +174,12 @@ const featuresMethodCallsMetricColumns = [
     {
         dataField: 'numberClusters',
         text: 'Number Clusters',
+        sort,
+        filter,
+    },
+    {
+        dataField: 'numberOfEntitiesClusters',
+        text: 'Number Of Entities Clusters',
         sort,
         filter,
     },
@@ -253,6 +265,12 @@ const featuresMethodCallsMetricColumns = [
 
 const featuresEntitiesTracesMetricColumns = [
     {
+        dataField: 'linkageType',
+        text: 'Linkage Type',
+        sort,
+        filter,
+    }, 
+    {
         dataField: 'writeMetricWeight',
         text: 'Write Weight',
         sort,
@@ -267,6 +285,12 @@ const featuresEntitiesTracesMetricColumns = [
     {
         dataField: 'numberClusters',
         text: 'Number Clusters',
+        sort,
+        filter,
+    },
+    {
+        dataField: 'numberOfEntitiesClusters',
+        text: 'Number Of Entities Clusters',
         sort,
         filter,
     },
@@ -352,8 +376,20 @@ const featuresEntitiesTracesMetricColumns = [
 
 const otherMetricColumns = [
     {
+        dataField: 'linkageType',
+        text: 'Linkage Type',
+        sort,
+        filter,
+    }, 
+    {
         dataField: 'numberClusters',
         text: 'Number Clusters',
+        sort,
+        filter,
+    },
+    {
+        dataField: 'numberOfEntitiesClusters',
+        text: 'Number Of Entities Clusters',
         sort,
         filter,
     },
@@ -440,7 +476,6 @@ const otherMetricColumns = [
 export const Analyser = () => {
     const [analysisType, setAnalysisType] = useState("static");
     const [featureVectorizationStrategy, setFeatureVectorizationStrategy] = useState("methodCalls");
-    const [linkageType, setLinkageType] = useState("average");
     const [codebases, setCodebases] = useState<Codebase[]>([]);
     const [codebase, setCodebase] = useState<Codebase>({ profiles: {} });
     const [selectedProfile, setSelectedProfile] = useState("");
@@ -498,10 +533,6 @@ export const Analyser = () => {
         setCodebase(codebase);
 
         loadCodebaseDecompositions(codebase.name!);
-    }
-
-    function handleLinkageType(event: any) {
-        setLinkageType(event.target.id);
     }
 
     function selectProfile(profile: string) {
@@ -562,8 +593,7 @@ export const Analyser = () => {
         service.entitiesAnalyser(
             codebase.name,
             expert,
-            selectedProfile,
-            linkageType
+            selectedProfile
         )
         .then(response => {
             if (response.status === HttpStatus.OK) {
@@ -592,8 +622,7 @@ export const Analyser = () => {
         service.classesAnalyser(
             codebase.name,
             expert,
-            selectedProfile,
-            linkageType
+            selectedProfile
         )
         .then(response => {
             if (response.status === HttpStatus.OK) {
@@ -623,8 +652,7 @@ export const Analyser = () => {
             service.methodCallsFeaturesAnalyser(
                 codebase.name,
                 expert,
-                selectedProfile,
-                linkageType
+                selectedProfile
             )
             .then(response => {
                 if (response.status === HttpStatus.OK) {
@@ -640,8 +668,7 @@ export const Analyser = () => {
             service.entitiesTracesFeaturesAnalyser(
                 codebase.name,
                 expert,
-                selectedProfile,
-                linkageType
+                selectedProfile
             )
             .then(response => {
                 if (response.status === HttpStatus.OK) {
@@ -1019,43 +1046,6 @@ export const Analyser = () => {
 
                 <br/>
 
-                <Form.Group as={Row} className="align-items-center">
-                    <Form.Label as="legend" column sm={2}>
-                        Linkage Type
-                    </Form.Label>
-                    <Col sm="auto">
-                        <Form.Check
-                            onClick={handleLinkageType}
-                            name="linkageType"
-                            label="Average"
-                            type="radio"
-                            id="average"
-                            defaultChecked
-                        />
-                    </Col>
-                    <Col sm="auto">
-                        <Form.Check
-                            onClick={handleLinkageType}
-                            name="linkageType"
-                            label="Single"
-                            type="radio"
-                            id="single"
-                        />
-
-                    </Col>
-                    <Col sm="auto">
-                        <Form.Check
-                            onClick={handleLinkageType}
-                            name="linkageType"
-                            label="Complete"
-                            type="radio"
-                            id="complete"
-                        />
-                    </Col>
-                </Form.Group>
-
-                <br/>
-
                 <Form.Group as={Row}>
                 <Col sm={{ span: 5, offset: 3 }}>
                     <Button
@@ -1247,12 +1237,14 @@ export const Analyser = () => {
     const featuresMethodCallsMetricRows = resultData.map((data: any, index: number) => {
         return {
             id: index,
+            linkageType: data.linkageType,
             maxDepth: data.maxDepth,
             controllersWeight: data.controllersWeight,
             servicesWeight: data.servicesWeight,
             intermediateMethodsWeight: data.intermediateMethodsWeight,
             entitiesWeight: data.entitiesWeight,
             numberClusters: data.numberClusters,
+            numberOfEntitiesClusters: data.numberOfEntitiesClusters,
             cohesion: data.cohesion.toFixed(2),
             coupling: data.coupling.toFixed(2),
             complexity: data.complexity.toFixed(2),
@@ -1272,9 +1264,11 @@ export const Analyser = () => {
     const featuresEntitiesTracesMetricRows = resultData.map((data: any, index: number) => {
         return {
             id: index,
+            linkageType: data.linkageType,
             writeMetricWeight: data.writeMetricWeight,
             readMetricWeight: data.readMetricWeight,
             numberClusters: data.numberClusters,
+            numberOfEntitiesClusters: data.numberOfEntitiesClusters,
             cohesion: data.cohesion.toFixed(2),
             coupling: data.coupling.toFixed(2),
             complexity: data.complexity.toFixed(2),
@@ -1294,7 +1288,9 @@ export const Analyser = () => {
     const otherMetricRows = resultData.map((data: any, index: number) => {
         return {
             id: index,
+            linkageType: data.linkageType,
             numberClusters: data.numberClusters,
+            numberOfEntitiesClusters: data.numberOfEntitiesClusters,
             cohesion: data.cohesion.toFixed(2),
             coupling: data.coupling.toFixed(2),
             complexity: data.complexity.toFixed(2),

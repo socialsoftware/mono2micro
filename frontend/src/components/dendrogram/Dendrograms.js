@@ -88,10 +88,10 @@ export const Dendrograms = () => {
     const [analysisType, setAnalysisType] = useState("static");
     const [featureVectorizationStrategy, setFeatureVectorizationStrategy] = useState("methodCalls");
     const [maxDepth, setMaxDepth] = useState("3");
-    const [controllersWeight, setControllersWeight] = useState("100");
-    const [servicesWeight, setServicesWeight] = useState("100");
-    const [intermediateMethodsWeight, setIntermediateMethodsWeight] = useState("100");
-    const [entitiesWeight, setEntitiesWeight] = useState("100");
+    const [controllersWeight, setControllersWeight] = useState("25");
+    const [servicesWeight, setServicesWeight] = useState("25");
+    const [intermediateMethodsWeight, setIntermediateMethodsWeight] = useState("25");
+    const [entitiesWeight, setEntitiesWeight] = useState("25");
     const [methodsWeight, setMethodsWeight] = useState("100");
 
     let { codebaseName } = useParams();
@@ -820,6 +820,7 @@ export const Dendrograms = () => {
                         <Button
                             type="submit"
                             disabled={
+                                Number(controllersWeight) + Number(servicesWeight) + Number(intermediateMethodsWeight) + Number(entitiesWeight) !== 100 ||
                                 isUploaded === "Uploading..." ||
                                 newDendrogramName === "" ||
                                 selectedProfile === ""
