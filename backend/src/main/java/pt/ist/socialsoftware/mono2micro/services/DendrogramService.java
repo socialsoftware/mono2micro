@@ -250,9 +250,9 @@ public class DendrogramService {
                     JSONObject method = methods.getJSONObject(k);
 
                     if (method.getString("type").equals("Controller")) {
-                        System.out.println("Controller: " + method.getString("signature"));
+                        // System.out.println("Controller: " + method.getString("signature"));
 
-                        Acumulator acumulator = getMethodCallsVectors(dendrogram, packages, className, classType, method, dendrogram.getMaxDepth());
+                        Acumulator acumulator = getMethodCallsVectors(dendrogram, packages, className, classType, method, dendrogram.getMaxDepth(), analysisMode);
 
                         if (acumulator.getCount() > 0) {
                             vectorDivision(acumulator.getSum(), acumulator.getCount());
@@ -449,7 +449,8 @@ public class DendrogramService {
             String className,
             String classType,
             JSONObject method,
-            int maxDepth
+            int maxDepth,
+            Boolean analysisMode
     )
             throws JSONException
     {
@@ -496,17 +497,22 @@ public class DendrogramService {
                             methodCall.getString("className"),
                             met.getString("classType"),
                             met,
-                            maxDepth - 1
+                            maxDepth - 1,
+                            analysisMode
                     );
 
                     vectorSum(vector, acum.getSum());
                     count += acum.getCount();
 
                 } else {
-                    System.err.println("[ - ] Cannot get method call for method: " + methodCall.getString("signature"));
+                    if (!analysisMode) {
+                        System.err.println("[ - ] Cannot get method call for method: " + methodCall.getString("signature"));
+                    }
                 }
             } catch (JSONException je) {
-                System.err.println("[ - ] Cannot get method call for method: " + methodCall.getString("signature"));
+                if (!analysisMode) {
+                    System.err.println("[ - ] Cannot get method call for method: " + methodCall.getString("signature"));
+                }
             }
         }
 

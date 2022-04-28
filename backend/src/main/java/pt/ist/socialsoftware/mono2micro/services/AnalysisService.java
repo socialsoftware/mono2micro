@@ -176,6 +176,8 @@ public class AnalysisService {
                             }
                         }
                     }
+                    Float perc = Float.valueOf((d + (cw / 100)) / 7);
+                    System.out.println("Progress: " + perc.toString());
                 }
             }
         }
@@ -204,8 +206,6 @@ public class AnalysisService {
             if (!analyserPath.exists()) {
                 analyserPath.mkdirs();
             }
-
-            /*
 
             List<ConcurrentMethodCallsAnalysisThread> threadsPool = new ArrayList<>();
             for (String lt: LINKAGE_TYPES) {
@@ -242,7 +242,6 @@ public class AnalysisService {
                     clusterService.executeClusterAnalysis(codebaseName, "/features/methodCalls");
                 }
             }
-             */
 
             JSONObject analyserResult = getAnalyserResult(
                     codebase,

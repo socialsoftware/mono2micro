@@ -25,8 +25,8 @@ def analyser(codebasesPath, codebaseName):
         raise Exception("Number of entities is too small (less than 4)")
 
     try:
-        for clusterSize in range(minClusters, maxClusters + 1, clusterStep, totalNumberOfEntities):
-            createCut(codebasesPath, codebaseName, clusterSize)
+        for clusterSize in range(minClusters, maxClusters + 1, clusterStep):
+            createCut(codebasesPath, codebaseName, clusterSize, totalNumberOfEntities)
             
     except Exception as e:
         print(e)
