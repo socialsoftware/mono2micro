@@ -459,7 +459,7 @@ public class Decomposition {
 	)
 		throws Exception
 	{
-		System.out.println("Calculating metrics...");
+		// System.out.println("Calculating metrics...");
 
 		Collection<Cluster> clusters = this.getClusters().values();
 
@@ -559,7 +559,7 @@ public class Decomposition {
 		float complexity = 0;
 		float performance = 0;
 
-		System.out.println("Calculating graph complexity and performance...");
+		// System.out.println("Calculating graph complexity and performance...");
 
 		for (Controller controller : this.getControllers().values()) {
 			String controllerName = controller.getName();
@@ -625,7 +625,7 @@ public class Decomposition {
 		float complexity = 0;
 		float performance = 0;
 
-		System.out.println("Calculating graph complexity and performance...");
+		// System.out.println("Calculating graph complexity and performance...");
 
 		for (Controller controller : this.getControllers().values()) {
 			String controllerName = controller.getName();
@@ -704,7 +704,7 @@ public class Decomposition {
 		Collection<Cluster> clusters,
 		Map<Short, Set<Controller>> clustersControllers
 	) {
-		System.out.println("Calculating graph cohesion and coupling...");
+		// System.out.println("Calculating graph cohesion and coupling...");
 
 		float cohesion = 0;
 		float coupling = 0;

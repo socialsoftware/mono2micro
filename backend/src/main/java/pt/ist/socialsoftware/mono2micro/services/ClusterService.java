@@ -48,4 +48,18 @@ public class ClusterService {
                 }).block();
     }
 
+    public void executePlotAnalysis(
+            String codebaseName,
+            String type
+    ) {
+        WebClient.create(SCRIPTS_ADDRESS)
+                .get()
+                .uri("/plots/{codebaseName}", codebaseName)
+                .exchange()
+                .doOnSuccess(clientResponse -> {
+                    if (clientResponse.statusCode() != HttpStatus.OK)
+                        throw new RuntimeException("Error Code:" + clientResponse.statusCode());
+                }).block();
+    }
+
 }
