@@ -22,8 +22,6 @@ import java.io.FileWriter;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.RecursiveAction;
 
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
 
@@ -86,6 +84,18 @@ public class AnalysisService {
             FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/entities/analyserResult.json");
             file.write(analyserResult.toString(4));
             file.close();
+
+            JSONObject analisysStats = new JSONObject();
+            analisysStats.put("complexity", getAnalysisStats("complexity", analyserResult));
+            analisysStats.put("performance", getAnalysisStats("performance", analyserResult));
+            analisysStats.put("cohesion", getAnalysisStats("cohesion", analyserResult));
+            analisysStats.put("coupling", getAnalysisStats("coupling", analyserResult));
+
+            FileWriter statsFile = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/entities/analisysStats.json");
+            statsFile.write(analisysStats.toString(4));
+            statsFile.close();
+
+            clusterService.executePlotAnalysis(codebaseName, "entities", "");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -129,6 +139,18 @@ public class AnalysisService {
             FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/classes/analyserResult.json");
             file.write(analyserResult.toString(4));
             file.close();
+
+            JSONObject analisysStats = new JSONObject();
+            analisysStats.put("complexity", getAnalysisStats("complexity", analyserResult));
+            analisysStats.put("performance", getAnalysisStats("performance", analyserResult));
+            analisysStats.put("cohesion", getAnalysisStats("cohesion", analyserResult));
+            analisysStats.put("coupling", getAnalysisStats("coupling", analyserResult));
+
+            FileWriter statsFile = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/classes/analisysStats.json");
+            statsFile.write(analisysStats.toString(4));
+            statsFile.close();
+
+            clusterService.executePlotAnalysis(codebaseName, "classes", "");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -208,8 +230,6 @@ public class AnalysisService {
                 analyserPath.mkdirs();
             }
 
-            /*
-
             List<ConcurrentMethodCallsAnalysisThread> threadsPool = new ArrayList<>();
             for (String lt: LINKAGE_TYPES) {
                 ConcurrentMethodCallsAnalysisThread thread = new ConcurrentMethodCallsAnalysisThread(analyserDto, codebaseName, lt, threadNumber);
@@ -245,7 +265,6 @@ public class AnalysisService {
                     clusterService.executeClusterAnalysis(codebaseName, "/features/methodCalls");
                 }
             }
-             */
 
             JSONObject analyserResult = getAnalyserResult(
                     codebase,
@@ -256,9 +275,9 @@ public class AnalysisService {
                     "/analyser/features/methodCalls/cuts/"
             );
 
-            // FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/features/methodCalls/analyserResult.json");
-            // file.write(analyserResult.toString(4));
-            // file.close();
+            FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/features/methodCalls/analyserResult.json");
+            file.write(analyserResult.toString(4));
+            file.close();
 
             JSONObject analisysStats = new JSONObject();
             analisysStats.put("complexity", getAnalysisStats("complexity", analyserResult));
@@ -266,11 +285,11 @@ public class AnalysisService {
             analisysStats.put("cohesion", getAnalysisStats("cohesion", analyserResult));
             analisysStats.put("coupling", getAnalysisStats("coupling", analyserResult));
 
-            FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/features/methodCalls/analisysStats.json");
-            file.write(analisysStats.toString(4));
-            file.close();
+            FileWriter statsFile = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/features/methodCalls/analisysStats.json");
+            statsFile.write(analisysStats.toString(4));
+            statsFile.close();
 
-            clusterService.executePlotAnalysis(codebaseName, "feature");
+            clusterService.executePlotAnalysis(codebaseName, "features", "methodCalls");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -329,6 +348,18 @@ public class AnalysisService {
             FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/features/entitiesTraces/analyserResult.json");
             file.write(analyserResult.toString(4));
             file.close();
+
+            JSONObject analisysStats = new JSONObject();
+            analisysStats.put("complexity", getAnalysisStats("complexity", analyserResult));
+            analisysStats.put("performance", getAnalysisStats("performance", analyserResult));
+            analisysStats.put("cohesion", getAnalysisStats("cohesion", analyserResult));
+            analisysStats.put("coupling", getAnalysisStats("coupling", analyserResult));
+
+            FileWriter statsFile = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/features/entitiesTraces/analisysStats.json");
+            statsFile.write(analisysStats.toString(4));
+            statsFile.close();
+
+            clusterService.executePlotAnalysis(codebaseName, "features", "entitiesTraces");
         } catch (Exception e) {
             e.printStackTrace();
         }

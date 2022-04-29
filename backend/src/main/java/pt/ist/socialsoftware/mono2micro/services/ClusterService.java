@@ -50,11 +50,12 @@ public class ClusterService {
 
     public void executePlotAnalysis(
             String codebaseName,
-            String type
+            String analysisType,
+            String strategy
     ) {
         WebClient.create(SCRIPTS_ADDRESS)
                 .get()
-                .uri("/plots/{codebaseName}", codebaseName)
+                .uri("/plots/{codebaseName}/{analysisType}/{strategy}", codebaseName, analysisType, strategy)
                 .exchange()
                 .doOnSuccess(clientResponse -> {
                     if (clientResponse.statusCode() != HttpStatus.OK)

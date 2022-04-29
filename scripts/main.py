@@ -19,8 +19,8 @@ app.add_middleware(
 # ROUTERS
 # To add different algorithms, create a new router and include it here
 app.include_router(scipyController.scipyRouter)
-app.include_router(plotsController.plotsRouter, prefix='/plots')
-app.include_router(code2vecController, prefix='/code2vec')
+app.include_router(plotsController.router, prefix='/plots')
+app.include_router(code2vecController.router, prefix='/code2vec')
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=env.PORT)
