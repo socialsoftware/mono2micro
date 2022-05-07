@@ -225,6 +225,17 @@ public class DendrogramService {
             throws JSONException, IOException
     {
 
+        HashMap<String, Object> featuresJson = generateMethodCallsFeaturesVectors(codebase, dendrogram, analysisMode, threadNumber);
+        codebaseManager.writeFeaturesCodeVectorsFile(codebase.getName(), featuresJson, threadNumber);
+
+        if (!analysisMode) {
+            codebase.addDendrogram(dendrogram);
+            clusterService.executeCreateDendrogram(codebase.getName(), dendrogram, "/features/methodsCalls");
+            codebaseManager.writeCodebase(codebase);
+        }
+    }
+
+    private HashMap<String, Object> generateMethodCallsFeaturesVectors(Codebase codebase, Dendrogram dendrogram, Boolean analysisMode, Integer threadNumber) throws IOException, JSONException {
         List<HashMap> featuresVectors = new ArrayList<>();
         Integer numberOfEntities = 0;
         HashMap<String, Object> featuresJson = new HashMap<String, Object>();
@@ -278,13 +289,7 @@ public class DendrogramService {
         featuresJson.put("numberOfEntities", numberOfEntities);
         featuresJson.put("features", featuresVectors);
 
-        codebaseManager.writeFeaturesCodeVectorsFile(codebase.getName(), featuresJson, threadNumber);
-
-        if (!analysisMode) {
-            codebase.addDendrogram(dendrogram);
-            clusterService.executeCreateDendrogram(codebase.getName(), dendrogram, "/features/methodsCalls");
-            codebaseManager.writeCodebase(codebase);
-        }
+        return featuresJson;
     }
 
     public void createDendrogramByEntitiesTracesStrategy(
@@ -294,6 +299,17 @@ public class DendrogramService {
     )
             throws JSONException, IOException
     {
+        HashMap<String, Object> tracesJson = generateEntitiesTracesFeaturesVectors(codebase, dendrogram);
+        codebaseManager.writeEntitiesTracesCodeVectorsFile(codebase.getName(), tracesJson);
+
+        if (!analysisMode) {
+            codebase.addDendrogram(dendrogram);
+            clusterService.executeCreateDendrogram(codebase.getName(), dendrogram, "/features/entitiesTraces");
+            codebaseManager.writeCodebase(codebase);
+        }
+    }
+
+    private HashMap<String, Object> generateEntitiesTracesFeaturesVectors(Codebase codebase, Dendrogram dendrogram) throws IOException, JSONException {
         List<HashMap> entitiesVectors = new ArrayList<>();
         Integer numberOfEntities = 0;
         HashMap<String, Object> entitiesJson = new HashMap<String, Object>();
@@ -406,19 +422,98 @@ public class DendrogramService {
         tracesJson.put("numberOfEntities", numberOfEntities);
         tracesJson.put("traces", tracesVectors);
 
-        codebaseManager.writeEntitiesTracesCodeVectorsFile(codebase.getName(), tracesJson);
-
-        if (!analysisMode) {
-            codebase.addDendrogram(dendrogram);
-            clusterService.executeCreateDendrogram(codebase.getName(), dendrogram, "/features/entitiesTraces");
-            codebaseManager.writeCodebase(codebase);
-        }
+        return tracesJson;
     }
 
     public void createDendrogramByMixedStrategy(Codebase codebase, Dendrogram dendrogram, Boolean analysisMode)
             throws JSONException, IOException
     {
+        HashMap<String, Object> mixedJson = new HashMap<String, Object>();
+        List<HashMap> mixedVectors = new ArrayList<>();
+        HashMap<String, Object> featuresJson = generateMethodCallsFeaturesVectors(codebase, dendrogram, analysisMode, null);
+        HashMap<String, Object> tracesJson = generateEntitiesTracesFeaturesVectors(codebase, dendrogram);
 
+        mixedJson.put("linkageType", dendrogram.getLinkageType());
+
+        featuresJson.put("name", featuresJson.get("name"));
+        featuresJson.put("maxDepth", featuresJson.get("maxDepth"));
+        featuresJson.put("controllersWeight", featuresJson.get("controllersWeight"));
+        featuresJson.put("servicesWeight", featuresJson.get("servicesWeight"));
+        featuresJson.put("intermediateMethodsWeight", featuresJson.get("intermediateMethodsWeight"));
+        featuresJson.put("entitiesWeight", featuresJson.get("entitiesWeight"));
+        featuresJson.put("linkageType", featuresJson.get("linkageType"));
+        List<HashMap<String, Object>> featuresVectorsHM = (List<HashMap<String, Object>>) featuresJson.get("features");
+        JSONArray featuresVectors = new JSONArray();
+        for (int i = 0; i < featuresVectorsHM.size(); i++) {
+            JSONObject newObj = new JSONObject();
+            newObj.put("signature", featuresVectorsHM.get(i).get("signature"));
+            newObj.put("class", featuresVectorsHM.get(i).get("class"));
+            List<Double> list = (List<Double>) featuresVectorsHM.get(i).get("codeVector");
+            JSONArray ja = new JSONArray();
+            for (Double d : list) { ja.put(d); }
+            newObj.put("codeVector", ja);
+            featuresVectors.put(newObj);
+        }
+
+        mixedJson.put("writeMetricWeight", tracesJson.get("writeMetricWeight"));
+        mixedJson.put("readMetricWeight", tracesJson.get("readMetricWeight"));
+        mixedJson.put("numberOfEntities", tracesJson.get("numberOfEntities"));
+        List<HashMap<String, Object>> tracesVectorsHM = (List<HashMap<String, Object>>) tracesJson.get("traces");
+        JSONArray tracesVectors = new JSONArray();
+        for (int i = 0; i < tracesVectorsHM.size(); i++) {
+            JSONObject newObj = new JSONObject();
+            newObj.put("name", tracesVectorsHM.get(i).get("name"));
+            List<Double> list = (List<Double>) tracesVectorsHM.get(i).get("codeVector");
+            JSONArray ja = new JSONArray();
+            for (Double d : list) { ja.put(d); }
+            newObj.put("codeVector", ja);
+            tracesVectors.put(newObj);
+        }
+
+        int fvLength = featuresVectors.length();
+        int etLength = tracesVectors.length();
+
+        for (int f = 0; f < fvLength; f++) {
+            JSONObject feature = featuresVectors.getJSONObject(f);
+
+            String[] splitStr = feature.getString("signature").split("\\(")[0].split("\\.");
+            String name = feature.getString("class") + "." + splitStr[splitStr.length - 1];
+
+            JSONArray jsonVector = feature.getJSONArray("codeVector");
+            ArrayList<Double> vector = new ArrayList<Double>();
+            int len = jsonVector.length();
+            for (int i = 0; i < len; i++) {
+                vector.add(dendrogram.getMethodsCallsWeight() * jsonVector.getDouble(i));
+            }
+
+            for (int t = 0; t < etLength; t++) {
+                JSONObject trace = tracesVectors.getJSONObject(t);
+
+                if (name.equals(trace.getString("name"))) {
+
+                    JSONArray jsonTraceVector = feature.getJSONArray("codeVector");
+                    ArrayList<Double> traceVector = new ArrayList<Double>();
+                    for (int i = 0; i < len; i++) {
+                        traceVector.add(dendrogram.getEntitiesTracesWeight() * jsonTraceVector.getDouble(i));
+                    }
+                    vectorSum(vector, traceVector);
+                    vectorDivision(vector, len * (dendrogram.getMethodsCallsWeight() + dendrogram.getEntitiesTracesWeight()));
+                    HashMap<String, Object> mixedEmbeddings = new HashMap<String, Object>();
+                    mixedEmbeddings.put("name", name);
+                    mixedEmbeddings.put("codeVector", vector);
+                    mixedVectors.add(mixedEmbeddings);
+                }
+            }
+        }
+
+        mixedJson.put("features", mixedVectors);
+        codebaseManager.writeMixedCodeVectorsFile(codebase.getName(), mixedJson);
+
+        if (!analysisMode) {
+            codebase.addDendrogram(dendrogram);
+            clusterService.executeCreateDendrogram(codebase.getName(), dendrogram, "/features/mixed");
+            codebaseManager.writeCodebase(codebase);
+        }
     }
 
     // ----------------------------------------------------------------------------------------------

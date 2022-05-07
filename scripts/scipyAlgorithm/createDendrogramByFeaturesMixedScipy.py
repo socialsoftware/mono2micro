@@ -7,19 +7,19 @@ import matplotlib.pyplot as plt
 
 
 def createDendrogramByFeaturesMixedScipy(codebasesPath, codebaseName, dendrogramName):
-    # TODO : ....
-    with open(codebasesPath + codebaseName + "/features_embeddings.json") as f:
-        features_embeddings = json.load(f)
+
+    with open(codebasesPath + codebaseName + "/mixed_embeddings.json") as f:
+        mixed_embeddings = json.load(f)
 
     names = []
     vectors = []
-    for feature in features_embeddings['features']:
-        names += [feature['signature'].split("(")[0].split(".")[-1]]
+    for feature in mixed_embeddings['features']:
+        names += [feature['name']]
         vectors += [feature['codeVector']]
 
     matrix = np.array(vectors)
 
-    linkageType = features_embeddings['linkageType']
+    linkageType = mixed_embeddings['linkageType']
 
     hierarc = hierarchy.linkage(y=matrix, method=linkageType)
 

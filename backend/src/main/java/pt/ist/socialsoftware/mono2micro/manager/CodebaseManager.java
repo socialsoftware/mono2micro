@@ -536,6 +536,18 @@ public class CodebaseManager {
 		);
 	}
 
+	public void writeMixedCodeVectorsFile(
+		String codebaseName,
+		HashMap mixedFileJSON
+	)
+		throws IOException
+	{
+		objectMapper.writerWithDefaultPrettyPrinter().writeValue(
+				new File(CODEBASES_PATH + codebaseName + "/mixed_embeddings.json"),
+				mixedFileJSON
+		);
+	}
+
 	public void writeDatafile(
 		String codebaseName,
 		HashMap datafile

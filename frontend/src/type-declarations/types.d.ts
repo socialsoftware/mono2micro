@@ -72,7 +72,8 @@ export interface Dendrogram {
     controllersWeight?: number;
     intermediateMethodsWeight?: number;
     entitiesWeight?: number;
-    methodsWeight?: number;
+    entitiesTracesWeight?: number;
+    methodsCallsWeight?: number;
 }
 
 export interface Codebase {

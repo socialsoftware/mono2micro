@@ -305,9 +305,10 @@ export class RepositoryService {
         controllersWeight: number,
         intermediateMethodsWeight: number,
         entitiesWeight: number,
-        methodsWeight: number,
         writeMetricWeight: number,
-        readMetricWeight: number
+        readMetricWeight: number,
+        entitiesTracesWeight: number,
+        methodsCallsWeight: number
     ) {
         const dendrogramData: Dendrogram = {
             codebaseName,
@@ -321,9 +322,10 @@ export class RepositoryService {
             controllersWeight,
             intermediateMethodsWeight,
             entitiesWeight,
-            methodsWeight,
             writeMetricWeight,
-            readMetricWeight
+            readMetricWeight,
+            entitiesTracesWeight,
+            methodsCallsWeight
         };
         
         return this.axios.post<null>(

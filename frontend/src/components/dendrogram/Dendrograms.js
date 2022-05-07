@@ -92,7 +92,8 @@ export const Dendrograms = () => {
     const [servicesWeight, setServicesWeight] = useState("25");
     const [intermediateMethodsWeight, setIntermediateMethodsWeight] = useState("25");
     const [entitiesWeight, setEntitiesWeight] = useState("25");
-    const [methodsWeight, setMethodsWeight] = useState("100");
+    const [entitiesTracesWeight, setEntitiesTracesWeight] = useState("50");
+    const [methodsCallsWeight, setMethodsCallsWeight] = useState("50");
 
     let { codebaseName } = useParams();
 
@@ -135,8 +136,8 @@ export const Dendrograms = () => {
                 "controllersWeight",
                 "servicesWeight",
                 "intermediateMethodsWeight",
-                "entitiesWeight",
-                "methodsWeight"
+                "entitiesTracesWeight",
+                "methodsCallsWeight"
             ]
         ).then((response) => {
             if (response.data !== null) {
@@ -220,9 +221,10 @@ export const Dendrograms = () => {
             Number(controllersWeight),
             Number(intermediateMethodsWeight),
             Number(entitiesWeight),
-            Number(methodsWeight),
             Number(writeMetricWeight),
-            Number(readMetricWeight)
+            Number(readMetricWeight),
+            Number(entitiesTracesWeight),
+            Number(methodsCallsWeight)
         )
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
@@ -368,8 +370,12 @@ export const Dendrograms = () => {
         setEntitiesWeight(event.target.value);
     }
 
-    function handleChangeMethodsWeight(event) {
-        setMethodsWeight(event.target.value);
+    function handleChangeEntitiesTracesWeight(event) {
+        setEntitiesTracesWeight(event.target.value);
+    }
+
+    function handleChangeMethodsCallsWeight(event) {
+        setMethodsCallsWeight(event.target.value);
     }
 
     function handleDeleteDendrogram(dendrogramName) {
@@ -821,6 +827,7 @@ export const Dendrograms = () => {
                             type="submit"
                             disabled={
                                 Number(controllersWeight) + Number(servicesWeight) + Number(intermediateMethodsWeight) + Number(entitiesWeight) !== 100 ||
+                                Number(entitiesTracesWeight) + Number(methodsCallsWeight) !== 100 ||
                                 isUploaded === "Uploading..." ||
                                 newDendrogramName === "" ||
                                 selectedProfile === ""
@@ -968,31 +975,31 @@ export const Dendrograms = () => {
         // Entities Weights, Method Calls Weights
         return (
             <div>
-                <Form.Group as={Row} controlId="entitiesWeight" className="align-items-center">
+                <Form.Group as={Row} controlId="entitiesTracesWeight" className="align-items-center">
                     <Form.Label column sm={2}>
-                        Entities Weight (%)
+                        Entities Traces Weight (%)
                     </Form.Label>
                     <Col sm={2}>
                         <FormControl
                             type="number"
                             placeholder="0-100"
-                            value={entitiesWeight}
-                            onChange={handleChangeEntitiesWeight} />
+                            value={entitiesTracesWeight}
+                            onChange={handleChangeEntitiesTracesWeight} />
                     </Col>
                 </Form.Group>
 
                 <br/>
 
-                <Form.Group as={Row} controlId="methodsWeight" className="align-items-center">
+                <Form.Group as={Row} controlId="methodsCallsWeight" className="align-items-center">
                     <Form.Label column sm={2}>
-                        Methods Weight (%)
+                        Methods Calls Weight (%)
                     </Form.Label>
                     <Col sm={2}>
                         <FormControl
                             type="number"
                             placeholder="0-100"
-                            value={methodsWeight}
-                            onChange={handleChangeMethodsWeight} />
+                            value={methodsCallsWeight}
+                            onChange={handleChangeMethodsCallsWeight} />
                     </Col>
                 </Form.Group>
             </div>
@@ -1251,8 +1258,8 @@ export const Dendrograms = () => {
                                             Access: {dendrogram.accessMetricWeight}%, Write: {dendrogram.writeMetricWeight}%<br/>
                                             Read: {dendrogram.readMetricWeight}%, Sequence: {dendrogram.sequenceMetricWeight}%<br/>
                                             Strategy: {dendrogram.featureVectorizationStrategy}<br/>
-                                            Entities Weight: {dendrogram.entitiesWeight}%<br/>
-                                            Methods Weight: {dendrogram.methodsWeight}%
+                                            Entities Weight: {dendrogram.entitiesTracesWeight}%<br/>
+                                            Methods Weight: {dendrogram.methodsCallsWeight}%
                                         </Card.Text>
                                         :
                                         <Card.Text>

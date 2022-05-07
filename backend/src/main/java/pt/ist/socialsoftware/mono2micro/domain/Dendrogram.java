@@ -48,7 +48,10 @@ public class Dendrogram {
     private float servicesWeight;
     private float intermediateMethodsWeight;
     private float entitiesWeight;
-    private float methodsWeight;
+
+	private float entitiesTracesWeight;
+
+    private float methodsCallsWeight;
 
 	public Dendrogram() {}
 
@@ -182,12 +185,20 @@ public class Dendrogram {
 		this.entitiesWeight = entitiesWeight;
 	}
 
-	public float getMethodsWeight() {
-		return methodsWeight;
+	public float getEntitiesTracesWeight() {
+		return entitiesTracesWeight;
 	}
 
-	public void setMethodsWeight(float methodsWeight) {
-		this.methodsWeight = methodsWeight;
+	public void setEntitiesTracesWeight(float entitiesTracesWeight) {
+		this.entitiesTracesWeight = entitiesTracesWeight;
+	}
+
+	public float getMethodsCallsWeight() {
+		return methodsCallsWeight;
+	}
+
+	public void setMethodsCallsWeight(float methodsCallsWeight) {
+		this.methodsCallsWeight = methodsCallsWeight;
 	}
 
 	@JsonIgnore
