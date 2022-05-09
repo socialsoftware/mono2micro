@@ -16,6 +16,7 @@ import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.*;
 
 import static pt.ist.socialsoftware.mono2micro.domain.source.Source.SourceType.ACCESSES;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.STRATEGIES_FOLDER;
 
 @RestController
 @RequestMapping(value = "/mono2micro/codebase/{codebaseName}/strategy/{strategyName}/decomposition/{decompositionName}")
@@ -41,9 +42,9 @@ public class ClusterController {
 			// FIXME Each controller and cluster would have its own json file
 
 			AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
-			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
+			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyName);
 			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
-					codebaseName, strategyName, decompositionName
+					codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName
 			);
 
 			decomposition.mergeClusters(
@@ -56,11 +57,12 @@ public class ClusterController {
 				source.getInputFilePath(),
 				source.getProfile(strategy.getProfile()),
 				strategy.getTracesMaxLimit(),
-				strategy.getTraceType());
+				strategy.getTraceType(),
+				true);
 
 			decomposition.calculateMetrics();
 
-			codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
+			codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -84,7 +86,7 @@ public class ClusterController {
 			// FIXME Each controller and cluster would have its own json file
 
 			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
-					codebaseName, strategyName, decompositionName
+					codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName
 			);
 
 			decomposition.renameCluster(
@@ -92,7 +94,7 @@ public class ClusterController {
 				newName
 			);
 
-			codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
+			codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (KeyAlreadyExistsException e) {
@@ -121,9 +123,9 @@ public class ClusterController {
 			// FIXME Each controller and cluster would have its own json file
 
 			AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
-			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
+			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyName);
 			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
-					codebaseName, strategyName, decompositionName
+					codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName
 			);
 
 			decomposition.splitCluster(
@@ -136,11 +138,12 @@ public class ClusterController {
 					source.getInputFilePath(),
 					source.getProfile(strategy.getProfile()),
 					strategy.getTracesMaxLimit(),
-					strategy.getTraceType());
+					strategy.getTraceType(),
+					true);
 
 			decomposition.calculateMetrics();
 
-			codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
+			codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -165,9 +168,9 @@ public class ClusterController {
 			// FIXME Each controller and cluster would have its own json file
 
 			AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
-			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
+			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyName);
 			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
-					codebaseName, strategyName, decompositionName
+					codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName
 			);
 
 			decomposition.transferEntities(
@@ -180,11 +183,12 @@ public class ClusterController {
 					source.getInputFilePath(),
 					source.getProfile(strategy.getProfile()),
 					strategy.getTracesMaxLimit(),
-					strategy.getTraceType());
+					strategy.getTraceType(),
+					true);
 
 			decomposition.calculateMetrics();
 
-			codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
+			codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -204,6 +208,7 @@ public class ClusterController {
 		try {
 			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
 				codebaseName,
+				STRATEGIES_FOLDER,
 				strategyName,
 				decompositionName
 			);
@@ -236,6 +241,7 @@ public class ClusterController {
 		try {
 			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
 				codebaseName,
+				STRATEGIES_FOLDER,
 				strategyName,
 				decompositionName
 			);

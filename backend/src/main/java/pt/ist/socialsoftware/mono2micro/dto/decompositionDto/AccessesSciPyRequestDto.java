@@ -10,6 +10,13 @@ public class AccessesSciPyRequestDto implements RequestDto {
     private String cutType;
     private Optional<MultipartFile> expertFile;
 
+    public AccessesSciPyRequestDto() {}
+
+    public AccessesSciPyRequestDto( String cutType, float cutValue) {
+        this.cutType = cutType;
+        this.cutValue = cutValue;
+    }
+
     public AccessesSciPyRequestDto(String expertName, Optional<MultipartFile> expertFile) {
         this.expertName = expertName;
         this.expertFile = expertFile;

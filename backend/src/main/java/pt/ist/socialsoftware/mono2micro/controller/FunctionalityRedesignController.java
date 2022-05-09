@@ -17,6 +17,7 @@ import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import static pt.ist.socialsoftware.mono2micro.domain.source.Source.SourceType.ACCESSES;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.STRATEGIES_FOLDER;
 
 @RestController
 @RequestMapping(value = "/mono2micro/codebase/{codebaseName}/strategy/{strategyName}/decomposition/{decompositionName}")
@@ -39,10 +40,10 @@ public class FunctionalityRedesignController {
 
         try {
             // TODO: abstract strategy call to make this a generic function, probably needs decompositions with subclasses
-            AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
+            AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyName);
 
             AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
-                    codebaseName, strategyName, decompositionName
+                    codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName
             );
             Functionality functionality = decomposition.getFunctionality(functionalityName);
 
@@ -61,7 +62,7 @@ public class FunctionalityRedesignController {
                                         decomposition.getEntityIDToClusterID())
                 );
             };
-            codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
+            codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
             return new ResponseEntity<>(functionality, HttpStatus.OK);
 
         } catch (Exception e) {
@@ -88,14 +89,14 @@ public class FunctionalityRedesignController {
 
 
             AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
-                    codebaseName, strategyName, decompositionName
+                    codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName
             );
             Functionality functionality = decomposition.getFunctionality(functionalityName);
 
             FunctionalityRedesign functionalityRedesign = functionality.getFunctionalityRedesign(redesignName);
             functionalityRedesign.addCompensating(clusterID, accesses, fromID);
             functionalityRedesign.calculateMetrics(decomposition, functionality);
-            codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
+            codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
 
             return new ResponseEntity<>(functionality, HttpStatus.OK);
 
@@ -118,7 +119,7 @@ public class FunctionalityRedesignController {
             String newCaller = data.get("newCaller");
 
             AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
-                    codebaseName, strategyName, decompositionName
+                    codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName
             );
             Functionality functionality = decomposition.getFunctionality(functionalityName);
 
@@ -126,7 +127,7 @@ public class FunctionalityRedesignController {
             functionalityRedesign.sequenceChange(localTransactionID, newCaller);
             functionalityRedesign.calculateMetrics(decomposition, functionality);
 
-            codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
+            codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
             return new ResponseEntity<>(functionality, HttpStatus.OK);
 
         } catch (Exception e) {
@@ -152,14 +153,14 @@ public class FunctionalityRedesignController {
             String localTransactions = data.get("localTransactions");
 
             AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
-                    codebaseName, strategyName, decompositionName
+                    codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName
             );
             Functionality functionality = decomposition.getFunctionality(functionalityName);
 
             FunctionalityRedesign functionalityRedesign = functionality.getFunctionalityRedesign(redesignName);
             functionalityRedesign.dcgi(fromClusterID, toClusterID, localTransactions);
             functionalityRedesign.calculateMetrics(decomposition, functionality);
-            codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
+            codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
 
             return new ResponseEntity<>(functionality, HttpStatus.OK);
 
@@ -182,10 +183,10 @@ public class FunctionalityRedesignController {
         logger.debug("pivotTransaction");
         try {
             // TODO: abstract strategy call to make this a generic function, probably needs decompositions with subclasses
-            AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
+            AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyName);
 
             AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
-                    codebaseName, strategyName, decompositionName
+                    codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName
             );
             Functionality functionality = decomposition.getFunctionality(functionalityName);
 
@@ -218,7 +219,7 @@ public class FunctionalityRedesignController {
 
             functionalityRedesign = functionality.getFunctionalityRedesign(Constants.DEFAULT_REDESIGN_NAME);
             functionalityRedesign.calculateMetrics(decomposition, functionality);
-            codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
+            codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
 
             return new ResponseEntity<>(functionality, HttpStatus.OK);
         } catch (Exception e) {
@@ -241,11 +242,11 @@ public class FunctionalityRedesignController {
         logger.debug("changeLTName");
         try {
             AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
-                    codebaseName, strategyName, decompositionName
+                    codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName
             );
             Functionality functionality = decomposition.getFunctionality(functionalityName);
             functionality.getFunctionalityRedesign(redesignName).changeLTName(transactionID, newName);
-            codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
+            codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
 
             return new ResponseEntity<>(functionality, HttpStatus.OK);
         } catch (Exception e) {
@@ -265,11 +266,11 @@ public class FunctionalityRedesignController {
         logger.debug("deleteRedesign");
         try {
             AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
-                    codebaseName, strategyName, decompositionName
+                    codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName
             );
             Functionality functionality = decomposition.getFunctionality(functionalityName);
             functionality.deleteRedesign(redesignName);
-            codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
+            codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
 
             return new ResponseEntity<>(functionality, HttpStatus.OK);
         } catch (Exception e) {
@@ -289,11 +290,11 @@ public class FunctionalityRedesignController {
         logger.debug("useForMetrics");
         try {
             AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
-                    codebaseName, strategyName, decompositionName
+                    codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName
             );
             Functionality functionality = decomposition.getFunctionality(functionalityName);
             functionality.changeFRUsedForMetrics(redesignName);
-            codebaseManager.writeStrategyDecomposition(codebaseName, strategyName, decomposition);
+            codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
 
             return new ResponseEntity<>(functionality, HttpStatus.OK);
         } catch (Exception e) {

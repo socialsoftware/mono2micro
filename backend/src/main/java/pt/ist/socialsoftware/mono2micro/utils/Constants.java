@@ -14,6 +14,8 @@ public final class Constants {
   public static String CODEBASES_PATH = (String) context.getBean("codebasesPath");
   public static String MOJO_RESOURCES_PATH = "src/main/java/pt/ist/socialsoftware/mono2micro/utils/mojoCalculator/" +
           "src/main/resources/";
+  public static String STRATEGIES_FOLDER = "/strategies/";
+  public static String RECOMMEND_FOLDER = "/recommendStrategies/";
   public static final String DEFAULT_REDESIGN_NAME = "Monolith Trace";
 
   public enum TraceType {

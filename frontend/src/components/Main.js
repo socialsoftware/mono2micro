@@ -7,7 +7,6 @@ import { Strategies } from './strategies/Strategies'
 import { Codebases } from './codebase/Codebases';
 import { Codebase } from './codebase/Codebase';
 import { Analysis } from './analysis/Analysis';
-import { Analyser } from './analysis/Analyser';
 import { Profiles } from './profile/Profiles';
 
 export const Main = () => (
@@ -24,7 +23,6 @@ export const Main = () => (
       <Route exact path='/codebases/:codebaseName/source/:sourceType/profiles' element={<Profiles/>} />
 
       <Route exact path='/analysis' element={<Analysis/>} />
-      <Route exact path='/analyser' element={<Analyser/>} />
     </Routes>
   </main>
 )

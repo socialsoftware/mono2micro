@@ -18,11 +18,11 @@ export default class AccessesSciPyStrategy extends Strategy {
     constructor(strategy: any) {
         super(strategy.type, strategy.codebaseName, strategy.name, strategy.decompositionsNames);
         // Initializes default values if no previous value is provided
-        this.accessMetricWeight =   strategy.accessMetricWeight      ||     25;
-        this.writeMetricWeight =    strategy.writeMetricWeight       ||     25;
-        this.readMetricWeight =     strategy.readMetricWeight        ||     25;
-        this.sequenceMetricWeight = strategy.sequenceMetricWeight    ||     25;
-        this.profile =              strategy.profile                 ||     "";
+        this.accessMetricWeight =   strategy.accessMetricWeight === undefined? 25 : strategy.accessMetricWeight;
+        this.writeMetricWeight =   strategy.writeMetricWeight === undefined? 25 : strategy.writeMetricWeight;
+        this.readMetricWeight =    strategy.readMetricWeight === undefined? 25 : strategy.readMetricWeight;
+        this.sequenceMetricWeight = strategy.sequenceMetricWeight === undefined? 25 : strategy.sequenceMetricWeight;
+        this.profile =              strategy.profile                 ||     "Generic";
         this.linkageType =          strategy.linkageType             ||     "average";
         this.tracesMaxLimit =       strategy.tracesMaxLimit          ||     0;
         this.traceType =            strategy.traceType               ||     TraceType.ALL;
@@ -30,6 +30,7 @@ export default class AccessesSciPyStrategy extends Strategy {
 
     readyToSubmit(): boolean {
         return this.linkageType !== "" &&
+        this.accessMetricWeight >= 0 && this.writeMetricWeight >= 0 && this.readMetricWeight >= 0 && this.sequenceMetricWeight >= 0 &&
         this.accessMetricWeight + this.writeMetricWeight + this.readMetricWeight + this.sequenceMetricWeight === 100 &&
         this.profile !== "" &&
         this.traceType !== ""

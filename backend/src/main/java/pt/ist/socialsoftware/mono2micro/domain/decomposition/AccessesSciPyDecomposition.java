@@ -205,7 +205,8 @@ public class AccessesSciPyDecomposition extends Decomposition {
             String inputFilePath,
             Set<String> profileFunctionalities,
             int tracesMaxLimit,
-            Constants.TraceType traceType
+            Constants.TraceType traceType,
+            boolean calculateRedesigns
     ) throws Exception {
         FunctionalityTracesIterator iter = new FunctionalityTracesIterator(inputFilePath, tracesMaxLimit);
         Map<String, DirectedAcyclicGraph<LocalTransaction, DefaultEdge>> localTransactionsGraphs = new HashMap<>();
@@ -241,12 +242,14 @@ public class AccessesSciPyDecomposition extends Decomposition {
             functionality.calculateMetrics(this);
 
             // Functionality Redesigns
-            FunctionalityRedesign functionalityRedesign = functionality.createFunctionalityRedesign(
-                    Constants.DEFAULT_REDESIGN_NAME,
-                    true,
-                    localTransactionsGraphs.get(functionality.getName()));
+            if (calculateRedesigns) {
+                FunctionalityRedesign functionalityRedesign = functionality.createFunctionalityRedesign(
+                        Constants.DEFAULT_REDESIGN_NAME,
+                        true,
+                        localTransactionsGraphs.get(functionality.getName()));
 
-            functionalityRedesign.calculateMetrics(this, functionality);
+                functionalityRedesign.calculateMetrics(this, functionality);
+            }
         }
     }
 

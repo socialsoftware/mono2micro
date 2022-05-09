@@ -29,8 +29,6 @@ public class CouplingMetric extends Metric<Float> {
 
     private float calculateMetricAccessesSciPy(AccessesSciPyDecomposition decomposition) {
 
-        System.out.println("Calculating graph coupling...");
-
         int graphClustersAmount = decomposition.getClusters().size();
         float coupling = 0;
 

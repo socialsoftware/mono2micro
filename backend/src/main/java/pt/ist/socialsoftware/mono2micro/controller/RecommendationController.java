@@ -3,6 +3,7 @@ package pt.ist.socialsoftware.mono2micro.controller;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FilenameUtils;
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -12,20 +13,25 @@ import org.springframework.web.reactive.function.client.WebClient;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Functionality;
+import pt.ist.socialsoftware.mono2micro.domain.clusteringAlgorithm.ClusteringAlgorithm;
+import pt.ist.socialsoftware.mono2micro.domain.clusteringAlgorithm.ClusteringAlgorithmFactory;
 import pt.ist.socialsoftware.mono2micro.domain.decomposition.AccessesSciPyDecomposition;
+import pt.ist.socialsoftware.mono2micro.domain.similarityGenerator.SimilarityGenerator;
+import pt.ist.socialsoftware.mono2micro.domain.similarityGenerator.SimilarityGeneratorFactory;
 import pt.ist.socialsoftware.mono2micro.domain.source.AccessesSource;
+import pt.ist.socialsoftware.mono2micro.domain.strategy.AccessesSciPyStrategy;
+import pt.ist.socialsoftware.mono2micro.domain.strategy.RecommendAccessesSciPyStrategy;
+import pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy;
 import pt.ist.socialsoftware.mono2micro.dto.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 import pt.ist.socialsoftware.mono2micro.utils.mojoCalculator.src.main.java.MoJo;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 
 import static pt.ist.socialsoftware.mono2micro.domain.source.Source.SourceType.ACCESSES;
@@ -33,11 +39,153 @@ import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 
 @RestController
 @RequestMapping(value = "/mono2micro")
-public class AnalysisController {
+public class RecommendationController {
 
-    private static final Logger logger = LoggerFactory.getLogger(AnalysisController.class);
+    private static final Logger logger = LoggerFactory.getLogger(RecommendationController.class);
     private final CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
+	@RequestMapping(value = "/codebase/{codebaseName}/recommendation", method = RequestMethod.PUT)
+	public ResponseEntity<Strategy> recommendation(
+			@PathVariable String codebaseName,
+			@RequestBody Strategy strategyRecommendation
+	) {
+		logger.debug("recommendation");
+
+		try {
+			List<Strategy> strategies = codebaseManager.getCodebaseStrategies(codebaseName, RECOMMEND_FOLDER, Collections.singletonList(strategyRecommendation.getType()));
+
+			Strategy existingStrategy = strategies.stream().filter(strategy -> strategy.equals(strategyRecommendation)).findFirst().orElse(null);
+			if (existingStrategy != null)
+				return new ResponseEntity<>(existingStrategy, HttpStatus.CREATED);
+
+			Strategy strategy = codebaseManager.createCodebaseStrategy(codebaseName, RECOMMEND_FOLDER, strategyRecommendation);
+
+			// Executes the request in a fork to avoid blocking the user
+			ForkJoinPool.commonPool().submit(() -> {
+				try {
+					SimilarityGenerator similarityGenerator = SimilarityGeneratorFactory.getFactory().getSimilarityGenerator(strategy.getType());
+					ClusteringAlgorithm clusteringAlgorithm = ClusteringAlgorithmFactory.getFactory().getClusteringAlgorithm(strategy.getType());
+
+					similarityGenerator.createSimilarityMatrix(strategy);
+					clusteringAlgorithm.createDecomposition(strategy, null); // TODO, maybe give the chance of choosing the number of cuts
+
+					codebaseManager.writeCodebaseStrategy(codebaseName, RECOMMEND_FOLDER, strategy);
+					logger.debug("recommendation ended");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+
+			return new ResponseEntity<>(strategy, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@RequestMapping(value = "/codebase/{codebaseName}/recommendationStrategy/{strategyName}/getRecommendationResult", method = RequestMethod.GET)
+	public ResponseEntity<String> getRecommendationResult(
+			@PathVariable String codebaseName,
+			@PathVariable String strategyName
+	) {
+		logger.debug("getRecommendationResult");
+
+		try {
+			return new ResponseEntity<>(codebaseManager.getRecommendationResult(codebaseName, strategyName), HttpStatus.OK);
+
+		} catch (FileNotFoundException e) { // Since it is an asynchronous call, the file might not be created yet
+			return new ResponseEntity<>(null, HttpStatus.OK);
+		} catch (JSONException | IOException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@RequestMapping(value = "/codebase/{codebaseName}/recommendationStrategy/{strategyName}/createDecompositions")
+	public ResponseEntity<HttpStatus> createDecompositions(
+			@PathVariable String codebaseName,
+			@PathVariable String strategyName,
+			@RequestParam List<String> decompositionNames
+	) {
+		try {
+			logger.debug("createDecompositions");
+
+			RecommendAccessesSciPyStrategy recommendationStrategy = (RecommendAccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, RECOMMEND_FOLDER, strategyName);
+			AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
+
+			for (String name: decompositionNames) {
+				String[] weights = name.split(",");
+
+				if (weights.length != 5)
+					continue;
+
+				System.out.println("Creating decomposition with name: " + name);
+
+				AccessesSciPyStrategy strategyInformation = new AccessesSciPyStrategy(recommendationStrategy, name);
+
+				// Get or create the decomposition's strategy
+				List<Strategy> strategies = codebaseManager.getCodebaseStrategies(codebaseName, STRATEGIES_FOLDER, Collections.singletonList(strategyInformation.getType()));
+				AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) strategies.stream().filter(possibleStrategy -> possibleStrategy.equals(strategyInformation)).findFirst().orElse(null);
+				if (strategy == null) {
+					strategy = (AccessesSciPyStrategy) codebaseManager.createCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyInformation);
+
+					codebaseManager.transferSimilarityMatrixFromRecommendation(
+							codebaseName,
+							recommendationStrategy.getName(),
+							weights[0] + "," + weights[1] + "," + weights[2] + "," + weights[3] + ".json",
+							"similarityMatrix.json",
+							strategy);
+
+					// generate dendrogram image
+					ClusteringAlgorithm clusteringAlgorithm = ClusteringAlgorithmFactory.getFactory().getClusteringAlgorithm(strategy.getType());
+					clusteringAlgorithm.createDendrogram(strategy);
+				}
+
+				//Create the decomposition by copying the existing decomposition
+				AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager
+						.transferDecompositionFromRecommendation(
+								codebaseName,
+								recommendationStrategy.getName(),
+								name,
+								getDecompositionName(strategy, "N" + weights[4]),
+								strategy);
+
+				// This is done since previous coupling dependencies mess up the results during 'setupFunctionalities'
+				for (Cluster cluster : decomposition.getClusters().values())
+					cluster.clearCouplingDependencies();
+
+				// Fill information regarding functionalities and their redesigns
+				decomposition.setupFunctionalities(
+						source.getInputFilePath(),
+						source.getProfile(strategy.getProfile()),
+						strategy.getTracesMaxLimit(),
+						strategy.getTraceType(),
+						true);
+
+				// save strategy and decomposition
+				codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, decomposition.getStrategyName(), decomposition);
+				codebaseManager.writeCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategy);
+				logger.debug("decomposition creation ended");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	private String getDecompositionName(AccessesSciPyStrategy strategy, String name) {
+		if (strategy.getDecompositionsNames().contains(name)) {
+			int i = 2;
+			while (strategy.getDecompositionsNames().contains(name + "(" + i + ")"))
+				i++;
+			return name + "(" + i + ")";
+
+		} else return name;
+	}
+
+	//FIXME analyzer no longer in use
+	//FIXME only here in case something is needed
 	@RequestMapping(value = "/codebase/{codebaseName}/analyser", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> analyser(
 		@PathVariable String codebaseName,
@@ -228,15 +376,14 @@ public class AnalysisController {
 
 	private void executeCreateCuts(
 		String codebaseName,
-		int numberOfEntitiesPresentInCollection
-	)
-	{
+		int totalNumberOfEntities
+	) throws IOException {
 		System.out.println("Executing analyser to create cuts...");
 
 		WebClient.create(SCRIPTS_ADDRESS)
 				.get()
 				.uri("/scipy/{codebaseName}/{totalNumberOfEntities}/analyser",
-						codebaseName, String.valueOf(numberOfEntitiesPresentInCollection))
+						codebaseName, String.valueOf(totalNumberOfEntities))
 				.exchange()
 				.doOnSuccess(clientResponse -> {
 					if (clientResponse.statusCode() != HttpStatus.OK)
@@ -280,7 +427,8 @@ public class AnalysisController {
 				source.getInputFilePath(),
 				source.getProfile(analyser.getProfile()),
 				analyser.getTracesMaxLimit(),
-				analyser.getTraceType());
+				analyser.getTraceType(),
+				true);
 
 		decomposition.calculateMetrics(
 			//source.getInputFilePath(),

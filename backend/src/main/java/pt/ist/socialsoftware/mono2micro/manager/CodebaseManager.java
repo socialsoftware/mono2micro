@@ -1,11 +1,10 @@
 package pt.ist.socialsoftware.mono2micro.manager;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.core.util.DefaultIndenter;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
@@ -98,13 +97,14 @@ public class CodebaseManager {
 
 	public List<Strategy> getCodebaseStrategies(
 			String codebaseName,
+			String strategyFolder,
 			List<String> strategyTypes			// Use null when specifying all strategy types
 	)
 			throws IOException
 	{
 		List<Strategy> strategies = new ArrayList<>();
 
-		File strategiesPath = new File(CODEBASES_PATH + codebaseName + "/strategies");
+		File strategiesPath = new File(CODEBASES_PATH + codebaseName + strategyFolder);
 
 		File[] files = strategiesPath.listFiles();
 
@@ -113,7 +113,7 @@ public class CodebaseManager {
 
 			for (File file : files) {
 				if (file.isDirectory() && sameType(file.getName(), strategyTypes)) {
-					Strategy strategy = getCodebaseStrategy(codebaseName, file.getName());
+					Strategy strategy = getCodebaseStrategy(codebaseName, strategyFolder, file.getName());
 
 					if (strategy != null)
 						strategies.add(strategy);
@@ -133,13 +133,17 @@ public class CodebaseManager {
 		return false;
 	}
 
+	public void createDecompositionDirectory(String codebaseName, String strategyFolder, String strategyName, String decompositionName) {
+		new File(CODEBASES_PATH + codebaseName + strategyFolder + strategyName + "/decompositions/" + decompositionName).mkdir();
+	}
+
 	public void deleteCodebaseStrategy(String codebaseName, String strategyName) throws IOException {
-		FileUtils.deleteDirectory(new File(CODEBASES_PATH + codebaseName + "/strategies/" + strategyName));
+		FileUtils.deleteDirectory(new File(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + strategyName));
 	}
 
 	public void deleteCodebaseStrategies(String codebaseName, List<String> possibleStrategies) throws IOException {
 
-		File strategiesPath = new File(CODEBASES_PATH + codebaseName + "/strategies");
+		File strategiesPath = new File(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER);
 
 		File[] files = strategiesPath.listFiles();
 
@@ -148,12 +152,12 @@ public class CodebaseManager {
 
 			for (File file : files)
 				if (file.isDirectory() && sameType(file.getName(), possibleStrategies))
-					FileUtils.deleteDirectory(new File(CODEBASES_PATH + codebaseName + "/strategies/" + file.getName()));
+					FileUtils.deleteDirectory(new File(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + file.getName()));
 		}
 	}
 
 	public void deleteStrategyDecomposition(String codebaseName, String strategyName, String decompositionName) throws IOException {
-		FileUtils.deleteDirectory(new File(CODEBASES_PATH + codebaseName + "/strategies/" + strategyName + "/decompositions/" + decompositionName));
+		FileUtils.deleteDirectory(new File(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + strategyName + "/decompositions/" + decompositionName));
 	}
 
 	public List<Decomposition> getCodebaseDecompositions(
@@ -164,7 +168,7 @@ public class CodebaseManager {
 	{
 		List<Decomposition> decompositions = new ArrayList<>();
 
-		File strategiesPath = new File(CODEBASES_PATH + codebaseName + "/strategies");
+		File strategiesPath = new File(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER);
 
 		File[] files = strategiesPath.listFiles();
 
@@ -186,12 +190,13 @@ public class CodebaseManager {
 
 	public Decomposition getStrategyDecomposition(
 		String codebaseName,
+		String strategyFolder,
 		String strategyName,
 		String decompositionName
 	)
 		throws IOException
 	{
-		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/strategies/" + strategyName + "/decompositions/" + decompositionName + "/decomposition.json");
+		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + strategyFolder + strategyName + "/decompositions/" + decompositionName + "/decomposition.json");
 
 		Decomposition decomposition = objectMapper.readerFor(Decomposition.class).readValue(is);
 		is.close();
@@ -205,12 +210,12 @@ public class CodebaseManager {
 	)
 		throws Exception
 	{
-		Strategy strategy = getCodebaseStrategy(codebaseName, strategyName);
+		Strategy strategy = getCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyName);
 
 		return strategy.getDecompositionsNames().stream()
 				.map(decompositionName -> {
 					try {
-						return getStrategyDecomposition(codebaseName, strategyName, decompositionName);
+						return getStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -220,9 +225,9 @@ public class CodebaseManager {
 				.collect(Collectors.toList());
 	}
 
-	public void writeStrategyDecomposition(String codebaseName, String strategyName, Decomposition decomposition) throws IOException {
+	public void writeStrategyDecomposition(String codebaseName, String strategyFolder, String strategyName, Decomposition decomposition) throws IOException {
 		objectMapper.writeValue(
-				new File(CODEBASES_PATH + codebaseName + "/strategies/" + strategyName + "/decompositions/" + decomposition.getName() + "/decomposition.json"),
+				new File(CODEBASES_PATH + codebaseName + strategyFolder + strategyName + "/decompositions/" + decomposition.getName() + "/decomposition.json"),
 				decomposition
 		);
 	}
@@ -260,21 +265,15 @@ public class CodebaseManager {
 		if (codebaseJSONFile.exists())
 			throw new KeyAlreadyExistsException();
 
-		File codebasesPath = new File(CODEBASES_PATH);
-		if (!codebasesPath.exists())
-			codebasesPath.mkdir();
+		new File(CODEBASES_PATH).mkdir();
 
-		File codebasePath = new File(CODEBASES_PATH + codebaseName);
-		if (!codebasePath.exists())
-			codebasePath.mkdir();
+		new File(CODEBASES_PATH + codebaseName).mkdir();
 
-		File strategiesPath = new File(CODEBASES_PATH + codebaseName + "/strategies");
-		if (!strategiesPath.exists())
-			strategiesPath.mkdir();
+		new File(CODEBASES_PATH + codebaseName + RECOMMEND_FOLDER).mkdir();
 
-		File sourcesPath = new File(CODEBASES_PATH + codebaseName + "/sources");
-		if (!sourcesPath.exists())
-			sourcesPath.mkdir();
+		new File(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER).mkdir();
+
+		new File(CODEBASES_PATH + codebaseName + "/sources").mkdir();
 
 		Codebase codebase = new Codebase(codebaseName);
 
@@ -338,32 +337,40 @@ public class CodebaseManager {
 		return source;
 	}
 
-	public Strategy createCodebaseStrategy(String codebaseName, Strategy strategy) throws IOException {
+	public List<String> getSimilarityMatricesNames(String codebaseName, String strategyFolder, String strategyName) {
+		String[] names = new File(CODEBASES_PATH + codebaseName + strategyFolder + strategyName + "/similarityMatrices").list();
+		if (names != null)
+			return Arrays.asList(names);
+		throw new RuntimeException("No similarity matrices found.");
+	}
+
+	public Strategy createCodebaseStrategy(String codebaseName, String strategyFolder, Strategy strategy) throws IOException {
 
 		File path;
 		int id = 0;
 
 		do {
-			path = new File(CODEBASES_PATH + codebaseName + "/strategies/" + strategy.getType() + ++id);
+			path = new File(CODEBASES_PATH + codebaseName + strategyFolder + strategy.getType() + ++id);
 		} while (path.exists() && path.isDirectory());
 
 		strategy.setName(strategy.getType() + id);
 
-		new File(CODEBASES_PATH + codebaseName + "/strategies/" + strategy.getName()).mkdir();
-		new File(CODEBASES_PATH + codebaseName + "/strategies/" + strategy.getName() + "/decompositions").mkdir();
+		new File(CODEBASES_PATH + codebaseName + strategyFolder + strategy.getName()).mkdir();
+		new File(CODEBASES_PATH + codebaseName + strategyFolder + strategy.getName() + "/decompositions").mkdir();
+		new File(CODEBASES_PATH + codebaseName + strategyFolder + strategy.getName() + "/similarityMatrices").mkdir();
 		strategy.setDecompositionsNames(new ArrayList<>());
 
-		objectMapper.writeValue(new File(CODEBASES_PATH + codebaseName + "/strategies/" + strategy.getName() + "/strategy.json"), strategy);
+		objectMapper.writeValue(new File(CODEBASES_PATH + codebaseName + strategyFolder + strategy.getName() + "/strategy.json"), strategy);
 
 		return strategy;
 	}
 
-	public void writeCodebaseStrategy(String codebaseName, Strategy strategy) throws IOException {
-		objectMapper.writeValue( new File(CODEBASES_PATH + codebaseName + "/strategies/" + strategy.getName() + "/strategy.json"), strategy);
+	public void writeCodebaseStrategy(String codebaseName, String strategyFolder, Strategy strategy) throws IOException {
+		objectMapper.writeValue(new File(CODEBASES_PATH + codebaseName + strategyFolder + strategy.getName() + "/strategy.json"), strategy);
 	}
 
-	public Strategy getCodebaseStrategy(String codebaseName, String strategyName) throws IOException {
-		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/strategies/" + strategyName + "/strategy.json");
+	public Strategy getCodebaseStrategy(String codebaseName, String strategyFolder, String strategyName) throws IOException {
+		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + strategyFolder + strategyName + "/strategy.json");
 
 		Strategy strategy = objectMapper.readerFor(Strategy.class).readValue(is);
 		is.close();
@@ -393,11 +400,12 @@ public class CodebaseManager {
 
 	public JSONObject getSimilarityMatrix(
 		String codebaseName,
-		String strategyName
+		String strategyName,
+		String similarityMatrixName
 	)
 		throws IOException, JSONException
 	{
-		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/strategies/" + strategyName + "/similarityMatrix.json");
+		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + strategyName + "/similarityMatrices" + similarityMatrixName);
 
 		JSONObject similarityMatrixJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
 
@@ -425,12 +433,14 @@ public class CodebaseManager {
 
 	public void writeSimilarityMatrix(
 		String codebaseName,
+		String strategyFolder,
 		String strategyName,
+		String similarityMatrixName,
 		JSONObject similarityMatrix
 	)
 		throws IOException, JSONException
 	{
-		FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + "/strategies/" + strategyName + "/similarityMatrix.json");
+		FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + strategyFolder + strategyName + "/similarityMatrices/" + similarityMatrixName);
 		file.write(similarityMatrix.toString(4));
 		file.close();
 	}
@@ -441,7 +451,7 @@ public class CodebaseManager {
 	)
 		throws IOException
 	{
-		String filePathname = CODEBASES_PATH + codebaseName + "/strategies/" + strategyName + "/dendrogramImage.png";
+		String filePathname = CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + strategyName + "/dendrogramImage.png";
 		Path filePath = Paths.get(filePathname);
 
 		if (Files.exists(filePath)) return Files.readAllBytes(filePath);
@@ -452,12 +462,13 @@ public class CodebaseManager {
 
 	public JSONObject getClusters(
 		String codebaseName,
+		String strategyFolder,
 		String strategyName,
 		String decompositionName
 	)
 		throws IOException, JSONException
 	{
-		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/strategies/" + strategyName + "/decompositions/" + decompositionName + "/clusters.json");
+		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + strategyFolder + strategyName + "/decompositions/" + decompositionName + "/clusters.json");
 
 		JSONObject clustersJSON = new JSONObject(IOUtils.toString(is, StandardCharsets.UTF_8));
 
@@ -489,16 +500,74 @@ public class CodebaseManager {
 		return new File(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json").exists();
 	}
 
-	public void writeAnalyserResults(
+	public synchronized void writeRecommendationResults(
 		String codebaseName,
-		HashMap analyserJSON
+		String strategyName,
+		JSONArray recommendationJSON
+	)
+		throws IOException, JSONException
+	{
+		FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + RECOMMEND_FOLDER + strategyName + "/recommendationResult.json");
+		file.write(recommendationJSON.toString(4));
+		file.close();
+	}
+
+	public Decomposition transferDecompositionFromRecommendation(
+		String codebaseName,
+		String recommendationStrategyName,
+		String recommendationDecompositionName,
+		String finalDecompositionName,
+		Strategy strategy
 	)
 		throws IOException
 	{
-		DefaultPrettyPrinter pp = new DefaultPrettyPrinter();
-		pp.indentArraysWith( DefaultIndenter.SYSTEM_LINEFEED_INSTANCE );
-		ObjectWriter writer = objectMapper.writer(pp);
-		writer.writeValue(new File(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json"), analyserJSON);
+
+		FileUtils.copyDirectory(
+			new File(CODEBASES_PATH + codebaseName + RECOMMEND_FOLDER + recommendationStrategyName + "/decompositions/" + recommendationDecompositionName),
+			new File(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + strategy.getName() + "/decompositions/" + finalDecompositionName)
+		);
+
+		Decomposition decomposition = getStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategy.getName(), finalDecompositionName);
+		decomposition.setName(finalDecompositionName);
+		decomposition.setStrategyName(strategy.getName());
+		strategy.addDecompositionName(decomposition.getName());
+
+		return decomposition;
+	}
+
+	public void transferSimilarityMatrixFromRecommendation(
+		String codebaseName,
+		String recommendationStrategyName,
+		String similarityMatrixName,
+		String finalSimilarityMatrixName,
+		Strategy strategy
+	)
+		throws IOException
+	{
+		File destination = new File(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + strategy.getName() + "/similarityMatrices/" + finalSimilarityMatrixName);
+
+		if (destination.exists())
+			return;
+
+		FileUtils.copyFile(
+			new File(CODEBASES_PATH + codebaseName + RECOMMEND_FOLDER + recommendationStrategyName + "/similarityMatrices/" + similarityMatrixName),
+			destination
+		);
+	}
+
+	public String getRecommendationResult(
+			String codebaseName,
+			String strategyName
+	)
+			throws IOException, JSONException
+	{
+		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + RECOMMEND_FOLDER + strategyName + "/recommendationResult.json");
+
+		String recommendationResultJSON = IOUtils.toString(is, "UTF-8");
+
+		is.close();
+
+		return recommendationResultJSON;
 	}
 
 	public HashMap<String, HashMap<String, Set<Short>>> getAnalyserCut(

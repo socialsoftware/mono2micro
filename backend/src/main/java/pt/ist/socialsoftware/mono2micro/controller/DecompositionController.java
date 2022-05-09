@@ -28,6 +28,7 @@ import java.util.Optional;
 
 import static pt.ist.socialsoftware.mono2micro.domain.source.Source.SourceType.ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy.StrategyType.*;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.STRATEGIES_FOLDER;
 
 @RestController
 @RequestMapping(value = "/mono2micro/codebase/{codebaseName}/strategy/{strategyName}")
@@ -47,7 +48,7 @@ public class DecompositionController {
 		logger.debug("createDecomposition");
 
 		try {
-			Strategy strategy = codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
+			Strategy strategy = codebaseManager.getCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyName);
 			ClusteringAlgorithm clusteringAlgorithm = ClusteringAlgorithmFactory.getFactory().getClusteringAlgorithm(strategy.getType());
 			clusteringAlgorithm.createDecomposition(strategy, requestDto);
 
@@ -86,7 +87,7 @@ public class DecompositionController {
 					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			}
 
-			Strategy strategy = codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
+			Strategy strategy = codebaseManager.getCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyName);
 			ClusteringAlgorithm clusteringAlgorithm = ClusteringAlgorithmFactory.getFactory().getClusteringAlgorithm(strategy.getType());
 			clusteringAlgorithm.createDecomposition(strategy, requestDto);
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -135,6 +136,7 @@ public class DecompositionController {
 			return new ResponseEntity<>(
 				codebaseManager.getStrategyDecomposition(
 					codebaseName,
+					STRATEGIES_FOLDER,
 					strategyName,
 					decompositionName
 				),
@@ -157,9 +159,9 @@ public class DecompositionController {
 
 		try {
 			codebaseManager.deleteStrategyDecomposition(codebaseName, strategyName, decompositionName);
-			Strategy strategy = codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
+			Strategy strategy = codebaseManager.getCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyName);
 			strategy.removeDecompositionName(decompositionName);
-			codebaseManager.writeCodebaseStrategy(codebaseName, strategy);
+			codebaseManager.writeCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategy);
 
 			return new ResponseEntity<>(HttpStatus.OK);
 
@@ -181,10 +183,11 @@ public class DecompositionController {
 		try {
 
 			// TODO: abstract strategy call to make this a generic function, probably needs decompositions with subclasses
-			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, strategyName);
+			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyName);
 
 			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
 				codebaseName,
+				STRATEGIES_FOLDER,
 				strategyName,
 				decompositionName
 			);

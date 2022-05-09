@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.STRATEGIES_FOLDER;
+
 @RestController
 @RequestMapping(value = "/mono2micro/codebase/{codebaseName}")
 public class StrategyController {
@@ -32,11 +34,11 @@ public class StrategyController {
 		logger.debug("Create Strategy");
 
 		try {
-			List<Strategy> strategies = codebaseManager.getCodebaseStrategies(codebaseName, Collections.singletonList(strategyInformation.getType()));
+			List<Strategy> strategies = codebaseManager.getCodebaseStrategies(codebaseName, STRATEGIES_FOLDER, Collections.singletonList(strategyInformation.getType()));
 			if (strategies.stream().anyMatch(strategy -> strategy.equals(strategyInformation)))
 				return new ResponseEntity<>(HttpStatus.CREATED);
 
-			Strategy strategy = codebaseManager.createCodebaseStrategy(codebaseName, strategyInformation);
+			Strategy strategy = codebaseManager.createCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyInformation);
 
 			SimilarityGenerator similarityGenerator = SimilarityGeneratorFactory.getFactory().getSimilarityGenerator(strategy.getType());
 			ClusteringAlgorithm clusteringAlgorithm = ClusteringAlgorithmFactory.getFactory().getClusteringAlgorithm(strategy.getType());
@@ -44,7 +46,7 @@ public class StrategyController {
 			similarityGenerator.createSimilarityMatrix(strategy);
 			clusteringAlgorithm.createDendrogram(strategy); //Not every strategy creates a dedrogram, in that case leave this method empty in the implementation
 
-			codebaseManager.writeCodebaseStrategy(codebaseName, strategy);
+			codebaseManager.writeCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategy);
 
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		} catch (Exception e) {

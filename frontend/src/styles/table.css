@@ -2,6 +2,11 @@ a {
     text-decoration: none;
 }
 
+#modal-table {
+    min-width: 50%;
+    max-width: 70%;
+}
+
 #home {
     margin-left: 1rem;
 }

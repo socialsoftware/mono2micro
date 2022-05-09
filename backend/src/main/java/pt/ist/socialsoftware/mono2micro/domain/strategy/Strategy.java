@@ -10,7 +10,8 @@ import static pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy.Strategy
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = AccessesSciPyStrategy.class, name = ACCESSES_SCIPY)
+        @JsonSubTypes.Type(value = AccessesSciPyStrategy.class, name = ACCESSES_SCIPY),
+        @JsonSubTypes.Type(value = RecommendAccessesSciPyStrategy.class, name = RECOMMENDATION_ACCESSES_SCIPY)
 })
 public abstract class Strategy {
     private String name;
@@ -45,11 +46,11 @@ public abstract class Strategy {
         this.decompositionsNames = decompositionsNames;
     }
 
-    public void addDecompositionName(String decompositionName) {
+    public synchronized void addDecompositionName(String decompositionName) {
         this.decompositionsNames.add(decompositionName);
     }
 
-    public void removeDecompositionName(String decompositionName) {
+    public synchronized void removeDecompositionName(String decompositionName) {
         this.decompositionsNames.remove(decompositionName);
     }
 
@@ -58,5 +59,6 @@ public abstract class Strategy {
 
     public static class StrategyType {
         public static final String ACCESSES_SCIPY = "ACCESSES_SCIPY";
+        public static final String RECOMMENDATION_ACCESSES_SCIPY = "RECOMMENDATION_ACCESSES_SCIPY";
     }
 }

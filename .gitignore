@@ -3,6 +3,9 @@
 # codebases
 codebases
 
+#python
+__pycache__
+
 # misc
 .DS_Store
 .env.local

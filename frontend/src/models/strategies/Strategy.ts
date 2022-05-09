@@ -23,9 +23,11 @@ export default abstract class Strategy {
 
 
 export enum StrategyType {
+    RECOMMENDATION_ACCESSES_SCIPY = 'RECOMMENDATION_ACCESSES_SCIPY', // Faster method of creating decompositions based on codebase accesses and SciPy clustering algorithm
     ACCESSES_SCIPY = 'ACCESSES_SCIPY',
 }
 
 export enum StrategyDescription {
     ACCESSES_SCIPY = 'Accesses-Based Similarity and SciPy Clustering Algorithm',
+    RECOMMENDATION_ACCESSES_SCIPY = 'Accesses-Based Similarity and SciPy Clustering Algorithm',
 }

@@ -35,8 +35,6 @@ public class CohesionMetric extends Metric<Float> {
                 decomposition.getFunctionalities().values()
         );
 
-        System.out.println("Calculating graph cohesion...");
-
         float totalCohesion = 0;
 
         for (Cluster cluster : decomposition.getClusters().values()) {

@@ -39,8 +39,6 @@ public class ComplexityMetric extends Metric<Float> {
                 decomposition.getFunctionalities().values()
         );
 
-        System.out.println("Calculating decomposition complexity...");
-
         float complexity;
 
         // Set cluster complexity

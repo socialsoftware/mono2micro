@@ -70,6 +70,47 @@ export class RepositoryService {
         );
     }
 
+    // Recommendation
+    recommendation(
+        codebaseName: string,
+        strategyRecommendation: Strategy
+    ) {
+        return this.axios.put("/codebase/" + codebaseName + "/recommendation", strategyRecommendation)
+            .then((response) => {return StrategyFactory.getStrategy(response.data)});
+    }
+
+    getRecommendationResult(
+        codebaseName: string,
+        strategyName: string
+    ) {
+        return this.axios.get("/codebase/" + codebaseName + "/recommendationStrategy/" + strategyName + "/getRecommendationResult")
+            .then(response => {
+                if (response.data === "")
+                    return [];
+                else return response.data;
+            });
+    }
+
+    createRecommendationDecompositions(
+        codebaseName: string,
+        strategyRecommendation: string,
+        decompositionNames: string[]
+    ) {
+        const data = new FormData();
+        for (const name of decompositionNames)
+            data.append('decompositionNames', name);
+
+        // unfortunately, this is needed so that data.append does not interpret the commas as an array separation
+        data.append('decompositionNames', "");
+
+        return this.axios.post<null>("/codebase/" + codebaseName + "/recommendationStrategy/" + strategyRecommendation + "/createDecompositions", data);
+    }
+
+    getRecommendationStrategy(codebaseName: string, strategyName: string) {
+        return this.axios.get<Strategy>("/codebase/" + codebaseName + "/recommendationStrategy/" + strategyName)
+            .then((response) => {return StrategyFactory.getStrategy(response.data)});
+    }
+
     //Codebases
     getCodebases(fieldNames?: string[]) {
         return this.axios.get<Codebase[]>(addSearchParamsToUrl(

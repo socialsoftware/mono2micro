@@ -21,9 +21,6 @@ const Header: FunctionComponent = () => {
                     <Nav.Link href="/analysis">
                         Microservice Analysis
                     </Nav.Link>
-                    <Nav.Link href="/analyser">
-                        Analyser
-                    </Nav.Link>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>

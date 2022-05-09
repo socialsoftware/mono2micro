@@ -4,10 +4,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import pt.ist.socialsoftware.mono2micro.domain.source.AccessesSource;
 import pt.ist.socialsoftware.mono2micro.domain.strategy.AccessesSciPyStrategy;
+import pt.ist.socialsoftware.mono2micro.domain.strategy.RecommendAccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
+import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 
@@ -16,12 +18,14 @@ import java.util.*;
 
 import static pt.ist.socialsoftware.mono2micro.domain.source.Source.SourceType.ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy.StrategyType.*;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 
 public class AccessesSimilarityGenerator implements SimilarityGenerator {
 
     private final Set<Short> entities = new TreeSet<>();
     private final Map<String, Integer> e1e2PairCount = new HashMap<>();
     private final Map<Short, List<Pair<String, Byte>>> entityFunctionalities = new HashMap<>(); // Map<entityID, List<Pair<functionalityName, accessMode>>>
+    private final CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
 
     public AccessesSimilarityGenerator() {}
@@ -32,41 +36,50 @@ public class AccessesSimilarityGenerator implements SimilarityGenerator {
             case ACCESSES_SCIPY:
                 createSimilarityMatrixForSciPy((AccessesSciPyStrategy) strategy);
                 break;
+            case RECOMMENDATION_ACCESSES_SCIPY:
+                createSimilarityMatricesForSciPy((RecommendAccessesSciPyStrategy) strategy);
+                break;
             default:
-                throw new RuntimeException("No clustering algorithm type provided. Cannot infer the matrix format.");
+                throw new RuntimeException("No strategy type provided. Cannot infer the matrix format.");
         }
 
     }
 
+    //#############################################
+    // ACCESSES_SCIPY
+    //#############################################
 
     private void createSimilarityMatrixForSciPy(AccessesSciPyStrategy strategy) throws Exception {
-        CodebaseManager codebaseManager = CodebaseManager.getInstance();
-
-        fillMatrix(strategy);
-        JSONObject matrixJSON = getSciPyMatrixAsJSONObject(strategy);
-        codebaseManager.writeSimilarityMatrix(strategy.getCodebaseName(), strategy.getName(), matrixJSON);
+        fillMatrix(strategy.getCodebaseName(), strategy.getProfile(), strategy.getTracesMaxLimit(), strategy.getTraceType());
+        JSONObject matrixJSON = getSciPyMatrixAsJSONObject(
+                getRawMatrix(),
+                strategy.getAccessMetricWeight(),
+                strategy.getWriteMetricWeight(),
+                strategy.getReadMetricWeight(),
+                strategy.getSequenceMetricWeight(),
+                strategy.getLinkageType());
+        codebaseManager.writeSimilarityMatrix(strategy.getCodebaseName(), STRATEGIES_FOLDER, strategy.getName(), "similarityMatrix.json", matrixJSON);
     }
 
-    private void fillMatrix(AccessesSciPyStrategy strategy)
+    private void fillMatrix(String codebaseName, String profile, int tracesMaxLimit, Constants.TraceType traceType)
         throws IOException
     {
         System.out.println("Creating similarity matrix...");
 
-        CodebaseManager codebaseManager = CodebaseManager.getInstance();
-        AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(strategy.getCodebaseName(), ACCESSES);
+        AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
 
         FunctionalityTracesIterator iter = new FunctionalityTracesIterator(
                 source.getInputFilePath(),
-                strategy.getTracesMaxLimit()
+                tracesMaxLimit
         );
 
         TraceDto t;
-        Set<String> profileFunctionalities = source.getProfile(strategy.getProfile());
+        Set<String> profileFunctionalities = source.getProfile(profile);
 
         for (String functionalityName : profileFunctionalities) {
             iter.nextFunctionalityWithName(functionalityName);
 
-            switch (strategy.getTraceType()) {
+            switch (traceType) {
                 case LONGEST:
                     t = iter.getLongestTrace();
 
@@ -91,46 +104,6 @@ public class AccessesSimilarityGenerator implements SimilarityGenerator {
         }
 
         entities.addAll(entityFunctionalities.keySet());
-    }
-
-    private JSONObject getSciPyMatrixAsJSONObject(AccessesSciPyStrategy strategy)
-            throws Exception
-    {
-        JSONObject matrixData = new JSONObject();
-        JSONArray similarityMatrixJSON = new JSONArray();
-
-        int maxNumberOfPairs = getMaxNumberOfPairs(e1e2PairCount);
-
-        for (short e1ID : entities) {
-            JSONArray matrixRow = new JSONArray();
-
-            for (short e2ID : entities) {
-                if (e1ID == e2ID) {
-                    matrixRow.put(1);
-                    continue;
-                }
-
-                float[] weights = calculateSimilarityMatrixWeights(
-                        e1ID,
-                        e2ID,
-                        maxNumberOfPairs
-                );
-
-                float metric = weights[0] * strategy.getAccessMetricWeight() / 100 +
-                        weights[1] * strategy.getWriteMetricWeight() / 100 +
-                        weights[2] * strategy.getReadMetricWeight() / 100 +
-                        weights[3] * strategy.getSequenceMetricWeight() / 100;
-
-                matrixRow.put(metric);
-            }
-            similarityMatrixJSON.put(matrixRow);
-        }
-
-        matrixData.put("linkageType", strategy.getLinkageType());
-        matrixData.put("matrix", similarityMatrixJSON);
-        matrixData.put("entities", entities);
-
-        return matrixData;
     }
 
     private static int getMaxNumberOfPairs(Map<String,Integer> e1e2PairCount) {
@@ -248,5 +221,142 @@ public class AccessesSimilarityGenerator implements SimilarityGenerator {
                 }
             }
         }
+    }
+
+    public float[][][] getRawMatrix() {
+        int maxNumberOfPairs = getMaxNumberOfPairs(e1e2PairCount);
+
+        float[][][] rawMatrix = new float[entities.size()][entities.size()][4];
+
+        int i = 0;
+        for (short e1ID : entities) {
+            int j = 0;
+
+            for (short e2ID : entities) {
+                if (e1ID == e2ID) {
+                    rawMatrix[i][j][0] = rawMatrix[i][j][1] = rawMatrix[i][j][2] = rawMatrix[i][j][3] = 1;
+                    j++;
+                    continue;
+                }
+
+                float[] weights = calculateSimilarityMatrixWeights(e1ID, e2ID, maxNumberOfPairs);
+
+                rawMatrix[i][j][0] = weights[0];
+                rawMatrix[i][j][1] = weights[1];
+                rawMatrix[i][j][2] = weights[2];
+                rawMatrix[i][j][3] = weights[3];
+                j++;
+            }
+            i++;
+        }
+
+        return rawMatrix;
+    }
+
+    private JSONObject getSciPyMatrixAsJSONObject(
+            float[][][] matrix,
+            float accessMetricWeight,
+            float writeMetricWeight,
+            float readMetricWeight,
+            float sequenceMetricWeight,
+            String linkageType
+    ) throws Exception {
+        JSONObject matrixData = new JSONObject();
+        JSONArray similarityMatrixJSON = new JSONArray();
+
+        int i = 0;
+        for (short e1ID : entities) {
+            JSONArray matrixRow = new JSONArray();
+            int j = 0;
+
+            for (short e2ID : entities) {
+                if (e1ID == e2ID) {
+                    matrixRow.put(1);
+                    j++;
+                    continue;
+                }
+
+                float metric = matrix[i][j][0] * accessMetricWeight / 100 +
+                        matrix[i][j][1] * writeMetricWeight / 100 +
+                        matrix[i][j][2] * readMetricWeight / 100 +
+                        matrix[i][j][3] * sequenceMetricWeight / 100;
+
+                matrixRow.put(metric);
+                j++;
+            }
+            similarityMatrixJSON.put(matrixRow);
+            i++;
+        }
+
+        matrixData.put("linkageType", linkageType);
+        matrixData.put("matrix", similarityMatrixJSON);
+        matrixData.put("entities", entities);
+
+        return matrixData;
+    }
+
+    //#############################################
+    // RECOMMENDATION_ACCESSES_SCIPY
+    //#############################################
+
+    private void createSimilarityMatricesForSciPy(RecommendAccessesSciPyStrategy strategy) throws Exception {
+        int INTERVAL = 100, STEP = 10;
+
+        fillMatrix(strategy.getCodebaseName(), strategy.getProfile(), strategy.getTracesMaxLimit(), strategy.getTraceType());
+
+        // needed later during clustering algorithm
+        strategy.setNumberOfEntities(entities.size());
+
+        float[][][] rawMatrix = getRawMatrix();
+
+        for (int a = INTERVAL, remainder; a >= 0; a -= STEP) {
+            remainder = INTERVAL - a;
+            if (remainder == 0)
+                createAndWriteSimilarityMatrix(strategy, rawMatrix, a, 0, 0, 0);
+            else {
+                for (int w = remainder, remainder2; w >= 0; w -= STEP) {
+                    remainder2 = remainder - w;
+                    if (remainder2 == 0)
+                        createAndWriteSimilarityMatrix(strategy, rawMatrix, a, w, 0, 0);
+                    else {
+                        for (int r = remainder2, remainder3; r >= 0; r -= STEP) {
+                            remainder3 = remainder2 - r;
+                            createAndWriteSimilarityMatrix(strategy, rawMatrix, a, w, r, remainder3);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void createAndWriteSimilarityMatrix(
+            RecommendAccessesSciPyStrategy strategy,
+            float[][][] rawMatrix,
+            float accessMetricWeight,
+            float writeMetricWeight,
+            float readMetricWeight,
+            float sequenceMetricWeight
+    ) throws Exception {
+        JSONObject matrixJSON = getSciPyMatrixAsJSONObject(
+                rawMatrix,
+                accessMetricWeight,
+                writeMetricWeight,
+                readMetricWeight,
+                sequenceMetricWeight,
+                strategy.getLinkageType());
+
+        codebaseManager.writeSimilarityMatrix(
+                strategy.getCodebaseName(),
+                RECOMMEND_FOLDER,
+                strategy.getName(),
+                getWeightAsString(accessMetricWeight) + "," +
+                        getWeightAsString(writeMetricWeight) + "," +
+                        getWeightAsString(readMetricWeight) + "," +
+                        getWeightAsString(sequenceMetricWeight) + ".json",
+                matrixJSON);
+    }
+
+    private String getWeightAsString(float weight) {
+        return Float.toString(weight).replaceAll("\\.?0*$", "");
     }
 }

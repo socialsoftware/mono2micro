@@ -9,26 +9,27 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import {useParams} from "react-router-dom";
 import {AccessesSciPyStrategyForm} from "./forms/AccessesSciPyStrategyForm";
 import {RepositoryService} from "../../services/RepositoryService";
-import HttpStatus from "http-status-codes";
 import {CollectorFactory} from "../../models/collectors/CollectorFactory";
 import {StrategyFactory} from "../../models/strategies/StrategyFactory";
 import {StrategyDescription, StrategyType} from "../../models/strategies/Strategy";
-import Button from "react-bootstrap/Button";
 
 export const Strategies = () => {
 
     let { codebaseName } = useParams();
 
-    const [isUploaded, setIsUploaded] = useState("");
     const [collectors, setCollectors] = useState([]);
     const [strategy, setStrategy] = useState(undefined);
     const [strategies, setStrategies] = useState([]);
+    const [updateStrategies, setUpdateStrategies] = useState({});
 
     // Executes on mount
     useEffect(() => {
         loadCollectors();
-        loadStrategies();
     }, []);
+
+    useEffect(() => {
+        loadStrategies();
+    }, [updateStrategies]);
 
     function loadCollectors() {
         const service = new RepositoryService();
@@ -49,30 +50,6 @@ export const Strategies = () => {
             codebaseName,
             allPossibleStrategies
         ).then(response => setStrategies(response));
-    }
-
-    function handleSubmit(event) {
-        event.preventDefault();
-        setIsUploaded("Uploading...");
-
-        const service = new RepositoryService();
-        service.createStrategy(strategy)
-            .then(response => {
-                if (response.status === HttpStatus.CREATED) {
-                    loadStrategies();
-                    setStrategy(undefined);
-                    setIsUploaded("");
-                } else {
-                    setIsUploaded("Upload failed.");
-                }
-            })
-            .catch(error => {
-                if (error.response !== undefined && error.response.status === HttpStatus.UNAUTHORIZED) {
-                    setIsUploaded("Upload failed. Name already exists.");
-                } else {
-                    setIsUploaded("Upload failed.");
-                }
-            });
     }
 
     function handleDeleteStrategy(strategy) {
@@ -143,37 +120,20 @@ export const Strategies = () => {
         <div>
             {renderBreadCrumbs()}
 
-            <Form onSubmit={handleSubmit} className="mb-3">
-                { renderCreateStrategies() }
+            { renderCreateStrategies() }
 
-                {/*Add render of each strategy like the next line to request the required elements for its creation*/}
-                {
-                    strategy !== undefined && strategy.type === StrategyType.ACCESSES_SCIPY &&
-                    <AccessesSciPyStrategyForm
-                        strategy={strategy}
-                        setStrategy={setStrategy}
-                    />
-                }
+            {/*Add render of each strategy like the next line to request the required elements for its creation*/}
+            {
+                strategy !== undefined &&
+                (strategy.type === StrategyType.ACCESSES_SCIPY || strategy.type === StrategyType.RECOMMENDATION_ACCESSES_SCIPY) &&
+                <AccessesSciPyStrategyForm
+                    strategy={strategy}
+                    setStrategy={setStrategy}
+                    setUpdateStrategies={setUpdateStrategies}
+                />
+            }
 
-                {
-                    strategy !== undefined &&
-                    <Form.Group as={Row} className="align-items-center">
-                        <Col sm={{offset: 2}}>
-                            <Button
-                                type="submit"
-                                disabled={isUploaded === "Uploading..." || !strategy.readyToSubmit()}
-                            >
-                                Create Strategy
-                            </Button>
-                            <Form.Text className="ms-2">
-                                {isUploaded}
-                            </Form.Text>
-                        </Col>
-                    </Form.Group>
-                }
-
-                {strategies.length !== 0 && renderStrategies()}
-            </Form>
+            {strategies.length !== 0 && renderStrategies()}
         </div>
     )
 }

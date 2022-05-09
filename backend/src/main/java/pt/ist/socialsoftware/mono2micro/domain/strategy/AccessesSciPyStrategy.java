@@ -19,6 +19,21 @@ public class AccessesSciPyStrategy extends Strategy {
 
     public AccessesSciPyStrategy() {}
 
+    public AccessesSciPyStrategy(RecommendAccessesSciPyStrategy recommendStrategy, String decompositionName) {
+        String[] weights = decompositionName.split(",");
+        this.accessMetricWeight = Float.parseFloat(weights[0]);
+        this.writeMetricWeight = Float.parseFloat(weights[1]);
+        this.readMetricWeight = Float.parseFloat(weights[2]);
+        this.sequenceMetricWeight = Float.parseFloat(weights[3]);
+
+        this.setCodebaseName(recommendStrategy.getCodebaseName());
+        this.profile = recommendStrategy.getProfile();
+        this.tracesMaxLimit = recommendStrategy.getTracesMaxLimit();
+        this.traceType = recommendStrategy.getTraceType();
+        this.linkageType = recommendStrategy.getLinkageType();
+    }
+
+    @Override
     public String getType() {
         return ACCESSES_SCIPY;
     }
@@ -94,7 +109,8 @@ public class AccessesSciPyStrategy extends Strategy {
             return false;
 
         AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) obj;
-        return strategy.getProfile().equals(this.profile) &&
+        return strategy.getCodebaseName().equals(this.getCodebaseName()) &&
+                strategy.getProfile().equals(this.profile) &&
                 (strategy.getTracesMaxLimit() == this.tracesMaxLimit) &&
                 (strategy.getTraceType() == this.traceType) &&
                 (strategy.getAccessMetricWeight() == this.accessMetricWeight) &&

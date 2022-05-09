@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.STRATEGIES_FOLDER;
+
 @RestController
 @RequestMapping(value = "/mono2micro")
 public class CodebaseController {
@@ -75,7 +77,7 @@ public class CodebaseController {
 		logger.debug("getCodebaseStrategies");
 
 		try {
-			return new ResponseEntity<>(codebaseManager.getCodebaseStrategies(codebaseName, strategyTypes), HttpStatus.OK);
+			return new ResponseEntity<>(codebaseManager.getCodebaseStrategies(codebaseName, STRATEGIES_FOLDER, strategyTypes), HttpStatus.OK);
 
 		} catch (Exception e) {
 			e.printStackTrace();

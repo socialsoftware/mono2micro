@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 
 def createDendrogram(codebasesPath, codebaseName, strategyName):
-    with open(codebasesPath + codebaseName + "/strategies/" + strategyName + "/similarityMatrix.json") as f:
+    with open(codebasesPath + codebaseName + "/strategies/" + strategyName + "/similarityMatrices/similarityMatrix.json") as f:
         similarityMatrix = json.load(f)
 
     entities = similarityMatrix["entities"]

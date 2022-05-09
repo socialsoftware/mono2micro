@@ -30,8 +30,6 @@ public class PerformanceMetric extends Metric<Float> { // the average of the num
     }
 
     private float calculateMetricAccessesSciPy(AccessesSciPyDecomposition decomposition) {
-        System.out.println("Calculating decomposition performance...");
-
         float performance = 0;
 
         for (Functionality functionality : decomposition.getFunctionalities().values()) {
