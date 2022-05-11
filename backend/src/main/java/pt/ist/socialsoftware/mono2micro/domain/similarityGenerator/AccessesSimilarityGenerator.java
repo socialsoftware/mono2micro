@@ -302,26 +302,32 @@ public class AccessesSimilarityGenerator implements SimilarityGenerator {
     private void createSimilarityMatricesForSciPy(RecommendAccessesSciPyStrategy strategy) throws Exception {
         int INTERVAL = 100, STEP = 10;
 
-        fillMatrix(strategy.getCodebaseName(), strategy.getProfile(), strategy.getTracesMaxLimit(), strategy.getTraceType());
+        for (TraceType traceType : strategy.getTraceTypes()) {
+            for (String linkageType : strategy.getLinkageTypes()) {
+                if (strategy.containsCombination(traceType, linkageType))
+                    continue;
+                fillMatrix(strategy.getCodebaseName(), strategy.getProfile(), strategy.getTracesMaxLimit(), traceType);
 
-        // needed later during clustering algorithm
-        strategy.setNumberOfEntities(entities.size());
+                // needed later during clustering algorithm
+                strategy.setNumberOfEntities(entities.size());
 
-        float[][][] rawMatrix = getRawMatrix();
+                float[][][] rawMatrix = getRawMatrix();
 
-        for (int a = INTERVAL, remainder; a >= 0; a -= STEP) {
-            remainder = INTERVAL - a;
-            if (remainder == 0)
-                createAndWriteSimilarityMatrix(strategy, rawMatrix, a, 0, 0, 0);
-            else {
-                for (int w = remainder, remainder2; w >= 0; w -= STEP) {
-                    remainder2 = remainder - w;
-                    if (remainder2 == 0)
-                        createAndWriteSimilarityMatrix(strategy, rawMatrix, a, w, 0, 0);
+                for (int a = INTERVAL, remainder; a >= 0; a -= STEP) {
+                    remainder = INTERVAL - a;
+                    if (remainder == 0)
+                        createAndWriteSimilarityMatrix(strategy, traceType, linkageType, rawMatrix, a, 0, 0, 0);
                     else {
-                        for (int r = remainder2, remainder3; r >= 0; r -= STEP) {
-                            remainder3 = remainder2 - r;
-                            createAndWriteSimilarityMatrix(strategy, rawMatrix, a, w, r, remainder3);
+                        for (int w = remainder, remainder2; w >= 0; w -= STEP) {
+                            remainder2 = remainder - w;
+                            if (remainder2 == 0)
+                                createAndWriteSimilarityMatrix(strategy, traceType, linkageType, rawMatrix, a, w, 0, 0);
+                            else {
+                                for (int r = remainder2, remainder3; r >= 0; r -= STEP) {
+                                    remainder3 = remainder2 - r;
+                                    createAndWriteSimilarityMatrix(strategy, traceType, linkageType, rawMatrix, a, w, r, remainder3);
+                                }
+                            }
                         }
                     }
                 }
@@ -331,6 +337,8 @@ public class AccessesSimilarityGenerator implements SimilarityGenerator {
 
     private void createAndWriteSimilarityMatrix(
             RecommendAccessesSciPyStrategy strategy,
+            TraceType traceType,
+            String linkageType,
             float[][][] rawMatrix,
             float accessMetricWeight,
             float writeMetricWeight,
@@ -343,7 +351,7 @@ public class AccessesSimilarityGenerator implements SimilarityGenerator {
                 writeMetricWeight,
                 readMetricWeight,
                 sequenceMetricWeight,
-                strategy.getLinkageType());
+                linkageType);
 
         codebaseManager.writeSimilarityMatrix(
                 strategy.getCodebaseName(),
@@ -352,7 +360,10 @@ public class AccessesSimilarityGenerator implements SimilarityGenerator {
                 getWeightAsString(accessMetricWeight) + "," +
                         getWeightAsString(writeMetricWeight) + "," +
                         getWeightAsString(readMetricWeight) + "," +
-                        getWeightAsString(sequenceMetricWeight) + ".json",
+                        getWeightAsString(sequenceMetricWeight) + "," +
+                        traceType + "," +
+                        linkageType +
+                        ".json",
                 matrixJSON);
     }
 

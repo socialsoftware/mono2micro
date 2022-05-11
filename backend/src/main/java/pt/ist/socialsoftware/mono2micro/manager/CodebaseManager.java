@@ -554,12 +554,26 @@ public class CodebaseManager {
 			destination
 		);
 	}
-
-	public String getRecommendationResult(
-			String codebaseName,
-			String strategyName
+	public JSONArray getRecommendationResultAsJSON(
+		String codebaseName,
+		String strategyName
 	)
-			throws IOException, JSONException
+		throws IOException, JSONException
+	{
+		File recommendationResult = new File(CODEBASES_PATH + codebaseName + RECOMMEND_FOLDER + strategyName + "/recommendationResult.json");
+		if (recommendationResult.exists()) {
+			InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + RECOMMEND_FOLDER + strategyName + "/recommendationResult.json");
+
+			return new JSONArray(IOUtils.toString(is, "UTF-8"));
+		}
+		else return new JSONArray();
+	}
+
+	public synchronized String getRecommendationResult(
+		String codebaseName,
+		String strategyName
+	)
+		throws IOException, JSONException
 	{
 		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + RECOMMEND_FOLDER + strategyName + "/recommendationResult.json");
 

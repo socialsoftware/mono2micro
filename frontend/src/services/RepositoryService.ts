@@ -73,9 +73,9 @@ export class RepositoryService {
     // Recommendation
     recommendation(
         codebaseName: string,
-        strategyRecommendation: Strategy
+        requestedStrategyRecommendation: Strategy
     ) {
-        return this.axios.put("/codebase/" + codebaseName + "/recommendation", strategyRecommendation)
+        return this.axios.put("/codebase/" + codebaseName + "/recommendation", requestedStrategyRecommendation)
             .then((response) => {return StrategyFactory.getStrategy(response.data)});
     }
 

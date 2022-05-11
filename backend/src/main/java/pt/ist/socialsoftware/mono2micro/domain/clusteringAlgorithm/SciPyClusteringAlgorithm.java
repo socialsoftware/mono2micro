@@ -16,10 +16,10 @@ import pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy;
 import pt.ist.socialsoftware.mono2micro.dto.decompositionDto.AccessesSciPyRequestDto;
 import pt.ist.socialsoftware.mono2micro.dto.decompositionDto.RequestDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
+import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.BufferedInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -225,20 +225,26 @@ public class SciPyClusteringAlgorithm implements ClusteringAlgorithm {
         else throw new RuntimeException("Number of entities is too small (less than 4)");
 
         List<String> similarityMatricesNames = codebaseManager.getSimilarityMatricesNames(strategy.getCodebaseName(), RECOMMEND_FOLDER, strategy.getName());
-        JSONArray recommendationJSON = new JSONArray();
+        JSONArray recommendationJSON = codebaseManager.getRecommendationResultAsJSON(strategy.getCodebaseName(), strategy.getName());
         int numberOfTotalSteps = similarityMatricesNames.size() * (1 + maxClusters - MIN_CLUSTERS)/CLUSTER_STEP;
 
         System.out.println("Number of decompositions to be made: " + numberOfTotalSteps);
 
         similarityMatricesNames.parallelStream().forEach(similarityMatrixFile -> {
+
+            //Name captured from the similarity matrix used to produce the cut
+            String similarityMatrixName = similarityMatrixFile.substring(0, similarityMatrixFile.lastIndexOf('.'));
+            String[] properties = similarityMatrixName.split(",");
+            TraceType traceType = TraceType.valueOf(properties[4]);
+            String linkageType = properties[5];
+            if (strategy.containsCombination(traceType, linkageType))
+                return;
+
             for (int numberOfClusters = MIN_CLUSTERS; numberOfClusters <= maxClusters; numberOfClusters += CLUSTER_STEP) {
                 try {
                     AccessesSciPyDecomposition decomposition = new AccessesSciPyDecomposition();
                     decomposition.setCodebaseName(strategy.getCodebaseName());
                     decomposition.setStrategyName(strategy.getName());
-
-                    //Name captured from the similarity matrix used to produce the cut
-                    String similarityMatrixName = similarityMatrixFile.substring(0, similarityMatrixFile.lastIndexOf('.'));
 
                     //Properties of the cut
                     AccessesSciPyRequestDto cutDto = new AccessesSciPyRequestDto("N", numberOfClusters);
@@ -263,7 +269,7 @@ public class SciPyClusteringAlgorithm implements ClusteringAlgorithm {
                             source.getInputFilePath(),
                             source.getProfile(strategy.getProfile()),
                             strategy.getTracesMaxLimit(),
-                            strategy.getTraceType(),
+                            traceType,
                             false);
 
                     decomposition.calculateMetrics();
@@ -274,11 +280,13 @@ public class SciPyClusteringAlgorithm implements ClusteringAlgorithm {
                     JSONObject decompositionJSON = new JSONObject();
                     String[] weights = decomposition.getName().split(",");
                     decompositionJSON.put("name", decomposition.getName());
+                    decompositionJSON.put("traceType", traceType);
+                    decompositionJSON.put("linkageType", linkageType);
                     decompositionJSON.put("accessMetricWeight", weights[0]);
                     decompositionJSON.put("writeMetricWeight", weights[1]);
                     decompositionJSON.put("readMetricWeight", weights[2]);
                     decompositionJSON.put("sequenceMetricWeight", weights[3]);
-                    decompositionJSON.put("numberOfClusters", weights[4]);
+                    decompositionJSON.put("numberOfClusters", weights[6]);
 
                     decompositionJSON.put("maxClusterSize", decomposition.maxClusterSize());
 
@@ -290,7 +298,7 @@ public class SciPyClusteringAlgorithm implements ClusteringAlgorithm {
                     System.out.println("Decomposition " + recommendationJSON.length() + "/" + numberOfTotalSteps);
 
                     // Every 10 decompositions, updates the recommendation results file
-                    if (recommendationJSON.length() % 10 == 0)
+                    if (recommendationJSON.length() % 20 == 0)
                         codebaseManager.writeRecommendationResults(strategy.getCodebaseName(), strategy.getName(), recommendationJSON);
                 } catch (Exception e) {
                     e.printStackTrace();

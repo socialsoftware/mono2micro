@@ -5,20 +5,22 @@ import {TraceType} from "../../type-declarations/types.d";
 
 export default class RecommendAccessesSciPyStrategy extends Strategy {
     profile: string;
-    linkageType: string;
+    linkageTypes: string[];
     tracesMaxLimit: number;
-    traceType: TraceType;
+    traceTypes: TraceType[];
+    completed: boolean;
 
     constructor(strategy: any) {
         super(strategy.type, strategy.codebaseName, strategy.name, strategy.decompositionsNames);
-        this.profile =              strategy.profile                 ||     "Generic";
-        this.tracesMaxLimit =       strategy.tracesMaxLimit          ||     0;
-        this.traceType =            strategy.traceType               ||     TraceType.ALL;
-        this.linkageType =          strategy.linkageType             ||     "average";
+        this.profile =                  strategy.profile              ||     "Generic";
+        this.tracesMaxLimit =           strategy.tracesMaxLimit       ||     0;
+        this.traceTypes =               strategy.traceTypes           ||     [TraceType.ALL];
+        this.linkageTypes =             strategy.linkageTypes         ||     ["average"];
+        this.completed =                Boolean(strategy.completed)   ||     false;
     }
 
     readyToSubmit(): boolean {
-        return this.linkageType !== "" && this.profile !== "" && this.traceType !== "";
+        return this.linkageTypes.length !== 0 && this.profile !== "" && this.traceTypes.length !== 0;
     }
 
     copy(): Strategy {

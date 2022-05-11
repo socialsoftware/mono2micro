@@ -47,40 +47,73 @@ public class RecommendationController {
 	@RequestMapping(value = "/codebase/{codebaseName}/recommendation", method = RequestMethod.PUT)
 	public ResponseEntity<Strategy> recommendation(
 			@PathVariable String codebaseName,
-			@RequestBody Strategy strategyRecommendation
+			@RequestBody Strategy strategy
 	) {
 		logger.debug("recommendation");
 
 		try {
-			List<Strategy> strategies = codebaseManager.getCodebaseStrategies(codebaseName, RECOMMEND_FOLDER, Collections.singletonList(strategyRecommendation.getType()));
-
-			Strategy existingStrategy = strategies.stream().filter(strategy -> strategy.equals(strategyRecommendation)).findFirst().orElse(null);
-			if (existingStrategy != null)
-				return new ResponseEntity<>(existingStrategy, HttpStatus.CREATED);
-
-			Strategy strategy = codebaseManager.createCodebaseStrategy(codebaseName, RECOMMEND_FOLDER, strategyRecommendation);
-
-			// Executes the request in a fork to avoid blocking the user
-			ForkJoinPool.commonPool().submit(() -> {
-				try {
-					SimilarityGenerator similarityGenerator = SimilarityGeneratorFactory.getFactory().getSimilarityGenerator(strategy.getType());
-					ClusteringAlgorithm clusteringAlgorithm = ClusteringAlgorithmFactory.getFactory().getClusteringAlgorithm(strategy.getType());
-
-					similarityGenerator.createSimilarityMatrix(strategy);
-					clusteringAlgorithm.createDecomposition(strategy, null); // TODO, maybe give the chance of choosing the number of cuts
-
-					codebaseManager.writeCodebaseStrategy(codebaseName, RECOMMEND_FOLDER, strategy);
-					logger.debug("recommendation ended");
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			});
-
-			return new ResponseEntity<>(strategy, HttpStatus.OK);
+			switch (strategy.getType()) {
+				case Strategy.StrategyType.RECOMMENDATION_ACCESSES_SCIPY:
+					return recommendAccessesSciPy(codebaseName, (RecommendAccessesSciPyStrategy) strategy);
+				default:
+					throw new RuntimeException("Unknown recommendation type:" + strategy.getType());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
+	}
+
+	public ResponseEntity<Strategy> recommendAccessesSciPy(
+				String codebaseName,
+				RecommendAccessesSciPyStrategy strategyRecommendation
+	) throws IOException {
+		List<Strategy> strategies = codebaseManager.getCodebaseStrategies(codebaseName, RECOMMEND_FOLDER, Collections.singletonList(strategyRecommendation.getType()));
+
+		RecommendAccessesSciPyStrategy existingStrategy = (RecommendAccessesSciPyStrategy) strategies.stream()
+				.filter(strategy -> strategy.equals(strategyRecommendation)).findFirst().orElse(null);
+
+		RecommendAccessesSciPyStrategy strategy;
+		// Create from scratch
+		if (existingStrategy == null) {
+			strategyRecommendation.setCompleted(false);
+			strategyRecommendation.addCombinationsInProduction();
+			strategy = (RecommendAccessesSciPyStrategy) codebaseManager.createCodebaseStrategy(codebaseName, RECOMMEND_FOLDER, strategyRecommendation);
+		}
+		// Already satisfies the requirements
+		else {
+			existingStrategy.setTraceTypes(strategyRecommendation.getTraceTypes());
+			existingStrategy.setLinkageTypes(strategyRecommendation.getLinkageTypes());
+
+			if (existingStrategy.containsRequestedCombinations() || !existingStrategy.isCompleted())
+				return new ResponseEntity<>(existingStrategy, HttpStatus.CREATED);
+			// Adds to the already existing strategy
+			else {
+				existingStrategy.addCombinationsInProduction();
+				existingStrategy.setCompleted(false);
+				codebaseManager.writeCodebaseStrategy(codebaseName, RECOMMEND_FOLDER, existingStrategy);
+				strategy = existingStrategy;
+			}
+		}
+
+		// Executes the request in a fork to avoid blocking the user
+		ForkJoinPool.commonPool().submit(() -> {
+			try {
+				SimilarityGenerator similarityGenerator = SimilarityGeneratorFactory.getFactory().getSimilarityGenerator(strategy.getType());
+				ClusteringAlgorithm clusteringAlgorithm = ClusteringAlgorithmFactory.getFactory().getClusteringAlgorithm(strategy.getType());
+
+				similarityGenerator.createSimilarityMatrix(strategy);
+				clusteringAlgorithm.createDecomposition(strategy, null);
+
+				strategy.addProducedCombinations();
+				codebaseManager.writeCodebaseStrategy(codebaseName, RECOMMEND_FOLDER, strategy);
+				logger.debug("recommendation ended");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+
+		return new ResponseEntity<>(strategy, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/codebase/{codebaseName}/recommendationStrategy/{strategyName}/getRecommendationResult", method = RequestMethod.GET)
@@ -114,14 +147,17 @@ public class RecommendationController {
 			AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
 
 			for (String name: decompositionNames) {
-				String[] weights = name.split(",");
+				String[] properties = name.split(",");
 
-				if (weights.length != 5)
+				if (properties.length != 7)
 					continue;
+
+				TraceType traceType = TraceType.valueOf(properties[4]);
+				String linkageType = properties[5];
 
 				System.out.println("Creating decomposition with name: " + name);
 
-				AccessesSciPyStrategy strategyInformation = new AccessesSciPyStrategy(recommendationStrategy, name);
+				AccessesSciPyStrategy strategyInformation = new AccessesSciPyStrategy(recommendationStrategy, traceType, linkageType, name);
 
 				// Get or create the decomposition's strategy
 				List<Strategy> strategies = codebaseManager.getCodebaseStrategies(codebaseName, STRATEGIES_FOLDER, Collections.singletonList(strategyInformation.getType()));
@@ -132,7 +168,7 @@ public class RecommendationController {
 					codebaseManager.transferSimilarityMatrixFromRecommendation(
 							codebaseName,
 							recommendationStrategy.getName(),
-							weights[0] + "," + weights[1] + "," + weights[2] + "," + weights[3] + ".json",
+							properties[0] + "," + properties[1] + "," + properties[2] + "," + properties[3] + "," + properties[4] + "," + properties[5] + ".json",
 							"similarityMatrix.json",
 							strategy);
 
@@ -147,7 +183,7 @@ public class RecommendationController {
 								codebaseName,
 								recommendationStrategy.getName(),
 								name,
-								getDecompositionName(strategy, "N" + weights[4]),
+								getDecompositionName(strategy, "N" + properties[6]),
 								strategy);
 
 				// This is done since previous coupling dependencies mess up the results during 'setupFunctionalities'
@@ -165,8 +201,8 @@ public class RecommendationController {
 				// save strategy and decomposition
 				codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, decomposition.getStrategyName(), decomposition);
 				codebaseManager.writeCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategy);
-				logger.debug("decomposition creation ended");
 			}
+			logger.debug("decomposition creation ended");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

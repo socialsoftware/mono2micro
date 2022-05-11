@@ -15,23 +15,26 @@ import {StrategyFactory} from "../../../models/strategies/StrategyFactory";
 import {Modal, ModalBody, ModalFooter, ModalTitle} from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
-import filterFactory, {numberFilter} from 'react-bootstrap-table2-filter';
+import filterFactory, {numberFilter, textFilter} from 'react-bootstrap-table2-filter';
 
-const filter = numberFilter({placeholder: "filter"});
+const nFilter = numberFilter({placeholder: "filter"});
+const tFilter = textFilter({placeholder: "filter"});
 const sort = true;
 
 const decompositionInfo = [
-    {dataField: 'accessMetricWeight', text: 'Access Metric', filter, sort},
-    {dataField: 'writeMetricWeight', text: 'Write Metric', filter, sort},
-    {dataField: 'readMetricWeight', text: 'Read Metric', filter, sort},
-    {dataField: 'sequenceMetricWeight', text: 'Sequence Metric', filter, sort},
-    {dataField: 'numberOfClusters', text: 'Number Of Clusters', filter, sort},
-    {dataField: 'maxClusterSize', text: 'Max Cluster Size', filter, sort},
-    {dataField: 'Complexity', text: 'Complexity', filter, sort},
-    {dataField: 'Cohesion', text: 'Cohesion', filter, sort},
-    {dataField: 'Coupling', text: 'Coupling', filter, sort},
-    {dataField: 'Performance', text: 'Performance', filter, sort},
-    {dataField: 'Silhouette Score', text: 'Silhouette Score', filter, sort},
+    {dataField: 'traceType',                text: 'Trace Type',         filter: tFilter, sort},
+    {dataField: 'linkageType',              text: 'Linkage Type',       filter: tFilter, sort},
+    {dataField: 'accessMetricWeight',       text: 'Access Metric',      filter: nFilter, sort},
+    {dataField: 'writeMetricWeight',        text: 'Write Metric',       filter: nFilter, sort},
+    {dataField: 'readMetricWeight',         text: 'Read Metric',        filter: nFilter, sort},
+    {dataField: 'sequenceMetricWeight',     text: 'Sequence Metric',    filter: nFilter, sort},
+    {dataField: 'numberOfClusters',         text: 'Number Of Clusters', filter: nFilter, sort},
+    {dataField: 'maxClusterSize',           text: 'Max Cluster Size',   filter: nFilter, sort},
+    {dataField: 'Complexity',               text: 'Complexity',         filter: nFilter, sort},
+    {dataField: 'Cohesion',                 text: 'Cohesion',           filter: nFilter, sort},
+    {dataField: 'Coupling',                 text: 'Coupling',           filter: nFilter, sort},
+    {dataField: 'Performance',              text: 'Performance',        filter: nFilter, sort},
+    {dataField: 'Silhouette Score',         text: 'Silhouette Score',   filter: nFilter, sort},
 ];
 
 const pagination = paginationFactory({
@@ -41,6 +44,9 @@ const pagination = paginationFactory({
         {text: '5', value: 5},
         {text: '10', value: 10},
         {text: '15', value: 15},
+        {text: '50', value: 50},
+        {text: '100', value: 100},
+        {text: '200', value: 200},
     ],
     lastPageText: '>>',
     firstPageText: '<<',
@@ -129,6 +135,15 @@ export const AccessesSciPyStrategyForm = ({strategy, setStrategy, setUpdateStrat
         setStrategy(newStrategy);
     }
 
+    function handleChangeLinkageTypeCheckbox(event) {
+        let newStrategy = strategy.copy();
+        if (event.target.checked && !newStrategy.linkageTypes.includes(event.target.id))
+            newStrategy.linkageTypes.push(event.target.id);
+        else newStrategy.linkageTypes = newStrategy.linkageTypes.filter(l => l !== event.target.id);
+
+        setStrategy(newStrategy);
+    }
+
     function handleChangeProfile(profile) {
         let newStrategy = strategy.copy();
         newStrategy.profile = profile;
@@ -144,6 +159,15 @@ export const AccessesSciPyStrategyForm = ({strategy, setStrategy, setUpdateStrat
     function handleChangeTraceType(event) {
         let newStrategy = strategy.copy();
         newStrategy.traceType = event.target.value;
+        setStrategy(newStrategy);
+    }
+
+    function handleChangeTraceTypeCheckbox(event) {
+        let newStrategy = strategy.copy();
+        if (event.target.checked && !newStrategy.traceTypes.includes(event.target.value))
+            newStrategy.traceTypes.push(event.target.value);
+        else newStrategy.traceTypes = newStrategy.traceTypes.filter(l => l !== event.target.value);
+
         setStrategy(newStrategy);
     }
 
@@ -167,28 +191,34 @@ export const AccessesSciPyStrategyForm = ({strategy, setStrategy, setUpdateStrat
 
         service.recommendation(strategy.codebaseName, strategy)
             .then(recommendationStrategy => {
+                recommendationStrategy.traceTypes = strategy.traceTypes;
+                recommendationStrategy.linkageTypes = strategy.linkageTypes;
                 setStrategy(recommendationStrategy);
 
                 service.getRecommendationResult(recommendationStrategy.codebaseName, recommendationStrategy.name)
-                    .then(list => setRecommendedDecompositions(list));
+                    .then(list => {
+                        const filteredList = list.filter(item =>
+                            recommendationStrategy.traceTypes.includes(item.traceType) &&
+                            recommendationStrategy.linkageTypes.includes(item.linkageType));
+
+                        setRecommendedDecompositions(filteredList);
+                    });
             }
         );
     }
 
-    function reloadRecommendationList() {
-        service.getRecommendationResult(strategy.codebaseName, strategy.name)
-            .then(list => setRecommendedDecompositions(list));
-    }
-
     function handleCreateDecompositions() {
-        if (selectedDecompositions.selectionContext.selected.length === 0)
+        if (selectedDecompositions.selectionContext.selected.length === 0) {
             setIsSelected("No decomposition was selected");
+            return;
+        }
         else setIsSelected("Creating decompositions...");
 
         service.createRecommendationDecompositions(strategy.codebaseName, strategy.name, selectedDecompositions.selectionContext.selected)
-            .then(() => setUpdateStrategies({})).catch(() => setIsSelected("Error during decomposition's creation."));
-
-        setIsSelected("Decompositions created.")
+            .then(() => {
+                setUpdateStrategies({});
+                setIsSelected("Decompositions created.");
+            }).catch(() => setIsSelected("Error during decomposition's creation."));
     }
 
     function renderRecommendationList() {
@@ -206,8 +236,6 @@ export const AccessesSciPyStrategyForm = ({strategy, setStrategy, setUpdateStrat
                     This list can be refreshed to display more decompositions.<br/>
                     Click in the <em>Refresh</em> button to update the list.<br/>
                     Click in the <em>Submit</em> button to create de decompositions.
-                </ModalBody>
-                <ModalFooter>
                     <BootstrapTable
                         bootstrap4
                         keyField='name'
@@ -218,18 +246,26 @@ export const AccessesSciPyStrategyForm = ({strategy, setStrategy, setUpdateStrat
                         selectRow={selectRow}
                         ref={n => setSelectedDecompositions(n)}
                     />
-                    <Button className="mt-0 mb-3" variant="success" onClick={() => handleCreateDecompositions()}>
-                        Submit
-                    </Button>
-                    <Button className="mt-0 mb-3" variant="primary" onClick={() => reloadRecommendationList()}>
-                        Refresh
-                    </Button>
-                    <Button className="mt-0 mb-3" variant="secondary" onClick={() => closePopup()}>
-                        Close
-                    </Button>
-                    <Form.Text className="ms-2">
-                        {isSelected}
-                    </Form.Text>
+                </ModalBody>
+                <ModalFooter>
+                    <div className="flex-column">
+                        <div className="flex-row">
+                            <Button className="me-2" variant="success" onClick={() => handleCreateDecompositions()}>
+                                Submit
+                            </Button>
+                            <Button className="me-2" variant="primary" disabled={strategy.completed} onClick={() => handleListRecommendations()}>
+                                Refresh
+                            </Button>
+                            <Button className="me-2" variant="secondary" onClick={() => closePopup()}>
+                                Close
+                            </Button>
+                        </div>
+                        <div className="me-2" style={{textAlign: "right"}}>
+                            <Form.Text>
+                                {isSelected}
+                            </Form.Text>
+                        </div>
+                    </div>
                 </ModalFooter>
             </Modal>
         );
@@ -289,6 +325,102 @@ export const AccessesSciPyStrategyForm = ({strategy, setStrategy, setUpdateStrat
                             </Form.Text>
                         </Col>
                     </Form.Group>
+                </React.Fragment>
+            }
+
+            {typeOfSubmission === "recommend" &&
+                <React.Fragment>
+                    <Form.Group as={Row} className="align-items-center mb-3">
+                        <Form.Label as="legend" column sm={2}>
+                            Type of traces
+                        </Form.Label>
+                        <Col sm={3} style={{ paddingLeft: 0 }}>
+                            <Col sm="auto">
+                                <Form.Check
+                                    onClick={handleChangeTraceTypeCheckbox}
+                                    name="traceType"
+                                    label="All"
+                                    type="checkbox"
+                                    id="allTraces"
+                                    value="ALL"
+                                    defaultChecked
+                                />
+                            </Col>
+                            <Col sm="auto">
+                                <Form.Check
+                                    onClick={handleChangeTraceTypeCheckbox}
+                                    name="traceType"
+                                    label="Longest"
+                                    type="checkbox"
+                                    id="longest"
+                                    value="LONGEST"
+                                />
+                            </Col>
+                            <Col sm="auto">
+                                <Form.Check
+                                    onClick={handleChangeTraceTypeCheckbox}
+                                    name="traceType"
+                                    label="With more different accesses"
+                                    type="checkbox"
+                                    id="withMoreDifferentTraces"
+                                    value="WITH_MORE_DIFFERENT_ACCESSES"
+                                />
+
+                            </Col>
+                        </Col>
+                    </Form.Group>
+                    <Form.Group as={Row} className="align-items-center mb-3">
+                        <Form.Label as="legend" column sm={2}>
+                            Linkage Type
+                        </Form.Label>
+                        <Col sm="auto">
+                            <Form.Check
+                                onClick={handleChangeLinkageTypeCheckbox}
+                                name="linkageType"
+                                label="Average"
+                                type="checkbox"
+                                id="average"
+                                defaultChecked
+                            />
+                        </Col>
+                        <Col sm="auto">
+                            <Form.Check
+                                onClick={handleChangeLinkageTypeCheckbox}
+                                name="linkageType"
+                                label="Single"
+                                type="checkbox"
+                                id="single"
+                            />
+
+                        </Col>
+                        <Col sm="auto">
+                            <Form.Check
+                                onClick={handleChangeLinkageTypeCheckbox}
+                                name="linkageType"
+                                label="Complete"
+                                type="checkbox"
+                                id="complete"
+                            />
+                        </Col>
+                    </Form.Group>
+                    <Form.Group as={Row} className="align-items-center">
+                        <Col sm={{offset: 2}}>
+                            <Button
+                                disabled={isUploaded === "Gathering recommendations..." || !strategy.readyToSubmit()}
+                                onClick={handleListRecommendations}
+                            >
+                                Show list of decompositions
+                            </Button>
+                            <Form.Text className="ms-2">
+                                {isUploaded}
+                            </Form.Text>
+                        </Col>
+                    </Form.Group>
+                </React.Fragment>
+            }
+
+            {typeOfSubmission === "manual" &&
+                <React.Fragment>
                     <Form.Group as={Row} className="align-items-center mb-3">
                         <Form.Label as="legend" column sm={2}>
                             Type of traces
@@ -362,29 +494,6 @@ export const AccessesSciPyStrategyForm = ({strategy, setStrategy, setUpdateStrat
                             />
                         </Col>
                     </Form.Group>
-                </React.Fragment>
-            }
-
-            {typeOfSubmission === "recommend" &&
-                <React.Fragment>
-                    <Form.Group as={Row} className="align-items-center">
-                        <Col sm={{offset: 2}}>
-                            <Button
-                                disabled={isUploaded === "Gathering recommendations..." || !strategy.readyToSubmit()}
-                                onClick={handleListRecommendations}
-                            >
-                                Show list of decompositions
-                            </Button>
-                            <Form.Text className="ms-2">
-                                {isUploaded}
-                            </Form.Text>
-                        </Col>
-                    </Form.Group>
-                </React.Fragment>
-            }
-
-            {typeOfSubmission === "manual" &&
-                <React.Fragment>
                     <Form.Group as={Row} controlId="access" className="align-items-center mb-3">
                         <Form.Label column sm={2}>
                             Access Metric Weight (%)
