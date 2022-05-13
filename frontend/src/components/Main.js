@@ -8,6 +8,7 @@ import { Codebases } from './codebase/Codebases';
 import { Codebase } from './codebase/Codebase';
 import { Analysis } from './analysis/Analysis';
 import { Analyser } from './analysis/Analyser';
+import { CommitAnalyser } from './analysis/CommitAnalyser';
 import { Profiles } from './profile/Profiles';
 
 export const Main = () => (
@@ -25,6 +26,8 @@ export const Main = () => (
 
       <Route exact path='/analysis' element={<Analysis/>} />
       <Route exact path='/analyser' element={<Analyser/>} />
+
+      <Route exact path='/commit-analyser' element={<CommitAnalyser/>} />
     </Routes>
   </main>
 )

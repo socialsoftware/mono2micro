@@ -60,10 +60,18 @@ export class RepositoryService {
             traceType,
             tracesMaxLimit: amountOfTraces,
         };
-
+        console.log(analyserData);
         return this.axios.post<null>(
             "/codebase/" + codebaseName + "/analyser",
             analyserData
+        );
+    }
+
+    commitAnalyser(
+        codebaseName: string,
+    ) {
+        return this.axios.post<null>(
+            "/codebase/" + codebaseName + "/commitAnalyser"
         );
     }
 

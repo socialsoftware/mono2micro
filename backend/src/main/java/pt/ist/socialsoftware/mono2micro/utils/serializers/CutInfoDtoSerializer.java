@@ -30,6 +30,8 @@ public class CutInfoDtoSerializer extends StdSerializer<CutInfoDto> {
         gen.writeObjectField("writeWeight", analyserResultDto.getWriteWeight());
         gen.writeObjectField("readWeight", analyserResultDto.getReadWeight());
         gen.writeObjectField("sequenceWeight", analyserResultDto.getSequenceWeight());
+        gen.writeObjectField("commitWeight", analyserResultDto.getCommitWeight());
+        gen.writeObjectField("authorsWeight", analyserResultDto.getAuthorsWeight());
         gen.writeObjectField("numberClusters", analyserResultDto.getNumberClusters());
         gen.writeObjectField("maxClusterSize", analyserResultDto.getMaxClusterSize());
         gen.writeObjectField("cohesion", analyserResultDto.getCohesion());

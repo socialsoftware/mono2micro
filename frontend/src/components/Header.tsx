@@ -24,6 +24,9 @@ const Header: FunctionComponent = () => {
                     <Nav.Link href="/analyser">
                         Analyser
                     </Nav.Link>
+                    <Nav.Link href="/commit-analyser">
+                        Commit Analyser
+                    </Nav.Link>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>

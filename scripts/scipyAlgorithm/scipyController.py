@@ -1,7 +1,9 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Body
 from scipyAlgorithm.createDendrogram import createDendrogram as createDendrogramScipy
 from scipyAlgorithm.cutDendrogram import cutDendrogram as cutDendrogramScipy
 from scipyAlgorithm.analyser import analyser as analyserScipy
+from scipyAlgorithm.commit_cut import cut
+
 import env
 
 scipyRouter = APIRouter()
@@ -24,3 +26,8 @@ async def cutDendrogram(codebaseName, dendrogramName, graphName, cutType, cutVal
 async def anayser(codebaseName, totalNumberOfEntities):
     analyserScipy(env.CODEBASES_PATH, codebaseName, int(totalNumberOfEntities))
     return {"codebaseName": codebaseName, "totalNumberOfEntities": totalNumberOfEntities, "operation": "analyser"}
+
+@scipyRouter.post("/scipy/{codebaseName}/{commitMetricValue}/{authorsMetricValue}/{clusters}/cut")
+async def commit_analyze(codebaseName, commitMetricValue, authorsMetricValue, clusters, matrix=Body(...)):
+    cut_result = cut(env.CODEBASES_PATH, codebaseName, commitMetricValue, authorsMetricValue, clusters, matrix)
+    return cut_result

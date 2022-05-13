@@ -11,6 +11,8 @@ public class SimilarityMatrixDto {
 
     private Set<Short> entities;
 
+    private Set<String> commitEntities;
+
     private String linkageType;
 
     private List<List<List<Float>>> matrix;
@@ -21,8 +23,16 @@ public class SimilarityMatrixDto {
         return entities;
     }
 
+    public Set<String> getCommitEntities() {
+        return commitEntities;
+    }
+
     public void setEntities(Set<Short> entities) {
         this.entities = entities;
+    }
+
+    public void setCommitEntities(Set<String> commitEntities) {
+        this.commitEntities = commitEntities;
     }
 
     public String getLinkageType() {

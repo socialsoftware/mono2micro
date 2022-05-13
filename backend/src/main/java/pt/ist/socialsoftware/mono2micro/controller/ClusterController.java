@@ -297,6 +297,8 @@ public class ClusterController {
 			String commitClusters = IOUtils.toString(is, "UTF-8");
 			is.close();
 
+			// Also get the domain entities for better visualizations
+
 			return new ResponseEntity<>(
 					commitClusters,
 					HttpStatus.OK

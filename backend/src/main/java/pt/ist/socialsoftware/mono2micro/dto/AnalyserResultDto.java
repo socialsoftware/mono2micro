@@ -5,6 +5,8 @@ public class AnalyserResultDto {
     private float writeWeight;
     private float readWeight;
     private float sequenceWeight;
+    private Integer commitWeight;
+    private Integer authorsWeight;
     private float numberClusters;
     private int maxClusterSize;
     private float cohesion;
@@ -152,4 +154,20 @@ public class AnalyserResultDto {
     public float getPerformance() { return performance; }
 
     public void setPerformance(float performance) { this.performance = performance; }
+
+    public Integer getCommitWeight() {
+        return commitWeight;
+    }
+
+    public void setCommitWeight(Integer commitWeight) {
+        this.commitWeight = commitWeight;
+    }
+
+    public Integer getAuthorsWeight() {
+        return authorsWeight;
+    }
+
+    public void setAuthorsWeight(Integer authorsWeight) {
+        this.authorsWeight = authorsWeight;
+    }
 }

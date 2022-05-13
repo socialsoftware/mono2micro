@@ -52,6 +52,9 @@ public class SimilarityMatrixDtoDeserializer extends StdDeserializer<SimilarityM
 						case "entities":
 							similarityMatrixDto.setEntities(jsonParser.readValueAs(new TypeReference<Set<Short>>() {}));
 							break;
+						case "commitEntities":
+							similarityMatrixDto.setCommitEntities(jsonParser.readValueAs(new TypeReference<Set<String>>() {}));
+							break;
 						case "couplingDependencies":
 							similarityMatrixDto.setMatrix(jsonParser.readValueAs(new TypeReference<List<List<List<Float>>>>() {}));
 							break;
