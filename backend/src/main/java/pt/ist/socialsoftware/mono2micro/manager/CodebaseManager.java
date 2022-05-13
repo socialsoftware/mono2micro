@@ -405,7 +405,7 @@ public class CodebaseManager {
 	)
 		throws IOException, JSONException
 	{
-		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + strategyName + "/similarityMatrices" + similarityMatrixName);
+		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + strategyName + "/similarityMatrices/" + similarityMatrixName);
 
 		JSONObject similarityMatrixJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
 
