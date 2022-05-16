@@ -19,7 +19,6 @@ import pt.ist.socialsoftware.mono2micro.dto.SimilarityMatrixDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
@@ -56,10 +55,10 @@ public class CommitAnalyserService {
         Codebase codebase = getCodebase();
         if (codebase == null) return false;
 
-        SimilarityMatrixDto similarityMatrixDto = getGenericSimilarityMatrix(this.codebaseName);
+        SimilarityMatrixDto similarityMatrixDto = getGenericSimilarityMatrix();
         if (similarityMatrixDto == null) return false;
 
-        int numberOfEntities = similarityMatrixDto.getEntities().size();
+        int numberOfEntities = Objects.requireNonNull(getEntitiesIds(codebaseName)).size();
         List<List<Integer>> combinations = generateCutsCombinations(numberOfEntities);
         for (List<Integer> combination : combinations) {
             try {
@@ -89,6 +88,19 @@ public class CommitAnalyserService {
         }
         System.out.println("Commit analyser ran with success.");
         return true;
+    }
+
+    public float doCutGetComplexity(int commitWeight, int authorWeight, int clusters) throws Exception {
+        SimilarityMatrixDto similarityMatrixDto = getGenericSimilarityMatrix();
+        List<Integer> combination = new ArrayList<>();
+        combination.add(commitWeight);
+        combination.add(authorWeight);
+        combination.add(clusters);
+
+        HashMap<String, Set<Short>> cut = null;
+        cut = performCut(combination, similarityMatrixDto);
+        Decomposition newDecomposition = buildDecompositionAndCalculateMetrics(this.getCodebase(), cut);
+        return newDecomposition.getComplexity();
     }
 
     private Codebase getCodebase() {
@@ -177,7 +189,7 @@ public class CommitAnalyserService {
         throw new Exception();
     }
 
-    private SimilarityMatrixDto getGenericSimilarityMatrix(String codebaseName) {
+    private SimilarityMatrixDto getGenericSimilarityMatrix() {
         /*
          * In the regular research workflow of Creating Codebase -> Creating Dendrogram -> Creating Cut, a similarity
          * matrix is created for each dendrogram with certain weights on the metrics (access, read, etc).
@@ -202,22 +214,31 @@ public class CommitAnalyserService {
         }
 
         List<List<List<Float>>> matrix = new ArrayList<>();
-        for (Short file1 : commitChanges.keySet()) {
+        for (short file1 : commitChanges.keySet()) {
 
             List<List<Float>> matrixRow = new ArrayList<>();
 
-            for (Short file2 : commitChanges.keySet()) {
+            for (short file2 : commitChanges.keySet()) {
                 List<Float> metric = new ArrayList<>();
-                if (file1.equals(file2)) {
-                    metric.add((float) 1); // Commit Metric
-                    metric.add((float) 1); // Authors Metric
+                if (file1 == file2) {
+                    metric.add(1.0F); // Commit Metric
+                    metric.add(1.0F); // Authors Metric
                     matrixRow.add(metric);
                     continue;
                 }
                 // Compute number of times file2 appears in file1's list, in commit changes
-                metric.add((float) commitChanges.get(file1).stream().filter(f -> f.equals(file2)).count());
-                // Compute authors in common between the two lists
+//                metric.add((float) Collections.frequency(commitChanges.get(file1), file2));
+//                // Compute authors in common between the two lists
+//                metric.add((float) authorsChanges.get(file1).stream().filter(authorsChanges.get(file2)::contains).count());
+                int commitMetricValue = 0;
+                for (Short fileInFile1Changes : commitChanges.get(file1)) {
+                    if (fileInFile1Changes == file2) {
+                        commitMetricValue += 1;
+                    }
+                }
+                metric.add((float) commitMetricValue);
                 metric.add((float) authorsChanges.get(file1).stream().filter(authorsChanges.get(file2)::contains).count());
+
                 matrixRow.add(metric);
             }
             matrix.add(matrixRow);
@@ -227,6 +248,17 @@ public class CommitAnalyserService {
         similarityMatrixDto.setEntities(commitChanges.keySet());
         similarityMatrixDto.setLinkageType("average");
         return similarityMatrixDto;
+    }
+
+    private Set<Short> getEntitiesIds(String codebaseName) {
+        try {
+            return CodebaseManager.getInstance()
+                    .getSimilarityMatrixDtoWithFields(codebaseName, new HashSet<String>() {{ add("entities"); }})
+                    .getEntities();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private List<List<Integer>> generateCutsCombinations(int numberOfEntities) {

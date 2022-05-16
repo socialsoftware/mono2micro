@@ -214,6 +214,26 @@ public class AnalysisController {
 		}
 	}
 
+	@RequestMapping(value = "/codebase/{codebaseName}/{commitWeight}/{authorWeight}/{clusters}/analyserCut", method = RequestMethod.POST)
+	public ResponseEntity<HttpStatus> analyserCut(
+			@PathVariable String codebaseName,
+			@PathVariable int commitWeight, @PathVariable int authorWeight, @PathVariable int clusters
+	) {
+
+		CommitAnalyserService commitAnalyserService = new CommitAnalyserService(codebaseName);
+		float complexity = 0;
+		try {
+			complexity = commitAnalyserService.doCutGetComplexity(commitWeight, authorWeight, clusters);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		System.out.println("Complexity: " + complexity);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+
+
 	public int getOrCreateSimilarityMatrix(
 		Codebase codebase,
 		AnalyserDto analyser
