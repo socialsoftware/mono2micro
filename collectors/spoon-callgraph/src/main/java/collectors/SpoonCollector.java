@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class SpoonCollector {
     private int controllerCount;
@@ -112,7 +113,7 @@ public abstract class SpoonCollector {
         System.out.println("Processing Project: " + projectName);
         long startTime = System.currentTimeMillis();
         collectControllersAndEntities();
-
+        //SamplesController
         controllerCount = 0;
         for (CtClass controller : controllers) {
             controllerCount++;
@@ -270,7 +271,11 @@ public abstract class SpoonCollector {
     }
 
     protected void addEntitiesSequenceAccess(String simpleName, String mode) {
-        controllerAccesses.add(new Access(mode, entityToID(simpleName)));
+        if (entityToID(simpleName) != null)
+            controllerAccesses.add(new Access(mode, entityToID(simpleName)));
+        else {
+            System.out.println("Got null on entity " + simpleName);
+        }
     }
 
     private Integer entityToID(String simpleName) {

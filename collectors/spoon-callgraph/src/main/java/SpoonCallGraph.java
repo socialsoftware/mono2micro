@@ -138,6 +138,7 @@ public class SpoonCallGraph {
         if (option == JOptionPane.OK_OPTION) {
             projectNameInput = projectNameField.getText();
             sourcesPath = pathField.getText();
+            repoURL = pathField.getText();
             ormChoice = frameworkDropdown.getSelectedIndex();
         }
         else {
