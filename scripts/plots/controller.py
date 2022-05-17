@@ -13,3 +13,8 @@ async def plotStats(codebaseName, analysisType, strategy):
 async def plotStats(codebaseName, analysisType):
     plotStatsService(env.CODEBASES_PATH, codebaseName, analysisType, None)
     return {"codebaseName": codebaseName, "operation": "plotStats", "analysisType": analysisType}
+
+@router.get("/{codebaseName}")
+async def plotStats(codebaseName):
+    plotStatsService(env.CODEBASES_PATH, codebaseName, "", None)
+    return {"codebaseName": codebaseName, "operation": "plotStats", "analysisType": "static"}

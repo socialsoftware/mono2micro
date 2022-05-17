@@ -3,6 +3,7 @@ package pt.ist.socialsoftware.mono2micro.controller;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FilenameUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import pt.ist.socialsoftware.mono2micro.domain.*;
 import pt.ist.socialsoftware.mono2micro.dto.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.services.AnalysisService;
+import pt.ist.socialsoftware.mono2micro.services.ClusterService;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 import pt.ist.socialsoftware.mono2micro.utils.mojoCalculator.src.main.java.MoJo;
@@ -38,6 +40,9 @@ public class AnalysisController {
 
 	@Autowired
 	AnalysisService analysisService;
+
+	@Autowired
+	ClusterService clusterService;
 
 	@RequestMapping(value = "/codebase/{codebaseName}/analyser", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> analyser(
@@ -193,6 +198,20 @@ public class AnalysisController {
 				fileToBeRenamed.renameTo(fileRenamed);
 			}
 
+			JSONObject analyserResult = codebaseManager.getAnalyserResults(codebaseName);
+
+			JSONObject analisysStats = new JSONObject();
+			analisysStats.put("complexity", analysisService.getStaticAnalysisStats("complexity", analyserResult));
+			analisysStats.put("performance", analysisService.getStaticAnalysisStats("performance", analyserResult));
+			analisysStats.put("cohesion", analysisService.getStaticAnalysisStats("cohesion", analyserResult));
+			analisysStats.put("coupling", analysisService.getStaticAnalysisStats("coupling", analyserResult));
+
+			FileWriter statsFile = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/analisysStats.json");
+			statsFile.write(analisysStats.toString(4));
+			statsFile.close();
+
+			clusterService.executeStaticPlotAnalysis(codebaseName);
+
 			System.out.println("Analyser Complete");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -257,6 +276,22 @@ public class AnalysisController {
 		try {
 
 			analysisService.analyzeDendrogramCutsByEntitiesTracesStrategy(codebaseName, analyserDto);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/codebase/{codebaseName}/analyser/features/mixed", method = RequestMethod.POST)
+	public ResponseEntity<HttpStatus> mixedFeaturesAnalyser(
+			@PathVariable String codebaseName,
+			@RequestBody AnalyserDto analyserDto
+	) {
+		try {
+
+			analysisService.analyzeDendrogramCutsByMixedStrategy(codebaseName, analyserDto);
 
 		} catch (Exception e) {
 			e.printStackTrace();

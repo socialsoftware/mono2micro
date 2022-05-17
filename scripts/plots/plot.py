@@ -6,7 +6,10 @@ plt.style.use('seaborn-whitegrid')
 
 def plotStats(codebasesPath, codebaseName, analysisType, strategy):
 
-    analyserPath = "/analyser/" + analysisType
+    analyserPath = "/analyser"
+    if analysisType != None and len(analysisType) != 0:
+        analyserPath += "/" + analysisType
+
     if strategy != None and len(strategy) != 0:
         analyserPath += "/" + strategy
 
@@ -18,7 +21,9 @@ def plotStats(codebasesPath, codebaseName, analysisType, strategy):
     coupling_stats = analisys_stats['coupling']
     performance_stats = analisys_stats['performance']
 
-    nbr_clusters = [i for i in range(1, 11)]
+    plt.clf()
+
+    nbr_clusters = [i for i in range(1, len(complexity_stats) + 1)]
     mean_complexity = [complexity['mean'] for complexity in complexity_stats]
     min_complexity  = [complexity['min']  for complexity in complexity_stats]
     max_complexity  = [complexity['max']  for complexity in complexity_stats]
@@ -30,14 +35,16 @@ def plotStats(codebasesPath, codebaseName, analysisType, strategy):
     plt.xlabel('Number of clusters')
     plt.ylabel('Complexity')
     plt.title('Mean Complexity per Number of clusters')
+    plt.xlim(0, 11)
+    plt.ylim(0, 200)
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig(codebasesPath + codebaseName + analyserPath + "/complexity.png", format="png", bbox_inches='tight')
+    plt.savefig(codebasesPath + codebaseName + analyserPath + "/complexity.png", format="png", bbox_inches='tight', marker='o')
 
     plt.clf()
 
-    nbr_clusters = [i for i in range(1, 11)]
+    nbr_clusters = [i for i in range(1, len(performance_stats) + 1)]
     mean_performance = [performance['mean'] for performance in performance_stats]
     min_performance  = [performance['min']  for performance in performance_stats]
     max_performance  = [performance['max']  for performance in performance_stats]
@@ -49,14 +56,16 @@ def plotStats(codebasesPath, codebaseName, analysisType, strategy):
     plt.xlabel('Number of clusters')
     plt.ylabel('Performance')
     plt.title('Performance per Number of clusters')
+    plt.xlim(0, 11)
+    plt.ylim(0, 20)
     plt.legend()
-    # plt.grid(True)
+    plt.grid(True)
     plt.tight_layout()
-    plt.savefig(codebasesPath + codebaseName + analyserPath + "/performance.png", format="png", bbox_inches='tight')
+    plt.savefig(codebasesPath + codebaseName + analyserPath + "/performance.png", format="png", bbox_inches='tight', marker='o')
 
     plt.clf()
 
-    nbr_clusters = [i for i in range(1, 11)]
+    nbr_clusters = [i for i in range(1, len(cohesion_stats) + 1)]
     mean_cohesion = [cohesion['mean'] for cohesion in cohesion_stats]
     min_cohesion  = [cohesion['min']  for cohesion in cohesion_stats]
     max_cohesion  = [cohesion['max']  for cohesion in cohesion_stats]
@@ -68,14 +77,16 @@ def plotStats(codebasesPath, codebaseName, analysisType, strategy):
     plt.xlabel('Number of clusters')
     plt.ylabel('Cohesion')
     plt.title('Cohesion per Number of clusters')
+    plt.xlim(0, 11)
+    plt.ylim(0, 1)
     plt.legend()
     plt.grid(True)
-    # plt.tight_layout()
-    plt.savefig(codebasesPath + codebaseName + analyserPath + "/cohesion.png", format="png", bbox_inches='tight')
+    plt.tight_layout()
+    plt.savefig(codebasesPath + codebaseName + analyserPath + "/cohesion.png", format="png", bbox_inches='tight', marker='o')
 
     plt.clf()
 
-    nbr_clusters = [i for i in range(1, 11)]
+    nbr_clusters = [i for i in range(1, len(coupling_stats) + 1)]
     mean_coupling = [coupling['mean'] for coupling in coupling_stats]
     min_coupling  = [coupling['min']  for coupling in coupling_stats]
     max_coupling  = [coupling['max']  for coupling in coupling_stats]
@@ -87,8 +98,10 @@ def plotStats(codebasesPath, codebaseName, analysisType, strategy):
     plt.xlabel('Number of clusters')
     plt.ylabel('Coupling')
     plt.title('Mean Coupling per Number of clusters')
-    # plt.legend()
-    # plt.grid(True)
-    # plt.tight_layout()
-    plt.savefig(codebasesPath + codebaseName + analyserPath + "/coupling.png", format="png", bbox_inches='tight')
+    plt.xlim(0, 11)
+    plt.ylim(0, 1)
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig(codebasesPath + codebaseName + analyserPath + "/coupling.png", format="png", bbox_inches='tight', marker='o')
     

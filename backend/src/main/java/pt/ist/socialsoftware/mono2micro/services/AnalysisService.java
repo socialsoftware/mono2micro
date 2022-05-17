@@ -542,4 +542,44 @@ public class AnalysisService {
         return clusters_stats;
     }
 
+    public JSONArray getStaticAnalysisStats(String metric, JSONObject analyserResult) throws JSONException {
+        JSONArray clusters_stats = new JSONArray();
+        for (int i = 0; i < 14; i++) {
+            JSONObject initJson = new JSONObject();
+            initJson.put("mean", 0.0);
+            initJson.put("min", Double.MAX_VALUE);
+            initJson.put("max", 0.0);
+            initJson.put("counter", 0);
+            clusters_stats.put(i, initJson);
+        }
+        Iterator<String> keys = analyserResult.keys();
+        while(keys.hasNext()) {
+            String key = keys.next();
+            if (analyserResult.get(key) instanceof JSONObject) {
+                JSONObject analysis = (JSONObject) analyserResult.get(key);
+                Double value = analysis.getDouble(metric);
+                Integer idx = analysis.getInt("numberClusters") - 1;
+                JSONObject updated_stats = clusters_stats.getJSONObject(idx);
+                updated_stats.put("mean", updated_stats.getDouble("mean") + value);
+                if (value > updated_stats.getDouble("max")) {
+                    updated_stats.put("max", value);
+                }
+                if (value < updated_stats.getDouble("min")) {
+                    updated_stats.put("min", value);
+                }
+                updated_stats.put("counter", updated_stats.getInt("counter") + 1);
+                clusters_stats.put(idx, updated_stats);
+            }
+        }
+        for (int i = 0; i < 14; i++) {
+            JSONObject updated_stats = clusters_stats.getJSONObject(i);
+            if (updated_stats.getInt("counter") != 0) {
+                updated_stats.put("mean", updated_stats.getDouble("mean") / updated_stats.getInt("counter"));
+            } else {
+                updated_stats.put("min", 0);
+            }
+        }
+        return clusters_stats;
+    }
+
 }

@@ -618,17 +618,14 @@ public class CodebaseManager {
 		return clustersJSON;
 	}
 
-	public HashMap<String, CutInfoDto> getAnalyserResults(
+	public JSONObject getAnalyserResults(
 		String codebaseName
 	)
-		throws IOException
+			throws IOException, JSONException
 	{
 		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json");
 
-		HashMap<String, CutInfoDto> analyserResults = objectMapper.readValue(
-			is,
-			new TypeReference<HashMap<String, CutInfoDto>>() {}
-		);
+		JSONObject analyserResults = new JSONObject(IOUtils.toString(is, StandardCharsets.UTF_8));
 
 		is.close();
 
