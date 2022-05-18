@@ -337,12 +337,12 @@ public class CommitAnalyserService {
                 decomposition.getEntityIDToClusterID()
         ));
 
-        decomposition.calculateMetrics(
-                codebase,
-                0,
-                Constants.TraceType.ALL,
-                true
-        );
+//        decomposition.calculateMetrics(
+//                codebase,
+//                0,
+//                Constants.TraceType.ALL,
+//                true
+//        );
         return decomposition;
     }
 

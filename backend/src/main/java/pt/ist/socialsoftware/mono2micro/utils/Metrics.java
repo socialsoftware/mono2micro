@@ -3,6 +3,7 @@ package pt.ist.socialsoftware.mono2micro.utils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
@@ -10,7 +11,7 @@ import pt.ist.socialsoftware.mono2micro.domain.*;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 
 public class Metrics {
-
+	//TODO: Optimize
     public static float calculateControllerComplexityAndClusterDependencies(
 	 	Decomposition decomposition,
 		String controllerName,
@@ -24,25 +25,24 @@ public class Metrics {
 
 		} else {
 			// < entity + mode, List<controllerName>> controllersThatTouchSameEntities for a given mode
-			Map<String, List<String>> cache = new HashMap<>();
+			Map<String, List<String>> cache = Collections.synchronizedMap(new HashMap<>());
 
-			float controllerComplexity = 0;
-
-			for (LocalTransaction lt : allLocalTransactions) {
+			AtomicReference<Float> controllerComplexity = new AtomicReference<>((float) 0);
+			allLocalTransactions.parallelStream().forEach(lt -> {
 				// ClusterDependencies
 				short clusterID = lt.getClusterID();
 				if (clusterID != -1) { // not root node
 					Cluster fromCluster = decomposition.getCluster(clusterID);
 
 					List<LocalTransaction> nextLocalTransactions = Decomposition.getNextLocalTransactions(
-						localTransactionsGraph,
-						lt
+							localTransactionsGraph,
+							lt
 					);
 
 					for (LocalTransaction nextLt : nextLocalTransactions)
 						fromCluster.addCouplingDependencies(
-							nextLt.getClusterID(),
-							nextLt.getFirstAccessedEntityIDs()
+								nextLt.getClusterID(),
+								nextLt.getFirstAccessedEntityIDs()
 						);
 
 					Set<String> controllersThatTouchSameEntities = new HashSet<>();
@@ -57,11 +57,11 @@ public class Metrics {
 
 						if (controllersThatTouchThisEntityAndMode == null) {
 							controllersThatTouchThisEntityAndMode = costOfAccess(
-								controllerName,
-								entityID,
-								mode,
-								decomposition.getControllers().values(),
-								controllerClusters
+									controllerName,
+									entityID,
+									mode,
+									decomposition.getControllers().values(),
+									controllerClusters
 							);
 
 							cache.put(key, controllersThatTouchThisEntityAndMode);
@@ -70,14 +70,14 @@ public class Metrics {
 						controllersThatTouchSameEntities.addAll(controllersThatTouchThisEntityAndMode);
 					}
 
-					controllerComplexity += controllersThatTouchSameEntities.size();
+					controllerComplexity.updateAndGet(v -> (float) (v + controllersThatTouchSameEntities.size()));
 				}
-			}
+			});
 
-			return controllerComplexity;
+			return controllerComplexity.get();
 		}
 	}
-
+//Start: 12:46:18
 	private static List<String> costOfAccess(
 		String controllerName,
 		short entityID,
@@ -85,23 +85,24 @@ public class Metrics {
 		Collection<Controller> controllers,
 		Map<String, Set<Cluster>> controllerClusters
 	) {
-		List<String> controllersThatTouchThisEntityAndMode = new ArrayList<>();
-
-		for (Controller otherController : controllers) {
+		List<String> controllersThatTouchThisEntityAndMode = Collections.synchronizedList(new ArrayList<>());
+		// Parallelize
+		controllers.parallelStream().forEach(otherController -> {
 			String otherControllerName = otherController.getName();
 
 			if (!otherControllerName.equals(controllerName) && controllerClusters.containsKey(otherControllerName)) {
 				Byte savedMode = otherController.getEntities().get(entityID);
 
 				if (
-					savedMode != null &&
-					savedMode != mode &&
-					controllerClusters.get(otherControllerName).size() > 1
+						savedMode != null &&
+								savedMode != mode &&
+								controllerClusters.get(otherControllerName).size() > 1
 				) {
 					controllersThatTouchThisEntityAndMode.add(otherControllerName);
 				}
 			}
-		}
+		});
+
 
 		return controllersThatTouchThisEntityAndMode;
 	}

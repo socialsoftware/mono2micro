@@ -1,6 +1,8 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
@@ -11,13 +13,17 @@ import pt.ist.socialsoftware.mono2micro.utils.Metrics;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.DecompositionDeserializer;
 import javax.management.openmbean.KeyAlreadyExistsException;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static org.jgrapht.Graphs.successorListOf;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.CODEBASES_PATH;
 
 @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
 @JsonDeserialize(using = DecompositionDeserializer.class)
@@ -288,13 +294,11 @@ public class Decomposition {
 	}
 
 	public GetLocalTransactionsGraphAndControllerPerformanceResult getLocalTransactionsGraphAndControllerPerformance(
-		ControllerTracesIterator iter,
-		String controllerName,
-		Constants.TraceType traceType
+		StaticCollection collection,
+		String controllerName
 	)
 		throws IOException
 	{
-		TraceDto t;
 		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph = new DirectedAcyclicGraph<>(DefaultEdge.class);
 
 		localTransactionsGraph.addVertex( // root
@@ -306,137 +310,29 @@ public class Decomposition {
 
 		int localTransactionsCounter = 1; // 1 because the root was already added with ID 0
 
-		iter.nextControllerWithName(controllerName);
-
 		float controllerPerformance = 0;
 		int tracesCounter = 0;
+		List<ReducedTraceElementDto> traceElements = collection.getAccessesForController(controllerName);
+		if (traceElements != null && traceElements.size() > 0) {
+			Utils.GetLocalTransactionsSequenceAndCalculateTracePerformanceResult result = Utils.getLocalTransactionsSequenceAndCalculateTracePerformance(
+					localTransactionsCounter,
+					null,
+					traceElements,
+					entityIDToClusterID,
+					new HashMap<>(),
+					0,
+					traceElements.size()
+			);
 
-		switch (traceType) {
-			case LONGEST:
-				t = iter.getLongestTrace();
+			addLocalTransactionsSequenceToGraph(
+					localTransactionsGraph,
+					result.localTransactionsSequence
+			);
 
-				if (t != null) {
-					List<ReducedTraceElementDto> traceElements = t.getElements();
-
-					if (traceElements != null && traceElements.size() > 0) {
-						Utils.GetLocalTransactionsSequenceAndCalculateTracePerformanceResult result = Utils.getLocalTransactionsSequenceAndCalculateTracePerformance(
-							localTransactionsCounter,
-							null,
-							traceElements,
-								entityIDToClusterID,
-							new HashMap<>(),
-							0,
-							traceElements.size()
-						);
-
-						addLocalTransactionsSequenceToGraph(
-							localTransactionsGraph,
-							result.localTransactionsSequence
-						);
-
-						controllerPerformance += result.performance;
-					}
-				}
-
-				tracesCounter++;
-
-				break;
-
-			case WITH_MORE_DIFFERENT_ACCESSES:
-				t = iter.getTraceWithMoreDifferentAccesses();
-
-				if (t != null) {
-					List<ReducedTraceElementDto> traceElements = t.getElements();
-
-					if (traceElements != null && traceElements.size() > 0) {
-						Utils.GetLocalTransactionsSequenceAndCalculateTracePerformanceResult result = Utils.getLocalTransactionsSequenceAndCalculateTracePerformance(
-							localTransactionsCounter,
-							null,
-							traceElements,
-								entityIDToClusterID,
-							new HashMap<>(),
-							0,
-							traceElements.size()
-						);
-
-						addLocalTransactionsSequenceToGraph(
-							localTransactionsGraph,
-							result.localTransactionsSequence
-						);
-
-						controllerPerformance += result.performance;
-					}
-				}
-
-				tracesCounter++;
-
-				break;
-
-			// FIXME not going to fix this since time is scarce
-//			case REPRESENTATIVE:
-//				Set<String> tracesIds = iter.getRepresentativeTraces();
-//				// FIXME probably here we create a second controllerTracesIterator
-//				iter.reset();
-//
-//				while (iter.hasMoreTraces()) {
-//					t = iter.nextTrace();
-//					traceAccesses = t.expand(2);
-//
-//					if (tracesIds.contains(String.valueOf(t.getId())) && traceAccesses.size() > 0) {
-//						List<LocalTransaction> localTransactionSequence = getLocalTransactionsSequence(
-//							localTransactionsCounter,
-//							entityIDToClusterName,
-//							traceAccesses
-//						);
-//
-//						addLocalTransactionsSequenceToGraph(
-//							localTransactionsGraph,
-//							localTransactionSequence
-//						);
-//
-//						localTransactionsCounter += localTransactionSequence.size();
-//
-//						Utils.GetLocalTransactionsSequenceAndCalculateTracePerformanceResult result = Utils.calculateTracePerformance(
-//							t.getElements(),
-//							entityIDToClusterName,
-//							0,
-//							t.getElements() == null ? 0 : t.getElements().size()
-//						);
-//
-//						controllerPerformance += result.performance;
-//					}
-//				}
-//
-//				break;
-
-			default:
-				while (iter.hasMoreTraces()) {
-					tracesCounter++;
-
-					t = iter.nextTrace();
-
-					List<ReducedTraceElementDto> traceElements = t.getElements();
-
-					if (traceElements != null && traceElements.size() > 0) {
-						Utils.GetLocalTransactionsSequenceAndCalculateTracePerformanceResult result = Utils.getLocalTransactionsSequenceAndCalculateTracePerformance(
-							localTransactionsCounter,
-							null,
-							traceElements,
-								entityIDToClusterID,
-							new HashMap<>(),
-							0,
-							traceElements.size()
-						);
-
-						addLocalTransactionsSequenceToGraph(
-							localTransactionsGraph,
-							result.localTransactionsSequence
-						);
-
-						controllerPerformance += result.performance;
-					}
-				}
+			controllerPerformance += result.performance;
+			tracesCounter += 1;
 		}
+
 
 		controllerPerformance /= tracesCounter;
 
@@ -455,7 +351,8 @@ public class Decomposition {
 		Codebase codebase, // requirements: datafilePath
 		int tracesMaxLimit,
 		Constants.TraceType traceType,
-		boolean isAnalyser
+		boolean isAnalyser,
+		StaticCollection collection
 	)
 		throws Exception
 	{
@@ -475,21 +372,22 @@ public class Decomposition {
 		// COMPLEXITY AND PERFORMANCE CALCULATION
 		CalculateComplexityAndPerformanceResult result2;
 
-		if(isAnalyser) {
+//		if(isAnalyser) {
 			result2 = calculateComplexityAndPerformance(
 					codebase,
 					controllersClusters,
 					traceType,
-					tracesMaxLimit
+					tracesMaxLimit,
+					collection
 			);
-		} else {
-			result2 = calculateComplexityAndPerformanceAndRedesignMetrics(
-					codebase,
-					controllersClusters,
-					traceType,
-					tracesMaxLimit
-			);
-		}
+//		} else {
+////			result2 = calculateComplexityAndPerformanceAndRedesignMetrics(
+////					codebase,
+////					controllersClusters,
+////					traceType,
+////					tracesMaxLimit
+////			);
+//		}
 
 		this.setPerformance(result2.performance);
 		this.setComplexity(result2.complexity);
@@ -517,37 +415,38 @@ public class Decomposition {
 		}
 	}
 
-	public DirectedAcyclicGraph<LocalTransaction, DefaultEdge> getControllerLocalTransactionsGraph(
-		Codebase codebase,
-		String controllerName,
-		Constants.TraceType traceType,
-		int tracesMaxLimit
-	)
-		throws IOException
-	{
-		if (!controllerExists(controllerName))
-			throw new Error("Controller: " + controllerName + " does not exist");
-
-		ControllerTracesIterator iter = new ControllerTracesIterator(
-			codebase.getDatafilePath(),
-			tracesMaxLimit
-		);
-
-		GetLocalTransactionsGraphAndControllerPerformanceResult result = getLocalTransactionsGraphAndControllerPerformance(
-			iter,
-			controllerName,
-			traceType
-		);
-
-		return result.localTransactionsGraph;
-
-	}
+//	public DirectedAcyclicGraph<LocalTransaction, DefaultEdge> getControllerLocalTransactionsGraph(
+//		Codebase codebase,
+//		String controllerName,
+//		Constants.TraceType traceType,
+//		int tracesMaxLimit
+//	)
+//		throws IOException
+//	{
+//		if (!controllerExists(controllerName))
+//			throw new Error("Controller: " + controllerName + " does not exist");
+//
+//		ControllerTracesIterator iter = new ControllerTracesIterator(
+//			codebase.getDatafilePath(),
+//			tracesMaxLimit
+//		);
+//
+//		GetLocalTransactionsGraphAndControllerPerformanceResult result = getLocalTransactionsGraphAndControllerPerformance(
+//			iter,
+//			controllerName,
+//			traceType
+//		);
+//
+//		return result.localTransactionsGraph;
+//
+//	}
 
 	public CalculateComplexityAndPerformanceResult calculateComplexityAndPerformance(
 		Codebase codebase,
 		Map<String, Set<Cluster>> controllersClusters,
 		Constants.TraceType traceType,
-		int tracesMaxLimit
+		int tracesMaxLimit,
+		StaticCollection collection
 	)
 		throws IOException
 	{
@@ -556,86 +455,24 @@ public class Decomposition {
 			tracesMaxLimit
 		);
 
-		float complexity = 0;
-		float performance = 0;
+		AtomicReference<Float> complexity = new AtomicReference<>((float) 0);
+		AtomicReference<Float> performance = new AtomicReference<>((float) 0);
 
 		System.out.println("Calculating graph complexity and performance...");
-
-		for (Controller controller : this.getControllers().values()) {
+		this.getControllers().values().parallelStream().forEach(controller -> {
 			String controllerName = controller.getName();
 
-			GetLocalTransactionsGraphAndControllerPerformanceResult result2 = getLocalTransactionsGraphAndControllerPerformance(
-				iter,
-				controllerName,
-				traceType
-			);
+			GetLocalTransactionsGraphAndControllerPerformanceResult result2 = null;
+			try {
+				result2 = getLocalTransactionsGraphAndControllerPerformance(
+						collection,
+						controllerName
+				);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
-			float controllerPerformance = result2.performance;
-
-			float controllerComplexity = Metrics.calculateControllerComplexityAndClusterDependencies(
-				this,
-				controllerName,
-				controllersClusters,
-				result2.localTransactionsGraph
-			);
-
-
-			performance += controllerPerformance;
-			complexity += controllerComplexity;
-
-			// This needs to be done because the cluster complexity calculation depends on this result
-			controller.setPerformance(
-				BigDecimal.valueOf(controllerPerformance).setScale(2, RoundingMode.HALF_UP).floatValue()
-			);
-
-			controller.setComplexity(controllerComplexity);
-		}
-
-		int graphControllersAmount = controllersClusters.size();
-
-		complexity = BigDecimal
-			.valueOf(complexity / graphControllersAmount)
-			.setScale(2, RoundingMode.HALF_UP)
-			.floatValue();
-
-		performance = BigDecimal
-			.valueOf(performance / graphControllersAmount)
-			.setScale(2, RoundingMode.HALF_UP)
-			.floatValue();
-
-		return new CalculateComplexityAndPerformanceResult(
-			complexity,
-			performance
-		);
-	}
-
-	public CalculateComplexityAndPerformanceResult calculateComplexityAndPerformanceAndRedesignMetrics(
-			Codebase codebase,
-			Map<String, Set<Cluster>> controllersClusters,
-			Constants.TraceType traceType,
-			int tracesMaxLimit
-	)
-			throws IOException
-	{
-		ControllerTracesIterator iter = new ControllerTracesIterator(
-				codebase.getDatafilePath(),
-				tracesMaxLimit
-		);
-
-		float complexity = 0;
-		float performance = 0;
-
-		System.out.println("Calculating graph complexity and performance...");
-
-		for (Controller controller : this.getControllers().values()) {
-			String controllerName = controller.getName();
-
-			GetLocalTransactionsGraphAndControllerPerformanceResult result2 = getLocalTransactionsGraphAndControllerPerformance(
-					iter,
-					controllerName,
-					traceType
-			);
-
+			assert result2 != null;
 			float controllerPerformance = result2.performance;
 
 			float controllerComplexity = Metrics.calculateControllerComplexityAndClusterDependencies(
@@ -646,8 +483,8 @@ public class Decomposition {
 			);
 
 
-			performance += controllerPerformance;
-			complexity += controllerComplexity;
+			performance.updateAndGet(v -> (float) (v + controllerPerformance));
+			complexity.updateAndGet(v -> (float) (v + controllerComplexity));
 
 			// This needs to be done because the cluster complexity calculation depends on this result
 			controller.setPerformance(
@@ -656,36 +493,104 @@ public class Decomposition {
 
 			controller.setComplexity(controllerComplexity);
 
-			controller.createFunctionalityRedesign(
-					Constants.DEFAULT_REDESIGN_NAME,
-					true,
-					result2.localTransactionsGraph
-			);
-
-			Metrics.calculateRedesignComplexities(
-					controller,
-					Constants.DEFAULT_REDESIGN_NAME,
-					this
-			);
-		}
+		});
 
 		int graphControllersAmount = controllersClusters.size();
 
-		complexity = BigDecimal
-				.valueOf(complexity / graphControllersAmount)
+		complexity.set(BigDecimal
+				.valueOf(complexity.get() / graphControllersAmount)
 				.setScale(2, RoundingMode.HALF_UP)
-				.floatValue();
+				.floatValue());
 
-		performance = BigDecimal
-				.valueOf(performance / graphControllersAmount)
+		performance.set(BigDecimal
+				.valueOf(performance.get() / graphControllersAmount)
 				.setScale(2, RoundingMode.HALF_UP)
-				.floatValue();
+				.floatValue());
 
 		return new CalculateComplexityAndPerformanceResult(
-				complexity,
-				performance
+				complexity.get(),
+				performance.get()
 		);
 	}
+
+	//TODO: REFACTOR TO USE STATICCOLLECTION OBJECT
+//	public CalculateComplexityAndPerformanceResult calculateComplexityAndPerformanceAndRedesignMetrics(
+//			Codebase codebase,
+//			Map<String, Set<Cluster>> controllersClusters,
+//			Constants.TraceType traceType,
+//			int tracesMaxLimit
+//	)
+//			throws IOException
+//	{
+//		ControllerTracesIterator iter = new ControllerTracesIterator(
+//				codebase.getDatafilePath(),
+//				tracesMaxLimit
+//		);
+//
+//		float complexity = 0;
+//		float performance = 0;
+//
+//		System.out.println("Calculating graph complexity and performance...");
+//
+//		for (Controller controller : this.getControllers().values()) {
+//			String controllerName = controller.getName();
+//
+//			GetLocalTransactionsGraphAndControllerPerformanceResult result2 = getLocalTransactionsGraphAndControllerPerformance(
+//					iter,
+//					controllerName,
+//					traceType
+//			);
+//
+//			float controllerPerformance = result2.performance;
+//
+//			float controllerComplexity = Metrics.calculateControllerComplexityAndClusterDependencies(
+//					this,
+//					controllerName,
+//					controllersClusters,
+//					result2.localTransactionsGraph
+//			);
+//
+//
+//			performance += controllerPerformance;
+//			complexity += controllerComplexity;
+//
+//			// This needs to be done because the cluster complexity calculation depends on this result
+//			controller.setPerformance(
+//					BigDecimal.valueOf(controllerPerformance).setScale(2, RoundingMode.HALF_UP).floatValue()
+//			);
+//
+//			controller.setComplexity(controllerComplexity);
+//
+//			controller.createFunctionalityRedesign(
+//					Constants.DEFAULT_REDESIGN_NAME,
+//					true,
+//					result2.localTransactionsGraph
+//			);
+//
+//			Metrics.calculateRedesignComplexities(
+//					controller,
+//					Constants.DEFAULT_REDESIGN_NAME,
+//					this
+//			);
+//		}
+//
+//		int graphControllersAmount = controllersClusters.size();
+//
+//		complexity = BigDecimal
+//				.valueOf(complexity / graphControllersAmount)
+//				.setScale(2, RoundingMode.HALF_UP)
+//				.floatValue();
+//
+//		performance = BigDecimal
+//				.valueOf(performance / graphControllersAmount)
+//				.setScale(2, RoundingMode.HALF_UP)
+//				.floatValue();
+//
+//		return new CalculateComplexityAndPerformanceResult(
+//				complexity,
+//				performance
+//		);
+//	}
 
 	public static class CalculateCouplingAndCohesionResult {
 		public float coupling;

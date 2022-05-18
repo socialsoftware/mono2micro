@@ -678,7 +678,7 @@ public class CodebaseManager {
 													cluster = entityIDToClusterID.get(entityID);
 
 													if (cluster == null) {
-														System.err.println("Entity " + entityID + " is not assign to a cluster.");
+														System.err.println("Entity " + entityID + " is not assigned to a cluster.");
 														System.exit(-1);
 													}
 

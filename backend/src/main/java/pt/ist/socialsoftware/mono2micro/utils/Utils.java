@@ -131,6 +131,7 @@ public class Utils {
             return 0;
     }
 
+
     public static class GetDataToBuildSimilarityMatrixResult {
         public Set<Short> entities;
         public Map<String, Integer> e1e2PairCount;
@@ -308,6 +309,30 @@ public class Utils {
         };
     }
 
+
+    public static float[] calculateSimilarityMatrixCommitMetrics(
+            short e1ID, short e2ID,
+            HashMap<Short, ArrayList<Short>> commitChanges,
+            HashMap<Short, ArrayList<String>> authorChanges) {
+
+        int commitMetricValue = 0;
+        for (Short fileInFile1Changes : commitChanges.get(e1ID)) {
+            if (fileInFile1Changes == e2ID) {
+                commitMetricValue += 1;
+            }
+        }
+        long authorMetricValue;
+        try {
+            authorMetricValue = authorChanges.get(e1ID).stream().filter(authorChanges.get(e2ID)::contains).count();
+        } catch (NullPointerException e) {
+            authorMetricValue = 0;
+        }
+        return new float[] {
+                (float) commitMetricValue,
+                (float) authorMetricValue
+        };
+    }
+
     public static class GetLocalTransactionsSequenceAndCalculateTracePerformanceResult {
         public int performance = 0;
         public LocalTransaction lastLocalTransaction = null;
@@ -412,7 +437,7 @@ public class Utils {
                 Short currentClusterID = entityIDToClusterID.get(accessedEntityID);
 
                 if (currentClusterID == null) {
-                    System.err.println("No assigned entity with ID " + accessedEntityID + " to a cluster.");
+                    System.err.println("No entity with ID " + accessedEntityID + " is assigned to a cluster.");
                     System.exit(-1);
                 }
 

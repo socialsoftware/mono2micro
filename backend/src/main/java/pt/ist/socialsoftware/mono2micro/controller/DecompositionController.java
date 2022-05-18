@@ -101,54 +101,55 @@ public class DecompositionController {
 		}
 	}
 
-	@RequestMapping(value = "/decomposition/{decompositionName}/getLocalTransactionsGraphForController", method = RequestMethod.GET)
-	public ResponseEntity<Utils.GetSerializableLocalTransactionsGraphResult> getControllerLocalTransactionsGraph(
-		@PathVariable String codebaseName,
-		@PathVariable String dendrogramName,
-		@PathVariable String decompositionName,
-		@RequestParam String controllerName
-	) {
-		logger.debug("getControllerLocalTransactionsGraph");
-
-		try {
-
-			Codebase codebase = codebaseManager.getCodebaseWithFields(
-				codebaseName,
-				new HashSet<String>() {{ add("datafilePath"); }}
-			);
-
-			Dendrogram dendrogram = codebaseManager.getCodebaseDendrogramWithFields(
-				codebaseName,
-				dendrogramName,
-				new HashSet<String>() {{
-					add("tracesMaxLimit"); add("traceType");
-				}}
-			);
-
-			Decomposition decomposition = codebaseManager.getDendrogramDecompositionWithFields(
-				codebaseName,
-				dendrogramName,
-				decompositionName,
-				new HashSet<String>() {{
-					add("controllers"); add("entityIDToClusterID");
-				}}
-			);
-
-			DirectedAcyclicGraph<LocalTransaction, DefaultEdge> controllerLocalTransactionsGraph = decomposition.getControllerLocalTransactionsGraph(
-				codebase,
-				controllerName,
-				dendrogram.getTraceType(),
-				dendrogram.getTracesMaxLimit()
-			);
-
-			return new ResponseEntity<>(
-				Utils.getSerializableLocalTransactionsGraph(controllerLocalTransactionsGraph),
-				HttpStatus.OK
-			);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
-	}
+	//TODO: REFACTOR TO USE THE STATICCOLLECTION OBJECT
+//	@RequestMapping(value = "/decomposition/{decompositionName}/getLocalTransactionsGraphForController", method = RequestMethod.GET)
+//	public ResponseEntity<Utils.GetSerializableLocalTransactionsGraphResult> getControllerLocalTransactionsGraph(
+//		@PathVariable String codebaseName,
+//		@PathVariable String dendrogramName,
+//		@PathVariable String decompositionName,
+//		@RequestParam String controllerName
+//	) {
+//		logger.debug("getControllerLocalTransactionsGraph");
+//
+//		try {
+//
+//			Codebase codebase = codebaseManager.getCodebaseWithFields(
+//				codebaseName,
+//				new HashSet<String>() {{ add("datafilePath"); }}
+//			);
+//
+//			Dendrogram dendrogram = codebaseManager.getCodebaseDendrogramWithFields(
+//				codebaseName,
+//				dendrogramName,
+//				new HashSet<String>() {{
+//					add("tracesMaxLimit"); add("traceType");
+//				}}
+//			);
+//
+//			Decomposition decomposition = codebaseManager.getDendrogramDecompositionWithFields(
+//				codebaseName,
+//				dendrogramName,
+//				decompositionName,
+//				new HashSet<String>() {{
+//					add("controllers"); add("entityIDToClusterID");
+//				}}
+//			);
+//
+//			DirectedAcyclicGraph<LocalTransaction, DefaultEdge> controllerLocalTransactionsGraph = decomposition.getControllerLocalTransactionsGraph(
+//				codebase,
+//				controllerName,
+//				dendrogram.getTraceType(),
+//				dendrogram.getTracesMaxLimit()
+//			);
+//
+//			return new ResponseEntity<>(
+//				Utils.getSerializableLocalTransactionsGraph(controllerLocalTransactionsGraph),
+//				HttpStatus.OK
+//			);
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//		}
+//	}
 }

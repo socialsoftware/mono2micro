@@ -60,11 +60,11 @@ public class ClusterController {
 				decomposition.getEntityIDToClusterID()
 			));
 
-			decomposition.calculateMetrics(
-				codebase,
-				dendrogram.getTracesMaxLimit(),
-				dendrogram.getTraceType(),
-					false);
+//			decomposition.calculateMetrics(
+//				codebase,
+//				dendrogram.getTracesMaxLimit(),
+//				dendrogram.getTraceType(),
+//					false);
 
 			codebaseManager.writeCodebase(codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -146,11 +146,11 @@ public class ClusterController {
 				decomposition.getEntityIDToClusterID()
 			));
 
-			decomposition.calculateMetrics(
-				codebase,
-				dendrogram.getTracesMaxLimit(),
-				dendrogram.getTraceType(),
-					false);
+//			decomposition.calculateMetrics(
+//				codebase,
+//				dendrogram.getTracesMaxLimit(),
+//				dendrogram.getTraceType(),
+//					false);
 
 			codebaseManager.writeCodebase(codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -194,12 +194,11 @@ public class ClusterController {
 				decomposition.getEntityIDToClusterID()
 			));
 
-			decomposition.calculateMetrics(
-				codebase,
-				dendrogram.getTracesMaxLimit(),
-				dendrogram.getTraceType(),
-					false);
-
+//			decomposition.calculateMetrics(
+//				codebase,
+//				dendrogram.getTracesMaxLimit(),
+//				dendrogram.getTraceType(),
+//					false);
 			codebaseManager.writeCodebase(codebase);
 			return new ResponseEntity<>(HttpStatus.OK);
 

@@ -1,19 +1,17 @@
 package pt.ist.socialsoftware.mono2micro.controller;
 
 import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.commons.io.FilenameUtils;
-import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
-import pt.ist.socialsoftware.mono2micro.domain.Cluster;
-import pt.ist.socialsoftware.mono2micro.domain.Codebase;
-import pt.ist.socialsoftware.mono2micro.domain.Controller;
-import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.domain.*;
 import pt.ist.socialsoftware.mono2micro.dto.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.CommitAnalyserService;
@@ -21,13 +19,11 @@ import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 import pt.ist.socialsoftware.mono2micro.utils.mojoCalculator.src.main.java.MoJo;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
@@ -99,89 +95,104 @@ public class AnalysisController {
 
 			Set<String> cutInfoNames = new HashSet<>();
 
-			if (analyserResultFileAlreadyExists) {
-
-				File existentAnalyserResultFile = new File(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json");
-
-				cutInfoNames = Utils.getJsonFileKeys(existentAnalyserResultFile);
-
-				if (cutInfoNames.size() == totalNumberOfFiles) {
-					System.out.println("Analyser Complete");
-					return new ResponseEntity<>(HttpStatus.OK);
-				}
-
-				JsonParser jsonParser = jsonfactory.createParser(existentAnalyserResultFile);
-				jsonParser.nextValue();
-
-				if (jsonParser.getCurrentToken() != JsonToken.START_OBJECT) {
-					System.err.println("Json must start with a left curly brace");
-					System.exit(-1);
-				}
-
-				jsonParser.nextValue();
-
-				while (jsonParser.getCurrentToken() != JsonToken.END_OBJECT) {
-					if (jsonParser.getCurrentToken() == JsonToken.START_OBJECT) {
-						Utils.print("Cut name: " + jsonParser.getCurrentName(), Utils.lineno());
-						cutInfoNames.add(jsonParser.currentName());
-
-						CutInfoDto cutInfo = jsonParser.readValueAs(CutInfoDto.class);
-
-						jGenerator.writeObjectField(jsonParser.getCurrentName(), cutInfo);
-
-						jsonParser.nextValue();
-					}
-				}
-
-				jGenerator.flush();
-
-				existentAnalyserResultFile.delete();
-			}
+//			if (analyserResultFileAlreadyExists) {
+//
+//				File existentAnalyserResultFile = new File("/home/joaolourenco/Thesis/development/mono2micro-mine/codebases/" + codebaseName + "/analyser/analyserResult.json");
+//
+//				cutInfoNames = Utils.getJsonFileKeys(existentAnalyserResultFile);
+//
+//				if (cutInfoNames.size() == totalNumberOfFiles) {
+//					System.out.println("Analyser Complete");
+//					return new ResponseEntity<>(HttpStatus.OK);
+//				}
+//
+//				JsonParser jsonParser = jsonfactory.createParser(existentAnalyserResultFile);
+//				jsonParser.nextValue();
+//
+//				if (jsonParser.getCurrentToken() != JsonToken.START_OBJECT) {
+//					System.err.println("Json must start with a left curly brace");
+//					System.exit(-1);
+//				}
+//
+//				jsonParser.nextValue();
+//
+//				while (jsonParser.getCurrentToken() != JsonToken.END_OBJECT) {
+//					if (jsonParser.getCurrentToken() == JsonToken.START_OBJECT) {
+//						Utils.print("Cut name: " + jsonParser.getCurrentName(), Utils.lineno());
+//						cutInfoNames.add(jsonParser.currentName());
+//
+//						CutInfoDto cutInfo = jsonParser.readValueAs(CutInfoDto.class);
+//
+//						jGenerator.writeObjectField(jsonParser.getCurrentName(), cutInfo);
+//
+//						jsonParser.nextValue();
+//					}
+//				}
+//
+//				jGenerator.flush();
+//
+//				existentAnalyserResultFile.delete();
+//			}
 
 			int maxRequests = analyser.getRequestLimit();
-			short newRequestsCount = 0;
-			short count = 0;
+			AtomicReference<Short> newRequestsCount = new AtomicReference<>((short) 0);
+			AtomicReference<Short> count = new AtomicReference<>((short) 0);
 
 			// AFTER COPYING PREVIOUS RESULTS, NEXT CUTS WILL BE PROCESSED AND THEIR RESULTS
 			// WILL BE APPENDED TO THE NEW FILE
 
-			for (File file : files) {
+			InputStream is = new FileInputStream(codebase.getDatafilePath());
 
+			ObjectMapper objectMapper = new ObjectMapper();
+			objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+			System.out.println("Objectifying static collection data");
+			StaticCollection collection = objectMapper.readerFor(StaticCollection.class).readValue(is);
+			is.close();
+			Arrays.stream(files).parallel().forEach(file -> {
 				String filename = FilenameUtils.getBaseName(file.getName());
 
-				count++;
+				count.getAndSet((short) (count.get() + 1));
 
-                if (cutInfoNames.contains(filename)) {
-                    System.out.println(filename + " already analysed. " + count + "/" + totalNumberOfFiles);
-                    continue;
-                }
+//				if (cutInfoNames.contains(filename)) {
+//					System.out.println(filename + " already analysed. " + count + "/" + totalNumberOfFiles);
+//					continue;
+//				}
 
-				Decomposition decomposition = buildDecompositionAndCalculateMetrics(
-					analyser,
-					codebase,
-					filename
-				);
+				Decomposition decomposition = null;
+				CutInfoDto cutInfo = null;
+				try {
+					decomposition = buildDecompositionAndCalculateMetrics(
+							analyser,
+							codebase,
+							filename,
+							collection
+					);
+					cutInfo = assembleCutInformation(
+							analyser,
+							decomposition,
+							filename
+					);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
-                CutInfoDto cutInfo = assembleCutInformation(
-                	analyser,
-					decomposition,
-					filename
-				);
+				synchronized(this) {
+					try {
+						jGenerator.writeObjectField(
+								filename,
+								cutInfo
+						);
+						jGenerator.flush();
 
-				jGenerator.writeObjectField(
-					filename,
-					cutInfo
-				);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 
-				jGenerator.flush();
-
-				newRequestsCount++;
+				}
 
 				System.out.println("NEW: " + filename + " : " + count + "/" + totalNumberOfFiles);
-				if (newRequestsCount == maxRequests)
-					break;
-
-			}
+				// Break somehow if max requests is hit
+			});
 
 			jGenerator.writeEndObject();
 			jGenerator.close();
@@ -232,7 +243,15 @@ public class AnalysisController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
+	private HashMap<Short, ArrayList<Short>> fetchCommitChanges(String codebaseName) throws IOException {
+		File commitChangesPath = new File(CODEBASES_PATH + codebaseName + "/" + "commitChanges.json");
+		return new ObjectMapper().readValue(commitChangesPath, new TypeReference<Map<Short,ArrayList<Short>>>() {});
+	}
 
+	private HashMap<Short, ArrayList<String>>  fetchAuthorsChanges(String codebaseName) throws IOException {
+		File authorChangesPath = new File(CODEBASES_PATH + codebaseName + "/filesAuthors.json");
+		return new ObjectMapper().readValue(authorChangesPath, new TypeReference<Map<Short,ArrayList<String>>>() {});
+	}
 
 	public int getOrCreateSimilarityMatrix(
 		Codebase codebase,
@@ -255,7 +274,9 @@ public class AnalysisController {
 			similarityMatrixDto = getMatrixData(
 				result.entities,
 				result.e1e2PairCount,
-				result.entityControllers
+				result.entityControllers,
+				fetchCommitChanges(codebase.getName()),
+				fetchAuthorsChanges(codebase.getName())
 			);
 
 			CodebaseManager.getInstance().writeAnalyserSimilarityMatrix(
@@ -298,7 +319,8 @@ public class AnalysisController {
 	private Decomposition buildDecompositionAndCalculateMetrics(
 		AnalyserDto analyser,
 		Codebase codebase, // requirements: name, profiles, datafilePath
-		String filename
+		String filename,
+		StaticCollection collection
 	)
 		throws Exception
 	{
@@ -335,7 +357,8 @@ public class AnalysisController {
 			codebase,
 			analyser.getTracesMaxLimit(),
 			analyser.getTraceType(),
-			true
+			true,
+				collection
 		);
 
 		return decomposition;
@@ -355,20 +378,20 @@ public class AnalysisController {
 		analysisDto = getAnalysis(analysisDto).getBody();
 
 		AnalyserResultDto analyserResult = new AnalyserResultDto();
-		analyserResult.setAccuracy(analysisDto.getAccuracy());
-		analyserResult.setPrecision(analysisDto.getPrecision());
-		analyserResult.setRecall(analysisDto.getRecall());
-		analyserResult.setSpecificity(analysisDto.getSpecificity());
-		analyserResult.setFmeasure(analysisDto.getFmeasure());
-		analyserResult.setMojoBiggest(analysisDto.getMojoBiggest());
-		analyserResult.setMojoCommon(analysisDto.getMojoCommon());
-		analyserResult.setMojoSingletons(analysisDto.getMojoSingletons());
-		analyserResult.setMojoNew(analysisDto.getMojoNew());
+//		analyserResult.setAccuracy(analysisDto.getAccuracy());
+//		analyserResult.setPrecision(analysisDto.getPrecision());
+//		analyserResult.setRecall(analysisDto.getRecall());
+//		analyserResult.setSpecificity(analysisDto.getSpecificity());
+//		analyserResult.setFmeasure(analysisDto.getFmeasure());
+//		analyserResult.setMojoBiggest(analysisDto.getMojoBiggest());
+//		analyserResult.setMojoCommon(analysisDto.getMojoCommon());
+//		analyserResult.setMojoSingletons(analysisDto.getMojoSingletons());
+//		analyserResult.setMojoNew(analysisDto.getMojoNew());
 
 		analyserResult.setComplexity(decomposition.getComplexity());
 		analyserResult.setCohesion(decomposition.getCohesion());
 		analyserResult.setCoupling(decomposition.getCoupling());
-		analyserResult.setPerformance(decomposition.getPerformance());
+//		analyserResult.setPerformance(decomposition.getPerformance());
 
 		analyserResult.setMaxClusterSize(decomposition.maxClusterSize());
 
@@ -377,23 +400,25 @@ public class AnalysisController {
 		analyserResult.setWriteWeight(Float.parseFloat(similarityWeights[1]));
 		analyserResult.setReadWeight(Float.parseFloat(similarityWeights[2]));
 		analyserResult.setSequenceWeight(Float.parseFloat(similarityWeights[3]));
-		analyserResult.setNumberClusters(Float.parseFloat(similarityWeights[4]));
+		analyserResult.setCommitWeight(Integer.parseInt(similarityWeights[4]));
+		analyserResult.setAuthorsWeight(Integer.parseInt(similarityWeights[5]));
+		analyserResult.setNumberClusters(Float.parseFloat(similarityWeights[6]));
 
 		CutInfoDto cutInfo = new CutInfoDto();
 		cutInfo.setAnalyserResultDto(analyserResult);
 
-		HashMap<String, HashMap<String, Float>> controllerSpecs = new HashMap<>();
-		for (Controller controller : decomposition.getControllers().values()) {
-			controllerSpecs.put(
-				controller.getName(),
-				new HashMap<String, Float>() {{
-					put("complexity", controller.getComplexity());
-					put("performance", (float) controller.getPerformance());
-				}}
-			);
-		}
-
-		cutInfo.setControllerSpecs(controllerSpecs);
+//		HashMap<String, HashMap<String, Float>> controllerSpecs = new HashMap<>();
+//		for (Controller controller : decomposition.getControllers().values()) {
+//			controllerSpecs.put(
+//				controller.getName(),
+//				new HashMap<String, Float>() {{
+//					put("complexity", controller.getComplexity());
+//					put("performance", (float) controller.getPerformance());
+//				}}
+//			);
+//		}
+//
+//		cutInfo.setControllerSpecs(controllerSpecs);
 
 		return cutInfo;
 	}
@@ -401,7 +426,9 @@ public class AnalysisController {
 	private static SimilarityMatrixDto getMatrixData(
 		Set<Short> entityIDs,
 		Map<String,Integer> e1e2PairCount,
-		Map<Short, List<Pair<String, Byte>>> entityControllers
+		Map<Short, List<Pair<String, Byte>>> entityControllers,
+		HashMap<Short, ArrayList<Short>> commitChanges,
+		HashMap<Short, ArrayList<String>> authorChanges
 	) {
 		SimilarityMatrixDto matrixData = new SimilarityMatrixDto();
 
@@ -420,6 +447,8 @@ public class AnalysisController {
 					metric.add((float) 1);
 					metric.add((float) 1);
 					metric.add((float) 1);
+					metric.add((float) 1); // commit
+					metric.add((float) 1); // author
 
 					matrixRow.add(metric);
 					continue;
@@ -433,10 +462,14 @@ public class AnalysisController {
 					maxNumberOfPairs
 				);
 
+				float[] commitMetrics = Utils.calculateSimilarityMatrixCommitMetrics(e1ID, e2ID, commitChanges, authorChanges);
+
 				metric.add(metrics[0]);
 				metric.add(metrics[1]);
 				metric.add(metrics[2]);
 				metric.add(metrics[3]);
+				metric.add(commitMetrics[0]);
+				metric.add(commitMetrics[1]);
 
 				matrixRow.add(metric);
 			}

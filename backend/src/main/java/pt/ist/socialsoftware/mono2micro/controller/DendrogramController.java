@@ -166,11 +166,11 @@ public class DendrogramController {
 				decomposition.getEntityIDToClusterID()
 			));
 
-			cutDecomposition.calculateMetrics(
-				codebase,
-				dendrogram.getTracesMaxLimit(),
-				dendrogram.getTraceType(),
-					false);
+//			cutDecomposition.calculateMetrics(
+//				codebase,
+//				dendrogram.getTracesMaxLimit(),
+//				dendrogram.getTraceType(),
+//					false);
 
 
 			dendrogram.addDecomposition(cutDecomposition);
@@ -211,11 +211,11 @@ public class DendrogramController {
 				decomposition.getEntityIDToClusterID()
 			));
 
-			decomposition.calculateMetrics(
-				codebase,
-				dendrogram.getTracesMaxLimit(),
-				dendrogram.getTraceType(),
-					false);
+//			decomposition.calculateMetrics(
+//				codebase,
+//				dendrogram.getTracesMaxLimit(),
+//				dendrogram.getTraceType(),
+//					false);
 
 			dendrogram.addDecomposition(decomposition);
 
