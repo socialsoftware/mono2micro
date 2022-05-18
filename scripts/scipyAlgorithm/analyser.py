@@ -8,6 +8,7 @@ multiplier = 10
 minClusters = 3
 clusterStep = 1
 maxClusters = -1
+current_request = 0
 
 
 def analyser(codebasesPath, codebaseName, totalNumberOfEntities):
@@ -31,22 +32,39 @@ def analyser(codebasesPath, codebaseName, totalNumberOfEntities):
     linkageType = similarityMatrix["linkageType"]
 
     try:
+        print("Creating all decompositions and cuts...")
         for a in range(interval, -1, -1):
             remainder = interval - a
             if remainder == 0:
-                sendRequest(a, 0, 0, 0, False, totalNumberOfEntities, codebase, entities, linkageType)
+                sendRequest(a, 0, 0, 0, 0, 0, False, totalNumberOfEntities, codebase, entities, linkageType)
             else:
                 for w in range(remainder, -1, -1):
                     remainder2 = remainder - w
                     if remainder2 == 0:
-                        sendRequest(a, w, 0, 0, False, totalNumberOfEntities, codebase, entities, linkageType)
+                        sendRequest(a, w, 0, 0, 0, 0, False, totalNumberOfEntities, codebase, entities, linkageType)
                     else:
                         for r in range(remainder2, -1, -1):
                             remainder3 = remainder2 - r
                             if remainder3 == 0:
-                                sendRequest(a, w, r, 0, False, totalNumberOfEntities, codebase, entities, linkageType)
+                                sendRequest(a, w, r, 0, 0, 0, False, totalNumberOfEntities, codebase, entities,
+                                            linkageType)
                             else:
-                                sendRequest(a, w, r, remainder3, False, totalNumberOfEntities, codebase, entities, linkageType)
+                                for s in range(remainder3, -1, -1):
+                                    remainder4 = remainder3 - s
+                                    if remainder4 == 0:
+                                        sendRequest(a, w, r, s, 0, 0, False, totalNumberOfEntities, codebase, entities,
+                                                    linkageType)
+                                    else:
+                                        for c in range(remainder4, -1, -1):
+                                            remainder5 = remainder4 - c
+                                            if remainder5 == 0:
+                                                sendRequest(a, w, r, s, c, 0, False, totalNumberOfEntities, codebase,
+                                                            entities,
+                                                            linkageType)
+                                            else:
+                                                sendRequest(a, w, r, s, c, remainder5, False, totalNumberOfEntities,
+                                                            codebase, entities,
+                                                            linkageType)
 
         # last request to discover max Complexity possible (each cluster is singleton)
         sendRequest(10, 0, 0, 0, True, totalNumberOfEntities, codebase, entities, linkageType)
@@ -54,8 +72,8 @@ def analyser(codebasesPath, codebaseName, totalNumberOfEntities):
         print(e)
 
 
-def createCut(a, w, r, s, n, codebase, entities, linkageType):
-    name = ','.join(map(str, [a, w, r, s, n]))
+def createCut(a, w, r, s, c, author, n, codebase, entities, linkageType):
+    name = ','.join(map(str, [a, w, r, s, c, author, n]))
 
     filePath = codebase + "/analyser/cuts/" + name + ".json"
 
@@ -71,7 +89,9 @@ def createCut(a, w, r, s, n, codebase, entities, linkageType):
             matrix[i][j] = matrix[i][j][0] * a / 100 + \
                            matrix[i][j][1] * w / 100 + \
                            matrix[i][j][2] * r / 100 + \
-                           matrix[i][j][3] * s / 100
+                           matrix[i][j][3] * s / 100 + \
+                           matrix[i][j][4] * c / 100 + \
+                           matrix[i][j][5] * author / 100
 
     matrix = np.array(matrix)
 
@@ -93,16 +113,18 @@ def createCut(a, w, r, s, n, codebase, entities, linkageType):
         outfile.write(json.dumps(clustersJSON, indent=4))
 
 
-def sendRequest(a, w, r, s, maxClusterCut, totalNumberOfEntities, codebase, entities, linkageType):
+def sendRequest(a, w, r, s, c, author, maxClusterCut, totalNumberOfEntities, codebase, entities, linkageType):
     a *= multiplier
     w *= multiplier
     r *= multiplier
     s *= multiplier
+    c *= multiplier
+    author *= multiplier
 
     if maxClusterCut:
-        createCut(a, w, r, s, totalNumberOfEntities, codebase, entities, linkageType)
+        createCut(a, w, r, s, c, author, totalNumberOfEntities, codebase, entities, linkageType)
     else:
         for n in range(minClusters, maxClusters + 1, clusterStep):
-            createCut(a, w, r, s, n, codebase, entities, linkageType)
+            createCut(a, w, r, s, c, author, n, codebase, entities, linkageType)
 
 
