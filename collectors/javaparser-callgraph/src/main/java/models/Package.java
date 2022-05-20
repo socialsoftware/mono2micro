@@ -26,9 +26,9 @@ public class Package {
 		return _classes.get(className);
 	}
 
-	public void addClass(String className, String classType) {
+	public void addClass(String className, String classType, String superQualifiedName) {
 		if (!hasClass(className)) {
-			_classes.put(className, new Class(className, classType));
+			_classes.put(className, new Class(className, classType, superQualifiedName));
 		}
 	}
 

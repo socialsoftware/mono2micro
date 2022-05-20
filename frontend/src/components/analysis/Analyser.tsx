@@ -557,6 +557,7 @@ export const Analyser = () => {
             return;
         }
 
+        var startTime = performance.now();
         const service = new RepositoryService();
         service.analyser(
             codebase.name,
@@ -568,6 +569,7 @@ export const Analyser = () => {
         )
         .then(response => {
             if (response.status === HttpStatus.OK) {
+                console.log("Performance Time: ", performance.now() - startTime);
                 setIsUploaded("Upload completed successfully.");
             } else {
                 setIsUploaded("Upload failed.");
@@ -588,6 +590,7 @@ export const Analyser = () => {
             return;
         }
 
+        var startTime = performance.now();
         const service = new RepositoryService();
 
         service.entitiesAnalyser(
@@ -597,6 +600,7 @@ export const Analyser = () => {
         )
         .then(response => {
             if (response.status === HttpStatus.OK) {
+                console.log("Performance Time: ", performance.now() - startTime);
                 setIsUploaded("Upload completed successfully.");
             } else {
                 setIsUploaded("Upload failed.");
@@ -617,6 +621,7 @@ export const Analyser = () => {
             return;
         }
 
+        var startTime = performance.now();
         const service = new RepositoryService();
 
         service.classesAnalyser(
@@ -626,6 +631,7 @@ export const Analyser = () => {
         )
         .then(response => {
             if (response.status === HttpStatus.OK) {
+                console.log("Performance Time: ", performance.now() - startTime);
                 setIsUploaded("Upload completed successfully.");
             } else {
                 setIsUploaded("Upload failed.");
@@ -646,6 +652,7 @@ export const Analyser = () => {
             return;
         }
 
+        var startTime = performance.now();
         const service = new RepositoryService();
 
         if (featureVectorizationStrategy == "methodCalls") {
@@ -656,6 +663,7 @@ export const Analyser = () => {
             )
             .then(response => {
                 if (response.status === HttpStatus.OK) {
+                    console.log("Performance Time: ", performance.now() - startTime);
                     setIsUploaded("Upload completed successfully.");
                 } else {
                     setIsUploaded("Upload failed.");
@@ -672,6 +680,7 @@ export const Analyser = () => {
             )
             .then(response => {
                 if (response.status === HttpStatus.OK) {
+                    console.log("Performance Time: ", performance.now() - startTime);
                     setIsUploaded("Upload completed successfully.");
                 } else {
                     setIsUploaded("Upload failed.");

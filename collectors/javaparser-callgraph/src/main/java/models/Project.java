@@ -39,11 +39,11 @@ public class Project {
 		_packages.put(packageName, new Package(packageName));
 	}
 
-	public void addClass(String packageName, String className, String classType) {
+	public void addClass(String packageName, String className, String classType, String superQualifiedName) {
 		if (!hasPackage(packageName)) {
 			addPackage(packageName);
 		}
-		getPackage(packageName).addClass(className, classType);
+		getPackage(packageName).addClass(className, classType, superQualifiedName);
 	}
 
 	public void addMethod(String packageName, String className, String signature, List<Float> codeVector, String type) {

@@ -95,29 +95,22 @@ public class DendrogramService {
 
                 if (classType.equals("Entity")) {
                     numberOfEntities++;
-                    float count = 0;
-                    ArrayList<Double> vector = new ArrayList<Double>();
-                    for (int idx = 0; idx < 384; idx++) {
-                        vector.add(0.0);
-                    }
+
+                    Acumulator acumulator = new Acumulator();
+                    getAscendedClassesMethodsCodeVectors(packages, acumulator, cls.getString("superQualifiedName"));
 
                     for (int k = 0; k < methods.length(); k++) {
                         JSONObject method = methods.getJSONObject(k);
                         JSONArray code_vector = method.getJSONArray("codeVector");
-                        for (int idx = 0; idx < 384; idx++) {
-                            vector.set(idx, vector.get(idx) + code_vector.getDouble(idx));
-                        }
-                        count += 1;
+                        acumulator.addVector(code_vector);
                     }
 
-                    if (count > 0) {
-                        vectorDivision(vector, count);
-
+                    if (acumulator.getCount() > 0) {
                         HashMap<String, Object> entityEmbeddings = new HashMap<String, Object>();
                         entityEmbeddings.put("package", pack.getString("name"));
                         entityEmbeddings.put("name", cls.getString("name"));
                         entityEmbeddings.put("translationID", cls.getInt("translationID"));
-                        entityEmbeddings.put("codeVector", vector);
+                        entityEmbeddings.put("codeVector", acumulator.getMeanVector());
                         entitiesVectors.add(entityEmbeddings);
                     }
 
@@ -137,6 +130,28 @@ public class DendrogramService {
             clusterService.executeCreateDendrogram(codebase.getName(), dendrogram, "/entities");
             codebaseManager.writeCodebase(codebase);
         }
+    }
+
+    private Acumulator getAscendedClassesMethodsCodeVectors(
+        JSONArray packages,
+        Acumulator acumulator,
+        String qualifiedName
+    )
+        throws JSONException
+    {
+        if (qualifiedName.isEmpty()) return acumulator;
+
+        String[] splittedStr = qualifiedName.split("[.]");
+        String packageName = splittedStr[0];
+        for (int i = 1; i < splittedStr.length-1; i++) {
+            packageName += "." + splittedStr[i];
+        }
+        String className = splittedStr[splittedStr.length - 1];
+
+        JSONObject cls = getClassMethodsCodeVectors(acumulator, packages, packageName, className);
+        if (cls == null) return acumulator;
+
+        return getAscendedClassesMethodsCodeVectors(packages, acumulator, cls.getString("superQualifiedName"));
     }
 
     public void createDendrogramByClassesStrategy(
@@ -329,29 +344,22 @@ public class DendrogramService {
 
                 if (classType.equals("Entity")) {
                     numberOfEntities++;
-                    float count = 0;
-                    ArrayList<Double> vector = new ArrayList<Double>();
-                    for (int idx = 0; idx < 384; idx++) {
-                        vector.add(0.0);
-                    }
+
+                    Acumulator acumulator = new Acumulator();
+                    getAscendedClassesMethodsCodeVectors(packages, acumulator, cls.getString("superQualifiedName"));
 
                     for (int k = 0; k < methods.length(); k++) {
                         JSONObject method = methods.getJSONObject(k);
                         JSONArray code_vector = method.getJSONArray("codeVector");
-                        for (int idx = 0; idx < 384; idx++) {
-                            vector.set(idx, vector.get(idx) + code_vector.getDouble(idx));
-                        }
-                        count += 1;
+                        acumulator.addVector(code_vector);
                     }
 
-                    if (count > 0) {
-                        vectorDivision(vector, count);
-
+                    if (acumulator.getCount() > 0) {
                         HashMap<String, Object> entityEmbeddings = new HashMap<String, Object>();
                         entityEmbeddings.put("package", pack.getString("name"));
                         entityEmbeddings.put("name", cls.getString("name"));
                         entityEmbeddings.put("translationID", cls.getInt("translationID"));
-                        entityEmbeddings.put("codeVector", vector);
+                        entityEmbeddings.put("codeVector", acumulator.getMeanVector());
                         entitiesVectors.add(entityEmbeddings);
                     }
                 }
@@ -536,6 +544,40 @@ public class DendrogramService {
         }
 
         return class_vector;
+    }
+
+    public JSONObject getClassMethodsCodeVectors(
+            Acumulator acumulator,
+            JSONArray packages,
+            String packageName,
+            String className
+    )
+            throws JSONException
+    {
+        for (int i = 0; i < packages.length(); i++) {
+            JSONObject pack = packages.getJSONObject(i);
+
+            if (pack.getString("name").equals(packageName)) {
+                JSONArray classes = pack.optJSONArray("classes");
+
+                for (int j = 0; j < classes.length(); j++) {
+                    JSONObject cls = classes.getJSONObject(j);
+
+                    if (cls.getString("name").equals(className)) {
+                        JSONArray methods = cls.getJSONArray("methods");
+
+                        for (int k = 0; k < methods.length(); k++) {
+                            JSONObject method = methods.getJSONObject(k);
+                            JSONArray codeVector = method.getJSONArray("codeVector");
+                            acumulator.addVector(codeVector);
+                        }
+
+                        return cls;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     public Acumulator getMethodCallsVectors(

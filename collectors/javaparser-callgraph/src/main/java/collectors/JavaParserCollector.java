@@ -8,6 +8,7 @@ import java.util.Arrays;
 import com.github.javaparser.StaticJavaParser;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -15,6 +16,7 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedConstructorDeclaration;
 
@@ -94,7 +96,7 @@ public class JavaParserCollector {
 				body += ", " + constructorDeclaration.getParameter(i).toString();
 			}
 		}
-		body += ") " + constructorDeclaration.getBody().toString();
+		body += ") " + constructorDeclaration.getBody().toString().replaceAll("(super[(])", "sup(");
 		// TODO: Can't have super() method calls inside methods... 
 		return body;
 	}
@@ -105,228 +107,195 @@ public class JavaParserCollector {
 
 			CompilationUnit cu = StaticJavaParser.parse(file);
 
-			cu.findAll(MethodDeclaration.class)
-				.stream()
-				.forEach(methodDeclaration -> {
+			String packageName = "";
+			if (cu.findFirst(PackageDeclaration.class).isPresent()) {
+				PackageDeclaration pd = (PackageDeclaration) cu.findFirst(PackageDeclaration.class).get();
+				packageName = pd.getName().toString();
+			}
 
-					String packageName = "";
-					if (cu.findFirst(PackageDeclaration.class).isPresent()) {
-						PackageDeclaration pd = (PackageDeclaration) cu.findFirst(PackageDeclaration.class).get();
-						packageName = pd.getName().toString();
+			String className = "";
+			String classType = "";
+			String superQualifiedName = "";
+			if (cu.findFirst(ClassOrInterfaceDeclaration.class).isPresent()) {
+				ClassOrInterfaceDeclaration coid = (ClassOrInterfaceDeclaration) cu.findFirst(ClassOrInterfaceDeclaration.class).get();
+				for (String annotation : CONFIGURATION_ANNOTATIONS) {
+					if (coid.getAnnotations().toString().contains(annotation)) {
+						System.out.println("[+] Ignoring: " + coid.getName().toString());
+						System.out.println("[+] Annotation: " + annotation);
+						return;
 					}
+				}
+				className = coid.getName().toString();
+				classType = coid.isInterface() ? "interface" : "class";
+				if (coid.isInterface()) {
+					System.out.println("[+] Ignoring Interface: " + coid.getName().toString());
+					return;
+				}
+				if (coid.getAnnotations().toString().contains(CONTROLLER_ANNOTATION)) {
+					classType = CONTROLLER_ANNOTATION;
+				} else if (coid.getAnnotations().toString().contains(ENTITY_ANNOTATION)) {
+					classType = ENTITY_ANNOTATION;
+				} else if (coid.getAnnotations().toString().contains(SERVICE_ANNOTATION)) {
+					classType = SERVICE_ANNOTATION;
+				} else if (coid.getAnnotations().toString().contains(REPOSITORY_ANNOTATION)) {
+					classType = REPOSITORY_ANNOTATION;
+				}
 
-					String className = "";
-					String classType = "";
-					if (cu.findFirst(ClassOrInterfaceDeclaration.class).isPresent()) {
-						ClassOrInterfaceDeclaration coid = (ClassOrInterfaceDeclaration) cu.findFirst(ClassOrInterfaceDeclaration.class).get();
-						for (String annotation : CONFIGURATION_ANNOTATIONS) {
-							if (coid.getAnnotations().toString().contains(annotation)) {
-								System.out.println("[+] Ignoring: " + coid.getName().toString());
-								System.out.println("[+] Annotation: " + annotation);
-								return;
-							}
-						}
-						className = coid.getName().toString();
-						classType = coid.isInterface() ? "interface" : "class";
-						if (coid.isInterface()) {
-							System.out.println("[+] Ignoring Interface: " + coid.getName().toString());
-							return;
-						}
-						if (coid.getAnnotations().toString().contains(CONTROLLER_ANNOTATION)) {
-							classType = CONTROLLER_ANNOTATION;
-						} else if (coid.getAnnotations().toString().contains(ENTITY_ANNOTATION)) {
-							classType = ENTITY_ANNOTATION;
-						} else if (coid.getAnnotations().toString().contains(SERVICE_ANNOTATION)) {
-							classType = SERVICE_ANNOTATION;
-						} else if (coid.getAnnotations().toString().contains(REPOSITORY_ANNOTATION)) {
-							classType = REPOSITORY_ANNOTATION;
-						}
+				try {
+					NodeList<ClassOrInterfaceType> extendedTypes = coid.getExtendedTypes();
+					if (extendedTypes.size() > 0) {
+						superQualifiedName = extendedTypes.get(0).resolve().getQualifiedName();
 					}
-					project.addClass(packageName, className, classType);
+				} catch (Exception e) {
+					System.out.println("[-] Resolution error: Unknown extended type");
+				}
+			}
+			project.addClass(packageName, className, classType, superQualifiedName);
 
-					String signature = methodDeclaration.getSignature().asString();
-					try {
-						ResolvedMethodDeclaration resolvedMetDecl = methodDeclaration.resolve();
-						if (resolvedMetDecl != null)
-							signature = resolvedMetDecl.getQualifiedSignature();
-					} catch(Exception _err) {}
+			for (MethodDeclaration methodDeclaration : cu.findAll(MethodDeclaration.class)) {
 
-					String body = methodDeclaration.toString();
-					//  	.replaceAll("[\\r\\n\\t]", ""); //Code after comments unreachable
-					String type = "Regular";
-					for (String annotation : ENDPOINT_ANNOTATIONS) {
-						if (methodDeclaration.getAnnotations().toString().contains(annotation)) {
-							type = CONTROLLER_ANNOTATION;
-						}
+				String signature = methodDeclaration.getSignature().asString();
+				try {
+					ResolvedMethodDeclaration resolvedMetDecl = methodDeclaration.resolve();
+					if (resolvedMetDecl != null)
+						signature = resolvedMetDecl.getQualifiedSignature();
+				} catch(Exception _err) {}
+
+				String body = methodDeclaration.toString();
+				//  	.replaceAll("[\\r\\n\\t]", ""); //Code after comments unreachable
+				String type = "Regular";
+				for (String annotation : ENDPOINT_ANNOTATIONS) {
+					if (methodDeclaration.getAnnotations().toString().contains(annotation)) {
+						type = CONTROLLER_ANNOTATION;
 					}
+				}
 
-					Boolean successfulPrediction = false;
-					
-					try {
+				Boolean successfulPrediction = false;
 
-						MethodPredict mp = predict(signature, body);
+				try {
 
-						project.addMethod(packageName, className, signature, mp.getCodeVector(), type);
+					MethodPredict mp = predict(signature, body);
 
-						successfulPrediction = true;
+					project.addMethod(packageName, className, signature, mp.getCodeVector(), type);
 
-					} catch (Exception e) {
-						System.out.println("[ - ] On predict : " + e.toString());
-					}
+					successfulPrediction = true;
 
-					if (successfulPrediction) {
-						for (MethodCallExpr call : methodDeclaration.findAll(MethodCallExpr.class)) {
-							try {
-	
-								System.out.println("[+] MethodCallExpr: " + call);
-								
-								SymbolReference<ResolvedMethodDeclaration> resolvedMethodDeclaration = jpf.solve(call);
-	
-								project.addMethodCallToLast(
+				} catch (Exception e) {
+					System.out.println("[ - ] On predict : " + e.toString());
+				}
+
+				if (successfulPrediction) {
+					for (MethodCallExpr call : methodDeclaration.findAll(MethodCallExpr.class)) {
+						try {
+
+							System.out.println("[+] MethodCallExpr: " + call);
+
+							SymbolReference<ResolvedMethodDeclaration> resolvedMethodDeclaration = jpf.solve(call);
+
+							project.addMethodCallToLast(
 									packageName,
 									className,
 									resolvedMethodDeclaration.getCorrespondingDeclaration().getPackageName(),
 									resolvedMethodDeclaration.getCorrespondingDeclaration().getClassName(),
 									resolvedMethodDeclaration.getCorrespondingDeclaration().getQualifiedSignature()
-								);
-	
-							} catch (Exception e) {
-								System.out.println("[-] Resolution error: " + e);
-							}
+							);
+
+						} catch (Exception e) {
+							System.out.println("[-] Resolution error: " + e);
 						}
-	
-						for (ObjectCreationExpr oce: methodDeclaration.findAll(ObjectCreationExpr.class)) {
-							try {
-	
-								System.out.println("[+] ObjectCreationExpr: " + oce);
-	
-								ResolvedConstructorDeclaration rcd = oce.resolve();
-	
-								project.addMethodCallToLast(
+					}
+
+					for (ObjectCreationExpr oce: methodDeclaration.findAll(ObjectCreationExpr.class)) {
+						try {
+
+							System.out.println("[+] ObjectCreationExpr: " + oce);
+
+							ResolvedConstructorDeclaration rcd = oce.resolve();
+
+							project.addMethodCallToLast(
 									packageName,
 									className,
 									rcd.getPackageName(),
 									rcd.getClassName(),
 									rcd.getQualifiedSignature()
-								);
-	
-							} catch (Exception e) {
-								System.out.println("[-] Resolution error: " + e);
-							}
+							);
+
+						} catch (Exception e) {
+							System.out.println("[-] Resolution error: " + e);
 						}
 					}
-					
-				});
+				}
+			}
 
-			cu.findAll(ConstructorDeclaration.class)
-				.stream()
-				.forEach(constructorDeclaration -> {
-					System.out.println("[+] ConstructorDeclaration: " + constructorDeclaration.getName());
+			for (ConstructorDeclaration constructorDeclaration : cu.findAll(ConstructorDeclaration.class)) {
+				System.out.println("[+] ConstructorDeclaration: " + constructorDeclaration.getName());
 
-					String packageName = "";
-					if (cu.findFirst(PackageDeclaration.class).isPresent()) {
-						PackageDeclaration pd = (PackageDeclaration) cu.findFirst(PackageDeclaration.class).get();
-						packageName = pd.getName().toString();
-					}
+				String signature = constructorDeclaration.getSignature().asString();
+				try {
+					ResolvedConstructorDeclaration resolvedConstDecl = constructorDeclaration.resolve();
+					if (resolvedConstDecl != null)
+						signature = resolvedConstDecl.getQualifiedSignature();
+				} catch(Exception _err) {}
 
-					String className = "";
-					String classType = "";
-					if (cu.findFirst(ClassOrInterfaceDeclaration.class).isPresent()) {
-						ClassOrInterfaceDeclaration coid = (ClassOrInterfaceDeclaration) cu.findFirst(ClassOrInterfaceDeclaration.class).get();
-						for (String annotation : CONFIGURATION_ANNOTATIONS) {
-							if (coid.getAnnotations().toString().contains(annotation)) {
-								System.out.println("[+] Ignoring: " + coid.getName().toString());
-								System.out.println("[+] Annotation: " + annotation);
-								return;
-							}
-						}
-						className = coid.getName().toString();
-						classType = coid.isInterface() ? "interface" : "class";
-						if (coid.isInterface()) {
-							System.out.println("[+] Ignoring Interface: " + coid.getName().toString());
-							return;
-						}
-						if (coid.getAnnotations().toString().contains(CONTROLLER_ANNOTATION)) {
-							classType = CONTROLLER_ANNOTATION;
-						} else if (coid.getAnnotations().toString().contains(ENTITY_ANNOTATION)) {
-							classType = ENTITY_ANNOTATION;
-						} else if (coid.getAnnotations().toString().contains(SERVICE_ANNOTATION)) {
-							classType = SERVICE_ANNOTATION;
-						} else if (coid.getAnnotations().toString().contains(REPOSITORY_ANNOTATION)) {
-							classType = REPOSITORY_ANNOTATION;
-						}
-					}
-					project.addClass(packageName, className, classType);
+				Boolean successfulPrediction = false;
 
-					String signature = constructorDeclaration.getSignature().asString();
-					try {
-						ResolvedConstructorDeclaration resolvedConstDecl = constructorDeclaration.resolve();
-						if (resolvedConstDecl != null)
-							signature = resolvedConstDecl.getQualifiedSignature();
-					} catch(Exception _err) {}
+				try {
 
-					String body = constructorDeclaration.toString();
 					String type = "Constructor";
+					String body = parseConstructorToMethod(constructorDeclaration);
 
-					Boolean successfulPrediction = false;
+					MethodPredict mp = predict(signature, body);
 
-					try {
+					project.addMethod(packageName, className, signature, mp.getCodeVector(), type);
 
-						body = parseConstructorToMethod(constructorDeclaration);
-						
-						MethodPredict mp = predict(signature, body);
+					successfulPrediction = true;
 
-						project.addMethod(packageName, className, signature, mp.getCodeVector(), type);
+				} catch (Exception e) {
+					System.out.println("[ - ] : " + e.toString());
+				}
 
-						successfulPrediction = true;
+				if (successfulPrediction) {
+					for (MethodCallExpr call : constructorDeclaration.findAll(MethodCallExpr.class)) {
+						try {
 
-					} catch (Exception e) {
-						System.out.println("[ - ] : " + e.toString());
-					}
+							System.out.println("[+] MethodCallExpr: " + call);
 
-					if (successfulPrediction) {
-						for (MethodCallExpr call : constructorDeclaration.findAll(MethodCallExpr.class)) {
-							try {
-	
-								System.out.println("[+] MethodCallExpr: " + call);
-								
-								SymbolReference<ResolvedMethodDeclaration> resolvedMethodDeclaration = jpf.solve(call);
-	
-								project.addMethodCallToLast(
+							SymbolReference<ResolvedMethodDeclaration> resolvedMethodDeclaration = jpf.solve(call);
+
+							project.addMethodCallToLast(
 									packageName,
 									className,
 									resolvedMethodDeclaration.getCorrespondingDeclaration().getPackageName(),
 									resolvedMethodDeclaration.getCorrespondingDeclaration().getClassName(),
 									resolvedMethodDeclaration.getCorrespondingDeclaration().getQualifiedSignature()
-								);
-	
-							} catch (Exception e) {
-								System.out.println("[-] Resolution error: " + e);
-							}
+							);
+
+						} catch (Exception e) {
+							System.out.println("[-] Resolution error: " + e);
 						}
-	
-						for (ObjectCreationExpr oce: constructorDeclaration.findAll(ObjectCreationExpr.class)) {
-							try {
-	
-								System.out.println("[+] ObjectCreationExpr: " + oce);
-	
-								ResolvedConstructorDeclaration rcd = oce.resolve();
-	
-								project.addMethodCallToLast(
+					}
+
+					for (ObjectCreationExpr oce: constructorDeclaration.findAll(ObjectCreationExpr.class)) {
+						try {
+
+							System.out.println("[+] ObjectCreationExpr: " + oce);
+
+							ResolvedConstructorDeclaration rcd = oce.resolve();
+
+							project.addMethodCallToLast(
 									packageName,
 									className,
 									rcd.getPackageName(),
 									rcd.getClassName(),
 									rcd.getQualifiedSignature()
-								);
-	
-							} catch (Exception e) {
-								System.out.println("[-] Resolution error: " + e);
-							}
+							);
+
+						} catch (Exception e) {
+							System.out.println("[-] Resolution error: " + e);
 						}
 					}
-
-				});
+				}
+			}
 
 		} catch (Exception e) {
 			System.out.println("Inside Error: " + e);
@@ -336,6 +305,7 @@ public class JavaParserCollector {
 
 	public static void main(String[] args) {
 		try {
+			long startTime = System.currentTimeMillis();
 
 			final String repoName = args[0];
 			File projectDir = new File("../../repos/" + repoName + "/src/main/java");
@@ -364,6 +334,9 @@ public class JavaParserCollector {
 			}).explore(projectDir);
 
 			project.saveToFile();
+
+			long estimatedTime = System.currentTimeMillis() - startTime;
+			System.out.println("[+] PERFORMANCE TIME: " + estimatedTime);
 
 		} catch (Exception e) {
 			System.err.println(e);

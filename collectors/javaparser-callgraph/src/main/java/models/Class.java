@@ -10,9 +10,12 @@ public class Class {
 	private String _type; // interface or class
 	private List<Method> _methods;
 
-	public Class(String name, String type) {
+	private String _superQualifiedName;
+
+	public Class(String name, String type, String superQualifiedName) {
 		_name = name;
 		_type = type;
+		_superQualifiedName = superQualifiedName;
 		_methods = new ArrayList<Method>();
 	}
 
@@ -38,6 +41,7 @@ public class Class {
 		JSONObject json = new JSONObject();
 		json.put("name", _name);
 		json.put("type", _type);
+		json.put("superQualifiedName", _superQualifiedName);
 		json.put("methods", methodsToJson());
 		return json;
 	}
