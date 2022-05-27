@@ -459,7 +459,7 @@ public class Decomposition {
 		AtomicReference<Float> performance = new AtomicReference<>((float) 0);
 
 		System.out.println("Calculating graph complexity and performance...");
-		this.getControllers().values().parallelStream().forEach(controller -> {
+		this.getControllers().values().stream().forEach(controller -> {
 			String controllerName = controller.getName();
 
 			GetLocalTransactionsGraphAndControllerPerformanceResult result2 = null;
@@ -501,6 +501,7 @@ public class Decomposition {
 				.valueOf(complexity.get() / graphControllersAmount)
 				.setScale(2, RoundingMode.HALF_UP)
 				.floatValue());
+		System.out.println("Final Complexity: " + complexity.get());
 
 		performance.set(BigDecimal
 				.valueOf(performance.get() / graphControllersAmount)

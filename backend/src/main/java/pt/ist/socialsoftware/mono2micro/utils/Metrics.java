@@ -28,7 +28,7 @@ public class Metrics {
 			Map<String, List<String>> cache = Collections.synchronizedMap(new HashMap<>());
 
 			AtomicReference<Float> controllerComplexity = new AtomicReference<>((float) 0);
-			allLocalTransactions.parallelStream().forEach(lt -> {
+			allLocalTransactions.stream().forEach(lt -> {
 				// ClusterDependencies
 				short clusterID = lt.getClusterID();
 				if (clusterID != -1) { // not root node
@@ -73,7 +73,7 @@ public class Metrics {
 					controllerComplexity.updateAndGet(v -> (float) (v + controllersThatTouchSameEntities.size()));
 				}
 			});
-
+//			System.out.println("Complexity for " + controllerName + " is " + controllerComplexity.get());
 			return controllerComplexity.get();
 		}
 	}
@@ -87,7 +87,7 @@ public class Metrics {
 	) {
 		List<String> controllersThatTouchThisEntityAndMode = Collections.synchronizedList(new ArrayList<>());
 		// Parallelize
-		controllers.parallelStream().forEach(otherController -> {
+		controllers.stream().forEach(otherController -> {
 			String otherControllerName = otherController.getName();
 
 			if (!otherControllerName.equals(controllerName) && controllerClusters.containsKey(otherControllerName)) {

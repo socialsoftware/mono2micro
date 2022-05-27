@@ -23,6 +23,7 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -141,42 +142,89 @@ public class AnalysisController {
 			// AFTER COPYING PREVIOUS RESULTS, NEXT CUTS WILL BE PROCESSED AND THEIR RESULTS
 			// WILL BE APPENDED TO THE NEW FILE
 
+			System.out.println("Objectifying static collection data");
 			InputStream is = new FileInputStream(codebase.getDatafilePath());
-
 			ObjectMapper objectMapper = new ObjectMapper();
 			objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-			System.out.println("Objectifying static collection data");
 			StaticCollection collection = objectMapper.readerFor(StaticCollection.class).readValue(is);
 			is.close();
+
+//			System.out.print("Loading cuts to memory... ");
+//			AtomicInteger index = new AtomicInteger();
+//			int totalFiles = files.length;
+//			Set<Cut> allCuts = new HashSet<Cut>();
+//			Arrays.stream(files).forEach(file -> {
+//				try {
+//					InputStream fis = new FileInputStream(file);
+//					ObjectMapper oM = new ObjectMapper();
+//					oM.enable(SerializationFeature.INDENT_OUTPUT);
+//					allCuts.add(oM.readerFor(Cut.class).readValue(fis));
+//					System.out.print("Loading cuts to memory... " + index + "/" + totalFiles + "\r");
+//					index.getAndIncrement();
+//					fis.close();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			});
+//			System.out.println("");
+//			System.out.println("There are " + allCuts.size() + " unique cuts.");
+
+			Map<Cut, Decomposition> cutsToDecomposition = Collections.synchronizedMap(new HashMap<>());
+
 			Arrays.stream(files).parallel().forEach(file -> {
 				String filename = FilenameUtils.getBaseName(file.getName());
-
 				count.getAndSet((short) (count.get() + 1));
+
+				Cut cut = null;
+				try {
+					InputStream fis = new FileInputStream(file);
+					ObjectMapper oM = new ObjectMapper();
+					oM.enable(SerializationFeature.INDENT_OUTPUT);
+					cut = oM.readerFor(Cut.class).readValue(fis);
+					fis.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				Decomposition previousDecomposition = cutsToDecomposition.get(cut);
+				CutInfoDto cutInfo = null;
+				if (previousDecomposition != null) {
+					try {
+						cutInfo = assembleCutInformation(
+								analyser,
+								previousDecomposition,
+								filename
+						);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				} else {
+					Decomposition decomposition = null;
+					try {
+						decomposition = buildDecompositionAndCalculateMetrics(
+								analyser,
+								codebase,
+								filename,
+								collection
+						);
+						cutInfo = assembleCutInformation(
+								analyser,
+								decomposition,
+								filename
+						);
+						cutsToDecomposition.put(cut, decomposition);
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
 
 //				if (cutInfoNames.contains(filename)) {
 //					System.out.println(filename + " already analysed. " + count + "/" + totalNumberOfFiles);
 //					continue;
 //				}
 
-				Decomposition decomposition = null;
-				CutInfoDto cutInfo = null;
-				try {
-					decomposition = buildDecompositionAndCalculateMetrics(
-							analyser,
-							codebase,
-							filename,
-							collection
-					);
-					cutInfo = assembleCutInformation(
-							analyser,
-							decomposition,
-							filename
-					);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-				synchronized(this) {
+				synchronized (this) {
 					try {
 						jGenerator.writeObjectField(
 								filename,
@@ -192,6 +240,7 @@ public class AnalysisController {
 
 				System.out.println("NEW: " + filename + " : " + count + "/" + totalNumberOfFiles);
 				// Break somehow if max requests is hit
+
 			});
 
 			jGenerator.writeEndObject();
@@ -346,13 +395,11 @@ public class AnalysisController {
 
 			decomposition.addCluster(cluster);
 		}
-
 		decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
 			codebase,
 			analyser.getProfile(),
 			decomposition.getEntityIDToClusterID()
 		));
-
 		decomposition.calculateMetrics(
 			codebase,
 			analyser.getTracesMaxLimit(),

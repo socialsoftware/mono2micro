@@ -1,22 +1,22 @@
 version: '3.7'
 
 services:
-  backend:
-    build:
-      context: .
-      dockerfile: ./backend/Dockerfile
-    image: mono2micro-backend
-    container_name: backend
-    hostname: 'localhost'
-    ports:
-      - 8080:8080
-      - 5005:5005
-    environment:
-      - SCRIPTS_ADDRESS=http://scripts:5002
-      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,address=*:5005,server=y,suspend=n
-    restart: unless-stopped
-    volumes:
-      - ./codebases:/codebases
+#  backend:
+#    build:
+#      context: .
+#      dockerfile: ./backend/Dockerfile
+#    image: mono2micro-backend
+#    container_name: backend
+#    hostname: 'localhost'
+#    ports:
+#      - 8080:8080
+#      - 5005:5005
+#    environment:
+#      - SCRIPTS_ADDRESS=http://scripts:5002
+#      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,address=*:5005,server=y,suspend=n
+#    restart: unless-stopped
+#    volumes:
+#      - ./codebases:/codebases
 
   scripts:
     build:
@@ -52,10 +52,10 @@ services:
       context: ./frontend/
     image: mono2micro-frontend                                                     
     container_name: frontend
-    depends_on:
-      - backend
-    links:
-      - backend
+#    depends_on:
+#      - backend
+#    links:
+#      - backend
     ports:
       - 3000:3000
     stdin_open: true
