@@ -85,14 +85,14 @@ public class AnalysisService {
             file.write(analyserResult.toString(4));
             file.close();
 
-            JSONObject analisysStats = new JSONObject();
-            analisysStats.put("complexity", getAnalysisStats("complexity", analyserResult));
-            analisysStats.put("performance", getAnalysisStats("performance", analyserResult));
-            analisysStats.put("cohesion", getAnalysisStats("cohesion", analyserResult));
-            analisysStats.put("coupling", getAnalysisStats("coupling", analyserResult));
+            JSONObject analysisStats = new JSONObject();
+            analysisStats.put("complexity", getAnalysisStats("complexity", analyserResult));
+            analysisStats.put("performance", getAnalysisStats("performance", analyserResult));
+            analysisStats.put("cohesion", getAnalysisStats("cohesion", analyserResult));
+            analysisStats.put("coupling", getAnalysisStats("coupling", analyserResult));
 
-            FileWriter statsFile = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/entities/analisysStats.json");
-            statsFile.write(analisysStats.toString(4));
+            FileWriter statsFile = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/entities/analysisStats.json");
+            statsFile.write(analysisStats.toString(4));
             statsFile.close();
 
             clusterService.executePlotAnalysis(codebaseName, "entities", "");
@@ -140,14 +140,14 @@ public class AnalysisService {
             file.write(analyserResult.toString(4));
             file.close();
 
-            JSONObject analisysStats = new JSONObject();
-            analisysStats.put("complexity", getAnalysisStats("complexity", analyserResult));
-            analisysStats.put("performance", getAnalysisStats("performance", analyserResult));
-            analisysStats.put("cohesion", getAnalysisStats("cohesion", analyserResult));
-            analisysStats.put("coupling", getAnalysisStats("coupling", analyserResult));
+            JSONObject analysisStats = new JSONObject();
+            analysisStats.put("complexity", getAnalysisStats("complexity", analyserResult));
+            analysisStats.put("performance", getAnalysisStats("performance", analyserResult));
+            analysisStats.put("cohesion", getAnalysisStats("cohesion", analyserResult));
+            analysisStats.put("coupling", getAnalysisStats("coupling", analyserResult));
 
-            FileWriter statsFile = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/classes/analisysStats.json");
-            statsFile.write(analisysStats.toString(4));
+            FileWriter statsFile = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/classes/analysisStats.json");
+            statsFile.write(analysisStats.toString(4));
             statsFile.close();
 
             clusterService.executePlotAnalysis(codebaseName, "classes", "");
@@ -199,8 +199,6 @@ public class AnalysisService {
                             }
                         }
                     }
-                    Float perc = Float.valueOf((d + (cw / 100)) / 7);
-                    System.out.println("Progress: " + perc.toString());
                 }
             }
         }
@@ -279,14 +277,14 @@ public class AnalysisService {
             file.write(analyserResult.toString(4));
             file.close();
 
-            JSONObject analisysStats = new JSONObject();
-            analisysStats.put("complexity", getAnalysisStats("complexity", analyserResult));
-            analisysStats.put("performance", getAnalysisStats("performance", analyserResult));
-            analisysStats.put("cohesion", getAnalysisStats("cohesion", analyserResult));
-            analisysStats.put("coupling", getAnalysisStats("coupling", analyserResult));
+            JSONObject analysisStats = new JSONObject();
+            analysisStats.put("complexity", getAnalysisStats("complexity", analyserResult));
+            analysisStats.put("performance", getAnalysisStats("performance", analyserResult));
+            analysisStats.put("cohesion", getAnalysisStats("cohesion", analyserResult));
+            analysisStats.put("coupling", getAnalysisStats("coupling", analyserResult));
 
-            FileWriter statsFile = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/features/methodCalls/analisysStats.json");
-            statsFile.write(analisysStats.toString(4));
+            FileWriter statsFile = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/features/methodCalls/analysisStats.json");
+            statsFile.write(analysisStats.toString(4));
             statsFile.close();
 
             clusterService.executePlotAnalysis(codebaseName, "features", "methodCalls");
@@ -349,14 +347,14 @@ public class AnalysisService {
             file.write(analyserResult.toString(4));
             file.close();
 
-            JSONObject analisysStats = new JSONObject();
-            analisysStats.put("complexity", getAnalysisStats("complexity", analyserResult));
-            analisysStats.put("performance", getAnalysisStats("performance", analyserResult));
-            analisysStats.put("cohesion", getAnalysisStats("cohesion", analyserResult));
-            analisysStats.put("coupling", getAnalysisStats("coupling", analyserResult));
+            JSONObject analysisStats = new JSONObject();
+            analysisStats.put("complexity", getAnalysisStats("complexity", analyserResult));
+            analysisStats.put("performance", getAnalysisStats("performance", analyserResult));
+            analysisStats.put("cohesion", getAnalysisStats("cohesion", analyserResult));
+            analysisStats.put("coupling", getAnalysisStats("coupling", analyserResult));
 
-            FileWriter statsFile = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/features/entitiesTraces/analisysStats.json");
-            statsFile.write(analisysStats.toString(4));
+            FileWriter statsFile = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/features/entitiesTraces/analysisStats.json");
+            statsFile.write(analysisStats.toString(4));
             statsFile.close();
 
             clusterService.executePlotAnalysis(codebaseName, "features", "entitiesTraces");
@@ -365,12 +363,155 @@ public class AnalysisService {
         }
     }
 
+    private class ConcurrentMixedAnalysisThread extends Thread {
+
+        AnalyserDto analyserDto;
+        String codebaseName;
+        String linkageType;
+        Integer threadNumber;
+
+        ConcurrentMixedAnalysisThread(
+                AnalyserDto analyserDto,
+                String codebaseName,
+                String linkageType,
+                Integer threadNumber
+        ) {
+            this.analyserDto = analyserDto;
+            this.codebaseName = codebaseName;
+            this.linkageType = linkageType;
+            this.threadNumber = threadNumber;
+        }
+
+        @Override
+        public void run() {
+            Dendrogram dendrogram = new Dendrogram();
+            dendrogram.setAnalysisType("feature");
+            dendrogram.setFeatureVectorizationStrategy("mixed");
+            dendrogram.setProfile(analyserDto.getProfile());
+            dendrogram.setLinkageType(linkageType);
+            for (int d = MIN_DEPTH; d <= MAX_DEPTH; d += DEPTH_STEP) {
+                dendrogram.setMaxDepth(d);
+                for (int cw = MIN_WEIGHT; cw <= MAX_WEIGHT; cw += WEIGHT_STEP) {
+                    dendrogram.setControllersWeight(cw);
+                    for (int sw = MIN_WEIGHT; sw <= MAX_WEIGHT; sw += WEIGHT_STEP) {
+                        dendrogram.setServicesWeight(sw);
+                        for (int iw = MIN_WEIGHT; iw <= MAX_WEIGHT; iw += WEIGHT_STEP) {
+                            dendrogram.setIntermediateMethodsWeight(iw);
+                            for (int ew = MIN_WEIGHT; ew <= MAX_WEIGHT; ew += WEIGHT_STEP) {
+                                dendrogram.setEntitiesWeight(ew);
+                                for (int wmw = MIN_WEIGHT; wmw <= MAX_WEIGHT; wmw += WEIGHT_STEP) {
+                                    dendrogram.setWriteMetricWeight(wmw);
+                                    for (int rmw = MIN_WEIGHT; rmw <= MAX_WEIGHT; rmw += WEIGHT_STEP) {
+                                        dendrogram.setReadMetricWeight(rmw);
+                                        for (int etw = MIN_WEIGHT; etw <= MAX_WEIGHT; etw += WEIGHT_STEP) {
+                                            dendrogram.setEntitiesTracesWeight(etw);
+                                            for (int mcw = MIN_WEIGHT; mcw <= MAX_WEIGHT; mcw += WEIGHT_STEP) {
+                                                dendrogram.setMethodsCallsWeight(mcw);
+                                                if ((cw + sw + iw + ew == 100) && (wmw + rmw == 100) && (etw + mcw == 100)) {
+                                                    dendrogramService.createDendrogramByFeatures(codebaseName, dendrogram, true, threadNumber);
+                                                    clusterService.executeClusterAnalysis(codebaseName, "/features/mixed/" + threadNumber.toString());
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            // Test with the same weights
+            for (int d = MIN_DEPTH; d <= MAX_DEPTH; d += DEPTH_STEP) {
+                dendrogram.setMaxDepth(d);
+                dendrogram.setControllersWeight(25);
+                dendrogram.setServicesWeight(25);
+                dendrogram.setIntermediateMethodsWeight(25);
+                dendrogram.setEntitiesWeight(25);
+                for (int wmw = MIN_WEIGHT; wmw <= MAX_WEIGHT; wmw += WEIGHT_STEP) {
+                    dendrogram.setWriteMetricWeight(wmw);
+                    for (int rmw = MIN_WEIGHT; rmw <= MAX_WEIGHT; rmw += WEIGHT_STEP) {
+                        dendrogram.setReadMetricWeight(rmw);
+                        for (int etw = MIN_WEIGHT; etw <= MAX_WEIGHT; etw += WEIGHT_STEP) {
+                            dendrogram.setEntitiesTracesWeight(etw);
+                            for (int mcw = MIN_WEIGHT; mcw <= MAX_WEIGHT; mcw += WEIGHT_STEP) {
+                                dendrogram.setMethodsCallsWeight(mcw);
+                                if ((wmw + rmw == 100) && (etw + mcw == 100)) {
+                                    dendrogramService.createDendrogramByFeatures(codebaseName, dendrogram, true, threadNumber);
+                                    clusterService.executeClusterAnalysis(codebaseName, "/features/mixed/" + threadNumber.toString());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public void analyzeDendrogramCutsByMixedStrategy(
             String codebaseName,
             AnalyserDto analyserDto
     ) {
         try {
+            Codebase codebase = codebaseManager.getCodebase(codebaseName);
+            Integer threadNumber = 1;
 
+            File analyserFeaturesPath = new File(CODEBASES_PATH + codebaseName + "/analyser/features/");
+            if (!analyserFeaturesPath.exists()) {
+                analyserFeaturesPath.mkdirs();
+            }
+
+            File analyserMixedFeaturesPath = new File(CODEBASES_PATH + codebaseName + "/analyser/features/mixed/");
+            if (!analyserMixedFeaturesPath.exists()) {
+                analyserMixedFeaturesPath.mkdirs();
+            }
+
+            File analyserPath = new File(CODEBASES_PATH + codebaseName + "/analyser/features/mixed/cuts");
+            if (!analyserPath.exists()) {
+                analyserPath.mkdirs();
+            }
+
+            List<ConcurrentMixedAnalysisThread> threadsPool = new ArrayList<>();
+            for (String lt: LINKAGE_TYPES) {
+                ConcurrentMixedAnalysisThread thread = new ConcurrentMixedAnalysisThread(analyserDto, codebaseName, lt, threadNumber);
+                threadsPool.add(thread);
+                threadNumber++;
+            }
+
+            try {
+                for (ConcurrentMixedAnalysisThread thread : threadsPool) {
+                    thread.start();
+                }
+                for (ConcurrentMixedAnalysisThread thread : threadsPool) {
+                    thread.join();
+                }
+            } catch(InterruptedException ie) {
+                ie.printStackTrace();
+            }
+
+            JSONObject analyserResult = getAnalyserResult(
+                    codebase,
+                    "feature",
+                    "mixed",
+                    analyserDto.getProfile(),
+                    analyserDto,
+                    "/analyser/features/mixed/cuts/"
+            );
+
+            FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/features/mixed/analyserResult.json");
+            file.write(analyserResult.toString(4));
+            file.close();
+
+            JSONObject analysisStats = new JSONObject();
+            analysisStats.put("complexity", getAnalysisStats("complexity", analyserResult));
+            analysisStats.put("performance", getAnalysisStats("performance", analyserResult));
+            analysisStats.put("cohesion", getAnalysisStats("cohesion", analyserResult));
+            analysisStats.put("coupling", getAnalysisStats("coupling", analyserResult));
+
+            FileWriter statsFile = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/features/mixed/analysisStats.json");
+            statsFile.write(analysisStats.toString(4));
+            statsFile.close();
+
+            clusterService.executePlotAnalysis(codebaseName, "features", "mixed");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -510,6 +651,7 @@ public class AnalysisService {
             initJson.put("min", Double.MAX_VALUE);
             initJson.put("max", 0.0);
             initJson.put("counter", 0);
+            initJson.put("data", new JSONArray());
             clusters_stats.put(i, initJson);
         }
         Iterator<String> keys = analyserResult.keys();
@@ -528,6 +670,7 @@ public class AnalysisService {
                     updated_stats.put("min", value);
                 }
                 updated_stats.put("counter", updated_stats.getInt("counter") + 1);
+                updated_stats.getJSONArray("data").put(value);
                 clusters_stats.put(idx, updated_stats);
             }
         }
@@ -550,6 +693,7 @@ public class AnalysisService {
             initJson.put("min", Double.MAX_VALUE);
             initJson.put("max", 0.0);
             initJson.put("counter", 0);
+            initJson.put("data", new JSONArray());
             clusters_stats.put(i, initJson);
         }
         Iterator<String> keys = analyserResult.keys();
@@ -568,6 +712,7 @@ public class AnalysisService {
                     updated_stats.put("min", value);
                 }
                 updated_stats.put("counter", updated_stats.getInt("counter") + 1);
+                updated_stats.getJSONArray("data").put(value);
                 clusters_stats.put(idx, updated_stats);
             }
         }

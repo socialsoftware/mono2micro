@@ -24,18 +24,20 @@ def analyser(codebasesPath, codebaseName):
     else:
         raise Exception("Number of entities is too small (less than 4)")
 
+    with open(codebasesPath + codebaseName + "/entities_traces_embeddings.json") as f:
+        entities_traces_embeddings = json.load(f)
+    
+    nbrTraces = len(entities_traces_embeddings['traces'])
+
     try:
-        for clusterSize in range(minClusters, maxClusters + 1, clusterStep):
-            createCut(codebasesPath, codebaseName, clusterSize, totalNumberOfEntities)
-            
+        for clusterSize in range(minClusters, nbrTraces + 1, clusterStep):
+            nbrClusters = createCut(codebasesPath, codebaseName, clusterSize, totalNumberOfEntities, maxClusters, entities_traces_embeddings)
+            if nbrClusters > maxClusters: return
+
     except Exception as e:
         print(e)
 
-
-def createCut(codebasesPath, codebaseName, clusterSize, totalNumberOfEntities):
-
-    with open(codebasesPath + codebaseName + "/entities_traces_embeddings.json") as f:
-        entities_traces_embeddings = json.load(f)
+def createCut(codebasesPath, codebaseName, clusterSize, totalNumberOfEntities, maxClusters, entities_traces_embeddings):
 
     with open(codebasesPath + codebaseName + "/datafile.json") as f:
         features_entities_accesses = json.load(f)
@@ -113,8 +115,12 @@ def createCut(codebasesPath, codebaseName, clusterSize, totalNumberOfEntities):
         if len(entities_cluster[k]) != 0:
             numberOfEntitiesClusters += 1
 
+    if (numberOfEntitiesClusters > maxClusters):
+        return numberOfEntitiesClusters
+
     clustersJSON = {"clusters": entities_cluster, "numberOfEntitiesClusters": numberOfEntitiesClusters}
 
     with open(filePath, 'w') as outfile:
         outfile.write(json.dumps(clustersJSON, indent=4))
 
+    return numberOfEntitiesClusters

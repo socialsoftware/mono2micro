@@ -25,14 +25,17 @@ def analyser(codebasesPath, codebaseName):
         raise Exception("Number of entities is too small (less than 4)")
 
     try:
-        for clusterSize in range(minClusters, maxClusters + 1, clusterStep):
-            createCut(codebasesPath, codebaseName, clusterSize)
-            
+        clusterSize = 1
+        while(True):
+            nbrClusters = createCut(codebasesPath, codebaseName, clusterSize, maxClusters)
+            if nbrClusters > maxClusters: return
+            clusterSize += 1
+
     except Exception as e:
         print(e)
 
 
-def createCut(codebasesPath, codebaseName, clusterSize):
+def createCut(codebasesPath, codebaseName, clusterSize, maxClusters):
 
     with open(codebasesPath + codebaseName + "/entities_embeddings.json") as f:
         entities_embeddings = json.load(f)
@@ -77,8 +80,12 @@ def createCut(codebasesPath, codebaseName, clusterSize):
         if len(clusters[k]) != 0:
             numberOfEntitiesClusters += 1
 
+    if (numberOfEntitiesClusters > maxClusters):
+        return numberOfEntitiesClusters
+
     clustersJSON = {"clusters": clusters, "numberOfEntitiesClusters": numberOfEntitiesClusters}
 
     with open(filePath, 'w') as outfile:
         outfile.write(json.dumps(clustersJSON, indent=4))
 
+    return numberOfEntitiesClusters

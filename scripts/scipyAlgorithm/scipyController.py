@@ -122,5 +122,10 @@ async def featureEntitiesTracesAnalyser(codebaseName):
 
 @scipyRouter.get("/scipy/{codebaseName}/analyser/features/mixed")
 async def featureMixedAnalyser(codebaseName):
-    featureMixedAnalyserScipy(env.CODEBASES_PATH, codebaseName)
+    featureMixedAnalyserScipy(env.CODEBASES_PATH, codebaseName, None)
     return {"codebaseName": codebaseName, "operation": "featureMixedAnalyser"}
+
+@scipyRouter.get("/scipy/{codebaseName}/analyser/features/mixed/{threadNumber}")
+async def concurrentFeatureMixedAnalyser(codebaseName, threadNumber):
+    featureMixedAnalyserScipy(env.CODEBASES_PATH, codebaseName, threadNumber)
+    return {"codebaseName": codebaseName, "operation": "concurrentFeatureMixedAnalyser"}

@@ -111,6 +111,16 @@ public class AnalysisController {
 				cutInfoNames = Utils.getJsonFileKeys(existentAnalyserResultFile);
 
 				if (cutInfoNames.size() == totalNumberOfFiles) {
+					JSONObject analyserResult = codebaseManager.getAnalyserResults(codebaseName);
+					JSONObject analysisStats = new JSONObject();
+					analysisStats.put("complexity", analysisService.getStaticAnalysisStats("complexity", analyserResult));
+					analysisStats.put("performance", analysisService.getStaticAnalysisStats("performance", analyserResult));
+					analysisStats.put("cohesion", analysisService.getStaticAnalysisStats("cohesion", analyserResult));
+					analysisStats.put("coupling", analysisService.getStaticAnalysisStats("coupling", analyserResult));
+					FileWriter statsFile = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/analysisStats.json");
+					statsFile.write(analysisStats.toString(4));
+					statsFile.close();
+					clusterService.executeStaticPlotAnalysis(codebaseName);
 					System.out.println("Analyser Complete");
 					return new ResponseEntity<>(HttpStatus.OK);
 				}
@@ -200,14 +210,14 @@ public class AnalysisController {
 
 			JSONObject analyserResult = codebaseManager.getAnalyserResults(codebaseName);
 
-			JSONObject analisysStats = new JSONObject();
-			analisysStats.put("complexity", analysisService.getStaticAnalysisStats("complexity", analyserResult));
-			analisysStats.put("performance", analysisService.getStaticAnalysisStats("performance", analyserResult));
-			analisysStats.put("cohesion", analysisService.getStaticAnalysisStats("cohesion", analyserResult));
-			analisysStats.put("coupling", analysisService.getStaticAnalysisStats("coupling", analyserResult));
+			JSONObject analysisStats = new JSONObject();
+			analysisStats.put("complexity", analysisService.getStaticAnalysisStats("complexity", analyserResult));
+			analysisStats.put("performance", analysisService.getStaticAnalysisStats("performance", analyserResult));
+			analysisStats.put("cohesion", analysisService.getStaticAnalysisStats("cohesion", analyserResult));
+			analysisStats.put("coupling", analysisService.getStaticAnalysisStats("coupling", analyserResult));
 
-			FileWriter statsFile = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/analisysStats.json");
-			statsFile.write(analisysStats.toString(4));
+			FileWriter statsFile = new FileWriter(CODEBASES_PATH + codebaseName + "/analyser/analysisStats.json");
+			statsFile.write(analysisStats.toString(4));
 			statsFile.close();
 
 			clusterService.executeStaticPlotAnalysis(codebaseName);

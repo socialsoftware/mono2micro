@@ -24,16 +24,6 @@ def analyser(codebasesPath, codebaseName, threadNumber):
     else:
         raise Exception("Number of entities is too small (less than 4)")
 
-    try:
-        for clusterSize in range(minClusters, maxClusters + 1, clusterStep):
-            createCut(codebasesPath, codebaseName, clusterSize, totalNumberOfEntities, threadNumber)
-            
-    except Exception as e:
-        print(e)
-
-
-def createCut(codebasesPath, codebaseName, clusterSize, totalNumberOfEntities, threadNumber):
-
     features_embeddings_fileName = "/features_embeddings"
     if (threadNumber != None):
         features_embeddings_fileName += "_t" + str(threadNumber)
@@ -41,6 +31,19 @@ def createCut(codebasesPath, codebaseName, clusterSize, totalNumberOfEntities, t
     
     with open(codebasesPath + codebaseName + features_embeddings_fileName) as f:
         features_embeddings = json.load(f)
+
+    nbrFeatures = len(features_embeddings['features'])
+
+    try:
+        for clusterSize in range(minClusters, nbrFeatures + 1, clusterStep):
+            nbrClusters = createCut(codebasesPath, codebaseName, clusterSize, totalNumberOfEntities, features_embeddings, maxClusters)
+            if nbrClusters > maxClusters: return
+            
+    except Exception as e:
+        print(e)
+
+
+def createCut(codebasesPath, codebaseName, clusterSize, totalNumberOfEntities, features_embeddings, maxClusters):
 
     with open(codebasesPath + codebaseName + "/datafile.json") as f:
         features_entities_accesses = json.load(f)
@@ -124,8 +127,13 @@ def createCut(codebasesPath, codebaseName, clusterSize, totalNumberOfEntities, t
         if len(entities_cluster[k]) != 0:
             numberOfEntitiesClusters += 1
 
+    if (numberOfEntitiesClusters > maxClusters):
+        return numberOfEntitiesClusters
+
     clustersJSON = {"clusters": entities_cluster, "numberOfEntitiesClusters": numberOfEntitiesClusters}
 
     with open(filePath, 'w') as outfile:
         outfile.write(json.dumps(clustersJSON, indent=4))
+
+    return numberOfEntitiesClusters
 

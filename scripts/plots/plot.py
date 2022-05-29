@@ -1,4 +1,5 @@
 from turtle import color
+import numpy as np 
 from matplotlib import pyplot as plt
 import json
 
@@ -13,94 +14,92 @@ def plotStats(codebasesPath, codebaseName, analysisType, strategy):
     if strategy != None and len(strategy) != 0:
         analyserPath += "/" + strategy
 
-    with open(codebasesPath + codebaseName + analyserPath + "/analisysStats.json") as f:
-        analisys_stats = json.load(f)
+    with open(codebasesPath + codebaseName + analyserPath + "/analysisStats.json") as f:
+        analysis_stats = json.load(f)
 
-    cohesion_stats = analisys_stats['cohesion']
-    complexity_stats = analisys_stats['complexity']
-    coupling_stats = analisys_stats['coupling']
-    performance_stats = analisys_stats['performance']
+    cohesion_stats_data    = [np.array(analysis_stats['cohesion'][i]['data']) for i in range(10)]
+    complexity_stats_data  = [np.array(analysis_stats['complexity'][i]['data']) for i in range(10)]
+    coupling_stats_data    = [np.array(analysis_stats['coupling'][i]['data']) for i in range(10)]
+    performance_stats_data = [np.array(analysis_stats['performance'][i]['data']) for i in range(10)]
 
+    beige_color  = dict(color='#EDC192')
+    green_color  = dict(color='#928E5E')
+    blue_color   = dict(color='#80C2CE')
+    red_color    = dict(color='#E55D53')
+    purple_color = dict(color='#BF80FF')
+
+    # =============================================================================================================================
     plt.clf()
 
-    nbr_clusters = [i for i in range(1, len(complexity_stats) + 1)]
-    mean_complexity = [complexity['mean'] for complexity in complexity_stats]
-    min_complexity  = [complexity['min']  for complexity in complexity_stats]
-    max_complexity  = [complexity['max']  for complexity in complexity_stats]
-
-    plt.plot(nbr_clusters, mean_complexity, color='#EDC192', label='Mean')
-    plt.plot(nbr_clusters, min_complexity, color='#928E5E', label='Min')
-    plt.plot(nbr_clusters, max_complexity, color='#80C2CE', label='Max')
+    bp = plt.boxplot(complexity_stats_data, meanline=True, showmeans=True, meanprops=blue_color, boxprops=beige_color, medianprops=purple_color, whiskerprops=beige_color)
+    caps = bp['caps']
+    for i in range(len(caps)):
+        if (i % 2) == 0: caps[i].set(color=green_color['color']) # Low cap
+        else: caps[i].set(color=red_color['color']) # High cap
 
     plt.xlabel('Number of clusters')
     plt.ylabel('Complexity')
     plt.title('Mean Complexity per Number of clusters')
     plt.xlim(0, 11)
-    plt.ylim(0, 200)
-    plt.legend()
+    plt.ylim(0)
+    plt.legend([bp['medians'][0], bp['means'][0]], ['Median', 'Mean'])
     plt.grid(True)
     plt.tight_layout()
     plt.savefig(codebasesPath + codebaseName + analyserPath + "/complexity.png", format="png", bbox_inches='tight', marker='o')
 
+    # =============================================================================================================================
     plt.clf()
 
-    nbr_clusters = [i for i in range(1, len(performance_stats) + 1)]
-    mean_performance = [performance['mean'] for performance in performance_stats]
-    min_performance  = [performance['min']  for performance in performance_stats]
-    max_performance  = [performance['max']  for performance in performance_stats]
-
-    plt.plot(nbr_clusters, mean_performance, color='#EDC192', label='Mean')
-    plt.plot(nbr_clusters, min_performance, color='#928E5E', label='Min')
-    plt.plot(nbr_clusters, max_performance, color='#80C2CE', label='Max')
+    bp = plt.boxplot(performance_stats_data, meanline=True, showmeans=True, meanprops=blue_color, boxprops=beige_color, medianprops=purple_color, whiskerprops=beige_color)
+    caps = bp['caps']
+    for i in range(len(caps)):
+        if (i % 2) == 0: caps[i].set(color=red_color['color']) # Low cap
+        else: caps[i].set(color=green_color['color']) # High cap
 
     plt.xlabel('Number of clusters')
     plt.ylabel('Performance')
     plt.title('Performance per Number of clusters')
     plt.xlim(0, 11)
-    plt.ylim(0, 20)
-    plt.legend()
+    plt.ylim(0)
+    plt.legend([bp['medians'][0], bp['means'][0]], ['Median', 'Mean'])
     plt.grid(True)
     plt.tight_layout()
     plt.savefig(codebasesPath + codebaseName + analyserPath + "/performance.png", format="png", bbox_inches='tight', marker='o')
 
+    # =============================================================================================================================
     plt.clf()
 
-    nbr_clusters = [i for i in range(1, len(cohesion_stats) + 1)]
-    mean_cohesion = [cohesion['mean'] for cohesion in cohesion_stats]
-    min_cohesion  = [cohesion['min']  for cohesion in cohesion_stats]
-    max_cohesion  = [cohesion['max']  for cohesion in cohesion_stats]
-
-    plt.plot(nbr_clusters, mean_cohesion, color='#EDC192', label='Mean')
-    plt.plot(nbr_clusters, min_cohesion, color='#928E5E', label='Min')
-    plt.plot(nbr_clusters, max_cohesion, color='#80C2CE', label='Max')
+    bp = plt.boxplot(cohesion_stats_data, meanline=True, showmeans=True, meanprops=blue_color, boxprops=beige_color, medianprops=purple_color, whiskerprops=beige_color)
+    caps = bp['caps']
+    for i in range(len(caps)):
+        if (i % 2) == 0: caps[i].set(color=red_color['color']) # Low cap
+        else: caps[i].set(color=green_color['color']) # High cap
 
     plt.xlabel('Number of clusters')
     plt.ylabel('Cohesion')
     plt.title('Cohesion per Number of clusters')
     plt.xlim(0, 11)
     plt.ylim(0, 1)
-    plt.legend()
+    plt.legend([bp['medians'][0], bp['means'][0]], ['Median', 'Mean'])
     plt.grid(True)
     plt.tight_layout()
     plt.savefig(codebasesPath + codebaseName + analyserPath + "/cohesion.png", format="png", bbox_inches='tight', marker='o')
 
+    # =============================================================================================================================
     plt.clf()
 
-    nbr_clusters = [i for i in range(1, len(coupling_stats) + 1)]
-    mean_coupling = [coupling['mean'] for coupling in coupling_stats]
-    min_coupling  = [coupling['min']  for coupling in coupling_stats]
-    max_coupling  = [coupling['max']  for coupling in coupling_stats]
-
-    plt.plot(nbr_clusters, mean_coupling, color='#EDC192', label='Mean')
-    plt.plot(nbr_clusters, min_coupling, color='#928E5E', label='Min')
-    plt.plot(nbr_clusters, max_coupling, color='#80C2CE', label='Max')
+    bp = plt.boxplot(coupling_stats_data, meanline=True, showmeans=True, meanprops=blue_color, boxprops=beige_color, medianprops=purple_color, whiskerprops=beige_color)
+    caps = bp['caps']
+    for i in range(len(caps)):
+        if (i % 2) == 0: caps[i].set(color=green_color['color']) # Low cap
+        else: caps[i].set(color=red_color['color']) # High cap
 
     plt.xlabel('Number of clusters')
     plt.ylabel('Coupling')
     plt.title('Mean Coupling per Number of clusters')
     plt.xlim(0, 11)
     plt.ylim(0, 1)
-    plt.legend()
+    plt.legend([bp['medians'][0], bp['means'][0]], ['Median', 'Mean'])
     plt.grid(True)
     plt.tight_layout()
     plt.savefig(codebasesPath + codebaseName + analyserPath + "/coupling.png", format="png", bbox_inches='tight', marker='o')

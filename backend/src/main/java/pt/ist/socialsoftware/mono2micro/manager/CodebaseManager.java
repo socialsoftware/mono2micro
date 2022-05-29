@@ -538,12 +538,20 @@ public class CodebaseManager {
 
 	public void writeMixedCodeVectorsFile(
 		String codebaseName,
-		HashMap mixedFileJSON
+		HashMap mixedFileJSON,
+		Integer threadNumber
 	)
 		throws IOException
 	{
+		String mixedEmbeddingsFileName = "/mixed_embeddings";
+
+		if (threadNumber != null) {
+			mixedEmbeddingsFileName += "_t" + threadNumber.toString();
+		}
+
+		mixedEmbeddingsFileName += ".json";
 		objectMapper.writerWithDefaultPrettyPrinter().writeValue(
-				new File(CODEBASES_PATH + codebaseName + "/mixed_embeddings.json"),
+				new File(CODEBASES_PATH + codebaseName + mixedEmbeddingsFileName),
 				mixedFileJSON
 		);
 	}
