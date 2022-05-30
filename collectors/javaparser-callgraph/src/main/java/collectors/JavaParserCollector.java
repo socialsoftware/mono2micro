@@ -106,6 +106,7 @@ public class JavaParserCollector {
 		try {
 
 			CompilationUnit cu = StaticJavaParser.parse(file);
+			if (!cu.findFirst(ClassOrInterfaceDeclaration.class).isPresent()) { return; }
 
 			String packageName = "";
 			if (cu.findFirst(PackageDeclaration.class).isPresent()) {
@@ -116,39 +117,37 @@ public class JavaParserCollector {
 			String className = "";
 			String classType = "";
 			String superQualifiedName = "";
-			if (cu.findFirst(ClassOrInterfaceDeclaration.class).isPresent()) {
-				ClassOrInterfaceDeclaration coid = (ClassOrInterfaceDeclaration) cu.findFirst(ClassOrInterfaceDeclaration.class).get();
-				for (String annotation : CONFIGURATION_ANNOTATIONS) {
-					if (coid.getAnnotations().toString().contains(annotation)) {
-						System.out.println("[+] Ignoring: " + coid.getName().toString());
-						System.out.println("[+] Annotation: " + annotation);
-						return;
-					}
-				}
-				className = coid.getName().toString();
-				classType = coid.isInterface() ? "interface" : "class";
-				if (coid.isInterface()) {
-					System.out.println("[+] Ignoring Interface: " + coid.getName().toString());
+			ClassOrInterfaceDeclaration coid = (ClassOrInterfaceDeclaration) cu.findFirst(ClassOrInterfaceDeclaration.class).get();
+			for (String annotation : CONFIGURATION_ANNOTATIONS) {
+				if (coid.getAnnotations().toString().contains(annotation)) {
+					System.out.println("[+] Ignoring: " + coid.getName().toString());
+					System.out.println("[+] Annotation: " + annotation);
 					return;
 				}
-				if (coid.getAnnotations().toString().contains(CONTROLLER_ANNOTATION)) {
-					classType = CONTROLLER_ANNOTATION;
-				} else if (coid.getAnnotations().toString().contains(ENTITY_ANNOTATION)) {
-					classType = ENTITY_ANNOTATION;
-				} else if (coid.getAnnotations().toString().contains(SERVICE_ANNOTATION)) {
-					classType = SERVICE_ANNOTATION;
-				} else if (coid.getAnnotations().toString().contains(REPOSITORY_ANNOTATION)) {
-					classType = REPOSITORY_ANNOTATION;
-				}
+			}
+			className = coid.getName().toString();
+			classType = coid.isInterface() ? "interface" : "class";
+			if (coid.isInterface()) {
+				System.out.println("[+] Ignoring Interface: " + coid.getName().toString());
+				return;
+			}
+			if (coid.getAnnotations().toString().contains(CONTROLLER_ANNOTATION)) {
+				classType = CONTROLLER_ANNOTATION;
+			} else if (coid.getAnnotations().toString().contains(ENTITY_ANNOTATION)) {
+				classType = ENTITY_ANNOTATION;
+			} else if (coid.getAnnotations().toString().contains(SERVICE_ANNOTATION)) {
+				classType = SERVICE_ANNOTATION;
+			} else if (coid.getAnnotations().toString().contains(REPOSITORY_ANNOTATION)) {
+				classType = REPOSITORY_ANNOTATION;
+			}
 
-				try {
-					NodeList<ClassOrInterfaceType> extendedTypes = coid.getExtendedTypes();
-					if (extendedTypes.size() > 0) {
-						superQualifiedName = extendedTypes.get(0).resolve().getQualifiedName();
-					}
-				} catch (Exception e) {
-					System.out.println("[-] Resolution error: Unknown extended type");
+			try {
+				NodeList<ClassOrInterfaceType> extendedTypes = coid.getExtendedTypes();
+				if (extendedTypes.size() > 0) {
+					superQualifiedName = extendedTypes.get(0).resolve().getQualifiedName();
 				}
+			} catch (Exception e) {
+				System.out.println("[-] Resolution error: Unknown extended type");
 			}
 			project.addClass(packageName, className, classType, superQualifiedName);
 

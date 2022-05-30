@@ -190,32 +190,28 @@ public class DendrogramService {
                 String classType = cls.getString("type");
                 String className = cls.getString("name");
                 JSONArray methods = cls.optJSONArray("methods");
-                List<List<Double>> classMethodsVectors = new ArrayList<List<Double>>();
 
                 if (!className.endsWith("_Base")) {
                     if (classType.equals("Entity")) {
                         numberOfEntities++;
                     }
 
+                    Acumulator acumulator = new Acumulator();
+                    getAscendedClassesMethodsCodeVectors(packages, acumulator, cls.getString("superQualifiedName"));
+
                     for (int k = 0; k < methods.length(); k++) {
                         JSONObject method = methods.getJSONObject(k);
                         JSONArray codeVectorArray = method.optJSONArray("codeVector");
-                        List<Double> codeVector = new ArrayList<Double>();
-
-                        for (int l = 0; l < codeVectorArray.length(); l++) {
-                            codeVector.add(codeVectorArray.getDouble(l));
-                        }
-                        classMethodsVectors.add(codeVector);
+                        acumulator.addVector(codeVectorArray);
                     }
 
-                    if (!classMethodsVectors.isEmpty()) {
-                        List<Double> classVector = calculateClassVector(classMethodsVectors);
+                    if (acumulator.getCount() > 0) {
                         HashMap<String, Object> classEmbeddings = new HashMap<String, Object>();
                         classEmbeddings.put("package", pack.getString("name"));
                         classEmbeddings.put("name", className);
                         classEmbeddings.put("type", cls.getString("type"));
                         if (cls.has("translationID")) classEmbeddings.put("translationID", cls.getInt("translationID"));
-                        classEmbeddings.put("codeVector", classVector);
+                        classEmbeddings.put("codeVector", acumulator.getMeanVector());
                         classesVectors.add(classEmbeddings);
                     }
                 }
@@ -539,24 +535,6 @@ public class DendrogramService {
     // ----------------------------------------------------------------------------------------------
     // ---                                AUXILIARY FUNCTIONS                                     ---
     // ----------------------------------------------------------------------------------------------
-
-    public List<Double> calculateClassVector(List<List<Double>> class_methods_vectors) {
-        List<Double> class_vector = new ArrayList<Double>();
-
-        int len = class_methods_vectors.get(0).size();
-
-        Double sum = 0.0;
-
-        for (int i = 0; i < len; i++) {
-            for (int j = 0; j < class_methods_vectors.size(); j++) {
-                sum += class_methods_vectors.get(j).get(i);
-            }
-            class_vector.add(sum / class_methods_vectors.size());
-            sum = 0.0;
-        }
-
-        return class_vector;
-    }
 
     public JSONObject getClassMethodsCodeVectors(
             Acumulator acumulator,

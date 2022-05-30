@@ -703,17 +703,19 @@ public class AnalysisService {
                 JSONObject analysis = (JSONObject) analyserResult.get(key);
                 Double value = analysis.getDouble(metric);
                 Integer idx = analysis.getInt("numberClusters") - 1;
-                JSONObject updated_stats = clusters_stats.getJSONObject(idx);
-                updated_stats.put("mean", updated_stats.getDouble("mean") + value);
-                if (value > updated_stats.getDouble("max")) {
-                    updated_stats.put("max", value);
+                if (idx < 10) {
+                    JSONObject updated_stats = clusters_stats.getJSONObject(idx);
+                    updated_stats.put("mean", updated_stats.getDouble("mean") + value);
+                    if (value > updated_stats.getDouble("max")) {
+                        updated_stats.put("max", value);
+                    }
+                    if (value < updated_stats.getDouble("min")) {
+                        updated_stats.put("min", value);
+                    }
+                    updated_stats.put("counter", updated_stats.getInt("counter") + 1);
+                    updated_stats.getJSONArray("data").put(value);
+                    clusters_stats.put(idx, updated_stats);
                 }
-                if (value < updated_stats.getDouble("min")) {
-                    updated_stats.put("min", value);
-                }
-                updated_stats.put("counter", updated_stats.getInt("counter") + 1);
-                updated_stats.getJSONArray("data").put(value);
-                clusters_stats.put(idx, updated_stats);
             }
         }
         for (int i = 0; i < 14; i++) {
