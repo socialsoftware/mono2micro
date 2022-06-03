@@ -38,6 +38,12 @@ public class CutInfoDtoDeserializer extends StdDeserializer<CutInfoDto> {
                     case "sequenceWeight":
                         analyserResultDto.setSequenceWeight(jsonParser.getIntValue());
                         break;
+                    case "commitWeight":
+                        analyserResultDto.setCommitWeight(jsonParser.getIntValue());
+                        break;
+                    case "authorsWeight":
+                        analyserResultDto.setAuthorsWeight(jsonParser.getIntValue());
+                        break;
                     case "numberClusters":
                         analyserResultDto.setNumberClusters(jsonParser.getIntValue());
                         break;
