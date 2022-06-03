@@ -41,7 +41,8 @@ public class Codebase {
 	}
 
 	public String getDatafilePath() {
-		return "/home/joaolourenco/Thesis/development/mono2micro-mine/codebases/" + name + "/datafile.json";
+//		return "/home/joaolourenco/Thesis/development/mono2micro-mine/codebases/" + name + "/datafile.json";
+		return datafilePath;
 	}
 
 	public void setDatafilePath(String datafilePath) {

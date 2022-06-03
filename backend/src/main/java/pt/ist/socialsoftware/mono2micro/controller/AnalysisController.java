@@ -96,44 +96,44 @@ public class AnalysisController {
 
 			Set<String> cutInfoNames = new HashSet<>();
 
-//			if (analyserResultFileAlreadyExists) {
-//
-//				File existentAnalyserResultFile = new File("/home/joaolourenco/Thesis/development/mono2micro-mine/codebases/" + codebaseName + "/analyser/analyserResult.json");
-//
-//				cutInfoNames = Utils.getJsonFileKeys(existentAnalyserResultFile);
-//
-//				if (cutInfoNames.size() == totalNumberOfFiles) {
-//					System.out.println("Analyser Complete");
-//					return new ResponseEntity<>(HttpStatus.OK);
-//				}
-//
-//				JsonParser jsonParser = jsonfactory.createParser(existentAnalyserResultFile);
-//				jsonParser.nextValue();
-//
-//				if (jsonParser.getCurrentToken() != JsonToken.START_OBJECT) {
-//					System.err.println("Json must start with a left curly brace");
-//					System.exit(-1);
-//				}
-//
-//				jsonParser.nextValue();
-//
-//				while (jsonParser.getCurrentToken() != JsonToken.END_OBJECT) {
-//					if (jsonParser.getCurrentToken() == JsonToken.START_OBJECT) {
-//						Utils.print("Cut name: " + jsonParser.getCurrentName(), Utils.lineno());
-//						cutInfoNames.add(jsonParser.currentName());
-//
-//						CutInfoDto cutInfo = jsonParser.readValueAs(CutInfoDto.class);
-//
-//						jGenerator.writeObjectField(jsonParser.getCurrentName(), cutInfo);
-//
-//						jsonParser.nextValue();
-//					}
-//				}
-//
-//				jGenerator.flush();
-//
-//				existentAnalyserResultFile.delete();
-//			}
+			if (analyserResultFileAlreadyExists) {
+
+				File existentAnalyserResultFile = new File(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json");
+
+				cutInfoNames = Utils.getJsonFileKeys(existentAnalyserResultFile);
+
+				if (cutInfoNames.size() == totalNumberOfFiles) {
+					System.out.println("Analyser Complete");
+					return new ResponseEntity<>(HttpStatus.OK);
+				}
+
+				JsonParser jsonParser = jsonfactory.createParser(existentAnalyserResultFile);
+				jsonParser.nextValue();
+
+				if (jsonParser.getCurrentToken() != JsonToken.START_OBJECT) {
+					System.err.println("Json must start with a left curly brace");
+					System.exit(-1);
+				}
+
+				jsonParser.nextValue();
+
+				while (jsonParser.getCurrentToken() != JsonToken.END_OBJECT) {
+					if (jsonParser.getCurrentToken() == JsonToken.START_OBJECT) {
+						Utils.print("Cut name: " + jsonParser.getCurrentName(), Utils.lineno());
+						cutInfoNames.add(jsonParser.currentName());
+
+						CutInfoDto cutInfo = jsonParser.readValueAs(CutInfoDto.class);
+
+						jGenerator.writeObjectField(jsonParser.getCurrentName(), cutInfo);
+
+						jsonParser.nextValue();
+					}
+				}
+
+				jGenerator.flush();
+
+				existentAnalyserResultFile.delete();
+			}
 
 			int maxRequests = analyser.getRequestLimit();
 			AtomicReference<Short> newRequestsCount = new AtomicReference<>((short) 0);
@@ -171,9 +171,15 @@ public class AnalysisController {
 
 			Map<Cut, Decomposition> cutsToDecomposition = Collections.synchronizedMap(new HashMap<>());
 
+			Set<String> finalCutInfoNames = cutInfoNames;
 			Arrays.stream(files).parallel().forEach(file -> {
 				String filename = FilenameUtils.getBaseName(file.getName());
 				count.getAndSet((short) (count.get() + 1));
+
+				if (finalCutInfoNames.contains(filename)) {
+					System.out.println(filename + " already analysed. " + count + "/" + totalNumberOfFiles);
+					return;
+				}
 
 				Cut cut = null;
 				try {
@@ -218,11 +224,6 @@ public class AnalysisController {
 						e.printStackTrace();
 					}
 				}
-
-//				if (cutInfoNames.contains(filename)) {
-//					System.out.println(filename + " already analysed. " + count + "/" + totalNumberOfFiles);
-//					continue;
-//				}
 
 				synchronized (this) {
 					try {
