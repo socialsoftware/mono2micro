@@ -98,7 +98,6 @@ public class ClusterController {
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (KeyAlreadyExistsException e) {
-			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 		} catch (Exception e) {
@@ -145,6 +144,9 @@ public class ClusterController {
 
 			codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
 			return new ResponseEntity<>(HttpStatus.OK);
+
+		} catch (KeyAlreadyExistsException e) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 		} catch (Exception e) {
 			e.printStackTrace();

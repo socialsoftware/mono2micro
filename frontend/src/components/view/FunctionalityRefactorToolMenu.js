@@ -293,15 +293,13 @@ export const FunctionalityRefactorToolMenu = () => {
 
     return (
         <div>
-            {
-                error && (
-                    <ModalMessage
-                        title='Error Message'
-                        message={errorMessage}
-                        onClose={closeErrorMessageModal}
-                    />
-                )
-            }
+            <ModalMessage
+                show={error}
+                setShow={setError}
+                title='Error Message'
+                message={errorMessage}
+                onClose={closeErrorMessageModal}
+            />
             <div style={
                 {
                     margin: "auto",

@@ -1,5 +1,22 @@
 import Decomposition from "../models/decompositions/Decomposition";
 
+export interface Edges {
+    edges: Edge[];
+}
+
+export interface Edge {
+    dist: number;
+    e1ID: number;
+    e2ID: number;
+    functionalities: string[];
+}
+
+export interface SimilarityMatrix {
+    entities?: number[];
+    linkageType?: string;
+    matrix?: number[][];
+}
+
 export interface AccessDto {
     entity?: string;
     mode?: string;
@@ -22,6 +39,7 @@ export interface LocalTransactionsGraph {
 export interface Functionality {
     name?: string;
     metrics?: Metric[];
+    entitiesPerCluster?: Record<number, number[]>; // <clusterId, entityIDs>
     entities?: Record<number, number>; // <entityID, mode>
     functionalityRedesigns: FunctionalityRedesign[];
 }

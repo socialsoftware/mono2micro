@@ -54,7 +54,7 @@ export const TransactionOperationsMenu = ({handleFunctionalitySubmit, functional
     );
 
     return (
-        <ButtonToolbar>
+        <ButtonToolbar style={{zIndex: 2, position: "absolute", left: "1.3rem", top: "13.3rem"}}>
             <DropdownButton className="me-1" as={ButtonGroup} title={functionalityAmount}>
                 <Dropdown.Item key={"All"} onClick={() => changeFunctionalityAmount("All")}>
                     {"All"}

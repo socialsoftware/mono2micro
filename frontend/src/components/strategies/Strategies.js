@@ -117,7 +117,7 @@ export const Strategies = () => {
     }
 
     return (
-        <div>
+        <div style={{ paddingLeft: "2rem" }}>
             {renderBreadCrumbs()}
 
             { renderCreateStrategies() }

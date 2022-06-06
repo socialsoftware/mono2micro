@@ -1,7 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import { ClusterView, clusterViewHelp } from './ClusterView';
 import { TransactionView, transactionViewHelp } from './TransactionView';
-import { EntityView, entityViewHelp } from './EntityView';
 import {FunctionalityRefactorToolMenu, refactorToolHelp} from './FunctionalityRefactorToolMenu';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -16,18 +14,20 @@ import {RepositoryService} from "../../services/RepositoryService";
 import AppContext from "./../AppContext";
 import {useParams} from "react-router-dom";
 import {SourceType} from "../../models/sources/Source";
+import {ClusterViewGraph, clusterViewHelp} from "./clusterView/ClusterViewGraph";
 
 export const views = {
     CLUSTERS: 'Clusters View',
     TRANSACTION: 'Transaction View',
-    ENTITY: 'Entity View',
     REFACTOR: 'Refactorization Tool',
 };
 
 export const types = {
-    CLUSTER: 0,
-    FUNCTIONALITY: 1,
-    ENTITY: 2
+    NONE: 0,
+    CLUSTER: 1,
+    FUNCTIONALITY: 2,
+    ENTITY: 3,
+    EDGE: 4,
 };
 
 export const Views = () => {
@@ -60,8 +60,6 @@ export const Views = () => {
                 return clusterViewHelp;
             case views.TRANSACTION:
                 return transactionViewHelp;
-            case views.ENTITY:
-                return entityViewHelp;
             case views.REFACTOR:
                 return refactorToolHelp;
             default:
@@ -102,18 +100,15 @@ export const Views = () => {
 
     return (
         <Container fluid>
-            {renderBreadCrumbs()}
-            <Row className="mb-2">
-                <Col>
-                    <h4 style={{color: "#666666"}}>{decompositionName}</h4>
-                </Col>
-                <Col className="me-5">
-                    <OverlayTrigger trigger="click" placement="left" overlay={helpPopover}>
-                        <Button className="float-end" variant="success">Help</Button>
-                    </OverlayTrigger>
-                </Col>
-            </Row>
-            <Row className="mb-2">
+            <div style={{ zIndex: 1, left: "2rem", position: "absolute" }}>
+                {renderBreadCrumbs()}
+            </div>
+            <div style={{ zIndex: 1, right: "2rem", position: "absolute" }}>
+                <OverlayTrigger trigger="click" placement="left" overlay={helpPopover}>
+                    <Button variant="success">Help</Button>
+                </OverlayTrigger>
+            </div>
+            <Row style={{ zIndex: 3, left: "1.3rem", marginTop: "3rem", position: "absolute" }}>
                 <Col sm="auto">
                     <DropdownButton title={view}>
                         <Dropdown.Item
@@ -127,11 +122,6 @@ export const Views = () => {
                             {views.TRANSACTION}
                         </Dropdown.Item>
                         <Dropdown.Item
-                            onClick={() => handleSelectView(views.ENTITY)}
-                        >
-                            {views.ENTITY}
-                        </Dropdown.Item>
-                        <Dropdown.Item
                             onClick={() => handleSelectView(views.REFACTOR)}
                         >
                             {views.REFACTOR}
@@ -143,23 +133,11 @@ export const Views = () => {
                 <Col>
                     {
                         view === views.CLUSTERS &&
-                            <ClusterView
-                                codebaseName={codebaseName}
-                                strategyName={strategyName}
-                                decompositionName={decompositionName}
-                            />
+                            <ClusterViewGraph/>
                     }
                     {
                         view === views.TRANSACTION &&
                             <TransactionView
-                                codebaseName={codebaseName}
-                                strategyName={strategyName}
-                                decompositionName={decompositionName}
-                            />
-                    }
-                    {
-                        view === views.ENTITY &&
-                            <EntityView
                                 codebaseName={codebaseName}
                                 strategyName={strategyName}
                                 decompositionName={decompositionName}

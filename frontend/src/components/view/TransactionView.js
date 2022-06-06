@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {RepositoryService} from '../../services/RepositoryService';
 import {VisNetwork} from '../util/VisNetwork';
-import { DataSet } from "vis";
+import { DataSet } from "vis-network/standalone";
 import {types, views} from './Views';
 import BootstrapTable from 'react-bootstrap-table-next';
 import CardGroup from 'react-bootstrap/CardGroup';
@@ -31,7 +31,7 @@ export const transactionViewHelp = (<div>
 </div>);
 
 const options = {
-    height: "700",
+    height: "890",
     layout: {
         hierarchical: {
             direction: 'UD',
@@ -44,11 +44,6 @@ const options = {
             to: {
                 enabled: true,
             }
-        },
-        scaling: {
-            label: {
-                enabled: true
-            },
         },
         color: {
             color: "#2B7CE9",
@@ -76,7 +71,7 @@ const options = {
 };
 
 const optionsSeq = {
-    height: "700",
+    height: "890",
     layout: {
         hierarchical: {
             direction: 'UD',
@@ -90,11 +85,6 @@ const optionsSeq = {
                 enabled: true,
             }
         },
-        scaling: {
-            label: {
-                enabled: true
-            },
-        },
         color: {
             color: "#2B7CE9",
             hover: "#2B7CE9",
@@ -103,11 +93,6 @@ const optionsSeq = {
     },
     nodes: {
         shape: 'ellipse',
-        scaling: {
-            label: {
-                enabled: true
-            },
-        },
         color: {
             border: "#2B7CE9",
             background: "#D2E5FF",
@@ -125,8 +110,8 @@ const optionsSeq = {
     }
 };
 
-const optionsFunctionalityRedesign = {
-    height: "700",
+const optionsFunctionalityRedesignCompare = {
+    height: "678",
     layout: {
         hierarchical: false,
         improvedLayout: false
@@ -138,10 +123,44 @@ const optionsFunctionalityRedesign = {
                 enabled: true,
             }
         },
-        scaling: {
-            label: {
-                enabled: true
-            },
+        color: {
+            color: "#2B7CE9",
+            hover: "#2B7CE9",
+            highlight: "#FFA500"
+        }
+    },
+    nodes: {
+        shape: 'ellipse',
+        color: {
+            border: "#2B7CE9",
+            background: "#D2E5FF",
+            highlight: {
+                background: "#FFA500",
+                border: "#FFA500"
+            }
+        }
+    },
+    interaction: {
+        hover: true
+    },
+    physics: {
+        enabled: true,
+        solver: 'hierarchicalRepulsion'
+    },
+};
+
+const optionsFunctionalityRedesign = {
+    height: "890",
+    layout: {
+        hierarchical: false,
+        improvedLayout: false
+    },
+    edges: {
+        smooth: false,
+        arrows: {
+            to: {
+                enabled: true,
+            }
         },
         color: {
             color: "#2B7CE9",
@@ -151,11 +170,6 @@ const optionsFunctionalityRedesign = {
     },
     nodes: {
         shape: 'ellipse',
-        scaling: {
-            label: {
-                enabled: true
-            },
-        },
         color: {
             border: "#2B7CE9",
             background: "#D2E5FF",
@@ -257,7 +271,7 @@ export const TransactionView = () => {
 
         visGraph.nodes.add({
             id: currentFunctionality.name,
-            title: Object.entries(currentFunctionality.entities).map(e => translateEntity(e[0]) + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(currentFunctionality.entities).length,
+            title: Object.entries(currentFunctionality.entities).map(e => translateEntity(e[0]) + " " + e[1]).join('\n') + "\nTotal: " + Object.keys(currentFunctionality.entities).length,
             label: currentFunctionality.name,
             level: 0,
             value: 1,
@@ -270,7 +284,7 @@ export const TransactionView = () => {
     function createNode(cluster) {
         return {
             id: cluster.id,
-            title: cluster.entities.map((entityID) => translateEntity(entityID)).join('<br>') + "<br>Total: " + cluster.entities.length,
+            title: cluster.entities.map((entityID) => translateEntity(entityID)).join('\n') + "\nTotal: " + cluster.entities.length,
             label: cluster.name,
             value: cluster.entities,
             level: 1,
@@ -290,7 +304,7 @@ export const TransactionView = () => {
             from: currentFunctionality.name,
             to: cluster.id,
             label: text.length.toString(),
-            title: text.join('<br>')
+            title: text.join('\n')
         };
     }
 
@@ -308,7 +322,7 @@ export const TransactionView = () => {
             type: types.FUNCTIONALITY,
             title: Object.entries(currentFunctionality.entities)
                 .map(e => translateEntity(e[0]) + " " + e[1])
-                .join('<br>') + "<br>Total: " + Object.keys(currentFunctionality.entities).length,
+                .join('\n') + "\nTotal: " + Object.keys(currentFunctionality.entities).length,
         });
 
         localTransactionIdToClusterAccesses[0] = [];
@@ -334,7 +348,7 @@ export const TransactionView = () => {
 
             nodes.push({
                 id: localTransactionId,
-                title: clusterEntityNames.map(entityID => translateEntity(entityID)).join('<br>') + "<br>Total: " + clusterEntityNames.length,
+                title: clusterEntityNames.map(entityID => translateEntity(entityID)).join('\n') + "\nTotal: " + clusterEntityNames.length,
                 label: cluster.name,
                 value: clusterEntityNames.length,
                 level: 1,
@@ -359,7 +373,7 @@ export const TransactionView = () => {
             edges.push({
                 from: Number(sourceNodeId),
                 to: Number(targetNodeId),
-                title: clusterAccesses.map(acc => `${acc[0]} ${translateEntity(acc[1])} ${acc[2] ?? ""}`).join('<br>'),
+                title: clusterAccesses.map(acc => `${acc[0]} ${translateEntity(acc[1])} ${acc[2] ?? ""}`).join('\n'),
                 label: clusterAccesses.length.toString()
             })
 
@@ -396,7 +410,7 @@ export const TransactionView = () => {
 
         nodes.push({
             id: 0,
-            title: Object.entries(functionality.entities).map(e => translateEntity(e[0]) + " " + e[1]).join('<br>') + "<br>Total: " + Object.keys(functionality.entities).length,
+            title: Object.entries(functionality.entities).map(e => translateEntity(e[0]) + " " + e[1]).join('\n') + "\nTotal: " + Object.keys(functionality.entities).length,
             label: functionality.name,
             level: -1,
             value: 1,
@@ -417,7 +431,7 @@ export const TransactionView = () => {
                 edges.push({
                     from: 0,
                     to: lt.id,
-                    title: lt.clusterAccesses.map(acc => `${acc[0]} ${translateEntity(acc[1])} ${acc[2] ?? ""}`).join('<br>'),
+                    title: lt.clusterAccesses.map(acc => `${acc[0]} ${translateEntity(acc[1])} ${acc[2] ?? ""}`).join('\n'),
                     label: lt.clusterAccesses.length.toString()
                 });
             });
@@ -439,7 +453,7 @@ export const TransactionView = () => {
                     edges.push({
                         from: nodes[i].id,
                         to: id,
-                        title: lt.clusterAccesses.map(acc => `${acc[0]} ${translateEntity(acc[1])} ${acc[2] ?? ""}`).join('<br>'),
+                        title: lt.clusterAccesses.map(acc => `${acc[0]} ${translateEntity(acc[1])} ${acc[2] ?? ""}`).join('\n'),
                         label: lt.clusterAccesses.length.toString()
                     });
                 });
@@ -467,6 +481,9 @@ export const TransactionView = () => {
 
 
     function handleSelectNode(nodeId) {
+        let selectedOperation;
+        setSelectedOperation(prev => {selectedOperation = prev; return prev});
+
         if (currentSubView === "Sequence Graph") return;
 
         if(compareRedesigns) return;
@@ -480,6 +497,8 @@ export const TransactionView = () => {
         if(nodeId === -1 && selectedOperation !== redesignOperations.SQ) return;
 
         if(selectedOperation === redesignOperations.SQ){
+            let selectedLocalTransaction;
+            setSelectedLocalTransaction(prev => {selectedLocalTransaction = prev; return prev});
             if(nodeId === selectedLocalTransaction.id){
                 setError(true);
                 setErrorMessage("One local transaction cannot call itself");
@@ -489,7 +508,7 @@ export const TransactionView = () => {
                 setError(true);
                 setErrorMessage("The local transaction " + lt.name
                     + " is already invoking local transaction " + selectedLocalTransaction.name);
-            } else if(checkTransitiveClosure(nodeId)){
+            } else if(checkTransitiveClosure(nodeId, selectedLocalTransaction)){
                 setError(true);
                 setErrorMessage("There cannot exist a cyclic dependency");
             } else {
@@ -511,7 +530,7 @@ export const TransactionView = () => {
         }
     }
 
-    function checkTransitiveClosure(nodeId){
+    function checkTransitiveClosure(nodeId, selectedLocalTransaction){
         let transitiveClosure = selectedLocalTransaction.remoteInvocations;
 
         for(let i = 0; i < transitiveClosure.length; i++) {
@@ -824,7 +843,7 @@ export const TransactionView = () => {
         );
     }
 
-    function renderRedesignGraph(graph){
+    function renderRedesignGraph(graph, options){
         return <div>
             <div style={{display:'none'}}>
                 {/*this div functions as a "cache". Is is used to render the graph with the optionsSeq
@@ -837,10 +856,10 @@ export const TransactionView = () => {
                     onDeselection={handleDeselectNode}
                     view={views.TRANSACTION} />
             </div>
-            <div style={{height: '700px'}}>
+            <div>
                 <VisNetwork
                     visGraph={graph}
-                    options={optionsFunctionalityRedesign}
+                    options={options}
                     onSelection={handleSelectNode}
                     onDeselection={handleDeselectNode}
                     view={views.TRANSACTION} />
@@ -919,17 +938,15 @@ export const TransactionView = () => {
 
     return (
         <div>
-            {
-                error && (
-                    <ModalMessage
-                        title='Error Message'
-                        message={errorMessage}
-                        onClose={closeErrorMessageModal}
-                    />
-                )
-            }
-            <Container fluid style={{paddingLeft:"0px", paddingRight:"0px"}}>
-                <Row>
+            <ModalMessage
+                show={error}
+                setShow={setError}
+                title='Error Message'
+                message={errorMessage}
+                onClose={closeErrorMessageModal}
+            />
+            <Container fluid>
+                <Row style={{zIndex:2, position: "absolute", top: "10.4rem", left: "1.3rem", paddingLeft: 0}}>
                     <Col>
                         <ButtonGroup className="mb-2">
                             <Button
@@ -964,22 +981,6 @@ export const TransactionView = () => {
                             </Button>
                         </ButtonGroup>
                     </Col>
-                    {selectedRedesign !== null &&
-                    <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
-                        {showGraph && currentSubView === "Functionality Redesign" &&
-                        functionality.type === "SAGA" &&
-                        <h4 style={{color: "#666666", textAlign: "center"}}>
-                            Functionality Complexity: {selectedRedesign.metrics.filter(metric => metric.type === MetricType.FUNCTIONALITY_COMPLEXITY)[0].value} - System Complexity: {selectedRedesign.metrics.filter(metric => metric.type === MetricType.SYSTEM_COMPLEXITY)[0].value}
-                        </h4>
-                        }
-                        {showGraph && currentSubView === "Functionality Redesign" &&
-                        functionality.type === "QUERY" &&
-                        <h4 style={{color: "#666666", textAlign: "center"}}>
-                            Query Inconsistency Complexity: {selectedRedesign.metrics.filter(metric => metric.type === MetricType.INCONSISTENCY_COMPLEXITY)[0].value}
-                        </h4>
-                        }
-                    </Col>
-                    }
                 </Row>
             </Container>
             {currentSubView === "Graph" &&
@@ -988,18 +989,16 @@ export const TransactionView = () => {
                         handleFunctionalitySubmit={handleFunctionalitySubmit}
                         functionalitiesClusters={functionalitiesClusters}
                     />
-                    <div style={{height: '700px'}}>
-                        <VisNetwork
-                            visGraph={visGraph}
-                            options={options}
-                            onSelection={handleSelectNode}
-                            onDeselection={handleDeselectNode}
-                            view={views.TRANSACTION} />
-                    </div>
+                    <VisNetwork
+                        visGraph={visGraph}
+                        options={options}
+                        onSelection={handleSelectNode}
+                        onDeselection={handleDeselectNode}
+                        view={views.TRANSACTION}
+                    />
                 </span>
             }
             {currentSubView === "Sequence Graph" &&
-            <div style={{height: '700px'}}>
                 <VisNetwork
                     visGraph={visGraphSeq}
                     options={optionsSeq}
@@ -1007,10 +1006,9 @@ export const TransactionView = () => {
                     onDeselection={handleDeselectNode}
                     view={views.TRANSACTION}
                 />
-            </div>
             }
             {currentSubView === "Metrics" &&
-            <div>
+            <div style={{marginTop: "9rem", marginLeft: "0.5rem"}}>
                 Number of Clusters : {clusters.length}
                 < br />
                 Number of Functionalities that access a single Cluster : {Object.keys(functionalitiesClusters).filter(key => functionalitiesClusters[key].length === 1).length}
@@ -1027,7 +1025,7 @@ export const TransactionView = () => {
             </div>
             }
             {showGraph && currentSubView === "Sequence Table" &&
-            <>
+            <div style={{marginTop: "9.3rem", marginLeft: "0.5rem"}}>
                 <h4>{functionality.name}</h4>
                 <BootstrapTable
                     bootstrap4
@@ -1035,11 +1033,11 @@ export const TransactionView = () => {
                     data={localTransactionsSequence}
                     columns={seqColumns}
                 />
-            </>
+            </div>
             }
             {showGraph && currentSubView === "Functionality Redesign" && selectedRedesign === null &&
             !compareRedesigns &&
-            <div>
+            <div style={{marginTop: "8rem", marginLeft: "0.5rem"}}>
                 <br/>
                 <h4 style={{color: "#666666"}}>{functionality.name} Redesigns</h4>
                 {functionality.functionalityRedesigns.length >= 2 &&
@@ -1073,11 +1071,11 @@ export const TransactionView = () => {
             {showGraph && currentSubView === "Functionality Redesign" && selectedRedesign === null &&
             compareRedesigns &&
             <div>
-                <Button className="mb-2"
+                <Button style={{position: "absolute", marginLeft: "0.55rem", marginTop: "0.15rem"}}
                         onClick={() => {setCompareRedesigns(false); setSelectedRedesignsToCompare1("Select a Redesign"); setSelectedRedesignsToCompare2("Select a Redesign");}}>
                     Back
                 </Button>
-                <Container fluid style={{paddingLeft:"0px", paddingRight:"0px"}}>
+                <Container fluid style={{paddingLeft:"0px", paddingRight:"0px", marginTop: "8.6rem", marginLeft: "-0.15rem"}}>
                     <Row>
                         <Col>
                             {functionality.type === "SAGA" ?
@@ -1094,7 +1092,7 @@ export const TransactionView = () => {
                                     Query Inconsistency Complexity: {functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare1)[0].metrics.filter(metric => metric.type === MetricType.INCONSISTENCY_COMPLEXITY)[0].value}
                                 </h4>
                             }
-                            {renderRedesignGraph(createRedesignGraph(functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare1)[0], functionality))}
+                            {renderRedesignGraph(createRedesignGraph(functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare1)[0], functionality), optionsFunctionalityRedesignCompare)}
                         </Col>
                         <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
                             {functionality.type === "SAGA" ?
@@ -1111,7 +1109,7 @@ export const TransactionView = () => {
                                     Query Inconsistency Complexity: {functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare2)[0].metrics.filter(metric => metric.type === MetricType.INCONSISTENCY_COMPLEXITY)[0].value}
                                 </h4>
                             }
-                            {renderRedesignGraph(createRedesignGraph(functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare2)[0], functionality))}
+                            {renderRedesignGraph(createRedesignGraph(functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare2)[0], functionality), optionsFunctionalityRedesignCompare)}
                         </Col>
                     </Row>
                 </Container>
@@ -1119,7 +1117,18 @@ export const TransactionView = () => {
             }
             {showGraph && currentSubView === "Functionality Redesign" && selectedRedesign !== null &&
             <Container fluid style={{paddingLeft:"0px", paddingRight:"0px"}}>
-                <Row>
+                {showGraph && currentSubView === "Functionality Redesign" && functionality.type === "SAGA" &&
+                    <h4 style={{color: "#666666", textAlign: "center", position: "absolute", marginTop: "6.3rem", marginLeft: "80%", transform: "translate(-50%,0%)"}}>
+                        Functionality Complexity: {selectedRedesign.metrics.filter(metric => metric.type === MetricType.FUNCTIONALITY_COMPLEXITY)[0].value} - System Complexity: {selectedRedesign.metrics.filter(metric => metric.type === MetricType.SYSTEM_COMPLEXITY)[0].value}
+                    </h4>
+                }
+                {showGraph && currentSubView === "Functionality Redesign" &&
+                    functionality.type === "QUERY" &&
+                    <h4 style={{color: "#666666", textAlign: "center", position: "absolute", marginTop: "6.3rem", marginLeft: "80%", transform: "translate(-50%,0)"}}>
+                        Query Inconsistency Complexity: {selectedRedesign.metrics.filter(metric => metric.type === MetricType.INCONSISTENCY_COMPLEXITY)[0].value}
+                    </h4>
+                }
+                <Row style={{zIndex: 1, position: "absolute", marginTop: "9rem", marginLeft: "-0.15rem"}}>
                     <Col>
                         <Button className="mb-2"
                                 onClick={() => {setSelectedRedesign(null); handleCancel();}}>
@@ -1142,10 +1151,8 @@ export const TransactionView = () => {
                         />
                         }
                     </Col>
-                    <Col style={{paddingLeft:"0px", paddingRight:"0px"}}>
-                        {renderRedesignGraph(redesignVisGraph)}
-                    </Col>
                 </Row>
+                {renderRedesignGraph(redesignVisGraph, optionsFunctionalityRedesign)}
             </Container>
             }
         </div>

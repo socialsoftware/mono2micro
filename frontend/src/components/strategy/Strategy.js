@@ -53,7 +53,7 @@ export const Strategy = () => {
     }
 
     return (
-        <div>
+        <div style={{ paddingLeft: "2rem" }}>
             {renderBreadCrumbs()}
 
             <h4 style={{color: "#666666"}}>

@@ -18,7 +18,7 @@ export default class AccessesCollector extends Collector {
                 StrategyType.ACCESSES_SCIPY,
             ]
         );
-        collector.addedSources = collector.addedSources ?? new Map<string, File>();
+        this.addedSources = collector.addedSources ?? new Map<string, File>();
     }
 
     canSubmit(): boolean {

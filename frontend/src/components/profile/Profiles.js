@@ -125,7 +125,7 @@ export const Profiles = () => {
     }
 
     return (
-        <div>
+        <div style={{ paddingLeft: "2rem" }}>
             {renderBreadCrumbs()}
             <h4 style={{color: "#666666"}}>
                 Create Functionality Profile

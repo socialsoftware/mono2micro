@@ -21,3 +21,6 @@ def createDendrogram(codebasesPath, codebaseName, strategyName):
     hierarchy.dendrogram(hierarc, labels=entities, distance_sort='descending')
     plt.savefig(codebasesPath + codebaseName + "/strategies/" + strategyName + "/dendrogramImage.png", format="png",
                 bbox_inches='tight')
+
+    with open(codebasesPath + codebaseName + "/strategies/" + strategyName + "/copheneticDistances.json",'w') as copheneticDistanceFile:
+        copheneticDistanceFile.write(json.dumps(hierarchy.cophenet(hierarc).tolist(), indent=4))

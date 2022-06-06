@@ -182,7 +182,7 @@ export function Codebase() {
     }
 
     return (
-        <div>
+        <div style={{ paddingLeft: "2rem" }}>
             { renderDeletePopup() }
 
             { renderBreadCrumbs(codebaseName) }

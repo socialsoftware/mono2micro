@@ -11,7 +11,8 @@ import {
     Cluster,
     Functionality,
     LocalTransactionsGraph,
-    RefactorCodebase
+    RefactorCodebase,
+    SimilarityMatrix, Edges
 } from "../type-declarations/types";
 import { addSearchParamsToUrl } from "../utils/url";
 import {SourceFactory} from "../models/sources/SourceFactory";
@@ -254,7 +255,8 @@ export class RepositoryService {
     }
 
     getStrategy(codebaseName: string, strategyName: string) {
-        return this.axios.get<Strategy>("/codebase/" + codebaseName + "/strategy/" + strategyName);
+        return this.axios.get("/codebase/" + codebaseName + "/strategy/" + strategyName).then(
+            response => { return StrategyFactory.getStrategy(response); });
     }
 
     deleteStrategy(codebaseName: string, strategyName: string) {
@@ -263,6 +265,26 @@ export class RepositoryService {
     
     createStrategy(strategy: Strategy) {
         return this.axios.post<null>("/codebase/" + strategy.codebaseName + "/strategy/createStrategy", strategy);
+    }
+
+    getSimilarityMatrix(codebaseName: string, strategyName: string) {
+        return this.axios.get<SimilarityMatrix>("/codebase/" + codebaseName + "/strategy/" + strategyName + "/getSimilarityMatrix");
+    }
+
+    getEdgeWeights(codebaseName: string, strategyName: string, decompositionName: string) {
+        return this.axios.get<Edges>("/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/getEdgeWeights");
+    }
+
+    getGraphPositions(codebaseName: string, strategyName: string, decompositionName: string) {
+        return this.axios.get("/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/getGraphPositions");
+    }
+
+    deleteGraphPositions(codebaseName: string, strategyName: string, decompositionName: string) {
+        return this.axios.delete("/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/deleteGraphPositions");
+    }
+
+    saveGraphPositions(codebaseName: string, strategyName: string, decompositionName: string, graphPositions: any) {
+        return this.axios.post<null>("/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/saveGraphPositions", graphPositions);
     }
 
     createDecomposition(

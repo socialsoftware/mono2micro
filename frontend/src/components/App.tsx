@@ -22,7 +22,7 @@ const App: FunctionComponent = () => {
         >
             <BrowserRouter basename="">
                 <Header />
-                <div style={{ paddingLeft: "2rem", paddingTop: "2rem" }}>
+                <div style={{ paddingTop: "1rem" }}>
                     <Main />
                 </div>
             </BrowserRouter>

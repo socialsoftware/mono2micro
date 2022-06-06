@@ -405,13 +405,81 @@ public class CodebaseManager {
 	)
 		throws IOException, JSONException
 	{
-		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + strategyName + "/similarityMatrices" + similarityMatrixName);
+		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + strategyName + "/similarityMatrices/" + similarityMatrixName);
 
 		JSONObject similarityMatrixJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
 
 		is.close();
 
 		return similarityMatrixJSON;
+	}
+
+	public String getSimilarityMatrixAsString(
+			String codebaseName,
+			String strategyName,
+			String similarityMatrixName
+	)
+			throws IOException
+	{
+		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + strategyName + "/similarityMatrices/" + similarityMatrixName);
+
+		String similarityMatrixContent = IOUtils.toString(is, "UTF-8");
+
+		is.close();
+
+		return similarityMatrixContent;
+	}
+
+	public JSONArray getCopheneticDistances(
+			String codebaseName,
+			String strategyName
+	)
+			throws IOException, JSONException
+	{
+		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + strategyName + "/copheneticDistances.json");
+
+		return new JSONArray(IOUtils.toString(is, "UTF-8"));
+	}
+
+	public void saveGraphPositions(
+			String codebaseName,
+			String strategyName,
+			String decompositionName,
+			String graphPositions
+	)
+			throws IOException
+	{
+		FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + strategyName + "/decompositions/" + decompositionName + "/graphPositions.json");
+		file.write(graphPositions);
+		file.close();
+	}
+
+	public void deleteGraphPositions(
+			String codebaseName,
+			String strategyName,
+			String decompositionName
+	)
+			throws IOException
+	{
+		File file = new File(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + strategyName + "/decompositions/" + decompositionName + "/graphPositions.json");
+		if (file.exists())
+			file.delete();
+	}
+
+	public String getGraphPositions(
+			String codebaseName,
+			String strategyName,
+			String decompositionName
+	)
+			throws IOException
+	{
+		File file = new File(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + strategyName + "/decompositions/" + decompositionName + "/graphPositions.json");
+		if (!file.exists())
+			return null;
+
+		InputStream is = new FileInputStream(file.getPath());
+
+		return IOUtils.toString(is, "UTF-8");
 	}
 
 	public String getInputFile(

@@ -93,4 +93,20 @@ public class StrategyController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
+
+	@RequestMapping(value = "/strategy/{strategyName}/getSimilarityMatrix", method = RequestMethod.GET)
+	public ResponseEntity<String> getSimilarityMatrix(
+			@PathVariable String codebaseName,
+			@PathVariable String strategyName
+	) {
+		logger.debug("getSimilarityMatrix");
+
+		try {
+			return new ResponseEntity<>(codebaseManager.getSimilarityMatrixAsString(codebaseName, strategyName, "similarityMatrix.json"), HttpStatus.OK);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
 }

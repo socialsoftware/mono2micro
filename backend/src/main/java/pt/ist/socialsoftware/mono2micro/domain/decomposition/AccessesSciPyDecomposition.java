@@ -349,6 +349,8 @@ public class AccessesSciPyDecomposition extends Decomposition {
             String newName,
             String[] entities
     ) {
+        if (clusterNameExists(newName)) throw new KeyAlreadyExistsException("Cluster with name: " + newName + " already exists");
+
         Cluster currentCluster = getCluster(clusterID);
         Cluster newCluster = new Cluster(getNewClusterID(), newName);
 
