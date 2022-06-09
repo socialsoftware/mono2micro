@@ -14,6 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import pt.ist.socialsoftware.mono2micro.domain.*;
 import pt.ist.socialsoftware.mono2micro.dto.*;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
+import pt.ist.socialsoftware.mono2micro.utils.AnalyserService;
 import pt.ist.socialsoftware.mono2micro.utils.CommitAnalyserService;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
@@ -42,223 +43,231 @@ public class AnalysisController {
 		@RequestBody AnalyserDto analyser
 	) {
 		logger.debug("analyser");
-
 		try {
-			File analyserPath = new File(CODEBASES_PATH + codebaseName + "/analyser/cuts/");
-			if (!analyserPath.exists()) {
-				analyserPath.mkdirs();
-			}
+			AnalyserService service = new AnalyserService(codebaseName);
+			service.runAnalyser(analyser);
+		} catch (IOException e) {
+			System.out.println("Failed to run analyser due to IO Error.");
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 
-			Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
-				codebaseName,
-				new HashSet<String>() {{
-					add("name");
-					add("profiles");
-					add("datafilePath");
-				}}
-			);
 
-			int numberOfEntitiesPresentInCollection = getOrCreateSimilarityMatrix(
-				codebase,
-				analyser
-			);
-
-			System.out.println("Codebase: " + codebaseName + " has " + numberOfEntitiesPresentInCollection + " entities");
-
-			executeCreateCuts(
-				codebaseName,
-				numberOfEntitiesPresentInCollection
-			);
-
-			// THIS FIRST PHASE EXISTS TO NOT PROCESS CUTS PREVIOUSLY PROCESSED
-			// BASICALLY IT'S A COPY OF THE PREVIOUS FILE INTO THE NEW FILE
-
-			File analyserCutsPath = new File(CODEBASES_PATH + codebaseName + "/analyser/cuts/");
-			File[] files = analyserCutsPath.listFiles();
-			int totalNumberOfFiles = files.length;
-
-			ObjectMapper mapper = new ObjectMapper();
-			JsonFactory jsonfactory = mapper.getFactory();
-
-			boolean analyserResultFileAlreadyExists = codebaseManager.analyserResultFileAlreadyExists(codebaseName);
-
-			String analyserResultFilename =  analyserResultFileAlreadyExists ?
-				"newAnalyserResult.json" :
-				"analyserResult.json";
-
-			JsonGenerator jGenerator = jsonfactory.createGenerator(
-				new FileOutputStream(CODEBASES_PATH + codebaseName + "/analyser/" + analyserResultFilename),
-				JsonEncoding.UTF8
-			);
-
-		 	jGenerator.useDefaultPrettyPrinter();
-			jGenerator.writeStartObject();
-
-			Set<String> cutInfoNames = new HashSet<>();
-
-			if (analyserResultFileAlreadyExists) {
-
-				File existentAnalyserResultFile = new File(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json");
-
-				cutInfoNames = Utils.getJsonFileKeys(existentAnalyserResultFile);
-
-				if (cutInfoNames.size() == totalNumberOfFiles) {
-					System.out.println("Analyser Complete");
-					return new ResponseEntity<>(HttpStatus.OK);
-				}
-
-				JsonParser jsonParser = jsonfactory.createParser(existentAnalyserResultFile);
-				jsonParser.nextValue();
-
-				if (jsonParser.getCurrentToken() != JsonToken.START_OBJECT) {
-					System.err.println("Json must start with a left curly brace");
-					System.exit(-1);
-				}
-
-				jsonParser.nextValue();
-
-				while (jsonParser.getCurrentToken() != JsonToken.END_OBJECT) {
-					if (jsonParser.getCurrentToken() == JsonToken.START_OBJECT) {
-						Utils.print("Cut name: " + jsonParser.getCurrentName(), Utils.lineno());
-						cutInfoNames.add(jsonParser.currentName());
-
-						CutInfoDto cutInfo = jsonParser.readValueAs(CutInfoDto.class);
-
-						jGenerator.writeObjectField(jsonParser.getCurrentName(), cutInfo);
-
-						jsonParser.nextValue();
-					}
-				}
-
-				jGenerator.flush();
-
-				existentAnalyserResultFile.delete();
-			}
-
-			int maxRequests = analyser.getRequestLimit();
-			AtomicReference<Short> newRequestsCount = new AtomicReference<>((short) 0);
-			AtomicReference<Short> count = new AtomicReference<>((short) 0);
-
-			// AFTER COPYING PREVIOUS RESULTS, NEXT CUTS WILL BE PROCESSED AND THEIR RESULTS
-			// WILL BE APPENDED TO THE NEW FILE
-
-			System.out.println("Objectifying static collection data");
-			InputStream is = new FileInputStream(codebase.getDatafilePath());
-			ObjectMapper objectMapper = new ObjectMapper();
-			objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-			StaticCollection collection = objectMapper.readerFor(StaticCollection.class).readValue(is);
-			is.close();
-
-//			System.out.print("Loading cuts to memory... ");
-//			AtomicInteger index = new AtomicInteger();
-//			int totalFiles = files.length;
-//			Set<Cut> allCuts = new HashSet<Cut>();
-//			Arrays.stream(files).forEach(file -> {
+//		try {
+//			File analyserPath = new File(CODEBASES_PATH + codebaseName + "/analyser/cuts/");
+//			if (!analyserPath.exists()) {
+//				analyserPath.mkdirs();
+//			}
+//
+//			Codebase codebase = CodebaseManager.getInstance().getCodebaseWithFields(
+//				codebaseName,
+//				new HashSet<String>() {{
+//					add("name");
+//					add("profiles");
+//					add("datafilePath");
+//				}}
+//			);
+//
+//			int numberOfEntitiesPresentInCollection = getOrCreateSimilarityMatrix(
+//				codebase,
+//				analyser
+//			);
+//
+//			System.out.println("Codebase: " + codebaseName + " has " + numberOfEntitiesPresentInCollection + " entities");
+//
+//			executeCreateCuts(
+//				codebaseName,
+//				numberOfEntitiesPresentInCollection
+//			);
+//
+//			// THIS FIRST PHASE EXISTS TO NOT PROCESS CUTS PREVIOUSLY PROCESSED
+//			// BASICALLY IT'S A COPY OF THE PREVIOUS FILE INTO THE NEW FILE
+//
+//			File analyserCutsPath = new File(CODEBASES_PATH + codebaseName + "/analyser/cuts/");
+//			File[] files = analyserCutsPath.listFiles();
+//			int totalNumberOfFiles = files.length;
+//
+//			ObjectMapper mapper = new ObjectMapper();
+//			JsonFactory jsonfactory = mapper.getFactory();
+//
+//			boolean analyserResultFileAlreadyExists = codebaseManager.analyserResultFileAlreadyExists(codebaseName);
+//
+//			String analyserResultFilename =  analyserResultFileAlreadyExists ?
+//				"newAnalyserResult.json" :
+//				"analyserResult.json";
+//
+//			JsonGenerator jGenerator = jsonfactory.createGenerator(
+//				new FileOutputStream(CODEBASES_PATH + codebaseName + "/analyser/" + analyserResultFilename),
+//				JsonEncoding.UTF8
+//			);
+//
+//		 	jGenerator.useDefaultPrettyPrinter();
+//			jGenerator.writeStartObject();
+//
+//			Set<String> cutInfoNames = new HashSet<>();
+//
+//			if (analyserResultFileAlreadyExists) {
+//
+//				File existentAnalyserResultFile = new File(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json");
+//
+//				cutInfoNames = Utils.getJsonFileKeys(existentAnalyserResultFile);
+//
+//				if (cutInfoNames.size() == totalNumberOfFiles) {
+//					System.out.println("Analyser Complete");
+//					return new ResponseEntity<>(HttpStatus.OK);
+//				}
+//
+//				JsonParser jsonParser = jsonfactory.createParser(existentAnalyserResultFile);
+//				jsonParser.nextValue();
+//
+//				if (jsonParser.getCurrentToken() != JsonToken.START_OBJECT) {
+//					System.err.println("Json must start with a left curly brace");
+//					System.exit(-1);
+//				}
+//
+//				jsonParser.nextValue();
+//
+//				while (jsonParser.getCurrentToken() != JsonToken.END_OBJECT) {
+//					if (jsonParser.getCurrentToken() == JsonToken.START_OBJECT) {
+//						Utils.print("Cut name: " + jsonParser.getCurrentName(), Utils.lineno());
+//						cutInfoNames.add(jsonParser.currentName());
+//
+//						CutInfoDto cutInfo = jsonParser.readValueAs(CutInfoDto.class);
+//
+//						jGenerator.writeObjectField(jsonParser.getCurrentName(), cutInfo);
+//
+//						jsonParser.nextValue();
+//					}
+//				}
+//
+//				jGenerator.flush();
+//
+//				existentAnalyserResultFile.delete();
+//			}
+//
+//			int maxRequests = analyser.getRequestLimit();
+//			AtomicReference<Short> newRequestsCount = new AtomicReference<>((short) 0);
+//			AtomicReference<Short> count = new AtomicReference<>((short) 0);
+//
+//			// AFTER COPYING PREVIOUS RESULTS, NEXT CUTS WILL BE PROCESSED AND THEIR RESULTS
+//			// WILL BE APPENDED TO THE NEW FILE
+//
+//			System.out.println("Objectifying static collection data");
+//			InputStream is = new FileInputStream(codebase.getDatafilePath());
+//			ObjectMapper objectMapper = new ObjectMapper();
+//			objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+//			StaticCollection collection = objectMapper.readerFor(StaticCollection.class).readValue(is);
+//			is.close();
+//
+////			System.out.print("Loading cuts to memory... ");
+////			AtomicInteger index = new AtomicInteger();
+////			int totalFiles = files.length;
+////			Set<Cut> allCuts = new HashSet<Cut>();
+////			Arrays.stream(files).forEach(file -> {
+////				try {
+////					InputStream fis = new FileInputStream(file);
+////					ObjectMapper oM = new ObjectMapper();
+////					oM.enable(SerializationFeature.INDENT_OUTPUT);
+////					allCuts.add(oM.readerFor(Cut.class).readValue(fis));
+////					System.out.print("Loading cuts to memory... " + index + "/" + totalFiles + "\r");
+////					index.getAndIncrement();
+////					fis.close();
+////				} catch (IOException e) {
+////					e.printStackTrace();
+////				}
+////			});
+////			System.out.println("");
+////			System.out.println("There are " + allCuts.size() + " unique cuts.");
+//
+//			Map<Cut, Decomposition> cutsToDecomposition = Collections.synchronizedMap(new HashMap<>());
+//
+//			Set<String> finalCutInfoNames = cutInfoNames;
+//			Arrays.stream(files).parallel().forEach(file -> {
+//				String filename = FilenameUtils.getBaseName(file.getName());
+//
+//				if (finalCutInfoNames.contains(filename)) {
+//					System.out.println(filename + " already analysed. " + count + "/" + totalNumberOfFiles);
+//					return;
+//				}
+//
+//				Cut cut = null;
 //				try {
 //					InputStream fis = new FileInputStream(file);
 //					ObjectMapper oM = new ObjectMapper();
 //					oM.enable(SerializationFeature.INDENT_OUTPUT);
-//					allCuts.add(oM.readerFor(Cut.class).readValue(fis));
-//					System.out.print("Loading cuts to memory... " + index + "/" + totalFiles + "\r");
-//					index.getAndIncrement();
+//					cut = oM.readerFor(Cut.class).readValue(fis);
 //					fis.close();
 //				} catch (IOException e) {
 //					e.printStackTrace();
 //				}
+//
+//				Decomposition previousDecomposition = cutsToDecomposition.get(cut);
+//				CutInfoDto cutInfo = null;
+//				if (previousDecomposition != null) {
+//					try {
+//						cutInfo = assembleCutInformation(
+//								analyser,
+//								previousDecomposition,
+//								filename
+//						);
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
+//				} else {
+//					Decomposition decomposition = null;
+//					try {
+//						decomposition = buildDecompositionAndCalculateMetrics(
+//								analyser,
+//								codebase,
+//								filename,
+//								collection
+//						);
+//						cutInfo = assembleCutInformation(
+//								analyser,
+//								decomposition,
+//								filename
+//						);
+//						cutsToDecomposition.put(cut, decomposition);
+//
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//					}
+//				}
+//
+//				synchronized (this) {
+//					try {
+//						jGenerator.writeObjectField(
+//								filename,
+//								cutInfo
+//						);
+//						jGenerator.flush();
+//
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
+//
+//				}
+//				count.getAndSet((short) (count.get() + 1));
+//				System.out.println("NEW: " + filename + " : " + count.get() + "/" + totalNumberOfFiles);
+//				// Break somehow if max requests is hit
+//
 //			});
-//			System.out.println("");
-//			System.out.println("There are " + allCuts.size() + " unique cuts.");
-
-			Map<Cut, Decomposition> cutsToDecomposition = Collections.synchronizedMap(new HashMap<>());
-
-			Set<String> finalCutInfoNames = cutInfoNames;
-			Arrays.stream(files).parallel().forEach(file -> {
-				String filename = FilenameUtils.getBaseName(file.getName());
-				count.getAndSet((short) (count.get() + 1));
-
-				if (finalCutInfoNames.contains(filename)) {
-					System.out.println(filename + " already analysed. " + count + "/" + totalNumberOfFiles);
-					return;
-				}
-
-				Cut cut = null;
-				try {
-					InputStream fis = new FileInputStream(file);
-					ObjectMapper oM = new ObjectMapper();
-					oM.enable(SerializationFeature.INDENT_OUTPUT);
-					cut = oM.readerFor(Cut.class).readValue(fis);
-					fis.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-				Decomposition previousDecomposition = cutsToDecomposition.get(cut);
-				CutInfoDto cutInfo = null;
-				if (previousDecomposition != null) {
-					try {
-						cutInfo = assembleCutInformation(
-								analyser,
-								previousDecomposition,
-								filename
-						);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				} else {
-					Decomposition decomposition = null;
-					try {
-						decomposition = buildDecompositionAndCalculateMetrics(
-								analyser,
-								codebase,
-								filename,
-								collection
-						);
-						cutInfo = assembleCutInformation(
-								analyser,
-								decomposition,
-								filename
-						);
-						cutsToDecomposition.put(cut, decomposition);
-
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-
-				synchronized (this) {
-					try {
-						jGenerator.writeObjectField(
-								filename,
-								cutInfo
-						);
-						jGenerator.flush();
-
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-
-				}
-
-				System.out.println("NEW: " + filename + " : " + count + "/" + totalNumberOfFiles);
-				// Break somehow if max requests is hit
-
-			});
-
-			jGenerator.writeEndObject();
-			jGenerator.close();
-
-			if (analyserResultFileAlreadyExists) {
-				File fileToBeRenamed = new File(CODEBASES_PATH + codebaseName + "/analyser/" + analyserResultFilename);
-				File fileRenamed = new File(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json");
-
-				fileToBeRenamed.renameTo(fileRenamed);
-			}
-
-			System.out.println("Analyser Complete");
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
+//
+//			jGenerator.writeEndObject();
+//			jGenerator.close();
+//
+//			if (analyserResultFileAlreadyExists) {
+//				File fileToBeRenamed = new File(CODEBASES_PATH + codebaseName + "/analyser/" + analyserResultFilename);
+//				File fileRenamed = new File(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json");
+//
+//				fileToBeRenamed.renameTo(fileRenamed);
+//			}
+//
+//			System.out.println("Analyser Complete");
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//		}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
