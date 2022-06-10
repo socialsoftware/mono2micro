@@ -204,6 +204,55 @@ public class AnalysisService {
         }
     }
 
+    private class ClusterConcurrentMethodCallsAnalysisThread extends Thread {
+
+        AnalyserDto analyserDto;
+        String codebaseName;
+        String linkageType;
+        Integer controllersWeight;
+        Integer threadNumber;
+
+        ClusterConcurrentMethodCallsAnalysisThread(
+                AnalyserDto analyserDto,
+                String codebaseName,
+                String linkageType,
+                Integer controllersWeight,
+                Integer threadNumber
+        ) {
+            this.analyserDto = analyserDto;
+            this.codebaseName = codebaseName;
+            this.linkageType = linkageType;
+            this.controllersWeight = controllersWeight;
+            this.threadNumber = threadNumber;
+        }
+
+        @Override
+        public void run() {
+            Dendrogram dendrogram = new Dendrogram();
+            dendrogram.setAnalysisType("feature");
+            dendrogram.setFeatureVectorizationStrategy("methodCalls");
+            dendrogram.setProfile(analyserDto.getProfile());
+            dendrogram.setLinkageType(linkageType);
+            dendrogram.setControllersWeight(controllersWeight);
+            for (int d = MIN_DEPTH; d <= MAX_DEPTH; d += DEPTH_STEP) {
+                dendrogram.setMaxDepth(d);
+                for (int sw = MIN_WEIGHT; sw <= MAX_WEIGHT; sw += WEIGHT_STEP) {
+                    dendrogram.setServicesWeight(sw);
+                    for (int iw = MIN_WEIGHT; iw <= MAX_WEIGHT; iw += WEIGHT_STEP) {
+                        dendrogram.setIntermediateMethodsWeight(iw);
+                        for (int ew = MIN_WEIGHT; ew <= MAX_WEIGHT; ew += WEIGHT_STEP) {
+                            if (controllersWeight + sw + iw + ew == 100) {
+                                dendrogram.setEntitiesWeight(ew);
+                                dendrogramService.createDendrogramByFeatures(codebaseName, dendrogram, true, threadNumber);
+                                clusterService.executeClusterAnalysis(codebaseName, "/features/methodCalls/" + threadNumber.toString());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public void analyzeDendrogramCutsByMethodCallsStrategy(
             String codebaseName,
             AnalyserDto analyserDto
@@ -228,18 +277,27 @@ public class AnalysisService {
                 analyserPath.mkdirs();
             }
 
-            List<ConcurrentMethodCallsAnalysisThread> threadsPool = new ArrayList<>();
+            List<ClusterConcurrentMethodCallsAnalysisThread> threadsPool = new ArrayList<>();
+
             for (String lt: LINKAGE_TYPES) {
-                ConcurrentMethodCallsAnalysisThread thread = new ConcurrentMethodCallsAnalysisThread(analyserDto, codebaseName, lt, threadNumber);
-                threadsPool.add(thread);
-                threadNumber++;
+                for (int cw = MIN_WEIGHT; cw <= MAX_WEIGHT; cw += WEIGHT_STEP) {
+                    ClusterConcurrentMethodCallsAnalysisThread thread = new ClusterConcurrentMethodCallsAnalysisThread(
+                        analyserDto,
+                        codebaseName,
+                        lt,
+                        cw,
+                        threadNumber
+                    );
+                    threadsPool.add(thread);
+                    threadNumber++;
+                }
             }
 
             try {
-                for (ConcurrentMethodCallsAnalysisThread thread : threadsPool) {
+                for (ClusterConcurrentMethodCallsAnalysisThread thread : threadsPool) {
                     thread.start();
                 }
-                for (ConcurrentMethodCallsAnalysisThread thread : threadsPool) {
+                for (ClusterConcurrentMethodCallsAnalysisThread thread : threadsPool) {
                     thread.join();
                 }
             } catch(InterruptedException ie) {
@@ -447,6 +505,88 @@ public class AnalysisService {
         }
     }
 
+    private class ClusterConcurrentMixedAnalysisThread extends Thread {
+
+        AnalyserDto analyserDto;
+        String codebaseName;
+        String linkageType;
+        Integer writeMetricWeight;
+        Integer threadNumber;
+
+        ClusterConcurrentMixedAnalysisThread(
+                AnalyserDto analyserDto,
+                String codebaseName,
+                String linkageType,
+                Integer writeMetricWeight,
+                Integer threadNumber
+        ) {
+            this.analyserDto = analyserDto;
+            this.codebaseName = codebaseName;
+            this.linkageType = linkageType;
+            this.writeMetricWeight = writeMetricWeight;
+            this.threadNumber = threadNumber;
+        }
+
+        @Override
+        public void run() {
+            Dendrogram dendrogram = new Dendrogram();
+            dendrogram.setAnalysisType("feature");
+            dendrogram.setFeatureVectorizationStrategy("mixed");
+            dendrogram.setProfile(analyserDto.getProfile());
+            dendrogram.setLinkageType(linkageType);
+            dendrogram.setWriteMetricWeight(writeMetricWeight);
+            for (int d = MIN_DEPTH; d <= MAX_DEPTH; d += DEPTH_STEP) {
+                dendrogram.setMaxDepth(d);
+                for (int cw = MIN_WEIGHT; cw <= MAX_WEIGHT; cw += WEIGHT_STEP) {
+                    dendrogram.setControllersWeight(cw);
+                    for (int sw = MIN_WEIGHT; sw <= MAX_WEIGHT; sw += WEIGHT_STEP) {
+                        dendrogram.setServicesWeight(sw);
+                        for (int iw = MIN_WEIGHT; iw <= MAX_WEIGHT; iw += WEIGHT_STEP) {
+                            dendrogram.setIntermediateMethodsWeight(iw);
+                            for (int ew = MIN_WEIGHT; ew <= MAX_WEIGHT; ew += WEIGHT_STEP) {
+                                dendrogram.setEntitiesWeight(ew);
+                                for (int rmw = MIN_WEIGHT; rmw <= MAX_WEIGHT; rmw += WEIGHT_STEP) {
+                                    dendrogram.setReadMetricWeight(rmw);
+                                    for (int etw = MIN_WEIGHT; etw <= MAX_WEIGHT; etw += WEIGHT_STEP) {
+                                        dendrogram.setEntitiesTracesWeight(etw);
+                                        for (int mcw = MIN_WEIGHT; mcw <= MAX_WEIGHT; mcw += WEIGHT_STEP) {
+                                            dendrogram.setMethodsCallsWeight(mcw);
+                                            if ((cw + sw + iw + ew == 100) && (writeMetricWeight + rmw == 100) && (etw + mcw == 100)) {
+                                                dendrogramService.createDendrogramByFeatures(codebaseName, dendrogram, true, threadNumber);
+                                                clusterService.executeClusterAnalysis(codebaseName, "/features/mixed/" + threadNumber.toString());
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            // Test with the same weights
+            for (int d = MIN_DEPTH; d <= MAX_DEPTH; d += DEPTH_STEP) {
+                dendrogram.setMaxDepth(d);
+                dendrogram.setControllersWeight(25);
+                dendrogram.setServicesWeight(25);
+                dendrogram.setIntermediateMethodsWeight(25);
+                dendrogram.setEntitiesWeight(25);
+                for (int rmw = MIN_WEIGHT; rmw <= MAX_WEIGHT; rmw += WEIGHT_STEP) {
+                    dendrogram.setReadMetricWeight(rmw);
+                    for (int etw = MIN_WEIGHT; etw <= MAX_WEIGHT; etw += WEIGHT_STEP) {
+                        dendrogram.setEntitiesTracesWeight(etw);
+                        for (int mcw = MIN_WEIGHT; mcw <= MAX_WEIGHT; mcw += WEIGHT_STEP) {
+                            dendrogram.setMethodsCallsWeight(mcw);
+                            if ((writeMetricWeight + rmw == 100) && (etw + mcw == 100)) {
+                                dendrogramService.createDendrogramByFeatures(codebaseName, dendrogram, true, threadNumber);
+                                clusterService.executeClusterAnalysis(codebaseName, "/features/mixed/" + threadNumber.toString());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public void analyzeDendrogramCutsByMixedStrategy(
             String codebaseName,
             AnalyserDto analyserDto
@@ -470,18 +610,26 @@ public class AnalysisService {
                 analyserPath.mkdirs();
             }
 
-            List<ConcurrentMixedAnalysisThread> threadsPool = new ArrayList<>();
+            List<ClusterConcurrentMixedAnalysisThread> threadsPool = new ArrayList<>();
             for (String lt: LINKAGE_TYPES) {
-                ConcurrentMixedAnalysisThread thread = new ConcurrentMixedAnalysisThread(analyserDto, codebaseName, lt, threadNumber);
-                threadsPool.add(thread);
-                threadNumber++;
+                for (int wmw = MIN_WEIGHT; wmw <= MAX_WEIGHT; wmw += WEIGHT_STEP) {
+                    ClusterConcurrentMixedAnalysisThread thread = new ClusterConcurrentMixedAnalysisThread(
+                        analyserDto,
+                        codebaseName,
+                        lt,
+                        wmw,
+                        threadNumber
+                    );
+                    threadsPool.add(thread);
+                    threadNumber++;
+                }
             }
 
             try {
-                for (ConcurrentMixedAnalysisThread thread : threadsPool) {
+                for (ClusterConcurrentMixedAnalysisThread thread : threadsPool) {
                     thread.start();
                 }
-                for (ConcurrentMixedAnalysisThread thread : threadsPool) {
+                for (ClusterConcurrentMixedAnalysisThread thread : threadsPool) {
                     thread.join();
                 }
             } catch(InterruptedException ie) {
