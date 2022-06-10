@@ -10,7 +10,12 @@ maxClusters = -1
 def analyser(codebasesPath, codebaseName, threadNumber):
     global maxClusters
 
-    with open(codebasesPath + codebaseName + "/mixed_embeddings.json") as f:
+    mixed_embeddings_fileName = "/mixed_embeddings"
+    if (threadNumber != None):
+        mixed_embeddings_fileName += "_t" + str(threadNumber)
+    mixed_embeddings_fileName += ".json"
+
+    with open(codebasesPath + codebaseName + mixed_embeddings_fileName) as f:
         mixed_embeddings = json.load(f)
 
     totalNumberOfEntities = mixed_embeddings['numberOfEntities']
@@ -23,14 +28,6 @@ def analyser(codebasesPath, codebaseName, threadNumber):
         maxClusters = 10
     else:
         raise Exception("Number of entities is too small (less than 4)")
-
-    mixed_embeddings_fileName = "/mixed_embeddings"
-    if (threadNumber != None):
-        mixed_embeddings_fileName += "_t" + str(threadNumber)
-    mixed_embeddings_fileName += ".json"
-
-    with open(codebasesPath + codebaseName + mixed_embeddings_fileName) as f:
-        mixed_embeddings = json.load(f)
 
     nbrFeatures = len(mixed_embeddings['features'])
 
