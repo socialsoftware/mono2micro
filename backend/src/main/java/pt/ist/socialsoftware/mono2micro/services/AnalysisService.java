@@ -862,6 +862,7 @@ public class AnalysisService {
                         System.err.println("Error on ClusterConcurrentGetAnalyserResultThread: " + e.getMessage());
                     }
                 }
+                counter++;
             }
         }
     }
