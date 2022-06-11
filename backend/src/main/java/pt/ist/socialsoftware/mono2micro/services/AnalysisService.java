@@ -45,6 +45,7 @@ public class AnalysisService {
     private final Integer MAX_WEIGHT = 100;
     private final Integer WEIGHT_STEP = 10;
     private final Integer DEPTH_STEP = 1;
+    private final Integer THREADS_NUMBER = 33;
 
     public void analyzeDendrogramCutsByEntitiesStrategy(
             String codebaseName,
@@ -208,21 +209,70 @@ public class AnalysisService {
 
         AnalyserDto analyserDto;
         String codebaseName;
-        String linkageType;
-        Integer controllersWeight;
         Integer threadNumber;
 
         ClusterConcurrentMethodCallsAnalysisThread(
                 AnalyserDto analyserDto,
                 String codebaseName,
+                Integer threadNumber
+        ) {
+            this.analyserDto = analyserDto;
+            this.codebaseName = codebaseName;
+            this.threadNumber = threadNumber;
+        }
+
+        @Override
+        public void run() {
+            Dendrogram dendrogram = new Dendrogram();
+            dendrogram.setAnalysisType("feature");
+            dendrogram.setFeatureVectorizationStrategy("methodCalls");
+            dendrogram.setProfile(analyserDto.getProfile());
+
+            int counter = 0;
+            for (String lt : LINKAGE_TYPES) {
+                dendrogram.setLinkageType(lt);
+                for (int d = MIN_DEPTH; d <= MAX_DEPTH; d += DEPTH_STEP) {
+                    dendrogram.setMaxDepth(d);
+                    for (int cw = MIN_WEIGHT; cw <= MAX_WEIGHT; cw += WEIGHT_STEP) {
+                        dendrogram.setControllersWeight(cw);
+                        for (int sw = MIN_WEIGHT; sw <= MAX_WEIGHT; sw += WEIGHT_STEP) {
+                            dendrogram.setServicesWeight(sw);
+                            for (int iw = MIN_WEIGHT; iw <= MAX_WEIGHT; iw += WEIGHT_STEP) {
+                                dendrogram.setIntermediateMethodsWeight(iw);
+                                for (int ew = MIN_WEIGHT; ew <= MAX_WEIGHT; ew += WEIGHT_STEP) {
+                                    if (cw + sw + iw + ew == 100) {
+                                        if (counter % THREADS_NUMBER == threadNumber) {
+                                            dendrogram.setEntitiesWeight(ew);
+                                            dendrogramService.createDendrogramByFeatures(codebaseName, dendrogram, true, threadNumber);
+                                            clusterService.executeClusterAnalysis(codebaseName, "/features/methodCalls/" + threadNumber.toString());
+                                        }
+                                        counter++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private class SameWeightsConcurrentMethodCallsAnalysisThread extends Thread {
+
+        AnalyserDto analyserDto;
+        String codebaseName;
+        String linkageType;
+        Integer threadNumber;
+
+        SameWeightsConcurrentMethodCallsAnalysisThread(
+                AnalyserDto analyserDto,
+                String codebaseName,
                 String linkageType,
-                Integer controllersWeight,
                 Integer threadNumber
         ) {
             this.analyserDto = analyserDto;
             this.codebaseName = codebaseName;
             this.linkageType = linkageType;
-            this.controllersWeight = controllersWeight;
             this.threadNumber = threadNumber;
         }
 
@@ -233,22 +283,15 @@ public class AnalysisService {
             dendrogram.setFeatureVectorizationStrategy("methodCalls");
             dendrogram.setProfile(analyserDto.getProfile());
             dendrogram.setLinkageType(linkageType);
-            dendrogram.setControllersWeight(controllersWeight);
+            dendrogram.setControllersWeight(25);
+            dendrogram.setServicesWeight(25);
+            dendrogram.setIntermediateMethodsWeight(25);
+            dendrogram.setEntitiesWeight(25);
+
             for (int d = MIN_DEPTH; d <= MAX_DEPTH; d += DEPTH_STEP) {
                 dendrogram.setMaxDepth(d);
-                for (int sw = MIN_WEIGHT; sw <= MAX_WEIGHT; sw += WEIGHT_STEP) {
-                    dendrogram.setServicesWeight(sw);
-                    for (int iw = MIN_WEIGHT; iw <= MAX_WEIGHT; iw += WEIGHT_STEP) {
-                        dendrogram.setIntermediateMethodsWeight(iw);
-                        for (int ew = MIN_WEIGHT; ew <= MAX_WEIGHT; ew += WEIGHT_STEP) {
-                            if (controllersWeight + sw + iw + ew == 100) {
-                                dendrogram.setEntitiesWeight(ew);
-                                dendrogramService.createDendrogramByFeatures(codebaseName, dendrogram, true, threadNumber);
-                                clusterService.executeClusterAnalysis(codebaseName, "/features/methodCalls/" + threadNumber.toString());
-                            }
-                        }
-                    }
-                }
+                dendrogramService.createDendrogramByFeatures(codebaseName, dendrogram, true, threadNumber);
+                clusterService.executeClusterAnalysis(codebaseName, "/features/methodCalls/" + threadNumber.toString());
             }
         }
     }
@@ -260,7 +303,6 @@ public class AnalysisService {
         try {
 
             Codebase codebase = codebaseManager.getCodebase(codebaseName);
-            Integer threadNumber = 1;
 
             File analyserFeaturesPath = new File(CODEBASES_PATH + codebaseName + "/analyser/features/");
             if (!analyserFeaturesPath.exists()) {
@@ -279,18 +321,13 @@ public class AnalysisService {
 
             List<ClusterConcurrentMethodCallsAnalysisThread> threadsPool = new ArrayList<>();
 
-            for (String lt: LINKAGE_TYPES) {
-                for (int cw = MIN_WEIGHT; cw <= MAX_WEIGHT; cw += WEIGHT_STEP) {
-                    ClusterConcurrentMethodCallsAnalysisThread thread = new ClusterConcurrentMethodCallsAnalysisThread(
-                        analyserDto,
-                        codebaseName,
-                        lt,
-                        cw,
-                        threadNumber
-                    );
-                    threadsPool.add(thread);
-                    threadNumber++;
-                }
+            for (int threadNumber=0; threadNumber < THREADS_NUMBER; threadNumber++) {
+                ClusterConcurrentMethodCallsAnalysisThread thread = new ClusterConcurrentMethodCallsAnalysisThread(
+                    analyserDto,
+                    codebaseName,
+                    threadNumber
+                );
+                threadsPool.add(thread);
             }
 
             try {
@@ -305,21 +342,28 @@ public class AnalysisService {
             }
 
             // Test with the same weights
+            int threadNumber = 0;
+            List<SameWeightsConcurrentMethodCallsAnalysisThread> sameWeightsThreadsPool = new ArrayList<>();
             for (String lt: LINKAGE_TYPES) {
-                Dendrogram dendrogram = new Dendrogram();
-                dendrogram.setAnalysisType("feature");
-                dendrogram.setFeatureVectorizationStrategy("methodCalls");
-                dendrogram.setProfile(analyserDto.getProfile());
-                dendrogram.setLinkageType(lt);
-                for (int d = MIN_DEPTH; d <= MAX_DEPTH; d += DEPTH_STEP) {
-                    dendrogram.setMaxDepth(d);
-                    dendrogram.setControllersWeight(25);
-                    dendrogram.setServicesWeight(25);
-                    dendrogram.setIntermediateMethodsWeight(25);
-                    dendrogram.setEntitiesWeight(25);
-                    dendrogramService.createDendrogramByFeatures(codebaseName, dendrogram, true, null);
-                    clusterService.executeClusterAnalysis(codebaseName, "/features/methodCalls");
+                SameWeightsConcurrentMethodCallsAnalysisThread thread = new SameWeightsConcurrentMethodCallsAnalysisThread(
+                        analyserDto,
+                        codebaseName,
+                        lt,
+                        threadNumber
+                );
+                sameWeightsThreadsPool.add(thread);
+                threadNumber++;
+            }
+
+            try {
+                for (SameWeightsConcurrentMethodCallsAnalysisThread thread : sameWeightsThreadsPool) {
+                    thread.start();
                 }
+                for (SameWeightsConcurrentMethodCallsAnalysisThread thread : sameWeightsThreadsPool) {
+                    thread.join();
+                }
+            } catch(InterruptedException ie) {
+                ie.printStackTrace();
             }
 
             JSONObject analyserResult = getAnalyserResult(
@@ -610,22 +654,21 @@ public class AnalysisService {
                 analyserPath.mkdirs();
             }
 
-            List<ClusterConcurrentMixedAnalysisThread> threadsPool = new ArrayList<>();
-            for (String lt: LINKAGE_TYPES) {
-                for (int wmw = MIN_WEIGHT; wmw <= MAX_WEIGHT; wmw += WEIGHT_STEP) {
-                    ClusterConcurrentMixedAnalysisThread thread = new ClusterConcurrentMixedAnalysisThread(
-                        analyserDto,
-                        codebaseName,
-                        lt,
-                        wmw,
-                        threadNumber
-                    );
-                    threadsPool.add(thread);
-                    threadNumber++;
-                }
-            }
-
             try {
+                List<ClusterConcurrentMixedAnalysisThread> threadsPool = new ArrayList<>();
+                for (String lt: LINKAGE_TYPES) {
+                    for (int wmw = MIN_WEIGHT; wmw <= MAX_WEIGHT; wmw += WEIGHT_STEP) {
+                        ClusterConcurrentMixedAnalysisThread thread = new ClusterConcurrentMixedAnalysisThread(
+                                analyserDto,
+                                codebaseName,
+                                lt,
+                                wmw,
+                                threadNumber
+                        );
+                        threadsPool.add(thread);
+                        threadNumber++;
+                    }
+                }
                 for (ClusterConcurrentMixedAnalysisThread thread : threadsPool) {
                     thread.start();
                 }
@@ -669,6 +712,160 @@ public class AnalysisService {
     // ---                                AUXILIARY FUNCTIONS                                     ---
     // ----------------------------------------------------------------------------------------------
 
+    private class ClusterConcurrentGetAnalyserResultThread extends Thread {
+
+        Codebase codebase;
+        String analysisType;
+        String featureVectorizationStrategy;
+        String profile;
+        AnalyserDto analyserDto;
+        File analyserCutsPath;
+        File[] files;
+        JSONObject analyserResult;
+        Integer threadNumber;
+
+        ClusterConcurrentGetAnalyserResultThread(
+                Codebase codebase,
+                String analysisType,
+                String featureVectorizationStrategy,
+                String profile,
+                AnalyserDto analyserDto,
+                File analyserCutsPath,
+                File[] files,
+                JSONObject analyserResult,
+                Integer threadNumber
+        ) {
+            this.codebase = codebase;
+            this.analysisType = analysisType;
+            this.featureVectorizationStrategy = featureVectorizationStrategy;
+            this.profile = profile;
+            this.analyserDto = analyserDto;
+            this.analyserCutsPath = analyserCutsPath;
+            this.files = files;
+            this.analyserResult = analyserResult;
+            this.threadNumber = threadNumber;
+        }
+
+        @Override
+        public void run() {
+
+            int counter = 0;
+            for (File file : files) {
+                if (counter % THREADS_NUMBER == threadNumber) {
+                    try {
+
+                        String filename = FilenameUtils.getBaseName(file.getName());
+
+                        Decomposition cutDecomposition = new Decomposition();
+
+                        InputStream is = new FileInputStream(analyserCutsPath + "/" + filename + ".json");
+                        JSONObject clustersJSON = new JSONObject(IOUtils.toString(is, StandardCharsets.UTF_8));
+                        is.close();
+
+                        Integer numberOfEntitiesClusters = clustersJSON.getInt("numberOfEntitiesClusters");
+                        Iterator<String> clusters = clustersJSON.getJSONObject("clusters").sortedKeys();
+                        ArrayList<Short> clusterIds = new ArrayList<>();
+                        while (clusters.hasNext()) {
+                            clusterIds.add(Short.parseShort(clusters.next()));
+                        }
+                        Collections.sort(clusterIds);
+
+                        for (Short id : clusterIds) {
+                            String clusterName = String.valueOf(id);
+                            JSONArray entities = clustersJSON.getJSONObject("clusters").getJSONArray(id.toString());
+                            Cluster cluster = new Cluster(id, clusterName);
+
+                            for (int i = 0; i < entities.length(); i++) {
+                                short entityID = (short) entities.getInt(i);
+                                cluster.addEntity(entityID);
+                                cutDecomposition.putEntity(entityID, id);
+                            }
+
+                            cutDecomposition.addCluster(cluster);
+                        }
+
+                        cutDecomposition.setNextClusterID(Integer.valueOf(clusterIds.size()).shortValue());
+
+                        cutDecomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+                                codebase,
+                                profile,
+                                cutDecomposition.getEntityIDToClusterID()
+                        ));
+
+                        cutDecomposition.calculateMetrics(
+                                codebase,
+                                analyserDto.getTracesMaxLimit(),
+                                analyserDto.getTraceType(),
+                                true
+                        );
+
+                        JSONObject metrics = new JSONObject();
+
+                        if (analysisType.equals("feature") && featureVectorizationStrategy.equals("methodCalls")) {
+                            String[] weights = filename.split(",");
+                            String linkageType = weights[0];
+                            Float maxDepth = Float.parseFloat(weights[1]);
+                            Float controllersWeight = Float.parseFloat(weights[2]);
+                            Float servicesWeight = Float.parseFloat(weights[3]);
+                            Float intermediateMethodsWeight = Float.parseFloat(weights[4]);
+                            Float entitiesWeight = Float.parseFloat(weights[5]);
+                            Integer clusterSize = Integer.parseInt(weights[6]);
+
+                            metrics.put("linkageType", linkageType);
+                            metrics.put("maxDepth", maxDepth);
+                            metrics.put("controllersWeight", controllersWeight);
+                            metrics.put("servicesWeight", servicesWeight);
+                            metrics.put("intermediateMethodsWeight", intermediateMethodsWeight);
+                            metrics.put("entitiesWeight", entitiesWeight);
+                            metrics.put("numberClusters", clusterSize);
+                        } else if (analysisType.equals("feature") && featureVectorizationStrategy.equals("entitiesTraces")) {
+                            String[] weights = filename.split(",");
+                            String linkageType = weights[0];
+                            Float writeMetricWeight = Float.parseFloat(weights[1]);
+                            Float readMetricWeight = Float.parseFloat(weights[2]);
+                            Integer clusterSize = Integer.parseInt(weights[3]);
+
+                            metrics.put("linkageType", linkageType);
+                            metrics.put("writeMetricWeight", writeMetricWeight);
+                            metrics.put("readMetricWeight", readMetricWeight);
+                            metrics.put("numberClusters", clusterSize);
+                        } else {
+                            String[] weights = filename.split(",");
+                            String linkageType = weights[0];
+                            Integer clusterSize = Integer.parseInt(weights[1]);
+
+                            metrics.put("linkageType", linkageType);
+                            metrics.put("numberClusters", clusterSize);
+                        }
+
+                        metrics.put("numberOfEntitiesClusters", numberOfEntitiesClusters);
+                        metrics.put("cohesion", cutDecomposition.getCohesion());
+                        metrics.put("coupling", cutDecomposition.getCoupling());
+                        metrics.put("complexity", cutDecomposition.getComplexity());
+                        metrics.put("performance", cutDecomposition.getPerformance());
+                        metrics.put("accuracy", 0.0);
+                        metrics.put("precision", 0.0);
+                        metrics.put("recall", 0.0);
+                        metrics.put("specificity", 0.0);
+                        metrics.put("fmeasure", 0.0);
+                        metrics.put("mojoCommon", 0.0);
+                        metrics.put("mojoBiggest", 0.0);
+                        metrics.put("mojoNew", 0.0);
+                        metrics.put("mojoSingletons", 0.0);
+                        metrics.put("controllerSpecs", new JSONObject());
+
+                        synchronized (analyserResult) {
+                            analyserResult.put(filename, metrics);
+                        }
+
+                    } catch (Exception e) {
+                        System.err.println("Error on ClusterConcurrentGetAnalyserResultThread: " + e.getMessage());
+                    }
+                }
+            }
+        }
+    }
+
     private JSONObject getAnalyserResult(
             Codebase codebase,
             String analysisType,
@@ -682,110 +879,30 @@ public class AnalysisService {
         File[] files = analyserCutsPath.listFiles();
         JSONObject analyserResult = new JSONObject();
 
-        for (File file : files) {
-
-            String filename = FilenameUtils.getBaseName(file.getName());
-
-            Decomposition cutDecomposition = new Decomposition();
-
-            InputStream is = new FileInputStream(analyserCutsPath + "/" + filename + ".json");
-            JSONObject clustersJSON = new JSONObject(IOUtils.toString(is, StandardCharsets.UTF_8));
-            is.close();
-
-            Integer numberOfEntitiesClusters = clustersJSON.getInt("numberOfEntitiesClusters");
-            Iterator<String> clusters = clustersJSON.getJSONObject("clusters").sortedKeys();
-            ArrayList<Short> clusterIds = new ArrayList<>();
-            while(clusters.hasNext()) {
-                clusterIds.add(Short.parseShort(clusters.next()));
+        try {
+            List<ClusterConcurrentGetAnalyserResultThread> threadsPool = new ArrayList<>();
+            for (int threadNumber=0; threadNumber < THREADS_NUMBER; threadNumber++) {
+                ClusterConcurrentGetAnalyserResultThread thread = new ClusterConcurrentGetAnalyserResultThread(
+                        codebase,
+                        analysisType,
+                        featureVectorizationStrategy,
+                        profile,
+                        analyserDto,
+                        analyserCutsPath,
+                        files,
+                        analyserResult,
+                        threadNumber
+                );
+                threadsPool.add(thread);
             }
-            Collections.sort(clusterIds);
-
-            for (Short id : clusterIds) {
-                String clusterName = String.valueOf(id);
-                JSONArray entities = clustersJSON.getJSONObject("clusters").getJSONArray(id.toString());
-                Cluster cluster = new Cluster(id, clusterName);
-
-                for (int i = 0; i < entities.length(); i++) {
-                    short entityID = (short) entities.getInt(i);
-                    cluster.addEntity(entityID);
-                    cutDecomposition.putEntity(entityID, id);
-                }
-
-                cutDecomposition.addCluster(cluster);
+            for (ClusterConcurrentGetAnalyserResultThread thread : threadsPool) {
+                thread.start();
             }
-
-            cutDecomposition.setNextClusterID(Integer.valueOf(clusterIds.size()).shortValue());
-
-            cutDecomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
-                    codebase,
-                    profile,
-                    cutDecomposition.getEntityIDToClusterID()
-            ));
-
-            cutDecomposition.calculateMetrics(
-                    codebase,
-                    analyserDto.getTracesMaxLimit(),
-                    analyserDto.getTraceType(),
-                    true
-            );
-
-            JSONObject metrics = new JSONObject();
-
-            if (analysisType.equals("feature") && featureVectorizationStrategy.equals("methodCalls")) {
-                String[] weights = filename.split(",");
-                String linkageType = weights[0];
-                Float maxDepth = Float.parseFloat(weights[1]);
-                Float controllersWeight = Float.parseFloat(weights[2]);
-                Float servicesWeight = Float.parseFloat(weights[3]);
-                Float intermediateMethodsWeight = Float.parseFloat(weights[4]);
-                Float entitiesWeight = Float.parseFloat(weights[5]);
-                Integer clusterSize = Integer.parseInt(weights[6]);
-
-                metrics.put("linkageType", linkageType);
-                metrics.put("maxDepth", maxDepth);
-                metrics.put("controllersWeight", controllersWeight);
-                metrics.put("servicesWeight", servicesWeight);
-                metrics.put("intermediateMethodsWeight", intermediateMethodsWeight);
-                metrics.put("entitiesWeight", entitiesWeight);
-                metrics.put("numberClusters", clusterSize);
-            } else if (analysisType.equals("feature") && featureVectorizationStrategy.equals("entitiesTraces")) {
-                String[] weights = filename.split(",");
-                String linkageType = weights[0];
-                Float writeMetricWeight = Float.parseFloat(weights[1]);
-                Float readMetricWeight = Float.parseFloat(weights[2]);
-                Integer clusterSize = Integer.parseInt(weights[3]);
-
-                metrics.put("linkageType", linkageType);
-                metrics.put("writeMetricWeight", writeMetricWeight);
-                metrics.put("readMetricWeight", readMetricWeight);
-                metrics.put("numberClusters", clusterSize);
-            } else {
-                String[] weights = filename.split(",");
-                String linkageType = weights[0];
-                Integer clusterSize = Integer.parseInt(weights[1]);
-
-                metrics.put("linkageType", linkageType);
-                metrics.put("numberClusters", clusterSize);
+            for (ClusterConcurrentGetAnalyserResultThread thread : threadsPool) {
+                thread.join();
             }
-
-            metrics.put("numberOfEntitiesClusters", numberOfEntitiesClusters);
-            metrics.put("cohesion", cutDecomposition.getCohesion());
-            metrics.put("coupling", cutDecomposition.getCoupling());
-            metrics.put("complexity", cutDecomposition.getComplexity());
-            metrics.put("performance", cutDecomposition.getPerformance());
-            metrics.put("accuracy", 0.0);
-            metrics.put("precision", 0.0);
-            metrics.put("recall", 0.0);
-            metrics.put("specificity", 0.0);
-            metrics.put("fmeasure", 0.0);
-            metrics.put("mojoCommon", 0.0);
-            metrics.put("mojoBiggest", 0.0);
-            metrics.put("mojoNew", 0.0);
-            metrics.put("mojoSingletons", 0.0);
-            metrics.put("controllerSpecs", new JSONObject());
-
-            analyserResult.put(filename, metrics);
-
+        } catch(InterruptedException ie) {
+            ie.printStackTrace();
         }
 
         return analyserResult;
