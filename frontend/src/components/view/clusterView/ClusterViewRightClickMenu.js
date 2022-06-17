@@ -2,7 +2,8 @@ import {ListGroup, ListGroupItem} from "react-bootstrap";
 import {types} from "../Views";
 import {OPERATION} from "../../../constants/constants";
 import {
-    AllOut, BubbleChart,
+    AirlineStops,
+    AllOut,
     CallMerge,
     CallSplit,
     Cancel, DeviceHub,
@@ -10,7 +11,7 @@ import {
     Hub,
     MoveDown, Restore, Save,
     Visibility,
-    VisibilityOff
+    VisibilityOff, Workspaces
 } from "@mui/icons-material";
 import React from "react";
 
@@ -20,6 +21,7 @@ export const ClusterViewRightClickMenu = ({ menuCoordinates, operations,
                                               handleRename,
                                               handleOnlyNeighbours,
                                               handleCollapseCluster,
+                                              handleCollapseAll,
                                               handleShowAll,
                                               handleTogglePhysics,
                                               handleTransfer,
@@ -67,7 +69,7 @@ export const ClusterViewRightClickMenu = ({ menuCoordinates, operations,
                             {operations.includes(OPERATION.RESTORE) && <ListGroupItem action onClick={() => handleShowAll("restore")}><Restore/>Restore Graph Positions</ListGroupItem>}
                             {operations.includes(OPERATION.SHOW_ALL) && <ListGroupItem action onClick={() => handleShowAll("showAll")}><Visibility/>Show All</ListGroupItem>}
                             {operations.includes(OPERATION.EXPAND_ALL) && <ListGroupItem action onClick={handleExpandAll}><AllOut/>Expand All</ListGroupItem>}
-                            {operations.includes(OPERATION.TOGGLE_PHYSICS) && <ListGroupItem action onClick={handleTogglePhysics}><BubbleChart/>Toggle Physics</ListGroupItem>}
+                            {operations.includes(OPERATION.TOGGLE_PHYSICS) && <ListGroupItem action onClick={handleTogglePhysics}><AirlineStops/>Toggle Physics</ListGroupItem>}
                         </>
                     }
                     {menuCoordinates.type === types.NONE &&
@@ -76,7 +78,8 @@ export const ClusterViewRightClickMenu = ({ menuCoordinates, operations,
                             {operations.includes(OPERATION.RESTORE) && <ListGroupItem action onClick={() => handleShowAll("restore")}><Restore/>Restore Graph Positions</ListGroupItem>}
                             {operations.includes(OPERATION.SHOW_ALL) && <ListGroupItem action onClick={() => handleShowAll("showAll")}><Visibility/>Show All</ListGroupItem>}
                             {operations.includes(OPERATION.EXPAND_ALL) && <ListGroupItem action onClick={handleExpandAll}><AllOut/>Expand All</ListGroupItem>}
-                            {operations.includes(OPERATION.TOGGLE_PHYSICS) && <ListGroupItem action onClick={handleTogglePhysics}><BubbleChart/>Toggle Physics</ListGroupItem>}
+                            {operations.includes(OPERATION.COLLAPSE_ALL) && <ListGroupItem action onClick={handleCollapseAll}><Workspaces/>Collapse All</ListGroupItem>}
+                            {operations.includes(OPERATION.TOGGLE_PHYSICS) && <ListGroupItem action onClick={handleTogglePhysics}><AirlineStops/>Toggle Physics</ListGroupItem>}
                         </>
                     }
                     {menuCoordinates.type === types.MULTIPLE &&

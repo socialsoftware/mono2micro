@@ -31,6 +31,9 @@ const options = {
     },
     physics: {
         enabled: true,
+        //stabilization: {
+        //    enabled: false // this greatly improves loading time, at the expense of a malformed initial graph
+        //},
         barnesHut: {
             springLength: 500,
             springConstant: 0.001
@@ -285,7 +288,7 @@ export const ClusterViewGraph = ({setNow, toastId, translateEntity, clusters, se
 
     const clustersActions = [
         { icon: <Search/>, name: 'Search Element', handler: () => setOpenSearch(true) },
-        { icon: <TableView/>, name: 'Go to Tables' , handler: handleScrollTop },
+        { icon: <TableView/>, name: 'Go to Metrics' , handler: handleScrollTop },
         { icon: <KeyboardArrowUp/>, name: 'Go to Top', handler: handleScrollBottom },
         { icon: <Timeline/>, name: 'Go to Functionalities', handler: changeToFunctionalities },
     ];
@@ -350,6 +353,7 @@ export const ClusterViewGraph = ({setNow, toastId, translateEntity, clusters, se
     function defaultOperations() {
         setOperations(() => [
             OPERATION.COLLAPSE,
+            OPERATION.COLLAPSE_ALL,
             OPERATION.TRANSFER,
             OPERATION.TRANSFER_ENTITY,
             OPERATION.MERGE,
@@ -562,6 +566,10 @@ export const ClusterViewGraph = ({setNow, toastId, translateEntity, clusters, se
                     prev.push(OPERATION.EXPAND_ALL);
                 else prev = prev.filter(op => op !== OPERATION.EXPAND_ALL);
 
+                if (network.body.nodeIndices.find(nodeId => !network.isCluster(nodeId)))
+                    prev.push(OPERATION.COLLAPSE_ALL);
+                else prev = prev.filter(op => op !== OPERATION.COLLAPSE_ALL);
+
                 return prev;
             });
             if (network.getEdgeAt(event.pointer.DOM) !== undefined) {
@@ -619,7 +627,8 @@ export const ClusterViewGraph = ({setNow, toastId, translateEntity, clusters, se
             });
             return prevNetwork;
         });
-        handleCancel();
+        setMenuCoordinates(undefined);
+        setClickedComponent(undefined);
     }
 
     function handleRename() {
@@ -631,19 +640,32 @@ export const ClusterViewGraph = ({setNow, toastId, translateEntity, clusters, se
     function handleCollapseCluster() {
         const clusterId = visGraph.nodes.get(clickedComponent.id).cid;
         const cluster = clusters.find(cluster => cluster.id === clusterId);
+        collapseCluster(cluster);
+        setClickedComponent(undefined);
+        setMenuCoordinates(undefined);
+    }
+
+    function handleCollapseAll() {
+        clusters.forEach(cluster => {
+            if (!network.body.nodeIndices.includes("c" + cluster.id))
+                collapseCluster(cluster);
+        });
+        setClickedComponent(undefined);
+        setMenuCoordinates(undefined);
+    }
+
+    function collapseCluster(cluster) {
         setNetwork(prevNetwork => {
             clusterEntities(cluster, clusterNodeProperties(cluster), prevNetwork);
-            prevNetwork.getConnectedEdges("c" + clusterId).forEach(edgeId => {
+            prevNetwork.getConnectedEdges("c" + cluster.id).forEach(edgeId => {
                 const edge = prevNetwork.body.edges[edgeId];
-                if (edge.fromId === "c" + clusterId && prevNetwork.isCluster(edge.toId) || prevNetwork.isCluster(edge.fromId) && edge.toId === "c" + clusterId) // Between clusters
+                if (edge.fromId === "c" + cluster.id && prevNetwork.isCluster(edge.toId) || prevNetwork.isCluster(edge.fromId) && edge.toId === "c" + cluster.id) // Between clusters
                     updateClusterEdge(edge, prevNetwork);
-                else if (edge.fromId === "c" + clusterId && !prevNetwork.isCluster(edge.toId) || !prevNetwork.isCluster(edge.fromId) && edge.toId === "c" + clusterId) // Between cluster and entity
+                else if (edge.fromId === "c" + cluster.id && !prevNetwork.isCluster(edge.toId) || !prevNetwork.isCluster(edge.fromId) && edge.toId === "c" + cluster.id) // Between cluster and entity
                     updateClusterEntityEdge(edge, prevNetwork);
             });
             return prevNetwork;
         })
-        setClickedComponent(undefined);
-        setMenuCoordinates(undefined);
     }
 
     function handleOnlyNeighbours() {
@@ -969,6 +991,7 @@ export const ClusterViewGraph = ({setNow, toastId, translateEntity, clusters, se
                 handleRename={handleRename}
                 handleOnlyNeighbours={handleOnlyNeighbours}
                 handleCollapseCluster={handleCollapseCluster}
+                handleCollapseAll={handleCollapseAll}
                 handleShowAll={handleShowAll}
                 handleTogglePhysics={handleTogglePhysics}
                 handleTransfer={handleTransfer}

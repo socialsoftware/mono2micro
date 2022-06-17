@@ -17,8 +17,9 @@ export const OPERATION = {
     EXPAND: 9,
     EXPAND_ALL: 10,
     COLLAPSE: 11,
-    TOGGLE_PHYSICS: 12,
-    SAVE: 13,
-    RESTORE: 14,
-    CANCEL: 15,
+    COLLAPSE_ALL: 12,
+    TOGGLE_PHYSICS: 13,
+    SAVE: 14,
+    RESTORE: 15,
+    CANCEL: 16,
 };
