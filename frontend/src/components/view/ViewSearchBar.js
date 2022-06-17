@@ -110,6 +110,12 @@ export const ViewSearchBar = ({searchItems, openSearch, setOpenSearch, setSearch
     const rowEvents = {
         onClick: (e, row, rowIndex) => {
             handleSubmit(row);
+        },
+        onMouseEnter: (e, row, rowIndex) => {
+            document.body.style.cursor = 'pointer';
+        },
+        onMouseLeave: (e, row, rowIndex) => {
+            document.body.style.cursor = 'default';
         }
     };
 
