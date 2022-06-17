@@ -5,6 +5,7 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import {useParams} from "react-router-dom";
 import {AccessesSciPyDecompositionForm} from "./forms/AccessesSciPyDecompositionForm";
 import {StrategyType} from "../../models/strategies/Strategy";
+import {toast, ToastContainer} from "react-toastify";
 
 export const Strategy = () => {
     let { codebaseName, strategyName } = useParams();
@@ -15,11 +16,16 @@ export const Strategy = () => {
 
     function loadDecompositions() {
         const service = new RepositoryService();
+        const toastId = toast.loading("Fetching Decompositions...");
         service.getDecompositions(
             codebaseName,
             strategyName
         ).then(response => {
             setDecompositions(response);
+            toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Decompositions Loaded.", isLoading: false});
+            setTimeout(() => {toast.dismiss(toastId)}, 1000);
+        }).catch(() => {
+            toast.update(toastId, {type: toast.TYPE.ERROR, render: "Error Loading Decompositions.", isLoading: false});
         });
     }
 
@@ -54,6 +60,11 @@ export const Strategy = () => {
 
     return (
         <div style={{ paddingLeft: "2rem" }}>
+            <ToastContainer
+                position="top-center"
+                theme="colored"
+            />
+
             {renderBreadCrumbs()}
 
             <h4 style={{color: "#666666"}}>

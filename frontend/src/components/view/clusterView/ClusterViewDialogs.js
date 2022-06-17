@@ -1,7 +1,6 @@
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 import BootstrapTable from "react-bootstrap-table-next";
-import filterFactory, {textFilter} from "react-bootstrap-table2-filter";
 import {useState} from "react";
 import {ArrowRightAlt} from "@mui/icons-material";
 
@@ -60,6 +59,7 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
                     </DialogContentText>
                     <TextField
                         autoFocus
+                        required={true}
                         margin="normal"
                         id="name"
                         label="New name"
@@ -85,14 +85,13 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
                     </DialogContentText>
                     <BootstrapTable
                         keyField={'id'}
+                        hover={true}
                         data={requestDialog.entities}
                         columns={[{
                             dataField: 'name',
                             text: 'Entity Name',
-                            filter: textFilter({placeholder: "filter"}),
                             sort: true
                         }]}
-                        filter={filterFactory()}
                         selectRow={{mode: 'checkbox', clickToSelect: true, hideSelectAll: true}}
                         ref={n => setSelectedEntities(n)}
                     />
@@ -127,6 +126,7 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
                     </DialogContentText>
                     <TextField
                         autoFocus
+                        required={true}
                         margin="normal"
                         id="name"
                         label="Merged cluster's name"
@@ -151,6 +151,7 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
                     </DialogContentText>
                     <TextField
                         autoFocus
+                        required={true}
                         margin="normal"
                         id="name"
                         label="New cluster"
@@ -161,14 +162,13 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
                     />
                     <BootstrapTable
                         keyField={'id'}
+                        hover={true}
                         data={requestDialog.entities}
                         columns={[{
                             dataField: 'name',
                             text: 'Entity Name',
-                            filter: textFilter({placeholder: "filter"}),
                             sort: true
                         }]}
-                        filter={filterFactory()}
                         selectRow={{mode: 'checkbox', clickToSelect: true, hideSelectAll: true}}
                         ref={n => setSelectedEntities(n)}
                     />
@@ -188,6 +188,7 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
                     </DialogContentText>
                     <TextField
                         autoFocus
+                        required={true}
                         margin="normal"
                         id="name"
                         label="New cluster"
@@ -198,12 +199,12 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
                     />
                     <BootstrapTable
                         keyField={'id'}
+                        hover={true}
                         data={requestDialog.entities}
                         columns={[
-                            { dataField: 'name', text: 'Entity Name', filter: textFilter({placeholder: "filter"}), sort: true },
-                            { dataField: 'cluster', text: 'Cluster Name', filter: textFilter({placeholder: "filter"}), sort: true }
+                            { dataField: 'name', text: 'Entity Name', sort: true },
+                            { dataField: 'cluster', text: 'Cluster Name', sort: true }
                         ]}
-                        filter={filterFactory()}
                         selectRow={{mode: 'checkbox', clickToSelect: true, hideSelectAll: true, selected: requestDialog.entities === undefined? [] : requestDialog.entities.map(entity => entity.id)}}
                         ref={n => setSelectedEntities(n)}
                     />

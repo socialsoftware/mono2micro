@@ -12,6 +12,7 @@ import {RepositoryService} from "../../services/RepositoryService";
 import {CollectorFactory} from "../../models/collectors/CollectorFactory";
 import {StrategyFactory} from "../../models/strategies/StrategyFactory";
 import {StrategyDescription, StrategyType} from "../../models/strategies/Strategy";
+import {toast, ToastContainer} from "react-toastify";
 
 export const Strategies = () => {
 
@@ -42,6 +43,7 @@ export const Strategies = () => {
     }
 
     function loadStrategies() {
+        const toastId = toast.loading("Fetching Strategies...");
         const allPossibleStrategies = collectors.flatMap(collector => collector.possibleStrategies)
             .filter((x, i, a) =>  a.indexOf(x) === i);
 
@@ -49,7 +51,13 @@ export const Strategies = () => {
         service.getStrategies(
             codebaseName,
             allPossibleStrategies
-        ).then(response => setStrategies(response));
+        ).then(response => {
+            setStrategies(response);
+            toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Strategies Loaded.", isLoading: false});
+            setTimeout(() => {toast.dismiss(toastId)}, 1000);
+        }).catch(() => {
+            toast.update(toastId, {type: toast.TYPE.ERROR, render: "Error Loading Strategies.", isLoading: false});
+        });
     }
 
     function handleDeleteStrategy(strategy) {
@@ -118,6 +126,11 @@ export const Strategies = () => {
 
     return (
         <div style={{ paddingLeft: "2rem" }}>
+            <ToastContainer
+                position="top-center"
+                theme="colored"
+            />
+
             {renderBreadCrumbs()}
 
             { renderCreateStrategies() }

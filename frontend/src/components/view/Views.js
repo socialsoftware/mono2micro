@@ -101,51 +101,51 @@ export const Views = () => {
     }, [searchedItem]);
 
     function setupSearch(newClusters, newFunctionalities, newTranslateEntity) {
-        let items = [];
+        let items = [], key = 0;
 
-        // Setup tags, some of them are added by default
-        let tags = {
-            available: {
-                type: [searchType.CLUSTER, searchType.ENTITY, searchType.FUNCTIONALITY],
-                entities: [],
-                cluster: [],
-                funcType: ["QUERY", "SAGA"],
-                clusters: [],
-            },
-            selected: {
-                type: [],
-                entities: [],
-                cluster: [],
-                funcType: [],
-                clusters: []
-            }
-        };
-
-        newFunctionalities.forEach(functionality => {
-            const item = {name: functionality.name, type: searchType.FUNCTIONALITY, funcType: functionality.type, clusters: Object.keys(functionality.entitiesPerCluster).length};
-            items.push(item);
-            if (!tags.available.clusters.includes(item.clusters))
-                tags.available.clusters.push(item.clusters);
-        });
+        newFunctionalities.forEach(functionality =>
+            items.push({
+                keyField: key++,
+                name: functionality.name,
+                type: searchType.FUNCTIONALITY,
+                id: "",
+                entities: "",
+                funcType: functionality.type,
+                clusters: Object.keys(functionality.entitiesPerCluster).length,
+                cluster: ""
+            })
+        );
 
         newClusters.forEach(cluster => {
-            const item = {name: cluster.name, type: searchType.CLUSTER, id: cluster.id, entities: cluster.entities.length,
-                cohesion: cluster.cohesion, coupling: cluster.coupling, complexity: cluster.complexity};
-            items.push(item);
-            if (!tags.available.entities.includes(item.entities))
-                tags.available.entities.push(item.entities);
-        });
-
-        newClusters.forEach(cluster => {
-            cluster.entities.forEach(entity => {
-                const item = {name: newTranslateEntity[entity], type: searchType.ENTITY, id: entity, cluster: cluster.name, clusterId: cluster.id};
-                items.push(item);
-                if (!tags.available.cluster.includes(item.cluster))
-                    tags.available.cluster.push(item.cluster);
+            items.push({
+                keyField: key++,
+                name: cluster.name,
+                type: searchType.CLUSTER,
+                id: cluster.id,
+                entities: cluster.entities.length,
+                funcType: "",
+                clusters: "",
+                cluster: ""
             });
         });
 
-        setSearchItems({items, tags});
+        newClusters.forEach(cluster => {
+            cluster.entities.forEach(entity =>
+                items.push({
+                    keyField: key++,
+                    name: newTranslateEntity[entity],
+                    type: searchType.ENTITY,
+                    id: entity,
+                    entities: "",
+                    funcType: "",
+                    clusters: "",
+                    cluster: cluster.name,
+                    clusterId: cluster.id
+                })
+            );
+        });
+
+        setSearchItems(items);
     }
 
     function getHelpText(view) {

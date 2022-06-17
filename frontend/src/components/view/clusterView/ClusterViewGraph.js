@@ -81,6 +81,13 @@ export const ClusterViewGraph = ({setNow, toastId, translateEntity, clusters, se
     const [graphPositionsBeforeNeighbours, setGraphPositionsBeforeNeighbours] = useState(undefined);
     const [pendingSearch, setPendingSearch] = useState(undefined);
 
+    const clustersActions = [
+        { icon: <Search/>, name: 'Search Element', handler: () => setOpenSearch(true) },
+        { icon: <TableView/>, name: 'Go to Metrics' , handler: handleScrollTop },
+        { icon: <KeyboardArrowUp/>, name: 'Go to Top', handler: handleScrollBottom },
+        { icon: <Timeline/>, name: 'Go to Functionalities', handler: changeToFunctionalities },
+    ];
+
     useEffect(() => {
         if (view === views.CLUSTERS)
             setActions(clustersActions);
@@ -298,13 +305,6 @@ export const ClusterViewGraph = ({setNow, toastId, translateEntity, clusters, se
     function handleScrollTop() { document.getElementById("metricTable").scrollIntoView({behavior: 'smooth', block: 'start'}); }
 
     function handleScrollBottom() { window.scrollTo(0, 0); }
-
-    const clustersActions = [
-        { icon: <Search/>, name: 'Search Element', handler: () => setOpenSearch(true) },
-        { icon: <TableView/>, name: 'Go to Metrics' , handler: handleScrollTop },
-        { icon: <KeyboardArrowUp/>, name: 'Go to Top', handler: handleScrollBottom },
-        { icon: <Timeline/>, name: 'Go to Functionalities', handler: changeToFunctionalities },
-    ];
 
     useEffect(() => {
         if (searchedItem !== undefined && (searchedItem.type === searchType.ENTITY || searchedItem.type === searchType.CLUSTER)) {
@@ -575,11 +575,11 @@ export const ClusterViewGraph = ({setNow, toastId, translateEntity, clusters, se
                     prev = prev.filter(op => op !== OPERATION.RESTORE);
                 else prev.push(OPERATION.RESTORE);
 
-                if (network.body.nodeIndices.find(nodeId => network.isCluster(nodeId)))
+                if (!prev.includes(OPERATION.SHOW_ALL) && network.body.nodeIndices.find(nodeId => network.isCluster(nodeId)))
                     prev.push(OPERATION.EXPAND_ALL);
                 else prev = prev.filter(op => op !== OPERATION.EXPAND_ALL);
 
-                if (network.body.nodeIndices.find(nodeId => !network.isCluster(nodeId)))
+                if (!prev.includes(OPERATION.SHOW_ALL) && network.body.nodeIndices.find(nodeId => !network.isCluster(nodeId)))
                     prev.push(OPERATION.COLLAPSE_ALL);
                 else prev = prev.filter(op => op !== OPERATION.COLLAPSE_ALL);
 

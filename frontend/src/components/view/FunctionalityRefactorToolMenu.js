@@ -9,6 +9,7 @@ import GrainIcon from '@mui/icons-material/Grain';
 import {useParams} from "react-router-dom";
 import {ModalMessage} from "../util/ModalMessage";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
+import {toast, ToastContainer} from "react-toastify";
 
 export const refactorToolHelp = (
 <div>
@@ -104,17 +105,18 @@ const functionalityRedesignColumns = [
 export const FunctionalityRefactorToolMenu = () => {
     let { codebaseName, strategyName, decompositionName } = useParams();
 
-    const[waitingResponse, setWaitingResponse] = useState(false);
-    const[functionalities, setFunctionalities] = useState([]);
-    const[dataDependenceThreshold, setDataDependenceThreshold] = useState(0);
-    const[timeoutSecs, setTimeoutSecs] = useState(null);
-    const[minimizeSumOfComplexities, setMinimizeSumOfComplexities] = useState(false);
-    const[refactorizationRows, setRefactorizationRows] = useState([]);
-    const[refactorizationExists, setRefactorizationExists] = useState(false);
-    const[functionalitiesRedesignRows, setFunctionalitiesRedesignRows] = useState([]);
+    const [waitingResponse, setWaitingResponse] = useState(false);
+    const [functionalities, setFunctionalities] = useState([]);
+    const [dataDependenceThreshold, setDataDependenceThreshold] = useState(0);
+    const [timeoutSecs, setTimeoutSecs] = useState(null);
+    const [minimizeSumOfComplexities, setMinimizeSumOfComplexities] = useState(false);
+    const [refactorizationRows, setRefactorizationRows] = useState([]);
+    const [refactorizationExists, setRefactorizationExists] = useState(false);
+    const [functionalitiesRedesignRows, setFunctionalitiesRedesignRows] = useState([]);
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => viewCodebaseRefactor(), []);
 
@@ -135,6 +137,8 @@ export const FunctionalityRefactorToolMenu = () => {
         let refactorizationRows = [];
 
         try {
+            setIsLoading(true);
+            let allCompleted = true;
             for(const [key, functionality] of Object.entries(data['functionalities'])) {
                 let functionalityData = {};
                 if(functionality['status'] === "COMPLETED") {
@@ -157,6 +161,8 @@ export const FunctionalityRefactorToolMenu = () => {
 
                     handleRedesignDataParsing(key, functionality['refactor']["call_graph"])
                 }
+                else if(functionality['status'] === "REFACTORING")
+                    allCompleted = false;
 
 
                 functionalityData["functionality"] = key;
@@ -165,6 +171,8 @@ export const FunctionalityRefactorToolMenu = () => {
 
                 refactorizationRows = refactorizationRows.concat(functionalityData)
             }
+
+            setIsLoading(!allCompleted);
 
             setRefactorizationRows(refactorizationRows);
         }
@@ -212,9 +220,15 @@ export const FunctionalityRefactorToolMenu = () => {
                 setWaitingResponse(false);
                 setRefactorizationExists(true);
                 handleDataParsing(response.data);
-            }).catch(() => {
-                setError(true);
-                setErrorMessage('ERROR: Failed to view refactorization of the codebase.');
+            }).catch((error) => {
+                if (error.response.status === 404) { // Not found
+                    toast.info("No refactorization information was created previously.")
+                }
+                else {
+                    setError(true);
+                    setErrorMessage('ERROR: Failed to view refactorization of the codebase.');
+                    setIsLoading(false);
+                }
                 setWaitingResponse(false);
                 setRefactorizationExists(false);
             }
@@ -319,6 +333,11 @@ export const FunctionalityRefactorToolMenu = () => {
 
     return (
         <div>
+            <ToastContainer
+                position="top-center"
+                theme="colored"
+            />
+
             <ModalMessage
                 show={error}
                 setShow={setError}
@@ -440,6 +459,7 @@ between the one being analyzed and the last one from the same cluster.</p>
                     onClick={ () => requestCodebaseRefactor(true) }
                     variant="contained"
                     color="primary"
+                    disabled={isLoading}
                 >
                     Start
                 </Button>
