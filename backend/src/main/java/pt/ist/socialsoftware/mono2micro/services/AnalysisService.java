@@ -15,11 +15,9 @@ import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.dto.AnalyserDto;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
+import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -515,6 +513,60 @@ public class AnalysisService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public Float getMaxComplexity(String codebaseName) throws Exception {
+        AnalyserDto analyser = new AnalyserDto();
+        analyser.setProfile("Generic");
+        analyser.setTracesMaxLimit(0);
+        analyser.setRequestLimit(0);
+        analyser.setTraceType(Constants.TraceType.ALL);
+
+        Codebase codebase = CodebaseManager.getInstance().getCodebase(codebaseName);
+
+        Decomposition decomposition = new Decomposition();
+        decomposition.setCodebaseName(codebaseName);
+
+        String translationEntityToIdFile = CodebaseManager.getTranslationEntityToId(codebaseName);
+        JSONObject translationEntityToIdJson = new JSONObject(translationEntityToIdFile);
+
+        HashMap<String, Set<Short>> clusterCut = new HashMap<>();
+        Iterator<String> keys = translationEntityToIdJson.keys();
+        Integer clusterJsonId = 0;
+        while(keys.hasNext()) {
+            String key = keys.next();
+            Short entityId = Short.parseShort(String.valueOf(translationEntityToIdJson.getInt(key)));
+            Set<Short> setEntities = new HashSet<>();
+            setEntities.add(entityId);
+            clusterCut.put(clusterJsonId.toString(), setEntities);
+            clusterJsonId++;
+        }
+
+        Set<String> clusterIDs = clusterCut.keySet();
+        decomposition.setNextClusterID(Integer.valueOf(clusterIDs.size()).shortValue());
+        for (String clusterName : clusterIDs) {
+            Short clusterId = Short.parseShort(clusterName);
+            Set<Short> entities = clusterCut.get(clusterName);
+            Cluster cluster = new Cluster(clusterId, clusterName, entities);
+            for (short entityID : entities)
+                decomposition.putEntity(entityID, clusterId);
+            decomposition.addCluster(cluster);
+        }
+
+        decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+                codebase,
+                analyser.getProfile(),
+                decomposition.getEntityIDToClusterID()
+        ));
+
+        decomposition.calculateMetrics(
+                codebase,
+                analyser.getTracesMaxLimit(),
+                analyser.getTraceType(),
+                true
+        );
+
+        return decomposition.getComplexity();
     }
 
     // ----------------------------------------------------------------------------------------------

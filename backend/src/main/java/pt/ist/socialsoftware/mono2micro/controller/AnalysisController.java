@@ -310,6 +310,21 @@ public class AnalysisController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
+	@RequestMapping(value = "/codebase/{codebaseName}/maxComplexity", method = RequestMethod.GET)
+	public ResponseEntity<Map<String, Float>> getMaxComplexity(
+			@PathVariable String codebaseName
+	) {
+		try {
+			Float maxComplexity = analysisService.getMaxComplexity(codebaseName);
+			HashMap<String, Float> response = new HashMap<>();
+			response.put("maxComplexity", maxComplexity);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
 	public int getOrCreateSimilarityMatrix(
 		Codebase codebase,
 		AnalyserDto analyser

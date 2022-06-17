@@ -438,7 +438,7 @@ public class CodebaseManager {
 		);
 	}
 
-	public String getTranslationEntityToId(
+	public static String getTranslationEntityToId(
 			String codebaseName
 	)
 		throws IOException
