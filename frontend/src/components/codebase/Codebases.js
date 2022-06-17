@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
+import {ArrowForward} from "@mui/icons-material";
 
 const HttpStatus = require('http-status-codes');
 
@@ -21,7 +22,7 @@ export const Codebases = () => {
     function loadCodebases() {
         const service = new RepositoryService();
         service.getCodebases(
-            ["name"],
+            ['name', 'collectors'],
         ).then(response => {
             setCodebases(response.data);
         });
@@ -44,17 +45,24 @@ export const Codebases = () => {
                 {
                     codebases.map(codebase =>
                         <Col key={codebase.name} md="auto">
-                            <Card style={{ width: '15rem', marginBottom: "16px" }}>
+                            <Card className={"text-center"} style={{ width: '15rem', marginBottom: "16px" }}>
+                                <Card.Header>{codebase.name}</Card.Header>
                                 <Card.Body>
-                                    <Card.Title>
-                                        {codebase.name}
-                                    </Card.Title>
+                                    <Button
+                                        href={`/codebases/${codebase.name}/strategies`}
+                                        className="mb-2"
+                                        variant={"success"}
+                                        disabled={codebase.collectors.length === 0}
+                                    >
+                                        Go to Strategies <ArrowForward/>
+                                    </Button>
+                                    <br/>
                                     <Button
                                         href={`/codebases/${codebase.name}`}
                                         className="mb-2"
-                                        variant={"success"}
+                                        variant={"primary"}
                                     >
-                                        Go to Codebase
+                                        Go to Collectors <b>+</b>
                                     </Button>
                                     <br/>
                                     <Button

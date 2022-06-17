@@ -8,6 +8,7 @@ import { Codebases } from './codebase/Codebases';
 import { Codebase } from './codebase/Codebase';
 import { Analysis } from './analysis/Analysis';
 import { Profiles } from './profile/Profiles';
+import {FunctionalityRefactorToolMenu} from "./view/FunctionalityRefactorToolMenu";
 
 export const Main = () => (
   <main>
@@ -19,6 +20,7 @@ export const Main = () => (
       <Route exact path='/codebases/:codebaseName/strategies' element={<Strategies/>} />
       <Route exact path='/codebases/:codebaseName/strategies/:strategyName' element={<Strategy/>} />
       <Route exact path='/codebases/:codebaseName/strategies/:strategyName/decompositions/:decompositionName' element={<Views/>} />
+      <Route exact path='/codebases/:codebaseName/strategies/:strategyName/decompositions/:decompositionName/functionalityRefactor' element={<FunctionalityRefactorToolMenu/>} />
 
       <Route exact path='/codebases/:codebaseName/source/:sourceType/profiles' element={<Profiles/>} />
 

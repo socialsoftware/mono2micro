@@ -5,7 +5,7 @@ import {
     AllOut, BubbleChart,
     CallMerge,
     CallSplit,
-    Cancel,
+    Cancel, DeviceHub,
     DriveFileRenameOutline,
     Hub,
     MoveDown, Restore, Save,
@@ -16,6 +16,7 @@ import React from "react";
 
 export const ClusterViewRightClickMenu = ({ menuCoordinates, operations,
                                               handleExpandCluster,
+                                              handleExpandAll,
                                               handleRename,
                                               handleOnlyNeighbours,
                                               handleCollapseCluster,
@@ -25,6 +26,7 @@ export const ClusterViewRightClickMenu = ({ menuCoordinates, operations,
                                               handleTransferEntity,
                                               handleMerge,
                                               handleSplit,
+                                              handleFormCluster,
                                               handleSave,
                                               handleCancel,
                                         }) => {
@@ -47,31 +49,39 @@ export const ClusterViewRightClickMenu = ({ menuCoordinates, operations,
                             {operations.includes(OPERATION.MERGE) && <ListGroupItem action onClick={handleMerge}><CallMerge/>Merge</ListGroupItem>}
                             {operations.includes(OPERATION.TRANSFER) && <ListGroupItem action onClick={handleTransfer}><MoveDown/>Transfer Entities</ListGroupItem>}
                             {operations.includes(OPERATION.ONLY_NEIGHBOURS) && <ListGroupItem action onClick={handleOnlyNeighbours}><VisibilityOff/>Only Show Neighbours</ListGroupItem>}
-                            {operations.includes(OPERATION.SHOW_ALL) && <ListGroupItem action onClick={handleShowAll}><Visibility/>Show All</ListGroupItem>}
+                            {operations.includes(OPERATION.SHOW_ALL) && <ListGroupItem action onClick={() => handleShowAll("showAll")}><Visibility/>Show All</ListGroupItem>}
                         </>
                     }
                     {menuCoordinates.type === types.ENTITY &&
                         <>
                             {operations.includes(OPERATION.TRANSFER_ENTITY) && <ListGroupItem action onClick={handleTransferEntity}><MoveDown/>Transfer Entity</ListGroupItem>}
+                            {operations.includes(OPERATION.FORM_CLUSTER) && <ListGroupItem action onClick={handleFormCluster}><DeviceHub/>Form Cluster</ListGroupItem>}
                             {operations.includes(OPERATION.COLLAPSE) && <ListGroupItem action onClick={handleCollapseCluster}><Hub/>Collapse Into Cluster</ListGroupItem>}
                             {operations.includes(OPERATION.ONLY_NEIGHBOURS) && <ListGroupItem action onClick={handleOnlyNeighbours}><VisibilityOff/>Only Show Neighbours</ListGroupItem>}
-                            {operations.includes(OPERATION.SHOW_ALL) && <ListGroupItem action onClick={handleShowAll}><Visibility/>Show All</ListGroupItem>}
+                            {operations.includes(OPERATION.SHOW_ALL) && <ListGroupItem action onClick={() => handleShowAll("showAll")}><Visibility/>Show All</ListGroupItem>}
                         </>
                     }
                     {menuCoordinates.type === types.EDGE &&
                         <>
                             {operations.includes(OPERATION.SAVE) && <ListGroupItem action onClick={handleSave}><Save/>Save Graph Positions</ListGroupItem>}
-                            {operations.includes(OPERATION.RESTORE) && <ListGroupItem action onClick={handleShowAll}><Restore/>Restore Graph Positions</ListGroupItem>}
-                            {operations.includes(OPERATION.SHOW_ALL) && <ListGroupItem action onClick={handleShowAll}><Visibility/>Show All</ListGroupItem>}
+                            {operations.includes(OPERATION.RESTORE) && <ListGroupItem action onClick={() => handleShowAll("restore")}><Restore/>Restore Graph Positions</ListGroupItem>}
+                            {operations.includes(OPERATION.SHOW_ALL) && <ListGroupItem action onClick={() => handleShowAll("showAll")}><Visibility/>Show All</ListGroupItem>}
+                            {operations.includes(OPERATION.EXPAND_ALL) && <ListGroupItem action onClick={handleExpandAll}><AllOut/>Expand All</ListGroupItem>}
                             {operations.includes(OPERATION.TOGGLE_PHYSICS) && <ListGroupItem action onClick={handleTogglePhysics}><BubbleChart/>Toggle Physics</ListGroupItem>}
                         </>
                     }
                     {menuCoordinates.type === types.NONE &&
                         <>
                             {operations.includes(OPERATION.SAVE) && <ListGroupItem action onClick={handleSave}><Save/>Save Graph Positions</ListGroupItem>}
-                            {operations.includes(OPERATION.RESTORE) && <ListGroupItem action onClick={handleShowAll}><Restore/>Restore Graph Positions</ListGroupItem>}
-                            {operations.includes(OPERATION.SHOW_ALL) && <ListGroupItem action onClick={handleShowAll}><Visibility/>Show All</ListGroupItem>}
+                            {operations.includes(OPERATION.RESTORE) && <ListGroupItem action onClick={() => handleShowAll("restore")}><Restore/>Restore Graph Positions</ListGroupItem>}
+                            {operations.includes(OPERATION.SHOW_ALL) && <ListGroupItem action onClick={() => handleShowAll("showAll")}><Visibility/>Show All</ListGroupItem>}
+                            {operations.includes(OPERATION.EXPAND_ALL) && <ListGroupItem action onClick={handleExpandAll}><AllOut/>Expand All</ListGroupItem>}
                             {operations.includes(OPERATION.TOGGLE_PHYSICS) && <ListGroupItem action onClick={handleTogglePhysics}><BubbleChart/>Toggle Physics</ListGroupItem>}
+                        </>
+                    }
+                    {menuCoordinates.type === types.MULTIPLE &&
+                        <>
+                            {operations.includes(OPERATION.FORM_CLUSTER) && <ListGroupItem action onClick={handleFormCluster}><DeviceHub/>Form Cluster</ListGroupItem>}
                         </>
                     }
                     {operations.includes(OPERATION.CANCEL) && <ListGroupItem action onClick={handleCancel}><Cancel/>Cancel Operation</ListGroupItem>}

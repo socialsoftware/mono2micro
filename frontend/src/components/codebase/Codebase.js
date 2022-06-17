@@ -7,6 +7,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
+import Card from "react-bootstrap/Card";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
 import {RepositoryService} from "../../services/RepositoryService";
@@ -15,6 +16,7 @@ import {CollectorType} from "../../models/collectors/Collector";
 import {CollectorFactory} from "../../models/collectors/CollectorFactory";
 import {Modal, ModalBody, ModalFooter, ModalTitle} from "react-bootstrap";
 import {AccessesCollectorForm} from "./forms/AccessesCollectorForm";
+import {ArrowForward} from "@mui/icons-material";
 
 function renderBreadCrumbs(codebaseName) {
     return (
@@ -133,14 +135,14 @@ export function Codebase() {
                     </Col>
                 </Form.Group>
 
-                {selectedCollector !== undefined &&                                     // Show sources request form
+                {selectedCollector !== undefined && selectedCollector.type === CollectorType.ACCESSES &&   // Show sources request form
                     <AccessesCollectorForm
                         collector={selectedCollector}
                         setCollector={setSelectedCollector}
                     />
                 }
 
-                {selectedCollector !== undefined &&                                     // Submit button
+                {selectedCollector !== undefined &&                                                        // Submit button
                     <Form.Group as={Row} className="align-items-center mb-4">
                         <Col sm={{ offset: 2 }}>
                             <Button type="submit" disabled={!selectedCollector.canSubmit()}>Submit</Button>
@@ -150,8 +152,6 @@ export function Codebase() {
                         </Col>
                     </Form.Group>
                 }
-
-                {collectors.length !== 0 && <h4 className="mb-3" style={{ color: "#666666" }}> Collectors </h4>}
 
                 <div className={"d-flex flex-wrap mw-100"} style={{gap: '1rem 1rem'}}>
                     {collectors.map(collector => collector.printCard(handleCollectorDelete))}
@@ -185,11 +185,9 @@ export function Codebase() {
         <div style={{ paddingLeft: "2rem" }}>
             { renderDeletePopup() }
 
-            { renderBreadCrumbs(codebaseName) }
-
             <Row className="mt-4">
                 <Col>
-                    <h3 style={{color: "#666666"}}>{codebaseName}</h3>
+                    { renderBreadCrumbs(codebaseName) }
                 </Col>
                 <Col className="me-5">
                     <OverlayTrigger trigger="click" placement="left" overlay={getHelpText}>
@@ -198,14 +196,25 @@ export function Codebase() {
                 </Col>
             </Row>
 
-            <Button
-                href={`/codebases/${codebaseName}/strategies`}
-                className="mt-2 mb-3"
-                disabled={collectors.length === 0}
-                variant={"success"}
-            >
-                Go to Strategies
-            </Button>
+            <Row className="justify-content-center">
+                <Col sm={2}>
+                    <Card
+                        className={"text-center"}
+                    >
+                        <Card.Header>{codebaseName}</Card.Header>
+                        <Card.Body>
+                            <Button
+                                href={`/codebases/${codebaseName}/strategies`}
+                                className="mt-2 mb-3"
+                                disabled={collectors.length === 0}
+                                variant={"success"}
+                            >
+                                Go to Strategies <ArrowForward/>
+                            </Button>
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
 
             { renderCollectors() }
         </div>

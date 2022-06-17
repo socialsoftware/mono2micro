@@ -6,7 +6,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 
-export const TransactionOperationsMenu = ({handleFunctionalitySubmit, functionalitiesClusters}) => {
+export const FunctionalityOperationsMenu = ({handleFunctionalitySubmit, functionalitiesClusters}) => {
     const [showSubmit, setShowSubmit] = useState(false);
     const [functionalityList, setFunctionalityList] = useState([]);
     const [functionality, setFunctionality] = useState('Select Functionality');
@@ -54,7 +54,7 @@ export const TransactionOperationsMenu = ({handleFunctionalitySubmit, functional
     );
 
     return (
-        <ButtonToolbar style={{zIndex: 2, position: "absolute", left: "1.3rem", top: "13.3rem"}}>
+        <ButtonToolbar style={{zIndex: 2, position: "absolute", left: "1.3rem", top: "10rem"}}>
             <DropdownButton className="me-1" as={ButtonGroup} title={functionalityAmount}>
                 <Dropdown.Item key={"All"} onClick={() => changeFunctionalityAmount("All")}>
                     {"All"}

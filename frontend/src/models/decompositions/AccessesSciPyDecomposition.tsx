@@ -42,17 +42,25 @@ export default class AccessesSciPyDecomposition extends Decomposition {
                         {this.metrics.map((metric: Metric) => <React.Fragment key={metric.type}>{metric.type}: {metric.value}<br/></React.Fragment>)}
                     </Card.Text>
                     <Button
-                    href={`/codebases/${this.codebaseName}/strategies/${this.strategyName}/decompositions/${this.name}`}
-                    className="mb-2"
-                    variant={"success"}
-                        >
-                        Go to Decomposition
+                        href={`/codebases/${this.codebaseName}/strategies/${this.strategyName}/decompositions/${this.name}`}
+                        className="mb-2"
+                        variant={"success"}
+                    >
+                        View Decomposition
+                    </Button>
+                    <br/>
+                    <Button
+                        href={`/codebases/${this.codebaseName}/strategies/${this.strategyName}/decompositions/${this.name}/functionalityRefactor`}
+                        className="mb-2"
+                        variant={"primary"}
+                    >
+                        Refactorization Tool
                     </Button>
                     <br/>
                     <Button
                         onClick={() => handleDeleteDecomposition(this.name)}
-                    variant="danger"
-                        >
+                        variant="danger"
+                    >
                         Delete
                     </Button>
                 </Card.Body>

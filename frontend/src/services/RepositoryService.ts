@@ -432,6 +432,25 @@ export class RepositoryService {
         );
     }
 
+    formCluster(
+        codebaseName: string,
+        strategyName: string,
+        decompositionName: string,
+        newName: string,
+        entities: string,
+    ) {
+        return this.axios.post<null>(
+            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/formCluster",
+            null,
+            {
+                params: {
+                    "newName" : newName,
+                    "entities" : entities
+                }
+            }
+        );
+    }
+
     transferEntities(
         codebaseName: string,
         strategyName: string,

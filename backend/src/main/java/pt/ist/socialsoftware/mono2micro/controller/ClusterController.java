@@ -264,4 +264,50 @@ public class ClusterController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
+
+	@RequestMapping(value = "/formCluster", method = RequestMethod.POST)
+	public ResponseEntity<HttpStatus> formCluster(
+			@PathVariable String codebaseName,
+			@PathVariable String strategyName,
+			@PathVariable String decompositionName,
+			@RequestParam String newName,
+			@RequestParam String entities
+	) {
+		logger.debug("formCluster");
+
+		try {
+			// FIXME Each dendrogram directory would have a folder for controllers and another for clusters
+			// FIXME Each controller and cluster would have its own json file
+
+			AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
+			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyName);
+			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+					codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName
+			);
+
+			decomposition.formCluster(
+					newName,
+					entities.split(",")
+			);
+
+			decomposition.setupFunctionalities(
+					source.getInputFilePath(),
+					source.getProfile(strategy.getProfile()),
+					strategy.getTracesMaxLimit(),
+					strategy.getTraceType(),
+					true);
+
+			decomposition.calculateMetrics();
+
+			codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
+			return new ResponseEntity<>(HttpStatus.OK);
+
+		} catch (KeyAlreadyExistsException e) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
 }

@@ -23,5 +23,4 @@ export default abstract class Collector {
 
 export enum CollectorType {
     ACCESSES = 'Accesses Collector',
-    GITHUB = 'GitHub Collector',
 }

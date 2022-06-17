@@ -8,6 +8,7 @@ import Divider from '@mui/material/Divider';
 import GrainIcon from '@mui/icons-material/Grain';
 import {useParams} from "react-router-dom";
 import {ModalMessage} from "../util/ModalMessage";
+import Breadcrumb from "react-bootstrap/Breadcrumb";
 
 export const refactorToolHelp = (
 <div>
@@ -286,6 +287,31 @@ export const FunctionalityRefactorToolMenu = () => {
         )
     };
 
+    function renderBreadCrumbs() {
+        return (
+            <Breadcrumb>
+                <Breadcrumb.Item href="/">
+                    Home
+                </Breadcrumb.Item>
+                <Breadcrumb.Item href="/codebases">
+                    Codebases
+                </Breadcrumb.Item>
+                <Breadcrumb.Item href={`/codebases/${codebaseName}`}>
+                    {codebaseName}
+                </Breadcrumb.Item>
+                <Breadcrumb.Item href={`/codebases/${codebaseName}/strategies`}>
+                    Strategies
+                </Breadcrumb.Item>
+                <Breadcrumb.Item href={`/codebases/${codebaseName}/strategies/${strategyName}`}>
+                    {strategyName}
+                </Breadcrumb.Item>
+                <Breadcrumb.Item active>
+                    {decompositionName}
+                </Breadcrumb.Item>
+            </Breadcrumb>
+        );
+    }
+
     const defaultSorted = [{
         dataField: 'status',
         order: 'asc' // desc or asc
@@ -300,6 +326,11 @@ export const FunctionalityRefactorToolMenu = () => {
                 message={errorMessage}
                 onClose={closeErrorMessageModal}
             />
+
+            <div style={{ zIndex: 1, left: "2rem", position: "absolute" }}>
+                {renderBreadCrumbs()}
+            </div>
+
             <div style={
                 {
                     margin: "auto",

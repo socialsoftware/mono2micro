@@ -17,14 +17,16 @@ import Container from 'react-bootstrap/Container';
 import {FunctionalityRedesignMenu, redesignOperations} from './FunctionalityRedesignMenu';
 import {ModalMessage} from "../util/ModalMessage";
 import {DEFAULT_REDESIGN_NAME} from "../../constants/constants";
-import {TransactionOperationsMenu} from "./TransactionOperationsMenu";
+import {FunctionalityOperationsMenu} from "./FunctionalityOperationsMenu";
 import AppContext from "./../AppContext";
 import {useParams} from "react-router-dom";
 import {MetricType} from "../../type-declarations/types.d";
+import {searchType} from "./ViewSearchBar";
+import {Analytics, BubbleChart, Edit, Hub, List, Search} from "@mui/icons-material";
 
 const HttpStatus = require('http-status-codes');
 
-export const transactionViewHelp = (<div>
+export const functionalityViewHelp = (<div>
     Hover or double click cluster to see entities inside.<br />
     Hover or double click functionality to see entities accessed.<br />
     Hover or double click edge to see entities accessed in a cluster.<br />
@@ -189,17 +191,14 @@ const optionsFunctionalityRedesign = {
 };
 
 
-export const TransactionView = () => {
+export const FunctionalityView = ({searchedItem, setSearchedItem, functionalities, setFunctionalities, clusters, changeToClusters, setOpenSearch, setActions, view}) => {
     const context = useContext(AppContext);
     const { translateEntity } = context;
     let { codebaseName, strategyName, decompositionName } = useParams();
 
     const [visGraph, setVisGraph] = useState({});
-    const [visGraphSeq, setVisGraphSeq] = useState({});
     const [redesignVisGraph, setRedesignVisGraph] = useState({});
-    const [clusters, setClusters] = useState([]);
     const [functionality, setFunctionality] = useState({});
-    const [functionalities, setFunctionalities] = useState([]);
     const [functionalitiesClusters, setFunctionalitiesClusters] = useState([]);
     const [showGraph, setShowGraph] = useState(false);
     const [localTransactionsSequence, setLocalTransactionsSequence] = useState([]);
@@ -220,7 +219,39 @@ export const TransactionView = () => {
     const [selectedRedesignsToCompare2, setSelectedRedesignsToCompare2] = useState("Select a Redesign");
     const [compareRedesigns, setCompareRedesigns] = useState(false);
 
-    useEffect(() => loadTransaction(), []);
+    const defaultActions = [
+        { icon: <Search/>, name: 'Search Element', handler: () => setOpenSearch(true) },
+        { icon: <Hub/>, name: 'Go to Clusters', handler: changeToClusters },
+    ];
+
+    const completeActions = [
+        { icon: <Search/>, name: 'Search Element', handler: () => setOpenSearch(true) },
+        { icon: <BubbleChart/>, name: 'Functionality Graph', handler: () => changeSubView("Graph") },
+        { icon: <Analytics/>, name: 'Metrics', handler: () => changeSubView("Metrics") },
+        { icon: <List/>, name: 'Sequence Table', handler: () => changeSubView("Sequence Table") },
+        { icon: <Edit/>, name: 'Functionality Redesign', handler: () => changeSubView("Functionality Redesign") },
+        { icon: <Hub/>, name: 'Go to Clusters', handler: changeToClusters },
+    ];
+
+    useEffect(() => {
+        loadTransaction();
+        setActions(defaultActions);
+    }, []);
+
+    useEffect(() => {
+        if (view === views.FUNCTIONALITY) {
+            if (Object.keys(functionality).length === 0)
+                setActions(defaultActions);
+            else setActions(completeActions);
+        }
+    }, [view, functionality]);
+
+    useEffect(() => {
+        if (searchedItem !== undefined && searchedItem.type === searchType.FUNCTIONALITY) {
+            handleFunctionalitySubmit(searchedItem.name);
+            setSearchedItem(undefined);
+        }
+    },[searchedItem]);
 
     function loadTransaction() {
         const service = new RepositoryService();
@@ -230,20 +261,13 @@ export const TransactionView = () => {
             strategyName,
             decompositionName
         ).then(response => { setFunctionalitiesClusters(response.data); });
-
-        service.getDecomposition(
-            codebaseName,
-            strategyName,
-            decompositionName
-        ).then(response => {
-            setFunctionalities(Object.values(response.data.functionalities));
-            setClusters(Object.values(response.data.clusters));
-        });
     }
 
     function handleFunctionalitySubmit(value) {
         const currentFunctionality = functionalities.find(c => c.name === value);
         setFunctionality(currentFunctionality);
+        setSelectedRedesign(null);
+        handleCancel();
         loadGraph(currentFunctionality);
     }
 
@@ -395,12 +419,6 @@ export const TransactionView = () => {
             }
         });
 
-        const visGraphSeq = {
-            nodes: new DataSet(nodes),
-            edges: new DataSet(edges)
-        };
-
-        setVisGraphSeq(visGraphSeq);
         setLocalTransactionsSequence(localTransactionsSequence);
     }
 
@@ -483,8 +501,6 @@ export const TransactionView = () => {
     function handleSelectNode(nodeId) {
         let selectedOperation;
         setSelectedOperation(prev => {selectedOperation = prev; return prev});
-
-        if (currentSubView === "Sequence Graph") return;
 
         if(compareRedesigns) return;
 
@@ -854,7 +870,7 @@ export const TransactionView = () => {
                     options={optionsSeq}
                     onSelection={handleSelectNode}
                     onDeselection={handleDeselectNode}
-                    view={views.TRANSACTION} />
+                    view={views.FUNCTIONALITY} />
             </div>
             <div>
                 <VisNetwork
@@ -862,7 +878,7 @@ export const TransactionView = () => {
                     options={options}
                     onSelection={handleSelectNode}
                     onDeselection={handleDeselectNode}
-                    view={views.TRANSACTION} />
+                    view={views.FUNCTIONALITY} />
             </div>
         </div>
     }
@@ -945,47 +961,9 @@ export const TransactionView = () => {
                 message={errorMessage}
                 onClose={closeErrorMessageModal}
             />
-            <Container fluid>
-                <Row style={{zIndex:2, position: "absolute", top: "10.4rem", left: "1.3rem", paddingLeft: 0}}>
-                    <Col>
-                        <ButtonGroup className="mb-2">
-                            <Button
-                                disabled={currentSubView === "Graph"}
-                                onClick={() => changeSubView("Graph")}
-                            >
-                                Graph
-                            </Button>
-                            <Button
-                                disabled={currentSubView === "Sequence Graph"}
-                                onClick={() => changeSubView("Sequence Graph")}
-                            >
-                                Sequence Graph
-                            </Button>
-                            <Button
-                                disabled={currentSubView === "Metrics"}
-                                onClick={() => changeSubView("Metrics")}
-                            >
-                                Metrics
-                            </Button>
-                            <Button
-                                disabled={currentSubView === "Sequence Table"}
-                                onClick={() => changeSubView("Sequence Table")}
-                            >
-                                Sequence Table
-                            </Button>
-                            <Button
-                                disabled={currentSubView === "Functionality Redesign"}
-                                onClick={() => changeSubView("Functionality Redesign")}
-                            >
-                                Functionality Redesign
-                            </Button>
-                        </ButtonGroup>
-                    </Col>
-                </Row>
-            </Container>
             {currentSubView === "Graph" &&
             <span>
-                    <TransactionOperationsMenu
+                    <FunctionalityOperationsMenu
                         handleFunctionalitySubmit={handleFunctionalitySubmit}
                         functionalitiesClusters={functionalitiesClusters}
                     />
@@ -994,21 +972,12 @@ export const TransactionView = () => {
                         options={options}
                         onSelection={handleSelectNode}
                         onDeselection={handleDeselectNode}
-                        view={views.TRANSACTION}
+                        view={views.FUNCTIONALITY}
                     />
                 </span>
             }
-            {currentSubView === "Sequence Graph" &&
-                <VisNetwork
-                    visGraph={visGraphSeq}
-                    options={optionsSeq}
-                    onSelection={handleSelectNode}
-                    onDeselection={handleDeselectNode}
-                    view={views.TRANSACTION}
-                />
-            }
             {currentSubView === "Metrics" &&
-            <div style={{marginTop: "9rem", marginLeft: "0.5rem"}}>
+            <div style={{marginTop: "3rem", marginLeft: "0.5rem"}}>
                 Number of Clusters : {clusters.length}
                 < br />
                 Number of Functionalities that access a single Cluster : {Object.keys(functionalitiesClusters).filter(key => functionalitiesClusters[key].length === 1).length}
@@ -1025,7 +994,7 @@ export const TransactionView = () => {
             </div>
             }
             {showGraph && currentSubView === "Sequence Table" &&
-            <div style={{marginTop: "9.3rem", marginLeft: "0.5rem"}}>
+            <div style={{marginTop: "2.5rem", marginLeft: "0.5rem"}}>
                 <h4>{functionality.name}</h4>
                 <BootstrapTable
                     bootstrap4
@@ -1037,7 +1006,7 @@ export const TransactionView = () => {
             }
             {showGraph && currentSubView === "Functionality Redesign" && selectedRedesign === null &&
             !compareRedesigns &&
-            <div style={{marginTop: "8rem", marginLeft: "0.5rem"}}>
+            <div style={{marginTop: "1rem", marginLeft: "0.5rem"}}>
                 <br/>
                 <h4 style={{color: "#666666"}}>{functionality.name} Redesigns</h4>
                 {functionality.functionalityRedesigns.length >= 2 &&
@@ -1075,7 +1044,7 @@ export const TransactionView = () => {
                         onClick={() => {setCompareRedesigns(false); setSelectedRedesignsToCompare1("Select a Redesign"); setSelectedRedesignsToCompare2("Select a Redesign");}}>
                     Back
                 </Button>
-                <Container fluid style={{paddingLeft:"0px", paddingRight:"0px", marginTop: "8.6rem", marginLeft: "-0.15rem"}}>
+                <Container fluid style={{paddingLeft:"0px", paddingRight:"0px", marginTop: "3rem", marginLeft: "-0.15rem"}}>
                     <Row>
                         <Col>
                             {functionality.type === "SAGA" ?
@@ -1118,17 +1087,17 @@ export const TransactionView = () => {
             {showGraph && currentSubView === "Functionality Redesign" && selectedRedesign !== null &&
             <Container fluid style={{paddingLeft:"0px", paddingRight:"0px"}}>
                 {showGraph && currentSubView === "Functionality Redesign" && functionality.type === "SAGA" &&
-                    <h4 style={{color: "#666666", textAlign: "center", position: "absolute", marginTop: "6.3rem", marginLeft: "80%", transform: "translate(-50%,0%)"}}>
+                    <h4 style={{color: "#666666", textAlign: "center", position: "absolute", marginTop: "2rem", marginLeft: "80%", transform: "translate(-50%,0%)"}}>
                         Functionality Complexity: {selectedRedesign.metrics.filter(metric => metric.type === MetricType.FUNCTIONALITY_COMPLEXITY)[0].value} - System Complexity: {selectedRedesign.metrics.filter(metric => metric.type === MetricType.SYSTEM_COMPLEXITY)[0].value}
                     </h4>
                 }
                 {showGraph && currentSubView === "Functionality Redesign" &&
                     functionality.type === "QUERY" &&
-                    <h4 style={{color: "#666666", textAlign: "center", position: "absolute", marginTop: "6.3rem", marginLeft: "80%", transform: "translate(-50%,0)"}}>
+                    <h4 style={{color: "#666666", textAlign: "center", position: "absolute", marginTop: "2rem", marginLeft: "80%", transform: "translate(-50%,0)"}}>
                         Query Inconsistency Complexity: {selectedRedesign.metrics.filter(metric => metric.type === MetricType.INCONSISTENCY_COMPLEXITY)[0].value}
                     </h4>
                 }
-                <Row style={{zIndex: 1, position: "absolute", marginTop: "9rem", marginLeft: "-0.15rem"}}>
+                <Row style={{zIndex: 1, position: "absolute", marginTop: "2.5rem", marginLeft: "-0.15rem"}}>
                     <Col>
                         <Button className="mb-2"
                                 onClick={() => {setSelectedRedesign(null); handleCancel();}}>

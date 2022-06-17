@@ -160,7 +160,7 @@ export const VisNetwork = ({visGraph, options, onSelection, onDeselection, view}
             const fromNode = graphNodes.get(fromNodeId);
             const toNode = graphNodes.get(toNodeId);
 
-            if (view === views.TRANSACTION) {
+            if (view === views.FUNCTIONALITY) {
 
                 newModalMessageTitle = 'Entities of cluster ' +
                                     toNode.label + ' accessed by ' +
@@ -176,7 +176,7 @@ export const VisNetwork = ({visGraph, options, onSelection, onDeselection, view}
             const clickedNodeLabel = node.label;
             const clickedNodeType = node.type;
 
-            if (view === views.TRANSACTION) {
+            if (view === views.FUNCTIONALITY) {
                 if (clickedNodeType === types.CLUSTER) {
                     newModalMessageTitle = 'Entities of ' + clickedNodeLabel;
 

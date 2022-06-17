@@ -305,6 +305,8 @@ public class AccessesSciPyDecomposition extends Decomposition {
     ) {
         Cluster cluster1 = getCluster(cluster1ID);
         Cluster cluster2 = getCluster(cluster2ID);
+        if (clusterNameExists(newName) && !cluster1.getName().equals(newName) && !cluster2.getName().equals(newName))
+            throw new KeyAlreadyExistsException("Cluster with name: " + newName + " already exists");
 
         Cluster mergedCluster = new Cluster(getNewClusterID(), newName);
 
@@ -365,6 +367,37 @@ public class AccessesSciPyDecomposition extends Decomposition {
             }
         }
         transferCouplingDependencies(newCluster.getEntities(), currentCluster.getID(), newCluster.getID());
+        addCluster(newCluster);
+    }
+
+    public void formCluster(
+            String newName,
+            String[] entities
+    ) {
+        List<Short> entitiesIDs = Arrays.stream(entities).map(Short::parseShort).collect(Collectors.toList());
+
+        if (clusterNameExists(newName)) {
+            Cluster previousCluster = clusters.values().stream().filter(cluster -> cluster.getName().equals(newName)).findFirst()
+                    .orElseThrow(() -> new KeyAlreadyExistsException("Cluster with name: " + newName + " already exists"));
+            if (!entitiesIDs.containsAll(previousCluster.getEntities()))
+                throw new KeyAlreadyExistsException("Cluster with name: " + newName + " already exists");
+        }
+
+        Cluster newCluster = new Cluster(getNewClusterID(), newName);
+
+        for (Short entityID : entitiesIDs) {
+            Cluster currentCluster = clusters.values().stream()
+                    .filter(cluster -> cluster.getEntities().contains(entityID)).findFirst()
+                    .orElseThrow(() -> new RuntimeException("No cluster constains entity " + entityID));
+
+            newCluster.addEntity(entityID);
+            currentCluster.removeEntity(entityID);
+            entityIDToClusterID.replace(entityID, newCluster.getID());
+            removeFunctionalityWithEntity(entityID);
+            transferCouplingDependencies(Collections.singleton(entityID), currentCluster.getID(), newCluster.getID());
+            if (currentCluster.getEntities().size() == 0)
+                removeCluster(currentCluster.getID());
+        }
         addCluster(newCluster);
     }
 

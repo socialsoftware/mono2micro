@@ -11,6 +11,7 @@ export const DIALOG_TYPE = {
     TRANSFER_ENTITY: 2,
     MERGE: 3,
     SPLIT: 4,
+    FORM_CLUSTER: 5,
 }
 
 export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCancel}) => {
@@ -40,6 +41,11 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
     function handleSplit() {
         if (name !== '' && selectedEntities.selectionContext.selected.length !== 0)
             setDialogResponse({type:DIALOG_TYPE.SPLIT, newName: name, entities: selectedEntities.selectionContext.selected});
+    }
+
+    function handleFormCluster() {
+        if (name !== '' && selectedEntities.selectionContext.selected.length !== 0)
+            setDialogResponse({type:DIALOG_TYPE.FORM_CLUSTER, newName: name, entities: selectedEntities.selectionContext.selected});
     }
 
     return (
@@ -170,6 +176,41 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
                 <DialogActions>
                     <Button onClick={handleCancel}>Cancel</Button>
                     <Button onClick={handleSplit}>Split</Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={requestDialog.type === DIALOG_TYPE.FORM_CLUSTER} onClose={handleCancel}>
+                <DialogContent>
+                    <DialogTitle>Form new cluster</DialogTitle>
+                    <DialogContentText className={"mb-2"}>
+                        This operation will form a new cluster.
+                        Attribute a name to the new cluster and select the entities to be placed in the new cluster.
+                    </DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="normal"
+                        id="name"
+                        label="New cluster"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        onChange={event => setName(event.target.value)}
+                    />
+                    <BootstrapTable
+                        keyField={'id'}
+                        data={requestDialog.entities}
+                        columns={[
+                            { dataField: 'name', text: 'Entity Name', filter: textFilter({placeholder: "filter"}), sort: true },
+                            { dataField: 'cluster', text: 'Cluster Name', filter: textFilter({placeholder: "filter"}), sort: true }
+                        ]}
+                        filter={filterFactory()}
+                        selectRow={{mode: 'checkbox', clickToSelect: true, hideSelectAll: true, selected: requestDialog.entities === undefined? [] : requestDialog.entities.map(entity => entity.id)}}
+                        ref={n => setSelectedEntities(n)}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCancel}>Cancel</Button>
+                    <Button onClick={handleFormCluster}>Create</Button>
                 </DialogActions>
             </Dialog>
         </>

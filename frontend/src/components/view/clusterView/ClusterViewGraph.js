@@ -1,23 +1,20 @@
-import React, {createRef, useContext, useEffect, useRef, useState} from "react";
+import React, {createRef, useEffect, useState} from "react";
 import {DataSet, Network} from "vis-network/standalone";
 import {RepositoryService} from "../../../services/RepositoryService";
 import {useParams} from "react-router-dom";
-import AppContext from "../../AppContext";
 import {OPERATION} from "../../../constants/constants";
-import {types} from "../Views";
+import {types, views} from "../Views";
 import {toast, ToastContainer} from "react-toastify";
 import HttpStatus from "http-status-codes";
 import {ClusterViewDialogs, DIALOG_TYPE} from "./ClusterViewDialogs";
 import {ClusterViewRightClickMenu} from "./ClusterViewRightClickMenu";
 import {ClusterViewModal} from "./ClusterViewModal";
-import {ModalProgressBar} from "../../util/ModalProgressBar";
 import {ClusterViewMetricTable} from "./ClusterViewMetricTable";
-import Row from "react-bootstrap/Row";
-import Button from "react-bootstrap/Button";
-import {KeyboardArrowUp, TableRows} from "@mui/icons-material";
+import {searchType} from "../ViewSearchBar";
+import {KeyboardArrowUp, Search, TableView, Timeline} from "@mui/icons-material";
 
 const options = {
-    height: "910",
+    height: "940",
     edges: {
         smooth: false,
         width: 0.5,
@@ -30,6 +27,7 @@ const options = {
     },
     interaction: {
         hover: true,
+        multiselect: true,
     },
     physics: {
         enabled: true,
@@ -48,22 +46,27 @@ export const clusterViewHelp = (<div>
     Double click a node to see its properties.<br />
     Double click an edge to see functionalities and dependencies.<br />
     Right click in a node to begin a modification.<br />
-    Other operations are also available when right-clicking the<br />
-    background or the edges.
+    Other operations are also available when<br />
+    right-clicking the background or the edges.<br />
+    Check cluster metrics by clicking in the<br />
+    speed dial (bottom right).<br />
+    Search specific entity/cluster/functionality<br />
+    in the speed dial.<br />
+    Jump directly to functionalities in the<br />
+    speed dial.<br />
+    To select multiple nodes, leave the mouse
+    button pressed or use "Ctrl+click" to add nodes.
+    Then right click to see available operations.<br />
 </div>);
 
-export const ClusterViewGraph = ({}) => {
-    const context = useContext(AppContext);
-    const { translateEntity } = context;
+export const ClusterViewGraph = ({setNow, toastId, translateEntity, clusters, setReloadProperties, searchedItem, setSearchedItem, changeToFunctionalities, setOpenSearch, setActions, view}) => {
     const appRef = createRef();
-    const toastId = useRef(null);
     let { codebaseName, strategyName, decompositionName } = useParams();
 
     const [visGraph, setVisGraph] = useState({});
-    const [clusters, setClusters] = useState([]);
-    const [clustersFunctionalities, setClustersFunctionalities] = useState({});
-    const [edgeWeights, setEdgeWeights] = useState([]);
     const [updateGraphVis, setUpdateGraphVis] = useState({});
+    const [clustersFunctionalities, setClustersFunctionalities] = useState({});
+    const [edgeWeights, setEdgeWeights] = useState({});
     const [network, setNetwork] = useState({});
     const [showModal, setShowModal] = useState(false);
     const [clickedComponent, setClickedComponent] = useState(undefined);
@@ -71,9 +74,59 @@ export const ClusterViewGraph = ({}) => {
     const [operations, setOperations] = useState([]);
     const [requestDialog, setRequestDialog] = useState(undefined);
     const [dialogResponse, setDialogResponse] = useState(undefined);
-    const [now, setNow] = useState(0);
-    const [scrollPosition, setScrollPosition] = useState(0);
     const [graphPositions, setGraphPositions] = useState(undefined);
+    const [graphPositionsBeforeNeighbours, setGraphPositionsBeforeNeighbours] = useState(undefined);
+    const [pendingSearch, setPendingSearch] = useState(undefined);
+
+    useEffect(() => {
+        if (view === views.CLUSTERS)
+            setActions(clustersActions);
+    }, [view]);
+
+    useEffect(() => {
+        const service = new RepositoryService();
+
+        // Clusters Functionalities
+        const firstRequest = service.getClustersFunctionalities(
+            codebaseName,
+            strategyName,
+            decompositionName
+        ).then(response => {
+            toast.update(toastId.current, {render: "Loaded Cluster/Functionality Relations"});
+            setNow(prev => prev + 10);
+            setClustersFunctionalities(response.data)});
+
+        // Entities
+        const secondRequest = service.getEdgeWeights(
+            codebaseName,
+            strategyName,
+            decompositionName,
+        ).then(response => {
+            toast.update(toastId.current, {render: "Loaded Entities"});
+            setNow(prev => prev + 15);
+            setEdgeWeights(response.data);});
+
+        // Entity and cluster positions
+        const thirdRequest = service.getGraphPositions(
+            codebaseName,
+            strategyName,
+            decompositionName,
+        ).then(response => {
+            toast.update(toastId.current, {render: "Loaded Graph Positions"});
+            setNow(prev => prev + 15);
+            setGraphPositions(response.data);
+        }).catch(error => {
+            if (error.response !== undefined && error.response.status === HttpStatus.NOT_FOUND)
+                toast.update(toastId.current, {render: "No previous positions saved"});
+            else toast.update(toastId.current, {type: toast.TYPE.ERROR, render: "Loading positions failed"});
+            setGraphPositions(undefined)});
+
+        Promise.all([firstRequest, secondRequest, thirdRequest]).then(() => {
+            toast.update(toastId.current, {render: "Creating graph..."});
+            setUpdateGraphVis({});
+            setActions(clustersActions);
+        });
+    }, [clusters]);
 
     useEffect(() => {
         if (dialogResponse === undefined) return;
@@ -99,7 +152,7 @@ export const ClusterViewGraph = ({}) => {
                         error: {
                             render({data}) { return data.response.status === HttpStatus.UNAUTHORIZED? "This name is already being used by a cluster." : "Failed Renaming."; }
                             , autoClose: 5000}
-                    }).then(() => loadProperties());
+                    }).then(() => setReloadProperties({}));
                     break;
                 case DIALOG_TYPE.TRANSFER:
                     fromCluster = clusters.find(c => c.id === clickedComponent.fromCluster);
@@ -119,7 +172,7 @@ export const ClusterViewGraph = ({}) => {
                             pending: "Transferring all entities to cluster " + toCluster.name + "...",
                             success: {render: "Successfully transferred all entities!", autoClose: 3000},
                             error: {render: "Failed transferring entities.", autoClose: 5000}
-                        }).then(() => loadProperties());
+                        }).then(() => setReloadProperties({}));
                     }
                     else {
                         promise = service.transferEntities(
@@ -134,7 +187,7 @@ export const ClusterViewGraph = ({}) => {
                             pending: "Transferring entities from cluster " + fromCluster.name + " to cluster " + toCluster.name + "...",
                             success: {render: "Successfully transferred entities!", autoClose: 3000},
                             error: {render: "Failed transferring entities.", autoClose: 5000}
-                        }).then(() => loadProperties());
+                        }).then(() => setReloadProperties({}));
                     }
                     break;
                 case DIALOG_TYPE.TRANSFER_ENTITY:
@@ -154,7 +207,7 @@ export const ClusterViewGraph = ({}) => {
                         pending: "Transferring entity " + translateEntity(clickedComponent.entityId) + " to cluster " + toCluster.name + "...",
                         success: {render: "Successfully transferred entity " + translateEntity(clickedComponent.entityId) + "!", autoClose: 3000},
                         error: {render: "Failed transferring entity " + translateEntity(clickedComponent.entityId) + ".", autoClose: 5000}
-                    }).then(() => loadProperties());
+                    }).then(() => setReloadProperties({}));
                     break;
                 case DIALOG_TYPE.MERGE:
                     fromCluster = clusters.find(c => c.id === clickedComponent.fromCluster);
@@ -172,7 +225,7 @@ export const ClusterViewGraph = ({}) => {
                         pending: "Merging clusters to create cluster " + toCluster.newName + "...",
                         success: {render: "Successfully merged clusters!", autoClose: 3000},
                         error: {render: "Failed merging clusters.", autoClose: 5000}
-                    }).then(() => loadProperties());
+                    }).then(() => setReloadProperties({}));
                     break;
                 case DIALOG_TYPE.SPLIT:
                     // All entities included equals merge of clusters
@@ -200,16 +253,76 @@ export const ClusterViewGraph = ({}) => {
                         error: {
                             render({data}) { return data.response.status === HttpStatus.UNAUTHORIZED? "This name is already being used by a cluster." : "Failed splitting."; }
                             , autoClose: 5000}
-                    }).then(() => loadProperties());
+                    }).then(() => setReloadProperties({}));
+                    break;
+                case DIALOG_TYPE.FORM_CLUSTER:
+                    promise = service.formCluster(
+                        codebaseName,
+                        strategyName,
+                        decompositionName,
+                        dialogResponse.newName,
+                        dialogResponse.entities.toString());
+
+                    toast.promise(promise, {
+                        pending: "Forming new cluster " + dialogResponse.newName + "...",
+                        success: {render: "Successfully formed new cluster!", autoClose: 3000},
+                        error: {
+                            render({data}) { return data.response.status === HttpStatus.UNAUTHORIZED? "This name is already being used by a cluster." : "Failed forming new cluster."; }
+                            , autoClose: 5000}
+                    }).then(() => setReloadProperties({}));
                     break;
             }
         });
         defaultOperations();
-        setScrollPosition(0);
         setClickedComponent(undefined);
         setRequestDialog(undefined);
         setDialogResponse(undefined);
     }, [dialogResponse]);
+
+    function handleScrollTop() { document.getElementById("metricTable").scrollIntoView({behavior: 'smooth', block: 'start'}); }
+
+    function handleScrollBottom() { window.scrollTo(0, 0); }
+
+    const clustersActions = [
+        { icon: <Search/>, name: 'Search Element', handler: () => setOpenSearch(true) },
+        { icon: <TableView/>, name: 'Go to Tables' , handler: handleScrollTop },
+        { icon: <KeyboardArrowUp/>, name: 'Go to Top', handler: handleScrollBottom },
+        { icon: <Timeline/>, name: 'Go to Functionalities', handler: changeToFunctionalities },
+    ];
+
+    useEffect(() => {
+        if (searchedItem !== undefined && (searchedItem.type === searchType.ENTITY || searchedItem.type === searchType.CLUSTER)) {
+            if (operations.includes(OPERATION.SHOW_ALL))
+                handleShowAll("restore");
+            else handleSearch();
+        }
+    }, [searchedItem]);
+
+    // This hook is used so that when searching a sequence of nodes, the graph resets to avoid missing edges/nodes bug
+    useEffect(() => {
+        if (searchedItem !== undefined && searchedItem.type !== searchType.FUNCTIONALITY)
+            handleSearch();
+    }, [pendingSearch]);
+
+    function handleSearch() {
+        if (searchedItem.type === searchType.ENTITY) {
+            if (network.body.nodeIndices.includes("c" + searchedItem.clusterId)) // Open entity's cluster if necessary
+                setNetwork(prevNetwork => {prevNetwork.openCluster("c" + searchedItem.clusterId); return prevNetwork;});
+            setClickedComponent({id: "e" + searchedItem.id});
+        }
+        else if (searchedItem.type === searchType.CLUSTER) {
+            if (!network.body.nodeIndices.includes("c" + searchedItem.id)) { // Create cluster if necessary
+                const cluster = clusters.find(cluster => cluster.id === searchedItem.id);
+                setNetwork(prevNetwork => {
+                    clusterEntities(cluster, clusterNodeProperties(cluster), prevNetwork);
+                    return prevNetwork;
+                });
+            }
+            setClickedComponent({id: "c" + searchedItem.id});
+        }
+        handleOnlyNeighbours();
+        setSearchedItem(undefined);
+    }
 
     function deleteGraphPositions() {
         setGraphPositions(undefined);
@@ -221,10 +334,6 @@ export const ClusterViewGraph = ({}) => {
             error: {render: "Error while Deleting Positions", autoClose: 5000}
         });
     }
-
-    useEffect(() => {
-        loadProperties();
-    }, []);
 
     useEffect(() => {
         if (clusters.length === 0 || edgeWeights.length === 0 || Object.keys(clustersFunctionalities).length === 0)
@@ -245,7 +354,9 @@ export const ClusterViewGraph = ({}) => {
             OPERATION.TRANSFER_ENTITY,
             OPERATION.MERGE,
             OPERATION.EXPAND,
+            OPERATION.EXPAND_ALL,
             OPERATION.SPLIT,
+            OPERATION.FORM_CLUSTER,
             OPERATION.RENAME,
             OPERATION.ONLY_NEIGHBOURS,
             OPERATION.TOGGLE_PHYSICS,
@@ -253,80 +364,24 @@ export const ClusterViewGraph = ({}) => {
         ]);
     }
 
-    function loadProperties() {
-        let clusters;
-        const service = new RepositoryService();
-        setNow(5);
-        toastId.current = toast.loading("Loading properties...");
-
-        // Clusters Functionalities
-        const firstRequest = service.getClustersFunctionalities(
-            codebaseName,
-            strategyName,
-            decompositionName
-        ).then(response => {
-            setNow(prev => prev + 20);
-            toast.update(toastId.current, {render: "Loaded Cluster/Functionality Relations"});
-            setClustersFunctionalities(response.data)});
-
-        // Clusters
-        const secondRequest = service.getDecomposition(
-            codebaseName,
-            strategyName,
-            decompositionName
-        ).then(response => {
-            clusters = Object.values(response.data.clusters);
-            clusters = clusters.sort((a, b) => a.name - b.name);
-            setClusters(clusters);
-            setNow(prev => prev + 25);
-            toast.update(toastId.current, {render: "Loaded Clusters"});});
-
-        // Entities
-        const thirdRequest = service.getEdgeWeights(
-            codebaseName,
-            strategyName,
-            decompositionName,
-        ).then(response => {
-            setNow(prev => prev + 25);
-            setEdgeWeights(response.data);
-            toast.update(toastId.current, {render: "Loaded Entities"});});
-
-        // Positions
-        const fourthRequest = service.getGraphPositions(
-            codebaseName,
-            strategyName,
-            decompositionName,
-        ).then(response => {
-            setNow(prev => prev + 25);
-            setGraphPositions(response.data);
-            toast.update(toastId.current, {render: "Loaded Graph Positions"});
-        }).catch(error => {
-            setNow(prev => prev + 25);
-            if (error.response !== undefined && error.response.status === HttpStatus.NOT_FOUND)
-                toast.update(toastId.current, {render: "No previous positions saved"});
-            else toast.update(toastId.current, {type: toast.TYPE.ERROR, render: "Loading positions failed"});
-            setGraphPositions(undefined)});
-
-
-        Promise.all([firstRequest, secondRequest, thirdRequest, fourthRequest]).then(() => {
-            setUpdateGraphVis({});
-            setNow(0);
-            toast.update(toastId.current, {render: "Creating graph..."});
-        });
-    }
-
     function createGraphVis() {
         let visGraph;
 
+        // Previous positions are recovered
+        if (graphPositionsBeforeNeighbours !== undefined) {
+            visGraph = { nodes: new DataSet(graphPositionsBeforeNeighbours.entities), edges: new DataSet(graphPositionsBeforeNeighbours.edges) };
+        }
+        else if (graphPositions !== undefined) {
+            visGraph = { nodes: new DataSet(graphPositions.entities), edges: new DataSet(graphPositions.edges) };
+            setGraphPositionsBeforeNeighbours(undefined);
+        }
         // No previous information saved about positions or positions became outdated (merge, split, etc. happened)
-        if (graphPositions === undefined) {
+        else {
             const nodes = clusters.flatMap(cluster => cluster.entities.map(entity => {return createEntity(entity, cluster);}))
             const edges = createEntitiesEdges();
 
             visGraph = { nodes: new DataSet(nodes), edges: new DataSet(edges) };
         }
-        // Previous positions are recovered
-        else visGraph = { nodes: new DataSet(graphPositions.entities), edges: new DataSet(graphPositions.edges) };
 
         setVisGraph(visGraph);
     }
@@ -351,14 +406,25 @@ export const ClusterViewGraph = ({}) => {
             // Whenever a double click is made
             newNetwork.on("doubleClick", (event) => handleDoubleClick(event));
 
+            // Updates graph loading progress
+            newNetwork.on("stabilizationProgress", function (params) {
+                setNow(40 + (params.iterations * 60) / params.total);
+            });
+
+            //Remove progress bar once graph is loaded
+            newNetwork.once("stabilizationIterationsDone", function () { setNow(0); });
+
             // Create clusters and cluster edges
-            if (graphPositions === undefined) {
-                clusters.forEach(cluster => clusterEntities(cluster, clusterNodeProperties(cluster), newNetwork));
-                newNetwork.body.edgeIndices.forEach(edgeId => updateClusterEdge(newNetwork.body.edges[edgeId], newNetwork));
+            const positions = graphPositionsBeforeNeighbours !== undefined? graphPositionsBeforeNeighbours : graphPositions;
+            if (positions === undefined) {
+                //NOTE: In case it is preferable to start with clusters instead of entities, uncomment the next two lines of code
+                // keep in mind that creating clusters increases loading times
+                //clusters.forEach(cluster => clusterEntities(cluster, clusterNodeProperties(cluster), newNetwork));
+                //newNetwork.body.edgeIndices.forEach(edgeId => updateClusterEdge(newNetwork.body.edges[edgeId], newNetwork));
             }
             else {
                 try {
-                    Object.entries(graphPositions.clusters).forEach(([id, nodeProperties]) => {
+                    Object.entries(positions.clusters).forEach(([id, nodeProperties]) => {
                         const cluster = clusters.find(c => "c" + c.id === id);
                         clusterEntities(cluster, nodeProperties, newNetwork);
                         newNetwork.body.edgeIndices.forEach(edgeId => {
@@ -381,6 +447,8 @@ export const ClusterViewGraph = ({}) => {
                 newNetwork.setOptions({interaction : {hideEdgesOnDrag: true}});
 
             setNetwork(newNetwork);
+            setGraphPositionsBeforeNeighbours(undefined);
+            setPendingSearch({});
             toast.update(toastId.current, {type: toast.TYPE.SUCCESS, render: "Completed Graph Creation", isLoading: false});
             setTimeout(() => {toast.dismiss(toastId.current); toastId.current = null;}, 1000);
             defaultOperations();
@@ -439,6 +507,33 @@ export const ClusterViewGraph = ({}) => {
         // This might be a bug in react involving the states and events
         setNetwork(prev => {network = prev; return prev});
 
+        let operations;
+        setOperations(prev => {operations = prev; return prev});
+        if (operations.includes(OPERATION.CANCEL)) {
+            setMenuCoordinates({left: event.event.pageX, top: event.event.pageY});
+            return;
+        }
+
+        // Multiple selection for nodes
+        let selectedNodes = network.getSelectedNodes();
+        if (selectedNodes.length > 1) {
+            const rightClickNode = network.getNodeAt(event.pointer.DOM);
+            if (rightClickNode !== undefined && !selectedNodes.includes(rightClickNode))
+                selectedNodes.push(rightClickNode);
+            let entities = [];
+            selectedNodes.forEach(nodeId => {
+                if (network.isCluster(nodeId)) {
+                    let cluster = clusters.find(c => c.id == nodeId.substring(1));
+                    cluster.entities.forEach(entity => entities.push(entity));
+                } else entities.push(Number(nodeId.substring(1)));
+            });
+            setClickedComponent({entities});
+
+            setMenuCoordinates({left: event.event.pageX, top: event.event.pageY, type: types.MULTIPLE});
+            return;
+        }
+
+        // Single selection for nodes and edges
         if (network.getNodeAt(event.pointer.DOM) !== undefined) {
             let nodeId = network.getNodeAt(event.pointer.DOM);
             setClickedComponent({id: nodeId});
@@ -450,7 +545,7 @@ export const ClusterViewGraph = ({}) => {
                 setOperations(prev => {operations = prev; return prev});
                 if (cluster.entities.length === 1)
                     setOperations(prev => prev.filter(op => op !== OPERATION.TRANSFER));
-                else if (!operations.includes(OPERATION.SHOW_ALL) && !operations.includes(OPERATION.CANCEL))
+                else if (!operations.includes(OPERATION.SHOW_ALL))
                     defaultOperations();
             }
             else setMenuCoordinates({left: event.event.pageX, top: event.event.pageY, type: types.ENTITY});
@@ -459,19 +554,24 @@ export const ClusterViewGraph = ({}) => {
             let graphPositions;
             setGraphPositions(prev => {graphPositions = prev; return prev});
             setOperations(prev => {
-                if (prev.includes(OPERATION.CANCEL))
-                    return prev;
-                else if (graphPositions === undefined)
-                    return prev.filter(op => op !== OPERATION.RESTORE);
-                else {
-                    prev.push(OPERATION.RESTORE);
-                    return prev;
-                }
+                if (graphPositions === undefined)
+                    prev = prev.filter(op => op !== OPERATION.RESTORE);
+                else prev.push(OPERATION.RESTORE);
+
+                if (network.body.nodeIndices.find(nodeId => network.isCluster(nodeId)))
+                    prev.push(OPERATION.EXPAND_ALL);
+                else prev = prev.filter(op => op !== OPERATION.EXPAND_ALL);
+
+                return prev;
             });
-            if (network.getEdgeAt(event.pointer.DOM) !== undefined)
+            if (network.getEdgeAt(event.pointer.DOM) !== undefined) {
                 setClickedComponent({id: network.getEdgeAt(event.pointer.DOM)});
-            else setClickedComponent(undefined);
-            setMenuCoordinates({left: event.event.pageX, top: event.event.pageY, type: types.EDGE});
+                setMenuCoordinates({left: event.event.pageX, top: event.event.pageY, type: types.EDGE});
+            }
+            else {
+                setClickedComponent(undefined);
+                setMenuCoordinates({left: event.event.pageX, top: event.event.pageY, type: types.NONE});
+            }
         }
     }
 
@@ -511,6 +611,17 @@ export const ClusterViewGraph = ({}) => {
         setMenuCoordinates(undefined);
     }
 
+    function handleExpandAll() {
+        setNetwork(prevNetwork => {
+            prevNetwork.body.nodeIndices.forEach(nodeId => {
+                if (prevNetwork.isCluster(nodeId))
+                    prevNetwork.openCluster(nodeId);
+            });
+            return prevNetwork;
+        });
+        handleCancel();
+    }
+
     function handleRename() {
         setMenuCoordinates(undefined);
         const cluster = clusters.find(cluster => cluster.id == clickedComponent.id.substring(1));
@@ -538,31 +649,36 @@ export const ClusterViewGraph = ({}) => {
     function handleOnlyNeighbours() {
         toastId.current = toast.loading("This operation might take a while...");
         setTimeout(() => {
-            handleSave();
+            setNetwork(prev => {setGraphPositionsBeforeNeighbours(buildGraphPositions()); return prev;});
+
+            let nodeId;
+            setClickedComponent(prev => {nodeId = prev.id; return prev;});
 
             let hiddenNodes = [], hiddenEdges = [];
 
             for (const edge of Object.values(network.body.edgeIndices))
-                if (network.body.edges[edge].fromId !== clickedComponent.id && network.body.edges[edge].toId !== clickedComponent.id)
+                if (network.body.edges[edge].fromId !== nodeId && network.body.edges[edge].toId !== nodeId)
                     hiddenEdges.push({id: edge, hidden: true});
 
             visGraph.edges.update(hiddenEdges);
 
-            const connectedNodes = network.getConnectedNodes(clickedComponent.id);
+            const connectedNodes = network.getConnectedNodes(nodeId);
             for (const node of network.body.nodeIndices)
-                if (!connectedNodes.includes(node) && node !== clickedComponent.id)
+                if (!connectedNodes.includes(node) && node !== nodeId)
                     hiddenNodes.push({id: node, hidden: true});
 
             visGraph.nodes.update(hiddenNodes);
 
-            setOperations([OPERATION.SHOW_ALL, OPERATION.TOGGLE_PHYSICS]);
+            setOperations([OPERATION.SHOW_ALL, OPERATION.EXPAND, OPERATION.TOGGLE_PHYSICS]);
             setMenuCoordinates(undefined);
             toast.update(toastId.current, {type: toast.TYPE.SUCCESS, render: "View Created", isLoading: false});
             setTimeout(() => {toast.dismiss(toastId.current); toastId.current = null;}, 1000);
         }, 100);
     }
 
-    function handleShowAll() {
+    function handleShowAll(type) {
+        if (type === "restore")
+            setGraphPositionsBeforeNeighbours(undefined);
         toastId.current = toast.loading("This operation might take a while...");
         setTimeout(() => {
             createGraphVis();
@@ -627,7 +743,27 @@ export const ClusterViewGraph = ({}) => {
         setMenuCoordinates(undefined);
     }
 
-    function handleSave() {
+    function handleFormCluster() {
+        if (clickedComponent.entities !== undefined)
+            setRequestDialog({
+                type: DIALOG_TYPE.FORM_CLUSTER,
+                entities: clickedComponent.entities.map(entity => {
+                    const cluster = clusters.find(cluster => cluster.entities.includes(entity));
+                    return {id: entity, name: translateEntity(entity), cluster: cluster.name};
+                })
+            });
+        else {
+            const entity = Number(clickedComponent.id.substring(1));
+            const cluster = clusters.find(cluster => cluster.entities.includes(entity));
+            setRequestDialog({
+                type: DIALOG_TYPE.FORM_CLUSTER,
+                entities: [{id: entity, name: translateEntity(clickedComponent.id), cluster: cluster.name}]
+            });
+        }
+        setMenuCoordinates(undefined);
+    }
+
+    function buildGraphPositions() {
         let graphPositions = {entities: [], clusters: {}, edges: []};
 
         // Add entities
@@ -653,6 +789,12 @@ export const ClusterViewGraph = ({}) => {
             graphPositions.edges.push({from: edge.from, to: edge.to, length: edge.length, value: edge.value, title: edge.title});
         });
 
+        return graphPositions;
+    }
+
+    function handleSave() {
+        const graphPositions = buildGraphPositions();
+
         const service = new RepositoryService();
 
         const promise = service.saveGraphPositions(codebaseName, strategyName, decompositionName, graphPositions);
@@ -663,7 +805,6 @@ export const ClusterViewGraph = ({}) => {
         }).then(() => setGraphPositions(graphPositions));
 
         setMenuCoordinates(undefined);
-        setClickedComponent(undefined);
     }
 
     function handleCancel() {
@@ -808,10 +949,6 @@ export const ClusterViewGraph = ({}) => {
                 theme="colored"
             />
 
-            <ModalProgressBar
-                now={now}
-            />
-
             <ClusterViewModal
                 clusters={clusters}
                 edgeWeights={edgeWeights}
@@ -828,6 +965,7 @@ export const ClusterViewGraph = ({}) => {
                 menuCoordinates={menuCoordinates}
                 operations={operations}
                 handleExpandCluster={handleExpandCluster}
+                handleExpandAll={handleExpandAll}
                 handleRename={handleRename}
                 handleOnlyNeighbours={handleOnlyNeighbours}
                 handleCollapseCluster={handleCollapseCluster}
@@ -837,6 +975,7 @@ export const ClusterViewGraph = ({}) => {
                 handleTransferEntity={handleTransferEntity}
                 handleMerge={handleMerge}
                 handleSplit={handleSplit}
+                handleFormCluster={handleFormCluster}
                 handleSave={handleSave}
                 handleCancel={handleCancel}
             />
@@ -851,13 +990,6 @@ export const ClusterViewGraph = ({}) => {
                 />
             }
 
-            <Row style={{ zIndex: 1, left: "2rem", top: "11rem", position: "fixed" }}>
-                {scrollPosition === 0 && <Button onClick={handleScroll}> <TableRows/> </Button> }
-            </Row>
-            <Row style={{ zIndex: 1, left: "2rem", top: "2rem", position: "fixed" }}>
-                {scrollPosition === 1 && <Button onClick={handleScroll}> <KeyboardArrowUp/> </Button> }
-            </Row>
-
             <div ref={appRef}/>
 
             <div id="metricTable"></div> {/*This is used as an anchor*/}
@@ -867,15 +999,4 @@ export const ClusterViewGraph = ({}) => {
             />
         </>
     );
-
-    function handleScroll() {
-        if (scrollPosition === 0) {
-            document.getElementById("metricTable").scrollIntoView({behavior: 'smooth', block: 'start'});
-            setScrollPosition(1);
-        }
-        else {
-            window.scrollTo(0, 0);
-            setScrollPosition(0);
-        }
-    }
 }
