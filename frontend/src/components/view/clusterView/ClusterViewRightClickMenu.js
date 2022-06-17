@@ -69,6 +69,7 @@ export const ClusterViewRightClickMenu = ({ menuCoordinates, operations,
                             {operations.includes(OPERATION.RESTORE) && <ListGroupItem action onClick={() => handleShowAll("restore")}><Restore/>Restore Graph Positions</ListGroupItem>}
                             {operations.includes(OPERATION.SHOW_ALL) && <ListGroupItem action onClick={() => handleShowAll("showAll")}><Visibility/>Show All</ListGroupItem>}
                             {operations.includes(OPERATION.EXPAND_ALL) && <ListGroupItem action onClick={handleExpandAll}><AllOut/>Expand All</ListGroupItem>}
+                            {operations.includes(OPERATION.COLLAPSE_ALL) && <ListGroupItem action onClick={handleCollapseAll}><Workspaces/>Collapse All</ListGroupItem>}
                             {operations.includes(OPERATION.TOGGLE_PHYSICS) && <ListGroupItem action onClick={handleTogglePhysics}><AirlineStops/>Toggle Physics</ListGroupItem>}
                         </>
                     }

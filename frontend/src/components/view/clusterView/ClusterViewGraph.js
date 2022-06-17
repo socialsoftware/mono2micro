@@ -197,15 +197,28 @@ export const ClusterViewGraph = ({setNow, toastId, translateEntity, clusters, se
                     fromCluster = clusters.find(c => c.entities.includes(clickedComponent.entityId));
                     toCluster = clusters.find(c => c.id === clickedComponent.toCluster);
 
-                    // All entities included equals to the merge of clusters
-                    promise = service.transferEntities(
-                        codebaseName,
-                        strategyName,
-                        decompositionName,
-                        fromCluster.id,
-                        toCluster.id,
-                        [clickedComponent.entityId].toString()
-                    );
+                    if (fromCluster.entities.length === 1) { // Only includes entity clicked, same as a cluster merge
+                        promise = service.mergeClusters(
+                            codebaseName,
+                            strategyName,
+                            decompositionName,
+                            fromCluster.id,
+                            toCluster.id,
+                            toCluster.name
+                        );
+                    }
+                    else {
+                        // All entities included equals to the merge of clusters
+                        promise = service.transferEntities(
+                            codebaseName,
+                            strategyName,
+                            decompositionName,
+                            fromCluster.id,
+                            toCluster.id,
+                            [clickedComponent.entityId].toString()
+                        );
+                    }
+
                     toast.promise(promise, {
                         pending: "Transferring entity " + translateEntity(clickedComponent.entityId) + " to cluster " + toCluster.name + "...",
                         success: {render: "Successfully transferred entity " + translateEntity(clickedComponent.entityId) + "!", autoClose: 3000},
