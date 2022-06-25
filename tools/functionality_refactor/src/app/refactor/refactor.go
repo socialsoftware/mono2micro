@@ -19,7 +19,7 @@ import (
 const (
 	OnlyLastInvocation                = 0
 	AllPreviousInvocations            = -1
-	DefaultRefactorRoutineTimeoutSecs = 1440
+	DefaultRefactorRoutineTimeoutSecs = 0
 )
 
 type RefactorHandler interface {
@@ -81,8 +81,10 @@ func (svc *DefaultHandler) RefactorDecomposition(
 			}()
 
 			go func() {
-				time.Sleep(time.Duration(refactorTimeout) * time.Second)
-				timeoutChannel <- true
+				if refactorTimeout != 0 {
+					time.Sleep(time.Duration(refactorTimeout) * time.Second)
+					timeoutChannel <- true
+				}
 			}()
 
 			// if the functionality takes too long to be refactored we want to timeout

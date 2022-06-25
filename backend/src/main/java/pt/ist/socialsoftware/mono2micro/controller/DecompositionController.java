@@ -27,6 +27,8 @@ import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -236,29 +238,58 @@ public class DecompositionController {
 					int e1ID = entities.getInt(i);
 					int e2ID = entities.getInt(j);
 
-					JSONArray functionalitiesJSON = new JSONArray();
-
-					for (Functionality functionality : decomposition.getFunctionalities().values())
-						if (functionality.getEntities().containsKey((short) e1ID) && functionality.getEntities().containsKey((short) e2ID))
-							functionalitiesJSON.put(functionality.getName());
-
-					if (functionalitiesJSON.length() != 0) {
-						JSONObject edgeJSON = new JSONObject();
-						edgeJSON.put("e1ID", e1ID);
-						edgeJSON.put("e2ID", e2ID);
-						edgeJSON.put("dist", copheneticDistances.getDouble(k));
-						edgeJSON.put("functionalities", functionalitiesJSON);
-						edgesJSON.put(edgeJSON);
+					JSONObject edgeJSON = new JSONObject();
+					if (e1ID < e2ID) {
+						edgeJSON.put("e1ID", e1ID); edgeJSON.put("e2ID", e2ID);
 					}
+					else {
+						edgeJSON.put("e1ID", e2ID); edgeJSON.put("e1ID", e2ID);
+					}
+					edgeJSON.put("dist", copheneticDistances.getDouble(k));
+					edgesJSON.put(edgeJSON);
 					k++;
 				}
 			}
-			return new ResponseEntity<>(edgesJSON.toString(), HttpStatus.OK);
+
+			// Get functionalities in common
+			HashMap<String, JSONArray> entityRelations = new HashMap<>();
+			for (Functionality functionality : decomposition.getFunctionalities().values()) {
+				List<Short> functionalityEntities = new ArrayList<>(functionality.getEntities().keySet());
+				for (int i = 0; i < functionalityEntities.size(); i++)
+					for (int j = i + 1; j < functionalityEntities.size(); j++) {
+						JSONArray relatedFunctionalities = entityRelations.get(edgeId(functionalityEntities.get(i), functionalityEntities.get(j)));
+						if (relatedFunctionalities == null) {
+							relatedFunctionalities = new JSONArray();
+							relatedFunctionalities.put(functionality.getName());
+							entityRelations.put(edgeId(functionalityEntities.get(i), functionalityEntities.get(j)), relatedFunctionalities);
+						}
+						else relatedFunctionalities.put(functionality.getName());
+					}
+			}
+
+			JSONArray filteredEdgesJSON = new JSONArray();
+			for (int i = 0; i < edgesJSON.length(); i++) {
+				JSONObject edgeJSON = edgesJSON.getJSONObject(i);
+				JSONArray relatedFunctionalities = entityRelations.get(edgeId(edgeJSON.getInt("e1ID"), edgeJSON.getInt("e2ID")));
+
+				if (relatedFunctionalities != null) {
+					edgeJSON.put("functionalities", relatedFunctionalities);
+					filteredEdgesJSON.put(edgeJSON);
+				}
+			}
+
+			return new ResponseEntity<>(filteredEdgesJSON.toString(), HttpStatus.OK);
 
 		} catch (IOException | JSONException e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
+	}
+
+	private String edgeId(int node1, int node2) {
+		if (node1 < node2)
+			return node1 + "&" + node2;
+		return node2 + "&" + node1;
 	}
 
 	@RequestMapping(value = "/decomposition/{decompositionName}/getGraphPositions", method = RequestMethod.GET)

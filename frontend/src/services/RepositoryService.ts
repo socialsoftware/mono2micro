@@ -437,15 +437,14 @@ export class RepositoryService {
         strategyName: string,
         decompositionName: string,
         newName: string,
-        entities: string,
+        entities: Map<string, number[]>,
     ) {
         return this.axios.post<null>(
             "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/formCluster",
-            null,
+            entities,
             {
                 params: {
                     "newName" : newName,
-                    "entities" : entities
                 }
             }
         );

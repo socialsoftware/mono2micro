@@ -18,17 +18,16 @@ import React from "react";
 export const ClusterViewRightClickMenu = ({ menuCoordinates, operations,
                                               handleExpandCluster,
                                               handleExpandAll,
-                                              handleRename,
+                                              handleRenameRequest,
                                               handleOnlyNeighbours,
                                               handleCollapseCluster,
                                               handleCollapseAll,
                                               handleShowAll,
                                               handleTogglePhysics,
-                                              handleTransfer,
-                                              handleTransferEntity,
-                                              handleMerge,
-                                              handleSplit,
-                                              handleFormCluster,
+                                              handleTransferRequest,
+                                              handleMergeRequest,
+                                              handleSplitRequest,
+                                              handleFormClusterRequest,
                                               handleSave,
                                               handleCancel,
                                         }) => {
@@ -45,21 +44,20 @@ export const ClusterViewRightClickMenu = ({ menuCoordinates, operations,
                 >
                     {menuCoordinates.type === types.CLUSTER &&
                         <>
-                            {operations.includes(OPERATION.EXPAND) && <ListGroupItem action onClick={handleExpandCluster}><AllOut/>Expand Cluster</ListGroupItem>}
-                            {operations.includes(OPERATION.RENAME) && <ListGroupItem action onClick={handleRename}><DriveFileRenameOutline/>Rename Cluster</ListGroupItem>}
-                            {operations.includes(OPERATION.SPLIT) && <ListGroupItem action onClick={handleSplit}><CallSplit/>Split</ListGroupItem>}
-                            {operations.includes(OPERATION.MERGE) && <ListGroupItem action onClick={handleMerge}><CallMerge/>Merge</ListGroupItem>}
-                            {operations.includes(OPERATION.TRANSFER) && <ListGroupItem action onClick={handleTransfer}><MoveDown/>Transfer Entities</ListGroupItem>}
-                            {operations.includes(OPERATION.ONLY_NEIGHBOURS) && <ListGroupItem action onClick={handleOnlyNeighbours}><VisibilityOff/>Only Show Neighbours</ListGroupItem>}
+                            {operations.includes(OPERATION.EXPAND) && <ListGroupItem action onClick={() => handleExpandCluster()}><AllOut/>Expand Cluster</ListGroupItem>}
+                            {operations.includes(OPERATION.RENAME) && <ListGroupItem action onClick={handleRenameRequest}><DriveFileRenameOutline/>Rename Cluster</ListGroupItem>}
+                            {operations.includes(OPERATION.SPLIT) && <ListGroupItem action onClick={handleSplitRequest}><CallSplit/>Split</ListGroupItem>}
+                            {operations.includes(OPERATION.MERGE) && <ListGroupItem action onClick={handleMergeRequest}><CallMerge/>Merge</ListGroupItem>}
+                            {operations.includes(OPERATION.TRANSFER) && <ListGroupItem action onClick={handleTransferRequest}><MoveDown/>Transfer Entities</ListGroupItem>}
+                            {operations.includes(OPERATION.ONLY_NEIGHBOURS) && <ListGroupItem action onClick={() => handleOnlyNeighbours()}><VisibilityOff/>Only Show Neighbours</ListGroupItem>}
                             {operations.includes(OPERATION.SHOW_ALL) && <ListGroupItem action onClick={() => handleShowAll("showAll")}><Visibility/>Show All</ListGroupItem>}
                         </>
                     }
                     {menuCoordinates.type === types.ENTITY &&
                         <>
-                            {operations.includes(OPERATION.TRANSFER_ENTITY) && <ListGroupItem action onClick={handleTransferEntity}><MoveDown/>Transfer Entity</ListGroupItem>}
-                            {operations.includes(OPERATION.FORM_CLUSTER) && <ListGroupItem action onClick={handleFormCluster}><DeviceHub/>Form Cluster</ListGroupItem>}
-                            {operations.includes(OPERATION.COLLAPSE) && <ListGroupItem action onClick={handleCollapseCluster}><Hub/>Collapse Into Cluster</ListGroupItem>}
-                            {operations.includes(OPERATION.ONLY_NEIGHBOURS) && <ListGroupItem action onClick={handleOnlyNeighbours}><VisibilityOff/>Only Show Neighbours</ListGroupItem>}
+                            {operations.includes(OPERATION.COLLAPSE) && <ListGroupItem action onClick={() => handleCollapseCluster()}><Hub/>Collapse Into Cluster</ListGroupItem>}
+                            {operations.includes(OPERATION.FORM_CLUSTER) && <ListGroupItem action onClick={handleFormClusterRequest}><DeviceHub/>Form Cluster</ListGroupItem>}
+                            {operations.includes(OPERATION.ONLY_NEIGHBOURS) && <ListGroupItem action onClick={() => handleOnlyNeighbours()}><VisibilityOff/>Only Show Neighbours</ListGroupItem>}
                             {operations.includes(OPERATION.SHOW_ALL) && <ListGroupItem action onClick={() => handleShowAll("showAll")}><Visibility/>Show All</ListGroupItem>}
                         </>
                     }
@@ -85,7 +83,7 @@ export const ClusterViewRightClickMenu = ({ menuCoordinates, operations,
                     }
                     {menuCoordinates.type === types.MULTIPLE &&
                         <>
-                            {operations.includes(OPERATION.FORM_CLUSTER) && <ListGroupItem action onClick={handleFormCluster}><DeviceHub/>Form Cluster</ListGroupItem>}
+                            {operations.includes(OPERATION.FORM_CLUSTER) && <ListGroupItem action onClick={handleFormClusterRequest}><DeviceHub/>Form Cluster</ListGroupItem>}
                         </>
                     }
                     {operations.includes(OPERATION.CANCEL) && <ListGroupItem action onClick={handleCancel}><Cancel/>Cancel Operation</ListGroupItem>}

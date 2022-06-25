@@ -9,11 +9,11 @@ import {RepositoryService} from "../../services/RepositoryService";
 import AppContext from "./../AppContext";
 import {useParams} from "react-router-dom";
 import {SourceType} from "../../models/sources/Source";
-import {ClusterViewGraph, clusterViewHelp} from "./clusterView/ClusterViewGraph";
+import {clusterViewHelp} from "./clusterView/ClusterViewGraph";
 import {searchType, ViewSearchBar} from "./ViewSearchBar";
 import {ModalProgressBar} from "../util/ModalProgressBar";
-import {toast} from "react-toastify";
 import {ViewSpeedDial} from "../util/ViewSpeedDial";
+import {ClusterViewGraph} from "./clusterView/ClusterViewGraph";
 
 export const views = {
     CLUSTERS: 'Clusters View',
@@ -27,16 +27,18 @@ export const types = {
     ENTITY: 3,
     EDGE: 4,
     MULTIPLE: 5, // When selecting multiple nodes
+    BETWEEN_CLUSTERS: 6,
+    BETWEEN_ENTITIES: 7,
+    BETWEEN_CLUSTER_ENTITY: 8,
 };
 
 export const Views = () => {
     const context = useContext(AppContext);
-    const { translateEntity } = context;
+    const { translateEntity, updateEntityTranslationFile } = context;
     let { codebaseName, strategyName, decompositionName } = useParams();
-    const toastId = useRef(null);
 
     const [view, setView] = useState(views.CLUSTERS);
-    const [reloadProperties, setReloadProperties] = useState({});
+    const [reloadProperties, setReloadProperties] = useState(undefined);
     const [now, setNow] = useState(0);
     const [openSearch, setOpenSearch] = useState(false);
     const [searchItems, setSearchItems] = useState(undefined);
@@ -48,24 +50,28 @@ export const Views = () => {
     const [displayFunctionalities, setDisplayFunctionalities] = useState("none");
     const [actions, setActions] = useState([]);
 
-    // Loads decomposition's properties
     useEffect(() => {
-        let newClusters, newFunctionalities, newTranslateEntity;
-        const service = new RepositoryService();
-        setNow(5);
-        toastId.current = toast.loading("Loading properties...");
-
         // Translation file
-        let first = service.getInputFile(codebaseName, SourceType.IDTOENTITIY).then(source => {
-            const { updateEntityTranslationFile } = context;
+        const service = new RepositoryService();
+        service.getInputFile(codebaseName, SourceType.IDTOENTITIY).then(source => {
             updateEntityTranslationFile(source.data);
-            newTranslateEntity = source.data;
         }).catch(error => {
             console.error(error);
         });
+        setReloadProperties({});
+    }, []);
+
+    // Loads decomposition's properties
+    useEffect(() => {
+        let newClusters, newFunctionalities;
+        const service = new RepositoryService();
+
+        if (reloadProperties === undefined)
+            return;
+        setNow(prev => prev + 10);
 
         // Clusters
-        let second = service.getDecomposition(
+        service.getDecomposition(
             codebaseName,
             strategyName,
             decompositionName
@@ -73,18 +79,13 @@ export const Views = () => {
             newClusters = Object.values(response.data.clusters);
             newFunctionalities = Object.values(response.data.functionalities);
             newClusters = newClusters.sort((a, b) => a.name - b.name);
-            setNow(prev => prev + 25);
-            toast.update(toastId.current, {render: "Loaded Clusters"});
+            if (clusters.length === 0)
+                setNow(prev => prev + 20);
+            else setNow(0);
             setClusters(newClusters);
             setFunctionalities(newFunctionalities);
-        }).catch(error => {
-            toast.update(toastId.current, {render: "An error occurred while fetching the decomposition", type: toast.TYPE.ERROR})
-            console.error(error);
-        });
-
-        Promise.all([first, second]).then(() => {
-            setupSearch(newClusters, newFunctionalities, newTranslateEntity);
-        });
+            setupSearch(newClusters, newFunctionalities);
+        }).catch(error => console.error(error));
     },[reloadProperties]);
 
     useEffect(() => { // Selects the correct view
@@ -100,8 +101,10 @@ export const Views = () => {
         }
     }, [searchedItem]);
 
-    function setupSearch(newClusters, newFunctionalities, newTranslateEntity) {
+    function setupSearch(newClusters, newFunctionalities) {
         let items = [], key = 0;
+        let translations = []; //fixes bug where translateEntity is not yet ready to translate entities
+        updateEntityTranslationFile(prev => {translations = prev; return prev});
 
         newFunctionalities.forEach(functionality =>
             items.push({
@@ -133,7 +136,7 @@ export const Views = () => {
             cluster.entities.forEach(entity =>
                 items.push({
                     keyField: key++,
-                    name: newTranslateEntity[entity],
+                    name: translations[entity] ?? entity,
                     type: searchType.ENTITY,
                     id: entity,
                     entities: "",
@@ -231,7 +234,6 @@ export const Views = () => {
                 {clusters.length !== 0 &&
                     <ClusterViewGraph
                         setNow={setNow}
-                        toastId={toastId}
                         translateEntity={translateEntity}
                         clusters={clusters}
                         setReloadProperties={setReloadProperties}

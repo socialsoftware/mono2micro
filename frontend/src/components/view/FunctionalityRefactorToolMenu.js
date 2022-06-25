@@ -481,6 +481,7 @@ between the one being analyzed and the last one from the same cluster.</p>
             {refactorizationExists &&
                 <div>
                     <Button
+                        className="ms-3"
                         onClick={ () => viewCodebaseRefactor() }
                         variant="contained"
                         color="primary"

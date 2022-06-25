@@ -43,7 +43,7 @@ export const ClusterViewMetricTable = ({clusters, clustersFunctionalities}) => {
             id: id,
             cluster: name,
             entities: entities.length,
-            functionalities: clustersFunctionalities[id] === undefined ? 0 : clustersFunctionalities[id].length,
+            functionalities: clustersFunctionalities[id] === undefined ? "fetching..." : clustersFunctionalities[id].length,
             cohesion: cohesion,
             coupling: coupling,
             complexity: complexity

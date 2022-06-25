@@ -199,7 +199,7 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, functionalitie
     const [visGraph, setVisGraph] = useState({});
     const [redesignVisGraph, setRedesignVisGraph] = useState({});
     const [functionality, setFunctionality] = useState({});
-    const [functionalitiesClusters, setFunctionalitiesClusters] = useState([]);
+    const [functionalitiesClusters, setFunctionalitiesClusters] = useState({});
     const [showGraph, setShowGraph] = useState(false);
     const [localTransactionsSequence, setLocalTransactionsSequence] = useState([]);
     const [currentSubView, setCurrentSubView] = useState("Graph");
@@ -234,9 +234,15 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, functionalitie
     ];
 
     useEffect(() => {
-        loadTransaction();
-        setActions(defaultActions);
-    }, []);
+        setFunctionalitiesClusters([]); // Invalidate functionalitiesClusters since clusters have changed
+    }, [clusters]);
+
+    useEffect(() => {
+        if (Object.keys(functionalitiesClusters).length !== 0 && searchedItem !== undefined) {
+            handleFunctionalitySubmit(searchedItem.name);
+            setSearchedItem(undefined);
+        }
+    }, [functionalitiesClusters]);
 
     useEffect(() => {
         if (view === views.FUNCTIONALITY) {
@@ -248,12 +254,17 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, functionalitie
 
     useEffect(() => {
         if (searchedItem !== undefined && searchedItem.type === searchType.FUNCTIONALITY) {
-            handleFunctionalitySubmit(searchedItem.name);
-            setSearchedItem(undefined);
+            if (Object.keys(functionalitiesClusters).length === 0) { // Will update and only then will search
+                loadFunctionalitiesClusters();
+            }
+            else { // Otherwise updates
+                handleFunctionalitySubmit(searchedItem.name);
+                setSearchedItem(undefined);
+            }
         }
     },[searchedItem]);
 
-    function loadTransaction() {
+    function loadFunctionalitiesClusters() {
         const service = new RepositoryService();
 
         service.getFunctionalitiesClusters(

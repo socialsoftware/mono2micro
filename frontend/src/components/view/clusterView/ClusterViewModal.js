@@ -4,6 +4,9 @@ import Divider from "@mui/material/Divider";
 import React, {useContext, useEffect, useState} from "react";
 import AppContext from "../../AppContext";
 import {ArrowRightAlt} from "@mui/icons-material";
+import CircularProgress from "@mui/material/CircularProgress";
+import {types} from "../Views";
+import {EDGE_LENGTH} from "../../../constants/constants";
 
 const ACCESS_TYPES = {
     1: "READ",
@@ -11,7 +14,7 @@ const ACCESS_TYPES = {
     3: "READ/WRITE"
 };
 
-export const ClusterViewModal = ({clusters, edgeWeights, clustersFunctionalities, visGraph, network, showModal, setShowModal, clickedComponent, setClickedComponent}) => {
+export const ClusterViewModal = ({clusters, edgeWeights, clustersFunctionalities, visGraph, showModal, setShowModal, clickedComponent, setClickedComponent}) => {
     const context = useContext(AppContext);
     const { translateEntity } = context;
 
@@ -19,53 +22,44 @@ export const ClusterViewModal = ({clusters, edgeWeights, clustersFunctionalities
     const [informationText, setInformationText] = useState(undefined);
 
     useEffect(() => {
-        if (clickedComponent === undefined)
+        if (clickedComponent === undefined || clickedComponent.operation !== "doubleClickEvent")
             return;
-        if (clickedComponent.eventType === "doubleClickCluster") {
-            const cluster = clusters.find(cluster => "c" + cluster.id === clickedComponent.id);
-            setTitle("Cluster " + cluster.name + " informations");
-        }
-        else if (clickedComponent.eventType === "doubleClickEntity") {
-            setTitle("Entity " + translateEntity(clickedComponent.id.substring(1)) + " informations");
-        }
+        if (clickedComponent.type === types.CLUSTER)
+            setTitle("Cluster " + clickedComponent.label + " informations");
+        else if (clickedComponent.type === types.ENTITY)
+            setTitle("Entity " + clickedComponent.label + " informations");
         else if (clickedComponent.eventType === "doubleClickEdge") {
-            const edge = network.body.edges[clickedComponent.id];
-            let text = "Edge with ";
-            text += network.clustering.isCluster(edge.fromId)?
-                "cluster " + clusters.find(cluster => "c" + cluster.id === edge.fromId).name :
-                "entity " + translateEntity(Number(edge.fromId.substring(1)));
+            const fromNode = visGraph.nodes.get(clickedComponent.from);
+            const toNode = visGraph.nodes.get(clickedComponent.to);
 
-            text += network.clustering.isCluster(edge.toId)?
-                " and cluster " + clusters.find(cluster => "c" + cluster.id === edge.toId).name :
-                " and entity " + translateEntity(Number(edge.toId.substring(1)));
+            let text = "Edge with ";
+            text += fromNode.type === types.CLUSTER? "cluster " + fromNode.label : "entity " + fromNode.label;
+            text += toNode.type === types.CLUSTER? " and cluster " + toNode.label : " and entity " + toNode.label;
             setTitle(text);
         }
-
     }, [clickedComponent]);
 
     function handleClusterEntities() {
-        const cluster = clusters.find(cluster => "c" + cluster.id === clickedComponent.id);
-        setTitle("Entities that belong to cluster " + cluster.name);
+        setTitle("Entities that belong to cluster " + clickedComponent.label);
 
         setInformationText(
-            <ListGroup>
-                {
-                    cluster.entities.map(entityId =>
-                        <ListGroupItem key={entityId}>{translateEntity(entityId)}</ListGroupItem>
-                    )
-                }
-            </ListGroup>
+            <>
+                <h4>{clickedComponent.entities.length} entities:</h4>
+                <ListGroup>
+                    {clickedComponent.entities.map(entityId => <ListGroupItem key={entityId}>{translateEntity(entityId)}</ListGroupItem>)}
+                </ListGroup>
+            </>
         );
     }
 
     function handleCouplingDependenciesCluster() {
         setTitle("Dependencies between other clusters");
-        const cluster = clusters.find(cluster => "c" + cluster.id === clickedComponent.id);
+        const cluster = clusters.find(cluster => cluster.id === clickedComponent.cid);
         setInformationText(
             <Accordion alwaysOpen={true}>
                 {
                     Object.entries(cluster.couplingDependencies).map(([clusterId, couplingDependency]) => {
-                        const dependencyCluster = clusters.find(c => c.id == clusterId);
+                        const dependencyCluster = clusters.find(c => c.id === Number(clusterId));
                         return (
                             <Accordion.Item eventKey={dependencyCluster.id} key={dependencyCluster.id}>
                                 <Accordion.Header>Depending on the following cluster {dependencyCluster.name} entities:</Accordion.Header>
@@ -83,75 +77,75 @@ export const ClusterViewModal = ({clusters, edgeWeights, clustersFunctionalities
     }
 
     function handleRelatedFunctionalitiesCluster() {
-        const cluster = clusters.find(cluster => "c" + cluster.id === clickedComponent.id);
-        setTitle("Functionalities that access cluster " + cluster.name);
+        setTitle("Functionalities that access cluster " + clickedComponent.label);
 
         setInformationText(
-            <Accordion alwaysOpen={true}>
-                {
-                    clustersFunctionalities[cluster.id].map(functionality => {
-                        return (
-                            <Accordion.Item eventKey={functionality.name} key={functionality.name}>
-                                <Accordion.Header><i>({functionality.type})</i>&ensp;{functionality.name}</Accordion.Header>
-                                <Accordion.Body>
-                                    <ListGroup>
-                                        {
-                                            functionality.entitiesPerCluster[cluster.id].map(entityId =>
-                                                <ListGroupItem key={entityId}>{translateEntity(entityId)}</ListGroupItem>
-                                            )
-                                        }
-                                    </ListGroup>
-                                </Accordion.Body>
-                            </Accordion.Item>
-                        );
-                    })
-                }
-            </Accordion>
+            <>
+                <h4>{clustersFunctionalities[clickedComponent.cid].length} Functionalities:</h4>
+                <Accordion alwaysOpen={true}>
+                    {
+                        clustersFunctionalities[clickedComponent.cid].map(functionality => {
+                            return (
+                                <Accordion.Item eventKey={functionality.name} key={functionality.name}>
+                                    <Accordion.Header><i>({functionality.type})</i>&ensp;{functionality.name}</Accordion.Header>
+                                    <Accordion.Body>
+                                        <ListGroup>
+                                            {
+                                                functionality.entitiesPerCluster[clickedComponent.cid].map(entityId =>
+                                                    <ListGroupItem key={entityId}>{translateEntity(entityId)}</ListGroupItem>
+                                                )
+                                            }
+                                        </ListGroup>
+                                    </Accordion.Body>
+                                </Accordion.Item>
+                            );
+                        })
+                    }
+                </Accordion>
+            </>
         );
     }
 
     function handleRelatedFunctionalitiesEntities() {
-        const entity = visGraph.nodes.get(clickedComponent.id);
-        const entityId = entity.id.substring(1);
-
-        setTitle("Functionalities accessing " + translateEntity(entityId) + " and respective type of access");
+        setTitle("Functionalities accessing " + clickedComponent.label + " and respective type of access");
 
         setInformationText(
-            <ListGroup>
-                {
-                    clustersFunctionalities[entity.cid].map(functionality => {
-                        if (functionality.entities[entityId] !== undefined)
-                            return <ListGroupItem key={functionality.name}><b>{functionality.name}:</b> {ACCESS_TYPES[functionality.entities[entityId]]}</ListGroupItem>;
-                    })
-                }
-            </ListGroup>
+            <>
+                <h4>{clustersFunctionalities[clickedComponent.cid].length} Functionalities:</h4>
+                <ListGroup>
+                    {
+                        clustersFunctionalities[clickedComponent.cid].map(functionality => {
+                            if (functionality.entities[clickedComponent.id] !== undefined)
+                                return <ListGroupItem key={functionality.name}><b>{functionality.name}:</b> {ACCESS_TYPES[functionality.entities[clickedComponent.id]]}</ListGroupItem>;
+                        })
+                    }
+                </ListGroup>
+            </>
         );
     }
 
     function handleRelatedClustersEntities() {
-        const entityId = Number(clickedComponent.id.substring(1));
-        setTitle("Functionalities in common between " + translateEntity(entityId) + " and respective Clusters");
+        setTitle("Functionalities in common between " + clickedComponent.label + " and respective Clusters");
         setInformationText(
             <Accordion alwaysOpen={true}>
                 {
                     Object.entries(clustersFunctionalities).map(([clusterId, functionalities]) => {
-                        const cluster = clusters.find(c => c.id == clusterId);
+                        const cluster = clusters.find(c => c.id === Number(clusterId));
+                        const filteredFunctionalities = functionalities.filter(functionality => functionality.entities[clickedComponent.id]);
+                        if (filteredFunctionalities.length === 0)
+                            return undefined;
                         return (
                             <Accordion.Item eventKey={cluster.id} key={cluster.id}>
-                                {cluster.entities.includes(entityId) &&
+                                {cluster.entities.includes(clickedComponent.id) &&
                                     <Accordion.Header>In common inside own cluster ({cluster.name}):</Accordion.Header>
                                 }
-                                {!cluster.entities.includes(entityId) &&
+                                {!cluster.entities.includes(clickedComponent.id) &&
                                     <Accordion.Header>In common with cluster {cluster.name}:</Accordion.Header>
                                 }
                                 <Accordion.Body>
                                     <ListGroup>
-                                        {
-                                            functionalities.map(functionality => {
-                                                if (functionality.entities[entityId] !== undefined)
-                                                    return <ListGroupItem key={functionality.name}>{functionality.name}</ListGroupItem>;
-                                            })
-                                        }
+                                        <h5>{filteredFunctionalities.length} Functionalities in common with {clickedComponent.label} and Cluster {cluster.name}</h5>
+                                        { filteredFunctionalities.map(functionality => <ListGroupItem key={functionality.name}>{functionality.name}</ListGroupItem>) }
                                     </ListGroup>
                                 </Accordion.Body>
                             </Accordion.Item>
@@ -163,9 +157,8 @@ export const ClusterViewModal = ({clusters, edgeWeights, clustersFunctionalities
     }
 
     function handleCouplingDependenciesFunctionality() {
-        const edge = network.body.edges[clickedComponent.id];
-        const c1 = clusters.find(cluster => "c" + cluster.id === edge.fromId);
-        const c2 = clusters.find(cluster => "c" + cluster.id === edge.toId);
+        const c1 = clusters.find(cluster => "c" + cluster.id === clickedComponent.from);
+        const c2 = clusters.find(cluster => "c" + cluster.id === clickedComponent.to);
 
         setTitle("Dependencies between Cluster " + c1.name + " and " + c2.name);
 
@@ -207,46 +200,48 @@ export const ClusterViewModal = ({clusters, edgeWeights, clustersFunctionalities
     }
 
     function handleCommonFunctionalitiesBetweenClusters() {
-        const edge = network.body.edges[clickedComponent.id];
-        const c1 = clusters.find(cluster => "c" + cluster.id === edge.fromId);
-        const c2 = clusters.find(cluster => "c" + cluster.id === edge.toId);
+        const c1 = clusters.find(cluster => "c" + cluster.id === clickedComponent.from);
+        const c2 = clusters.find(cluster => "c" + cluster.id === clickedComponent.to);
         const cluster1Functionalities = clustersFunctionalities[c1.id].map(c => c.name);
         const cluster2Functionalities = clustersFunctionalities[c2.id].map(c => c.name);
         const functionalitiesInCommon = cluster1Functionalities.filter(functionalityName => cluster2Functionalities.includes(functionalityName))
 
         setTitle("Functionalities that interact with Cluster " + c1.name + " and Cluster " + c2.name);
         setInformationText(
-            <ListGroup>
-                {functionalitiesInCommon.map(func => <ListGroupItem key={func}>{func}</ListGroupItem>)}
-            </ListGroup>
+            <>
+                <h4>{functionalitiesInCommon.length} functionalities in common:</h4>
+                <ListGroup>
+                    {functionalitiesInCommon.map(func => <ListGroupItem key={func}>{func}</ListGroupItem>)}
+                </ListGroup>
+            </>
         );
     }
 
     function handleCommonFunctionalitiesBetweenClusterEntity() {
-        const edge = network.body.edges[clickedComponent.id];
         let cluster;
         let entity;
-        if (network.clustering.isCluster(edge.fromId)) {
-            cluster = clusters.find(c => "c" + c.id === edge.fromId);
-            entity = edge.toId;
+        if (visGraph.nodes.get(clickedComponent.from).type === types.CLUSTER) {
+            cluster = clusters.find(c => "c" + c.id === clickedComponent.from);
+            entity = clickedComponent.to;
         }
         else {
-            cluster = clusters.find(c => "c" + c.id === edge.toId);
-            entity = edge.fromId;
+            cluster = clusters.find(c => "c" + c.id === clickedComponent.to);
+            entity = clickedComponent.from;
         }
-        const entityId = Number(entity.substring(1));
+        const filteredClustersFunctionalities = clustersFunctionalities[cluster.id].filter(functionality => functionality.entities[entity]);
 
-        setTitle("Functionalities that interact with Cluster " + cluster.name + " and entity " + translateEntity(entityId));
+        setTitle("Functionalities that interact with Cluster " + cluster.name + " and entity " + translateEntity(entity));
 
         setInformationText(
-            <Accordion alwaysOpen={true}>
-                {
-                    clustersFunctionalities[cluster.id].map(functionality => {
-                        if (functionality.entities[entityId] !== undefined) {
+            <>
+                <h4>{filteredClustersFunctionalities.length} Functionalities in common:</h4>
+                <Accordion alwaysOpen={true}>
+                    {
+                        filteredClustersFunctionalities.map(functionality => {
                             return <Accordion.Item eventKey={functionality.name} key={functionality.name}>
                                 <Accordion.Header>{functionality.name}</Accordion.Header>
                                 <Accordion.Body>
-                                    Accesses entity {translateEntity(entityId)} in <i>{ACCESS_TYPES[functionality.entities[entityId]]}</i><br/>
+                                    Accesses entity {translateEntity(entity)} in <i>{ACCESS_TYPES[functionality.entities[entity]]}</i><br/>
                                     And accesses the following entities of Cluster {cluster.name}:
                                     <ListGroup>
                                         {
@@ -257,60 +252,61 @@ export const ClusterViewModal = ({clusters, edgeWeights, clustersFunctionalities
                                     </ListGroup>
                                 </Accordion.Body>
                             </Accordion.Item>;
-                        }
-                    })
-                }
-            </Accordion>
+                        })
+                    }
+                </Accordion>
+            </>
         );
     }
 
     function handleCommonFunctionalitiesBetweenEntities() {
-        const edge = network.body.edges[clickedComponent.id];
-        const e1ID = Number(edge.fromId.substring(1));
-        const e2ID = Number(edge.toId.substring(1));
-        const e1Cluster = clusters.find(c => c.id === visGraph.nodes.get(edge.fromId).cid);
+        const e1ID = clickedComponent.from;
+        const e2ID = clickedComponent.to;
+        const e1Cluster = clusters.find(c => c.id === visGraph.nodes.get(e1ID).cid);
         const weights = edgeWeights.find(w => w.e1ID === e1ID && w.e2ID === e2ID);
 
+        setTitle("Functionalities that interact with Entity " + translateEntity(e1ID) + " and Entity " + translateEntity(e2ID));
+
         setInformationText(
-            <Accordion alwaysOpen={true}>
-                {
-                    weights.functionalities.map(functionalityName => {
-                        const functionality = clustersFunctionalities[e1Cluster.id].find(f => f.name === functionalityName);
-                        return <Accordion.Item eventKey={functionalityName} key={functionalityName}>
-                            <Accordion.Header>{functionalityName}</Accordion.Header>
-                            <Accordion.Body>
-                                <ListGroup>
-                                    <ListGroupItem> Entity {translateEntity(e1ID)} <i>({ACCESS_TYPES[functionality.entities[e1ID]]})</i> </ListGroupItem>
-                                    <ListGroupItem> Entity {translateEntity(e2ID)} <i>({ACCESS_TYPES[functionality.entities[e2ID]]})</i> </ListGroupItem>
-                                </ListGroup>
-                            </Accordion.Body>
-                        </Accordion.Item>;
-                    })
-                }
-            </Accordion>
+            <>
+                <h4>{weights.functionalities.length} Functionalities in common:</h4>
+                <Accordion alwaysOpen={true}>
+                    {
+                        weights.functionalities.map(functionalityName => {
+                            const functionality = clustersFunctionalities[e1Cluster.id].find(f => f.name === functionalityName);
+                            return <Accordion.Item eventKey={functionalityName} key={functionalityName}>
+                                <Accordion.Header>{functionalityName}</Accordion.Header>
+                                <Accordion.Body>
+                                    <ListGroup>
+                                        <ListGroupItem> Entity {translateEntity(e1ID)} <i>({ACCESS_TYPES[functionality.entities[e1ID]]})</i> </ListGroupItem>
+                                        <ListGroupItem> Entity {translateEntity(e2ID)} <i>({ACCESS_TYPES[functionality.entities[e2ID]]})</i> </ListGroupItem>
+                                    </ListGroup>
+                                </Accordion.Body>
+                            </Accordion.Item>;
+                        })
+                    }
+                </Accordion>
+            </>
         );
     }
 
     function copheneticDistance() {
-        const edge = network.body.edges[clickedComponent.id];
-        const e1ID = Number(edge.fromId.substring(1));
-        const e2ID = Number(edge.toId.substring(1));
-        const weights = edgeWeights.find(w => w.e1ID === e1ID && w.e2ID === e2ID);
         return (<Button className="flex-grow-1 mt-2" variant="success" disabled={true}>
-                Cophenetic Distance: {weights.dist}
+                {clickedComponent.type !== types.BETWEEN_ENTITIES && "Average"} Cophenetic Distance: {clickedComponent.length/EDGE_LENGTH}
             </Button>);
     }
 
     function isDependencyClusterEntityEdge() {
-        const edge = network.body.edges[clickedComponent.id];
+        const fromNode = visGraph.nodes.get(clickedComponent.from);
+        const toNode = visGraph.nodes.get(clickedComponent.to);
         let cluster;
         let entityId;
-        if (network.clustering.isCluster(edge.fromId)) {
-            cluster = clusters.find(c => "c" + c.id === edge.fromId);
-            entityId = Number(edge.toId.substring(1));
+        if (fromNode.type === types.CLUSTER) {
+            cluster = clusters.find(c => c.id === fromNode.cid);
+            entityId = toNode.id;
         } else {
-            cluster = clusters.find(c => "c" + c.id === edge.toId);
-            entityId = Number(edge.fromId.substring(1));
+            cluster = clusters.find(c => c.id === toNode.cid);
+            entityId = fromNode.id;
         }
         if (Object.values(cluster.couplingDependencies).flatMap(dep => dep).includes(entityId))
             return (<><Button className="flex-grow-1 mt-2" variant="success" disabled={true}>
@@ -350,47 +346,53 @@ export const ClusterViewModal = ({clusters, edgeWeights, clustersFunctionalities
                             </div>
                         </>
                     }
-                    {informationText === undefined && clickedComponent !== undefined && clickedComponent.eventType === "doubleClickCluster" &&
-                        <>
-                            <div className="d-flex flex-row">
-                                <Button className="flex-grow-1 mt-2" variant="primary" onClick={handleClusterEntities}>
-                                    Cluster's Entities
-                                </Button>
-                            </div>
-                            <div className="d-flex flex-row">
-                                <Button className="flex-grow-1 mt-2" variant="primary" onClick={handleCouplingDependenciesCluster}>
-                                    Coupling Dependencies
-                                </Button>
-                            </div>
-                            <div className="d-flex flex-row">
-                                <Button className="flex-grow-1 mt-2" variant="primary" onClick={handleRelatedFunctionalitiesCluster}>
-                                    Related Functionalities
-                                </Button>
-                            </div>
-                            <Divider className="mt-2"></Divider>
-                        </>
+                    {Object.keys(clustersFunctionalities).length === 0 &&
+                        <div style={{ margin: "auto", textAlign: "center"}}>
+                            <CircularProgress/>
+                        </div>
                     }
-                    {informationText === undefined && clickedComponent !== undefined && clickedComponent.eventType === "doubleClickEntity" &&
+                    {Object.keys(clustersFunctionalities).length !== 0 && informationText === undefined && clickedComponent !== undefined &&
                         <>
-                            <div className="d-flex flex-row">
-                                <Button className="flex-grow-1 mt-2" variant="primary" onClick={handleRelatedFunctionalitiesEntities}>
-                                    Related Functionalities
-                                </Button>
-                            </div>
-                            <div className="d-flex flex-row">
-                                <Button className="flex-grow-1 mt-2" variant="primary" onClick={handleRelatedClustersEntities}>
-                                    Related Clusters
-                                </Button>
-                            </div>
-                            <Divider className="mt-2"></Divider>
-                        </>
-                    }
-                    {informationText === undefined && clickedComponent !== undefined && clickedComponent.eventType === "doubleClickEdge" &&
-                        <>
-                            {/*Between clusters*/}
-                            {network.clustering.isCluster(network.body.edges[clickedComponent.id].fromId) &&
-                             network.clustering.isCluster(network.body.edges[clickedComponent.id].toId) &&
+                            {clickedComponent.type === types.CLUSTER &&
                                 <>
+                                    <div className="d-flex flex-row">
+                                        <Button className="flex-grow-1 mt-2" variant="primary" onClick={handleClusterEntities}>
+                                            Cluster's Entities ({clickedComponent.entities.length} Entities)
+                                        </Button>
+                                    </div>
+                                    <div className="d-flex flex-row">
+                                        <Button className="flex-grow-1 mt-2" variant="primary" onClick={handleCouplingDependenciesCluster}>
+                                            Coupling Dependencies
+                                        </Button>
+                                    </div>
+                                    <div className="d-flex flex-row">
+                                        <Button className="flex-grow-1 mt-2" variant="primary" onClick={handleRelatedFunctionalitiesCluster}>
+                                            Related Functionalities
+                                        </Button>
+                                    </div>
+                                    <Divider className="mt-2"></Divider>
+                                </>
+                            }
+                            {clickedComponent.type === types.ENTITY &&
+                                <>
+                                    <div className="d-flex flex-row">
+                                        <Button className="flex-grow-1 mt-2" variant="primary" onClick={handleRelatedFunctionalitiesEntities}>
+                                            Related Functionalities
+                                        </Button>
+                                    </div>
+                                    <div className="d-flex flex-row">
+                                        <Button className="flex-grow-1 mt-2" variant="primary" onClick={handleRelatedClustersEntities}>
+                                            Related Clusters
+                                        </Button>
+                                    </div>
+                                    <Divider className="mt-2"></Divider>
+                                </>
+                            }
+                            {clickedComponent.type === types.BETWEEN_CLUSTERS &&
+                                <>
+                                    <div className="d-flex flex-row">
+                                        {copheneticDistance()}
+                                    </div>
                                     <div className="d-flex flex-row">
                                         <Button className="flex-grow-1 mt-2" variant="primary" onClick={handleCouplingDependenciesFunctionality}>
                                             Coupling Dependencies
@@ -404,9 +406,7 @@ export const ClusterViewModal = ({clusters, edgeWeights, clustersFunctionalities
                                     <Divider className="mt-2"></Divider>
                                 </>
                             }
-                            {/*Between entities*/}
-                            {!network.clustering.isCluster(network.body.edges[clickedComponent.id].fromId) &&
-                             !network.clustering.isCluster(network.body.edges[clickedComponent.id].toId) &&
+                            {clickedComponent.type === types.BETWEEN_ENTITIES &&
                                 <>
                                     <div className="d-flex flex-row">
                                         {copheneticDistance()}
@@ -419,10 +419,11 @@ export const ClusterViewModal = ({clusters, edgeWeights, clustersFunctionalities
                                     <Divider className="mt-2"></Divider>
                                 </>
                             }
-                            {/*Between cluster and entity*/}
-                            {(!network.clustering.isCluster(network.body.edges[clickedComponent.id].fromId) && network.clustering.isCluster(network.body.edges[clickedComponent.id].toId) ||
-                              network.clustering.isCluster(network.body.edges[clickedComponent.id].fromId) && !network.clustering.isCluster(network.body.edges[clickedComponent.id].toId)) &&
+                            {clickedComponent.type === types.BETWEEN_CLUSTER_ENTITY &&
                                 <>
+                                    <div className="d-flex flex-row">
+                                        {copheneticDistance()}
+                                    </div>
                                     <div className="d-flex flex-row">
                                         {isDependencyClusterEntityEdge()}
                                     </div>

@@ -38,9 +38,6 @@ public class ClusterController {
 		logger.debug("mergeClusters");
 
 		try {
-			// FIXME Each dendrogram directory would have a folder for controllers and another for clusters
-			// FIXME Each controller and cluster would have its own json file
-
 			AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
 			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyName);
 			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
@@ -82,9 +79,6 @@ public class ClusterController {
 		logger.debug("renameCluster");
 
 		try {
-			// FIXME Each dendrogram directory would have a folder for controllers and another for clusters
-			// FIXME Each controller and cluster would have its own json file
-
 			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
 					codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName
 			);
@@ -118,9 +112,6 @@ public class ClusterController {
 		logger.debug("splitCluster");
 
 		try {
-			// FIXME Each dendrogram directory would have a folder for controllers and another for clusters
-			// FIXME Each controller and cluster would have its own json file
-
 			AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
 			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyName);
 			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
@@ -166,9 +157,6 @@ public class ClusterController {
 		logger.debug("transferEntities");
 
 		try {
-			// FIXME Each dendrogram directory would have a folder for controllers and another for clusters
-			// FIXME Each controller and cluster would have its own json file
-
 			AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
 			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyName);
 			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
@@ -271,14 +259,11 @@ public class ClusterController {
 			@PathVariable String strategyName,
 			@PathVariable String decompositionName,
 			@RequestParam String newName,
-			@RequestParam String entities
+			@RequestBody Map<Short, List<Short>> entities // <clusterId, entitiesIds[]> This additional information might be useful in the future
 	) {
 		logger.debug("formCluster");
 
 		try {
-			// FIXME Each dendrogram directory would have a folder for controllers and another for clusters
-			// FIXME Each controller and cluster would have its own json file
-
 			AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
 			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyName);
 			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
@@ -287,7 +272,7 @@ public class ClusterController {
 
 			decomposition.formCluster(
 					newName,
-					entities.split(",")
+					entities.values().stream().flatMap(Collection::stream).map(Object::toString).toArray(String[]::new)
 			);
 
 			decomposition.setupFunctionalities(

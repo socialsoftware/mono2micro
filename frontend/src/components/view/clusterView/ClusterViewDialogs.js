@@ -1,7 +1,7 @@
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 import BootstrapTable from "react-bootstrap-table-next";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {ArrowRightAlt} from "@mui/icons-material";
 
 export const DIALOG_TYPE = {
@@ -17,15 +17,35 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
 
     const [name, setName] = useState('');
     const [selectedEntities, setSelectedEntities] = useState([]);
+    const [textError, setTextError] = useState(false);
+
+    useEffect(() => {
+        setTextError(false);
+    }, [requestDialog]);
+
+    useEffect(() => {
+        if (name !== '')
+            setTextError(false);
+    }, [name]);
+
+    function handleChangeName(newName) {
+        if (name.length !== 0 && newName.length === 0)
+            setTextError(true);
+        setName(newName);
+    }
 
     function handleRename() {
         if (name !== '')
             setDialogResponse({type: DIALOG_TYPE.RENAME, newName: name});
+        else setTextError(true);
     }
 
     function handleTransfer() {
-        if (selectedEntities.selectionContext.selected.length !== 0)
-            setDialogResponse({type: DIALOG_TYPE.TRANSFER, entities: selectedEntities.selectionContext.selected});
+        if (selectedEntities.selectionContext.selected.length !== 0) {
+            if (requestDialog.entities.length === selectedEntities.selectionContext.selected.length)
+                setDialogResponse({type: DIALOG_TYPE.MERGE, newName: requestDialog.toCluster});
+            else setDialogResponse({type: DIALOG_TYPE.TRANSFER, entities: selectedEntities.selectionContext.selected});
+        }
     }
 
     function handleTransferEntity() {
@@ -35,16 +55,35 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
     function handleMerge() {
         if (name !== '')
             setDialogResponse({type: DIALOG_TYPE.MERGE, newName: name});
+        else setTextError(true);
     }
 
     function handleSplit() {
-        if (name !== '' && selectedEntities.selectionContext.selected.length !== 0)
-            setDialogResponse({type:DIALOG_TYPE.SPLIT, newName: name, entities: selectedEntities.selectionContext.selected});
+        if (name !== '') {
+            if (selectedEntities.selectionContext.selected.length !== 0) {
+                if (requestDialog.entities.length === selectedEntities.selectionContext.selected.length)
+                    setDialogResponse({ type: DIALOG_TYPE.RENAME, newName: name });
+                setDialogResponse({ type: DIALOG_TYPE.SPLIT, newName: name, entities: selectedEntities.selectionContext.selected });
+            } else handleCancel();
+        }
+        else setTextError(true);
     }
 
     function handleFormCluster() {
-        if (name !== '' && selectedEntities.selectionContext.selected.length !== 0)
-            setDialogResponse({type:DIALOG_TYPE.FORM_CLUSTER, newName: name, entities: selectedEntities.selectionContext.selected});
+        if (name !== '') {
+            if (selectedEntities.selectionContext.selected.length !== 0) {
+                let entities = {};
+                selectedEntities.selectionContext.selected.forEach(selectedEntity => {
+                    const entity = requestDialog.entities.find(entity => entity.id === selectedEntity);
+                    let clusterEntities = entities[entity.cid];
+                    if (clusterEntities)
+                        clusterEntities.push(entity.id);
+                    else entities[entity.cid] = [entity.id];
+                });
+                setDialogResponse({type: DIALOG_TYPE.FORM_CLUSTER, newName: name, entities});
+            }
+        }
+        else setTextError(true);
     }
 
     return (
@@ -59,14 +98,14 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
                     </DialogContentText>
                     <TextField
                         autoFocus
-                        required={true}
+                        error={textError}
                         margin="normal"
                         id="name"
                         label="New name"
                         type="text"
                         fullWidth
                         variant="standard"
-                        onChange={event => setName(event.target.value)}
+                        onChange={event => handleChangeName(event.target.value)}
                     />
                 </DialogContent>
                 <DialogActions>
@@ -126,14 +165,14 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
                     </DialogContentText>
                     <TextField
                         autoFocus
-                        required={true}
+                        error={textError}
                         margin="normal"
                         id="name"
                         label="Merged cluster's name"
                         type="text"
                         fullWidth
                         variant="standard"
-                        onChange={event => setName(event.target.value)}
+                        onChange={event => handleChangeName(event.target.value)}
                     />
                 </DialogContent>
                 <DialogActions>
@@ -151,14 +190,14 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
                     </DialogContentText>
                     <TextField
                         autoFocus
-                        required={true}
+                        error={textError}
                         margin="normal"
                         id="name"
                         label="New cluster"
                         type="text"
                         fullWidth
                         variant="standard"
-                        onChange={event => setName(event.target.value)}
+                        onChange={event => handleChangeName(event.target.value)}
                     />
                     <BootstrapTable
                         keyField={'id'}
@@ -188,14 +227,14 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
                     </DialogContentText>
                     <TextField
                         autoFocus
-                        required={true}
+                        error={textError}
                         margin="normal"
                         id="name"
                         label="New cluster"
                         type="text"
                         fullWidth
                         variant="standard"
-                        onChange={event => setName(event.target.value)}
+                        onChange={event => handleChangeName(event.target.value)}
                     />
                     <BootstrapTable
                         keyField={'id'}
@@ -205,7 +244,7 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
                             { dataField: 'name', text: 'Entity Name', sort: true },
                             { dataField: 'cluster', text: 'Cluster Name', sort: true }
                         ]}
-                        selectRow={{mode: 'checkbox', clickToSelect: true, hideSelectAll: true, selected: requestDialog.entities === undefined? [] : requestDialog.entities.map(entity => entity.id)}}
+                        selectRow={{mode: 'checkbox', clickToSelect: true}}
                         ref={n => setSelectedEntities(n)}
                     />
                 </DialogContent>
