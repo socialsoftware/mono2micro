@@ -143,7 +143,7 @@ export const ClusterViewModal = ({clusters, edgeWeights, outdated, clustersFunct
                                 }
                                 <Accordion.Body>
                                     <ListGroup>
-                                        <h5>{filteredFunctionalities.length} Functionalities in common with {clickedComponent.label} and Cluster {cluster.name}</h5>
+                                        <h5>{filteredFunctionalities.length} Functionalities in common:</h5>
                                         { filteredFunctionalities.map(functionality => <ListGroupItem key={functionality.name}>{functionality.name}</ListGroupItem>) }
                                     </ListGroup>
                                 </Accordion.Body>

@@ -482,115 +482,139 @@ function updateNetwork() {
     }, [stabilizationProgress]);
 
     function handleExpandCluster(clusterNode = undefined) {
-        if (clusterNode === undefined)
-            clusterNode = clickedComponent.node;
-        const position = network.getPosition(clusterNode.id);
-        const relatedNodesAndEdges = getRelatedNodesAndEdges([clusterNode.id]);
-        visGraph.nodes.remove(clusterNode.id);
-        visGraph.edges.remove(relatedNodesAndEdges.edges.map(edge => edge.id));
+        let toastId = toast.loading("Processing entity nodes...", {type: toast.TYPE.INFO});
+        setTimeout(() => {
+            if (clusterNode === undefined)
+                clusterNode = clickedComponent.node;
+            const position = network.getPosition(clusterNode.id);
+            const relatedNodesAndEdges = getRelatedNodesAndEdges([clusterNode.id]);
+            visGraph.nodes.remove(clusterNode.id);
+            visGraph.edges.remove(relatedNodesAndEdges.edges.map(edge => edge.id));
 
-        const nodes = clusterNode.entities.map(entity => createEntity(entity, {id: clusterNode.cid, name: clusterNode.label}, position));
-        visGraph.nodes.add(nodes);
+            const nodes = clusterNode.entities.map(entity => createEntity(entity, {id: clusterNode.cid, name: clusterNode.label}, position));
+            visGraph.nodes.add(nodes);
 
-        const newGraphEdges = generateNewAndAffectedEdges(nodes, relatedNodesAndEdges.nodes);
-        visGraph.edges.add(newGraphEdges);
+            const newGraphEdges = generateNewAndAffectedEdges(nodes, relatedNodesAndEdges.nodes);
+            visGraph.edges.add(newGraphEdges);
+            toast.dismiss(toastId);
+        }, 50);
         clearMenu();
     }
 
     function handleExpandAll() {
-        let clusterNodes = [], newNodes = [], existingNodes = [];
-        visGraph.nodes.get().forEach(node => {
-            if (node.type === types.CLUSTER) {
-                const position = network.getPosition(node.id);
-                newNodes.push(...node.entities.map(entity => createEntity(entity, {id: node.cid, name: node.label}, position)));
-                clusterNodes.push(node);
-            }
-            else existingNodes.push(node);
-        });
+        let toastId = toast.loading("Processing entity nodes...", {type: toast.TYPE.INFO});
+        setTimeout(() => {
+            let clusterNodes = [], newNodes = [], existingNodes = [];
+            visGraph.nodes.get().forEach(node => {
+                if (node.type === types.CLUSTER) {
+                    const position = network.getPosition(node.id);
+                    newNodes.push(...node.entities.map(entity => createEntity(entity, {id: node.cid, name: node.label}, position)));
+                    clusterNodes.push(node);
+                }
+                else existingNodes.push(node);
+            });
 
-        visGraph.nodes.remove(clusterNodes.map(cluster => cluster.id));
-        visGraph.edges.remove(visGraph.edges.get().filter(edge => edge.type !== types.BETWEEN_ENTITIES).map(edge => edge.id));
-        visGraph.nodes.add(newNodes);
+            visGraph.nodes.remove(clusterNodes.map(cluster => cluster.id));
+            visGraph.edges.remove(visGraph.edges.get().filter(edge => edge.type !== types.BETWEEN_ENTITIES).map(edge => edge.id));
+            visGraph.nodes.add(newNodes);
 
-        const newGraphEdges = generateNewAndAffectedEdges(newNodes, existingNodes);
+            const newGraphEdges = generateNewAndAffectedEdges(newNodes, existingNodes);
 
-        visGraph.edges.add(newGraphEdges);
+            visGraph.edges.add(newGraphEdges);
+            toast.dismiss(toastId);
+        }, 50);
         clearMenu();
     }
 
     function handleCollapseCluster(clusterId = undefined) {
-        if (clusterId === undefined)
-            clusterId = clickedComponent.node.cid;
-        const entityNodes = visGraph.nodes.get().filter(node => node.cid === clusterId);
-        const clusterEntities = entityNodes.map(node => node.id);
-        const relatedNodesAndEdges = getRelatedNodesAndEdges(clusterEntities);
-        const newClusterNode = createCluster({id: entityNodes[0].cid, name: entityNodes[0].clusterName, entities: clusterEntities});
+        let toastId = toast.loading("Processing cluster node...", {type: toast.TYPE.INFO});
+        setTimeout(() => {
+            if (clusterId === undefined)
+                clusterId = clickedComponent.node.cid;
+            const entityNodes = visGraph.nodes.get().filter(node => node.cid === clusterId);
+            const clusterEntities = entityNodes.map(node => node.id);
+            const relatedNodesAndEdges = getRelatedNodesAndEdges(clusterEntities);
+            const newClusterNode = createCluster({id: entityNodes[0].cid, name: entityNodes[0].clusterName, entities: clusterEntities});
 
-        const newGraphEdges = generateNewAndAffectedEdges([newClusterNode], relatedNodesAndEdges.nodes);
+            const newGraphEdges = generateNewAndAffectedEdges([newClusterNode], relatedNodesAndEdges.nodes);
 
-        visGraph.nodes.remove(clusterEntities);
-        visGraph.edges.remove(relatedNodesAndEdges.edges.map(edge => edge.id));
+            visGraph.nodes.remove(clusterEntities);
+            visGraph.edges.remove(relatedNodesAndEdges.edges.map(edge => edge.id));
 
-        visGraph.nodes.add(newClusterNode);
-        visGraph.edges.add(newGraphEdges);
+            visGraph.nodes.add(newClusterNode);
+            visGraph.edges.add(newGraphEdges);
+            toast.dismiss(toastId);
+        }, 50);
         clearMenu();
     }
 
     function handleCollapseAll() {
-        let existingClusterNodes = [], clusterNodeInformation = {};
-        const entityNodes = visGraph.nodes.get().filter(node => {
-            if (node.type === types.CLUSTER) {
-                existingClusterNodes.push(node);
-                return false;
-            }
-            else {
-                let info = clusterNodeInformation[node.cid];
-                if (info === undefined)
-                    clusterNodeInformation[node.cid] = {id: node.cid, name: node.clusterName, entities: [node.id]}
-                else info.entities.push(node.id);
-                return true;
-            }
-        });
-        visGraph.nodes.remove(entityNodes.map(entity => entity.id));
-        visGraph.edges.remove(visGraph.edges.get().filter(edge => edge.type !== types.BETWEEN_CLUSTERS).map(edge => edge.id));
+        let toastId = toast.loading("Processing cluster nodes...", {type: toast.TYPE.INFO});
+        setTimeout(() => {
+            let existingClusterNodes = [], clusterNodeInformation = {};
+            const entityNodes = visGraph.nodes.get().filter(node => {
+                if (node.type === types.CLUSTER) {
+                    existingClusterNodes.push(node);
+                    return false;
+                }
+                else {
+                    let info = clusterNodeInformation[node.cid];
+                    if (info === undefined)
+                        clusterNodeInformation[node.cid] = {id: node.cid, name: node.clusterName, entities: [node.id]}
+                    else info.entities.push(node.id);
+                    return true;
+                }
+            });
+            visGraph.nodes.remove(entityNodes.map(entity => entity.id));
+            visGraph.edges.remove(visGraph.edges.get().filter(edge => edge.type !== types.BETWEEN_CLUSTERS).map(edge => edge.id));
 
-        const newClusterNodes = Object.values(clusterNodeInformation).map(cluster => createCluster(cluster));
-        const newGraphEdges = generateNewAndAffectedEdges(newClusterNodes, existingClusterNodes);
+            const newClusterNodes = Object.values(clusterNodeInformation).map(cluster => createCluster(cluster));
+            const newGraphEdges = generateNewAndAffectedEdges(newClusterNodes, existingClusterNodes);
 
-        visGraph.nodes.add(newClusterNodes);
-        visGraph.edges.add(newGraphEdges);
+            visGraph.nodes.add(newClusterNodes);
+            visGraph.edges.add(newGraphEdges);
+            toast.dismiss(toastId);
+        }, 50);
         clearMenu();
     }
 
     function handleOnlyNeighbours(entityNode = undefined) {
         if (operations.includes(OPERATION.SHOW_ALL)) // Needs to reset the visible nodes and edges before hiding them again
             handleShowAll("showAll");
-        if (entityNode === undefined)
-            entityNode = clickedComponent.node;
-        const relatedNodesAndEdges = getRelatedNodesAndEdges([entityNode.id]);
-        relatedNodesAndEdges.nodes.push(entityNode);
-        const relatedNodes = relatedNodesAndEdges.nodes.map(node => node.id);
-        const relatedEdges = relatedNodesAndEdges.edges.map(edge => edge.id);
 
-        visGraph.nodes.update(visGraph.nodes.get().filter(node => !relatedNodes.includes(node.id)).map(node => ({id: node.id, hidden: true})));
-        visGraph.edges.update(visGraph.edges.get().filter(edge => !relatedEdges.includes(edge.id)).map(edge => ({id: edge.id, hidden: true})));
-        setOperations([OPERATION.SHOW_ALL, OPERATION.EXPAND, OPERATION.TOGGLE_PHYSICS]);
+        let toastId = toast.loading("Hiding nodes...", {type: toast.TYPE.INFO});
+        setTimeout(() => {
+            if (entityNode === undefined)
+                entityNode = clickedComponent.node;
+            const relatedNodesAndEdges = getRelatedNodesAndEdges([entityNode.id]);
+            relatedNodesAndEdges.nodes.push(entityNode);
+            const relatedNodes = relatedNodesAndEdges.nodes.map(node => node.id);
+            const relatedEdges = relatedNodesAndEdges.edges.map(edge => edge.id);
+
+            visGraph.nodes.update(visGraph.nodes.get().filter(node => !relatedNodes.includes(node.id)).map(node => ({id: node.id, hidden: true})));
+            visGraph.edges.update(visGraph.edges.get().filter(edge => !relatedEdges.includes(edge.id)).map(edge => ({id: edge.id, hidden: true})));
+            setOperations([OPERATION.SHOW_ALL, OPERATION.EXPAND, OPERATION.TOGGLE_PHYSICS]);
+            toast.dismiss(toastId);
+        }, 50);
         clearMenu();
     }
 
     function handleShowAll(type) {
-
-        if (type === "showAll") {
-            visGraph.nodes.update(visGraph.nodes.get().filter(node => node.hidden).map(node => ({ id: node.id, hidden: false })));
-            visGraph.edges.update(visGraph.edges.get().filter(edge => edge.hidden).map(edge => ({ id: edge.id, hidden: false })));
-        }
-        else if (type === "restore" && graphPositions !== undefined) {
-            visGraph.nodes.remove(visGraph.nodes.get().map(node => node.id));
-            visGraph.edges.remove(visGraph.edges.get().map(edge => edge.id));
-            visGraph.nodes.add(graphPositions.nodes);
-            visGraph.edges.add(graphPositions.edges);
-        }
-        defaultOperations();
+        let toastId = toast.loading(type === "showAll"? "Showing all nodes..." : "Restoring all nodes...", {type: toast.TYPE.INFO});
+        setTimeout(() => {
+            if (type === "showAll") {
+                visGraph.nodes.update(visGraph.nodes.get().filter(node => node.hidden).map(node => ({ id: node.id, hidden: false })));
+                visGraph.edges.update(visGraph.edges.get().filter(edge => edge.hidden).map(edge => ({ id: edge.id, hidden: false })));
+            }
+            else if (type === "restore" && graphPositions !== undefined) {
+                visGraph.nodes.remove(visGraph.nodes.get().map(node => node.id));
+                visGraph.edges.remove(visGraph.edges.get().map(edge => edge.id));
+                visGraph.nodes.add(graphPositions.nodes);
+                visGraph.edges.add(graphPositions.edges);
+            }
+            defaultOperations();
+            toast.dismiss(toastId);
+        }, 50);
         clearMenu();
     }
 

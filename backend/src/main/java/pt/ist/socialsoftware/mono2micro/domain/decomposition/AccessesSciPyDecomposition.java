@@ -357,11 +357,7 @@ public class AccessesSciPyDecomposition extends Decomposition {
     ) {
         if (clusterNameExists(newName)) throw new KeyAlreadyExistsException("Cluster with name: " + newName + " already exists");
 
-        Cluster removedCluster = removeCluster(clusterID);
-
-        removedCluster.setName(newName);
-
-        addCluster(new Cluster(removedCluster));
+        getCluster(clusterID).setName(newName);
     }
 
     public void splitCluster(
