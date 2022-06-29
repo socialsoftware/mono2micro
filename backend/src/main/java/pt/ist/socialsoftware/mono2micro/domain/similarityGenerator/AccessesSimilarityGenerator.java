@@ -78,6 +78,7 @@ public class AccessesSimilarityGenerator implements SimilarityGenerator {
 
         for (String functionalityName : profileFunctionalities) {
             iter.nextFunctionalityWithName(functionalityName);
+            iter.getFirstTrace();
 
             switch (traceType) {
                 case LONGEST:

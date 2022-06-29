@@ -1,4 +1,4 @@
-import React, {createRef, useEffect, useState} from "react";
+import React, {createRef, useContext, useEffect, useState} from "react";
 import {RepositoryService} from "../../../services/RepositoryService";
 import {toast, ToastContainer} from "react-toastify";
 import HttpStatus from "http-status-codes";
@@ -12,6 +12,7 @@ import {ClusterViewDialogs, DIALOG_TYPE} from "./ClusterViewDialogs";
 import {ClusterViewModal} from "./ClusterViewModal";
 import {ClusterViewMetricTable} from "./ClusterViewMetricTable";
 import {searchType} from "../ViewSearchBar";
+import AppContext from "../../AppContext";
 
 export const clusterViewHelp = (<div>
     Double click a node to see its properties.<br />
@@ -62,10 +63,13 @@ const options = {
     }
 };
 
-export const ClusterViewGraph = ({setNow, translateEntity, clusters, setReloadProperties, searchedItem, setSearchedItem, changeToFunctionalities, setOpenSearch, setActions, view}) => {
+export const ClusterViewGraph = ({setNow, outdated, setOutdated, searchedItem, setSearchedItem, changeToFunctionalities, setOpenSearch, setActions, view}) => {
     const appRef = createRef();
+    const context = useContext(AppContext);
+    const { translateEntity } = context;
     let { codebaseName, strategyName, decompositionName } = useParams();
     const [operations, setOperations] = useState([]);
+    const [clusters, setClusters] = useState(undefined);
 
     const [clustersFunctionalities, setClustersFunctionalities] = useState({});
     const [edgeWeights, setEdgeWeights] = useState([]);
@@ -127,8 +131,8 @@ export const ClusterViewGraph = ({setNow, translateEntity, clusters, setReloadPr
     useEffect(() => {
         if (view === views.CLUSTERS) {
             if (showTable === true)
-                setActions(hiddenTableActions);
-            else setActions(visibleTableActions);
+                setActions(visibleTableActions);
+            else setActions(hiddenTableActions);
         }
     }, [view]);
 
@@ -136,72 +140,87 @@ export const ClusterViewGraph = ({setNow, translateEntity, clusters, setReloadPr
         if (searchedItem === undefined)
             return;
         if (searchedItem.type === searchType.ENTITY) {
-            let entityNode = visGraph.nodes.get(searchedItem.id);
+            const entityId = Number(searchedItem.id);
+            let entityNode = visGraph.nodes.get(entityId);
             if (entityNode === null) {
-                const clusterNode = visGraph.nodes.get().find(node => node.entities && node.entities.includes(searchedItem.id));
+                const clusterNode = visGraph.nodes.get().find(node => node.entities && node.entities.includes(entityId));
                 handleExpandCluster(clusterNode);
-                entityNode = visGraph.nodes.get(searchedItem.id);
+                entityNode = visGraph.nodes.get(entityId);
             }
             handleOnlyNeighbours(entityNode);
             setSearchedItem(undefined);
         }
         else if (searchedItem.type === searchType.CLUSTER) {
-            let clusterNode = visGraph.nodes.get("c" + searchedItem.id);
+            let clusterNode = visGraph.nodes.get(searchedItem.id);
             if (clusterNode === null) {
-                handleCollapseCluster(searchedItem.id);
-                clusterNode = visGraph.nodes.get("c" + searchedItem.id);
+                handleCollapseCluster(Number(searchedItem.id.substring(1)));
+                clusterNode = visGraph.nodes.get(searchedItem.id);
             }
             handleOnlyNeighbours(clusterNode);
             setSearchedItem(undefined);
         }
     }, [searchedItem]);
 
-    useEffect(() => {
-        if (Object.keys(clustersFunctionalities).length === 0 && (showModal || showTable)) {
-            const service = new RepositoryService();
+    function loadClustersAndClustersFunctionalities() {
+        const service = new RepositoryService();
+        service.getClustersAndClustersFunctionalities(codebaseName,strategyName,decompositionName).then(response => {
+            setClusters(Object.values(response.data.clusters).sort((a, b) => a.name - b.name));
+            setClustersFunctionalities(response.data.clustersFunctionalities);
+            setOutdated(false);
+        });
+    }
 
-            // Clusters Functionalities
-            service.getClustersFunctionalities(
-                codebaseName,
-                strategyName,
-                decompositionName
-            ).then(response => setClustersFunctionalities(response.data));
+    useEffect(() => {
+        if (outdated) {
+            setClustersFunctionalities({});
+
+            if (view === views.CLUSTERS && showTable) // Avoid information mismatch in metric table
+                loadClustersAndClustersFunctionalities();
+            else setShowTable(false);
         }
+    }, [outdated]);
+
+    useEffect(() => {
+        if ((outdated || Object.keys(clustersFunctionalities).length === 0) && (showModal || showTable))
+            loadClustersAndClustersFunctionalities();
     }, [showModal, showTable]);
 
     // This will only be executed once variable clusters is set and only runs once during the entire execution
     useEffect(() => {
         const service = new RepositoryService();
 
-        // Entities
-        const first = service.getEdgeWeights(
-            codebaseName,
-            strategyName,
-            decompositionName,
-        ).then(response => {
-            setNow(prev => prev + 10);
-            setEdgeWeights(response.data);});
+        // Loads decomposition's properties
+        service.getClustersAndClustersFunctionalities(codebaseName, strategyName, decompositionName).then(response => {
+            setNow(prev => prev + 20);
+            setClusters(Object.values(response.data.clusters).sort((a, b) => a.name - b.name));
+            setClustersFunctionalities(response.data.clustersFunctionalities);
+            setOutdated(false);
 
-        // Entity and cluster positions
-        const second = service.getGraphPositions(
-            codebaseName,
-            strategyName,
-            decompositionName,
-        ).then(response => {
-            setNow(prev => prev + 10);
-            setGraphPositions(response.data);
-        }).catch(error => {
-            if (error.response !== undefined && error.response.status === HttpStatus.NOT_FOUND)
-                toast.info("No previous positions saved.");
-            else toast.error("Loading previous positions failed.");
-            setGraphPositions(undefined)});
+            // Entities
+            const first = service.getEdgeWeights(codebaseName, strategyName, decompositionName).then(response => {
+                setNow(prev => prev + 10);
+                setEdgeWeights(response.data);
+            });
 
-        // Waits for both requests to be fulfilled
-        Promise.all([first, second]).then(() => setUpdateGraphVis({}));
+            // Entity and cluster positions
+            const second = service.getGraphPositions(codebaseName, strategyName, decompositionName).then(response => {
+                setNow(prev => prev + 10);
+                setGraphPositions(response.data);
+            }).catch(error => {
+                if (error.response !== undefined && error.response.status === HttpStatus.NOT_FOUND)
+                    toast.info("No previous positions saved.");
+                else toast.error("Loading previous positions failed.");
+                setGraphPositions(undefined)});
+
+            // Waits for both requests to be fulfilled
+            Promise.all([first, second]).then(() => setUpdateGraphVis({}));
+        }).catch(error =>
+            console.error("Error during decomposition update.", error)
+        );
     }, []);
 
     useEffect(() => {
-        if (clusters.length !== 0 && edgeWeights.length !== 0 && Object.keys(visGraph).length === 0) // Only sets up one time
+        if (clusters !== undefined && edgeWeights.length !== 0 && Object.keys(visGraph).length === 0) // Only sets up one time
             updateNetwork();
     }, [updateGraphVis]);
 
@@ -220,6 +239,7 @@ export const ClusterViewGraph = ({setNow, translateEntity, clusters, setReloadPr
                     success: {render: "Successfully changed name!", autoClose: 3000},
                     error: { render({data}) {return data.response.status === HttpStatus.UNAUTHORIZED? "This name is already being used by a cluster." : "Failed Renaming."; }, autoClose: 5000}
                 })
+                toastId.then((response) => setClusters(Object.values(response.data)));
                 response = handleRename();
                 break;
             case DIALOG_TYPE.TRANSFER:
@@ -229,6 +249,7 @@ export const ClusterViewGraph = ({setNow, translateEntity, clusters, setReloadPr
                     success: {render: "Successfully transferred entities!", autoClose: 3000},
                     error: {render: "Failed transferring entities.", autoClose: 5000}
                 })
+                toastId.then((response) => {setClusters(Object.values(response.data)); setOutdated(true);});
                 response = handleTransfer();
                 break;
             case DIALOG_TYPE.MERGE:
@@ -238,6 +259,7 @@ export const ClusterViewGraph = ({setNow, translateEntity, clusters, setReloadPr
                     success: {render: "Successfully merged clusters!", autoClose: 3000},
                     error: {render: "Failed merging clusters.", autoClose: 5000}
                 })
+                toastId.then((response) => {setClusters(Object.values(response.data)); setOutdated(true);});
                 response = handleMerge();
                 break;
             case DIALOG_TYPE.SPLIT:
@@ -247,6 +269,7 @@ export const ClusterViewGraph = ({setNow, translateEntity, clusters, setReloadPr
                     success: {render: "Successfully split cluster!", autoClose: 3000},
                     error: {render({data}) { return data.response.status === HttpStatus.UNAUTHORIZED? "This name is already being used by a cluster." : "Failed splitting.";}, autoClose: 5000}
                 });
+                toastId.then((response) => {setClusters(Object.values(response.data)); setOutdated(true);});
                 response = handleSplit();
                 break;
             case DIALOG_TYPE.FORM_CLUSTER:
@@ -256,6 +279,7 @@ export const ClusterViewGraph = ({setNow, translateEntity, clusters, setReloadPr
                     success: {render: "Successfully formed new cluster!", autoClose: 3000},
                     error: {render({data}) {return data.response.status === HttpStatus.UNAUTHORIZED? "This name is already being used by a cluster." : "Failed forming new cluster.";}, autoClose: 5000}
                 });
+                toastId.then((response) => {setClusters(Object.values(response.data)); setOutdated(true);});
                 response = handleFormCluster();
                 break;
         }
@@ -266,7 +290,7 @@ export const ClusterViewGraph = ({setNow, translateEntity, clusters, setReloadPr
             if (response.edges) visGraph.edges.update(response.edges);
             setGraphPositions(undefined);
             setStabilizationProgress("stabilizing");
-            setReloadProperties({});
+            setNow(0);
             defaultOperations();
         }).catch(error => {
             if (error.response.status === HttpStatus.UNAUTHORIZED) {
@@ -282,14 +306,8 @@ export const ClusterViewGraph = ({setNow, translateEntity, clusters, setReloadPr
         setDialogResponse(undefined);
     }, [dialogResponse]);
 
-    // Once the clusters change, it means that the connections between clusters and functionalities become invalid
-    useEffect(() => {
-        setClustersFunctionalities({});
-        setShowTable(false);
-        setActions(hiddenTableActions);
-    }, [clusters]);
 
-    function updateNetwork() {
+function updateNetwork() {
         let toastId;
         try {
             let visGraph, corruptedSave = false;
@@ -297,9 +315,11 @@ export const ClusterViewGraph = ({setNow, translateEntity, clusters, setReloadPr
             // Check for the existence of a corrupted save
             if (graphPositions !== undefined) {
                 graphPositions.nodes.forEach(node => {
+                    if (corruptedSave) return;
                     if (node.type === types.CLUSTER) {
                         const cluster = clusters.find(cluster => cluster.id === node.cid);
-                        if (node.entities.length !== cluster.entities.length || !node.entities.reduce((prev, current) => prev && cluster.entities.includes(current), true))
+                        if (cluster === undefined || node.entities === undefined || node.entities.length !== cluster.entities.length ||
+                            !node.entities.reduce((prev, current) => prev && cluster.entities.includes(current), true))
                             corruptedSave = true;
                     }
                     else {
@@ -396,7 +416,6 @@ export const ClusterViewGraph = ({setNow, translateEntity, clusters, setReloadPr
         }
         else { // No differentiation was done between background or edges, but if needed, use network.getEdgeAt(rightClickEvent.pointer.DOM) to identify the clicked edge
             let newOperations;
-            //TODO maybe some of these exceptions can be removed with good event handling
             if (graphPositions === undefined)
                 newOperations = operations.filter(op => op !== OPERATION.RESTORE);
             else newOperations = [...operations, OPERATION.RESTORE];
@@ -566,8 +585,10 @@ export const ClusterViewGraph = ({setNow, translateEntity, clusters, setReloadPr
             visGraph.edges.update(visGraph.edges.get().filter(edge => edge.hidden).map(edge => ({ id: edge.id, hidden: false })));
         }
         else if (type === "restore" && graphPositions !== undefined) {
-            visGraph.nodes.update(graphPositions.nodes);
-            visGraph.edges.update(graphPositions.edges);
+            visGraph.nodes.remove(visGraph.nodes.get().map(node => node.id));
+            visGraph.edges.remove(visGraph.edges.get().map(edge => edge.id));
+            visGraph.nodes.add(graphPositions.nodes);
+            visGraph.edges.add(graphPositions.edges);
         }
         defaultOperations();
         clearMenu();
@@ -877,6 +898,7 @@ export const ClusterViewGraph = ({setNow, translateEntity, clusters, setReloadPr
             <ClusterViewModal
                 clusters={clusters}
                 edgeWeights={edgeWeights}
+                outdated={outdated}
                 clustersFunctionalities={clustersFunctionalities}
                 visGraph={visGraph}
                 showModal={showModal}
@@ -920,6 +942,7 @@ export const ClusterViewGraph = ({setNow, translateEntity, clusters, setReloadPr
                     <ClusterViewMetricTable
                         clusters={clusters}
                         clustersFunctionalities={clustersFunctionalities}
+                        outdated={outdated}
                     />
                 </>
             }

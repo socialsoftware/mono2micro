@@ -2,6 +2,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 import React, {useState} from "react";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const metricsColumns = [{
     dataField: 'cluster',
@@ -34,7 +35,7 @@ const TABLE_TYPE = {
     COUPLING: 2
 }
 
-export const ClusterViewMetricTable = ({clusters, clustersFunctionalities}) => {
+export const ClusterViewMetricTable = ({clusters, clustersFunctionalities, outdated}) => {
 
     const [selectedTable, setSelectedTable] = useState(1);
 
@@ -75,22 +76,32 @@ export const ClusterViewMetricTable = ({clusters, clustersFunctionalities}) => {
                 <Button disabled={selectedTable === TABLE_TYPE.COUPLING} onClick={() => setSelectedTable(2)}>Inter Coupling Cluster</Button>
             </ButtonGroup>
 
-            {selectedTable === TABLE_TYPE.METRICS &&
-                <BootstrapTable
-                    bootstrap4
-                    keyField='id'
-                    data={metricsRows}
-                    columns={metricsColumns}
-                />
+            {(outdated || Object.keys(clustersFunctionalities).length === 0) &&
+                <div style={{ margin: "auto", textAlign: "center"}}>
+                    {outdated && <h2>Waiting for metrics and functionalities to be updated...</h2>}
+                    <CircularProgress/>
+                </div>
             }
+            {clusters !== 0 && Object.keys(clustersFunctionalities).length !== 0 &&
+                <>
+                    {selectedTable === TABLE_TYPE.METRICS &&
+                        <BootstrapTable
+                            bootstrap4
+                            keyField='id'
+                            data={metricsRows}
+                            columns={metricsColumns}
+                        />
+                    }
 
-            {selectedTable === TABLE_TYPE.COUPLING &&
-                <BootstrapTable
-                    bootstrap4
-                    keyField='id'
-                    data={couplingRows}
-                    columns={couplingColumns}
-                />
+                    {selectedTable === TABLE_TYPE.COUPLING &&
+                        <BootstrapTable
+                        bootstrap4
+                        keyField='id'
+                        data={couplingRows}
+                        columns={couplingColumns}
+                        />
+                    }
+                </>
             }
         </>
 );

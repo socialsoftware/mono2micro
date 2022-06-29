@@ -45,6 +45,14 @@ public class Functionality {
         this.name = name;
 	}
 
+	public Functionality(Functionality functionality) { // Useful when redesigns are not needed
+		this.name = functionality.getName();
+		this.type = functionality.getType();
+		this.metrics = functionality.getMetrics();
+		this.entities = functionality.getEntities();
+		this.entitiesPerCluster = functionality.getEntitiesPerCluster();
+	}
+
 	private static final String[] availableMetrics = {
 			Metric.MetricType.COMPLEXITY,
 			Metric.MetricType.PERFORMANCE
@@ -326,6 +334,7 @@ public class Functionality {
 		if (this.getTraces() == null) {
 			FunctionalityTracesIterator iter = new FunctionalityTracesIterator(inputFilePath, tracesMaxLimit);
 			iter.nextFunctionalityWithName(this.getName());
+			iter.getFirstTrace();
 
 			List<TraceDto> traceDtos = iter.getTracesByType(traceType);
 			this.setTraces(traceDtos);

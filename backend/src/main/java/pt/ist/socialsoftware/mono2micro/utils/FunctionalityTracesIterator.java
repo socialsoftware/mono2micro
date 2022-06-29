@@ -65,6 +65,11 @@ public class FunctionalityTracesIterator {
 		return t;
 	}
 
+	public void skipFunctionalityInformation() throws IOException {
+		jsonParser.skipChildren();
+		jsonParser.nextValue();
+	}
+
 	public void jumpToNextFunctionality() throws IOException {
 		while (jsonParser.getCurrentName() != null && jsonParser.getCurrentToken() != JsonToken.START_OBJECT ||					// Either finds beginning of other functionality
 				jsonParser.getCurrentName() == null && jsonParser.getCurrentToken() != JsonToken.END_OBJECT) { 					// Or finds the end of the file
@@ -99,6 +104,11 @@ public class FunctionalityTracesIterator {
 			jsonParser.nextValue();
 		}
 
+		return name;
+	}
+
+	public void getFirstTrace() throws IOException {
+
 		findTraceFieldLoop:
 		while (jsonParser.nextValue() != JsonToken.END_OBJECT) {
 			switch (jsonParser.getCurrentName()) {
@@ -118,7 +128,6 @@ public class FunctionalityTracesIterator {
 					throw new IOException();
 			}
 		}
-		return name;
 	}
 
 	// Be sure this iterator is already positioned to read the traces of a certain functionality

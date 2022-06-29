@@ -270,20 +270,23 @@ public class Utils {
         return functionalitiesClusters;
     }
 
-    public static Map<Short, Set<Functionality>> getClustersFunctionalities(
+    public static Map<Short, List<Functionality>> getClustersFunctionalities(
             Map<Short, Short> entityIDToClusterID,
             Map<Short, Cluster> clusters,
             Collection<Functionality> functionalities
     ) {
-        Map<Short, Set<Functionality>> clustersFunctionalities = new HashMap<>();
+        Map<Short, List<Functionality>> clustersFunctionalities = new HashMap<>();
 
         for (Functionality functionality : functionalities) {
             for (short entityID : functionality.getEntities().keySet()) {
                 Cluster cluster = clusters.get(entityIDToClusterID.get(entityID));
 
-                Set<Functionality> clusterFunctionalities = clustersFunctionalities.getOrDefault(cluster.getID(), new HashSet<>());
-                clusterFunctionalities.add(functionality);
-                clustersFunctionalities.put(cluster.getID(), clusterFunctionalities);
+                List<Functionality> clusterFunctionalities = clustersFunctionalities.getOrDefault(cluster.getID(), new ArrayList<>());
+                if (clusterFunctionalities.size() == 0)
+                    clustersFunctionalities.put(cluster.getID(), clusterFunctionalities);
+
+                if (clusterFunctionalities.stream().noneMatch(prevFunctionality -> prevFunctionality.getName().equals(functionality.getName())))
+                    clusterFunctionalities.add(new Functionality(functionality));
             }
         }
 

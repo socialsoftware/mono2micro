@@ -10,6 +10,7 @@ import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,7 +30,7 @@ public class CohesionMetric extends Metric<Float> {
     }
 
     private float calculateMetricAccessesSciPy(AccessesSciPyDecomposition decomposition) {
-        Map<Short, Set<Functionality>> clustersFunctionalities = Utils.getClustersFunctionalities(
+        Map<Short, List<Functionality>> clustersFunctionalities = Utils.getClustersFunctionalities(
                 decomposition.getEntityIDToClusterID(),
                 decomposition.getClusters(),
                 decomposition.getFunctionalities().values()
@@ -38,7 +39,7 @@ public class CohesionMetric extends Metric<Float> {
         float totalCohesion = 0;
 
         for (Cluster cluster : decomposition.getClusters().values()) {
-            Set<Functionality> FunctionalitiesThatAccessThisCluster = clustersFunctionalities.get(cluster.getID());
+            List<Functionality> FunctionalitiesThatAccessThisCluster = clustersFunctionalities.get(cluster.getID());
 
             float clusterCohesion = 0;
 

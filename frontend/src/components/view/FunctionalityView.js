@@ -191,11 +191,12 @@ const optionsFunctionalityRedesign = {
 };
 
 
-export const FunctionalityView = ({searchedItem, setSearchedItem, functionalities, setFunctionalities, clusters, changeToClusters, setOpenSearch, setActions, view}) => {
+export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setOutdated, changeToClusters, setOpenSearch, setActions, view}) => {
     const context = useContext(AppContext);
     const { translateEntity } = context;
     let { codebaseName, strategyName, decompositionName } = useParams();
 
+    const [functionalities, setFunctionalities] = useState(undefined);
     const [visGraph, setVisGraph] = useState({});
     const [redesignVisGraph, setRedesignVisGraph] = useState({});
     const [functionality, setFunctionality] = useState({});
@@ -234,19 +235,24 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, functionalitie
     ];
 
     useEffect(() => {
-        setFunctionalitiesClusters([]); // Invalidate functionalitiesClusters since clusters have changed
-    }, [clusters]);
+        if (outdated) {
+            setFunctionalities(undefined);
+        }
+    }, [outdated]);
 
     useEffect(() => {
-        if (Object.keys(functionalitiesClusters).length !== 0 && searchedItem !== undefined) {
+        if (!outdated && functionalities && searchedItem !== undefined && view === views.FUNCTIONALITY) {
             handleFunctionalitySubmit(searchedItem.name);
             setSearchedItem(undefined);
         }
-    }, [functionalitiesClusters]);
+    }, [outdated, functionalities]);
 
     useEffect(() => {
         if (view === views.FUNCTIONALITY) {
-            if (Object.keys(functionality).length === 0)
+            if ((outdated || !functionalities) && searchedItem === undefined)
+                loadFunctionalitiesAndFunctionalitiesClusters();
+
+            if (Object.keys(functionality).length === 0) // Set the options in the speed dial according to a functionality
                 setActions(defaultActions);
             else setActions(completeActions);
         }
@@ -254,24 +260,24 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, functionalitie
 
     useEffect(() => {
         if (searchedItem !== undefined && searchedItem.type === searchType.FUNCTIONALITY) {
-            if (Object.keys(functionalitiesClusters).length === 0) { // Will update and only then will search
-                loadFunctionalitiesClusters();
+            if (!functionalities || outdated) { // Will update and only then will search
+                loadFunctionalitiesAndFunctionalitiesClusters();
             }
             else { // Otherwise updates
-                handleFunctionalitySubmit(searchedItem.name);
+                handleFunctionalitySubmit(searchedItem.id);
                 setSearchedItem(undefined);
             }
         }
     },[searchedItem]);
 
-    function loadFunctionalitiesClusters() {
+    function loadFunctionalitiesAndFunctionalitiesClusters() {
         const service = new RepositoryService();
 
-        service.getFunctionalitiesClusters(
-            codebaseName,
-            strategyName,
-            decompositionName
-        ).then(response => { setFunctionalitiesClusters(response.data); });
+        service.getFunctionalitiesAndFunctionalitiesClusters(codebaseName, strategyName, decompositionName).then(response => {
+            setFunctionalitiesClusters(response.data.functionalitiesClusters);
+            setFunctionalities(Object.values(response.data.functionalities));
+            setOutdated(false);
+        }).catch((error) => console.error("Error while fetching functionalities and functionalities clusters:", error));
     }
 
     function handleFunctionalitySubmit(value) {
@@ -344,91 +350,18 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, functionalitie
     }
 
     function createSequenceDiagram(localTransactionsGraph, currentFunctionality) {
-        let nodes = [];
-        let edges = [];
         let localTransactionsSequence = [];
-        const localTransactionIdToClusterAccesses = {};
 
-        nodes.push({
-            id: 0,
-            label: currentFunctionality.name,
-            level: 0,
-            value: 1,
-            type: types.FUNCTIONALITY,
-            title: Object.entries(currentFunctionality.entities)
-                .map(e => translateEntity(e[0]) + " " + e[1])
-                .join('\n') + "\nTotal: " + Object.keys(currentFunctionality.entities).length,
-        });
-
-        localTransactionIdToClusterAccesses[0] = [];
-
-        let {
-            nodes: localTransactionsList,
-            links: linksList,
-        } = localTransactionsGraph;
-
-
-        for (let i = 1; i < localTransactionsList.length; i++) {
-
-            let {
-                id: localTransactionId,
-                clusterID,
-                clusterAccesses,
-            } = localTransactionsList[i];
-
-            localTransactionIdToClusterAccesses[localTransactionId] = clusterAccesses;
-
-            let cluster = clusters.find(cluster => Number(cluster.id) === clusterID);
-            const clusterEntityNames = cluster.entities;
-
-            nodes.push({
-                id: localTransactionId,
-                title: clusterEntityNames.map(entityID => translateEntity(entityID)).join('\n') + "\nTotal: " + clusterEntityNames.length,
-                label: cluster.name,
-                value: clusterEntityNames.length,
-                level: 1,
-                type: types.CLUSTER
-            });
+        localTransactionsGraph.nodes.forEach(node => {
+            if (node.clusterID === -1) return;
+            let cluster = functionalitiesClusters[currentFunctionality.name].find(cluster => cluster.id === node.clusterID);
 
             localTransactionsSequence.push({
-                id: localTransactionId,
+                id: node.id,
                 cluster: cluster.name,
-                entities: <pre>{clusterAccesses.map(acc => `${acc[0]} ${translateEntity(acc[1])} ${acc[2] ?? ""}`).join('\n')}</pre>
+                entities: <pre>{node.clusterAccesses.map(acc => `${acc[0]} ${translateEntity(acc[1])} ${acc[2] ?? ""}`).join('\n')}</pre>
             });
-        }
-
-        linksList.forEach(link => {
-            const [
-                sourceNodeId,
-                targetNodeId,
-            ] = link.split('->');
-
-            const clusterAccesses = localTransactionIdToClusterAccesses[Number(targetNodeId)];
-
-            edges.push({
-                from: Number(sourceNodeId),
-                to: Number(targetNodeId),
-                title: clusterAccesses.map(acc => `${acc[0]} ${translateEntity(acc[1])} ${acc[2] ?? ""}`).join('\n'),
-                label: clusterAccesses.length.toString()
-            })
-
-            let sourceNodeIndex;
-            let targetNodeIndex;
-
-            for (let i = 0; i < nodes.length; i++) {
-                if (nodes[i].id === Number(sourceNodeId)) {
-                    sourceNodeIndex = i;
-                }
-
-                if (nodes[i].id === Number(targetNodeId)) {
-                    targetNodeIndex = i;
-                }
-                if (sourceNodeIndex !== undefined && targetNodeIndex !== undefined) {
-                    nodes[targetNodeIndex].level = nodes[sourceNodeIndex].level + 1;
-                }
-
-            }
-        });
+        })
 
         setLocalTransactionsSequence(localTransactionsSequence);
     }
@@ -894,7 +827,7 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, functionalitie
         </div>
     }
 
-    const metricsRows = functionalities.map(functionalities => {
+    const metricsRows = functionalities? functionalities.map(functionalities => {
         let metrics = functionalities.functionalityRedesigns.find(fr => fr.usedForMetrics).metrics;
         return functionalities.type === "QUERY" ?
             {
@@ -914,7 +847,7 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, functionalitie
                 systemComplexity: metrics.filter(metric => metric.type === MetricType.SYSTEM_COMPLEXITY)[0].value,
                 total: metrics.filter(metric => metric.type === MetricType.FUNCTIONALITY_COMPLEXITY)[0].value + metrics.filter(metric => metric.type === MetricType.SYSTEM_COMPLEXITY)[0].value
             }
-    });
+    }) : undefined;
 
     const metricsColumns = [{
         dataField: 'functionality',
@@ -962,6 +895,7 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, functionalitie
 
     let functionalitiesClustersAmount = Object.keys(functionalitiesClusters).map(functionality => functionalitiesClusters[functionality].length);
     let averageClustersAccessed = functionalitiesClustersAmount.reduce((a, b) => a + b, 0) / functionalitiesClustersAmount.length;
+    let numberOfClusters = [...new Set(Object.values(functionalitiesClusters).flatMap(clusters => clusters.map(cluster => cluster.id)))].length;
 
     return (
         <div>
@@ -989,9 +923,9 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, functionalitie
             }
             {currentSubView === "Metrics" &&
             <div style={{marginTop: "3rem", marginLeft: "0.5rem"}}>
-                Number of Clusters : {clusters.length}
+                Number of Clusters : {numberOfClusters}
                 < br />
-                Number of Functionalities that access a single Cluster : {Object.keys(functionalitiesClusters).filter(key => functionalitiesClusters[key].length === 1).length}
+                Number of Functionalities that access a singleton Cluster : {Object.keys(functionalitiesClusters).filter(key => functionalitiesClusters[key].length === 1).length}
                 < br />
                 Maximum number of Clusters accessed by a single Functionality : {Math.max(...Object.keys(functionalitiesClusters).map(key => functionalitiesClusters[key].length))}
                 < br />

@@ -33,7 +33,7 @@ public class ComplexityMetric extends Metric<Float> {
     }
 
     private float calculateMetricAccessesSciPy(AccessesSciPyDecomposition decomposition) {
-        Map<Short, Set<Functionality>> clustersFunctionalities = Utils.getClustersFunctionalities(
+        Map<Short, List<Functionality>> clustersFunctionalities = Utils.getClustersFunctionalities(
                 decomposition.getEntityIDToClusterID(),
                 decomposition.getClusters(),
                 decomposition.getFunctionalities().values()
@@ -43,7 +43,7 @@ public class ComplexityMetric extends Metric<Float> {
 
         // Set cluster complexity
         for (Cluster cluster : decomposition.getClusters().values()) {
-            Set<Functionality> functionalitiesThatAccessThisCluster = clustersFunctionalities.get(cluster.getID());
+            List<Functionality> functionalitiesThatAccessThisCluster = clustersFunctionalities.get(cluster.getID());
 
             complexity = 0;
 

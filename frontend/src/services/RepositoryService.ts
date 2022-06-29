@@ -349,6 +349,26 @@ export class RepositoryService {
         );
     }
 
+    updatedAccessesSciPyDecomposition(
+        codebaseName: string,
+        strategyName: string,
+        decompositionName: string
+    ) {
+        return this.axios.get<Decomposition>(
+            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/updatedAccessesSciPyDecomposition"
+        );
+    }
+
+    getAccessesSciPyClusters(
+        codebaseName: string,
+        strategyName: string,
+        decompositionName: string
+    ) {
+        return this.axios.get<Cluster[]>(
+            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/getClusters"
+        );
+    }
+
     deleteDecomposition(
         codebaseName: string,
         strategyName: string,
@@ -470,23 +490,33 @@ export class RepositoryService {
         );
     }
 
-    getFunctionalitiesClusters(
+    getFunctionalitiesAndFunctionalitiesClusters(
         codebaseName: string,
         strategyName: string,
         decompositionName: string,
     ) {
-        return this.axios.get<Record<string, Cluster[]>>(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/functionalitiesClusters"
+        return this.axios.get<Record<string, any>>(
+            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/getFunctionalitiesAndFunctionalitiesClusters"
         );
     }
 
-    getClustersFunctionalities(
+    getClustersAndClustersFunctionalities(
         codebaseName: string,
         strategyName: string,
         decompositionName: string
     ) {
-        return this.axios.get<Record<number, Functionality[]>>(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/clustersFunctionalities"
+        return this.axios.get<Record<string, any>>(
+            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/getClustersAndClustersFunctionalities"
+        );
+    }
+
+    getSearchItems(
+        codebaseName: string,
+        strategyName: string,
+        decompositionName: string
+    ) {
+        return this.axios.get<any[]>(
+            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/getSearchItems"
         );
     }
 

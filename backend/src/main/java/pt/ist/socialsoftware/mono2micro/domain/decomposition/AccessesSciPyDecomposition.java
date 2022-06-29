@@ -9,7 +9,10 @@ import pt.ist.socialsoftware.mono2micro.domain.FunctionalityRedesign;
 import pt.ist.socialsoftware.mono2micro.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.domain.metrics.Metric;
 import pt.ist.socialsoftware.mono2micro.domain.metrics.MetricFactory;
+import pt.ist.socialsoftware.mono2micro.domain.source.AccessesSource;
+import pt.ist.socialsoftware.mono2micro.domain.strategy.AccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
+import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
 
@@ -18,7 +21,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.jgrapht.Graphs.successorListOf;
+import static pt.ist.socialsoftware.mono2micro.domain.source.Source.SourceType.ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.domain.strategy.Strategy.StrategyType.ACCESSES_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.STRATEGIES_FOLDER;
 
 public class AccessesSciPyDecomposition extends Decomposition {
 
@@ -29,6 +34,8 @@ public class AccessesSciPyDecomposition extends Decomposition {
             Metric.MetricType.COUPLING,
             Metric.MetricType.SILHOUETTE_SCORE
     };
+
+    private boolean outdated;
 
     private boolean expert;
 
@@ -41,6 +48,14 @@ public class AccessesSciPyDecomposition extends Decomposition {
     @Override
     public String getStrategyType() {
         return ACCESSES_SCIPY;
+    }
+
+    public boolean isOutdated() {
+        return outdated;
+    }
+
+    public void setOutdated(boolean outdated) {
+        this.outdated = outdated;
     }
 
     public boolean isExpert() {
@@ -210,13 +225,15 @@ public class AccessesSciPyDecomposition extends Decomposition {
     ) throws Exception {
         FunctionalityTracesIterator iter = new FunctionalityTracesIterator(inputFilePath, tracesMaxLimit);
         Map<String, DirectedAcyclicGraph<LocalTransaction, DefaultEdge>> localTransactionsGraphs = new HashMap<>();
+        ArrayList<Functionality> newFunctionalities = new ArrayList<>();
 
         do {
             String functionalityName = iter.nextFunctionalityWithName(null);
-            if (!profileFunctionalities.contains(functionalityName)) {
-                iter.jumpToNextFunctionality();
+            if (!profileFunctionalities.contains(functionalityName) || functionalityExists(functionalityName)) {
+                iter.skipFunctionalityInformation();
                 continue;
             }
+            else iter.getFirstTrace();
 
             Functionality functionality = new Functionality(functionalityName);
 
@@ -231,13 +248,14 @@ public class AccessesSciPyDecomposition extends Decomposition {
             findClusterDependencies(localTransactionGraph);
 
             addFunctionality(functionality);
+            newFunctionalities.add(functionality);
 
             iter.jumpToNextFunctionality();
         } while (iter.hasMoreFunctionalities());
 
         System.out.println("Calculating functionality metrics...");
 
-        for (Functionality functionality: functionalities.values()) {
+        for (Functionality functionality: newFunctionalities) {
             functionality.defineFunctionalityType();
             functionality.calculateMetrics(this);
 
@@ -401,7 +419,6 @@ public class AccessesSciPyDecomposition extends Decomposition {
         addCluster(newCluster);
     }
 
-    //TODO: if possible, use something more fine grained
     private void removeFunctionalityWithEntity(short entityID) {
         this.setFunctionalities(this.getFunctionalities().entrySet()
                 .stream()
@@ -424,7 +441,6 @@ public class AccessesSciPyDecomposition extends Decomposition {
         Set<Short> entities = Arrays.stream(entitiesString).map(Short::valueOf).collect(Collectors.toSet());
 
         for (Short entityID : entities) {
-
             if (fromCluster.containsEntity(entityID)) {
                 toCluster.addEntity(entityID);
                 fromCluster.removeEntity(entityID);
@@ -433,5 +449,29 @@ public class AccessesSciPyDecomposition extends Decomposition {
             }
         }
         transferCouplingDependencies(entities, fromClusterID, toClusterID);
+    }
+
+    public void updateOutdatedFunctionalitiesAndMetrics() {
+        if (!isOutdated())
+            return;
+        CodebaseManager codebaseManager = CodebaseManager.getInstance();
+        try {
+            AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(getCodebaseName(), ACCESSES);
+            AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(getCodebaseName(), STRATEGIES_FOLDER, getStrategyName());
+
+            setupFunctionalities(
+                    source.getInputFilePath(),
+                    source.getProfile(strategy.getProfile()),
+                    strategy.getTracesMaxLimit(),
+                    strategy.getTraceType(),
+                    true);
+
+            calculateMetrics();
+            setOutdated(false);
+
+            codebaseManager.writeStrategyDecomposition(getCodebaseName(), STRATEGIES_FOLDER, getStrategyName(), this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

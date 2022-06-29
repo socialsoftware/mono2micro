@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.controller;
+package pt.ist.socialsoftware.mono2micro.controller.accessesSciPy;
 
 import java.util.*;
 
@@ -95,6 +95,7 @@ public class FunctionalityRedesignController {
 
             FunctionalityRedesign functionalityRedesign = functionality.getFunctionalityRedesign(redesignName);
             functionalityRedesign.addCompensating(clusterID, accesses, fromID);
+            // TODO certificar se a proxima linha e' necessaria
             functionalityRedesign.calculateMetrics(decomposition, functionality);
             codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
 

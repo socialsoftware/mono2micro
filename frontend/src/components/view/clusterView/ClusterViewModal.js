@@ -14,7 +14,7 @@ const ACCESS_TYPES = {
     3: "READ/WRITE"
 };
 
-export const ClusterViewModal = ({clusters, edgeWeights, clustersFunctionalities, visGraph, showModal, setShowModal, clickedComponent, setClickedComponent}) => {
+export const ClusterViewModal = ({clusters, edgeWeights, outdated, clustersFunctionalities, visGraph, showModal, setShowModal, clickedComponent, setClickedComponent}) => {
     const context = useContext(AppContext);
     const { translateEntity } = context;
 
@@ -108,16 +108,15 @@ export const ClusterViewModal = ({clusters, edgeWeights, clustersFunctionalities
 
     function handleRelatedFunctionalitiesEntities() {
         setTitle("Functionalities accessing " + clickedComponent.label + " and respective type of access");
+        const functionalities = clustersFunctionalities[clickedComponent.cid].filter(functionality => functionality.entities[clickedComponent.id]);
 
         setInformationText(
             <>
-                <h4>{clustersFunctionalities[clickedComponent.cid].length} Functionalities:</h4>
+                <h4>{functionalities.length} Functionalities:</h4>
                 <ListGroup>
                     {
-                        clustersFunctionalities[clickedComponent.cid].map(functionality => {
-                            if (functionality.entities[clickedComponent.id] !== undefined)
-                                return <ListGroupItem key={functionality.name}><b>{functionality.name}:</b> {ACCESS_TYPES[functionality.entities[clickedComponent.id]]}</ListGroupItem>;
-                        })
+                        functionalities.map(functionality =>
+                            <ListGroupItem key={functionality.name}><b>{functionality.name}:</b> {ACCESS_TYPES[functionality.entities[clickedComponent.id]]}</ListGroupItem>)
                     }
                 </ListGroup>
             </>
@@ -346,12 +345,13 @@ export const ClusterViewModal = ({clusters, edgeWeights, clustersFunctionalities
                             </div>
                         </>
                     }
-                    {Object.keys(clustersFunctionalities).length === 0 &&
+                    {(Object.keys(clustersFunctionalities).length === 0 || outdated) &&
                         <div style={{ margin: "auto", textAlign: "center"}}>
+                            {outdated && <h2>Waiting for metrics and functionalities to be updated...</h2>}
                             <CircularProgress/>
                         </div>
                     }
-                    {Object.keys(clustersFunctionalities).length !== 0 && informationText === undefined && clickedComponent !== undefined &&
+                    {Object.keys(clustersFunctionalities).length !== 0 && !outdated && informationText === undefined && clickedComponent !== undefined &&
                         <>
                             {clickedComponent.type === types.CLUSTER &&
                                 <>

@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.controller;
+package pt.ist.socialsoftware.mono2micro.controller.accessesSciPy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,15 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.domain.*;
 import pt.ist.socialsoftware.mono2micro.domain.decomposition.AccessesSciPyDecomposition;
-import pt.ist.socialsoftware.mono2micro.domain.source.AccessesSource;
-import pt.ist.socialsoftware.mono2micro.domain.strategy.AccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.*;
 
-import static pt.ist.socialsoftware.mono2micro.domain.source.Source.SourceType.ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.STRATEGIES_FOLDER;
 
 @RestController
@@ -38,8 +35,6 @@ public class ClusterController {
 		logger.debug("mergeClusters");
 
 		try {
-			AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
-			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyName);
 			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
 					codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName
 			);
@@ -49,15 +44,7 @@ public class ClusterController {
 				otherClusterID,
 				newName
 			);
-
-			decomposition.setupFunctionalities(
-				source.getInputFilePath(),
-				source.getProfile(strategy.getProfile()),
-				strategy.getTracesMaxLimit(),
-				strategy.getTraceType(),
-				true);
-
-			decomposition.calculateMetrics();
+			decomposition.setOutdated(true);
 
 			codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -69,7 +56,7 @@ public class ClusterController {
 	}
 
 	@RequestMapping(value = "/cluster/{clusterID}/rename", method = RequestMethod.POST)
-	public ResponseEntity<HttpStatus> renameCluster(
+	public ResponseEntity<Map<Short, Cluster>> renameCluster(
 		@PathVariable String codebaseName,
 		@PathVariable String strategyName,
 		@PathVariable String decompositionName,
@@ -89,7 +76,7 @@ public class ClusterController {
 			);
 
 			codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>(decomposition.getClusters(), HttpStatus.OK);
 
 		} catch (KeyAlreadyExistsException e) {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -101,7 +88,7 @@ public class ClusterController {
 	}
 
 	@RequestMapping(value = "/cluster/{clusterID}/split", method = RequestMethod.POST)
-	public ResponseEntity<HttpStatus> splitCluster(
+	public ResponseEntity<Map<Short, Cluster>> splitCluster(
 		@PathVariable String codebaseName,
 		@PathVariable String strategyName,
 		@PathVariable String decompositionName,
@@ -112,8 +99,6 @@ public class ClusterController {
 		logger.debug("splitCluster");
 
 		try {
-			AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
-			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyName);
 			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
 					codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName
 			);
@@ -123,18 +108,10 @@ public class ClusterController {
 				newName,
 				entities.split(",")
 			);
-
-			decomposition.setupFunctionalities(
-					source.getInputFilePath(),
-					source.getProfile(strategy.getProfile()),
-					strategy.getTracesMaxLimit(),
-					strategy.getTraceType(),
-					true);
-
-			decomposition.calculateMetrics();
+			decomposition.setOutdated(true);
 
 			codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>(decomposition.getClusters(), HttpStatus.OK);
 
 		} catch (KeyAlreadyExistsException e) {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -146,7 +123,7 @@ public class ClusterController {
 	}
 
 	@RequestMapping(value = "/cluster/{clusterID}/transferEntities", method = RequestMethod.POST)
-	public ResponseEntity<HttpStatus> transferEntities(
+	public ResponseEntity<Map<Short, Cluster>> transferEntities(
 		@PathVariable String codebaseName,
 		@PathVariable String strategyName,
 		@PathVariable String decompositionName,
@@ -157,8 +134,6 @@ public class ClusterController {
 		logger.debug("transferEntities");
 
 		try {
-			AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
-			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyName);
 			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
 					codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName
 			);
@@ -168,84 +143,10 @@ public class ClusterController {
 				toClusterID,
 				entities.split(",")
 			);
-
-			decomposition.setupFunctionalities(
-					source.getInputFilePath(),
-					source.getProfile(strategy.getProfile()),
-					strategy.getTracesMaxLimit(),
-					strategy.getTraceType(),
-					true);
-
-			decomposition.calculateMetrics();
+			decomposition.setOutdated(true);
 
 			codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
-			return new ResponseEntity<>(HttpStatus.OK);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
-	}
-
-	@RequestMapping(value = "/functionalitiesClusters", method = RequestMethod.GET)
-	public ResponseEntity<Map<String, Set<Cluster>>> getFunctionalitiesClusters(
-		@PathVariable String codebaseName,
-		@PathVariable String strategyName,
-		@PathVariable String decompositionName
-	) {
-		logger.debug("getFunctionalitiesClusters");
-
-		try {
-			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
-				codebaseName,
-				STRATEGIES_FOLDER,
-				strategyName,
-				decompositionName
-			);
-
-			Map<String, Set<Cluster>> functionalitiesClusters = Utils.getFunctionalitiesClusters(
-					decomposition.getEntityIDToClusterID(),
-					decomposition.getClusters(),
-					decomposition.getFunctionalities().values()
-			);
-
-			return new ResponseEntity<>(
-				functionalitiesClusters,
-				HttpStatus.OK
-			);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
-	}
-
-	@RequestMapping(value = "/clustersFunctionalities", method = RequestMethod.GET)
-	public ResponseEntity<Map<Short, Set<Functionality>>> getClustersFunctionalities(
-		@PathVariable String codebaseName,
-		@PathVariable String strategyName,
-		@PathVariable String decompositionName
-	) {
-		logger.debug("getClustersFunctionalities");
-
-		try {
-			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
-				codebaseName,
-				STRATEGIES_FOLDER,
-				strategyName,
-				decompositionName
-			);
-
-			Map<Short, Set<Functionality>> clustersFunctionalities = Utils.getClustersFunctionalities(
-					decomposition.getEntityIDToClusterID(),
-					decomposition.getClusters(),
-					decomposition.getFunctionalities().values()
-			);
-
-			return new ResponseEntity<>(
-				clustersFunctionalities,
-				HttpStatus.OK
-			);
+			return new ResponseEntity<>(decomposition.getClusters(), HttpStatus.OK);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -254,7 +155,7 @@ public class ClusterController {
 	}
 
 	@RequestMapping(value = "/formCluster", method = RequestMethod.POST)
-	public ResponseEntity<HttpStatus> formCluster(
+	public ResponseEntity<Map<Short, Cluster>> formCluster(
 			@PathVariable String codebaseName,
 			@PathVariable String strategyName,
 			@PathVariable String decompositionName,
@@ -264,8 +165,6 @@ public class ClusterController {
 		logger.debug("formCluster");
 
 		try {
-			AccessesSource source = (AccessesSource) codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
-			AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyName);
 			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
 					codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName
 			);
@@ -274,21 +173,91 @@ public class ClusterController {
 					newName,
 					entities.values().stream().flatMap(Collection::stream).map(Object::toString).toArray(String[]::new)
 			);
-
-			decomposition.setupFunctionalities(
-					source.getInputFilePath(),
-					source.getProfile(strategy.getProfile()),
-					strategy.getTracesMaxLimit(),
-					strategy.getTraceType(),
-					true);
-
-			decomposition.calculateMetrics();
+			decomposition.setOutdated(true);
 
 			codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>(decomposition.getClusters(), HttpStatus.OK);
 
 		} catch (KeyAlreadyExistsException e) {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@RequestMapping(value = "/getFunctionalitiesAndFunctionalitiesClusters", method = RequestMethod.GET)
+	public ResponseEntity<Map<String, Object>> getFunctionalitiesAndFunctionalitiesClusters(
+		@PathVariable String codebaseName,
+		@PathVariable String strategyName,
+		@PathVariable String decompositionName
+	) {
+		logger.debug("getFunctionalitiesAndFunctionalitiesClusters");
+
+		try {
+			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+				codebaseName,
+				STRATEGIES_FOLDER,
+				strategyName,
+				decompositionName
+			);
+
+			decomposition.updateOutdatedFunctionalitiesAndMetrics();
+
+			Map<String, Set<Cluster>> functionalitiesClusters = Utils.getFunctionalitiesClusters(
+					decomposition.getEntityIDToClusterID(),
+					decomposition.getClusters(),
+					decomposition.getFunctionalities().values()
+			);
+
+			Map<String, Object> response = new HashMap<>();
+			response.put("functionalities", decomposition.getFunctionalities());
+			response.put("functionalitiesClusters", functionalitiesClusters);
+
+			return new ResponseEntity<>(
+				response,
+				HttpStatus.OK
+			);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@RequestMapping(value = "/getClustersAndClustersFunctionalities", method = RequestMethod.GET)
+	public ResponseEntity<Map<String, Object>> getClustersAndClustersFunctionalities(
+		@PathVariable String codebaseName,
+		@PathVariable String strategyName,
+		@PathVariable String decompositionName
+	) {
+		logger.debug("getClustersAndClustersFunctionalities");
+
+		try {
+			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+				codebaseName,
+				STRATEGIES_FOLDER,
+				strategyName,
+				decompositionName
+			);
+
+			decomposition.updateOutdatedFunctionalitiesAndMetrics();
+
+			Map<Short, List<Functionality>> clustersFunctionalities = Utils.getClustersFunctionalities(
+					decomposition.getEntityIDToClusterID(),
+					decomposition.getClusters(),
+					decomposition.getFunctionalities().values()
+			);
+
+			Map<String, Object> response = new HashMap<>();
+			response.put("clusters", decomposition.getClusters());
+			response.put("clustersFunctionalities", clustersFunctionalities);
+
+			return new ResponseEntity<>(
+				response,
+				HttpStatus.OK
+			);
 
 		} catch (Exception e) {
 			e.printStackTrace();
