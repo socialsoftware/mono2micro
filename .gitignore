@@ -34,3 +34,4 @@ collectors/spoon-callgraph/data/collection/*.json
 codebases/
 repos/
 results/
+evaluation/

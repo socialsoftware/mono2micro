@@ -27,6 +27,8 @@ services:
     restart: unless-stopped
     volumes:
       - './codebases:/codebases'
+      - './results:/results'
+      - './evaluation:/evaluation'
   # functionality_refactor:
   #   build:
   #     context: ./tools/functionality_refactor/src

@@ -1,15 +1,15 @@
 import env
 from fastapi import APIRouter
-from evaluation.class_analysis_correlation import class_analysis_correlation
-from evaluation.entities_analysis_correlation import entities_analysis_correlation
-from evaluation.features_entities_traces_analysis_correlation import features_entities_traces_analysis_correlation
-from evaluation.features_method_calls_analysis_correlation import features_method_calls_analysis_correlation
-from evaluation.static_analysis_correlation import static_analysis_correlation
-from evaluation.compare_evaluation_metrics import compare_evaluation_metrics
+from evaluations.class_analysis_correlation import class_analysis_correlation
+from evaluations.entities_analysis_correlation import entities_analysis_correlation
+from evaluations.features_entities_traces_analysis_correlation import features_entities_traces_analysis_correlation
+from evaluations.features_method_calls_analysis_correlation import features_method_calls_analysis_correlation
+from evaluations.static_analysis_correlation import static_analysis_correlation
+from evaluations.compare_evaluation_metrics import compare_evaluation_metrics
 
 router = APIRouter()
 
-@router.get("/{analysisType}/{strategy}")
+@router.get("/correlation/{analysisType}/{strategy}")
 async def correlation(analysisType, strategy):
 	if (analysisType == "features") and (strategy == "entitiesTraces"):
 		features_entities_traces_analysis_correlation()
@@ -19,7 +19,7 @@ async def correlation(analysisType, strategy):
 		
 	return {"operation": "correlation", "analysisType": analysisType, "strategy": strategy}
 
-@router.get("/{analysisType}/")
+@router.get("/correlation/{analysisType}/")
 async def correlation(analysisType):
 	if (analysisType == "static"):
 		static_analysis_correlation()
@@ -32,7 +32,7 @@ async def correlation(analysisType):
 
 	return {"operation": "correlation", "analysisType": analysisType}
 
-@router.get("/{analysisType}/{strategy}")
+@router.get("/metrics/{analysisType}/{strategy}")
 async def compare_metrics(analysisType, strategy):
 	if (analysisType == "features") and (strategy == "entitiesTraces"):
 		compare_evaluation_metrics("FAEA")
@@ -42,7 +42,7 @@ async def compare_metrics(analysisType, strategy):
 		
 	return {"operation": "correlation", "analysisType": analysisType, "strategy": strategy}
 
-@router.get("/{analysisType}/")
+@router.get("/metrics/{analysisType}/")
 async def compare_metrics(analysisType):
 	if (analysisType == "static"):
 		compare_evaluation_metrics("SA")

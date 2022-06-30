@@ -8,7 +8,7 @@ import requests
 import json
 import env
 
-API_URL = "http://localhost:8080/mono2micro/"
+API_URL = "http://backend:8080/mono2micro"
 MAX_CLUSTER_SIZE = 10
 
 plt.style.use('seaborn-whitegrid')
@@ -46,22 +46,64 @@ def compare_evaluation_metrics(strategy):
 			response_body = response.json()
 			max_complexity = response_body['maxComplexity']
 
-			for sm_idx in range(MAX_CLUSTER_SIZE):
-				data_size = len(stats['complexity'][sm_idx]['data'])
+			if max_complexity == 0:
+				print(f"Max complexity of {cb} is 0")
+			else:
 
-				for data_idx in range(data_size):
-					complexity = stats['complexity'][sm_idx]['data'][data_idx]
-					uniform_complexity = complexity / max_complexity
-					cohesion = stats['cohesion'][sm_idx]['data'][data_idx]
-					coupling = stats['coupling'][sm_idx]['data'][data_idx]
+				for sm_idx in range(MAX_CLUSTER_SIZE):
+					data_size = len(stats['complexity'][sm_idx]['data'])
 
-					df['n'].append(sm_idx + 1)
-					df['complexity'].append(uniform_complexity)
-					df['cohesion'].append(cohesion)
-					df['coupling'].append(coupling)
+					for data_idx in range(data_size):
+						complexity = stats['complexity'][sm_idx]['data'][data_idx]
+						uniform_complexity = complexity / max_complexity
+						cohesion = stats['cohesion'][sm_idx]['data'][data_idx]
+						coupling = stats['coupling'][sm_idx]['data'][data_idx]
+
+						df['n'].append(sm_idx + 1)
+						df['complexity'].append(uniform_complexity)
+						df['cohesion'].append(cohesion)
+						df['coupling'].append(coupling)
 
 	df = pd.DataFrame(df)
 	df['n'] = df['n'].astype(str)
+
+	for nIdx in (3, 6, 9):
+		plt.clf()
+
+		dfi = df[df['n'].str.contains(str(nIdx))]
+
+		if (len(dfi) != 0):
+			
+			b, a = np.polyfit(dfi.complexity, dfi.cohesion, deg=1)
+			xseq = np.linspace(0, 10, num=100)
+			plt.plot(xseq, a + b * xseq, color=purple_color['color'], lw=1.5)
+			
+			sp = plt.scatter(dfi.complexity, dfi.cohesion, s=3)
+			plt.xlabel('Uniform Complexity')
+			plt.ylabel('Cohesion')
+			plt.title('Uniform Complexity versus Cohesion')
+			plt.xlim(0, 1)
+			plt.ylim(0, 1)
+			plt.grid(True)
+			plt.tight_layout()
+			plt.savefig(env.EVALUATION_PATH + "/" + strategy + f"/ucomplexity_vs_cohesion_{nIdx}.png", format="png", bbox_inches='tight')
+
+			plt.clf()
+
+			b, a = np.polyfit(dfi.complexity, dfi.coupling, deg=1)
+			# Create sequence of 100 numbers from 0 to 100
+			xseq = np.linspace(0, 10, num=100)
+			plt.plot(xseq, a + b * xseq, color=purple_color['color'], lw=1.5)
+
+			sp = plt.scatter(dfi.complexity, dfi.coupling, s=3)
+			plt.xlabel('Uniform Complexity')
+			plt.ylabel('Coupling')
+			plt.title('Uniform Complexity versus Coupling')
+			plt.xlim(0, 1)
+			plt.ylim(0, 1)
+			plt.grid(True)
+			plt.tight_layout()
+			plt.savefig(env.EVALUATION_PATH + "/" + strategy + f"/ucomplexity_vs_coupling_{nIdx}.png", format="png", bbox_inches='tight')
 
 	plt.clf()
 
@@ -96,6 +138,52 @@ def compare_evaluation_metrics(strategy):
 	plt.grid(True)
 	plt.tight_layout()
 	plt.savefig(env.EVALUATION_PATH + "/" + strategy + "/ucomplexity_vs_coupling.png", format="png", bbox_inches='tight')
+
+	plt.clf()
+
+	grouped_df = df.groupby("n")
+	data_to_plot = [np.array([]) for i in range(MAX_CLUSTER_SIZE)]
+	for key, item in grouped_df:
+		data_to_plot[int(key) - 1] = item.cohesion
+
+	bp = plt.boxplot(data_to_plot, meanline=True, showmeans=True, meanprops=blue_color, boxprops=beige_color, medianprops=purple_color, whiskerprops=beige_color)
+	caps = bp['caps']
+	for i in range(len(caps)):
+		if (i % 2) == 0: caps[i].set(color=green_color['color']) # Low cap
+		else: caps[i].set(color=red_color['color']) # High cap
+
+	plt.xlabel('Number of clusters')
+	plt.ylabel('Cohesion')
+	plt.title('Cohesion versus Number of clusters')
+	plt.xlim(0, 11)
+	plt.ylim(0, 1)
+	plt.legend([bp['medians'][0], bp['means'][0]], ['Median', 'Mean'])
+	plt.grid(True)
+	plt.tight_layout()
+	plt.savefig(env.EVALUATION_PATH + "/" + strategy + '/cohesion_vs_nclusters.png', format='png', bbox_inches='tight')
+
+	plt.clf()
+
+	grouped_df = df.groupby("n")
+	data_to_plot = [np.array([]) for i in range(MAX_CLUSTER_SIZE)]
+	for key, item in grouped_df:
+		data_to_plot[int(key) - 1] = item.coupling
+
+	bp = plt.boxplot(data_to_plot, meanline=True, showmeans=True, meanprops=blue_color, boxprops=beige_color, medianprops=purple_color, whiskerprops=beige_color)
+	caps = bp['caps']
+	for i in range(len(caps)):
+		if (i % 2) == 0: caps[i].set(color=green_color['color']) # Low cap
+		else: caps[i].set(color=red_color['color']) # High cap
+
+	plt.xlabel('Number of clusters')
+	plt.ylabel('Coupling')
+	plt.title('Coupling versus Number of clusters')
+	plt.xlim(0, 11)
+	plt.ylim(0, 1)
+	plt.legend([bp['medians'][0], bp['means'][0]], ['Median', 'Mean'])
+	plt.grid(True)
+	plt.tight_layout()
+	plt.savefig(env.EVALUATION_PATH + "/" + strategy + '/coupling_vs_nclusters.png', format='png', bbox_inches='tight')
 
 	plt.clf()
 

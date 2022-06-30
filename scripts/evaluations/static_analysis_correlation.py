@@ -28,7 +28,7 @@ def static_analysis_correlation():
 		'complexity': []
 	}
 
-	codebases = [d for d in listdir(env.RESULTS_PATH) if not isfile(join(RESULTS_PATH, d))]
+	codebases = [d for d in listdir(env.RESULTS_PATH) if not isfile(join(env.RESULTS_PATH, d))]
 
 	for cb in codebases:
 		cb_path = join(env.RESULTS_PATH, cb)

@@ -4,7 +4,7 @@ from starlette.middleware.cors import CORSMiddleware
 import scipyAlgorithm.scipyController as scipyController
 import code2vec.controller as code2vecController
 import plots.controller as plotsController
-import evaluation.controller as evaluationController
+import evaluations.controller as evaluationController
 import uvicorn
 import env
 
@@ -23,7 +23,7 @@ app.add_middleware(
 app.include_router(scipyController.scipyRouter)
 app.include_router(plotsController.router, prefix='/plots')
 app.include_router(code2vecController.router, prefix='/code2vec')
-app.include_router(evaluationController, prefix='/evaluation')
+app.include_router(evaluationController.router, prefix='/evaluation')
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=env.PORT, workers=3)
