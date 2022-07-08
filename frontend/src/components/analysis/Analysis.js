@@ -86,9 +86,7 @@ export const Analysis = () => {
 
     function loadCodebases() {
         const service = new RepositoryService();
-        service.getCodebases(
-            [ "name" ]
-        ).then(response => {
+        service.getCodebases().then(response => {
             setCodebases(response.data);
         });
     }
@@ -112,7 +110,7 @@ export const Analysis = () => {
             }
         });
 
-        service.getInputFile(codebaseName, SourceType.IDTOENTITIY).then(response => {
+        service.getInputFile(codebaseName + SourceType.IDTOENTITIY).then(response => {
             const { updateEntityTranslationFile } = context;
             updateEntityTranslationFile(response.data);
         }).catch(error => {

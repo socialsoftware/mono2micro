@@ -1,13 +1,18 @@
 export default abstract class Source {
+    name!: string;
     type!: string;
-    inputFilePath!: string;
     codebaseName!: string;
+    inputFile!: string;
 
-    protected constructor(type: string, inputFilePath: string, codebaseName: string) {
-        this.type = type;
-        this.inputFilePath = inputFilePath;
-        this.codebaseName = codebaseName;
+    protected constructor(source: Source) {
+        this.name = source.name;
+        this.type = source.type;
+        this.codebaseName = source.codebaseName;
+        this.inputFile = source.inputFile;
     }
+
+    // This function is used to display the collector
+    abstract printCard(handleDeleteSource: (source: Source) => void): JSX.Element;
 }
 
 export enum SourceType {

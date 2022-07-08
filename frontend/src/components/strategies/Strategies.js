@@ -9,49 +9,34 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import {useParams} from "react-router-dom";
 import {AccessesSciPyStrategyForm} from "./forms/AccessesSciPyStrategyForm";
 import {RepositoryService} from "../../services/RepositoryService";
-import {CollectorFactory} from "../../models/collectors/CollectorFactory";
 import {StrategyFactory} from "../../models/strategies/StrategyFactory";
-import {StrategyDescription, StrategyType} from "../../models/strategies/Strategy";
+import {StrategyDescription, StrategySources, StrategyType} from "../../models/strategies/Strategy";
 import {toast, ToastContainer} from "react-toastify";
+import {RecommendAccessesSciPyStrategyForm} from "./forms/RecommendAccessesSciPyStrategyForm";
 
 export const Strategies = () => {
 
     let { codebaseName } = useParams();
 
-    const [collectors, setCollectors] = useState([]);
+    const [sources, setSources] = useState([]);
     const [strategy, setStrategy] = useState(undefined);
     const [strategies, setStrategies] = useState([]);
     const [updateStrategies, setUpdateStrategies] = useState({});
 
     // Executes on mount
     useEffect(() => {
-        loadCollectors();
+        const service = new RepositoryService();
+        service.getSourceTypes(codebaseName).then(response => setSources(response.data));
     }, []);
 
     useEffect(() => {
         loadStrategies();
     }, [updateStrategies]);
 
-    function loadCollectors() {
-        const service = new RepositoryService();
-        service.getCodebase(codebaseName, ['collectors'])
-            .then(response => {
-                if (response.data !== undefined)
-                    setCollectors(response.data.collectors.map(collector =>
-                        CollectorFactory.getCollector({type: collector, codebaseName})));
-            });
-    }
-
     function loadStrategies() {
         const toastId = toast.loading("Fetching Strategies...");
-        const allPossibleStrategies = collectors.flatMap(collector => collector.possibleStrategies)
-            .filter((x, i, a) =>  a.indexOf(x) === i);
-
         const service = new RepositoryService();
-        service.getStrategies(
-            codebaseName,
-            allPossibleStrategies
-        ).then(response => {
+        service.getCodebaseStrategies(codebaseName).then(response => {
             setStrategies(response);
             toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Strategies Loaded.", isLoading: false});
             setTimeout(() => {toast.dismiss(toastId)}, 1000);
@@ -63,13 +48,7 @@ export const Strategies = () => {
     function handleDeleteStrategy(strategy) {
         const service = new RepositoryService();
 
-        service.deleteStrategy(
-            strategy.codebaseName,
-            strategy.name
-        )
-            .then(() => {
-                loadStrategies();
-            });
+        service.deleteStrategy(strategy.name).then(() => loadStrategies());
     }
 
 
@@ -96,15 +75,15 @@ export const Strategies = () => {
                 </h4>
                 <Col sm={2}>
                     <DropdownButton title={strategy === undefined? "Select Similarity Generator and Clustering Algorithm" : StrategyDescription[strategy.type]}>
-                        {collectors.flatMap(collector => collector.possibleStrategies)
-                            .filter((x, i, a) =>  a.indexOf(x) === i) // filter repeated values
-                            .map(possibleStrategy =>
-                                <Dropdown.Item
-                                    key={possibleStrategy}
-                                    onClick={() => handleSelectStrategy(possibleStrategy)}
-                                >
-                                    {StrategyDescription[possibleStrategy]}
-                                </Dropdown.Item>
+                        {
+                            Object.entries(StrategySources).filter(([type, strategySources]) => strategySources.reduce((prev, current) => prev && sources.includes(current), true))
+                                .map(([type, sources]) =>
+                                    <Dropdown.Item
+                                        key={type}
+                                        onClick={() => handleSelectStrategy(type)}
+                                    >
+                                        {StrategyDescription[type]}
+                                    </Dropdown.Item>
                             )
                         }
                     </DropdownButton>
@@ -136,10 +115,15 @@ export const Strategies = () => {
             { renderCreateStrategies() }
 
             {/*Add render of each strategy like the next line to request the required elements for its creation*/}
-            {
-                strategy !== undefined &&
-                (strategy.type === StrategyType.ACCESSES_SCIPY || strategy.type === StrategyType.RECOMMENDATION_ACCESSES_SCIPY) &&
+            {strategy !== undefined && strategy.type === StrategyType.ACCESSES_SCIPY &&
                 <AccessesSciPyStrategyForm
+                    strategy={strategy}
+                    setStrategy={setStrategy}
+                    setUpdateStrategies={setUpdateStrategies}
+                />
+            }
+            {strategy !== undefined && strategy.type === StrategyType.RECOMMENDATION_ACCESSES_SCIPY &&
+                <RecommendAccessesSciPyStrategyForm
                     strategy={strategy}
                     setStrategy={setStrategy}
                     setUpdateStrategies={setUpdateStrategies}

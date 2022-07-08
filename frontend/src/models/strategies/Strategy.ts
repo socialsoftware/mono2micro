@@ -1,14 +1,16 @@
+import {SourceType} from "../sources/Source";
+
 export default abstract class Strategy {
     type!: string;
-    codebaseName!: string;
     name?: string;
-    decompositionsNames?: string[];
+    codebaseName!:string;
+    sourceTypes!: string[]
 
-    protected constructor(type: string, codebaseName: string, name: string, decompositionsNames: string[]) {
-        this.type = type;
-        this.codebaseName = codebaseName;
-        this.name = name;
-        this.decompositionsNames = decompositionsNames;
+    protected constructor(strategy: any) {
+        this.type = strategy.type;
+        this.name = strategy.name;
+        this.codebaseName = strategy.codebaseName;
+        this.sourceTypes = StrategySources[this.type];
     }
 
     // Required to validate submit button
@@ -23,11 +25,16 @@ export default abstract class Strategy {
 
 
 export enum StrategyType {
-    RECOMMENDATION_ACCESSES_SCIPY = 'RECOMMENDATION_ACCESSES_SCIPY', // Faster method of creating decompositions based on codebase accesses and SciPy clustering algorithm
     ACCESSES_SCIPY = 'ACCESSES_SCIPY',
+    RECOMMENDATION_ACCESSES_SCIPY = 'RECOMMENDATION_ACCESSES_SCIPY', // Faster method of creating decompositions based on codebase accesses and SciPy clustering algorithm
 }
 
 export enum StrategyDescription {
     ACCESSES_SCIPY = 'Accesses-Based Similarity and SciPy Clustering Algorithm',
-    RECOMMENDATION_ACCESSES_SCIPY = 'Accesses-Based Similarity and SciPy Clustering Algorithm',
+    RECOMMENDATION_ACCESSES_SCIPY = 'Accesses-Based Similarity and SciPy Clustering Algorithm Recommendations',
+}
+
+export const StrategySources: Record<string, SourceType[]> = {
+    ACCESSES_SCIPY : [SourceType.ACCESSES, SourceType.IDTOENTITIY],
+    RECOMMENDATION_ACCESSES_SCIPY : [SourceType.ACCESSES, SourceType.IDTOENTITIY],
 }

@@ -50,10 +50,10 @@ export const AccessesSciPyDecompositionForm = ({loadDecompositions}) => {
 
         const service = new RepositoryService();
 
-        service.createDecomposition(
-            codebaseName,
+        service.createAccessesSciPyDecomposition(
             strategyName,
-            {type: "ACCESSES_SCIPY", cutValue, cutType}
+            cutValue,
+            cutType
         ).then(response => {
             if (response.status === HttpStatus.OK) {
                 loadDecompositions();
@@ -63,9 +63,9 @@ export const AccessesSciPyDecompositionForm = ({loadDecompositions}) => {
                 setIsUploaded("Failed to create decomposition.");
             }
         })
-            .catch(error => {
-                setIsUploaded("Failed to create decomposition.");
-            });
+        .catch(() => {
+            setIsUploaded("Failed to create decomposition.");
+        });
     }
 
     function handleExpertSubmit(event){
@@ -74,10 +74,8 @@ export const AccessesSciPyDecompositionForm = ({loadDecompositions}) => {
         setIsUploaded("Uploading...");
 
         const service = new RepositoryService();
-        service.createExpertDecomposition(
-            codebaseName,
+        service.createAccessesSciPyExpertDecomposition(
             strategyName,
-            "ACCESSES_SCIPY",
             expertName,
             expertFile
         ).then(response => {

@@ -21,10 +21,8 @@ export const Codebases = () => {
 
     function loadCodebases() {
         const service = new RepositoryService();
-        service.getCodebases(
-            ['name', 'collectors'],
-        ).then(response => {
-            setCodebases(response.data);
+        service.getCodebases().then(response => {
+            setCodebases(response);
         });
     }
 
@@ -34,7 +32,7 @@ export const Codebases = () => {
 
     function handleDeleteCodebase(codebaseName) {
         const service = new RepositoryService();
-        service.deleteCodebase(codebaseName).then(response => {
+        service.deleteCodebase(codebaseName).then(() => {
             loadCodebases();
         });
     }
@@ -52,7 +50,7 @@ export const Codebases = () => {
                                         href={`/codebases/${codebase.name}/strategies`}
                                         className="mb-2"
                                         variant={"success"}
-                                        disabled={codebase.collectors.length === 0}
+                                        disabled={codebase.isEmpty}
                                     >
                                         Go to Strategies <ArrowForward/>
                                     </Button>
@@ -62,7 +60,7 @@ export const Codebases = () => {
                                         className="mb-2"
                                         variant={"primary"}
                                     >
-                                        Go to Collectors <b>+</b>
+                                        Go to Sources <b>+</b>
                                     </Button>
                                     <br/>
                                     <Button

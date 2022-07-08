@@ -8,15 +8,15 @@ export default class RecommendAccessesSciPyStrategy extends Strategy {
     linkageTypes: string[];
     tracesMaxLimit: number;
     traceTypes: TraceType[];
-    completed: boolean;
+    isCompleted: boolean;
 
     constructor(strategy: any) {
-        super(strategy.type, strategy.codebaseName, strategy.name, strategy.decompositionsNames);
+        super(strategy);
         this.profile =                  strategy.profile              ||     "Generic";
         this.tracesMaxLimit =           strategy.tracesMaxLimit       ||     0;
         this.traceTypes =               strategy.traceTypes           ||     [TraceType.ALL];
         this.linkageTypes =             strategy.linkageTypes         ||     ["average"];
-        this.completed =                Boolean(strategy.completed)   ||     false;
+        this.isCompleted =              Boolean(strategy.completed)   ||     false;
     }
 
     readyToSubmit(): boolean {

@@ -1,6 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.dto;
 
-import pt.ist.socialsoftware.mono2micro.domain.decomposition.Decomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 public class AnalyserDto {

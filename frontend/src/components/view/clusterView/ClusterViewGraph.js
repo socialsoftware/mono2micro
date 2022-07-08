@@ -3,7 +3,7 @@ import {RepositoryService} from "../../../services/RepositoryService";
 import {toast, ToastContainer} from "react-toastify";
 import HttpStatus from "http-status-codes";
 import {useParams} from "react-router-dom";
-import {CancelPresentation, Search, TableView, Timeline} from "@mui/icons-material";
+import {CancelPresentation, Search, TableView, Timeline, Undo} from "@mui/icons-material";
 import {DataSet, Network} from "vis-network/standalone";
 import {types, views} from "../Views";
 import {EDGE_LENGTH, OPERATION} from "../../../constants/constants";
@@ -90,6 +90,8 @@ export const ClusterViewGraph = ({setNow, outdated, setOutdated, searchedItem, s
     const [requestDialog, setRequestDialog] = useState(undefined);
     const [dialogResponse, setDialogResponse] = useState(undefined);
 
+    const [undo, setUndo] = useState(undefined);
+
     function defaultOperations() {
         setOperations(() => [
             OPERATION.COLLAPSE,
@@ -109,12 +111,14 @@ export const ClusterViewGraph = ({setNow, outdated, setOutdated, searchedItem, s
 
     const visibleTableActions = [
         { icon: <Search/>, name: 'Search Element', handler: () => setOpenSearch(true) },
+        { icon: <Undo/>, name: 'Undo', handler: handleUndo },
         { icon: <CancelPresentation/>, name: 'Go to Top', handler: handleScrollTop },
         { icon: <Timeline/>, name: 'Go to Functionalities', handler: changeToFunctionalities },
     ];
 
     const hiddenTableActions = [
         { icon: <Search/>, name: 'Search Element', handler: () => setOpenSearch(true) },
+        { icon: <Undo/>, name: 'Undo', handler: handleUndo },
         { icon: <TableView/>, name: 'Go to Metrics' , handler: handleScrollBottom },
         { icon: <Timeline/>, name: 'Go to Functionalities', handler: changeToFunctionalities },
     ];
@@ -122,6 +126,19 @@ export const ClusterViewGraph = ({setNow, outdated, setOutdated, searchedItem, s
     function handleScrollTop() { setActions(hiddenTableActions); setShowTable(false); }
 
     function handleScrollBottom() { setActions(visibleTableActions); setShowTable(true); }
+
+    function handleUndo() {
+        const service = new RepositoryService();
+        service.undoOperation(codebaseName,strategyName,decompositionName).then(response => {
+            const clusters = Object.values(response.data);
+            setClusters(clusters);
+            setUndo({});
+        });
+    }
+
+    useEffect(() => {
+        console.log(graphPositions);
+    }, [undo]);
 
     useEffect(() => {
         if (showTable) window.scrollTo(0, document.body.scrollHeight);
@@ -759,9 +776,9 @@ function updateNetwork() {
             const position = network.getPosition(node.id);
             node.x = position.x;
             node.y = position.y;
-            node.hidden = false;
+            delete node["hidden"];
         });
-        graphPositions.edges.forEach(edge => edge.hidden = false);
+        graphPositions.edges.forEach(edge => delete edge["hidden"]);
 
         return graphPositions;
     }

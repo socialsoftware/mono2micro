@@ -10,31 +10,32 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pt.ist.socialsoftware.mono2micro.controller.DecompositionController;
+import pt.ist.socialsoftware.mono2micro.decomposition.controller.DecompositionController;
 import pt.ist.socialsoftware.mono2micro.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.domain.LocalTransaction;
-import pt.ist.socialsoftware.mono2micro.domain.decomposition.AccessesSciPyDecomposition;
-import pt.ist.socialsoftware.mono2micro.domain.decomposition.Decomposition;
-import pt.ist.socialsoftware.mono2micro.domain.source.Source;
-import pt.ist.socialsoftware.mono2micro.domain.strategy.AccessesSciPyStrategy;
-import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.source.domain.Source;
+import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
+import pt.ist.socialsoftware.mono2micro.fileManager.FileManager;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static pt.ist.socialsoftware.mono2micro.domain.source.Source.SourceType.ACCESSES;
+import static pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource.ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.STRATEGIES_FOLDER;
 
 @RestController
-@RequestMapping(value = "/mono2micro/codebase/{codebaseName}/strategy/{strategyName}/decomposition/{decompositionName}")
+@RequestMapping(value = "/mono2micro/strategy/{strategyName}/decomposition/{decompositionName}")
 public class AccessesSciPyController {
 
     private static final Logger logger = LoggerFactory.getLogger(DecompositionController.class);
 
-    private final CodebaseManager codebaseManager = CodebaseManager.getInstance();
+    private final FileManager fileManager = FileManager.getInstance();
 
     @RequestMapping(value = "/updatedAccessesSciPyDecomposition", method = RequestMethod.GET)
     public ResponseEntity<Decomposition> updatedAccessesSciPyDecomposition(
@@ -45,7 +46,7 @@ public class AccessesSciPyController {
         logger.debug("updatedAccessesSciPyDecomposition");
 
         try {
-            AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+            AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) fileManager.getStrategyDecomposition(
                     codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName
             );
             decomposition.updateOutdatedFunctionalitiesAndMetrics();
@@ -67,20 +68,21 @@ public class AccessesSciPyController {
         logger.debug("getFunctionalityLocalTransactionsGraph");
 
         try {
-            AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseManager.getCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyName);
+            AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) fileManager.getCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyName);
 
-            AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+            AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) fileManager.getStrategyDecomposition(
                     codebaseName,
                     STRATEGIES_FOLDER,
                     strategyName,
                     decompositionName
             );
 
-            Source source = codebaseManager.getCodebaseSource(codebaseName, ACCESSES);
+            Source source = fileManager.getCodebaseSource(codebaseName, ACCESSES);
 
             DirectedAcyclicGraph<LocalTransaction, DefaultEdge> functionalityLocalTransactionsGraph = decomposition.getFunctionality(functionalityName)
                     .createLocalTransactionGraphFromScratch(
-                            source.getInputFilePath(),
+                            //source.getSourceFilePath(),
+                            new ByteArrayInputStream("TODO".getBytes()),
                             strategy.getTracesMaxLimit(),
                             strategy.getTraceType(),
                             decomposition.getEntityIDToClusterID());
@@ -106,7 +108,7 @@ public class AccessesSciPyController {
 
         try {
             ArrayList<HashMap<String, String>> searchItems = new ArrayList<>();
-            AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+            AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) fileManager.getStrategyDecomposition(
                     codebaseName,
                     STRATEGIES_FOLDER,
                     strategyName,
@@ -160,9 +162,9 @@ public class AccessesSciPyController {
         logger.debug("getEdgeWeights");
 
         try {
-            JSONArray copheneticDistances = codebaseManager.getCopheneticDistances(codebaseName, strategyName);
-            JSONArray entities = codebaseManager.getSimilarityMatrix(codebaseName, strategyName, "similarityMatrix.json").getJSONArray("entities");
-            AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName);
+            JSONArray copheneticDistances = fileManager.getCopheneticDistances(codebaseName, strategyName);
+            JSONArray entities = fileManager.getSimilarityMatrix(codebaseName, strategyName, "similarityMatrix.json").getJSONArray("entities");
+            AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) fileManager.getStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName);
 
             JSONArray edgesJSON = new JSONArray();
             int k = 0;
@@ -234,7 +236,7 @@ public class AccessesSciPyController {
         logger.debug("getGraphPositions");
 
         try {
-            String graphPositions = codebaseManager.getGraphPositions(codebaseName, strategyName, decompositionName);
+            String graphPositions = fileManager.getGraphPositions(codebaseName, strategyName, decompositionName);
 
             if (graphPositions == null)
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -257,7 +259,7 @@ public class AccessesSciPyController {
         logger.debug("saveGraphPositions");
 
         try {
-            codebaseManager.saveGraphPositions(codebaseName, strategyName, decompositionName, graphPositions);
+            fileManager.saveGraphPositions(codebaseName, strategyName, decompositionName, graphPositions);
             return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (IOException e) {
@@ -275,7 +277,7 @@ public class AccessesSciPyController {
         logger.debug("deleteGraphPositions");
 
         try {
-            codebaseManager.deleteGraphPositions(codebaseName, strategyName, decompositionName);
+            fileManager.deleteGraphPositions(codebaseName, strategyName, decompositionName);
             return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (IOException e) {

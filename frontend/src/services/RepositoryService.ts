@@ -6,7 +6,6 @@ import {
 import {
     AnalyserDto,
     AnalysisDto,
-    Codebase,
     TraceType,
     Cluster,
     Functionality,
@@ -20,6 +19,7 @@ import Strategy from "../models/strategies/Strategy";
 import {StrategyFactory} from "../models/strategies/StrategyFactory";
 import {DecompositionFactory} from "../models/decompositions/DecompositionFactory";
 import Decomposition from "../models/decompositions/Decomposition";
+import Codebase from "../models/codebase/Codebase";
 
 export class RepositoryService {
     axios: AxiosInstance;
@@ -93,7 +93,6 @@ export class RepositoryService {
     }
 
     createRecommendationDecompositions(
-        codebaseName: string,
         strategyRecommendation: string,
         decompositionNames: string[]
     ) {
@@ -104,7 +103,7 @@ export class RepositoryService {
         // unfortunately, this is needed so that data.append does not interpret the commas as an array separation
         data.append('decompositionNames', "");
 
-        return this.axios.post<null>("/codebase/" + codebaseName + "/recommendationStrategy/" + strategyRecommendation + "/createDecompositions", data);
+        return this.axios.post<null>("/recommendAccessesSciPyStrategy/" + strategyRecommendation + "/createDecompositions", data);
     }
 
     getRecommendationStrategy(codebaseName: string, strategyName: string) {
@@ -113,18 +112,12 @@ export class RepositoryService {
     }
 
     //Codebases
-    getCodebases(fieldNames?: string[]) {
-        return this.axios.get<Codebase[]>(addSearchParamsToUrl(
-            "/codebases",
-            fieldNames ? { fieldNames } : {},
-        ));
+    getCodebases() {
+        return this.axios.get("/codebases").then(response => response.data.map((codebase:any) => new Codebase(codebase)));
     }
 
-    getCodebase(codebaseName: string, fieldNames?: string[]) {
-        return this.axios.get<Codebase>(addSearchParamsToUrl(
-            "/codebase/" + codebaseName,
-            fieldNames ? { fieldNames } : {},
-        ));
+    getCodebase(codebaseName: string) {
+        return this.axios.get("/codebase/" + codebaseName).then(response => new Codebase(response.data));
     }
 
     getCodebaseDecompositions(
@@ -150,9 +143,9 @@ export class RepositoryService {
     }
 
     // Profiles
-    addProfile(codebaseName: string, sourceType: string, profile: string) {
+    addAccessesProfile(sourceName: string, profile: string) {
         return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/source/" + sourceType + "/addProfile",
+            "/source/" + sourceName + "/addAccessesProfile",
             null,
             {
                 params: {
@@ -161,14 +154,13 @@ export class RepositoryService {
             });
     }
 
-    moveFunctionalities(
-        codebaseName: string,
-        sourceType: string,
+    moveAccessesFunctionalities(
+        sourceName: string,
         functionalities: string[],
         targetProfile: string,
     ) {
         return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/source/" + sourceType + "/moveFunctionalities",
+            "/source/" + sourceName + "/moveAccessesFunctionalities",
             functionalities,
             {
                 params: {
@@ -178,9 +170,9 @@ export class RepositoryService {
         );
     }
 
-    deleteProfile(codebaseName: string, sourceType: string, profile: string) {
+    deleteAccessesProfile(sourceName: string, profile: string) {
         return this.axios.delete<null>(
-            "/codebase/" + codebaseName + "/source/" + sourceType + "/deleteProfile",
+            "/source/" + sourceName + "/deleteAccessesProfile",
             {
                 params: {
                     "profile" : profile
@@ -190,9 +182,8 @@ export class RepositoryService {
     }
 
     //Sources
-    addCollector(
+    addSources(
         codebaseName: string,
-        collectorName: string,
         sources: Map<string, File>
     ) {
         const config = {
@@ -201,51 +192,37 @@ export class RepositoryService {
             }
         }
         const data = new FormData();
-        data.append("collectorName", collectorName);
         Object.entries(sources).forEach((entry) => {data.append("sourceTypes", entry[0]); data.append("sources", entry[1])});
 
-        return this.axios.post<null>("/codebase/" + codebaseName + "/addCollector", data, config);
+        return this.axios.post<null>("/codebase/" + codebaseName + "/addSources", data, config);
     }
 
-    deleteCollector(codebaseName: string, collectorType: string, sources: string[], possibleStrategies: string[]) {
-        return this.axios.delete<null>(addSearchParamsToUrl("/codebase/" + codebaseName + "/collector/" + collectorType + "/delete", {sources, possibleStrategies}));
+    getCodebaseSource(codebaseName: string, sourceType: string) {
+        return this.axios.get("/codebase/" + codebaseName + "/source/" + sourceType + "/getCodebaseSource")
+            .then((response) => SourceFactory.getSource(response.data));
     }
 
-    addSource(
-        codebaseName: string,
-        sourceType: string,
-        inputFile: any
-    ) {
-        const config = {
-            headers: {
-                'content-type': 'multipart/form-data'
-            }
-        }
-        const data = new FormData();
-        data.append('sourceType', sourceType);
-        data.append('inputFile', inputFile);
-
-        return this.axios.post<null>("/codebase/" + codebaseName + "/addSource", data, config);
+    getSource(sourceName: string) {
+        return this.axios.get("/source/" + sourceName + "/getSource")
+            .then((response) => SourceFactory.getSource(response.data));
     }
 
-    getSource(codebaseName: string, sourceType: string) {
-        return this.axios.get("/codebase/" + codebaseName + "/source/" + sourceType + "/getSource")
-            .then((response) => {
-                return SourceFactory.getSource(response.data);
-            });
+    getSourceTypes(codebaseName: string) {
+        return this.axios.get<string[]>("/codebase/" + codebaseName + "/getSourceTypes");
     }
 
-    getInputFile(codebaseName: string, sourceType: string) {
-        return this.axios.get<string>("/codebase/" + codebaseName + "/source/" + sourceType + "/getInputFile");
+    deleteSource(id: string) {
+        return this.axios.delete<null>("/source/" + id + "/delete");
+    }
+
+    getInputFile(sourceName: string) {
+        return this.axios.get<string>("/source/" + sourceName + "/getInputFile");
     }
 
 
     //Strategies
-    getStrategies(codebaseName: string, strategyTypes?: string[]) {
-        return this.axios.get(addSearchParamsToUrl(
-            "/codebase/" + codebaseName + "/strategies",
-            strategyTypes? {strategyTypes} : {},
-        )).then((responseList) => {
+    getCodebaseStrategies(codebaseName: string) {
+        return this.axios.get("/codebase/" + codebaseName + "/getCodebaseStrategies").then(responseList => {
             if (responseList.data.length == 0)
                 return responseList.data;
             return responseList.data.map((response: any) => {
@@ -259,16 +236,16 @@ export class RepositoryService {
             response => { return StrategyFactory.getStrategy(response); });
     }
 
-    deleteStrategy(codebaseName: string, strategyName: string) {
-        return this.axios.delete<null>("/codebase/" + codebaseName + "/strategy/" + strategyName + "/delete");
+    deleteStrategy(strategyName: string) {
+        return this.axios.delete<null>("/strategy/" + strategyName + "/delete");
     }
     
-    createStrategy(strategy: Strategy) {
-        return this.axios.post<null>("/codebase/" + strategy.codebaseName + "/strategy/createStrategy", strategy);
+    createAccessesSciPyStrategy(strategy: Strategy) {
+        return this.axios.post<null>("/strategy/createAccessesSciPyStrategy", strategy);
     }
 
-    getSimilarityMatrix(codebaseName: string, strategyName: string) {
-        return this.axios.get<SimilarityMatrix>("/codebase/" + codebaseName + "/strategy/" + strategyName + "/getSimilarityMatrix");
+    createRecommendAccessesSciPyStrategy(strategy: Strategy) {
+        return this.axios.post<null>("/strategy/createRecommendAccessesSciPyStrategy", strategy);
     }
 
     getEdgeWeights(codebaseName: string, strategyName: string, decompositionName: string) {
@@ -287,22 +264,19 @@ export class RepositoryService {
         return this.axios.post<null>("/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/saveGraphPositions", graphPositions);
     }
 
-    createDecomposition(
-        codebaseName: string,
+    createAccessesSciPyDecomposition(
         strategyName: string,
-        request: any
+        cutType: string,
+        cutValue: number
     ) {
-
-        return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/createDecomposition",
-            request
-        );
+        return this.axios.get(addSearchParamsToUrl(
+            "/strategy/" + strategyName + "/createAccessesSciPyDecomposition",
+            { cutType: cutType, cutValue: cutValue.toString() },
+        ));
     }
 
-    createExpertDecomposition(
-        codebaseName: string,
+    createAccessesSciPyExpertDecomposition(
         strategyName: string,
-        type: string,
         expertName: string,
         expertFile: any
     ) {
@@ -312,12 +286,11 @@ export class RepositoryService {
             }
         }
         const data = new FormData();
-        data.append('type', type);
         data.append('expertName', expertName);
         data.append('expertFile', expertFile);
 
         return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/createExpertDecomposition",
+            "/strategy/" + strategyName + "/createExpertDecomposition",
             data,
             config
         );
@@ -468,6 +441,14 @@ export class RepositoryService {
                 }
             }
         );
+    }
+
+    undoOperation(
+        codebaseName: string,
+        strategyName: string,
+        decompositionName: string
+    ) {
+        return this.axios.get<Record<number, Cluster>>("/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/undoOperation");
     }
 
     transferEntities(

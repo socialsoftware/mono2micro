@@ -15,7 +15,7 @@ import {useParams} from "react-router-dom";
 const HttpStatus = require('http-status-codes');
 
 export const Profiles = () => {
-    let { codebaseName, sourceType } = useParams();
+    let { codebaseName, sourceName } = useParams();
     const [source, setSource] = useState({});
     const [newProfileName, setNewProfileName] = useState("");
     const [moveToProfile, setMoveToProfile] = useState("");
@@ -26,7 +26,7 @@ export const Profiles = () => {
 
     function loadSource() {
         const service = new RepositoryService();
-        service.getSource(codebaseName, sourceType).then(response => {
+        service.getSource(sourceName).then(response => {
             setSource(response === null ? {} : response);
         });
     }
@@ -41,7 +41,7 @@ export const Profiles = () => {
         setIsUploaded("Uploading...");
 
         const service = new RepositoryService();
-        service.addProfile(codebaseName, sourceType, newProfileName).then(response => {
+        service.addAccessesProfile(sourceName, newProfileName).then(response => {
             if (response.status === HttpStatus.OK) {
                 loadSource();
                 setIsUploaded("Upload completed successfully.");
@@ -65,9 +65,8 @@ export const Profiles = () => {
     function handleMoveFunctionalitiesSubmit() {
         const service = new RepositoryService();
 
-        service.moveFunctionalities(
-            codebaseName,
-            sourceType,
+        service.moveAccessesFunctionalities(
+            sourceName,
             selectedFunctionalities,
             moveToProfile
         ).then(() => {
@@ -79,9 +78,8 @@ export const Profiles = () => {
     function handleDeleteProfile(profile) {
         const service = new RepositoryService();
 
-        service.deleteProfile(
-            codebaseName,
-            sourceType,
+        service.deleteAccessesProfile(
+            sourceName,
             profile
         ).then(() => {
             loadSource();
@@ -115,7 +113,7 @@ export const Profiles = () => {
                     Source
                 </Breadcrumb.Item>
                 <Breadcrumb.Item href={`/codebases/${codebaseName}`}>
-                    {sourceType}
+                    {sourceName}
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>
                     Profiles

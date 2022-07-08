@@ -78,12 +78,6 @@ export interface Cluster {
     entities?: number[];
 }
 
-export interface Codebase {
-    name?: string;
-    profiles?: Record<string, string[]>; // e.g <Generic, FunctionalityNamesList>
-    datafilePath?: string;
-}
-
 export interface AnalyserDto {
     profile?: string;
     requestLimit?: number;

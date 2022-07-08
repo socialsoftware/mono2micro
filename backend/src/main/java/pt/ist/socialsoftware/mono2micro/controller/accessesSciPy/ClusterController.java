@@ -2,12 +2,15 @@ package pt.ist.socialsoftware.mono2micro.controller.accessesSciPy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.domain.*;
-import pt.ist.socialsoftware.mono2micro.domain.decomposition.AccessesSciPyDecomposition;
-import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
+import pt.ist.socialsoftware.mono2micro.history.model.AccessesSciPyOperations.*;
+import pt.ist.socialsoftware.mono2micro.history.service.AccessesSciPyHistoryService;
+import pt.ist.socialsoftware.mono2micro.fileManager.FileManager;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
@@ -19,9 +22,12 @@ import static pt.ist.socialsoftware.mono2micro.utils.Constants.STRATEGIES_FOLDER
 @RequestMapping(value = "/mono2micro/codebase/{codebaseName}/strategy/{strategyName}/decomposition/{decompositionName}")
 public class ClusterController {
 
+	@Autowired
+	AccessesSciPyHistoryService accessesSciPyHistoryService;
+
 	private static final Logger logger = LoggerFactory.getLogger(ClusterController.class);
 
-	private final CodebaseManager codebaseManager = CodebaseManager.getInstance();
+	private final FileManager fileManager = FileManager.getInstance();
 
 	@RequestMapping(value = "/cluster/{clusterNameID}/merge", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> mergeClusters(
@@ -35,9 +41,11 @@ public class ClusterController {
 		logger.debug("mergeClusters");
 
 		try {
-			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) fileManager.getStrategyDecomposition(
 					codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName
 			);
+
+			MergeHistoryEntry historyEntry = new MergeHistoryEntry(decomposition, clusterNameID, otherClusterID, newName);
 
 			decomposition.mergeClusters(
 				clusterNameID,
@@ -46,7 +54,8 @@ public class ClusterController {
 			);
 			decomposition.setOutdated(true);
 
-			codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
+			fileManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
+			accessesSciPyHistoryService.addHistoryEntry(decomposition, historyEntry);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -66,16 +75,19 @@ public class ClusterController {
 		logger.debug("renameCluster");
 
 		try {
-			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) fileManager.getStrategyDecomposition(
 					codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName
 			);
+
+			RenameHistoryEntry historyEntry = new RenameHistoryEntry(decomposition, clusterID, newName);
 
 			decomposition.renameCluster(
 				clusterID,
 				newName
 			);
 
-			codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
+			fileManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
+			accessesSciPyHistoryService.addHistoryEntry(decomposition, historyEntry);
 			return new ResponseEntity<>(decomposition.getClusters(), HttpStatus.OK);
 
 		} catch (KeyAlreadyExistsException e) {
@@ -99,9 +111,11 @@ public class ClusterController {
 		logger.debug("splitCluster");
 
 		try {
-			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) fileManager.getStrategyDecomposition(
 					codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName
 			);
+
+			SplitHistoryEntry historyEntry = new SplitHistoryEntry(decomposition, clusterID, newName, entities);
 
 			decomposition.splitCluster(
 				clusterID,
@@ -110,7 +124,8 @@ public class ClusterController {
 			);
 			decomposition.setOutdated(true);
 
-			codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
+			fileManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
+			accessesSciPyHistoryService.addHistoryEntry(decomposition, historyEntry);
 			return new ResponseEntity<>(decomposition.getClusters(), HttpStatus.OK);
 
 		} catch (KeyAlreadyExistsException e) {
@@ -134,9 +149,11 @@ public class ClusterController {
 		logger.debug("transferEntities");
 
 		try {
-			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) fileManager.getStrategyDecomposition(
 					codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName
 			);
+
+			TransferHistoryEntry historyEntry = new TransferHistoryEntry(decomposition, clusterID, toClusterID, entities);
 
 			decomposition.transferEntities(
 				clusterID,
@@ -145,7 +162,8 @@ public class ClusterController {
 			);
 			decomposition.setOutdated(true);
 
-			codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
+			fileManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
+			accessesSciPyHistoryService.addHistoryEntry(decomposition, historyEntry);
 			return new ResponseEntity<>(decomposition.getClusters(), HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -160,14 +178,16 @@ public class ClusterController {
 			@PathVariable String strategyName,
 			@PathVariable String decompositionName,
 			@RequestParam String newName,
-			@RequestBody Map<Short, List<Short>> entities // <clusterId, entitiesIds[]> This additional information might be useful in the future
+			@RequestBody Map<Short, List<Short>> entities
 	) {
 		logger.debug("formCluster");
 
 		try {
-			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) fileManager.getStrategyDecomposition(
 					codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName
 			);
+
+			FormClusterHistoryEntry historyEntry = new FormClusterHistoryEntry(decomposition, newName, entities);
 
 			decomposition.formCluster(
 					newName,
@@ -175,11 +195,41 @@ public class ClusterController {
 			);
 			decomposition.setOutdated(true);
 
-			codebaseManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
+			fileManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decomposition);
+			accessesSciPyHistoryService.addHistoryEntry(decomposition, historyEntry);
 			return new ResponseEntity<>(decomposition.getClusters(), HttpStatus.OK);
 
 		} catch (KeyAlreadyExistsException e) {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@RequestMapping(value = "/undoOperation", method = RequestMethod.GET)
+	public ResponseEntity<Map<Short, Cluster>> undoOperation(
+			@PathVariable String codebaseName,
+			@PathVariable String strategyName,
+			@PathVariable String decompositionName
+	) {
+		logger.debug("undoOperation");
+
+		try {
+			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) fileManager.getStrategyDecomposition(
+					codebaseName,
+					STRATEGIES_FOLDER,
+					strategyName,
+					decompositionName
+			);
+
+			accessesSciPyHistoryService.undoOperation(decomposition);
+
+			return new ResponseEntity<>(
+					decomposition.getClusters(),
+					HttpStatus.OK
+			);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -196,7 +246,7 @@ public class ClusterController {
 		logger.debug("getFunctionalitiesAndFunctionalitiesClusters");
 
 		try {
-			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) fileManager.getStrategyDecomposition(
 				codebaseName,
 				STRATEGIES_FOLDER,
 				strategyName,
@@ -235,7 +285,7 @@ public class ClusterController {
 		logger.debug("getClustersAndClustersFunctionalities");
 
 		try {
-			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) codebaseManager.getStrategyDecomposition(
+			AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) fileManager.getStrategyDecomposition(
 				codebaseName,
 				STRATEGIES_FOLDER,
 				strategyName,

@@ -2,9 +2,9 @@ package pt.ist.socialsoftware.mono2micro.domain;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import pt.ist.socialsoftware.mono2micro.domain.decomposition.Decomposition;
-import pt.ist.socialsoftware.mono2micro.domain.metrics.Metric;
-import pt.ist.socialsoftware.mono2micro.domain.metrics.MetricFactory;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.metrics.Metric;
+import pt.ist.socialsoftware.mono2micro.metrics.MetricFactory;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.utils.LocalTransactionTypes;

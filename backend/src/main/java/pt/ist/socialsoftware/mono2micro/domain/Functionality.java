@@ -1,6 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.domain;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -10,16 +11,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.traverse.BreadthFirstIterator;
-import pt.ist.socialsoftware.mono2micro.domain.decomposition.Decomposition;
-import pt.ist.socialsoftware.mono2micro.domain.metrics.Metric;
-import pt.ist.socialsoftware.mono2micro.domain.metrics.MetricFactory;
+import org.json.JSONException;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.metrics.Metric;
+import pt.ist.socialsoftware.mono2micro.metrics.MetricFactory;
 import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.dto.ReducedTraceElementDto;
 import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
-import pt.ist.socialsoftware.mono2micro.utils.Constants;
-import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
-import pt.ist.socialsoftware.mono2micro.utils.FunctionalityType;
-import pt.ist.socialsoftware.mono2micro.utils.Utils;
+import pt.ist.socialsoftware.mono2micro.utils.*;
 import pt.ist.socialsoftware.mono2micro.utils.deserializers.FunctionalityDeserializer;
 import pt.ist.socialsoftware.mono2micro.utils.serializers.FunctionalitySerializer;
 
@@ -326,15 +325,14 @@ public class Functionality {
 	}
 
 	public DirectedAcyclicGraph<LocalTransaction, DefaultEdge> createLocalTransactionGraphFromScratch(
-			String inputFilePath,
+			InputStream inputFilePath,
 			int tracesMaxLimit,
 			Constants.TraceType traceType,
 			Map<Short, Short> entityIDToClusterID
-	) throws IOException {
+	) throws IOException, JSONException {
 		if (this.getTraces() == null) {
 			FunctionalityTracesIterator iter = new FunctionalityTracesIterator(inputFilePath, tracesMaxLimit);
-			iter.nextFunctionalityWithName(this.getName());
-			iter.getFirstTrace();
+			iter.getFunctionalityWithName(this.getName());
 
 			List<TraceDto> traceDtos = iter.getTracesByType(traceType);
 			this.setTraces(traceDtos);

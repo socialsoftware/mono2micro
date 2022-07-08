@@ -12,11 +12,11 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
 import {RepositoryService} from "../../services/RepositoryService";
 import HttpStatus from "http-status-codes";
-import {CollectorType} from "../../models/collectors/Collector";
-import {CollectorFactory} from "../../models/collectors/CollectorFactory";
 import {Modal, ModalBody, ModalFooter, ModalTitle} from "react-bootstrap";
-import {AccessesCollectorForm} from "./forms/AccessesCollectorForm";
+import {AccessesSciPyForm} from "./forms/AccessesSciPyForm";
 import {ArrowForward} from "@mui/icons-material";
+import {StrategyDescription, StrategyType} from "../../models/strategies/Strategy";
+import {StrategyFactory} from "../../models/strategies/StrategyFactory";
 
 function renderBreadCrumbs(codebaseName) {
     return (
@@ -37,42 +37,40 @@ function renderBreadCrumbs(codebaseName) {
 export function Codebase() {
     let { codebaseName } = useParams();
     const [showPopup, setShowPopup] = useState(false);
-    const [collectorToDelete, setCollectorToDelete] = useState(undefined);
-    const [selectedCollector, setSelectedCollector] = useState(undefined);
-    const [collectors, setCollectors] = useState([]);
+    const [sourceToDelete, setSourceToDelete] = useState(undefined);
+    const [selectedStrategy, setSelectedStrategy] = useState(undefined);
+    const [sources, setSources] = useState([]);
+    const [addedSources, setAddedSources] = useState({});
     const [isUploaded, setIsUploaded] = useState("");
+    const [canSubmit, setCanSubmit] = useState(false);
 
     //Executed on mount
     useEffect(() => {
-        loadCollectors()
+        loadCodebase();
     }, []);
 
-    function loadCollectors() {
+    function loadCodebase() {
         const service = new RepositoryService();
-        service.getCodebase(codebaseName, ['collectors'])
-            .then(response => {
-                if (response.data !== undefined)
-                    setCollectors(response.data.collectors.map(collector =>
-                        CollectorFactory.getCollector({type:collector, codebaseName}))
-                    );
-            });
+        service.getCodebase(codebaseName).then(response => {
+            setSources(response.sources);
+        });
     }
 
-    function handleCollectorSubmit(event) {
+    function handleSourcesSubmit(event) {
         event.preventDefault()
 
         setIsUploaded("Uploading...");
 
         const service = new RepositoryService();
-        service.addCollector(codebaseName, selectedCollector.type, selectedCollector.addedSources)
+        service.addSources(codebaseName, addedSources)
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
-                    loadCollectors();
-                    setSelectedCollector(undefined);
+                    loadCodebase();
                     setIsUploaded("");
-                } else {
-                    setIsUploaded("Upload failed.");
-                }
+                } else setIsUploaded("Upload failed.");
+
+                setSelectedStrategy(undefined);
+                setAddedSources({});
             })
             .catch(error => {
                 if (error.response !== undefined && error.response.status === HttpStatus.UNAUTHORIZED) {
@@ -85,6 +83,7 @@ export function Codebase() {
                     setIsUploaded("Upload failed.");
                 }
             });
+        setCanSubmit(false);
     }
 
     const getHelpText = (
@@ -93,59 +92,57 @@ export function Codebase() {
         </Popover>
     );
 
-    function handleSelectedCollector(collectorType) {
-        setSelectedCollector(CollectorFactory.getCollector({type: collectorType, codebaseName}));
+    function handleSelectedStrategy(strategyType) {
+        setSelectedStrategy(StrategyFactory.getStrategy({type: strategyType}));
     }
 
-    function handleCollectorDelete(collectorToDelete) {
-        setCollectorToDelete(collectorToDelete);
+    function handleSourceDelete(source) {
+        setSourceToDelete(source);
         setShowPopup(true);
     }
 
-    function confirmCollectorDelete() {
+    function confirmSourceToDelete() {
         setShowPopup(false);
 
         const service = new RepositoryService();
-        service.deleteCollector(
-            collectorToDelete.codebaseName,
-            collectorToDelete.type,
-            collectorToDelete.sources,
-            collectorToDelete.possibleStrategies
-        ).then(() => {
-            loadCollectors()
+        service.deleteSource(sourceToDelete.name).then(() => {
+            loadCodebase();
         });
     }
 
-    function renderCollectors() {
+    function renderSources() {
         return (
-            <Form onSubmit={handleCollectorSubmit}>
+            <Form onSubmit={handleSourcesSubmit}>
                 <Form.Group as={Row} controlId="selectSource" className="align-items-center mb-3">
                     <Col sm={2}>
-                        <DropdownButton title={selectedCollector === undefined? "Add Collector" : selectedCollector.type}>
-                            {Object.values(CollectorType).filter(collectorType => !collectors.find(collector => collector.type === collectorType))
-                                .map(collectorType =>
+                        <DropdownButton title={selectedStrategy === undefined? "Choose Strategy" : StrategyDescription[selectedStrategy.type]}>
+                            {Object.values(StrategyType).map(strategyType =>
                                     <Dropdown.Item
-                                        key={collectorType}
-                                        onClick={() => handleSelectedCollector(collectorType)}
+                                        key={strategyType}
+                                        onClick={() => handleSelectedStrategy(strategyType)}
                                     >
-                                        {collectorType}
+                                        {StrategyDescription[strategyType]}
                                     </Dropdown.Item>
                             )}
                         </DropdownButton>
                     </Col>
                 </Form.Group>
 
-                {selectedCollector !== undefined && selectedCollector.type === CollectorType.ACCESSES &&   // Show sources request form
-                    <AccessesCollectorForm
-                        collector={selectedCollector}
-                        setCollector={setSelectedCollector}
+                {selectedStrategy !== undefined &&
+                    (selectedStrategy.type === StrategyType.RECOMMENDATION_ACCESSES_SCIPY ||
+                    selectedStrategy.type === StrategyType.ACCESSES_SCIPY) &&   // Show sources request form
+                    <AccessesSciPyForm
+                        strategy={selectedStrategy}
+                        setAddedSources={setAddedSources}
+                        sources={sources}
+                        setCanSubmit={setCanSubmit}
                     />
                 }
 
-                {selectedCollector !== undefined &&                                                        // Submit button
+                {selectedStrategy !== undefined &&
                     <Form.Group as={Row} className="align-items-center mb-4">
-                        <Col sm={{ offset: 2 }}>
-                            <Button type="submit" disabled={!selectedCollector.canSubmit()}>Submit</Button>
+                        <Col sm={{offset: 2}}>
+                            <Button type="submit" disabled={!canSubmit}>Submit</Button>
                             <Form.Text className="ms-2">
                                 {isUploaded}
                             </Form.Text>
@@ -154,29 +151,29 @@ export function Codebase() {
                 }
 
                 <div className={"d-flex flex-wrap mw-100"} style={{gap: '1rem 1rem'}}>
-                    {collectors.map(collector => collector.printCard(handleCollectorDelete))}
+                    {sources.map(source => source.printCard(handleSourceDelete))}
                 </div>
             </Form>
         );
     }
 
     function renderDeletePopup() {
-        const closePopup = function () {setShowPopup(false); setCollectorToDelete(undefined)};
+        const closePopup = function () {setShowPopup(false); setSourceToDelete(undefined)};
 
         return <Modal
                 show={showPopup}
                 onHide={() => closePopup()}
                 backdrop="static"
             >
-                <ModalTitle>&ensp;Collector Deletion</ModalTitle>
+                <ModalTitle>&ensp;Source Deletion</ModalTitle>
                 <ModalBody>
-                    Strategies created from this collector will be deleted.<br/>Are you sure you want to delete this Collector?
+                    Strategies created from this source will be deleted.<br/>Are you sure you want to delete this Source?
                 </ModalBody>
                 <ModalFooter>
                     <Button variant="secondary" onClick={() => closePopup()}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={() => confirmCollectorDelete()}>Delete</Button>
+                    <Button variant="primary" onClick={() => confirmSourceToDelete()}>Delete</Button>
                 </ModalFooter>
             </Modal>;
     }
@@ -206,7 +203,7 @@ export function Codebase() {
                             <Button
                                 href={`/codebases/${codebaseName}/strategies`}
                                 className="mt-2 mb-3"
-                                disabled={collectors.length === 0}
+                                disabled={sources.length === 0}
                                 variant={"success"}
                             >
                                 Go to Strategies <ArrowForward/>
@@ -216,7 +213,7 @@ export function Codebase() {
                 </Col>
             </Row>
 
-            { renderCollectors() }
+            { renderSources() }
         </div>
     );
 }

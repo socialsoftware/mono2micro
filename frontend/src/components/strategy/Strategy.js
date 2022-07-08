@@ -31,7 +31,7 @@ export const Strategy = () => {
 
     function handleDeleteDecomposition(decompositionName) {
         const service = new RepositoryService();
-        service.deleteDecomposition(codebaseName, strategyName, decompositionName).then(response => {
+        service.deleteDecomposition(codebaseName, strategyName, decompositionName).then(() => {
             loadDecompositions();
         });
     }
@@ -71,7 +71,7 @@ export const Strategy = () => {
                 Decomposition Creation Method
             </h4>
 
-            {/*Add decomposition creation forms here*/}
+            {/*Add decomposition creation forms here TODO talvez se possa fazer a partir do strategyType*/}
             {strategyName.startsWith(StrategyType.ACCESSES_SCIPY) &&
                 <AccessesSciPyDecompositionForm
                     loadDecompositions={loadDecompositions}

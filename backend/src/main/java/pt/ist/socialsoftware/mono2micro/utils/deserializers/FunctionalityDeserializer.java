@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import pt.ist.socialsoftware.mono2micro.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.domain.FunctionalityRedesign;
-import pt.ist.socialsoftware.mono2micro.domain.metrics.Metric;
+import pt.ist.socialsoftware.mono2micro.metrics.Metric;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityType;
 
 import java.io.IOException;

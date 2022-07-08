@@ -1,14 +1,26 @@
+import base64
 import numpy as np
-from scipy.cluster import hierarchy
-import json
 import matplotlib
-matplotlib.use('agg')
 import matplotlib.pyplot as plt
+import json
+
+import pymongo
+import gridfs
+from scipy.cluster import hierarchy
+from io import BytesIO
+
+import env
+
+matplotlib.use('agg')
 
 
-def createDendrogram(codebasesPath, codebaseName, strategyName):
-    with open(codebasesPath + codebaseName + "/strategies/" + strategyName + "/similarityMatrices/similarityMatrix.json") as f:
-        similarityMatrix = json.load(f)
+def createDendrogram(strategyName, similarityMatrixName):
+    # Database initialization in order to contact MongoDB
+    client = pymongo.MongoClient(env.MONGO_DB)
+    DB = client[env.MONGO_DB_NAME]
+    fs = gridfs.GridFS(DB)  # To use with large files
+    similarityMatrixFile = fs.find_one({"filename": similarityMatrixName})
+    similarityMatrix = json.loads(similarityMatrixFile.read().decode("utf-8"))
 
     entities = similarityMatrix["entities"]
     linkageType = similarityMatrix["linkageType"]
@@ -19,8 +31,14 @@ def createDendrogram(codebasesPath, codebaseName, strategyName):
     fig = plt.figure(figsize=(25, 10))
 
     hierarchy.dendrogram(hierarc, labels=entities, distance_sort='descending')
-    plt.savefig(codebasesPath + codebaseName + "/strategies/" + strategyName + "/dendrogramImage.png", format="png",
-                bbox_inches='tight')
 
-    with open(codebasesPath + codebaseName + "/strategies/" + strategyName + "/copheneticDistances.json",'w') as copheneticDistanceFile:
-        copheneticDistanceFile.write(json.dumps(hierarchy.cophenet(hierarc).tolist(), indent=4))
+    img = BytesIO()
+    plt.savefig(img, format="png", bbox_inches='tight')
+    img.seek(0)
+    imageName = strategyName + "_image"
+    copheneticDistanceName = strategyName + "_copheneticDistance"
+    fs.put(img.getvalue(), filename=imageName)
+    fs.put(BytesIO(bytes(str(hierarchy.cophenet(hierarc).tolist()), 'ascii')).getvalue(), filename=copheneticDistanceName)
+    client.close()
+
+    return {"operation": "createDendrogram", "imageName": imageName, "copheneticDistanceName": copheneticDistanceName}

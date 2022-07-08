@@ -5,7 +5,9 @@ import React from "react";
 import {Metric} from "../../type-declarations/types.d";
 
 export default class AccessesSciPyDecomposition extends Decomposition {
+    outdated: boolean;
     expert: boolean;
+    silhouetteScore: number;
     clusters: any;
     functionalities: any;
     entityIDToClusterID: any;
@@ -13,7 +15,9 @@ export default class AccessesSciPyDecomposition extends Decomposition {
     constructor(decomposition: any) {
         super(decomposition);
 
+        this.outdated = decomposition.outdated;
         this.expert = decomposition.expert;
+        this.silhouetteScore = decomposition.silhouetteScore;
         this.clusters = decomposition.clusters;
         this.functionalities = decomposition.functionalities;
         this.entityIDToClusterID = decomposition.entityIDToClusterID;
@@ -42,7 +46,7 @@ export default class AccessesSciPyDecomposition extends Decomposition {
                         {this.metrics.map((metric: Metric) => <React.Fragment key={metric.type}>{metric.type}: {metric.value}<br/></React.Fragment>)}
                     </Card.Text>
                     <Button
-                        href={`/codebases/${this.codebaseName}/strategies/${this.strategyName}/decompositions/${this.name}`}
+                        href={`/decompositions/${this.name}/viewDecomposition`}
                         className="mb-2"
                         variant={"success"}
                     >
@@ -50,7 +54,7 @@ export default class AccessesSciPyDecomposition extends Decomposition {
                     </Button>
                     <br/>
                     <Button
-                        href={`/codebases/${this.codebaseName}/strategies/${this.strategyName}/decompositions/${this.name}/functionalityRefactor`}
+                        href={`/decompositions/${this.name}/functionalityRefactor`}
                         className="mb-2"
                         variant={"primary"}
                     >

@@ -16,7 +16,7 @@ export default class AccessesSciPyStrategy extends Strategy {
     traceType: TraceType;
 
     constructor(strategy: any) {
-        super(strategy.type, strategy.codebaseName, strategy.name, strategy.decompositionsNames);
+        super(strategy);
         // Initializes default values if no previous value is provided
         this.accessMetricWeight =   strategy.accessMetricWeight === undefined? 25 : strategy.accessMetricWeight;
         this.writeMetricWeight =   strategy.writeMetricWeight === undefined? 25 : strategy.writeMetricWeight;
@@ -44,7 +44,7 @@ export default class AccessesSciPyStrategy extends Strategy {
         return <Card key={this.name} className="mb-4" style={{ width: '20rem' }}>
             <Card.Img
                 variant="top"
-                src={URL + "codebase/" + this.codebaseName + "/strategy/" + this.name + "/image?" + new Date().getTime()}
+                src={URL + "/strategy/" + this.name + "/image?" + new Date().getTime()}
             />
             <Card.Body>
                 <Card.Title>{this.name}</Card.Title>
@@ -58,7 +58,7 @@ export default class AccessesSciPyStrategy extends Strategy {
                     Read: {this.readMetricWeight}% < br />
                     Sequence: {this.sequenceMetricWeight}%
                 </Card.Text>
-                <Button href={`/codebases/${this.codebaseName}/strategies/${this.name}`}
+                <Button href={`/strategies/${this.name}`}
                         variant={"success"}
                         className="mb-2">
                     Go to Strategy

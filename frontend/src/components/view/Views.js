@@ -52,7 +52,7 @@ export const Views = () => {
 
         // Translation file
         const service = new RepositoryService();
-        service.getInputFile(codebaseName, SourceType.IDTOENTITIY).then(source => {
+        service.getInputFile(codebaseName + SourceType.IDTOENTITIY).then(source => {
             setNow(prev => prev + 10);
             updateEntityTranslationFile(source.data);
         }).catch(error => {
