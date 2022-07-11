@@ -7,28 +7,32 @@ import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.SciPyClusteringAlgor
 import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.codebase.repository.CodebaseRepository;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.similarityGenerator.AccessesSimilarityGeneratorService;
 import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
+import pt.ist.socialsoftware.mono2micro.source.service.SourceService;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.RecommendAccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
+import pt.ist.socialsoftware.mono2micro.strategy.dto.AccessesSciPyStrategyDto;
 import pt.ist.socialsoftware.mono2micro.strategy.dto.RecommendAccessesSciPyStrategyDto;
 import pt.ist.socialsoftware.mono2micro.strategy.repository.RecommendAccessesSciPyStrategyRepository;
+import pt.ist.socialsoftware.mono2micro.strategy.repository.StrategyRepository;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
+import java.util.stream.Collectors;
 
 import static pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource.ACCESSES;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.RECOMMEND_FOLDER;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.STRATEGIES_FOLDER;
 
 @Service
 public class RecommendAccessesSciPyStrategyService {
@@ -36,13 +40,25 @@ public class RecommendAccessesSciPyStrategyService {
     CodebaseRepository codebaseRepository;
 
     @Autowired
-    RecommendAccessesSciPyStrategyRepository strategyRepository;
+    StrategyRepository strategyRepository;
+
+    @Autowired
+    RecommendAccessesSciPyStrategyRepository recommendAccessesSciPyStrategyRepository;
 
     @Autowired
     AccessesSimilarityGeneratorService similarityGenerator;
 
     @Autowired
     SciPyClusteringAlgorithmService clusteringAlgorithm;
+
+    @Autowired
+    AccessesSciPyStrategyService accessesSciPyStrategyService;
+
+    @Autowired
+    DecompositionRepository decompositionRepository;
+
+    @Autowired
+    SourceService sourceService;
 
     @Autowired
     GridFsService gridFsService;
@@ -58,7 +74,9 @@ public class RecommendAccessesSciPyStrategyService {
             strategy = new RecommendAccessesSciPyStrategy(strategyDto);
             strategy.setCompleted(false);
             strategy.addCombinationsInProduction();
-            strategyRepository.save(strategy);
+            codebase.addStrategy(strategy);
+            recommendAccessesSciPyStrategyRepository.save(strategy);
+            codebaseRepository.save(codebase);
         }
         // Already satisfies the requirements
         else {
@@ -71,7 +89,7 @@ public class RecommendAccessesSciPyStrategyService {
             else {
                 existingStrategy.addCombinationsInProduction();
                 existingStrategy.setCompleted(false);
-                strategyRepository.save(existingStrategy);
+                recommendAccessesSciPyStrategyRepository.save(existingStrategy);
                 strategy = existingStrategy;
             }
         }
@@ -83,7 +101,7 @@ public class RecommendAccessesSciPyStrategyService {
                 clusteringAlgorithm.generateMultipleDecompositions(strategy);
 
                 strategy.addProducedCombinations();
-                strategyRepository.save(strategy);
+                recommendAccessesSciPyStrategyRepository.save(strategy);
                 System.out.println("recommendation ended");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -93,13 +111,15 @@ public class RecommendAccessesSciPyStrategyService {
     }
 
     public String getRecommendationResultByStrategyName(String strategyName) throws IOException {
-        RecommendAccessesSciPyStrategy strategy = strategyRepository.getRecommendationResultName(strategyName);
+        RecommendAccessesSciPyStrategy strategy = recommendAccessesSciPyStrategyRepository.getRecommendationResultName(strategyName);
         return getRecommendationResult(strategy);
     }
 
     public void createDecompositions(String strategyName, List<String> decompositionNames) throws Exception {
-        RecommendAccessesSciPyStrategy recommendationStrategy = strategyRepository.getRecommendationResultName(strategyName);
+        RecommendAccessesSciPyStrategy recommendationStrategy = recommendAccessesSciPyStrategyRepository.getRecommendationResultName(strategyName);
         AccessesSource source = (AccessesSource) recommendationStrategy.getCodebase().getSourceByType(ACCESSES);
+        Codebase codebase = recommendationStrategy.getCodebase();
+        List<Strategy> codebaseStrategies = codebase.getStrategies();
 
         for (String name : decompositionNames) {
             String[] properties = name.split(",");
@@ -112,35 +132,28 @@ public class RecommendAccessesSciPyStrategyService {
 
             System.out.println("Creating decomposition with name: " + name);
 
-            AccessesSciPyStrategy strategyInformation = new AccessesSciPyStrategy(recommendationStrategy, traceType, linkageType, name);
+            AccessesSciPyStrategyDto strategyInformation = new AccessesSciPyStrategyDto(recommendationStrategy, traceType, linkageType, name);
 
             // Get or create the decomposition's strategy
-            List<Strategy> strategies = fileManager.getCodebaseStrategies(codebaseName, STRATEGIES_FOLDER, Collections.singletonList(strategyInformation.getType()));
-            //TODO depois disto eliminar o equals das strategies
-            AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) strategies.stream().filter(possibleStrategy -> possibleStrategy.equals(strategyInformation)).findFirst().orElse(null);
+            AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) codebaseStrategies.stream().filter(possibleStrategy -> possibleStrategy.equalsDto(strategyInformation)).findFirst().orElse(null);
             if (strategy == null) {
-                strategy = (AccessesSciPyStrategy) fileManager.createCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyInformation);
+                strategy = accessesSciPyStrategyService.getNewAccesssesSciPyStrategyForCodebase(codebase, strategyInformation);
+                strategy.setDecompositions(new ArrayList<>());
 
-                fileManager.transferSimilarityMatrixFromRecommendation(
-                        codebaseName,
-                        recommendationStrategy.getName(),
-                        properties[0] + "," + properties[1] + "," + properties[2] + "," + properties[3] + "," + properties[4] + "," + properties[5] + ".json",
-                        "similarityMatrix.json",
-                        strategy);
+                strategy.setSimilarityMatrixName(strategy.getName() + "_similarityMatrix");
+                InputStream inputStream = gridFsService.getFile(name.substring(0, name.lastIndexOf(","))); // Gets the previously produced similarity matrix
+                gridFsService.saveFile(inputStream, strategy.getSimilarityMatrixName()); // And saves it with a different name
 
                 // generate dendrogram image
-                //ClusteringAlgorithm clusteringAlgorithm = ClusteringAlgorithmFactory.getFactory().getClusteringAlgorithm(strategy.getType());
-                //clusteringAlgorithm.createDendrogram(strategy);
+                clusteringAlgorithm.createAccessesSciPyDendrogram(strategy);
+                codebase.addStrategy(strategy);
             }
 
-            //Create the decomposition by copying the existing decomposition
-            AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) fileManager
-                    .transferDecompositionFromRecommendation(
-                            codebaseName,
-                            recommendationStrategy.getName(),
-                            name,
-                            getDecompositionName(strategy, "N" + properties[6]),
-                            strategy);
+            //Create the decomposition by copying the existing decomposition (new id equals new decomposition)
+            AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) strategy.getDecompositionByName(name);
+            decomposition.setName(getDecompositionName(strategy, "N" + properties[7]));
+            decomposition.setStrategy(strategy);
+            strategy.addDecomposition(decomposition);
 
             // This is done since previous coupling dependencies mess up the results during 'setupFunctionalities'
             for (Cluster cluster : decomposition.getClusters().values())
@@ -148,17 +161,28 @@ public class RecommendAccessesSciPyStrategyService {
 
             // Fill information regarding functionalities and their redesigns
             decomposition.setupFunctionalities(
-                    //source.getSourceFilePath(),
-                    new ByteArrayInputStream("TODO".getBytes()),
+                    sourceService.getSourceFileAsInputStream(source.getName()),
                     source.getProfile(strategy.getProfile()),
                     strategy.getTracesMaxLimit(),
                     strategy.getTraceType(),
                     true);
 
             // save strategy and decomposition
-            fileManager.writeStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, decomposition.getStrategyName(), decomposition);
-            fileManager.writeCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategy);
+            decompositionRepository.save(decomposition);
+            strategyRepository.save(strategy);
         }
+        codebaseRepository.save(codebase);
+    }
+
+    private String getDecompositionName(AccessesSciPyStrategy strategy, String name) {
+        List<String> decompositionNames = strategy.getDecompositions().stream().map(Decomposition::getName).collect(Collectors.toList());
+        if (decompositionNames.contains(strategy.getName() + " " + name)) {
+            int i = 2;
+            while (decompositionNames.contains(strategy.getName() + " " + name + "(" + i + ")"))
+                i++;
+            return strategy.getName() + " " + name + "(" + i + ")";
+
+        } else return strategy.getName() + " " + name;
     }
 
     public String getRecommendationResult(RecommendAccessesSciPyStrategy strategy) throws IOException {

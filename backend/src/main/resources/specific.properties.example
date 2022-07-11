@@ -6,3 +6,9 @@
 # otherwise, it will default to http://localhost:5002
 
 scripts.address=${SCRIPTS_ADDRESS:http://localhost:5002}
+
+# MongoDB address with credentials
+
+spring.data.mongodb.uri=${MONGO_DB:mongodb://mono2micro:mono2microPass@localhost:27017}
+
+spring.data.mongodb.database=${MONGO_DB_NAME:mono2micro}

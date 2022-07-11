@@ -39,6 +39,10 @@ public abstract class Strategy {
         return decompositions;
     }
 
+    public Decomposition getDecompositionByName(String decompositionName) {
+        return this.decompositions.stream().filter(decomposition -> decomposition.getName().equals(decompositionName)).findFirst().orElse(null);
+    }
+
     public void setDecompositions(List<Decomposition> decompositions) {
         this.decompositions = decompositions;
     }
@@ -50,9 +54,6 @@ public abstract class Strategy {
     public synchronized void removeDecomposition(String decompositionName) {
         this.decompositions = this.decompositions.stream().filter(decomposition -> !decomposition.getName().equals(decompositionName)).collect(Collectors.toList());
     }
-
-    @Override
-    public abstract boolean equals(Object obj);
 
     public abstract boolean equalsDto(StrategyDto dto);
 }

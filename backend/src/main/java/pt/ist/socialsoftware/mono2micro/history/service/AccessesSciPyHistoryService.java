@@ -20,9 +20,21 @@ import static pt.ist.socialsoftware.mono2micro.history.model.AccessesSciPyOperat
 @Service
 public class AccessesSciPyHistoryService extends AbstractHistoryService {
 
+    public void addHistoryEntry(Decomposition d, HistoryEntry historyEntry) {
+        AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) d;
+        DecompositionHistory decompositionHistory = decomposition.getDecompositionHistory();
+        if (decompositionHistory == null) {
+            decompositionHistory = new DecompositionHistory(decomposition);
+            decomposition.setDecompositionHistory(decompositionHistory);
+            decompositionHistory.setHistoryEntryList(new ArrayList<>());
+        }
+        decompositionHistory.addHistoryEntry(historyEntry);
+        historyRepository.save(decompositionHistory);
+    }
+
     public void undoOperation(Decomposition d) {
         AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) d;
-        DecompositionHistory decompositionHistory = getDecompositionHistory(decomposition);
+        DecompositionHistory decompositionHistory = historyRepository.findByName(decomposition.getName());
         HistoryEntry historyEntry = decompositionHistory.getCurrentHistoryEntry();
 
         switch (historyEntry.getOperationType()) {
@@ -82,5 +94,6 @@ public class AccessesSciPyHistoryService extends AbstractHistoryService {
     }
 
     private void undoFormCluster(AccessesSciPyDecomposition decomposition, FormClusterHistoryEntry historyEntry) {
+        //TODO form cluster undo
     }
 }

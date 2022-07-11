@@ -17,7 +17,6 @@ public class Codebase {
 	private String name;
 	@DBRef(lazy = true)
 	private List<Source> sources;
-
 	@DBRef(lazy = true)
 	private List<Strategy> strategies;
 

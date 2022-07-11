@@ -23,6 +23,7 @@ import pt.ist.socialsoftware.mono2micro.strategy.service.RecommendAccessesSciPyS
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -158,7 +159,7 @@ public class SciPyClusteringAlgorithmService {
         } catch(Exception e) { throw new RuntimeException("Could not produce or extract elements from JSON Object"); }
     }
 
-    private String getDecompositionName(AccessesSciPyStrategy strategy, String cutType, float cutValue) {
+    public String getDecompositionName(AccessesSciPyStrategy strategy, String cutType, float cutValue) {
         String cutValueString = Float.valueOf(cutValue).toString().replaceAll("\\.?0*$", "");
         List<String> decompositionNames = strategy.getDecompositions().stream().map(Decomposition::getName).collect(Collectors.toList());
 
@@ -251,7 +252,16 @@ public class SciPyClusteringAlgorithmService {
                     addClustersAndEntities(decomposition, clustersJSON);
 
                     // create functionalities and calculate their metrics
-                    setupFunctionalitiesAndMetrics(strategy.getProfile(), strategy.getTracesMaxLimit(), traceType, source, decomposition);
+                    decomposition.setupFunctionalities(
+                            new ByteArrayInputStream(sourceBytes),
+                            source.getProfile(strategy.getProfile()),
+                            strategy.getTracesMaxLimit(),
+                            traceType,
+                            true);
+
+                    // Calculate decomposition's metrics
+                    decomposition.calculateMetrics();
+
                     decompositionRepository.save(decomposition);
                     strategy.addDecomposition(decomposition);
 
@@ -261,11 +271,11 @@ public class SciPyClusteringAlgorithmService {
                     decompositionJSON.put("name", decomposition.getName());
                     decompositionJSON.put("traceType", traceType);
                     decompositionJSON.put("linkageType", linkageType);
-                    decompositionJSON.put("accessMetricWeight", weights[0]);
-                    decompositionJSON.put("writeMetricWeight", weights[1]);
-                    decompositionJSON.put("readMetricWeight", weights[2]);
-                    decompositionJSON.put("sequenceMetricWeight", weights[3]);
-                    decompositionJSON.put("numberOfClusters", weights[6]);
+                    decompositionJSON.put("accessMetricWeight", weights[1]);
+                    decompositionJSON.put("writeMetricWeight", weights[2]);
+                    decompositionJSON.put("readMetricWeight", weights[3]);
+                    decompositionJSON.put("sequenceMetricWeight", weights[4]);
+                    decompositionJSON.put("numberOfClusters", weights[7]);
 
                     decompositionJSON.put("maxClusterSize", decomposition.maxClusterSize());
 

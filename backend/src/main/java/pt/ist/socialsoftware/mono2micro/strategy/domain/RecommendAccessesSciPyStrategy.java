@@ -153,16 +153,6 @@ public class RecommendAccessesSciPyStrategy extends Strategy {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof RecommendAccessesSciPyStrategy))
-            return false;
-
-        RecommendAccessesSciPyStrategy strategy = (RecommendAccessesSciPyStrategy) obj;
-
-        return strategy.getProfile().equals(this.profile) && (strategy.getTracesMaxLimit() == this.tracesMaxLimit);
-    }
-
-    @Override
     public boolean equalsDto(StrategyDto dto) {
         if (!(dto instanceof RecommendAccessesSciPyStrategyDto))
             return false;

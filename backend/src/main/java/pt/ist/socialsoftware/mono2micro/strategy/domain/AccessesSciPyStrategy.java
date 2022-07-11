@@ -27,20 +27,6 @@ public class AccessesSciPyStrategy extends Strategy {
 
     public AccessesSciPyStrategy() {}
 
-    public AccessesSciPyStrategy(RecommendAccessesSciPyStrategy recommendStrategy, Constants.TraceType traceType, String linkageType, String decompositionName) {
-        String[] weights = decompositionName.split(",");
-        this.accessMetricWeight = Float.parseFloat(weights[0]);
-        this.writeMetricWeight = Float.parseFloat(weights[1]);
-        this.readMetricWeight = Float.parseFloat(weights[2]);
-        this.sequenceMetricWeight = Float.parseFloat(weights[3]);
-
-        this.setCodebase(recommendStrategy.getCodebase());
-        this.profile = recommendStrategy.getProfile();
-        this.tracesMaxLimit = recommendStrategy.getTracesMaxLimit();
-        this.traceType = traceType;
-        this.linkageType = linkageType;
-    }
-
     public AccessesSciPyStrategy(AccessesSciPyStrategyDto dto) {
         this.profile = dto.getProfile();
         this.tracesMaxLimit = dto.getTracesMaxLimit();
@@ -145,24 +131,6 @@ public class AccessesSciPyStrategy extends Strategy {
     public void setCopheneticDistanceName(String copheneticDistanceName) {
         this.copheneticDistanceName = copheneticDistanceName;
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof AccessesSciPyStrategy))
-            return false;
-
-        AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) obj;
-        return strategy.getCodebase().getName().equals(this.getCodebase().getName()) &&
-                strategy.getProfile().equals(this.profile) &&
-                (strategy.getTracesMaxLimit() == this.tracesMaxLimit) &&
-                (strategy.getTraceType() == this.traceType) &&
-                (strategy.getAccessMetricWeight() == this.accessMetricWeight) &&
-                (strategy.getWriteMetricWeight() == this.writeMetricWeight) &&
-                (strategy.getReadMetricWeight() == this.readMetricWeight) &&
-                (strategy.getSequenceMetricWeight() == this.sequenceMetricWeight) &&
-                (strategy.getLinkageType().equals(this.linkageType));
-    }
-    //TODO check if this is still needed
 
     @Override
     public boolean equalsDto(StrategyDto dto) {

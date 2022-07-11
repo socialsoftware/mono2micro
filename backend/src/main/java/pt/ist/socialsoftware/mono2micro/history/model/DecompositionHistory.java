@@ -1,5 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.history.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 
@@ -8,11 +10,11 @@ import java.util.stream.Collectors;
 
 @Document("decompositionhistory")
 public class DecompositionHistory {
-    private String codebaseName;
+    @Id
+    private String name;
 
-    private String strategyName;
-
-    private String decompositionName;
+    @DBRef(lazy = true)
+    private Decomposition decomposition;
 
     private Long currentHistoryEntryDepth;
 
@@ -21,41 +23,25 @@ public class DecompositionHistory {
     public DecompositionHistory() {}
 
     public DecompositionHistory(Decomposition decomposition) {
-        this.codebaseName = decomposition.getCodebaseName();
-        this.strategyName = decomposition.getStrategyName();
-        this.decompositionName = decomposition.getName();
+        this.name = decomposition.getName();
+        this.decomposition = decomposition;
         this.currentHistoryEntryDepth = 0L;
     }
 
-    public DecompositionHistory(String codebaseName, String strategyName, String decompositionName) {
-        this.codebaseName = codebaseName;
-        this.strategyName = strategyName;
-        this.decompositionName = decompositionName;
-        this.currentHistoryEntryDepth = 0L;
+    public String getName() {
+        return name;
     }
 
-    public String getCodebaseName() {
-        return codebaseName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setCodebaseName(String codebaseName) {
-        this.codebaseName = codebaseName;
+    public Decomposition getDecomposition() {
+        return decomposition;
     }
 
-    public String getStrategyName() {
-        return strategyName;
-    }
-
-    public void setStrategyName(String strategyName) {
-        this.strategyName = strategyName;
-    }
-
-    public String getDecompositionName() {
-        return decompositionName;
-    }
-
-    public void setDecompositionName(String decompositionName) {
-        this.decompositionName = decompositionName;
+    public void setDecomposition(Decomposition decomposition) {
+        this.decomposition = decomposition;
     }
 
     public Long getCurrentHistoryEntryDepth() {

@@ -94,17 +94,6 @@ public class RecommendAccessesSciPyStrategyController {
 		}
 	}
 
-	private String getDecompositionName(AccessesSciPyStrategy strategy, String name) {
-		List<String> decompositionNames = strategy.getDecompositions().stream().map(Decomposition::getName).collect(Collectors.toList());
-		if (decompositionNames.contains(strategy.getName() + " " + name)) {
-			int i = 2;
-			while (decompositionNames.contains(strategy.getName() + " " + name + "(" + i + ")"))
-				i++;
-			return strategy.getName() + " " + name + "(" + i + ")";
-
-		} else return strategy.getName() + " " + name;
-	}
-
 	//FIXME analyzer no longer in use
 	//FIXME only here in case something is needed
 	@RequestMapping(value = "/codebase/{codebaseName}/analyser", method = RequestMethod.POST)

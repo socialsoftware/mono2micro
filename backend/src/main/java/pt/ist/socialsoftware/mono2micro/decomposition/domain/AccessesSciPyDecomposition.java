@@ -1,31 +1,27 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.domain.Cluster;
 import pt.ist.socialsoftware.mono2micro.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.domain.FunctionalityRedesign;
 import pt.ist.socialsoftware.mono2micro.domain.LocalTransaction;
+import pt.ist.socialsoftware.mono2micro.history.model.DecompositionHistory;
 import pt.ist.socialsoftware.mono2micro.metrics.Metric;
 import pt.ist.socialsoftware.mono2micro.metrics.MetricFactory;
-import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
-import pt.ist.socialsoftware.mono2micro.fileManager.FileManager;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.jgrapht.Graphs.successorListOf;
-import static pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource.ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy.ACCESSES_SCIPY;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.STRATEGIES_FOLDER;
 
 public class AccessesSciPyDecomposition extends Decomposition {
     private static final String[] availableMetrics = {
@@ -40,6 +36,8 @@ public class AccessesSciPyDecomposition extends Decomposition {
     private Map<Short, Cluster> clusters = new HashMap<>();
     private Map<String, Functionality> functionalities = new HashMap<>(); // <functionalityName, Functionality>
     private Map<Short, Short> entityIDToClusterID = new HashMap<>();
+    @DBRef(lazy = true)
+    private DecompositionHistory decompositionHistory;
 
     @Override
     public String getStrategyType() {
@@ -67,6 +65,14 @@ public class AccessesSciPyDecomposition extends Decomposition {
     }
 
     public void setEntityIDToClusterID(Map<Short, Short> entityIDToClusterID) { this.entityIDToClusterID = entityIDToClusterID; }
+
+    public DecompositionHistory getDecompositionHistory() {
+        return decompositionHistory;
+    }
+
+    public void setDecompositionHistory(DecompositionHistory decompositionHistory) {
+        this.decompositionHistory = decompositionHistory;
+    }
 
     public void putEntity(short entityID, Short clusterID) {
         entityIDToClusterID.put(entityID, clusterID);
@@ -450,31 +456,5 @@ public class AccessesSciPyDecomposition extends Decomposition {
             }
         }
         transferCouplingDependencies(entities, fromClusterID, toClusterID);
-    }
-
-    //TODO isto vai para um service
-    public void updateOutdatedFunctionalitiesAndMetrics() {
-        if (!isOutdated())
-            return;
-        FileManager fileManager = FileManager.getInstance();
-        try {
-            AccessesSource source = (AccessesSource) fileManager.getCodebaseSource(getCodebaseName(), ACCESSES);
-            AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) fileManager.getCodebaseStrategy(getCodebaseName(), STRATEGIES_FOLDER, getStrategyName());
-
-            setupFunctionalities(
-                    //source.getInputFilePath(),
-                    new ByteArrayInputStream("TODO".getBytes()),
-                    source.getProfile(strategy.getProfile()),
-                    strategy.getTracesMaxLimit(),
-                    strategy.getTraceType(),
-                    true);
-
-            calculateMetrics();
-            setOutdated(false);
-
-            fileManager.writeStrategyDecomposition(getCodebaseName(), STRATEGIES_FOLDER, getStrategyName(), this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

@@ -36,6 +36,14 @@ public class AccessesSciPyStrategyService {
         if (codebase.getStrategies().stream().anyMatch(strategy -> strategy.equalsDto(strategyDto)))
             return;
 
+        AccessesSciPyStrategy strategy = getNewAccesssesSciPyStrategyForCodebase(codebase, strategyDto);
+        similarityGenerator.createSimilarityMatrixForSciPy(strategy);
+        clusteringAlgorithm.createAccessesSciPyDendrogram(strategy);
+        codebaseRepository.save(codebase);
+        strategyRepository.save(strategy);
+    }
+
+    public AccessesSciPyStrategy getNewAccesssesSciPyStrategyForCodebase(Codebase codebase, AccessesSciPyStrategyDto strategyDto) {
         AccessesSciPyStrategy strategy = new AccessesSciPyStrategy(strategyDto);
         int i = 0;
         String strategyName;
@@ -45,11 +53,7 @@ public class AccessesSciPyStrategyService {
         strategy.setName(strategyName);
         strategy.setCodebase(codebase);
         codebase.addStrategy(strategy);
-
-        similarityGenerator.createSimilarityMatrixForSciPy(strategy);
-        clusteringAlgorithm.createAccessesSciPyDendrogram(strategy);
-        codebaseRepository.save(codebase);
-        strategyRepository.save(strategy);
+        return strategy;
     }
 
     public byte[] getDendrogramImage(String strategyName) throws IOException {

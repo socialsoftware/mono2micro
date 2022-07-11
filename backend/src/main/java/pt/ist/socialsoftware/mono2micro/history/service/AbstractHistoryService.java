@@ -13,39 +13,15 @@ public abstract class AbstractHistoryService {
     @Autowired
     HistoryRepository historyRepository;
 
-    public DecompositionHistory getDecompositionHistory(Decomposition decomposition) {
-        return historyRepository.findByDecomposition(decomposition.getCodebaseName(), decomposition.getStrategyName(), decomposition.getName());
-    }
-
     public void deleteAll() {
         historyRepository.deleteAll();
     }
 
-    public void deleteAllCodebaseHistory(String codebaseName) {
-        historyRepository.deleteByCodebase(codebaseName);
-    }
-
-    public void deleteAllStrategyHistory(String codebaseName, String strategyName) {
-        historyRepository.deleteByStrategy(codebaseName, strategyName);
-    }
-
-    public void deleteDecompositionHistory(String codebaseName, String strategyName, String decompositionName) {
-        historyRepository.deleteByDecomposition(codebaseName, strategyName, decompositionName);
-    }
-
     public void deleteDecompositionHistory(Decomposition decomposition) {
-        historyRepository.deleteByDecomposition(decomposition.getCodebaseName(), decomposition.getStrategyName(), decomposition.getName());
+        historyRepository.deleteByName(decomposition.getName());
     }
 
-    public void addHistoryEntry(Decomposition decomposition, HistoryEntry historyEntry) {
-        DecompositionHistory decompositionHistory = getDecompositionHistory(decomposition);
-        if (decompositionHistory == null) {
-            decompositionHistory = new DecompositionHistory(decomposition);
-            decompositionHistory.setHistoryEntryList(new ArrayList<>());
-        }
-        decompositionHistory.addHistoryEntry(historyEntry);
-        historyRepository.save(decompositionHistory);
-    }
+    public abstract void addHistoryEntry(Decomposition decomposition, HistoryEntry historyEntry);
 
     public abstract void undoOperation(Decomposition decomposition);
 }

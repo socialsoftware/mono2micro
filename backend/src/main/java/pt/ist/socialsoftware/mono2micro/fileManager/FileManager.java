@@ -160,34 +160,6 @@ public class FileManager {
 		FileUtils.deleteDirectory(new File(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + strategyName + "/decompositions/" + decompositionName));
 	}
 
-	public List<Decomposition> getCodebaseDecompositions(
-		String codebaseName,
-		String strategyType			// Use "" when specifying all strategy types
-	)
-		throws Exception
-	{
-		List<Decomposition> decompositions = new ArrayList<>();
-
-		File strategiesPath = new File(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER);
-
-		File[] files = strategiesPath.listFiles();
-
-		if (files != null) {
-			Arrays.sort(files, Comparator.comparingLong(File::lastModified));
-
-			for (File file : files) {
-				if (file.isDirectory() && file.getName().startsWith(strategyType)) {
-					List<Decomposition> strategyDecompositions = getStrategyDecompositions(codebaseName, file.getName());
-
-					if (!strategyDecompositions.isEmpty())
-						decompositions.addAll(strategyDecompositions);
-				}
-			}
-		}
-
-		return decompositions;
-	}
-
 	public Decomposition getStrategyDecomposition(
 		String codebaseName,
 		String strategyFolder,
@@ -202,27 +174,6 @@ public class FileManager {
 		is.close();
 
 		return decomposition;
-	}
-
-	public List<Decomposition> getStrategyDecompositions(
-		String codebaseName,
-		String strategyName
-	)
-		throws Exception
-	{
-		Strategy strategy = getCodebaseStrategy(codebaseName, STRATEGIES_FOLDER, strategyName);
-
-		return strategy.getDecompositionsNames().stream()
-				.map(decompositionName -> {
-					try {
-						return getStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategyName, decompositionName);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					return null;
-				})
-				.filter(Objects::nonNull)
-				.collect(Collectors.toList());
 	}
 
 	public void writeStrategyDecomposition(String codebaseName, String strategyFolder, String strategyName, Decomposition decomposition) throws IOException {
@@ -483,48 +434,6 @@ public class FileManager {
 		file.close();
 	}
 
-	public Decomposition transferDecompositionFromRecommendation(
-		String codebaseName,
-		String recommendationStrategyName,
-		String recommendationDecompositionName,
-		String finalDecompositionName,
-		Strategy strategy
-	)
-		throws IOException
-	{
-
-		FileUtils.copyDirectory(
-			new File(CODEBASES_PATH + codebaseName + RECOMMEND_FOLDER + recommendationStrategyName + "/decompositions/" + recommendationDecompositionName),
-			new File(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + strategy.getName() + "/decompositions/" + finalDecompositionName)
-		);
-
-		Decomposition decomposition = getStrategyDecomposition(codebaseName, STRATEGIES_FOLDER, strategy.getName(), finalDecompositionName);
-		decomposition.setName(finalDecompositionName);
-		decomposition.setStrategyName(strategy.getName());
-		strategy.addDecompositionName(decomposition.getName());
-
-		return decomposition;
-	}
-
-	public void transferSimilarityMatrixFromRecommendation(
-		String codebaseName,
-		String recommendationStrategyName,
-		String similarityMatrixName,
-		String finalSimilarityMatrixName,
-		Strategy strategy
-	)
-		throws IOException
-	{
-		File destination = new File(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + strategy.getName() + "/similarityMatrices/" + finalSimilarityMatrixName);
-
-		if (destination.exists())
-			return;
-
-		FileUtils.copyFile(
-			new File(CODEBASES_PATH + codebaseName + RECOMMEND_FOLDER + recommendationStrategyName + "/similarityMatrices/" + similarityMatrixName),
-			destination
-		);
-	}
 	public JSONArray getRecommendationResultAsJSON(
 		String codebaseName,
 		String strategyName

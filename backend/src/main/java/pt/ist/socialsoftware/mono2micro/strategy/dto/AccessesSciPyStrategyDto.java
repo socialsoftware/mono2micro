@@ -1,6 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.strategy.dto;
 
 import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
+import pt.ist.socialsoftware.mono2micro.strategy.domain.RecommendAccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy.ACCESSES_SCIPY;
@@ -28,6 +29,20 @@ public class AccessesSciPyStrategyDto extends StrategyDto {
         this.linkageType = strategy.getLinkageType();
         this.tracesMaxLimit = strategy.getTracesMaxLimit();
         this.traceType = strategy.getTraceType();
+    }
+
+    public AccessesSciPyStrategyDto(RecommendAccessesSciPyStrategy strategy, Constants.TraceType traceType, String linkageType, String decompositionName) {
+        this.setType(ACCESSES_SCIPY);
+        this.setCodebaseName(strategy.getCodebase().getName());
+        String[] weights = decompositionName.split(",");
+        this.accessMetricWeight = Float.parseFloat(weights[1]);
+        this.writeMetricWeight = Float.parseFloat(weights[2]);
+        this.readMetricWeight = Float.parseFloat(weights[3]);
+        this.sequenceMetricWeight = Float.parseFloat(weights[4]);
+        this.profile = strategy.getProfile();
+        this.linkageType = linkageType;
+        this.tracesMaxLimit = strategy.getTracesMaxLimit();
+        this.traceType = traceType;
     }
 
     public float getAccessMetricWeight() {
