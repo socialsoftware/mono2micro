@@ -1,24 +1,24 @@
 package pt.ist.socialsoftware.mono2micro.history.model.AccessesSciPyOperations;
 
-import pt.ist.socialsoftware.mono2micro.domain.Cluster;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
-import pt.ist.socialsoftware.mono2micro.history.model.HistoryEntry;
+import pt.ist.socialsoftware.mono2micro.history.model.DecompositionOperation;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class MergeHistoryEntry extends HistoryEntry {
+public class MergeDecompositionOperation extends DecompositionOperation {
     public static final String ACCESSES_SCIPY_MERGE = "AccessesSciPyMerge";
 
     private String newCluster;
 
     private Map<String, List<String>> previousClusters;
 
-    public MergeHistoryEntry() {}
+    public MergeDecompositionOperation() {}
 
-    public MergeHistoryEntry(AccessesSciPyDecomposition decomposition, Short clusterNameID, Short otherClusterID, String newName) {
+    public MergeDecompositionOperation(AccessesSciPyDecomposition decomposition, Short clusterNameID, Short otherClusterID, String newName) {
         this.previousClusters = new HashMap<>();
         Cluster cluster1 = decomposition.getCluster(clusterNameID);
         Cluster cluster2 = decomposition.getCluster(otherClusterID);

@@ -30,7 +30,7 @@ public class DecompositionService {
         removeSpecificDecompositionProperties(decomposition);
         Strategy strategy = decomposition.getStrategy();
         strategy.removeDecomposition(decomposition.getName());
-        strategyRepository.save(decomposition.getStrategy());
+        strategyRepository.save(strategy);
         decompositionRepository.deleteByName(decomposition.getName());
     }
 

@@ -25,16 +25,16 @@ export default abstract class Strategy {
 
 
 export enum StrategyType {
-    ACCESSES_SCIPY = 'ACCESSES_SCIPY',
-    RECOMMENDATION_ACCESSES_SCIPY = 'RECOMMENDATION_ACCESSES_SCIPY', // Faster method of creating decompositions based on codebase accesses and SciPy clustering algorithm
+    ACCESSES_SCIPY = 'Accesses SciPy',
+    RECOMMEND_ACCESSES_SCIPY = 'Recommend Accesses SciPy', // Faster method of creating decompositions based on codebase accesses and SciPy clustering algorithm
 }
 
 export enum StrategyDescription {
-    ACCESSES_SCIPY = 'Accesses-Based Similarity and SciPy Clustering Algorithm',
-    RECOMMENDATION_ACCESSES_SCIPY = 'Accesses-Based Similarity and SciPy Clustering Algorithm Recommendations',
+    'Accesses SciPy' = 'Accesses-Based Similarity and SciPy Clustering Algorithm',
+    'Recommend Accesses SciPy' = 'Accesses-Based Similarity and SciPy Clustering Algorithm Recommendations',
 }
 
 export const StrategySources: Record<string, SourceType[]> = {
-    ACCESSES_SCIPY : [SourceType.ACCESSES, SourceType.IDTOENTITIY],
-    RECOMMENDATION_ACCESSES_SCIPY : [SourceType.ACCESSES, SourceType.IDTOENTITIY],
+    'Accesses SciPy' : [SourceType.ACCESSES, SourceType.IDTOENTITIY],
+    'Recommend Accesses SciPy' : [SourceType.ACCESSES, SourceType.IDTOENTITIY],
 }

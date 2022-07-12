@@ -58,7 +58,7 @@ export default class AccessesSciPyStrategy extends Strategy {
                     Read: {this.readMetricWeight}% < br />
                     Sequence: {this.sequenceMetricWeight}%
                 </Card.Text>
-                <Button href={`/strategies/${this.name}`}
+                <Button href={`/codebases/${this.codebaseName}/strategies/${this.name}`}
                         variant={"success"}
                         className="mb-2">
                     Go to Strategy

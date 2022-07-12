@@ -36,14 +36,14 @@ public class AccessesSciPyStrategyService {
         if (codebase.getStrategies().stream().anyMatch(strategy -> strategy.equalsDto(strategyDto)))
             return;
 
-        AccessesSciPyStrategy strategy = getNewAccesssesSciPyStrategyForCodebase(codebase, strategyDto);
+        AccessesSciPyStrategy strategy = getNewAccessesSciPyStrategyForCodebase(codebase, strategyDto);
         similarityGenerator.createSimilarityMatrixForSciPy(strategy);
         clusteringAlgorithm.createAccessesSciPyDendrogram(strategy);
         codebaseRepository.save(codebase);
         strategyRepository.save(strategy);
     }
 
-    public AccessesSciPyStrategy getNewAccesssesSciPyStrategyForCodebase(Codebase codebase, AccessesSciPyStrategyDto strategyDto) {
+    public AccessesSciPyStrategy getNewAccessesSciPyStrategyForCodebase(Codebase codebase, AccessesSciPyStrategyDto strategyDto) {
         AccessesSciPyStrategy strategy = new AccessesSciPyStrategy(strategyDto);
         int i = 0;
         String strategyName;

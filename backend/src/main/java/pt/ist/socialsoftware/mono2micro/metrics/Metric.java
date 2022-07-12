@@ -3,8 +3,8 @@ package pt.ist.socialsoftware.mono2micro.metrics;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import pt.ist.socialsoftware.mono2micro.domain.Functionality;
-import pt.ist.socialsoftware.mono2micro.domain.FunctionalityRedesign;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Functionality;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.FunctionalityRedesign;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")

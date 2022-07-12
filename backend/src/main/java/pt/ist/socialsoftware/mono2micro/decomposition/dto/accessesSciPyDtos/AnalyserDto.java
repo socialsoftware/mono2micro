@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.dto;
+package pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos;
 
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;

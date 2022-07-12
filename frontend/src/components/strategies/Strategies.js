@@ -46,9 +46,16 @@ export const Strategies = () => {
     }
 
     function handleDeleteStrategy(strategy) {
+        const toastId = toast.loading("Deleting " + strategy.name + "...");
         const service = new RepositoryService();
 
-        service.deleteStrategy(strategy.name).then(() => loadStrategies());
+        service.deleteStrategy(strategy.name).then(() => {
+            loadStrategies();
+            toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Strategy deleted.", isLoading: false});
+            setTimeout(() => {toast.dismiss(toastId)}, 1000);
+        }).catch(() => {
+            toast.update(toastId, {type: toast.TYPE.ERROR, render: "Error deleting " + strategy.name + ".", isLoading: false});
+        });
     }
 
 
@@ -122,7 +129,7 @@ export const Strategies = () => {
                     setUpdateStrategies={setUpdateStrategies}
                 />
             }
-            {strategy !== undefined && strategy.type === StrategyType.RECOMMENDATION_ACCESSES_SCIPY &&
+            {strategy !== undefined && strategy.type === StrategyType.RECOMMEND_ACCESSES_SCIPY &&
                 <RecommendAccessesSciPyStrategyForm
                     strategy={strategy}
                     setStrategy={setStrategy}

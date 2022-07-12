@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
-import pt.ist.socialsoftware.mono2micro.dto.FunctionalityDto;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.AccessDto;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.FunctionalityDto;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -73,18 +73,16 @@ export class RepositoryService {
 
     // Recommendation
     recommendation(
-        codebaseName: string,
         requestedStrategyRecommendation: Strategy
     ) {
-        return this.axios.put("/codebase/" + codebaseName + "/recommendation", requestedStrategyRecommendation)
+        return this.axios.put("strategy/createRecommendAccessesSciPy", requestedStrategyRecommendation)
             .then((response) => {return StrategyFactory.getStrategy(response.data)});
     }
 
     getRecommendationResult(
-        codebaseName: string,
         strategyName: string
     ) {
-        return this.axios.get("/codebase/" + codebaseName + "/recommendationStrategy/" + strategyName + "/getRecommendationResult")
+        return this.axios.get("/recommendAccessesSciPyStrategy/" + strategyName + "/getRecommendationResult")
             .then(response => {
                 if (response.data === "")
                     return [];
@@ -231,9 +229,9 @@ export class RepositoryService {
         });
     }
 
-    getStrategy(codebaseName: string, strategyName: string) {
-        return this.axios.get("/codebase/" + codebaseName + "/strategy/" + strategyName).then(
-            response => { return StrategyFactory.getStrategy(response); });
+    getStrategy(strategyName: string) {
+        return this.axios.get("/strategy/" + strategyName + "/getStrategy").then(
+            response => { return StrategyFactory.getStrategy(response.data); });
     }
 
     deleteStrategy(strategyName: string) {
@@ -269,7 +267,7 @@ export class RepositoryService {
         cutType: string,
         cutValue: number
     ) {
-        return this.axios.get(addSearchParamsToUrl(
+        return this.axios.post(addSearchParamsToUrl(
             "/strategy/" + strategyName + "/createAccessesSciPyDecomposition",
             { cutType: cutType, cutValue: cutValue.toString() },
         ));
@@ -290,7 +288,7 @@ export class RepositoryService {
         data.append('expertFile', expertFile);
 
         return this.axios.post<null>(
-            "/strategy/" + strategyName + "/createExpertDecomposition",
+            "/strategy/" + strategyName + "/createAccessesSciPyExpertDecomposition",
             data,
             config
         );
@@ -298,11 +296,10 @@ export class RepositoryService {
 
     //Decomposition
     getDecompositions(
-        codebaseName: string,
         strategyName: string
     ) {
         return this.axios.get<Decomposition[]>(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decompositions",
+            "/strategy/" + strategyName + "/decompositions",
         ).then(responseList => {
             if (responseList.data.length == 0)
                 return responseList.data;

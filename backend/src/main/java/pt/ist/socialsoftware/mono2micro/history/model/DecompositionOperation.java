@@ -1,6 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.history.model;
 
-public abstract class HistoryEntry {
+public abstract class DecompositionOperation {
     private Long historyDepth;
 
     public abstract String getOperationType();

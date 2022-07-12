@@ -2,7 +2,6 @@ package pt.ist.socialsoftware.mono2micro.history;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.annotation.Id;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pt.ist.socialsoftware.mono2micro.controller.accessesSciPy.ClusterController;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.AccessesSciPyDecompositionRepository;
-import pt.ist.socialsoftware.mono2micro.domain.Cluster;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
 import pt.ist.socialsoftware.mono2micro.history.service.AccessesSciPyHistoryService;
 
 import java.util.Map;

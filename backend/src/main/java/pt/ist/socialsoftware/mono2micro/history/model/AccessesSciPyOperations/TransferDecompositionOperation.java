@@ -1,10 +1,10 @@
 package pt.ist.socialsoftware.mono2micro.history.model.AccessesSciPyOperations;
 
-import pt.ist.socialsoftware.mono2micro.domain.Cluster;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
-import pt.ist.socialsoftware.mono2micro.history.model.HistoryEntry;
+import pt.ist.socialsoftware.mono2micro.history.model.DecompositionOperation;
 
-public class TransferHistoryEntry extends HistoryEntry {
+public class TransferDecompositionOperation extends DecompositionOperation {
     public static final String ACCESSES_SCIPY_TRANSFER = "AccessesSciPyTransfer";
 
     private String fromCluster;
@@ -13,9 +13,9 @@ public class TransferHistoryEntry extends HistoryEntry {
 
     private String entities;
 
-    public TransferHistoryEntry() {}
+    public TransferDecompositionOperation() {}
 
-    public TransferHistoryEntry(AccessesSciPyDecomposition decomposition, Short clusterID, Short toClusterID, String entities) {
+    public TransferDecompositionOperation(AccessesSciPyDecomposition decomposition, Short clusterID, Short toClusterID, String entities) {
         Cluster cluster = decomposition.getCluster(clusterID);
         Cluster toCluster = decomposition.getCluster(toClusterID);
 

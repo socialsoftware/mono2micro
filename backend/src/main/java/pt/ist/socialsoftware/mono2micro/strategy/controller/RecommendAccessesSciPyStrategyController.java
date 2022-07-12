@@ -1,38 +1,26 @@
 package pt.ist.socialsoftware.mono2micro.strategy.controller;
 
-import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.client.WebClient;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.domain.Cluster;
-import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
-import pt.ist.socialsoftware.mono2micro.domain.Functionality;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
-import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.RecommendAccessesSciPyStrategy;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
-import pt.ist.socialsoftware.mono2micro.dto.*;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.AnalysisDto;
 import pt.ist.socialsoftware.mono2micro.fileManager.FileManager;
 import pt.ist.socialsoftware.mono2micro.strategy.dto.RecommendAccessesSciPyStrategyDto;
 import pt.ist.socialsoftware.mono2micro.strategy.service.RecommendAccessesSciPyStrategyService;
-import pt.ist.socialsoftware.mono2micro.utils.Utils;
 import pt.ist.socialsoftware.mono2micro.utils.mojoCalculator.src.main.java.MoJo;
 
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.file.NoSuchFileException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource.ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 
 @RestController
@@ -69,7 +57,7 @@ public class RecommendAccessesSciPyStrategyController {
 		try {
 			return new ResponseEntity<>(strategyService.getRecommendationResultByStrategyName(strategyName), HttpStatus.OK);
 
-		} catch (RuntimeException e) { // Since it is an asynchronous call, the file might not be created yet
+		} catch (NoSuchFileException e) { // Since it is an asynchronous call, the file might not be created yet
 			return new ResponseEntity<>(null, HttpStatus.OK);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -96,7 +84,7 @@ public class RecommendAccessesSciPyStrategyController {
 
 	//FIXME analyzer no longer in use
 	//FIXME only here in case something is needed
-	@RequestMapping(value = "/codebase/{codebaseName}/analyser", method = RequestMethod.POST)
+/*	@RequestMapping(value = "/codebase/{codebaseName}/analyser", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> analyser(
 		@PathVariable String codebaseName,
 		@RequestBody AnalyserDto analyser
@@ -407,6 +395,7 @@ public class RecommendAccessesSciPyStrategyController {
 
 		return cutInfo;
 	}
+ */
 
 	@RequestMapping(value = "/analysis", method = RequestMethod.POST)
 	public ResponseEntity<AnalysisDto> getAnalysis(@RequestBody AnalysisDto analysis) throws IOException {

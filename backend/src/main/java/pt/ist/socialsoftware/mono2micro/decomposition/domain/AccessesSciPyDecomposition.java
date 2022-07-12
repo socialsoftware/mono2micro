@@ -4,14 +4,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
-import pt.ist.socialsoftware.mono2micro.domain.Cluster;
-import pt.ist.socialsoftware.mono2micro.domain.Functionality;
-import pt.ist.socialsoftware.mono2micro.domain.FunctionalityRedesign;
-import pt.ist.socialsoftware.mono2micro.domain.LocalTransaction;
-import pt.ist.socialsoftware.mono2micro.history.model.DecompositionHistory;
+import org.springframework.data.mongodb.core.mapping.Document;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Functionality;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.FunctionalityRedesign;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.LocalTransaction;
+import pt.ist.socialsoftware.mono2micro.history.model.DecompositionLog;
 import pt.ist.socialsoftware.mono2micro.metrics.Metric;
 import pt.ist.socialsoftware.mono2micro.metrics.MetricFactory;
-import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.TraceDto;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
 
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 import static org.jgrapht.Graphs.successorListOf;
 import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy.ACCESSES_SCIPY;
 
+@Document("decomposition")
 public class AccessesSciPyDecomposition extends Decomposition {
     private static final String[] availableMetrics = {
             Metric.MetricType.COMPLEXITY,
@@ -37,7 +39,9 @@ public class AccessesSciPyDecomposition extends Decomposition {
     private Map<String, Functionality> functionalities = new HashMap<>(); // <functionalityName, Functionality>
     private Map<Short, Short> entityIDToClusterID = new HashMap<>();
     @DBRef(lazy = true)
-    private DecompositionHistory decompositionHistory;
+    private DecompositionLog decompositionLog;
+
+    public AccessesSciPyDecomposition() {}
 
     @Override
     public String getStrategyType() {
@@ -66,12 +70,12 @@ public class AccessesSciPyDecomposition extends Decomposition {
 
     public void setEntityIDToClusterID(Map<Short, Short> entityIDToClusterID) { this.entityIDToClusterID = entityIDToClusterID; }
 
-    public DecompositionHistory getDecompositionHistory() {
-        return decompositionHistory;
+    public DecompositionLog getDecompositionHistory() {
+        return decompositionLog;
     }
 
-    public void setDecompositionHistory(DecompositionHistory decompositionHistory) {
-        this.decompositionHistory = decompositionHistory;
+    public void setDecompositionHistory(DecompositionLog decompositionLog) {
+        this.decompositionLog = decompositionLog;
     }
 
     public void putEntity(short entityID, Short clusterID) {
@@ -94,12 +98,16 @@ public class AccessesSciPyDecomposition extends Decomposition {
 
     public void setFunctionalities(Map<String, Functionality> functionalities) { this.functionalities = functionalities; }
 
-    public void addFunctionality(Functionality functionality) { this.functionalities.put(functionality.getName(), functionality); }
+    public void addFunctionality(Functionality functionality) {
+        this.functionalities.put(functionality.getName().replaceAll("\\.", "_"), functionality);
+    }
 
-    public boolean functionalityExists(String functionalityName) { return this.functionalities.containsKey(functionalityName); }
+    public boolean functionalityExists(String functionalityName) {
+        return this.functionalities.containsKey(functionalityName.replaceAll("\\.", "_"));
+    }
 
     public Functionality getFunctionality(String functionalityName) {
-        Functionality c = this.functionalities.get(functionalityName);
+        Functionality c = this.functionalities.get(functionalityName.replaceAll("\\.", "_"));
 
         if (c == null) throw new Error("Functionality with name: " + functionalityName + " not found");
 

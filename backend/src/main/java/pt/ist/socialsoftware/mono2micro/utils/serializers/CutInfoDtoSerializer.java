@@ -3,8 +3,8 @@ package pt.ist.socialsoftware.mono2micro.utils.serializers;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import pt.ist.socialsoftware.mono2micro.dto.AnalyserResultDto;
-import pt.ist.socialsoftware.mono2micro.dto.CutInfoDto;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.AnalyserResultDto;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.CutInfoDto;
 
 import java.io.IOException;
 

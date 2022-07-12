@@ -9,16 +9,22 @@ import {toast, ToastContainer} from "react-toastify";
 
 export const Strategy = () => {
     let { codebaseName, strategyName } = useParams();
+    const [strategy, setStrategy] = useState({});
     const [decompositions, setDecompositions] = useState([]);
 
     //Executed on mount
-    useEffect(() => loadDecompositions(), []);
+    useEffect(() => {
+        const service = new RepositoryService();
+        service.getStrategy(strategyName).then(response => {
+            setStrategy(response);
+            loadDecompositions();
+        });
+    }, []);
 
     function loadDecompositions() {
         const service = new RepositoryService();
         const toastId = toast.loading("Fetching Decompositions...");
         service.getDecompositions(
-            codebaseName,
             strategyName
         ).then(response => {
             setDecompositions(response);
@@ -30,9 +36,14 @@ export const Strategy = () => {
     }
 
     function handleDeleteDecomposition(decompositionName) {
+        const toastId = toast.loading("Deleting " + decompositionName + "...");
         const service = new RepositoryService();
         service.deleteDecomposition(codebaseName, strategyName, decompositionName).then(() => {
             loadDecompositions();
+            toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Decomposition deleted.", isLoading: false});
+            setTimeout(() => {toast.dismiss(toastId)}, 1000);
+        }).catch(() => {
+            toast.update(toastId, {type: toast.TYPE.ERROR, render: "Error deleting " + decompositionName + ".", isLoading: false});
         });
     }
 
@@ -71,8 +82,7 @@ export const Strategy = () => {
                 Decomposition Creation Method
             </h4>
 
-            {/*Add decomposition creation forms here TODO talvez se possa fazer a partir do strategyType*/}
-            {strategyName.startsWith(StrategyType.ACCESSES_SCIPY) &&
+            {strategy.type === StrategyType.ACCESSES_SCIPY &&
                 <AccessesSciPyDecompositionForm
                     loadDecompositions={loadDecompositions}
                 />

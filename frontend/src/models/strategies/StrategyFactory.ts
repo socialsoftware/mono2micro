@@ -7,7 +7,7 @@ export abstract class StrategyFactory {
         switch (strategy.type) {
             case StrategyType.ACCESSES_SCIPY:
                 return new AccessesSciPyStrategy(strategy);
-            case StrategyType.RECOMMENDATION_ACCESSES_SCIPY:
+            case StrategyType.RECOMMEND_ACCESSES_SCIPY:
                 return new RecommendAccessesSciPyStrategy(strategy);
             default:
                 throw new Error('Type ' + strategy.type + ' unknown.');

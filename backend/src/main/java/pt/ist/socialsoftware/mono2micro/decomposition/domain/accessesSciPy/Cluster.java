@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.domain;
+package pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

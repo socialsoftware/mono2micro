@@ -1,12 +1,12 @@
 package pt.ist.socialsoftware.mono2micro.metrics;
 
-import pt.ist.socialsoftware.mono2micro.domain.Cluster;
-import pt.ist.socialsoftware.mono2micro.domain.Functionality;
-import pt.ist.socialsoftware.mono2micro.domain.FunctionalityRedesign;
-import pt.ist.socialsoftware.mono2micro.domain.LocalTransaction;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Functionality;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.FunctionalityRedesign;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.AccessDto;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.utils.LocalTransactionTypes;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;

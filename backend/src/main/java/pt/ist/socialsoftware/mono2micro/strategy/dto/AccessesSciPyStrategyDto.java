@@ -19,6 +19,7 @@ public class AccessesSciPyStrategyDto extends StrategyDto {
     public AccessesSciPyStrategyDto() {this.setType(ACCESSES_SCIPY);}
 
     public AccessesSciPyStrategyDto(AccessesSciPyStrategy strategy) {
+        this.setCodebaseName(strategy.getCodebase().getName());
         this.setName(strategy.getName());
         this.setType(ACCESSES_SCIPY);
         this.accessMetricWeight = strategy.getAccessMetricWeight();

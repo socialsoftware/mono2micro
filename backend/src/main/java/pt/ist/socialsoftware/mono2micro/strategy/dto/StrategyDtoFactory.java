@@ -22,7 +22,7 @@ public class StrategyDtoFactory {
         switch (strategy.getType()) {
             case AccessesSciPyStrategy.ACCESSES_SCIPY:
                 return new AccessesSciPyStrategyDto((AccessesSciPyStrategy) strategy);
-            case RecommendAccessesSciPyStrategy.RECOMMENDATION_ACCESSES_SCIPY:
+            case RecommendAccessesSciPyStrategy.RECOMMEND_ACCESSES_SCIPY:
                 return new RecommendAccessesSciPyStrategyDto((RecommendAccessesSciPyStrategy) strategy);
             default:
                 throw new RuntimeException("The type \"" + strategy.getType() + "\" is not a valid strategy type.");

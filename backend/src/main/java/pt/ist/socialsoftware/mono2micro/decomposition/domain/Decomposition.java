@@ -1,6 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.domain;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.ist.socialsoftware.mono2micro.metrics.Metric;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
@@ -8,10 +9,10 @@ import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import java.util.ArrayList;
 import java.util.List;
 
-@Document("decomposition")
 public abstract class Decomposition {
 	@Id
 	private String name;
+	@DBRef
 	private Strategy strategy;
 	private List<Metric> metrics = new ArrayList<>();
 

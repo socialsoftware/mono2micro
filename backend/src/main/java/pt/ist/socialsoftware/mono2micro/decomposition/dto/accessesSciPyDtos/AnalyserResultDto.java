@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.dto;
+package pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos;
 
 public class AnalyserResultDto {
     private float accessWeight;

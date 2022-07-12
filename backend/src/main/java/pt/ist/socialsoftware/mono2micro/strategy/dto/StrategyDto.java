@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy.ACCESSES_SCIPY;
-import static pt.ist.socialsoftware.mono2micro.strategy.domain.RecommendAccessesSciPyStrategy.RECOMMENDATION_ACCESSES_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.strategy.domain.RecommendAccessesSciPyStrategy.RECOMMEND_ACCESSES_SCIPY;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = AccessesSciPyStrategyDto.class, name = ACCESSES_SCIPY),
-        @JsonSubTypes.Type(value = RecommendAccessesSciPyStrategyDto.class, name = RECOMMENDATION_ACCESSES_SCIPY)
+        @JsonSubTypes.Type(value = RecommendAccessesSciPyStrategyDto.class, name = RECOMMEND_ACCESSES_SCIPY)
 })
 public abstract class StrategyDto {
     private String name;

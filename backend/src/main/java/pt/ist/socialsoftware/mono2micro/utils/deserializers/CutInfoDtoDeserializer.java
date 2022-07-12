@@ -5,8 +5,8 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import pt.ist.socialsoftware.mono2micro.dto.AnalyserResultDto;
-import pt.ist.socialsoftware.mono2micro.dto.CutInfoDto;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.AnalyserResultDto;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.CutInfoDto;
 
 import java.io.IOException;
 import java.util.HashMap;

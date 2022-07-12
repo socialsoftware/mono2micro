@@ -28,7 +28,7 @@ public class Codebase {
         this.name = name;
 		sources = new ArrayList<>();
 		strategies = new ArrayList<>();
-		isEmpty = false;
+		isEmpty = true;
 	}
 
 	public String getName() {

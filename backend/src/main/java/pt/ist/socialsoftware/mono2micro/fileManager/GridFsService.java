@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.NoSuchFileException;
 import java.util.Set;
 
 /**
@@ -31,7 +32,7 @@ public class GridFsService {
     public InputStream getFile(String fileName) throws IOException {
         GridFSFile gridFSFile = gridFsTemplate.findOne(new Query(Criteria.where("filename").is(fileName)));
         if (gridFSFile == null)
-            throw new RuntimeException("No file called: " + fileName);
+            throw new NoSuchFileException("No file called: " + fileName);
         return operations.getResource(gridFSFile).getInputStream();
     }
 

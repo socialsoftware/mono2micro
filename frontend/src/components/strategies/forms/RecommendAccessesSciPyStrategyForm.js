@@ -10,7 +10,6 @@ import Button from "react-bootstrap/Button";
 import {Modal, ModalBody, ModalFooter, ModalTitle} from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import {RepositoryService} from "../../../services/RepositoryService";
-import HttpStatus from "http-status-codes";
 import FormControl from "react-bootstrap/FormControl";
 import {SourceType} from "../../../models/sources/Source";
 
@@ -32,7 +31,6 @@ const decompositionInfo = [
     {dataField: 'Cohesion',                 text: 'Cohesion',           filter: nFilter, sort},
     {dataField: 'Coupling',                 text: 'Coupling',           filter: nFilter, sort},
     {dataField: 'Performance',              text: 'Performance',        filter: nFilter, sort},
-    {dataField: 'Silhouette Score',         text: 'Silhouette Score',   filter: nFilter, sort},
 ];
 
 const pagination = paginationFactory({
@@ -68,6 +66,7 @@ export const RecommendAccessesSciPyStrategyForm = ({strategy, setStrategy, setUp
     const [isSelected, setIsSelected] = useState("");
     const [isUploaded, setIsUploaded] = useState("");
     const [profiles, setProfiles] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         loadProfiles();
@@ -85,33 +84,45 @@ export const RecommendAccessesSciPyStrategyForm = ({strategy, setStrategy, setUp
         }
         else setIsSelected("Creating decompositions...");
 
-        service.createRecommendationDecompositions(strategy.codebaseName, strategy.name, selectedDecompositions.selectionContext.selected)
+        service.createRecommendationDecompositions(strategy.name, selectedDecompositions.selectionContext.selected)
             .then(() => {
                 setUpdateStrategies({});
                 setIsSelected("Decompositions created.");
             }).catch(() => setIsSelected("Error during decomposition's creation."));
     }
 
-    function handleListRecommendations() {
+    function handleCreateRecommendation() {
         setIsUploaded("Gathering recommendations...");
         setShowPopup(true);
+        setLoading(true);
 
-        service.recommendation(strategy.codebaseName, strategy)
+        service.recommendation(strategy)
             .then(recommendationStrategy => {
                 recommendationStrategy.traceTypes = strategy.traceTypes;
                 recommendationStrategy.linkageTypes = strategy.linkageTypes;
                 setStrategy(recommendationStrategy);
 
-                service.getRecommendationResult(recommendationStrategy.codebaseName, recommendationStrategy.name)
+                service.getRecommendationResult(recommendationStrategy.name)
                     .then(list => {
                         const filteredList = list.filter(item =>
                             recommendationStrategy.traceTypes.includes(item.traceType) &&
                             recommendationStrategy.linkageTypes.includes(item.linkageType));
 
                         setRecommendedDecompositions(filteredList);
+                        setLoading(false);
                     });
                 }
             );
+    }
+
+    function handleListRecommendations() {
+        service.getRecommendationResult(strategy.name).then(list => {
+            const filteredList = list.filter(item =>
+                strategy.traceTypes.includes(item.traceType) &&
+                strategy.linkageTypes.includes(item.linkageType));
+
+            setRecommendedDecompositions(filteredList);
+        });
     }
 
     function handleChangeLinkageTypeCheckbox(event) {
@@ -176,7 +187,7 @@ export const RecommendAccessesSciPyStrategyForm = ({strategy, setStrategy, setUp
                             <Button className="me-2" variant="success" onClick={() => handleCreateDecompositions()}>
                                 Submit
                             </Button>
-                            <Button className="me-2" variant="primary" disabled={strategy.isCompleted} onClick={() => handleListRecommendations()}>
+                            <Button className="me-2" variant="primary" disabled={strategy.isCompleted || loading} onClick={() => handleCreateRecommendation()}>
                                 Refresh
                             </Button>
                             <Button className="me-2" variant="secondary" onClick={() => closePopup()}>
@@ -309,8 +320,8 @@ export const RecommendAccessesSciPyStrategyForm = ({strategy, setStrategy, setUp
             <Form.Group as={Row} className="align-items-center">
                 <Col sm={{offset: 2}}>
                     <Button
-                        disabled={isUploaded === "Gathering recommendations..." || !strategy.readyToSubmit()}
-                        onClick={handleListRecommendations}
+                        disabled={isUploaded === "Gathering recommendations..." || !strategy.readyToSubmit() || loading}
+                        onClick={handleCreateRecommendation}
                     >
                         Show list of decompositions
                     </Button>

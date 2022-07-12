@@ -14,7 +14,7 @@ import pt.ist.socialsoftware.mono2micro.strategy.repository.StrategyRepository;
 import java.util.List;
 
 import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy.ACCESSES_SCIPY;
-import static pt.ist.socialsoftware.mono2micro.strategy.domain.RecommendAccessesSciPyStrategy.RECOMMENDATION_ACCESSES_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.strategy.domain.RecommendAccessesSciPyStrategy.RECOMMEND_ACCESSES_SCIPY;
 
 @Service
 public class StrategyService {
@@ -53,7 +53,7 @@ public class StrategyService {
             case ACCESSES_SCIPY:
                 accessesSciPyStrategyService.deleteStrategyProperties((AccessesSciPyStrategy) strategy);
                 break;
-            case RECOMMENDATION_ACCESSES_SCIPY:
+            case RECOMMEND_ACCESSES_SCIPY:
                 recommendAccessesSciPyStrategy.deleteStrategyProperties((RecommendAccessesSciPyStrategy) strategy);
                 break;
         }
@@ -62,5 +62,9 @@ public class StrategyService {
     public List<Decomposition> getDecompositions(String strategyName) {
         Strategy strategy = strategyRepository.findByName(strategyName);
         return strategy.getDecompositions();
+    }
+
+    public Strategy getStrategy(String strategyName) {
+        return strategyRepository.findByName(strategyName);
     }
 }

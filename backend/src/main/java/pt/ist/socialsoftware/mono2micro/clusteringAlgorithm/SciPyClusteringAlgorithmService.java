@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
-import pt.ist.socialsoftware.mono2micro.domain.Cluster;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.metrics.Metric;
 import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
@@ -20,6 +20,7 @@ import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.RecommendAccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.strategy.repository.StrategyRepository;
 import pt.ist.socialsoftware.mono2micro.strategy.service.RecommendAccessesSciPyStrategyService;
+import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.BufferedInputStream;
@@ -30,7 +31,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource.ACCESSES;
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
+import static pt.ist.socialsoftware.mono2micro.utils.Constants.SCRIPTS_ADDRESS;
 
 @Service
 public class SciPyClusteringAlgorithmService {
@@ -126,7 +127,7 @@ public class SciPyClusteringAlgorithmService {
     private void setupFunctionalitiesAndMetrics(
             String profile,
             int tracesMaxLimit,
-            TraceType traceType,
+            Constants.TraceType traceType,
             AccessesSource source,
             AccessesSciPyDecomposition decomposition
     ) throws Exception {
@@ -155,8 +156,8 @@ public class SciPyClusteringAlgorithmService {
         try {
             JSONObject jsonObject = new JSONObject(response);
             decomposition.setSilhouetteScore(jsonObject.getDouble("silhouetteScore"));
-            return jsonObject.getJSONObject("clusters");
-        } catch(Exception e) { throw new RuntimeException("Could not produce or extract elements from JSON Object"); }
+            return new JSONObject(jsonObject.getString("clusters"));
+        } catch(Exception e) { throw new RuntimeException(e.getMessage()); }
     }
 
     public String getDecompositionName(AccessesSciPyStrategy strategy, String cutType, float cutValue) {
@@ -198,6 +199,12 @@ public class SciPyClusteringAlgorithmService {
         }
     }
 
+    // This prevents bug where, during the generateMultipleDecompositions, SCRIPTS_ADDRESS is not loaded
+    // this might happen since this operation is called in another thread and might not load SCRIPTS_ADDRESS because of it
+    public void prepareAutowire() {
+        System.out.println("Preparing to contact " + SCRIPTS_ADDRESS);
+    }
+
     public void generateMultipleDecompositions(RecommendAccessesSciPyStrategy strategy) throws Exception {
         AccessesSource source = (AccessesSource) strategy.getCodebase().getSourceByType(ACCESSES);
         byte[] sourceBytes = IOUtils.toByteArray(sourceService.getSourceFileAsInputStream(source.getName()));
@@ -219,6 +226,7 @@ public class SciPyClusteringAlgorithmService {
         if (strategy.getRecommendationResultName() == null) {
             recommendationJSON = new JSONArray();
             strategy.setRecommendationResultName(strategy.getName() + "_recommendationResult");
+            strategyRepository.save(strategy);
         }
         else {
             recommendationJSON = new JSONArray(recommendStrategyService.getRecommendationResult(strategy));
@@ -231,7 +239,7 @@ public class SciPyClusteringAlgorithmService {
 
             //Name captured from the similarity matrix used to produce the cut
             String[] properties = similarityMatrixName.split(",");
-            TraceType traceType = TraceType.valueOf(properties[5]);
+            Constants.TraceType traceType = Constants.TraceType.valueOf(properties[5]);
             String linkageType = properties[6];
             if (strategy.containsCombination(traceType, linkageType))
                 return;

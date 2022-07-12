@@ -6,12 +6,13 @@ import pt.ist.socialsoftware.mono2micro.strategy.dto.RecommendAccessesSciPyStrat
 import pt.ist.socialsoftware.mono2micro.strategy.dto.StrategyDto;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 @Document("strategy")
 public class RecommendAccessesSciPyStrategy extends Strategy {
-    public static final String RECOMMENDATION_ACCESSES_SCIPY = "RECOMMENDATION_ACCESSES_SCIPY";
+    public static final String RECOMMEND_ACCESSES_SCIPY = "Recommend Accesses SciPy";
     private String profile;
     private int tracesMaxLimit;
     private boolean isCompleted; // true when all the decompositions are calculated
@@ -28,6 +29,8 @@ public class RecommendAccessesSciPyStrategy extends Strategy {
     private Set<String> similarityMatricesNames;
     private String recommendationResultName;
 
+    public RecommendAccessesSciPyStrategy() {}
+
     public RecommendAccessesSciPyStrategy(RecommendAccessesSciPyStrategyDto dto) {
         this.profile = dto.getProfile();
         this.tracesMaxLimit = dto.getTracesMaxLimit();
@@ -37,11 +40,12 @@ public class RecommendAccessesSciPyStrategy extends Strategy {
         this.combinationsInProduction = new HashSet<>();
         this.producedCombinations = new HashSet<>();
         this.similarityMatricesNames = new HashSet<>();
+        setDecompositions(new ArrayList<>());
     }
 
     @Override
     public String getType() {
-        return RECOMMENDATION_ACCESSES_SCIPY;
+        return RECOMMEND_ACCESSES_SCIPY;
     }
 
     public String getProfile() {

@@ -52,8 +52,8 @@ export const AccessesSciPyDecompositionForm = ({loadDecompositions}) => {
 
         service.createAccessesSciPyDecomposition(
             strategyName,
-            cutValue,
-            cutType
+            cutType,
+            cutValue
         ).then(response => {
             if (response.status === HttpStatus.OK) {
                 loadDecompositions();
@@ -107,7 +107,7 @@ export const AccessesSciPyDecompositionForm = ({loadDecompositions}) => {
                 <img
                     className={"d-block mb-4"}
                     width="70%"
-                    src={URL + "codebase/" + codebaseName + "/strategy/" + strategyName + "/image?" + new Date().getTime()}
+                    src={URL + "/strategy/" + strategyName + "/image?" + new Date().getTime()}
                     alt="Strategy"
                 />
 

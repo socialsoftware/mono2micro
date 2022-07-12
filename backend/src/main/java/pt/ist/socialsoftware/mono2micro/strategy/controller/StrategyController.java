@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.DecompositionDto;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.DecompositionDtoFactory;
+import pt.ist.socialsoftware.mono2micro.strategy.dto.StrategyDto;
+import pt.ist.socialsoftware.mono2micro.strategy.dto.StrategyDtoFactory;
 import pt.ist.socialsoftware.mono2micro.strategy.service.StrategyService;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
@@ -51,6 +53,23 @@ public class StrategyController {
 					HttpStatus.OK
 			);
 
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@RequestMapping(value = "/strategy/{strategyName}/getStrategy", method = RequestMethod.GET)
+	public ResponseEntity<StrategyDto> getStrategy(
+			@PathVariable String strategyName
+	) {
+		logger.debug("getStrategy");
+
+		try {
+			return new ResponseEntity<>(
+					StrategyDtoFactory.getFactory().getStrategyDto(strategyService.getStrategy(strategyName)),
+					HttpStatus.OK
+			);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

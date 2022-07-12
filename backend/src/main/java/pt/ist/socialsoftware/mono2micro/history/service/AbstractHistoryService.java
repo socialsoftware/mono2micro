@@ -2,11 +2,9 @@ package pt.ist.socialsoftware.mono2micro.history.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.history.model.DecompositionHistory;
-import pt.ist.socialsoftware.mono2micro.history.model.HistoryEntry;
+import pt.ist.socialsoftware.mono2micro.history.model.DecompositionLog;
+import pt.ist.socialsoftware.mono2micro.history.model.DecompositionOperation;
 import pt.ist.socialsoftware.mono2micro.history.repository.HistoryRepository;
-
-import java.util.ArrayList;
 
 public abstract class AbstractHistoryService {
 
@@ -17,11 +15,11 @@ public abstract class AbstractHistoryService {
         historyRepository.deleteAll();
     }
 
-    public void deleteDecompositionHistory(Decomposition decomposition) {
-        historyRepository.deleteByName(decomposition.getName());
+    public void deleteDecompositionHistory(DecompositionLog decompositionLog) {
+        historyRepository.deleteByName(decompositionLog.getName());
     }
 
-    public abstract void addHistoryEntry(Decomposition decomposition, HistoryEntry historyEntry);
+    public abstract void addHistoryEntry(Decomposition decomposition, DecompositionOperation decompositionOperation);
 
     public abstract void undoOperation(Decomposition decomposition);
 }

@@ -1,11 +1,11 @@
-package pt.ist.socialsoftware.mono2micro.domain;
+package pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.metrics.Metric;
 import pt.ist.socialsoftware.mono2micro.metrics.MetricFactory;
-import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.AccessDto;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.utils.LocalTransactionTypes;
 

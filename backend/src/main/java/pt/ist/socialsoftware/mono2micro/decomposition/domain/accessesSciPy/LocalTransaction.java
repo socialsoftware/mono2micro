@@ -1,11 +1,11 @@
-package pt.ist.socialsoftware.mono2micro.domain;
+package pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.*;
 
-import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.AccessDto;
 import pt.ist.socialsoftware.mono2micro.utils.LocalTransactionTypes;
 
 @JsonInclude(JsonInclude.Include.USE_DEFAULTS)

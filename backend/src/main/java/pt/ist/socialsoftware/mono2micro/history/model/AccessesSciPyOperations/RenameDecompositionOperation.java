@@ -1,19 +1,19 @@
 package pt.ist.socialsoftware.mono2micro.history.model.AccessesSciPyOperations;
 
-import pt.ist.socialsoftware.mono2micro.domain.Cluster;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
-import pt.ist.socialsoftware.mono2micro.history.model.HistoryEntry;
+import pt.ist.socialsoftware.mono2micro.history.model.DecompositionOperation;
 
-public class RenameHistoryEntry extends HistoryEntry {
+public class RenameDecompositionOperation extends DecompositionOperation {
     public static final String ACCESSES_SCIPY_RENAME = "AccessesSciPyRename";
 
     private String newClusterName;
 
     private String previousClusterName;
 
-    public RenameHistoryEntry() {}
+    public RenameDecompositionOperation() {}
 
-    public RenameHistoryEntry(AccessesSciPyDecomposition decomposition, Short clusterID, String newClusterName) {
+    public RenameDecompositionOperation(AccessesSciPyDecomposition decomposition, Short clusterID, String newClusterName) {
         Cluster cluster = decomposition.getCluster(clusterID);
         this.previousClusterName = cluster.getName();
         this.newClusterName = newClusterName;

@@ -5,7 +5,7 @@ import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.util.Set;
 
-import static pt.ist.socialsoftware.mono2micro.strategy.domain.RecommendAccessesSciPyStrategy.RECOMMENDATION_ACCESSES_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.strategy.domain.RecommendAccessesSciPyStrategy.RECOMMEND_ACCESSES_SCIPY;
 
 public class RecommendAccessesSciPyStrategyDto extends StrategyDto {
     private String profile;
@@ -14,11 +14,12 @@ public class RecommendAccessesSciPyStrategyDto extends StrategyDto {
     private boolean isCompleted;
     private Set<Constants.TraceType> traceTypes;
 
-    public RecommendAccessesSciPyStrategyDto() {this.setType(RECOMMENDATION_ACCESSES_SCIPY);}
+    public RecommendAccessesSciPyStrategyDto() {this.setType(RECOMMEND_ACCESSES_SCIPY);}
 
     public RecommendAccessesSciPyStrategyDto(RecommendAccessesSciPyStrategy strategy) {
+        this.setCodebaseName(strategy.getCodebase().getName());
         this.setName(strategy.getName());
-        this.setType(RECOMMENDATION_ACCESSES_SCIPY);
+        this.setType(RECOMMEND_ACCESSES_SCIPY);
         this.profile = strategy.getProfile();
         this.linkageTypes = strategy.getLinkageTypes();
         this.tracesMaxLimit = strategy.getTracesMaxLimit();

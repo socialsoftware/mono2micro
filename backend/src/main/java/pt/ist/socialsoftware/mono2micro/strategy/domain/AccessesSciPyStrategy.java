@@ -5,9 +5,11 @@ import pt.ist.socialsoftware.mono2micro.strategy.dto.AccessesSciPyStrategyDto;
 import pt.ist.socialsoftware.mono2micro.strategy.dto.StrategyDto;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
+import java.util.ArrayList;
+
 @Document("strategy")
 public class AccessesSciPyStrategy extends Strategy {
-    public static final String ACCESSES_SCIPY = "ACCESSES_SCIPY";
+    public static final String ACCESSES_SCIPY = "Accesses SciPy";
     private String profile;
     private int tracesMaxLimit;
     private Constants.TraceType traceType;
@@ -36,6 +38,7 @@ public class AccessesSciPyStrategy extends Strategy {
         this.readMetricWeight = dto.getReadMetricWeight();
         this.sequenceMetricWeight = dto.getSequenceMetricWeight();
         this.linkageType = dto.getLinkageType();
+        setDecompositions(new ArrayList<>());
     }
 
     @Override

@@ -5,7 +5,7 @@ import pt.ist.socialsoftware.mono2micro.strategy.dto.RecommendAccessesSciPyStrat
 import pt.ist.socialsoftware.mono2micro.strategy.dto.StrategyDto;
 
 import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy.ACCESSES_SCIPY;
-import static pt.ist.socialsoftware.mono2micro.strategy.domain.RecommendAccessesSciPyStrategy.RECOMMENDATION_ACCESSES_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.strategy.domain.RecommendAccessesSciPyStrategy.RECOMMEND_ACCESSES_SCIPY;
 
 public class StrategyFactory {
     private static StrategyFactory factory = null;
@@ -20,7 +20,7 @@ public class StrategyFactory {
         switch (strategyDto.getType()) {
             case ACCESSES_SCIPY:
                 return new AccessesSciPyStrategy((AccessesSciPyStrategyDto) strategyDto);
-            case RECOMMENDATION_ACCESSES_SCIPY:
+            case RECOMMEND_ACCESSES_SCIPY:
                 return new RecommendAccessesSciPyStrategy((RecommendAccessesSciPyStrategyDto) strategyDto);
             default:
                 throw new RuntimeException("The type \"" + strategyDto.getType() + "\" is not a valid source type.");

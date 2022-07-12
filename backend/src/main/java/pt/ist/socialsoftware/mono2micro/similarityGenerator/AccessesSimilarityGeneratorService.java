@@ -10,8 +10,8 @@ import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
 import pt.ist.socialsoftware.mono2micro.source.service.SourceService;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.RecommendAccessesSciPyStrategy;
-import pt.ist.socialsoftware.mono2micro.dto.AccessDto;
-import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.AccessDto;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.TraceDto;
 import pt.ist.socialsoftware.mono2micro.strategy.service.AccessesSciPyStrategyService;
 import pt.ist.socialsoftware.mono2micro.strategy.service.RecommendAccessesSciPyStrategyService;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
@@ -38,7 +38,7 @@ public class AccessesSimilarityGeneratorService {
     RecommendAccessesSciPyStrategyService recommendAccessesSciPyStrategyService;
 
     //#############################################
-    // ACCESSES_SCIPY
+    // ACCESSES SCIPY
     //#############################################
 
     public void createSimilarityMatrixForSciPy(AccessesSciPyStrategy strategy) throws Exception {
@@ -317,7 +317,7 @@ public class AccessesSimilarityGeneratorService {
     }
 
     //#############################################
-    // RECOMMENDATION_ACCESSES_SCIPY
+    // RECOMMEND ACCESSES SCIPY
     //#############################################
 
     public void createSimilarityMatricesForSciPy(RecommendAccessesSciPyStrategy strategy) throws Exception {

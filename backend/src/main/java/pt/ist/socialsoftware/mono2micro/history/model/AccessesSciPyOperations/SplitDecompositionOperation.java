@@ -1,10 +1,10 @@
 package pt.ist.socialsoftware.mono2micro.history.model.AccessesSciPyOperations;
 
-import pt.ist.socialsoftware.mono2micro.domain.Cluster;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
-import pt.ist.socialsoftware.mono2micro.history.model.HistoryEntry;
+import pt.ist.socialsoftware.mono2micro.history.model.DecompositionOperation;
 
-public class SplitHistoryEntry extends HistoryEntry {
+public class SplitDecompositionOperation extends DecompositionOperation {
     public static final String ACCESSES_SCIPY_SPLIT = "AccessesSciPySplit";
 
     private String originalCluster;
@@ -13,9 +13,9 @@ public class SplitHistoryEntry extends HistoryEntry {
 
     private String newCluster;
 
-    public SplitHistoryEntry() {}
+    public SplitDecompositionOperation() {}
 
-    public SplitHistoryEntry(AccessesSciPyDecomposition decomposition, Short clusterID, String newName, String entities) {
+    public SplitDecompositionOperation(AccessesSciPyDecomposition decomposition, Short clusterID, String newName, String entities) {
         Cluster cluster = decomposition.getCluster(clusterID);
         this.originalCluster = cluster.getName();
         this.newCluster = newName;

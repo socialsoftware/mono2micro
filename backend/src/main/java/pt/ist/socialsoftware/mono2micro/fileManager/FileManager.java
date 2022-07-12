@@ -3,25 +3,18 @@ package pt.ist.socialsoftware.mono2micro.fileManager;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.CutInfoDto;
 import pt.ist.socialsoftware.mono2micro.source.domain.Source;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
-import pt.ist.socialsoftware.mono2micro.dto.*;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 
@@ -316,89 +309,6 @@ public class FileManager {
 		);
 	}
 
-	public JSONObject getSimilarityMatrix(
-		String codebaseName,
-		String strategyName,
-		String similarityMatrixName
-	)
-		throws IOException, JSONException
-	{
-		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + strategyName + "/similarityMatrices/" + similarityMatrixName);
-
-		JSONObject similarityMatrixJSON = new JSONObject(IOUtils.toString(is, "UTF-8"));
-
-		is.close();
-
-		return similarityMatrixJSON;
-	}
-
-	public JSONArray getCopheneticDistances(
-			String codebaseName,
-			String strategyName
-	)
-			throws IOException, JSONException
-	{
-		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + strategyName + "/copheneticDistances.json");
-
-		return new JSONArray(IOUtils.toString(is, "UTF-8"));
-	}
-
-	public void saveGraphPositions(
-			String codebaseName,
-			String strategyName,
-			String decompositionName,
-			String graphPositions
-	)
-			throws IOException
-	{
-		FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + strategyName + "/decompositions/" + decompositionName + "/graphPositions.json");
-		file.write(graphPositions);
-		file.close();
-	}
-
-	public void deleteGraphPositions(
-			String codebaseName,
-			String strategyName,
-			String decompositionName
-	)
-			throws IOException
-	{
-		File file = new File(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + strategyName + "/decompositions/" + decompositionName + "/graphPositions.json");
-		if (file.exists())
-			file.delete();
-	}
-
-	public String getGraphPositions(
-			String codebaseName,
-			String strategyName,
-			String decompositionName
-	)
-			throws IOException
-	{
-		File file = new File(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + strategyName + "/decompositions/" + decompositionName + "/graphPositions.json");
-		if (!file.exists())
-			return null;
-
-		InputStream is = new FileInputStream(file.getPath());
-
-		return IOUtils.toString(is, "UTF-8");
-	}
-
-	public byte[] getDendrogramImage(
-		String codebaseName,
-		String strategyName
-	)
-		throws IOException
-	{
-		String filePathname = CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER + strategyName + "/dendrogramImage.png";
-		Path filePath = Paths.get(filePathname);
-
-		if (Files.exists(filePath)) return Files.readAllBytes(filePath);
-
-		throw new FileNotFoundException("File: " + filePathname + " not found");
-
-	}
-
 	public HashMap<String, CutInfoDto> getAnalyserResults(
 		String codebaseName
 	)
@@ -432,36 +342,6 @@ public class FileManager {
 		FileWriter file = new FileWriter(CODEBASES_PATH + codebaseName + RECOMMEND_FOLDER + strategyName + "/recommendationResult.json");
 		file.write(recommendationJSON.toString(4));
 		file.close();
-	}
-
-	public JSONArray getRecommendationResultAsJSON(
-		String codebaseName,
-		String strategyName
-	)
-		throws IOException, JSONException
-	{
-		File recommendationResult = new File(CODEBASES_PATH + codebaseName + RECOMMEND_FOLDER + strategyName + "/recommendationResult.json");
-		if (recommendationResult.exists()) {
-			InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + RECOMMEND_FOLDER + strategyName + "/recommendationResult.json");
-
-			return new JSONArray(IOUtils.toString(is, "UTF-8"));
-		}
-		else return new JSONArray();
-	}
-
-	public synchronized String getRecommendationResult(
-		String codebaseName,
-		String strategyName
-	)
-		throws IOException, JSONException
-	{
-		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + RECOMMEND_FOLDER + strategyName + "/recommendationResult.json");
-
-		String recommendationResultJSON = IOUtils.toString(is, "UTF-8");
-
-		is.close();
-
-		return recommendationResultJSON;
 	}
 
 	public HashMap<String, HashMap<String, Set<Short>>> getAnalyserCut(

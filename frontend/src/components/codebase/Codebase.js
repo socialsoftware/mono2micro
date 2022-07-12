@@ -129,7 +129,7 @@ export function Codebase() {
                 </Form.Group>
 
                 {selectedStrategy !== undefined &&
-                    (selectedStrategy.type === StrategyType.RECOMMENDATION_ACCESSES_SCIPY ||
+                    (selectedStrategy.type === StrategyType.RECOMMEND_ACCESSES_SCIPY ||
                     selectedStrategy.type === StrategyType.ACCESSES_SCIPY) &&   // Show sources request form
                     <AccessesSciPyForm
                         strategy={selectedStrategy}
