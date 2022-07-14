@@ -20,26 +20,26 @@ import static pt.ist.socialsoftware.mono2micro.history.model.AccessesSciPyOperat
 import static pt.ist.socialsoftware.mono2micro.history.model.AccessesSciPyOperations.TransferDecompositionOperation.ACCESSES_SCIPY_TRANSFER;
 
 @Service
-public class AccessesSciPyHistoryService extends AbstractHistoryService {
+public class AccessesSciPyLogService extends AbstractLogService {
 
     @Autowired
     DecompositionRepository decompositionRepository;
 
-    public void addHistoryEntry(Decomposition d, DecompositionOperation decompositionOperation) {
+    public void addDecompositionOperation(Decomposition d, DecompositionOperation decompositionOperation) {
         AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) d;
         DecompositionLog decompositionLog = decomposition.getDecompositionHistory();
         if (decompositionLog == null) {
             decompositionLog = new DecompositionLog(decomposition);
             decomposition.setDecompositionHistory(decompositionLog);
         }
-        decompositionLog.addHistoryEntry(decompositionOperation);
-        historyRepository.save(decompositionLog);
+        decompositionLog.addLogOperation(decompositionOperation);
+        logRepository.save(decompositionLog);
     }
 
     public void undoOperation(Decomposition d) {
         AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) d;
         DecompositionLog decompositionLog = decomposition.getDecompositionHistory();
-        DecompositionOperation decompositionOperation = decompositionLog.getCurrentHistoryEntry();
+        DecompositionOperation decompositionOperation = decompositionLog.getCurrentLogOperation();
 
         switch (decompositionOperation.getOperationType()) {
             case ACCESSES_SCIPY_RENAME:
@@ -58,41 +58,41 @@ public class AccessesSciPyHistoryService extends AbstractHistoryService {
                 undoFormCluster(decomposition, (FormClusterDecompositionOperation) decompositionOperation);
                 break;
         }
-        decompositionLog.decrementCurrentHistoryEntry();
+        decompositionLog.decrementCurrentLogDepth();
         decomposition.setOutdated(true);
 
-        historyRepository.save(decompositionLog);
+        logRepository.save(decompositionLog);
         decompositionRepository.save(decomposition);
     }
 
-    private void undoRename(AccessesSciPyDecomposition decomposition, RenameDecompositionOperation historyEntry) {
-        Cluster cluster = decomposition.getClusterByName(historyEntry.getNewClusterName());
-        decomposition.renameCluster(cluster.getID(), historyEntry.getPreviousClusterName());
+    private void undoRename(AccessesSciPyDecomposition decomposition, RenameDecompositionOperation decompositionOperation) {
+        Cluster cluster = decomposition.getClusterByName(decompositionOperation.getNewClusterName());
+        decomposition.renameCluster(cluster.getID(), decompositionOperation.getPreviousClusterName());
     }
 
-    private void undoMerge(AccessesSciPyDecomposition decomposition, MergeDecompositionOperation historyEntry) {
-        Cluster cluster = decomposition.getClusterByName(historyEntry.getNewCluster());
-        List<String> clusterNames = new ArrayList<>(historyEntry.getPreviousClusters().keySet());
-        String[] cluster2Entities = historyEntry.getPreviousClusters().get(clusterNames.get(1)).toArray(new String[0]);
+    private void undoMerge(AccessesSciPyDecomposition decomposition, MergeDecompositionOperation decompositionOperation) {
+        Cluster cluster = decomposition.getClusterByName(decompositionOperation.getNewCluster());
+        List<String> clusterNames = new ArrayList<>(decompositionOperation.getPreviousClusters().keySet());
+        String[] cluster2Entities = decompositionOperation.getPreviousClusters().get(clusterNames.get(1)).toArray(new String[0]);
         decomposition.splitCluster(cluster.getID(), clusterNames.get(1), cluster2Entities);
         decomposition.renameCluster(cluster.getID(), clusterNames.get(0));
     }
 
-    private void undoSplit(AccessesSciPyDecomposition decomposition, SplitDecompositionOperation historyEntry) {
-        Cluster originalCluster = decomposition.getClusterByName(historyEntry.getOriginalCluster());
-        Cluster newCluster = decomposition.getClusterByName(historyEntry.getNewCluster());
+    private void undoSplit(AccessesSciPyDecomposition decomposition, SplitDecompositionOperation decompositionOperation) {
+        Cluster originalCluster = decomposition.getClusterByName(decompositionOperation.getOriginalCluster());
+        Cluster newCluster = decomposition.getClusterByName(decompositionOperation.getNewCluster());
 
         decomposition.mergeClusters(originalCluster.getID(), newCluster.getID(), originalCluster.getName());
     }
 
-    private void undoTransfer(AccessesSciPyDecomposition decomposition, TransferDecompositionOperation historyEntry) {
-        Cluster fromCluster = decomposition.getClusterByName(historyEntry.getFromCluster());
-        Cluster toCluster = decomposition.getClusterByName(historyEntry.getToCluster());
+    private void undoTransfer(AccessesSciPyDecomposition decomposition, TransferDecompositionOperation decompositionOperation) {
+        Cluster fromCluster = decomposition.getClusterByName(decompositionOperation.getFromCluster());
+        Cluster toCluster = decomposition.getClusterByName(decompositionOperation.getToCluster());
 
-        decomposition.transferEntities(toCluster.getID(), fromCluster.getID(), historyEntry.getEntities().split(","));
+        decomposition.transferEntities(toCluster.getID(), fromCluster.getID(), decompositionOperation.getEntities().split(","));
     }
 
-    private void undoFormCluster(AccessesSciPyDecomposition decomposition, FormClusterDecompositionOperation historyEntry) {
+    private void undoFormCluster(AccessesSciPyDecomposition decomposition, FormClusterDecompositionOperation decompositionOperation) {
         //TODO form cluster undo
     }
 }

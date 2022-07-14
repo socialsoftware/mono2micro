@@ -9,11 +9,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import pt.ist.socialsoftware.mono2micro.controller.accessesSciPy.ClusterController;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.AccessesSciPyDecompositionRepository;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
-import pt.ist.socialsoftware.mono2micro.history.service.AccessesSciPyHistoryService;
+import pt.ist.socialsoftware.mono2micro.history.service.AccessesSciPyLogService;
 
 import java.util.Map;
 
@@ -21,12 +20,12 @@ import java.util.Map;
 @RequestMapping(value = "/mono2micro/history/{decompositionName}")
 public class AccessesSciPyHistoryController {
     @Autowired
-    AccessesSciPyHistoryService accessesSciPyHistoryService;
+    AccessesSciPyLogService accessesSciPyHistoryService;
 
     @Autowired
     AccessesSciPyDecompositionRepository decompositionRepository;
 
-    private static final Logger logger = LoggerFactory.getLogger(ClusterController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AccessesSciPyHistoryController.class);
 
     @RequestMapping(value = "/undoOperation", method = RequestMethod.GET)
     public ResponseEntity<Map<Short, Cluster>> undoOperation(

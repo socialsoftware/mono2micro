@@ -1,7 +1,5 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.controller;
 
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,22 +10,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.FunctionalityRedesign;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.decomposition.service.AccessesSciPyDecompositionService;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Functionality;
-import pt.ist.socialsoftware.mono2micro.source.domain.Source;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
-import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import javax.naming.NameAlreadyBoundException;
 import java.io.IOException;
 import java.util.*;
-
-import static pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource.ACCESSES;
 
 @RestController
 @RequestMapping(value = "/mono2micro")
@@ -439,7 +430,7 @@ public class AccessesSciPyDecompositionController {
         logger.debug("changeLTName");
         try {
 
-            return new ResponseEntity<>(functionality, HttpStatus.OK);
+            return new ResponseEntity<>(decompositionService.changeLTName(decompositionName, functionalityName, redesignName, transactionID, newName), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -454,12 +445,8 @@ public class AccessesSciPyDecompositionController {
     ) {
         logger.debug("deleteRedesign");
         try {
-            AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-            Functionality functionality = decomposition.getFunctionality(functionalityName);
-            functionality.deleteRedesign(redesignName);
-            decompositionRepository.save(decomposition);
-
-            return new ResponseEntity<>(functionality, HttpStatus.OK);
+            decompositionService.deleteRedesign(decompositionName, functionalityName, redesignName);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -474,12 +461,7 @@ public class AccessesSciPyDecompositionController {
     ) {
         logger.debug("useForMetrics");
         try {
-            AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-            Functionality functionality = decomposition.getFunctionality(functionalityName);
-            functionality.changeFRUsedForMetrics(redesignName);
-            decompositionRepository.save(decomposition);
-
-            return new ResponseEntity<>(functionality, HttpStatus.OK);
+            return new ResponseEntity<>(decompositionService.useForMetrics(decompositionName, functionalityName, redesignName), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

@@ -17,17 +17,17 @@ public class DecompositionLog {
     @DBRef(lazy = true)
     private Decomposition decomposition;
 
-    private Long currentHistoryOperationDepth;
+    private Long currentLogOperationDepth;
 
-    private List<DecompositionOperation> decompositionOperationList;
+    private List<DecompositionOperation> logOperationList;
 
     public DecompositionLog() {}
 
     public DecompositionLog(Decomposition decomposition) {
         this.name = decomposition.getName();
         this.decomposition = decomposition;
-        this.decompositionOperationList = new ArrayList<>();
-        this.currentHistoryOperationDepth = 0L;
+        this.logOperationList = new ArrayList<>();
+        this.currentLogOperationDepth = 0L;
     }
 
     public String getName() {
@@ -46,42 +46,42 @@ public class DecompositionLog {
         this.decomposition = decomposition;
     }
 
-    public Long getCurrentHistoryOperationDepth() {
-        return currentHistoryOperationDepth;
+    public Long getCurrentLogOperationDepth() {
+        return currentLogOperationDepth;
     }
 
-    public void setCurrentHistoryOperationDepth(Long currentHistoryOperationDepth) {
-        this.currentHistoryOperationDepth = currentHistoryOperationDepth;
+    public void setCurrentLogOperationDepth(Long currentLogOperationDepth) {
+        this.currentLogOperationDepth = currentLogOperationDepth;
     }
 
-    public Long incrementCurrentHistoryEntry() {
-        return ++this.currentHistoryOperationDepth;
+    public Long incrementCurrentLogDepth() {
+        return ++this.currentLogOperationDepth;
     }
 
-    public Long decrementCurrentHistoryEntry() {
-        return --this.currentHistoryOperationDepth;
+    public Long decrementCurrentLogDepth() {
+        return --this.currentLogOperationDepth;
     }
 
-    public List<DecompositionOperation> getHistoryEntryList() {
-        return decompositionOperationList;
+    public List<DecompositionOperation> getLogOperationList() {
+        return logOperationList;
     }
 
-    public DecompositionOperation getHistoryEntryByDepth(Long historyDepth) {
-        return decompositionOperationList.get(Math.toIntExact(historyDepth - 1));
+    public DecompositionOperation getLogOperationByDepth(Long historyDepth) {
+        return logOperationList.get(Math.toIntExact(historyDepth - 1));
     }
 
-    public void setHistoryEntryList(List<DecompositionOperation> decompositionOperationList) {
-        this.decompositionOperationList = decompositionOperationList;
+    public void setLogOperationsList(List<DecompositionOperation> logOperationList) {
+        this.logOperationList = logOperationList;
     }
 
-    public void addHistoryEntry(DecompositionOperation decompositionOperation) {
-        decompositionOperation.setHistoryDepth(incrementCurrentHistoryEntry());
-        // Remove conflicting HistoryEntries that have been overridden by the new operation
-        setHistoryEntryList(this.decompositionOperationList.stream().filter(entry -> entry.getHistoryDepth() < getCurrentHistoryOperationDepth()).collect(Collectors.toList()));
-        this.decompositionOperationList.add(decompositionOperation);
+    public void addLogOperation(DecompositionOperation decompositionOperation) {
+        decompositionOperation.setHistoryDepth(incrementCurrentLogDepth());
+        // Remove conflicting Decomposition operations that have been overridden by the new operation
+        setLogOperationsList(this.logOperationList.stream().filter(operation -> operation.getHistoryDepth() < getCurrentLogOperationDepth()).collect(Collectors.toList()));
+        this.logOperationList.add(decompositionOperation);
     }
 
-    public DecompositionOperation getCurrentHistoryEntry() {
-        return decompositionOperationList.get(Math.toIntExact(getCurrentHistoryOperationDepth() - 1));
+    public DecompositionOperation getCurrentLogOperation() {
+        return logOperationList.get(Math.toIntExact(getCurrentLogOperationDepth() - 1));
     }
 }

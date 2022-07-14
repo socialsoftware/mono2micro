@@ -4,22 +4,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.history.model.DecompositionLog;
 import pt.ist.socialsoftware.mono2micro.history.model.DecompositionOperation;
-import pt.ist.socialsoftware.mono2micro.history.repository.HistoryRepository;
+import pt.ist.socialsoftware.mono2micro.history.repository.LogRepository;
 
-public abstract class AbstractHistoryService {
+public abstract class AbstractLogService {
 
     @Autowired
-    HistoryRepository historyRepository;
+    LogRepository logRepository;
 
     public void deleteAll() {
-        historyRepository.deleteAll();
+        logRepository.deleteAll();
     }
 
     public void deleteDecompositionHistory(DecompositionLog decompositionLog) {
-        historyRepository.deleteByName(decompositionLog.getName());
+        logRepository.deleteByName(decompositionLog.getName());
     }
 
-    public abstract void addHistoryEntry(Decomposition decomposition, DecompositionOperation decompositionOperation);
+    public abstract void addDecompositionOperation(Decomposition decomposition, DecompositionOperation decompositionOperation);
 
     public abstract void undoOperation(Decomposition decomposition);
 }
