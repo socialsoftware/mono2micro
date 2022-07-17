@@ -115,16 +115,6 @@ export const RecommendAccessesSciPyStrategyForm = ({strategy, setStrategy, setUp
             );
     }
 
-    function handleListRecommendations() {
-        service.getRecommendationResult(strategy.name).then(list => {
-            const filteredList = list.filter(item =>
-                strategy.traceTypes.includes(item.traceType) &&
-                strategy.linkageTypes.includes(item.linkageType));
-
-            setRecommendedDecompositions(filteredList);
-        });
-    }
-
     function handleChangeLinkageTypeCheckbox(event) {
         let newStrategy = strategy.copy();
         if (event.target.checked && !newStrategy.linkageTypes.includes(event.target.id))

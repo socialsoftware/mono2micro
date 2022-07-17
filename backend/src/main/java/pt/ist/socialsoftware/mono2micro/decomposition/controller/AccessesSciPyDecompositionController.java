@@ -12,11 +12,10 @@ import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomp
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.service.AccessesSciPyDecompositionService;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Functionality;
+import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
-import javax.naming.NameAlreadyBoundException;
 import java.io.IOException;
 import java.util.*;
 
@@ -135,47 +134,6 @@ public class AccessesSciPyDecompositionController {
         }
     }
 
-    @RequestMapping(value = "/accessesSciPyDecomposition/{decompositionName}/getGraphPositions", method = RequestMethod.GET)
-    public ResponseEntity<String> getGraphPositions(
-            @PathVariable String decompositionName
-    ) {
-        logger.debug("getGraphPositions");
-
-        try {
-            String graphPositions = decompositionService.getGraphPositions(decompositionName);
-
-            if (graphPositions == null)
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            else return new ResponseEntity<>(graphPositions, HttpStatus.OK);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    // Permanently saves clusters and entities' positions
-    @RequestMapping(value = "/accessesSciPyDecomposition/{decompositionName}/saveGraphPositions", method = RequestMethod.POST)
-    public ResponseEntity<HttpStatus> saveGraphPositions(
-            @PathVariable String decompositionName,
-            @RequestBody String graphPositions
-    ) {
-        logger.debug("saveGraphPositions");
-
-        decompositionService.saveGraphPositions(decompositionName, graphPositions);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/accessesSciPyDecomposition/{decompositionName}/deleteGraphPositions", method = RequestMethod.DELETE)
-    public ResponseEntity<HttpStatus> deleteGraphPositions(
-            @PathVariable String decompositionName
-    ) {
-        logger.debug("deleteGraphPositions");
-
-        decompositionService.deleteGraphPositions(decompositionName);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
     @RequestMapping(value = "/accessesSciPyDecomposition/{decompositionName}/getFunctionalitiesAndFunctionalitiesClusters", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getFunctionalitiesAndFunctionalitiesClusters(
             @PathVariable String decompositionName
@@ -245,7 +203,7 @@ public class AccessesSciPyDecompositionController {
     ) {
         logger.debug("mergeClusters");
         try {
-            return new ResponseEntity<>(decompositionService.mergeClusters(decompositionName, clusterNameID, otherClusterID, newName), HttpStatus.OK);
+            return new ResponseEntity<>(decompositionService.mergeClustersOperation(decompositionName, clusterNameID, otherClusterID, newName), HttpStatus.OK);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -261,8 +219,7 @@ public class AccessesSciPyDecompositionController {
     ) {
         logger.debug("renameCluster");
         try {
-
-            return new ResponseEntity<>(decompositionService.renameCluster(decompositionName, clusterID, newName), HttpStatus.OK);
+            return new ResponseEntity<>(decompositionService.renameClusterOperation(decompositionName, clusterID, newName), HttpStatus.OK);
 
         } catch (KeyAlreadyExistsException e) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -282,7 +239,7 @@ public class AccessesSciPyDecompositionController {
     ) {
         logger.debug("splitCluster");
         try {
-            return new ResponseEntity<>(decompositionService.splitCluster(decompositionName, clusterID, newName, entities), HttpStatus.OK);
+            return new ResponseEntity<>(decompositionService.splitClusterOperation(decompositionName, clusterID, newName, entities), HttpStatus.OK);
 
         } catch (KeyAlreadyExistsException e) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -302,7 +259,7 @@ public class AccessesSciPyDecompositionController {
     ) {
         logger.debug("transferEntities");
         try {
-            return new ResponseEntity<>(decompositionService.transferEntities(decompositionName, clusterID, toClusterID, entities), HttpStatus.OK);
+            return new ResponseEntity<>(decompositionService.transferEntitiesOperation(decompositionName, clusterID, toClusterID, entities), HttpStatus.OK);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -318,150 +275,11 @@ public class AccessesSciPyDecompositionController {
     ) {
         logger.debug("formCluster");
         try {
-            return new ResponseEntity<>(decompositionService.formCluster(decompositionName, newName, entities), HttpStatus.OK);
+            return new ResponseEntity<>(decompositionService.formClusterOperation(decompositionName, newName, entities), HttpStatus.OK);
 
         } catch (KeyAlreadyExistsException e) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @RequestMapping(value = "/decomposition/{decompositionName}/functionality/{functionalityName}/getOrCreateRedesign", method = RequestMethod.GET)
-    public ResponseEntity<Functionality> getOrCreateRedesign(
-            @PathVariable String decompositionName,
-            @PathVariable String functionalityName
-    ) {
-
-        logger.debug("getOrCreateRedesign");
-
-        try {
-            return new ResponseEntity<>(decompositionService.getOrCreateRedesign(decompositionName, functionalityName), HttpStatus.OK);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @RequestMapping(value = "/decomposition/{decompositionName}/functionality/{functionalityName}/redesign/{redesignName}/addCompensating", method = RequestMethod.POST)
-    public ResponseEntity<Functionality> addCompensating(
-            @PathVariable String decompositionName,
-            @PathVariable String functionalityName,
-            @PathVariable String redesignName,
-            @RequestBody HashMap<String, Object> data
-    ) {
-        logger.debug("addCompensating");
-
-        try {
-            return new ResponseEntity<>(decompositionService.addCompensating(decompositionName, functionalityName, redesignName, data), HttpStatus.OK);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @RequestMapping(value = "/decomposition/{decompositionName}/functionality/{functionalityName}/redesign/{redesignName}/sequenceChange", method = RequestMethod.POST)
-    public ResponseEntity<Functionality> sequenceChange(@PathVariable String decompositionName,
-                                                        @PathVariable String functionalityName,
-                                                        @PathVariable String redesignName,
-                                                        @RequestBody HashMap<String, String> data) {
-        logger.debug("sequenceChange");
-        try {
-            return new ResponseEntity<>(decompositionService.sequenceChange(decompositionName, functionalityName, redesignName, data), HttpStatus.OK);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-        }
-    }
-
-    @RequestMapping(value = "/decomposition/{decompositionName}/functionality/{functionalityName}/redesign/{redesignName}/dcgi", method = RequestMethod.POST)
-    public ResponseEntity<Functionality> dcgi(
-            @PathVariable String decompositionName,
-            @PathVariable String functionalityName,
-            @PathVariable String redesignName,
-            @RequestBody HashMap<String, String> data
-    ) {
-        logger.debug("dcgi");
-        try {
-
-            return new ResponseEntity<>(decompositionService.dcgi(decompositionName, functionalityName, redesignName, data), HttpStatus.OK);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @RequestMapping(value = "/decomposition/{decompositionName}/functionality/{functionalityName}/redesign/{redesignName}/pivotTransaction", method = RequestMethod.POST)
-    public ResponseEntity<Object> pivotTransaction(
-            @PathVariable String decompositionName,
-            @PathVariable String functionalityName,
-            @PathVariable String redesignName,
-            @RequestParam String transactionID,
-            @RequestParam Optional<String> newRedesignName
-    ) {
-        logger.debug("pivotTransaction");
-        try {
-
-            return new ResponseEntity<>(decompositionService.pivotTransaction(decompositionName, functionalityName, redesignName, transactionID, newRedesignName), HttpStatus.OK);
-        } catch (NameAlreadyBoundException e){
-            return new ResponseEntity<>("Name is already selected", HttpStatus.FORBIDDEN);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-    }
-
-    @RequestMapping(value="/decomposition/{decompositionName}/functionality/{functionalityName}/redesign/{redesignName}/changeLTName", method = RequestMethod.POST)
-    public ResponseEntity<Functionality> changeLTName(
-            @PathVariable String decompositionName,
-            @PathVariable String functionalityName,
-            @PathVariable String redesignName,
-            @RequestParam String transactionID,
-            @RequestParam String newName
-    ){
-        logger.debug("changeLTName");
-        try {
-
-            return new ResponseEntity<>(decompositionService.changeLTName(decompositionName, functionalityName, redesignName, transactionID, newName), HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @RequestMapping(value="/decomposition/{decompositionName}/functionality/{functionalityName}/redesign/{redesignName}/deleteRedesign", method = RequestMethod.DELETE)
-    public ResponseEntity<Functionality> deleteRedesign(
-            @PathVariable String decompositionName,
-            @PathVariable String functionalityName,
-            @PathVariable String redesignName
-    ) {
-        logger.debug("deleteRedesign");
-        try {
-            decompositionService.deleteRedesign(decompositionName, functionalityName, redesignName);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @RequestMapping(value="/decomposition/{decompositionName}/functionality/{functionalityName}/redesign/{redesignName}/useForMetrics", method = RequestMethod.POST)
-    public ResponseEntity<Functionality> useForMetrics(
-            @PathVariable String decompositionName,
-            @PathVariable String functionalityName,
-            @PathVariable String redesignName
-    ) {
-        logger.debug("useForMetrics");
-        try {
-            return new ResponseEntity<>(decompositionService.useForMetrics(decompositionName, functionalityName, redesignName), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

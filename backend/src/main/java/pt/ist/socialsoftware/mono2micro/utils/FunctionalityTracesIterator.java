@@ -4,10 +4,10 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.AccessDto;
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.ReducedTraceElementDto;
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.RuleDto;
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.TraceDto;
+import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
+import pt.ist.socialsoftware.mono2micro.functionality.dto.ReducedTraceElementDto;
+import pt.ist.socialsoftware.mono2micro.functionality.dto.RuleDto;
+import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
 
 import java.io.IOException;
 import java.io.InputStream;

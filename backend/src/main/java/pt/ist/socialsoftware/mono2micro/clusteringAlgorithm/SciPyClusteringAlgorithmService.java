@@ -13,6 +13,9 @@ import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
+import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityService;
+import pt.ist.socialsoftware.mono2micro.log.domain.AccessesSciPyLog;
+import pt.ist.socialsoftware.mono2micro.log.repository.LogRepository;
 import pt.ist.socialsoftware.mono2micro.metrics.Metric;
 import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
 import pt.ist.socialsoftware.mono2micro.source.service.SourceService;
@@ -48,6 +51,12 @@ public class SciPyClusteringAlgorithmService {
     @Autowired
     RecommendAccessesSciPyStrategyService recommendStrategyService;
 
+    @Autowired
+    FunctionalityService functionalityService;
+
+    @Autowired
+    LogRepository logRepository;
+
     public void createAccessesSciPyDendrogram(AccessesSciPyStrategy strategy) {
         String response = WebClient.create(SCRIPTS_ADDRESS)
                 .get()
@@ -67,8 +76,8 @@ public class SciPyClusteringAlgorithmService {
         AccessesSource source = (AccessesSource) strategy.getCodebase().getSourceByType(ACCESSES);
 
         AccessesSciPyDecomposition decomposition = new AccessesSciPyDecomposition();
-        decomposition.setStrategy(strategy);
         decomposition.setName(getDecompositionName(strategy, cutType, cutValue));
+        decomposition.setStrategy(strategy);
 
         JSONObject clustersJSON = invokePythonCut(decomposition, strategy.getSimilarityMatrixName(), cutType, cutValue);
         addClustersAndEntities(decomposition, clustersJSON);
@@ -76,6 +85,12 @@ public class SciPyClusteringAlgorithmService {
         setupFunctionalitiesAndMetrics(strategy.getProfile(), strategy.getTracesMaxLimit(), strategy.getTraceType(), source, decomposition);
 
         strategy.addDecomposition(decomposition);
+
+        //Add decomposition log to save operations during the usage of the view
+        AccessesSciPyLog decompositionLog = new AccessesSciPyLog(decomposition);
+        decomposition.setLog(decompositionLog);
+        logRepository.save(decompositionLog);
+
         decompositionRepository.save(decomposition);
         strategyRepository.save(strategy);
     }
@@ -103,6 +118,12 @@ public class SciPyClusteringAlgorithmService {
         setupFunctionalitiesAndMetrics(strategy.getProfile(), strategy.getTracesMaxLimit(), strategy.getTraceType(), source, decomposition);
 
         strategy.addDecomposition(decomposition);
+
+        //Add decomposition log to save operations during the usage of the view
+        AccessesSciPyLog decompositionLog = new AccessesSciPyLog(decomposition);
+        decomposition.setLog(decompositionLog);
+        logRepository.save(decompositionLog);
+
         decompositionRepository.save(decomposition);
         strategyRepository.save(strategy);
     }
@@ -131,7 +152,8 @@ public class SciPyClusteringAlgorithmService {
             AccessesSource source,
             AccessesSciPyDecomposition decomposition
     ) throws Exception {
-        decomposition.setupFunctionalities(
+        functionalityService.setupFunctionalities(
+                decomposition,
                 sourceService.getSourceFileAsInputStream(source.getName()),
                 source.getProfile(profile),
                 tracesMaxLimit,
@@ -260,12 +282,13 @@ public class SciPyClusteringAlgorithmService {
                     addClustersAndEntities(decomposition, clustersJSON);
 
                     // create functionalities and calculate their metrics
-                    decomposition.setupFunctionalities(
+                    functionalityService.setupFunctionalities(
+                            decomposition,
                             new ByteArrayInputStream(sourceBytes),
                             source.getProfile(strategy.getProfile()),
                             strategy.getTracesMaxLimit(),
                             traceType,
-                            true);
+                            false);
 
                     // Calculate decomposition's metrics
                     decomposition.calculateMetrics();

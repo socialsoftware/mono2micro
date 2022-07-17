@@ -2,7 +2,7 @@ package pt.ist.socialsoftware.mono2micro.decomposition.dto;
 
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Functionality;
+import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +20,8 @@ public class AccessesSciPyDecompositionDto extends DecompositionDto {
     public AccessesSciPyDecompositionDto() {this.setStrategyType(ACCESSES_SCIPY);}
 
     public AccessesSciPyDecompositionDto(AccessesSciPyDecomposition decomposition) {
+        this.setCodebaseName(decomposition.getStrategy().getCodebase().getName());
+        this.setStrategyName(decomposition.getStrategy().getName());
         this.setName(decomposition.getName());
         this.setStrategyType(ACCESSES_SCIPY);
         this.setMetrics(decomposition.getMetrics());

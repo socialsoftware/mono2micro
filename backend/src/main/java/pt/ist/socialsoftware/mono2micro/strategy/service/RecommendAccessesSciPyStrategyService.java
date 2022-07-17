@@ -11,6 +11,9 @@ import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
+import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityService;
+import pt.ist.socialsoftware.mono2micro.log.domain.AccessesSciPyLog;
+import pt.ist.socialsoftware.mono2micro.log.repository.LogRepository;
 import pt.ist.socialsoftware.mono2micro.similarityGenerator.AccessesSimilarityGeneratorService;
 import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
 import pt.ist.socialsoftware.mono2micro.source.service.SourceService;
@@ -27,6 +30,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
@@ -57,7 +61,13 @@ public class RecommendAccessesSciPyStrategyService {
     DecompositionRepository decompositionRepository;
 
     @Autowired
+    FunctionalityService functionalityService;
+
+    @Autowired
     SourceService sourceService;
+
+    @Autowired
+    LogRepository logRepository;
 
     @Autowired
     GridFsService gridFsService;
@@ -161,6 +171,12 @@ public class RecommendAccessesSciPyStrategyService {
             AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) recommendationStrategy.getDecompositionByName(name);
             decomposition.setName(getDecompositionName(strategy, "N" + properties[7]));
             decomposition.setStrategy(strategy);
+
+            //Add decomposition log to save operations during the usage of the view
+            AccessesSciPyLog decompositionLog = new AccessesSciPyLog(decomposition);
+            decomposition.setLog(decompositionLog);
+            logRepository.save(decompositionLog);
+
             strategy.addDecomposition(decomposition);
 
             // This is done since previous coupling dependencies mess up the results during 'setupFunctionalities'
@@ -168,7 +184,9 @@ public class RecommendAccessesSciPyStrategyService {
                 cluster.clearCouplingDependencies();
 
             // Fill information regarding functionalities and their redesigns
-            decomposition.setupFunctionalities(
+            decomposition.setFunctionalities(new HashMap<>());
+            functionalityService.setupFunctionalities(
+                    decomposition,
                     sourceService.getSourceFileAsInputStream(source.getName()),
                     source.getProfile(strategy.getProfile()),
                     strategy.getTracesMaxLimit(),

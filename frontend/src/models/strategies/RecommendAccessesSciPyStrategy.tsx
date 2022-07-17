@@ -18,7 +18,6 @@ export default class RecommendAccessesSciPyStrategy extends Strategy {
         this.traceTypes =               strategy.traceTypes           ||     [TraceType.ALL];
         this.linkageTypes =             strategy.linkageTypes         ||     ["average"];
         this.isCompleted =              Boolean(strategy.completed)   ||     false;
-        console.log(this);
     }
 
     readyToSubmit(): boolean {

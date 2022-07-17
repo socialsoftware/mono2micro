@@ -46,7 +46,7 @@ export default class AccessesSciPyDecomposition extends Decomposition {
                         {this.metrics.map((metric: Metric) => <React.Fragment key={metric.type}>{metric.type}: {metric.value}<br/></React.Fragment>)}
                     </Card.Text>
                     <Button
-                        href={`/decompositions/${this.name}/viewDecomposition`}
+                        href={`/codebases/${this.codebaseName}/strategies/${this.strategyName}/decompositions/${this.name}/viewDecomposition`}
                         className="mb-2"
                         variant={"success"}
                     >
@@ -54,7 +54,7 @@ export default class AccessesSciPyDecomposition extends Decomposition {
                     </Button>
                     <br/>
                     <Button
-                        href={`/decompositions/${this.name}/functionalityRefactor`}
+                        href={`/codebases/${this.codebaseName}/strategies/${this.strategyName}/decompositions/${this.name}/functionalityRefactor`}
                         className="mb-2"
                         variant={"primary"}
                     >

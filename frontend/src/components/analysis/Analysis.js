@@ -110,7 +110,7 @@ export const Analysis = () => {
             }
         });
 
-        service.getInputFile(codebaseName + SourceType.IDTOENTITIY).then(response => {
+        service.getIdToEntity(codebaseName + SourceType.IDTOENTITIY).then(response => {
             const { updateEntityTranslationFile } = context;
             updateEntityTranslationFile(response.data);
         }).catch(error => {

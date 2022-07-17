@@ -1,12 +1,12 @@
 package pt.ist.socialsoftware.mono2micro.metrics;
 
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Functionality;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.FunctionalityRedesign;
+import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
+import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.ReducedTraceElementDto;
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.TraceDto;
+import pt.ist.socialsoftware.mono2micro.functionality.dto.ReducedTraceElementDto;
+import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import java.math.BigDecimal;

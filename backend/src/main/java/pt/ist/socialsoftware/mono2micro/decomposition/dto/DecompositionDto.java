@@ -13,6 +13,7 @@ import java.util.List;
 })
 public abstract class DecompositionDto {
     private String name;
+    private String codebaseName;
     private String strategyName;
     private String strategyType;
     private List<Metric> metrics;
@@ -23,6 +24,14 @@ public abstract class DecompositionDto {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCodebaseName() {
+        return codebaseName;
+    }
+
+    public void setCodebaseName(String codebaseName) {
+        this.codebaseName = codebaseName;
     }
 
     public String getStrategyName() {

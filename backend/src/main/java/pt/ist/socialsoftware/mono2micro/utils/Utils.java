@@ -7,11 +7,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Functionality;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.LocalTransaction;
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.AccessDto;
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.ReducedTraceElementDto;
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.RuleDto;
+import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
+import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
+import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
+import pt.ist.socialsoftware.mono2micro.functionality.dto.ReducedTraceElementDto;
+import pt.ist.socialsoftware.mono2micro.functionality.dto.RuleDto;
 
 import java.io.File;
 import java.io.FileInputStream;

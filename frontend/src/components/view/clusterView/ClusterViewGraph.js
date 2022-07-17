@@ -67,7 +67,7 @@ export const ClusterViewGraph = ({setNow, outdated, setOutdated, searchedItem, s
     const appRef = createRef();
     const context = useContext(AppContext);
     const { translateEntity } = context;
-    let { codebaseName, strategyName, decompositionName } = useParams();
+    let { decompositionName } = useParams();
     const [operations, setOperations] = useState([]);
     const [clusters, setClusters] = useState(undefined);
 
@@ -129,15 +129,23 @@ export const ClusterViewGraph = ({setNow, outdated, setOutdated, searchedItem, s
 
     function handleUndo() {
         const service = new RepositoryService();
-        service.undoOperation(codebaseName,strategyName,decompositionName).then(response => {
+        service.undoOperation(decompositionName).then(response => {
             const clusters = Object.values(response.data);
             setClusters(clusters);
+            service.getGraphPositions(decompositionName).then(response => setGraphPositions(response.data)).catch(error => {
+                if (error.response !== undefined && error.response.status === HttpStatus.NOT_FOUND) {
+                    const nodes = clusters.flatMap(cluster => createCluster(cluster));
+                    const edges = generateAllEdges(nodes);
+                    // TODO finish undo
+                }
+            })
             setUndo({});
         });
     }
 
     useEffect(() => {
-        console.log(graphPositions);
+        if (undo === undefined) {
+        }
     }, [undo]);
 
     useEffect(() => {
@@ -180,7 +188,7 @@ export const ClusterViewGraph = ({setNow, outdated, setOutdated, searchedItem, s
 
     function loadClustersAndClustersFunctionalities() {
         const service = new RepositoryService();
-        service.getClustersAndClustersFunctionalities(codebaseName,strategyName,decompositionName).then(response => {
+        service.getClustersAndClustersFunctionalities(decompositionName).then(response => {
             setClusters(Object.values(response.data.clusters).sort((a, b) => a.name - b.name));
             setClustersFunctionalities(response.data.clustersFunctionalities);
             setOutdated(false);
@@ -207,20 +215,21 @@ export const ClusterViewGraph = ({setNow, outdated, setOutdated, searchedItem, s
         const service = new RepositoryService();
 
         // Loads decomposition's properties
-        service.getClustersAndClustersFunctionalities(codebaseName, strategyName, decompositionName).then(response => {
+        service.getClustersAndClustersFunctionalities(decompositionName).then(response => {
             setNow(prev => prev + 20);
             setClusters(Object.values(response.data.clusters).sort((a, b) => a.name - b.name));
             setClustersFunctionalities(response.data.clustersFunctionalities);
             setOutdated(false);
 
             // Entities
-            const first = service.getEdgeWeights(codebaseName, strategyName, decompositionName).then(response => {
+            const first = service.getEdgeWeights(decompositionName).then(response => {
                 setNow(prev => prev + 10);
                 setEdgeWeights(response.data);
             });
 
             // Entity and cluster positions
-            const second = service.getGraphPositions(codebaseName, strategyName, decompositionName).then(response => {
+            const second = service.getGraphPositions(decompositionName).then(response => {
+                console.log(response);
                 setNow(prev => prev + 10);
                 setGraphPositions(response.data);
             }).catch(error => {
@@ -250,7 +259,7 @@ export const ClusterViewGraph = ({setNow, outdated, setOutdated, searchedItem, s
         setNow(prev => prev + 10);
         switch(dialogResponse.type) {
             case DIALOG_TYPE.RENAME:
-                promise = service.renameCluster(codebaseName, strategyName, decompositionName, clickedComponent.node.cid, dialogResponse.newName);
+                promise = service.renameCluster(decompositionName, clickedComponent.node.cid, dialogResponse.newName);
                 toastId = toast.promise(promise, {
                     pending: "Renaming Cluster...",
                     success: {render: "Successfully changed name!", autoClose: 3000},
@@ -260,7 +269,7 @@ export const ClusterViewGraph = ({setNow, outdated, setOutdated, searchedItem, s
                 response = handleRename();
                 break;
             case DIALOG_TYPE.TRANSFER:
-                promise = service.transferEntities(codebaseName, strategyName, decompositionName, clickedComponent.node.cid, clickedComponent.toNode.cid, dialogResponse.entities.toString());
+                promise = service.transferEntities(decompositionName, clickedComponent.node.cid, clickedComponent.toNode.cid, dialogResponse.entities.toString());
                 toastId = toast.promise(promise, {
                     pending: "Transferring entities from cluster " + clickedComponent.node.label + " to cluster " + clickedComponent.toNode.label + "...",
                     success: {render: "Successfully transferred entities!", autoClose: 3000},
@@ -270,7 +279,7 @@ export const ClusterViewGraph = ({setNow, outdated, setOutdated, searchedItem, s
                 response = handleTransfer();
                 break;
             case DIALOG_TYPE.MERGE:
-                promise = service.mergeClusters(codebaseName, strategyName, decompositionName, clickedComponent.node.cid, clickedComponent.toNode.cid, dialogResponse.newName);
+                promise = service.mergeClusters(decompositionName, clickedComponent.node.cid, clickedComponent.toNode.cid, dialogResponse.newName);
                 toastId = toast.promise(promise, {
                     pending: "Merging clusters to create cluster " + dialogResponse.newName + "...",
                     success: {render: "Successfully merged clusters!", autoClose: 3000},
@@ -280,7 +289,7 @@ export const ClusterViewGraph = ({setNow, outdated, setOutdated, searchedItem, s
                 response = handleMerge();
                 break;
             case DIALOG_TYPE.SPLIT:
-                promise = service.splitCluster(codebaseName, strategyName, decompositionName, clickedComponent.node.cid, dialogResponse.newName, dialogResponse.entities.toString());
+                promise = service.splitCluster(decompositionName, clickedComponent.node.cid, dialogResponse.newName, dialogResponse.entities.toString());
                 toastId = toast.promise(promise, {
                     pending: "Splitting cluster " + dialogResponse.newName + "...",
                     success: {render: "Successfully split cluster!", autoClose: 3000},
@@ -290,7 +299,7 @@ export const ClusterViewGraph = ({setNow, outdated, setOutdated, searchedItem, s
                 response = handleSplit();
                 break;
             case DIALOG_TYPE.FORM_CLUSTER:
-                promise = service.formCluster(codebaseName, strategyName, decompositionName, dialogResponse.newName, dialogResponse.entities);
+                promise = service.formCluster(decompositionName, dialogResponse.newName, dialogResponse.entities);
                 toastId = toast.promise(promise, {
                     pending: "Forming new cluster " + dialogResponse.newName + "...",
                     success: {render: "Successfully formed new cluster!", autoClose: 3000},
@@ -758,7 +767,7 @@ function updateNetwork() {
 
         const service = new RepositoryService();
 
-        const promise = service.saveGraphPositions(codebaseName, strategyName, decompositionName, graphPositions);
+        const promise = service.saveGraphPositions(decompositionName, graphPositions);
         toast.promise(promise, {
             pending: "Saving Graph...",
             success: {render: "Successfully Saved Graph Positions!", autoClose: 2000},

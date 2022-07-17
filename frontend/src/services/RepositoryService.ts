@@ -213,8 +213,8 @@ export class RepositoryService {
         return this.axios.delete<null>("/source/" + id + "/delete");
     }
 
-    getInputFile(sourceName: string) {
-        return this.axios.get<string>("/source/" + sourceName + "/getInputFile");
+    getIdToEntity(codebaseName: string) {
+        return this.axios.get<string>("/source/" + codebaseName + "/getIdToEntity");
     }
 
 
@@ -246,20 +246,20 @@ export class RepositoryService {
         return this.axios.post<null>("/strategy/createRecommendAccessesSciPyStrategy", strategy);
     }
 
-    getEdgeWeights(codebaseName: string, strategyName: string, decompositionName: string) {
-        return this.axios.get<Edges>("/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/getEdgeWeights");
+    getEdgeWeights(decompositionName: string) {
+        return this.axios.get<Edges>("/accessesSciPyDecomposition/" + decompositionName + "/getEdgeWeights");
     }
 
-    getGraphPositions(codebaseName: string, strategyName: string, decompositionName: string) {
-        return this.axios.get("/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/getGraphPositions");
+    getGraphPositions(decompositionName: string) {
+        return this.axios.get("/accessesSciPyLog/" + decompositionName + "/getGraphPositions");
     }
 
-    deleteGraphPositions(codebaseName: string, strategyName: string, decompositionName: string) {
-        return this.axios.delete("/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/deleteGraphPositions");
+    deleteGraphPositions(decompositionName: string) {
+        return this.axios.delete("/accessesSciPyLog/" + decompositionName + "/deleteGraphPositions");
     }
 
-    saveGraphPositions(codebaseName: string, strategyName: string, decompositionName: string, graphPositions: any) {
-        return this.axios.post<null>("/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/saveGraphPositions", graphPositions);
+    saveGraphPositions(decompositionName: string, graphPositions: any) {
+        return this.axios.post<null>("/accessesSciPyLog/" + decompositionName + "/saveGraphPositions", graphPositions);
     }
 
     createAccessesSciPyDecomposition(
@@ -365,15 +365,13 @@ export class RepositoryService {
 
     //Cluster
     mergeClusters(
-        codebaseName: string,
-        strategyName: string,
         decompositionName: string,
         clusterID: number,
         otherClusterID: number,
         newName: string,
     ) {
         return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/cluster/" + clusterID + "/merge",
+            "/decomposition/" + decompositionName + "/cluster/" + clusterID + "/merge",
             null,
             {
                 params: {
@@ -385,14 +383,12 @@ export class RepositoryService {
     }
 
     renameCluster(
-        codebaseName: string,
-        strategyName: string,
         decompositionName: string,
         clusterID: number,
         newName: string
     ) {
         return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/cluster/" + clusterID + "/rename",
+            "/decomposition/" + decompositionName + "/cluster/" + clusterID + "/rename",
             null,
             {
                 params: {
@@ -403,15 +399,13 @@ export class RepositoryService {
     }
 
     splitCluster(
-        codebaseName: string,
-        strategyName: string,
         decompositionName: string,
         clusterID: number,
         newName: string,
         entities: string,
     ) {
         return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/cluster/" + clusterID + "/split",
+            "/decomposition/" + decompositionName + "/cluster/" + clusterID + "/split",
             null,
             {
                 params: {
@@ -423,14 +417,12 @@ export class RepositoryService {
     }
 
     formCluster(
-        codebaseName: string,
-        strategyName: string,
         decompositionName: string,
         newName: string,
         entities: Map<string, number[]>,
     ) {
         return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/formCluster",
+            "/decomposition/" + decompositionName + "/formCluster",
             entities,
             {
                 params: {
@@ -441,23 +433,19 @@ export class RepositoryService {
     }
 
     undoOperation(
-        codebaseName: string,
-        strategyName: string,
         decompositionName: string
     ) {
-        return this.axios.get<Record<number, Cluster>>("/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/undoOperation");
+        return this.axios.get<Record<number, Cluster>>("/accessesSciPyLog/" + decompositionName + "/undoOperation");
     }
 
     transferEntities(
-        codebaseName: string,
-        strategyName: string,
         decompositionName: string,
         clusterID: number,
         toClusterID: number,
         entities: string,
     ) {
         return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/cluster/" + clusterID + "/transferEntities",
+            "/decomposition/" + decompositionName + "/cluster/" + clusterID + "/transferEntities",
             null,
             {
                 params: {
@@ -479,12 +467,10 @@ export class RepositoryService {
     }
 
     getClustersAndClustersFunctionalities(
-        codebaseName: string,
-        strategyName: string,
         decompositionName: string
     ) {
         return this.axios.get<Record<string, any>>(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/getClustersAndClustersFunctionalities"
+            "/accessesSciPyDecomposition/" + decompositionName + "/getClustersAndClustersFunctionalities"
         );
     }
 

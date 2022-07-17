@@ -13,26 +13,24 @@ import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.SciPyClusteringAlgor
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.FunctionalityRedesign;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.AccessesSciPyDecompositionRepository;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Functionality;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.LocalTransaction;
+import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityService;
+import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
+import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
-import pt.ist.socialsoftware.mono2micro.history.model.AccessesSciPyOperations.*;
-import pt.ist.socialsoftware.mono2micro.history.service.AccessesSciPyLogService;
+import pt.ist.socialsoftware.mono2micro.log.domain.accessesSciPyOperations.*;
+import pt.ist.socialsoftware.mono2micro.log.service.AccessesSciPyLogService;
 import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
-import pt.ist.socialsoftware.mono2micro.source.domain.Source;
 import pt.ist.socialsoftware.mono2micro.source.service.SourceService;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.strategy.repository.AccessesSciPyStrategyRepository;
-import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
-import javax.naming.NameAlreadyBoundException;
-import java.io.ByteArrayInputStream;
+import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource.ACCESSES;
 
@@ -48,7 +46,10 @@ public class AccessesSciPyDecompositionService {
     AccessesSciPyDecompositionRepository decompositionRepository;
 
     @Autowired
-    AccessesSciPyLogService accessesSciPyHistoryService;
+    AccessesSciPyLogService accessesSciPyLogService;
+
+    @Autowired
+    FunctionalityService functionalityService;
 
     @Autowired
     SourceService sourceService;
@@ -73,7 +74,8 @@ public class AccessesSciPyDecompositionService {
         if (!decomposition.isOutdated())
             return decomposition;
 
-        decomposition.setupFunctionalities(
+        functionalityService.setupFunctionalities(
+                decomposition,
                 sourceService.getSourceFileAsInputStream(source.getName()),
                 source.getProfile(strategy.getProfile()),
                 strategy.getTracesMaxLimit(),
@@ -202,217 +204,175 @@ public class AccessesSciPyDecompositionService {
         return node2 + "&" + node1;
     }
 
-    public String getGraphPositions(String decompositionName) throws IOException {
-        try {
-            return IOUtils.toString(gridFsService.getFile(decompositionName + "_graphPositions"), StandardCharsets.UTF_8);
-        } catch (RuntimeException e) {
-            System.out.println(e.getMessage());
-            return null;
-        }
-    }
+    public Map<Short, Cluster> mergeClustersOperation(String decompositionName, Short clusterNameID, Short otherClusterID, String newName) {
+        AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
+        MergeOperation operation = new MergeOperation(decomposition, clusterNameID, otherClusterID, newName);
 
-    public void saveGraphPositions(String decompositionName, String graphPositions) {
-        gridFsService.saveFile(new ByteArrayInputStream(graphPositions.getBytes(StandardCharsets.UTF_8)), decompositionName + "_graphPositions");
-    }
-
-    public void deleteGraphPositions(String decompositionName) {
-        gridFsService.deleteFile(decompositionName + "_graphPositions");
-    }
-
-    public Map<Short, Cluster> mergeClusters(String decompositionName, Short clusterNameID, Short otherClusterID, String newName) {
-        AccessesSciPyDecomposition decomposition = decompositionRepository.findByNameWithoutFunctionalityRedesigns(decompositionName);
-
-        MergeDecompositionOperation decompositionOperation = new MergeDecompositionOperation(decomposition, clusterNameID, otherClusterID, newName);
-
-        decomposition.mergeClusters(clusterNameID, otherClusterID, newName);
-        decomposition.setOutdated(true);
-        accessesSciPyHistoryService.addDecompositionOperation(decomposition, decompositionOperation);
-        decompositionRepository.save(decomposition);
-        return decomposition.getClusters();
-    }
-    public Map<Short, Cluster> renameCluster(String decompositionName, Short clusterID, String newName) {
-        AccessesSciPyDecomposition decomposition = decompositionRepository.findByNameWithoutFunctionalityRedesigns(decompositionName);
-
-        RenameDecompositionOperation decompositionOperation = new RenameDecompositionOperation(decomposition, clusterID, newName);
-
-        decomposition.renameCluster(clusterID, newName);
-        decompositionRepository.save(decomposition);
-        accessesSciPyHistoryService.addDecompositionOperation(decomposition, decompositionOperation);
+        mergeClusters(decomposition, clusterNameID, otherClusterID, newName);
+        accessesSciPyLogService.addOperation(decomposition, operation);
         return decomposition.getClusters();
     }
 
-    public Map<Short, Cluster> splitCluster(String decompositionName, Short clusterID, String newName, String entities) {
-        AccessesSciPyDecomposition decomposition = decompositionRepository.findByNameWithoutFunctionalityRedesigns(decompositionName);
+    public void mergeClusters(AccessesSciPyDecomposition decomposition, Short clusterNameID, Short otherClusterID, String newName) {
+        Cluster cluster1 = decomposition.getCluster(clusterNameID);
+        Cluster cluster2 = decomposition.getCluster(otherClusterID);
+        if (decomposition.clusterNameExists(newName) && !cluster1.getName().equals(newName) && !cluster2.getName().equals(newName))
+            throw new KeyAlreadyExistsException("Cluster with name: " + newName + " already exists");
 
-        SplitDecompositionOperation decompositionOperation = new SplitDecompositionOperation(decomposition, clusterID, newName, entities);
+        Cluster mergedCluster = new Cluster(decomposition.getNewClusterID(), newName);
 
-        decomposition.splitCluster(clusterID, newName, entities.split(","));
-        decomposition.setOutdated(true);
-        decompositionRepository.save(decomposition);
-        accessesSciPyHistoryService.addDecompositionOperation(decomposition, decompositionOperation);
-        return decomposition.getClusters();
-    }
-
-    public Map<Short, Cluster> transferEntities(String decompositionName, Short clusterID, Short toClusterID, String entities) {
-        AccessesSciPyDecomposition decomposition = decompositionRepository.findByNameWithoutFunctionalityRedesigns(decompositionName);
-
-        TransferDecompositionOperation decompositionOperation = new TransferDecompositionOperation(decomposition, clusterID, toClusterID, entities);
-
-        decomposition.transferEntities(clusterID, toClusterID, entities.split(","));
-        decomposition.setOutdated(true);
-        decompositionRepository.save(decomposition);
-        accessesSciPyHistoryService.addDecompositionOperation(decomposition, decompositionOperation);
-        return decomposition.getClusters();
-    }
-
-    public Map<Short, Cluster> formCluster(String decompositionName, String newName, Map<Short, List<Short>> entities) {
-        AccessesSciPyDecomposition decomposition = decompositionRepository.findByNameWithoutFunctionalityRedesigns(decompositionName);
-
-        FormClusterDecompositionOperation decompositionOperation = new FormClusterDecompositionOperation(decomposition, newName, entities);
-
-        decomposition.formCluster(newName, entities.values().stream().flatMap(Collection::stream).map(Object::toString).toArray(String[]::new));
-        decomposition.setOutdated(true);
-
-        decompositionRepository.save(decomposition);
-        accessesSciPyHistoryService.addDecompositionOperation(decomposition, decompositionOperation);
-        return decomposition.getClusters();
-    }
-
-    public Functionality getOrCreateRedesign(String decompositionName, String functionalityName) throws IOException, JSONException {
-        AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-        AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) decomposition.getStrategy();
-
-        Functionality functionality = decomposition.getFunctionality(functionalityName);
-
-        Source source = strategy.getCodebase().getSourceByType(ACCESSES);
-
-        if(functionality.getFunctionalityRedesigns()
-                .stream()
-                .noneMatch(e -> e.getName().equals(Constants.DEFAULT_REDESIGN_NAME))){
-            functionality.createFunctionalityRedesign(
-                    Constants.DEFAULT_REDESIGN_NAME,
-                    true,
-                    functionality.createLocalTransactionGraphFromScratch(
-                            sourceService.getSourceFileAsInputStream(source.getName()),
-                            strategy.getTracesMaxLimit(),
-                            strategy.getTraceType(),
-                            decomposition.getEntityIDToClusterID())
-            );
-        };
-        decompositionRepository.save(decomposition);
-        return functionality;
-    }
-
-    public Functionality addCompensating(String decompositionName, String functionalityName, String redesignName, HashMap<String, Object> data) throws Exception {
-        int fromID = (Integer) data.get("fromID");
-        Short clusterID = ((Integer) data.get("cluster")).shortValue();
-        ArrayList<Integer> accesses = (ArrayList<Integer>) data.get("entities");
-
-        AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-        Functionality functionality = decomposition.getFunctionality(functionalityName);
-
-        FunctionalityRedesign functionalityRedesign = functionality.getFunctionalityRedesign(redesignName);
-        functionalityRedesign.addCompensating(clusterID, accesses, fromID);
-        // TODO certificar se a proxima linha e' necessaria
-        functionalityRedesign.calculateMetrics(decomposition, functionality);
-        decompositionRepository.save(decomposition);
-        return functionality;
-    }
-
-    public Functionality sequenceChange(String decompositionName, String functionalityName, String redesignName, HashMap<String, String> data) throws Exception {
-        String localTransactionID = data.get("localTransactionID");
-        String newCaller = data.get("newCaller");
-
-        AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-        Functionality functionality = decomposition.getFunctionality(functionalityName);
-
-        FunctionalityRedesign functionalityRedesign = functionality.getFunctionalityRedesign(redesignName);
-        functionalityRedesign.sequenceChange(localTransactionID, newCaller);
-        functionalityRedesign.calculateMetrics(decomposition, functionality);
-
-        decompositionRepository.save(decomposition);
-        return functionality;
-    }
-
-    public Functionality dcgi(String decompositionName, String functionalityName, String redesignName, HashMap<String, String> data) throws Exception {
-        Short fromClusterID = Short.parseShort(data.get("fromCluster"));
-        Short toClusterID = Short.parseShort(data.get("toCluster"));
-        String localTransactions = data.get("localTransactions");
-
-        AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-        Functionality functionality = decomposition.getFunctionality(functionalityName);
-
-        FunctionalityRedesign functionalityRedesign = functionality.getFunctionalityRedesign(redesignName);
-        functionalityRedesign.dcgi(fromClusterID, toClusterID, localTransactions);
-        functionalityRedesign.calculateMetrics(decomposition, functionality);
-        decompositionRepository.save(decomposition);
-        return functionality;
-    }
-
-    public Functionality pivotTransaction(String decompositionName, String functionalityName, String redesignName, String transactionID, Optional<String> newRedesignName)
-            throws Exception
-    {
-        AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-        AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) decomposition.getStrategy();
-        Functionality functionality = decomposition.getFunctionality(functionalityName);
-
-        if(newRedesignName.isPresent())
-            if(!functionality.checkNameValidity(newRedesignName.get()))
-                throw new NameAlreadyBoundException();
-
-        FunctionalityRedesign functionalityRedesign = functionality.getFunctionalityRedesign(redesignName);
-        functionalityRedesign.definePivotTransaction(Integer.parseInt(transactionID));
-        functionalityRedesign.calculateMetrics(decomposition, functionality);
-
-        if(newRedesignName.isPresent()) {
-            functionality.changeFunctionalityRedesignName(redesignName, newRedesignName.get());
-
-            Source source = strategy.getCodebase().getSourceByType(ACCESSES);
-
-            DirectedAcyclicGraph<LocalTransaction, DefaultEdge> functionalityLocalTransactionsGraph = decomposition.getFunctionality(functionalityName)
-                    .createLocalTransactionGraphFromScratch(
-                            sourceService.getSourceFileAsInputStream(source.getName()),
-                            strategy.getTracesMaxLimit(),
-                            strategy.getTraceType(),
-                            decomposition.getEntityIDToClusterID());
-
-            functionality.createFunctionalityRedesign(
-                    Constants.DEFAULT_REDESIGN_NAME,
-                    false,
-                    functionalityLocalTransactionsGraph
-            );
+        for(short entityID : cluster1.getEntities()) {
+            decomposition.getEntityIDToClusterID().replace(entityID, mergedCluster.getID());
+            functionalityService.deleteFunctionalities(removeFunctionalityWithEntity(decomposition, entityID));
         }
 
-        functionalityRedesign = functionality.getFunctionalityRedesign(Constants.DEFAULT_REDESIGN_NAME);
-        functionalityRedesign.calculateMetrics(decomposition, functionality);
+        for(short entityID : cluster2.getEntities()) {
+            decomposition.getEntityIDToClusterID().replace(entityID, mergedCluster.getID());
+            functionalityService.deleteFunctionalities(removeFunctionalityWithEntity(decomposition, entityID));
+        }
+
+        Set<Short> allEntities = new HashSet<>(cluster1.getEntities());
+        allEntities.addAll(cluster2.getEntities());
+        mergedCluster.setEntities(allEntities);
+
+        decomposition.transferCouplingDependencies(cluster1.getEntities(), cluster1.getID(), mergedCluster.getID());
+        decomposition.transferCouplingDependencies(cluster2.getEntities(), cluster2.getID(), mergedCluster.getID());
+
+        decomposition.removeCluster(clusterNameID);
+        decomposition.removeCluster(otherClusterID);
+
+        decomposition.addCluster(mergedCluster);
+        decomposition.setOutdated(true);
         decompositionRepository.save(decomposition);
-        return functionality;
     }
 
-    public Functionality changeLTName(String decompositionName, String functionalityName, String redesignName, String transactionID, String newName) {
+    public Map<Short, Cluster> renameClusterOperation(String decompositionName, Short clusterID, String newName) {
         AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-        Functionality functionality = decomposition.getFunctionality(functionalityName);
-        functionality.getFunctionalityRedesign(redesignName).changeLTName(transactionID, newName);
-        decompositionRepository.save(decomposition);
-        return functionality;
+        RenameOperation operation = new RenameOperation(decomposition, clusterID, newName);
+
+        renameCluster(decomposition, clusterID, newName);
+        accessesSciPyLogService.addOperation(decomposition, operation);
+        return decomposition.getClusters();
     }
 
-    public void deleteRedesign(String decompositionName, String functionalityName, String redesignName) {
-        AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-        Functionality functionality = decomposition.getFunctionality(functionalityName);
-        functionality.deleteRedesign(redesignName);
+    public void renameCluster(AccessesSciPyDecomposition decomposition, Short clusterID, String newName) {
+        if (decomposition.clusterNameExists(newName)) throw new KeyAlreadyExistsException("Cluster with name: " + newName + " already exists");
+
+        decomposition.getCluster(clusterID).setName(newName);
         decompositionRepository.save(decomposition);
     }
 
-    public Functionality useForMetrics(String decompositionName, String functionalityName, String redesignName) {
+    public Map<Short, Cluster> splitClusterOperation(String decompositionName, Short clusterID, String newName, String entitiesString) {
         AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-        Functionality functionality = decomposition.getFunctionality(functionalityName);
-        functionality.changeFRUsedForMetrics(redesignName);
+        SplitOperation operation = new SplitOperation(decomposition, clusterID, newName, entitiesString);
+
+        splitCluster(decomposition, clusterID, newName, entitiesString);
+        accessesSciPyLogService.addOperation(decomposition, operation);
+        return decomposition.getClusters();
+    }
+
+    public void splitCluster(AccessesSciPyDecomposition decomposition, Short clusterID, String newName, String entitiesString) {
+        String[] entities = entitiesString.split(",");
+        if (decomposition.clusterNameExists(newName)) throw new KeyAlreadyExistsException("Cluster with name: " + newName + " already exists");
+
+        Cluster currentCluster = decomposition.getCluster(clusterID);
+        Cluster newCluster = new Cluster(decomposition.getNewClusterID(), newName);
+
+        for (String stringifiedEntityID : entities) {
+            short entityID = Short.parseShort(stringifiedEntityID);
+
+            if (currentCluster.containsEntity(entityID)) {
+                newCluster.addEntity(entityID);
+                currentCluster.removeEntity(entityID);
+                decomposition.getEntityIDToClusterID().replace(entityID, newCluster.getID());
+                functionalityService.deleteFunctionalities(removeFunctionalityWithEntity(decomposition, entityID));
+            }
+        }
+        decomposition.transferCouplingDependencies(newCluster.getEntities(), currentCluster.getID(), newCluster.getID());
+        decomposition.addCluster(newCluster);
+        decomposition.setOutdated(true);
         decompositionRepository.save(decomposition);
-        return functionality;
+    }
+
+    public Map<Short, Cluster> transferEntitiesOperation(String decompositionName, Short fromClusterID, Short toClusterID, String entitiesString) {
+        AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
+        TransferOperation operation = new TransferOperation(decomposition, fromClusterID, toClusterID, entitiesString);
+
+        transferEntities(decomposition, fromClusterID, toClusterID, entitiesString);
+        accessesSciPyLogService.addOperation(decomposition, operation);
+        return decomposition.getClusters();
+    }
+
+    public void transferEntities(AccessesSciPyDecomposition decomposition, Short fromClusterID, Short toClusterID, String entitiesString) {
+        Cluster fromCluster = decomposition.getCluster(fromClusterID);
+        Cluster toCluster = decomposition.getCluster(toClusterID);
+        Set<Short> entities = Arrays.stream(entitiesString.split(",")).map(Short::valueOf).collect(Collectors.toSet());
+
+        for (Short entityID : entities) {
+            if (fromCluster.containsEntity(entityID)) {
+                toCluster.addEntity(entityID);
+                fromCluster.removeEntity(entityID);
+                decomposition.getEntityIDToClusterID().replace(entityID, toCluster.getID());
+                functionalityService.deleteFunctionalities(removeFunctionalityWithEntity(decomposition, entityID));
+            }
+        }
+        decomposition.transferCouplingDependencies(entities, fromClusterID, toClusterID);
+        decomposition.setOutdated(true);
+        decompositionRepository.save(decomposition);
+    }
+
+    public Map<Short, Cluster> formClusterOperation(String decompositionName, String newName, Map<Short, List<Short>> entities) {
+        AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
+        FormClusterOperation operation = new FormClusterOperation(decomposition, newName, entities);
+
+        formCluster(decomposition, newName, entities);
+        accessesSciPyLogService.addOperation(decomposition, operation);
+        return decomposition.getClusters();
+    }
+    public void formCluster(AccessesSciPyDecomposition decomposition, String newName, Map<Short, List<Short>> entities) {
+        List<Short> entitiesIDs = entities.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+
+        if (decomposition.clusterNameExists(newName)) {
+            Cluster previousCluster = decomposition.getClusters().values().stream().filter(cluster -> cluster.getName().equals(newName)).findFirst()
+                    .orElseThrow(() -> new KeyAlreadyExistsException("Cluster with name: " + newName + " already exists"));
+            if (!entitiesIDs.containsAll(previousCluster.getEntities()))
+                throw new KeyAlreadyExistsException("Cluster with name: " + newName + " already exists");
+        }
+
+        Cluster newCluster = new Cluster(decomposition.getNewClusterID(), newName);
+
+        for (Short entityID : entitiesIDs) {
+            Cluster currentCluster = decomposition.getClusters().values().stream()
+                    .filter(cluster -> cluster.getEntities().contains(entityID)).findFirst()
+                    .orElseThrow(() -> new RuntimeException("No cluster constains entity " + entityID));
+
+            newCluster.addEntity(entityID);
+            currentCluster.removeEntity(entityID);
+            decomposition.getEntityIDToClusterID().replace(entityID, newCluster.getID());
+            functionalityService.deleteFunctionalities(removeFunctionalityWithEntity(decomposition, entityID));
+            decomposition.transferCouplingDependencies(Collections.singleton(entityID), currentCluster.getID(), newCluster.getID());
+            if (currentCluster.getEntities().size() == 0)
+                decomposition.removeCluster(currentCluster.getID());
+        }
+        decomposition.addCluster(newCluster);
+        decomposition.setOutdated(true);
+        decompositionRepository.save(decomposition);
+    }
+
+    public List<Functionality> removeFunctionalityWithEntity(AccessesSciPyDecomposition decomposition, short entityID) {
+        Map<String, Functionality> newFunctionalities = new HashMap<>();
+        List<Functionality> toDelete = new ArrayList<>();
+        decomposition.getFunctionalities().forEach((name, functionality) -> {
+            if (functionality.containsEntity(entityID))
+                toDelete.add(functionality);
+            else newFunctionalities.put(name, functionality);
+        });
+        decomposition.setFunctionalities(newFunctionalities);
+        return toDelete;
     }
 
     public void deleteDecompositionProperties(AccessesSciPyDecomposition decomposition) {
-        accessesSciPyHistoryService.deleteDecompositionHistory(decomposition.getDecompositionHistory());
+        accessesSciPyLogService.deleteDecompositionLog(decomposition.getLog());
+        functionalityService.deleteFunctionalities(decomposition.getFunctionalities().values());
     }
 }
