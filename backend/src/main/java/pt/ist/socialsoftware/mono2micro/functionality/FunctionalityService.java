@@ -62,7 +62,7 @@ public class FunctionalityService {
             List<TraceDto> traceDtos = iter.getTracesByType(traceType);
             functionality.setTraces(traceDtos);
 
-            DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionGraph = functionality.createLocalTransactionGraph(decomposition.getEntityIDToClusterID());
+            DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionGraph = functionality.createLocalTransactionGraph(decomposition.getEntityIDToClusterName());
 
             localTransactionsGraphs.put(functionality.getName(), localTransactionGraph);
 
@@ -96,14 +96,14 @@ public class FunctionalityService {
 
         for (LocalTransaction lt : allLocalTransactions) {
             // ClusterDependencies
-            short clusterID = lt.getClusterID();
-            if (clusterID != -1) { // not root node
-                Cluster fromCluster = decomposition.getCluster(clusterID);
+            String clusterName = lt.getClusterName();
+            if (!clusterName.equals("-1")) { // not root node
+                Cluster fromCluster = decomposition.getCluster(clusterName);
 
                 List<LocalTransaction> nextLocalTransactions = successorListOf(localTransactionsGraph, lt);
 
                 for (LocalTransaction nextLt : nextLocalTransactions)
-                    fromCluster.addCouplingDependencies(nextLt.getClusterID(), nextLt.getFirstAccessedEntityIDs());
+                    fromCluster.addCouplingDependencies(nextLt.getClusterName(), nextLt.getFirstAccessedEntityIDs());
             }
         }
     }
@@ -126,7 +126,7 @@ public class FunctionalityService {
                             sourceService.getSourceFileAsInputStream(source.getName()),
                             strategy.getTracesMaxLimit(),
                             strategy.getTraceType(),
-                            decomposition.getEntityIDToClusterID())
+                            decomposition.getEntityIDToClusterName())
             );
         }
         functionalityRepository.save(functionality);
@@ -135,14 +135,14 @@ public class FunctionalityService {
 
     public Functionality addCompensating(String decompositionName, String functionalityName, String redesignName, HashMap<String, Object> data) throws Exception {
         int fromID = (Integer) data.get("fromID");
-        Short clusterID = ((Integer) data.get("cluster")).shortValue();
+        String clusterName = (String) data.get("cluster");
         ArrayList<Integer> accesses = (ArrayList<Integer>) data.get("entities");
 
         AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
         Functionality functionality = decomposition.getFunctionality(functionalityName);
 
         FunctionalityRedesign functionalityRedesign = functionality.getFunctionalityRedesign(redesignName);
-        functionalityRedesign.addCompensating(clusterID, accesses, fromID);
+        functionalityRedesign.addCompensating(clusterName, accesses, fromID);
         functionalityRedesign.calculateMetrics(decomposition, functionality);
         functionalityRepository.save(functionality);
         return functionality;
@@ -164,15 +164,15 @@ public class FunctionalityService {
     }
 
     public Functionality dcgi(String decompositionName, String functionalityName, String redesignName, HashMap<String, String> data) throws Exception {
-        Short fromClusterID = Short.parseShort(data.get("fromCluster"));
-        Short toClusterID = Short.parseShort(data.get("toCluster"));
+        String fromClusterName = data.get("fromCluster");
+        String toClusterName = data.get("toCluster");
         String localTransactions = data.get("localTransactions");
 
         AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
         Functionality functionality = decomposition.getFunctionality(functionalityName);
 
         FunctionalityRedesign functionalityRedesign = functionality.getFunctionalityRedesign(redesignName);
-        functionalityRedesign.dcgi(fromClusterID, toClusterID, localTransactions);
+        functionalityRedesign.dcgi(fromClusterName, toClusterName, localTransactions);
         functionalityRedesign.calculateMetrics(decomposition, functionality);
         functionalityRepository.save(functionality);
         return functionality;
@@ -203,7 +203,7 @@ public class FunctionalityService {
                             sourceService.getSourceFileAsInputStream(source.getName()),
                             strategy.getTracesMaxLimit(),
                             strategy.getTraceType(),
-                            decomposition.getEntityIDToClusterID());
+                            decomposition.getEntityIDToClusterName());
 
             functionality.createFunctionalityRedesign(
                     Constants.DEFAULT_REDESIGN_NAME,

@@ -17,10 +17,10 @@ public class MergeOperation extends Operation {
 
     public MergeOperation() {}
 
-    public MergeOperation(AccessesSciPyDecomposition decomposition, Short clusterNameID, Short otherClusterID, String newName) {
+    public MergeOperation(AccessesSciPyDecomposition decomposition, String clusterNameName, String otherClusterName, String newName) {
         this.previousClusters = new HashMap<>();
-        Cluster cluster1 = decomposition.getCluster(clusterNameID);
-        Cluster cluster2 = decomposition.getCluster(otherClusterID);
+        Cluster cluster1 = decomposition.getCluster(clusterNameName);
+        Cluster cluster2 = decomposition.getCluster(otherClusterName);
 
         String cluster1Entities = cluster1.getEntities().stream().map(Object::toString).collect(Collectors.joining(","));
         String cluster2Entities = cluster2.getEntities().stream().map(Object::toString).collect(Collectors.joining(","));

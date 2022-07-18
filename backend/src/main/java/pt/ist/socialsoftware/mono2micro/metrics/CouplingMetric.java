@@ -34,9 +34,9 @@ public class CouplingMetric extends Metric<Float> {
 
         for (Cluster cluster1 : decomposition.getClusters().values()) {
             float clusterCoupling = 0;
-            Map<Short, Set<Short>> couplingDependencies = cluster1.getCouplingDependencies();
+            Map<String, Set<Short>> couplingDependencies = cluster1.getCouplingDependencies();
 
-            for (Short cluster2 : couplingDependencies.keySet())
+            for (String cluster2 : couplingDependencies.keySet())
                 clusterCoupling += (float) couplingDependencies.get(cluster2).size() / decomposition.getCluster(cluster2).getEntities().size();
 
             clusterCoupling = graphClustersAmount == 1 ? 0 : clusterCoupling / (graphClustersAmount - 1);

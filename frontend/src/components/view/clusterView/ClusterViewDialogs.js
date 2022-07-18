@@ -75,10 +75,10 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
                 let entities = {};
                 selectedEntities.selectionContext.selected.forEach(selectedEntity => {
                     const entity = requestDialog.entities.find(entity => entity.id === selectedEntity);
-                    let clusterEntities = entities[entity.cid];
+                    let clusterEntities = entities[entity.group];
                     if (clusterEntities)
                         clusterEntities.push(entity.id);
-                    else entities[entity.cid] = [entity.id];
+                    else entities[entity.group] = [entity.id];
                 });
                 setDialogResponse({type: DIALOG_TYPE.FORM_CLUSTER, newName: name, entities});
             }

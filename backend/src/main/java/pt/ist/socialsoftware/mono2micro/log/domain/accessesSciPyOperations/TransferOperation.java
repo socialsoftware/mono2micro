@@ -15,9 +15,9 @@ public class TransferOperation extends Operation {
 
     public TransferOperation() {}
 
-    public TransferOperation(AccessesSciPyDecomposition decomposition, Short clusterID, Short toClusterID, String entities) {
-        Cluster cluster = decomposition.getCluster(clusterID);
-        Cluster toCluster = decomposition.getCluster(toClusterID);
+    public TransferOperation(AccessesSciPyDecomposition decomposition, String clusterName, String toClusterName, String entities) {
+        Cluster cluster = decomposition.getCluster(clusterName);
+        Cluster toCluster = decomposition.getCluster(toClusterName);
 
         this.fromCluster = cluster.getName();
         this.toCluster = toCluster.getName();

@@ -38,7 +38,7 @@ public class InconsistencyComplexityMetric extends Metric<Integer> {
 
                 Set<Short> entitiesWritten = otherFunctionality.entitiesTouchedInAGivenMode((byte) 2);
                 entitiesWritten.retainAll(entitiesRead);
-                Set<Short> clustersInCommon = otherFunctionality.clustersOfGivenEntities(entitiesWritten);
+                Set<String> clustersInCommon = otherFunctionality.clustersOfGivenEntities(entitiesWritten);
 
                 if(clustersInCommon.size() > 1)
                     this.value += clustersInCommon.size();

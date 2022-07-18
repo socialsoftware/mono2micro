@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.CutInfoDto;
+import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
 import pt.ist.socialsoftware.mono2micro.source.domain.Source;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
@@ -174,6 +175,12 @@ public class FileManager {
 				new File(CODEBASES_PATH + codebaseName + strategyFolder + strategyName + "/decompositions/" + decomposition.getName() + "/decomposition.json"),
 				decomposition
 		);
+	}
+
+	public InputStream getFunctionalityRedesignAsJSON(FunctionalityRedesign functionalityRedesign) throws IOException {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		objectMapper.writeValue(outputStream, functionalityRedesign);
+		return new ByteArrayInputStream(outputStream.toByteArray());
 	}
 
 	public Decomposition getDecompositionWithFunctionalitiesAndClustersWithFields(

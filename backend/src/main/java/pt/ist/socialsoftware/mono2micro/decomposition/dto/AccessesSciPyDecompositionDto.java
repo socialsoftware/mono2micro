@@ -13,9 +13,9 @@ public class AccessesSciPyDecompositionDto extends DecompositionDto {
     private boolean outdated;
     private boolean expert;
     private double silhouetteScore;
-    private Map<Short, Cluster> clusters = new HashMap<>();
+    private Map<String, Cluster> clusters = new HashMap<>();
     private Map<String, Functionality> functionalities = new HashMap<>(); // <functionalityName, Functionality>
-    private Map<Short, Short> entityIDToClusterID = new HashMap<>();
+    private Map<String, Short> entityIDToClusterName = new HashMap<>();
 
     public AccessesSciPyDecompositionDto() {this.setStrategyType(ACCESSES_SCIPY);}
 
@@ -54,11 +54,11 @@ public class AccessesSciPyDecompositionDto extends DecompositionDto {
         this.silhouetteScore = silhouetteScore;
     }
 
-    public Map<Short, Cluster> getClusters() {
+    public Map<String, Cluster> getClusters() {
         return clusters;
     }
 
-    public void setClusters(Map<Short, Cluster> clusters) {
+    public void setClusters(Map<String, Cluster> clusters) {
         this.clusters = clusters;
     }
 
@@ -70,11 +70,11 @@ public class AccessesSciPyDecompositionDto extends DecompositionDto {
         this.functionalities = functionalities;
     }
 
-    public Map<Short, Short> getEntityIDToClusterID() {
-        return entityIDToClusterID;
+    public Map<String, Short> getEntityIDToClusterName() {
+        return entityIDToClusterName;
     }
 
-    public void setEntityIDToClusterID(Map<Short, Short> entityIDToClusterID) {
-        this.entityIDToClusterID = entityIDToClusterID;
+    public void setEntityIDToClusterName(Map<String, Short> entityIDToClusterName) {
+        this.entityIDToClusterName = entityIDToClusterName;
     }
 }

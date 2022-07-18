@@ -129,7 +129,7 @@ public class SciPyClusteringAlgorithmService {
     }
 
     private void createGenericDecomposition(AccessesSciPyStrategy strategy, AccessesSciPyDecomposition decomposition) throws Exception {
-        Cluster cluster = new Cluster((short) 0, "Generic");
+        Cluster cluster = new Cluster("Generic");
 
         JSONObject similarityMatrixData = new JSONObject(strategy.getSimilarityMatrixName());
 
@@ -139,7 +139,7 @@ public class SciPyClusteringAlgorithmService {
             short entityID = (short) entities.getInt(i);
 
             cluster.addEntity(entityID);
-            decomposition.putEntity(entityID, cluster.getID());
+            decomposition.putEntity(entityID, cluster.getName());
         }
 
         decomposition.addCluster(cluster);
@@ -204,18 +204,16 @@ public class SciPyClusteringAlgorithmService {
 
         Collections.sort(clusterNames);
 
-        short clusterID = 0;
         for (String name : clusterNames) {
             JSONArray entities = clustersJSON.getJSONArray(name);
-            Cluster cluster = new Cluster(clusterID, name);
+            Cluster cluster = new Cluster("Cluster " + name);
 
             for (int i = 0; i < entities.length(); i++) {
                 short entityID = (short) entities.getInt(i);
 
                 cluster.addEntity(entityID);
-                decomposition.putEntity(entityID, clusterID);
+                decomposition.putEntity(entityID, cluster.getName());
             }
-            clusterID++;
 
             decomposition.addCluster(cluster);
         }

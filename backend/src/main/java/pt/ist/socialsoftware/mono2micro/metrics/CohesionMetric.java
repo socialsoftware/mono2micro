@@ -30,8 +30,8 @@ public class CohesionMetric extends Metric<Float> {
     }
 
     private float calculateMetricAccessesSciPy(AccessesSciPyDecomposition decomposition) {
-        Map<Short, List<Functionality>> clustersFunctionalities = Utils.getClustersFunctionalities(
-                decomposition.getEntityIDToClusterID(),
+        Map<String, List<Functionality>> clustersFunctionalities = Utils.getClustersFunctionalities(
+                decomposition.getEntityIDToClusterName(),
                 decomposition.getClusters(),
                 decomposition.getFunctionalities().values()
         );
@@ -39,7 +39,7 @@ public class CohesionMetric extends Metric<Float> {
         float totalCohesion = 0;
 
         for (Cluster cluster : decomposition.getClusters().values()) {
-            List<Functionality> FunctionalitiesThatAccessThisCluster = clustersFunctionalities.get(cluster.getID());
+            List<Functionality> FunctionalitiesThatAccessThisCluster = clustersFunctionalities.get(cluster.getName());
 
             float clusterCohesion = 0;
 

@@ -12,43 +12,31 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.USE_DEFAULTS)
 @JsonDeserialize(using = ClusterDeserializer.class)
 public class Cluster {
-	private Short id;
 	private String name;
 	private float complexity;
 	private float cohesion;
 	private float coupling;
-	private Map<Short, Set<Short>> couplingDependencies = new HashMap<>(); // <clusterID, Set<EntityID>>
+	private Map<String, Set<Short>> couplingDependencies = new HashMap<>(); // <clusterName, Set<EntityID>>
 	private Set<Short> entities = new HashSet<>(); // entity IDs
 
 	public Cluster() { }
 
-	public Cluster(Short id, String name) {
-		this.id = id;
+	public Cluster(String name) {
         this.name = name;
 	}
 
-	public Cluster(Short id, String name, Set<Short> entities) {
-		this.id = id;
+	public Cluster(String name, Set<Short> entities) {
 		this.name = name;
 		this.entities = entities;
 	}
 
 	public Cluster(Cluster c) {
-		this.id = c.getID();
 		this.name = c.getName();
 		this.complexity = c.getComplexity();
 		this.cohesion = c.getCohesion();
 		this.coupling = c.getCoupling();
 		this.couplingDependencies = c.getCouplingDependencies();
 		this.entities = c.getEntities();
-	}
-
-	public Short getID() {
-		return id;
-	}
-
-	public void setID(Short id) {
-		this.id = id;
 	}
 
 	public String getName() {
@@ -83,9 +71,9 @@ public class Cluster {
 		this.coupling = coupling;
 	}
 
-	public Map<Short, Set<Short>> getCouplingDependencies() { return couplingDependencies; }
+	public Map<String, Set<Short>> getCouplingDependencies() { return couplingDependencies; }
 
-	public void setCouplingDependencies(Map<Short, Set<Short>> couplingDependencies) { this.couplingDependencies = couplingDependencies; }
+	public void setCouplingDependencies(Map<String, Set<Short>> couplingDependencies) { this.couplingDependencies = couplingDependencies; }
 
 	public Set<Short> getEntities() { return entities; }
 
@@ -100,7 +88,7 @@ public class Cluster {
 
 	public void clearCouplingDependencies() {this.couplingDependencies.clear(); }
 
-	public void addCouplingDependency(Short toCluster, short entityID) {
+	public void addCouplingDependency(String toCluster, short entityID) {
 		if (this.couplingDependencies.containsKey(toCluster)) {
 			this.couplingDependencies.get(toCluster).add(entityID);
 		} else {
@@ -110,7 +98,7 @@ public class Cluster {
 		}
 	}
 
-	public void addCouplingDependencies(Short toCluster, Set<Short> entityIDs) {
+	public void addCouplingDependencies(String toCluster, Set<Short> entityIDs) {
 		if (this.couplingDependencies.containsKey(toCluster)) {
 			this.couplingDependencies.get(toCluster).addAll(entityIDs);
 		} else {
@@ -118,15 +106,15 @@ public class Cluster {
 		}
 	}
 
-	public void transferCouplingDependencies(Set<Short> entities, short currentClusterID, short newClusterID) {
-		Set<Short> dependencyEntities = this.couplingDependencies.get(currentClusterID);
+	public void transferCouplingDependencies(Set<Short> entities, String currentClusterName, String newClusterName) {
+		Set<Short> dependencyEntities = this.couplingDependencies.get(currentClusterName);
 
 		if (dependencyEntities == null) return;
 
 		for (short entity : entities)
-			if (dependencyEntities.remove(entity) && newClusterID != id)
-				addCouplingDependency(newClusterID, entity);
+			if (dependencyEntities.remove(entity) && !newClusterName.equals(this.name))
+				addCouplingDependency(newClusterName, entity);
 		if (dependencyEntities.isEmpty())
-			this.couplingDependencies.remove(currentClusterID);
+			this.couplingDependencies.remove(currentClusterName);
 	}
 }

@@ -44,9 +44,6 @@ public class ClusterDeserializer extends StdDeserializer<Cluster> {
 			while (jsonParser.nextValue() != JsonToken.END_OBJECT) {
 				if (deserializableFields == null || deserializableFields.contains(jsonParser.getCurrentName())) {
 					switch (jsonParser.getCurrentName()) {
-						case "id":
-							cluster.setID(jsonParser.getShortValue());
-							break;
 						case "name":
 							cluster.setName(jsonParser.getValueAsString());
 							break;

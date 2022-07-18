@@ -53,6 +53,10 @@ public abstract class Log {
         return logOperationList;
     }
 
+    public int getMaxLogDepth() {
+        return this.logOperationList.size();
+    }
+
     public Operation getLogOperationByDepth(Long historyDepth) {
         return logOperationList.get(Math.toIntExact(historyDepth - 1));
     }
@@ -62,6 +66,6 @@ public abstract class Log {
     }
 
     public Operation getCurrentLogOperation() {
-        return logOperationList.get(Math.toIntExact(getCurrentLogOperationDepth()));
+        return logOperationList.get(Math.toIntExact(getCurrentLogOperationDepth()) - 1);
     }
 }

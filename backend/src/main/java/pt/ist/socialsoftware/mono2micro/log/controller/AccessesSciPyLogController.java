@@ -82,16 +82,14 @@ public class AccessesSciPyLogController {
     }
 
     @RequestMapping(value = "/undoOperation", method = RequestMethod.GET)
-    public ResponseEntity<Map<Short, Cluster>> undoOperation(
+    public ResponseEntity<Map<String, Cluster>> undoOperation(
             @PathVariable String decompositionName
     ) {
         logger.debug("undoOperation");
 
         try {
             AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-
             logService.undoOperation(decomposition);
-
             return new ResponseEntity<>(decomposition.getClusters(), HttpStatus.OK);
 
         } catch (Exception e) {

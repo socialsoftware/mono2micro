@@ -69,7 +69,6 @@ export enum MetricType {
 }
 
 export interface Cluster {
-    id?: number;
     name?: string;
     complexity?: number;
     cohesion?: number;

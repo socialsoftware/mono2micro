@@ -13,7 +13,7 @@ public class LocalTransaction {
 
     private String name;
     private int id;
-    private short clusterID;
+    private String clusterName;
     private Set<AccessDto> clusterAccesses;
     private List<Integer> remoteInvocations;
     private Set<Short> firstAccessedEntityIDs;
@@ -23,34 +23,34 @@ public class LocalTransaction {
 
     public LocalTransaction(
         int id,
-        short clusterID,
+        String clusterName,
         Set<AccessDto> clusterAccesses,
         List<Integer> remoteInvocations,
         String name
     ){
         this.id = id;
         this.name = name;
-        this.clusterID = clusterID;
+        this.clusterName = clusterName;
         this.clusterAccesses = clusterAccesses;
         this.remoteInvocations = remoteInvocations;
     }
 
     public LocalTransaction(
         int id,
-        short clusterID
+        String clusterName
     ) {
         this.id = id;
-        this.clusterID = clusterID;
+        this.clusterName = clusterName;
     }
 
     public LocalTransaction(
         int id,
-        short clusterID,
+        String clusterName,
         Set<AccessDto> clusterAccesses,
         short firstAccessedEntityID
     ) {
         this.id = id;
-        this.clusterID = clusterID;
+        this.clusterName = clusterName;
         this.clusterAccesses = clusterAccesses;
         this.firstAccessedEntityIDs = new HashSet<Short>() {
             { add(firstAccessedEntityID); }
@@ -59,7 +59,7 @@ public class LocalTransaction {
 
     public LocalTransaction(LocalTransaction lt) {
         this.id = lt.getId();
-        this.clusterID = lt.getClusterID();
+        this.clusterName = lt.getClusterName();
         this.clusterAccesses = new HashSet<>(lt.getClusterAccesses());
         this.firstAccessedEntityIDs = new HashSet<>(lt.getFirstAccessedEntityIDs());
     }
@@ -72,12 +72,12 @@ public class LocalTransaction {
         this.id = id;
     }
 
-    public short getClusterID() {
-        return clusterID;
+    public String getClusterName() {
+        return clusterName;
     }
 
-    public void setClusterID(short clusterID) {
-        this.clusterID = clusterID;
+    public void setClusterName(String clusterName) {
+        this.clusterName = clusterName;
     }
 
     public Set<AccessDto> getClusterAccesses() {

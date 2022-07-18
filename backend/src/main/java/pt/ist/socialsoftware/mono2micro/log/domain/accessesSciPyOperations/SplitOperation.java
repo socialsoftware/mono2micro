@@ -15,8 +15,8 @@ public class SplitOperation extends Operation {
 
     public SplitOperation() {}
 
-    public SplitOperation(AccessesSciPyDecomposition decomposition, Short clusterID, String newName, String entities) {
-        Cluster cluster = decomposition.getCluster(clusterID);
+    public SplitOperation(AccessesSciPyDecomposition decomposition, String clusterName, String newName, String entities) {
+        Cluster cluster = decomposition.getCluster(clusterName);
         this.originalCluster = cluster.getName();
         this.newCluster = newName;
         this.entities = entities;

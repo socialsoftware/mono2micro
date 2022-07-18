@@ -1,7 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.functionality.domain;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.metrics.Metric;
 import pt.ist.socialsoftware.mono2micro.metrics.MetricFactory;
@@ -97,7 +96,7 @@ public class FunctionalityRedesign {
     }
 
     public List<LocalTransaction> addCompensating(
-        Short clusterID,
+        String clusterName,
         List<Integer> entities,
         int fromID
     )
@@ -121,10 +120,10 @@ public class FunctionalityRedesign {
 
         LocalTransaction newLT = new LocalTransaction(
             i,
-            clusterID,
+            clusterName,
             accesses,
             new ArrayList<>(),
-            i + ": " + clusterID
+            i + ": " + clusterName
         );
 
         LocalTransaction caller = this.redesign
@@ -164,8 +163,8 @@ public class FunctionalityRedesign {
     }
 
     public List<LocalTransaction> dcgi(
-        Short fromClusterID,
-        Short toClusterID,
+        String fromClusterName,
+        String toClusterName,
         String localTransactions
     )
         throws Exception
@@ -194,7 +193,7 @@ public class FunctionalityRedesign {
                 short accessedEntityID = access.getEntityID();
                 byte accessedMode = access.getMode();
 
-                if(lt.getClusterID() == fromClusterID) {
+                if(lt.getClusterName().equals(fromClusterName)) {
                     Byte mode = fromLTAccesses.get(accessedEntityID);
 
                     if(mode == null) { // map does not contain the entity
@@ -204,7 +203,7 @@ public class FunctionalityRedesign {
                     }
                 }
 
-                else if (lt.getClusterID() == toClusterID){
+                else if (lt.getClusterName().equals(toClusterName)) {
                     Byte mode = toLTAccesses.get(accessedEntityID);
 
                     if(mode == null) { // map does not contain the entity
@@ -271,18 +270,18 @@ public class FunctionalityRedesign {
         fromRemoteInvocations.add(secondMin);
         LocalTransaction newFromLT = new LocalTransaction(
             min,
-            fromClusterID,
+            fromClusterName,
             constructSequence(fromLTAccesses),
             fromRemoteInvocations,
-            min + ": " + fromClusterID
+            min + ": " + fromClusterName
         );
 
         LocalTransaction newToLT = new LocalTransaction(
             secondMin,
-            toClusterID,
+            toClusterName,
             constructSequence(toLTAccesses),
             toRemoteInvocations,
-            secondMin + ": " + toClusterID
+            secondMin + ": " + toClusterName
         );
 
         this.redesign.add(newFromLT);
@@ -339,7 +338,6 @@ public class FunctionalityRedesign {
     public void definePivotTransaction(
         int pivotID
     )
-        throws JSONException
     {
         pivotID = checkForRemoteInvocationsValidity(pivotID);
         this.setPivotTransaction(pivotID);
@@ -430,7 +428,7 @@ public class FunctionalityRedesign {
                     .orElse(null);
 
                 if(lt2 != null){
-                    if(lt1.getClusterID() == lt2.getClusterID()){
+                    if(lt1.getClusterName().equals(lt2.getClusterName())) {
                         int newID = mergeTwoLocalTransactions(lt1, lt2);
 
                         if(lt1.getId() == pivotID || lt2.getId() == pivotID)
@@ -487,10 +485,10 @@ public class FunctionalityRedesign {
 
         LocalTransaction newLT = new LocalTransaction(
             min,
-            lt1.getClusterID(),
+            lt1.getClusterName(),
             constructSequence(ltAccesses),
             remoteInvocations,
-            min + ": " + lt1.getClusterID()
+            min + ": " + lt1.getClusterName()
         );
 
         for(int i = 0; i < this.redesign.size() ; i++){

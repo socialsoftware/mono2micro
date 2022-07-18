@@ -144,7 +144,7 @@ public class AccessesSciPyDecompositionController {
             AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) decompositionService.updateOutdatedFunctionalitiesAndMetrics(decompositionName);
 
             Map<String, Set<Cluster>> functionalitiesClusters = Utils.getFunctionalitiesClusters(
-                    decomposition.getEntityIDToClusterID(),
+                    decomposition.getEntityIDToClusterName(),
                     decomposition.getClusters(),
                     decomposition.getFunctionalities().values()
             );
@@ -173,8 +173,8 @@ public class AccessesSciPyDecompositionController {
         try {
             AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) decompositionService.updateOutdatedFunctionalitiesAndMetrics(decompositionName);
 
-            Map<Short, List<Functionality>> clustersFunctionalities = Utils.getClustersFunctionalities(
-                    decomposition.getEntityIDToClusterID(),
+            Map<String, List<Functionality>> clustersFunctionalities = Utils.getClustersFunctionalities(
+                    decomposition.getEntityIDToClusterName(),
                     decomposition.getClusters(),
                     decomposition.getFunctionalities().values()
             );
@@ -194,16 +194,16 @@ public class AccessesSciPyDecompositionController {
         }
     }
 
-    @RequestMapping(value = "/decomposition/{decompositionName}/cluster/{clusterNameID}/merge", method = RequestMethod.POST)
-    public ResponseEntity<Map<Short, Cluster>> mergeClusters(
+    @RequestMapping(value = "/decomposition/{decompositionName}/cluster/{clusterName}/merge", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Cluster>> mergeClusters(
             @PathVariable String decompositionName,
-            @PathVariable Short clusterNameID,
-            @RequestParam Short otherClusterID,
+            @PathVariable String clusterName,
+            @RequestParam String otherClusterName,
             @RequestParam String newName
     ) {
         logger.debug("mergeClusters");
         try {
-            return new ResponseEntity<>(decompositionService.mergeClustersOperation(decompositionName, clusterNameID, otherClusterID, newName), HttpStatus.OK);
+            return new ResponseEntity<>(decompositionService.mergeClustersOperation(decompositionName, clusterName, otherClusterName, newName), HttpStatus.OK);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -211,15 +211,15 @@ public class AccessesSciPyDecompositionController {
         }
     }
 
-    @RequestMapping(value = "/decomposition/{decompositionName}/cluster/{clusterID}/rename", method = RequestMethod.POST)
-    public ResponseEntity<Map<Short, Cluster>> renameCluster(
+    @RequestMapping(value = "/decomposition/{decompositionName}/cluster/{clusterName}/rename", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Cluster>> renameCluster(
             @PathVariable String decompositionName,
-            @PathVariable Short clusterID,
+            @PathVariable String clusterName,
             @RequestParam String newName
     ) {
         logger.debug("renameCluster");
         try {
-            return new ResponseEntity<>(decompositionService.renameClusterOperation(decompositionName, clusterID, newName), HttpStatus.OK);
+            return new ResponseEntity<>(decompositionService.renameClusterOperation(decompositionName, clusterName, newName), HttpStatus.OK);
 
         } catch (KeyAlreadyExistsException e) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -230,16 +230,16 @@ public class AccessesSciPyDecompositionController {
         }
     }
 
-    @RequestMapping(value = "/decomposition/{decompositionName}/cluster/{clusterID}/split", method = RequestMethod.POST)
-    public ResponseEntity<Map<Short, Cluster>> splitCluster(
+    @RequestMapping(value = "/decomposition/{decompositionName}/cluster/{clusterName}/split", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Cluster>> splitCluster(
             @PathVariable String decompositionName,
-            @PathVariable Short clusterID,
+            @PathVariable String clusterName,
             @RequestParam String newName,
             @RequestParam String entities
     ) {
         logger.debug("splitCluster");
         try {
-            return new ResponseEntity<>(decompositionService.splitClusterOperation(decompositionName, clusterID, newName, entities), HttpStatus.OK);
+            return new ResponseEntity<>(decompositionService.splitClusterOperation(decompositionName, clusterName, newName, entities), HttpStatus.OK);
 
         } catch (KeyAlreadyExistsException e) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -250,16 +250,16 @@ public class AccessesSciPyDecompositionController {
         }
     }
 
-    @RequestMapping(value = "/decomposition/{decompositionName}/cluster/{clusterID}/transferEntities", method = RequestMethod.POST)
-    public ResponseEntity<Map<Short, Cluster>> transferEntities(
+    @RequestMapping(value = "/decomposition/{decompositionName}/cluster/{clusterName}/transferEntities", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Cluster>> transferEntities(
             @PathVariable String decompositionName,
-            @PathVariable Short clusterID,
-            @RequestParam Short toClusterID,
+            @PathVariable String clusterName,
+            @RequestParam String toClusterName,
             @RequestParam String entities
     ) {
         logger.debug("transferEntities");
         try {
-            return new ResponseEntity<>(decompositionService.transferEntitiesOperation(decompositionName, clusterID, toClusterID, entities), HttpStatus.OK);
+            return new ResponseEntity<>(decompositionService.transferEntitiesOperation(decompositionName, clusterName, toClusterName, entities), HttpStatus.OK);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -268,10 +268,10 @@ public class AccessesSciPyDecompositionController {
     }
 
     @RequestMapping(value = "/decomposition/{decompositionName}/formCluster", method = RequestMethod.POST)
-    public ResponseEntity<Map<Short, Cluster>> formCluster(
+    public ResponseEntity<Map<String, Cluster>> formCluster(
             @PathVariable String decompositionName,
             @RequestParam String newName,
-            @RequestBody Map<Short, List<Short>> entities
+            @RequestBody Map<String, List<Short>> entities
     ) {
         logger.debug("formCluster");
         try {

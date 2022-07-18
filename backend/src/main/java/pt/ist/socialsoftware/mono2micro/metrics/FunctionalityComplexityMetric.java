@@ -39,7 +39,7 @@ public class FunctionalityComplexityMetric extends Metric<Integer> {
             return;
 
         Map<String, Set<Cluster>> functionalitiesClusters = Utils.getFunctionalitiesClusters(
-                decomposition.getEntityIDToClusterID(),
+                decomposition.getEntityIDToClusterName(),
                 decomposition.getClusters(),
                 decomposition.getFunctionalities().values());
 

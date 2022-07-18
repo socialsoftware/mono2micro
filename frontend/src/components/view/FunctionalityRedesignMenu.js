@@ -120,7 +120,7 @@ export const FunctionalityRedesignMenu = ({
             return false;
         else if(DCGISelectedLocalTransactions.length !== 0){
             const selectedClustersSet = new Set();
-            DCGISelectedLocalTransactions.forEach(e => selectedClustersSet.add(e.clusterID));
+            DCGISelectedLocalTransactions.forEach(e => selectedClustersSet.add(e.clusterName));
             if(selectedClustersSet.size === 2 && DCGISelectedLocalTransactions.length >= 3){
                 return false;
             }
@@ -203,7 +203,7 @@ export const FunctionalityRedesignMenu = ({
                 }
 
                 {operation === redesignOperations.DCGI &&
-                <Button className="me-1">{"From Cluster: " + selectedLocalTransaction.clusterID}</Button>
+                <Button className="me-1">{"From Cluster: " + selectedLocalTransaction.clusterName}</Button>
                 }
 
                 {DCGIAvailableClusters !== null &&

@@ -2,12 +2,11 @@ package pt.ist.socialsoftware.mono2micro.functionality.domain;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.apache.commons.io.IOUtils;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.traverse.BreadthFirstIterator;
@@ -16,6 +15,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.fileManager.FileManager;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.metrics.Metric;
 import pt.ist.socialsoftware.mono2micro.metrics.MetricFactory;
@@ -23,14 +23,10 @@ import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.ReducedTraceElementDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.utils.*;
-import pt.ist.socialsoftware.mono2micro.functionality.deserializer.FunctionalityDeserializer;
-import pt.ist.socialsoftware.mono2micro.functionality.serializer.FunctionalitySerializer;
 
 import static org.jgrapht.Graphs.successorListOf;
 
-@JsonInclude(JsonInclude.Include.USE_DEFAULTS)
-@JsonSerialize(using = FunctionalitySerializer.class)
-@JsonDeserialize(using = FunctionalityDeserializer.class)
+// TODO talvez isto possa ser removido
 @Document("functionality")
 public class Functionality {
 	@Id
@@ -40,7 +36,7 @@ public class Functionality {
 	private List<Metric> metrics = new ArrayList<>();
 	private Map<Short, Byte> entities = new HashMap<>(); // <entityID, mode>
 	private List<FunctionalityRedesign> functionalityRedesigns = new ArrayList<>();
-	private Map<Short, Set<Short>> entitiesPerCluster = new HashMap<>();
+	private Map<String, Set<Short>> entitiesPerCluster = new HashMap<>();
 
 	@JsonIgnore
 	@Transient
@@ -134,11 +130,11 @@ public class Functionality {
 		String name,
 		boolean usedForMetrics,
 		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph
-	) {
+	) throws IOException {
 		FunctionalityRedesign functionalityRedesign = new FunctionalityRedesign(name);
 		functionalityRedesign.setUsedForMetrics(usedForMetrics);
 
-		LocalTransaction graphRootLT = new LocalTransaction(0, (short) -1);
+		LocalTransaction graphRootLT = new LocalTransaction(0, "-1");
 
 		graphRootLT.setName(this.name);
 
@@ -158,23 +154,24 @@ public class Functionality {
 
 			for (LocalTransaction childLT : graphChildrenLTs) {
 				lt.addRemoteInvocations(childLT.getId());
-				childLT.setName(childLT.getId() + ": " + childLT.getClusterID());
+				childLT.setName(childLT.getId() + ": " + childLT.getClusterName());
 			}
 
 			functionalityRedesign.getRedesign().add(lt);
 			if(lt.getId() != 0){
 				for(AccessDto accessDto : lt.getClusterAccesses()){
-					if(this.entitiesPerCluster.containsKey(lt.getClusterID())){
-						this.entitiesPerCluster.get(lt.getClusterID()).add(accessDto.getEntityID());
+					if(this.entitiesPerCluster.containsKey(lt.getClusterName())){
+						this.entitiesPerCluster.get(lt.getClusterName()).add(accessDto.getEntityID());
 					} else {
 						Set<Short> entities = new HashSet<>();
 						entities.add(accessDto.getEntityID());
-						this.entitiesPerCluster.put(lt.getClusterID(), entities);
+						this.entitiesPerCluster.put(lt.getClusterName(), entities);
 					}
 				}
 			}
 		}
 
+		System.out.println(IOUtils.toString(FileManager.getInstance().getFunctionalityRedesignAsJSON(functionalityRedesign), StandardCharsets.UTF_8));
 		this.functionalityRedesigns.add(0, functionalityRedesign);
 		return functionalityRedesign;
 	}
@@ -237,12 +234,12 @@ public class Functionality {
 		return entitiesTouchedInAGivenMode;
 	}
 
-	public Set<Short> clustersOfGivenEntities(Set<Short> entities){
-		Set<Short> clustersOfGivenEntities = new HashSet<>();
-		for(Short clusterID : this.entitiesPerCluster.keySet()){
+	public Set<String> clustersOfGivenEntities(Set<Short> entities){
+		Set<String> clustersOfGivenEntities = new HashSet<>();
+		for(String clusterName : this.entitiesPerCluster.keySet()){
 			for(Short entityID : entities){
-				if(this.entitiesPerCluster.get(clusterID).contains(entityID))
-					clustersOfGivenEntities.add(clusterID);
+				if(this.entitiesPerCluster.get(clusterName).contains(entityID))
+					clustersOfGivenEntities.add(clusterName);
 			}
 		}
 		return clustersOfGivenEntities;
@@ -268,11 +265,11 @@ public class Functionality {
 		return this.entities.containsKey(entity);
 	}
 
-	public Map<Short, Set<Short>> getEntitiesPerCluster() {
+	public Map<String, Set<Short>> getEntitiesPerCluster() {
 		return entitiesPerCluster;
 	}
 
-	public void setEntitiesPerCluster(Map<Short, Set<Short>> entitiesPerCluster) {
+	public void setEntitiesPerCluster(Map<String, Set<Short>> entitiesPerCluster) {
 		this.entitiesPerCluster = entitiesPerCluster;
 	}
 
@@ -287,9 +284,9 @@ public class Functionality {
 		}
 	}
 
-	public void setupEntities(List<ReducedTraceElementDto> traceElements, Map<Short, Short> entityIDToClusterID) {
+	public void setupEntities(List<ReducedTraceElementDto> traceElements, Map<Short, String> entityIDToClusterName) {
 		Map<Short, Byte> entityIDToMode = new HashMap<>();
-		short previousCluster = -2;
+		String previousCluster = "-2";
 		boolean isFirstAccess = false;
 
 		for (ReducedTraceElementDto rte : traceElements) {
@@ -298,9 +295,9 @@ public class Functionality {
 				short entityID = access.getEntityID();
 				byte mode = access.getMode();
 
-				Short cluster = entityIDToClusterID.get(entityID);
+				String clusterName = entityIDToClusterName.get(entityID);
 
-				if (cluster == null) {
+				if (clusterName == null) {
 					System.err.println("Entity " + entityID + " is not assign to a cluster.");
 					System.exit(-1);
 				}
@@ -310,7 +307,7 @@ public class Functionality {
 					this.addEntity(entityID, mode);
 
 				} else {
-					if (cluster == previousCluster) {
+					if (clusterName.equals(previousCluster)) {
 						Byte savedMode = entityIDToMode.get(entityID);
 
 						if (savedMode == null || savedMode == 1 && mode == 2) { // "R" -> 1, "W" -> 2
@@ -326,7 +323,7 @@ public class Functionality {
 					}
 				}
 
-				previousCluster = cluster;
+				previousCluster = clusterName;
 				isFirstAccess = true;
 			}
 		}
@@ -344,7 +341,7 @@ public class Functionality {
 			InputStream inputFilePath,
 			int tracesMaxLimit,
 			Constants.TraceType traceType,
-			Map<Short, Short> entityIDToClusterID
+			Map<Short, String> entityIDToClusterName
 	) throws IOException, JSONException {
 		if (this.getTraces() == null) {
 			FunctionalityTracesIterator iter = new FunctionalityTracesIterator(inputFilePath, tracesMaxLimit);
@@ -355,23 +352,23 @@ public class Functionality {
 		}
 
 		// Get traces according to trace type
-		return createLocalTransactionGraph(entityIDToClusterID);
+		return createLocalTransactionGraph(entityIDToClusterName);
 	}
 
-	public DirectedAcyclicGraph<LocalTransaction, DefaultEdge> createLocalTransactionGraph(Map<Short, Short> entityIDToClusterID) {
+	public DirectedAcyclicGraph<LocalTransaction, DefaultEdge> createLocalTransactionGraph(Map<Short, String> entityIDToClusterName) {
 		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph = new DirectedAcyclicGraph<>(DefaultEdge.class);
-		localTransactionsGraph.addVertex(new LocalTransaction(0, (short) -1)); // Local transaction's root
+		localTransactionsGraph.addVertex(new LocalTransaction(0, "-1")); // Local transaction's root
 
 		for (TraceDto t : this.getTraces()) {
 			List<ReducedTraceElementDto> traceElements = t.getElements();
-			this.setupEntities(traceElements, entityIDToClusterID); // Adds entities used by the functionality
+			this.setupEntities(traceElements, entityIDToClusterName); // Adds entities used by the functionality
 
 			if (traceElements.size() > 0) {
 				Utils.GetLocalTransactionsSequenceAndCalculateTracePerformanceResult result = Utils.getLocalTransactionsSequenceAndCalculateTracePerformance(
 						1,
 						null,
 						traceElements,
-						entityIDToClusterID,
+						entityIDToClusterName,
 						new HashMap<>(),
 						0,
 						traceElements.size());
@@ -389,7 +386,7 @@ public class Functionality {
 			DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph,
 			List<LocalTransaction> localTransactionSequence
 	) {
-		LocalTransaction graphCurrentLT = new LocalTransaction(0, (short) -1); // root
+		LocalTransaction graphCurrentLT = new LocalTransaction(0, "-1"); // root
 
 		for (int i = 0; i < localTransactionSequence.size(); i++) {
 			List<LocalTransaction> graphChildrenLTs = getNextLocalTransactions(
@@ -414,7 +411,7 @@ public class Functionality {
 				LocalTransaction graphChildLT = graphChildrenLTs.get(j);
 				LocalTransaction sequenceCurrentLT = localTransactionSequence.get(i);
 
-				if (sequenceCurrentLT.getClusterID() == graphChildLT.getClusterID()) {
+				if (sequenceCurrentLT.getClusterName().equals(graphChildLT.getClusterName())) {
 					graphChildLT.getClusterAccesses().addAll(sequenceCurrentLT.getClusterAccesses());
 					graphChildLT.getFirstAccessedEntityIDs().addAll(sequenceCurrentLT.getFirstAccessedEntityIDs());
 

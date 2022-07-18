@@ -17,11 +17,11 @@ public class FormClusterOperation extends Operation {
 
     public FormClusterOperation() {}
 
-    public FormClusterOperation(AccessesSciPyDecomposition decomposition, String newName, Map<Short, List<Short>> entities) {
+    public FormClusterOperation(AccessesSciPyDecomposition decomposition, String newName, Map<String, List<Short>> entities) {
         this.newCluster = newName;
         this.entities = new HashMap<>();
-        entities.forEach((clusterID, entitiesIDs) -> {
-            Cluster cluster = decomposition.getCluster(clusterID);
+        entities.forEach((clusterName, entitiesIDs) -> {
+            Cluster cluster = decomposition.getCluster(clusterName);
             this.entities.put(cluster.getName(), entitiesIDs);
         });
     }

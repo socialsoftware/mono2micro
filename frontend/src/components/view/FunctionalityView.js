@@ -235,9 +235,8 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
     ];
 
     useEffect(() => {
-        if (outdated) {
+        if (outdated)
             setFunctionalities(undefined);
-        }
     }, [outdated]);
 
     useEffect(() => {

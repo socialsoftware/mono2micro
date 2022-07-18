@@ -8,4 +8,6 @@ public abstract class AbstractLogService {
     public abstract void addOperation(Decomposition decomposition, Operation operation);
 
     public abstract void undoOperation(Decomposition decomposition);
+
+    public abstract void redoOperation(Decomposition decomposition);
 }

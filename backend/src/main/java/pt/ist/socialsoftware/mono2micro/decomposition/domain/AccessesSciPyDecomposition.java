@@ -1,6 +1,5 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
@@ -24,10 +23,10 @@ public class AccessesSciPyDecomposition extends Decomposition {
     private boolean outdated;
     private boolean expert;
     private double silhouetteScore;
-    private Map<Short, Cluster> clusters = new HashMap<>();
+    private Map<String, Cluster> clusters = new HashMap<>();
     @DBRef(lazy = true)
     private Map<String, Functionality> functionalities = new HashMap<>(); // <functionalityName, Functionality>
-    private Map<Short, Short> entityIDToClusterID = new HashMap<>();
+    private Map<Short, String> entityIDToClusterName = new HashMap<>();
     @DBRef(lazy = true)
     private AccessesSciPyLog decompositionLog;
 
@@ -54,11 +53,11 @@ public class AccessesSciPyDecomposition extends Decomposition {
         this.expert = expert;
     }
 
-    public Map<Short, Short> getEntityIDToClusterID() {
-        return entityIDToClusterID;
+    public Map<Short, String> getEntityIDToClusterName() {
+        return entityIDToClusterName;
     }
 
-    public void setEntityIDToClusterID(Map<Short, Short> entityIDToClusterID) { this.entityIDToClusterID = entityIDToClusterID; }
+    public void setEntityIDToClusterName(Map<Short, String> entityIDToClusterName) { this.entityIDToClusterName = entityIDToClusterName; }
 
     public AccessesSciPyLog getLog() {
         return decompositionLog;
@@ -68,8 +67,8 @@ public class AccessesSciPyDecomposition extends Decomposition {
         this.decompositionLog = decompositionLog;
     }
 
-    public void putEntity(short entityID, Short clusterID) {
-        entityIDToClusterID.put(entityID, clusterID);
+    public void putEntity(short entityID, String clusterName) {
+        entityIDToClusterName.put(entityID, clusterName);
     }
 
     public double getSilhouetteScore() {
@@ -80,9 +79,9 @@ public class AccessesSciPyDecomposition extends Decomposition {
         this.silhouetteScore = silhouetteScore;
     }
 
-    public Map<Short, Cluster> getClusters() { return this.clusters; }
+    public Map<String, Cluster> getClusters() { return this.clusters; }
 
-    public void setClusters(Map<Short, Cluster> clusters) { this.clusters = clusters; }
+    public void setClusters(Map<String, Cluster> clusters) { this.clusters = clusters; }
 
     public Map<String, Functionality> getFunctionalities() { return functionalities; }
 
@@ -105,30 +104,30 @@ public class AccessesSciPyDecomposition extends Decomposition {
     }
 
     public boolean clusterNameExists(String clusterName) {
-        for (Map.Entry<Short, Cluster> cluster :this.clusters.entrySet())
+        for (Map.Entry<String, Cluster> cluster :this.clusters.entrySet())
             if (cluster.getValue().getName().equals(clusterName))
                 return true;
         return false;
     }
 
     public void addCluster(Cluster cluster) {
-        Cluster c = this.clusters.putIfAbsent(cluster.getID(), cluster);
+        Cluster c = this.clusters.putIfAbsent(cluster.getName(), cluster);
 
-        if (c != null) throw new Error("Cluster with ID: " + cluster.getID() + " already exists");
+        if (c != null) throw new Error("Cluster with name: " + cluster.getName() + " already exists");
     }
 
-    public Cluster removeCluster(Short clusterID) {
-        Cluster c = this.clusters.remove(clusterID);
+    public Cluster removeCluster(String clusterName) {
+        Cluster c = this.clusters.remove(clusterName);
 
-        if (c == null) throw new Error("Cluster with ID: " + clusterID + " not found");
+        if (c == null) throw new Error("Cluster with name: " + clusterName + " not found");
 
         return c;
     }
 
-    public Cluster getCluster(Short clusterID) {
-        Cluster c = this.clusters.get(clusterID);
+    public Cluster getCluster(String clusterName) {
+        Cluster c = this.clusters.get(clusterName);
 
-        if (c == null) throw new Error("Cluster with ID: " + clusterID + " not found");
+        if (c == null) throw new Error("Cluster with name: " + clusterName + " not found");
 
         return c;
     }
@@ -168,13 +167,8 @@ public class AccessesSciPyDecomposition extends Decomposition {
         }
     }
 
-    @JsonIgnore
-    public short getNewClusterID() {
-        return (short) (Collections.max(clusters.keySet()) + 1);
-    }
-
-    public void transferCouplingDependencies(Set<Short> entities, short currentClusterID, short newClusterID) {
+    public void transferCouplingDependencies(Set<Short> entities, String currentClusterName, String newClusterName) {
         for (Cluster cluster : this.getClusters().values())
-            cluster.transferCouplingDependencies(entities, currentClusterID, newClusterID);
+            cluster.transferCouplingDependencies(entities, currentClusterName, newClusterName);
     }
 }

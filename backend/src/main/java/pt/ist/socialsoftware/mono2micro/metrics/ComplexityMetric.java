@@ -33,8 +33,8 @@ public class ComplexityMetric extends Metric<Float> {
     }
 
     private float calculateMetricAccessesSciPy(AccessesSciPyDecomposition decomposition) {
-        Map<Short, List<Functionality>> clustersFunctionalities = Utils.getClustersFunctionalities(
-                decomposition.getEntityIDToClusterID(),
+        Map<String, List<Functionality>> clustersFunctionalities = Utils.getClustersFunctionalities(
+                decomposition.getEntityIDToClusterName(),
                 decomposition.getClusters(),
                 decomposition.getFunctionalities().values()
         );
@@ -43,7 +43,7 @@ public class ComplexityMetric extends Metric<Float> {
 
         // Set cluster complexity
         for (Cluster cluster : decomposition.getClusters().values()) {
-            List<Functionality> functionalitiesThatAccessThisCluster = clustersFunctionalities.get(cluster.getID());
+            List<Functionality> functionalitiesThatAccessThisCluster = clustersFunctionalities.get(cluster.getName());
 
             complexity = 0;
 
@@ -80,13 +80,13 @@ public class ComplexityMetric extends Metric<Float> {
 
         // Since metric calculation is always done during the creation of the functionalities, we can use createLocalTransactionGraph,
         // otherwise, if traces == null, use createLocalTransactionGraphFromScratch
-        DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph = functionality.createLocalTransactionGraph(accessesSciPyDecomposition.getEntityIDToClusterID());
+        DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph = functionality.createLocalTransactionGraph(accessesSciPyDecomposition.getEntityIDToClusterName());
 
         this.value = calculateFunctionalityComplexity(
                 accessesSciPyDecomposition,
                 functionality.getName(),
                 Utils.getFunctionalitiesClusters(
-                        accessesSciPyDecomposition.getEntityIDToClusterID(),
+                        accessesSciPyDecomposition.getEntityIDToClusterName(),
                         accessesSciPyDecomposition.getClusters(),
                         accessesSciPyDecomposition.getFunctionalities().values()),
                         localTransactionsGraph);
@@ -111,8 +111,8 @@ public class ComplexityMetric extends Metric<Float> {
 
             for (LocalTransaction lt : allLocalTransactions) {
                 // ClusterDependencies
-                short clusterID = lt.getClusterID();
-                if (clusterID != -1) { // not root node
+                String clusterName = lt.getClusterName();
+                if (!clusterName.equals("-1")) { // not root node
 
                     Set<String> functionalitiesThatTouchSameEntities = new HashSet<>();
                     Set<AccessDto> clusterAccesses = lt.getClusterAccesses();

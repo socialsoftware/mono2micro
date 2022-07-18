@@ -56,7 +56,7 @@ public class PerformanceMetric extends Metric<Float> { // the average of the num
                         1,
                         null,
                         traceElements,
-                        accessesSciPyDecomposition.getEntityIDToClusterID(),
+                        accessesSciPyDecomposition.getEntityIDToClusterName(),
                         new HashMap<>(),
                         0,
                         traceElements.size()

@@ -39,12 +39,12 @@ export const ClusterViewMetricTable = ({clusters, clustersFunctionalities, outda
 
     const [selectedTable, setSelectedTable] = useState(1);
 
-    const metricsRows = clusters.map(({ id, name, entities, cohesion, coupling, complexity }) => {
+    const metricsRows = clusters.map(({ name, entities, cohesion, coupling, complexity }) => {
         return {
-            id: id,
+            name: name,
             cluster: name,
             entities: entities.length,
-            functionalities: clustersFunctionalities[id] === undefined ? "fetching..." : clustersFunctionalities[id].length,
+            functionalities: clustersFunctionalities[name] === undefined ? "fetching..." : clustersFunctionalities[name].length,
             cohesion: cohesion,
             coupling: coupling,
             complexity: complexity
@@ -52,16 +52,16 @@ export const ClusterViewMetricTable = ({clusters, clustersFunctionalities, outda
     });
 
     const couplingRows = clusters.map(c1 => {
-        return Object.assign({id: c1.name}, ...clusters.map(c2 => {
+        return Object.assign({name: c1.name}, ...clusters.map(c2 => {
             return {
-                [c2.name]: c1.id === c2.id ? "---" :
-                    c1.couplingDependencies[c2.id] === undefined ? 0 :
-                        parseFloat(c1.couplingDependencies[c2.id].length / Object.keys(c2.entities).length).toFixed(2)
+                [c2.name]: c1.name === c2.name ? "---" :
+                    c1.couplingDependencies[c2.name] === undefined ? 0 :
+                        parseFloat(c1.couplingDependencies[c2.name].length / Object.keys(c2.entities).length).toFixed(2)
             }
         }))
     });
 
-    const couplingColumns = [{ dataField: 'id', text: '', style: { fontWeight: 'bold' } }]
+    const couplingColumns = [{ dataField: 'name', text: '', style: { fontWeight: 'bold' } }]
         .concat(clusters.map(c => {
             return {
                 dataField: c.name,
@@ -87,7 +87,7 @@ export const ClusterViewMetricTable = ({clusters, clustersFunctionalities, outda
                     {selectedTable === TABLE_TYPE.METRICS &&
                         <BootstrapTable
                             bootstrap4
-                            keyField='id'
+                            keyField='name'
                             data={metricsRows}
                             columns={metricsColumns}
                         />
@@ -96,7 +96,7 @@ export const ClusterViewMetricTable = ({clusters, clustersFunctionalities, outda
                     {selectedTable === TABLE_TYPE.COUPLING &&
                         <BootstrapTable
                         bootstrap4
-                        keyField='id'
+                        keyField='name'
                         data={couplingRows}
                         columns={couplingColumns}
                         />

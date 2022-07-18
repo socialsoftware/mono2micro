@@ -70,6 +70,8 @@ public class AccessesSciPyLogService extends AbstractLogService {
     public void undoOperation(Decomposition d) {
         AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) d;
         Log log = decomposition.getLog();
+        if (log.getCurrentLogOperationDepth() == 0)
+            throw new RuntimeException("No more operations to undo");
         Operation operation = log.getCurrentLogOperation();
 
         switch (operation.getOperationType()) {
@@ -97,45 +99,87 @@ public class AccessesSciPyLogService extends AbstractLogService {
     }
 
     private void undoRename(AccessesSciPyDecomposition decomposition, RenameOperation operation) {
-        Cluster cluster = decomposition.getClusterByName(operation.getNewClusterName());
-        decompositionService.renameCluster(decomposition, cluster.getID(), operation.getPreviousClusterName());
+        decompositionService.renameCluster(decomposition, operation.getNewClusterName(), operation.getPreviousClusterName());
     }
 
     private void undoMerge(AccessesSciPyDecomposition decomposition, MergeOperation operation) {
-        Cluster cluster = decomposition.getClusterByName(operation.getNewCluster());
         List<String> clusterNames = new ArrayList<>(operation.getPreviousClusters().keySet());
         String cluster2Entities = operation.getPreviousClusters().get(clusterNames.get(1));
-        decompositionService.splitCluster(decomposition, cluster.getID(), clusterNames.get(1), cluster2Entities);
-        decompositionService.renameCluster(decomposition, cluster.getID(), clusterNames.get(0));
+        decompositionService.splitCluster(decomposition, operation.getNewCluster(), clusterNames.get(1), cluster2Entities);
+        decompositionService.renameCluster(decomposition, operation.getNewCluster(), clusterNames.get(0));
     }
 
     private void undoSplit(AccessesSciPyDecomposition decomposition, SplitOperation operation) {
-        Cluster originalCluster = decomposition.getClusterByName(operation.getOriginalCluster());
-        Cluster newCluster = decomposition.getClusterByName(operation.getNewCluster());
-
-        decompositionService.mergeClusters(decomposition, originalCluster.getID(), newCluster.getID(), originalCluster.getName());
+        decompositionService.mergeClusters(decomposition, operation.getOriginalCluster(), operation.getNewCluster(), operation.getOriginalCluster());
     }
 
     private void undoTransfer(AccessesSciPyDecomposition decomposition, TransferOperation operation) {
-        Cluster fromCluster = decomposition.getClusterByName(operation.getFromCluster());
-        Cluster toCluster = decomposition.getClusterByName(operation.getToCluster());
-
-        decompositionService.transferEntities(decomposition, toCluster.getID(), fromCluster.getID(), operation.getEntities());
+        decompositionService.transferEntities(decomposition, operation.getToCluster(), operation.getFromCluster(), operation.getEntities());
     }
 
     private void undoFormCluster(AccessesSciPyDecomposition decomposition, FormClusterOperation operation) {
-        Cluster fromCluster = decomposition.getClusterByName(operation.getNewCluster());
-
         operation.getEntities().forEach((clusterName, entitiesID) -> {
             Cluster toCluster = decomposition.getClusterByName(clusterName);
             if (toCluster == null) // If there is no cluster, the operation is a split, if there is, it is a transfer
-                decompositionService.splitCluster(decomposition, fromCluster.getID(), clusterName, entitiesID.stream().map(Object::toString).collect(Collectors.joining(",")));
+                decompositionService.splitCluster(decomposition, operation.getNewCluster(), clusterName, entitiesID.stream().map(Object::toString).collect(Collectors.joining(",")));
             else
-                decompositionService.transferEntities(decomposition, fromCluster.getID(), toCluster.getID(), entitiesID.stream().map(Object::toString).collect(Collectors.joining(",")));
+                decompositionService.transferEntities(decomposition, operation.getNewCluster(), toCluster.getName(), entitiesID.stream().map(Object::toString).collect(Collectors.joining(",")));
         });
 
-        decomposition.removeCluster(fromCluster.getID());
+        decomposition.removeCluster(operation.getNewCluster());
         decompositionRepository.save(decomposition);
+    }
+
+    public void redoOperation(Decomposition d) {
+        AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) d;
+        Log log = decomposition.getLog();
+        if (log.getCurrentLogOperationDepth() == log.getMaxLogDepth())
+            throw new RuntimeException("No more operations to redo");
+        log.incrementCurrentLogDepth();
+        Operation operation = log.getCurrentLogOperation();
+
+        switch (operation.getOperationType()) {
+            case ACCESSES_SCIPY_RENAME:
+                redoRename(decomposition, (RenameOperation) operation);
+                break;
+            case ACCESSES_SCIPY_MERGE:
+                redoMerge(decomposition, (MergeOperation) operation);
+                break;
+            case ACCESSES_SCIPY_SPLIT:
+                redoSplit(decomposition, (SplitOperation) operation);
+                break;
+            case ACCESSES_SCIPY_TRANSFER:
+                redoTransfer(decomposition, (TransferOperation) operation);
+                break;
+            case ACCESSES_SCIPY_FORM:
+                redoFormCluster(decomposition, (FormClusterOperation) operation);
+                break;
+        }
+        decomposition.setOutdated(true);
+
+        logRepository.save(log);
+        decompositionRepository.save(decomposition);
+    }
+
+    private void redoRename(AccessesSciPyDecomposition decomposition, RenameOperation operation) {
+        decompositionService.renameCluster(decomposition, operation.getPreviousClusterName(), operation.getNewClusterName());
+    }
+
+    private void redoMerge(AccessesSciPyDecomposition decomposition, MergeOperation operation) {
+        List<String> clusterNames = new ArrayList<>(operation.getPreviousClusters().keySet());
+        decompositionService.mergeClusters(decomposition, clusterNames.get(0), clusterNames.get(1), operation.getNewCluster());
+    }
+
+    private void redoSplit(AccessesSciPyDecomposition decomposition, SplitOperation operation) {
+        decompositionService.splitCluster(decomposition, operation.getOriginalCluster(), operation.getNewCluster(), operation.getEntities());
+    }
+
+    private void redoTransfer(AccessesSciPyDecomposition decomposition, TransferOperation operation) {
+        decompositionService.transferEntities(decomposition, operation.getFromCluster(), operation.getToCluster(), operation.getEntities());
+    }
+
+    private void redoFormCluster(AccessesSciPyDecomposition decomposition, FormClusterOperation operation) {
+        decompositionService.formCluster(decomposition, operation.getNewCluster(), operation.getEntities());
     }
 
     // Called when deleting an Accesses SciPy decomposition

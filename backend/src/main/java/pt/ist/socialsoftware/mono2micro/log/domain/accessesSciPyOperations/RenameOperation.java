@@ -13,8 +13,8 @@ public class RenameOperation extends Operation {
 
     public RenameOperation() {}
 
-    public RenameOperation(AccessesSciPyDecomposition decomposition, Short clusterID, String newClusterName) {
-        Cluster cluster = decomposition.getCluster(clusterID);
+    public RenameOperation(AccessesSciPyDecomposition decomposition, String clusterName, String newClusterName) {
+        Cluster cluster = decomposition.getCluster(clusterName);
         this.previousClusterName = cluster.getName();
         this.newClusterName = newClusterName;
     }
