@@ -1,11 +1,11 @@
-package pt.ist.socialsoftware.mono2micro.metrics;
+package pt.ist.socialsoftware.mono2micro.metrics.metricService;
 
+import org.springframework.stereotype.Service;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.functionality.LocalTransactionTypes;
@@ -14,36 +14,18 @@ import pt.ist.socialsoftware.mono2micro.utils.Utils;
 import java.util.Map;
 import java.util.Set;
 
-public class FunctionalityComplexityMetric extends Metric<Integer> {
-    public String getType() {
-        return MetricType.FUNCTIONALITY_COMPLEXITY;
-    }
+@Service
+public class FunctionalityComplexityMetricService {
+    public Integer calculateMetric(AccessesSciPyDecomposition decomposition, Functionality functionality, FunctionalityRedesign functionalityRedesign) {
+        int value = 0;
 
-    // Decomposition Metric
-    public void calculateMetric(Decomposition decomposition) {}
-
-    // Functionality Metric
-    public void calculateMetric(Decomposition decomposition, Functionality functionality) {}
-
-    // Functionality Redesign Metric
-    public void calculateMetric(Decomposition decomposition, Functionality functionality, FunctionalityRedesign functionalityRedesign) {
-        calculateFunctionalityComplexity((AccessesSciPyDecomposition) decomposition, functionality, functionalityRedesign);
-    }
-
-    private void calculateFunctionalityComplexity(
-            AccessesSciPyDecomposition decomposition,
-            Functionality functionality,
-            FunctionalityRedesign functionalityRedesign
-    ){
         if(functionality.getType() != FunctionalityType.SAGA)
-            return;
+            return value;
 
         Map<String, Set<Cluster>> functionalitiesClusters = Utils.getFunctionalitiesClusters(
                 decomposition.getEntityIDToClusterName(),
                 decomposition.getClusters(),
                 decomposition.getFunctionalities().values());
-
-        this.value = 0;
 
         for (int i = 0; i < functionalityRedesign.getRedesign().size(); i++) {
             LocalTransaction lt = functionalityRedesign.getRedesign().get(i);
@@ -55,7 +37,7 @@ public class FunctionalityComplexityMetric extends Metric<Integer> {
 
                     // Functionality complexity cost of write
                     if(mode >= 2 && lt.getType() == LocalTransactionTypes.COMPENSATABLE) // 2 -> W, 3 -> RW
-                        this.value++;
+                        value++;
 
                     // Functionality complexity cost of read
                     if (mode != 2) { // 2 -> W - we want all the reads
@@ -64,17 +46,18 @@ public class FunctionalityComplexityMetric extends Metric<Integer> {
                                     otherFunctionality.containsEntity(entity) &&
                                     functionalitiesClusters.get(otherFunctionality.getName()).size() > 1) {
 
-                                if(otherFunctionality.getFunctionalityRedesigns().size() == 1 &&
+                                if(otherFunctionality.getFunctionalityRedesignNames().size() == 1 &&
                                         otherFunctionality.getEntities().get(entity) >= 2)
-                                    this.value++;
-                                else if(otherFunctionality.getFunctionalityRedesigns().size() > 1 &&
+                                    value++;
+                                else if(otherFunctionality.getFunctionalityRedesignNames().size() > 1 &&
                                         otherFunctionality.frUsedForMetrics().semanticLockEntities().contains(entity))
-                                    this.value++;
+                                    value++;
                             }
                         }
                     }
                 }
             }
         }
+        return value;
     }
 }

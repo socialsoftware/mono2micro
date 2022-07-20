@@ -1,14 +1,12 @@
-package pt.ist.socialsoftware.mono2micro.metrics;
+package pt.ist.socialsoftware.mono2micro.metrics.metricService;
 
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
+import org.springframework.stereotype.Service;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
-import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
@@ -16,29 +14,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
-public class ComplexityMetric extends Metric<Float> {
-    public String getType() {
-        return MetricType.COMPLEXITY;
-    }
-
-    // Decomposition Metric
-    public void calculateMetric(Decomposition decomposition) {
-        switch (decomposition.getStrategyType()) {
-            case AccessesSciPyStrategy.ACCESSES_SCIPY:
-                this.value = calculateMetricAccessesSciPy((AccessesSciPyDecomposition) decomposition);
-                break;
-            default:
-                throw new RuntimeException("Decomposition strategy '" + decomposition.getStrategyType() + "' not known.");
-        }
-    }
-
-    private float calculateMetricAccessesSciPy(AccessesSciPyDecomposition decomposition) {
-        Map<String, List<Functionality>> clustersFunctionalities = Utils.getClustersFunctionalities(
-                decomposition.getEntityIDToClusterName(),
-                decomposition.getClusters(),
-                decomposition.getFunctionalities().values()
-        );
-
+@Service
+public class ComplexityMetricService {
+    public Float calculateMetric(AccessesSciPyDecomposition decomposition, Map<String, List<Functionality>> clustersFunctionalities) {
         float complexity;
 
         // Set cluster complexity
@@ -48,8 +26,8 @@ public class ComplexityMetric extends Metric<Float> {
             complexity = 0;
 
             for (Functionality functionality : functionalitiesThatAccessThisCluster) {
-                ComplexityMetric complexityMetric = (ComplexityMetric) functionality.searchMetricByType(MetricType.COMPLEXITY);
-                complexity += complexityMetric.getValue();
+                Float complexityMetric = (Float) functionality.getMetric(MetricType.COMPLEXITY);
+                complexity += complexityMetric;
             }
 
             complexity /= functionalitiesThatAccessThisCluster.size();
@@ -62,8 +40,8 @@ public class ComplexityMetric extends Metric<Float> {
         complexity = 0;
 
         for (Functionality functionality : decomposition.getFunctionalities().values()) {
-            ComplexityMetric complexityMetric = (ComplexityMetric) functionality.searchMetricByType(MetricType.COMPLEXITY);
-            complexity += complexityMetric.getValue();
+            Float complexityMetric = (Float) functionality.getMetric(MetricType.COMPLEXITY);
+            complexity += complexityMetric;
         }
 
         return BigDecimal.valueOf(complexity / decomposition.getFunctionalities().size())
@@ -71,38 +49,22 @@ public class ComplexityMetric extends Metric<Float> {
                 .floatValue();
     }
 
-
-
-    // Functionality Metric
-    public void calculateMetric(Decomposition decomposition, Functionality functionality) {
-
-        AccessesSciPyDecomposition accessesSciPyDecomposition = (AccessesSciPyDecomposition) decomposition;
+    public Float calculateMetric(AccessesSciPyDecomposition decomposition, Functionality functionality) {
+        float value;
 
         // Since metric calculation is always done during the creation of the functionalities, we can use createLocalTransactionGraph,
         // otherwise, if traces == null, use createLocalTransactionGraphFromScratch
-        DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph = functionality.createLocalTransactionGraph(accessesSciPyDecomposition.getEntityIDToClusterName());
+        DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph = functionality.createLocalTransactionGraph(decomposition.getEntityIDToClusterName());
 
-        this.value = calculateFunctionalityComplexity(
-                accessesSciPyDecomposition,
-                functionality.getName(),
-                Utils.getFunctionalitiesClusters(
-                        accessesSciPyDecomposition.getEntityIDToClusterName(),
-                        accessesSciPyDecomposition.getClusters(),
-                        accessesSciPyDecomposition.getFunctionalities().values()),
-                        localTransactionsGraph);
-    }
+        Map<String, Set<Cluster>> functionalityClusters = Utils.getFunctionalitiesClusters(
+                decomposition.getEntityIDToClusterName(),
+                decomposition.getClusters(),
+                decomposition.getFunctionalities().values());
 
-    private static float calculateFunctionalityComplexity(
-            AccessesSciPyDecomposition decomposition,
-            String functionalityName,
-            Map<String, Set<Cluster>> functionalityClusters,
-            DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph
-    ) {
         Set<LocalTransaction> allLocalTransactions = localTransactionsGraph.vertexSet();
 
-        if (functionalityClusters.get(functionalityName).size() == 1) {
-            return 0;
-
+        if (functionalityClusters.get(functionality.getName()).size() == 1) {
+            value = 0F;
         } else {
             // < entity + mode, List<functionalityName>> functionalitiesThatTouchSameEntities for a given mode
             Map<String, List<String>> cache = new HashMap<>();
@@ -126,7 +88,7 @@ public class ComplexityMetric extends Metric<Float> {
 
                         if (functionalitiesThatTouchThisEntityAndMode == null) {
                             functionalitiesThatTouchThisEntityAndMode = costOfAccess(
-                                    functionalityName,
+                                    functionality.getName(),
                                     entityID,
                                     mode,
                                     decomposition.getFunctionalities().values(),
@@ -142,9 +104,10 @@ public class ComplexityMetric extends Metric<Float> {
                     functionalityComplexity += functionalitiesThatTouchSameEntities.size();
                 }
             }
-
-            return functionalityComplexity;
+            value = functionalityComplexity;
         }
+
+        return value;
     }
 
     private static List<String> costOfAccess(
@@ -174,6 +137,4 @@ public class ComplexityMetric extends Metric<Float> {
 
         return functionalitiesThatTouchThisEntityAndMode;
     }
-
-    public void calculateMetric(Decomposition decomposition, Functionality functionality, FunctionalityRedesign functionalityRedesign) {}
 }

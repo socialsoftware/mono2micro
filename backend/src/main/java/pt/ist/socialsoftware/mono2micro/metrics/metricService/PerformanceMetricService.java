@@ -1,10 +1,9 @@
-package pt.ist.socialsoftware.mono2micro.metrics;
+package pt.ist.socialsoftware.mono2micro.metrics.metricService;
 
+import org.springframework.stereotype.Service;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
-import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.ReducedTraceElementDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
@@ -14,27 +13,14 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 
-public class PerformanceMetric extends Metric<Float> { // the average of the number of hops between clusters for all traces
-    public String getType() {
-        return MetricType.PERFORMANCE;
-    }
-
-    public void calculateMetric(Decomposition decomposition) {
-        switch (decomposition.getStrategyType()) {
-            case AccessesSciPyStrategy.ACCESSES_SCIPY:
-                this.value = calculateMetricAccessesSciPy((AccessesSciPyDecomposition) decomposition);
-                break;
-            default:
-                throw new RuntimeException("Decomposition strategy '" + decomposition.getStrategyType() + "' not known.");
-        }
-    }
-
-    private float calculateMetricAccessesSciPy(AccessesSciPyDecomposition decomposition) {
+@Service
+public class PerformanceMetricService { // the average of the number of hops between clusters for all traces
+    public Float calculateMetric(AccessesSciPyDecomposition decomposition) {
         float performance = 0;
 
         for (Functionality functionality : decomposition.getFunctionalities().values()) {
-            PerformanceMetric performanceMetric = (PerformanceMetric) functionality.searchMetricByType(MetricType.PERFORMANCE);
-            performance += performanceMetric.getValue();
+            Float performanceMetric = (Float) functionality.getMetric(MetricType.PERFORMANCE);
+            performance += performanceMetric;
         }
 
         int graphFunctionalitiesAmount = decomposition.getFunctionalities().size();
@@ -44,7 +30,7 @@ public class PerformanceMetric extends Metric<Float> { // the average of the num
                 .floatValue();
     }
 
-    public void calculateMetric(Decomposition decomposition, Functionality functionality) {
+    public Float calculateMetric(Decomposition decomposition, Functionality functionality) {
         AccessesSciPyDecomposition accessesSciPyDecomposition = (AccessesSciPyDecomposition) decomposition;
 
         float functionalityPerformance = 0;
@@ -67,8 +53,6 @@ public class PerformanceMetric extends Metric<Float> { // the average of the num
         }
         functionalityPerformance /= functionality.getTraces().size();
 
-        this.value = BigDecimal.valueOf(functionalityPerformance).setScale(2, RoundingMode.HALF_UP).floatValue();
+        return BigDecimal.valueOf(functionalityPerformance).setScale(2, RoundingMode.HALF_UP).floatValue();
     }
-
-    public void calculateMetric(Decomposition decomposition, Functionality functionality, FunctionalityRedesign functionalityRedesign) {}
 }

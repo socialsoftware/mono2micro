@@ -20,6 +20,7 @@ import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.log.domain.accessesSciPyOperations.*;
 import pt.ist.socialsoftware.mono2micro.log.service.AccessesSciPyLogService;
+import pt.ist.socialsoftware.mono2micro.metrics.decompositionService.AccessesSciPyMetricService;
 import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
 import pt.ist.socialsoftware.mono2micro.source.service.SourceService;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
@@ -47,6 +48,9 @@ public class AccessesSciPyDecompositionService {
 
     @Autowired
     AccessesSciPyLogService accessesSciPyLogService;
+
+    @Autowired
+    AccessesSciPyMetricService metricService;
 
     @Autowired
     FunctionalityService functionalityService;
@@ -82,7 +86,7 @@ public class AccessesSciPyDecompositionService {
                 strategy.getTraceType(),
                 true);
 
-        decomposition.calculateMetrics();
+        metricService.calculateMetrics(decomposition);
         decomposition.setOutdated(false);
 
         decompositionRepository.save(decomposition);
@@ -272,7 +276,7 @@ public class AccessesSciPyDecompositionService {
                 functionality.getEntitiesPerCluster().remove(clusterName); functionality.getEntitiesPerCluster().put(newName, entities);
 
                 //TODO perguntar o que fazer com functionality redesigns
-                functionality.getFunctionalityRedesigns().forEach(functionalityRedesign -> {
+                functionality.getFunctionalityRedesignNames().forEach(functionalityRedesign -> {
                     functionalityRedesign.getRedesign().forEach(localTransaction -> {
                         if (localTransaction.getClusterName().equals(clusterName)) {
                             localTransaction.setClusterName(newName);

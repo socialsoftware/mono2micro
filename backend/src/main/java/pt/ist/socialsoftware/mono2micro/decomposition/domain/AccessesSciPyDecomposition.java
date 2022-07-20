@@ -5,8 +5,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.log.domain.AccessesSciPyLog;
-import pt.ist.socialsoftware.mono2micro.metrics.Metric;
-import pt.ist.socialsoftware.mono2micro.metrics.MetricFactory;
 
 import java.util.*;
 
@@ -14,12 +12,6 @@ import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStra
 
 @Document("decomposition")
 public class AccessesSciPyDecomposition extends Decomposition {
-    private static final String[] availableMetrics = {
-            Metric.MetricType.COMPLEXITY,
-            Metric.MetricType.PERFORMANCE,
-            Metric.MetricType.COHESION,
-            Metric.MetricType.COUPLING,
-    };
     private boolean outdated;
     private boolean expert;
     private double silhouetteScore;
@@ -145,26 +137,6 @@ public class AccessesSciPyDecomposition extends Decomposition {
         }
 
         return max;
-    }
-
-    public Metric searchMetricByType(String metricType) {
-        for (Metric metric: this.getMetrics())
-            if (metric.getType().equals(metricType))
-                return metric;
-        return null;
-    }
-
-    public void calculateMetrics() throws Exception {
-        System.out.println("Calculating decomposition metrics...");
-
-        for(String metricType: availableMetrics) {
-            Metric metric = searchMetricByType(metricType);
-            if (metric == null) {
-                metric = MetricFactory.getFactory().getMetric(metricType);
-                this.addMetric(metric);
-            }
-            metric.calculateMetric(this);
-        }
     }
 
     public void transferCouplingDependencies(Set<Short> entities, String currentClusterName, String newClusterName) {

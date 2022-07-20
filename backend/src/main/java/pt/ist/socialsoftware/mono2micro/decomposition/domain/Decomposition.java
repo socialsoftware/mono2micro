@@ -2,18 +2,16 @@ package pt.ist.socialsoftware.mono2micro.decomposition.domain;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
-import pt.ist.socialsoftware.mono2micro.metrics.Metric;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 public abstract class Decomposition {
 	@Id
 	private String name;
 	@DBRef
 	private Strategy strategy;
-	private List<Metric> metrics = new ArrayList<>();
+	private Map<String, Object> metrics; // Map<Metric type, Metric value>
 
 
 	public abstract String getStrategyType();
@@ -32,15 +30,15 @@ public abstract class Decomposition {
 		this.name = name;
 	}
 
-	public List<Metric> getMetrics() {
+	public Map<String, Object> getMetrics() {
 		return metrics;
 	}
 
-	public void setMetrics(List<Metric> metrics) {
+	public void setMetrics(Map<String, Object> metrics) {
 		this.metrics = metrics;
 	}
 
-	public void addMetric(Metric metric) {
-		this.metrics.add(metric);
+	public void addMetric(String metricType, Object metricValue) {
+		this.metrics.put(metricType, metricValue);
 	}
 }

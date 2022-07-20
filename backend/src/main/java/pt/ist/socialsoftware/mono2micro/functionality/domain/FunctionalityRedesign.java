@@ -1,11 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.functionality.domain;
 
 import org.json.JSONArray;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.metrics.Metric;
-import pt.ist.socialsoftware.mono2micro.metrics.MetricFactory;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
-import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.functionality.LocalTransactionTypes;
 
 import java.util.*;
@@ -14,19 +10,9 @@ import java.util.stream.Collectors;
 public class FunctionalityRedesign {
 
     private String name;
-    private boolean usedForMetrics;
     private List<LocalTransaction> redesign = new ArrayList<>();
     private int pivotTransaction = -1;
-    private List<Metric> metrics = new ArrayList<>();
-
-    private static final String[] queryMetrics = {
-            Metric.MetricType.INCONSISTENCY_COMPLEXITY,
-    };
-
-    private static final String[] sagaMetrics = {
-            Metric.MetricType.SYSTEM_COMPLEXITY,
-            Metric.MetricType.FUNCTIONALITY_COMPLEXITY,
-    };
+    private Map<String, Object> metrics;
 
     public FunctionalityRedesign(){}
 
@@ -34,41 +20,20 @@ public class FunctionalityRedesign {
         this.name = name;
     }
 
-    public List<Metric> getMetrics() {
+    public Map<String, Object> getMetrics() {
         return metrics;
     }
 
-    public void setMetrics(List<Metric> metrics) {
+    public Object getMetric(String metricType) {
+        return this.metrics.get(metricType);
+    }
+
+    public void setMetrics(Map<String, Object> metrics) {
         this.metrics = metrics;
     }
 
-    public void addMetric(Metric metric) {
-        this.metrics.add(metric);
-    }
-
-    public Metric searchMetricByType(String metricType) {
-        for (Metric metric: this.getMetrics())
-            if (metric.getType().equals(metricType))
-                return metric;
-        return null;
-    }
-
-    public void calculateMetrics(Decomposition decomposition, Functionality functionality) throws Exception {
-        String[] metricList;
-        if (functionality.getType() == FunctionalityType.QUERY)
-            metricList = queryMetrics;
-        else if (functionality.getType() == FunctionalityType.SAGA)
-            metricList = sagaMetrics;
-        else throw new RuntimeException("Unknown functionality type.");
-
-        for(String metricType: metricList) {
-            Metric metric = searchMetricByType(metricType);
-            if (metric == null) {
-                metric = MetricFactory.getFactory().getMetric(metricType);
-                this.addMetric(metric);
-            }
-            metric.calculateMetric(decomposition, functionality, this);
-        }
+    public void addMetric(String metricType, Object metricValue) {
+        this.metrics.put(metricType, metricValue);
     }
 
     public int getPivotTransaction() {
@@ -535,13 +500,5 @@ public class FunctionalityRedesign {
         for(LocalTransaction lt : this.redesign)
             if(lt.getId() == Integer.parseInt(ltID))
                 lt.setName(newName);
-    }
-
-    public boolean isUsedForMetrics() {
-        return usedForMetrics;
-    }
-
-    public void setUsedForMetrics(boolean usedForMetrics) {
-        this.usedForMetrics = usedForMetrics;
     }
 }

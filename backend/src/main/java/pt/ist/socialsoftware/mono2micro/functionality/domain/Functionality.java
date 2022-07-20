@@ -14,11 +14,8 @@ import org.json.JSONException;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.fileManager.FileManager;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
-import pt.ist.socialsoftware.mono2micro.metrics.Metric;
-import pt.ist.socialsoftware.mono2micro.metrics.MetricFactory;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.ReducedTraceElementDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
@@ -26,16 +23,16 @@ import pt.ist.socialsoftware.mono2micro.utils.*;
 
 import static org.jgrapht.Graphs.successorListOf;
 
-// TODO talvez isto possa ser removido
 @Document("functionality")
 public class Functionality {
 	@Id
 	private String id;
 	private String name;
 	private FunctionalityType type;
-	private List<Metric> metrics = new ArrayList<>();
+	private Map<String, Object> metrics = new HashMap<>();
 	private Map<Short, Byte> entities = new HashMap<>(); // <entityID, mode>
-	private List<FunctionalityRedesign> functionalityRedesigns = new ArrayList<>();
+	private List<String> functionalityRedesignNames = new ArrayList<>();
+	private String functionalityRedesignNameUsedForMetrics;
 	private Map<String, Set<Short>> entitiesPerCluster = new HashMap<>();
 
 	@JsonIgnore
@@ -56,11 +53,6 @@ public class Functionality {
 		this.entitiesPerCluster = functionality.getEntitiesPerCluster();
 	}
 
-	private static final String[] availableMetrics = {
-			Metric.MetricType.COMPLEXITY,
-			Metric.MetricType.PERFORMANCE
-	};
-
 	public String getId() {
 		return id;
 	}
@@ -77,23 +69,20 @@ public class Functionality {
 		this.name = name;
 	}
 
-	public List<Metric> getMetrics() {
+	public Map<String, Object> getMetrics() {
 		return metrics;
 	}
 
-	public void setMetrics(List<Metric> metrics) {
+	public Object getMetric(String metricType) {
+		return this.metrics.get(metricType);
+	}
+
+	public void setMetrics(Map<String, Object> metrics) {
 		this.metrics = metrics;
 	}
 
-	public void addMetric(Metric metric) {
-		this.metrics.add(metric);
-	}
-
-	public Metric searchMetricByType(String metricType) {
-		for (Metric metric: this.getMetrics())
-			if (metric.getType().equals(metricType))
-				return metric;
-		return null;
+	public void addMetric(String metricType, Object metricValue) {
+		this.metrics.put(metricType, metricValue);
 	}
 
 	public Map<Short, Byte> getEntities() {
@@ -119,10 +108,10 @@ public class Functionality {
 		return this.entities.containsKey(entity);
 	}
 
-	public List<FunctionalityRedesign> getFunctionalityRedesigns() { return functionalityRedesigns; }
+	public List<String> getFunctionalityRedesignNames() { return functionalityRedesignNames; }
 
-	public void setFunctionalityRedesigns(List<FunctionalityRedesign> functionalityRedesigns) {
-		this.functionalityRedesigns = functionalityRedesigns;
+	public void setFunctionalityRedesignNames(List<String> functionalityRedesignNames) {
+		this.functionalityRedesignNames = functionalityRedesignNames;
 	}
 
 
@@ -172,16 +161,16 @@ public class Functionality {
 		}
 
 		System.out.println(IOUtils.toString(FileManager.getInstance().getFunctionalityRedesignAsJSON(functionalityRedesign), StandardCharsets.UTF_8));
-		this.functionalityRedesigns.add(0, functionalityRedesign);
+		this.functionalityRedesignNames.add(0, functionalityRedesign);
 		return functionalityRedesign;
 	}
 
 	public FunctionalityRedesign getFunctionalityRedesign(String redesignName){
-		return this.functionalityRedesigns.stream().filter(fr -> fr.getName().equals(redesignName)).findFirst().orElse(null);
+		return this.functionalityRedesignNames.stream().filter(fr -> fr.getName().equals(redesignName)).findFirst().orElse(null);
 	}
 
 	public boolean changeFunctionalityRedesignName(String oldName, String newName){
-		FunctionalityRedesign functionalityRedesign = this.functionalityRedesigns
+		FunctionalityRedesign functionalityRedesign = this.functionalityRedesignNames
 			.stream()
 			.filter(fr -> fr.getName().equals(oldName))
 			.findFirst()
@@ -192,24 +181,32 @@ public class Functionality {
 	}
 
 	public FunctionalityRedesign frUsedForMetrics(){
-		for(FunctionalityRedesign fr : this.getFunctionalityRedesigns()){
+		for(FunctionalityRedesign fr : this.getFunctionalityRedesignNames()){
 			if(fr.isUsedForMetrics()) return fr;
 		}
 		return null;
 	}
 
+	public String getFunctionalityRedesignNameUsedForMetrics() {
+		return functionalityRedesignNameUsedForMetrics;
+	}
+
+	public void setFunctionalityRedesignNameUsedForMetrics(String functionalityRedesignNameUsedForMetrics) {
+		this.functionalityRedesignNameUsedForMetrics = functionalityRedesignNameUsedForMetrics;
+	}
+
 	public boolean checkNameValidity(String name){
-		return this.functionalityRedesigns.stream().filter(fr -> fr.getName().equals(name)).findFirst().orElse(null) == null;
+		return this.functionalityRedesignNames.stream().filter(fr -> fr.getName().equals(name)).findFirst().orElse(null) == null;
 	}
 
 	public void deleteRedesign(String redesignName){
-		if(this.functionalityRedesigns.removeIf(fr -> fr.getName().equals(redesignName))){
-			this.functionalityRedesigns.get(0).setUsedForMetrics(true);
+		if(this.functionalityRedesignNames.removeIf(fr -> fr.getName().equals(redesignName))){
+			this.functionalityRedesignNames.get(0).setUsedForMetrics(true);
 		}
 	}
 
 	public void changeFRUsedForMetrics(String redesignName){
-		for(FunctionalityRedesign fr : this.getFunctionalityRedesigns()) {
+		for(FunctionalityRedesign fr : this.getFunctionalityRedesignNames()) {
 			if (fr.isUsedForMetrics())
 				fr.setUsedForMetrics(false);
 			else if (fr.getName().equals(redesignName))
@@ -271,17 +268,6 @@ public class Functionality {
 
 	public void setEntitiesPerCluster(Map<String, Set<Short>> entitiesPerCluster) {
 		this.entitiesPerCluster = entitiesPerCluster;
-	}
-
-	public void calculateMetrics(Decomposition decomposition) throws Exception {
-		for(String metricType: availableMetrics) {
-			Metric metric = searchMetricByType(metricType);
-			if (metric == null) {
-				metric = MetricFactory.getFactory().getMetric(metricType);
-				this.addMetric(metric);
-			}
-			metric.calculateMetric(decomposition, this);
-		}
 	}
 
 	public void setupEntities(List<ReducedTraceElementDto> traceElements, Map<Short, String> entityIDToClusterName) {

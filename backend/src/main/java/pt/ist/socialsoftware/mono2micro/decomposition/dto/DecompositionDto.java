@@ -2,10 +2,9 @@ package pt.ist.socialsoftware.mono2micro.decomposition.dto;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import pt.ist.socialsoftware.mono2micro.metrics.Metric;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
 
-import java.util.List;
+import java.util.Map;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "strategyType")
 @JsonSubTypes({
@@ -16,7 +15,7 @@ public abstract class DecompositionDto {
     private String codebaseName;
     private String strategyName;
     private String strategyType;
-    private List<Metric> metrics;
+    private Map<String, Object> metrics;
 
     public String getName() {
         return name;
@@ -50,11 +49,11 @@ public abstract class DecompositionDto {
         this.strategyType = strategyType;
     }
 
-    public List<Metric> getMetrics() {
+    public Map<String, Object> getMetrics() {
         return metrics;
     }
 
-    public void setMetrics(List<Metric> metrics) {
+    public void setMetrics(Map<String, Object> metrics) {
         this.metrics = metrics;
     }
 }

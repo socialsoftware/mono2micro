@@ -1,12 +1,9 @@
-package pt.ist.socialsoftware.mono2micro.metrics;
+package pt.ist.socialsoftware.mono2micro.metrics.metricService;
 
+import org.springframework.stereotype.Service;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
-import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
-import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -14,28 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class CohesionMetric extends Metric<Float> {
-    public String getType() {
-        return MetricType.COHESION;
-    }
-
-    public void calculateMetric(Decomposition decomposition) {
-        switch (decomposition.getStrategyType()) {
-            case AccessesSciPyStrategy.ACCESSES_SCIPY:
-                this.value = calculateMetricAccessesSciPy((AccessesSciPyDecomposition) decomposition);
-                break;
-            default:
-                throw new RuntimeException("Decomposition strategy '" + decomposition.getStrategyType() + "' not known.");
-        }
-    }
-
-    private float calculateMetricAccessesSciPy(AccessesSciPyDecomposition decomposition) {
-        Map<String, List<Functionality>> clustersFunctionalities = Utils.getClustersFunctionalities(
-                decomposition.getEntityIDToClusterName(),
-                decomposition.getClusters(),
-                decomposition.getFunctionalities().values()
-        );
-
+@Service
+public class CohesionMetricService {
+    public Float calculateMetric(AccessesSciPyDecomposition decomposition, Map<String, List<Functionality>> clustersFunctionalities) {
         float totalCohesion = 0;
 
         for (Cluster cluster : decomposition.getClusters().values()) {
@@ -67,8 +45,4 @@ public class CohesionMetric extends Metric<Float> {
                 .setScale(2, RoundingMode.HALF_UP)
                 .floatValue();
     }
-
-    public void calculateMetric(Decomposition decomposition, Functionality functionality) {}
-
-    public void calculateMetric(Decomposition decomposition, Functionality functionality, FunctionalityRedesign functionalityRedesign) {}
 }

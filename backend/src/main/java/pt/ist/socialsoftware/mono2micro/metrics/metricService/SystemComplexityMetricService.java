@@ -1,11 +1,11 @@
-package pt.ist.socialsoftware.mono2micro.metrics;
+package pt.ist.socialsoftware.mono2micro.metrics.metricService;
 
+import org.springframework.stereotype.Service;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.functionality.LocalTransactionTypes;
@@ -14,36 +14,22 @@ import pt.ist.socialsoftware.mono2micro.utils.Utils;
 import java.util.Map;
 import java.util.Set;
 
-public class SystemComplexityMetric extends Metric<Integer> {
-    public String getType() {
-        return MetricType.SYSTEM_COMPLEXITY;
-    }
-
-    // Decomposition Metric
-    public void calculateMetric(Decomposition decomposition) {}
-
-    // Functionality Metric
-    public void calculateMetric(Decomposition decomposition, Functionality functionality) {}
-
-    // Functionality Redesign Metric
-    public void calculateMetric(Decomposition decomposition, Functionality functionality, FunctionalityRedesign functionalityRedesign) {
-        calculateSystemComplexity((AccessesSciPyDecomposition) decomposition, functionality, functionalityRedesign);
-    }
-
-    private void calculateSystemComplexity(
+@Service
+public class SystemComplexityMetricService {
+    public Integer calculateMetric(
             AccessesSciPyDecomposition decomposition,
             Functionality functionality,
             FunctionalityRedesign functionalityRedesign
     ){
+        int value = 0;
+
         if(functionality.getType() != FunctionalityType.SAGA)
-            return;
+            return value;
 
         Map<String, Set<Cluster>> functionalitiesClusters = Utils.getFunctionalitiesClusters(
                 decomposition.getEntityIDToClusterName(),
                 decomposition.getClusters(),
                 decomposition.getFunctionalities().values());
-
-        this.value = 0;
 
         for (int i = 0; i < functionalityRedesign.getRedesign().size(); i++) {
             LocalTransaction lt = functionalityRedesign.getRedesign().get(i);
@@ -60,9 +46,10 @@ public class SystemComplexityMetric extends Metric<Integer> {
                                     otherFunctionality.containsEntity(entity) &&
                                     otherFunctionality.getEntities().get(entity) != 2 &&
                                     functionalitiesClusters.get(otherFunctionality.getName()).size() > 1)
-                                this.value++;
+                                value++;
                 }
             }
         }
+        return value;
     }
 }

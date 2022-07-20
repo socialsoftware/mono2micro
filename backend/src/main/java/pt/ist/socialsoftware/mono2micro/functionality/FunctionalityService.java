@@ -12,6 +12,7 @@ import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
+import pt.ist.socialsoftware.mono2micro.metrics.decompositionService.AccessesSciPyMetricService;
 import pt.ist.socialsoftware.mono2micro.source.domain.Source;
 import pt.ist.socialsoftware.mono2micro.source.service.SourceService;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
@@ -36,6 +37,9 @@ public class FunctionalityService {
 
     @Autowired
     FunctionalityRepository functionalityRepository;
+
+    @Autowired
+    AccessesSciPyMetricService metricService;
 
     public void setupFunctionalities(
             AccessesSciPyDecomposition decomposition,
@@ -76,7 +80,7 @@ public class FunctionalityService {
 
         for (Functionality functionality: newFunctionalities) {
             functionality.defineFunctionalityType();
-            functionality.calculateMetrics(decomposition);
+            metricService.calculateMetrics(decomposition, functionality);
 
             // Functionality Redesigns
             if (calculateRedesigns) {
@@ -85,7 +89,7 @@ public class FunctionalityService {
                         true,
                         localTransactionsGraphs.get(functionality.getName()));
 
-                functionalityRedesign.calculateMetrics(decomposition, functionality);
+                metricService.calculateMetrics(decomposition, functionality, functionalityRedesign);
             }
         }
         functionalityRepository.saveAll(newFunctionalities);
@@ -116,7 +120,7 @@ public class FunctionalityService {
 
         Source source = strategy.getCodebase().getSourceByType(ACCESSES);
 
-        if(functionality.getFunctionalityRedesigns()
+        if(functionality.getFunctionalityRedesignNames()
                 .stream()
                 .noneMatch(e -> e.getName().equals(Constants.DEFAULT_REDESIGN_NAME))){
             functionality.createFunctionalityRedesign(
@@ -143,7 +147,7 @@ public class FunctionalityService {
 
         FunctionalityRedesign functionalityRedesign = functionality.getFunctionalityRedesign(redesignName);
         functionalityRedesign.addCompensating(clusterName, accesses, fromID);
-        functionalityRedesign.calculateMetrics(decomposition, functionality);
+        metricService.calculateMetrics(decomposition, functionality, functionalityRedesign);
         functionalityRepository.save(functionality);
         return functionality;
     }
@@ -157,7 +161,7 @@ public class FunctionalityService {
 
         FunctionalityRedesign functionalityRedesign = functionality.getFunctionalityRedesign(redesignName);
         functionalityRedesign.sequenceChange(localTransactionID, newCaller);
-        functionalityRedesign.calculateMetrics(decomposition, functionality);
+        metricService.calculateMetrics(decomposition, functionality, functionalityRedesign);
 
         functionalityRepository.save(functionality);
         return functionality;
@@ -173,7 +177,7 @@ public class FunctionalityService {
 
         FunctionalityRedesign functionalityRedesign = functionality.getFunctionalityRedesign(redesignName);
         functionalityRedesign.dcgi(fromClusterName, toClusterName, localTransactions);
-        functionalityRedesign.calculateMetrics(decomposition, functionality);
+        metricService.calculateMetrics(decomposition, functionality, functionalityRedesign);
         functionalityRepository.save(functionality);
         return functionality;
     }
@@ -191,7 +195,7 @@ public class FunctionalityService {
 
         FunctionalityRedesign functionalityRedesign = functionality.getFunctionalityRedesign(redesignName);
         functionalityRedesign.definePivotTransaction(Integer.parseInt(transactionID));
-        functionalityRedesign.calculateMetrics(decomposition, functionality);
+        metricService.calculateMetrics(decomposition, functionality, functionalityRedesign);
 
         if(newRedesignName.isPresent()) {
             functionality.changeFunctionalityRedesignName(redesignName, newRedesignName.get());
@@ -213,7 +217,7 @@ public class FunctionalityService {
         }
 
         functionalityRedesign = functionality.getFunctionalityRedesign(Constants.DEFAULT_REDESIGN_NAME);
-        functionalityRedesign.calculateMetrics(decomposition, functionality);
+        metricService.calculateMetrics(decomposition, functionality, functionalityRedesign);
         functionalityRepository.save(functionality);
         return functionality;
     }

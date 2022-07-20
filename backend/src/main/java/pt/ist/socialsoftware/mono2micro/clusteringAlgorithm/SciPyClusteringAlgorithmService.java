@@ -16,7 +16,7 @@ import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomp
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityService;
 import pt.ist.socialsoftware.mono2micro.log.domain.AccessesSciPyLog;
 import pt.ist.socialsoftware.mono2micro.log.repository.LogRepository;
-import pt.ist.socialsoftware.mono2micro.metrics.Metric;
+import pt.ist.socialsoftware.mono2micro.metrics.decompositionService.AccessesSciPyMetricService;
 import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
 import pt.ist.socialsoftware.mono2micro.source.service.SourceService;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
@@ -50,6 +50,9 @@ public class SciPyClusteringAlgorithmService {
 
     @Autowired
     RecommendAccessesSciPyStrategyService recommendStrategyService;
+
+    @Autowired
+    AccessesSciPyMetricService metricService;
 
     @Autowired
     FunctionalityService functionalityService;
@@ -161,7 +164,7 @@ public class SciPyClusteringAlgorithmService {
                 true);
 
         // Calculate decomposition's metrics
-        decomposition.calculateMetrics();
+        metricService.calculateMetrics(decomposition);
     }
 
     private JSONObject invokePythonCut(AccessesSciPyDecomposition decomposition, String similarityMatrixName, String cutType, float cutValue) {
@@ -289,7 +292,7 @@ public class SciPyClusteringAlgorithmService {
                             false);
 
                     // Calculate decomposition's metrics
-                    decomposition.calculateMetrics();
+                    metricService.calculateMetrics(decomposition);
 
                     decompositionRepository.save(decomposition);
                     strategy.addDecomposition(decomposition);
@@ -308,8 +311,8 @@ public class SciPyClusteringAlgorithmService {
 
                     decompositionJSON.put("maxClusterSize", decomposition.maxClusterSize());
 
-                    for (Metric metric : decomposition.getMetrics())
-                        decompositionJSON.put(metric.getType(), metric.getValue());
+                    for (Map.Entry<String, Object> metric : decomposition.getMetrics().entrySet())
+                        decompositionJSON.put(metric.getKey(), metric.getValue());
 
                     addRecommendationToJSON(recommendationJSON, decompositionJSON);
 
