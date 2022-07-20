@@ -183,6 +183,11 @@ public class FileManager {
 		return new ByteArrayInputStream(outputStream.toByteArray());
 	}
 
+	public FunctionalityRedesign getFunctionalityRedesign(InputStream inputStream) throws IOException {
+		ObjectReader reader = objectMapper.readerFor(FunctionalityRedesign.class);
+		return reader.readValue(inputStream);
+	}
+
 	public Decomposition getDecompositionWithFunctionalitiesAndClustersWithFields(
 		String codebaseName,
 		String decompositionName,

@@ -9,6 +9,7 @@ import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesi
 import pt.ist.socialsoftware.mono2micro.metrics.metricService.*;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,11 +32,7 @@ public class AccessesSciPyMetricService {
     SystemComplexityMetricService systemComplexityMetricService;
 
     public void calculateMetrics(AccessesSciPyDecomposition decomposition) {
-        Map<String, List<Functionality>> clustersFunctionalities = Utils.getClustersFunctionalities(
-                decomposition.getEntityIDToClusterName(),
-                decomposition.getClusters(),
-                decomposition.getFunctionalities().values()
-        );
+        Map<String, List<Functionality>> clustersFunctionalities = Utils.getClustersFunctionalities(decomposition);
 
         decomposition.setMetrics(new HashMap<>());
         decomposition.addMetric(MetricType.COMPLEXITY, complexityMetricService.calculateMetric(decomposition, clustersFunctionalities));
@@ -50,7 +47,7 @@ public class AccessesSciPyMetricService {
         functionality.addMetric(MetricType.PERFORMANCE, performanceMetricService.calculateMetric(decomposition, functionality));
     }
 
-    public void calculateMetrics(AccessesSciPyDecomposition decomposition, Functionality functionality, FunctionalityRedesign functionalityRedesign) {
+    public void calculateMetrics(AccessesSciPyDecomposition decomposition, Functionality functionality, FunctionalityRedesign functionalityRedesign) throws IOException {
         functionalityRedesign.setMetrics(new HashMap<>());
         if (functionality.getType() == FunctionalityType.QUERY) {
             functionalityRedesign.addMetric(MetricType.SYSTEM_COMPLEXITY, systemComplexityMetricService.calculateMetric(decomposition, functionality, functionalityRedesign));

@@ -173,11 +173,7 @@ public class AccessesSciPyDecompositionController {
         try {
             AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) decompositionService.updateOutdatedFunctionalitiesAndMetrics(decompositionName);
 
-            Map<String, List<Functionality>> clustersFunctionalities = Utils.getClustersFunctionalities(
-                    decomposition.getEntityIDToClusterName(),
-                    decomposition.getClusters(),
-                    decomposition.getFunctionalities().values()
-            );
+            Map<String, List<Functionality>> clustersFunctionalities = Utils.getClustersFunctionalities(decomposition);
 
             Map<String, Object> response = new HashMap<>();
             response.put("clusters", decomposition.getClusters());

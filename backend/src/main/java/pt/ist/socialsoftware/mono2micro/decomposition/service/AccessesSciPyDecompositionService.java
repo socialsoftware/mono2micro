@@ -16,6 +16,7 @@ import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Clust
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.AccessesSciPyDecompositionRepository;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityService;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
+import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.log.domain.accessesSciPyOperations.*;
@@ -275,14 +276,18 @@ public class AccessesSciPyDecompositionService {
             if (entities != null) {
                 functionality.getEntitiesPerCluster().remove(clusterName); functionality.getEntitiesPerCluster().put(newName, entities);
 
-                //TODO perguntar o que fazer com functionality redesigns
-                functionality.getFunctionalityRedesignNames().forEach(functionalityRedesign -> {
-                    functionalityRedesign.getRedesign().forEach(localTransaction -> {
-                        if (localTransaction.getClusterName().equals(clusterName)) {
-                            localTransaction.setClusterName(newName);
-                            localTransaction.setName(localTransaction.getId() + ": " + newName);
-                        }
-                    });
+                functionality.getFunctionalityRedesigns().keySet().forEach(functionalityRedesignName -> {
+                    try {
+                        FunctionalityRedesign functionalityRedesign = functionalityService.getFunctionalityRedesign(functionality, functionalityRedesignName);
+                        functionalityRedesign.getRedesign().forEach(localTransaction -> {
+                            if (localTransaction.getClusterName().equals(clusterName)) {
+                                localTransaction.setClusterName(newName);
+                                localTransaction.setName(localTransaction.getId() + ": " + newName);
+                            }
+                        });
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 });
             }
         });

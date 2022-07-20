@@ -2,19 +2,15 @@ package pt.ist.socialsoftware.mono2micro.functionality.domain;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.apache.commons.io.IOUtils;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
-import org.jgrapht.traverse.BreadthFirstIterator;
 import org.json.JSONException;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
-import pt.ist.socialsoftware.mono2micro.fileManager.FileManager;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.ReducedTraceElementDto;
@@ -31,7 +27,7 @@ public class Functionality {
 	private FunctionalityType type;
 	private Map<String, Object> metrics = new HashMap<>();
 	private Map<Short, Byte> entities = new HashMap<>(); // <entityID, mode>
-	private List<String> functionalityRedesignNames = new ArrayList<>();
+	private Map<String, String> functionalityRedesigns = new HashMap<>(); // <redesignName, redesignFileName>
 	private String functionalityRedesignNameUsedForMetrics;
 	private Map<String, Set<Short>> entitiesPerCluster = new HashMap<>();
 
@@ -41,11 +37,13 @@ public class Functionality {
 
 	public Functionality() {}
 
-	public Functionality(String name) {
+	public Functionality(String decompositionName, String name) {
+		this.id = decompositionName + " & " + name.replaceAll("\\.", "_");
         this.name = name;
 	}
 
-	public Functionality(Functionality functionality) { // Useful when redesigns are not needed
+	public Functionality(String decompositionName, Functionality functionality) { // Useful when redesigns are not needed
+		this.id = decompositionName + " & " + functionality.getName().replaceAll("\\.", "_");
 		this.name = functionality.getName();
 		this.type = functionality.getType();
 		this.metrics = functionality.getMetrics();
@@ -108,83 +106,18 @@ public class Functionality {
 		return this.entities.containsKey(entity);
 	}
 
-	public List<String> getFunctionalityRedesignNames() { return functionalityRedesignNames; }
+	public Map<String, String> getFunctionalityRedesigns() { return functionalityRedesigns; }
 
-	public void setFunctionalityRedesignNames(List<String> functionalityRedesignNames) {
-		this.functionalityRedesignNames = functionalityRedesignNames;
+	public void setFunctionalityRedesigns(Map<String, String> functionalityRedesigns) {
+		this.functionalityRedesigns = functionalityRedesigns;
 	}
 
-
-	public FunctionalityRedesign createFunctionalityRedesign(
-		String name,
-		boolean usedForMetrics,
-		DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph
-	) throws IOException {
-		FunctionalityRedesign functionalityRedesign = new FunctionalityRedesign(name);
-		functionalityRedesign.setUsedForMetrics(usedForMetrics);
-
-		LocalTransaction graphRootLT = new LocalTransaction(0, "-1");
-
-		graphRootLT.setName(this.name);
-
-		Iterator<LocalTransaction> iterator = new BreadthFirstIterator<>(
-			localTransactionsGraph,
-			graphRootLT
-		);
-
-		while (iterator.hasNext()) {
-			LocalTransaction lt = iterator.next();
-			lt.setRemoteInvocations(new ArrayList<>());
-
-			List<LocalTransaction> graphChildrenLTs = successorListOf(
-				localTransactionsGraph,
-				lt
-			);
-
-			for (LocalTransaction childLT : graphChildrenLTs) {
-				lt.addRemoteInvocations(childLT.getId());
-				childLT.setName(childLT.getId() + ": " + childLT.getClusterName());
-			}
-
-			functionalityRedesign.getRedesign().add(lt);
-			if(lt.getId() != 0){
-				for(AccessDto accessDto : lt.getClusterAccesses()){
-					if(this.entitiesPerCluster.containsKey(lt.getClusterName())){
-						this.entitiesPerCluster.get(lt.getClusterName()).add(accessDto.getEntityID());
-					} else {
-						Set<Short> entities = new HashSet<>();
-						entities.add(accessDto.getEntityID());
-						this.entitiesPerCluster.put(lt.getClusterName(), entities);
-					}
-				}
-			}
-		}
-
-		System.out.println(IOUtils.toString(FileManager.getInstance().getFunctionalityRedesignAsJSON(functionalityRedesign), StandardCharsets.UTF_8));
-		this.functionalityRedesignNames.add(0, functionalityRedesign);
-		return functionalityRedesign;
+	public void addFunctionalityRedesign(String functionalityRedesign, String fileName) {
+		this.functionalityRedesigns.put(functionalityRedesign, fileName);
 	}
 
-	public FunctionalityRedesign getFunctionalityRedesign(String redesignName){
-		return this.functionalityRedesignNames.stream().filter(fr -> fr.getName().equals(redesignName)).findFirst().orElse(null);
-	}
-
-	public boolean changeFunctionalityRedesignName(String oldName, String newName){
-		FunctionalityRedesign functionalityRedesign = this.functionalityRedesignNames
-			.stream()
-			.filter(fr -> fr.getName().equals(oldName))
-			.findFirst()
-			.orElse(null);
-
-		functionalityRedesign.setName(newName);
-		return true;
-	}
-
-	public FunctionalityRedesign frUsedForMetrics(){
-		for(FunctionalityRedesign fr : this.getFunctionalityRedesignNames()){
-			if(fr.isUsedForMetrics()) return fr;
-		}
-		return null;
+	public String getFunctionalityRedesignFileName(String redesignName) {
+		return this.functionalityRedesigns.get(redesignName);
 	}
 
 	public String getFunctionalityRedesignNameUsedForMetrics() {
@@ -195,23 +128,14 @@ public class Functionality {
 		this.functionalityRedesignNameUsedForMetrics = functionalityRedesignNameUsedForMetrics;
 	}
 
-	public boolean checkNameValidity(String name){
-		return this.functionalityRedesignNames.stream().filter(fr -> fr.getName().equals(name)).findFirst().orElse(null) == null;
+	public boolean containsFunctionalityRedesignName(String name) {
+		return this.functionalityRedesigns.containsKey(name);
 	}
 
-	public void deleteRedesign(String redesignName){
-		if(this.functionalityRedesignNames.removeIf(fr -> fr.getName().equals(redesignName))){
-			this.functionalityRedesignNames.get(0).setUsedForMetrics(true);
-		}
-	}
-
-	public void changeFRUsedForMetrics(String redesignName){
-		for(FunctionalityRedesign fr : this.getFunctionalityRedesignNames()) {
-			if (fr.isUsedForMetrics())
-				fr.setUsedForMetrics(false);
-			else if (fr.getName().equals(redesignName))
-				fr.setUsedForMetrics(true);
-		}
+	public void removeFunctionalityRedesign(String redesignName) {
+		this.functionalityRedesigns.remove(redesignName);
+		if (this.functionalityRedesignNameUsedForMetrics.equals(redesignName))
+			this.functionalityRedesignNameUsedForMetrics = new ArrayList<>(this.getFunctionalityRedesigns().keySet()).get(0);
 	}
 
 	public FunctionalityType getType() {

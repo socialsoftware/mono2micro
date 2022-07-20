@@ -1,7 +1,9 @@
 package pt.ist.socialsoftware.mono2micro.metrics.metricService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
+import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityService;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
@@ -11,12 +13,18 @@ import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.functionality.LocalTransactionTypes;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
 @Service
 public class FunctionalityComplexityMetricService {
-    public Integer calculateMetric(AccessesSciPyDecomposition decomposition, Functionality functionality, FunctionalityRedesign functionalityRedesign) {
+    @Autowired
+    FunctionalityService functionalityService;
+
+    public Integer calculateMetric(AccessesSciPyDecomposition decomposition, Functionality functionality, FunctionalityRedesign functionalityRedesign)
+            throws IOException
+    {
         int value = 0;
 
         if(functionality.getType() != FunctionalityType.SAGA)
@@ -46,11 +54,11 @@ public class FunctionalityComplexityMetricService {
                                     otherFunctionality.containsEntity(entity) &&
                                     functionalitiesClusters.get(otherFunctionality.getName()).size() > 1) {
 
-                                if(otherFunctionality.getFunctionalityRedesignNames().size() == 1 &&
+                                if(otherFunctionality.getFunctionalityRedesigns().size() == 1 &&
                                         otherFunctionality.getEntities().get(entity) >= 2)
                                     value++;
-                                else if(otherFunctionality.getFunctionalityRedesignNames().size() > 1 &&
-                                        otherFunctionality.frUsedForMetrics().semanticLockEntities().contains(entity))
+                                else if(otherFunctionality.getFunctionalityRedesigns().size() > 1 &&
+                                        functionalityService.getFunctionalityRedesignUsedForMetrics(otherFunctionality).semanticLockEntities().contains(entity))
                                     value++;
                             }
                         }
