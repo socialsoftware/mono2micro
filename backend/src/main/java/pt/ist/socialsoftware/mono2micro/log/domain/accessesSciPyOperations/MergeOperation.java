@@ -4,28 +4,27 @@ import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Clust
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.log.domain.Operation;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MergeOperation extends Operation {
     public static final String ACCESSES_SCIPY_MERGE = "AccessesSciPyMerge";
 
     private String newCluster;
-
-    private Map<String, String> previousClusters;
+    private String cluster1Name;
+    private String cluster2Name;
+    private String cluster1Entities;
+    private String cluster2Entities;
 
     public MergeOperation() {}
 
     public MergeOperation(AccessesSciPyDecomposition decomposition, String clusterNameName, String otherClusterName, String newName) {
-        this.previousClusters = new HashMap<>();
         Cluster cluster1 = decomposition.getCluster(clusterNameName);
         Cluster cluster2 = decomposition.getCluster(otherClusterName);
 
-        String cluster1Entities = cluster1.getEntities().stream().map(Object::toString).collect(Collectors.joining(","));
-        String cluster2Entities = cluster2.getEntities().stream().map(Object::toString).collect(Collectors.joining(","));
-        previousClusters.put(cluster1.getName(), cluster1Entities);
-        previousClusters.put(cluster2.getName(), cluster2Entities);
+        cluster1Name = cluster1.getName();
+        cluster2Name = cluster2.getName();
+        cluster1Entities = cluster1.getEntities().stream().map(Object::toString).collect(Collectors.joining(","));
+        cluster2Entities = cluster2.getEntities().stream().map(Object::toString).collect(Collectors.joining(","));
 
         this.newCluster = newName;
     }
@@ -43,11 +42,35 @@ public class MergeOperation extends Operation {
         this.newCluster = newCluster;
     }
 
-    public Map<String, String> getPreviousClusters() {
-        return previousClusters;
+    public String getCluster1Name() {
+        return cluster1Name;
     }
 
-    public void setPreviousClusters(Map<String, String> previousClusters) {
-        this.previousClusters = previousClusters;
+    public void setCluster1Name(String cluster1Name) {
+        this.cluster1Name = cluster1Name;
+    }
+
+    public String getCluster2Name() {
+        return cluster2Name;
+    }
+
+    public void setCluster2Name(String cluster2Name) {
+        this.cluster2Name = cluster2Name;
+    }
+
+    public String getCluster1Entities() {
+        return cluster1Entities;
+    }
+
+    public void setCluster1Entities(String cluster1Entities) {
+        this.cluster1Entities = cluster1Entities;
+    }
+
+    public String getCluster2Entities() {
+        return cluster2Entities;
+    }
+
+    public void setCluster2Entities(String cluster2Entities) {
+        this.cluster2Entities = cluster2Entities;
     }
 }

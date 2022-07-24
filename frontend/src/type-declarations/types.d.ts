@@ -25,7 +25,7 @@ export interface AccessDto {
 
 export interface LocalTransaction {
     id?: number;
-    clusterID?: number;
+    clusterName?: string;
     clusterAccesses?: AccessDto[];
     remoteInvocations?: number[];
     firstAccessedEntityIDs: number[];
@@ -38,23 +38,20 @@ export interface LocalTransactionsGraph {
 
 export interface Functionality {
     name?: string;
-    metrics?: Metric[];
+    type?: string;
+    metrics?: Record<string, any>;
     entitiesPerCluster?: Record<number, number[]>; // <clusterId, entityIDs>
     entities?: Record<number, number>; // <entityID, mode>
     functionalityRedesigns: FunctionalityRedesign[];
+    functionalityRedesignNameUsedForMetrics: string;
 }
 
 export interface FunctionalityRedesign {
     name?: string;
     usedForMetrics?: boolean;
-    metrics?: Metric[];
+    metrics?: Record<string, any>;
     redesign?: LocalTransaction[];
     pivotTransaction?: number;
-}
-
-export interface Metric {
-    type: string,
-    value: any
 }
 
 export enum MetricType {

@@ -20,7 +20,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static pt.ist.socialsoftware.mono2micro.log.domain.accessesSciPyOperations.FormClusterOperation.ACCESSES_SCIPY_FORM;
@@ -103,10 +105,14 @@ public class AccessesSciPyLogService extends AbstractLogService {
     }
 
     private void undoMerge(AccessesSciPyDecomposition decomposition, MergeOperation operation) {
-        List<String> clusterNames = new ArrayList<>(operation.getPreviousClusters().keySet());
-        String cluster2Entities = operation.getPreviousClusters().get(clusterNames.get(1));
-        decompositionService.splitCluster(decomposition, operation.getNewCluster(), clusterNames.get(1), cluster2Entities);
-        decompositionService.renameCluster(decomposition, operation.getNewCluster(), clusterNames.get(0));
+        if (operation.getCluster1Name().equals(operation.getNewCluster())) {
+            decompositionService.splitCluster(decomposition, operation.getNewCluster(), operation.getCluster2Name(), operation.getCluster2Entities());
+            decompositionService.renameCluster(decomposition, operation.getNewCluster(), operation.getCluster1Name());
+        }
+        else {
+            decompositionService.splitCluster(decomposition, operation.getNewCluster(), operation.getCluster1Name(), operation.getCluster1Entities());
+            decompositionService.renameCluster(decomposition, operation.getNewCluster(), operation.getCluster2Name());
+        }
     }
 
     private void undoSplit(AccessesSciPyDecomposition decomposition, SplitOperation operation) {
@@ -166,8 +172,7 @@ public class AccessesSciPyLogService extends AbstractLogService {
     }
 
     private void redoMerge(AccessesSciPyDecomposition decomposition, MergeOperation operation) {
-        List<String> clusterNames = new ArrayList<>(operation.getPreviousClusters().keySet());
-        decompositionService.mergeClusters(decomposition, clusterNames.get(0), clusterNames.get(1), operation.getNewCluster());
+        decompositionService.mergeClusters(decomposition, operation.getCluster1Name(), operation.getCluster2Name(), operation.getNewCluster());
     }
 
     private void redoSplit(AccessesSciPyDecomposition decomposition, SplitOperation operation) {
@@ -215,5 +220,17 @@ public class AccessesSciPyLogService extends AbstractLogService {
         gridFsService.deleteFile(fileName);
         decompositionLog.removeDepthGraphPosition(decompositionLog.getCurrentLogOperationDepth());
         logRepository.save(decompositionLog);
+    }
+
+    public Map<String, Boolean> canUndoRedo(AccessesSciPyDecomposition decomposition) {
+        AccessesSciPyLog decompositionLog = decomposition.getLog();
+        Map<String, Boolean> canUndoRedo = new HashMap<>();
+        if (decompositionLog.getMaxLogDepth() == decompositionLog.getCurrentLogOperationDepth())
+            canUndoRedo.put("redo", false);
+        else canUndoRedo.put("redo", true);
+        if (decompositionLog.getCurrentLogOperationDepth() == 0)
+            canUndoRedo.put("undo", false);
+        else canUndoRedo.put("undo", true);
+        return canUndoRedo;
     }
 }

@@ -1,11 +1,9 @@
-import {Metric} from "../../type-declarations/types.d";
-
 export default abstract class Decomposition {
     codebaseName: string;
     strategyName: string;
     name: string;
     strategyType: string;
-    metrics: Metric[];
+    metrics: Record<string, any>;
 
     protected constructor(decomposition: any) {
         this.codebaseName = decomposition.codebaseName;
@@ -15,5 +13,5 @@ export default abstract class Decomposition {
         this.metrics = decomposition.metrics;
     }
 
-    abstract printCard(handleDeleteDecomposition: (collector: string) => void): JSX.Element;
+    abstract printCard(reloadDecompositions: () => void, handleDeleteDecomposition: (collector: string) => void): JSX.Element;
 }

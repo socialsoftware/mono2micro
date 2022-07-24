@@ -41,7 +41,7 @@ const itemInfo = [
 ];
 
 export const ViewSearchBar = ({openSearch, setOpenSearch, setSearchedItem}) => {
-    let { codebaseName, strategyName, decompositionName } = useParams();
+    let { decompositionName } = useParams();
     const context = useContext(AppContext);
     const { translateEntity } = context;
     const [fuse, setFuse] = useState(undefined);
@@ -56,7 +56,7 @@ export const ViewSearchBar = ({openSearch, setOpenSearch, setSearchedItem}) => {
 
     function updateSearchItems() {
         const service = new RepositoryService();
-        service.getSearchItems(codebaseName, strategyName, decompositionName).then(response => {
+        service.getSearchItems(decompositionName).then(response => {
             const newSearchItems = response.data.map(item => {
                 if (item.type === searchType.ENTITY) // Add translation to entities
                     item.name = translateEntity(Number(item.id));

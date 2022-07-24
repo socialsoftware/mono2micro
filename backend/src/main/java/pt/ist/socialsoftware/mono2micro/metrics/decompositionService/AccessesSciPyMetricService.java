@@ -49,7 +49,7 @@ public class AccessesSciPyMetricService {
 
     public void calculateMetrics(AccessesSciPyDecomposition decomposition, Functionality functionality, FunctionalityRedesign functionalityRedesign) throws IOException {
         functionalityRedesign.setMetrics(new HashMap<>());
-        if (functionality.getType() == FunctionalityType.QUERY) {
+        if (functionality.getType() == FunctionalityType.SAGA) {
             functionalityRedesign.addMetric(MetricType.SYSTEM_COMPLEXITY, systemComplexityMetricService.calculateMetric(decomposition, functionality, functionalityRedesign));
             functionalityRedesign.addMetric(MetricType.FUNCTIONALITY_COMPLEXITY, functionalityComplexityMetricService.calculateMetric(decomposition, functionality, functionalityRedesign));
         }

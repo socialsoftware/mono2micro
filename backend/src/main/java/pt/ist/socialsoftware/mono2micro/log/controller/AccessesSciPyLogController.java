@@ -97,4 +97,37 @@ public class AccessesSciPyLogController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @RequestMapping(value = "/redoOperation", method = RequestMethod.GET)
+    public ResponseEntity<Map<String, Cluster>> redoOperation(
+            @PathVariable String decompositionName
+    ) {
+        logger.debug("redoOperation");
+
+        try {
+            AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
+            logService.redoOperation(decomposition);
+            return new ResponseEntity<>(decomposition.getClusters(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(value = "/canUndoRedo", method = RequestMethod.GET)
+    public ResponseEntity<Map<String, Boolean>> canUndoRedo(
+            @PathVariable String decompositionName
+    ) {
+        logger.debug("canUndoRedo");
+
+        try {
+            AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
+            return new ResponseEntity<>(logService.canUndoRedo(decomposition), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }

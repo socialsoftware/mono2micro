@@ -8,7 +8,6 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import {RepositoryService} from "../../services/RepositoryService";
 import AppContext from "./../AppContext";
 import {useParams} from "react-router-dom";
-import {SourceType} from "../../models/sources/Source";
 import {clusterViewHelp} from "./clusterView/ClusterViewGraph";
 import {searchType, ViewSearchBar} from "./ViewSearchBar";
 import {ModalProgressBar} from "../util/ModalProgressBar";

@@ -17,6 +17,7 @@ import {AccessesSciPyForm} from "./forms/AccessesSciPyForm";
 import {ArrowForward} from "@mui/icons-material";
 import {StrategyDescription, StrategyType} from "../../models/strategies/Strategy";
 import {StrategyFactory} from "../../models/strategies/StrategyFactory";
+import {toast} from "react-toastify";
 
 function renderBreadCrumbs(codebaseName) {
     return (
@@ -104,9 +105,11 @@ export function Codebase() {
     function confirmSourceToDelete() {
         setShowPopup(false);
 
+        let toastId = toast.loading("Deleting strategies related to source...", {type: toast.TYPE.INFO});
         const service = new RepositoryService();
         service.deleteSource(sourceToDelete.name).then(() => {
             loadCodebase();
+            toast.dismiss(toastId);
         });
     }
 

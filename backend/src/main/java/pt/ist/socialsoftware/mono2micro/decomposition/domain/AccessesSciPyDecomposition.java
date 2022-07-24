@@ -24,6 +24,17 @@ public class AccessesSciPyDecomposition extends Decomposition {
 
     public AccessesSciPyDecomposition() {}
 
+    public AccessesSciPyDecomposition(AccessesSciPyDecomposition decomposition) {
+        this.name = decomposition.getName();
+        this.strategy = decomposition.getStrategy();
+        this.metrics = decomposition.getMetrics();
+        this.outdated = decomposition.isOutdated();
+        this.expert = decomposition.isExpert();
+        this.silhouetteScore = decomposition.getSilhouetteScore();
+        this.clusters = decomposition.getClusters();
+        this.entityIDToClusterName = decomposition.getEntityIDToClusterName();
+    }
+
     @Override
     public String getStrategyType() {
         return ACCESSES_SCIPY;

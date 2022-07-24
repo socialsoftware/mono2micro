@@ -27,6 +27,7 @@ import javax.naming.NameAlreadyBoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.jgrapht.Graphs.successorListOf;
 import static pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource.ACCESSES;
@@ -182,6 +183,14 @@ public class FunctionalityService {
         );
     }
 
+    public List<FunctionalityRedesign> getFunctionalityRedesigns(Functionality functionality) {
+        return functionality.getFunctionalityRedesigns().values().stream().map(fileName -> {
+            try {
+                return FileManager.getInstance().getFunctionalityRedesign(gridFsService.getFile(fileName));
+            } catch (IOException e) { throw new RuntimeException(e); }
+        }).collect(Collectors.toList());
+    }
+
     public void findClusterDependencies(AccessesSciPyDecomposition decomposition, DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph) {
         Set<LocalTransaction> allLocalTransactions = localTransactionsGraph.vertexSet();
 
@@ -283,7 +292,7 @@ public class FunctionalityService {
         Functionality functionality = decomposition.getFunctionality(functionalityName);
 
         if(newRedesignName.isPresent())
-            if(!functionality.containsFunctionalityRedesignName(newRedesignName.get()))
+            if(functionality.containsFunctionalityRedesignName(newRedesignName.get()))
                 throw new NameAlreadyBoundException();
 
         FunctionalityRedesign functionalityRedesign = getFunctionalityRedesign(functionality, redesignName);
@@ -332,12 +341,13 @@ public class FunctionalityService {
         return functionality;
     }
 
-    public void deleteRedesign(String decompositionName, String functionalityName, String redesignName) {
+    public Functionality deleteRedesign(String decompositionName, String functionalityName, String redesignName) {
         AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
         Functionality functionality = decomposition.getFunctionality(functionalityName);
         functionality.removeFunctionalityRedesign(redesignName);
         gridFsService.deleteFile(functionality.getFunctionalityRedesignFileName(redesignName));
         functionalityRepository.save(functionality);
+        return functionality;
     }
 
     public Functionality useForMetrics(String decompositionName, String functionalityName, String redesignName) {

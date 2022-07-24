@@ -262,6 +262,10 @@ export class RepositoryService {
         return this.axios.post<null>("/accessesSciPyLog/" + decompositionName + "/saveGraphPositions", graphPositions);
     }
 
+    snapshotDecomposition(decompositionName: string) {
+        return this.axios.get<null>("/accessesSciPyDecomposition/" + decompositionName + "/snapshotDecomposition");
+    }
+
     createAccessesSciPyDecomposition(
         strategyName: string,
         cutType: string,
@@ -320,12 +324,10 @@ export class RepositoryService {
     }
 
     updatedAccessesSciPyDecomposition(
-        codebaseName: string,
-        strategyName: string,
         decompositionName: string
     ) {
         return this.axios.get<Decomposition>(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/updatedAccessesSciPyDecomposition"
+            "/accessesSciPyDecomposition/" + decompositionName + "/updatedAccessesSciPyDecomposition"
         );
     }
 
@@ -350,14 +352,12 @@ export class RepositoryService {
     }
 
     getLocalTransactionsGraphForFunctionality(
-        codebaseName: string,
-        strategyName: string,
         decompositionName: string,
         functionalityName: string
     ) {
         return this.axios.get<LocalTransactionsGraph>(
             addSearchParamsToUrl(
-                "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/getLocalTransactionsGraphForFunctionality",
+                "/accessesSciPyDecomposition/" + decompositionName + "/getLocalTransactionsGraphForFunctionality",
                 { functionalityName: functionalityName },
             )
         );
@@ -366,16 +366,16 @@ export class RepositoryService {
     //Cluster
     mergeClusters(
         decompositionName: string,
-        clusterID: number,
-        otherClusterID: number,
+        clusterName: number,
+        otherClusterName: number,
         newName: string,
     ) {
         return this.axios.post<null>(
-            "/decomposition/" + decompositionName + "/cluster/" + clusterID + "/merge",
+            "/decomposition/" + decompositionName + "/cluster/" + clusterName + "/merge",
             null,
             {
                 params: {
-                    "otherClusterID" : otherClusterID,
+                    "otherClusterName" : otherClusterName,
                     "newName" : newName
                 }
             }
@@ -384,11 +384,11 @@ export class RepositoryService {
 
     renameCluster(
         decompositionName: string,
-        clusterID: number,
+        clusterName: number,
         newName: string
     ) {
         return this.axios.post<null>(
-            "/decomposition/" + decompositionName + "/cluster/" + clusterID + "/rename",
+            "/decomposition/" + decompositionName + "/cluster/" + clusterName + "/rename",
             null,
             {
                 params: {
@@ -400,12 +400,12 @@ export class RepositoryService {
 
     splitCluster(
         decompositionName: string,
-        clusterID: number,
+        clusterName: number,
         newName: string,
         entities: string,
     ) {
         return this.axios.post<null>(
-            "/decomposition/" + decompositionName + "/cluster/" + clusterID + "/split",
+            "/decomposition/" + decompositionName + "/cluster/" + clusterName + "/split",
             null,
             {
                 params: {
@@ -438,18 +438,30 @@ export class RepositoryService {
         return this.axios.get<Record<number, Cluster>>("/accessesSciPyLog/" + decompositionName + "/undoOperation");
     }
 
+    redoOperation(
+        decompositionName: string
+    ) {
+        return this.axios.get<Record<number, Cluster>>("/accessesSciPyLog/" + decompositionName + "/redoOperation");
+    }
+
+    canUndoRedo(
+        decompositionName: string
+    ) {
+        return this.axios.get<Record<string, Boolean>>("/accessesSciPyLog/" + decompositionName + "/canUndoRedo");
+    }
+
     transferEntities(
         decompositionName: string,
-        clusterID: number,
-        toClusterID: number,
+        clusterName: number,
+        toClusterName: number,
         entities: string,
     ) {
         return this.axios.post<null>(
-            "/decomposition/" + decompositionName + "/cluster/" + clusterID + "/transferEntities",
+            "/decomposition/" + decompositionName + "/cluster/" + clusterName + "/transferEntities",
             null,
             {
                 params: {
-                    "toClusterID" : toClusterID,
+                    "toClusterName" : toClusterName,
                     "entities" : entities
                 }
             }
@@ -457,12 +469,10 @@ export class RepositoryService {
     }
 
     getFunctionalitiesAndFunctionalitiesClusters(
-        codebaseName: string,
-        strategyName: string,
         decompositionName: string,
     ) {
         return this.axios.get<Record<string, any>>(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/getFunctionalitiesAndFunctionalitiesClusters"
+            "/accessesSciPyDecomposition/" + decompositionName + "/getFunctionalitiesAndFunctionalitiesClusters"
         );
     }
 
@@ -475,31 +485,17 @@ export class RepositoryService {
     }
 
     getSearchItems(
-        codebaseName: string,
-        strategyName: string,
         decompositionName: string
     ) {
         return this.axios.get<any[]>(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/getSearchItems"
+            "/accessesSciPyDecomposition/" + decompositionName + "/getSearchItems"
         );
     }
 
 
     //FunctionalityRedesign
 
-    getOrCreateRedesign(
-        codebaseName: string,
-        strategyName: string,
-        decompositionName: string,
-        functionalityName: string
-    ) {
-        return this.axios.get<Functionality>("/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/functionality/" + functionalityName + "/getOrCreateRedesign");
-    }
-
-
     addCompensating(
-        codebaseName: string,
-        strategyName: string,
         decompositionName: string,
         functionalityName: string,
         redesignName: string,
@@ -508,7 +504,7 @@ export class RepositoryService {
         fromID: string
     ) {
         return this.axios.post(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/functionality/" + functionalityName + "/redesign/" + redesignName + "/addCompensating",
+            "/decomposition/" + decompositionName + "/functionality/" + functionalityName + "/redesign/" + redesignName + "/addCompensating",
             {
                 fromID: fromID,
                 cluster : clusterID,
@@ -518,8 +514,6 @@ export class RepositoryService {
     }
 
     sequenceChange(
-        codebaseName: string,
-        strategyName: string,
         decompositionName: string,
         functionalityName: string,
         redesignName: string,
@@ -527,7 +521,7 @@ export class RepositoryService {
         newCaller: string
     ) {
         return this.axios.post(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/functionality/" + functionalityName + "/redesign/" + redesignName + "/sequenceChange",
+            "/decomposition/" + decompositionName + "/functionality/" + functionalityName + "/redesign/" + redesignName + "/sequenceChange",
             {
                 localTransactionID: localTransaction,
                 newCaller: newCaller
@@ -536,8 +530,6 @@ export class RepositoryService {
     }
 
     dcgi(
-        codebaseName: string,
-        strategyName: string,
         decompositionName: string,
         functionalityName: string,
         redesignName: string,
@@ -546,7 +538,7 @@ export class RepositoryService {
         localTransactions: string
     ) {
         return this.axios.post(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/functionality/" + functionalityName + "/redesign/" + redesignName + "/dcgi",
+            "/decomposition/" + decompositionName + "/functionality/" + functionalityName + "/redesign/" + redesignName + "/dcgi",
             {
                 fromCluster: fromClusterID,
                 toCluster: toClusterID,
@@ -556,8 +548,6 @@ export class RepositoryService {
     }
 
     selectPivotTransaction(
-        codebaseName: string,
-        strategyName: string,
         decompositionName: string,
         functionalityName: string,
         redesignName: string,
@@ -565,15 +555,13 @@ export class RepositoryService {
         newRedesignName: string
     ) {
         return this.axios.post(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/functionality/" + functionalityName + "/redesign/" + redesignName + "/pivotTransaction",
+            "/decomposition/" + decompositionName + "/functionality/" + functionalityName + "/redesign/" + redesignName + "/pivotTransaction",
             null,
             { params: {"transactionID" : transactionID, "newRedesignName": newRedesignName}}
         );
     }
 
     changeLTName(
-        codebaseName: string,
-        strategyName: string,
         decompositionName: string,
         functionalityName: string,
         redesignName: string,
@@ -581,33 +569,29 @@ export class RepositoryService {
         newName: string
     ) {
         return this.axios.post(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/functionality/" + functionalityName + "/redesign/" + redesignName + "/changeLTName",
+            "/decomposition/" + decompositionName + "/functionality/" + functionalityName + "/redesign/" + redesignName + "/changeLTName",
             null,
             { params: {"transactionID" : transactionID, "newName": newName}}
         );
     }
 
     deleteRedesign(
-        codebaseName: string,
-        strategyName: string,
         decompositionName: string,
         functionalityName: string,
         redesignName: string
     ){
         return this.axios.delete(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/functionality/" + functionalityName + "/redesign/" + redesignName + "/deleteRedesign"
+            "/decomposition/" + decompositionName + "/functionality/" + functionalityName + "/redesign/" + redesignName + "/deleteRedesign"
         );
     }
 
     setUseForMetrics(
-        codebaseName: string,
-        strategyName: string,
         decompositionName: string,
         functionalityName: string,
         redesignName: string
     ){
         return this.axios.post(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/functionality/" + functionalityName + "/redesign/" + redesignName + "/useForMetrics"
+            "/decomposition/" + decompositionName + "/functionality/" + functionalityName + "/redesign/" + redesignName + "/useForMetrics"
         );
     }
 

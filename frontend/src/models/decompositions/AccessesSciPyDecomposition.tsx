@@ -2,7 +2,10 @@ import Decomposition from "./Decomposition";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import React from "react";
-import {Metric} from "../../type-declarations/types.d";
+import {MetricType} from "../../type-declarations/types.d";
+import {Cached} from "@mui/icons-material";
+import {RepositoryService} from "../../services/RepositoryService";
+import {toast} from "react-toastify";
 
 export default class AccessesSciPyDecomposition extends Decomposition {
     outdated: boolean;
@@ -23,7 +26,17 @@ export default class AccessesSciPyDecomposition extends Decomposition {
         this.entityIDToClusterID = decomposition.entityIDToClusterID;
     }
 
-    printCard(handleDeleteDecomposition: (collector: string) => void): JSX.Element {
+    handleUpdate(reloadDecompositions: () => void) {
+        const service = new RepositoryService();
+        const promise = service.updatedAccessesSciPyDecomposition(this.name);
+        toast.promise(promise, {
+            pending: "Updating Decomposition...",
+            success: {render: "Success updating decomposition!", autoClose: 2000},
+            error: {render: "Error while updating decomposition.", autoClose: 5000}
+        }).then(() => reloadDecompositions());
+    }
+
+    printCard(reloadDecompositions: () => void, handleDeleteDecomposition: (collector: string) => void): JSX.Element {
         let amountOfSingletonClusters = 0;
         let maxClusterSize = 0;
 
@@ -43,8 +56,22 @@ export default class AccessesSciPyDecomposition extends Decomposition {
                         Number of Clusters: {Object.values(this.clusters).length} <br />
                         Singleton Servers: {amountOfSingletonClusters} <br />
                         Maximum Cluster Size: {maxClusterSize} <br />
-                        {this.metrics.map((metric: Metric) => <React.Fragment key={metric.type}>{metric.type}: {metric.value}<br/></React.Fragment>)}
+                        {MetricType.COMPLEXITY}: {parseFloat(this.metrics["Complexity"]).toFixed(3)} <br />
+                        {MetricType.PERFORMANCE}: {parseFloat(this.metrics["Performance"]).toFixed(3)} <br />
+                        {MetricType.COHESION}: {parseFloat(this.metrics["Cohesion"]).toFixed(3)} <br />
+                        {MetricType.COUPLING}: {parseFloat(this.metrics["Coupling"]).toFixed(3)} <br />
+                        Silhouette Score: {this.silhouetteScore} <br />
                     </Card.Text>
+                    {this.outdated &&
+                        <Button
+                            onClick={() => this.handleUpdate(reloadDecompositions)}
+                            className="mb-2"
+                            variant={"warning"}
+                        >
+                            Update Metrics <Cached/>
+                        </Button>
+                    }
+                    <br/>
                     <Button
                         href={`/codebases/${this.codebaseName}/strategies/${this.strategyName}/decompositions/${this.name}/viewDecomposition`}
                         className="mb-2"

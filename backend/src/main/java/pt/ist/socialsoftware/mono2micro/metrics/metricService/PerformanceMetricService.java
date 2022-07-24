@@ -15,11 +15,11 @@ import java.util.List;
 
 @Service
 public class PerformanceMetricService { // the average of the number of hops between clusters for all traces
-    public Float calculateMetric(AccessesSciPyDecomposition decomposition) {
-        float performance = 0;
+    public Double calculateMetric(AccessesSciPyDecomposition decomposition) {
+        double performance = 0;
 
         for (Functionality functionality : decomposition.getFunctionalities().values()) {
-            Float performanceMetric = (Float) functionality.getMetric(MetricType.PERFORMANCE);
+            Double performanceMetric = (Double) functionality.getMetric(MetricType.PERFORMANCE);
             performance += performanceMetric;
         }
 
@@ -27,13 +27,13 @@ public class PerformanceMetricService { // the average of the number of hops bet
 
         return BigDecimal.valueOf(performance / graphFunctionalitiesAmount)
                 .setScale(2, RoundingMode.HALF_UP)
-                .floatValue();
+                .doubleValue();
     }
 
-    public Float calculateMetric(Decomposition decomposition, Functionality functionality) {
+    public Double calculateMetric(Decomposition decomposition, Functionality functionality) {
         AccessesSciPyDecomposition accessesSciPyDecomposition = (AccessesSciPyDecomposition) decomposition;
 
-        float functionalityPerformance = 0;
+        double functionalityPerformance = 0;
         for (TraceDto t : functionality.getTraces()) {
             List<ReducedTraceElementDto> traceElements = t.getElements();
 
@@ -53,6 +53,6 @@ public class PerformanceMetricService { // the average of the number of hops bet
         }
         functionalityPerformance /= functionality.getTraces().size();
 
-        return BigDecimal.valueOf(functionalityPerformance).setScale(2, RoundingMode.HALF_UP).floatValue();
+        return BigDecimal.valueOf(functionalityPerformance).setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 }

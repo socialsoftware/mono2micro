@@ -13,9 +13,9 @@ import java.util.Set;
 @JsonDeserialize(using = ClusterDeserializer.class)
 public class Cluster {
 	private String name;
-	private float complexity;
-	private float cohesion;
-	private float coupling;
+	private double complexity;
+	private double cohesion;
+	private double coupling;
 	private Map<String, Set<Short>> couplingDependencies = new HashMap<>(); // <clusterName, Set<EntityID>>
 	private Set<Short> entities = new HashSet<>(); // entity IDs
 
@@ -47,27 +47,27 @@ public class Cluster {
 		this.name = name;
 	}
 
-	public float getComplexity() {
+	public double getComplexity() {
 		return complexity;
 	}
 
-	public void setComplexity(float complexity) {
+	public void setComplexity(double complexity) {
 		this.complexity = complexity;
 	}
 
-	public float getCohesion() {
+	public double getCohesion() {
 		return cohesion;
 	}
 
-	public void setCohesion(float cohesion) {
+	public void setCohesion(double cohesion) {
 		this.cohesion = cohesion;
 	}
 
-	public float getCoupling() {
+	public double getCoupling() {
 		return coupling;
 	}
 
-	public void setCoupling(float coupling) {
+	public void setCoupling(double coupling) {
 		this.coupling = coupling;
 	}
 

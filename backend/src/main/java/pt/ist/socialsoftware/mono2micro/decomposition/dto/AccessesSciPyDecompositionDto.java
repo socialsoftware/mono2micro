@@ -25,6 +25,7 @@ public class AccessesSciPyDecompositionDto extends DecompositionDto {
         this.setName(decomposition.getName());
         this.setStrategyType(ACCESSES_SCIPY);
         this.setMetrics(decomposition.getMetrics());
+        this.silhouetteScore = decomposition.getSilhouetteScore();
         this.outdated = decomposition.isOutdated();
         this.expert = decomposition.isExpert();
         this.clusters = decomposition.getClusters();

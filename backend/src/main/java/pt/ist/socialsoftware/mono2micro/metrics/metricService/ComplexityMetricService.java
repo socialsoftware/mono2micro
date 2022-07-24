@@ -16,8 +16,8 @@ import java.util.*;
 
 @Service
 public class ComplexityMetricService {
-    public Float calculateMetric(AccessesSciPyDecomposition decomposition, Map<String, List<Functionality>> clustersFunctionalities) {
-        float complexity;
+    public Double calculateMetric(AccessesSciPyDecomposition decomposition, Map<String, List<Functionality>> clustersFunctionalities) {
+        double complexity;
 
         // Set cluster complexity
         for (Cluster cluster : decomposition.getClusters().values()) {
@@ -26,12 +26,12 @@ public class ComplexityMetricService {
             complexity = 0;
 
             for (Functionality functionality : functionalitiesThatAccessThisCluster) {
-                Float complexityMetric = (Float) functionality.getMetric(MetricType.COMPLEXITY);
-                complexity += complexityMetric;
+                Object complexityMetric = functionality.getMetric(MetricType.COMPLEXITY);
+                complexity += (Double) complexityMetric;
             }
 
             complexity /= functionalitiesThatAccessThisCluster.size();
-            complexity = BigDecimal.valueOf(complexity).setScale(2, RoundingMode.HALF_UP).floatValue();
+            complexity = BigDecimal.valueOf(complexity).setScale(2, RoundingMode.HALF_UP).doubleValue();
 
             cluster.setComplexity(complexity);
         }
@@ -40,17 +40,17 @@ public class ComplexityMetricService {
         complexity = 0;
 
         for (Functionality functionality : decomposition.getFunctionalities().values()) {
-            Float complexityMetric = (Float) functionality.getMetric(MetricType.COMPLEXITY);
+            Double complexityMetric = (Double) functionality.getMetric(MetricType.COMPLEXITY);
             complexity += complexityMetric;
         }
 
         return BigDecimal.valueOf(complexity / decomposition.getFunctionalities().size())
                 .setScale(2, RoundingMode.HALF_UP)
-                .floatValue();
+                .doubleValue();
     }
 
-    public Float calculateMetric(AccessesSciPyDecomposition decomposition, Functionality functionality) {
-        float value;
+    public Double calculateMetric(AccessesSciPyDecomposition decomposition, Functionality functionality) {
+        double value;
 
         // Since metric calculation is always done during the creation of the functionalities, we can use createLocalTransactionGraph,
         // otherwise, if traces == null, use createLocalTransactionGraphFromScratch
@@ -69,7 +69,7 @@ public class ComplexityMetricService {
             // < entity + mode, List<functionalityName>> functionalitiesThatTouchSameEntities for a given mode
             Map<String, List<String>> cache = new HashMap<>();
 
-            float functionalityComplexity = 0;
+            double functionalityComplexity = 0;
 
             for (LocalTransaction lt : allLocalTransactions) {
                 // ClusterDependencies

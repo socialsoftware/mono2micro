@@ -13,16 +13,16 @@ import java.util.Set;
 
 @Service
 public class CohesionMetricService {
-    public Float calculateMetric(AccessesSciPyDecomposition decomposition, Map<String, List<Functionality>> clustersFunctionalities) {
-        float totalCohesion = 0;
+    public Double calculateMetric(AccessesSciPyDecomposition decomposition, Map<String, List<Functionality>> clustersFunctionalities) {
+        double totalCohesion = 0;
 
         for (Cluster cluster : decomposition.getClusters().values()) {
             List<Functionality> FunctionalitiesThatAccessThisCluster = clustersFunctionalities.get(cluster.getName());
 
-            float clusterCohesion = 0;
+            double clusterCohesion = 0;
 
             for (Functionality functionality : FunctionalitiesThatAccessThisCluster) {
-                float numberEntitiesTouched = 0;
+                double numberEntitiesTouched = 0;
 
                 Set<Short> functionalityEntities = functionality.getEntities().keySet();
 
@@ -34,7 +34,7 @@ public class CohesionMetricService {
             }
 
             clusterCohesion /= FunctionalitiesThatAccessThisCluster.size();
-            clusterCohesion = BigDecimal.valueOf(clusterCohesion).setScale(2, RoundingMode.HALF_UP).floatValue();
+            clusterCohesion = BigDecimal.valueOf(clusterCohesion).setScale(2, RoundingMode.HALF_UP).doubleValue();
             cluster.setCohesion(clusterCohesion);
             totalCohesion += clusterCohesion;
         }
@@ -43,6 +43,6 @@ public class CohesionMetricService {
 
         return BigDecimal.valueOf(totalCohesion / graphClustersAmount)
                 .setScale(2, RoundingMode.HALF_UP)
-                .floatValue();
+                .doubleValue();
     }
 }

@@ -8,10 +8,10 @@ import java.util.Map;
 
 public abstract class Decomposition {
 	@Id
-	private String name;
+	String name;
 	@DBRef
-	private Strategy strategy;
-	private Map<String, Object> metrics; // Map<Metric type, Metric value>
+	Strategy strategy;
+	Map<String, Object> metrics; // Map<Metric type, Metric value>
 
 
 	public abstract String getStrategyType();

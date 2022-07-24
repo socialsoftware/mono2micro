@@ -10,14 +10,20 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.AccessesSciPyDecompositionDto;
 import pt.ist.socialsoftware.mono2micro.decomposition.service.AccessesSciPyDecompositionService;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
+import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityService;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
+import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
+import pt.ist.socialsoftware.mono2micro.functionality.dto.FunctionalityDto;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/mono2micro")
@@ -26,6 +32,9 @@ public class AccessesSciPyDecompositionController {
 
     @Autowired
     AccessesSciPyDecompositionService decompositionService;
+
+    @Autowired
+    FunctionalityService functionalityService;
 
     @RequestMapping(value = "/strategy/{strategyName}/createAccessesSciPyDecomposition", method = RequestMethod.POST)
     public ResponseEntity<HttpStatus> createDecomposition(
@@ -72,15 +81,14 @@ public class AccessesSciPyDecompositionController {
     }
 
     @RequestMapping(value = "/accessesSciPyDecomposition/{decompositionName}/updatedAccessesSciPyDecomposition", method = RequestMethod.GET)
-    public ResponseEntity<Decomposition> updatedAccessesSciPyDecomposition(
+    public ResponseEntity<AccessesSciPyDecompositionDto> updatedAccessesSciPyDecomposition(
             @PathVariable String decompositionName
     ) {
         logger.debug("updatedAccessesSciPyDecomposition");
 
         try {
-            Decomposition decomposition = decompositionService.updateOutdatedFunctionalitiesAndMetrics(decompositionName);
+            return new ResponseEntity<>(new AccessesSciPyDecompositionDto(decompositionService.updateOutdatedFunctionalitiesAndMetrics(decompositionName)), HttpStatus.OK);
 
-            return new ResponseEntity<>(decomposition, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -134,6 +142,22 @@ public class AccessesSciPyDecompositionController {
         }
     }
 
+    @RequestMapping(value = "/accessesSciPyDecomposition/{decompositionName}/snapshotDecomposition", method = RequestMethod.GET)
+    public ResponseEntity<HttpStatus> snapshotDecomposition(
+            @PathVariable String decompositionName
+    ) {
+        logger.debug("snapshotDecomposition");
+
+        try {
+            decompositionService.snapshotDecomposition(decompositionName);
+            return new ResponseEntity<>(HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @RequestMapping(value = "/accessesSciPyDecomposition/{decompositionName}/getFunctionalitiesAndFunctionalitiesClusters", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getFunctionalitiesAndFunctionalitiesClusters(
             @PathVariable String decompositionName
@@ -141,7 +165,7 @@ public class AccessesSciPyDecompositionController {
         logger.debug("getFunctionalitiesAndFunctionalitiesClusters");
 
         try {
-            AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) decompositionService.updateOutdatedFunctionalitiesAndMetrics(decompositionName);
+            AccessesSciPyDecomposition decomposition = decompositionService.updateOutdatedFunctionalitiesAndMetrics(decompositionName);
 
             Map<String, Set<Cluster>> functionalitiesClusters = Utils.getFunctionalitiesClusters(
                     decomposition.getEntityIDToClusterName(),
@@ -150,7 +174,13 @@ public class AccessesSciPyDecompositionController {
             );
 
             Map<String, Object> response = new HashMap<>();
-            response.put("functionalities", decomposition.getFunctionalities());
+            Map<String, Functionality> functionalities = decomposition.getFunctionalities();
+            Map<String, List<FunctionalityRedesign>> functionalityRedesignsPerFunctionality = functionalities.values().stream()
+                    .collect(Collectors.toMap(Functionality::getName, functionalityService::getFunctionalityRedesigns));
+            Map<String, FunctionalityDto> functionalitiesWithRedesigns = functionalities.values().stream()
+                    .map(functionality -> new FunctionalityDto(functionality, functionalityRedesignsPerFunctionality.get(functionality.getName())))
+                    .collect(Collectors.toMap(FunctionalityDto::getName, functionalityDto -> functionalityDto));
+            response.put("functionalities", functionalitiesWithRedesigns);
             response.put("functionalitiesClusters", functionalitiesClusters);
 
             return new ResponseEntity<>(
@@ -171,7 +201,7 @@ public class AccessesSciPyDecompositionController {
         logger.debug("getClustersAndClustersFunctionalities");
 
         try {
-            AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) decompositionService.updateOutdatedFunctionalitiesAndMetrics(decompositionName);
+            AccessesSciPyDecomposition decomposition = decompositionService.updateOutdatedFunctionalitiesAndMetrics(decompositionName);
 
             Map<String, List<Functionality>> clustersFunctionalities = Utils.getClustersFunctionalities(decomposition);
 

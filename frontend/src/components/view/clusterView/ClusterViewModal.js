@@ -28,7 +28,7 @@ export const ClusterViewModal = ({clusters, edgeWeights, outdated, clustersFunct
             setTitle("Cluster " + clickedComponent.label + " informations");
         else if (clickedComponent.type === types.ENTITY)
             setTitle("Entity " + clickedComponent.label + " informations");
-        else if (clickedComponent.eventType === "doubleClickEdge") {
+        else {
             const fromNode = visGraph.nodes.get(clickedComponent.from);
             const toNode = visGraph.nodes.get(clickedComponent.to);
 

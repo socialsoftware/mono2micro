@@ -95,7 +95,7 @@ export const Strategy = () => {
             }
 
             <Row className={"d-flex flex-wrap mw-100"} style={{gap: '1rem 1rem'}}>
-                {decompositions.map(decomposition => decomposition.printCard(handleDeleteDecomposition))}
+                {decompositions.map(decomposition => decomposition.printCard(loadDecompositions, handleDeleteDecomposition))}
             </Row>
         </div>
     );

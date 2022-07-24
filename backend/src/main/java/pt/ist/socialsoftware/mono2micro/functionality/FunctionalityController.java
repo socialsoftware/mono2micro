@@ -8,38 +8,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.decomposition.controller.DecompositionController;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
+import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
+import pt.ist.socialsoftware.mono2micro.functionality.dto.FunctionalityDto;
 
 import javax.naming.NameAlreadyBoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/mono2micro/decomposition/{decompositionName}/functionality/{functionalityName}")
+@RequestMapping(value = "/mono2micro/decomposition/{decompositionName}/functionality/{functionalityName}/redesign/{redesignName}")
 public class FunctionalityController {
     private static final Logger logger = LoggerFactory.getLogger(DecompositionController.class);
 
     @Autowired
     FunctionalityService functionalityService;
 
-    @RequestMapping(value = "/getOrCreateRedesign", method = RequestMethod.GET)
-    public ResponseEntity<Functionality> getOrCreateRedesign(
-            @PathVariable String decompositionName,
-            @PathVariable String functionalityName
-    ) {
-
-        logger.debug("getOrCreateRedesign");
-
-        try {
-            return new ResponseEntity<>(functionalityService.getOrCreateRedesign(decompositionName, functionalityName), HttpStatus.OK);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @RequestMapping(value = "/redesign/{redesignName}/addCompensating", method = RequestMethod.POST)
-    public ResponseEntity<Functionality> addCompensating(
+    @RequestMapping(value = "/addCompensating", method = RequestMethod.POST)
+    public ResponseEntity<FunctionalityDto> addCompensating(
             @PathVariable String decompositionName,
             @PathVariable String functionalityName,
             @PathVariable String redesignName,
@@ -48,7 +35,8 @@ public class FunctionalityController {
         logger.debug("addCompensating");
 
         try {
-            return new ResponseEntity<>(functionalityService.addCompensating(decompositionName, functionalityName, redesignName, data), HttpStatus.OK);
+            Functionality functionality = functionalityService.addCompensating(decompositionName, functionalityName, redesignName, data);
+            return new ResponseEntity<>(new FunctionalityDto(functionality, functionalityService.getFunctionalityRedesigns(functionality)), HttpStatus.OK);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -56,14 +44,15 @@ public class FunctionalityController {
         }
     }
 
-    @RequestMapping(value = "/redesign/{redesignName}/sequenceChange", method = RequestMethod.POST)
-    public ResponseEntity<Functionality> sequenceChange(@PathVariable String decompositionName,
+    @RequestMapping(value = "/sequenceChange", method = RequestMethod.POST)
+    public ResponseEntity<FunctionalityDto> sequenceChange(@PathVariable String decompositionName,
                                                         @PathVariable String functionalityName,
                                                         @PathVariable String redesignName,
                                                         @RequestBody HashMap<String, String> data) {
         logger.debug("sequenceChange");
         try {
-            return new ResponseEntity<>(functionalityService.sequenceChange(decompositionName, functionalityName, redesignName, data), HttpStatus.OK);
+            Functionality functionality = functionalityService.sequenceChange(decompositionName, functionalityName, redesignName, data);
+            return new ResponseEntity<>(new FunctionalityDto(functionality, functionalityService.getFunctionalityRedesigns(functionality)), HttpStatus.OK);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,8 +61,8 @@ public class FunctionalityController {
         }
     }
 
-    @RequestMapping(value = "/redesign/{redesignName}/dcgi", method = RequestMethod.POST)
-    public ResponseEntity<Functionality> dcgi(
+    @RequestMapping(value = "/dcgi", method = RequestMethod.POST)
+    public ResponseEntity<FunctionalityDto> dcgi(
             @PathVariable String decompositionName,
             @PathVariable String functionalityName,
             @PathVariable String redesignName,
@@ -81,8 +70,8 @@ public class FunctionalityController {
     ) {
         logger.debug("dcgi");
         try {
-
-            return new ResponseEntity<>(functionalityService.dcgi(decompositionName, functionalityName, redesignName, data), HttpStatus.OK);
+            Functionality functionality = functionalityService.dcgi(decompositionName, functionalityName, redesignName, data);
+            return new ResponseEntity<>(new FunctionalityDto(functionality, functionalityService.getFunctionalityRedesigns(functionality)), HttpStatus.OK);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -90,8 +79,8 @@ public class FunctionalityController {
         }
     }
 
-    @RequestMapping(value = "/redesign/{redesignName}/pivotTransaction", method = RequestMethod.POST)
-    public ResponseEntity<Object> pivotTransaction(
+    @RequestMapping(value = "/pivotTransaction", method = RequestMethod.POST)
+    public ResponseEntity<FunctionalityDto> pivotTransaction(
             @PathVariable String decompositionName,
             @PathVariable String functionalityName,
             @PathVariable String redesignName,
@@ -101,9 +90,10 @@ public class FunctionalityController {
         logger.debug("pivotTransaction");
         try {
 
-            return new ResponseEntity<>(functionalityService.pivotTransaction(decompositionName, functionalityName, redesignName, transactionID, newRedesignName), HttpStatus.OK);
+            Functionality functionality = functionalityService.pivotTransaction(decompositionName, functionalityName, redesignName, transactionID, newRedesignName);
+            return new ResponseEntity<>(new FunctionalityDto(functionality, functionalityService.getFunctionalityRedesigns(functionality)), HttpStatus.OK);
         } catch (NameAlreadyBoundException e){
-            return new ResponseEntity<>("Name is already selected", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -111,8 +101,8 @@ public class FunctionalityController {
 
     }
 
-    @RequestMapping(value="/redesign/{redesignName}/changeLTName", method = RequestMethod.POST)
-    public ResponseEntity<Functionality> changeLTName(
+    @RequestMapping(value="/changeLTName", method = RequestMethod.POST)
+    public ResponseEntity<FunctionalityDto> changeLTName(
             @PathVariable String decompositionName,
             @PathVariable String functionalityName,
             @PathVariable String redesignName,
@@ -121,39 +111,41 @@ public class FunctionalityController {
     ){
         logger.debug("changeLTName");
         try {
+            Functionality functionality = functionalityService.changeLTName(decompositionName, functionalityName, redesignName, transactionID, newName);
+            return new ResponseEntity<>(new FunctionalityDto(functionality, functionalityService.getFunctionalityRedesigns(functionality)), HttpStatus.OK);
 
-            return new ResponseEntity<>(functionalityService.changeLTName(decompositionName, functionalityName, redesignName, transactionID, newName), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
-    @RequestMapping(value="/redesign/{redesignName}/deleteRedesign", method = RequestMethod.DELETE)
-    public ResponseEntity<Functionality> deleteRedesign(
+    @RequestMapping(value="/deleteRedesign", method = RequestMethod.DELETE)
+    public ResponseEntity<FunctionalityDto> deleteRedesign(
             @PathVariable String decompositionName,
             @PathVariable String functionalityName,
             @PathVariable String redesignName
     ) {
         logger.debug("deleteRedesign");
         try {
-            functionalityService.deleteRedesign(decompositionName, functionalityName, redesignName);
-            return new ResponseEntity<>(HttpStatus.OK);
+            Functionality functionality = functionalityService.deleteRedesign(decompositionName, functionalityName, redesignName);
+            return new ResponseEntity<>(new FunctionalityDto(functionality, functionalityService.getFunctionalityRedesigns(functionality)), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
-    @RequestMapping(value="/redesign/{redesignName}/useForMetrics", method = RequestMethod.POST)
-    public ResponseEntity<Functionality> useForMetrics(
+    @RequestMapping(value="/useForMetrics", method = RequestMethod.POST)
+    public ResponseEntity<FunctionalityDto> useForMetrics(
             @PathVariable String decompositionName,
             @PathVariable String functionalityName,
             @PathVariable String redesignName
     ) {
         logger.debug("useForMetrics");
         try {
-            return new ResponseEntity<>(functionalityService.useForMetrics(decompositionName, functionalityName, redesignName), HttpStatus.OK);
+            Functionality functionality = functionalityService.useForMetrics(decompositionName, functionalityName, redesignName);
+            return new ResponseEntity<>(new FunctionalityDto(functionality, functionalityService.getFunctionalityRedesigns(functionality)), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

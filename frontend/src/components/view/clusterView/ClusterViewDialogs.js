@@ -7,10 +7,9 @@ import {ArrowRightAlt} from "@mui/icons-material";
 export const DIALOG_TYPE = {
     RENAME: 0,
     TRANSFER: 1,
-    TRANSFER_ENTITY: 2,
-    MERGE: 3,
-    SPLIT: 4,
-    FORM_CLUSTER: 5,
+    MERGE: 2,
+    SPLIT: 3,
+    FORM_CLUSTER: 4,
 }
 
 export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCancel}) => {
@@ -48,10 +47,6 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
         }
     }
 
-    function handleTransferEntity() {
-        setDialogResponse({type: DIALOG_TYPE.TRANSFER_ENTITY});
-    }
-
     function handleMerge() {
         if (name !== '')
             setDialogResponse({type: DIALOG_TYPE.MERGE, newName: name});
@@ -63,7 +58,7 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
             if (selectedEntities.selectionContext.selected.length !== 0) {
                 if (requestDialog.entities.length === selectedEntities.selectionContext.selected.length)
                     setDialogResponse({ type: DIALOG_TYPE.RENAME, newName: name });
-                setDialogResponse({ type: DIALOG_TYPE.SPLIT, newName: name, entities: selectedEntities.selectionContext.selected });
+                else setDialogResponse({ type: DIALOG_TYPE.SPLIT, newName: name, entities: selectedEntities.selectionContext.selected });
             } else handleCancel();
         }
         else setTextError(true);
@@ -75,10 +70,10 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
                 let entities = {};
                 selectedEntities.selectionContext.selected.forEach(selectedEntity => {
                     const entity = requestDialog.entities.find(entity => entity.id === selectedEntity);
-                    let clusterEntities = entities[entity.group];
+                    let clusterEntities = entities[entity.cluster];
                     if (clusterEntities)
                         clusterEntities.push(entity.id);
-                    else entities[entity.group] = [entity.id];
+                    else entities[entity.cluster] = [entity.id];
                 });
                 setDialogResponse({type: DIALOG_TYPE.FORM_CLUSTER, newName: name, entities});
             }
@@ -138,20 +133,6 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
                 <DialogActions>
                     <Button onClick={handleCancel}>Cancel</Button>
                     <Button onClick={handleTransfer}>Transfer</Button>
-                </DialogActions>
-            </Dialog>
-
-            <Dialog open={requestDialog.type === DIALOG_TYPE.TRANSFER_ENTITY} onClose={handleCancel}>
-                <DialogContent>
-                    <DialogTitle>Transfer entity {requestDialog.entityName} <ArrowRightAlt/> {requestDialog.toCluster}</DialogTitle>
-                    <DialogContentText className={"mb-2"}>
-                        This operation will transfer entity {requestDialog.entityName} to
-                        cluster {requestDialog.toCluster}.
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCancel}>Cancel</Button>
-                    <Button onClick={handleTransferEntity}>Transfer Entity</Button>
                 </DialogActions>
             </Dialog>
 

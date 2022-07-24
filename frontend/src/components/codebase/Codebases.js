@@ -8,6 +8,7 @@ import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import {ArrowForward} from "@mui/icons-material";
+import {toast} from "react-toastify";
 
 const HttpStatus = require('http-status-codes');
 
@@ -31,9 +32,11 @@ export const Codebases = () => {
     }
 
     function handleDeleteCodebase(codebaseName) {
+        let toastId = toast.loading("Deleting all codebase information...", {type: toast.TYPE.INFO});
         const service = new RepositoryService();
         service.deleteCodebase(codebaseName).then(() => {
             loadCodebases();
+            toast.dismiss(toastId);
         });
     }
 

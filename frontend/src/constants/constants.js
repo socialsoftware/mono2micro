@@ -19,8 +19,9 @@ export const OPERATION = {
     COLLAPSE_ALL: 11,
     TOGGLE_PHYSICS: 12,
     SAVE: 13,
-    RESTORE: 14,
-    CANCEL: 15,
+    SNAPSHOT: 14,
+    RESTORE: 15,
+    CANCEL: 16,
 };
 
 export const EDGE_LENGTH = 400;

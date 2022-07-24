@@ -227,11 +227,11 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
 
     const completeActions = [
         { icon: <Search/>, name: 'Search Element', handler: () => setOpenSearch(true) },
+        { icon: <Hub/>, name: 'Go to Clusters', handler: changeToClusters },
         { icon: <BubbleChart/>, name: 'Functionality Graph', handler: () => changeSubView("Graph") },
         { icon: <Analytics/>, name: 'Metrics', handler: () => changeSubView("Metrics") },
         { icon: <List/>, name: 'Sequence Table', handler: () => changeSubView("Sequence Table") },
         { icon: <Edit/>, name: 'Functionality Redesign', handler: () => changeSubView("Functionality Redesign") },
-        { icon: <Hub/>, name: 'Go to Clusters', handler: changeToClusters },
     ];
 
     useEffect(() => {
@@ -272,7 +272,7 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
     function loadFunctionalitiesAndFunctionalitiesClusters() {
         const service = new RepositoryService();
 
-        service.getFunctionalitiesAndFunctionalitiesClusters(codebaseName, strategyName, decompositionName).then(response => {
+        service.getFunctionalitiesAndFunctionalitiesClusters(decompositionName).then(response => {
             setFunctionalitiesClusters(response.data.functionalitiesClusters);
             setFunctionalities(Object.values(response.data.functionalities));
             setOutdated(false);
@@ -293,8 +293,6 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
         const service = new RepositoryService();
 
         service.getLocalTransactionsGraphForFunctionality(
-            codebaseName,
-            strategyName,
             decompositionName,
             currentFunctionality.name
         ).then(response => {
@@ -323,7 +321,7 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
 
     function createNode(cluster) {
         return {
-            id: cluster.id,
+            id: cluster.name,
             title: cluster.entities.map((entityID) => translateEntity(entityID)).join('\n') + "\nTotal: " + cluster.entities.length,
             label: cluster.name,
             value: cluster.entities,
@@ -342,7 +340,7 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
 
         return {
             from: currentFunctionality.name,
-            to: cluster.id,
+            to: cluster.name,
             label: text.length.toString(),
             title: text.join('\n')
         };
@@ -352,8 +350,8 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
         let localTransactionsSequence = [];
 
         localTransactionsGraph.nodes.forEach(node => {
-            if (node.clusterID === -1) return;
-            let cluster = functionalitiesClusters[currentFunctionality.name].find(cluster => cluster.id === node.clusterID);
+            if (node.clusterName === "-1") return;
+            let cluster = functionalitiesClusters[currentFunctionality.name].find(cluster => cluster.name === node.clusterName);
 
             localTransactionsSequence.push({
                 id: node.id,
@@ -435,7 +433,7 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
         })
 
         return {
-            cluster: cluster.id,
+            cluster: cluster.name,
             modifiedEntities,
         }
     }
@@ -478,7 +476,7 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
             DCGILocalTransactionsForTheSelectedClusters !== null){
             const localTransaction = selectedRedesign.redesign.find(c => c.id === nodeId);
 
-            if(!DCGISelectedClusters.includes(localTransaction.clusterID))
+            if(!DCGISelectedClusters.includes(localTransaction.clusterName))
                 return
 
             if(!DCGISelectedLocalTransactions.map(e => e.id).includes(nodeId)){
@@ -529,12 +527,12 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
             const DCGIAvailableClusters = [];
 
             functionalitiesClusters[functionality.name].forEach(cluster => {
-                if (cluster.id !== selectedLocalTransaction.clusterID)
-                    DCGIAvailableClusters.push(cluster.id);
+                if (cluster.name !== selectedLocalTransaction.clusterName)
+                    DCGIAvailableClusters.push(cluster.name);
             })
 
             setDCGIAvailableClusters(DCGIAvailableClusters);
-            setDCGISelectedClusters([selectedLocalTransaction.clusterID]);
+            setDCGISelectedClusters([selectedLocalTransaction.clusterName]);
         }
     }
 
@@ -549,8 +547,6 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
         switch (selectedOperation) {
             case redesignOperations.AC:
                 service.addCompensating(
-                    codebaseName,
-                    strategyName,
                     decompositionName,
                     functionality.name,
                     selectedRedesign.name,
@@ -570,8 +566,6 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
 
             case redesignOperations.SQ:
                 service.sequenceChange(
-                    codebaseName,
-                    strategyName,
                     decompositionName,
                     functionality.name,
                     selectedRedesign.name,
@@ -596,8 +590,6 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
                         return 1;
                 });
                 service.dcgi(
-                    codebaseName,
-                    strategyName,
                     decompositionName,
                     functionality.name,
                     selectedRedesign.name,
@@ -617,8 +609,6 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
 
             case redesignOperations.PIVOT:
                 service.selectPivotTransaction(
-                    codebaseName,
-                    strategyName,
                     decompositionName,
                     functionality.name,
                     selectedRedesign.name,
@@ -631,9 +621,9 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
                     }).catch(error => {
                         console.error(error.response)
 
-                        if(error.response !== undefined && error.response.status === HttpStatus.FORBIDDEN){
+                        if(error.response.status === HttpStatus.FORBIDDEN){
                             setError(true);
-                            setErrorMessage('Pivot selection failed - ' + error.response.data);
+                            setErrorMessage('Pivot selection failed - Name already used for another functionalityRedesign');
                         } else {
                             setError(true);
                             setErrorMessage('Pivot selection failed.');
@@ -643,8 +633,6 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
 
             case redesignOperations.RENAME:
                 service.changeLTName(
-                    codebaseName,
-                    strategyName,
                     decompositionName,
                     functionality.name,
                     selectedRedesign.name,
@@ -703,11 +691,10 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
 
     function DCGISelectCluster(value){
         const selectedClusters = DCGISelectedClusters;
-        //console.log("Maybe this needs a change after distinction between id and name");
-        selectedClusters.push(parseInt(value));
+        selectedClusters.push(value);
 
         const localTransactionsForTheSelectedClusters =
-            selectedRedesign.redesign.filter(e => selectedClusters.includes(e.clusterID));
+            selectedRedesign.redesign.filter(e => selectedClusters.includes(e.clusterName));
 
         setDCGILocalTransactionsForTheSelectedClusters(localTransactionsForTheSelectedClusters);
         setDCGISelectedLocalTransactions([selectedLocalTransaction]);
@@ -729,7 +716,7 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
             {functionality.functionalityRedesigns.map(fr =>
                 <Card className="me-4 mb-4" key={fr.name} style={{ width: "30rem" }}>
                     <Card.Body>
-                        {fr.usedForMetrics ? <Card.Title>
+                        {functionality.functionalityRedesignNameUsedForMetrics === fr.name ? <Card.Title>
                                 {fr.name + " (Used For Metrics)"}
                             </Card.Title> :
                             <Card.Title>
@@ -739,19 +726,19 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
                         {functionality.type === "QUERY" ?
                             <Card.Text>
                                 Type: Query <br/>
-                                Inconsistency Complexity: {fr.metrics.filter(metric => metric.type === MetricType.INCONSISTENCY_COMPLEXITY)[0].value}
+                                Inconsistency Complexity: {fr.metrics[MetricType.INCONSISTENCY_COMPLEXITY]}
                             </Card.Text>
                             :
                             <Card.Text>
                                 Type: Saga <br/>
-                                Functionality Complexity: {fr.metrics.filter(metric => metric.type === MetricType.FUNCTIONALITY_COMPLEXITY)[0].value}< br/>
-                                System Complexity: {fr.metrics.filter(metric => metric.type === MetricType.SYSTEM_COMPLEXITY)[0].value}
+                                Functionality Complexity: {fr.metrics[MetricType.FUNCTIONALITY_COMPLEXITY]}< br/>
+                                System Complexity: {fr.metrics[MetricType.SYSTEM_COMPLEXITY]}
                             </Card.Text>
                         }
                         <Button onClick={() => handleSelectRedesign(fr)} className="me-2">
                             {fr.name === DEFAULT_REDESIGN_NAME ? "Create a new Redesign" : "Go to Redesign"}
                         </Button>
-                        <Button onClick={() => handleUseForMetrics(fr)} className="me-2" disabled={fr.usedForMetrics}>
+                        <Button onClick={() => handleUseForMetrics(fr)} className="me-2" disabled={functionality.functionalityRedesignNameUsedForMetrics === fr.name}>
                             Use For Metrics
                         </Button>
                         <Button onClick={() => handleDeleteRedesign(fr)} variant="danger" className="me-2" disabled={fr.name === DEFAULT_REDESIGN_NAME}>
@@ -765,8 +752,7 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
 
     function handleUseForMetrics(value){
         const service = new RepositoryService();
-        service.setUseForMetrics(codebaseName, strategyName, decompositionName,
-            functionality.name, value.name)
+        service.setUseForMetrics(decompositionName, functionality.name, value.name)
             .then(response => {
                 const tempFunctionalities = functionalities;
                 const index = tempFunctionalities.indexOf(functionality);
@@ -787,8 +773,7 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
 
     function handleDeleteRedesign(value){
         const service = new RepositoryService();
-        service.deleteRedesign(codebaseName, strategyName, decompositionName,
-            functionality.name, value.name)
+        service.deleteRedesign(decompositionName, functionality.name, value.name)
             .then(response => {
                 const tempFunctionalities = functionalities;
                 const index = tempFunctionalities.indexOf(functionality);
@@ -826,25 +811,25 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
         </div>
     }
 
-    const metricsRows = functionalities? functionalities.map(functionalities => {
-        let metrics = functionalities.functionalityRedesigns.find(fr => fr.usedForMetrics).metrics;
-        return functionalities.type === "QUERY" ?
+    const metricsRows = functionalities? functionalities.map(functionality => {
+        let metrics = functionality.functionalityRedesigns.find(fr => functionality.functionalityRedesignNameUsedForMetrics === fr.name).metrics;
+        return functionality.type === "QUERY" ?
             {
-                functionality: functionalities.name,
-                clusters: functionalitiesClusters[functionalities.name] === undefined ? 0 : functionalitiesClusters[functionalities.name].length,
-                type: functionalities.type,
-                complexity: functionalities.metrics.filter(metric => metric.type === MetricType.COMPLEXITY)[0].value,
-                inconsistencyComplexity: metrics.filter(metric => metric.type === MetricType.INCONSISTENCY_COMPLEXITY)[0].value
+                functionality: functionality.name,
+                clusters: functionalitiesClusters[functionality.name] === undefined ? 0 : functionalitiesClusters[functionality.name].length,
+                type: functionality.type,
+                complexity: functionality.metrics[MetricType.COMPLEXITY],
+                inconsistencyComplexity: metrics[MetricType.INCONSISTENCY_COMPLEXITY]
             }
             :
             {
-                functionality: functionalities.name,
-                clusters: functionalitiesClusters[functionalities.name] === undefined ? 0 : functionalitiesClusters[functionalities.name].length,
-                type: functionalities.type,
-                complexity: functionalities.metrics.filter(metric => metric.type === MetricType.COMPLEXITY)[0].value,
-                functionalityComplexity: metrics.filter(metric => metric.type === MetricType.FUNCTIONALITY_COMPLEXITY)[0].value,
-                systemComplexity: metrics.filter(metric => metric.type === MetricType.SYSTEM_COMPLEXITY)[0].value,
-                total: metrics.filter(metric => metric.type === MetricType.FUNCTIONALITY_COMPLEXITY)[0].value + metrics.filter(metric => metric.type === MetricType.SYSTEM_COMPLEXITY)[0].value
+                functionality: functionality.name,
+                clusters: functionalitiesClusters[functionality.name] === undefined ? 0 : functionalitiesClusters[functionality.name].length,
+                type: functionality.type,
+                complexity: functionality.metrics[MetricType.COMPLEXITY],
+                functionalityComplexity: metrics[MetricType.FUNCTIONALITY_COMPLEXITY],
+                systemComplexity: metrics[MetricType.SYSTEM_COMPLEXITY],
+                total: metrics[MetricType.FUNCTIONALITY_COMPLEXITY] + metrics[MetricType.SYSTEM_COMPLEXITY]
             }
     }) : undefined;
 
@@ -894,7 +879,7 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
 
     let functionalitiesClustersAmount = Object.keys(functionalitiesClusters).map(functionality => functionalitiesClusters[functionality].length);
     let averageClustersAccessed = functionalitiesClustersAmount.reduce((a, b) => a + b, 0) / functionalitiesClustersAmount.length;
-    let numberOfClusters = [...new Set(Object.values(functionalitiesClusters).flatMap(clusters => clusters.map(cluster => cluster.id)))].length;
+    let numberOfClusters = [...new Set(Object.values(functionalitiesClusters).flatMap(clusters => clusters.map(cluster => cluster.name)))].length;
 
     return (
         <div>
@@ -997,12 +982,12 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
                                         {selectedRedesignsToCompare1}
                                     </h4>
                                     <h4 style={{color: "#666666", textAlign: "center"}}>
-                                        Functionality Complexity: {functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare1)[0].metrics.filter(metric => metric.type === MetricType.FUNCTIONALITY_COMPLEXITY)[0].value} - System Complexity: {functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare1)[0].metrics.filter(metric => metric.type === MetricType.SYSTEM_COMPLEXITY)[0].value}
+                                        Functionality Complexity: {functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare1)[0].metrics[MetricType.FUNCTIONALITY_COMPLEXITY]} - System Complexity: {functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare1)[0].metrics[MetricType.SYSTEM_COMPLEXITY]}
                                     </h4>
                                 </div>
                                 :
                                 <h4 style={{color: "#666666", textAlign: "center"}}>
-                                    Query Inconsistency Complexity: {functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare1)[0].metrics.filter(metric => metric.type === MetricType.INCONSISTENCY_COMPLEXITY)[0].value}
+                                    Query Inconsistency Complexity: {functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare1)[0].metrics[MetricType.INCONSISTENCY_COMPLEXITY]}
                                 </h4>
                             }
                             {renderRedesignGraph(createRedesignGraph(functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare1)[0], functionality), optionsFunctionalityRedesignCompare)}
@@ -1014,12 +999,12 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
                                         {selectedRedesignsToCompare2}
                                     </h4>
                                     <h4 style={{color: "#666666", textAlign: "center"}}>
-                                        Functionality Complexity: {functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare2)[0].metrics.filter(metric => metric.type === MetricType.FUNCTIONALITY_COMPLEXITY)[0].value} - System Complexity: {functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare2)[0].metrics.filter(metric => metric.type === MetricType.SYSTEM_COMPLEXITY)[0].value}
+                                        Functionality Complexity: {functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare2)[0].metrics[MetricType.FUNCTIONALITY_COMPLEXITY]} - System Complexity: {functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare2)[0].metrics[MetricType.SYSTEM_COMPLEXITY]}
                                     </h4>
                                 </div>
                                 :
                                 <h4 style={{color: "#666666", textAlign: "center"}}>
-                                    Query Inconsistency Complexity: {functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare2)[0].metrics.filter(metric => metric.type === MetricType.INCONSISTENCY_COMPLEXITY)[0].value}
+                                    Query Inconsistency Complexity: {functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare2)[0].metrics[MetricType.INCONSISTENCY_COMPLEXITY]}
                                 </h4>
                             }
                             {renderRedesignGraph(createRedesignGraph(functionality.functionalityRedesigns.filter(e => e.name === selectedRedesignsToCompare2)[0], functionality), optionsFunctionalityRedesignCompare)}
@@ -1032,13 +1017,13 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
             <Container fluid style={{paddingLeft:"0px", paddingRight:"0px"}}>
                 {showGraph && currentSubView === "Functionality Redesign" && functionality.type === "SAGA" &&
                     <h4 style={{color: "#666666", textAlign: "center", position: "absolute", marginTop: "2rem", marginLeft: "80%", transform: "translate(-50%,0%)"}}>
-                        Functionality Complexity: {selectedRedesign.metrics.filter(metric => metric.type === MetricType.FUNCTIONALITY_COMPLEXITY)[0].value} - System Complexity: {selectedRedesign.metrics.filter(metric => metric.type === MetricType.SYSTEM_COMPLEXITY)[0].value}
+                        Functionality Complexity: {selectedRedesign.metrics[MetricType.FUNCTIONALITY_COMPLEXITY]} - System Complexity: {selectedRedesign.metrics[MetricType.SYSTEM_COMPLEXITY]}
                     </h4>
                 }
                 {showGraph && currentSubView === "Functionality Redesign" &&
                     functionality.type === "QUERY" &&
                     <h4 style={{color: "#666666", textAlign: "center", position: "absolute", marginTop: "2rem", marginLeft: "80%", transform: "translate(-50%,0)"}}>
-                        Query Inconsistency Complexity: {selectedRedesign.metrics.filter(metric => metric.type === MetricType.INCONSISTENCY_COMPLEXITY)[0].value}
+                        Query Inconsistency Complexity: {selectedRedesign.metrics[MetricType.INCONSISTENCY_COMPLEXITY]}
                     </h4>
                 }
                 <Row style={{zIndex: 1, position: "absolute", marginTop: "2.5rem", marginLeft: "-0.15rem"}}>

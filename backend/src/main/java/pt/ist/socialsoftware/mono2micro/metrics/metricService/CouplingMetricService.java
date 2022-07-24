@@ -11,22 +11,22 @@ import java.util.Set;
 
 @Service
 public class CouplingMetricService {
-    public Float calculateMetric(AccessesSciPyDecomposition decomposition) {
+    public Double calculateMetric(AccessesSciPyDecomposition decomposition) {
 
         int graphClustersAmount = decomposition.getClusters().size();
-        float coupling = 0;
+        double coupling = 0;
 
         for (Cluster cluster1 : decomposition.getClusters().values()) {
-            float clusterCoupling = 0;
+            double clusterCoupling = 0;
             Map<String, Set<Short>> couplingDependencies = cluster1.getCouplingDependencies();
 
             for (String cluster2 : couplingDependencies.keySet())
-                clusterCoupling += (float) couplingDependencies.get(cluster2).size() / decomposition.getCluster(cluster2).getEntities().size();
+                clusterCoupling += (double) couplingDependencies.get(cluster2).size() / decomposition.getCluster(cluster2).getEntities().size();
 
             clusterCoupling = graphClustersAmount == 1 ? 0 : clusterCoupling / (graphClustersAmount - 1);
             clusterCoupling = BigDecimal.valueOf(clusterCoupling)
                     .setScale(2, RoundingMode.HALF_UP)
-                    .floatValue();
+                    .doubleValue();
 
             cluster1.setCoupling(clusterCoupling);
 
@@ -35,6 +35,6 @@ public class CouplingMetricService {
 
         return BigDecimal.valueOf(coupling / graphClustersAmount)
                 .setScale(2, RoundingMode.HALF_UP)
-                .floatValue();
+                .doubleValue();
     }
 }
