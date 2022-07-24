@@ -26,6 +26,7 @@ export const clusterViewHelp = (<div>
     in the speed dial.<br />
     Jump directly to functionalities in the<br />
     speed dial.<br />
+    Also undo/redo operations on the speed dial<br />
     To select multiple nodes, leave the mouse
     button pressed or use "Ctrl+click" to add nodes.
     Then right click to see available operations.<br />
