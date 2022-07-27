@@ -596,8 +596,6 @@ export class RepositoryService {
     }
 
     refactorCodebase(
-        codebaseName: string,
-        strategyName: string,
         decompositionName: string,
         functionalityNames: string[],
         dataDependenceThreshold: number,
@@ -607,8 +605,6 @@ export class RepositoryService {
     ) {
 
         const refactorRequest: RefactorCodebase = {
-            codebase_name: codebaseName,
-            strategy_name: strategyName,
             decomposition_name: decompositionName,
             functionality_names: functionalityNames,
             data_dependence_threshold: dataDependenceThreshold,
@@ -624,13 +620,11 @@ export class RepositoryService {
     }
 
     viewRefactor(
-        codebaseName: string,
-        strategyName: string,
         decompositionName: string,
     ) {
 
         return this.refactorizationToolAxios.get(
-            "/refactor/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName ,
+            "/refactor/decomposition/" + decompositionName ,
         );
     }
 }

@@ -149,7 +149,7 @@ export const AccessesSciPyDecompositionForm = ({loadDecompositions}) => {
                                 disabled={(height !== "" && numberClusters !== "") ||
                                     (height === "" && numberClusters === "") ||
                                     isUploaded === "Processing..."}>
-                            Cut Dendrogram
+                            Generate
                         </Button>
                         <Form.Text className="ms-2">
                             {isUploaded}
@@ -209,7 +209,7 @@ export const AccessesSciPyDecompositionForm = ({loadDecompositions}) => {
     return (
         <div>
             <Button className={"me-3"} onClick={() => {setCreateExpert(false); setIsUploaded("")}}>
-                Dendrogram Cut
+                Generate Decomposition
             </Button>
 
             <Button onClick={() => {setCreateExpert(true); setIsUploaded("")}}>

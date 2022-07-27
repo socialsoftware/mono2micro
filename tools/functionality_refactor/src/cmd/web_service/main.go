@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"functionality_refactor/app/database"
 	"net"
 	"net/http"
 	"os"
@@ -9,7 +10,6 @@ import (
 	"syscall"
 
 	"functionality_refactor/app"
-	"functionality_refactor/app/files"
 	"functionality_refactor/app/handler"
 	"functionality_refactor/app/metrics"
 	"functionality_refactor/app/refactor"
@@ -22,25 +22,36 @@ import (
 )
 
 const (
-	httpPort      = ":5001"
-	allowedOrigin = "*"
-	codebasesPath = "../../../../../codebases/"
+	httpPort           = ":5001"
+	allowedOrigin      = "*"
+	mongodbDefault     = "mongodb://mono2micro:mono2microPass@mongo"
+	mongodbNameDefault = "mono2micro"
 )
 
 func main() {
 	logger := log.NewLogger()
 
-	filesHandler := files.New(logger, codebasesPath)
+	mongodb := mongodbDefault
+	if mdb := os.Getenv("MONGO_DB"); mdb != "" {
+		mongodb = mdb
+	}
+
+	mongodbName := mongodbNameDefault
+	if mdbName := os.Getenv("MONGO_DB_NAME"); mdbName != "" {
+		mongodbName = mdbName
+	}
+
+	databaseHandler := database.New(logger, mongodb, mongodbName)
 	refactorHandler := refactor.New(
 		logger,
 		metrics.New(logger),
 		training.New(logger),
-		filesHandler,
+		databaseHandler,
 	)
 
 	svc := handler.New(
 		logger,
-		filesHandler,
+		databaseHandler,
 		refactorHandler,
 	)
 

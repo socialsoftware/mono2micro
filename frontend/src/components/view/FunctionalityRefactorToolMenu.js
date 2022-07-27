@@ -134,6 +134,7 @@ export const FunctionalityRefactorToolMenu = () => {
     }
 
     function handleDataParsing(data) {
+        console.log(data);
         let refactorizationRows = [];
 
         try {
@@ -196,7 +197,7 @@ export const FunctionalityRefactorToolMenu = () => {
 
                 invocations = invocations.concat(
                     {
-                        cluster: data[i]['cluster_id'],
+                        cluster: data[i]['cluster_name'],
                         entity_accesses: invocationAccesses,
                     }
                 )
@@ -215,7 +216,7 @@ export const FunctionalityRefactorToolMenu = () => {
 
         setWaitingResponse(true);
 
-        service.viewRefactor(codebaseName, strategyName, decompositionName)
+        service.viewRefactor(decompositionName)
             .then(response => {
                 setWaitingResponse(false);
                 setRefactorizationExists(true);
@@ -240,7 +241,7 @@ export const FunctionalityRefactorToolMenu = () => {
 
         setWaitingResponse(true);
 
-        service.refactorCodebase(codebaseName, strategyName, decompositionName,
+        service.refactorCodebase(decompositionName,
             functionalities, Number(dataDependenceThreshold), minimizeSumOfComplexities, Number(timeoutSecs), newRefactor)
             .then(response => {
                 setWaitingResponse(false);
@@ -281,7 +282,6 @@ export const FunctionalityRefactorToolMenu = () => {
                                 keyField='functionality'
                                 data={functionalitiesRedesignRows[row["name"]]}
                                 columns={functionalityRedesignColumns}
-                                expandRow={ expandRow }
                                 caption={"Saga redesign proposed:"}
                                 bordered={false}
                                 hover={true}

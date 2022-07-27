@@ -64,6 +64,9 @@ services:
     hostname: 'localhost'
     ports:
       - 5001:5001
+    environment:
+      - MONGO_DB=mongodb://mono2micro:mono2microPass@mongo
+      - MONGO_DB_NAME=mono2micro
     restart: unless-stopped
     volumes:
       - ./codebases:/codebases

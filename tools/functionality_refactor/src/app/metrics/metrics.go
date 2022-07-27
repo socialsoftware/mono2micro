@@ -38,9 +38,9 @@ func New(logger log.Logger) MetricsHandler {
 func (svc *DefaultHandler) CalculateDecompositionMetrics(
 	decomposition *mono2micro.Decomposition, functionality *mono2micro.Functionality, redesign *mono2micro.FunctionalityRedesign,
 ) {
-	var complexity float32
-	var cohesion float32
-	var coupling float32
+	var complexity float64
+	var cohesion float64
+	var coupling float64
 
 	for _, functionality := range decomposition.Functionalities {
 		svc.calculateFunctionalityComplexityAndDependencies(decomposition, functionality, redesign)
@@ -56,7 +56,7 @@ func (svc *DefaultHandler) CalculateDecompositionMetrics(
 		// coupling += cluster.Coupling
 	}
 
-	clusterInvocations := map[int]int{}
+	clusterInvocations := map[string]int{}
 	for _, invocation := range redesign.Redesign {
 		redesign.AccessesCount += len(invocation.ClusterAccesses)
 
@@ -64,23 +64,23 @@ func (svc *DefaultHandler) CalculateDecompositionMetrics(
 			redesign.InvocationsCount += 1
 		}
 
-		_, exists := clusterInvocations[invocation.ClusterID]
+		_, exists := clusterInvocations[invocation.ClusterName]
 		if !exists {
-			clusterInvocations[invocation.ClusterID] = 1
+			clusterInvocations[invocation.ClusterName] = 1
 		} else {
-			clusterInvocations[invocation.ClusterID] += 1
+			clusterInvocations[invocation.ClusterName] += 1
 		}
 	}
 
-	for clusterID, count := range clusterInvocations {
-		if count > 1 && clusterID != redesign.OrchestratorID {
+	for clusterName, count := range clusterInvocations {
+		if count > 1 && clusterName != redesign.OrchestratorName {
 			redesign.ClustersBesidesOrchestratorWithMultipleInvocations += 1
 		}
 	}
 
-	decomposition.Complexity = complexity / float32(len(decomposition.Functionalities))
-	decomposition.Cohesion = cohesion / float32(len(decomposition.Clusters))
-	decomposition.Coupling = coupling / float32(len(decomposition.Clusters))
+	decomposition.Complexity = complexity / float64(len(decomposition.Functionalities))
+	decomposition.Cohesion = cohesion / float64(len(decomposition.Clusters))
+	decomposition.Coupling = coupling / float64(len(decomposition.Clusters))
 }
 
 func (svc *DefaultHandler) calculateFunctionalityComplexityAndDependencies(
@@ -91,18 +91,18 @@ func (svc *DefaultHandler) calculateFunctionalityComplexityAndDependencies(
 		return
 	}
 
-	var complexity float32
+	var complexity float64
 	for idx, invocation := range redesign.Redesign {
-		if invocation.ClusterID == -1 {
+		if invocation.ClusterName == "-1" {
 			continue
 		}
 
-		cluster := decomposition.GetClusterFromID(invocation.ClusterID)
+		cluster := decomposition.GetClusterFromID(invocation.ClusterName)
 		for i := idx; i < len(redesign.Redesign); i++ {
 			if len(redesign.GetInvocation(i).ClusterAccesses) > 0 {
 				mapMutex.Lock()
 				cluster.AddCouplingDependency(
-					redesign.GetInvocation(i).ClusterID,
+					redesign.GetInvocation(i).ClusterName,
 					redesign.GetInvocation(i).GetAccessEntityID(0),
 				)
 				mapMutex.Unlock()
@@ -125,10 +125,10 @@ func (svc *DefaultHandler) calculateFunctionalityComplexityAndDependencies(
 				}
 			}
 		}
-		complexity += float32(len(functionalitiesTouchingSameEntities))
+		complexity += float64(len(functionalitiesTouchingSameEntities))
 	}
 
-	functionality.Complexity = float32(complexity)
+	functionality.Complexity = complexity
 	return
 }
 
@@ -152,9 +152,9 @@ func (svc *DefaultHandler) functionalitiesThatTouchEntity(
 }
 
 func (svc *DefaultHandler) calculateClusterComplexityAndCohesion(cluster *mono2micro.Cluster) {
-	var complexity float32
-	var cohesion float32
-	var numberEntitiesTouched float32
+	var complexity float64
+	var cohesion float64
+	var numberEntitiesTouched float64
 
 	for _, functionality := range cluster.Functionalities {
 		for entityName := range functionality.Entities {
@@ -164,14 +164,14 @@ func (svc *DefaultHandler) calculateClusterComplexityAndCohesion(cluster *mono2m
 			}
 		}
 
-		cohesion += numberEntitiesTouched / float32(len(cluster.Entities))
+		cohesion += numberEntitiesTouched / float64(len(cluster.Entities))
 		complexity += functionality.Complexity
 	}
 
-	complexity /= float32(len(cluster.Functionalities))
+	complexity /= float64(len(cluster.Functionalities))
 	cluster.Complexity = complexity
 
-	cohesion /= float32(len(cluster.Functionalities))
+	cohesion /= float64(len(cluster.Functionalities))
 	cluster.Cohesion = cohesion
 	return
 }

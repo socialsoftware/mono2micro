@@ -74,14 +74,8 @@ func (r *RefactorCodebaseHTTPHandler) ServeHTTP(w http.ResponseWriter, req *http
 }
 
 func (r *RefactorCodebaseHTTPHandler) validateRequest(req *values.RefactorCodebaseRequest) error {
-	if req.CodebaseName == "" {
-		return fmt.Errorf("A codebase name must be set.")
-	}
 	if req.DecompositionName == "" {
 		return fmt.Errorf("A decomposition name must be set.")
-	}
-	if req.StrategyName == "" {
-		return fmt.Errorf("A strategy name must be set.")
 	}
 	return nil
 }

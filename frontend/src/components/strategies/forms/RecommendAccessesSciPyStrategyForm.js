@@ -313,7 +313,7 @@ export const RecommendAccessesSciPyStrategyForm = ({strategy, setStrategy, setUp
                         disabled={isUploaded === "Gathering recommendations..." || !strategy.readyToSubmit() || loading}
                         onClick={handleCreateRecommendation}
                     >
-                        Show list of decompositions
+                        Recommend Decompositions
                     </Button>
                     <Form.Text className="ms-2">
                         {isUploaded}

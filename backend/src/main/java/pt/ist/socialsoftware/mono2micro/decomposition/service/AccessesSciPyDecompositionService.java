@@ -465,5 +465,6 @@ public class AccessesSciPyDecompositionService {
     public void deleteDecompositionProperties(AccessesSciPyDecomposition decomposition) {
         accessesSciPyLogService.deleteDecompositionLog(decomposition.getLog());
         functionalityService.deleteFunctionalities(decomposition.getFunctionalities().values());
+        gridFsService.deleteFile(decomposition.getName() + "_refactorization");
     }
 }

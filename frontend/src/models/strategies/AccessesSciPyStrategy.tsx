@@ -61,7 +61,7 @@ export default class AccessesSciPyStrategy extends Strategy {
                 <Button href={`/codebases/${this.codebaseName}/strategies/${this.name}`}
                         variant={"success"}
                         className="mb-2">
-                    Go to Strategy
+                    Decomposition Generation
                 </Button>
                 <br />
                 <Button

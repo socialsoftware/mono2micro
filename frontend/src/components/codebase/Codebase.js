@@ -209,7 +209,7 @@ export function Codebase() {
                                 disabled={sources.length === 0}
                                 variant={"success"}
                             >
-                                Go to Strategies <ArrowForward/>
+                                Strategy Generation <ArrowForward/>
                             </Button>
                         </Card.Body>
                     </Card>
