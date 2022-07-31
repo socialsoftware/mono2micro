@@ -11,7 +11,7 @@ export default abstract class Source {
         this.inputFile = source.inputFile;
     }
 
-    // This function is used to display the collector
+    // This function is used to be displayed in the context of the codebase
     abstract printCard(handleDeleteSource: (source: Source) => void): JSX.Element;
 }
 

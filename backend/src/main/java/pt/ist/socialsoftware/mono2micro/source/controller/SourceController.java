@@ -22,24 +22,6 @@ public class SourceController {
     @Autowired
     SourceService sourceService;
 
-    @RequestMapping(value = "/codebase/{codebaseName}/addSources", method = RequestMethod.POST)
-    public ResponseEntity<HttpStatus> addSources(
-            @PathVariable String codebaseName,
-            @RequestParam List<String> sourceTypes,
-            @RequestParam List<Object> sources
-    ){
-        logger.debug("addSources");
-
-        try {
-            sourceService.addSources(codebaseName, sourceTypes, sources);
-            return new ResponseEntity<>(HttpStatus.CREATED);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
     @RequestMapping(value = "/codebase/{codebaseName}/source/{sourceType}/getCodebaseSource", method = RequestMethod.GET)
     public ResponseEntity<SourceDto> getCodebaseSource(
             @PathVariable String codebaseName,

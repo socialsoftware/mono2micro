@@ -19,10 +19,10 @@ import pt.ist.socialsoftware.mono2micro.log.repository.LogRepository;
 import pt.ist.socialsoftware.mono2micro.metrics.decompositionService.AccessesSciPyMetricService;
 import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
 import pt.ist.socialsoftware.mono2micro.source.service.SourceService;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.RecommendAccessesSciPyStrategy;
-import pt.ist.socialsoftware.mono2micro.strategy.repository.StrategyRepository;
-import pt.ist.socialsoftware.mono2micro.strategy.service.RecommendAccessesSciPyStrategyService;
+import pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram;
+import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendAccessesSciPy;
+import pt.ist.socialsoftware.mono2micro.dendrogram.repository.DendrogramRepository;
+import pt.ist.socialsoftware.mono2micro.recommendation.service.RecommendAccessesSciPyStrategyService;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
@@ -43,7 +43,7 @@ public class SciPyClusteringAlgorithmService {
     SourceService sourceService;
 
     @Autowired
-    StrategyRepository strategyRepository;
+    DendrogramRepository dendrogramRepository;
 
     @Autowired
     DecompositionRepository decompositionRepository;
@@ -60,7 +60,7 @@ public class SciPyClusteringAlgorithmService {
     @Autowired
     LogRepository logRepository;
 
-    public void createAccessesSciPyDendrogram(AccessesSciPyStrategy strategy) {
+    public void createAccessesSciPyDendrogram(AccessesSciPyDendrogram strategy) {
         String response = WebClient.create(SCRIPTS_ADDRESS)
                 .get()
                 .uri("/scipy/{strategyName}/{similarityMatrixName}/createDendrogram", strategy.getName(), strategy.getSimilarityMatrixName())
@@ -75,8 +75,8 @@ public class SciPyClusteringAlgorithmService {
         } catch(Exception e) { throw new RuntimeException("Could not produce or extract elements from JSON Object"); }
     }
 
-    public void createDecomposition(AccessesSciPyStrategy strategy, String cutType, float cutValue) throws Exception {
-        AccessesSource source = (AccessesSource) strategy.getCodebase().getSourceByType(ACCESSES);
+    public void createDecomposition(AccessesSciPyDendrogram strategy, String cutType, float cutValue) throws Exception {
+        AccessesSource source = (AccessesSource) strategy.getStrategy().getSourceByType(ACCESSES);
 
         AccessesSciPyDecomposition decomposition = new AccessesSciPyDecomposition();
         decomposition.setName(getDecompositionName(strategy, cutType, cutValue));
@@ -95,11 +95,11 @@ public class SciPyClusteringAlgorithmService {
         logRepository.save(decompositionLog);
 
         decompositionRepository.save(decomposition);
-        strategyRepository.save(strategy);
+        dendrogramRepository.save(strategy);
     }
 
-    public void createExpertDecomposition(AccessesSciPyStrategy strategy, String expertName, Optional<MultipartFile> expertFile) throws Exception {
-        AccessesSource source = (AccessesSource) strategy.getCodebase().getSourceByType(ACCESSES);
+    public void createExpertDecomposition(AccessesSciPyDendrogram strategy, String expertName, Optional<MultipartFile> expertFile) throws Exception {
+        AccessesSource source = (AccessesSource) strategy.getStrategy().getSourceByType(ACCESSES);
 
         AccessesSciPyDecomposition decomposition = new AccessesSciPyDecomposition();
         decomposition.setStrategy(strategy);
@@ -128,10 +128,10 @@ public class SciPyClusteringAlgorithmService {
         logRepository.save(decompositionLog);
 
         decompositionRepository.save(decomposition);
-        strategyRepository.save(strategy);
+        dendrogramRepository.save(strategy);
     }
 
-    private void createGenericDecomposition(AccessesSciPyStrategy strategy, AccessesSciPyDecomposition decomposition) throws Exception {
+    private void createGenericDecomposition(AccessesSciPyDendrogram strategy, AccessesSciPyDecomposition decomposition) throws Exception {
         Cluster cluster = new Cluster("Generic");
 
         JSONObject similarityMatrixData = new JSONObject(strategy.getSimilarityMatrixName());
@@ -161,7 +161,7 @@ public class SciPyClusteringAlgorithmService {
                 source.getProfile(profile),
                 tracesMaxLimit,
                 traceType,
-                true);
+                false);
 
         // Calculate decomposition's metrics
         metricService.calculateMetrics(decomposition);
@@ -185,7 +185,7 @@ public class SciPyClusteringAlgorithmService {
         } catch(Exception e) { throw new RuntimeException(e.getMessage()); }
     }
 
-    public String getDecompositionName(AccessesSciPyStrategy strategy, String cutType, float cutValue) {
+    public String getDecompositionName(AccessesSciPyDendrogram strategy, String cutType, float cutValue) {
         String cutValueString = Float.valueOf(cutValue).toString().replaceAll("\\.?0*$", "");
         List<String> decompositionNames = strategy.getDecompositions().stream().map(Decomposition::getName).collect(Collectors.toList());
 
@@ -228,7 +228,7 @@ public class SciPyClusteringAlgorithmService {
         System.out.println("Preparing to contact " + SCRIPTS_ADDRESS);
     }
 
-    public void generateMultipleDecompositions(RecommendAccessesSciPyStrategy strategy) throws Exception {
+    public void generateMultipleDecompositions(RecommendAccessesSciPy strategy) throws Exception {
         AccessesSource source = (AccessesSource) strategy.getCodebase().getSourceByType(ACCESSES);
         byte[] sourceBytes = IOUtils.toByteArray(sourceService.getSourceFileAsInputStream(source.getName()));
 
@@ -249,7 +249,7 @@ public class SciPyClusteringAlgorithmService {
         if (strategy.getRecommendationResultName() == null) {
             recommendationJSON = new JSONArray();
             strategy.setRecommendationResultName(strategy.getName() + "_recommendationResult");
-            strategyRepository.save(strategy);
+            dendrogramRepository.save(strategy);
         }
         else {
             recommendationJSON = new JSONArray(recommendStrategyService.getRecommendationResult(strategy));
@@ -289,13 +289,10 @@ public class SciPyClusteringAlgorithmService {
                             source.getProfile(strategy.getProfile()),
                             strategy.getTracesMaxLimit(),
                             traceType,
-                            false);
+                            true);
 
                     // Calculate decomposition's metrics
                     metricService.calculateMetrics(decomposition);
-
-                    decompositionRepository.save(decomposition);
-                    strategy.addDecomposition(decomposition);
 
                     // Add decomposition's relevant information to the file
                     JSONObject decompositionJSON = new JSONObject();

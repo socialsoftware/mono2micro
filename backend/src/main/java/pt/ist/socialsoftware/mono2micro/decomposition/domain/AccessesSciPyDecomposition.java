@@ -8,7 +8,7 @@ import pt.ist.socialsoftware.mono2micro.log.domain.AccessesSciPyLog;
 
 import java.util.*;
 
-import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy.ACCESSES_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram.ACCESSES_SCIPY;
 
 @Document("decomposition")
 public class AccessesSciPyDecomposition extends Decomposition {

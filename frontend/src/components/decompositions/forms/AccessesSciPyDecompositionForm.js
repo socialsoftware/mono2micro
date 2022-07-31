@@ -11,7 +11,7 @@ import HttpStatus from "http-status-codes";
 
 
 export const AccessesSciPyDecompositionForm = ({loadDecompositions}) => {
-    let { codebaseName, strategyName } = useParams();
+    let { strategyName } = useParams();
 
     const [createExpert, setCreateExpert] = useState(undefined);
 
@@ -107,7 +107,7 @@ export const AccessesSciPyDecompositionForm = ({loadDecompositions}) => {
                 <img
                     className={"d-block mb-4"}
                     width="70%"
-                    src={URL + "/strategy/" + strategyName + "/image?" + new Date().getTime()}
+                    src={URL + "/decompositions/" + strategyName + "/image?" + new Date().getTime()}
                     alt="Strategy"
                 />
 

@@ -1,17 +1,16 @@
-package pt.ist.socialsoftware.mono2micro.strategy.domain;
+package pt.ist.socialsoftware.mono2micro.recommendation.domain;
 
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
-import pt.ist.socialsoftware.mono2micro.strategy.dto.RecommendAccessesSciPyStrategyDto;
-import pt.ist.socialsoftware.mono2micro.strategy.dto.StrategyDto;
+import pt.ist.socialsoftware.mono2micro.recommendation.dto.RecommendAccessesSciPyDto;
+import pt.ist.socialsoftware.mono2micro.dendrogram.dto.DendrogramDto;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-@Document("strategy")
-public class RecommendAccessesSciPyStrategy extends Strategy {
+@Document("recommend")
+public class RecommendAccessesSciPy extends Recommendation {
     public static final String RECOMMEND_ACCESSES_SCIPY = "Recommend Accesses SciPy";
     private String profile;
     private int tracesMaxLimit;
@@ -29,9 +28,9 @@ public class RecommendAccessesSciPyStrategy extends Strategy {
     private Set<String> similarityMatricesNames;
     private String recommendationResultName;
 
-    public RecommendAccessesSciPyStrategy() {}
+    public RecommendAccessesSciPy() {}
 
-    public RecommendAccessesSciPyStrategy(RecommendAccessesSciPyStrategyDto dto) {
+    public RecommendAccessesSciPy(RecommendAccessesSciPyDto dto) {
         this.profile = dto.getProfile();
         this.tracesMaxLimit = dto.getTracesMaxLimit();
         this.isCompleted = dto.isCompleted();
@@ -40,7 +39,6 @@ public class RecommendAccessesSciPyStrategy extends Strategy {
         this.combinationsInProduction = new HashSet<>();
         this.producedCombinations = new HashSet<>();
         this.similarityMatricesNames = new HashSet<>();
-        setDecompositions(new ArrayList<>());
     }
 
     @Override
@@ -157,11 +155,11 @@ public class RecommendAccessesSciPyStrategy extends Strategy {
     }
 
     @Override
-    public boolean equalsDto(StrategyDto dto) {
-        if (!(dto instanceof RecommendAccessesSciPyStrategyDto))
+    public boolean equalsDto(DendrogramDto dto) {
+        if (!(dto instanceof RecommendAccessesSciPyDto))
             return false;
 
-        RecommendAccessesSciPyStrategyDto strategyDto = (RecommendAccessesSciPyStrategyDto) dto;
+        RecommendAccessesSciPyDto strategyDto = (RecommendAccessesSciPyDto) dto;
 
         return strategyDto.getProfile().equals(this.profile) && (strategyDto.getTracesMaxLimit() == this.tracesMaxLimit);
     }

@@ -1,6 +1,6 @@
 import Decomposition from "./Decomposition";
 import AccessesSciPyDecomposition from "./AccessesSciPyDecomposition";
-import {StrategyType} from "../strategies/Strategy";
+import {StrategyType} from "../dendrogram/Dendrogram";
 
 export abstract class DecompositionFactory {
     static getDecomposition(decomposition: any) : Decomposition {

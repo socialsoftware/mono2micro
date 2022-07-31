@@ -19,7 +19,7 @@ import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.metrics.decompositionService.AccessesSciPyMetricService;
 import pt.ist.socialsoftware.mono2micro.source.domain.Source;
 import pt.ist.socialsoftware.mono2micro.source.service.SourceService;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
+import pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
 
@@ -55,7 +55,7 @@ public class FunctionalityService {
             Set<String> profileFunctionalities,
             int tracesMaxLimit,
             Constants.TraceType traceType,
-            boolean calculateRedesigns
+            boolean recommendation
     ) throws Exception {
         FunctionalityTracesIterator iter = new FunctionalityTracesIterator(inputFilePath, tracesMaxLimit);
         Map<String, DirectedAcyclicGraph<LocalTransaction, DefaultEdge>> localTransactionsGraphs = new HashMap<>();
@@ -93,7 +93,7 @@ public class FunctionalityService {
             metricService.calculateMetrics(decomposition, functionality);
 
             // Functionality Redesigns
-            if (calculateRedesigns) {
+            if (!recommendation) {
                 createFunctionalityRedesign(
                         decomposition,
                         functionality,
@@ -102,7 +102,8 @@ public class FunctionalityService {
                         localTransactionsGraphs.get(functionality.getName()));
             }
         }
-        functionalityRepository.saveAll(newFunctionalities);
+        if (!recommendation)
+            functionalityRepository.saveAll(newFunctionalities);
     }
 
     public FunctionalityRedesign createFunctionalityRedesign(
@@ -210,11 +211,11 @@ public class FunctionalityService {
 
     public Functionality getOrCreateRedesign(String decompositionName, String functionalityName) throws IOException, JSONException {
         AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-        AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) decomposition.getStrategy();
+        AccessesSciPyDendrogram strategy = (AccessesSciPyDendrogram) decomposition.getStrategy();
 
         Functionality functionality = decomposition.getFunctionality(functionalityName);
 
-        Source source = strategy.getCodebase().getSourceByType(ACCESSES);
+        Source source = strategy.getStrategy().getSourceByType(ACCESSES);
 
         if (!functionality.containsFunctionalityRedesignName(Constants.DEFAULT_REDESIGN_NAME)) {
             FunctionalityRedesign functionalityRedesign = createFunctionalityRedesign(
@@ -288,7 +289,7 @@ public class FunctionalityService {
             throws Exception
     {
         AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-        AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) decomposition.getStrategy();
+        AccessesSciPyDendrogram strategy = (AccessesSciPyDendrogram) decomposition.getStrategy();
         Functionality functionality = decomposition.getFunctionality(functionalityName);
 
         if(newRedesignName.isPresent())
@@ -306,7 +307,7 @@ public class FunctionalityService {
             functionality.addFunctionalityRedesign(functionalityRedesign.getName(), functionality.getId() + functionalityRedesign.getName());
             functionality.setFunctionalityRedesignNameUsedForMetrics(functionalityRedesign.getName());
 
-            Source source = strategy.getCodebase().getSourceByType(ACCESSES);
+            Source source = strategy.getStrategy().getSourceByType(ACCESSES);
 
             DirectedAcyclicGraph<LocalTransaction, DefaultEdge> functionalityLocalTransactionsGraph = decomposition.getFunctionality(functionalityName)
                     .createLocalTransactionGraphFromScratch(

@@ -2,13 +2,13 @@ package pt.ist.socialsoftware.mono2micro.decomposition.dto;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
+import pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram;
 
 import java.util.Map;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "strategyType")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = AccessesSciPyDecompositionDto.class, name = AccessesSciPyStrategy.ACCESSES_SCIPY)
+        @JsonSubTypes.Type(value = AccessesSciPyDecompositionDto.class, name = AccessesSciPyDendrogram.ACCESSES_SCIPY)
 })
 public abstract class DecompositionDto {
     private String name;

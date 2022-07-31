@@ -8,18 +8,19 @@ import {
     AnalysisDto,
     TraceType,
     Cluster,
-    Functionality,
     LocalTransactionsGraph,
     RefactorCodebase,
-    SimilarityMatrix, Edges
+    Edges
 } from "../type-declarations/types";
 import { addSearchParamsToUrl } from "../utils/url";
 import {SourceFactory} from "../models/sources/SourceFactory";
-import Strategy from "../models/strategies/Strategy";
-import {StrategyFactory} from "../models/strategies/StrategyFactory";
+import Dendrogram from "../models/dendrogram/Dendrogram";
+import {DendrogramFactory} from "../models/dendrogram/DendrogramFactory";
 import {DecompositionFactory} from "../models/decompositions/DecompositionFactory";
 import Decomposition from "../models/decompositions/Decomposition";
 import Codebase from "../models/codebase/Codebase";
+import {StrategyFactory} from "../models/strategy/StrategyFactory";
+import {RecommendationFactory} from "../models/recommendation/RecommendationFactory";
 
 export class RepositoryService {
     axios: AxiosInstance;
@@ -73,14 +74,14 @@ export class RepositoryService {
 
     // Recommendation
     recommendation(
-        requestedStrategyRecommendation: Strategy
+        requestedStrategyRecommendation: Dendrogram
     ) {
         return this.axios.put("strategy/createRecommendAccessesSciPy", requestedStrategyRecommendation)
-            .then((response) => {return StrategyFactory.getStrategy(response.data)});
+            .then((response) => {return RecommendationFactory.getRecommendation(response.data)});
     }
 
     getRecommendationResult(
-        strategyName: string
+        recommendationName: string
     ) {
         return this.axios.get("/recommendAccessesSciPyStrategy/" + strategyName + "/getRecommendationResult")
             .then(response => {
@@ -105,8 +106,8 @@ export class RepositoryService {
     }
 
     getRecommendationStrategy(codebaseName: string, strategyName: string) {
-        return this.axios.get<Strategy>("/codebase/" + codebaseName + "/recommendationStrategy/" + strategyName)
-            .then((response) => {return StrategyFactory.getStrategy(response.data)});
+        return this.axios.get<Dendrogram>("/codebase/" + codebaseName + "/recommendationStrategy/" + strategyName)
+            .then((response) => {return DendrogramFactory.getDendrogram(response.data)});
     }
 
     //Codebases
@@ -180,8 +181,9 @@ export class RepositoryService {
     }
 
     //Sources
-    addSources(
+    createStrategy(
         codebaseName: string,
+        strategyType: string,
         sources: Map<string, File>
     ) {
         const config = {
@@ -192,7 +194,7 @@ export class RepositoryService {
         const data = new FormData();
         Object.entries(sources).forEach((entry) => {data.append("sourceTypes", entry[0]); data.append("sources", entry[1])});
 
-        return this.axios.post<null>("/codebase/" + codebaseName + "/addSources", data, config);
+        return this.axios.post<null>("/codebase/" + codebaseName + "/strategy/" + strategyType + "/addSources", data, config);
     }
 
     getCodebaseSource(codebaseName: string, sourceType: string) {
@@ -218,17 +220,28 @@ export class RepositoryService {
     }
 
 
-    //Strategies
-    getCodebaseStrategies(codebaseName: string) {
-        return this.axios.get("/codebase/" + codebaseName + "/getCodebaseStrategies").then(responseList => {
+    //Dendrograms
+    getStrategyDendrograms(strategyName: string) {
+        return this.axios.get("/strategies/" + strategyName + "/getStrategyDendrograms").then(responseList => {
             if (responseList.data.length == 0)
                 return responseList.data;
             return responseList.data.map((response: any) => {
-                return StrategyFactory.getStrategy(response);
+                return DendrogramFactory.getDendrogram(response);
             });
         });
     }
 
+    deleteDendrogram(dendrogramName: string) {
+        return this.axios.delete<null>("/dendrogram/" + dendrogramName + "/delete");
+    }
+
+    getDendrogram(dendrogramName: string) {
+        return this.axios.get("/dendrogram/" + dendrogramName + "/getDendrogram").then(
+            response => { return DendrogramFactory.getDendrogram(response.data); });
+    }
+
+
+    //Strategies
     getStrategy(strategyName: string) {
         return this.axios.get("/strategy/" + strategyName + "/getStrategy").then(
             response => { return StrategyFactory.getStrategy(response.data); });
@@ -238,11 +251,11 @@ export class RepositoryService {
         return this.axios.delete<null>("/strategy/" + strategyName + "/delete");
     }
     
-    createAccessesSciPyStrategy(strategy: Strategy) {
+    createAccessesSciPyStrategy(strategy: Dendrogram) {
         return this.axios.post<null>("/strategy/createAccessesSciPyStrategy", strategy);
     }
 
-    createRecommendAccessesSciPyStrategy(strategy: Strategy) {
+    createRecommendAccessesSciPyStrategy(strategy: Dendrogram) {
         return this.axios.post<null>("/strategy/createRecommendAccessesSciPyStrategy", strategy);
     }
 
@@ -272,7 +285,7 @@ export class RepositoryService {
         cutValue: number
     ) {
         return this.axios.post(addSearchParamsToUrl(
-            "/strategy/" + strategyName + "/createAccessesSciPyDecomposition",
+            "/decompositions/" + strategyName + "/createAccessesSciPyDecomposition",
             { cutType: cutType, cutValue: cutValue.toString() },
         ));
     }

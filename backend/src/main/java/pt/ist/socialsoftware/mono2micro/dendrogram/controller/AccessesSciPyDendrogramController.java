@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.strategy.controller;
+package pt.ist.socialsoftware.mono2micro.dendrogram.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,27 +7,27 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
-import pt.ist.socialsoftware.mono2micro.strategy.dto.AccessesSciPyStrategyDto;
-import pt.ist.socialsoftware.mono2micro.strategy.service.AccessesSciPyStrategyService;
+import pt.ist.socialsoftware.mono2micro.dendrogram.domain.Dendrogram;
+import pt.ist.socialsoftware.mono2micro.dendrogram.dto.AccessesSciPyDendrogramDto;
+import pt.ist.socialsoftware.mono2micro.dendrogram.service.AccessesSciPyDendrogramService;
 
 @RestController
 @RequestMapping(value = "/mono2micro")
-public class AccessesSciPyStrategyController {
+public class AccessesSciPyDendrogramController {
 
-    private static final Logger logger = LoggerFactory.getLogger(Strategy.class);
+    private static final Logger logger = LoggerFactory.getLogger(Dendrogram.class);
 
     @Autowired
-    AccessesSciPyStrategyService strategyService;
+    AccessesSciPyDendrogramService strategyService;
 
     @RequestMapping(value = "/strategy/createAccessesSciPyStrategy", method = RequestMethod.POST)
     public ResponseEntity<HttpStatus> createStrategy(
-            @RequestBody AccessesSciPyStrategyDto strategyDto
+            @RequestBody AccessesSciPyDendrogramDto strategyDto
     ) {
         logger.debug("Create Accesses SciPy Strategy");
 
         try {
-            strategyService.createStrategy(strategyDto);
+            strategyService.createDendrogram(strategyDto);
 
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception e) {

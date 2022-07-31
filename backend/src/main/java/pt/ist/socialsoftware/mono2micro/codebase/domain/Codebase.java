@@ -63,6 +63,10 @@ public class Codebase {
 		return strategies;
 	}
 
+	public Strategy getStrategyByType(String strategyType) {
+		return strategies.stream().filter(strategy -> strategy.getType().equals(strategyType)).findFirst().orElse(null);
+	}
+
 	public void setStrategies(List<Strategy> strategies) {
 		this.strategies = strategies;
 	}

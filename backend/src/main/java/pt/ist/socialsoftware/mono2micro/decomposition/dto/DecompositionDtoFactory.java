@@ -2,7 +2,7 @@ package pt.ist.socialsoftware.mono2micro.decomposition.dto;
 
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
+import pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class DecompositionDtoFactory {
         if (decomposition == null)
             return null;
         switch (decomposition.getStrategyType()) {
-            case AccessesSciPyStrategy.ACCESSES_SCIPY:
+            case AccessesSciPyDendrogram.ACCESSES_SCIPY:
                 return new AccessesSciPyDecompositionDto((AccessesSciPyDecomposition) decomposition);
             default:
                 throw new RuntimeException("The type \"" + decomposition.getStrategyType() + "\" is not a valid strategy type for the decomposition.");

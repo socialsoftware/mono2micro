@@ -7,7 +7,7 @@ import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import java.util.HashMap;
 import java.util.Map;
 
-import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy.ACCESSES_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram.ACCESSES_SCIPY;
 
 public class AccessesSciPyDecompositionDto extends DecompositionDto {
     private boolean outdated;

@@ -6,14 +6,14 @@ import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomp
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
-import pt.ist.socialsoftware.mono2micro.strategy.repository.StrategyRepository;
+import pt.ist.socialsoftware.mono2micro.dendrogram.repository.DendrogramRepository;
 
-import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy.ACCESSES_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram.ACCESSES_SCIPY;
 
 @Service
 public class DecompositionService {
     @Autowired
-    StrategyRepository strategyRepository;
+    DendrogramRepository dendrogramRepository;
 
     @Autowired
     DecompositionRepository decompositionRepository;
@@ -30,7 +30,7 @@ public class DecompositionService {
         removeSpecificDecompositionProperties(decomposition);
         Strategy strategy = decomposition.getStrategy();
         strategy.removeDecomposition(decomposition.getName());
-        strategyRepository.save(strategy);
+        dendrogramRepository.save(strategy);
         decompositionRepository.deleteByName(decomposition.getName());
     }
 

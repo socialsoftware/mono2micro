@@ -7,7 +7,6 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
-import {ArrowForward} from "@mui/icons-material";
 import {toast} from "react-toastify";
 
 const HttpStatus = require('http-status-codes');
@@ -50,20 +49,11 @@ export const Codebases = () => {
                                 <Card.Header>{codebase.name}</Card.Header>
                                 <Card.Body>
                                     <Button
-                                        href={`/codebases/${codebase.name}/strategies`}
-                                        className="mb-2"
-                                        variant={"success"}
-                                        disabled={codebase.isEmpty}
-                                    >
-                                        Go to Strategies <ArrowForward/>
-                                    </Button>
-                                    <br/>
-                                    <Button
                                         href={`/codebases/${codebase.name}`}
                                         className="mb-2"
                                         variant={"primary"}
                                     >
-                                        Go to Sources <b>+</b>
+                                        Add Codebase Sources <b>+</b>
                                     </Button>
                                     <br/>
                                     <Button

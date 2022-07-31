@@ -26,8 +26,8 @@ import pt.ist.socialsoftware.mono2micro.log.service.AccessesSciPyLogService;
 import pt.ist.socialsoftware.mono2micro.metrics.decompositionService.AccessesSciPyMetricService;
 import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
 import pt.ist.socialsoftware.mono2micro.source.service.SourceService;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
-import pt.ist.socialsoftware.mono2micro.strategy.repository.AccessesSciPyStrategyRepository;
+import pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram;
+import pt.ist.socialsoftware.mono2micro.dendrogram.repository.AccessesSciPyDendrogramRepository;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
@@ -41,7 +41,7 @@ import static pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource.ACCE
 @Service
 public class AccessesSciPyDecompositionService {
     @Autowired
-    AccessesSciPyStrategyRepository strategyRepository;
+    AccessesSciPyDendrogramRepository strategyRepository;
 
     @Autowired
     SciPyClusteringAlgorithmService clusteringService;
@@ -71,19 +71,19 @@ public class AccessesSciPyDecompositionService {
     GridFsService gridFsService;
 
     public void createDecomposition(String strategyName, String cutType, float cutValue) throws Exception {
-        AccessesSciPyStrategy strategy = strategyRepository.findByName(strategyName);
+        AccessesSciPyDendrogram strategy = strategyRepository.findByName(strategyName);
         clusteringService.createDecomposition(strategy, cutType, cutValue);
     }
 
     public void createExpertDecomposition(String strategyName, String expertName, Optional<MultipartFile> expertFile) throws Exception {
-        AccessesSciPyStrategy strategy = strategyRepository.findByName(strategyName);
+        AccessesSciPyDendrogram strategy = strategyRepository.findByName(strategyName);
         clusteringService.createExpertDecomposition(strategy, expertName, expertFile);
     }
 
     public AccessesSciPyDecomposition updateOutdatedFunctionalitiesAndMetrics(String decompositionName) throws Exception {
         AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-        AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) decomposition.getStrategy();
-        AccessesSource source = (AccessesSource) strategy.getCodebase().getSourceByType(ACCESSES);
+        AccessesSciPyDendrogram strategy = (AccessesSciPyDendrogram) decomposition.getStrategy();
+        AccessesSource source = (AccessesSource) strategy.getStrategy().getSourceByType(ACCESSES);
         if (!decomposition.isOutdated())
             return decomposition;
 
@@ -93,7 +93,7 @@ public class AccessesSciPyDecompositionService {
                 source.getProfile(strategy.getProfile()),
                 strategy.getTracesMaxLimit(),
                 strategy.getTraceType(),
-                true);
+                false);
 
         metricService.calculateMetrics(decomposition);
         decomposition.setOutdated(false);
@@ -104,7 +104,7 @@ public class AccessesSciPyDecompositionService {
 
     public void snapshotDecomposition(String decompositionName) throws Exception {
         AccessesSciPyDecomposition decomposition = updateOutdatedFunctionalitiesAndMetrics(decompositionName);
-        AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) decomposition.getStrategy();
+        AccessesSciPyDendrogram strategy = (AccessesSciPyDendrogram) decomposition.getStrategy();
         String snapshotName = decomposition.getName() + " SNAPSHOT";
 
         // Find unused name
@@ -142,8 +142,8 @@ public class AccessesSciPyDecompositionService {
 
     public Utils.GetSerializableLocalTransactionsGraphResult getLocalTransactionGraphForFunctionality(String decompositionName, String functionalityName) throws JSONException, IOException {
         AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-        AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) decomposition.getStrategy();
-        AccessesSource source = (AccessesSource) strategy.getCodebase().getSourceByType(ACCESSES);
+        AccessesSciPyDendrogram strategy = (AccessesSciPyDendrogram) decomposition.getStrategy();
+        AccessesSource source = (AccessesSource) strategy.getStrategy().getSourceByType(ACCESSES);
 
         DirectedAcyclicGraph<LocalTransaction, DefaultEdge> functionalityLocalTransactionsGraph = decomposition.getFunctionality(functionalityName)
                 .createLocalTransactionGraphFromScratch(
@@ -194,7 +194,7 @@ public class AccessesSciPyDecompositionService {
 
     public String getEdgeWeights(String decompositionName) throws JSONException, IOException {
         AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-        AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) decomposition.getStrategy();
+        AccessesSciPyDendrogram strategy = (AccessesSciPyDendrogram) decomposition.getStrategy();
         JSONArray copheneticDistances = new JSONArray(IOUtils.toString(gridFsService.getFile(strategy.getCopheneticDistanceName()), StandardCharsets.UTF_8));
 
         ArrayList<Short> entities = new ArrayList<>(decomposition.getEntityIDToClusterName().keySet());

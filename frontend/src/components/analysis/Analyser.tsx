@@ -16,7 +16,7 @@
 //} from "../../type-declarations/types.d";
 //import Decomposition from "../../models/decompositions/Decomposition";
 //import AccessesSciPyDecomposition from "../../models/decompositions/AccessesSciPyDecomposition";
-//import {StrategyType} from "../../models/strategies/Strategy";
+//import {StrategyType} from "../../models/dendrogram/Strategy";
 //import {DecompositionFactory} from "../../models/decompositions/DecompositionFactory";
 //
 //const HttpStatus = require('http-status-codes');

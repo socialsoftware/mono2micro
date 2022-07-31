@@ -1,7 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.strategy.dto;
 
 import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.RecommendAccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
 import java.util.ArrayList;
@@ -22,8 +21,6 @@ public class StrategyDtoFactory {
         switch (strategy.getType()) {
             case AccessesSciPyStrategy.ACCESSES_SCIPY:
                 return new AccessesSciPyStrategyDto((AccessesSciPyStrategy) strategy);
-            case RecommendAccessesSciPyStrategy.RECOMMEND_ACCESSES_SCIPY:
-                return new RecommendAccessesSciPyStrategyDto((RecommendAccessesSciPyStrategy) strategy);
             default:
                 throw new RuntimeException("The type \"" + strategy.getType() + "\" is not a valid strategy type.");
         }

@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.strategy.controller;
+package pt.ist.socialsoftware.mono2micro.recommendation.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +10,8 @@ import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Clust
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.AnalysisDto;
 import pt.ist.socialsoftware.mono2micro.fileManager.FileManager;
-import pt.ist.socialsoftware.mono2micro.strategy.dto.RecommendAccessesSciPyStrategyDto;
-import pt.ist.socialsoftware.mono2micro.strategy.service.RecommendAccessesSciPyStrategyService;
+import pt.ist.socialsoftware.mono2micro.recommendation.dto.RecommendAccessesSciPyDto;
+import pt.ist.socialsoftware.mono2micro.recommendation.service.RecommendAccessesSciPyStrategyService;
 import pt.ist.socialsoftware.mono2micro.utils.mojoCalculator.src.main.java.MoJo;
 
 import java.io.*;
@@ -35,13 +35,13 @@ public class RecommendAccessesSciPyStrategyController {
     private final FileManager fileManager = FileManager.getInstance();
 
 	@RequestMapping(value = "/strategy/createRecommendAccessesSciPy", method = RequestMethod.PUT)
-	public ResponseEntity<RecommendAccessesSciPyStrategyDto> createRecommendAccessesSciPy(
-			@RequestBody RecommendAccessesSciPyStrategyDto strategyDto
+	public ResponseEntity<RecommendAccessesSciPyDto> createRecommendAccessesSciPy(
+			@RequestBody RecommendAccessesSciPyDto strategyDto
 	) {
 		logger.debug("Accesses SciPy Recommendation");
 
 		try {
-			return new ResponseEntity<>(new RecommendAccessesSciPyStrategyDto(strategyService.recommendAccessesSciPy(strategyDto)), HttpStatus.CREATED);
+			return new ResponseEntity<>(new RecommendAccessesSciPyDto(strategyService.recommendAccessesSciPy(strategyDto)), HttpStatus.CREATED);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

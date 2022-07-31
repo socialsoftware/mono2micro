@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
 import pt.ist.socialsoftware.mono2micro.source.service.SourceService;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.RecommendAccessesSciPyStrategy;
+import pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram;
+import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendAccessesSciPy;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
-import pt.ist.socialsoftware.mono2micro.strategy.service.AccessesSciPyStrategyService;
-import pt.ist.socialsoftware.mono2micro.strategy.service.RecommendAccessesSciPyStrategyService;
+import pt.ist.socialsoftware.mono2micro.dendrogram.service.AccessesSciPyDendrogramService;
+import pt.ist.socialsoftware.mono2micro.recommendation.service.RecommendAccessesSciPyStrategyService;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
@@ -32,7 +32,7 @@ public class AccessesSimilarityGeneratorService {
     SourceService sourceService;
 
     @Autowired
-    AccessesSciPyStrategyService accessesSciPyStrategyService;
+    AccessesSciPyDendrogramService accessesSciPyDendrogramService;
 
     @Autowired
     RecommendAccessesSciPyStrategyService recommendAccessesSciPyStrategyService;
@@ -41,7 +41,7 @@ public class AccessesSimilarityGeneratorService {
     // ACCESSES SCIPY
     //#############################################
 
-    public void createSimilarityMatrixForSciPy(AccessesSciPyStrategy strategy) throws Exception {
+    public void createSimilarityMatrixForSciPy(AccessesSciPyDendrogram strategy) throws Exception {
         Set<Short> entities = new TreeSet<>();
         Map<String, Integer> e1e2PairCount = new HashMap<>();
         Map<Short, List<Pair<String, Byte>>> entityFunctionalities = new HashMap<>(); // Map<entityID, List<Pair<functionalityName, accessMode>>>
@@ -50,7 +50,7 @@ public class AccessesSimilarityGeneratorService {
                 entities,
                 e1e2PairCount,
                 entityFunctionalities,
-                strategy.getCodebase(),
+                strategy.getStrategy(),
                 strategy.getProfile(),
                 strategy.getTracesMaxLimit(),
                 strategy.getTraceType());
@@ -65,7 +65,7 @@ public class AccessesSimilarityGeneratorService {
                 strategy.getLinkageType());
 
         strategy.setSimilarityMatrixName(strategy.getName() + "_similarityMatrix");
-        accessesSciPyStrategyService.saveSimilarityMatrix(new ByteArrayInputStream(matrixJSON.toString().getBytes()), strategy.getSimilarityMatrixName());
+        accessesSciPyDendrogramService.saveSimilarityMatrix(new ByteArrayInputStream(matrixJSON.toString().getBytes()), strategy.getSimilarityMatrixName());
     }
 
     private void fillMatrix(
@@ -320,7 +320,7 @@ public class AccessesSimilarityGeneratorService {
     // RECOMMEND ACCESSES SCIPY
     //#############################################
 
-    public void createSimilarityMatricesForSciPy(RecommendAccessesSciPyStrategy strategy) throws Exception {
+    public void createSimilarityMatricesForSciPy(RecommendAccessesSciPy strategy) throws Exception {
         int INTERVAL = 100, STEP = 10;
         Set<Short> entities = new TreeSet<>();
         Map<String, Integer> e1e2PairCount = new HashMap<>();
@@ -360,7 +360,7 @@ public class AccessesSimilarityGeneratorService {
     }
 
     private void createAndWriteSimilarityMatrix(
-            RecommendAccessesSciPyStrategy strategy,
+            RecommendAccessesSciPy strategy,
             Set<Short> entities,
             TraceType traceType,
             String linkageType,

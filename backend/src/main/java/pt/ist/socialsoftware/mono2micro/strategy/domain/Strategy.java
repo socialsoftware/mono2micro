@@ -4,7 +4,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.strategy.dto.StrategyDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +17,8 @@ public abstract class Strategy {
     private List<Decomposition> decompositions;
 
     public abstract String getType();
+
+    public abstract List<String> getSourceTypes();
 
     public String getName() {
         return name;
@@ -54,6 +55,4 @@ public abstract class Strategy {
     public synchronized void removeDecomposition(String decompositionName) {
         this.decompositions = this.decompositions.stream().filter(decomposition -> !decomposition.getName().equals(decompositionName)).collect(Collectors.toList());
     }
-
-    public abstract boolean equalsDto(StrategyDto dto);
 }

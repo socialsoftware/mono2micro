@@ -1,23 +1,23 @@
-package pt.ist.socialsoftware.mono2micro.strategy.dto;
+package pt.ist.socialsoftware.mono2micro.recommendation.dto;
 
-import pt.ist.socialsoftware.mono2micro.strategy.domain.RecommendAccessesSciPyStrategy;
+import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendAccessesSciPy;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.util.Set;
 
-import static pt.ist.socialsoftware.mono2micro.strategy.domain.RecommendAccessesSciPyStrategy.RECOMMEND_ACCESSES_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendAccessesSciPy.RECOMMEND_ACCESSES_SCIPY;
 
-public class RecommendAccessesSciPyStrategyDto extends StrategyDto {
+public class RecommendAccessesSciPyDto {
     private String profile;
     private Set<String> linkageTypes;
     private int tracesMaxLimit;
     private boolean isCompleted;
     private Set<Constants.TraceType> traceTypes;
 
-    public RecommendAccessesSciPyStrategyDto() {this.setType(RECOMMEND_ACCESSES_SCIPY);}
+    public RecommendAccessesSciPyDto() {this.setType(RECOMMEND_ACCESSES_SCIPY);}
 
-    public RecommendAccessesSciPyStrategyDto(RecommendAccessesSciPyStrategy strategy) {
-        this.setCodebaseName(strategy.getCodebase().getName());
+    public RecommendAccessesSciPyDto(RecommendAccessesSciPy strategy) {
+        this.setStrategyName(strategy.getCodebase().getName());
         this.setName(strategy.getName());
         this.setType(RECOMMEND_ACCESSES_SCIPY);
         this.profile = strategy.getProfile();

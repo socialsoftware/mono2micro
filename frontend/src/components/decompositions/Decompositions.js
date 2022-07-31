@@ -4,10 +4,10 @@ import Row from 'react-bootstrap/Row';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import {useParams} from "react-router-dom";
 import {AccessesSciPyDecompositionForm} from "./forms/AccessesSciPyDecompositionForm";
-import {StrategyType} from "../../models/strategies/Strategy";
 import {toast, ToastContainer} from "react-toastify";
+import {StrategyType} from "../../models/strategy/Strategy";
 
-export const Strategy = () => {
+export const Decompositions = () => {
     let { codebaseName, strategyName } = useParams();
     const [strategy, setStrategy] = useState({});
     const [decompositions, setDecompositions] = useState([]);

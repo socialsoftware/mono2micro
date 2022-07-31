@@ -7,8 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.codebase.CodebaseController;
-import pt.ist.socialsoftware.mono2micro.source.dto.SourceDto;
-import pt.ist.socialsoftware.mono2micro.source.dto.SourceDtoFactory;
 import pt.ist.socialsoftware.mono2micro.source.service.AccessesSourceService;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
