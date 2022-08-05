@@ -7,7 +7,7 @@ import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import java.util.HashMap;
 import java.util.Map;
 
-import static pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram.ACCESSES_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy.ACCESSES_SCIPY;
 
 public class AccessesSciPyDecompositionDto extends DecompositionDto {
     private boolean outdated;
@@ -17,13 +17,13 @@ public class AccessesSciPyDecompositionDto extends DecompositionDto {
     private Map<String, Functionality> functionalities = new HashMap<>(); // <functionalityName, Functionality>
     private Map<String, Short> entityIDToClusterName = new HashMap<>();
 
-    public AccessesSciPyDecompositionDto() {this.setStrategyType(ACCESSES_SCIPY);}
+    public AccessesSciPyDecompositionDto() {this.type = ACCESSES_SCIPY;}
 
     public AccessesSciPyDecompositionDto(AccessesSciPyDecomposition decomposition) {
-        this.setCodebaseName(decomposition.getStrategy().getCodebase().getName());
+        this.setCodebaseName(decomposition.getDendrogram().getStrategy().getCodebase().getName());
         this.setStrategyName(decomposition.getStrategy().getName());
         this.setName(decomposition.getName());
-        this.setStrategyType(ACCESSES_SCIPY);
+        this.type = ACCESSES_SCIPY;
         this.setMetrics(decomposition.getMetrics());
         this.silhouetteScore = decomposition.getSilhouetteScore();
         this.outdated = decomposition.isOutdated();

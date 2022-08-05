@@ -11,7 +11,7 @@ import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomp
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.AnalysisDto;
 import pt.ist.socialsoftware.mono2micro.fileManager.FileManager;
 import pt.ist.socialsoftware.mono2micro.recommendation.dto.RecommendAccessesSciPyDto;
-import pt.ist.socialsoftware.mono2micro.recommendation.service.RecommendAccessesSciPyStrategyService;
+import pt.ist.socialsoftware.mono2micro.recommendation.service.RecommendAccessesSciPyService;
 import pt.ist.socialsoftware.mono2micro.utils.mojoCalculator.src.main.java.MoJo;
 
 import java.io.*;
@@ -25,37 +25,37 @@ import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 
 @RestController
 @RequestMapping(value = "/mono2micro")
-public class RecommendAccessesSciPyStrategyController {
+public class RecommendAccessesSciPyController {
 
-    private static final Logger logger = LoggerFactory.getLogger(RecommendAccessesSciPyStrategyController.class);
+    private static final Logger logger = LoggerFactory.getLogger(RecommendAccessesSciPyController.class);
 
 	@Autowired
-	RecommendAccessesSciPyStrategyService strategyService;
+	RecommendAccessesSciPyService recommendationService;
 
     private final FileManager fileManager = FileManager.getInstance();
 
-	@RequestMapping(value = "/strategy/createRecommendAccessesSciPy", method = RequestMethod.PUT)
+	@RequestMapping(value = "/recommendation/createRecommendAccessesSciPy", method = RequestMethod.PUT)
 	public ResponseEntity<RecommendAccessesSciPyDto> createRecommendAccessesSciPy(
-			@RequestBody RecommendAccessesSciPyDto strategyDto
+			@RequestBody RecommendAccessesSciPyDto recommendationDto
 	) {
 		logger.debug("Accesses SciPy Recommendation");
 
 		try {
-			return new ResponseEntity<>(new RecommendAccessesSciPyDto(strategyService.recommendAccessesSciPy(strategyDto)), HttpStatus.CREATED);
+			return new ResponseEntity<>(new RecommendAccessesSciPyDto(recommendationService.recommendAccessesSciPy(recommendationDto)), HttpStatus.CREATED);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 
-	@RequestMapping(value = "/recommendAccessesSciPyStrategy/{strategyName}/getRecommendationResult", method = RequestMethod.GET)
+	@RequestMapping(value = "/recommendAccessesSciPy/{recommendationName}/getRecommendationResult", method = RequestMethod.GET)
 	public ResponseEntity<String> getRecommendationResult(
-			@PathVariable String strategyName
+			@PathVariable String recommendationName
 	) {
 		logger.debug("get Accesses SciPy recommendation result");
 
 		try {
-			return new ResponseEntity<>(strategyService.getRecommendationResultByStrategyName(strategyName), HttpStatus.OK);
+			return new ResponseEntity<>(recommendationService.getRecommendationResultByName(recommendationName), HttpStatus.OK);
 
 		} catch (NoSuchFileException e) { // Since it is an asynchronous call, the file might not be created yet
 			return new ResponseEntity<>(null, HttpStatus.OK);
@@ -65,15 +65,15 @@ public class RecommendAccessesSciPyStrategyController {
 		}
 	}
 
-	@RequestMapping(value = "/recommendAccessesSciPyStrategy/{strategyName}/createDecompositions")
+	@RequestMapping(value = "/recommendAccessesSciPy/{recommendationName}/createDecompositions")
 	public ResponseEntity<HttpStatus> createDecompositions(
-			@PathVariable String strategyName,
+			@PathVariable String recommendationName,
 			@RequestParam List<String> decompositionNames
 	) {
 		try {
 			logger.debug("createDecompositions");
 
-			strategyService.createDecompositions(strategyName, decompositionNames);
+			recommendationService.createDecompositions(recommendationName, decompositionNames);
 			logger.debug("decomposition creation ended");
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {

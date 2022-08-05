@@ -20,12 +20,13 @@ public class AccessesSciPyDendrogramDto extends DendrogramDto {
         return AccessesSciPyStrategy.ACCESSES_SCIPY;
     }
 
-    public AccessesSciPyDendrogramDto() {this.setType(AccessesSciPyStrategy.ACCESSES_SCIPY);}
+    public AccessesSciPyDendrogramDto() {this.type = AccessesSciPyStrategy.ACCESSES_SCIPY;}
 
     public AccessesSciPyDendrogramDto(AccessesSciPyDendrogram dendrogram) {
-        this.setStrategyName(dendrogram.getStrategy().getName());
-        this.setName(dendrogram.getName());
-        this.setType(AccessesSciPyStrategy.ACCESSES_SCIPY);
+        this.codebaseName = dendrogram.getStrategy().getCodebase().getName();
+        this.strategyName = dendrogram.getStrategy().getName();
+        this.name = dendrogram.getName();
+        this.type = AccessesSciPyStrategy.ACCESSES_SCIPY;
         this.accessMetricWeight = dendrogram.getAccessMetricWeight();
         this.writeMetricWeight = dendrogram.getWriteMetricWeight();
         this.readMetricWeight = dendrogram.getReadMetricWeight();
@@ -37,8 +38,8 @@ public class AccessesSciPyDendrogramDto extends DendrogramDto {
     }
 
     public AccessesSciPyDendrogramDto(RecommendAccessesSciPy recommend, Constants.TraceType traceType, String linkageType, String decompositionName) {
-        this.setType(AccessesSciPyStrategy.ACCESSES_SCIPY);
-        this.setStrategyName(recommend.getStrategy().getName());
+        this.type = AccessesSciPyStrategy.ACCESSES_SCIPY;
+        this.strategyName = recommend.getStrategy().getName();
         String[] weights = decompositionName.split(",");
         this.accessMetricWeight = Float.parseFloat(weights[1]);
         this.writeMetricWeight = Float.parseFloat(weights[2]);

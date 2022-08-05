@@ -18,16 +18,16 @@ public class AccessesSciPyDendrogramController {
     private static final Logger logger = LoggerFactory.getLogger(Dendrogram.class);
 
     @Autowired
-    AccessesSciPyDendrogramService strategyService;
+    AccessesSciPyDendrogramService dendrogramService;
 
-    @RequestMapping(value = "/strategy/createAccessesSciPyStrategy", method = RequestMethod.POST)
-    public ResponseEntity<HttpStatus> createStrategy(
-            @RequestBody AccessesSciPyDendrogramDto strategyDto
+    @RequestMapping(value = "/dendrogram/createAccessesSciPyDendrogram", method = RequestMethod.POST)
+    public ResponseEntity<HttpStatus> createDendrogram(
+            @RequestBody AccessesSciPyDendrogramDto dendrogramDto
     ) {
-        logger.debug("Create Accesses SciPy Strategy");
+        logger.debug("Create Accesses SciPy Dendrogram");
 
         try {
-            strategyService.createDendrogram(strategyDto);
+            dendrogramService.createDendrogram(dendrogramDto);
 
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception e) {
@@ -38,16 +38,16 @@ public class AccessesSciPyDendrogramController {
 
 
     // Specific to accesses similarity generator with SciPy clustering algorithm
-    @RequestMapping(value = "/strategy/{strategyName}/image", method = RequestMethod.GET)
+    @RequestMapping(value = "/dendrogram/{dendrogramName}/image", method = RequestMethod.GET)
     public ResponseEntity<byte[]> getDendrogramImage(
-            @PathVariable String strategyName
+            @PathVariable String dendrogramName
     ) {
         logger.debug("getDendrogramImage");
 
         try {
             return ResponseEntity.ok()
                     .contentType(MediaType.IMAGE_PNG)
-                    .body(strategyService.getDendrogramImage(strategyName));
+                    .body(dendrogramService.getDendrogramImage(dendrogramName));
 
         } catch (Exception e) {
             System.err.println(e.getMessage());

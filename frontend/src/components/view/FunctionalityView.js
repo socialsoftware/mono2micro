@@ -194,7 +194,7 @@ const optionsFunctionalityRedesign = {
 export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setOutdated, changeToClusters, setOpenSearch, setActions, view}) => {
     const context = useContext(AppContext);
     const { translateEntity } = context;
-    let { codebaseName, strategyName, decompositionName } = useParams();
+    let { decompositionName } = useParams();
 
     const [functionalities, setFunctionalities] = useState(undefined);
     const [visGraph, setVisGraph] = useState({});

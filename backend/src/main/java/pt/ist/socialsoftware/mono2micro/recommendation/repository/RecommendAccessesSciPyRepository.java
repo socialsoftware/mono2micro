@@ -4,8 +4,9 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendAccessesSciPy;
 
-public interface RecommendAccessesSciPyStrategyRepository  extends MongoRepository<RecommendAccessesSciPy, String> {
-    RecommendAccessesSciPy findByName(String strategyName);
+public interface RecommendAccessesSciPyRepository extends MongoRepository<RecommendAccessesSciPy, String> {
+    boolean existsByName(String name);
+    RecommendAccessesSciPy findByName(String recommendationName);
     @Query(value = "{'name': ?0}", fields = "{'recommendationResultName': 1}")
-    RecommendAccessesSciPy getRecommendationResultName(String strategyName);
+    RecommendAccessesSciPy getRecommendationResultName(String recommendationName);
 }

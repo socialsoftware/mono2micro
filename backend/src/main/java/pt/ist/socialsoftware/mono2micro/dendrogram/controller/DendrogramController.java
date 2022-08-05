@@ -24,14 +24,14 @@ public class DendrogramController {
 	@Autowired
 	DendrogramService dendrogramService;
 
-	@RequestMapping(value = "/strategy/{strategyName}/delete", method = RequestMethod.DELETE)
-	public ResponseEntity<HttpStatus> deleteStrategy(
-			@PathVariable String strategyName
+	@RequestMapping(value = "/dendrogram/{dendrogramName}/delete", method = RequestMethod.DELETE)
+	public ResponseEntity<HttpStatus> deleteDendrogram(
+			@PathVariable String dendrogramName
 	) {
-		logger.debug("Delete Strategy");
+		logger.debug("Delete Dendrogram");
 
 		try {
-			dendrogramService.deleteSingleDendrogram(strategyName);
+			dendrogramService.deleteSingleDendrogram(dendrogramName);
 
 			return new ResponseEntity<>(HttpStatus.OK);
 
@@ -41,15 +41,15 @@ public class DendrogramController {
 		}
 	}
 
-	@RequestMapping(value = "/strategy/{strategyName}/decompositions", method = RequestMethod.GET)
+	@RequestMapping(value = "/dendrogram/{dendrogramName}/decompositions", method = RequestMethod.GET)
 	public ResponseEntity<List<DecompositionDto>> getDecompositions(
-			@PathVariable String strategyName
+			@PathVariable String dendrogramName
 	) {
 		logger.debug("getDecompositions");
 
 		try {
 			return new ResponseEntity<>(
-					DecompositionDtoFactory.getFactory().getDecompositionDtos(dendrogramService.getDecompositions(strategyName)),
+					DecompositionDtoFactory.getFactory().getDecompositionDtos(dendrogramService.getDecompositions(dendrogramName)),
 					HttpStatus.OK
 			);
 
@@ -59,15 +59,15 @@ public class DendrogramController {
 		}
 	}
 
-	@RequestMapping(value = "/strategy/{strategyName}/getDendrogram", method = RequestMethod.GET)
+	@RequestMapping(value = "/dendrogram/{dendrogramName}/getDendrogram", method = RequestMethod.GET)
 	public ResponseEntity<DendrogramDto> getDendrogram(
-			@PathVariable String strategyName
+			@PathVariable String dendrogramName
 	) {
-		logger.debug("getStrategy");
+		logger.debug("getDendrogram");
 
 		try {
 			return new ResponseEntity<>(
-					DendrogramDtoFactory.getFactory().getDendrogramDto(dendrogramService.getDendrogram(strategyName)),
+					DendrogramDtoFactory.getFactory().getDendrogramDto(dendrogramService.getDendrogram(dendrogramName)),
 					HttpStatus.OK
 			);
 		} catch (Exception e) {

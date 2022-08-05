@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.codebase.repository.CodebaseRepository;
 import pt.ist.socialsoftware.mono2micro.fileManager.FileManager;
+import pt.ist.socialsoftware.mono2micro.source.domain.Source;
 import pt.ist.socialsoftware.mono2micro.source.service.SourceService;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.strategy.service.StrategyService;
@@ -48,14 +49,16 @@ public class CodebaseService {
     }
 
     public List<Strategy> getCodebaseStrategies(String codebaseName) {
-        Codebase codebase = codebaseRepository.getCodebaseStrategies(codebaseName);
+        Codebase codebase = codebaseRepository.findByName(codebaseName);
         return codebase.getStrategies();
     }
 
     public void deleteCodebase(String codebaseName) throws IOException {
         Codebase codebase = codebaseRepository.findByName(codebaseName);
-        codebase.getSources().forEach(source -> sourceService.deleteSource(source.getName()));
-        codebase.getStrategies().forEach(strategy -> strategyService.deleteStrategy(strategy));
+        for (Strategy strategy: codebase.getStrategies())
+            strategyService.deleteStrategy(strategy);
+        for (Source source: codebase.getSources())
+            sourceService.deleteSource(source.getName());
         FileManager.getInstance().deleteCodebase(codebaseName);
         codebaseRepository.deleteById(codebaseName);
     }

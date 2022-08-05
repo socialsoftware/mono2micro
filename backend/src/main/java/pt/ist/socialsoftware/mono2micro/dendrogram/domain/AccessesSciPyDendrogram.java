@@ -3,6 +3,7 @@ package pt.ist.socialsoftware.mono2micro.dendrogram.domain;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.ist.socialsoftware.mono2micro.dendrogram.dto.AccessesSciPyDendrogramDto;
 import pt.ist.socialsoftware.mono2micro.dendrogram.dto.DendrogramDto;
+import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.util.ArrayList;
@@ -23,10 +24,14 @@ public class AccessesSciPyDendrogram extends Dendrogram {
 
     // Image created in the Python services
     private String imageName;
-
     private String copheneticDistanceName;
 
     public AccessesSciPyDendrogram() {}
+
+    @Override
+    public String getType() {
+        return AccessesSciPyStrategy.ACCESSES_SCIPY;
+    }
 
     public AccessesSciPyDendrogram(AccessesSciPyDendrogramDto dto) {
         this.profile = dto.getProfile();
@@ -133,15 +138,15 @@ public class AccessesSciPyDendrogram extends Dendrogram {
         if (!(dto instanceof AccessesSciPyDendrogramDto))
             return false;
 
-        AccessesSciPyDendrogramDto strategyDto = (AccessesSciPyDendrogramDto) dto;
-        return strategyDto.getStrategyName().equals(this.getStrategy().getName()) &&
-                strategyDto.getProfile().equals(this.profile) &&
-                (strategyDto.getTracesMaxLimit() == this.tracesMaxLimit) &&
-                (strategyDto.getTraceType() == this.traceType) &&
-                (strategyDto.getAccessMetricWeight() == this.accessMetricWeight) &&
-                (strategyDto.getWriteMetricWeight() == this.writeMetricWeight) &&
-                (strategyDto.getReadMetricWeight() == this.readMetricWeight) &&
-                (strategyDto.getSequenceMetricWeight() == this.sequenceMetricWeight) &&
-                (strategyDto.getLinkageType().equals(this.linkageType));
+        AccessesSciPyDendrogramDto dendrogramDto = (AccessesSciPyDendrogramDto) dto;
+        return dendrogramDto.getStrategyName().equals(this.getStrategy().getName()) &&
+                dendrogramDto.getProfile().equals(this.profile) &&
+                (dendrogramDto.getTracesMaxLimit() == this.tracesMaxLimit) &&
+                (dendrogramDto.getTraceType() == this.traceType) &&
+                (dendrogramDto.getAccessMetricWeight() == this.accessMetricWeight) &&
+                (dendrogramDto.getWriteMetricWeight() == this.writeMetricWeight) &&
+                (dendrogramDto.getReadMetricWeight() == this.readMetricWeight) &&
+                (dendrogramDto.getSequenceMetricWeight() == this.sequenceMetricWeight) &&
+                (dendrogramDto.getLinkageType().equals(this.linkageType));
     }
 }

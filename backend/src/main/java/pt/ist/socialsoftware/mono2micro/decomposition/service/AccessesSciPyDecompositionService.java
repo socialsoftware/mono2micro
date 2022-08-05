@@ -13,6 +13,8 @@ import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.SciPyClusteringAlgor
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.AccessesSciPyDecompositionRepository;
+import pt.ist.socialsoftware.mono2micro.dendrogram.domain.Dendrogram;
+import pt.ist.socialsoftware.mono2micro.dendrogram.repository.DendrogramRepository;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityRepository;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityService;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
@@ -28,6 +30,8 @@ import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
 import pt.ist.socialsoftware.mono2micro.source.service.SourceService;
 import pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram;
 import pt.ist.socialsoftware.mono2micro.dendrogram.repository.AccessesSciPyDendrogramRepository;
+import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
+import pt.ist.socialsoftware.mono2micro.strategy.repository.AccessesSciPyStrategyRepository;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
@@ -41,7 +45,13 @@ import static pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource.ACCE
 @Service
 public class AccessesSciPyDecompositionService {
     @Autowired
-    AccessesSciPyDendrogramRepository strategyRepository;
+    AccessesSciPyStrategyRepository strategyRepository;
+
+    @Autowired
+    DendrogramRepository dendrogramRepository;
+
+    @Autowired
+    AccessesSciPyDendrogramRepository accessesSciPyDendrogramRepository;
 
     @Autowired
     SciPyClusteringAlgorithmService clusteringService;
@@ -70,29 +80,31 @@ public class AccessesSciPyDecompositionService {
     @Autowired
     GridFsService gridFsService;
 
-    public void createDecomposition(String strategyName, String cutType, float cutValue) throws Exception {
-        AccessesSciPyDendrogram strategy = strategyRepository.findByName(strategyName);
-        clusteringService.createDecomposition(strategy, cutType, cutValue);
+    public void createDecomposition(String dendrogramName, String cutType, float cutValue) throws Exception {
+        AccessesSciPyDendrogram dendrogram = accessesSciPyDendrogramRepository.findByName(dendrogramName);
+        AccessesSciPyStrategy strategy = strategyRepository.findByName(dendrogram.getStrategy().getName());
+        clusteringService.createDecomposition(strategy, dendrogram, cutType, cutValue);
     }
 
-    public void createExpertDecomposition(String strategyName, String expertName, Optional<MultipartFile> expertFile) throws Exception {
-        AccessesSciPyDendrogram strategy = strategyRepository.findByName(strategyName);
-        clusteringService.createExpertDecomposition(strategy, expertName, expertFile);
+    public void createExpertDecomposition(String dendrogramName, String expertName, Optional<MultipartFile> expertFile) throws Exception {
+        AccessesSciPyDendrogram dendrogram = accessesSciPyDendrogramRepository.findByName(dendrogramName);
+        AccessesSciPyStrategy strategy = strategyRepository.findByName(dendrogram.getStrategy().getName());
+        clusteringService.createExpertDecomposition(strategy, dendrogram, expertName, expertFile);
     }
 
     public AccessesSciPyDecomposition updateOutdatedFunctionalitiesAndMetrics(String decompositionName) throws Exception {
         AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-        AccessesSciPyDendrogram strategy = (AccessesSciPyDendrogram) decomposition.getStrategy();
-        AccessesSource source = (AccessesSource) strategy.getStrategy().getSourceByType(ACCESSES);
+        AccessesSciPyDendrogram dendrogram = (AccessesSciPyDendrogram) decomposition.getDendrogram();
+        AccessesSource source = (AccessesSource) dendrogram.getStrategy().getCodebase().getSourceByType(ACCESSES);
         if (!decomposition.isOutdated())
             return decomposition;
 
         functionalityService.setupFunctionalities(
                 decomposition,
                 sourceService.getSourceFileAsInputStream(source.getName()),
-                source.getProfile(strategy.getProfile()),
-                strategy.getTracesMaxLimit(),
-                strategy.getTraceType(),
+                source.getProfile(dendrogram.getProfile()),
+                dendrogram.getTracesMaxLimit(),
+                dendrogram.getTraceType(),
                 false);
 
         metricService.calculateMetrics(decomposition);
@@ -104,13 +116,13 @@ public class AccessesSciPyDecompositionService {
 
     public void snapshotDecomposition(String decompositionName) throws Exception {
         AccessesSciPyDecomposition decomposition = updateOutdatedFunctionalitiesAndMetrics(decompositionName);
-        AccessesSciPyDendrogram strategy = (AccessesSciPyDendrogram) decomposition.getStrategy();
+        AccessesSciPyDendrogram dendrogram = (AccessesSciPyDendrogram) decomposition.getDendrogram();
         String snapshotName = decomposition.getName() + " SNAPSHOT";
 
         // Find unused name
-        if (strategy.getDecompositionByName(snapshotName) != null) {
+        if (dendrogram.getDecompositionByName(snapshotName) != null) {
             int i = 1;
-            do {i++;} while (strategy.getDecompositionByName(snapshotName + "(" + i + ")") != null);
+            do {i++;} while (dendrogram.getDecompositionByName(snapshotName + "(" + i + ")") != null);
             snapshotName = snapshotName + "(" + i + ")";
         }
         AccessesSciPyDecomposition snapshotDecomposition = new AccessesSciPyDecomposition(decomposition);
@@ -135,21 +147,25 @@ public class AccessesSciPyDecompositionService {
         logRepository.save(snapshotLog);
         accessesSciPyLogService.saveGraphPositions(snapshotDecomposition, accessesSciPyLogService.getGraphPositions(decomposition));
 
+        dendrogram.addDecomposition(snapshotDecomposition);
+        AccessesSciPyStrategy strategy = strategyRepository.findByName(dendrogram.getStrategy().getName());
         strategy.addDecomposition(snapshotDecomposition);
+        snapshotDecomposition.setStrategy(strategy);
         decompositionRepository.save(snapshotDecomposition);
+        accessesSciPyDendrogramRepository.save(dendrogram);
         strategyRepository.save(strategy);
     }
 
     public Utils.GetSerializableLocalTransactionsGraphResult getLocalTransactionGraphForFunctionality(String decompositionName, String functionalityName) throws JSONException, IOException {
         AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-        AccessesSciPyDendrogram strategy = (AccessesSciPyDendrogram) decomposition.getStrategy();
-        AccessesSource source = (AccessesSource) strategy.getStrategy().getSourceByType(ACCESSES);
+        AccessesSciPyDendrogram dendrogram = (AccessesSciPyDendrogram) decomposition.getDendrogram();
+        AccessesSource source = (AccessesSource) dendrogram.getStrategy().getCodebase().getSourceByType(ACCESSES);
 
         DirectedAcyclicGraph<LocalTransaction, DefaultEdge> functionalityLocalTransactionsGraph = decomposition.getFunctionality(functionalityName)
                 .createLocalTransactionGraphFromScratch(
                         sourceService.getSourceFileAsInputStream(source.getName()),
-                        strategy.getTracesMaxLimit(),
-                        strategy.getTraceType(),
+                        dendrogram.getTracesMaxLimit(),
+                        dendrogram.getTraceType(),
                         decomposition.getEntityIDToClusterName());
 
         return Utils.getSerializableLocalTransactionsGraph(functionalityLocalTransactionsGraph);
@@ -194,8 +210,8 @@ public class AccessesSciPyDecompositionService {
 
     public String getEdgeWeights(String decompositionName) throws JSONException, IOException {
         AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-        AccessesSciPyDendrogram strategy = (AccessesSciPyDendrogram) decomposition.getStrategy();
-        JSONArray copheneticDistances = new JSONArray(IOUtils.toString(gridFsService.getFile(strategy.getCopheneticDistanceName()), StandardCharsets.UTF_8));
+        AccessesSciPyDendrogram dendrogram = (AccessesSciPyDendrogram) decomposition.getDendrogram();
+        JSONArray copheneticDistances = new JSONArray(IOUtils.toString(gridFsService.getFile(dendrogram.getCopheneticDistanceName()), StandardCharsets.UTF_8));
 
         ArrayList<Short> entities = new ArrayList<>(decomposition.getEntityIDToClusterName().keySet());
 
@@ -466,5 +482,8 @@ public class AccessesSciPyDecompositionService {
         accessesSciPyLogService.deleteDecompositionLog(decomposition.getLog());
         functionalityService.deleteFunctionalities(decomposition.getFunctionalities().values());
         gridFsService.deleteFile(decomposition.getName() + "_refactorization");
+        Dendrogram dendrogram = decomposition.getDendrogram();
+        dendrogram.removeDecomposition(decomposition.getName());
+        dendrogramRepository.save(dendrogram);
     }
 }

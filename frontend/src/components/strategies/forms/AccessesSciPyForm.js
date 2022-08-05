@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -7,6 +7,10 @@ import Button from "@mui/material/Button";
 import {CheckCircle} from "@mui/icons-material";
 
 export const AccessesSciPyForm = ({strategy, setAddedSources, sources, setCanSubmit}) => {
+    useEffect(() => {
+        if (sources.reduce((p, c) => {return p? strategy.sourceTypes.includes(c.type) : false}, true))
+            setCanSubmit(true);
+    }, []);
 
     function addSource(source, event) {
         setAddedSources(prev => {

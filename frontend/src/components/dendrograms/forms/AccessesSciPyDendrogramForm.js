@@ -13,8 +13,10 @@ import filterFactory, {numberFilter, textFilter} from "react-bootstrap-table2-fi
 import paginationFactory from "react-bootstrap-table2-paginator";
 import {Modal, ModalBody, ModalFooter, ModalTitle} from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
-import {TraceType} from "../../../type-declarations/types";
-import {ButtonGroup} from "@mui/material";
+import {TraceType} from "../../../type-declarations/types.d";
+import {RecommendationFactory} from "../../../models/recommendation/RecommendationFactory";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import {StrategyType} from "../../../models/strategy/Strategy";
 
 
 const nFilter = numberFilter({placeholder: "filter"});
@@ -78,8 +80,8 @@ export const AccessesSciPyDendrogramForm = ({codebaseName, strategyName, setUpda
     const [linkageType, setLinkageType] = useState("average");
     const [tracesMaxLimit, setTracesMaxLimit] = useState(0);
     const [traceType, setTraceType] = useState(TraceType.ALL);
-    const [traceTypeCheckbox, setTraceTypeCheckbox] = useState([]);
-    const [linkageTypeCheckbox, setLinkageTypeCheckbox] = useState([]);
+    const [traceTypeCheckbox, setTraceTypeCheckbox] = useState(["ALL"]);
+    const [linkageTypeCheckbox, setLinkageTypeCheckbox] = useState(["average"]);
     const [method, setMethod] = useState("dendrogram");
     const [recommendation, setRecommendation] = useState(undefined);
 
@@ -92,8 +94,9 @@ export const AccessesSciPyDendrogramForm = ({codebaseName, strategyName, setUpda
         event.preventDefault();
         setIsUploaded("Uploading...");
 
-        service.createAccessesSciPyStrategy({
+        service.createAccessesSciPyDendrogram({
             strategyName,
+            type: StrategyType.ACCESSES_SCIPY,
             accessMetricWeight,
             writeMetricWeight,
             readMetricWeight,
@@ -103,21 +106,21 @@ export const AccessesSciPyDendrogramForm = ({codebaseName, strategyName, setUpda
             tracesMaxLimit,
             traceType,
         })
-            .then(response => {
-                if (response.status === HttpStatus.CREATED) {
-                    setIsUploaded("");
-                    setUpdateStrategies({}); // Calls function responsible for updating dendrogram
-                } else {
-                    setIsUploaded("Upload failed.");
-                }
-            })
-            .catch(error => {
-                if (error.response !== undefined && error.response.status === HttpStatus.UNAUTHORIZED) {
-                    setIsUploaded("Upload failed. Name already exists.");
-                } else {
-                    setIsUploaded("Upload failed.");
-                }
-            });
+        .then(response => {
+            if (response.status === HttpStatus.CREATED) {
+                setIsUploaded("");
+                setUpdateStrategies({}); // Calls function responsible for updating dendrogram
+            } else {
+                setIsUploaded("Upload failed.");
+            }
+        })
+        .catch(error => {
+            if (error.response !== undefined && error.response.status === HttpStatus.UNAUTHORIZED) {
+                setIsUploaded("Upload failed. Name already exists.");
+            } else {
+                setIsUploaded("Upload failed.");
+            }
+        });
     }
 
     function loadProfiles() {
@@ -164,7 +167,7 @@ export const AccessesSciPyDendrogramForm = ({codebaseName, strategyName, setUpda
         }
         else setIsSelected("Creating decompositions...");
 
-        service.createRecommendationDecompositions(strategyName, selectedDecompositions.selectionContext.selected)
+        service.createRecommendationDecompositions(recommendation.name, selectedDecompositions.selectionContext.selected)
             .then(() => {
                 setUpdateStrategies({});
                 setIsSelected("Decompositions created.");
@@ -183,10 +186,10 @@ export const AccessesSciPyDendrogramForm = ({codebaseName, strategyName, setUpda
 
     function handleChangeLinkageTypeCheckbox(event) {
         setLinkageTypeCheckbox(prev => {
-            let next = [...prev]
-            if (event.target.checked && !next.linkageTypes.includes(event.target.id))
+            let next = [...prev];
+            if (event.target.checked && !next.includes(event.target.id))
                 next.push(event.target.id);
-            else next = next.linkageTypes.filter(l => l !== event.target.id);
+            else next = next.filter(l => l !== event.target.id);
             return next;
         })
     }
@@ -198,28 +201,30 @@ export const AccessesSciPyDendrogramForm = ({codebaseName, strategyName, setUpda
         setShowPopup(true);
         setLoading(true);
 
-        service.recommendation({
+        service.recommendation(RecommendationFactory.getRecommendation({
+            strategyName,
+            type: StrategyType.ACCESSES_SCIPY,
             profile,
             linkageTypes: linkageTypeCheckbox,
             tracesMaxLimit,
             traceTypes: traceTypeCheckbox,
-        })
-            .then(recommendationStrategy => {
-                recommendationStrategy.traceTypes = traceTypeCheckbox;
-                recommendationStrategy.linkageTypes = linkageTypeCheckbox;
-                setRecommendation(recommendationStrategy);
+        }))
+        .then(recommendation => {
+            recommendation.traceTypes = traceTypeCheckbox;
+            recommendation.linkageTypes = linkageTypeCheckbox;
+            setRecommendation(recommendation);
 
-                service.getRecommendationResult(recommendationStrategy.name)
-                    .then(list => {
-                        const filteredList = list.filter(item =>
-                            recommendationStrategy.traceTypes.includes(item.traceType) &&
-                            recommendationStrategy.linkageTypes.includes(item.linkageType));
+            service.getRecommendationResult(recommendation.name)
+                .then(list => {
+                    const filteredList = list.filter(item =>
+                        recommendation.traceTypes.includes(item.traceType) &&
+                        recommendation.linkageTypes.includes(item.linkageType));
 
-                        setRecommendedDecompositions(filteredList);
-                        setLoading(false);
-                    });
-                }
-            );
+                    setRecommendedDecompositions(filteredList);
+                    setLoading(false);
+                });
+            }
+        );
     }
 
     function renderRecommendationList() {
@@ -236,7 +241,7 @@ export const AccessesSciPyDendrogramForm = ({codebaseName, strategyName, setUpda
                 <ModalBody>
                     This list can be refreshed to display more decompositions.<br/>
                     Click in the <em>Refresh</em> button to update the list.<br/>
-                    Click in the <em>Submit</em> button to create de decompositions.
+                    Select the desired decompositions and click in the <em>Create</em> button to create de decompositions.
                     <BootstrapTable
                         bootstrap4
                         keyField='name'
@@ -252,7 +257,7 @@ export const AccessesSciPyDendrogramForm = ({codebaseName, strategyName, setUpda
                     <div className="flex-column">
                         <div className="flex-row">
                             <Button className="me-2" variant="success" onClick={() => handleCreateDecompositions()}>
-                                Submit
+                                Create
                             </Button>
                             <Button className="me-2" variant="primary" disabled={recommendation !== undefined && recommendation.isCompleted || loading}
                                     onClick={() => handleCreateRecommendation()}>
@@ -282,7 +287,7 @@ export const AccessesSciPyDendrogramForm = ({codebaseName, strategyName, setUpda
             <Button onClick={() => setMethod("recommendation")}>Decomposition Recommendation</Button>
         </ButtonGroup>
 
-        <Form onSubmit={handleSubmit} className="mb-3">
+        <Form onSubmit={handleSubmit} className="mt-2 mb-3">
             <Form.Group as={Row} controlId="selectFunctionalityProfiles" className="align-items-center mb-3">
                 <Form.Label column sm={2}>
                     Select Codebase Profile
@@ -318,7 +323,7 @@ export const AccessesSciPyDendrogramForm = ({codebaseName, strategyName, setUpda
                     </Form.Text>
                 </Col>
             </Form.Group>
-            {method === "recommend" &&
+            {method === "recommendation" &&
             <>
                 <Form.Group as={Row} className="align-items-center mb-3">
                     <Form.Label as="legend" column sm={2}>
@@ -327,33 +332,35 @@ export const AccessesSciPyDendrogramForm = ({codebaseName, strategyName, setUpda
                     <Col sm={3} style={{ paddingLeft: 0 }}>
                         <Col sm="auto">
                             <Form.Check
-                                onClick={handleChangeTraceTypeCheckbox}
+                                onChange={handleChangeTraceTypeCheckbox}
                                 name="traceType"
                                 label="All"
                                 type="checkbox"
                                 id="allTraces"
                                 value="ALL"
-                                defaultChecked
+                                checked={traceTypeCheckbox.includes("ALL")}
                             />
                         </Col>
                         <Col sm="auto">
                             <Form.Check
-                                onClick={handleChangeTraceTypeCheckbox}
+                                onChange={handleChangeTraceTypeCheckbox}
                                 name="traceType"
                                 label="Longest"
                                 type="checkbox"
                                 id="longest"
                                 value="LONGEST"
+                                checked={traceTypeCheckbox.includes("LONGEST")}
                             />
                         </Col>
                         <Col sm="auto">
                             <Form.Check
-                                onClick={handleChangeTraceTypeCheckbox}
+                                onChange={handleChangeTraceTypeCheckbox}
                                 name="traceType"
                                 label="With more different accesses"
                                 type="checkbox"
                                 id="withMoreDifferentTraces"
                                 value="WITH_MORE_DIFFERENT_ACCESSES"
+                                checked={traceTypeCheckbox.includes("WITH_MORE_DIFFERENT_ACCESSES")}
                             />
 
                         </Col>
@@ -365,31 +372,33 @@ export const AccessesSciPyDendrogramForm = ({codebaseName, strategyName, setUpda
                     </Form.Label>
                     <Col sm="auto">
                         <Form.Check
-                            onClick={handleChangeLinkageTypeCheckbox}
+                            onChange={handleChangeLinkageTypeCheckbox}
                             name="linkageType"
                             label="Average"
                             type="checkbox"
                             id="average"
-                            defaultChecked
+                            checked={linkageTypeCheckbox.includes("average")}
                         />
                     </Col>
                     <Col sm="auto">
                         <Form.Check
-                            onClick={handleChangeLinkageTypeCheckbox}
+                            onChange={handleChangeLinkageTypeCheckbox}
                             name="linkageType"
                             label="Single"
                             type="checkbox"
                             id="single"
+                            checked={linkageTypeCheckbox.includes("single")}
                         />
 
                     </Col>
                     <Col sm="auto">
                         <Form.Check
-                            onClick={handleChangeLinkageTypeCheckbox}
+                            onChange={handleChangeLinkageTypeCheckbox}
                             name="linkageType"
                             label="Complete"
                             type="checkbox"
                             id="complete"
+                            checked={linkageTypeCheckbox.includes("complete")}
                         />
                     </Col>
                 </Form.Group>
@@ -543,7 +552,7 @@ export const AccessesSciPyDendrogramForm = ({codebaseName, strategyName, setUpda
                 </Form.Group>
             </>
             }
-            {method === "recommend" &&
+            {method === "recommendation" &&
                 <Form.Group as={Row} className="align-items-center">
                     <Col sm={{offset: 2}}>
                         <Button

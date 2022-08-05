@@ -16,7 +16,7 @@ export default class AccessesSource extends Source {
             <Card.Header>{this.type}</Card.Header>
             <Card.Body>
                 <Button
-                    href={`/codebase/${this.codebaseName}/source/${this.name}/profiles`}
+                    href={`/codebase/${this.codebaseName}/${this.name}/profiles`}
                     className="mb-2"
                 >
                     Change Profile

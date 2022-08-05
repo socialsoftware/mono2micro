@@ -1,5 +1,5 @@
 import React from "react";
-import {TraceType} from "../../type-declarations/types";
+import {TraceType} from "../../type-declarations/types.d";
 import Recommendation from "./Recommendation";
 
 export default class RecommendAccessesSciPy extends Recommendation {

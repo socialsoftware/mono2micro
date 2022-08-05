@@ -12,7 +12,7 @@ import Popover from "react-bootstrap/Popover";
 import {RepositoryService} from "../../services/RepositoryService";
 import HttpStatus from "http-status-codes";
 import {Modal, ModalBody, ModalFooter, ModalTitle} from "react-bootstrap";
-import {AccessesSciPyForm} from "../codebase/forms/AccessesSciPyForm";
+import {AccessesSciPyForm} from "./forms/AccessesSciPyForm";
 import {toast} from "react-toastify";
 import {StrategyDescription, StrategyType} from "../../models/strategy/Strategy";
 import {StrategyFactory} from "../../models/strategy/StrategyFactory";
@@ -52,8 +52,15 @@ export function Strategies() {
     function loadCodebase() {
         const service = new RepositoryService();
         service.getCodebase(codebaseName).then(response => {
-            setStrategies(response.strategies)
+            loadStrategies();
             setSources(response.sources);
+        });
+    }
+
+    function loadStrategies() {
+        const service = new RepositoryService();
+        service.getCodebaseStrategies(codebaseName).then(response => {
+            setStrategies(response);
         });
     }
 
@@ -117,7 +124,7 @@ export function Strategies() {
         let toastId = toast.loading("Deleting strategy...", {type: toast.TYPE.INFO});
         const service = new RepositoryService();
         service.deleteStrategy(strategy.name).then(() => {
-            loadCodebase();
+            loadStrategies();
             toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Strategy deleted.", isLoading: false});
             setTimeout(() => {toast.dismiss(toastId)}, 1000);
         }).catch(() => {
@@ -164,18 +171,26 @@ export function Strategies() {
                     </Form.Group>
                 }
 
-                <h4 className="mt-4" style={{ color: "#666666" }}>
-                    Strategies
-                </h4>
-                <div className={"d-flex flex-wrap mw-100"} style={{gap: '1rem 1rem'}}>
-                    {strategies.map(strategy => strategy.printCard(handleDeleteStrategy))}
-                </div>
-                <h4 className="mt-4" style={{ color: "#666666" }}>
-                    Sources
-                </h4>
-                <div className={"d-flex flex-wrap mw-100"} style={{gap: '1rem 1rem'}}>
-                    {sources.map(source => source.printCard(handleDeleteSource))}
-                </div>
+                {strategies.length !== 0 &&
+                    <>
+                        <h4 className="mt-4" style={{color: "#666666"}}>
+                            Strategies
+                        </h4>
+                        <div className={"d-flex flex-wrap mw-100"} style={{gap: '1rem 1rem'}}>
+                            {strategies.map(strategy => strategy.printCard(handleDeleteStrategy))}
+                        </div>
+                    </>
+                }
+                {sources.length !== 0 &&
+                    <>
+                        <h4 className="mt-4" style={{ color: "#666666" }}>
+                            Sources
+                        </h4>
+                        <div className={"d-flex flex-wrap mw-100"} style={{gap: '1rem 1rem'}}>
+                            {sources.map(source => source.printCard(handleDeleteSource))}
+                        </div>
+                    </>
+                }
             </Form>
         );
     }

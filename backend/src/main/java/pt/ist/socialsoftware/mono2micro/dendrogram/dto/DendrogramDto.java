@@ -10,9 +10,10 @@ import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStra
         @JsonSubTypes.Type(value = AccessesSciPyDendrogramDto.class, name = ACCESSES_SCIPY),
 })
 public abstract class DendrogramDto {
-    private String name;
-    private String strategyName;
-    private String type;
+    String codebaseName;
+    String strategyName;
+    String name;
+    String type;
 
     public String getName() {
         return name;
@@ -28,6 +29,14 @@ public abstract class DendrogramDto {
 
     public void setStrategyName(String strategyName) {
         this.strategyName = strategyName;
+    }
+
+    public String getCodebaseName() {
+        return codebaseName;
+    }
+
+    public void setCodebaseName(String codebaseName) {
+        this.codebaseName = codebaseName;
     }
 
     public String getType() {

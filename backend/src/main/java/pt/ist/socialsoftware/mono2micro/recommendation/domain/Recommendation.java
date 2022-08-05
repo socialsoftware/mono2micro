@@ -1,22 +1,33 @@
 package pt.ist.socialsoftware.mono2micro.recommendation.domain;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
-import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
-import pt.ist.socialsoftware.mono2micro.dendrogram.dto.DendrogramDto;
+import pt.ist.socialsoftware.mono2micro.recommendation.dto.RecommendationDto;
+import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
 public abstract class Recommendation {
+    @Id
+    String name;
     @DBRef(lazy = true)
-    private Codebase codebase;
+    Strategy strategy;
 
-    public Codebase getCodebase() {
-        return codebase;
+    public String getName() {
+        return name;
     }
 
-    public void setCodebase(Codebase codebase) {
-        this.codebase = codebase;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Strategy getStrategy() {
+        return strategy;
+    }
+
+    public void setStrategy(Strategy strategy) {
+        this.strategy = strategy;
     }
 
     public abstract String getType();
 
-    public abstract boolean equalsDto(DendrogramDto dto);
+    public abstract boolean equalsDto(RecommendationDto dto);
 }

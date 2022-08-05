@@ -1,4 +1,3 @@
-import base64
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
@@ -14,7 +13,7 @@ import env
 matplotlib.use('agg')
 
 
-def createDendrogram(strategyName, similarityMatrixName):
+def createDendrogram(dendrogramName, similarityMatrixName):
     # Database initialization in order to contact MongoDB
     client = pymongo.MongoClient(env.MONGO_DB)
     DB = client[env.MONGO_DB_NAME]
@@ -35,8 +34,8 @@ def createDendrogram(strategyName, similarityMatrixName):
     img = BytesIO()
     plt.savefig(img, format="png", bbox_inches='tight')
     img.seek(0)
-    imageName = strategyName + "_image"
-    copheneticDistanceName = strategyName + "_copheneticDistance"
+    imageName = dendrogramName + "_image"
+    copheneticDistanceName = dendrogramName + "_copheneticDistance"
     fs.put(img.getvalue(), filename=imageName)
     fs.put(BytesIO(bytes(str(hierarchy.cophenet(hierarc).tolist()), 'ascii')).getvalue(), filename=copheneticDistanceName)
     client.close()

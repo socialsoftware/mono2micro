@@ -3,15 +3,16 @@ package pt.ist.socialsoftware.mono2micro.recommendation.domain;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.ist.socialsoftware.mono2micro.recommendation.dto.RecommendAccessesSciPyDto;
-import pt.ist.socialsoftware.mono2micro.dendrogram.dto.DendrogramDto;
+import pt.ist.socialsoftware.mono2micro.recommendation.dto.RecommendationDto;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Document("recommend")
+import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy.ACCESSES_SCIPY;
+
+@Document("recommendation")
 public class RecommendAccessesSciPy extends Recommendation {
-    public static final String RECOMMEND_ACCESSES_SCIPY = "Recommend Accesses SciPy";
     private String profile;
     private int tracesMaxLimit;
     private boolean isCompleted; // true when all the decompositions are calculated
@@ -43,7 +44,7 @@ public class RecommendAccessesSciPy extends Recommendation {
 
     @Override
     public String getType() {
-        return RECOMMEND_ACCESSES_SCIPY;
+        return ACCESSES_SCIPY;
     }
 
     public String getProfile() {
@@ -155,12 +156,12 @@ public class RecommendAccessesSciPy extends Recommendation {
     }
 
     @Override
-    public boolean equalsDto(DendrogramDto dto) {
+    public boolean equalsDto(RecommendationDto dto) {
         if (!(dto instanceof RecommendAccessesSciPyDto))
             return false;
 
-        RecommendAccessesSciPyDto strategyDto = (RecommendAccessesSciPyDto) dto;
+        RecommendAccessesSciPyDto recommendAccessesSciPyDto = (RecommendAccessesSciPyDto) dto;
 
-        return strategyDto.getProfile().equals(this.profile) && (strategyDto.getTracesMaxLimit() == this.tracesMaxLimit);
+        return recommendAccessesSciPyDto.getProfile().equals(this.profile) && (recommendAccessesSciPyDto.getTracesMaxLimit() == this.tracesMaxLimit);
     }
 }

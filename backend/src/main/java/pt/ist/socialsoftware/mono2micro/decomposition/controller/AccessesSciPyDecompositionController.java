@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.AccessesSciPyDecompositionDto;
 import pt.ist.socialsoftware.mono2micro.decomposition.service.AccessesSciPyDecompositionService;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
@@ -22,7 +21,6 @@ import pt.ist.socialsoftware.mono2micro.utils.Utils;
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.IOException;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RestController
@@ -36,16 +34,16 @@ public class AccessesSciPyDecompositionController {
     @Autowired
     FunctionalityService functionalityService;
 
-    @RequestMapping(value = "/strategy/{strategyName}/createAccessesSciPyDecomposition", method = RequestMethod.POST)
+    @RequestMapping(value = "/dendrogram/{dendrogramName}/createAccessesSciPyDecomposition", method = RequestMethod.POST)
     public ResponseEntity<HttpStatus> createDecomposition(
-            @PathVariable String strategyName,
+            @PathVariable String dendrogramName,
             @RequestParam String cutType,
             @RequestParam float cutValue
     ) {
         logger.debug("createDecomposition");
 
         try {
-            decompositionService.createDecomposition(strategyName, cutType, cutValue);
+            decompositionService.createDecomposition(dendrogramName, cutType, cutValue);
             return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (KeyAlreadyExistsException e) {
@@ -58,16 +56,16 @@ public class AccessesSciPyDecompositionController {
         }
     }
 
-    @RequestMapping(value = "/strategy/{strategyName}/createAccessesSciPyExpertDecomposition", method = RequestMethod.POST)
+    @RequestMapping(value = "/dendrogram/{dendrogramName}/createAccessesSciPyExpertDecomposition", method = RequestMethod.POST)
     public ResponseEntity<HttpStatus> createExpertDecomposition(
-            @PathVariable String strategyName,
+            @PathVariable String dendrogramName,
             @RequestParam String expertName,
             @RequestParam Optional<MultipartFile> expertFile
     ) {
         logger.debug("createExpertDecomposition");
 
         try {
-            decompositionService.createExpertDecomposition(strategyName, expertName, expertFile);
+            decompositionService.createExpertDecomposition(dendrogramName, expertName, expertFile);
             return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (KeyAlreadyExistsException e) {

@@ -46,7 +46,7 @@ export default class AccessesSciPyDendrogram extends Dendrogram {
                     Read: {this.readMetricWeight}% < br />
                     Sequence: {this.sequenceMetricWeight}%
                 </Card.Text>
-                <Button href={`/codebases/${this.codebaseName}/strategies/${this.strategyName}/dendrograms/${this.name}`}
+                <Button href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.name}/dendrogram`}
                         variant={"success"}
                         className="mb-2">
                     Decomposition Generation

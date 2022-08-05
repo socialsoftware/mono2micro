@@ -134,7 +134,6 @@ export const FunctionalityRefactorToolMenu = () => {
     }
 
     function handleDataParsing(data) {
-        console.log(data);
         let refactorizationRows = [];
 
         try {
@@ -313,10 +312,7 @@ export const FunctionalityRefactorToolMenu = () => {
                 <Breadcrumb.Item href={`/codebases/${codebaseName}`}>
                     {codebaseName}
                 </Breadcrumb.Item>
-                <Breadcrumb.Item href={`/codebases/${codebaseName}/strategies`}>
-                    Strategies
-                </Breadcrumb.Item>
-                <Breadcrumb.Item href={`/codebases/${codebaseName}/strategies/${strategyName}`}>
+                <Breadcrumb.Item href={`/codebases/${codebaseName}/${strategyName}`}>
                     {strategyName}
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>

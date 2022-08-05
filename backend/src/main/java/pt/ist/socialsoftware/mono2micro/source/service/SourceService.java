@@ -9,10 +9,13 @@ import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.source.domain.Source;
 import pt.ist.socialsoftware.mono2micro.source.domain.SourceFactory;
 import pt.ist.socialsoftware.mono2micro.source.repository.SourceRepository;
+import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
+import pt.ist.socialsoftware.mono2micro.strategy.service.StrategyService;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +26,9 @@ public class SourceService {
     CodebaseRepository codebaseRepository;
 
     @Autowired
+    StrategyService strategyService;
+
+    @Autowired
     SourceRepository sourceRepository;
 
     @Autowired
@@ -30,7 +36,9 @@ public class SourceService {
 
     public void addSources(String codebaseName, List<String> sourceTypes, List<Object> sources) throws Exception {
 
-        if (sourceTypes.size() != sources.size())
+        if (sourceTypes == null && sources == null) // sources already added
+            return;
+        if (sourceTypes == null || sources == null || sourceTypes.size() != sources.size())
             throw new RuntimeException("Number of sources is different from the number of source types.");
 
         Codebase codebase = codebaseRepository.findByName(codebaseName);
@@ -68,8 +76,21 @@ public class SourceService {
 
     public void deleteSource(String sourceId) {
         Source source = sourceRepository.findById(sourceId).orElseThrow(() -> new RuntimeException("No source with id " + sourceId));
+        gridFsService.deleteFile(source.getName());
+        sourceRepository.deleteById(sourceId);
+    }
+
+    public void deleteSingleSource(String sourceId) {
+        Source source = sourceRepository.findById(sourceId).orElseThrow(() -> new RuntimeException("No source with id " + sourceId));
         Codebase codebase = source.getCodebase();
         codebase.removeSource(sourceId);
+        ArrayList<Strategy> strategies = new ArrayList<>();
+        for (Strategy strategy: codebase.getStrategies()) {
+            if (strategy.getSourceTypes().contains(source.getType()))
+                strategyService.deleteStrategy(strategy);
+            else strategies.add(strategy);
+        }
+        codebase.setStrategies(strategies);
         gridFsService.deleteFile(source.getName());
         codebaseRepository.save(codebase);
         sourceRepository.deleteById(sourceId);

@@ -1,6 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.strategy.domain;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 import pt.ist.socialsoftware.mono2micro.dendrogram.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
 import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
@@ -8,7 +9,10 @@ import pt.ist.socialsoftware.mono2micro.source.domain.TranslationSource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+
+@Document("strategy")
 public class AccessesSciPyStrategy extends Strategy {
     public static final String ACCESSES_SCIPY = "Accesses SciPy";
 
@@ -18,9 +22,11 @@ public class AccessesSciPyStrategy extends Strategy {
     }};
 
     @DBRef(lazy = true)
-    private List<Dendrogram> dendrograms;
+    private List<Dendrogram> dendrograms = new ArrayList<>();
     @DBRef(lazy = true)
-    private List<Recommendation> recommendations;
+    private List<Recommendation> recommendations = new ArrayList<>();
+
+    public AccessesSciPyStrategy() {}
 
     @Override
     public String getType() {
@@ -41,6 +47,10 @@ public class AccessesSciPyStrategy extends Strategy {
 
     public void addDendrogram(Dendrogram dendrogram) {
         this.dendrograms.add(dendrogram);
+    }
+
+    public void removeDendrogram(String dendrogramName) {
+        this.dendrograms = this.dendrograms.stream().filter(dendrogram -> !dendrogram.getName().equals(dendrogramName)).collect(Collectors.toList());
     }
 
     public List<Recommendation> getRecommendations() {

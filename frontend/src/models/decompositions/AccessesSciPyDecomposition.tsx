@@ -13,7 +13,7 @@ export default class AccessesSciPyDecomposition extends Decomposition {
     silhouetteScore: number;
     clusters: any;
     functionalities: any;
-    entityIDToClusterID: any;
+    entityIDToClusterName: any;
 
     constructor(decomposition: any) {
         super(decomposition);
@@ -23,7 +23,7 @@ export default class AccessesSciPyDecomposition extends Decomposition {
         this.silhouetteScore = decomposition.silhouetteScore;
         this.clusters = decomposition.clusters;
         this.functionalities = decomposition.functionalities;
-        this.entityIDToClusterID = decomposition.entityIDToClusterID;
+        this.entityIDToClusterName = decomposition.entityIDToClusterName;
     }
 
     handleUpdate(reloadDecompositions: () => void) {
@@ -73,7 +73,7 @@ export default class AccessesSciPyDecomposition extends Decomposition {
                     }
                     <br/>
                     <Button
-                        href={`/codebases/${this.codebaseName}/strategies/${this.strategyName}/decompositions/${this.name}/viewDecomposition`}
+                        href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.name}/viewDecomposition`}
                         className="mb-2"
                         variant={"success"}
                     >
@@ -81,7 +81,7 @@ export default class AccessesSciPyDecomposition extends Decomposition {
                     </Button>
                     <br/>
                     <Button
-                        href={`/codebases/${this.codebaseName}/strategies/${this.strategyName}/decompositions/${this.name}/functionalityRefactor`}
+                        href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.name}/functionalityRefactor`}
                         className="mb-2"
                         variant={"primary"}
                     >

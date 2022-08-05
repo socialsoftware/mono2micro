@@ -10,9 +10,7 @@ import pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogra
 import pt.ist.socialsoftware.mono2micro.dendrogram.dto.AccessesSciPyDendrogramDto;
 import pt.ist.socialsoftware.mono2micro.dendrogram.repository.AccessesSciPyDendrogramRepository;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.strategy.repository.AccessesSciPyStrategyRepository;
-import pt.ist.socialsoftware.mono2micro.strategy.repository.StrategyRepository;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,7 +49,7 @@ public class AccessesSciPyDendrogramService {
         int i = 0;
         String dendrogramName;
         do {
-            dendrogramName = dendrogramDto.getStrategyName() + " & " + dendrogramDto.getType() + ++i;
+            dendrogramName = dendrogramDto.getStrategyName() + " D" + ++i;
         } while (dendrogramRepository.existsByName(dendrogramName));
         dendrogram.setName(dendrogramName);
         dendrogram.setStrategy(strategy);
@@ -70,6 +68,9 @@ public class AccessesSciPyDendrogramService {
     }
 
     public void deleteDendrogramProperties(AccessesSciPyDendrogram dendrogram) { // Used to delete fields that can't otherwise be accessed by abstract Dendrogram
+        AccessesSciPyStrategy strategy = strategyRepository.findByName(dendrogram.getStrategy().getName());
+        strategy.removeDendrogram(dendrogram.getName());
+        strategyRepository.save(strategy);
         gridFsService.deleteFile(dendrogram.getSimilarityMatrixName());
         gridFsService.deleteFile(dendrogram.getImageName());
         gridFsService.deleteFile(dendrogram.getCopheneticDistanceName());

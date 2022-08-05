@@ -110,9 +110,6 @@ export const Profiles = () => {
                     {codebaseName}
                 </Breadcrumb.Item>
                 <Breadcrumb.Item href={`/codebases/${codebaseName}`}>
-                    Source
-                </Breadcrumb.Item>
-                <Breadcrumb.Item href={`/codebases/${codebaseName}`}>
                     {sourceName}
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>

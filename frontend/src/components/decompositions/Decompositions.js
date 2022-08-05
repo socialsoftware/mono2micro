@@ -8,15 +8,15 @@ import {toast, ToastContainer} from "react-toastify";
 import {StrategyType} from "../../models/strategy/Strategy";
 
 export const Decompositions = () => {
-    let { codebaseName, strategyName } = useParams();
-    const [strategy, setStrategy] = useState({});
+    let { codebaseName, strategyName, dendrogramName } = useParams();
+    const [dendrogram, setDendrogram] = useState({});
     const [decompositions, setDecompositions] = useState([]);
 
     //Executed on mount
     useEffect(() => {
         const service = new RepositoryService();
-        service.getStrategy(strategyName).then(response => {
-            setStrategy(response);
+        service.getDendrogram(dendrogramName).then(response => {
+            setDendrogram(response);
             loadDecompositions();
         });
     }, []);
@@ -25,7 +25,7 @@ export const Decompositions = () => {
         const service = new RepositoryService();
         const toastId = toast.loading("Fetching Decompositions...");
         service.getDecompositions(
-            strategyName
+            dendrogramName
         ).then(response => {
             setDecompositions(response);
             toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Decompositions Loaded.", isLoading: false});
@@ -38,7 +38,7 @@ export const Decompositions = () => {
     function handleDeleteDecomposition(decompositionName) {
         const toastId = toast.loading("Deleting " + decompositionName + "...");
         const service = new RepositoryService();
-        service.deleteDecomposition(codebaseName, strategyName, decompositionName).then(() => {
+        service.deleteDecomposition(decompositionName).then(() => {
             loadDecompositions();
             toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Decomposition deleted.", isLoading: false});
             setTimeout(() => {toast.dismiss(toastId)}, 1000);
@@ -59,11 +59,11 @@ export const Decompositions = () => {
                 <Breadcrumb.Item href={`/codebases/${codebaseName}`}>
                     {codebaseName}
                 </Breadcrumb.Item>
-                <Breadcrumb.Item href={`/codebases/${codebaseName}/strategies`}>
-                    Strategies
+                <Breadcrumb.Item href={`/codebases/${codebaseName}/${strategyName}`}>
+                    {strategyName}
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>
-                    {strategyName}
+                    {dendrogramName}
                 </Breadcrumb.Item>
             </Breadcrumb>
         );
@@ -82,7 +82,7 @@ export const Decompositions = () => {
                 Decomposition Creation Method
             </h4>
 
-            {strategy.type === StrategyType.ACCESSES_SCIPY &&
+            {dendrogram.type === StrategyType.ACCESSES_SCIPY &&
                 <AccessesSciPyDecompositionForm
                     loadDecompositions={loadDecompositions}
                 />

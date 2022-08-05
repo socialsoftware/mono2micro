@@ -5,7 +5,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
 import pt.ist.socialsoftware.mono2micro.source.service.SourceService;
 import pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram;
@@ -13,7 +12,7 @@ import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendAccessesS
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.dendrogram.service.AccessesSciPyDendrogramService;
-import pt.ist.socialsoftware.mono2micro.recommendation.service.RecommendAccessesSciPyStrategyService;
+import pt.ist.socialsoftware.mono2micro.recommendation.service.RecommendAccessesSciPyService;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
@@ -35,52 +34,50 @@ public class AccessesSimilarityGeneratorService {
     AccessesSciPyDendrogramService accessesSciPyDendrogramService;
 
     @Autowired
-    RecommendAccessesSciPyStrategyService recommendAccessesSciPyStrategyService;
+    RecommendAccessesSciPyService recommendAccessesSciPyService;
 
     //#############################################
     // ACCESSES SCIPY
     //#############################################
 
-    public void createSimilarityMatrixForSciPy(AccessesSciPyDendrogram strategy) throws Exception {
+    public void createSimilarityMatrixForSciPy(AccessesSciPyDendrogram dendrogram) throws Exception {
         Set<Short> entities = new TreeSet<>();
         Map<String, Integer> e1e2PairCount = new HashMap<>();
         Map<Short, List<Pair<String, Byte>>> entityFunctionalities = new HashMap<>(); // Map<entityID, List<Pair<functionalityName, accessMode>>>
-
+        AccessesSource source = (AccessesSource) dendrogram.getStrategy().getCodebase().getSourceByType(ACCESSES);
         fillMatrix(
                 entities,
                 e1e2PairCount,
                 entityFunctionalities,
-                strategy.getStrategy(),
-                strategy.getProfile(),
-                strategy.getTracesMaxLimit(),
-                strategy.getTraceType());
+                source,
+                dendrogram.getProfile(),
+                dendrogram.getTracesMaxLimit(),
+                dendrogram.getTraceType());
 
         JSONObject matrixJSON = getSciPyMatrixAsJSONObject(
                 entities,
                 getRawMatrix(entities, e1e2PairCount, entityFunctionalities),
-                strategy.getAccessMetricWeight(),
-                strategy.getWriteMetricWeight(),
-                strategy.getReadMetricWeight(),
-                strategy.getSequenceMetricWeight(),
-                strategy.getLinkageType());
+                dendrogram.getAccessMetricWeight(),
+                dendrogram.getWriteMetricWeight(),
+                dendrogram.getReadMetricWeight(),
+                dendrogram.getSequenceMetricWeight(),
+                dendrogram.getLinkageType());
 
-        strategy.setSimilarityMatrixName(strategy.getName() + "_similarityMatrix");
-        accessesSciPyDendrogramService.saveSimilarityMatrix(new ByteArrayInputStream(matrixJSON.toString().getBytes()), strategy.getSimilarityMatrixName());
+        dendrogram.setSimilarityMatrixName(dendrogram.getName() + "_similarityMatrix");
+        accessesSciPyDendrogramService.saveSimilarityMatrix(new ByteArrayInputStream(matrixJSON.toString().getBytes()), dendrogram.getSimilarityMatrixName());
     }
 
     private void fillMatrix(
             Set<Short> entities,
             Map<String, Integer> e1e2PairCount,
             Map<Short, List<Pair<String, Byte>>> entityFunctionalities,
-            Codebase codebase,
+            AccessesSource source,
             String profile,
             int tracesMaxLimit,
             Constants.TraceType traceType
     )
             throws IOException, JSONException {
         System.out.println("Creating similarity matrix...");
-
-        AccessesSource source = (AccessesSource) codebase.getSourceByType(ACCESSES);
 
         FunctionalityTracesIterator iter = new FunctionalityTracesIterator(
                 sourceService.getSourceFileAsInputStream(source.getName()),
@@ -320,36 +317,36 @@ public class AccessesSimilarityGeneratorService {
     // RECOMMEND ACCESSES SCIPY
     //#############################################
 
-    public void createSimilarityMatricesForSciPy(RecommendAccessesSciPy strategy) throws Exception {
+    public void createSimilarityMatricesForSciPy(AccessesSource source, RecommendAccessesSciPy recommendation) throws Exception {
         int INTERVAL = 100, STEP = 10;
         Set<Short> entities = new TreeSet<>();
         Map<String, Integer> e1e2PairCount = new HashMap<>();
         Map<Short, List<Pair<String, Byte>>> entityFunctionalities = new HashMap<>(); // Map<entityID, List<Pair<functionalityName, accessMode>>>
 
-        for (TraceType traceType : strategy.getTraceTypes()) {
-            for (String linkageType : strategy.getLinkageTypes()) {
-                if (strategy.containsCombination(traceType, linkageType))
+        for (TraceType traceType : recommendation.getTraceTypes()) {
+            for (String linkageType : recommendation.getLinkageTypes()) {
+                if (recommendation.containsCombination(traceType, linkageType))
                     continue;
-                fillMatrix(entities, e1e2PairCount, entityFunctionalities, strategy.getCodebase(), strategy.getProfile(), strategy.getTracesMaxLimit(), traceType);
+                fillMatrix(entities, e1e2PairCount, entityFunctionalities, source, recommendation.getProfile(), recommendation.getTracesMaxLimit(), traceType);
 
                 // needed later during clustering algorithm
-                strategy.setNumberOfEntities(entities.size());
+                recommendation.setNumberOfEntities(entities.size());
 
                 float[][][] rawMatrix = getRawMatrix(entities, e1e2PairCount, entityFunctionalities);
 
                 for (int a = INTERVAL, remainder; a >= 0; a -= STEP) {
                     remainder = INTERVAL - a;
                     if (remainder == 0)
-                        createAndWriteSimilarityMatrix(strategy, entities, traceType, linkageType, rawMatrix, a, 0, 0, 0);
+                        createAndWriteSimilarityMatrix(recommendation, entities, traceType, linkageType, rawMatrix, a, 0, 0, 0);
                     else {
                         for (int w = remainder, remainder2; w >= 0; w -= STEP) {
                             remainder2 = remainder - w;
                             if (remainder2 == 0)
-                                createAndWriteSimilarityMatrix(strategy, entities, traceType, linkageType, rawMatrix, a, w, 0, 0);
+                                createAndWriteSimilarityMatrix(recommendation, entities, traceType, linkageType, rawMatrix, a, w, 0, 0);
                             else {
                                 for (int r = remainder2, remainder3; r >= 0; r -= STEP) {
                                     remainder3 = remainder2 - r;
-                                    createAndWriteSimilarityMatrix(strategy, entities, traceType, linkageType, rawMatrix, a, w, r, remainder3);
+                                    createAndWriteSimilarityMatrix(recommendation, entities, traceType, linkageType, rawMatrix, a, w, r, remainder3);
                                 }
                             }
                         }
@@ -360,7 +357,7 @@ public class AccessesSimilarityGeneratorService {
     }
 
     private void createAndWriteSimilarityMatrix(
-            RecommendAccessesSciPy strategy,
+            RecommendAccessesSciPy recommendation,
             Set<Short> entities,
             TraceType traceType,
             String linkageType,
@@ -380,7 +377,7 @@ public class AccessesSimilarityGeneratorService {
                 linkageType);
 
         String similarityMatrixName =
-                strategy.getName() + "," +
+                recommendation.getName() + "," +
                 getWeightAsString(accessMetricWeight) + "," +
                 getWeightAsString(writeMetricWeight) + "," +
                 getWeightAsString(readMetricWeight) + "," +
@@ -388,8 +385,8 @@ public class AccessesSimilarityGeneratorService {
                 traceType + "," +
                 linkageType;
 
-        strategy.addSimilarityMatrixName(similarityMatrixName);
-        recommendAccessesSciPyStrategyService.saveSimilarityMatrix(new ByteArrayInputStream(matrixJSON.toString().getBytes()), similarityMatrixName);
+        recommendation.addSimilarityMatrixName(similarityMatrixName);
+        recommendAccessesSciPyService.saveSimilarityMatrix(new ByteArrayInputStream(matrixJSON.toString().getBytes()), similarityMatrixName);
     }
 
     private String getWeightAsString(float weight) {

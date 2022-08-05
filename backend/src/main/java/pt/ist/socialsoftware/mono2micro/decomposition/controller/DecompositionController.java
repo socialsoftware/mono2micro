@@ -9,14 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.DecompositionDto;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.DecompositionDtoFactory;
 import pt.ist.socialsoftware.mono2micro.decomposition.service.DecompositionService;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
-
-import java.io.IOException;
-
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.STRATEGIES_FOLDER;
 
 @RestController
-@RequestMapping(value = "/mono2micro/codebase/{codebaseName}/strategy/{strategyName}")
+@RequestMapping(value = "/mono2micro")
 public class DecompositionController {
 
 	private static final Logger logger = LoggerFactory.getLogger(DecompositionController.class);

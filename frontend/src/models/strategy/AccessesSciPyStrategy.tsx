@@ -9,6 +9,7 @@ export default class AccessesSciPyStrategy extends Strategy {
 
     public constructor(strategy: any) {
         super(strategy);
+        this.hasDendrograms = true;
         this.dendrograms = strategy.dendrograms;
     }
 
@@ -17,7 +18,7 @@ export default class AccessesSciPyStrategy extends Strategy {
             <Card.Header>{this.type}</Card.Header>
             <Card.Body>
                 <Button
-                    href={`/codebases/${this.codebaseName}/strategy/${this.name}`}
+                    href={`/codebases/${this.codebaseName}/${this.name}`}
                     className="mb-2"
                 >
                     Dendrogram Generation

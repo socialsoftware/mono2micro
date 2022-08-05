@@ -5,26 +5,25 @@ import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.util.Set;
 
-import static pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendAccessesSciPy.RECOMMEND_ACCESSES_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy.ACCESSES_SCIPY;
 
-public class RecommendAccessesSciPyDto {
+public class RecommendAccessesSciPyDto extends RecommendationDto {
     private String profile;
     private Set<String> linkageTypes;
     private int tracesMaxLimit;
-    private boolean isCompleted;
     private Set<Constants.TraceType> traceTypes;
 
-    public RecommendAccessesSciPyDto() {this.setType(RECOMMEND_ACCESSES_SCIPY);}
+    public RecommendAccessesSciPyDto() {this.setType(ACCESSES_SCIPY);}
 
-    public RecommendAccessesSciPyDto(RecommendAccessesSciPy strategy) {
-        this.setStrategyName(strategy.getCodebase().getName());
-        this.setName(strategy.getName());
-        this.setType(RECOMMEND_ACCESSES_SCIPY);
-        this.profile = strategy.getProfile();
-        this.linkageTypes = strategy.getLinkageTypes();
-        this.tracesMaxLimit = strategy.getTracesMaxLimit();
-        this.isCompleted = strategy.isCompleted();
-        this.traceTypes = strategy.getTraceTypes();
+    public RecommendAccessesSciPyDto(RecommendAccessesSciPy recommendation) {
+        this.setStrategyName(recommendation.getStrategy().getName());
+        this.name = recommendation.getName();
+        this.setType(ACCESSES_SCIPY);
+        this.profile = recommendation.getProfile();
+        this.linkageTypes = recommendation.getLinkageTypes();
+        this.tracesMaxLimit = recommendation.getTracesMaxLimit();
+        this.isCompleted = recommendation.isCompleted();
+        this.traceTypes = recommendation.getTraceTypes();
     }
 
     public String getProfile() {
@@ -49,14 +48,6 @@ public class RecommendAccessesSciPyDto {
 
     public void setTracesMaxLimit(int tracesMaxLimit) {
         this.tracesMaxLimit = tracesMaxLimit;
-    }
-
-    public boolean isCompleted() {
-        return isCompleted;
-    }
-
-    public void setCompleted(boolean completed) {
-        isCompleted = completed;
     }
 
     public Set<Constants.TraceType> getTraceTypes() {

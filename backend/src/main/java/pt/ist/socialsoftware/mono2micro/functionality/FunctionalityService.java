@@ -211,11 +211,11 @@ public class FunctionalityService {
 
     public Functionality getOrCreateRedesign(String decompositionName, String functionalityName) throws IOException, JSONException {
         AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-        AccessesSciPyDendrogram strategy = (AccessesSciPyDendrogram) decomposition.getStrategy();
+        AccessesSciPyDendrogram dendrogram = (AccessesSciPyDendrogram) decomposition.getDendrogram();
 
         Functionality functionality = decomposition.getFunctionality(functionalityName);
 
-        Source source = strategy.getStrategy().getSourceByType(ACCESSES);
+        Source source = dendrogram.getStrategy().getCodebase().getSourceByType(ACCESSES);
 
         if (!functionality.containsFunctionalityRedesignName(Constants.DEFAULT_REDESIGN_NAME)) {
             FunctionalityRedesign functionalityRedesign = createFunctionalityRedesign(
@@ -225,8 +225,8 @@ public class FunctionalityService {
                     true,
                     functionality.createLocalTransactionGraphFromScratch(
                             sourceService.getSourceFileAsInputStream(source.getName()),
-                            strategy.getTracesMaxLimit(),
-                            strategy.getTraceType(),
+                            dendrogram.getTracesMaxLimit(),
+                            dendrogram.getTraceType(),
                             decomposition.getEntityIDToClusterName())
             );
             metricService.calculateMetrics(decomposition, functionality, functionalityRedesign);
@@ -289,7 +289,7 @@ public class FunctionalityService {
             throws Exception
     {
         AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-        AccessesSciPyDendrogram strategy = (AccessesSciPyDendrogram) decomposition.getStrategy();
+        AccessesSciPyDendrogram dendrogram = (AccessesSciPyDendrogram) decomposition.getDendrogram();
         Functionality functionality = decomposition.getFunctionality(functionalityName);
 
         if(newRedesignName.isPresent())
@@ -307,13 +307,13 @@ public class FunctionalityService {
             functionality.addFunctionalityRedesign(functionalityRedesign.getName(), functionality.getId() + functionalityRedesign.getName());
             functionality.setFunctionalityRedesignNameUsedForMetrics(functionalityRedesign.getName());
 
-            Source source = strategy.getStrategy().getSourceByType(ACCESSES);
+            Source source = dendrogram.getStrategy().getCodebase().getSourceByType(ACCESSES);
 
             DirectedAcyclicGraph<LocalTransaction, DefaultEdge> functionalityLocalTransactionsGraph = decomposition.getFunctionality(functionalityName)
                     .createLocalTransactionGraphFromScratch(
                             sourceService.getSourceFileAsInputStream(source.getName()),
-                            strategy.getTracesMaxLimit(),
-                            strategy.getTraceType(),
+                            dendrogram.getTracesMaxLimit(),
+                            dendrogram.getTraceType(),
                             decomposition.getEntityIDToClusterName());
 
             createFunctionalityRedesign(

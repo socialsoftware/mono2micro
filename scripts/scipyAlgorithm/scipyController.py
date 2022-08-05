@@ -5,9 +5,9 @@ from scipyAlgorithm.createDecomposition import createDecomposition as createDeco
 scipyRouter = APIRouter()
 
 
-@scipyRouter.get("/scipy/{strategyName}/{similarityMatrixName}/createDendrogram")
-async def createDendrogram(strategyName, similarityMatrixName):
-    return createDendrogramScipy(strategyName, similarityMatrixName)
+@scipyRouter.get("/scipy/{dendrogramName}/{similarityMatrixName}/createDendrogram")
+async def createDendrogram(dendrogramName, similarityMatrixName):
+    return createDendrogramScipy(dendrogramName, similarityMatrixName)
 
 
 @scipyRouter.get("/scipy/{similarityMatrixName}/{cutType}/{cutValue}/createDecomposition")

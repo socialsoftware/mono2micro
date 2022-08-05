@@ -7,8 +7,8 @@ import pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogra
 public interface AccessesSciPyDendrogramRepository extends MongoRepository<AccessesSciPyDendrogram, String> {
     boolean existsByName(String name);
 
-    AccessesSciPyDendrogram findByName(String strategyName);
+    AccessesSciPyDendrogram findByName(String dendrogramName);
 
     @Query(value = "{'name': ?0}", fields = "{'imageName': 1}")
-    AccessesSciPyDendrogram getDendrogramImage(String strategyName);
+    AccessesSciPyDendrogram getDendrogramImage(String dendrogramName);
 }

@@ -7,7 +7,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
-import {toast} from "react-toastify";
+import {toast, ToastContainer} from "react-toastify";
 
 const HttpStatus = require('http-status-codes');
 
@@ -31,11 +31,12 @@ export const Codebases = () => {
     }
 
     function handleDeleteCodebase(codebaseName) {
-        let toastId = toast.loading("Deleting all codebase information...", {type: toast.TYPE.INFO});
+        let toastId = toast.loading("Deleting codebase information...", {type: toast.TYPE.INFO});
         const service = new RepositoryService();
         service.deleteCodebase(codebaseName).then(() => {
             loadCodebases();
-            toast.dismiss(toastId);
+            toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Codebase deleted.", isLoading: false});
+            setTimeout(() => {toast.dismiss(toastId)}, 1000);
         });
     }
 
@@ -148,18 +149,25 @@ export const Codebases = () => {
 
 
     return (
-        <div style={{ paddingLeft: "2rem" }}>
-            {renderBreadCrumbs()}
+        <>
+            <ToastContainer
+                position="top-center"
+                theme="colored"
+            />
 
-            <h4 style={{color: "#666666"}}>
-                Create Codebase
-            </h4>
-            {renderCreateCodebaseForm()}
+            <div style={{ paddingLeft: "2rem" }}>
+                {renderBreadCrumbs()}
 
-            <h4 style={{color: "#666666"}}>
-                Codebases
-            </h4>
-            {renderCodebases()}
-        </div>
+                <h4 style={{color: "#666666"}}>
+                    Create Codebase
+                </h4>
+                {renderCreateCodebaseForm()}
+
+                <h4 style={{color: "#666666"}}>
+                    Codebases
+                </h4>
+                {renderCodebases()}
+            </div>
+        </>
     );
 }

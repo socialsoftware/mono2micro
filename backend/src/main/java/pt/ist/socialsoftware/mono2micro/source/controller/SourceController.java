@@ -11,8 +11,6 @@ import pt.ist.socialsoftware.mono2micro.source.dto.SourceDto;
 import pt.ist.socialsoftware.mono2micro.source.dto.SourceDtoFactory;
 import pt.ist.socialsoftware.mono2micro.source.service.SourceService;
 
-import java.util.List;
-
 @RestController
 @RequestMapping(value = "/mono2micro")
 public class SourceController {
@@ -46,7 +44,7 @@ public class SourceController {
         logger.debug("deleteCodebase");
 
         try {
-            sourceService.deleteSource(sourceName);
+            sourceService.deleteSingleSource(sourceName);
             return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (Exception e) {

@@ -2,14 +2,14 @@ export default abstract class Decomposition {
     codebaseName: string;
     strategyName: string;
     name: string;
-    strategyType: string;
+    type: string;
     metrics: Record<string, any>;
 
     protected constructor(decomposition: any) {
         this.codebaseName = decomposition.codebaseName;
         this.strategyName = decomposition.strategyName;
         this.name = decomposition.name;
-        this.strategyType = decomposition.strategyType;
+        this.type = decomposition.type;
         this.metrics = decomposition.metrics;
     }
 

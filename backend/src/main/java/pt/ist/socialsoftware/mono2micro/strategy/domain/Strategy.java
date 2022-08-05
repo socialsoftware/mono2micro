@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,7 +15,7 @@ public abstract class Strategy {
     @DBRef(lazy = true)
     private Codebase codebase;
     @DBRef(lazy = true)
-    private List<Decomposition> decompositions;
+    private List<Decomposition> decompositions = new ArrayList<>();
 
     public abstract String getType();
 

@@ -3,18 +3,22 @@ package pt.ist.socialsoftware.mono2micro.decomposition.domain;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
+import pt.ist.socialsoftware.mono2micro.dendrogram.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.log.domain.AccessesSciPyLog;
 
 import java.util.*;
 
-import static pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram.ACCESSES_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy.ACCESSES_SCIPY;
 
 @Document("decomposition")
 public class AccessesSciPyDecomposition extends Decomposition {
     private boolean outdated;
     private boolean expert;
     private double silhouetteScore;
+
+    @DBRef
+    Dendrogram dendrogram;
     private Map<String, Cluster> clusters = new HashMap<>();
     @DBRef(lazy = true)
     private Map<String, Functionality> functionalities = new HashMap<>(); // <functionalityName, Functionality>
@@ -26,7 +30,7 @@ public class AccessesSciPyDecomposition extends Decomposition {
 
     public AccessesSciPyDecomposition(AccessesSciPyDecomposition decomposition) {
         this.name = decomposition.getName();
-        this.strategy = decomposition.getStrategy();
+        this.dendrogram = decomposition.getDendrogram();
         this.metrics = decomposition.getMetrics();
         this.outdated = decomposition.isOutdated();
         this.expert = decomposition.isExpert();
@@ -39,6 +43,15 @@ public class AccessesSciPyDecomposition extends Decomposition {
     public String getStrategyType() {
         return ACCESSES_SCIPY;
     }
+
+    public Dendrogram getDendrogram() {
+        return dendrogram;
+    }
+
+    public void setDendrogram(Dendrogram dendrogram) {
+        this.dendrogram = dendrogram;
+    }
+
 
     public boolean isOutdated() {
         return outdated;

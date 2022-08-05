@@ -23,7 +23,7 @@ public class DendrogramDtoFactory {
             case AccessesSciPyStrategy.ACCESSES_SCIPY:
                 return new AccessesSciPyDendrogramDto((AccessesSciPyDendrogram) dendrogram);
             default:
-                throw new RuntimeException("The type \"" + dendrogram.getStrategy().getType() + "\" is not a valid dendrogram type.");
+                throw new RuntimeException("The type \"" + dendrogram.getType() + "\" is not a valid dendrogram type.");
         }
     }
 
