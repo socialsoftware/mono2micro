@@ -1,5 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -10,10 +12,13 @@ import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.domain.StaticCollection;
 import pt.ist.socialsoftware.mono2micro.manager.CodebaseManager;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -160,11 +165,25 @@ public class DendrogramController {
 			// FIXME Did not have the patience to code it well
 			Decomposition cutDecomposition = dendrogram.cut(decomposition);
 
-			decomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
+			cutDecomposition.setControllers(codebaseManager.getControllersWithCostlyAccesses(
 				codebase,
 				dendrogram.getProfile(),
 				decomposition.getEntityIDToClusterID()
 			));
+
+			InputStream is = new FileInputStream(codebase.getDatafilePath());
+			ObjectMapper objectMapper = new ObjectMapper();
+			objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+			StaticCollection collection = objectMapper.readerFor(StaticCollection.class).readValue(is);
+			is.close();
+
+			cutDecomposition.calculateMetrics(
+					codebase,
+					dendrogram.getTracesMaxLimit(),
+					dendrogram.getTraceType(),
+					false,
+					collection
+			);
 
 //			cutDecomposition.calculateMetrics(
 //				codebase,

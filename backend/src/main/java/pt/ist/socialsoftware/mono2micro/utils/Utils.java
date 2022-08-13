@@ -312,18 +312,20 @@ public class Utils {
 
     public static float[] calculateSimilarityMatrixCommitMetrics(
             short e1ID, short e2ID,
-            HashMap<Short, ArrayList<Short>> commitChanges,
+            HashMap<String, Map<String, Integer>> commitChanges,
             HashMap<Short, ArrayList<String>> authorChanges) {
 
-        int commitMetricValue = 0;
-        for (Short fileInFile1Changes : commitChanges.get(e1ID)) {
-            if (fileInFile1Changes == e2ID) {
-                commitMetricValue += 1;
+        float commitMetricValue = 0;
+        if (commitChanges.containsKey(String.valueOf(e1ID))) {
+            if (commitChanges.get(String.valueOf(e1ID)).containsKey(String.valueOf(e2ID))) {
+                commitMetricValue = (float) commitChanges.get(String.valueOf(e1ID)).get(String.valueOf(e2ID)) /
+                        commitChanges.get(String.valueOf(e1ID)).get("total_commits");
             }
         }
-        long authorMetricValue;
+
+        float authorMetricValue;
         try {
-            authorMetricValue = authorChanges.get(e1ID).stream().filter(authorChanges.get(e2ID)::contains).count();
+            authorMetricValue = (float) authorChanges.get(e1ID).stream().filter(authorChanges.get(e2ID)::contains).count() / (long) authorChanges.get(e1ID).size();
         } catch (NullPointerException e) {
             authorMetricValue = 0;
         }

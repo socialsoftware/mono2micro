@@ -1,10 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.controller;
 
-import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -24,8 +21,6 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
@@ -302,7 +297,7 @@ public class AnalysisController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	private HashMap<Short, ArrayList<Short>> fetchCommitChanges(String codebaseName) throws IOException {
+	private HashMap<String, Map<String, Integer>> fetchCommitChanges(String codebaseName) throws IOException {
 		File commitChangesPath = new File(CODEBASES_PATH + codebaseName + "/" + "commitChanges.json");
 		return new ObjectMapper().readValue(commitChangesPath, new TypeReference<Map<Short,ArrayList<Short>>>() {});
 	}
@@ -484,7 +479,7 @@ public class AnalysisController {
 		Set<Short> entityIDs,
 		Map<String,Integer> e1e2PairCount,
 		Map<Short, List<Pair<String, Byte>>> entityControllers,
-		HashMap<Short, ArrayList<Short>> commitChanges,
+		HashMap<String, Map<String, Integer>> commitChanges,
 		HashMap<Short, ArrayList<String>> authorChanges
 	) {
 		SimilarityMatrixDto matrixData = new SimilarityMatrixDto();

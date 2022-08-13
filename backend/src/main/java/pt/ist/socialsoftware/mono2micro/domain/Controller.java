@@ -31,6 +31,7 @@ public class Controller {
 
 	public Controller(String name) {
         this.name = name;
+		this.type = ControllerType.QUERY;
 	}
 
 	public Controller(

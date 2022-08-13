@@ -620,6 +620,8 @@ public class CodebaseManager {
 		Map<String, Controller> controllers = new HashMap<>();
 
 		File jsonFile = new File(codebase.getDatafilePath());
+		System.out.println(new File(".").getAbsolutePath());
+		System.out.println("The path is '" + codebase.getDatafilePath() + "'");
 
 		Set<String> profileControllers = codebase.getProfile(profile);
 		JsonFactory jsonfactory = objectMapper.getFactory();

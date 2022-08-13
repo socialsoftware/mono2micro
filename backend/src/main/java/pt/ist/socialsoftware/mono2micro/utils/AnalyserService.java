@@ -82,7 +82,7 @@ public class AnalyserService {
         );
 
         AtomicReference<Short> count = new AtomicReference<>((short) 0);
-        List<File> cutsFiles = loadCuts(-1, false);
+        List<File> cutsFiles = loadCuts(-1, true);
         Map<Cut, Decomposition> cutsToDecomposition = Collections.synchronizedMap(new HashMap<>());
         StaticCollection collection = getStaticCollectionData();
         int totalNumberOfFiles = cutsFiles.size();
@@ -385,7 +385,7 @@ public class AnalyserService {
             Set<Short> entityIDs,
             Map<String,Integer> e1e2PairCount,
             Map<Short, List<Pair<String, Byte>>> entityControllers,
-            HashMap<Short, ArrayList<Short>> commitChanges,
+            HashMap<String, Map<String, Integer>> commitChanges,
             HashMap<Short, ArrayList<String>> authorChanges
     ) {
         SimilarityMatrixDto matrixData = new SimilarityMatrixDto();
@@ -440,9 +440,9 @@ public class AnalyserService {
         return matrixData;
     }
 
-    private HashMap<Short, ArrayList<Short>> fetchCommitChanges(String codebaseName) throws IOException {
+    private HashMap<String, Map<String, Integer>> fetchCommitChanges(String codebaseName) throws IOException {
         File commitChangesPath = new File(CODEBASES_PATH + codebaseName + "/" + "commitChanges.json");
-        return new ObjectMapper().readValue(commitChangesPath, new TypeReference<Map<Short,ArrayList<Short>>>() {});
+        return new ObjectMapper().readValue(commitChangesPath, new TypeReference<Map<String, Map<String, Integer>>>() {});
     }
 
     private HashMap<Short, ArrayList<String>>  fetchAuthorsChanges(String codebaseName) throws IOException {
