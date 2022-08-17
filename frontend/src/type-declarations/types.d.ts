@@ -74,17 +74,12 @@ export interface Cluster {
     entities?: number[];
 }
 
-export interface AnalyserDto {
-    profile?: string;
-    requestLimit?: number;
-    tracesMaxLimit?: number;
-    traceType?: TraceType;
-    expert?: Decomposition;
-}
-
 export interface AnalysisDto {
     decomposition1?: Decomposition;
     decomposition2?: Decomposition;
+}
+
+export interface AccessesSciPyAnalysisDto extends AnalysisDto {
     truePositive?: number;
     trueNegative?: number;
     falsePositive?: number;

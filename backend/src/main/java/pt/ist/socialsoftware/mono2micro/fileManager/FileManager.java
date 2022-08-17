@@ -8,7 +8,6 @@ import org.json.JSONException;
 import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos.CutInfoDto;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
 import pt.ist.socialsoftware.mono2micro.source.domain.Source;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
@@ -319,23 +318,6 @@ public class FileManager {
 			new File(CODEBASES_PATH + codebase.getName() + "/codebase.json"),
 			codebase
 		);
-	}
-
-	public HashMap<String, CutInfoDto> getAnalyserResults(
-		String codebaseName
-	)
-		throws IOException
-	{
-		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/analyser/analyserResult.json");
-
-		HashMap<String, CutInfoDto> analyserResults = objectMapper.readValue(
-			is,
-			new TypeReference<HashMap<String, CutInfoDto>>() {}
-		);
-
-		is.close();
-
-		return analyserResults;
 	}
 
 	public boolean analyserResultFileAlreadyExists(

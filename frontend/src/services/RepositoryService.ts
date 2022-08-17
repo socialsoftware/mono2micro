@@ -4,9 +4,7 @@ import {
     REFACTORIZATION_TOOL_URL,
 } from '../constants/constants';
 import {
-    AnalyserDto,
     AnalysisDto,
-    TraceType,
     Cluster,
     LocalTransactionsGraph,
     RefactorCodebase,
@@ -47,30 +45,8 @@ export class RepositoryService {
     }
 
     //Analysis
-    analysis(data: AnalysisDto) {
-        return this.axios.post<AnalysisDto>("/analysis", data);
-    }
-
-    analyser(
-        codebaseName: string,
-        expert: Decomposition,
-        profile: string,
-        requestLimit: number,
-        amountOfTraces: number,
-        traceType: TraceType,
-    ) {
-        const analyserData: AnalyserDto = {
-            expert: expert || {},
-            profile,
-            requestLimit,
-            traceType,
-            tracesMaxLimit: amountOfTraces
-        };
-
-        return this.axios.post<null>(
-            "/codebase/" + codebaseName + "/analyser",
-            analyserData
-        );
+    analysis(decomposition1Name: string, decomposition2Name: string) {
+        return this.axios.post<AnalysisDto>("/analysis/" + decomposition1Name + "/" + decomposition2Name);
     }
 
     // Recommendation
@@ -120,16 +96,8 @@ export class RepositoryService {
             .then(response => {return response.data.map((strategy:any) => StrategyFactory.getStrategy(strategy))});
     }
 
-    getCodebaseDecompositions(
-        codebaseName: string,
-        strategyType?: string
-    ) {
-        return this.axios.get<Decomposition[]>(
-            addSearchParamsToUrl(
-                "/codebase/" + codebaseName + "/decompositions",
-                strategyType? {strategyType} : {},
-            )
-        );
+    getCodebaseDecompositions(codebaseName: string) {
+        return this.axios.get<Decomposition[]>("/codebase/" + codebaseName + "/getCodebaseDecompositions");
     }
 
     deleteCodebase(name: string) {

@@ -1,13 +1,9 @@
-package pt.ist.socialsoftware.mono2micro.decomposition.dto.accessesSciPyDtos;
-
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
+package pt.ist.socialsoftware.mono2micro.analysis.dto;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AnalysisDto {
-    private Decomposition decomposition1;
-    private Decomposition decomposition2;
+public class AccessesSciPyAnalysisDto extends AnalysisDto {
     private int truePositive;
     private int trueNegative;
     private int falsePositive;
@@ -25,22 +21,6 @@ public class AnalysisDto {
 
     public float getPrecision() {
         return precision;
-    }
-
-    public Decomposition getDecomposition2() {
-        return decomposition2;
-    }
-
-    public void setDecomposition2(Decomposition decomposition2) {
-        this.decomposition2 = decomposition2;
-    }
-
-    public Decomposition getDecomposition1() {
-        return decomposition1;
-    }
-
-    public void setDecomposition1(Decomposition decomposition1) {
-        this.decomposition1 = decomposition1;
     }
 
     public float getSpecificity() {

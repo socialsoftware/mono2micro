@@ -7,10 +7,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.codebase.dto.CodebaseDto;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.DecompositionDto;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.DecompositionDtoFactory;
+import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.strategy.dto.StrategyDto;
 import pt.ist.socialsoftware.mono2micro.strategy.dto.StrategyDtoFactory;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -82,6 +86,27 @@ public class CodebaseController {
 		try {
 			List<StrategyDto> strategies = StrategyDtoFactory.getFactory().getStrategyDtos(codebaseService.getCodebaseStrategies(codebaseName));
 			return new ResponseEntity<>(strategies, HttpStatus.OK);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@RequestMapping(value = "/codebase/{codebaseName}/getCodebaseDecompositions", method = RequestMethod.GET)
+	public ResponseEntity<List<DecompositionDto>> getCodebaseDecompositions(
+			@PathVariable String codebaseName
+	) {
+		logger.debug("getCodebaseDecompositions");
+
+		try {
+			List<DecompositionDto> decompositionDtos = DecompositionDtoFactory.getFactory().getDecompositionDtos(
+					codebaseService.getCodebaseStrategies(codebaseName).stream()
+							.map(Strategy::getDecompositions)
+							.flatMap(Collection::stream)
+							.collect(Collectors.toList())
+			);
+			return new ResponseEntity<>(decompositionDtos, HttpStatus.OK);
 
 		} catch (Exception e) {
 			e.printStackTrace();
