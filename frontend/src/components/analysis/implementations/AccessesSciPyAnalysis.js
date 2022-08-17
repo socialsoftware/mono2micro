@@ -1,8 +1,8 @@
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider, {Search} from "react-bootstrap-table2-toolkit";
 import React, {useEffect, useContext, useState} from "react";
-import AppContext from "../AppContext";
-import {RepositoryService} from "../../services/RepositoryService";
+import AppContext from "../../AppContext";
+import {RepositoryService} from "../../../services/RepositoryService";
 
 const metricsColumns = [
     {
