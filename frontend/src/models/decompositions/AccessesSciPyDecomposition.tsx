@@ -54,7 +54,7 @@ export default class AccessesSciPyDecomposition extends Decomposition {
                     </Card.Title>
                     <Card.Text>
                         Number of Clusters: {Object.values(this.clusters).length} <br />
-                        Singleton Servers: {amountOfSingletonClusters} <br />
+                        Singleton Clusters: {amountOfSingletonClusters} <br />
                         Maximum Cluster Size: {maxClusterSize} <br />
                         {MetricType.COMPLEXITY}: {parseFloat(this.metrics["Complexity"]).toFixed(3)} <br />
                         {MetricType.PERFORMANCE}: {parseFloat(this.metrics["Performance"]).toFixed(3)} <br />

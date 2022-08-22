@@ -132,7 +132,7 @@ export const Analysis = () => {
     });
 
     return (
-        <>
+        <div className={"ms-2 me-2"}>
             {renderBreadCrumbs()}
             <h4 style={{ color: "#666666" }}>Microservice Analysis</h4>
 
@@ -193,6 +193,10 @@ export const Analysis = () => {
                                 decomposition2.name + " from " + decomposition2.strategyName
                             }
                         >
+                            {<>
+                                {expertDecompositionsForDecomposition2}
+                                <Dropdown.Divider />
+                            </>}
                             {nonExpertDecompositionsForDecomposition2}
                         </DropdownButton>
                     </Col>
@@ -228,6 +232,6 @@ export const Analysis = () => {
                     decomposition2={decomposition2}
                 />
             }
-        </>
+        </div>
     )
 }

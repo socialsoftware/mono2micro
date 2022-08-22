@@ -11,12 +11,9 @@ public class CodebaseDto {
 
     private List<SourceDto> sources;
 
-    private boolean isEmpty;
-
     public CodebaseDto(Codebase codebase) {
         this.name = codebase.getName();
         this.sources = SourceDtoFactory.getFactory().getSourceDtos(codebase.getSources());
-        this.isEmpty = codebase.isEmpty();
     }
 
     public String getName() {
@@ -33,13 +30,5 @@ public class CodebaseDto {
 
     public void setSources(List<SourceDto> sources) {
         this.sources = sources;
-    }
-
-    public boolean isEmpty() {
-        return isEmpty;
-    }
-
-    public void setEmpty(boolean empty) {
-        this.isEmpty = empty;
     }
 }

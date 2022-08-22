@@ -20,15 +20,12 @@ public class Codebase {
 	@DBRef(lazy = true)
 	private List<Strategy> strategies;
 
-	private boolean isEmpty; // Avoids fetching strategies
-
 	public Codebase() {}
 
 	public Codebase(String name) {
         this.name = name;
 		sources = new ArrayList<>();
 		strategies = new ArrayList<>();
-		isEmpty = true;
 	}
 
 	public String getName() {
@@ -73,20 +70,9 @@ public class Codebase {
 
 	public void addStrategy(Strategy strategy) {
 		this.strategies.add(strategy);
-		setEmpty(false);
 	}
 
 	public void removeStrategy(String strategyName) {
 		this.strategies = this.strategies.stream().filter(strategy -> !strategy.getName().equals(strategyName)).collect(Collectors.toList());
-		if (this.strategies.isEmpty())
-			setEmpty(true);
-	}
-
-	public boolean isEmpty() {
-		return isEmpty;
-	}
-
-	public void setEmpty(boolean empty) {
-		this.isEmpty = empty;
 	}
 }

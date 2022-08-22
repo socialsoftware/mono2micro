@@ -216,7 +216,10 @@ public class SciPyClusteringAlgorithmService {
 
         for (String name : clusterNames) {
             JSONArray entities = clustersJSON.getJSONArray(name);
-            Cluster cluster = new Cluster("Cluster" + name);
+            Cluster cluster;
+            if (decomposition.isExpert())
+                cluster = new Cluster(name);
+            else cluster = new Cluster("Cluster" + name);
 
             for (int i = 0; i < entities.length(); i++) {
                 short entityID = (short) entities.getInt(i);
