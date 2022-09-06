@@ -42,8 +42,9 @@ To run the frontend:
     docker-compose build --no-cache
     docker-compose up --build
 
+## Accessing Web Service
 
-Due to a limitation in SpringBoot documented in https://github.com/spring-projects/spring-boot/issues/2895, .jar files cannot be generated with more than 655535 total files inside. Due to this, make sure the folder ```backend/src/main/resources/codebases``` is empty before building the project.
+The web service can be accessed in <http://localhost:3000> and the mongoDB contents in <http://localhost:8081>
 
 ## Publications Data
 - [ECSA2019](https://doi.org/10.1007/978-3-030-29983-5_3): [Collector Tool](https://github.com/socialsoftware/mono2micro/tree/master/collectors/java-callgraph)

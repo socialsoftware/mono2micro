@@ -1,5 +1,22 @@
 import Decomposition from "../models/decompositions/Decomposition";
 
+export interface Edges {
+    edges: Edge[];
+}
+
+export interface Edge {
+    dist: number;
+    e1ID: number;
+    e2ID: number;
+    functionalities: string[];
+}
+
+export interface SimilarityMatrix {
+    entities?: number[];
+    linkageType?: string;
+    matrix?: number[][];
+}
+
 export interface AccessDto {
     entity?: string;
     mode?: string;
@@ -8,7 +25,7 @@ export interface AccessDto {
 
 export interface LocalTransaction {
     id?: number;
-    clusterID?: number;
+    clusterName?: string;
     clusterAccesses?: AccessDto[];
     remoteInvocations?: number[];
     firstAccessedEntityIDs: number[];
@@ -21,22 +38,20 @@ export interface LocalTransactionsGraph {
 
 export interface Functionality {
     name?: string;
-    metrics?: Metric[];
+    type?: string;
+    metrics?: Record<string, any>;
+    entitiesPerCluster?: Record<number, number[]>; // <clusterId, entityIDs>
     entities?: Record<number, number>; // <entityID, mode>
     functionalityRedesigns: FunctionalityRedesign[];
+    functionalityRedesignNameUsedForMetrics: string;
 }
 
 export interface FunctionalityRedesign {
     name?: string;
     usedForMetrics?: boolean;
-    metrics?: Metric[];
+    metrics?: Record<string, any>;
     redesign?: LocalTransaction[];
     pivotTransaction?: number;
-}
-
-export interface Metric {
-    type: string,
-    value: any
 }
 
 export enum MetricType {
@@ -51,7 +66,6 @@ export enum MetricType {
 }
 
 export interface Cluster {
-    id?: number;
     name?: string;
     complexity?: number;
     cohesion?: number;
@@ -60,23 +74,12 @@ export interface Cluster {
     entities?: number[];
 }
 
-export interface Codebase {
-    name?: string;
-    profiles?: Record<string, string[]>; // e.g <Generic, FunctionalityNamesList>
-    datafilePath?: string;
-}
-
-export interface AnalyserDto {
-    profile?: string;
-    requestLimit?: number;
-    tracesMaxLimit?: number;
-    traceType?: TraceType;
-    expert?: Decomposition;
-}
-
 export interface AnalysisDto {
     decomposition1?: Decomposition;
     decomposition2?: Decomposition;
+}
+
+export interface AccessesSciPyAnalysisDto extends AnalysisDto {
     truePositive?: number;
     trueNegative?: number;
     falsePositive?: number;

@@ -6,8 +6,6 @@ import (
 )
 
 type RefactorCodebaseRequest struct {
-	CodebaseName              string   `json:"codebase_name,omitempty"`
-	StrategyName              string   `json:"strategy_name,omitempty"`
 	DecompositionName         string   `json:"decomposition_name,omitempty"`
 	FunctionalityNames        []string `json:"functionality_names,omitempty"`
 	DataDependenceThreshold   int      `json:"data_dependence_threshold,omitempty"`
@@ -42,8 +40,6 @@ func (r *RefactorCodebaseRequest) ShouldRefactorFunctionality(functionality *mon
 }
 
 type RefactorCodebaseResponse struct {
-	CodebaseName            string                    `json:"codebase_name"`
-	StrategyName            string                    `json:"strategy_name"`
 	DecompositionName       string                    `json:"decomposition_name"`
 	Functionalities         map[string]*Functionality `json:"functionalities"`
 	DataDependenceThreshold int                       `json:"data_dependence_threshold"`
@@ -71,7 +67,6 @@ type Refactor struct {
 
 type Cluster struct {
 	Name     string `json:"name,omitempty"`
-	ID       int    `json:"id,omitempty"`
 	Entities []int  `json:"entities,omitempty"`
 }
 
@@ -96,8 +91,8 @@ type ClusterMetrics struct {
 }
 
 type Invocation struct {
-	ClusterID int      `json:"cluster_id"`
-	Accesses  []Access `json:"accesses"`
+	ClusterName string   `json:"cluster_name"`
+	Accesses    []Access `json:"accesses"`
 }
 
 type Access struct {

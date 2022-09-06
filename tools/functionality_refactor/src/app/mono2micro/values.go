@@ -32,22 +32,22 @@ type Strategy struct {
 }
 
 type Decomposition struct {
-	StrategyType        string                    `json:"strategyType,omitempty"`
-	Name                string                    `json:"name,omitempty"`
-	CodebaseName        string                    `json:"codebaseName,omitempty"`
-	StrategyName        string                    `json:"strategyName,omitempty"`
-	Expert              bool                      `json:"expert,omitempty"`
-	Complexity          float32                   `json:"complexity,omitempty"`
-	Cohesion            float32                   `json:"cohesion,omitempty"`
-	Coupling            float32                   `json:"coupling,omitempty"`
-	Clusters            map[int]*Cluster          `json:"clusters,omitempty"`
-	Functionalities     map[string]*Functionality `json:"functionalities,omitempty"`
-	EntityIDToClusterID map[int]int               `json:"entityIDToClusterID,omitempty"`
+	StrategyType          string                    `json:"strategyType,omitempty"`
+	Name                  string                    `json:"name,omitempty"`
+	CodebaseName          string                    `json:"codebaseName,omitempty"`
+	StrategyName          string                    `json:"strategyName,omitempty"`
+	Expert                bool                      `json:"expert,omitempty"`
+	Complexity            float64                   `json:"complexity,omitempty"`
+	Cohesion              float64                   `json:"cohesion,omitempty"`
+	Coupling              float64                   `json:"coupling,omitempty"`
+	Clusters              map[string]*Cluster       `json:"clusters,omitempty"`
+	Functionalities       map[string]*Functionality `json:"functionalities,omitempty"`
+	EntityIDToClusterName map[int]string            `json:"entityIDToClusterID,omitempty"`
 }
 
-func (d *Decomposition) GetClusterFromID(clusterID int) *Cluster {
-	for id, cluster := range d.Clusters {
-		if id == clusterID {
+func (d *Decomposition) GetClusterFromID(clusterName string) *Cluster {
+	for name, cluster := range d.Clusters {
+		if name == clusterName {
 			return cluster
 		}
 	}
@@ -55,12 +55,12 @@ func (d *Decomposition) GetClusterFromID(clusterID int) *Cluster {
 }
 
 func (d *Decomposition) GetEntityCluster(id int) *Cluster {
-	clusterID, found := d.EntityIDToClusterID[id]
+	clusterName, found := d.EntityIDToClusterName[id]
 	if !found {
 		return nil
 	}
 
-	cluster, found := d.Clusters[clusterID]
+	cluster, found := d.Clusters[clusterName]
 	if !found {
 		return nil
 	}
@@ -69,20 +69,20 @@ func (d *Decomposition) GetEntityCluster(id int) *Cluster {
 }
 
 type Cluster struct {
-	Id                   int                       `json:"id,omitempty"`
-	Complexity           float32                   `json:"complexity,omitempty"`
-	Cohesion             float32                   `json:"cohesion,omitempty"`
-	Coupling             float32                   `json:"coupling,omitempty"`
-	CouplingDependencies map[int][]int             `json:"couplingDependencies,omitempty"`
+	Name                 string                    `json:"string,omitempty"`
+	Complexity           float64                   `json:"complexity,omitempty"`
+	Cohesion             float64                   `json:"cohesion,omitempty"`
+	Coupling             float64                   `json:"coupling,omitempty"`
+	CouplingDependencies map[string][]int          `json:"couplingDependencies,omitempty"`
 	Entities             []int                     `json:"entities,omitempty"`
 	Functionalities      map[string]*Functionality `json:"functionalities,omitempty"`
 }
 
-func (c *Cluster) AddCouplingDependency(clusterID int, entityID int) {
+func (c *Cluster) AddCouplingDependency(clusterName string, entityID int) {
 
-	clusterDependencies, ok := c.CouplingDependencies[clusterID]
+	clusterDependencies, ok := c.CouplingDependencies[clusterName]
 	if !ok {
-		c.CouplingDependencies[clusterID] = []int{entityID}
+		c.CouplingDependencies[clusterName] = []int{entityID}
 		return
 	}
 
@@ -92,7 +92,7 @@ func (c *Cluster) AddCouplingDependency(clusterID int, entityID int) {
 		}
 	}
 
-	c.CouplingDependencies[clusterID] = append(c.CouplingDependencies[clusterID], entityID)
+	c.CouplingDependencies[clusterName] = append(c.CouplingDependencies[clusterName], entityID)
 	return
 }
 
@@ -120,18 +120,19 @@ func (c *Cluster) ContainsEntity(id int) bool {
 }
 
 type Functionality struct {
-	Name                   string                   `json:"name,omitempty"`
-	Type                   string                   `json:"type,omitempty"`
-	Complexity             float32                  `json:"complexity,omitempty"`
-	Performance            float32                  `json:"performance,omitempty"`
-	Entities               map[string]int           `json:"entities,omitempty"`
-	FunctionalityRedesigns []*FunctionalityRedesign `json:"functionalityRedesigns,omitempty"`
-	EntitiesPerCluster     map[int][]int            `json:"entitiesPerCluster,omitempty"`
+	Name                                    string                   `json:"name,omitempty"`
+	Type                                    string                   `json:"type,omitempty"`
+	Complexity                              float64                  `json:"complexity,omitempty"`
+	Performance                             float64                  `json:"performance,omitempty"`
+	Entities                                map[string]int           `json:"entities,omitempty"`
+	FunctionalityRedesigns                  []*FunctionalityRedesign `json:"functionalityRedesigns,omitempty"`
+	FunctionalityRedesignNameUsedForMetrics string                   `json:"functionalityRedesignNameUsedForMetrics,omitempty"`
+	EntitiesPerCluster                      map[string][]int         `json:"entitiesPerCluster,omitempty"`
 }
 
 func (c *Functionality) GetFunctionalityRedesign() *FunctionalityRedesign {
 	for _, redesign := range c.FunctionalityRedesigns {
-		if redesign.UsedForMetrics {
+		if redesign.Name == c.FunctionalityRedesignNameUsedForMetrics {
 			return redesign
 		}
 	}
@@ -157,13 +158,12 @@ func (c *Functionality) EntitiesTouchedInMode(mode int) map[int]int {
 
 type FunctionalityRedesign struct {
 	Name                                               string        `json:"name,omitempty"`
-	UsedForMetrics                                     bool          `json:"usedForMetrics,omitempty"`
 	Redesign                                           []*Invocation `json:"redesign,omitempty"`
 	SystemComplexity                                   int           `json:"systemComplexity,omitempty"`
 	FunctionalityComplexity                            int           `json:"functionalityComplexity,omitempty"`
 	InconsistencyComplexity                            int           `json:"inconsistencyComplexity,omitempty"`
 	PivotTransaction                                   int           `json:"pivotTransaction,omitempty"`
-	OrchestratorID                                     int           `json:"orchestrator_id,omitempty"`
+	OrchestratorName                                   string        `json:"orchestrator_name,omitempty"`
 	RecursiveIterations                                int           `json:"recursive_iterations,omitempty"`
 	MergedInvocationsCount                             int           `json:"merged_invocations_count,omitempty"`
 	InvocationsCount                                   int           `json:"invocations_count,omitempty"`
@@ -179,7 +179,7 @@ func (f *FunctionalityRedesign) GetInvocation(idx int) *Invocation {
 type Invocation struct {
 	Name                                     string          `json:"name,omitempty"`
 	ID                                       int             `json:"id,omitempty"`
-	ClusterID                                int             `json:"clusterID,omitempty"`
+	ClusterName                              string          `json:"clusterName,omitempty"`
 	ClusterAccesses                          [][]interface{} `json:"clusterAccesses,omitempty"`
 	RemoteInvocations                        []int           `json:"remoteInvocations,omitempty"`
 	Type                                     string          `json:"type,omitempty"`

@@ -3,7 +3,7 @@ package handler
 import (
 	"context"
 	"fmt"
-	"functionality_refactor/app/files"
+	"functionality_refactor/app/database"
 	"functionality_refactor/app/refactor"
 	"functionality_refactor/app/refactor/values"
 
@@ -12,24 +12,24 @@ import (
 
 type Handler interface {
 	HandleRefactorCodebase(context.Context, *values.RefactorCodebaseRequest) (*values.RefactorCodebaseResponse, error)
-	HandleViewRefactorization(context.Context, string, string, string) (*values.RefactorCodebaseResponse, error)
+	HandleViewRefactorization(context.Context, string) (*values.RefactorCodebaseResponse, error)
 }
 
 type DefaultHandler struct {
 	logger          log.Logger
-	filesHandler    files.FilesHandler
 	refactorHandler refactor.RefactorHandler
+	databaseHandler database.DatabaseHandler
 }
 
 func New(
 	logger log.Logger,
-	filesHandler files.FilesHandler,
+	databaseHandler database.DatabaseHandler,
 	refactorHandler refactor.RefactorHandler,
 ) Handler {
 	var svc Handler
 	svc = &DefaultHandler{
 		logger:          log.With(logger, "module", "Handler"),
-		filesHandler:    filesHandler,
+		databaseHandler: databaseHandler,
 		refactorHandler: refactorHandler,
 	}
 
@@ -37,13 +37,14 @@ func New(
 }
 
 func (svc *DefaultHandler) HandleRefactorCodebase(ctx context.Context, request *values.RefactorCodebaseRequest) (*values.RefactorCodebaseResponse, error) {
-	decomposition, err := svc.filesHandler.ReadDecomposition(request.CodebaseName, request.StrategyName, request.DecompositionName)
+	decomposition, err := svc.databaseHandler.ReadDecomposition(ctx, request.DecompositionName)
 	if err != nil {
-		svc.logger.Log("codebase", request.CodebaseName, "error", "failed to read decomposition")
-		return nil, fmt.Errorf("failed to read decomposition %s from strategy %s of codebase %s", request.DecompositionName, request.StrategyName, request.CodebaseName)
+		svc.logger.Log("decomposition", request.DecompositionName, "error", "failed to read decomposition")
+		return nil, fmt.Errorf("failed to read decomposition %s", request.DecompositionName)
 	}
 
 	response := svc.refactorHandler.RefactorDecomposition(
+		ctx,
 		decomposition,
 		request,
 	)
@@ -51,6 +52,6 @@ func (svc *DefaultHandler) HandleRefactorCodebase(ctx context.Context, request *
 	return response, nil
 }
 
-func (svc *DefaultHandler) HandleViewRefactorization(ctx context.Context, codebaseName string, strategyName string, decompositionName string) (*values.RefactorCodebaseResponse, error) {
-	return svc.filesHandler.ReadDecompositionRefactorization(codebaseName, strategyName, decompositionName)
+func (svc *DefaultHandler) HandleViewRefactorization(ctx context.Context, decompositionName string) (*values.RefactorCodebaseResponse, error) {
+	return svc.databaseHandler.ReadDecompositionRefactorization(ctx, decompositionName)
 }

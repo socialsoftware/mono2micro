@@ -10,7 +10,7 @@ type EntityMetrics struct {
 }
 
 type ClusterMetrics struct {
-	ClusterID                                     int     `json:"cluster_id,omitempty"`
+	ClusterName                                   string  `json:"cluster_name,omitempty"`
 	InvocationIds                                 []int   `json:"invocation_ids,omitempty"`
 	LockInvocations                               int     `json:"lock_invocations,omitempty"`
 	ReadInvocations                               int     `json:"read_invocations,omitempty"`

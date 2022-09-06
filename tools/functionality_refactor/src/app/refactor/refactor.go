@@ -1,13 +1,12 @@
 package refactor
 
 import (
+	"context"
 	"fmt"
-	"functionality_refactor/app/files"
+	"functionality_refactor/app/database"
 	"functionality_refactor/app/metrics"
 	"functionality_refactor/app/mono2micro"
 	"functionality_refactor/app/refactor/values"
-	"strconv"
-
 	"functionality_refactor/app/training"
 	"sort"
 	"sync"
@@ -19,46 +18,46 @@ import (
 const (
 	OnlyLastInvocation                = 0
 	AllPreviousInvocations            = -1
-	DefaultRefactorRoutineTimeoutSecs = 1440
+	DefaultRefactorRoutineTimeoutSecs = 0
 )
 
 type RefactorHandler interface {
-	RefactorDecomposition(*mono2micro.Decomposition, *values.RefactorCodebaseRequest) *values.RefactorCodebaseResponse
+	RefactorDecomposition(context.Context, *mono2micro.Decomposition, *values.RefactorCodebaseRequest) *values.RefactorCodebaseResponse
 }
 
 type DefaultHandler struct {
 	logger          log.Logger
 	metricsHandler  metrics.MetricsHandler
 	trainingHandler training.TrainingHandler
-	filesHandler    files.FilesHandler
+	databaseHandler database.DatabaseHandler
 }
 
 func New(
-	logger log.Logger, metricsHandler metrics.MetricsHandler, trainingHandler training.TrainingHandler, filesHandler files.FilesHandler,
+	logger log.Logger, metricsHandler metrics.MetricsHandler, trainingHandler training.TrainingHandler, databaseHandler database.DatabaseHandler,
 ) RefactorHandler {
 	return &DefaultHandler{
 		logger:          log.With(logger, "module", "RefactorHandler"),
 		metricsHandler:  metricsHandler,
 		trainingHandler: trainingHandler,
-		filesHandler:    filesHandler,
+		databaseHandler: databaseHandler,
 	}
 }
 
 func (svc *DefaultHandler) RefactorDecomposition(
-	decomposition *mono2micro.Decomposition, request *values.RefactorCodebaseRequest,
+	ctx context.Context, decomposition *mono2micro.Decomposition, request *values.RefactorCodebaseRequest,
 ) *values.RefactorCodebaseResponse {
 	// Add to each cluster, the list of functionalities that use it
 	validFunctionalities := svc.extractValidFunctionalities(decomposition, request)
 
 	// store the initial decomposition data in the file system
 	decompositionData := svc.createInitialDecompositionData(request, validFunctionalities)
-	err := svc.filesHandler.StoreDecompositionRefactorization(decompositionData)
+	err := svc.databaseHandler.StoreDecompositionRefactorization(ctx, decompositionData)
 	if err != nil {
-		svc.logger.Log("codebase", request.CodebaseName, "validFunctionalities", len(validFunctionalities), "error", err)
+		svc.logger.Log("decomposition", request.DecompositionName, "validFunctionalities", len(validFunctionalities), "error", err)
 		return nil
 	}
 
-	svc.logger.Log("codebase", request.CodebaseName, "validFunctionalities", len(validFunctionalities))
+	svc.logger.Log("decomposition", request.DecompositionName, "validFunctionalities", len(validFunctionalities))
 
 	refactorTimeout := DefaultRefactorRoutineTimeoutSecs
 	if request.RefactorTimeOutSecs != 0 {
@@ -69,7 +68,7 @@ func (svc *DefaultHandler) RefactorDecomposition(
 		go func(request *values.RefactorCodebaseRequest, decomposition *mono2micro.Decomposition, functionality *mono2micro.Functionality) {
 			initialRedesign := functionality.GetFunctionalityRedesign()
 
-			svc.logger.Log("codebase", request.CodebaseName, "functionality", functionality.Name, "status", "refactoring...")
+			svc.logger.Log("decomposition", request.DecompositionName, "functionality", functionality.Name, "status", "refactoring...")
 
 			timeoutChannel := make(chan bool, 1)
 			redesignChannel := make(chan []*mono2micro.FunctionalityRedesign, 1)
@@ -81,31 +80,29 @@ func (svc *DefaultHandler) RefactorDecomposition(
 			}()
 
 			go func() {
-				time.Sleep(time.Duration(refactorTimeout) * time.Second)
-				timeoutChannel <- true
+				if refactorTimeout != 0 {
+					time.Sleep(time.Duration(refactorTimeout) * time.Second)
+					timeoutChannel <- true
+				}
 			}()
 
 			// if the functionality takes too long to be refactored we want to timeout
 			select {
 			case sagaRedesigns := <-redesignChannel:
-				svc.logger.Log("codebase", request.CodebaseName, "functionality", functionality.Name, "status", "finished refactoring!")
+				svc.logger.Log("decomposition", request.DecompositionName, "functionality", functionality.Name, "status", "finished refactoring!")
 
 				bestRedesign := sagaRedesigns[0]
 
 				// TODO: multiple goroutines could try to write in the file at the same time !!!!
-				svc.filesHandler.UpdateFunctionalityRefactorization(
-					request.CodebaseName,
-					request.StrategyName,
+				svc.databaseHandler.UpdateFunctionalityRefactorization(
 					request.DecompositionName,
 					svc.createFinalFunctionalityData(functionality, initialRedesign, bestRedesign),
 				)
 				return
 			case <-timeoutChannel:
 				err := fmt.Sprintf("refactor operation timed out after %d seconds!", refactorTimeout)
-				svc.logger.Log("codebase", request.CodebaseName, "functionality", functionality.Name, "error", err)
-				svc.filesHandler.UpdateFunctionalityRefactorization(
-					request.CodebaseName,
-					request.StrategyName,
+				svc.logger.Log("decomposition", request.DecompositionName, "functionality", functionality.Name, "error", err)
+				svc.databaseHandler.UpdateFunctionalityRefactorization(
 					request.DecompositionName,
 					&values.Functionality{
 						Name: functionality.Name,
@@ -145,8 +142,8 @@ func (svc *DefaultHandler) extractValidFunctionalities(
 		wg.Add(1)
 		go func(functionality *mono2micro.Functionality, validFunctionalities map[string]*mono2micro.Functionality) {
 			defer wg.Done()
-			for clusterID := range functionality.EntitiesPerCluster {
-				cluster := decomposition.GetClusterFromID(clusterID)
+			for clusterName := range functionality.EntitiesPerCluster {
+				cluster := decomposition.GetClusterFromID(clusterName)
 				mapMutex.Lock()
 				cluster.AddFunctionality(functionality)
 				mapMutex.Unlock()
@@ -168,14 +165,14 @@ func (svc *DefaultHandler) createSagaRedesigns(
 ) []*mono2micro.FunctionalityRedesign {
 	sagaRedesigns := []*mono2micro.FunctionalityRedesign{}
 
-	for clusterID := range functionality.EntitiesPerCluster {
-		cluster := decomposition.Clusters[clusterID]
+	for clusterName := range functionality.EntitiesPerCluster {
+		cluster := decomposition.Clusters[clusterName]
 
 		redesign := svc.refactorFunctionality(request, functionality, initialRedesign, cluster)
 
 		svc.metricsHandler.CalculateDecompositionMetrics(decomposition, functionality, redesign)
 
-		redesign.OrchestratorID = clusterID
+		redesign.OrchestratorName = clusterName
 
 		sagaRedesigns = append(sagaRedesigns, redesign)
 	}
@@ -204,16 +201,16 @@ func (svc *DefaultHandler) refactorFunctionality(
 ) *mono2micro.FunctionalityRedesign {
 	redesign := &mono2micro.FunctionalityRedesign{
 		Name:                    functionality.Name,
-		UsedForMetrics:          true,
 		Redesign:                []*mono2micro.Invocation{},
 		SystemComplexity:        0,
 		FunctionalityComplexity: 0,
 		InconsistencyComplexity: 0,
 		PivotTransaction:        0,
 	}
+	functionality.FunctionalityRedesignNameUsedForMetrics = functionality.Name
 
 	// Initialize Invocation, set dependencies and orchestrator
-	redesign = svc.addOrchestratorPivotInvocations(orchestrator.Id, initialRedesign, redesign)
+	redesign = svc.addOrchestratorPivotInvocations(orchestrator.Name, initialRedesign, redesign)
 
 	// while any merge is done, iterate all the invocations
 	var mergedInvocations int
@@ -231,24 +228,24 @@ func (svc *DefaultHandler) refactorFunctionality(
 }
 
 func (svc *DefaultHandler) addOrchestratorPivotInvocations(
-	orchestratorID int, initialRedesign *mono2micro.FunctionalityRedesign, newRedesign *mono2micro.FunctionalityRedesign,
+	orchestratorName string, initialRedesign *mono2micro.FunctionalityRedesign, newRedesign *mono2micro.FunctionalityRedesign,
 ) *mono2micro.FunctionalityRedesign {
 	var invocationID int
 	var prevInvocation *mono2micro.Invocation
 	for _, initialInvocation := range initialRedesign.Redesign {
-		if initialInvocation.ClusterID == -1 {
+		if initialInvocation.ClusterName == "-1" {
 			continue
 		}
 
 		// if this one or the previous is not the orchestrator
-		if initialInvocation.ClusterID != orchestratorID && (prevInvocation == nil || prevInvocation.ClusterID != orchestratorID) {
+		if initialInvocation.ClusterName != orchestratorName && (prevInvocation == nil || prevInvocation.ClusterName != orchestratorName) {
 			// add empty orchestrator invocation
 			newRedesign.Redesign = append(
 				newRedesign.Redesign,
 				&mono2micro.Invocation{
-					Name:              fmt.Sprintf("%d: %d", invocationID, orchestratorID),
+					Name:              fmt.Sprintf("%d: %s", invocationID, orchestratorName),
 					ID:                invocationID,
-					ClusterID:         orchestratorID,
+					ClusterName:       orchestratorName,
 					ClusterAccesses:   [][]interface{}{},
 					RemoteInvocations: []int{},
 					Type:              "COMPENSATABLE",
@@ -260,9 +257,9 @@ func (svc *DefaultHandler) addOrchestratorPivotInvocations(
 		// add actual invocation
 		invocationType := initialInvocation.GetTypeFromAccesses()
 		invocation := &mono2micro.Invocation{
-			Name:              fmt.Sprintf("%d: %d", invocationID, initialInvocation.ClusterID),
+			Name:              fmt.Sprintf("%d: %s", invocationID, initialInvocation.ClusterName),
 			ID:                invocationID,
-			ClusterID:         initialInvocation.ClusterID,
+			ClusterName:       initialInvocation.ClusterName,
 			ClusterAccesses:   initialInvocation.ClusterAccesses,
 			RemoteInvocations: []int{},
 			Type:              invocationType,
@@ -282,7 +279,7 @@ func (svc *DefaultHandler) mergeAllPossibleInvocations(
 ) ([]*mono2micro.Invocation, int) {
 	var mergeCount int
 	var deleted int
-	prevClusterInvocations := map[int][]int{}
+	prevClusterInvocations := map[string][]int{}
 
 	invocations := redesign.Redesign
 
@@ -290,7 +287,7 @@ func (svc *DefaultHandler) mergeAllPossibleInvocations(
 		var addToPreviousInvocations bool
 		originalInvocation := invocations[originalInvocationIdx]
 
-		prevInvocations, exists := prevClusterInvocations[originalInvocation.ClusterID]
+		prevInvocations, exists := prevClusterInvocations[originalInvocation.ClusterName]
 
 		if !exists {
 			addToPreviousInvocations = true
@@ -320,7 +317,7 @@ func (svc *DefaultHandler) mergeAllPossibleInvocations(
 		}
 
 		if addToPreviousInvocations {
-			prevClusterInvocations[originalInvocation.ClusterID] = append(prevClusterInvocations[originalInvocation.ClusterID], originalInvocationIdx)
+			prevClusterInvocations[originalInvocation.ClusterName] = append(prevClusterInvocations[originalInvocation.ClusterName], originalInvocationIdx)
 		}
 	}
 
@@ -349,7 +346,7 @@ func (svc *DefaultHandler) isMergeForbidden(
 	var mergeForbidden bool
 	for idx := originalInvocationIdx - 1; idx >= 0; idx-- {
 		pivotInvocation := invocations[idx]
-		if pivotInvocation.ClusterID == originalInvocation.ClusterID {
+		if pivotInvocation.ClusterName == originalInvocation.ClusterName {
 			break
 		}
 
@@ -376,8 +373,8 @@ func (svc *DefaultHandler) isMergeForbidden(
 }
 
 func (svc *DefaultHandler) mergeInvocations(
-	invocations []*mono2micro.Invocation, prevInvocations map[int][]int, destinyInvocationIdx int, originalInvocationIdx int,
-) ([]*mono2micro.Invocation, map[int][]int, int) {
+	invocations []*mono2micro.Invocation, prevInvocations map[string][]int, destinyInvocationIdx int, originalInvocationIdx int,
+) ([]*mono2micro.Invocation, map[string][]int, int) {
 	newInvocations := []*mono2micro.Invocation{}
 	var invocationID int
 	var deletedCount int
@@ -400,13 +397,13 @@ func (svc *DefaultHandler) mergeInvocations(
 
 		if removeInvocation {
 			var newPrevInvocations []int
-			for _, prevIdx := range prevInvocations[invocations[idx].ClusterID] {
+			for _, prevIdx := range prevInvocations[invocations[idx].ClusterName] {
 				if prevIdx != idx {
 					newPrevInvocations = append(newPrevInvocations, prevIdx)
 				}
 			}
 
-			prevInvocations[invocations[idx].ClusterID] = newPrevInvocations
+			prevInvocations[invocations[idx].ClusterName] = newPrevInvocations
 		} else {
 			invocation.ID = invocationID
 			newInvocations = append(newInvocations, invocation)
@@ -480,8 +477,6 @@ func (svc *DefaultHandler) createInitialDecompositionData(
 	}
 
 	return &values.RefactorCodebaseResponse{
-		CodebaseName:            request.CodebaseName,
-		StrategyName:            request.StrategyName,
 		DecompositionName:       request.DecompositionName,
 		Functionalities:         functionalitiesData,
 		DataDependenceThreshold: request.DataDependenceThreshold,
@@ -495,8 +490,7 @@ func (svc *DefaultHandler) createFinalFunctionalityData(
 	systemComplexityReduction := initialRedesign.SystemComplexity - sagaRedesign.SystemComplexity
 	functionalityComplexityReduction := initialRedesign.FunctionalityComplexity - sagaRedesign.FunctionalityComplexity
 
-	orchestratorID := sagaRedesign.Redesign[0].ClusterID
-	orchestratorName := strconv.Itoa(orchestratorID)
+	orchestratorName := sagaRedesign.Redesign[0].ClusterName
 
 	invocations := []values.Invocation{}
 	for _, invocation := range sagaRedesign.Redesign {
@@ -509,8 +503,8 @@ func (svc *DefaultHandler) createFinalFunctionalityData(
 		}
 
 		invocations = append(invocations, values.Invocation{
-			ClusterID: invocation.ClusterID,
-			Accesses:  accesses,
+			ClusterName: invocation.ClusterName,
+			Accesses:    accesses,
 		})
 	}
 
@@ -527,8 +521,7 @@ func (svc *DefaultHandler) createFinalFunctionalityData(
 		Refactor: &values.Refactor{
 			Orchestrator: &values.Cluster{
 				Name:     orchestratorName,
-				ID:       orchestratorID,
-				Entities: functionality.EntitiesPerCluster[orchestratorID],
+				Entities: functionality.EntitiesPerCluster[orchestratorName],
 			},
 			ComplexityMetrics: &values.ComplexityMetrics{
 				SystemComplexity:        sagaRedesign.SystemComplexity,

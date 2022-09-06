@@ -1,13 +1,20 @@
 import numpy as np
+import pymongo
+import gridfs
 from scipy.cluster import hierarchy
 from sklearn import metrics
 import json
 
+import env
 
-def createDecomposition(codebasesPath, codebaseName, strategyFolder, strategyName, graphName, matrixFile, cutType, cutValue):
 
-    with open(codebasesPath + codebaseName + "/" + strategyFolder + "/" + strategyName + "/similarityMatrices/" + matrixFile + ".json") as f:
-        similarityMatrix = json.load(f)
+def createDecomposition(similarityMatrixName, cutType, cutValue):
+
+    client = pymongo.MongoClient(env.MONGO_DB)
+    DB = client[env.MONGO_DB_NAME]
+    fs = gridfs.GridFS(DB)  # To use with large files
+    similarityMatrixFile = fs.find_one({"filename": similarityMatrixName})
+    similarityMatrix = json.loads(similarityMatrixFile.read().decode("utf-8"))
 
     entities = similarityMatrix["entities"]
     linkageType = similarityMatrix["linkageType"]
@@ -33,7 +40,4 @@ def createDecomposition(codebasesPath, codebaseName, strategyFolder, strategyNam
     except:
         silhouetteScore = 0
 
-    clustersJSON = {"silhouetteScore": "{0:.2f}".format(silhouetteScore), "clusters": clusters}
-
-    with open(codebasesPath + codebaseName + "/" + strategyFolder + "/" + strategyName + "/decompositions/" + graphName + "/clusters.json", 'w') as outfile:
-        outfile.write(json.dumps(clustersJSON, indent=4))
+    return {"operation": "createSciPyDecomposition", "silhouetteScore": "{0:.2f}".format(silhouetteScore), "clusters": json.dumps(clusters, indent=4)}

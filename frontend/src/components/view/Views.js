@@ -1,69 +1,83 @@
-import React, {useContext, useEffect, useState} from 'react';
-import { ClusterView, clusterViewHelp } from './ClusterView';
-import { TransactionView, transactionViewHelp } from './TransactionView';
-import { EntityView, entityViewHelp } from './EntityView';
-import {FunctionalityRefactorToolMenu, refactorToolHelp} from './FunctionalityRefactorToolMenu';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import React, {useContext, useEffect, useRef, useState} from 'react';
+import { FunctionalityView, functionalityViewHelp } from './FunctionalityView';
 import Popover from 'react-bootstrap/Popover';
 import Container from 'react-bootstrap/Container';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Button from 'react-bootstrap/Button';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
-import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
 import {RepositoryService} from "../../services/RepositoryService";
 import AppContext from "./../AppContext";
 import {useParams} from "react-router-dom";
-import {SourceType} from "../../models/sources/Source";
+import {clusterViewHelp} from "./clusterView/ClusterViewGraph";
+import {searchType, ViewSearchBar} from "./ViewSearchBar";
+import {ModalProgressBar} from "../util/ModalProgressBar";
+import {ViewSpeedDial} from "../util/ViewSpeedDial";
+import {ClusterViewGraph} from "./clusterView/ClusterViewGraph";
 
 export const views = {
     CLUSTERS: 'Clusters View',
-    TRANSACTION: 'Transaction View',
-    ENTITY: 'Entity View',
-    REFACTOR: 'Refactorization Tool',
+    FUNCTIONALITY: 'Functionality View',
 };
 
 export const types = {
-    CLUSTER: 0,
-    FUNCTIONALITY: 1,
-    ENTITY: 2
+    NONE: 0,
+    CLUSTER: 1,
+    FUNCTIONALITY: 2,
+    ENTITY: 3,
+    EDGE: 4,
+    MULTIPLE: 5, // When selecting multiple nodes
+    BETWEEN_CLUSTERS: 6,
+    BETWEEN_ENTITIES: 7,
+    BETWEEN_CLUSTER_ENTITY: 8,
 };
 
 export const Views = () => {
     const context = useContext(AppContext);
+    const { updateEntityTranslationFile } = context;
     let { codebaseName, strategyName, decompositionName } = useParams();
 
     const [view, setView] = useState(views.CLUSTERS);
+    const [now, setNow] = useState(0);
+    const [openSearch, setOpenSearch] = useState(false);
+    const [searchedItem, setSearchedItem] = useState(undefined);
+    const [outdated, setOutdated] = useState(true);
+
+    const [displayClusters, setDisplayClusters] = useState("block");
+    const [displayFunctionalities, setDisplayFunctionalities] = useState("none");
+    const [actions, setActions] = useState([]);
 
     useEffect(() => {
-        loadTranslation();
-    },[]);
+        setNow(10);
 
-    function loadTranslation() {
+        // Translation file
         const service = new RepositoryService();
-        service.getInputFile(codebaseName, SourceType.IDTOENTITIY).then(source => {
-            const { updateEntityTranslationFile } = context;
-            updateEntityTranslationFile(source.data);
+        service.getIdToEntity(codebaseName).then(response => {
+            setNow(prev => prev + 10);
+            updateEntityTranslationFile(response.data);
         }).catch(error => {
-            console.log(error);
+            console.error(error);
         });
-    }
+    }, []);
 
-    function handleSelectView(value) {
-        setView(value);
-    }
+    useEffect(() => { // Selects the correct view
+        if (searchedItem !== undefined && searchedItem.type === searchType.FUNCTIONALITY) {
+            setDisplayClusters("none");
+            setDisplayFunctionalities("block");
+            setView(views.FUNCTIONALITY);
+        }
+        else if (searchedItem !== undefined && (searchedItem.type === searchType.CLUSTER || searchedItem.type === searchType.ENTITY)) {
+            setDisplayClusters("block");
+            setDisplayFunctionalities("none");
+            setView(views.CLUSTERS);
+        }
+    }, [searchedItem]);
 
     function getHelpText(view) {
         switch(view) {
             case views.CLUSTERS:
                 return clusterViewHelp;
-            case views.TRANSACTION:
-                return transactionViewHelp;
-            case views.ENTITY:
-                return entityViewHelp;
-            case views.REFACTOR:
-                return refactorToolHelp;
+            case views.FUNCTIONALITY:
+                return functionalityViewHelp;
             default:
                 return null;
         }
@@ -81,10 +95,7 @@ export const Views = () => {
                 <Breadcrumb.Item href={`/codebases/${codebaseName}`}>
                     {codebaseName}
                 </Breadcrumb.Item>
-                <Breadcrumb.Item href={`/codebases/${codebaseName}/strategies`}>
-                    Strategies
-                </Breadcrumb.Item>
-                <Breadcrumb.Item href={`/codebases/${codebaseName}/strategies/${strategyName}`}>
+                <Breadcrumb.Item href={`/codebases/${codebaseName}/${strategyName}`}>
                     {strategyName}
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>
@@ -100,81 +111,67 @@ export const Views = () => {
         </Popover>
     );
 
+    function changeToFunctionalities() {
+        setDisplayClusters("none");
+        setDisplayFunctionalities("block");
+        setView(views.FUNCTIONALITY);
+    }
+
+    function changeToClusters() {
+        setDisplayClusters("block");
+        setDisplayFunctionalities("none");
+        setView(views.CLUSTERS);
+    }
+
     return (
         <Container fluid>
-            {renderBreadCrumbs()}
-            <Row className="mb-2">
-                <Col>
-                    <h4 style={{color: "#666666"}}>{decompositionName}</h4>
-                </Col>
-                <Col className="me-5">
-                    <OverlayTrigger trigger="click" placement="left" overlay={helpPopover}>
-                        <Button className="float-end" variant="success">Help</Button>
-                    </OverlayTrigger>
-                </Col>
-            </Row>
-            <Row className="mb-2">
-                <Col sm="auto">
-                    <DropdownButton title={view}>
-                        <Dropdown.Item
-                            onClick={() => handleSelectView(views.CLUSTERS)}
-                        >
-                            {views.CLUSTERS}
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                            onClick={() => handleSelectView(views.TRANSACTION)}
-                        >
-                            {views.TRANSACTION}
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                            onClick={() => handleSelectView(views.ENTITY)}
-                        >
-                            {views.ENTITY}
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                            onClick={() => handleSelectView(views.REFACTOR)}
-                        >
-                            {views.REFACTOR}
-                        </Dropdown.Item>
-                    </DropdownButton>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    {
-                        view === views.CLUSTERS &&
-                            <ClusterView
-                                codebaseName={codebaseName}
-                                strategyName={strategyName}
-                                decompositionName={decompositionName}
-                            />
-                    }
-                    {
-                        view === views.TRANSACTION &&
-                            <TransactionView
-                                codebaseName={codebaseName}
-                                strategyName={strategyName}
-                                decompositionName={decompositionName}
-                            />
-                    }
-                    {
-                        view === views.ENTITY &&
-                            <EntityView
-                                codebaseName={codebaseName}
-                                strategyName={strategyName}
-                                decompositionName={decompositionName}
-                            />
-                    }
-                    {
-                        view === views.REFACTOR &&
-                            <FunctionalityRefactorToolMenu
-                                codebaseName = {codebaseName}
-                                strategyName = {strategyName}
-                                decompositionName = {decompositionName}
-                            />
-                    }
-                </Col>
-            </Row>
+            <ModalProgressBar
+                now={now}
+            />
+
+            <ViewSearchBar
+                openSearch={openSearch}
+                setOpenSearch={setOpenSearch}
+                setSearchedItem={setSearchedItem}
+            />
+
+            <ViewSpeedDial actions={actions}/>
+
+            <div style={{ zIndex: 1, left: "2rem", top: "4.5rem", position: "absolute" }}>
+                {renderBreadCrumbs()}
+            </div>
+
+            <div style={{ zIndex: 1, right: "2rem", top: "4.5rem", position: "absolute" }}>
+                <OverlayTrigger trigger="click" placement="left" overlay={helpPopover}>
+                    <Button variant="success">Help</Button>
+                </OverlayTrigger>
+            </div>
+
+            <div style={{display: displayClusters}}>
+                <ClusterViewGraph
+                    setNow={setNow}
+                    outdated={outdated}
+                    setOutdated={setOutdated}
+                    searchedItem={searchedItem}
+                    setSearchedItem={setSearchedItem}
+                    changeToFunctionalities={changeToFunctionalities}
+                    setOpenSearch={setOpenSearch}
+                    setActions={setActions}
+                    view={view}
+                />
+            </div>
+            <div style={{display: displayFunctionalities}}>
+                <FunctionalityView
+                    searchedItem={searchedItem}
+                    setSearchedItem={setSearchedItem}
+                    outdated={outdated}
+                    setOutdated={setOutdated}
+                    changeToClusters={changeToClusters}
+                    setOpenSearch={setOpenSearch}
+                    setActions={setActions}
+                    view={view}
+                />
+            </div>
         </Container>
     );
 }

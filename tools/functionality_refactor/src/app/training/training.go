@@ -9,11 +9,11 @@ import (
 )
 
 type TrainingHandler interface {
-	CalculateFunctionalityTrainingFeatures(*mono2micro.FunctionalityRedesign) map[int]*ClusterMetrics
+	CalculateFunctionalityTrainingFeatures(*mono2micro.FunctionalityRedesign) map[string]*ClusterMetrics
 	AddDataToTrainingDataset(
 		[][]string, *mono2micro.Codebase,
 		*mono2micro.Functionality,
-		map[int]*ClusterMetrics,
+		map[string]*ClusterMetrics,
 		*mono2micro.FunctionalityRedesign, map[string]string,
 	) [][]string
 }
@@ -30,25 +30,25 @@ func New(logger log.Logger) TrainingHandler {
 
 func (svc *DefaultHandler) CalculateFunctionalityTrainingFeatures(
 	redesign *mono2micro.FunctionalityRedesign,
-) map[int]*ClusterMetrics {
+) map[string]*ClusterMetrics {
 	featureMetrics := FeatureMetrics{}
-	clusterMetrics := make(map[int]*ClusterMetrics)
+	clusterMetrics := make(map[string]*ClusterMetrics)
 
 	var accessType string
 	for index, invocation := range redesign.Redesign {
-		if invocation.ClusterID == -1 {
+		if invocation.ClusterName == "-1" {
 			continue
 		}
 
 		var metrics *ClusterMetrics
 		var ok bool
-		metrics, ok = clusterMetrics[invocation.ClusterID]
+		metrics, ok = clusterMetrics[invocation.ClusterName]
 		if !ok {
 			metrics = &ClusterMetrics{
-				ClusterID:     invocation.ClusterID,
+				ClusterName:   invocation.ClusterName,
 				InvocationIds: []int{index},
 			}
-			clusterMetrics[invocation.ClusterID] = metrics
+			clusterMetrics[invocation.ClusterName] = metrics
 			featureMetrics.Clusters += 1
 		}
 
@@ -95,7 +95,7 @@ func (svc *DefaultHandler) CalculateFunctionalityTrainingFeatures(
 }
 
 func (svc *DefaultHandler) calculateFinalClusterMetrics(
-	featureMetrics *FeatureMetrics, clusterMetrics map[int]*ClusterMetrics, redesign *mono2micro.FunctionalityRedesign,
+	featureMetrics *FeatureMetrics, clusterMetrics map[string]*ClusterMetrics, redesign *mono2micro.FunctionalityRedesign,
 ) {
 	for _, metrics := range clusterMetrics {
 		metrics.PivotInvocations = featureMetrics.Invocations - metrics.Invocations - metrics.InvocationIds[0] - (featureMetrics.Invocations - metrics.InvocationIds[len(metrics.InvocationIds)-1] - 1)
@@ -135,13 +135,13 @@ func (svc *DefaultHandler) AddDataToTrainingDataset(
 	data [][]string,
 	codebase *mono2micro.Codebase,
 	functionality *mono2micro.Functionality,
-	clusterMetrics map[int]*ClusterMetrics,
+	clusterMetrics map[string]*ClusterMetrics,
 	redesign *mono2micro.FunctionalityRedesign,
 	idToEntityMap map[string]string,
 ) [][]string {
 	for cluster, metrics := range clusterMetrics {
 		var result int
-		if redesign.OrchestratorID == cluster {
+		if redesign.OrchestratorName == cluster {
 			result = 1
 		}
 
@@ -159,7 +159,7 @@ func (svc *DefaultHandler) AddDataToTrainingDataset(
 			codebase.Name,
 			functionality.Name,
 			//functionality.Type,
-			strconv.Itoa(cluster),
+			cluster,
 			//entityNamesCSVFormat,
 			fmt.Sprintf("%f", metrics.LockInvocationProbability),
 			fmt.Sprintf("%f", metrics.ReadInvocationProbability),

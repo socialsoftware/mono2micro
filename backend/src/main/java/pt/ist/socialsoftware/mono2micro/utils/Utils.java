@@ -6,8 +6,13 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
-import pt.ist.socialsoftware.mono2micro.domain.*;
-import pt.ist.socialsoftware.mono2micro.dto.*;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
+import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
+import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
+import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
+import pt.ist.socialsoftware.mono2micro.functionality.dto.ReducedTraceElementDto;
+import pt.ist.socialsoftware.mono2micro.functionality.dto.RuleDto;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -61,7 +66,7 @@ public class Utils {
         public int performance = 0;
         public LocalTransaction lastLocalTransaction = null;
         public List<LocalTransaction> localTransactionsSequence = new ArrayList<>();
-        public Short firstAccessedClusterID = null;
+        public String firstAccessedClusterName = null;
         Map<Short, Byte> entityIDToMode = new HashMap<>();
 
         public GetLocalTransactionsSequenceAndCalculateTracePerformanceResult() {}
@@ -70,13 +75,13 @@ public class Utils {
             int performance,
             LocalTransaction lastLocalTransaction,
             List<LocalTransaction> localTransactionsSequence,
-            Short firstAccessedClusterID,
+            String firstAccessedClusterName,
             Map<Short, Byte> entityIDToMode
         ) {
             this.performance = performance;
             this.lastLocalTransaction = lastLocalTransaction;
             this.localTransactionsSequence = localTransactionsSequence;
-            this.firstAccessedClusterID = firstAccessedClusterID;
+            this.firstAccessedClusterName = firstAccessedClusterName;
             this.entityIDToMode = entityIDToMode;
         }
     }
@@ -85,7 +90,7 @@ public class Utils {
         int lastLocalTransactionID,
         LocalTransaction lastLocalTransaction,
         List<ReducedTraceElementDto> elements,
-        Map<Short, Short> entityIDToClusterID,
+        Map<Short, String> entityIDToClusterName,
         Map<Short, Byte> entityIDToMode,
         int from,
         int to
@@ -95,7 +100,7 @@ public class Utils {
         if (numberOfElements == 0) return new GetLocalTransactionsSequenceAndCalculateTracePerformanceResult();
 
         int performance = 0;
-        Short firstAccessedClusterID = null;
+        String firstAccessedClusterName = null;
 
         LocalTransaction currentLocalTransaction = lastLocalTransaction;
         List<LocalTransaction> localTransactionsSequence = new ArrayList<>();
@@ -112,22 +117,22 @@ public class Utils {
                     lastLocalTransactionID,
                     currentLocalTransaction,
                     elements,
-                    entityIDToClusterID,
+                    entityIDToClusterName,
                     entityIDToMode,
                     i + 1,
                     i + 1 + r.getCount()
                 );
 
-                Short sequenceFirstAccessedClusterID = result.firstAccessedClusterID;
+                String sequenceFirstAccessedClusterName = result.firstAccessedClusterName;
                 int sequencePerformance = result.performance;
 
-                if (firstAccessedClusterID == null)
-                    firstAccessedClusterID = sequenceFirstAccessedClusterID;
+                if (firstAccessedClusterName == null)
+                    firstAccessedClusterName = sequenceFirstAccessedClusterName;
 
                 // hop between an access (previous cluster if it exists) and the sequence in question
                 if (
                     currentLocalTransaction != null && // this currentLT is already outdated that's why it's useful
-                    currentLocalTransaction.getClusterID() != sequenceFirstAccessedClusterID
+                    !currentLocalTransaction.getClusterName().equals(sequenceFirstAccessedClusterName)
                 ) {
                     performance++;
                 }
@@ -145,7 +150,7 @@ public class Utils {
                 // then we want to consider the hop between the final access and the first one
                 if (
                     r.getOccurrences() > 1 &&
-                    sequenceFirstAccessedClusterID != currentLocalTransaction.getClusterID()
+                    !sequenceFirstAccessedClusterName.equals(currentLocalTransaction.getClusterName())
                 ) {
                     performance += r.getOccurrences() - 1;
                 }
@@ -158,22 +163,22 @@ public class Utils {
                 short accessedEntityID = access.getEntityID();
                 byte accessMode = access.getMode();
 
-                Short currentClusterID = entityIDToClusterID.get(accessedEntityID);
+                String currentClusterName = entityIDToClusterName.get(accessedEntityID);
 
-                if (currentClusterID == null) {
+                if (currentClusterName == null) {
                     System.err.println("No assigned entity with ID " + accessedEntityID + " to a cluster.");
                     System.exit(-1);
                 }
 
-                if (firstAccessedClusterID == null)
-                    firstAccessedClusterID = currentClusterID;
+                if (firstAccessedClusterName == null)
+                    firstAccessedClusterName = currentClusterName;
 
                 if (currentLocalTransaction == null) { // if it's the first element
                     performance++;
 
                     currentLocalTransaction = new LocalTransaction(
                         ++lastLocalTransactionID,
-                        currentClusterID,
+                        currentClusterName,
                         new HashSet<AccessDto>() {{ add(access); }},
                         accessedEntityID
                     );
@@ -182,7 +187,7 @@ public class Utils {
                 }
 
                 else {
-                    if (currentClusterID == currentLocalTransaction.getClusterID()) {
+                    if (currentClusterName.equals(currentLocalTransaction.getClusterName())) {
                         // check if it is a costly access
                         boolean hasCost = false;
                         Byte savedMode = entityIDToMode.get(accessedEntityID);
@@ -209,7 +214,7 @@ public class Utils {
 
                         currentLocalTransaction = new LocalTransaction(
                             ++lastLocalTransactionID,
-                            currentClusterID,
+                            currentClusterName,
                             new HashSet<AccessDto>() {{ add(access); }},
                             accessedEntityID
                         );
@@ -239,14 +244,14 @@ public class Utils {
             performance,
             currentLocalTransaction,
             localTransactionsSequence,
-            firstAccessedClusterID,
+            firstAccessedClusterName,
             entityIDToMode
         );
     }
 
     public static Map<String, Set<Cluster>> getFunctionalitiesClusters(
-            Map<Short, Short> entityIDToClusterID,
-            Map<Short, Cluster> clusters,
+            Map<Short, String> entityIDToClusterName,
+            Map<String, Cluster> clusters,
             Collection<Functionality> functionalities
     ) {
         Map<String, Set<Cluster>> functionalitiesClusters = new HashMap<>();
@@ -257,7 +262,7 @@ public class Utils {
             Set<Cluster> functionalityClusters = new HashSet<>();
 
             for (short entityID : functionality.getEntities().keySet()) {
-                Cluster cluster = clusters.get(entityIDToClusterID.get(entityID));
+                Cluster cluster = clusters.get(entityIDToClusterName.get(entityID));
                 functionalityClusters.add(cluster);
             }
 
@@ -270,20 +275,21 @@ public class Utils {
         return functionalitiesClusters;
     }
 
-    public static Map<Short, Set<Functionality>> getClustersFunctionalities(
-            Map<Short, Short> entityIDToClusterID,
-            Map<Short, Cluster> clusters,
-            Collection<Functionality> functionalities
+    public static Map<String, List<Functionality>> getClustersFunctionalities(
+            AccessesSciPyDecomposition decomposition
     ) {
-        Map<Short, Set<Functionality>> clustersFunctionalities = new HashMap<>();
+        Map<String, List<Functionality>> clustersFunctionalities = new HashMap<>();
 
-        for (Functionality functionality : functionalities) {
+        for (Functionality functionality : decomposition.getFunctionalities().values()) {
             for (short entityID : functionality.getEntities().keySet()) {
-                Cluster cluster = clusters.get(entityIDToClusterID.get(entityID));
+                Cluster cluster = decomposition.getClusters().get(decomposition.getEntityIDToClusterName().get(entityID));
 
-                Set<Functionality> clusterFunctionalities = clustersFunctionalities.getOrDefault(cluster.getID(), new HashSet<>());
-                clusterFunctionalities.add(functionality);
-                clustersFunctionalities.put(cluster.getID(), clusterFunctionalities);
+                List<Functionality> clusterFunctionalities = clustersFunctionalities.getOrDefault(cluster.getName(), new ArrayList<>());
+                if (clusterFunctionalities.size() == 0)
+                    clustersFunctionalities.put(cluster.getName(), clusterFunctionalities);
+
+                if (clusterFunctionalities.stream().noneMatch(prevFunctionality -> prevFunctionality.getName().equals(functionality.getName())))
+                    clusterFunctionalities.add(new Functionality(decomposition.getName(), functionality));
             }
         }
 

@@ -1,10 +1,10 @@
 import Decomposition from "./Decomposition";
 import AccessesSciPyDecomposition from "./AccessesSciPyDecomposition";
-import {StrategyType} from "../strategies/Strategy";
+import {StrategyType} from "../strategy/Strategy";
 
 export abstract class DecompositionFactory {
     static getDecomposition(decomposition: any) : Decomposition {
-        switch (decomposition.strategyType) {
+        switch (decomposition.type) {
             case StrategyType.ACCESSES_SCIPY:
                 return new AccessesSciPyDecomposition(decomposition);
             default:

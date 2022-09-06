@@ -1,6 +1,25 @@
 version: '3.7'
 
 services:
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mono2micro
+      - MONGO_INITDB_ROOT_PASSWORD=mono2microPass
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=mono2micro
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=mono2microPass
+      - ME_CONFIG_MONGODB_URL=mongodb://mono2micro:mono2microPass@mongo
+
   backend:
     build:
       context: .
@@ -12,6 +31,8 @@ services:
       - 8080:8080
     environment:
       - SCRIPTS_ADDRESS=http://scripts:5002
+      - MONGO_DB=mongodb://mono2micro:mono2microPass@mongo
+      - MONGO_DB_NAME=mono2micro
     restart: unless-stopped
     volumes:
       - ./codebases:/codebases
@@ -27,6 +48,8 @@ services:
     environment:
       - PORT=5002
       - CODEBASES_PATH=/codebases/
+      - MONGO_DB=mongodb://mono2micro:mono2microPass@mongo
+      - MONGO_DB_NAME=mono2micro
     restart: unless-stopped
     volumes:
       - ./codebases:/codebases
@@ -41,6 +64,9 @@ services:
     hostname: 'localhost'
     ports:
       - 5001:5001
+    environment:
+      - MONGO_DB=mongodb://mono2micro:mono2microPass@mongo
+      - MONGO_DB_NAME=mono2micro
     restart: unless-stopped
     volumes:
       - ./codebases:/codebases

@@ -13,7 +13,7 @@ import (
 )
 
 type ViewRefactorizationProvider interface {
-	HandleViewRefactorization(context.Context, string, string, string) (*values.RefactorCodebaseResponse, error)
+	HandleViewRefactorization(context.Context, string) (*values.RefactorCodebaseResponse, error)
 }
 
 type ViewRefactorizationHTTPHandler struct {
@@ -26,7 +26,7 @@ func NewViewRefactorizationHandler(logger log.Logger, view ViewRefactorizationPr
 }
 
 func (r *ViewRefactorizationHTTPHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	codebase, strategy, decomposition, err := r.extractParameters(req)
+	decomposition, err := r.extractParameters(req)
 	if err != nil {
 		r.logger.Log("transport", "view/HTTP", "error", err.Error())
 		http.Error(
@@ -37,7 +37,7 @@ func (r *ViewRefactorizationHTTPHandler) ServeHTTP(w http.ResponseWriter, req *h
 		return
 	}
 
-	response, err := r.view.HandleViewRefactorization(req.Context(), codebase, strategy, decomposition)
+	response, err := r.view.HandleViewRefactorization(req.Context(), decomposition)
 	if err != nil {
 		r.logger.Log("transport", "refactor/handleViewRefactorization", "error", err.Error())
 		http.Error(
@@ -66,25 +66,14 @@ func (r *ViewRefactorizationHTTPHandler) ServeHTTP(w http.ResponseWriter, req *h
 	r.logger.Log("transport", "refactor/HTTP")
 }
 
-func (r *ViewRefactorizationHTTPHandler) extractParameters(req *http.Request) (string, string, string, error) {
+func (r *ViewRefactorizationHTTPHandler) extractParameters(req *http.Request) (string, error) {
 	vars := mux.Vars(req)
-	codebase, ok := vars["codebase"]
-	if !ok {
-		err := fmt.Errorf("no codebase provided as a path variable")
-		return "", "", "", err
-	}
-
-	strategy, ok := vars["strategy"]
-	if !ok {
-		err := fmt.Errorf("no strategy provided as a path variable")
-		return codebase, "", "", err
-	}
 
 	decomposition, ok := vars["decomposition"]
 	if !ok {
 		err := fmt.Errorf("no decomposition provided as a path variable")
-		return codebase, strategy, "", err
+		return "", err
 	}
 
-	return codebase, strategy, decomposition, nil
+	return decomposition, nil
 }

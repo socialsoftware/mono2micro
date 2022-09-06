@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import pt.ist.socialsoftware.mono2micro.domain.Cluster;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -44,9 +44,6 @@ public class ClusterDeserializer extends StdDeserializer<Cluster> {
 			while (jsonParser.nextValue() != JsonToken.END_OBJECT) {
 				if (deserializableFields == null || deserializableFields.contains(jsonParser.getCurrentName())) {
 					switch (jsonParser.getCurrentName()) {
-						case "id":
-							cluster.setID(jsonParser.getShortValue());
-							break;
 						case "name":
 							cluster.setName(jsonParser.getValueAsString());
 							break;

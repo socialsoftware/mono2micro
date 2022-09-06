@@ -1,199 +1,137 @@
 package pt.ist.socialsoftware.mono2micro.utils;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import pt.ist.socialsoftware.mono2micro.dto.TraceDto;
+import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
+import pt.ist.socialsoftware.mono2micro.functionality.dto.ReducedTraceElementDto;
+import pt.ist.socialsoftware.mono2micro.functionality.dto.RuleDto;
+import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.*;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class FunctionalityTracesIterator {
-	private JsonParser jsonParser;
-	private int limit = 0; // 0 means no limit aka all traces will be parsed
-	private int tracesCounter; // #traces
-	String filePath;
+    private int limit; // 0 means no limit aka all traces will be parsed
+    private int tracesCounter; // #traces
+    private final JSONObject codebaseAsJSON;
+    private JSONObject requestedFunctionality;
 
-	public FunctionalityTracesIterator(
-		String filePath,
-		int limit
-	) throws IOException {
-		this.limit = limit;
-		this.filePath = filePath;
+    public FunctionalityTracesIterator(
+            InputStream file,
+            int limit
+    ) throws IOException, JSONException {
+        this.limit = limit;
+        codebaseAsJSON = new JSONObject(new String(IOUtils.toByteArray(file)));
+        file.close();
+    }
 
-		init();
-	}
+    public Iterator<String> getFunctionalitiesNames() {
+        return codebaseAsJSON.keys();
+    }
 
-	private void init() throws IOException {
-		this.tracesCounter = 0;
+    public void getFunctionalityWithName(String functionalityName) throws JSONException {
+        requestedFunctionality = codebaseAsJSON.getJSONObject(functionalityName);
+    }
 
-		ObjectMapper mapper = new ObjectMapper();
-		JsonFactory jsonfactory = mapper.getFactory();
+    public TraceDto getLongestTrace() throws JSONException {
+        JSONArray tracesArray = requestedFunctionality.getJSONArray("t");
+        TraceDto t1 = nextTrace(tracesArray.getJSONObject(0));;
+        int t1UncompressedSize = t1.getUncompressedSize();
+        for (int i = 1; i < tracesArray.length() && (limit == 0 || tracesCounter < limit); i++) {
+            TraceDto t2 = nextTrace(tracesArray.getJSONObject(i));
 
-		jsonParser = jsonfactory.createParser(new FileInputStream(filePath));
+            int t2UncompressedSize = t2.getUncompressedSize();
 
-		jsonParser.nextToken();
+            if (t2UncompressedSize > t1UncompressedSize) {
+                t1 = t2;
+                t1UncompressedSize = t2UncompressedSize;
+            }
+        }
+        return t1;
+    }
 
-		if (jsonParser.getCurrentToken() != JsonToken.START_OBJECT) {
-			System.err.println("Json must start with a left curly brace");
-			System.exit(-1);
-		}
+    public TraceDto getTraceWithMoreDifferentAccesses() throws JSONException {
+        JSONArray tracesArray = requestedFunctionality.getJSONArray("t");
+        TraceDto t1 = nextTrace(tracesArray.getJSONObject(0));
+        int t1AccessesSetSize = t1.getAccessesSet().size();
 
-		jsonParser.nextValue();
+        for (int i = 1; i < tracesArray.length() && (limit == 0 || tracesCounter < limit); i++) {
+            TraceDto t2 = nextTrace(tracesArray.getJSONObject(i));
 
-	}
+            int t2AccessesSetSize = t2.getAccessesSet().size();
 
-	public void reset() throws IOException {
-		if (!jsonParser.isClosed())
-			jsonParser.close();
+            if (t2AccessesSetSize > t1AccessesSetSize) {
+                t1 = t2;
+                t1AccessesSetSize = t2AccessesSetSize;
+            }
+        }
 
-		init();
-	}
+        return t1;
+    }
 
-	public TraceDto nextTrace() throws IOException {
-		if (jsonParser.getCurrentToken() == JsonToken.END_ARRAY || jsonParser.getCurrentToken() == JsonToken.END_OBJECT)
-			return null;
+    public List<TraceDto> getAllTraces() throws JSONException {
+        List<TraceDto> traceDtos = new ArrayList<>();
+        JSONArray tracesArray = requestedFunctionality.getJSONArray("t");
+        for (int i = 0; i < tracesArray.length() && (limit == 0 || tracesCounter < limit); i++)
+            traceDtos.add(nextTrace(tracesArray.getJSONObject(i)));
+        return traceDtos;
+    }
 
-		TraceDto t = jsonParser.readValueAs(TraceDto.class);
-		jsonParser.nextValue();
+    public List<TraceDto> getTracesByType(Constants.TraceType traceType) throws JSONException {
+        List<TraceDto> traceDtos = new ArrayList<>();
 
-		if (t.getElements() != null && t.getElements().size() > 0)
-			tracesCounter++;
+        // Get traces according to trace type
+        switch(traceType) {
+            case LONGEST:
+                traceDtos.add(this.getLongestTrace());
+                break;
+            case WITH_MORE_DIFFERENT_ACCESSES:
+                traceDtos.add(this.getTraceWithMoreDifferentAccesses());
+                break;
+            default:
+                traceDtos.addAll(this.getAllTraces());
+        }
+        if (traceDtos.size() == 0)
+            throw new RuntimeException("Functionality does not contain any trace.");
 
-		return t;
-	}
+        return traceDtos;
+    }
 
-	public void jumpToNextFunctionality() throws IOException {
-		while (jsonParser.getCurrentName() != null && jsonParser.getCurrentToken() != JsonToken.START_OBJECT ||					// Either finds beginning of other functionality
-				jsonParser.getCurrentName() == null && jsonParser.getCurrentToken() != JsonToken.END_OBJECT) { 					// Or finds the end of the file
-			jsonParser.nextValue();
-		}
-	}
+    private TraceDto nextTrace(JSONObject traceJSON) throws JSONException {
+        List<ReducedTraceElementDto> elements = new ArrayList<>();
+        JSONArray accessesJSON = traceJSON.getJSONArray("a");
 
-	public String nextFunctionalityWithName(
-		String functionalityName
-	)
-		throws IOException
-	{
-		tracesCounter = 0;
-		String name;
+        for (int i = 0; i < accessesJSON.length(); i++) {
+            JSONArray reducedTraceElementJSON = accessesJSON.getJSONArray(i);
+            Object elementType = reducedTraceElementJSON.get(0);
 
-		while (true) {
-			if (jsonParser.getCurrentToken() == JsonToken.START_OBJECT) {
-				if (
-					jsonParser.getCurrentName() != null &&
-					(functionalityName == null || jsonParser.getCurrentName().equals(functionalityName)) // null means every functionality is acceptable
-				) {
-					name = jsonParser.getCurrentName();
-					break;
-				}
+            if (elementType instanceof String) { // Is an AccessDto
+                AccessDto accessDto = new AccessDto();
+                accessDto.setMode((byte) (reducedTraceElementJSON.getString(0).equals("R") ? 1 : 2));
+                accessDto.setEntityID((short) reducedTraceElementJSON.getInt(1));
+                if (reducedTraceElementJSON.length() == 3)
+                    accessDto.setOccurrences(reducedTraceElementJSON.getInt(2));
+                else accessDto.setOccurrences(1);
+                elements.add(accessDto);
+            }
+            else { // Is a RuleDto
+                RuleDto ruleDto = new RuleDto();
+                ruleDto.setCount(reducedTraceElementJSON.getInt(0));
+                if (reducedTraceElementJSON.length() == 2)
+                    ruleDto.setOccurrences(reducedTraceElementJSON.getInt(1));
+                else ruleDto.setOccurrences(1);
+                elements.add(ruleDto);
+            }
+        }
 
-				jsonParser.skipChildren();
+        if (elements.size() > 0)
+            tracesCounter++;
 
-			} else if (jsonParser.getCurrentToken() == JsonToken.START_ARRAY) {
-				jsonParser.skipChildren();
-			}
-
-			jsonParser.nextValue();
-		}
-
-		findTraceFieldLoop:
-		while (jsonParser.nextValue() != JsonToken.END_OBJECT) {
-			switch (jsonParser.getCurrentName()) {
-				case "t":
-					if (jsonParser.getCurrentToken() != JsonToken.START_ARRAY) {
-						System.err.println("Json must start with a left bracket");
-						System.exit(-1);
-					}
-
-					jsonParser.nextValue();
-					break findTraceFieldLoop;
-				case "id":
-				case "f":
-					break;
-
-				default:
-					throw new IOException();
-			}
-		}
-		return name;
-	}
-
-	// Be sure this iterator is already positioned to read the traces of a certain functionality
-	public List<TraceDto> getTracesByType(Constants.TraceType traceType) throws IOException {
-		List<TraceDto> traceDtos = new ArrayList<>();
-
-		// Get traces according to trace type
-		switch(traceType) {
-			case LONGEST:
-				traceDtos.add(this.getLongestTrace());
-				break;
-			case WITH_MORE_DIFFERENT_ACCESSES:
-				traceDtos.add(this.getTraceWithMoreDifferentAccesses());
-				break;
-			default:
-				while (this.hasMoreTraces())
-					traceDtos.add(this.nextTrace());
-		}
-		if (traceDtos.size() == 0)
-			throw new IOException("Functionality does not contain any trace.");
-
-		return traceDtos;
-	}
-
-	public boolean hasMoreFunctionalities() throws IOException {
-		return !(jsonParser.getCurrentName() == null && jsonParser.getCurrentToken() == JsonToken.END_OBJECT);
-	}
-
-	public boolean hasMoreTraces() {
-		return (
-			jsonParser.getCurrentToken() != JsonToken.END_ARRAY &&
-			jsonParser.getCurrentToken() != JsonToken.END_OBJECT &&
-			(limit == 0 || tracesCounter < limit)
-		);
-	}
-
-	public TraceDto getLongestTrace() throws IOException {
-		if (this.hasMoreTraces()) {
-			TraceDto t1 = this.nextTrace();
-			int t1UncompressedSize = t1.getUncompressedSize();
-
-			while (this.hasMoreTraces()) {
-				TraceDto t2 = this.nextTrace();
-				int t2UncompressedSize = t2.getUncompressedSize();
-
-				if (t2UncompressedSize > t1UncompressedSize) {
-					t1 = t2;
-					t1UncompressedSize = t2UncompressedSize;
-				}
-			}
-
-			return t1;
-		}
-
-		return null;
-	}
-
-	public TraceDto getTraceWithMoreDifferentAccesses() throws IOException {
-		if (this.hasMoreTraces()) {
-			TraceDto t1 = this.nextTrace();
-			int t1AccessesSetSize = t1.getAccessesSet().size();
-
-			while (this.hasMoreTraces()) {
-				TraceDto t2 = this.nextTrace();
-				int t2AccessesSetSize = t2.getAccessesSet().size();
-
-				if (t2AccessesSetSize > t1AccessesSetSize) {
-					t1 = t2;
-					t1AccessesSetSize = t2AccessesSetSize;
-				}
-			}
-
-			return t1;
-		}
-
-		return null;
-	}
+        return new TraceDto(traceJSON.getInt("id"), traceJSON.has("f")? traceJSON.getInt("f") : 1, elements);
+    }
 }

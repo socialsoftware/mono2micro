@@ -13,4 +13,10 @@ export abstract class SourceFactory {
                 throw new Error('Type ' + source.type + ' unknown.');
         }
     }
+
+    static getSources(source: any[]) : Source[] | null {
+        if (source === null)
+            return null;
+        return source.map((source:any) => this.getSource(source))
+    }
 }
