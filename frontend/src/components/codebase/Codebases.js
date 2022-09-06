@@ -54,7 +54,7 @@ export const Codebases = () => {
                                         className="mb-2"
                                         variant={"primary"}
                                     >
-                                        Add Codebase Sources <b>+</b>
+                                        Manage Strategies
                                     </Button>
                                     <br/>
                                     <Button
