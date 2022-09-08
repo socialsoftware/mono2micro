@@ -2,11 +2,11 @@ import {Accordion, ListGroup, ListGroupItem, Modal, ModalBody, ModalTitle} from 
 import Button from "react-bootstrap/Button";
 import Divider from "@mui/material/Divider";
 import React, {useContext, useEffect, useState} from "react";
-import AppContext from "../../AppContext";
+import AppContext from "../../../AppContext";
 import {ArrowRightAlt} from "@mui/icons-material";
 import CircularProgress from "@mui/material/CircularProgress";
 import {types} from "../Views";
-import {EDGE_LENGTH} from "../../../constants/constants";
+import {EDGE_LENGTH} from "../../../../constants/constants";
 
 const ACCESS_TYPES = {
     1: "READ",

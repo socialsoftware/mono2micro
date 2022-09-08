@@ -7,7 +7,6 @@ import pt.ist.socialsoftware.mono2micro.decomposition.service.DecompositionServi
 import pt.ist.socialsoftware.mono2micro.dendrogram.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram;
 import pt.ist.socialsoftware.mono2micro.dendrogram.repository.DendrogramRepository;
-import pt.ist.socialsoftware.mono2micro.strategy.repository.StrategyRepository;
 
 import java.util.List;
 
@@ -15,8 +14,6 @@ import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStra
 
 @Service
 public class DendrogramService {
-    @Autowired
-    StrategyRepository strategyRepository;
     @Autowired
     DendrogramRepository dendrogramRepository;
 

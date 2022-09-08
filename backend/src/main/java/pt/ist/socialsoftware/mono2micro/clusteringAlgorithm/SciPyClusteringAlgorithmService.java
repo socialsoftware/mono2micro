@@ -25,7 +25,6 @@ import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendAccessesS
 import pt.ist.socialsoftware.mono2micro.dendrogram.repository.DendrogramRepository;
 import pt.ist.socialsoftware.mono2micro.recommendation.service.RecommendAccessesSciPyService;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.strategy.repository.StrategyRepository;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
@@ -69,21 +68,6 @@ public class SciPyClusteringAlgorithmService {
 
     @Autowired
     LogRepository logRepository;
-
-    public void createAccessesSciPyDendrogram(AccessesSciPyDendrogram dendrogram) {
-        String response = WebClient.create(SCRIPTS_ADDRESS)
-                .get()
-                .uri("/scipy/{dendrogramName}/{similarityMatrixName}/createDendrogram", dendrogram.getName(), dendrogram.getSimilarityMatrixName())
-                .retrieve()
-                .onStatus(HttpStatus::isError, clientResponse -> {throw new RuntimeException("Error Code:" + clientResponse.statusCode());})
-                .bodyToMono(String.class)
-                .block();
-        try {
-            JSONObject jsonObject = new JSONObject(response);
-            dendrogram.setImageName(jsonObject.getString("imageName"));
-            dendrogram.setCopheneticDistanceName(jsonObject.getString("copheneticDistanceName"));
-        } catch(Exception e) { throw new RuntimeException("Could not produce or extract elements from JSON Object"); }
-    }
 
     public void createDecomposition(AccessesSciPyStrategy strategy, AccessesSciPyDendrogram dendrogram, String cutType, float cutValue) throws Exception {
         AccessesSource source = (AccessesSource) dendrogram.getStrategy().getCodebase().getSourceByType(ACCESSES);

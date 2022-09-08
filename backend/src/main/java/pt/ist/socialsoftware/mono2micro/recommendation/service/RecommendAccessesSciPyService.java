@@ -4,7 +4,6 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.SciPyClusteringAlgorithmService;
-import pt.ist.socialsoftware.mono2micro.codebase.repository.CodebaseRepository;
 import pt.ist.socialsoftware.mono2micro.dendrogram.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.similarityGenerator.AccessesSimilarityGeneratorService;
@@ -30,9 +29,6 @@ import static pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource.ACCE
 
 @Service
 public class RecommendAccessesSciPyService {
-    @Autowired
-    CodebaseRepository codebaseRepository;
-
     @Autowired
     StrategyRepository strategyRepository;
 
@@ -147,7 +143,7 @@ public class RecommendAccessesSciPyService {
                 gridFsService.saveFile(inputStream, dendrogram.getSimilarityMatrixName()); // And saves it with a different name
 
                 // generate dendrogram image
-                clusteringAlgorithm.createAccessesSciPyDendrogram(dendrogram);
+                similarityGenerator.createAccessesSciPyDendrogram(dendrogram);
             }
 
             clusteringAlgorithm.createDecomposition(strategy, dendrogram, "N", Float.parseFloat(properties[7]));
