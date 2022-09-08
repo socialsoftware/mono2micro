@@ -2,12 +2,12 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Home } from './Home';
 import { Decompositions } from './decompositions/Decompositions';
-import { Views } from './view/Views';
+import { Views } from './view/accessesSciPyViews/Views';
 import { Codebases } from './codebase/Codebases';
 import { Strategies } from './strategies/Strategies';
 import { Analysis } from './analysis/Analysis';
 import { Profiles } from './profile/Profiles';
-import {FunctionalityRefactorToolMenu} from "./view/FunctionalityRefactorToolMenu";
+import {FunctionalityRefactorToolMenu} from "./view/accessesSciPyViews/FunctionalityRefactorToolMenu";
 import {Dendrograms} from "./dendrograms/Dendrograms";
 
 export const Main = () => (

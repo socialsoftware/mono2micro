@@ -3,7 +3,6 @@ package pt.ist.socialsoftware.mono2micro.dendrogram.service;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.SciPyClusteringAlgorithmService;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.similarityGenerator.AccessesSimilarityGeneratorService;
 import pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram;
@@ -27,9 +26,6 @@ public class AccessesSciPyDendrogramService {
     AccessesSimilarityGeneratorService similarityGenerator;
 
     @Autowired
-    SciPyClusteringAlgorithmService clusteringAlgorithm;
-
-    @Autowired
     GridFsService gridFsService;
 
     public void createDendrogram(AccessesSciPyDendrogramDto dendrogramDto) throws Exception {
@@ -39,7 +35,7 @@ public class AccessesSciPyDendrogramService {
 
         AccessesSciPyDendrogram dendrogram = getNewAccessesSciPyDendrogramForStrategy(strategy, dendrogramDto);
         similarityGenerator.createSimilarityMatrixForSciPy(dendrogram);
-        clusteringAlgorithm.createAccessesSciPyDendrogram(dendrogram);
+        similarityGenerator.createAccessesSciPyDendrogram(dendrogram);
         strategyRepository.save(strategy);
         dendrogramRepository.save(dendrogram);
     }

@@ -1,18 +1,18 @@
 import React, {createRef, useContext, useEffect, useState} from "react";
-import {RepositoryService} from "../../../services/RepositoryService";
+import {RepositoryService} from "../../../../services/RepositoryService";
 import {toast, ToastContainer} from "react-toastify";
 import HttpStatus from "http-status-codes";
 import {useParams} from "react-router-dom";
 import {CancelPresentation, Redo, Search, TableView, Timeline, Undo} from "@mui/icons-material";
 import {DataSet, Network} from "vis-network/standalone";
 import {types, views} from "../Views";
-import {EDGE_LENGTH, OPERATION} from "../../../constants/constants";
+import {EDGE_LENGTH, OPERATION} from "../../../../constants/constants";
 import {ClusterViewRightClickMenu} from "./ClusterViewRightClickMenu";
 import {ClusterViewDialogs, DIALOG_TYPE} from "./ClusterViewDialogs";
 import {ClusterViewModal} from "./ClusterViewModal";
 import {ClusterViewMetricTable} from "./ClusterViewMetricTable";
 import {searchType} from "../ViewSearchBar";
-import AppContext from "../../AppContext";
+import AppContext from "../../../AppContext";
 
 export const clusterViewHelp = (<div>
     Double click a node to see its properties.<br />

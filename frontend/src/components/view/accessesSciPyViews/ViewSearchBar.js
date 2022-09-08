@@ -11,9 +11,9 @@ import filterFactory, {numberFilter, selectFilter, textFilter} from "react-boots
 import paginationFactory from "react-bootstrap-table2-paginator";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
-import {RepositoryService} from "../../services/RepositoryService";
+import {RepositoryService} from "../../../services/RepositoryService";
 import {useParams} from "react-router-dom";
-import AppContext from "../AppContext";
+import AppContext from "../../AppContext";
 
 export const searchType = {
     CLUSTER: "Cluster",

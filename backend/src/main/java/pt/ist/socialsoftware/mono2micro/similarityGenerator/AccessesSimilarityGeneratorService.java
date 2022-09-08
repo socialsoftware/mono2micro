@@ -4,7 +4,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
 import pt.ist.socialsoftware.mono2micro.source.service.SourceService;
 import pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram;
@@ -39,6 +41,21 @@ public class AccessesSimilarityGeneratorService {
     //#############################################
     // ACCESSES SCIPY
     //#############################################
+
+    public void createAccessesSciPyDendrogram(AccessesSciPyDendrogram dendrogram) {
+        String response = WebClient.create(SCRIPTS_ADDRESS)
+                .get()
+                .uri("/scipy/{dendrogramName}/{similarityMatrixName}/createDendrogram", dendrogram.getName(), dendrogram.getSimilarityMatrixName())
+                .retrieve()
+                .onStatus(HttpStatus::isError, clientResponse -> {throw new RuntimeException("Error Code:" + clientResponse.statusCode());})
+                .bodyToMono(String.class)
+                .block();
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            dendrogram.setImageName(jsonObject.getString("imageName"));
+            dendrogram.setCopheneticDistanceName(jsonObject.getString("copheneticDistanceName"));
+        } catch(Exception e) { throw new RuntimeException("Could not produce or extract elements from JSON Object"); }
+    }
 
     public void createSimilarityMatrixForSciPy(AccessesSciPyDendrogram dendrogram) throws Exception {
         Set<Short> entities = new TreeSet<>();

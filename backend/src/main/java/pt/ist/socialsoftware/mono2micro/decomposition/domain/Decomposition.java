@@ -2,7 +2,6 @@ package pt.ist.socialsoftware.mono2micro.decomposition.domain;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
-import pt.ist.socialsoftware.mono2micro.dendrogram.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
 import java.util.Map;

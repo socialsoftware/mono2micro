@@ -1,6 +1,6 @@
 import {ListGroup, ListGroupItem} from "react-bootstrap";
 import {types} from "../Views";
-import {OPERATION} from "../../../constants/constants";
+import {OPERATION} from "../../../../constants/constants";
 import {
     AirlineStops,
     AllOut,

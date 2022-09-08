@@ -1,17 +1,17 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
-import { FunctionalityView, functionalityViewHelp } from './FunctionalityView';
+import { FunctionalityView, functionalityViewHelp } from './functionalityView/FunctionalityView';
 import Popover from 'react-bootstrap/Popover';
 import Container from 'react-bootstrap/Container';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Button from 'react-bootstrap/Button';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
-import {RepositoryService} from "../../services/RepositoryService";
-import AppContext from "./../AppContext";
+import {RepositoryService} from "../../../services/RepositoryService";
+import AppContext from "../../AppContext";
 import {useParams} from "react-router-dom";
 import {clusterViewHelp} from "./clusterView/ClusterViewGraph";
 import {searchType, ViewSearchBar} from "./ViewSearchBar";
-import {ModalProgressBar} from "../util/ModalProgressBar";
-import {ViewSpeedDial} from "../util/ViewSpeedDial";
+import {ModalProgressBar} from "../../util/ModalProgressBar";
+import {ViewSpeedDial} from "../../util/ViewSpeedDial";
 import {ClusterViewGraph} from "./clusterView/ClusterViewGraph";
 
 export const views = {

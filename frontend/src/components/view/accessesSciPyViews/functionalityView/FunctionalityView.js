@@ -1,8 +1,8 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {RepositoryService} from '../../services/RepositoryService';
-import {VisNetwork} from '../util/VisNetwork';
+import {RepositoryService} from '../../../../services/RepositoryService';
+import {VisNetwork} from '../../../util/VisNetwork';
 import { DataSet } from "vis-network/standalone";
-import {types, views} from './Views';
+import {types, views} from '../Views';
 import BootstrapTable from 'react-bootstrap-table-next';
 import CardGroup from 'react-bootstrap/CardGroup';
 import Button from 'react-bootstrap/Button';
@@ -15,13 +15,13 @@ import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 
 import {FunctionalityRedesignMenu, redesignOperations} from './FunctionalityRedesignMenu';
-import {ModalMessage} from "../util/ModalMessage";
-import {DEFAULT_REDESIGN_NAME} from "../../constants/constants";
+import {ModalMessage} from "../../../util/ModalMessage";
+import {DEFAULT_REDESIGN_NAME} from "../../../../constants/constants";
 import {FunctionalityOperationsMenu} from "./FunctionalityOperationsMenu";
-import AppContext from "./../AppContext";
+import AppContext from "../../../AppContext";
 import {useParams} from "react-router-dom";
-import {MetricType} from "../../type-declarations/types.d";
-import {searchType} from "./ViewSearchBar";
+import {MetricType} from "../../../../type-declarations/types.d";
+import {searchType} from "../ViewSearchBar";
 import {Analytics, BubbleChart, Edit, Hub, List, Search} from "@mui/icons-material";
 
 const HttpStatus = require('http-status-codes');

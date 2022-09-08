@@ -8,13 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.decomposition.controller.DecompositionController;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
-import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.FunctionalityDto;
 
 import javax.naming.NameAlreadyBoundException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 
 @RestController

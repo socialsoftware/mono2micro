@@ -10,7 +10,7 @@ import {
     InputGroup
 } from "react-bootstrap";
 import Select from 'react-select';
-import AppContext from "../AppContext";
+import AppContext from "../../../AppContext";
 
 export const redesignOperations = {
     NONE: 'operation',
