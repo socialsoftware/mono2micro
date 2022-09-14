@@ -1,18 +1,18 @@
-package pt.ist.socialsoftware.mono2micro.source.dto;
+package pt.ist.socialsoftware.mono2micro.representation.dto;
 
-import pt.ist.socialsoftware.mono2micro.source.domain.Source;
+import pt.ist.socialsoftware.mono2micro.representation.domain.Representation;
 
-public class SourceDto {
+public class RepresentationDto {
     private String name;
 
     private String type;
 
     private String codebaseName;
 
-    protected SourceDto(Source source) {
-        this.name = source.getName();
-        this.type = source.getType();
-        this.codebaseName = source.getCodebase().getName();
+    protected RepresentationDto(Representation representation) {
+        this.name = representation.getName();
+        this.type = representation.getType();
+        this.codebaseName = representation.getCodebase().getName();
     }
 
     public String getName() {

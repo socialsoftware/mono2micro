@@ -18,8 +18,8 @@ import pt.ist.socialsoftware.mono2micro.log.domain.AccessesSciPyLog;
 import pt.ist.socialsoftware.mono2micro.log.repository.LogRepository;
 import pt.ist.socialsoftware.mono2micro.metrics.decompositionService.AccessesSciPyMetricService;
 import pt.ist.socialsoftware.mono2micro.recommendation.repository.RecommendAccessesSciPyRepository;
-import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
-import pt.ist.socialsoftware.mono2micro.source.service.SourceService;
+import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
+import pt.ist.socialsoftware.mono2micro.representation.service.RepresentationService;
 import pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendAccessesSciPy;
 import pt.ist.socialsoftware.mono2micro.dendrogram.repository.DendrogramRepository;
@@ -36,14 +36,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource.ACCESSES;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.SCRIPTS_ADDRESS;
 
 @Service
 public class SciPyClusteringAlgorithmService {
 
     @Autowired
-    SourceService sourceService;
+    RepresentationService representationService;
 
     @Autowired
     StrategyRepository strategyRepository;
@@ -70,7 +70,7 @@ public class SciPyClusteringAlgorithmService {
     LogRepository logRepository;
 
     public void createDecomposition(AccessesSciPyStrategy strategy, AccessesSciPyDendrogram dendrogram, String cutType, float cutValue) throws Exception {
-        AccessesSource source = (AccessesSource) dendrogram.getStrategy().getCodebase().getSourceByType(ACCESSES);
+        AccessesRepresentation representation = (AccessesRepresentation) dendrogram.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
 
         AccessesSciPyDecomposition decomposition = new AccessesSciPyDecomposition();
         decomposition.setName(getDecompositionName(dendrogram, cutType, cutValue));
@@ -79,11 +79,11 @@ public class SciPyClusteringAlgorithmService {
         JSONObject clustersJSON = invokePythonCut(decomposition, dendrogram.getSimilarityMatrixName(), cutType, cutValue);
         addClustersAndEntities(decomposition, clustersJSON);
 
-        setupAndSaveDendrogram(strategy, dendrogram, source, decomposition);
+        setupAndSaveDendrogram(strategy, dendrogram, representation, decomposition);
     }
 
-    private void setupAndSaveDendrogram(AccessesSciPyStrategy strategy, AccessesSciPyDendrogram dendrogram, AccessesSource source, AccessesSciPyDecomposition decomposition) throws Exception {
-        setupFunctionalitiesAndMetrics(dendrogram.getProfile(), dendrogram.getTracesMaxLimit(), dendrogram.getTraceType(), source, decomposition);
+    private void setupAndSaveDendrogram(AccessesSciPyStrategy strategy, AccessesSciPyDendrogram dendrogram, AccessesRepresentation representation, AccessesSciPyDecomposition decomposition) throws Exception {
+        setupFunctionalitiesAndMetrics(dendrogram.getProfile(), dendrogram.getTracesMaxLimit(), dendrogram.getTraceType(), representation, decomposition);
 
         dendrogram.addDecomposition(decomposition);
         strategy.addDecomposition(decomposition);
@@ -100,7 +100,7 @@ public class SciPyClusteringAlgorithmService {
     }
 
     public void createExpertDecomposition(AccessesSciPyStrategy strategy, AccessesSciPyDendrogram dendrogram, String expertName, Optional<MultipartFile> expertFile) throws Exception {
-        AccessesSource source = (AccessesSource) dendrogram.getStrategy().getCodebase().getSourceByType(ACCESSES);
+        AccessesRepresentation representation = (AccessesRepresentation) dendrogram.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
 
         AccessesSciPyDecomposition decomposition = new AccessesSciPyDecomposition();
         decomposition.setDendrogram(dendrogram);
@@ -119,7 +119,7 @@ public class SciPyClusteringAlgorithmService {
         }
         else createGenericDecomposition(dendrogram, decomposition);
 
-        setupAndSaveDendrogram(strategy, dendrogram, source, decomposition);
+        setupAndSaveDendrogram(strategy, dendrogram, representation, decomposition);
     }
 
     private void createGenericDecomposition(AccessesSciPyDendrogram dendrogram, AccessesSciPyDecomposition decomposition) throws Exception {
@@ -143,13 +143,13 @@ public class SciPyClusteringAlgorithmService {
             String profile,
             int tracesMaxLimit,
             Constants.TraceType traceType,
-            AccessesSource source,
+            AccessesRepresentation representation,
             AccessesSciPyDecomposition decomposition
     ) throws Exception {
         functionalityService.setupFunctionalities(
                 decomposition,
-                sourceService.getSourceFileAsInputStream(source.getName()),
-                source.getProfile(profile),
+                representationService.getRepresentationFileAsInputStream(representation.getName()),
+                representation.getProfile(profile),
                 tracesMaxLimit,
                 traceType,
                 false);
@@ -223,8 +223,8 @@ public class SciPyClusteringAlgorithmService {
     }
 
     public void generateMultipleDecompositions(RecommendAccessesSciPy recommendation) throws Exception {
-        AccessesSource source = (AccessesSource) recommendation.getStrategy().getCodebase().getSourceByType(ACCESSES);
-        byte[] sourceBytes = IOUtils.toByteArray(sourceService.getSourceFileAsInputStream(source.getName()));
+        AccessesRepresentation representation = (AccessesRepresentation) recommendation.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
+        byte[] representationBytes = IOUtils.toByteArray(representationService.getRepresentationFileAsInputStream(representation.getName()));
 
         int MIN_CLUSTERS = 3, CLUSTER_STEP = 1;
 
@@ -278,8 +278,8 @@ public class SciPyClusteringAlgorithmService {
                     // create functionalities and calculate their metrics
                     functionalityService.setupFunctionalities(
                             decomposition,
-                            new ByteArrayInputStream(sourceBytes),
-                            source.getProfile(recommendation.getProfile()),
+                            new ByteArrayInputStream(representationBytes),
+                            representation.getProfile(recommendation.getProfile()),
                             recommendation.getTracesMaxLimit(),
                             traceType,
                             true);

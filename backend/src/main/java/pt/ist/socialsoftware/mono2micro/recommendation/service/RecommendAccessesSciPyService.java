@@ -9,7 +9,7 @@ import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.similarityGenerator.AccessesSimilarityGeneratorService;
 import pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendAccessesSciPy;
-import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
+import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.dendrogram.dto.AccessesSciPyDendrogramDto;
 import pt.ist.socialsoftware.mono2micro.recommendation.dto.RecommendAccessesSciPyDto;
@@ -25,7 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 
-import static pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource.ACCESSES;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
 
 @Service
 public class RecommendAccessesSciPyService {
@@ -91,13 +91,13 @@ public class RecommendAccessesSciPyService {
             }
         }
 
-        AccessesSource source = (AccessesSource) recommendation.getStrategy().getCodebase().getSourceByType(ACCESSES);
+        AccessesRepresentation representation = (AccessesRepresentation) recommendation.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
 
         clusteringAlgorithm.prepareAutowire();
         // Executes the request in a fork to avoid blocking the user
         ForkJoinPool.commonPool().submit(() -> {
             try {
-                similarityGenerator.createSimilarityMatricesForSciPy(source, recommendation);
+                similarityGenerator.createSimilarityMatricesForSciPy(representation, recommendation);
                 clusteringAlgorithm.generateMultipleDecompositions(recommendation);
 
                 recommendation.addProducedCombinations();

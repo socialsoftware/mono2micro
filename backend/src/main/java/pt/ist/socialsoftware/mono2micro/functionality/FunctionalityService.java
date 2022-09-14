@@ -17,8 +17,8 @@ import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.metrics.decompositionService.AccessesSciPyMetricService;
-import pt.ist.socialsoftware.mono2micro.source.domain.Source;
-import pt.ist.socialsoftware.mono2micro.source.service.SourceService;
+import pt.ist.socialsoftware.mono2micro.representation.domain.Representation;
+import pt.ist.socialsoftware.mono2micro.representation.service.RepresentationService;
 import pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
@@ -30,7 +30,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.jgrapht.Graphs.successorListOf;
-import static pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource.ACCESSES;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
 
 @Service
 public class FunctionalityService {
@@ -38,7 +38,7 @@ public class FunctionalityService {
     AccessesSciPyDecompositionRepository decompositionRepository;
 
     @Autowired
-    SourceService sourceService;
+    RepresentationService representationService;
 
     @Autowired
     FunctionalityRepository functionalityRepository;
@@ -215,7 +215,7 @@ public class FunctionalityService {
 
         Functionality functionality = decomposition.getFunctionality(functionalityName);
 
-        Source source = dendrogram.getStrategy().getCodebase().getSourceByType(ACCESSES);
+        Representation representation = dendrogram.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
 
         if (!functionality.containsFunctionalityRedesignName(Constants.DEFAULT_REDESIGN_NAME)) {
             FunctionalityRedesign functionalityRedesign = createFunctionalityRedesign(
@@ -224,7 +224,7 @@ public class FunctionalityService {
                     Constants.DEFAULT_REDESIGN_NAME,
                     true,
                     functionality.createLocalTransactionGraphFromScratch(
-                            sourceService.getSourceFileAsInputStream(source.getName()),
+                            representationService.getRepresentationFileAsInputStream(representation.getName()),
                             dendrogram.getTracesMaxLimit(),
                             dendrogram.getTraceType(),
                             decomposition.getEntityIDToClusterName())
@@ -307,11 +307,11 @@ public class FunctionalityService {
             functionality.addFunctionalityRedesign(functionalityRedesign.getName(), functionality.getId() + functionalityRedesign.getName());
             functionality.setFunctionalityRedesignNameUsedForMetrics(functionalityRedesign.getName());
 
-            Source source = dendrogram.getStrategy().getCodebase().getSourceByType(ACCESSES);
+            Representation representation = dendrogram.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
 
             DirectedAcyclicGraph<LocalTransaction, DefaultEdge> functionalityLocalTransactionsGraph = decomposition.getFunctionality(functionalityName)
                     .createLocalTransactionGraphFromScratch(
-                            sourceService.getSourceFileAsInputStream(source.getName()),
+                            representationService.getRepresentationFileAsInputStream(representation.getName()),
                             dendrogram.getTracesMaxLimit(),
                             dendrogram.getTraceType(),
                             decomposition.getEntityIDToClusterName());

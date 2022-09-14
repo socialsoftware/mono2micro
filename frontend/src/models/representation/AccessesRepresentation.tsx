@@ -1,17 +1,17 @@
-import Source from "./Source";
+import Representation from "./Representation";
 import React from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 
-export default class AccessesSource extends Source {
+export default class AccessesRepresentation extends Representation {
     profiles!: Map<string, string>;
 
-    constructor(source: AccessesSource) {
-        super(source);
-        this.profiles = source.profiles;
+    constructor(representation: AccessesRepresentation) {
+        super(representation);
+        this.profiles = representation.profiles;
     }
 
-    printCard(handleDeleteSource: (source: Source) => void): JSX.Element {
+    printCard(handleDeleteRepresentation: (representation: Representation) => void): JSX.Element {
         return <Card className={"text-center"} key={this.type} style={{width: '13rem'}}>
             <Card.Header>{this.type}</Card.Header>
             <Card.Body>
@@ -23,7 +23,7 @@ export default class AccessesSource extends Source {
                 </Button>
                 <br/>
                 <Button
-                    onClick={() => handleDeleteSource(this)}
+                    onClick={() => handleDeleteRepresentation(this)}
                     className="mb-2"
                     variant={"danger"}
                 >

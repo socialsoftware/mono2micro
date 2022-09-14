@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.codebase.repository.CodebaseRepository;
 import pt.ist.socialsoftware.mono2micro.fileManager.FileManager;
-import pt.ist.socialsoftware.mono2micro.source.domain.Source;
-import pt.ist.socialsoftware.mono2micro.source.service.SourceService;
+import pt.ist.socialsoftware.mono2micro.representation.domain.Representation;
+import pt.ist.socialsoftware.mono2micro.representation.service.RepresentationService;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.strategy.service.StrategyService;
 
@@ -19,7 +19,7 @@ import java.util.List;
 public class CodebaseService {
 
     @Autowired
-    SourceService sourceService;
+    RepresentationService representationService;
 
     @Autowired
     StrategyService strategyService;
@@ -41,11 +41,11 @@ public class CodebaseService {
         return codebaseRepository.findByName(codebaseName);
     }
 
-    public List<String> getSourceTypes(String codebaseName) {
+    public List<String> getRepresentationTypes(String codebaseName) {
         Codebase codebase = codebaseRepository.findByName(codebaseName);
-        List<String> sourceTypes = new ArrayList<>();
-        codebase.getSources().forEach(source -> sourceTypes.add(source.getType()));
-        return sourceTypes;
+        List<String> representationTypes = new ArrayList<>();
+        codebase.getRepresentations().forEach(representation -> representationTypes.add(representation.getType()));
+        return representationTypes;
     }
 
     public List<Strategy> getCodebaseStrategies(String codebaseName) {
@@ -57,8 +57,8 @@ public class CodebaseService {
         Codebase codebase = codebaseRepository.findByName(codebaseName);
         for (Strategy strategy: codebase.getStrategies())
             strategyService.deleteStrategy(strategy);
-        for (Source source: codebase.getSources())
-            sourceService.deleteSource(source.getName());
+        for (Representation representation : codebase.getRepresentations())
+            representationService.deleteRepresentation(representation.getName());
         FileManager.getInstance().deleteCodebase(codebaseName);
         codebaseRepository.deleteById(codebaseName);
     }

@@ -26,8 +26,8 @@ import pt.ist.socialsoftware.mono2micro.log.domain.accessesSciPyOperations.*;
 import pt.ist.socialsoftware.mono2micro.log.repository.LogRepository;
 import pt.ist.socialsoftware.mono2micro.log.service.AccessesSciPyLogService;
 import pt.ist.socialsoftware.mono2micro.metrics.decompositionService.AccessesSciPyMetricService;
-import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
-import pt.ist.socialsoftware.mono2micro.source.service.SourceService;
+import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
+import pt.ist.socialsoftware.mono2micro.representation.service.RepresentationService;
 import pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram;
 import pt.ist.socialsoftware.mono2micro.dendrogram.repository.AccessesSciPyDendrogramRepository;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
@@ -40,7 +40,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource.ACCESSES;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
 
 @Service
 public class AccessesSciPyDecompositionService {
@@ -75,7 +75,7 @@ public class AccessesSciPyDecompositionService {
     FunctionalityRepository functionalityRepository;
 
     @Autowired
-    SourceService sourceService;
+    RepresentationService representationService;
 
     @Autowired
     GridFsService gridFsService;
@@ -95,14 +95,14 @@ public class AccessesSciPyDecompositionService {
     public AccessesSciPyDecomposition updateOutdatedFunctionalitiesAndMetrics(String decompositionName) throws Exception {
         AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
         AccessesSciPyDendrogram dendrogram = (AccessesSciPyDendrogram) decomposition.getDendrogram();
-        AccessesSource source = (AccessesSource) dendrogram.getStrategy().getCodebase().getSourceByType(ACCESSES);
+        AccessesRepresentation representation = (AccessesRepresentation) dendrogram.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
         if (!decomposition.isOutdated())
             return decomposition;
 
         functionalityService.setupFunctionalities(
                 decomposition,
-                sourceService.getSourceFileAsInputStream(source.getName()),
-                source.getProfile(dendrogram.getProfile()),
+                representationService.getRepresentationFileAsInputStream(representation.getName()),
+                representation.getProfile(dendrogram.getProfile()),
                 dendrogram.getTracesMaxLimit(),
                 dendrogram.getTraceType(),
                 false);
@@ -159,11 +159,11 @@ public class AccessesSciPyDecompositionService {
     public Utils.GetSerializableLocalTransactionsGraphResult getLocalTransactionGraphForFunctionality(String decompositionName, String functionalityName) throws JSONException, IOException {
         AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
         AccessesSciPyDendrogram dendrogram = (AccessesSciPyDendrogram) decomposition.getDendrogram();
-        AccessesSource source = (AccessesSource) dendrogram.getStrategy().getCodebase().getSourceByType(ACCESSES);
+        AccessesRepresentation representation = (AccessesRepresentation) dendrogram.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
 
         DirectedAcyclicGraph<LocalTransaction, DefaultEdge> functionalityLocalTransactionsGraph = decomposition.getFunctionality(functionalityName)
                 .createLocalTransactionGraphFromScratch(
-                        sourceService.getSourceFileAsInputStream(source.getName()),
+                        representationService.getRepresentationFileAsInputStream(representation.getName()),
                         dendrogram.getTracesMaxLimit(),
                         dendrogram.getTraceType(),
                         decomposition.getEntityIDToClusterName());

@@ -9,7 +9,7 @@ type Codebase struct {
 	Collectors []*string `json:"collectors,omitempty"`
 }
 
-type Source struct {
+type Representation struct {
 	Type          string              `json:"type,omitempty"`
 	CodebaseName  string              `json:"codebaseName,omitempty"`
 	InputFilePath string              `json:"inputFilePath,omitempty"`

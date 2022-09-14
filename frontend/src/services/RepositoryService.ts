@@ -11,7 +11,7 @@ import {
     Edges
 } from "../type-declarations/types";
 import { addSearchParamsToUrl } from "../utils/url";
-import {SourceFactory} from "../models/sources/SourceFactory";
+import {RepresentationFactory} from "../models/representation/RepresentationFactory";
 import Dendrogram from "../models/dendrogram/Dendrogram";
 import {DendrogramFactory} from "../models/dendrogram/DendrogramFactory";
 import {DecompositionFactory} from "../models/decompositions/DecompositionFactory";
@@ -111,9 +111,9 @@ export class RepositoryService {
     }
 
     // Profiles
-    addAccessesProfile(sourceName: string, profile: string) {
+    addAccessesProfile(representationName: string, profile: string) {
         return this.axios.post<null>(
-            "/source/" + sourceName + "/addAccessesProfile",
+            "/representation/" + representationName + "/addAccessesProfile",
             null,
             {
                 params: {
@@ -123,12 +123,12 @@ export class RepositoryService {
     }
 
     moveAccessesFunctionalities(
-        sourceName: string,
+        representationName: string,
         functionalities: string[],
         targetProfile: string,
     ) {
         return this.axios.post<null>(
-            "/source/" + sourceName + "/moveAccessesFunctionalities",
+            "/representation/" + representationName + "/moveAccessesFunctionalities",
             functionalities,
             {
                 params: {
@@ -138,9 +138,9 @@ export class RepositoryService {
         );
     }
 
-    deleteAccessesProfile(sourceName: string, profile: string) {
+    deleteAccessesProfile(representationName: string, profile: string) {
         return this.axios.delete<null>(
-            "/source/" + sourceName + "/deleteAccessesProfile",
+            "/representation/" + representationName + "/deleteAccessesProfile",
             {
                 params: {
                     "profile" : profile
@@ -149,27 +149,27 @@ export class RepositoryService {
         );
     }
 
-    //Sources
-    getCodebaseSource(codebaseName: string, sourceType: string) {
-        return this.axios.get("/codebase/" + codebaseName + "/source/" + sourceType + "/getCodebaseSource")
-            .then((response) => SourceFactory.getSource(response.data));
+    //Representation
+    getCodebaseRepresentation(codebaseName: string, representationType: string) {
+        return this.axios.get("/codebase/" + codebaseName + "/representation/" + representationType + "/getCodebaseRepresentation")
+            .then((response) => RepresentationFactory.getRepresentation(response.data));
     }
 
-    getSource(sourceName: string) {
-        return this.axios.get("/source/" + sourceName + "/getSource")
-            .then((response) => SourceFactory.getSource(response.data));
+    getRepresentation(representationName: string) {
+        return this.axios.get("/representation/" + representationName + "/getRepresentation")
+            .then((response) => RepresentationFactory.getRepresentation(response.data));
     }
 
-    getSourceTypes(codebaseName: string) {
-        return this.axios.get<string[]>("/codebase/" + codebaseName + "/getSourceTypes");
+    getRepresentationTypes(codebaseName: string) {
+        return this.axios.get<string[]>("/codebase/" + codebaseName + "/getRepresentationTypes");
     }
 
-    deleteSource(id: string) {
-        return this.axios.delete<null>("/source/" + id + "/delete");
+    deleteRepresentation(id: string) {
+        return this.axios.delete<null>("/representation/" + id + "/delete");
     }
 
     getIdToEntity(codebaseName: string) {
-        return this.axios.get<string>("/source/" + codebaseName + "/getIdToEntity");
+        return this.axios.get<string>("/representation/" + codebaseName + "/getIdToEntity");
     }
 
 
@@ -192,7 +192,7 @@ export class RepositoryService {
     createStrategy(
         codebaseName: string,
         strategyType: string,
-        sources: Map<string, File>
+        representations: Map<string, File>
     ) {
         const config = {
             headers: {
@@ -200,7 +200,7 @@ export class RepositoryService {
             }
         }
         const data = new FormData();
-        Object.entries(sources).forEach((entry) => {data.append("sourceTypes", entry[0]); data.append("sources", entry[1])});
+        Object.entries(representations).forEach((entry) => {data.append("representationTypes", entry[0]); data.append("representations", entry[1])});
 
         return this.axios.post<null>("/codebase/" + codebaseName + "/strategy/" + strategyType + "/createStrategy", data, config);
     }

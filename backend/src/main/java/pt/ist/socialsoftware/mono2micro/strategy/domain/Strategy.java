@@ -19,7 +19,7 @@ public abstract class Strategy {
 
     public abstract String getType();
 
-    public abstract List<String> getSourceTypes();
+    public abstract List<String> getRepresentationTypes();
 
     public String getName() {
         return name;

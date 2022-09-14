@@ -6,7 +6,7 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 import FormControl from "react-bootstrap/FormControl";
 import {RepositoryService} from "../../../services/RepositoryService";
-import {SourceType} from "../../../models/sources/Source";
+import {RepresentationType} from "../../../models/representation/Representation";
 import Button from "react-bootstrap/Button";
 import HttpStatus from "http-status-codes";
 import filterFactory, {numberFilter, textFilter} from "react-bootstrap-table2-filter";
@@ -124,7 +124,7 @@ export const AccessesSciPyDendrogramForm = ({codebaseName, strategyName, setUpda
     }
 
     function loadProfiles() {
-        service.getCodebaseSource(codebaseName, SourceType.ACCESSES)
+        service.getCodebaseRepresentation(codebaseName, RepresentationType.ACCESSES)
             .then((response) => setProfiles(response.profiles));
     }
 

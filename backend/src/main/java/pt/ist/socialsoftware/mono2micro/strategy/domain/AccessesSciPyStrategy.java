@@ -4,8 +4,8 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.ist.socialsoftware.mono2micro.dendrogram.domain.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
-import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
-import pt.ist.socialsoftware.mono2micro.source.domain.TranslationSource;
+import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
+import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
 public class AccessesSciPyStrategy extends Strategy {
     public static final String ACCESSES_SCIPY = "Accesses SciPy";
 
-    public static final List<String> sourceTypes = new ArrayList<String>() {{
-        add(AccessesSource.ACCESSES);
-        add(TranslationSource.TRANSLATION);
+    public static final List<String> representationTypes = new ArrayList<String>() {{
+        add(AccessesRepresentation.ACCESSES);
+        add(IDToEntityRepresentation.ID_TO_ENTITY);
     }};
 
     @DBRef(lazy = true)
@@ -33,8 +33,8 @@ public class AccessesSciPyStrategy extends Strategy {
         return ACCESSES_SCIPY;
     }
     @Override
-    public List<String> getSourceTypes() {
-        return sourceTypes;
+    public List<String> getRepresentationTypes() {
+        return representationTypes;
     }
 
     public List<Dendrogram> getDendrograms() {

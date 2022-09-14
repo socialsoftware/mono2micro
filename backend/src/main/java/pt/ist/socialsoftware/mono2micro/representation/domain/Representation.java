@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.source.domain;
+package pt.ist.socialsoftware.mono2micro.representation.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;
@@ -9,14 +9,14 @@ import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
  * Represents an imported file during the creation of the Codebase
  * Inheritors might contain additional information relevant to the imported file
  */
-public abstract class Source {
+public abstract class Representation {
     @Id
     protected String name;
 
     @DBRef(lazy = true)
     protected Codebase codebase;
 
-    public abstract String init(Codebase codebase, byte[] sourceFile) throws Exception;
+    public abstract String init(Codebase codebase, byte[] representationFile) throws Exception;
 
     @JsonIgnore
     public abstract String getType();

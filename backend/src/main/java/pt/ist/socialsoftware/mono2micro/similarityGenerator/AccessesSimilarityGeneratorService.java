@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
-import pt.ist.socialsoftware.mono2micro.source.service.SourceService;
+import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
+import pt.ist.socialsoftware.mono2micro.representation.service.RepresentationService;
 import pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendAccessesSciPy;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
@@ -23,14 +23,14 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
 
-import static pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource.ACCESSES;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 
 @Service
 public class AccessesSimilarityGeneratorService {
 
     @Autowired
-    SourceService sourceService;
+    RepresentationService representationService;
 
     @Autowired
     AccessesSciPyDendrogramService accessesSciPyDendrogramService;
@@ -61,12 +61,12 @@ public class AccessesSimilarityGeneratorService {
         Set<Short> entities = new TreeSet<>();
         Map<String, Integer> e1e2PairCount = new HashMap<>();
         Map<Short, List<Pair<String, Byte>>> entityFunctionalities = new HashMap<>(); // Map<entityID, List<Pair<functionalityName, accessMode>>>
-        AccessesSource source = (AccessesSource) dendrogram.getStrategy().getCodebase().getSourceByType(ACCESSES);
+        AccessesRepresentation representation = (AccessesRepresentation) dendrogram.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
         fillMatrix(
                 entities,
                 e1e2PairCount,
                 entityFunctionalities,
-                source,
+                representation,
                 dendrogram.getProfile(),
                 dendrogram.getTracesMaxLimit(),
                 dendrogram.getTraceType());
@@ -88,7 +88,7 @@ public class AccessesSimilarityGeneratorService {
             Set<Short> entities,
             Map<String, Integer> e1e2PairCount,
             Map<Short, List<Pair<String, Byte>>> entityFunctionalities,
-            AccessesSource source,
+            AccessesRepresentation representation,
             String profile,
             int tracesMaxLimit,
             Constants.TraceType traceType
@@ -97,12 +97,12 @@ public class AccessesSimilarityGeneratorService {
         System.out.println("Creating similarity matrix...");
 
         FunctionalityTracesIterator iter = new FunctionalityTracesIterator(
-                sourceService.getSourceFileAsInputStream(source.getName()),
+                representationService.getRepresentationFileAsInputStream(representation.getName()),
                 tracesMaxLimit
         );
 
         TraceDto t;
-        Set<String> profileFunctionalities = source.getProfile(profile);
+        Set<String> profileFunctionalities = representation.getProfile(profile);
 
         for (String functionalityName : profileFunctionalities) {
             iter.getFunctionalityWithName(functionalityName);
@@ -334,7 +334,7 @@ public class AccessesSimilarityGeneratorService {
     // RECOMMEND ACCESSES SCIPY
     //#############################################
 
-    public void createSimilarityMatricesForSciPy(AccessesSource source, RecommendAccessesSciPy recommendation) throws Exception {
+    public void createSimilarityMatricesForSciPy(AccessesRepresentation representation, RecommendAccessesSciPy recommendation) throws Exception {
         int INTERVAL = 100, STEP = 10;
         Set<Short> entities = new TreeSet<>();
         Map<String, Integer> e1e2PairCount = new HashMap<>();
@@ -344,7 +344,7 @@ public class AccessesSimilarityGeneratorService {
             for (String linkageType : recommendation.getLinkageTypes()) {
                 if (recommendation.containsCombination(traceType, linkageType))
                     continue;
-                fillMatrix(entities, e1e2PairCount, entityFunctionalities, source, recommendation.getProfile(), recommendation.getTracesMaxLimit(), traceType);
+                fillMatrix(entities, e1e2PairCount, entityFunctionalities, representation, recommendation.getProfile(), recommendation.getTracesMaxLimit(), traceType);
 
                 // needed later during clustering algorithm
                 recommendation.setNumberOfEntities(entities.size());

@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.source.domain;
+package pt.ist.socialsoftware.mono2micro.representation.domain;
 
 import org.json.JSONObject;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -7,19 +7,19 @@ import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.*;
 
-@Document("source")
-public class AccessesSource extends Source {
+@Document("representation")
+public class AccessesRepresentation extends Representation {
 
     public static final String ACCESSES = "Accesses";
     private Map<String, Set<String>> profiles = new HashMap<>(); // e.g <Generic, FunctionalityNamesList>
 
-    public AccessesSource() {}
+    public AccessesRepresentation() {}
 
     @Override
-    public String init(Codebase codebase, byte[] sourceFile) throws Exception {
+    public String init(Codebase codebase, byte[] representationFile) throws Exception {
         this.name = codebase.getName() + " & " + getType();
         this.codebase = codebase;
-        addProfile("Generic", getFunctionalitiesNamesFromSourceFile(sourceFile));
+        addProfile("Generic", getFunctionalitiesNamesFromRepresentationFile(representationFile));
         return name;
     }
 
@@ -59,10 +59,10 @@ public class AccessesSource extends Source {
             this.profiles.get(targetProfile).add(functionality);
     }
 
-    private Set<String> getFunctionalitiesNamesFromSourceFile(byte[] sourceFile) throws Exception {
-        JSONObject sourceFileJSON = new JSONObject(new String(sourceFile));
+    private Set<String> getFunctionalitiesNamesFromRepresentationFile(byte[] representationFile) throws Exception {
+        JSONObject representationFileJSON = new JSONObject(new String(representationFile));
         Set<String> functionalitiesNames = new HashSet<>();
-        for (Iterator<String> it = sourceFileJSON.keys(); it.hasNext(); )
+        for (Iterator<String> it = representationFileJSON.keys(); it.hasNext(); )
             functionalitiesNames.add(it.next());
         return functionalitiesNames;
     }
