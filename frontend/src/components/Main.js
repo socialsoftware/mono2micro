@@ -1,14 +1,14 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Home } from './Home';
-import { Decompositions } from './decompositions/Decompositions';
+import { Decompositions } from './decomposition/Decompositions';
 import { Views } from './view/accessesSciPyViews/Views';
 import { Codebases } from './codebase/Codebases';
 import { Strategies } from './strategies/Strategies';
 import { Analysis } from './analysis/Analysis';
 import { Profiles } from './profile/Profiles';
 import {FunctionalityRefactorToolMenu} from "./view/accessesSciPyViews/FunctionalityRefactorToolMenu";
-import {Dendrograms} from "./dendrograms/Dendrograms";
+import {Similarities} from "./similarity/Similarities";
 
 export const Main = () => (
   <main>
@@ -17,8 +17,8 @@ export const Main = () => (
 
       <Route exact path='/codebases' element={<Codebases/>} />
       <Route exact path='/codebases/:codebaseName' element={<Strategies/>} />
-      <Route exact path='/codebases/:codebaseName/:strategyName' element={<Dendrograms/>} />
-      <Route exact path='/codebases/:codebaseName/:strategyName/:dendrogramName/dendrogram' element={<Decompositions/>} />
+      <Route exact path='/codebases/:codebaseName/:strategyName' element={<Similarities/>} />
+      <Route exact path='/codebases/:codebaseName/:strategyName/:similarityName/similarity' element={<Decompositions/>} />
       <Route exact path='/codebases/:codebaseName/:strategyName/:decompositionName/viewDecomposition' element={<Views/>} />
       <Route exact path='/codebases/:codebaseName/:strategyName/:decompositionName/functionalityRefactor' element={<FunctionalityRefactorToolMenu/>} />
 

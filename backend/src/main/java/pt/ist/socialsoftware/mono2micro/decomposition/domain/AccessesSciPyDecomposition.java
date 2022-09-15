@@ -3,7 +3,7 @@ package pt.ist.socialsoftware.mono2micro.decomposition.domain;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
-import pt.ist.socialsoftware.mono2micro.dendrogram.domain.Dendrogram;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.log.domain.AccessesSciPyLog;
 
@@ -18,7 +18,7 @@ public class AccessesSciPyDecomposition extends Decomposition {
     private double silhouetteScore;
 
     @DBRef
-    Dendrogram dendrogram;
+    Similarity similarity;
     private Map<String, Cluster> clusters = new HashMap<>();
     @DBRef(lazy = true)
     private Map<String, Functionality> functionalities = new HashMap<>(); // <functionalityName, Functionality>
@@ -30,7 +30,7 @@ public class AccessesSciPyDecomposition extends Decomposition {
 
     public AccessesSciPyDecomposition(AccessesSciPyDecomposition decomposition) {
         this.name = decomposition.getName();
-        this.dendrogram = decomposition.getDendrogram();
+        this.similarity = decomposition.getSimilarity();
         this.metrics = decomposition.getMetrics();
         this.outdated = decomposition.isOutdated();
         this.expert = decomposition.isExpert();
@@ -44,12 +44,12 @@ public class AccessesSciPyDecomposition extends Decomposition {
         return ACCESSES_SCIPY;
     }
 
-    public Dendrogram getDendrogram() {
-        return dendrogram;
+    public Similarity getSimilarity() {
+        return similarity;
     }
 
-    public void setDendrogram(Dendrogram dendrogram) {
-        this.dendrogram = dendrogram;
+    public void setSimilarity(Similarity similarity) {
+        this.similarity = similarity;
     }
 
 

@@ -19,7 +19,7 @@ import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.metrics.decompositionService.AccessesSciPyMetricService;
 import pt.ist.socialsoftware.mono2micro.representation.domain.Representation;
 import pt.ist.socialsoftware.mono2micro.representation.service.RepresentationService;
-import pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.AccessesSciPySimilarity;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
 
@@ -211,11 +211,11 @@ public class FunctionalityService {
 
     public Functionality getOrCreateRedesign(String decompositionName, String functionalityName) throws IOException, JSONException {
         AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-        AccessesSciPyDendrogram dendrogram = (AccessesSciPyDendrogram) decomposition.getDendrogram();
+        AccessesSciPySimilarity similarity = (AccessesSciPySimilarity) decomposition.getSimilarity();
 
         Functionality functionality = decomposition.getFunctionality(functionalityName);
 
-        Representation representation = dendrogram.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
+        Representation representation = similarity.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
 
         if (!functionality.containsFunctionalityRedesignName(Constants.DEFAULT_REDESIGN_NAME)) {
             FunctionalityRedesign functionalityRedesign = createFunctionalityRedesign(
@@ -225,8 +225,8 @@ public class FunctionalityService {
                     true,
                     functionality.createLocalTransactionGraphFromScratch(
                             representationService.getRepresentationFileAsInputStream(representation.getName()),
-                            dendrogram.getTracesMaxLimit(),
-                            dendrogram.getTraceType(),
+                            similarity.getTracesMaxLimit(),
+                            similarity.getTraceType(),
                             decomposition.getEntityIDToClusterName())
             );
             metricService.calculateMetrics(decomposition, functionality, functionalityRedesign);
@@ -289,7 +289,7 @@ public class FunctionalityService {
             throws Exception
     {
         AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-        AccessesSciPyDendrogram dendrogram = (AccessesSciPyDendrogram) decomposition.getDendrogram();
+        AccessesSciPySimilarity similarity = (AccessesSciPySimilarity) decomposition.getSimilarity();
         Functionality functionality = decomposition.getFunctionality(functionalityName);
 
         if(newRedesignName.isPresent())
@@ -307,13 +307,13 @@ public class FunctionalityService {
             functionality.addFunctionalityRedesign(functionalityRedesign.getName(), functionality.getId() + functionalityRedesign.getName());
             functionality.setFunctionalityRedesignNameUsedForMetrics(functionalityRedesign.getName());
 
-            Representation representation = dendrogram.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
+            Representation representation = similarity.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
 
             DirectedAcyclicGraph<LocalTransaction, DefaultEdge> functionalityLocalTransactionsGraph = decomposition.getFunctionality(functionalityName)
                     .createLocalTransactionGraphFromScratch(
                             representationService.getRepresentationFileAsInputStream(representation.getName()),
-                            dendrogram.getTracesMaxLimit(),
-                            dendrogram.getTraceType(),
+                            similarity.getTracesMaxLimit(),
+                            similarity.getTraceType(),
                             decomposition.getEntityIDToClusterName());
 
             createFunctionalityRedesign(

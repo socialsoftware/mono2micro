@@ -1,15 +1,15 @@
-package pt.ist.socialsoftware.mono2micro.dendrogram.domain;
+package pt.ist.socialsoftware.mono2micro.similarity.domain;
 
 import org.springframework.data.mongodb.core.mapping.Document;
-import pt.ist.socialsoftware.mono2micro.dendrogram.dto.AccessesSciPyDendrogramDto;
-import pt.ist.socialsoftware.mono2micro.dendrogram.dto.DendrogramDto;
+import pt.ist.socialsoftware.mono2micro.similarity.dto.AccessesSciPySimilarityDto;
+import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDto;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.util.ArrayList;
 
-@Document("dendrogram")
-public class AccessesSciPyDendrogram extends Dendrogram {
+@Document("similarity")
+public class AccessesSciPySimilarity extends Similarity {
     private String profile;
     private int tracesMaxLimit;
     private Constants.TraceType traceType;
@@ -23,17 +23,17 @@ public class AccessesSciPyDendrogram extends Dendrogram {
     private String similarityMatrixName;
 
     // Image created in the Python services
-    private String imageName;
+    private String dendrogramName;
     private String copheneticDistanceName;
 
-    public AccessesSciPyDendrogram() {}
+    public AccessesSciPySimilarity() {}
 
     @Override
     public String getType() {
         return AccessesSciPyStrategy.ACCESSES_SCIPY;
     }
 
-    public AccessesSciPyDendrogram(AccessesSciPyDendrogramDto dto) {
+    public AccessesSciPySimilarity(AccessesSciPySimilarityDto dto) {
         this.profile = dto.getProfile();
         this.tracesMaxLimit = dto.getTracesMaxLimit();
         this.traceType = dto.getTraceType();
@@ -117,12 +117,12 @@ public class AccessesSciPyDendrogram extends Dendrogram {
         this.similarityMatrixName = similarityMatrixName;
     }
 
-    public String getImageName() {
-        return imageName;
+    public String getDendrogramName() {
+        return dendrogramName;
     }
 
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
+    public void setDendrogramName(String dendrogramName) {
+        this.dendrogramName = dendrogramName;
     }
 
     public String getCopheneticDistanceName() {
@@ -134,19 +134,19 @@ public class AccessesSciPyDendrogram extends Dendrogram {
     }
 
     @Override
-    public boolean equalsDto(DendrogramDto dto) {
-        if (!(dto instanceof AccessesSciPyDendrogramDto))
+    public boolean equalsDto(SimilarityDto dto) {
+        if (!(dto instanceof AccessesSciPySimilarityDto))
             return false;
 
-        AccessesSciPyDendrogramDto dendrogramDto = (AccessesSciPyDendrogramDto) dto;
-        return dendrogramDto.getStrategyName().equals(this.getStrategy().getName()) &&
-                dendrogramDto.getProfile().equals(this.profile) &&
-                (dendrogramDto.getTracesMaxLimit() == this.tracesMaxLimit) &&
-                (dendrogramDto.getTraceType() == this.traceType) &&
-                (dendrogramDto.getAccessMetricWeight() == this.accessMetricWeight) &&
-                (dendrogramDto.getWriteMetricWeight() == this.writeMetricWeight) &&
-                (dendrogramDto.getReadMetricWeight() == this.readMetricWeight) &&
-                (dendrogramDto.getSequenceMetricWeight() == this.sequenceMetricWeight) &&
-                (dendrogramDto.getLinkageType().equals(this.linkageType));
+        AccessesSciPySimilarityDto similarityDto = (AccessesSciPySimilarityDto) dto;
+        return similarityDto.getStrategyName().equals(this.getStrategy().getName()) &&
+                similarityDto.getProfile().equals(this.profile) &&
+                (similarityDto.getTracesMaxLimit() == this.tracesMaxLimit) &&
+                (similarityDto.getTraceType() == this.traceType) &&
+                (similarityDto.getAccessMetricWeight() == this.accessMetricWeight) &&
+                (similarityDto.getWriteMetricWeight() == this.writeMetricWeight) &&
+                (similarityDto.getReadMetricWeight() == this.readMetricWeight) &&
+                (similarityDto.getSequenceMetricWeight() == this.sequenceMetricWeight) &&
+                (similarityDto.getLinkageType().equals(this.linkageType));
     }
 }

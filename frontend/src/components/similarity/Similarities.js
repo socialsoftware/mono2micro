@@ -3,17 +3,17 @@ import Row from 'react-bootstrap/Row';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 
 import {useParams} from "react-router-dom";
-import {AccessesSciPyDendrogramForm} from "./forms/AccessesSciPyDendrogramForm";
+import {AccessesSciPySimilarityForm} from "./forms/AccessesSciPySimilarityForm";
 import {RepositoryService} from "../../services/RepositoryService";
 import {toast, ToastContainer} from "react-toastify";
 import {StrategyType} from "../../models/strategy/Strategy";
 
-export const Dendrograms = () => {
+export const Similarities = () => {
 
     let { codebaseName, strategyName } = useParams();
 
     const [strategy, setStrategy] = useState(undefined);
-    const [dendrograms, setDendrograms] = useState([]);
+    const [similarities, setSimilarities] = useState([]);
     const [decompositions, setDecompositions] = useState([]);
     const [updateStrategies, setUpdateStrategies] = useState({});
 
@@ -28,8 +28,8 @@ export const Dendrograms = () => {
             setStrategy(response);
 
             loadDecompositions();
-            if (response.hasDendrograms)
-                loadDendrograms()
+            if (response.hasSimilarities)
+                loadSimilarities()
 
             toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Strategies Loaded.", isLoading: false});
             setTimeout(() => {toast.dismiss(toastId)}, 1000);
@@ -48,29 +48,29 @@ export const Dendrograms = () => {
             .catch((error) => {console.log(error);toast.update(toastId, {type: toast.TYPE.ERROR, render: "Error while loading strategy's decompositions."})});
     }
 
-    function loadDendrograms() {
-        const toastId = toast.loading("Fetching Dendrograms...");
+    function loadSimilarities() {
+        const toastId = toast.loading("Fetching Similarities...");
         const service = new RepositoryService();
-        service.getStrategyDendrograms(strategyName)
+        service.getStrategySimilarities(strategyName)
             .then(response => {
-                setDendrograms(response);
-                toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Dendrograms Loaded.", isLoading: false});
+                setSimilarities(response);
+                toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Similarities Loaded.", isLoading: false});
                 setTimeout(() => {toast.dismiss(toastId)}, 1000);
             })
-            .catch(() => toast.update(toastId, {type: toast.TYPE.ERROR, render: "Error while loading strategy's dendrograms."}));
+            .catch(() => toast.update(toastId, {type: toast.TYPE.ERROR, render: "Error while loading strategy's similarity."}));
     }
 
-    function handleDeleteDendrogram(dendrogram) {
-        const toastId = toast.loading("Deleting " + dendrogram.name + "...");
+    function handleDeleteSimilarity(similarity) {
+        const toastId = toast.loading("Deleting " + similarity.name + "...");
         const service = new RepositoryService();
 
-        service.deleteDendrogram(dendrogram.name).then(() => {
-            loadDendrograms();
+        service.deleteSimilarity(similarity.name).then(() => {
+            loadSimilarities();
             loadDecompositions();
-            toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Dendrogram deleted.", isLoading: false});
+            toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Similarity deleted.", isLoading: false});
             setTimeout(() => {toast.dismiss(toastId)}, 1000);
         }).catch(() => {
-            toast.update(toastId, {type: toast.TYPE.ERROR, render: "Error deleting " + dendrogram.name + ".", isLoading: false});
+            toast.update(toastId, {type: toast.TYPE.ERROR, render: "Error deleting " + similarity.name + ".", isLoading: false});
         });
     }
 
@@ -97,13 +97,13 @@ export const Dendrograms = () => {
         );
     }
 
-    function renderDendrograms() {
+    function renderSimilarities() {
         return <Row>
             <h4 className="mt-4" style={{ color: "#666666" }}>
-                Dendrograms
+                Similarity Distances
             </h4>
             <div className={"d-flex flex-wrap mw-100"} style={{gap: '1rem 1rem'}}>
-                {dendrograms.map(dendrogram => dendrogram.printCard(handleDeleteDendrogram))}
+                {similarities.map(similarity => similarity.printCard(handleDeleteSimilarity))}
             </div>
         </Row>
     }
@@ -128,15 +128,15 @@ export const Dendrograms = () => {
 
             {renderBreadCrumbs()}
 
-            {/*Add render of each dendrogram like the next line to request the required elements for its creation*/}
+            {/*Add render of each similarity like the next line to request the required elements for its creation*/}
             {strategy !== undefined && strategy.type === StrategyType.ACCESSES_SCIPY &&
                 <>
-                    <AccessesSciPyDendrogramForm
+                    <AccessesSciPySimilarityForm
                         codebaseName={codebaseName}
                         strategyName={strategyName}
                         setUpdateStrategies={setUpdateStrategies}
                     />
-                    {dendrograms.length !== 0 && renderDendrograms()}
+                    {similarities.length !== 0 && renderSimilarities()}
 
                     {decompositions.length !== 0 && renderDecompositions()}
                 </>

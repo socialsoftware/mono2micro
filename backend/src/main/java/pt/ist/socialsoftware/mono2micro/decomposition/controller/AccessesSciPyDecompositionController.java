@@ -34,16 +34,16 @@ public class AccessesSciPyDecompositionController {
     @Autowired
     FunctionalityService functionalityService;
 
-    @RequestMapping(value = "/dendrogram/{dendrogramName}/createAccessesSciPyDecomposition", method = RequestMethod.POST)
+    @RequestMapping(value = "/similarity/{similarityName}/createAccessesSciPyDecomposition", method = RequestMethod.POST)
     public ResponseEntity<HttpStatus> createDecomposition(
-            @PathVariable String dendrogramName,
+            @PathVariable String similarityName,
             @RequestParam String cutType,
             @RequestParam float cutValue
     ) {
         logger.debug("createDecomposition");
 
         try {
-            decompositionService.createDecomposition(dendrogramName, cutType, cutValue);
+            decompositionService.createDecomposition(similarityName, cutType, cutValue);
             return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (KeyAlreadyExistsException e) {
@@ -56,16 +56,16 @@ public class AccessesSciPyDecompositionController {
         }
     }
 
-    @RequestMapping(value = "/dendrogram/{dendrogramName}/createAccessesSciPyExpertDecomposition", method = RequestMethod.POST)
+    @RequestMapping(value = "/similarity/{similarityName}/createAccessesSciPyExpertDecomposition", method = RequestMethod.POST)
     public ResponseEntity<HttpStatus> createExpertDecomposition(
-            @PathVariable String dendrogramName,
+            @PathVariable String similarityName,
             @RequestParam String expertName,
             @RequestParam Optional<MultipartFile> expertFile
     ) {
         logger.debug("createExpertDecomposition");
 
         try {
-            decompositionService.createExpertDecomposition(dendrogramName, expertName, expertFile);
+            decompositionService.createExpertDecomposition(similarityName, expertName, expertFile);
             return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (KeyAlreadyExistsException e) {

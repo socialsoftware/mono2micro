@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.service.RepresentationService;
-import pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.AccessesSciPySimilarity;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendAccessesSciPy;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
-import pt.ist.socialsoftware.mono2micro.dendrogram.service.AccessesSciPyDendrogramService;
+import pt.ist.socialsoftware.mono2micro.similarity.service.AccessesSciPySimilarityService;
 import pt.ist.socialsoftware.mono2micro.recommendation.service.RecommendAccessesSciPyService;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
@@ -33,7 +33,7 @@ public class AccessesSimilarityGeneratorService {
     RepresentationService representationService;
 
     @Autowired
-    AccessesSciPyDendrogramService accessesSciPyDendrogramService;
+    AccessesSciPySimilarityService accessesSciPySimilarityService;
 
     @Autowired
     RecommendAccessesSciPyService recommendAccessesSciPyService;
@@ -42,46 +42,46 @@ public class AccessesSimilarityGeneratorService {
     // ACCESSES SCIPY
     //#############################################
 
-    public void createAccessesSciPyDendrogram(AccessesSciPyDendrogram dendrogram) {
+    public void createAccessesSciPyDendrogram(AccessesSciPySimilarity similarity) {
         String response = WebClient.create(SCRIPTS_ADDRESS)
                 .get()
-                .uri("/scipy/{dendrogramName}/{similarityMatrixName}/createDendrogram", dendrogram.getName(), dendrogram.getSimilarityMatrixName())
+                .uri("/scipy/{similarityName}/{similarityMatrixName}/createDendrogram", similarity.getName(), similarity.getSimilarityMatrixName())
                 .retrieve()
                 .onStatus(HttpStatus::isError, clientResponse -> {throw new RuntimeException("Error Code:" + clientResponse.statusCode());})
                 .bodyToMono(String.class)
                 .block();
         try {
             JSONObject jsonObject = new JSONObject(response);
-            dendrogram.setImageName(jsonObject.getString("imageName"));
-            dendrogram.setCopheneticDistanceName(jsonObject.getString("copheneticDistanceName"));
+            similarity.setDendrogramName(jsonObject.getString("dendrogramName"));
+            similarity.setCopheneticDistanceName(jsonObject.getString("copheneticDistanceName"));
         } catch(Exception e) { throw new RuntimeException("Could not produce or extract elements from JSON Object"); }
     }
 
-    public void createSimilarityMatrixForSciPy(AccessesSciPyDendrogram dendrogram) throws Exception {
+    public void createSimilarityMatrixForSciPy(AccessesSciPySimilarity similarity) throws Exception {
         Set<Short> entities = new TreeSet<>();
         Map<String, Integer> e1e2PairCount = new HashMap<>();
         Map<Short, List<Pair<String, Byte>>> entityFunctionalities = new HashMap<>(); // Map<entityID, List<Pair<functionalityName, accessMode>>>
-        AccessesRepresentation representation = (AccessesRepresentation) dendrogram.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
+        AccessesRepresentation representation = (AccessesRepresentation) similarity.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
         fillMatrix(
                 entities,
                 e1e2PairCount,
                 entityFunctionalities,
                 representation,
-                dendrogram.getProfile(),
-                dendrogram.getTracesMaxLimit(),
-                dendrogram.getTraceType());
+                similarity.getProfile(),
+                similarity.getTracesMaxLimit(),
+                similarity.getTraceType());
 
         JSONObject matrixJSON = getSciPyMatrixAsJSONObject(
                 entities,
                 getRawMatrix(entities, e1e2PairCount, entityFunctionalities),
-                dendrogram.getAccessMetricWeight(),
-                dendrogram.getWriteMetricWeight(),
-                dendrogram.getReadMetricWeight(),
-                dendrogram.getSequenceMetricWeight(),
-                dendrogram.getLinkageType());
+                similarity.getAccessMetricWeight(),
+                similarity.getWriteMetricWeight(),
+                similarity.getReadMetricWeight(),
+                similarity.getSequenceMetricWeight(),
+                similarity.getLinkageType());
 
-        dendrogram.setSimilarityMatrixName(dendrogram.getName() + "_similarityMatrix");
-        accessesSciPyDendrogramService.saveSimilarityMatrix(new ByteArrayInputStream(matrixJSON.toString().getBytes()), dendrogram.getSimilarityMatrixName());
+        similarity.setSimilarityMatrixName(similarity.getName() + "_similarityMatrix");
+        accessesSciPySimilarityService.saveSimilarityMatrix(new ByteArrayInputStream(matrixJSON.toString().getBytes()), similarity.getSimilarityMatrixName());
     }
 
     private void fillMatrix(

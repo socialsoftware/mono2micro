@@ -6,7 +6,6 @@ import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomp
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
-import pt.ist.socialsoftware.mono2micro.dendrogram.repository.DendrogramRepository;
 import pt.ist.socialsoftware.mono2micro.strategy.repository.StrategyRepository;
 
 import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy.ACCESSES_SCIPY;
@@ -15,9 +14,6 @@ import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStra
 public class DecompositionService {
     @Autowired
     StrategyRepository strategyRepository;
-
-    @Autowired
-    DendrogramRepository dendrogramRepository;
 
     @Autowired
     DecompositionRepository decompositionRepository;

@@ -11,7 +11,7 @@ import HttpStatus from "http-status-codes";
 
 
 export const AccessesSciPyDecompositionForm = ({loadDecompositions}) => {
-    let { dendrogramName } = useParams();
+    let { similarityName } = useParams();
 
     const [createExpert, setCreateExpert] = useState(undefined);
 
@@ -51,7 +51,7 @@ export const AccessesSciPyDecompositionForm = ({loadDecompositions}) => {
         const service = new RepositoryService();
 
         service.createAccessesSciPyDecomposition(
-            dendrogramName,
+            similarityName,
             cutType,
             cutValue
         ).then(response => {
@@ -75,7 +75,7 @@ export const AccessesSciPyDecompositionForm = ({loadDecompositions}) => {
 
         const service = new RepositoryService();
         service.createAccessesSciPyExpertDecomposition(
-            dendrogramName,
+            similarityName,
             expertName,
             expertFile
         ).then(response => {
@@ -107,7 +107,7 @@ export const AccessesSciPyDecompositionForm = ({loadDecompositions}) => {
                 <img
                     className={"d-block mb-4"}
                     width="70%"
-                    src={URL + "/dendrogram/" + dendrogramName + "/image?" + new Date().getTime()}
+                    src={URL + "/similarity/" + similarityName + "/image?" + new Date().getTime()}
                     alt="Strategy"
                 />
 

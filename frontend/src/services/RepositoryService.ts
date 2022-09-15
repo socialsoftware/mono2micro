@@ -12,8 +12,8 @@ import {
 } from "../type-declarations/types";
 import { addSearchParamsToUrl } from "../utils/url";
 import {RepresentationFactory} from "../models/representation/RepresentationFactory";
-import Dendrogram from "../models/dendrogram/Dendrogram";
-import {DendrogramFactory} from "../models/dendrogram/DendrogramFactory";
+import Similarity from "../models/similarity/Similarity";
+import {SimilarityFactory} from "../models/similarity/SimilarityFactory";
 import {DecompositionFactory} from "../models/decompositions/DecompositionFactory";
 import Decomposition from "../models/decompositions/Decomposition";
 import Codebase from "../models/codebase/Codebase";
@@ -173,18 +173,18 @@ export class RepositoryService {
     }
 
 
-    //Dendrograms
-    deleteDendrogram(dendrogramName: string) {
-        return this.axios.delete<null>("/dendrogram/" + dendrogramName + "/delete");
+    //Similarities
+    deleteSimilarity(similarityName: string) {
+        return this.axios.delete<null>("/similarity/" + similarityName + "/delete");
     }
 
-    getDendrogram(dendrogramName: string) {
-        return this.axios.get("/dendrogram/" + dendrogramName + "/getDendrogram").then(
-            response => { return DendrogramFactory.getDendrogram(response.data); });
+    getSimilarity(similarityName: string) {
+        return this.axios.get("/similarity/" + similarityName + "/getSimilarity").then(
+            response => { return SimilarityFactory.getSimilarity(response.data); });
     }
 
-    createAccessesSciPyDendrogram(dendrogram: Dendrogram) {
-        return this.axios.post<null>("/dendrogram/createAccessesSciPyDendrogram", dendrogram);
+    createAccessesSciPySimilarity(similarity: Similarity) {
+        return this.axios.post<null>("/similarity/createAccessesSciPySimilarity", similarity);
     }
 
 
@@ -205,9 +205,9 @@ export class RepositoryService {
         return this.axios.post<null>("/codebase/" + codebaseName + "/strategy/" + strategyType + "/createStrategy", data, config);
     }
 
-    getStrategyDendrograms(strategyName: string) {
-        return this.axios.get("/strategy/" + strategyName + "/getStrategyDendrograms").then(
-            response => response.data.map((dendrogram: any) => DendrogramFactory.getDendrogram(dendrogram)));
+    getStrategySimilarities(strategyName: string) {
+        return this.axios.get("/strategy/" + strategyName + "/getStrategySimilarities").then(
+            response => response.data.map((similarity: any) => SimilarityFactory.getSimilarity(similarity)));
     }
 
     getStrategyDecompositions(strategyName: string) {
@@ -245,18 +245,18 @@ export class RepositoryService {
     }
 
     createAccessesSciPyDecomposition(
-        dendrogramName: string,
+        similarityName: string,
         cutType: string,
         cutValue: number
     ) {
         return this.axios.post(addSearchParamsToUrl(
-            "/dendrogram/" + dendrogramName + "/createAccessesSciPyDecomposition",
+            "/similarity/" + similarityName + "/createAccessesSciPyDecomposition",
             { cutType: cutType, cutValue: cutValue.toString() },
         ));
     }
 
     createAccessesSciPyExpertDecomposition(
-        dendrogramName: string,
+        similarityName: string,
         expertName: string,
         expertFile: any
     ) {
@@ -270,7 +270,7 @@ export class RepositoryService {
         data.append('expertFile', expertFile);
 
         return this.axios.post<null>(
-            "/dendrogram/" + dendrogramName + "/createAccessesSciPyExpertDecomposition",
+            "/similarity/" + similarityName + "/createAccessesSciPyExpertDecomposition",
             data,
             config
         );
@@ -278,10 +278,10 @@ export class RepositoryService {
 
     //Decomposition
     getDecompositions(
-        dendrogramName: string
+        similarityName: string
     ) {
         return this.axios.get<Decomposition[]>(
-            "/dendrogram/" + dendrogramName + "/decompositions",
+            "/similarity/" + similarityName + "/decompositions",
         ).then(responseList => {
             if (responseList.data.length == 0)
                 return responseList.data;

@@ -2,15 +2,15 @@ import Strategy from "./Strategy";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import React from "react";
-import Dendrogram from "../dendrogram/Dendrogram";
+import Similarity from "../similarity/Similarity";
 
 export default class AccessesSciPyStrategy extends Strategy {
-    dendrograms?: Dendrogram[];
+    similarities?: Similarity[];
 
     public constructor(strategy: any) {
         super(strategy);
-        this.hasDendrograms = true;
-        this.dendrograms = strategy.dendrograms;
+        this.hasSimilarities = true;
+        this.similarities = strategy.similarities;
     }
 
     printCard(handleDeleteStrategy: (strategy: Strategy) => void): JSX.Element {
@@ -21,7 +21,7 @@ export default class AccessesSciPyStrategy extends Strategy {
                     href={`/codebases/${this.codebaseName}/${this.name}`}
                     className="mb-2"
                 >
-                    Dendrogram Generation
+                    Similarity Distance Generation
                 </Button>
                 <br/>
                 <Button

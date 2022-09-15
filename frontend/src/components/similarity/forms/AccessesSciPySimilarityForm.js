@@ -62,7 +62,7 @@ const selectRow = {
     clickToSelect: true
 };
 
-export const AccessesSciPyDendrogramForm = ({codebaseName, strategyName, setUpdateStrategies}) => {
+export const AccessesSciPySimilarityForm = ({codebaseName, strategyName, setUpdateStrategies}) => {
 
     const service = new RepositoryService();
     const [isUploaded, setIsUploaded] = useState("");
@@ -82,7 +82,7 @@ export const AccessesSciPyDendrogramForm = ({codebaseName, strategyName, setUpda
     const [traceType, setTraceType] = useState(TraceType.ALL);
     const [traceTypeCheckbox, setTraceTypeCheckbox] = useState(["ALL"]);
     const [linkageTypeCheckbox, setLinkageTypeCheckbox] = useState(["average"]);
-    const [method, setMethod] = useState("dendrogram");
+    const [method, setMethod] = useState("similarity");
     const [recommendation, setRecommendation] = useState(undefined);
 
     // Executes when it is informed that there is information to be updated
@@ -94,7 +94,7 @@ export const AccessesSciPyDendrogramForm = ({codebaseName, strategyName, setUpda
         event.preventDefault();
         setIsUploaded("Uploading...");
 
-        service.createAccessesSciPyDendrogram({
+        service.createAccessesSciPySimilarity({
             strategyName,
             type: StrategyType.ACCESSES_SCIPY,
             accessMetricWeight,
@@ -109,7 +109,7 @@ export const AccessesSciPyDendrogramForm = ({codebaseName, strategyName, setUpda
         .then(response => {
             if (response.status === HttpStatus.CREATED) {
                 setIsUploaded("");
-                setUpdateStrategies({}); // Calls function responsible for updating dendrogram
+                setUpdateStrategies({}); // Calls function responsible for updating similarity
             } else {
                 setIsUploaded("Upload failed.");
             }
@@ -165,7 +165,7 @@ export const AccessesSciPyDendrogramForm = ({codebaseName, strategyName, setUpda
             setIsSelected("No decomposition was selected");
             return;
         }
-        else setIsSelected("Creating decompositions...");
+        else setIsSelected("Creating decomposition...");
 
         service.createRecommendationDecompositions(recommendation.name, selectedDecompositions.selectionContext.selected)
             .then(() => {
@@ -283,7 +283,7 @@ export const AccessesSciPyDendrogramForm = ({codebaseName, strategyName, setUpda
         { renderRecommendationList() }
 
         <ButtonGroup variant="contained" aria-label="outlined primary button group">
-            <Button onClick={() => setMethod("dendrogram")}>Dendrogram Creation</Button>
+            <Button onClick={() => setMethod("similarity")}>Similarity Distances Generation</Button>
             <Button onClick={() => setMethod("recommendation")}>Decomposition Recommendation</Button>
         </ButtonGroup>
 
@@ -404,7 +404,7 @@ export const AccessesSciPyDendrogramForm = ({codebaseName, strategyName, setUpda
                 </Form.Group>
             </>
             }
-            {method === "dendrogram" &&
+            {method === "similarity" &&
             <>
                 <Form.Group as={Row} className="align-items-center mb-3">
                     <Form.Label as="legend" column sm={2}>
@@ -543,7 +543,7 @@ export const AccessesSciPyDendrogramForm = ({codebaseName, strategyName, setUpda
                                 traceType !== "")
                             }
                         >
-                            Create Dendrogram
+                            Generate Similarity Distances
                         </Button>
                         <Form.Text className="ms-2">
                             {isUploaded}

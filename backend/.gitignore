@@ -13,7 +13,7 @@ mono2micro.iml
 
 src/main/resources/specific.properties
 src/main/resources/codebases/
-src/main/resources/dendrograms/
+src/main/resources/similarities/
 src/main/resources/experts/
 src/main/resources/evaluation/data/
 src/main/resources/evaluation/mojoCalculator/src/main/resources

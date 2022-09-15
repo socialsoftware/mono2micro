@@ -20,7 +20,7 @@ public class AccessesSciPyDecompositionDto extends DecompositionDto {
     public AccessesSciPyDecompositionDto() {this.type = ACCESSES_SCIPY;}
 
     public AccessesSciPyDecompositionDto(AccessesSciPyDecomposition decomposition) {
-        this.setCodebaseName(decomposition.getDendrogram().getStrategy().getCodebase().getName());
+        this.setCodebaseName(decomposition.getSimilarity().getStrategy().getCodebase().getName());
         this.setStrategyName(decomposition.getStrategy().getName());
         this.setName(decomposition.getName());
         this.type = ACCESSES_SCIPY;

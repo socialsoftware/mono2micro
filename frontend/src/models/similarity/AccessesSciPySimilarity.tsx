@@ -1,11 +1,11 @@
-import Dendrogram from "./Dendrogram";
+import Similarity from "./Similarity";
 import {TraceType} from "../../type-declarations/types.d";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import {URL} from "../../constants/constants"
 import React from "react";
 
-export default class AccessesSciPyDendrogram extends Dendrogram {
+export default class AccessesSciPySimilarity extends Similarity {
     accessMetricWeight: number;
     writeMetricWeight: number;
     readMetricWeight: number;
@@ -15,24 +15,24 @@ export default class AccessesSciPyDendrogram extends Dendrogram {
     tracesMaxLimit: number;
     traceType: TraceType;
 
-    constructor(dendrogram: any) {
-        super(dendrogram);
+    constructor(similarity: any) {
+        super(similarity);
         // Initializes default values if no previous value is provided
-        this.accessMetricWeight =   dendrogram.accessMetricWeight === undefined? 25 : dendrogram.accessMetricWeight;
-        this.writeMetricWeight =    dendrogram.writeMetricWeight === undefined? 25 : dendrogram.writeMetricWeight;
-        this.readMetricWeight =     dendrogram.readMetricWeight === undefined? 25 : dendrogram.readMetricWeight;
-        this.sequenceMetricWeight = dendrogram.sequenceMetricWeight === undefined? 25 : dendrogram.sequenceMetricWeight;
-        this.profile =              dendrogram.profile                 ||     "Generic";
-        this.linkageType =          dendrogram.linkageType             ||     "average";
-        this.tracesMaxLimit =       dendrogram.tracesMaxLimit          ||     0;
-        this.traceType =            dendrogram.traceType               ||     TraceType.ALL;
+        this.accessMetricWeight =   similarity.accessMetricWeight === undefined? 25 : similarity.accessMetricWeight;
+        this.writeMetricWeight =    similarity.writeMetricWeight === undefined? 25 : similarity.writeMetricWeight;
+        this.readMetricWeight =     similarity.readMetricWeight === undefined? 25 : similarity.readMetricWeight;
+        this.sequenceMetricWeight = similarity.sequenceMetricWeight === undefined? 25 : similarity.sequenceMetricWeight;
+        this.profile =              similarity.profile                 ||     "Generic";
+        this.linkageType =          similarity.linkageType             ||     "average";
+        this.tracesMaxLimit =       similarity.tracesMaxLimit          ||     0;
+        this.traceType =            similarity.traceType               ||     TraceType.ALL;
     }
 
-    printCard(handleDeleteDendrogram: (dendrogram: Dendrogram) => void): JSX.Element {
+    printCard(handleDeleteSimilarity: (similarity: Similarity) => void): JSX.Element {
         return <Card key={this.name} className="mb-4" style={{ width: '20rem' }}>
             <Card.Img
                 variant="top"
-                src={URL + "/dendrogram/" + this.name + "/image?" + new Date().getTime()}
+                src={URL + "/similarity/" + this.name + "/image?" + new Date().getTime()}
             />
             <Card.Body>
                 <Card.Title>{this.name}</Card.Title>
@@ -46,14 +46,14 @@ export default class AccessesSciPyDendrogram extends Dendrogram {
                     Read: {this.readMetricWeight}% < br />
                     Sequence: {this.sequenceMetricWeight}%
                 </Card.Text>
-                <Button href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.name}/dendrogram`}
+                <Button href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.name}/similarity`}
                         variant={"success"}
                         className="mb-2">
                     Decomposition Generation
                 </Button>
                 <br />
                 <Button
-                    onClick={() => handleDeleteDendrogram(this)}
+                    onClick={() => handleDeleteSimilarity(this)}
                     variant="danger"
                 >
                     Delete

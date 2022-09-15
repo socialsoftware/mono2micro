@@ -1,15 +1,15 @@
-package pt.ist.socialsoftware.mono2micro.dendrogram.domain;
+package pt.ist.socialsoftware.mono2micro.similarity.domain;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.dendrogram.dto.DendrogramDto;
+import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDto;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class Dendrogram {
+public abstract class Similarity {
     @Id
     private String name;
     @DBRef(lazy = true)
@@ -55,5 +55,5 @@ public abstract class Dendrogram {
         this.decompositions = this.decompositions.stream().filter(decomposition -> !decomposition.getName().equals(decompositionName)).collect(Collectors.toList());
     }
 
-    public abstract boolean equalsDto(DendrogramDto dto);
+    public abstract boolean equalsDto(SimilarityDto dto);
 }

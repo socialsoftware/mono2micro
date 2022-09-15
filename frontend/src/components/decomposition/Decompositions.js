@@ -8,15 +8,15 @@ import {toast, ToastContainer} from "react-toastify";
 import {StrategyType} from "../../models/strategy/Strategy";
 
 export const Decompositions = () => {
-    let { codebaseName, strategyName, dendrogramName } = useParams();
-    const [dendrogram, setDendrogram] = useState({});
+    let { codebaseName, strategyName, similarityName } = useParams();
+    const [similarity, setSimilarity] = useState({});
     const [decompositions, setDecompositions] = useState([]);
 
     //Executed on mount
     useEffect(() => {
         const service = new RepositoryService();
-        service.getDendrogram(dendrogramName).then(response => {
-            setDendrogram(response);
+        service.getSimilarity(similarityName).then(response => {
+            setSimilarity(response);
             loadDecompositions();
         });
     }, []);
@@ -25,7 +25,7 @@ export const Decompositions = () => {
         const service = new RepositoryService();
         const toastId = toast.loading("Fetching Decompositions...");
         service.getDecompositions(
-            dendrogramName
+            similarityName
         ).then(response => {
             setDecompositions(response);
             toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Decompositions Loaded.", isLoading: false});
@@ -63,7 +63,7 @@ export const Decompositions = () => {
                     {strategyName}
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>
-                    {dendrogramName}
+                    {similarityName}
                 </Breadcrumb.Item>
             </Breadcrumb>
         );
@@ -82,7 +82,7 @@ export const Decompositions = () => {
                 Decomposition Creation Method
             </h4>
 
-            {dendrogram.type === StrategyType.ACCESSES_SCIPY &&
+            {similarity.type === StrategyType.ACCESSES_SCIPY &&
                 <AccessesSciPyDecompositionForm
                     loadDecompositions={loadDecompositions}
                 />

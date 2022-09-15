@@ -1,11 +1,11 @@
-package pt.ist.socialsoftware.mono2micro.dendrogram.dto;
+package pt.ist.socialsoftware.mono2micro.similarity.dto;
 
-import pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.AccessesSciPySimilarity;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendAccessesSciPy;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
-public class AccessesSciPyDendrogramDto extends DendrogramDto {
+public class AccessesSciPySimilarityDto extends SimilarityDto {
     private float accessMetricWeight;
     private float writeMetricWeight;
     private float readMetricWeight;
@@ -20,24 +20,24 @@ public class AccessesSciPyDendrogramDto extends DendrogramDto {
         return AccessesSciPyStrategy.ACCESSES_SCIPY;
     }
 
-    public AccessesSciPyDendrogramDto() {this.type = AccessesSciPyStrategy.ACCESSES_SCIPY;}
+    public AccessesSciPySimilarityDto() {this.type = AccessesSciPyStrategy.ACCESSES_SCIPY;}
 
-    public AccessesSciPyDendrogramDto(AccessesSciPyDendrogram dendrogram) {
-        this.codebaseName = dendrogram.getStrategy().getCodebase().getName();
-        this.strategyName = dendrogram.getStrategy().getName();
-        this.name = dendrogram.getName();
+    public AccessesSciPySimilarityDto(AccessesSciPySimilarity similarity) {
+        this.codebaseName = similarity.getStrategy().getCodebase().getName();
+        this.strategyName = similarity.getStrategy().getName();
+        this.name = similarity.getName();
         this.type = AccessesSciPyStrategy.ACCESSES_SCIPY;
-        this.accessMetricWeight = dendrogram.getAccessMetricWeight();
-        this.writeMetricWeight = dendrogram.getWriteMetricWeight();
-        this.readMetricWeight = dendrogram.getReadMetricWeight();
-        this.sequenceMetricWeight = dendrogram.getSequenceMetricWeight();
-        this.profile = dendrogram.getProfile();
-        this.linkageType = dendrogram.getLinkageType();
-        this.tracesMaxLimit = dendrogram.getTracesMaxLimit();
-        this.traceType = dendrogram.getTraceType();
+        this.accessMetricWeight = similarity.getAccessMetricWeight();
+        this.writeMetricWeight = similarity.getWriteMetricWeight();
+        this.readMetricWeight = similarity.getReadMetricWeight();
+        this.sequenceMetricWeight = similarity.getSequenceMetricWeight();
+        this.profile = similarity.getProfile();
+        this.linkageType = similarity.getLinkageType();
+        this.tracesMaxLimit = similarity.getTracesMaxLimit();
+        this.traceType = similarity.getTraceType();
     }
 
-    public AccessesSciPyDendrogramDto(RecommendAccessesSciPy recommend, Constants.TraceType traceType, String linkageType, String decompositionName) {
+    public AccessesSciPySimilarityDto(RecommendAccessesSciPy recommend, Constants.TraceType traceType, String linkageType, String decompositionName) {
         this.type = AccessesSciPyStrategy.ACCESSES_SCIPY;
         this.strategyName = recommend.getStrategy().getName();
         String[] weights = decompositionName.split(",");

@@ -5,7 +5,7 @@ export default abstract class Strategy {
     type!: string;
     codebaseName!: string;
     representationTypes!: string[]
-    hasDendrograms!: boolean;
+    hasSimilarities!: boolean;
 
     protected constructor(strategy: any) {
         this.name = strategy.name;

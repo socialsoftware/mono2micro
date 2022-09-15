@@ -6,7 +6,7 @@ import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.codebase.repository.CodebaseRepository;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.service.DecompositionService;
-import pt.ist.socialsoftware.mono2micro.dendrogram.domain.Dendrogram;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.representation.service.RepresentationService;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
@@ -76,13 +76,13 @@ public class StrategyService {
     public Strategy getStrategy(String strategyName) {
         return strategyRepository.findByName(strategyName);
     }
-    public List<Dendrogram> getStrategyDendrograms(String strategyName) {
+    public List<Similarity> getStrategySimilarities(String strategyName) {
         Strategy strategy = strategyRepository.findByName(strategyName);
         switch (strategy.getType()) {
             case ACCESSES_SCIPY:
-                return ((AccessesSciPyStrategy) strategy).getDendrograms();
+                return ((AccessesSciPyStrategy) strategy).getSimilarities();
             default:
-                throw new RuntimeException("Type " + strategy.getType() + "does not have dendrograms.");
+                throw new RuntimeException("Type " + strategy.getType() + "does not have similarities.");
         }
     }
     public List<Decomposition> getStrategyDecompositions(String strategyName) {

@@ -13,7 +13,7 @@ import env
 matplotlib.use('agg')
 
 
-def createDendrogram(dendrogramName, similarityMatrixName):
+def createDendrogram(similarityName, similarityMatrixName):
     # Database initialization in order to contact MongoDB
     client = pymongo.MongoClient(env.MONGO_DB)
     DB = client[env.MONGO_DB_NAME]
@@ -34,10 +34,10 @@ def createDendrogram(dendrogramName, similarityMatrixName):
     img = BytesIO()
     plt.savefig(img, format="png", bbox_inches='tight')
     img.seek(0)
-    imageName = dendrogramName + "_image"
-    copheneticDistanceName = dendrogramName + "_copheneticDistance"
-    fs.put(img.getvalue(), filename=imageName)
+    dendrogramName = similarityName + "_image"
+    copheneticDistanceName = similarityName + "_copheneticDistance"
+    fs.put(img.getvalue(), filename=dendrogramName)
     fs.put(BytesIO(bytes(str(hierarchy.cophenet(hierarc).tolist()), 'ascii')).getvalue(), filename=copheneticDistanceName)
     client.close()
 
-    return {"operation": "createDendrogram", "imageName": imageName, "copheneticDistanceName": copheneticDistanceName}
+    return {"operation": "createDendrogram", "dendrogramName": dendrogramName, "copheneticDistanceName": copheneticDistanceName}

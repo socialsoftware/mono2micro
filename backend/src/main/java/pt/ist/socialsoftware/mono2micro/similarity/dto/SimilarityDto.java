@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.dendrogram.dto;
+package pt.ist.socialsoftware.mono2micro.similarity.dto;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -7,9 +7,9 @@ import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStra
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = AccessesSciPyDendrogramDto.class, name = ACCESSES_SCIPY),
+        @JsonSubTypes.Type(value = AccessesSciPySimilarityDto.class, name = ACCESSES_SCIPY),
 })
-public abstract class DendrogramDto {
+public abstract class SimilarityDto {
     String codebaseName;
     String strategyName;
     String name;
