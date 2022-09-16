@@ -9,9 +9,10 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import pt.ist.socialsoftware.mono2micro.cluster.AccessesSciPyCluster;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.SciPyClusteringAlgorithmService;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
+import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.AccessesSciPyDecompositionRepository;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.AccessesSciPySimilarity;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
@@ -175,7 +176,8 @@ public class AccessesSciPyDecompositionService {
         ArrayList<HashMap<String, String>> searchItems = new ArrayList<>();
         AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
 
-        decomposition.getClusters().values().forEach(cluster -> {
+        decomposition.getClusters().values().forEach(c -> {
+            AccessesSciPyCluster cluster = (AccessesSciPyCluster) c;
             HashMap<String, String> clusterItem = new HashMap<>();
             clusterItem.put("name", cluster.getName());
             clusterItem.put("type", "Cluster");
@@ -271,8 +273,7 @@ public class AccessesSciPyDecompositionService {
         return node2 + "&" + node1;
     }
 
-    public Map<String, Cluster> mergeClustersOperation(String decompositionName, String clusterName, String otherClusterName, String newName) {
-        AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
+    public Map<String, Cluster> mergeClustersOperation(AccessesSciPyDecomposition decomposition, String clusterName, String otherClusterName, String newName) {
         MergeOperation operation = new MergeOperation(decomposition, clusterName, otherClusterName, newName);
 
         mergeClusters(decomposition, clusterName, otherClusterName, newName);
@@ -281,12 +282,12 @@ public class AccessesSciPyDecompositionService {
     }
 
     public void mergeClusters(AccessesSciPyDecomposition decomposition, String clusterName, String otherClusterName, String newName) {
-        Cluster cluster1 = decomposition.getCluster(clusterName);
-        Cluster cluster2 = decomposition.getCluster(otherClusterName);
+        AccessesSciPyCluster cluster1 = (AccessesSciPyCluster) decomposition.getCluster(clusterName);
+        AccessesSciPyCluster cluster2 = (AccessesSciPyCluster) decomposition.getCluster(otherClusterName);
         if (decomposition.clusterNameExists(newName) && !cluster1.getName().equals(newName) && !cluster2.getName().equals(newName))
             throw new KeyAlreadyExistsException("Cluster with name: " + newName + " already exists");
 
-        Cluster mergedCluster = new Cluster(newName);
+        AccessesSciPyCluster mergedCluster = new AccessesSciPyCluster(newName);
 
         for(short entityID : cluster1.getEntities()) {
             decomposition.getEntityIDToClusterName().replace(entityID, mergedCluster.getName());
@@ -313,8 +314,7 @@ public class AccessesSciPyDecompositionService {
         decompositionRepository.save(decomposition);
     }
 
-    public Map<String, Cluster> renameClusterOperation(String decompositionName, String clusterName, String newName) {
-        AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
+    public Map<String, Cluster> renameClusterOperation(AccessesSciPyDecomposition decomposition, String clusterName, String newName) {
         RenameOperation operation = new RenameOperation(decomposition, clusterName, newName);
 
         renameCluster(decomposition, clusterName, newName);
@@ -330,7 +330,8 @@ public class AccessesSciPyDecompositionService {
         decomposition.addCluster(oldCluster);
 
         // Change coupling dependencies
-        decomposition.getClusters().forEach((s, cluster) -> {
+        decomposition.getClusters().forEach((s, c) -> {
+            AccessesSciPyCluster cluster = (AccessesSciPyCluster) c;
             Set<Short> dependencies = cluster.getCouplingDependencies().get(clusterName);
             if (dependencies != null) {cluster.getCouplingDependencies().remove(clusterName); cluster.addCouplingDependencies(newName, dependencies);}
         });
@@ -368,8 +369,7 @@ public class AccessesSciPyDecompositionService {
         decompositionRepository.save(decomposition);
     }
 
-    public Map<String, Cluster> splitClusterOperation(String decompositionName, String clusterName, String newName, String entitiesString) {
-        AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
+    public Map<String, Cluster> splitClusterOperation(AccessesSciPyDecomposition decomposition, String clusterName, String newName, String entitiesString) {
         SplitOperation operation = new SplitOperation(decomposition, clusterName, newName, entitiesString);
 
         splitCluster(decomposition, clusterName, newName, entitiesString);
@@ -381,8 +381,8 @@ public class AccessesSciPyDecompositionService {
         String[] entities = entitiesString.split(",");
         if (decomposition.clusterNameExists(newName)) throw new KeyAlreadyExistsException("Cluster with name: " + newName + " already exists");
 
-        Cluster currentCluster = decomposition.getCluster(clusterName);
-        Cluster newCluster = new Cluster(newName);
+        AccessesSciPyCluster currentCluster = (AccessesSciPyCluster) decomposition.getCluster(clusterName);
+        AccessesSciPyCluster newCluster = new AccessesSciPyCluster(newName);
 
         for (String stringifiedEntityID : entities) {
             short entityID = Short.parseShort(stringifiedEntityID);
@@ -400,8 +400,7 @@ public class AccessesSciPyDecompositionService {
         decompositionRepository.save(decomposition);
     }
 
-    public Map<String, Cluster> transferEntitiesOperation(String decompositionName, String fromClusterName, String toClusterName, String entitiesString) {
-        AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
+    public Map<String, Cluster> transferEntitiesOperation(AccessesSciPyDecomposition decomposition, String fromClusterName, String toClusterName, String entitiesString) {
         TransferOperation operation = new TransferOperation(decomposition, fromClusterName, toClusterName, entitiesString);
 
         transferEntities(decomposition, fromClusterName, toClusterName, entitiesString);
@@ -410,8 +409,8 @@ public class AccessesSciPyDecompositionService {
     }
 
     public void transferEntities(AccessesSciPyDecomposition decomposition, String fromClusterName, String toClusterName, String entitiesString) {
-        Cluster fromCluster = decomposition.getCluster(fromClusterName);
-        Cluster toCluster = decomposition.getCluster(toClusterName);
+        AccessesSciPyCluster fromCluster = (AccessesSciPyCluster) decomposition.getCluster(fromClusterName);
+        AccessesSciPyCluster toCluster = (AccessesSciPyCluster) decomposition.getCluster(toClusterName);
         Set<Short> entities = Arrays.stream(entitiesString.split(",")).map(Short::valueOf).collect(Collectors.toSet());
 
         for (Short entityID : entities) {
@@ -440,17 +439,17 @@ public class AccessesSciPyDecompositionService {
         List<Short> entitiesIDs = entities.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
 
         if (decomposition.clusterNameExists(newName)) {
-            Cluster previousCluster = decomposition.getClusters().values().stream().filter(cluster -> cluster.getName().equals(newName)).findFirst()
+            AccessesSciPyCluster previousCluster = (AccessesSciPyCluster) decomposition.getClusters().values().stream().filter(cluster -> cluster.getName().equals(newName)).findFirst()
                     .orElseThrow(() -> new KeyAlreadyExistsException("Cluster with name: " + newName + " already exists"));
             if (!entitiesIDs.containsAll(previousCluster.getEntities()))
                 throw new KeyAlreadyExistsException("Cluster with name: " + newName + " already exists");
         }
 
-        Cluster newCluster = new Cluster(newName);
+        AccessesSciPyCluster newCluster = new AccessesSciPyCluster(newName);
 
         for (Short entityID : entitiesIDs) {
-            Cluster currentCluster = decomposition.getClusters().values().stream()
-                    .filter(cluster -> cluster.getEntities().contains(entityID)).findFirst()
+            AccessesSciPyCluster currentCluster = (AccessesSciPyCluster) decomposition.getClusters().values().stream()
+                    .filter(cluster -> ((AccessesSciPyCluster) cluster).getEntities().contains(entityID)).findFirst()
                     .orElseThrow(() -> new RuntimeException("No cluster constains entity " + entityID));
 
             newCluster.addEntity(entityID);

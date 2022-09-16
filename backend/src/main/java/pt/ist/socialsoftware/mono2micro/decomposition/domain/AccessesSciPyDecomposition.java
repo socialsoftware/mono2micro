@@ -2,7 +2,8 @@ package pt.ist.socialsoftware.mono2micro.decomposition.domain;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
+import pt.ist.socialsoftware.mono2micro.cluster.AccessesSciPyCluster;
+import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.log.domain.AccessesSciPyLog;
@@ -19,7 +20,6 @@ public class AccessesSciPyDecomposition extends Decomposition {
 
     @DBRef
     Similarity similarity;
-    private Map<String, Cluster> clusters = new HashMap<>();
     @DBRef(lazy = true)
     private Map<String, Functionality> functionalities = new HashMap<>(); // <functionalityName, Functionality>
     private Map<Short, String> entityIDToClusterName = new HashMap<>();
@@ -119,43 +119,11 @@ public class AccessesSciPyDecomposition extends Decomposition {
         return c;
     }
 
-    public boolean clusterNameExists(String clusterName) {
-        for (Map.Entry<String, Cluster> cluster :this.clusters.entrySet())
-            if (cluster.getValue().getName().equals(clusterName))
-                return true;
-        return false;
-    }
-
-    public void addCluster(Cluster cluster) {
-        Cluster c = this.clusters.putIfAbsent(cluster.getName(), cluster);
-
-        if (c != null) throw new Error("Cluster with name: " + cluster.getName() + " already exists");
-    }
-
-    public Cluster removeCluster(String clusterName) {
-        Cluster c = this.clusters.remove(clusterName);
-
-        if (c == null) throw new Error("Cluster with name: " + clusterName + " not found");
-
-        return c;
-    }
-
-    public Cluster getCluster(String clusterName) {
-        Cluster c = this.clusters.get(clusterName);
-
-        if (c == null) throw new Error("Cluster with name: " + clusterName + " not found");
-
-        return c;
-    }
-
-    public Cluster getClusterByName(String name) {
-        return this.clusters.values().stream().filter(cluster -> cluster.getName().equals(name)).findFirst().orElse(null);
-    }
-
     public int maxClusterSize() {
         int max = 0;
 
-        for (Cluster cluster : this.clusters.values()) {
+        for (Cluster c : this.clusters.values()) {
+            AccessesSciPyCluster cluster = (AccessesSciPyCluster) c;
             if (cluster.getEntities().size() > max)
                 max = cluster.getEntities().size();
         }
@@ -165,6 +133,6 @@ public class AccessesSciPyDecomposition extends Decomposition {
 
     public void transferCouplingDependencies(Set<Short> entities, String currentClusterName, String newClusterName) {
         for (Cluster cluster : this.getClusters().values())
-            cluster.transferCouplingDependencies(entities, currentClusterName, newClusterName);
+            ((AccessesSciPyCluster) cluster).transferCouplingDependencies(entities, currentClusterName, newClusterName);
     }
 }

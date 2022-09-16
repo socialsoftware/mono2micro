@@ -94,7 +94,7 @@ export const AccessesSciPySimilarityForm = ({codebaseName, strategyName, setUpda
         event.preventDefault();
         setIsUploaded("Uploading...");
 
-        service.createAccessesSciPySimilarity({
+        service.createSimilarity({
             strategyName,
             type: StrategyType.ACCESSES_SCIPY,
             accessMetricWeight,

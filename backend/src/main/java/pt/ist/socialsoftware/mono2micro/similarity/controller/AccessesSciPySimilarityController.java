@@ -8,7 +8,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
-import pt.ist.socialsoftware.mono2micro.similarity.dto.AccessesSciPySimilarityDto;
 import pt.ist.socialsoftware.mono2micro.similarity.service.AccessesSciPySimilarityService;
 
 @RestController
@@ -19,22 +18,6 @@ public class AccessesSciPySimilarityController {
 
     @Autowired
     AccessesSciPySimilarityService similarityService;
-
-    @RequestMapping(value = "/similarity/createAccessesSciPySimilarity", method = RequestMethod.POST)
-    public ResponseEntity<HttpStatus> createSimilarity(
-            @RequestBody AccessesSciPySimilarityDto similarityDto
-    ) {
-        logger.debug("Create Accesses SciPy Similarity");
-
-        try {
-            similarityService.createSimilarity(similarityDto);
-
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
 
 
     // Specific to accesses similarity generator with SciPy clustering algorithm

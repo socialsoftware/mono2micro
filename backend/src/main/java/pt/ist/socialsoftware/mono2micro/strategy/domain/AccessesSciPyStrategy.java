@@ -64,5 +64,4 @@ public class AccessesSciPyStrategy extends Strategy {
     public void addRecommendation(Recommendation recommendation) {
         this.recommendations.add(recommendation);
     }
-
 }

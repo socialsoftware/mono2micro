@@ -6,8 +6,8 @@ import org.jgrapht.traverse.BreadthFirstIterator;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pt.ist.socialsoftware.mono2micro.cluster.AccessesSciPyCluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.AccessesSciPyDecompositionRepository;
 import pt.ist.socialsoftware.mono2micro.fileManager.FileManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
@@ -199,7 +199,7 @@ public class FunctionalityService {
             // ClusterDependencies
             String clusterName = lt.getClusterName();
             if (!clusterName.equals("-1")) { // not root node
-                Cluster fromCluster = decomposition.getCluster(clusterName);
+                AccessesSciPyCluster fromCluster = (AccessesSciPyCluster) decomposition.getCluster(clusterName);
 
                 List<LocalTransaction> nextLocalTransactions = successorListOf(localTransactionsGraph, lt);
 

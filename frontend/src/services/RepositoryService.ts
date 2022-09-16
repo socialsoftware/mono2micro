@@ -183,8 +183,8 @@ export class RepositoryService {
             response => { return SimilarityFactory.getSimilarity(response.data); });
     }
 
-    createAccessesSciPySimilarity(similarity: Similarity) {
-        return this.axios.post<null>("/similarity/createAccessesSciPySimilarity", similarity);
+    createSimilarity(similarity: Similarity) {
+        return this.axios.post<null>("/similarity/create", similarity);
     }
 
 
@@ -244,15 +244,8 @@ export class RepositoryService {
         return this.axios.get<null>("/accessesSciPyDecomposition/" + decompositionName + "/snapshotDecomposition");
     }
 
-    createAccessesSciPyDecomposition(
-        similarityName: string,
-        cutType: string,
-        cutValue: number
-    ) {
-        return this.axios.post(addSearchParamsToUrl(
-            "/similarity/" + similarityName + "/createAccessesSciPyDecomposition",
-            { cutType: cutType, cutValue: cutValue.toString() },
-        ));
+    createDecomposition(decompositionDto: any) {
+        return this.axios.post("/similarity/createDecomposition", decompositionDto);
     }
 
     createAccessesSciPyExpertDecomposition(
@@ -304,16 +297,6 @@ export class RepositoryService {
     ) {
         return this.axios.get<Decomposition>(
             "/accessesSciPyDecomposition/" + decompositionName + "/updatedAccessesSciPyDecomposition"
-        );
-    }
-
-    getAccessesSciPyClusters(
-        codebaseName: string,
-        strategyName: string,
-        decompositionName: string
-    ) {
-        return this.axios.get<Cluster[]>(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/getClusters"
         );
     }
 

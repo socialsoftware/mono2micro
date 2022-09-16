@@ -2,8 +2,10 @@ package pt.ist.socialsoftware.mono2micro.decomposition.dto;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
@@ -16,6 +18,7 @@ public abstract class DecompositionDto {
     String strategyName;
     String type;
     Map<String, Object> metrics;
+    Map<String, Cluster> clusters = new HashMap<>();
 
     public String getName() {
         return name;
@@ -56,4 +59,12 @@ public abstract class DecompositionDto {
     public void setMetrics(Map<String, Object> metrics) {
         this.metrics = metrics;
     }
+    public Map<String, Cluster> getClusters() {
+        return clusters;
+    }
+
+    public void setClusters(Map<String, Cluster> clusters) {
+        this.clusters = clusters;
+    }
+
 }

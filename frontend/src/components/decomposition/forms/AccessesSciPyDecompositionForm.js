@@ -8,6 +8,7 @@ import Button from "react-bootstrap/Button";
 import {useParams} from "react-router-dom";
 import {RepositoryService} from "../../../services/RepositoryService";
 import HttpStatus from "http-status-codes";
+import {StrategyType} from "../../../models/strategy/Strategy";
 
 
 export const AccessesSciPyDecompositionForm = ({loadDecompositions}) => {
@@ -50,11 +51,12 @@ export const AccessesSciPyDecompositionForm = ({loadDecompositions}) => {
 
         const service = new RepositoryService();
 
-        service.createAccessesSciPyDecomposition(
+        service.createDecomposition({
+            type: StrategyType.ACCESSES_SCIPY,
             similarityName,
             cutType,
             cutValue
-        ).then(response => {
+        }).then(response => {
             if (response.status === HttpStatus.OK) {
                 loadDecompositions();
                 setIsUploaded("");

@@ -6,7 +6,10 @@ import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.service.DecompositionService;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.AccessesSciPySimilarity;
+import pt.ist.socialsoftware.mono2micro.similarity.dto.AccessesSciPySimilarityDto;
+import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDto;
 import pt.ist.socialsoftware.mono2micro.similarity.repository.SimilarityRepository;
+import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
 
 import java.util.List;
 
@@ -22,6 +25,16 @@ public class SimilarityService {
 
     @Autowired
     DecompositionService decompositionService;
+
+    public void createSimilarity(SimilarityDto similarityDto) throws Exception {
+        switch (similarityDto.getType()) {
+            case AccessesSciPyStrategy.ACCESSES_SCIPY:
+                accessesSciPySimilarityService.createSimilarity((AccessesSciPySimilarityDto) similarityDto);
+                return;
+            default:
+                throw new RuntimeException("Similarity type not found.");
+        }
+    }
 
     public void deleteSingleSimilarity(String similarityName) {
         Similarity similarity = similarityRepository.findByName(similarityName);

@@ -9,9 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
+import pt.ist.socialsoftware.mono2micro.cluster.AccessesSciPyCluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityService;
 import pt.ist.socialsoftware.mono2micro.log.domain.AccessesSciPyLog;
@@ -123,7 +123,7 @@ public class SciPyClusteringAlgorithmService {
     }
 
     private void createGenericDecomposition(AccessesSciPySimilarity similarity, AccessesSciPyDecomposition decomposition) throws Exception {
-        Cluster cluster = new Cluster("Generic");
+        AccessesSciPyCluster cluster = new AccessesSciPyCluster("Generic");
 
         JSONObject similarityMatrixData = new JSONObject(similarity.getSimilarityMatrixName());
 
@@ -200,10 +200,10 @@ public class SciPyClusteringAlgorithmService {
 
         for (String name : clusterNames) {
             JSONArray entities = clustersJSON.getJSONArray(name);
-            Cluster cluster;
+            AccessesSciPyCluster cluster;
             if (decomposition.isExpert())
-                cluster = new Cluster(name);
-            else cluster = new Cluster("Cluster" + name);
+                cluster = new AccessesSciPyCluster(name);
+            else cluster = new AccessesSciPyCluster("Cluster" + name);
 
             for (int i = 0; i < entities.length(); i++) {
                 short entityID = (short) entities.getInt(i);

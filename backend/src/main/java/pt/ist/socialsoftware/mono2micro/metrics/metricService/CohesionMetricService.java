@@ -1,7 +1,8 @@
 package pt.ist.socialsoftware.mono2micro.metrics.metricService;
 
 import org.springframework.stereotype.Service;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
+import pt.ist.socialsoftware.mono2micro.cluster.AccessesSciPyCluster;
+import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 
@@ -16,7 +17,8 @@ public class CohesionMetricService {
     public Double calculateMetric(AccessesSciPyDecomposition decomposition, Map<String, List<Functionality>> clustersFunctionalities) {
         double totalCohesion = 0;
 
-        for (Cluster cluster : decomposition.getClusters().values()) {
+        for (Cluster c : decomposition.getClusters().values()) {
+            AccessesSciPyCluster cluster = (AccessesSciPyCluster) c;
             List<Functionality> FunctionalitiesThatAccessThisCluster = clustersFunctionalities.get(cluster.getName());
 
             double clusterCohesion = 0;

@@ -24,17 +24,33 @@ public class SimilarityController {
 	@Autowired
 	SimilarityService similarityService;
 
-	@RequestMapping(value = "/similarity/{similarityName}/delete", method = RequestMethod.DELETE)
-	public ResponseEntity<HttpStatus> deleteSimilarity(
-			@PathVariable String similarityName
+	@RequestMapping(value = "/similarity/create", method = RequestMethod.POST)
+	public ResponseEntity<HttpStatus> createSimilarity(
+			@RequestBody SimilarityDto similarityDto
 	) {
-		logger.debug("Delete Similarity");
+		logger.debug("Create Similarity Distances");
 
 		try {
-			similarityService.deleteSingleSimilarity(similarityName);
+			similarityService.createSimilarity(similarityDto);
 
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>(HttpStatus.CREATED);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
 
+	@RequestMapping(value = "/similarity/{similarityName}/getSimilarity", method = RequestMethod.GET)
+	public ResponseEntity<SimilarityDto> getSimilarity(
+			@PathVariable String similarityName
+	) {
+		logger.debug("getSimilarity");
+
+		try {
+			return new ResponseEntity<>(
+					SimilarityDtoFactory.getFactory().getSimilarityDto(similarityService.getSimilarity(similarityName)),
+					HttpStatus.OK
+			);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -59,17 +75,17 @@ public class SimilarityController {
 		}
 	}
 
-	@RequestMapping(value = "/similarity/{similarityName}/getSimilarity", method = RequestMethod.GET)
-	public ResponseEntity<SimilarityDto> getSimilarity(
+	@RequestMapping(value = "/similarity/{similarityName}/delete", method = RequestMethod.DELETE)
+	public ResponseEntity<HttpStatus> deleteSimilarity(
 			@PathVariable String similarityName
 	) {
-		logger.debug("getSimilarity");
+		logger.debug("Delete Similarity");
 
 		try {
-			return new ResponseEntity<>(
-					SimilarityDtoFactory.getFactory().getSimilarityDto(similarityService.getSimilarity(similarityName)),
-					HttpStatus.OK
-			);
+			similarityService.deleteSingleSimilarity(similarityName);
+
+			return new ResponseEntity<>(HttpStatus.OK);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
