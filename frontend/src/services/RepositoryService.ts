@@ -53,14 +53,14 @@ export class RepositoryService {
     recommendation(
         requestedStrategyRecommendation: Recommendation
     ) {
-        return this.axios.put("recommendation/createRecommendAccessesSciPy", requestedStrategyRecommendation)
+        return this.axios.put("recommendation/createRecommendation", requestedStrategyRecommendation)
             .then((response) => {return RecommendationFactory.getRecommendation(response.data)});
     }
 
     getRecommendationResult(
         recommendationName: string
     ) {
-        return this.axios.get("/recommendAccessesSciPy/" + recommendationName + "/getRecommendationResult")
+        return this.axios.get("/recommendation/" + recommendationName + "/getRecommendationResult")
             .then(response => {
                 if (response.data === "")
                     return [];
@@ -79,7 +79,7 @@ export class RepositoryService {
         // unfortunately, this is needed so that data.append does not interpret the commas as an array separation
         data.append('decompositionNames', "");
 
-        return this.axios.post<null>("/recommendAccessesSciPy/" + recommendationName + "/createDecompositions", data);
+        return this.axios.post<null>("/recommendation/" + recommendationName + "/createDecompositions", data);
     }
 
     //Codebases

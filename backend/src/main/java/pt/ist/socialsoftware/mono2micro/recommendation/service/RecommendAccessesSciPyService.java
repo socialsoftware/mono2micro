@@ -4,6 +4,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.SciPyClusteringAlgorithmService;
+import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.similarityGenerator.AccessesSimilarityGeneratorService;
@@ -110,13 +111,7 @@ public class RecommendAccessesSciPyService {
         return recommendation;
     }
 
-    public String getRecommendationResultByName(String recommendationName) throws IOException {
-        RecommendAccessesSciPy recommendation = recommendAccessesSciPyRepository.getRecommendationResultName(recommendationName);
-        return getRecommendationResult(recommendation);
-    }
-
-    public void createDecompositions(String recommendationName, List<String> decompositionNames) throws Exception {
-        RecommendAccessesSciPy recommendation = recommendAccessesSciPyRepository.findByName(recommendationName);
+    public void createDecompositions(RecommendAccessesSciPy recommendation, List<String> decompositionNames) throws Exception {
         AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) strategyRepository.findByName(recommendation.getStrategy().getName());
         List<Similarity> similarities = strategy.getSimilarities();
 
@@ -150,7 +145,7 @@ public class RecommendAccessesSciPyService {
         }
     }
 
-    public String getRecommendationResult(RecommendAccessesSciPy recommendation) throws IOException {
+    public String getRecommendationResult(Recommendation recommendation) throws IOException {
         return IOUtils.toString(gridFsService.getFile(recommendation.getRecommendationResultName()), StandardCharsets.UTF_8);
     }
 

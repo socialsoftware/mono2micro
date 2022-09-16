@@ -10,6 +10,7 @@ public abstract class Recommendation {
     String name;
     @DBRef(lazy = true)
     Strategy strategy;
+    String recommendationResultName;
 
     public String getName() {
         return name;
@@ -30,4 +31,12 @@ public abstract class Recommendation {
     public abstract String getType();
 
     public abstract boolean equalsDto(RecommendationDto dto);
+
+    public String getRecommendationResultName() {
+        return recommendationResultName;
+    }
+
+    public void setRecommendationResultName(String recommendationResultName) {
+        this.recommendationResultName = recommendationResultName;
+    }
 }
