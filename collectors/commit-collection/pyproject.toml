@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "scripts"
+version = "0.1.0"
+description = "Helpful scripts for João's Thesis."
+authors = ["João Lourenço <estudante.lourenco@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+funcy = "1.17"
+GitPython = "3.1.27"
+matplotlib = "3.5.2"
+pip-chill = "1.0.1"
+plotly = "5.8.2"
+rich = "12.4.4"
+statsmodels = "0.13.2"
+requests = "2.26.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
