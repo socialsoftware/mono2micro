@@ -23,7 +23,7 @@ public class CouplingMetricService {
             Map<String, Set<Short>> couplingDependencies = cluster1.getCouplingDependencies();
 
             for (String cluster2 : couplingDependencies.keySet())
-                clusterCoupling += (double) couplingDependencies.get(cluster2).size() / ((AccessesSciPyCluster) decomposition.getCluster(cluster2)).getEntities().size();
+                clusterCoupling += (double) couplingDependencies.get(cluster2).size() / decomposition.getCluster(cluster2).getElements().size();
 
             clusterCoupling = graphClustersAmount == 1 ? 0 : clusterCoupling / (graphClustersAmount - 1);
             clusterCoupling = BigDecimal.valueOf(clusterCoupling)

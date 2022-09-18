@@ -29,10 +29,10 @@ public class CohesionMetricService {
                 Set<Short> functionalityEntities = functionality.getEntities().keySet();
 
                 for (short entityID : functionalityEntities)
-                    if (cluster.containsEntity(entityID))
+                    if (cluster.containsElement(entityID))
                         numberEntitiesTouched++;
 
-                clusterCohesion += numberEntitiesTouched / cluster.getEntities().size();
+                clusterCohesion += numberEntitiesTouched / cluster.getElements().size();
             }
 
             clusterCohesion /= FunctionalitiesThatAccessThisCluster.size();

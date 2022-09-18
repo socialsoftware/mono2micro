@@ -2,6 +2,7 @@ package pt.ist.socialsoftware.mono2micro.decomposition.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.AccessesSciPyDecompositionDto;
@@ -10,6 +11,8 @@ import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRe
 import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.strategy.repository.StrategyRepository;
+
+import java.util.Map;
 
 import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy.ACCESSES_SCIPY;
 
@@ -61,45 +64,41 @@ public class DecompositionService {
         }
     }
 
-    public void mergeClusters(String decompositionName,  String clusterName,  String otherClusterName,  String newName) {
+    public Map<String, Cluster> mergeClusters(String decompositionName,  String clusterName,  String otherClusterName,  String newName) {
         Decomposition decomposition = decompositionRepository.findByName(decompositionName);
         switch (decomposition.getStrategyType()) {
             case AccessesSciPyStrategy.ACCESSES_SCIPY:
-                accessesSciPyDecompositionService.mergeClustersOperation((AccessesSciPyDecomposition) decomposition, clusterName, otherClusterName, newName);
-                return;
+                return accessesSciPyDecompositionService.mergeClustersOperation((AccessesSciPyDecomposition) decomposition, clusterName, otherClusterName, newName);
             default:
                 throw new RuntimeException("Could not get the strategy type");
         }
     }
 
-    public void renameCluster(String decompositionName,  String clusterName,  String newName) {
+    public Map<String, Cluster> renameCluster(String decompositionName,  String clusterName,  String newName) {
         Decomposition decomposition = decompositionRepository.findByName(decompositionName);
         switch (decomposition.getStrategyType()) {
             case AccessesSciPyStrategy.ACCESSES_SCIPY:
-                accessesSciPyDecompositionService.renameClusterOperation((AccessesSciPyDecomposition) decomposition, clusterName, newName);
-                return;
+                return accessesSciPyDecompositionService.renameClusterOperation((AccessesSciPyDecomposition) decomposition, clusterName, newName);
             default:
                 throw new RuntimeException("Could not get the strategy type");
         }
     }
 
-    public void splitCluster(String decompositionName,  String clusterName,  String newName, String entities) {
+    public Map<String, Cluster> splitCluster(String decompositionName,  String clusterName,  String newName, String entities) {
         Decomposition decomposition = decompositionRepository.findByName(decompositionName);
         switch (decomposition.getStrategyType()) {
             case AccessesSciPyStrategy.ACCESSES_SCIPY:
-                accessesSciPyDecompositionService.splitClusterOperation((AccessesSciPyDecomposition) decomposition, clusterName, newName, entities);
-                return;
+                return accessesSciPyDecompositionService.splitClusterOperation((AccessesSciPyDecomposition) decomposition, clusterName, newName, entities);
             default:
                 throw new RuntimeException("Could not get the strategy type");
         }
     }
 
-    public void transferEntities(String decompositionName,  String clusterName,  String toClusterName, String entities) {
+    public Map<String, Cluster> transferEntities(String decompositionName, String clusterName, String toClusterName, String entities) {
         Decomposition decomposition = decompositionRepository.findByName(decompositionName);
         switch (decomposition.getStrategyType()) {
             case AccessesSciPyStrategy.ACCESSES_SCIPY:
-                accessesSciPyDecompositionService.transferEntitiesOperation((AccessesSciPyDecomposition) decomposition, clusterName, toClusterName, entities);
-                return;
+                return accessesSciPyDecompositionService.transferEntitiesOperation((AccessesSciPyDecomposition) decomposition, clusterName, toClusterName, entities);
             default:
                 throw new RuntimeException("Could not get the strategy type");
         }

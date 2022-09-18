@@ -322,9 +322,9 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
     function createNode(cluster) {
         return {
             id: cluster.name,
-            title: cluster.entities.map((entityID) => translateEntity(entityID)).join('\n') + "\nTotal: " + cluster.entities.length,
+            title: cluster.elements.map((entity) => entity.name).join('\n') + "\nTotal: " + cluster.elements.length,
             label: cluster.name,
-            value: cluster.entities,
+            value: cluster.elements,
             level: 1,
             type: types.CLUSTER
         };
@@ -334,7 +334,7 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
         const text = [];
 
         Object.entries(currentFunctionality.entities).forEach(([entityID, value]) => {
-            if (cluster.entities.includes(Number(entityID)))
+            if (cluster.elements.find(e => e.id === Number(entityID)))
                 text.push(translateEntity(entityID) + " " + value)
         });
 
@@ -428,7 +428,8 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
     function identifyModifiedEntities(cluster){
         const modifiedEntities = [];
         Object.entries(functionality.entities).forEach(e => {
-            if (cluster.entities.includes(parseInt(e[0])) && e[1] >= 2) // 2 -> W , 3 -> RW - we want all writes
+            let entityId = parseInt(e[0]);
+            if (cluster.elements.find(e1 => e1.id === entityId) && e[1] >= 2) // 2 -> W , 3 -> RW - we want all writes
                 modifiedEntities.push(e[0]);
         })
 

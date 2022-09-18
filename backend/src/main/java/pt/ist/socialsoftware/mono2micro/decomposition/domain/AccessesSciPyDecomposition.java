@@ -122,10 +122,9 @@ public class AccessesSciPyDecomposition extends Decomposition {
     public int maxClusterSize() {
         int max = 0;
 
-        for (Cluster c : this.clusters.values()) {
-            AccessesSciPyCluster cluster = (AccessesSciPyCluster) c;
-            if (cluster.getEntities().size() > max)
-                max = cluster.getEntities().size();
+        for (Cluster cluster : this.clusters.values()) {
+            if (cluster.getElements().size() > max)
+                max = cluster.getElements().size();
         }
 
         return max;

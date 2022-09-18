@@ -69,13 +69,18 @@ func (d *Decomposition) GetEntityCluster(id int) *Cluster {
 }
 
 type Cluster struct {
-	Name                 string                    `json:"string,omitempty"`
+	Name                 string                    `json:"name,omitempty"`
 	Complexity           float64                   `json:"complexity,omitempty"`
 	Cohesion             float64                   `json:"cohesion,omitempty"`
 	Coupling             float64                   `json:"coupling,omitempty"`
 	CouplingDependencies map[string][]int          `json:"couplingDependencies,omitempty"`
-	Entities             []int                     `json:"entities,omitempty"`
+	Entities             []Entity                  `json:"entities,omitempty"`
 	Functionalities      map[string]*Functionality `json:"functionalities,omitempty"`
+}
+
+type Entity struct {
+	Id   int    `json:"id,omitempty"`
+	Name string `json:"name,omitempty"`
 }
 
 func (c *Cluster) AddCouplingDependency(clusterName string, entityID int) {
@@ -111,8 +116,8 @@ func (c *Cluster) AddFunctionality(functionality *Functionality) {
 }
 
 func (c *Cluster) ContainsEntity(id int) bool {
-	for entityID := range c.Entities {
-		if entityID == id {
+	for _, entity := range c.Entities {
+		if entity.Id == id {
 			return true
 		}
 	}

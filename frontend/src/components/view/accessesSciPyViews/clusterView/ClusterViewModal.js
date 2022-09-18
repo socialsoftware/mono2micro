@@ -1,8 +1,7 @@
 import {Accordion, ListGroup, ListGroupItem, Modal, ModalBody, ModalTitle} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Divider from "@mui/material/Divider";
-import React, {useContext, useEffect, useState} from "react";
-import AppContext from "../../../AppContext";
+import React, {useEffect, useState} from "react";
 import {ArrowRightAlt} from "@mui/icons-material";
 import CircularProgress from "@mui/material/CircularProgress";
 import {types} from "../Views";
@@ -15,9 +14,6 @@ const ACCESS_TYPES = {
 };
 
 export const ClusterViewModal = ({clusters, edgeWeights, outdated, clustersFunctionalities, visGraph, showModal, setShowModal, clickedComponent, setClickedComponent}) => {
-    const context = useContext(AppContext);
-    const { translateEntity } = context;
-
     const [title, setTitle] = useState("Options");
     const [informationText, setInformationText] = useState(undefined);
 
@@ -44,9 +40,9 @@ export const ClusterViewModal = ({clusters, edgeWeights, outdated, clustersFunct
 
         setInformationText(
             <>
-                <h4>{clickedComponent.entities.length} entities:</h4>
+                <h4>{clickedComponent.elements.length} entities:</h4>
                 <ListGroup>
-                    {clickedComponent.entities.map(entityId => <ListGroupItem key={entityId}>{translateEntity(entityId)}</ListGroupItem>)}
+                    {clickedComponent.elements.map(entity => <ListGroupItem key={entity.id}>{entity.name}</ListGroupItem>)}
                 </ListGroup>
             </>
         );
@@ -65,7 +61,10 @@ export const ClusterViewModal = ({clusters, edgeWeights, outdated, clustersFunct
                                 <Accordion.Header>Depending on the following cluster {dependencyCluster.name} entities:</Accordion.Header>
                                 <Accordion.Body>
                                     <ListGroup>
-                                        {couplingDependency.map(entityId => <ListGroupItem key={entityId}>{translateEntity(entityId)}</ListGroupItem>)}
+                                        {couplingDependency.map(entityId => {
+                                            let entity = dependencyCluster.elements.find(e => e.id === entityId);
+                                            return <ListGroupItem key={entity.id}>{entity.name}</ListGroupItem>
+                                        })}
                                     </ListGroup>
                                 </Accordion.Body>
                             </Accordion.Item>
@@ -91,9 +90,10 @@ export const ClusterViewModal = ({clusters, edgeWeights, outdated, clustersFunct
                                     <Accordion.Body>
                                         <ListGroup>
                                             {
-                                                functionality.entitiesPerCluster[clickedComponent.id].map(entityId =>
-                                                    <ListGroupItem key={entityId}>{translateEntity(entityId)}</ListGroupItem>
-                                                )
+                                                functionality.entitiesPerCluster[clickedComponent.id].map(entityId => {
+                                                    let entity = clickedComponent.elements.find(e => e.id === entityId);
+                                                    return <ListGroupItem key={entity.id}>{entity.name}</ListGroupItem>;
+                                                })
                                             }
                                         </ListGroup>
                                     </Accordion.Body>
@@ -135,10 +135,10 @@ export const ClusterViewModal = ({clusters, edgeWeights, outdated, clustersFunct
                             return undefined;
                         return (
                             <Accordion.Item eventKey={cluster.name} key={cluster.name}>
-                                {cluster.entities.includes(clickedComponent.id) &&
+                                {cluster.elements.find(e => e.id === clickedComponent.id) &&
                                     <Accordion.Header>In common inside own cluster ({cluster.name}):</Accordion.Header>
                                 }
-                                {!cluster.entities.includes(clickedComponent.id) &&
+                                {!cluster.elements.find(e => e.id === clickedComponent.id) &&
                                     <Accordion.Header>In common with cluster {cluster.name}:</Accordion.Header>
                                 }
                                 <Accordion.Body>
@@ -172,7 +172,12 @@ export const ClusterViewModal = ({clusters, edgeWeights, outdated, clustersFunct
                         <Accordion.Header>Coupling dependencies from {c1.name} <ArrowRightAlt/> {c2.name}:</Accordion.Header>
                         <Accordion.Body>
                             <ListGroup>
-                                { couplingC1C2.map(entity => <ListGroupItem key={entity}>{translateEntity(entity)}</ListGroupItem>) }
+                                {
+                                    couplingC1C2.map(entityId => {
+                                        let entity = c2.elements.find(e => e.id === entityId);
+                                        return <ListGroupItem key={entity.id}>{entity.name}</ListGroupItem>;
+                                    })
+                                }
                             </ListGroup>
                         </Accordion.Body>
                     </Accordion.Item>
@@ -186,7 +191,12 @@ export const ClusterViewModal = ({clusters, edgeWeights, outdated, clustersFunct
                         <Accordion.Header>Coupling dependencies from {c2.name} <ArrowRightAlt/> {c1.name}:</Accordion.Header>
                         <Accordion.Body>
                             <ListGroup>
-                                { couplingC2C1.map(entity => <ListGroupItem key={entity}>{translateEntity(entity)}</ListGroupItem>) }
+                                {
+                                    couplingC2C1.map(entityId => {
+                                        let entity = c1.elements.find(e => e.id === entityId);
+                                        return <ListGroupItem key={entity.id}>{entity.name}</ListGroupItem>;
+                                    })
+                                }
                             </ListGroup>
                         </Accordion.Body>
                     </Accordion.Item>
@@ -215,19 +225,18 @@ export const ClusterViewModal = ({clusters, edgeWeights, outdated, clustersFunct
     }
 
     function handleCommonFunctionalitiesBetweenClusterEntity() {
-        let cluster;
+        let cluster = visGraph.nodes.get(clickedComponent.from);
         let entity;
-        if (visGraph.nodes.get(clickedComponent.from).type === types.CLUSTER) {
-            cluster = clickedComponent.from
-            entity = clickedComponent.to;
+        if (cluster.type === types.CLUSTER) {
+            entity = visGraph.nodes.get(clickedComponent.to);
         }
         else {
-            cluster = clickedComponent.to
-            entity = clickedComponent.from;
+            entity = cluster;
+            cluster = visGraph.nodes.get(clickedComponent.to);
         }
-        const filteredClustersFunctionalities = clustersFunctionalities[cluster].filter(functionality => functionality.entities[entity]);
+        const filteredClustersFunctionalities = clustersFunctionalities[cluster.id].filter(functionality => functionality.entities[entity.id]);
 
-        setTitle("Functionalities that interact with Cluster " + cluster + " and entity " + translateEntity(entity));
+        setTitle("Functionalities that interact with Cluster " + cluster.id + " and entity " + entity.label);
 
         setInformationText(
             <>
@@ -238,12 +247,14 @@ export const ClusterViewModal = ({clusters, edgeWeights, outdated, clustersFunct
                             return <Accordion.Item eventKey={functionality.name} key={functionality.name}>
                                 <Accordion.Header>{functionality.name}</Accordion.Header>
                                 <Accordion.Body>
-                                    Accesses entity {translateEntity(entity)} in <i>{ACCESS_TYPES[functionality.entities[entity]]}</i><br/>
-                                    And accesses the following entities of Cluster {cluster}:
+                                    Accesses entity {entity.label} in <i>{ACCESS_TYPES[functionality.entities[entity.id]]}</i><br/>
+                                    And accesses the following entities of Cluster {cluster.id}:
                                     <ListGroup>
                                         {
-                                            functionality.entitiesPerCluster[cluster].map(e =>
-                                                <ListGroupItem key={e}>{translateEntity(e)} <i>({ACCESS_TYPES[functionality.entities[e]]})</i></ListGroupItem>
+                                            functionality.entitiesPerCluster[cluster.id].map(e => {
+                                                let entity = cluster.elements.find(elem => elem.id === e);
+                                                return <ListGroupItem key={entity.id}>{entity.name} <i>({ACCESS_TYPES[functionality.entities[entity.id]]})</i></ListGroupItem>;
+                                            }
                                             )
                                         }
                                     </ListGroup>
@@ -257,11 +268,11 @@ export const ClusterViewModal = ({clusters, edgeWeights, outdated, clustersFunct
     }
 
     function handleCommonFunctionalitiesBetweenEntities() {
-        const e1ID = clickedComponent.from;
-        const e2ID = clickedComponent.to;
-        const weights = edgeWeights.find(w => w.e1ID === e1ID && w.e2ID === e2ID);
+        const e1ID = visGraph.nodes.get(clickedComponent.from);
+        const e2ID = visGraph.nodes.get(clickedComponent.to);
+        const weights = edgeWeights.find(w => w.e1ID === e1ID.id && w.e2ID === e2ID.id);
 
-        setTitle("Functionalities that interact with Entity " + translateEntity(e1ID) + " and Entity " + translateEntity(e2ID));
+        setTitle("Functionalities that interact with Entity " + e1ID.label + " and Entity " + e2ID.label);
 
         setInformationText(
             <>
@@ -269,13 +280,13 @@ export const ClusterViewModal = ({clusters, edgeWeights, outdated, clustersFunct
                 <Accordion alwaysOpen={true}>
                     {
                         weights.functionalities.map(functionalityName => {
-                            const functionality = clustersFunctionalities[visGraph.nodes.get(e1ID).group].find(f => f.name === functionalityName);
+                            const functionality = clustersFunctionalities[e1ID.group].find(f => f.name === functionalityName);
                             return <Accordion.Item eventKey={functionalityName} key={functionalityName}>
                                 <Accordion.Header>{functionalityName}</Accordion.Header>
                                 <Accordion.Body>
                                     <ListGroup>
-                                        <ListGroupItem> Entity {translateEntity(e1ID)} <i>({ACCESS_TYPES[functionality.entities[e1ID]]})</i> </ListGroupItem>
-                                        <ListGroupItem> Entity {translateEntity(e2ID)} <i>({ACCESS_TYPES[functionality.entities[e2ID]]})</i> </ListGroupItem>
+                                        <ListGroupItem> Entity {e1ID.label} <i>({ACCESS_TYPES[functionality.entities[e1ID.id]]})</i> </ListGroupItem>
+                                        <ListGroupItem> Entity {e2ID.label} <i>({ACCESS_TYPES[functionality.entities[e2ID.id]]})</i> </ListGroupItem>
                                     </ListGroup>
                                 </Accordion.Body>
                             </Accordion.Item>;
@@ -296,20 +307,20 @@ export const ClusterViewModal = ({clusters, edgeWeights, outdated, clustersFunct
         const fromNode = visGraph.nodes.get(clickedComponent.from);
         const toNode = visGraph.nodes.get(clickedComponent.to);
         let cluster;
-        let entityId;
+        let entity;
         if (fromNode.type === types.CLUSTER) {
             cluster = clusters.find(c => c.name === fromNode.id);
-            entityId = toNode.id;
+            entity = toNode;
         } else {
             cluster = clusters.find(c => c.name === toNode.id);
-            entityId = fromNode.id;
+            entity = fromNode;
         }
-        if (Object.values(cluster.couplingDependencies).flatMap(dep => dep).includes(entityId))
+        if (Object.values(cluster.couplingDependencies).flatMap(dep => dep).includes(entity.id))
             return (<><Button className="flex-grow-1 mt-2" variant="success" disabled={true}>
-                            Cluster {cluster.name} depends on entity {translateEntity(entityId)}
+                            Cluster {cluster.name} depends on entity {entity.label}
                         </Button></>);
         else return (<><Button className="flex-grow-1 mt-2" variant="warning" disabled={true}>
-                            Cluster {cluster.name} does not depend on entity {translateEntity(entityId)}
+                            Cluster {cluster.name} does not depend on entity {entity.label}
                         </Button></>);
     }
 
@@ -354,7 +365,7 @@ export const ClusterViewModal = ({clusters, edgeWeights, outdated, clustersFunct
                                 <>
                                     <div className="d-flex flex-row">
                                         <Button className="flex-grow-1 mt-2" variant="primary" onClick={handleClusterEntities}>
-                                            Cluster's Entities ({clickedComponent.entities.length} Entities)
+                                            Cluster's Entities ({clickedComponent.elements.length} Entities)
                                         </Button>
                                     </div>
                                     <div className="d-flex flex-row">

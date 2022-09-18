@@ -2,7 +2,6 @@ package pt.ist.socialsoftware.mono2micro.recommendation.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
-import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendAccessesSciPy;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
 
 public interface RecommendationRepository extends MongoRepository<Recommendation, String> {

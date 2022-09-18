@@ -2,7 +2,7 @@ import Decomposition from "./Decomposition";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import React from "react";
-import {MetricType} from "../../type-declarations/types.d";
+import {Elem, MetricType} from "../../type-declarations/types.d";
 import {Cached} from "@mui/icons-material";
 import {RepositoryService} from "../../services/RepositoryService";
 import {toast} from "react-toastify";
@@ -41,7 +41,7 @@ export default class AccessesSciPyDecomposition extends Decomposition {
         let maxClusterSize = 0;
 
         Object.values(this.clusters).forEach((c:any) => {
-            const numberOfEntities = c.entities.length;
+            const numberOfEntities = c.elements.length;
             if (numberOfEntities === 1) amountOfSingletonClusters++;
             if (numberOfEntities > maxClusterSize) maxClusterSize = numberOfEntities;
         })

@@ -14,6 +14,7 @@ import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.SciPyClusteringAlgor
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.AccessesSciPyDecompositionRepository;
+import pt.ist.socialsoftware.mono2micro.element.Element;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.AccessesSciPySimilarity;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.similarity.repository.SimilarityRepository;
@@ -176,21 +177,20 @@ public class AccessesSciPyDecompositionService {
         ArrayList<HashMap<String, String>> searchItems = new ArrayList<>();
         AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
 
-        decomposition.getClusters().values().forEach(c -> {
-            AccessesSciPyCluster cluster = (AccessesSciPyCluster) c;
+        decomposition.getClusters().values().forEach(cluster -> {
             HashMap<String, String> clusterItem = new HashMap<>();
             clusterItem.put("name", cluster.getName());
             clusterItem.put("type", "Cluster");
             clusterItem.put("id", cluster.getName());
-            clusterItem.put("entities", Integer.toString(cluster.getEntities().size()));
+            clusterItem.put("entities", Integer.toString(cluster.getElements().size()));
             clusterItem.put("funcType", ""); clusterItem.put("cluster", "");
             searchItems.add(clusterItem);
 
-            cluster.getEntities().forEach(entity -> {
+            cluster.getElements().forEach(entity -> {
                 HashMap<String, String> entityItem = new HashMap<>();
-                entityItem.put("name", String.valueOf(entity));
+                entityItem.put("name", entity.getName());
                 entityItem.put("type", "Entity");
-                entityItem.put("id", String.valueOf(entity));
+                entityItem.put("id", String.valueOf(entity.getId()));
                 entityItem.put("entities", ""); entityItem.put("funcType", "");
                 entityItem.put("cluster", cluster.getName());
                 searchItems.add(entityItem);
@@ -282,29 +282,29 @@ public class AccessesSciPyDecompositionService {
     }
 
     public void mergeClusters(AccessesSciPyDecomposition decomposition, String clusterName, String otherClusterName, String newName) {
-        AccessesSciPyCluster cluster1 = (AccessesSciPyCluster) decomposition.getCluster(clusterName);
-        AccessesSciPyCluster cluster2 = (AccessesSciPyCluster) decomposition.getCluster(otherClusterName);
+        Cluster cluster1 = decomposition.getCluster(clusterName);
+        Cluster cluster2 = decomposition.getCluster(otherClusterName);
         if (decomposition.clusterNameExists(newName) && !cluster1.getName().equals(newName) && !cluster2.getName().equals(newName))
             throw new KeyAlreadyExistsException("Cluster with name: " + newName + " already exists");
 
-        AccessesSciPyCluster mergedCluster = new AccessesSciPyCluster(newName);
+        Cluster mergedCluster = new AccessesSciPyCluster(newName);
 
-        for(short entityID : cluster1.getEntities()) {
-            decomposition.getEntityIDToClusterName().replace(entityID, mergedCluster.getName());
-            functionalityService.deleteFunctionalities(removeFunctionalityWithEntity(decomposition, entityID));
+        for(Element entity : cluster1.getElements()) {
+            decomposition.getEntityIDToClusterName().replace(entity.getId(), mergedCluster.getName());
+            functionalityService.deleteFunctionalities(removeFunctionalityWithEntity(decomposition, entity.getId()));
         }
 
-        for(short entityID : cluster2.getEntities()) {
-            decomposition.getEntityIDToClusterName().replace(entityID, mergedCluster.getName());
-            functionalityService.deleteFunctionalities(removeFunctionalityWithEntity(decomposition, entityID));
+        for(Element entity : cluster2.getElements()) {
+            decomposition.getEntityIDToClusterName().replace(entity.getId(), mergedCluster.getName());
+            functionalityService.deleteFunctionalities(removeFunctionalityWithEntity(decomposition, entity.getId()));
         }
 
-        Set<Short> allEntities = new HashSet<>(cluster1.getEntities());
-        allEntities.addAll(cluster2.getEntities());
-        mergedCluster.setEntities(allEntities);
+        Set<Element> allEntities = new HashSet<>(cluster1.getElements());
+        allEntities.addAll(cluster2.getElements());
+        mergedCluster.setElements(allEntities);
 
-        decomposition.transferCouplingDependencies(cluster1.getEntities(), cluster1.getName(), mergedCluster.getName());
-        decomposition.transferCouplingDependencies(cluster2.getEntities(), cluster2.getName(), mergedCluster.getName());
+        decomposition.transferCouplingDependencies(cluster1.getElementsIDs(), cluster1.getName(), mergedCluster.getName());
+        decomposition.transferCouplingDependencies(cluster2.getElementsIDs(), cluster2.getName(), mergedCluster.getName());
 
         decomposition.removeCluster(clusterName);
         decomposition.removeCluster(otherClusterName);
@@ -381,20 +381,20 @@ public class AccessesSciPyDecompositionService {
         String[] entities = entitiesString.split(",");
         if (decomposition.clusterNameExists(newName)) throw new KeyAlreadyExistsException("Cluster with name: " + newName + " already exists");
 
-        AccessesSciPyCluster currentCluster = (AccessesSciPyCluster) decomposition.getCluster(clusterName);
-        AccessesSciPyCluster newCluster = new AccessesSciPyCluster(newName);
+        Cluster currentCluster = decomposition.getCluster(clusterName);
+        Cluster newCluster = new AccessesSciPyCluster(newName);
 
         for (String stringifiedEntityID : entities) {
-            short entityID = Short.parseShort(stringifiedEntityID);
+            Element entity = currentCluster.getElementByID(Short.parseShort(stringifiedEntityID));
 
-            if (currentCluster.containsEntity(entityID)) {
-                newCluster.addEntity(entityID);
-                currentCluster.removeEntity(entityID);
-                decomposition.getEntityIDToClusterName().replace(entityID, newCluster.getName());
-                functionalityService.deleteFunctionalities(removeFunctionalityWithEntity(decomposition, entityID));
+            if (entity != null) {
+                newCluster.addElement(entity);
+                currentCluster.removeElement(entity);
+                decomposition.getEntityIDToClusterName().replace(entity.getId(), newCluster.getName());
+                functionalityService.deleteFunctionalities(removeFunctionalityWithEntity(decomposition, entity.getId()));
             }
         }
-        decomposition.transferCouplingDependencies(newCluster.getEntities(), currentCluster.getName(), newCluster.getName());
+        decomposition.transferCouplingDependencies(newCluster.getElementsIDs(), currentCluster.getName(), newCluster.getName());
         decomposition.addCluster(newCluster);
         decomposition.setOutdated(true);
         decompositionRepository.save(decomposition);
@@ -409,14 +409,15 @@ public class AccessesSciPyDecompositionService {
     }
 
     public void transferEntities(AccessesSciPyDecomposition decomposition, String fromClusterName, String toClusterName, String entitiesString) {
-        AccessesSciPyCluster fromCluster = (AccessesSciPyCluster) decomposition.getCluster(fromClusterName);
-        AccessesSciPyCluster toCluster = (AccessesSciPyCluster) decomposition.getCluster(toClusterName);
+        Cluster fromCluster = decomposition.getCluster(fromClusterName);
+        Cluster toCluster = decomposition.getCluster(toClusterName);
         Set<Short> entities = Arrays.stream(entitiesString.split(",")).map(Short::valueOf).collect(Collectors.toSet());
 
         for (Short entityID : entities) {
-            if (fromCluster.containsEntity(entityID)) {
-                toCluster.addEntity(entityID);
-                fromCluster.removeEntity(entityID);
+            Element entity = fromCluster.getElementByID(entityID);
+            if (entity != null) {
+                toCluster.addElement(entity);
+                fromCluster.removeElement(entity);
                 decomposition.getEntityIDToClusterName().replace(entityID, toCluster.getName());
                 functionalityService.deleteFunctionalities(removeFunctionalityWithEntity(decomposition, entityID));
             }
@@ -439,25 +440,26 @@ public class AccessesSciPyDecompositionService {
         List<Short> entitiesIDs = entities.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
 
         if (decomposition.clusterNameExists(newName)) {
-            AccessesSciPyCluster previousCluster = (AccessesSciPyCluster) decomposition.getClusters().values().stream().filter(cluster -> cluster.getName().equals(newName)).findFirst()
+            Cluster previousCluster = decomposition.getClusters().values().stream().filter(cluster -> cluster.getName().equals(newName)).findFirst()
                     .orElseThrow(() -> new KeyAlreadyExistsException("Cluster with name: " + newName + " already exists"));
-            if (!entitiesIDs.containsAll(previousCluster.getEntities()))
+            if (!entitiesIDs.containsAll(previousCluster.getElementsIDs()))
                 throw new KeyAlreadyExistsException("Cluster with name: " + newName + " already exists");
         }
 
-        AccessesSciPyCluster newCluster = new AccessesSciPyCluster(newName);
+        Cluster newCluster = new AccessesSciPyCluster(newName);
 
         for (Short entityID : entitiesIDs) {
-            AccessesSciPyCluster currentCluster = (AccessesSciPyCluster) decomposition.getClusters().values().stream()
-                    .filter(cluster -> ((AccessesSciPyCluster) cluster).getEntities().contains(entityID)).findFirst()
-                    .orElseThrow(() -> new RuntimeException("No cluster constains entity " + entityID));
+            Cluster currentCluster = decomposition.getClusters().values().stream()
+                    .filter(cluster -> cluster.containsElement(entityID)).findFirst()
+                    .orElseThrow(() -> new RuntimeException("No cluster contains entity " + entityID));
 
-            newCluster.addEntity(entityID);
-            currentCluster.removeEntity(entityID);
+            Element entity = currentCluster.getElementByID(entityID);
+            newCluster.addElement(entity);
+            currentCluster.removeElement(entityID);
             decomposition.getEntityIDToClusterName().replace(entityID, newCluster.getName());
             functionalityService.deleteFunctionalities(removeFunctionalityWithEntity(decomposition, entityID));
             decomposition.transferCouplingDependencies(Collections.singleton(entityID), currentCluster.getName(), newCluster.getName());
-            if (currentCluster.getEntities().size() == 0)
+            if (currentCluster.getElements().size() == 0)
                 decomposition.removeCluster(currentCluster.getName());
         }
         decomposition.addCluster(newCluster);

@@ -86,8 +86,7 @@ public class DecompositionController {
 	) {
 		logger.debug("mergeClusters");
 		try {
-			decompositionService.mergeClusters(decompositionName, clusterName, otherClusterName, newName);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>(decompositionService.mergeClusters(decompositionName, clusterName, otherClusterName, newName), HttpStatus.OK);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -103,8 +102,7 @@ public class DecompositionController {
 	) {
 		logger.debug("renameCluster");
 		try {
-			decompositionService.renameCluster(decompositionName, clusterName, newName);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>(decompositionService.renameCluster(decompositionName, clusterName, newName), HttpStatus.OK);
 
 		} catch (KeyAlreadyExistsException e) {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -124,8 +122,7 @@ public class DecompositionController {
 	) {
 		logger.debug("splitCluster");
 		try {
-			decompositionService.splitCluster(decompositionName, clusterName, newName, entities);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>(decompositionService.splitCluster(decompositionName, clusterName, newName, entities), HttpStatus.OK);
 
 		} catch (KeyAlreadyExistsException e) {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -145,8 +142,7 @@ public class DecompositionController {
 	) {
 		logger.debug("transferEntities");
 		try {
-			decompositionService.transferEntities(decompositionName, clusterName, toClusterName, entities);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>(decompositionService.transferEntities(decompositionName, clusterName, toClusterName, entities), HttpStatus.OK);
 
 		} catch (Exception e) {
 			e.printStackTrace();

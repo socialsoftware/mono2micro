@@ -13,12 +13,14 @@ import pt.ist.socialsoftware.mono2micro.cluster.AccessesSciPyCluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
+import pt.ist.socialsoftware.mono2micro.element.DomainEntity;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityService;
 import pt.ist.socialsoftware.mono2micro.log.domain.AccessesSciPyLog;
 import pt.ist.socialsoftware.mono2micro.log.repository.LogRepository;
 import pt.ist.socialsoftware.mono2micro.metrics.decompositionService.AccessesSciPyMetricService;
 import pt.ist.socialsoftware.mono2micro.recommendation.repository.RecommendAccessesSciPyRepository;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
+import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.service.RepresentationService;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.AccessesSciPySimilarity;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendAccessesSciPy;
@@ -31,12 +33,14 @@ import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.SCRIPTS_ADDRESS;
 
 @Service
@@ -71,15 +75,30 @@ public class SciPyClusteringAlgorithmService {
 
     public void createDecomposition(AccessesSciPyStrategy strategy, AccessesSciPySimilarity similarity, String cutType, float cutValue) throws Exception {
         AccessesRepresentation representation = (AccessesRepresentation) similarity.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
+        IDToEntityRepresentation idToEntityRepresentation = (IDToEntityRepresentation) similarity.getStrategy().getCodebase().getRepresentationByType(ID_TO_ENTITY);
+        Map<Short, String> idToEntity = getIDToEntity(idToEntityRepresentation);
 
         AccessesSciPyDecomposition decomposition = new AccessesSciPyDecomposition();
         decomposition.setName(getDecompositionName(similarity, cutType, cutValue));
         decomposition.setSimilarity(similarity);
 
         JSONObject clustersJSON = invokePythonCut(decomposition, similarity.getSimilarityMatrixName(), cutType, cutValue);
-        addClustersAndEntities(decomposition, clustersJSON);
+        addClustersAndEntities(decomposition, clustersJSON, idToEntity);
 
         setupAndSaveSimilarity(strategy, similarity, representation, decomposition);
+    }
+
+    public Map<Short, String> getIDToEntity(IDToEntityRepresentation representation) throws IOException, JSONException {
+        Map<Short, String> idToEntity = new HashMap<>();
+        String file = representationService.getRepresentationFileAsString(representation.getName());
+        JSONObject idToEntityJSON = new JSONObject(file);
+        Iterator<String> entityIDs = idToEntityJSON.keys();
+
+        while (entityIDs.hasNext()) {
+            String entityID = entityIDs.next();
+            idToEntity.put(Short.valueOf(entityID), idToEntityJSON.getString(entityID));
+        }
+        return idToEntity;
     }
 
     private void setupAndSaveSimilarity(AccessesSciPyStrategy strategy, AccessesSciPySimilarity similarity, AccessesRepresentation representation, AccessesSciPyDecomposition decomposition) throws Exception {
@@ -101,6 +120,8 @@ public class SciPyClusteringAlgorithmService {
 
     public void createExpertDecomposition(AccessesSciPyStrategy strategy, AccessesSciPySimilarity similarity, String expertName, Optional<MultipartFile> expertFile) throws Exception {
         AccessesRepresentation representation = (AccessesRepresentation) similarity.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
+        IDToEntityRepresentation idToEntityRepresentation = (IDToEntityRepresentation) similarity.getStrategy().getCodebase().getRepresentationByType(ID_TO_ENTITY);
+        Map<Short, String> idToEntity = getIDToEntity(idToEntityRepresentation);
 
         AccessesSciPyDecomposition decomposition = new AccessesSciPyDecomposition();
         decomposition.setSimilarity(similarity);
@@ -114,15 +135,15 @@ public class SciPyClusteringAlgorithmService {
         if (expertFile.isPresent()) { // Expert decomposition with file
             InputStream is = new BufferedInputStream(expertFile.get().getInputStream());
             JSONObject clustersJSON = new JSONObject(IOUtils.toString(is, StandardCharsets.UTF_8)).getJSONObject("clusters");
-            addClustersAndEntities(decomposition, clustersJSON);
+            addClustersAndEntities(decomposition, clustersJSON, idToEntity);
             is.close();
         }
-        else createGenericDecomposition(similarity, decomposition);
+        else createGenericDecomposition(similarity, decomposition, idToEntity);
 
         setupAndSaveSimilarity(strategy, similarity, representation, decomposition);
     }
 
-    private void createGenericDecomposition(AccessesSciPySimilarity similarity, AccessesSciPyDecomposition decomposition) throws Exception {
+    private void createGenericDecomposition(AccessesSciPySimilarity similarity, AccessesSciPyDecomposition decomposition, Map<Short, String> idToEntity) throws Exception {
         AccessesSciPyCluster cluster = new AccessesSciPyCluster("Generic");
 
         JSONObject similarityMatrixData = new JSONObject(similarity.getSimilarityMatrixName());
@@ -132,7 +153,7 @@ public class SciPyClusteringAlgorithmService {
         for (int i = 0; i < entities.length(); i++) {
             short entityID = (short) entities.getInt(i);
 
-            cluster.addEntity(entityID);
+            cluster.addElement(new DomainEntity(entityID, idToEntity.get(entityID)));
             decomposition.putEntity(entityID, cluster.getName());
         }
 
@@ -189,7 +210,7 @@ public class SciPyClusteringAlgorithmService {
         } else return similarity.getName() + " " + cutType + cutValueString;
     }
 
-    private void addClustersAndEntities(AccessesSciPyDecomposition decomposition, JSONObject clustersJSON) throws JSONException {
+    private void addClustersAndEntities(AccessesSciPyDecomposition decomposition, JSONObject clustersJSON, Map<Short, String> idToEntity) throws JSONException {
         Iterator<String> clusters = clustersJSON.sortedKeys();
         ArrayList<String> clusterNames = new ArrayList<>();
 
@@ -208,7 +229,7 @@ public class SciPyClusteringAlgorithmService {
             for (int i = 0; i < entities.length(); i++) {
                 short entityID = (short) entities.getInt(i);
 
-                cluster.addEntity(entityID);
+                cluster.addElement(new DomainEntity(entityID, idToEntity.get(entityID)));
                 decomposition.putEntity(entityID, cluster.getName());
             }
 
@@ -225,6 +246,8 @@ public class SciPyClusteringAlgorithmService {
     public void generateMultipleDecompositions(RecommendAccessesSciPy recommendation) throws Exception {
         AccessesRepresentation representation = (AccessesRepresentation) recommendation.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
         byte[] representationBytes = IOUtils.toByteArray(representationService.getRepresentationFileAsInputStream(representation.getName()));
+        IDToEntityRepresentation idToEntityRepresentation = (IDToEntityRepresentation) recommendation.getStrategy().getCodebase().getRepresentationByType(ID_TO_ENTITY);
+        Map<Short, String> idToEntity = getIDToEntity(idToEntityRepresentation);
 
         int MIN_CLUSTERS = 3, CLUSTER_STEP = 1;
 
@@ -273,7 +296,7 @@ public class SciPyClusteringAlgorithmService {
                             "N",
                             numberOfClusters);
 
-                    addClustersAndEntities(decomposition, clustersJSON);
+                    addClustersAndEntities(decomposition, clustersJSON, idToEntity);
 
                     // create functionalities and calculate their metrics
                     functionalityService.setupFunctionalities(

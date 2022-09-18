@@ -10,7 +10,6 @@ public class AccessesSciPyCluster extends Cluster {
     private double cohesion;
     private double coupling;
     private Map<String, Set<Short>> couplingDependencies = new HashMap<>(); // <clusterName, Set<EntityID>>
-    private Set<Short> entities = new HashSet<>(); // entity IDs
 
     public AccessesSciPyCluster() { }
 
@@ -45,18 +44,6 @@ public class AccessesSciPyCluster extends Cluster {
     public Map<String, Set<Short>> getCouplingDependencies() { return couplingDependencies; }
 
     public void setCouplingDependencies(Map<String, Set<Short>> couplingDependencies) { this.couplingDependencies = couplingDependencies; }
-
-    public Set<Short> getEntities() { return entities; }
-
-    public void setEntities(Set<Short> entities) {
-        this.entities = entities;
-    }
-
-    public void addEntity(short entity) { this.entities.add(entity); }
-
-    public void removeEntity(short entityID) { this.entities.remove(entityID); }
-
-    public boolean containsEntity(short entityID) { return this.entities.contains(entityID); }
 
     public void clearCouplingDependencies() {this.couplingDependencies.clear(); }
 

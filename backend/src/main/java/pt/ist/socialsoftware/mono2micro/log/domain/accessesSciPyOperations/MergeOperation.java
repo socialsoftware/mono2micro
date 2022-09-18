@@ -1,6 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.log.domain.accessesSciPyOperations;
 
-import pt.ist.socialsoftware.mono2micro.cluster.AccessesSciPyCluster;
+import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.log.domain.Operation;
 
@@ -18,13 +18,13 @@ public class MergeOperation extends Operation {
     public MergeOperation() {}
 
     public MergeOperation(AccessesSciPyDecomposition decomposition, String clusterNameName, String otherClusterName, String newName) {
-        AccessesSciPyCluster cluster1 = (AccessesSciPyCluster) decomposition.getCluster(clusterNameName);
-        AccessesSciPyCluster cluster2 = (AccessesSciPyCluster) decomposition.getCluster(otherClusterName);
+        Cluster cluster1 = decomposition.getCluster(clusterNameName);
+        Cluster cluster2 = decomposition.getCluster(otherClusterName);
 
         cluster1Name = cluster1.getName();
         cluster2Name = cluster2.getName();
-        cluster1Entities = cluster1.getEntities().stream().map(Object::toString).collect(Collectors.joining(","));
-        cluster2Entities = cluster2.getEntities().stream().map(Object::toString).collect(Collectors.joining(","));
+        cluster1Entities = cluster1.getElementsIDs().stream().map(Object::toString).collect(Collectors.joining(","));
+        cluster2Entities = cluster2.getElementsIDs().stream().map(Object::toString).collect(Collectors.joining(","));
 
         this.newCluster = newName;
     }
