@@ -27,7 +27,6 @@ public class RecommendAccessesSciPy extends Recommendation {
     private Set<String> combinationsInProduction;
     private Set<String> producedCombinations;
     private Set<String> similarityMatricesNames;
-    private String recommendationResultName;
 
     public RecommendAccessesSciPy() {}
 
@@ -105,14 +104,6 @@ public class RecommendAccessesSciPy extends Recommendation {
 
     public void addSimilarityMatrixName(String similarityMatrixName) {
         this.similarityMatricesNames.add(similarityMatrixName);
-    }
-
-    public String getRecommendationResultName() {
-        return recommendationResultName;
-    }
-
-    public void setRecommendationResultName(String recommendationResultName) {
-        this.recommendationResultName = recommendationResultName;
     }
 
     public void addCombinationsInProduction() {

@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
-import pt.ist.socialsoftware.mono2micro.source.domain.Source;
+import pt.ist.socialsoftware.mono2micro.representation.domain.Representation;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
@@ -228,60 +228,60 @@ public class FileManager {
 
 		new File(CODEBASES_PATH + codebaseName + STRATEGIES_FOLDER).mkdir();
 
-		new File(CODEBASES_PATH + codebaseName + "/sources").mkdir();
+		new File(CODEBASES_PATH + codebaseName + "/representations").mkdir();
 
 		Codebase codebase = new Codebase(codebaseName);
 
 		return codebase;
 	}
 
-	public String writeSourceFile(String codebaseName, String sourceId, Object sourceFile) throws IOException {
-		InputStream sourceFileInputStream = ((MultipartFile) sourceFile).getInputStream();
-		HashMap sourceFileJSON = objectMapper.readValue(sourceFileInputStream, HashMap.class);
-		sourceFileInputStream.close();
+	public String writeRepresentationFile(String codebaseName, String representationId, Object representationFile) throws IOException {
+		InputStream representationFileInputStream = ((MultipartFile) representationFile).getInputStream();
+		HashMap representationFileJSON = objectMapper.readValue(representationFileInputStream, HashMap.class);
+		representationFileInputStream.close();
 
 		File folder = new File(CODEBASES_PATH); if (!folder.exists()) folder.mkdir();
 		folder = new File(CODEBASES_PATH + codebaseName); if (!folder.exists()) folder.mkdir();
-		folder = new File(CODEBASES_PATH + codebaseName + "/sources/"); if (!folder.exists()) folder.mkdir();
+		folder = new File(CODEBASES_PATH + codebaseName + "/representations/"); if (!folder.exists()) folder.mkdir();
 
-		File sourceFileDestination = new File(CODEBASES_PATH + codebaseName + "/sources/" + sourceId + ".json");
+		File representationFileDestination = new File(CODEBASES_PATH + codebaseName + "/representations/" + representationId + ".json");
 		objectMapper.writerWithDefaultPrettyPrinter().writeValue(
-				sourceFileDestination,
-				sourceFileJSON
+				representationFileDestination,
+				representationFileJSON
 		);
-		return sourceFileDestination.getAbsolutePath();
+		return representationFileDestination.getAbsolutePath();
 	}
 
-	public List<Source> getCodebaseSources(String codebaseName) throws IOException {
-		List<Source> sources = new ArrayList<>();
+	public List<Representation> getCodebaseRepresentations(String codebaseName) throws IOException {
+		List<Representation> representations = new ArrayList<>();
 
-		File sourcesPath = new File(CODEBASES_PATH + codebaseName + "/sources");
+		File representationsPath = new File(CODEBASES_PATH + codebaseName + "/representations");
 
-		File[] files = sourcesPath.listFiles();
+		File[] files = representationsPath.listFiles();
 
 		if (files != null) {
 			Arrays.sort(files, Comparator.comparingLong(File::lastModified));
 
 			for (File file : files) {
 				if (file.isDirectory()) {
-					Source source = getCodebaseSource(codebaseName, file.getName());
+					Representation representation = getCodebaseRepresentation(codebaseName, file.getName());
 
-					if (source != null)
-						sources.add(source);
+					if (representation != null)
+						representations.add(representation);
 				}
 			}
 		}
-		return sources;
+		return representations;
 	}
 
 
-	public Source getCodebaseSource(String codebaseName, String sourceType) throws IOException {
-		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/sources/" + sourceType + "/source.json");
+	public Representation getCodebaseRepresentation(String codebaseName, String representationType) throws IOException {
+		InputStream is = new FileInputStream(CODEBASES_PATH + codebaseName + "/representations/" + representationType + "/representation.json");
 
-		Source source = objectMapper.readerFor(Source.class).readValue(is);
+		Representation representation = objectMapper.readerFor(Representation.class).readValue(is);
 		is.close();
 
-		return source;
+		return representation;
 	}
 
 	public List<String> getSimilarityMatricesNames(String codebaseName, String strategyFolder, String strategyName) {

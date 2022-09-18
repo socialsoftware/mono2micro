@@ -60,15 +60,15 @@ public class CodebaseController {
 		}
 	}
 
-	@RequestMapping(value = "/codebase/{codebaseName}/getSourceTypes", method = RequestMethod.GET)
-	public ResponseEntity<List<String>> getSourceTypes(
+	@RequestMapping(value = "/codebase/{codebaseName}/getRepresentationTypes", method = RequestMethod.GET)
+	public ResponseEntity<List<String>> getRepresentationTypes(
 			@PathVariable String codebaseName
 	) {
-		logger.debug("getSourceTypes");
+		logger.debug("getRepresentationTypes");
 
 		try {
 			return new ResponseEntity<>(
-					codebaseService.getSourceTypes(codebaseName),
+					codebaseService.getRepresentationTypes(codebaseName),
 					HttpStatus.OK
 			);
 		} catch (Exception e) {

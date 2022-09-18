@@ -135,16 +135,16 @@ export const AccessesSciPyAnalysis = ({codebaseName, resultData, decomposition1,
                                     <Grid item xs={4}> <Item>{decomposition2.silhouetteScore}</Item> </Grid>
 
                                     <Grid item xs={4}> <ItemCorner>Largest Cluster Size:</ItemCorner> </Grid>
-                                    <Grid item xs={4}> <Item>{Object.values(decomposition1.clusters).reduce((p, c) => p > c.entities.length? p : c.entities.length, 0)}</Item> </Grid>
-                                    <Grid item xs={4}> <Item>{Object.values(decomposition2.clusters).reduce((p, c) => p > c.entities.length? p : c.entities.length, 0)}</Item> </Grid>
+                                    <Grid item xs={4}> <Item>{Object.values(decomposition1.clusters).reduce((p, c) => p > c.elements.length? p : c.elements.length, 0)}</Item> </Grid>
+                                    <Grid item xs={4}> <Item>{Object.values(decomposition2.clusters).reduce((p, c) => p > c.elements.length? p : c.elements.length, 0)}</Item> </Grid>
 
                                     <Grid item xs={4}> <ItemCorner>Smallest Cluster Size:</ItemCorner> </Grid>
-                                    <Grid item xs={4}> <Item>{Object.values(decomposition1.clusters).reduce((p, c) => p < c.entities.length? p : c.entities.length, Object.values(decomposition2.clusters)[0].entities.length)}</Item> </Grid>
-                                    <Grid item xs={4}> <Item>{Object.values(decomposition2.clusters).reduce((p, c) => p < c.entities.length? p : c.entities.length, Object.values(decomposition2.clusters)[0].entities.length)}</Item> </Grid>
+                                    <Grid item xs={4}> <Item>{Object.values(decomposition1.clusters).reduce((p, c) => p < c.elements.length? p : c.elements.length, Object.values(decomposition2.clusters)[0].elements.length)}</Item> </Grid>
+                                    <Grid item xs={4}> <Item>{Object.values(decomposition2.clusters).reduce((p, c) => p < c.elements.length? p : c.elements.length, Object.values(decomposition2.clusters)[0].elements.length)}</Item> </Grid>
 
                                     <Grid item xs={4}> <ItemCorner>Number of Singleton Clusters:</ItemCorner> </Grid>
-                                    <Grid item xs={4}> <Item>{Object.values(decomposition1.clusters).reduce((p, c) => c.entities.length === 1? p + 1: p, 0)}</Item> </Grid>
-                                    <Grid item xs={4}> <Item>{Object.values(decomposition2.clusters).reduce((p, c) => c.entities.length === 1? p + 1: p, 0)}</Item> </Grid>
+                                    <Grid item xs={4}> <Item>{Object.values(decomposition1.clusters).reduce((p, c) => c.elements.length === 1? p + 1: p, 0)}</Item> </Grid>
+                                    <Grid item xs={4}> <Item>{Object.values(decomposition2.clusters).reduce((p, c) => c.elements.length === 1? p + 1: p, 0)}</Item> </Grid>
 
                                     {Object.entries(decomposition1.metrics).map(([metricName, metric]) =>
                                         <React.Fragment key={metricName}>
@@ -210,10 +210,10 @@ export const AccessesSciPyAnalysis = ({codebaseName, resultData, decomposition1,
                                         else {
                                             let cluster2 = decomposition2.clusters[clusterName];
                                             let includedEntities = [], notIncludedEntities = [];
-                                            {cluster1.entities.map(entity => {
-                                                if (cluster2.entities.includes(entity))
-                                                    includedEntities.push(translateEntity(entity));
-                                                else notIncludedEntities.push(translateEntity(entity) + " (belong to " + Object.values(decomposition2.clusters).find(c => c.entities.includes(entity)).name + ")");
+                                            {cluster1.elements.map(entity => {
+                                                if (cluster2.elements.find(e => e.id === entity.id))
+                                                    includedEntities.push(entity.name);
+                                                else notIncludedEntities.push(entity.name + " (belong to " + Object.values(decomposition2.clusters).find(c => c.elements.find(e => e.id === entity.id)).name + ")");
                                             })}
                                             return  <Accordion key={clusterName}>
                                                 <AccordionSummary>{clusterName}</AccordionSummary>
@@ -228,7 +228,7 @@ export const AccessesSciPyAnalysis = ({codebaseName, resultData, decomposition1,
                                                         }}
                                                     >
                                                         <ListSubheader sx={{fontSize: "25px", backgroundColor: "#07bc0c22"}}>Entities Belonging to the Same Cluster in Both Decompositions</ListSubheader>
-                                                        {includedEntities.map(e => <ListItem key={e}><ListItemText>{translateEntity(e)}</ListItemText></ListItem>)}
+                                                        {includedEntities.map(e => <ListItem key={e}><ListItemText>{e}</ListItemText></ListItem>)}
                                                     </List>
                                                     <List
                                                         sx={{
@@ -240,7 +240,7 @@ export const AccessesSciPyAnalysis = ({codebaseName, resultData, decomposition1,
                                                         }}
                                                     >
                                                         <ListSubheader sx={{fontSize: "25px", backgroundColor: "#e74c3c22"}}>Entities Missing From the Second Decomposition's Clusters</ListSubheader>
-                                                        {notIncludedEntities.map(e => <ListItem key={e}><ListItemText>{translateEntity(e)}</ListItemText></ListItem>)}
+                                                        {notIncludedEntities.map(e => <ListItem key={e}><ListItemText>{e}</ListItemText></ListItem>)}
                                                     </List>
                                                 </AccordionDetails>
                                             </Accordion>

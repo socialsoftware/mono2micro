@@ -41,9 +41,9 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
 
     function handleTransfer() {
         if (selectedEntities.selectionContext.selected.length !== 0) {
-            if (requestDialog.entities.length === selectedEntities.selectionContext.selected.length)
+            if (requestDialog.elements.length === selectedEntities.selectionContext.selected.length)
                 setDialogResponse({type: DIALOG_TYPE.MERGE, newName: requestDialog.toCluster});
-            else setDialogResponse({type: DIALOG_TYPE.TRANSFER, entities: selectedEntities.selectionContext.selected});
+            else setDialogResponse({type: DIALOG_TYPE.TRANSFER, elements: selectedEntities.selectionContext.selected});
         }
     }
 
@@ -56,9 +56,9 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
     function handleSplit() {
         if (name !== '') {
             if (selectedEntities.selectionContext.selected.length !== 0) {
-                if (requestDialog.entities.length === selectedEntities.selectionContext.selected.length)
+                if (requestDialog.elements.length === selectedEntities.selectionContext.selected.length)
                     setDialogResponse({ type: DIALOG_TYPE.RENAME, newName: name });
-                else setDialogResponse({ type: DIALOG_TYPE.SPLIT, newName: name, entities: selectedEntities.selectionContext.selected });
+                else setDialogResponse({ type: DIALOG_TYPE.SPLIT, newName: name, elements: selectedEntities.selectionContext.selected });
             } else handleCancel();
         }
         else setTextError(true);
@@ -67,15 +67,15 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
     function handleFormCluster() {
         if (name !== '') {
             if (selectedEntities.selectionContext.selected.length !== 0) {
-                let entities = {};
+                let elements = {};
                 selectedEntities.selectionContext.selected.forEach(selectedEntity => {
-                    const entity = requestDialog.entities.find(entity => entity.id === selectedEntity);
-                    let clusterEntities = entities[entity.cluster];
+                    const entity = requestDialog.elements.find(entity => entity.id === selectedEntity);
+                    let clusterEntities = elements[entity.cluster];
                     if (clusterEntities)
                         clusterEntities.push(entity.id);
-                    else entities[entity.cluster] = [entity.id];
+                    else elements[entity.cluster] = [entity.id];
                 });
-                setDialogResponse({type: DIALOG_TYPE.FORM_CLUSTER, newName: name, entities});
+                setDialogResponse({type: DIALOG_TYPE.FORM_CLUSTER, newName: name, elements});
             }
         }
         else setTextError(true);
@@ -120,7 +120,7 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
                     <BootstrapTable
                         keyField={'id'}
                         hover={true}
-                        data={requestDialog.entities}
+                        data={requestDialog.elements}
                         columns={[{
                             dataField: 'name',
                             text: 'Entity Name',
@@ -183,7 +183,7 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
                     <BootstrapTable
                         keyField={'id'}
                         hover={true}
-                        data={requestDialog.entities}
+                        data={requestDialog.elements}
                         columns={[{
                             dataField: 'name',
                             text: 'Entity Name',
@@ -220,7 +220,7 @@ export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCanc
                     <BootstrapTable
                         keyField={'id'}
                         hover={true}
-                        data={requestDialog.entities}
+                        data={requestDialog.elements}
                         columns={[
                             { dataField: 'name', text: 'Entity Name', sort: true },
                             { dataField: 'cluster', text: 'Cluster Name', sort: true }

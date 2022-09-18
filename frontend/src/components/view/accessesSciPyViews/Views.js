@@ -49,7 +49,7 @@ export const Views = () => {
     useEffect(() => {
         setNow(10);
 
-        // Translation file
+        // IDToEntity file
         const service = new RepositoryService();
         service.getIdToEntity(codebaseName).then(response => {
             setNow(prev => prev + 10);

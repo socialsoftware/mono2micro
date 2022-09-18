@@ -15,19 +15,19 @@ import {useParams} from "react-router-dom";
 const HttpStatus = require('http-status-codes');
 
 export const Profiles = () => {
-    let { codebaseName, sourceName } = useParams();
-    const [source, setSource] = useState({});
+    let { codebaseName, representationName } = useParams();
+    const [representation, setRepresentation] = useState({});
     const [newProfileName, setNewProfileName] = useState("");
     const [moveToProfile, setMoveToProfile] = useState("");
     const [selectedFunctionalities, setSelectedFunctionalities] = useState([]);
     const [isUploaded, setIsUploaded] = useState("");
 
-    useEffect(() => loadSource(), []);
+    useEffect(() => loadRepresentation(), []);
 
-    function loadSource() {
+    function loadRepresentation() {
         const service = new RepositoryService();
-        service.getSource(sourceName).then(response => {
-            setSource(response === null ? {} : response);
+        service.getRepresentation(representationName).then(response => {
+            setRepresentation(response === null ? {} : response);
         });
     }
 
@@ -41,9 +41,9 @@ export const Profiles = () => {
         setIsUploaded("Uploading...");
 
         const service = new RepositoryService();
-        service.addAccessesProfile(sourceName, newProfileName).then(response => {
+        service.addAccessesProfile(representationName, newProfileName).then(response => {
             if (response.status === HttpStatus.OK) {
-                loadSource();
+                loadRepresentation();
                 setIsUploaded("Upload completed successfully.");
             } else {
                 setIsUploaded("Upload failed.");
@@ -66,12 +66,12 @@ export const Profiles = () => {
         const service = new RepositoryService();
 
         service.moveAccessesFunctionalities(
-            sourceName,
+            representationName,
             selectedFunctionalities,
             moveToProfile
         ).then(() => {
             setSelectedFunctionalities([]);
-            loadSource();
+            loadRepresentation();
         });
     }
 
@@ -79,10 +79,10 @@ export const Profiles = () => {
         const service = new RepositoryService();
 
         service.deleteAccessesProfile(
-            sourceName,
+            representationName,
             profile
         ).then(() => {
-            loadSource();
+            loadRepresentation();
         });
     }
 
@@ -110,7 +110,7 @@ export const Profiles = () => {
                     {codebaseName}
                 </Breadcrumb.Item>
                 <Breadcrumb.Item href={`/codebases/${codebaseName}`}>
-                    {sourceName}
+                    {representationName}
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>
                     Profiles
@@ -160,7 +160,7 @@ export const Profiles = () => {
             <h4 style={{color: "#666666"}}>
                 Functionality Profiles
             </h4>
-            {Object.keys(source).length &&
+            {Object.keys(representation).length &&
                 <div>
                     <ButtonToolbar>
                         <Button className="me-1">Move selected functionalities to</Button>
@@ -170,7 +170,7 @@ export const Profiles = () => {
                             title={moveToProfile === "" ? "Functionality Profile" : moveToProfile}
                             className="me-1"
                         >
-                            {Object.keys(source.profiles).map(profile =>
+                            {Object.keys(representation.profiles).map(profile =>
                                 <Dropdown.Item
                                     key={profile}
                                     onClick={() => handleMoveToProfile(profile)}
@@ -188,11 +188,11 @@ export const Profiles = () => {
                         </Button>
                     </ButtonToolbar>
 
-                    {Object.keys(source.profiles).map(profile =>
+                    {Object.keys(representation.profiles).map(profile =>
                         <div key={profile}>
                             <div style={{fontSize: '25px'}}>
                                 {profile}
-                                {!source.profiles[profile].length &&
+                                {!representation.profiles[profile].length &&
                                     <Button
                                         onClick={() => handleDeleteProfile(profile)}
                                         className="ms-2"
@@ -204,7 +204,7 @@ export const Profiles = () => {
                                 }
                             </div>
 
-                            {source.profiles[profile].map(functionality =>
+                            {representation.profiles[profile].map(functionality =>
                                 <Form.Check
                                     id={functionality}
                                     key={functionality}

@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.AccessesSciPyDecompositionDto;
 import pt.ist.socialsoftware.mono2micro.decomposition.service.AccessesSciPyDecompositionService;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
+import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityService;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
@@ -34,38 +34,16 @@ public class AccessesSciPyDecompositionController {
     @Autowired
     FunctionalityService functionalityService;
 
-    @RequestMapping(value = "/dendrogram/{dendrogramName}/createAccessesSciPyDecomposition", method = RequestMethod.POST)
-    public ResponseEntity<HttpStatus> createDecomposition(
-            @PathVariable String dendrogramName,
-            @RequestParam String cutType,
-            @RequestParam float cutValue
-    ) {
-        logger.debug("createDecomposition");
-
-        try {
-            decompositionService.createDecomposition(dendrogramName, cutType, cutValue);
-            return new ResponseEntity<>(HttpStatus.OK);
-
-        } catch (KeyAlreadyExistsException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @RequestMapping(value = "/dendrogram/{dendrogramName}/createAccessesSciPyExpertDecomposition", method = RequestMethod.POST)
+    @RequestMapping(value = "/similarity/{similarityName}/createAccessesSciPyExpertDecomposition", method = RequestMethod.POST)
     public ResponseEntity<HttpStatus> createExpertDecomposition(
-            @PathVariable String dendrogramName,
+            @PathVariable String similarityName,
             @RequestParam String expertName,
             @RequestParam Optional<MultipartFile> expertFile
     ) {
         logger.debug("createExpertDecomposition");
 
         try {
-            decompositionService.createExpertDecomposition(dendrogramName, expertName, expertFile);
+            decompositionService.createExpertDecomposition(similarityName, expertName, expertFile);
             return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (KeyAlreadyExistsException e) {
@@ -211,79 +189,6 @@ public class AccessesSciPyDecompositionController {
                     response,
                     HttpStatus.OK
             );
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @RequestMapping(value = "/decomposition/{decompositionName}/cluster/{clusterName}/merge", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Cluster>> mergeClusters(
-            @PathVariable String decompositionName,
-            @PathVariable String clusterName,
-            @RequestParam String otherClusterName,
-            @RequestParam String newName
-    ) {
-        logger.debug("mergeClusters");
-        try {
-            return new ResponseEntity<>(decompositionService.mergeClustersOperation(decompositionName, clusterName, otherClusterName, newName), HttpStatus.OK);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @RequestMapping(value = "/decomposition/{decompositionName}/cluster/{clusterName}/rename", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Cluster>> renameCluster(
-            @PathVariable String decompositionName,
-            @PathVariable String clusterName,
-            @RequestParam String newName
-    ) {
-        logger.debug("renameCluster");
-        try {
-            return new ResponseEntity<>(decompositionService.renameClusterOperation(decompositionName, clusterName, newName), HttpStatus.OK);
-
-        } catch (KeyAlreadyExistsException e) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @RequestMapping(value = "/decomposition/{decompositionName}/cluster/{clusterName}/split", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Cluster>> splitCluster(
-            @PathVariable String decompositionName,
-            @PathVariable String clusterName,
-            @RequestParam String newName,
-            @RequestParam String entities
-    ) {
-        logger.debug("splitCluster");
-        try {
-            return new ResponseEntity<>(decompositionService.splitClusterOperation(decompositionName, clusterName, newName, entities), HttpStatus.OK);
-
-        } catch (KeyAlreadyExistsException e) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @RequestMapping(value = "/decomposition/{decompositionName}/cluster/{clusterName}/transferEntities", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Cluster>> transferEntities(
-            @PathVariable String decompositionName,
-            @PathVariable String clusterName,
-            @RequestParam String toClusterName,
-            @RequestParam String entities
-    ) {
-        logger.debug("transferEntities");
-        try {
-            return new ResponseEntity<>(decompositionService.transferEntitiesOperation(decompositionName, clusterName, toClusterName, entities), HttpStatus.OK);
 
         } catch (Exception e) {
             e.printStackTrace();

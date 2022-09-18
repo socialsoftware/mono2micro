@@ -1,7 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.dto;
 
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 
 import java.util.HashMap;
@@ -10,17 +9,22 @@ import java.util.Map;
 import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy.ACCESSES_SCIPY;
 
 public class AccessesSciPyDecompositionDto extends DecompositionDto {
+    // For decomposition initialization
+    private String similarityName;
+    private String cutType;
+    private float cutValue;
+
+    // For usage
     private boolean outdated;
     private boolean expert;
     private double silhouetteScore;
-    private Map<String, Cluster> clusters = new HashMap<>();
     private Map<String, Functionality> functionalities = new HashMap<>(); // <functionalityName, Functionality>
     private Map<String, Short> entityIDToClusterName = new HashMap<>();
 
     public AccessesSciPyDecompositionDto() {this.type = ACCESSES_SCIPY;}
 
     public AccessesSciPyDecompositionDto(AccessesSciPyDecomposition decomposition) {
-        this.setCodebaseName(decomposition.getDendrogram().getStrategy().getCodebase().getName());
+        this.setCodebaseName(decomposition.getSimilarity().getStrategy().getCodebase().getName());
         this.setStrategyName(decomposition.getStrategy().getName());
         this.setName(decomposition.getName());
         this.type = ACCESSES_SCIPY;
@@ -29,6 +33,30 @@ public class AccessesSciPyDecompositionDto extends DecompositionDto {
         this.outdated = decomposition.isOutdated();
         this.expert = decomposition.isExpert();
         this.clusters = decomposition.getClusters();
+    }
+
+    public String getSimilarityName() {
+        return similarityName;
+    }
+
+    public void setSimilarityName(String similarityName) {
+        this.similarityName = similarityName;
+    }
+
+    public String getCutType() {
+        return cutType;
+    }
+
+    public void setCutType(String cutType) {
+        this.cutType = cutType;
+    }
+
+    public float getCutValue() {
+        return cutValue;
+    }
+
+    public void setCutValue(float cutValue) {
+        this.cutValue = cutValue;
     }
 
     public boolean isOutdated() {
@@ -53,14 +81,6 @@ public class AccessesSciPyDecompositionDto extends DecompositionDto {
 
     public void setSilhouetteScore(double silhouetteScore) {
         this.silhouetteScore = silhouetteScore;
-    }
-
-    public Map<String, Cluster> getClusters() {
-        return clusters;
-    }
-
-    public void setClusters(Map<String, Cluster> clusters) {
-        this.clusters = clusters;
     }
 
     public Map<String, Functionality> getFunctionalities() {

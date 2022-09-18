@@ -1,19 +1,19 @@
 package pt.ist.socialsoftware.mono2micro.codebase.dto;
 
 import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
-import pt.ist.socialsoftware.mono2micro.source.dto.SourceDto;
-import pt.ist.socialsoftware.mono2micro.source.dto.SourceDtoFactory;
+import pt.ist.socialsoftware.mono2micro.representation.dto.RepresentationDto;
+import pt.ist.socialsoftware.mono2micro.representation.dto.RepresentationDtoFactory;
 
 import java.util.List;
 
 public class CodebaseDto {
     private String name;
 
-    private List<SourceDto> sources;
+    private List<RepresentationDto> representations;
 
     public CodebaseDto(Codebase codebase) {
         this.name = codebase.getName();
-        this.sources = SourceDtoFactory.getFactory().getSourceDtos(codebase.getSources());
+        this.representations = RepresentationDtoFactory.getFactory().getRepresentationDtos(codebase.getRepresentations());
     }
 
     public String getName() {
@@ -24,11 +24,11 @@ public class CodebaseDto {
         this.name = name;
     }
 
-    public List<SourceDto> getSources() {
-        return sources;
+    public List<RepresentationDto> getRepresentations() {
+        return representations;
     }
 
-    public void setSources(List<SourceDto> sources) {
-        this.sources = sources;
+    public void setRepresentations(List<RepresentationDto> representations) {
+        this.representations = representations;
     }
 }

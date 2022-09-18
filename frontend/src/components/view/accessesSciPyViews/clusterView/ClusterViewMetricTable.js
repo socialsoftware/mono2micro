@@ -39,11 +39,11 @@ export const ClusterViewMetricTable = ({clusters, clustersFunctionalities, outda
 
     const [selectedTable, setSelectedTable] = useState(1);
 
-    const metricsRows = clusters.map(({ name, entities, cohesion, coupling, complexity }) => {
+    const metricsRows = clusters.map(({ name, elements, cohesion, coupling, complexity }) => {
         return {
             name: name,
             cluster: name,
-            entities: entities.length,
+            entities: elements.length,
             functionalities: clustersFunctionalities[name] === undefined ? "fetching..." : clustersFunctionalities[name].length,
             cohesion: cohesion,
             coupling: coupling,
@@ -56,7 +56,7 @@ export const ClusterViewMetricTable = ({clusters, clustersFunctionalities, outda
             return {
                 [c2.name]: c1.name === c2.name ? "---" :
                     c1.couplingDependencies[c2.name] === undefined ? 0 :
-                        parseFloat(c1.couplingDependencies[c2.name].length / Object.keys(c2.entities).length).toFixed(2)
+                        parseFloat(c1.couplingDependencies[c2.name].length / Object.keys(c2.elements).length).toFixed(2)
             }
         }))
     });

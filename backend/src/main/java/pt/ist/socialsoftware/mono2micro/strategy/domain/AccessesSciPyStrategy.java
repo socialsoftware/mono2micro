@@ -2,10 +2,10 @@ package pt.ist.socialsoftware.mono2micro.strategy.domain;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import pt.ist.socialsoftware.mono2micro.dendrogram.domain.Dendrogram;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
-import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
-import pt.ist.socialsoftware.mono2micro.source.domain.TranslationSource;
+import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
+import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +16,13 @@ import java.util.stream.Collectors;
 public class AccessesSciPyStrategy extends Strategy {
     public static final String ACCESSES_SCIPY = "Accesses SciPy";
 
-    public static final List<String> sourceTypes = new ArrayList<String>() {{
-        add(AccessesSource.ACCESSES);
-        add(TranslationSource.TRANSLATION);
+    public static final List<String> representationTypes = new ArrayList<String>() {{
+        add(AccessesRepresentation.ACCESSES);
+        add(IDToEntityRepresentation.ID_TO_ENTITY);
     }};
 
     @DBRef(lazy = true)
-    private List<Dendrogram> dendrograms = new ArrayList<>();
+    private List<Similarity> similarities = new ArrayList<>();
     @DBRef(lazy = true)
     private List<Recommendation> recommendations = new ArrayList<>();
 
@@ -33,24 +33,24 @@ public class AccessesSciPyStrategy extends Strategy {
         return ACCESSES_SCIPY;
     }
     @Override
-    public List<String> getSourceTypes() {
-        return sourceTypes;
+    public List<String> getRepresentationTypes() {
+        return representationTypes;
     }
 
-    public List<Dendrogram> getDendrograms() {
-        return dendrograms;
+    public List<Similarity> getSimilarities() {
+        return similarities;
     }
 
-    public void setDendrograms(List<Dendrogram> dendrograms) {
-        this.dendrograms = dendrograms;
+    public void setSimilarities(List<Similarity> similarities) {
+        this.similarities = similarities;
     }
 
-    public void addDendrogram(Dendrogram dendrogram) {
-        this.dendrograms.add(dendrogram);
+    public void addSimilarity(Similarity similarity) {
+        this.similarities.add(similarity);
     }
 
-    public void removeDendrogram(String dendrogramName) {
-        this.dendrograms = this.dendrograms.stream().filter(dendrogram -> !dendrogram.getName().equals(dendrogramName)).collect(Collectors.toList());
+    public void removeSimilarity(String similarityName) {
+        this.similarities = this.similarities.stream().filter(similarity -> !similarity.getName().equals(similarityName)).collect(Collectors.toList());
     }
 
     public List<Recommendation> getRecommendations() {
@@ -64,5 +64,4 @@ public class AccessesSciPyStrategy extends Strategy {
     public void addRecommendation(Recommendation recommendation) {
         this.recommendations.add(recommendation);
     }
-
 }

@@ -3,7 +3,7 @@ package pt.ist.socialsoftware.mono2micro.analysis.service;
 import org.springframework.stereotype.Service;
 import pt.ist.socialsoftware.mono2micro.analysis.dto.AccessesSciPyAnalysisDto;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
+import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.analysis.dto.AnalysisDto;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.AccessesSciPyDecompositionDto;
 import pt.ist.socialsoftware.mono2micro.utils.mojoCalculator.src.main.java.MoJo;
@@ -31,13 +31,13 @@ public class AccessesSciPyAnalysisService {
         //}
 
         Map<String, Set<Short>> decomposition1ClusterEntities = new HashMap<>();
-        for (Cluster c : decomposition1.getClusters().values()) {
-            decomposition1ClusterEntities.put(c.getName(), c.getEntities());
+        for (Cluster cluster : decomposition1.getClusters().values()) {
+            decomposition1ClusterEntities.put(cluster.getName(), cluster.getElementsIDs());
         }
 
         Map<String, Set<Short>> decomposition2_CommonEntitiesOnly = new HashMap<>();
-        for (Cluster c : decomposition2.getClusters().values()) {
-            decomposition2_CommonEntitiesOnly.put(c.getName(), c.getEntities());
+        for (Cluster cluster : decomposition2.getClusters().values()) {
+            decomposition2_CommonEntitiesOnly.put(cluster.getName(), cluster.getElementsIDs());
         }
 
         List<Short> entities = new ArrayList<>();

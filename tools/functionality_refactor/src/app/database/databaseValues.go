@@ -21,7 +21,12 @@ type Cluster struct {
 	Cohesion             float64          `bson:"cohesion,omitempty"`
 	Coupling             float64          `bson:"coupling,omitempty"`
 	CouplingDependencies map[string][]int `bson:"couplingDependencies,omitempty"`
-	Entities             []int            `bson:"entities,omitempty"`
+	Entities             []Entity         `bson:"entities,omitempty"`
+}
+
+type Entity struct {
+	Id   int    `bson:"id,omitempty"`
+	Name string `bson:"name,omitempty"`
 }
 
 type Functionality struct {

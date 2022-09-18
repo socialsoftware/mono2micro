@@ -1,4 +1,4 @@
-import React, {createRef, useContext, useEffect, useState} from "react";
+import React, {createRef, useEffect, useState} from "react";
 import {RepositoryService} from "../../../../services/RepositoryService";
 import {toast, ToastContainer} from "react-toastify";
 import HttpStatus from "http-status-codes";
@@ -12,7 +12,6 @@ import {ClusterViewDialogs, DIALOG_TYPE} from "./ClusterViewDialogs";
 import {ClusterViewModal} from "./ClusterViewModal";
 import {ClusterViewMetricTable} from "./ClusterViewMetricTable";
 import {searchType} from "../ViewSearchBar";
-import AppContext from "../../../AppContext";
 
 export const clusterViewHelp = (<div>
     Double click a node to see its properties.<br />
@@ -66,8 +65,6 @@ const options = {
 
 export const ClusterViewGraph = ({setNow, outdated, setOutdated, searchedItem, setSearchedItem, changeToFunctionalities, setOpenSearch, setActions, view}) => {
     const appRef = createRef();
-    const context = useContext(AppContext);
-    const { translateEntity } = context;
     let { decompositionName } = useParams();
     const [operations, setOperations] = useState([]);
     const [clusters, setClusters] = useState(undefined);
@@ -209,7 +206,7 @@ export const ClusterViewGraph = ({setNow, outdated, setOutdated, searchedItem, s
                 const entityId = Number(searchedItem.id);
                 let entityNode = visGraph.nodes.get(entityId);
                 if (entityNode === null) {
-                    const clusterNode = visGraph.nodes.get().find(node => node.entities && node.entities.includes(entityId));
+                    const clusterNode = visGraph.nodes.get().find(node => node.elements && node.elements.find(e => e.id === entityId));
                     handleExpandCluster(clusterNode);
                     entityNode = visGraph.nodes.get(entityId);
                 }
@@ -315,7 +312,7 @@ export const ClusterViewGraph = ({setNow, outdated, setOutdated, searchedItem, s
                 response = handleRename();
                 break;
             case DIALOG_TYPE.TRANSFER:
-                promise = service.transferEntities(decompositionName, clickedComponent.node.id, clickedComponent.toNode.id, dialogResponse.entities.toString());
+                promise = service.transferEntities(decompositionName, clickedComponent.node.id, clickedComponent.toNode.id, dialogResponse.elements.toString());
                 toastId = toast.promise(promise, {
                     pending: "Transferring entities from cluster " + clickedComponent.node.label + " to cluster " + clickedComponent.toNode.label + "...",
                     success: {render: "Successfully transferred entities!", autoClose: 3000},
@@ -335,7 +332,7 @@ export const ClusterViewGraph = ({setNow, outdated, setOutdated, searchedItem, s
                 response = handleMerge();
                 break;
             case DIALOG_TYPE.SPLIT:
-                promise = service.splitCluster(decompositionName, clickedComponent.node.id, dialogResponse.newName, dialogResponse.entities.toString());
+                promise = service.splitCluster(decompositionName, clickedComponent.node.id, dialogResponse.newName, dialogResponse.elements.toString());
                 toastId = toast.promise(promise, {
                     pending: "Splitting cluster " + dialogResponse.newName + "...",
                     success: {render: "Successfully split cluster!", autoClose: 3000},
@@ -345,7 +342,7 @@ export const ClusterViewGraph = ({setNow, outdated, setOutdated, searchedItem, s
                 response = handleSplit();
                 break;
             case DIALOG_TYPE.FORM_CLUSTER:
-                promise = service.formCluster(decompositionName, dialogResponse.newName, dialogResponse.entities);
+                promise = service.formCluster(decompositionName, dialogResponse.newName, dialogResponse.elements);
                 toastId = toast.promise(promise, {
                     pending: "Forming new cluster " + dialogResponse.newName + "...",
                     success: {render: "Successfully formed new cluster!", autoClose: 3000},
@@ -391,12 +388,12 @@ function updateNetwork() {
                     if (corruptedSave) return;
                     if (node.type === types.CLUSTER) {
                         const cluster = clusters.find(cluster => cluster.name === node.id);
-                        if (cluster === undefined || node.entities === undefined || node.entities.length !== cluster.entities.length ||
-                            !node.entities.reduce((prev, current) => prev && cluster.entities.includes(current), true))
+                        if (cluster === undefined || node.elements === undefined || node.elements.length !== cluster.elements.length ||
+                            !node.elements.reduce((prev, current) => prev && cluster.elements.find(e => e.id === current.id), true))
                             corruptedSave = true;
                     }
                     else {
-                        const cluster = clusters.find(cluster => cluster.entities.includes(node.id));
+                        const cluster = clusters.find(cluster => cluster.elements.find(e => e.id === node.id));
                         if (cluster === undefined || node.group !== cluster.name)
                             corruptedSave = true;
                     }
@@ -445,7 +442,7 @@ function updateNetwork() {
             // Stabilization is over (This stabilization actuates during the entire usage)
             newNetwork.on("stabilized", () => setStabilizationProgress(prev => prev === "stabilizing"? "stabilized" : prev));
 
-            if (clusters.reduce((prev, current) => prev + current.entities.length, 0) > 100)
+            if (clusters.reduce((prev, current) => prev + current.elements.length, 0) > 100)
                 newNetwork.setOptions({interaction : {hideEdgesOnDrag: true}});
 
             setNetwork(newNetwork);
@@ -519,8 +516,7 @@ function updateNetwork() {
                 return;
             }
             toast.dismiss();
-            const entities = clickedComponent.node.entities.map(entity => ({id: entity, name: translateEntity(entity)}));
-            setRequestDialog({type: DIALOG_TYPE.TRANSFER, fromCluster: clickedComponent.node.label, toCluster: selectedNode.label, entities});
+            setRequestDialog({type: DIALOG_TYPE.TRANSFER, fromCluster: clickedComponent.node.label, toCluster: selectedNode.label, elements: clickedComponent.node.elements});
             setClickedComponent(prev => {prev.toNode = selectedNode; return prev;});
         }
         else if (clickedComponent.operation === OPERATION.MERGE && selectedNode.type === types.CLUSTER) {
@@ -562,7 +558,7 @@ function updateNetwork() {
         visGraph.nodes.remove(clusterNode.id);
         visGraph.edges.remove(relatedNodesAndEdges.edges.map(edge => edge.id));
 
-        const nodes = clusterNode.entities.map(entity => createEntity(entity, clusterNode.id, position));
+        const nodes = clusterNode.elements.map(entity => createEntity(entity, clusterNode.id, position));
         visGraph.nodes.add(nodes);
 
         const newGraphEdges = generateNewAndAffectedEdges(nodes, relatedNodesAndEdges.nodes);
@@ -575,7 +571,7 @@ function updateNetwork() {
         visGraph.nodes.get().forEach(node => {
             if (node.type === types.CLUSTER) {
                 const position = network.getPosition(node.id);
-                newNodes.push(...node.entities.map(entity => createEntity(entity, node.id, position)));
+                newNodes.push(...node.elements.map(entity => createEntity(entity, node.id, position)));
                 clusterNodes.push(node);
             }
             else existingNodes.push(node);
@@ -595,13 +591,13 @@ function updateNetwork() {
         if (clusterId === undefined)
             clusterId = clickedComponent.node.group;
         const entityNodes = visGraph.nodes.get().filter(node => node.group === clusterId);
-        const clusterEntities = entityNodes.map(node => node.id);
-        const relatedNodesAndEdges = getRelatedNodesAndEdges(clusterEntities);
-        const newClusterNode = createCluster({name: entityNodes[0].group, entities: clusterEntities});
+        const clusterEntitiesIDs = entityNodes.map(node => node.id);
+        const relatedNodesAndEdges = getRelatedNodesAndEdges(clusterEntitiesIDs);
+        const newClusterNode = createCluster({name: entityNodes[0].group, elements: entityNodes.map(node => {return {id: node.id, name: node.label}})});
 
         const newGraphEdges = generateNewAndAffectedEdges([newClusterNode], relatedNodesAndEdges.nodes);
 
-        visGraph.nodes.remove(clusterEntities);
+        visGraph.nodes.remove(clusterEntitiesIDs);
         visGraph.edges.remove(relatedNodesAndEdges.edges.map(edge => edge.id));
 
         visGraph.nodes.add(newClusterNode);
@@ -619,8 +615,8 @@ function updateNetwork() {
             else {
                 let info = clusterNodeInformation[node.group];
                 if (info === undefined)
-                    clusterNodeInformation[node.group] = {name: node.group, entities: [node.id]}
-                else info.entities.push(node.id);
+                    clusterNodeInformation[node.group] = {name: node.group, elements: [{id: node.id, name: node.label}]}
+                else info.elements.push({id: node.id, name: node.label});
                 return true;
             }
         });
@@ -698,8 +694,8 @@ function updateNetwork() {
         let fromNode = {...clickedComponent.node};
         let toNode = {...clickedComponent.toNode};
 
-        fromNode.entities = fromNode.entities.filter(entity => !dialogResponse.entities.includes(entity)); fromNode.value = fromNode.entities.length;
-        toNode.entities.push(...dialogResponse.entities); toNode.value = toNode.entities.length;
+        toNode.elements.push(...fromNode.elements.filter(entity => dialogResponse.elements.find(e => e === entity.id))); toNode.value = toNode.elements.length;
+        fromNode.elements = fromNode.elements.filter(entity => !dialogResponse.elements.find(e => e === entity.id)); fromNode.value = fromNode.elements.length;
 
         const fromNodeRelated = getRelatedNodesAndEdges([fromNode.id]);
         const toNodeRelated = getRelatedNodesAndEdges([toNode.id]);
@@ -722,24 +718,27 @@ function updateNetwork() {
     function handleMerge() {
         const clusterIds = [clickedComponent.node.id, clickedComponent.toNode.id];
         const relatedNodesAndEdges = getRelatedNodesAndEdges(clusterIds)
-        const newClusterNode = createCluster({name: dialogResponse.newName, entities: [...clickedComponent.node.entities, ...clickedComponent.toNode.entities]});
+        const newClusterNode = createCluster({name: dialogResponse.newName, elements: [...clickedComponent.node.elements, ...clickedComponent.toNode.elements]});
         const newGraphEdges = generateNewAndAffectedEdges([newClusterNode], relatedNodesAndEdges.nodes);
 
         return {removableNodes: clusterIds, removableEdges: relatedNodesAndEdges.edges.map(edge => edge.id), nodes: [newClusterNode], edges: newGraphEdges};
     }
 
     function handleSplitRequest() {
-        const entities = clickedComponent.node.entities.map(entity => ({id: entity, name: translateEntity(entity)}));
-        setRequestDialog({ type: DIALOG_TYPE.SPLIT, cluster: clickedComponent.node.label, entities });
+        setRequestDialog({ type: DIALOG_TYPE.SPLIT, cluster: clickedComponent.node.label, elements: [...clickedComponent.node.elements] });
         setOperations([OPERATION.CANCEL]);
         setMenuCoordinates(undefined);
     }
 
     function handleSplit() {
         const relatedNodesAndEdges = getRelatedNodesAndEdges([clickedComponent.node.id]);
-        const newClusterNode = createCluster({name: dialogResponse.newName, entities: [...dialogResponse.entities]});
+        const newClusterNode = createCluster({
+            name: dialogResponse.newName,
+            elements: [...clickedComponent.node.elements.filter(e => dialogResponse.elements.includes(e.id))]
+        });
         let toUpdateCluster = {...clickedComponent.node};
-        toUpdateCluster.entities = toUpdateCluster.entities.filter(entity => !dialogResponse.entities.includes(entity)); toUpdateCluster.value = toUpdateCluster.entities.length;
+        toUpdateCluster.elements = toUpdateCluster.elements.filter(entity => !dialogResponse.elements.find(e => e === entity.id));
+        toUpdateCluster.value = toUpdateCluster.elements.length;
 
         let edges = [], removableEdges = [];
         generateNewAndAffectedEdges([newClusterNode, toUpdateCluster], relatedNodesAndEdges.nodes, edges, removableEdges);
@@ -749,33 +748,40 @@ function updateNetwork() {
     function handleFormClusterRequest() {
         const nodes = clickedComponent.nodes? clickedComponent.nodes : [clickedComponent.node];
         setRequestDialog({type: DIALOG_TYPE.FORM_CLUSTER,
-            entities: nodes.flatMap(node => {
+            elements: nodes.flatMap(node => {
                 if (node.type === types.CLUSTER)
-                    return node.entities.map(entity => ({id: entity, name: translateEntity(entity), cluster: node.label}));
-                return [{id: node.id, name: translateEntity(node.id), cluster: node.group}]; })
+                    return node.elements.map(entity => ({id: entity.id, name: entity.name, cluster: node.label}));
+                return [{id: node.id, name: node.label, cluster: node.group}]; })
         });
         setMenuCoordinates(undefined);
     }
 
     function handleFormCluster() {
         let nodes = [], edges = [], removableNodes = [], removableEdges = [];
-        let newClusterNode = createCluster({name: dialogResponse.newName, entities: []});
+        let newClusterNode = createCluster({name: dialogResponse.newName, elements: []});
 
-        Object.entries(dialogResponse.entities).forEach(([clusterName, entities]) => {
+        Object.entries(dialogResponse.elements).forEach(([clusterName, elements]) => {
             const allGraphNodes = visGraph.nodes.get();
             let clusterNode = allGraphNodes.find(node => node.id === clusterName);
             if (clusterNode !== undefined) {
-                if (clusterNode.entities.length === entities.length) // The entire cluster was selected to be added into the new cluster
+                if (clusterNode.elements.length === elements.length) { // The entire cluster was selected to be added into the new cluster
+                    newClusterNode.elements.push(...clusterNode.elements);
                     removableNodes.push(clusterNode.id);
-                else {
-                    clusterNode.entities = clusterNode.entities.filter(entity => !entities.includes(entity)); clusterNode.value = clusterNode.entities.length;
+                } else {
+                    newClusterNode.elements.push(...clusterNode.elements.filter(entity => elements.find(e => e === entity.id)));
+                    clusterNode.elements = clusterNode.elements.filter(entity => !elements.find(e => e === entity.id));
+                    clusterNode.value = clusterNode.elements.length;
                     nodes.push(clusterNode);
                 }
-                newClusterNode.entities.push(...entities); newClusterNode.value = newClusterNode.entities.length;
+                newClusterNode.value = newClusterNode.elements.length;
             }
             else { // Entities were singularly added or filtered from cluster
-                removableNodes.push(...entities);
-                newClusterNode.entities.push(...entities); newClusterNode.value = newClusterNode.entities.length;
+                removableNodes.push(...elements);
+                for (let element of elements) {
+                    let entityNode = allGraphNodes.find(e => e.id === element);
+                    newClusterNode.elements.push({id: entityNode.id, name: entityNode.label});
+                }
+                newClusterNode.value = newClusterNode.elements.length;
             }
         });
 
@@ -852,10 +858,10 @@ function updateNetwork() {
 
     const createEntity = (entity, clusterName, position = undefined) => {
         let node = {
-            id: entity,
+            id: entity.id,
             group: clusterName,
             type: types.ENTITY,
-            label: translateEntity(entity),
+            label: entity.name,
             value: 1
         };
         if (position !== undefined) {
@@ -870,9 +876,9 @@ function updateNetwork() {
             id: cluster.name,
             group: cluster.name,
             type: types.CLUSTER,
-            entities: cluster.entities,
+            elements: cluster.elements,
             label: cluster.name,
-            value: cluster.entities.length,
+            value: cluster.elements.length,
             borderWidth: 3,
             shape: "box",
             scaling: { label: { enabled: true, min: 20, max: 80 } }
@@ -906,8 +912,8 @@ function updateNetwork() {
         // Both Clusters edge
         if (node1.type === types.CLUSTER && node2.type === types.CLUSTER) {
             let allFunctionalitiesInCommon = [], fullLength = 0, counter = 0;
-            node1.entities.forEach(entity1 => {
-                node2.entities.forEach(entity2 => {
+            node1.elements.map(e => e.id).forEach(entity1 => {
+                node2.elements.map(e => e.id).forEach(entity2 => {
                     const edge = edgeWeights.find(edge => edge.e1ID === entity1 && edge.e2ID === entity2 || edge.e1ID === entity2 && edge.e2ID === entity1);
                     if (edge !== undefined) {
                         allFunctionalitiesInCommon.push(...edge.functionalities);
@@ -937,8 +943,8 @@ function updateNetwork() {
         else {
             let allFunctionalitiesInCommon = [], fullLength = 0, counter = 0;
             const cluster = node1.type === types.CLUSTER ? node1 : node2, entity = cluster === node1 ? node2 : node1;
-            cluster.entities.forEach(clusterEntity => {
-                const edge = edgeWeights.find(edge => edge.e1ID === clusterEntity && edge.e2ID === entity.id || edge.e1ID === entity.id && edge.e2ID === clusterEntity);
+            cluster.elements.forEach(clusterEntity => {
+                const edge = edgeWeights.find(edge => edge.e1ID === clusterEntity.id && edge.e2ID === entity.id || edge.e1ID === entity.id && edge.e2ID === clusterEntity.id);
                 if (edge !== undefined) {
                     allFunctionalitiesInCommon.push(...edge.functionalities);
                     fullLength += edge.dist;

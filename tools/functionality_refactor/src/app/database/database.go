@@ -211,18 +211,31 @@ func newDecomposition(databaseDecomposition Decomposition) *mono2micro.Decomposi
 
 	clusters := map[string]*mono2micro.Cluster{}
 	for key, cluster := range databaseDecomposition.Clusters {
+
+		var entities []mono2micro.Entity
+		for _, entity := range cluster.Entities {
+			entities = append(entities, newEntity(entity))
+		}
+
 		clusters[key] = &mono2micro.Cluster{
 			Name:                 cluster.Name,
 			Complexity:           cluster.Complexity,
 			Cohesion:             cluster.Cohesion,
 			Coupling:             cluster.Coupling,
 			CouplingDependencies: cluster.CouplingDependencies,
-			Entities:             cluster.Entities,
+			Entities:             entities,
 		}
 	}
 	decomposition.Clusters = clusters
 
 	return &decomposition
+}
+
+func newEntity(entity Entity) mono2micro.Entity {
+	return mono2micro.Entity{
+		Id:   entity.Id,
+		Name: entity.Name,
+	}
 }
 
 func newFunctionality(bucket *gridfs.Bucket, databaseFunctionality Functionality) (*mono2micro.Functionality, error) {

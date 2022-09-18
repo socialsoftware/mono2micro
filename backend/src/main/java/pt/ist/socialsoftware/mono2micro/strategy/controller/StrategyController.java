@@ -9,8 +9,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.DecompositionDto;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.DecompositionDtoFactory;
-import pt.ist.socialsoftware.mono2micro.dendrogram.dto.DendrogramDto;
-import pt.ist.socialsoftware.mono2micro.dendrogram.dto.DendrogramDtoFactory;
+import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDto;
+import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDtoFactory;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.strategy.dto.StrategyDto;
 import pt.ist.socialsoftware.mono2micro.strategy.dto.StrategyDtoFactory;
@@ -47,13 +47,13 @@ public class StrategyController {
     public ResponseEntity<HttpStatus> createStrategy(
             @PathVariable String codebaseName,
             @PathVariable String strategyType,
-            @Nullable @RequestParam List<String> sourceTypes,
-            @Nullable @RequestParam List<Object> sources
+            @Nullable @RequestParam List<String> representationTypes,
+            @Nullable @RequestParam List<Object> representations
     ){
         logger.debug("createStrategy");
 
         try {
-            strategyService.createStrategy(codebaseName, strategyType, sourceTypes, sources);
+            strategyService.createStrategy(codebaseName, strategyType, representationTypes, representations);
             return new ResponseEntity<>(HttpStatus.CREATED);
 
         } catch (Exception e) {
@@ -79,14 +79,14 @@ public class StrategyController {
         }
     }
 
-    @RequestMapping(value = "/strategy/{strategyName}/getStrategyDendrograms", method = RequestMethod.GET)
-    public ResponseEntity<List<DendrogramDto>> getStrategyDendrogram(
+    @RequestMapping(value = "/strategy/{strategyName}/getStrategySimilarities", method = RequestMethod.GET)
+    public ResponseEntity<List<SimilarityDto>> getStrategySimilarities(
             @PathVariable String strategyName
     ) {
-        logger.debug("getStrategyDendrogram");
+        logger.debug("getStrategySimilarities");
         try {
             return new ResponseEntity<>(
-                    DendrogramDtoFactory.getFactory().getDendrogramDtos(strategyService.getStrategyDendrograms(strategyName)),
+                    SimilarityDtoFactory.getFactory().getSimilarityDtos(strategyService.getStrategySimilarities(strategyName)),
                     HttpStatus.OK
             );
 

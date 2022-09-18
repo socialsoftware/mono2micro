@@ -67,11 +67,23 @@ export enum MetricType {
 
 export interface Cluster {
     name?: string;
+    elements?: Elem;
+}
+
+export interface AccessesSciPyCluster extends Cluster {
     complexity?: number;
     cohesion?: number;
     coupling?: number;
     couplingDependencies?: Record<number, number[]> // <clusterID, entityIDs>
-    entities?: number[];
+}
+
+export interface Elem {
+    id: number;
+    name: string;
+}
+
+export interface DomainEntity extends Elem {
+    type: string;
 }
 
 export interface AnalysisDto {

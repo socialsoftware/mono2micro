@@ -36,11 +36,11 @@ function renderBreadCrumbs(codebaseName) {
 export function Strategies() {
     let { codebaseName } = useParams();
     const [showPopup, setShowPopup] = useState(false);
-    const [sourceToDelete, setSourceToDelete] = useState(undefined);
+    const [representationToDelete, setRepresentationToDelete] = useState(undefined);
     const [selectedStrategy, setSelectedStrategy] = useState(undefined);
     const [strategies, setStrategies] = useState([]);
-    const [sources, setSources] = useState([]);
-    const [addedSources, setAddedSources] = useState({});
+    const [representations, setRepresentations] = useState([]);
+    const [addedRepresentations, setAddedRepresentations] = useState({});
     const [isUploaded, setIsUploaded] = useState("");
     const [canSubmit, setCanSubmit] = useState(false);
 
@@ -53,7 +53,7 @@ export function Strategies() {
         const service = new RepositoryService();
         service.getCodebase(codebaseName).then(response => {
             loadStrategies();
-            setSources(response.sources);
+            setRepresentations(response.representations);
         });
     }
 
@@ -64,13 +64,13 @@ export function Strategies() {
         });
     }
 
-    function handleSourcesSubmit(event) {
+    function handleRepresentationsSubmit(event) {
         event.preventDefault()
 
         setIsUploaded("Uploading...");
 
         const service = new RepositoryService();
-        service.createStrategy(codebaseName, selectedStrategy.type, addedSources)
+        service.createStrategy(codebaseName, selectedStrategy.type, addedRepresentations)
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
                     loadCodebase();
@@ -78,7 +78,7 @@ export function Strategies() {
                 } else setIsUploaded("Upload failed.");
 
                 setSelectedStrategy(undefined);
-                setAddedSources({});
+                setAddedRepresentations({});
             })
             .catch(error => {
                 if (error.response !== undefined && error.response.status === HttpStatus.UNAUTHORIZED) {
@@ -104,17 +104,17 @@ export function Strategies() {
         setSelectedStrategy(StrategyFactory.getStrategy({type: strategyType}));
     }
 
-    function handleDeleteSource(source) {
-        setSourceToDelete(source);
+    function handleDeleteRepresentation(representation) {
+        setRepresentationToDelete(representation);
         setShowPopup(true);
     }
 
-    function confirmSourceToDelete() {
+    function confirmRepresentationToDelete() {
         setShowPopup(false);
 
-        let toastId = toast.loading("Deleting source...", {type: toast.TYPE.INFO});
+        let toastId = toast.loading("Deleting representation...", {type: toast.TYPE.INFO});
         const service = new RepositoryService();
-        service.deleteSource(sourceToDelete.name).then(() => {
+        service.deleteRepresentation(representationToDelete.name).then(() => {
             loadCodebase();
             toast.dismiss(toastId);
         });
@@ -132,9 +132,9 @@ export function Strategies() {
         });
     }
 
-    function renderSources() {
+    function renderRepresentations() {
         return (
-            <Form onSubmit={handleSourcesSubmit}>
+            <Form onSubmit={handleRepresentationsSubmit}>
                 <Form.Group as={Row} controlId="selectStrategy" className="align-items-center mb-3">
                     <Col sm={2}>
                         <DropdownButton title={selectedStrategy === undefined? "Choose Strategy" : StrategyDescription[selectedStrategy.type]}>
@@ -151,11 +151,11 @@ export function Strategies() {
                     </Col>
                 </Form.Group>
 
-                {selectedStrategy !== undefined && selectedStrategy.type === StrategyType.ACCESSES_SCIPY &&   // Show sources request form
+                {selectedStrategy !== undefined && selectedStrategy.type === StrategyType.ACCESSES_SCIPY &&   // Show representation request form
                     <AccessesSciPyForm
                         strategy={selectedStrategy}
-                        setAddedSources={setAddedSources}
-                        sources={sources}
+                        setAddedRepresentations={setAddedRepresentations}
+                        representations={representations}
                         setCanSubmit={setCanSubmit}
                     />
                 }
@@ -181,13 +181,13 @@ export function Strategies() {
                         </div>
                     </>
                 }
-                {sources.length !== 0 &&
+                {representations.length !== 0 &&
                     <>
                         <h4 className="mt-4" style={{ color: "#666666" }}>
-                            Sources
+                            Representations
                         </h4>
                         <div className={"d-flex flex-wrap mw-100"} style={{gap: '1rem 1rem'}}>
-                            {sources.map(source => source.printCard(handleDeleteSource))}
+                            {representations.map(representation => representation.printCard(handleDeleteRepresentation))}
                         </div>
                     </>
                 }
@@ -196,22 +196,22 @@ export function Strategies() {
     }
 
     function renderDeletePopup() {
-        const closePopup = function () {setShowPopup(false); setSourceToDelete(undefined)};
+        const closePopup = function () {setShowPopup(false); setRepresentationToDelete(undefined)};
 
         return <Modal
                 show={showPopup}
                 onHide={() => closePopup()}
                 backdrop="static"
             >
-                <ModalTitle>&ensp;Source Deletion</ModalTitle>
+                <ModalTitle>&ensp;Representation Deletion</ModalTitle>
                 <ModalBody>
-                    Strategies created from this source will be deleted.<br/>Are you sure you want to delete this Source?
+                    Strategies created from this representation will be deleted.<br/>Are you sure you want to delete this Representation?
                 </ModalBody>
                 <ModalFooter>
                     <Button variant="secondary" onClick={() => closePopup()}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={() => confirmSourceToDelete()}>Delete</Button>
+                    <Button variant="primary" onClick={() => confirmRepresentationToDelete()}>Delete</Button>
                 </ModalFooter>
             </Modal>;
     }
@@ -231,7 +231,7 @@ export function Strategies() {
                 </Col>
             </Row>
 
-            { renderSources() }
+            { renderRepresentations() }
         </div>
     );
 }

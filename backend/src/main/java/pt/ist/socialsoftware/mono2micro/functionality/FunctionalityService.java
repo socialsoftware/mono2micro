@@ -6,8 +6,8 @@ import org.jgrapht.traverse.BreadthFirstIterator;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pt.ist.socialsoftware.mono2micro.cluster.AccessesSciPyCluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.AccessesSciPyDecompositionRepository;
 import pt.ist.socialsoftware.mono2micro.fileManager.FileManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
@@ -17,9 +17,9 @@ import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.metrics.decompositionService.AccessesSciPyMetricService;
-import pt.ist.socialsoftware.mono2micro.source.domain.Source;
-import pt.ist.socialsoftware.mono2micro.source.service.SourceService;
-import pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram;
+import pt.ist.socialsoftware.mono2micro.representation.domain.Representation;
+import pt.ist.socialsoftware.mono2micro.representation.service.RepresentationService;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.AccessesSciPySimilarity;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
 
@@ -30,7 +30,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.jgrapht.Graphs.successorListOf;
-import static pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource.ACCESSES;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
 
 @Service
 public class FunctionalityService {
@@ -38,7 +38,7 @@ public class FunctionalityService {
     AccessesSciPyDecompositionRepository decompositionRepository;
 
     @Autowired
-    SourceService sourceService;
+    RepresentationService representationService;
 
     @Autowired
     FunctionalityRepository functionalityRepository;
@@ -199,7 +199,7 @@ public class FunctionalityService {
             // ClusterDependencies
             String clusterName = lt.getClusterName();
             if (!clusterName.equals("-1")) { // not root node
-                Cluster fromCluster = decomposition.getCluster(clusterName);
+                AccessesSciPyCluster fromCluster = (AccessesSciPyCluster) decomposition.getCluster(clusterName);
 
                 List<LocalTransaction> nextLocalTransactions = successorListOf(localTransactionsGraph, lt);
 
@@ -211,11 +211,11 @@ public class FunctionalityService {
 
     public Functionality getOrCreateRedesign(String decompositionName, String functionalityName) throws IOException, JSONException {
         AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-        AccessesSciPyDendrogram dendrogram = (AccessesSciPyDendrogram) decomposition.getDendrogram();
+        AccessesSciPySimilarity similarity = (AccessesSciPySimilarity) decomposition.getSimilarity();
 
         Functionality functionality = decomposition.getFunctionality(functionalityName);
 
-        Source source = dendrogram.getStrategy().getCodebase().getSourceByType(ACCESSES);
+        Representation representation = similarity.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
 
         if (!functionality.containsFunctionalityRedesignName(Constants.DEFAULT_REDESIGN_NAME)) {
             FunctionalityRedesign functionalityRedesign = createFunctionalityRedesign(
@@ -224,9 +224,9 @@ public class FunctionalityService {
                     Constants.DEFAULT_REDESIGN_NAME,
                     true,
                     functionality.createLocalTransactionGraphFromScratch(
-                            sourceService.getSourceFileAsInputStream(source.getName()),
-                            dendrogram.getTracesMaxLimit(),
-                            dendrogram.getTraceType(),
+                            representationService.getRepresentationFileAsInputStream(representation.getName()),
+                            similarity.getTracesMaxLimit(),
+                            similarity.getTraceType(),
                             decomposition.getEntityIDToClusterName())
             );
             metricService.calculateMetrics(decomposition, functionality, functionalityRedesign);
@@ -289,7 +289,7 @@ public class FunctionalityService {
             throws Exception
     {
         AccessesSciPyDecomposition decomposition = decompositionRepository.findByName(decompositionName);
-        AccessesSciPyDendrogram dendrogram = (AccessesSciPyDendrogram) decomposition.getDendrogram();
+        AccessesSciPySimilarity similarity = (AccessesSciPySimilarity) decomposition.getSimilarity();
         Functionality functionality = decomposition.getFunctionality(functionalityName);
 
         if(newRedesignName.isPresent())
@@ -307,13 +307,13 @@ public class FunctionalityService {
             functionality.addFunctionalityRedesign(functionalityRedesign.getName(), functionality.getId() + functionalityRedesign.getName());
             functionality.setFunctionalityRedesignNameUsedForMetrics(functionalityRedesign.getName());
 
-            Source source = dendrogram.getStrategy().getCodebase().getSourceByType(ACCESSES);
+            Representation representation = similarity.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
 
             DirectedAcyclicGraph<LocalTransaction, DefaultEdge> functionalityLocalTransactionsGraph = decomposition.getFunctionality(functionalityName)
                     .createLocalTransactionGraphFromScratch(
-                            sourceService.getSourceFileAsInputStream(source.getName()),
-                            dendrogram.getTracesMaxLimit(),
-                            dendrogram.getTraceType(),
+                            representationService.getRepresentationFileAsInputStream(representation.getName()),
+                            similarity.getTracesMaxLimit(),
+                            similarity.getTraceType(),
                             decomposition.getEntityIDToClusterName());
 
             createFunctionalityRedesign(

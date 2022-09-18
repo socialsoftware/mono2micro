@@ -4,17 +4,18 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.SciPyClusteringAlgorithmService;
-import pt.ist.socialsoftware.mono2micro.dendrogram.domain.Dendrogram;
+import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.similarityGenerator.AccessesSimilarityGeneratorService;
-import pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.AccessesSciPySimilarity;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendAccessesSciPy;
-import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
+import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
-import pt.ist.socialsoftware.mono2micro.dendrogram.dto.AccessesSciPyDendrogramDto;
+import pt.ist.socialsoftware.mono2micro.similarity.dto.AccessesSciPySimilarityDto;
 import pt.ist.socialsoftware.mono2micro.recommendation.dto.RecommendAccessesSciPyDto;
 import pt.ist.socialsoftware.mono2micro.recommendation.repository.RecommendAccessesSciPyRepository;
-import pt.ist.socialsoftware.mono2micro.dendrogram.service.AccessesSciPyDendrogramService;
+import pt.ist.socialsoftware.mono2micro.similarity.service.AccessesSciPySimilarityService;
 import pt.ist.socialsoftware.mono2micro.strategy.repository.StrategyRepository;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
@@ -25,7 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 
-import static pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource.ACCESSES;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
 
 @Service
 public class RecommendAccessesSciPyService {
@@ -45,7 +46,7 @@ public class RecommendAccessesSciPyService {
     SciPyClusteringAlgorithmService clusteringAlgorithm;
 
     @Autowired
-    AccessesSciPyDendrogramService accessesSciPyDendrogramService;
+    AccessesSciPySimilarityService accessesSciPySimilarityService;
 
     @Autowired
     GridFsService gridFsService;
@@ -91,13 +92,13 @@ public class RecommendAccessesSciPyService {
             }
         }
 
-        AccessesSource source = (AccessesSource) recommendation.getStrategy().getCodebase().getSourceByType(ACCESSES);
+        AccessesRepresentation representation = (AccessesRepresentation) recommendation.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
 
         clusteringAlgorithm.prepareAutowire();
         // Executes the request in a fork to avoid blocking the user
         ForkJoinPool.commonPool().submit(() -> {
             try {
-                similarityGenerator.createSimilarityMatricesForSciPy(source, recommendation);
+                similarityGenerator.createSimilarityMatricesForSciPy(representation, recommendation);
                 clusteringAlgorithm.generateMultipleDecompositions(recommendation);
 
                 recommendation.addProducedCombinations();
@@ -110,15 +111,9 @@ public class RecommendAccessesSciPyService {
         return recommendation;
     }
 
-    public String getRecommendationResultByName(String recommendationName) throws IOException {
-        RecommendAccessesSciPy recommendation = recommendAccessesSciPyRepository.getRecommendationResultName(recommendationName);
-        return getRecommendationResult(recommendation);
-    }
-
-    public void createDecompositions(String recommendationName, List<String> decompositionNames) throws Exception {
-        RecommendAccessesSciPy recommendation = recommendAccessesSciPyRepository.findByName(recommendationName);
+    public void createDecompositions(RecommendAccessesSciPy recommendation, List<String> decompositionNames) throws Exception {
         AccessesSciPyStrategy strategy = (AccessesSciPyStrategy) strategyRepository.findByName(recommendation.getStrategy().getName());
-        List<Dendrogram> dendrograms = strategy.getDendrograms();
+        List<Similarity> similarities = strategy.getSimilarities();
 
         for (String name : decompositionNames) {
             String[] properties = name.split(",");
@@ -131,26 +126,26 @@ public class RecommendAccessesSciPyService {
 
             System.out.println("Creating decomposition with name: " + name);
 
-            AccessesSciPyDendrogramDto dendrogramInformation = new AccessesSciPyDendrogramDto(recommendation, traceType, linkageType, name);
+            AccessesSciPySimilarityDto similarityInformation = new AccessesSciPySimilarityDto(recommendation, traceType, linkageType, name);
 
             // Get or create the decomposition's strategy
-            AccessesSciPyDendrogram dendrogram = (AccessesSciPyDendrogram) dendrograms.stream().filter(possibleDendrogram -> possibleDendrogram.equalsDto(dendrogramInformation)).findFirst().orElse(null);
-            if (dendrogram == null) {
-                dendrogram = accessesSciPyDendrogramService.getNewAccessesSciPyDendrogramForStrategy(strategy, dendrogramInformation);
+            AccessesSciPySimilarity similarity = (AccessesSciPySimilarity) similarities.stream().filter(possibleSimilarity -> possibleSimilarity.equalsDto(similarityInformation)).findFirst().orElse(null);
+            if (similarity == null) {
+                similarity = accessesSciPySimilarityService.getNewAccessesSciPySimilarityForStrategy(strategy, similarityInformation);
 
-                dendrogram.setSimilarityMatrixName(dendrogram.getName() + "_similarityMatrix");
+                similarity.setSimilarityMatrixName(similarity.getName() + "_similarityMatrix");
                 InputStream inputStream = gridFsService.getFile(name.substring(0, name.lastIndexOf(","))); // Gets the previously produced similarity matrix
-                gridFsService.saveFile(inputStream, dendrogram.getSimilarityMatrixName()); // And saves it with a different name
+                gridFsService.saveFile(inputStream, similarity.getSimilarityMatrixName()); // And saves it with a different name
 
                 // generate dendrogram image
-                similarityGenerator.createAccessesSciPyDendrogram(dendrogram);
+                similarityGenerator.createAccessesSciPyDendrogram(similarity);
             }
 
-            clusteringAlgorithm.createDecomposition(strategy, dendrogram, "N", Float.parseFloat(properties[7]));
+            clusteringAlgorithm.createDecomposition(strategy, similarity, "N", Float.parseFloat(properties[7]));
         }
     }
 
-    public String getRecommendationResult(RecommendAccessesSciPy recommendation) throws IOException {
+    public String getRecommendationResult(Recommendation recommendation) throws IOException {
         return IOUtils.toString(gridFsService.getFile(recommendation.getRecommendationResultName()), StandardCharsets.UTF_8);
     }
 

@@ -1,7 +1,8 @@
 package pt.ist.socialsoftware.mono2micro.metrics.metricService;
 
 import org.springframework.stereotype.Service;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
+import pt.ist.socialsoftware.mono2micro.cluster.AccessesSciPyCluster;
+import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 
 import java.math.BigDecimal;
@@ -16,12 +17,13 @@ public class CouplingMetricService {
         int graphClustersAmount = decomposition.getClusters().size();
         double coupling = 0;
 
-        for (Cluster cluster1 : decomposition.getClusters().values()) {
+        for (Cluster c1 : decomposition.getClusters().values()) {
+            AccessesSciPyCluster cluster1 = (AccessesSciPyCluster) c1;
             double clusterCoupling = 0;
             Map<String, Set<Short>> couplingDependencies = cluster1.getCouplingDependencies();
 
             for (String cluster2 : couplingDependencies.keySet())
-                clusterCoupling += (double) couplingDependencies.get(cluster2).size() / decomposition.getCluster(cluster2).getEntities().size();
+                clusterCoupling += (double) couplingDependencies.get(cluster2).size() / decomposition.getCluster(cluster2).getElements().size();
 
             clusterCoupling = graphClustersAmount == 1 ? 0 : clusterCoupling / (graphClustersAmount - 1);
             clusterCoupling = BigDecimal.valueOf(clusterCoupling)

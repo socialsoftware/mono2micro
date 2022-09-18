@@ -3,7 +3,7 @@ package pt.ist.socialsoftware.mono2micro.codebase.domain;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import pt.ist.socialsoftware.mono2micro.source.domain.Source;
+import pt.ist.socialsoftware.mono2micro.representation.domain.Representation;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ public class Codebase {
 	@Id
 	private String name;
 	@DBRef(lazy = true)
-	private List<Source> sources;
+	private List<Representation> representations;
 	@DBRef(lazy = true)
 	private List<Strategy> strategies;
 
@@ -24,7 +24,7 @@ public class Codebase {
 
 	public Codebase(String name) {
         this.name = name;
-		sources = new ArrayList<>();
+		representations = new ArrayList<>();
 		strategies = new ArrayList<>();
 	}
 
@@ -36,24 +36,24 @@ public class Codebase {
 		this.name = name;
 	}
 
-	public List<Source> getSources() {
-		return sources;
+	public List<Representation> getRepresentations() {
+		return representations;
 	}
 
-	public Source getSourceByType(String type) {
-		return this.sources.stream().filter(source -> source.getType().equals(type)).findFirst().orElse(null);
+	public Representation getRepresentationByType(String type) {
+		return this.representations.stream().filter(representation -> representation.getType().equals(type)).findFirst().orElse(null);
 	}
 
-	public void setSources(List<Source> sources) {
-		this.sources = sources;
+	public void setRepresentations(List<Representation> representations) {
+		this.representations = representations;
 	}
 
-	public void addSource(Source source) {
-		this.sources.add(source);
+	public void addRepresentation(Representation representation) {
+		this.representations.add(representation);
 	}
 
-	public void removeSource(String sourceId) {
-		this.sources = this.sources.stream().filter(source -> !source.getName().equals(sourceId)).collect(Collectors.toList());
+	public void removeRepresentation(String representationId) {
+		this.representations = this.representations.stream().filter(representation -> !representation.getName().equals(representationId)).collect(Collectors.toList());
 	}
 
 	public List<Strategy> getStrategies() {

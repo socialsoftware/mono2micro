@@ -1,6 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.log.domain.accessesSciPyOperations;
 
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
+import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.log.domain.Operation;
 

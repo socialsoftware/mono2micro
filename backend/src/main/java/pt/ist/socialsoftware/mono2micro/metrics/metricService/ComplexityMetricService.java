@@ -3,7 +3,8 @@ package pt.ist.socialsoftware.mono2micro.metrics.metricService;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.springframework.stereotype.Service;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
+import pt.ist.socialsoftware.mono2micro.cluster.AccessesSciPyCluster;
+import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
@@ -20,7 +21,8 @@ public class ComplexityMetricService {
         double complexity;
 
         // Set cluster complexity
-        for (Cluster cluster : decomposition.getClusters().values()) {
+        for (Cluster c : decomposition.getClusters().values()) {
+            AccessesSciPyCluster cluster = (AccessesSciPyCluster) c;
             List<Functionality> functionalitiesThatAccessThisCluster = clustersFunctionalities.get(cluster.getName());
 
             complexity = 0;

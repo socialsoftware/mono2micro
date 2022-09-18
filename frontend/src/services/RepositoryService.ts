@@ -11,9 +11,9 @@ import {
     Edges
 } from "../type-declarations/types";
 import { addSearchParamsToUrl } from "../utils/url";
-import {SourceFactory} from "../models/sources/SourceFactory";
-import Dendrogram from "../models/dendrogram/Dendrogram";
-import {DendrogramFactory} from "../models/dendrogram/DendrogramFactory";
+import {RepresentationFactory} from "../models/representation/RepresentationFactory";
+import Similarity from "../models/similarity/Similarity";
+import {SimilarityFactory} from "../models/similarity/SimilarityFactory";
 import {DecompositionFactory} from "../models/decompositions/DecompositionFactory";
 import Decomposition from "../models/decompositions/Decomposition";
 import Codebase from "../models/codebase/Codebase";
@@ -53,14 +53,14 @@ export class RepositoryService {
     recommendation(
         requestedStrategyRecommendation: Recommendation
     ) {
-        return this.axios.put("recommendation/createRecommendAccessesSciPy", requestedStrategyRecommendation)
+        return this.axios.put("recommendation/createRecommendation", requestedStrategyRecommendation)
             .then((response) => {return RecommendationFactory.getRecommendation(response.data)});
     }
 
     getRecommendationResult(
         recommendationName: string
     ) {
-        return this.axios.get("/recommendAccessesSciPy/" + recommendationName + "/getRecommendationResult")
+        return this.axios.get("/recommendation/" + recommendationName + "/getRecommendationResult")
             .then(response => {
                 if (response.data === "")
                     return [];
@@ -79,7 +79,7 @@ export class RepositoryService {
         // unfortunately, this is needed so that data.append does not interpret the commas as an array separation
         data.append('decompositionNames', "");
 
-        return this.axios.post<null>("/recommendAccessesSciPy/" + recommendationName + "/createDecompositions", data);
+        return this.axios.post<null>("/recommendation/" + recommendationName + "/createDecompositions", data);
     }
 
     //Codebases
@@ -111,9 +111,9 @@ export class RepositoryService {
     }
 
     // Profiles
-    addAccessesProfile(sourceName: string, profile: string) {
+    addAccessesProfile(representationName: string, profile: string) {
         return this.axios.post<null>(
-            "/source/" + sourceName + "/addAccessesProfile",
+            "/representation/" + representationName + "/addAccessesProfile",
             null,
             {
                 params: {
@@ -123,12 +123,12 @@ export class RepositoryService {
     }
 
     moveAccessesFunctionalities(
-        sourceName: string,
+        representationName: string,
         functionalities: string[],
         targetProfile: string,
     ) {
         return this.axios.post<null>(
-            "/source/" + sourceName + "/moveAccessesFunctionalities",
+            "/representation/" + representationName + "/moveAccessesFunctionalities",
             functionalities,
             {
                 params: {
@@ -138,9 +138,9 @@ export class RepositoryService {
         );
     }
 
-    deleteAccessesProfile(sourceName: string, profile: string) {
+    deleteAccessesProfile(representationName: string, profile: string) {
         return this.axios.delete<null>(
-            "/source/" + sourceName + "/deleteAccessesProfile",
+            "/representation/" + representationName + "/deleteAccessesProfile",
             {
                 params: {
                     "profile" : profile
@@ -149,42 +149,42 @@ export class RepositoryService {
         );
     }
 
-    //Sources
-    getCodebaseSource(codebaseName: string, sourceType: string) {
-        return this.axios.get("/codebase/" + codebaseName + "/source/" + sourceType + "/getCodebaseSource")
-            .then((response) => SourceFactory.getSource(response.data));
+    //Representation
+    getCodebaseRepresentation(codebaseName: string, representationType: string) {
+        return this.axios.get("/codebase/" + codebaseName + "/representation/" + representationType + "/getCodebaseRepresentation")
+            .then((response) => RepresentationFactory.getRepresentation(response.data));
     }
 
-    getSource(sourceName: string) {
-        return this.axios.get("/source/" + sourceName + "/getSource")
-            .then((response) => SourceFactory.getSource(response.data));
+    getRepresentation(representationName: string) {
+        return this.axios.get("/representation/" + representationName + "/getRepresentation")
+            .then((response) => RepresentationFactory.getRepresentation(response.data));
     }
 
-    getSourceTypes(codebaseName: string) {
-        return this.axios.get<string[]>("/codebase/" + codebaseName + "/getSourceTypes");
+    getRepresentationTypes(codebaseName: string) {
+        return this.axios.get<string[]>("/codebase/" + codebaseName + "/getRepresentationTypes");
     }
 
-    deleteSource(id: string) {
-        return this.axios.delete<null>("/source/" + id + "/delete");
+    deleteRepresentation(id: string) {
+        return this.axios.delete<null>("/representation/" + id + "/delete");
     }
 
     getIdToEntity(codebaseName: string) {
-        return this.axios.get<string>("/source/" + codebaseName + "/getIdToEntity");
+        return this.axios.get<string>("/representation/" + codebaseName + "/getIdToEntity");
     }
 
 
-    //Dendrograms
-    deleteDendrogram(dendrogramName: string) {
-        return this.axios.delete<null>("/dendrogram/" + dendrogramName + "/delete");
+    //Similarities
+    deleteSimilarity(similarityName: string) {
+        return this.axios.delete<null>("/similarity/" + similarityName + "/delete");
     }
 
-    getDendrogram(dendrogramName: string) {
-        return this.axios.get("/dendrogram/" + dendrogramName + "/getDendrogram").then(
-            response => { return DendrogramFactory.getDendrogram(response.data); });
+    getSimilarity(similarityName: string) {
+        return this.axios.get("/similarity/" + similarityName + "/getSimilarity").then(
+            response => { return SimilarityFactory.getSimilarity(response.data); });
     }
 
-    createAccessesSciPyDendrogram(dendrogram: Dendrogram) {
-        return this.axios.post<null>("/dendrogram/createAccessesSciPyDendrogram", dendrogram);
+    createSimilarity(similarity: Similarity) {
+        return this.axios.post<null>("/similarity/create", similarity);
     }
 
 
@@ -192,7 +192,7 @@ export class RepositoryService {
     createStrategy(
         codebaseName: string,
         strategyType: string,
-        sources: Map<string, File>
+        representations: Map<string, File>
     ) {
         const config = {
             headers: {
@@ -200,14 +200,14 @@ export class RepositoryService {
             }
         }
         const data = new FormData();
-        Object.entries(sources).forEach((entry) => {data.append("sourceTypes", entry[0]); data.append("sources", entry[1])});
+        Object.entries(representations).forEach((entry) => {data.append("representationTypes", entry[0]); data.append("representations", entry[1])});
 
         return this.axios.post<null>("/codebase/" + codebaseName + "/strategy/" + strategyType + "/createStrategy", data, config);
     }
 
-    getStrategyDendrograms(strategyName: string) {
-        return this.axios.get("/strategy/" + strategyName + "/getStrategyDendrograms").then(
-            response => response.data.map((dendrogram: any) => DendrogramFactory.getDendrogram(dendrogram)));
+    getStrategySimilarities(strategyName: string) {
+        return this.axios.get("/strategy/" + strategyName + "/getStrategySimilarities").then(
+            response => response.data.map((similarity: any) => SimilarityFactory.getSimilarity(similarity)));
     }
 
     getStrategyDecompositions(strategyName: string) {
@@ -244,19 +244,12 @@ export class RepositoryService {
         return this.axios.get<null>("/accessesSciPyDecomposition/" + decompositionName + "/snapshotDecomposition");
     }
 
-    createAccessesSciPyDecomposition(
-        dendrogramName: string,
-        cutType: string,
-        cutValue: number
-    ) {
-        return this.axios.post(addSearchParamsToUrl(
-            "/dendrogram/" + dendrogramName + "/createAccessesSciPyDecomposition",
-            { cutType: cutType, cutValue: cutValue.toString() },
-        ));
+    createDecomposition(decompositionDto: any) {
+        return this.axios.post("/similarity/createDecomposition", decompositionDto);
     }
 
     createAccessesSciPyExpertDecomposition(
-        dendrogramName: string,
+        similarityName: string,
         expertName: string,
         expertFile: any
     ) {
@@ -270,7 +263,7 @@ export class RepositoryService {
         data.append('expertFile', expertFile);
 
         return this.axios.post<null>(
-            "/dendrogram/" + dendrogramName + "/createAccessesSciPyExpertDecomposition",
+            "/similarity/" + similarityName + "/createAccessesSciPyExpertDecomposition",
             data,
             config
         );
@@ -278,10 +271,10 @@ export class RepositoryService {
 
     //Decomposition
     getDecompositions(
-        dendrogramName: string
+        similarityName: string
     ) {
         return this.axios.get<Decomposition[]>(
-            "/dendrogram/" + dendrogramName + "/decompositions",
+            "/similarity/" + similarityName + "/decompositions",
         ).then(responseList => {
             if (responseList.data.length == 0)
                 return responseList.data;
@@ -304,16 +297,6 @@ export class RepositoryService {
     ) {
         return this.axios.get<Decomposition>(
             "/accessesSciPyDecomposition/" + decompositionName + "/updatedAccessesSciPyDecomposition"
-        );
-    }
-
-    getAccessesSciPyClusters(
-        codebaseName: string,
-        strategyName: string,
-        decompositionName: string
-    ) {
-        return this.axios.get<Cluster[]>(
-            "/codebase/" + codebaseName + "/strategy/" + strategyName + "/decomposition/" + decompositionName + "/getClusters"
         );
     }
 

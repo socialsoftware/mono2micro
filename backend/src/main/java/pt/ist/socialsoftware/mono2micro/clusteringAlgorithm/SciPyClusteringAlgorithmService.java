@@ -9,20 +9,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
+import pt.ist.socialsoftware.mono2micro.cluster.AccessesSciPyCluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.accessesSciPy.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
+import pt.ist.socialsoftware.mono2micro.element.DomainEntity;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityService;
 import pt.ist.socialsoftware.mono2micro.log.domain.AccessesSciPyLog;
 import pt.ist.socialsoftware.mono2micro.log.repository.LogRepository;
 import pt.ist.socialsoftware.mono2micro.metrics.decompositionService.AccessesSciPyMetricService;
 import pt.ist.socialsoftware.mono2micro.recommendation.repository.RecommendAccessesSciPyRepository;
-import pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource;
-import pt.ist.socialsoftware.mono2micro.source.service.SourceService;
-import pt.ist.socialsoftware.mono2micro.dendrogram.domain.AccessesSciPyDendrogram;
+import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
+import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
+import pt.ist.socialsoftware.mono2micro.representation.service.RepresentationService;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.AccessesSciPySimilarity;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendAccessesSciPy;
-import pt.ist.socialsoftware.mono2micro.dendrogram.repository.DendrogramRepository;
+import pt.ist.socialsoftware.mono2micro.similarity.repository.SimilarityRepository;
 import pt.ist.socialsoftware.mono2micro.recommendation.service.RecommendAccessesSciPyService;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy;
 import pt.ist.socialsoftware.mono2micro.strategy.repository.StrategyRepository;
@@ -31,25 +33,27 @@ import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static pt.ist.socialsoftware.mono2micro.source.domain.AccessesSource.ACCESSES;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.SCRIPTS_ADDRESS;
 
 @Service
 public class SciPyClusteringAlgorithmService {
 
     @Autowired
-    SourceService sourceService;
+    RepresentationService representationService;
 
     @Autowired
     StrategyRepository strategyRepository;
 
     @Autowired
-    DendrogramRepository dendrogramRepository;
+    SimilarityRepository similarityRepository;
 
     @Autowired
     DecompositionRepository decompositionRepository;
@@ -69,23 +73,38 @@ public class SciPyClusteringAlgorithmService {
     @Autowired
     LogRepository logRepository;
 
-    public void createDecomposition(AccessesSciPyStrategy strategy, AccessesSciPyDendrogram dendrogram, String cutType, float cutValue) throws Exception {
-        AccessesSource source = (AccessesSource) dendrogram.getStrategy().getCodebase().getSourceByType(ACCESSES);
+    public void createDecomposition(AccessesSciPyStrategy strategy, AccessesSciPySimilarity similarity, String cutType, float cutValue) throws Exception {
+        AccessesRepresentation representation = (AccessesRepresentation) similarity.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
+        IDToEntityRepresentation idToEntityRepresentation = (IDToEntityRepresentation) similarity.getStrategy().getCodebase().getRepresentationByType(ID_TO_ENTITY);
+        Map<Short, String> idToEntity = getIDToEntity(idToEntityRepresentation);
 
         AccessesSciPyDecomposition decomposition = new AccessesSciPyDecomposition();
-        decomposition.setName(getDecompositionName(dendrogram, cutType, cutValue));
-        decomposition.setDendrogram(dendrogram);
+        decomposition.setName(getDecompositionName(similarity, cutType, cutValue));
+        decomposition.setSimilarity(similarity);
 
-        JSONObject clustersJSON = invokePythonCut(decomposition, dendrogram.getSimilarityMatrixName(), cutType, cutValue);
-        addClustersAndEntities(decomposition, clustersJSON);
+        JSONObject clustersJSON = invokePythonCut(decomposition, similarity.getSimilarityMatrixName(), cutType, cutValue);
+        addClustersAndEntities(decomposition, clustersJSON, idToEntity);
 
-        setupAndSaveDendrogram(strategy, dendrogram, source, decomposition);
+        setupAndSaveSimilarity(strategy, similarity, representation, decomposition);
     }
 
-    private void setupAndSaveDendrogram(AccessesSciPyStrategy strategy, AccessesSciPyDendrogram dendrogram, AccessesSource source, AccessesSciPyDecomposition decomposition) throws Exception {
-        setupFunctionalitiesAndMetrics(dendrogram.getProfile(), dendrogram.getTracesMaxLimit(), dendrogram.getTraceType(), source, decomposition);
+    public Map<Short, String> getIDToEntity(IDToEntityRepresentation representation) throws IOException, JSONException {
+        Map<Short, String> idToEntity = new HashMap<>();
+        String file = representationService.getRepresentationFileAsString(representation.getName());
+        JSONObject idToEntityJSON = new JSONObject(file);
+        Iterator<String> entityIDs = idToEntityJSON.keys();
 
-        dendrogram.addDecomposition(decomposition);
+        while (entityIDs.hasNext()) {
+            String entityID = entityIDs.next();
+            idToEntity.put(Short.valueOf(entityID), idToEntityJSON.getString(entityID));
+        }
+        return idToEntity;
+    }
+
+    private void setupAndSaveSimilarity(AccessesSciPyStrategy strategy, AccessesSciPySimilarity similarity, AccessesRepresentation representation, AccessesSciPyDecomposition decomposition) throws Exception {
+        setupFunctionalitiesAndMetrics(similarity.getProfile(), similarity.getTracesMaxLimit(), similarity.getTraceType(), representation, decomposition);
+
+        similarity.addDecomposition(decomposition);
         strategy.addDecomposition(decomposition);
         decomposition.setStrategy(strategy);
 
@@ -95,44 +114,46 @@ public class SciPyClusteringAlgorithmService {
         logRepository.save(decompositionLog);
 
         decompositionRepository.save(decomposition);
-        dendrogramRepository.save(dendrogram);
+        similarityRepository.save(similarity);
         strategyRepository.save(strategy);
     }
 
-    public void createExpertDecomposition(AccessesSciPyStrategy strategy, AccessesSciPyDendrogram dendrogram, String expertName, Optional<MultipartFile> expertFile) throws Exception {
-        AccessesSource source = (AccessesSource) dendrogram.getStrategy().getCodebase().getSourceByType(ACCESSES);
+    public void createExpertDecomposition(AccessesSciPyStrategy strategy, AccessesSciPySimilarity similarity, String expertName, Optional<MultipartFile> expertFile) throws Exception {
+        AccessesRepresentation representation = (AccessesRepresentation) similarity.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
+        IDToEntityRepresentation idToEntityRepresentation = (IDToEntityRepresentation) similarity.getStrategy().getCodebase().getRepresentationByType(ID_TO_ENTITY);
+        Map<Short, String> idToEntity = getIDToEntity(idToEntityRepresentation);
 
         AccessesSciPyDecomposition decomposition = new AccessesSciPyDecomposition();
-        decomposition.setDendrogram(dendrogram);
-        List<String> decompositionNames = dendrogram.getDecompositions().stream().map(Decomposition::getName).collect(Collectors.toList());
+        decomposition.setSimilarity(similarity);
+        List<String> decompositionNames = similarity.getDecompositions().stream().map(Decomposition::getName).collect(Collectors.toList());
 
         if (decompositionNames.contains(expertName))
             throw new KeyAlreadyExistsException();
-        decomposition.setName(dendrogram.getName() + " " + expertName);
+        decomposition.setName(similarity.getName() + " " + expertName);
         decomposition.setExpert(true);
 
         if (expertFile.isPresent()) { // Expert decomposition with file
             InputStream is = new BufferedInputStream(expertFile.get().getInputStream());
             JSONObject clustersJSON = new JSONObject(IOUtils.toString(is, StandardCharsets.UTF_8)).getJSONObject("clusters");
-            addClustersAndEntities(decomposition, clustersJSON);
+            addClustersAndEntities(decomposition, clustersJSON, idToEntity);
             is.close();
         }
-        else createGenericDecomposition(dendrogram, decomposition);
+        else createGenericDecomposition(similarity, decomposition, idToEntity);
 
-        setupAndSaveDendrogram(strategy, dendrogram, source, decomposition);
+        setupAndSaveSimilarity(strategy, similarity, representation, decomposition);
     }
 
-    private void createGenericDecomposition(AccessesSciPyDendrogram dendrogram, AccessesSciPyDecomposition decomposition) throws Exception {
-        Cluster cluster = new Cluster("Generic");
+    private void createGenericDecomposition(AccessesSciPySimilarity similarity, AccessesSciPyDecomposition decomposition, Map<Short, String> idToEntity) throws Exception {
+        AccessesSciPyCluster cluster = new AccessesSciPyCluster("Generic");
 
-        JSONObject similarityMatrixData = new JSONObject(dendrogram.getSimilarityMatrixName());
+        JSONObject similarityMatrixData = new JSONObject(similarity.getSimilarityMatrixName());
 
         JSONArray entities = similarityMatrixData.getJSONArray("entities");
 
         for (int i = 0; i < entities.length(); i++) {
             short entityID = (short) entities.getInt(i);
 
-            cluster.addEntity(entityID);
+            cluster.addElement(new DomainEntity(entityID, idToEntity.get(entityID)));
             decomposition.putEntity(entityID, cluster.getName());
         }
 
@@ -143,13 +164,13 @@ public class SciPyClusteringAlgorithmService {
             String profile,
             int tracesMaxLimit,
             Constants.TraceType traceType,
-            AccessesSource source,
+            AccessesRepresentation representation,
             AccessesSciPyDecomposition decomposition
     ) throws Exception {
         functionalityService.setupFunctionalities(
                 decomposition,
-                sourceService.getSourceFileAsInputStream(source.getName()),
-                source.getProfile(profile),
+                representationService.getRepresentationFileAsInputStream(representation.getName()),
+                representation.getProfile(profile),
                 tracesMaxLimit,
                 traceType,
                 false);
@@ -176,20 +197,20 @@ public class SciPyClusteringAlgorithmService {
         } catch(Exception e) { throw new RuntimeException(e.getMessage()); }
     }
 
-    public String getDecompositionName(AccessesSciPyDendrogram dendrogram, String cutType, float cutValue) {
+    public String getDecompositionName(AccessesSciPySimilarity similarity, String cutType, float cutValue) {
         String cutValueString = Float.valueOf(cutValue).toString().replaceAll("\\.?0*$", "");
-        List<String> decompositionNames = dendrogram.getDecompositions().stream().map(Decomposition::getName).collect(Collectors.toList());
+        List<String> decompositionNames = similarity.getDecompositions().stream().map(Decomposition::getName).collect(Collectors.toList());
 
-        if (decompositionNames.contains(dendrogram.getName() + " " + cutType + cutValueString)) {
+        if (decompositionNames.contains(similarity.getName() + " " + cutType + cutValueString)) {
             int i = 2;
-            while (decompositionNames.contains(dendrogram.getName() + " " + cutType + cutValueString + "(" + i + ")"))
+            while (decompositionNames.contains(similarity.getName() + " " + cutType + cutValueString + "(" + i + ")"))
                 i++;
-            return dendrogram.getName() + " " + cutType + cutValueString + "(" + i + ")";
+            return similarity.getName() + " " + cutType + cutValueString + "(" + i + ")";
 
-        } else return dendrogram.getName() + " " + cutType + cutValueString;
+        } else return similarity.getName() + " " + cutType + cutValueString;
     }
 
-    private void addClustersAndEntities(AccessesSciPyDecomposition decomposition, JSONObject clustersJSON) throws JSONException {
+    private void addClustersAndEntities(AccessesSciPyDecomposition decomposition, JSONObject clustersJSON, Map<Short, String> idToEntity) throws JSONException {
         Iterator<String> clusters = clustersJSON.sortedKeys();
         ArrayList<String> clusterNames = new ArrayList<>();
 
@@ -200,15 +221,15 @@ public class SciPyClusteringAlgorithmService {
 
         for (String name : clusterNames) {
             JSONArray entities = clustersJSON.getJSONArray(name);
-            Cluster cluster;
+            AccessesSciPyCluster cluster;
             if (decomposition.isExpert())
-                cluster = new Cluster(name);
-            else cluster = new Cluster("Cluster" + name);
+                cluster = new AccessesSciPyCluster(name);
+            else cluster = new AccessesSciPyCluster("Cluster" + name);
 
             for (int i = 0; i < entities.length(); i++) {
                 short entityID = (short) entities.getInt(i);
 
-                cluster.addEntity(entityID);
+                cluster.addElement(new DomainEntity(entityID, idToEntity.get(entityID)));
                 decomposition.putEntity(entityID, cluster.getName());
             }
 
@@ -223,8 +244,10 @@ public class SciPyClusteringAlgorithmService {
     }
 
     public void generateMultipleDecompositions(RecommendAccessesSciPy recommendation) throws Exception {
-        AccessesSource source = (AccessesSource) recommendation.getStrategy().getCodebase().getSourceByType(ACCESSES);
-        byte[] sourceBytes = IOUtils.toByteArray(sourceService.getSourceFileAsInputStream(source.getName()));
+        AccessesRepresentation representation = (AccessesRepresentation) recommendation.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
+        byte[] representationBytes = IOUtils.toByteArray(representationService.getRepresentationFileAsInputStream(representation.getName()));
+        IDToEntityRepresentation idToEntityRepresentation = (IDToEntityRepresentation) recommendation.getStrategy().getCodebase().getRepresentationByType(ID_TO_ENTITY);
+        Map<Short, String> idToEntity = getIDToEntity(idToEntityRepresentation);
 
         int MIN_CLUSTERS = 3, CLUSTER_STEP = 1;
 
@@ -273,13 +296,13 @@ public class SciPyClusteringAlgorithmService {
                             "N",
                             numberOfClusters);
 
-                    addClustersAndEntities(decomposition, clustersJSON);
+                    addClustersAndEntities(decomposition, clustersJSON, idToEntity);
 
                     // create functionalities and calculate their metrics
                     functionalityService.setupFunctionalities(
                             decomposition,
-                            new ByteArrayInputStream(sourceBytes),
-                            source.getProfile(recommendation.getProfile()),
+                            new ByteArrayInputStream(representationBytes),
+                            representation.getProfile(recommendation.getProfile()),
                             recommendation.getTracesMaxLimit(),
                             traceType,
                             true);
