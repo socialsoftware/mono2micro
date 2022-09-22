@@ -120,11 +120,23 @@ export const AccessesSciPyAnalysis = ({codebaseName, resultData, decomposition1,
                         <Accordion>
                             <AccordionSummary>Statistics</AccordionSummary>
                             <AccordionDetails>
-                                <Typography>Accuracy: {resultData.accuracy}</Typography>
-                                <Typography>Precision: {resultData.precision}</Typography>
-                                <Typography>Recall: {resultData.recall}</Typography>
-                                <Typography>Specificity: {resultData.specificity}</Typography>
-                                <Typography>F-score: {resultData.fmeasure}</Typography>
+                                <Grid container spacing={1} sx={{marginBottom: "2rem"}}>
+                                    <Grid item xs={1}> </Grid>
+                                    <Grid item xs={2}> <ItemCorner>Accuracy</ItemCorner> </Grid>
+                                    <Grid item xs={2}> <ItemCorner>Precision</ItemCorner> </Grid>
+                                    <Grid item xs={2}> <ItemCorner>Recall</ItemCorner> </Grid>
+                                    <Grid item xs={2}> <ItemCorner>Specificity</ItemCorner> </Grid>
+                                    <Grid item xs={2}> <ItemCorner>F-score</ItemCorner> </Grid>
+                                    <Grid item xs={1}> </Grid>
+
+                                    <Grid item xs={1}> </Grid>
+                                    <Grid item xs={2}> <Item>{resultData.accuracy}</Item> </Grid>
+                                    <Grid item xs={2}> <Item>{resultData.precision}</Item> </Grid>
+                                    <Grid item xs={2}> <Item>{resultData.recall}</Item> </Grid>
+                                    <Grid item xs={2}> <Item>{resultData.specificity}</Item> </Grid>
+                                    <Grid item xs={2}> <Item>{resultData.fmeasure}</Item> </Grid>
+                                    <Grid item xs={1}> </Grid>
+                                </Grid>
                                 <Grid container spacing={1}>
                                     <Grid item xs={4}> <ItemCorner>Property</ItemCorner> </Grid>
                                     <Grid item xs={4}> <ItemTop>{decomposition1.name}</ItemTop> </Grid>
@@ -158,13 +170,20 @@ export const AccessesSciPyAnalysis = ({codebaseName, resultData, decomposition1,
                         </Accordion>
                         <Accordion>
                             <AccordionSummary>
-                                <Typography>Mojo </Typography>
+                                <Typography>Mojo</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
-                                <Typography>Mojo Common Entities: {resultData.mojoCommon}</Typography>
-                                <Typography>Mojo Biggest Cluster: {resultData.mojoBiggest}</Typography>
-                                <Typography>Mojo New Cluster: {resultData.mojoNew}</Typography>
-                                <Typography>Mojo Singletons: {resultData.mojoSingletons}</Typography>
+                                <Grid container spacing={1} sx={{marginBottom: "2rem"}}>
+                                    <Grid item xs={3}> <ItemCorner>Mojo Common Entities</ItemCorner> </Grid>
+                                    <Grid item xs={3}> <ItemCorner>Mojo Biggest Cluster</ItemCorner> </Grid>
+                                    <Grid item xs={3}> <ItemCorner>Mojo New Cluster</ItemCorner> </Grid>
+                                    <Grid item xs={3}> <ItemCorner>Mojo Singletons</ItemCorner> </Grid>
+
+                                    <Grid item xs={3}> <Item>{resultData.mojoCommon}</Item> </Grid>
+                                    <Grid item xs={3}> <Item>{resultData.mojoBiggest}</Item> </Grid>
+                                    <Grid item xs={3}> <Item>{resultData.mojoNew}</Item> </Grid>
+                                    <Grid item xs={3}> <Item>{resultData.mojoSingletons}</Item> </Grid>
+                                </Grid>
                             </AccordionDetails>
                         </Accordion>
                         <Accordion>
@@ -172,10 +191,17 @@ export const AccessesSciPyAnalysis = ({codebaseName, resultData, decomposition1,
                                 <Typography>Entity Pairs</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
-                                <Typography>True Positives: {resultData.truePositive}</Typography>
-                                <Typography>True Negatives: {resultData.trueNegative}</Typography>
-                                <Typography>False Positives: {resultData.falsePositive}</Typography>
-                                <Typography>False Negatives: {resultData.falseNegative}</Typography>
+                                <Grid container spacing={1} sx={{marginBottom: "2rem"}}>
+                                    <Grid item xs={3}> <ItemCorner>True Positives</ItemCorner> </Grid>
+                                    <Grid item xs={3}> <ItemCorner>True Negatives</ItemCorner> </Grid>
+                                    <Grid item xs={3}> <ItemCorner>False Positives</ItemCorner> </Grid>
+                                    <Grid item xs={3}> <ItemCorner>False Negatives</ItemCorner> </Grid>
+
+                                    <Grid item xs={3}> <Item>{resultData.truePositive}</Item> </Grid>
+                                    <Grid item xs={3}> <Item>{resultData.trueNegative}</Item> </Grid>
+                                    <Grid item xs={3}> <Item>{resultData.falsePositive}</Item> </Grid>
+                                    <Grid item xs={3}> <Item>{resultData.falseNegative}</Item> </Grid>
+                                </Grid>
                             </AccordionDetails>
                         </Accordion>
                         <Accordion>
