@@ -11,4 +11,6 @@ public class MetricType {
     public static final String SYSTEM_COMPLEXITY = "System Complexity";
     public static final String FUNCTIONALITY_COMPLEXITY = "Functionality Complexity";
     public static final String INCONSISTENCY_COMPLEXITY = "Inconsistency Complexity";
+    // Used by repository
+    public static final String TSR = "Team Size Reduction Ratio";
 }

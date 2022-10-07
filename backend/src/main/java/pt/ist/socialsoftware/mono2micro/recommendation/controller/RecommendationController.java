@@ -43,7 +43,7 @@ public class RecommendationController {
 		logger.debug("Get recommendation result");
 
 		try {
-			return new ResponseEntity<>(recommendationService.getRecommendationResult(recommendationName), HttpStatus.OK);
+			return new ResponseEntity<>(recommendationService.getRecommendationResultFromName(recommendationName), HttpStatus.OK);
 
 		} catch (NoSuchFileException e) { // Since it is an asynchronous call, the file might not be created yet
 			return new ResponseEntity<>(null, HttpStatus.OK);

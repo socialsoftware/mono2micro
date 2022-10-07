@@ -1,7 +1,8 @@
 import { Network } from "vis-network/standalone";
 import React, {createRef, useEffect, useState} from 'react';
 import { ModalMessage } from './ModalMessage';
-import { views, types } from '../view/accessesSciPyViews/Views'
+import { views } from '../view/accessesViews/Views'
+import {types} from "../view/utils/GraphUtils";
 
 export const VisNetwork = ({visGraph, options, onSelection, onDeselection, view}) => {
     let network = {};

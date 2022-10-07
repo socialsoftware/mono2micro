@@ -12,12 +12,16 @@ import java.util.stream.Collectors;
 public abstract class Similarity {
     @Id
     private String name;
+    private String type;
     @DBRef(lazy = true)
     private Strategy strategy;
     @DBRef(lazy = true)
     private List<Decomposition> decompositions;
+    public abstract List<String> getImplementations();
 
-    public abstract String getType();
+    public boolean containsImplementation(String implementation) {
+        return getImplementations().contains(implementation);
+    }
 
     public String getName() {
         return name;
@@ -25,6 +29,14 @@ public abstract class Similarity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Strategy getStrategy() {

@@ -5,11 +5,11 @@ from scipyAlgorithm.createDecomposition import createDecomposition as createDeco
 scipyRouter = APIRouter()
 
 
-@scipyRouter.get("/scipy/{similarityName}/{similarityMatrixName}/createDendrogram")
-async def createDendrogram(similarityName, similarityMatrixName):
-    return createDendrogramScipy(similarityName, similarityMatrixName)
+@scipyRouter.get("/scipy/{similarityName}/{similarityMatrixName}/{linkageType}/createDendrogram")
+async def createDendrogram(similarityName, similarityMatrixName, linkageType):
+    return createDendrogramScipy(similarityName, similarityMatrixName, linkageType)
 
 
-@scipyRouter.get("/scipy/{similarityMatrixName}/{cutType}/{cutValue}/createDecomposition")
-async def createDecomposition(similarityMatrixName, cutType, cutValue):
-    return createDecompositionScipy(similarityMatrixName, cutType, float(cutValue))
+@scipyRouter.get("/scipy/{similarityMatrixName}/{linkageType}/{cutType}/{cutValue}/createDecomposition")
+async def createDecomposition(similarityMatrixName, linkageType, cutType, cutValue):
+    return createDecompositionScipy(similarityMatrixName, linkageType, cutType, float(cutValue))

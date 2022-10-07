@@ -7,13 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.DecompositionDto;
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.DecompositionDtoFactory;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.DecompositionDto;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.DecompositionDtoFactory;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDto;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDtoFactory;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.strategy.dto.StrategyDto;
-import pt.ist.socialsoftware.mono2micro.strategy.dto.StrategyDtoFactory;
 import pt.ist.socialsoftware.mono2micro.strategy.service.StrategyService;
 
 import java.util.List;
@@ -33,7 +32,7 @@ public class StrategyController {
         logger.debug("getStrategy");
         try {
             return new ResponseEntity<>(
-                    StrategyDtoFactory.getFactory().getStrategyDto(strategyService.getStrategy(strategyName)),
+                    new StrategyDto(strategyService.getStrategy(strategyName)),
                     HttpStatus.OK
             );
 

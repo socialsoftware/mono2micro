@@ -8,7 +8,7 @@ import pt.ist.socialsoftware.mono2micro.codebase.repository.CodebaseRepository;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.Representation;
-import pt.ist.socialsoftware.mono2micro.representation.repository.AccessesRepresentationRepository;
+import pt.ist.socialsoftware.mono2micro.representation.repository.RepresentationRepository;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -23,27 +23,27 @@ public class AccessesRepresentationService {
     CodebaseRepository codebaseRepository;
 
     @Autowired
-    AccessesRepresentationRepository accessesRepresentationRepository;
+    RepresentationRepository representationRepository;
 
     @Autowired
     GridFsService gridFsService;
 
     public void addAccessesProfile(String representationId, String profile) {
-        AccessesRepresentation representation = accessesRepresentationRepository.findById(representationId).orElseThrow(() -> new RuntimeException("No representation " + representationId + " found."));
+        AccessesRepresentation representation = (AccessesRepresentation) representationRepository.findById(representationId).orElseThrow(() -> new RuntimeException("No representation " + representationId + " found."));
         representation.addProfile(profile, new HashSet<>());
-        accessesRepresentationRepository.save(representation);
+        representationRepository.save(representation);
     }
 
     public void moveAccessesFunctionalities(String representationId, String[] functionalities, String targetProfile) {
-        AccessesRepresentation representation = accessesRepresentationRepository.findById(representationId).orElseThrow(() -> new RuntimeException("No representation " + representationId + " found."));
+        AccessesRepresentation representation = (AccessesRepresentation) representationRepository.findById(representationId).orElseThrow(() -> new RuntimeException("No representation " + representationId + " found."));
         representation.moveFunctionalities(functionalities, targetProfile);
-        accessesRepresentationRepository.save(representation);
+        representationRepository.save(representation);
     }
 
     public void deleteAccessesProfile(String representationId, String profile) {
-        AccessesRepresentation representation = accessesRepresentationRepository.findById(representationId).orElseThrow(() -> new RuntimeException("No representation " + representationId + " found."));
+        AccessesRepresentation representation = (AccessesRepresentation) representationRepository.findById(representationId).orElseThrow(() -> new RuntimeException("No representation " + representationId + " found."));
         representation.deleteProfile(profile);
-        accessesRepresentationRepository.save(representation);
+        representationRepository.save(representation);
     }
 
     public String getIdToEntity(String codebaseName) throws IOException {

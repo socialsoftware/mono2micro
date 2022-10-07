@@ -2,10 +2,10 @@ package pt.ist.socialsoftware.mono2micro.analysis.service;
 
 import org.springframework.stereotype.Service;
 import pt.ist.socialsoftware.mono2micro.analysis.dto.AccessesSciPyAnalysisDto;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPy;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.analysis.dto.AnalysisDto;
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.AccessesSciPyDecompositionDto;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.AccessesSciPyDto;
 import pt.ist.socialsoftware.mono2micro.utils.mojoCalculator.src.main.java.MoJo;
 
 import java.io.File;
@@ -21,10 +21,10 @@ import static pt.ist.socialsoftware.mono2micro.utils.Constants.MOJO_RESOURCES_PA
 @Service
 public class AccessesSciPyAnalysisService {
 
-    public AnalysisDto getAnalysis(AccessesSciPyDecomposition decomposition1, AccessesSciPyDecomposition decomposition2) throws IOException {
+    public AnalysisDto getAnalysis(AccessesSciPy decomposition1, AccessesSciPy decomposition2) throws IOException {
         AccessesSciPyAnalysisDto analysis = new AccessesSciPyAnalysisDto();
-        analysis.setDecomposition1(new AccessesSciPyDecompositionDto(decomposition1));
-        analysis.setDecomposition2(new AccessesSciPyDecompositionDto(decomposition2));
+        analysis.setDecomposition1(new AccessesSciPyDto(decomposition1));
+        analysis.setDecomposition2(new AccessesSciPyDto(decomposition2));
 
         //if (analysis.getDecomposition1().getCodebaseName() == null) { // no expert cut from frontend
         //	return analysis;

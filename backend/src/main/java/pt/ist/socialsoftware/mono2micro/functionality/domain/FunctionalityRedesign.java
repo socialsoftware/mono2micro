@@ -12,7 +12,7 @@ public class FunctionalityRedesign {
     private String name;
     private List<LocalTransaction> redesign = new ArrayList<>();
     private int pivotTransaction = -1;
-    private Map<String, Object> metrics;
+    private Map<String, Object> metrics = new HashMap<>();
 
     public FunctionalityRedesign(){}
 

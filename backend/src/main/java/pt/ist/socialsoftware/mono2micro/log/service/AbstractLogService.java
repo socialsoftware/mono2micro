@@ -1,7 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.log.service;
 
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.log.domain.Operation;
+import pt.ist.socialsoftware.mono2micro.operation.Operation;
 
 public abstract class AbstractLogService {
 

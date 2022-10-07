@@ -1,6 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.analysis.dto;
 
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.DecompositionDto;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.DecompositionDto;
 
 public class AnalysisDto {
     private DecompositionDto decomposition1;

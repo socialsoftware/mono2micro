@@ -1,17 +1,13 @@
 package pt.ist.socialsoftware.mono2micro.log.domain;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.operation.Operation;
 
 import java.util.List;
 
 public abstract class Log {
     @Id
     String name;
-
-    @DBRef(lazy = true)
-    Decomposition decomposition;
 
     Long currentLogOperationDepth;
 
@@ -25,13 +21,7 @@ public abstract class Log {
         this.name = name;
     }
 
-    public Decomposition getDecomposition() {
-        return decomposition;
-    }
-
-    public void setDecomposition(Decomposition decomposition) {
-        this.decomposition = decomposition;
-    }
+    public abstract String getType();
 
     public Long getCurrentLogOperationDepth() {
         return currentLogOperationDepth;

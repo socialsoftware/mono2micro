@@ -7,11 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.codebase.dto.CodebaseDto;
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.DecompositionDto;
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.DecompositionDtoFactory;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.DecompositionDto;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.DecompositionDtoFactory;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.strategy.dto.StrategyDto;
-import pt.ist.socialsoftware.mono2micro.strategy.dto.StrategyDtoFactory;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.Collection;
@@ -84,7 +83,7 @@ public class CodebaseController {
 		logger.debug("getCodebaseStrategies");
 
 		try {
-			List<StrategyDto> strategies = StrategyDtoFactory.getFactory().getStrategyDtos(codebaseService.getCodebaseStrategies(codebaseName));
+			List<StrategyDto> strategies = codebaseService.getCodebaseStrategies(codebaseName).stream().map(StrategyDto::new).collect(Collectors.toList());
 			return new ResponseEntity<>(strategies, HttpStatus.OK);
 
 		} catch (Exception e) {

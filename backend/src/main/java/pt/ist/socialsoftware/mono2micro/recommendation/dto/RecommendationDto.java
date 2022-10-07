@@ -4,25 +4,18 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy.ACCESSES_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.strategy.domain.RepositorySciPyStrategy.REPOSITORY_SCIPY;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = RecommendAccessesSciPyDto.class, name = ACCESSES_SCIPY),
+        @JsonSubTypes.Type(value = RecommendForSciPyDto.class, name = ACCESSES_SCIPY),
+        @JsonSubTypes.Type(value = RecommendForSciPyDto.class, name = REPOSITORY_SCIPY),
 })
-public class RecommendationDto {
-    String codebaseName;
+public abstract class RecommendationDto {
     String strategyName;
     String name;
     String type;
     boolean isCompleted;
-
-    public String getCodebaseName() {
-        return codebaseName;
-    }
-
-    public void setCodebaseName(String codebaseName) {
-        this.codebaseName = codebaseName;
-    }
 
     public String getStrategyName() {
         return strategyName;

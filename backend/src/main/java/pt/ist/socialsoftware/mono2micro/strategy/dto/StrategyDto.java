@@ -1,9 +1,17 @@
 package pt.ist.socialsoftware.mono2micro.strategy.dto;
 
+import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
+
 public class StrategyDto {
     String codebaseName;
     String name;
     String type;
+
+    public StrategyDto(Strategy strategy) {
+        this.codebaseName = strategy.getCodebase().getName();
+        this.name = strategy.getName();
+        this.type = strategy.getType();
+    }
 
     public String getCodebaseName() {
         return codebaseName;

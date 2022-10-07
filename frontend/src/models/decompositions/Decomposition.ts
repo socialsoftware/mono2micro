@@ -3,6 +3,7 @@ export default abstract class Decomposition {
     strategyName: string;
     name: string;
     type: string;
+    clusters: any;
     metrics: Record<string, any>;
 
     protected constructor(decomposition: any) {
@@ -10,6 +11,7 @@ export default abstract class Decomposition {
         this.strategyName = decomposition.strategyName;
         this.name = decomposition.name;
         this.type = decomposition.type;
+        this.clusters = decomposition.clusters;
         this.metrics = decomposition.metrics;
     }
 

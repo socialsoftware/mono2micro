@@ -10,7 +10,7 @@ import plotly.express as px
 
 # OLS Regression Model calculator
 # Estimates the performance of the Write Similarity measure
-# given the percentage of write accesses the datafile has
+# given the percentage of write accessesDecomposition the datafile has
 
 files = []
 for (dirpath, dirnames, filenames) in walk("./data/"):

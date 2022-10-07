@@ -3,7 +3,7 @@ import { RepositoryService } from '../../services/RepositoryService';
 import Row from 'react-bootstrap/Row';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import {useParams} from "react-router-dom";
-import {AccessesSciPyDecompositionForm} from "./forms/AccessesSciPyDecompositionForm";
+import {SciPyDecompositionForm} from "./forms/SciPyDecompositionForm";
 import {toast, ToastContainer} from "react-toastify";
 import {StrategyType} from "../../models/strategy/Strategy";
 
@@ -82,8 +82,9 @@ export const Decompositions = () => {
                 Decomposition Creation Method
             </h4>
 
-            {similarity.type === StrategyType.ACCESSES_SCIPY &&
-                <AccessesSciPyDecompositionForm
+            {(similarity.type === StrategyType.ACCESSES_SCIPY || similarity.type === StrategyType.REPOSITORY_SCIPY || similarity.type === StrategyType.ACC_AND_REPO_SCIPY) &&
+                <SciPyDecompositionForm
+                    strategyType={similarity.type}
                     loadDecompositions={loadDecompositions}
                 />
             }

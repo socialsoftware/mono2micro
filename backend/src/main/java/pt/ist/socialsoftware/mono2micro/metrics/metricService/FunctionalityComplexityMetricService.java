@@ -3,11 +3,11 @@ package pt.ist.socialsoftware.mono2micro.metrics.metricService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces.AccessesDecomposition;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityService;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.functionality.LocalTransactionTypes;
@@ -22,7 +22,7 @@ public class FunctionalityComplexityMetricService {
     @Autowired
     FunctionalityService functionalityService;
 
-    public Integer calculateMetric(AccessesSciPyDecomposition decomposition, Functionality functionality, FunctionalityRedesign functionalityRedesign)
+    public Integer calculateMetric(AccessesDecomposition decomposition, Functionality functionality, FunctionalityRedesign functionalityRedesign)
             throws IOException
     {
         int value = 0;

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import pt.ist.socialsoftware.mono2micro.analysis.service.AccessesSciPyAnalysisService;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPy;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.analysis.dto.AnalysisDto;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
@@ -40,7 +40,7 @@ public class AnalysisController {
             switch (decomposition1.getStrategyType() + decomposition2.getStrategyType()) {
                 case ACCESSES_SCIPY + ACCESSES_SCIPY:
                     return new ResponseEntity<>(
-                            accessesSciPyAnalysisService.getAnalysis((AccessesSciPyDecomposition) decomposition1, (AccessesSciPyDecomposition) decomposition2),
+                            accessesSciPyAnalysisService.getAnalysis((AccessesSciPy) decomposition1, (AccessesSciPy) decomposition2),
                             HttpStatus.OK
                     );
                 default:

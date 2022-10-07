@@ -6,19 +6,23 @@ import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class Decomposition {
 	@Id
 	String name;
-	Map<String, Object> metrics; // Map<Metric type, Metric value>
+	Map<String, Object> metrics = new HashMap<>(); // Map<Metric type, Metric value>
 	Map<String, Cluster> clusters = new HashMap<>();
-
 	@DBRef(lazy = true)
 	Strategy strategy;
 
 	public abstract String getStrategyType();
 
+	public abstract List<String> getImplementations();
+	public boolean containsImplementation(String implementation) {
+		return getImplementations().contains(implementation);
+	}
 	public String getName() { return this.name; }
 
 	public void setName(String name) {
@@ -45,12 +49,9 @@ public abstract class Decomposition {
 		this.strategy = strategy;
 	}
 
-	public boolean clusterNameExists(String clusterName) {
-		for (Map.Entry<String, Cluster> cluster :this.clusters.entrySet())
-			if (cluster.getValue().getName().equals(clusterName))
-				return true;
-		return false;
-	}
+	public Map<String, Cluster> getClusters() { return this.clusters; }
+
+	public void setClusters(Map<String, Cluster> clusters) { this.clusters = clusters; }
 
 	public void addCluster(Cluster cluster) {
 		Cluster c = this.clusters.putIfAbsent(cluster.getName(), cluster);
@@ -74,7 +75,21 @@ public abstract class Decomposition {
 		return c;
 	}
 
-	public Cluster getClusterByName(String name) {
-		return this.clusters.values().stream().filter(cluster -> cluster.getName().equals(name)).findFirst().orElse(null);
+	public boolean clusterNameExists(String clusterName) {
+		for (String cluster : this.clusters.keySet())
+			if (cluster.equals(clusterName))
+				return true;
+		return false;
+	}
+
+	public int maxClusterSize() {
+		int max = 0;
+
+		for (Cluster cluster : this.clusters.values()) {
+			if (cluster.getElements().size() > max)
+				max = cluster.getElements().size();
+		}
+
+		return max;
 	}
 }

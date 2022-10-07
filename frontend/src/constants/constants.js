@@ -23,5 +23,3 @@ export const OPERATION = {
     RESTORE: 15,
     CANCEL: 16,
 };
-
-export const EDGE_LENGTH = 400;

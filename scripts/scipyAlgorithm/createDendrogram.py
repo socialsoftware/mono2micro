@@ -13,7 +13,7 @@ import env
 matplotlib.use('agg')
 
 
-def createDendrogram(similarityName, similarityMatrixName):
+def createDendrogram(similarityName, similarityMatrixName, linkageType):
     # Database initialization in order to contact MongoDB
     client = pymongo.MongoClient(env.MONGO_DB)
     DB = client[env.MONGO_DB_NAME]
@@ -21,8 +21,7 @@ def createDendrogram(similarityName, similarityMatrixName):
     similarityMatrixFile = fs.find_one({"filename": similarityMatrixName})
     similarityMatrix = json.loads(similarityMatrixFile.read().decode("utf-8"))
 
-    entities = similarityMatrix["entities"]
-    linkageType = similarityMatrix["linkageType"]
+    entities = similarityMatrix["elements"]
     matrix = np.array(similarityMatrix["matrix"])
 
     hierarc = hierarchy.linkage(y=matrix, method=linkageType)

@@ -1,8 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.representation.dto;
 
-import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
-import pt.ist.socialsoftware.mono2micro.representation.domain.Representation;
-import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
+import pt.ist.socialsoftware.mono2micro.representation.domain.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +22,10 @@ public class RepresentationDtoFactory {
                 return new AccessesRepresentationDto((AccessesRepresentation) representation);
             case IDToEntityRepresentation.ID_TO_ENTITY:
                 return new IDToEntityRepresentationDto((IDToEntityRepresentation) representation);
+            case AuthorRepresentation.AUTHOR:
+                return new AuthorRepresentationDto((AuthorRepresentation) representation);
+            case CommitRepresentation.COMMIT:
+                return new CommitRepresentationDto((CommitRepresentation) representation);
             default:
                 throw new RuntimeException("The type \"" + representation.getType() + "\" is not a valid representation type.");
         }

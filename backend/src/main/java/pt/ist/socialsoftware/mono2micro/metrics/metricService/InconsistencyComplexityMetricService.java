@@ -1,15 +1,15 @@
 package pt.ist.socialsoftware.mono2micro.metrics.metricService;
 
 import org.springframework.stereotype.Service;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces.AccessesDecomposition;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
 
 import java.util.Set;
 
 @Service
 public class InconsistencyComplexityMetricService {
-    public Integer calculateMetric(AccessesSciPyDecomposition decomposition, Functionality functionality) {
+    public Integer calculateMetric(AccessesDecomposition decomposition, Functionality functionality) {
         int value = 0;
 
         if(functionality.getType() != FunctionalityType.QUERY)

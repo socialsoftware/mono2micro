@@ -224,31 +224,31 @@ export class RepositoryService {
         return this.axios.delete<null>("/strategy/" + strategyName + "/delete");
     }
 
-    getEdgeWeights(decompositionName: string) {
-        return this.axios.get<Edges>("/accessesSciPyDecomposition/" + decompositionName + "/getEdgeWeights");
+    getEdgeWeights(decompositionName: string, view: string) {
+        return this.axios.get<Edges>("/decomposition/" + decompositionName + "/" + view + "/getEdgeWeights");
     }
 
     getGraphPositions(decompositionName: string) {
-        return this.axios.get("/accessesSciPyLog/" + decompositionName + "/getGraphPositions");
+        return this.axios.get("/positionLog/" + decompositionName + "/getGraphPositions");
     }
 
     deleteGraphPositions(decompositionName: string) {
-        return this.axios.delete("/accessesSciPyLog/" + decompositionName + "/deleteGraphPositions");
+        return this.axios.delete("/positionLog/" + decompositionName + "/deleteGraphPositions");
     }
 
     saveGraphPositions(decompositionName: string, graphPositions: any) {
-        return this.axios.post<null>("/accessesSciPyLog/" + decompositionName + "/saveGraphPositions", graphPositions);
+        return this.axios.post<null>("/positionLog/" + decompositionName + "/saveGraphPositions", graphPositions);
     }
 
     snapshotDecomposition(decompositionName: string) {
-        return this.axios.get<null>("/accessesSciPyDecomposition/" + decompositionName + "/snapshotDecomposition");
+        return this.axios.get<null>("/decomposition/" + decompositionName + "/snapshotDecomposition");
     }
 
     createDecomposition(decompositionDto: any) {
         return this.axios.post("/similarity/createDecomposition", decompositionDto);
     }
 
-    createAccessesSciPyExpertDecomposition(
+    createExpertDecomposition(
         similarityName: string,
         expertName: string,
         expertFile: any
@@ -262,11 +262,7 @@ export class RepositoryService {
         data.append('expertName', expertName);
         data.append('expertFile', expertFile);
 
-        return this.axios.post<null>(
-            "/similarity/" + similarityName + "/createAccessesSciPyExpertDecomposition",
-            data,
-            config
-        );
+        return this.axios.post<null>("/similarity/" + similarityName + "/createExpertDecomposition", data, config);
     }
 
     //Decomposition
@@ -287,16 +283,21 @@ export class RepositoryService {
     getDecomposition(
         decompositionName: string
     ) {
-        return this.axios.get<Decomposition>(
-            "/decomposition/" + decompositionName
-        );
+        return this.axios.get<Decomposition>("/decomposition/" + decompositionName)
+            .then(response => DecompositionFactory.getDecomposition(response.data));
+    }
+
+    getClusters(
+        decompositionName: string
+    ) {
+        return this.axios.get<Record<number, Cluster>>("/decomposition/" + decompositionName + "/getClusters");
     }
 
     updatedAccessesSciPyDecomposition(
         decompositionName: string
     ) {
         return this.axios.get<Decomposition>(
-            "/accessesSciPyDecomposition/" + decompositionName + "/updatedAccessesSciPyDecomposition"
+            "/accesses/" + decompositionName + "/updatedAccessesSciPyDecomposition"
         );
     }
 
@@ -314,7 +315,7 @@ export class RepositoryService {
     ) {
         return this.axios.get<LocalTransactionsGraph>(
             addSearchParamsToUrl(
-                "/accessesSciPyDecomposition/" + decompositionName + "/getLocalTransactionsGraphForFunctionality",
+                "/accesses/" + decompositionName + "/getLocalTransactionsGraphForFunctionality",
                 { functionalityName: functionalityName },
             )
         );
@@ -323,113 +324,63 @@ export class RepositoryService {
     //Cluster
     mergeClusters(
         decompositionName: string,
-        clusterName: number,
-        otherClusterName: number,
-        newName: string,
+        data: any
     ) {
         return this.axios.post<null>(
-            "/decomposition/" + decompositionName + "/cluster/" + clusterName + "/merge",
-            null,
-            {
-                params: {
-                    "otherClusterName" : otherClusterName,
-                    "newName" : newName
-                }
-            }
-        );
+            "/decomposition/" + decompositionName + "/merge", data);
     }
 
     renameCluster(
         decompositionName: string,
-        clusterName: number,
-        newName: string
+        data: any
     ) {
-        return this.axios.post<null>(
-            "/decomposition/" + decompositionName + "/cluster/" + clusterName + "/rename",
-            null,
-            {
-                params: {
-                    "newName" : newName
-                },
-            }
-        );
+        return this.axios.post<null>("/decomposition/" + decompositionName + "/rename", data);
     }
 
     splitCluster(
         decompositionName: string,
-        clusterName: number,
-        newName: string,
-        entities: string,
+        data: any
     ) {
-        return this.axios.post<null>(
-            "/decomposition/" + decompositionName + "/cluster/" + clusterName + "/split",
-            null,
-            {
-                params: {
-                    "newName" : newName,
-                    "entities" : entities
-                }
-            }
-        );
+        return this.axios.post<null>("/decomposition/" + decompositionName + "/split", data);
     }
 
     formCluster(
         decompositionName: string,
-        newName: string,
-        entities: Map<string, number[]>,
+        data: any
     ) {
-        return this.axios.post<null>(
-            "/decomposition/" + decompositionName + "/formCluster",
-            entities,
-            {
-                params: {
-                    "newName" : newName,
-                }
-            }
-        );
+        return this.axios.post<null>("/decomposition/" + decompositionName + "/formCluster", data);
+    }
+
+    transferEntities(
+        decompositionName: string,
+        data: any
+    ) {
+        return this.axios.post<null>("/decomposition/" + decompositionName + "/transfer", data);
     }
 
     undoOperation(
         decompositionName: string
     ) {
-        return this.axios.get<Record<number, Cluster>>("/accessesSciPyLog/" + decompositionName + "/undoOperation");
+        return this.axios.get("/log/" + decompositionName + "/undoOperation");
     }
 
     redoOperation(
         decompositionName: string
     ) {
-        return this.axios.get<Record<number, Cluster>>("/accessesSciPyLog/" + decompositionName + "/redoOperation");
+        return this.axios.get("/log/" + decompositionName + "/redoOperation");
     }
 
     canUndoRedo(
         decompositionName: string
     ) {
-        return this.axios.get<Record<string, Boolean>>("/accessesSciPyLog/" + decompositionName + "/canUndoRedo");
-    }
-
-    transferEntities(
-        decompositionName: string,
-        clusterName: number,
-        toClusterName: number,
-        entities: string,
-    ) {
-        return this.axios.post<null>(
-            "/decomposition/" + decompositionName + "/cluster/" + clusterName + "/transferEntities",
-            null,
-            {
-                params: {
-                    "toClusterName" : toClusterName,
-                    "entities" : entities
-                }
-            }
-        );
+        return this.axios.get<Record<string, Boolean>>("/log/" + decompositionName + "/canUndoRedo");
     }
 
     getFunctionalitiesAndFunctionalitiesClusters(
         decompositionName: string,
     ) {
         return this.axios.get<Record<string, any>>(
-            "/accessesSciPyDecomposition/" + decompositionName + "/getFunctionalitiesAndFunctionalitiesClusters"
+            "/accesses/" + decompositionName + "/getFunctionalitiesAndFunctionalitiesClusters"
         );
     }
 
@@ -437,7 +388,7 @@ export class RepositoryService {
         decompositionName: string
     ) {
         return this.axios.get<Record<string, any>>(
-            "/accessesSciPyDecomposition/" + decompositionName + "/getClustersAndClustersFunctionalities"
+            "/accesses/" + decompositionName + "/getClustersAndClustersFunctionalities"
         );
     }
 
@@ -445,7 +396,7 @@ export class RepositoryService {
         decompositionName: string
     ) {
         return this.axios.get<any[]>(
-            "/accessesSciPyDecomposition/" + decompositionName + "/getSearchItems"
+            "/accesses/" + decompositionName + "/getSearchItems"
         );
     }
 

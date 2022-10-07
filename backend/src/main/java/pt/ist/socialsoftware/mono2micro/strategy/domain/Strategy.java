@@ -17,6 +17,12 @@ public abstract class Strategy {
     @DBRef(lazy = true)
     private List<Decomposition> decompositions = new ArrayList<>();
 
+    public abstract List<String> getImplementations();
+
+    public boolean containsImplementation(String implementation) {
+        return getImplementations().contains(implementation);
+    }
+
     public abstract String getType();
 
     public abstract List<String> getRepresentationTypes();

@@ -7,6 +7,8 @@ import {AccessesSciPySimilarityForm} from "./forms/AccessesSciPySimilarityForm";
 import {RepositoryService} from "../../services/RepositoryService";
 import {toast, ToastContainer} from "react-toastify";
 import {StrategyType} from "../../models/strategy/Strategy";
+import {RepositorySciPySimilarityForm} from "./forms/RepositorySciPySimilarityForm";
+import {AccAndRepoSciPySimilarityForm} from "./forms/AccAndRepoSciPySimilarityForm";
 
 export const Similarities = () => {
 
@@ -128,15 +130,38 @@ export const Similarities = () => {
 
             {renderBreadCrumbs()}
 
-            {/*Add render of each similarity like the next line to request the required elements for its creation*/}
-            {strategy !== undefined && strategy.type === StrategyType.ACCESSES_SCIPY &&
+            {strategy !== undefined &&
                 <>
-                    <AccessesSciPySimilarityForm
-                        codebaseName={codebaseName}
-                        strategyName={strategyName}
-                        setUpdateStrategies={setUpdateStrategies}
-                    />
-                    {similarities.length !== 0 && renderSimilarities()}
+                    {/*Add form of each similarity like the next block to request the required elements for its creation*/}
+                    {strategy.type === StrategyType.ACCESSES_SCIPY &&
+                        <>
+                            <AccessesSciPySimilarityForm
+                                codebaseName={codebaseName}
+                                strategyName={strategyName}
+                                setUpdateStrategies={setUpdateStrategies}
+                            />
+                            {similarities.length !== 0 && renderSimilarities()}
+                        </>
+                    }
+                    {strategy.type === StrategyType.REPOSITORY_SCIPY &&
+                        <>
+                            <RepositorySciPySimilarityForm
+                                strategyName={strategyName}
+                                setUpdateStrategies={setUpdateStrategies}
+                            />
+                            {similarities.length !== 0 && renderSimilarities()}
+                        </>
+                    }
+                    {strategy.type === StrategyType.ACC_AND_REPO_SCIPY &&
+                        <>
+                            <AccAndRepoSciPySimilarityForm
+                                codebaseName={codebaseName}
+                                strategyName={strategyName}
+                                setUpdateStrategies={setUpdateStrategies}
+                            />
+                            {similarities.length !== 0 && renderSimilarities()}
+                        </>
+                    }
 
                     {decompositions.length !== 0 && renderDecompositions()}
                 </>

@@ -2,7 +2,7 @@ import Decomposition from "./Decomposition";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import React from "react";
-import {Elem, MetricType} from "../../type-declarations/types.d";
+import {MetricType} from "../../type-declarations/types.d";
 import {Cached} from "@mui/icons-material";
 import {RepositoryService} from "../../services/RepositoryService";
 import {toast} from "react-toastify";
@@ -11,7 +11,6 @@ export default class AccessesSciPyDecomposition extends Decomposition {
     outdated: boolean;
     expert: boolean;
     silhouetteScore: number;
-    clusters: any;
     functionalities: any;
     entityIDToClusterName: any;
 
@@ -21,7 +20,6 @@ export default class AccessesSciPyDecomposition extends Decomposition {
         this.outdated = decomposition.outdated;
         this.expert = decomposition.expert;
         this.silhouetteScore = decomposition.silhouetteScore;
-        this.clusters = decomposition.clusters;
         this.functionalities = decomposition.functionalities;
         this.entityIDToClusterName = decomposition.entityIDToClusterName;
     }
@@ -73,7 +71,7 @@ export default class AccessesSciPyDecomposition extends Decomposition {
                     }
                     <br/>
                     <Button
-                        href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.name}/viewDecomposition`}
+                        href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.name}/accessesViews`}
                         className="mb-2"
                         variant={"success"}
                     >

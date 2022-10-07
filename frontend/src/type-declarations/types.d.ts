@@ -62,7 +62,8 @@ export enum MetricType {
     SILHOUETTE_SCORE = "Silhouette Score",
     SYSTEM_COMPLEXITY = "System Complexity",
     FUNCTIONALITY_COMPLEXITY = "Functionality Complexity",
-    INCONSISTENCY_COMPLEXITY = "Inconsistency Complexity"
+    INCONSISTENCY_COMPLEXITY = "Inconsistency Complexity",
+    TSR = "Team Size Reduction Ratio"
 }
 
 export interface Cluster {

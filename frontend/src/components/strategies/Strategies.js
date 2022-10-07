@@ -12,7 +12,7 @@ import Popover from "react-bootstrap/Popover";
 import {RepositoryService} from "../../services/RepositoryService";
 import HttpStatus from "http-status-codes";
 import {Modal, ModalBody, ModalFooter, ModalTitle} from "react-bootstrap";
-import {AccessesSciPyForm} from "./forms/AccessesSciPyForm";
+import {DefaultForm} from "./forms/DefaultForm";
 import {toast} from "react-toastify";
 import {StrategyDescription, StrategyType} from "../../models/strategy/Strategy";
 import {StrategyFactory} from "../../models/strategy/StrategyFactory";
@@ -151,13 +151,21 @@ export function Strategies() {
                     </Col>
                 </Form.Group>
 
-                {selectedStrategy !== undefined && selectedStrategy.type === StrategyType.ACCESSES_SCIPY &&   // Show representation request form
-                    <AccessesSciPyForm
-                        strategy={selectedStrategy}
-                        setAddedRepresentations={setAddedRepresentations}
-                        representations={representations}
-                        setCanSubmit={setCanSubmit}
-                    />
+                {selectedStrategy !== undefined &&  // Show representation request form
+                    <>
+                        {
+                            (selectedStrategy.type === StrategyType.ACCESSES_SCIPY ||
+                            selectedStrategy.type === StrategyType.REPOSITORY_SCIPY ||
+                            selectedStrategy.type === StrategyType.ACC_AND_REPO_SCIPY) &&
+                                <DefaultForm
+                                    strategy={selectedStrategy}
+                                    setAddedRepresentations={setAddedRepresentations}
+                                    representations={representations}
+                                    setCanSubmit={setCanSubmit}
+                                />
+                        }
+                        {/*ADD OTHER FORMS HERE IF NEEDED*/}
+                    </>
                 }
 
                 {selectedStrategy !== undefined &&

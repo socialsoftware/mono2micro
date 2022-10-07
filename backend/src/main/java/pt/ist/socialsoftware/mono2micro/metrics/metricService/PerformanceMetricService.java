@@ -1,9 +1,8 @@
 package pt.ist.socialsoftware.mono2micro.metrics.metricService;
 
 import org.springframework.stereotype.Service;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces.AccessesDecomposition;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.ReducedTraceElementDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
@@ -15,7 +14,7 @@ import java.util.List;
 
 @Service
 public class PerformanceMetricService { // the average of the number of hops between clusters for all traces
-    public Double calculateMetric(AccessesSciPyDecomposition decomposition) {
+    public Double calculateMetric(AccessesDecomposition decomposition) {
         double performance = 0;
 
         for (Functionality functionality : decomposition.getFunctionalities().values()) {
@@ -30,9 +29,7 @@ public class PerformanceMetricService { // the average of the number of hops bet
                 .doubleValue();
     }
 
-    public Double calculateMetric(Decomposition decomposition, Functionality functionality) {
-        AccessesSciPyDecomposition accessesSciPyDecomposition = (AccessesSciPyDecomposition) decomposition;
-
+    public Double calculateMetric(AccessesDecomposition decomposition, Functionality functionality) {
         double functionalityPerformance = 0;
         for (TraceDto t : functionality.getTraces()) {
             List<ReducedTraceElementDto> traceElements = t.getElements();
@@ -42,7 +39,7 @@ public class PerformanceMetricService { // the average of the number of hops bet
                         1,
                         null,
                         traceElements,
-                        accessesSciPyDecomposition.getEntityIDToClusterName(),
+                        decomposition.getEntityIDToClusterName(),
                         new HashMap<>(),
                         0,
                         traceElements.size()

@@ -1,10 +1,10 @@
 package pt.ist.socialsoftware.mono2micro.metrics.metricService;
 
 import org.springframework.stereotype.Service;
-import pt.ist.socialsoftware.mono2micro.cluster.AccessesSciPyCluster;
+import pt.ist.socialsoftware.mono2micro.cluster.SciPyCluster;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces.AccessesDecomposition;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -14,11 +14,11 @@ import java.util.Set;
 
 @Service
 public class CohesionMetricService {
-    public Double calculateMetric(AccessesSciPyDecomposition decomposition, Map<String, List<Functionality>> clustersFunctionalities) {
+    public Double calculateMetric(AccessesDecomposition decomposition, Map<String, List<Functionality>> clustersFunctionalities) {
         double totalCohesion = 0;
 
         for (Cluster c : decomposition.getClusters().values()) {
-            AccessesSciPyCluster cluster = (AccessesSciPyCluster) c;
+            SciPyCluster cluster = (SciPyCluster) c;
             List<Functionality> FunctionalitiesThatAccessThisCluster = clustersFunctionalities.get(cluster.getName());
 
             double clusterCohesion = 0;

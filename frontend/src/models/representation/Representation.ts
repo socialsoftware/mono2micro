@@ -18,4 +18,6 @@ export default abstract class Representation {
 export enum RepresentationType {
     ACCESSES = 'Accesses',
     IDTOENTITIY = 'IDToEntity',
+    AUTHOR = 'Changes Authorship',
+    COMMIT = 'File Changes',
 }
