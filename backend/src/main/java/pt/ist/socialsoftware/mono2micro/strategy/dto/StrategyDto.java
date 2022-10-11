@@ -2,15 +2,19 @@ package pt.ist.socialsoftware.mono2micro.strategy.dto;
 
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
+import java.util.List;
+
 public class StrategyDto {
     String codebaseName;
     String name;
-    String type;
+    String decompositionType;
+    List<String> representationTypes;
 
     public StrategyDto(Strategy strategy) {
         this.codebaseName = strategy.getCodebase().getName();
         this.name = strategy.getName();
-        this.type = strategy.getType();
+        this.decompositionType = strategy.getDecompositionType();
+        this.representationTypes = strategy.getRepresentationTypes();
     }
 
     public String getCodebaseName() {
@@ -29,11 +33,19 @@ public class StrategyDto {
         this.name = name;
     }
 
-    public String getType() {
-        return type;
+    public String getDecompositionType() {
+        return decompositionType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setDecompositionType(String decompositionType) {
+        this.decompositionType = decompositionType;
+    }
+
+    public List<String> getRepresentationTypes() {
+        return representationTypes;
+    }
+
+    public void setRepresentationTypes(List<String> representationTypes) {
+        this.representationTypes = representationTypes;
     }
 }

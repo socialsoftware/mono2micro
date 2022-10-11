@@ -4,6 +4,9 @@ import {MetricType} from "../../type-declarations/types.d";
 import Button from "react-bootstrap/Button";
 import React from "react";
 
+const REPOSITORY_SCIPY = "Repository-Based Similarity and SciPy Clustering Algorithm";
+export {REPOSITORY_SCIPY};
+
 export default class RepositorySciPyDecomposition extends Decomposition {
     expert: boolean;
     silhouetteScore: number;
@@ -43,7 +46,7 @@ export default class RepositorySciPyDecomposition extends Decomposition {
                         Number of Clusters: {Object.values(this.clusters).length} <br />
                         Singleton Clusters: {amountOfSingletonClusters} <br />
                         Maximum Cluster Size: {maxClusterSize} <br />
-                        {MetricType.TSR}: {parseFloat(this.metrics[MetricType.TSR]).toFixed(3)} <br />
+                        TSR: {parseFloat(this.metrics[MetricType.TSR]).toFixed(3)} <br />
                         Silhouette Score: {this.silhouetteScore} <br />
                     </Card.Text>
                     <br/>

@@ -12,15 +12,9 @@ import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.representation.service.RepresentationService;
 import pt.ist.socialsoftware.mono2micro.similarity.service.SimilarityService;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.StrategyFactory;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.inteface.RecommendationsStrategy;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.inteface.SimilaritiesStrategy;
 import pt.ist.socialsoftware.mono2micro.strategy.repository.StrategyRepository;
 
 import java.util.List;
-
-import static pt.ist.socialsoftware.mono2micro.strategy.domain.inteface.RecommendationsStrategy.CONTAINS_RECOMMENDATIONS;
-import static pt.ist.socialsoftware.mono2micro.strategy.domain.inteface.SimilaritiesStrategy.CONTAINS_SIMILARITIES;
 
 @Service
 public class StrategyService {
@@ -42,13 +36,13 @@ public class StrategyService {
     @Autowired
     RecommendationService recommendationService;
 
-    public void createStrategy(String codebaseName, String strategyType, List<String> representationTypes, List<Object> representations) throws Exception {
+    public void createStrategy(String codebaseName, String decompositionType, List<String> representationTypes, List<Object> representations) throws Exception {
         representationService.addRepresentations(codebaseName, representationTypes, representations);
 
         Codebase codebase = codebaseRepository.findByName(codebaseName);
-        if (codebase.getStrategyByType(strategyType) == null) {
-            Strategy strategy = StrategyFactory.getFactory().getStrategy(strategyType);
-            strategy.setName(codebaseName + " & " + strategyType);
+        if (codebase.getStrategyByDecompositionType(decompositionType) == null) {
+            Strategy strategy = new Strategy(codebase, decompositionType);
+
             if (strategy.getRepresentationTypes().stream().allMatch(representationType -> codebase.getRepresentationByType(representationType) != null)) { // Check if all required representations exist
                 strategy.setCodebase(codebase);
                 codebase.addStrategy(strategy);
@@ -59,20 +53,13 @@ public class StrategyService {
     }
 
     public void removeSpecificStrategyProperties(Strategy strategy) {
-        if (strategy.containsImplementation(CONTAINS_SIMILARITIES)) {
-            deleteStrategySimilarities((SimilaritiesStrategy) strategy);
-        }
-        if (strategy.containsImplementation(CONTAINS_RECOMMENDATIONS)) {
-            deleteStrategyRecommendations((RecommendationsStrategy) strategy);
-        }
-        // ADD OTHER ENTRIES HERE
+        deleteStrategySimilarities(strategy);
+        deleteStrategyRecommendations(strategy);
     }
 
     public List<Similarity> getStrategySimilarities(String strategyName) {
         Strategy strategy = strategyRepository.findByName(strategyName);
-        if (strategy.containsImplementation(CONTAINS_SIMILARITIES))
-            return ((SimilaritiesStrategy) strategy).getSimilarities();
-        else throw new RuntimeException("Type " + strategy.getType() + "does not have similarities.");
+        return strategy.getSimilarities();
     }
 
     public void deleteSingleStrategy(String strategyName) {
@@ -101,12 +88,12 @@ public class StrategyService {
         return strategy.getDecompositions();
     }
 
-    private void deleteStrategySimilarities(SimilaritiesStrategy strategy) {
+    private void deleteStrategySimilarities(Strategy strategy) {
         for (Similarity similarity : strategy.getSimilarities())
             similarityService.deleteSimilarity(similarity);
     }
 
-    private void deleteStrategyRecommendations(RecommendationsStrategy strategy) {
+    private void deleteStrategyRecommendations(Strategy strategy) {
         for (Recommendation recommendation: strategy.getRecommendations())
             recommendationService.deleteRecommendation(recommendation);
     }

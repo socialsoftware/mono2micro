@@ -7,15 +7,15 @@ import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import java.util.HashMap;
 import java.util.Map;
 
-import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccAndRepoSciPyStrategy.ACC_AND_REPO_SCIPY;
-import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy.ACCESSES_SCIPY;
-import static pt.ist.socialsoftware.mono2micro.strategy.domain.RepositorySciPyStrategy.REPOSITORY_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccAndRepoSciPyDecomposition.ACC_AND_REPO_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition.ACCESSES_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.RepositorySciPyDecomposition.REPOSITORY_SCIPY;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = AccessesSciPyDto.class, name = ACCESSES_SCIPY),
-        @JsonSubTypes.Type(value = RepositorySciPyDto.class, name = REPOSITORY_SCIPY),
-        @JsonSubTypes.Type(value = AccAndRepoSciPyDto.class, name = ACC_AND_REPO_SCIPY),
+        @JsonSubTypes.Type(value = AccessesSciPyDecompositionDto.class, name = ACCESSES_SCIPY),
+        @JsonSubTypes.Type(value = RepositorySciPyDecompositionDto.class, name = REPOSITORY_SCIPY),
+        @JsonSubTypes.Type(value = AccAndRepoSciPyDecompositionDto.class, name = ACC_AND_REPO_SCIPY),
 })
 public abstract class DecompositionDto {
     String name;

@@ -7,6 +7,9 @@ import {Cached} from "@mui/icons-material";
 import {RepositoryService} from "../../services/RepositoryService";
 import {toast} from "react-toastify";
 
+const ACCESSES_SCIPY = "Accesses-Based Similarity and SciPy Clustering Algorithm";
+export {ACCESSES_SCIPY};
+
 export default class AccessesSciPyDecomposition extends Decomposition {
     outdated: boolean;
     expert: boolean;
@@ -54,10 +57,10 @@ export default class AccessesSciPyDecomposition extends Decomposition {
                         Number of Clusters: {Object.values(this.clusters).length} <br />
                         Singleton Clusters: {amountOfSingletonClusters} <br />
                         Maximum Cluster Size: {maxClusterSize} <br />
-                        {MetricType.COMPLEXITY}: {parseFloat(this.metrics["Complexity"]).toFixed(3)} <br />
-                        {MetricType.PERFORMANCE}: {parseFloat(this.metrics["Performance"]).toFixed(3)} <br />
-                        {MetricType.COHESION}: {parseFloat(this.metrics["Cohesion"]).toFixed(3)} <br />
-                        {MetricType.COUPLING}: {parseFloat(this.metrics["Coupling"]).toFixed(3)} <br />
+                        {MetricType.COMPLEXITY}: {parseFloat(this.metrics[MetricType.COMPLEXITY]).toFixed(3)} <br />
+                        {MetricType.PERFORMANCE}: {parseFloat(this.metrics[MetricType.PERFORMANCE]).toFixed(3)} <br />
+                        {MetricType.COHESION}: {parseFloat(this.metrics[MetricType.COHESION]).toFixed(3)} <br />
+                        {MetricType.COUPLING}: {parseFloat(this.metrics[MetricType.COUPLING]).toFixed(3)} <br />
                         Silhouette Score: {this.silhouetteScore} <br />
                     </Card.Text>
                     {this.outdated &&

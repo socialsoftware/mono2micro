@@ -7,15 +7,7 @@ import static pt.ist.socialsoftware.mono2micro.similarityGenerator.weights.Acces
 import static pt.ist.socialsoftware.mono2micro.similarityGenerator.weights.RepositoryWeights.REPOSITORY_WEIGHTS;
 
 public class WeightsFactory {
-    private static WeightsFactory factory = null;
-
-    public static WeightsFactory getFactory() {
-        if (factory == null)
-            factory = new WeightsFactory();
-        return factory;
-    }
-
-    public Weights getWeights(String type) {
+    public static Weights getWeights(String type) {
         switch (type) {
             case ACCESSES_WEIGHTS:
                 return new AccessesWeights();
@@ -26,7 +18,7 @@ public class WeightsFactory {
         }
     }
 
-    public List<Weights> getWeightsList(List<String> types) {
+    public static List<Weights> getWeightsList(List<String> types) {
         List<Weights> weightsList = new ArrayList<>();
         for (String weightsType : types)
             weightsList.add(getWeights(weightsType));

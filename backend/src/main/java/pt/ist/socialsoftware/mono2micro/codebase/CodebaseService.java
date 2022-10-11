@@ -6,13 +6,14 @@ import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.codebase.repository.CodebaseRepository;
 import pt.ist.socialsoftware.mono2micro.fileManager.FileManager;
 import pt.ist.socialsoftware.mono2micro.representation.domain.Representation;
+import pt.ist.socialsoftware.mono2micro.representation.dto.RepresentationDto;
+import pt.ist.socialsoftware.mono2micro.representation.dto.RepresentationDtoFactory;
 import pt.ist.socialsoftware.mono2micro.representation.service.RepresentationService;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.strategy.service.StrategyService;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -41,11 +42,9 @@ public class CodebaseService {
         return codebaseRepository.findByName(codebaseName);
     }
 
-    public List<String> getRepresentationTypes(String codebaseName) {
+    public List<RepresentationDto> getRepresentationTypes(String codebaseName) {
         Codebase codebase = codebaseRepository.findByName(codebaseName);
-        List<String> representationTypes = new ArrayList<>();
-        codebase.getRepresentations().forEach(representation -> representationTypes.add(representation.getType()));
-        return representationTypes;
+        return RepresentationDtoFactory.getFactory().getRepresentationDtos(codebase.getRepresentations());
     }
 
     public List<Strategy> getCodebaseStrategies(String codebaseName) {

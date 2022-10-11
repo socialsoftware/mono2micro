@@ -60,8 +60,12 @@ public class Codebase {
 		return strategies;
 	}
 
-	public Strategy getStrategyByType(String strategyType) {
-		return strategies.stream().filter(strategy -> strategy.getType().equals(strategyType)).findFirst().orElse(null);
+	public Strategy getStrategyByDecompositionType(String decompositionType) {
+		return strategies.stream().filter(strategy -> strategy.getDecompositionType().equals(decompositionType)).findFirst().orElse(null);
+	}
+
+	public boolean containsStrategyName(String name) {
+		return this.strategies.stream().anyMatch(strategy -> strategy.getName().equals(name));
 	}
 
 	public void setStrategies(List<Strategy> strategies) {

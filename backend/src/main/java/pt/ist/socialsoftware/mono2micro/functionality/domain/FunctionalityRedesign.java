@@ -1,8 +1,15 @@
 package pt.ist.socialsoftware.mono2micro.functionality.domain;
 
 import org.json.JSONArray;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces.AccessesDecomposition;
+import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
+import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.LocalTransactionTypes;
+import pt.ist.socialsoftware.mono2micro.metrics.functionalityRedesignMetrics.FunctionalityRedesignComplexityMetric;
+import pt.ist.socialsoftware.mono2micro.metrics.functionalityRedesignMetrics.FunctionalityRedesignMetric;
+import pt.ist.socialsoftware.mono2micro.metrics.functionalityRedesignMetrics.InconsistencyComplexityMetric;
+import pt.ist.socialsoftware.mono2micro.metrics.functionalityRedesignMetrics.SystemComplexityMetric;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -58,6 +65,18 @@ public class FunctionalityRedesign {
 
     public void setRedesign(List<LocalTransaction> redesign) {
         this.redesign = redesign;
+    }
+
+    public void calculateMetrics(GridFsService gridFsService, AccessesDecomposition decomposition, Functionality functionality) throws Exception {
+        FunctionalityRedesignMetric[] metricObjects;
+        if (functionality.getType() == FunctionalityType.SAGA)
+            metricObjects = new FunctionalityRedesignMetric[] {new FunctionalityRedesignComplexityMetric(gridFsService), new SystemComplexityMetric()};
+        else metricObjects = new FunctionalityRedesignMetric[] {new InconsistencyComplexityMetric()};
+
+        Map<String, Object> newMetrics = new HashMap<>();
+        for (FunctionalityRedesignMetric metric : metricObjects)
+            newMetrics.put(metric.getType(), metric.calculateMetric(decomposition, functionality, this));
+        metrics = newMetrics;
     }
 
     public List<LocalTransaction> addCompensating(

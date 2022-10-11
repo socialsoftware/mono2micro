@@ -1,13 +1,15 @@
 export default class Recommendation {
-    strategyName: string;
+    type!: string;
+    strategyName!: string;
     name: string;
-    type: string;
+    decompositionType: string;
     isCompleted: boolean;
 
     constructor(recommendation: any) {
-        this.strategyName = recommendation.strategyName;
-        this.name = recommendation.name;
-        this.type         = recommendation.type;
-        this.isCompleted  = Boolean(recommendation.completed) || false;
+        this.type               = recommendation.type;
+        this.strategyName       = recommendation.strategyName;
+        this.name               = recommendation.name;
+        this.decompositionType  = recommendation.decompositionType;
+        this.isCompleted        = Boolean(recommendation.completed) || false;
     }
 }

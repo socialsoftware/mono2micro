@@ -7,6 +7,9 @@ import {Cached} from "@mui/icons-material";
 import {RepositoryService} from "../../services/RepositoryService";
 import {toast} from "react-toastify";
 
+const ACC_AND_REPO_SCIPY = "Accesses and Repository-Based Similarity and SciPy Clustering Algorithm";
+export {ACC_AND_REPO_SCIPY};
+
 export default class AccAndRepoSciPyDecomposition extends Decomposition {
     outdated: boolean;
     expert: boolean;
@@ -51,6 +54,7 @@ export default class AccAndRepoSciPyDecomposition extends Decomposition {
                         {this.name}
                     </Card.Title>
                     <Card.Text>
+                        Type: {this.type} <br />
                         Number of Clusters: {Object.values(this.clusters).length} <br />
                         Singleton Clusters: {amountOfSingletonClusters} <br />
                         Maximum Cluster Size: {maxClusterSize} <br />
@@ -58,7 +62,7 @@ export default class AccAndRepoSciPyDecomposition extends Decomposition {
                         {MetricType.PERFORMANCE}: {parseFloat(this.metrics[MetricType.PERFORMANCE]).toFixed(3)} <br />
                         {MetricType.COHESION}: {parseFloat(this.metrics[MetricType.COHESION]).toFixed(3)} <br />
                         {MetricType.COUPLING}: {parseFloat(this.metrics[MetricType.COUPLING]).toFixed(3)} <br />
-                        {MetricType.TSR}: {parseFloat(this.metrics[MetricType.TSR]).toFixed(3)} <br />
+                        TSR: {parseFloat(this.metrics[MetricType.TSR]).toFixed(3)} <br />
                         Silhouette Score: {this.silhouetteScore} <br />
                     </Card.Text>
                     {this.outdated &&
@@ -76,14 +80,14 @@ export default class AccAndRepoSciPyDecomposition extends Decomposition {
                         className="mb-2"
                         variant={"success"}
                     >
-                        View Decomposition
+                        View Accesses
                     </Button>
                     <Button
                         href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.name}/repositoryView`}
                         className="mb-2"
                         variant={"success"}
                     >
-                        View Decomposition
+                        View Repository
                     </Button>
                     <br/>
                     <Button

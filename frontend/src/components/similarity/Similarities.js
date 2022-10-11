@@ -3,12 +3,12 @@ import Row from 'react-bootstrap/Row';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 
 import {useParams} from "react-router-dom";
-import {AccessesSciPySimilarityForm} from "./forms/AccessesSciPySimilarityForm";
 import {RepositoryService} from "../../services/RepositoryService";
 import {toast, ToastContainer} from "react-toastify";
-import {StrategyType} from "../../models/strategy/Strategy";
-import {RepositorySciPySimilarityForm} from "./forms/RepositorySciPySimilarityForm";
-import {AccAndRepoSciPySimilarityForm} from "./forms/AccAndRepoSciPySimilarityForm";
+import {ACCESSES_SCIPY} from "../../models/decompositions/AccessesSciPyDecomposition";
+import {REPOSITORY_SCIPY} from "../../models/decompositions/RepositorySciPyDecomposition";
+import {ACC_AND_REPO_SCIPY} from "../../models/decompositions/AccAndRepoSciPyDecomposition";
+import {SimilarityMatrixSciPyForm} from "./forms/SimilarityMatrixSciPyForm";
 
 export const Similarities = () => {
 
@@ -16,7 +16,6 @@ export const Similarities = () => {
 
     const [strategy, setStrategy] = useState(undefined);
     const [similarities, setSimilarities] = useState([]);
-    const [decompositions, setDecompositions] = useState([]);
     const [updateStrategies, setUpdateStrategies] = useState({});
 
     useEffect(() => {
@@ -28,26 +27,11 @@ export const Similarities = () => {
         const service = new RepositoryService();
         service.getStrategy(strategyName).then(response => {
             setStrategy(response);
+            loadSimilarities();
 
-            loadDecompositions();
-            if (response.hasSimilarities)
-                loadSimilarities()
-
-            toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Strategies Loaded.", isLoading: false});
+            toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Loaded Strategy.", isLoading: false});
             setTimeout(() => {toast.dismiss(toastId)}, 1000);
-        }).catch(() => toast.update(toastId, {type: toast.TYPE.ERROR, render: "Error Loading Strategies.", isLoading: false}));
-    }
-
-    function loadDecompositions() {
-        const toastId = toast.loading("Fetching Decompositions...");
-        const service = new RepositoryService();
-        service.getStrategyDecompositions(strategyName)
-            .then(response => {
-                setDecompositions(response);
-                toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Decompositions Loaded.", isLoading: false});
-                setTimeout(() => {toast.dismiss(toastId)}, 1000);
-            })
-            .catch((error) => {console.log(error);toast.update(toastId, {type: toast.TYPE.ERROR, render: "Error while loading strategy's decompositions."})});
+        }).catch(() => toast.update(toastId, {type: toast.TYPE.ERROR, render: "Error Loading Strategy.", isLoading: false}));
     }
 
     function loadSimilarities() {
@@ -68,23 +52,10 @@ export const Similarities = () => {
 
         service.deleteSimilarity(similarity.name).then(() => {
             loadSimilarities();
-            loadDecompositions();
             toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Similarity deleted.", isLoading: false});
             setTimeout(() => {toast.dismiss(toastId)}, 1000);
         }).catch(() => {
             toast.update(toastId, {type: toast.TYPE.ERROR, render: "Error deleting " + similarity.name + ".", isLoading: false});
-        });
-    }
-
-    function handleDeleteDecomposition(decompositionName) {
-        const toastId = toast.loading("Deleting " + decompositionName + "...");
-        const service = new RepositoryService();
-        service.deleteDecomposition(decompositionName).then(() => {
-            loadDecompositions();
-            toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Decomposition deleted.", isLoading: false});
-            setTimeout(() => {toast.dismiss(toastId)}, 1000);
-        }).catch(() => {
-            toast.update(toastId, {type: toast.TYPE.ERROR, render: "Error deleting " + decompositionName + ".", isLoading: false});
         });
     }
 
@@ -110,17 +81,6 @@ export const Similarities = () => {
         </Row>
     }
 
-    function renderDecompositions() {
-        return <Row>
-            <h4 className="mt-4" style={{ color: "#666666" }}>
-                Decompositions
-            </h4>
-            <div className={"d-flex flex-wrap mw-100"} style={{gap: '1rem 1rem'}}>
-                {decompositions.map(decomposition => decomposition.printCard(loadDecompositions, handleDeleteDecomposition))}
-            </div>
-        </Row>
-    }
-
     return (
         <div style={{ paddingLeft: "2rem" }}>
             <ToastContainer
@@ -132,38 +92,19 @@ export const Similarities = () => {
 
             {strategy !== undefined &&
                 <>
-                    {/*Add form of each similarity like the next block to request the required elements for its creation*/}
-                    {strategy.type === StrategyType.ACCESSES_SCIPY &&
+                    {/*Add form of each similarity type like the next block to request the required elements for its creation*/}
+                    {(strategy.decompositionType === ACCESSES_SCIPY ||
+                        strategy.decompositionType === REPOSITORY_SCIPY ||
+                        strategy.decompositionType === ACC_AND_REPO_SCIPY) &&
                         <>
-                            <AccessesSciPySimilarityForm
+                            <SimilarityMatrixSciPyForm
                                 codebaseName={codebaseName}
-                                strategyName={strategyName}
+                                strategy={strategy}
                                 setUpdateStrategies={setUpdateStrategies}
                             />
-                            {similarities.length !== 0 && renderSimilarities()}
                         </>
                     }
-                    {strategy.type === StrategyType.REPOSITORY_SCIPY &&
-                        <>
-                            <RepositorySciPySimilarityForm
-                                strategyName={strategyName}
-                                setUpdateStrategies={setUpdateStrategies}
-                            />
-                            {similarities.length !== 0 && renderSimilarities()}
-                        </>
-                    }
-                    {strategy.type === StrategyType.ACC_AND_REPO_SCIPY &&
-                        <>
-                            <AccAndRepoSciPySimilarityForm
-                                codebaseName={codebaseName}
-                                strategyName={strategyName}
-                                setUpdateStrategies={setUpdateStrategies}
-                            />
-                            {similarities.length !== 0 && renderSimilarities()}
-                        </>
-                    }
-
-                    {decompositions.length !== 0 && renderDecompositions()}
+                    {similarities.length !== 0 && renderSimilarities()}
                 </>
             }
         </div>

@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 public abstract class Similarity {
     @Id
     private String name;
-    private String type;
-    @DBRef(lazy = true)
+    private String decompositionType;
+    @DBRef
     private Strategy strategy;
     @DBRef(lazy = true)
     private List<Decomposition> decompositions;
@@ -31,12 +31,14 @@ public abstract class Similarity {
         this.name = name;
     }
 
-    public String getType() {
-        return type;
+    public abstract String getType();
+
+    public String getDecompositionType() {
+        return decompositionType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setDecompositionType(String decompositionType) {
+        this.decompositionType = decompositionType;
     }
 
     public Strategy getStrategy() {

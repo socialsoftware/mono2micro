@@ -16,7 +16,7 @@ import {
     collapseAll,
     collapseCluster,
     createCluster,
-    createEntity, expandAll,
+    expandAll,
     expandCluster,
     generateAllEdges,
     generateNewAndAffectedEdges,

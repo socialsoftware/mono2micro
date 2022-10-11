@@ -72,14 +72,6 @@ public class RepresentationService {
         return representationRepository.findById(representationId).orElseThrow(() -> new RuntimeException("No representation " + representationId + " found."));
     }
 
-    public InputStream getRepresentationFileAsInputStream(String representationName) throws IOException {
-        return gridFsService.getFile(representationName);
-    }
-
-    public String getRepresentationFileAsString(String representationName) throws IOException {
-        return IOUtils.toString(gridFsService.getFile(representationName), StandardCharsets.UTF_8);
-    }
-
     public void deleteRepresentation(String representationId) {
         Representation representation = representationRepository.findById(representationId).orElseThrow(() -> new RuntimeException("No representation with id " + representationId));
         gridFsService.deleteFile(representation.getName());

@@ -2,18 +2,18 @@ package pt.ist.socialsoftware.mono2micro.decomposition.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccAndRepoSciPy;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccAndRepoSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityRepository;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityService;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
-import pt.ist.socialsoftware.mono2micro.log.domain.PositionLog;
-import pt.ist.socialsoftware.mono2micro.log.repository.LogRepository;
-import pt.ist.socialsoftware.mono2micro.log.service.PositionLogService;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityForSciPy;
+import pt.ist.socialsoftware.mono2micro.decompositionOperations.domain.DecompositionOperationsWithPosition;
+import pt.ist.socialsoftware.mono2micro.decompositionOperations.repository.DecompositionOperationsRepository;
+import pt.ist.socialsoftware.mono2micro.decompositionOperations.service.PositionLogService;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy;
 import pt.ist.socialsoftware.mono2micro.similarity.repository.SimilarityRepository;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.AccAndRepoSciPyStrategy;
+import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.strategy.repository.StrategyRepository;
 
 @Service
@@ -31,7 +31,7 @@ public class AccAndRepoSciPyService {
     PositionLogService positionLogService;
 
     @Autowired
-    LogRepository logRepository;
+    DecompositionOperationsRepository decompositionOperationsRepository;
 
     @Autowired
     FunctionalityService functionalityService;
@@ -43,8 +43,8 @@ public class AccAndRepoSciPyService {
     AccessesDecompositionService accessesDecompositionService;
 
     public void snapshotDecomposition(String decompositionName) throws Exception {
-        AccAndRepoSciPy decomposition = (AccAndRepoSciPy) accessesDecompositionService.updateOutdatedFunctionalitiesAndMetrics(decompositionName);
-        SimilarityForSciPy similarity = (SimilarityForSciPy) decomposition.getSimilarity();
+        AccAndRepoSciPyDecomposition decomposition = (AccAndRepoSciPyDecomposition) accessesDecompositionService.updateOutdatedFunctionalitiesAndMetrics(decompositionName);
+        SimilarityMatrixSciPy similarity = (SimilarityMatrixSciPy) decomposition.getSimilarity();
         String snapshotName = decomposition.getName() + " SNAPSHOT";
 
         // Find unused name
@@ -53,7 +53,7 @@ public class AccAndRepoSciPyService {
             do {i++;} while (similarity.getDecompositionByName(snapshotName + "(" + i + ")") != null);
             snapshotName = snapshotName + "(" + i + ")";
         }
-        AccAndRepoSciPy snapshotDecomposition = new AccAndRepoSciPy(decomposition);
+        AccAndRepoSciPyDecomposition snapshotDecomposition = new AccAndRepoSciPyDecomposition(decomposition);
         snapshotDecomposition.setName(snapshotName);
 
         // Duplicate functionalities for the new decomposition (also includes duplicating respective redesigns)
@@ -70,13 +70,13 @@ public class AccAndRepoSciPyService {
             functionalityRepository.save(snapshotFunctionality);
         }
 
-        PositionLog snapshotLog = new PositionLog(snapshotDecomposition);
-        snapshotDecomposition.setLog(snapshotLog);
-        logRepository.save(snapshotLog);
+        DecompositionOperationsWithPosition snapshotLog = new DecompositionOperationsWithPosition(snapshotDecomposition);
+        snapshotDecomposition.setDecompositionOperations(snapshotLog);
+        decompositionOperationsRepository.save(snapshotLog);
         positionLogService.saveGraphPositions(snapshotDecomposition, positionLogService.getGraphPositions(decomposition));
 
         similarity.addDecomposition(snapshotDecomposition);
-        AccAndRepoSciPyStrategy strategy = (AccAndRepoSciPyStrategy) strategyRepository.findByName(similarity.getStrategy().getName());
+        Strategy strategy = strategyRepository.findByName(similarity.getStrategy().getName());
         strategy.addDecomposition(snapshotDecomposition);
         snapshotDecomposition.setStrategy(strategy);
         decompositionRepository.save(snapshotDecomposition);

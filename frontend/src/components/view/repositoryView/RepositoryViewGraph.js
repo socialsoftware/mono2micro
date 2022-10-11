@@ -78,7 +78,7 @@ export const RepositoryViewGraph = () => {
                 <Breadcrumb.Item href={`/codebases/${codebaseName}`}>
                     {codebaseName}
                 </Breadcrumb.Item>
-                <Breadcrumb.Item href={`/codebases/${codebaseName}/${strategyName}`}>
+                <Breadcrumb.Item href={`/codebases/${codebaseName}/${strategyName}/similarity`}>
                     {strategyName}
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>

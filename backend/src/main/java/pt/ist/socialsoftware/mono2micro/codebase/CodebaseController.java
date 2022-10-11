@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.codebase.dto.CodebaseDto;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.DecompositionDto;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.DecompositionDtoFactory;
+import pt.ist.socialsoftware.mono2micro.representation.dto.RepresentationDto;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.strategy.dto.StrategyDto;
 
@@ -59,11 +60,11 @@ public class CodebaseController {
 		}
 	}
 
-	@RequestMapping(value = "/codebase/{codebaseName}/getRepresentationTypes", method = RequestMethod.GET)
-	public ResponseEntity<List<String>> getRepresentationTypes(
+	@RequestMapping(value = "/codebase/{codebaseName}/getRepresentations", method = RequestMethod.GET)
+	public ResponseEntity<List<RepresentationDto>> getRepresentations(
 			@PathVariable String codebaseName
 	) {
-		logger.debug("getRepresentationTypes");
+		logger.debug("getRepresentations");
 
 		try {
 			return new ResponseEntity<>(

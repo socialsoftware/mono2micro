@@ -85,7 +85,7 @@ public class StrategyController {
         logger.debug("getStrategySimilarities");
         try {
             return new ResponseEntity<>(
-                    SimilarityDtoFactory.getFactory().getSimilarityDtos(strategyService.getStrategySimilarities(strategyName)),
+                    SimilarityDtoFactory.getSimilarityDtos(strategyService.getStrategySimilarities(strategyName)),
                     HttpStatus.OK
             );
 

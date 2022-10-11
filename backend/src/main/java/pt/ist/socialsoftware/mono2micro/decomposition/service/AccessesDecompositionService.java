@@ -20,15 +20,13 @@ import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityService;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
-import pt.ist.socialsoftware.mono2micro.log.service.PositionLogService;
-import pt.ist.socialsoftware.mono2micro.metrics.decompositionService.MetricService;
+import pt.ist.socialsoftware.mono2micro.decompositionOperations.service.PositionLogService;
 import pt.ist.socialsoftware.mono2micro.operation.RenameOperation;
 import pt.ist.socialsoftware.mono2micro.operation.accesses.AccessesFormClusterOperation;
 import pt.ist.socialsoftware.mono2micro.operation.accesses.AccessesMergeOperation;
 import pt.ist.socialsoftware.mono2micro.operation.accesses.AccessesSplitOperation;
 import pt.ist.socialsoftware.mono2micro.operation.accesses.AccessesTransferOperation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
-import pt.ist.socialsoftware.mono2micro.representation.service.RepresentationService;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.algorithm.AccessesSimilarity;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.algorithm.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
@@ -53,12 +51,6 @@ public class AccessesDecompositionService {
     FunctionalityRepository functionalityRepository;
 
     @Autowired
-    MetricService metricService;
-
-    @Autowired
-    RepresentationService representationService;
-
-    @Autowired
     PositionLogService positionLogService;
 
     @Autowired
@@ -67,21 +59,16 @@ public class AccessesDecompositionService {
     public Decomposition updateOutdatedFunctionalitiesAndMetrics(String decompositionName) throws Exception {
         Decomposition decomposition = decompositionRepository.findByName(decompositionName);
         AccessesDecomposition accessesDecomposition = (AccessesDecomposition) decomposition;
-        AccessesSimilarity similarity = (AccessesSimilarity) accessesDecomposition.getSimilarity();
         AccessesRepresentation representation = (AccessesRepresentation) decomposition.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
 
         if (!accessesDecomposition.isOutdated())
             return decomposition;
 
-        functionalityService.setupFunctionalities(
-                accessesDecomposition,
-                representationService.getRepresentationFileAsInputStream(representation.getName()),
-                representation.getProfile(similarity.getProfile()),
-                similarity.getTracesMaxLimit(),
-                similarity.getTraceType(),
-                false);
+        AccessesSimilarity similarity = (AccessesSimilarity) decomposition.getSimilarity();
+        accessesDecomposition.setupFunctionalities(gridFsService, functionalityRepository, gridFsService.getFile(representation.getName()),
+                similarity.getProfile(), similarity.getTracesMaxLimit(), similarity.getTraceType());
 
-        metricService.calculateMetrics((Decomposition) accessesDecomposition);
+        decomposition.calculateMetrics();
         accessesDecomposition.setOutdated(false);
 
         decompositionRepository.save(decomposition);
@@ -96,7 +83,7 @@ public class AccessesDecompositionService {
 
         DirectedAcyclicGraph<LocalTransaction, DefaultEdge> functionalityLocalTransactionsGraph = decomposition.getFunctionality(functionalityName)
                 .createLocalTransactionGraphFromScratch(
-                        representationService.getRepresentationFileAsInputStream(representation.getName()),
+                        gridFsService.getFile(representation.getName()),
                         similarity.getTracesMaxLimit(),
                         similarity.getTraceType(),
                         decomposition.getEntityIDToClusterName());

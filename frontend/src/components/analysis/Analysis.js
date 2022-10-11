@@ -8,7 +8,6 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import Button from 'react-bootstrap/Button';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import {AccessesSciPyAnalysis} from "./implementations/AccessesSciPyAnalysis";
-import {StrategyType} from "../../models/strategy/Strategy";
 
 const HttpStatus = require('http-status-codes');
 

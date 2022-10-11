@@ -11,10 +11,14 @@ import org.json.JSONException;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces.AccessesDecomposition;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.ReducedTraceElementDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
+import pt.ist.socialsoftware.mono2micro.metrics.functionalityMetrics.FunctionalityComplexityMetric;
+import pt.ist.socialsoftware.mono2micro.metrics.functionalityMetrics.FunctionalityMetric;
+import pt.ist.socialsoftware.mono2micro.metrics.functionalityMetrics.FunctionalityPerformanceMetric;
 import pt.ist.socialsoftware.mono2micro.utils.*;
 
 import static org.jgrapht.Graphs.successorListOf;
@@ -364,5 +368,14 @@ public class Functionality {
 			LocalTransaction lt
 	) {
 		return successorListOf(localTransactionsGraph, lt);
+	}
+
+	public void calculateMetrics(AccessesDecomposition decomposition) throws Exception {
+		FunctionalityMetric[] metricObjects = new FunctionalityMetric[] {new FunctionalityComplexityMetric(), new FunctionalityPerformanceMetric()};
+
+		Map<String, Object> newMetrics = new HashMap<>();
+		for (FunctionalityMetric metric : metricObjects)
+			newMetrics.put(metric.getType(), metric.calculateMetric(decomposition, this));
+		metrics = newMetrics;
 	}
 }

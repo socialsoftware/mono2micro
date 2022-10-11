@@ -3,6 +3,11 @@ package pt.ist.socialsoftware.mono2micro.decomposition.domain;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
+import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.Clustering;
+import pt.ist.socialsoftware.mono2micro.element.Element;
+import pt.ist.socialsoftware.mono2micro.decompositionOperations.domain.DecompositionOperations;
+import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
 import java.util.HashMap;
@@ -12,14 +17,21 @@ import java.util.Map;
 public abstract class Decomposition {
 	@Id
 	String name;
+	boolean expert;
 	Map<String, Object> metrics = new HashMap<>(); // Map<Metric type, Metric value>
 	Map<String, Cluster> clusters = new HashMap<>();
 	@DBRef(lazy = true)
 	Strategy strategy;
+	@DBRef
+	Similarity similarity;
+	@DBRef
+	DecompositionOperations decompositionOperations;
 
-	public abstract String getStrategyType();
-
-	public abstract List<String> getImplementations();
+	public abstract String getType();
+	public abstract List<String> getImplementations();  // Provides the implementations of the decomposition
+	public abstract List<String> getRequiredRepresentations(); // Provides the required representations
+	public abstract Clustering getClusteringAlgorithm(GridFsService gridFsService);
+	public abstract void calculateMetrics();
 	public boolean containsImplementation(String implementation) {
 		return getImplementations().contains(implementation);
 	}
@@ -27,6 +39,14 @@ public abstract class Decomposition {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public boolean isExpert() {
+		return expert;
+	}
+
+	public void setExpert(boolean expert) {
+		this.expert = expert;
 	}
 
 	public Map<String, Object> getMetrics() {
@@ -47,6 +67,22 @@ public abstract class Decomposition {
 
 	public void setStrategy(Strategy strategy) {
 		this.strategy = strategy;
+	}
+
+	public Similarity getSimilarity() {
+		return similarity;
+	}
+
+	public void setSimilarity(Similarity similarity) {
+		this.similarity = similarity;
+	}
+
+	public DecompositionOperations getDecompositionOperations() {
+		return decompositionOperations;
+	}
+
+	public void setDecompositionOperations(DecompositionOperations decompositionOperations) {
+		this.decompositionOperations = decompositionOperations;
 	}
 
 	public Map<String, Cluster> getClusters() { return this.clusters; }
@@ -91,5 +127,13 @@ public abstract class Decomposition {
 		}
 
 		return max;
+	}
+
+	public Map<Short, String> getEntityIDToClusterName() {
+		Map<Short, String> entityIDToClusterName = new HashMap<>();
+		for (Cluster cluster : this.clusters.values())
+			for (Element element : cluster.getElements())
+				entityIDToClusterName.put(element.getId(), cluster.getName());
+		return entityIDToClusterName;
 	}
 }

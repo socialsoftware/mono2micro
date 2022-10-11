@@ -2,8 +2,12 @@ package pt.ist.socialsoftware.mono2micro.similarityGenerator.weights;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
+import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 
 import java.util.List;
+import java.util.Set;
 
 import static pt.ist.socialsoftware.mono2micro.similarityGenerator.weights.AccessesWeights.ACCESSES_WEIGHTS;
 import static pt.ist.socialsoftware.mono2micro.similarityGenerator.weights.RepositoryWeights.REPOSITORY_WEIGHTS;
@@ -22,7 +26,8 @@ public abstract class Weights {
     public abstract List<String> getWeightsNames();
 
     public abstract void setWeightsFromArray(float[] weightsArray);
-
+    public abstract void fillMatrix(GridFsService gridFsService, Similarity similarity, float[][][] rawMatrix, Set<Short> elements, int fillFromIndex) throws Exception;
+    public abstract void fillMatrix(GridFsService gridFsService, Recommendation recommendation, float[][][] rawMatrix, Set<Short> elements, int fillFromIndex) throws Exception;
     @Override
     public abstract boolean equals(Object object);
 }

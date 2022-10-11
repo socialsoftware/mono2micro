@@ -10,7 +10,7 @@ import {RepositoryService} from "../../../services/RepositoryService";
 import HttpStatus from "http-status-codes";
 
 
-export const SciPyDecompositionForm = ({strategyType, loadDecompositions}) => {
+export const SciPyDecompositionForm = ({type, loadDecompositions}) => {
     let { similarityName } = useParams();
 
     const [createExpert, setCreateExpert] = useState(undefined);
@@ -51,7 +51,8 @@ export const SciPyDecompositionForm = ({strategyType, loadDecompositions}) => {
         const service = new RepositoryService();
 
         service.createDecomposition({
-            type: strategyType,
+            type,
+            decompositionType: type,
             similarityName,
             cutType,
             cutValue

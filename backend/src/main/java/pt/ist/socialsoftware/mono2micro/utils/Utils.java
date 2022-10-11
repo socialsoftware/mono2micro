@@ -279,10 +279,11 @@ public class Utils {
             AccessesDecomposition decomposition
     ) {
         Map<String, List<Functionality>> clustersFunctionalities = new HashMap<>();
+        Map<Short, String> entityIDToClusterName = decomposition.getEntityIDToClusterName();
 
         for (Functionality functionality : decomposition.getFunctionalities().values()) {
             for (short entityID : functionality.getEntities().keySet()) {
-                Cluster cluster = decomposition.getClusters().get(decomposition.getEntityIDToClusterName().get(entityID));
+                Cluster cluster = decomposition.getClusters().get(entityIDToClusterName.get(entityID));
 
                 List<Functionality> clusterFunctionalities = clustersFunctionalities.getOrDefault(cluster.getName(), new ArrayList<>());
                 if (clusterFunctionalities.size() == 0)

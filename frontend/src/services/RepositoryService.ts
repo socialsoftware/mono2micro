@@ -17,9 +17,10 @@ import {SimilarityFactory} from "../models/similarity/SimilarityFactory";
 import {DecompositionFactory} from "../models/decompositions/DecompositionFactory";
 import Decomposition from "../models/decompositions/Decomposition";
 import Codebase from "../models/codebase/Codebase";
-import {StrategyFactory} from "../models/strategy/StrategyFactory";
 import {RecommendationFactory} from "../models/recommendation/RecommendationFactory";
 import Recommendation from "../models/recommendation/Recommendation";
+import Representation from "../models/representation/Representation";
+import Strategy from "../models/strategy/Strategy";
 
 export class RepositoryService {
     axios: AxiosInstance;
@@ -93,7 +94,7 @@ export class RepositoryService {
 
     getCodebaseStrategies(codebaseName: string) {
         return this.axios.get("/codebase/" + codebaseName + "/getCodebaseStrategies")
-            .then(response => {return response.data.map((strategy:any) => StrategyFactory.getStrategy(strategy))});
+            .then(response => {return response.data.map((strategy:any) => new Strategy(strategy))});
     }
 
     getCodebaseDecompositions(codebaseName: string) {
@@ -150,6 +151,16 @@ export class RepositoryService {
     }
 
     //Representation
+
+    getRequiredRepresentations(decompositionType: string) {
+        return this.axios.get<string[]>("/decomposition/" + decompositionType + "/getRequiredRepresentations");
+    }
+
+    getRepresentations(codebaseName: string) {
+        return this.axios.get<Representation[]>("/codebase/" + codebaseName + "/getRepresentations")
+            .then((response) => RepresentationFactory.getRepresentations(response.data));
+    }
+
     getCodebaseRepresentation(codebaseName: string, representationType: string) {
         return this.axios.get("/codebase/" + codebaseName + "/representation/" + representationType + "/getCodebaseRepresentation")
             .then((response) => RepresentationFactory.getRepresentation(response.data));
@@ -158,10 +169,6 @@ export class RepositoryService {
     getRepresentation(representationName: string) {
         return this.axios.get("/representation/" + representationName + "/getRepresentation")
             .then((response) => RepresentationFactory.getRepresentation(response.data));
-    }
-
-    getRepresentationTypes(codebaseName: string) {
-        return this.axios.get<string[]>("/codebase/" + codebaseName + "/getRepresentationTypes");
     }
 
     deleteRepresentation(id: string) {
@@ -191,7 +198,7 @@ export class RepositoryService {
     //Strategies
     createStrategy(
         codebaseName: string,
-        strategyType: string,
+        decompositionType: string,
         representations: Map<string, File>
     ) {
         const config = {
@@ -202,7 +209,7 @@ export class RepositoryService {
         const data = new FormData();
         Object.entries(representations).forEach((entry) => {data.append("representationTypes", entry[0]); data.append("representations", entry[1])});
 
-        return this.axios.post<null>("/codebase/" + codebaseName + "/strategy/" + strategyType + "/createStrategy", data, config);
+        return this.axios.post<null>("/codebase/" + codebaseName + "/strategy/" + decompositionType + "/createStrategy", data, config);
     }
 
     getStrategySimilarities(strategyName: string) {
@@ -217,7 +224,7 @@ export class RepositoryService {
 
     getStrategy(strategyName: string) {
         return this.axios.get("/strategy/" + strategyName + "/getStrategy").then(
-            response => StrategyFactory.getStrategy(response.data));
+            response => new Strategy(response.data));
     }
 
     deleteStrategy(strategyName: string) {
@@ -266,6 +273,11 @@ export class RepositoryService {
     }
 
     //Decomposition
+
+    getDecompositionTypes() {
+        return this.axios.get<string[]>("/decomposition/getDecompositionTypes");
+    }
+
     getDecompositions(
         similarityName: string
     ) {

@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import pt.ist.socialsoftware.mono2micro.analysis.service.AccessesSciPyAnalysisService;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPy;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.analysis.dto.AnalysisDto;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
 
-import static pt.ist.socialsoftware.mono2micro.strategy.domain.AccessesSciPyStrategy.ACCESSES_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition.ACCESSES_SCIPY;
 
 @RestController
 @RequestMapping(value = "/mono2micro")
@@ -37,14 +37,14 @@ public class AnalysisController {
             Decomposition decomposition1 = decompositionRepository.findByName(decomposition1Name);
             Decomposition decomposition2 = decompositionRepository.findByName(decomposition2Name);
 
-            switch (decomposition1.getStrategyType() + decomposition2.getStrategyType()) {
+            switch (decomposition1.getType() + decomposition2.getType()) {
                 case ACCESSES_SCIPY + ACCESSES_SCIPY:
                     return new ResponseEntity<>(
-                            accessesSciPyAnalysisService.getAnalysis((AccessesSciPy) decomposition1, (AccessesSciPy) decomposition2),
+                            accessesSciPyAnalysisService.getAnalysis((AccessesSciPyDecomposition) decomposition1, (AccessesSciPyDecomposition) decomposition2),
                             HttpStatus.OK
                     );
                 default:
-                    throw new RuntimeException("No decomposition analysis for types: " + decomposition1.getStrategyType() + " and " + decomposition2.getStrategyType());
+                    throw new RuntimeException("No decomposition analysis for types: " + decomposition1.getType() + " and " + decomposition2.getType());
             }
         } catch (Exception e) {
             e.printStackTrace();

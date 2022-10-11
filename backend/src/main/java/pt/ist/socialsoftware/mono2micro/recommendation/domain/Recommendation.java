@@ -2,7 +2,12 @@ package pt.ist.socialsoftware.mono2micro.recommendation.domain;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
+import pt.ist.socialsoftware.mono2micro.decomposition.service.DecompositionService;
+import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.recommendation.dto.RecommendationDto;
+import pt.ist.socialsoftware.mono2micro.recommendation.repository.RecommendationRepository;
+import pt.ist.socialsoftware.mono2micro.similarity.repository.SimilarityRepository;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
 import java.util.List;
@@ -10,10 +15,8 @@ import java.util.List;
 public abstract class Recommendation {
     @Id
     String name;
-
-    String type;
-
-    @DBRef(lazy = true)
+    String decompositionType;
+    @DBRef
     Strategy strategy;
     String recommendationResultName;
     boolean isCompleted; // true when all the decompositions are calculated
@@ -34,18 +37,20 @@ public abstract class Recommendation {
         this.strategy = strategy;
     }
 
+    public abstract String getType();
+
     public abstract List<String> getImplementations();
 
     public boolean containsImplementation(String implementation) {
         return getImplementations().contains(implementation);
     }
 
-    public String getType() {
-        return type;
+    public String getDecompositionType() {
+        return decompositionType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setDecompositionType(String decompositionType) {
+        this.decompositionType = decompositionType;
     }
 
     public abstract boolean equalsDto(RecommendationDto dto);
@@ -65,4 +70,6 @@ public abstract class Recommendation {
     public void setCompleted(boolean completed) {
         isCompleted = completed;
     }
+    public abstract void generateRecommendation(RecommendationRepository recommendationRepository, GridFsService gridFsService);
+    public abstract void createDecompositions(DecompositionService decompositionService, GridFsService gridFsService, List<String> decompositionNames) throws Exception;
 }

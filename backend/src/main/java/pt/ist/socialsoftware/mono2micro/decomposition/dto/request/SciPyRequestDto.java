@@ -1,7 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.dto.request;
 
 public class SciPyRequestDto extends DecompositionRequest {
-    private String similarityName;
     private String cutType;
     private float cutValue;
 
@@ -11,14 +10,6 @@ public class SciPyRequestDto extends DecompositionRequest {
         this.similarityName = similarityName;
         this.cutType = cutType;
         this.cutValue = cutValue;
-    }
-
-    public String getSimilarityName() {
-        return similarityName;
-    }
-
-    public void setSimilarityName(String similarityName) {
-        this.similarityName = similarityName;
     }
 
     public String getCutType() {

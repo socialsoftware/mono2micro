@@ -1,6 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.fileManager;
 
 import com.mongodb.client.gridfs.model.GridFSFile;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.NoSuchFileException;
 import java.util.Set;
 
@@ -34,6 +36,10 @@ public class GridFsService {
         if (gridFSFile == null)
             throw new NoSuchFileException("No file called: " + fileName);
         return operations.getResource(gridFSFile).getInputStream();
+    }
+
+    public String getFileAsString(String fileName) throws IOException {
+        return IOUtils.toString(getFile(fileName), StandardCharsets.UTF_8);
     }
 
     public void replaceFile(InputStream fileStream, String fileName) {
