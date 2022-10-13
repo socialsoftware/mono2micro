@@ -1,23 +1,33 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces;
 
+import org.apache.commons.io.IOUtils;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.cluster.SciPyCluster;
+import pt.ist.socialsoftware.mono2micro.element.Element;
+import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityRepository;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityService;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
+import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.algorithm.AccessesSimilarity;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.algorithm.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static org.jgrapht.Graphs.successorListOf;
@@ -25,7 +35,6 @@ import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRep
 
 public interface AccessesDecomposition {
     String ACCESSES_DECOMPOSITION = "ACCESSES_DECOMPOSITION";
-    boolean isOutdated();
     void setOutdated(boolean outdated);
     String getName();
     String getType();
@@ -62,24 +71,17 @@ public interface AccessesDecomposition {
         getFunctionalities().put(functionality.getName().replaceAll("\\.", "_"), functionality);
     }
 
-    default void transferCouplingDependencies(Set<Short> entities, String currentClusterName, String newClusterName) {
-        for (Cluster cluster : getClusters().values())
-            ((SciPyCluster) cluster).transferCouplingDependencies(entities, currentClusterName, newClusterName);
-    }
 
+    default void setupFunctionalities() throws Exception {
+        GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
+        FunctionalityRepository functionalityRepository = ContextManager.get().getBean(FunctionalityRepository.class);
 
-    default void setupFunctionalities(
-            GridFsService gridFsService,
-            FunctionalityRepository functionalityRepository,
-            InputStream inputFilePath,
-            String profile,
-            int tracesMaxLimit,
-            Constants.TraceType traceType
-    ) throws Exception {
+        AccessesSimilarity similarity = (AccessesSimilarity) getSimilarity();
         AccessesRepresentation accesses = (AccessesRepresentation) getStrategy().getCodebase().getRepresentationByType(ACCESSES);
-        Set<String> profileFunctionalities = accesses.getProfile(profile);
+        InputStream inputStream = gridFsService.getFile(accesses.getName());
+        Set<String> profileFunctionalities = accesses.getProfile(similarity.getProfile());
 
-        FunctionalityTracesIterator iter = new FunctionalityTracesIterator(inputFilePath, tracesMaxLimit);
+        FunctionalityTracesIterator iter = new FunctionalityTracesIterator(inputStream, similarity.getTracesMaxLimit());
         Map<String, DirectedAcyclicGraph<LocalTransaction, DefaultEdge>> localTransactionsGraphs = new HashMap<>();
         List<Functionality> newFunctionalities = new ArrayList<>();
 
@@ -93,7 +95,7 @@ public interface AccessesDecomposition {
             Functionality functionality = new Functionality(getName(), functionalityName);
 
             // Get traces according to trace type
-            List<TraceDto> traceDtos = iter.getTracesByType(traceType);
+            List<TraceDto> traceDtos = iter.getTracesByType(similarity.getTraceType());
             functionality.setTraces(traceDtos);
 
             DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionGraph = functionality.createLocalTransactionGraph(
@@ -115,7 +117,7 @@ public interface AccessesDecomposition {
             functionality.calculateMetrics(this);
 
             // Functionality Redesigns
-            if (gridFsService != null) {
+            if (similarity.getName() != null) { // If it does not have name, it means recommendation is using the similarity as a DTO
                 FunctionalityService.createFunctionalityRedesign(
                         gridFsService,
                         this,
@@ -125,7 +127,7 @@ public interface AccessesDecomposition {
                         localTransactionsGraphs.get(functionality.getName()));
             }
         }
-        if (functionalityRepository != null)
+        if (similarity.getName() != null) // If it does not have name, it means recommendation is using the similarity as a DTO
             functionalityRepository.saveAll(newFunctionalities);
     }
 
@@ -144,5 +146,142 @@ public interface AccessesDecomposition {
                     fromCluster.addCouplingDependencies(nextLt.getClusterName(), nextLt.getFirstAccessedEntityIDs());
             }
         }
+    }
+
+    default void deleteAccessesProperties() {
+        FunctionalityService functionalityService = ContextManager.get().getBean(FunctionalityService.class);
+        GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
+
+        functionalityService.deleteFunctionalities(getFunctionalities().values());
+        gridFsService.deleteFile(getName() + "_refactorization");
+    }
+
+    default String getEdgeWeightsFromAccesses(GridFsService gridFsService) throws JSONException, IOException {
+        Dendrogram similarity = (Dendrogram) getSimilarity();
+        JSONArray copheneticDistances = new JSONArray(IOUtils.toString(gridFsService.getFile(similarity.getCopheneticDistanceName()), StandardCharsets.UTF_8));
+
+        ArrayList<Short> entities = new ArrayList<>(getEntityIDToClusterName().keySet());
+
+        JSONArray edgesJSON = new JSONArray();
+        int k = 0;
+        for (int i = 0; i < entities.size(); i++) {
+            short e1ID = entities.get(i);
+            for (int j = i + 1; j < entities.size(); j++) {
+                short e2ID = entities.get(j);
+
+                JSONObject edgeJSON = new JSONObject();
+                if (e1ID < e2ID) {
+                    edgeJSON.put("e1ID", e1ID); edgeJSON.put("e2ID", e2ID);
+                }
+                else {
+                    edgeJSON.put("e1ID", e2ID); edgeJSON.put("e1ID", e2ID);
+                }
+                edgeJSON.put("dist", copheneticDistances.getDouble(k));
+                edgesJSON.put(edgeJSON);
+                k++;
+            }
+        }
+
+        // Get functionalities in common
+        HashMap<String, JSONArray> entityRelations = new HashMap<>();
+        for (Functionality functionality : getFunctionalities().values()) {
+            List<Short> functionalityEntities = new ArrayList<>(functionality.getEntities().keySet());
+            for (int i = 0; i < functionalityEntities.size(); i++)
+                for (int j = i + 1; j < functionalityEntities.size(); j++) {
+                    JSONArray relatedFunctionalities = entityRelations.get(edgeId(functionalityEntities.get(i), functionalityEntities.get(j)));
+                    if (relatedFunctionalities == null) {
+                        relatedFunctionalities = new JSONArray();
+                        relatedFunctionalities.put(functionality.getName());
+                        entityRelations.put(edgeId(functionalityEntities.get(i), functionalityEntities.get(j)), relatedFunctionalities);
+                    }
+                    else relatedFunctionalities.put(functionality.getName());
+                }
+        }
+
+        JSONArray filteredEdgesJSON = new JSONArray();
+        for (int i = 0; i < edgesJSON.length(); i++) {
+            JSONObject edgeJSON = edgesJSON.getJSONObject(i);
+            JSONArray relatedFunctionalities = entityRelations.get(edgeId(edgeJSON.getInt("e1ID"), edgeJSON.getInt("e2ID")));
+
+            if (relatedFunctionalities != null) {
+                edgeJSON.put("functionalities", relatedFunctionalities);
+                filteredEdgesJSON.put(edgeJSON);
+            }
+        }
+
+        return filteredEdgesJSON.toString();
+    }
+
+    default String edgeId(int node1, int node2) {
+        if (node1 < node2)
+            return node1 + "&" + node2;
+        return node2 + "&" + node1;
+    }
+
+    default void copyFunctionalities(FunctionalityService functionalityService, AccessesDecomposition snapshotDecomposition) throws IOException {
+        for (Functionality functionality : getFunctionalities().values()) {
+            Functionality snapshotFunctionality = new Functionality(snapshotDecomposition.getName(), functionality);
+            snapshotFunctionality.setFunctionalityRedesignNameUsedForMetrics(functionality.getFunctionalityRedesignNameUsedForMetrics());
+
+            for (String redesignName : functionality.getFunctionalityRedesigns().keySet()) {
+                FunctionalityRedesign functionalityRedesign = functionalityService.getFunctionalityRedesign(functionality, redesignName);
+                snapshotFunctionality.addFunctionalityRedesign(functionalityRedesign.getName(), snapshotFunctionality.getId() + functionalityRedesign.getName());
+                functionalityService.saveFunctionalityRedesign(snapshotFunctionality, functionalityRedesign);
+            }
+            snapshotDecomposition.addFunctionality(snapshotFunctionality);
+            functionalityService.saveFunctionality(snapshotFunctionality);
+        }
+    }
+
+    default void renameClusterInFunctionalities(String clusterName, String newName) {
+        FunctionalityService functionalityService = ContextManager.get().getBean(FunctionalityService.class);
+
+        // Change functionalities
+        getFunctionalities().forEach((s, functionality) -> {
+            Set<Short> entities = functionality.getEntitiesPerCluster().get(clusterName);
+            if (entities != null) {
+                functionality.getEntitiesPerCluster().remove(clusterName); functionality.getEntitiesPerCluster().put(newName, entities);
+
+                functionality.getFunctionalityRedesigns().keySet().forEach(functionalityRedesignName -> {
+                    try {
+                        FunctionalityRedesign functionalityRedesign = functionalityService.getFunctionalityRedesign(functionality, functionalityRedesignName);
+                        functionalityRedesign.getRedesign().forEach(localTransaction -> {
+                            if (localTransaction.getClusterName().equals(clusterName)) {
+                                localTransaction.setClusterName(newName);
+                                localTransaction.setName(localTransaction.getId() + ": " + newName);
+                            }
+                        });
+                        functionalityService.updateFunctionalityRedesign(functionality, functionalityRedesign);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
+            functionalityService.saveFunctionality(functionality);
+        });
+    }
+
+    default void removeFunctionalitiesWithEntityIDs(Set<Short> elements) {
+        FunctionalityService functionalityService = ContextManager.get().getBean(FunctionalityService.class);
+        for(Short entityId : elements)
+            functionalityService.deleteFunctionalities(removeFunctionalityWithEntity(entityId));
+    }
+
+    default void removeFunctionalitiesWithEntities(Set<Element> elements) {
+        FunctionalityService functionalityService = ContextManager.get().getBean(FunctionalityService.class);
+        for(Element entity : elements)
+            functionalityService.deleteFunctionalities(removeFunctionalityWithEntity(entity.getId()));
+    }
+
+    default List<Functionality> removeFunctionalityWithEntity(short entityID) {
+        Map<String, Functionality> newFunctionalities = new HashMap<>();
+        List<Functionality> toDelete = new ArrayList<>();
+        getFunctionalities().forEach((name, functionality) -> {
+            if (functionality.containsEntity(entityID))
+                toDelete.add(functionality);
+            else newFunctionalities.put(name, functionality);
+        });
+        setFunctionalities(newFunctionalities);
+        return toDelete;
     }
 }

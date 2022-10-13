@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.decompositionOperations.controller;
+package pt.ist.socialsoftware.mono2micro.history.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,20 +7,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
-import pt.ist.socialsoftware.mono2micro.decompositionOperations.service.PositionLogService;
+import pt.ist.socialsoftware.mono2micro.history.service.HistoryService;
 
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/mono2micro/log/{decompositionName}")
-public class LogController {
+@RequestMapping(value = "/mono2micro/history/{decompositionName}")
+public class HistoryController {
     @Autowired
-    PositionLogService logService;
+    HistoryService historyService;
 
     @Autowired
     DecompositionRepository decompositionRepository;
 
-    private static final Logger logger = LoggerFactory.getLogger(LogController.class);
+    private static final Logger logger = LoggerFactory.getLogger(HistoryController.class);
 
     @RequestMapping(value = "/undoOperation", method = RequestMethod.GET)
     public ResponseEntity<HttpStatus> undoOperation(
@@ -29,7 +29,7 @@ public class LogController {
         logger.debug("undoOperation");
 
         try {
-            logService.undoOperation(decompositionRepository.findByName(decompositionName));
+            historyService.undoOperation(decompositionRepository.findByName(decompositionName));
             return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (Exception e) {
@@ -45,7 +45,7 @@ public class LogController {
         logger.debug("redoOperation");
 
         try {
-            logService.redoOperation(decompositionRepository.findByName(decompositionName));
+            historyService.redoOperation(decompositionRepository.findByName(decompositionName));
             return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (Exception e) {
@@ -61,7 +61,7 @@ public class LogController {
         logger.debug("canUndoRedo");
 
         try {
-            return new ResponseEntity<>(logService.canUndoRedo(decompositionRepository.findByName(decompositionName)), HttpStatus.OK);
+            return new ResponseEntity<>(historyService.canUndoRedo(decompositionRepository.findByName(decompositionName)), HttpStatus.OK);
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -7,6 +7,11 @@ public class RenameOperation extends Operation {
 
     public RenameOperation() {}
 
+    public RenameOperation(String clusterName, String newClusterName) {
+        this.clusterName = clusterName;
+        this.newClusterName = newClusterName;
+    }
+
     @Override
     public String getOperationType() {
         return RENAME;

@@ -8,11 +8,11 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import {RepositoryService} from "../../../services/RepositoryService";
 import AppContext from "../../AppContext";
 import {useParams} from "react-router-dom";
-import {clusterViewHelp} from "./clusterView/ClusterViewGraph";
+import {clusterViewHelp} from "./accessView/AccessViewGraph";
 import {searchType, ViewSearchBar} from "./ViewSearchBar";
 import {ModalProgressBar} from "../../util/ModalProgressBar";
 import {ViewSpeedDial} from "../../util/ViewSpeedDial";
-import {ClusterViewGraph} from "./clusterView/ClusterViewGraph";
+import {AccessViewGraph} from "./accessView/AccessViewGraph";
 
 export const views = {
     CLUSTERS: 'Clusters View',
@@ -144,7 +144,7 @@ export const Views = () => {
             </div>
 
             <div style={{display: displayClusters}}>
-                <ClusterViewGraph
+                <AccessViewGraph
                     setNow={setNow}
                     outdated={outdated}
                     setOutdated={setOutdated}

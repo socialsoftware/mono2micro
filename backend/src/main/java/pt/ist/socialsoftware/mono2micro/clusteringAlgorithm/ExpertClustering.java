@@ -9,6 +9,7 @@ import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.ExpertRequest;
 import pt.ist.socialsoftware.mono2micro.element.DomainEntity;
+import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy;
 
@@ -24,8 +25,8 @@ public class ExpertClustering extends Clustering {
     public static final String EXPERT_CLUSTERING = "EXPERT_CLUSTERING";
     private final GridFsService gridFsService;
 
-    public ExpertClustering(GridFsService gridFsService) {
-        this.gridFsService = gridFsService;
+    public ExpertClustering() {
+        this.gridFsService = ContextManager.get().getBean(GridFsService.class);
     }
 
     public String getType() {

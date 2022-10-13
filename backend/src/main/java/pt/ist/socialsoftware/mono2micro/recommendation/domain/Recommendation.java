@@ -2,12 +2,8 @@ package pt.ist.socialsoftware.mono2micro.recommendation.domain;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
-import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
-import pt.ist.socialsoftware.mono2micro.decomposition.service.DecompositionService;
-import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.recommendation.dto.RecommendationDto;
 import pt.ist.socialsoftware.mono2micro.recommendation.repository.RecommendationRepository;
-import pt.ist.socialsoftware.mono2micro.similarity.repository.SimilarityRepository;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
 import java.util.List;
@@ -39,12 +35,6 @@ public abstract class Recommendation {
 
     public abstract String getType();
 
-    public abstract List<String> getImplementations();
-
-    public boolean containsImplementation(String implementation) {
-        return getImplementations().contains(implementation);
-    }
-
     public String getDecompositionType() {
         return decompositionType;
     }
@@ -52,6 +42,8 @@ public abstract class Recommendation {
     public void setDecompositionType(String decompositionType) {
         this.decompositionType = decompositionType;
     }
+
+    public abstract void deleteProperties();
 
     public abstract boolean equalsDto(RecommendationDto dto);
 
@@ -70,6 +62,6 @@ public abstract class Recommendation {
     public void setCompleted(boolean completed) {
         isCompleted = completed;
     }
-    public abstract void generateRecommendation(RecommendationRepository recommendationRepository, GridFsService gridFsService);
-    public abstract void createDecompositions(DecompositionService decompositionService, GridFsService gridFsService, List<String> decompositionNames) throws Exception;
+    public abstract void generateRecommendation(RecommendationRepository recommendationRepository);
+    public abstract void createDecompositions(List<String> decompositionNames) throws Exception;
 }

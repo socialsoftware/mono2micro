@@ -12,16 +12,11 @@ import java.util.stream.Collectors;
 public abstract class Similarity {
     @Id
     private String name;
-    private String decompositionType;
+    private String decompositionType; //TODO usar o decompositionType da strategy
     @DBRef
     private Strategy strategy;
     @DBRef(lazy = true)
     private List<Decomposition> decompositions;
-    public abstract List<String> getImplementations();
-
-    public boolean containsImplementation(String implementation) {
-        return getImplementations().contains(implementation);
-    }
 
     public String getName() {
         return name;
@@ -68,6 +63,10 @@ public abstract class Similarity {
     public synchronized void removeDecomposition(String decompositionName) {
         this.decompositions = this.decompositions.stream().filter(decomposition -> !decomposition.getName().equals(decompositionName)).collect(Collectors.toList());
     }
+
+    public abstract void generate() throws Exception;
+
+    public abstract void removeProperties();
 
     public abstract boolean equalsDto(SimilarityDto dto);
 }

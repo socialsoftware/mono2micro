@@ -231,20 +231,16 @@ export class RepositoryService {
         return this.axios.delete<null>("/strategy/" + strategyName + "/delete");
     }
 
-    getEdgeWeights(decompositionName: string, view: string) {
-        return this.axios.get<Edges>("/decomposition/" + decompositionName + "/" + view + "/getEdgeWeights");
+    getEdgeWeights(decompositionName: string, viewType: string) {
+        return this.axios.get<Edges>("/decomposition/" + decompositionName + "/" + viewType + "/getEdgeWeights");
     }
 
     getGraphPositions(decompositionName: string) {
-        return this.axios.get("/positionLog/" + decompositionName + "/getGraphPositions");
-    }
-
-    deleteGraphPositions(decompositionName: string) {
-        return this.axios.delete("/positionLog/" + decompositionName + "/deleteGraphPositions");
+        return this.axios.get("/positionHistory/" + decompositionName + "/getGraphPositions");
     }
 
     saveGraphPositions(decompositionName: string, graphPositions: any) {
-        return this.axios.post<null>("/positionLog/" + decompositionName + "/saveGraphPositions", graphPositions);
+        return this.axios.post<null>("/positionHistory/" + decompositionName + "/saveGraphPositions", graphPositions);
     }
 
     snapshotDecomposition(decompositionName: string) {
@@ -373,19 +369,19 @@ export class RepositoryService {
     undoOperation(
         decompositionName: string
     ) {
-        return this.axios.get("/log/" + decompositionName + "/undoOperation");
+        return this.axios.get("/history/" + decompositionName + "/undoOperation");
     }
 
     redoOperation(
         decompositionName: string
     ) {
-        return this.axios.get("/log/" + decompositionName + "/redoOperation");
+        return this.axios.get("/history/" + decompositionName + "/redoOperation");
     }
 
     canUndoRedo(
         decompositionName: string
     ) {
-        return this.axios.get<Record<string, Boolean>>("/log/" + decompositionName + "/canUndoRedo");
+        return this.axios.get<Record<string, Boolean>>("/history/" + decompositionName + "/canUndoRedo");
     }
 
     getFunctionalitiesAndFunctionalitiesClusters(

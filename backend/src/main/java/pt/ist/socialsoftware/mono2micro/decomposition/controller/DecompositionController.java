@@ -1,6 +1,5 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.controller;
 
-import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +12,9 @@ import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.Decompos
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.DecompositionDtoFactory;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
 import pt.ist.socialsoftware.mono2micro.decomposition.service.DecompositionService;
-import pt.ist.socialsoftware.mono2micro.operation.Operation;
+import pt.ist.socialsoftware.mono2micro.operation.*;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -156,7 +154,7 @@ public class DecompositionController {
 	) {
 		logger.debug("mergeClusters");
 		try {
-			decompositionService.mergeClusters(decompositionName, operation);
+			decompositionService.mergeClustersOperation(decompositionName, (MergeOperation) operation);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -172,7 +170,7 @@ public class DecompositionController {
 	) {
 		logger.debug("renameCluster");
 		try {
-			decompositionService.renameCluster(decompositionName, operation);
+			decompositionService.renameClusterOperation(decompositionName, (RenameOperation) operation);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (KeyAlreadyExistsException e) {
@@ -191,7 +189,7 @@ public class DecompositionController {
 	) {
 		logger.debug("splitCluster");
 		try {
-			decompositionService.splitCluster(decompositionName, operation);
+			decompositionService.splitClusterOperation(decompositionName, (SplitOperation) operation);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (KeyAlreadyExistsException e) {
@@ -210,7 +208,7 @@ public class DecompositionController {
 	) {
 		logger.debug("transferEntities");
 		try {
-			decompositionService.transferEntities(decompositionName, operation);
+			decompositionService.transferEntitiesOperation(decompositionName, (TransferOperation) operation);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -227,7 +225,7 @@ public class DecompositionController {
 	) {
 		logger.debug("formCluster");
 		try {
-			decompositionService.formCluster(decompositionName, operation);
+			decompositionService.formClusterOperation(decompositionName, (FormClusterOperation) operation);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (KeyAlreadyExistsException e) {
@@ -255,17 +253,17 @@ public class DecompositionController {
 		}
 	}
 
-	@RequestMapping(value = "/decomposition/{decompositionName}/{view}/getEdgeWeights", method = RequestMethod.GET)
+	@RequestMapping(value = "/decomposition/{decompositionName}/{viewType}/getEdgeWeights", method = RequestMethod.GET)
 	public ResponseEntity<String> getEdgeWeights(
 			@PathVariable String decompositionName,
-			@PathVariable String view
+			@PathVariable String viewType
 	) {
 		logger.debug("getEdgeWeights");
 
 		try {
-			return new ResponseEntity<>(decompositionService.getEdgeWeights(decompositionName, view), HttpStatus.OK);
+			return new ResponseEntity<>(decompositionService.getEdgeWeights(decompositionName, viewType), HttpStatus.OK);
 
-		} catch (IOException | JSONException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}

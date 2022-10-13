@@ -18,6 +18,7 @@ import java.util.*;
 
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.*;
 
+// NO LONGER IN USE, HERE IN CASE IT IS NEEDED
 public class FileManager {
 
 	private static FileManager instance = null;
@@ -174,17 +175,6 @@ public class FileManager {
 				new File(CODEBASES_PATH + codebaseName + strategyFolder + strategyName + "/decompositions/" + decomposition.getName() + "/decomposition.json"),
 				decomposition
 		);
-	}
-
-	public InputStream getFunctionalityRedesignAsJSON(FunctionalityRedesign functionalityRedesign) throws IOException {
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		objectMapper.writeValue(outputStream, functionalityRedesign);
-		return new ByteArrayInputStream(outputStream.toByteArray());
-	}
-
-	public FunctionalityRedesign getFunctionalityRedesign(InputStream inputStream) throws IOException {
-		ObjectReader reader = objectMapper.readerFor(FunctionalityRedesign.class);
-		return reader.readValue(inputStream);
 	}
 
 	public Decomposition getDecompositionWithFunctionalitiesAndClustersWithFields(

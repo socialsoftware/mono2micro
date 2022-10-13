@@ -1,7 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.similarity.domain.algorithm;
 
 public interface Dendrogram {
-    String DENDROGRAM = "DENDROGRAM";
     String getName();
     String getLinkageType();
     String getSimilarityMatrixName();

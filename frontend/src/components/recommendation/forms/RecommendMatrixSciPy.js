@@ -139,11 +139,14 @@ export const RecommendMatrixSciPy = ({codebaseName, strategy, setUpdateStrategie
                 setRecommendation(recommendation);
 
                 service.getRecommendationResult(recommendation.name).then(list => {
-                    let line = Object.keys(list[0]);
-                    setDecompositionInfo(columns.filter(column => line.includes(column.dataField)));
-                    setShowPopup(true);
-
+                    if (list.length !== 0) {
+                        let line = Object.keys(list[0]);
+                        setDecompositionInfo(columns.filter(column => line.includes(column.dataField)));
+                    }
+                    else setDecompositionInfo(columns);
                     setRecommendedDecompositions(list);
+
+                    setShowPopup(true);
                     setLoading(false);
                 });
             }

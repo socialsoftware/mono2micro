@@ -5,8 +5,8 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.Clustering;
 import pt.ist.socialsoftware.mono2micro.element.Element;
-import pt.ist.socialsoftware.mono2micro.decompositionOperations.domain.DecompositionOperations;
-import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
+import pt.ist.socialsoftware.mono2micro.history.domain.History;
+import pt.ist.socialsoftware.mono2micro.operation.*;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
@@ -18,6 +18,7 @@ public abstract class Decomposition {
 	@Id
 	String name;
 	boolean expert;
+	boolean outdated; // Used to avoid long waiting times during interaction
 	Map<String, Object> metrics = new HashMap<>(); // Map<Metric type, Metric value>
 	Map<String, Cluster> clusters = new HashMap<>();
 	@DBRef(lazy = true)
@@ -25,16 +26,22 @@ public abstract class Decomposition {
 	@DBRef
 	Similarity similarity;
 	@DBRef
-	DecompositionOperations decompositionOperations;
+    History history;
 
 	public abstract String getType();
-	public abstract List<String> getImplementations();  // Provides the implementations of the decomposition
 	public abstract List<String> getRequiredRepresentations(); // Provides the required representations
-	public abstract Clustering getClusteringAlgorithm(GridFsService gridFsService);
+	public abstract Clustering getClusteringAlgorithm();
+	public abstract void setup() throws Exception;
+	public abstract void update() throws Exception;
+	public abstract void deleteProperties();
 	public abstract void calculateMetrics();
-	public boolean containsImplementation(String implementation) {
-		return getImplementations().contains(implementation);
-	}
+	public abstract void renameCluster(RenameOperation operation);
+	public abstract void mergeClusters(MergeOperation operation);
+	public abstract void splitCluster(SplitOperation operation);
+	public abstract void transferEntities(TransferOperation operation);
+	public abstract void formCluster(FormClusterOperation operation); // leave empty if not available
+	public abstract void undoOperation(Operation operation);
+	public abstract void redoOperation(Operation operation);
 	public String getName() { return this.name; }
 
 	public void setName(String name) {
@@ -47,6 +54,14 @@ public abstract class Decomposition {
 
 	public void setExpert(boolean expert) {
 		this.expert = expert;
+	}
+
+	public boolean isOutdated() {
+		return outdated;
+	}
+
+	public void setOutdated(boolean outdated) {
+		this.outdated = outdated;
 	}
 
 	public Map<String, Object> getMetrics() {
@@ -77,12 +92,12 @@ public abstract class Decomposition {
 		this.similarity = similarity;
 	}
 
-	public DecompositionOperations getDecompositionOperations() {
-		return decompositionOperations;
+	public History getHistory() {
+		return history;
 	}
 
-	public void setDecompositionOperations(DecompositionOperations decompositionOperations) {
-		this.decompositionOperations = decompositionOperations;
+	public void setHistory(History history) {
+		this.history = history;
 	}
 
 	public Map<String, Cluster> getClusters() { return this.clusters; }

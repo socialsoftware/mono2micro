@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 
 public interface SimilarityMatrix {
-    String SIMILARITY_MATRIX = "SIMILARITY_MATRIX";
     Strategy getStrategy();
     String getName();
     List<Weights> getWeightsList();

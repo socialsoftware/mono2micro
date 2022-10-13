@@ -3,6 +3,7 @@ package pt.ist.socialsoftware.mono2micro.similarityGenerator;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.similarityGenerator.SimilarityMatrices;
@@ -18,8 +19,8 @@ public class SimilarityMatrixGenerator {
     private static final int STEP = 10;
     private final GridFsService gridFsService;
 
-    public SimilarityMatrixGenerator(GridFsService gridFsService) {
-        this.gridFsService = gridFsService;
+    public SimilarityMatrixGenerator() {
+        this.gridFsService = ContextManager.get().getBean(GridFsService.class);
     }
 
     public void createSimilarityMatrixFromWeights(SimilarityMatrix similarity) throws Exception {

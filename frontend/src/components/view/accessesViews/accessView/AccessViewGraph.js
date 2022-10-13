@@ -8,9 +8,9 @@ import {DataSet, Network} from "vis-network/standalone";
 import {OperationTypes, views} from "../Views";
 import {OPERATION} from "../../../../constants/constants";
 import {RightClickMenu} from "../../utils/RightClickMenu";
-import {ClusterViewDialogs, DIALOG_TYPE} from "./ClusterViewDialogs";
-import {ClusterViewModal} from "./ClusterViewModal";
-import {ClusterViewMetricTable} from "./ClusterViewMetricTable";
+import {AccessViewDialogs, DIALOG_TYPE} from "./AccessViewDialogs";
+import {AccessViewModal} from "./AccessViewModal";
+import {AccessViewMetricTable} from "./AccessViewMetricTable";
 import {searchType} from "../ViewSearchBar";
 import {
     collapseAll,
@@ -43,7 +43,7 @@ export const clusterViewHelp = (<div>
     Then right click to see available operations.<br />
 </div>);
 
-export const ClusterViewGraph = ({setNow, outdated, setOutdated, searchedItem, setSearchedItem, changeToFunctionalities, setOpenSearch, setActions, view}) => {
+export const AccessViewGraph = ({setNow, outdated, setOutdated, searchedItem, setSearchedItem, changeToFunctionalities, setOpenSearch, setActions, view}) => {
     const appRef = createRef();
     let { decompositionName } = useParams();
     const [operations, setOperations] = useState([]);
@@ -799,7 +799,7 @@ function updateNetwork() {
 
             <div ref={appRef}/>
 
-            <ClusterViewModal
+            <AccessViewModal
                 clusters={clusters}
                 edgeWeights={edgeWeights}
                 outdated={outdated}
@@ -832,7 +832,7 @@ function updateNetwork() {
             />
 
             {requestDialog !== undefined &&
-                <ClusterViewDialogs
+                <AccessViewDialogs
                     requestDialog={requestDialog}
                     setRequestDialog={setRequestDialog}
                     setDialogResponse={setDialogResponse}
@@ -844,7 +844,7 @@ function updateNetwork() {
             {showTable &&
                 <>
                     <div id="metricTable"></div> {/*This is used as an anchor*/}
-                    <ClusterViewMetricTable
+                    <AccessViewMetricTable
                         clusters={clusters}
                         clustersFunctionalities={clustersFunctionalities}
                         outdated={outdated}

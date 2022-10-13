@@ -1,44 +1,29 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.service;
 
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.Clustering;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.DecompositionFactory;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces.AccessesDecomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces.RepositoryDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.views.ClusterViewDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.ExpertRequest;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
-import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityRepository;
-import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityService;
-import pt.ist.socialsoftware.mono2micro.decompositionOperations.service.DecompositionOperationsService;
-import pt.ist.socialsoftware.mono2micro.operation.Operation;
-import pt.ist.socialsoftware.mono2micro.operation.RenameOperation;
-import pt.ist.socialsoftware.mono2micro.operation.accesses.AccessesFormClusterOperation;
-import pt.ist.socialsoftware.mono2micro.operation.accesses.AccessesMergeOperation;
-import pt.ist.socialsoftware.mono2micro.operation.accesses.AccessesSplitOperation;
-import pt.ist.socialsoftware.mono2micro.operation.accesses.AccessesTransferOperation;
+import pt.ist.socialsoftware.mono2micro.history.service.HistoryService;
+import pt.ist.socialsoftware.mono2micro.operation.*;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.algorithm.AccessesSimilarity;
 import pt.ist.socialsoftware.mono2micro.similarity.repository.SimilarityRepository;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.strategy.repository.StrategyRepository;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces.AccessesDecomposition.ACCESSES_DECOMPOSITION;
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces.RepositoryDecomposition.REPOSITORY_DECOMPOSITION;
 import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccAndRepoSciPyDecomposition.ACC_AND_REPO_SCIPY;
 import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition.ACCESSES_SCIPY;
 import static pt.ist.socialsoftware.mono2micro.decomposition.domain.RepositorySciPyDecomposition.REPOSITORY_SCIPY;
-import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
 
 @Service
 public class DecompositionService {
@@ -52,25 +37,7 @@ public class DecompositionService {
     DecompositionRepository decompositionRepository;
 
     @Autowired
-    AccessesDecompositionService accessesDecompositionService;
-
-    @Autowired
-    AccessesSciPyService accessesSciPyService;
-
-    @Autowired
-    RepositoryDecompositionService repositoryDecompositionService;
-
-    @Autowired
-    AccAndRepoSciPyService accAndRepoSciPyService;
-
-    @Autowired
-    FunctionalityRepository functionalityRepository;
-
-    @Autowired
-    FunctionalityService functionalityService;
-
-    @Autowired
-    DecompositionOperationsService decompositionOperationsService;
+    HistoryService historyService;
 
     @Autowired
     GridFsService gridFsService;
@@ -83,26 +50,6 @@ public class DecompositionService {
         };
     }
 
-    public void setupDecomposition(Decomposition decomposition) throws Exception {
-        if (decomposition.containsImplementation(ACCESSES_DECOMPOSITION)) {
-            AccessesSimilarity similarity = (AccessesSimilarity) decomposition.getSimilarity();
-            InputStream inputStream = gridFsService.getFile(decomposition.getStrategy().getCodebase().getRepresentationByType(ACCESSES).getName());
-            ((AccessesDecomposition) decomposition).setupFunctionalities(gridFsService, functionalityRepository, inputStream,
-                    similarity.getProfile(), similarity.getTracesMaxLimit(), similarity.getTraceType());
-        }
-        if (decomposition.containsImplementation(REPOSITORY_DECOMPOSITION)) {
-            ((RepositoryDecomposition) decomposition).setupAuthorsAndCommits(gridFsService);
-        }
-        // FILL DECOMPOSITION WITH SPECIFIC PROPERTIES HERE
-
-        decomposition.calculateMetrics();
-
-        decompositionOperationsService.saveDecompositionOperations(decomposition.getDecompositionOperations());
-        decompositionRepository.save(decomposition);
-        similarityRepository.save(decomposition.getSimilarity());
-        strategyRepository.save(decomposition.getStrategy());
-    }
-
     public void createDecomposition(DecompositionRequest request) throws Exception {
         Decomposition decomposition = DecompositionFactory.getDecomposition(request);
 
@@ -112,7 +59,7 @@ public class DecompositionService {
         decomposition.setStrategy(similarity.getStrategy());
         similarity.getStrategy().addDecomposition(decomposition);
 
-        Clustering clustering = decomposition.getClusteringAlgorithm(gridFsService);
+        Clustering clustering = decomposition.getClusteringAlgorithm();
         clustering.generateClusters(decomposition, request);
 
         setupDecomposition(decomposition);
@@ -128,20 +75,31 @@ public class DecompositionService {
         decomposition.setStrategy(similarity.getStrategy());
         similarity.getStrategy().addDecomposition(decomposition);
 
-        Clustering clustering = decomposition.getClusteringAlgorithm(gridFsService);
+        Clustering clustering = decomposition.getClusteringAlgorithm();
         clustering.generateClusters(decomposition, new ExpertRequest(expertName, expertFile));
 
         setupDecomposition(decomposition);
     }
 
-    private void removeSpecificDecompositionProperties(Decomposition decomposition) {
-        if (decomposition.containsImplementation(ACCESSES_DECOMPOSITION)) {
-            functionalityService.deleteFunctionalities(((AccessesDecomposition)decomposition).getFunctionalities().values());
-            gridFsService.deleteFile(decomposition.getName() + "_refactorization");
+    public void setupDecomposition(Decomposition decomposition) throws Exception {
+        decomposition.setup();
+        decomposition.calculateMetrics();
+
+        historyService.saveHistory(decomposition.getHistory());
+        decompositionRepository.save(decomposition);
+        similarityRepository.save(decomposition.getSimilarity());
+        strategyRepository.save(decomposition.getStrategy());
+    }
+
+    public Decomposition updateDecomposition(String decompositionName) throws Exception {
+        Decomposition decomposition = decompositionRepository.findByName(decompositionName);
+        if (decomposition.isOutdated()) {
+            decomposition.update();
+            decomposition.calculateMetrics();
+            decomposition.setOutdated(false);
+            decompositionRepository.save(decomposition);
         }
-        Similarity similarity = decomposition.getSimilarity();
-        similarity.removeDecomposition(decomposition.getName());
-        similarityRepository.save(similarity);
+        return decomposition;
     }
 
     public List<String> getRequiredRepresentations(String decompositionType) {
@@ -154,78 +112,85 @@ public class DecompositionService {
 
     public void deleteSingleDecomposition(String decompositionName) {
         Decomposition decomposition = decompositionRepository.findByName(decompositionName);
-        removeSpecificDecompositionProperties(decomposition);
-        Strategy strategy = strategyRepository.findByName(decomposition.getStrategy().getName());
+        decomposition.deleteProperties();
+
+        Strategy strategy = decomposition.getStrategy();
         strategy.removeDecomposition(decomposition.getName());
-        decompositionOperationsService.deleteDecompositionOperations(decomposition.getDecompositionOperations());
+        Similarity similarity = decomposition.getSimilarity();
+        similarity.removeDecomposition(decomposition.getName());
+
+        similarityRepository.save(similarity);
+        historyService.deleteHistory(decomposition.getHistory());
         strategyRepository.save(strategy);
         decompositionRepository.deleteByName(decomposition.getName());
     }
 
     public void deleteDecomposition(Decomposition decomposition) {
-        removeSpecificDecompositionProperties(decomposition);
-        decompositionOperationsService.deleteDecompositionOperations(decomposition.getDecompositionOperations());
+        decomposition.deleteProperties();
+        historyService.deleteHistory(decomposition.getHistory());
         decompositionRepository.deleteByName(decomposition.getName());
     }
 
-    public void mergeClusters(String decompositionName, Operation operation) {
+    public void mergeClustersOperation(String decompositionName, MergeOperation operation) {
         Decomposition decomposition = decompositionRepository.findByName(decompositionName);
-        if (decomposition.containsImplementation(ACCESSES_DECOMPOSITION))
-            accessesDecompositionService.mergeClustersOperation(decomposition, (AccessesMergeOperation) operation);
-        else throw new RuntimeException("Could not get the strategy type");
+        decomposition.mergeClusters(operation);
+        historyService.addOperation(decomposition, operation);
+        decompositionRepository.save(decomposition);
     }
 
-    public void renameCluster(String decompositionName, Operation operation) {
+    public void renameClusterOperation(String decompositionName, RenameOperation operation) {
         Decomposition decomposition = decompositionRepository.findByName(decompositionName);
-        if (decomposition.containsImplementation(ACCESSES_DECOMPOSITION))
-            accessesDecompositionService.renameClusterOperation(decomposition, (RenameOperation) operation);
-        else throw new RuntimeException("Could not get the strategy type");
+        decomposition.renameCluster(operation);
+        historyService.addOperation(decomposition, operation);
+        decompositionRepository.save(decomposition);
     }
 
-    public void splitCluster(String decompositionName, Operation operation) {
+    public void splitClusterOperation(String decompositionName, SplitOperation operation) {
         Decomposition decomposition = decompositionRepository.findByName(decompositionName);
-        if (decomposition.containsImplementation(ACCESSES_DECOMPOSITION))
-            accessesDecompositionService.splitClusterOperation(decomposition, (AccessesSplitOperation) operation);
-        else throw new RuntimeException("Could not get the strategy type");
+        decomposition.splitCluster(operation);
+        historyService.addOperation(decomposition, operation);
+        decompositionRepository.save(decomposition);
     }
 
-    public void transferEntities(String decompositionName, Operation operation) {
+    public void transferEntitiesOperation(String decompositionName, TransferOperation operation) {
         Decomposition decomposition = decompositionRepository.findByName(decompositionName);
-        if (decomposition.containsImplementation(ACCESSES_DECOMPOSITION))
-            accessesDecompositionService.transferEntitiesOperation(decomposition, (AccessesTransferOperation) operation);
-        else throw new RuntimeException("Could not get the strategy type");
+        decomposition.transferEntities(operation);
+        historyService.addOperation(decomposition, operation);
+        decompositionRepository.save(decomposition);
     }
 
-    public void formCluster(String decompositionName, Operation operation) {
+    public void formClusterOperation(String decompositionName, FormClusterOperation operation) {
         Decomposition decomposition = decompositionRepository.findByName(decompositionName);
-        if (decomposition.containsImplementation(ACCESSES_DECOMPOSITION))
-            accessesDecompositionService.formClusterOperation(decomposition, (AccessesFormClusterOperation) operation);
-        else throw new RuntimeException("Could not get the strategy type");
+        decomposition.formCluster(operation);
+        historyService.addOperation(decomposition, operation);
+        decompositionRepository.save(decomposition);
+    }
+
+    public String getEdgeWeights(String decompositionName, String view) throws Exception {
+        ClusterViewDecomposition clusterView = (ClusterViewDecomposition) decompositionRepository.findByName(decompositionName);
+        return clusterView.getEdgeWeights(gridFsService, view);
     }
 
     public void snapshotDecomposition(String decompositionName) throws Exception {
-        Decomposition decomposition = decompositionRepository.findByName(decompositionName);
-        switch (decomposition.getType()) {
-            case ACCESSES_SCIPY:
-                accessesSciPyService.snapshotDecomposition(decomposition.getName());
-                break;
-            case ACC_AND_REPO_SCIPY:
-                accAndRepoSciPyService.snapshotDecomposition(decomposition.getName());
-                break;
-            default:
-                throw new RuntimeException("Could not get the strategy type");
-        }
-    }
+        ClusterViewDecomposition decomposition = (ClusterViewDecomposition) updateDecomposition(decompositionName);
+        Similarity similarity = decomposition.getSimilarity();
 
-    public String getEdgeWeights(String decompositionName, String view) throws JSONException, IOException {
-        Decomposition decomposition = decompositionRepository.findByName(decompositionName);
-        switch (view) {
-            case ACCESSES_DECOMPOSITION:
-                return accessesDecompositionService.getEdgeWeights((AccessesDecomposition) decomposition);
-            case REPOSITORY_DECOMPOSITION:
-                return repositoryDecompositionService.getEdgeWeights((RepositoryDecomposition) decomposition);
-            default:
-                throw new RuntimeException("Could not get the strategy type");
+        String snapshotName = decomposition.getName() + " SNAPSHOT";
+        if (similarity.getDecompositionByName(snapshotName) != null) {
+            int i = 1;
+            do {i++;} while (similarity.getDecompositionByName(snapshotName + "(" + i + ")") != null);
+            snapshotName = snapshotName + "(" + i + ")";
         }
+
+        Decomposition snapshotDecomposition = decomposition.snapshotDecomposition(snapshotName);
+
+        Strategy strategy = decomposition.getStrategy();
+        similarity.addDecomposition(snapshotDecomposition);
+        snapshotDecomposition.setSimilarity(similarity);
+        strategy.addDecomposition(snapshotDecomposition);
+        snapshotDecomposition.setStrategy(strategy);
+        decompositionRepository.save(snapshotDecomposition);
+        similarityRepository.save(similarity);
+        strategyRepository.save(strategy);
     }
 }

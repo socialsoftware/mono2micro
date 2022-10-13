@@ -2,18 +2,18 @@ package pt.ist.socialsoftware.mono2micro.operation;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import pt.ist.socialsoftware.mono2micro.operation.accesses.AccessesFormClusterOperation;
-import pt.ist.socialsoftware.mono2micro.operation.accesses.AccessesMergeOperation;
-import pt.ist.socialsoftware.mono2micro.operation.accesses.AccessesSplitOperation;
-import pt.ist.socialsoftware.mono2micro.operation.accesses.AccessesTransferOperation;
+import pt.ist.socialsoftware.mono2micro.operation.clusterView.ClusterViewFormClusterOperation;
+import pt.ist.socialsoftware.mono2micro.operation.clusterView.ClusterViewMergeOperation;
+import pt.ist.socialsoftware.mono2micro.operation.clusterView.ClusterViewSplitOperation;
+import pt.ist.socialsoftware.mono2micro.operation.clusterView.ClusterViewTransferOperation;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = RenameOperation.class, name = RenameOperation.RENAME),
-        @JsonSubTypes.Type(value = AccessesMergeOperation.class, name = AccessesMergeOperation.ACCESSES_MERGE),
-        @JsonSubTypes.Type(value = AccessesSplitOperation.class, name = AccessesSplitOperation.ACCESSES_SPLIT),
-        @JsonSubTypes.Type(value = AccessesTransferOperation.class, name = AccessesTransferOperation.ACCESSES_TRANSFER),
-        @JsonSubTypes.Type(value = AccessesFormClusterOperation.class, name = AccessesFormClusterOperation.ACCESSES_FORM),
+        @JsonSubTypes.Type(value = ClusterViewMergeOperation.class, name = ClusterViewMergeOperation.CLUSTER_VIEW_MERGE),
+        @JsonSubTypes.Type(value = ClusterViewSplitOperation.class, name = ClusterViewSplitOperation.CLUSTER_VIEW_SPLIT),
+        @JsonSubTypes.Type(value = ClusterViewTransferOperation.class, name = ClusterViewTransferOperation.CLUSTER_VIEW_TRANSFER),
+        @JsonSubTypes.Type(value = ClusterViewFormClusterOperation.class, name = ClusterViewFormClusterOperation.CLUSTER_VIEW_FORM),
 })
 public abstract class Operation {
     protected Long historyDepth;

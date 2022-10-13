@@ -12,7 +12,7 @@ export const DIALOG_TYPE = {
     FORM_CLUSTER: 4,
 }
 
-export const ClusterViewDialogs = ({requestDialog, setDialogResponse, handleCancel}) => {
+export const AccessViewDialogs = ({requestDialog, setDialogResponse, handleCancel}) => {
 
     const [name, setName] = useState('');
     const [selectedEntities, setSelectedEntities] = useState([]);

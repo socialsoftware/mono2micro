@@ -12,7 +12,7 @@ const ACCESS_TYPES = {
     3: "READ/WRITE"
 };
 
-export const ClusterViewModal = ({clusters, edgeWeights, outdated, clustersFunctionalities, visGraph, showModal, setShowModal, clickedComponent, setClickedComponent}) => {
+export const AccessViewModal = ({clusters, edgeWeights, outdated, clustersFunctionalities, visGraph, showModal, setShowModal, clickedComponent, setClickedComponent}) => {
     const [title, setTitle] = useState("Options");
     const [informationText, setInformationText] = useState(undefined);
 

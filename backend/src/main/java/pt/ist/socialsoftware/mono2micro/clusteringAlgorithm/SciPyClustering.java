@@ -11,10 +11,10 @@ import pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces.SciPyDec
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.SciPyRequestDto;
 import pt.ist.socialsoftware.mono2micro.element.DomainEntity;
+import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.algorithm.RecommendationForSciPy;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.algorithm.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.algorithm.SimilarityForSciPy;
 
 import java.io.ByteArrayInputStream;
@@ -28,31 +28,14 @@ public class SciPyClustering extends Clustering {
 
     static final int MIN_CLUSTERS = 3, CLUSTER_STEP = 1;
 
-    private GridFsService gridFsService;
+    private final GridFsService gridFsService;
 
-    public SciPyClustering() {}
-
-    public SciPyClustering(GridFsService gridFsService) {
-        this.gridFsService = gridFsService;
+    public SciPyClustering() {
+        this.gridFsService = ContextManager.get().getBean(GridFsService.class);
     }
 
     public String getType() {
         return SCIPY_CLUSTERING_ALGORITHM;
-    }
-
-    public void createDendrogramImage(Dendrogram similarity) {
-        String response = WebClient.create(SCRIPTS_ADDRESS)
-                .get()
-                .uri("/scipy/{similarityName}/{similarityMatrixName}/{linkageType}/createDendrogram", similarity.getName(), similarity.getSimilarityMatrixName(), similarity.getLinkageType())
-                .retrieve()
-                .onStatus(HttpStatus::isError, clientResponse -> {throw new RuntimeException("Error Code:" + clientResponse.statusCode());})
-                .bodyToMono(String.class)
-                .block();
-        try {
-            JSONObject jsonObject = new JSONObject(response);
-            similarity.setDendrogramName(jsonObject.getString("dendrogramName"));
-            similarity.setCopheneticDistanceName(jsonObject.getString("copheneticDistanceName"));
-        } catch(Exception e) { throw new RuntimeException("Could not produce or extract elements from JSON Object"); }
     }
 
     public void generateClusters(Decomposition decomposition, DecompositionRequest request) throws Exception {
@@ -159,7 +142,7 @@ public class SciPyClustering extends Clustering {
 
                     addClustersAndEntities(decomposition, clustersJSON, idToEntity);
 
-                    recommendation.getDecompositionPropertiesForRecommendation(gridFsService, decomposition);
+                    recommendation.getDecompositionPropertiesForRecommendation(decomposition);
 
                     // Add decomposition's relevant information to the file
                     JSONObject decompositionJSON = new JSONObject();

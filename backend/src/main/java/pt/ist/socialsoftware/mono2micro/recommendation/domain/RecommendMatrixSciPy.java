@@ -2,17 +2,14 @@ package pt.ist.socialsoftware.mono2micro.recommendation.domain;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.SciPyClustering;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.DecompositionFactory;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces.AccessesDecomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces.RepositoryDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.SciPyRequestDto;
 import pt.ist.socialsoftware.mono2micro.decomposition.service.DecompositionService;
+import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.algorithm.RecommendationForSciPy;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.similarityGenerator.SimilarityMatrices;
@@ -25,6 +22,7 @@ import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityFactory;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityMatrixSciPyDto;
+import pt.ist.socialsoftware.mono2micro.similarityGenerator.DendrogramGenerator;
 import pt.ist.socialsoftware.mono2micro.similarityGenerator.SimilarityMatrixGenerator;
 import pt.ist.socialsoftware.mono2micro.similarityGenerator.weights.AccessesWeights;
 import pt.ist.socialsoftware.mono2micro.similarityGenerator.weights.Weights;
@@ -32,14 +30,11 @@ import pt.ist.socialsoftware.mono2micro.similarityGenerator.weights.WeightsFacto
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.ForkJoinPool;
 
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces.AccessesDecomposition.ACCESSES_DECOMPOSITION;
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces.RepositoryDecomposition.REPOSITORY_DECOMPOSITION;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
 
@@ -52,14 +47,6 @@ public class RecommendMatrixSciPy extends Recommendation implements SimilarityMa
     private String linkageType;
     private List<Weights> weightsList;
     private Set<String> similarityMatricesNames;
-
-    @Transient
-    private byte[] representationBytes;
-
-    private static final List<String> implementationTypes = new ArrayList<String>() {{
-        add(SIMILARITY_MATRICES);
-        add(RECOMMENDATION_FOR_SCIPY);
-    }};
 
     public RecommendMatrixSciPy() {}
 
@@ -76,10 +63,6 @@ public class RecommendMatrixSciPy extends Recommendation implements SimilarityMa
 
     public String getType() {
         return RECOMMEND_MATRIX_SCIPY;
-    }
-
-    public List<String> getImplementations() {
-        return implementationTypes;
     }
 
     public String getProfile() {
@@ -131,12 +114,10 @@ public class RecommendMatrixSciPy extends Recommendation implements SimilarityMa
         this.weightsList = weightsList;
     }
 
-    public byte[] getRepresentationBytes() {
-        return representationBytes;
-    }
-
-    public void setRepresentationBytes(byte[] representationBytes) {
-        this.representationBytes = representationBytes;
+    @Override
+    public void deleteProperties() {
+        GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
+        gridFsService.deleteFiles(getSimilarityMatricesNames());
     }
 
     @Override
@@ -171,13 +152,13 @@ public class RecommendMatrixSciPy extends Recommendation implements SimilarityMa
     }
 
     @Override
-    public void generateRecommendation(RecommendationRepository recommendationRepository, GridFsService gridFsService) {
-        SciPyClustering clusteringAlgorithm = new SciPyClustering(gridFsService);
+    public void generateRecommendation(RecommendationRepository recommendationRepository) {
+        SciPyClustering clusteringAlgorithm = new SciPyClustering();
         clusteringAlgorithm.prepareAutowire();
         // Executes the request in a fork to avoid blocking the user
         ForkJoinPool.commonPool().submit(() -> {
             try {
-                SimilarityMatrixGenerator generator = new SimilarityMatrixGenerator(gridFsService);
+                SimilarityMatrixGenerator generator = new SimilarityMatrixGenerator();
                 generator.createSimilarityMatrices(this);
                 clusteringAlgorithm.generateMultipleDecompositions(this);
 
@@ -189,35 +170,27 @@ public class RecommendMatrixSciPy extends Recommendation implements SimilarityMa
         });
     }
 
-    public void getDecompositionPropertiesForRecommendation(GridFsService gridFsService, Decomposition decomposition) throws Exception {
-        if (decomposition.containsImplementation(ACCESSES_DECOMPOSITION)) {
-            AccessesRepresentation accesses = (AccessesRepresentation) getStrategy().getCodebase().getRepresentationByType(ACCESSES);
-            byte[] representationBytes = getRepresentationBytes();
-            if (representationBytes == null) {
-                representationBytes = IOUtils.toByteArray(gridFsService.getFile(accesses.getName()));
-                setRepresentationBytes(representationBytes);
-            }
-            ((AccessesDecomposition)decomposition).setupFunctionalities(
-                    null, null, new ByteArrayInputStream(representationBytes),
-                    getProfile(), getTracesMaxLimit(), getTraceType());
-        }
-        if (decomposition.containsImplementation(REPOSITORY_DECOMPOSITION)) {
-            ((RepositoryDecomposition) decomposition).setupAuthorsAndCommits(gridFsService);
-        }
-        // FILL DECOMPOSITION WITH SPECIFIC PROPERTIES HERE
+    @Override
+    public void getDecompositionPropertiesForRecommendation(Decomposition decomposition) throws Exception {
+        SimilarityMatrixSciPy similarity = new SimilarityMatrixSciPy(this);
+        decomposition.setSimilarity(similarity);
 
+        decomposition.setup();
         decomposition.calculateMetrics();
     }
 
+    @Override
     public void createDecompositions(
-            DecompositionService decompositionService,
-            GridFsService gridFsService,
             List<String> decompositionNames
     )
             throws Exception
     {
+        GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
+        DecompositionService decompositionService = ContextManager.get().getBean(DecompositionService.class);
+
         List<Similarity> similarities = getStrategy().getSimilarities();
-        SciPyClustering clusteringAlgorithm = new SciPyClustering(gridFsService);
+        DendrogramGenerator dendrogramGenerator = new DendrogramGenerator();
+        SciPyClustering clusteringAlgorithm = new SciPyClustering();
 
         for (String name : decompositionNames) {
             String[] properties = name.split(",");
@@ -251,7 +224,7 @@ public class RecommendMatrixSciPy extends Recommendation implements SimilarityMa
                 gridFsService.saveFile(inputStream, similarity.getSimilarityMatrixName()); // And saves it with a different name
 
                 // generate dendrogram image
-                clusteringAlgorithm.createDendrogramImage(similarity);
+                dendrogramGenerator.generateDendrogram(similarity);
             }
 
             Decomposition decomposition = DecompositionFactory.getDecomposition(similarity.getDecompositionType());

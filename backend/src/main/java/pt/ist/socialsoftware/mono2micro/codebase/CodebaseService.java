@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.codebase.repository.CodebaseRepository;
-import pt.ist.socialsoftware.mono2micro.fileManager.FileManager;
 import pt.ist.socialsoftware.mono2micro.representation.domain.Representation;
 import pt.ist.socialsoftware.mono2micro.representation.dto.RepresentationDto;
 import pt.ist.socialsoftware.mono2micro.representation.dto.RepresentationDtoFactory;
@@ -13,7 +12,6 @@ import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.strategy.service.StrategyService;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
-import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -52,13 +50,12 @@ public class CodebaseService {
         return codebase.getStrategies();
     }
 
-    public void deleteCodebase(String codebaseName) throws IOException {
+    public void deleteCodebase(String codebaseName) {
         Codebase codebase = codebaseRepository.findByName(codebaseName);
         for (Strategy strategy: codebase.getStrategies())
             strategyService.deleteStrategy(strategy);
         for (Representation representation : codebase.getRepresentations())
             representationService.deleteRepresentation(representation.getName());
-        FileManager.getInstance().deleteCodebase(codebaseName);
         codebaseRepository.deleteById(codebaseName);
     }
 }

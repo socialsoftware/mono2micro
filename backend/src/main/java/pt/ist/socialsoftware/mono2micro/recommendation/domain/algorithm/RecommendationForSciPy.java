@@ -11,13 +11,12 @@ import java.util.Map;
 import java.util.Set;
 
 public interface RecommendationForSciPy {
-    String RECOMMENDATION_FOR_SCIPY = "RECOMMENDATION_FOR_SCIPY";
     Strategy getStrategy();
     String getDecompositionType();
     String getLinkageType();
     Set<String> getSimilarityMatricesNames();
     Map<Short, String> getIDToEntityName(GridFsService gridFsService) throws Exception;
-    void getDecompositionPropertiesForRecommendation(GridFsService gridFsService, Decomposition decomposition) throws Exception;
+    void getDecompositionPropertiesForRecommendation(Decomposition decomposition) throws Exception;
     String getRecommendationResultName();
     void setCompleted(boolean completed);
     List<Weights> getWeightsList();

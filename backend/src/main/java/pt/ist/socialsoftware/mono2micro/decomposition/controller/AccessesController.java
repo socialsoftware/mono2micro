@@ -11,6 +11,7 @@ import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.Decompos
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.DecompositionDtoFactory;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.service.AccessesDecompositionService;
+import pt.ist.socialsoftware.mono2micro.decomposition.service.DecompositionService;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityService;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
@@ -26,7 +27,10 @@ public class AccessesController {
     private static final Logger logger = LoggerFactory.getLogger(AccessesController.class);
 
     @Autowired
-    AccessesDecompositionService decompositionService;
+    DecompositionService decompositionService;
+
+    @Autowired
+    AccessesDecompositionService accessesDecompositionService;
 
     @Autowired
     FunctionalityService functionalityService;
@@ -38,7 +42,8 @@ public class AccessesController {
         logger.debug("updatedAccessesSciPyDecomposition");
 
         try {
-            return new ResponseEntity<>(DecompositionDtoFactory.getFactory().getDecompositionDto(decompositionService.updateOutdatedFunctionalitiesAndMetrics(decompositionName)), HttpStatus.OK);
+            return new ResponseEntity<>(DecompositionDtoFactory.getFactory().getDecompositionDto(
+                    decompositionService.updateDecomposition(decompositionName)), HttpStatus.OK);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,7 +60,7 @@ public class AccessesController {
 
         try {
             return new ResponseEntity<>(
-                    decompositionService.getLocalTransactionGraphForFunctionality(decompositionName, functionalityName),
+                    accessesDecompositionService.getLocalTransactionGraphForFunctionality(decompositionName, functionalityName),
                     HttpStatus.OK
             );
         } catch (Exception e) {
@@ -71,7 +76,7 @@ public class AccessesController {
         logger.debug("getSearchItems");
 
         try {
-            return new ResponseEntity<>(decompositionService.getSearchItems(decompositionName), HttpStatus.OK);
+            return new ResponseEntity<>(accessesDecompositionService.getSearchItems(decompositionName), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -85,7 +90,7 @@ public class AccessesController {
         logger.debug("getFunctionalitiesAndFunctionalitiesClusters");
 
         try {
-            AccessesDecomposition decomposition = (AccessesDecomposition) decompositionService.updateOutdatedFunctionalitiesAndMetrics(decompositionName);
+            AccessesDecomposition decomposition = (AccessesDecomposition) decompositionService.updateDecomposition(decompositionName);
 
             Map<String, Set<Cluster>> functionalitiesClusters = Utils.getFunctionalitiesClusters(
                     decomposition.getEntityIDToClusterName(),
@@ -121,7 +126,7 @@ public class AccessesController {
         logger.debug("getClustersAndClustersFunctionalities");
 
         try {
-            AccessesDecomposition decomposition = (AccessesDecomposition) decompositionService.updateOutdatedFunctionalitiesAndMetrics(decompositionName);
+            AccessesDecomposition decomposition = (AccessesDecomposition) decompositionService.updateDecomposition(decompositionName);
 
             Map<String, List<Functionality>> clustersFunctionalities = Utils.getClustersFunctionalities(decomposition);
 

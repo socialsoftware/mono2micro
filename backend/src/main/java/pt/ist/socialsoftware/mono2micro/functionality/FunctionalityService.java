@@ -1,5 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.functionality;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.traverse.BreadthFirstIterator;
@@ -8,7 +10,6 @@ import org.springframework.stereotype.Service;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces.AccessesDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
-import pt.ist.socialsoftware.mono2micro.fileManager.FileManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
@@ -19,7 +20,10 @@ import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import javax.naming.NameAlreadyBoundException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -87,33 +91,47 @@ public class FunctionalityService {
         }
 
         functionalityRedesign.calculateMetrics(gridFsService, decomposition, functionality);
-        gridFsService.saveFile(FileManager.getInstance().getFunctionalityRedesignAsJSON(functionalityRedesign), functionality.getId() + functionalityRedesign.getName());
+        gridFsService.saveFile(getFunctionalityRedesignAsJSON(functionalityRedesign), functionality.getId() + functionalityRedesign.getName());
         functionality.addFunctionalityRedesign(functionalityRedesign.getName(), functionality.getId() + functionalityRedesign.getName());
         return functionalityRedesign;
+    }
+    public void saveFunctionality(Functionality functionality) {
+        functionalityRepository.save(functionality);
     }
 
     public void saveFunctionalityRedesign(Functionality functionality, FunctionalityRedesign functionalityRedesign) throws IOException {
         gridFsService.saveFile(
-                FileManager.getInstance().getFunctionalityRedesignAsJSON(functionalityRedesign),
+                getFunctionalityRedesignAsJSON(functionalityRedesign),
                 functionality.getId() + functionalityRedesign.getName()
         );
     }
 
     public void updateFunctionalityRedesign(Functionality functionality, FunctionalityRedesign functionalityRedesign) throws IOException {
         gridFsService.replaceFile(
-                FileManager.getInstance().getFunctionalityRedesignAsJSON(functionalityRedesign),
+                getFunctionalityRedesignAsJSON(functionalityRedesign),
                 functionality.getId() + functionalityRedesign.getName()
         );
     }
 
+    public static InputStream getFunctionalityRedesignAsJSON(FunctionalityRedesign functionalityRedesign) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        new ObjectMapper().writeValue(outputStream, functionalityRedesign);
+        return new ByteArrayInputStream(outputStream.toByteArray());
+    }
+
     public FunctionalityRedesign getFunctionalityRedesign(Functionality functionality, String redesignName) throws IOException {
-        return FileManager.getInstance().getFunctionalityRedesign(gridFsService.getFile(functionality.getFunctionalityRedesignFileName(redesignName)));
+        return getFunctionalityRedesign(gridFsService.getFile(functionality.getFunctionalityRedesignFileName(redesignName)));
+    }
+
+    public FunctionalityRedesign getFunctionalityRedesign(InputStream inputStream) throws IOException {
+        ObjectReader reader = new ObjectMapper().readerFor(FunctionalityRedesign.class);
+        return reader.readValue(inputStream);
     }
 
     public List<FunctionalityRedesign> getFunctionalityRedesigns(Functionality functionality) {
         return functionality.getFunctionalityRedesigns().values().stream().map(fileName -> {
             try {
-                return FileManager.getInstance().getFunctionalityRedesign(gridFsService.getFile(fileName));
+                return getFunctionalityRedesign(gridFsService.getFile(fileName));
             } catch (IOException e) { throw new RuntimeException(e); }
         }).collect(Collectors.toList());
     }
