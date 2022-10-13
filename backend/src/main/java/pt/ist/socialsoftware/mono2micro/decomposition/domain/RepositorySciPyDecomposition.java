@@ -65,7 +65,6 @@ public class RepositorySciPyDecomposition extends Decomposition implements SciPy
         this.commitsInCommon = decomposition.getCommitsInCommon();
         this.totalCommits = decomposition.getTotalCommits();
         this.totalAuthors = decomposition.getTotalAuthors();
-        this.history = new PositionHistory(this);
     }
 
     @Override
@@ -146,6 +145,7 @@ public class RepositorySciPyDecomposition extends Decomposition implements SciPy
 
     public void setup() throws IOException {
         setupAuthorsAndCommits();
+        this.history = new PositionHistory(this);
     }
 
     public void update() {}
@@ -160,25 +160,25 @@ public class RepositorySciPyDecomposition extends Decomposition implements SciPy
         ClusterViewMergeOperation mergeOperation = (ClusterViewMergeOperation) operation;
         mergeOperation.addEntities(this); // needed so that when doing undo, the original entities are restored
         clusterViewMerge(operation.getCluster1Name(), operation.getCluster2Name(), operation.getNewName());
-        setOutdated(true);
+        //setOutdated(true);
     }
 
     public void splitCluster(SplitOperation operation) {
         ClusterViewSplitOperation mergeOperation = (ClusterViewSplitOperation) operation;
         clusterViewSplit(mergeOperation.getOriginalCluster(), mergeOperation.getNewCluster(), mergeOperation.getEntities());
-        setOutdated(true);
+        //setOutdated(true);
     }
 
     public void transferEntities(TransferOperation operation) {
         ClusterViewTransferOperation transferOperation = (ClusterViewTransferOperation) operation;
         clusterViewTransfer(transferOperation.getFromCluster(), transferOperation.getToCluster(), transferOperation.getEntities());
-        setOutdated(true);
+        //setOutdated(true);
     }
 
     public void formCluster(FormClusterOperation operation) {
         ClusterViewFormClusterOperation formClusterOperation = (ClusterViewFormClusterOperation) operation;
         clusterViewFormCluster(formClusterOperation.getNewCluster(), formClusterOperation.getEntities());
-        setOutdated(true);
+        //setOutdated(true);
     }
 
     public void undoOperation(Operation operation) {

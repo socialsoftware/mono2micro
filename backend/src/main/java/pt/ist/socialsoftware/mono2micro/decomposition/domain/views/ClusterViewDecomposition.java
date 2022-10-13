@@ -160,7 +160,7 @@ public interface ClusterViewDecomposition {
         }
         else if (operation.getOperationType().equals(CLUSTER_VIEW_SPLIT)) {
             ClusterViewSplitOperation splitOperation = (ClusterViewSplitOperation) operation;
-            mergeClusters(new ClusterViewMergeOperation(splitOperation.getOperationType(), splitOperation.getNewCluster(), splitOperation.getOriginalCluster()));
+            mergeClusters(new ClusterViewMergeOperation(splitOperation.getOriginalCluster(), splitOperation.getNewCluster(), splitOperation.getOriginalCluster()));
         }
         else if (operation.getOperationType().equals(CLUSTER_VIEW_TRANSFER)) {
             ClusterViewTransferOperation transferOperation = (ClusterViewTransferOperation) operation;
@@ -169,7 +169,7 @@ public interface ClusterViewDecomposition {
         else if (operation.getOperationType().equals(CLUSTER_VIEW_FORM)) {
             ClusterViewFormClusterOperation formClusterOperation = (ClusterViewFormClusterOperation) operation;
             formClusterOperation.getEntities().forEach((clusterName, entitiesID) -> {
-                Cluster toCluster = getCluster(clusterName);
+                Cluster toCluster = getClusters().get(clusterName);
                 if (toCluster == null) // If there is no cluster, the operation is a split, if there is, it is a transfer
                     splitCluster(new ClusterViewSplitOperation(formClusterOperation.getNewCluster(), clusterName, entitiesID.stream().map(Object::toString).collect(Collectors.joining(","))));
                 else
@@ -188,7 +188,7 @@ public interface ClusterViewDecomposition {
         else if (operation.getOperationType().equals(CLUSTER_VIEW_SPLIT))
             splitCluster((SplitOperation) operation);
         else if (operation.getOperationType().equals(CLUSTER_VIEW_TRANSFER))
-            splitCluster((SplitOperation) operation);
+            transferEntities((TransferOperation) operation);
         else if (operation.getOperationType().equals(CLUSTER_VIEW_FORM))
             formCluster((FormClusterOperation) operation);
     }

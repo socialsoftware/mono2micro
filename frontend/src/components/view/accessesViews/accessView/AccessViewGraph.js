@@ -300,7 +300,7 @@ export const AccessViewGraph = ({setNow, outdated, setOutdated, searchedItem, se
                 break;
             case DIALOG_TYPE.TRANSFER:
                 promise = service.transferEntities(decompositionName, {
-                    type: OperationTypes.ACCESSES_TRANSFER,
+                    type: OperationTypes.CLUSTER_VIEW_TRANSFER,
                     fromCluster: clickedComponent.node.id,
                     toCluster: clickedComponent.toNode.id,
                     entities: dialogResponse.elements.toString()});
@@ -314,7 +314,7 @@ export const AccessViewGraph = ({setNow, outdated, setOutdated, searchedItem, se
                 break;
             case DIALOG_TYPE.MERGE:
                 promise = service.mergeClusters(decompositionName, {
-                    type: OperationTypes.ACCESSES_MERGE,
+                    type: OperationTypes.CLUSTER_VIEW_MERGE,
                     cluster1Name: clickedComponent.node.id,
                     cluster2Name: clickedComponent.toNode.id,
                     newName: dialogResponse.newName});
@@ -328,7 +328,7 @@ export const AccessViewGraph = ({setNow, outdated, setOutdated, searchedItem, se
                 break;
             case DIALOG_TYPE.SPLIT:
                 promise = service.splitCluster(decompositionName, {
-                    type: OperationTypes.ACCESSES_SPLIT,
+                    type: OperationTypes.CLUSTER_VIEW_SPLIT,
                     originalCluster: clickedComponent.node.id,
                     newCluster: dialogResponse.newName,
                     entities: dialogResponse.elements.toString()});
@@ -342,7 +342,7 @@ export const AccessViewGraph = ({setNow, outdated, setOutdated, searchedItem, se
                 break;
             case DIALOG_TYPE.FORM_CLUSTER:
                 promise = service.formCluster(decompositionName, {
-                    type: OperationTypes.ACCESSES_FORM,
+                    type: OperationTypes.CLUSTER_VIEW_FORM,
                     newCluster: dialogResponse.newName,
                     entities: dialogResponse.elements});
                 toastId = toast.promise(promise, {

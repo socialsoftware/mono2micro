@@ -71,7 +71,6 @@ public class AccAndRepoSciPyDecomposition extends Decomposition implements SciPy
         this.commitsInCommon = decomposition.getCommitsInCommon();
         this.totalCommits = decomposition.getTotalCommits();
         this.totalAuthors = decomposition.getTotalAuthors();
-        this.history = new PositionHistory(this);
     }
 
     @Override
@@ -162,6 +161,7 @@ public class AccAndRepoSciPyDecomposition extends Decomposition implements SciPy
     public void setup() throws Exception {
         setupFunctionalities();
         setupAuthorsAndCommits();
+        this.history = new PositionHistory(this);
     }
 
     public void update() throws Exception {

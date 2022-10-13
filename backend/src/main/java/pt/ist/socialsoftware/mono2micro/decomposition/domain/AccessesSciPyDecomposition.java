@@ -58,7 +58,6 @@ public class AccessesSciPyDecomposition extends Decomposition implements SciPyDe
         this.expert = decomposition.isExpert();
         this.silhouetteScore = decomposition.getSilhouetteScore();
         this.clusters = decomposition.getClusters();
-        this.history = new PositionHistory(this);
     }
 
     @Override
@@ -108,6 +107,7 @@ public class AccessesSciPyDecomposition extends Decomposition implements SciPyDe
 
     public void setup() throws Exception {
         setupFunctionalities();
+        this.history = new PositionHistory(this);
     }
 
     public void update() throws Exception {

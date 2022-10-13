@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { FunctionalityView, functionalityViewHelp } from './functionalityView/FunctionalityView';
 import Popover from 'react-bootstrap/Popover';
 import Container from 'react-bootstrap/Container';
@@ -21,10 +21,10 @@ export const views = {
 
 export const OperationTypes = {
     RENAME: "Rename",
-    ACCESSES_MERGE: "AccessesMerge",
-    ACCESSES_FORM: "AccessesForm",
-    ACCESSES_SPLIT: "AccessesSplit",
-    ACCESSES_TRANSFER: "AccessesTransfer",
+    CLUSTER_VIEW_MERGE: "ClusterViewMerge",
+    CLUSTER_VIEW_FORM: "ClusterViewForm",
+    CLUSTER_VIEW_SPLIT: "ClusterViewSplit",
+    CLUSTER_VIEW_TRANSFER: "ClusterViewTransfer",
 };
 
 export const Views = () => {
