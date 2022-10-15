@@ -1,8 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {RepositoryService} from '../../../../services/RepositoryService';
-import {VisNetwork} from '../../../util/VisNetwork';
+import {APIService} from '../../../../services/APIService';
+import {VisNetwork} from '../../utils/VisNetwork';
 import { DataSet } from "vis-network/standalone";
-import {views} from '../Views';
 import BootstrapTable from 'react-bootstrap-table-next';
 import CardGroup from 'react-bootstrap/CardGroup';
 import Button from 'react-bootstrap/Button';
@@ -15,15 +14,16 @@ import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 
 import {FunctionalityRedesignMenu, redesignOperations} from './FunctionalityRedesignMenu';
-import {ModalMessage} from "../../../util/ModalMessage";
+import {ModalMessage} from "../../utils/ModalMessage";
 import {DEFAULT_REDESIGN_NAME} from "../../../../constants/constants";
 import {FunctionalityOperationsMenu} from "./FunctionalityOperationsMenu";
 import AppContext from "../../../AppContext";
 import {useParams} from "react-router-dom";
 import {MetricType} from "../../../../type-declarations/types.d";
-import {searchType} from "../ViewSearchBar";
+import {searchType} from "../../utils/ViewSearchBar";
 import {Analytics, BubbleChart, Edit, Hub, List, Search} from "@mui/icons-material";
 import {types} from "../../utils/GraphUtils";
+import {views} from "../AccessesViews";
 
 const HttpStatus = require('http-status-codes');
 
@@ -271,7 +271,7 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
     },[searchedItem]);
 
     function loadFunctionalitiesAndFunctionalitiesClusters() {
-        const service = new RepositoryService();
+        const service = new APIService();
 
         service.getFunctionalitiesAndFunctionalitiesClusters(decompositionName).then(response => {
             setFunctionalitiesClusters(response.data.functionalitiesClusters);
@@ -291,7 +291,7 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
     function loadGraph(currentFunctionality) {
         createTransactionDiagram(currentFunctionality);
 
-        const service = new RepositoryService();
+        const service = new APIService();
 
         service.getLocalTransactionsGraphForFunctionality(
             decompositionName,
@@ -544,7 +544,7 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
     }
 
     function handleSubmit(value){
-        const service = new RepositoryService();
+        const service = new APIService();
 
         switch (selectedOperation) {
             case redesignOperations.AC:
@@ -753,7 +753,7 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
     }
 
     function handleUseForMetrics(value){
-        const service = new RepositoryService();
+        const service = new APIService();
         service.setUseForMetrics(decompositionName, functionality.name, value.name)
             .then(response => {
                 const tempFunctionalities = functionalities;
@@ -774,7 +774,7 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
     }
 
     function handleDeleteRedesign(value){
-        const service = new RepositoryService();
+        const service = new APIService();
         service.deleteRedesign(decompositionName, functionality.name, value.name)
             .then(response => {
                 const tempFunctionalities = functionalities;

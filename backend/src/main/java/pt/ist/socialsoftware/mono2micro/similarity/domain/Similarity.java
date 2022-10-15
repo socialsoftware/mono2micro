@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 public abstract class Similarity {
     @Id
     private String name;
-    private String decompositionType; //TODO usar o decompositionType da strategy
     @DBRef
     private Strategy strategy;
     @DBRef(lazy = true)
@@ -27,14 +26,6 @@ public abstract class Similarity {
     }
 
     public abstract String getType();
-
-    public String getDecompositionType() {
-        return decompositionType;
-    }
-
-    public void setDecompositionType(String decompositionType) {
-        this.decompositionType = decompositionType;
-    }
 
     public Strategy getStrategy() {
         return strategy;

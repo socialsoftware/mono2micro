@@ -1,11 +1,8 @@
-package pt.ist.socialsoftware.mono2micro.analysis.service;
+package pt.ist.socialsoftware.mono2micro.analysis.domain;
 
-import org.springframework.stereotype.Service;
-import pt.ist.socialsoftware.mono2micro.analysis.dto.AccessesSciPyAnalysisDto;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
+import pt.ist.socialsoftware.mono2micro.analysis.dto.interfaces.MoJoProperties;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
-import pt.ist.socialsoftware.mono2micro.analysis.dto.AnalysisDto;
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.AccessesSciPyDecompositionDto;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.utils.mojoCalculator.src.main.java.MoJo;
 
 import java.io.File;
@@ -18,18 +15,9 @@ import java.util.stream.Collectors;
 
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.MOJO_RESOURCES_PATH;
 
-@Service
-public class AccessesSciPyAnalysisService {
+public class MoJoCalculations {
 
-    public AnalysisDto getAnalysis(AccessesSciPyDecomposition decomposition1, AccessesSciPyDecomposition decomposition2) throws IOException {
-        AccessesSciPyAnalysisDto analysis = new AccessesSciPyAnalysisDto();
-        analysis.setDecomposition1(new AccessesSciPyDecompositionDto(decomposition1));
-        analysis.setDecomposition2(new AccessesSciPyDecompositionDto(decomposition2));
-
-        //if (analysis.getDecomposition1().getCodebaseName() == null) { // no expert cut from frontend
-        //	return analysis;
-        //}
-
+    public static void getAnalysis(MoJoProperties analysis, Decomposition decomposition1, Decomposition decomposition2) throws IOException {
         Map<String, Set<Short>> decomposition1ClusterEntities = new HashMap<>();
         for (Cluster cluster : decomposition1.getClusters().values()) {
             decomposition1ClusterEntities.put(cluster.getName(), cluster.getElementsIDs());
@@ -227,11 +215,9 @@ public class AccessesSciPyAnalysisService {
         analysis.setMojoBiggest(mojoValueUnassignedInBiggest);
         analysis.setMojoNew(mojoValueUnassignedInNew);
         analysis.setMojoSingletons(mojoValueUnassignedInSingletons);
-
-        return analysis;
     }
 
-    private Map<String, Set<Short>> decompositionCopyOf(Map<String, Set<Short>> decomposition) {
+    private static Map<String, Set<Short>> decompositionCopyOf(Map<String, Set<Short>> decomposition) {
         HashMap<String, Set<Short>> copy = new HashMap<>();
 
         for (Map.Entry<String, Set<Short>> entry : decomposition.entrySet())
@@ -243,7 +229,7 @@ public class AccessesSciPyAnalysisService {
         return copy;
     }
 
-    private double getMojoValue(
+    private static double getMojoValue(
             Map<String, Set<Short>> decomposition1ClusterEntities,
             Map<String, Set<Short>> decomposition2,
             Set<Short> entities

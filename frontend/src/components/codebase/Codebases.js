@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { RepositoryService } from '../../services/RepositoryService';
+import { APIService } from '../../services/APIService';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
@@ -20,7 +20,7 @@ export const Codebases = () => {
     useEffect(() => loadCodebases(), []);
 
     function loadCodebases() {
-        const service = new RepositoryService();
+        const service = new APIService();
         service.getCodebases().then(response => {
             setCodebases(response);
         });
@@ -32,7 +32,7 @@ export const Codebases = () => {
 
     function handleDeleteCodebase(codebaseName) {
         let toastId = toast.loading("Deleting codebase information...", {type: toast.TYPE.INFO});
-        const service = new RepositoryService();
+        const service = new APIService();
         service.deleteCodebase(codebaseName).then(() => {
             loadCodebases();
             toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Codebase deleted.", isLoading: false});
@@ -77,7 +77,7 @@ export const Codebases = () => {
 
         setIsCreated("Creating...");
 
-        const service = new RepositoryService();
+        const service = new APIService();
         service.createCodebase(newCodebaseName)
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {

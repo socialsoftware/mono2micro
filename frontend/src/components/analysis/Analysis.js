@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { RepositoryService } from '../../services/RepositoryService';
+import { APIService } from '../../services/APIService';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
@@ -7,7 +7,7 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Button from 'react-bootstrap/Button';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
-import {AccessesSciPyAnalysis} from "./implementations/AccessesSciPyAnalysis";
+import {DefaultAnalysis} from "./implementations/DefaultAnalysis";
 
 const HttpStatus = require('http-status-codes');
 
@@ -23,14 +23,14 @@ export const Analysis = () => {
     useEffect(() => loadCodebases(), []);
 
     function loadCodebases() {
-        const service = new RepositoryService();
+        const service = new APIService();
         service.getCodebases().then(response => {
             setCodebases(response);
         });
     }
 
     function loadCodebaseDecompositions(codebaseName) {
-        const service = new RepositoryService();
+        const service = new APIService();
         
         service.getCodebaseDecompositions(
             codebaseName
@@ -60,7 +60,7 @@ export const Analysis = () => {
 
         setIsUploaded("Uploading...");
 
-        const service = new RepositoryService();
+        const service = new APIService();
         service.analysis(decomposition1.name, decomposition2.name)
             .then(response => {
                 if (response.status === HttpStatus.OK) {
@@ -222,13 +222,10 @@ export const Analysis = () => {
 
             {/*ADD ADDITIONAL COMPARISONS HERE*/}
 
-            {decomposition1.length !== 0 && decomposition1.type === StrategyType.ACCESSES_SCIPY &&
-                decomposition2.length !== 0 && decomposition2.type === StrategyType.ACCESSES_SCIPY &&
-                <AccessesSciPyAnalysis
+            {resultData.type === "DEFAULT_ANALYSIS_DTO" &&
+                <DefaultAnalysis
                     codebaseName={codebase.name}
                     resultData={resultData}
-                    decomposition1={decomposition1}
-                    decomposition2={decomposition2}
                 />
             }
         </div>

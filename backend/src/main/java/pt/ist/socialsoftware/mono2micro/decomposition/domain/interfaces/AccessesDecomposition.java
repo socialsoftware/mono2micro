@@ -1,5 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces;
 
+import com.mongodb.util.JSON;
 import org.apache.commons.io.IOUtils;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
@@ -156,8 +157,9 @@ public interface AccessesDecomposition {
         gridFsService.deleteFile(getName() + "_refactorization");
     }
 
-    default String getEdgeWeightsFromAccesses(GridFsService gridFsService) throws JSONException, IOException {
+    default String getEdgeWeightsFromAccesses() throws JSONException, IOException {
         Dendrogram similarity = (Dendrogram) getSimilarity();
+        GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
         JSONArray copheneticDistances = new JSONArray(IOUtils.toString(gridFsService.getFile(similarity.getCopheneticDistanceName()), StandardCharsets.UTF_8));
 
         ArrayList<Short> entities = new ArrayList<>(getEntityIDToClusterName().keySet());
@@ -216,6 +218,40 @@ public interface AccessesDecomposition {
         if (node1 < node2)
             return node1 + "&" + node2;
         return node2 + "&" + node1;
+    }
+
+    default String getSearchItemsFromAccesses() throws JSONException {
+        JSONArray searchItems = new JSONArray();
+
+        for (Cluster cluster : getClusters().values()) {
+            JSONObject clusterItem = new JSONObject();
+            clusterItem.put("name", cluster.getName());
+            clusterItem.put("type", "Cluster");
+            clusterItem.put("id", cluster.getName());
+            clusterItem.put("entities", Integer.toString(cluster.getElements().size()));
+            searchItems.put(clusterItem);
+
+            for (Element element : cluster.getElements()) {
+                JSONObject entityItem = new JSONObject();
+                entityItem.put("name", element.getName());
+                entityItem.put("type", "Entity");
+                entityItem.put("id", String.valueOf(element.getId()));
+                entityItem.put("cluster", cluster.getName());
+                searchItems.put(entityItem);
+            }
+        }
+
+        for (Functionality functionality : getFunctionalities().values()) {
+            JSONObject functionalityItem = new JSONObject();
+            functionalityItem.put("name", functionality.getName());
+            functionalityItem.put("type", "Functionality");
+            functionalityItem.put("id", functionality.getName());
+            functionalityItem.put("entities", Integer.toString(functionality.getEntities().size()));
+            functionalityItem.put("funcType", functionality.getType().toString());
+            searchItems.put(functionalityItem);
+        }
+
+        return searchItems.toString();
     }
 
     default void copyFunctionalities(FunctionalityService functionalityService, AccessesDecomposition snapshotDecomposition) throws IOException {

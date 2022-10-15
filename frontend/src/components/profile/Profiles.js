@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { RepositoryService } from '../../services/RepositoryService';
+import { APIService } from '../../services/APIService';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
@@ -25,7 +25,7 @@ export const Profiles = () => {
     useEffect(() => loadRepresentation(), []);
 
     function loadRepresentation() {
-        const service = new RepositoryService();
+        const service = new APIService();
         service.getRepresentation(representationName).then(response => {
             setRepresentation(response === null ? {} : response);
         });
@@ -40,7 +40,7 @@ export const Profiles = () => {
 
         setIsUploaded("Uploading...");
 
-        const service = new RepositoryService();
+        const service = new APIService();
         service.addAccessesProfile(representationName, newProfileName).then(response => {
             if (response.status === HttpStatus.OK) {
                 loadRepresentation();
@@ -63,7 +63,7 @@ export const Profiles = () => {
     }
 
     function handleMoveFunctionalitiesSubmit() {
-        const service = new RepositoryService();
+        const service = new APIService();
 
         service.moveAccessesFunctionalities(
             representationName,
@@ -76,7 +76,7 @@ export const Profiles = () => {
     }
 
     function handleDeleteProfile(profile) {
-        const service = new RepositoryService();
+        const service = new APIService();
 
         service.deleteAccessesProfile(
             representationName,

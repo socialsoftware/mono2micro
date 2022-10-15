@@ -1,68 +1,60 @@
-import React, {createRef, useEffect, useState} from "react";
-import {RepositoryService} from "../../../../services/RepositoryService";
+import React, {useEffect, useState} from "react";
+import {APIService} from "../../../services/APIService";
 import {toast, ToastContainer} from "react-toastify";
 import HttpStatus from "http-status-codes";
-import {useParams} from "react-router-dom";
-import {CancelPresentation, Redo, Search, TableView, Timeline, Undo} from "@mui/icons-material";
 import {DataSet, Network} from "vis-network/standalone";
-import {OperationTypes, views} from "../Views";
-import {OPERATION} from "../../../../constants/constants";
-import {RightClickMenu} from "../../utils/RightClickMenu";
-import {AccessViewDialogs, DIALOG_TYPE} from "./AccessViewDialogs";
-import {AccessViewModal} from "./AccessViewModal";
-import {AccessViewMetricTable} from "./AccessViewMetricTable";
-import {searchType} from "../ViewSearchBar";
+import {OPERATION} from "../../../constants/constants";
+import {searchType} from "./ViewSearchBar";
 import {
     collapseAll,
     collapseCluster,
     createCluster,
     expandAll,
     expandCluster,
-    generateAllEdges,
-    generateNewAndAffectedEdges,
-    getRelatedNodesAndEdges,
+    generateAllEdges, generateNewAndAffectedEdges, getRelatedNodesAndEdges,
     networkOptions,
     types
-} from "../../utils/GraphUtils";
+} from "./GraphUtils";
+import {useParams} from "react-router-dom";
+import {RightClickMenu} from "./RightClickMenu";
+import {ClusterViewDialogs, DIALOG_TYPE} from "./ClusterViewDialogs";
+import Container from "react-bootstrap/Container";
 
-export const clusterViewHelp = (<div>
-    Double click a node to see its properties.<br />
-    Double click an edge to see functionalities and dependencies.<br />
-    Right click in a node to begin a modification.<br />
-    Other operations are also available when<br />
-    right-clicking the background or the edges.<br />
-    Check cluster metrics by clicking in the<br />
-    speed dial (bottom right).<br />
-    Search specific entity/cluster/functionality<br />
-    in the speed dial.<br />
-    Jump directly to functionalities in the<br />
-    speed dial.<br />
-    Also undo/redo operations on the speed dial<br />
-    To select multiple nodes, leave the mouse
-    button pressed or use "Ctrl+click" to add nodes.
-    Then right click to see available operations.<br />
-</div>);
+export const OperationTypes = {
+    RENAME: "Rename",
+    CLUSTER_VIEW_MERGE: "ClusterViewMerge",
+    CLUSTER_VIEW_FORM: "ClusterViewForm",
+    CLUSTER_VIEW_SPLIT: "ClusterViewSplit",
+    CLUSTER_VIEW_TRANSFER: "ClusterViewTransfer",
+};
 
-export const AccessViewGraph = ({setNow, outdated, setOutdated, searchedItem, setSearchedItem, changeToFunctionalities, setOpenSearch, setActions, view}) => {
-    const appRef = createRef();
+export const ClusterView = (
+    {
+        property,
+        reloadPositions,
+        setReloadPositions,
+        clickedComponent,
+        setClickedComponent,
+        clusters,
+        setClusters,
+        edgeWeights,
+        setNow,
+        setOutdated,
+        searchedItem,
+        setSearchedItem,
+        setShowModal
+}) => {
+    const container = document.getElementById("network");
     let { decompositionName } = useParams();
     const [operations, setOperations] = useState([]);
-    const [clusters, setClusters] = useState(undefined);
 
-    const [clustersFunctionalities, setClustersFunctionalities] = useState({});
-    const [edgeWeights, setEdgeWeights] = useState([]);
     const [graphPositions, setGraphPositions] = useState(undefined);
-    const [stabilizationProgress, setStabilizationProgress] = useState(undefined);
 
-    const [updateGraphVis, setUpdateGraphVis] = useState({});
     const [visGraph, setVisGraph] = useState({});
     const [network, setNetwork] = useState({});
-    const [showModal, setShowModal] = useState(false);
-    const [showTable, setShowTable] = useState(false);
-    const [reload, setReload] = useState(undefined);
+    const [stabilizationProgress, setStabilizationProgress] = useState(undefined);
 
     const [menuCoordinates, setMenuCoordinates] = useState(undefined);
-    const [clickedComponent, setClickedComponent] = useState(undefined);
     const [selectNodeEvent, setSelectNodeEvent] = useState(undefined);
     const [rightClickEvent, setRightClickEvent] = useState(undefined);
     const [doubleClickEvent, setDoubleClickEvent] = useState(undefined);
@@ -87,52 +79,9 @@ export const AccessViewGraph = ({setNow, outdated, setOutdated, searchedItem, se
         ]);
     }
 
-    const speedDialActions = [
-        { icon: <Search/>, name: 'Search Element', handler: () => setOpenSearch(true) },
-        { icon: <Undo/>, name: 'Undo', handler: handleUndo },
-        { icon: <Redo/>, name: 'Redo', handler: handleRedo },
-        { icon: <CancelPresentation/>, name: 'Go to Top', handler: handleScrollTop },
-        { icon: <TableView/>, name: 'Go to Metrics' , handler: handleScrollBottom },
-        { icon: <Timeline/>, name: 'Go to Functionalities', handler: changeToFunctionalities },
-    ];
-
-    function handleScrollTop() { changeSpeedDial(false); setShowTable(false); }
-
-    function handleScrollBottom() { changeSpeedDial(true); setShowTable(true); }
-
-    function handleUndo() {
-        const service = new RepositoryService();
-        service.undoOperation(decompositionName).then(() => {
-            service.getClusters(decompositionName).then(response => {
-                setClusters(Object.values(response.data));
-            });
-            setOutdated(true);
-            setReload({});
-        });
-    }
-
-    function handleRedo() {
-        const service = new RepositoryService();
-        service.redoOperation(decompositionName).then(() => {
-            service.getClusters(decompositionName).then(response => {
-                setClusters(Object.values(response.data));
-            });
-            setOutdated(true);
-            setReload({});
-        });
-    }
-
-    useEffect(() => {
-        if (reload !== undefined) {
-            getGraphPositions(decompositionName);
-            changeSpeedDial(showTable);
-            setReload(undefined);
-        }
-    }, [reload]);
-
     function getGraphPositions(decompositionName) {
         let toastId = toast.loading("Constructing graph...", {type: toast.TYPE.INFO});
-        const service = new RepositoryService();
+        const service = new APIService();
         service.getGraphPositions(decompositionName).then(response => {
             restoreGraph(response.data.nodes, response.data.edges);
             setGraphPositions(response.data);
@@ -140,45 +89,25 @@ export const AccessViewGraph = ({setNow, outdated, setOutdated, searchedItem, se
         }).catch(error => {
             if (error.response !== undefined && error.response.status === HttpStatus.NOT_FOUND) {
                 const nodes = clusters.flatMap(cluster => createCluster(cluster));
-                const edges = generateAllEdges(edgeWeights, "functionalities", nodes);
+                const edges = generateAllEdges(edgeWeights, property, nodes);
                 restoreGraph(nodes, edges);
                 toast.dismiss(toastId);
             } else toast.update(toastId, {type: toast.TYPE.ERROR, render: "Failed Graph Construction", isLoading: false});
         });
     }
 
+    useEffect(() => {
+        if (reloadPositions !== undefined) {
+            getGraphPositions(decompositionName);
+            setReloadPositions(undefined);
+        }
+    }, [reloadPositions]);
+
     function restoreGraph(nodes, edges) {
         visGraph.nodes.remove(visGraph.nodes.get().map(node => node.id));
         visGraph.edges.remove(visGraph.edges.get().map(edge => edge.id));
         visGraph.nodes.add(nodes);
         visGraph.edges.add(edges);
-    }
-
-    useEffect(() => {
-        if (showTable) window.scrollTo(0, document.body.scrollHeight);
-        else window.scrollTo(0, 0);
-    }, [showTable]);
-
-    useEffect(() => {
-        if (view === views.CLUSTERS)
-            changeSpeedDial(showTable);
-    }, [view]);
-
-    function changeSpeedDial(showTable) {
-        setActions(speedDialActions);
-        const service = new RepositoryService();
-        service.canUndoRedo(decompositionName).then(response => {
-            setActions(actions => [...actions.filter(action => action.name !== "Undo" && action.name !== "Redo")]);
-            if (response.data["undo"])
-                setActions(actions => [...actions, {icon: <Undo/>, name: 'Undo', handler: handleUndo}]);
-            if (response.data["redo"])
-                setActions(actions => [...actions, {icon: <Redo/>, name: 'Redo', handler: handleRedo}]);
-        });
-
-        setActions(actions => [...actions.filter(action => action.name !== "Go to Top" && action.name !== "Go to Metrics")]);
-        if (showTable === true)
-            setActions(actions => [...actions, { icon: <CancelPresentation/>, name: 'Go to Top', handler: handleScrollTop }]);
-        else setActions(actions => [...actions, { icon: <TableView/>, name: 'Go to Metrics' , handler: handleScrollBottom }]);
     }
 
     useEffect(() => {
@@ -214,73 +143,27 @@ export const AccessViewGraph = ({setNow, outdated, setOutdated, searchedItem, se
         }
     }, [searchedItem]);
 
-    function loadClustersAndClustersFunctionalities() {
-        const service = new RepositoryService();
-        service.getClustersAndClustersFunctionalities(decompositionName).then(response => {
-            setClusters(Object.values(response.data.clusters).sort((a, b) => a.name - b.name));
-            setClustersFunctionalities(response.data.clustersFunctionalities);
-            setOutdated(false);
-        });
-    }
-
     useEffect(() => {
-        if (outdated) {
-            setClustersFunctionalities({});
-
-            if (view === views.CLUSTERS && showTable) // Avoid information mismatch in metric table
-                loadClustersAndClustersFunctionalities();
-            else setShowTable(false);
-        }
-    }, [outdated]);
-
-    useEffect(() => {
-        if ((outdated || Object.keys(clustersFunctionalities).length === 0) && (showModal || showTable))
-            loadClustersAndClustersFunctionalities();
-    }, [showModal, showTable]);
-
-    // This will only be executed once variable clusters is set and only runs once during the entire execution
-    useEffect(() => {
-        const service = new RepositoryService();
-
-        // Loads decomposition's properties
-        service.getClustersAndClustersFunctionalities(decompositionName).then(response => {
-            setNow(prev => prev + 20);
-            setClusters(Object.values(response.data.clusters).sort((a, b) => a.name - b.name));
-            setClustersFunctionalities(response.data.clustersFunctionalities);
-            setOutdated(false);
-
-            // Entities
-            const first = service.getEdgeWeights(decompositionName, "ACCESSES_DECOMPOSITION").then(response => {
-                setNow(prev => prev + 10);
-                setEdgeWeights(response.data);
-            });
-
-            // Entity and cluster positions
-            const second = service.getGraphPositions(decompositionName).then(response => {
+        if (clusters !== undefined && edgeWeights !== undefined && Object.keys(visGraph).length === 0) { // Only sets up one time
+            const service = new APIService();
+            service.getGraphPositions(decompositionName).then(response => {
                 setNow(prev => prev + 10);
                 setGraphPositions(response.data);
+                updateNetwork(response.data);
             }).catch(error => {
                 if (error.response !== undefined && error.response.status === HttpStatus.NOT_FOUND)
                     toast.info("No previous positions saved.");
                 else toast.error("Loading previous positions failed.");
-                setGraphPositions(undefined)});
-
-            // Waits for both requests to be fulfilled
-            Promise.all([first, second]).then(() => setUpdateGraphVis({}));
-        }).catch(error =>
-            console.error("Error during decomposition update.", error)
-        );
-    }, []);
-
-    useEffect(() => {
-        if (clusters !== undefined && edgeWeights.length !== 0 && Object.keys(visGraph).length === 0) // Only sets up one time
-            updateNetwork();
-    }, [updateGraphVis]);
+                setGraphPositions(undefined);
+                updateNetwork();
+            });
+        }
+    }, [clusters, edgeWeights]);
 
     useEffect(() => {
         if (dialogResponse === undefined) return;
 
-        const service = new RepositoryService();
+        const service = new APIService();
         let promise, toastId, response;
 
         setNow(prev => prev + 10);
@@ -362,7 +245,6 @@ export const AccessViewGraph = ({setNow, outdated, setOutdated, searchedItem, se
             setGraphPositions(undefined);
             setStabilizationProgress("stabilizing");
             setNow(0);
-            changeSpeedDial(showTable);
             defaultOperations();
         }).catch(error => {
             if (error.response.status === HttpStatus.UNAUTHORIZED) {
@@ -379,13 +261,13 @@ export const AccessViewGraph = ({setNow, outdated, setOutdated, searchedItem, se
     }, [dialogResponse]);
 
 
-function updateNetwork() {
+    function updateNetwork(graphPositions = undefined) {
         let toastId;
         try {
-            let visGraph, corruptedSave = false;
+            let newVisGraph, corruptedSave = false;
 
             // Check for the existence of a corrupted save
-            if (graphPositions !== undefined) {
+            if (graphPositions !== undefined && graphPositions.property === property) {
                 graphPositions.nodes.forEach(node => {
                     if (corruptedSave) return;
                     if (node.type === types.CLUSTER) {
@@ -404,19 +286,18 @@ function updateNetwork() {
 
             if (graphPositions === undefined || corruptedSave === true) {
                 const nodes = clusters.flatMap(cluster => createCluster(cluster));
-                const edges = generateAllEdges(edgeWeights, "functionalities", nodes);
+                const edges = generateAllEdges(edgeWeights, property, nodes);
 
-                visGraph = { nodes: new DataSet(nodes), edges: new DataSet(edges) };
+                newVisGraph = { nodes: new DataSet(nodes), edges: new DataSet(edges) };
                 setGraphPositions(undefined);
             }
-            else visGraph = {nodes: new DataSet(graphPositions.nodes), edges: new DataSet(graphPositions.edges)};
+            else newVisGraph = {nodes: new DataSet(graphPositions.nodes), edges: new DataSet(graphPositions.edges)};
 
-            setVisGraph(visGraph);
-            changeSpeedDial(false);
+            setVisGraph(newVisGraph);
 
             toastId = toast.loading( "Creating graph...");
 
-            let newNetwork = new Network(appRef.current, visGraph, networkOptions);
+            let newNetwork = new Network(container, newVisGraph, networkOptions);
 
             // Whenever there is a click outside the contextMenu, it disappears
             newNetwork.on("click", () => setMenuCoordinates(undefined));
@@ -538,8 +419,10 @@ function updateNetwork() {
             return;
         if (doubleClickEvent.nodes.length > 0) // Clicked cluster or entity
             setClickedComponent({...visGraph.nodes.get(doubleClickEvent.nodes[0]), operation: "doubleClickEvent"});
-        else if (doubleClickEvent.edges.length > 0) // Clicked edge
-            setClickedComponent({...visGraph.edges.get(doubleClickEvent.edges[0]), operation: "doubleClickEvent"});
+        else if (doubleClickEvent.edges.length > 0) { // Clicked edge
+            let edge = visGraph.edges.get(doubleClickEvent.edges[0]);
+            setClickedComponent({...edge, fromNode: visGraph.nodes.get(edge.from), toNode: visGraph.nodes.get(edge.to), operation: "doubleClickEvent" });
+        }
         else return; // Clicked in the background
         setShowModal(true);
         setDoubleClickEvent(undefined);
@@ -553,22 +436,22 @@ function updateNetwork() {
     }, [stabilizationProgress]);
 
     function handleExpandCluster(clusterNode = undefined) {
-        expandCluster(clickedComponent, "functionalities", network, visGraph, edgeWeights, clusterNode);
+        expandCluster(clickedComponent, property, network, visGraph, edgeWeights, clusterNode);
         clearMenu();
     }
 
     function handleExpandAll() {
-        expandAll("functionalities", network, visGraph, edgeWeights);
+        expandAll(property, network, visGraph, edgeWeights);
         clearMenu();
     }
 
     function handleCollapseCluster(clusterId = undefined) {
-        collapseCluster(clickedComponent, "functionalities", visGraph, edgeWeights, clusterId);
+        collapseCluster(clickedComponent, property, visGraph, edgeWeights, clusterId);
         clearMenu();
     }
 
     function handleCollapseAll() {
-        collapseAll("functionalities", visGraph, edgeWeights);
+        collapseAll(property, visGraph, edgeWeights);
         clearMenu();
     }
 
@@ -619,7 +502,7 @@ function updateNetwork() {
         let graphEdges = [];
         const relatedNodesAndEdges = getRelatedNodesAndEdges(visGraph, [clickedComponent.node.id]);
         let removableEdges = relatedNodesAndEdges.edges.map(edge => edge.id);
-        generateNewAndAffectedEdges(edgeWeights, "functionalities", [newNode], relatedNodesAndEdges.nodes, graphEdges, removableEdges);
+        generateNewAndAffectedEdges(edgeWeights, property, [newNode], relatedNodesAndEdges.nodes, graphEdges, removableEdges);
         return {nodes: [newNode], removableNodes: [clickedComponent.node.id], edges: graphEdges, removableEdges};
     }
 
@@ -644,7 +527,7 @@ function updateNetwork() {
         let graphEdges = [], removableEdges = [];
         let affectedNodes = [...new Set([...fromNodeRelated.nodes, ...toNodeRelated.nodes])].filter(node => node.id !== fromNode.id && node.id !== toNode.id);
 
-        generateNewAndAffectedEdges(edgeWeights, "functionalities", [fromNode, toNode], affectedNodes, graphEdges, removableEdges);
+        generateNewAndAffectedEdges(edgeWeights, property, [fromNode, toNode], affectedNodes, graphEdges, removableEdges);
         return {nodes: [fromNode, toNode], edges: graphEdges, removableEdges};
     }
 
@@ -660,7 +543,7 @@ function updateNetwork() {
         const clusterIds = [clickedComponent.node.id, clickedComponent.toNode.id];
         const relatedNodesAndEdges = getRelatedNodesAndEdges(visGraph, clusterIds)
         const newClusterNode = createCluster({name: dialogResponse.newName, elements: [...clickedComponent.node.elements, ...clickedComponent.toNode.elements]});
-        const newGraphEdges = generateNewAndAffectedEdges(edgeWeights, "functionalities", [newClusterNode], relatedNodesAndEdges.nodes);
+        const newGraphEdges = generateNewAndAffectedEdges(edgeWeights, property, [newClusterNode], relatedNodesAndEdges.nodes);
 
         return {removableNodes: clusterIds, removableEdges: relatedNodesAndEdges.edges.map(edge => edge.id), nodes: [newClusterNode], edges: newGraphEdges};
     }
@@ -682,7 +565,7 @@ function updateNetwork() {
         toUpdateCluster.value = toUpdateCluster.elements.length;
 
         let edges = [], removableEdges = [];
-        generateNewAndAffectedEdges(edgeWeights, "functionalities", [newClusterNode, toUpdateCluster], relatedNodesAndEdges.nodes, edges, removableEdges);
+        generateNewAndAffectedEdges(edgeWeights, property, [newClusterNode, toUpdateCluster], relatedNodesAndEdges.nodes, edges, removableEdges);
         return {nodes: [newClusterNode, toUpdateCluster], edges, removableEdges};
     }
 
@@ -729,7 +612,7 @@ function updateNetwork() {
         let relatedNodesAndEdges = getRelatedNodesAndEdges(visGraph, [...removableNodes, ...nodes.map(node => node.id)]);
         removableEdges.push(...relatedNodesAndEdges.edges.map(edge => edge.id));
         nodes.push(newClusterNode);
-        generateNewAndAffectedEdges(edgeWeights, "functionalities", nodes, relatedNodesAndEdges.nodes, edges, removableEdges);
+        generateNewAndAffectedEdges(edgeWeights, property, nodes, relatedNodesAndEdges.nodes, edges, removableEdges);
 
         return ({nodes, edges, removableNodes, removableEdges});
     }
@@ -737,7 +620,7 @@ function updateNetwork() {
     function handleSave() {
         const graphPositions = buildGraphPositions();
 
-        const service = new RepositoryService();
+        const service = new APIService();
 
         const promise = service.saveGraphPositions(decompositionName, graphPositions);
         toast.promise(promise, {
@@ -750,7 +633,7 @@ function updateNetwork() {
     }
 
     function handleSnapshot() {
-        const service = new RepositoryService();
+        const service = new APIService();
 
         const promise = service.snapshotDecomposition(decompositionName);
         toast.promise(promise, {
@@ -764,6 +647,8 @@ function updateNetwork() {
 
     function buildGraphPositions() {
         let graphPositions = {nodes: visGraph.nodes.get(), edges: visGraph.edges.get()};
+
+        graphPositions.property = property;
 
         // Updates positions of nodes and clears hidden
         graphPositions.nodes.forEach(node => {
@@ -791,25 +676,13 @@ function updateNetwork() {
     }
 
     return (
-        <>
+        <Container fluid>
             <ToastContainer
                 position="top-center"
                 theme="colored"
             />
 
-            <div ref={appRef}/>
-
-            <AccessViewModal
-                clusters={clusters}
-                edgeWeights={edgeWeights}
-                outdated={outdated}
-                clustersFunctionalities={clustersFunctionalities}
-                visGraph={visGraph}
-                showModal={showModal}
-                setShowModal={setShowModal}
-                clickedComponent={clickedComponent}
-                setClickedComponent={setClickedComponent}
-            />
+            <div id="network"></div>
 
             <RightClickMenu
                 menuCoordinates={menuCoordinates}
@@ -832,7 +705,7 @@ function updateNetwork() {
             />
 
             {requestDialog !== undefined &&
-                <AccessViewDialogs
+                <ClusterViewDialogs
                     requestDialog={requestDialog}
                     setRequestDialog={setRequestDialog}
                     setDialogResponse={setDialogResponse}
@@ -840,17 +713,6 @@ function updateNetwork() {
                     handleCancel={handleCancel}
                 />
             }
-
-            {showTable &&
-                <>
-                    <div id="metricTable"></div> {/*This is used as an anchor*/}
-                    <AccessViewMetricTable
-                        clusters={clusters}
-                        clustersFunctionalities={clustersFunctionalities}
-                        outdated={outdated}
-                    />
-                </>
-            }
-        </>
+        </Container>
     );
 }

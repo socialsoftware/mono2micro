@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import React from "react";
 import {MetricType} from "../../type-declarations/types.d";
 import {Cached} from "@mui/icons-material";
-import {RepositoryService} from "../../services/RepositoryService";
+import {APIService} from "../../services/APIService";
 import {toast} from "react-toastify";
 
 const ACC_AND_REPO_SCIPY = "Accesses and Repository-Based Similarity and SciPy Clustering Algorithm";
@@ -16,6 +16,9 @@ export default class AccAndRepoSciPyDecomposition extends Decomposition {
     silhouetteScore: number;
     functionalities: any;
     entityIDToClusterName: any;
+    authors: Record<number, string[]>;
+    commitsInCommon: Record<number, Record<number, number>>;
+    totalCommits: Record<number, number>;
 
     constructor(decomposition: any) {
         super(decomposition);
@@ -25,10 +28,13 @@ export default class AccAndRepoSciPyDecomposition extends Decomposition {
         this.silhouetteScore = decomposition.silhouetteScore;
         this.functionalities = decomposition.functionalities;
         this.entityIDToClusterName = decomposition.entityIDToClusterName;
+        this.authors = decomposition.authors;
+        this.commitsInCommon = decomposition.commitsInCommon;
+        this.totalCommits = decomposition.totalCommits;
     }
 
     handleUpdate(reloadDecompositions: () => void) {
-        const service = new RepositoryService();
+        const service = new APIService();
         const promise = service.updatedAccessesSciPyDecomposition(this.name);
         toast.promise(promise, {
             pending: "Updating Decomposition...",

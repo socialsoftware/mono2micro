@@ -2,9 +2,11 @@ package pt.ist.socialsoftware.mono2micro.analysis.dto;
 
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.DecompositionDto;
 
-public class AnalysisDto {
+public abstract class AnalysisDto {
     private DecompositionDto decomposition1;
     private DecompositionDto decomposition2;
+
+    public abstract String getType();
 
     public DecompositionDto getDecomposition2() {
         return decomposition2;

@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import React from "react";
 import {MetricType} from "../../type-declarations/types.d";
 import {Cached} from "@mui/icons-material";
-import {RepositoryService} from "../../services/RepositoryService";
+import {APIService} from "../../services/APIService";
 import {toast} from "react-toastify";
 
 const ACCESSES_SCIPY = "Accesses-Based Similarity and SciPy Clustering Algorithm";
@@ -28,7 +28,7 @@ export default class AccessesSciPyDecomposition extends Decomposition {
     }
 
     handleUpdate(reloadDecompositions: () => void) {
-        const service = new RepositoryService();
+        const service = new APIService();
         const promise = service.updatedAccessesSciPyDecomposition(this.name);
         toast.promise(promise, {
             pending: "Updating Decomposition...",

@@ -11,7 +11,6 @@ import pt.ist.socialsoftware.mono2micro.decomposition.domain.views.ClusterViewDe
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.history.domain.PositionHistory;
-import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityService;
 import pt.ist.socialsoftware.mono2micro.history.service.HistoryService;
 import pt.ist.socialsoftware.mono2micro.history.service.PositionHistoryService;
@@ -99,9 +98,15 @@ public class AccessesSciPyDecomposition extends Decomposition implements SciPyDe
         metrics = newMetrics;
     }
 
-    public String getEdgeWeights(GridFsService gridFsService, String viewType) throws Exception {
+    public String getEdgeWeights(String viewType) throws Exception {
         if (viewType.equals(ACCESSES_DECOMPOSITION))
-            return getEdgeWeightsFromAccesses(gridFsService);
+            return getEdgeWeightsFromAccesses();
+        else throw new RuntimeException("View type not supported by this decomposition");
+    }
+
+    public String getSearchItems(String viewType) throws Exception {
+        if (viewType.equals(ACCESSES_DECOMPOSITION))
+            return getSearchItemsFromAccesses();
         else throw new RuntimeException("View type not supported by this decomposition");
     }
 

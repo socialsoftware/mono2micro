@@ -3,7 +3,7 @@ import Row from 'react-bootstrap/Row';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 
 import {useParams} from "react-router-dom";
-import {RepositoryService} from "../../services/RepositoryService";
+import {APIService} from "../../services/APIService";
 import {toast, ToastContainer} from "react-toastify";
 import {ACCESSES_SCIPY} from "../../models/decompositions/AccessesSciPyDecomposition";
 import {REPOSITORY_SCIPY} from "../../models/decompositions/RepositorySciPyDecomposition";
@@ -24,7 +24,7 @@ export const Recommendations = () => {
 
     function loadStrategy() {
         const toastId = toast.loading("Fetching Strategy...");
-        const service = new RepositoryService();
+        const service = new APIService();
         service.getStrategy(strategyName).then(response => {
             setStrategy(response);
 
@@ -34,7 +34,7 @@ export const Recommendations = () => {
     }
 
     function loadDecompositions() {
-        const service = new RepositoryService();
+        const service = new APIService();
         const toastId = toast.loading("Fetching Decompositions...");
         service.getStrategyDecompositions(
             strategyName
@@ -49,7 +49,7 @@ export const Recommendations = () => {
 
     function handleDeleteDecomposition(decompositionName) {
         const toastId = toast.loading("Deleting " + decompositionName + "...");
-        const service = new RepositoryService();
+        const service = new APIService();
         service.deleteDecomposition(decompositionName).then(() => {
             loadDecompositions();
             toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Decomposition deleted.", isLoading: false});

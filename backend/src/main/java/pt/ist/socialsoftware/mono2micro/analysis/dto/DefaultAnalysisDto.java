@@ -1,9 +1,12 @@
 package pt.ist.socialsoftware.mono2micro.analysis.dto;
 
+import pt.ist.socialsoftware.mono2micro.analysis.dto.interfaces.MoJoProperties;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class AccessesSciPyAnalysisDto extends AnalysisDto {
+public class DefaultAnalysisDto extends AnalysisDto implements MoJoProperties {
+    public static final String DEFAULT_ANALYSIS_DTO = "DEFAULT_ANALYSIS_DTO";
     private int truePositive;
     private int trueNegative;
     private int falsePositive;
@@ -18,6 +21,11 @@ public class AccessesSciPyAnalysisDto extends AnalysisDto {
     private double mojoBiggest;
     private double mojoNew;
     private double mojoSingletons;
+
+    @Override
+    public String getType() {
+        return DEFAULT_ANALYSIS_DTO;
+    }
 
     public float getPrecision() {
         return precision;

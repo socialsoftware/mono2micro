@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { RepositoryService } from '../../services/RepositoryService';
+import { APIService } from '../../services/APIService';
 import Row from 'react-bootstrap/Row';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import {useParams} from "react-router-dom";
@@ -16,7 +16,7 @@ export const Decompositions = () => {
 
     //Executed on mount
     useEffect(() => {
-        const service = new RepositoryService();
+        const service = new APIService();
         service.getSimilarity(similarityName).then(response => {
             setSimilarity(response);
             loadDecompositions();
@@ -24,7 +24,7 @@ export const Decompositions = () => {
     }, []);
 
     function loadDecompositions() {
-        const service = new RepositoryService();
+        const service = new APIService();
         const toastId = toast.loading("Fetching Decompositions...");
         service.getDecompositions(
             similarityName
@@ -39,7 +39,7 @@ export const Decompositions = () => {
 
     function handleDeleteDecomposition(decompositionName) {
         const toastId = toast.loading("Deleting " + decompositionName + "...");
-        const service = new RepositoryService();
+        const service = new APIService();
         service.deleteDecomposition(decompositionName).then(() => {
             loadDecompositions();
             toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Decomposition deleted.", isLoading: false});

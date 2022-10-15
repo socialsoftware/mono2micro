@@ -1,5 +1,5 @@
 import Fuse from "fuse.js";
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     Box,
     Dialog,
@@ -11,9 +11,8 @@ import filterFactory, {numberFilter, selectFilter, textFilter} from "react-boots
 import paginationFactory from "react-bootstrap-table2-paginator";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
-import {RepositoryService} from "../../../services/RepositoryService";
+import {APIService} from "../../../services/APIService";
 import {useParams} from "react-router-dom";
-import AppContext from "../../AppContext";
 
 export const searchType = {
     CLUSTER: "Cluster",
@@ -32,7 +31,7 @@ const sFilter1 = selectFilter({placeholder:"Select", options: {"Cluster": "Clust
 const sFilter2 = selectFilter({placeholder:"Select", options: {"QUERY": "QUERY", "SAGA": "SAGA"}});
 const sort = true;
 
-const itemInfo = [
+const columnEntries = [
     {dataField: 'name',         text: 'Name'                                    , sort},
     {dataField: 'type',         text: 'Type',                   filter: sFilter1, sort},
     {dataField: 'funcType',     text: 'Functionality Type',     filter: sFilter2, sort},
@@ -40,33 +39,25 @@ const itemInfo = [
     {dataField: 'entities',     text: 'Entities',               filter: nFilter , sort},
 ];
 
-export const ViewSearchBar = ({openSearch, setOpenSearch, setSearchedItem}) => {
+export const ViewSearchBar = ({viewType, dataFields, openSearch, setOpenSearch, setSearchedItem}) => {
     let { decompositionName } = useParams();
-    const context = useContext(AppContext);
-    const { translateEntity } = context;
     const [fuse, setFuse] = useState(undefined);
     const [pattern, setPattern] = useState("");
     const [filteredItems, setFilteredItems] = useState([]);
     const [searchItems, setSearchItems] = useState(undefined);
+    const [columns, setColumns] = useState(columnEntries);
 
     useEffect(() => {
-        if (openSearch)
-            updateSearchItems();
+        if (openSearch) {
+            setColumns(columnEntries.filter(item => dataFields.includes(item.dataField)));
+            const service = new APIService();
+            service.getSearchItems(decompositionName, viewType).then(response => {
+                setSearchItems(response.data);
+            }).catch(error => {
+                console.error("Error during search items fetch:", error);
+            });
+        }
     }, [openSearch]);
-
-    function updateSearchItems() {
-        const service = new RepositoryService();
-        service.getSearchItems(decompositionName).then(response => {
-            const newSearchItems = response.data.map(item => {
-                if (item.type === searchType.ENTITY) // Add translation to entities
-                    item.name = translateEntity(Number(item.id));
-                return item;
-            })
-            setSearchItems(newSearchItems);
-        }).catch(error => {
-            console.error("Error during search items fetch:", error);
-        });
-    }
 
     useEffect(() => {
         if (!openSearch) // remove cursor
@@ -187,7 +178,7 @@ export const ViewSearchBar = ({openSearch, setOpenSearch, setSearchedItem}) => {
                         keyField='id'
                         hover={true}
                         data={filteredItems}
-                        columns={itemInfo}
+                        columns={columns}
                         pagination={pagination}
                         filter={filterFactory()}
                         rowEvents={rowEvents}

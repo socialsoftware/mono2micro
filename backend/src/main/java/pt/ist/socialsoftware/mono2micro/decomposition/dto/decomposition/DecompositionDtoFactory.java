@@ -21,7 +21,7 @@ public class DecompositionDtoFactory {
         return factory;
     }
 
-    public DecompositionDto getDecompositionDto(Decomposition decomposition) {
+    public static DecompositionDto getDecompositionDto(Decomposition decomposition) {
         if (decomposition == null)
             return null;
         switch (decomposition.getType()) {

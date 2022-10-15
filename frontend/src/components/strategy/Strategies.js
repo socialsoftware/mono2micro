@@ -9,7 +9,7 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
-import {RepositoryService} from "../../services/RepositoryService";
+import {APIService} from "../../services/APIService";
 import HttpStatus from "http-status-codes";
 import {Modal, ModalBody, ModalFooter, ModalTitle} from "react-bootstrap";
 import {toast} from "react-toastify";
@@ -49,14 +49,14 @@ export function Strategies() {
 
     //Executed on mount
     useEffect(() => {
-        const service = new RepositoryService();
+        const service = new APIService();
         loadStrategies();
         loadRepresentations();
         service.getDecompositionTypes(codebaseName).then(response => setDecompositionTypes(response.data));
     }, []);
 
     function loadRepresentations() {
-        const service = new RepositoryService();
+        const service = new APIService();
         service.getRepresentations(codebaseName).then(response => {
             setRepresentations(response);
             setObtainedRepresentations(response.map(representation => representation.type));
@@ -64,7 +64,7 @@ export function Strategies() {
     }
 
     function loadStrategies() {
-        const service = new RepositoryService();
+        const service = new APIService();
         service.getCodebaseStrategies(codebaseName).then(response => {
             setStrategies(response);
         });
@@ -75,7 +75,7 @@ export function Strategies() {
 
         setIsUploaded("Uploading...");
 
-        const service = new RepositoryService();
+        const service = new APIService();
         service.createStrategy(codebaseName, selectedDecompositionType, addedRepresentations)
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
@@ -110,7 +110,7 @@ export function Strategies() {
 
     function handleSelectedDecomposition(decompositionType) {
         setSelectedDecompositionType(decompositionType);
-        const service = new RepositoryService();
+        const service = new APIService();
         service.getRequiredRepresentations(decompositionType).then(response => {
             setRequiredRepresentations(response.data);
 
@@ -138,7 +138,7 @@ export function Strategies() {
         setShowPopup(false);
 
         let toastId = toast.loading("Deleting representation...", {type: toast.TYPE.INFO});
-        const service = new RepositoryService();
+        const service = new APIService();
         service.deleteRepresentation(representationToDelete.name).then(() => {
             loadRepresentations();
             loadStrategies();
@@ -148,7 +148,7 @@ export function Strategies() {
 
     function handleDeleteStrategy(strategy) {
         let toastId = toast.loading("Deleting strategy...", {type: toast.TYPE.INFO});
-        const service = new RepositoryService();
+        const service = new APIService();
         service.deleteStrategy(strategy.name).then(() => {
             loadStrategies();
             toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Strategy deleted.", isLoading: false});

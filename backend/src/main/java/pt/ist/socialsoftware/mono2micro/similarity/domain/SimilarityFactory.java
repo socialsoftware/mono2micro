@@ -31,7 +31,6 @@ public class SimilarityFactory {
         } while (strategy.containsSimilarityName(similarityName));
         similarity.setName(similarityName);
 
-        similarity.setDecompositionType(strategy.getDecompositionType());
         similarity.setStrategy(strategy);
         strategy.addSimilarity(similarity);
         return similarity;

@@ -4,7 +4,6 @@ import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.cluster.SciPyCluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.element.Element;
-import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.operation.*;
 import pt.ist.socialsoftware.mono2micro.operation.clusterView.ClusterViewFormClusterOperation;
 import pt.ist.socialsoftware.mono2micro.operation.clusterView.ClusterViewMergeOperation;
@@ -27,7 +26,8 @@ public interface ClusterViewDecomposition {
     Strategy getStrategy();
     Similarity getSimilarity();
     String getName();
-    String getEdgeWeights(GridFsService gridFsService, String viewType) throws Exception;
+    String getEdgeWeights(String viewType) throws Exception;
+    String getSearchItems(String viewType) throws Exception;
     Decomposition snapshotDecomposition(String snapshotName) throws Exception; // This function can be placed in Decomposition if deemed relevant enough
 
     Map<String, Cluster> getClusters();

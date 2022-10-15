@@ -13,7 +13,6 @@ import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionR
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityService;
 import pt.ist.socialsoftware.mono2micro.history.domain.PositionHistory;
-import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.history.service.HistoryService;
 import pt.ist.socialsoftware.mono2micro.history.service.PositionHistoryService;
@@ -150,11 +149,19 @@ public class AccAndRepoSciPyDecomposition extends Decomposition implements SciPy
         metrics = newMetrics;
     }
 
-    public String getEdgeWeights(GridFsService gridFsService, String viewType) throws Exception {
+    public String getEdgeWeights(String viewType) throws Exception {
         if (viewType.equals(ACCESSES_DECOMPOSITION))
-            return getEdgeWeightsFromAccesses(gridFsService);
+            return getEdgeWeightsFromAccesses();
         else if (viewType.equals(REPOSITORY_DECOMPOSITION))
-            return getEdgeWeightsFromRepository(gridFsService);
+            return getEdgeWeightsFromRepository();
+        else throw new RuntimeException("View type not supported by this decomposition");
+    }
+
+    public String getSearchItems(String viewType) throws Exception {
+        if (viewType.equals(ACCESSES_DECOMPOSITION))
+            return getSearchItemsFromAccesses();
+        else if (viewType.equals(REPOSITORY_DECOMPOSITION))
+            return getSearchItemsFromRepository();
         else throw new RuntimeException("View type not supported by this decomposition");
     }
 

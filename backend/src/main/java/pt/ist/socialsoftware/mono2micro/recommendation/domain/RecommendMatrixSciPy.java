@@ -227,7 +227,7 @@ public class RecommendMatrixSciPy extends Recommendation implements SimilarityMa
                 dendrogramGenerator.generateDendrogram(similarity);
             }
 
-            Decomposition decomposition = DecompositionFactory.getDecomposition(similarity.getDecompositionType());
+            Decomposition decomposition = DecompositionFactory.getDecomposition(similarity.getStrategy().getDecompositionType());
             decomposition.setSimilarity(similarity);
             similarity.addDecomposition(decomposition);
             decomposition.setStrategy(similarity.getStrategy());

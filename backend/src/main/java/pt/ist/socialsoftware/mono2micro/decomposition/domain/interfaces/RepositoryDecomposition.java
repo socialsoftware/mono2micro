@@ -6,6 +6,8 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
+import pt.ist.socialsoftware.mono2micro.element.Element;
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AuthorRepresentation;
@@ -26,6 +28,7 @@ public interface RepositoryDecomposition {
     Strategy getStrategy();
     Similarity getSimilarity();
     Map<Short, String> getEntityIDToClusterName();
+    Map<String, Cluster> getClusters();
     Map<Short, Map<Short, Integer>> getCommitsInCommon();
     Map<Short, Integer> getTotalCommits();
     Map<Short, ArrayList<String>> getAuthors();
@@ -80,8 +83,9 @@ public interface RepositoryDecomposition {
         }
     }
 
-    default String getEdgeWeightsFromRepository(GridFsService gridFsService) throws JSONException, IOException {
+    default String getEdgeWeightsFromRepository() throws JSONException, IOException {
         Dendrogram similarity = (Dendrogram) getSimilarity();
+        GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
         JSONArray copheneticDistances = new JSONArray(IOUtils.toString(gridFsService.getFile(similarity.getCopheneticDistanceName()), StandardCharsets.UTF_8));
 
         ArrayList<Short> entities = new ArrayList<>(getEntityIDToClusterName().keySet());
@@ -120,5 +124,29 @@ public interface RepositoryDecomposition {
             }
         }
         return edgesJSON.toString();
+    }
+
+    default String getSearchItemsFromRepository() throws JSONException {
+        JSONArray searchItems = new JSONArray();
+
+        for (Cluster cluster : getClusters().values()) {
+            JSONObject clusterItem = new JSONObject();
+            clusterItem.put("name", cluster.getName());
+            clusterItem.put("type", "Cluster");
+            clusterItem.put("id", cluster.getName());
+            clusterItem.put("entities", Integer.toString(cluster.getElements().size()));
+            searchItems.put(clusterItem);
+
+            for (Element element : cluster.getElements()) {
+                JSONObject entityItem = new JSONObject();
+                entityItem.put("name", element.getName());
+                entityItem.put("type", "Entity");
+                entityItem.put("id", String.valueOf(element.getId()));
+                entityItem.put("cluster", cluster.getName());
+                searchItems.put(entityItem);
+            }
+        }
+
+        return searchItems.toString();
     }
 }

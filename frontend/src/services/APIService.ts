@@ -22,7 +22,7 @@ import Recommendation from "../models/recommendation/Recommendation";
 import Representation from "../models/representation/Representation";
 import Strategy from "../models/strategy/Strategy";
 
-export class RepositoryService {
+export class APIService {
     axios: AxiosInstance;
 
     refactorizationToolAxios: AxiosInstance;
@@ -305,7 +305,7 @@ export class RepositoryService {
         decompositionName: string
     ) {
         return this.axios.get<Decomposition>(
-            "/accesses/" + decompositionName + "/updatedAccessesSciPyDecomposition"
+            "/decomposition/" + decompositionName + "/update"
         );
     }
 
@@ -401,10 +401,11 @@ export class RepositoryService {
     }
 
     getSearchItems(
-        decompositionName: string
-    ) {
+        decompositionName: string,
+        viewType: string
+) {
         return this.axios.get<any[]>(
-            "/accesses/" + decompositionName + "/getSearchItems"
+            "/decomposition/" + decompositionName + "/" + viewType + "/getSearchItems"
         );
     }
 

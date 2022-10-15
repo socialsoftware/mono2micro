@@ -3,7 +3,7 @@ import Row from 'react-bootstrap/Row';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 
 import {useParams} from "react-router-dom";
-import {RepositoryService} from "../../services/RepositoryService";
+import {APIService} from "../../services/APIService";
 import {toast, ToastContainer} from "react-toastify";
 import {ACCESSES_SCIPY} from "../../models/decompositions/AccessesSciPyDecomposition";
 import {REPOSITORY_SCIPY} from "../../models/decompositions/RepositorySciPyDecomposition";
@@ -24,7 +24,7 @@ export const Similarities = () => {
 
     function loadStrategy() {
         const toastId = toast.loading("Fetching Strategy...");
-        const service = new RepositoryService();
+        const service = new APIService();
         service.getStrategy(strategyName).then(response => {
             setStrategy(response);
             loadSimilarities();
@@ -36,7 +36,7 @@ export const Similarities = () => {
 
     function loadSimilarities() {
         const toastId = toast.loading("Fetching Similarities...");
-        const service = new RepositoryService();
+        const service = new APIService();
         service.getStrategySimilarities(strategyName)
             .then(response => {
                 setSimilarities(response);
@@ -48,7 +48,7 @@ export const Similarities = () => {
 
     function handleDeleteSimilarity(similarity) {
         const toastId = toast.loading("Deleting " + similarity.name + "...");
-        const service = new RepositoryService();
+        const service = new APIService();
 
         service.deleteSimilarity(similarity.name).then(() => {
             loadSimilarities();

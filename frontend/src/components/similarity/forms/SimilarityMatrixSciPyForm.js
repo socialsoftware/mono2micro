@@ -3,7 +3,7 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import FormControl from "react-bootstrap/FormControl";
-import {RepositoryService} from "../../../services/RepositoryService";
+import {APIService} from "../../../services/APIService";
 import Button from "react-bootstrap/Button";
 import HttpStatus from "http-status-codes";
 import DropdownButton from "react-bootstrap/DropdownButton";
@@ -15,7 +15,7 @@ import {WeightsFactory} from "../../../models/weights/WeightsFactory";
 
 
 export const SimilarityMatrixSciPyForm = ({codebaseName, strategy, setUpdateStrategies}) => {
-    const service = new RepositoryService();
+    const service = new APIService();
     const [isUploaded, setIsUploaded] = useState("");
     const [profiles, setProfiles] = useState([]);
     const [profile, setProfile] = useState("Generic")

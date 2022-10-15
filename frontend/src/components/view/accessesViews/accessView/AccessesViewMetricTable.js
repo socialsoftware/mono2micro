@@ -35,7 +35,7 @@ const TABLE_TYPE = {
     COUPLING: 2
 }
 
-export const AccessViewMetricTable = ({clusters, clustersFunctionalities, outdated}) => {
+export const AccessesViewMetricTable = ({clusters, clustersFunctionalities, outdated}) => {
 
     const [selectedTable, setSelectedTable] = useState(1);
 

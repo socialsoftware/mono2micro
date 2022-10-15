@@ -7,8 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces.AccessesDecomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.DecompositionDto;
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.DecompositionDtoFactory;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.service.AccessesDecompositionService;
 import pt.ist.socialsoftware.mono2micro.decomposition.service.DecompositionService;
@@ -35,22 +33,6 @@ public class AccessesController {
     @Autowired
     FunctionalityService functionalityService;
 
-    @RequestMapping(value = "/accesses/{decompositionName}/updatedAccessesSciPyDecomposition", method = RequestMethod.GET)
-    public ResponseEntity<DecompositionDto> updatedAccessesSciPyDecomposition(
-            @PathVariable String decompositionName
-    ) {
-        logger.debug("updatedAccessesSciPyDecomposition");
-
-        try {
-            return new ResponseEntity<>(DecompositionDtoFactory.getFactory().getDecompositionDto(
-                    decompositionService.updateDecomposition(decompositionName)), HttpStatus.OK);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
     @RequestMapping(value = "/accesses/{decompositionName}/getLocalTransactionsGraphForFunctionality", method = RequestMethod.GET)
     public ResponseEntity<Utils.GetSerializableLocalTransactionsGraphResult> getLocalTransactionsGraphForFunctionality(
             @PathVariable String decompositionName,
@@ -63,20 +45,6 @@ public class AccessesController {
                     accessesDecompositionService.getLocalTransactionGraphForFunctionality(decompositionName, functionalityName),
                     HttpStatus.OK
             );
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @RequestMapping(value = "/accesses/{decompositionName}/getSearchItems", method = RequestMethod.GET)
-    public ResponseEntity<ArrayList<HashMap<String, String>>> getSearchItems(
-            @PathVariable String decompositionName
-    ) {
-        logger.debug("getSearchItems");
-
-        try {
-            return new ResponseEntity<>(accessesDecompositionService.getSearchItems(decompositionName), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

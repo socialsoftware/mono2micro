@@ -21,7 +21,7 @@ public class SimilarityMatrixSciPyDto extends SimilarityDto {
         this.strategyName = similarity.getStrategy().getName();
         this.name = similarity.getName();
         this.type = similarity.getType();
-        this.decompositionType = similarity.getDecompositionType();
+        this.decompositionType = similarity.getStrategy().getDecompositionType();
         this.weightsList = similarity.getWeightsList();
         this.profile = similarity.getProfile();
         this.linkageType = similarity.getLinkageType();
@@ -30,7 +30,7 @@ public class SimilarityMatrixSciPyDto extends SimilarityDto {
     }
 
     public SimilarityMatrixSciPyDto(RecommendMatrixSciPy recommend, List<Weights> weightsList) {
-        this.decompositionType = recommend.getDecompositionType();
+        this.decompositionType = recommend.getStrategy().getDecompositionType();
         this.strategyName = recommend.getStrategy().getName();
         this.weightsList = weightsList;
         this.profile = recommend.getProfile();

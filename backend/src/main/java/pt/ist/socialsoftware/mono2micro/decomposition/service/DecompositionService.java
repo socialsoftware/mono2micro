@@ -67,7 +67,7 @@ public class DecompositionService {
 
     public void createExpertDecomposition(String similarityName, String expertName, Optional<MultipartFile> expertFile) throws Exception {
         Similarity similarity = similarityRepository.findByName(similarityName);
-        Decomposition decomposition = DecompositionFactory.getDecomposition(similarity.getDecompositionType());
+        Decomposition decomposition = DecompositionFactory.getDecomposition(similarity.getStrategy().getDecompositionType());
 
         decomposition.setExpert(true);
         decomposition.setSimilarity(similarity);
@@ -168,7 +168,12 @@ public class DecompositionService {
 
     public String getEdgeWeights(String decompositionName, String view) throws Exception {
         ClusterViewDecomposition clusterView = (ClusterViewDecomposition) decompositionRepository.findByName(decompositionName);
-        return clusterView.getEdgeWeights(gridFsService, view);
+        return clusterView.getEdgeWeights(view);
+    }
+
+    public String getSearchItems(String decompositionName, String view) throws Exception {
+        ClusterViewDecomposition clusterView = (ClusterViewDecomposition) decompositionRepository.findByName(decompositionName);
+        return clusterView.getSearchItems(view);
     }
 
     public void snapshotDecomposition(String decompositionName) throws Exception {

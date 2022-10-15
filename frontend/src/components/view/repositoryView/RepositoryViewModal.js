@@ -4,7 +4,7 @@ import Divider from "@mui/material/Divider";
 import React, {useEffect, useState} from "react";
 import {EDGE_LENGTH, types} from "../utils/GraphUtils";
 
-export const RepositoryViewModal = ({decomposition, visGraph, showModal, setShowModal, clickedComponent, setClickedComponent}) => {
+export const RepositoryViewModal = ({authors, clusters, commitsInCommon, totalCommits, showModal, setShowModal, clickedComponent, setClickedComponent}) => {
     const [title, setTitle] = useState("Options");
     const [informationText, setInformationText] = useState(undefined);
 
@@ -16,8 +16,8 @@ export const RepositoryViewModal = ({decomposition, visGraph, showModal, setShow
         else if (clickedComponent.type === types.ENTITY)
             setTitle("Entity " + clickedComponent.label + " informations");
         else {
-            const fromNode = visGraph.nodes.get(clickedComponent.from);
-            const toNode = visGraph.nodes.get(clickedComponent.to);
+            const fromNode = clickedComponent.fromNode;
+            const toNode = clickedComponent.toNode;
 
             let text = "Edge with ";
             text += fromNode.type === types.CLUSTER? "cluster " + fromNode.label : "entity " + fromNode.label;
@@ -41,13 +41,13 @@ export const RepositoryViewModal = ({decomposition, visGraph, showModal, setShow
 
     function handleRelatedAuthorsEntities() {
         setTitle("Authors that made modifications to " + clickedComponent.label);
-        const authors = decomposition.authors[clickedComponent.id]
+        const entityAuthors = authors[clickedComponent.id]
 
         setInformationText(
             <>
-                <h4>{authors.length} Authors:</h4>
+                <h4>{entityAuthors.length} Authors:</h4>
                 <ListGroup>
-                    { authors.map(author => <ListGroupItem key={author}>{author}</ListGroupItem>) }
+                    { entityAuthors.map(author => <ListGroupItem key={author}>{author}</ListGroupItem>) }
                 </ListGroup>
             </>
         );
@@ -55,8 +55,8 @@ export const RepositoryViewModal = ({decomposition, visGraph, showModal, setShow
 
     function handleRelatedAuthorsCluster() {
         setTitle("Authors that made modifications to " + clickedComponent.label);
-        let clickedCluster = decomposition.clusters[clickedComponent.id];
-        let clickedClusterAuthors = [...new Set(clickedCluster.elements.flatMap(element => decomposition.authors[element.id]))];
+        let clickedCluster = clusters.find(cluster => cluster.name === clickedComponent.id);
+        let clickedClusterAuthors = [...new Set(clickedCluster.elements.flatMap(element => authors[element.id]))];
 
         setInformationText(
             <>
@@ -70,14 +70,14 @@ export const RepositoryViewModal = ({decomposition, visGraph, showModal, setShow
 
     function handleCommonAuthorsCluster() {
         setTitle("Authors in common between " + clickedComponent.label + " and other Clusters");
-        let clickedCluster = decomposition.clusters[clickedComponent.id];
-        let clickedClusterAuthors = [...new Set(clickedCluster.elements.flatMap(element => decomposition.authors[element.id]))];
+        let clickedCluster = clusters.find(cluster => cluster.name === clickedComponent.id);
+        let clickedClusterAuthors = [...new Set(clickedCluster.elements.flatMap(element => authors[element.id]))];
 
         setInformationText(
             <Accordion alwaysOpen={true}>
                 {
-                    Object.values(decomposition.clusters).map(otherCluster => {
-                        let otherClusterAuthors = [...new Set(otherCluster.elements.flatMap(element => decomposition.authors[element.id]))];
+                    clusters.map(otherCluster => {
+                        let otherClusterAuthors = [...new Set(otherCluster.elements.flatMap(element => authors[element.id]))];
                         let authorsInCommon = clickedClusterAuthors.filter(author => otherClusterAuthors.includes(author));
 
                         if (clickedCluster.name === otherCluster.name)
@@ -103,10 +103,10 @@ export const RepositoryViewModal = ({decomposition, visGraph, showModal, setShow
     }
 
     function handleCommonAuthorsBetweenClusters() {
-        const cluster1 = decomposition.clusters[clickedComponent.from];
-        const cluster2 = decomposition.clusters[clickedComponent.to];
-        let cluster1Authors = [...new Set(cluster1.elements.flatMap(element => decomposition.authors[element.id]))];
-        let cluster2Authors = [...new Set(cluster2.elements.flatMap(element => decomposition.authors[element.id]))];
+        const cluster1 = clusters.find(cluster => cluster.name === clickedComponent.from);
+        const cluster2 = clusters.find(cluster => cluster.name === clickedComponent.to);
+        let cluster1Authors = [...new Set(cluster1.elements.flatMap(element => authors[element.id]))];
+        let cluster2Authors = [...new Set(cluster2.elements.flatMap(element => authors[element.id]))];
         let authorsInCommon = cluster1Authors.filter(author => cluster2Authors.includes(author));
 
         setTitle("Authors that modify entities of " + clickedComponent.from + " and " + clickedComponent.to);
@@ -126,18 +126,18 @@ export const RepositoryViewModal = ({decomposition, visGraph, showModal, setShow
     }
 
     function handleCommonAuthorsBetweenClusterAndEntity() {
-        let entity, cluster = decomposition.clusters[clickedComponent.from];
+        let entity, cluster = clusters.find(cluster => cluster.name === clickedComponent.from);
 
         if (cluster) {
-            entity = visGraph.nodes.get(clickedComponent.to);
+            entity = clickedComponent.toNode;
         }
         else {
-            entity = visGraph.nodes.get(clickedComponent.from);
-            cluster = decomposition.clusters[clickedComponent.to];
+            entity = clickedComponent.fromNode;
+            cluster = clusters.find(cluster => cluster.name === clickedComponent.to);
         }
 
-        let clusterAuthors = [...new Set(cluster.elements.flatMap(element => decomposition.authors[element.id]))];
-        let entityAuthors = decomposition.authors[entity.id];
+        let clusterAuthors = [...new Set(cluster.elements.flatMap(element => authors[element.id]))];
+        let entityAuthors = authors[entity.id];
 
         let authorsInCommon = clusterAuthors.filter(author => entityAuthors.includes(author));
 
@@ -158,11 +158,11 @@ export const RepositoryViewModal = ({decomposition, visGraph, showModal, setShow
     }
 
     function handleCommonAuthorsBetweenEntities() {
-        const entity1Authors = decomposition.authors[clickedComponent.from];
-        const entity2Authors = decomposition.authors[clickedComponent.to];
+        const entity1Authors = authors[clickedComponent.from];
+        const entity2Authors = authors[clickedComponent.to];
         let authorsInCommon = entity1Authors.filter(author => entity2Authors.includes(author));
 
-        setTitle("Authors that modify entities of " + visGraph.nodes.get(clickedComponent.from).label + " and " + visGraph.nodes.get(clickedComponent.to).label);
+        setTitle("Authors that modify entities of " + clickedComponent.fromNode.label + " and " + clickedComponent.toNode.label);
         setInformationText(
             <>
                 {authorsInCommon.length === 0 && <h4> No authors in common.</h4>}
@@ -239,12 +239,17 @@ export const RepositoryViewModal = ({decomposition, visGraph, showModal, setShow
                                 <>
                                     <div className="d-flex flex-row">
                                         <Button className="flex-grow-1 mt-2" variant="success" disabled={true}>
+                                            Total commits: {totalCommits[clickedComponent.id]}
+                                        </Button>
+                                    </div>
+                                    <div className="d-flex flex-row">
+                                        <Button className="flex-grow-1 mt-2" variant="success" disabled={true}>
                                             Belongs to: {clickedComponent.group}
                                         </Button>
                                     </div>
                                     <div className="d-flex flex-row">
                                         <Button className="flex-grow-1 mt-2" variant="success" disabled={true}>
-                                            Number of modifications done: {decomposition.totalCommits[clickedComponent.id]}
+                                            Number of modifications done: {totalCommits[clickedComponent.id]}
                                         </Button>
                                     </div>
                                     <div className="d-flex flex-row">
@@ -270,6 +275,11 @@ export const RepositoryViewModal = ({decomposition, visGraph, showModal, setShow
                             }
                             {clickedComponent.type === types.BETWEEN_ENTITIES &&
                                 <>
+                                    <div className="d-flex flex-row">
+                                        <Button className="flex-grow-1 mt-2" variant="success" disabled={true}>
+                                            Commits in Common: {commitsInCommon[clickedComponent.from][clickedComponent.to]}
+                                        </Button>
+                                    </div>
                                     <div className="d-flex flex-row">
                                         {copheneticDistance()}
                                     </div>

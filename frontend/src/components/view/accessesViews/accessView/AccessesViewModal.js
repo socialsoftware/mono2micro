@@ -12,7 +12,7 @@ const ACCESS_TYPES = {
     3: "READ/WRITE"
 };
 
-export const AccessViewModal = ({clusters, edgeWeights, outdated, clustersFunctionalities, visGraph, showModal, setShowModal, clickedComponent, setClickedComponent}) => {
+export const AccessesViewModal = ({clusters, clustersFunctionalities, edgeWeights, outdated, showModal, setShowModal, clickedComponent, setClickedComponent}) => {
     const [title, setTitle] = useState("Options");
     const [informationText, setInformationText] = useState(undefined);
 
@@ -24,8 +24,8 @@ export const AccessViewModal = ({clusters, edgeWeights, outdated, clustersFuncti
         else if (clickedComponent.type === types.ENTITY)
             setTitle("Entity " + clickedComponent.label + " informations");
         else {
-            const fromNode = visGraph.nodes.get(clickedComponent.from);
-            const toNode = visGraph.nodes.get(clickedComponent.to);
+            const fromNode = clickedComponent.fromNode;
+            const toNode = clickedComponent.toNode;
 
             let text = "Edge with ";
             text += fromNode.type === types.CLUSTER? "cluster " + fromNode.label : "entity " + fromNode.label;
@@ -224,14 +224,14 @@ export const AccessViewModal = ({clusters, edgeWeights, outdated, clustersFuncti
     }
 
     function handleCommonFunctionalitiesBetweenClusterEntity() {
-        let cluster = visGraph.nodes.get(clickedComponent.from);
+        let cluster = clickedComponent.fromNode;
         let entity;
         if (cluster.type === types.CLUSTER) {
-            entity = visGraph.nodes.get(clickedComponent.to);
+            entity = clickedComponent.toNode;
         }
         else {
             entity = cluster;
-            cluster = visGraph.nodes.get(clickedComponent.to);
+            cluster = clickedComponent.toNode;
         }
         const filteredClustersFunctionalities = clustersFunctionalities[cluster.id].filter(functionality => functionality.entities[entity.id]);
 
@@ -267,8 +267,8 @@ export const AccessViewModal = ({clusters, edgeWeights, outdated, clustersFuncti
     }
 
     function handleCommonFunctionalitiesBetweenEntities() {
-        const e1ID = visGraph.nodes.get(clickedComponent.from);
-        const e2ID = visGraph.nodes.get(clickedComponent.to);
+        const e1ID = clickedComponent.fromNode;
+        const e2ID = clickedComponent.toNode;
         const weights = edgeWeights.find(w => w.e1ID === e1ID.id && w.e2ID === e2ID.id);
 
         setTitle("Functionalities that interact with Entity " + e1ID.label + " and Entity " + e2ID.label);
@@ -303,8 +303,8 @@ export const AccessViewModal = ({clusters, edgeWeights, outdated, clustersFuncti
     }
 
     function isDependencyClusterEntityEdge() {
-        const fromNode = visGraph.nodes.get(clickedComponent.from);
-        const toNode = visGraph.nodes.get(clickedComponent.to);
+        const fromNode = clickedComponent.fromNode;
+        const toNode = clickedComponent.toNode;
         let cluster;
         let entity;
         if (fromNode.type === types.CLUSTER) {

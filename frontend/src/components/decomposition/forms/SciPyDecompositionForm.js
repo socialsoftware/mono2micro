@@ -6,7 +6,7 @@ import Col from "react-bootstrap/Col";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 import {useParams} from "react-router-dom";
-import {RepositoryService} from "../../../services/RepositoryService";
+import {APIService} from "../../../services/APIService";
 import HttpStatus from "http-status-codes";
 
 
@@ -48,7 +48,7 @@ export const SciPyDecompositionForm = ({type, loadDecompositions}) => {
             cutValue = Number(numberClusters);
         }
 
-        const service = new RepositoryService();
+        const service = new APIService();
 
         service.createDecomposition({
             type,
@@ -75,7 +75,7 @@ export const SciPyDecompositionForm = ({type, loadDecompositions}) => {
 
         setIsUploaded("Uploading...");
 
-        const service = new RepositoryService();
+        const service = new APIService();
         service.createExpertDecomposition(
             similarityName,
             expertName,

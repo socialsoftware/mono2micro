@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {RepositoryService} from '../../../services/RepositoryService';
+import {APIService} from '../../../services/APIService';
 import BootstrapTable from 'react-bootstrap-table-next';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -7,7 +7,7 @@ import Slider from '@mui/material/Slider';
 import Divider from '@mui/material/Divider';
 import GrainIcon from '@mui/icons-material/Grain';
 import {useParams} from "react-router-dom";
-import {ModalMessage} from "../../util/ModalMessage";
+import {ModalMessage} from "../utils/ModalMessage";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import {toast, ToastContainer} from "react-toastify";
 
@@ -211,7 +211,7 @@ export const FunctionalityRefactorToolMenu = () => {
     }
 
     function viewCodebaseRefactor(){
-        const service = new RepositoryService();
+        const service = new APIService();
 
         setWaitingResponse(true);
 
@@ -236,7 +236,7 @@ export const FunctionalityRefactorToolMenu = () => {
     }
 
     function requestCodebaseRefactor(newRefactor){
-        const service = new RepositoryService();
+        const service = new APIService();
 
         setWaitingResponse(true);
 

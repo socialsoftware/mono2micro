@@ -106,7 +106,7 @@ public class DecompositionController {
 
 		try {
 			return new ResponseEntity<>(
-				DecompositionDtoFactory.getFactory().getDecompositionDto(decompositionService.getDecomposition(decompositionName)),
+				DecompositionDtoFactory.getDecompositionDto(decompositionService.getDecomposition(decompositionName)),
 				HttpStatus.OK
 			);
 
@@ -156,6 +156,9 @@ public class DecompositionController {
 		try {
 			decompositionService.mergeClustersOperation(decompositionName, (MergeOperation) operation);
 			return new ResponseEntity<>(HttpStatus.OK);
+
+		} catch (KeyAlreadyExistsException e) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -262,6 +265,37 @@ public class DecompositionController {
 
 		try {
 			return new ResponseEntity<>(decompositionService.getEdgeWeights(decompositionName, viewType), HttpStatus.OK);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@RequestMapping(value = "/decomposition/{decompositionName}/{viewType}/getSearchItems", method = RequestMethod.GET)
+	public ResponseEntity<String> getSearchItems(
+			@PathVariable String decompositionName,
+			@PathVariable String viewType
+	) {
+		logger.debug("getSearchItems");
+
+		try {
+			return new ResponseEntity<>(decompositionService.getSearchItems(decompositionName, viewType), HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@RequestMapping(value = "/decomposition/{decompositionName}/update", method = RequestMethod.GET)
+	public ResponseEntity<DecompositionDto> update(
+			@PathVariable String decompositionName
+	) {
+		logger.debug("update");
+
+		try {
+			return new ResponseEntity<>(DecompositionDtoFactory.getDecompositionDto(
+					decompositionService.updateDecomposition(decompositionName)), HttpStatus.OK);
 
 		} catch (Exception e) {
 			e.printStackTrace();

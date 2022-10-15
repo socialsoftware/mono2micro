@@ -2,20 +2,20 @@ import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider, {Search} from "react-bootstrap-table2-toolkit";
 import React, {useEffect, useContext, useState} from "react";
 import AppContext from "../../AppContext";
-import {RepositoryService} from "../../../services/RepositoryService";
+import {APIService} from "../../../services/APIService";
 import MuiAccordion from '@mui/material/Accordion';
 import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import {Grid, List, ListItem, ListItemText, ListSubheader, Paper, styled, Typography} from "@mui/material";
 
-export const AccessesSciPyAnalysis = ({codebaseName, resultData, decomposition1, decomposition2}) => {
+export const DefaultAnalysis = ({codebaseName, resultData}) => {
     const context = useContext(AppContext);
     const { translateEntity, updateEntityTranslationFile } = context;
     const [falsePairs, setFalsePairs] = useState([]);
 
     useEffect(() => {
-        const service = new RepositoryService();
+        const service = new APIService();
 
         service.getIdToEntity(codebaseName).then(response => {
             updateEntityTranslationFile(response.data);
@@ -45,11 +45,11 @@ export const AccessesSciPyAnalysis = ({codebaseName, resultData, decomposition1,
         sort: true
     }, {
         dataField: 'e1g1',
-        text: decomposition1.name,
+        text: resultData.decomposition1.name,
         sort: true
     }, {
         dataField: 'e1g2',
-        text: decomposition2.name,
+        text: resultData.decomposition2.name,
         sort: true
     }, {
         dataField: 'space',
@@ -60,11 +60,11 @@ export const AccessesSciPyAnalysis = ({codebaseName, resultData, decomposition1,
         sort: true
     }, {
         dataField: 'e2g1',
-        text: decomposition1.name,
+        text: resultData.decomposition1.name,
         sort: true
     }, {
         dataField: 'e2g2',
-        text: decomposition2.name,
+        text: resultData.decomposition2.name,
         sort: true
     }];
 
@@ -139,32 +139,42 @@ export const AccessesSciPyAnalysis = ({codebaseName, resultData, decomposition1,
                                 </Grid>
                                 <Grid container spacing={1}>
                                     <Grid item xs={4}> <ItemCorner>Property</ItemCorner> </Grid>
-                                    <Grid item xs={4}> <ItemTop>{decomposition1.name}</ItemTop> </Grid>
-                                    <Grid item xs={4}> <ItemTop>{decomposition2.name}</ItemTop> </Grid>
+                                    <Grid item xs={4}> <ItemTop>{resultData.decomposition1.name}</ItemTop> </Grid>
+                                    <Grid item xs={4}> <ItemTop>{resultData.decomposition2.name}</ItemTop> </Grid>
 
                                     <Grid item xs={4}> <ItemCorner>Silhouette Score:</ItemCorner> </Grid>
-                                    <Grid item xs={4}> <Item>{decomposition1.silhouetteScore}</Item> </Grid>
-                                    <Grid item xs={4}> <Item>{decomposition2.silhouetteScore}</Item> </Grid>
+                                    <Grid item xs={4}> <Item>{resultData.decomposition1.silhouetteScore}</Item> </Grid>
+                                    <Grid item xs={4}> <Item>{resultData.decomposition2.silhouetteScore}</Item> </Grid>
 
                                     <Grid item xs={4}> <ItemCorner>Largest Cluster Size:</ItemCorner> </Grid>
-                                    <Grid item xs={4}> <Item>{Object.values(decomposition1.clusters).reduce((p, c) => p > c.elements.length? p : c.elements.length, 0)}</Item> </Grid>
-                                    <Grid item xs={4}> <Item>{Object.values(decomposition2.clusters).reduce((p, c) => p > c.elements.length? p : c.elements.length, 0)}</Item> </Grid>
+                                    <Grid item xs={4}> <Item>{Object.values(resultData.decomposition1.clusters).reduce((p, c) => p > c.elements.length? p : c.elements.length, 0)}</Item> </Grid>
+                                    <Grid item xs={4}> <Item>{Object.values(resultData.decomposition2.clusters).reduce((p, c) => p > c.elements.length? p : c.elements.length, 0)}</Item> </Grid>
 
                                     <Grid item xs={4}> <ItemCorner>Smallest Cluster Size:</ItemCorner> </Grid>
-                                    <Grid item xs={4}> <Item>{Object.values(decomposition1.clusters).reduce((p, c) => p < c.elements.length? p : c.elements.length, Object.values(decomposition2.clusters)[0].elements.length)}</Item> </Grid>
-                                    <Grid item xs={4}> <Item>{Object.values(decomposition2.clusters).reduce((p, c) => p < c.elements.length? p : c.elements.length, Object.values(decomposition2.clusters)[0].elements.length)}</Item> </Grid>
+                                    <Grid item xs={4}> <Item>{Object.values(resultData.decomposition1.clusters).reduce((p, c) => p < c.elements.length? p : c.elements.length, Object.values(resultData.decomposition2.clusters)[0].elements.length)}</Item> </Grid>
+                                    <Grid item xs={4}> <Item>{Object.values(resultData.decomposition2.clusters).reduce((p, c) => p < c.elements.length? p : c.elements.length, Object.values(resultData.decomposition2.clusters)[0].elements.length)}</Item> </Grid>
 
                                     <Grid item xs={4}> <ItemCorner>Number of Singleton Clusters:</ItemCorner> </Grid>
-                                    <Grid item xs={4}> <Item>{Object.values(decomposition1.clusters).reduce((p, c) => c.elements.length === 1? p + 1: p, 0)}</Item> </Grid>
-                                    <Grid item xs={4}> <Item>{Object.values(decomposition2.clusters).reduce((p, c) => c.elements.length === 1? p + 1: p, 0)}</Item> </Grid>
+                                    <Grid item xs={4}> <Item>{Object.values(resultData.decomposition1.clusters).reduce((p, c) => c.elements.length === 1? p + 1: p, 0)}</Item> </Grid>
+                                    <Grid item xs={4}> <Item>{Object.values(resultData.decomposition2.clusters).reduce((p, c) => c.elements.length === 1? p + 1: p, 0)}</Item> </Grid>
 
-                                    {Object.entries(decomposition1.metrics).map(([metricName, metric]) =>
-                                        <React.Fragment key={metricName}>
+                                    {Object.entries(resultData.decomposition1.metrics).map(([metricName, metric]) => {
+                                        const decompositionMetric = resultData.decomposition2.metrics[metricName];
+                                        return (<React.Fragment key={metricName}>
                                             <Grid item xs={4}> <ItemCorner>{metricName}:</ItemCorner> </Grid>
                                             <Grid item xs={4}> <Item>{metric}</Item> </Grid>
-                                            <Grid item xs={4}> <Item>{decomposition2.metrics[metricName]}</Item> </Grid>
-                                        </React.Fragment>
-                                    )}
+                                            <Grid item xs={4}> <Item>{decompositionMetric !== undefined? decompositionMetric : ""} {decompositionMetric === undefined && <i>Not Present</i>}</Item> </Grid>
+                                        </React.Fragment>);
+                                    })}
+                                    {Object.entries(resultData.decomposition2.metrics).map(([metricName, metric]) => {
+                                        if (Object.keys(resultData.decomposition1.metrics).includes(metricName))
+                                            return undefined;
+                                        return (<React.Fragment key={metricName}>
+                                            <Grid item xs={4}> <ItemCorner>{metricName}:</ItemCorner> </Grid>
+                                            <Grid item xs={4}> <Item><i>Not Present</i></Item> </Grid>
+                                            <Grid item xs={4}> <Item>{metric}</Item> </Grid>
+                                        </React.Fragment>);
+                                    })}
                                 </Grid>
                             </AccordionDetails>
                         </Accordion>
@@ -228,18 +238,18 @@ export const AccessesSciPyAnalysis = ({codebaseName, resultData, decomposition1,
                             <AccordionSummary>Decomposition Differences</AccordionSummary>
                             <AccordionDetails>
                                 <div>
-                                    {Object.entries(decomposition1.clusters).map(([clusterName, cluster1]) => {
-                                        if (decomposition2.clusters[clusterName] === undefined)
+                                    {Object.entries(resultData.decomposition1.clusters).map(([clusterName, cluster1]) => {
+                                        if (resultData.decomposition2.clusters[clusterName] === undefined)
                                             return  <Accordion disabled={true} key={clusterName}>
-                                                <AccordionSummary>{clusterName} does not exist in {decomposition2.name}</AccordionSummary>
+                                                <AccordionSummary>{clusterName} does not exist in {resultData.decomposition2.name}</AccordionSummary>
                                             </Accordion>
                                         else {
-                                            let cluster2 = decomposition2.clusters[clusterName];
+                                            let cluster2 = resultData.decomposition2.clusters[clusterName];
                                             let includedEntities = [], notIncludedEntities = [];
                                             {cluster1.elements.map(entity => {
                                                 if (cluster2.elements.find(e => e.id === entity.id))
                                                     includedEntities.push(entity.name);
-                                                else notIncludedEntities.push(entity.name + " (belong to " + Object.values(decomposition2.clusters).find(c => c.elements.find(e => e.id === entity.id)).name + ")");
+                                                else notIncludedEntities.push(entity.name + " (belong to " + Object.values(resultData.decomposition2.clusters).find(c => c.elements.find(e => e.id === entity.id)).name + ")");
                                             })}
                                             return  <Accordion key={clusterName}>
                                                 <AccordionSummary>{clusterName}</AccordionSummary>
@@ -272,10 +282,10 @@ export const AccessesSciPyAnalysis = ({codebaseName, resultData, decomposition1,
                                             </Accordion>
                                         }
                                     })}
-                                    {Object.keys(decomposition2.clusters).map(clusterName => {
-                                        if (decomposition1.clusters[clusterName] === undefined)
+                                    {Object.keys(resultData.decomposition2.clusters).map(clusterName => {
+                                        if (resultData.decomposition1.clusters[clusterName] === undefined)
                                             return  <Accordion disabled={true} key={clusterName}>
-                                                <AccordionSummary>{clusterName} does not exist in {decomposition1.name}</AccordionSummary>
+                                                <AccordionSummary>{clusterName} does not exist in {resultData.decomposition1.name}</AccordionSummary>
                                             </Accordion>
                                         else return undefined;
                                     })}

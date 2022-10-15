@@ -14,7 +14,7 @@ public class SimilarityDtoFactory {
             case SIMILARITY_MATRIX_SCIPY:
                 return new SimilarityMatrixSciPyDto((SimilarityMatrixSciPy) similarity);
             default:
-                throw new RuntimeException("The type \"" + similarity.getDecompositionType() + "\" is not a valid similarity type.");
+                throw new RuntimeException("The type \"" + similarity.getType() + "\" is not a valid similarity type.");
         }
     }
 
