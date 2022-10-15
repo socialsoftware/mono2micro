@@ -33,7 +33,7 @@ public class CouplingMetric extends DecompositionMetric {
                     .setScale(2, RoundingMode.HALF_UP)
                     .doubleValue();
 
-            cluster1.setCoupling(clusterCoupling);
+            cluster1.addMetric(COUPLING, clusterCoupling);
 
             coupling += clusterCoupling;
         }

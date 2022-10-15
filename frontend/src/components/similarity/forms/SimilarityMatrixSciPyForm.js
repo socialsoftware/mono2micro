@@ -9,7 +9,7 @@ import HttpStatus from "http-status-codes";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 import {RepresentationType} from "../../../models/representation/Representation";
-import {TraceType} from "../../../type-declarations/types.d";
+import {TraceType} from "../../../type-declarations/types";
 import {SIMILARITY_MATRIX_SCIPY} from "../../../models/similarity/SimilarityMatrixSciPy";
 import {WeightsFactory} from "../../../models/weights/WeightsFactory";
 

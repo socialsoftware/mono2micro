@@ -19,7 +19,7 @@ import {DEFAULT_REDESIGN_NAME} from "../../../../constants/constants";
 import {FunctionalityOperationsMenu} from "./FunctionalityOperationsMenu";
 import AppContext from "../../../AppContext";
 import {useParams} from "react-router-dom";
-import {MetricType} from "../../../../type-declarations/types.d";
+import {MetricType} from "../../../../type-declarations/types";
 import {searchType} from "../../utils/ViewSearchBar";
 import {Analytics, BubbleChart, Edit, Hub, List, Search} from "@mui/icons-material";
 import {types} from "../../utils/GraphUtils";

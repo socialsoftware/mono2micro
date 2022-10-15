@@ -1,5 +1,5 @@
 import React from "react";
-import {TraceType} from "../../type-declarations/types.d";
+import {TraceType} from "../../type-declarations/types";
 import Recommendation from "./Recommendation";
 
 const RECOMMEND_MATRIX_SCIPY = "RECOMMEND_MATRIX_SCIPY";

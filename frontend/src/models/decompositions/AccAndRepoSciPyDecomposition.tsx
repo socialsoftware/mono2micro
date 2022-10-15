@@ -2,7 +2,7 @@ import Decomposition from "./Decomposition";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import React from "react";
-import {MetricType} from "../../type-declarations/types.d";
+import {MetricType} from "../../type-declarations/types";
 import {Cached} from "@mui/icons-material";
 import {APIService} from "../../services/APIService";
 import {toast} from "react-toastify";

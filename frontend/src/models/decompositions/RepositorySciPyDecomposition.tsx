@@ -1,6 +1,6 @@
 import Decomposition from "./Decomposition";
 import Card from "react-bootstrap/Card";
-import {MetricType} from "../../type-declarations/types.d";
+import {MetricType} from "../../type-declarations/types";
 import Button from "react-bootstrap/Button";
 import React from "react";
 

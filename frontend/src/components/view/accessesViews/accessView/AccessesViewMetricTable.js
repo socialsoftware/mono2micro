@@ -3,6 +3,7 @@ import React, {useState} from "react";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
 import CircularProgress from "@mui/material/CircularProgress";
+import {MetricType} from "../../../../type-declarations/types";
 
 const metricsColumns = [{
     dataField: 'cluster',
@@ -39,15 +40,15 @@ export const AccessesViewMetricTable = ({clusters, clustersFunctionalities, outd
 
     const [selectedTable, setSelectedTable] = useState(1);
 
-    const metricsRows = clusters.map(({ name, elements, cohesion, coupling, complexity }) => {
+    const metricsRows = clusters.map(({ name, elements, metrics }) => {
         return {
             name: name,
             cluster: name,
             entities: elements.length,
             functionalities: clustersFunctionalities[name] === undefined ? "fetching..." : clustersFunctionalities[name].length,
-            cohesion: cohesion,
-            coupling: coupling,
-            complexity: complexity
+            cohesion: metrics[MetricType.COHESION],
+            coupling: metrics[MetricType.COUPLING],
+            complexity: metrics[MetricType.COMPLEXITY]
         }
     });
 

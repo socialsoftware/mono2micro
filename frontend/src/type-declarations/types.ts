@@ -71,7 +71,8 @@ export interface Cluster {
     elements?: Elem;
 }
 
-export interface AccessesSciPyCluster extends Cluster {
+export interface sciPyCluster extends Cluster {
+    metrics?: Record<string, any>;
     complexity?: number;
     cohesion?: number;
     coupling?: number;

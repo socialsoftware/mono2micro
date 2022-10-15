@@ -12,7 +12,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 import {RepresentationType} from "../../../models/representation/Representation";
-import {TraceType} from "../../../type-declarations/types.d";
+import {TraceType} from "../../../type-declarations/types";
 import {RECOMMEND_MATRIX_SCIPY} from "../../../models/recommendation/RecommendMatrixSciPy";
 import {WeightsFactory} from "../../../models/weights/WeightsFactory";
 

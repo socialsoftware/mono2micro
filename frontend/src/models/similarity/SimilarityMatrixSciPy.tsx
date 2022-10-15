@@ -1,5 +1,5 @@
 import Similarity from "./Similarity";
-import {TraceType} from "../../type-declarations/types.d";
+import {TraceType} from "../../type-declarations/types";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import {URL} from "../../constants/constants"

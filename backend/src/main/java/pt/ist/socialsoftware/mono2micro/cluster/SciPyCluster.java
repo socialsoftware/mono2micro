@@ -6,9 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class SciPyCluster extends Cluster {
-    private double complexity;
-    private double cohesion;
-    private double coupling;
+    Map<String, Object> metrics = new HashMap<>(); // Map<Metric type, Metric value>
     private Map<String, Set<Short>> couplingDependencies = new HashMap<>(); // <clusterName, Set<EntityID>>
 
     public SciPyCluster() { }
@@ -17,28 +15,16 @@ public class SciPyCluster extends Cluster {
         this.name = name;
     }
 
-    public double getComplexity() {
-        return complexity;
+    public Map<String, Object> getMetrics() {
+        return metrics;
     }
 
-    public void setComplexity(double complexity) {
-        this.complexity = complexity;
+    public void setMetrics(Map<String, Object> metrics) {
+        this.metrics = metrics;
     }
 
-    public double getCohesion() {
-        return cohesion;
-    }
-
-    public void setCohesion(double cohesion) {
-        this.cohesion = cohesion;
-    }
-
-    public double getCoupling() {
-        return coupling;
-    }
-
-    public void setCoupling(double coupling) {
-        this.coupling = coupling;
+    public void addMetric(String type, Object value) {
+        this.metrics.put(type, value);
     }
 
     public Map<String, Set<Short>> getCouplingDependencies() { return couplingDependencies; }
