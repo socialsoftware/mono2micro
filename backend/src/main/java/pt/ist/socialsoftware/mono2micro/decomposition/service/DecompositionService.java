@@ -10,7 +10,6 @@ import pt.ist.socialsoftware.mono2micro.decomposition.domain.views.ClusterViewDe
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.ExpertRequest;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
-import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.history.service.HistoryService;
 import pt.ist.socialsoftware.mono2micro.operation.*;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
@@ -38,9 +37,6 @@ public class DecompositionService {
 
     @Autowired
     HistoryService historyService;
-
-    @Autowired
-    GridFsService gridFsService;
 
     public String[] getDecompositionTypes() {
         return new String[] { // LOG NEW DECOMPOSITION TYPES HERE
