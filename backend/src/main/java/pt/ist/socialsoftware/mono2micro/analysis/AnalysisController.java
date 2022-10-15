@@ -16,7 +16,7 @@ import pt.ist.socialsoftware.mono2micro.analysis.dto.interfaces.MoJoProperties;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.analysis.dto.AnalysisDto;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.DecompositionDtoFactory;
-import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
+import pt.ist.socialsoftware.mono2micro.decomposition.service.DecompositionService;
 
 @RestController
 @RequestMapping(value = "/mono2micro")
@@ -24,7 +24,7 @@ public class AnalysisController {
     private static final Logger logger = LoggerFactory.getLogger(AnalysisController.class);
 
     @Autowired
-    DecompositionRepository decompositionRepository;
+    DecompositionService decompositionService;
 
     @RequestMapping(value = "/analysis/{decomposition1Name}/{decomposition2Name}", method = RequestMethod.POST)
     public ResponseEntity<AnalysisDto> getAnalysis(
@@ -34,8 +34,8 @@ public class AnalysisController {
         logger.debug("getAnalysis");
 
         try {
-            Decomposition decomposition1 = decompositionRepository.findByName(decomposition1Name);
-            Decomposition decomposition2 = decompositionRepository.findByName(decomposition2Name);
+            Decomposition decomposition1 = decompositionService.updateDecomposition(decomposition1Name);
+            Decomposition decomposition2 = decompositionService.updateDecomposition(decomposition2Name);
 
             AnalysisDto analysisDto = AnalysisDtoFactory.getAnalysisDto(decomposition1, decomposition2);
 
