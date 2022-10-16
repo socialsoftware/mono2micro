@@ -7,11 +7,11 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Button from 'react-bootstrap/Button';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
-import {DefaultAnalysis} from "./implementations/DefaultAnalysis";
+import {DefaultComparisonTool} from "./implementations/DefaultComparisonTool";
 
 const HttpStatus = require('http-status-codes');
 
-export const Analysis = () => {
+export const ComparisonTool = () => {
     const [codebases, setCodebases] = useState([]);
     const [codebase, setCodebase] = useState({});
     const [decompositions, setDecompositions] = useState([]);
@@ -82,7 +82,7 @@ export const Analysis = () => {
                     Home
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>
-                    Microservice Analysis
+                    Comparison Tool
                 </Breadcrumb.Item>
             </Breadcrumb>
         );
@@ -133,7 +133,7 @@ export const Analysis = () => {
     return (
         <div className={"ms-2 me-2"}>
             {renderBreadCrumbs()}
-            <h4 style={{ color: "#666666" }}>Microservice Analysis</h4>
+            <h4 style={{ color: "#666666" }}>Comparison Tool</h4>
 
             <Form onSubmit={handleSubmit}>
                 <Form.Group as={Row} controlId="codebase">
@@ -222,8 +222,8 @@ export const Analysis = () => {
 
             {/*ADD ADDITIONAL COMPARISONS HERE*/}
 
-            {resultData.type === "DEFAULT_ANALYSIS_DTO" &&
-                <DefaultAnalysis
+            {resultData.type === "DEFAULT_COMPARISON_TOOL_DTO" &&
+                <DefaultComparisonTool
                     codebaseName={codebase.name}
                     resultData={resultData}
                 />

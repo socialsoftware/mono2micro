@@ -18,8 +18,8 @@ const Header: FunctionComponent = () => {
                     <Nav.Link href="/codebases">
                         Codebases
                     </Nav.Link>
-                    <Nav.Link href="/analysis">
-                        Microservice Analysis
+                    <Nav.Link href="/comparisonTool">
+                        Comparison Tool
                     </Nav.Link>
                 </Nav>
             </Navbar.Collapse>

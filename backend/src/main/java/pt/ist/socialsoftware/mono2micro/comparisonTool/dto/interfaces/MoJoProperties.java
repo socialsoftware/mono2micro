@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.analysis.dto.interfaces;
+package pt.ist.socialsoftware.mono2micro.comparisonTool.dto.interfaces;
 
 public interface MoJoProperties {
     void setSpecificity(float specificity);

@@ -88,12 +88,12 @@ export interface DomainEntity extends Elem {
     type: string;
 }
 
-export interface AnalysisDto {
+export interface ComparisonToolDto {
     decomposition1?: Decomposition;
     decomposition2?: Decomposition;
 }
 
-export interface AccessesSciPyAnalysisDto extends AnalysisDto {
+export interface DefaultComparisonToolDto extends ComparisonToolDto {
     truePositive?: number;
     trueNegative?: number;
     falsePositive?: number;

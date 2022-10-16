@@ -1,12 +1,12 @@
-package pt.ist.socialsoftware.mono2micro.analysis.dto;
+package pt.ist.socialsoftware.mono2micro.comparisonTool.dto;
 
-import pt.ist.socialsoftware.mono2micro.analysis.dto.interfaces.MoJoProperties;
+import pt.ist.socialsoftware.mono2micro.comparisonTool.dto.interfaces.MoJoProperties;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefaultAnalysisDto extends AnalysisDto implements MoJoProperties {
-    public static final String DEFAULT_ANALYSIS_DTO = "DEFAULT_ANALYSIS_DTO";
+public class DefaultComparisonToolDto extends ComparisonToolDto implements MoJoProperties {
+    public static final String DEFAULT_COMPARISON_TOOL_DTO = "DEFAULT_COMPARISON_TOOL_DTO";
     private int truePositive;
     private int trueNegative;
     private int falsePositive;
@@ -24,7 +24,7 @@ public class DefaultAnalysisDto extends AnalysisDto implements MoJoProperties {
 
     @Override
     public String getType() {
-        return DEFAULT_ANALYSIS_DTO;
+        return DEFAULT_COMPARISON_TOOL_DTO;
     }
 
     public float getPrecision() {

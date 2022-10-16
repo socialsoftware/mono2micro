@@ -1,8 +1,8 @@
-package pt.ist.socialsoftware.mono2micro.analysis.dto;
+package pt.ist.socialsoftware.mono2micro.comparisonTool.dto;
 
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.DecompositionDto;
 
-public abstract class AnalysisDto {
+public abstract class ComparisonToolDto {
     private DecompositionDto decomposition1;
     private DecompositionDto decomposition2;
 

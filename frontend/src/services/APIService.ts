@@ -4,7 +4,7 @@ import {
     REFACTORIZATION_TOOL_URL,
 } from '../constants/constants';
 import {
-    AnalysisDto,
+    ComparisonToolDto,
     Cluster,
     LocalTransactionsGraph,
     RefactorCodebase,
@@ -47,7 +47,7 @@ export class APIService {
 
     //Analysis
     analysis(decomposition1Name: string, decomposition2Name: string) {
-        return this.axios.post<AnalysisDto>("/analysis/" + decomposition1Name + "/" + decomposition2Name);
+        return this.axios.post<ComparisonToolDto>("/comparison/" + decomposition1Name + "/" + decomposition2Name);
     }
 
     // Recommendation

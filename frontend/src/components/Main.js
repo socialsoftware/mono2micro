@@ -4,7 +4,7 @@ import { Home } from './Home';
 import { Decompositions } from './decomposition/Decompositions';
 import { Codebases } from './codebase/Codebases';
 import { Strategies } from './strategy/Strategies';
-import { Analysis } from './analysis/Analysis';
+import { ComparisonTool } from './comparisonTool/ComparisonTool';
 import { Profiles } from './profile/Profiles';
 import {FunctionalityRefactorToolMenu} from "./view/accessesViews/FunctionalityRefactorToolMenu";
 import {Similarities} from "./similarity/Similarities";
@@ -28,7 +28,7 @@ export const Main = () => (
 
       <Route exact path='/codebase/:codebaseName/:representationName/profiles' element={<Profiles/>} />
 
-      <Route exact path='/analysis' element={<Analysis/>} />
+      <Route exact path='/comparisonTool' element={<ComparisonTool/>} />
     </Routes>
   </main>
 )

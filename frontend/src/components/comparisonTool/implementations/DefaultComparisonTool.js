@@ -9,7 +9,7 @@ import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import {Grid, List, ListItem, ListItemText, ListSubheader, Paper, styled, Typography} from "@mui/material";
 
-export const DefaultAnalysis = ({codebaseName, resultData}) => {
+export const DefaultComparisonTool = ({codebaseName, resultData}) => {
     const context = useContext(AppContext);
     const { translateEntity, updateEntityTranslationFile } = context;
     const [falsePairs, setFalsePairs] = useState([]);
