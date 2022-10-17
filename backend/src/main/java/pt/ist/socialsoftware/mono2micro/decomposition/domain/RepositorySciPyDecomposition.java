@@ -165,25 +165,21 @@ public class RepositorySciPyDecomposition extends Decomposition implements SciPy
         ClusterViewMergeOperation mergeOperation = (ClusterViewMergeOperation) operation;
         mergeOperation.addEntities(this); // needed so that when doing undo, the original entities are restored
         clusterViewMerge(operation.getCluster1Name(), operation.getCluster2Name(), operation.getNewName());
-        //setOutdated(true);
     }
 
     public void splitCluster(SplitOperation operation) {
-        ClusterViewSplitOperation mergeOperation = (ClusterViewSplitOperation) operation;
-        clusterViewSplit(mergeOperation.getOriginalCluster(), mergeOperation.getNewCluster(), mergeOperation.getEntities());
-        //setOutdated(true);
+        ClusterViewSplitOperation splitOperation = (ClusterViewSplitOperation) operation;
+        clusterViewSplit(splitOperation.getOriginalCluster(), splitOperation.getNewCluster(), splitOperation.getEntities());
     }
 
     public void transferEntities(TransferOperation operation) {
         ClusterViewTransferOperation transferOperation = (ClusterViewTransferOperation) operation;
         clusterViewTransfer(transferOperation.getFromCluster(), transferOperation.getToCluster(), transferOperation.getEntities());
-        //setOutdated(true);
     }
 
     public void formCluster(FormClusterOperation operation) {
         ClusterViewFormClusterOperation formClusterOperation = (ClusterViewFormClusterOperation) operation;
         clusterViewFormCluster(formClusterOperation.getNewCluster(), formClusterOperation.getEntities());
-        //setOutdated(true);
     }
 
     public void undoOperation(Operation operation) {
