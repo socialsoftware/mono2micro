@@ -2,7 +2,7 @@ package pt.ist.socialsoftware.mono2micro.metrics.decompositionMetrics;
 
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces.RepositoryDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.property.RepositoryDecomposition;
 import pt.ist.socialsoftware.mono2micro.element.Element;
 
 import java.util.HashSet;

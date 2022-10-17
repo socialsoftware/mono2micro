@@ -3,7 +3,7 @@ package pt.ist.socialsoftware.mono2micro.metrics.functionalityRedesignMetrics;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces.AccessesDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.property.AccessesDecomposition;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.functionality.LocalTransactionTypes;

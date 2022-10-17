@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import pt.ist.socialsoftware.mono2micro.cluster.SciPyCluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.*;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces.SciPyDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.algorithm.SciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.SciPyRequestDto;
 import pt.ist.socialsoftware.mono2micro.element.DomainEntity;

@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces.AccessesDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.property.AccessesDecomposition;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.service.AccessesDecompositionService;
 import pt.ist.socialsoftware.mono2micro.decomposition.service.DecompositionService;

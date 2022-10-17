@@ -1,7 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.functionality.domain;
 
 import org.json.JSONArray;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces.AccessesDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.property.AccessesDecomposition;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;

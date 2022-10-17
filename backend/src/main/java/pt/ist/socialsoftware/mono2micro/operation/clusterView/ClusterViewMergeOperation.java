@@ -2,7 +2,6 @@ package pt.ist.socialsoftware.mono2micro.operation.clusterView;
 
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces.AccessesDecomposition;
 import pt.ist.socialsoftware.mono2micro.operation.MergeOperation;
 
 import java.util.stream.Collectors;

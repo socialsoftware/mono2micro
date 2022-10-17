@@ -1,6 +1,5 @@
-package pt.ist.socialsoftware.mono2micro.decomposition.domain.interfaces;
+package pt.ist.socialsoftware.mono2micro.decomposition.domain.property;
 
-import com.mongodb.util.JSON;
 import org.apache.commons.io.IOUtils;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
