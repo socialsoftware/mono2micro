@@ -77,7 +77,6 @@ export const AccessesViews = () => {
             service.getEdgeWeights(decompositionName, ACCESSES_DECOMPOSITION).then(response => {
                 setNow(n => n + 30);
                 setEdgeWeights(response.data);
-                changeSpeedDial(false);
             });
         });
         service.getIdToEntity(codebaseName).then(response => {
@@ -158,6 +157,7 @@ export const AccessesViews = () => {
     }
 
     function changeToFunctionalities() {
+        setShowTable(false);
         setDisplayAccesses("none");
         setDisplayFunctionalities("block");
         setView(views.FUNCTIONALITY);
@@ -193,7 +193,6 @@ export const AccessesViews = () => {
                 setReloadPositions({});
             });
             setOutdated(true);
-            changeSpeedDial(false);
         });
     }
 
@@ -205,14 +204,12 @@ export const AccessesViews = () => {
                 setReloadPositions({});
             });
             setOutdated(true);
-            changeSpeedDial(false);
         });
     }
 
     useEffect(() => { // update speed dial after operation
-        if (outdated)
-            changeSpeedDial(false);
-    }, [outdated]);
+        changeSpeedDial(showTable);
+    }, [clusters]);
 
     const helpPopover = (
         <Popover id="helpPopover" title={view}>
@@ -233,6 +230,7 @@ export const AccessesViews = () => {
 
     useEffect(() => { // Selects the correct view
         if (searchedItem !== undefined && searchedItem.type === searchType.FUNCTIONALITY) {
+            setShowTable(false);
             setDisplayAccesses("none");
             setDisplayFunctionalities("block");
             setView(views.FUNCTIONALITY);

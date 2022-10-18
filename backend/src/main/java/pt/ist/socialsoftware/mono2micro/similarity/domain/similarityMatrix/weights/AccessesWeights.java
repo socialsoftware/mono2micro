@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.similarityGenerator.weights;
+package pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights;
 
 import org.json.JSONException;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
@@ -8,7 +8,7 @@ import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSci
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.algorithm.AccessesSimilarity;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
@@ -60,6 +60,7 @@ public class AccessesWeights extends Weights {
         }};
     }
 
+    @Override
     public void setWeightsFromArray(float[] weightsArray) {
         this.accessMetricWeight = weightsArray[0];
         this.writeMetricWeight = weightsArray[1];
@@ -103,12 +104,14 @@ public class AccessesWeights extends Weights {
                 this.sequenceMetricWeight == accessesWeights.getSequenceMetricWeight();
     }
 
+    @Override
     public void fillMatrix(GridFsService gridFsService, Similarity similarity, float[][][] rawMatrix, Set<Short> elements, int fillFromIndex) throws IOException, JSONException {
-        AccessesSimilarity s = (AccessesSimilarity) similarity;
+        SimilarityMatrixSciPy s = (SimilarityMatrixSciPy) similarity;
         AccessesRepresentation accesses = (AccessesRepresentation) similarity.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
         fillRawMatrixFromAccesses(rawMatrix, fillFromIndex, gridFsService.getFile(accesses.getName()), accesses.getProfile(s.getProfile()), s.getTraceType(), s.getTracesMaxLimit());
     }
 
+    @Override
     public void fillMatrix(GridFsService gridFsService, Recommendation recommendation, float[][][] rawMatrix, Set<Short> elements, int fillFromIndex) throws IOException, JSONException {
         RecommendMatrixSciPy r = (RecommendMatrixSciPy) recommendation;
         AccessesRepresentation accesses = (AccessesRepresentation) recommendation.getStrategy().getCodebase().getRepresentationByType(ACCESSES);

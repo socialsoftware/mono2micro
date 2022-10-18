@@ -62,10 +62,7 @@ export const RepositoryView = () => {
             setTotalCommits(response.totalCommits);
         });
         const response2 = service.getEdgeWeights(decompositionName, REPOSITORY_DECOMPOSITION).then(response => { setNow(n => n + 30); setEdgeWeights(response.data);});
-        Promise.all([response1, response2]).then(() => {
-            setDisplayRepository("block");
-            changeSpeedDial();
-        });
+        Promise.all([response1, response2]).then(() => setDisplayRepository("block"));
     }, []);
 
     const speedDialActions = [
@@ -104,7 +101,6 @@ export const RepositoryView = () => {
                 setReloadPositions({});
             });
             setOutdated(true);
-            changeSpeedDial();
         });
     }
 
@@ -116,14 +112,12 @@ export const RepositoryView = () => {
                 setReloadPositions({});
             });
             setOutdated(true);
-            changeSpeedDial();
         });
     }
 
     useEffect(() => { // update speed dial after operation
-        if (outdated)
-            changeSpeedDial();
-    }, [outdated]);
+        changeSpeedDial();
+    }, [clusters]);
 
     function changeSpeedDial() {
         setActions(speedDialActions);

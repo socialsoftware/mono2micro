@@ -1,12 +1,9 @@
-package pt.ist.socialsoftware.mono2micro.similarityGenerator.weights;
+package pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONException;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
-import pt.ist.socialsoftware.mono2micro.representation.domain.AuthorRepresentation;
-import pt.ist.socialsoftware.mono2micro.representation.domain.CommitRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 
 import java.io.IOException;

@@ -9,16 +9,11 @@ import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.algorithm.AccessesSimilarity;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.algorithm.Dendrogram;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.algorithm.SimilarityForSciPy;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityGenerator.SimilarityMatrix;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.dendrogram.Dendrogram;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.SimilarityMatrix;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDto;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityMatrixSciPyDto;
-import pt.ist.socialsoftware.mono2micro.similarityGenerator.DendrogramGenerator;
-import pt.ist.socialsoftware.mono2micro.similarityGenerator.SimilarityMatrixGenerator;
-import pt.ist.socialsoftware.mono2micro.similarityGenerator.weights.AccessesWeights;
-import pt.ist.socialsoftware.mono2micro.similarityGenerator.weights.Weights;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.AccessesWeights;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
 
@@ -29,7 +24,7 @@ import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRep
 import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
 
 @Document("similarity")
-public class SimilarityMatrixSciPy extends Similarity implements AccessesSimilarity, Dendrogram, SimilarityForSciPy, SimilarityMatrix {
+public class SimilarityMatrixSciPy extends Similarity {
     public static final String SIMILARITY_MATRIX_SCIPY = "SIMILARITY_MATRIX_SCIPY";
 
     // Used during Similarity Generation
@@ -37,15 +32,12 @@ public class SimilarityMatrixSciPy extends Similarity implements AccessesSimilar
     private int tracesMaxLimit;
     private Constants.TraceType traceType;
 
-    private List<Weights> weightsList;
-
     // Used in Clustering Algorithm
     private String linkageType;
-    private String similarityMatrixName;
+    private SimilarityMatrix similarityMatrix;
 
-    // Image created in the Python services
-    private String dendrogramName;
-    private String copheneticDistanceName;
+    // Dendrogram created in the Python services
+    private Dendrogram dendrogram;
 
     public SimilarityMatrixSciPy() {}
 
@@ -54,7 +46,7 @@ public class SimilarityMatrixSciPy extends Similarity implements AccessesSimilar
         this.tracesMaxLimit = dto.getTracesMaxLimit();
         this.traceType = dto.getTraceType();
         this.linkageType = dto.getLinkageType();
-        this.weightsList = dto.getWeightsList();
+        this.similarityMatrix = new SimilarityMatrix(dto.getWeightsList());
         setDecompositions(new ArrayList<>());
     }
 
@@ -70,7 +62,6 @@ public class SimilarityMatrixSciPy extends Similarity implements AccessesSimilar
         return SIMILARITY_MATRIX_SCIPY;
     }
 
-    @Override
     public Set<Short> fillElements(GridFsService gridFsService) throws IOException, JSONException {
         Set<Short> elements = new TreeSet<>();
         AccessesRepresentation accesses = (AccessesRepresentation) getStrategy().getCodebase().getRepresentationByType(ACCESSES);
@@ -82,7 +73,6 @@ public class SimilarityMatrixSciPy extends Similarity implements AccessesSimilar
         return elements;
     }
 
-    @Override
     public Map<Short, String> getIDToEntityName(GridFsService gridFsService) throws IOException {
         IDToEntityRepresentation idToEntity = (IDToEntityRepresentation) getStrategy().getCodebase().getRepresentationByType(ID_TO_ENTITY);
         return new ObjectMapper().readValue(gridFsService.getFileAsString(idToEntity.getName()), new TypeReference<Map<Short, String>>() {});
@@ -109,57 +99,45 @@ public class SimilarityMatrixSciPy extends Similarity implements AccessesSimilar
         this.traceType = traceType;
     }
 
-    public List<Weights> getWeightsList() {
-        return weightsList;
+    public SimilarityMatrix getSimilarityMatrix() {
+        return similarityMatrix;
     }
 
-    public void setWeightsList(List<Weights> weightsList) {
-        this.weightsList = weightsList;
+    public void setSimilarityMatrix(SimilarityMatrix similarityMatrix) {
+        this.similarityMatrix = similarityMatrix;
     }
-    @Override
+
     public String getLinkageType() {
         return linkageType;
     }
+
     public void setLinkageType(String linkageType) {
         this.linkageType = linkageType;
     }
-    @Override
-    public String getSimilarityMatrixName() {
-        return similarityMatrixName;
+
+    public Dendrogram getDendrogram() {
+        return dendrogram;
     }
-    @Override
-    public void setSimilarityMatrixName(String similarityMatrixName) {
-        this.similarityMatrixName = similarityMatrixName;
-    }
-    public String getDendrogramName() {
-        return dendrogramName;
-    }
-    public void setDendrogramName(String dendrogramName) {
-        this.dendrogramName = dendrogramName;
-    }
-    @Override
-    public String getCopheneticDistanceName() {
-        return copheneticDistanceName;
-    }
-    public void setCopheneticDistanceName(String copheneticDistanceName) {
-        this.copheneticDistanceName = copheneticDistanceName;
+
+    public void setDendrogram(Dendrogram dendrogram) {
+        this.dendrogram = dendrogram;
     }
 
     @Override
     public void generate() throws Exception {
-        SimilarityMatrixGenerator similarityMatrixGenerator = new SimilarityMatrixGenerator();
-        similarityMatrixGenerator.createSimilarityMatrixFromWeights(this);
+        GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
+        Set<Short> elements = fillElements(gridFsService);
+        this.similarityMatrix.generate(gridFsService, this, elements);
 
-        DendrogramGenerator dendrogramGenerator = new DendrogramGenerator();
-        dendrogramGenerator.generateDendrogram(this);
+        this.dendrogram = new Dendrogram(getName(), similarityMatrix.getName(), getLinkageType());
     }
 
     @Override
     public void removeProperties() {
         GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
-        gridFsService.deleteFile(getSimilarityMatrixName());
-        gridFsService.deleteFile(getDendrogramName());
-        gridFsService.deleteFile(getCopheneticDistanceName());
+        gridFsService.deleteFile(similarityMatrix.getName());
+        gridFsService.deleteFile(dendrogram.getDendrogramName());
+        gridFsService.deleteFile(dendrogram.getCopheneticDistanceName());
     }
 
     @Override
@@ -173,6 +151,6 @@ public class SimilarityMatrixSciPy extends Similarity implements AccessesSimilar
                 similarityDto.getTracesMaxLimit() == this.tracesMaxLimit &&
                 similarityDto.getTraceType() == this.traceType &&
                 similarityDto.getLinkageType().equals(this.linkageType) &&
-                hasSameWeights(similarityDto.getWeightsList());
+                similarityMatrix.hasSameWeights(similarityDto.getWeightsList());
     }
 }

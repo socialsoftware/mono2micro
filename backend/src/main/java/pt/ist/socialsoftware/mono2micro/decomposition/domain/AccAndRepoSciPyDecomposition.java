@@ -26,6 +26,7 @@ import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresenta
 import pt.ist.socialsoftware.mono2micro.representation.domain.AuthorRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.CommitRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy;
 
 import java.io.IOException;
 import java.util.*;
@@ -151,9 +152,9 @@ public class AccAndRepoSciPyDecomposition extends Decomposition implements SciPy
 
     public String getEdgeWeights(String viewType) throws Exception {
         if (viewType.equals(ACCESSES_DECOMPOSITION))
-            return getEdgeWeightsFromAccesses();
+            return getEdgeWeightsFromAccesses(((SimilarityMatrixSciPy) getSimilarity()).getDendrogram());
         else if (viewType.equals(REPOSITORY_DECOMPOSITION))
-            return getEdgeWeightsFromRepository();
+            return getEdgeWeightsFromRepository(((SimilarityMatrixSciPy) getSimilarity()).getDendrogram());
         else throw new RuntimeException("View type not supported by this decomposition");
     }
 

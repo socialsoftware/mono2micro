@@ -53,7 +53,7 @@ public class ExpertClustering extends Clustering {
             SciPyClustering.addClustersAndEntities(decomposition, clustersJSON, idToEntity);
             is.close();
         }
-        else createGenericDecomposition(similarity.getSimilarityMatrixName(), decomposition.getClusters(), idToEntity);
+        else createGenericDecomposition(similarity.getSimilarityMatrix().getName(), decomposition.getClusters(), idToEntity);
     }
 
     private void createGenericDecomposition(

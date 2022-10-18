@@ -23,6 +23,7 @@ import pt.ist.socialsoftware.mono2micro.operation.clusterView.ClusterViewTransfe
 import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy;
 
 import java.io.IOException;
 import java.util.*;
@@ -100,7 +101,7 @@ public class AccessesSciPyDecomposition extends Decomposition implements SciPyDe
 
     public String getEdgeWeights(String viewType) throws Exception {
         if (viewType.equals(ACCESSES_DECOMPOSITION))
-            return getEdgeWeightsFromAccesses();
+            return getEdgeWeightsFromAccesses(((SimilarityMatrixSciPy) getSimilarity()).getDendrogram());
         else throw new RuntimeException("View type not supported by this decomposition");
     }
 

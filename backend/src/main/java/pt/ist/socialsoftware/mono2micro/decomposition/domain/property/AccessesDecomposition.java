@@ -19,8 +19,8 @@ import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.algorithm.AccessesSimilarity;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.algorithm.Dendrogram;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.dendrogram.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
@@ -35,7 +35,6 @@ import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRep
 
 public interface AccessesDecomposition {
     String ACCESSES_DECOMPOSITION = "ACCESSES_DECOMPOSITION";
-    void setOutdated(boolean outdated);
     String getName();
     String getType();
     Strategy getStrategy();
@@ -48,12 +47,7 @@ public interface AccessesDecomposition {
 
     void setMetrics(Map<String, Object> metrics);
 
-    void addCluster(Cluster cluster);
-    Cluster removeCluster(String clusterName);
-
     Cluster getCluster(String clusterName);
-
-    boolean clusterNameExists(String clusterName);
 
     default Functionality getFunctionality(String functionalityName) {
         Functionality c = getFunctionalities().get(functionalityName.replaceAll("\\.", "_"));
@@ -76,7 +70,7 @@ public interface AccessesDecomposition {
         GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
         FunctionalityRepository functionalityRepository = ContextManager.get().getBean(FunctionalityRepository.class);
 
-        AccessesSimilarity similarity = (AccessesSimilarity) getSimilarity();
+        SimilarityMatrixSciPy similarity = (SimilarityMatrixSciPy) getSimilarity();
         AccessesRepresentation accesses = (AccessesRepresentation) getStrategy().getCodebase().getRepresentationByType(ACCESSES);
         InputStream inputStream = gridFsService.getFile(accesses.getName());
         Set<String> profileFunctionalities = accesses.getProfile(similarity.getProfile());
@@ -156,10 +150,9 @@ public interface AccessesDecomposition {
         gridFsService.deleteFile(getName() + "_refactorization");
     }
 
-    default String getEdgeWeightsFromAccesses() throws JSONException, IOException {
-        Dendrogram similarity = (Dendrogram) getSimilarity();
+    default String getEdgeWeightsFromAccesses(Dendrogram dendrogram) throws JSONException, IOException {
         GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
-        JSONArray copheneticDistances = new JSONArray(IOUtils.toString(gridFsService.getFile(similarity.getCopheneticDistanceName()), StandardCharsets.UTF_8));
+        JSONArray copheneticDistances = new JSONArray(IOUtils.toString(gridFsService.getFile(dendrogram.getCopheneticDistanceName()), StandardCharsets.UTF_8));
 
         ArrayList<Short> entities = new ArrayList<>(getEntityIDToClusterName().keySet());
 

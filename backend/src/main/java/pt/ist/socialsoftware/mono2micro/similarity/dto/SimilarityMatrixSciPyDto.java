@@ -2,7 +2,7 @@ package pt.ist.socialsoftware.mono2micro.similarity.dto;
 
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy;
-import pt.ist.socialsoftware.mono2micro.similarityGenerator.weights.Weights;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.Weights;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public class SimilarityMatrixSciPyDto extends SimilarityDto {
         this.name = similarity.getName();
         this.type = similarity.getType();
         this.decompositionType = similarity.getStrategy().getDecompositionType();
-        this.weightsList = similarity.getWeightsList();
+        this.weightsList = similarity.getSimilarityMatrix().getWeightsList();
         this.profile = similarity.getProfile();
         this.linkageType = similarity.getLinkageType();
         this.tracesMaxLimit = similarity.getTracesMaxLimit();

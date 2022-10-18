@@ -2,7 +2,7 @@ package pt.ist.socialsoftware.mono2micro.recommendation.domain.algorithm;
 
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
-import pt.ist.socialsoftware.mono2micro.similarityGenerator.weights.Weights;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.Weights;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
 import java.util.ArrayList;

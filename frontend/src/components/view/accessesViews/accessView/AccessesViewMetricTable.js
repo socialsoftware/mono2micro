@@ -83,7 +83,7 @@ export const AccessesViewMetricTable = ({clusters, clustersFunctionalities, outd
                     <CircularProgress/>
                 </div>
             }
-            {clusters !== 0 && Object.keys(clustersFunctionalities).length !== 0 &&
+            {!outdated && clusters !== 0 && Object.keys(clustersFunctionalities).length !== 0 &&
                 <>
                     {selectedTable === TABLE_TYPE.METRICS &&
                         <BootstrapTable
@@ -105,5 +105,5 @@ export const AccessesViewMetricTable = ({clusters, clustersFunctionalities, outd
                 </>
             }
         </>
-);
+    );
 }

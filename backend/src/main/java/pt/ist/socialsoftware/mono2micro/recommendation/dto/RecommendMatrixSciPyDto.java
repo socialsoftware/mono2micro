@@ -1,7 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.recommendation.dto;
 
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy;
-import pt.ist.socialsoftware.mono2micro.similarityGenerator.weights.Weights;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.Weights;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.util.List;

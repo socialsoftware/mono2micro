@@ -8,7 +8,6 @@ import pt.ist.socialsoftware.mono2micro.decomposition.service.DecompositionServi
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityFactory;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.algorithm.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDto;
 import pt.ist.socialsoftware.mono2micro.similarity.repository.SimilarityRepository;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
@@ -74,8 +73,8 @@ public class SimilarityService {
     }
 
     public byte[] getDendrogramImage(String similarityName) throws IOException {
-        Dendrogram similarity = (Dendrogram) similarityRepository.findByName(similarityName);
-        InputStream inputStream = gridFsService.getFile(similarity.getDendrogramName());
+        Similarity similarity = similarityRepository.findByName(similarityName);
+        InputStream inputStream = gridFsService.getFile(similarity.getName() + "_image");
         return IOUtils.toByteArray(inputStream);
     }
 }

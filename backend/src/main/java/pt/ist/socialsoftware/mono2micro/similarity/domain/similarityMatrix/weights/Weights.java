@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.similarityGenerator.weights;
+package pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -9,8 +9,8 @@ import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import java.util.List;
 import java.util.Set;
 
-import static pt.ist.socialsoftware.mono2micro.similarityGenerator.weights.AccessesWeights.ACCESSES_WEIGHTS;
-import static pt.ist.socialsoftware.mono2micro.similarityGenerator.weights.RepositoryWeights.REPOSITORY_WEIGHTS;
+import static pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.AccessesWeights.ACCESSES_WEIGHTS;
+import static pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.RepositoryWeights.REPOSITORY_WEIGHTS;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
