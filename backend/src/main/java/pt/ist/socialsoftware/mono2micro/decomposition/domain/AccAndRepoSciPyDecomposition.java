@@ -7,7 +7,6 @@ import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.ExpertClustering;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.SciPyClustering;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.property.AccessesDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.property.RepositoryDecomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.algorithm.SciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.views.ClusterViewDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
@@ -33,7 +32,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Document("decomposition")
-public class AccAndRepoSciPyDecomposition extends Decomposition implements SciPyDecomposition, AccessesDecomposition, RepositoryDecomposition, ClusterViewDecomposition {
+public class AccAndRepoSciPyDecomposition extends Decomposition implements AccessesDecomposition, RepositoryDecomposition, ClusterViewDecomposition {
     public static final String ACC_AND_REPO_SCIPY = "Accesses and Repository-Based Similarity and SciPy Clustering Algorithm";
 
     private static final List<String> requiredRepresentations = new ArrayList<String>() {{
@@ -43,7 +42,6 @@ public class AccAndRepoSciPyDecomposition extends Decomposition implements SciPy
         add(CommitRepresentation.COMMIT);
     }};
 
-    private double silhouetteScore;
     @DBRef(lazy = true)
     private Map<String, Functionality> functionalities = new HashMap<>(); // <functionalityName, Functionality>
     private Map<Short, ArrayList<String>> authors = new HashMap<>();
@@ -51,13 +49,9 @@ public class AccAndRepoSciPyDecomposition extends Decomposition implements SciPy
     private Map<Short, Integer> totalCommits = new HashMap<>();
     private Integer totalAuthors;
 
-    public AccAndRepoSciPyDecomposition() {
-        this.history = new PositionHistory(this);
-    }
+    public AccAndRepoSciPyDecomposition() {}
 
-    public AccAndRepoSciPyDecomposition(DecompositionRequest decompositionRequest) {
-        this.history = new PositionHistory(this);
-    }
+    public AccAndRepoSciPyDecomposition(DecompositionRequest decompositionRequest) {}
 
     public AccAndRepoSciPyDecomposition(AccAndRepoSciPyDecomposition decomposition) {
         this.name = decomposition.getName();
@@ -65,7 +59,6 @@ public class AccAndRepoSciPyDecomposition extends Decomposition implements SciPy
         this.metrics = decomposition.getMetrics();
         this.outdated = decomposition.isOutdated();
         this.expert = decomposition.isExpert();
-        this.silhouetteScore = decomposition.getSilhouetteScore();
         this.clusters = decomposition.getClusters();
         this.authors = decomposition.getAuthors();
         this.commitsInCommon = decomposition.getCommitsInCommon();
@@ -120,14 +113,6 @@ public class AccAndRepoSciPyDecomposition extends Decomposition implements SciPy
         this.totalAuthors = totalAuthors;
     }
 
-    public double getSilhouetteScore() {
-        return silhouetteScore;
-    }
-
-    public void setSilhouetteScore(double silhouetteScore) {
-        this.silhouetteScore = silhouetteScore;
-    }
-
     @Override
     public Map<String, Functionality> getFunctionalities() { return functionalities; }
 
@@ -144,10 +129,8 @@ public class AccAndRepoSciPyDecomposition extends Decomposition implements SciPy
         DecompositionMetric[] metricObjects = new DecompositionMetric[] {
                 new CohesionMetric(), new ComplexityMetric(), new CouplingMetric(), new PerformanceMetric(), new TSRMetric()};
 
-        Map<String, Object> newMetrics = new HashMap<>();
         for (DecompositionMetric metric : metricObjects)
-            newMetrics.put(metric.getType(), metric.calculateMetric(this));
-        metrics = newMetrics;
+            this.metrics.put(metric.getType(), metric.calculateMetric(this));
     }
 
     public String getEdgeWeights(String viewType) throws Exception {

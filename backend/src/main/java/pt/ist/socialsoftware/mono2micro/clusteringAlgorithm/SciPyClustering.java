@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import pt.ist.socialsoftware.mono2micro.cluster.SciPyCluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.*;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.algorithm.SciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.SciPyRequestDto;
 import pt.ist.socialsoftware.mono2micro.element.DomainEntity;
@@ -45,14 +44,14 @@ public class SciPyClustering extends Clustering {
 
         decomposition.setName(getDecompositionName(similarity, dto.getCutType(), dto.getCutValue()));
 
-        JSONObject clustersJSON = invokePythonCut((SciPyDecomposition) decomposition, similarity.getSimilarityMatrix().getName(), similarity.getLinkageType(), dto.getCutType(), dto.getCutValue());
+        JSONObject clustersJSON = invokePythonCut(decomposition, similarity.getSimilarityMatrix().getName(), similarity.getLinkageType(), dto.getCutType(), dto.getCutValue());
 
         idToEntity = similarity.getIDToEntityName(gridFsService);
 
         addClustersAndEntities(decomposition, clustersJSON, idToEntity);
     }
 
-    private JSONObject invokePythonCut(SciPyDecomposition decomposition, String similarityMatrixName, String linkageType, String cutType, float cutValue) {
+    private JSONObject invokePythonCut(Decomposition decomposition, String similarityMatrixName, String linkageType, String cutType, float cutValue) {
         String response = WebClient.create(SCRIPTS_ADDRESS)
                 .get()
                 .uri("/scipy/{similarityMatrixName}/{linkageType}/{cutType}/{cutValue}/createDecomposition",
@@ -63,7 +62,7 @@ public class SciPyClustering extends Clustering {
                 .block();
         try {
             JSONObject jsonObject = new JSONObject(response);
-            decomposition.setSilhouetteScore(jsonObject.getDouble("silhouetteScore"));
+            decomposition.addMetric("Silhouette Score", jsonObject.getDouble("silhouetteScore"));
             return new JSONObject(jsonObject.getString("clusters"));
         } catch(Exception e) { throw new RuntimeException(e.getMessage()); }
     }
@@ -138,7 +137,7 @@ public class SciPyClustering extends Clustering {
 
                     decomposition.setName(similarityMatrixName + "," + numberOfClusters);
 
-                    JSONObject clustersJSON = invokePythonCut((SciPyDecomposition) decomposition, similarityMatrixName, recommendation.getLinkageType(), "N", numberOfClusters);
+                    JSONObject clustersJSON = invokePythonCut(decomposition, similarityMatrixName, recommendation.getLinkageType(), "N", numberOfClusters);
 
                     addClustersAndEntities(decomposition, clustersJSON, idToEntity);
 

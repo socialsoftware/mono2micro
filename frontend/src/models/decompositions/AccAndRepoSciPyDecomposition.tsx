@@ -13,7 +13,6 @@ export {ACC_AND_REPO_SCIPY};
 export default class AccAndRepoSciPyDecomposition extends Decomposition {
     outdated: boolean;
     expert: boolean;
-    silhouetteScore: number;
     functionalities: any;
     entityIDToClusterName: any;
     authors: Record<number, string[]>;
@@ -25,7 +24,6 @@ export default class AccAndRepoSciPyDecomposition extends Decomposition {
 
         this.outdated = decomposition.outdated;
         this.expert = decomposition.expert;
-        this.silhouetteScore = decomposition.silhouetteScore;
         this.functionalities = decomposition.functionalities;
         this.entityIDToClusterName = decomposition.entityIDToClusterName;
         this.authors = decomposition.authors;
@@ -64,12 +62,12 @@ export default class AccAndRepoSciPyDecomposition extends Decomposition {
                         Number of Clusters: {Object.values(this.clusters).length} <br />
                         Singleton Clusters: {amountOfSingletonClusters} <br />
                         Maximum Cluster Size: {maxClusterSize} <br />
+                        {MetricType.SILHOUETTE_SCORE}: {parseFloat(this.metrics[MetricType.SILHOUETTE_SCORE])} <br />
                         {MetricType.COMPLEXITY}: {parseFloat(this.metrics[MetricType.COMPLEXITY]).toFixed(3)} <br />
                         {MetricType.PERFORMANCE}: {parseFloat(this.metrics[MetricType.PERFORMANCE]).toFixed(3)} <br />
                         {MetricType.COHESION}: {parseFloat(this.metrics[MetricType.COHESION]).toFixed(3)} <br />
                         {MetricType.COUPLING}: {parseFloat(this.metrics[MetricType.COUPLING]).toFixed(3)} <br />
                         TSR: {parseFloat(this.metrics[MetricType.TSR]).toFixed(3)} <br />
-                        Silhouette Score: {this.silhouetteScore} <br />
                     </Card.Text>
                     {this.outdated &&
                         <Button

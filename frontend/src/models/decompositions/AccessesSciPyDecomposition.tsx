@@ -13,7 +13,6 @@ export {ACCESSES_SCIPY};
 export default class AccessesSciPyDecomposition extends Decomposition {
     outdated: boolean;
     expert: boolean;
-    silhouetteScore: number;
     functionalities: any;
     entityIDToClusterName: any;
 
@@ -22,7 +21,6 @@ export default class AccessesSciPyDecomposition extends Decomposition {
 
         this.outdated = decomposition.outdated;
         this.expert = decomposition.expert;
-        this.silhouetteScore = decomposition.silhouetteScore;
         this.functionalities = decomposition.functionalities;
         this.entityIDToClusterName = decomposition.entityIDToClusterName;
     }
@@ -57,11 +55,11 @@ export default class AccessesSciPyDecomposition extends Decomposition {
                         Number of Clusters: {Object.values(this.clusters).length} <br />
                         Singleton Clusters: {amountOfSingletonClusters} <br />
                         Maximum Cluster Size: {maxClusterSize} <br />
+                        {MetricType.SILHOUETTE_SCORE}: {parseFloat(this.metrics[MetricType.SILHOUETTE_SCORE])} <br />
                         {MetricType.COMPLEXITY}: {parseFloat(this.metrics[MetricType.COMPLEXITY]).toFixed(3)} <br />
                         {MetricType.PERFORMANCE}: {parseFloat(this.metrics[MetricType.PERFORMANCE]).toFixed(3)} <br />
                         {MetricType.COHESION}: {parseFloat(this.metrics[MetricType.COHESION]).toFixed(3)} <br />
                         {MetricType.COUPLING}: {parseFloat(this.metrics[MetricType.COUPLING]).toFixed(3)} <br />
-                        Silhouette Score: {this.silhouetteScore} <br />
                     </Card.Text>
                     {this.outdated &&
                         <Button

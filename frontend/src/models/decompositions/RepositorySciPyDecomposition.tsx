@@ -9,7 +9,6 @@ export {REPOSITORY_SCIPY};
 
 export default class RepositorySciPyDecomposition extends Decomposition {
     expert: boolean;
-    silhouetteScore: number;
     entityIDToClusterName: any;
     authors: Record<number, string[]>;
     commitsInCommon: Record<number, Record<number, number>>;
@@ -19,7 +18,6 @@ export default class RepositorySciPyDecomposition extends Decomposition {
         super(decomposition);
 
         this.expert = decomposition.expert;
-        this.silhouetteScore = decomposition.silhouetteScore;
         this.entityIDToClusterName = decomposition.entityIDToClusterName;
         this.authors = decomposition.authors;
         this.commitsInCommon = decomposition.commitsInCommon;
@@ -46,8 +44,8 @@ export default class RepositorySciPyDecomposition extends Decomposition {
                         Number of Clusters: {Object.values(this.clusters).length} <br />
                         Singleton Clusters: {amountOfSingletonClusters} <br />
                         Maximum Cluster Size: {maxClusterSize} <br />
+                        {MetricType.SILHOUETTE_SCORE}: {parseFloat(this.metrics[MetricType.SILHOUETTE_SCORE])} <br />
                         TSR: {parseFloat(this.metrics[MetricType.TSR]).toFixed(3)} <br />
-                        Silhouette Score: {this.silhouetteScore} <br />
                     </Card.Text>
                     <br/>
                     <Button

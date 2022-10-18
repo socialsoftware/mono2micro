@@ -6,7 +6,6 @@ import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.Clustering;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.ExpertClustering;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.SciPyClustering;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.property.AccessesDecomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.algorithm.SciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.views.ClusterViewDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
@@ -30,7 +29,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Document("decomposition")
-public class AccessesSciPyDecomposition extends Decomposition implements SciPyDecomposition, AccessesDecomposition, ClusterViewDecomposition {
+public class AccessesSciPyDecomposition extends Decomposition implements AccessesDecomposition, ClusterViewDecomposition {
     public static final String ACCESSES_SCIPY = "Accesses-Based Similarity and SciPy Clustering Algorithm";
 
     private static final List<String> requiredRepresentations = new ArrayList<String>() {{
@@ -38,17 +37,12 @@ public class AccessesSciPyDecomposition extends Decomposition implements SciPyDe
         add(IDToEntityRepresentation.ID_TO_ENTITY);
     }};
 
-    private double silhouetteScore;
     @DBRef(lazy = true)
     private Map<String, Functionality> functionalities = new HashMap<>(); // <functionalityName, Functionality>
 
-    public AccessesSciPyDecomposition() {
-        this.history = new PositionHistory(this);
-    }
+    public AccessesSciPyDecomposition() {}
 
-    public AccessesSciPyDecomposition(DecompositionRequest request) {
-        this.history = new PositionHistory(this);
-    }
+    public AccessesSciPyDecomposition(DecompositionRequest request) {}
 
     public AccessesSciPyDecomposition(AccessesSciPyDecomposition decomposition) {
         this.name = decomposition.getName();
@@ -56,7 +50,6 @@ public class AccessesSciPyDecomposition extends Decomposition implements SciPyDe
         this.metrics = decomposition.getMetrics();
         this.outdated = decomposition.isOutdated();
         this.expert = decomposition.isExpert();
-        this.silhouetteScore = decomposition.getSilhouetteScore();
         this.clusters = decomposition.getClusters();
     }
 
@@ -67,14 +60,6 @@ public class AccessesSciPyDecomposition extends Decomposition implements SciPyDe
 
     public List<String> getRequiredRepresentations() {
         return requiredRepresentations;
-    }
-
-    public double getSilhouetteScore() {
-        return silhouetteScore;
-    }
-
-    public void setSilhouetteScore(double silhouetteScore) {
-        this.silhouetteScore = silhouetteScore;
     }
 
     @Override
@@ -93,10 +78,8 @@ public class AccessesSciPyDecomposition extends Decomposition implements SciPyDe
         DecompositionMetric[] metricObjects = new DecompositionMetric[] {
                 new CohesionMetric(), new ComplexityMetric(), new CouplingMetric(), new PerformanceMetric()};
 
-        Map<String, Object> newMetrics = new HashMap<>();
         for (DecompositionMetric metric : metricObjects)
-            newMetrics.put(metric.getType(), metric.calculateMetric(this));
-        metrics = newMetrics;
+            this.metrics.put(metric.getType(), metric.calculateMetric(this));
     }
 
     public String getEdgeWeights(String viewType) throws Exception {

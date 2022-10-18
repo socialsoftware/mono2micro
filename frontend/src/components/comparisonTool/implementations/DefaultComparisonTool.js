@@ -142,10 +142,6 @@ export const DefaultComparisonTool = ({codebaseName, resultData}) => {
                                     <Grid item xs={4}> <ItemTop>{resultData.decomposition1.name}</ItemTop> </Grid>
                                     <Grid item xs={4}> <ItemTop>{resultData.decomposition2.name}</ItemTop> </Grid>
 
-                                    <Grid item xs={4}> <ItemCorner>Silhouette Score:</ItemCorner> </Grid>
-                                    <Grid item xs={4}> <Item>{resultData.decomposition1.silhouetteScore}</Item> </Grid>
-                                    <Grid item xs={4}> <Item>{resultData.decomposition2.silhouetteScore}</Item> </Grid>
-
                                     <Grid item xs={4}> <ItemCorner>Largest Cluster Size:</ItemCorner> </Grid>
                                     <Grid item xs={4}> <Item>{Object.values(resultData.decomposition1.clusters).reduce((p, c) => p > c.elements.length? p : c.elements.length, 0)}</Item> </Grid>
                                     <Grid item xs={4}> <Item>{Object.values(resultData.decomposition2.clusters).reduce((p, c) => p > c.elements.length? p : c.elements.length, 0)}</Item> </Grid>

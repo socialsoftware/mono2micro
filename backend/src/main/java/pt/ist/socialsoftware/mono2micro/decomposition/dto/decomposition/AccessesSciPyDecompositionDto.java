@@ -11,7 +11,6 @@ import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciP
 public class AccessesSciPyDecompositionDto extends DecompositionDto {
     private boolean outdated;
     private boolean expert;
-    private double silhouetteScore;
     private Map<String, Functionality> functionalities = new HashMap<>(); // <functionalityName, Functionality>
     private Map<String, Short> entityIDToClusterName = new HashMap<>();
 
@@ -23,7 +22,6 @@ public class AccessesSciPyDecompositionDto extends DecompositionDto {
         this.setName(decomposition.getName());
         this.type = ACCESSES_SCIPY;
         this.setMetrics(decomposition.getMetrics());
-        this.silhouetteScore = decomposition.getSilhouetteScore();
         this.outdated = decomposition.isOutdated();
         this.expert = decomposition.isExpert();
         this.clusters = decomposition.getClusters();
@@ -43,14 +41,6 @@ public class AccessesSciPyDecompositionDto extends DecompositionDto {
 
     public void setExpert(boolean expert) {
         this.expert = expert;
-    }
-
-    public double getSilhouetteScore() {
-        return silhouetteScore;
-    }
-
-    public void setSilhouetteScore(double silhouetteScore) {
-        this.silhouetteScore = silhouetteScore;
     }
 
     public Map<String, Functionality> getFunctionalities() {

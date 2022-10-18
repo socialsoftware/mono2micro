@@ -12,7 +12,6 @@ import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccAndRepoSc
 public class AccAndRepoSciPyDecompositionDto extends DecompositionDto {
     private boolean outdated;
     private boolean expert;
-    private double silhouetteScore;
     private Map<String, Functionality> functionalities = new HashMap<>(); // <functionalityName, Functionality>
     private Map<String, Short> entityIDToClusterName = new HashMap<>();
     private Map<Short, ArrayList<String>> authors = new HashMap<>();
@@ -27,7 +26,6 @@ public class AccAndRepoSciPyDecompositionDto extends DecompositionDto {
         this.setName(decomposition.getName());
         this.type = ACC_AND_REPO_SCIPY;
         this.setMetrics(decomposition.getMetrics());
-        this.silhouetteScore = decomposition.getSilhouetteScore();
         this.outdated = decomposition.isOutdated();
         this.expert = decomposition.isExpert();
         this.clusters = decomposition.getClusters();
@@ -50,14 +48,6 @@ public class AccAndRepoSciPyDecompositionDto extends DecompositionDto {
 
     public void setExpert(boolean expert) {
         this.expert = expert;
-    }
-
-    public double getSilhouetteScore() {
-        return silhouetteScore;
-    }
-
-    public void setSilhouetteScore(double silhouetteScore) {
-        this.silhouetteScore = silhouetteScore;
     }
 
     public Map<String, Functionality> getFunctionalities() {

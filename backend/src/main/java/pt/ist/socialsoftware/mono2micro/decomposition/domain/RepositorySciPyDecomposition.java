@@ -5,7 +5,6 @@ import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.Clustering;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.ExpertClustering;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.SciPyClustering;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.property.RepositoryDecomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.algorithm.SciPyDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.views.ClusterViewDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
@@ -29,7 +28,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Document("decomposition")
-public class RepositorySciPyDecomposition extends Decomposition implements SciPyDecomposition, RepositoryDecomposition, ClusterViewDecomposition {
+public class RepositorySciPyDecomposition extends Decomposition implements RepositoryDecomposition, ClusterViewDecomposition {
     public static final String REPOSITORY_SCIPY = "Repository-Based Similarity and SciPy Clustering Algorithm";
 
     private static final List<String> requiredRepresentations = new ArrayList<String>() {{
@@ -39,19 +38,14 @@ public class RepositorySciPyDecomposition extends Decomposition implements SciPy
         add(CommitRepresentation.COMMIT);
     }};
 
-    private double silhouetteScore;
     private Map<Short, ArrayList<String>> authors = new HashMap<>();
     private Map<Short, Map<Short, Integer>> commitsInCommon = new HashMap<>();
     private Map<Short, Integer> totalCommits = new HashMap<>();
     private Integer totalAuthors;
 
-    public RepositorySciPyDecomposition() {
-        this.history = new PositionHistory(this);
-    }
+    public RepositorySciPyDecomposition() {}
 
-    public RepositorySciPyDecomposition(DecompositionRequest request) {
-        this.history = new PositionHistory(this);
-    }
+    public RepositorySciPyDecomposition(DecompositionRequest request) {}
 
     public RepositorySciPyDecomposition(RepositorySciPyDecomposition decomposition) {
         this.name = decomposition.getName();
@@ -59,7 +53,6 @@ public class RepositorySciPyDecomposition extends Decomposition implements SciPy
         this.metrics = decomposition.getMetrics();
         this.outdated = decomposition.isOutdated();
         this.expert = decomposition.isExpert();
-        this.silhouetteScore = decomposition.getSilhouetteScore();
         this.clusters = decomposition.getClusters();
         this.authors = decomposition.getAuthors();
         this.commitsInCommon = decomposition.getCommitsInCommon();
@@ -74,14 +67,6 @@ public class RepositorySciPyDecomposition extends Decomposition implements SciPy
 
     public List<String> getRequiredRepresentations() {
         return requiredRepresentations;
-    }
-
-    public double getSilhouetteScore() {
-        return silhouetteScore;
-    }
-
-    public void setSilhouetteScore(double silhouetteScore) {
-        this.silhouetteScore = silhouetteScore;
     }
 
     @Override
@@ -131,10 +116,8 @@ public class RepositorySciPyDecomposition extends Decomposition implements SciPy
     public void calculateMetrics() {
         DecompositionMetric[] metricObjects = new DecompositionMetric[] {new TSRMetric()};
 
-        Map<String, Object> newMetrics = new HashMap<>();
         for (DecompositionMetric metric : metricObjects)
-            newMetrics.put(metric.getType(), metric.calculateMetric(this));
-        metrics = newMetrics;
+            this.metrics.put(metric.getType(), metric.calculateMetric(this));
     }
 
     public String getEdgeWeights(String viewType) throws Exception {
