@@ -3,7 +3,8 @@ package pt.ist.socialsoftware.mono2micro.metrics.functionalityRedesignMetrics;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.property.AccessesDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.AccessesInfo;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.functionality.LocalTransactionTypes;
@@ -22,6 +23,7 @@ public class FunctionalityRedesignComplexityMetric extends FunctionalityRedesign
 
     GridFsService gridFsService;
 
+    @Override
     public String getType() {
         return FUNCTIONALITY_COMPLEXITY;
     }
@@ -30,7 +32,8 @@ public class FunctionalityRedesignComplexityMetric extends FunctionalityRedesign
         this.gridFsService = gridFsService;
     }
 
-    public Integer calculateMetric(AccessesDecomposition decomposition, Functionality functionality, FunctionalityRedesign functionalityRedesign)
+    @Override
+    public Integer calculateMetric(Decomposition decomposition, AccessesInfo accessesInfo, Functionality functionality, FunctionalityRedesign functionalityRedesign)
             throws IOException
     {
         int value = 0;
@@ -41,7 +44,7 @@ public class FunctionalityRedesignComplexityMetric extends FunctionalityRedesign
         Map<String, Set<Cluster>> functionalitiesClusters = Utils.getFunctionalitiesClusters(
                 decomposition.getEntityIDToClusterName(),
                 decomposition.getClusters(),
-                decomposition.getFunctionalities().values());
+                accessesInfo.getFunctionalities().values());
 
         for (int i = 0; i < functionalityRedesign.getRedesign().size(); i++) {
             LocalTransaction lt = functionalityRedesign.getRedesign().get(i);
@@ -57,7 +60,7 @@ public class FunctionalityRedesignComplexityMetric extends FunctionalityRedesign
 
                     // Functionality complexity cost of read
                     if (mode != 2) { // 2 -> W - we want all the reads
-                        for (Functionality otherFunctionality : decomposition.getFunctionalities().values()) {
+                        for (Functionality otherFunctionality : accessesInfo.getFunctionalities().values()) {
                             if (!otherFunctionality.getName().equals(functionality.getName()) &&
                                     otherFunctionality.containsEntity(entity) &&
                                     functionalitiesClusters.get(otherFunctionality.getName()).size() > 1) {

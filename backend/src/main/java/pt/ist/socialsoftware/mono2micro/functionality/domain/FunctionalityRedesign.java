@@ -1,7 +1,8 @@
 package pt.ist.socialsoftware.mono2micro.functionality.domain;
 
 import org.json.JSONArray;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.property.AccessesDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.AccessesInfo;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
@@ -67,7 +68,7 @@ public class FunctionalityRedesign {
         this.redesign = redesign;
     }
 
-    public void calculateMetrics(GridFsService gridFsService, AccessesDecomposition decomposition, Functionality functionality) throws Exception {
+    public void calculateMetrics(GridFsService gridFsService, Decomposition decomposition, AccessesInfo accessesInfo, Functionality functionality) throws Exception {
         FunctionalityRedesignMetric[] metricObjects;
         if (functionality.getType() == FunctionalityType.SAGA)
             metricObjects = new FunctionalityRedesignMetric[] {new FunctionalityRedesignComplexityMetric(gridFsService), new SystemComplexityMetric()};
@@ -75,7 +76,7 @@ public class FunctionalityRedesign {
 
         Map<String, Object> newMetrics = new HashMap<>();
         for (FunctionalityRedesignMetric metric : metricObjects)
-            newMetrics.put(metric.getType(), metric.calculateMetric(decomposition, functionality, this));
+            newMetrics.put(metric.getType(), metric.calculateMetric(decomposition, accessesInfo, functionality, this));
         metrics = newMetrics;
     }
 

@@ -11,7 +11,8 @@ import org.json.JSONException;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.property.AccessesDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.AccessesInfo;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.ReducedTraceElementDto;
@@ -370,12 +371,10 @@ public class Functionality {
 		return successorListOf(localTransactionsGraph, lt);
 	}
 
-	public void calculateMetrics(AccessesDecomposition decomposition) throws Exception {
+	public void calculateMetrics(AccessesInfo accessesInfo, Decomposition decomposition) throws Exception {
 		FunctionalityMetric[] metricObjects = new FunctionalityMetric[] {new FunctionalityComplexityMetric(), new FunctionalityPerformanceMetric()};
 
-		Map<String, Object> newMetrics = new HashMap<>();
 		for (FunctionalityMetric metric : metricObjects)
-			newMetrics.put(metric.getType(), metric.calculateMetric(decomposition, this));
-		metrics = newMetrics;
+			this.metrics.put(metric.getType(), metric.calculateMetric(accessesInfo, decomposition, this));
 	}
 }

@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.decomposition.domain.property;
+package pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo;
 
 import org.apache.commons.io.IOUtils;
 import org.jgrapht.graph.DefaultEdge;
@@ -6,8 +6,10 @@ import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
-import pt.ist.socialsoftware.mono2micro.cluster.SciPyCluster;
+import pt.ist.socialsoftware.mono2micro.cluster.DefaultCluster;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.element.Element;
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
@@ -18,10 +20,8 @@ import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesi
 import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.dendrogram.Dendrogram;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
 
@@ -33,23 +33,54 @@ import java.util.*;
 import static org.jgrapht.Graphs.successorListOf;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
 
-public interface AccessesDecomposition {
-    String ACCESSES_DECOMPOSITION = "ACCESSES_DECOMPOSITION";
-    String getName();
-    String getType();
-    Strategy getStrategy();
-    Similarity getSimilarity();
-    Map<String, Cluster> getClusters();
-    Map<String, Functionality> getFunctionalities();
-    void setFunctionalities(Map<String, Functionality> functionalities);
-    Map<Short, String> getEntityIDToClusterName();
-    Map<String, Object> getMetrics();
+public class AccessesInfo extends RepresentationInformation {
+    public static final String ACCESSES_INFO = "ACCESSES_INFO";
+    @DBRef(lazy = true)
+    private Map<String, Functionality> functionalities = new HashMap<>(); // <functionalityName, Functionality>
 
-    void setMetrics(Map<String, Object> metrics);
+    public AccessesInfo() {}
 
-    Cluster getCluster(String clusterName);
+    public AccessesInfo(Decomposition decomposition) throws Exception {
+        this.decompositionName = decomposition.getName();
+        decomposition.addRepresentationInformation(this);
+        setupFunctionalities(decomposition);
+    }
 
-    default Functionality getFunctionality(String functionalityName) {
+    public AccessesInfo(Decomposition snapshotDecomposition, Decomposition decomposition) throws IOException {
+        this.decompositionName = snapshotDecomposition.getName();
+        snapshotDecomposition.addRepresentationInformation(this);
+        AccessesInfo accessesInfo = (AccessesInfo) decomposition.getRepresentationInformationByType(ACCESSES_INFO);
+        copyFunctionalities(accessesInfo);
+    }
+
+    @Override
+    public String getType() {
+        return ACCESSES_INFO;
+    }
+
+    @Override
+    public void update(Decomposition decomposition) throws Exception {
+        setupFunctionalities(decomposition);
+    }
+
+    @Override
+    public void deleteProperties() {
+        FunctionalityService functionalityService = ContextManager.get().getBean(FunctionalityService.class);
+        GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
+
+        functionalityService.deleteFunctionalities(getFunctionalities().values());
+        gridFsService.deleteFile(getDecompositionName() + "_refactorization");
+    }
+
+    public Map<String, Functionality> getFunctionalities() {
+        return functionalities;
+    }
+
+    public void setFunctionalities(Map<String, Functionality> functionalities) {
+        this.functionalities = functionalities;
+    }
+
+    public Functionality getFunctionality(String functionalityName) {
         Functionality c = getFunctionalities().get(functionalityName.replaceAll("\\.", "_"));
 
         if (c == null) throw new Error("Functionality with name: " + functionalityName + " not found");
@@ -57,21 +88,21 @@ public interface AccessesDecomposition {
         return c;
     }
 
-    default boolean functionalityExists(String functionalityName) {
+    public boolean functionalityExists(String functionalityName) {
         return getFunctionalities().containsKey(functionalityName.replaceAll("\\.", "_"));
     }
 
-    default void addFunctionality(Functionality functionality) {
+    public void addFunctionality(Functionality functionality) {
         getFunctionalities().put(functionality.getName().replaceAll("\\.", "_"), functionality);
     }
 
 
-    default void setupFunctionalities() throws Exception {
+    public void setupFunctionalities(Decomposition decomposition) throws Exception {
         GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
         FunctionalityRepository functionalityRepository = ContextManager.get().getBean(FunctionalityRepository.class);
 
-        SimilarityMatrixSciPy similarity = (SimilarityMatrixSciPy) getSimilarity();
-        AccessesRepresentation accesses = (AccessesRepresentation) getStrategy().getCodebase().getRepresentationByType(ACCESSES);
+        SimilarityMatrixSciPy similarity = (SimilarityMatrixSciPy) decomposition.getSimilarity();
+        AccessesRepresentation accesses = (AccessesRepresentation) decomposition.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
         InputStream inputStream = gridFsService.getFile(accesses.getName());
         Set<String> profileFunctionalities = accesses.getProfile(similarity.getProfile());
 
@@ -86,19 +117,19 @@ public interface AccessesDecomposition {
                 continue;
 
             iter.getFunctionalityWithName(functionalityName);
-            Functionality functionality = new Functionality(getName(), functionalityName);
+            Functionality functionality = new Functionality(decomposition.getName(), functionalityName);
 
             // Get traces according to trace type
             List<TraceDto> traceDtos = iter.getTracesByType(similarity.getTraceType());
             functionality.setTraces(traceDtos);
 
             DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionGraph = functionality.createLocalTransactionGraph(
-                    getEntityIDToClusterName()
+                    decomposition.getEntityIDToClusterName()
             );
 
             localTransactionsGraphs.put(functionality.getName(), localTransactionGraph);
 
-            findClusterDependencies(localTransactionGraph);
+            findClusterDependencies(decomposition, localTransactionGraph);
 
             newFunctionalities.add(functionality);
             this.addFunctionality(functionality);
@@ -108,13 +139,13 @@ public interface AccessesDecomposition {
 
         for (Functionality functionality: newFunctionalities) {
             functionality.defineFunctionalityType();
-            functionality.calculateMetrics(this);
+            functionality.calculateMetrics(this, decomposition);
 
             // Functionality Redesigns
             if (similarity.getName() != null) { // If it does not have name, it means recommendation is using the similarity as a DTO
                 FunctionalityService.createFunctionalityRedesign(
                         gridFsService,
-                        this,
+                        decomposition,
                         functionality,
                         Constants.DEFAULT_REDESIGN_NAME,
                         true,
@@ -125,14 +156,14 @@ public interface AccessesDecomposition {
             functionalityRepository.saveAll(newFunctionalities);
     }
 
-    default void findClusterDependencies(DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph) {
+    public void findClusterDependencies(Decomposition decomposition, DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph) {
         Set<LocalTransaction> allLocalTransactions = localTransactionsGraph.vertexSet();
 
         for (LocalTransaction lt : allLocalTransactions) {
             // ClusterDependencies
             String clusterName = lt.getClusterName();
             if (!clusterName.equals("-1")) { // not root node
-                SciPyCluster fromCluster = (SciPyCluster) getCluster(clusterName);
+                DefaultCluster fromCluster = (DefaultCluster) decomposition.getCluster(clusterName);
 
                 List<LocalTransaction> nextLocalTransactions = successorListOf(localTransactionsGraph, lt);
 
@@ -142,19 +173,13 @@ public interface AccessesDecomposition {
         }
     }
 
-    default void deleteAccessesProperties() {
-        FunctionalityService functionalityService = ContextManager.get().getBean(FunctionalityService.class);
+    @Override
+    public String getEdgeWeights(Decomposition decomposition) throws JSONException, IOException {
         GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
-
-        functionalityService.deleteFunctionalities(getFunctionalities().values());
-        gridFsService.deleteFile(getName() + "_refactorization");
-    }
-
-    default String getEdgeWeightsFromAccesses(Dendrogram dendrogram) throws JSONException, IOException {
-        GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
+        Dendrogram dendrogram = ((SimilarityMatrixSciPy) decomposition.getSimilarity()).getDendrogram();
         JSONArray copheneticDistances = new JSONArray(IOUtils.toString(gridFsService.getFile(dendrogram.getCopheneticDistanceName()), StandardCharsets.UTF_8));
 
-        ArrayList<Short> entities = new ArrayList<>(getEntityIDToClusterName().keySet());
+        ArrayList<Short> entities = new ArrayList<>(decomposition.getEntityIDToClusterName().keySet());
 
         JSONArray edgesJSON = new JSONArray();
         int k = 0;
@@ -206,16 +231,17 @@ public interface AccessesDecomposition {
         return filteredEdgesJSON.toString();
     }
 
-    default String edgeId(int node1, int node2) {
+    public String edgeId(int node1, int node2) {
         if (node1 < node2)
             return node1 + "&" + node2;
         return node2 + "&" + node1;
     }
 
-    default String getSearchItemsFromAccesses() throws JSONException {
+    @Override
+    public String getSearchItems(Decomposition decomposition) throws JSONException {
         JSONArray searchItems = new JSONArray();
 
-        for (Cluster cluster : getClusters().values()) {
+        for (Cluster cluster : decomposition.getClusters().values()) {
             JSONObject clusterItem = new JSONObject();
             clusterItem.put("name", cluster.getName());
             clusterItem.put("type", "Cluster");
@@ -246,9 +272,10 @@ public interface AccessesDecomposition {
         return searchItems.toString();
     }
 
-    default void copyFunctionalities(FunctionalityService functionalityService, AccessesDecomposition snapshotDecomposition) throws IOException {
-        for (Functionality functionality : getFunctionalities().values()) {
-            Functionality snapshotFunctionality = new Functionality(snapshotDecomposition.getName(), functionality);
+    public void copyFunctionalities(AccessesInfo accessesInfo) throws IOException {
+        FunctionalityService functionalityService = ContextManager.get().getBean(FunctionalityService.class);
+        for (Functionality functionality : accessesInfo.getFunctionalities().values()) {
+            Functionality snapshotFunctionality = new Functionality(getDecompositionName(), functionality);
             snapshotFunctionality.setFunctionalityRedesignNameUsedForMetrics(functionality.getFunctionalityRedesignNameUsedForMetrics());
 
             for (String redesignName : functionality.getFunctionalityRedesigns().keySet()) {
@@ -256,12 +283,13 @@ public interface AccessesDecomposition {
                 snapshotFunctionality.addFunctionalityRedesign(functionalityRedesign.getName(), snapshotFunctionality.getId() + functionalityRedesign.getName());
                 functionalityService.saveFunctionalityRedesign(snapshotFunctionality, functionalityRedesign);
             }
-            snapshotDecomposition.addFunctionality(snapshotFunctionality);
+            addFunctionality(snapshotFunctionality);
             functionalityService.saveFunctionality(snapshotFunctionality);
         }
     }
 
-    default void renameClusterInFunctionalities(String clusterName, String newName) {
+    @Override
+    public void renameClusterInFunctionalities(String clusterName, String newName) {
         FunctionalityService functionalityService = ContextManager.get().getBean(FunctionalityService.class);
 
         // Change functionalities
@@ -289,19 +317,15 @@ public interface AccessesDecomposition {
         });
     }
 
-    default void removeFunctionalitiesWithEntityIDs(Set<Short> elements) {
+    @Override
+    public void removeFunctionalitiesWithEntityIDs(Decomposition decomposition, Set<Short> elements) {
         FunctionalityService functionalityService = ContextManager.get().getBean(FunctionalityService.class);
         for(Short entityId : elements)
             functionalityService.deleteFunctionalities(removeFunctionalityWithEntity(entityId));
+        decomposition.setOutdated(true);
     }
 
-    default void removeFunctionalitiesWithEntities(Set<Element> elements) {
-        FunctionalityService functionalityService = ContextManager.get().getBean(FunctionalityService.class);
-        for(Element entity : elements)
-            functionalityService.deleteFunctionalities(removeFunctionalityWithEntity(entity.getId()));
-    }
-
-    default List<Functionality> removeFunctionalityWithEntity(short entityID) {
+    private List<Functionality> removeFunctionalityWithEntity(short entityID) {
         Map<String, Functionality> newFunctionalities = new HashMap<>();
         List<Functionality> toDelete = new ArrayList<>();
         getFunctionalities().forEach((name, functionality) -> {

@@ -6,12 +6,15 @@ import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.Clustering;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.DecompositionFactory;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.views.ClusterViewDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.ExpertRequest;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
 import pt.ist.socialsoftware.mono2micro.history.service.HistoryService;
-import pt.ist.socialsoftware.mono2micro.operation.*;
+import pt.ist.socialsoftware.mono2micro.operation.formCluster.FormClusterOperation;
+import pt.ist.socialsoftware.mono2micro.operation.merge.MergeOperation;
+import pt.ist.socialsoftware.mono2micro.operation.rename.RenameOperation;
+import pt.ist.socialsoftware.mono2micro.operation.split.SplitOperation;
+import pt.ist.socialsoftware.mono2micro.operation.transfer.TransferOperation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.similarity.repository.SimilarityRepository;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
@@ -130,50 +133,50 @@ public class DecompositionService {
     public void mergeClustersOperation(String decompositionName, MergeOperation operation) {
         Decomposition decomposition = decompositionRepository.findByName(decompositionName);
         decomposition.mergeClusters(operation);
-        historyService.addOperation(decomposition, operation);
+        historyService.saveHistory(decomposition.getHistory());
         decompositionRepository.save(decomposition);
     }
 
     public void renameClusterOperation(String decompositionName, RenameOperation operation) {
         Decomposition decomposition = decompositionRepository.findByName(decompositionName);
         decomposition.renameCluster(operation);
-        historyService.addOperation(decomposition, operation);
+        historyService.saveHistory(decomposition.getHistory());
         decompositionRepository.save(decomposition);
     }
 
     public void splitClusterOperation(String decompositionName, SplitOperation operation) {
         Decomposition decomposition = decompositionRepository.findByName(decompositionName);
         decomposition.splitCluster(operation);
-        historyService.addOperation(decomposition, operation);
+        historyService.saveHistory(decomposition.getHistory());
         decompositionRepository.save(decomposition);
     }
 
     public void transferEntitiesOperation(String decompositionName, TransferOperation operation) {
         Decomposition decomposition = decompositionRepository.findByName(decompositionName);
         decomposition.transferEntities(operation);
-        historyService.addOperation(decomposition, operation);
+        historyService.saveHistory(decomposition.getHistory());
         decompositionRepository.save(decomposition);
     }
 
     public void formClusterOperation(String decompositionName, FormClusterOperation operation) {
         Decomposition decomposition = decompositionRepository.findByName(decompositionName);
         decomposition.formCluster(operation);
-        historyService.addOperation(decomposition, operation);
+        historyService.saveHistory(decomposition.getHistory());
         decompositionRepository.save(decomposition);
     }
 
-    public String getEdgeWeights(String decompositionName, String view) throws Exception {
-        ClusterViewDecomposition clusterView = (ClusterViewDecomposition) decompositionRepository.findByName(decompositionName);
-        return clusterView.getEdgeWeights(view);
+    public String getEdgeWeights(String decompositionName, String representationInfo) throws Exception {
+        Decomposition clusterView = decompositionRepository.findByName(decompositionName);
+        return clusterView.getEdgeWeights(representationInfo);
     }
 
-    public String getSearchItems(String decompositionName, String view) throws Exception {
-        ClusterViewDecomposition clusterView = (ClusterViewDecomposition) decompositionRepository.findByName(decompositionName);
-        return clusterView.getSearchItems(view);
+    public String getSearchItems(String decompositionName, String representationInfo) throws Exception {
+        Decomposition clusterView = decompositionRepository.findByName(decompositionName);
+        return clusterView.getSearchItems(representationInfo);
     }
 
     public void snapshotDecomposition(String decompositionName) throws Exception {
-        ClusterViewDecomposition decomposition = (ClusterViewDecomposition) updateDecomposition(decompositionName);
+        Decomposition decomposition = updateDecomposition(decompositionName);
         Similarity similarity = decomposition.getSimilarity();
 
         String snapshotName = decomposition.getName() + " SNAPSHOT";

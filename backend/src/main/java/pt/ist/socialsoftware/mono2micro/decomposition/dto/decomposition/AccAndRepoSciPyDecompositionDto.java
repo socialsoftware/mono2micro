@@ -1,6 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition;
 
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccAndRepoSciPyDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.RepositoryInfo;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccAndRepoSciPyDecomposition.ACC_AND_REPO_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.RepositoryInfo.REPOSITORY_INFO;
 
 public class AccAndRepoSciPyDecompositionDto extends DecompositionDto {
     private boolean outdated;
@@ -29,9 +31,10 @@ public class AccAndRepoSciPyDecompositionDto extends DecompositionDto {
         this.outdated = decomposition.isOutdated();
         this.expert = decomposition.isExpert();
         this.clusters = decomposition.getClusters();
-        this.authors = decomposition.getAuthors();
-        this.commitsInCommon = decomposition.getCommitsInCommon();
-        this.totalCommits = decomposition.getTotalCommits();
+        RepositoryInfo repositoryInfo = (RepositoryInfo) decomposition.getRepresentationInformationByType(REPOSITORY_INFO);
+        this.authors = repositoryInfo.getAuthors();
+        this.commitsInCommon = repositoryInfo.getCommitsInCommon();
+        this.totalCommits = repositoryInfo.getTotalCommits();
     }
 
     public boolean isOutdated() {

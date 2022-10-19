@@ -1,6 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.metrics.functionalityMetrics;
 
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.property.AccessesDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.AccessesInfo;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.ReducedTraceElementDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
@@ -15,11 +16,13 @@ import java.util.Map;
 public class FunctionalityPerformanceMetric extends FunctionalityMetric {
     public static final String PERFORMANCE = "Performance";
 
+    @Override
     public String getType() {
         return PERFORMANCE;
     }
 
-    public Double calculateMetric(AccessesDecomposition decomposition, Functionality functionality) {
+    @Override
+    public Double calculateMetric(AccessesInfo accessesInfo, Decomposition decomposition, Functionality functionality) {
         double functionalityPerformance = 0;
         Map<Short, String> entityIDToClusterName = decomposition.getEntityIDToClusterName();
         for (TraceDto t : functionality.getTraces()) {

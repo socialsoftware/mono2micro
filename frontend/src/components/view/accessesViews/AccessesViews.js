@@ -39,8 +39,8 @@ export const views = {
     FUNCTIONALITY: 'Functionality View',
 };
 
-const ACCESSES_DECOMPOSITION = "ACCESSES_DECOMPOSITION";
-export {ACCESSES_DECOMPOSITION};
+const ACCESSES_INFO = "ACCESSES_INFO";
+export {ACCESSES_INFO};
 
 export const AccessesViews = () => {
     const context = useContext(AppContext);
@@ -74,7 +74,7 @@ export const AccessesViews = () => {
             setClusters(Object.values(response.data.clusters).sort((a, b) => a.name - b.name));
             setClustersFunctionalities(response.data.clustersFunctionalities);
 
-            service.getEdgeWeights(decompositionName, ACCESSES_DECOMPOSITION).then(response => {
+            service.getEdgeWeights(decompositionName, ACCESSES_INFO).then(response => {
                 setNow(n => n + 30);
                 setEdgeWeights(response.data);
             });
@@ -249,7 +249,7 @@ export const AccessesViews = () => {
             />
 
             <ViewSearchBar
-                viewType={ACCESSES_DECOMPOSITION}
+                viewType={ACCESSES_INFO}
                 dataFields={['name', 'type', 'funcType', 'cluster', 'entities']}
                 openSearch={openSearch}
                 setOpenSearch={setOpenSearch}

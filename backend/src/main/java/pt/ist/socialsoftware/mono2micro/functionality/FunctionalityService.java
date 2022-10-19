@@ -7,8 +7,8 @@ import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.traverse.BreadthFirstIterator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.property.AccessesDecomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.AccessesInfo;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
@@ -28,6 +28,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.jgrapht.Graphs.successorListOf;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.AccessesInfo.ACCESSES_INFO;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
 
 @Service
@@ -43,12 +44,13 @@ public class FunctionalityService {
 
     public static FunctionalityRedesign createFunctionalityRedesign(
             GridFsService gridFsService,
-            AccessesDecomposition decomposition,
+            Decomposition decomposition,
             Functionality functionality,
             String name,
             boolean usedForMetrics,
             DirectedAcyclicGraph<LocalTransaction, DefaultEdge> localTransactionsGraph
     ) throws Exception {
+        AccessesInfo accessesInfo = (AccessesInfo) decomposition.getRepresentationInformationByType(ACCESSES_INFO);
         FunctionalityRedesign functionalityRedesign = new FunctionalityRedesign(name);
         if (usedForMetrics)
             functionality.setFunctionalityRedesignNameUsedForMetrics(name);
@@ -90,7 +92,7 @@ public class FunctionalityService {
             }
         }
 
-        functionalityRedesign.calculateMetrics(gridFsService, decomposition, functionality);
+        functionalityRedesign.calculateMetrics(gridFsService, decomposition, accessesInfo, functionality);
         gridFsService.saveFile(getFunctionalityRedesignAsJSON(functionalityRedesign), functionality.getId() + functionalityRedesign.getName());
         functionality.addFunctionalityRedesign(functionalityRedesign.getName(), functionality.getId() + functionalityRedesign.getName());
         return functionalityRedesign;
@@ -136,45 +138,18 @@ public class FunctionalityService {
         }).collect(Collectors.toList());
     }
 
-    // NOTE Code not used, only left here since it might be needed
-    public Functionality getOrCreateRedesign(String decompositionName, String functionalityName) throws Exception {
-        AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) decompositionRepository.findByName(decompositionName);
-        SimilarityMatrixSciPy similarity = (SimilarityMatrixSciPy) decomposition.getSimilarity();
-
-        Functionality functionality = decomposition.getFunctionality(functionalityName);
-
-        Representation representation = similarity.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
-
-        if (!functionality.containsFunctionalityRedesignName(Constants.DEFAULT_REDESIGN_NAME)) {
-            FunctionalityRedesign functionalityRedesign = createFunctionalityRedesign(
-                    gridFsService,
-                    decomposition,
-                    functionality,
-                    Constants.DEFAULT_REDESIGN_NAME,
-                    true,
-                    functionality.createLocalTransactionGraphFromScratch(
-                            gridFsService.getFile(representation.getName()),
-                            similarity.getTracesMaxLimit(),
-                            similarity.getTraceType(),
-                            decomposition.getEntityIDToClusterName())
-            );
-            functionalityRedesign.calculateMetrics(gridFsService, decomposition, functionality);
-            functionalityRepository.save(functionality);
-        }
-        return functionality;
-    }
-
     public Functionality addCompensating(String decompositionName, String functionalityName, String redesignName, HashMap<String, Object> data) throws Exception {
         int fromID = (Integer) data.get("fromID");
         String clusterName = (String) data.get("cluster");
         ArrayList<Integer> accesses = (ArrayList<Integer>) data.get("entities");
+        Decomposition decomposition = decompositionRepository.findByName(decompositionName);
+        AccessesInfo accessesInfo = (AccessesInfo) decomposition.getRepresentationInformationByType(ACCESSES_INFO);
 
-        AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) decompositionRepository.findByName(decompositionName);
-        Functionality functionality = decomposition.getFunctionality(functionalityName);
+        Functionality functionality = accessesInfo.getFunctionality(functionalityName);
 
         FunctionalityRedesign functionalityRedesign = getFunctionalityRedesign(functionality, redesignName);
         functionalityRedesign.addCompensating(clusterName, accesses, fromID);
-        functionalityRedesign.calculateMetrics(gridFsService, decomposition, functionality);
+        functionalityRedesign.calculateMetrics(gridFsService, decomposition, accessesInfo, functionality);
 
         updateFunctionalityRedesign(functionality, functionalityRedesign);
         functionalityRepository.save(functionality);
@@ -185,12 +160,13 @@ public class FunctionalityService {
         String localTransactionID = data.get("localTransactionID");
         String newCaller = data.get("newCaller");
 
-        AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) decompositionRepository.findByName(decompositionName);
-        Functionality functionality = decomposition.getFunctionality(functionalityName);
+        Decomposition decomposition = decompositionRepository.findByName(decompositionName);
+        AccessesInfo accessesInfo = (AccessesInfo) decomposition.getRepresentationInformationByType(ACCESSES_INFO);
+        Functionality functionality = accessesInfo.getFunctionality(functionalityName);
 
         FunctionalityRedesign functionalityRedesign = getFunctionalityRedesign(functionality, redesignName);
         functionalityRedesign.sequenceChange(localTransactionID, newCaller);
-        functionalityRedesign.calculateMetrics(gridFsService, decomposition, functionality);
+        functionalityRedesign.calculateMetrics(gridFsService, decomposition, accessesInfo, functionality);
 
         updateFunctionalityRedesign(functionality, functionalityRedesign);
         functionalityRepository.save(functionality);
@@ -202,12 +178,13 @@ public class FunctionalityService {
         String toClusterName = data.get("toCluster");
         String localTransactions = data.get("localTransactions");
 
-        AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) decompositionRepository.findByName(decompositionName);
-        Functionality functionality = decomposition.getFunctionality(functionalityName);
+        Decomposition decomposition = decompositionRepository.findByName(decompositionName);
+        AccessesInfo accessesInfo = (AccessesInfo) decomposition.getRepresentationInformationByType(ACCESSES_INFO);
+        Functionality functionality = accessesInfo.getFunctionality(functionalityName);
 
         FunctionalityRedesign functionalityRedesign = getFunctionalityRedesign(functionality, redesignName);
         functionalityRedesign.dcgi(fromClusterName, toClusterName, localTransactions);
-        functionalityRedesign.calculateMetrics(gridFsService, decomposition, functionality);
+        functionalityRedesign.calculateMetrics(gridFsService, decomposition, accessesInfo, functionality);
 
         updateFunctionalityRedesign(functionality, functionalityRedesign);
         functionalityRepository.save(functionality);
@@ -217,9 +194,10 @@ public class FunctionalityService {
     public Functionality pivotTransaction(String decompositionName, String functionalityName, String redesignName, String transactionID, Optional<String> newRedesignName)
             throws Exception
     {
-        AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) decompositionRepository.findByName(decompositionName);
+        Decomposition decomposition = decompositionRepository.findByName(decompositionName);
         SimilarityMatrixSciPy similarity = (SimilarityMatrixSciPy) decomposition.getSimilarity();
-        Functionality functionality = decomposition.getFunctionality(functionalityName);
+        AccessesInfo accessesInfo = (AccessesInfo) decomposition.getRepresentationInformationByType(ACCESSES_INFO);
+        Functionality functionality = accessesInfo.getFunctionality(functionalityName);
 
         if(newRedesignName.isPresent())
             if(functionality.containsFunctionalityRedesignName(newRedesignName.get()))
@@ -227,7 +205,7 @@ public class FunctionalityService {
 
         FunctionalityRedesign functionalityRedesign = getFunctionalityRedesign(functionality, redesignName);
         functionalityRedesign.definePivotTransaction(Integer.parseInt(transactionID));
-        functionalityRedesign.calculateMetrics(gridFsService, decomposition, functionality);
+        functionalityRedesign.calculateMetrics(gridFsService, decomposition, accessesInfo, functionality);
 
         if(newRedesignName.isPresent()) {
             gridFsService.deleteFile(functionality.getFunctionalityRedesigns().remove(redesignName));
@@ -238,7 +216,7 @@ public class FunctionalityService {
 
             Representation representation = similarity.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
 
-            DirectedAcyclicGraph<LocalTransaction, DefaultEdge> functionalityLocalTransactionsGraph = decomposition.getFunctionality(functionalityName)
+            DirectedAcyclicGraph<LocalTransaction, DefaultEdge> functionalityLocalTransactionsGraph = accessesInfo.getFunctionality(functionalityName)
                     .createLocalTransactionGraphFromScratch(
                             gridFsService.getFile(representation.getName()),
                             similarity.getTracesMaxLimit(),
@@ -263,8 +241,9 @@ public class FunctionalityService {
     public Functionality changeLTName(String decompositionName, String functionalityName, String redesignName, String transactionID, String newName)
             throws IOException
     {
-        AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) decompositionRepository.findByName(decompositionName);
-        Functionality functionality = decomposition.getFunctionality(functionalityName);
+        Decomposition decomposition = decompositionRepository.findByName(decompositionName);
+        AccessesInfo accessesInfo = (AccessesInfo) decomposition.getRepresentationInformationByType(ACCESSES_INFO);
+        Functionality functionality = accessesInfo.getFunctionality(functionalityName);
         FunctionalityRedesign functionalityRedesign = getFunctionalityRedesign(functionality, redesignName);
         functionalityRedesign.changeLTName(transactionID, newName);
         updateFunctionalityRedesign(functionality, functionalityRedesign);
@@ -273,8 +252,9 @@ public class FunctionalityService {
     }
 
     public Functionality deleteRedesign(String decompositionName, String functionalityName, String redesignName) {
-        AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) decompositionRepository.findByName(decompositionName);
-        Functionality functionality = decomposition.getFunctionality(functionalityName);
+        Decomposition decomposition = decompositionRepository.findByName(decompositionName);
+        AccessesInfo accessesInfo = (AccessesInfo) decomposition.getRepresentationInformationByType(ACCESSES_INFO);
+        Functionality functionality = accessesInfo.getFunctionality(functionalityName);
         functionality.removeFunctionalityRedesign(redesignName);
         gridFsService.deleteFile(functionality.getFunctionalityRedesignFileName(redesignName));
         functionalityRepository.save(functionality);
@@ -282,8 +262,9 @@ public class FunctionalityService {
     }
 
     public Functionality useForMetrics(String decompositionName, String functionalityName, String redesignName) {
-        AccessesSciPyDecomposition decomposition = (AccessesSciPyDecomposition) decompositionRepository.findByName(decompositionName);
-        Functionality functionality = decomposition.getFunctionality(functionalityName);
+        Decomposition decomposition = decompositionRepository.findByName(decompositionName);
+        AccessesInfo accessesInfo = (AccessesInfo) decomposition.getRepresentationInformationByType(ACCESSES_INFO);
+        Functionality functionality = accessesInfo.getFunctionality(functionalityName);
         functionality.setFunctionalityRedesignNameUsedForMetrics(redesignName);
         functionalityRepository.save(functionality);
         return functionality;

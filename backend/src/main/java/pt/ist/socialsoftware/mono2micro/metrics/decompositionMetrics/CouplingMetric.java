@@ -1,7 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.metrics.decompositionMetrics;
 
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
-import pt.ist.socialsoftware.mono2micro.cluster.SciPyCluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 
 import java.math.BigDecimal;
@@ -12,16 +11,17 @@ import java.util.Set;
 public class CouplingMetric extends DecompositionMetric {
     public static final String COUPLING = "Coupling";
 
+    @Override
     public String getType() {
         return COUPLING;
     }
 
+    @Override
     public Double calculateMetric(Decomposition decomposition) {
         int graphClustersAmount = decomposition.getClusters().size();
         double coupling = 0;
 
-        for (Cluster c1 : decomposition.getClusters().values()) {
-            SciPyCluster cluster1 = (SciPyCluster) c1;
+        for (Cluster cluster1 : decomposition.getClusters().values()) {
             double clusterCoupling = 0;
             Map<String, Set<Short>> couplingDependencies = cluster1.getCouplingDependencies();
 

@@ -3,7 +3,8 @@ package pt.ist.socialsoftware.mono2micro.metrics.functionalityMetrics;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.property.AccessesDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.AccessesInfo;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
@@ -14,11 +15,13 @@ import java.util.*;
 public class FunctionalityComplexityMetric extends FunctionalityMetric {
     public static final String COMPLEXITY = "Complexity";
 
+    @Override
     public String getType() {
         return COMPLEXITY;
     }
 
-    public Double calculateMetric(AccessesDecomposition decomposition, Functionality functionality) {
+    @Override
+    public Double calculateMetric(AccessesInfo accessesInfo, Decomposition decomposition, Functionality functionality) {
         double value;
 
         // Since metric calculation is always done during the creation of the functionalities, we can use createLocalTransactionGraph,
@@ -28,7 +31,7 @@ public class FunctionalityComplexityMetric extends FunctionalityMetric {
         Map<String, Set<Cluster>> functionalityClusters = Utils.getFunctionalitiesClusters(
                 decomposition.getEntityIDToClusterName(),
                 decomposition.getClusters(),
-                decomposition.getFunctionalities().values());
+                accessesInfo.getFunctionalities().values());
 
         Set<LocalTransaction> allLocalTransactions = localTransactionsGraph.vertexSet();
 
@@ -60,7 +63,7 @@ public class FunctionalityComplexityMetric extends FunctionalityMetric {
                                     functionality.getName(),
                                     entityID,
                                     mode,
-                                    decomposition.getFunctionalities().values(),
+                                    accessesInfo.getFunctionalities().values(),
                                     functionalityClusters
                             );
 

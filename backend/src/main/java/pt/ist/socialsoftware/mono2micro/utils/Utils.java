@@ -1,66 +1,23 @@
 package pt.ist.socialsoftware.mono2micro.utils;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.property.AccessesDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.AccessesInfo;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.ReducedTraceElementDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.RuleDto;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 import static org.jgrapht.Graphs.successorListOf;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.AccessesInfo.ACCESSES_INFO;
 
 public class Utils {
-
-    public static Integer lineno() { return new Throwable().getStackTrace()[1].getLineNumber(); }
-
     public static void print(String message, Integer lineNumber) { System.out.println("[" + lineNumber + "] " + message); }
-
-    public static Set<String> getJsonFileKeys(File file) throws IOException {
-        InputStream is = new FileInputStream(file);
-
-        ObjectMapper mapper = new ObjectMapper();
-        JsonFactory jsonfactory = mapper.getFactory();
-
-        JsonParser jsonParser = jsonfactory.createParser(is);
-        JsonToken jsonToken = jsonParser.nextValue(); // JsonToken.START_OBJECT
-
-        if (jsonToken != JsonToken.START_OBJECT) {
-            System.err.println("Json must start with a left curly brace");
-            System.exit(-1);
-        }
-
-        Set<String> keys = new HashSet<>();
-
-        jsonParser.nextValue();
-
-        while (jsonToken != JsonToken.END_OBJECT) {
-            if (jsonParser.getCurrentName() != null) {
-                String keyName = jsonParser.getCurrentName();
-                System.out.println("Key name: " + keyName);
-                keys.add(keyName);
-                jsonParser.skipChildren();
-            }
-
-            jsonToken = jsonParser.nextValue();
-        }
-
-        is.close();
-
-        return keys;
-    }
 
     public static class GetLocalTransactionsSequenceAndCalculateTracePerformanceResult {
         public int performance = 0;
@@ -276,12 +233,13 @@ public class Utils {
     }
 
     public static Map<String, List<Functionality>> getClustersFunctionalities(
-            AccessesDecomposition decomposition
+            Decomposition decomposition
     ) {
         Map<String, List<Functionality>> clustersFunctionalities = new HashMap<>();
         Map<Short, String> entityIDToClusterName = decomposition.getEntityIDToClusterName();
+        AccessesInfo accessesInfo = (AccessesInfo) decomposition.getRepresentationInformationByType(ACCESSES_INFO);
 
-        for (Functionality functionality : decomposition.getFunctionalities().values()) {
+        for (Functionality functionality : accessesInfo.getFunctionalities().values()) {
             for (short entityID : functionality.getEntities().keySet()) {
                 Cluster cluster = decomposition.getClusters().get(entityIDToClusterName.get(entityID));
 

@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.decomposition.domain.property;
+package pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,14 +7,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.element.Element;
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AuthorRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.CommitRepresentation;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.dendrogram.Dendrogram;
-import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -23,52 +23,109 @@ import java.util.*;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.AuthorRepresentation.AUTHOR;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.CommitRepresentation.COMMIT;
 
-public interface RepositoryDecomposition {
-    String REPOSITORY_DECOMPOSITION = "REPOSITORY_DECOMPOSITION";
-    Strategy getStrategy();
-    Similarity getSimilarity();
-    Map<Short, String> getEntityIDToClusterName();
-    Map<String, Cluster> getClusters();
-    Map<Short, Map<Short, Integer>> getCommitsInCommon();
-    Map<Short, Integer> getTotalCommits();
-    Map<Short, ArrayList<String>> getAuthors();
-    void setAuthors(Map<Short, ArrayList<String>> authors);
-    Integer getTotalAuthors();
-    void setTotalAuthors(Integer totalAuthors);
-    default List<String> getAuthorsFromId(Short id) {
+public class RepositoryInfo extends RepresentationInformation {
+    public static final String REPOSITORY_INFO = "REPOSITORY_INFO";
+    private Map<Short, ArrayList<String>> authors = new HashMap<>();
+    private Map<Short, Map<Short, Integer>> commitsInCommon = new HashMap<>();
+    private Map<Short, Integer> totalCommits = new HashMap<>();
+    private Integer totalAuthors;
+
+    public RepositoryInfo() {}
+
+    public RepositoryInfo(Decomposition decomposition) throws IOException {
+        this.decompositionName = decomposition.getName();
+        decomposition.addRepresentationInformation(this);
+        setupAuthorsAndCommits(decomposition);
+    }
+
+    public RepositoryInfo(Decomposition snapshotDecomposition, Decomposition decomposition) {
+        this.decompositionName = snapshotDecomposition.getName();
+        snapshotDecomposition.addRepresentationInformation(this);
+        RepositoryInfo repositoryInfo = (RepositoryInfo) decomposition.getRepresentationInformationByType(REPOSITORY_INFO);
+        this.authors = repositoryInfo.getAuthors();
+        this.commitsInCommon = repositoryInfo.getCommitsInCommon();
+        this.totalCommits = repositoryInfo.getTotalCommits();
+        this.totalAuthors = repositoryInfo.getTotalAuthors();
+    }
+
+    @Override
+    public String getType() {
+        return REPOSITORY_INFO;
+    }
+
+    @Override
+    public void update(Decomposition decomposition) throws Exception {}
+
+    @Override
+    public void deleteProperties() {}
+
+
+    public Map<Short, ArrayList<String>> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(Map<Short, ArrayList<String>> authors) {
+        this.authors = authors;
+    }
+
+    public Map<Short, Map<Short, Integer>> getCommitsInCommon() {
+        return commitsInCommon;
+    }
+
+    public void setCommitsInCommon(Map<Short, Map<Short, Integer>> commitsInCommon) {
+        this.commitsInCommon = commitsInCommon;
+    }
+
+    public Map<Short, Integer> getTotalCommits() {
+        return totalCommits;
+    }
+
+    public void setTotalCommits(Map<Short, Integer> totalCommits) {
+        this.totalCommits = totalCommits;
+    }
+
+    public Integer getTotalAuthors() {
+        return totalAuthors;
+    }
+
+    public void setTotalAuthors(Integer totalAuthors) {
+        this.totalAuthors = totalAuthors;
+    }
+
+    public List<String> getAuthorsFromId(Short id) {
         return getAuthors().get(id);
     }
-    default void addCommitInCommon(Short entityId, Short commonEntityId, Integer totalCommits) {
+    public void addCommitInCommon(Short entityId, Short commonEntityId, Integer totalCommits) {
         Map<Short, Map<Short, Integer>> commitsInCommon = getCommitsInCommon();
         Map<Short, Integer> commits = commitsInCommon.getOrDefault(entityId, new HashMap<>());
         commits.put(commonEntityId, totalCommits);
         commitsInCommon.put(entityId, commits);
     }
-    default void addTotalCommit(Short entityId, Integer totalCommits) {
+    public void addTotalCommit(Short entityId, Integer totalCommits) {
         getTotalCommits().put(entityId, totalCommits);
     }
 
-    default void setupAuthorsAndCommits() throws IOException {
+    private void setupAuthorsAndCommits(Decomposition decomposition) throws IOException {
         GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
-        AuthorRepresentation authorRepresentation = (AuthorRepresentation) getStrategy().getCodebase().getRepresentationByType(AUTHOR);
-        CommitRepresentation commitRepresentation = (CommitRepresentation) getStrategy().getCodebase().getRepresentationByType(COMMIT);
+        AuthorRepresentation authorRepresentation = (AuthorRepresentation) decomposition.getStrategy().getCodebase().getRepresentationByType(AUTHOR);
+        CommitRepresentation commitRepresentation = (CommitRepresentation) decomposition.getStrategy().getCodebase().getRepresentationByType(COMMIT);
         Map<Short, ArrayList<String>> authors = new ObjectMapper().readValue(gridFsService.getFileAsString(authorRepresentation.getName()), new TypeReference<Map<Short, ArrayList<String>>>() {});
         Map<String, Map<String, Integer>> commits = new ObjectMapper().readValue(gridFsService.getFileAsString(commitRepresentation.getName()), new TypeReference<Map<String, Map<String, Integer>>>() {});
 
         setAuthors(authors);
         extractNumberOfAuthors(authors);
-        extractCommitsInCommon(commits);
+        extractCommitsInCommon(decomposition, commits);
     }
 
-    default void extractNumberOfAuthors(Map<Short, ArrayList<String>> filesAndAuthors) {
+    private void extractNumberOfAuthors(Map<Short, ArrayList<String>> filesAndAuthors) {
         Set<String> allAuthors = new HashSet<>();
         for (ArrayList<String> authors : filesAndAuthors.values())
             allAuthors.addAll(authors);
         setTotalAuthors(allAuthors.size());
     }
 
-    default void extractCommitsInCommon(Map<String, Map<String, Integer>> commits) {
-        Set<Short> entityIds = getEntityIDToClusterName().keySet();
+    private void extractCommitsInCommon(Decomposition decomposition, Map<String, Map<String, Integer>> commits) {
+        Set<Short> entityIds = decomposition.getEntityIDToClusterName().keySet();
         for (Short entityId : entityIds) {
             Map<String, Integer> commonEntities = commits.get(entityId.toString());
             addTotalCommit(entityId, commonEntities.get("total_commits"));
@@ -83,11 +140,13 @@ public interface RepositoryDecomposition {
         }
     }
 
-    default String getEdgeWeightsFromRepository(Dendrogram dendrogram) throws JSONException, IOException {
+    @Override
+    public String getEdgeWeights(Decomposition decomposition) throws JSONException, IOException {
         GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
+        Dendrogram dendrogram = ((SimilarityMatrixSciPy) decomposition.getSimilarity()).getDendrogram();
         JSONArray copheneticDistances = new JSONArray(IOUtils.toString(gridFsService.getFile(dendrogram.getCopheneticDistanceName()), StandardCharsets.UTF_8));
 
-        ArrayList<Short> entities = new ArrayList<>(getEntityIDToClusterName().keySet());
+        ArrayList<Short> entities = new ArrayList<>(decomposition.getEntityIDToClusterName().keySet());
 
         JSONArray edgesJSON = new JSONArray();
         int k = 0;
@@ -125,10 +184,11 @@ public interface RepositoryDecomposition {
         return edgesJSON.toString();
     }
 
-    default String getSearchItemsFromRepository() throws JSONException {
+    @Override
+    public String getSearchItems(Decomposition decomposition) throws JSONException {
         JSONArray searchItems = new JSONArray();
 
-        for (Cluster cluster : getClusters().values()) {
+        for (Cluster cluster : decomposition.getClusters().values()) {
             JSONObject clusterItem = new JSONObject();
             clusterItem.put("name", cluster.getName());
             clusterItem.put("type", "Cluster");

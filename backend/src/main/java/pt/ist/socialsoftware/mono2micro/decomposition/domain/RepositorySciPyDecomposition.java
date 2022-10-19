@@ -4,8 +4,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.Clustering;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.ExpertClustering;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.SciPyClustering;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.property.RepositoryDecomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.views.ClusterViewDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.RepositoryInfo;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.history.domain.PositionHistory;
@@ -13,22 +12,26 @@ import pt.ist.socialsoftware.mono2micro.history.service.HistoryService;
 import pt.ist.socialsoftware.mono2micro.history.service.PositionHistoryService;
 import pt.ist.socialsoftware.mono2micro.metrics.decompositionMetrics.DecompositionMetric;
 import pt.ist.socialsoftware.mono2micro.metrics.decompositionMetrics.TSRMetric;
-import pt.ist.socialsoftware.mono2micro.operation.*;
-import pt.ist.socialsoftware.mono2micro.operation.clusterView.ClusterViewFormClusterOperation;
-import pt.ist.socialsoftware.mono2micro.operation.clusterView.ClusterViewMergeOperation;
-import pt.ist.socialsoftware.mono2micro.operation.clusterView.ClusterViewSplitOperation;
-import pt.ist.socialsoftware.mono2micro.operation.clusterView.ClusterViewTransferOperation;
+import pt.ist.socialsoftware.mono2micro.operation.formCluster.AccAndRepoFormClusterOperation;
+import pt.ist.socialsoftware.mono2micro.operation.formCluster.FormClusterOperation;
+import pt.ist.socialsoftware.mono2micro.operation.merge.RepositoryMergeOperation;
+import pt.ist.socialsoftware.mono2micro.operation.rename.RepositoryRenameOperation;
+import pt.ist.socialsoftware.mono2micro.operation.split.RepositorySplitOperation;
+import pt.ist.socialsoftware.mono2micro.operation.merge.MergeOperation;
+import pt.ist.socialsoftware.mono2micro.operation.rename.RenameOperation;
+import pt.ist.socialsoftware.mono2micro.operation.split.SplitOperation;
+import pt.ist.socialsoftware.mono2micro.operation.transfer.RepositoryTransferOperation;
+import pt.ist.socialsoftware.mono2micro.operation.transfer.TransferOperation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AuthorRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.CommitRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy;
 
 import java.io.IOException;
 import java.util.*;
 
 @Document("decomposition")
-public class RepositorySciPyDecomposition extends Decomposition implements RepositoryDecomposition, ClusterViewDecomposition {
+public class RepositorySciPyDecomposition extends Decomposition {
     public static final String REPOSITORY_SCIPY = "Repository-Based Similarity and SciPy Clustering Algorithm";
 
     private static final List<String> requiredRepresentations = new ArrayList<String>() {{
@@ -38,26 +41,18 @@ public class RepositorySciPyDecomposition extends Decomposition implements Repos
         add(CommitRepresentation.COMMIT);
     }};
 
-    private Map<Short, ArrayList<String>> authors = new HashMap<>();
-    private Map<Short, Map<Short, Integer>> commitsInCommon = new HashMap<>();
-    private Map<Short, Integer> totalCommits = new HashMap<>();
-    private Integer totalAuthors;
-
     public RepositorySciPyDecomposition() {}
 
     public RepositorySciPyDecomposition(DecompositionRequest request) {}
 
-    public RepositorySciPyDecomposition(RepositorySciPyDecomposition decomposition) {
-        this.name = decomposition.getName();
+    public RepositorySciPyDecomposition(RepositorySciPyDecomposition decomposition, String snapshotName) {
+        this.name = snapshotName;
         this.similarity = decomposition.getSimilarity();
         this.metrics = decomposition.getMetrics();
         this.outdated = decomposition.isOutdated();
         this.expert = decomposition.isExpert();
         this.clusters = decomposition.getClusters();
-        this.authors = decomposition.getAuthors();
-        this.commitsInCommon = decomposition.getCommitsInCommon();
-        this.totalCommits = decomposition.getTotalCommits();
-        this.totalAuthors = decomposition.getTotalAuthors();
+        new RepositoryInfo(this, decomposition);
     }
 
     @Override
@@ -65,45 +60,9 @@ public class RepositorySciPyDecomposition extends Decomposition implements Repos
         return REPOSITORY_SCIPY;
     }
 
+    @Override
     public List<String> getRequiredRepresentations() {
         return requiredRepresentations;
-    }
-
-    @Override
-    public Map<Short, ArrayList<String>> getAuthors() {
-        return authors;
-    }
-
-    public void setAuthors(Map<Short, ArrayList<String>> authors) {
-        this.authors = authors;
-    }
-
-    @Override
-    public Map<Short, Map<Short, Integer>> getCommitsInCommon() {
-        return commitsInCommon;
-    }
-
-    public void setCommitsInCommon(Map<Short, Map<Short, Integer>> commitsInCommon) {
-        this.commitsInCommon = commitsInCommon;
-    }
-
-    @Override
-    public Map<Short, Integer> getTotalCommits() {
-        return totalCommits;
-    }
-
-    public void setTotalCommits(Map<Short, Integer> totalCommits) {
-        this.totalCommits = totalCommits;
-    }
-
-    @Override
-    public Integer getTotalAuthors() {
-        return totalAuthors;
-    }
-
-    @Override
-    public void setTotalAuthors(Integer totalAuthors) {
-        this.totalAuthors = totalAuthors;
     }
 
     @Override
@@ -113,6 +72,7 @@ public class RepositorySciPyDecomposition extends Decomposition implements Repos
         else return new SciPyClustering();
     }
 
+    @Override
     public void calculateMetrics() {
         DecompositionMetric[] metricObjects = new DecompositionMetric[] {new TSRMetric()};
 
@@ -120,65 +80,53 @@ public class RepositorySciPyDecomposition extends Decomposition implements Repos
             this.metrics.put(metric.getType(), metric.calculateMetric(this));
     }
 
-    public String getEdgeWeights(String viewType) throws Exception {
-        if (viewType.equals(REPOSITORY_DECOMPOSITION))
-            return getEdgeWeightsFromRepository(((SimilarityMatrixSciPy) getSimilarity()).getDendrogram());
-        else throw new RuntimeException("View type not supported by this decomposition");
-    }
-
-    public String getSearchItems(String viewType) throws Exception {
-        if (viewType.equals(REPOSITORY_DECOMPOSITION))
-            return getSearchItemsFromRepository();
-        else throw new RuntimeException("View type not supported by this decomposition");
-    }
-
+    @Override
     public void setup() throws IOException {
-        setupAuthorsAndCommits();
+        new RepositoryInfo(this);
         this.history = new PositionHistory(this);
     }
 
+    @Override
     public void update() {}
 
+    @Override
     public void deleteProperties() {}
 
+    @Override
     public void renameCluster(RenameOperation operation) {
-        clusterViewRename(operation.getClusterName(), operation.getNewClusterName());
+        RepositoryRenameOperation repositoryRenameOperation = new RepositoryRenameOperation(operation);
+        repositoryRenameOperation.execute(this);
     }
 
+    @Override
     public void mergeClusters(MergeOperation operation) {
-        ClusterViewMergeOperation mergeOperation = (ClusterViewMergeOperation) operation;
-        mergeOperation.addEntities(this); // needed so that when doing undo, the original entities are restored
-        clusterViewMerge(operation.getCluster1Name(), operation.getCluster2Name(), operation.getNewName());
+        RepositoryMergeOperation repositoryMergeOperation = new RepositoryMergeOperation(operation);
+        repositoryMergeOperation.execute(this);
     }
 
+    @Override
     public void splitCluster(SplitOperation operation) {
-        ClusterViewSplitOperation splitOperation = (ClusterViewSplitOperation) operation;
-        clusterViewSplit(splitOperation.getOriginalCluster(), splitOperation.getNewCluster(), splitOperation.getEntities());
+        RepositorySplitOperation repositorySplitOperation = new RepositorySplitOperation(operation);
+        repositorySplitOperation.execute(this);
     }
 
+    @Override
     public void transferEntities(TransferOperation operation) {
-        ClusterViewTransferOperation transferOperation = (ClusterViewTransferOperation) operation;
-        clusterViewTransfer(transferOperation.getFromCluster(), transferOperation.getToCluster(), transferOperation.getEntities());
+        RepositoryTransferOperation repositoryTransferOperation = new RepositoryTransferOperation(operation);
+        repositoryTransferOperation.execute(this);
     }
 
+    @Override
     public void formCluster(FormClusterOperation operation) {
-        ClusterViewFormClusterOperation formClusterOperation = (ClusterViewFormClusterOperation) operation;
-        clusterViewFormCluster(formClusterOperation.getNewCluster(), formClusterOperation.getEntities());
+        AccAndRepoFormClusterOperation accAndRepoFormClusterOperation = new AccAndRepoFormClusterOperation(operation);
+        accAndRepoFormClusterOperation.execute(this);
     }
 
-    public void undoOperation(Operation operation) {
-        undoClusterViewOperation(operation);
-    }
-
-    public void redoOperation(Operation operation) {
-        redoClusterViewOperation(operation);
-    }
-
+    @Override
     public Decomposition snapshotDecomposition(String snapshotName) throws IOException {
         HistoryService historyService = ContextManager.get().getBean(HistoryService.class);
         PositionHistoryService positionHistoryService = ContextManager.get().getBean(PositionHistoryService.class);
-        RepositorySciPyDecomposition snapshotDecomposition = new RepositorySciPyDecomposition(this);
-        snapshotDecomposition.setName(snapshotName);
+        RepositorySciPyDecomposition snapshotDecomposition = new RepositorySciPyDecomposition(this, snapshotName);
 
         PositionHistory snapshotHistory = new PositionHistory(snapshotDecomposition);
         snapshotDecomposition.setHistory(snapshotHistory);

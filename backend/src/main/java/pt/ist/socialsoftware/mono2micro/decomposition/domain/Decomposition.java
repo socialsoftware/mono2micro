@@ -4,12 +4,18 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.Clustering;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.RepresentationInformation;
 import pt.ist.socialsoftware.mono2micro.element.Element;
 import pt.ist.socialsoftware.mono2micro.history.domain.History;
-import pt.ist.socialsoftware.mono2micro.operation.*;
+import pt.ist.socialsoftware.mono2micro.operation.formCluster.FormClusterOperation;
+import pt.ist.socialsoftware.mono2micro.operation.merge.MergeOperation;
+import pt.ist.socialsoftware.mono2micro.operation.rename.RenameOperation;
+import pt.ist.socialsoftware.mono2micro.operation.split.SplitOperation;
+import pt.ist.socialsoftware.mono2micro.operation.transfer.TransferOperation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +34,8 @@ public abstract class Decomposition {
 	@DBRef
     History history;
 
+	List<RepresentationInformation> representationInformations = new ArrayList<>();
+
 	public abstract String getType();
 	public abstract List<String> getRequiredRepresentations(); // Provides the required representations
 	public abstract Clustering getClusteringAlgorithm();
@@ -40,8 +48,8 @@ public abstract class Decomposition {
 	public abstract void splitCluster(SplitOperation operation);
 	public abstract void transferEntities(TransferOperation operation);
 	public abstract void formCluster(FormClusterOperation operation); // leave empty if not available
-	public abstract void undoOperation(Operation operation);
-	public abstract void redoOperation(Operation operation);
+	public abstract Decomposition snapshotDecomposition(String decompositionName) throws Exception;
+
 	public String getName() { return this.name; }
 
 	public void setName(String name) {
@@ -74,6 +82,22 @@ public abstract class Decomposition {
 
 	public void addMetric(String metricType, Object metricValue) {
 		this.metrics.put(metricType, metricValue);
+	}
+
+	public List<RepresentationInformation> getRepresentationInformations() {
+		return representationInformations;
+	}
+
+	public void setRepresentationInformations(List<RepresentationInformation> representationInformations) {
+		this.representationInformations = representationInformations;
+	}
+
+	public void addRepresentationInformation(RepresentationInformation representationInformation) {
+		this.representationInformations.add(representationInformation);
+	}
+
+	public RepresentationInformation getRepresentationInformationByType(String type) {
+		return this.representationInformations.stream().filter(r -> r.getType().equals(type)).findFirst().orElse(null);
 	}
 
 	public Strategy getStrategy() {
@@ -150,5 +174,15 @@ public abstract class Decomposition {
 			for (Element element : cluster.getElements())
 				entityIDToClusterName.put(element.getId(), cluster.getName());
 		return entityIDToClusterName;
+	}
+
+	public String getEdgeWeights(String representationInfo) throws Exception {
+		RepresentationInformation representationInformation = getRepresentationInformationByType(representationInfo);
+		return representationInformation.getEdgeWeights(this);
+	}
+
+	public String getSearchItems(String representationInfo) throws Exception {
+		RepresentationInformation representationInformation = getRepresentationInformationByType(representationInfo);
+		return representationInformation.getSearchItems(this);
 	}
 }

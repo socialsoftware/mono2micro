@@ -12,7 +12,11 @@ import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.Decompos
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.DecompositionDtoFactory;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
 import pt.ist.socialsoftware.mono2micro.decomposition.service.DecompositionService;
-import pt.ist.socialsoftware.mono2micro.operation.*;
+import pt.ist.socialsoftware.mono2micro.operation.formCluster.FormClusterOperation;
+import pt.ist.socialsoftware.mono2micro.operation.merge.MergeOperation;
+import pt.ist.socialsoftware.mono2micro.operation.rename.RenameOperation;
+import pt.ist.socialsoftware.mono2micro.operation.split.SplitOperation;
+import pt.ist.socialsoftware.mono2micro.operation.transfer.TransferOperation;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.List;
@@ -150,11 +154,11 @@ public class DecompositionController {
 	@RequestMapping(value = "/decomposition/{decompositionName}/merge", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Cluster>> mergeClusters(
 			@PathVariable String decompositionName,
-			@RequestBody Operation operation
+			@RequestBody MergeOperation operation
 	) {
 		logger.debug("mergeClusters");
 		try {
-			decompositionService.mergeClustersOperation(decompositionName, (MergeOperation) operation);
+			decompositionService.mergeClustersOperation(decompositionName, operation);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (KeyAlreadyExistsException e) {
@@ -169,11 +173,11 @@ public class DecompositionController {
 	@RequestMapping(value = "/decomposition/{decompositionName}/rename", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Cluster>> renameCluster(
 			@PathVariable String decompositionName,
-			@RequestBody Operation operation
+			@RequestBody RenameOperation operation
 	) {
 		logger.debug("renameCluster");
 		try {
-			decompositionService.renameClusterOperation(decompositionName, (RenameOperation) operation);
+			decompositionService.renameClusterOperation(decompositionName, operation);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (KeyAlreadyExistsException e) {
@@ -188,11 +192,11 @@ public class DecompositionController {
 	@RequestMapping(value = "/decomposition/{decompositionName}/split", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Cluster>> splitCluster(
 			@PathVariable String decompositionName,
-			@RequestBody Operation operation
+			@RequestBody SplitOperation operation
 	) {
 		logger.debug("splitCluster");
 		try {
-			decompositionService.splitClusterOperation(decompositionName, (SplitOperation) operation);
+			decompositionService.splitClusterOperation(decompositionName, operation);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (KeyAlreadyExistsException e) {
@@ -207,11 +211,11 @@ public class DecompositionController {
 	@RequestMapping(value = "/decomposition/{decompositionName}/transfer", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Cluster>> transferEntities(
 			@PathVariable String decompositionName,
-			@RequestBody Operation operation
+			@RequestBody TransferOperation operation
 	) {
 		logger.debug("transferEntities");
 		try {
-			decompositionService.transferEntitiesOperation(decompositionName, (TransferOperation) operation);
+			decompositionService.transferEntitiesOperation(decompositionName, operation);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -224,11 +228,11 @@ public class DecompositionController {
 	@RequestMapping(value = "/decomposition/{decompositionName}/formCluster", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Cluster>> formCluster(
 			@PathVariable String decompositionName,
-			@RequestBody Operation operation
+			@RequestBody FormClusterOperation operation
 	) {
 		logger.debug("formCluster");
 		try {
-			decompositionService.formClusterOperation(decompositionName, (FormClusterOperation) operation);
+			decompositionService.formClusterOperation(decompositionName, operation);
 			return new ResponseEntity<>(HttpStatus.OK);
 
 		} catch (KeyAlreadyExistsException e) {
@@ -256,15 +260,15 @@ public class DecompositionController {
 		}
 	}
 
-	@RequestMapping(value = "/decomposition/{decompositionName}/{viewType}/getEdgeWeights", method = RequestMethod.GET)
+	@RequestMapping(value = "/decomposition/{decompositionName}/{representationInfo}/getEdgeWeights", method = RequestMethod.GET)
 	public ResponseEntity<String> getEdgeWeights(
 			@PathVariable String decompositionName,
-			@PathVariable String viewType
+			@PathVariable String representationInfo
 	) {
 		logger.debug("getEdgeWeights");
 
 		try {
-			return new ResponseEntity<>(decompositionService.getEdgeWeights(decompositionName, viewType), HttpStatus.OK);
+			return new ResponseEntity<>(decompositionService.getEdgeWeights(decompositionName, representationInfo), HttpStatus.OK);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -272,15 +276,15 @@ public class DecompositionController {
 		}
 	}
 
-	@RequestMapping(value = "/decomposition/{decompositionName}/{viewType}/getSearchItems", method = RequestMethod.GET)
+	@RequestMapping(value = "/decomposition/{decompositionName}/{representationInfo}/getSearchItems", method = RequestMethod.GET)
 	public ResponseEntity<String> getSearchItems(
 			@PathVariable String decompositionName,
-			@PathVariable String viewType
+			@PathVariable String representationInfo
 	) {
 		logger.debug("getSearchItems");
 
 		try {
-			return new ResponseEntity<>(decompositionService.getSearchItems(decompositionName, viewType), HttpStatus.OK);
+			return new ResponseEntity<>(decompositionService.getSearchItems(decompositionName, representationInfo), HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

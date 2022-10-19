@@ -29,24 +29,13 @@ public class HistoryService {
         historyRepository.deleteByName(history.getName());
     }
 
-    public void addOperation(Decomposition decomposition, Operation operation) {
-        History history = decomposition.getHistory();
-
-        Long newHistoryOperationDepth = history.incrementCurrentHistoryDepth();
-        operation.setHistoryDepth(newHistoryOperationDepth);
-
-        // Remove conflicting Decomposition operations that have been overridden by the new operation
-        history.removeOverriddenOperations(newHistoryOperationDepth);
-
-        history.addOperation(operation);
-        historyRepository.save(history);
-    }
     public void undoOperation(Decomposition decomposition) {
         History history = decomposition.getHistory();
         if (history.getCurrentHistoryOperationDepth() == 0)
             throw new RuntimeException("No more operations to undo");
 
-        decomposition.undoOperation(history.getCurrentHistoryOperation());
+        Operation operation = history.getCurrentHistoryOperation();
+        operation.undo(decomposition);
 
         history.decrementCurrentHistoryDepth();
 
@@ -60,7 +49,8 @@ public class HistoryService {
             throw new RuntimeException("No more operations to redo");
         history.incrementCurrentHistoryDepth();
 
-        decomposition.redoOperation(history.getCurrentHistoryOperation());
+        Operation operation = history.getCurrentHistoryOperation();
+        operation.redo(decomposition);
 
         historyRepository.save(history);
         decompositionRepository.save(decomposition);

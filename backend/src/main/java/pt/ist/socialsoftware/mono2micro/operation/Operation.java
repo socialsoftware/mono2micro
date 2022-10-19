@@ -2,23 +2,44 @@ package pt.ist.socialsoftware.mono2micro.operation;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import pt.ist.socialsoftware.mono2micro.operation.clusterView.ClusterViewFormClusterOperation;
-import pt.ist.socialsoftware.mono2micro.operation.clusterView.ClusterViewMergeOperation;
-import pt.ist.socialsoftware.mono2micro.operation.clusterView.ClusterViewSplitOperation;
-import pt.ist.socialsoftware.mono2micro.operation.clusterView.ClusterViewTransferOperation;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.history.domain.History;
+import pt.ist.socialsoftware.mono2micro.operation.formCluster.FormClusterOperation;
+import pt.ist.socialsoftware.mono2micro.operation.merge.MergeOperation;
+import pt.ist.socialsoftware.mono2micro.operation.split.SplitOperation;
+import pt.ist.socialsoftware.mono2micro.operation.rename.RenameOperation;
+import pt.ist.socialsoftware.mono2micro.operation.transfer.TransferOperation;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = RenameOperation.class, name = RenameOperation.RENAME),
-        @JsonSubTypes.Type(value = ClusterViewMergeOperation.class, name = ClusterViewMergeOperation.CLUSTER_VIEW_MERGE),
-        @JsonSubTypes.Type(value = ClusterViewSplitOperation.class, name = ClusterViewSplitOperation.CLUSTER_VIEW_SPLIT),
-        @JsonSubTypes.Type(value = ClusterViewTransferOperation.class, name = ClusterViewTransferOperation.CLUSTER_VIEW_TRANSFER),
-        @JsonSubTypes.Type(value = ClusterViewFormClusterOperation.class, name = ClusterViewFormClusterOperation.CLUSTER_VIEW_FORM),
+        @JsonSubTypes.Type(value = RenameOperation.class, name = RenameOperation.RENAME_OPERATION),
+        @JsonSubTypes.Type(value = MergeOperation.class, name = MergeOperation.MERGE_OPERATION),
+        @JsonSubTypes.Type(value = SplitOperation.class, name = SplitOperation.SPLIT_OPERATION),
+        @JsonSubTypes.Type(value = TransferOperation.class, name = TransferOperation.TRANSFER_OPERATION),
+        @JsonSubTypes.Type(value = FormClusterOperation.class, name = FormClusterOperation.FORM_CLUSTER_OPERATION),
 })
 public abstract class Operation {
     protected Long historyDepth;
 
     public abstract String getOperationType();
+
+    public void execute(Decomposition decomposition) {
+        History history = decomposition.getHistory();
+
+        Long newHistoryOperationDepth = history.incrementCurrentHistoryDepth();
+        this.setHistoryDepth(newHistoryOperationDepth);
+
+        // Remove conflicting Decomposition operations that have been overridden by the new operation
+        history.removeOverriddenOperations(newHistoryOperationDepth);
+
+        history.addOperation(this);
+    }
+
+    public void executeOperation(Decomposition decomposition) {}
+
+    public void undo(Decomposition decomposition) {}
+
+    public void redo(Decomposition decomposition) {executeOperation(decomposition);}
 
     public Long getHistoryDepth() {
         return historyDepth;

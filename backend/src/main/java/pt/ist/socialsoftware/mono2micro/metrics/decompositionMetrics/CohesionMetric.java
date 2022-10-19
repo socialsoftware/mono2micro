@@ -1,9 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.metrics.decompositionMetrics;
 
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
-import pt.ist.socialsoftware.mono2micro.cluster.SciPyCluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.property.AccessesDecomposition;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
@@ -16,20 +14,21 @@ import java.util.Set;
 public class CohesionMetric extends DecompositionMetric {
     public static final String COHESION = "Cohesion";
 
+    @Override
     public String getType() {
         return COHESION;
     }
 
+    @Override
     public Double calculateMetric(Decomposition decomposition) { // It might be extended to adapt for other kinds of decompositions without functionalities
-        Map<String, List<Functionality>> clustersFunctionalities = Utils.getClustersFunctionalities((AccessesDecomposition) decomposition);
+        Map<String, List<Functionality>> clustersFunctionalities = Utils.getClustersFunctionalities(decomposition);
         return calculateMetric(decomposition, clustersFunctionalities);
     }
 
     public Double calculateMetric(Decomposition decomposition, Map<String, List<Functionality>> clustersFunctionalities) {
         double totalCohesion = 0;
 
-        for (Cluster c : decomposition.getClusters().values()) {
-            SciPyCluster cluster = (SciPyCluster) c;
+        for (Cluster cluster : decomposition.getClusters().values()) {
             List<Functionality> FunctionalitiesThatAccessThisCluster = clustersFunctionalities.get(cluster.getName());
 
             double clusterCohesion = 0;

@@ -11,7 +11,6 @@ import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.SciPyRequestDt
 import pt.ist.socialsoftware.mono2micro.decomposition.service.DecompositionService;
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
-import pt.ist.socialsoftware.mono2micro.recommendation.domain.algorithm.RecommendationForSciPy;
 import pt.ist.socialsoftware.mono2micro.recommendation.dto.RecommendMatrixSciPyDto;
 import pt.ist.socialsoftware.mono2micro.recommendation.dto.RecommendationDto;
 import pt.ist.socialsoftware.mono2micro.recommendation.repository.RecommendationRepository;
@@ -39,7 +38,7 @@ import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRep
 import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
 
 @Document("recommendation")
-public class RecommendMatrixSciPy extends Recommendation implements RecommendationForSciPy {
+public class RecommendMatrixSciPy extends Recommendation {
     public static final String RECOMMEND_MATRIX_SCIPY = "RECOMMEND_MATRIX_SCIPY";
     private String profile;
     private int tracesMaxLimit;
@@ -105,13 +104,19 @@ public class RecommendMatrixSciPy extends Recommendation implements Recommendati
         this.similarityMatricesNames = similarityMatricesNames;
     }
 
-    @Override
     public List<Weights> getWeightsList() {
         return weightsList;
     }
 
     public void setWeightsList(List<Weights> weightsList) {
         this.weightsList = weightsList;
+    }
+
+    public List<String> getWeightsNames() {
+        List<String> weightsNames = new ArrayList<>();
+        for (Weights weights : getWeightsList())
+            weightsNames.addAll(weights.getWeightsNames());
+        return weightsNames;
     }
 
     @Override
@@ -152,7 +157,6 @@ public class RecommendMatrixSciPy extends Recommendation implements Recommendati
         return getWeightsList().stream().map(Weights::getType).collect(Collectors.toList());
     }
 
-    @Override
     public Map<Short, String> getIDToEntityName(GridFsService gridFsService) throws IOException {
         IDToEntityRepresentation idToEntity = (IDToEntityRepresentation) getStrategy().getCodebase().getRepresentationByType(ID_TO_ENTITY);
         return new ObjectMapper().readValue(gridFsService.getFileAsString(idToEntity.getName()), new TypeReference<Map<Short, String>>() {});
@@ -178,7 +182,6 @@ public class RecommendMatrixSciPy extends Recommendation implements Recommendati
         });
     }
 
-    @Override
     public void getDecompositionPropertiesForRecommendation(Decomposition decomposition) throws Exception {
         SimilarityMatrixSciPy similarity = new SimilarityMatrixSciPy(this);
         decomposition.setSimilarity(similarity);

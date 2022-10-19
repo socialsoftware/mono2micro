@@ -5,14 +5,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
-import pt.ist.socialsoftware.mono2micro.cluster.SciPyCluster;
+import pt.ist.socialsoftware.mono2micro.cluster.DefaultCluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.*;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.SciPyRequestDto;
 import pt.ist.socialsoftware.mono2micro.element.DomainEntity;
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
-import pt.ist.socialsoftware.mono2micro.recommendation.domain.algorithm.RecommendationForSciPy;
+import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy;
 
@@ -96,10 +96,10 @@ public class SciPyClustering extends Clustering {
 
         for (String name : clusterNames) {
             JSONArray entities = clustersJSON.getJSONArray(name);
-            SciPyCluster cluster;
+            DefaultCluster cluster;
             if (decomposition.isExpert())
-                cluster = new SciPyCluster(name);
-            else cluster = new SciPyCluster("Cluster" + name);
+                cluster = new DefaultCluster(name);
+            else cluster = new DefaultCluster("Cluster" + name);
 
             for (int i = 0; i < entities.length(); i++) {
                 short entityID = (short) entities.getInt(i);
@@ -116,7 +116,7 @@ public class SciPyClustering extends Clustering {
         System.out.println("Preparing to contact " + SCRIPTS_ADDRESS);
     }
 
-    public void generateMultipleDecompositions(RecommendationForSciPy recommendation) throws Exception {
+    public void generateMultipleDecompositions(RecommendMatrixSciPy recommendation) throws Exception {
         Map<Short, String> idToEntity = recommendation.getIDToEntityName(gridFsService);
 
         JSONArray recommendationJSON = new JSONArray();

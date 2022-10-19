@@ -183,8 +183,19 @@ func (svc *DefaultHandler) ReadDecomposition(ctx context.Context, decompositionN
 		return nil, err
 	}
 
+	var representationInformation RepresentationInformations
+	representationInformations := databaseDecomposition.RepresentationInformations
+	for _, representationInfo := range databaseDecomposition.RepresentationInformations {
+		if len(representationInfo.Functionalities) != 0 {
+			representationInformation = representationInfo
+			break
+		}
+	}
+	fmt.Println(representationInformations[0])
+	fmt.Println(representationInformations[0].Functionalities)
+
 	functionalities := map[string]*mono2micro.Functionality{}
-	for _, dbref := range databaseDecomposition.Functionalities {
+	for _, dbref := range representationInformation.Functionalities {
 		var databaseFunctionality Functionality
 		err = functionalityCollection.FindOne(ctx, bson.D{{"_id", dbref.ID}}).Decode(&databaseFunctionality)
 		if err != nil {

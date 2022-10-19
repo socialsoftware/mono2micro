@@ -1,7 +1,8 @@
 package pt.ist.socialsoftware.mono2micro.metrics.functionalityRedesignMetrics;
 
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.property.AccessesDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.AccessesInfo;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.functionality.LocalTransactionTypes;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
@@ -16,12 +17,15 @@ import java.util.Set;
 public class SystemComplexityMetric extends FunctionalityRedesignMetric {
     public static final String SYSTEM_COMPLEXITY = "System Complexity";
 
+    @Override
     public String getType() {
         return SYSTEM_COMPLEXITY;
     }
 
+    @Override
     public Integer calculateMetric(
-            AccessesDecomposition decomposition,
+            Decomposition decomposition,
+            AccessesInfo accessesInfo,
             Functionality functionality,
             FunctionalityRedesign functionalityRedesign
     ){
@@ -33,7 +37,7 @@ public class SystemComplexityMetric extends FunctionalityRedesignMetric {
         Map<String, Set<Cluster>> functionalitiesClusters = Utils.getFunctionalitiesClusters(
                 decomposition.getEntityIDToClusterName(),
                 decomposition.getClusters(),
-                decomposition.getFunctionalities().values());
+                accessesInfo.getFunctionalities().values());
 
         for (int i = 0; i < functionalityRedesign.getRedesign().size(); i++) {
             LocalTransaction lt = functionalityRedesign.getRedesign().get(i);
@@ -45,7 +49,7 @@ public class SystemComplexityMetric extends FunctionalityRedesignMetric {
 
                     // Functionality complexity cost of write
                     if(mode >= 2 && lt.getType() == LocalTransactionTypes.COMPENSATABLE) // 2 -> W, 3 -> RW
-                        for (Functionality otherFunctionality : decomposition.getFunctionalities().values())
+                        for (Functionality otherFunctionality : accessesInfo.getFunctionalities().values())
                             if (!otherFunctionality.getName().equals(functionality.getName()) &&
                                     otherFunctionality.containsEntity(entity) &&
                                     otherFunctionality.getEntities().get(entity) != 2 &&

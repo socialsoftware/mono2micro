@@ -1,12 +1,19 @@
 package database
 
 type Decomposition struct {
-	Name                  string              `bson:"_id,omitempty"`
-	Expert                bool                `bson:"expert,omitempty"`
-	Metrics               map[string]float64  `bson:"metrics,omitempty"`
-	Clusters              map[string]*Cluster `bson:"clusters,omitempty"`
-	Functionalities       map[string]*DBRef   `bson:"functionalities,omitempty"`
-	EntityIDToClusterName map[int]string      `bson:"entityIDToClusterName,omitempty"`
+	Name                       string                       `bson:"_id,omitempty"`
+	Expert                     bool                         `bson:"expert,omitempty"`
+	Metrics                    map[string]float64           `bson:"metrics,omitempty"`
+	Clusters                   map[string]*Cluster          `bson:"clusters,omitempty"`
+	RepresentationInformations []RepresentationInformations `bson:"representationInformations,omitempty"`
+	EntityIDToClusterName      map[int]string               `bson:"entityIDToClusterName,omitempty"`
+}
+
+type RepresentationInformations struct {
+	Functionalities   map[string]*DBRef   `bson:"functionalities,omitempty"`
+	Authors           map[string][]string `bson:"authors,omitempty"`
+	DecompositionName string              `bson:"decompositionName,omitempty"`
+	Name              string              `bson:"_class,omitempty"`
 }
 
 type DBRef struct {

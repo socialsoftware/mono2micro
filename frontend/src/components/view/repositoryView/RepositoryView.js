@@ -27,8 +27,8 @@ export const repositoryViewHelp = (<div>
     Then right click to see available operations.<br />
 </div>);
 
-const REPOSITORY_DECOMPOSITION = "REPOSITORY_DECOMPOSITION";
-export {REPOSITORY_DECOMPOSITION};
+const REPOSITORY_INFO = "REPOSITORY_INFO";
+export {REPOSITORY_INFO};
 
 export const RepositoryView = () => {
     let { codebaseName, strategyName, decompositionName } = useParams();
@@ -61,7 +61,7 @@ export const RepositoryView = () => {
             setCommitsInCommon(response.commitsInCommon);
             setTotalCommits(response.totalCommits);
         });
-        const response2 = service.getEdgeWeights(decompositionName, REPOSITORY_DECOMPOSITION).then(response => { setNow(n => n + 30); setEdgeWeights(response.data);});
+        const response2 = service.getEdgeWeights(decompositionName, REPOSITORY_INFO).then(response => { setNow(n => n + 30); setEdgeWeights(response.data);});
         Promise.all([response1, response2]).then(() => setDisplayRepository("block"));
     }, []);
 
@@ -146,7 +146,7 @@ export const RepositoryView = () => {
             />
 
             <ViewSearchBar
-                viewType={REPOSITORY_DECOMPOSITION}
+                viewType={REPOSITORY_INFO}
                 dataFields={['name', 'type', 'cluster', 'entities']}
                 openSearch={openSearch}
                 setOpenSearch={setOpenSearch}

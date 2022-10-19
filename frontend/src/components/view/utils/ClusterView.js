@@ -21,11 +21,11 @@ import {ClusterViewDialogs, DIALOG_TYPE} from "./ClusterViewDialogs";
 import Container from "react-bootstrap/Container";
 
 export const OperationTypes = {
-    RENAME: "Rename",
-    CLUSTER_VIEW_MERGE: "ClusterViewMerge",
-    CLUSTER_VIEW_FORM: "ClusterViewForm",
-    CLUSTER_VIEW_SPLIT: "ClusterViewSplit",
-    CLUSTER_VIEW_TRANSFER: "ClusterViewTransfer",
+    RENAME_OPERATION: "RenameOperation",
+    MERGE_OPERATION: "MergeOperation",
+    FORM_CLUSTER_OPERATION: "FormClusterOperation",
+    SPLIT_OPERATION: "SplitOperation",
+    TRANSFER_OPERATION: "TransferOperation",
 };
 
 export const ClusterView = (
@@ -170,7 +170,7 @@ export const ClusterView = (
         switch(dialogResponse.type) {
             case DIALOG_TYPE.RENAME:
                 promise = service.renameCluster(decompositionName, {
-                    type: OperationTypes.RENAME,
+                    type: OperationTypes.RENAME_OPERATION,
                     clusterName: clickedComponent.node.id,
                     newClusterName: dialogResponse.newName});
                 toastId = toast.promise(promise, {
@@ -183,7 +183,7 @@ export const ClusterView = (
                 break;
             case DIALOG_TYPE.TRANSFER:
                 promise = service.transferEntities(decompositionName, {
-                    type: OperationTypes.CLUSTER_VIEW_TRANSFER,
+                    type: OperationTypes.TRANSFER_OPERATION,
                     fromCluster: clickedComponent.node.id,
                     toCluster: clickedComponent.toNode.id,
                     entities: dialogResponse.elements.toString()});
@@ -197,7 +197,7 @@ export const ClusterView = (
                 break;
             case DIALOG_TYPE.MERGE:
                 promise = service.mergeClusters(decompositionName, {
-                    type: OperationTypes.CLUSTER_VIEW_MERGE,
+                    type: OperationTypes.MERGE_OPERATION,
                     cluster1Name: clickedComponent.node.id,
                     cluster2Name: clickedComponent.toNode.id,
                     newName: dialogResponse.newName});
@@ -211,7 +211,7 @@ export const ClusterView = (
                 break;
             case DIALOG_TYPE.SPLIT:
                 promise = service.splitCluster(decompositionName, {
-                    type: OperationTypes.CLUSTER_VIEW_SPLIT,
+                    type: OperationTypes.SPLIT_OPERATION,
                     originalCluster: clickedComponent.node.id,
                     newCluster: dialogResponse.newName,
                     entities: dialogResponse.elements.toString()});
@@ -225,7 +225,7 @@ export const ClusterView = (
                 break;
             case DIALOG_TYPE.FORM_CLUSTER:
                 promise = service.formCluster(decompositionName, {
-                    type: OperationTypes.CLUSTER_VIEW_FORM,
+                    type: OperationTypes.FORM_CLUSTER_OPERATION,
                     newCluster: dialogResponse.newName,
                     entities: dialogResponse.elements});
                 toastId = toast.promise(promise, {

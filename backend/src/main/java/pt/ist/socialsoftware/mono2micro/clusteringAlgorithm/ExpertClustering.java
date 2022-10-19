@@ -4,7 +4,7 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
-import pt.ist.socialsoftware.mono2micro.cluster.SciPyCluster;
+import pt.ist.socialsoftware.mono2micro.cluster.DefaultCluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.ExpertRequest;
@@ -61,7 +61,7 @@ public class ExpertClustering extends Clustering {
             Map<String, Cluster> clusters,
             Map<Short, String> idToEntity
     ) throws Exception {
-        SciPyCluster cluster = new SciPyCluster("Generic");
+        DefaultCluster cluster = new DefaultCluster("Generic");
 
         JSONObject similarityMatrixData = new JSONObject(gridFsService.getFile(similarityMatrixName));
 
