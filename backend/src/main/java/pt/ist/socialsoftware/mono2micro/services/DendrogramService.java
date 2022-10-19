@@ -288,14 +288,14 @@ public class DendrogramService {
 
                         if (acumulator.getCount() > 0) {
                             vectorDivision(acumulator.getSum(), acumulator.getCount());
+			}
 
-                            HashMap<String, Object> featureEmbeddings = new HashMap<String, Object>();
-                            featureEmbeddings.put("package", pack.getString("name"));
-                            featureEmbeddings.put("class", className);
-                            featureEmbeddings.put("signature", method.getString("signature"));
-                            featureEmbeddings.put("codeVector", acumulator.getSum());
-                            featuresVectors.add(featureEmbeddings);
-                        }
+                        HashMap<String, Object> featureEmbeddings = new HashMap<String, Object>();
+                        featureEmbeddings.put("package", pack.getString("name"));
+                        featureEmbeddings.put("class", className);
+                        featureEmbeddings.put("signature", method.getString("signature"));
+                        featureEmbeddings.put("codeVector", acumulator.getSum());
+                        featuresVectors.add(featureEmbeddings);
                     }
                 }
             }
