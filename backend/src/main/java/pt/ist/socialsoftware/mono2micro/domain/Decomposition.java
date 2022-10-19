@@ -724,7 +724,12 @@ public class Decomposition {
 			cohesion += cluster.getCohesion();
 		}
 
-		int graphClustersAmount = clusters.size();
+		int graphClustersAmount = 0;
+		for (Cluster c : clusters) {
+			if (!c.getEntities().isEmpty()) {
+				graphClustersAmount++;
+			}
+		}
 
 		cohesion = BigDecimal
 			.valueOf(cohesion / graphClustersAmount)

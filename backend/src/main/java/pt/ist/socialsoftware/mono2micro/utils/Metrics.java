@@ -166,7 +166,12 @@ public class Metrics {
     	for (Short c2 : couplingDependencies.keySet())
     		coupling += (float) couplingDependencies.get(c2).size() / clusters.get(c2).getEntities().size();
 
-    	int graphClustersAmount = clusters.size();
+    	int graphClustersAmount = 0;
+		for (Short c : clusters.keySet()) {
+			if (!clusters.get(c).getEntities().isEmpty()) {
+				graphClustersAmount++;
+			}
+		}
 
 		coupling = graphClustersAmount == 1 ? 0 : coupling / (graphClustersAmount - 1);
 		coupling = BigDecimal
