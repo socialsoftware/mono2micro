@@ -295,6 +295,7 @@ public class AnalysisService {
             }
 
 	    // Test for MIN_DEPTH, only controllers needed
+	    dendrogram.setMaxDepth(MIN_DEPTH);
 	    dendrogram.setControllersWeight(100);
             dendrogram.setServicesWeight(0);
             dendrogram.setIntermediateMethodsWeight(0);
