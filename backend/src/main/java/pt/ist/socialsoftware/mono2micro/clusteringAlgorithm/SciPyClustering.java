@@ -23,8 +23,6 @@ import java.util.stream.Collectors;
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.SCRIPTS_ADDRESS;
 
 public class SciPyClustering extends Clustering {
-    public static final String SCIPY_CLUSTERING_ALGORITHM = "SCIPY_CLUSTERING_ALGORITHM";
-
     static final int MIN_CLUSTERS = 3, CLUSTER_STEP = 1;
 
     private final GridFsService gridFsService;
@@ -33,10 +31,7 @@ public class SciPyClustering extends Clustering {
         this.gridFsService = ContextManager.get().getBean(GridFsService.class);
     }
 
-    public String getType() {
-        return SCIPY_CLUSTERING_ALGORITHM;
-    }
-
+    @Override
     public void generateClusters(Decomposition decomposition, DecompositionRequest request) throws Exception {
         SciPyRequestDto dto = (SciPyRequestDto) request;
         SimilarityMatrixSciPy similarity = (SimilarityMatrixSciPy) decomposition.getSimilarity();

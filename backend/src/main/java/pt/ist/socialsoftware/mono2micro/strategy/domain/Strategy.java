@@ -31,11 +31,7 @@ public class Strategy {
     public Strategy() {}
 
     public Strategy(Codebase codebase, String decompositionType) {
-        int i = 0;
-        String strategyName;
-        do { strategyName = codebase.getName() + " - Strategy " + ++i; } while (codebase.containsStrategyName(strategyName));
-
-        this.name = strategyName;
+        this.name = codebase.getName() + " - " + decompositionType + " Strategy";
         this.decompositionType = decompositionType;
         this.representationTypes = DecompositionFactory.getDecomposition(decompositionType).getRequiredRepresentations();
     }

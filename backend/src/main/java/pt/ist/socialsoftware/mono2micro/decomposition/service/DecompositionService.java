@@ -23,9 +23,9 @@ import pt.ist.socialsoftware.mono2micro.strategy.repository.StrategyRepository;
 import java.util.List;
 import java.util.Optional;
 
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccAndRepoSciPyDecomposition.ACC_AND_REPO_SCIPY;
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition.ACCESSES_SCIPY;
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.RepositorySciPyDecomposition.REPOSITORY_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccAndRepoDecomposition.ACC_AND_REPO_DECOMPOSITION;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesDecomposition.ACCESSES_DECOMPOSITION;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.RepositoryDecomposition.REPOSITORY_DECOMPOSITION;
 
 @Service
 public class DecompositionService {
@@ -43,9 +43,9 @@ public class DecompositionService {
 
     public String[] getDecompositionTypes() {
         return new String[] { // LOG NEW DECOMPOSITION TYPES HERE
-                ACCESSES_SCIPY,
-                REPOSITORY_SCIPY,
-                ACC_AND_REPO_SCIPY,
+                ACCESSES_DECOMPOSITION,
+                REPOSITORY_DECOMPOSITION,
+                ACC_AND_REPO_DECOMPOSITION,
         };
     }
 

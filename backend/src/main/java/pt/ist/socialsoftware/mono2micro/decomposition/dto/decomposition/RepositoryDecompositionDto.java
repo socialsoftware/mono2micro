@@ -1,16 +1,16 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition;
 
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.RepositorySciPyDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.RepositoryDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.RepositoryInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.RepositorySciPyDecomposition.REPOSITORY_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.RepositoryDecomposition.REPOSITORY_DECOMPOSITION;
 import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.RepositoryInfo.REPOSITORY_INFO;
 
-public class RepositorySciPyDecompositionDto extends DecompositionDto {
+public class RepositoryDecompositionDto extends DecompositionDto {
     private boolean expert;
     private Map<String, Short> entityIDToClusterName = new HashMap<>();
     private Map<Short, ArrayList<String>> authors = new HashMap<>();
@@ -18,13 +18,13 @@ public class RepositorySciPyDecompositionDto extends DecompositionDto {
     private Map<Short, Integer> totalCommits = new HashMap<>();
 
 
-    public RepositorySciPyDecompositionDto() {this.type = REPOSITORY_SCIPY;}
+    public RepositoryDecompositionDto() {this.type = REPOSITORY_DECOMPOSITION;}
 
-    public RepositorySciPyDecompositionDto(RepositorySciPyDecomposition decomposition) {
+    public RepositoryDecompositionDto(RepositoryDecomposition decomposition) {
         this.setCodebaseName(decomposition.getSimilarity().getStrategy().getCodebase().getName());
         this.setStrategyName(decomposition.getStrategy().getName());
         this.setName(decomposition.getName());
-        this.type = REPOSITORY_SCIPY;
+        this.type = REPOSITORY_DECOMPOSITION;
         this.setMetrics(decomposition.getMetrics());
         this.expert = decomposition.isExpert();
         this.clusters = decomposition.getClusters();

@@ -1,16 +1,16 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition;
 
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccAndRepoSciPyDecomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccAndRepoDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.RepositorySciPyDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.RepositoryDecomposition;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccAndRepoSciPyDecomposition.ACC_AND_REPO_SCIPY;
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition.ACCESSES_SCIPY;
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.RepositorySciPyDecomposition.REPOSITORY_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccAndRepoDecomposition.ACC_AND_REPO_DECOMPOSITION;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesDecomposition.ACCESSES_DECOMPOSITION;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.RepositoryDecomposition.REPOSITORY_DECOMPOSITION;
 
 public class DecompositionDtoFactory {
     private static DecompositionDtoFactory factory = null;
@@ -25,12 +25,12 @@ public class DecompositionDtoFactory {
         if (decomposition == null)
             return null;
         switch (decomposition.getType()) {
-            case ACCESSES_SCIPY:
-                return new AccessesSciPyDecompositionDto((AccessesSciPyDecomposition) decomposition);
-            case REPOSITORY_SCIPY:
-                return new RepositorySciPyDecompositionDto((RepositorySciPyDecomposition) decomposition);
-            case ACC_AND_REPO_SCIPY:
-                return new AccAndRepoSciPyDecompositionDto((AccAndRepoSciPyDecomposition) decomposition);
+            case ACCESSES_DECOMPOSITION:
+                return new AccessesDecompositionDto((AccessesDecomposition) decomposition);
+            case REPOSITORY_DECOMPOSITION:
+                return new RepositoryDecompositionDto((RepositoryDecomposition) decomposition);
+            case ACC_AND_REPO_DECOMPOSITION:
+                return new AccAndRepoDecompositionDto((AccAndRepoDecomposition) decomposition);
             default:
                 throw new RuntimeException("The type \"" + decomposition.getType() + "\" is not a valid strategy type for the decomposition.");
         }

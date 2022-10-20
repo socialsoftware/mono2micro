@@ -176,7 +176,7 @@ export const DefaultComparisonTool = ({codebaseName, resultData}) => {
                         </Accordion>
                         <Accordion>
                             <AccordionSummary>
-                                <Typography>Mojo</Typography>
+                                <Typography>MojoFM</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <Grid container spacing={1} sx={{marginBottom: "2rem"}}>

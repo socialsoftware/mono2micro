@@ -97,7 +97,7 @@ export const ComparisonTool = () => {
                 key={decomposition.name}
                 onClick={() => changeDecomposition1(decomposition)}
             >
-                {decomposition.name + " from " + decomposition.strategyName}
+                {decomposition.name}
             </Dropdown.Item>
         )
 
@@ -118,7 +118,7 @@ export const ComparisonTool = () => {
                 key={decomposition.name}
                 onClick={() => changeDecomposition2(decomposition)}
             >
-                {decomposition.name + " from " + decomposition.strategyName}
+                {decomposition.name}
             </Dropdown.Item>
         )
 
@@ -170,7 +170,7 @@ export const ComparisonTool = () => {
                             title={
                                 Object.keys(decomposition1).length === 0 ?
                                     "Select Cut" :
-                                    decomposition1.name + " from " + decomposition1.strategyName
+                                    decomposition1.name
                             }
                         >
                             {expertDecompositionsForDecomposition1}
@@ -189,7 +189,7 @@ export const ComparisonTool = () => {
                             className="mb-2"
                             title={Object.keys(decomposition2).length === 0 ?
                                 "Select Cut" :
-                                decomposition2.name + " from " + decomposition2.strategyName
+                                decomposition2.name
                             }
                         >
                             {<>

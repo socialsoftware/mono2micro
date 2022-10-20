@@ -1,26 +1,26 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition;
 
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesDecomposition;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition.ACCESSES_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesDecomposition.ACCESSES_DECOMPOSITION;
 
-public class AccessesSciPyDecompositionDto extends DecompositionDto {
+public class AccessesDecompositionDto extends DecompositionDto {
     private boolean outdated;
     private boolean expert;
     private Map<String, Functionality> functionalities = new HashMap<>(); // <functionalityName, Functionality>
     private Map<String, Short> entityIDToClusterName = new HashMap<>();
 
-    public AccessesSciPyDecompositionDto() {this.type = ACCESSES_SCIPY;}
+    public AccessesDecompositionDto() {this.type = ACCESSES_DECOMPOSITION;}
 
-    public AccessesSciPyDecompositionDto(AccessesSciPyDecomposition decomposition) {
+    public AccessesDecompositionDto(AccessesDecomposition decomposition) {
         this.setCodebaseName(decomposition.getSimilarity().getStrategy().getCodebase().getName());
         this.setStrategyName(decomposition.getStrategy().getName());
         this.setName(decomposition.getName());
-        this.type = ACCESSES_SCIPY;
+        this.type = ACCESSES_DECOMPOSITION;
         this.setMetrics(decomposition.getMetrics());
         this.outdated = decomposition.isOutdated();
         this.expert = decomposition.isExpert();

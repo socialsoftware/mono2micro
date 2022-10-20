@@ -4,10 +4,10 @@ import {MetricType} from "../../type-declarations/types";
 import Button from "react-bootstrap/Button";
 import React from "react";
 
-const REPOSITORY_SCIPY = "Repository-Based Similarity and SciPy Clustering Algorithm";
-export {REPOSITORY_SCIPY};
+const REPOSITORY_DECOMPOSITION = "Repository Decomposition";
+export {REPOSITORY_DECOMPOSITION};
 
-export default class RepositorySciPyDecomposition extends Decomposition {
+export default class RepositoryDecomposition extends Decomposition {
     expert: boolean;
     entityIDToClusterName: any;
     authors: Record<number, string[]>;

@@ -7,14 +7,17 @@ import {Cached} from "@mui/icons-material";
 import {APIService} from "../../services/APIService";
 import {toast} from "react-toastify";
 
-const ACCESSES_SCIPY = "Accesses-Based Similarity and SciPy Clustering Algorithm";
-export {ACCESSES_SCIPY};
+const ACC_AND_REPO_DECOMPOSITION = "Accesses and Repository Decomposition";
+export {ACC_AND_REPO_DECOMPOSITION};
 
-export default class AccessesSciPyDecomposition extends Decomposition {
+export default class AccAndRepoDecomposition extends Decomposition {
     outdated: boolean;
     expert: boolean;
     functionalities: any;
     entityIDToClusterName: any;
+    authors: Record<number, string[]>;
+    commitsInCommon: Record<number, Record<number, number>>;
+    totalCommits: Record<number, number>;
 
     constructor(decomposition: any) {
         super(decomposition);
@@ -23,11 +26,14 @@ export default class AccessesSciPyDecomposition extends Decomposition {
         this.expert = decomposition.expert;
         this.functionalities = decomposition.functionalities;
         this.entityIDToClusterName = decomposition.entityIDToClusterName;
+        this.authors = decomposition.authors;
+        this.commitsInCommon = decomposition.commitsInCommon;
+        this.totalCommits = decomposition.totalCommits;
     }
 
     handleUpdate(reloadDecompositions: () => void) {
         const service = new APIService();
-        const promise = service.updatedAccessesSciPyDecomposition(this.name);
+        const promise = service.updateDecomposition(this.name);
         toast.promise(promise, {
             pending: "Updating Decomposition...",
             success: {render: "Success updating decomposition!", autoClose: 2000},
@@ -52,6 +58,7 @@ export default class AccessesSciPyDecomposition extends Decomposition {
                         {this.name}
                     </Card.Title>
                     <Card.Text>
+                        Type: {this.type} <br />
                         Number of Clusters: {Object.values(this.clusters).length} <br />
                         Singleton Clusters: {amountOfSingletonClusters} <br />
                         Maximum Cluster Size: {maxClusterSize} <br />
@@ -60,6 +67,7 @@ export default class AccessesSciPyDecomposition extends Decomposition {
                         {MetricType.PERFORMANCE}: {parseFloat(this.metrics[MetricType.PERFORMANCE]).toFixed(3)} <br />
                         {MetricType.COHESION}: {parseFloat(this.metrics[MetricType.COHESION]).toFixed(3)} <br />
                         {MetricType.COUPLING}: {parseFloat(this.metrics[MetricType.COUPLING]).toFixed(3)} <br />
+                        TSR: {parseFloat(this.metrics[MetricType.TSR]).toFixed(3)} <br />
                     </Card.Text>
                     {this.outdated &&
                         <Button
@@ -76,7 +84,14 @@ export default class AccessesSciPyDecomposition extends Decomposition {
                         className="mb-2"
                         variant={"success"}
                     >
-                        View Decomposition
+                        View Accesses
+                    </Button>
+                    <Button
+                        href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.name}/repositoryView`}
+                        className="mb-2"
+                        variant={"success"}
+                    >
+                        View Repository
                     </Button>
                     <br/>
                     <Button

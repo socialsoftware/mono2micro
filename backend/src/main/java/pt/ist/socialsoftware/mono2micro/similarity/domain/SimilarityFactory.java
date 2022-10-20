@@ -4,9 +4,9 @@ import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDto;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityMatrixSciPyDto;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccAndRepoSciPyDecomposition.ACC_AND_REPO_SCIPY;
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesSciPyDecomposition.ACCESSES_SCIPY;
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.RepositorySciPyDecomposition.REPOSITORY_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccAndRepoDecomposition.ACC_AND_REPO_DECOMPOSITION;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesDecomposition.ACCESSES_DECOMPOSITION;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.RepositoryDecomposition.REPOSITORY_DECOMPOSITION;
 
 public class SimilarityFactory {
 
@@ -14,9 +14,9 @@ public class SimilarityFactory {
         if (similarityDto == null)
             return null;
         switch (similarityDto.getDecompositionType()) {
-            case ACCESSES_SCIPY:
-            case REPOSITORY_SCIPY:
-            case ACC_AND_REPO_SCIPY:
+            case ACCESSES_DECOMPOSITION:
+            case REPOSITORY_DECOMPOSITION:
+            case ACC_AND_REPO_DECOMPOSITION:
                 return new SimilarityMatrixSciPy((SimilarityMatrixSciPyDto) similarityDto);
             default:
                 throw new RuntimeException("The type \"" + similarityDto.getDecompositionType() + "\" is not a valid similarityDto type.");

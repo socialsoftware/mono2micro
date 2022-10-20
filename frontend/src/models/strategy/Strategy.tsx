@@ -18,7 +18,7 @@ export default class Strategy {
     // This function is used to be displayed in the context of the codebase
     printCard(handleDeleteStrategy: (strategy: Strategy) => void): JSX.Element {
         return <Card className={"text-center"} key={this.decompositionType} style={{width: '13rem'}}>
-            <Card.Header>{this.decompositionType}</Card.Header>
+            <Card.Header>{this.decompositionType + " Strategy"}</Card.Header>
             <Card.Body>
                 <Button
                     href={`/codebases/${this.codebaseName}/${this.name}/similarity`}

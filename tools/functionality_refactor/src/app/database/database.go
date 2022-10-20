@@ -184,15 +184,12 @@ func (svc *DefaultHandler) ReadDecomposition(ctx context.Context, decompositionN
 	}
 
 	var representationInformation RepresentationInformations
-	representationInformations := databaseDecomposition.RepresentationInformations
 	for _, representationInfo := range databaseDecomposition.RepresentationInformations {
 		if len(representationInfo.Functionalities) != 0 {
 			representationInformation = representationInfo
 			break
 		}
 	}
-	fmt.Println(representationInformations[0])
-	fmt.Println(representationInformations[0].Functionalities)
 
 	functionalities := map[string]*mono2micro.Functionality{}
 	for _, dbref := range representationInformation.Functionalities {

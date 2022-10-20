@@ -301,7 +301,7 @@ export class APIService {
         return this.axios.get<Record<number, Cluster>>("/decomposition/" + decompositionName + "/getClusters");
     }
 
-    updatedAccessesSciPyDecomposition(
+    updateDecomposition(
         decompositionName: string
     ) {
         return this.axios.get<Decomposition>(

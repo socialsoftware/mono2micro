@@ -1,17 +1,17 @@
 import Decomposition from "./Decomposition";
-import AccessesSciPyDecomposition, {ACCESSES_SCIPY} from "./AccessesSciPyDecomposition";
-import RepositorySciPyDecomposition, {REPOSITORY_SCIPY} from "./RepositorySciPyDecomposition";
-import AccAndRepoSciPyDecomposition, {ACC_AND_REPO_SCIPY} from "./AccAndRepoSciPyDecomposition";
+import AccessesDecomposition, {ACCESSES_DECOMPOSITION} from "./AccessesDecomposition";
+import RepositoryDecomposition, {REPOSITORY_DECOMPOSITION} from "./RepositoryDecomposition";
+import AccAndRepoDecomposition, {ACC_AND_REPO_DECOMPOSITION} from "./AccAndRepoDecomposition";
 
 export abstract class DecompositionFactory {
     static getDecomposition(decomposition: any) : Decomposition {
         switch (decomposition.type) {
-            case ACCESSES_SCIPY:
-                return new AccessesSciPyDecomposition(decomposition);
-            case REPOSITORY_SCIPY:
-                return new RepositorySciPyDecomposition(decomposition);
-            case ACC_AND_REPO_SCIPY:
-                return new AccAndRepoSciPyDecomposition(decomposition);
+            case ACCESSES_DECOMPOSITION:
+                return new AccessesDecomposition(decomposition);
+            case REPOSITORY_DECOMPOSITION:
+                return new RepositoryDecomposition(decomposition);
+            case ACC_AND_REPO_DECOMPOSITION:
+                return new AccAndRepoDecomposition(decomposition);
             default:
                 throw new Error('Type ' + decomposition.strategyType + ' unknown.');
         }

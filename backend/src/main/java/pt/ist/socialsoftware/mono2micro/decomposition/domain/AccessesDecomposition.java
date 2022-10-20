@@ -5,7 +5,6 @@ import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.Clustering;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.ExpertClustering;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.SciPyClustering;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.AccessesInfo;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.RepositoryInfo;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.RepresentationInformation;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
@@ -13,39 +12,36 @@ import pt.ist.socialsoftware.mono2micro.history.domain.PositionHistory;
 import pt.ist.socialsoftware.mono2micro.history.service.HistoryService;
 import pt.ist.socialsoftware.mono2micro.history.service.PositionHistoryService;
 import pt.ist.socialsoftware.mono2micro.metrics.decompositionMetrics.*;
-import pt.ist.socialsoftware.mono2micro.operation.formCluster.AccAndRepoFormClusterOperation;
+import pt.ist.socialsoftware.mono2micro.operation.formCluster.AccessesFormClusterOperation;
 import pt.ist.socialsoftware.mono2micro.operation.formCluster.FormClusterOperation;
-import pt.ist.socialsoftware.mono2micro.operation.merge.AccAndRepoMergeOperation;
+import pt.ist.socialsoftware.mono2micro.operation.merge.AccessesMergeOperation;
+import pt.ist.socialsoftware.mono2micro.operation.rename.AccessesRenameOperation;
+import pt.ist.socialsoftware.mono2micro.operation.split.AccessesSplitOperation;
 import pt.ist.socialsoftware.mono2micro.operation.merge.MergeOperation;
-import pt.ist.socialsoftware.mono2micro.operation.rename.AccAndRepoRenameOperation;
 import pt.ist.socialsoftware.mono2micro.operation.rename.RenameOperation;
-import pt.ist.socialsoftware.mono2micro.operation.split.AccAndRepoSplitOperation;
 import pt.ist.socialsoftware.mono2micro.operation.split.SplitOperation;
-import pt.ist.socialsoftware.mono2micro.operation.transfer.AccAndRepoTransferOperation;
+import pt.ist.socialsoftware.mono2micro.operation.transfer.AccessesTransferOperation;
 import pt.ist.socialsoftware.mono2micro.operation.transfer.TransferOperation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
-import pt.ist.socialsoftware.mono2micro.representation.domain.AuthorRepresentation;
-import pt.ist.socialsoftware.mono2micro.representation.domain.CommitRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
 
 import java.io.IOException;
 import java.util.*;
 
 @Document("decomposition")
-public class AccAndRepoSciPyDecomposition extends Decomposition {
-    public static final String ACC_AND_REPO_SCIPY = "Accesses and Repository-Based Similarity and SciPy Clustering Algorithm";
+public class AccessesDecomposition extends Decomposition {
+    public static final String ACCESSES_DECOMPOSITION = "Accesses Decomposition";
 
     private static final List<String> requiredRepresentations = new ArrayList<String>() {{
         add(AccessesRepresentation.ACCESSES);
         add(IDToEntityRepresentation.ID_TO_ENTITY);
-        add(AuthorRepresentation.AUTHOR);
-        add(CommitRepresentation.COMMIT);
     }};
-    public AccAndRepoSciPyDecomposition() {}
 
-    public AccAndRepoSciPyDecomposition(DecompositionRequest decompositionRequest) {}
+    public AccessesDecomposition() {}
 
-    public AccAndRepoSciPyDecomposition(AccAndRepoSciPyDecomposition decomposition, String snapshotName) throws IOException {
+    public AccessesDecomposition(DecompositionRequest request) {}
+
+    public AccessesDecomposition(AccessesDecomposition decomposition, String snapshotName) throws IOException {
         this.name = snapshotName;
         this.similarity = decomposition.getSimilarity();
         this.metrics = decomposition.getMetrics();
@@ -53,15 +49,13 @@ public class AccAndRepoSciPyDecomposition extends Decomposition {
         this.expert = decomposition.isExpert();
         this.clusters = decomposition.getClusters();
         new AccessesInfo(this, decomposition);
-        new RepositoryInfo(this, decomposition);
     }
 
     @Override
     public String getType() {
-        return ACC_AND_REPO_SCIPY;
+        return ACCESSES_DECOMPOSITION;
     }
 
-    @Override
     public List<String> getRequiredRepresentations() {
         return requiredRepresentations;
     }
@@ -73,10 +67,9 @@ public class AccAndRepoSciPyDecomposition extends Decomposition {
         else return new SciPyClustering();
     }
 
-    @Override
     public void calculateMetrics() {
         DecompositionMetric[] metricObjects = new DecompositionMetric[] {
-                new CohesionMetric(), new ComplexityMetric(), new CouplingMetric(), new PerformanceMetric(), new TSRMetric()};
+                new CohesionMetric(), new ComplexityMetric(), new CouplingMetric(), new PerformanceMetric()};
 
         for (DecompositionMetric metric : metricObjects)
             this.metrics.put(metric.getType(), metric.calculateMetric(this));
@@ -85,7 +78,6 @@ public class AccAndRepoSciPyDecomposition extends Decomposition {
     @Override
     public void setup() throws Exception {
         new AccessesInfo(this);
-        new RepositoryInfo(this);
         this.history = new PositionHistory(this);
     }
 
@@ -102,32 +94,32 @@ public class AccAndRepoSciPyDecomposition extends Decomposition {
 
     @Override
     public void renameCluster(RenameOperation operation) {
-        AccAndRepoRenameOperation accAndRepoRenameOperation = new AccAndRepoRenameOperation(operation);
-        accAndRepoRenameOperation.execute(this);
+        AccessesRenameOperation accessesRenameOperation = new AccessesRenameOperation(operation);
+        accessesRenameOperation.execute(this);
     }
 
     @Override
     public void mergeClusters(MergeOperation operation) {
-        AccAndRepoMergeOperation accAndRepoMergeOperation = new AccAndRepoMergeOperation(operation);
-        accAndRepoMergeOperation.execute(this);
+        AccessesMergeOperation accessesMergeOperation = new AccessesMergeOperation(operation);
+        accessesMergeOperation.execute(this);
     }
 
     @Override
     public void splitCluster(SplitOperation operation) {
-        AccAndRepoSplitOperation accAndRepoSplitOperation = new AccAndRepoSplitOperation(operation);
-        accAndRepoSplitOperation.execute(this);
+        AccessesSplitOperation accessesSplitOperation = new AccessesSplitOperation(operation);
+        accessesSplitOperation.execute(this);
     }
 
     @Override
     public void transferEntities(TransferOperation operation) {
-        AccAndRepoTransferOperation accAndRepoTransferOperation = new AccAndRepoTransferOperation(operation);
-        accAndRepoTransferOperation.execute(this);
+        AccessesTransferOperation accessesTransferOperation = new AccessesTransferOperation(operation);
+        accessesTransferOperation.execute(this);
     }
 
     @Override
     public void formCluster(FormClusterOperation operation) {
-        AccAndRepoFormClusterOperation accAndRepoFormClusterOperation = new AccAndRepoFormClusterOperation(operation);
-        accAndRepoFormClusterOperation.execute(this);
+        AccessesFormClusterOperation accessesFormClusterOperation = new AccessesFormClusterOperation(operation);
+        accessesFormClusterOperation.execute(this);
     }
 
     @Override
@@ -135,7 +127,7 @@ public class AccAndRepoSciPyDecomposition extends Decomposition {
         HistoryService historyService = ContextManager.get().getBean(HistoryService.class);
         PositionHistoryService positionHistoryService = ContextManager.get().getBean(PositionHistoryService.class);
 
-        AccAndRepoSciPyDecomposition snapshotDecomposition = new AccAndRepoSciPyDecomposition(this, snapshotName);
+        AccessesDecomposition snapshotDecomposition = new AccessesDecomposition(this, snapshotName);
 
         PositionHistory snapshotHistory = new PositionHistory(snapshotDecomposition);
         snapshotDecomposition.setHistory(snapshotHistory);

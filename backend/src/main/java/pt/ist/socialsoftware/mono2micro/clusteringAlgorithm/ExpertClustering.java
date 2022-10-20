@@ -22,17 +22,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ExpertClustering extends Clustering {
-    public static final String EXPERT_CLUSTERING = "EXPERT_CLUSTERING";
     private final GridFsService gridFsService;
 
     public ExpertClustering() {
         this.gridFsService = ContextManager.get().getBean(GridFsService.class);
     }
 
-    public String getType() {
-        return EXPERT_CLUSTERING;
-    }
-
+    @Override
     public void generateClusters(Decomposition decomposition, DecompositionRequest request) throws Exception {
         ExpertRequest dto = (ExpertRequest) request;
         Map<Short, String> idToEntity;

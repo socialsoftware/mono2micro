@@ -1,6 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition;
 
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccAndRepoSciPyDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccAndRepoDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.RepositoryInfo;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 
@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccAndRepoSciPyDecomposition.ACC_AND_REPO_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccAndRepoDecomposition.ACC_AND_REPO_DECOMPOSITION;
 import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.RepositoryInfo.REPOSITORY_INFO;
 
-public class AccAndRepoSciPyDecompositionDto extends DecompositionDto {
+public class AccAndRepoDecompositionDto extends DecompositionDto {
     private boolean outdated;
     private boolean expert;
     private Map<String, Functionality> functionalities = new HashMap<>(); // <functionalityName, Functionality>
@@ -20,13 +20,13 @@ public class AccAndRepoSciPyDecompositionDto extends DecompositionDto {
     private Map<Short, Map<Short, Integer>> commitsInCommon = new HashMap<>();
     private Map<Short, Integer> totalCommits = new HashMap<>();
 
-    public AccAndRepoSciPyDecompositionDto() {this.type = ACC_AND_REPO_SCIPY;}
+    public AccAndRepoDecompositionDto() {this.type = ACC_AND_REPO_DECOMPOSITION;}
 
-    public AccAndRepoSciPyDecompositionDto(AccAndRepoSciPyDecomposition decomposition) {
+    public AccAndRepoDecompositionDto(AccAndRepoDecomposition decomposition) {
         this.setCodebaseName(decomposition.getSimilarity().getStrategy().getCodebase().getName());
         this.setStrategyName(decomposition.getStrategy().getName());
         this.setName(decomposition.getName());
-        this.type = ACC_AND_REPO_SCIPY;
+        this.type = ACC_AND_REPO_DECOMPOSITION;
         this.setMetrics(decomposition.getMetrics());
         this.outdated = decomposition.isOutdated();
         this.expert = decomposition.isExpert();
