@@ -28,6 +28,8 @@ public class DendrogramService {
 
     private final CodebaseManager codebaseManager = CodebaseManager.getInstance();
 
+    private final Integer MIN_DEPTH = 1;
+
     public Dendrogram createDendrogramByFeatures(
             String codebaseName,
             Dendrogram dendrogram,
@@ -601,7 +603,7 @@ public class DendrogramService {
             vector.add(count * code_vector.getDouble(idx));
         }
 
-        if (maxDepth == 0 || methodCalls.length() == 0) {
+        if (maxDepth <= MIN_DEPTH || methodCalls.length() == 0) {
             return new Acumulator(vector, count);
         }
 
