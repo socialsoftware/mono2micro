@@ -180,7 +180,7 @@ public class AnalysisService {
             dendrogram.setFeatureVectorizationStrategy("methodCalls");
             dendrogram.setProfile(analyserDto.getProfile());
             dendrogram.setLinkageType(linkageType);
-            for (int d = MIN_DEPTH; d <= MAX_DEPTH; d += DEPTH_STEP) {
+            for (int d = MIN_DEPTH+1; d <= MAX_DEPTH; d += DEPTH_STEP) {
                 dendrogram.setMaxDepth(d);
                 for (int cw = MIN_WEIGHT; cw <= MAX_WEIGHT; cw += WEIGHT_STEP) {
                     dendrogram.setControllersWeight(cw);
@@ -244,6 +244,22 @@ public class AnalysisService {
                 ie.printStackTrace();
             }
 
+            // Test with MIN_DEPTH, only controllers needed
+            for (String lt: LINKAGE_TYPES) {
+                Dendrogram dendrogram = new Dendrogram();
+                dendrogram.setAnalysisType("feature");
+                dendrogram.setFeatureVectorizationStrategy("methodCalls");
+                dendrogram.setProfile(analyserDto.getProfile());
+                dendrogram.setLinkageType(lt);
+                dendrogram.setMaxDepth(MIN_DEPTH);
+                dendrogram.setControllersWeight(100);
+                dendrogram.setServicesWeight(0);
+                dendrogram.setIntermediateMethodsWeight(0);
+                dendrogram.setEntitiesWeight(0);
+                dendrogramService.createDendrogramByFeatures(codebaseName, dendrogram, true, null);
+                clusterService.executeClusterAnalysis(codebaseName, "/features/methodCalls");
+            }
+
             // Test with the same weights
             for (String lt: LINKAGE_TYPES) {
                 Dendrogram dendrogram = new Dendrogram();
@@ -251,7 +267,7 @@ public class AnalysisService {
                 dendrogram.setFeatureVectorizationStrategy("methodCalls");
                 dendrogram.setProfile(analyserDto.getProfile());
                 dendrogram.setLinkageType(lt);
-                for (int d = MIN_DEPTH; d <= MAX_DEPTH; d += DEPTH_STEP) {
+                for (int d = MIN_DEPTH+1; d <= MAX_DEPTH; d += DEPTH_STEP) {
                     dendrogram.setMaxDepth(d);
                     dendrogram.setControllersWeight(25);
                     dendrogram.setServicesWeight(25);
