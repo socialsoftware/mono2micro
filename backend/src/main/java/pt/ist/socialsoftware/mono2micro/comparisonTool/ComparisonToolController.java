@@ -10,12 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import pt.ist.socialsoftware.mono2micro.comparisonTool.dto.ComparisonToolDtoFactory;
-import pt.ist.socialsoftware.mono2micro.comparisonTool.domain.MoJoCalculations;
-import pt.ist.socialsoftware.mono2micro.comparisonTool.dto.interfaces.MoJoProperties;
+import pt.ist.socialsoftware.mono2micro.comparisonTool.dto.ComparisonToolResponseFactory;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.comparisonTool.dto.ComparisonToolDto;
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.DecompositionDtoFactory;
+import pt.ist.socialsoftware.mono2micro.comparisonTool.dto.ComparisonToolResponse;
 import pt.ist.socialsoftware.mono2micro.decomposition.service.DecompositionService;
 
 @RestController
@@ -27,7 +24,7 @@ public class ComparisonToolController {
     DecompositionService decompositionService;
 
     @RequestMapping(value = "/comparison/{decomposition1Name}/{decomposition2Name}", method = RequestMethod.POST)
-    public ResponseEntity<ComparisonToolDto> getAnalysis(
+    public ResponseEntity<ComparisonToolResponse> getAnalysis(
             @PathVariable String decomposition1Name,
             @PathVariable String decomposition2Name
     ) {
@@ -37,12 +34,8 @@ public class ComparisonToolController {
             Decomposition decomposition1 = decompositionService.updateDecomposition(decomposition1Name);
             Decomposition decomposition2 = decompositionService.updateDecomposition(decomposition2Name);
 
-            ComparisonToolDto comparisonToolDto = ComparisonToolDtoFactory.getComparisonToolDto(decomposition1, decomposition2);
-
-            MoJoCalculations.getAnalysis((MoJoProperties) comparisonToolDto, decomposition1, decomposition2);
-            comparisonToolDto.setDecomposition1(DecompositionDtoFactory.getDecompositionDto(decomposition1));
-            comparisonToolDto.setDecomposition2(DecompositionDtoFactory.getDecompositionDto(decomposition2));
-            return new ResponseEntity<>(comparisonToolDto, HttpStatus.OK);
+            ComparisonToolResponse comparisonToolResponse = ComparisonToolResponseFactory.getComparisonToolResponse(decomposition1, decomposition2);
+            return new ResponseEntity<>(comparisonToolResponse, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

@@ -1,7 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.comparisonTool.domain;
 
-import pt.ist.socialsoftware.mono2micro.comparisonTool.dto.interfaces.MoJoProperties;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
+import pt.ist.socialsoftware.mono2micro.comparisonTool.domain.results.MoJoFMResults;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.utils.mojoCalculator.src.main.java.MoJo;
 
@@ -15,9 +15,10 @@ import java.util.stream.Collectors;
 
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.MOJO_RESOURCES_PATH;
 
-public class MoJoCalculations {
+public class MoJoFM {
+    public static MoJoFMResults getAnalysis(Decomposition decomposition1, Decomposition decomposition2) throws IOException {
+        MoJoFMResults moJoFMResults = new MoJoFMResults();
 
-    public static void getAnalysis(MoJoProperties comparisonTool, Decomposition decomposition1, Decomposition decomposition2) throws IOException {
         Map<String, Set<Short>> decomposition1ClusterEntities = new HashMap<>();
         for (Cluster cluster : decomposition1.getClusters().values()) {
             decomposition1ClusterEntities.put(cluster.getName(), cluster.getElementsIDs());
@@ -136,15 +137,15 @@ public class MoJoCalculations {
                     falsePair[4] = e2ClusterG1;
                     falsePair[5] = e2ClusterG2;
 
-                    comparisonTool.addFalsePair(falsePair);
+                    moJoFMResults.addFalsePair(falsePair);
                 }
             }
         }
 
-        comparisonTool.setTruePositive(truePositive);
-        comparisonTool.setTrueNegative(trueNegative);
-        comparisonTool.setFalsePositive(falsePositive);
-        comparisonTool.setFalseNegative(falseNegative);
+        moJoFMResults.setTruePositive(truePositive);
+        moJoFMResults.setTrueNegative(trueNegative);
+        moJoFMResults.setFalsePositive(falsePositive);
+        moJoFMResults.setFalseNegative(falseNegative);
 
         float accuracy;
         float precision;
@@ -176,11 +177,11 @@ public class MoJoCalculations {
             fmeasure = Float.isNaN(precision) ? -1 : BigDecimal.valueOf(fmeasure).setScale(2, RoundingMode.HALF_UP).floatValue();
         }
 
-        comparisonTool.setAccuracy(accuracy);
-        comparisonTool.setPrecision(precision);
-        comparisonTool.setRecall(recall);
-        comparisonTool.setSpecificity(specificity);
-        comparisonTool.setFmeasure(fmeasure);
+        moJoFMResults.setAccuracy(accuracy);
+        moJoFMResults.setPrecision(precision);
+        moJoFMResults.setRecall(recall);
+        moJoFMResults.setSpecificity(specificity);
+        moJoFMResults.setFmeasure(fmeasure);
 
         /*
          *******************************************
@@ -211,10 +212,12 @@ public class MoJoCalculations {
                 decomposition2_UnassignedInSingletons.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
         );
 
-        comparisonTool.setMojoCommon(mojoValueCommonOnly);
-        comparisonTool.setMojoBiggest(mojoValueUnassignedInBiggest);
-        comparisonTool.setMojoNew(mojoValueUnassignedInNew);
-        comparisonTool.setMojoSingletons(mojoValueUnassignedInSingletons);
+        moJoFMResults.setMojoCommon(mojoValueCommonOnly);
+        moJoFMResults.setMojoBiggest(mojoValueUnassignedInBiggest);
+        moJoFMResults.setMojoNew(mojoValueUnassignedInNew);
+        moJoFMResults.setMojoSingletons(mojoValueUnassignedInSingletons);
+
+        return moJoFMResults;
     }
 
     private static Map<String, Set<Short>> decompositionCopyOf(Map<String, Set<Short>> decomposition) {

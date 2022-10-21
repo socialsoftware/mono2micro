@@ -2,9 +2,9 @@ package pt.ist.socialsoftware.mono2micro.comparisonTool.dto;
 
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.DecompositionDto;
 
-public abstract class ComparisonToolDto {
-    private DecompositionDto decomposition1;
-    private DecompositionDto decomposition2;
+public abstract class ComparisonToolResponse {
+    protected DecompositionDto decomposition1;
+    protected DecompositionDto decomposition2;
 
     public abstract String getType();
 

@@ -1,12 +1,9 @@
-package pt.ist.socialsoftware.mono2micro.comparisonTool.dto;
-
-import pt.ist.socialsoftware.mono2micro.comparisonTool.dto.interfaces.MoJoProperties;
+package pt.ist.socialsoftware.mono2micro.comparisonTool.domain.results;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefaultComparisonToolDto extends ComparisonToolDto implements MoJoProperties {
-    public static final String DEFAULT_COMPARISON_TOOL_DTO = "DEFAULT_COMPARISON_TOOL_DTO";
+public class MoJoFMResults {
     private int truePositive;
     private int trueNegative;
     private int falsePositive;
@@ -21,11 +18,6 @@ public class DefaultComparisonToolDto extends ComparisonToolDto implements MoJoP
     private double mojoBiggest;
     private double mojoNew;
     private double mojoSingletons;
-
-    @Override
-    public String getType() {
-        return DEFAULT_COMPARISON_TOOL_DTO;
-    }
 
     public float getPrecision() {
         return precision;
