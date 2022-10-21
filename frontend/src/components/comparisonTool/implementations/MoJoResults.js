@@ -6,7 +6,7 @@ import AppContext from "../../AppContext";
 import {APIService} from "../../../services/APIService";
 import {Accordion, AccordionDetails, AccordionSummary, Item, ItemCorner} from "../ComparisonTool";
 
-export const MoJoResults = ({codebaseName, resultData}) => {
+export const MoJoResults = ({codebaseName, comparisonData}) => {
     const context = useContext(AppContext);
     const { translateEntity, updateEntityTranslationFile } = context;
     const [falsePairs, setFalsePairs] = useState([]);
@@ -30,11 +30,11 @@ export const MoJoResults = ({codebaseName, resultData}) => {
         sort: true
     }, {
         dataField: 'e1g1',
-        text: resultData.decomposition1.name,
+        text: comparisonData.decomposition1.name,
         sort: true
     }, {
         dataField: 'e1g2',
-        text: resultData.decomposition2.name,
+        text: comparisonData.decomposition2.name,
         sort: true
     }, {
         dataField: 'space',
@@ -45,18 +45,18 @@ export const MoJoResults = ({codebaseName, resultData}) => {
         sort: true
     }, {
         dataField: 'e2g1',
-        text: resultData.decomposition1.name,
+        text: comparisonData.decomposition1.name,
         sort: true
     }, {
         dataField: 'e2g2',
-        text: resultData.decomposition2.name,
+        text: comparisonData.decomposition2.name,
         sort: true
     }];
 
 
     useEffect(() => {
         const service = new APIService();
-        const moJoResults = resultData.resultsList.find(results => results.type === "MOJO_RESULTS");
+        const moJoResults = comparisonData.analysisList.find(results => results.type === "MOJO");
         setMoJoResults(moJoResults);
 
         service.getIdToEntity(codebaseName).then(response => {
@@ -66,7 +66,7 @@ export const MoJoResults = ({codebaseName, resultData}) => {
         });
         if (moJoResults.falsePairs !== undefined)
             setFalsePairs(moJoResults.falsePairs);
-    }, [resultData]);
+    }, [comparisonData]);
 
     const { SearchBar } = Search;
 

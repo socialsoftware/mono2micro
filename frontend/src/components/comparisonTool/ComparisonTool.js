@@ -65,8 +65,8 @@ export const ComparisonTool = () => {
     const [isUploaded, setIsUploaded] = useState("");
     const [decomposition1, setDecomposition1] = useState({});
     const [decomposition2, setDecomposition2] = useState({});
-    const [resultData, setResultData] = useState({});
-    const [resultsTypes, setResultsTypes] = useState([]);
+    const [comparisonData, setComparisonData] = useState({});
+    const [analysisTypes, setAnalysisTypes] = useState([]);
 
     useEffect(() => loadCodebases(), []);
 
@@ -112,8 +112,8 @@ export const ComparisonTool = () => {
         service.analysis(decomposition1.name, decomposition2.name)
             .then(response => {
                 if (response.status === HttpStatus.OK) {
-                    setResultData(response.data);
-                    setResultsTypes(response.data.resultsList.map(results => results.type));
+                    setComparisonData(response.data);
+                    setAnalysisTypes(response.data.analysisList.map(results => results.type));
                     setIsUploaded("Upload completed successfully.");
                 } else {
                     setIsUploaded("Upload failed.");
@@ -271,15 +271,15 @@ export const ComparisonTool = () => {
 
             <h4 style={{ color: "#666666" }}> Metrics </h4>
 
-            {resultsTypes.includes("MOJO_RESULTS") &&
+            {analysisTypes.includes("MOJO") &&
                 <MoJoResults
                     codebaseName={codebase.name}
-                    resultData={resultData}
+                    comparisonData={comparisonData}
                 />
             }
 
             <DefaultComparisonTool
-                resultData={resultData}
+                comparisonData={comparisonData}
             />
 
             {/*ADD ADDITIONAL COMPARISONS HERE*/}

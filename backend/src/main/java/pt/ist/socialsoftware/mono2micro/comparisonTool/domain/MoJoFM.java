@@ -1,8 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.comparisonTool.domain;
 
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
-import pt.ist.socialsoftware.mono2micro.comparisonTool.domain.results.MoJoFMResults;
-import pt.ist.socialsoftware.mono2micro.comparisonTool.domain.results.Results;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.utils.mojoCalculator.src.main.java.MoJo;
 
@@ -16,11 +14,149 @@ import java.util.stream.Collectors;
 
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.MOJO_RESOURCES_PATH;
 
-public class MoJoFM extends ComparisonAlgorithms {
-    @Override
-    public Results getAnalysis(Decomposition decomposition1, Decomposition decomposition2) throws IOException {
-        MoJoFMResults moJoFMResults = new MoJoFMResults();
+public class MoJoFM extends Analysis {
+    public static final String MOJO = "MOJO";
+    private int truePositive;
+    private int trueNegative;
+    private int falsePositive;
+    private int falseNegative;
+    private List<String[]> falsePairs = new ArrayList<>();
+    private float accuracy;
+    private float precision;
+    private float recall;
+    private float specificity;
+    private float fmeasure;
+    private double mojoCommon;
+    private double mojoBiggest;
+    private double mojoNew;
+    private double mojoSingletons;
 
+    @Override
+    public String getType() {
+        return MOJO;
+    }
+
+    public MoJoFM(Decomposition decomposition1, Decomposition decomposition2) throws IOException {
+        analyse(decomposition1, decomposition2);
+    }
+
+    public float getPrecision() {
+        return precision;
+    }
+
+    public float getSpecificity() {
+        return specificity;
+    }
+
+    public void setSpecificity(float specificity) {
+        this.specificity = specificity;
+    }
+
+    public float getAccuracy() {
+        return accuracy;
+    }
+
+    public void setAccuracy(float accuracy) {
+        this.accuracy = accuracy;
+    }
+
+    public List<String[]> getFalsePairs() {
+        return falsePairs;
+    }
+
+    public void setFalsePairs(List<String[]> falsePairs) {
+        this.falsePairs = falsePairs;
+    }
+
+    public void addFalsePair(String[] falsePair) {
+        this.falsePairs.add(falsePair);
+    }
+
+    public int getFalseNegative() {
+        return falseNegative;
+    }
+
+    public void setFalseNegative(int falseNegative) {
+        this.falseNegative = falseNegative;
+    }
+
+    public int getFalsePositive() {
+        return falsePositive;
+    }
+
+    public void setFalsePositive(int falsePositive) {
+        this.falsePositive = falsePositive;
+    }
+
+    public int getTrueNegative() {
+        return trueNegative;
+    }
+
+    public void setTrueNegative(int trueNegative) {
+        this.trueNegative = trueNegative;
+    }
+
+    public int getTruePositive() {
+        return truePositive;
+    }
+
+    public void setTruePositive(int truePositive) {
+        this.truePositive = truePositive;
+    }
+
+    public void setPrecision(float precision) {
+        this.precision = precision;
+    }
+
+    public float getRecall() {
+        return recall;
+    }
+
+    public void setRecall(float recall) {
+        this.recall = recall;
+    }
+
+    public float getFmeasure() {
+        return fmeasure;
+    }
+
+    public void setFmeasure(float fmeasure) {
+        this.fmeasure = fmeasure;
+    }
+
+    public double getMojoCommon() {
+        return mojoCommon;
+    }
+
+    public void setMojoCommon(double mojoValue) {
+        this.mojoCommon = mojoValue;
+    }
+
+    public double getMojoBiggest() {
+        return mojoBiggest;
+    }
+
+    public void setMojoBiggest(double mojoBiggest) {
+        this.mojoBiggest = mojoBiggest;
+    }
+
+    public double getMojoNew() {
+        return mojoNew;
+    }
+
+    public void setMojoNew(double mojoNew) {
+        this.mojoNew = mojoNew;
+    }
+
+    public double getMojoSingletons() {
+        return mojoSingletons;
+    }
+
+    public void setMojoSingletons(double mojoSingletons) {
+        this.mojoSingletons = mojoSingletons;
+    }
+    @Override
+    public void analyse(Decomposition decomposition1, Decomposition decomposition2) throws IOException {
         Map<String, Set<Short>> decomposition1ClusterEntities = new HashMap<>();
         for (Cluster cluster : decomposition1.getClusters().values()) {
             decomposition1ClusterEntities.put(cluster.getName(), cluster.getElementsIDs());
@@ -80,11 +216,6 @@ public class MoJoFM extends ComparisonAlgorithms {
             decomposition2_UnassignedInSingletons.put("singletonCluster" + i, clusterSingletonEntity);
         }
 
-        int truePositive = 0;
-        int falsePositive = 0;
-        int trueNegative = 0;
-        int falseNegative = 0;
-
         for (int i = 0; i < entities.size(); i++) {
             for (int j = i+1; j < entities.size(); j++) {
                 short e1ID = entities.get(i);
@@ -139,21 +270,10 @@ public class MoJoFM extends ComparisonAlgorithms {
                     falsePair[4] = e2ClusterG1;
                     falsePair[5] = e2ClusterG2;
 
-                    moJoFMResults.addFalsePair(falsePair);
+                    addFalsePair(falsePair);
                 }
             }
         }
-
-        moJoFMResults.setTruePositive(truePositive);
-        moJoFMResults.setTrueNegative(trueNegative);
-        moJoFMResults.setFalsePositive(falsePositive);
-        moJoFMResults.setFalseNegative(falseNegative);
-
-        float accuracy;
-        float precision;
-        float recall;
-        float specificity;
-        float fmeasure;
 
         if (truePositive == 0 && trueNegative == 0 && falsePositive == 0 && falseNegative == 0) { // no ExpertCut submitted
             accuracy = 0;
@@ -179,47 +299,34 @@ public class MoJoFM extends ComparisonAlgorithms {
             fmeasure = Float.isNaN(precision) ? -1 : BigDecimal.valueOf(fmeasure).setScale(2, RoundingMode.HALF_UP).floatValue();
         }
 
-        moJoFMResults.setAccuracy(accuracy);
-        moJoFMResults.setPrecision(precision);
-        moJoFMResults.setRecall(recall);
-        moJoFMResults.setSpecificity(specificity);
-        moJoFMResults.setFmeasure(fmeasure);
-
         /*
          *******************************************
          ************ CALCULATE MOJO ***************
          *******************************************
          */
-        double mojoValueCommonOnly = getMojoValue(
+        mojoCommon = getMojoValue(
                 decomposition2_CommonEntitiesOnly,
                 decomposition1ClusterEntities,
                 decomposition2_CommonEntitiesOnly.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
         );
 
-        double mojoValueUnassignedInBiggest = getMojoValue(
+        mojoBiggest = getMojoValue(
                 decomposition2_UnassignedInBigger,
                 decomposition1ClusterEntities,
                 decomposition2_UnassignedInBigger.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
         );
 
-        double mojoValueUnassignedInNew = getMojoValue(
+        mojoNew = getMojoValue(
                 decomposition2_UnassignedInNew,
                 decomposition1ClusterEntities,
                 decomposition2_UnassignedInNew.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
         );
 
-        double mojoValueUnassignedInSingletons = getMojoValue(
+        mojoSingletons = getMojoValue(
                 decomposition2_UnassignedInSingletons,
                 decomposition1ClusterEntities,
                 decomposition2_UnassignedInSingletons.values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
         );
-
-        moJoFMResults.setMojoCommon(mojoValueCommonOnly);
-        moJoFMResults.setMojoBiggest(mojoValueUnassignedInBiggest);
-        moJoFMResults.setMojoNew(mojoValueUnassignedInNew);
-        moJoFMResults.setMojoSingletons(mojoValueUnassignedInSingletons);
-
-        return moJoFMResults;
     }
 
     private static Map<String, Set<Short>> decompositionCopyOf(Map<String, Set<Short>> decomposition) {
