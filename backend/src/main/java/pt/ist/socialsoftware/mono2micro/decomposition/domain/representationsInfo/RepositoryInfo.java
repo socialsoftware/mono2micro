@@ -128,6 +128,12 @@ public class RepositoryInfo extends RepresentationInformation {
         Set<Short> entityIds = decomposition.getEntityIDToClusterName().keySet();
         for (Short entityId : entityIds) {
             Map<String, Integer> commonEntities = commits.get(entityId.toString());
+            if (commonEntities == null) {
+                addTotalCommit(entityId, 1);
+                Map<Short, Map<Short, Integer>> commitsInCommon = getCommitsInCommon();
+                commitsInCommon.put(entityId, new HashMap<>());
+                continue;
+            }
             addTotalCommit(entityId, commonEntities.get("total_commits"));
 
             for (Map.Entry<String, Integer> commonEntity : commonEntities.entrySet()) {

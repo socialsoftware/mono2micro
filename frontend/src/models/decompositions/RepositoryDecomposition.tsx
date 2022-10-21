@@ -27,9 +27,11 @@ export default class RepositoryDecomposition extends Decomposition {
     printCard(reloadDecompositions: () => void, handleDeleteDecomposition: (collector: string) => void): JSX.Element {
         let amountOfSingletonClusters = 0;
         let maxClusterSize = 0;
+        let totalEntities = 0;
 
         Object.values(this.clusters).forEach((c:any) => {
             const numberOfEntities = c.elements.length;
+            totalEntities += numberOfEntities;
             if (numberOfEntities === 1) amountOfSingletonClusters++;
             if (numberOfEntities > maxClusterSize) maxClusterSize = numberOfEntities;
         })
@@ -42,6 +44,7 @@ export default class RepositoryDecomposition extends Decomposition {
                     </Card.Title>
                     <Card.Text>
                         Number of Clusters: {Object.values(this.clusters).length} <br />
+                        Number of Entities: {totalEntities} <br />
                         Singleton Clusters: {amountOfSingletonClusters} <br />
                         Maximum Cluster Size: {maxClusterSize} <br />
                         {MetricType.SILHOUETTE_SCORE}: {parseFloat(this.metrics[MetricType.SILHOUETTE_SCORE])} <br />
