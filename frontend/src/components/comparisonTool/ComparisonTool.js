@@ -8,8 +8,55 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import Button from 'react-bootstrap/Button';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import {DefaultComparisonTool} from "./implementations/DefaultComparisonTool";
+import {MoJoResults} from "./implementations/MoJoResults";
+import {Paper, styled} from "@mui/material";
+import MuiAccordion from "@mui/material/Accordion";
+import MuiAccordionSummary from "@mui/material/AccordionSummary";
+import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
+import MuiAccordionDetails from "@mui/material/AccordionDetails";
 
 const HttpStatus = require('http-status-codes');
+
+export const Accordion = styled((props) => (
+    <MuiAccordion disableGutters {...props} />
+))(({ theme }) => ({
+    border: `1px solid ${theme.palette.error}`,
+    '&:not(:last-child)': {
+        borderBottom: 0,
+    },
+    '&:before': {
+        display: 'none',
+    },
+}));
+
+export const AccordionSummary = styled((props) => (
+    <MuiAccordionSummary
+        expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem' }} />}
+        {...props}
+    />
+))(({ theme }) => ({
+    backgroundColor:'#dee2e6',
+    flexDirection: 'row-reverse',
+    '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
+        transform: 'rotate(90deg)',
+    },
+    '& .MuiAccordionSummary-content': {
+        marginLeft: theme.spacing(1),
+    },
+}));
+
+export const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
+    backgroundColor: '#e9ecef',
+    padding: theme.spacing(2),
+    borderTop: '1px solid rgba(0, 0, 0, .125)',
+}));
+
+export const ItemCorner = styled(Paper)(({ theme }) => ({backgroundColor: '#3498db', ...theme.typography.body2, padding: theme.spacing(1), textAlign: 'center', }));
+
+export const ItemTop = styled(Paper)(({ theme }) => ({ ...theme.typography.body2, padding: theme.spacing(1), textAlign: 'center', }));
+
+export const Item = styled(Paper)(({ theme }) => ({ backgroundColor: '#dee2e6', ...theme.typography.body2, padding: theme.spacing(1), textAlign: 'center', }));
+
 
 export const ComparisonTool = () => {
     const [codebases, setCodebases] = useState([]);
@@ -19,6 +66,7 @@ export const ComparisonTool = () => {
     const [decomposition1, setDecomposition1] = useState({});
     const [decomposition2, setDecomposition2] = useState({});
     const [resultData, setResultData] = useState({});
+    const [resultsTypes, setResultsTypes] = useState([]);
 
     useEffect(() => loadCodebases(), []);
 
@@ -65,6 +113,7 @@ export const ComparisonTool = () => {
             .then(response => {
                 if (response.status === HttpStatus.OK) {
                     setResultData(response.data);
+                    setResultsTypes(response.data.resultsList.map(results => results.type));
                     setIsUploaded("Upload completed successfully.");
                 } else {
                     setIsUploaded("Upload failed.");
@@ -220,14 +269,20 @@ export const ComparisonTool = () => {
                 </Form.Group>
             </Form>
 
-            {/*ADD ADDITIONAL COMPARISONS HERE*/}
+            <h4 style={{ color: "#666666" }}> Metrics </h4>
 
-            {resultData.type === "DEFAULT_COMPARISON_TOOL_DTO" &&
-                <DefaultComparisonTool
+            {resultsTypes.includes("MOJO_RESULTS") &&
+                <MoJoResults
                     codebaseName={codebase.name}
                     resultData={resultData}
                 />
             }
+
+            <DefaultComparisonTool
+                resultData={resultData}
+            />
+
+            {/*ADD ADDITIONAL COMPARISONS HERE*/}
         </div>
     )
 }

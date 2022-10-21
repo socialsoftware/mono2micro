@@ -3,7 +3,8 @@ package pt.ist.socialsoftware.mono2micro.comparisonTool.domain.results;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MoJoFMResults {
+public class MoJoFMResults extends Results {
+    public static final String DEFAULT_COMPARISON_TOOL_DTO = "MOJO_RESULTS";
     private int truePositive;
     private int trueNegative;
     private int falsePositive;
@@ -18,6 +19,11 @@ public class MoJoFMResults {
     private double mojoBiggest;
     private double mojoNew;
     private double mojoSingletons;
+
+    @Override
+    public String getType() {
+        return DEFAULT_COMPARISON_TOOL_DTO;
+    }
 
     public float getPrecision() {
         return precision;

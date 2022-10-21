@@ -2,6 +2,7 @@ package pt.ist.socialsoftware.mono2micro.comparisonTool.domain;
 
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.comparisonTool.domain.results.MoJoFMResults;
+import pt.ist.socialsoftware.mono2micro.comparisonTool.domain.results.Results;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.utils.mojoCalculator.src.main.java.MoJo;
 
@@ -15,8 +16,9 @@ import java.util.stream.Collectors;
 
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.MOJO_RESOURCES_PATH;
 
-public class MoJoFM {
-    public static MoJoFMResults getAnalysis(Decomposition decomposition1, Decomposition decomposition2) throws IOException {
+public class MoJoFM extends ComparisonAlgorithms {
+    @Override
+    public Results getAnalysis(Decomposition decomposition1, Decomposition decomposition2) throws IOException {
         MoJoFMResults moJoFMResults = new MoJoFMResults();
 
         Map<String, Set<Short>> decomposition1ClusterEntities = new HashMap<>();
