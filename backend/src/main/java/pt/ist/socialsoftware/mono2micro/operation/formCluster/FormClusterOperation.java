@@ -5,6 +5,8 @@ import pt.ist.socialsoftware.mono2micro.cluster.DefaultCluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.element.Element;
 import pt.ist.socialsoftware.mono2micro.operation.Operation;
+import pt.ist.socialsoftware.mono2micro.operation.split.SplitOperation;
+import pt.ist.socialsoftware.mono2micro.operation.transfer.TransferOperation;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.Collection;
@@ -28,6 +30,36 @@ public class FormClusterOperation extends Operation {
     @Override
     public String getOperationType() {
         return FORM_CLUSTER_OPERATION;
+    }
+
+    @Override
+    public void execute(Decomposition decomposition) {
+        executeOperation(decomposition);
+        super.execute(decomposition);
+    }
+
+    @Override
+    public void executeOperation(Decomposition decomposition) {
+        formCluster(decomposition);
+        decomposition.getRepresentationInformations().forEach(representationInformation ->
+                representationInformation.removeFunctionalitiesWithEntityIDs(
+                        decomposition,
+                        getEntities().values().stream().flatMap(Collection::stream).collect(Collectors.toSet())
+                )
+        );
+    }
+
+    @Override
+    public void undo(Decomposition decomposition) {
+        getEntities().forEach((clusterName, entitiesID) -> {
+            Cluster toCluster = decomposition.getClusters().get(clusterName);
+            if (toCluster == null) // If there is no cluster, the operation is a split, if there is, it is a transfer
+                new SplitOperation(getNewCluster(), clusterName, entitiesID.stream().map(Object::toString).collect(Collectors.joining(","))).executeOperation(decomposition);
+            else
+                new TransferOperation(getNewCluster(), toCluster.getName(), entitiesID.stream().map(Object::toString).collect(Collectors.joining(","))).executeOperation(decomposition);
+        });
+
+        decomposition.removeCluster(getNewCluster());
     }
 
     protected void formCluster(Decomposition decomposition) {

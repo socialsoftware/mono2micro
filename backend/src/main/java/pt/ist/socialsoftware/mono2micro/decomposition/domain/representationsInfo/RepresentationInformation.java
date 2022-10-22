@@ -1,7 +1,9 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo;
 
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.metrics.decompositionMetrics.DecompositionMetric;
 
+import java.util.List;
 import java.util.Set;
 
 public abstract class RepresentationInformation {
@@ -10,7 +12,14 @@ public abstract class RepresentationInformation {
 
     public abstract void deleteProperties();
 
+    public abstract List<String> getRequiredRepresentations();
+
+    public abstract void setup(Decomposition decomposition) throws Exception;
+
     public abstract void update(Decomposition decomposition) throws Exception;
+    public abstract void snapshot(Decomposition snapshotDecomposition, Decomposition decomposition) throws Exception;
+
+    public abstract List<DecompositionMetric> getDecompositionMetrics();
 
     public void renameClusterInFunctionalities(String clusterName, String newName) {}
 

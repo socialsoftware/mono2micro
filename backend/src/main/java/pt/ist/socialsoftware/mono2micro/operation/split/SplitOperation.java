@@ -5,8 +5,10 @@ import pt.ist.socialsoftware.mono2micro.cluster.DefaultCluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.element.Element;
 import pt.ist.socialsoftware.mono2micro.operation.Operation;
+import pt.ist.socialsoftware.mono2micro.operation.merge.MergeOperation;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
+import java.util.stream.Collectors;
 
 public class SplitOperation extends Operation {
     public static final String SPLIT_OPERATION = "SplitOperation";
@@ -22,9 +24,37 @@ public class SplitOperation extends Operation {
         this.entities = operation.getEntities();
     }
 
+    public SplitOperation(String originalCluster, String newCluster, String entities) {
+        this.originalCluster = originalCluster;
+        this.newCluster = newCluster;
+        this.entities = entities;
+    }
+
     @Override
     public String getOperationType() {
         return SPLIT_OPERATION;
+    }
+
+    @Override
+    public void execute(Decomposition decomposition) {
+        executeOperation(decomposition);
+        super.execute(decomposition);
+    }
+
+    @Override
+    public void executeOperation(Decomposition decomposition) {
+        split(decomposition);
+        decomposition.getRepresentationInformations().forEach(representationInformation ->
+                representationInformation.removeFunctionalitiesWithEntityIDs(
+                        decomposition,
+                        decomposition.getCluster(getNewCluster()).getElements().stream().map(Element::getId).collect(Collectors.toSet())
+                )
+        );
+    }
+
+    @Override
+    public void undo(Decomposition decomposition) {
+        new MergeOperation(getOriginalCluster(), getNewCluster(), getOriginalCluster()).executeOperation(decomposition);
     }
 
     protected void split(Decomposition decomposition) {

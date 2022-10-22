@@ -330,40 +330,12 @@ export class APIService {
     }
 
     //Cluster
-    mergeClusters(
-        decompositionName: string,
-        data: any
-    ) {
-        return this.axios.post<null>(
-            "/decomposition/" + decompositionName + "/merge", data);
-    }
 
-    renameCluster(
+    applyOperation(
         decompositionName: string,
         data: any
     ) {
-        return this.axios.post<null>("/decomposition/" + decompositionName + "/rename", data);
-    }
-
-    splitCluster(
-        decompositionName: string,
-        data: any
-    ) {
-        return this.axios.post<null>("/decomposition/" + decompositionName + "/split", data);
-    }
-
-    formCluster(
-        decompositionName: string,
-        data: any
-    ) {
-        return this.axios.post<null>("/decomposition/" + decompositionName + "/formCluster", data);
-    }
-
-    transferEntities(
-        decompositionName: string,
-        data: any
-    ) {
-        return this.axios.post<null>("/decomposition/" + decompositionName + "/transfer", data);
+        return this.axios.post<null>("/decomposition/" + decompositionName + "/applyOperation", data);
     }
 
     undoOperation(

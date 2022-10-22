@@ -7,22 +7,21 @@ import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.Clustering;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.RepresentationInformation;
 import pt.ist.socialsoftware.mono2micro.element.Element;
 import pt.ist.socialsoftware.mono2micro.history.domain.History;
-import pt.ist.socialsoftware.mono2micro.operation.formCluster.FormClusterOperation;
-import pt.ist.socialsoftware.mono2micro.operation.merge.MergeOperation;
-import pt.ist.socialsoftware.mono2micro.operation.rename.RenameOperation;
-import pt.ist.socialsoftware.mono2micro.operation.split.SplitOperation;
-import pt.ist.socialsoftware.mono2micro.operation.transfer.TransferOperation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class Decomposition {
+	public static class DecompositionType {
+		public static final String ACC_AND_REPO_DECOMPOSITION = "Accesses and Repository Decomposition";
+		public static final String ACCESSES_DECOMPOSITION = "Accesses Decomposition";
+		public static final String REPOSITORY_DECOMPOSITION = "Repository Decomposition";
+	}
+
 	@Id
 	String name;
+	String type;
 	boolean expert;
 	boolean outdated; // Used to avoid long waiting times during interaction
 	Map<String, Object> metrics = new HashMap<>(); // Map<Metric type, Metric value>
@@ -36,24 +35,26 @@ public abstract class Decomposition {
 
 	List<RepresentationInformation> representationInformations = new ArrayList<>();
 
-	public abstract String getType();
-	public abstract List<String> getRequiredRepresentations(); // Provides the required representations
+	public abstract Set<String> getRequiredRepresentations(); // Provides the required representations
 	public abstract Clustering getClusteringAlgorithm();
 	public abstract void setup() throws Exception;
 	public abstract void update() throws Exception;
 	public abstract void deleteProperties();
 	public abstract void calculateMetrics();
-	public abstract void renameCluster(RenameOperation operation);
-	public abstract void mergeClusters(MergeOperation operation);
-	public abstract void splitCluster(SplitOperation operation);
-	public abstract void transferEntities(TransferOperation operation);
-	public abstract void formCluster(FormClusterOperation operation); // leave empty if not available
 	public abstract Decomposition snapshotDecomposition(String decompositionName) throws Exception;
 
 	public String getName() { return this.name; }
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public boolean isExpert() {
@@ -99,6 +100,8 @@ public abstract class Decomposition {
 	public RepresentationInformation getRepresentationInformationByType(String type) {
 		return this.representationInformations.stream().filter(r -> r.getType().equals(type)).findFirst().orElse(null);
 	}
+
+	public abstract List<RepresentationInformation> getRepresentationInformationsByDecompositionType(String type);
 
 	public Strategy getStrategy() {
 		return strategy;

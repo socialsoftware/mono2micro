@@ -19,7 +19,9 @@ import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
+import pt.ist.socialsoftware.mono2micro.metrics.decompositionMetrics.*;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
+import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.dendrogram.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
@@ -38,15 +40,22 @@ public class AccessesInfo extends RepresentationInformation {
     @DBRef(lazy = true)
     private Map<String, Functionality> functionalities = new HashMap<>(); // <functionalityName, Functionality>
 
+    private static final List<String> requiredRepresentations = new ArrayList<String>() {{
+        add(AccessesRepresentation.ACCESSES);
+        add(IDToEntityRepresentation.ID_TO_ENTITY);
+    }};
+
     public AccessesInfo() {}
 
-    public AccessesInfo(Decomposition decomposition) throws Exception {
+    @Override
+    public void setup(Decomposition decomposition) throws Exception {
         this.decompositionName = decomposition.getName();
         decomposition.addRepresentationInformation(this);
         setupFunctionalities(decomposition);
     }
 
-    public AccessesInfo(Decomposition snapshotDecomposition, Decomposition decomposition) throws IOException {
+    @Override
+    public void snapshot(Decomposition snapshotDecomposition, Decomposition decomposition) throws IOException {
         this.decompositionName = snapshotDecomposition.getName();
         snapshotDecomposition.addRepresentationInformation(this);
         AccessesInfo accessesInfo = (AccessesInfo) decomposition.getRepresentationInformationByType(ACCESSES_INFO);
@@ -59,8 +68,23 @@ public class AccessesInfo extends RepresentationInformation {
     }
 
     @Override
+    public List<String> getRequiredRepresentations() {
+        return requiredRepresentations;
+    }
+
+    @Override
     public void update(Decomposition decomposition) throws Exception {
         setupFunctionalities(decomposition);
+    }
+
+    @Override
+    public List<DecompositionMetric> getDecompositionMetrics() {
+        return new ArrayList<DecompositionMetric>() {{
+            add(new CohesionMetric());
+            add(new ComplexityMetric());
+            add(new CouplingMetric());
+            add(new PerformanceMetric());
+        }};
     }
 
     @Override

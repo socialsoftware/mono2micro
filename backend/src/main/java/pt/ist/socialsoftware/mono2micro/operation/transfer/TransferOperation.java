@@ -23,6 +23,12 @@ public class TransferOperation extends Operation {
         this.entities = operation.getEntities();
     }
 
+    public TransferOperation(String fromCluster, String toCluster, String entities) {
+        this.fromCluster = fromCluster;
+        this.toCluster = toCluster;
+        this.entities = entities;
+    }
+
     protected void transfer(Decomposition decomposition) {
         Cluster from = decomposition.getCluster(fromCluster);
         Cluster to = decomposition.getCluster(toCluster);
@@ -43,6 +49,28 @@ public class TransferOperation extends Operation {
     @Override
     public String getOperationType() {
         return TRANSFER_OPERATION;
+    }
+
+    @Override
+    public void execute(Decomposition decomposition) {
+        executeOperation(decomposition);
+        super.execute(decomposition);
+    }
+
+    @Override
+    public void executeOperation(Decomposition decomposition) {
+        transfer(decomposition);
+        decomposition.getRepresentationInformations().forEach(representationInformation ->
+                representationInformation.removeFunctionalitiesWithEntityIDs(
+                        decomposition,
+                        Arrays.stream(getEntities().split(",")).map(Short::valueOf).collect(Collectors.toSet())
+                )
+        );
+    }
+
+    @Override
+    public void undo(Decomposition decomposition) {
+        new TransferOperation(getToCluster(), getFromCluster(), getEntities()).executeOperation(decomposition);
     }
 
     public String getFromCluster() {

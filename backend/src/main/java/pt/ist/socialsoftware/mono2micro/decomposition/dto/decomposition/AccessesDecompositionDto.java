@@ -1,12 +1,12 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition;
 
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.ClustersDecomposition;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesDecomposition.ACCESSES_DECOMPOSITION;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition.DecompositionType.ACCESSES_DECOMPOSITION;
 
 public class AccessesDecompositionDto extends DecompositionDto {
     private boolean outdated;
@@ -16,7 +16,7 @@ public class AccessesDecompositionDto extends DecompositionDto {
 
     public AccessesDecompositionDto() {this.type = ACCESSES_DECOMPOSITION;}
 
-    public AccessesDecompositionDto(AccessesDecomposition decomposition) {
+    public AccessesDecompositionDto(ClustersDecomposition decomposition) {
         this.setCodebaseName(decomposition.getSimilarity().getStrategy().getCodebase().getName());
         this.setStrategyName(decomposition.getStrategy().getName());
         this.setName(decomposition.getName());

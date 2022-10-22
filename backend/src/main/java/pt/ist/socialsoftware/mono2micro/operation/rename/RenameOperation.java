@@ -29,6 +29,25 @@ public class RenameOperation extends Operation {
         return RENAME_OPERATION;
     }
 
+    @Override
+    public void execute(Decomposition decomposition) {
+        executeOperation(decomposition);
+        super.execute(decomposition);
+    }
+
+    @Override
+    public void executeOperation(Decomposition decomposition) {
+        rename(decomposition);
+        decomposition.getRepresentationInformations().forEach(representationInformation ->
+                representationInformation.renameClusterInFunctionalities(getClusterName(), getNewClusterName())
+        );
+    }
+
+    @Override
+    public void undo(Decomposition decomposition) {
+        new RenameOperation(getNewClusterName(), getClusterName()).executeOperation(decomposition);
+    }
+
     protected void rename(Decomposition decomposition) {
         if (decomposition.clusterNameExists(newClusterName) && !clusterName.equals(newClusterName))
             throw new KeyAlreadyExistsException("Cluster with name: " + newClusterName + " already exists");

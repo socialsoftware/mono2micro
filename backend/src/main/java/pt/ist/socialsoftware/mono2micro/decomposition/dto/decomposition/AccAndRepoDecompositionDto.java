@@ -1,6 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition;
 
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccAndRepoDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.ClustersDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.RepositoryInfo;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccAndRepoDecomposition.ACC_AND_REPO_DECOMPOSITION;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition.DecompositionType.ACC_AND_REPO_DECOMPOSITION;
 import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.RepositoryInfo.REPOSITORY_INFO;
 
 public class AccAndRepoDecompositionDto extends DecompositionDto {
@@ -22,7 +22,7 @@ public class AccAndRepoDecompositionDto extends DecompositionDto {
 
     public AccAndRepoDecompositionDto() {this.type = ACC_AND_REPO_DECOMPOSITION;}
 
-    public AccAndRepoDecompositionDto(AccAndRepoDecomposition decomposition) {
+    public AccAndRepoDecompositionDto(ClustersDecomposition decomposition) {
         this.setCodebaseName(decomposition.getSimilarity().getStrategy().getCodebase().getName());
         this.setStrategyName(decomposition.getStrategy().getName());
         this.setName(decomposition.getName());

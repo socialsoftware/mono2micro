@@ -11,6 +11,7 @@ import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Document("strategy")
@@ -26,7 +27,7 @@ public class Strategy {
     private List<Similarity> similarities = new ArrayList<>();
     @DBRef(lazy = true)
     private List<Recommendation> recommendations = new ArrayList<>();
-    private List<String> representationTypes;
+    private Set<String> representationTypes;
 
     public Strategy() {}
 
@@ -44,11 +45,11 @@ public class Strategy {
         this.decompositionType = decompositionType;
     }
 
-    public List<String> getRepresentationTypes() {
+    public Set<String> getRepresentationTypes() {
         return representationTypes;
     }
 
-    public void setRepresentationTypes(List<String> representationTypes) {
+    public void setRepresentationTypes(Set<String> representationTypes) {
         this.representationTypes = representationTypes;
     }
 

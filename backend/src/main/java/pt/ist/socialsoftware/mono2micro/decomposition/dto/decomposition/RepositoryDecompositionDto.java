@@ -1,13 +1,13 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition;
 
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.RepositoryDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.ClustersDecomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.RepositoryInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.RepositoryDecomposition.REPOSITORY_DECOMPOSITION;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition.DecompositionType.REPOSITORY_DECOMPOSITION;
 import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.RepositoryInfo.REPOSITORY_INFO;
 
 public class RepositoryDecompositionDto extends DecompositionDto {
@@ -20,7 +20,7 @@ public class RepositoryDecompositionDto extends DecompositionDto {
 
     public RepositoryDecompositionDto() {this.type = REPOSITORY_DECOMPOSITION;}
 
-    public RepositoryDecompositionDto(RepositoryDecomposition decomposition) {
+    public RepositoryDecompositionDto(ClustersDecomposition decomposition) {
         this.setCodebaseName(decomposition.getSimilarity().getStrategy().getCodebase().getName());
         this.setStrategyName(decomposition.getStrategy().getName());
         this.setName(decomposition.getName());

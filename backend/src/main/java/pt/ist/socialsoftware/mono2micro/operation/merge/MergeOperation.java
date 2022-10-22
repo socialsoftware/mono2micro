@@ -5,6 +5,8 @@ import pt.ist.socialsoftware.mono2micro.cluster.DefaultCluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.element.Element;
 import pt.ist.socialsoftware.mono2micro.operation.Operation;
+import pt.ist.socialsoftware.mono2micro.operation.rename.RenameOperation;
+import pt.ist.socialsoftware.mono2micro.operation.split.SplitOperation;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.HashSet;
@@ -27,9 +29,44 @@ public class MergeOperation extends Operation {
         this.newName = mergeOperation.getNewName();
     }
 
+    public MergeOperation(String cluster1Name, String cluster2Name, String newName) {
+        this.cluster1Name = cluster1Name;
+        this.cluster2Name = cluster2Name;
+        this.newName = newName;
+    }
+
     @Override
     public String getOperationType() {
         return MERGE_OPERATION;
+    }
+
+    @Override
+    public void execute(Decomposition decomposition) {
+        storeState(decomposition); // needed so that when doing undo, the original entities are restored
+        executeOperation(decomposition);
+        super.execute(decomposition);
+    }
+
+    @Override
+    public void executeOperation(Decomposition decomposition) {
+        merge(decomposition);
+        decomposition.getRepresentationInformations().forEach(representationInformation ->
+                representationInformation.removeFunctionalitiesWithEntityIDs(
+                        decomposition,
+                        decomposition.getCluster(getNewName()).getElements().stream().map(Element::getId).collect(Collectors.toSet())
+                )
+        );
+    }
+
+    @Override
+    public void undo(Decomposition decomposition) {
+        if (getCluster1Name().equals(getNewName())) {
+            new SplitOperation(getNewName(), getCluster2Name(), getCluster2Entities()).executeOperation(decomposition);
+            new RenameOperation(getNewName(), getCluster1Name()).executeOperation(decomposition);
+        } else {
+            new SplitOperation(getNewName(), getCluster1Name(), getCluster1Entities()).executeOperation(decomposition);
+            new RenameOperation(getNewName(), getCluster2Name()).executeOperation(decomposition);
+        }
     }
 
     protected void storeState(Decomposition decomposition) {

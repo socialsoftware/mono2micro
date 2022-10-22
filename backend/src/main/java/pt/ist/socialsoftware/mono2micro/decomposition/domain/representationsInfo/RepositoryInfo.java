@@ -11,8 +11,11 @@ import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.element.Element;
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
+import pt.ist.socialsoftware.mono2micro.metrics.decompositionMetrics.*;
+import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AuthorRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.CommitRepresentation;
+import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.dendrogram.Dendrogram;
 
@@ -30,15 +33,24 @@ public class RepositoryInfo extends RepresentationInformation {
     private Map<Short, Integer> totalCommits = new HashMap<>();
     private Integer totalAuthors;
 
+    private static final List<String> requiredRepresentations = new ArrayList<String>() {{
+        add(AccessesRepresentation.ACCESSES);
+        add(IDToEntityRepresentation.ID_TO_ENTITY);
+        add(AuthorRepresentation.AUTHOR);
+        add(CommitRepresentation.COMMIT);
+    }};
+
     public RepositoryInfo() {}
 
-    public RepositoryInfo(Decomposition decomposition) throws IOException {
+    @Override
+    public void setup(Decomposition decomposition) throws IOException {
         this.decompositionName = decomposition.getName();
         decomposition.addRepresentationInformation(this);
         setupAuthorsAndCommits(decomposition);
     }
 
-    public RepositoryInfo(Decomposition snapshotDecomposition, Decomposition decomposition) {
+    @Override
+    public void snapshot(Decomposition snapshotDecomposition, Decomposition decomposition) {
         this.decompositionName = snapshotDecomposition.getName();
         snapshotDecomposition.addRepresentationInformation(this);
         RepositoryInfo repositoryInfo = (RepositoryInfo) decomposition.getRepresentationInformationByType(REPOSITORY_INFO);
@@ -54,7 +66,17 @@ public class RepositoryInfo extends RepresentationInformation {
     }
 
     @Override
+    public List<String> getRequiredRepresentations() {
+        return requiredRepresentations;
+    }
+
+    @Override
     public void update(Decomposition decomposition) throws Exception {}
+
+    @Override
+    public List<DecompositionMetric> getDecompositionMetrics() {
+        return new ArrayList<DecompositionMetric>() {{ add(new TSRMetric()); }};
+    }
 
     @Override
     public void deleteProperties() {}

@@ -1,16 +1,11 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition;
 
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccAndRepoDecomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesDecomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.RepositoryDecomposition;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccAndRepoDecomposition.ACC_AND_REPO_DECOMPOSITION;
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesDecomposition.ACCESSES_DECOMPOSITION;
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.RepositoryDecomposition.REPOSITORY_DECOMPOSITION;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition.DecompositionType.*;
 
 public class DecompositionDtoFactory {
     private static DecompositionDtoFactory factory = null;
@@ -26,11 +21,11 @@ public class DecompositionDtoFactory {
             return null;
         switch (decomposition.getType()) {
             case ACCESSES_DECOMPOSITION:
-                return new AccessesDecompositionDto((AccessesDecomposition) decomposition);
+                return new AccessesDecompositionDto((ClustersDecomposition) decomposition);
             case REPOSITORY_DECOMPOSITION:
-                return new RepositoryDecompositionDto((RepositoryDecomposition) decomposition);
+                return new RepositoryDecompositionDto((ClustersDecomposition) decomposition);
             case ACC_AND_REPO_DECOMPOSITION:
-                return new AccAndRepoDecompositionDto((AccAndRepoDecomposition) decomposition);
+                return new AccAndRepoDecompositionDto((ClustersDecomposition) decomposition);
             default:
                 throw new RuntimeException("The type \"" + decomposition.getType() + "\" is not a valid strategy type for the decomposition.");
         }

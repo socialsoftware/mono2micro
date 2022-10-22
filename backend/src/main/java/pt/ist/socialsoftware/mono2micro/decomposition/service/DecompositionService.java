@@ -10,11 +10,7 @@ import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionR
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.ExpertRequest;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
 import pt.ist.socialsoftware.mono2micro.history.service.HistoryService;
-import pt.ist.socialsoftware.mono2micro.operation.formCluster.FormClusterOperation;
-import pt.ist.socialsoftware.mono2micro.operation.merge.MergeOperation;
-import pt.ist.socialsoftware.mono2micro.operation.rename.RenameOperation;
-import pt.ist.socialsoftware.mono2micro.operation.split.SplitOperation;
-import pt.ist.socialsoftware.mono2micro.operation.transfer.TransferOperation;
+import pt.ist.socialsoftware.mono2micro.operation.Operation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.similarity.repository.SimilarityRepository;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
@@ -22,10 +18,9 @@ import pt.ist.socialsoftware.mono2micro.strategy.repository.StrategyRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccAndRepoDecomposition.ACC_AND_REPO_DECOMPOSITION;
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.AccessesDecomposition.ACCESSES_DECOMPOSITION;
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.RepositoryDecomposition.REPOSITORY_DECOMPOSITION;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition.DecompositionType.*;
 
 @Service
 public class DecompositionService {
@@ -101,7 +96,7 @@ public class DecompositionService {
         return decomposition;
     }
 
-    public List<String> getRequiredRepresentations(String decompositionType) {
+    public Set<String> getRequiredRepresentations(String decompositionType) {
         return DecompositionFactory.getDecomposition(decompositionType).getRequiredRepresentations();
     }
 
@@ -130,37 +125,9 @@ public class DecompositionService {
         decompositionRepository.deleteByName(decomposition.getName());
     }
 
-    public void mergeClustersOperation(String decompositionName, MergeOperation operation) {
+    public void applyOperation(String decompositionName, Operation operation) {
         Decomposition decomposition = decompositionRepository.findByName(decompositionName);
-        decomposition.mergeClusters(operation);
-        historyService.saveHistory(decomposition.getHistory());
-        decompositionRepository.save(decomposition);
-    }
-
-    public void renameClusterOperation(String decompositionName, RenameOperation operation) {
-        Decomposition decomposition = decompositionRepository.findByName(decompositionName);
-        decomposition.renameCluster(operation);
-        historyService.saveHistory(decomposition.getHistory());
-        decompositionRepository.save(decomposition);
-    }
-
-    public void splitClusterOperation(String decompositionName, SplitOperation operation) {
-        Decomposition decomposition = decompositionRepository.findByName(decompositionName);
-        decomposition.splitCluster(operation);
-        historyService.saveHistory(decomposition.getHistory());
-        decompositionRepository.save(decomposition);
-    }
-
-    public void transferEntitiesOperation(String decompositionName, TransferOperation operation) {
-        Decomposition decomposition = decompositionRepository.findByName(decompositionName);
-        decomposition.transferEntities(operation);
-        historyService.saveHistory(decomposition.getHistory());
-        decompositionRepository.save(decomposition);
-    }
-
-    public void formClusterOperation(String decompositionName, FormClusterOperation operation) {
-        Decomposition decomposition = decompositionRepository.findByName(decompositionName);
-        decomposition.formCluster(operation);
+        operation.execute(decomposition);
         historyService.saveHistory(decomposition.getHistory());
         decompositionRepository.save(decomposition);
     }
