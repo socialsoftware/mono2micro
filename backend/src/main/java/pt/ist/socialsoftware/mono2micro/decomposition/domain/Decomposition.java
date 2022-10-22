@@ -7,6 +7,11 @@ import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.Clustering;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.RepresentationInformation;
 import pt.ist.socialsoftware.mono2micro.element.Element;
 import pt.ist.socialsoftware.mono2micro.history.domain.History;
+import pt.ist.socialsoftware.mono2micro.operation.formCluster.FormClusterOperation;
+import pt.ist.socialsoftware.mono2micro.operation.merge.MergeOperation;
+import pt.ist.socialsoftware.mono2micro.operation.rename.RenameOperation;
+import pt.ist.socialsoftware.mono2micro.operation.split.SplitOperation;
+import pt.ist.socialsoftware.mono2micro.operation.transfer.TransferOperation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
@@ -41,6 +46,11 @@ public abstract class Decomposition {
 	public abstract void update() throws Exception;
 	public abstract void deleteProperties();
 	public abstract void calculateMetrics();
+	public abstract void renameCluster(RenameOperation operation);
+	public abstract void mergeClusters(MergeOperation operation);
+	public abstract void splitCluster(SplitOperation operation);
+	public abstract void transferEntities(TransferOperation operation);
+	public abstract void formCluster(FormClusterOperation operation);
 	public abstract Decomposition snapshotDecomposition(String decompositionName) throws Exception;
 
 	public String getName() { return this.name; }

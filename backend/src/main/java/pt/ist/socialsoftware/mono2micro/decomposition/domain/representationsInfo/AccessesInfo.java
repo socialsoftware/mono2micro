@@ -8,7 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
-import pt.ist.socialsoftware.mono2micro.cluster.DefaultCluster;
+import pt.ist.socialsoftware.mono2micro.cluster.Partition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.element.Element;
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
@@ -187,7 +187,7 @@ public class AccessesInfo extends RepresentationInformation {
             // ClusterDependencies
             String clusterName = lt.getClusterName();
             if (!clusterName.equals("-1")) { // not root node
-                DefaultCluster fromCluster = (DefaultCluster) decomposition.getCluster(clusterName);
+                Partition fromCluster = (Partition) decomposition.getCluster(clusterName);
 
                 List<LocalTransaction> nextLocalTransactions = successorListOf(localTransactionsGraph, lt);
 

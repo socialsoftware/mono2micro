@@ -169,7 +169,7 @@ export const ClusterView = (
         setNow(prev => prev + 10);
         switch(dialogResponse.type) {
             case DIALOG_TYPE.RENAME:
-                promise = service.applyOperation(decompositionName, {
+                promise = service.renameCluster(decompositionName, {
                     type: OperationTypes.RENAME_OPERATION,
                     clusterName: clickedComponent.node.id,
                     newClusterName: dialogResponse.newName});
@@ -182,7 +182,7 @@ export const ClusterView = (
                 response = handleRename();
                 break;
             case DIALOG_TYPE.TRANSFER:
-                promise = service.applyOperation(decompositionName, {
+                promise = service.transferEntities(decompositionName, {
                     type: OperationTypes.TRANSFER_OPERATION,
                     fromCluster: clickedComponent.node.id,
                     toCluster: clickedComponent.toNode.id,
@@ -196,7 +196,7 @@ export const ClusterView = (
                 response = handleTransfer();
                 break;
             case DIALOG_TYPE.MERGE:
-                promise = service.applyOperation(decompositionName, {
+                promise = service.mergeClusters(decompositionName, {
                     type: OperationTypes.MERGE_OPERATION,
                     cluster1Name: clickedComponent.node.id,
                     cluster2Name: clickedComponent.toNode.id,
@@ -210,7 +210,7 @@ export const ClusterView = (
                 response = handleMerge();
                 break;
             case DIALOG_TYPE.SPLIT:
-                promise = service.applyOperation(decompositionName, {
+                promise = service.splitCluster(decompositionName, {
                     type: OperationTypes.SPLIT_OPERATION,
                     originalCluster: clickedComponent.node.id,
                     newCluster: dialogResponse.newName,
@@ -224,7 +224,7 @@ export const ClusterView = (
                 response = handleSplit();
                 break;
             case DIALOG_TYPE.FORM_CLUSTER:
-                promise = service.applyOperation(decompositionName, {
+                promise = service.formCluster(decompositionName, {
                     type: OperationTypes.FORM_CLUSTER_OPERATION,
                     newCluster: dialogResponse.newName,
                     entities: dialogResponse.elements});

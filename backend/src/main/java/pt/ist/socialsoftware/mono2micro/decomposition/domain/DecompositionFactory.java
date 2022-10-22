@@ -10,7 +10,7 @@ public class DecompositionFactory {
             case ACCESSES_DECOMPOSITION:
             case REPOSITORY_DECOMPOSITION:
             case ACC_AND_REPO_DECOMPOSITION:
-                return new ClustersDecomposition(type);
+                return new PartitionsDecomposition(type);
             default:
                 throw new RuntimeException("The type \"" + type + "\" is not a valid type for the decomposition.");
         }
@@ -22,7 +22,7 @@ public class DecompositionFactory {
             case ACCESSES_DECOMPOSITION:
             case REPOSITORY_DECOMPOSITION:
             case ACC_AND_REPO_DECOMPOSITION:
-                return new ClustersDecomposition(request);
+                return new PartitionsDecomposition(request);
             default:
                 throw new RuntimeException("The type \"" + request.getDecompositionType() + "\" is not a valid type for the decomposition.");
         }

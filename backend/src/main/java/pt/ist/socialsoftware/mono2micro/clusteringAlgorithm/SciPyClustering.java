@@ -5,7 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
-import pt.ist.socialsoftware.mono2micro.cluster.DefaultCluster;
+import pt.ist.socialsoftware.mono2micro.cluster.Partition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.*;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.SciPyRequestDto;
@@ -91,10 +91,10 @@ public class SciPyClustering extends Clustering {
 
         for (String name : clusterNames) {
             JSONArray entities = clustersJSON.getJSONArray(name);
-            DefaultCluster cluster;
+            Partition cluster;
             if (decomposition.isExpert())
-                cluster = new DefaultCluster(name);
-            else cluster = new DefaultCluster("Cluster" + name);
+                cluster = new Partition(name);
+            else cluster = new Partition("Cluster" + name);
 
             for (int i = 0; i < entities.length(); i++) {
                 short entityID = (short) entities.getInt(i);

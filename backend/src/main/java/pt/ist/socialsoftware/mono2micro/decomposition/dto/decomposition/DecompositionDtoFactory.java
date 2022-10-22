@@ -21,11 +21,11 @@ public class DecompositionDtoFactory {
             return null;
         switch (decomposition.getType()) {
             case ACCESSES_DECOMPOSITION:
-                return new AccessesDecompositionDto((ClustersDecomposition) decomposition);
+                return new AccessesDecompositionDto((PartitionsDecomposition) decomposition);
             case REPOSITORY_DECOMPOSITION:
-                return new RepositoryDecompositionDto((ClustersDecomposition) decomposition);
+                return new RepositoryDecompositionDto((PartitionsDecomposition) decomposition);
             case ACC_AND_REPO_DECOMPOSITION:
-                return new AccAndRepoDecompositionDto((ClustersDecomposition) decomposition);
+                return new AccAndRepoDecompositionDto((PartitionsDecomposition) decomposition);
             default:
                 throw new RuntimeException("The type \"" + decomposition.getType() + "\" is not a valid strategy type for the decomposition.");
         }

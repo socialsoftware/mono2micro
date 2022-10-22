@@ -331,11 +331,40 @@ export class APIService {
 
     //Cluster
 
-    applyOperation(
+    mergeClusters(
         decompositionName: string,
         data: any
     ) {
-        return this.axios.post<null>("/decomposition/" + decompositionName + "/applyOperation", data);
+        return this.axios.post<null>(
+            "/decomposition/" + decompositionName + "/merge", data);
+    }
+
+    renameCluster(
+        decompositionName: string,
+        data: any
+    ) {
+        return this.axios.post<null>("/decomposition/" + decompositionName + "/rename", data);
+    }
+
+    splitCluster(
+        decompositionName: string,
+        data: any
+    ) {
+        return this.axios.post<null>("/decomposition/" + decompositionName + "/split", data);
+    }
+
+    formCluster(
+        decompositionName: string,
+        data: any
+    ) {
+        return this.axios.post<null>("/decomposition/" + decompositionName + "/formCluster", data);
+    }
+
+    transferEntities(
+        decompositionName: string,
+        data: any
+    ) {
+        return this.axios.post<null>("/decomposition/" + decompositionName + "/transfer", data);
     }
 
     undoOperation(

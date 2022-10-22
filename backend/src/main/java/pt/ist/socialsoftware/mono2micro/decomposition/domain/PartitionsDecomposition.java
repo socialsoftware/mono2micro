@@ -12,6 +12,16 @@ import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.history.domain.PositionHistory;
 import pt.ist.socialsoftware.mono2micro.history.service.HistoryService;
 import pt.ist.socialsoftware.mono2micro.history.service.PositionHistoryService;
+import pt.ist.socialsoftware.mono2micro.operation.formCluster.FormClusterOperation;
+import pt.ist.socialsoftware.mono2micro.operation.formCluster.FormClusterPartitionsOperation;
+import pt.ist.socialsoftware.mono2micro.operation.merge.MergeOperation;
+import pt.ist.socialsoftware.mono2micro.operation.merge.MergePartitionsOperation;
+import pt.ist.socialsoftware.mono2micro.operation.rename.RenameOperation;
+import pt.ist.socialsoftware.mono2micro.operation.rename.RenamePartitionsOperation;
+import pt.ist.socialsoftware.mono2micro.operation.split.SplitOperation;
+import pt.ist.socialsoftware.mono2micro.operation.split.SplitPartitionsOperation;
+import pt.ist.socialsoftware.mono2micro.operation.transfer.TransferOperation;
+import pt.ist.socialsoftware.mono2micro.operation.transfer.TransferPartitionsOperation;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,14 +29,14 @@ import java.util.stream.Collectors;
 import static pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition.DecompositionType.*;
 
 @Document("decomposition")
-public class ClustersDecomposition extends Decomposition {
-    public ClustersDecomposition() {}
+public class PartitionsDecomposition extends Decomposition {
+    public PartitionsDecomposition() {}
 
-    public ClustersDecomposition(String type) {this.type = type;}
+    public PartitionsDecomposition(String type) {this.type = type;}
 
-    public ClustersDecomposition(DecompositionRequest decompositionRequest) {this.type = decompositionRequest.getDecompositionType();}
+    public PartitionsDecomposition(DecompositionRequest decompositionRequest) {this.type = decompositionRequest.getDecompositionType();}
 
-    public ClustersDecomposition(ClustersDecomposition decomposition, String snapshotName) throws Exception {
+    public PartitionsDecomposition(PartitionsDecomposition decomposition, String snapshotName) throws Exception {
         this.type = decomposition.type;
         this.name = snapshotName;
         this.similarity = decomposition.getSimilarity();
@@ -96,6 +106,36 @@ public class ClustersDecomposition extends Decomposition {
     }
 
     @Override
+    public void renameCluster(RenameOperation operation) {
+        RenamePartitionsOperation partitionsOperation = new RenamePartitionsOperation(operation);
+        partitionsOperation.execute(this);
+    }
+
+    @Override
+    public void mergeClusters(MergeOperation operation) {
+        MergePartitionsOperation partitionsOperation = new MergePartitionsOperation(operation);
+        partitionsOperation.execute(this);
+    }
+
+    @Override
+    public void splitCluster(SplitOperation operation) {
+        SplitPartitionsOperation partitionsOperation = new SplitPartitionsOperation(operation);
+        partitionsOperation.execute(this);
+    }
+
+    @Override
+    public void transferEntities(TransferOperation operation) {
+        TransferPartitionsOperation partitionsOperation = new TransferPartitionsOperation(operation);
+        partitionsOperation.execute(this);
+    }
+
+    @Override
+    public void formCluster(FormClusterOperation operation) {
+        FormClusterPartitionsOperation partitionsOperation = new FormClusterPartitionsOperation(operation);
+        partitionsOperation.execute(this);
+    }
+
+    @Override
     public void deleteProperties() {
         representationInformations.forEach(RepresentationInformation::deleteProperties);
     }
@@ -105,7 +145,7 @@ public class ClustersDecomposition extends Decomposition {
         HistoryService historyService = ContextManager.get().getBean(HistoryService.class);
         PositionHistoryService positionHistoryService = ContextManager.get().getBean(PositionHistoryService.class);
 
-        ClustersDecomposition snapshotDecomposition = new ClustersDecomposition(this, snapshotName);
+        PartitionsDecomposition snapshotDecomposition = new PartitionsDecomposition(this, snapshotName);
 
         PositionHistory snapshotHistory = new PositionHistory(snapshotDecomposition);
         snapshotDecomposition.setHistory(snapshotHistory);

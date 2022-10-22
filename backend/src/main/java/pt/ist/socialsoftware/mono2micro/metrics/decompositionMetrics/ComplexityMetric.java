@@ -1,7 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.metrics.decompositionMetrics;
 
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
-import pt.ist.socialsoftware.mono2micro.cluster.DefaultCluster;
+import pt.ist.socialsoftware.mono2micro.cluster.Partition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.AccessesInfo;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
@@ -33,7 +33,7 @@ public class ComplexityMetric extends DecompositionMetric {
 
         // Set cluster complexity
         for (Cluster c : decomposition.getClusters().values()) {
-            DefaultCluster cluster = (DefaultCluster) c;
+            Partition cluster = (Partition) c;
             List<Functionality> functionalitiesThatAccessThisCluster = clustersFunctionalities.get(cluster.getName());
 
             complexity = 0;
