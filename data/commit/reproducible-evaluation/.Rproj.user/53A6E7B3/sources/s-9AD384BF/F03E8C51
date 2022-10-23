@@ -1,0 +1,26 @@
+{
+    "id": "F03E8C51",
+    "path": "~/Thesis/reproducible-evaluation/README.Rmd",
+    "project_path": "README.Rmd",
+    "type": "r_markdown",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1666452476613.0,
+    "source_on_save": false,
+    "relative_order": 3,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "36,92",
+        "scrollLine": "22"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1666540473,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1666540473952,
+    "read_only": false,
+    "read_only_alternatives": []
+}
