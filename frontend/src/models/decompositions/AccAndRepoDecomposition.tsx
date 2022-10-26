@@ -83,14 +83,14 @@ export default class AccAndRepoDecomposition extends Decomposition {
                     }
                     <br/>
                     <Button
-                        href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.name}/accessesViews`}
+                        href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.similarityName}/${this.name}/accessesViews`}
                         className="mb-2"
                         variant={"success"}
                     >
                         View Accesses
                     </Button>
                     <Button
-                        href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.name}/repositoryView`}
+                        href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.similarityName}/${this.name}/repositoryView`}
                         className="mb-2"
                         variant={"success"}
                     >
@@ -98,7 +98,7 @@ export default class AccAndRepoDecomposition extends Decomposition {
                     </Button>
                     <br/>
                     <Button
-                        href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.name}/functionalityRefactor`}
+                        href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.similarityName}/${this.name}/functionalityRefactor`}
                         className="mb-2"
                         variant={"primary"}
                     >

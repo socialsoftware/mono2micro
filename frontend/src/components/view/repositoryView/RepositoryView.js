@@ -31,7 +31,7 @@ const REPOSITORY_INFO = "REPOSITORY_INFO";
 export {REPOSITORY_INFO};
 
 export const RepositoryView = () => {
-    let { codebaseName, strategyName, decompositionName } = useParams();
+    let { codebaseName, strategyName, similarityName, decompositionName } = useParams();
 
     const [displayRepository, setDisplayRepository] = useState("none");
     const [showModal, setShowModal] = useState(false);
@@ -85,6 +85,9 @@ export const RepositoryView = () => {
                 </Breadcrumb.Item>
                 <Breadcrumb.Item href={`/codebases/${codebaseName}/${strategyName}/similarity`}>
                     {strategyName}
+                </Breadcrumb.Item>
+                <Breadcrumb.Item href={`/codebases/${codebaseName}/${strategyName}/${similarityName}/decomposition`}>
+                    {similarityName}
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>
                     {decompositionName}

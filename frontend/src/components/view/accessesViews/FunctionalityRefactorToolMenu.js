@@ -103,7 +103,7 @@ const functionalityRedesignColumns = [
 ];
 
 export const FunctionalityRefactorToolMenu = () => {
-    let { codebaseName, strategyName, decompositionName } = useParams();
+    let { codebaseName, strategyName, similarityName, decompositionName } = useParams();
 
     const [waitingResponse, setWaitingResponse] = useState(false);
     const [functionalities, setFunctionalities] = useState([]);
@@ -314,6 +314,9 @@ export const FunctionalityRefactorToolMenu = () => {
                 </Breadcrumb.Item>
                 <Breadcrumb.Item href={`/codebases/${codebaseName}/${strategyName}/similarity`}>
                     {strategyName}
+                </Breadcrumb.Item>
+                <Breadcrumb.Item href={`/codebases/${codebaseName}/${strategyName}/${similarityName}/decomposition`}>
+                    {similarityName}
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>
                     {decompositionName}

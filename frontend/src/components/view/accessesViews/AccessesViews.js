@@ -45,7 +45,7 @@ export {ACCESSES_INFO};
 export const AccessesViews = () => {
     const context = useContext(AppContext);
     const { updateEntityTranslationFile } = context;
-    let { codebaseName, strategyName, decompositionName } = useParams();
+    let { codebaseName, strategyName, similarityName, decompositionName } = useParams();
 
     const [view, setView] = useState(views.CLUSTERS);
     const [displayAccesses, setDisplayAccesses] = useState("block");
@@ -177,6 +177,9 @@ export const AccessesViews = () => {
                 </Breadcrumb.Item>
                 <Breadcrumb.Item href={`/codebases/${codebaseName}/${strategyName}/similarity`}>
                     {strategyName}
+                </Breadcrumb.Item>
+                <Breadcrumb.Item href={`/codebases/${codebaseName}/${strategyName}/${similarityName}/decomposition`}>
+                    {similarityName}
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>
                     {decompositionName}

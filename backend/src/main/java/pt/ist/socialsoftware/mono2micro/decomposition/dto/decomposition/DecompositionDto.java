@@ -19,6 +19,7 @@ public abstract class DecompositionDto {
     String name;
     String codebaseName;
     String strategyName;
+    String similarityName;
     String type;
     Map<String, Object> metrics;
     Map<String, Cluster> clusters = new HashMap<>();
@@ -45,6 +46,14 @@ public abstract class DecompositionDto {
 
     public void setStrategyName(String strategyName) {
         this.strategyName = strategyName;
+    }
+
+    public String getSimilarityName() {
+        return similarityName;
+    }
+
+    public void setSimilarityName(String similarityName) {
+        this.similarityName = similarityName;
     }
 
     public String getType() {

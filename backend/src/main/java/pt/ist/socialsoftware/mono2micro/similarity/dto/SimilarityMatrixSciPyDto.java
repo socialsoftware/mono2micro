@@ -7,6 +7,8 @@ import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.util.List;
 
+import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy.SIMILARITY_MATRIX_SCIPY;
+
 public class SimilarityMatrixSciPyDto extends SimilarityDto {
     private List<Weights> weightsList;
     private String linkageType;
@@ -14,7 +16,7 @@ public class SimilarityMatrixSciPyDto extends SimilarityDto {
     private Constants.TraceType traceType;
     private String profile;
 
-    public SimilarityMatrixSciPyDto() {}
+    public SimilarityMatrixSciPyDto() { this.type = SIMILARITY_MATRIX_SCIPY; }
 
     public SimilarityMatrixSciPyDto(SimilarityMatrixSciPy similarity) {
         this.codebaseName = similarity.getStrategy().getCodebase().getName();
@@ -32,6 +34,7 @@ public class SimilarityMatrixSciPyDto extends SimilarityDto {
     public SimilarityMatrixSciPyDto(RecommendMatrixSciPy recommend, List<Weights> weightsList) {
         this.decompositionType = recommend.getStrategy().getDecompositionType();
         this.strategyName = recommend.getStrategy().getName();
+        this.type = SIMILARITY_MATRIX_SCIPY;
         this.weightsList = weightsList;
         this.profile = recommend.getProfile();
         this.linkageType = recommend.getLinkageType();

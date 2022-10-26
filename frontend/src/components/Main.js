@@ -22,9 +22,9 @@ export const Main = () => (
       <Route exact path='/codebases/:codebaseName/:strategyName/similarity' element={<Similarities/>} />
       <Route exact path='/codebases/:codebaseName/:strategyName/recommendation' element={<Recommendations/>} />
       <Route exact path='/codebases/:codebaseName/:strategyName/:similarityName/decomposition' element={<Decompositions/>} />
-      <Route exact path='/codebases/:codebaseName/:strategyName/:decompositionName/accessesViews' element={<AccessesViews/>} />
-      <Route exact path='/codebases/:codebaseName/:strategyName/:decompositionName/repositoryView' element={<RepositoryView/>} />
-      <Route exact path='/codebases/:codebaseName/:strategyName/:decompositionName/functionalityRefactor' element={<FunctionalityRefactorToolMenu/>} />
+      <Route exact path='/codebases/:codebaseName/:strategyName/:similarityName/:decompositionName/accessesViews' element={<AccessesViews/>} />
+      <Route exact path='/codebases/:codebaseName/:strategyName/:similarityName/:decompositionName/repositoryView' element={<RepositoryView/>} />
+      <Route exact path='/codebases/:codebaseName/:strategyName/:similarityName/:decompositionName/functionalityRefactor' element={<FunctionalityRefactorToolMenu/>} />
 
       <Route exact path='/codebase/:codebaseName/:representationName/profiles' element={<Profiles/>} />
 

@@ -19,6 +19,7 @@ public class AccessesDecompositionDto extends DecompositionDto {
     public AccessesDecompositionDto(PartitionsDecomposition decomposition) {
         this.setCodebaseName(decomposition.getSimilarity().getStrategy().getCodebase().getName());
         this.setStrategyName(decomposition.getStrategy().getName());
+        this.setSimilarityName(decomposition.getSimilarity().getName());
         this.setName(decomposition.getName());
         this.type = ACCESSES_DECOMPOSITION;
         this.setMetrics(decomposition.getMetrics());

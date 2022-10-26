@@ -52,7 +52,7 @@ export default class RepositoryDecomposition extends Decomposition {
                     </Card.Text>
                     <br/>
                     <Button
-                        href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.name}/repositoryView`}
+                        href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.similarityName}/${this.name}/repositoryView`}
                         className="mb-2"
                         variant={"success"}
                     >
