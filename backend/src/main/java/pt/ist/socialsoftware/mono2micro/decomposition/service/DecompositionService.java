@@ -10,7 +10,6 @@ import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionR
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.ExpertRequest;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
 import pt.ist.socialsoftware.mono2micro.history.service.HistoryService;
-import pt.ist.socialsoftware.mono2micro.operation.Operation;
 import pt.ist.socialsoftware.mono2micro.operation.formCluster.FormClusterOperation;
 import pt.ist.socialsoftware.mono2micro.operation.merge.MergeOperation;
 import pt.ist.socialsoftware.mono2micro.operation.rename.RenameOperation;
@@ -21,7 +20,6 @@ import pt.ist.socialsoftware.mono2micro.similarity.repository.SimilarityReposito
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.strategy.repository.StrategyRepository;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
