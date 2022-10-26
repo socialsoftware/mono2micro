@@ -6,15 +6,7 @@ import static pt.ist.socialsoftware.mono2micro.representation.domain.CommitRepre
 import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
 
 public class RepresentationFactory {
-    private static RepresentationFactory factory = null;
-
-    public static RepresentationFactory getFactory() {
-        if (factory == null)
-            factory = new RepresentationFactory();
-        return factory;
-    }
-
-    public Representation getRepresentation(String representationType) {
+    public static Representation getRepresentation(String representationType) {
         switch (representationType) {
             case ACCESSES:
                 return new AccessesRepresentation();

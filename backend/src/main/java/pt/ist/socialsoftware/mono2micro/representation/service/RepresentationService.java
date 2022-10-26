@@ -53,7 +53,7 @@ public class RepresentationService {
         for(int i = 0; i < representationTypes.size(); i++) {
             String representationType = representationTypes.get(i);
             byte[] representationFileStream = ((MultipartFile) representations.get(i)).getBytes();
-            Representation representation = RepresentationFactory.getFactory().getRepresentation(representationType);
+            Representation representation = RepresentationFactory.getRepresentation(representationType);
             String fileName = representation.init(codebase, representationFileStream);
             codebase.addRepresentation(representation);
             gridFsService.saveFile(new ByteArrayInputStream(representationFileStream), fileName);
