@@ -111,7 +111,7 @@ public abstract class Decomposition {
 		return this.representationInformations.stream().filter(r -> r.getType().equals(type)).findFirst().orElse(null);
 	}
 
-	public abstract List<RepresentationInformation> getRepresentationInformationsByDecompositionType(String type);
+	public abstract List<RepresentationInformation> getRepresentationInformationsByStrategy(String type);
 
 	public Strategy getStrategy() {
 		return strategy;

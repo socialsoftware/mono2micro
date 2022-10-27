@@ -44,13 +44,13 @@ public class PartitionsDecomposition extends Decomposition {
         this.outdated = decomposition.isOutdated();
         this.expert = decomposition.isExpert();
         this.clusters = decomposition.getClusters();
-        List<RepresentationInformation> representationInformations = getRepresentationInformationsByDecompositionType(this.type);
+        List<RepresentationInformation> representationInformations = getRepresentationInformationsByStrategy(this.type);
         for (RepresentationInformation representationInformation : representationInformations)
             representationInformation.snapshot(this, decomposition);
     }
 
     @Override
-    public List<RepresentationInformation> getRepresentationInformationsByDecompositionType(String type) {
+    public List<RepresentationInformation> getRepresentationInformationsByStrategy(String type) {
         List<RepresentationInformation> representationInformations = new ArrayList<>();
 
         switch (type) {
@@ -77,7 +77,7 @@ public class PartitionsDecomposition extends Decomposition {
 
     @Override
     public Set<String> getRequiredRepresentations() {
-        return getRepresentationInformationsByDecompositionType(type).stream()
+        return getRepresentationInformationsByStrategy(type).stream()
                 .map(RepresentationInformation::getRequiredRepresentations)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
@@ -93,7 +93,7 @@ public class PartitionsDecomposition extends Decomposition {
 
     @Override
     public void setup() throws Exception {
-        List<RepresentationInformation> representationInformations = getRepresentationInformationsByDecompositionType(this.type);
+        List<RepresentationInformation> representationInformations = getRepresentationInformationsByStrategy(this.type);
         for (RepresentationInformation representationInformation : representationInformations)
             representationInformation.setup(this);
         this.history = new PositionHistory(this);
