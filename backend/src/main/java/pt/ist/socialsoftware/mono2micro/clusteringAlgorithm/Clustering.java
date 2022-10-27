@@ -5,4 +5,5 @@ import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionR
 
 public abstract class Clustering {
     public abstract void generateClusters(Decomposition decomposition, DecompositionRequest request) throws Exception;
+    public abstract String getType();
 }

@@ -23,12 +23,18 @@ import java.util.stream.Collectors;
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.SCRIPTS_ADDRESS;
 
 public class SciPyClustering extends Clustering {
+    public static final String SCIPY = "SCIPY";
     static final int MIN_CLUSTERS = 3, CLUSTER_STEP = 1;
 
     private final GridFsService gridFsService;
 
     public SciPyClustering() {
         this.gridFsService = ContextManager.get().getBean(GridFsService.class);
+    }
+
+    @Override
+    public String getType() {
+        return SCIPY;
     }
 
     @Override

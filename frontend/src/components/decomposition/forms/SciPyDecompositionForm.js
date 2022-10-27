@@ -51,7 +51,7 @@ export const SciPyDecompositionForm = ({type, loadDecompositions}) => {
         const service = new APIService();
 
         service.createDecomposition({
-            type,
+            type: "SCIPY",
             decompositionType: type,
             similarityName,
             cutType,
