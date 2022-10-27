@@ -1,0 +1,573 @@
+---
+title: "Article Evaluation"
+author: "João Lourenço"
+output:
+  bookdown::pdf_document2:
+    extra_dependencies: "subfig"
+    fig_caption: yes
+bibliography: bibliography.bib
+csl: ieee.csl
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE, fig.path="Images/", out.width="90%", fig.align='center', fig.pos="H", dev="png", dpi=600)
+
+# Better tables
+library(kableExtra)
+
+# Data manipulation
+library(dplyr)
+
+# Plotting
+library(ggplot2)
+
+# Plotting side by side
+library(patchwork)
+
+# Easier text wrapping
+library(scales)
+
+# Universal path locations
+library(here)
+
+# Custom functions for more abstraction
+source("../helper_functions.R", local = knitr::knit_global())
+
+
+custom_theme <- theme_minimal(base_size=12) +
+  theme(axis.title.y=element_text(margin=margin(t = 0, r = 15, b = 0, l = 0)),
+        axis.title.x=element_text(margin=margin(t = 8, r = 0, b = 0, l = 0)),
+        legend.position="bottom")
+```
+
+```{r prepare-data, echo=FALSE, cache=TRUE}
+all_data <- initialize_data(analyser_result_location = "../data/analyserFullResult.csv",
+                            tsr_result_location = "../data/tsrResultCorrectMetrics.csv")
+
+codebases_counts <- read.csv("../data/counts.csv")
+codebases_counts_author <- data.frame(name=codebases_counts$name, author=codebases_counts$author)
+codebases_counts_commit <- data.frame(name=codebases_counts$name, commit=codebases_counts$commit)
+```
+
+# Approach
+
+The research goal of this thesis, as stated in the introduction, is the following:
+
+\textbf{How do monolith microservices identification approaches that use the monolith code evolution representation perform when compared with approaches that use the monolith functionalities sequences of accesses representation?}
+
+To address this research question, we generate a large set of decompositions and analyse how the decomposition qualities vary depending on different monolith representations and similarity measures.
+
+Whenever we create a decomposition, we choose the weights to attribute to our similarity measures. If we choose 0 as the weight for the commit and the author similarity, then the decomposition is created using only data from the sequences of accesses representation. On the other hand, if we choose 0 as the weight for all four sequences of accesses measures (access, read, write, sequence), then the decomposition is created using only data from the development history based representations. In the remaining combinations, the decompositions are created with data from both sources. By filtering the results of all generated decompositions, we can obtain five distinct groups of decompositions based on the weights used to create them: only data from the file changes representation; only data from the changes authorship representation; only data from the sequences of accesses representation; only data from the file changes representation and changes authorship; data from all representations. This allows us to then compare the groups' quality metrics and draw conclusions.
+
+The comparisons will first be made by evaluating the median and the dispersion of each quality metric in each of these five groups, which gives us an overview of how, on average, each representation behaves. We also evaluate the median values of the metrics in the case of the best decompositions - that is, the decomposition of each codebase with the best value for each metric. This gives us a different perspective by focusing on which group performs best when the ideal weights for the similarity measures are found. Finally, we assess if our findings hold when we compare codebases with more commits and authors than the mean with codebases with less commits and authors than the mean.
+
+The comparisons are, initially, done visually through the analysis of boxplots. Whenever it's not visually obvious that there is a large difference between groups, and considering that there are different amounts of decompositions in each group and the quality metric values don't follow a normal distribution, we use a Welch T-test with the following hypotheses:
+
+- $H_0$ - There are no significant differences between the mean \$\{QUALITY METRIC\} of \$\{GROUP\} decompositions and \$\{OTHER GROUP\}.
+- $H_1$ - The mean \$\{QUALITY METRIC\} of \$\{GROUP\} decompositions is greater than \$\{OTHER GROUP\}.
+
+
+# Codebases and decompositions characterization
+
+In [@samuel22], 121 codebases were chosen for evaluation. The codebases were selected from GitHub, using the following procedure:
+
+1. Get all GitHub repositories that list the Spring Data JPA library as a dependency;
+2. Filter out repositories that did not contain at least 5 files whose name ended in `Controller.java`, and at least 5 files whose name did not contain `Dao` or `Repository`.
+3. The remaining repositories were ordered by the number of GitHub stars, and 118 codebases were manually selected. Repositories from lessons or tutorials, and repositories that did not use just Spring Data JPA were disregarded.
+
+From this list, we selected 28 codebases by choosing those with at least 100 commits, and at least 2 authors. The codebases under study have a mean commit count of `r round(mean(codebases_counts$commit), 1)` with a standard deviation of `r round(sd(codebases_counts$commit),1)` (median of `r round(median(codebases_counts$commit), 1)`), and a mean author count of `r round(mean(codebases_counts$author), 1)`, with a standard deviation of `r round(sd(codebases_counts$author),1)` (median of `r round(median(codebases_counts$author), 1)`). This show that we are only considering projects with an actual development history, and not toy-like or quickly abandoned projects. Information on the codebases names, their repositories, and cloned hash can be found on Mono2Micro's repository^[[codebases.csv @ mono2micro's github](https://github.com/socialsoftware/mono2micro/blob/joao-commit-complexity/collectors/commit-collection/resources/codebases.csv)].
+
+For each codebase, we create decompositions with 3 to 10 clusters, according to the number of entities it contains: $3 \leq n\_entities < 10 =$ 3 clusters; $10 < n\_entities < 20 =$ 3, 4, and 5 clusters; $n\_entities \geq 20 =$ 3 to 10 clusters. For each number of clusters, we generate decompositions with varying weights on the six measures: from 0 to 100, with increments of 10. The distribution of the number of generated decompositions can be found in Table \ref{tab:decompositions-characteristics}.
+
+```{r decompositions-characteristics, cache=TRUE}
+data <- data.frame(
+  nentities=c("3 to 9", "10 to 19", "20+", "Total"),
+  nclusters=c("3", "3 to 5", "3 to 10", ""),
+  ncodebases=c(nrow(codebases_counts[codebases_counts$entities < 10,]),
+               nrow(codebases_counts[codebases_counts$entities >= 10 & codebases_counts$entities < 20,]),
+               nrow(codebases_counts[codebases_counts$entities >= 20,]),
+               nrow(codebases_counts)),
+  ndecompositions=c(nrow(all_data[all_data$codebase_name %in% codebases_counts[codebases_counts$entities < 10,]$name,]),
+                    nrow(all_data[all_data$codebase_name %in% codebases_counts[codebases_counts$entities >= 10 & codebases_counts$entities < 20,]$name,]),
+                    nrow(all_data[all_data$codebase_name %in% codebases_counts[codebases_counts$entities >= 20,]$name,]),
+                    nrow(all_data))
+)
+
+kable(data,booktabs=TRUE, digits=5, caption="The number of generated decompositions across all codebases.", col.names=c("#Entities", "#Clusters", "#Codebases", "#Decompositions")) %>%
+  kable_styling(position='center', latex_options = c("HOLD_position")) %>%
+  row_spec(c(3),hline_after=TRUE) %>%
+  row_spec(c(4), bold=TRUE)
+```
+
+# Comparison of representations
+
+When evaluating the quality metrics of all decompositions of each representation, we found that the development history representation showed better results when it comes to cohesion than the sequence of accesses, and the sequence of accesses, despite containing no data regarding changes authorship, still performs well with regards to the _tsr_. For the coupling, complexity, and combined metrics, the sequence of accesses representation often generated better decompositions than the remaining representations. 
+
+
+```{r best-decompositions-compare, fig.cap="Grouping the decompositions by codebase and by number of clusters, and selecting the best decomposition in each group and each metric, highlights a difference between the representations and provides a different perspective on the results.", fig.subcap=c('Uniform complexity', 'Cohesion', 'Coupling', 'Team size reduction ratio', 'Performance'), out.width='30%', fig.asp=0.6, fig.ncol = 3, fig.pos="", fig.env="figure*", results="asis"}
+minimum_complexity_decompositions_authorship <- all_data[all_data$Representation == "Authorship",] %>% group_by(codebase_name, clusters) %>% slice(which.min(pondered_complexity))
+minimum_complexity_decompositions_sequences <- all_data[all_data$Representation == "Sequences",] %>% group_by(codebase_name, clusters) %>% slice(which.min(pondered_complexity))
+minimum_complexity_decompositions_files <- all_data[all_data$Representation == "Files",] %>% group_by(codebase_name, clusters) %>% slice(which.min(pondered_complexity))
+minimum_complexity_decompositions_dhist <- all_data[all_data$Representation == "Development history",] %>% group_by(codebase_name, clusters) %>% slice(which.min(pondered_complexity))
+minimum_complexity_decompositions_dhist_seq <- all_data[all_data$Representation == "Development history and sequences",] %>% group_by(codebase_name, clusters) %>% slice(which.min(pondered_complexity))
+
+minimum_coupling_decompositions_authorship <- all_data[all_data$Representation == "Authorship",] %>% group_by(codebase_name, clusters) %>% slice(which.min(coupling))
+minimum_coupling_decompositions_sequences <- all_data[all_data$Representation == "Sequences",] %>% group_by(codebase_name, clusters) %>% slice(which.min(coupling))
+minimum_coupling_decompositions_files <- all_data[all_data$Representation == "Files",] %>% group_by(codebase_name, clusters) %>% slice(which.min(coupling))
+minimum_coupling_decompositions_dhist <- all_data[all_data$Representation == "Development history",] %>% group_by(codebase_name, clusters) %>% slice(which.min(coupling))
+minimum_coupling_decompositions_dhist_seq <- all_data[all_data$Representation == "Development history and sequences",] %>% group_by(codebase_name, clusters) %>% slice(which.min(coupling))
+
+maximum_cohesion_decompositions_authorship <- all_data[all_data$Representation == "Authorship",] %>% group_by(codebase_name, clusters) %>% slice(which.max(cohesion))
+maximum_cohesion_decompositions_sequences <- all_data[all_data$Representation == "Sequences",] %>% group_by(codebase_name, clusters) %>% slice(which.max(cohesion))
+maximum_cohesion_decompositions_files <- all_data[all_data$Representation == "Files",] %>% group_by(codebase_name, clusters) %>% slice(which.max(cohesion))
+maximum_cohesion_decompositions_dhist <- all_data[all_data$Representation == "Development history",] %>% group_by(codebase_name, clusters) %>% slice(which.max(cohesion))
+maximum_cohesion_decompositions_dhist_seq <- all_data[all_data$Representation == "Development history and sequences",] %>% group_by(codebase_name, clusters) %>% slice(which.max(cohesion))
+
+minimum_tsr_decompositions_authorship <- all_data[all_data$Representation == "Authorship",] %>% group_by(codebase_name, clusters) %>% slice(which.min(tsr))
+minimum_tsr_decompositions_sequences <- all_data[all_data$Representation == "Sequences",] %>% group_by(codebase_name, clusters) %>% slice(which.min(tsr))
+minimum_tsr_decompositions_files <- all_data[all_data$Representation == "Files",] %>% group_by(codebase_name, clusters) %>% slice(which.min(tsr))
+minimum_tsr_decompositions_dhist <- all_data[all_data$Representation == "Development history",] %>% group_by(codebase_name, clusters) %>% slice(which.min(tsr))
+minimum_tsr_decompositions_dhist_seq <- all_data[all_data$Representation == "Development history and sequences",] %>% group_by(codebase_name, clusters) %>% slice(which.min(tsr))
+
+minimum_performance_decompositions_authorship <- all_data[all_data$Representation == "Authorship",] %>% group_by(codebase_name, clusters) %>% slice(which.min(performance))
+minimum_performance_decompositions_sequences <- all_data[all_data$Representation == "Sequences",] %>% group_by(codebase_name, clusters) %>% slice(which.min(performance))
+minimum_performance_decompositions_files <- all_data[all_data$Representation == "Files",] %>% group_by(codebase_name, clusters) %>% slice(which.min(performance))
+minimum_performance_decompositions_dhist <- all_data[all_data$Representation == "Development history",] %>% group_by(codebase_name, clusters) %>% slice(which.min(performance))
+minimum_performance_decompositions_dhist_seq <- all_data[all_data$Representation == "Development history and sequences",] %>% group_by(codebase_name, clusters) %>% slice(which.min(performance))
+
+minimum_complexity_decompositions_combined <- rbind(minimum_complexity_decompositions_authorship,minimum_complexity_decompositions_sequences,minimum_complexity_decompositions_files,minimum_complexity_decompositions_dhist,minimum_complexity_decompositions_dhist_seq)
+
+minimum_coupling_decompositions_combined <- rbind(minimum_coupling_decompositions_authorship,minimum_coupling_decompositions_sequences,minimum_coupling_decompositions_files,minimum_coupling_decompositions_dhist,minimum_coupling_decompositions_dhist_seq)
+
+maximum_cohesion_decompositions_combined <- rbind(maximum_cohesion_decompositions_authorship,maximum_cohesion_decompositions_sequences,maximum_cohesion_decompositions_files,maximum_cohesion_decompositions_dhist,maximum_cohesion_decompositions_dhist_seq)
+
+minimum_tsr_decompositions_combined <- rbind(minimum_tsr_decompositions_authorship,minimum_tsr_decompositions_sequences,minimum_tsr_decompositions_files,minimum_tsr_decompositions_dhist,minimum_tsr_decompositions_dhist_seq)
+
+minimum_performance_decompositions_combined <- rbind(minimum_performance_decompositions_authorship,minimum_performance_decompositions_sequences,minimum_performance_decompositions_files,minimum_performance_decompositions_dhist,minimum_performance_decompositions_dhist_seq)
+
+minimum_complexity_plot <- ggplot(minimum_complexity_decompositions_combined, aes(x=Representation, y=pondered_complexity, fill=Representation)) +
+  geom_boxplot(show.legend = TRUE) +
+  labs(title="Lowest uniform complexities",
+       subtitle="Lower is better",
+       y="Uniform complexity",
+       x="Representation") +
+  scale_y_continuous(limits=c(0,1)) +
+  custom_theme +
+  theme(axis.text.x = element_text(size=7))
+
+
+maximum_cohesion_plot <- ggplot(maximum_cohesion_decompositions_combined, aes(x=Representation, y=cohesion, fill=Representation)) +
+  geom_boxplot(show.legend = TRUE) +
+  labs(title="Largest cohesion",
+       subtitle="Higher is better",
+       y="Cohesion",
+       x="Representation") +
+  custom_theme +
+  theme(axis.text.x = element_text(size=7))
+
+minimum_coupling_plot <- ggplot(minimum_coupling_decompositions_combined, aes(x=Representation, y=coupling, fill=Representation)) +
+  geom_boxplot(show.legend = TRUE) +
+  labs(title="Lowest coupling",
+       subtitle="Lower is better",
+       y="Coupling",
+       x="Representation") +
+  custom_theme +
+  theme(axis.text.x = element_text(size=7))
+
+minimum_tsr_plot <- ggplot(minimum_tsr_decompositions_combined, aes(x=Representation, y=tsr, fill=Representation)) +
+  geom_boxplot(show.legend = TRUE) +
+  labs(title="Lowest tsr",
+       subtitle="Lower is better",
+       y="tsr",
+       x="Representation") +
+  custom_theme +
+  theme(axis.text.x = element_text(size=7))
+
+minimum_performance_plot <- ggplot(minimum_performance_decompositions_combined, aes(x=Representation, y=performance, fill=Representation)) +
+  geom_boxplot(show.legend = TRUE) +
+  labs(title="Lowest combined",
+       subtitle="Lower is better",
+       y="Combined",
+       x="Representation") +
+  custom_theme +
+  theme(axis.text.x = element_text(size=7))
+
+minimum_complexity_plot
+maximum_cohesion_plot
+minimum_coupling_plot
+minimum_tsr_plot
+minimum_performance_plot
+```
+
+
+```{r best-decompositions-percentages, cache=TRUE}
+
+minimum_complexity_decompositions <- all_data %>% group_by(codebase_name, clusters) %>% slice(which.min(pondered_complexity))
+maximum_cohesion_decompositions <- all_data %>% group_by(codebase_name, clusters) %>% slice(which.max(cohesion))
+minimum_coupling_decompositions <- all_data %>% group_by(codebase_name, clusters) %>% slice(which.min(coupling))
+minimum_tsr_decompositions <- all_data %>% group_by(codebase_name, clusters) %>% slice(which.min(tsr))
+minimum_combined_decompositions <- all_data %>% group_by(codebase_name, clusters) %>% slice(which.min(performance))
+
+
+complexity_best_decompositions_with_commit_data_percentage <- round(nrow(minimum_complexity_decompositions[minimum_complexity_decompositions$commit != 0 | minimum_complexity_decompositions$authors != 0,])*100/nrow(minimum_complexity_decompositions), 2)
+
+cohesion_best_decompositions_with_commit_data_percentage <- round(nrow(maximum_cohesion_decompositions[maximum_cohesion_decompositions$commit != 0 | maximum_cohesion_decompositions$authors != 0,])*100/nrow(maximum_cohesion_decompositions), 2)
+
+coupling_best_decompositions_with_commit_data_percentage <- round(nrow(minimum_coupling_decompositions[minimum_coupling_decompositions$commit != 0 | minimum_coupling_decompositions$authors != 0,])*100/nrow(minimum_coupling_decompositions), 2)
+
+tsr_best_decompositions_with_commit_data_percentage <- round(nrow(minimum_tsr_decompositions[minimum_tsr_decompositions$commit != 0 | minimum_tsr_decompositions$authors != 0,])*100/nrow(minimum_tsr_decompositions), 2)
+
+combined_best_decompositions_with_commit_data_percentage <- round(nrow(minimum_combined_decompositions[minimum_combined_decompositions$commit != 0 | minimum_combined_decompositions$authors != 0,])*100/nrow(minimum_combined_decompositions), 2)
+```
+
+Having concluded this, we now turn our analysis to the best decompositions of each codebase. If we group all decompositions by codebase and by number of clusters, and identify the minimum uniform complexity decompositions in each group, we find that `r complexity_best_decompositions_with_commit_data_percentage`$\%$ of the best decompositions in terms of complexity were made by combining data from the development history representations with the sequences of accesses. Furthermore, `r cohesion_best_decompositions_with_commit_data_percentage`$\%$ of the best decompositions in terms of cohesion, `r coupling_best_decompositions_with_commit_data_percentage`$\%$ of the best decompositions in terms of coupling, `r tsr_best_decompositions_with_commit_data_percentage`$\%$ of the best decompositions in terms of _tsr_ and `r combined_best_decompositions_with_commit_data_percentage`$\%$ of the best decompositions in terms of combined were also obtained by this combination of representations. This finding, together with the overview of the previous subsections, suggests that the vast majority of weights combinations yield worse results than considering just data from the sequences of accesses; but, if the right combination is found, the results can be improved in almost all cases.
+
+```{r best-decompositions-p-values}
+# Is sequences higher than development history + sequences
+sequences_best_comparison_complexity <- data.frame(
+  dev_history_sequences=get_p_value_first_greater_all_clusters("Sequences", "Development history and sequences", "pondered_complexity", minimum_complexity_decompositions_sequences, minimum_complexity_decompositions_dhist_seq)
+)
+sequences_best_comparison_coupling <- data.frame(
+  dev_history_sequences=get_p_value_first_greater_all_clusters("Sequences", "Development history and sequences", "coupling", minimum_coupling_decompositions_sequences, minimum_coupling_decompositions_dhist_seq)
+)
+sequences_best_comparison_tsr <- data.frame(
+  dev_history_sequences=get_p_value_first_greater_all_clusters("Sequences", "Development history and sequences", "tsr", minimum_tsr_decompositions_sequences, minimum_tsr_decompositions_dhist_seq)
+)
+sequences_best_comparison_combined <- data.frame(
+  dev_history_sequences=get_p_value_first_greater_all_clusters("Sequences", "Development history and sequences", "performance", minimum_performance_decompositions_sequences, minimum_performance_decompositions_dhist_seq)
+)
+
+dev_history_sequences_best_comparison_cohesion <- data.frame(
+  sequences=get_p_value_first_greater_all_clusters("Development history and sequences", "Sequences", "cohesion", maximum_cohesion_decompositions_dhist_seq, maximum_cohesion_decompositions_sequences)
+)
+
+dev_history_best_comparison_complexity <- data.frame(
+    sequences=get_p_value_first_greater_all_clusters("Development history", "Sequences", "pondered_complexity", maximum_cohesion_decompositions_dhist, maximum_cohesion_decompositions_sequences)
+)
+
+
+# Col > Row significance
+best_comparison_complexity <- data.frame(
+  representations = c("Files", "Authorship", "Development history", "Sequences", "Development history and sequences"),
+  Files = c(
+    "",
+    get_p_value_first_greater_all_clusters("Files", "Authorship", "pondered_complexity", minimum_complexity_decompositions_files, minimum_complexity_decompositions_authorship),
+    get_p_value_first_greater_all_clusters("Files", "Development history", "pondered_complexity", minimum_complexity_decompositions_files, minimum_complexity_decompositions_dhist),
+    get_p_value_first_greater_all_clusters("Files", "Sequences", "pondered_complexity", minimum_complexity_decompositions_files, minimum_complexity_decompositions_sequences),
+    get_p_value_first_greater_all_clusters("Files", "Development history and sequences", "pondered_complexity", minimum_complexity_decompositions_files, minimum_complexity_decompositions_dhist_seq)
+  ),
+  Authorship = c(
+    get_p_value_first_greater_all_clusters("Authorship", "Files", "pondered_complexity", minimum_complexity_decompositions_authorship, minimum_complexity_decompositions_files),
+    "",
+    get_p_value_first_greater_all_clusters("Authorship", "Development history", "pondered_complexity", minimum_complexity_decompositions_authorship, minimum_complexity_decompositions_dhist),
+    get_p_value_first_greater_all_clusters("Authorship", "Sequences", "pondered_complexity", minimum_complexity_decompositions_authorship, minimum_complexity_decompositions_sequences),
+    get_p_value_first_greater_all_clusters("Authorship", "Development history and sequences", "pondered_complexity", minimum_complexity_decompositions_authorship, minimum_complexity_decompositions_dhist_seq)
+  ),
+  Development_history = c(
+    get_p_value_first_greater_all_clusters("Development history", "Files", "pondered_complexity", minimum_complexity_decompositions_dhist, minimum_complexity_decompositions_files),
+    get_p_value_first_greater_all_clusters("Development history", "Authorship", "pondered_complexity", minimum_complexity_decompositions_dhist, minimum_complexity_decompositions_authorship),
+    "",
+    get_p_value_first_greater_all_clusters("Development history", "Sequences", "pondered_complexity", minimum_complexity_decompositions_dhist, minimum_complexity_decompositions_sequences),
+    get_p_value_first_greater_all_clusters("Development history", "Development history and sequences", "pondered_complexity", minimum_complexity_decompositions_dhist, minimum_complexity_decompositions_dhist_seq)
+  ),
+    Sequences = c(
+    get_p_value_first_greater_all_clusters("Sequences", "Files", "pondered_complexity", minimum_complexity_decompositions_sequences, minimum_complexity_decompositions_files),
+    get_p_value_first_greater_all_clusters("Sequences", "Authorship", "pondered_complexity", minimum_complexity_decompositions_sequences, minimum_complexity_decompositions_authorship),
+    get_p_value_first_greater_all_clusters("Sequences", "Development history", "pondered_complexity", minimum_complexity_decompositions_sequences, minimum_complexity_decompositions_dhist),
+    "",
+    get_p_value_first_greater_all_clusters("Sequences", "Development history and sequences", "pondered_complexity", minimum_complexity_decompositions_sequences, minimum_complexity_decompositions_dhist_seq)
+  ),
+  Development_history_sequences = c(
+    get_p_value_first_greater_all_clusters("Development history and sequences", "Files", "pondered_complexity", minimum_complexity_decompositions_dhist_seq, minimum_complexity_decompositions_files),
+    get_p_value_first_greater_all_clusters("Development history and sequences", "Authorship", "pondered_complexity", minimum_complexity_decompositions_dhist_seq, minimum_complexity_decompositions_authorship),
+    get_p_value_first_greater_all_clusters("Development history and sequences", "Development history", "pondered_complexity", minimum_complexity_decompositions_dhist_seq, minimum_complexity_decompositions_dhist),
+    get_p_value_first_greater_all_clusters("Development history and sequences", "Sequences", "pondered_complexity", minimum_complexity_decompositions_dhist_seq, minimum_complexity_decompositions_sequences),
+    ""
+  )
+)
+
+best_comparison_cohesion <- data.frame(
+  representations = c("Files", "Authorship", "Development history", "Sequences", "Development history and sequences"),
+  Files = c(
+    "",
+    get_p_value_first_greater_all_clusters("Files", "Authorship", "cohesion", maximum_cohesion_decompositions_files, maximum_cohesion_decompositions_authorship),
+    get_p_value_first_greater_all_clusters("Files", "Development history", "cohesion", maximum_cohesion_decompositions_files, maximum_cohesion_decompositions_dhist),
+    get_p_value_first_greater_all_clusters("Files", "Sequences", "cohesion", maximum_cohesion_decompositions_files, maximum_cohesion_decompositions_sequences),
+    get_p_value_first_greater_all_clusters("Files", "Development history and sequences", "cohesion", maximum_cohesion_decompositions_files, maximum_cohesion_decompositions_dhist_seq)
+  ),
+  Authorship = c(
+    get_p_value_first_greater_all_clusters("Authorship", "Files", "cohesion", maximum_cohesion_decompositions_authorship, maximum_cohesion_decompositions_files),
+    "",
+    get_p_value_first_greater_all_clusters("Authorship", "Development history", "cohesion", maximum_cohesion_decompositions_authorship, maximum_cohesion_decompositions_dhist),
+    get_p_value_first_greater_all_clusters("Authorship", "Sequences", "cohesion", maximum_cohesion_decompositions_authorship, maximum_cohesion_decompositions_sequences),
+    get_p_value_first_greater_all_clusters("Authorship", "Development history and sequences", "cohesion", maximum_cohesion_decompositions_authorship, maximum_cohesion_decompositions_dhist_seq)
+  ),
+  Development_history = c(
+    get_p_value_first_greater_all_clusters("Development history", "Files", "cohesion", maximum_cohesion_decompositions_dhist, maximum_cohesion_decompositions_files),
+    get_p_value_first_greater_all_clusters("Development history", "Authorship", "cohesion", maximum_cohesion_decompositions_dhist, maximum_cohesion_decompositions_authorship),
+    "",
+    get_p_value_first_greater_all_clusters("Development history", "Sequences", "cohesion", maximum_cohesion_decompositions_dhist, maximum_cohesion_decompositions_sequences),
+    get_p_value_first_greater_all_clusters("Development history", "Development history and sequences", "cohesion", maximum_cohesion_decompositions_dhist, maximum_cohesion_decompositions_dhist_seq)
+  ),
+    Sequences = c(
+    get_p_value_first_greater_all_clusters("Sequences", "Files", "cohesion", maximum_cohesion_decompositions_sequences, maximum_cohesion_decompositions_files),
+    get_p_value_first_greater_all_clusters("Sequences", "Authorship", "cohesion", maximum_cohesion_decompositions_sequences, maximum_cohesion_decompositions_authorship),
+    get_p_value_first_greater_all_clusters("Sequences", "Development history", "cohesion", maximum_cohesion_decompositions_sequences, maximum_cohesion_decompositions_dhist),
+    "",
+    get_p_value_first_greater_all_clusters("Sequences", "Development history and sequences", "cohesion", maximum_cohesion_decompositions_sequences, maximum_cohesion_decompositions_dhist_seq)
+  ),
+  Development_history_sequences = c(
+    get_p_value_first_greater_all_clusters("Development history and sequences", "Files", "cohesion", maximum_cohesion_decompositions_dhist_seq, maximum_cohesion_decompositions_files),
+    get_p_value_first_greater_all_clusters("Development history and sequences", "Authorship", "cohesion", maximum_cohesion_decompositions_dhist_seq, maximum_cohesion_decompositions_authorship),
+    get_p_value_first_greater_all_clusters("Development history and sequences", "Development history", "cohesion", maximum_cohesion_decompositions_dhist_seq, maximum_cohesion_decompositions_dhist),
+    get_p_value_first_greater_all_clusters("Development history and sequences", "Sequences", "cohesion", maximum_cohesion_decompositions_dhist_seq, maximum_cohesion_decompositions_sequences),
+    ""
+  )
+)
+
+best_comparison_coupling <- data.frame(
+  representations = c("Files", "Authorship", "Development history", "Sequences", "Development history and sequences"),
+  Files = c(
+    "",
+    get_p_value_first_greater_all_clusters("Files", "Authorship", "coupling", minimum_coupling_decompositions_files, minimum_coupling_decompositions_authorship),
+    get_p_value_first_greater_all_clusters("Files", "Development history", "coupling", minimum_coupling_decompositions_files, minimum_coupling_decompositions_dhist),
+    get_p_value_first_greater_all_clusters("Files", "Sequences", "coupling", minimum_coupling_decompositions_files, minimum_coupling_decompositions_sequences),
+    get_p_value_first_greater_all_clusters("Files", "Development history and sequences", "coupling", minimum_coupling_decompositions_files, minimum_coupling_decompositions_dhist_seq)
+  ),
+  Authorship = c(
+    get_p_value_first_greater_all_clusters("Authorship", "Files", "coupling", minimum_coupling_decompositions_authorship, minimum_coupling_decompositions_files),
+    "",
+    get_p_value_first_greater_all_clusters("Authorship", "Development history", "coupling", minimum_coupling_decompositions_authorship, minimum_coupling_decompositions_dhist),
+    get_p_value_first_greater_all_clusters("Authorship", "Sequences", "coupling", minimum_coupling_decompositions_authorship, minimum_coupling_decompositions_sequences),
+    get_p_value_first_greater_all_clusters("Authorship", "Development history and sequences", "coupling", minimum_coupling_decompositions_authorship, minimum_coupling_decompositions_dhist_seq)
+  ),
+  Development_history = c(
+    get_p_value_first_greater_all_clusters("Development history", "Files", "coupling", minimum_coupling_decompositions_dhist, minimum_coupling_decompositions_files),
+    get_p_value_first_greater_all_clusters("Development history", "Authorship", "coupling", minimum_coupling_decompositions_dhist, minimum_coupling_decompositions_authorship),
+    "",
+    get_p_value_first_greater_all_clusters("Development history", "Sequences", "coupling", minimum_coupling_decompositions_dhist, minimum_coupling_decompositions_sequences),
+    get_p_value_first_greater_all_clusters("Development history", "Development history and sequences", "coupling", minimum_coupling_decompositions_dhist, minimum_coupling_decompositions_dhist_seq)
+  ),
+    Sequences = c(
+    get_p_value_first_greater_all_clusters("Sequences", "Files", "coupling", minimum_coupling_decompositions_sequences, minimum_coupling_decompositions_files),
+    get_p_value_first_greater_all_clusters("Sequences", "Authorship", "coupling", minimum_coupling_decompositions_sequences, minimum_coupling_decompositions_authorship),
+    get_p_value_first_greater_all_clusters("Sequences", "Development history", "coupling", minimum_coupling_decompositions_sequences, minimum_coupling_decompositions_dhist),
+    "",
+    get_p_value_first_greater_all_clusters("Sequences", "Development history and sequences", "coupling", minimum_coupling_decompositions_sequences, minimum_coupling_decompositions_dhist_seq)
+  ),
+  Development_history_sequences = c(
+    get_p_value_first_greater_all_clusters("Development history and sequences", "Files", "coupling", minimum_coupling_decompositions_dhist_seq, minimum_coupling_decompositions_files),
+    get_p_value_first_greater_all_clusters("Development history and sequences", "Authorship", "coupling", minimum_coupling_decompositions_dhist_seq, minimum_coupling_decompositions_authorship),
+    get_p_value_first_greater_all_clusters("Development history and sequences", "Development history", "coupling", minimum_coupling_decompositions_dhist_seq, minimum_coupling_decompositions_dhist),
+    get_p_value_first_greater_all_clusters("Development history and sequences", "Sequences", "coupling", minimum_coupling_decompositions_dhist_seq, minimum_coupling_decompositions_sequences),
+    ""
+  )
+)
+
+best_comparison_tsr <- data.frame(
+  representations = c("Files", "Authorship", "Development history", "Sequences", "Development history and sequences"),
+  Files = c(
+    "",
+    get_p_value_first_greater_all_clusters("Files", "Authorship", "tsr", minimum_tsr_decompositions_files, minimum_tsr_decompositions_authorship),
+    get_p_value_first_greater_all_clusters("Files", "Development history", "tsr", minimum_tsr_decompositions_files, minimum_tsr_decompositions_dhist),
+    get_p_value_first_greater_all_clusters("Files", "Sequences", "tsr", minimum_tsr_decompositions_files, minimum_tsr_decompositions_sequences),
+    get_p_value_first_greater_all_clusters("Files", "Development history and sequences", "tsr", minimum_tsr_decompositions_files, minimum_tsr_decompositions_dhist_seq)
+  ),
+  Authorship = c(
+    get_p_value_first_greater_all_clusters("Authorship", "Files", "tsr", minimum_tsr_decompositions_authorship, minimum_tsr_decompositions_files),
+    "",
+    get_p_value_first_greater_all_clusters("Authorship", "Development history", "tsr", minimum_tsr_decompositions_authorship, minimum_tsr_decompositions_dhist),
+    get_p_value_first_greater_all_clusters("Authorship", "Sequences", "tsr", minimum_tsr_decompositions_authorship, minimum_tsr_decompositions_sequences),
+    get_p_value_first_greater_all_clusters("Authorship", "Development history and sequences", "tsr", minimum_tsr_decompositions_authorship, minimum_tsr_decompositions_dhist_seq)
+  ),
+  Development_history = c(
+    get_p_value_first_greater_all_clusters("Development history", "Files", "tsr", minimum_tsr_decompositions_dhist, minimum_tsr_decompositions_files),
+    get_p_value_first_greater_all_clusters("Development history", "Authorship", "tsr", minimum_tsr_decompositions_dhist, minimum_tsr_decompositions_authorship),
+    "",
+    get_p_value_first_greater_all_clusters("Development history", "Sequences", "tsr", minimum_tsr_decompositions_dhist, minimum_tsr_decompositions_sequences),
+    get_p_value_first_greater_all_clusters("Development history", "Development history and sequences", "tsr", minimum_tsr_decompositions_dhist, minimum_tsr_decompositions_dhist_seq)
+  ),
+    Sequences = c(
+    get_p_value_first_greater_all_clusters("Sequences", "Files", "tsr", minimum_tsr_decompositions_sequences, minimum_tsr_decompositions_files),
+    get_p_value_first_greater_all_clusters("Sequences", "Authorship", "tsr", minimum_tsr_decompositions_sequences, minimum_tsr_decompositions_authorship),
+    get_p_value_first_greater_all_clusters("Sequences", "Development history", "tsr", minimum_tsr_decompositions_sequences, minimum_tsr_decompositions_dhist),
+    "",
+    get_p_value_first_greater_all_clusters("Sequences", "Development history and sequences", "tsr", minimum_tsr_decompositions_sequences, minimum_tsr_decompositions_dhist_seq)
+  ),
+  Development_history_sequences = c(
+    get_p_value_first_greater_all_clusters("Development history and sequences", "Files", "tsr", minimum_tsr_decompositions_dhist_seq, minimum_tsr_decompositions_files),
+    get_p_value_first_greater_all_clusters("Development history and sequences", "Authorship", "tsr", minimum_tsr_decompositions_dhist_seq, minimum_tsr_decompositions_authorship),
+    get_p_value_first_greater_all_clusters("Development history and sequences", "Development history", "tsr", minimum_tsr_decompositions_dhist_seq, minimum_tsr_decompositions_dhist),
+    get_p_value_first_greater_all_clusters("Development history and sequences", "Sequences", "tsr", minimum_tsr_decompositions_dhist_seq, minimum_tsr_decompositions_sequences),
+    ""
+  )
+)
+
+best_comparison_performance <- data.frame(
+  representations = c("Files", "Authorship", "Development history", "Sequences", "Development history and sequences"),
+  Files = c(
+    "",
+    get_p_value_first_greater_all_clusters("Files", "Authorship", "performance", minimum_performance_decompositions_files, minimum_performance_decompositions_authorship),
+    get_p_value_first_greater_all_clusters("Files", "Development history", "performance", minimum_performance_decompositions_files, minimum_performance_decompositions_dhist),
+    get_p_value_first_greater_all_clusters("Files", "Sequences", "performance", minimum_performance_decompositions_files, minimum_performance_decompositions_sequences),
+    get_p_value_first_greater_all_clusters("Files", "Development history and sequences", "performance", minimum_performance_decompositions_files, minimum_performance_decompositions_dhist_seq)
+  ),
+  Authorship = c(
+    get_p_value_first_greater_all_clusters("Authorship", "Files", "performance", minimum_performance_decompositions_authorship, minimum_performance_decompositions_files),
+    "",
+    get_p_value_first_greater_all_clusters("Authorship", "Development history", "performance", minimum_performance_decompositions_authorship, minimum_performance_decompositions_dhist),
+    get_p_value_first_greater_all_clusters("Authorship", "Sequences", "performance", minimum_performance_decompositions_authorship, minimum_performance_decompositions_sequences),
+    get_p_value_first_greater_all_clusters("Authorship", "Development history and sequences", "performance", minimum_performance_decompositions_authorship, minimum_performance_decompositions_dhist_seq)
+  ),
+  Development_history = c(
+    get_p_value_first_greater_all_clusters("Development history", "Files", "performance", minimum_performance_decompositions_dhist, minimum_performance_decompositions_files),
+    get_p_value_first_greater_all_clusters("Development history", "Authorship", "performance", minimum_performance_decompositions_dhist, minimum_performance_decompositions_authorship),
+    "",
+    get_p_value_first_greater_all_clusters("Development history", "Sequences", "performance", minimum_performance_decompositions_dhist, minimum_performance_decompositions_sequences),
+    get_p_value_first_greater_all_clusters("Development history", "Development history and sequences", "performance", minimum_performance_decompositions_dhist, minimum_performance_decompositions_dhist_seq)
+  ),
+    Sequences = c(
+    get_p_value_first_greater_all_clusters("Sequences", "Files", "performance", minimum_performance_decompositions_sequences, minimum_performance_decompositions_files),
+    get_p_value_first_greater_all_clusters("Sequences", "Authorship", "performance", minimum_performance_decompositions_sequences, minimum_performance_decompositions_authorship),
+    get_p_value_first_greater_all_clusters("Sequences", "Development history", "performance", minimum_performance_decompositions_sequences, minimum_performance_decompositions_dhist),
+    "",
+    get_p_value_first_greater_all_clusters("Sequences", "Development history and sequences", "performance", minimum_performance_decompositions_sequences, minimum_performance_decompositions_dhist_seq)
+  ),
+  Development_history_sequences = c(
+    get_p_value_first_greater_all_clusters("Development history and sequences", "Files", "performance", minimum_performance_decompositions_dhist_seq, minimum_performance_decompositions_files),
+    get_p_value_first_greater_all_clusters("Development history and sequences", "Authorship", "performance", minimum_performance_decompositions_dhist_seq, minimum_performance_decompositions_authorship),
+    get_p_value_first_greater_all_clusters("Development history and sequences", "Development history", "performance", minimum_performance_decompositions_dhist_seq, minimum_performance_decompositions_dhist),
+    get_p_value_first_greater_all_clusters("Development history and sequences", "Sequences", "performance", minimum_performance_decompositions_dhist_seq, minimum_performance_decompositions_sequences),
+    ""
+  )
+)
+
+```
+
+Visually comparing the boxplots of the best decompositions of each codebase, for each metric and for each monolith representation (Figure \ref{fig:best-decompositions-compare}) shows that decompositions made with the development history and the sequences of accesses representations, simultaneously, display the best values in all metrics. Statistical tests allow us to state with confidence that this is true for uniform complexity, cohesion, coupling, and combined. This goes against the conclusions drawn when considering all decompositions, confirming our previous suggestion. For the case of _tsr_, we cannot say with confidence that this representation is better than just the development history or the authorship, highlighting the poorer performance that the sequence of accesses has in this metric.
+
+
+
+# Large vs small codebases
+
+In our study so far, we made no distinction between small and large codebases. But, there are `r nrow(codebases_counts[codebases_counts$commit >= mean(codebases_counts$commit) + sd(codebases_counts$commit),])` codebases with more commits than the mean plus one standard deviation, which we call "large in the number of commits". The remaining codebases are called "small in the number of commits". A similar classification is made for the number of authors of each codebase. Considering the increased information available from the development history in these large codebases, we asked ourselves if their development history based representations perform differently than the representations of small codebases. To test this hypothesis, we gathered the best decompositions of each representation for each metric, and compare the best decompositions of large codebases in the number of commits with small codebases in the number of commits, as well as large codebases in the number of authors with small codebases in the number of authors. Box plots with these comparisons can be found in Figure \ref{fig:large-small-codebases-compare}.
+
+
+```{r large-small-codebases-init}
+
+many_authors_decompositions <- all_data[all_data$codebase_name %in% codebases_counts[codebases_counts$author > mean(codebases_counts$author) + sd(codebases_counts$author),]$name,]
+many_authors_best_decompositions <- select_best_decompositions(many_authors_decompositions)
+
+little_authors_decompositions <- all_data[all_data$codebase_name %in% codebases_counts[codebases_counts$author <= mean(codebases_counts$author) + sd(codebases_counts$author),]$name,]
+little_authors_best_decompositions <- select_best_decompositions(little_authors_decompositions)
+
+many_commits_decompositions <- all_data[all_data$codebase_name %in% codebases_counts[codebases_counts$commit > mean(codebases_counts$commit) + sd(codebases_counts$commit),]$name, ]
+many_commits_best_decompositions <- select_best_decompositions(many_commits_decompositions)
+
+little_commits_decompositions <- all_data[all_data$codebase_name %in% codebases_counts[codebases_counts$commit <= mean(codebases_counts$commit) + sd(codebases_counts$commit),]$name,]
+little_commits_best_decompositions <- select_best_decompositions(little_commits_decompositions)
+```
+
+
+```{r large-small-codebases-p-values, cache=TRUE}
+commit_vs_pvalues <- large_vs_small_codebases_p_values(many_commits_best_decompositions, little_commits_best_decompositions)
+author_vs_pvalues <- large_vs_small_codebases_p_values(many_authors_best_decompositions, little_authors_best_decompositions)
+```
+
+We can say with statistical significance that the median uniform complexity of small codebases in the number of authors is greater than that of large codebases in the number of authors, when comparing the authorship representation for both cases (p-value: 0). We can also state that there are no significant differences between the median uniform complexity of the authorship representation in large codebases to the median uniform complexity of the sequences representation in small codebases, whereas there is a difference if we compare these two representations in small codebases. This is a surprising result, as it suggests the effectiveness of the authorship representation, when compared with sequences, if more authors are present.
+
+We can also say that the _tsr_ of the smaller codebases in the number of authors is greater than the large ones in all representations. Statistical tests reveal that there are no significant differences between the authorship, development history, and the combined development history and sequences representations, highlighting the effect that the changes authorship data has in these representations. Similarly to the uniform complexity, the development history based representations of large codebases perform better than the sequence of accesses of small codebases, whereas they perform worse in the case of smaller codebases. Regarding coupling, the obtained values in the files and authorship representations are very similar for both categories of codebases, visually and with statistical significance, but the smaller codebases display worse values in the development history, sequences, and the development history and sequences representations. The good performance of the larger codebases in the number of authors explains the improvement of the combined metric, as the representations of smaller codebases have statistically significant greater median values than the large codebases.  The only metric where the large codebases in the number of authors do not display better results than the smaller codebases is cohesion.
+
+Large codebases in the number of commits display improved _tsr_ median values across all representations, when compared with small codebases in the number of commits. In the case of uniform complexity and, consequently, combined, better results are obtained for the files representation of large codebases (when compared with the files representation of small codebases) only if we discard one of the large codebases (Irida) that does not behave like the others. We find that the modularity is neither improved nor worsened when we evaluate codebases with more commits. In the case of cohesion, the smaller codebases in the number of commits are similar to the large, and other than the authorship representation, we do not find statistically significant differences between their medians. For coupling, cannot confidently state that the larger codebases have greater median than the smaller. For the combined metric, we cannot state that the smaller codebases display larger values in any representations, which means that overall, the quality of codebases with more commits is comparable to the quality of codebases with less commits.
+
+Finally, we can state that just like in the previous analysis of the best decompositions, the best results are obtained when combining the development history with sequences of accesses, in all quality metrics - both for large and small codebases in the number of commits and authors.
+
+To answer our research question, we can conclude that the authorship representation for large codebases provides similar results to the sequences of accesses. This allows the usage of a collection technique that is easier to apply, as it is independent of the language or framework chosen for the monolith.
+
+
+```{r large-small-codebases-compare, fig.cap="Comparison between the best decompositions of each representation. Different results are obtained when we compare large with small codebases.", fig.subcap=c('Uniform complexity', 'Cohesion', 'Coupling', 'tsr', 'Combined'), out.width='30%', fig.asp=0.6, fig.ncol = 3, fig.env="figure*", fig.pos="", results="asis"}
+
+plot_commits_complexity_large_vs_small <- large_vs_small_plot(many_commits_best_decompositions, little_commits_best_decompositions, "pondered_complexity", FALSE) + 
+  labs(title="Uniform complexity,\nLarge #commits vs small #commits",
+     subtitle="Lower is better",
+     x="Representation",
+     y="Uniform complexity")
+
+plot_authors_complexity_large_vs_small <- large_vs_small_plot(many_authors_best_decompositions, little_authors_best_decompositions, "pondered_complexity", FALSE) +
+  labs(title="Uniform complexity,\nLarge #authors vs small #authors",
+       subtitle="Lower is better",
+       x="Representation",
+       y="Uniform complexity")
+
+(plot_commits_complexity_large_vs_small | plot_authors_complexity_large_vs_small) + plot_layout(guides = 'collect') & custom_theme & theme(legend.position = 'bottom', text = element_text(size=9), axis.text.x = element_text(angle=25, hjust=1))
+
+plot_commits_cohesion_large_vs_small <- large_vs_small_plot(many_commits_best_decompositions, little_commits_best_decompositions, "cohesion", FALSE) + 
+  labs(title="Cohesion,\nLarge #commits vs small #commits",
+     subtitle="Higher is better",
+     x="Representation",
+     y="Cohesion")
+
+plot_authors_cohesion_large_vs_small <- large_vs_small_plot(many_authors_best_decompositions, little_authors_best_decompositions, "cohesion", FALSE) +
+  labs(title="Cohesion,\nLarge #authors vs small #authors",
+       subtitle="Higher is better",
+       x="Representation",
+       y="Cohesion")
+
+(plot_commits_cohesion_large_vs_small | plot_authors_cohesion_large_vs_small) + plot_layout(guides = 'collect')  & custom_theme & theme(legend.position = 'bottom', text = element_text(size=9), axis.text.x = element_text(angle=25, hjust=1))
+
+plot_commits_coupling_large_vs_small <- large_vs_small_plot(many_commits_best_decompositions, little_commits_best_decompositions, "coupling", FALSE) + 
+  labs(title="Coupling,\nLarge #commits vs small #commits",
+     subtitle="Lower is better",
+     x="Representation",
+     y="Coupling")
+
+plot_authors_coupling_large_vs_small <- large_vs_small_plot(many_authors_best_decompositions, little_authors_best_decompositions, "coupling", FALSE) +
+  labs(title="Coupling,\nLarge #authors vs small #authors",
+       subtitle="Lower is better",
+       x="Representation",
+       y="Coupling")
+
+(plot_commits_coupling_large_vs_small | plot_authors_coupling_large_vs_small) + plot_layout(guides = 'collect')  & custom_theme & theme(legend.position = 'bottom', text = element_text(size=9), axis.text.x = element_text(angle=25, hjust=1))
+
+plot_commits_tsr_large_vs_small <- large_vs_small_plot(many_commits_best_decompositions, little_commits_best_decompositions, "tsr", FALSE) + 
+  labs(title="Tsr,\nLarge #commits vs small #commits",
+     subtitle="Lower is better",
+     x="Representation",
+     y="Tsr")
+
+plot_authors_tsr_large_vs_small <- large_vs_small_plot(many_authors_best_decompositions, little_authors_best_decompositions, "tsr", FALSE) +
+  labs(title="Tsr,\nLarge #authors vs small #authors",
+       subtitle="Lower is better",
+       x="Representation",
+       y="Tsr")
+
+(plot_commits_tsr_large_vs_small | plot_authors_tsr_large_vs_small) + plot_layout(guides = 'collect')  & custom_theme & theme(legend.position = 'bottom', text = element_text(size=9), axis.text.x = element_text(angle=25, hjust=1))
+
+plot_commits_performance_large_vs_small <- large_vs_small_plot(many_commits_best_decompositions, little_commits_best_decompositions, "performance", FALSE) + 
+  labs(title="Combined,\nLarge #commits vs small #commits",
+     subtitle="Lower is better",
+     x="Representation",
+     y="Combined")
+
+plot_authors_performance_large_vs_small <- large_vs_small_plot(many_authors_best_decompositions, little_authors_best_decompositions, "performance", FALSE) +
+  labs(title="Combined,\nLarge #authors vs small #authors",
+       subtitle="Lower is better",
+       x="Representation",
+       y="Combined")
+
+(plot_commits_performance_large_vs_small | plot_authors_performance_large_vs_small) + plot_layout(guides = 'collect')  & custom_theme & theme(legend.position = 'bottom', text = element_text(size=9), axis.text.x = element_text(angle=25, hjust=1))
+```
+
+# Threats to validity
+
+Out of all decompositions, we find that $0.37\%$ were made exclusively with data from the development history, and $9.52\%$ exclusively with data from the sequences of accesses. The remaining $90.11\%$ were made with combined data. This is a consequence of using four measures related to the sequences of accesses, but only two related to the development history. To ensure this does not affect our findings, we opted to use a statistical test that performs well even comparing groups with different sample sizes, and do not rely only on boxplots to draw conclusions. Additionally, note that these differences only applied for the first analysis, where we consider to all the decompositions, which was rather inconclusive. For all the other analyses, the best decompositions were chosen and so, we have only one decomposition per representation and number of clusters.
+
+Not all repositories have a clean and linear history, with some presenting many branches, refactors, and merges. This affects the detection and processing of deletes and renames, which makes development history based decompositions less efficient. Nevertheless, we obtained good results for the development history representations.
+
+We found that sometimes, files presented an \texttt{ADD} or \texttt{MODIFY} change event after a \texttt{DELETE} event. In some situations, this means we could be considering two distinct files as the same one, if they happened to have the same filename and one of them was deleted before the other was added. However, in all cases we found, the files still existed in the latest repository snapshot and did correspond to the same file that was deleted. Considering that this situation is unlikely, and the existence of a \texttt{DELETE} event after an \texttt{ADD} or \texttt{MODIFY} change event usually occurs due to merges, we opted to still consider these files in our analysis, and we don't discard them.
+
+Our data collection approach was to gather data about all `.java` files across all commits, and then discard non domain entities files only in the decomposition phase. An alternative would be to filter all commits and select those where only domain entities were changed. Our approach is richer, as we have more data available and are not deleting potentially useful relationships between files.
+
+We adapted the logical coupling and the contributor coupling measures from [@mazlami_extraction_2017], by considering a fraction rather than an absolute value. This was made to facilitate the integration of other measures without much experimentation on the ideal weights that would be required if absolute values were considered.
+
+# References

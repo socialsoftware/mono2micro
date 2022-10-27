@@ -1,0 +1,41 @@
+---
+title: "Evaluation"
+author: "João Lourenço"
+output:
+  bookdown::pdf_document2: default
+---
+
+# Reproducible evaluation
+
+This document describes how to run the evaluation package, both for the Thesis and for the
+article.
+
+The evaluation for each project consists of an RMarkdown file, which is configured to
+output a LaTeX fragment. This fragment cannot be compiled by itself, since it is meant to
+be used with the `\input{fragment.tex}` command in the respective projects.
+
+For the purpose of reproducibility, the RMarkdown files were changed to output a PDF, and very small adjustments
+to images' layouts were made. This ensures that the content and conclusions remain the same as the ones in each project, and that
+the PDF generation time is reduced.
+
+## How to generate the PDF
+
+The best way to generate the desired PDF is by using Docker. This ensures you'll have the correct
+R version, the correct dependencies, and a working LaTeX environment with all necessary packages. You can always attempt to
+perform the generation manually if you're feeling brave... but this is highly discouraged.
+
+All you need to do is run the following two commands in the directory of this README file:
+
+```
+# The build command takes a while to run - up to 20-30 mins
+docker build -t evaluation .
+
+# If you want the longer Thesis evaluation:
+docker run --rm -v ${PWD}:/thesis:report/thesis evaluation thesis/Thesis-Evaluation.Rmd 
+
+# If you want the smaller Article evaluation:
+docker run --rm -v ${PWD}:/article:report/article evaluation article/Article-Evaluation.Rmd 
+```
+
+The output will be found under the respective folders. This was tested with Pop!_OS 21.10, a distribution based on Ubuntu.
+
