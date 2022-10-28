@@ -21,12 +21,12 @@ const nFilter = numberFilter({placeholder: "filter"});
 const sort = true;
 
 const columns = [
-    {dataField: 'accessMetricWeight',           text: 'Access Metric',              filter: nFilter, sort},
-    {dataField: 'writeMetricWeight',            text: 'Write Metric',               filter: nFilter, sort},
-    {dataField: 'readMetricWeight',             text: 'Read Metric',                filter: nFilter, sort},
-    {dataField: 'sequenceMetricWeight',         text: 'Sequence Metric',            filter: nFilter, sort},
-    {dataField: 'authorMetricWeight',           text: 'Author Metric',              filter: nFilter, sort},
-    {dataField: 'commitMetricWeight',           text: 'Commit Metric',              filter: nFilter, sort},
+    {dataField: 'accessMetricWeight',           text: 'Access Weight',              filter: nFilter, sort},
+    {dataField: 'writeMetricWeight',            text: 'Write Weight',               filter: nFilter, sort},
+    {dataField: 'readMetricWeight',             text: 'Read Weight',                filter: nFilter, sort},
+    {dataField: 'sequenceMetricWeight',         text: 'Sequence Weight',            filter: nFilter, sort},
+    {dataField: 'authorMetricWeight',           text: 'Author Weight',              filter: nFilter, sort},
+    {dataField: 'commitMetricWeight',           text: 'Commit Weight',              filter: nFilter, sort},
     {dataField: 'numberOfClusters',             text: 'Number Of Clusters',         filter: nFilter, sort},
     {dataField: 'maxClusterSize',               text: 'Max Cluster Size',           filter: nFilter, sort},
     {dataField: 'Complexity',                   text: 'Complexity',                 filter: nFilter, sort},
