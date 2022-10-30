@@ -19,6 +19,7 @@ public class Codebase {
 	private List<Representation> representations;
 	@DBRef(lazy = true)
 	private List<Strategy> strategies;
+	private List<String> representationInfoTypes;
 
 	public Codebase() {}
 
@@ -26,6 +27,7 @@ public class Codebase {
         this.name = name;
 		representations = new ArrayList<>();
 		strategies = new ArrayList<>();
+		representationInfoTypes = new ArrayList<>();
 	}
 
 	public String getName() {
@@ -36,11 +38,28 @@ public class Codebase {
 		this.name = name;
 	}
 
+	public List<String> getRepresentationInfoTypes() {
+		return representationInfoTypes;
+	}
+
+	public void setRepresentationInfoTypes(List<String> representationInfoTypes) {
+		this.representationInfoTypes = representationInfoTypes;
+	}
+
+	public void addRepresentationInfoType(String representationInfoType) {
+		if (!representationInfoTypes.contains(representationInfoType))
+			this.representationInfoTypes.add(representationInfoType);
+	}
+
+	public void removeRepresentationInfoTypes(List<String> representationInfoTypes) {
+		this.representationInfoTypes.removeAll(representationInfoTypes);
+	}
+
 	public List<Representation> getRepresentations() {
 		return representations;
 	}
 
-	public Representation getRepresentationByType(String type) {
+	public Representation getRepresentationByFileType(String type) {
 		return this.representations.stream().filter(representation -> representation.getType().equals(type)).findFirst().orElse(null);
 	}
 
@@ -58,10 +77,6 @@ public class Codebase {
 
 	public List<Strategy> getStrategies() {
 		return strategies;
-	}
-
-	public Strategy getStrategyByDecompositionType(String decompositionType) {
-		return strategies.stream().filter(strategy -> strategy.getDecompositionType().equals(decompositionType)).findFirst().orElse(null);
 	}
 
 	public boolean containsStrategyName(String name) {

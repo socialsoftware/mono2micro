@@ -15,6 +15,7 @@ import {FunctionalityView, functionalityViewHelp} from "./functionalityView/Func
 import AppContext from "../../AppContext";
 import {AccessesViewModal} from "./accessView/AccessesViewModal";
 import {AccessesViewMetricTable} from "./accessView/AccessesViewMetricTable";
+import {RepresentationInfoType} from "../../../models/representation/RepresentationInfoTypes";
 
 export const clusterViewHelp = (<div>
     Double click a node to see its properties.<br />
@@ -38,9 +39,6 @@ export const views = {
     CLUSTERS: 'Clusters View',
     FUNCTIONALITY: 'Functionality View',
 };
-
-const ACCESSES_INFO = "ACCESSES_INFO";
-export {ACCESSES_INFO};
 
 export const AccessesViews = () => {
     const context = useContext(AppContext);
@@ -74,7 +72,7 @@ export const AccessesViews = () => {
             setClusters(Object.values(response.data.clusters).sort((a, b) => a.name - b.name));
             setClustersFunctionalities(response.data.clustersFunctionalities);
 
-            service.getEdgeWeights(decompositionName, ACCESSES_INFO).then(response => {
+            service.getEdgeWeights(decompositionName, RepresentationInfoType.ACCESSES_INFO).then(response => {
                 setNow(n => n + 30);
                 setEdgeWeights(response.data);
             });
@@ -252,7 +250,7 @@ export const AccessesViews = () => {
             />
 
             <ViewSearchBar
-                viewType={ACCESSES_INFO}
+                viewType={RepresentationInfoType.ACCESSES_INFO}
                 dataFields={['name', 'type', 'funcType', 'cluster', 'entities']}
                 openSearch={openSearch}
                 setOpenSearch={setOpenSearch}

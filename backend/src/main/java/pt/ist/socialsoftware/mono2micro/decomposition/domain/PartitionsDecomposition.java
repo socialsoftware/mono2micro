@@ -1,12 +1,8 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.domain;
 
 import org.springframework.data.mongodb.core.mapping.Document;
-import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.Clustering;
-import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.ExpertClustering;
-import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.SciPyClustering;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.AccessesInfo;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.RepositoryInfo;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.RepresentationInformation;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.RepresentationInfo;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.RepresentationInfoFactory;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.history.domain.PositionHistory;
@@ -24,85 +20,49 @@ import pt.ist.socialsoftware.mono2micro.operation.transfer.TransferOperation;
 import pt.ist.socialsoftware.mono2micro.operation.transfer.TransferPartitionsOperation;
 
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition.DecompositionType.*;
 
 @Document("decomposition")
 public class PartitionsDecomposition extends Decomposition {
+    public static final String PARTITIONS_DECOMPOSITION = "Partitions Decomposition";
     public PartitionsDecomposition() {}
 
-    public PartitionsDecomposition(String type) {this.type = type;}
-
-    public PartitionsDecomposition(DecompositionRequest decompositionRequest) {this.type = decompositionRequest.getDecompositionType();}
+    public PartitionsDecomposition(DecompositionRequest decompositionRequest) {
+        this.type = PARTITIONS_DECOMPOSITION;
+    }
 
     public PartitionsDecomposition(PartitionsDecomposition decomposition, String snapshotName) throws Exception {
-        this.type = decomposition.type;
+        this.type = PARTITIONS_DECOMPOSITION;
         this.name = snapshotName;
         this.similarity = decomposition.getSimilarity();
         this.metrics = decomposition.getMetrics();
         this.outdated = decomposition.isOutdated();
         this.expert = decomposition.isExpert();
         this.clusters = decomposition.getClusters();
-        List<RepresentationInformation> representationInformations = getRepresentationInformationsByStrategy(this.type);
-        for (RepresentationInformation representationInformation : representationInformations)
-            representationInformation.snapshot(this, decomposition);
-    }
-
-    @Override
-    public List<RepresentationInformation> getRepresentationInformationsByStrategy(String type) {
-        List<RepresentationInformation> representationInformations = new ArrayList<>();
-
-        switch (type) {
-            case ACC_AND_REPO_DECOMPOSITION:
-                representationInformations.add(new AccessesInfo());
-                representationInformations.add(new RepositoryInfo());
-                break;
-            case ACCESSES_DECOMPOSITION:
-                representationInformations.add(new AccessesInfo());
-                break;
-            case REPOSITORY_DECOMPOSITION:
-                representationInformations.add(new RepositoryInfo());
-                break;
-        }
-        return representationInformations;
-    }
-
-    @Override
-    public Clustering getClusteringAlgorithm() {
-        if (isExpert())
-            return new ExpertClustering();
-        else return new SciPyClustering();
-    }
-
-    @Override
-    public Set<String> getRequiredRepresentations() {
-        return getRepresentationInformationsByStrategy(type).stream()
-                .map(RepresentationInformation::getRequiredRepresentations)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
+        List<RepresentationInfo> representationInfos = RepresentationInfoFactory.getRepresentationInfosFromType(decomposition.getStrategy().getRepresentationInfoTypes());
+        for (RepresentationInfo representationInfo : representationInfos)
+            representationInfo.snapshot(this, decomposition);
     }
 
     @Override
     public void calculateMetrics() {
-        this.representationInformations.stream()
-                .map(RepresentationInformation::getDecompositionMetrics)
+        this.representationInfos.stream()
+                .map(RepresentationInfo::getDecompositionMetrics)
                 .flatMap(Collection::stream)
                 .forEach(metric -> this.metrics.put(metric.getType(), metric.calculateMetric(this)));
     }
 
     @Override
     public void setup() throws Exception {
-        List<RepresentationInformation> representationInformations = getRepresentationInformationsByStrategy(this.type);
-        for (RepresentationInformation representationInformation : representationInformations)
-            representationInformation.setup(this);
+        List<RepresentationInfo> representationInfos = RepresentationInfoFactory.getRepresentationInfosFromType(getStrategy().getRepresentationInfoTypes());
+        for (RepresentationInfo representationInfo : representationInfos)
+            representationInfo.setup(this);
         this.history = new PositionHistory(this);
     }
 
     @Override
     public void update() throws Exception {
-        for (RepresentationInformation representationInformation : representationInformations)
-            representationInformation.update(this);
+        for (RepresentationInfo representationInfo : representationInfos)
+            representationInfo.update(this);
     }
 
     @Override
@@ -137,7 +97,7 @@ public class PartitionsDecomposition extends Decomposition {
 
     @Override
     public void deleteProperties() {
-        representationInformations.forEach(RepresentationInformation::deleteProperties);
+        representationInfos.forEach(RepresentationInfo::deleteProperties);
     }
 
     @Override

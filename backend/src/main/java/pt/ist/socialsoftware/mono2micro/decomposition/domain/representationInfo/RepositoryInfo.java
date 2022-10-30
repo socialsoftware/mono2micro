@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo;
+package pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,10 +12,8 @@ import pt.ist.socialsoftware.mono2micro.element.Element;
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.metrics.decompositionMetrics.*;
-import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AuthorRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.CommitRepresentation;
-import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.dendrogram.Dendrogram;
 
@@ -26,19 +24,12 @@ import java.util.*;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.AuthorRepresentation.AUTHOR;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.CommitRepresentation.COMMIT;
 
-public class RepositoryInfo extends RepresentationInformation {
-    public static final String REPOSITORY_INFO = "REPOSITORY_INFO";
+public class RepositoryInfo extends RepresentationInfo {
+    public static final String REPOSITORY_INFO = "Repository Based";
     private Map<Short, ArrayList<String>> authors = new HashMap<>();
     private Map<Short, Map<Short, Integer>> commitsInCommon = new HashMap<>();
     private Map<Short, Integer> totalCommits = new HashMap<>();
     private Integer totalAuthors;
-
-    private static final List<String> requiredRepresentations = new ArrayList<String>() {{
-        add(AccessesRepresentation.ACCESSES);
-        add(IDToEntityRepresentation.ID_TO_ENTITY);
-        add(AuthorRepresentation.AUTHOR);
-        add(CommitRepresentation.COMMIT);
-    }};
 
     public RepositoryInfo() {}
 
@@ -63,11 +54,6 @@ public class RepositoryInfo extends RepresentationInformation {
     @Override
     public String getType() {
         return REPOSITORY_INFO;
-    }
-
-    @Override
-    public List<String> getRequiredRepresentations() {
-        return requiredRepresentations;
     }
 
     @Override
@@ -129,8 +115,8 @@ public class RepositoryInfo extends RepresentationInformation {
 
     private void setupAuthorsAndCommits(Decomposition decomposition) throws IOException {
         GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
-        AuthorRepresentation authorRepresentation = (AuthorRepresentation) decomposition.getStrategy().getCodebase().getRepresentationByType(AUTHOR);
-        CommitRepresentation commitRepresentation = (CommitRepresentation) decomposition.getStrategy().getCodebase().getRepresentationByType(COMMIT);
+        AuthorRepresentation authorRepresentation = (AuthorRepresentation) decomposition.getStrategy().getCodebase().getRepresentationByFileType(AUTHOR);
+        CommitRepresentation commitRepresentation = (CommitRepresentation) decomposition.getStrategy().getCodebase().getRepresentationByFileType(COMMIT);
         Map<Short, ArrayList<String>> authors = new ObjectMapper().readValue(gridFsService.getFileAsString(authorRepresentation.getName()), new TypeReference<Map<Short, ArrayList<String>>>() {});
         Map<String, Map<String, Integer>> commits = new ObjectMapper().readValue(gridFsService.getFileAsString(commitRepresentation.getName()), new TypeReference<Map<String, Map<String, Integer>>>() {});
 

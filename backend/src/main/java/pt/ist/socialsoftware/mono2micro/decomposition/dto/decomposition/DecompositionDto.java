@@ -1,20 +1,11 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.representationInfoDto.RepresentationInfoDto;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition.DecompositionType.*;
-
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = AccessesDecompositionDto.class, name = ACCESSES_DECOMPOSITION),
-        @JsonSubTypes.Type(value = RepositoryDecompositionDto.class, name = REPOSITORY_DECOMPOSITION),
-        @JsonSubTypes.Type(value = AccAndRepoDecompositionDto.class, name = ACC_AND_REPO_DECOMPOSITION),
-})
 public abstract class DecompositionDto {
     String name;
     String codebaseName;
@@ -22,7 +13,8 @@ public abstract class DecompositionDto {
     String similarityName;
     String type;
     Map<String, Object> metrics;
-    Map<String, Cluster> clusters = new HashMap<>();
+    Map<String, Cluster> clusters;
+    List<RepresentationInfoDto> representationInformations;
 
     public String getName() {
         return name;
@@ -79,4 +71,11 @@ public abstract class DecompositionDto {
         this.clusters = clusters;
     }
 
+    public List<RepresentationInfoDto> getRepresentationInformations() {
+        return representationInformations;
+    }
+
+    public void setRepresentationInformations(List<RepresentationInfoDto> representationInformations) {
+        this.representationInformations = representationInformations;
+    }
 }

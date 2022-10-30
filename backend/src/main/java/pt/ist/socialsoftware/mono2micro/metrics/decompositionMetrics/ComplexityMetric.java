@@ -3,7 +3,7 @@ package pt.ist.socialsoftware.mono2micro.metrics.decompositionMetrics;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.cluster.Partition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.AccessesInfo;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.AccessesInfo;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.AccessesInfo.ACCESSES_INFO;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.AccessesInfo.ACCESSES_INFO;
 
 public class ComplexityMetric extends DecompositionMetric {
     public static final String COMPLEXITY = "Complexity";
@@ -44,7 +44,7 @@ public class ComplexityMetric extends DecompositionMetric {
             }
 
             complexity /= functionalitiesThatAccessThisCluster.size();
-            complexity = BigDecimal.valueOf(complexity).setScale(2, RoundingMode.HALF_UP).doubleValue();
+            complexity = BigDecimal.valueOf(complexity).setScale(3, RoundingMode.HALF_UP).doubleValue();
 
             cluster.addMetric(COMPLEXITY, complexity);
         }
@@ -58,7 +58,7 @@ public class ComplexityMetric extends DecompositionMetric {
         }
 
         return BigDecimal.valueOf(complexity / accessesInfo.getFunctionalities().size())
-                .setScale(2, RoundingMode.HALF_UP)
+                .setScale(3, RoundingMode.HALF_UP)
                 .doubleValue();
     }
 }

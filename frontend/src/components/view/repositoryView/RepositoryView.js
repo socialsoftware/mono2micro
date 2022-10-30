@@ -12,6 +12,7 @@ import {Redo, Search, Undo} from "@mui/icons-material";
 import {RepositoryViewModal} from "./RepositoryViewModal";
 import Popover from "react-bootstrap/Popover";
 import {ViewSearchBar} from "../utils/ViewSearchBar";
+import {RepresentationInfoType} from "../../../models/representation/RepresentationInfoTypes";
 
 export const repositoryViewHelp = (<div>
     Double click a node to see its properties.<br />
@@ -26,9 +27,6 @@ export const repositoryViewHelp = (<div>
     button pressed or use "Ctrl+click" to add nodes.
     Then right click to see available operations.<br />
 </div>);
-
-const REPOSITORY_INFO = "REPOSITORY_INFO";
-export {REPOSITORY_INFO};
 
 export const RepositoryView = () => {
     let { codebaseName, strategyName, similarityName, decompositionName } = useParams();
@@ -57,11 +55,12 @@ export const RepositoryView = () => {
         const response1 = service.getDecomposition(decompositionName).then(response => {
             setNow(n => n + 30);
             setClusters(Object.values(response.clusters));
-            setAuthors(response.authors);
-            setCommitsInCommon(response.commitsInCommon);
-            setTotalCommits(response.totalCommits);
+            let representationInfo = response.representationInformations.find(rep => rep.type === RepresentationInfoType.REPOSITORY_INFO);
+            setAuthors(representationInfo.authors);
+            setCommitsInCommon(representationInfo.commitsInCommon);
+            setTotalCommits(representationInfo.totalCommits);
         });
-        const response2 = service.getEdgeWeights(decompositionName, REPOSITORY_INFO).then(response => { setNow(n => n + 30); setEdgeWeights(response.data);});
+        const response2 = service.getEdgeWeights(decompositionName, RepresentationInfoType.REPOSITORY_INFO).then(response => { setNow(n => n + 30); setEdgeWeights(response.data);});
         Promise.all([response1, response2]).then(() => setDisplayRepository("block"));
     }, []);
 
@@ -149,7 +148,7 @@ export const RepositoryView = () => {
             />
 
             <ViewSearchBar
-                viewType={REPOSITORY_INFO}
+                viewType={RepresentationInfoType.REPOSITORY_INFO}
                 dataFields={['name', 'type', 'cluster', 'entities']}
                 openSearch={openSearch}
                 setOpenSearch={setOpenSearch}

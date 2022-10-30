@@ -10,7 +10,7 @@ import {APIService} from "../../../services/APIService";
 import HttpStatus from "http-status-codes";
 
 
-export const SciPyDecompositionForm = ({type, loadDecompositions}) => {
+export const SciPyDecompositionForm = ({loadDecompositions}) => {
     let { similarityName } = useParams();
 
     const [createExpert, setCreateExpert] = useState(undefined);
@@ -51,8 +51,7 @@ export const SciPyDecompositionForm = ({type, loadDecompositions}) => {
         const service = new APIService();
 
         service.createDecomposition({
-            type: "SCIPY",
-            decompositionType: type,
+            type: "SciPy Clustering",
             similarityName,
             cutType,
             cutValue
@@ -85,6 +84,8 @@ export const SciPyDecompositionForm = ({type, loadDecompositions}) => {
                 loadDecompositions();
                 setIsUploaded("");
                 setCreateExpert(undefined);
+                setExpertName("");
+                setExpertFile(null);
             } else {
                 setIsUploaded("Upload failed.");
             }
@@ -195,7 +196,7 @@ export const SciPyDecompositionForm = ({type, loadDecompositions}) => {
                     <Col sm={{ span: 5, offset: 2 }}>
                         <Button
                             type="submit"
-                            disabled={isUploaded === "Uploading..." || expertName === ""}
+                            disabled={isUploaded === "Uploading..." || expertName === "" || expertFile === null}
                         >
                             Create Expert
                         </Button>

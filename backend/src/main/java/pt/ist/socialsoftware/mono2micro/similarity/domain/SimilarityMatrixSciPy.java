@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONException;
 import org.springframework.data.mongodb.core.mapping.Document;
+import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.Clustering;
+import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.SciPyClustering;
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy;
@@ -62,9 +64,14 @@ public class SimilarityMatrixSciPy extends Similarity {
         return SIMILARITY_MATRIX_SCIPY;
     }
 
+    @Override
+    public Clustering getClustering() {
+        return new SciPyClustering();
+    }
+
     public Set<Short> fillElements(GridFsService gridFsService) throws IOException, JSONException {
         Set<Short> elements = new TreeSet<>();
-        AccessesRepresentation accesses = (AccessesRepresentation) getStrategy().getCodebase().getRepresentationByType(ACCESSES);
+        AccessesRepresentation accesses = (AccessesRepresentation) getStrategy().getCodebase().getRepresentationByFileType(ACCESSES);
         AccessesWeights.fillDataStructures( // TODO THIS METHOD SHOULD BE REFACTORED TO ONLY OBTAIN ELEMENTS FROM ACCESSES FILE
                 elements, new HashMap<>(), new HashMap<>(),
                 new FunctionalityTracesIterator(gridFsService.getFile(accesses.getName()), getTracesMaxLimit()),
@@ -73,8 +80,10 @@ public class SimilarityMatrixSciPy extends Similarity {
         return elements;
     }
 
-    public Map<Short, String> getIDToEntityName(GridFsService gridFsService) throws IOException {
-        IDToEntityRepresentation idToEntity = (IDToEntityRepresentation) getStrategy().getCodebase().getRepresentationByType(ID_TO_ENTITY);
+    @Override
+    public Map<Short, String> getIDToEntityName() throws IOException {
+        GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
+        IDToEntityRepresentation idToEntity = (IDToEntityRepresentation) getStrategy().getCodebase().getRepresentationByFileType(ID_TO_ENTITY);
         return new ObjectMapper().readValue(gridFsService.getFileAsString(idToEntity.getName()), new TypeReference<Map<Short, String>>() {});
     }
 

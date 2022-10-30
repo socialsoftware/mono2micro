@@ -48,7 +48,7 @@ public class AccessesRepresentationService {
 
     public String getIdToEntity(String codebaseName) throws IOException {
         Codebase codebase = codebaseRepository.findByName(codebaseName);
-        Representation representation = codebase.getRepresentationByType(ID_TO_ENTITY);
+        Representation representation = codebase.getRepresentationByFileType(ID_TO_ENTITY);
         return IOUtils.toString(gridFsService.getFile(representation.getName()), StandardCharsets.UTF_8);
     }
 }

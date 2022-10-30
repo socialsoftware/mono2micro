@@ -14,7 +14,6 @@ public abstract class SimilarityDto {
     String strategyName;
     String name;
     String type;
-    String decompositionType;
 
     public String getName() {
         return name;
@@ -46,13 +45,5 @@ public abstract class SimilarityDto {
 
     public void setCodebaseName(String codebaseName) {
         this.codebaseName = codebaseName;
-    }
-
-    public String getDecompositionType() {
-        return decompositionType;
-    }
-
-    public void setDecompositionType(String decompositionType) {
-        this.decompositionType = decompositionType;
     }
 }

@@ -2,11 +2,14 @@ package pt.ist.socialsoftware.mono2micro.similarity.domain;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.Clustering;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDto;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class Similarity {
@@ -54,6 +57,10 @@ public abstract class Similarity {
     public synchronized void removeDecomposition(String decompositionName) {
         this.decompositions = this.decompositions.stream().filter(decomposition -> !decomposition.getName().equals(decompositionName)).collect(Collectors.toList());
     }
+
+    public abstract Clustering getClustering();
+
+    public abstract Map<Short, String> getIDToEntityName() throws Exception;
 
     public abstract void generate() throws Exception;
 

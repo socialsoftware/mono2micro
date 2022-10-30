@@ -4,17 +4,15 @@ import pt.ist.socialsoftware.mono2micro.recommendation.dto.RecommendMatrixSciPyD
 import pt.ist.socialsoftware.mono2micro.recommendation.dto.RecommendationDto;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition.DecompositionType.*;
+import static pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy.RECOMMEND_MATRIX_SCIPY;
 
 public class RecommendationFactory {
     public static Recommendation getRecommendation(RecommendationDto recommendationDto) {
-        switch (recommendationDto.getDecompositionType()) {
-            case ACCESSES_DECOMPOSITION:
-            case REPOSITORY_DECOMPOSITION:
-            case ACC_AND_REPO_DECOMPOSITION:
+        switch (recommendationDto.getType()) {
+            case RECOMMEND_MATRIX_SCIPY:
                 return new RecommendMatrixSciPy((RecommendMatrixSciPyDto) recommendationDto);
             default:
-                throw new RuntimeException("The type \"" + recommendationDto.getDecompositionType() + "\" is not a valid decomposition type for recommendation creation.");
+                throw new RuntimeException("The type \"" + recommendationDto.getType() + "\" is not a valid decomposition type for recommendation creation.");
         }
     }
 

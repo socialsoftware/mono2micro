@@ -1,13 +1,13 @@
 package pt.ist.socialsoftware.mono2micro.metrics.decompositionMetrics;
 
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.AccessesInfo;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.AccessesInfo;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.AccessesInfo.ACCESSES_INFO;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.AccessesInfo.ACCESSES_INFO;
 
 public class PerformanceMetric extends DecompositionMetric { // the average of the number of hops between clusters for all traces
     public static final String PERFORMANCE = "Performance";
@@ -30,7 +30,7 @@ public class PerformanceMetric extends DecompositionMetric { // the average of t
         int graphFunctionalitiesAmount = accessesInfo.getFunctionalities().size();
 
         return BigDecimal.valueOf(performance / graphFunctionalitiesAmount)
-                .setScale(2, RoundingMode.HALF_UP)
+                .setScale(3, RoundingMode.HALF_UP)
                 .doubleValue();
     }
 }

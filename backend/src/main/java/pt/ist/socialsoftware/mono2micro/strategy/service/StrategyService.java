@@ -9,7 +9,6 @@ import pt.ist.socialsoftware.mono2micro.decomposition.service.DecompositionServi
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
 import pt.ist.socialsoftware.mono2micro.recommendation.service.RecommendationService;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
-import pt.ist.socialsoftware.mono2micro.representation.service.RepresentationService;
 import pt.ist.socialsoftware.mono2micro.similarity.service.SimilarityService;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.strategy.repository.StrategyRepository;
@@ -28,28 +27,24 @@ public class StrategyService {
     DecompositionService decompositionService;
 
     @Autowired
-    RepresentationService representationService;
-
-    @Autowired
     SimilarityService similarityService;
 
     @Autowired
     RecommendationService recommendationService;
 
-    public void createStrategy(String codebaseName, String decompositionType, List<String> representationTypes, List<Object> representations) throws Exception {
-        representationService.addRepresentations(codebaseName, representationTypes, representations);
-
+    public void createStrategy(String codebaseName, String algorithmType, List<String> representationTypes) {
         Codebase codebase = codebaseRepository.findByName(codebaseName);
-        if (codebase.getStrategyByDecompositionType(decompositionType) == null) {
-            Strategy strategy = new Strategy(codebase, decompositionType);
+        for (Strategy strategy : codebase.getStrategies())
+            if (strategy.getAlgorithmType().equals(algorithmType) &&
+                    strategy.getRepresentationInfoTypes().size() == representationTypes.size() &&
+                    strategy.getRepresentationInfoTypes().containsAll(representationTypes)) // strategy already exists
+                return;
 
-            if (strategy.getRepresentationTypes().stream().allMatch(representationType -> codebase.getRepresentationByType(representationType) != null)) { // Check if all required representations exist
-                strategy.setCodebase(codebase);
-                codebase.addStrategy(strategy);
-                strategyRepository.save(strategy);
-                codebaseRepository.save(codebase);
-            }
-        }
+        Strategy strategy = new Strategy(codebase, algorithmType, representationTypes);
+        strategy.setCodebase(codebase);
+        codebase.addStrategy(strategy);
+        strategyRepository.save(strategy);
+        codebaseRepository.save(codebase);
     }
 
     public void removeSpecificStrategyProperties(Strategy strategy) {

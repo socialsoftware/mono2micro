@@ -80,15 +80,15 @@ public class RepositoryWeights extends Weights {
     @Override
     public void fillMatrix(GridFsService gridFsService, Similarity similarity, float[][][] rawMatrix, Set<Short> elements, int fillFromIndex) throws IOException {
         fillRawMatrix(rawMatrix, elements, fillFromIndex,
-                new ObjectMapper().readValue(gridFsService.getFileAsString(similarity.getStrategy().getCodebase().getRepresentationByType(AUTHOR).getName()), new TypeReference<Map<Short, ArrayList<String>>>() {}),
-                new ObjectMapper().readValue(gridFsService.getFileAsString(similarity.getStrategy().getCodebase().getRepresentationByType(COMMIT).getName()), new TypeReference<Map<String, Map<String, Integer>>>() {}));
+                new ObjectMapper().readValue(gridFsService.getFileAsString(similarity.getStrategy().getCodebase().getRepresentationByFileType(AUTHOR).getName()), new TypeReference<Map<Short, ArrayList<String>>>() {}),
+                new ObjectMapper().readValue(gridFsService.getFileAsString(similarity.getStrategy().getCodebase().getRepresentationByFileType(COMMIT).getName()), new TypeReference<Map<String, Map<String, Integer>>>() {}));
     }
 
     @Override
     public void fillMatrix(GridFsService gridFsService, Recommendation recommendation, float[][][] rawMatrix, Set<Short> elements, int fillFromIndex) throws IOException {
         fillRawMatrix(rawMatrix, elements, fillFromIndex,
-                new ObjectMapper().readValue(gridFsService.getFileAsString(recommendation.getStrategy().getCodebase().getRepresentationByType(AUTHOR).getName()), new TypeReference<Map<Short, ArrayList<String>>>() {}),
-                new ObjectMapper().readValue(gridFsService.getFileAsString(recommendation.getStrategy().getCodebase().getRepresentationByType(COMMIT).getName()), new TypeReference<Map<String, Map<String, Integer>>>() {}));
+                new ObjectMapper().readValue(gridFsService.getFileAsString(recommendation.getStrategy().getCodebase().getRepresentationByFileType(AUTHOR).getName()), new TypeReference<Map<Short, ArrayList<String>>>() {}),
+                new ObjectMapper().readValue(gridFsService.getFileAsString(recommendation.getStrategy().getCodebase().getRepresentationByFileType(COMMIT).getName()), new TypeReference<Map<String, Map<String, Integer>>>() {}));
     }
 
     public void fillRawMatrix(

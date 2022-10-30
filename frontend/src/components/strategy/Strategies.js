@@ -14,8 +14,9 @@ import HttpStatus from "http-status-codes";
 import {Modal, ModalBody, ModalFooter, ModalTitle} from "react-bootstrap";
 import {toast} from "react-toastify";
 import FormControl from "react-bootstrap/FormControl";
-import {CheckCircle} from "@mui/icons-material";
+import {AddCircleOutline, CheckCircle} from "@mui/icons-material";
 import MUIButton from "@mui/material/Button";
+import Card from "react-bootstrap/Card";
 
 function renderBreadCrumbs(codebaseName) {
     return (
@@ -41,19 +42,32 @@ export function Strategies() {
     const [representations, setRepresentations] = useState([]);
     const [requiredRepresentations, setRequiredRepresentations] = useState([]);
     const [obtainedRepresentations, setObtainedRepresentations] = useState([]);
-    const [decompositionTypes, setDecompositionTypes] = useState(undefined);
-    const [selectedDecompositionType, setSelectedDecompositionType] = useState(undefined);
+    const [selectedRepresentationInfoType, setSelectedRepresentationInfoType] = useState(undefined);
     const [addedRepresentations, setAddedRepresentations] = useState({});
     const [isUploaded, setIsUploaded] = useState("");
     const [canSubmit, setCanSubmit] = useState(false);
+    const [add, setAdd] = useState("");
+    const [representationInfoTypes, setRepresentationInfoTypes] = useState([]);
+    const [codebaseRepresentationInfoTypes, setCodebaseRepresentationInfoTypes] = useState([]);
+    const [strategyRepresentations, setStrategyRepresentations] = useState([]);
+    const [algorithms, setAlgorithms] = useState([]);
+    const [strategyAlgorithm, setStrategyAlgorithm] = useState(undefined);
+    const [supportedRepresentationInfoTypes, setSupportedRepresentationInfoTypes] = useState([]);
 
     //Executed on mount
     useEffect(() => {
         const service = new APIService();
         loadStrategies();
         loadRepresentations();
-        service.getDecompositionTypes(codebaseName).then(response => setDecompositionTypes(response.data));
+        loadCodebaseRepresentationInfoTypes();
+        service.getAlgorithms().then(response => setAlgorithms(response.data));
+        service.getRepresentationInfoTypes().then(response => setRepresentationInfoTypes(response.data));
     }, []);
+
+    function loadCodebaseRepresentationInfoTypes() {
+        const service = new APIService();
+        service.getCodebaseRepresentationInfoTypes(codebaseName).then(response => setCodebaseRepresentationInfoTypes(response.data));
+    }
 
     function loadRepresentations() {
         const service = new APIService();
@@ -76,17 +90,18 @@ export function Strategies() {
         setIsUploaded("Uploading...");
 
         const service = new APIService();
-        service.createStrategy(codebaseName, selectedDecompositionType, addedRepresentations)
+        service.addRepresentations(codebaseName, selectedRepresentationInfoType, addedRepresentations)
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
-                    loadStrategies();
+                    loadCodebaseRepresentationInfoTypes();
                     loadRepresentations();
                     setIsUploaded("");
                 } else setIsUploaded("Upload failed.");
 
-                setSelectedDecompositionType(undefined);
+                setSelectedRepresentationInfoType(undefined);
                 setRequiredRepresentations([]);
                 setAddedRepresentations({});
+                setAdd("");
             })
             .catch(error => {
                 if (error.response !== undefined && error.response.status === HttpStatus.UNAUTHORIZED) {
@@ -108,22 +123,18 @@ export function Strategies() {
         </Popover>
     );
 
-    function handleSelectedDecomposition(decompositionType) {
-        setSelectedDecompositionType(decompositionType);
-        const service = new APIService();
-        service.getRequiredRepresentations(decompositionType).then(response => {
-            setRequiredRepresentations(response.data);
-
-            let representationTypes = representations.map(rep => rep.type);
-            if (response.data.reduce((p, c) => {return p? representationTypes.includes(c) : false}, true))
-                setCanSubmit(true);
-        });
+    function handleSelectedRepresentation(representationType) {
+        setSelectedRepresentationInfoType(representationType);
+        setRequiredRepresentations(representationInfoTypes[representationType]);
+        let representationTypes = representations.map(rep => rep.type);
+        setCanSubmit(representationInfoTypes[representationType].reduce((p, c) => {return p? representationTypes.includes(c) : false}, true));
     }
 
     function addRepresentation(representation, event) {
         setAddedRepresentations(prev => {
             prev[representation] = event.target.files[0];
-            if (Object.keys(prev).reduce((p, c) => {return p? requiredRepresentations.includes(c) : false}, true))
+            let totalRepresentations = [...representations.map(r => r.type), ...Object.keys(prev)];
+            if (requiredRepresentations.reduce((p, c) => {return p? totalRepresentations.includes(c) : false}, true))
                 setCanSubmit(true);
             return prev;
         });
@@ -140,6 +151,7 @@ export function Strategies() {
         let toastId = toast.loading("Deleting representation...", {type: toast.TYPE.INFO});
         const service = new APIService();
         service.deleteRepresentation(representationToDelete.name).then(() => {
+            loadCodebaseRepresentationInfoTypes();
             loadRepresentations();
             loadStrategies();
             toast.dismiss(toastId);
@@ -158,25 +170,116 @@ export function Strategies() {
         });
     }
 
+    function handleStrategiesSubmit(event) {
+        event.preventDefault()
+
+        setIsUploaded("Uploading...");
+
+        const service = new APIService();
+        service.createStrategy(codebaseName, strategyRepresentations, strategyAlgorithm)
+            .then(response => {
+                if (response.status === HttpStatus.CREATED) {
+                    loadStrategies();
+                    setIsUploaded("");
+                } else setIsUploaded("Upload failed.");
+
+                setStrategyRepresentations([]);
+                setStrategyAlgorithm(undefined);
+                setSupportedRepresentationInfoTypes([]);
+                setAdd("");
+            })
+            .catch(error => {
+                if (error.response !== undefined && error.response.status === HttpStatus.UNAUTHORIZED) {
+                    setIsUploaded("Upload failed. Strategy already submitted.");
+                }
+                else if (error.response !== undefined && error.response.status === HttpStatus.NOT_FOUND) {
+                    setIsUploaded("Upload failed. Invalid datafile path.");
+                }
+                else {
+                    setIsUploaded("Upload failed.");
+                }
+            });
+        setCanSubmit(false);
+    }
+
+    function clickStrategyRepresentations(type) {
+        setStrategyRepresentations(prev => {
+            if (prev.includes(type))
+                prev = prev.filter(t => t !== type);
+            else prev = [...prev, type];
+            return prev;
+        });
+    }
+
+    function clickStrategyAlgorithm(type) {
+        const service = new APIService();
+        service.getSupportedRepresentationInfoTypes(type).then(response => {
+            setStrategyAlgorithm(type);
+            setSupportedRepresentationInfoTypes(response.data.filter(rep => codebaseRepresentationInfoTypes.includes(rep)));
+        });
+    }
+
+    function renderStrategies() {
+        return (
+            <Form onSubmit={handleStrategiesSubmit}>
+                <Form.Group as={Row} className="align-items-center mb-3">
+                    <Form.Label as="legend" column sm={2}>
+                        Algorithm
+                    </Form.Label>
+                    <Col sm={3} style={{ paddingLeft: 0 }}>
+                        {algorithms.map(algorithm =>
+                            <Col key={algorithm} sm="auto">
+                                <Form.Check onClick={() => clickStrategyAlgorithm(algorithm)} name="algorithm" label={algorithm} type="radio" id={algorithm} value={algorithm}/>
+                            </Col>
+                        )}
+                    </Col>
+                </Form.Group>
+
+                {supportedRepresentationInfoTypes.length !== 0 &&
+                    <Form.Group as={Row} className="align-items-center mb-3">
+                        <Form.Label as="legend" column sm={2}>
+                            Representation Informations
+                        </Form.Label>
+                        <Col sm={3} style={{ paddingLeft: 0 }}>
+                            {supportedRepresentationInfoTypes.map(type =>
+                                <Col key={type} sm="auto">
+                                    <Form.Check onClick={() => clickStrategyRepresentations(type)} name="representation" label={type} type="checkbox" id={type} value={type} />
+                                </Col>
+                            )}
+                        </Col>
+                    </Form.Group>
+                }
+
+                <Form.Group as={Row} className="align-items-center mb-4">
+                    <Col sm={{offset: 2}}>
+                        <Button type="submit" disabled={strategyAlgorithm === undefined || strategyRepresentations.length === 0}>Submit</Button>
+                        <Form.Text className="ms-2">
+                            {isUploaded}
+                        </Form.Text>
+                    </Col>
+                </Form.Group>
+            </Form>
+        );
+    }
+
     function renderRepresentations() {
         return (
             <Form onSubmit={handleRepresentationsSubmit}>
-                <Form.Group as={Row} controlId="selectDecompositionType" className="align-items-center mb-3">
+                <Form.Group as={Row} controlId="selectRepresentationInfo" className="align-items-center mb-3">
                     <Col sm={2}>
-                        <DropdownButton title={selectedDecompositionType === undefined? "Choose Decomposition Type" : selectedDecompositionType}>
-                            {decompositionTypes !== undefined && decompositionTypes.filter(decompositionType => !strategies || !strategies.find(strategy => strategy.decompositionType === decompositionType))
-                                .map(decompositionType =>
+                        <DropdownButton title={selectedRepresentationInfoType === undefined? "Choose Representation Type" : selectedRepresentationInfoType}>
+                            {representationInfoTypes !== undefined && Object.keys(representationInfoTypes).filter(representationType => !codebaseRepresentationInfoTypes.includes(representationType))
+                                .map(representationType =>
                                     <Dropdown.Item
-                                        key={decompositionType}
-                                        onClick={() => handleSelectedDecomposition(decompositionType)}
+                                        key={representationType}
+                                        onClick={() => handleSelectedRepresentation(representationType)}
                                     >
-                                        {decompositionType}
+                                        {representationType}
                                     </Dropdown.Item>
                             )}
                         </DropdownButton>
                     </Col>
                 </Form.Group>
-
                 {requiredRepresentations.map(representationType =>
                     <React.Fragment key={representationType}>
                         {!obtainedRepresentations.includes(representationType) &&
@@ -207,7 +310,7 @@ export function Strategies() {
                     </React.Fragment>
                 )}
 
-                {selectedDecompositionType !== undefined &&
+                {selectedRepresentationInfoType !== undefined &&
                     <Form.Group as={Row} className="align-items-center mb-4">
                         <Col sm={{offset: 2}}>
                             <Button type="submit" disabled={!canSubmit}>Submit</Button>
@@ -217,32 +320,21 @@ export function Strategies() {
                         </Col>
                     </Form.Group>
                 }
-
-                {strategies.length !== 0 &&
-                    <>
-                        <h4 className="mt-4" style={{color: "#666666"}}>
-                            Strategies
-                        </h4>
-                        <div className={"d-flex flex-wrap mw-100"} style={{gap: '1rem 1rem'}}>
-                            {strategies.map(strategy => strategy.printCard(handleDeleteStrategy))}
-                        </div>
-                    </>
-                }
-                {representations.length !== 0 &&
-                    <>
-                        <h4 className="mt-4" style={{ color: "#666666" }}>
-                            Representations
-                        </h4>
-                        <div className={"d-flex flex-wrap mw-100"} style={{gap: '1rem 1rem'}}>
-                            {representations.map(representation => representation.printCard(handleDeleteRepresentation))}
-                        </div>
-                    </>
-                }
             </Form>
         );
     }
 
-    function renderDeletePopup() {
+    function addCard(add) {
+        return (
+            <Card className={"text-center"} key="add" style={{cursor: "pointer", borderStyle: "dashed", borderWidth: "thick", backgroundColor: "#00000000", width: '13rem'}} onClick={() => setAdd(add)}>
+                <div style={{ position: "relative", marginTop: "50%", marginBottom: "40%", marginLeft: "50%", transform: "translate(-50%,-50%)" }}>
+                    <AddCircleOutline style={{transform: "scale(3)", color: "#00000022" }}/>
+                </div>
+            </Card>
+        );
+    }
+
+    function renderDeleteModal() {
         const closePopup = function () {setShowPopup(false); setRepresentationToDelete(undefined)};
 
         return <Modal
@@ -263,9 +355,38 @@ export function Strategies() {
             </Modal>;
     }
 
+    function renderAddModal() {
+        const closeAddPopup = function () {
+            setAdd("");
+            setStrategyRepresentations([]);
+            setStrategyAlgorithm(undefined);
+            setSupportedRepresentationInfoTypes([]);
+        };
+
+        return <Modal
+            show={add !== ""}
+            onHide={() => closeAddPopup()}
+            backdrop="static"
+            size='lg'
+        >
+            <ModalTitle>&ensp;Add {add}</ModalTitle>
+            <ModalBody>
+                {add === "Strategy" && renderStrategies()}
+                {add === "Representation" && renderRepresentations()}
+            </ModalBody>
+            <ModalFooter>
+                <Button variant="secondary" onClick={() => closeAddPopup()}>
+                    Close
+                </Button>
+            </ModalFooter>
+        </Modal>;
+    }
+
     return (
         <div style={{ paddingLeft: "2rem" }}>
-            { renderDeletePopup() }
+            { renderDeleteModal() }
+
+            { renderAddModal() }
 
             <Row className="mt-4">
                 <Col>
@@ -278,7 +399,19 @@ export function Strategies() {
                 </Col>
             </Row>
 
-            { renderRepresentations() }
+            <h4 className="mt-4" style={{ color: "#666666" }}>
+                Representation Files
+            </h4>
+            <div className={"d-flex flex-wrap mw-100"} style={{gap: '1rem 1rem'}}>
+                {[...representations.map(representation => representation.printCard(handleDeleteRepresentation)), addCard("Representation")]}
+            </div>
+
+            <h4 className="mt-4" style={{color: "#666666"}}>
+                Strategies
+            </h4>
+            <div className={"d-flex flex-wrap mw-100"} style={{gap: '1rem 1rem'}}>
+                {[...strategies.map(strategy => strategy.printCard(handleDeleteStrategy)), addCard("Strategy")]}
+            </div>
         </div>
     );
 }

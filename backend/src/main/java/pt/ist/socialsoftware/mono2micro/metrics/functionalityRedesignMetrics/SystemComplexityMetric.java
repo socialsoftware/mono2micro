@@ -2,7 +2,7 @@ package pt.ist.socialsoftware.mono2micro.metrics.functionalityRedesignMetrics;
 
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.AccessesInfo;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.AccessesInfo;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.functionality.LocalTransactionTypes;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;

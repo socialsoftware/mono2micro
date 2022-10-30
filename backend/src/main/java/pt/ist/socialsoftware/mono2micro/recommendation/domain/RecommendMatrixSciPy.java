@@ -6,7 +6,6 @@ import org.json.JSONException;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.SciPyClustering;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.DecompositionFactory;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.SciPyRequestDto;
 import pt.ist.socialsoftware.mono2micro.decomposition.service.DecompositionService;
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
@@ -50,7 +49,6 @@ public class RecommendMatrixSciPy extends Recommendation {
     public RecommendMatrixSciPy() {}
 
     public RecommendMatrixSciPy(RecommendMatrixSciPyDto dto) {
-        this.decompositionType = dto.getDecompositionType();
         this.profile = dto.getProfile();
         this.tracesMaxLimit = dto.getTracesMaxLimit();
         this.traceType = dto.getTraceType();
@@ -140,7 +138,7 @@ public class RecommendMatrixSciPy extends Recommendation {
 
     private Set<Short> fillElements(GridFsService gridFsService) throws IOException, JSONException {
         Set<Short> elements = new TreeSet<>();
-        AccessesRepresentation accesses = (AccessesRepresentation) getStrategy().getCodebase().getRepresentationByType(ACCESSES);
+        AccessesRepresentation accesses = (AccessesRepresentation) getStrategy().getCodebase().getRepresentationByFileType(ACCESSES);
         AccessesWeights.fillDataStructures( // TODO THIS METHOD SHOULD BE REFACTORED TO ONLY OBTAIN ELEMENTS FROM ACCESSES FILE
                 elements, new HashMap<>(), new HashMap<>(),
                 new FunctionalityTracesIterator(gridFsService.getFile(accesses.getName()), getTracesMaxLimit()),
@@ -158,7 +156,7 @@ public class RecommendMatrixSciPy extends Recommendation {
     }
 
     public Map<Short, String> getIDToEntityName(GridFsService gridFsService) throws IOException {
-        IDToEntityRepresentation idToEntity = (IDToEntityRepresentation) getStrategy().getCodebase().getRepresentationByType(ID_TO_ENTITY);
+        IDToEntityRepresentation idToEntity = (IDToEntityRepresentation) getStrategy().getCodebase().getRepresentationByFileType(ID_TO_ENTITY);
         return new ObjectMapper().readValue(gridFsService.getFileAsString(idToEntity.getName()), new TypeReference<Map<Short, String>>() {});
     }
 
@@ -237,13 +235,7 @@ public class RecommendMatrixSciPy extends Recommendation {
                 similarity.setDendrogram(new Dendrogram(similarity.getName(), similarity.getSimilarityMatrix().getName(), similarity.getLinkageType()));
             }
 
-            Decomposition decomposition = DecompositionFactory.getDecomposition(similarity.getStrategy().getDecompositionType());
-            decomposition.setSimilarity(similarity);
-            similarity.addDecomposition(decomposition);
-            decomposition.setStrategy(similarity.getStrategy());
-            similarity.getStrategy().addDecomposition(decomposition);
-
-            clusteringAlgorithm.generateClusters(decomposition, new SciPyRequestDto(similarity.getName(), "N", Float.parseFloat(properties[properties.length - 1])));
+            Decomposition decomposition = clusteringAlgorithm.generateDecomposition(similarity, new SciPyRequestDto(similarity.getName(), "N", Float.parseFloat(properties[properties.length - 1])));
             decompositionService.setupDecomposition(decomposition);
         }
     }

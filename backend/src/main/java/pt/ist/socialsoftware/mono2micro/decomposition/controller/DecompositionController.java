@@ -21,7 +21,6 @@ import pt.ist.socialsoftware.mono2micro.operation.transfer.TransferOperation;
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/mono2micro")
@@ -31,34 +30,6 @@ public class DecompositionController {
 
 	@Autowired
 	DecompositionService decompositionService;
-
-	@RequestMapping(value = "/decomposition/getDecompositionTypes", method = RequestMethod.GET)
-	public ResponseEntity<String[]> getDecompositionTypes() {
-		logger.debug("getDecompositionTypes");
-
-		try {
-			return new ResponseEntity<>(decompositionService.getDecompositionTypes(), HttpStatus.OK);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
-	}
-
-	@RequestMapping(value = "/decomposition/{decompositionType}/getRequiredRepresentations", method = RequestMethod.GET)
-	public ResponseEntity<Set<String>> getRequiredRepresentations(
-			@PathVariable String decompositionType
-	) {
-		logger.debug("getRequiredRepresentations");
-
-		try {
-			return new ResponseEntity<>(decompositionService.getRequiredRepresentations(decompositionType), HttpStatus.OK);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
-	}
 
 	@RequestMapping(value = "/similarity/createDecomposition", method = RequestMethod.POST)
 	public ResponseEntity<HttpStatus> createDecomposition(

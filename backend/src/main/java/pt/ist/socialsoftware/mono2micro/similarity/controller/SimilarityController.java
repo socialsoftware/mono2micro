@@ -66,7 +66,7 @@ public class SimilarityController {
 
 		try {
 			return new ResponseEntity<>(
-					DecompositionDtoFactory.getFactory().getDecompositionDtos(similarityService.getDecompositions(similarityName)),
+					DecompositionDtoFactory.getDecompositionDtos(similarityService.getDecompositions(similarityName)),
 					HttpStatus.OK
 			);
 

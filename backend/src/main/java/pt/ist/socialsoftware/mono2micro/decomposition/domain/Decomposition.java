@@ -3,8 +3,7 @@ package pt.ist.socialsoftware.mono2micro.decomposition.domain;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
-import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.Clustering;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo.RepresentationInformation;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.RepresentationInfo;
 import pt.ist.socialsoftware.mono2micro.element.Element;
 import pt.ist.socialsoftware.mono2micro.history.domain.History;
 import pt.ist.socialsoftware.mono2micro.operation.formCluster.FormClusterOperation;
@@ -18,12 +17,6 @@ import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import java.util.*;
 
 public abstract class Decomposition {
-	public static class DecompositionType {
-		public static final String ACC_AND_REPO_DECOMPOSITION = "Accesses and Repository Decomposition";
-		public static final String ACCESSES_DECOMPOSITION = "Accesses Decomposition";
-		public static final String REPOSITORY_DECOMPOSITION = "Repository Decomposition";
-	}
-
 	@Id
 	String name;
 	String type;
@@ -38,10 +31,8 @@ public abstract class Decomposition {
 	@DBRef
     History history;
 
-	List<RepresentationInformation> representationInformations = new ArrayList<>();
+	List<RepresentationInfo> representationInfos = new ArrayList<>();
 
-	public abstract Set<String> getRequiredRepresentations(); // Provides the required representations
-	public abstract Clustering getClusteringAlgorithm();
 	public abstract void setup() throws Exception;
 	public abstract void update() throws Exception;
 	public abstract void deleteProperties();
@@ -95,23 +86,21 @@ public abstract class Decomposition {
 		this.metrics.put(metricType, metricValue);
 	}
 
-	public List<RepresentationInformation> getRepresentationInformations() {
-		return representationInformations;
+	public List<RepresentationInfo> getRepresentationInformations() {
+		return representationInfos;
 	}
 
-	public void setRepresentationInformations(List<RepresentationInformation> representationInformations) {
-		this.representationInformations = representationInformations;
+	public void setRepresentationInformations(List<RepresentationInfo> representationInfos) {
+		this.representationInfos = representationInfos;
 	}
 
-	public void addRepresentationInformation(RepresentationInformation representationInformation) {
-		this.representationInformations.add(representationInformation);
+	public void addRepresentationInformation(RepresentationInfo representationInfo) {
+		this.representationInfos.add(representationInfo);
 	}
 
-	public RepresentationInformation getRepresentationInformationByType(String type) {
-		return this.representationInformations.stream().filter(r -> r.getType().equals(type)).findFirst().orElse(null);
+	public RepresentationInfo getRepresentationInformationByType(String type) {
+		return this.representationInfos.stream().filter(r -> r.getType().equals(type)).findFirst().orElse(null);
 	}
-
-	public abstract List<RepresentationInformation> getRepresentationInformationsByStrategy(String type);
 
 	public Strategy getStrategy() {
 		return strategy;
@@ -190,12 +179,12 @@ public abstract class Decomposition {
 	}
 
 	public String getEdgeWeights(String representationInfo) throws Exception {
-		RepresentationInformation representationInformation = getRepresentationInformationByType(representationInfo);
+		RepresentationInfo representationInformation = getRepresentationInformationByType(representationInfo);
 		return representationInformation.getEdgeWeights(this);
 	}
 
 	public String getSearchItems(String representationInfo) throws Exception {
-		RepresentationInformation representationInformation = getRepresentationInformationByType(representationInfo);
+		RepresentationInfo representationInformation = getRepresentationInformationByType(representationInfo);
 		return representationInformation.getSearchItems(this);
 	}
 }

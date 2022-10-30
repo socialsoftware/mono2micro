@@ -5,7 +5,7 @@ type Decomposition struct {
 	Expert                     bool                         `bson:"expert,omitempty"`
 	Metrics                    map[string]float64           `bson:"metrics,omitempty"`
 	Clusters                   map[string]*Cluster          `bson:"clusters,omitempty"`
-	RepresentationInformations []RepresentationInformations `bson:"representationInformations,omitempty"`
+	RepresentationInformations []RepresentationInformations `bson:"representationInfos,omitempty"`
 	EntityIDToClusterName      map[int]string               `bson:"entityIDToClusterName,omitempty"`
 }
 

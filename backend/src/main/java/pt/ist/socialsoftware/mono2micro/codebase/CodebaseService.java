@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.codebase.repository.CodebaseRepository;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.RepresentationInfoType;
 import pt.ist.socialsoftware.mono2micro.representation.domain.Representation;
 import pt.ist.socialsoftware.mono2micro.representation.dto.RepresentationDto;
 import pt.ist.socialsoftware.mono2micro.representation.dto.RepresentationDtoFactory;
@@ -13,6 +14,7 @@ import pt.ist.socialsoftware.mono2micro.strategy.service.StrategyService;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CodebaseService {
@@ -30,6 +32,15 @@ public class CodebaseService {
         if (codebaseRepository.existsByName(codebaseName))
             throw new KeyAlreadyExistsException();
         codebaseRepository.save(new Codebase(codebaseName));
+    }
+
+    public Map<String, List<String>> getRepresentationInfoTypes() {
+        return RepresentationInfoType.representationInfoTypeToFiles;
+    }
+
+    public List<String> getCodebaseRepresentationInfoTypes(String codebaseName) {
+        Codebase codebase = codebaseRepository.findByName(codebaseName);
+        return codebase.getRepresentationInfoTypes();
     }
 
     public List<Codebase> getCodebases() {

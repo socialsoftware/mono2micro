@@ -16,6 +16,7 @@ import pt.ist.socialsoftware.mono2micro.strategy.dto.StrategyDto;
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -100,7 +101,7 @@ public class CodebaseController {
 		logger.debug("getCodebaseDecompositions");
 
 		try {
-			List<DecompositionDto> decompositionDtos = DecompositionDtoFactory.getFactory().getDecompositionDtos(
+			List<DecompositionDto> decompositionDtos = DecompositionDtoFactory.getDecompositionDtos(
 					codebaseService.getCodebaseStrategies(codebaseName).stream()
 							.map(Strategy::getDecompositions)
 							.flatMap(Collection::stream)
@@ -147,4 +148,32 @@ public class CodebaseController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+	@RequestMapping(value = "/codebase/{codebaseName}/getCodebaseRepresentationInfoTypes", method = RequestMethod.GET)
+	public ResponseEntity<List<String>> getCodebaseRepresentationInfoTypes(
+			@PathVariable String codebaseName
+	){
+		logger.debug("getCodebaseRepresentationInfoTypes");
+
+		try {
+			return new ResponseEntity<>(codebaseService.getCodebaseRepresentationInfoTypes(codebaseName), HttpStatus.OK);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@RequestMapping(value = "/codebase/getRepresentationInfoTypes", method = RequestMethod.GET)
+	public ResponseEntity<Map<String, List<String>>> getRepresentationInfoTypes() {
+		logger.debug("getRepresentationInfoTypes");
+
+		try {
+			return new ResponseEntity<>(codebaseService.getRepresentationInfoTypes(), HttpStatus.OK);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
 }

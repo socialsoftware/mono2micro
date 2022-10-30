@@ -5,9 +5,7 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import {useParams} from "react-router-dom";
 import {SciPyDecompositionForm} from "./forms/SciPyDecompositionForm";
 import {toast, ToastContainer} from "react-toastify";
-import {ACCESSES_DECOMPOSITION} from "../../models/decompositions/AccessesDecomposition";
-import {REPOSITORY_DECOMPOSITION} from "../../models/decompositions/RepositoryDecomposition";
-import {ACC_AND_REPO_DECOMPOSITION} from "../../models/decompositions/AccAndRepoDecomposition";
+import {SIMILARITY_MATRIX_SCIPY} from "../../models/similarity/SimilarityMatrixSciPy";
 
 export const Decompositions = () => {
     let { codebaseName, strategyName, similarityName } = useParams();
@@ -84,11 +82,8 @@ export const Decompositions = () => {
                 Decomposition Creation Method
             </h4>
 
-            {(similarity.decompositionType === ACCESSES_DECOMPOSITION || similarity.decompositionType === REPOSITORY_DECOMPOSITION || similarity.decompositionType === ACC_AND_REPO_DECOMPOSITION) &&
-                <SciPyDecompositionForm
-                    type={similarity.decompositionType}
-                    loadDecompositions={loadDecompositions}
-                />
+            {similarity.type === SIMILARITY_MATRIX_SCIPY &&
+                <SciPyDecompositionForm loadDecompositions={loadDecompositions}/>
             }
 
             {decompositions.length !== 0 &&

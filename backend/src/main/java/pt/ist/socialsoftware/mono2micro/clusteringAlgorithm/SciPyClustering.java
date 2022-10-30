@@ -20,10 +20,12 @@ import java.io.ByteArrayInputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.AccessesInfo.ACCESSES_INFO;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.RepositoryInfo.REPOSITORY_INFO;
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.SCRIPTS_ADDRESS;
 
 public class SciPyClustering extends Clustering {
-    public static final String SCIPY = "SCIPY";
+    public static final String SCIPY = "SciPy Clustering";
     static final int MIN_CLUSTERS = 3, CLUSTER_STEP = 1;
 
     private final GridFsService gridFsService;
@@ -38,18 +40,29 @@ public class SciPyClustering extends Clustering {
     }
 
     @Override
-    public void generateClusters(Decomposition decomposition, DecompositionRequest request) throws Exception {
+    public List<String> getSupportedRepresentationInfoTypes() {
+        return new ArrayList<String>() {{add(ACCESSES_INFO); add(REPOSITORY_INFO);}};
+    }
+
+    @Override
+    public Decomposition generateDecomposition(Similarity s, DecompositionRequest request) throws Exception {
         SciPyRequestDto dto = (SciPyRequestDto) request;
-        SimilarityMatrixSciPy similarity = (SimilarityMatrixSciPy) decomposition.getSimilarity();
+        SimilarityMatrixSciPy similarity = (SimilarityMatrixSciPy) s;
         Map<Short, String> idToEntity;
 
+        PartitionsDecomposition decomposition = new PartitionsDecomposition(dto);
+        decomposition.setSimilarity(similarity);
+        similarity.addDecomposition(decomposition);
+        decomposition.setStrategy(similarity.getStrategy());
+        similarity.getStrategy().addDecomposition(decomposition);
         decomposition.setName(getDecompositionName(similarity, dto.getCutType(), dto.getCutValue()));
 
         JSONObject clustersJSON = invokePythonCut(decomposition, similarity.getSimilarityMatrix().getName(), similarity.getLinkageType(), dto.getCutType(), dto.getCutValue());
 
-        idToEntity = similarity.getIDToEntityName(gridFsService);
+        idToEntity = similarity.getIDToEntityName();
 
         addClustersAndEntities(decomposition, clustersJSON, idToEntity);
+        return decomposition;
     }
 
     private JSONObject invokePythonCut(Decomposition decomposition, String similarityMatrixName, String linkageType, String cutType, float cutValue) {
@@ -133,7 +146,7 @@ public class SciPyClustering extends Clustering {
 
             for (int numberOfClusters = MIN_CLUSTERS; numberOfClusters <= maxClusters; numberOfClusters += CLUSTER_STEP) {
                 try {
-                    Decomposition decomposition = DecompositionFactory.getDecomposition(recommendation.getDecompositionType());
+                    Decomposition decomposition = new PartitionsDecomposition();
                     decomposition.setStrategy(recommendation.getStrategy());
 
                     decomposition.setName(similarityMatrixName + "," + numberOfClusters);

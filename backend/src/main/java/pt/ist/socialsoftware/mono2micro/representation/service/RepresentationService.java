@@ -1,11 +1,11 @@
 package pt.ist.socialsoftware.mono2micro.representation.service;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.codebase.repository.CodebaseRepository;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.RepresentationInfoType;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.representation.domain.Representation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.RepresentationFactory;
@@ -14,11 +14,9 @@ import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.strategy.service.StrategyService;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,14 +34,17 @@ public class RepresentationService {
     @Autowired
     GridFsService gridFsService;
 
-    public void addRepresentations(String codebaseName, List<String> representationTypes, List<Object> representations) throws Exception {
+    public void addRepresentations(String codebaseName, String representationInfoType, List<String> representationTypes, List<Object> representations) throws Exception {
+        Codebase codebase = codebaseRepository.findByName(codebaseName);
 
-        if (representationTypes == null && representations == null) // representations already added
+        if (representationTypes == null && representations == null) { // representations already added
+            codebase.addRepresentationInfoType(representationInfoType);
+            codebaseRepository.save(codebase);
             return;
+        }
         if (representationTypes == null || representations == null || representationTypes.size() != representations.size())
             throw new RuntimeException("Number of representations is different from the number of representation types.");
 
-        Codebase codebase = codebaseRepository.findByName(codebaseName);
         List<String> availableRepresentationsTypes = codebase.getRepresentations().stream().map(Representation::getType).collect(Collectors.toList());
 
         for (String representationType : representationTypes)
@@ -59,6 +60,7 @@ public class RepresentationService {
             gridFsService.saveFile(new ByteArrayInputStream(representationFileStream), fileName);
             representationRepository.save(representation);
         }
+        codebase.addRepresentationInfoType(representationInfoType);
         codebaseRepository.save(codebase);
     }
 
@@ -84,10 +86,24 @@ public class RepresentationService {
         codebase.removeRepresentation(representationId);
         ArrayList<Strategy> strategies = new ArrayList<>();
         for (Strategy strategy: codebase.getStrategies()) {
-            if (strategy.getRepresentationTypes().contains(representation.getType()))
-                strategyService.deleteStrategy(strategy);
-            else strategies.add(strategy);
+            boolean deleted = false;
+            for (String representationType: strategy.getRepresentationInfoTypes()) {
+                List<String> representationTypes = RepresentationInfoType.representationInfoTypeToFiles.get(representationType);
+                if (representationTypes.contains(representation.getType())) {
+                    strategyService.deleteStrategy(strategy);
+                    deleted = true;
+                    break;
+                }
+            }
+            if (!deleted)
+                strategies.add(strategy);
         }
+        List<String> toRemove = new ArrayList<>();
+        for (Map.Entry<String, List<String>> representationTypes: RepresentationInfoType.representationInfoTypeToFiles.entrySet()) {
+            if (representationTypes.getValue().contains(representation.getType()))
+                toRemove.add(representationTypes.getKey());
+        }
+        codebase.removeRepresentationInfoTypes(toRemove);
         codebase.setStrategies(strategies);
         gridFsService.deleteFile(representation.getName());
         codebaseRepository.save(codebase);

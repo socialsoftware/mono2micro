@@ -5,9 +5,6 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import {useParams} from "react-router-dom";
 import {APIService} from "../../services/APIService";
 import {toast, ToastContainer} from "react-toastify";
-import {ACCESSES_DECOMPOSITION} from "../../models/decompositions/AccessesDecomposition";
-import {REPOSITORY_DECOMPOSITION} from "../../models/decompositions/RepositoryDecomposition";
-import {ACC_AND_REPO_DECOMPOSITION} from "../../models/decompositions/AccAndRepoDecomposition";
 import {RecommendMatrixSciPy} from "./forms/RecommendMatrixSciPy";
 
 export const Recommendations = () => {
@@ -82,9 +79,7 @@ export const Recommendations = () => {
             {strategy !== undefined &&
                 <>
                     {/*Add form of each similarity type like the next block to request the required elements for its creation*/}
-                    {(strategy.decompositionType === ACCESSES_DECOMPOSITION ||
-                            strategy.decompositionType === REPOSITORY_DECOMPOSITION ||
-                            strategy.decompositionType === ACC_AND_REPO_DECOMPOSITION) &&
+                    {strategy.algorithmType === "SciPy Clustering" &&
                         <>
                             <RecommendMatrixSciPy
                                 codebaseName={codebaseName}

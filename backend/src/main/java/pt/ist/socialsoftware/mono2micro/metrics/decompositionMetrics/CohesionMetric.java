@@ -46,7 +46,7 @@ public class CohesionMetric extends DecompositionMetric {
             }
 
             clusterCohesion /= FunctionalitiesThatAccessThisCluster.size();
-            clusterCohesion = BigDecimal.valueOf(clusterCohesion).setScale(2, RoundingMode.HALF_UP).doubleValue();
+            clusterCohesion = BigDecimal.valueOf(clusterCohesion).setScale(3, RoundingMode.HALF_UP).doubleValue();
             cluster.addMetric(COHESION, clusterCohesion);
             totalCohesion += clusterCohesion;
         }
@@ -54,7 +54,7 @@ public class CohesionMetric extends DecompositionMetric {
         int graphClustersAmount = decomposition.getClusters().size();
 
         return BigDecimal.valueOf(totalCohesion / graphClustersAmount)
-                .setScale(2, RoundingMode.HALF_UP)
+                .setScale(3, RoundingMode.HALF_UP)
                 .doubleValue();
     }
 }

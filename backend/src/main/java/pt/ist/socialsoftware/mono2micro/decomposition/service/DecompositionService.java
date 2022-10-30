@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.Clustering;
+import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.Expert;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.DecompositionFactory;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.ExpertRequest;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
@@ -21,9 +21,6 @@ import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.strategy.repository.StrategyRepository;
 
 import java.util.Optional;
-import java.util.Set;
-
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition.DecompositionType.*;
 
 @Service
 public class DecompositionService {
@@ -39,41 +36,20 @@ public class DecompositionService {
     @Autowired
     HistoryService historyService;
 
-    public String[] getDecompositionTypes() {
-        return new String[] { // LOG NEW DECOMPOSITION TYPES HERE
-                ACCESSES_DECOMPOSITION,
-                REPOSITORY_DECOMPOSITION,
-                ACC_AND_REPO_DECOMPOSITION,
-        };
-    }
-
     public void createDecomposition(DecompositionRequest request) throws Exception {
-        Decomposition decomposition = DecompositionFactory.getDecomposition(request);
-
         Similarity similarity = similarityRepository.findByName(request.getSimilarityName());
-        decomposition.setSimilarity(similarity);
-        similarity.addDecomposition(decomposition);
-        decomposition.setStrategy(similarity.getStrategy());
-        similarity.getStrategy().addDecomposition(decomposition);
 
-        Clustering clustering = decomposition.getClusteringAlgorithm();
-        clustering.generateClusters(decomposition, request);
+        Clustering clustering = similarity.getClustering();
+        Decomposition decomposition = clustering.generateDecomposition(similarity, request);
 
         setupDecomposition(decomposition);
     }
 
     public void createExpertDecomposition(String similarityName, String expertName, Optional<MultipartFile> expertFile) throws Exception {
         Similarity similarity = similarityRepository.findByName(similarityName);
-        Decomposition decomposition = DecompositionFactory.getDecomposition(similarity.getStrategy().getDecompositionType());
+        Expert expert = new Expert();
 
-        decomposition.setExpert(true);
-        decomposition.setSimilarity(similarity);
-        similarity.addDecomposition(decomposition);
-        decomposition.setStrategy(similarity.getStrategy());
-        similarity.getStrategy().addDecomposition(decomposition);
-
-        Clustering clustering = decomposition.getClusteringAlgorithm();
-        clustering.generateClusters(decomposition, new ExpertRequest(expertName, expertFile));
+        Decomposition decomposition = expert.generateClusters(similarity, new ExpertRequest(expertName, expertFile));
 
         setupDecomposition(decomposition);
     }
@@ -97,10 +73,6 @@ public class DecompositionService {
             decompositionRepository.save(decomposition);
         }
         return decomposition;
-    }
-
-    public Set<String> getRequiredRepresentations(String decompositionType) {
-        return DecompositionFactory.getDecomposition(decompositionType).getRequiredRepresentations();
     }
 
     public Decomposition getDecomposition(String decompositionName) {

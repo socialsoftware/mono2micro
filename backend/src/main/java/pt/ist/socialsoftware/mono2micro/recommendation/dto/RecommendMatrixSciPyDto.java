@@ -21,7 +21,6 @@ public class RecommendMatrixSciPyDto extends RecommendationDto {
         this.type = RECOMMEND_MATRIX_SCIPY;
         this.setStrategyName(recommendation.getStrategy().getName());
         this.name = recommendation.getName();
-        this.decompositionType = recommendation.getDecompositionType();
         this.profile = recommendation.getProfile();
         this.linkageType = recommendation.getLinkageType();
         this.tracesMaxLimit = recommendation.getTracesMaxLimit();

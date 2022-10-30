@@ -5,20 +5,18 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.DecompositionFactory;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Document("strategy")
 public class Strategy {
     @Id
     private String name;
-    private String decompositionType;
+    private String algorithmType;
     @DBRef
     private Codebase codebase;
     @DBRef(lazy = true)
@@ -27,30 +25,34 @@ public class Strategy {
     private List<Similarity> similarities = new ArrayList<>();
     @DBRef(lazy = true)
     private List<Recommendation> recommendations = new ArrayList<>();
-    private Set<String> representationTypes;
+    private List<String> representationInfoTypes;
 
     public Strategy() {}
 
-    public Strategy(Codebase codebase, String decompositionType) {
-        this.name = codebase.getName() + " - " + decompositionType + " Strategy";
-        this.decompositionType = decompositionType;
-        this.representationTypes = DecompositionFactory.getDecomposition(decompositionType).getRequiredRepresentations();
+    public Strategy(Codebase codebase, String algorithmType, List<String> representationInfoTypes) {
+        StringBuilder shortForm = new StringBuilder();
+        shortForm.append(representationInfoTypes.get(0), 0, Math.min(representationInfoTypes.get(0).length(), 3));
+        for (int i = 1; i < representationInfoTypes.size(); i++)
+            shortForm.append("+" + representationInfoTypes.get(i), 0, Math.min(representationInfoTypes.get(i).length(), 4));
+        this.name = codebase.getName() + " - " + shortForm + " Strategy";
+        this.algorithmType = algorithmType;
+        this.representationInfoTypes = representationInfoTypes;
     }
 
-    public String getDecompositionType() {
-        return decompositionType;
+    public String getAlgorithmType() {
+        return algorithmType;
     }
 
-    public void setDecompositionType(String decompositionType) {
-        this.decompositionType = decompositionType;
+    public void setAlgorithmType(String algorithmType) {
+        this.algorithmType = algorithmType;
     }
 
-    public Set<String> getRepresentationTypes() {
-        return representationTypes;
+    public List<String> getRepresentationInfoTypes() {
+        return representationInfoTypes;
     }
 
-    public void setRepresentationTypes(Set<String> representationTypes) {
-        this.representationTypes = representationTypes;
+    public void setRepresentationInfoTypes(List<String> representationInfoTypes) {
+        this.representationInfoTypes = representationInfoTypes;
     }
 
     public String getName() {

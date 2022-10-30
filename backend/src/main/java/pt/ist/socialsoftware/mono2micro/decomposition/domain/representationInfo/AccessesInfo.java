@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.decomposition.domain.representationsInfo;
+package pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo;
 
 import org.apache.commons.io.IOUtils;
 import org.jgrapht.graph.DefaultEdge;
@@ -21,7 +21,6 @@ import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.metrics.decompositionMetrics.*;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
-import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.dendrogram.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
@@ -35,15 +34,10 @@ import java.util.*;
 import static org.jgrapht.Graphs.successorListOf;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
 
-public class AccessesInfo extends RepresentationInformation {
-    public static final String ACCESSES_INFO = "ACCESSES_INFO";
+public class AccessesInfo extends RepresentationInfo {
+    public static final String ACCESSES_INFO = "Accesses Based";
     @DBRef(lazy = true)
     private Map<String, Functionality> functionalities = new HashMap<>(); // <functionalityName, Functionality>
-
-    private static final List<String> requiredRepresentations = new ArrayList<String>() {{
-        add(AccessesRepresentation.ACCESSES);
-        add(IDToEntityRepresentation.ID_TO_ENTITY);
-    }};
 
     public AccessesInfo() {}
 
@@ -65,11 +59,6 @@ public class AccessesInfo extends RepresentationInformation {
     @Override
     public String getType() {
         return ACCESSES_INFO;
-    }
-
-    @Override
-    public List<String> getRequiredRepresentations() {
-        return requiredRepresentations;
     }
 
     @Override
@@ -126,7 +115,7 @@ public class AccessesInfo extends RepresentationInformation {
         FunctionalityRepository functionalityRepository = ContextManager.get().getBean(FunctionalityRepository.class);
 
         SimilarityMatrixSciPy similarity = (SimilarityMatrixSciPy) decomposition.getSimilarity();
-        AccessesRepresentation accesses = (AccessesRepresentation) decomposition.getStrategy().getCodebase().getRepresentationByType(ACCESSES);
+        AccessesRepresentation accesses = (AccessesRepresentation) decomposition.getStrategy().getCodebase().getRepresentationByFileType(ACCESSES);
         InputStream inputStream = gridFsService.getFile(accesses.getName());
         Set<String> profileFunctionalities = accesses.getProfile(similarity.getProfile());
 

@@ -30,7 +30,7 @@ public class CouplingMetric extends DecompositionMetric {
 
             clusterCoupling = graphClustersAmount == 1 ? 0 : clusterCoupling / (graphClustersAmount - 1);
             clusterCoupling = BigDecimal.valueOf(clusterCoupling)
-                    .setScale(2, RoundingMode.HALF_UP)
+                    .setScale(3, RoundingMode.HALF_UP)
                     .doubleValue();
 
             cluster1.addMetric(COUPLING, clusterCoupling);
@@ -39,7 +39,7 @@ public class CouplingMetric extends DecompositionMetric {
         }
 
         return BigDecimal.valueOf(coupling / graphClustersAmount)
-                .setScale(2, RoundingMode.HALF_UP)
+                .setScale(3, RoundingMode.HALF_UP)
                 .doubleValue();
     }
 }

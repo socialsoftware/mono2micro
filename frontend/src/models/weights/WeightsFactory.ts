@@ -1,9 +1,7 @@
-import {ACCESSES_DECOMPOSITION} from "../decompositions/AccessesDecomposition";
-import {REPOSITORY_DECOMPOSITION} from "../decompositions/RepositoryDecomposition";
-import {ACC_AND_REPO_DECOMPOSITION} from "../decompositions/AccAndRepoDecomposition";
 import AccessesWeights, {ACCESSES_WEIGHTS} from "./AccessesWeights";
 import Weights from "./Weights";
 import RepositoryWeights, {REPOSITORY_WEIGHTS} from "./RepositoryWeights";
+import {RepresentationInfoType} from "../representation/RepresentationInfoTypes";
 
 export abstract class WeightsFactory {
     static getWeights(weights: any) : Weights {
@@ -21,19 +19,17 @@ export abstract class WeightsFactory {
         return weightsList.map(weights => WeightsFactory.getWeights(weights));
     }
 
-    static getWeightListByDecompositionType(decompositionType: string) : Weights[] {
-        switch (decompositionType) {
-            case ACCESSES_DECOMPOSITION:
-                return [new AccessesWeights({accessMetricWeight: 25, writeMetricWeight: 25, readMetricWeight: 25, sequenceMetricWeight: 25})];
-            case REPOSITORY_DECOMPOSITION:
-                return [new RepositoryWeights({authorMetricWeight: 50, commitMetricWeight: 50})];
-            case ACC_AND_REPO_DECOMPOSITION:
-                return [
-                    new AccessesWeights({ accessMetricWeight: 17, writeMetricWeight: 17, readMetricWeight: 17, sequenceMetricWeight: 17}),
-                    new RepositoryWeights({authorMetricWeight: 16, commitMetricWeight: 16})
-                ];
-            default:
-                throw new Error('Type ' + decompositionType + ' unknown.');
-        }
+    static getWeightListByRepresentationInfoType(representationTypes: string[]) : Weights[] {
+
+        if (representationTypes.includes(RepresentationInfoType.ACCESSES_INFO) && representationTypes.includes(RepresentationInfoType.REPOSITORY_INFO))
+            return [
+                new AccessesWeights({ accessMetricWeight: 17, writeMetricWeight: 17, readMetricWeight: 17, sequenceMetricWeight: 17}),
+                new RepositoryWeights({authorMetricWeight: 16, commitMetricWeight: 16})
+            ];
+        else if (representationTypes.includes(RepresentationInfoType.ACCESSES_INFO))
+            return [new AccessesWeights({accessMetricWeight: 25, writeMetricWeight: 25, readMetricWeight: 25, sequenceMetricWeight: 25})];
+        else if (representationTypes.includes(RepresentationInfoType.REPOSITORY_INFO))
+            return [new RepositoryWeights({authorMetricWeight: 50, commitMetricWeight: 50})];
+        throw new Error('No known type of Representation Info in Weights Factory.');
     }
 }

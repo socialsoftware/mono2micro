@@ -111,6 +111,14 @@ export class APIService {
         return this.axios.post<null>("/codebase/create", data);
     }
 
+    getCodebaseRepresentationInfoTypes(codebaseName: string) {
+        return this.axios.get("/codebase/" + codebaseName + "/getCodebaseRepresentationInfoTypes");
+    }
+
+    getRepresentationInfoTypes() {
+        return this.axios.get("/codebase/getRepresentationInfoTypes");
+    }
+
     // Profiles
     addAccessesProfile(representationName: string, profile: string) {
         return this.axios.post<null>(
@@ -152,8 +160,20 @@ export class APIService {
 
     //Representation
 
-    getRequiredRepresentations(decompositionType: string) {
-        return this.axios.get<string[]>("/decomposition/" + decompositionType + "/getRequiredRepresentations");
+    addRepresentations(
+        codebaseName: string,
+        selectedRepresentationType: string,
+        representations: Map<string, File>
+    ) {
+        const config = {
+            headers: {
+                'content-type': 'multipart/form-data'
+            }
+        }
+        const data = new FormData();
+        Object.entries(representations).forEach((entry) => {data.append("representationTypes", entry[0]); data.append("representations", entry[1])});
+
+        return this.axios.post<null>("/codebase/" + codebaseName + "/addRepresentations/" + selectedRepresentationType, data, config);
     }
 
     getRepresentations(codebaseName: string) {
@@ -194,12 +214,16 @@ export class APIService {
         return this.axios.post<null>("/similarity/create", similarity);
     }
 
+    getSupportedRepresentationInfoTypes(algorithmType: string) {
+        return this.axios.get("/clustering/" + algorithmType + "/getSupportedRepresentationInfoTypes");
+    }
+
 
     //Strategies
     createStrategy(
         codebaseName: string,
-        decompositionType: string,
-        representations: Map<string, File>
+        strategyRepresentations: string[],
+        strategyAlgorithm: string
     ) {
         const config = {
             headers: {
@@ -207,9 +231,14 @@ export class APIService {
             }
         }
         const data = new FormData();
-        Object.entries(representations).forEach((entry) => {data.append("representationTypes", entry[0]); data.append("representations", entry[1])});
+        strategyRepresentations.forEach(repr => data.append("representationTypes", repr));
+        data.append("algorithmType", strategyAlgorithm);
 
-        return this.axios.post<null>("/codebase/" + codebaseName + "/strategy/" + decompositionType + "/createStrategy", data, config);
+        return this.axios.post<null>("/codebase/" + codebaseName + "/createStrategy", data, config);
+    }
+
+    getAlgorithms() {
+        return this.axios.get("/strategy/getAlgorithms");
     }
 
     getStrategySimilarities(strategyName: string) {
@@ -269,10 +298,6 @@ export class APIService {
     }
 
     //Decomposition
-
-    getDecompositionTypes() {
-        return this.axios.get<string[]>("/decomposition/getDecompositionTypes");
-    }
 
     getDecompositions(
         similarityName: string

@@ -5,11 +5,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.codebase.CodebaseController;
 import pt.ist.socialsoftware.mono2micro.representation.dto.RepresentationDto;
 import pt.ist.socialsoftware.mono2micro.representation.dto.RepresentationDtoFactory;
 import pt.ist.socialsoftware.mono2micro.representation.service.RepresentationService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/mono2micro")
@@ -59,6 +62,25 @@ public class RepresentationController {
 
         try {
             return new ResponseEntity<>(RepresentationDtoFactory.getFactory().getRepresentationDto(representationService.getRepresentation(representationName)), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(value = "/codebase/{codebaseName}/addRepresentations/{representationInfoType}", method = RequestMethod.POST)
+    public ResponseEntity<HttpStatus> createStrategy(
+            @PathVariable String codebaseName,
+            @PathVariable String representationInfoType,
+            @Nullable @RequestParam List<String> representationTypes,
+            @Nullable @RequestParam List<Object> representations
+    ){
+        logger.debug("createStrategy");
+
+        try {
+            representationService.addRepresentations(codebaseName, representationInfoType, representationTypes, representations);
+            return new ResponseEntity<>(HttpStatus.CREATED);
 
         } catch (Exception e) {
             e.printStackTrace();

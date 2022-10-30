@@ -63,7 +63,7 @@ export enum MetricType {
     SYSTEM_COMPLEXITY = "System Complexity",
     FUNCTIONALITY_COMPLEXITY = "Functionality Complexity",
     INCONSISTENCY_COMPLEXITY = "Inconsistency Complexity",
-    TSR = "Team Size Reduction Ratio"
+    TSR = "TSR"
 }
 
 export interface Cluster {

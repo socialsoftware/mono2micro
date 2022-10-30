@@ -13,7 +13,6 @@ public abstract class RecommendationDto {
     String type;
     String strategyName;
     String name;
-    String decompositionType;
     boolean isCompleted;
 
     public String getType() {
@@ -38,14 +37,6 @@ public abstract class RecommendationDto {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getDecompositionType() {
-        return decompositionType;
-    }
-
-    public void setDecompositionType(String decompositionType) {
-        this.decompositionType = decompositionType;
     }
 
     public boolean isCompleted() {

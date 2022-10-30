@@ -5,9 +5,6 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import {useParams} from "react-router-dom";
 import {APIService} from "../../services/APIService";
 import {toast, ToastContainer} from "react-toastify";
-import {ACCESSES_DECOMPOSITION} from "../../models/decompositions/AccessesDecomposition";
-import {REPOSITORY_DECOMPOSITION} from "../../models/decompositions/RepositoryDecomposition";
-import {ACC_AND_REPO_DECOMPOSITION} from "../../models/decompositions/AccAndRepoDecomposition";
 import {SimilarityMatrixSciPyForm} from "./forms/SimilarityMatrixSciPyForm";
 
 export const Similarities = () => {
@@ -93,16 +90,12 @@ export const Similarities = () => {
             {strategy !== undefined &&
                 <>
                     {/*Add form of each similarity type like the next block to request the required elements for its creation*/}
-                    {(strategy.decompositionType === ACCESSES_DECOMPOSITION ||
-                        strategy.decompositionType === REPOSITORY_DECOMPOSITION ||
-                        strategy.decompositionType === ACC_AND_REPO_DECOMPOSITION) &&
-                        <>
-                            <SimilarityMatrixSciPyForm
-                                codebaseName={codebaseName}
-                                strategy={strategy}
-                                setUpdateStrategies={setUpdateStrategies}
-                            />
-                        </>
+                    {strategy.algorithmType === "SciPy Clustering" && //Asks for the required information for SciPy
+                        <SimilarityMatrixSciPyForm
+                            codebaseName={codebaseName}
+                            strategy={strategy}
+                            setUpdateStrategies={setUpdateStrategies}
+                        />
                     }
                     {similarities.length !== 0 && renderSimilarities()}
                 </>

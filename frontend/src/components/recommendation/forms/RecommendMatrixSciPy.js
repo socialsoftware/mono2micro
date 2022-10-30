@@ -81,7 +81,7 @@ export const RecommendMatrixSciPy = ({codebaseName, strategy, setUpdateStrategie
     // Executes when it is informed that there is information to be updated
     useEffect(() => {
         loadProfiles();
-        setWeightsList(WeightsFactory.getWeightListByDecompositionType(strategy.decompositionType));
+        setWeightsList(WeightsFactory.getWeightListByRepresentationInfoType(strategy.representationInformationTypes));
     }, [])
 
     function loadProfiles() {
@@ -129,7 +129,6 @@ export const RecommendMatrixSciPy = ({codebaseName, strategy, setUpdateStrategie
         service.recommendation({
             type: RECOMMEND_MATRIX_SCIPY,
             strategyName: strategy.name,
-            decompositionType: strategy.decompositionType,
             weightsList,
             profile,
             linkageType,

@@ -11,7 +11,6 @@ import java.util.List;
 public abstract class Recommendation {
     @Id
     String name;
-    String decompositionType;
     @DBRef
     Strategy strategy;
     String recommendationResultName;
@@ -34,14 +33,6 @@ public abstract class Recommendation {
     }
 
     public abstract String getType();
-
-    public String getDecompositionType() {
-        return decompositionType;
-    }
-
-    public void setDecompositionType(String decompositionType) {
-        this.decompositionType = decompositionType;
-    }
 
     public abstract void deleteProperties();
 

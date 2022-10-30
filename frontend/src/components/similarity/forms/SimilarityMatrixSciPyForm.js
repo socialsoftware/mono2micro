@@ -28,7 +28,7 @@ export const SimilarityMatrixSciPyForm = ({codebaseName, strategy, setUpdateStra
     // Executes when it is informed that there is information to be updated
     useEffect(() => {
         loadProfiles();
-        setWeightsList(WeightsFactory.getWeightListByDecompositionType(strategy.decompositionType));
+        setWeightsList(WeightsFactory.getWeightListByRepresentationInfoType(strategy.representationInformationTypes));
     }, [])
 
     function handleSubmit(event) {
@@ -38,7 +38,6 @@ export const SimilarityMatrixSciPyForm = ({codebaseName, strategy, setUpdateStra
         service.createSimilarity({
             strategyName: strategy.name,
             type: SIMILARITY_MATRIX_SCIPY,
-            decompositionType: strategy.decompositionType,
             weightsList,
             profile,
             linkageType,
@@ -145,36 +144,13 @@ export const SimilarityMatrixSciPyForm = ({codebaseName, strategy, setUpdateStra
                     </Form.Label>
                     <Col sm={3} style={{ paddingLeft: 0 }}>
                         <Col sm="auto">
-                            <Form.Check
-                                onClick={handleChangeTraceType}
-                                name="traceType"
-                                label="All"
-                                type="radio"
-                                id="allTraces"
-                                value="ALL"
-                                defaultChecked
-                            />
+                            <Form.Check onClick={handleChangeTraceType} name="traceType" label="All" type="radio" id="allTraces" value="ALL" defaultChecked/>
                         </Col>
                         <Col sm="auto">
-                            <Form.Check
-                                onClick={handleChangeTraceType}
-                                name="traceType"
-                                label="Longest"
-                                type="radio"
-                                id="longest"
-                                value="LONGEST"
-                            />
+                            <Form.Check onClick={handleChangeTraceType} name="traceType" label="Longest" type="radio" id="longest" value="LONGEST"/>
                         </Col>
                         <Col sm="auto">
-                            <Form.Check
-                                onClick={handleChangeTraceType}
-                                name="traceType"
-                                label="With more different accesses"
-                                type="radio"
-                                id="withMoreDifferentTraces"
-                                value="WITH_MORE_DIFFERENT_ACCESSES"
-                            />
-
+                            <Form.Check onClick={handleChangeTraceType} name="traceType" label="With more different accesses" type="radio" id="withMoreDifferentTraces" value="WITH_MORE_DIFFERENT_ACCESSES"/>
                         </Col>
                     </Col>
                 </Form.Group>
@@ -183,33 +159,13 @@ export const SimilarityMatrixSciPyForm = ({codebaseName, strategy, setUpdateStra
                         Linkage Type
                     </Form.Label>
                     <Col sm="auto">
-                        <Form.Check
-                            onClick={handleChangeLinkageType}
-                            name="linkageType"
-                            label="Average"
-                            type="radio"
-                            id="average"
-                            defaultChecked
-                        />
+                        <Form.Check onClick={handleChangeLinkageType} name="linkageType" label="Average" type="radio" id="average" defaultChecked/>
                     </Col>
                     <Col sm="auto">
-                        <Form.Check
-                            onClick={handleChangeLinkageType}
-                            name="linkageType"
-                            label="Single"
-                            type="radio"
-                            id="single"
-                        />
-
+                        <Form.Check onClick={handleChangeLinkageType} name="linkageType" label="Single" type="radio" id="single"/>
                     </Col>
                     <Col sm="auto">
-                        <Form.Check
-                            onClick={handleChangeLinkageType}
-                            name="linkageType"
-                            label="Complete"
-                            type="radio"
-                            id="complete"
-                        />
+                        <Form.Check onClick={handleChangeLinkageType} name="linkageType" label="Complete" type="radio" id="complete"/>
                     </Col>
                 </Form.Group>
                 {weightsList.flatMap(weight => Object.entries(weight.weightsLabel).map(([key, value]) =>

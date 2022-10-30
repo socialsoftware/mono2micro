@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
+import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.ClusteringFactory;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.DecompositionDto;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.DecompositionDtoFactory;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDto;
@@ -42,18 +43,32 @@ public class StrategyController {
         }
     }
 
-    @RequestMapping(value = "/codebase/{codebaseName}/strategy/{strategyType}/createStrategy", method = RequestMethod.POST)
+    @RequestMapping(value = "/codebase/{codebaseName}/createStrategy", method = RequestMethod.POST)
     public ResponseEntity<HttpStatus> createStrategy(
             @PathVariable String codebaseName,
-            @PathVariable String strategyType,
-            @Nullable @RequestParam List<String> representationTypes,
-            @Nullable @RequestParam List<Object> representations
+            @Nullable @RequestParam String algorithmType,
+            @Nullable @RequestParam List<String> representationTypes
     ){
         logger.debug("createStrategy");
 
         try {
-            strategyService.createStrategy(codebaseName, strategyType, representationTypes, representations);
+            strategyService.createStrategy(codebaseName, algorithmType, representationTypes);
             return new ResponseEntity<>(HttpStatus.CREATED);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(value = "/strategy/getAlgorithms", method = RequestMethod.GET)
+    public ResponseEntity<List<String>> getAlgorithms() {
+        logger.debug("getAlgorithms");
+        try {
+            return new ResponseEntity<>(
+                    ClusteringFactory.algorithmTypes,
+                    HttpStatus.OK
+            );
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,7 +83,7 @@ public class StrategyController {
         logger.debug("getStrategyDecompositions");
         try {
             return new ResponseEntity<>(
-                    DecompositionDtoFactory.getFactory().getDecompositionDtos(strategyService.getStrategyDecompositions(strategyName)),
+                    DecompositionDtoFactory.getDecompositionDtos(strategyService.getStrategyDecompositions(strategyName)),
                     HttpStatus.OK
             );
 

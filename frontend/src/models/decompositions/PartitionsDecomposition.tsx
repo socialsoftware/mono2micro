@@ -2,27 +2,22 @@ import Decomposition from "./Decomposition";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import React from "react";
-import {MetricType} from "../../type-declarations/types";
 import {Cached} from "@mui/icons-material";
 import {APIService} from "../../services/APIService";
 import {toast} from "react-toastify";
+import {RepresentationInfoType} from "../representation/RepresentationInfoTypes";
 
-const ACCESSES_DECOMPOSITION = "Accesses Decomposition";
-export {ACCESSES_DECOMPOSITION};
+const PARTITIONS_DECOMPOSITION = "Partitions Decomposition";
+export {PARTITIONS_DECOMPOSITION};
 
-export default class AccessesDecomposition extends Decomposition {
+export default class PartitionsDecomposition extends Decomposition {
     outdated: boolean;
-    expert: boolean;
-    functionalities: any;
-    entityIDToClusterName: any;
+    representationInformationsTypes: string;
 
     constructor(decomposition: any) {
         super(decomposition);
-
         this.outdated = decomposition.outdated;
-        this.expert = decomposition.expert;
-        this.functionalities = decomposition.functionalities;
-        this.entityIDToClusterName = decomposition.entityIDToClusterName;
+        this.representationInformationsTypes = decomposition.representationInformations.map((rep:any) => rep.type);
     }
 
     handleUpdate(reloadDecompositions: () => void) {
@@ -54,15 +49,12 @@ export default class AccessesDecomposition extends Decomposition {
                         {this.name}
                     </Card.Title>
                     <Card.Text>
+                        Type: {this.type} <br />
                         Number of Clusters: {Object.values(this.clusters).length} <br />
                         Number of Entities: {totalEntities} <br />
                         Singleton Clusters: {amountOfSingletonClusters} <br />
                         Maximum Cluster Size: {maxClusterSize} <br />
-                        {MetricType.SILHOUETTE_SCORE}: {parseFloat(this.metrics[MetricType.SILHOUETTE_SCORE])} <br />
-                        {MetricType.COMPLEXITY}: {parseFloat(this.metrics[MetricType.COMPLEXITY]).toFixed(3)} <br />
-                        {MetricType.PERFORMANCE}: {parseFloat(this.metrics[MetricType.PERFORMANCE]).toFixed(3)} <br />
-                        {MetricType.COHESION}: {parseFloat(this.metrics[MetricType.COHESION]).toFixed(3)} <br />
-                        {MetricType.COUPLING}: {parseFloat(this.metrics[MetricType.COUPLING]).toFixed(3)} <br />
+                        {Object.entries(this.metrics).map(([name, val]) => <span key={name}>{name}: {val} <br /></span>)}
                     </Card.Text>
                     {this.outdated &&
                         <Button
@@ -74,22 +66,38 @@ export default class AccessesDecomposition extends Decomposition {
                         </Button>
                     }
                     <br/>
-                    <Button
-                        href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.similarityName}/${this.name}/accessesViews`}
-                        className="mb-2"
-                        variant={"success"}
-                    >
-                        View Decomposition
-                    </Button>
-                    <br/>
-                    <Button
-                        href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.similarityName}/${this.name}/functionalityRefactor`}
-                        className="mb-2"
-                        variant={"primary"}
-                    >
-                        Refactorization Tool
-                    </Button>
-                    <br/>
+                    {this.representationInformationsTypes.includes(RepresentationInfoType.ACCESSES_INFO) &&
+                        <>
+                            <Button
+                                href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.similarityName}/${this.name}/accessesViews`}
+                                className="mb-2"
+                                variant={"success"}
+                            >
+                                View Accesses
+                            </Button>
+                            <br/>
+                            <Button
+                                href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.similarityName}/${this.name}/functionalityRefactor`}
+                                className="mb-2"
+                                variant={"primary"}
+                            >
+                                Refactorization Tool
+                            </Button>
+                            <br/>
+                        </>
+                    }
+                    {this.representationInformationsTypes.includes(RepresentationInfoType.REPOSITORY_INFO) &&
+                        <>
+                            <Button
+                                href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.similarityName}/${this.name}/repositoryView`}
+                                className="mb-2"
+                                variant={"success"}
+                            >
+                                View Repository
+                            </Button>
+                            <br/>
+                        </>
+                    }
                     <Button
                         onClick={() => handleDeleteDecomposition(this.name)}
                         variant="danger"
