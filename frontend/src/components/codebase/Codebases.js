@@ -54,7 +54,7 @@ export const Codebases = () => {
                                         className="mb-2"
                                         variant={"primary"}
                                     >
-                                        Manage Strategies
+                                        Manage Codebase
                                     </Button>
                                     <br/>
                                     <Button
