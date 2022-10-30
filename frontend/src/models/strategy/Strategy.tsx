@@ -26,7 +26,7 @@ export default class Strategy {
                     href={`/codebases/${this.codebaseName}/${this.name}/similarity`}
                     className="mb-2"
                 >
-                    Similarity Distance Generation
+                    Manual Generation
                 </Button>
                 <br/>
                 <Button
