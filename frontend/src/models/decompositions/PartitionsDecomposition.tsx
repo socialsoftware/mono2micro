@@ -76,14 +76,6 @@ export default class PartitionsDecomposition extends Decomposition {
                                 View Accesses
                             </Button>
                             <br/>
-                            <Button
-                                href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.similarityName}/${this.name}/functionalityRefactor`}
-                                className="mb-2"
-                                variant={"primary"}
-                            >
-                                Refactorization Tool
-                            </Button>
-                            <br/>
                         </>
                     }
                     {this.representationInformationsTypes.includes(RepresentationInfoType.REPOSITORY_INFO) &&
@@ -94,6 +86,18 @@ export default class PartitionsDecomposition extends Decomposition {
                                 variant={"success"}
                             >
                                 View Repository
+                            </Button>
+                            <br/>
+                        </>
+                    }
+                    {this.representationInformationsTypes.includes(RepresentationInfoType.ACCESSES_INFO) &&
+                        <>
+                            <Button
+                                href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.similarityName}/${this.name}/functionalityRefactor`}
+                                className="mb-2"
+                                variant={"primary"}
+                            >
+                                Refactorization Tool
                             </Button>
                             <br/>
                         </>
