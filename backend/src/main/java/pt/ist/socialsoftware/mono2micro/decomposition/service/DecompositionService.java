@@ -49,7 +49,7 @@ public class DecompositionService {
         Similarity similarity = similarityRepository.findByName(similarityName);
         Expert expert = new Expert();
 
-        Decomposition decomposition = expert.generateClusters(similarity, new ExpertRequest(expertName, expertFile));
+        Decomposition decomposition = expert.generateClusters(similarity, expertName, expertFile);
 
         setupDecomposition(decomposition);
     }

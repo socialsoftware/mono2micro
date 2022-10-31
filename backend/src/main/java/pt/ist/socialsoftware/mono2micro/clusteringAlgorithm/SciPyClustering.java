@@ -50,7 +50,7 @@ public class SciPyClustering extends Clustering {
         SimilarityMatrixSciPy similarity = (SimilarityMatrixSciPy) s;
         Map<Short, String> idToEntity;
 
-        PartitionsDecomposition decomposition = new PartitionsDecomposition(dto);
+        PartitionsDecomposition decomposition = new PartitionsDecomposition();
         decomposition.setSimilarity(similarity);
         similarity.addDecomposition(decomposition);
         decomposition.setStrategy(similarity.getStrategy());

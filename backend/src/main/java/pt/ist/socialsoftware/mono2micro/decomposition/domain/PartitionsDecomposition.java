@@ -24,11 +24,7 @@ import java.util.*;
 @Document("decomposition")
 public class PartitionsDecomposition extends Decomposition {
     public static final String PARTITIONS_DECOMPOSITION = "Partitions Decomposition";
-    public PartitionsDecomposition() {}
-
-    public PartitionsDecomposition(DecompositionRequest decompositionRequest) {
-        this.type = PARTITIONS_DECOMPOSITION;
-    }
+    public PartitionsDecomposition() { this.type = PARTITIONS_DECOMPOSITION; }
 
     public PartitionsDecomposition(PartitionsDecomposition decomposition, String snapshotName) throws Exception {
         this.type = PARTITIONS_DECOMPOSITION;
