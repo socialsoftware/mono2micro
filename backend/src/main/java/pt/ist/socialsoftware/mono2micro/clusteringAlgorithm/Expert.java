@@ -5,8 +5,6 @@ import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.PartitionsDecomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.ExpertRequest;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
