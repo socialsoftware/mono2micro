@@ -1,0 +1,8 @@
+funcy==1.17
+gitpython==3.1.27
+matplotlib==3.5.2
+pip-chill==1.0.1
+plotly==5.8.2
+rich==12.4.4
+statsmodels==0.13.2
+requests==2.26.0
