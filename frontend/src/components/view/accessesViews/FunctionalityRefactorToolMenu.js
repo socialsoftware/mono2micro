@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {APIService} from '../../../services/APIService';
 import BootstrapTable from 'react-bootstrap-table-next';
 import Button from '@mui/material/Button';
@@ -10,6 +10,7 @@ import {useParams} from "react-router-dom";
 import {ModalMessage} from "../utils/ModalMessage";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import {toast, ToastContainer} from "react-toastify";
+import AppContext from "../../AppContext";
 
 export const refactorToolHelp = (
 <div>
@@ -103,6 +104,8 @@ const functionalityRedesignColumns = [
 ];
 
 export const FunctionalityRefactorToolMenu = () => {
+    const context = useContext(AppContext);
+    const { updateEntityTranslationFile, translateEntity } = context;
     let { codebaseName, strategyName, similarityName, decompositionName } = useParams();
 
     const [waitingResponse, setWaitingResponse] = useState(false);
@@ -118,7 +121,17 @@ export const FunctionalityRefactorToolMenu = () => {
 
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => viewCodebaseRefactor(), []);
+    useEffect(() => {
+        const service = new APIService();
+        viewCodebaseRefactor();
+        service.getIdToEntity(codebaseName).then(response => {
+            updateEntityTranslationFile(response.data);
+        });
+    }, []);
+
+    useEffect(() => {
+        viewCodebaseRefactor();
+    }, [translateEntity]);
 
     function handleChangeThreshold(event) {
         setDataDependenceThreshold(event.target.value);
@@ -191,7 +204,9 @@ export const FunctionalityRefactorToolMenu = () => {
                 let invocationAccesses = "";
 
                 for(let j=0; j<data[i]["accesses"].length; j++) {
-                    invocationAccesses = invocationAccesses.concat(data[i]["accesses"][j]["type"], " -> ", data[i]["accesses"][j]["entity_id"], "    |    ");
+                    console.log(translateEntity(data[i]["accesses"][j]["entity_id"]));
+                    console.log(translateEntity(3));
+                    invocationAccesses = invocationAccesses.concat(data[i]["accesses"][j]["type"], " -> ", translateEntity(data[i]["accesses"][j]["entity_id"]), "    |    ");
                 }
 
                 invocations = invocations.concat(
