@@ -29,9 +29,10 @@ tmpDecompiledSources/
 collectors/spoon-callgraph/data/collection/Untitled Folder
 collectors/spoon-callgraph/testData.txt
 collectors/spoon-callgraph/data/collection/*.json
+collectors/javaparser-callgraph/data/collection/*.json
 
 # local codebases
 codebases/
 repos/
-results/
-evaluation/
+/results/
+/evaluation
