@@ -175,6 +175,8 @@ done
 
 - The third step consists of running all possible combinations of parameters for all five strategies over the 85 codebases under analysis. Since this process can take too long, there is an alternative branch called ```/feature/cluster/code2vec``` which is prepared to run in machines with a bigger number of CPUs.
 
+- Only an example with 2 codebases of the previous generated results were left zipped inside the ```evaluation-playground/results``` folder, due to the large size of the files.
+
 - It is recommended to use the following scripts instead of using the analyser present in the user interface because it generates a huge amount of data.
 
 - As the script runs, the generated cuts and some auxiliary files are deleted to free memory, leaving only the files with the parameters used to generate each decomposition along with the values for cohesion, coupling, and complexity (```analyserResult.json```).
