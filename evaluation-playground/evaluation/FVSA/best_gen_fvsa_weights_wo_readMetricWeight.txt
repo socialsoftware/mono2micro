@@ -1,0 +1,26 @@
+['readMetricWeight']                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:               combined   R-squared:                       0.072
+Model:                            OLS   Adj. R-squared:                  0.068
+Method:                 Least Squares   F-statistic:                     17.82
+Date:                Sun, 23 Oct 2022   Prob (F-statistic):           3.50e-08
+Time:                        19:13:59   Log-Likelihood:                 521.51
+No. Observations:                 464   AIC:                            -1037.
+Df Residuals:                     461   BIC:                            -1025.
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+====================================================================================
+                       coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------------
+const                0.2497      0.012     20.772      0.000       0.226       0.273
+readMetricWeight    -0.0004   9.29e-05     -4.000      0.000      -0.001      -0.000
+n                   -0.0080      0.002     -4.994      0.000      -0.011      -0.005
+==============================================================================
+Omnibus:                       58.432   Durbin-Watson:                   1.666
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):               84.147
+Skew:                           0.856   Prob(JB):                     5.34e-19
+Kurtosis:                       4.191   Cond. No.                         222.
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.

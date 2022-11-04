@@ -1,0 +1,8 @@
+NC: 3 -> S: same_weights vs diff_weights -> Test: Ttest_indResult(statistic=4.602444137155733, pvalue=8.589240801616406e-06)
+NC: 4 -> S: same_weights vs diff_weights -> Test: Ttest_indResult(statistic=5.572894675005213, pvalue=1.4482725180711304e-07)
+NC: 5 -> S: same_weights vs diff_weights -> Test: Ttest_indResult(statistic=4.594661152949951, pvalue=9.509173409371242e-06)
+NC: 6 -> S: same_weights vs diff_weights -> Test: Ttest_indResult(statistic=6.000171611695318, pvalue=1.0095626525936492e-07)
+NC: 7 -> S: same_weights vs diff_weights -> Test: Ttest_indResult(statistic=6.068704734550813, pvalue=9.529307533071112e-08)
+NC: 8 -> S: same_weights vs diff_weights -> Test: Ttest_indResult(statistic=5.560647063452049, pvalue=5.324182357744291e-07)
+NC: 9 -> S: same_weights vs diff_weights -> Test: Ttest_indResult(statistic=5.524713117926713, pvalue=5.536329135915878e-07)
+NC: 10 -> S: same_weights vs diff_weights -> Test: Ttest_indResult(statistic=4.8195353629540145, pvalue=7.516027927957289e-06)

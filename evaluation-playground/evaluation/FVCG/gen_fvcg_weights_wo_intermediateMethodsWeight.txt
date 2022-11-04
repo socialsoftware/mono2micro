@@ -1,0 +1,28 @@
+['intermediateMethodsWeight', 'entitiesWeight', 'controllersWeight']                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:               combined   R-squared:                       0.005
+Model:                            OLS   Adj. R-squared:                  0.005
+Method:                 Least Squares   F-statistic:                 1.108e+04
+Date:                Sun, 23 Oct 2022   Prob (F-statistic):               0.00
+Time:                        18:54:30   Log-Likelihood:             6.1406e+06
+No. Observations:             9772947   AIC:                        -1.228e+07
+Df Residuals:                 9772942   BIC:                        -1.228e+07
+Df Model:                           4                                         
+Covariance Type:            nonrobust                                         
+=============================================================================================
+                                coef    std err          t      P>|t|      [0.025      0.975]
+---------------------------------------------------------------------------------------------
+const                         0.2752      0.000   1564.483      0.000       0.275       0.276
+intermediateMethodsWeight     0.0003    2.2e-06    145.314      0.000       0.000       0.000
+entitiesWeight                0.0004   2.22e-06    186.846      0.000       0.000       0.000
+controllersWeight             0.0004   2.19e-06    162.248      0.000       0.000       0.000
+n                            -0.0008   1.71e-05    -48.284      0.000      -0.001      -0.001
+==============================================================================
+Omnibus:                   382147.366   Durbin-Watson:                   0.110
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):           354568.255
+Skew:                           0.415   Prob(JB):                         0.00
+Kurtosis:                       2.572   Cond. No.                         196.
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.

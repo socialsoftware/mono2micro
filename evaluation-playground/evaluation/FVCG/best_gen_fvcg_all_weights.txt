@@ -1,0 +1,31 @@
+['controllersWeight', 'servicesWeight', 'intermediateMethodsWeight', 'entitiesWeight']                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:               combined   R-squared:                       0.105
+Model:                            OLS   Adj. R-squared:                  0.097
+Method:                 Least Squares   F-statistic:                     13.63
+Date:                Sun, 23 Oct 2022   Prob (F-statistic):           1.62e-10
+Time:                        19:08:02   Log-Likelihood:                 616.55
+No. Observations:                 469   AIC:                            -1223.
+Df Residuals:                     464   BIC:                            -1202.
+Df Model:                           4                                         
+Covariance Type:            nonrobust                                         
+=============================================================================================
+                                coef    std err          t      P>|t|      [0.025      0.975]
+---------------------------------------------------------------------------------------------
+const                      8.152e-05    3.5e-06     23.296      0.000    7.46e-05    8.84e-05
+controllersWeight             0.0020      0.000     13.855      0.000       0.002       0.002
+entitiesWeight                0.0020   9.22e-05     21.747      0.000       0.002       0.002
+servicesWeight                0.0019      0.000     15.330      0.000       0.002       0.002
+intermediateMethodsWeight     0.0022      0.000     16.762      0.000       0.002       0.002
+n                            -0.0087      0.001     -6.544      0.000      -0.011      -0.006
+==============================================================================
+Omnibus:                      193.706   Durbin-Watson:                   1.578
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):              962.372
+Skew:                           1.763   Prob(JB):                    1.06e-209
+Kurtosis:                       9.068   Cond. No.                     1.17e+17
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The smallest eigenvalue is 1.15e-28. This might indicate that there are
+strong multicollinearity problems or that the design matrix is singular.

@@ -1,0 +1,29 @@
+['readMetricWeight', 'writeMetricWeight']                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:               combined   R-squared:                       0.005
+Model:                            OLS   Adj. R-squared:                  0.005
+Method:                 Least Squares   F-statistic:                     111.1
+Date:                Sun, 23 Oct 2022   Prob (F-statistic):           7.58e-49
+Time:                        19:09:39   Log-Likelihood:                 27359.
+No. Observations:               42768   AIC:                        -5.471e+04
+Df Residuals:                   42765   BIC:                        -5.469e+04
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+=====================================================================================
+                        coef    std err          t      P>|t|      [0.025      0.975]
+-------------------------------------------------------------------------------------
+const              6.476e-05   3.41e-07    189.931      0.000    6.41e-05    6.54e-05
+readMetricWeight      0.0033   1.95e-05    168.668      0.000       0.003       0.003
+writeMetricWeight     0.0032   2.01e-05    158.216      0.000       0.003       0.003
+n                    -0.0035      0.000    -13.896      0.000      -0.004      -0.003
+==============================================================================
+Omnibus:                     1648.680   Durbin-Watson:                   0.162
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):             1122.313
+Skew:                           0.284   Prob(JB):                    1.96e-244
+Kurtosis:                       2.446   Cond. No.                     1.78e+16
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The smallest eigenvalue is 6.86e-25. This might indicate that there are
+strong multicollinearity problems or that the design matrix is singular.

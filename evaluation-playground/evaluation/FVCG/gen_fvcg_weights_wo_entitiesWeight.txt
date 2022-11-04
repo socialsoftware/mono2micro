@@ -1,0 +1,28 @@
+['entitiesWeight', 'controllersWeight', 'servicesWeight']                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:               combined   R-squared:                       0.005
+Model:                            OLS   Adj. R-squared:                  0.005
+Method:                 Least Squares   F-statistic:                 1.108e+04
+Date:                Sun, 23 Oct 2022   Prob (F-statistic):               0.00
+Time:                        18:54:34   Log-Likelihood:             6.1406e+06
+No. Observations:             9772947   AIC:                        -1.228e+07
+Df Residuals:                 9772942   BIC:                        -1.228e+07
+Df Model:                           4                                         
+Covariance Type:            nonrobust                                         
+=====================================================================================
+                        coef    std err          t      P>|t|      [0.025      0.975]
+-------------------------------------------------------------------------------------
+const                 0.3072      0.000   1746.818      0.000       0.307       0.308
+entitiesWeight     9.414e-05   2.19e-06     42.921      0.000    8.98e-05    9.84e-05
+controllersWeight  3.523e-05   2.16e-06     16.287      0.000     3.1e-05    3.95e-05
+servicesWeight       -0.0003    2.2e-06   -145.314      0.000      -0.000      -0.000
+n                    -0.0008   1.71e-05    -48.284      0.000      -0.001      -0.001
+==============================================================================
+Omnibus:                   382147.366   Durbin-Watson:                   0.110
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):           354568.255
+Skew:                           0.415   Prob(JB):                         0.00
+Kurtosis:                       2.572   Cond. No.                         195.
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
