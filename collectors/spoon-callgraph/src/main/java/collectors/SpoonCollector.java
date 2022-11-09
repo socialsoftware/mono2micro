@@ -36,7 +36,9 @@ public abstract class SpoonCollector {
     protected LinkedHashMap<String, Integer> entitiesMap;
 
     protected HashSet<CtClass> controllers;
-    private List<Access> controllerAccesses;
+    private Map<Integer, List<Access>> controllerAccesses;
+    private Integer controllerContextCounter;
+    private List<Integer> controllerContextStack;
     protected Map<String, List<CtType>> abstractClassesAndInterfacesImplementorsMap;
 
     protected Factory factory;
@@ -179,7 +181,8 @@ public abstract class SpoonCollector {
 
             String controllerFullName = controller.getSimpleName() + "." + controllerMethod.getSimpleName();
             System.out.println("Processing Controller: " + controllerFullName + "   " + controllerCount + "/" + controllers.size());
-            controllerAccesses = new ArrayList<>();
+            initializeContextArray();
+            controllerAccesses = new HashMap<Integer, List<Access>>();
             Stack<SourcePosition> methodStack = new Stack<>();
 
             controllerMethodsCount++;
@@ -187,7 +190,7 @@ public abstract class SpoonCollector {
 
             if (controllerAccesses.size() > 0) {
                 List<Trace> traces = new ArrayList<>();
-                traces.add(new Trace(0, controllerAccesses));
+                traces.add(new Trace(0, controllerAccesses.get(0)));
                 controllerSequences.put(controllerFullName, new Controller(traces));
             }
         }
@@ -270,10 +273,34 @@ public abstract class SpoonCollector {
     }
 
     protected void addEntitiesSequenceAccess(String simpleName, String mode) {
-        controllerAccesses.add(new Access(mode, entityToID(simpleName)));
+        int currentContext = getCurrentContextIndex();
+        if(controllerAccesses.get(currentContext) == null)
+            controllerAccesses.put(currentContext, new ArrayList<Access>());
+        controllerAccesses.get(currentContext).add(new Access(mode, entityToID(simpleName)));
     }
 
     private Integer entityToID(String simpleName) {
         return entitiesMap.get(simpleName);
+    }
+
+    protected Integer getCurrentContextIndex() {
+        return controllerContextStack.get(controllerContextStack.size() - 1);
+    }
+
+    protected void openNewContext() {
+        controllerContextCounter++;
+        controllerContextStack.add(controllerContextCounter);
+    }
+
+    protected void closeContext() {
+        if(controllerContextCounter > 0) {
+            controllerContextStack.remove(controllerContextStack.size() - 1);
+        }
+    }
+
+    private void initializeContextArray() {
+        controllerContextCounter = 0;
+        controllerContextStack = new ArrayList<Integer>();
+        controllerContextStack.add(controllerContextCounter);
     }
 }
