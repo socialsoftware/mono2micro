@@ -66,8 +66,9 @@ public class MergePartitionsOperation extends  MergeOperation {
         mergedCluster.setElements(allEntities);
 
         for (Cluster cluster : decomposition.getClusters().values()) {
-            cluster.transferCouplingDependencies(cluster1.getElementsIDs(), cluster1.getName(), mergedCluster.getName());
-            cluster.transferCouplingDependencies(cluster2.getElementsIDs(), cluster2.getName(), mergedCluster.getName());
+            Partition partition = (Partition) cluster;
+            partition.transferCouplingDependencies(cluster1.getElementsIDs(), cluster1.getName(), mergedCluster.getName());
+            partition.transferCouplingDependencies(cluster2.getElementsIDs(), cluster2.getName(), mergedCluster.getName());
         }
 
         decomposition.removeCluster(cluster1Name);

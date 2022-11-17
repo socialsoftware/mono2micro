@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import pt.ist.socialsoftware.mono2micro.codebase.ClusteringService;
 import pt.ist.socialsoftware.mono2micro.codebase.CodebaseController;
 
 import java.util.List;

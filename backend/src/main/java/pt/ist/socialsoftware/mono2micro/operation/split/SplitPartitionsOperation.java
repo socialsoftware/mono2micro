@@ -59,8 +59,10 @@ public class SplitPartitionsOperation extends SplitOperation {
                 currentCluster.removeElement(entity);
             }
         }
-        for (Cluster cluster : decomposition.getClusters().values())
-            cluster.transferCouplingDependencies(createdCluster.getElementsIDs(), currentCluster.getName(), createdCluster.getName());
+        for (Cluster cluster : decomposition.getClusters().values()) {
+            Partition partition = (Partition) cluster;
+            partition.transferCouplingDependencies(createdCluster.getElementsIDs(), currentCluster.getName(), createdCluster.getName());
+        }
 
         decomposition.addCluster(createdCluster);
     }

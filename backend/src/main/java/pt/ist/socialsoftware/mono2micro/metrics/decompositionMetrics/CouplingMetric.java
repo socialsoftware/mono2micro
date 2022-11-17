@@ -1,6 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.metrics.decompositionMetrics;
 
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
+import pt.ist.socialsoftware.mono2micro.cluster.Partition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 
 import java.math.BigDecimal;
@@ -22,8 +23,9 @@ public class CouplingMetric extends DecompositionMetric {
         double coupling = 0;
 
         for (Cluster cluster1 : decomposition.getClusters().values()) {
+            Partition partition1 = (Partition) cluster1;
             double clusterCoupling = 0;
-            Map<String, Set<Short>> couplingDependencies = cluster1.getCouplingDependencies();
+            Map<String, Set<Short>> couplingDependencies = partition1.getCouplingDependencies();
 
             for (String cluster2 : couplingDependencies.keySet())
                 clusterCoupling += (double) couplingDependencies.get(cluster2).size() / decomposition.getCluster(cluster2).getElements().size();
@@ -33,7 +35,7 @@ public class CouplingMetric extends DecompositionMetric {
                     .setScale(3, RoundingMode.HALF_UP)
                     .doubleValue();
 
-            cluster1.addMetric(COUPLING, clusterCoupling);
+            partition1.addMetric(COUPLING, clusterCoupling);
 
             coupling += clusterCoupling;
         }

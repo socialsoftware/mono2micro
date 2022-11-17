@@ -1,7 +1,6 @@
-package pt.ist.socialsoftware.mono2micro.codebase;
+package pt.ist.socialsoftware.mono2micro.clusteringAlgorithm;
 
 import org.springframework.stereotype.Service;
-import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.ClusteringFactory;
 
 import java.util.List;
 

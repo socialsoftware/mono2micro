@@ -70,8 +70,10 @@ public class FormClusterPartitionsOperation extends FormClusterOperation {
             Element entity = currentCluster.getElementByID(entityID);
             createdCluster.addElement(entity);
             currentCluster.removeElement(entityID);
-            for (Cluster cluster : decomposition.getClusters().values())
-                cluster.transferCouplingDependencies(Collections.singleton(entityID), currentCluster.getName(), createdCluster.getName());
+            for (Cluster cluster : decomposition.getClusters().values()) {
+                Partition partition = (Partition) cluster;
+                partition.transferCouplingDependencies(Collections.singleton(entityID), currentCluster.getName(), createdCluster.getName());
+            }
 
             if (currentCluster.getElements().size() == 0)
                 decomposition.removeCluster(currentCluster.getName());

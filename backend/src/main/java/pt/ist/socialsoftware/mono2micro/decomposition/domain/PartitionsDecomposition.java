@@ -3,7 +3,6 @@ package pt.ist.socialsoftware.mono2micro.decomposition.domain;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.RepresentationInfo;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.RepresentationInfoFactory;
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.history.domain.PositionHistory;
 import pt.ist.socialsoftware.mono2micro.history.service.HistoryService;
