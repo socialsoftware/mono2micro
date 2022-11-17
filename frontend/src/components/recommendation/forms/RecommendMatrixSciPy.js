@@ -33,7 +33,7 @@ const columns = [
     {dataField: 'Cohesion',                     text: 'Cohesion',                   filter: nFilter, sort},
     {dataField: 'Coupling',                     text: 'Coupling',                   filter: nFilter, sort},
     {dataField: 'Performance',                  text: 'Performance',                filter: nFilter, sort},
-    {dataField: 'Team Size Reduction Ratio',    text: 'Team Size Reduction Ratio',  filter: nFilter, sort},
+    {dataField: 'TSR',                          text: 'Team Size Reduction Ratio',  filter: nFilter, sort},
 ];
 
 const pagination = paginationFactory({
