@@ -16,7 +16,7 @@ public class RepresentationInfoType {
     public static final Map<String, List<String>> representationInfoTypeToFiles = new HashMap<String, List<String>>() {
         {
             put(ACCESSES_INFO, new ArrayList<String>() {{add(ACCESSES); add(ID_TO_ENTITY);}});
-            put(REPOSITORY_INFO, new ArrayList<String>() {{add(ACCESSES); add(ID_TO_ENTITY); add(AUTHOR); add(COMMIT);}});
+            put(REPOSITORY_INFO, new ArrayList<String>() {{add(ID_TO_ENTITY); add(AUTHOR); add(COMMIT);}});
             //ADD MORE TYPES HERE
         }
     };
