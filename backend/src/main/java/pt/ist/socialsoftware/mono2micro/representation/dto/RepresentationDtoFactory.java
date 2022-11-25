@@ -26,6 +26,10 @@ public class RepresentationDtoFactory {
                 return new AuthorRepresentationDto((AuthorRepresentation) representation);
             case CommitRepresentation.COMMIT:
                 return new CommitRepresentationDto((CommitRepresentation) representation);
+            case EntityToIDRepresentation.ENTITY_TO_ID:
+                return new EntityToIDRepresentationDto((EntityToIDRepresentation) representation);
+            case CodeEmbeddingsRepresentation.CODE_EMBEDDINGS:
+                return new CodeEmbeddingsRepresentationDto((CodeEmbeddingsRepresentation) representation);
             default:
                 throw new RuntimeException("The type \"" + representation.getType() + "\" is not a valid representation type.");
         }

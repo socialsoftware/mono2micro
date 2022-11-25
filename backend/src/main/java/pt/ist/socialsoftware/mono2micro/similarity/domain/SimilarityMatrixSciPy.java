@@ -33,6 +33,7 @@ public class SimilarityMatrixSciPy extends Similarity {
     private String profile;
     private int tracesMaxLimit;
     private Constants.TraceType traceType;
+    private int depth;
 
     // Used in Clustering Algorithm
     private String linkageType;
@@ -47,6 +48,7 @@ public class SimilarityMatrixSciPy extends Similarity {
         this.profile = dto.getProfile();
         this.tracesMaxLimit = dto.getTracesMaxLimit();
         this.traceType = dto.getTraceType();
+        this.depth = dto.getDepth();
         this.linkageType = dto.getLinkageType();
         this.similarityMatrix = new SimilarityMatrix(dto.getWeightsList());
         setDecompositions(new ArrayList<>());
@@ -130,6 +132,14 @@ public class SimilarityMatrixSciPy extends Similarity {
 
     public void setDendrogram(Dendrogram dendrogram) {
         this.dendrogram = dendrogram;
+    }
+
+    public int getDepth() {
+        return depth;
+    }
+
+    public void setDepth(int depth) {
+        this.depth = depth;
     }
 
     @Override

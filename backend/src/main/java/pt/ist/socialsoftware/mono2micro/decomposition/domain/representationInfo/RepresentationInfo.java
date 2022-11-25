@@ -19,6 +19,8 @@ public abstract class RepresentationInfo {
 
     public abstract List<DecompositionMetric> getDecompositionMetrics();
 
+    public abstract List<String> getParameters();
+
     public void renameClusterInFunctionalities(String clusterName, String newName) {}
 
     public void removeFunctionalitiesWithEntityIDs(Decomposition decomposition, Set<Short> elements) {}

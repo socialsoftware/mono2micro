@@ -1,8 +1,10 @@
 import Representation, {RepresentationType} from "./Representation";
-import AccessesRepresentation from "./AccessesRepresentation";
-import IDToEntityRepresentation from "./IDToEntityRepresentation";
-import AuthorRepresentation from "./AuthorRepresentation";
-import CommitRepresentation from "./CommitRepresentation";
+import AccessesRepresentation from "./files/AccessesRepresentation";
+import IDToEntityRepresentation from "./files/IDToEntityRepresentation";
+import AuthorRepresentation from "./files/AuthorRepresentation";
+import CommitRepresentation from "./files/CommitRepresentation";
+import EntityToIDRepresentation from "./files/EntityToIDRepresentation";
+import CodeEmbeddingsRepresentation from "./files/CodeEmbeddingsRepresentation";
 
 export abstract class RepresentationFactory {
     static getRepresentation(representation: any) : Representation {
@@ -15,6 +17,10 @@ export abstract class RepresentationFactory {
                 return new AuthorRepresentation(representation);
             case RepresentationType.COMMIT:
                 return new CommitRepresentation(representation);
+            case RepresentationType.ENTITY_TO_ID:
+                return new EntityToIDRepresentation(representation);
+            case RepresentationType.CODE_EMBEDDINGS:
+                return new CodeEmbeddingsRepresentation(representation);
             default:
                 throw new Error('Type ' + representation.type + ' unknown.');
         }

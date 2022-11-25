@@ -20,4 +20,6 @@ export enum RepresentationType {
     IDTOENTITIY = 'IDToEntity',
     AUTHOR = 'Changes Authorship',
     COMMIT = 'File Changes',
+    ENTITY_TO_ID = 'EntityToID',
+    CODE_EMBEDDINGS = 'CodeEmbeddings'
 }

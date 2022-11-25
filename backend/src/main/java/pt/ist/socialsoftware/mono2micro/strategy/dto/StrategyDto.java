@@ -1,7 +1,10 @@
 package pt.ist.socialsoftware.mono2micro.strategy.dto;
 
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.RepresentationInfo;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.RepresentationInfoFactory;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StrategyDto {
@@ -9,12 +12,23 @@ public class StrategyDto {
     String name;
     String algorithmType;
     List<String> representationInformationTypes;
+    List<String> parameterTypes;
 
     public StrategyDto(Strategy strategy) {
         this.codebaseName = strategy.getCodebase().getName();
         this.name = strategy.getName();
         this.algorithmType = strategy.getAlgorithmType();
         this.representationInformationTypes = strategy.getRepresentationInfoTypes();
+        this.parameterTypes = new ArrayList<>();
+
+        for (String representationType : this.representationInformationTypes) {
+            RepresentationInfo representationInfo = RepresentationInfoFactory.getRepresentationInfoFromType(representationType);
+            for (String parameterType : representationInfo.getParameters()) {
+                if (!this.parameterTypes.contains(parameterType)) {
+                    this.parameterTypes.add(parameterType);
+                }
+            }
+        }
     }
 
     public String getCodebaseName() {
@@ -47,5 +61,13 @@ public class StrategyDto {
 
     public void setRepresentationInformationTypes(List<String> representationInformationTypes) {
         this.representationInformationTypes = representationInformationTypes;
+    }
+
+    public List<String> getParameterTypes() {
+        return parameterTypes;
+    }
+
+    public void setParameterTypes(List<String> parameterTypes) {
+        this.parameterTypes = parameterTypes;
     }
 }

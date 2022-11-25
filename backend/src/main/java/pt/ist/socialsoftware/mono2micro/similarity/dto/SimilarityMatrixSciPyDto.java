@@ -14,6 +14,7 @@ public class SimilarityMatrixSciPyDto extends SimilarityDto {
     private String linkageType;
     private int tracesMaxLimit;
     private Constants.TraceType traceType;
+    private int depth;
     private String profile;
 
     public SimilarityMatrixSciPyDto() { this.type = SIMILARITY_MATRIX_SCIPY; }
@@ -28,6 +29,7 @@ public class SimilarityMatrixSciPyDto extends SimilarityDto {
         this.linkageType = similarity.getLinkageType();
         this.tracesMaxLimit = similarity.getTracesMaxLimit();
         this.traceType = similarity.getTraceType();
+        this.depth = similarity.getDepth();
     }
 
     public SimilarityMatrixSciPyDto(RecommendMatrixSciPy recommend, List<Weights> weightsList) {
@@ -78,5 +80,13 @@ public class SimilarityMatrixSciPyDto extends SimilarityDto {
 
     public void setLinkageType(String linkageType) {
         this.linkageType = linkageType;
+    }
+
+    public int getDepth() {
+        return depth;
+    }
+
+    public void setDepth(int depth) {
+        this.depth = depth;
     }
 }

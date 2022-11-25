@@ -122,6 +122,13 @@ export interface RefactorCodebase {
     override_previous?: boolean;
 }
 
+export enum RepresentationInfoParameters {
+    DEPTH_PARAMETER = "DEPTH_PARAMETER",
+    PROFILE_PARAMETER = "PROFILE_PARAMETER",
+    TRACES_MAX_LIMIT_PARAMETER = "TRACES_MAX_LIMIT_PARAMETER",
+    TRACE_TYPE_PARAMETER = "TRACE_TYPE_PARAMETER",
+}
+
 export enum TraceType {
     NONE = "",
     ALL = "ALL",

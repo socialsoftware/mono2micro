@@ -7,12 +7,14 @@ export default class Strategy {
     name!: string;
     algorithmType!: string;
     representationInformationTypes!: string[];
+    parameterTypes!: string[];
 
     constructor(strategy: any) {
         this.codebaseName = strategy.codebaseName;
         this.name = strategy.name;
         this.algorithmType = strategy.algorithmType;
         this.representationInformationTypes = strategy.representationInformationTypes;
+        this.parameterTypes = strategy.parameterTypes || [];
     }
 
     // This function is used to be displayed in the context of the codebase

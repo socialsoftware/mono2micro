@@ -1,27 +1,18 @@
-import Representation from "./Representation";
+import Representation from "../Representation";
 import React from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 
-export default class AccessesRepresentation extends Representation {
-    profiles!: Map<string, string>;
+export default class CodeEmbeddingsRepresentation extends Representation {
 
-    constructor(representation: AccessesRepresentation) {
+    constructor(representation: CodeEmbeddingsRepresentation) {
         super(representation);
-        this.profiles = representation.profiles;
     }
 
     printCard(handleDeleteRepresentation: (representation: Representation) => void): JSX.Element {
         return <Card className={"text-center"} key={this.type} style={{width: '13rem'}}>
             <Card.Header>{this.type}</Card.Header>
             <Card.Body>
-                <Button
-                    href={`/codebase/${this.codebaseName}/${this.name}/profiles`}
-                    className="mb-2"
-                >
-                    Change Profile
-                </Button>
-                <br/>
                 <Button
                     onClick={() => handleDeleteRepresentation(this)}
                     className="mb-2"

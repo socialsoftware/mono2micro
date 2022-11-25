@@ -15,6 +15,7 @@ export default class SimilarityMatrixSciPy extends Similarity {
     linkageType: string;
     tracesMaxLimit: number;
     traceType: TraceType;
+    depth: number;
     weightsList: Weights[];
 
     constructor(similarity: any) {
@@ -24,6 +25,7 @@ export default class SimilarityMatrixSciPy extends Similarity {
         this.linkageType =          similarity.linkageType             ||     "average";
         this.tracesMaxLimit =       similarity.tracesMaxLimit          ||     0;
         this.traceType =            similarity.traceType               ||     TraceType.ALL;
+        this.depth =                similarity.depth                   ||     2;
         this.weightsList =          WeightsFactory.getWeightsList(similarity.weightsList);
     }
 
@@ -40,6 +42,7 @@ export default class SimilarityMatrixSciPy extends Similarity {
                     AmountOfTraces: {this.tracesMaxLimit} <br />
                     Type of traces: {this.traceType} <br />
                     Linkage Type: {this.linkageType} < br />
+                    DEPTH: {this.depth} < br />
                     {this.weightsList.flatMap((weights: any) =>
                         Object.entries(weights.weightsLabel).map(([key, value]) => <span key={key}>{value + ": " + weights[key] + "%"} <br/></span>)
                     )}

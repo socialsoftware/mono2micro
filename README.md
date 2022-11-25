@@ -26,6 +26,9 @@ To run the backend:
 	mvn clean install -DskipTests
 	mvn spring-boot:run
 
+    mvn -Dmaven.test.skip=true package # If there are ContextManager when refreshing the context
+    java -jar ./target/mono2micro-0.0.1-SNAPSHOT.jar
+
 To run the frontend:
 	
 	cd frontend/

@@ -31,9 +31,15 @@ public class Strategy {
 
     public Strategy(Codebase codebase, String algorithmType, List<String> representationInfoTypes) {
         StringBuilder shortForm = new StringBuilder();
-        shortForm.append(representationInfoTypes.get(0), 0, Math.min(representationInfoTypes.get(0).length(), 3));
-        for (int i = 1; i < representationInfoTypes.size(); i++)
-            shortForm.append("+" + representationInfoTypes.get(i), 0, Math.min(representationInfoTypes.get(i).length(), 4));
+        for (String word : representationInfoTypes.get(0).split(" ")) {
+            shortForm.append(word.charAt(0));
+        }
+        for (int i = 1; i < representationInfoTypes.size(); i++) {
+            shortForm.append("+");
+            for (String word : representationInfoTypes.get(i).split(" ")) {
+                shortForm.append(word.charAt(0));
+            }
+        }
         this.name = codebase.getName() + " - " + shortForm + " Strategy";
         this.algorithmType = algorithmType;
         this.representationInfoTypes = representationInfoTypes;

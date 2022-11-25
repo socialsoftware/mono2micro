@@ -1,11 +1,11 @@
-import Representation from "./Representation";
+import Representation from "../Representation";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import React from "react";
 
-export default class AuthorRepresentation extends Representation {
+export default class CommitRepresentation extends Representation {
 
-    constructor(representation: AuthorRepresentation) {
+    constructor(representation: CommitRepresentation) {
         super(representation);
     }
 

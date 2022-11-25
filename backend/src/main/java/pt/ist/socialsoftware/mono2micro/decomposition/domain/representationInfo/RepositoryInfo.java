@@ -65,6 +65,15 @@ public class RepositoryInfo extends RepresentationInfo {
     }
 
     @Override
+    public List<String> getParameters() {
+        return new ArrayList<String>() {{
+            add(RepresentationInfoParameters.PROFILE_PARAMETER.toString());
+            add(RepresentationInfoParameters.TRACES_MAX_LIMIT_PARAMETER.toString());
+            add(RepresentationInfoParameters.TRACE_TYPE_PARAMETER.toString());
+        }};
+    }
+
+    @Override
     public void deleteProperties() {}
 
 

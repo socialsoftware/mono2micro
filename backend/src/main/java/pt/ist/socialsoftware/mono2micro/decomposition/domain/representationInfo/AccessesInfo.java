@@ -77,6 +77,15 @@ public class AccessesInfo extends RepresentationInfo {
     }
 
     @Override
+    public List<String> getParameters() {
+        return new ArrayList<String>() {{
+            add(RepresentationInfoParameters.PROFILE_PARAMETER.toString());
+            add(RepresentationInfoParameters.TRACES_MAX_LIMIT_PARAMETER.toString());
+            add(RepresentationInfoParameters.TRACE_TYPE_PARAMETER.toString());
+        }};
+    }
+
+    @Override
     public void deleteProperties() {
         FunctionalityService functionalityService = ContextManager.get().getBean(FunctionalityService.class);
         GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);

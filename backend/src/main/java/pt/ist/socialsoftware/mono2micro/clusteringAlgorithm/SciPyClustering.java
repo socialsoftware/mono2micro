@@ -21,6 +21,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.AccessesInfo.ACCESSES_INFO;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.ClassVectorizationInfo.CLASS_VECTORIZATION_INFO;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.EntityVectorizationInfo.ENTITY_VECTORIZATION_INFO;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.FunctionalityVectorizationByCallGraphInfo.FUNCTIONALITY_VECTORIZATION_CALLGRAPH_INFO;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.FunctionalityVectorizationBySequenceOfAccessesInfo.FUNCTIONALITY_VECTORIZATION_ACCESSES_INFO;
 import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.RepositoryInfo.REPOSITORY_INFO;
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.SCRIPTS_ADDRESS;
 
@@ -41,7 +45,14 @@ public class SciPyClustering extends Clustering {
 
     @Override
     public List<String> getSupportedRepresentationInfoTypes() {
-        return new ArrayList<String>() {{add(ACCESSES_INFO); add(REPOSITORY_INFO);}};
+        return new ArrayList<String>() {{
+            add(ACCESSES_INFO);
+            add(REPOSITORY_INFO);
+            add(CLASS_VECTORIZATION_INFO);
+            add(ENTITY_VECTORIZATION_INFO);
+            add(FUNCTIONALITY_VECTORIZATION_CALLGRAPH_INFO);
+            add(FUNCTIONALITY_VECTORIZATION_ACCESSES_INFO);
+        }};
     }
 
     @Override

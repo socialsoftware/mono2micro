@@ -9,7 +9,7 @@ import HttpStatus from "http-status-codes";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 import {RepresentationType} from "../../../models/representation/Representation";
-import {TraceType} from "../../../type-declarations/types";
+import {TraceType, RepresentationInfoParameters} from "../../../type-declarations/types";
 import {SIMILARITY_MATRIX_SCIPY} from "../../../models/similarity/SimilarityMatrixSciPy";
 import {WeightsFactory} from "../../../models/weights/WeightsFactory";
 
@@ -22,6 +22,7 @@ export const SimilarityMatrixSciPyForm = ({codebaseName, strategy, setUpdateStra
     const [linkageType, setLinkageType] = useState("average");
     const [tracesMaxLimit, setTracesMaxLimit] = useState(0);
     const [traceType, setTraceType] = useState(TraceType.ALL);
+    const [depth, setDepth] = useState(-1);
     const [weightsList, setWeightsList] = useState([]);
     const [weightSum, setWeightSum] = useState(0);
 
@@ -42,7 +43,8 @@ export const SimilarityMatrixSciPyForm = ({codebaseName, strategy, setUpdateStra
             profile,
             linkageType,
             tracesMaxLimit,
-            traceType
+            traceType,
+            depth
         })
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
@@ -100,9 +102,14 @@ export const SimilarityMatrixSciPyForm = ({codebaseName, strategy, setUpdateStra
         setTraceType(event.target.value);
     }
 
+    function handleChangeDepth(event) {
+        setDepth(Number(event.target.value));
+    }
+
     return (
         <>
             <Form onSubmit={handleSubmit} className="mt-2 mb-3">
+                {strategy.parameterTypes.includes(RepresentationInfoParameters.PROFILE_PARAMETER) &&
                 <Form.Group as={Row} controlId="selectFunctionalityProfiles" className="align-items-center mb-3">
                     <Form.Label column sm={2}>
                         Select Codebase Profile
@@ -120,7 +127,8 @@ export const SimilarityMatrixSciPyForm = ({codebaseName, strategy, setUpdateStra
                             )}
                         </DropdownButton>
                     </Col>
-                </Form.Group>
+                </Form.Group>}
+                {strategy.parameterTypes.includes(RepresentationInfoParameters.TRACES_MAX_LIMIT_PARAMETER) &&
                 <Form.Group as={Row} controlId="amountOfTraces" className="mb-3">
                     <Form.Label column sm={2}>
                         Amount of Traces per Functionality
@@ -137,7 +145,8 @@ export const SimilarityMatrixSciPyForm = ({codebaseName, strategy, setUpdateStra
                             If no number is inserted, 0 is assumed to be the default value meaning the maximum number of traces
                         </Form.Text>
                     </Col>
-                </Form.Group>
+                </Form.Group>}
+                {strategy.parameterTypes.includes(RepresentationInfoParameters.TRACE_TYPE_PARAMETER) &&
                 <Form.Group as={Row} className="align-items-center mb-3">
                     <Form.Label as="legend" column sm={2}>
                         Type of traces
@@ -153,7 +162,20 @@ export const SimilarityMatrixSciPyForm = ({codebaseName, strategy, setUpdateStra
                             <Form.Check onClick={handleChangeTraceType} name="traceType" label="With more different accesses" type="radio" id="withMoreDifferentTraces" value="WITH_MORE_DIFFERENT_ACCESSES"/>
                         </Col>
                     </Col>
-                </Form.Group>
+                </Form.Group>}
+                {strategy.parameterTypes.includes(RepresentationInfoParameters.DEPTH_PARAMETER) &&
+                <Form.Group as={Row} className="align-items-center mb-3">
+                    <Form.Label as="legend" column sm={2}>
+                        Max Depth
+                    </Form.Label>
+                    <Col sm={2}>
+                        <FormControl
+                            type="number"
+                            placeholder="1-N"
+                            value={depth === -1 ? '' : depth}
+                            onChange={(event) => handleChangeDepth(event)} />
+                    </Col>
+                </Form.Group>}
                 <Form.Group as={Row} className="align-items-center mb-3">
                     <Form.Label as="legend" column sm={2}>
                         Linkage Type
