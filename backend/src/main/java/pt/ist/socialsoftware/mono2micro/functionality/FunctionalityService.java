@@ -16,7 +16,7 @@ import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesi
 import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.representation.domain.Representation;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyWeights;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import javax.naming.NameAlreadyBoundException;
@@ -195,7 +195,7 @@ public class FunctionalityService {
             throws Exception
     {
         Decomposition decomposition = decompositionRepository.findByName(decompositionName);
-        SimilarityMatrixSciPy similarity = (SimilarityMatrixSciPy) decomposition.getSimilarity();
+        SimilarityScipyWeights similarity = (SimilarityScipyWeights) decomposition.getSimilarity();
         AccessesInfo accessesInfo = (AccessesInfo) decomposition.getRepresentationInformationByType(ACCESSES_INFO);
         Functionality functionality = accessesInfo.getFunctionality(functionalityName);
 

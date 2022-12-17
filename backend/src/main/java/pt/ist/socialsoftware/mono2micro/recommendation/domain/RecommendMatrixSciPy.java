@@ -2,7 +2,6 @@ package pt.ist.socialsoftware.mono2micro.recommendation.domain;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONException;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.SciPyClustering;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
@@ -13,19 +12,17 @@ import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.recommendation.dto.RecommendMatrixSciPyDto;
 import pt.ist.socialsoftware.mono2micro.recommendation.dto.RecommendationDto;
 import pt.ist.socialsoftware.mono2micro.recommendation.repository.RecommendationRepository;
-import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityFactory;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyWeights;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.dendrogram.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.SimilarityMatrix;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.SimilarityMatrixWeights;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityMatrixSciPyDto;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.AccessesWeights;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.Weights;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.WeightsFactory;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
-import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +30,6 @@ import java.util.*;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 
-import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
 
 @Document("recommendation")
@@ -136,15 +132,10 @@ public class RecommendMatrixSciPy extends Recommendation {
                 (recommendMatrixSciPyDto.getTracesMaxLimit() == this.tracesMaxLimit);
     }
 
-    private Set<Short> fillElements(GridFsService gridFsService) throws IOException, JSONException {
-        Set<Short> elements = new TreeSet<>();
-        AccessesRepresentation accesses = (AccessesRepresentation) getStrategy().getCodebase().getRepresentationByFileType(ACCESSES);
-        AccessesWeights.fillDataStructures( // TODO THIS METHOD SHOULD BE REFACTORED TO ONLY OBTAIN ELEMENTS FROM ACCESSES FILE
-                elements, new HashMap<>(), new HashMap<>(),
-                new FunctionalityTracesIterator(gridFsService.getFile(accesses.getName()), getTracesMaxLimit()),
-                accesses.getProfile(getProfile()),
-                getTraceType());
-        return elements;
+    public Set<Short> fillElements(GridFsService gridFsService) throws IOException {
+        IDToEntityRepresentation idToEntityRepresentation = (IDToEntityRepresentation) getStrategy().getCodebase().getRepresentationByFileType(ID_TO_ENTITY);
+        Map<Short, String> idToEntity = new ObjectMapper().readValue(gridFsService.getFileAsString(idToEntityRepresentation.getName()), new TypeReference<Map<Short, String>>() {});
+        return new TreeSet<>(idToEntity.keySet());
     }
 
     private int getTotalNumberOfWeights() {
@@ -168,7 +159,7 @@ public class RecommendMatrixSciPy extends Recommendation {
         ForkJoinPool.commonPool().submit(() -> {
             try {
                 GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
-                SimilarityMatrix similarityMatrix = new SimilarityMatrix(getName(), getWeightsList());
+                SimilarityMatrixWeights similarityMatrix = new SimilarityMatrixWeights(getName(), getWeightsList());
                 setSimilarityMatricesNames(similarityMatrix.generateMultipleMatrices(gridFsService, this, fillElements(gridFsService), getTotalNumberOfWeights()));
                 clusteringAlgorithm.generateMultipleDecompositions(this);
 
@@ -181,7 +172,7 @@ public class RecommendMatrixSciPy extends Recommendation {
     }
 
     public void getDecompositionPropertiesForRecommendation(Decomposition decomposition) throws Exception {
-        SimilarityMatrixSciPy similarity = new SimilarityMatrixSciPy(this);
+        SimilarityScipyWeights similarity = new SimilarityScipyWeights(this);
         decomposition.setSimilarity(similarity);
 
         decomposition.setup();
@@ -222,10 +213,10 @@ public class RecommendMatrixSciPy extends Recommendation {
             SimilarityMatrixSciPyDto similarityInformation = new SimilarityMatrixSciPyDto(this, weightsList);
 
             // Get or create the decomposition's strategy
-            SimilarityMatrixSciPy similarity = (SimilarityMatrixSciPy) similarities.stream().filter(possibleSimilarity ->
+            SimilarityScipyWeights similarity = (SimilarityScipyWeights) similarities.stream().filter(possibleSimilarity ->
                     possibleSimilarity.equalsDto(similarityInformation)).findFirst().orElse(null);
             if (similarity == null) {
-                similarity = (SimilarityMatrixSciPy) SimilarityFactory.getSimilarity(getStrategy(), similarityInformation);
+                similarity = (SimilarityScipyWeights) SimilarityFactory.getSimilarity(getStrategy(), similarityInformation);
                 similarity.setSimilarityMatrix(new SimilarityMatrix(similarity.getName() + "_similarityMatrix", weightsList));
 
                 InputStream inputStream = gridFsService.getFile(name.substring(0, name.lastIndexOf(","))); // Gets the previously produced similarity matrix

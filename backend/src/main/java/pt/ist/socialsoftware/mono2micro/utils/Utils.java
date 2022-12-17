@@ -5,6 +5,7 @@ import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.AccessesInfo;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.EntityVectorizationInfo;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
@@ -15,6 +16,7 @@ import java.util.*;
 
 import static org.jgrapht.Graphs.successorListOf;
 import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.AccessesInfo.ACCESSES_INFO;
+import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.EntityVectorizationInfo.ENTITY_VECTORIZATION_INFO;
 
 public class Utils {
     public static void print(String message, Integer lineNumber) { System.out.println("[" + lineNumber + "] " + message); }
@@ -238,6 +240,10 @@ public class Utils {
         Map<String, List<Functionality>> clustersFunctionalities = new HashMap<>();
         Map<Short, String> entityIDToClusterName = decomposition.getEntityIDToClusterName();
         AccessesInfo accessesInfo = (AccessesInfo) decomposition.getRepresentationInformationByType(ACCESSES_INFO);
+
+        for (String clusterkey : decomposition.getClusters().keySet()) {
+            clustersFunctionalities.put(decomposition.getClusters().get(clusterkey).getName(), new ArrayList<>());
+        }
 
         for (Functionality functionality : accessesInfo.getFunctionalities().values()) {
             for (short entityID : functionality.getEntities().keySet()) {

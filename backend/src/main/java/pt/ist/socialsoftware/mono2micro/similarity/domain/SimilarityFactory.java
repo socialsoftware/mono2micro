@@ -2,9 +2,11 @@ package pt.ist.socialsoftware.mono2micro.similarity.domain;
 
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDto;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityMatrixSciPyDto;
+import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityMatrixSciPyEntityVectorizationDto;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
-import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy.SIMILARITY_MATRIX_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyEntityVectorization.SIMILARITY_SCIPY_ENTITY_VECTORIZATION;
+import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyWeights.SIMILARITY_SCIPY_WEIGHTS;
 
 public class SimilarityFactory {
 
@@ -12,12 +14,15 @@ public class SimilarityFactory {
         if (similarityDto == null)
             return null;
         switch (similarityDto.getType()) {
-            case SIMILARITY_MATRIX_SCIPY:
-                return new SimilarityMatrixSciPy((SimilarityMatrixSciPyDto) similarityDto);
+            case SIMILARITY_SCIPY_WEIGHTS:
+                return new SimilarityScipyWeights((SimilarityMatrixSciPyDto) similarityDto);
+            case SIMILARITY_SCIPY_ENTITY_VECTORIZATION:
+                return new SimilarityScipyEntityVectorization((SimilarityMatrixSciPyEntityVectorizationDto) similarityDto);
             default:
                 throw new RuntimeException("The type \"" + similarityDto.getType() + "\" is not a valid similarityDto type.");
         }
     }
+
     public static Similarity getSimilarity(Strategy strategy, SimilarityDto similarityDto) {
         Similarity similarity = getSimilarity(similarityDto);
         int i = 0;

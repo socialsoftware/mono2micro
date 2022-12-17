@@ -29,11 +29,11 @@ public class CohesionMetric extends DecompositionMetric {
         double totalCohesion = 0;
 
         for (Cluster cluster : decomposition.getClusters().values()) {
-            List<Functionality> FunctionalitiesThatAccessThisCluster = clustersFunctionalities.get(cluster.getName());
+            List<Functionality> functionalitiesThatAccessThisCluster = clustersFunctionalities.get(cluster.getName());
 
             double clusterCohesion = 0;
 
-            for (Functionality functionality : FunctionalitiesThatAccessThisCluster) {
+            for (Functionality functionality : functionalitiesThatAccessThisCluster) {
                 double numberEntitiesTouched = 0;
 
                 Set<Short> functionalityEntities = functionality.getEntities().keySet();
@@ -45,7 +45,8 @@ public class CohesionMetric extends DecompositionMetric {
                 clusterCohesion += numberEntitiesTouched / cluster.getElements().size();
             }
 
-            clusterCohesion /= FunctionalitiesThatAccessThisCluster.size();
+            if (functionalitiesThatAccessThisCluster.size() != 0)
+                clusterCohesion /= functionalitiesThatAccessThisCluster.size();
             clusterCohesion = BigDecimal.valueOf(clusterCohesion).setScale(3, RoundingMode.HALF_UP).doubleValue();
             cluster.addMetric(COHESION, clusterCohesion);
             totalCohesion += clusterCohesion;

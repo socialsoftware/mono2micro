@@ -14,7 +14,7 @@ import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.metrics.decompositionMetrics.*;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AuthorRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.CommitRepresentation;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipy;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.dendrogram.Dendrogram;
 
 import java.io.IOException;
@@ -166,7 +166,7 @@ public class RepositoryInfo extends RepresentationInfo {
     @Override
     public String getEdgeWeights(Decomposition decomposition) throws JSONException, IOException {
         GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
-        Dendrogram dendrogram = ((SimilarityMatrixSciPy) decomposition.getSimilarity()).getDendrogram();
+        Dendrogram dendrogram = ((SimilarityScipy) decomposition.getSimilarity()).getDendrogram();
         JSONArray copheneticDistances = new JSONArray(IOUtils.toString(gridFsService.getFile(dendrogram.getCopheneticDistanceName()), StandardCharsets.UTF_8));
 
         ArrayList<Short> entities = new ArrayList<>(decomposition.getEntityIDToClusterName().keySet());

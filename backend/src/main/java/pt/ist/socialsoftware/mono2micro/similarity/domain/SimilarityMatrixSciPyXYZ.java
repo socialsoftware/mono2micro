@@ -2,31 +2,26 @@ package pt.ist.socialsoftware.mono2micro.similarity.domain;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONException;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.Clustering;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.SciPyClustering;
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy;
-import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.dendrogram.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.SimilarityMatrix;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDto;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityMatrixSciPyDto;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.AccessesWeights;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
-import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
 
 import java.io.IOException;
 import java.util.*;
 
-import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
 
 @Document("similarity")
-public class SimilarityMatrixSciPy extends Similarity {
+public class SimilarityMatrixSciPyXYZ extends Similarity {
     public static final String SIMILARITY_MATRIX_SCIPY = "SIMILARITY_MATRIX_SCIPY";
 
     // Used during Similarity Generation
@@ -42,9 +37,9 @@ public class SimilarityMatrixSciPy extends Similarity {
     // Dendrogram created in the Python services
     private Dendrogram dendrogram;
 
-    public SimilarityMatrixSciPy() {}
+    public SimilarityMatrixSciPyXYZ() {}
 
-    public SimilarityMatrixSciPy(SimilarityMatrixSciPyDto dto) {
+    public SimilarityMatrixSciPyXYZ(SimilarityMatrixSciPyDto dto) {
         this.profile = dto.getProfile();
         this.tracesMaxLimit = dto.getTracesMaxLimit();
         this.traceType = dto.getTraceType();
@@ -54,7 +49,7 @@ public class SimilarityMatrixSciPy extends Similarity {
         setDecompositions(new ArrayList<>());
     }
 
-    public SimilarityMatrixSciPy(RecommendMatrixSciPy recommendation) {
+    public SimilarityMatrixSciPyXYZ(RecommendMatrixSciPy recommendation) {
         this.profile = recommendation.getProfile();
         this.tracesMaxLimit = recommendation.getTracesMaxLimit();
         this.traceType = recommendation.getTraceType();
@@ -71,15 +66,13 @@ public class SimilarityMatrixSciPy extends Similarity {
         return new SciPyClustering();
     }
 
-    public Set<Short> fillElements(GridFsService gridFsService) throws IOException, JSONException {
-        Set<Short> elements = new TreeSet<>();
-        AccessesRepresentation accesses = (AccessesRepresentation) getStrategy().getCodebase().getRepresentationByFileType(ACCESSES);
-        AccessesWeights.fillDataStructures( // TODO THIS METHOD SHOULD BE REFACTORED TO ONLY OBTAIN ELEMENTS FROM ACCESSES FILE
-                elements, new HashMap<>(), new HashMap<>(),
-                new FunctionalityTracesIterator(gridFsService.getFile(accesses.getName()), getTracesMaxLimit()),
-                accesses.getProfile(getProfile()),
-                getTraceType());
-        return elements;
+    public Set<Short> fillElements(GridFsService gridFsService) throws IOException {
+        IDToEntityRepresentation idToEntityRepresentation = (IDToEntityRepresentation) getStrategy().getCodebase().getRepresentationByFileType(ID_TO_ENTITY);
+        Map<Short, String> idToEntity = new ObjectMapper().readValue(
+                gridFsService.getFileAsString(idToEntityRepresentation.getName()),
+                new TypeReference<Map<Short, String>>() {}
+        );
+        return new TreeSet<>(idToEntity.keySet());
     }
 
     @Override
@@ -146,7 +139,7 @@ public class SimilarityMatrixSciPy extends Similarity {
     public void generate() throws Exception {
         GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
         Set<Short> elements = fillElements(gridFsService);
-        this.similarityMatrix.generate(gridFsService, this, elements);
+        this.similarityMatrix.generate(gridFsService, this);
 
         this.dendrogram = new Dendrogram(getName(), similarityMatrix.getName(), getLinkageType());
     }
@@ -169,7 +162,7 @@ public class SimilarityMatrixSciPy extends Similarity {
                 similarityDto.getProfile().equals(this.profile) &&
                 similarityDto.getTracesMaxLimit() == this.tracesMaxLimit &&
                 similarityDto.getTraceType() == this.traceType &&
-                similarityDto.getLinkageType().equals(this.linkageType) &&
-                similarityMatrix.hasSameWeights(similarityDto.getWeightsList());
+                similarityDto.getLinkageType().equals(this.linkageType);// &&
+                //similarityMatrix.hasSameWeights(similarityDto.getWeightsList());
     }
 }

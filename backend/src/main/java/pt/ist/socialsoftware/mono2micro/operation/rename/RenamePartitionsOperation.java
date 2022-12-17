@@ -1,6 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.operation.rename;
 
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
+import pt.ist.socialsoftware.mono2micro.cluster.Partition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
@@ -47,8 +48,9 @@ public class RenamePartitionsOperation extends RenameOperation {
 
         // Change coupling dependencies
         decomposition.getClusters().forEach((s, cluster) -> {
-            Set<Short> dependencies = cluster.getCouplingDependencies().get(clusterName);
-            if (dependencies != null) {cluster.getCouplingDependencies().remove(clusterName); cluster.addCouplingDependencies(newClusterName, dependencies);}
+            Partition partition = (Partition) cluster;
+            Set<Short> dependencies = partition.getCouplingDependencies().get(clusterName);
+            if (dependencies != null) {partition.getCouplingDependencies().remove(clusterName); partition.addCouplingDependencies(newClusterName, dependencies);}
         });
     }
 

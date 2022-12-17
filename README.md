@@ -24,7 +24,8 @@ To run the backend:
 	
 	cd backend/
 	mvn clean install -DskipTests
-	mvn spring-boot:run
+    java -Djava.security.egd=file:/dev/./urandom -jar ./target/mono2micro-0.0.1-SNAPSHOT.jar
+
 
     mvn -Dmaven.test.skip=true package # If there are ContextManager when refreshing the context
     java -jar ./target/mono2micro-0.0.1-SNAPSHOT.jar

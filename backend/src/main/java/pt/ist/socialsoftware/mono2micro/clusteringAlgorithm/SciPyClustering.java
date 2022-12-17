@@ -14,7 +14,7 @@ import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipy;
 
 import java.io.ByteArrayInputStream;
 import java.util.*;
@@ -58,8 +58,7 @@ public class SciPyClustering extends Clustering {
     @Override
     public Decomposition generateDecomposition(Similarity s, DecompositionRequest request) throws Exception {
         SciPyRequestDto dto = (SciPyRequestDto) request;
-        SimilarityMatrixSciPy similarity = (SimilarityMatrixSciPy) s;
-        Map<Short, String> idToEntity;
+        SimilarityScipy similarity = (SimilarityScipy) s;
 
         PartitionsDecomposition decomposition = new PartitionsDecomposition();
         decomposition.setSimilarity(similarity);
@@ -70,9 +69,9 @@ public class SciPyClustering extends Clustering {
 
         JSONObject clustersJSON = invokePythonCut(decomposition, similarity.getSimilarityMatrix().getName(), similarity.getLinkageType(), dto.getCutType(), dto.getCutValue());
 
-        idToEntity = similarity.getIDToEntityName();
-
+        Map<Short, String> idToEntity = similarity.getIDToEntityName();
         addClustersAndEntities(decomposition, clustersJSON, idToEntity);
+
         return decomposition;
     }
 

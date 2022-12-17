@@ -6,6 +6,7 @@ import {useParams} from "react-router-dom";
 import {APIService} from "../../services/APIService";
 import {toast, ToastContainer} from "react-toastify";
 import {SimilarityMatrixSciPyForm} from "./forms/SimilarityMatrixSciPyForm";
+import {SimilarityMatrixSciPyEntityVectorizationForm} from "./forms/SimilarityMatrixSciPyEntityVectorizationForm";
 
 export const Similarities = () => {
 
@@ -34,9 +35,12 @@ export const Similarities = () => {
     function loadSimilarities() {
         const toastId = toast.loading("Fetching Similarities...");
         const service = new APIService();
+        console.log('[LOG] - Test -> ' + strategyName);
         service.getStrategySimilarities(strategyName)
             .then(response => {
+                console.log('[LOG] - ' + response);
                 setSimilarities(response);
+                console.log('[LOG] - Setted Stretegy');
                 toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Similarities Loaded.", isLoading: false});
                 setTimeout(() => {toast.dismiss(toastId)}, 1000);
             })
@@ -90,7 +94,14 @@ export const Similarities = () => {
             {strategy !== undefined &&
                 <>
                     {/*Add form of each similarity type like the next block to request the required elements for its creation*/}
-                    {strategy.algorithmType === "SciPy Clustering" && //Asks for the required information for SciPy
+                    {strategy.algorithmType === "SciPy Clustering" &&
+                        strategy.representationInformationTypes.includes("Entity Vectorization") ?
+                        <SimilarityMatrixSciPyEntityVectorizationForm
+                            codebaseName={codebaseName}
+                            strategy={strategy}
+                            setUpdateStrategies={setUpdateStrategies}
+                        /> :
+                    strategy.algorithmType === "SciPy Clustering" &&
                         <SimilarityMatrixSciPyForm
                             codebaseName={codebaseName}
                             strategy={strategy}

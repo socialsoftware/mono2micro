@@ -1,6 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.operation.transfer;
 
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
+import pt.ist.socialsoftware.mono2micro.cluster.Partition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.element.Element;
 
@@ -55,7 +56,9 @@ public class TransferPartitionsOperation extends TransferOperation {
             }
         }
 
-        for (Cluster cluster : decomposition.getClusters().values())
-            cluster.transferCouplingDependencies(entitiesList, fromCluster, toCluster);
+        for (Cluster cluster : decomposition.getClusters().values()) {
+            Partition partition = (Partition) cluster;
+            partition.transferCouplingDependencies(entitiesList, fromCluster, toCluster);
+        }
     }
 }

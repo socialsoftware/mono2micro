@@ -1,7 +1,12 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo;
 
+import pt.ist.socialsoftware.mono2micro.representation.domain.Representation;
+import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.AccessesInfo.ACCESSES_INFO;
 import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.ClassVectorizationInfo.CLASS_VECTORIZATION_INFO;
@@ -11,10 +16,22 @@ import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representati
 import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.RepositoryInfo.REPOSITORY_INFO;
 
 public class RepresentationInfoFactory {
-    public static List<RepresentationInfo> getRepresentationInfosFromType(List<String> representationInfosTypes) {
+    public static List<RepresentationInfo> getRepresentationInfosFromType(Strategy strategy) {
         List<RepresentationInfo> representationInfos = new ArrayList<>();
-        for (String rep : representationInfosTypes)
-            representationInfos.add(getRepresentationInfoFromType(rep));
+        List<String> representationFiles = strategy.getCodebase()
+                                                    .getRepresentations()
+                                                    .stream()
+                                                    .map(Representation::getType)
+                                                    .collect(Collectors.toList());
+
+        Map<String, List<String>> representationInfoTypeToFiles = RepresentationInfoType.representationInfoTypeToFiles;
+
+        for (String representationInfoKey : representationInfoTypeToFiles.keySet()) {
+            if (representationFiles.containsAll(representationInfoTypeToFiles.get(representationInfoKey))) {
+                representationInfos.add(getRepresentationInfoFromType(representationInfoKey));
+            }
+        }
+
         return representationInfos;
     }
 

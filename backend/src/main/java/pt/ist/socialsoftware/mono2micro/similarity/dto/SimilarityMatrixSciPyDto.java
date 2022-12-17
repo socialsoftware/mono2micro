@@ -1,13 +1,14 @@
 package pt.ist.socialsoftware.mono2micro.similarity.dto;
 
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyWeights;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.SimilarityMatrixWeights;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.Weights;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.util.List;
 
-import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy.SIMILARITY_MATRIX_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyWeights.SIMILARITY_SCIPY_WEIGHTS;
 
 public class SimilarityMatrixSciPyDto extends SimilarityDto {
     private List<Weights> weightsList;
@@ -17,24 +18,23 @@ public class SimilarityMatrixSciPyDto extends SimilarityDto {
     private int depth;
     private String profile;
 
-    public SimilarityMatrixSciPyDto() { this.type = SIMILARITY_MATRIX_SCIPY; }
+    public SimilarityMatrixSciPyDto() { this.type = SIMILARITY_SCIPY_WEIGHTS; }
 
-    public SimilarityMatrixSciPyDto(SimilarityMatrixSciPy similarity) {
+    public SimilarityMatrixSciPyDto(SimilarityScipyWeights similarity) {
         this.codebaseName = similarity.getStrategy().getCodebase().getName();
         this.strategyName = similarity.getStrategy().getName();
         this.name = similarity.getName();
         this.type = similarity.getType();
-        this.weightsList = similarity.getSimilarityMatrix().getWeightsList();
+        this.weightsList = ((SimilarityMatrixWeights) similarity.getSimilarityMatrix()).getWeightsList();
         this.profile = similarity.getProfile();
         this.linkageType = similarity.getLinkageType();
         this.tracesMaxLimit = similarity.getTracesMaxLimit();
         this.traceType = similarity.getTraceType();
-        this.depth = similarity.getDepth();
     }
 
     public SimilarityMatrixSciPyDto(RecommendMatrixSciPy recommend, List<Weights> weightsList) {
         this.strategyName = recommend.getStrategy().getName();
-        this.type = SIMILARITY_MATRIX_SCIPY;
+        this.type = SIMILARITY_SCIPY_WEIGHTS;
         this.weightsList = weightsList;
         this.profile = recommend.getProfile();
         this.linkageType = recommend.getLinkageType();

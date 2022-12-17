@@ -10,7 +10,7 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 import {RepresentationType} from "../../../models/representation/Representation";
 import {TraceType, RepresentationInfoParameters} from "../../../type-declarations/types";
-import {SIMILARITY_MATRIX_SCIPY} from "../../../models/similarity/SimilarityMatrixSciPy";
+import {SIMILARITY_SCIPY_WEIGHTS, SIMILARITY_SCIPY_ENTITY_VECTORIZATION} from "../../../models/similarity/SimilaritySciPyWeights";
 import {WeightsFactory} from "../../../models/weights/WeightsFactory";
 
 
@@ -38,7 +38,7 @@ export const SimilarityMatrixSciPyForm = ({codebaseName, strategy, setUpdateStra
 
         service.createSimilarity({
             strategyName: strategy.name,
-            type: SIMILARITY_MATRIX_SCIPY,
+            type: SIMILARITY_SCIPY_WEIGHTS,
             weightsList,
             profile,
             linkageType,
@@ -209,7 +209,8 @@ export const SimilarityMatrixSciPyForm = ({codebaseName, strategy, setUpdateStra
                         <Button
                             type="submit"
                             disabled={isUploaded === "Uploading..." ||
-                                !(weightSum === 100 && profile !== "" && traceType !== "")
+                            false
+                                // !(weightSum === 100 && profile !== "" && traceType !== "")
                             }
                         >
                             Generate Similarity Distances

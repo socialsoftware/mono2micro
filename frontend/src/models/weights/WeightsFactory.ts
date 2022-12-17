@@ -45,7 +45,7 @@ export abstract class WeightsFactory {
         else if (representationTypes.includes(RepresentationInfoType.CLASS_VECTORIZATION_INFO))
             return [new ClassVectorizationWeights({})];
         else if (representationTypes.includes(RepresentationInfoType.ENTITY_VECTORIZATION_INFO))
-            return [new EntityVectorizationWeights({})];
+            return [];
         else if (representationTypes.includes(RepresentationInfoType.FUNCTIONALITY_VECTORIZATION_CALLGRAPH_INFO))
             return [new FunctionalityVectorizationCallGraphWeights({controllersWeight: 25, servicesWeight: 25, intermediateMethodsWeight: 25, entitiesWeight: 25})];
         else if (representationTypes.includes(RepresentationInfoType.FUNCTIONALITY_VECTORIZATION_ACCESSES_INFO))
