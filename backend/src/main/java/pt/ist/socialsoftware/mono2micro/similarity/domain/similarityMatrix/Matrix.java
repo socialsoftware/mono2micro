@@ -3,7 +3,6 @@ package pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix;
 import org.springframework.data.annotation.Transient;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyEntityVectorization;
 
 public abstract class Matrix { // TODO - Latter this should become the SimilarityMatrix
 

@@ -51,7 +51,7 @@ public class RepresentationService {
             if (availableRepresentationsTypes.contains(representationType))
                 throw new RuntimeException("Re-sending representations is not allowed.");
 
-        for(int i = 0; i < representationTypes.size(); i++) {
+        for (int i = 0; i < representationTypes.size(); i++) {
             String representationType = representationTypes.get(i);
             byte[] representationFileStream = ((MultipartFile) representations.get(i)).getBytes();
             Representation representation = RepresentationFactory.getRepresentation(representationType);

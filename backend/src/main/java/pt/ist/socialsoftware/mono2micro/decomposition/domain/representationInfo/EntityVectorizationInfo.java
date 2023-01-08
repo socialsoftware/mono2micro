@@ -3,6 +3,9 @@ package pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo
 import org.apache.commons.lang3.NotImplementedException;
 import org.json.JSONException;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
+import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
+import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
+import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityService;
 import pt.ist.socialsoftware.mono2micro.metrics.decompositionMetrics.*;
 
 import java.io.IOException;
@@ -23,6 +26,9 @@ public class EntityVectorizationInfo extends RepresentationInfo {
         return new ArrayList<String>() {{}};
     }
 
+    @Override
+    public void deleteProperties() {}
+
     /* ------------------------- NOT USED -------------------------------- */
 
     @Override
@@ -33,8 +39,7 @@ public class EntityVectorizationInfo extends RepresentationInfo {
 
     @Override
     public List<DecompositionMetric> getDecompositionMetrics() {
-        return new ArrayList<DecompositionMetric>() {{
-        }};
+        return new ArrayList<DecompositionMetric>() {{}};
     }
 
     @Override
@@ -44,11 +49,6 @@ public class EntityVectorizationInfo extends RepresentationInfo {
 
     @Override
     public void update(Decomposition decomposition) throws Exception {
-        throw new NotImplementedException("Not used");
-    }
-
-    @Override
-    public void deleteProperties() {
         throw new NotImplementedException("Not used");
     }
 

@@ -3,12 +3,14 @@ package pt.ist.socialsoftware.mono2micro.similarity.dto;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyClassVectorization.SIMILARITY_SCIPY_CLASS_VECTORIZATION;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyEntityVectorization.SIMILARITY_SCIPY_ENTITY_VECTORIZATION;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyWeights.SIMILARITY_SCIPY_WEIGHTS;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = SimilarityMatrixSciPyDto.class, name = SIMILARITY_SCIPY_WEIGHTS),
+        @JsonSubTypes.Type(value = SimilarityMatrixSciPyClassVectorizationDto.class, name = SIMILARITY_SCIPY_CLASS_VECTORIZATION),
         @JsonSubTypes.Type(value = SimilarityMatrixSciPyEntityVectorizationDto.class, name = SIMILARITY_SCIPY_ENTITY_VECTORIZATION)
 })
 public abstract class SimilarityDto {

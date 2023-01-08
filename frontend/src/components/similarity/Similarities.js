@@ -7,6 +7,8 @@ import {APIService} from "../../services/APIService";
 import {toast, ToastContainer} from "react-toastify";
 import {SimilarityMatrixSciPyForm} from "./forms/SimilarityMatrixSciPyForm";
 import {SimilarityMatrixSciPyEntityVectorizationForm} from "./forms/SimilarityMatrixSciPyEntityVectorizationForm";
+import {SimilarityMatrixSciPyClassVectorizationForm} from "./forms/SimilarityMatrixSciPyClassVectorizationForm";
+import { RepresentationInfoType } from '../../models/representation/RepresentationInfoTypes';
 
 export const Similarities = () => {
 
@@ -95,8 +97,15 @@ export const Similarities = () => {
                 <>
                     {/*Add form of each similarity type like the next block to request the required elements for its creation*/}
                     {strategy.algorithmType === "SciPy Clustering" &&
-                        strategy.representationInformationTypes.includes("Entity Vectorization") ?
+                        strategy.representationInformationTypes.includes(RepresentationInfoType.ENTITY_VECTORIZATION_INFO) ?
                         <SimilarityMatrixSciPyEntityVectorizationForm
+                            codebaseName={codebaseName}
+                            strategy={strategy}
+                            setUpdateStrategies={setUpdateStrategies}
+                        /> :
+                    strategy.algorithmType === "SciPy Clustering" &&
+                        strategy.representationInformationTypes.includes(RepresentationInfoType.CLASS_VECTORIZATION_INFO) ?
+                        <SimilarityMatrixSciPyClassVectorizationForm
                             codebaseName={codebaseName}
                             strategy={strategy}
                             setUpdateStrategies={setUpdateStrategies}

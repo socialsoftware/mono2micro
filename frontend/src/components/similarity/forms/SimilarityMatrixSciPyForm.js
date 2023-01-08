@@ -10,7 +10,7 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 import {RepresentationType} from "../../../models/representation/Representation";
 import {TraceType, RepresentationInfoParameters} from "../../../type-declarations/types";
-import {SIMILARITY_SCIPY_WEIGHTS, SIMILARITY_SCIPY_ENTITY_VECTORIZATION} from "../../../models/similarity/SimilaritySciPyWeights";
+import {SIMILARITY_SCIPY_WEIGHTS} from "../../../models/similarity/SimilaritySciPyWeights";
 import {WeightsFactory} from "../../../models/weights/WeightsFactory";
 
 

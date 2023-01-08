@@ -118,7 +118,9 @@ public class SimilarityMatrixWeights extends SimilarityMatrix {
         }
 
         matrixData.put("elements", elements);
+        matrixData.put("labels", elements);
         matrixData.put("matrix", matrixJSON);
+        matrixData.put("clusterPrimitiveType", "Entity");
         return matrixData;
     }
 

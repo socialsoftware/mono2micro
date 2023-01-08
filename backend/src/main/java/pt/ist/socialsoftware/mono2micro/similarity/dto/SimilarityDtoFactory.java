@@ -1,12 +1,14 @@
 package pt.ist.socialsoftware.mono2micro.similarity.dto;
 
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyClassVectorization;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyEntityVectorization;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyWeights;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyClassVectorization.SIMILARITY_SCIPY_CLASS_VECTORIZATION;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyEntityVectorization.SIMILARITY_SCIPY_ENTITY_VECTORIZATION;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyWeights.SIMILARITY_SCIPY_WEIGHTS;
 
@@ -17,6 +19,8 @@ public class SimilarityDtoFactory {
                 return new SimilarityMatrixSciPyDto((SimilarityScipyWeights) similarity);
             case SIMILARITY_SCIPY_ENTITY_VECTORIZATION:
                 return new SimilarityMatrixSciPyEntityVectorizationDto((SimilarityScipyEntityVectorization) similarity);
+            case SIMILARITY_SCIPY_CLASS_VECTORIZATION:
+                return new SimilarityMatrixSciPyClassVectorizationDto((SimilarityScipyClassVectorization) similarity);
             default:
                 throw new RuntimeException("The type \"" + similarity.getType() + "\" is not a valid similarity type.");
         }

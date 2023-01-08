@@ -8,26 +8,31 @@ import org.json.JSONObject;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddingsRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.EntityToIDRepresentation;
+import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.utils.Acumulator;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddingsRepresentation.CODE_EMBEDDINGS;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.EntityToIDRepresentation.ENTITY_TO_ID;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
 
-public class SimilarityMatrixEntityVectorization extends SimilarityMatrix {
+public class SimilarityMatrixClassVectorization extends SimilarityMatrix {
 
     private static final int INTERVAL = 100;
     private static final int STEP = 10;
     private static final int CODE_VECTOR_SIZE = 384;
 
-    public SimilarityMatrixEntityVectorization() { super(); }
+    public SimilarityMatrixClassVectorization() { super(); }
 
-    public SimilarityMatrixEntityVectorization(String name) {
+    public SimilarityMatrixClassVectorization(String name) {
         this.name = name;
     }
 
@@ -36,9 +41,10 @@ public class SimilarityMatrixEntityVectorization extends SimilarityMatrix {
         setGridFsService(gridFsService);
         JSONObject codeEmbeddings = getCodeEmbeddings(similarity.getStrategy());
         Map<String, Short> entityToId = getEntitiesNamesToIds(similarity.getStrategy());
+        this.matchEntitiesTranslationIds(similarity.getStrategy(), codeEmbeddings);
 
         HashMap<String, Object> matrix = new HashMap<>();
-        this.computeEntitiesVectors(matrix, codeEmbeddings, entityToId);
+        this.computeClassesVectors(matrix, codeEmbeddings, entityToId);
 
         JSONObject matrixJSON = new JSONObject(matrix);
         setName(similarity.getName() + "_similarityMatrix");
@@ -46,10 +52,10 @@ public class SimilarityMatrixEntityVectorization extends SimilarityMatrix {
         gridFsService.saveFile(new ByteArrayInputStream(matrixJSON.toString().getBytes()), getName());
     }
 
-    private void computeEntitiesVectors(HashMap<String, Object> matrix, JSONObject codeEmbeddings, Map<String, Short> entityToId) throws JSONException {
-        List<List<Double>> entitiesVectors = new ArrayList<>();
-        List<Short> entitiesIds = new ArrayList<>();
-        List<String> entitiesNames = new ArrayList<>();
+    private void computeClassesVectors(HashMap<String, Object> matrix, JSONObject codeEmbeddings, Map<String, Short> entityToId) throws JSONException {
+        List<List<Double>> classesVectors = new ArrayList<>();
+        List<String> classesNames = new ArrayList<>();
+        List<Integer> translationIds = new ArrayList<>();
         JSONArray packages = codeEmbeddings.getJSONArray("packages");
 
         for (int i = 0; i < packages.length(); i++) {
@@ -59,30 +65,38 @@ public class SimilarityMatrixEntityVectorization extends SimilarityMatrix {
             for (int j = 0; j < classes.length(); j++) {
                 JSONObject cls = classes.getJSONObject(j);
                 JSONArray methods = cls.optJSONArray("methods");
-                String classType = cls.getString("type");
                 String className = cls.getString("name");
 
-                if (classType.equals("Entity") && !className.endsWith("_Base")) {
+                if (!className.endsWith("_Base")) {
 
                     Acumulator acumulator = new Acumulator();
                     getAscendedClassesMethodsCodeVectors(packages, acumulator, cls.getString("superQualifiedName"));
 
                     for (int k = 0; k < methods.length(); k++) {
                         JSONObject method = methods.getJSONObject(k);
-                        JSONArray code_vector = method.getJSONArray("codeVector");
-                        acumulator.addVector(code_vector);
+                        JSONArray codeVector = method.getJSONArray("codeVector");
+                        acumulator.addVector(codeVector);
                     }
 
-                    entitiesIds.add(entityToId.get(className));
-                    entitiesNames.add(className);
-                    entitiesVectors.add(acumulator.getMeanVector());
+                    if (acumulator.getCount() > 0) {
+                        HashMap<String, Object> classEmbeddings = new HashMap<String, Object>();
+                        classEmbeddings.put("package", pack.getString("name"));
+                        classEmbeddings.put("name", className);
+                        classEmbeddings.put("type", cls.getString("type"));
+
+                        if (cls.has("translationID")) translationIds.add(cls.getInt("translationID"));
+                        else translationIds.add(-1);
+                        classesNames.add(className);
+                        classesVectors.add(acumulator.getMeanVector());
+                    }
                 }
             }
         }
-        matrix.put("elements", entitiesIds);
-        matrix.put("labels", entitiesNames);
-        matrix.put("matrix", entitiesVectors);
-        matrix.put("clusterPrimitiveType", "Entity");
+        matrix.put("elements", classesNames);
+        matrix.put("labels", classesNames);
+        matrix.put("translationIds", translationIds);
+        matrix.put("matrix", classesVectors);
+        matrix.put("clusterPrimitiveType", "Class");
     }
 
     private Acumulator getAscendedClassesMethodsCodeVectors(
@@ -140,11 +154,42 @@ public class SimilarityMatrixEntityVectorization extends SimilarityMatrix {
         return null;
     }
 
+    public void matchEntitiesTranslationIds(Strategy strategy, JSONObject codeEmbeddings)
+        throws JSONException, IOException
+    {
+        Map<String, Short> translationEntityToId = getTranslationEntityToId(strategy);
+        JSONArray packages = codeEmbeddings.getJSONArray("packages");
+
+        for (int i = 0; i < packages.length(); i++) {
+            JSONObject pack = packages.getJSONObject(i);
+            JSONArray classes = pack.optJSONArray("classes");
+
+            for (int j = 0; j < classes.length(); j++) {
+                JSONObject cls = classes.getJSONObject(j);
+                String className = cls.getString("name");
+
+                if (translationEntityToId.containsKey(className)) {
+                    int entityId = translationEntityToId.get(className);
+                    cls.put("type", "Entity");
+                    cls.put("translationID", entityId);
+                }
+            }
+        }
+    }
+
     private Map<String, Short> getEntitiesNamesToIds(Strategy strategy) throws IOException {
         EntityToIDRepresentation entityToId = (EntityToIDRepresentation) strategy.getCodebase().getRepresentationByFileType(ENTITY_TO_ID);
         return new ObjectMapper().readValue(
                 gridFsService.getFileAsString(entityToId.getName()),
                 new TypeReference<Map<String, Short>>() {}
+        );
+    }
+
+    private Map<String, Short> getTranslationEntityToId(Strategy strategy) throws IOException {
+        IDToEntityRepresentation idToEntity = (IDToEntityRepresentation) strategy.getCodebase().getRepresentationByFileType(ID_TO_ENTITY);
+        return new ObjectMapper().readValue(
+                gridFsService.getFileAsString(idToEntity.getName()),
+                new TypeReference<Map<Short, String>>() {}
         );
     }
 
@@ -157,7 +202,7 @@ public class SimilarityMatrixEntityVectorization extends SimilarityMatrix {
 
     @Override
     public String toString() {
-        return "SimilarityMatrixEntityVectorization";
+        return "SimilarityMatrixClassVectorization";
     }
 
 }

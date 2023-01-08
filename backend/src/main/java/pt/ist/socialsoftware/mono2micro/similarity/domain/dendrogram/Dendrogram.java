@@ -44,6 +44,6 @@ public class Dendrogram {
             JSONObject jsonObject = new JSONObject(response);
             setDendrogramName(jsonObject.getString("dendrogramName"));
             setCopheneticDistanceName(jsonObject.getString("copheneticDistanceName"));
-        } catch(Exception e) { throw new RuntimeException("Could not produce or extract elements from JSON Object"); }
+        } catch (Exception e) { throw new RuntimeException("Could not produce or extract elements from JSON Object"); }
     }
 }
