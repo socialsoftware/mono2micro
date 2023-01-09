@@ -1,5 +1,4 @@
 import Similarity from "./Similarity";
-import {TraceType} from "../../type-declarations/types";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import {URL} from "../../constants/constants"
@@ -7,23 +6,19 @@ import React from "react";
 import {WeightsFactory} from "../weights/WeightsFactory";
 import Weights from "../weights/Weights";
 
-const SIMILARITY_SCIPY_WEIGHTS = 'SIMILARITY_SCIPY_WEIGHTS';
-export {SIMILARITY_SCIPY_WEIGHTS};
+const SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH = 'SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH';
+export {SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH};
 
-export default class SimilaritySciPyWeights extends Similarity {
-    profile: string;
+export default class SimilarityMatrixFunctionalityVectorizationByCallGraph extends Similarity {
     linkageType: string;
-    tracesMaxLimit: number;
-    traceType: TraceType;
+    depth: number;
     weightsList: Weights[];
 
     constructor(similarity: any) {
         super(similarity);
         // Initializes default values if no previous value is provided
-        this.profile =              similarity.profile                 ||     "Generic";
         this.linkageType =          similarity.linkageType             ||     "average";
-        this.tracesMaxLimit =       similarity.tracesMaxLimit          ||     0;
-        this.traceType =            similarity.traceType               ||     TraceType.ALL;
+        this.depth =                similarity.depth                   ||     2;
         this.weightsList =          WeightsFactory.getWeightsList(similarity.weightsList);
     }
 
@@ -36,10 +31,8 @@ export default class SimilaritySciPyWeights extends Similarity {
             <Card.Body>
                 <Card.Title>{this.name}</Card.Title>
                 <Card.Text>
-                    Profile: {this.profile} <br />
-                    AmountOfTraces: {this.tracesMaxLimit} <br />
-                    Type of traces: {this.traceType} <br />
                     Linkage Type: {this.linkageType} < br />
+                    Depth: {this.depth} < br />
                     {this.weightsList.flatMap((weights: any) =>
                         Object.entries(weights.weightsLabel).map(([key, value]) => <span key={key}>{value + ": " + weights[key] + "%"} <br/></span>)
                     )}

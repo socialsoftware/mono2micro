@@ -29,7 +29,7 @@ def createDendrogram(similarityName, similarityMatrixName, linkageType):
 
     fig = plt.figure(figsize=(25, 10))
 
-    hierarchy.dendrogram(hierarc, labels=labels, distance_sort='descending')
+    hierarchy.dendrogram(hierarc, labels=labels, leaf_rotation=90.0, distance_sort='descending')
 
     img = BytesIO()
     plt.savefig(img, format="png", bbox_inches='tight')

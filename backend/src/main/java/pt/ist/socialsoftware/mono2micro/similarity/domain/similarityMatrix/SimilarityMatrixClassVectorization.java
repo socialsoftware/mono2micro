@@ -22,13 +22,8 @@ import java.util.Map;
 
 import static pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddingsRepresentation.CODE_EMBEDDINGS;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.EntityToIDRepresentation.ENTITY_TO_ID;
-import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
 
 public class SimilarityMatrixClassVectorization extends SimilarityMatrix {
-
-    private static final int INTERVAL = 100;
-    private static final int STEP = 10;
-    private static final int CODE_VECTOR_SIZE = 384;
 
     public SimilarityMatrixClassVectorization() { super(); }
 
@@ -84,8 +79,11 @@ public class SimilarityMatrixClassVectorization extends SimilarityMatrix {
                         classEmbeddings.put("name", className);
                         classEmbeddings.put("type", cls.getString("type"));
 
-                        if (cls.has("translationID")) translationIds.add(cls.getInt("translationID"));
-                        else translationIds.add(-1);
+                        if (cls.has("translationID")) {
+                            translationIds.add(cls.getInt("translationID"));
+                        } else {
+                            translationIds.add(-1);
+                        }
                         classesNames.add(className);
                         classesVectors.add(acumulator.getMeanVector());
                     }
@@ -157,7 +155,7 @@ public class SimilarityMatrixClassVectorization extends SimilarityMatrix {
     public void matchEntitiesTranslationIds(Strategy strategy, JSONObject codeEmbeddings)
         throws JSONException, IOException
     {
-        Map<String, Short> translationEntityToId = getTranslationEntityToId(strategy);
+        Map<String, Short> translationEntityToId = getEntitiesNamesToIds(strategy);
         JSONArray packages = codeEmbeddings.getJSONArray("packages");
 
         for (int i = 0; i < packages.length(); i++) {
@@ -182,14 +180,6 @@ public class SimilarityMatrixClassVectorization extends SimilarityMatrix {
         return new ObjectMapper().readValue(
                 gridFsService.getFileAsString(entityToId.getName()),
                 new TypeReference<Map<String, Short>>() {}
-        );
-    }
-
-    private Map<String, Short> getTranslationEntityToId(Strategy strategy) throws IOException {
-        IDToEntityRepresentation idToEntity = (IDToEntityRepresentation) strategy.getCodebase().getRepresentationByFileType(ID_TO_ENTITY);
-        return new ObjectMapper().readValue(
-                gridFsService.getFileAsString(idToEntity.getName()),
-                new TypeReference<Map<Short, String>>() {}
         );
     }
 

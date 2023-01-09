@@ -1,14 +1,12 @@
 package pt.ist.socialsoftware.mono2micro.similarity.domain;
 
-import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDto;
-import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityMatrixSciPyClassVectorizationDto;
-import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityMatrixSciPyDto;
-import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityMatrixSciPyEntityVectorizationDto;
+import pt.ist.socialsoftware.mono2micro.similarity.dto.*;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyClassVectorization.SIMILARITY_SCIPY_CLASS_VECTORIZATION;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyEntityVectorization.SIMILARITY_SCIPY_ENTITY_VECTORIZATION;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyWeights.SIMILARITY_SCIPY_WEIGHTS;
+import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyFunctionalityVectorizationByCallGraph.SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH;
 
 public class SimilarityFactory {
 
@@ -22,6 +20,8 @@ public class SimilarityFactory {
                 return new SimilarityScipyEntityVectorization((SimilarityMatrixSciPyEntityVectorizationDto) similarityDto);
             case SIMILARITY_SCIPY_CLASS_VECTORIZATION:
                 return new SimilarityScipyClassVectorization((SimilarityMatrixSciPyClassVectorizationDto) similarityDto);
+            case SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH:
+                return new SimilarityScipyFunctionalityVectorizationByCallGraph((SimilarityMatrixSciPyFunctionalityVectorizationByCallGraphDto) similarityDto);
             default:
                 throw new RuntimeException("The type \"" + similarityDto.getType() + "\" is not a valid similarityDto type.");
         }

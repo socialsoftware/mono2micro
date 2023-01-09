@@ -8,6 +8,7 @@ import {toast, ToastContainer} from "react-toastify";
 import {SIMILARITY_SCIPY_WEIGHTS} from "../../models/similarity/SimilaritySciPyWeights";
 import {SIMILARITY_SCIPY_ENTITY_VECTORIZATION} from "../../models/similarity/SimilarityMatrixEntityVectorization";
 import {SIMILARITY_SCIPY_CLASS_VECTORIZATION} from "../../models/similarity/SimilarityMatrixClassVectorization";
+import {SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH} from "../../models/similarity/SimilarityMatrixFunctionalityVectorizationByCallGraph";
 
 export const Decompositions = () => {
     let { codebaseName, strategyName, similarityName } = useParams();
@@ -93,6 +94,10 @@ export const Decompositions = () => {
             }
 
             {similarity.type === SIMILARITY_SCIPY_CLASS_VECTORIZATION &&
+                <SciPyDecompositionForm loadDecompositions={loadDecompositions}/>
+            }
+
+            {similarity.type === SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH &&
                 <SciPyDecompositionForm loadDecompositions={loadDecompositions}/>
             }
 

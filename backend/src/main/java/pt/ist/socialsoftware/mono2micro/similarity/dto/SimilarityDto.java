@@ -6,12 +6,14 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyClassVectorization.SIMILARITY_SCIPY_CLASS_VECTORIZATION;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyEntityVectorization.SIMILARITY_SCIPY_ENTITY_VECTORIZATION;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyWeights.SIMILARITY_SCIPY_WEIGHTS;
+import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyFunctionalityVectorizationByCallGraph.SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = SimilarityMatrixSciPyDto.class, name = SIMILARITY_SCIPY_WEIGHTS),
         @JsonSubTypes.Type(value = SimilarityMatrixSciPyClassVectorizationDto.class, name = SIMILARITY_SCIPY_CLASS_VECTORIZATION),
-        @JsonSubTypes.Type(value = SimilarityMatrixSciPyEntityVectorizationDto.class, name = SIMILARITY_SCIPY_ENTITY_VECTORIZATION)
+        @JsonSubTypes.Type(value = SimilarityMatrixSciPyEntityVectorizationDto.class, name = SIMILARITY_SCIPY_ENTITY_VECTORIZATION),
+        @JsonSubTypes.Type(value = SimilarityMatrixSciPyFunctionalityVectorizationByCallGraphDto.class, name = SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH)
 })
 public abstract class SimilarityDto {
     String codebaseName;

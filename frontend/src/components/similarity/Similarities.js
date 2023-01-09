@@ -8,6 +8,7 @@ import {toast, ToastContainer} from "react-toastify";
 import {SimilarityMatrixSciPyForm} from "./forms/SimilarityMatrixSciPyForm";
 import {SimilarityMatrixSciPyEntityVectorizationForm} from "./forms/SimilarityMatrixSciPyEntityVectorizationForm";
 import {SimilarityMatrixSciPyClassVectorizationForm} from "./forms/SimilarityMatrixSciPyClassVectorizationForm";
+import {SimilarityMatrixSciPyFunctionalityVectorizationCallGraphForm} from "./forms/SimilarityMatrixSciPyFunctionalityVectorizationCallGraphForm";
 import { RepresentationInfoType } from '../../models/representation/RepresentationInfoTypes';
 
 export const Similarities = () => {
@@ -106,6 +107,13 @@ export const Similarities = () => {
                     strategy.algorithmType === "SciPy Clustering" &&
                         strategy.representationInformationTypes.includes(RepresentationInfoType.CLASS_VECTORIZATION_INFO) ?
                         <SimilarityMatrixSciPyClassVectorizationForm
+                            codebaseName={codebaseName}
+                            strategy={strategy}
+                            setUpdateStrategies={setUpdateStrategies}
+                        /> :
+                    strategy.algorithmType === "SciPy Clustering" &&
+                        strategy.representationInformationTypes.includes(RepresentationInfoType.FUNCTIONALITY_VECTORIZATION_CALLGRAPH_INFO) ?
+                        <SimilarityMatrixSciPyFunctionalityVectorizationCallGraphForm
                             codebaseName={codebaseName}
                             strategy={strategy}
                             setUpdateStrategies={setUpdateStrategies}

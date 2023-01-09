@@ -1,7 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.similarity.domain;
 
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.SimilarityMatrixEntityVectorization;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.SimilarityMatrixClassVectorization;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDto;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityMatrixSciPyClassVectorizationDto;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityMatrixSciPyDto;
@@ -15,7 +15,7 @@ public class SimilarityScipyClassVectorization extends SimilarityScipy {
 
     public SimilarityScipyClassVectorization(SimilarityMatrixSciPyClassVectorizationDto dto) {
         super(dto.getLinkageType());
-        this.similarityMatrix = new SimilarityMatrixEntityVectorization();
+        this.similarityMatrix = new SimilarityMatrixClassVectorization();
     }
 
     public SimilarityScipyClassVectorization(RecommendMatrixSciPy recommendation) {

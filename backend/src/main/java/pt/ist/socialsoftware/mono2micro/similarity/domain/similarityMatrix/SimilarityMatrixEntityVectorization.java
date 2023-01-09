@@ -21,10 +21,6 @@ import static pt.ist.socialsoftware.mono2micro.representation.domain.EntityToIDR
 
 public class SimilarityMatrixEntityVectorization extends SimilarityMatrix {
 
-    private static final int INTERVAL = 100;
-    private static final int STEP = 10;
-    private static final int CODE_VECTOR_SIZE = 384;
-
     public SimilarityMatrixEntityVectorization() { super(); }
 
     public SimilarityMatrixEntityVectorization(String name) {

@@ -6,28 +6,21 @@ import FormControl from "react-bootstrap/FormControl";
 import {APIService} from "../../../services/APIService";
 import Button from "react-bootstrap/Button";
 import HttpStatus from "http-status-codes";
-import DropdownButton from "react-bootstrap/DropdownButton";
-import Dropdown from "react-bootstrap/Dropdown";
-import {RepresentationType} from "../../../models/representation/Representation";
-import {TraceType, RepresentationInfoParameters} from "../../../type-declarations/types";
-import {SIMILARITY_SCIPY_WEIGHTS} from "../../../models/similarity/SimilaritySciPyWeights";
+import {SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH} from "../../../models/similarity/SimilarityMatrixFunctionalityVectorizationByCallGraph";
+import {RepresentationInfoParameters} from "../../../type-declarations/types";
 import {WeightsFactory} from "../../../models/weights/WeightsFactory";
 
 
-export const SimilarityMatrixSciPyForm = ({codebaseName, strategy, setUpdateStrategies}) => {
+export const SimilarityMatrixSciPyFunctionalityVectorizationCallGraphForm = ({codebaseName, strategy, setUpdateStrategies}) => {
     const service = new APIService();
     const [isUploaded, setIsUploaded] = useState("");
-    const [profiles, setProfiles] = useState([]);
-    const [profile, setProfile] = useState("Generic")
     const [linkageType, setLinkageType] = useState("average");
-    const [tracesMaxLimit, setTracesMaxLimit] = useState(0);
-    const [traceType, setTraceType] = useState(TraceType.ALL);
+    const [depth, setDepth] = useState(-1);
     const [weightsList, setWeightsList] = useState([]);
     const [weightSum, setWeightSum] = useState(0);
 
     // Executes when it is informed that there is information to be updated
     useEffect(() => {
-        loadProfiles();
         setWeightsList(WeightsFactory.getWeightListByRepresentationInfoType(strategy.representationInformationTypes));
     }, [])
 
@@ -37,12 +30,10 @@ export const SimilarityMatrixSciPyForm = ({codebaseName, strategy, setUpdateStra
 
         service.createSimilarity({
             strategyName: strategy.name,
-            type: SIMILARITY_SCIPY_WEIGHTS,
-            weightsList,
-            profile,
+            type: SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH,
             linkageType,
-            tracesMaxLimit,
-            traceType
+            depth,
+            weightsList
         })
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
@@ -59,11 +50,6 @@ export const SimilarityMatrixSciPyForm = ({codebaseName, strategy, setUpdateStra
                     setIsUploaded("Upload failed.");
                 }
             });
-    }
-
-    function loadProfiles() {
-        service.getCodebaseRepresentation(codebaseName, RepresentationType.ACCESSES)
-            .then((response) => setProfiles(response.profiles));
     }
 
     function changeMetricWeight(event, weightName) {
@@ -88,72 +74,13 @@ export const SimilarityMatrixSciPyForm = ({codebaseName, strategy, setUpdateStra
         setLinkageType(event.target.id);
     }
 
-    function handleChangeProfile(profile) {
-        setProfile(profile);
-    }
-
-    function handleChangeTracesMaxLimit(event) {
-        setTracesMaxLimit(Number(event.target.value));
-    }
-
-    function handleChangeTraceType(event) {
-        setTraceType(event.target.value);
+    function handleChangeDepth(event) {
+        setDepth(Number(event.target.value));
     }
 
     return (
         <>
             <Form onSubmit={handleSubmit} className="mt-2 mb-3">
-                <Form.Group as={Row} controlId="selectFunctionalityProfiles" className="align-items-center mb-3">
-                    <Form.Label column sm={2}>
-                        Select Codebase Profile
-                    </Form.Label>
-                    <Col sm={2}>
-                        <DropdownButton title={profile === ""? 'Functionality Profiles': profile}>
-                            {profiles !== [] && Object.keys(profiles).map(profile =>
-                                <Dropdown.Item
-                                    key={profile}
-                                    onClick={() => handleChangeProfile(profile)}
-                                    active={profile === profile}
-                                >
-                                    {profile}
-                                </Dropdown.Item>
-                            )}
-                        </DropdownButton>
-                    </Col>
-                </Form.Group>
-                <Form.Group as={Row} controlId="amountOfTraces" className="mb-3">
-                    <Form.Label column sm={2}>
-                        Amount of Traces per Functionality
-                    </Form.Label>
-                    <Col sm={2}>
-                        <FormControl
-                            type="number"
-                            placeholder="0 by default"
-                            value={tracesMaxLimit === 0? '' : tracesMaxLimit}
-                            onChange={handleChangeTracesMaxLimit}
-
-                        />
-                        <Form.Text className="text-muted">
-                            If no number is inserted, 0 is assumed to be the default value meaning the maximum number of traces
-                        </Form.Text>
-                    </Col>
-                </Form.Group>
-                <Form.Group as={Row} className="align-items-center mb-3">
-                    <Form.Label as="legend" column sm={2}>
-                        Type of traces
-                    </Form.Label>
-                    <Col sm={3} style={{ paddingLeft: 0 }}>
-                        <Col sm="auto">
-                            <Form.Check onClick={handleChangeTraceType} name="traceType" label="All" type="radio" id="allTraces" value="ALL" defaultChecked/>
-                        </Col>
-                        <Col sm="auto">
-                            <Form.Check onClick={handleChangeTraceType} name="traceType" label="Longest" type="radio" id="longest" value="LONGEST"/>
-                        </Col>
-                        <Col sm="auto">
-                            <Form.Check onClick={handleChangeTraceType} name="traceType" label="With more different accesses" type="radio" id="withMoreDifferentTraces" value="WITH_MORE_DIFFERENT_ACCESSES"/>
-                        </Col>
-                    </Col>
-                </Form.Group>
                 <Form.Group as={Row} className="align-items-center mb-3">
                     <Form.Label as="legend" column sm={2}>
                         Linkage Type
@@ -166,6 +93,18 @@ export const SimilarityMatrixSciPyForm = ({codebaseName, strategy, setUpdateStra
                     </Col>
                     <Col sm="auto">
                         <Form.Check onClick={handleChangeLinkageType} name="linkageType" label="Complete" type="radio" id="complete"/>
+                    </Col>
+                </Form.Group>
+                <Form.Group as={Row} className="align-items-center mb-3">
+                    <Form.Label as="legend" column sm={2}>
+                        Max Depth
+                    </Form.Label>
+                    <Col sm={2}>
+                        <FormControl
+                            type="number"
+                            placeholder="1-N"
+                            value={depth === -1 ? '' : depth}
+                            onChange={(event) => handleChangeDepth(event)} />
                     </Col>
                 </Form.Group>
                 {weightsList.flatMap(weight => Object.entries(weight.weightsLabel).map(([key, value]) =>
@@ -187,7 +126,7 @@ export const SimilarityMatrixSciPyForm = ({codebaseName, strategy, setUpdateStra
                         <Button
                             type="submit"
                             disabled={isUploaded === "Uploading..." ||
-                            !(weightSum === 100 && profile !== "" && traceType !== "")
+                            !(weightSum === 100 && depth > 0 )
                             }
                         >
                             Generate Similarity Distances

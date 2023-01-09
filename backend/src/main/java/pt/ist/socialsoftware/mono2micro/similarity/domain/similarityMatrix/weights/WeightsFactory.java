@@ -10,6 +10,8 @@ public class WeightsFactory {
                 return new AccessesWeights();
             case RepositoryWeights.REPOSITORY_WEIGHTS:
                 return new RepositoryWeights();
+            case FunctionalityVectorizationCallGraphWeights.FUNCTIONALITY_VECTORIZATION_CALLGRAPH_WEIGHTS:
+                return new FunctionalityVectorizationCallGraphWeights();
             default:
                 throw new RuntimeException("The type \"" + type + "\" is not a valid weight type.");
         }
