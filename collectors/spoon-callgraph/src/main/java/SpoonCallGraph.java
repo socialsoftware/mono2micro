@@ -57,11 +57,11 @@ public class SpoonCallGraph {
             System.out.println("Cloning repository...");
             // clone repo to tmp folder
             Git.cloneRepository()
-                    .setURI(repoURL)
+                    .setURI(sourcesPath)
                     .setDirectory(file)
                     .call();
 
-            String[] split = repoURL.split("/");
+            String[] split = sourcesPath.split("/");
             String[] split1 = split[split.length - 1].split("\\.");
             projectName = split1[0];
         }
