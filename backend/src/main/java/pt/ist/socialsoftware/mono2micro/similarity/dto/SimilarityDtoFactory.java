@@ -7,6 +7,7 @@ import java.util.List;
 
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyClassVectorization.SIMILARITY_SCIPY_CLASS_VECTORIZATION;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyEntityVectorization.SIMILARITY_SCIPY_ENTITY_VECTORIZATION;
+import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses.SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyWeights.SIMILARITY_SCIPY_WEIGHTS;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyFunctionalityVectorizationByCallGraph.SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH;
 
@@ -21,6 +22,8 @@ public class SimilarityDtoFactory {
                 return new SimilarityMatrixSciPyClassVectorizationDto((SimilarityScipyClassVectorization) similarity);
             case SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH:
                 return new SimilarityMatrixSciPyFunctionalityVectorizationByCallGraphDto((SimilarityScipyFunctionalityVectorizationByCallGraph) similarity);
+            case SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES:
+                return new SimilarityMatrixSciPyFunctionalityVectorizationBySequenceOfAccessesDto((SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses) similarity);
             default:
                 throw new RuntimeException("The type \"" + similarity.getType() + "\" is not a valid similarity type.");
         }

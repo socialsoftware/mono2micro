@@ -9,7 +9,7 @@ export default class FunctionalityVectorizationAccessesWeights extends Weights {
 
     public constructor(weights: any) {
         super(weights);
-        this.numberOfWeights = 4;
+        this.numberOfWeights = 2;
         this.type = FUNCTIONALITY_VECTORIZATION_ACCESSES_WEIGHTS;
         this.weightsLabel = {
             readMetricWeight: "Read Metric Weight",

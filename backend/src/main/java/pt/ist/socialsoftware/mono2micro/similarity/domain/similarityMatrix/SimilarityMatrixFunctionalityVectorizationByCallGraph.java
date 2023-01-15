@@ -22,11 +22,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddingsRepresentation.CODE_EMBEDDINGS;
-import static pt.ist.socialsoftware.mono2micro.representation.domain.EntityToIDRepresentation.ENTITY_TO_ID;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.FunctionalityVectorizationCallGraphWeights.FUNCTIONALITY_VECTORIZATION_CALLGRAPH_WEIGHTS;
 
@@ -70,7 +68,6 @@ public class SimilarityMatrixFunctionalityVectorizationByCallGraph extends Simil
     private void computeMethodCallsFeaturesVectors(HashMap<String, Object> matrix, JSONObject codeEmbeddings) throws JSONException {
         List<List<Double>> featuresVectors = new ArrayList<>();
         List<String> featuresNames = new ArrayList<>();
-        HashMap<String, Object> featuresJson = new HashMap<String, Object>();
         JSONArray packages = codeEmbeddings.getJSONArray("packages");
 
         for (int i = 0; i < packages.length(); i++) {
@@ -226,22 +223,6 @@ public class SimilarityMatrixFunctionalityVectorizationByCallGraph extends Simil
         return getWeightsList().stream().filter(weight -> weight.getType().equals(type)).findFirst().orElse(null);
     }
 
-    private Map<String, Short> getEntitiesNamesToIds(Strategy strategy) throws IOException {
-        EntityToIDRepresentation entityToId = (EntityToIDRepresentation) strategy.getCodebase().getRepresentationByFileType(ENTITY_TO_ID);
-        return new ObjectMapper().readValue(
-                gridFsService.getFileAsString(entityToId.getName()),
-                new TypeReference<Map<String, Short>>() {}
-        );
-    }
-
-    private Map<String, Short> getTranslationIdToEntity(Strategy strategy) throws IOException {
-        IDToEntityRepresentation idToEntity = (IDToEntityRepresentation) strategy.getCodebase().getRepresentationByFileType(ID_TO_ENTITY);
-        return new ObjectMapper().readValue(
-                gridFsService.getFileAsString(idToEntity.getName()),
-                new TypeReference<Map<Short, String>>() {}
-        );
-    }
-
     private JSONObject getCodeEmbeddings(Strategy strategy) throws IOException, JSONException {
         CodeEmbeddingsRepresentation codeEmbeddings = (CodeEmbeddingsRepresentation) strategy.getCodebase().getRepresentationByFileType(CODE_EMBEDDINGS);
         return new JSONObject(
@@ -251,7 +232,7 @@ public class SimilarityMatrixFunctionalityVectorizationByCallGraph extends Simil
 
     @Override
     public String toString() {
-        return "SimilarityMatrixClassVectorization";
+        return "SimilarityMatrixFunctionalityVectorizationByCallGraph";
     }
 
 }

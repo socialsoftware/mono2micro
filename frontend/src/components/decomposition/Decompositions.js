@@ -9,6 +9,7 @@ import {SIMILARITY_SCIPY_WEIGHTS} from "../../models/similarity/SimilaritySciPyW
 import {SIMILARITY_SCIPY_ENTITY_VECTORIZATION} from "../../models/similarity/SimilarityMatrixEntityVectorization";
 import {SIMILARITY_SCIPY_CLASS_VECTORIZATION} from "../../models/similarity/SimilarityMatrixClassVectorization";
 import {SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH} from "../../models/similarity/SimilarityMatrixFunctionalityVectorizationByCallGraph";
+import {SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES} from "../../models/similarity/SimilarityMatrixFunctionalityVectorizationBySequenceOfAccesses";
 
 export const Decompositions = () => {
     let { codebaseName, strategyName, similarityName } = useParams();
@@ -98,6 +99,10 @@ export const Decompositions = () => {
             }
 
             {similarity.type === SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH &&
+                <SciPyDecompositionForm loadDecompositions={loadDecompositions}/>
+            }
+
+            {similarity.type === SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES &&
                 <SciPyDecompositionForm loadDecompositions={loadDecompositions}/>
             }
 

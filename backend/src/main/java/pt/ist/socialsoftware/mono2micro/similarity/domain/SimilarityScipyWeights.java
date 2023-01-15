@@ -12,7 +12,6 @@ import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityMatrixSciPyDto;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Map;
 
 import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
