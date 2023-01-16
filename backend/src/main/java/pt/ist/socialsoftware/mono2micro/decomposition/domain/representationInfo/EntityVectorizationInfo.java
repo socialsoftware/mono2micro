@@ -3,9 +3,6 @@ package pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo
 import org.apache.commons.lang3.NotImplementedException;
 import org.json.JSONException;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
-import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
-import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityService;
 import pt.ist.socialsoftware.mono2micro.metrics.decompositionMetrics.*;
 
 import java.io.IOException;
@@ -59,16 +56,6 @@ public class EntityVectorizationInfo extends RepresentationInfo {
 
     @Override
     public String getSearchItems(Decomposition decomposition) throws JSONException {
-        throw new NotImplementedException("Not used");
-    }
-
-    @Override
-    public void renameClusterInFunctionalities(String clusterName, String newName) {
-        throw new NotImplementedException("Not used");
-    }
-
-    @Override
-    public void removeFunctionalitiesWithEntityIDs(Decomposition decomposition, Set<Short> elements) {
         throw new NotImplementedException("Not used");
     }
 

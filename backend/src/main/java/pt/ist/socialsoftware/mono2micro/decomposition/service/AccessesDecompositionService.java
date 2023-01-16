@@ -16,6 +16,7 @@ import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesi
 import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.FunctionalityDto;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipy;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyWeights;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
@@ -80,7 +81,7 @@ public class AccessesDecompositionService {
     public Utils.GetSerializableLocalTransactionsGraphResult getLocalTransactionGraphForFunctionality(String decompositionName, String functionalityName) throws JSONException, IOException {
         Decomposition decomposition = decompositionRepository.findByName(decompositionName);
         AccessesInfo accessesInfo = (AccessesInfo) decomposition.getRepresentationInformationByType(ACCESSES_INFO);
-        SimilarityScipyWeights similarity = (SimilarityScipyWeights) decomposition.getSimilarity();
+        SimilarityScipy similarity = (SimilarityScipy) decomposition.getSimilarity();
         AccessesRepresentation representation = (AccessesRepresentation) similarity.getStrategy().getCodebase().getRepresentationByFileType(ACCESSES);
 
         DirectedAcyclicGraph<LocalTransaction, DefaultEdge> functionalityLocalTransactionsGraph = accessesInfo.getFunctionality(functionalityName)

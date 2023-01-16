@@ -204,9 +204,14 @@ export function Strategies() {
 
     function clickStrategyRepresentations(type) {
         setStrategyRepresentations(prev => {
-            if (prev.includes(type))
+            if (prev.includes(type)) {
                 prev = prev.filter(t => t !== type);
-            else prev = [...prev, type];
+            } else if (prev.some((el) => el.includes('Vectorization')) || type.includes('Vectorization')) {
+                prev.forEach((t) => document.getElementById(t).checked = false);
+                prev = [type];
+            } else {
+                prev = [...prev, type];
+            }
             return prev;
         });
     }
@@ -240,10 +245,17 @@ export function Strategies() {
                         <Form.Label as="legend" column sm={2}>
                             Representation Informations
                         </Form.Label>
-                        <Col sm={3} style={{ paddingLeft: 0 }}>
+                        <Col sm={8} style={{ paddingLeft: 0 }}>
                             {supportedRepresentationInfoTypes.map(type =>
                                 <Col key={type} sm="auto">
-                                    <Form.Check onClick={() => clickStrategyRepresentations(type)} name="representation" label={type} type="checkbox" id={type} value={type} />
+                                    <Form.Check
+                                        onClick={() => clickStrategyRepresentations(type)}
+                                        name="representation"
+                                        label={type}
+                                        type="checkbox"
+                                        id={type}
+                                        value={type}
+                                    />
                                 </Col>
                             )}
                         </Col>

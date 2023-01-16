@@ -1,14 +1,8 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.element.Element;
-import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.metrics.decompositionMetrics.*;
 
 import java.io.IOException;
@@ -62,16 +56,6 @@ public class FunctionalityVectorizationByCallGraphInfo extends RepresentationInf
 
     @Override
     public String getSearchItems(Decomposition decomposition) throws JSONException {
-        throw new NotImplementedException("Not used");
-    }
-
-    @Override
-    public void renameClusterInFunctionalities(String clusterName, String newName) {
-        throw new NotImplementedException("Not used");
-    }
-
-    @Override
-    public void removeFunctionalitiesWithEntityIDs(Decomposition decomposition, Set<Short> elements) {
         throw new NotImplementedException("Not used");
     }
 
