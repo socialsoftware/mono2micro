@@ -94,6 +94,12 @@ Tools to migrate a monolith to a microservices architecture, focusing on microse
 
 # Repeat Code Vectorization Experiment
 
+## 0. The data
+
+- The codebases used in the experiment are included [here](https://drive.google.com/drive/folders/1QiAPyM4ezhihoqJdSEJNmwfNDNzzsYv1?usp=share_link).
+
+- The actually codebases are: Acme-Academy-2.0 Acme-Polyglot-2.0 hexie Acme-AnimalShelter Acme-Rebujito hrm_backend Acme-Antenna Acme-Recycling hrportal Acme-Barter Acme-Rendezvous JavaSpringMvcBlog Acme-BnB Acme-Rookie jewelry Acme-Certifications Acme-Santiago jpabook Acme-Champions Acme-Series Acme-Chorbies AcmeShop learndemo-soufang Acme-CinemaDB Acme-Shout liuda Acme-Citizen Acme-Six-Pack Logos-ShopingCartUnregisteredUser Acme_CnG Acme-Sport-Centre market-manage Acme-Conference Acme-Supermarket myweb AcmeDistributor Acme-Taxi Acme-Events Acme-Trip reddit-app Acme-Un-Viaje ruanfan Skoolie Acme-Gallery AppPortal soad Acme-Hacker-Rank axon-trader SoloMusic Acme-HandyWorker AyjrFiance splunkwithaws-destination Acme-Inmigrant bag-database_adapted springblog Acme-Madruga bookstore-spring Acme-Meals cheybao Acme-Newspaper chorus-opensource spring-mvn-react Acme-Orienteering cloudstreetmarket.com StudyOnlinePlatForm Acme-Pad-Thai Corpore-Fit TwitterAutomationWebApp Acme-Parade Curso-Systema-Web-brewer wish Acme-Patronage dubai Acme-Personal-Trainer echo yydb Acme-Pet FirstWebShop
+
 ## 1. Parse the codebases under analysis and collect the respective data
 
 - To perform this step, both spoon-callgraph and javaparser-callgraph are used.
@@ -303,6 +309,10 @@ python best_gen_fvsa_weights.py
 python best_gen_lt.py
 python gen_fvsa_weights.py
 ```
+
+## Experimentation Data
+- The monolith codebases used by the spoon-callgraph and commit-collection Collectors are available [here](https://drive.google.com/drive/folders/1QiAPyM4ezhihoqJdSEJNmwfNDNzzsYv1?usp=share_link). 
+- The monolith representations, Access and Repository Based, for some of the codebases are available [here](https://drive.google.com/drive/folders/1X1RHtWwLlJvc-i6q1fmXK_xrfD9OjuRb?usp=share_link).
 
 
 ## Publications Data
