@@ -9,11 +9,18 @@ import collectors.JPA.parser.TableNamesFinderExt;
 import spoon.reflect.code.*;
 import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.declaration.*;
+import spoon.reflect.path.CtRole;
 import spoon.reflect.reference.CtExecutableReference;
 import spoon.reflect.reference.CtTypeParameterReference;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtScanner;
 import spoon.support.SpoonClassNotFoundException;
+import spoon.support.reflect.code.CtDoImpl;
+import spoon.support.reflect.code.CtForEachImpl;
+import spoon.support.reflect.code.CtForImpl;
+import spoon.support.reflect.code.CtIfImpl;
+import spoon.support.reflect.code.CtLoopImpl;
+import spoon.support.reflect.code.CtWhileImpl;
 import util.*;
 
 import java.io.IOException;
@@ -416,6 +423,51 @@ public class SpringDataJPACollector extends SpoonCollector {
             public <T> void visitCtConstructorCall(CtConstructorCall<T> ctConstructorCall) {
                 super.visitCtConstructorCall(ctConstructorCall);
                 visitCtAbstractInvocation(ctConstructorCall);
+            }
+
+            @Override
+            public void scan(CtRole role, CtElement element) {
+                CtElement elParent = null;
+                if(element != null) {
+                    try {
+                        elParent = element.getParent();
+                    } catch (ParentNotInitializedException e) {
+                        elParent = null;
+                    }
+                }
+
+                if(element instanceof CtIfImpl) { // IF
+                    openNewContext("if");
+                    super.scan(element);
+                    closeCurrentContext();
+
+                } else if(element instanceof CtLoopImpl) { // LOOP
+                    String loopType = "loop";
+
+                    if(element instanceof CtDoImpl)
+                        loopType = "do_loop";
+                    else if(element instanceof CtWhileImpl)
+                        loopType = "while_loop";
+                    else if(element instanceof CtForImpl)
+                        loopType = "for_loop";
+                    else if(element instanceof CtForEachImpl)
+                        loopType = "foreach_loop";
+
+                    openNewContext(loopType);
+                    super.scan(element);
+                    closeCurrentContext();
+                
+                } else if(  (elParent instanceof CtIfImpl && (role == CtRole.CONDITION || element instanceof CtBlock)) ||
+                            (elParent instanceof CtLoopImpl && (role == CtRole.EXPRESSION || role == CtRole.BODY))
+                        ) {
+                    openNewContext(role.toString());
+                    super.scan(element);
+                    closeCurrentContext();
+
+                }else {
+                    super.scan(element);
+                }
+
             }
         });
 
