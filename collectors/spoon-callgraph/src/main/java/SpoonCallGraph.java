@@ -85,6 +85,7 @@ public class SpoonCallGraph {
             String input = scanner.nextLine();
             if (input.equals("YES"))
                 FileUtils.deleteDirectory(file);
+            scanner.close();
         }
     }
 
