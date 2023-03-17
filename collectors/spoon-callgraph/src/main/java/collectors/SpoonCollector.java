@@ -275,12 +275,16 @@ public abstract class SpoonCollector {
         }
     }
 
-    protected void addEntitiesSequenceAccess(String simpleName, String mode) {
+    public void addEntitiesSequenceAccess(String simpleName, String mode) {
         addEntitiesSequenceAccess(new Access(mode, entityToID(simpleName)));
     }
     
-    protected void addContextReference(int contextIndex, String type) {
+    public void addContextReference(int contextIndex, String type) {
         addEntitiesSequenceAccess(new ContextReference(contextIndex, type));
+    }
+
+    public void addLabel(String text) {
+        addEntitiesSequenceAccess(new Label(text));
     }
 
     protected void addEntitiesSequenceAccess(Access access) {

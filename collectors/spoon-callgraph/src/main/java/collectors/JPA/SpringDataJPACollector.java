@@ -6,6 +6,8 @@ import net.sf.jsqlparser.statement.Statement;
 import collectors.JPA.parser.MyHqlParser;
 import collectors.JPA.parser.QueryAccess;
 import collectors.JPA.parser.TableNamesFinderExt;
+import collectors.JPA.property_scanner.PropertyScanner;
+import collectors.JPA.property_scanner.ReturnPropertyScanner;
 import spoon.reflect.code.*;
 import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.declaration.*;
@@ -25,6 +27,7 @@ import util.*;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import static collectors.JPA.JPAUtils.*;
@@ -36,6 +39,7 @@ public class SpringDataJPACollector extends SpoonCollector {
     static ArrayList<Query> namedQueries; // list of tables accessed in a given query
     private List<Repository> repositories;
     private Repository eventualNewRepository;
+    private List<PropertyScanner> propertyScanners;
 
     public SpringDataJPACollector(int launcherChoice, String repoName, String projectPath) throws IOException {
         super(launcherChoice, repoName, projectPath);
@@ -54,6 +58,27 @@ public class SpringDataJPACollector extends SpoonCollector {
                 System.exit(1);
                 break;
         }
+
+        // instantiate property scanners
+        String list = "collectors.JPA.property_scanner.ReturnPropertyScanner;collectors.JPA.property_scanner.ReturnPropertyScanner"; //FIXME: test list
+        String[] pScanners = list.split(";");
+        PropertyScanner scannerBuffer;
+
+        propertyScanners = new ArrayList<PropertyScanner>();
+
+        for (String scanner : pScanners) {
+            try {
+                scannerBuffer = (PropertyScanner)(Class.forName(scanner).getDeclaredConstructor().newInstance());
+                propertyScanners.add(scannerBuffer);
+                
+            } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
+                e.printStackTrace();
+                System.out.println("Invalid Scanner: " + scanner);
+                System.exit(-1);
+            }
+
+        }
+
 
         System.out.println("Generating AST...");
         launcher.buildModel();
@@ -466,6 +491,12 @@ public class SpringDataJPACollector extends SpoonCollector {
 
                 }else {
                     super.scan(element);
+                }
+
+                // read heuristic properties
+                //new ReturnPropertyScanner().process(SpringDataJPACollector.this, element);
+                for (PropertyScanner scanner : propertyScanners) {
+                    scanner.process(SpringDataJPACollector.this, element);
                 }
 
             }
