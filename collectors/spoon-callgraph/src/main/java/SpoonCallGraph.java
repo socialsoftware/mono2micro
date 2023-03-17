@@ -100,8 +100,10 @@ public class SpoonCallGraph {
         JTextField projectNameField = new JTextField(5);
         JTextField pathField = new JTextField(5);
 
-        panel.add(new JLabel("Project name:"));
-        panel.add(projectNameField);
+        if (sourcesChoice != Constants.GITHUB) {
+            panel.add(new JLabel("Project name:"));
+            panel.add(projectNameField);
+        }
 
         String sourcesText = "";
         if (sourcesChoice == Constants.LOCAL && launcherChoice != Constants.JAR_LAUNCHER)
