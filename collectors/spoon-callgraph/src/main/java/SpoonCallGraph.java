@@ -18,7 +18,6 @@ public class SpoonCallGraph {
     private static int ormChoice = -1;
 
     private static String sourcesPath = null;
-    private static String repoURL = null;
     private static String projectNameInput = null;
 
     public static void main(String[] args) throws GitAPIException, IOException {
