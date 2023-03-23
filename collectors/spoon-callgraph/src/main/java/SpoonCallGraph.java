@@ -18,7 +18,6 @@ public class SpoonCallGraph {
     private static int ormChoice = -1;
 
     private static String sourcesPath = null;
-    private static String repoURL = null;
     private static String projectNameInput = null;
 
     public static void main(String[] args) throws GitAPIException, IOException {
@@ -57,11 +56,11 @@ public class SpoonCallGraph {
             System.out.println("Cloning repository...");
             // clone repo to tmp folder
             Git.cloneRepository()
-                    .setURI(repoURL)
+                    .setURI(sourcesPath)
                     .setDirectory(file)
                     .call();
 
-            String[] split = repoURL.split("/");
+            String[] split = sourcesPath.split("/");
             String[] split1 = split[split.length - 1].split("\\.");
             projectName = split1[0];
         }
@@ -86,6 +85,7 @@ public class SpoonCallGraph {
             String input = scanner.nextLine();
             if (input.equals("YES"))
                 FileUtils.deleteDirectory(file);
+            scanner.close();
         }
     }
 
@@ -101,8 +101,10 @@ public class SpoonCallGraph {
         JTextField projectNameField = new JTextField(5);
         JTextField pathField = new JTextField(5);
 
-        panel.add(new JLabel("Project name:"));
-        panel.add(projectNameField);
+        if (sourcesChoice != Constants.GITHUB) {
+            panel.add(new JLabel("Project name:"));
+            panel.add(projectNameField);
+        }
 
         String sourcesText = "";
         if (sourcesChoice == Constants.LOCAL && launcherChoice != Constants.JAR_LAUNCHER)

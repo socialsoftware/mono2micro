@@ -6,6 +6,8 @@ services:
     restart: always
     ports:
       - 27017:27017
+    volumes:
+      - mongodata:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=mono2micro
       - MONGO_INITDB_ROOT_PASSWORD=mono2microPass
@@ -89,3 +91,6 @@ services:
       - './frontend/:/app'
     environment:
       - CHOKIDAR_USEPOLLING=true
+
+volumes:
+  mongodata:

@@ -13,13 +13,12 @@ Currently implemented for Spring-Boot monoliths that use FenixFramework and Spri
 - (Non docker) run: ```pip install -r backend/src/main/resources/requirements.txt```
 - Create the file ```specific.properties``` in backend/src/main/resources with the correct python command (example in file ```specific.properties.example```)
 
-## Run manually
-
-To run the collectors:
+## Run Collectors
 
 	cd collectors/
 	see README.md for each collector
 
+## Run Pipeline Manually
 To run the backend:
 	
 	cd backend/
@@ -36,26 +35,30 @@ To run the frontend:
 	npm install --legacy-peer-deps
 	npm start
 
-## Run using Docker
+## Run Pipeline using Docker
 
     docker-compose build
     docker-compose up
 
-## Run using Docker, clean install
+OR
 
     docker-compose build --no-cache
     docker-compose up --build
 
-## Accessing Web Service
+### Accessing
 
-The web service can be accessed in <http://localhost:3000> and the mongoDB contents in <http://localhost:8081>
+The frontend can be accessed in <http://localhost:3000> and the mongoDB contents in <http://localhost:8081>
+
+## Experimentation Data
+- The monolith codebases used by the spoon-callgraph and commit-collection Collectors are available [here](https://drive.google.com/drive/folders/1QiAPyM4ezhihoqJdSEJNmwfNDNzzsYv1?usp=share_link). 
+- The monolith representations, Access and Repository Based, for some of the codebases are available [here](https://drive.google.com/drive/folders/1X1RHtWwLlJvc-i6q1fmXK_xrfD9OjuRb?usp=share_link).
 
 ## Publications Data
 - [ECSA2019](https://doi.org/10.1007/978-3-030-29983-5_3): [Collector Tool](https://github.com/socialsoftware/mono2micro/tree/master/collectors/java-callgraph)
 - [ICSA2020](https://doi.org/10.1109/ICSA47634.2020.00024): [Replication Package](https://github.com/socialsoftware/mono2micro/tree/master/data/icsa2020)
 - [ECSA2020](https://doi.org/10.1007/978-3-030-58923-3_3): [Evaluation Data](https://github.com/socialsoftware/mono2micro/tree/master/data/ecsa2020/evaluation)
 
-## Evaluation package
+## Evaluation package using Spoon and Commits collectors
 
 Looking for a reproducible evaluation package? It's available [here](https://github.com/socialsoftware/mono2micro/tree/master/data/commit).
 
