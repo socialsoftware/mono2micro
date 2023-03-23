@@ -6,7 +6,7 @@ import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy;
 import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.SimilarityMatrixWeights;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.SimilarityMatrixAccessesAndRepository;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDto;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityMatrixSciPyDto;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
 
-public class SimilarityScipyWeights extends SimilarityScipy {
+public class SimilarityScipyAccessesAndRepository extends SimilarityScipy {
 
     public static final String SIMILARITY_SCIPY_WEIGHTS = "SIMILARITY_SCIPY_WEIGHTS";
 
@@ -25,17 +25,17 @@ public class SimilarityScipyWeights extends SimilarityScipy {
     private int tracesMaxLimit;
     private Constants.TraceType traceType;
 
-    public SimilarityScipyWeights() {}
+    public SimilarityScipyAccessesAndRepository() {}
 
-    public SimilarityScipyWeights(SimilarityMatrixSciPyDto dto) {
+    public SimilarityScipyAccessesAndRepository(SimilarityMatrixSciPyDto dto) {
         super(dto.getLinkageType());
         this.profile = dto.getProfile();
         this.tracesMaxLimit = dto.getTracesMaxLimit();
         this.traceType = dto.getTraceType();
-        this.similarityMatrix = new SimilarityMatrixWeights(dto.getWeightsList());
+        this.similarityMatrix = new SimilarityMatrixAccessesAndRepository(dto.getWeightsList());
     }
 
-    public SimilarityScipyWeights(RecommendMatrixSciPy recommendation) {
+    public SimilarityScipyAccessesAndRepository(RecommendMatrixSciPy recommendation) {
         super(recommendation.getLinkageType());
         this.profile = recommendation.getProfile();
         this.tracesMaxLimit = recommendation.getTracesMaxLimit();

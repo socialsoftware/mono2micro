@@ -1,22 +1,35 @@
 package pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.data.annotation.Transient;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
-import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.Weights;
 
-import java.io.ByteArrayInputStream;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-public class SimilarityMatrix extends Matrix {
+public abstract class SimilarityMatrix {
+    @Transient
+    public GridFsService gridFsService;
+
+    public String name;
     private List<Weights> weightsList;
+
+    public GridFsService getGridFsService() {
+        return gridFsService;
+    }
+
+    public void setGridFsService(GridFsService gridFsService) {
+        this.gridFsService = gridFsService;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public List<Weights> getWeightsList() {
         return weightsList;
@@ -37,9 +50,6 @@ public class SimilarityMatrix extends Matrix {
         this.weightsList = weightsList;
     }
 
-    @Override
-    public void generate(GridFsService gridFsService, Similarity similarity) throws Exception {
-        throw new NotImplementedException("Must be implemented in sub class");
-    }
+    public abstract void generate(GridFsService gridFsService, Similarity similarity) throws Exception;
 
 }

@@ -8,14 +8,14 @@ import java.util.List;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyClassVectorization.SIMILARITY_SCIPY_CLASS_VECTORIZATION;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyEntityVectorization.SIMILARITY_SCIPY_ENTITY_VECTORIZATION;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses.SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES;
-import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyWeights.SIMILARITY_SCIPY_WEIGHTS;
+import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyAccessesAndRepository.SIMILARITY_SCIPY_WEIGHTS;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyFunctionalityVectorizationByCallGraph.SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH;
 
 public class SimilarityDtoFactory {
     public static SimilarityDto getSimilarityDto(Similarity similarity) {
         switch (similarity.getType()) {
             case SIMILARITY_SCIPY_WEIGHTS:
-                return new SimilarityMatrixSciPyDto((SimilarityScipyWeights) similarity);
+                return new SimilarityMatrixSciPyDto((SimilarityScipyAccessesAndRepository) similarity);
             case SIMILARITY_SCIPY_ENTITY_VECTORIZATION:
                 return new SimilarityMatrixSciPyEntityVectorizationDto((SimilarityScipyEntityVectorization) similarity);
             case SIMILARITY_SCIPY_CLASS_VECTORIZATION:

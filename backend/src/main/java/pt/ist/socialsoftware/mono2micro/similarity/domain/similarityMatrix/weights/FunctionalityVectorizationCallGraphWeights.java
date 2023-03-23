@@ -42,12 +42,7 @@ public class FunctionalityVectorizationCallGraphWeights extends Weights {
 
     @Override
     public List<String> getWeightsNames() {
-        return new ArrayList<String>() {{
-            add("controllersWeight");
-            add("servicesWeight");
-            add("intermediateMethodsWeight");
-            add("entitiesWeight");
-        }};
+        return new ArrayList<>(Arrays.asList("controllersWeight", "servicesWeight", "intermediateMethodsWeight", "entitiesWeight"));
     }
 
     @Override

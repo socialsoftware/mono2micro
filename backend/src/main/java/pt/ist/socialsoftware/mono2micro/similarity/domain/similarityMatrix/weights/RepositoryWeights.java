@@ -41,10 +41,7 @@ public class RepositoryWeights extends Weights {
 
     @Override
     public List<String> getWeightsNames() {
-        return new ArrayList<String>() {{
-            add("authorMetricWeight");
-            add("commitMetricWeight");
-        }};
+        return new ArrayList<>(Arrays.asList("authorMetricWeight", "commitMetricWeight"));
     }
 
     public void setWeightsFromArray(float[] weightsArray) {

@@ -9,7 +9,7 @@ import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.dendrogram.Dendrogram;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.Matrix;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.SimilarityMatrix;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.io.IOException;
@@ -22,7 +22,7 @@ public abstract class SimilarityScipy extends Similarity {
 
     // Used in Clustering Algorithm
     String linkageType;
-    Matrix similarityMatrix;
+    SimilarityMatrix similarityMatrix;
 
     // Dendrogram created in the Python services
     Dendrogram dendrogram;
@@ -67,13 +67,13 @@ public abstract class SimilarityScipy extends Similarity {
     public String getLinkageType() {
         return linkageType;
     }
-    public Matrix getSimilarityMatrix() {
+    public SimilarityMatrix getSimilarityMatrix() {
         return similarityMatrix;
     }
     public Dendrogram getDendrogram() {
         return dendrogram;
     }
-    public void setSimilarityMatrix(Matrix similarityMatrix) {
+    public void setSimilarityMatrix(SimilarityMatrix similarityMatrix) {
         this.similarityMatrix = similarityMatrix;
     }
     public void setDendrogram(Dendrogram dendrogram) {

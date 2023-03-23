@@ -17,7 +17,6 @@ import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.FunctionalityDto;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipy;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyWeights;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import java.io.IOException;

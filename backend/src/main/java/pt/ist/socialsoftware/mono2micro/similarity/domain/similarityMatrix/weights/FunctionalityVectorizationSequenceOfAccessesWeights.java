@@ -8,6 +8,7 @@ import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -40,10 +41,7 @@ public class FunctionalityVectorizationSequenceOfAccessesWeights extends Weights
 
     @Override
     public List<String> getWeightsNames() {
-        return new ArrayList<String>() {{
-            add("readMetricWeight");
-            add("writeMetricWeight");
-        }};
+        return new ArrayList<>(Arrays.asList("readMetricWeight", "writeMetricWeight"));
     }
 
     @Override

@@ -17,18 +17,18 @@ import java.util.*;
 
 import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
 
-public class SimilarityMatrixWeights extends SimilarityMatrix {
+public class SimilarityMatrixAccessesAndRepository extends SimilarityMatrix {
 
     private static final int INTERVAL = 100;
     private static final int STEP = 10;
 
-    public SimilarityMatrixWeights() { super(); }
+    public SimilarityMatrixAccessesAndRepository() { super(); }
 
-    public SimilarityMatrixWeights(List<Weights> weightsList) {
+    public SimilarityMatrixAccessesAndRepository(List<Weights> weightsList) {
         super(weightsList);
     }
 
-    public SimilarityMatrixWeights(String name, List<Weights> weightsList) {
+    public SimilarityMatrixAccessesAndRepository(String name, List<Weights> weightsList) {
         super(name, weightsList);
     }
 
