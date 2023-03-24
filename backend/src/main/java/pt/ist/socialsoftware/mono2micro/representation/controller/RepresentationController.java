@@ -18,12 +18,12 @@ import java.util.List;
 @RequestMapping(value = "/mono2micro")
 public class RepresentationController {
 
-    private static final Logger logger = LoggerFactory.getLogger(CodebaseController.class);
+    private static final Logger logger = LoggerFactory.getLogger(RepresentationController.class);
 
     @Autowired
     RepresentationService representationService;
 
-    @RequestMapping(value = "/codebase/{codebaseName}/representation/{representationType}/getCodebaseRepresentation", method = RequestMethod.GET)
+    @GetMapping(value = "/codebase/{codebaseName}/representation/{representationType}/getCodebaseRepresentation")
     public ResponseEntity<RepresentationDto> getCodebaseRepresentation(
             @PathVariable String codebaseName,
             @PathVariable String representationType
@@ -42,7 +42,7 @@ public class RepresentationController {
     }
 
 
-    @RequestMapping(value = "/representation/{representationName}/delete", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/representation/{representationName}/delete")
     public ResponseEntity<HttpStatus> deleteRepresentation(@PathVariable String representationName) {
         logger.debug("deleteCodebase");
 
@@ -56,7 +56,7 @@ public class RepresentationController {
         }
     }
 
-    @RequestMapping(value = "/representation/{representationName}/getRepresentation", method = RequestMethod.GET)
+    @GetMapping(value = "/representation/{representationName}/getRepresentation")
     public ResponseEntity<RepresentationDto> getRepresentation(@PathVariable String representationName) {
         logger.debug("getRepresentation");
 
@@ -69,7 +69,7 @@ public class RepresentationController {
         }
     }
 
-    @RequestMapping(value = "/codebase/{codebaseName}/addRepresentations/{representationInfoType}", method = RequestMethod.POST)
+    @PostMapping(value = "/codebase/{codebaseName}/addRepresentations/{representationInfoType}")
     public ResponseEntity<HttpStatus> createStrategy(
             @PathVariable String codebaseName,
             @PathVariable String representationInfoType,

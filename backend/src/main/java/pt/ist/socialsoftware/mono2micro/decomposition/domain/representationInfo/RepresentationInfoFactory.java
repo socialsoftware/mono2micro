@@ -26,9 +26,9 @@ public class RepresentationInfoFactory {
 
         Map<String, List<String>> representationInfoTypeToFiles = RepresentationInfoType.representationInfoTypeToFiles;
 
-        for (String representationInfoKey : representationInfoTypeToFiles.keySet()) {
-            if (representationFiles.containsAll(representationInfoTypeToFiles.get(representationInfoKey))) {
-                representationInfos.add(getRepresentationInfoFromType(representationInfoKey));
+        for (Map.Entry<String, List<String>> entry : representationInfoTypeToFiles.entrySet()) {
+            if (representationFiles.containsAll(entry.getValue())) {
+                representationInfos.add(getRepresentationInfoFromType(entry.getKey()));
             }
         }
 

@@ -20,7 +20,7 @@ public class FunctionalityVectorizationByCallGraphInfo extends RepresentationInf
 
     @Override
     public List<String> getParameters() {
-        return new ArrayList<String>() {{}};
+        return new ArrayList<String>();
     }
 
     @Override
@@ -36,7 +36,7 @@ public class FunctionalityVectorizationByCallGraphInfo extends RepresentationInf
 
     @Override
     public List<DecompositionMetric> getDecompositionMetrics() {
-        return new ArrayList<DecompositionMetric>() {{}};
+        return new ArrayList<DecompositionMetric>();
     }
 
     @Override

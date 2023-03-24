@@ -43,7 +43,7 @@ public class ComplexityMetric extends DecompositionMetric {
                 complexity += (Double) complexityMetric;
             }
 
-            if (functionalitiesThatAccessThisCluster.size() != 0)
+            if (!functionalitiesThatAccessThisCluster.isEmpty())
                 complexity /= functionalitiesThatAccessThisCluster.size();
             complexity = BigDecimal.valueOf(complexity).setScale(3, RoundingMode.HALF_UP).doubleValue();
 

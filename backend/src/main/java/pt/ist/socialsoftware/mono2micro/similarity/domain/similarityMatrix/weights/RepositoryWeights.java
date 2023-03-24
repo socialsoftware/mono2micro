@@ -92,8 +92,8 @@ public class RepositoryWeights extends Weights {
             float[][][] rawMatrix,
             Set<Short> entities,
             int fillFromIndex,
-            HashMap<Short, ArrayList<String>> authorChanges,
-            HashMap<String, Map<String, Integer>> commitChanges
+            Map<Short, ArrayList<String>> authorChanges,
+            Map<String, Map<String, Integer>> commitChanges
     ) {
         int i = 0;
         for (short e1ID : entities) {
@@ -119,8 +119,8 @@ public class RepositoryWeights extends Weights {
 
     public float[] calculateSimilarityMatrixCommitMetrics(
             short e1ID, short e2ID,
-            HashMap<String, Map<String, Integer>> commitChanges,
-            HashMap<Short, ArrayList<String>> authorChanges
+            Map<String, Map<String, Integer>> commitChanges,
+            Map<Short, ArrayList<String>> authorChanges
     ) {
 
         float commitMetricValue = 0;

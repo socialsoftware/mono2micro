@@ -45,7 +45,7 @@ public class CohesionMetric extends DecompositionMetric {
                 clusterCohesion += numberEntitiesTouched / cluster.getElements().size();
             }
 
-            if (functionalitiesThatAccessThisCluster.size() != 0)
+            if (!functionalitiesThatAccessThisCluster.isEmpty())
                 clusterCohesion /= functionalitiesThatAccessThisCluster.size();
             clusterCohesion = BigDecimal.valueOf(clusterCohesion).setScale(3, RoundingMode.HALF_UP).doubleValue();
             cluster.addMetric(COHESION, clusterCohesion);

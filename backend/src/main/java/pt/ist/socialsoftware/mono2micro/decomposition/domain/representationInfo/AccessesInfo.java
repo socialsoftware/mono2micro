@@ -68,21 +68,19 @@ public class AccessesInfo extends RepresentationInfo {
 
     @Override
     public List<DecompositionMetric> getDecompositionMetrics() {
-        return new ArrayList<DecompositionMetric>() {{
-            add(new CohesionMetric());
-            add(new ComplexityMetric());
-            add(new CouplingMetric());
-            add(new PerformanceMetric());
-        }};
+        return new ArrayList<>(Arrays.asList(
+                new CohesionMetric(),
+                new ComplexityMetric(),
+                new CouplingMetric(),
+                new PerformanceMetric()));
     }
 
     @Override
     public List<String> getParameters() {
-        return new ArrayList<String>() {{
-            add(RepresentationInfoParameters.PROFILE_PARAMETER.toString());
-            add(RepresentationInfoParameters.TRACES_MAX_LIMIT_PARAMETER.toString());
-            add(RepresentationInfoParameters.TRACE_TYPE_PARAMETER.toString());
-        }};
+        return new ArrayList<>(Arrays.asList(
+            RepresentationInfoParameters.PROFILE_PARAMETER.toString(),
+            RepresentationInfoParameters.TRACES_MAX_LIMIT_PARAMETER.toString(),
+            RepresentationInfoParameters.TRACE_TYPE_PARAMETER.toString()));
     }
 
     @Override
@@ -103,7 +101,7 @@ public class AccessesInfo extends RepresentationInfo {
     }
 
     public Functionality getFunctionality(String functionalityName) {
-        Functionality c = getFunctionalities().get(functionalityName.replaceAll("\\.", "_"));
+        Functionality c = getFunctionalities().get(functionalityName.replace(".", "_"));
 
         if (c == null) throw new Error("Functionality with name: " + functionalityName + " not found");
 
@@ -111,11 +109,11 @@ public class AccessesInfo extends RepresentationInfo {
     }
 
     public boolean functionalityExists(String functionalityName) {
-        return getFunctionalities().containsKey(functionalityName.replaceAll("\\.", "_"));
+        return getFunctionalities().containsKey(functionalityName.replace(".", "_"));
     }
 
     public void addFunctionality(Functionality functionality) {
-        getFunctionalities().put(functionality.getName().replaceAll("\\.", "_"), functionality);
+        getFunctionalities().put(functionality.getName().replace(".", "_"), functionality);
     }
 
 

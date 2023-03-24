@@ -307,11 +307,11 @@ public class FunctionalityRedesign {
     private Set<AccessDto> constructSequence(HashMap<Short, Byte> hashMapSequence){
         Set<AccessDto> accesses = new HashSet<>();
 
-        for (Short s : hashMapSequence.keySet()) {
+        for (Map.Entry<Short, Byte> entry: hashMapSequence.entrySet()) {
             AccessDto access = new AccessDto();
 
-            access.setEntityID(s);
-            access.setMode(hashMapSequence.get(s));
+            access.setEntityID(entry.getKey());
+            access.setMode(entry.getValue());
 
             accesses.add(access);
         }

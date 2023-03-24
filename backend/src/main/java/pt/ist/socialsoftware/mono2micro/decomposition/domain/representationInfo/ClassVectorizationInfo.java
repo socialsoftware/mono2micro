@@ -20,7 +20,7 @@ public class ClassVectorizationInfo extends RepresentationInfo {
 
     @Override
     public List<String> getParameters() {
-        return new ArrayList<String>() {{}};
+        return new ArrayList<>();
     }
 
     @Override
@@ -36,7 +36,7 @@ public class ClassVectorizationInfo extends RepresentationInfo {
 
     @Override
     public List<DecompositionMetric> getDecompositionMetrics() {
-        return new ArrayList<DecompositionMetric>() {{}};
+        return new ArrayList<>();
     }
 
     @Override

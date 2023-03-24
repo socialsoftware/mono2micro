@@ -27,8 +27,8 @@ public class CouplingMetric extends DecompositionMetric {
             double clusterCoupling = 0;
             Map<String, Set<Short>> couplingDependencies = partition1.getCouplingDependencies();
 
-            for (String cluster2 : couplingDependencies.keySet())
-                clusterCoupling += (double) couplingDependencies.get(cluster2).size() / decomposition.getCluster(cluster2).getElements().size();
+            for (Map.Entry<String, Set<Short>> entry : couplingDependencies.entrySet())
+                clusterCoupling += (double) entry.getValue().size() / decomposition.getCluster(entry.getKey()).getElements().size();
 
             clusterCoupling = graphClustersAmount == 1 ? 0 : clusterCoupling / (graphClustersAmount - 1);
             clusterCoupling = BigDecimal.valueOf(clusterCoupling)

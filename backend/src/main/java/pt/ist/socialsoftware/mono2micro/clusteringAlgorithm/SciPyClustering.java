@@ -45,14 +45,13 @@ public class SciPyClustering extends Clustering {
 
     @Override
     public List<String> getSupportedRepresentationInfoTypes() {
-        return new ArrayList<String>() {{
-            add(ACCESSES_INFO);
-            add(REPOSITORY_INFO);
-            add(CLASS_VECTORIZATION_INFO);
-            add(ENTITY_VECTORIZATION_INFO);
-            add(FUNCTIONALITY_VECTORIZATION_CALLGRAPH_INFO);
-            add(FUNCTIONALITY_VECTORIZATION_ACCESSES_INFO);
-        }};
+        return new ArrayList<>(Arrays.asList(
+                ACCESSES_INFO,
+                REPOSITORY_INFO,
+                CLASS_VECTORIZATION_INFO,
+                ENTITY_VECTORIZATION_INFO,
+                FUNCTIONALITY_VECTORIZATION_CALLGRAPH_INFO,
+                FUNCTIONALITY_VECTORIZATION_ACCESSES_INFO));
     }
 
     @Override

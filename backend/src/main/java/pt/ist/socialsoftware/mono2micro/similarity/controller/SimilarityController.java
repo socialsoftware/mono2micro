@@ -20,12 +20,12 @@ import java.util.List;
 @RequestMapping(value = "/mono2micro")
 public class SimilarityController {
 
-    private static final Logger logger = LoggerFactory.getLogger(Similarity.class);
+    private static final Logger logger = LoggerFactory.getLogger(SimilarityController.class);
 
 	@Autowired
 	SimilarityService similarityService;
 
-	@RequestMapping(value = "/similarity/create", method = RequestMethod.POST)
+	@PostMapping(value = "/similarity/create")
 	public ResponseEntity<HttpStatus> createSimilarity(
 			@RequestBody SimilarityDto similarityDto
 	) {
@@ -41,7 +41,7 @@ public class SimilarityController {
 		}
 	}
 
-	@RequestMapping(value = "/similarity/{similarityName}/getSimilarity", method = RequestMethod.GET)
+	@GetMapping(value = "/similarity/{similarityName}/getSimilarity")
 	public ResponseEntity<SimilarityDto> getSimilarity(
 			@PathVariable String similarityName
 	) {
@@ -58,7 +58,7 @@ public class SimilarityController {
 		}
 	}
 
-	@RequestMapping(value = "/similarity/{similarityName}/decompositions", method = RequestMethod.GET)
+	@GetMapping(value = "/similarity/{similarityName}/decompositions")
 	public ResponseEntity<List<DecompositionDto>> getDecompositions(
 			@PathVariable String similarityName
 	) {
@@ -76,7 +76,7 @@ public class SimilarityController {
 		}
 	}
 
-	@RequestMapping(value = "/similarity/{similarityName}/delete", method = RequestMethod.DELETE)
+	@DeleteMapping(value = "/similarity/{similarityName}/delete")
 	public ResponseEntity<HttpStatus> deleteSimilarity(
 			@PathVariable String similarityName
 	) {
@@ -93,7 +93,7 @@ public class SimilarityController {
 		}
 	}
 
-	@RequestMapping(value = "/similarity/{similarityName}/image", method = RequestMethod.GET)
+	@GetMapping(value = "/similarity/{similarityName}/image")
 	public ResponseEntity<byte[]> getDendrogramImage(
 			@PathVariable String similarityName
 	) {

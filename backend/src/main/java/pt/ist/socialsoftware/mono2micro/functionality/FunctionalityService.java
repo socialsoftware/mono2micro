@@ -138,7 +138,7 @@ public class FunctionalityService {
         }).collect(Collectors.toList());
     }
 
-    public Functionality addCompensating(String decompositionName, String functionalityName, String redesignName, HashMap<String, Object> data) throws Exception {
+    public Functionality addCompensating(String decompositionName, String functionalityName, String redesignName, Map<String, Object> data) throws Exception {
         int fromID = (Integer) data.get("fromID");
         String clusterName = (String) data.get("cluster");
         ArrayList<Integer> accesses = (ArrayList<Integer>) data.get("entities");
@@ -156,7 +156,7 @@ public class FunctionalityService {
         return functionality;
     }
 
-    public Functionality sequenceChange(String decompositionName, String functionalityName, String redesignName, HashMap<String, String> data) throws Exception {
+    public Functionality sequenceChange(String decompositionName, String functionalityName, String redesignName, Map<String, String> data) throws Exception {
         String localTransactionID = data.get("localTransactionID");
         String newCaller = data.get("newCaller");
 
@@ -173,7 +173,7 @@ public class FunctionalityService {
         return functionality;
     }
 
-    public Functionality dcgi(String decompositionName, String functionalityName, String redesignName, HashMap<String, String> data) throws Exception {
+    public Functionality dcgi(String decompositionName, String functionalityName, String redesignName, Map<String, String> data) throws Exception {
         String fromClusterName = data.get("fromCluster");
         String toClusterName = data.get("toCluster");
         String localTransactions = data.get("localTransactions");
@@ -199,8 +199,7 @@ public class FunctionalityService {
         AccessesInfo accessesInfo = (AccessesInfo) decomposition.getRepresentationInformationByType(ACCESSES_INFO);
         Functionality functionality = accessesInfo.getFunctionality(functionalityName);
 
-        if(newRedesignName.isPresent())
-            if(functionality.containsFunctionalityRedesignName(newRedesignName.get()))
+        if(newRedesignName.isPresent() && functionality.containsFunctionalityRedesignName(newRedesignName.get()))
                 throw new NameAlreadyBoundException();
 
         FunctionalityRedesign functionalityRedesign = getFunctionalityRedesign(functionality, redesignName);

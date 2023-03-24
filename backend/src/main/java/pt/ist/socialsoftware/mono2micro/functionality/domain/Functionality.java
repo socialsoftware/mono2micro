@@ -43,12 +43,12 @@ public class Functionality {
 	public Functionality() {}
 
 	public Functionality(String decompositionName, String name) {
-		this.id = decompositionName + " & " + name.replaceAll("\\.", "_");
+		this.id = decompositionName + " & " + name.replace(".", "_");
         this.name = name;
 	}
 
 	public Functionality(String decompositionName, Functionality functionality) { // Useful when redesigns are not needed
-		this.id = decompositionName + " & " + functionality.getName().replaceAll("\\.", "_");
+		this.id = decompositionName + " & " + functionality.getName().replace(".", "_");
 		this.name = functionality.getName();
 		this.type = functionality.getType();
 		this.metrics = functionality.getMetrics();
@@ -153,30 +153,30 @@ public class Functionality {
 
 	public Set<Short> entitiesTouchedInAGivenMode(byte mode){
 		Set<Short> entitiesTouchedInAGivenMode = new HashSet<>();
-		for(Short entity : this.entities.keySet()){
-			if(this.entities.get(entity) == 3 || this.entities.get(entity) == mode) // 3 -> RW
-				entitiesTouchedInAGivenMode.add(entity);
+		for (Map.Entry<Short, Byte> entry: this.entities.entrySet()){
+			if (entry.getValue() == 3 || entry.getValue() == mode) // 3 -> RW
+				entitiesTouchedInAGivenMode.add(entry.getKey());
 		}
 		return entitiesTouchedInAGivenMode;
 	}
 
 	public Set<String> clustersOfGivenEntities(Set<Short> entities){
 		Set<String> clustersOfGivenEntities = new HashSet<>();
-		for(String clusterName : this.entitiesPerCluster.keySet()){
-			for(Short entityID : entities){
-				if(this.entitiesPerCluster.get(clusterName).contains(entityID))
-					clustersOfGivenEntities.add(clusterName);
+		for (Map.Entry<String, Set<Short>> entry : this.entitiesPerCluster.entrySet()){
+			for (Short entityID : entities){
+				if (entry.getValue().contains(entityID))
+					clustersOfGivenEntities.add(entry.getKey());
 			}
 		}
 		return clustersOfGivenEntities;
 	}
 
 	public FunctionalityType defineFunctionalityType(){
-		if(this.type != null) return this.type;
+		if (this.type != null) return this.type;
 
-		if(!this.entities.isEmpty()){
-			for(Short entity : this.entities.keySet()){
-				if(this.entities.get(entity) >= 2) { // 2 -> W , 3 -> RW
+		if (!this.entities.isEmpty()){
+			for (Map.Entry<Short, Byte> entry : this.entities.entrySet()){
+				if (entry.getValue() >= 2) { // 2 -> W , 3 -> RW
 					this.type = FunctionalityType.SAGA;
 					return this.type;
 				}

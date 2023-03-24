@@ -24,7 +24,8 @@ public class TSRMetric extends DecompositionMetric {
     @Override
     public Double calculateMetric(Decomposition decomposition) {
         RepositoryInfo repositoryInfo = (RepositoryInfo) decomposition.getRepresentationInformationByType(REPOSITORY_INFO);
-        double authorsPerClusterSum = 0, cpm;
+        double authorsPerClusterSum = 0;
+        double cpm;
 
         for (Cluster cluster : decomposition.getClusters().values()) {
             Set<String> contributorsInThisCluster = new HashSet<>();

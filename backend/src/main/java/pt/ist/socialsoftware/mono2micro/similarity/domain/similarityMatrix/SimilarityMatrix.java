@@ -1,6 +1,5 @@
 package pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.data.annotation.Transient;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;

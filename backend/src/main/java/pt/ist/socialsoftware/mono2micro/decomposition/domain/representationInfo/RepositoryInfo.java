@@ -61,16 +61,15 @@ public class RepositoryInfo extends RepresentationInfo {
 
     @Override
     public List<DecompositionMetric> getDecompositionMetrics() {
-        return new ArrayList<DecompositionMetric>() {{ add(new TSRMetric()); }};
+        return new ArrayList<>(Arrays.asList(new TSRMetric()));
     }
 
     @Override
     public List<String> getParameters() {
-        return new ArrayList<String>() {{
-            add(RepresentationInfoParameters.PROFILE_PARAMETER.toString());
-            add(RepresentationInfoParameters.TRACES_MAX_LIMIT_PARAMETER.toString());
-            add(RepresentationInfoParameters.TRACE_TYPE_PARAMETER.toString());
-        }};
+        return new ArrayList<>(Arrays.asList(
+                RepresentationInfoParameters.PROFILE_PARAMETER.toString(),
+                RepresentationInfoParameters.TRACES_MAX_LIMIT_PARAMETER.toString(),
+                RepresentationInfoParameters.TRACE_TYPE_PARAMETER.toString()));
     }
 
     @Override
@@ -113,10 +112,10 @@ public class RepositoryInfo extends RepresentationInfo {
         return getAuthors().get(id);
     }
     public void addCommitInCommon(Short entityId, Short commonEntityId, Integer totalCommits) {
-        Map<Short, Map<Short, Integer>> commitsInCommon = getCommitsInCommon();
-        Map<Short, Integer> commits = commitsInCommon.getOrDefault(entityId, new HashMap<>());
+        Map<Short, Map<Short, Integer>> localCommitsInCommon = getCommitsInCommon();
+        Map<Short, Integer> commits = localCommitsInCommon.getOrDefault(entityId, new HashMap<>());
         commits.put(commonEntityId, totalCommits);
-        commitsInCommon.put(entityId, commits);
+        localCommitsInCommon.put(entityId, commits);
     }
     public void addTotalCommit(Short entityId, Integer totalCommits) {
         getTotalCommits().put(entityId, totalCommits);
@@ -126,18 +125,18 @@ public class RepositoryInfo extends RepresentationInfo {
         GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
         AuthorRepresentation authorRepresentation = (AuthorRepresentation) decomposition.getStrategy().getCodebase().getRepresentationByFileType(AUTHOR);
         CommitRepresentation commitRepresentation = (CommitRepresentation) decomposition.getStrategy().getCodebase().getRepresentationByFileType(COMMIT);
-        Map<Short, ArrayList<String>> authors = new ObjectMapper().readValue(gridFsService.getFileAsString(authorRepresentation.getName()), new TypeReference<Map<Short, ArrayList<String>>>() {});
+        Map<Short, ArrayList<String>> localAuthors = new ObjectMapper().readValue(gridFsService.getFileAsString(authorRepresentation.getName()), new TypeReference<Map<Short, ArrayList<String>>>() {});
         Map<String, Map<String, Integer>> commits = new ObjectMapper().readValue(gridFsService.getFileAsString(commitRepresentation.getName()), new TypeReference<Map<String, Map<String, Integer>>>() {});
 
-        setAuthors(authors);
-        extractNumberOfAuthors(authors);
+        setAuthors(localAuthors);
+        extractNumberOfAuthors(localAuthors);
         extractCommitsInCommon(decomposition, commits);
     }
 
     private void extractNumberOfAuthors(Map<Short, ArrayList<String>> filesAndAuthors) {
         Set<String> allAuthors = new HashSet<>();
-        for (ArrayList<String> authors : filesAndAuthors.values())
-            allAuthors.addAll(authors);
+        for (ArrayList<String> localAuthors : filesAndAuthors.values())
+            allAuthors.addAll(localAuthors);
         setTotalAuthors(allAuthors.size());
     }
 
@@ -147,8 +146,8 @@ public class RepositoryInfo extends RepresentationInfo {
             Map<String, Integer> commonEntities = commits.get(entityId.toString());
             if (commonEntities == null) {
                 addTotalCommit(entityId, 1);
-                Map<Short, Map<Short, Integer>> commitsInCommon = getCommitsInCommon();
-                commitsInCommon.put(entityId, new HashMap<>());
+                Map<Short, Map<Short, Integer>> localCommitsInCommon = getCommitsInCommon();
+                localCommitsInCommon.put(entityId, new HashMap<>());
                 continue;
             }
             addTotalCommit(entityId, commonEntities.get("total_commits"));
@@ -175,13 +174,13 @@ public class RepositoryInfo extends RepresentationInfo {
         int k = 0;
         for (int i = 0; i < entities.size(); i++) {
             short e1ID = entities.get(i);
-            Map<Short, Integer> commitsInCommon = getCommitsInCommon().get(e1ID);
-            if (commitsInCommon == null)
+            Map<Short, Integer> localCommitsInCommon = getCommitsInCommon().get(e1ID);
+            if (localCommitsInCommon == null)
                 continue;
 
             for (int j = i + 1; j < entities.size(); j++) {
                 short e2ID = entities.get(j);
-                Integer numberOfCommits = commitsInCommon.get(e2ID);
+                Integer numberOfCommits = localCommitsInCommon.get(e2ID);
                 if (numberOfCommits == null)
                     continue;
 

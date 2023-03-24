@@ -31,7 +31,7 @@ public class DecompositionController {
 	@Autowired
 	DecompositionService decompositionService;
 
-	@RequestMapping(value = "/similarity/createDecomposition", method = RequestMethod.POST)
+	@PostMapping(value = "/similarity/createDecomposition")
 	public ResponseEntity<HttpStatus> createDecomposition(
 			@RequestBody DecompositionRequest decompositionRequest
 	) {
@@ -51,7 +51,7 @@ public class DecompositionController {
 		}
 	}
 
-	@RequestMapping(value = "/similarity/{similarityName}/createExpertDecomposition", method = RequestMethod.POST)
+	@PostMapping(value = "/similarity/{similarityName}/createExpertDecomposition")
 	public ResponseEntity<HttpStatus> createExpertDecomposition(
 			@PathVariable String similarityName,
 			@RequestParam String expertName,
@@ -73,7 +73,7 @@ public class DecompositionController {
 		}
 	}
 
-	@RequestMapping(value = "/decomposition/{decompositionName}", method = RequestMethod.GET)
+	@GetMapping(value = "/decomposition/{decompositionName}")
 	public ResponseEntity<DecompositionDto> getDecomposition(
 		@PathVariable String decompositionName
 	) {
@@ -91,7 +91,7 @@ public class DecompositionController {
 		}
 	}
 
-	@RequestMapping(value = "/decomposition/{decompositionName}/getClusters", method = RequestMethod.GET)
+	@GetMapping(value = "/decomposition/{decompositionName}/getClusters")
 	public ResponseEntity<Map<String, Cluster>> getClusters(
 			@PathVariable String decompositionName
 	) {
@@ -106,7 +106,7 @@ public class DecompositionController {
 		}
 	}
 
-	@RequestMapping(value = "/decomposition/{decompositionName}/delete", method = RequestMethod.DELETE)
+	@DeleteMapping(value = "/decomposition/{decompositionName}/delete")
 	public ResponseEntity<HttpStatus> deleteDecomposition(
 		@PathVariable String decompositionName
 	) {
@@ -123,7 +123,7 @@ public class DecompositionController {
 	}
 
 
-	@RequestMapping(value = "/decomposition/{decompositionName}/merge", method = RequestMethod.POST)
+	@PostMapping(value = "/decomposition/{decompositionName}/merge")
 	public ResponseEntity<Map<String, Cluster>> mergeClusters(
 			@PathVariable String decompositionName,
 			@RequestBody MergeOperation operation
@@ -142,7 +142,7 @@ public class DecompositionController {
 		}
 	}
 
-	@RequestMapping(value = "/decomposition/{decompositionName}/rename", method = RequestMethod.POST)
+	@PostMapping(value = "/decomposition/{decompositionName}/rename")
 	public ResponseEntity<Map<String, Cluster>> renameCluster(
 			@PathVariable String decompositionName,
 			@RequestBody RenameOperation operation
@@ -161,7 +161,7 @@ public class DecompositionController {
 		}
 	}
 
-	@RequestMapping(value = "/decomposition/{decompositionName}/split", method = RequestMethod.POST)
+	@PostMapping(value = "/decomposition/{decompositionName}/split")
 	public ResponseEntity<Map<String, Cluster>> splitCluster(
 			@PathVariable String decompositionName,
 			@RequestBody SplitOperation operation
@@ -180,7 +180,7 @@ public class DecompositionController {
 		}
 	}
 
-	@RequestMapping(value = "/decomposition/{decompositionName}/transfer", method = RequestMethod.POST)
+	@PostMapping(value = "/decomposition/{decompositionName}/transfer")
 	public ResponseEntity<Map<String, Cluster>> transferEntities(
 			@PathVariable String decompositionName,
 			@RequestBody TransferOperation operation
@@ -197,7 +197,7 @@ public class DecompositionController {
 	}
 
 
-	@RequestMapping(value = "/decomposition/{decompositionName}/formCluster", method = RequestMethod.POST)
+	@PostMapping(value = "/decomposition/{decompositionName}/formCluster")
 	public ResponseEntity<Map<String, Cluster>> formCluster(
 			@PathVariable String decompositionName,
 			@RequestBody FormClusterOperation operation
@@ -215,7 +215,7 @@ public class DecompositionController {
 		}
 	}
 
-	@RequestMapping(value = "/decomposition/{decompositionName}/snapshotDecomposition", method = RequestMethod.GET)
+	@GetMapping(value = "/decomposition/{decompositionName}/snapshotDecomposition")
 	public ResponseEntity<HttpStatus> snapshotDecomposition(
 			@PathVariable String decompositionName
 	) {
@@ -231,7 +231,7 @@ public class DecompositionController {
 		}
 	}
 
-	@RequestMapping(value = "/decomposition/{decompositionName}/{representationInfo}/getEdgeWeights", method = RequestMethod.GET)
+	@GetMapping(value = "/decomposition/{decompositionName}/{representationInfo}/getEdgeWeights")
 	public ResponseEntity<String> getEdgeWeights(
 			@PathVariable String decompositionName,
 			@PathVariable String representationInfo
@@ -247,7 +247,7 @@ public class DecompositionController {
 		}
 	}
 
-	@RequestMapping(value = "/decomposition/{decompositionName}/{representationInfo}/getSearchItems", method = RequestMethod.GET)
+	@GetMapping(value = "/decomposition/{decompositionName}/{representationInfo}/getSearchItems")
 	public ResponseEntity<String> getSearchItems(
 			@PathVariable String decompositionName,
 			@PathVariable String representationInfo
@@ -262,7 +262,7 @@ public class DecompositionController {
 		}
 	}
 
-	@RequestMapping(value = "/decomposition/{decompositionName}/update", method = RequestMethod.GET)
+	@GetMapping(value = "/decomposition/{decompositionName}/update")
 	public ResponseEntity<DecompositionDto> update(
 			@PathVariable String decompositionName
 	) {

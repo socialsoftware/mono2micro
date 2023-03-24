@@ -28,7 +28,7 @@ public class CodebaseController {
 	@Autowired
 	CodebaseService codebaseService;
 
-	@RequestMapping(value = "/codebases", method = RequestMethod.GET)
+	@GetMapping(value = "/codebases")
 	public ResponseEntity<List<CodebaseDto>> getCodebases() {
 		logger.debug("getCodebases");
 
@@ -44,7 +44,7 @@ public class CodebaseController {
 		}
 	}
 
-	@RequestMapping(value = "/codebase/{codebaseName}", method = RequestMethod.GET)
+	@GetMapping(value = "/codebase/{codebaseName}")
 	public ResponseEntity<CodebaseDto> getCodebase(
 			@PathVariable String codebaseName
 	) {
@@ -61,7 +61,7 @@ public class CodebaseController {
 		}
 	}
 
-	@RequestMapping(value = "/codebase/{codebaseName}/getRepresentations", method = RequestMethod.GET)
+	@GetMapping(value = "/codebase/{codebaseName}/getRepresentations")
 	public ResponseEntity<List<RepresentationDto>> getRepresentations(
 			@PathVariable String codebaseName
 	) {
@@ -78,7 +78,7 @@ public class CodebaseController {
 		}
 	}
 
-	@RequestMapping(value = "/codebase/{codebaseName}/getCodebaseStrategies", method = RequestMethod.GET)
+	@GetMapping(value = "/codebase/{codebaseName}/getCodebaseStrategies")
 	public ResponseEntity<List<StrategyDto>> getCodebaseStrategies(
 			@PathVariable String codebaseName
 	) {
@@ -94,7 +94,7 @@ public class CodebaseController {
 		}
 	}
 
-	@RequestMapping(value = "/codebase/{codebaseName}/getCodebaseDecompositions", method = RequestMethod.GET)
+	@GetMapping(value = "/codebase/{codebaseName}/getCodebaseDecompositions")
 	public ResponseEntity<List<DecompositionDto>> getCodebaseDecompositions(
 			@PathVariable String codebaseName
 	) {
@@ -115,7 +115,7 @@ public class CodebaseController {
 		}
 	}
 
-    @RequestMapping(value = "/codebase/{codebaseName}/delete", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/codebase/{codebaseName}/delete")
 	public ResponseEntity<HttpStatus> deleteCodebase(@PathVariable String codebaseName) {
 		logger.debug("deleteCodebase");
 
@@ -129,7 +129,7 @@ public class CodebaseController {
         }
     }
 
-    @RequestMapping(value = "/codebase/create", method = RequestMethod.POST)
+    @PostMapping(value = "/codebase/create")
     public ResponseEntity<HttpStatus> createCodebase(
         @RequestParam String codebaseName
     ){
@@ -149,7 +149,7 @@ public class CodebaseController {
         }
     }
 
-	@RequestMapping(value = "/codebase/{codebaseName}/getCodebaseRepresentationInfoTypes", method = RequestMethod.GET)
+	@GetMapping(value = "/codebase/{codebaseName}/getCodebaseRepresentationInfoTypes")
 	public ResponseEntity<List<String>> getCodebaseRepresentationInfoTypes(
 			@PathVariable String codebaseName
 	){
@@ -164,7 +164,7 @@ public class CodebaseController {
 		}
 	}
 
-	@RequestMapping(value = "/codebase/getRepresentationInfoTypes", method = RequestMethod.GET)
+	@GetMapping(value = "/codebase/getRepresentationInfoTypes")
 	public ResponseEntity<Map<String, List<String>>> getRepresentationInfoTypes() {
 		logger.debug("getRepresentationInfoTypes");
 

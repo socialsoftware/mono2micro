@@ -5,10 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pt.ist.socialsoftware.mono2micro.codebase.CodebaseController;
 
 import java.util.List;
@@ -19,9 +16,9 @@ public class ClusteringController {
     @Autowired
     ClusteringService clusteringService;
 
-    private static final Logger logger = LoggerFactory.getLogger(CodebaseController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClusteringController.class);
 
-    @RequestMapping(value = "/{algorithmType}/getSupportedRepresentationInfoTypes", method = RequestMethod.GET)
+    @GetMapping(value = "/{algorithmType}/getSupportedRepresentationInfoTypes")
     public ResponseEntity<List<String>> getSupportedRepresentationInfoTypes(
             @PathVariable String algorithmType
     ){

@@ -22,7 +22,7 @@ public class HistoryController {
 
     private static final Logger logger = LoggerFactory.getLogger(HistoryController.class);
 
-    @RequestMapping(value = "/undoOperation", method = RequestMethod.GET)
+    @GetMapping(value = "/undoOperation")
     public ResponseEntity<HttpStatus> undoOperation(
             @PathVariable String decompositionName
     ) {
@@ -38,7 +38,7 @@ public class HistoryController {
         }
     }
 
-    @RequestMapping(value = "/redoOperation", method = RequestMethod.GET)
+    @GetMapping(value = "/redoOperation")
     public ResponseEntity<HttpStatus> redoOperation(
             @PathVariable String decompositionName
     ) {
@@ -54,7 +54,7 @@ public class HistoryController {
         }
     }
 
-    @RequestMapping(value = "/canUndoRedo", method = RequestMethod.GET)
+    @GetMapping(value = "/canUndoRedo")
     public ResponseEntity<Map<String, Boolean>> canUndoRedo(
             @PathVariable String decompositionName
     ) {

@@ -5,7 +5,6 @@ import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.AccessesInfo;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.EntityVectorizationInfo;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
@@ -16,7 +15,6 @@ import java.util.*;
 
 import static org.jgrapht.Graphs.successorListOf;
 import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.AccessesInfo.ACCESSES_INFO;
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.EntityVectorizationInfo.ENTITY_VECTORIZATION_INFO;
 
 public class Utils {
     public static void print(String message, Integer lineNumber) { System.out.println("[" + lineNumber + "] " + message); }
@@ -138,7 +136,7 @@ public class Utils {
                     currentLocalTransaction = new LocalTransaction(
                         ++lastLocalTransactionID,
                         currentClusterName,
-                        new HashSet<AccessDto>() {{ add(access); }},
+                        new HashSet<>(Arrays.asList(access)),
                         accessedEntityID
                     );
 
@@ -174,7 +172,7 @@ public class Utils {
                         currentLocalTransaction = new LocalTransaction(
                             ++lastLocalTransactionID,
                             currentClusterName,
-                            new HashSet<AccessDto>() {{ add(access); }},
+                            new HashSet<>(Arrays.asList(access)),
                             accessedEntityID
                         );
 

@@ -1,16 +1,11 @@
 package pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 
 import java.io.IOException;
 import java.util.*;
-
-import static pt.ist.socialsoftware.mono2micro.representation.domain.AuthorRepresentation.AUTHOR;
-import static pt.ist.socialsoftware.mono2micro.representation.domain.CommitRepresentation.COMMIT;
 
 public class ZeroWeights extends Weights {
     public static final String ZERO_WEIGHTS = "ZERO_WEIGHTS";
@@ -34,8 +29,7 @@ public class ZeroWeights extends Weights {
 
     @Override
     public List<String> getWeightsNames() {
-        return new ArrayList<String>() {{
-        }};
+        return new ArrayList<>();
     }
 
     @Override

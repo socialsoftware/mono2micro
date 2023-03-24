@@ -40,7 +40,7 @@ public class FunctionalityTracesIterator {
 
     public TraceDto getLongestTrace() throws JSONException {
         JSONArray tracesArray = requestedFunctionality.getJSONArray("t");
-        TraceDto t1 = nextTrace(tracesArray.getJSONObject(0));;
+        TraceDto t1 = nextTrace(tracesArray.getJSONObject(0));
         int t1UncompressedSize = t1.getUncompressedSize();
         for (int i = 1; i < tracesArray.length() && (limit == 0 || tracesCounter < limit); i++) {
             TraceDto t2 = nextTrace(tracesArray.getJSONObject(i));
@@ -96,7 +96,7 @@ public class FunctionalityTracesIterator {
             default:
                 traceDtos.addAll(this.getAllTraces());
         }
-        if (traceDtos.size() == 0)
+        if (traceDtos.isEmpty())
             throw new RuntimeException("Functionality does not contain any trace.");
 
         return traceDtos;
@@ -129,7 +129,7 @@ public class FunctionalityTracesIterator {
             }
         }
 
-        if (elements.size() > 0)
+        if (!elements.isEmpty())
             tracesCounter++;
 
         return new TraceDto(traceJSON.getInt("id"), traceJSON.has("f")? traceJSON.getInt("f") : 1, elements);

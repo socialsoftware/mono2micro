@@ -1,15 +1,11 @@
 package pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.AccessesInfo;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddingsRepresentation;
-import pt.ist.socialsoftware.mono2micro.representation.domain.EntityToIDRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.FunctionalityVectorizationCallGraphWeights;
@@ -206,14 +202,14 @@ public class SimilarityMatrixFunctionalityVectorizationByCallGraph extends Simil
         return null;
     }
 
-    public void vectorSum(ArrayList<Double> vector, ArrayList<Double> array)
+    public void vectorSum(List<Double> vector, List<Double> array)
     {
         for (int i = 0; i < array.size(); i++) {
             vector.set(i, vector.get(i) + array.get(i));
         }
     }
 
-    public void vectorDivision(ArrayList<Double> vector, float count) {
+    public void vectorDivision(List<Double> vector, float count) {
         for (int i = 0; i < vector.size(); i++) {
             vector.set(i, vector.get(i) / count);
         }

@@ -8,7 +8,6 @@ import org.json.JSONObject;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddingsRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.EntityToIDRepresentation;
-import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.utils.Acumulator;
@@ -74,7 +73,7 @@ public class SimilarityMatrixClassVectorization extends SimilarityMatrix {
                     }
 
                     if (acumulator.getCount() > 0) {
-                        HashMap<String, Object> classEmbeddings = new HashMap<String, Object>();
+                        HashMap<String, Object> classEmbeddings = new HashMap<>();
                         classEmbeddings.put("package", pack.getString("name"));
                         classEmbeddings.put("name", className);
                         classEmbeddings.put("type", cls.getString("type"));

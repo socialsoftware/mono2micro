@@ -17,7 +17,6 @@ import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityFactory;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyAccessesAndRepository;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.dendrogram.Dendrogram;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.SimilarityMatrix;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.SimilarityMatrixAccessesAndRepository;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityMatrixSciPyDto;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.Weights;
@@ -199,10 +198,10 @@ public class RecommendMatrixSciPy extends Recommendation {
 
             System.out.println("Creating decomposition with name: " + name);
 
-            List<Weights> weightsList = WeightsFactory.getWeightsList(this.getAllWeightsTypes());
+            List<Weights> localWeightsList = WeightsFactory.getWeightsList(getAllWeightsTypes());
 
             int i = 1;
-            for (Weights weights : weightsList) {
+            for (Weights weights : localWeightsList) {
                 float[] w = new float[weights.getNumberOfWeights()];
                 for (int j = 0; j < w.length; j++)
                     w[j] = Float.parseFloat(properties[i++]);
@@ -210,14 +209,14 @@ public class RecommendMatrixSciPy extends Recommendation {
                 weights.setWeightsFromArray(w);
             }
 
-            SimilarityMatrixSciPyDto similarityInformation = new SimilarityMatrixSciPyDto(this, weightsList);
+            SimilarityMatrixSciPyDto similarityInformation = new SimilarityMatrixSciPyDto(this, localWeightsList);
 
             // Get or create the decomposition's strategy
             SimilarityScipyAccessesAndRepository similarity = (SimilarityScipyAccessesAndRepository) similarities.stream().filter(possibleSimilarity ->
                     possibleSimilarity.equalsDto(similarityInformation)).findFirst().orElse(null);
             if (similarity == null) {
                 similarity = (SimilarityScipyAccessesAndRepository) SimilarityFactory.getSimilarity(getStrategy(), similarityInformation);
-                similarity.setSimilarityMatrix(new SimilarityMatrixAccessesAndRepository(similarity.getName() + "_similarityMatrix", weightsList));
+                similarity.setSimilarityMatrix(new SimilarityMatrixAccessesAndRepository(similarity.getName() + "_similarityMatrix", localWeightsList));
 
                 InputStream inputStream = gridFsService.getFile(name.substring(0, name.lastIndexOf(","))); // Gets the previously produced similarity matrix
                 gridFsService.saveFile(inputStream, similarity.getSimilarityMatrix().getName()); // And saves it with a different name
