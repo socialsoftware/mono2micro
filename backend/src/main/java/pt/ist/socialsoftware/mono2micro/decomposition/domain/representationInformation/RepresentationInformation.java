@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo;
+package pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInformation;
 
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.metrics.decompositionMetrics.DecompositionMetric;
@@ -6,7 +6,7 @@ import pt.ist.socialsoftware.mono2micro.metrics.decompositionMetrics.Decompositi
 import java.util.List;
 import java.util.Set;
 
-public abstract class RepresentationInfo {
+public abstract class RepresentationInformation {
     String decompositionName;
     public abstract String getType();
 

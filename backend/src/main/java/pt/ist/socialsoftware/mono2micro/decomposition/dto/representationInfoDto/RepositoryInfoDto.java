@@ -1,7 +1,7 @@
-package pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.representationInfoDto;
+package pt.ist.socialsoftware.mono2micro.decomposition.dto.representationInfoDto;
 
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.RepositoryInfo;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.RepresentationInfo;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInformation.RepositoryInformation;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInformation.RepresentationInformation;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -11,12 +11,12 @@ public class RepositoryInfoDto extends RepresentationInfoDto {
     private Map<Short, Map<Short, Integer>> commitsInCommon;
     private Map<Short, Integer> totalCommits;
 
-    public RepositoryInfoDto(RepresentationInfo representationInfo) {
-        super(representationInfo.getType());
-        RepositoryInfo repositoryInfo = (RepositoryInfo) representationInfo;
-        this.authors = repositoryInfo.getAuthors();
-        this.commitsInCommon = repositoryInfo.getCommitsInCommon();
-        this.totalCommits = repositoryInfo.getTotalCommits();
+    public RepositoryInfoDto(RepresentationInformation representationInformation) {
+        super(representationInformation.getType());
+        RepositoryInformation repositoryInformation = (RepositoryInformation) representationInformation;
+        this.authors = repositoryInformation.getAuthors();
+        this.commitsInCommon = repositoryInformation.getCommitsInCommon();
+        this.totalCommits = repositoryInformation.getTotalCommits();
     }
 
     public Map<Short, ArrayList<String>> getAuthors() {

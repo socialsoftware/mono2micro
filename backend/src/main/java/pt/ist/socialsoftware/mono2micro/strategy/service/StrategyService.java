@@ -32,15 +32,15 @@ public class StrategyService {
     @Autowired
     RecommendationService recommendationService;
 
-    public void createStrategy(String codebaseName, String algorithmType, List<String> representationTypes) {
+    public void createStrategy(String codebaseName, String algorithmType, List<String> strategyTypes) {
         Codebase codebase = codebaseRepository.findByName(codebaseName);
         for (Strategy strategy : codebase.getStrategies())
             if (strategy.getAlgorithmType().equals(algorithmType) &&
-                    strategy.getRepresentationInfoTypes().size() == representationTypes.size() &&
-                    strategy.getRepresentationInfoTypes().containsAll(representationTypes)) // strategy already exists
+                    strategy.getStrategyTypes().size() == strategyTypes.size() &&
+                    strategy.getStrategyTypes().containsAll(strategyTypes)) // strategy already exists
                 return;
 
-        Strategy strategy = new Strategy(codebase, algorithmType, representationTypes);
+        Strategy strategy = new Strategy(codebase, algorithmType, strategyTypes);
         strategy.setCodebase(codebase);
         codebase.addStrategy(strategy);
         strategyRepository.save(strategy);

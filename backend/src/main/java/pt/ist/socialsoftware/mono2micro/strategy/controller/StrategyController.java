@@ -47,12 +47,12 @@ public class StrategyController {
     public ResponseEntity<HttpStatus> createStrategy(
             @PathVariable String codebaseName,
             @Nullable @RequestParam String algorithmType,
-            @Nullable @RequestParam List<String> representationTypes
+            @Nullable @RequestParam List<String> strategyTypes
     ){
         logger.debug("createStrategy");
 
         try {
-            strategyService.createStrategy(codebaseName, algorithmType, representationTypes);
+            strategyService.createStrategy(codebaseName, algorithmType, strategyTypes);
             return new ResponseEntity<>(HttpStatus.CREATED);
 
         } catch (Exception e) {

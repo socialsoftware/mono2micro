@@ -21,7 +21,7 @@ export const SimilarityMatrixSciPyFunctionalityVectorizationCallGraphForm = ({co
 
     // Executes when it is informed that there is information to be updated
     useEffect(() => {
-        setWeightsList(WeightsFactory.getWeightListByRepresentationInfoType(strategy.representationInformationTypes));
+        setWeightsList(WeightsFactory.getWeightListByStrategyType(strategy.strategyTypes));
     }, [])
 
     function handleSubmit(event) {

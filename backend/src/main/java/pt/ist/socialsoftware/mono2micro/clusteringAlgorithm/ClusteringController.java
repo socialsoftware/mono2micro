@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pt.ist.socialsoftware.mono2micro.codebase.CodebaseController;
 
 import java.util.List;
 
@@ -18,14 +17,14 @@ public class ClusteringController {
 
     private static final Logger logger = LoggerFactory.getLogger(ClusteringController.class);
 
-    @GetMapping(value = "/{algorithmType}/getSupportedRepresentationInfoTypes")
-    public ResponseEntity<List<String>> getSupportedRepresentationInfoTypes(
+    @GetMapping(value = "/{algorithmType}/getAlgorithmSupportedStrategyTypes")
+    public ResponseEntity<List<String>> getSupportedStrategyTypes(
             @PathVariable String algorithmType
     ){
-        logger.debug("getSupportedRepresentationInfoTypes");
+        logger.debug("getAlgorithmSupportedStrategyTypes");
 
         try {
-            return new ResponseEntity<>(clusteringService.getSupportedRepresentationInfoTypes(algorithmType), HttpStatus.OK);
+            return new ResponseEntity<>(clusteringService.getAlgorithmSupportedStrategyTypes(algorithmType), HttpStatus.OK);
 
         } catch (Exception e) {
             e.printStackTrace();

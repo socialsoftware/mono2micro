@@ -2,7 +2,7 @@ package pt.ist.socialsoftware.mono2micro.metrics.functionalityRedesignMetrics;
 
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.AccessesInfo;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInformation.AccessesInformation;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.functionality.LocalTransactionTypes;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
@@ -25,7 +25,7 @@ public class SystemComplexityMetric extends FunctionalityRedesignMetric {
     @Override
     public Integer calculateMetric(
             Decomposition decomposition,
-            AccessesInfo accessesInfo,
+            AccessesInformation accessesInformation,
             Functionality functionality,
             FunctionalityRedesign functionalityRedesign
     ){
@@ -37,7 +37,7 @@ public class SystemComplexityMetric extends FunctionalityRedesignMetric {
         Map<String, Set<Cluster>> functionalitiesClusters = Utils.getFunctionalitiesClusters(
                 decomposition.getEntityIDToClusterName(),
                 decomposition.getClusters(),
-                accessesInfo.getFunctionalities().values());
+                accessesInformation.getFunctionalities().values());
 
         for (int i = 0; i < functionalityRedesign.getRedesign().size(); i++) {
             LocalTransaction lt = functionalityRedesign.getRedesign().get(i);
@@ -49,7 +49,7 @@ public class SystemComplexityMetric extends FunctionalityRedesignMetric {
 
                     // Functionality complexity cost of write
                     if(mode >= 2 && lt.getType() == LocalTransactionTypes.COMPENSATABLE) // 2 -> W, 3 -> RW
-                        for (Functionality otherFunctionality : accessesInfo.getFunctionalities().values())
+                        for (Functionality otherFunctionality : accessesInformation.getFunctionalities().values())
                             if (!otherFunctionality.getName().equals(functionality.getName()) &&
                                     otherFunctionality.containsEntity(entity) &&
                                     otherFunctionality.getEntities().get(entity) != 2 &&

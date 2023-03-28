@@ -6,8 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import pt.ist.socialsoftware.mono2micro.representation.domain.Representation;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -19,7 +18,6 @@ public class Codebase {
 	private List<Representation> representations;
 	@DBRef(lazy = true)
 	private List<Strategy> strategies;
-	private List<String> representationInfoTypes;
 
 	public Codebase() {}
 
@@ -27,7 +25,6 @@ public class Codebase {
         this.name = name;
 		representations = new ArrayList<>();
 		strategies = new ArrayList<>();
-		representationInfoTypes = new ArrayList<>();
 	}
 
 	public String getName() {
@@ -38,21 +35,15 @@ public class Codebase {
 		this.name = name;
 	}
 
-	public List<String> getRepresentationInfoTypes() {
-		return representationInfoTypes;
-	}
+	public List<String> getRepresentationGroups() {
+		Set<String> representationTypes = representations.stream()
+				.map(representation -> representation.getType())
+						.collect(Collectors.toSet());
 
-	public void setRepresentationInfoTypes(List<String> representationInfoTypes) {
-		this.representationInfoTypes = representationInfoTypes;
-	}
-
-	public void addRepresentationInfoType(String representationInfoType) {
-		if (!representationInfoTypes.contains(representationInfoType))
-			this.representationInfoTypes.add(representationInfoType);
-	}
-
-	public void removeRepresentationInfoTypes(List<String> representationInfoTypes) {
-		this.representationInfoTypes.removeAll(representationInfoTypes);
+		return Representation.representationGroupToRepresentations.entrySet().stream()
+				.filter(entry -> representationTypes.containsAll(entry.getValue()))
+				.map(Map.Entry::getKey)
+				.collect(Collectors.toList());
 	}
 
 	public List<Representation> getRepresentations() {

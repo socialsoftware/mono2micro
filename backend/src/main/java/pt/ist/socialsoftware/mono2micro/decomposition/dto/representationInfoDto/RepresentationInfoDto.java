@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.representationInfoDto;
+package pt.ist.socialsoftware.mono2micro.decomposition.dto.representationInfoDto;
 
 public abstract class RepresentationInfoDto {
     protected String type;

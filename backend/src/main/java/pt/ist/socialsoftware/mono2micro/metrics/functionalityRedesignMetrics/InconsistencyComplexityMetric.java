@@ -1,7 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.metrics.functionalityRedesignMetrics;
 
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.AccessesInfo;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInformation.AccessesInformation;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
@@ -17,7 +17,7 @@ public class InconsistencyComplexityMetric extends  FunctionalityRedesignMetric 
     }
 
     @Override
-    public Integer calculateMetric(Decomposition decomposition, AccessesInfo accessesInfo, Functionality functionality, FunctionalityRedesign functionalityRedesign) {
+    public Integer calculateMetric(Decomposition decomposition, AccessesInformation accessesInformation, Functionality functionality, FunctionalityRedesign functionalityRedesign) {
         int value = 0;
 
         if(functionality.getType() != FunctionalityType.QUERY)
@@ -25,7 +25,7 @@ public class InconsistencyComplexityMetric extends  FunctionalityRedesignMetric 
 
         Set<Short> entitiesRead = functionality.entitiesTouchedInAGivenMode((byte) 1);
 
-        for (Functionality otherFunctionality : accessesInfo.getFunctionalities().values()) {
+        for (Functionality otherFunctionality : accessesInformation.getFunctionalities().values()) {
             if (!otherFunctionality.getName().equals(functionality.getName()) &&
                     otherFunctionality.getType() == FunctionalityType.SAGA){
 

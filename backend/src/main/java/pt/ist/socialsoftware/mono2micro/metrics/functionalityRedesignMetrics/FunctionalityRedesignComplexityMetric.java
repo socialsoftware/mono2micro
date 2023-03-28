@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.AccessesInfo;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInformation.AccessesInformation;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.functionality.LocalTransactionTypes;
@@ -33,7 +33,7 @@ public class FunctionalityRedesignComplexityMetric extends FunctionalityRedesign
     }
 
     @Override
-    public Integer calculateMetric(Decomposition decomposition, AccessesInfo accessesInfo, Functionality functionality, FunctionalityRedesign functionalityRedesign)
+    public Integer calculateMetric(Decomposition decomposition, AccessesInformation accessesInformation, Functionality functionality, FunctionalityRedesign functionalityRedesign)
             throws IOException
     {
         int value = 0;
@@ -44,7 +44,7 @@ public class FunctionalityRedesignComplexityMetric extends FunctionalityRedesign
         Map<String, Set<Cluster>> functionalitiesClusters = Utils.getFunctionalitiesClusters(
                 decomposition.getEntityIDToClusterName(),
                 decomposition.getClusters(),
-                accessesInfo.getFunctionalities().values());
+                accessesInformation.getFunctionalities().values());
 
         for (int i = 0; i < functionalityRedesign.getRedesign().size(); i++) {
             LocalTransaction lt = functionalityRedesign.getRedesign().get(i);
@@ -60,7 +60,7 @@ public class FunctionalityRedesignComplexityMetric extends FunctionalityRedesign
 
                     // Functionality complexity cost of read
                     if (mode != 2) { // 2 -> W - we want all the reads
-                        for (Functionality otherFunctionality : accessesInfo.getFunctionalities().values()) {
+                        for (Functionality otherFunctionality : accessesInformation.getFunctionalities().values()) {
                             if (!otherFunctionality.getName().equals(functionality.getName()) &&
                                     otherFunctionality.containsEntity(entity) &&
                                     functionalitiesClusters.get(otherFunctionality.getName()).size() > 1) {

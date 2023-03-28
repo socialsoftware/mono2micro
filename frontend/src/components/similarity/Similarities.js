@@ -10,7 +10,7 @@ import {SimilarityMatrixSciPyEntityVectorizationForm} from "./forms/SimilarityMa
 import {SimilarityMatrixSciPyClassVectorizationForm} from "./forms/SimilarityMatrixSciPyClassVectorizationForm";
 import {SimilarityMatrixSciPyFunctionalityVectorizationCallGraphForm} from "./forms/SimilarityMatrixSciPyFunctionalityVectorizationCallGraphForm";
 import {SimilarityMatrixScipyFunctionalityVectorizationSequenceOfAccessesForm} from "./forms/SimilarityMatrixScipyFunctionalityVectorizationSequenceOfAccessesForm";
-import { RepresentationInfoType } from '../../models/representation/RepresentationInfoTypes';
+import { StrategyType } from '../../models/strategy/StrategyTypes';
 
 export const Similarities = () => {
 
@@ -99,28 +99,28 @@ export const Similarities = () => {
                 <>
                     {/*Add form of each similarity type like the next block to request the required elements for its creation*/}
                     {strategy.algorithmType === "SciPy Clustering" &&
-                        strategy.representationInformationTypes.includes(RepresentationInfoType.ENTITY_VECTORIZATION_INFO) ?
+                        strategy.strategyTypes.includes(StrategyType.ENTITY_VECTORIZATION_STRATEGY) ?
                         <SimilarityMatrixSciPyEntityVectorizationForm
                             codebaseName={codebaseName}
                             strategy={strategy}
                             setUpdateStrategies={setUpdateStrategies}
                         /> :
                     strategy.algorithmType === "SciPy Clustering" &&
-                        strategy.representationInformationTypes.includes(RepresentationInfoType.CLASS_VECTORIZATION_INFO) ?
+                        strategy.strategyTypes.includes(StrategyType.CLASS_VECTORIZATION_STRATEGY) ?
                         <SimilarityMatrixSciPyClassVectorizationForm
                             codebaseName={codebaseName}
                             strategy={strategy}
                             setUpdateStrategies={setUpdateStrategies}
                         /> :
                     strategy.algorithmType === "SciPy Clustering" &&
-                        strategy.representationInformationTypes.includes(RepresentationInfoType.FUNCTIONALITY_VECTORIZATION_CALLGRAPH_INFO) ?
+                        strategy.strategyTypes.includes(StrategyType.FUNCTIONALITY_VECTORIZATION_CALLGRAPH_STRATEGY) ?
                         <SimilarityMatrixSciPyFunctionalityVectorizationCallGraphForm
                             codebaseName={codebaseName}
                             strategy={strategy}
                             setUpdateStrategies={setUpdateStrategies}
                         /> :
                     strategy.algorithmType === "SciPy Clustering" &&
-                        strategy.representationInformationTypes.includes(RepresentationInfoType.FUNCTIONALITY_VECTORIZATION_ACCESSES_INFO) ?
+                        strategy.strategyTypes.includes(StrategyType.FUNCTIONALITY_VECTORIZATION_ACCESSES_STRATEGY) ?
                         <SimilarityMatrixScipyFunctionalityVectorizationSequenceOfAccessesForm
                             codebaseName={codebaseName}
                             strategy={strategy}

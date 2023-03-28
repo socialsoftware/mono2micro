@@ -1,6 +1,6 @@
-package pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo;
+package pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInformation;
 
-public enum RepresentationInfoParameters {
+public enum RepresentationInformationParameters {
     PROFILE_PARAMETER("PROFILE_PARAMETER"),
     TRACES_MAX_LIMIT_PARAMETER("TRACES_MAX_LIMIT_PARAMETER"),
     TRACE_TYPE_PARAMETER("TRACE_TYPE_PARAMETER"),
@@ -8,7 +8,7 @@ public enum RepresentationInfoParameters {
 
     private final String text;
 
-    RepresentationInfoParameters(final String text) { this.text = text; }
+    RepresentationInformationParameters(final String text) { this.text = text; }
 
     @Override
     public String toString() { return text; }

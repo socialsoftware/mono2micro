@@ -8,7 +8,7 @@ import Button from "react-bootstrap/Button";
 import HttpStatus from "http-status-codes";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
-import {RepresentationType} from "../../../models/representation/Representation";
+import {RepresentationFile} from "../../../models/representation/Representation";
 import {TraceType, RepresentationInfoParameters} from "../../../type-declarations/types";
 import {SIMILARITY_SCIPY_WEIGHTS} from "../../../models/similarity/SimilaritySciPyWeights";
 import {WeightsFactory} from "../../../models/weights/WeightsFactory";
@@ -28,7 +28,7 @@ export const SimilarityMatrixSciPyForm = ({codebaseName, strategy, setUpdateStra
     // Executes when it is informed that there is information to be updated
     useEffect(() => {
         loadProfiles();
-        setWeightsList(WeightsFactory.getWeightListByRepresentationInfoType(strategy.representationInformationTypes));
+        setWeightsList(WeightsFactory.getWeightListByStrategyType(strategy.strategyTypes));
     }, [])
 
     function handleSubmit(event) {
@@ -62,7 +62,7 @@ export const SimilarityMatrixSciPyForm = ({codebaseName, strategy, setUpdateStra
     }
 
     function loadProfiles() {
-        service.getCodebaseRepresentation(codebaseName, RepresentationType.ACCESSES)
+        service.getCodebaseRepresentation(codebaseName, RepresentationFile.ACCESSES)
             .then((response) => setProfiles(response.profiles));
     }
 

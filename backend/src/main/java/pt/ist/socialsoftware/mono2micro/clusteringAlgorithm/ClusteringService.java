@@ -6,7 +6,7 @@ import java.util.List;
 
 @Service
 public class ClusteringService {
-    public List<String> getSupportedRepresentationInfoTypes(String algorithmType) {
-        return ClusteringFactory.getClustering(algorithmType).getSupportedRepresentationInfoTypes();
+    public List<String> getAlgorithmSupportedStrategyTypes(String algorithmType) {
+        return ClusteringFactory.getClustering(algorithmType).getAlgorithmSupportedStrategyTypes();
     }
 }

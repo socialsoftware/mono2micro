@@ -4,7 +4,7 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.AccessesInfo;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInformation.AccessesInformation;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
@@ -21,7 +21,7 @@ public class FunctionalityComplexityMetric extends FunctionalityMetric {
     }
 
     @Override
-    public Double calculateMetric(AccessesInfo accessesInfo, Decomposition decomposition, Functionality functionality) {
+    public Double calculateMetric(AccessesInformation accessesInformation, Decomposition decomposition, Functionality functionality) {
         double value;
 
         // Since metric calculation is always done during the creation of the functionalities, we can use createLocalTransactionGraph,
@@ -31,7 +31,7 @@ public class FunctionalityComplexityMetric extends FunctionalityMetric {
         Map<String, Set<Cluster>> functionalityClusters = Utils.getFunctionalitiesClusters(
                 decomposition.getEntityIDToClusterName(),
                 decomposition.getClusters(),
-                accessesInfo.getFunctionalities().values());
+                accessesInformation.getFunctionalities().values());
 
         Set<LocalTransaction> allLocalTransactions = localTransactionsGraph.vertexSet();
 
@@ -63,7 +63,7 @@ public class FunctionalityComplexityMetric extends FunctionalityMetric {
                                     functionality.getName(),
                                     entityID,
                                     mode,
-                                    accessesInfo.getFunctionalities().values(),
+                                    accessesInformation.getFunctionalities().values(),
                                     functionalityClusters
                             );
 

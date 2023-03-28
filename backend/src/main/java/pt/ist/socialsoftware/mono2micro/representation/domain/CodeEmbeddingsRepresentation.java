@@ -7,7 +7,7 @@ import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
 @Document("representation")
 public class CodeEmbeddingsRepresentation extends Representation {
 
-    public static final String CODE_EMBEDDINGS = "CodeEmbeddings";
+    public static final String CODE_EMBEDDINGS = "Code Embeddings";
 
     public CodeEmbeddingsRepresentation() {}
 

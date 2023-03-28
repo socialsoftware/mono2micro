@@ -11,7 +11,7 @@ import {Modal, ModalBody, ModalFooter, ModalTitle} from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
-import {RepresentationType} from "../../../models/representation/Representation";
+import {RepresentationFile} from "../../../models/representation/Representation";
 import {TraceType} from "../../../type-declarations/types";
 import {RECOMMEND_MATRIX_SCIPY} from "../../../models/recommendation/RecommendMatrixSciPy";
 import {WeightsFactory} from "../../../models/weights/WeightsFactory";
@@ -81,11 +81,11 @@ export const RecommendMatrixSciPy = ({codebaseName, strategy, setUpdateStrategie
     // Executes when it is informed that there is information to be updated
     useEffect(() => {
         loadProfiles();
-        setWeightsList(WeightsFactory.getWeightListByRepresentationInfoType(strategy.representationInformationTypes));
+        setWeightsList(WeightsFactory.getWeightListByStrategyType(strategy.strategyTypes));
     }, [])
 
     function loadProfiles() {
-        service.getCodebaseRepresentation(codebaseName, RepresentationType.ACCESSES)
+        service.getCodebaseRepresentation(codebaseName, RepresentationFile.ACCESSES)
             .then((response) => setProfiles(response.profiles));
     }
 

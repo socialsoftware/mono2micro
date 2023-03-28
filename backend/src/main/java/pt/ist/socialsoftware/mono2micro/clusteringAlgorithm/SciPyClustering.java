@@ -20,12 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.AccessesInfo.ACCESSES_INFO;
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.ClassVectorizationInfo.CLASS_VECTORIZATION_INFO;
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.EntityVectorizationInfo.ENTITY_VECTORIZATION_INFO;
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.FunctionalityVectorizationByCallGraphInfo.FUNCTIONALITY_VECTORIZATION_CALLGRAPH_INFO;
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.FunctionalityVectorizationBySequenceOfAccessesInfo.FUNCTIONALITY_VECTORIZATION_ACCESSES_INFO;
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.RepositoryInfo.REPOSITORY_INFO;
+import static pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy.*;
 import static pt.ist.socialsoftware.mono2micro.utils.Constants.SCRIPTS_ADDRESS;
 
 public class SciPyClustering extends Clustering {
@@ -44,14 +39,14 @@ public class SciPyClustering extends Clustering {
     }
 
     @Override
-    public List<String> getSupportedRepresentationInfoTypes() {
+    public List<String> getAlgorithmSupportedStrategyTypes() {
         return new ArrayList<>(Arrays.asList(
-                ACCESSES_INFO,
-                REPOSITORY_INFO,
-                CLASS_VECTORIZATION_INFO,
-                ENTITY_VECTORIZATION_INFO,
-                FUNCTIONALITY_VECTORIZATION_CALLGRAPH_INFO,
-                FUNCTIONALITY_VECTORIZATION_ACCESSES_INFO));
+                ACCESSES_STRATEGY,
+                REPOSITORY_STRATEGY,
+                CLASS_VECTORIZATION_STRATEGY,
+                ENTITY_VECTORIZATION_STRATEGY,
+                FUNCTIONALITY_VECTORIZATION_CALLGRAPH_STRATEGY,
+                FUNCTIONALITY_VECTORIZATION_ACCESSES_STRATEGY));
     }
 
     @Override

@@ -3,7 +3,7 @@ package pt.ist.socialsoftware.mono2micro.metrics.decompositionMetrics;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.cluster.Partition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.AccessesInfo;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInformation.AccessesInformation;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.AccessesInfo.ACCESSES_INFO;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.Representation.ACCESSES_TYPE;
 
 public class ComplexityMetric extends DecompositionMetric {
     public static final String COMPLEXITY = "Complexity";
@@ -28,7 +28,7 @@ public class ComplexityMetric extends DecompositionMetric {
     }
 
     public static Double calculateMetric(Decomposition decomposition, Map<String, List<Functionality>> clustersFunctionalities) {
-        AccessesInfo accessesInfo = (AccessesInfo) decomposition.getRepresentationInformationByType(ACCESSES_INFO);
+        AccessesInformation accessesInformation = (AccessesInformation) decomposition.getRepresentationInformationByType(ACCESSES_TYPE);
         double complexity;
 
         // Set cluster complexity
@@ -53,12 +53,12 @@ public class ComplexityMetric extends DecompositionMetric {
         // Return overall complexity
         complexity = 0;
 
-        for (Functionality functionality : accessesInfo.getFunctionalities().values()) {
+        for (Functionality functionality : accessesInformation.getFunctionalities().values()) {
             Double complexityMetric = (Double) functionality.getMetric(COMPLEXITY);
             complexity += complexityMetric;
         }
 
-        return BigDecimal.valueOf(complexity / accessesInfo.getFunctionalities().size())
+        return BigDecimal.valueOf(complexity / accessesInformation.getFunctionalities().size())
                 .setScale(3, RoundingMode.HALF_UP)
                 .doubleValue();
     }

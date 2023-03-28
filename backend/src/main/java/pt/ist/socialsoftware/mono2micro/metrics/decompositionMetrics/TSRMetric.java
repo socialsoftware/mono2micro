@@ -2,7 +2,7 @@ package pt.ist.socialsoftware.mono2micro.metrics.decompositionMetrics;
 
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.RepositoryInfo;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInformation.RepositoryInformation;
 import pt.ist.socialsoftware.mono2micro.element.Element;
 
 import java.math.BigDecimal;
@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.RepositoryInfo.REPOSITORY_INFO;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.Representation.REPOSITORY_TYPE;
 
 public class TSRMetric extends DecompositionMetric {
     public static final String TSR = "TSR"; //Team Size Reduction Ratio
@@ -23,14 +23,14 @@ public class TSRMetric extends DecompositionMetric {
 
     @Override
     public Double calculateMetric(Decomposition decomposition) {
-        RepositoryInfo repositoryInfo = (RepositoryInfo) decomposition.getRepresentationInformationByType(REPOSITORY_INFO);
+        RepositoryInformation repositoryInformation = (RepositoryInformation) decomposition.getRepresentationInformationByType(REPOSITORY_TYPE);
         double authorsPerClusterSum = 0;
         double cpm;
 
         for (Cluster cluster : decomposition.getClusters().values()) {
             Set<String> contributorsInThisCluster = new HashSet<>();
             for (Element element : cluster.getElements()) {
-                List<String> authorsFromId = repositoryInfo.getAuthorsFromId(element.getId());
+                List<String> authorsFromId = repositoryInformation.getAuthorsFromId(element.getId());
                 if (authorsFromId != null)
                     contributorsInThisCluster.addAll(authorsFromId);
             }
@@ -38,7 +38,7 @@ public class TSRMetric extends DecompositionMetric {
         }
         cpm = authorsPerClusterSum / decomposition.getClusters().size();
 
-        return BigDecimal.valueOf(cpm / repositoryInfo.getTotalAuthors())
+        return BigDecimal.valueOf(cpm / repositoryInformation.getTotalAuthors())
                 .setScale(3, RoundingMode.HALF_UP)
                 .doubleValue();
     }

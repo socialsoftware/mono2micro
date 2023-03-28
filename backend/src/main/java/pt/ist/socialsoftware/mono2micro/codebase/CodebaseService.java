@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.codebase.repository.CodebaseRepository;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.RepresentationInfoType;
 import pt.ist.socialsoftware.mono2micro.representation.domain.Representation;
 import pt.ist.socialsoftware.mono2micro.representation.dto.RepresentationDto;
 import pt.ist.socialsoftware.mono2micro.representation.dto.RepresentationDtoFactory;
@@ -13,8 +12,11 @@ import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.strategy.service.StrategyService;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class CodebaseService {
@@ -34,13 +36,13 @@ public class CodebaseService {
         codebaseRepository.save(new Codebase(codebaseName));
     }
 
-    public Map<String, List<String>> getRepresentationInfoTypes() {
-        return RepresentationInfoType.representationInfoTypeToFiles;
+    public Map<String, List<String>> getRepresentationGroups() {
+        return Representation.representationGroupToRepresentations;
     }
 
-    public List<String> getCodebaseRepresentationInfoTypes(String codebaseName) {
+    public List<String> getCodebaseRepresentationGroups(String codebaseName) {
         Codebase codebase = codebaseRepository.findByName(codebaseName);
-        return codebase.getRepresentationInfoTypes();
+        return codebase.getRepresentationGroups();
     }
 
     public List<Codebase> getCodebases() {
@@ -61,6 +63,20 @@ public class CodebaseService {
         return codebase.getStrategies();
     }
 
+    public List<String> getAllowableCodebaseStrategyTypes(String codebaseName) {
+        Codebase codebase = codebaseRepository.findByName(codebaseName);
+        Set<String> representationTypes = codebase.getRepresentations().stream().map(Representation::getType).collect(Collectors.toSet());
+
+        List<String> result = new ArrayList<>();
+        for (Map.Entry<String, List<String>> entry: Strategy.strategiesToRepresentations.entrySet()) {
+            if (representationTypes.containsAll(entry.getValue())) {
+                result.add(entry.getKey());
+            }
+        }
+
+        return result;
+    }
+
     public void deleteCodebase(String codebaseName) {
         Codebase codebase = codebaseRepository.findByName(codebaseName);
         for (Strategy strategy: codebase.getStrategies())
@@ -69,4 +85,5 @@ public class CodebaseService {
             representationService.deleteRepresentation(representation.getName());
         codebaseRepository.deleteById(codebaseName);
     }
+
 }

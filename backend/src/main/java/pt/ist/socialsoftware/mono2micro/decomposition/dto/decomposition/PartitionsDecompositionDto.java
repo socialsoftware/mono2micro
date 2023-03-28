@@ -1,7 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition;
 
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.PartitionsDecomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.representationInfoDto.RepresentationInfoDtoFactory;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.representationInfoDto.RepresentationInfoDtoFactory;
 
 public class PartitionsDecompositionDto extends DecompositionDto {
     private boolean outdated;

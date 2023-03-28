@@ -1,7 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.strategy.dto;
 
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.RepresentationInfo;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.RepresentationInfoFactory;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInformation.RepresentationInformation;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInformation.RepresentationInformationFactory;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
 import java.util.ArrayList;
@@ -11,19 +11,18 @@ public class StrategyDto {
     String codebaseName;
     String name;
     String algorithmType;
-    List<String> representationInformationTypes;
+    List<String> strategyTypes;
     List<String> parameterTypes;
 
     public StrategyDto(Strategy strategy) {
         this.codebaseName = strategy.getCodebase().getName();
         this.name = strategy.getName();
         this.algorithmType = strategy.getAlgorithmType();
-        this.representationInformationTypes = strategy.getRepresentationInfoTypes();
+        this.strategyTypes = strategy.getStrategyTypes();
         this.parameterTypes = new ArrayList<>();
 
-        for (String representationType : this.representationInformationTypes) {
-            RepresentationInfo representationInfo = RepresentationInfoFactory.getRepresentationInfoFromType(representationType);
-            for (String parameterType : representationInfo.getParameters()) {
+        for (RepresentationInformation representationInformation : RepresentationInformationFactory.getStrategyRepresentationInformations(strategy)) {
+            for (String parameterType : representationInformation.getParameters()) {
                 if (!this.parameterTypes.contains(parameterType)) {
                     this.parameterTypes.add(parameterType);
                 }
@@ -55,12 +54,12 @@ public class StrategyDto {
         this.algorithmType = algorithmType;
     }
 
-    public List<String> getRepresentationInformationTypes() {
-        return representationInformationTypes;
+    public List<String> getStrategyTypes() {
+        return strategyTypes;
     }
 
-    public void setRepresentationInformationTypes(List<String> representationInformationTypes) {
-        this.representationInformationTypes = representationInformationTypes;
+    public void setStrategyTypes(List<String> strategyTypes) {
+        this.strategyTypes = strategyTypes;
     }
 
     public List<String> getParameterTypes() {

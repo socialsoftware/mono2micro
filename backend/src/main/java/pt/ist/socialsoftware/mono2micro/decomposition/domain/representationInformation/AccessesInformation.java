@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo;
+package pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInformation;
 
 import org.apache.commons.io.IOUtils;
 import org.jgrapht.graph.DefaultEdge;
@@ -33,13 +33,13 @@ import java.util.*;
 
 import static org.jgrapht.Graphs.successorListOf;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.Representation.ACCESSES_TYPE;
 
-public class AccessesInfo extends RepresentationInfo {
-    public static final String ACCESSES_INFO = "Accesses Based";
+public class AccessesInformation extends RepresentationInformation {
     @DBRef(lazy = true)
     private Map<String, Functionality> functionalities = new HashMap<>(); // <functionalityName, Functionality>
 
-    public AccessesInfo() {}
+    public AccessesInformation() {}
 
     @Override
     public void setup(Decomposition decomposition) throws Exception {
@@ -52,13 +52,13 @@ public class AccessesInfo extends RepresentationInfo {
     public void snapshot(Decomposition snapshotDecomposition, Decomposition decomposition) throws IOException {
         this.decompositionName = snapshotDecomposition.getName();
         snapshotDecomposition.addRepresentationInformation(this);
-        AccessesInfo accessesInfo = (AccessesInfo) decomposition.getRepresentationInformationByType(ACCESSES_INFO);
-        copyFunctionalities(accessesInfo);
+        AccessesInformation accessesInformation = (AccessesInformation) decomposition.getRepresentationInformationByType(ACCESSES_TYPE);
+        copyFunctionalities(accessesInformation);
     }
 
     @Override
     public String getType() {
-        return ACCESSES_INFO;
+        return ACCESSES_TYPE;
     }
 
     @Override
@@ -78,9 +78,9 @@ public class AccessesInfo extends RepresentationInfo {
     @Override
     public List<String> getParameters() {
         return new ArrayList<>(Arrays.asList(
-            RepresentationInfoParameters.PROFILE_PARAMETER.toString(),
-            RepresentationInfoParameters.TRACES_MAX_LIMIT_PARAMETER.toString(),
-            RepresentationInfoParameters.TRACE_TYPE_PARAMETER.toString()));
+            RepresentationInformationParameters.PROFILE_PARAMETER.toString(),
+            RepresentationInformationParameters.TRACES_MAX_LIMIT_PARAMETER.toString(),
+            RepresentationInformationParameters.TRACE_TYPE_PARAMETER.toString()));
     }
 
     @Override
@@ -292,9 +292,9 @@ public class AccessesInfo extends RepresentationInfo {
         return searchItems.toString();
     }
 
-    public void copyFunctionalities(AccessesInfo accessesInfo) throws IOException {
+    public void copyFunctionalities(AccessesInformation accessesInformation) throws IOException {
         FunctionalityService functionalityService = ContextManager.get().getBean(FunctionalityService.class);
-        for (Functionality functionality : accessesInfo.getFunctionalities().values()) {
+        for (Functionality functionality : accessesInformation.getFunctionalities().values()) {
             Functionality snapshotFunctionality = new Functionality(getDecompositionName(), functionality);
             snapshotFunctionality.setFunctionalityRedesignNameUsedForMetrics(functionality.getFunctionalityRedesignNameUsedForMetrics());
 

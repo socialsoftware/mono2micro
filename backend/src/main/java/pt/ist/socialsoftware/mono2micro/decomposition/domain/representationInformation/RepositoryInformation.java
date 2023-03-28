@@ -1,4 +1,4 @@
-package pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo;
+package pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInformation;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,15 +23,15 @@ import java.util.*;
 
 import static pt.ist.socialsoftware.mono2micro.representation.domain.AuthorRepresentation.AUTHOR;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.CommitRepresentation.COMMIT;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.Representation.REPOSITORY_TYPE;
 
-public class RepositoryInfo extends RepresentationInfo {
-    public static final String REPOSITORY_INFO = "Repository Based";
+public class RepositoryInformation extends RepresentationInformation {
     private Map<Short, ArrayList<String>> authors = new HashMap<>();
     private Map<Short, Map<Short, Integer>> commitsInCommon = new HashMap<>();
     private Map<Short, Integer> totalCommits = new HashMap<>();
     private Integer totalAuthors;
 
-    public RepositoryInfo() {}
+    public RepositoryInformation() {}
 
     @Override
     public void setup(Decomposition decomposition) throws IOException {
@@ -44,16 +44,16 @@ public class RepositoryInfo extends RepresentationInfo {
     public void snapshot(Decomposition snapshotDecomposition, Decomposition decomposition) {
         this.decompositionName = snapshotDecomposition.getName();
         snapshotDecomposition.addRepresentationInformation(this);
-        RepositoryInfo repositoryInfo = (RepositoryInfo) decomposition.getRepresentationInformationByType(REPOSITORY_INFO);
-        this.authors = repositoryInfo.getAuthors();
-        this.commitsInCommon = repositoryInfo.getCommitsInCommon();
-        this.totalCommits = repositoryInfo.getTotalCommits();
-        this.totalAuthors = repositoryInfo.getTotalAuthors();
+        RepositoryInformation repositoryInformation = (RepositoryInformation) decomposition.getRepresentationInformationByType(REPOSITORY_TYPE);
+        this.authors = repositoryInformation.getAuthors();
+        this.commitsInCommon = repositoryInformation.getCommitsInCommon();
+        this.totalCommits = repositoryInformation.getTotalCommits();
+        this.totalAuthors = repositoryInformation.getTotalAuthors();
     }
 
     @Override
     public String getType() {
-        return REPOSITORY_INFO;
+        return REPOSITORY_TYPE;
     }
 
     @Override
@@ -67,9 +67,9 @@ public class RepositoryInfo extends RepresentationInfo {
     @Override
     public List<String> getParameters() {
         return new ArrayList<>(Arrays.asList(
-                RepresentationInfoParameters.PROFILE_PARAMETER.toString(),
-                RepresentationInfoParameters.TRACES_MAX_LIMIT_PARAMETER.toString(),
-                RepresentationInfoParameters.TRACE_TYPE_PARAMETER.toString()));
+                RepresentationInformationParameters.PROFILE_PARAMETER.toString(),
+                RepresentationInformationParameters.TRACES_MAX_LIMIT_PARAMETER.toString(),
+                RepresentationInformationParameters.TRACE_TYPE_PARAMETER.toString()));
     }
 
     @Override
