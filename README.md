@@ -16,7 +16,7 @@ Currently implemented for Spring-Boot monoliths that use FenixFramework and Spri
 
 ## 3. Fast API Server (Scripts)
 
- - The Fast API Server is responsible for the dendrogram operations, and also to expose the Code2Vec model.
+ - The Fast API Server is responsible for the clustering operations, and also to expose the Code2Vec model.
 
 ## 4. User Inteface (Frontend)
 
@@ -97,14 +97,18 @@ Currently implemented for Spring-Boot monoliths that use FenixFramework and Spri
 
 The web service can be accessed in <http://localhost:3000> and the mongoDB contents in <http://localhost:8081>
 
+## Experimentation Data
+- The monolith codebases used by the spoon-callgraph, commit-collection and code2vec Collectors are available [here](https://drive.google.com/drive/folders/1QiAPyM4ezhihoqJdSEJNmwfNDNzzsYv1?usp=share_link).
+- The monolith representations, Access and Repository Based, for some codebases are available [here](https://drive.google.com/drive/folders/1X1RHtWwLlJvc-i6q1fmXK_xrfD9OjuRb?usp=share_link).
+- The monolith representations, Code Embeddings generated using code2vec, for some codebased are available [here](https://drive.google.com/drive/folders/1R4NU3QcTboAPuvMqp-_AMRmfftAmGgXt?usp=share_link).
+
+## Evaluation package
+Looking for a reproducible evaluation package? It's available [here](https://github.com/socialsoftware/mono2micro/tree/master/data/commit).
+
 ## Publications Data
 - [ECSA2019](https://doi.org/10.1007/978-3-030-29983-5_3): [Collector Tool](https://github.com/socialsoftware/mono2micro/tree/master/collectors/java-callgraph)
 - [ICSA2020](https://doi.org/10.1109/ICSA47634.2020.00024): [Replication Package](https://github.com/socialsoftware/mono2micro/tree/master/data/icsa2020)
 - [ECSA2020](https://doi.org/10.1007/978-3-030-58923-3_3): [Evaluation Data](https://github.com/socialsoftware/mono2micro/tree/master/data/ecsa2020/evaluation)
-
-## Evaluation package
-
-Looking for a reproducible evaluation package? It's available [here](https://github.com/socialsoftware/mono2micro/tree/master/data/commit).
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/socialsoftware/mono2micro/blob/master/LICENSE) file for details.
