@@ -416,10 +416,34 @@ public class SpringDataJPACollector extends SpoonCollector {
             public <T> void visitCtConstructorCall(CtConstructorCall<T> ctConstructorCall) {
                 super.visitCtConstructorCall(ctConstructorCall);
                 visitCtAbstractInvocation(ctConstructorCall);
+                registerConstructorCallAccess(ctConstructorCall);
             }
         });
 
         methodStack.pop();
+    }
+
+    /**
+     * Assume that all created entities (call to 'new') will be saved later on.
+     * Storing the access also at constructor call time catches cases of entities which are subclasses,
+     * but whose subtype reference is lost or not considered later on,
+     * leaving entities completely out of the traces in the worst case.
+     *
+     * @param ctConstructorCall A constructor call (new Object())
+     */
+    private void registerConstructorCallAccess(CtConstructorCall<?> ctConstructorCall) {
+        String createdTypeName = ctConstructorCall.getExecutable().getType().getSimpleName();
+        if (allDomainEntities.contains(createdTypeName)) {
+            addEntitiesSequenceAccess(createdTypeName, "W");
+        } else {
+            // Might be a collection (List<Entity>, Map<String, Entity>, ...)
+            for (CtTypeReference<?> typeArguments : ctConstructorCall.getType().getActualTypeArguments()) {
+                if (allDomainEntities.contains(typeArguments.getSimpleName())) {
+                    addEntitiesSequenceAccess(typeArguments.getSimpleName(), "W");
+                    break;
+                }
+            }
+        }
     }
 
     private void analyzeCallAndRegisterAccess(CtExecutableReference executable, CtType repositoryCtType) throws UnkownMethodException {
