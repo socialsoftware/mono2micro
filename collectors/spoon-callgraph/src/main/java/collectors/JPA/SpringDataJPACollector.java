@@ -60,10 +60,11 @@ public class SpringDataJPACollector extends SpoonCollector {
         }
 
         // instantiate property scanners
-        String list = "collectors.JPA.property_scanner.ReturnPropertyScanner;collectors.JPA.property_scanner.ReturnPropertyScanner"; //FIXME: test list
-        String[] pScanners = list.split(";");
+        String list = "collectors.JPA.property_scanner.ReturnPropertyScanner"; //FIXME: test list
+        String[] pScanners = new String[0];
         PropertyScanner scannerBuffer;
 
+        if(list.length() > 0) pScanners = list.split(";");
         propertyScanners = new ArrayList<PropertyScanner>();
 
         for (String scanner : pScanners) {
@@ -78,7 +79,6 @@ public class SpringDataJPACollector extends SpoonCollector {
             }
 
         }
-
 
         System.out.println("Generating AST...");
         launcher.buildModel();
