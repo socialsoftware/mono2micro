@@ -2,6 +2,9 @@ package collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.core.appender.routing.IdlePurgePolicy;
+import org.eclipse.jdt.internal.compiler.SourceElementNotifier;
+
 import spoon.DecompiledResource;
 import spoon.Launcher;
 import spoon.MavenLauncher;
@@ -21,6 +24,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
+import java.util.Map.Entry;
+
+import javax.naming.Context;
 
 public abstract class SpoonCollector {
     private int controllerCount;
@@ -220,7 +226,8 @@ public abstract class SpoonCollector {
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.writerWithDefaultPrettyPrinter().writeValue(new FileOutputStream(filepath+fileName + ".json"), controllerSequences);
-            mapper.writerWithDefaultPrettyPrinter().writeValue(new FileOutputStream(filepath+fileName+"_entityToID.json"), entitiesMap);
+            mapper.writerWithDefaultPrettyPrinter().writeValue(new FileOutputStream(filepath+fileName + "_linear.json"), getFlattenedControllerSequences(controllerSequences));
+            mapper.writerWithDefaultPrettyPrinter().writeValue(new FileOutputStream(filepath+fileName + "_entityToID.json"), entitiesMap);
 
             LinkedHashMap<Integer, String> idToEntityMap = new LinkedHashMap<>();
             entitiesMap.forEach((s, integer) -> idToEntityMap.put(integer, s));
@@ -229,6 +236,49 @@ public abstract class SpoonCollector {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private HashMap<String, Controller> getFlattenedControllerSequences(HashMap<String, Controller> controllerSequences) {
+        
+        for (Controller controller : controllerSequences.values()) {
+            
+            Map<Integer, Trace> flatTraces = new HashMap<Integer, Trace>();
+
+            // create map of traces, ordered by id (via a list)
+            for(Trace trace: controller.getT()) {
+                flatTraces.put(trace.getId(), trace);
+            }
+
+            List<Integer> idList = new ArrayList<Integer>(flatTraces.keySet());
+            Collections.sort(idList);
+            
+            for (Integer i = idList.size()-1; i >= 0; i--) {
+                
+                Integer traceId = idList.get(i);
+                
+                List<Access> flatSequence = new ArrayList<Access>();
+
+                for (Access access : flatTraces.get(traceId).getA()) {
+                    if (access instanceof Label) {
+                        // skip - not supported by flat traces
+                    } else if(access instanceof ContextReference) {
+                        // add flattened context sequence
+                        flatSequence.addAll(flatTraces.get(access.getEntityID()).getA());
+                    } else {
+                        // add access
+                        flatSequence.add(access);
+                    }
+                }
+
+                flatTraces.put(traceId, new Trace(traceId, flatSequence)); // substitute the trace by its flat equivalent
+            }
+
+            List<Trace> newTraces = new ArrayList<Trace>();
+            newTraces.add(flatTraces.get(0)); // full flat trace of the controller can be found in indice 0
+            controller.setT(newTraces);
+        }
+
+        return controllerSequences;
     }
 
     protected List<CtMethod> getExplicitImplementationsOfAbstractMethod(CtMethod abstractMethod) throws UnkownMethodException {
