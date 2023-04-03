@@ -7,11 +7,13 @@ import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy;
 import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.SimilarityMatrixAccessesAndRepository;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.Weights;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDto;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityMatrixSciPyDto;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
@@ -64,7 +66,18 @@ public class SimilarityScipyAccessesAndRepository extends SimilarityScipy {
                 similarityDto.getProfile().equals(this.profile) &&
                 similarityDto.getTracesMaxLimit() == this.tracesMaxLimit &&
                 similarityDto.getTraceType() == this.traceType &&
-                similarityDto.getLinkageType().equals(this.linkageType);
+                similarityDto.getLinkageType().equals(this.linkageType) &&
+                equalWeights(similarityDto.getWeightsList());
+    }
+
+    private boolean equalWeights(List<Weights> weightsList) {
+        for (int i=0; i < weightsList.size(); i++) {
+            if (!weightsList.get(i).equals(this.getSimilarityMatrix().getWeightsList().get(i)) ) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public String getProfile() {

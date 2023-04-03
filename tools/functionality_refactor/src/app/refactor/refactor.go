@@ -134,7 +134,12 @@ func (svc *DefaultHandler) extractValidFunctionalities(
 	var wg sync.WaitGroup
 	mapMutex := sync.RWMutex{}
 
+	svc.logger.Log("validFunctionalities", len(validFunctionalities))
+
+	svc.logger.Log("start extractValidFunctionalities", 0)
+
 	for _, functionality := range decomposition.Functionalities {
+		svc.logger.Log("functionality name", functionality.Name)
 		if !request.ShouldRefactorFunctionality(functionality) {
 			continue
 		}

@@ -179,11 +179,7 @@ public class RecommendMatrixSciPy extends Recommendation {
     }
 
     @Override
-    public void createDecompositions(
-            List<String> decompositionNames
-    )
-            throws Exception
-    {
+    public void createDecompositions(List<String> decompositionNames) throws Exception {
         GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
         DecompositionService decompositionService = ContextManager.get().getBean(DecompositionService.class);
 
@@ -214,6 +210,7 @@ public class RecommendMatrixSciPy extends Recommendation {
             // Get or create the decomposition's strategy
             SimilarityScipyAccessesAndRepository similarity = (SimilarityScipyAccessesAndRepository) similarities.stream().filter(possibleSimilarity ->
                     possibleSimilarity.equalsDto(similarityInformation)).findFirst().orElse(null);
+
             if (similarity == null) {
                 similarity = (SimilarityScipyAccessesAndRepository) SimilarityFactory.getSimilarity(getStrategy(), similarityInformation);
                 similarity.setSimilarityMatrix(new SimilarityMatrixAccessesAndRepository(similarity.getName() + "_similarityMatrix", localWeightsList));

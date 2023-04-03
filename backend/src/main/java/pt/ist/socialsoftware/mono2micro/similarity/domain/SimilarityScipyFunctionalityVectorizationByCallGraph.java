@@ -2,10 +2,13 @@ package pt.ist.socialsoftware.mono2micro.similarity.domain;
 
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.SimilarityMatrixFunctionalityVectorizationByCallGraph;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.Weights;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDto;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityMatrixSciPyDto;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityMatrixSciPyFunctionalityVectorizationByCallGraphDto;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
+
+import java.util.List;
 
 public class SimilarityScipyFunctionalityVectorizationByCallGraph extends SimilarityScipy {
 
@@ -46,7 +49,18 @@ public class SimilarityScipyFunctionalityVectorizationByCallGraph extends Simila
 
         SimilarityMatrixSciPyDto similarityDto = (SimilarityMatrixSciPyDto) dto;
         return similarityDto.getStrategyName().equals(this.getStrategy().getName()) &&
-                similarityDto.getLinkageType().equals(this.linkageType);
+                similarityDto.getLinkageType().equals(this.linkageType) &&
+                equalWeights(similarityDto.getWeightsList());
+    }
+
+    private boolean equalWeights(List<Weights> weightsList) {
+        for (int i=0; i < weightsList.size(); i++) {
+            if (!weightsList.get(i).equals(this.getSimilarityMatrix().getWeightsList().get(i)) ) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override
