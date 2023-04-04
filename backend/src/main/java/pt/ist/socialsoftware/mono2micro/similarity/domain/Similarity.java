@@ -8,17 +8,26 @@ import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDto;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class Similarity {
     @Id
-    private String name;
+    protected String name;
     @DBRef
     private Strategy strategy;
     @DBRef(lazy = true)
     private List<Decomposition> decompositions;
+
+    public Similarity() {}
+    public Similarity(Strategy strategy, String name) {
+        this.strategy = strategy;
+        strategy.addSimilarity(this);
+        this.name = name;
+        setDecompositions(new ArrayList<>());
+    }
 
     public String getName() {
         return name;

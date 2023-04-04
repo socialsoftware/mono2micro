@@ -5,7 +5,7 @@ import Col from "react-bootstrap/Col";
 import {APIService} from "../../../services/APIService";
 import Button from "react-bootstrap/Button";
 import HttpStatus from "http-status-codes";
-import {SIMILARITY_SCIPY_CLASS_VECTORIZATION} from "../../../models/similarity/SimilarityMatrixClassVectorization";
+import {SIMILARITY_SCIPY_CLASS_VECTORIZATION} from "../../../models/similarity/SimilarityScipyClassVectorization";
 
 
 export const SimilarityMatrixSciPyClassVectorizationForm = ({codebaseName, strategy, setUpdateStrategies}) => {

@@ -141,6 +141,13 @@ public class Strategy {
         return this.similarities.stream().anyMatch(similarity -> similarity.getName().equals(name));
     }
 
+    public Similarity getSimilarityByName(String name) {
+        return this.similarities.stream()
+                .filter(similarity -> similarity.getName().equals(name))
+                .findAny()
+                .orElse(null);
+    }
+
     public List<Recommendation> getRecommendations() {
         return recommendations;
     }

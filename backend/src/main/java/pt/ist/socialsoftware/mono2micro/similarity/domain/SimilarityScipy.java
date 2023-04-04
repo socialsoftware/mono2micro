@@ -9,29 +9,30 @@ import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.dendrogram.Dendrogram;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.SimilarityMatrix;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.Weights;
+import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
 
 @Document("similarity")
 public abstract class SimilarityScipy extends Similarity {
-
     // Used in Clustering Algorithm
     String linkageType;
-    SimilarityMatrix similarityMatrix;
-
+    private List<Weights> weightsList;
     // Dendrogram created in the Python services
     Dendrogram dendrogram;
 
     public SimilarityScipy() {}
 
-    public SimilarityScipy(String linkageType) {
+    public SimilarityScipy(Strategy strategy, String name, String linkageType, List<Weights> weightsList) {
+        super(strategy, name);
         this.linkageType = linkageType;
-        setDecompositions(new ArrayList<>());
+        this.weightsList = weightsList;
     }
 
     @Override
@@ -50,31 +51,31 @@ public abstract class SimilarityScipy extends Similarity {
     public void generate() throws Exception {
         // 1 - Generate Matrix
         GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
-        this.similarityMatrix.generate(gridFsService, this);
+        generate(gridFsService, this);
 
         // 2 - Generate Dendrogram
-        this.dendrogram = new Dendrogram(getName(), similarityMatrix.getName(), getLinkageType());
+        this.dendrogram = new Dendrogram(getName(), getName(), getLinkageType());
     }
 
     @Override
     public void removeProperties() {
         GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
-        gridFsService.deleteFile(similarityMatrix.getName());
         gridFsService.deleteFile(dendrogram.getDendrogramName());
         gridFsService.deleteFile(dendrogram.getCopheneticDistanceName());
+    }
+
+    public List<Weights> getWeightsList() {
+        return weightsList;
+    }
+    public void setWeightsList(List<Weights> weightsList) {
+        this.weightsList = weightsList;
     }
 
     public String getLinkageType() {
         return linkageType;
     }
-    public SimilarityMatrix getSimilarityMatrix() {
-        return similarityMatrix;
-    }
     public Dendrogram getDendrogram() {
         return dendrogram;
-    }
-    public void setSimilarityMatrix(SimilarityMatrix similarityMatrix) {
-        this.similarityMatrix = similarityMatrix;
     }
     public void setDendrogram(Dendrogram dendrogram) {
         this.dendrogram = dendrogram;
@@ -83,4 +84,6 @@ public abstract class SimilarityScipy extends Similarity {
     public abstract String getProfile();
     public abstract int getTracesMaxLimit();
     public abstract Constants.TraceType getTraceType();
+
+    public abstract void generate(GridFsService gridFsService, Similarity similarity) throws Exception;
 }

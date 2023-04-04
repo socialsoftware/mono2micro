@@ -8,22 +8,22 @@ import java.util.List;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyClassVectorization.SIMILARITY_SCIPY_CLASS_VECTORIZATION;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyEntityVectorization.SIMILARITY_SCIPY_ENTITY_VECTORIZATION;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses.SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES;
-import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyAccessesAndRepository.SIMILARITY_SCIPY_WEIGHTS;
+import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyAccessesAndRepository.SIMILARITY_SCIPY_ACCESSES_REPOSITORY;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyFunctionalityVectorizationByCallGraph.SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH;
 
 public class SimilarityDtoFactory {
     public static SimilarityDto getSimilarityDto(Similarity similarity) {
         switch (similarity.getType()) {
-            case SIMILARITY_SCIPY_WEIGHTS:
-                return new SimilarityMatrixSciPyDto((SimilarityScipyAccessesAndRepository) similarity);
+            case SIMILARITY_SCIPY_ACCESSES_REPOSITORY:
+                return new SimilarityScipyAccessesAndRepositoryDto((SimilarityScipyAccessesAndRepository) similarity);
             case SIMILARITY_SCIPY_ENTITY_VECTORIZATION:
-                return new SimilarityMatrixSciPyEntityVectorizationDto((SimilarityScipyEntityVectorization) similarity);
+                return new SimilarityScipyEntityVectorizationDto((SimilarityScipyEntityVectorization) similarity);
             case SIMILARITY_SCIPY_CLASS_VECTORIZATION:
-                return new SimilarityMatrixSciPyClassVectorizationDto((SimilarityScipyClassVectorization) similarity);
+                return new SimilarityScipyClassVectorizationDto((SimilarityScipyClassVectorization) similarity);
             case SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH:
-                return new SimilarityMatrixSciPyFunctionalityVectorizationByCallGraphDto((SimilarityScipyFunctionalityVectorizationByCallGraph) similarity);
+                return new SimilarityScipyFunctionalityVectorizationByCallGraphDto((SimilarityScipyFunctionalityVectorizationByCallGraph) similarity);
             case SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES:
-                return new SimilarityMatrixSciPyFunctionalityVectorizationBySequenceOfAccessesDto((SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses) similarity);
+                return new SimilarityScipyFunctionalityVectorizationBySequenceOfAccessesDto((SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses) similarity);
             default:
                 throw new RuntimeException("The type \"" + similarity.getType() + "\" is not a valid similarity type.");
         }

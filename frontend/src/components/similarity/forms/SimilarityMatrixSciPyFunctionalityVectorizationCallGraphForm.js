@@ -6,7 +6,7 @@ import FormControl from "react-bootstrap/FormControl";
 import {APIService} from "../../../services/APIService";
 import Button from "react-bootstrap/Button";
 import HttpStatus from "http-status-codes";
-import {SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH} from "../../../models/similarity/SimilarityMatrixFunctionalityVectorizationByCallGraph";
+import {SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH} from "../../../models/similarity/SimilarityScipyFunctionalityVectorizationByCallGraph";
 import {RepresentationInfoParameters} from "../../../type-declarations/types";
 import {WeightsFactory} from "../../../models/weights/WeightsFactory";
 

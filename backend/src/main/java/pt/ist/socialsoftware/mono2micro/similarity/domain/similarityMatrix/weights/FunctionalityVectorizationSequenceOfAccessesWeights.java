@@ -45,6 +45,18 @@ public class FunctionalityVectorizationSequenceOfAccessesWeights extends Weights
     }
 
     @Override
+    public String getName() {
+        StringBuilder result = new StringBuilder("FUN_SEQ(");
+        result.append("R")
+                .append(Math.round(getWeights()[0]))
+                .append(",")
+                .append('W')
+                .append(Math.round(getWeights()[1]))
+                .append(")");
+        return result.toString();
+    }
+
+    @Override
     public void setWeightsFromArray(float[] weightsArray) {
         this.readMetricWeight = weightsArray[0];
         this.writeMetricWeight = weightsArray[1];

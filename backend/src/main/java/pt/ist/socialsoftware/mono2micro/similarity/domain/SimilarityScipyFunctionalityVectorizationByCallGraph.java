@@ -1,32 +1,51 @@
 package pt.ist.socialsoftware.mono2micro.similarity.domain;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
+import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.SimilarityMatrixFunctionalityVectorizationByCallGraph;
+import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
+import pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddingsRepresentation;
+import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.FunctionalityVectorizationCallGraphWeights;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.Weights;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDto;
-import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityMatrixSciPyDto;
-import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityMatrixSciPyFunctionalityVectorizationByCallGraphDto;
+import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityScipyAccessesAndRepositoryDto;
+import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityScipyFunctionalityVectorizationByCallGraphDto;
+import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
+import pt.ist.socialsoftware.mono2micro.utils.Acumulator;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddingsRepresentation.CODE_EMBEDDINGS;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
+import static pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.FunctionalityVectorizationCallGraphWeights.FUNCTIONALITY_VECTORIZATION_CALLGRAPH_WEIGHTS;
 
 public class SimilarityScipyFunctionalityVectorizationByCallGraph extends SimilarityScipy {
 
     public static final String SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH = "SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH";
 
-    // Used during Similarity Generation
-    private int depth;
+    private static final Integer MIN_DEPTH = 1;
+
+    private int depth = 2;
 
     public SimilarityScipyFunctionalityVectorizationByCallGraph() {}
 
-    public SimilarityScipyFunctionalityVectorizationByCallGraph(SimilarityMatrixSciPyFunctionalityVectorizationByCallGraphDto dto) {
-        super(dto.getLinkageType());
-        this.similarityMatrix = new SimilarityMatrixFunctionalityVectorizationByCallGraph(dto.getWeightsList(), dto.getDepth());
+    public SimilarityScipyFunctionalityVectorizationByCallGraph(Strategy strategy, String name, SimilarityScipyFunctionalityVectorizationByCallGraphDto dto) {
+        super(strategy, name, dto.getLinkageType(), dto.getWeightsList());
         this.depth = dto.getDepth();
     }
 
-    public SimilarityScipyFunctionalityVectorizationByCallGraph(RecommendMatrixSciPy recommendation) {
-        super(recommendation.getLinkageType());
+    public SimilarityScipyFunctionalityVectorizationByCallGraph(Strategy strategy, String name, RecommendMatrixSciPy recommendation) {
+        super(strategy, name, recommendation.getLinkageType(), recommendation.getWeightsList());
     }
 
     public int getDepth() {
@@ -44,10 +63,10 @@ public class SimilarityScipyFunctionalityVectorizationByCallGraph extends Simila
 
     @Override
     public boolean equalsDto(SimilarityDto dto) {
-        if (!(dto instanceof SimilarityMatrixSciPyDto))
+        if (!(dto instanceof SimilarityScipyAccessesAndRepositoryDto))
             return false;
 
-        SimilarityMatrixSciPyDto similarityDto = (SimilarityMatrixSciPyDto) dto;
+        SimilarityScipyAccessesAndRepositoryDto similarityDto = (SimilarityScipyAccessesAndRepositoryDto) dto;
         return similarityDto.getStrategyName().equals(this.getStrategy().getName()) &&
                 similarityDto.getLinkageType().equals(this.linkageType) &&
                 equalWeights(similarityDto.getWeightsList());
@@ -55,7 +74,7 @@ public class SimilarityScipyFunctionalityVectorizationByCallGraph extends Simila
 
     private boolean equalWeights(List<Weights> weightsList) {
         for (int i=0; i < weightsList.size(); i++) {
-            if (!weightsList.get(i).equals(this.getSimilarityMatrix().getWeightsList().get(i)) ) {
+            if (!weightsList.get(i).equals(getWeightsList().get(i)) ) {
                 return false;
             }
         }
@@ -75,4 +94,193 @@ public class SimilarityScipyFunctionalityVectorizationByCallGraph extends Simila
     public Constants.TraceType getTraceType() {
         return Constants.TraceType.ALL;
     }
+
+    public void generate(GridFsService gridFsService, Similarity similarity) throws Exception {
+        JSONObject codeEmbeddings = getCodeEmbeddings(similarity.getStrategy());
+
+        HashMap<String, Object> matrix = new HashMap<>();
+        this.computeMethodCallsFeaturesVectors(matrix, codeEmbeddings);
+
+        IDToEntityRepresentation idToEntity = (IDToEntityRepresentation) similarity.getStrategy().getCodebase().getRepresentationByFileType(ID_TO_ENTITY);
+        AccessesRepresentation accessesInfo = (AccessesRepresentation) similarity.getStrategy().getCodebase().getRepresentationByFileType(ACCESSES);
+        matrix.put("translationFileName", idToEntity.getName());
+        matrix.put("accessesFileName", accessesInfo.getName());
+
+        JSONObject matrixJSON = new JSONObject(matrix);
+
+        gridFsService.saveFile(new ByteArrayInputStream(matrixJSON.toString().getBytes()), getName());
+    }
+
+    private void computeMethodCallsFeaturesVectors(HashMap<String, Object> matrix, JSONObject codeEmbeddings) throws JSONException {
+        List<List<Double>> featuresVectors = new ArrayList<>();
+        List<String> featuresNames = new ArrayList<>();
+        JSONArray packages = codeEmbeddings.getJSONArray("packages");
+
+        for (int i = 0; i < packages.length(); i++) {
+            JSONObject pack = packages.getJSONObject(i);
+            JSONArray classes = pack.optJSONArray("classes");
+
+            for (int j = 0; j < classes.length(); j++) {
+                JSONObject cls = classes.getJSONObject(j);
+                JSONArray methods = cls.optJSONArray("methods");
+                String className = cls.getString("name");
+                String classType = cls.getString("type");
+
+                for (int k = 0; k < methods.length(); k++) {
+                    JSONObject method = methods.getJSONObject(k);
+                    String methodSignature = method.getString("signature");
+
+                    if (method.getString("type").equals("Controller")) {
+
+                        Acumulator acumulator = getMethodCallsVectors(packages, classType, method, this.depth);
+
+                        if (acumulator.getCount() > 0) {
+                            vectorDivision(acumulator.getSum(), acumulator.getCount());
+                        }
+
+                        String[] splitFeatureName = methodSignature.split("\\(")[0].split("\\.");
+                        String featureName = splitFeatureName[splitFeatureName.length - 1];
+                        featuresNames.add(className + "." + featureName);
+                        featuresVectors.add(acumulator.getSum());
+                    }
+                }
+            }
+        }
+
+        matrix.put("elements", featuresNames);
+        matrix.put("labels", featuresNames);
+        matrix.put("matrix", featuresVectors);
+        matrix.put("clusterPrimitiveType", "Functionality");
+    }
+
+    public Acumulator getMethodCallsVectors(
+            JSONArray packages,
+            String classType,
+            JSONObject method,
+            int maxDepth
+    )
+            throws JSONException
+    {
+        float count = 0;
+        ArrayList<Double> vector = new ArrayList<Double>();
+        JSONArray code_vector = method.getJSONArray("codeVector");
+        JSONArray methodCalls = method.optJSONArray("methodCalls");
+        String methodType = method.getString("type");
+
+        FunctionalityVectorizationCallGraphWeights weights = (FunctionalityVectorizationCallGraphWeights) getWeightsByType(FUNCTIONALITY_VECTORIZATION_CALLGRAPH_WEIGHTS);
+
+        if (methodType.equals("Controller")) {
+            count = weights.getControllersWeight();
+        } else if (classType.equals("Service") || methodType.equals("Service")) {
+            count = weights.getServicesWeight();
+        } else if (classType.equals("Entity")) {
+            count = weights.getEntitiesWeight();
+        } else {
+            count = weights.getIntermediateMethodsWeight();
+        }
+
+        for (int idx = 0; idx < 384; idx++) {
+            vector.add(count * code_vector.getDouble(idx));
+        }
+
+        if (maxDepth <= MIN_DEPTH || methodCalls.length() == 0) {
+            return new Acumulator(vector, count);
+        }
+
+        for (int l = 0; l < methodCalls.length(); l++) {
+            JSONObject methodCall = methodCalls.getJSONObject(l);
+
+            try {
+                JSONObject met = getMethodCall(
+                        packages,
+                        methodCall.getString("packageName"),
+                        methodCall.getString("className"),
+                        methodCall.getString("signature")
+                );
+
+                if (met != null) {
+
+                    Acumulator acum = getMethodCallsVectors(
+                            packages,
+                            met.getString("classType"),
+                            met,
+                            maxDepth - 1
+                    );
+
+                    vectorSum(vector, acum.getSum());
+                    count += acum.getCount();
+
+                } else {
+                    System.err.println("[ - ] Cannot get method call for method: " + methodCall.getString("signature"));
+                }
+            } catch (JSONException je) {
+                System.err.println("[ - ] Cannot get method call for method: " + methodCall.getString("signature"));
+            }
+        }
+
+        return new Acumulator(vector, count);
+    }
+
+    public JSONObject getMethodCall(JSONArray packages, String callPackage, String callClass, String callSignature)
+            throws JSONException
+    {
+        for (int i = 0; i < packages.length(); i++) {
+            JSONObject pack = packages.getJSONObject(i);
+
+            if (pack.getString("name").equals(callPackage)) {
+                JSONArray classes = pack.optJSONArray("classes");
+
+                for (int j = 0; j < classes.length(); j++) {
+                    JSONObject cls = classes.getJSONObject(j);
+                    String classType = cls.getString("type");
+
+                    if (cls.getString("name").equals(callClass)) {
+                        JSONArray methods = cls.optJSONArray("methods");
+
+                        for (int k = 0; k < methods.length(); k++) {
+                            JSONObject method = methods.getJSONObject(k);
+
+                            if (method.getString("signature").equals(callSignature)) {
+                                method.put("classType", classType);
+                                return method;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public void vectorSum(List<Double> vector, List<Double> array)
+    {
+        for (int i = 0; i < array.size(); i++) {
+            vector.set(i, vector.get(i) + array.get(i));
+        }
+    }
+
+    public void vectorDivision(List<Double> vector, float count) {
+        for (int i = 0; i < vector.size(); i++) {
+            vector.set(i, vector.get(i) / count);
+        }
+    }
+
+    private Weights getWeightsByType(String type) {
+        return getWeightsList().stream().filter(weight -> weight.getType().equals(type)).findFirst().orElse(null);
+    }
+
+    private JSONObject getCodeEmbeddings(Strategy strategy) throws IOException, JSONException {
+        GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
+
+        CodeEmbeddingsRepresentation codeEmbeddings = (CodeEmbeddingsRepresentation) strategy.getCodebase().getRepresentationByFileType(CODE_EMBEDDINGS);
+        return new JSONObject(
+                gridFsService.getFileAsString(codeEmbeddings.getName())
+        );
+    }
+
+    @Override
+    public String toString() {
+        return "SimilarityScipyFunctionalityVectorizationByCallGraph";
+    }
+
 }

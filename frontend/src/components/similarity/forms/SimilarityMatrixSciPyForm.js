@@ -10,7 +10,7 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 import {RepresentationFile} from "../../../models/representation/Representation";
 import {TraceType, RepresentationInfoParameters} from "../../../type-declarations/types";
-import {SIMILARITY_SCIPY_WEIGHTS} from "../../../models/similarity/SimilaritySciPyWeights";
+import {SIMILARITY_SCIPY_ACCESSES_REPOSITORY} from "../../../models/similarity/SimilarityScipyAccessesAndRepository";
 import {WeightsFactory} from "../../../models/weights/WeightsFactory";
 
 
@@ -37,7 +37,7 @@ export const SimilarityMatrixSciPyForm = ({codebaseName, strategy, setUpdateStra
 
         service.createSimilarity({
             strategyName: strategy.name,
-            type: SIMILARITY_SCIPY_WEIGHTS,
+            type: SIMILARITY_SCIPY_ACCESSES_REPOSITORY,
             weightsList,
             profile,
             linkageType,

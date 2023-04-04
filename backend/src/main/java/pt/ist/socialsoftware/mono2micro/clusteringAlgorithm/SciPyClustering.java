@@ -54,14 +54,11 @@ public class SciPyClustering extends Clustering {
         SciPyRequestDto dto = (SciPyRequestDto) request;
         SimilarityScipy similarity = (SimilarityScipy) s;
 
-        PartitionsDecomposition decomposition = new PartitionsDecomposition();
-        decomposition.setSimilarity(similarity);
-        similarity.addDecomposition(decomposition);
-        decomposition.setStrategy(similarity.getStrategy());
-        similarity.getStrategy().addDecomposition(decomposition);
+        PartitionsDecomposition decomposition = new PartitionsDecomposition(similarity);
+
         decomposition.setName(getDecompositionName(similarity, dto.getCutType(), dto.getCutValue()));
 
-        JSONObject clustersJSON = invokePythonCut(decomposition, similarity.getSimilarityMatrix().getName(), similarity.getLinkageType(), dto.getCutType(), dto.getCutValue());
+        JSONObject clustersJSON = invokePythonCut(decomposition, similarity.getName(), similarity.getLinkageType(), dto.getCutType(), dto.getCutValue());
 
         Map<Short, String> idToEntity = similarity.getIDToEntityName();
         addClustersAndEntities(decomposition, clustersJSON, idToEntity);

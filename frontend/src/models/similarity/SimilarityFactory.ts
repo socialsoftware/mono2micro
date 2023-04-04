@@ -1,23 +1,23 @@
 import Similarity from "./Similarity";
-import SimilaritySciPyWeights, {SIMILARITY_SCIPY_WEIGHTS} from "./SimilaritySciPyWeights";
-import SimilarityMatrixEntityVectorization, {SIMILARITY_SCIPY_ENTITY_VECTORIZATION} from "./SimilarityMatrixEntityVectorization";
-import SimilarityMatrixClassVectorization, {SIMILARITY_SCIPY_CLASS_VECTORIZATION} from "./SimilarityMatrixClassVectorization";
-import SimilarityMatrixFunctionalityVectorizationByCallGraph, {SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH} from "./SimilarityMatrixFunctionalityVectorizationByCallGraph";
-import SimilarityMatrixFunctionalityVectorizationBySequenceOfAccesses, {SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES} from "./SimilarityMatrixFunctionalityVectorizationBySequenceOfAccesses";
+import SimilarityScipyAccessesAndRepository, {SIMILARITY_SCIPY_ACCESSES_REPOSITORY} from "./SimilarityScipyAccessesAndRepository";
+import SimilarityScipyEntityVectorization, {SIMILARITY_SCIPY_ENTITY_VECTORIZATION} from "./SimilarityScipyEntityVectorization";
+import SimilarityScipyClassVectorization, {SIMILARITY_SCIPY_CLASS_VECTORIZATION} from "./SimilarityScipyClassVectorization";
+import SimilarityScipyFunctionalityVectorizationByCallGraph, {SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH} from "./SimilarityScipyFunctionalityVectorizationByCallGraph";
+import SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses, {SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES} from "./SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses";
 
 export abstract class SimilarityFactory {
     static getSimilarity(similarity: any) : Similarity {
         switch (similarity.type) {
-            case SIMILARITY_SCIPY_WEIGHTS:
-                return new SimilaritySciPyWeights(similarity);
+            case SIMILARITY_SCIPY_ACCESSES_REPOSITORY:
+                return new SimilarityScipyAccessesAndRepository(similarity);
             case SIMILARITY_SCIPY_ENTITY_VECTORIZATION:
-                return new SimilarityMatrixEntityVectorization(similarity);
+                return new SimilarityScipyEntityVectorization(similarity);
             case SIMILARITY_SCIPY_CLASS_VECTORIZATION:
-                return new SimilarityMatrixClassVectorization(similarity);
+                return new SimilarityScipyClassVectorization(similarity);
             case SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH:
-                return new SimilarityMatrixFunctionalityVectorizationByCallGraph(similarity);
+                return new SimilarityScipyFunctionalityVectorizationByCallGraph(similarity);
             case SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES:
-                return new SimilarityMatrixFunctionalityVectorizationBySequenceOfAccesses(similarity);
+                return new SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses(similarity);
             default:
                 throw new Error('Type ' + similarity.type + ' unknown.');
         }

@@ -15,10 +15,11 @@ import pt.ist.socialsoftware.mono2micro.recommendation.repository.Recommendation
 import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityFactory;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipy;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyAccessesAndRepository;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.dendrogram.Dendrogram;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.SimilarityMatrixAccessesAndRepository;
-import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityMatrixSciPyDto;
+import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDto;
+import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityScipyAccessesAndRepositoryDto;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.Weights;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.WeightsFactory;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
@@ -158,8 +159,8 @@ public class RecommendMatrixSciPy extends Recommendation {
         ForkJoinPool.commonPool().submit(() -> {
             try {
                 GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
-                SimilarityMatrixAccessesAndRepository similarityMatrix = new SimilarityMatrixAccessesAndRepository(getName(), getWeightsList());
-                setSimilarityMatricesNames(similarityMatrix.generateMultipleMatrices(gridFsService, this, fillElements(gridFsService), getTotalNumberOfWeights()));
+                SimilarityScipyAccessesAndRepository similarityScipy = new SimilarityScipyAccessesAndRepository(strategy, this.getName(), this);
+                setSimilarityMatricesNames(similarityScipy.generateMultipleMatrices(gridFsService, this, fillElements(gridFsService), getTotalNumberOfWeights()));
                 clusteringAlgorithm.generateMultipleDecompositions(this);
 
                 recommendationRepository.save(this);
@@ -171,7 +172,8 @@ public class RecommendMatrixSciPy extends Recommendation {
     }
 
     public void getDecompositionPropertiesForRecommendation(Decomposition decomposition) throws Exception {
-        SimilarityScipyAccessesAndRepository similarity = new SimilarityScipyAccessesAndRepository(this);
+        SimilarityScipyAccessesAndRepository similarity = new SimilarityScipyAccessesAndRepository(strategy, this.getName(), this);
+
         decomposition.setSimilarity(similarity);
 
         decomposition.setup();
@@ -205,21 +207,20 @@ public class RecommendMatrixSciPy extends Recommendation {
                 weights.setWeightsFromArray(w);
             }
 
-            SimilarityMatrixSciPyDto similarityInformation = new SimilarityMatrixSciPyDto(this, localWeightsList);
+            SimilarityDto similarityInformation = new SimilarityScipyAccessesAndRepositoryDto(this, localWeightsList);
 
             // Get or create the decomposition's strategy
-            SimilarityScipyAccessesAndRepository similarity = (SimilarityScipyAccessesAndRepository) similarities.stream().filter(possibleSimilarity ->
+            SimilarityScipy similarity = (SimilarityScipy) similarities.stream().filter(possibleSimilarity ->
                     possibleSimilarity.equalsDto(similarityInformation)).findFirst().orElse(null);
 
             if (similarity == null) {
-                similarity = (SimilarityScipyAccessesAndRepository) SimilarityFactory.getSimilarity(getStrategy(), similarityInformation);
-                similarity.setSimilarityMatrix(new SimilarityMatrixAccessesAndRepository(similarity.getName() + "_similarityMatrix", localWeightsList));
+                similarity = SimilarityFactory.getSimilarity(getStrategy(), similarityInformation);
 
                 InputStream inputStream = gridFsService.getFile(name.substring(0, name.lastIndexOf(","))); // Gets the previously produced similarity matrix
-                gridFsService.saveFile(inputStream, similarity.getSimilarityMatrix().getName()); // And saves it with a different name
+                gridFsService.saveFile(inputStream, similarity.getName()); // And saves it with a different name
 
                 // generate dendrogram image
-                similarity.setDendrogram(new Dendrogram(similarity.getName(), similarity.getSimilarityMatrix().getName(), similarity.getLinkageType()));
+                similarity.setDendrogram(new Dendrogram(similarity.getName(), similarity.getName(), similarity.getLinkageType()));
             }
 
             Decomposition decomposition = clusteringAlgorithm.generateDecomposition(similarity, new SciPyRequestDto(similarity.getName(), "N", Float.parseFloat(properties[properties.length - 1])));

@@ -2,43 +2,55 @@ package pt.ist.socialsoftware.mono2micro.similarity.dto;
 
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyAccessesAndRepository;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.SimilarityMatrixAccessesAndRepository;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.Weights;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyAccessesAndRepository.SIMILARITY_SCIPY_WEIGHTS;
+import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyAccessesAndRepository.SIMILARITY_SCIPY_ACCESSES_REPOSITORY;
 
-public class SimilarityMatrixSciPyDto extends SimilarityDto {
+public class SimilarityScipyAccessesAndRepositoryDto extends SimilarityDto {
     private List<Weights> weightsList;
     private String linkageType;
     private int tracesMaxLimit;
     private Constants.TraceType traceType;
     private String profile;
 
-    public SimilarityMatrixSciPyDto() { this.type = SIMILARITY_SCIPY_WEIGHTS; }
+    public SimilarityScipyAccessesAndRepositoryDto() { this.type = SIMILARITY_SCIPY_ACCESSES_REPOSITORY; }
 
-    public SimilarityMatrixSciPyDto(SimilarityScipyAccessesAndRepository similarity) {
+    public SimilarityScipyAccessesAndRepositoryDto(SimilarityScipyAccessesAndRepository similarity) {
         this.codebaseName = similarity.getStrategy().getCodebase().getName();
         this.strategyName = similarity.getStrategy().getName();
         this.name = similarity.getName();
         this.type = similarity.getType();
-        this.weightsList = ((SimilarityMatrixAccessesAndRepository) similarity.getSimilarityMatrix()).getWeightsList();
+        this.weightsList = similarity.getWeightsList();
         this.profile = similarity.getProfile();
         this.linkageType = similarity.getLinkageType();
         this.tracesMaxLimit = similarity.getTracesMaxLimit();
         this.traceType = similarity.getTraceType();
     }
 
-    public SimilarityMatrixSciPyDto(RecommendMatrixSciPy recommend, List<Weights> weightsList) {
+    public SimilarityScipyAccessesAndRepositoryDto(RecommendMatrixSciPy recommend, List<Weights> weightsList) {
         this.strategyName = recommend.getStrategy().getName();
-        this.type = SIMILARITY_SCIPY_WEIGHTS;
+        this.type = SIMILARITY_SCIPY_ACCESSES_REPOSITORY;
         this.weightsList = weightsList;
         this.profile = recommend.getProfile();
         this.linkageType = recommend.getLinkageType();
         this.tracesMaxLimit = recommend.getTracesMaxLimit();
         this.traceType = recommend.getTraceType();
+    }
+
+    public String getName() {
+        if (this.name == null) {
+            this.name = this.strategyName + " "
+                    + this.type + "(" + this.linkageType + "," + this.profile + "," + this.tracesMaxLimit + "," + this.traceType + ") "
+                    + this.weightsList.stream()
+                    .map(weights -> weights.getName())
+                    .collect(Collectors.joining(", "));
+        }
+
+        return this.name;
     }
 
     public List<Weights> getWeightsList() {

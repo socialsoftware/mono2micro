@@ -17,6 +17,8 @@ import pt.ist.socialsoftware.mono2micro.operation.split.SplitOperation;
 import pt.ist.socialsoftware.mono2micro.operation.split.SplitPartitionsOperation;
 import pt.ist.socialsoftware.mono2micro.operation.transfer.TransferOperation;
 import pt.ist.socialsoftware.mono2micro.operation.transfer.TransferPartitionsOperation;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
+import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
 import java.util.*;
 
@@ -25,10 +27,18 @@ public class PartitionsDecomposition extends Decomposition {
     public static final String PARTITIONS_DECOMPOSITION = "Partitions Decomposition";
     public PartitionsDecomposition() { this.type = PARTITIONS_DECOMPOSITION; }
 
+    public PartitionsDecomposition(Similarity similarity) {
+        super(similarity);
+        this.type = PARTITIONS_DECOMPOSITION;
+    }
+
     public PartitionsDecomposition(PartitionsDecomposition decomposition, String snapshotName) throws Exception {
         this.type = PARTITIONS_DECOMPOSITION;
         this.name = snapshotName;
+        this.strategy = decomposition.getStrategy();
+        decomposition.getStrategy().addDecomposition(this);
         this.similarity = decomposition.getSimilarity();
+        decomposition.getSimilarity().addDecomposition(this);
         this.metrics = decomposition.getMetrics();
         this.outdated = decomposition.isOutdated();
         this.expert = decomposition.isExpert();

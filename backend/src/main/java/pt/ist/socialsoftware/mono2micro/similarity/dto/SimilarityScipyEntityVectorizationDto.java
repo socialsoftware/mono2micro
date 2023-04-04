@@ -7,12 +7,12 @@ import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weigh
 import java.util.List;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyEntityVectorization.SIMILARITY_SCIPY_ENTITY_VECTORIZATION;
 
-public class SimilarityMatrixSciPyEntityVectorizationDto extends SimilarityDto {
+public class SimilarityScipyEntityVectorizationDto extends SimilarityDto {
     private String linkageType;
 
-    public SimilarityMatrixSciPyEntityVectorizationDto() { this.type = SIMILARITY_SCIPY_ENTITY_VECTORIZATION; }
+    public SimilarityScipyEntityVectorizationDto() { this.type = SIMILARITY_SCIPY_ENTITY_VECTORIZATION; }
 
-    public SimilarityMatrixSciPyEntityVectorizationDto(SimilarityScipyEntityVectorization similarity) {
+    public SimilarityScipyEntityVectorizationDto(SimilarityScipyEntityVectorization similarity) {
         this.codebaseName = similarity.getStrategy().getCodebase().getName();
         this.strategyName = similarity.getStrategy().getName();
         this.name = similarity.getName();
@@ -20,12 +20,20 @@ public class SimilarityMatrixSciPyEntityVectorizationDto extends SimilarityDto {
         this.linkageType = similarity.getLinkageType();
     }
 
-    public SimilarityMatrixSciPyEntityVectorizationDto(RecommendMatrixSciPy recommend, List<Weights> weightsList) {
+    public SimilarityScipyEntityVectorizationDto(RecommendMatrixSciPy recommend, List<Weights> weightsList) {
         this.strategyName = recommend.getStrategy().getName();
+        this.name = recommend.getName();
         this.type = SIMILARITY_SCIPY_ENTITY_VECTORIZATION;
         this.linkageType = recommend.getLinkageType();
     }
 
+    public String getName() {
+        if (this.name == null) {
+            this.name = this.strategyName + " " + this.type + "(" + this.linkageType + ")";
+        }
+
+        return this.name;
+    }
 
     public String getLinkageType() {
         return linkageType;

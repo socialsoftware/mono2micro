@@ -44,6 +44,18 @@ public class RepositoryWeights extends Weights {
         return new ArrayList<>(Arrays.asList("authorMetricWeight", "commitMetricWeight"));
     }
 
+    @Override
+    public String getName() {
+        StringBuilder result = new StringBuilder("REPOSITORY(");
+        result.append("A")
+                .append(Math.round(getWeights()[0]))
+                .append(",")
+                .append('C')
+                .append(Math.round(getWeights()[1]))
+                .append(")");
+        return result.toString();
+    }
+
     public void setWeightsFromArray(float[] weightsArray) {
         this.authorMetricWeight = weightsArray[0];
         this.commitMetricWeight = weightsArray[1];

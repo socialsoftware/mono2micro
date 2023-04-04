@@ -3,17 +3,21 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import {URL} from "../../constants/constants"
 import React from "react";
+import {WeightsFactory} from "../weights/WeightsFactory";
+import Weights from "../weights/Weights";
 
-const SIMILARITY_SCIPY_CLASS_VECTORIZATION = 'SIMILARITY_SCIPY_CLASS_VECTORIZATION';
-export {SIMILARITY_SCIPY_CLASS_VECTORIZATION};
+const SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES = 'SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES';
+export {SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES};
 
-export default class SimilarityMatrixClassVectorization extends Similarity {
+export default class SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses extends Similarity {
     linkageType: string;
+    weightsList: Weights[];
 
     constructor(similarity: any) {
         super(similarity);
         // Initializes default values if no previous value is provided
         this.linkageType =          similarity.linkageType             ||     "average";
+        this.weightsList =          WeightsFactory.getWeightsList(similarity.weightsList);
     }
 
     printCard(handleDeleteSimilarity: (similarity: Similarity) => void): JSX.Element {
@@ -26,6 +30,9 @@ export default class SimilarityMatrixClassVectorization extends Similarity {
                 <Card.Title>{this.name}</Card.Title>
                 <Card.Text>
                     Linkage Type: {this.linkageType} < br />
+                    {this.weightsList.flatMap((weights: any) =>
+                        Object.entries(weights.weightsLabel).map(([key, value]) => <span key={key}>{value + ": " + weights[key] + "%"} <br/></span>)
+                    )}
                 </Card.Text>
                 <Button href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.name}/decomposition`}
                         variant={"success"}

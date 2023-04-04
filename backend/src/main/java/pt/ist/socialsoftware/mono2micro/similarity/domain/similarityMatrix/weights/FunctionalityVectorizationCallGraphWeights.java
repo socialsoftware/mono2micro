@@ -46,6 +46,24 @@ public class FunctionalityVectorizationCallGraphWeights extends Weights {
     }
 
     @Override
+    public String getName() {
+        StringBuilder result = new StringBuilder("FUN_CALL(");
+        result.append("C")
+                .append(Math.round(getWeights()[0]))
+                .append(",")
+                .append('S')
+                .append(Math.round(getWeights()[1]))
+                .append(",")
+                .append('I')
+                .append(Math.round(getWeights()[2]))
+                .append(",")
+                .append('E')
+                .append(Math.round(getWeights()[3]))
+                .append(")");
+        return result.toString();
+    }
+
+    @Override
     public void setWeightsFromArray(float[] weightsArray) {
         this.controllersWeight = weightsArray[0];
         this.servicesWeight = weightsArray[1];

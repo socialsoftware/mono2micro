@@ -33,6 +33,14 @@ public abstract class Decomposition {
 
 	List<RepresentationInformation> representationInformations = new ArrayList<>();
 
+	public Decomposition() {}
+	public Decomposition(Similarity similarity) {
+		this.similarity = similarity;
+		similarity.addDecomposition(this);
+		this.strategy = similarity.getStrategy();
+		strategy.addDecomposition(this);
+	}
+
 	public abstract void setup() throws Exception;
 	public abstract void update() throws Exception;
 	public abstract void deleteProperties();

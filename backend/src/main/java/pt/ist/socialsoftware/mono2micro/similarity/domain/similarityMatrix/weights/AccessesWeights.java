@@ -56,6 +56,24 @@ public class AccessesWeights extends Weights {
     }
 
     @Override
+    public String getName() {
+        StringBuilder result = new StringBuilder("ACCESSES(");
+        result.append("A")
+                .append(Math.round(getWeights()[0]))
+                .append(",")
+                .append('W')
+                .append(Math.round(getWeights()[1]))
+                .append(",")
+                .append('R')
+                .append(Math.round(getWeights()[2]))
+                .append(",")
+                .append('S')
+                .append(Math.round(getWeights()[3]))
+                .append(")");
+        return result.toString();
+    }
+
+    @Override
     public void setWeightsFromArray(float[] weightsArray) {
         this.accessMetricWeight = weightsArray[0];
         this.writeMetricWeight = weightsArray[1];

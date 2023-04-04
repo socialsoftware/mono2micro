@@ -23,12 +23,10 @@ import static pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatri
 })
 public abstract class Weights {
     public abstract String getType();
-
     public abstract int getNumberOfWeights();
-
     public abstract float[] getWeights();
     public abstract List<String> getWeightsNames();
-
+    public abstract String getName();
     public abstract void setWeightsFromArray(float[] weightsArray);
     public abstract void fillMatrix(GridFsService gridFsService, Similarity similarity, float[][][] rawMatrix, Set<Short> elements, int fillFromIndex) throws Exception;
     public abstract void fillMatrix(GridFsService gridFsService, Recommendation recommendation, float[][][] rawMatrix, Set<Short> elements, int fillFromIndex) throws Exception;

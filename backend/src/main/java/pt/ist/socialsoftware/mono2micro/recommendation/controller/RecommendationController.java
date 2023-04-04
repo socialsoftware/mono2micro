@@ -23,9 +23,7 @@ public class RecommendationController {
 	RecommendationService recommendationService;
 
 	@PutMapping(value = "/recommendation/createRecommendation")
-	public ResponseEntity<RecommendationDto> createRecommendation(
-			@RequestBody RecommendationDto recommendationDto
-	) {
+	public ResponseEntity<RecommendationDto> createRecommendation(@RequestBody RecommendationDto recommendationDto) {
 		logger.debug("Create recommendation");
 
 		try {
