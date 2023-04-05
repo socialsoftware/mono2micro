@@ -57,7 +57,7 @@ public class AccessesWeights extends Weights {
 
     @Override
     public String getName() {
-        StringBuilder result = new StringBuilder("ACCESSES(");
+        StringBuilder result = new StringBuilder("Accesses(");
         result.append("A")
                 .append(Math.round(getWeights()[0]))
                 .append(",")

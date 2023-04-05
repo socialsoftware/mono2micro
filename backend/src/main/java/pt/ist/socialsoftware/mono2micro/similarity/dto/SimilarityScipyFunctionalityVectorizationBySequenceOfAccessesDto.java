@@ -36,7 +36,7 @@ public class SimilarityScipyFunctionalityVectorizationBySequenceOfAccessesDto ex
     public String getName() {
         if (this.name == null) {
             this.name = this.strategyName + " "
-                    + this.type + "(" + this.linkageType + ") "
+                    + "Scipy" + "(" + this.linkageType + ") "
                     + this.weightsList.stream()
                     .map(weights -> weights.getName())
                     .collect(Collectors.joining(", "));

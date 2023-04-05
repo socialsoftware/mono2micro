@@ -47,7 +47,7 @@ public class FunctionalityVectorizationCallGraphWeights extends Weights {
 
     @Override
     public String getName() {
-        StringBuilder result = new StringBuilder("FUN_CALL(");
+        StringBuilder result = new StringBuilder("Func Call(");
         result.append("C")
                 .append(Math.round(getWeights()[0]))
                 .append(",")

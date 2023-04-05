@@ -40,7 +40,7 @@ public class SimilarityScipyFunctionalityVectorizationByCallGraphDto extends Sim
     public String getName() {
         if (this.name == null) {
             this.name = this.strategyName + " "
-                    + this.type + "(" + this.linkageType + "," + this.depth + ") "
+                    + "Scipy" + "(" + this.linkageType + "," + this.depth + ") "
                     + this.weightsList.stream()
                     .map(weights -> weights.getName())
                     .collect(Collectors.joining(", "));

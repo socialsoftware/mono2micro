@@ -46,7 +46,7 @@ public class FunctionalityVectorizationSequenceOfAccessesWeights extends Weights
 
     @Override
     public String getName() {
-        StringBuilder result = new StringBuilder("FUN_SEQ(");
+        StringBuilder result = new StringBuilder("Func Seq(");
         result.append("R")
                 .append(Math.round(getWeights()[0]))
                 .append(",")

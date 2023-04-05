@@ -46,7 +46,7 @@ public class RepositoryWeights extends Weights {
 
     @Override
     public String getName() {
-        StringBuilder result = new StringBuilder("REPOSITORY(");
+        StringBuilder result = new StringBuilder("Repository(");
         result.append("A")
                 .append(Math.round(getWeights()[0]))
                 .append(",")
