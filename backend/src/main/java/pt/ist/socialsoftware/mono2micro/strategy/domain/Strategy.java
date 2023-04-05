@@ -26,8 +26,8 @@ public class Strategy {
     public static final String REPOSITORY_STRATEGY = "Repository Strategy";
     public static final String CLASS_VECTORIZATION_STRATEGY = "Class Vectorization Strategy";
     public static final String ENTITY_VECTORIZATION_STRATEGY = "Entity Vectorization Strategy";
-    public static final String FUNCTIONALITY_VECTORIZATION_CALLGRAPH_STRATEGY = "Functionality Vectorization by Call Graph Strategy";
-    public static final String FUNCTIONALITY_VECTORIZATION_ACCESSES_STRATEGY = "Functionality Vectorization by Sequence of Accesses Strategy";
+    public static final String FUNCTIONALITY_VECTORIZATION_CALLGRAPH_STRATEGY = "Functionality Vectorization Call Graph Strategy";
+    public static final String FUNCTIONALITY_VECTORIZATION_ACCESSES_STRATEGY = "Functionality Vectorization Sequence Accesses Strategy";
 
     public static final Map<String, List<String>> strategiesToRepresentations = Stream.of(
             new AbstractMap.SimpleImmutableEntry<>(ACCESSES_STRATEGY, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ACCESSES))),

@@ -46,11 +46,11 @@ public class FunctionalityVectorizationSequenceOfAccessesWeights extends Weights
 
     @Override
     public String getName() {
-        StringBuilder result = new StringBuilder("Func Seq(");
-        result.append("R")
+        StringBuilder result = new StringBuilder("ws(");
+        result.append("Re")
                 .append(Math.round(getWeights()[0]))
                 .append(",")
-                .append('W')
+                .append("Wr")
                 .append(Math.round(getWeights()[1]))
                 .append(")");
         return result.toString();

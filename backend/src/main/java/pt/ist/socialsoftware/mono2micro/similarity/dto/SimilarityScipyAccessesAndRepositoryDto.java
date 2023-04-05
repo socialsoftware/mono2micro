@@ -44,7 +44,7 @@ public class SimilarityScipyAccessesAndRepositoryDto extends SimilarityDto {
     public String getName() {
         if (this.name == null) {
             this.name = this.strategyName + " "
-                    + "Scipy" + "(" + this.linkageType + "," + this.profile + "," + this.tracesMaxLimit + "," + this.traceType + ") "
+                    + "pars" + "(" + this.linkageType + "," + this.profile + "," + this.tracesMaxLimit + "," + this.traceType + ") "
                     + this.weightsList.stream()
                     .map(weights -> weights.getName())
                     .collect(Collectors.joining(", "));

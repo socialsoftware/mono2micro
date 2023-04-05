@@ -46,11 +46,11 @@ public class RepositoryWeights extends Weights {
 
     @Override
     public String getName() {
-        StringBuilder result = new StringBuilder("Repository(");
-        result.append("A")
+        StringBuilder result = new StringBuilder("ws(");
+        result.append("Au")
                 .append(Math.round(getWeights()[0]))
                 .append(",")
-                .append('C')
+                .append("Co")
                 .append(Math.round(getWeights()[1]))
                 .append(")");
         return result.toString();

@@ -47,17 +47,17 @@ public class FunctionalityVectorizationCallGraphWeights extends Weights {
 
     @Override
     public String getName() {
-        StringBuilder result = new StringBuilder("Func Call(");
-        result.append("C")
+        StringBuilder result = new StringBuilder("ws(");
+        result.append("Co")
                 .append(Math.round(getWeights()[0]))
                 .append(",")
-                .append('S')
+                .append("Se")
                 .append(Math.round(getWeights()[1]))
                 .append(",")
-                .append('I')
+                .append("In")
                 .append(Math.round(getWeights()[2]))
                 .append(",")
-                .append('E')
+                .append("En")
                 .append(Math.round(getWeights()[3]))
                 .append(")");
         return result.toString();
