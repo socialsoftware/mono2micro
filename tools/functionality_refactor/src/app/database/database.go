@@ -204,25 +204,27 @@ func (svc *DefaultHandler) ReadDecomposition(ctx context.Context, decompositionN
 		}
 	}
 	decomposition.Functionalities = functionalities
+
 	return decomposition, err
 }
 
 func newDecomposition(databaseDecomposition Decomposition) *mono2micro.Decomposition {
 	decomposition := mono2micro.Decomposition{
-		Name:                  databaseDecomposition.Name,
-		Expert:                databaseDecomposition.Expert,
-		Complexity:            databaseDecomposition.Metrics["Complexity"],
-		Coupling:              databaseDecomposition.Metrics["Coupling"],
-		Cohesion:              databaseDecomposition.Metrics["Cohesion"],
-		EntityIDToClusterName: databaseDecomposition.EntityIDToClusterName,
+		Name:       databaseDecomposition.Name,
+		Expert:     databaseDecomposition.Expert,
+		Complexity: databaseDecomposition.Metrics["Complexity"],
+		Coupling:   databaseDecomposition.Metrics["Coupling"],
+		Cohesion:   databaseDecomposition.Metrics["Cohesion"],
 	}
 
 	clusters := map[string]*mono2micro.Cluster{}
-	for key, cluster := range databaseDecomposition.Clusters {
+	entityIDToClusterName := map[int]string{}
 
+	for key, cluster := range databaseDecomposition.Clusters {
 		var entities []mono2micro.Entity
 		for _, entity := range cluster.Entities {
 			entities = append(entities, newEntity(entity))
+			entityIDToClusterName[entity.Id] = cluster.Name
 		}
 
 		clusters[key] = &mono2micro.Cluster{
@@ -235,6 +237,7 @@ func newDecomposition(databaseDecomposition Decomposition) *mono2micro.Decomposi
 		}
 	}
 	decomposition.Clusters = clusters
+	decomposition.EntityIDToClusterName = entityIDToClusterName
 
 	return &decomposition
 }

@@ -5,15 +5,13 @@ type Decomposition struct {
 	Expert                     bool                         `bson:"expert,omitempty"`
 	Metrics                    map[string]float64           `bson:"metrics,omitempty"`
 	Clusters                   map[string]*Cluster          `bson:"clusters,omitempty"`
-	RepresentationInformations []RepresentationInformations `bson:"representationInfos,omitempty"`
-	EntityIDToClusterName      map[int]string               `bson:"entityIDToClusterName,omitempty"`
+	RepresentationInformations []RepresentationInformations `bson:"representationInformations,omitempty"`
 }
 
 type RepresentationInformations struct {
-	Functionalities   map[string]*DBRef   `bson:"functionalities,omitempty"`
-	Authors           map[string][]string `bson:"authors,omitempty"`
-	DecompositionName string              `bson:"decompositionName,omitempty"`
-	Name              string              `bson:"_class,omitempty"`
+	Functionalities   map[string]*DBRef `bson:"functionalities,omitempty"`
+	DecompositionName string            `bson:"decompositionName,omitempty"`
+	Name              string            `bson:"_class,omitempty"`
 }
 
 type DBRef struct {
@@ -28,11 +26,11 @@ type Cluster struct {
 	Cohesion             float64          `bson:"cohesion,omitempty"`
 	Coupling             float64          `bson:"coupling,omitempty"`
 	CouplingDependencies map[string][]int `bson:"couplingDependencies,omitempty"`
-	Entities             []Entity         `bson:"entities,omitempty"`
+	Entities             []Entity         `bson:"elements,omitempty"`
 }
 
 type Entity struct {
-	Id   int    `bson:"id,omitempty"`
+	Id   int    `bson:"_id,omitempty"`
 	Name string `bson:"name,omitempty"`
 }
 
