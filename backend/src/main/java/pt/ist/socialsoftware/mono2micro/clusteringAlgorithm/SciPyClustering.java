@@ -141,13 +141,15 @@ public class SciPyClustering extends Clustering {
 
         List<String> similarityMatricesNames = new ArrayList<>(recommendation.getSimilarityMatricesNames());
 
+        // To remove, there are strategies where we can not infer the number of maxClusters
         int maxClusters = getMaxClusters(idToEntity.size());
-        int numberOfTotalSteps = similarityMatricesNames.size() * (1 + maxClusters - MIN_CLUSTERS)/CLUSTER_STEP;
+        // int numberOfTotalSteps = similarityMatricesNames.size() * (1 + maxClusters - MIN_CLUSTERS)/CLUSTER_STEP;
 
-        System.out.println("Number of decompositions to be made: " + numberOfTotalSteps);
+        //System.out.println("Number of decompositions to be made: " + numberOfTotalSteps);
 
         similarityMatricesNames.parallelStream().forEach(similarityMatrixName -> {
 
+            // Replace with a while loop
             for (int numberOfClusters = MIN_CLUSTERS; numberOfClusters <= maxClusters; numberOfClusters += CLUSTER_STEP) {
                 try {
                     Decomposition decomposition = new PartitionsDecomposition();
@@ -159,6 +161,7 @@ public class SciPyClustering extends Clustering {
 
                     addClustersAndEntities(decomposition, clustersJSON, idToEntity);
 
+                    // Create this function on Recommendation Super class
                     recommendation.getDecompositionPropertiesForRecommendation(decomposition);
 
                     // Add decomposition's relevant information to the file
@@ -177,7 +180,7 @@ public class SciPyClustering extends Clustering {
 
                     addRecommendationToJSON(recommendationJSON, decompositionJSON);
 
-                    System.out.println("Decomposition " + recommendationJSON.length() + "/" + numberOfTotalSteps);
+                    // System.out.println("Decomposition " + recommendationJSON.length() + "/" + numberOfTotalSteps);
 
                     // Every 10 decompositions, updates the recommendation results file
                     if (recommendationJSON.length() % 20 == 0)

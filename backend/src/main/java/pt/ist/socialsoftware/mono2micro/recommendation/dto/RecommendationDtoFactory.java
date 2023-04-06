@@ -1,8 +1,10 @@
 package pt.ist.socialsoftware.mono2micro.recommendation.dto;
 
+import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixClassVectorization;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
 
+import static pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixClassVectorization.RECOMMEND_MATRIX_CLASS_VECTORIZATION;
 import static pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy.RECOMMEND_MATRIX_SCIPY;
 
 public class RecommendationDtoFactory {
@@ -10,6 +12,8 @@ public class RecommendationDtoFactory {
         switch (recommendation.getType()) {
             case RECOMMEND_MATRIX_SCIPY:
                 return new RecommendMatrixSciPyDto((RecommendMatrixSciPy) recommendation);
+            case RECOMMEND_MATRIX_CLASS_VECTORIZATION:
+                return new RecommendMatrixClassVectorizationDto((RecommendMatrixClassVectorization) recommendation);
             default:
                 throw new RuntimeException("The recommendation type " + recommendation.getType() + " is not present.");
         }

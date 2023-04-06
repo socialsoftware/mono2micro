@@ -5,19 +5,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
+import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddingsRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.EntityToIDRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.Weights;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.utils.Acumulator;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddingsRepresentation.CODE_EMBEDDINGS;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.EntityToIDRepresentation.ENTITY_TO_ID;
@@ -192,6 +192,34 @@ public class SimilarityMatrixClassVectorization extends SimilarityMatrix {
     @Override
     public String toString() {
         return "SimilarityMatrixClassVectorization";
+    }
+
+    public Set<String> generateMultipleMatrices(
+            GridFsService gridFsService,
+            Recommendation recommendation
+    ) throws Exception {
+        setGridFsService(gridFsService);
+
+        JSONObject codeEmbeddings = getCodeEmbeddings(recommendation.getStrategy());
+        Map<String, Short> entityToId = getEntitiesNamesToIds(recommendation.getStrategy());
+        this.matchEntitiesTranslationIds(recommendation.getStrategy(), codeEmbeddings);
+
+        HashMap<String, Object> matrix = new HashMap<>();
+        this.computeClassesVectors(matrix, codeEmbeddings, entityToId);
+
+        JSONObject matrixJSON = new JSONObject(matrix);
+
+        Set<String> similarityMatrices = new HashSet<>();
+        createAndWriteSimilarityMatrix(similarityMatrices, matrixJSON);
+        return similarityMatrices;
+    }
+
+    private void createAndWriteSimilarityMatrix(
+            Set<String> similarityMatrices,
+            JSONObject matrixJSON
+    ) {
+        similarityMatrices.add(getName());
+        gridFsService.saveFile(new ByteArrayInputStream(matrixJSON.toString().getBytes()), getName());
     }
 
 }

@@ -41,6 +41,8 @@ public class RecommendMatrixSciPy extends Recommendation {
     private List<Weights> weightsList;
     private Set<String> similarityMatricesNames;
 
+    private boolean requiresClusterTypeConversion;
+
     public RecommendMatrixSciPy() {}
 
     public RecommendMatrixSciPy(RecommendMatrixSciPyDto dto) {

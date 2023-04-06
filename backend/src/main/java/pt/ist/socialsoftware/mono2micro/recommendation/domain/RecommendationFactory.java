@@ -1,9 +1,11 @@
 package pt.ist.socialsoftware.mono2micro.recommendation.domain;
 
+import pt.ist.socialsoftware.mono2micro.recommendation.dto.RecommendMatrixClassVectorizationDto;
 import pt.ist.socialsoftware.mono2micro.recommendation.dto.RecommendMatrixSciPyDto;
 import pt.ist.socialsoftware.mono2micro.recommendation.dto.RecommendationDto;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
+import static pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixClassVectorization.RECOMMEND_MATRIX_CLASS_VECTORIZATION;
 import static pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy.RECOMMEND_MATRIX_SCIPY;
 
 public class RecommendationFactory {
@@ -11,6 +13,8 @@ public class RecommendationFactory {
         switch (recommendationDto.getType()) {
             case RECOMMEND_MATRIX_SCIPY:
                 return new RecommendMatrixSciPy((RecommendMatrixSciPyDto) recommendationDto);
+            case RECOMMEND_MATRIX_CLASS_VECTORIZATION:
+                return new RecommendMatrixClassVectorization((RecommendMatrixClassVectorizationDto) recommendationDto);
             default:
                 throw new RuntimeException("The type \"" + recommendationDto.getType() + "\" is not a valid decomposition type for recommendation creation.");
         }
