@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy;
+import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddingsRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
@@ -20,9 +21,7 @@ import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddingsRepresentation.CODE_EMBEDDINGS;
@@ -32,8 +31,9 @@ import static pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatri
 public class SimilarityScipyFunctionalityVectorizationByCallGraph extends SimilarityScipy {
 
     public static final String SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH = "SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH";
-
     private static final Integer MIN_DEPTH = 1;
+    private static final int INTERVAL = 100;
+    private static final int STEP = 10;
 
     private int depth = 2;
 
@@ -44,8 +44,8 @@ public class SimilarityScipyFunctionalityVectorizationByCallGraph extends Simila
         this.depth = dto.getDepth();
     }
 
-    public SimilarityScipyFunctionalityVectorizationByCallGraph(Strategy strategy, String name, RecommendMatrixSciPy recommendation) {
-        super(strategy, name, recommendation.getLinkageType(), recommendation.getWeightsList());
+    public SimilarityScipyFunctionalityVectorizationByCallGraph(RecommendMatrixSciPy recommendation) {
+        super(recommendation.getStrategy(), recommendation.getName(), recommendation.getLinkageType(), recommendation.getWeightsList());
     }
 
     public int getDepth() {
@@ -276,6 +276,92 @@ public class SimilarityScipyFunctionalityVectorizationByCallGraph extends Simila
         return new JSONObject(
                 gridFsService.getFileAsString(codeEmbeddings.getName())
         );
+    }
+
+    @Override
+    public Set<String> generateMultipleMatrices(
+            GridFsService gridFsService,
+            Recommendation recommendation,
+            Set<Short> elements,
+            int totalNumberOfWeights
+    ) throws Exception {
+        JSONObject codeEmbeddings = getCodeEmbeddings(recommendation.getStrategy());
+        IDToEntityRepresentation idToEntity = (IDToEntityRepresentation) recommendation.getStrategy().getCodebase().getRepresentationByFileType(ID_TO_ENTITY);
+        AccessesRepresentation accessesInfo = (AccessesRepresentation) recommendation.getStrategy().getCodebase().getRepresentationByFileType(ACCESSES);
+
+        int[] weights = new int[totalNumberOfWeights];
+        weights[0] = INTERVAL;
+        int[] remainders = new int[totalNumberOfWeights];
+        remainders[0] = INTERVAL;
+
+        Set<String> similarityMatrices = new HashSet<>();
+        getMatrixCombinations(similarityMatrices, codeEmbeddings, idToEntity.getName(), accessesInfo.getName(), weights, remainders, 0);
+        return similarityMatrices;
+    }
+
+    // Creates matrices based on combinations of weights ([100, 0, 0], [90, 10, 0], [90, 0, 10], [80, 20, 0], [80, 10, 10], ...)
+    public void getMatrixCombinations(
+            Set<String> similarityMatrices,
+            JSONObject codeEmbeddings,
+            String translationFileName,
+            String accessesFileName,
+            int[] weights,
+            int[] remainders, int i
+    )
+            throws Exception
+    {
+        if (i + 1 == remainders.length) {
+            // TODO - Here instead of creating should just create the MatrixCombinations
+            createAndWriteSimilarityMatrix(similarityMatrices, codeEmbeddings, weights, translationFileName, accessesFileName);
+            return;
+        }
+        else {
+            remainders[i + 1] = remainders[i] - weights[i];
+            weights[i + 1] = remainders[i + 1];
+            getMatrixCombinations(similarityMatrices, codeEmbeddings, translationFileName, accessesFileName, weights, remainders, i+1);
+        }
+
+        weights[i] = weights[i] - STEP;
+        if (weights[i] >= 0)
+            getMatrixCombinations(similarityMatrices, codeEmbeddings, translationFileName, accessesFileName, weights, remainders, i);
+    }
+
+    private void createAndWriteSimilarityMatrix(
+            Set<String> similarityMatrices,
+            JSONObject codeEmbeddings,
+            int[] weights,
+            String translationFileName,
+            String accessesFileName
+    ) throws Exception {
+
+        float[] weightsAsFloats = new float[weights.length];
+        for (int i = 0; i < weights.length; i++)
+            weightsAsFloats[i] = weights[i];
+
+        FunctionalityVectorizationCallGraphWeights fvcgWeights = (FunctionalityVectorizationCallGraphWeights) getWeightsByType(FUNCTIONALITY_VECTORIZATION_CALLGRAPH_WEIGHTS);
+
+        fvcgWeights.setControllersWeight(weightsAsFloats[0]);
+        fvcgWeights.setServicesWeight(weightsAsFloats[1]);
+        fvcgWeights.setEntitiesWeight(weightsAsFloats[2]);
+        fvcgWeights.setIntermediateMethodsWeight(weightsAsFloats[3]);
+
+        HashMap<String, Object> matrix = new HashMap<>();
+        this.computeMethodCallsFeaturesVectors(matrix, codeEmbeddings);
+        matrix.put("translationFileName", translationFileName);
+        matrix.put("accessesFileName", accessesFileName);
+        JSONObject matrixJSON = new JSONObject(matrix);
+
+        StringBuilder similarityMatrixName = new StringBuilder(getName());
+        for (float weight : weights)
+            similarityMatrixName.append(",").append(getWeightAsString(weight));
+
+        similarityMatrices.add(similarityMatrixName.toString());
+        GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
+        gridFsService.saveFile(new ByteArrayInputStream(matrixJSON.toString().getBytes()), similarityMatrixName.toString());
+    }
+
+    public String getWeightAsString(float weight) {
+        return Float.toString(weight).replaceAll("\\.?0*$", "");
     }
 
     @Override

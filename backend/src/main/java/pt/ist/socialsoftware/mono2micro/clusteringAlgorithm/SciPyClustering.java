@@ -140,50 +140,100 @@ public class SciPyClustering extends Clustering {
 
         int maxClusters = getMaxClusters(idToEntity.size());
         int numberOfTotalSteps = similarityMatricesNames.size() * (1 + maxClusters - MIN_CLUSTERS)/CLUSTER_STEP;
-
         System.out.println("Number of decompositions to be made: " + numberOfTotalSteps);
 
-        similarityMatricesNames.parallelStream().forEach(similarityMatrixName -> {
+        if (recommendation.requiresClusterTypeConversion()) {
+            similarityMatricesNames.parallelStream().forEach(similarityMatrixName -> {
+                int numberOfClusters = MIN_CLUSTERS;
+                int numberOfEntitiesClusters = MIN_CLUSTERS;
 
-            for (int numberOfClusters = MIN_CLUSTERS; numberOfClusters <= maxClusters; numberOfClusters += CLUSTER_STEP) {
-                try {
-                    Decomposition decomposition = new PartitionsDecomposition();
-                    decomposition.setStrategy(recommendation.getStrategy());
+                do {
+                    try {
+                        Decomposition decomposition = new PartitionsDecomposition();
+                        decomposition.setStrategy(recommendation.getStrategy());
 
-                    decomposition.setName(similarityMatrixName + "," + numberOfClusters);
+                        decomposition.setName(similarityMatrixName + "," + numberOfClusters);
 
-                    JSONObject clustersJSON = invokePythonCut(decomposition, similarityMatrixName, recommendation.getLinkageType(), "N", numberOfClusters);
+                        JSONObject clustersJSON = invokePythonCut(decomposition, similarityMatrixName, recommendation.getLinkageType(), "N", numberOfClusters);
 
-                    addClustersAndEntities(decomposition, clustersJSON, idToEntity);
+                        addClustersAndEntities(decomposition, clustersJSON, idToEntity);
 
-                    recommendation.getDecompositionPropertiesForRecommendation(decomposition);
+                        // Create this function on Recommendation Super class
+                        recommendation.getDecompositionPropertiesForRecommendation(decomposition);
 
-                    // Add decomposition's relevant information to the file
-                    JSONObject decompositionJSON = new JSONObject();
-                    String[] weights = decomposition.getName().split(",");
-                    decompositionJSON.put("name", decomposition.getName());
-                    int i = 1;
-                    for (String weightName : recommendation.getWeightsNames())
-                        decompositionJSON.put(weightName, weights[i++]);
-                    decompositionJSON.put("numberOfClusters", weights[i]);
+                        // Add decomposition's relevant information to the file
+                        JSONObject decompositionJSON = new JSONObject();
+                        String[] weights = decomposition.getName().split(",");
+                        decompositionJSON.put("name", decomposition.getName());
+                        int i = 1;
+                        for (String weightName : recommendation.getWeightsNames())
+                            decompositionJSON.put(weightName, weights[i++]);
+                        decompositionJSON.put("numberOfClusters", weights[i]);
+                        numberOfEntitiesClusters = Integer.parseInt(weights[i]);
 
-                    decompositionJSON.put("maxClusterSize", decomposition.maxClusterSize());
+                        decompositionJSON.put("maxClusterSize", decomposition.maxClusterSize());
 
-                    for (Map.Entry<String, Object> metric : decomposition.getMetrics().entrySet())
-                        decompositionJSON.put(metric.getKey(), metric.getValue());
+                        for (Map.Entry<String, Object> metric : decomposition.getMetrics().entrySet())
+                            decompositionJSON.put(metric.getKey(), metric.getValue());
 
-                    addRecommendationToJSON(recommendationJSON, decompositionJSON);
+                        addRecommendationToJSON(recommendationJSON, decompositionJSON);
 
-                    System.out.println("Decomposition " + recommendationJSON.length() + "/" + numberOfTotalSteps);
+                        System.out.println("Decomposition " + recommendationJSON.length() + "/" + numberOfEntitiesClusters);
 
-                    // Every 10 decompositions, updates the recommendation results file
-                    if (recommendationJSON.length() % 20 == 0)
-                        setRecommendationResult(recommendationJSON, recommendation.getRecommendationResultName());
-                } catch (Exception e) {
-                    e.printStackTrace();
+                        numberOfClusters++;
+
+                        // Every 10 decompositions, updates the recommendation results file
+                        if (recommendationJSON.length() % 20 == 0)
+                            setRecommendationResult(recommendationJSON, recommendation.getRecommendationResultName());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } while (numberOfEntitiesClusters <= maxClusters);
+            });
+        } else {
+            similarityMatricesNames.parallelStream().forEach(similarityMatrixName -> {
+
+                for (int numberOfClusters = MIN_CLUSTERS; numberOfClusters <= maxClusters; numberOfClusters += CLUSTER_STEP) {
+                    try {
+                        Decomposition decomposition = new PartitionsDecomposition();
+                        decomposition.setStrategy(recommendation.getStrategy());
+
+                        decomposition.setName(similarityMatrixName + "," + numberOfClusters);
+
+                        JSONObject clustersJSON = invokePythonCut(decomposition, similarityMatrixName, recommendation.getLinkageType(), "N", numberOfClusters);
+
+                        addClustersAndEntities(decomposition, clustersJSON, idToEntity);
+
+                        // Create this function on Recommendation Super class
+                        recommendation.getDecompositionPropertiesForRecommendation(decomposition);
+
+                        // Add decomposition's relevant information to the file
+                        JSONObject decompositionJSON = new JSONObject();
+                        String[] weights = decomposition.getName().split(",");
+                        decompositionJSON.put("name", decomposition.getName());
+                        int i = 1;
+                        for (String weightName : recommendation.getWeightsNames())
+                            decompositionJSON.put(weightName, weights[i++]);
+                        decompositionJSON.put("numberOfClusters", weights[i]);
+
+                        decompositionJSON.put("maxClusterSize", decomposition.maxClusterSize());
+
+                        for (Map.Entry<String, Object> metric : decomposition.getMetrics().entrySet())
+                            decompositionJSON.put(metric.getKey(), metric.getValue());
+
+                        addRecommendationToJSON(recommendationJSON, decompositionJSON);
+
+                        System.out.println("Decomposition " + recommendationJSON.length() + "/" + numberOfTotalSteps);
+
+                        // Every 10 decompositions, updates the recommendation results file
+                        if (recommendationJSON.length() % 20 == 0)
+                            setRecommendationResult(recommendationJSON, recommendation.getRecommendationResultName());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        });
+            });
+        }
 
         setRecommendationResult(recommendationJSON, recommendation.getRecommendationResultName());
         recommendation.setCompleted(true);

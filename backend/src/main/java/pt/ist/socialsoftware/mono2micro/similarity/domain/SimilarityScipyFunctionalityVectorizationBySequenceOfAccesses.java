@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy;
+import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddingsRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.EntityToIDRepresentation;
@@ -41,8 +42,8 @@ public class SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses exten
         super(strategy, name, dto.getLinkageType(), dto.getWeightsList());
     }
 
-    public SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses(Strategy strategy, String name, RecommendMatrixSciPy recommendation) {
-        super(strategy, name, recommendation.getLinkageType(), recommendation.getWeightsList());
+    public SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses(RecommendMatrixSciPy recommendation) {
+        super(recommendation.getStrategy(), recommendation.getName(), recommendation.getLinkageType(), recommendation.getWeightsList());
     }
 
     @Override
@@ -308,6 +309,18 @@ public class SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses exten
         return new JSONObject(
                 gridFsService.getFileAsString(accessesRepresentation.getName())
         );
+    }
+
+    @Override
+    public Set<String> generateMultipleMatrices(
+            GridFsService gridFsService,
+            Recommendation recommendation,
+            Set<Short> elements,
+            int totalNumberOfWeights
+    ) throws Exception {
+        Set<String> similarityMatrices = new HashSet<>();
+
+        return similarityMatrices;
     }
 
     @Override

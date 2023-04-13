@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy;
+import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddingsRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.EntityToIDRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDto;
@@ -19,10 +20,7 @@ import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddingsRepresentation.CODE_EMBEDDINGS;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.EntityToIDRepresentation.ENTITY_TO_ID;
@@ -38,9 +36,8 @@ public class SimilarityScipyEntityVectorization extends SimilarityScipy {
         this.name = this.getName() + " " + getType() + "()";
     }
 
-    public SimilarityScipyEntityVectorization(Strategy strategy, String name, RecommendMatrixSciPy recommendation) {
-        super(strategy, name, recommendation.getLinkageType(), recommendation.getWeightsList());
-        this.name = this.getName() + " " + getType() + "()";
+    public SimilarityScipyEntityVectorization(RecommendMatrixSciPy recommendation) {
+        super(recommendation.getStrategy(), recommendation.getName(), recommendation.getLinkageType(), recommendation.getWeightsList());
     }
 
     @Override
@@ -194,6 +191,28 @@ public class SimilarityScipyEntityVectorization extends SimilarityScipy {
         return new JSONObject(
                 gridFsService.getFileAsString(codeEmbeddings.getName())
         );
+    }
+
+    @Override
+    public Set<String> generateMultipleMatrices(
+            GridFsService gridFsService,
+            Recommendation recommendation,
+            Set<Short> elements,
+            int totalNumberOfWeights
+    ) throws Exception {
+        JSONObject codeEmbeddings = getCodeEmbeddings(recommendation.getStrategy());
+        Map<String, Short> entityToId = getEntitiesNamesToIds(recommendation.getStrategy());
+
+        HashMap<String, Object> matrix = new HashMap<>();
+        this.computeEntitiesVectors(matrix, codeEmbeddings, entityToId);
+
+        JSONObject matrixJSON = new JSONObject(matrix);
+
+        Set<String> similarityMatrices = new HashSet<>();
+        similarityMatrices.add(getName());
+        gridFsService.saveFile(new ByteArrayInputStream(matrixJSON.toString().getBytes()), getName());
+
+        return similarityMatrices;
     }
 
     @Override

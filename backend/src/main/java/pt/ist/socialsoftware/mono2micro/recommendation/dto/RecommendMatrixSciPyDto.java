@@ -6,7 +6,7 @@ import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.util.List;
 
-import static pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy.RECOMMEND_MATRIX_SCIPY;
+import static pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendationsType.RECOMMEND_MATRIX_SCIPY;
 
 public class RecommendMatrixSciPyDto extends RecommendationDto {
     private String profile;

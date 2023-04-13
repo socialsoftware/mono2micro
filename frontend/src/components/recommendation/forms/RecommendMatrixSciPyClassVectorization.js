@@ -2,20 +2,14 @@ import React, {useEffect, useState} from "react";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import FormControl from "react-bootstrap/FormControl";
-import {APIService} from "../../../services/APIService";
 import Button from "react-bootstrap/Button";
+import BootstrapTable from "react-bootstrap-table-next";
 import filterFactory, {numberFilter} from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import {Modal, ModalBody, ModalFooter, ModalTitle} from "react-bootstrap";
-import BootstrapTable from "react-bootstrap-table-next";
-import DropdownButton from "react-bootstrap/DropdownButton";
-import Dropdown from "react-bootstrap/Dropdown";
-import {RepresentationFile} from "../../../models/representation/Representation";
-import {TraceType} from "../../../type-declarations/types";
-import {RECOMMEND_MATRIX_SCIPY} from "../../../models/recommendation/RecommendMatrixSciPy";
+import {APIService} from "../../../services/APIService";
+import { RECOMMEND_MATRIX_CLASS_VECTORIZATION } from "../../../models/recommendation/RecommendMatrixClassVectorization";
 import {WeightsFactory} from "../../../models/weights/WeightsFactory";
-
 
 const nFilter = numberFilter({placeholder: "filter"});
 const sort = true;
@@ -60,15 +54,11 @@ const selectRow = {
     clickToSelect: true
 };
 
-export const RecommendMatrixSciPy = ({codebaseName, strategy, setUpdateStrategies}) => {
+export const RecommendMatrixSciPyClassVectorization = ({codebaseName, strategy, setUpdateStrategies}) => {
 
     const service = new APIService();
     const [isUploaded, setIsUploaded] = useState("");
-    const [profiles, setProfiles] = useState([]);
-    const [profile, setProfile] = useState("Generic")
     const [linkageType, setLinkageType] = useState("average");
-    const [tracesMaxLimit, setTracesMaxLimit] = useState(0);
-    const [traceType, setTraceType] = useState(TraceType.ALL);
     const [showPopup, setShowPopup] = useState(false);
     const [recommendedDecompositions, setRecommendedDecompositions] = useState([]);
     const [selectedDecompositions, setSelectedDecompositions] = useState(undefined);
@@ -78,31 +68,12 @@ export const RecommendMatrixSciPy = ({codebaseName, strategy, setUpdateStrategie
     const [recommendation, setRecommendation] = useState(undefined);
     const [decompositionInfo, setDecompositionInfo] = useState([]);
 
-    // Executes when it is informed that there is information to be updated
     useEffect(() => {
-        loadProfiles();
         setWeightsList(WeightsFactory.getWeightListByStrategyType(strategy.strategyTypes));
     }, [])
 
-    function loadProfiles() {
-        service.getCodebaseRepresentation(codebaseName, RepresentationFile.ACCESSES)
-            .then((response) => setProfiles(response.profiles));
-    }
-
     function handleChangeLinkageType(event) {
         setLinkageType(event.target.id);
-    }
-
-    function handleChangeProfile(profile) {
-        setProfile(profile);
-    }
-
-    function handleChangeTracesMaxLimit(event) {
-        setTracesMaxLimit(Number(event.target.value));
-    }
-
-    function handleChangeTraceType(event) {
-        setTraceType(event.target.value);
     }
 
     function handleCreateDecompositions() {
@@ -119,7 +90,6 @@ export const RecommendMatrixSciPy = ({codebaseName, strategy, setUpdateStrategie
             }).catch(() => setIsSelected("Error during decomposition's creation."));
     }
 
-
     function handleCreateRecommendation(event) {
         if (event !== undefined)
             event.preventDefault();
@@ -127,13 +97,10 @@ export const RecommendMatrixSciPy = ({codebaseName, strategy, setUpdateStrategie
         setLoading(true);
 
         service.recommendation({
-            type: RECOMMEND_MATRIX_SCIPY,
+            type: RECOMMEND_MATRIX_CLASS_VECTORIZATION,
             strategyName: strategy.name,
             weightsList,
-            profile,
-            linkageType,
-            tracesMaxLimit,
-            traceType
+            linkageType
         }).then(recommendation => {
                 setRecommendation(recommendation);
 
@@ -149,7 +116,10 @@ export const RecommendMatrixSciPy = ({codebaseName, strategy, setUpdateStrategie
                     setLoading(false);
                 });
             }
-        );
+        ).catch(error => {
+            console.error(error);
+            setIsUploaded("Recommendation service failed.");
+        });
     }
 
     function renderRecommendationList() {
@@ -208,58 +178,6 @@ export const RecommendMatrixSciPy = ({codebaseName, strategy, setUpdateStrategie
             { renderRecommendationList() }
 
             <Form onSubmit={handleCreateRecommendation} className="mt-2 mb-3">
-                <Form.Group as={Row} controlId="selectFunctionalityProfiles" className="align-items-center mb-3">
-                    <Form.Label column sm={2}>
-                        Select Codebase Profile
-                    </Form.Label>
-                    <Col sm={2}>
-                        <DropdownButton title={profile === ""? 'Functionality Profiles': profile}>
-                            {profiles !== [] && Object.keys(profiles).map(profile =>
-                                <Dropdown.Item
-                                    key={profile}
-                                    onClick={() => handleChangeProfile(profile)}
-                                    active={profile === profile}
-                                >
-                                    {profile}
-                                </Dropdown.Item>
-                            )}
-                        </DropdownButton>
-                    </Col>
-                </Form.Group>
-                <Form.Group as={Row} controlId="amountOfTraces" className="mb-3">
-                    <Form.Label column sm={2}>
-                        Amount of Traces per Functionality
-                    </Form.Label>
-                    <Col sm={2}>
-                        <FormControl
-                            type="number"
-                            placeholder="0 by default"
-                            value={tracesMaxLimit === 0? '' : tracesMaxLimit}
-                            onChange={handleChangeTracesMaxLimit}
-
-                        />
-                        <Form.Text className="text-muted">
-                            If no number is inserted, 0 is assumed to be the default value meaning the maximum number of traces
-                        </Form.Text>
-                    </Col>
-                </Form.Group>
-                <Form.Group as={Row} className="align-items-center mb-3">
-                    <Form.Label as="legend" column sm={2}>
-                        Type of traces
-                    </Form.Label>
-                    <Col sm={3} style={{ paddingLeft: 0 }}>
-                        <Col sm="auto">
-                            <Form.Check onClick={handleChangeTraceType} name="traceType" label="All" type="radio" id="allTraces" value="ALL" defaultChecked/>
-                        </Col>
-                        <Col sm="auto">
-                            <Form.Check onClick={handleChangeTraceType} name="traceType" label="Longest" type="radio" id="longest" value="LONGEST"/>
-                        </Col>
-                        <Col sm="auto">
-                            <Form.Check onClick={handleChangeTraceType} name="traceType" label="With more different accesses" type="radio" id="withMoreDifferentTraces" value="WITH_MORE_DIFFERENT_ACCESSES"/>
-
-                        </Col>
-                    </Col>
-                </Form.Group>
                 <Form.Group as={Row} className="align-items-center mb-3">
                     <Form.Label as="legend" column sm={2}>
                         Linkage Type
@@ -279,7 +197,7 @@ export const RecommendMatrixSciPy = ({codebaseName, strategy, setUpdateStrategie
                     <Col sm={{offset: 2}}>
                         <Button
                             type="submit"
-                            disabled={isUploaded === "Gathering recommendations..." || !(profile !== "") || loading}
+                            disabled={isUploaded === "Gathering recommendations..." || loading}
                         >
                             Recommend Decompositions
                         </Button>

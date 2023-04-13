@@ -7,6 +7,8 @@ import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.Clustering;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.SciPyClustering;
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
+import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy;
+import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.dendrogram.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.Weights;
@@ -33,6 +35,12 @@ public abstract class SimilarityScipy extends Similarity {
         super(strategy, name);
         this.linkageType = linkageType;
         this.weightsList = weightsList;
+    }
+
+    public SimilarityScipy(Strategy strategy, String name, RecommendMatrixSciPy recommendation) {
+        super(strategy, name);
+        this.linkageType = recommendation.getLinkageType();
+        this.weightsList = recommendation.getWeightsList();
     }
 
     @Override
@@ -86,4 +94,6 @@ public abstract class SimilarityScipy extends Similarity {
     public abstract Constants.TraceType getTraceType();
 
     public abstract void generate(GridFsService gridFsService, Similarity similarity) throws Exception;
+
+    public abstract Set<String> generateMultipleMatrices(GridFsService gridFsService, Recommendation recommendation, Set<Short> elements, int totalNumberOfWeights) throws Exception;
 }

@@ -43,7 +43,7 @@ export abstract class WeightsFactory {
         else if (strategyTypes.includes(StrategyType.REPOSITORY_STRATEGY))
             return [new RepositoryWeights({authorMetricWeight: 50, commitMetricWeight: 50})];
         else if (strategyTypes.includes(StrategyType.CLASS_VECTORIZATION_STRATEGY))
-            return [new ClassVectorizationWeights({})];
+            return [];
         else if (strategyTypes.includes(StrategyType.ENTITY_VECTORIZATION_STRATEGY))
             return [];
         else if (strategyTypes.includes(StrategyType.FUNCTIONALITY_VECTORIZATION_CALLGRAPH_STRATEGY))

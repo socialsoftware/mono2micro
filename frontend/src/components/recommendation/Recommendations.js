@@ -6,6 +6,11 @@ import {useParams} from "react-router-dom";
 import {APIService} from "../../services/APIService";
 import {toast, ToastContainer} from "react-toastify";
 import {RecommendMatrixSciPy} from "./forms/RecommendMatrixSciPy";
+import {RecommendMatrixSciPyEntityVectorization} from "./forms/RecommendMatrixSciPyEntityVectorization";
+import {RecommendMatrixSciPyClassVectorization} from "./forms/RecommendMatrixSciPyClassVectorization";
+import {RecommendMatrixSciPyFunctionalityVectorizationByCallGraph} from "./forms/RecommendMatrixSciPyFunctionalityVectorizationByCallGraph";
+import {RecommendMatrixScipyFunctionalityVectorizationBySequenceOfAccesses} from "./forms/RecommendMatrixScipyFunctionalityVectorizationBySequenceOfAccesses";
+import { StrategyType } from '../../models/strategy/StrategyTypes';
 
 export const Recommendations = () => {
     let { codebaseName, strategyName } = useParams();
@@ -80,13 +85,39 @@ export const Recommendations = () => {
                 <>
                     {/*Add form of each similarity type like the next block to request the required elements for its creation*/}
                     {strategy.algorithmType === "SciPy Clustering" &&
-                        <>
-                            <RecommendMatrixSciPy
-                                codebaseName={codebaseName}
-                                strategy={strategy}
-                                setUpdateStrategies={setUpdateStrategies}
-                            />
-                        </>
+                        strategy.strategyTypes.includes(StrategyType.ENTITY_VECTORIZATION_STRATEGY) ?
+                        <RecommendMatrixSciPyEntityVectorization
+                            codebaseName={codebaseName}
+                            strategy={strategy}
+                            setUpdateStrategies={setUpdateStrategies}
+                        /> :
+                    strategy.algorithmType === "SciPy Clustering" &&
+                        strategy.strategyTypes.includes(StrategyType.CLASS_VECTORIZATION_STRATEGY) ?
+                        <RecommendMatrixSciPyClassVectorization
+                            codebaseName={codebaseName}
+                            strategy={strategy}
+                            setUpdateStrategies={setUpdateStrategies}
+                        /> :
+                    strategy.algorithmType === "SciPy Clustering" &&
+                        strategy.strategyTypes.includes(StrategyType.FUNCTIONALITY_VECTORIZATION_CALLGRAPH_STRATEGY) ?
+                        <RecommendMatrixSciPyFunctionalityVectorizationByCallGraph
+                            codebaseName={codebaseName}
+                            strategy={strategy}
+                            setUpdateStrategies={setUpdateStrategies}
+                        /> :
+                    strategy.algorithmType === "SciPy Clustering" &&
+                        strategy.strategyTypes.includes(StrategyType.FUNCTIONALITY_VECTORIZATION_ACCESSES_STRATEGY) ?
+                        <RecommendMatrixScipyFunctionalityVectorizationBySequenceOfAccesses
+                            codebaseName={codebaseName}
+                            strategy={strategy}
+                            setUpdateStrategies={setUpdateStrategies}
+                        /> :
+                    strategy.algorithmType === "SciPy Clustering" &&
+                        <RecommendMatrixSciPy
+                            codebaseName={codebaseName}
+                            strategy={strategy}
+                            setUpdateStrategies={setUpdateStrategies}
+                        />
                     }
 
                     {decompositions.length !== 0 &&

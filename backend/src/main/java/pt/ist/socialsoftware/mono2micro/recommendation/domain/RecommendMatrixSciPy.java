@@ -13,10 +13,7 @@ import pt.ist.socialsoftware.mono2micro.recommendation.dto.RecommendMatrixSciPyD
 import pt.ist.socialsoftware.mono2micro.recommendation.dto.RecommendationDto;
 import pt.ist.socialsoftware.mono2micro.recommendation.repository.RecommendationRepository;
 import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityFactory;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipy;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyAccessesAndRepository;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.*;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.dendrogram.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDto;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityScipyAccessesAndRepositoryDto;
@@ -30,11 +27,13 @@ import java.util.*;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 
+import static pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendationsType.*;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
 
 @Document("recommendation")
 public class RecommendMatrixSciPy extends Recommendation {
-    public static final String RECOMMEND_MATRIX_SCIPY = "RECOMMEND_MATRIX_SCIPY";
+
+    public String type;
     private String profile;
     private int tracesMaxLimit;
     private Constants.TraceType traceType;
@@ -45,6 +44,7 @@ public class RecommendMatrixSciPy extends Recommendation {
     public RecommendMatrixSciPy() {}
 
     public RecommendMatrixSciPy(RecommendMatrixSciPyDto dto) {
+        this.type = dto.getType();
         this.profile = dto.getProfile();
         this.tracesMaxLimit = dto.getTracesMaxLimit();
         this.traceType = dto.getTraceType();
@@ -55,7 +55,18 @@ public class RecommendMatrixSciPy extends Recommendation {
     }
 
     public String getType() {
-        return RECOMMEND_MATRIX_SCIPY;
+        return this.type;
+    }
+
+    public boolean requiresClusterTypeConversion() {
+        switch (getType()) {
+            case RECOMMEND_MATRIX_CLASS_VECTORIZATION:
+            case RECOMMEND_MATRIX_FUNCTIONALITY_VECTORIZATION_CALLGRAPH:
+            case RECOMMEND_MATRIX_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES:
+                return true;
+            default:
+                return false;
+        }
     }
 
     public String getProfile() {
@@ -159,7 +170,7 @@ public class RecommendMatrixSciPy extends Recommendation {
         ForkJoinPool.commonPool().submit(() -> {
             try {
                 GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
-                SimilarityScipyAccessesAndRepository similarityScipy = new SimilarityScipyAccessesAndRepository(strategy, this.getName(), this);
+                SimilarityScipy similarityScipy = SimilarityScipyFactory.getSimilarityScipy(this);
                 setSimilarityMatricesNames(similarityScipy.generateMultipleMatrices(gridFsService, this, fillElements(gridFsService), getTotalNumberOfWeights()));
                 clusteringAlgorithm.generateMultipleDecompositions(this);
 
@@ -172,10 +183,8 @@ public class RecommendMatrixSciPy extends Recommendation {
     }
 
     public void getDecompositionPropertiesForRecommendation(Decomposition decomposition) throws Exception {
-        SimilarityScipyAccessesAndRepository similarity = new SimilarityScipyAccessesAndRepository(strategy, this.getName(), this);
-
+        SimilarityScipy similarity = SimilarityScipyFactory.getSimilarityScipy(this);
         decomposition.setSimilarity(similarity);
-
         decomposition.setup();
         decomposition.calculateMetrics();
     }

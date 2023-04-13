@@ -41,8 +41,8 @@ public class SimilarityScipyAccessesAndRepository extends SimilarityScipy {
         this.traceType = dto.getTraceType();
     }
 
-    public SimilarityScipyAccessesAndRepository(Strategy strategy, String name, RecommendMatrixSciPy recommendation) {
-        super(strategy, name, recommendation.getLinkageType(), recommendation.getWeightsList());
+    public SimilarityScipyAccessesAndRepository(RecommendMatrixSciPy recommendation) {
+        super(recommendation.getStrategy(), recommendation.getName(), recommendation.getLinkageType(), recommendation.getWeightsList());
         this.profile = recommendation.getProfile();
         this.tracesMaxLimit = recommendation.getTracesMaxLimit();
         this.traceType = recommendation.getTraceType();
@@ -184,6 +184,7 @@ public class SimilarityScipyAccessesAndRepository extends SimilarityScipy {
         return matrixData;
     }
 
+    @Override
     public Set<String> generateMultipleMatrices(GridFsService gridFsService, Recommendation recommendation, Set<Short> elements, int totalNumberOfWeights) throws Exception {
         float[][][] rawMatrix = getEmptyRawMatrix(elements.size(), totalNumberOfWeights);
 
