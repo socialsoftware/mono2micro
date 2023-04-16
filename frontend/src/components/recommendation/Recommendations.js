@@ -6,11 +6,8 @@ import {useParams} from "react-router-dom";
 import {APIService} from "../../services/APIService";
 import {toast, ToastContainer} from "react-toastify";
 import {RecommendMatrixSciPy} from "./forms/RecommendMatrixSciPy";
-import {RecommendMatrixSciPyEntityVectorization} from "./forms/RecommendMatrixSciPyEntityVectorization";
-import {RecommendMatrixSciPyClassVectorization} from "./forms/RecommendMatrixSciPyClassVectorization";
-import {RecommendMatrixSciPyFunctionalityVectorizationByCallGraph} from "./forms/RecommendMatrixSciPyFunctionalityVectorizationByCallGraph";
-import {RecommendMatrixScipyFunctionalityVectorizationBySequenceOfAccesses} from "./forms/RecommendMatrixScipyFunctionalityVectorizationBySequenceOfAccesses";
 import { StrategyType } from '../../models/strategy/StrategyTypes';
+import { RecommendationType } from '../../models/recommendation/RecommendationTypes';
 
 export const Recommendations = () => {
     let { codebaseName, strategyName } = useParams();
@@ -86,37 +83,42 @@ export const Recommendations = () => {
                     {/*Add form of each similarity type like the next block to request the required elements for its creation*/}
                     {strategy.algorithmType === "SciPy Clustering" &&
                         strategy.strategyTypes.includes(StrategyType.ENTITY_VECTORIZATION_STRATEGY) ?
-                        <RecommendMatrixSciPyEntityVectorization
+                        <RecommendMatrixSciPy
                             codebaseName={codebaseName}
                             strategy={strategy}
                             setUpdateStrategies={setUpdateStrategies}
+                            recommendationType={RecommendationType.RECOMMEND_MATRIX_ENTITY_VECTORIZATION}
                         /> :
                     strategy.algorithmType === "SciPy Clustering" &&
                         strategy.strategyTypes.includes(StrategyType.CLASS_VECTORIZATION_STRATEGY) ?
-                        <RecommendMatrixSciPyClassVectorization
+                        <RecommendMatrixSciPy
                             codebaseName={codebaseName}
                             strategy={strategy}
                             setUpdateStrategies={setUpdateStrategies}
+                            recommendationType={RecommendationType.RECOMMEND_MATRIX_CLASS_VECTORIZATION}
                         /> :
                     strategy.algorithmType === "SciPy Clustering" &&
                         strategy.strategyTypes.includes(StrategyType.FUNCTIONALITY_VECTORIZATION_CALLGRAPH_STRATEGY) ?
-                        <RecommendMatrixSciPyFunctionalityVectorizationByCallGraph
+                        <RecommendMatrixSciPy
                             codebaseName={codebaseName}
                             strategy={strategy}
                             setUpdateStrategies={setUpdateStrategies}
+                            recommendationType={RecommendationType.RECOMMEND_MATRIX_FUNCTIONALITY_VECTORIZATION_CALLGRAPH}
                         /> :
                     strategy.algorithmType === "SciPy Clustering" &&
                         strategy.strategyTypes.includes(StrategyType.FUNCTIONALITY_VECTORIZATION_ACCESSES_STRATEGY) ?
-                        <RecommendMatrixScipyFunctionalityVectorizationBySequenceOfAccesses
+                        <RecommendMatrixSciPy
                             codebaseName={codebaseName}
                             strategy={strategy}
                             setUpdateStrategies={setUpdateStrategies}
+                            recommendationType={RecommendationType.RECOMMEND_MATRIX_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES}
                         /> :
                     strategy.algorithmType === "SciPy Clustering" &&
                         <RecommendMatrixSciPy
                             codebaseName={codebaseName}
                             strategy={strategy}
                             setUpdateStrategies={setUpdateStrategies}
+                            recommendationType={RecommendationType.RECOMMEND_MATRIX_SCIPY}
                         />
                     }
 

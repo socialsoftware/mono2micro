@@ -5,13 +5,13 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import static pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendationsType.*;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", visible = true)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = RecommendMatrixSciPyDto.class, name = RECOMMEND_MATRIX_SCIPY),
-        @JsonSubTypes.Type(value = RecommendMatrixClassVectorizationDto.class, name = RECOMMEND_MATRIX_CLASS_VECTORIZATION),
-        @JsonSubTypes.Type(value = RecommendMatrixEntityVectorizationDto.class, name = RECOMMEND_MATRIX_ENTITY_VECTORIZATION),
-        @JsonSubTypes.Type(value = RecommendMatrixFunctionalityVectorizationCallGraphDto.class, name = RECOMMEND_MATRIX_FUNCTIONALITY_VECTORIZATION_CALLGRAPH),
-        @JsonSubTypes.Type(value = RecommendMatrixFunctionalityVectorizationSequenceOfAcessesDto.class, name = RECOMMEND_MATRIX_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES)
+        @JsonSubTypes.Type(value = RecommendMatrixSciPyDto.class, name = RECOMMEND_MATRIX_CLASS_VECTORIZATION),
+        @JsonSubTypes.Type(value = RecommendMatrixSciPyDto.class, name = RECOMMEND_MATRIX_ENTITY_VECTORIZATION),
+        @JsonSubTypes.Type(value = RecommendMatrixSciPyDto.class, name = RECOMMEND_MATRIX_FUNCTIONALITY_VECTORIZATION_CALLGRAPH),
+        @JsonSubTypes.Type(value = RecommendMatrixSciPyDto.class, name = RECOMMEND_MATRIX_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES)
 })
 public abstract class RecommendationDto {
     String type;

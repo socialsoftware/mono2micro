@@ -13,7 +13,6 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 import {RepresentationFile} from "../../../models/representation/Representation";
 import {TraceType} from "../../../type-declarations/types";
-import {RECOMMEND_MATRIX_SCIPY} from "../../../models/recommendation/RecommendMatrixSciPy";
 import {WeightsFactory} from "../../../models/weights/WeightsFactory";
 
 
@@ -27,6 +26,10 @@ const columns = [
     {dataField: 'sequenceMetricWeight',         text: 'Sequence Weight',            filter: nFilter, sort},
     {dataField: 'authorMetricWeight',           text: 'Author Weight',              filter: nFilter, sort},
     {dataField: 'commitMetricWeight',           text: 'Commit Weight',              filter: nFilter, sort},
+    {dataField: 'controllersWeight',            text: 'Controllers Weight',         filter: nFilter, sort},
+    {dataField: 'servicesWeight',               text: 'Services Weight',            filter: nFilter, sort},
+    {dataField: 'intermediateMethodsWeight',    text: 'Intermediate Methods Weight',filter: nFilter, sort},
+    {dataField: 'entitiesWeight',               text: 'Entities Weight',            filter: nFilter, sort},
     {dataField: 'numberOfClusters',             text: 'Number Of Clusters',         filter: nFilter, sort},
     {dataField: 'maxClusterSize',               text: 'Max Cluster Size',           filter: nFilter, sort},
     {dataField: 'Complexity',                   text: 'Complexity',                 filter: nFilter, sort},
@@ -60,7 +63,7 @@ const selectRow = {
     clickToSelect: true
 };
 
-export const RecommendMatrixSciPy = ({codebaseName, strategy, setUpdateStrategies}) => {
+export const RecommendMatrixSciPy = ({codebaseName, strategy, setUpdateStrategies, recommendationType}) => {
 
     const service = new APIService();
     const [isUploaded, setIsUploaded] = useState("");
@@ -127,7 +130,7 @@ export const RecommendMatrixSciPy = ({codebaseName, strategy, setUpdateStrategie
         setLoading(true);
 
         service.recommendation({
-            type: RECOMMEND_MATRIX_SCIPY,
+            type: recommendationType,
             strategyName: strategy.name,
             weightsList,
             profile,

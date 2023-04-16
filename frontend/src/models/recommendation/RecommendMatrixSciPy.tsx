@@ -1,9 +1,5 @@
-import React from "react";
 import {TraceType} from "../../type-declarations/types";
 import Recommendation from "./Recommendation";
-
-const RECOMMEND_MATRIX_SCIPY = "RECOMMEND_MATRIX_SCIPY";
-export {RECOMMEND_MATRIX_SCIPY};
 
 export default class RecommendMatrixSciPy extends Recommendation {
     profile: string;

@@ -210,8 +210,6 @@ public class SimilarityScipyFunctionalityVectorizationByCallGraph extends Simila
                     vectorSum(vector, acum.getSum());
                     count += acum.getCount();
 
-                } else {
-                    System.err.println("[ - ] Cannot get method call for method: " + methodCall.getString("signature"));
                 }
             } catch (JSONException je) {
                 System.err.println("[ - ] Cannot get method call for method: " + methodCall.getString("signature"));
@@ -311,7 +309,6 @@ public class SimilarityScipyFunctionalityVectorizationByCallGraph extends Simila
             throws Exception
     {
         if (i + 1 == remainders.length) {
-            // TODO - Here instead of creating should just create the MatrixCombinations
             createAndWriteSimilarityMatrix(similarityMatrices, codeEmbeddings, weights, translationFileName, accessesFileName);
             return;
         }

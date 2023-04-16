@@ -35,6 +35,8 @@ import static pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatri
 public class SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses extends SimilarityScipy {
 
     public static final String SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES = "SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES";
+    private static final int INTERVAL = 100;
+    private static final int STEP = 10;
 
     public SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses() {}
 
@@ -318,9 +320,84 @@ public class SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses exten
             Set<Short> elements,
             int totalNumberOfWeights
     ) throws Exception {
-        Set<String> similarityMatrices = new HashSet<>();
+        JSONObject codeEmbeddings = getCodeEmbeddings(recommendation.getStrategy());
+        JSONObject functionalityTraces = getFunctionalityTraces(recommendation.getStrategy());
+        Map<String, Short> entityToId = getEntitiesNamesToIds(recommendation.getStrategy());
+        IDToEntityRepresentation idToEntity = (IDToEntityRepresentation) recommendation.getStrategy().getCodebase().getRepresentationByFileType(ID_TO_ENTITY);
+        AccessesRepresentation accessesInfo = (AccessesRepresentation) recommendation.getStrategy().getCodebase().getRepresentationByFileType(ACCESSES);
 
+        int[] weights = new int[totalNumberOfWeights];
+        weights[0] = INTERVAL;
+        int[] remainders = new int[totalNumberOfWeights];
+        remainders[0] = INTERVAL;
+
+        Set<String> similarityMatrices = new HashSet<>();
+        getMatrixCombinations(similarityMatrices, codeEmbeddings, functionalityTraces, idToEntity.getName(), accessesInfo.getName(), entityToId, weights, remainders, 0);
         return similarityMatrices;
+    }
+
+    private void getMatrixCombinations(
+            Set<String> similarityMatrices,
+            JSONObject codeEmbeddings,
+            JSONObject functionalityTraces,
+            String translationFileName,
+            String accessesFileName,
+            Map<String, Short> entityToId,
+            int[] weights,
+            int[] remainders,
+            int i
+    ) throws Exception {
+        if (i + 1 == remainders.length) {
+            createAndWriteSimilarityMatrix(similarityMatrices, codeEmbeddings, functionalityTraces, weights, translationFileName, accessesFileName, entityToId);
+            return;
+        }
+        else {
+            remainders[i + 1] = remainders[i] - weights[i];
+            weights[i + 1] = remainders[i + 1];
+            getMatrixCombinations(similarityMatrices, codeEmbeddings, functionalityTraces, translationFileName, accessesFileName, entityToId, weights, remainders, i+1);
+        }
+
+        weights[i] = weights[i] - STEP;
+        if (weights[i] >= 0)
+            getMatrixCombinations(similarityMatrices, codeEmbeddings, functionalityTraces, translationFileName, accessesFileName, entityToId, weights, remainders, i);
+    }
+
+    private void createAndWriteSimilarityMatrix(
+            Set<String> similarityMatrices,
+            JSONObject codeEmbeddings,
+            JSONObject functionalityTraces,
+            int[] weights,
+            String translationFileName,
+            String accessesFileName,
+            Map<String, Short> entityToId
+    ) throws Exception {
+        float[] weightsAsFloats = new float[weights.length];
+        for (int i = 0; i < weights.length; i++)
+            weightsAsFloats[i] = weights[i];
+
+        FunctionalityVectorizationSequenceOfAccessesWeights fvsaWeights = (FunctionalityVectorizationSequenceOfAccessesWeights) getWeightsByType(FUNCTIONALITY_VECTORIZATION_ACCESSES_WEIGHTS);
+
+        fvsaWeights.setReadMetricWeight(weightsAsFloats[0]);
+        fvsaWeights.setWriteMetricWeight(weightsAsFloats[1]);
+
+        HashMap<String, Object> matrix = new HashMap<>();
+        List<HashMap> entitiesVectors = this.computeEntitiesVectors(codeEmbeddings, entityToId);
+        this.computeSequenceOfAccessesFunctionalityVectors(matrix, functionalityTraces, entitiesVectors);
+        matrix.put("translationFileName", translationFileName);
+        matrix.put("accessesFileName", accessesFileName);
+        JSONObject matrixJSON = new JSONObject(matrix);
+
+        StringBuilder similarityMatrixName = new StringBuilder(getName());
+        for (float weight : weights)
+            similarityMatrixName.append(",").append(getWeightAsString(weight));
+
+        similarityMatrices.add(similarityMatrixName.toString());
+        GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
+        gridFsService.saveFile(new ByteArrayInputStream(matrixJSON.toString().getBytes()), similarityMatrixName.toString());
+    }
+
+    public String getWeightAsString(float weight) {
+        return Float.toString(weight).replaceAll("\\.?0*$", "");
     }
 
     @Override
