@@ -10,7 +10,6 @@ import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
-import pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddingsRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.EntityToIDRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.FunctionalityVectorizationSequenceOfAccessesWeights;
@@ -27,7 +26,6 @@ import java.io.IOException;
 import java.util.*;
 
 import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
-import static pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddingsRepresentation.CODE_EMBEDDINGS;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.EntityToIDRepresentation.ENTITY_TO_ID;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.FunctionalityVectorizationSequenceOfAccessesWeights.FUNCTIONALITY_VECTORIZATION_ACCESSES_WEIGHTS;
@@ -292,15 +290,6 @@ public class SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses exten
         return new ObjectMapper().readValue(
                 gridFsService.getFileAsString(idToEntity.getName()),
                 new TypeReference<Map<Short, String>>() {}
-        );
-    }
-
-    private JSONObject getCodeEmbeddings(Strategy strategy) throws IOException, JSONException {
-        GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
-
-        CodeEmbeddingsRepresentation codeEmbeddings = (CodeEmbeddingsRepresentation) strategy.getCodebase().getRepresentationByFileType(CODE_EMBEDDINGS);
-        return new JSONObject(
-                gridFsService.getFileAsString(codeEmbeddings.getName())
         );
     }
 

@@ -9,7 +9,6 @@ import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
-import pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddingsRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.EntityToIDRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityDto;
 import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityScipyClassVectorizationDto;
@@ -22,7 +21,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
 
-import static pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddingsRepresentation.CODE_EMBEDDINGS;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.EntityToIDRepresentation.ENTITY_TO_ID;
 
 public class SimilarityScipyClassVectorization extends SimilarityScipy {
@@ -215,15 +213,6 @@ public class SimilarityScipyClassVectorization extends SimilarityScipy {
         return new ObjectMapper().readValue(
                 gridFsService.getFileAsString(entityToId.getName()),
                 new TypeReference<Map<String, Short>>() {}
-        );
-    }
-
-    private JSONObject getCodeEmbeddings(Strategy strategy) throws IOException, JSONException {
-        GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
-
-        CodeEmbeddingsRepresentation codeEmbeddings = (CodeEmbeddingsRepresentation) strategy.getCodebase().getRepresentationByFileType(CODE_EMBEDDINGS);
-        return new JSONObject(
-                gridFsService.getFileAsString(codeEmbeddings.getName())
         );
     }
 

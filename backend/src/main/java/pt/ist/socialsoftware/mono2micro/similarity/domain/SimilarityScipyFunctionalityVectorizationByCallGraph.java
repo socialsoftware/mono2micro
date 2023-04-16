@@ -8,7 +8,6 @@ import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
-import pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddingsRepresentation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.FunctionalityVectorizationCallGraphWeights;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.Weights;
@@ -20,11 +19,9 @@ import pt.ist.socialsoftware.mono2micro.utils.Acumulator;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.*;
 
 import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
-import static pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddingsRepresentation.CODE_EMBEDDINGS;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.FunctionalityVectorizationCallGraphWeights.FUNCTIONALITY_VECTORIZATION_CALLGRAPH_WEIGHTS;
 
@@ -97,6 +94,7 @@ public class SimilarityScipyFunctionalityVectorizationByCallGraph extends Simila
 
     public void generate(GridFsService gridFsService, Similarity similarity) throws Exception {
         JSONObject codeEmbeddings = getCodeEmbeddings(similarity.getStrategy());
+        this.matchEntitiesTranslationIds(codeEmbeddings);
 
         HashMap<String, Object> matrix = new HashMap<>();
         this.computeMethodCallsFeaturesVectors(matrix, codeEmbeddings);
@@ -107,7 +105,6 @@ public class SimilarityScipyFunctionalityVectorizationByCallGraph extends Simila
         matrix.put("accessesFileName", accessesInfo.getName());
 
         JSONObject matrixJSON = new JSONObject(matrix);
-
         gridFsService.saveFile(new ByteArrayInputStream(matrixJSON.toString().getBytes()), getName());
     }
 
@@ -265,15 +262,6 @@ public class SimilarityScipyFunctionalityVectorizationByCallGraph extends Simila
 
     private Weights getWeightsByType(String type) {
         return getWeightsList().stream().filter(weight -> weight.getType().equals(type)).findFirst().orElse(null);
-    }
-
-    private JSONObject getCodeEmbeddings(Strategy strategy) throws IOException, JSONException {
-        GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
-
-        CodeEmbeddingsRepresentation codeEmbeddings = (CodeEmbeddingsRepresentation) strategy.getCodebase().getRepresentationByFileType(CODE_EMBEDDINGS);
-        return new JSONObject(
-                gridFsService.getFileAsString(codeEmbeddings.getName())
-        );
     }
 
     @Override
