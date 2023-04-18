@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class CohesionMetric extends DecompositionMetric {
+public class CohesionMetricCalculator extends DecompositionMetricCalculator {
     public static final String COHESION = "Cohesion";
 
     @Override

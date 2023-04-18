@@ -22,12 +22,12 @@ import static pt.ist.socialsoftware.mono2micro.representation.domain.Representat
 
 @Document("strategy")
 public class Strategy {
-    public static final String ACCESSES_STRATEGY = "Accesses Strategy";
-    public static final String REPOSITORY_STRATEGY = "Repository Strategy";
-    public static final String CLASS_VECTORIZATION_STRATEGY = "Class Vectorization Strategy";
-    public static final String ENTITY_VECTORIZATION_STRATEGY = "Entity Vectorization Strategy";
-    public static final String FUNCTIONALITY_VECTORIZATION_CALLGRAPH_STRATEGY = "Functionality Vectorization Call Graph Strategy";
-    public static final String FUNCTIONALITY_VECTORIZATION_ACCESSES_STRATEGY = "Functionality Vectorization Sequence Accesses Strategy";
+    public static final String ACCESSES_STRATEGY = "Accesses";
+    public static final String REPOSITORY_STRATEGY = "Repository";
+    public static final String CLASS_VECTORIZATION_STRATEGY = "Class Vectorization";
+    public static final String ENTITY_VECTORIZATION_STRATEGY = "Entity Vectorization";
+    public static final String FUNCTIONALITY_VECTORIZATION_CALLGRAPH_STRATEGY = "Functionality Vectorization Call Graph";
+    public static final String FUNCTIONALITY_VECTORIZATION_ACCESSES_STRATEGY = "Functionality Vectorization Sequence Accesses";
 
     public static final Map<String, List<String>> strategiesToRepresentations = Stream.of(
             new AbstractMap.SimpleImmutableEntry<>(ACCESSES_STRATEGY, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ACCESSES))),

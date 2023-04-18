@@ -22,7 +22,7 @@ public abstract class Decomposition {
 	String type;
 	boolean expert;
 	boolean outdated; // Used to avoid long waiting times during interaction
-	Map<String, Object> metrics = new HashMap<>(); // Map<Metric type, Metric value>
+	Map<String, Object> metrics = new HashMap<>(); // Map<MetricCalculator type, MetricCalculator value>
 	Map<String, Cluster> clusters = new HashMap<>();
 	@DBRef(lazy = true)
 	Strategy strategy;

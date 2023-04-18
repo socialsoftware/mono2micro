@@ -29,7 +29,7 @@ public class SimilarityScipyEntityVectorizationDto extends SimilarityDto {
 
     public String getName() {
         if (this.name == null) {
-            this.name = this.strategyName + " " + "pars" + "(" + this.linkageType + ")";
+            this.name = this.strategyName + " " + "params" + "(" + this.linkageType + ")";
         }
 
         return this.name;

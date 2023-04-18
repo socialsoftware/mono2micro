@@ -67,12 +67,12 @@ public class AccessesInformation extends RepresentationInformation {
     }
 
     @Override
-    public List<DecompositionMetric> getDecompositionMetrics() {
+    public List<DecompositionMetricCalculator> getDecompositionMetrics() {
         return new ArrayList<>(Arrays.asList(
-                new CohesionMetric(),
-                new ComplexityMetric(),
-                new CouplingMetric(),
-                new PerformanceMetric()));
+                new CohesionMetricCalculator(),
+                new ComplexityMetricCalculator(),
+                new CouplingMetricCalculator(),
+                new PerformanceMetricCalculator()));
     }
 
     @Override

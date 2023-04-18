@@ -12,8 +12,8 @@ export default class FunctionalityVectorizationAccessesWeights extends Weights {
         this.numberOfWeights = 2;
         this.type = FUNCTIONALITY_VECTORIZATION_ACCESSES_WEIGHTS;
         this.weightsLabel = {
-            readMetricWeight: "Read Metric Weight",
-            writeMetricWeight: "Write Metric Weight"
+            readMetricWeight: "Read Weight",
+            writeMetricWeight: "Write Weight"
         }
 
         this.readMetricWeight = weights.readMetricWeight;

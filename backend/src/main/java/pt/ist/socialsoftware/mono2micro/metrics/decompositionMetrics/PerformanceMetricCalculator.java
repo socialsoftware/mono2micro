@@ -9,7 +9,7 @@ import java.math.RoundingMode;
 
 import static pt.ist.socialsoftware.mono2micro.representation.domain.Representation.ACCESSES_TYPE;
 
-public class PerformanceMetric extends DecompositionMetric { // the average of the number of hops between clusters for all traces
+public class PerformanceMetricCalculator extends DecompositionMetricCalculator { // the average of the number of hops between clusters for all traces
     public static final String PERFORMANCE = "Performance";
 
     @Override

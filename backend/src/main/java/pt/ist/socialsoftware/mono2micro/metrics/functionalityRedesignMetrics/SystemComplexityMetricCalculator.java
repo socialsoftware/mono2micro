@@ -14,7 +14,7 @@ import pt.ist.socialsoftware.mono2micro.utils.Utils;
 import java.util.Map;
 import java.util.Set;
 
-public class SystemComplexityMetric extends FunctionalityRedesignMetric {
+public class SystemComplexityMetricCalculator extends FunctionalityRedesignMetricCalculator {
     public static final String SYSTEM_COMPLEXITY = "System Complexity";
 
     @Override

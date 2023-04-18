@@ -17,9 +17,9 @@ import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.ReducedTraceElementDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
-import pt.ist.socialsoftware.mono2micro.metrics.functionalityMetrics.FunctionalityComplexityMetric;
-import pt.ist.socialsoftware.mono2micro.metrics.functionalityMetrics.FunctionalityMetric;
-import pt.ist.socialsoftware.mono2micro.metrics.functionalityMetrics.FunctionalityPerformanceMetric;
+import pt.ist.socialsoftware.mono2micro.metrics.functionalityMetrics.FunctionalityComplexityMetricCalculator;
+import pt.ist.socialsoftware.mono2micro.metrics.functionalityMetrics.FunctionalityMetricCalculator;
+import pt.ist.socialsoftware.mono2micro.metrics.functionalityMetrics.FunctionalityPerformanceMetricCalculator;
 import pt.ist.socialsoftware.mono2micro.utils.*;
 
 import static org.jgrapht.Graphs.successorListOf;
@@ -372,9 +372,9 @@ public class Functionality {
 	}
 
 	public void calculateMetrics(AccessesInformation accessesInformation, Decomposition decomposition) throws Exception {
-		FunctionalityMetric[] metricObjects = new FunctionalityMetric[] {new FunctionalityComplexityMetric(), new FunctionalityPerformanceMetric()};
+		FunctionalityMetricCalculator[] metricObjects = new FunctionalityMetricCalculator[] {new FunctionalityComplexityMetricCalculator(), new FunctionalityPerformanceMetricCalculator()};
 
-		for (FunctionalityMetric metric : metricObjects)
+		for (FunctionalityMetricCalculator metric : metricObjects)
 			this.metrics.put(metric.getType(), metric.calculateMetric(accessesInformation, decomposition, this));
 	}
 }

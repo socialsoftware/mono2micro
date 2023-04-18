@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
-public class FunctionalityRedesignComplexityMetric extends FunctionalityRedesignMetric {
+public class FunctionalityRedesignComplexityMetricCalculator extends FunctionalityRedesignMetricCalculator {
     public static final String FUNCTIONALITY_COMPLEXITY = "Functionality Complexity";
 
     GridFsService gridFsService;
@@ -28,7 +28,7 @@ public class FunctionalityRedesignComplexityMetric extends FunctionalityRedesign
         return FUNCTIONALITY_COMPLEXITY;
     }
 
-    public FunctionalityRedesignComplexityMetric(GridFsService gridFsService) {
+    public FunctionalityRedesignComplexityMetricCalculator(GridFsService gridFsService) {
         this.gridFsService = gridFsService;
     }
 

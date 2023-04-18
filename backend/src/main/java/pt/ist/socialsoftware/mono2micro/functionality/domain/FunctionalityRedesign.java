@@ -7,10 +7,9 @@ import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.LocalTransactionTypes;
-import pt.ist.socialsoftware.mono2micro.metrics.functionalityRedesignMetrics.FunctionalityRedesignComplexityMetric;
-import pt.ist.socialsoftware.mono2micro.metrics.functionalityRedesignMetrics.FunctionalityRedesignMetric;
-import pt.ist.socialsoftware.mono2micro.metrics.functionalityRedesignMetrics.InconsistencyComplexityMetric;
-import pt.ist.socialsoftware.mono2micro.metrics.functionalityRedesignMetrics.SystemComplexityMetric;
+import pt.ist.socialsoftware.mono2micro.metrics.functionalityRedesignMetrics.*;
+import pt.ist.socialsoftware.mono2micro.metrics.functionalityRedesignMetrics.FunctionalityRedesignMetricCalculator;
+import pt.ist.socialsoftware.mono2micro.metrics.functionalityRedesignMetrics.InconsistencyComplexityMetricCalculator;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -69,13 +68,13 @@ public class FunctionalityRedesign {
     }
 
     public void calculateMetrics(GridFsService gridFsService, Decomposition decomposition, AccessesInformation accessesInformation, Functionality functionality) throws Exception {
-        FunctionalityRedesignMetric[] metricObjects;
+        FunctionalityRedesignMetricCalculator[] metricObjects;
         if (functionality.getType() == FunctionalityType.SAGA)
-            metricObjects = new FunctionalityRedesignMetric[] {new FunctionalityRedesignComplexityMetric(gridFsService), new SystemComplexityMetric()};
-        else metricObjects = new FunctionalityRedesignMetric[] {new InconsistencyComplexityMetric()};
+            metricObjects = new FunctionalityRedesignMetricCalculator[] {new FunctionalityRedesignComplexityMetricCalculator(gridFsService), new SystemComplexityMetricCalculator()};
+        else metricObjects = new FunctionalityRedesignMetricCalculator[] {new InconsistencyComplexityMetricCalculator()};
 
         Map<String, Object> newMetrics = new HashMap<>();
-        for (FunctionalityRedesignMetric metric : metricObjects)
+        for (FunctionalityRedesignMetricCalculator metric : metricObjects)
             newMetrics.put(metric.getType(), metric.calculateMetric(decomposition, accessesInformation, functionality, this));
         metrics = newMetrics;
     }

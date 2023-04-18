@@ -13,7 +13,7 @@ import java.util.*;
 
 import static pt.ist.socialsoftware.mono2micro.representation.domain.Representation.ACCESSES_TYPE;
 
-public class ComplexityMetric extends DecompositionMetric {
+public class ComplexityMetricCalculator extends DecompositionMetricCalculator {
     public static final String COMPLEXITY = "Complexity";
 
     @Override

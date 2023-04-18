@@ -8,7 +8,7 @@ import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesi
 
 import java.util.Set;
 
-public class InconsistencyComplexityMetric extends  FunctionalityRedesignMetric {
+public class InconsistencyComplexityMetricCalculator extends FunctionalityRedesignMetricCalculator {
     public static final String INCONSISTENCY_COMPLEXITY = "Inconsistency Complexity";
 
     @Override

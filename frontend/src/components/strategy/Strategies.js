@@ -263,7 +263,7 @@ export function Strategies() {
                 {availableStrategyTypes.length !== 0 &&
                     <Form.Group as={Row} className="align-items-center mb-3">
                         <Form.Label as="legend" column sm={2}>
-                            Strategies
+                            Criteria
                         </Form.Label>
                         <Col sm={8} style={{ paddingLeft: 0 }}>
                             {availableStrategyTypes.map(type =>

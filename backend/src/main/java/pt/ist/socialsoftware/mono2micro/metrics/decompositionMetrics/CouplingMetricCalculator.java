@@ -9,7 +9,7 @@ import java.math.RoundingMode;
 import java.util.Map;
 import java.util.Set;
 
-public class CouplingMetric extends DecompositionMetric {
+public class CouplingMetricCalculator extends DecompositionMetricCalculator {
     public static final String COUPLING = "Coupling";
 
     @Override

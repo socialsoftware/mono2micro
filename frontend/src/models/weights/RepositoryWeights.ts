@@ -12,8 +12,8 @@ export default class RepositoryWeights extends Weights {
         this.type = REPOSITORY_WEIGHTS;
         this.numberOfWeights = 2;
         this.weightsLabel = {
-            authorMetricWeight: "Author Metric Weight",
-            commitMetricWeight: "Commit Metric Weight"
+            authorMetricWeight: "Author Weight",
+            commitMetricWeight: "Commit Weight"
         }
 
         this.authorMetricWeight = weights.authorMetricWeight;

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public abstract class Cluster {
 	String name;
-	Map<String, Object> metrics = new HashMap<>(); // Map<Metric type, Metric value>
+	Map<String, Object> metrics = new HashMap<>(); // Map<MetricCalculator type, MetricCalculator value>
 	Set<Element> elements = new HashSet<>();
 
 	public String getName() {

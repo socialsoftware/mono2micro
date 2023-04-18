@@ -60,8 +60,8 @@ public class RepositoryInformation extends RepresentationInformation {
     public void update(Decomposition decomposition) throws Exception {}
 
     @Override
-    public List<DecompositionMetric> getDecompositionMetrics() {
-        return new ArrayList<>(Arrays.asList(new TSRMetric()));
+    public List<DecompositionMetricCalculator> getDecompositionMetrics() {
+        return new ArrayList<>(Arrays.asList(new TSRMetricCalculator()));
     }
 
     @Override

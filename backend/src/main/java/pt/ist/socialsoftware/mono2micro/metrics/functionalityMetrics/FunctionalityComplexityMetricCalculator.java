@@ -12,7 +12,7 @@ import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import java.util.*;
 
-public class FunctionalityComplexityMetric extends FunctionalityMetric {
+public class FunctionalityComplexityMetricCalculator extends FunctionalityMetricCalculator {
     public static final String COMPLEXITY = "Complexity";
 
     @Override

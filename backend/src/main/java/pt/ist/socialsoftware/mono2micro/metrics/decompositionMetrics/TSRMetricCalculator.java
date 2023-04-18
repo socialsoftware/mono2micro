@@ -13,7 +13,7 @@ import java.util.Set;
 
 import static pt.ist.socialsoftware.mono2micro.representation.domain.Representation.REPOSITORY_TYPE;
 
-public class TSRMetric extends DecompositionMetric {
+public class TSRMetricCalculator extends DecompositionMetricCalculator {
     public static final String TSR = "TSR"; //Team Size Reduction Ratio
 
     @Override
