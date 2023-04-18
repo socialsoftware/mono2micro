@@ -12,7 +12,8 @@ import {Redo, Search, Undo} from "@mui/icons-material";
 import {RepositoryViewModal} from "./RepositoryViewModal";
 import Popover from "react-bootstrap/Popover";
 import {ViewSearchBar} from "../utils/ViewSearchBar";
-import {RepresentationInfoType} from "../../../models/representation/RepresentationInfoTypes";
+import {StrategyType} from "../../../models/strategy/StrategyTypes";
+import {RepresentationType} from "../../../models/representation/Representation";
 
 export const repositoryViewHelp = (<div>
     Double click a node to see its properties.<br />
@@ -55,12 +56,12 @@ export const RepositoryView = () => {
         const response1 = service.getDecomposition(decompositionName).then(response => {
             setNow(n => n + 30);
             setClusters(Object.values(response.clusters));
-            let representationInfo = response.representationInformations.find(rep => rep.type === RepresentationInfoType.REPOSITORY_INFO);
+            let representationInfo = response.representationInformations.find(rep => rep.type === RepresentationType.REPOSITORY_TYPE);
             setAuthors(representationInfo.authors);
             setCommitsInCommon(representationInfo.commitsInCommon);
             setTotalCommits(representationInfo.totalCommits);
         });
-        const response2 = service.getEdgeWeights(decompositionName, RepresentationInfoType.REPOSITORY_INFO).then(response => { setNow(n => n + 30); setEdgeWeights(response.data);});
+        const response2 = service.getEdgeWeights(decompositionName, RepresentationType.REPOSITORY_TYPE).then(response => { setNow(n => n + 30); setEdgeWeights(response.data);});
         Promise.all([response1, response2]).then(() => setDisplayRepository("block"));
     }, []);
 
@@ -148,7 +149,7 @@ export const RepositoryView = () => {
             />
 
             <ViewSearchBar
-                viewType={RepresentationInfoType.REPOSITORY_INFO}
+                viewType={StrategyType.REPOSITORY_STRATEGY}
                 dataFields={['name', 'type', 'cluster', 'entities']}
                 openSearch={openSearch}
                 setOpenSearch={setOpenSearch}

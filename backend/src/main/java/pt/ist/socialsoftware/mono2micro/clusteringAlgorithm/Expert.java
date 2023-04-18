@@ -26,12 +26,8 @@ public class Expert {
     }
 
     public Decomposition generateClusters(Similarity similarity, String expertName, Optional<MultipartFile> expertFile) throws Exception {
-        Decomposition decomposition = new PartitionsDecomposition();
+        Decomposition decomposition = new PartitionsDecomposition(similarity);
         decomposition.setExpert(true);
-        decomposition.setSimilarity(similarity);
-        similarity.addDecomposition(decomposition);
-        decomposition.setStrategy(similarity.getStrategy());
-        similarity.getStrategy().addDecomposition(decomposition);
 
         Map<Short, String> idToEntity;
 

@@ -22,10 +22,8 @@ public class RecommendationController {
 	@Autowired
 	RecommendationService recommendationService;
 
-	@RequestMapping(value = "/recommendation/createRecommendation", method = RequestMethod.PUT)
-	public ResponseEntity<RecommendationDto> createRecommendation(
-			@RequestBody RecommendationDto recommendationDto
-	) {
+	@PutMapping(value = "/recommendation/createRecommendation")
+	public ResponseEntity<RecommendationDto> createRecommendation(@RequestBody RecommendationDto recommendationDto) {
 		logger.debug("Create recommendation");
 
 		try {
@@ -36,7 +34,7 @@ public class RecommendationController {
 		}
 	}
 
-	@RequestMapping(value = "/recommendation/{recommendationName}/getRecommendationResult", method = RequestMethod.GET)
+	@GetMapping(value = "/recommendation/{recommendationName}/getRecommendationResult")
 	public ResponseEntity<String> getRecommendationResult(
 			@PathVariable String recommendationName
 	) {
@@ -53,7 +51,7 @@ public class RecommendationController {
 		}
 	}
 
-	@RequestMapping(value = "/recommendation/{recommendationName}/createDecompositions")
+	@PostMapping(value = "/recommendation/{recommendationName}/createDecompositions")
 	public ResponseEntity<HttpStatus> createDecompositions(
 			@PathVariable String recommendationName,
 			@RequestParam List<String> decompositionNames

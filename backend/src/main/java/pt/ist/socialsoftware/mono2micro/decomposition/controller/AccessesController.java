@@ -19,7 +19,7 @@ public class AccessesController {
     @Autowired
     AccessesDecompositionService accessesDecompositionService;
 
-    @RequestMapping(value = "/accesses/{decompositionName}/getLocalTransactionsGraphForFunctionality", method = RequestMethod.GET)
+    @GetMapping(value = "/accesses/{decompositionName}/getLocalTransactionsGraphForFunctionality")
     public ResponseEntity<Utils.GetSerializableLocalTransactionsGraphResult> getLocalTransactionsGraphForFunctionality(
             @PathVariable String decompositionName,
             @RequestParam String functionalityName
@@ -37,7 +37,7 @@ public class AccessesController {
         }
     }
 
-    @RequestMapping(value = "/accesses/{decompositionName}/getFunctionalitiesAndFunctionalitiesClusters", method = RequestMethod.GET)
+    @GetMapping(value = "/accesses/{decompositionName}/getFunctionalitiesAndFunctionalitiesClusters")
     public ResponseEntity<Map<String, Object>> getFunctionalitiesAndFunctionalitiesClusters(
             @PathVariable String decompositionName
     ) {
@@ -56,7 +56,7 @@ public class AccessesController {
         }
     }
 
-    @RequestMapping(value = "/accesses/{decompositionName}/getClustersAndClustersFunctionalities", method = RequestMethod.GET)
+    @GetMapping(value = "/accesses/{decompositionName}/getClustersAndClustersFunctionalities")
     public ResponseEntity<Map<String, Object>> getClustersAndClustersFunctionalities(
             @PathVariable String decompositionName
     ) {

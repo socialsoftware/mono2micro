@@ -1,7 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition;
 
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
-import pt.ist.socialsoftware.mono2micro.decomposition.dto.decomposition.representationInfoDto.RepresentationInfoDto;
+import pt.ist.socialsoftware.mono2micro.decomposition.dto.representationInfoDto.RepresentationInfoDto;
 
 import java.util.List;
 import java.util.Map;

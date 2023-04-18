@@ -6,8 +6,6 @@ import pt.ist.socialsoftware.mono2micro.utils.Constants;
 
 import java.util.List;
 
-import static pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy.RECOMMEND_MATRIX_SCIPY;
-
 public class RecommendMatrixSciPyDto extends RecommendationDto {
     private String profile;
     private String linkageType;
@@ -15,10 +13,10 @@ public class RecommendMatrixSciPyDto extends RecommendationDto {
     private int tracesMaxLimit;
     private List<Weights> weightsList;
 
-    public RecommendMatrixSciPyDto() {this.type = RECOMMEND_MATRIX_SCIPY;}
+    public RecommendMatrixSciPyDto() {}
 
     public RecommendMatrixSciPyDto(RecommendMatrixSciPy recommendation) {
-        this.type = RECOMMEND_MATRIX_SCIPY;
+        this.setType(recommendation.getType());
         this.setStrategyName(recommendation.getStrategy().getName());
         this.name = recommendation.getName();
         this.profile = recommendation.getProfile();

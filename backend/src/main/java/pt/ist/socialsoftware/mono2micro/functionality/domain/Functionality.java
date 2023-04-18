@@ -12,14 +12,14 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.AccessesInfo;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInformation.AccessesInformation;
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.ReducedTraceElementDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
-import pt.ist.socialsoftware.mono2micro.metrics.functionalityMetrics.FunctionalityComplexityMetric;
-import pt.ist.socialsoftware.mono2micro.metrics.functionalityMetrics.FunctionalityMetric;
-import pt.ist.socialsoftware.mono2micro.metrics.functionalityMetrics.FunctionalityPerformanceMetric;
+import pt.ist.socialsoftware.mono2micro.metrics.functionalityMetrics.FunctionalityComplexityMetricCalculator;
+import pt.ist.socialsoftware.mono2micro.metrics.functionalityMetrics.FunctionalityMetricCalculator;
+import pt.ist.socialsoftware.mono2micro.metrics.functionalityMetrics.FunctionalityPerformanceMetricCalculator;
 import pt.ist.socialsoftware.mono2micro.utils.*;
 
 import static org.jgrapht.Graphs.successorListOf;
@@ -43,12 +43,12 @@ public class Functionality {
 	public Functionality() {}
 
 	public Functionality(String decompositionName, String name) {
-		this.id = decompositionName + " & " + name.replaceAll("\\.", "_");
+		this.id = decompositionName + " & " + name.replace(".", "_");
         this.name = name;
 	}
 
 	public Functionality(String decompositionName, Functionality functionality) { // Useful when redesigns are not needed
-		this.id = decompositionName + " & " + functionality.getName().replaceAll("\\.", "_");
+		this.id = decompositionName + " & " + functionality.getName().replace(".", "_");
 		this.name = functionality.getName();
 		this.type = functionality.getType();
 		this.metrics = functionality.getMetrics();
@@ -153,30 +153,30 @@ public class Functionality {
 
 	public Set<Short> entitiesTouchedInAGivenMode(byte mode){
 		Set<Short> entitiesTouchedInAGivenMode = new HashSet<>();
-		for(Short entity : this.entities.keySet()){
-			if(this.entities.get(entity) == 3 || this.entities.get(entity) == mode) // 3 -> RW
-				entitiesTouchedInAGivenMode.add(entity);
+		for (Map.Entry<Short, Byte> entry: this.entities.entrySet()){
+			if (entry.getValue() == 3 || entry.getValue() == mode) // 3 -> RW
+				entitiesTouchedInAGivenMode.add(entry.getKey());
 		}
 		return entitiesTouchedInAGivenMode;
 	}
 
 	public Set<String> clustersOfGivenEntities(Set<Short> entities){
 		Set<String> clustersOfGivenEntities = new HashSet<>();
-		for(String clusterName : this.entitiesPerCluster.keySet()){
-			for(Short entityID : entities){
-				if(this.entitiesPerCluster.get(clusterName).contains(entityID))
-					clustersOfGivenEntities.add(clusterName);
+		for (Map.Entry<String, Set<Short>> entry : this.entitiesPerCluster.entrySet()){
+			for (Short entityID : entities){
+				if (entry.getValue().contains(entityID))
+					clustersOfGivenEntities.add(entry.getKey());
 			}
 		}
 		return clustersOfGivenEntities;
 	}
 
 	public FunctionalityType defineFunctionalityType(){
-		if(this.type != null) return this.type;
+		if (this.type != null) return this.type;
 
-		if(!this.entities.isEmpty()){
-			for(Short entity : this.entities.keySet()){
-				if(this.entities.get(entity) >= 2) { // 2 -> W , 3 -> RW
+		if (!this.entities.isEmpty()){
+			for (Map.Entry<Short, Byte> entry : this.entities.entrySet()){
+				if (entry.getValue() >= 2) { // 2 -> W , 3 -> RW
 					this.type = FunctionalityType.SAGA;
 					return this.type;
 				}
@@ -371,10 +371,10 @@ public class Functionality {
 		return successorListOf(localTransactionsGraph, lt);
 	}
 
-	public void calculateMetrics(AccessesInfo accessesInfo, Decomposition decomposition) throws Exception {
-		FunctionalityMetric[] metricObjects = new FunctionalityMetric[] {new FunctionalityComplexityMetric(), new FunctionalityPerformanceMetric()};
+	public void calculateMetrics(AccessesInformation accessesInformation, Decomposition decomposition) throws Exception {
+		FunctionalityMetricCalculator[] metricObjects = new FunctionalityMetricCalculator[] {new FunctionalityComplexityMetricCalculator(), new FunctionalityPerformanceMetricCalculator()};
 
-		for (FunctionalityMetric metric : metricObjects)
-			this.metrics.put(metric.getType(), metric.calculateMetric(accessesInfo, decomposition, this));
+		for (FunctionalityMetricCalculator metric : metricObjects)
+			this.metrics.put(metric.getType(), metric.calculateMetric(accessesInformation, decomposition, this));
 	}
 }

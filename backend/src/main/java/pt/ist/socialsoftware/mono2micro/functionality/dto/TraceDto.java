@@ -48,7 +48,7 @@ public class TraceDto {
 		int elementsListSize = elements.size();
 
 		for (int i = 0; i < elementsListSize; i++) {
-			while (ll.size() != 0) {
+			while (!ll.isEmpty()) {
 				Pair<Integer, RuleDto> lastPair = ll.getLast();
 
 				if (lastPair.getFirst() + lastPair.getSecond().getCount() < i) {
@@ -85,7 +85,7 @@ public class TraceDto {
 	) {
 		List<ReducedTraceElementDto> accesses = new ArrayList<>();
 
-		if (elements == null || elements.size() == 0) return accesses;
+		if (elements == null || elements.isEmpty()) return accesses;
 
 		int i = from;
 
@@ -154,8 +154,8 @@ public class TraceDto {
 	}
 
 	@JsonIgnore
-	public HashSet<String> getAccessesSet() {
-		HashSet<String> accessesSet = new HashSet<>();
+	public Set<String> getAccessesSet() {
+		Set<String> accessesSet = new HashSet<>();
 
 		if (elements != null) {
 			elements.forEach(e -> {

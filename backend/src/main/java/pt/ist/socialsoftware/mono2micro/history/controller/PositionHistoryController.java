@@ -23,7 +23,7 @@ public class PositionHistoryController {
 
     private static final Logger logger = LoggerFactory.getLogger(PositionHistoryController.class);
 
-    @RequestMapping(value = "/saveGraphPositions", method = RequestMethod.POST)
+    @PostMapping(value = "/saveGraphPositions")
     public ResponseEntity<HttpStatus> saveGraphPositions(
             @PathVariable String decompositionName,
             @RequestBody String graphPositions
@@ -41,7 +41,7 @@ public class PositionHistoryController {
         }
     }
 
-    @RequestMapping(value = "/getGraphPositions", method = RequestMethod.GET)
+    @GetMapping(value = "/getGraphPositions")
     public ResponseEntity<String> getGraphPositions(
             @PathVariable String decompositionName
     ) {

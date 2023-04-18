@@ -14,10 +14,10 @@ export default class AccessesWeights extends Weights {
         this.numberOfWeights = 4;
         this.type = ACCESSES_WEIGHTS;
         this.weightsLabel = {
-            accessMetricWeight: "Access Metric Weight",
-            writeMetricWeight: "Write Metric Weight",
-            readMetricWeight: "Read Metric Weight",
-            sequenceMetricWeight: "Sequence Metric Weight"
+            accessMetricWeight: "Access Weight",
+            writeMetricWeight: "Write Weight",
+            readMetricWeight: "Read Weight",
+            sequenceMetricWeight: "Sequence Weight"
         }
 
         this.accessMetricWeight = weights.accessMetricWeight;

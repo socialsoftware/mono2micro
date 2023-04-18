@@ -17,12 +17,12 @@ import java.util.Optional;
 @RestController
 @RequestMapping(value = "/mono2micro/decomposition/{decompositionName}/functionality/{functionalityName}/redesign/{redesignName}")
 public class FunctionalityController {
-    private static final Logger logger = LoggerFactory.getLogger(DecompositionController.class);
+    private static final Logger logger = LoggerFactory.getLogger(FunctionalityController.class);
 
     @Autowired
     FunctionalityService functionalityService;
 
-    @RequestMapping(value = "/addCompensating", method = RequestMethod.POST)
+    @PostMapping(value = "/addCompensating")
     public ResponseEntity<FunctionalityDto> addCompensating(
             @PathVariable String decompositionName,
             @PathVariable String functionalityName,
@@ -41,7 +41,7 @@ public class FunctionalityController {
         }
     }
 
-    @RequestMapping(value = "/sequenceChange", method = RequestMethod.POST)
+    @PostMapping(value = "/sequenceChange")
     public ResponseEntity<FunctionalityDto> sequenceChange(@PathVariable String decompositionName,
                                                         @PathVariable String functionalityName,
                                                         @PathVariable String redesignName,
@@ -58,7 +58,7 @@ public class FunctionalityController {
         }
     }
 
-    @RequestMapping(value = "/dcgi", method = RequestMethod.POST)
+    @PostMapping(value = "/dcgi")
     public ResponseEntity<FunctionalityDto> dcgi(
             @PathVariable String decompositionName,
             @PathVariable String functionalityName,
@@ -76,7 +76,7 @@ public class FunctionalityController {
         }
     }
 
-    @RequestMapping(value = "/pivotTransaction", method = RequestMethod.POST)
+    @PostMapping(value = "/pivotTransaction")
     public ResponseEntity<FunctionalityDto> pivotTransaction(
             @PathVariable String decompositionName,
             @PathVariable String functionalityName,
@@ -98,7 +98,7 @@ public class FunctionalityController {
 
     }
 
-    @RequestMapping(value="/changeLTName", method = RequestMethod.POST)
+    @PostMapping(value="/changeLTName")
     public ResponseEntity<FunctionalityDto> changeLTName(
             @PathVariable String decompositionName,
             @PathVariable String functionalityName,
@@ -117,7 +117,7 @@ public class FunctionalityController {
         }
     }
 
-    @RequestMapping(value="/deleteRedesign", method = RequestMethod.DELETE)
+    @DeleteMapping(value="/deleteRedesign")
     public ResponseEntity<FunctionalityDto> deleteRedesign(
             @PathVariable String decompositionName,
             @PathVariable String functionalityName,
@@ -133,7 +133,7 @@ public class FunctionalityController {
         }
     }
 
-    @RequestMapping(value="/useForMetrics", method = RequestMethod.POST)
+    @PostMapping(value="/useForMetrics")
     public ResponseEntity<FunctionalityDto> useForMetrics(
             @PathVariable String decompositionName,
             @PathVariable String functionalityName,

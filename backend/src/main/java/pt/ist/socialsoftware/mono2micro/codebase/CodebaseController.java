@@ -28,7 +28,7 @@ public class CodebaseController {
 	@Autowired
 	CodebaseService codebaseService;
 
-	@RequestMapping(value = "/codebases", method = RequestMethod.GET)
+	@GetMapping(value = "/codebases")
 	public ResponseEntity<List<CodebaseDto>> getCodebases() {
 		logger.debug("getCodebases");
 
@@ -44,7 +44,7 @@ public class CodebaseController {
 		}
 	}
 
-	@RequestMapping(value = "/codebase/{codebaseName}", method = RequestMethod.GET)
+	@GetMapping(value = "/codebase/{codebaseName}")
 	public ResponseEntity<CodebaseDto> getCodebase(
 			@PathVariable String codebaseName
 	) {
@@ -61,7 +61,7 @@ public class CodebaseController {
 		}
 	}
 
-	@RequestMapping(value = "/codebase/{codebaseName}/getRepresentations", method = RequestMethod.GET)
+	@GetMapping(value = "/codebase/{codebaseName}/getRepresentations")
 	public ResponseEntity<List<RepresentationDto>> getRepresentations(
 			@PathVariable String codebaseName
 	) {
@@ -78,10 +78,8 @@ public class CodebaseController {
 		}
 	}
 
-	@RequestMapping(value = "/codebase/{codebaseName}/getCodebaseStrategies", method = RequestMethod.GET)
-	public ResponseEntity<List<StrategyDto>> getCodebaseStrategies(
-			@PathVariable String codebaseName
-	) {
+	@GetMapping(value = "/codebase/{codebaseName}/getCodebaseStrategies")
+	public ResponseEntity<List<StrategyDto>> getCodebaseStrategies(@PathVariable String codebaseName) {
 		logger.debug("getCodebaseStrategies");
 
 		try {
@@ -94,7 +92,20 @@ public class CodebaseController {
 		}
 	}
 
-	@RequestMapping(value = "/codebase/{codebaseName}/getCodebaseDecompositions", method = RequestMethod.GET)
+	@GetMapping(value = "/codebase/{codebaseName}/getAllowableCodebaseStrategyTypes")
+	public ResponseEntity<List<String>> getAllowableCodebaseStrategyTypes(@PathVariable String codebaseName) {
+		logger.debug("getPossibleCodebaseStrategyTypes");
+
+		try {
+			return new ResponseEntity<>(codebaseService.getAllowableCodebaseStrategyTypes(codebaseName), HttpStatus.OK);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@GetMapping(value = "/codebase/{codebaseName}/getCodebaseDecompositions")
 	public ResponseEntity<List<DecompositionDto>> getCodebaseDecompositions(
 			@PathVariable String codebaseName
 	) {
@@ -115,7 +126,7 @@ public class CodebaseController {
 		}
 	}
 
-    @RequestMapping(value = "/codebase/{codebaseName}/delete", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/codebase/{codebaseName}/delete")
 	public ResponseEntity<HttpStatus> deleteCodebase(@PathVariable String codebaseName) {
 		logger.debug("deleteCodebase");
 
@@ -129,7 +140,7 @@ public class CodebaseController {
         }
     }
 
-    @RequestMapping(value = "/codebase/create", method = RequestMethod.POST)
+    @PostMapping(value = "/codebase/create")
     public ResponseEntity<HttpStatus> createCodebase(
         @RequestParam String codebaseName
     ){
@@ -149,14 +160,14 @@ public class CodebaseController {
         }
     }
 
-	@RequestMapping(value = "/codebase/{codebaseName}/getCodebaseRepresentationInfoTypes", method = RequestMethod.GET)
-	public ResponseEntity<List<String>> getCodebaseRepresentationInfoTypes(
+	@GetMapping(value = "/codebase/{codebaseName}/getCodebaseRepresentationGroups")
+	public ResponseEntity<List<String>> getCodebaseRepresentationGroups(
 			@PathVariable String codebaseName
 	){
 		logger.debug("getCodebaseRepresentationInfoTypes");
 
 		try {
-			return new ResponseEntity<>(codebaseService.getCodebaseRepresentationInfoTypes(codebaseName), HttpStatus.OK);
+			return new ResponseEntity<>(codebaseService.getCodebaseRepresentationGroups(codebaseName), HttpStatus.OK);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -164,12 +175,12 @@ public class CodebaseController {
 		}
 	}
 
-	@RequestMapping(value = "/codebase/getRepresentationInfoTypes", method = RequestMethod.GET)
-	public ResponseEntity<Map<String, List<String>>> getRepresentationInfoTypes() {
+	@GetMapping(value = "/codebase/getRepresentationGroups")
+	public ResponseEntity<Map<String, List<String>>> getRepresentationGroups() {
 		logger.debug("getRepresentationInfoTypes");
 
 		try {
-			return new ResponseEntity<>(codebaseService.getRepresentationInfoTypes(), HttpStatus.OK);
+			return new ResponseEntity<>(codebaseService.getRepresentationGroups(), HttpStatus.OK);
 
 		} catch (Exception e) {
 			e.printStackTrace();

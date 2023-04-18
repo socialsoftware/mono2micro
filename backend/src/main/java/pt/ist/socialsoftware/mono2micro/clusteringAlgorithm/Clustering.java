@@ -10,5 +10,5 @@ public abstract class Clustering {
     public abstract Decomposition generateDecomposition(Similarity similarity, DecompositionRequest request) throws Exception;
     public abstract String getType();
 
-    public abstract List<String> getSupportedRepresentationInfoTypes();
+    public abstract List<String> getAlgorithmSupportedStrategyTypes();
 }

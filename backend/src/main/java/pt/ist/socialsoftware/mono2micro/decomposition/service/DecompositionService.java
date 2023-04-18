@@ -37,7 +37,7 @@ public class DecompositionService {
 
     public void createDecomposition(DecompositionRequest request) throws Exception {
         Similarity similarity = similarityRepository.findByName(request.getSimilarityName());
-
+        
         Clustering clustering = similarity.getClustering();
         Decomposition decomposition = clustering.generateDecomposition(similarity, request);
 
@@ -157,13 +157,8 @@ public class DecompositionService {
 
         Decomposition snapshotDecomposition = decomposition.snapshotDecomposition(snapshotName);
 
-        Strategy strategy = decomposition.getStrategy();
-        similarity.addDecomposition(snapshotDecomposition);
-        snapshotDecomposition.setSimilarity(similarity);
-        strategy.addDecomposition(snapshotDecomposition);
-        snapshotDecomposition.setStrategy(strategy);
         decompositionRepository.save(snapshotDecomposition);
         similarityRepository.save(similarity);
-        strategyRepository.save(strategy);
+        strategyRepository.save(similarity.getStrategy());
     }
 }

@@ -19,7 +19,7 @@ public class AccessesRepresentationController {
     @Autowired
     AccessesRepresentationService accessesRepresentationService;
 
-    @RequestMapping(value = "/representation/{representationName}/addAccessesProfile", method = RequestMethod.POST)
+    @PostMapping(value = "/representation/{representationName}/addAccessesProfile")
     public ResponseEntity<HttpStatus> addAccessesProfile(
             @PathVariable String representationName,
             @RequestParam String profile
@@ -41,7 +41,7 @@ public class AccessesRepresentationController {
     }
 
 
-    @RequestMapping(value = "/representation/{representationName}/moveAccessesFunctionalities", method = RequestMethod.POST)
+    @PostMapping(value = "/representation/{representationName}/moveAccessesFunctionalities")
     public ResponseEntity<HttpStatus> moveAccessesFunctionalities(
             @PathVariable String representationName,
             @RequestBody String[] functionalities,
@@ -60,7 +60,7 @@ public class AccessesRepresentationController {
     }
 
 
-    @RequestMapping(value = "/representation/{representationName}/deleteAccessesProfile", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/representation/{representationName}/deleteAccessesProfile")
     public ResponseEntity<HttpStatus> deleteAccessesProfile(
             @PathVariable String representationName,
             @RequestParam String profile
@@ -76,7 +76,7 @@ public class AccessesRepresentationController {
         }
     }
 
-    @RequestMapping(value = "/representation/{codebaseName}/getIdToEntity", method = RequestMethod.GET)
+    @GetMapping(value = "/representation/{codebaseName}/getIdToEntity")
     public ResponseEntity<String> getIdToEntity(@PathVariable String codebaseName) {
         logger.debug("getIdToEntity");
 

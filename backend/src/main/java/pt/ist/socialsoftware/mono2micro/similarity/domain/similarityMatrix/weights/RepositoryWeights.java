@@ -41,10 +41,19 @@ public class RepositoryWeights extends Weights {
 
     @Override
     public List<String> getWeightsNames() {
-        return new ArrayList<String>() {{
-            add("authorMetricWeight");
-            add("commitMetricWeight");
-        }};
+        return new ArrayList<>(Arrays.asList("authorMetricWeight", "commitMetricWeight"));
+    }
+
+    @Override
+    public String getName() {
+        StringBuilder result = new StringBuilder("ws(");
+        result.append("Au")
+                .append(Math.round(getWeights()[0]))
+                .append(",")
+                .append("Co")
+                .append(Math.round(getWeights()[1]))
+                .append(")");
+        return result.toString();
     }
 
     public void setWeightsFromArray(float[] weightsArray) {
@@ -95,8 +104,8 @@ public class RepositoryWeights extends Weights {
             float[][][] rawMatrix,
             Set<Short> entities,
             int fillFromIndex,
-            HashMap<Short, ArrayList<String>> authorChanges,
-            HashMap<String, Map<String, Integer>> commitChanges
+            Map<Short, ArrayList<String>> authorChanges,
+            Map<String, Map<String, Integer>> commitChanges
     ) {
         int i = 0;
         for (short e1ID : entities) {
@@ -122,8 +131,8 @@ public class RepositoryWeights extends Weights {
 
     public float[] calculateSimilarityMatrixCommitMetrics(
             short e1ID, short e2ID,
-            HashMap<String, Map<String, Integer>> commitChanges,
-            HashMap<Short, ArrayList<String>> authorChanges
+            Map<String, Map<String, Integer>> commitChanges,
+            Map<Short, ArrayList<String>> authorChanges
     ) {
 
         float commitMetricValue = 0;

@@ -11,9 +11,8 @@ import {Modal, ModalBody, ModalFooter, ModalTitle} from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
-import {RepresentationType} from "../../../models/representation/Representation";
+import {RepresentationFile} from "../../../models/representation/Representation";
 import {TraceType} from "../../../type-declarations/types";
-import {RECOMMEND_MATRIX_SCIPY} from "../../../models/recommendation/RecommendMatrixSciPy";
 import {WeightsFactory} from "../../../models/weights/WeightsFactory";
 
 
@@ -27,6 +26,10 @@ const columns = [
     {dataField: 'sequenceMetricWeight',         text: 'Sequence Weight',            filter: nFilter, sort},
     {dataField: 'authorMetricWeight',           text: 'Author Weight',              filter: nFilter, sort},
     {dataField: 'commitMetricWeight',           text: 'Commit Weight',              filter: nFilter, sort},
+    {dataField: 'controllersWeight',            text: 'Controllers Weight',         filter: nFilter, sort},
+    {dataField: 'servicesWeight',               text: 'Services Weight',            filter: nFilter, sort},
+    {dataField: 'intermediateMethodsWeight',    text: 'Intermediate Methods Weight',filter: nFilter, sort},
+    {dataField: 'entitiesWeight',               text: 'Entities Weight',            filter: nFilter, sort},
     {dataField: 'numberOfClusters',             text: 'Number Of Clusters',         filter: nFilter, sort},
     {dataField: 'maxClusterSize',               text: 'Max Cluster Size',           filter: nFilter, sort},
     {dataField: 'Complexity',                   text: 'Complexity',                 filter: nFilter, sort},
@@ -37,7 +40,7 @@ const columns = [
 ];
 
 const pagination = paginationFactory({
-    page: 2,
+    page: 1,
     sizePerPage: 5,
     sizePerPageList: [
         {text: '5', value: 5},
@@ -60,7 +63,7 @@ const selectRow = {
     clickToSelect: true
 };
 
-export const RecommendMatrixSciPy = ({codebaseName, strategy, setUpdateStrategies}) => {
+export const RecommendMatrixSciPy = ({codebaseName, strategy, setUpdateStrategies, recommendationType}) => {
 
     const service = new APIService();
     const [isUploaded, setIsUploaded] = useState("");
@@ -81,11 +84,11 @@ export const RecommendMatrixSciPy = ({codebaseName, strategy, setUpdateStrategie
     // Executes when it is informed that there is information to be updated
     useEffect(() => {
         loadProfiles();
-        setWeightsList(WeightsFactory.getWeightListByRepresentationInfoType(strategy.representationInformationTypes));
+        setWeightsList(WeightsFactory.getWeightListByStrategyType(strategy.strategyTypes));
     }, [])
 
     function loadProfiles() {
-        service.getCodebaseRepresentation(codebaseName, RepresentationType.ACCESSES)
+        service.getCodebaseRepresentation(codebaseName, RepresentationFile.ACCESSES)
             .then((response) => setProfiles(response.profiles));
     }
 
@@ -127,7 +130,7 @@ export const RecommendMatrixSciPy = ({codebaseName, strategy, setUpdateStrategie
         setLoading(true);
 
         service.recommendation({
-            type: RECOMMEND_MATRIX_SCIPY,
+            type: recommendationType,
             strategyName: strategy.name,
             weightsList,
             profile,

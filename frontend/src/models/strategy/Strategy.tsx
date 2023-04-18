@@ -6,13 +6,15 @@ export default class Strategy {
     codebaseName!: string;
     name!: string;
     algorithmType!: string;
-    representationInformationTypes!: string[];
+    strategyTypes!: string[];
+    parameterTypes!: string[];
 
     constructor(strategy: any) {
         this.codebaseName = strategy.codebaseName;
         this.name = strategy.name;
         this.algorithmType = strategy.algorithmType;
-        this.representationInformationTypes = strategy.representationInformationTypes;
+        this.strategyTypes = strategy.strategyTypes;
+        this.parameterTypes = strategy.parameterTypes || [];
     }
 
     // This function is used to be displayed in the context of the codebase
@@ -21,7 +23,7 @@ export default class Strategy {
             <Card.Header>{this.name}</Card.Header>
             <Card.Body>
                 <span>{this.algorithmType}<br/></span>
-                {this.representationInformationTypes.map(rep => <span key={rep}>{rep}<br/></span> )}
+                {this.strategyTypes.map(rep => <span key={rep}>{rep}<br/></span> )}
                 <Button
                     href={`/codebases/${this.codebaseName}/${this.name}/similarity`}
                     className="mb-2"

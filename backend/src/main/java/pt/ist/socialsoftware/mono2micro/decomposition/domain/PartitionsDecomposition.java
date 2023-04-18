@@ -1,8 +1,8 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.domain;
 
 import org.springframework.data.mongodb.core.mapping.Document;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.RepresentationInfo;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.RepresentationInfoFactory;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInformation.RepresentationInformation;
+import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInformation.RepresentationInformationFactory;
 import pt.ist.socialsoftware.mono2micro.fileManager.ContextManager;
 import pt.ist.socialsoftware.mono2micro.history.domain.PositionHistory;
 import pt.ist.socialsoftware.mono2micro.history.service.HistoryService;
@@ -17,6 +17,8 @@ import pt.ist.socialsoftware.mono2micro.operation.split.SplitOperation;
 import pt.ist.socialsoftware.mono2micro.operation.split.SplitPartitionsOperation;
 import pt.ist.socialsoftware.mono2micro.operation.transfer.TransferOperation;
 import pt.ist.socialsoftware.mono2micro.operation.transfer.TransferPartitionsOperation;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
+import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 
 import java.util.*;
 
@@ -25,39 +27,47 @@ public class PartitionsDecomposition extends Decomposition {
     public static final String PARTITIONS_DECOMPOSITION = "Partitions Decomposition";
     public PartitionsDecomposition() { this.type = PARTITIONS_DECOMPOSITION; }
 
+    public PartitionsDecomposition(Similarity similarity) {
+        super(similarity);
+        this.type = PARTITIONS_DECOMPOSITION;
+    }
+
     public PartitionsDecomposition(PartitionsDecomposition decomposition, String snapshotName) throws Exception {
         this.type = PARTITIONS_DECOMPOSITION;
         this.name = snapshotName;
+        this.strategy = decomposition.getStrategy();
+        decomposition.getStrategy().addDecomposition(this);
         this.similarity = decomposition.getSimilarity();
+        decomposition.getSimilarity().addDecomposition(this);
         this.metrics = decomposition.getMetrics();
         this.outdated = decomposition.isOutdated();
         this.expert = decomposition.isExpert();
         this.clusters = decomposition.getClusters();
-        List<RepresentationInfo> representationInfos = RepresentationInfoFactory.getRepresentationInfosFromType(decomposition.getStrategy().getRepresentationInfoTypes());
-        for (RepresentationInfo representationInfo : representationInfos)
-            representationInfo.snapshot(this, decomposition);
+        List<RepresentationInformation> representationInformations = RepresentationInformationFactory.getStrategyRepresentationInformations(decomposition.getStrategy());
+        for (RepresentationInformation representationInformation : representationInformations)
+            representationInformation.snapshot(this, decomposition);
     }
 
     @Override
     public void calculateMetrics() {
-        this.representationInfos.stream()
-                .map(RepresentationInfo::getDecompositionMetrics)
+        this.representationInformations.stream()
+                .map(RepresentationInformation::getDecompositionMetrics)
                 .flatMap(Collection::stream)
                 .forEach(metric -> this.metrics.put(metric.getType(), metric.calculateMetric(this)));
     }
 
     @Override
     public void setup() throws Exception {
-        List<RepresentationInfo> representationInfos = RepresentationInfoFactory.getRepresentationInfosFromType(getStrategy().getRepresentationInfoTypes());
-        for (RepresentationInfo representationInfo : representationInfos)
-            representationInfo.setup(this);
+        List<RepresentationInformation> representationInformations = RepresentationInformationFactory.getStrategyRepresentationInformations(getStrategy());
+        for (RepresentationInformation representationInformation : representationInformations)
+            representationInformation.setup(this);
         this.history = new PositionHistory(this);
     }
 
     @Override
     public void update() throws Exception {
-        for (RepresentationInfo representationInfo : representationInfos)
-            representationInfo.update(this);
+        for (RepresentationInformation representationInformation : representationInformations)
+            representationInformation.update(this);
     }
 
     @Override
@@ -92,7 +102,7 @@ public class PartitionsDecomposition extends Decomposition {
 
     @Override
     public void deleteProperties() {
-        representationInfos.forEach(RepresentationInfo::deleteProperties);
+        representationInformations.forEach(RepresentationInformation::deleteProperties);
     }
 
     @Override

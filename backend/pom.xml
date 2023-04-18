@@ -14,6 +14,33 @@
 	<name>mono2micro</name>
 	<description>Monolithic to Microservices</description>
 
+	<packaging>${packaging.type}</packaging>
+
+	<profiles>
+		<profile>
+			<id>jar</id>
+			<properties>
+				<packaging.type>jar</packaging.type>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
+		<profile>
+			<id>war</id>
+			<properties>
+				<packaging.type>war</packaging.type>
+			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+					<scope>provided</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
+
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>

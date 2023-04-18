@@ -59,6 +59,46 @@ func (svc *DefaultHandler) RefactorDecomposition(
 
 	svc.logger.Log("decomposition", request.DecompositionName, "validFunctionalities", len(validFunctionalities))
 
+	//fmt.Println(decomposition.StrategyType)
+	//fmt.Println(decomposition.Name)
+	//fmt.Println(decomposition.CodebaseName)
+	//fmt.Println(decomposition.StrategyName)
+	//fmt.Println(decomposition.Expert)
+	//fmt.Println(decomposition.Complexity)
+	//fmt.Println(decomposition.Cohesion)
+	//fmt.Println(decomposition.Coupling)
+	//for name, cluster := range decomposition.Clusters {
+	//	for _, entity := range cluster.Entities {
+	//		fmt.Println("cluster", name, entity.Id, entity.Name)
+	//	}
+	//}
+	//for id, name := range decomposition.EntityIDToClusterName {
+	//	fmt.Println("cluster of entity", id, name)
+	//}
+	//for _, functionality := range decomposition.Functionalities {
+	//	fmt.Println("functionality name", functionality.Name)
+	//	fmt.Println("functionality type", functionality.Type)
+	//	fmt.Println("functionality complexity", functionality.Complexity)
+	//	fmt.Println("functionality performance", functionality.Performance)
+	//	fmt.Println("functionality FunctionalityRedesignNameUsedForMetrics", functionality.FunctionalityRedesignNameUsedForMetrics)
+	//	fmt.Println("functionality Entities", functionality.Entities)
+	//	fmt.Println("functionality EntitiesPerCluster", functionality.EntitiesPerCluster)
+	//	for _, functionalityRedesign := range functionality.FunctionalityRedesigns {
+	//		fmt.Println("redesign name", functionalityRedesign.Name)
+	//		for _, invocation := range functionalityRedesign.Redesign {
+	//			fmt.Println("invocation name", invocation.Name)
+	//			fmt.Println("invocation ID", invocation.ID)
+	//			fmt.Println("invocation ClusterName", invocation.ClusterName)
+	//			fmt.Println("invocation ClusterAccesses", invocation.ClusterAccesses)
+	//			fmt.Println("invocation RemoteInvocations", invocation.RemoteInvocations)
+	//			fmt.Println("invocation Type", invocation.Type)
+	//			fmt.Println("invocation FunctionalitiesThatReadInWrittenEntities", invocation.FunctionalitiesThatReadInWrittenEntities)
+	//			fmt.Println("invocation FunctionalitiesThatWriteInReadEntities", invocation.FunctionalitiesThatWriteInReadEntities)
+	//		}
+	//	}
+	//
+	//}
+
 	refactorTimeout := DefaultRefactorRoutineTimeoutSecs
 	if request.RefactorTimeOutSecs != 0 {
 		refactorTimeout = request.RefactorTimeOutSecs
@@ -134,7 +174,10 @@ func (svc *DefaultHandler) extractValidFunctionalities(
 	var wg sync.WaitGroup
 	mapMutex := sync.RWMutex{}
 
+	svc.logger.Log("start extractValidFunctionalities", 0)
+
 	for _, functionality := range decomposition.Functionalities {
+		svc.logger.Log("functionality name", functionality.Name)
 		if !request.ShouldRefactorFunctionality(functionality) {
 			continue
 		}
@@ -492,6 +535,7 @@ func (svc *DefaultHandler) createFinalFunctionalityData(
 
 	orchestratorName := sagaRedesign.Redesign[0].ClusterName
 
+	isNextOrchestrator := true
 	invocations := []values.Invocation{}
 	for _, invocation := range sagaRedesign.Redesign {
 		accesses := []values.Access{}
@@ -502,10 +546,19 @@ func (svc *DefaultHandler) createFinalFunctionalityData(
 			})
 		}
 
+		if isNextOrchestrator && invocation.ClusterName != orchestratorName {
+			invocations = append(invocations, values.Invocation{
+				ClusterName: orchestratorName,
+				Accesses:    []values.Access{},
+			})
+		}
+
 		invocations = append(invocations, values.Invocation{
 			ClusterName: invocation.ClusterName,
 			Accesses:    accesses,
 		})
+
+		isNextOrchestrator = invocation.ClusterName != orchestratorName
 	}
 
 	return &values.Functionality{

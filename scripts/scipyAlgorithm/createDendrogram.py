@@ -23,12 +23,13 @@ def createDendrogram(similarityName, similarityMatrixName, linkageType):
 
     entities = similarityMatrix["elements"]
     matrix = np.array(similarityMatrix["matrix"])
+    labels = similarityMatrix["labels"]
 
     hierarc = hierarchy.linkage(y=matrix, method=linkageType)
 
     fig = plt.figure(figsize=(25, 10))
 
-    hierarchy.dendrogram(hierarc, labels=entities, distance_sort='descending')
+    hierarchy.dendrogram(hierarc, labels=labels, leaf_rotation=90.0, distance_sort='descending')
 
     img = BytesIO()
     plt.savefig(img, format="png", bbox_inches='tight')

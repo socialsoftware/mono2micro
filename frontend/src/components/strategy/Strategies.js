@@ -38,35 +38,35 @@ export function Strategies() {
     let { codebaseName } = useParams();
     const [showPopup, setShowPopup] = useState(false);
     const [representationToDelete, setRepresentationToDelete] = useState(undefined);
-    const [strategies, setStrategies] = useState([]);
+    const [codebaseStrategies, setCodebaseCodebaseStrategies] = useState([]);
     const [representations, setRepresentations] = useState([]);
     const [requiredRepresentations, setRequiredRepresentations] = useState([]);
     const [obtainedRepresentations, setObtainedRepresentations] = useState([]);
-    const [selectedRepresentationInfoType, setSelectedRepresentationInfoType] = useState(undefined);
+    const [selectedRepresentationType, setSelectedRepresentationType] = useState(undefined);
     const [addedRepresentations, setAddedRepresentations] = useState({});
     const [isUploaded, setIsUploaded] = useState("");
     const [canSubmit, setCanSubmit] = useState(false);
     const [add, setAdd] = useState("");
-    const [representationInfoTypes, setRepresentationInfoTypes] = useState([]);
-    const [codebaseRepresentationInfoTypes, setCodebaseRepresentationInfoTypes] = useState([]);
+    const [representationGroups, setRepresentationGroups] = useState([]);
+    const [codebaseRepresentationGroups, setCodebaseRepresentationGroups] = useState([]);
     const [strategyRepresentations, setStrategyRepresentations] = useState([]);
     const [algorithms, setAlgorithms] = useState([]);
     const [strategyAlgorithm, setStrategyAlgorithm] = useState(undefined);
-    const [supportedRepresentationInfoTypes, setSupportedRepresentationInfoTypes] = useState([]);
+    const [availableStrategyTypes, setAvailableStrategyTypes] = useState([]);
 
     //Executed on mount
     useEffect(() => {
         const service = new APIService();
         loadStrategies();
         loadRepresentations();
-        loadCodebaseRepresentationInfoTypes();
+        loadCodebaseRepresentationGroups();
         service.getAlgorithms().then(response => setAlgorithms(response.data));
-        service.getRepresentationInfoTypes().then(response => setRepresentationInfoTypes(response.data));
+        service.getRepresentationGroups().then(response => setRepresentationGroups(response.data));
     }, []);
 
-    function loadCodebaseRepresentationInfoTypes() {
+    function loadCodebaseRepresentationGroups() {
         const service = new APIService();
-        service.getCodebaseRepresentationInfoTypes(codebaseName).then(response => setCodebaseRepresentationInfoTypes(response.data));
+        service.getCodebaseRepresentationGroups(codebaseName).then(response => setCodebaseRepresentationGroups(response.data));
     }
 
     function loadRepresentations() {
@@ -80,7 +80,7 @@ export function Strategies() {
     function loadStrategies() {
         const service = new APIService();
         service.getCodebaseStrategies(codebaseName).then(response => {
-            setStrategies(response);
+            setCodebaseCodebaseStrategies(response);
         });
     }
 
@@ -90,15 +90,15 @@ export function Strategies() {
         setIsUploaded("Uploading...");
 
         const service = new APIService();
-        service.addRepresentations(codebaseName, selectedRepresentationInfoType, addedRepresentations)
+        service.addRepresentations(codebaseName, selectedRepresentationType, addedRepresentations)
             .then(response => {
                 if (response.status === HttpStatus.CREATED) {
-                    loadCodebaseRepresentationInfoTypes();
+                    loadCodebaseRepresentationGroups();
                     loadRepresentations();
                     setIsUploaded("");
                 } else setIsUploaded("Upload failed.");
 
-                setSelectedRepresentationInfoType(undefined);
+                setSelectedRepresentationType(undefined);
                 setRequiredRepresentations([]);
                 setAddedRepresentations({});
                 setAdd("");
@@ -124,10 +124,10 @@ export function Strategies() {
     );
 
     function handleSelectedRepresentation(representationType) {
-        setSelectedRepresentationInfoType(representationType);
-        setRequiredRepresentations(representationInfoTypes[representationType]);
+        setSelectedRepresentationType(representationType);
+        setRequiredRepresentations(representationGroups[representationType]);
         let representationTypes = representations.map(rep => rep.type);
-        setCanSubmit(representationInfoTypes[representationType].reduce((p, c) => {return p? representationTypes.includes(c) : false}, true));
+        setCanSubmit(representationGroups[representationType].reduce((p, c) => {return p? representationTypes.includes(c) : false}, true));
     }
 
     function addRepresentation(representation, event) {
@@ -151,7 +151,7 @@ export function Strategies() {
         let toastId = toast.loading("Deleting representation...", {type: toast.TYPE.INFO});
         const service = new APIService();
         service.deleteRepresentation(representationToDelete.name).then(() => {
-            loadCodebaseRepresentationInfoTypes();
+            loadCodebaseRepresentationGroups();
             loadRepresentations();
             loadStrategies();
             toast.dismiss(toastId);
@@ -185,7 +185,7 @@ export function Strategies() {
 
                 setStrategyRepresentations([]);
                 setStrategyAlgorithm(undefined);
-                setSupportedRepresentationInfoTypes([]);
+                setAvailableStrategyTypes([]);
                 setAdd("");
             })
             .catch(error => {
@@ -204,18 +204,43 @@ export function Strategies() {
 
     function clickStrategyRepresentations(type) {
         setStrategyRepresentations(prev => {
-            if (prev.includes(type))
+            if (prev.includes(type)) {
                 prev = prev.filter(t => t !== type);
-            else prev = [...prev, type];
+            } else if (prev.some((el) => el.includes('Vectorization')) || type.includes('Vectorization')) {
+                prev.forEach((t) => document.getElementById(t).checked = false);
+                prev = [type];
+            } else {
+                prev = [...prev, type];
+            }
             return prev;
         });
     }
 
+    function includesStrategy(strategy) {
+        // this is too specific and needs to be refactored
+
+        let existing = codebaseStrategies.map(strategy => strategy.strategyTypes).filter((strategyTypes) => strategyTypes.includes(strategy));
+
+        // the vectorization strategies can not be combined
+        if (existing.length === 1 && existing[0].length === 1 && existing[0][0].includes('Vectorization')) {
+            return true;
+        }
+
+        // accesses and repository can be combined
+        if (existing.length == 2) return true;
+
+        return false;
+    }
+
     function clickStrategyAlgorithm(type) {
         const service = new APIService();
-        service.getSupportedRepresentationInfoTypes(type).then(response => {
+        service.getAllowableCodebaseStrategyTypes(codebaseName).then(response => {
+            setAvailableStrategyTypes(response.data.filter(strategy => !includesStrategy(strategy)));
+        })
+
+        service.getAlgorithmSupportedStrategyTypes(type).then(response => {
             setStrategyAlgorithm(type);
-            setSupportedRepresentationInfoTypes(response.data.filter(rep => codebaseRepresentationInfoTypes.includes(rep)));
+            setAvailableStrategyTypes(response.data.filter(strategy => availableStrategyTypes.includes(strategy)));
         });
     }
 
@@ -235,15 +260,22 @@ export function Strategies() {
                     </Col>
                 </Form.Group>
 
-                {supportedRepresentationInfoTypes.length !== 0 &&
+                {availableStrategyTypes.length !== 0 &&
                     <Form.Group as={Row} className="align-items-center mb-3">
                         <Form.Label as="legend" column sm={2}>
-                            Representation Informations
+                            Criteria
                         </Form.Label>
-                        <Col sm={3} style={{ paddingLeft: 0 }}>
-                            {supportedRepresentationInfoTypes.map(type =>
+                        <Col sm={8} style={{ paddingLeft: 0 }}>
+                            {availableStrategyTypes.map(type =>
                                 <Col key={type} sm="auto">
-                                    <Form.Check onClick={() => clickStrategyRepresentations(type)} name="representation" label={type} type="checkbox" id={type} value={type} />
+                                    <Form.Check
+                                        onClick={() => clickStrategyRepresentations(type)}
+                                        name="representation"
+                                        label={type}
+                                        type="checkbox"
+                                        id={type}
+                                        value={type}
+                                    />
                                 </Col>
                             )}
                         </Col>
@@ -267,8 +299,8 @@ export function Strategies() {
             <Form onSubmit={handleRepresentationsSubmit}>
                 <Form.Group as={Row} controlId="selectRepresentationInfo" className="align-items-center mb-3">
                     <Col sm={2}>
-                        <DropdownButton title={selectedRepresentationInfoType === undefined? "Choose Representation Type" : selectedRepresentationInfoType}>
-                            {representationInfoTypes !== undefined && Object.keys(representationInfoTypes).filter(representationType => !codebaseRepresentationInfoTypes.includes(representationType))
+                        <DropdownButton title={selectedRepresentationType === undefined? "Choose Representation Type" : selectedRepresentationType}>
+                            {representationGroups !== undefined && Object.keys(representationGroups).filter(representationType => !codebaseRepresentationGroups.includes(representationType))
                                 .map(representationType =>
                                     <Dropdown.Item
                                         key={representationType}
@@ -310,7 +342,7 @@ export function Strategies() {
                     </React.Fragment>
                 )}
 
-                {selectedRepresentationInfoType !== undefined &&
+                {selectedRepresentationType !== undefined &&
                     <Form.Group as={Row} className="align-items-center mb-4">
                         <Col sm={{offset: 2}}>
                             <Button type="submit" disabled={!canSubmit}>Submit</Button>
@@ -360,7 +392,7 @@ export function Strategies() {
             setAdd("");
             setStrategyRepresentations([]);
             setStrategyAlgorithm(undefined);
-            setSupportedRepresentationInfoTypes([]);
+            setAvailableStrategyTypes([]);
         };
 
         return <Modal
@@ -410,7 +442,7 @@ export function Strategies() {
                 Strategies
             </h4>
             <div className={"d-flex flex-wrap mw-100"} style={{gap: '1rem 1rem'}}>
-                {[...strategies.map(strategy => strategy.printCard(handleDeleteStrategy)), addCard("Strategy")]}
+                {[...codebaseStrategies.map(strategy => strategy.printCard(handleDeleteStrategy)), addCard("Strategy")]}
             </div>
         </div>
     );

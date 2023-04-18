@@ -16,16 +16,8 @@ public class PropertiesManager {
 	@Value("${scripts.address}")
 	private String scriptsAddress;
 
-	@Value("${codebases.path}")
-	private String codebasesPath;
-
 	@Bean(name="scriptsAddress")
 	public String getScriptsAddress() {
 		return scriptsAddress;
-	}
-
-	@Bean(name="codebasesPath")
-	public String getCodebasesPath() {
-		return codebasesPath;
 	}
 }

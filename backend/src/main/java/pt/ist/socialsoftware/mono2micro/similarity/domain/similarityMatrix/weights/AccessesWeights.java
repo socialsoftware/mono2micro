@@ -8,7 +8,7 @@ import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSci
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
-import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityMatrixSciPy;
+import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyAccessesAndRepository;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
@@ -52,12 +52,25 @@ public class AccessesWeights extends Weights {
 
     @Override
     public List<String> getWeightsNames() {
-        return new ArrayList<String>() {{
-            add("accessMetricWeight");
-            add("writeMetricWeight");
-            add("readMetricWeight");
-            add("sequenceMetricWeight");
-        }};
+        return new ArrayList<>(Arrays.asList("accessMetricWeight", "writeMetricWeight", "readMetricWeight", "sequenceMetricWeight"));
+    }
+
+    @Override
+    public String getName() {
+        StringBuilder result = new StringBuilder("ws(");
+        result.append("Ac")
+                .append(Math.round(getWeights()[0]))
+                .append(",")
+                .append("Wr")
+                .append(Math.round(getWeights()[1]))
+                .append(",")
+                .append("Re")
+                .append(Math.round(getWeights()[2]))
+                .append(",")
+                .append("Se")
+                .append(Math.round(getWeights()[3]))
+                .append(")");
+        return result.toString();
     }
 
     @Override
@@ -106,7 +119,7 @@ public class AccessesWeights extends Weights {
 
     @Override
     public void fillMatrix(GridFsService gridFsService, Similarity similarity, float[][][] rawMatrix, Set<Short> elements, int fillFromIndex) throws IOException, JSONException {
-        SimilarityMatrixSciPy s = (SimilarityMatrixSciPy) similarity;
+        SimilarityScipyAccessesAndRepository s = (SimilarityScipyAccessesAndRepository) similarity;
         AccessesRepresentation accesses = (AccessesRepresentation) similarity.getStrategy().getCodebase().getRepresentationByFileType(ACCESSES);
         fillRawMatrixFromAccesses(rawMatrix, fillFromIndex, gridFsService.getFile(accesses.getName()), accesses.getProfile(s.getProfile()), s.getTraceType(), s.getTracesMaxLimit());
     }

@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.codebase.repository.CodebaseRepository;
-import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfo.RepresentationInfoType;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.representation.domain.Representation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.RepresentationFactory;
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class RepresentationService {
-
     @Autowired
     CodebaseRepository codebaseRepository;
 
@@ -38,8 +36,6 @@ public class RepresentationService {
         Codebase codebase = codebaseRepository.findByName(codebaseName);
 
         if (representationTypes == null && representations == null) { // representations already added
-            codebase.addRepresentationInfoType(representationInfoType);
-            codebaseRepository.save(codebase);
             return;
         }
         if (representationTypes == null || representations == null || representationTypes.size() != representations.size())
@@ -51,7 +47,7 @@ public class RepresentationService {
             if (availableRepresentationsTypes.contains(representationType))
                 throw new RuntimeException("Re-sending representations is not allowed.");
 
-        for(int i = 0; i < representationTypes.size(); i++) {
+        for (int i = 0; i < representationTypes.size(); i++) {
             String representationType = representationTypes.get(i);
             byte[] representationFileStream = ((MultipartFile) representations.get(i)).getBytes();
             Representation representation = RepresentationFactory.getRepresentation(representationType);
@@ -60,7 +56,6 @@ public class RepresentationService {
             gridFsService.saveFile(new ByteArrayInputStream(representationFileStream), fileName);
             representationRepository.save(representation);
         }
-        codebase.addRepresentationInfoType(representationInfoType);
         codebaseRepository.save(codebase);
     }
 
@@ -87,9 +82,8 @@ public class RepresentationService {
         ArrayList<Strategy> strategies = new ArrayList<>();
         for (Strategy strategy: codebase.getStrategies()) {
             boolean deleted = false;
-            for (String representationType: strategy.getRepresentationInfoTypes()) {
-                List<String> representationTypes = RepresentationInfoType.representationInfoTypeToFiles.get(representationType);
-                if (representationTypes.contains(representation.getType())) {
+            for (String strategyType: strategy.getStrategyTypes()) {
+                if (Strategy.strategiesToRepresentations.get(strategyType).contains(representation.getType())) {
                     strategyService.deleteStrategy(strategy);
                     deleted = true;
                     break;
@@ -98,12 +92,7 @@ public class RepresentationService {
             if (!deleted)
                 strategies.add(strategy);
         }
-        List<String> toRemove = new ArrayList<>();
-        for (Map.Entry<String, List<String>> representationTypes: RepresentationInfoType.representationInfoTypeToFiles.entrySet()) {
-            if (representationTypes.getValue().contains(representation.getType()))
-                toRemove.add(representationTypes.getKey());
-        }
-        codebase.removeRepresentationInfoTypes(toRemove);
+
         codebase.setStrategies(strategies);
         gridFsService.deleteFile(representation.getName());
         codebaseRepository.save(codebase);

@@ -15,9 +15,17 @@ export default abstract class Representation {
     abstract printCard(handleDeleteRepresentation: (representation: Representation) => void): JSX.Element;
 }
 
-export enum RepresentationType {
+export enum RepresentationFile {
     ACCESSES = 'Accesses',
     IDTOENTITIY = 'IDToEntity',
     AUTHOR = 'Changes Authorship',
     COMMIT = 'File Changes',
+    ENTITY_TO_ID = 'EntityToID',
+    CODE_EMBEDDINGS = 'Code Embeddings'
+}
+
+export enum RepresentationType {
+    ACCESSES_TYPE = 'Accesses Based',
+    REPOSITORY_TYPE = 'Repository Based',
+    CODE_EMBEDDINGS_TYPE = 'Code Embeddings Based'
 }

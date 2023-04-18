@@ -21,12 +21,12 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/mono2micro")
 public class StrategyController {
-    private static final Logger logger = LoggerFactory.getLogger(Strategy.class);
+    private static final Logger logger = LoggerFactory.getLogger(StrategyController.class);
 
     @Autowired
     StrategyService strategyService;
 
-    @RequestMapping(value = "/strategy/{strategyName}/getStrategy", method = RequestMethod.GET)
+    @GetMapping(value = "/strategy/{strategyName}/getStrategy")
     public ResponseEntity<StrategyDto> getStrategy(
             @PathVariable String strategyName
     ) {
@@ -43,16 +43,16 @@ public class StrategyController {
         }
     }
 
-    @RequestMapping(value = "/codebase/{codebaseName}/createStrategy", method = RequestMethod.POST)
+    @PostMapping(value = "/codebase/{codebaseName}/createStrategy")
     public ResponseEntity<HttpStatus> createStrategy(
             @PathVariable String codebaseName,
             @Nullable @RequestParam String algorithmType,
-            @Nullable @RequestParam List<String> representationTypes
+            @Nullable @RequestParam List<String> strategyTypes
     ){
         logger.debug("createStrategy");
 
         try {
-            strategyService.createStrategy(codebaseName, algorithmType, representationTypes);
+            strategyService.createStrategy(codebaseName, algorithmType, strategyTypes);
             return new ResponseEntity<>(HttpStatus.CREATED);
 
         } catch (Exception e) {
@@ -61,7 +61,7 @@ public class StrategyController {
         }
     }
 
-    @RequestMapping(value = "/strategy/getAlgorithms", method = RequestMethod.GET)
+    @GetMapping(value = "/strategy/getAlgorithms")
     public ResponseEntity<List<String>> getAlgorithms() {
         logger.debug("getAlgorithms");
         try {
@@ -76,7 +76,7 @@ public class StrategyController {
         }
     }
 
-    @RequestMapping(value = "/strategy/{strategyName}/getStrategyDecompositions", method = RequestMethod.GET)
+    @GetMapping(value = "/strategy/{strategyName}/getStrategyDecompositions")
     public ResponseEntity<List<DecompositionDto>> getStrategyDecompositions(
             @PathVariable String strategyName
     ) {
@@ -93,7 +93,7 @@ public class StrategyController {
         }
     }
 
-    @RequestMapping(value = "/strategy/{strategyName}/getStrategySimilarities", method = RequestMethod.GET)
+    @GetMapping(value = "/strategy/{strategyName}/getStrategySimilarities")
     public ResponseEntity<List<SimilarityDto>> getStrategySimilarities(
             @PathVariable String strategyName
     ) {
@@ -110,7 +110,7 @@ public class StrategyController {
         }
     }
 
-    @RequestMapping(value = "/strategy/{strategyName}/delete", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/strategy/{strategyName}/delete")
     public ResponseEntity<HttpStatus> deleteStrategy(
             @PathVariable String strategyName
     ) {

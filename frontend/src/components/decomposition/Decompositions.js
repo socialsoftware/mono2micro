@@ -5,7 +5,11 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import {useParams} from "react-router-dom";
 import {SciPyDecompositionForm} from "./forms/SciPyDecompositionForm";
 import {toast, ToastContainer} from "react-toastify";
-import {SIMILARITY_MATRIX_SCIPY} from "../../models/similarity/SimilarityMatrixSciPy";
+import {SIMILARITY_SCIPY_ACCESSES_REPOSITORY} from "../../models/similarity/SimilarityScipyAccessesAndRepository";
+import {SIMILARITY_SCIPY_ENTITY_VECTORIZATION} from "../../models/similarity/SimilarityScipyEntityVectorization";
+import {SIMILARITY_SCIPY_CLASS_VECTORIZATION} from "../../models/similarity/SimilarityScipyClassVectorization";
+import {SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH} from "../../models/similarity/SimilarityScipyFunctionalityVectorizationByCallGraph";
+import {SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES} from "../../models/similarity/SimilarityScipyFunctionalityVectorizationBySequenceOfAccesses";
 
 export const Decompositions = () => {
     let { codebaseName, strategyName, similarityName } = useParams();
@@ -82,7 +86,23 @@ export const Decompositions = () => {
                 Decomposition Creation Method
             </h4>
 
-            {similarity.type === SIMILARITY_MATRIX_SCIPY &&
+            {similarity.type === SIMILARITY_SCIPY_ACCESSES_REPOSITORY &&
+                <SciPyDecompositionForm loadDecompositions={loadDecompositions}/>
+            }
+
+            {similarity.type === SIMILARITY_SCIPY_ENTITY_VECTORIZATION &&
+                <SciPyDecompositionForm loadDecompositions={loadDecompositions}/>
+            }
+
+            {similarity.type === SIMILARITY_SCIPY_CLASS_VECTORIZATION &&
+                <SciPyDecompositionForm loadDecompositions={loadDecompositions}/>
+            }
+
+            {similarity.type === SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_CALLGRAPH &&
+                <SciPyDecompositionForm loadDecompositions={loadDecompositions}/>
+            }
+
+            {similarity.type === SIMILARITY_SCIPY_FUNCTIONALITY_VECTORIZATION_SEQUENCE_ACCESSES &&
                 <SciPyDecompositionForm loadDecompositions={loadDecompositions}/>
             }
 

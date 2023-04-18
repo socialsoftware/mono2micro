@@ -64,7 +64,7 @@ func (d *Decomposition) GetEntityCluster(id int) *Cluster {
 	if !found {
 		return nil
 	}
-
+	
 	return cluster
 }
 

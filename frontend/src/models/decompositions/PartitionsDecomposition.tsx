@@ -4,8 +4,9 @@ import Button from "react-bootstrap/Button";
 import React from "react";
 import {Cached} from "@mui/icons-material";
 import {APIService} from "../../services/APIService";
+// @ts-ignore
 import {toast} from "react-toastify";
-import {RepresentationInfoType} from "../representation/RepresentationInfoTypes";
+import {RepresentationType} from "../representation/Representation";
 
 const PARTITIONS_DECOMPOSITION = "Partitions Decomposition";
 export {PARTITIONS_DECOMPOSITION};
@@ -66,7 +67,7 @@ export default class PartitionsDecomposition extends Decomposition {
                         </Button>
                     }
                     <br/>
-                    {this.representationInformationsTypes.includes(RepresentationInfoType.ACCESSES_INFO) &&
+                    {this.representationInformationsTypes.includes(RepresentationType.ACCESSES_TYPE) &&
                         <>
                             <Button
                                 href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.similarityName}/${this.name}/accessesViews`}
@@ -78,7 +79,7 @@ export default class PartitionsDecomposition extends Decomposition {
                             <br/>
                         </>
                     }
-                    {this.representationInformationsTypes.includes(RepresentationInfoType.REPOSITORY_INFO) &&
+                    {this.representationInformationsTypes.includes(RepresentationType.REPOSITORY_TYPE) &&
                         <>
                             <Button
                                 href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.similarityName}/${this.name}/repositoryView`}
@@ -90,7 +91,7 @@ export default class PartitionsDecomposition extends Decomposition {
                             <br/>
                         </>
                     }
-                    {this.representationInformationsTypes.includes(RepresentationInfoType.ACCESSES_INFO) &&
+                    {this.representationInformationsTypes.includes(RepresentationType.ACCESSES_TYPE) &&
                         <>
                             <Button
                                 href={`/codebases/${this.codebaseName}/${this.strategyName}/${this.similarityName}/${this.name}/functionalityRefactor`}

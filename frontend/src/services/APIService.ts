@@ -111,12 +111,12 @@ export class APIService {
         return this.axios.post<null>("/codebase/create", data);
     }
 
-    getCodebaseRepresentationInfoTypes(codebaseName: string) {
-        return this.axios.get("/codebase/" + codebaseName + "/getCodebaseRepresentationInfoTypes");
+    getCodebaseRepresentationGroups(codebaseName: string) {
+        return this.axios.get("/codebase/" + codebaseName + "/getCodebaseRepresentationGroups");
     }
 
-    getRepresentationInfoTypes() {
-        return this.axios.get("/codebase/getRepresentationInfoTypes");
+    getRepresentationGroups() {
+        return this.axios.get("/codebase/getRepresentationGroups");
     }
 
     // Profiles
@@ -214,8 +214,12 @@ export class APIService {
         return this.axios.post<null>("/similarity/create", similarity);
     }
 
-    getSupportedRepresentationInfoTypes(algorithmType: string) {
-        return this.axios.get("/clustering/" + algorithmType + "/getSupportedRepresentationInfoTypes");
+    getAllowableCodebaseStrategyTypes(codebaseName: string) {
+        return this.axios.get("/codebase/" + codebaseName + "/getAllowableCodebaseStrategyTypes");
+    }
+
+    getAlgorithmSupportedStrategyTypes(algorithmType: string) {
+        return this.axios.get("/clustering/" + algorithmType + "/getAlgorithmSupportedStrategyTypes");
     }
 
 
@@ -231,7 +235,7 @@ export class APIService {
             }
         }
         const data = new FormData();
-        strategyRepresentations.forEach(repr => data.append("representationTypes", repr));
+        strategyRepresentations.forEach(repr => data.append("strategyTypes", repr));
         data.append("algorithmType", strategyAlgorithm);
 
         return this.axios.post<null>("/codebase/" + codebaseName + "/createStrategy", data, config);
