@@ -21,6 +21,7 @@ import spoon.support.reflect.code.CtDoImpl;
 import spoon.support.reflect.code.CtForEachImpl;
 import spoon.support.reflect.code.CtForImpl;
 import spoon.support.reflect.code.CtIfImpl;
+import spoon.support.reflect.code.CtInvocationImpl;
 import spoon.support.reflect.code.CtLoopImpl;
 import spoon.support.reflect.code.CtWhileImpl;
 import util.*;
@@ -482,6 +483,11 @@ public class SpringDataJPACollector extends SpoonCollector {
                     super.scan(element);
                     closeCurrentContext();
                 
+                } else if(element instanceof CtInvocationImpl) {
+                    openNewContext("call");
+                    super.scan(element);
+                    closeCurrentContext();
+
                 } else if(  (elParent instanceof CtIfImpl && (role == CtRole.CONDITION || element instanceof CtBlock)) ||
                             (elParent instanceof CtLoopImpl && (role == CtRole.EXPRESSION || role == CtRole.BODY))
                         ) {
