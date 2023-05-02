@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import util.ContextReference;
+import util.EntityIdentifier;
 
 import java.io.IOException;
 
@@ -23,7 +24,7 @@ public class ContextReferenceSerializer extends StdSerializer<ContextReference> 
             SerializerProvider serializerProvider
     ) throws IOException {
         jsonGenerator.writeStartArray();
-        jsonGenerator.writeString(reference.getContextType());
+        jsonGenerator.writeString(EntityIdentifier.CONTEXT_REFERENCE + reference.getContextType());
         jsonGenerator.writeNumber(reference.getEntityID());
         jsonGenerator.writeEndArray();
     }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import util.Access;
+import util.EntityIdentifier;
+
 import java.io.IOException;
 
 public class AccessSerializer extends StdSerializer<Access> {
@@ -22,7 +24,7 @@ public class AccessSerializer extends StdSerializer<Access> {
             SerializerProvider serializerProvider
     ) throws IOException {
         jsonGenerator.writeStartArray();
-        jsonGenerator.writeString(access.getMode());
+        jsonGenerator.writeString(EntityIdentifier.ACCESS + access.getMode());
         jsonGenerator.writeNumber(access.getEntityID());
         jsonGenerator.writeEndArray();
     }
