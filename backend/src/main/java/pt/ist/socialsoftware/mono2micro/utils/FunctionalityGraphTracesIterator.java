@@ -33,11 +33,7 @@ public class FunctionalityGraphTracesIterator {
         while (functionalities.hasNext()) {
             String functionality = functionalities.next();
 
-            System.out.println(functionality);
             _traceGraphs.put(functionality, getFunctionalityTraceGraph(getFunctionalityWithName(functionality)));
-
-            System.out.println(getFunctionalityWithName(functionality).getJSONArray("t").length() + " -> " + _traceGraphs.get(functionality));
-
         }
     }
 
@@ -208,7 +204,6 @@ public class FunctionalityGraphTracesIterator {
         JSONObject mainTrace = object.getJSONArray("t").getJSONObject(0);
 
         List<TraceGraphNode> preProcessedTraces = translateSubTrace(object, mainTrace);
-        System.out.println("------------------------------");
 
 
         return null;
@@ -232,8 +227,6 @@ public class FunctionalityGraphTracesIterator {
                         JSONArray referenceElements = totalTraceArray.getJSONObject(traceElementJSON.getInt(1)).getJSONArray("a");
 
                         if(description.contains("if")) {
-                            System.out.println("if");
-                            
                             If newIf  = new If();
                             
                             JSONArray condition = getRoleInSubTrace("condition", referenceElements);
@@ -243,9 +236,7 @@ public class FunctionalityGraphTracesIterator {
 
                             JSONArray thenBody = getRoleInSubTrace("then", referenceElements);
                             if(thenBody != null) {
-                                System.out.println("then added");
                                 newIf.setThenBody(translateSubTrace(totalTrace, totalTraceArray.getJSONObject(thenBody.getInt(1))));
-                                System.out.println(newIf.getThenBody());
                             }
 
                             JSONArray elseBody = getRoleInSubTrace("else", referenceElements);
@@ -256,8 +247,6 @@ public class FunctionalityGraphTracesIterator {
                             translatedTrace.add(newIf);
 
                         } else if(description.contains("loop")) {
-                            System.out.println("loop");
-
                             Loop newLoop  = new Loop();
                             
                             JSONArray expression = getRoleInSubTrace("expression", referenceElements);
@@ -273,8 +262,6 @@ public class FunctionalityGraphTracesIterator {
                             translatedTrace.add(newLoop);
 
                         } else if(description.contains("call")) {
-                            System.out.println("call");
-
                             Call newCall  = new Call();
 
                             newCall.setBody(translateSubTrace(totalTrace, totalTraceArray.getJSONObject(traceElementJSON.getInt(1))));
@@ -302,9 +289,6 @@ public class FunctionalityGraphTracesIterator {
                 }
             }
         }
-
-        System.out.println(translatedTrace);
-        System.out.println("-------------------------");
         
         return translatedTrace;
     }
@@ -314,14 +298,11 @@ public class FunctionalityGraphTracesIterator {
             try {
                 if(traceArray.getJSONArray(i).getString(0).contains(role)) {
                     return traceArray.getJSONArray(i);
-                }
-                System.out.println(traceArray.getJSONArray(i).getString(0));
-                
+                }                
             } catch (JSONException e) {
                 // continue
             }
         }
-        System.out.println(role + " not found");
         return null;
     }
     
