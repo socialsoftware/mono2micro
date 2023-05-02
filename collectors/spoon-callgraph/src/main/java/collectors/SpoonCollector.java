@@ -377,6 +377,8 @@ public abstract class SpoonCollector {
             // insert context reference in the new current context
             if(controllerAccesses.get(previousContext) != null)
                 addContextReference(previousContext, previousContextType);
+            else
+                controllerContextCounter--;
         }
     }
 
