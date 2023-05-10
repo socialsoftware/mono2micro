@@ -1,13 +1,18 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.service;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.Clustering;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.Expert;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
+import pt.ist.socialsoftware.mono2micro.element.Element;
 import pt.ist.socialsoftware.mono2micro.history.service.HistoryService;
 import pt.ist.socialsoftware.mono2micro.operation.formCluster.FormClusterOperation;
 import pt.ist.socialsoftware.mono2micro.operation.merge.MergeOperation;
@@ -76,6 +81,37 @@ public class DecompositionService {
 
     public Decomposition getDecomposition(String decompositionName) {
         return decompositionRepository.findByName(decompositionName);
+    }
+
+    public JSONObject exportDecomposition(String decompositionName) throws JSONException {
+        Decomposition decomposition = decompositionRepository.findByName(decompositionName);
+        return buildJsonData(decomposition);
+    }
+
+    private JSONObject buildJsonData(Decomposition decomposition) throws JSONException {
+
+        JSONObject data = new JSONObject();
+        JSONObject decompositionObject = new JSONObject();
+        JSONArray clustersList = new JSONArray();
+
+        for (Cluster cluster : decomposition.getClusters().values()) {
+            JSONObject clusterObject = new JSONObject();
+            clusterObject.put("name", cluster.getName());
+
+            JSONArray elementsList = new JSONArray();
+            for (Element element : cluster.getElements()) {
+                JSONObject elementObject = new JSONObject();
+                elementObject.put("name", element.getName());
+                elementsList.put(elementObject);
+            }
+
+            clusterObject.put("elements", elementsList);
+            clustersList.put(clusterObject);
+        }
+
+        decompositionObject.put("clusters", clustersList);
+        data.put("decomposition", decompositionObject);
+        return data;
     }
 
     public void deleteSingleDecomposition(String decompositionName) {

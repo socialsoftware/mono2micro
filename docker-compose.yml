@@ -38,6 +38,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./codebases:/codebases
+      - ./data_export:/data_export
 
   scripts:
     build:
