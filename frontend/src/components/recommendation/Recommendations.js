@@ -58,6 +58,33 @@ export const Recommendations = () => {
         });
     }
 
+    function handleExportDecomposition(decompositionName) {
+        const toastId = toast.loading("Exporting " + decompositionName + "...");
+        const service = new APIService();
+        service.exportDecomposition(decompositionName).then(response => {
+            downloadDecompositionData(response);
+            toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Decomposition exported.", isLoading: false});
+            setTimeout(() => {toast.dismiss(toastId)}, 1000);
+        }).catch(() => {
+            toast.update(toastId, {type: toast.TYPE.ERROR, render: "Error exporting " + decompositionName + ".", isLoading: false});
+        });
+    }
+
+    function downloadDecompositionData(response) {
+        const url = window.URL.createObjectURL(
+            new Blob([response.data], {type: "application/json"})
+        );
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'm2m_decomposition_data.json');
+        document.body.appendChild(link);
+        link.click();
+
+        link.parentNode.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
     function renderBreadCrumbs() {
         return (
             <Breadcrumb>
@@ -129,7 +156,7 @@ export const Recommendations = () => {
                     }
 
                     <Row className={"d-flex flex-wrap mw-100"} style={{gap: '1rem 1rem'}}>
-                        {decompositions.map(decomposition => decomposition.printCard(loadDecompositions, handleDeleteDecomposition))}
+                        {decompositions.map(decomposition => decomposition.printCard(loadDecompositions, handleDeleteDecomposition, handleExportDecomposition))}
                     </Row>
                 </>
             }

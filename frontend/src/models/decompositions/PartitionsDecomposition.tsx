@@ -31,7 +31,11 @@ export default class PartitionsDecomposition extends Decomposition {
         }).then(() => reloadDecompositions());
     }
 
-    printCard(reloadDecompositions: () => void, handleDeleteDecomposition: (collector: string) => void): JSX.Element {
+    printCard(
+        reloadDecompositions: () => void,
+        handleDeleteDecomposition: (collector: string) => void,
+        handleExportDecomposition: (collector: string) => void
+    ): JSX.Element {
         let amountOfSingletonClusters = 0;
         let maxClusterSize = 0;
         let totalEntities = 0;
@@ -99,6 +103,18 @@ export default class PartitionsDecomposition extends Decomposition {
                                 variant={"primary"}
                             >
                                 Refactorization Tool
+                            </Button>
+                            <br/>
+                        </>
+                    }
+                    {this.representationInformationsTypes.includes(RepresentationType.ACCESSES_TYPE) &&
+                        <>
+                            <Button
+                                onClick={() => handleExportDecomposition(this.name)}
+                                className="mb-2"
+                                variant={"primary"}
+                            >
+                                Export Data
                             </Button>
                             <br/>
                         </>
