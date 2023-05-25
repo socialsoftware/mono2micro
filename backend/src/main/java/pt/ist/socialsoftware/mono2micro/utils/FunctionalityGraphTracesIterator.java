@@ -96,8 +96,7 @@ public class FunctionalityGraphTracesIterator {
                 switch (type.substring(0, 1)) {
                     case "&": // Is a TraceReferenceDto
                         String description = traceElementJSON.getString(0);
-                        JSONArray referenceElements = totalTraceArray.getJSONObject(traceElementJSON.getInt(1)).getJSONArray("a");
-
+                        
                         if (description.contains("if")) {
                             translatedTrace.add(new If(totalTrace, totalTraceArray, traceElementJSON));
                         } else if (description.contains("loop")) {
