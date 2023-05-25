@@ -2,12 +2,13 @@ package pt.ist.socialsoftware.mono2micro.utils.traceGraph;
 
 import java.util.List;
 
+import org.apache.commons.lang3.ObjectUtils.Null;
 import org.json.JSONArray;
 import org.json.JSONException;
 
 
 public class Access extends TraceGraphNode {
-    String mode;
+    String mode = null;
     int entityAccessedId;
 
     public Access() {}
