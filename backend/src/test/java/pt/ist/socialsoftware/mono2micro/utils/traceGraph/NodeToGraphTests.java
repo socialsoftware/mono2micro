@@ -76,11 +76,11 @@ public class NodeToGraphTests {
 	// Call
 
 	@Test  
-    public void nodeToAccessGraph_Call_EmptyTrace() throws JSONException{
+    public void nodeToAccessGraph_Call_EmptyTraceSingleCall() throws JSONException{
 		// setup
 		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
 			new Object[][]{
-				new Object[]{"call", 1}
+				new Object[]{"&call", 1}
 			},
 			new Object[][]{
 				new Object[]{"R", 6}
@@ -109,6 +109,47 @@ public class NodeToGraphTests {
 		assertEquals(access.getEntityAccessedId(), 6);
 		assertEquals(entryPoint.getNextAccessProbabilities().containsKey(access), true);
 		assertEquals(access.getNextAccessProbabilities().containsKey(exitPoint), true);
+		
+		
+    }
+
+	public void nodeToAccessGraph_Call_EmptyTraceMultipleCalls() throws JSONException{
+		// setup
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&call", 1}
+			},
+			new Object[][]{
+				new Object[]{"R", 6}, new Object[]{"R", 6}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
+
+		Call callNode = new Call(totalTrace, totalTraceArray, traceElementJSON);
+
+		// steps
+		callNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+
+		// result
+		assertEquals(processedSubTrace.size(), 4);
+
+		Access entryPoint = processedSubTrace.get(0);
+		Access exitPoint = processedSubTrace.get(3);
+		assertNull(entryPoint.getMode());
+		assertNull(exitPoint.getMode());
+		assertEquals(exitPoint.getNextAccessProbabilities().keySet().isEmpty(), true);
+		
+		Access access1 = processedSubTrace.get(1);
+		Access access2 = processedSubTrace.get(2);
+		assertEquals(access1.getMode(), "R");
+		assertEquals(access1.getEntityAccessedId(), 6);
+		assertEquals(access2.getMode(), "R");
+		assertEquals(access2.getEntityAccessedId(), 6);
+		assertEquals(entryPoint.getNextAccessProbabilities().containsKey(access1), true);
+		assertEquals(access1.getNextAccessProbabilities().containsKey(access2), true);
+		assertEquals(access2.getNextAccessProbabilities().containsKey(exitPoint), true);
 		
 		
     }
@@ -157,6 +198,53 @@ public class NodeToGraphTests {
 
 		access = processedSubTrace.get(4);
 		assertEquals(exitPoint.getNextAccessProbabilities().containsKey(access), true); // check if exit connected properly
+		
+    }
+
+	@Test  
+    public void nodeToAccessGraph_Call_Nested() throws JSONException{
+		// setup
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&call", 1}
+			},
+			new Object[][]{
+				new Object[]{"&call", 2}
+			},
+			new Object[][]{
+				new Object[]{"R", 6}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
+
+		Call callNode = new Call(totalTrace, totalTraceArray, traceElementJSON);
+
+		// steps
+		callNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+
+		// result
+		assertEquals(processedSubTrace.size(), 5);
+
+		Access outerEntryPoint = processedSubTrace.get(0);
+		Access outerExitPoint = processedSubTrace.get(4);
+		assertNull(outerEntryPoint.getMode());
+		assertNull(outerExitPoint.getMode());
+		assertEquals(outerExitPoint.getNextAccessProbabilities().keySet().isEmpty(), true);
+
+		Access innerEntryPoint = processedSubTrace.get(1);
+		Access innerExitPoint = processedSubTrace.get(3);
+		assertNull(innerEntryPoint.getMode());
+		assertNull(innerExitPoint.getMode());
+		assertEquals(innerExitPoint.getNextAccessProbabilities().containsKey(outerExitPoint), true);
+		
+		Access access = processedSubTrace.get(2); // actual access
+		assertEquals(access.getMode(), "R");
+		assertEquals(access.getEntityAccessedId(), 6);
+		assertEquals(innerEntryPoint.getNextAccessProbabilities().containsKey(access), true);
+		assertEquals(access.getNextAccessProbabilities().containsKey(innerExitPoint), true);
+		
 		
     }
 
