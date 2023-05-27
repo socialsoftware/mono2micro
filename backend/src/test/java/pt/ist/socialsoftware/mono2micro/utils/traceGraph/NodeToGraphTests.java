@@ -163,7 +163,7 @@ public class NodeToGraphTests {
 
 		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
 			new Object[][]{
-				new Object[]{access1.getMode(), access1.getEntityAccessedId()}, new Object[]{"call", 1}, new Object[]{access2.getMode(), access2.getEntityAccessedId()}
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}, new Object[]{"&call", 1}, new Object[]{access2.getMode(), access2.getEntityAccessedId()}
 			},
 			new Object[][]{
 				new Object[]{access3.getMode(), access3.getEntityAccessedId()}
@@ -257,10 +257,10 @@ public class NodeToGraphTests {
 
 		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
 			new Object[][]{
-				new Object[]{"if", 1}
+				new Object[]{"&if", 1}
 			},
 			new Object[][]{
-				new Object[]{"condition", 2}, new Object[]{"then", 3}, new Object[]{"else", 4}
+				new Object[]{"&condition", 2}, new Object[]{"&then", 3}, new Object[]{"&else", 4}
 			},
 			new Object[][]{
 				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
@@ -315,10 +315,10 @@ public class NodeToGraphTests {
 
 		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
 			new Object[][]{
-				new Object[]{access1.getMode(), access1.getEntityAccessedId()}, new Object[]{"if", 1}, new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}, new Object[]{"&if", 1}, new Object[]{access1.getMode(), access1.getEntityAccessedId()}
 			},
 			new Object[][]{
-				new Object[]{"condition", 2}, new Object[]{"then", 3}, new Object[]{"else", 4}
+				new Object[]{"&condition", 2}, new Object[]{"&then", 3}, new Object[]{"&else", 4}
 			},
 			new Object[][]{
 				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
