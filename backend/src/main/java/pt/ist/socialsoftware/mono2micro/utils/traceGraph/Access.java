@@ -12,7 +12,7 @@ public class Access extends TraceGraphNode {
 
     public Access() {}
 
-    public Access(String mode, int entityAccessdId) {
+    public Access(String mode, int entityAccessedId) {
         this.setMode(mode);
         this.setEntityAccessedId(entityAccessedId);
     }

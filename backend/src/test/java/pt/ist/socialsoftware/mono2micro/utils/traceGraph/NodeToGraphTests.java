@@ -38,16 +38,16 @@ public class NodeToGraphTests {
 		String mode = "R";
 		int entityAccessedId = 19;
 
-        Access access = new Access();
-		access.setMode(mode);
-		access.setEntityAccessedId(entityAccessedId);
+        Access access = new Access(mode, entityAccessedId);
 
 		access.nodeToAccessGraph(processedSubTrace, null, null, null);
 
 		assertEquals(processedSubTrace.size(), 1);
 		assertEquals(processedSubTrace.get(0), access);
 		assertEquals(access.getNextAccessProbabilities().keySet().isEmpty(), true);
-		
+
+		assertEquals(access.getMode(), mode);
+		assertEquals(access.getEntityAccessedId(), entityAccessedId);
     }
 
 	@Test  
