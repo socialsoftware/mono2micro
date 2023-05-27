@@ -2,6 +2,7 @@ package pt.ist.socialsoftware.mono2micro.utils.traceGraph;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,12 +43,12 @@ public class NodeToGraphTests {
 
 		access.nodeToAccessGraph(processedSubTrace, null, null, null);
 
-		assertEquals(processedSubTrace.size(), 1);
-		assertEquals(processedSubTrace.get(0), access);
-		assertEquals(access.getNextAccessProbabilities().keySet().isEmpty(), true);
+		assertEquals(1, processedSubTrace.size());
+		assertEquals(access, processedSubTrace.get(0));
+		assertEquals(true, access.getNextAccessProbabilities().keySet().isEmpty());
 
-		assertEquals(access.getMode(), mode);
-		assertEquals(access.getEntityAccessedId(), entityAccessedId);
+		assertEquals(mode, access.getMode());
+		assertEquals(entityAccessedId, access.getEntityAccessedId());
     }
 
 	@Test  
@@ -66,11 +67,11 @@ public class NodeToGraphTests {
 		access1.nodeToAccessGraph(processedSubTrace, null, null, null);
 		access2.nodeToAccessGraph(processedSubTrace, null, null, null);
 
-		assertEquals(processedSubTrace.size(), 2);
-		assertEquals(processedSubTrace.get(0), access1);
-		assertEquals(processedSubTrace.get(1), access2);
-		assertEquals(access1.getNextAccessProbabilities().containsKey(access2), true);
-		assertEquals(access2.getNextAccessProbabilities().keySet().isEmpty(), true);
+		assertEquals(2, processedSubTrace.size());
+		assertEquals(access1, processedSubTrace.get(0));
+		assertEquals(access2, processedSubTrace.get(1));
+		assertTrue(access1.getNextAccessProbabilities().containsKey(access2));
+		assertTrue(access2.getNextAccessProbabilities().keySet().isEmpty());
 		
     }
 
@@ -103,13 +104,13 @@ public class NodeToGraphTests {
 		Access exitPoint = processedSubTrace.get(2);
 		assertNull(entryPoint.getMode());
 		assertNull(exitPoint.getMode());
-		assertEquals(exitPoint.getNextAccessProbabilities().keySet().isEmpty(), true);
+		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
 		
 		Access access = processedSubTrace.get(1); // actual access
-		assertEquals(access.getMode(), "R");
-		assertEquals(access.getEntityAccessedId(), 6);
-		assertEquals(entryPoint.getNextAccessProbabilities().containsKey(access), true);
-		assertEquals(access.getNextAccessProbabilities().containsKey(exitPoint), true);
+		assertEquals("R", access.getMode());
+		assertEquals(6, access.getEntityAccessedId());
+		assertTrue(entryPoint.getNextAccessProbabilities().containsKey(access));
+		assertTrue(access.getNextAccessProbabilities().containsKey(exitPoint));
 		
 		
     }
@@ -134,23 +135,23 @@ public class NodeToGraphTests {
 		callNode.nodeToAccessGraph(processedSubTrace, null, null, null);
 
 		// result
-		assertEquals(processedSubTrace.size(), 4);
+		assertEquals(4, processedSubTrace.size());
 
 		Access entryPoint = processedSubTrace.get(0);
 		Access exitPoint = processedSubTrace.get(3);
 		assertNull(entryPoint.getMode());
 		assertNull(exitPoint.getMode());
-		assertEquals(exitPoint.getNextAccessProbabilities().keySet().isEmpty(), true);
+		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
 		
 		Access access1 = processedSubTrace.get(1);
 		Access access2 = processedSubTrace.get(2);
-		assertEquals(access1.getMode(), "R");
-		assertEquals(access1.getEntityAccessedId(), 6);
-		assertEquals(access2.getMode(), "R");
-		assertEquals(access2.getEntityAccessedId(), 6);
-		assertEquals(entryPoint.getNextAccessProbabilities().containsKey(access1), true);
-		assertEquals(access1.getNextAccessProbabilities().containsKey(access2), true);
-		assertEquals(access2.getNextAccessProbabilities().containsKey(exitPoint), true);
+		assertEquals("R", access1.getMode());
+		assertEquals(6, access1.getEntityAccessedId());
+		assertEquals("R", access2.getMode());
+		assertEquals(6, access2.getEntityAccessedId());
+		assertTrue(entryPoint.getNextAccessProbabilities().containsKey(access1));
+		assertTrue(access1.getNextAccessProbabilities().containsKey(access2));
+		assertTrue(access2.getNextAccessProbabilities().containsKey(exitPoint));
 		
 		
     }
@@ -182,7 +183,7 @@ public class NodeToGraphTests {
 		access2.nodeToAccessGraph(processedSubTrace, null, null, null);
 
 		// result
-		assertEquals(processedSubTrace.size(), 5);
+		assertEquals(5, processedSubTrace.size());
 
 		Access entryPoint = processedSubTrace.get(1);
 		Access exitPoint = processedSubTrace.get(3);
@@ -191,14 +192,14 @@ public class NodeToGraphTests {
 		
 		Access access;
 		access = processedSubTrace.get(0);
-		assertEquals(access.getNextAccessProbabilities().containsKey(entryPoint), true); // check if entry connected properly
+		assertTrue(access.getNextAccessProbabilities().containsKey(entryPoint)); // check if entry connected properly
 
 		access = processedSubTrace.get(2);
-		assertEquals(entryPoint.getNextAccessProbabilities().containsKey(access), true);
-		assertEquals(access.getNextAccessProbabilities().containsKey(exitPoint), true); // check if center access is connected
+		assertTrue(entryPoint.getNextAccessProbabilities().containsKey(access));
+		assertTrue(access.getNextAccessProbabilities().containsKey(exitPoint)); // check if center access is connected
 
 		access = processedSubTrace.get(4);
-		assertEquals(exitPoint.getNextAccessProbabilities().containsKey(access), true); // check if exit connected properly
+		assertTrue(exitPoint.getNextAccessProbabilities().containsKey(access)); // check if exit connected properly
 		
     }
 
@@ -232,19 +233,19 @@ public class NodeToGraphTests {
 		Access outerExitPoint = processedSubTrace.get(4);
 		assertNull(outerEntryPoint.getMode());
 		assertNull(outerExitPoint.getMode());
-		assertEquals(outerExitPoint.getNextAccessProbabilities().keySet().isEmpty(), true);
+		assertTrue(outerExitPoint.getNextAccessProbabilities().keySet().isEmpty());
 
 		Access innerEntryPoint = processedSubTrace.get(1);
 		Access innerExitPoint = processedSubTrace.get(3);
 		assertNull(innerEntryPoint.getMode());
 		assertNull(innerExitPoint.getMode());
-		assertEquals(innerExitPoint.getNextAccessProbabilities().containsKey(outerExitPoint), true);
+		assertTrue(innerExitPoint.getNextAccessProbabilities().containsKey(outerExitPoint));
 		
 		Access access = processedSubTrace.get(2); // actual access
-		assertEquals(access.getMode(), "R");
-		assertEquals(access.getEntityAccessedId(), 6);
-		assertEquals(innerEntryPoint.getNextAccessProbabilities().containsKey(access), true);
-		assertEquals(access.getNextAccessProbabilities().containsKey(innerExitPoint), true);
+		assertEquals("R", access.getMode());
+		assertEquals(6, access.getEntityAccessedId());
+		assertTrue(innerEntryPoint.getNextAccessProbabilities().containsKey(access));
+		assertTrue(access.getNextAccessProbabilities().containsKey(innerExitPoint));
 		
 		
     }
@@ -283,13 +284,13 @@ public class NodeToGraphTests {
 		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null);
 
 		// result
-		assertEquals(processedSubTrace.size(), 5); // entry + 3 access + call exit = 5
+		assertEquals(5, processedSubTrace.size()); // entry + 3 access + call exit = 5
 
 		Access entryPoint = processedSubTrace.get(0);
 		Access exitPoint = processedSubTrace.get(4);
 		assertNull(entryPoint.getMode());
 		assertNull(exitPoint.getMode());
-		assertEquals(exitPoint.getNextAccessProbabilities().keySet().isEmpty(), true);
+		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
 		
 		Access access;
 		Access condition = null;
@@ -297,11 +298,11 @@ public class NodeToGraphTests {
 		for (int i = 1; i < 4; i++) {
 			access = processedSubTrace.get(i);
 			if(condition == null) {
-				assertEquals(entryPoint.getNextAccessProbabilities().containsKey(access), true);
+				assertTrue(entryPoint.getNextAccessProbabilities().containsKey(access));
 				condition = access;
 			} else {
-				assertEquals(condition.getNextAccessProbabilities().containsKey(access), true);
-				assertEquals(access.getNextAccessProbabilities().containsKey(exitPoint), true);
+				assertTrue(condition.getNextAccessProbabilities().containsKey(access));
+				assertTrue(access.getNextAccessProbabilities().containsKey(exitPoint));
 			}
 			
 		}
@@ -343,7 +344,7 @@ public class NodeToGraphTests {
 		access1.nodeToAccessGraph(processedSubTrace, null, null, null);
 
 		// result
-		assertEquals(processedSubTrace.size(), 7); // entry + 3 access + call exit = 5
+		assertEquals(7, processedSubTrace.size());
 
 		Access entryPoint = processedSubTrace.get(1);
 		Access exitPoint = processedSubTrace.get(5);
@@ -356,20 +357,20 @@ public class NodeToGraphTests {
 		for (int i = 2; i < 5; i++) {
 			access = processedSubTrace.get(i);
 			if(condition == null) {
-				assertEquals(entryPoint.getNextAccessProbabilities().containsKey(access), true);
+				assertTrue(entryPoint.getNextAccessProbabilities().containsKey(access));
 				condition = access;
 			} else {
-				assertEquals(condition.getNextAccessProbabilities().containsKey(access), true);
-				assertEquals(access.getNextAccessProbabilities().containsKey(exitPoint), true);
+				assertTrue(condition.getNextAccessProbabilities().containsKey(access));
+				assertTrue(access.getNextAccessProbabilities().containsKey(exitPoint));
 			}
 			
 		}
 
 		access = processedSubTrace.get(0);
-		assertEquals(access.getNextAccessProbabilities().containsKey(entryPoint), true);
+		assertTrue(access.getNextAccessProbabilities().containsKey(entryPoint));
 
 		access = processedSubTrace.get(6);
-		assertEquals(exitPoint.getNextAccessProbabilities().containsKey(access), true);
+		assertTrue(exitPoint.getNextAccessProbabilities().containsKey(access));
 		
     }
 
@@ -417,13 +418,13 @@ public class NodeToGraphTests {
 		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null);
 
 		// result
-		assertEquals(processedSubTrace.size(), 9);
+		assertEquals(9, processedSubTrace.size());
 
 		Access outerEntryPoint = processedSubTrace.get(0);
 		Access outerExitPoint = processedSubTrace.get(8);
 		assertNull(outerEntryPoint.getMode());
 		assertNull(outerExitPoint.getMode());
-		assertEquals(outerExitPoint.getNextAccessProbabilities().keySet().isEmpty(), true);
+		assertTrue(outerExitPoint.getNextAccessProbabilities().keySet().isEmpty());
 
 		Access innerEntryPoint = processedSubTrace.get(2);
 		Access innerExitPoint = processedSubTrace.get(6);
@@ -436,11 +437,11 @@ public class NodeToGraphTests {
 		for (int i = 3; i < 5; i++) {
 			access = processedSubTrace.get(i);
 			if(condition == null) {
-				assertEquals(innerEntryPoint.getNextAccessProbabilities().containsKey(access), true);
+				assertTrue(innerEntryPoint.getNextAccessProbabilities().containsKey(access));
 				condition = access;
 			} else {
-				assertEquals(condition.getNextAccessProbabilities().containsKey(access), true);
-				assertEquals(access.getNextAccessProbabilities().containsKey(innerExitPoint), true);
+				assertTrue(condition.getNextAccessProbabilities().containsKey(access));
+				assertTrue(access.getNextAccessProbabilities().containsKey(innerExitPoint));
 			}
 			
 		}
@@ -471,11 +472,11 @@ public class NodeToGraphTests {
 		callNode.nodeToAccessGraph(processedSubTrace, null, null, null);
 
 		// result
-		assertEquals(processedSubTrace.size(), 4);
+		assertEquals(4, processedSubTrace.size());
 
 		Access exitPoint = processedSubTrace.get(3);		
 		Access access = processedSubTrace.get(1);
-		assertEquals(access.getNextAccessProbabilities().containsKey(exitPoint), true);
+		assertTrue(access.getNextAccessProbabilities().containsKey(exitPoint));
 		
 		
     }
@@ -504,11 +505,11 @@ public class NodeToGraphTests {
 		callNode.nodeToAccessGraph(processedSubTrace, null, null, null);
 
 		// result
-		assertEquals(processedSubTrace.size(), 6);
+		assertEquals(6, processedSubTrace.size());
 
 		Access exitPoint = processedSubTrace.get(4);		
 		Access access = processedSubTrace.get(2);
-		assertEquals(access.getNextAccessProbabilities().containsKey(exitPoint), true);
+		assertTrue(access.getNextAccessProbabilities().containsKey(exitPoint));
 		
 		
     }
