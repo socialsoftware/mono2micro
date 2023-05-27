@@ -9,7 +9,7 @@ public class Label extends TraceGraphNode {
     String content;
 
     public Label(JSONArray traceElementJSON) throws JSONException{
-        this.setContent(traceElementJSON.getString(0));
+        this.setContent(traceElementJSON.getString(0).substring(1));
     }
 
     public String getContent() {
