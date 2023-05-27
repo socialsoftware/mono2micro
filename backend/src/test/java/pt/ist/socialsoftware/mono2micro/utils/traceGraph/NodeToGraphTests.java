@@ -373,6 +373,81 @@ public class NodeToGraphTests {
 		
     }
 
+	@Test  
+    public void nodeToAccessGraph_If_Nested() throws JSONException{
+		// setup
+		Access access1 = new Access("R", 6);
+
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&if", 1}
+			},
+			new Object[][]{
+				new Object[]{"&condition", 2}, new Object[]{"&then", 3}, new Object[]{"&else", 7}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			},
+			new Object[][]{
+				new Object[]{"&if", 4}
+			},
+			new Object[][]{
+				new Object[]{"&condition", 5}, new Object[]{"&then", 6}, new Object[]{"&else", 8}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
+
+		If ifNode = new If(totalTrace, totalTraceArray, traceElementJSON);
+
+		// steps
+		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+
+		// result
+		assertEquals(processedSubTrace.size(), 9);
+
+		Access outerEntryPoint = processedSubTrace.get(0);
+		Access outerExitPoint = processedSubTrace.get(8);
+		assertNull(outerEntryPoint.getMode());
+		assertNull(outerExitPoint.getMode());
+		assertEquals(outerExitPoint.getNextAccessProbabilities().keySet().isEmpty(), true);
+
+		Access innerEntryPoint = processedSubTrace.get(2);
+		Access innerExitPoint = processedSubTrace.get(6);
+		assertNull(innerEntryPoint.getMode());
+		assertNull(innerExitPoint.getMode());
+		
+		Access access;
+		Access condition = null;
+
+		for (int i = 3; i < 5; i++) {
+			access = processedSubTrace.get(i);
+			if(condition == null) {
+				assertEquals(innerEntryPoint.getNextAccessProbabilities().containsKey(access), true);
+				condition = access;
+			} else {
+				assertEquals(condition.getNextAccessProbabilities().containsKey(access), true);
+				assertEquals(access.getNextAccessProbabilities().containsKey(innerExitPoint), true);
+			}
+			
+		}
+		
+		
+    }
+
 	// Label
 
 	@Test  
