@@ -115,6 +115,7 @@ public class NodeToGraphTests {
 		
     }
 
+	@Test
 	public void nodeToAccessGraph_Call_EmptyTraceMultipleCalls() throws JSONException{
 		// setup
 		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
