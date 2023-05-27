@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite.SuiteClasses;
@@ -374,7 +375,68 @@ public class NodeToGraphTests {
 
 	// Label
 
+	@Test  
+    public void nodeToAccessGraph_Label_NormalReturn() throws JSONException {
+		// setup
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&call", 1}
+			},
+			new Object[][]{
+				new Object[]{"R", 6}, new Object[]{"#return"}, new Object[]{"R", 6}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
 
+		Call callNode = new Call(totalTrace, totalTraceArray, traceElementJSON);
+
+		// steps
+		callNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+
+		// result
+		assertEquals(processedSubTrace.size(), 4);
+
+		Access exitPoint = processedSubTrace.get(3);		
+		Access access = processedSubTrace.get(1);
+		assertEquals(access.getNextAccessProbabilities().containsKey(exitPoint), true);
+		
+		
+    }
+
+	@Test  
+    public void nodeToAccessGraph_Label_NormalReturnNested() throws JSONException {
+		// setup
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&call", 1}
+			},
+			new Object[][]{
+				new Object[]{"&call", 2}
+			},
+			new Object[][]{
+				new Object[]{"R", 6}, new Object[]{"#return"}, new Object[]{"R", 6}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
+
+		Call callNode = new Call(totalTrace, totalTraceArray, traceElementJSON);
+
+		// steps
+		callNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+
+		// result
+		assertEquals(processedSubTrace.size(), 6);
+
+		Access exitPoint = processedSubTrace.get(4);		
+		Access access = processedSubTrace.get(2);
+		assertEquals(access.getNextAccessProbabilities().containsKey(exitPoint), true);
+		
+		
+    }
 
 	// Loop
 
@@ -404,7 +466,11 @@ public class NodeToGraphTests {
 		JSONArray access;
 
 		for (Object[] accessPair : accesses) {
-			access = new JSONArray().put(accessPair[0]).put(accessPair[1]);
+			access = new JSONArray().put(accessPair[0]);
+			if(accessPair.length > 1) {
+				access.put(accessPair[1]);
+			}
+			
 			accessList.put(access);
 		}
 
