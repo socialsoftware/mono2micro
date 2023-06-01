@@ -1148,7 +1148,7 @@ public class NodeToGraphTests {
 	
 	// Utils
 
-	public JSONObject initializeBaseTrace(Object[][][] traceList) throws JSONException{  
+	public static JSONObject initializeBaseTrace(Object[][][] traceList) throws JSONException{  
 		JSONObject totalTrace = new JSONObject();
 
 		Integer id = 0;
@@ -1164,7 +1164,7 @@ public class NodeToGraphTests {
 		
     }
 
-	JSONObject createTrace(Integer id, Object[][] accesses) throws JSONException {
+	static JSONObject createTrace(Integer id, Object[][] accesses) throws JSONException {
 		JSONObject trace = new JSONObject();
 		JSONArray accessList = new JSONArray();
 		JSONArray access;
