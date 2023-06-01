@@ -95,9 +95,9 @@ public class If extends TraceGraphNode {
         }
 
         processedSubTrace.add(startingNode);
-        processedSubTrace.addAll(condition.getAllAccesses());
-        processedSubTrace.addAll(thenGraph.getAllAccesses());
-        processedSubTrace.addAll(elseGraph.getAllAccesses());
+        if (condition != null) processedSubTrace.addAll(condition.getAllAccesses());
+        if (thenGraph != null) processedSubTrace.addAll(thenGraph.getAllAccesses());
+        if (elseGraph != null) processedSubTrace.addAll(elseGraph.getAllAccesses());
         processedSubTrace.add(endingNode);
     }
 
