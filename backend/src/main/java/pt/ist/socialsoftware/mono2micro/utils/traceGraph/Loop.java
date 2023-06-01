@@ -15,7 +15,7 @@ public class Loop extends TraceGraphNode {
     public Loop(JSONObject totalTrace, JSONArray totalTraceArray, JSONArray traceElementJSON) throws JSONException {
         JSONArray referenceElements = totalTraceArray.getJSONObject(traceElementJSON.getInt(1)).getJSONArray("a");
 
-        JSONArray expressionGraph = FunctionalityGraphTracesIterator.getRoleInSubTrace("expressionGraph", referenceElements);
+        JSONArray expressionGraph = FunctionalityGraphTracesIterator.getRoleInSubTrace("expression", referenceElements);
         if (expressionGraph != null) {
             this.setExpression(FunctionalityGraphTracesIterator.translateSubTrace(totalTrace, totalTraceArray.getJSONObject(expressionGraph.getInt(1))));
         }
@@ -59,7 +59,7 @@ public class Loop extends TraceGraphNode {
             }
 
             // exit body
-            bodyGraph.getLastAccess().nextAccessProbabilities.put(endingNode, 1f); // FIXME: change probability (A)
+            expressionGraph.getLastAccess().nextAccessProbabilities.put(endingNode, 1f); // FIXME: change probability (A)
         }
 
         if (bodyGraph != null) {
@@ -81,6 +81,14 @@ public class Loop extends TraceGraphNode {
             }
         }
 
+        if (processedSubTrace.size() != 0) {
+            processedSubTrace.get(processedSubTrace.size()-1).nextAccessProbabilities.put(startingNode, 1f);
+        }
+
+        processedSubTrace.add(startingNode);
+        if (expressionGraph != null) processedSubTrace.addAll(expressionGraph.getAllAccesses());
+        if (bodyGraph != null) processedSubTrace.addAll(bodyGraph.getAllAccesses());
+        processedSubTrace.add(endingNode);
 
     }
 
