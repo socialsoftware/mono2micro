@@ -98,7 +98,7 @@ public class NodeToGraphTests {
 		callNode.nodeToAccessGraph(processedSubTrace, null, null, null);
 
 		// result
-		assertEquals(processedSubTrace.size(), 3); // call entry + 1 access + call exit = 3
+		assertEquals(processedSubTrace.size(), 3); // entry + 1 access + exit = 3
 
 		Access entryPoint = processedSubTrace.get(0);
 		Access exitPoint = processedSubTrace.get(2);
@@ -285,7 +285,7 @@ public class NodeToGraphTests {
 		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null);
 
 		// result
-		assertEquals(5, processedSubTrace.size()); // entry + 3 access + call exit = 5
+		assertEquals(5, processedSubTrace.size()); // entry + 3 access + exit = 5
 
 		Access entryPoint = processedSubTrace.get(0);
 		Access exitPoint = processedSubTrace.get(4);
