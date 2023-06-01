@@ -1,6 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.utils.traceGraph;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -691,7 +692,7 @@ public class NodeToGraphTests {
 				new Object[]{"&call", 1}
 			},
 			new Object[][]{
-				new Object[]{"R", 6}, new Object[]{"#return"}, new Object[]{"R", 6}
+				new Object[]{"R", 6}, new Object[]{"#return"}
 			}
 			});
 		
@@ -704,9 +705,9 @@ public class NodeToGraphTests {
 		callNode.nodeToAccessGraph(processedSubTrace, null, null, null);
 
 		// result
-		assertEquals(4, processedSubTrace.size());
+		assertEquals(3, processedSubTrace.size());
 
-		Access exitPoint = processedSubTrace.get(3);		
+		Access exitPoint = processedSubTrace.get(2);		
 		Access access = processedSubTrace.get(1);
 		assertTrue(access.getNextAccessProbabilities().containsKey(exitPoint));
 		
@@ -724,7 +725,7 @@ public class NodeToGraphTests {
 				new Object[]{"&call", 2}
 			},
 			new Object[][]{
-				new Object[]{"R", 6}, new Object[]{"#return"}, new Object[]{"R", 6}
+				new Object[]{"R", 6}, new Object[]{"#return"}
 			}
 			});
 		
@@ -737,12 +738,170 @@ public class NodeToGraphTests {
 		callNode.nodeToAccessGraph(processedSubTrace, null, null, null);
 
 		// result
-		assertEquals(6, processedSubTrace.size());
+		assertEquals(5, processedSubTrace.size());
 
-		Access exitPoint = processedSubTrace.get(4);		
+		Access exitPoint = processedSubTrace.get(3);		
 		Access access = processedSubTrace.get(2);
 		assertTrue(access.getNextAccessProbabilities().containsKey(exitPoint));
 		
+		
+    }
+
+	@Test  
+    public void nodeToAccessGraph_Label_NormalContinue() throws JSONException {
+		// setup
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&for_loop", 1}
+			},
+			new Object[][]{
+				new Object[]{"&expression", 2}, new Object[]{"&body", 3}
+			},
+			new Object[][]{
+				new Object[]{"R", 6}
+			},
+			new Object[][]{
+				new Object[]{"R", 6}, new Object[]{"#continue"}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
+
+		Loop loopNode = new Loop(totalTrace, totalTraceArray, traceElementJSON);
+
+		// steps
+		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+
+		// result
+		assertEquals(4, processedSubTrace.size());
+
+		Access expressionStart = processedSubTrace.get(1);		
+		Access bodyEnd = processedSubTrace.get(2);
+		assertTrue(bodyEnd.getNextAccessProbabilities().containsKey(expressionStart));
+			
+    }
+
+	@Test  
+    public void nodeToAccessGraph_Label_NestedContinue() throws JSONException {
+		// setup
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&for_loop", 1}
+			},
+			new Object[][]{
+				new Object[]{"&expression", 2}, new Object[]{"&body", 3}
+			},
+			new Object[][]{
+				new Object[]{"R", 6}
+			},
+			new Object[][]{
+				new Object[]{"&for_loop", 4}
+			},
+			new Object[][]{
+				new Object[]{"&expression", 5}, new Object[]{"&body", 6}
+			},
+			new Object[][]{
+				new Object[]{"R", 6}
+			},
+			new Object[][]{
+				new Object[]{"R", 6}, new Object[]{"#continue"}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
+
+		Loop loopNode = new Loop(totalTrace, totalTraceArray, traceElementJSON);
+
+		// steps
+		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+
+		// result
+		assertEquals(7, processedSubTrace.size());
+
+		Access innerExpressionStart = processedSubTrace.get(3);		
+		Access innerBodyEnd = processedSubTrace.get(4);
+		assertTrue(innerBodyEnd.getNextAccessProbabilities().containsKey(innerExpressionStart));
+		
+    }
+
+	@Test  
+    public void nodeToAccessGraph_Label_NormalBreak() throws JSONException {
+		// setup
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&for_loop", 1}
+			},
+			new Object[][]{
+				new Object[]{"&expression", 2}, new Object[]{"&body", 3}
+			},
+			new Object[][]{
+				new Object[]{"R", 6}
+			},
+			new Object[][]{
+				new Object[]{"R", 6}, new Object[]{"#break"}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
+
+		Loop loopNode = new Loop(totalTrace, totalTraceArray, traceElementJSON);
+
+		// steps
+		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+
+		// result
+		assertEquals(4, processedSubTrace.size());
+
+		Access loopEnd = processedSubTrace.get(3);		
+		Access bodyEnd = processedSubTrace.get(2);
+		assertTrue(bodyEnd.getNextAccessProbabilities().containsKey(loopEnd));
+			
+    }
+
+	@Test  
+    public void nodeToAccessGraph_Label_NestedBreak() throws JSONException {
+		// setup
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&for_loop", 1}
+			},
+			new Object[][]{
+				new Object[]{"&expression", 2}, new Object[]{"&body", 3}
+			},
+			new Object[][]{
+				new Object[]{"R", 6}
+			},
+			new Object[][]{
+				new Object[]{"&for_loop", 4}
+			},
+			new Object[][]{
+				new Object[]{"&expression", 5}, new Object[]{"&body", 6}
+			},
+			new Object[][]{
+				new Object[]{"R", 6}
+			},
+			new Object[][]{
+				new Object[]{"R", 6}, new Object[]{"#break"}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
+
+		Loop loopNode = new Loop(totalTrace, totalTraceArray, traceElementJSON);
+
+		// steps
+		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+
+		// result
+		assertEquals(7, processedSubTrace.size());
+
+		Access innerLoopEnd = processedSubTrace.get(5);		
+		Access innerBodyEnd = processedSubTrace.get(4);
+		assertTrue(innerBodyEnd.getNextAccessProbabilities().containsKey(innerLoopEnd));
 		
     }
 
@@ -791,6 +950,7 @@ public class NodeToGraphTests {
 		assertTrue(expression.nextAccessProbabilities.containsKey(body));
 		assertTrue(expression.nextAccessProbabilities.containsKey(exitPoint));
 		assertTrue(body.nextAccessProbabilities.containsKey(expression));
+		assertFalse(body.nextAccessProbabilities.containsKey(exitPoint));
 		
     }
 
@@ -928,6 +1088,65 @@ public class NodeToGraphTests {
 
 		assertTrue(expression.nextAccessProbabilities.containsKey(expression));
 		assertTrue(expression.nextAccessProbabilities.containsKey(exitPoint));
+		
+    }
+
+	@Test  
+    public void nodeToAccessGraph_For_MultipleAccesses() throws JSONException{
+		// setup
+		Access access1 = new Access("R", 6);
+
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&for_loop", 1}
+			},
+			new Object[][]{
+				new Object[]{"&expression", 2}, new Object[]{"&body", 3}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}, new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}, new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
+
+		Loop loopNode = new Loop(totalTrace, totalTraceArray, traceElementJSON);
+
+		// steps
+		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+
+		// result
+		assertEquals(6, processedSubTrace.size());
+
+		Access entryPoint = processedSubTrace.get(0);
+		Access exitPoint = processedSubTrace.get(5);
+		assertNull(entryPoint.getMode());
+		assertNull(exitPoint.getMode());
+		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
+
+		Access prev = null;
+		Access current;
+
+		for (int i = 0; i < processedSubTrace.size()-1; i++) {
+			if (prev == null) continue;
+
+			current = processedSubTrace.get(i);
+
+			assertTrue(prev.nextAccessProbabilities.containsKey(current));
+
+			prev = current;
+		}
+
+		Access firstExpressionAccess = processedSubTrace.get(1);
+		Access lastExpressionAccess = processedSubTrace.get(2);
+		Access lastBodyAccess = processedSubTrace.get(4);
+
+		assertTrue(lastExpressionAccess.nextAccessProbabilities.containsKey(exitPoint));
+		assertTrue(lastBodyAccess.nextAccessProbabilities.containsKey(firstExpressionAccess));
 		
     }
 
