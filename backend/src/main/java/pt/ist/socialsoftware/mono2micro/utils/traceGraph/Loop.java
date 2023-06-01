@@ -46,8 +46,8 @@ public class Loop extends TraceGraphNode {
         Access startingNode = new Access();
         Access endingNode = new Access();
         
-        TraceGraph expressionGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getExpression(), lastCallEnd, lastLoopStart, lastLoopEnd);
-        TraceGraph bodyGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getBody(), lastCallEnd, lastLoopStart, lastLoopEnd);
+        TraceGraph expressionGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getExpression(), lastCallEnd, startingNode, endingNode);
+        TraceGraph bodyGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getBody(), lastCallEnd, startingNode, endingNode);
 
         if (expressionGraph != null) {
             // enter condition
