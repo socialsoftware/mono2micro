@@ -450,6 +450,237 @@ public class NodeToGraphTests {
 		
     }
 
+	@Test  
+    public void nodeToAccessGraph_If_NoCond() throws JSONException{
+		// setup
+		Access access1 = new Access("R", 6);
+
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&if", 1}
+			},
+			new Object[][]{
+				new Object[]{"&then", 3}, new Object[]{"&else", 4}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
+
+		If ifNode = new If(totalTrace, totalTraceArray, traceElementJSON);
+
+		// steps
+		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+
+		// result
+		assertEquals(4, processedSubTrace.size());
+
+		Access entryPoint = processedSubTrace.get(0);
+		Access exitPoint = processedSubTrace.get(3);
+		assertNull(entryPoint.getMode());
+		assertNull(exitPoint.getMode());
+		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
+		
+		Access access;
+		Access condition = null;
+
+		for (int i = 0; i < 3; i++) {
+			access = processedSubTrace.get(i);
+			if(condition == null) {
+				condition = entryPoint;
+			} else {
+				assertTrue(condition.getNextAccessProbabilities().containsKey(access));
+				assertTrue(access.getNextAccessProbabilities().containsKey(exitPoint));
+			}
+			
+		}
+		
+		
+    }
+
+	@Test  
+    public void nodeToAccessGraph_If_NoThen() throws JSONException{
+		// setup
+		Access access1 = new Access("R", 6);
+
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&if", 1}
+			},
+			new Object[][]{
+				new Object[]{"&condition", 2}, new Object[]{"&else", 4}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
+
+		If ifNode = new If(totalTrace, totalTraceArray, traceElementJSON);
+
+		// steps
+		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+
+		// result
+		assertEquals(4, processedSubTrace.size());
+
+		Access entryPoint = processedSubTrace.get(0);
+		Access exitPoint = processedSubTrace.get(3);
+		assertNull(entryPoint.getMode());
+		assertNull(exitPoint.getMode());
+		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
+		
+		Access access;
+		Access condition = null;
+
+		for (int i = 1; i < 3; i++) {
+			access = processedSubTrace.get(i);
+			if(condition == null) {
+				assertTrue(entryPoint.getNextAccessProbabilities().containsKey(access));
+				condition = access;
+			} else {
+				assertTrue(condition.getNextAccessProbabilities().containsKey(access));
+				assertTrue(access.getNextAccessProbabilities().containsKey(exitPoint));
+			}
+			
+		}
+		
+		
+    }
+
+	@Test  
+    public void nodeToAccessGraph_If_NoElse() throws JSONException{
+		// setup
+		Access access1 = new Access("R", 6);
+
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&if", 1}
+			},
+			new Object[][]{
+				new Object[]{"&condition", 2}, new Object[]{"&then", 4}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
+
+		If ifNode = new If(totalTrace, totalTraceArray, traceElementJSON);
+
+		// steps
+		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+
+		// result
+		assertEquals(4, processedSubTrace.size());
+
+		Access entryPoint = processedSubTrace.get(0);
+		Access exitPoint = processedSubTrace.get(3);
+		assertNull(entryPoint.getMode());
+		assertNull(exitPoint.getMode());
+		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
+		
+		Access access;
+		Access condition = null;
+
+		for (int i = 1; i < 3; i++) {
+			access = processedSubTrace.get(i);
+			if(condition == null) {
+				assertTrue(entryPoint.getNextAccessProbabilities().containsKey(access));
+				condition = access;
+			} else {
+				assertTrue(condition.getNextAccessProbabilities().containsKey(access));
+				assertTrue(access.getNextAccessProbabilities().containsKey(exitPoint));
+			}
+			
+		}
+		
+		
+    }
+
+	@Test  
+    public void nodeToAccessGraph_If_NoThenOrElse() throws JSONException{
+		// setup
+		Access access1 = new Access("R", 6);
+
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&if", 1}
+			},
+			new Object[][]{
+				new Object[]{"&condition", 2}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
+
+		If ifNode = new If(totalTrace, totalTraceArray, traceElementJSON);
+
+		// steps
+		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+
+		// result
+		assertEquals(3, processedSubTrace.size());
+
+		Access entryPoint = processedSubTrace.get(0);
+		Access exitPoint = processedSubTrace.get(2);
+		assertNull(entryPoint.getMode());
+		assertNull(exitPoint.getMode());
+		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
+		
+		Access access;
+		Access condition = null;
+
+		for (int i = 1; i < 2; i++) {
+			access = processedSubTrace.get(i);
+			if(condition == null) {
+				assertTrue(entryPoint.getNextAccessProbabilities().containsKey(access));
+				condition = access;
+			} else {
+				assertTrue(condition.getNextAccessProbabilities().containsKey(access));
+				assertTrue(access.getNextAccessProbabilities().containsKey(exitPoint));
+			}
+			
+		}
+		
+		
+    }
+
 	// Label
 
 	@Test  
