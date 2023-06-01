@@ -748,6 +748,188 @@ public class NodeToGraphTests {
 
 	// Loop
 
+	@Test  
+    public void nodeToAccessGraph_For_EmptyTrace() throws JSONException{
+		// setup
+		Access access1 = new Access("R", 6);
+
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&for_loop", 1}
+			},
+			new Object[][]{
+				new Object[]{"&expression", 2}, new Object[]{"&body", 3}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
+
+		Loop loopNode = new Loop(totalTrace, totalTraceArray, traceElementJSON);
+
+		// steps
+		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+
+		// result
+		assertEquals(4, processedSubTrace.size()); // entry + 2 access + exit = 4
+
+		Access entryPoint = processedSubTrace.get(0);
+		Access exitPoint = processedSubTrace.get(3);
+		assertNull(entryPoint.getMode());
+		assertNull(exitPoint.getMode());
+		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
+		
+		Access expression = processedSubTrace.get(1);
+		Access body = processedSubTrace.get(2);
+
+		assertTrue(expression.nextAccessProbabilities.containsKey(body));
+		assertTrue(expression.nextAccessProbabilities.containsKey(exitPoint));
+		assertTrue(body.nextAccessProbabilities.containsKey(expression));
+		
+    }
+
+	@Test  
+    public void nodeToAccessGraph_For_NonEmptyTrace() throws JSONException{
+		// setup
+		Access access1 = new Access("R", 6);
+
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}, new Object[]{"&for_loop", 1}
+			},
+			new Object[][]{
+				new Object[]{"&expression", 2}, new Object[]{"&body", 3}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(1);
+
+		Loop loopNode = new Loop(totalTrace, totalTraceArray, traceElementJSON);
+
+		// steps
+		access1.nodeToAccessGraph(processedSubTrace, null, null, null);
+		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+
+		// result
+		assertEquals(5, processedSubTrace.size()); // entry + 2 access + exit = 4
+
+		access1 = processedSubTrace.get(0);
+		Access entryPoint = processedSubTrace.get(1);
+		Access exitPoint = processedSubTrace.get(4);
+		assertNull(entryPoint.getMode());
+		assertNull(exitPoint.getMode());
+		assertTrue(access1.nextAccessProbabilities.containsKey(entryPoint));
+		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
+		
+		Access expression = processedSubTrace.get(2);
+		Access body = processedSubTrace.get(3);
+
+		assertTrue(expression.nextAccessProbabilities.containsKey(body));
+		assertTrue(expression.nextAccessProbabilities.containsKey(exitPoint));
+		assertTrue(body.nextAccessProbabilities.containsKey(expression));
+			
+    }
+
+	@Test  
+    public void nodeToAccessGraph_For_NoExpr() throws JSONException{
+		// setup
+		Access access1 = new Access("R", 6);
+
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&for_loop", 1}
+			},
+			new Object[][]{
+				new Object[]{"&body", 3}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
+
+		Loop loopNode = new Loop(totalTrace, totalTraceArray, traceElementJSON);
+
+		// steps
+		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+
+		// result
+		assertEquals(3, processedSubTrace.size());
+
+		Access entryPoint = processedSubTrace.get(0);
+		Access exitPoint = processedSubTrace.get(2);
+		assertNull(entryPoint.getMode());
+		assertNull(exitPoint.getMode());
+		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
+
+		Access body = processedSubTrace.get(1);
+
+		assertTrue(body.nextAccessProbabilities.containsKey(body));
+		assertTrue(body.nextAccessProbabilities.containsKey(exitPoint));
+	
+    }
+
+	@Test  
+    public void nodeToAccessGraph_For_NoBody() throws JSONException{
+		// setup
+		Access access1 = new Access("R", 6);
+
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&for_loop", 1}
+			},
+			new Object[][]{
+				new Object[]{"&expression", 2}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
+
+		Loop loopNode = new Loop(totalTrace, totalTraceArray, traceElementJSON);
+
+		// steps
+		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+
+		// result
+		assertEquals(3, processedSubTrace.size());
+
+		Access entryPoint = processedSubTrace.get(0);
+		Access exitPoint = processedSubTrace.get(2);
+		assertNull(entryPoint.getMode());
+		assertNull(exitPoint.getMode());
+		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
+		
+		Access expression = processedSubTrace.get(1);
+
+		assertTrue(expression.nextAccessProbabilities.containsKey(expression));
+		assertTrue(expression.nextAccessProbabilities.containsKey(exitPoint));
+		
+    }
 
 	
 	// Utils
