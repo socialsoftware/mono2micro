@@ -908,7 +908,7 @@ public class NodeToGraphTests {
 	// Loop
 
 	@Test  
-    public void nodeToAccessGraph_For_EmptyTrace() throws JSONException{
+    public void nodeToAccessGraph_Loop_EmptyTrace() throws JSONException{
 		// setup
 		Access access1 = new Access("R", 6);
 
@@ -955,7 +955,7 @@ public class NodeToGraphTests {
     }
 
 	@Test  
-    public void nodeToAccessGraph_For_NonEmptyTrace() throws JSONException{
+    public void nodeToAccessGraph_Loop_NonEmptyTrace() throws JSONException{
 		// setup
 		Access access1 = new Access("R", 6);
 
@@ -1004,7 +1004,7 @@ public class NodeToGraphTests {
     }
 
 	@Test  
-    public void nodeToAccessGraph_For_NoExpr() throws JSONException{
+    public void nodeToAccessGraph_Loop_NoExpr() throws JSONException{
 		// setup
 		Access access1 = new Access("R", 6);
 
@@ -1048,7 +1048,7 @@ public class NodeToGraphTests {
     }
 
 	@Test  
-    public void nodeToAccessGraph_For_NoBody() throws JSONException{
+    public void nodeToAccessGraph_Loop_NoBody() throws JSONException{
 		// setup
 		Access access1 = new Access("R", 6);
 
@@ -1092,7 +1092,7 @@ public class NodeToGraphTests {
     }
 
 	@Test  
-    public void nodeToAccessGraph_For_MultipleAccesses() throws JSONException{
+    public void nodeToAccessGraph_Loop_MultipleAccesses() throws JSONException{
 		// setup
 		Access access1 = new Access("R", 6);
 
