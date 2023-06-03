@@ -7,7 +7,6 @@ import collectors.JPA.parser.MyHqlParser;
 import collectors.JPA.parser.QueryAccess;
 import collectors.JPA.parser.TableNamesFinderExt;
 import collectors.JPA.property_scanner.PropertyScanner;
-import collectors.JPA.property_scanner.ReturnPropertyScanner;
 import spoon.reflect.code.*;
 import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.declaration.*;
@@ -61,7 +60,7 @@ public class SpringDataJPACollector extends SpoonCollector {
         }
 
         // instantiate property scanners
-        String list = "collectors.JPA.property_scanner.ReturnPropertyScanner"; //FIXME: test list
+        String list = "collectors.JPA.property_scanner.ReturnPropertyScanner;collectors.JPA.property_scanner.ContinuePropertyScanner;collectors.JPA.property_scanner.BreakPropertyScanner"; //FIXME: test list
         String[] pScanners = new String[0];
         PropertyScanner scannerBuffer;
 
@@ -462,6 +461,27 @@ public class SpringDataJPACollector extends SpoonCollector {
                     }
                 }
 
+                List<CtRole> loopRoles = Arrays.asList(
+                        CtRole.EXPRESSION,
+                        CtRole.BODY,
+                        CtRole.FOR_INIT,
+                        CtRole.FOR_UPDATE
+                    );
+                List<CtRole> ifRoles = Arrays.asList(
+                        CtRole.CONDITION,
+                        CtRole.THEN,
+                        CtRole.ELSE
+                    );
+
+                boolean roleOpened = false;
+                if( (elParent instanceof CtIfImpl && ifRoles.contains(role)) ||
+                    (elParent instanceof CtLoopImpl /*&& loopRoles.contains(role)*/)
+                    ) {
+                    openNewContext(role.toString());
+                    roleOpened = true;
+
+                }
+                
                 if(element instanceof CtIfImpl) { // IF
                     openNewContext("if");
                     super.scan(element);
@@ -488,16 +508,11 @@ public class SpringDataJPACollector extends SpoonCollector {
                     super.scan(element);
                     closeCurrentContext();
 
-                } else if(  (elParent instanceof CtIfImpl && (role == CtRole.CONDITION || element instanceof CtBlock)) ||
-                            (elParent instanceof CtLoopImpl && (role == CtRole.EXPRESSION || role == CtRole.BODY))
-                        ) {
-                    openNewContext(role.toString());
-                    super.scan(element);
-                    closeCurrentContext();
-
-                }else {
+                } else {
                     super.scan(element);
                 }
+
+                if(roleOpened) closeCurrentContext();
 
                 // read heuristic properties
                 //new ReturnPropertyScanner().process(SpringDataJPACollector.this, element);
