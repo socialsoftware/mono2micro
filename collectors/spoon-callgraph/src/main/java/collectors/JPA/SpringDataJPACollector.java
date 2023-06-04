@@ -512,13 +512,13 @@ public class SpringDataJPACollector extends SpoonCollector {
                     super.scan(element);
                 }
 
-                if(roleOpened) closeCurrentContext();
-
                 // read heuristic properties
                 //new ReturnPropertyScanner().process(SpringDataJPACollector.this, element);
                 for (PropertyScanner scanner : propertyScanners) {
                     scanner.process(SpringDataJPACollector.this, element);
                 }
+
+                if(roleOpened) closeCurrentContext();
 
             }
         });
