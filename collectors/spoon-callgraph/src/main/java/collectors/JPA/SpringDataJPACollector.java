@@ -60,7 +60,7 @@ public class SpringDataJPACollector extends SpoonCollector {
         }
 
         // instantiate property scanners
-        String list = "collectors.JPA.property_scanner.ReturnPropertyScanner;collectors.JPA.property_scanner.ContinuePropertyScanner;collectors.JPA.property_scanner.BreakPropertyScanner"; //FIXME: test list
+        String list = "collectors.JPA.property_scanner.ReturnPropertyScanner;collectors.JPA.property_scanner.ContinuePropertyScanner;collectors.JPA.property_scanner.BreakPropertyScanner;collectors.JPA.property_scanner.ZeroComparisonPropertyScanner"; //FIXME: test list
         String[] pScanners = new String[0];
         PropertyScanner scannerBuffer;
 
