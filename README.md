@@ -22,10 +22,6 @@ Currently implemented for Spring-Boot monoliths that use FenixFramework and Spri
 
  - The User Interface allows the user to create codebases by submitting the collectors data to the Spring Boot Server, and create and evaluate several decompositions.
 
-## 5. Evaluation Playground
-
- - The Evaluation Playground is used to evaluate the strategies results data in order to generate graphics and statistic reports.
-
 # Setup
 
 ### Pre-Requisites
@@ -75,13 +71,6 @@ Currently implemented for Spring-Boot monoliths that use FenixFramework and Spri
 	cd frontend/
 	npm install --legacy-peer-deps
 	npm start
-
-### 5. To run the Evaluation Playground:
-
-	cd evaluation-playground/
-	pipenv shell
-	pipenv install # First time only
-	python <script-file-name>.py
 
 ## Run using Docker
 
