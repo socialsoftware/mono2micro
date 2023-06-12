@@ -81,6 +81,12 @@ Currently implemented for Spring-Boot monoliths that use FenixFramework and Spri
 
     docker-compose build --no-cache
     docker-compose up --build
+    
+ ## Run using Docker and rebuild only backend service after changes
+ 
+    docker-compose build
+    docker-compose up -d
+    docker compose up --no-deps -d --build backend
 
 ## Accessing Web Service
 
