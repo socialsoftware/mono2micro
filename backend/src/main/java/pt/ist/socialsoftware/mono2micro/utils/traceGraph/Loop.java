@@ -42,12 +42,15 @@ public class Loop extends TraceGraphNode {
         this.body = body;
     }
 
-    public void nodeToAccessGraph(List<Access> processedSubTrace, TraceGraphNode lastCallEnd, TraceGraphNode lastLoopStart, TraceGraphNode lastLoopEnd) {
+    public void nodeToAccessGraph(List<Access> processedSubTrace, TraceGraphNode lastCallEnd, TraceGraphNode lastLoopStart, TraceGraphNode lastLoopEnd, HeuristicFlags heuristicFlags) {
+        HeuristicFlags expressionHeuristicFlags = new HeuristicFlags();
+        HeuristicFlags bodyHeuristicFlags = new HeuristicFlags();
+
         Access startingNode = new Access();
         Access endingNode = new Access();
         
-        TraceGraph expressionGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getExpression(), lastCallEnd, startingNode, endingNode);
-        TraceGraph bodyGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getBody(), lastCallEnd, startingNode, endingNode);
+        TraceGraph expressionGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getExpression(), lastCallEnd, startingNode, endingNode, expressionHeuristicFlags);
+        TraceGraph bodyGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getBody(), lastCallEnd, startingNode, endingNode, bodyHeuristicFlags);
 
         if (expressionGraph != null) {
             // enter condition
@@ -85,7 +88,7 @@ public class Loop extends TraceGraphNode {
             processedSubTrace.get(processedSubTrace.size()-1).nextAccessProbabilities.put(startingNode, 1f);
         }
 
-        processedSubTrace.add(startingNode);
+        processedSubTrace.add(startingNode); // FIXME: clean starting and ending nodes instead of adding them to the trace
         if (expressionGraph != null) processedSubTrace.addAll(expressionGraph.getAllAccesses());
         if (bodyGraph != null) processedSubTrace.addAll(bodyGraph.getAllAccesses());
         processedSubTrace.add(endingNode);

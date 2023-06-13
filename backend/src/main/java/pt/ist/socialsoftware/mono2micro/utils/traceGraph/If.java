@@ -56,15 +56,24 @@ public class If extends TraceGraphNode {
         this.elseBody = elseBody;
     }
 
-    public void nodeToAccessGraph(List<Access> processedSubTrace, TraceGraphNode lastCallEnd, TraceGraphNode lastLoopStart, TraceGraphNode lastLoopEnd) {
+    public void nodeToAccessGraph(List<Access> processedSubTrace, TraceGraphNode lastCallEnd, TraceGraphNode lastLoopStart, TraceGraphNode lastLoopEnd, HeuristicFlags heuristicFlags) {
+        HeuristicFlags conditionHeuristicFlags = new HeuristicFlags();
+        HeuristicFlags thenHeuristicFlags = new HeuristicFlags();
+        HeuristicFlags elseHeuristicFlags = new HeuristicFlags();
+
+        Float thenProbability;
+
         Access startingNode = new Access();
         Access endingNode = new Access();
         
         Access baseNode;
         
-        TraceGraph condition = FunctionalityGraphTracesIterator.processSubTrace(this.getCondition(), lastCallEnd, lastLoopStart, lastLoopEnd);
-        TraceGraph thenGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getThenBody(), lastCallEnd, lastLoopStart, lastLoopEnd);
-        TraceGraph elseGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getElseBody(), lastCallEnd, lastLoopStart, lastLoopEnd);
+        TraceGraph condition = FunctionalityGraphTracesIterator.processSubTrace(this.getCondition(), lastCallEnd, lastLoopStart, lastLoopEnd, conditionHeuristicFlags);
+        TraceGraph thenGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getThenBody(), lastCallEnd, lastLoopStart, lastLoopEnd, thenHeuristicFlags);
+        TraceGraph elseGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getElseBody(), lastCallEnd, lastLoopStart, lastLoopEnd, elseHeuristicFlags);
+
+        List<String> appliableHeuristics = BranchHeuristics.getAppliableHeuristics(conditionHeuristicFlags, thenHeuristicFlags, elseHeuristicFlags);
+        thenProbability = BranchHeuristics.calculateBranchProbability(appliableHeuristics);
 
         if (condition != null) {
             startingNode.nextAccessProbabilities.put(condition.getFirstAccess(), 1f);
@@ -75,17 +84,17 @@ public class If extends TraceGraphNode {
         }
 
         if (thenGraph != null) {
-            baseNode.nextAccessProbabilities.put(thenGraph.getFirstAccess(), 1f); // FIXME: change probability (A)
+            baseNode.nextAccessProbabilities.put(thenGraph.getFirstAccess(), thenProbability);
             thenGraph.getLastAccess().nextAccessProbabilities.put(endingNode, 1f);
         } else {
-            baseNode.nextAccessProbabilities.put(endingNode, 1f); // FIXME: change probability (A)
+            baseNode.nextAccessProbabilities.put(endingNode, thenProbability);
         }
 
         if (elseGraph != null) {
-            baseNode.nextAccessProbabilities.put(elseGraph.getFirstAccess(), 1f); // FIXME: change probability (B)
+            baseNode.nextAccessProbabilities.put(elseGraph.getFirstAccess(), 1-thenProbability);
             elseGraph.getLastAccess().nextAccessProbabilities.put(endingNode, 1f);
         } else {
-            baseNode.nextAccessProbabilities.put(endingNode, 1f); // FIXME: change probability (B)
+            baseNode.nextAccessProbabilities.put(endingNode, 1-thenProbability);
         }
 
 

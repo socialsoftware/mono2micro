@@ -23,11 +23,12 @@ public class Call extends TraceGraphNode {
         this.body = body;
     }
 
-    public void nodeToAccessGraph(List<Access> processedSubTrace, TraceGraphNode lastCallEnd, TraceGraphNode lastLoopStart, TraceGraphNode lastLoopEnd) {
+    public void nodeToAccessGraph(List<Access> processedSubTrace, TraceGraphNode lastCallEnd, TraceGraphNode lastLoopStart, TraceGraphNode lastLoopEnd, HeuristicFlags heuristicFlags) {
+
         Access startingNode = new Access();
         Access endingNode = new Access();
         
-        TraceGraph bodyGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getBody(), endingNode, lastLoopStart, lastLoopEnd);
+        TraceGraph bodyGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getBody(), endingNode, lastLoopStart, lastLoopEnd, null);
 
         if (bodyGraph != null) {
             startingNode.nextAccessProbabilities.put(bodyGraph.getFirstAccess(), 1f);

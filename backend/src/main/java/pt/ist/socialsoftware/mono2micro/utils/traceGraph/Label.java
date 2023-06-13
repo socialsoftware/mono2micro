@@ -20,7 +20,7 @@ public class Label extends TraceGraphNode {
         this.content = content;
     }
 
-    public void nodeToAccessGraph(List<Access> processedSubTrace, TraceGraphNode lastCallEnd, TraceGraphNode lastLoopStart, TraceGraphNode lastLoopEnd) {
+    public void nodeToAccessGraph(List<Access> processedSubTrace, TraceGraphNode lastCallEnd, TraceGraphNode lastLoopStart, TraceGraphNode lastLoopEnd, HeuristicFlags heuristicFlags) {
         // TODO: implement (set flags for detected label)
 
         Access lastAccess = processedSubTrace.get(processedSubTrace.size()-1);
@@ -28,19 +28,22 @@ public class Label extends TraceGraphNode {
         switch (this.getContent()) {
             case HeuristicLabelType.CONTINUE:
                     lastAccess.nextAccessProbabilities.put(lastLoopStart, 1f); // FIXME: check probability
-                    // TODO: set heuristic flag
+                    heuristicFlags.goingToLoopHead = true;
                 break;
         
             case HeuristicLabelType.BREAK:
                     lastAccess.nextAccessProbabilities.put(lastLoopEnd, 1f); // FIXME: check probability
-                    // TODO: set heuristic flag
+                    heuristicFlags.hasBreak = true;
                 break;
 
             case HeuristicLabelType.RETURN:
                     lastAccess.nextAccessProbabilities.put(lastCallEnd, 1f); // FIXME: check probability
-                    // TODO: set heuristic flag
+                    heuristicFlags.hasReturn = true;
                 break;
-        
+
+            case HeuristicLabelType.ZERO_COMPARISON:
+                    heuristicFlags.zeroComparison = true;
+                break;
             default:
                 break;
         }

@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.Access;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.Call;
+import pt.ist.socialsoftware.mono2micro.utils.traceGraph.HeuristicFlags;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.If;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.Label;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.Loop;
@@ -135,15 +136,15 @@ public class FunctionalityGraphTracesIterator {
     }
 
     public static TraceGraph processSubTrace(List<TraceGraphNode> subTrace) {
-        return processSubTrace(subTrace, null, null, null);
+        return processSubTrace(subTrace, null, null, null, null);
     }
 
-    public static TraceGraph processSubTrace(List<TraceGraphNode> subTrace, TraceGraphNode lastCallEnd, TraceGraphNode lastLoopStart, TraceGraphNode lastLoopEnd) {
+    public static TraceGraph processSubTrace(List<TraceGraphNode> subTrace, TraceGraphNode lastCallEnd, TraceGraphNode lastLoopStart, TraceGraphNode lastLoopEnd, HeuristicFlags heuristicFlags) {
         if (subTrace == null || subTrace.isEmpty()) return null;
 
         List<Access> processedSubTrace = new ArrayList<Access>();
         for (int i = 0; i < subTrace.size(); i++) {
-            subTrace.get(i).nodeToAccessGraph(processedSubTrace, lastCallEnd, lastLoopStart, lastLoopEnd);
+            subTrace.get(i).nodeToAccessGraph(processedSubTrace, lastCallEnd, lastLoopStart, lastLoopEnd, heuristicFlags);
         }
 
         TraceGraph resultingGraph = new TraceGraph();
