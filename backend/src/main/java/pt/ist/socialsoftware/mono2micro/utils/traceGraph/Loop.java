@@ -52,35 +52,40 @@ public class Loop extends TraceGraphNode {
         TraceGraph expressionGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getExpression(), lastCallEnd, startingNode, endingNode, expressionHeuristicFlags);
         TraceGraph bodyGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getBody(), lastCallEnd, startingNode, endingNode, bodyHeuristicFlags);
 
+        List<String> appliableHeuristics = BranchHeuristics.getAppliableHeuristics(expressionHeuristicFlags, bodyHeuristicFlags, null);
+        appliableHeuristics.add(BranchHeuristics.LOOP_BRANCH_H); // add heuristic beacuse the loop is repeated if path taken
+        Float enterLoopProbability = BranchHeuristics.calculateBranchProbability(appliableHeuristics);
+        Float exitLoopProbability = 1-enterLoopProbability;
+
         if (expressionGraph != null) {
             // enter condition
             startingNode.nextAccessProbabilities.put(expressionGraph.getFirstAccess(), 1f);
 
             // return to head (if no body)
             if(bodyGraph == null) {
-                expressionGraph.getLastAccess().nextAccessProbabilities.put(expressionGraph.getFirstAccess(), 1f); // FIXME: change probability (P)
+                expressionGraph.getLastAccess().nextAccessProbabilities.put(expressionGraph.getFirstAccess(), enterLoopProbability);
             }
 
             // exit body
-            expressionGraph.getLastAccess().nextAccessProbabilities.put(endingNode, 1f); // FIXME: change probability (A)
+            expressionGraph.getLastAccess().nextAccessProbabilities.put(endingNode, exitLoopProbability);
         }
 
         if (bodyGraph != null) {
             // enter body
             if (expressionGraph != null) {
-                expressionGraph.getLastAccess().nextAccessProbabilities.put(bodyGraph.getFirstAccess(), 1f); // FIXME: change probability (P)
+                expressionGraph.getLastAccess().nextAccessProbabilities.put(bodyGraph.getFirstAccess(), enterLoopProbability);
             } else {
-                startingNode.nextAccessProbabilities.put(bodyGraph.getFirstAccess(), 1f); // FIXME: change probability (P)
+                startingNode.nextAccessProbabilities.put(bodyGraph.getFirstAccess(), enterLoopProbability);
             }
 
             // return to head
             if (expressionGraph != null) {
                 bodyGraph.getLastAccess().nextAccessProbabilities.put(expressionGraph.getFirstAccess(), 1f);
             } else {
-                bodyGraph.getLastAccess().nextAccessProbabilities.put(bodyGraph.getFirstAccess(), 1f); // FIXME: change probability (P)
+                bodyGraph.getLastAccess().nextAccessProbabilities.put(bodyGraph.getFirstAccess(), enterLoopProbability);
                 
                 // exit body (since expression is "empty")
-                bodyGraph.getLastAccess().nextAccessProbabilities.put(endingNode, 1f); // FIXME: change probability (A)
+                bodyGraph.getLastAccess().nextAccessProbabilities.put(endingNode, exitLoopProbability);
             }
         }
 
@@ -92,6 +97,10 @@ public class Loop extends TraceGraphNode {
         if (expressionGraph != null) processedSubTrace.addAll(expressionGraph.getAllAccesses());
         if (bodyGraph != null) processedSubTrace.addAll(bodyGraph.getAllAccesses());
         processedSubTrace.add(endingNode);
+
+        if (heuristicFlags != null) {
+            heuristicFlags.hasLoop = true;
+        }
 
     }
 

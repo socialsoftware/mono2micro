@@ -51,64 +51,64 @@ public class BranchHeuristics {
             if (cond.zeroComparison) {
                 appliableHeuristics.add(OPCODE_H);
             }
+            // TODO: GUARD_H
         }
         
-
-        // LOOP_BRANCH_H
-        if (b1.goingToLoopHead && !b2.goingToLoopHead) {
-            appliableHeuristics.add(LOOP_BRANCH_H);
-        } else if (b2.goingToLoopHead && !b1.goingToLoopHead) {
-            appliableHeuristics.add(inverted(LOOP_BRANCH_H));
+        if (b1 != null && b2 != null) {
+                  
+            // LOOP_BRANCH_H
+            if (b1.goingToLoopHead && !b2.goingToLoopHead) {
+                appliableHeuristics.add(LOOP_BRANCH_H);
+            } else if (b2.goingToLoopHead && !b1.goingToLoopHead) {
+                appliableHeuristics.add(inverted(LOOP_BRANCH_H));
+            }
+            
+            // LOOP_EXIT_H
+            if (!b1.hasBreak && b2.hasBreak) {
+                appliableHeuristics.add(LOOP_EXIT_H);
+            } else if (!b2.hasBreak && b1.hasBreak) {
+                appliableHeuristics.add(inverted(LOOP_EXIT_H));
+            }
+            
+            // LOOP_HEADER_H
+            if (b1.hasLoop && !b1.postDominant && !(b2.hasLoop && !b2.postDominant)) {
+                appliableHeuristics.add(LOOP_HEADER_H);
+            } else if (b2.hasLoop && !b2.postDominant && !(b1.hasLoop && !b1.postDominant)) {
+                appliableHeuristics.add(inverted(LOOP_HEADER_H));
+            }
+            
+            // CALL_H
+            if (b1.hasCall && !b1.postDominant && !(b2.hasCall && !b2.postDominant)) {
+                appliableHeuristics.add(CALL_H);
+            } else if (b2.hasCall && !b2.postDominant && !(b1.hasCall && !b1.postDominant)) {
+                appliableHeuristics.add(inverted(CALL_H));
+            }
+            
+            // STORE_H
+            if (b1.hasStore && !b1.postDominant && !(b2.hasStore && !b2.postDominant)) {
+                appliableHeuristics.add(STORE_H);
+            } else if (b2.hasStore && !b2.postDominant && !(b1.hasStore && !b1.postDominant)) {
+                appliableHeuristics.add(inverted(STORE_H));
+            }
+            
+            // RETURN_H
+            if (!b1.hasReturn && !b1.postDominant && !(!b2.hasReturn && !b2.postDominant)) {
+                appliableHeuristics.add(RETURN_H);
+            } else if (!b2.hasReturn && !b2.postDominant && !(!b1.hasReturn && !b1.postDominant)) {
+                appliableHeuristics.add(inverted(RETURN_H));
+            }
+            
         }
-
-
-        // TODO: GUARD_H
-
-        // LOOP_EXIT_H
-        if (!b1.hasBreak && b2.hasBreak) {
-            appliableHeuristics.add(LOOP_EXIT_H);
-        } else if (!b2.hasBreak && b1.hasBreak) {
-            appliableHeuristics.add(inverted(LOOP_EXIT_H));
-        }
-
-        // LOOP_HEADER_H
-        if (b1.hasLoop && !b1.postDominant && !(b2.hasLoop && !b2.postDominant)) {
-            appliableHeuristics.add(LOOP_HEADER_H);
-        } else if (b2.hasLoop && !b2.postDominant && !(b1.hasLoop && !b1.postDominant)) {
-            appliableHeuristics.add(inverted(LOOP_HEADER_H));
-        }
-
-        // CALL_H
-        if (b1.hasCall && !b1.postDominant && !(b2.hasCall && !b2.postDominant)) {
-            appliableHeuristics.add(CALL_H);
-        } else if (b2.hasCall && !b2.postDominant && !(b1.hasCall && !b1.postDominant)) {
-            appliableHeuristics.add(inverted(CALL_H));
-        }
-
-        // STORE_H
-        if (b1.hasStore && !b1.postDominant && !(b2.hasStore && !b2.postDominant)) {
-            appliableHeuristics.add(STORE_H);
-        } else if (b2.hasStore && !b2.postDominant && !(b1.hasStore && !b1.postDominant)) {
-            appliableHeuristics.add(inverted(STORE_H));
-        }
-
-        // RETURN_H
-        if (!b1.hasReturn && !b1.postDominant && !(!b2.hasReturn && !b2.postDominant)) {
-            appliableHeuristics.add(RETURN_H);
-        } else if (!b2.hasReturn && !b2.postDominant && !(!b1.hasReturn && !b1.postDominant)) {
-            appliableHeuristics.add(inverted(RETURN_H));
-        }
-
-
-
+        
+        
         return appliableHeuristics;
-
+        
     }
-
+    
     public static String inverted(String heuristic) {
         return heuristic + "_i";
     }
-
+    
     public static float calculateBranchProbability(List<String> heuristics) {
         // x*y/(x*y + (1-x)*(1-y))
 

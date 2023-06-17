@@ -46,6 +46,10 @@ public class Access extends TraceGraphNode {
             processedSubTrace.get(processedSubTrace.size()-1).nextAccessProbabilities.put(this, 1f);
         }
         processedSubTrace.add(this);
+
+        if (heuristicFlags != null && getMode() == "W") {
+            heuristicFlags.hasStore = true;
+        }
     }
 
 }

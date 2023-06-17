@@ -73,6 +73,7 @@ public class If extends TraceGraphNode {
         TraceGraph elseGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getElseBody(), lastCallEnd, lastLoopStart, lastLoopEnd, elseHeuristicFlags);
 
         List<String> appliableHeuristics = BranchHeuristics.getAppliableHeuristics(conditionHeuristicFlags, thenHeuristicFlags, elseHeuristicFlags);
+        if (elseGraph == null) elseHeuristicFlags.postDominant = true;
         thenProbability = BranchHeuristics.calculateBranchProbability(appliableHeuristics);
 
         if (condition != null) {
