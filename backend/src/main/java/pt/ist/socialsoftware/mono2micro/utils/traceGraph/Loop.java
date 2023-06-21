@@ -76,6 +76,9 @@ public class Loop extends TraceGraphNode {
                 expressionGraph.getLastAccess().nextAccessProbabilities.put(bodyGraph.getFirstAccess(), enterLoopProbability);
             } else {
                 startingNode.nextAccessProbabilities.put(bodyGraph.getFirstAccess(), enterLoopProbability);
+
+                // not enter body (since expression is "empty")
+                startingNode.nextAccessProbabilities.put(endingNode, exitLoopProbability);
             }
 
             // return to head
@@ -93,7 +96,7 @@ public class Loop extends TraceGraphNode {
             processedSubTrace.get(processedSubTrace.size()-1).nextAccessProbabilities.put(startingNode, 1f);
         }
 
-        processedSubTrace.add(startingNode); // FIXME: clean starting and ending nodes instead of adding them to the trace
+        processedSubTrace.add(startingNode);
         if (expressionGraph != null) processedSubTrace.addAll(expressionGraph.getAllAccesses());
         if (bodyGraph != null) processedSubTrace.addAll(bodyGraph.getAllAccesses());
         processedSubTrace.add(endingNode);
