@@ -153,9 +153,11 @@ public class FunctionalityGraphTracesIterator {
 
         TraceGraph resultingGraph = new TraceGraph();
         resultingGraph.setAllAccesses(processedSubTrace);
-        resultingGraph.setFirstAccess(processedSubTrace.get(0));
+        if (processedSubTrace.size() > 0) {
+            resultingGraph.setFirstAccess(processedSubTrace.get(0));
+        }
 
         return resultingGraph;
-    }    
+    }
     
 }

@@ -57,12 +57,12 @@ public class Loop extends TraceGraphNode {
         Float enterLoopProbability = BranchHeuristics.calculateBranchProbability(appliableHeuristics);
         Float exitLoopProbability = 1-enterLoopProbability;
 
-        if (expressionGraph != null) {
+        if (expressionGraph != null && expressionGraph.getAllAccesses().size() != 0) {
             // enter condition
             startingNode.nextAccessProbabilities.put(expressionGraph.getFirstAccess(), 1f);
 
             // return to head (if no body)
-            if(bodyGraph == null) {
+            if(bodyGraph == null || bodyGraph.getAllAccesses().size() == 0) {
                 expressionGraph.getLastAccess().nextAccessProbabilities.put(expressionGraph.getFirstAccess(), enterLoopProbability);
             }
 
@@ -70,7 +70,7 @@ public class Loop extends TraceGraphNode {
             expressionGraph.getLastAccess().nextAccessProbabilities.put(endingNode, exitLoopProbability);
         }
 
-        if (bodyGraph != null) {
+        if (bodyGraph != null && bodyGraph.getAllAccesses().size() != 0) {
             // enter body
             if (expressionGraph != null) {
                 expressionGraph.getLastAccess().nextAccessProbabilities.put(bodyGraph.getFirstAccess(), enterLoopProbability);
@@ -82,7 +82,7 @@ public class Loop extends TraceGraphNode {
             }
 
             // return to head
-            if (expressionGraph != null) {
+            if (expressionGraph != null && expressionGraph.getAllAccesses().size() != 0) {
                 bodyGraph.getLastAccess().nextAccessProbabilities.put(expressionGraph.getFirstAccess(), 1f);
             } else {
                 bodyGraph.getLastAccess().nextAccessProbabilities.put(bodyGraph.getFirstAccess(), enterLoopProbability);

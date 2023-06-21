@@ -76,7 +76,7 @@ public class If extends TraceGraphNode {
         if (elseGraph == null) elseHeuristicFlags.postDominant = true;
         thenProbability = BranchHeuristics.calculateBranchProbability(appliableHeuristics);
 
-        if (condition != null) {
+        if (condition != null && condition.getAllAccesses().size() != 0) {
             startingNode.nextAccessProbabilities.put(condition.getFirstAccess(), 1f);
 
             baseNode = condition.getLastAccess();
@@ -84,14 +84,14 @@ public class If extends TraceGraphNode {
             baseNode = startingNode;
         }
 
-        if (thenGraph != null) {
+        if (thenGraph != null && thenGraph.getAllAccesses().size() != 0) {
             baseNode.nextAccessProbabilities.put(thenGraph.getFirstAccess(), thenProbability);
             thenGraph.getLastAccess().nextAccessProbabilities.put(endingNode, 1f);
         } else {
             baseNode.nextAccessProbabilities.put(endingNode, thenProbability);
         }
 
-        if (elseGraph != null) {
+        if (elseGraph != null && elseGraph.getAllAccesses().size() != 0) {
             baseNode.nextAccessProbabilities.put(elseGraph.getFirstAccess(), 1-thenProbability);
             elseGraph.getLastAccess().nextAccessProbabilities.put(endingNode, 1f);
         } else {
