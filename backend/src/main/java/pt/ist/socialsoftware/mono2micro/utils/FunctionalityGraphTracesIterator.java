@@ -79,7 +79,11 @@ public class FunctionalityGraphTracesIterator {
 
         List<TraceGraphNode> preProcessedTraces = translateSubTrace(object, mainTrace);
 
-        return processSubTrace(preProcessedTraces);
+        TraceGraph processedSubTrace = processSubTrace(preProcessedTraces);
+
+        processedSubTrace.removeEmptyNodes();
+
+        return processedSubTrace;
     }
 
     public static List<TraceGraphNode> translateSubTrace(JSONObject totalTrace, JSONObject subTrace) throws JSONException {
