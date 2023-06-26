@@ -47,6 +47,8 @@ public abstract class TraceGraphNode {
 
         List<TraceGraphNode> nextAccessList = new ArrayList<>(this.getNextAccessProbabilities().keySet());
 
+        if (nextAccessList.size() == 0) return;
+
         Float prob;
         if (((Access)this).getMode() == null) {
             toRemoveStack.add(this);
