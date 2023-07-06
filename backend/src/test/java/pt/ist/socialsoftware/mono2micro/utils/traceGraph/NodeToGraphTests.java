@@ -679,6 +679,57 @@ public class NodeToGraphTests {
 
 	// Label
 
+	/*@Test  
+    public void testst() throws JSONException {
+		// setup
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&if", 1}
+			},
+			new Object[][]{
+				new Object[]{"&condition", 2}, new Object[]{"&then", 3}, new Object[]{"&else", 4}
+			},
+			new Object[][]{
+				new Object[]{"R", 0}, new Object[]{"#zero_comparison"}
+			},
+			new Object[][]{
+				new Object[]{"&call", 5}, new Object[]{"R", 17}
+			},
+			new Object[][]{
+				new Object[]{"R", 2}
+			},
+			new Object[][]{
+				new Object[]{"&call", 6}
+			},
+			new Object[][]{
+				new Object[]{"R", 1}, new Object[]{"#return"}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
+
+		If ifNode = new If(totalTrace, totalTraceArray, traceElementJSON);
+		HeuristicFlags heuristicFlags = new HeuristicFlags();
+
+		// steps
+		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null, heuristicFlags);
+
+		// result
+		assertEquals(10, processedSubTrace.size());
+
+		TraceGraph subGraph = new TraceGraph(processedSubTrace, processedSubTrace.get(0));
+		subGraph.removeEmptyNodes();
+
+		assertTrue(heuristicFlags.hasReturn);
+
+		Access exitPoint = processedSubTrace.get(2);		
+		Access access = processedSubTrace.get(1);
+		assertTrue(access.getNextAccessProbabilities().containsKey(exitPoint));
+		
+		
+    }*/
+
 	@Test  
     public void nodeToAccessGraph_Label_NormalReturn() throws JSONException {
 		// setup
@@ -906,6 +957,49 @@ public class NodeToGraphTests {
 		
     }
 
+	@Test
+	public void nodeToAccessGraph_Label_FlagReturn() throws JSONException{
+		// setup
+		Access access1 = new Access("R", 6);
+
+		JSONObject totalTrace = initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"&if", 1}
+			},
+			new Object[][]{
+				new Object[]{"&condition", 2}, new Object[]{"&then", 3}, new Object[]{"&else", 4}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			},
+			new Object[][]{
+				new Object[]{access1.getMode(), access1.getEntityAccessedId()}
+			},
+			new Object[][]{
+				new Object[]{"#return"}
+			}
+			});
+		
+		JSONArray totalTraceArray = totalTrace.getJSONArray("t");
+		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
+
+		If ifNode = new If(totalTrace, totalTraceArray, traceElementJSON);
+
+		HeuristicFlags heuristicFlags = new HeuristicFlags();
+
+		// steps
+		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null, heuristicFlags);
+
+		// result
+		assertEquals(4, processedSubTrace.size());
+
+		Float probability = BranchHeuristics.heuristicProbabilities.get(BranchHeuristics.RETURN_H);
+		Float inverse = 1.0f - probability;
+		assertEquals(probability, processedSubTrace.get(1).getNextAccessProbabilities().get(processedSubTrace.get(2)));
+		assertEquals(inverse, processedSubTrace.get(1).getNextAccessProbabilities().get(processedSubTrace.get(3)));
+		
+    }
+
 	// Loop
 
 	@Test  
@@ -948,10 +1042,10 @@ public class NodeToGraphTests {
 		Access expression = processedSubTrace.get(1);
 		Access body = processedSubTrace.get(2);
 
-		assertTrue(expression.nextAccessProbabilities.containsKey(body));
-		assertTrue(expression.nextAccessProbabilities.containsKey(exitPoint));
-		assertTrue(body.nextAccessProbabilities.containsKey(expression));
-		assertFalse(body.nextAccessProbabilities.containsKey(exitPoint));
+		assertTrue(expression.getNextAccessProbabilities().containsKey(body));
+		assertTrue(expression.getNextAccessProbabilities().containsKey(exitPoint));
+		assertTrue(body.getNextAccessProbabilities().containsKey(expression));
+		assertFalse(body.getNextAccessProbabilities().containsKey(exitPoint));
 		
     }
 
@@ -992,15 +1086,15 @@ public class NodeToGraphTests {
 		Access exitPoint = processedSubTrace.get(4);
 		assertNull(entryPoint.getMode());
 		assertNull(exitPoint.getMode());
-		assertTrue(access1.nextAccessProbabilities.containsKey(entryPoint));
+		assertTrue(access1.getNextAccessProbabilities().containsKey(entryPoint));
 		assertTrue(exitPoint.getNextAccessProbabilities().keySet().isEmpty());
 		
 		Access expression = processedSubTrace.get(2);
 		Access body = processedSubTrace.get(3);
 
-		assertTrue(expression.nextAccessProbabilities.containsKey(body));
-		assertTrue(expression.nextAccessProbabilities.containsKey(exitPoint));
-		assertTrue(body.nextAccessProbabilities.containsKey(expression));
+		assertTrue(expression.getNextAccessProbabilities().containsKey(body));
+		assertTrue(expression.getNextAccessProbabilities().containsKey(exitPoint));
+		assertTrue(body.getNextAccessProbabilities().containsKey(expression));
 			
     }
 
@@ -1043,8 +1137,8 @@ public class NodeToGraphTests {
 
 		Access body = processedSubTrace.get(1);
 
-		assertTrue(body.nextAccessProbabilities.containsKey(body));
-		assertTrue(body.nextAccessProbabilities.containsKey(exitPoint));
+		assertTrue(body.getNextAccessProbabilities().containsKey(body));
+		assertTrue(body.getNextAccessProbabilities().containsKey(exitPoint));
 	
     }
 
@@ -1087,8 +1181,8 @@ public class NodeToGraphTests {
 		
 		Access expression = processedSubTrace.get(1);
 
-		assertTrue(expression.nextAccessProbabilities.containsKey(expression));
-		assertTrue(expression.nextAccessProbabilities.containsKey(exitPoint));
+		assertTrue(expression.getNextAccessProbabilities().containsKey(expression));
+		assertTrue(expression.getNextAccessProbabilities().containsKey(exitPoint));
 		
     }
 
@@ -1137,7 +1231,7 @@ public class NodeToGraphTests {
 
 			current = processedSubTrace.get(i);
 
-			assertTrue(prev.nextAccessProbabilities.containsKey(current));
+			assertTrue(prev.getNextAccessProbabilities().containsKey(current));
 
 			prev = current;
 		}
@@ -1146,8 +1240,8 @@ public class NodeToGraphTests {
 		Access lastExpressionAccess = processedSubTrace.get(2);
 		Access lastBodyAccess = processedSubTrace.get(4);
 
-		assertTrue(lastExpressionAccess.nextAccessProbabilities.containsKey(exitPoint));
-		assertTrue(lastBodyAccess.nextAccessProbabilities.containsKey(firstExpressionAccess));
+		assertTrue(lastExpressionAccess.getNextAccessProbabilities().containsKey(exitPoint));
+		assertTrue(lastBodyAccess.getNextAccessProbabilities().containsKey(firstExpressionAccess));
 		
     }
 
