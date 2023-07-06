@@ -37,7 +37,7 @@ public class NodeToGraphTests {
 
         Access access = new Access(mode, entityAccessedId);
 
-		access.nodeToAccessGraph(processedSubTrace, null, null, null);
+		access.nodeToAccessGraph(processedSubTrace, null, null, null, null);
 
 		assertEquals(1, processedSubTrace.size());
 		assertEquals(access, processedSubTrace.get(0));
@@ -60,8 +60,8 @@ public class NodeToGraphTests {
 		access2.setMode(mode);
 		access2.setEntityAccessedId(entityAccessedId);
 
-		access1.nodeToAccessGraph(processedSubTrace, null, null, null);
-		access2.nodeToAccessGraph(processedSubTrace, null, null, null);
+		access1.nodeToAccessGraph(processedSubTrace, null, null, null, null);
+		access2.nodeToAccessGraph(processedSubTrace, null, null, null, null);
 
 		assertEquals(2, processedSubTrace.size());
 		assertEquals(access1, processedSubTrace.get(0));
@@ -91,7 +91,7 @@ public class NodeToGraphTests {
 		Call callNode = new Call(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		callNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+		callNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
 
 		// result
 		assertEquals(processedSubTrace.size(), 3); // entry + 1 access + exit = 3
@@ -129,7 +129,7 @@ public class NodeToGraphTests {
 		Call callNode = new Call(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		callNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+		callNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
 
 		// result
 		assertEquals(4, processedSubTrace.size());
@@ -175,9 +175,9 @@ public class NodeToGraphTests {
 		Call callNode = new Call(totalTrace, totalTraceArray, traceElementJSON);
 		
 		// steps
-		access1.nodeToAccessGraph(processedSubTrace, null, null, null);
-		callNode.nodeToAccessGraph(processedSubTrace, null, null, null);
-		access2.nodeToAccessGraph(processedSubTrace, null, null, null);
+		access1.nodeToAccessGraph(processedSubTrace, null, null, null, null);
+		callNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
+		access2.nodeToAccessGraph(processedSubTrace, null, null, null, null);
 
 		// result
 		assertEquals(5, processedSubTrace.size());
@@ -221,7 +221,7 @@ public class NodeToGraphTests {
 		Call callNode = new Call(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		callNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+		callNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
 
 		// result
 		assertEquals(processedSubTrace.size(), 5);
@@ -278,7 +278,7 @@ public class NodeToGraphTests {
 		If ifNode = new If(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
 
 		// result
 		assertEquals(5, processedSubTrace.size()); // entry + 3 access + exit = 5
@@ -336,9 +336,9 @@ public class NodeToGraphTests {
 		If ifNode = new If(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		access1.nodeToAccessGraph(processedSubTrace, null, null, null);
-		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null);
-		access1.nodeToAccessGraph(processedSubTrace, null, null, null);
+		access1.nodeToAccessGraph(processedSubTrace, null, null, null, null);
+		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
+		access1.nodeToAccessGraph(processedSubTrace, null, null, null, null);
 
 		// result
 		assertEquals(7, processedSubTrace.size());
@@ -412,7 +412,7 @@ public class NodeToGraphTests {
 		If ifNode = new If(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
 
 		// result
 		assertEquals(9, processedSubTrace.size());
@@ -475,7 +475,7 @@ public class NodeToGraphTests {
 		If ifNode = new If(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
 
 		// result
 		assertEquals(4, processedSubTrace.size());
@@ -532,7 +532,7 @@ public class NodeToGraphTests {
 		If ifNode = new If(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
 
 		// result
 		assertEquals(4, processedSubTrace.size());
@@ -590,7 +590,7 @@ public class NodeToGraphTests {
 		If ifNode = new If(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
 
 		// result
 		assertEquals(4, processedSubTrace.size());
@@ -648,7 +648,7 @@ public class NodeToGraphTests {
 		If ifNode = new If(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+		ifNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
 
 		// result
 		assertEquals(3, processedSubTrace.size());
@@ -695,9 +695,10 @@ public class NodeToGraphTests {
 		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
 
 		Call callNode = new Call(totalTrace, totalTraceArray, traceElementJSON);
+		HeuristicFlags heuristicFlags = new HeuristicFlags();
 
 		// steps
-		callNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+		callNode.nodeToAccessGraph(processedSubTrace, null, null, null, heuristicFlags);
 
 		// result
 		assertEquals(3, processedSubTrace.size());
@@ -728,9 +729,10 @@ public class NodeToGraphTests {
 		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
 
 		Call callNode = new Call(totalTrace, totalTraceArray, traceElementJSON);
+		HeuristicFlags heuristicFlags = new HeuristicFlags();
 
 		// steps
-		callNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+		callNode.nodeToAccessGraph(processedSubTrace, null, null, null, heuristicFlags);
 
 		// result
 		assertEquals(5, processedSubTrace.size());
@@ -764,9 +766,10 @@ public class NodeToGraphTests {
 		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
 
 		Loop loopNode = new Loop(totalTrace, totalTraceArray, traceElementJSON);
+		HeuristicFlags heuristicFlags = new HeuristicFlags();
 
 		// steps
-		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null, heuristicFlags);
 
 		// result
 		assertEquals(4, processedSubTrace.size());
@@ -808,9 +811,10 @@ public class NodeToGraphTests {
 		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
 
 		Loop loopNode = new Loop(totalTrace, totalTraceArray, traceElementJSON);
+		HeuristicFlags heuristicFlags = new HeuristicFlags();
 
 		// steps
-		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null, heuristicFlags);
 
 		// result
 		assertEquals(7, processedSubTrace.size());
@@ -843,9 +847,10 @@ public class NodeToGraphTests {
 		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
 
 		Loop loopNode = new Loop(totalTrace, totalTraceArray, traceElementJSON);
+		HeuristicFlags heuristicFlags = new HeuristicFlags();
 
 		// steps
-		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null, heuristicFlags);
 
 		// result
 		assertEquals(4, processedSubTrace.size());
@@ -887,9 +892,10 @@ public class NodeToGraphTests {
 		JSONArray traceElementJSON = totalTraceArray.getJSONObject(0).getJSONArray("a").getJSONArray(0);
 
 		Loop loopNode = new Loop(totalTrace, totalTraceArray, traceElementJSON);
+		HeuristicFlags heuristicFlags = new HeuristicFlags();
 
 		// steps
-		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null, heuristicFlags);
 
 		// result
 		assertEquals(7, processedSubTrace.size());
@@ -928,7 +934,7 @@ public class NodeToGraphTests {
 		Loop loopNode = new Loop(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
 
 		// result
 		assertEquals(4, processedSubTrace.size()); // entry + 2 access + exit = 4
@@ -975,8 +981,8 @@ public class NodeToGraphTests {
 		Loop loopNode = new Loop(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		access1.nodeToAccessGraph(processedSubTrace, null, null, null);
-		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+		access1.nodeToAccessGraph(processedSubTrace, null, null, null, null);
+		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
 
 		// result
 		assertEquals(5, processedSubTrace.size()); // entry + 2 access + exit = 4
@@ -1024,7 +1030,7 @@ public class NodeToGraphTests {
 		Loop loopNode = new Loop(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
 
 		// result
 		assertEquals(3, processedSubTrace.size());
@@ -1068,7 +1074,7 @@ public class NodeToGraphTests {
 		Loop loopNode = new Loop(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
 
 		// result
 		assertEquals(3, processedSubTrace.size());
@@ -1112,7 +1118,7 @@ public class NodeToGraphTests {
 		Loop loopNode = new Loop(totalTrace, totalTraceArray, traceElementJSON);
 
 		// steps
-		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null);
+		loopNode.nodeToAccessGraph(processedSubTrace, null, null, null, null);
 
 		// result
 		assertEquals(6, processedSubTrace.size());
