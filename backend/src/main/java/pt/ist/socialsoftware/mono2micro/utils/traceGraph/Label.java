@@ -31,21 +31,21 @@ public class Label extends TraceGraphNode {
         switch (this.getContent()) {
             case HeuristicLabelType.CONTINUE:
                     if (lastAccess != null && lastLoopStart != null) {
-                        lastAccess.nextAccessProbabilities.put(lastLoopStart, 1f);
+                        lastAccess.addSuccessor(lastLoopStart, 1f);
                     }
                     heuristicFlags.goingToLoopHead = true;
                 break;
         
             case HeuristicLabelType.BREAK:
                     if (lastAccess != null && lastLoopEnd != null){
-                        lastAccess.nextAccessProbabilities.put(lastLoopEnd, 1f);
+                        lastAccess.addSuccessor(lastLoopEnd, 1f);
                     }
                     heuristicFlags.hasBreak = true;
                 break;
 
             case HeuristicLabelType.RETURN:
                     if (lastAccess != null && lastCallEnd != null) {
-                        lastAccess.nextAccessProbabilities.put(lastCallEnd, 1f);
+                        lastAccess.addSuccessor(lastCallEnd, 1f);
                     }
                     heuristicFlags.hasReturn = true;
                 break;

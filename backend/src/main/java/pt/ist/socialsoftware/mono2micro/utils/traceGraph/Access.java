@@ -43,7 +43,7 @@ public class Access extends TraceGraphNode {
 
     public void nodeToAccessGraph(List<Access> processedSubTrace, TraceGraphNode lastCallEnd, TraceGraphNode lastLoopStart, TraceGraphNode lastLoopEnd, HeuristicFlags heuristicFlags) {
         if (processedSubTrace.size() != 0) {
-            processedSubTrace.get(processedSubTrace.size()-1).nextAccessProbabilities.put(this, 1f);
+            processedSubTrace.get(processedSubTrace.size()-1).addSuccessor(this, 1f);
         }
         processedSubTrace.add(this);
 

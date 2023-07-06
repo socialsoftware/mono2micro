@@ -18,6 +18,10 @@ public abstract class TraceGraphNode {
         return this.nextAccessProbabilities;
     }
 
+    public void addSuccessor(TraceGraphNode successor, Float probability) {
+        this.nextAccessProbabilities.put(successor, probability);
+    }
+
     public boolean getVisited() {
         return this.visited;
     }
@@ -38,7 +42,7 @@ public abstract class TraceGraphNode {
         }
 
         if (lastValidNode != null && ((Access)this).getMode() != null) {
-            lastValidNode.nextAccessProbabilities.put(this, lastValidNodeToCurrentProbability);
+            lastValidNode.addSuccessor(this, lastValidNodeToCurrentProbability);
         }
 
         if (this.getVisited() && ((Access)this).getMode() != null) return;

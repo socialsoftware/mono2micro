@@ -59,41 +59,41 @@ public class Loop extends TraceGraphNode {
 
         if (expressionGraph != null && expressionGraph.getAllAccesses().size() != 0) {
             // enter condition
-            startingNode.nextAccessProbabilities.put(expressionGraph.getFirstAccess(), 1f);
+            startingNode.addSuccessor(expressionGraph.getFirstAccess(), 1f);
 
             // return to head (if no body)
             if(bodyGraph == null || bodyGraph.getAllAccesses().size() == 0) {
-                expressionGraph.getLastAccess().nextAccessProbabilities.put(expressionGraph.getFirstAccess(), enterLoopProbability);
+                expressionGraph.getLastAccess().addSuccessor(expressionGraph.getFirstAccess(), enterLoopProbability);
             }
 
             // exit body
-            expressionGraph.getLastAccess().nextAccessProbabilities.put(endingNode, exitLoopProbability);
+            expressionGraph.getLastAccess().addSuccessor(endingNode, exitLoopProbability);
         }
 
         if (bodyGraph != null && bodyGraph.getAllAccesses().size() != 0) {
             // enter body
             if (expressionGraph != null) {
-                expressionGraph.getLastAccess().nextAccessProbabilities.put(bodyGraph.getFirstAccess(), enterLoopProbability);
+                expressionGraph.getLastAccess().addSuccessor(bodyGraph.getFirstAccess(), enterLoopProbability);
             } else {
-                startingNode.nextAccessProbabilities.put(bodyGraph.getFirstAccess(), enterLoopProbability);
+                startingNode.addSuccessor(bodyGraph.getFirstAccess(), enterLoopProbability);
 
                 // not enter body (since expression is "empty")
-                startingNode.nextAccessProbabilities.put(endingNode, exitLoopProbability);
+                startingNode.addSuccessor(endingNode, exitLoopProbability);
             }
 
             // return to head
             if (expressionGraph != null && expressionGraph.getAllAccesses().size() != 0) {
-                bodyGraph.getLastAccess().nextAccessProbabilities.put(expressionGraph.getFirstAccess(), 1f);
+                bodyGraph.getLastAccess().addSuccessor(expressionGraph.getFirstAccess(), 1f);
             } else {
-                bodyGraph.getLastAccess().nextAccessProbabilities.put(bodyGraph.getFirstAccess(), enterLoopProbability);
+                bodyGraph.getLastAccess().addSuccessor(bodyGraph.getFirstAccess(), enterLoopProbability);
                 
                 // exit body (since expression is "empty")
-                bodyGraph.getLastAccess().nextAccessProbabilities.put(endingNode, exitLoopProbability);
+                bodyGraph.getLastAccess().addSuccessor(endingNode, exitLoopProbability);
             }
         }
 
         if (processedSubTrace.size() != 0) {
-            processedSubTrace.get(processedSubTrace.size()-1).nextAccessProbabilities.put(startingNode, 1f);
+            processedSubTrace.get(processedSubTrace.size()-1).addSuccessor(startingNode, 1f);
         }
 
         processedSubTrace.add(startingNode);

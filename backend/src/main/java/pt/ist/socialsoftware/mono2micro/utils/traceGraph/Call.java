@@ -31,16 +31,16 @@ public class Call extends TraceGraphNode {
         TraceGraph bodyGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getBody(), endingNode, lastLoopStart, lastLoopEnd, new HeuristicFlags());
 
         if (bodyGraph != null && bodyGraph.getAllAccesses().size() != 0) {
-            startingNode.nextAccessProbabilities.put(bodyGraph.getFirstAccess(), 1f);
-            bodyGraph.getLastAccess().nextAccessProbabilities.put(endingNode, 1f);
+            startingNode.addSuccessor(bodyGraph.getFirstAccess(), 1f);
+            bodyGraph.getLastAccess().addSuccessor(endingNode, 1f);
         } else {
-            startingNode.nextAccessProbabilities.put(endingNode, 1f);
+            startingNode.addSuccessor(endingNode, 1f);
         }
 
         
 
         if (processedSubTrace.size() != 0) {
-            processedSubTrace.get(processedSubTrace.size()-1).nextAccessProbabilities.put(startingNode, 1f);
+            processedSubTrace.get(processedSubTrace.size()-1).addSuccessor(startingNode, 1f);
         }
 
         processedSubTrace.add(startingNode);

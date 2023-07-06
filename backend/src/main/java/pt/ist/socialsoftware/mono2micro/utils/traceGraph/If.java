@@ -77,7 +77,7 @@ public class If extends TraceGraphNode {
         thenProbability = BranchHeuristics.calculateBranchProbability(appliableHeuristics);
 
         if (condition != null && condition.getAllAccesses().size() != 0) {
-            startingNode.nextAccessProbabilities.put(condition.getFirstAccess(), 1f);
+            startingNode.addSuccessor(condition.getFirstAccess(), 1f);
 
             baseNode = condition.getLastAccess();
         } else {
@@ -85,23 +85,23 @@ public class If extends TraceGraphNode {
         }
 
         if (thenGraph != null && thenGraph.getAllAccesses().size() != 0) {
-            baseNode.nextAccessProbabilities.put(thenGraph.getFirstAccess(), thenProbability);
-            thenGraph.getLastAccess().nextAccessProbabilities.put(endingNode, 1f);
+            baseNode.addSuccessor(thenGraph.getFirstAccess(), thenProbability);
+            thenGraph.getLastAccess().addSuccessor(endingNode, 1f);
         } else {
-            baseNode.nextAccessProbabilities.put(endingNode, thenProbability);
+            baseNode.addSuccessor(endingNode, thenProbability);
         }
 
         if (elseGraph != null && elseGraph.getAllAccesses().size() != 0) {
-            baseNode.nextAccessProbabilities.put(elseGraph.getFirstAccess(), 1-thenProbability);
-            elseGraph.getLastAccess().nextAccessProbabilities.put(endingNode, 1f);
+            baseNode.addSuccessor(elseGraph.getFirstAccess(), 1-thenProbability);
+            elseGraph.getLastAccess().addSuccessor(endingNode, 1f);
         } else {
-            baseNode.nextAccessProbabilities.put(endingNode, 1-thenProbability);
+            baseNode.addSuccessor(endingNode, 1-thenProbability);
         }
 
 
 
         if (processedSubTrace.size() != 0) {
-            processedSubTrace.get(processedSubTrace.size()-1).nextAccessProbabilities.put(startingNode, 1f);
+            processedSubTrace.get(processedSubTrace.size()-1).addSuccessor(startingNode, 1f);
         }
 
         processedSubTrace.add(startingNode);
