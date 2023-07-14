@@ -34,6 +34,9 @@ public class FunctionalityGraphTracesIterator {
     private Map<String, TraceGraph> _traceGraphs;
     private String requestedFunctionality;
 
+    private Map<Access, PathData> _pathDataCache;
+    private Map<String, PathData> _functionalityPathData;
+
     public FunctionalityGraphTracesIterator(InputStream file) throws IOException, JSONException {
         _codebaseAsJSON = new JSONObject(new String(IOUtils.toByteArray(file)));
         file.close();
@@ -47,6 +50,9 @@ public class FunctionalityGraphTracesIterator {
 
             _traceGraphs.put(functionality, getFunctionalityTraceGraph(_codebaseAsJSON.getJSONObject(functionality)));
         }
+
+        _pathDataCache = new HashMap<>();
+        _functionalityPathData = new HashMap<>();
     }
 
     public Iterator<String> getFunctionalitiesNames() {
@@ -57,13 +63,113 @@ public class FunctionalityGraphTracesIterator {
         requestedFunctionality = functionalityName;
     }
 
+    public PathData computeTraceTypes() {
+        PathData pathData = computeTraceTypes(_traceGraphs.get(requestedFunctionality).getFirstAccess());
+        _pathDataCache.clear();
+        return pathData;
+    }
+
+    public PathData computeTraceTypes(Access access) {
+        PathData resultingPathData;
+        if (access.getNextAccessProbabilities().size() == 0 || access.getVisited()) {
+            access.setVisited(true);
+
+            List<Access> accessList = new ArrayList<>();
+            accessList.add(access);
+            resultingPathData = new PathData(accessList, 1f, accessList, accessList, accessList);
+
+        } else {
+            access.setVisited(true);
+
+            List<PathData> successorsPathData = new ArrayList<>();
+            PathData succPathData;
+            for (TraceGraphNode successor: access.getNextAccessProbabilities().keySet()) {
+
+                if (_pathDataCache.containsKey(successor)) {
+                    succPathData = _pathDataCache.get(successor);
+                } else {
+                    succPathData = computeTraceTypes((Access)successor);
+                }
+
+                // update prob
+                succPathData.getMostProbablePath().add(0, access);
+                succPathData.setMostProbablePathProbability(succPathData.getMostProbablePathProbability() * access.getNextAccessProbabilities().get(successor));
+
+                // add current access to list of diff accesses
+                for (Access a: succPathData.getMostDifferentAccesses()) {
+                    if (a.getMode() == access.getMode() && a.getEntityAccessedId() == access.getEntityAccessedId()) {
+                        succPathData.getMostDifferentAccessesPath().add(0, access);
+                        succPathData.getMostDifferentAccesses().add(access);
+                        break;
+                    }
+                }
+
+                // add current access to trace
+                succPathData.getLongestPath().add(0, access);
+
+                successorsPathData.add(succPathData);
+            }
+
+            Float highestProb = 0f;
+            int highestProbIndex = 0;
+            int biggerDiffAccessListSize = 0;
+            int biggerDiffAccessListSizeIndex = 0;
+            int highestLength = 0;
+            int highestLengthIndex = 0;
+            
+            boolean firstLoop = true;
+            for (PathData pathData : successorsPathData) {
+                if (pathData.getMostProbablePathProbability() > highestProb || firstLoop) {
+                    highestProb = pathData.getMostProbablePathProbability();
+                    highestProbIndex = successorsPathData.indexOf(pathData);
+                }
+                
+                if (pathData.getMostDifferentAccesses().size() > biggerDiffAccessListSize || firstLoop) {
+                    biggerDiffAccessListSize = pathData.getMostDifferentAccesses().size();
+                    biggerDiffAccessListSizeIndex = successorsPathData.indexOf(pathData);
+                }
+
+                if (pathData.getLongestPath().size() > highestLength || firstLoop) {
+                    highestLength = pathData.getLongestPath().size();
+                    highestLengthIndex = successorsPathData.indexOf(pathData);
+                }
+                
+                if (firstLoop) firstLoop = false;
+            }
+            
+
+            resultingPathData = new PathData(   successorsPathData.get(highestProbIndex).getMostProbablePath(),
+                                                successorsPathData.get(highestProbIndex).getMostProbablePathProbability(),
+                                                successorsPathData.get(biggerDiffAccessListSizeIndex).getMostDifferentAccessesPath(),
+                                                successorsPathData.get(biggerDiffAccessListSizeIndex).getMostDifferentAccesses(),
+                                                successorsPathData.get(highestLengthIndex).getLongestPath()
+                                            );
+
+            if (access.getPrevAccessProbabilities().size() > 1) {
+                    _pathDataCache.put(access, resultingPathData);
+            }
+
+        }
+
+        return resultingPathData;
+    }
+
     public TraceDto getLongestTrace() throws JSONException {
+        initializeFunctionalityPathData(requestedFunctionality);
+
+        return accessListToTraceDto(_functionalityPathData.get(requestedFunctionality).getLongestPath());
+    }
+
+    /*public TraceDto getLongestTrace() throws JSONException {
+        System.out.println("Get longest trace");
+        System.out.println(requestedFunctionality);
         TraceDto longestTrace = getLongestTrace(_traceGraphs.get(requestedFunctionality).getFirstAccess());
         _traceGraphs.get(requestedFunctionality).resetVisited();
         return longestTrace;
     }
 
     private TraceDto getLongestTrace(Access access) throws JSONException {
+        //System.out.println("lt");
         if (access.getNextAccessProbabilities().size() == 0 || access.getVisited()) {
             return accessListToTraceDto(List.of(access));
         }
@@ -94,7 +200,7 @@ public class FunctionalityGraphTracesIterator {
         longestTrace.setElements(newAccessList);
 
         return longestTrace;
-    }
+    }*/
 
     public TraceDto getTraceWithMoreDifferentAccesses() throws JSONException {
         return null;
@@ -108,10 +214,18 @@ public class FunctionalityGraphTracesIterator {
         return null;
     }
 
+    public void initializeFunctionalityPathData(String functionality) {
+        if (!_functionalityPathData.containsKey(requestedFunctionality)) {
+            _functionalityPathData.put(requestedFunctionality, computeTraceTypes());
+        }
+    }
+
     public List<TraceDto> getTracesByType(Constants.TraceType traceType) throws JSONException {
         List<TraceDto> traceDtos = new ArrayList<>();
 
         traceType = TraceType.LONGEST; // FIXME: REMOVE
+
+        initializeFunctionalityPathData(requestedFunctionality);
 
         // Get traces according to trace type
         switch(traceType) {

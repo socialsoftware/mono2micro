@@ -7,10 +7,12 @@ import java.util.Map;
 
 public abstract class TraceGraphNode {
     Map<TraceGraphNode, Float> nextAccessProbabilities;
+    Map<TraceGraphNode, Float> prevAccessProbabilities;
     boolean visited;
 
     public TraceGraphNode() {
         this.nextAccessProbabilities = new HashMap<TraceGraphNode, Float>();
+        this.prevAccessProbabilities = new HashMap<TraceGraphNode, Float>();
         this.visited = false;
     }
 
@@ -18,8 +20,14 @@ public abstract class TraceGraphNode {
         return this.nextAccessProbabilities;
     }
 
+    public Map<TraceGraphNode, Float> getPrevAccessProbabilities() {
+        return this.prevAccessProbabilities;
+    }
+
     public void addSuccessor(TraceGraphNode successor, Float probability) {
         this.nextAccessProbabilities.put(successor, probability);
+
+        successor.prevAccessProbabilities.put(this, probability);
     }
 
     public boolean getVisited() {
@@ -37,6 +45,7 @@ public abstract class TraceGraphNode {
      * @param toRemoveStack , empty nodes that are to be removed and have been bypassed
      */
     public void bypassEmptySuccessors(TraceGraphNode lastValidNode, Float lastValidNodeToCurrentProbability, List<TraceGraphNode> toRemoveStack) {
+        // FIXME: needs rework to correct prev access probabilities
         if (lastValidNodeToCurrentProbability == null) {
             lastValidNodeToCurrentProbability = 1.0f;
         }
