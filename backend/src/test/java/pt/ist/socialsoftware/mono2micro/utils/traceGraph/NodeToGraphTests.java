@@ -825,7 +825,7 @@ public class NodeToGraphTests {
 		// result
 		assertEquals(4, processedSubTrace.size());
 
-		Access expressionStart = processedSubTrace.get(1);		
+		Access expressionStart = processedSubTrace.get(0);		
 		Access bodyEnd = processedSubTrace.get(2);
 		assertTrue(bodyEnd.getNextAccessProbabilities().containsKey(expressionStart));
 			
@@ -870,7 +870,7 @@ public class NodeToGraphTests {
 		// result
 		assertEquals(7, processedSubTrace.size());
 
-		Access innerExpressionStart = processedSubTrace.get(3);		
+		Access innerExpressionStart = processedSubTrace.get(2);		
 		Access innerBodyEnd = processedSubTrace.get(4);
 		assertTrue(innerBodyEnd.getNextAccessProbabilities().containsKey(innerExpressionStart));
 		
