@@ -120,26 +120,41 @@ public class FunctionalityGraphTracesIterator {
                 successorsPathData.add(succPathData);
             }
 
+            // calculate different accesses in currentPath
+            List<Access> currentPathDifferentAccesses = new ArrayList<>();
+            for (Access a : currentPath) {
+                if (!currentPathDifferentAccesses.contains(a)) {
+                    currentPathDifferentAccesses.add(a);
+                }
+            }
+
             Float highestProb = 0f;
             int highestProbIndex = 0;
-            int biggerDiffAccessListSize = 0;
+            int biggerDiffAccessListAggregateSize = 0;
             int biggerDiffAccessListSizeIndex = 0;
             int highestLength = 0;
             int highestLengthIndex = 0;
             
             boolean firstLoop = true;
             for (PathData pathData : successorsPathData) {
-                if (pathData.getMostProbablePathProbability() > highestProb || firstLoop) {
+                if (firstLoop || pathData.getMostProbablePathProbability() > highestProb) {
                     highestProb = pathData.getMostProbablePathProbability();
                     highestProbIndex = successorsPathData.indexOf(pathData);
                 }
+
+                List<Access> mostDifferentAccessesAggregate = new ArrayList<>(currentPathDifferentAccesses);
+                for (Access a : pathData.getMostDifferentAccesses()) {
+                    if (!mostDifferentAccessesAggregate.contains(a)) {
+                        mostDifferentAccessesAggregate.add(a);
+                    }
+                }
                 
-                if (pathData.getMostDifferentAccesses().size() > biggerDiffAccessListSize || firstLoop) {
-                    biggerDiffAccessListSize = pathData.getMostDifferentAccesses().size();
+                if (firstLoop || mostDifferentAccessesAggregate.size() > biggerDiffAccessListAggregateSize) {
+                    biggerDiffAccessListAggregateSize = mostDifferentAccessesAggregate.size();
                     biggerDiffAccessListSizeIndex = successorsPathData.indexOf(pathData);
                 }
 
-                if (pathData.getLongestPath().size() > highestLength || firstLoop) {
+                if (firstLoop || pathData.getLongestPath().size() > highestLength) {
                     highestLength = pathData.getLongestPath().size();
                     highestLengthIndex = successorsPathData.indexOf(pathData);
                 }
