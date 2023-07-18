@@ -110,9 +110,10 @@ public class BranchHeuristics {
     }
     
     public static float calculateBranchProbability(List<String> heuristics) {
+        // calculate probability based on the Dempster-Shafer theory 
         // x*y/(x*y + (1-x)*(1-y))
 
-        float result = -1;
+        float result = 0.5f; // initial probability of each branch is 0.5; 0.5 is also neutral in the operation
         for (String h : heuristics) {
             float currentHeuristicProb;
             if (heuristicProbabilities.containsKey(h)) {
@@ -121,11 +122,6 @@ public class BranchHeuristics {
                 currentHeuristicProb = 1 - heuristicProbabilities.get(h.split("_i")[0]);
             } else {
                 currentHeuristicProb = 0;
-            }
-
-            if (result == -1) {
-                result = currentHeuristicProb;
-                continue;
             }
 
             result = result*currentHeuristicProb/(result*currentHeuristicProb + (1-result)*(1-currentHeuristicProb));
