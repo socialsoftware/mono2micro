@@ -101,12 +101,70 @@ public class FunctionalityGraphTracesIteratorTests {
         TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.processSubTrace(preProcessedTraces);
 
         PathData pathData = FunctionalityGraphTracesIterator.computeTraceTypes(processedSubTrace.getFirstAccess(), new HashMap<Access, PathData>(), new ArrayList<>());
-        
-        for (Access a : pathData.getLongestPath()) {
-            //System.out.println(a.getMode() + ", " + a.getEntityAccessedId());
-        }
 
         assertEquals(8, pathData.getLongestPath().size());
+
+    }
+
+    @Test
+    public void computeTraceTypes_SimpleCall() throws JSONException {
+        JSONObject trace = NodeToGraphTests.initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"W", 1}, new Object[]{"W", 2}, new Object[]{"&call", 1}, new Object[]{"W", 5}
+			},
+			new Object[][]{
+				new Object[]{"W", 3}, new Object[]{"W", 4}
+			}
+			});
+
+        
+        JSONObject mainTrace = trace.getJSONArray("t").getJSONObject(0);
+
+        List<TraceGraphNode> preProcessedTraces = FunctionalityGraphTracesIterator.translateSubTrace(trace, mainTrace);
+
+        TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.processSubTrace(preProcessedTraces);
+
+        PathData pathData = FunctionalityGraphTracesIterator.computeTraceTypes(processedSubTrace.getFirstAccess(), new HashMap<Access, PathData>(), new ArrayList<>());
+
+        assertEquals(7, pathData.getLongestPath().size());
+
+    }
+
+    @Test
+    public void computeTraceTypes_CallIfReturn() throws JSONException {
+        JSONObject trace = NodeToGraphTests.initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"W", 1}, new Object[]{"W", 2}, new Object[]{"&call", 1}, new Object[]{"W", 9}
+			},
+            new Object[][]{
+				new Object[]{"&if", 2}, new Object[]{"W", 8}
+			},
+			new Object[][]{
+				new Object[]{"&condition", 3}, new Object[]{"&then", 4}, new Object[]{"&else", 5}
+			},
+			new Object[][]{
+				new Object[]{"W", 3}
+			},
+			new Object[][]{
+				new Object[]{"W", 4}, new Object[]{"W", 5}, new Object[]{"#return"}
+			},
+			new Object[][]{
+				new Object[]{"W", 8}, new Object[]{"W", 8}
+			}
+			});
+
+        
+        JSONObject mainTrace = trace.getJSONArray("t").getJSONObject(0);
+
+        List<TraceGraphNode> preProcessedTraces = FunctionalityGraphTracesIterator.translateSubTrace(trace, mainTrace);
+
+        TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.processSubTrace(preProcessedTraces);
+
+        PathData pathData = FunctionalityGraphTracesIterator.computeTraceTypes(processedSubTrace.getFirstAccess(), new HashMap<Access, PathData>(), new ArrayList<>());
+
+        assertEquals(11, pathData.getLongestPath().size());
+        assertEquals(9, pathData.getMostDifferentAccessesPath().size());
+        assertEquals(11, pathData.getMostProbablePath().size());
 
     }
 }
