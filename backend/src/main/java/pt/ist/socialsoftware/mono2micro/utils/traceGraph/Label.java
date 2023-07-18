@@ -32,6 +32,7 @@ public class Label extends TraceGraphNode {
             case HeuristicLabelType.CONTINUE:
                     if (lastAccess != null && lastLoopStart != null) {
                         lastAccess.addSuccessor(lastLoopStart, 1f);
+                        lastAccess.setLockedToNewConnections(true);
                     }
                     heuristicFlags.goingToLoopHead = true;
                 break;
@@ -39,6 +40,7 @@ public class Label extends TraceGraphNode {
             case HeuristicLabelType.BREAK:
                     if (lastAccess != null && lastLoopEnd != null){
                         lastAccess.addSuccessor(lastLoopEnd, 1f);
+                        lastAccess.setLockedToNewConnections(true);
                     }
                     heuristicFlags.hasBreak = true;
                 break;
@@ -46,6 +48,7 @@ public class Label extends TraceGraphNode {
             case HeuristicLabelType.RETURN:
                     if (lastAccess != null && lastCallEnd != null) {
                         lastAccess.addSuccessor(lastCallEnd, 1f);
+                        lastAccess.setLockedToNewConnections(true);
                     }
                     heuristicFlags.hasReturn = true;
                 break;

@@ -9,11 +9,13 @@ public abstract class TraceGraphNode {
     Map<TraceGraphNode, Float> nextAccessProbabilities;
     Map<TraceGraphNode, Float> prevAccessProbabilities;
     boolean visited;
+    boolean lockedToNewConnections;
 
     public TraceGraphNode() {
         this.nextAccessProbabilities = new HashMap<TraceGraphNode, Float>();
         this.prevAccessProbabilities = new HashMap<TraceGraphNode, Float>();
         this.visited = false;
+        this.lockedToNewConnections = false;
     }
 
     public Map<TraceGraphNode, Float> getNextAccessProbabilities() {
@@ -25,9 +27,12 @@ public abstract class TraceGraphNode {
     }
 
     public void addSuccessor(TraceGraphNode successor, Float probability) {
-        this.nextAccessProbabilities.put(successor, probability);
+        if (!this.getLockedToNewConnections()) {
+            this.nextAccessProbabilities.put(successor, probability);
+    
+            successor.prevAccessProbabilities.put(this, probability);
+        }
 
-        successor.prevAccessProbabilities.put(this, probability);
     }
 
     public boolean getVisited() {
@@ -36,6 +41,14 @@ public abstract class TraceGraphNode {
 
     public void setVisited(boolean visited) {
         this.visited = visited;
+    }
+
+    public boolean getLockedToNewConnections() {
+        return this.lockedToNewConnections;
+    }
+
+    public void setLockedToNewConnections(boolean locked) {
+        this.lockedToNewConnections = locked;
     }
 
     public abstract void nodeToAccessGraph(List<Access> processedSubTrace, TraceGraphNode lastCallEnd, TraceGraphNode lastLoopStart, TraceGraphNode lastLoopEnd, HeuristicFlags heuristicFlags);
