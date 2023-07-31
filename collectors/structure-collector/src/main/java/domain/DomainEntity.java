@@ -1,55 +1,52 @@
 package domain;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import domain.relationships.Relationship;
-import serializers.DomainEntitySerializer;
-import spoon.reflect.declaration.CtClass;
+import domain.datatypes.DataType;
+import domain.datatypes.PrimitiveDataType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-/**
- * Entity that represents a Domain Entity in the codebase.
- */
-@JsonSerialize(using = DomainEntitySerializer.class)
-public class DomainEntity implements Type {
+public class DomainEntity {
 
-    private static int idCounter = 0;
+    private String name;
+    private List<Field> fields;
+    private DataType superclass;
 
-    private final int id;
-
-    private List<Relationship> relationships;
-
-    private final CtClass<?> ctDomainEntity;
-
-    public DomainEntity(CtClass<?> ctDomainEntity) {
-        this.id = idCounter++;
-        this.ctDomainEntity = ctDomainEntity;
-
-        this.relationships = new ArrayList<>();
+    public DomainEntity(String name) {
+        this.name = name;
+        this.fields = new ArrayList<>();
+        this.superclass = null;
     }
 
-    public int getId() {
-        return id;
+    public String getName() {
+        return this.name;
     }
 
-    public String getSimpleName() {
-        return ctDomainEntity.getSimpleName();
+    public List<Field> getFields() {
+        return Collections.unmodifiableList(fields);
     }
 
-    public String getQualifiedName() {
-        return ctDomainEntity.getQualifiedName();
+    public void addField(Field field) {
+        this.fields.add(field);
     }
 
-    public CtClass<?> getCtDomainEntity() {
-        return ctDomainEntity;
+    public DataType getSuperclass() {
+        return this.superclass;
     }
 
-    public List<Relationship> getRelationships() {
-        return this.relationships;
+    public void setSuperclass(DataType superclass) {
+        if (superclassDataTypeIsThisDataType(superclass) || superclassDataTypeIsPrimitive(superclass)) {
+            return; // Source code error
+        }
+        this.superclass = superclass;
     }
 
-    public void addRelationship(Relationship relationship) {
-        this.relationships.add(relationship);
+    private boolean superclassDataTypeIsThisDataType(DataType superclass) {
+        return this.name.equals(superclass.getName());
+    }
+
+    private boolean superclassDataTypeIsPrimitive(DataType superclass) {
+        return superclass instanceof PrimitiveDataType;
     }
 }
