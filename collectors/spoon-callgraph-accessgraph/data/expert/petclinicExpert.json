@@ -1,0 +1,16 @@
+{
+    "clusters": {
+    	"Customers": [
+    		"Owner",
+    		"Pet",
+    		"PetType"
+    	],
+    	"Vets": [
+    		"Vet",
+    		"Specialty"
+    	],
+    	"Visits": [
+    		"Visit"
+    	]
+    }
+}

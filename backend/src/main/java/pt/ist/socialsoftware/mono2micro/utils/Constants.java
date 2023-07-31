@@ -20,6 +20,7 @@ public final class Constants {
   public enum TraceType {
     ALL,
     LONGEST,
+    MOST_PROBABLE,
     WITH_MORE_DIFFERENT_ACCESSES,
   }
 
