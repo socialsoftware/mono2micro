@@ -66,6 +66,7 @@ public class SpoonCollector implements Collector {
         return this;
     }
 
+    // TODO: Make serialization strategy depend on input
     @Override
     public void serialize() {
         File filePath = new File(Constants.OUTPUT_PATH);

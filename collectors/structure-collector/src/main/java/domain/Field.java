@@ -2,6 +2,9 @@ package domain;
 
 import domain.datatypes.DataType;
 
+/**
+ * Represents a class field in the source code.
+ */
 public class Field {
 
     private String name;

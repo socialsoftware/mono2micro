@@ -5,6 +5,10 @@ import spoon.reflect.reference.CtTypeReference;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Factory for DataType objects. DataType objects are Value Objects, so the same instance is used to represent a given data type.
+ * Use this class to create DataType objects to avoid large amounts of repeated objects during execution.
+ */
 public class DataTypeFactory {
 
     private static final Map<String, DataType> createdDataTypes = new HashMap<>();
@@ -15,7 +19,7 @@ public class DataTypeFactory {
     public static DataType getOrCreateDataType(CtTypeReference<?> dataTypeReference) {
         String dataTypeName = dataTypeReference.getSimpleName();
 
-        if (createdDataTypes.containsKey(dataTypeName)) {
+        if (createdDataTypes.containsKey(buildCreatedDataTypeKey(dataTypeName, dataTypeReference))) {
             return createdDataTypes.get(dataTypeName);
         } else {
             return createDataType(dataTypeName, dataTypeReference);
@@ -34,22 +38,23 @@ public class DataTypeFactory {
 
     private static PrimitiveDataType createPrimitiveDataType(String dataTypeName) {
         PrimitiveDataType primitiveDataType = new PrimitiveDataType(dataTypeName);
-        createdDataTypes.put(dataTypeName, primitiveDataType);
+        cacheCreatedDataType(primitiveDataType);
         return primitiveDataType;
     }
 
+    // TODO: Enhancement - Consider bounded types and wildcards (List<T extends Type>, List<?>)
     private static ParameterizedDataType createParameterizedDataType(String dataTypeName, CtTypeReference<?> dataTypeReference) {
         ParameterizedDataType parameterizedDataType = new ParameterizedDataType(dataTypeName);
         for (CtTypeReference<?> ctParameter : dataTypeReference.getActualTypeArguments()) {
             parameterizedDataType.addParameter(getOrCreateDataType(ctParameter));
         }
-        createdDataTypes.put(dataTypeName, parameterizedDataType);
+        cacheCreatedDataType(parameterizedDataType);
         return parameterizedDataType;
     }
 
     private static ReferenceDataType createReferenceDataType(String dataTypeName) {
         ReferenceDataType referenceDataType = new ReferenceDataType(dataTypeName);
-        createdDataTypes.put(dataTypeName, referenceDataType);
+        cacheCreatedDataType(referenceDataType);
         return referenceDataType;
     }
 
@@ -59,5 +64,19 @@ public class DataTypeFactory {
 
     private static boolean isParametrizedDataType(CtTypeReference<?> dataTypeReference) {
         return dataTypeReference.isParameterized();
+    }
+
+    private static String buildCreatedDataTypeKey(String dataTypeName, CtTypeReference<?> dataTypeReference) {
+        StringBuilder dataTypeKey = new StringBuilder(dataTypeName);
+        if (isParametrizedDataType(dataTypeReference)) {
+            for (CtTypeReference<?> ctParameter : dataTypeReference.getActualTypeArguments()) {
+                dataTypeKey.append(buildCreatedDataTypeKey(ctParameter.getSimpleName(), ctParameter));
+            }
+        }
+        return dataTypeKey.toString();
+    }
+
+    private static void cacheCreatedDataType(DataType dataType) {
+        createdDataTypes.put(dataType.toStringKey(), dataType);
     }
 }

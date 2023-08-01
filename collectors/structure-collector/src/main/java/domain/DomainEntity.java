@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Represents a domain entity class in the source code.
+ */
 public class DomainEntity {
 
     private String name;

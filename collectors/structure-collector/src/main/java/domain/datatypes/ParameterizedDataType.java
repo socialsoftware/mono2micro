@@ -20,4 +20,14 @@ public class ParameterizedDataType extends DataType {
     public void addParameter(DataType dataType) {
         this.parameters.add(dataType);
     }
+
+    @Override
+    public String toStringKey() {
+        StringBuilder stringKey = new StringBuilder(getName());
+        for (DataType dataType : getParameters()) {
+            stringKey.append(dataType.getName());
+        }
+
+        return stringKey.toString();
+    }
 }

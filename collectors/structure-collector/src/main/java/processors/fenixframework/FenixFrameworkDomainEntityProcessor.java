@@ -5,6 +5,9 @@ import spoon.processing.AbstractProcessor;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.reference.CtTypeReference;
 
+/**
+ * Responsible for finding and processing domain entity classes represented with the FenixFramework during the Spoon AST traversal.
+ */
 public class FenixFrameworkDomainEntityProcessor extends AbstractProcessor<CtClass<?>> {
 
     private static final String DOMAIN_ENTITY_SUPERCLASS_SUFFIX = "_Base";

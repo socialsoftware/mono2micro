@@ -12,6 +12,9 @@ import spoon.reflect.reference.CtTypeReference;
 
 import java.util.List;
 
+/**
+ * Responsible for finding and processing domain entity classes represented in SpringDataJPA during the Spoon AST traversal.
+ */
 public class SpringDataJpaDomainEntityProcessor extends AbstractProcessor<CtClass<?>> {
 
     private static final String DOMAIN_ENTITY_ANNOTATION_REGEX = "(Entity)|(MappedSuperclass)|(Embeddable)";
