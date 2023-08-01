@@ -1,7 +1,6 @@
 package domain;
 
 import domain.datatypes.DataType;
-import domain.datatypes.PrimitiveDataType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,6 +49,6 @@ public class DomainEntity {
     }
 
     private boolean superclassDataTypeIsPrimitive(DataType superclass) {
-        return superclass instanceof PrimitiveDataType;
+        return superclass.isPrimitiveType();
     }
 }
