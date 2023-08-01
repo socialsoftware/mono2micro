@@ -39,3 +39,4 @@ collectors/spoon-callgraph/testData.txt
 collectors/spoon-callgraph/data/collection/*.json
 collectors/code2vec-callgraph/data/collection/*.json
 collectors/structure-collection/data/collection/*.json
+collectors/structure-collection/spooned
