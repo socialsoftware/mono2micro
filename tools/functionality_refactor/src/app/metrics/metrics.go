@@ -189,7 +189,7 @@ func (svc *DefaultHandler) calculateRedesignComplexities(
 func (svc *DefaultHandler) queryRedesignComplexity(
 	decomposition *mono2micro.Decomposition, functionality *mono2micro.Functionality, redesign *mono2micro.FunctionalityRedesign,
 ) {
-	entitiesRead := functionality.EntitiesTouchedInMode(mono2micro.MapAccessTypeToMode("R"))
+	entitiesRead := functionality.EntitiesTouchedInReadMode()
 
 	var inconsistencyComplexity int
 	for _, otherFunctionality := range decomposition.Functionalities {
@@ -200,7 +200,7 @@ func (svc *DefaultHandler) queryRedesignComplexity(
 			continue
 		}
 
-		entitiesWritten := otherFunctionality.EntitiesTouchedInMode(mono2micro.MapAccessTypeToMode("W"))
+		entitiesWritten := otherFunctionality.EntitiesTouchedInWriteMode()
 		for entity := range entitiesRead {
 			_, written := entitiesWritten[entity]
 			if written {
@@ -235,7 +235,7 @@ func (svc *DefaultHandler) sagasRedesignComplexity(
 			entity := invocation.GetAccessEntityID(i)
 			mode := mono2micro.MapAccessTypeToMode(invocation.GetAccessType(i))
 
-			if mode >= WriteMode { // 2 -> W, 3 -> RW
+			if mode >= WriteMode {
 				if invocation.Type == "COMPENSATABLE" {
 					systemComplexityResult := svc.systemComplexity(decomposition, functionality, redesign, entity)
 

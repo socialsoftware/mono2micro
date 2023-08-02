@@ -467,7 +467,7 @@ func (svc *DefaultHandler) pruneInvocationAccesses(invocation *mono2micro.Invoca
 		entity := invocation.GetAccessEntityID(idx)
 		accessType := invocation.GetAccessType(idx)
 
-		if accessType == "W" {
+		if mono2micro.IsCudWriteMode(accessType) {
 			containsLock = true
 		}
 
@@ -475,21 +475,27 @@ func (svc *DefaultHandler) pruneInvocationAccesses(invocation *mono2micro.Invoca
 		if !exists {
 			previousEntityAccesses[entity] = accessType
 			continue
-		} else if previousAccessType == "R" && accessType == "W" {
-			previousEntityAccesses[entity] = "RW"
+		} else if previousAccessType == "R" && mono2micro.IsCudWriteMode(accessType) { // "C", "U", "D"
+			previousEntityAccesses[entity] = "R" + accessType
 			continue
-		} else if previousAccessType == "W" && accessType == "R" {
-			previousEntityAccesses[entity] = "WR"
+		} else if mono2micro.IsCudWriteMode(previousAccessType) && accessType == "R" {
+			previousEntityAccesses[entity] = previousAccessType + "R"
 			continue
-		} else if previousAccessType == "WR" && accessType == "W" {
-			previousEntityAccesses[entity] = "RW"
+		} else if mono2micro.IsCudWriteReadMode(previousAccessType) && mono2micro.IsCudWriteMode(accessType) {
+			previousEntityAccesses[entity] = "R" + accessType
+			continue
+		} else if previousAccessType == "C" && accessType == "U" {
+			previousEntityAccesses[entity] = "C"
+			continue
+		} else if previousAccessType == "U" && accessType == "D" {
+			previousEntityAccesses[entity] = "D"
 			continue
 		}
 	}
 
 	for entity, accessType := range previousEntityAccesses {
-		if accessType == "WR" {
-			accessType = "W"
+		if mono2micro.IsCudWriteReadMode(accessType) {
+			accessType = string(accessType[0])
 		}
 		newAccesses = append(newAccesses, []interface{}{accessType, entity})
 	}

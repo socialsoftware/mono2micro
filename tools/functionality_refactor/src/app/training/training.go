@@ -61,10 +61,10 @@ func (svc *DefaultHandler) CalculateFunctionalityTrainingFeatures(
 		for idx := range invocation.ClusterAccesses {
 			accessType = invocation.GetAccessType(idx)
 
-			if accessType == "R" {
+			if accessType == mono2micro.ReadMode {
 				metrics.ReadOperations += 1
 				featureMetrics.ReadOperations += 1
-			} else if accessType == "W" {
+			} else if mono2micro.IsWriteMode(accessType) {
 				metrics.WriteOperations += 1
 				featureMetrics.WriteOperations += 1
 				containsSemanticLock = true

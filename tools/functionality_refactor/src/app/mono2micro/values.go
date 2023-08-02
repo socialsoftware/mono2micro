@@ -4,6 +4,15 @@ import (
 	"strconv"
 )
 
+const (
+	ReadMode      = "R"
+	WriteMode     = "W"
+	ReadWriteMode = "RW"
+	CreateMode    = "C"
+	UpdateMode    = "U"
+	DeleteMode    = "D"
+)
+
 type Codebase struct {
 	Name       string    `json:"name,omitempty"`
 	Collectors []*string `json:"collectors,omitempty"`
@@ -64,7 +73,7 @@ func (d *Decomposition) GetEntityCluster(id int) *Cluster {
 	if !found {
 		return nil
 	}
-	
+
 	return cluster
 }
 
@@ -150,12 +159,29 @@ func (c *Functionality) GetEntityMode(id int) (int, bool) {
 	return mode, exists
 }
 
-func (c *Functionality) EntitiesTouchedInMode(mode int) map[int]int {
+func (c *Functionality) EntitiesTouchedInReadMode() map[int]int {
 	results := map[int]int{}
 	for entity, accessMode := range c.Entities {
-		if accessMode == mode {
+		if accessMode == MapAccessTypeToMode(ReadMode) {
 			entityID, _ := strconv.Atoi(entity)
-			results[entityID] = mode
+			results[entityID] = MapAccessTypeToMode(ReadMode)
+		}
+	}
+	return results
+}
+
+func (c *Functionality) EntitiesTouchedInWriteMode() map[int]int {
+	results := map[int]int{}
+	for entity, accessMode := range c.Entities {
+		if accessMode == MapAccessTypeToMode(CreateMode) {
+			entityID, _ := strconv.Atoi(entity)
+			results[entityID] = MapAccessTypeToMode(CreateMode)
+		} else if accessMode == MapAccessTypeToMode(UpdateMode) {
+			entityID, _ := strconv.Atoi(entity)
+			results[entityID] = MapAccessTypeToMode(UpdateMode)
+		} else if accessMode == MapAccessTypeToMode(DeleteMode) {
+			entityID, _ := strconv.Atoi(entity)
+			results[entityID] = MapAccessTypeToMode(DeleteMode)
 		}
 	}
 	return results
@@ -192,6 +218,8 @@ type Invocation struct {
 	FunctionalitiesThatWriteInReadEntities   int             `json:"functionalities_that_write_in_read_entities,omitempty"`
 }
 
+/* Unused
+
 func (i *Invocation) AddPrunedAccess(entity int, accessType string) {
 	for _, access := range i.ClusterAccesses {
 		if access[1] == entity {
@@ -205,6 +233,8 @@ func (i *Invocation) AddPrunedAccess(entity int, accessType string) {
 	i.ClusterAccesses = append(i.ClusterAccesses, []interface{}{accessType, entity})
 	return
 }
+
+*/
 
 func (i *Invocation) GetAccessEntityID(idx int) int {
 	id, ok := i.ClusterAccesses[idx][1].(int)
@@ -221,7 +251,7 @@ func (i *Invocation) GetAccessType(idx int) string {
 
 func (i *Invocation) ContainsLock() bool {
 	for _, access := range i.ClusterAccesses {
-		if access[0] == "W" || access[0] == "RW" {
+		if IsWriteMode(access[0]) {
 			return true
 		}
 	}
@@ -230,7 +260,7 @@ func (i *Invocation) ContainsLock() bool {
 
 func (i *Invocation) ContainsRead() bool {
 	for _, access := range i.ClusterAccesses {
-		if access[0] == "R" || access[0] == "RW" {
+		if access[0] == ReadMode || access[0] == ReadWriteMode {
 			return true
 		}
 	}
@@ -246,10 +276,31 @@ func (i *Invocation) GetTypeFromAccesses() string {
 
 func MapAccessTypeToMode(accessType string) int {
 	modeMap := map[string]int{
-		"R":  1,
-		"W":  2,
-		"RW": 3,
+		ReadMode:      1,
+		WriteMode:     2,
+		ReadWriteMode: 3,
+		CreateMode:    4,
+		UpdateMode:    5,
+		DeleteMode:    6,
 	}
 
 	return modeMap[accessType]
+}
+
+func IsWriteMode(mode interface{}) bool {
+	return mode == WriteMode ||
+		mode == ReadWriteMode ||
+		IsCudWriteMode(mode)
+}
+
+func IsCudWriteMode(mode interface{}) bool {
+	return mode == CreateMode ||
+		mode == UpdateMode ||
+		mode == DeleteMode
+}
+
+func IsCudWriteReadMode(mode interface{}) bool {
+	return mode == "CR" ||
+		mode == "UR" ||
+		mode == "DR"
 }
