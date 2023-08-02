@@ -98,7 +98,7 @@ public class FunctionalityRedesign {
         Set<AccessDto> accesses = entities.stream().map(e -> {
             AccessDto accessDto = new AccessDto();
             accessDto.setEntityID((e.shortValue()));
-            accessDto.setMode((byte) 2);
+            accessDto.setMode(AccessDto.UPDATE_MODE); // Previously just 2 ("W")
             return  accessDto;
         }).collect(Collectors.toSet());
 
@@ -183,7 +183,7 @@ public class FunctionalityRedesign {
                     if(mode == null) { // map does not contain the entity
                         fromLTAccesses.put(accessedEntityID, accessedMode);
                     } else if(mode != accessedMode){
-                        fromLTAccesses.put(accessedEntityID, (byte) 3); // 3 -> "RW"
+                        fromLTAccesses.put(accessedEntityID, AccessDto.getMergedMode(mode, accessedMode)); // 3 -> "RW"
                     }
                 }
 
@@ -193,7 +193,7 @@ public class FunctionalityRedesign {
                     if(mode == null) { // map does not contain the entity
                         toLTAccesses.put(accessedEntityID, accessedMode);
                     } else if(mode != accessedMode){
-                        toLTAccesses.put(accessedEntityID, (byte) 3); // 3 -> "RW"
+                        toLTAccesses.put(accessedEntityID, AccessDto.getMergedMode(mode, accessedMode)); // 3 -> "RW"
                     }
                 }
             }
@@ -391,7 +391,7 @@ public class FunctionalityRedesign {
             short entityID = access.getEntityID();
             byte mode = access.getMode();
 
-            if (mode >= 2) // 2 -> "W", 3 -> "RW"
+            if (AccessDto.containsWriteMode(mode)) // 2 -> "W", 3 -> "RW"
                 touchedEntitiesIDs.add(entityID);
         }
     }
@@ -448,7 +448,7 @@ public class FunctionalityRedesign {
             if(mode == null) { // map does not contain the entity
                 ltAccesses.put(accessedEntityID, accessedMode);
             } else if(mode != accessedMode){
-                ltAccesses.put(accessedEntityID, (byte) 3); // 3 -> "RW"
+                ltAccesses.put(accessedEntityID, AccessDto.getMergedMode(mode, accessedMode)); // 3 -> "RW"
             }
         }
 
@@ -505,7 +505,7 @@ public class FunctionalityRedesign {
                         short entityID = access.getEntityID();
                         byte mode = access.getMode();
 
-                        if (mode >= 2) // 2 -> "W", 3 -> "RW"
+                        if (AccessDto.containsWriteMode(mode)) // 2 -> "W", 3 -> "RW"
                             slEntities.add(entityID);
                     }
                 }

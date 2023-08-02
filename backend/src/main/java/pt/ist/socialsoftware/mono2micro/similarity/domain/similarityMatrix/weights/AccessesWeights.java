@@ -206,8 +206,8 @@ public class AccessesWeights extends Weights {
                     if (functionalityPair.getFirst().equals(functionalityName)) {
                         containsFunctionality = true;
 
-                        if (functionalityPair.getSecond() != 3 && functionalityPair.getSecond() != mode)
-                            functionalityPair.setSecond((byte) 3); // "RW" -> 3
+                        if (functionalityPair.getSecond() != mode)
+                            functionalityPair.setSecond(AccessDto.getMergedMode(functionalityPair.getSecond(), mode)); // "RW" -> 3
 
                         break;
                     }
@@ -299,21 +299,21 @@ public class AccessesWeights extends Weights {
                 if (e1Functionalities.getFirst().equals(e2Functionalities.getFirst())) {
                     inCommon++;
                     // != 1 == contains("W") -> "W" or "RW"
-                    if (e1Functionalities.getSecond() != 1 && e2Functionalities.getSecond() != 1)
+                    if (AccessDto.containsWriteMode(e1Functionalities.getSecond()) && AccessDto.containsWriteMode(e2Functionalities.getSecond()))
                         inCommonW++;
 
                     // != 2 == contains("R") -> "R" or "RW"
-                    if (e1Functionalities.getSecond() != 2 && e2Functionalities.getSecond() != 2)
+                    if (AccessDto.containsReadMode(e1Functionalities.getSecond()) && AccessDto.containsReadMode(e2Functionalities.getSecond()))
                         inCommonR++;
                 }
             }
 
             // != 1 == contains("W") -> "W" or "RW"
-            if (e1Functionalities.getSecond() != 1)
+            if (AccessDto.containsWriteMode(e1Functionalities.getSecond()))
                 e1FunctionalitiesW++;
 
             // != 2 == contains("R") -> "R" or "RW"
-            if (e1Functionalities.getSecond() != 2)
+            if (AccessDto.containsReadMode(e1Functionalities.getSecond()))
                 e1FunctionalitiesR++;
         }
 

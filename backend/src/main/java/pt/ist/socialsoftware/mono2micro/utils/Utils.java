@@ -153,7 +153,7 @@ public class Utils {
                             hasCost = true;
 
                         } else {
-                            if (savedMode == 1 && accessMode == 2) // "R" -> 1, "W" -> 2
+                            if (AccessDto.isReadMode(savedMode) && AccessDto.isWriteMode(accessMode)) // "R" -> 1, "W" -> 2
                                 hasCost = true;
                         }
 

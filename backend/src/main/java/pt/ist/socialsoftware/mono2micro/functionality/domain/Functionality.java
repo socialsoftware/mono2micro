@@ -100,8 +100,8 @@ public class Functionality {
 		Byte savedMode = this.entities.get(entityID);
 
 		if (savedMode != null) {
-			if (savedMode != mode && savedMode != 3) // "RW" -> 3
-				this.entities.put(entityID, (byte) 3); // "RW" -> 3
+			if (savedMode != mode) // "RW" -> 3
+				this.entities.put(entityID, AccessDto.getMergedMode(savedMode, mode)); // "RW" -> 3
 		} else {
 			this.entities.put(entityID, mode);
 		}
@@ -154,7 +154,7 @@ public class Functionality {
 	public Set<Short> entitiesTouchedInAGivenMode(byte mode){
 		Set<Short> entitiesTouchedInAGivenMode = new HashSet<>();
 		for (Map.Entry<Short, Byte> entry: this.entities.entrySet()){
-			if (entry.getValue() == 3 || entry.getValue() == mode) // 3 -> RW
+			if (AccessDto.shareMode(entry.getValue(), mode)) // 3 -> RW
 				entitiesTouchedInAGivenMode.add(entry.getKey());
 		}
 		return entitiesTouchedInAGivenMode;
@@ -176,7 +176,7 @@ public class Functionality {
 
 		if (!this.entities.isEmpty()){
 			for (Map.Entry<Short, Byte> entry : this.entities.entrySet()){
-				if (entry.getValue() >= 2) { // 2 -> W , 3 -> RW
+				if (AccessDto.containsWriteMode(entry.getValue())) { // 2 -> W , 3 -> RW
 					this.type = FunctionalityType.SAGA;
 					return this.type;
 				}
@@ -225,7 +225,7 @@ public class Functionality {
 					if (clusterName.equals(previousCluster)) {
 						Byte savedMode = entityIDToMode.get(entityID);
 
-						if (savedMode == null || savedMode == 1 && mode == 2) { // "R" -> 1, "W" -> 2
+						if (savedMode == null || AccessDto.isReadMode(savedMode) && AccessDto.isWriteMode(mode)) { // "R" -> 1, "W" -> 2
 							entityIDToMode.put(entityID, mode);
 							this.addEntity(entityID, mode);
 						}
