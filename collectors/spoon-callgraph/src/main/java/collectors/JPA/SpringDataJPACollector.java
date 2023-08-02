@@ -403,7 +403,7 @@ public class SpringDataJPACollector extends SpoonCollector {
             @Override
             public <T> void visitCtFieldWrite(CtFieldWrite<T> fieldWrite) {
                 super.visitCtFieldWrite(fieldWrite);
-                visitCtFieldAccess(fieldWrite, "W");
+                visitCtFieldAccess(fieldWrite, "U");
             }
 
             @Override
@@ -625,14 +625,13 @@ public class SpringDataJPACollector extends SpoonCollector {
             mode = "R";
             returnType = fieldAccessedType;
         }
-        else if (methodName.startsWith("set") ||
-                methodName.startsWith("add") ||
-                methodName.startsWith("remove") ||
-                methodName.startsWith("clear") ||
-                methodName.startsWith("replace") ||
-                methodName.startsWith("put")) {
-            mode = "W";
-
+        else if (methodName.startsWith("add") ||
+                    methodName.startsWith("put") ||
+                    methodName.startsWith("set") ||
+                    methodName.startsWith("replace") ||
+                    methodName.startsWith("remove") ||
+                    methodName.startsWith("clear")) {
+            mode = "U";
 
             // we visited the target before to find the field so lets use the types of field type
             for (CtTypeReference ctTypeReference : fieldAccessedType.getActualTypeArguments()) {
@@ -665,7 +664,7 @@ public class SpringDataJPACollector extends SpoonCollector {
                 }
             }
         }
-        else if (mode.equals("W")) {
+        else if (mode.equals("U")) {
             for (String argTypeName : argTypeNames) {
                 if (allDomainEntities.contains(argTypeName)) {
                     addEntitiesSequenceAccess(argTypeName, mode);
@@ -890,9 +889,10 @@ public class SpringDataJPACollector extends SpoonCollector {
 
         // Write Access
         else if (methodName.startsWith("save") ||
-                methodName.startsWith("delete")||
                 methodName.startsWith("flush")) {
-            mode = "W";
+            mode = "U";
+        } else if (methodName.startsWith("delete")) {
+            mode = "D";
         }
         else {
             System.err.println("SpringDataRepositoryAccess Unknown Mode: " + methodName);

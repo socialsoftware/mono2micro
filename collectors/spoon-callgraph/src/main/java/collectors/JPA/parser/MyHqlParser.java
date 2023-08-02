@@ -125,13 +125,15 @@ public class MyHqlParser {
     private void checkMode(String node) {
         switch (node) {
             case "update":
+                mode = "U";
+                break;
             case "delete":
+                mode = "D";
+                break;
             case "insert":
-                mode = "W";
+                mode = "C";
                 break;
             case "query":
-                mode = "R";
-                break;
             default:
                 mode = "R";
                 break;

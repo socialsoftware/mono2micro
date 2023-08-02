@@ -199,7 +199,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
                 returnType = returnTypeReference.getSimpleName();
         }
         else if (methodName.startsWith("set") || methodName.startsWith("add") || methodName.startsWith("remove")) {
-            mode = "W";
+            mode = "U";
             List<CtParameter> calleeParameters = callee.getParameters();
             for (CtParameter ctP : calleeParameters) {
                 CtTypeReference parameterType = ctP.getType();
@@ -231,7 +231,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
             if (allDomainEntities.contains(returnType))
                 addEntitiesSequenceAccess(returnType, mode);
         }
-        else if (mode.equals("W")) {
+        else if (mode.equals("U")) {
             // Class Read
             if (allDomainEntities.contains(resolvedType))
                 addEntitiesSequenceAccess(resolvedType, mode);

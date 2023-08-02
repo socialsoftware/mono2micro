@@ -33,13 +33,13 @@ public class TableNamesFinderExt extends TablesNamesFinder {
 
     @Override
     public void visit(Delete delete) {
-        mode = "W";
+        mode = "D";
         super.visit(delete);
     }
 
     @Override
     public void visit(Insert insert) {
-        mode = "W";
+        mode = "C";
         super.visit(insert);
     }
 
@@ -51,7 +51,7 @@ public class TableNamesFinderExt extends TablesNamesFinder {
 
     @Override
     public void visit(Update update) {
-        mode = "W";
+        mode = "U";
         super.visit(update);
     }
 
