@@ -75,7 +75,7 @@ public class ReducedTraceElementDtoDeserializer extends StdDeserializer<ReducedT
 				AccessDto a = new AccessDto();
 
 				a.setEntityID(entityID);
-				a.setMode((byte) (mode.equals("R") ? 1 : 2));
+				a.setMode(AccessDto.fromStringMode(mode));
 				a.setOccurrences(occurrences);
 
 				return a;

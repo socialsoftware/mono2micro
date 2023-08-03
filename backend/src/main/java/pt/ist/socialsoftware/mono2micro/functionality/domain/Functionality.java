@@ -151,13 +151,22 @@ public class Functionality {
 		this.type = type;
 	}
 
-	public Set<Short> entitiesTouchedInAGivenMode(byte mode){
-		Set<Short> entitiesTouchedInAGivenMode = new HashSet<>();
+	public Set<Short> entitiesTouchedInReadMode() {
+		Set<Short> entitiesTouchedInReadMode = new HashSet<>();
 		for (Map.Entry<Short, Byte> entry: this.entities.entrySet()){
-			if (AccessDto.shareMode(entry.getValue(), mode)) // 3 -> RW
-				entitiesTouchedInAGivenMode.add(entry.getKey());
+			if (AccessDto.containsReadMode(entry.getValue()))
+				entitiesTouchedInReadMode.add(entry.getKey());
 		}
-		return entitiesTouchedInAGivenMode;
+		return entitiesTouchedInReadMode;
+	}
+
+	public Set<Short> entitiesTouchedInWriteMode() {
+		Set<Short> entitiesTouchedInWriteMode = new HashSet<>();
+		for (Map.Entry<Short, Byte> entry: this.entities.entrySet()){
+			if (AccessDto.containsWriteMode(entry.getValue()))
+				entitiesTouchedInWriteMode.add(entry.getKey());
+		}
+		return entitiesTouchedInWriteMode;
 	}
 
 	public Set<String> clustersOfGivenEntities(Set<Short> entities){

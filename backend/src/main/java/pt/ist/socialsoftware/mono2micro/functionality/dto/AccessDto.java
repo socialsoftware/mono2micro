@@ -46,27 +46,6 @@ public class AccessDto extends ReducedTraceElementDto {
         return mode >= UPDATE_MODE;
     }
 
-    public static boolean isReadWriteMode(byte mode) {
-        return mode != READ_MODE && mode % 2 != 0;
-    }
-
-    public static boolean shareMode(byte mode1, byte mode2) {
-        return mode1 == mode2 || shareReadMode(mode1, mode2) || shareWriteMode(mode1, mode2);
-    }
-
-    private static boolean shareReadMode(byte mode1, byte mode2) {
-        return containsReadMode(mode1) && containsReadMode(mode2);
-    }
-
-    private static boolean shareWriteMode(byte mode1, byte mode2) {
-        if (mode1 == READ_MODE && mode2 == READ_MODE) {
-            return false;
-        } else {
-            int mode = mode1 + mode2;
-            return mode == 5 || mode == 9 || mode == 17; // U+RU C+RC D+RD
-        }
-    }
-
     public static byte getMergedMode(byte mode1, byte mode2) {
         if (mode1 == mode2) {
             return mode1;
@@ -84,6 +63,19 @@ public class AccessDto extends ReducedTraceElementDto {
             return READ_DELETE_MODE;
         } else {
             return (byte) Integer.max(mode1, mode2);
+        }
+    }
+
+    public static byte fromStringMode(String mode) {
+        switch (mode) {
+            case "U":
+                return UPDATE_MODE;
+            case "C":
+                return CREATE_MODE;
+            case "D":
+                return DELETE_MODE;
+            default:
+                return READ_MODE;
         }
     }
 

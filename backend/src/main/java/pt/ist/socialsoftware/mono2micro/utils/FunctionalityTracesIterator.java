@@ -112,7 +112,7 @@ public class FunctionalityTracesIterator {
 
             if (elementType instanceof String) { // Is an AccessDto
                 AccessDto accessDto = new AccessDto();
-                accessDto.setMode((byte) (reducedTraceElementJSON.getString(0).equals("R") ? 1 : 2));
+                accessDto.setMode(AccessDto.fromStringMode(reducedTraceElementJSON.getString(0)));
                 accessDto.setEntityID((short) reducedTraceElementJSON.getInt(1));
                 if (reducedTraceElementJSON.length() == 3)
                     accessDto.setOccurrences(reducedTraceElementJSON.getInt(2));

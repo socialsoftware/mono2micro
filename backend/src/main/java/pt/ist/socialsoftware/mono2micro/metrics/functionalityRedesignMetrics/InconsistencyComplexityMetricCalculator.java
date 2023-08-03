@@ -5,6 +5,7 @@ import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInfor
 import pt.ist.socialsoftware.mono2micro.functionality.FunctionalityType;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.FunctionalityRedesign;
+import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 
 import java.util.Set;
 
@@ -23,13 +24,13 @@ public class InconsistencyComplexityMetricCalculator extends FunctionalityRedesi
         if(functionality.getType() != FunctionalityType.QUERY)
             return value;
 
-        Set<Short> entitiesRead = functionality.entitiesTouchedInAGivenMode((byte) 1);
+        Set<Short> entitiesRead = functionality.entitiesTouchedInReadMode();
 
         for (Functionality otherFunctionality : accessesInformation.getFunctionalities().values()) {
             if (!otherFunctionality.getName().equals(functionality.getName()) &&
                     otherFunctionality.getType() == FunctionalityType.SAGA){
 
-                Set<Short> entitiesWritten = otherFunctionality.entitiesTouchedInAGivenMode((byte) 2);
+                Set<Short> entitiesWritten = otherFunctionality.entitiesTouchedInWriteMode();
                 entitiesWritten.retainAll(entitiesRead);
                 Set<String> clustersInCommon = otherFunctionality.clustersOfGivenEntities(entitiesWritten);
 
