@@ -1,5 +1,6 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.service;
 
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,6 +14,7 @@ import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
 import pt.ist.socialsoftware.mono2micro.element.Element;
+import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.history.service.HistoryService;
 import pt.ist.socialsoftware.mono2micro.operation.formCluster.FormClusterOperation;
 import pt.ist.socialsoftware.mono2micro.operation.merge.MergeOperation;
@@ -24,6 +26,7 @@ import pt.ist.socialsoftware.mono2micro.similarity.repository.SimilarityReposito
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.strategy.repository.StrategyRepository;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -39,6 +42,9 @@ public class DecompositionService {
 
     @Autowired
     HistoryService historyService;
+
+    @Autowired
+    GridFsService gridFsService;
 
     public void createDecomposition(DecompositionRequest request) throws Exception {
         Similarity similarity = similarityRepository.findByName(request.getSimilarityName());
@@ -83,35 +89,8 @@ public class DecompositionService {
         return decompositionRepository.findByName(decompositionName);
     }
 
-    public JSONObject exportDecomposition(String decompositionName) throws JSONException {
-        Decomposition decomposition = decompositionRepository.findByName(decompositionName);
-        return buildJsonData(decomposition);
-    }
-
-    private JSONObject buildJsonData(Decomposition decomposition) throws JSONException {
-
-        JSONObject data = new JSONObject();
-        JSONObject decompositionObject = new JSONObject();
-        JSONArray clustersList = new JSONArray();
-
-        for (Cluster cluster : decomposition.getClusters().values()) {
-            JSONObject clusterObject = new JSONObject();
-            clusterObject.put("name", cluster.getName());
-
-            JSONArray elementsList = new JSONArray();
-            for (Element element : cluster.getElements()) {
-                JSONObject elementObject = new JSONObject();
-                elementObject.put("name", element.getName());
-                elementsList.put(elementObject);
-            }
-
-            clusterObject.put("elements", elementsList);
-            clustersList.put(clusterObject);
-        }
-
-        decompositionObject.put("clusters", clustersList);
-        data.put("decomposition", decompositionObject);
-        return data;
+    public byte[] exportDecomposition(String decompositionName) throws IOException {
+        return IOUtils.toByteArray(gridFsService.getFile(decompositionName + "_refactorization"));
     }
 
     public void deleteSingleDecomposition(String decompositionName) {

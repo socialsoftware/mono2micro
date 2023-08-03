@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Optional;
@@ -121,35 +122,19 @@ public class DecompositionController {
 	) {
 		logger.debug("exportDecomposition");
 
-		// TODO Clean code
 		try {
 			response.setHeader("Content-Disposition", "attachment; filename=m2m_decomposition_data.json");
 			response.setContentType("application/json");
-
-			String sourceFolder = EXPORT_PATH + "/" + decompositionName;
-			File path = new File(sourceFolder);
-			path.mkdir();
-
-			String fileName = sourceFolder + "/m2m_decomposition_data.json";
-			File file = new File(fileName);
-			if (file.createNewFile()) {
-				FileWriter fw = new FileWriter(file);
-				fw.write(decompositionService.exportDecomposition(decompositionName).toString(2));
-				fw.close();
-			}
-
-			response.getOutputStream().write(Files.readAllBytes(Paths.get(fileName)));
+			response.getOutputStream().write(decompositionService.exportDecomposition(decompositionName));
+			response.setStatus(HttpServletResponse.SC_OK);
 			response.flushBuffer();
 
-			file.delete();
-			path.delete();
-
-		} catch (JSONException je) {
-			je.printStackTrace();
-			throw new RuntimeException("Error Creating JSON file.", je);
+		} catch (NoSuchFileException e) {
+			e.printStackTrace();
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new RuntimeException("Error writing file to output stream while exporting decomposition.", e);
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
 	}
 
