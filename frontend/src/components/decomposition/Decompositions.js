@@ -58,8 +58,13 @@ export const Decompositions = () => {
             downloadDecompositionData(response);
             toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Decomposition exported.", isLoading: false});
             setTimeout(() => {toast.dismiss(toastId)}, 1000);
-        }).catch(() => {
-            toast.update(toastId, {type: toast.TYPE.ERROR, render: "Error exporting " + decompositionName + ".", isLoading: false});
+        }).catch((error) => {
+            if (error.response && error.response.status === 404) {
+                toast.update(toastId, {type: toast.TYPE.INFO, render: "Please use the Refactorization Tool first to create the data to export.", isLoading: false})
+            } else {
+                toast.update(toastId, {type: toast.TYPE.ERROR, render: "Error exporting " + decompositionName + ".", isLoading: false});
+            }
+            setTimeout(() => {toast.dismiss(toastId)}, 5000);
         });
     }
 
