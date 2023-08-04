@@ -434,15 +434,7 @@ public class SpringDataJPACollector extends SpoonCollector {
     private void registerConstructorCallAccess(CtConstructorCall<?> ctConstructorCall) {
         String createdTypeName = ctConstructorCall.getExecutable().getType().getSimpleName();
         if (allDomainEntities.contains(createdTypeName)) {
-            addEntitiesSequenceAccess(createdTypeName, "W");
-        } else {
-            // Might be a collection (List<Entity>, Map<String, Entity>, ...)
-            for (CtTypeReference<?> typeArguments : ctConstructorCall.getType().getActualTypeArguments()) {
-                if (allDomainEntities.contains(typeArguments.getSimpleName())) {
-                    addEntitiesSequenceAccess(typeArguments.getSimpleName(), "W");
-                    break;
-                }
-            }
+            addEntitiesSequenceAccess(createdTypeName, "C");
         }
     }
 
