@@ -29,7 +29,7 @@ public class SpoonCollector implements Collector {
     @JsonProperty(value = "entities")
     private List<DomainEntity> domainEntities;
 
-    public SpoonCollector(String projectName, String sourcesPath, int projectFramework) {
+    public SpoonCollector(String projectName, String sourcesPath, int projectFramework, boolean collectStructuralData) {
         this.projectName = projectName;
         this.domainEntities = new ArrayList<>();
 

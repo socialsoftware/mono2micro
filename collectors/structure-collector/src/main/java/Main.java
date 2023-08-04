@@ -15,6 +15,6 @@ public class Main {
     }
 
     public static void runCollector(String projectName, String sourcesPath, int projectFramework) {
-        new SpoonCollector(projectName, sourcesPath, projectFramework).collect().serialize();
+        new SpoonCollector(projectName, sourcesPath, projectFramework, true).collect().serialize();
     }
 }
