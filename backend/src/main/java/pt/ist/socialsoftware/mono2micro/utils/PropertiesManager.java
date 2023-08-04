@@ -16,14 +16,8 @@ public class PropertiesManager {
 	@Value("${scripts.address}")
 	private String scriptsAddress;
 
-	@Value("${export.path}")
-	private String exportPath;
-
 	@Bean(name="scriptsAddress")
 	public String getScriptsAddress() {
 		return scriptsAddress;
 	}
-
-	@Bean(name="exportPath")
-	public String getExportPath() { return exportPath; }
 }

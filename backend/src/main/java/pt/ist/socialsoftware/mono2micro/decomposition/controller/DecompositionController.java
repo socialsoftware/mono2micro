@@ -1,6 +1,5 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.controller;
 
-import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +20,10 @@ import pt.ist.socialsoftware.mono2micro.operation.transfer.TransferOperation;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileWriter;
-import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
-import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Optional;
-
-import static pt.ist.socialsoftware.mono2micro.utils.Constants.EXPORT_PATH;
+import java.util.zip.ZipOutputStream;
 
 @RestController
 @RequestMapping(value = "/mono2micro")
@@ -123,9 +117,9 @@ public class DecompositionController {
 		logger.debug("exportDecomposition");
 
 		try {
-			response.setHeader("Content-Disposition", "attachment; filename=m2m_decomposition_data.json");
-			response.setContentType("application/json");
-			response.getOutputStream().write(decompositionService.exportDecomposition(decompositionName));
+			response.setHeader("Content-Disposition", "attachment; filename=m2m_decomposition_data.zip");
+			response.setContentType("application/zip");
+			decompositionService.exportDecomposition(decompositionName, new ZipOutputStream(response.getOutputStream()));
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.flushBuffer();
 

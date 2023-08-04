@@ -1,19 +1,15 @@
 package pt.ist.socialsoftware.mono2micro.decomposition.service;
 
 import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.Clustering;
 import pt.ist.socialsoftware.mono2micro.clusteringAlgorithm.Expert;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.dto.request.DecompositionRequest;
 import pt.ist.socialsoftware.mono2micro.decomposition.repository.DecompositionRepository;
-import pt.ist.socialsoftware.mono2micro.element.Element;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.history.service.HistoryService;
 import pt.ist.socialsoftware.mono2micro.operation.formCluster.FormClusterOperation;
@@ -25,9 +21,11 @@ import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.similarity.repository.SimilarityRepository;
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.strategy.repository.StrategyRepository;
+import pt.ist.socialsoftware.mono2micro.utils.ExportUtils;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.zip.ZipOutputStream;
 
 @Service
 public class DecompositionService {
@@ -89,8 +87,12 @@ public class DecompositionService {
         return decompositionRepository.findByName(decompositionName);
     }
 
-    public byte[] exportDecomposition(String decompositionName) throws IOException {
-        return IOUtils.toByteArray(gridFsService.getFile(decompositionName + "_refactorization"));
+    public void exportDecomposition(String decompositionName, ZipOutputStream zipOutputStream) throws IOException, JSONException {
+        byte[] refactorizationData = IOUtils.toByteArray(gridFsService.getFile(decompositionName + "_refactorization"));
+        Decomposition decomposition = decompositionRepository.findByName(decompositionName);
+        ExportUtils.addDataToZipFile("m2m_sagas.json", refactorizationData, zipOutputStream);
+        ExportUtils.addDataToZipFile("m2m_clusters.json", decomposition, zipOutputStream);
+        zipOutputStream.close();
     }
 
     public void deleteSingleDecomposition(String decompositionName) {
