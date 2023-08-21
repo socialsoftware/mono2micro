@@ -19,7 +19,7 @@ public class SpringDataJpaDomainEntityProcessor extends AbstractProcessor<CtClas
 
     private static final String DOMAIN_ENTITY_ANNOTATION_REGEX = "(Entity)|(MappedSuperclass)|(Embeddable)";
 
-    private SpoonCollector collector;
+    private final SpoonCollector collector;
 
     public SpringDataJpaDomainEntityProcessor(SpoonCollector collector) {
         this.collector = collector;

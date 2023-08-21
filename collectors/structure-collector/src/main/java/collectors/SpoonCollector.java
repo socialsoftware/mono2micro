@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.List;
 
 // TODO: Enhancement - Decouple cached data from collector class ("domainEntities")
-// TODO: Enhancement - Make what data to collect dependent on user input
 public class SpoonCollector implements Collector {
 
     @JsonIgnore
@@ -29,7 +28,7 @@ public class SpoonCollector implements Collector {
     @JsonProperty(value = "entities")
     private List<DomainEntity> domainEntities;
 
-    public SpoonCollector(String projectName, String sourcesPath, int projectFramework, boolean collectStructuralData) {
+    public SpoonCollector(String projectName, String sourcesPath, int projectFramework) {
         this.projectName = projectName;
         this.domainEntities = new ArrayList<>();
 
@@ -75,7 +74,7 @@ public class SpoonCollector implements Collector {
         }
         filePath.mkdirs();
 
-        try (FileOutputStream fos = new FileOutputStream(Constants.OUTPUT_PATH + this.projectName + "_STRUCTURE.json")) {
+        try (FileOutputStream fos = new FileOutputStream(Constants.OUTPUT_PATH + this.projectName + "_m2m_structure.json")) {
             ObjectMapper mapper = new ObjectMapper();
             mapper.writerWithDefaultPrettyPrinter().writeValue(fos, this);
         } catch (IOException e) {

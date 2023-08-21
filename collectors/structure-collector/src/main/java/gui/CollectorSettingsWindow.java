@@ -15,7 +15,9 @@ public class CollectorSettingsWindow extends JFrame {
     private JTextField projectNameTextField;
     private JTextField projectLocationTextField;
     private int projectFrameworkFieldSelectedOption = Constants.SPRING_DATA_JPA;
-    private boolean collectStructuralData = true;
+
+    // Unused for now, only one option
+    private int dataToCollect = Constants.STRUCTURAL_DATA_COLLECTION_MASK;
 
     private CollectorSettingsWindow() {
         setTitle("Collector Settings");
@@ -185,7 +187,9 @@ public class CollectorSettingsWindow extends JFrame {
     }
 
     private void onStructuralDataCheckBoxClicked(ActionEvent e) {
-        collectStructuralData = ((JCheckBox) e.getSource()).isSelected();
+        dataToCollect = ((JCheckBox) e.getSource()).isSelected() ?
+                dataToCollect | Constants.STRUCTURAL_DATA_COLLECTION_MASK :
+                dataToCollect ^ Constants.STRUCTURAL_DATA_COLLECTION_MASK;
     }
 
     private void onSubmitButtonClicked() {
@@ -193,10 +197,8 @@ public class CollectorSettingsWindow extends JFrame {
         new SpoonCollector(
                 projectNameTextField.getText(),
                 projectLocationTextField.getText(),
-                projectFrameworkFieldSelectedOption,
-                collectStructuralData)
-                .collect()
-                .serialize();
+                projectFrameworkFieldSelectedOption)
+                .collect().serialize();
     }
 
     private JPanel createLineSegment() {
@@ -211,10 +213,3 @@ public class CollectorSettingsWindow extends JFrame {
         };
     }
 }
-
-
-
-
-
-
-
