@@ -88,10 +88,10 @@ public class DecompositionService {
     }
 
     public void exportDecomposition(String decompositionName, ZipOutputStream zipOutputStream) throws IOException, JSONException {
-        byte[] refactorizationData = IOUtils.toByteArray(gridFsService.getFile(decompositionName + "_refactorization"));
-        Decomposition decomposition = decompositionRepository.findByName(decompositionName);
-        ExportUtils.addDataToZipFile("m2m_sagas.json", refactorizationData, zipOutputStream);
-        ExportUtils.addDataToZipFile("m2m_clusters.json", decomposition, zipOutputStream);
+        String serializedData = ExportUtils.serializeDecompositionDataForContextMapper(
+                decompositionRepository.findByName(decompositionName),
+                IOUtils.toByteArray(gridFsService.getFile(decompositionName + "_refactorization")));
+        ExportUtils.zipSerializedData("m2m_decomposition.json", serializedData, zipOutputStream);
         zipOutputStream.close();
     }
 
