@@ -23,3 +23,13 @@ export const OPERATION = {
     RESTORE: 15,
     CANCEL: 16,
 };
+
+export const ENTITY_ACCESS_TYPE = {
+    READ: 1,
+    UPDATE: 2,
+    CREATE: 4,
+    DELETE: 8,
+    READ_UPDATE: this.READ + this.UPDATE,
+    READ_CREATE: this.READ + this.CREATE,
+    READ_DELETE: this.READ + this.DELETE
+}

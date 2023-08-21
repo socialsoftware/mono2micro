@@ -15,7 +15,7 @@ import Container from 'react-bootstrap/Container';
 
 import {FunctionalityRedesignMenu, redesignOperations} from './FunctionalityRedesignMenu';
 import {ModalMessage} from "../../utils/ModalMessage";
-import {DEFAULT_REDESIGN_NAME} from "../../../../constants/constants";
+import {DEFAULT_REDESIGN_NAME, ENTITY_ACCESS_TYPE} from "../../../../constants/constants";
 import {FunctionalityOperationsMenu} from "./FunctionalityOperationsMenu";
 import AppContext from "../../../AppContext";
 import {useParams} from "react-router-dom";
@@ -430,7 +430,7 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
         const modifiedEntities = [];
         Object.entries(functionality.entities).forEach(e => {
             let entityId = parseInt(e[0]);
-            if (cluster.elements.find(e1 => e1.id === entityId) && e[1] >= 2) // 2 -> W , 3 -> RW - we want all writes
+            if (cluster.elements.find(e1 => e1.id === entityId) && e[1] > ENTITY_ACCESS_TYPE.READ) // we want all writes
                 modifiedEntities.push(e[0]);
         })
 
