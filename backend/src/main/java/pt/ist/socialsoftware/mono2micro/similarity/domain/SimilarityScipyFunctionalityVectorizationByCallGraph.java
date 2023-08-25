@@ -17,11 +17,11 @@ import pt.ist.socialsoftware.mono2micro.similarity.dto.SimilarityScipyFunctional
 import pt.ist.socialsoftware.mono2micro.strategy.domain.Strategy;
 import pt.ist.socialsoftware.mono2micro.utils.Acumulator;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
+import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import java.io.ByteArrayInputStream;
 import java.util.*;
 
-import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityRepresentation.ID_TO_ENTITY;
 import static pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights.FunctionalityVectorizationCallGraphWeights.FUNCTIONALITY_VECTORIZATION_CALLGRAPH_WEIGHTS;
 
@@ -100,7 +100,7 @@ public class SimilarityScipyFunctionalityVectorizationByCallGraph extends Simila
         this.computeMethodCallsFeaturesVectors(matrix, codeEmbeddings);
 
         IDToEntityRepresentation idToEntity = (IDToEntityRepresentation) similarity.getStrategy().getCodebase().getRepresentationByFileType(ID_TO_ENTITY);
-        AccessesRepresentation accessesInfo = (AccessesRepresentation) similarity.getStrategy().getCodebase().getRepresentationByFileType(ACCESSES);
+        AccessesRepresentation accessesInfo = Utils.getCodebaseAccessRepresentation(similarity.getStrategy().getCodebase());
         matrix.put("translationFileName", idToEntity.getName());
         matrix.put("accessesFileName", accessesInfo.getName());
 
@@ -273,7 +273,7 @@ public class SimilarityScipyFunctionalityVectorizationByCallGraph extends Simila
     ) throws Exception {
         JSONObject codeEmbeddings = getCodeEmbeddings(recommendation.getStrategy());
         IDToEntityRepresentation idToEntity = (IDToEntityRepresentation) recommendation.getStrategy().getCodebase().getRepresentationByFileType(ID_TO_ENTITY);
-        AccessesRepresentation accessesInfo = (AccessesRepresentation) recommendation.getStrategy().getCodebase().getRepresentationByFileType(ACCESSES);
+        AccessesRepresentation accessesInfo = Utils.getCodebaseAccessRepresentation(recommendation.getStrategy().getCodebase());
 
         int[] weights = new int[totalNumberOfWeights];
         weights[0] = INTERVAL;

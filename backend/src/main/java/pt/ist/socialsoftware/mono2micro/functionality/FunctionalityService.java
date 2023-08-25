@@ -18,6 +18,7 @@ import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.representation.domain.Representation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipy;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
+import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import javax.naming.NameAlreadyBoundException;
 import java.io.ByteArrayInputStream;
@@ -28,7 +29,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.jgrapht.Graphs.successorListOf;
-import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.Representation.ACCESSES_TYPE;
 
 @Service
@@ -213,7 +213,7 @@ public class FunctionalityService {
             functionality.addFunctionalityRedesign(functionalityRedesign.getName(), functionality.getId() + functionalityRedesign.getName());
             functionality.setFunctionalityRedesignNameUsedForMetrics(functionalityRedesign.getName());
 
-            Representation representation = similarity.getStrategy().getCodebase().getRepresentationByFileType(ACCESSES);
+            Representation representation = Utils.getCodebaseAccessRepresentation(similarity.getStrategy().getCodebase());
 
             DirectedAcyclicGraph<LocalTransaction, DefaultEdge> functionalityLocalTransactionsGraph = accessesInformation.getFunctionality(functionalityName)
                     .createLocalTransactionGraphFromScratch(
