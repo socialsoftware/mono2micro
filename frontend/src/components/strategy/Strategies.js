@@ -209,6 +209,8 @@ export function Strategies() {
             } else if (prev.some((el) => el.includes('Vectorization')) || type.includes('Vectorization')) {
                 prev.forEach((t) => document.getElementById(t).checked = false);
                 prev = [type];
+            } else if (prev.some((el) => el.includes('Accesses')) || type.includes('Accesses')) {
+                prev.forEach((t) => {if(t.includes('Accesses')) document.getElementById(t).checked = false});
             } else {
                 prev = [...prev, type];
             }
