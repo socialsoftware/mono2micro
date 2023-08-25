@@ -253,8 +253,6 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
     public List<TraceDto> getTracesByType(Constants.TraceType traceType) throws JSONException {
         List<TraceDto> traceDtos = new ArrayList<>();
 
-        traceType = TraceType.LONGEST; // FIXME: REMOVE
-
         initializeFunctionalityPathData(requestedFunctionality);
 
         // Get traces according to trace type
