@@ -258,8 +258,10 @@ export const RecommendMatrixSciPy = ({codebaseName, strategy, setUpdateStrategie
                             <Form.Check onClick={handleChangeTraceType} name="traceType" label="Longest" type="radio" id="longest" value="LONGEST"/>
                         </Col>
                         <Col sm="auto">
+                            <Form.Check onClick={handleChangeTraceType} name="traceType" label="Most Probable" type="radio" id="mostProbable" value="MOST_PROBABLE"/>
+                        </Col>
+                        <Col sm="auto">
                             <Form.Check onClick={handleChangeTraceType} name="traceType" label="With more different accesses" type="radio" id="withMoreDifferentTraces" value="WITH_MORE_DIFFERENT_ACCESSES"/>
-
                         </Col>
                     </Col>
                 </Form.Group>

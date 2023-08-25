@@ -188,14 +188,9 @@ public class AccessesWeights extends Weights {
 
             switch (traceType) {
                 case LONGEST:
-                    t = iter.getLongestTrace();
-
-                    if (t != null)
-                        fillEntityDataStructures(e1e2PairCount, entityFunctionalities, t.expand(2), functionalityName);
-
-                    break;
+                case MOST_PROBABLE:
                 case WITH_MORE_DIFFERENT_ACCESSES:
-                    t = iter.getTraceWithMoreDifferentAccesses();
+                    t = iter.getTracesByType(traceType).get(0);
 
                     if (t != null)
                         fillEntityDataStructures(e1e2PairCount, entityFunctionalities, t.expand(2), functionalityName);

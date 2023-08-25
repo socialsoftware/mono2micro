@@ -88,6 +88,7 @@ public class FunctionalityTracesIterator extends TracesIterator {
         // Get traces according to trace type
         switch(traceType) {
             case LONGEST:
+            case MOST_PROBABLE:
                 traceDtos.add(this.getLongestTrace());
                 break;
             case WITH_MORE_DIFFERENT_ACCESSES:
