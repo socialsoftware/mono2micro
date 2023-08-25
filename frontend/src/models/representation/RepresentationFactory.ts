@@ -1,5 +1,6 @@
 import Representation, {RepresentationFile} from "./Representation";
 import AccessesRepresentation from "./files/AccessesRepresentation";
+import AccessesGraphRepresentation from "./files/AccessesGraphRepresentation";
 import IDToEntityRepresentation from "./files/IDToEntityRepresentation";
 import AuthorRepresentation from "./files/AuthorRepresentation";
 import CommitRepresentation from "./files/CommitRepresentation";
@@ -11,6 +12,8 @@ export abstract class RepresentationFactory {
         switch (representation.type) {
             case RepresentationFile.ACCESSES:
                 return new AccessesRepresentation(representation);
+            case RepresentationFile.ACCESSES_GRAPH:
+                return new AccessesGraphRepresentation(representation);
             case RepresentationFile.IDTOENTITIY:
                 return new IDToEntityRepresentation(representation);
             case RepresentationFile.AUTHOR:

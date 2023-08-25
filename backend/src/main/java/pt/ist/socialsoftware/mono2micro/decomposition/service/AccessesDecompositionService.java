@@ -5,6 +5,7 @@ import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInformation.AccessesInformation;
@@ -26,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.Representation.ACCESSES_TYPE;
 
 @Service
@@ -81,7 +81,7 @@ public class AccessesDecompositionService {
         Decomposition decomposition = decompositionRepository.findByName(decompositionName);
         AccessesInformation accessesInformation = (AccessesInformation) decomposition.getRepresentationInformationByType(ACCESSES_TYPE);
         SimilarityScipy similarity = (SimilarityScipy) decomposition.getSimilarity();
-        AccessesRepresentation representation = (AccessesRepresentation) similarity.getStrategy().getCodebase().getRepresentationByFileType(ACCESSES);
+        AccessesRepresentation representation = Utils.getCodebaseAccessRepresentation(similarity.getStrategy().getCodebase());
 
         DirectedAcyclicGraph<LocalTransaction, DefaultEdge> functionalityLocalTransactionsGraph = accessesInformation.getFunctionality(functionalityName)
                 .createLocalTransactionGraphFromScratch(

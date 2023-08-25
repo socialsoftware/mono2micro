@@ -29,7 +29,7 @@ import pt.ist.socialsoftware.mono2micro.utils.traceGraph.TraceGraphNode;
 /**
  * FunctionalityGraphTracesIterator
  */
-public class FunctionalityGraphTracesIterator {
+public class FunctionalityGraphTracesIterator extends TracesIterator {
     private final JSONObject _codebaseAsJSON;
     private Map<String, TraceGraph> _traceGraphs;
     private String requestedFunctionality;

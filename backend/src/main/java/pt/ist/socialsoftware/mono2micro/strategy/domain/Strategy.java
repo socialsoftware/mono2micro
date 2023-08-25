@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesGraphRepresentation.ACCESSES_GRAPH;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.AuthorRepresentation.AUTHOR;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddingsRepresentation.CODE_EMBEDDINGS;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.CommitRepresentation.COMMIT;
@@ -23,6 +24,7 @@ import static pt.ist.socialsoftware.mono2micro.representation.domain.Representat
 @Document("strategy")
 public class Strategy {
     public static final String ACCESSES_STRATEGY = "Accesses";
+    public static final String ACCESSES_GRAPH_STRATEGY = "Accesses Graph";
     public static final String REPOSITORY_STRATEGY = "Repository";
     public static final String CLASS_VECTORIZATION_STRATEGY = "Class Vectorization";
     public static final String ENTITY_VECTORIZATION_STRATEGY = "Entity Vectorization";
@@ -31,6 +33,7 @@ public class Strategy {
 
     public static final Map<String, List<String>> strategiesToRepresentations = Stream.of(
             new AbstractMap.SimpleImmutableEntry<>(ACCESSES_STRATEGY, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ACCESSES))),
+            new AbstractMap.SimpleImmutableEntry<>(ACCESSES_GRAPH_STRATEGY, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ACCESSES_GRAPH))),
             new AbstractMap.SimpleImmutableEntry<>(REPOSITORY_STRATEGY, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ACCESSES, AUTHOR, COMMIT))),
             new AbstractMap.SimpleImmutableEntry<>(CLASS_VECTORIZATION_STRATEGY, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ENTITY_TO_ID, ACCESSES, CODE_EMBEDDINGS))),
             new AbstractMap.SimpleImmutableEntry<>(ENTITY_VECTORIZATION_STRATEGY, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ENTITY_TO_ID, ACCESSES, CODE_EMBEDDINGS))),
@@ -40,6 +43,7 @@ public class Strategy {
 
     public static final Map<String, List<String>> strategiesToRepresentationTypes = Stream.of(
             new AbstractMap.SimpleImmutableEntry<>(ACCESSES_STRATEGY, new ArrayList<>(Arrays.asList(ACCESSES_TYPE))),
+            new AbstractMap.SimpleImmutableEntry<>(ACCESSES_GRAPH_STRATEGY, new ArrayList<>(Arrays.asList(ACCESSES_GRAPH_TYPE))),
             new AbstractMap.SimpleImmutableEntry<>(REPOSITORY_STRATEGY, new ArrayList<>(Arrays.asList(ACCESSES_TYPE, REPOSITORY_TYPE))),
             new AbstractMap.SimpleImmutableEntry<>(CLASS_VECTORIZATION_STRATEGY, new ArrayList<>(Arrays.asList(ACCESSES_TYPE, CODE_EMBEDDINGS_TYPE))),
             new AbstractMap.SimpleImmutableEntry<>(ENTITY_VECTORIZATION_STRATEGY, new ArrayList<>(Arrays.asList(ACCESSES_TYPE, CODE_EMBEDDINGS_TYPE))),
@@ -169,6 +173,7 @@ public class Strategy {
     }
 
     public void setStrategyTypes(List<String> strategyTypes) {
+        System.out.println(strategyTypes);
         this.strategyTypes = strategyTypes;
     }
 }

@@ -62,7 +62,7 @@ export const SimilarityMatrixSciPyForm = ({codebaseName, strategy, setUpdateStra
     }
 
     function loadProfiles() {
-        service.getCodebaseRepresentation(codebaseName, RepresentationFile.ACCESSES)
+        service.getCodebaseRepresentation(codebaseName, strategy.strategyTypes.includes(RepresentationFile.ACCESSES)?RepresentationFile.ACCESSES:RepresentationFile.ACCESSES_GRAPH)
             .then((response) => setProfiles(response.profiles));
     }
 

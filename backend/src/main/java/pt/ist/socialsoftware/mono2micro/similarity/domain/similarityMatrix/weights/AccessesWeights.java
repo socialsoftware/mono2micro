@@ -1,23 +1,31 @@
 package pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights;
 
+import org.apache.el.lang.FunctionMapperImpl.Function;
 import org.json.JSONException;
+
+import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
+import pt.ist.socialsoftware.mono2micro.representation.domain.Representation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyAccessesAndRepository;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
+import pt.ist.socialsoftware.mono2micro.utils.FunctionalityGraphTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Pair;
+import pt.ist.socialsoftware.mono2micro.utils.TracesIterator;
+import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
 import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesGraphRepresentation.ACCESSES_GRAPH;
 
 public class AccessesWeights extends Weights {
     public static final String ACCESSES_WEIGHTS = "ACCESSES_WEIGHTS";
@@ -120,15 +128,30 @@ public class AccessesWeights extends Weights {
     @Override
     public void fillMatrix(GridFsService gridFsService, Similarity similarity, float[][][] rawMatrix, Set<Short> elements, int fillFromIndex) throws IOException, JSONException {
         SimilarityScipyAccessesAndRepository s = (SimilarityScipyAccessesAndRepository) similarity;
-        AccessesRepresentation accesses = (AccessesRepresentation) similarity.getStrategy().getCodebase().getRepresentationByFileType(ACCESSES);
-        fillRawMatrixFromAccesses(rawMatrix, fillFromIndex, gridFsService.getFile(accesses.getName()), accesses.getProfile(s.getProfile()), s.getTraceType(), s.getTracesMaxLimit());
+        AccessesRepresentation accesses = Utils.getCodebaseAccessRepresentation(similarity.getStrategy().getCodebase());
+        fillRawMatrixFromAccesses(rawMatrix, fillFromIndex, gridFsService.getFile(accesses.getName()), accesses.getProfile(s.getProfile()), s.getTraceType(), s.getTracesMaxLimit(), accesses.getType());
     }
 
     @Override
     public void fillMatrix(GridFsService gridFsService, Recommendation recommendation, float[][][] rawMatrix, Set<Short> elements, int fillFromIndex) throws IOException, JSONException {
         RecommendMatrixSciPy r = (RecommendMatrixSciPy) recommendation;
-        AccessesRepresentation accesses = (AccessesRepresentation) recommendation.getStrategy().getCodebase().getRepresentationByFileType(ACCESSES);
-        fillRawMatrixFromAccesses(rawMatrix, fillFromIndex, gridFsService.getFile(accesses.getName()), accesses.getProfile(r.getProfile()), r.getTraceType(), r.getTracesMaxLimit());
+        AccessesRepresentation accesses = Utils.getCodebaseAccessRepresentation(recommendation.getStrategy().getCodebase());
+        fillRawMatrixFromAccesses(rawMatrix, fillFromIndex, gridFsService.getFile(accesses.getName()), accesses.getProfile(r.getProfile()), r.getTraceType(), r.getTracesMaxLimit(), accesses.getType());
+    }
+
+    public static TracesIterator getTraceIterator(String representationType, InputStream accessesFile, int tracesMaxLimit) throws JSONException, IOException {
+        switch (representationType) {
+            case ACCESSES:
+                return new FunctionalityTracesIterator(accessesFile, tracesMaxLimit);
+        
+            case ACCESSES_GRAPH:
+                return new FunctionalityGraphTracesIterator(accessesFile);
+
+            default:
+                break;
+        }
+
+        return null;
     }
 
     public static void fillRawMatrixFromAccesses(
@@ -137,12 +160,13 @@ public class AccessesWeights extends Weights {
             InputStream accessesFile,
             Set<String> profileFunctionalities,
             Constants.TraceType traceType,
-            int tracesMaxLimit
+            int tracesMaxLimit,
+            String representationType
     ) throws JSONException, IOException {
         Set<Short> entities = new TreeSet<>();
         Map<String, Integer> e1e2PairCount = new HashMap<>();
         Map<Short, List<Pair<String, Byte>>> entityFunctionalities = new HashMap<>(); // Map<entityID, List<Pair<functionalityName, accessMode>>>
-        fillDataStructures(entities, e1e2PairCount, entityFunctionalities, new FunctionalityTracesIterator(accessesFile, tracesMaxLimit), profileFunctionalities, traceType);
+        fillDataStructures(entities, e1e2PairCount, entityFunctionalities, getTraceIterator(representationType, accessesFile, tracesMaxLimit), profileFunctionalities, traceType);
         fillRawMatrix(rawMatrix, entities, e1e2PairCount, entityFunctionalities, fillFromIndex);
     }
 
@@ -150,7 +174,7 @@ public class AccessesWeights extends Weights {
             Set<Short> entities,
             Map<String, Integer> e1e2PairCount,
             Map<Short, List<Pair<String, Byte>>> entityFunctionalities,
-            FunctionalityTracesIterator iter,
+            TracesIterator iter,
             Set<String> profileFunctionalities,
             Constants.TraceType traceType
     )

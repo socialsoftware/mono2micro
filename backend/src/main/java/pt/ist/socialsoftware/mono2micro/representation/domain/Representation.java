@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesGraphRepresentation.ACCESSES_GRAPH;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.AuthorRepresentation.AUTHOR;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddingsRepresentation.CODE_EMBEDDINGS;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.CommitRepresentation.COMMIT;
@@ -22,11 +23,13 @@ import static pt.ist.socialsoftware.mono2micro.representation.domain.IDToEntityR
  */
 public abstract class Representation {
     public static final String ACCESSES_TYPE = "Accesses Based";
+    public static final String ACCESSES_GRAPH_TYPE = "Accesses Graph Based";
     public static final String REPOSITORY_TYPE = "Repository Based";
     public static final String CODE_EMBEDDINGS_TYPE = "Code Embeddings Based";
 
     public static final Map<String, List<String>> representationGroupToRepresentations = Stream.of(
             new AbstractMap.SimpleImmutableEntry<>(ACCESSES_TYPE, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ACCESSES))),
+            new AbstractMap.SimpleImmutableEntry<>(ACCESSES_GRAPH_TYPE, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ACCESSES_GRAPH))),
             new AbstractMap.SimpleImmutableEntry<>(REPOSITORY_TYPE, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ACCESSES, AUTHOR, COMMIT))),
             new AbstractMap.SimpleImmutableEntry<>(CODE_EMBEDDINGS_TYPE, new ArrayList<>(Arrays.asList(ID_TO_ENTITY, ENTITY_TO_ID, ACCESSES, CODE_EMBEDDINGS)))
     ).collect(Collectors.toMap(AbstractMap.SimpleImmutableEntry::getKey, AbstractMap.SimpleImmutableEntry::getValue));

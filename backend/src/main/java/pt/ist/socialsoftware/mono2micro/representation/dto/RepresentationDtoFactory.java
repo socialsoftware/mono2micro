@@ -20,6 +20,8 @@ public class RepresentationDtoFactory {
         switch (representation.getType()) {
             case AccessesRepresentation.ACCESSES:
                 return new AccessesRepresentationDto((AccessesRepresentation) representation);
+            case AccessesGraphRepresentation.ACCESSES_GRAPH:
+                return new AccessesGraphRepresentationDto((AccessesRepresentation) representation);
             case IDToEntityRepresentation.ID_TO_ENTITY:
                 return new IDToEntityRepresentationDto((IDToEntityRepresentation) representation);
             case AuthorRepresentation.AUTHOR:

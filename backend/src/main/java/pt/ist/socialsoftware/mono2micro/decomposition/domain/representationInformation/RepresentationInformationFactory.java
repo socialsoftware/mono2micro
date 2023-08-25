@@ -26,6 +26,7 @@ public class RepresentationInformationFactory {
     public static RepresentationInformation getRepresentationInformationFromType(String type) {
         switch (type) {
             case ACCESSES_TYPE:
+            case ACCESSES_GRAPH_TYPE:
                 return new AccessesInformation();
             case REPOSITORY_TYPE:
                 return new RepositoryInformation();

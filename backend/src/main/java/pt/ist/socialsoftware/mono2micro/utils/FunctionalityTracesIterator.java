@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class FunctionalityTracesIterator {
+public class FunctionalityTracesIterator extends TracesIterator {
     private int limit; // 0 means no limit aka all traces will be parsed
     private int tracesCounter; // #traces
     private final JSONObject codebaseAsJSON;

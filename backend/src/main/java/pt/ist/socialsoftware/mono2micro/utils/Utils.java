@@ -4,16 +4,21 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.Decomposition;
 import pt.ist.socialsoftware.mono2micro.cluster.Cluster;
+import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.decomposition.domain.representationInformation.AccessesInformation;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.Functionality;
 import pt.ist.socialsoftware.mono2micro.functionality.domain.LocalTransaction;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.ReducedTraceElementDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.RuleDto;
+import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
+import pt.ist.socialsoftware.mono2micro.representation.domain.Representation;
 
 import java.util.*;
 
 import static org.jgrapht.Graphs.successorListOf;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesGraphRepresentation.ACCESSES_GRAPH;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.Representation.ACCESSES_TYPE;
 
 public class Utils {
@@ -296,5 +301,15 @@ public class Utils {
             nodes,
             links
         );
+    }
+
+    public static AccessesRepresentation getCodebaseAccessRepresentation(Codebase codebase) {
+        Representation representation = codebase.getRepresentationByFileType(ACCESSES);
+
+        if (representation == null) {
+            return (AccessesRepresentation) codebase.getRepresentationByFileType(ACCESSES_GRAPH);
+        }
+
+        return (AccessesRepresentation) representation;
     }
 }

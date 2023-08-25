@@ -24,7 +24,10 @@ import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresenta
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipy;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.dendrogram.Dendrogram;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
+import pt.ist.socialsoftware.mono2micro.utils.FunctionalityGraphTracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.FunctionalityTracesIterator;
+import pt.ist.socialsoftware.mono2micro.utils.TracesIterator;
+import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,8 +35,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static org.jgrapht.Graphs.successorListOf;
-import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.Representation.ACCESSES_TYPE;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesGraphRepresentation.ACCESSES_GRAPH;
+
 
 public class AccessesInformation extends RepresentationInformation {
     @DBRef(lazy = true)
@@ -116,17 +121,31 @@ public class AccessesInformation extends RepresentationInformation {
         getFunctionalities().put(functionality.getName().replace(".", "_"), functionality);
     }
 
+    public static TracesIterator getTraceIterator(String representationType, InputStream accessesFile, int tracesMaxLimit) throws JSONException, IOException {
+        switch (representationType) {
+            case ACCESSES:
+                return new FunctionalityTracesIterator(accessesFile, tracesMaxLimit);
+        
+            case ACCESSES_GRAPH:
+                return new FunctionalityGraphTracesIterator(accessesFile);
+
+            default:
+                break;
+        }
+
+        return null;
+    }
 
     public void setupFunctionalities(Decomposition decomposition) throws Exception {
         GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
         FunctionalityRepository functionalityRepository = ContextManager.get().getBean(FunctionalityRepository.class);
 
         SimilarityScipy similarity = (SimilarityScipy) decomposition.getSimilarity();
-        AccessesRepresentation accesses = (AccessesRepresentation) decomposition.getStrategy().getCodebase().getRepresentationByFileType(ACCESSES);
+        AccessesRepresentation accesses = Utils.getCodebaseAccessRepresentation(decomposition.getStrategy().getCodebase());
         InputStream inputStream = gridFsService.getFile(accesses.getName());
         Set<String> profileFunctionalities = accesses.getProfile(similarity.getProfile());
 
-        FunctionalityTracesIterator iter = new FunctionalityTracesIterator(inputStream, similarity.getTracesMaxLimit());
+        TracesIterator iter = getTraceIterator(Utils.getCodebaseAccessRepresentation(decomposition.getStrategy().getCodebase()).getType(), inputStream, similarity.getTracesMaxLimit());
         Map<String, DirectedAcyclicGraph<LocalTransaction, DefaultEdge>> localTransactionsGraphs = new HashMap<>();
         List<Functionality> newFunctionalities = new ArrayList<>();
 

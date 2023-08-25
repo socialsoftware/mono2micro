@@ -42,6 +42,7 @@ public class SciPyClustering extends Clustering {
     public List<String> getAlgorithmSupportedStrategyTypes() {
         return new ArrayList<>(Arrays.asList(
                 ACCESSES_STRATEGY,
+                ACCESSES_GRAPH_STRATEGY,
                 REPOSITORY_STRATEGY,
                 CLASS_VECTORIZATION_STRATEGY,
                 ENTITY_VECTORIZATION_STRATEGY,

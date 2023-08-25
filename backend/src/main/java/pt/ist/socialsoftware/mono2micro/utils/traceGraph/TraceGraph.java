@@ -43,7 +43,7 @@ public class TraceGraph {
 
     public void removeEmptyNodes() {
         List<TraceGraphNode> toRemoveStack = new ArrayList<>();
-        firstAccess.bypassEmptySuccessors(null, null, toRemoveStack);
+        //firstAccess.bypassEmptySuccessors(null, null, toRemoveStack);
 
         for (TraceGraphNode node : toRemoveStack) {
             if (node == firstAccess) continue;

@@ -40,6 +40,8 @@ export abstract class WeightsFactory {
             ];
         else if (strategyTypes.includes(StrategyType.ACCESSES_STRATEGY))
             return [new AccessesWeights({accessMetricWeight: 25, writeMetricWeight: 25, readMetricWeight: 25, sequenceMetricWeight: 25})];
+        else if (strategyTypes.includes(StrategyType.ACCESSES_GRAPH_STRATEGY))
+            return [new AccessesWeights({accessMetricWeight: 25, writeMetricWeight: 25, readMetricWeight: 25, sequenceMetricWeight: 25})];
         else if (strategyTypes.includes(StrategyType.REPOSITORY_STRATEGY))
             return [new RepositoryWeights({authorMetricWeight: 50, commitMetricWeight: 50})];
         else if (strategyTypes.includes(StrategyType.CLASS_VECTORIZATION_STRATEGY))

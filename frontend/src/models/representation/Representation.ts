@@ -17,6 +17,7 @@ export default abstract class Representation {
 
 export enum RepresentationFile {
     ACCESSES = 'Accesses',
+    ACCESSES_GRAPH = 'Accesses Graph',
     IDTOENTITIY = 'IDToEntity',
     AUTHOR = 'Changes Authorship',
     COMMIT = 'File Changes',
@@ -26,6 +27,7 @@ export enum RepresentationFile {
 
 export enum RepresentationType {
     ACCESSES_TYPE = 'Accesses Based',
+    ACCESSES_GRAPH_TYPE = 'Accesses Graph Based',
     REPOSITORY_TYPE = 'Repository Based',
     CODE_EMBEDDINGS_TYPE = 'Code Embeddings Based'
 }

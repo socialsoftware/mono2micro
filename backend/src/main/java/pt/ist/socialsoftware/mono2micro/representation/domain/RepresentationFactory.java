@@ -1,6 +1,7 @@
 package pt.ist.socialsoftware.mono2micro.representation.domain;
 
 import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
+import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesGraphRepresentation.ACCESSES_GRAPH;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.AuthorRepresentation.AUTHOR;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.CodeEmbeddingsRepresentation.CODE_EMBEDDINGS;
 import static pt.ist.socialsoftware.mono2micro.representation.domain.CommitRepresentation.COMMIT;
@@ -12,6 +13,8 @@ public class RepresentationFactory {
         switch (representationType) {
             case ACCESSES:
                 return new AccessesRepresentation();
+            case ACCESSES_GRAPH:
+                return new AccessesGraphRepresentation();
             case ID_TO_ENTITY:
                 return new IDToEntityRepresentation();
             case AUTHOR:

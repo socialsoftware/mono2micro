@@ -1,5 +1,6 @@
 export enum StrategyType {
     ACCESSES_STRATEGY = 'Accesses',
+    ACCESSES_GRAPH_STRATEGY = 'Accesses Graph',
     REPOSITORY_STRATEGY = 'Repository',
     CLASS_VECTORIZATION_STRATEGY = 'Class Vectorization',
     ENTITY_VECTORIZATION_STRATEGY = 'Entity Vectorization',
