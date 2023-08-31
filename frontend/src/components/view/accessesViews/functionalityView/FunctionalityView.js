@@ -310,7 +310,7 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
 
         visGraph.nodes.add({
             id: currentFunctionality.name,
-            title: Object.entries(currentFunctionality.entities).map(e => translateEntity(e[0]) + " " + e[1]).join('\n') + "\nTotal: " + Object.keys(currentFunctionality.entities).length,
+            title: Object.entries(currentFunctionality.entities).map(e => translateEntity(e[0]) + " " + ENTITY_ACCESS_TYPE.fromNumberToString(e[1])).join('\n') + "\nTotal: " + Object.keys(currentFunctionality.entities).length,
             label: currentFunctionality.name,
             level: 0,
             value: 1,
@@ -336,7 +336,7 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
 
         Object.entries(currentFunctionality.entities).forEach(([entityID, value]) => {
             if (cluster.elements.find(e => e.id === Number(entityID)))
-                text.push(translateEntity(entityID) + " " + value)
+                text.push(translateEntity(entityID) + " " + ENTITY_ACCESS_TYPE.fromNumberToString(value))
         });
 
         return {
@@ -370,7 +370,7 @@ export const FunctionalityView = ({searchedItem, setSearchedItem, outdated, setO
 
         nodes.push({
             id: 0,
-            title: Object.entries(functionality.entities).map(e => translateEntity(e[0]) + " " + e[1]).join('\n') + "\nTotal: " + Object.keys(functionality.entities).length,
+            title: Object.entries(functionality.entities).map(e => translateEntity(e[0]) + " " + ENTITY_ACCESS_TYPE.fromNumberToString(e[1])).join('\n') + "\nTotal: " + Object.keys(functionality.entities).length,
             label: functionality.name,
             level: -1,
             value: 1,

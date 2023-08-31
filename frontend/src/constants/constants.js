@@ -29,7 +29,28 @@ export const ENTITY_ACCESS_TYPE = {
     UPDATE: 2,
     CREATE: 4,
     DELETE: 8,
-    READ_UPDATE: this.READ + this.UPDATE,
-    READ_CREATE: this.READ + this.CREATE,
-    READ_DELETE: this.READ + this.DELETE
-}
+    READ_UPDATE: 1 + 2,
+    READ_CREATE: 1 + 4,
+    READ_DELETE: 1 + 8,
+
+    fromNumberToString: function (number) {
+        switch (number) {
+            case this.READ:
+                return "R";
+            case this.UPDATE:
+                return "U";
+            case this.CREATE:
+                return "C";
+            case this.DELETE:
+                return "D";
+            case this.READ_UPDATE:
+                return "RU";
+            case this.READ_CREATE:
+                return "RC";
+            case this.READ_DELETE:
+                return "RD";
+            default:
+                return "?";
+        }
+    }
+};
