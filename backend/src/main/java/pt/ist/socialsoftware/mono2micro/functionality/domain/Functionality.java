@@ -100,8 +100,9 @@ public class Functionality {
 		Byte savedMode = this.entities.get(entityID);
 
 		if (savedMode != null) {
-			if (savedMode != mode) // "RW" -> 3
-				this.entities.put(entityID, AccessDto.getMergedMode(savedMode, mode)); // "RW" -> 3
+			if (savedMode != mode) {
+				this.entities.put(entityID, AccessDto.getMergedMode(savedMode, mode));
+			}
 		} else {
 			this.entities.put(entityID, mode);
 		}
@@ -234,7 +235,7 @@ public class Functionality {
 					if (clusterName.equals(previousCluster)) {
 						Byte savedMode = entityIDToMode.get(entityID);
 
-						if (savedMode == null || AccessDto.isReadMode(savedMode) && AccessDto.isWriteMode(mode)) { // "R" -> 1, "W" -> 2
+						if (savedMode == null || AccessDto.hasMorePriority(mode, savedMode)) {
 							entityIDToMode.put(entityID, mode);
 							this.addEntity(entityID, mode);
 						}

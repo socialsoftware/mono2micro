@@ -20,7 +20,7 @@ public class AccessDto extends ReducedTraceElementDto {
     public static final byte READ_DELETE_MODE = READ_MODE + DELETE_MODE;
 
     private short entityID;
-    private byte mode; // "R" -> 1, "W" -> 2
+    private byte mode;
 
     public AccessDto() {}
 
@@ -44,6 +44,10 @@ public class AccessDto extends ReducedTraceElementDto {
 
     public static boolean containsWriteMode(byte mode) {
         return mode >= UPDATE_MODE;
+    }
+
+    public static boolean hasMorePriority(byte newMode, byte oldMode) {
+        return newMode > oldMode;
     }
 
     public static byte getMergedMode(byte mode1, byte mode2) {
