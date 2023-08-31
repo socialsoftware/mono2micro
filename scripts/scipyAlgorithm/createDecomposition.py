@@ -101,7 +101,7 @@ def createDecompositionFromFunctionalities(similarityMatrix, linkageType, cutTyp
 	for entity in range(1, totalNumberOfEntities + 1):
 		entities_clusters_accesses[entity] = {}
 		for cluster in clusters.keys():
-			entities_clusters_accesses[entity][cluster] = { "R" : 0, "W" : 0}
+			entities_clusters_accesses[entity][cluster] = { "R" : 0, "U" : 0, "C" : 0, "D" : 0}
 
 	for cluster in clusters.keys():
 
@@ -122,7 +122,7 @@ def createDecompositionFromFunctionalities(similarityMatrix, linkageType, cutTyp
 		attr_cluster = "0"
 
 		for cluster in entities_clusters_accesses[entity].keys():
-			nbr_accesses = entities_clusters_accesses[entity][cluster]["R"] + entities_clusters_accesses[entity][cluster]["W"]
+			nbr_accesses = entities_clusters_accesses[entity][cluster]["R"] + entities_clusters_accesses[entity][cluster]["U"] + entities_clusters_accesses[entity][cluster]["C"] + entities_clusters_accesses[entity][cluster]["D"]
 
 			if nbr_accesses > max_nbr_accesses:
 				max_nbr_accesses = nbr_accesses
