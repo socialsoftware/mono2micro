@@ -57,6 +57,22 @@ services:
       - ./codebases:/codebases
       - './scripts/:/app'
 
+  functionality_refactor:
+    build:
+      context: ./tools/functionality_refactor/src
+    image: functionality_refactor
+    container_name: functionality_refactor
+    command: /app/web_service
+    hostname: 'localhost'
+    ports:
+      - 5001:5001
+    environment:
+      - MONGO_DB=mongodb://mono2micro:mono2microPass@mongo
+      - MONGO_DB_NAME=mono2micro
+    restart: unless-stopped
+    volumes:
+      - ./codebases:/codebases
+
   frontend:
     build:
       context: ./frontend/
