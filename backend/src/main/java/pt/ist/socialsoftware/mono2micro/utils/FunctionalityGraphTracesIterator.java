@@ -369,14 +369,16 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
 
         AccessDto accessDto;
         Access access;
+        float carriedProbability = 1.0f; // used to carry probability from null nodes
         for (PathDataAccess pathDataAccess : accessList) {
             access = pathDataAccess.getAccess();
-            //TODO: carry over probability on nulls
+            carriedProbability *= pathDataAccess.getProbability();
             if (access.getMode() == null) continue; // skip the first node
 
-            accessDto = accessToAccessDto(access, pathDataAccess.getProbability());
+            accessDto = accessToAccessDto(access, carriedProbability);
 
             traceElementList.add(accessDto);
+            carriedProbability = 1.0f; // reset on valid nodes
         }
 
         return new TraceDto(0, 0, traceElementList);
