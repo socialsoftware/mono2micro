@@ -96,7 +96,8 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
                 float succProbability = access.getNextAccessProbabilities().get(successor);
                 // update prob
                 succPathData.setMostProbablePath(new ArrayList<>(succPathData.getMostProbablePath()));
-                succPathData.getMostProbablePath().add(0, new PathDataAccess(access, succProbability));
+                succPathData.getMostProbablePath().set(0, new PathDataAccess(succPathData.getMostProbablePath().get(0).getAccess(), succProbability));
+                succPathData.getMostProbablePath().add(0, new PathDataAccess(access, 1f));
                 succPathData.setMostProbablePathProbability(succPathData.getMostProbablePathProbability() * succProbability);
 
                 // add current access to list of diff accesses
@@ -110,14 +111,16 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
                     }
                 }
                 
-                succPathData.getMostDifferentAccessesPath().add(0, new PathDataAccess(access, succProbability));
+                succPathData.getMostDifferentAccessesPath().set(0, new PathDataAccess(succPathData.getMostDifferentAccessesPath().get(0).getAccess(), succProbability));
+                succPathData.getMostDifferentAccessesPath().add(0, new PathDataAccess(access, 1.0f));
                 if (!alreadyExists) {
                     succPathData.getMostDifferentAccesses().add(new PathDataAccess(access));
                 }
                 
                 // add current access to trace
                 succPathData.setLongestPath(new ArrayList<>(succPathData.getLongestPath()));
-                succPathData.getLongestPath().add(0, new PathDataAccess(access, succProbability));
+                succPathData.getLongestPath().set(0, new PathDataAccess(succPathData.getLongestPath().get(0).getAccess(), succProbability));
+                succPathData.getLongestPath().add(0, new PathDataAccess(access, 1.0f));
 
                 successorsPathData.add(succPathData);
             }
