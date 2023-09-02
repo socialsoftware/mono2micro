@@ -192,7 +192,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
     public TraceDto getLongestTrace() throws JSONException {
         initializeFunctionalityPathData(requestedFunctionality);
 
-        return PathDataAccessListToTraceDto(_functionalityPathData.get(requestedFunctionality).getLongestPath());
+        return pathDataAccessListToTraceDto(_functionalityPathData.get(requestedFunctionality).getLongestPath());
     }
 
     /*public TraceDto getLongestTrace() throws JSONException {
@@ -367,7 +367,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         return resultingGraph;
     }
 
-    public TraceDto PathDataAccessListToTraceDto(List<PathDataAccess> accessList) {
+    public static TraceDto pathDataAccessListToTraceDto(List<PathDataAccess> accessList) {
         List<ReducedTraceElementDto> traceElementList = new ArrayList<>();
 
         AccessDto accessDto;
@@ -387,7 +387,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         return new TraceDto(0, 0, traceElementList);
     }
 
-    public AccessDto accessToAccessDto(Access access, float probability) {
+    public static AccessDto accessToAccessDto(Access access, float probability) {
         AccessDto accessDto = new AccessDto();
         accessDto.setEntityID((short)access.getEntityAccessedId());
         accessDto.setMode((byte) (access.getMode().equals("R") ? 1 : 2));

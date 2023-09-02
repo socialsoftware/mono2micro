@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.Access;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.NodeToGraphTests;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.TraceGraph;
@@ -87,7 +88,7 @@ public class FunctionalityGraphTracesIteratorTests {
 			},
 			new Object[][]{
 				new Object[]{"W", 4}, new Object[]{"W", 5}
-			},
+            },
 			new Object[][]{
 				new Object[]{"W", 6}
 			}
@@ -103,6 +104,51 @@ public class FunctionalityGraphTracesIteratorTests {
         PathData pathData = FunctionalityGraphTracesIterator.computeTraceTypes(processedSubTrace.getFirstAccess(), new HashMap<Access, PathData>(), new ArrayList<>());
 
         assertEquals(8, pathData.getLongestPath().size());
+
+    }
+
+    @Test
+    public void computeTraceTypes_ChainedIfs() throws JSONException {
+        JSONObject trace = NodeToGraphTests.initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"W", 1}, new Object[]{"W", 2}, new Object[]{"&if", 1}, new Object[]{"W", 7}
+			},
+			new Object[][]{
+				new Object[]{"&condition", 2}, new Object[]{"&then", 3}, new Object[]{"&else", 4}
+			},
+			new Object[][]{
+				new Object[]{"W", 3}
+			},
+			new Object[][]{
+				new Object[]{"W", 4}, new Object[]{"W", 5}, new Object[]{"&if", 4}
+			},
+			new Object[][]{
+				new Object[]{"&condition", 5}, new Object[]{"&then", 6}
+			},
+            new Object[][]{
+				new Object[]{"W", -4}, new Object[]{"W", -5}
+			},
+            new Object[][]{
+				new Object[]{"&call", 7}
+			},
+            new Object[][]{
+				new Object[]{"W", 8}, new Object[]{"W", 9}
+			}
+			});
+
+        
+        JSONObject mainTrace = trace.getJSONArray("t").getJSONObject(0);
+
+        List<TraceGraphNode> preProcessedTraces = FunctionalityGraphTracesIterator.translateSubTrace(trace, mainTrace);
+
+        TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.processSubTrace(preProcessedTraces);
+
+        PathData pathData = FunctionalityGraphTracesIterator.computeTraceTypes(processedSubTrace.getFirstAccess(), new HashMap<Access, PathData>(), new ArrayList<>());
+
+        
+        TraceDto t = FunctionalityGraphTracesIterator.pathDataAccessListToTraceDto(pathData.getLongestPath());
+
+        assertEquals(16, pathData.getLongestPath().size());
 
     }
 
