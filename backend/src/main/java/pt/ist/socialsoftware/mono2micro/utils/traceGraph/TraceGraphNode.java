@@ -57,47 +57,34 @@ public abstract class TraceGraphNode {
      * Creates connections around empty (or auxiliar) nodes and adds them to the removal stack.
      * @param toRemoveStack , empty nodes that are to be removed and have been bypassed
      */
-    public void bypassEmptySuccessors(TraceGraphNode lastValidNode, Float lastValidNodeToCurrentProbability, List<TraceGraphNode> toRemoveStack) {
-        // FIXME: needs rework to correct prev access probabilities
-        if (lastValidNodeToCurrentProbability == null) {
-            lastValidNodeToCurrentProbability = 1.0f;
-        }
+    public TraceGraphNode bypassEmptySuccessors(TraceGraphNode lastValidNode, List<TraceGraphNode> cleanedNodes, List<TraceGraphNode> toRemoveStack) {
+        /* boolean isAuxNode = ((Access)this).getMode() == null;
 
-        if (lastValidNode != null && ((Access)this).getMode() != null) {
-            lastValidNode.addSuccessor(this, lastValidNodeToCurrentProbability);
-        }
+        if (this.nextAccessProbabilities.size() == 0)
+            return !isAuxNode? this: null;
 
-        if (this.getVisited() && ((Access)this).getMode() != null) return;
+        TraceGraphNode currentLastValidNode = isAuxNode? lastValidNode: this;
 
-        this.setVisited(true);
+        Map<TraceGraphNode, Float> oldNextAccessProbabilities = new HashMap<>(this.nextAccessProbabilities);
 
-        List<TraceGraphNode> nextAccessList = new ArrayList<>(this.getNextAccessProbabilities().keySet());
+        Map<TraceGraphNode, Float> newNextAccessProbabilities = new HashMap<>();
 
-        if (nextAccessList.size() == 0) return;
-
-        Float prob;
-        if (((Access)this).getMode() == null) {
-            toRemoveStack.add(this);
-
-            for (TraceGraphNode successor: nextAccessList) {
-                prob = lastValidNodeToCurrentProbability*this.getNextAccessProbabilities().get(successor);
-                successor.bypassEmptySuccessors(lastValidNode, prob, toRemoveStack);
-            }
-
-        } else {
-
-            for (TraceGraphNode successor: nextAccessList) {
-                prob = this.getNextAccessProbabilities().get(successor);
-
-                if (((Access)successor).getMode() == null) {
-                    this.nextAccessProbabilities.remove(successor);
-                }
-
-                successor.bypassEmptySuccessors(this, prob, toRemoveStack);
-            }
-
-        }
-
+        this.nextAccessProbabilities.clear();
         
+        TraceGraphNode closestValidNode;
+        for (TraceGraphNode traceGraphNode : oldNextAccessProbabilities.keySet()) {
+            closestValidNode = traceGraphNode.bypassEmptySuccessors(currentLastValidNode, cleanedNodes, toRemoveStack);
+
+            if (closestValidNode != null) {
+                newNextAccessProbabilities.put(closestValidNode, this.nextAccessProbabilities.get(traceGraphNode));
+            }
+        }
+
+        lastValidNode.nextAccessProbabilities.putAll(newNextAccessProbabilities);
+
+         */
+
+         return null;
     }
+   
 }

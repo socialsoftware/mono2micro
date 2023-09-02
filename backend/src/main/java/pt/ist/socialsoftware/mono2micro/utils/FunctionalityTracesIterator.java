@@ -118,6 +118,7 @@ public class FunctionalityTracesIterator extends TracesIterator {
                 if (reducedTraceElementJSON.length() == 3)
                     accessDto.setOccurrences(reducedTraceElementJSON.getInt(2));
                 else accessDto.setOccurrences(1);
+                accessDto.setProbability(1f);
                 elements.add(accessDto);
             }
             else { // Is a RuleDto

@@ -1,16 +1,13 @@
 package pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weights;
 
-import org.apache.el.lang.FunctionMapperImpl.Function;
 import org.json.JSONException;
 
-import pt.ist.socialsoftware.mono2micro.codebase.domain.Codebase;
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.RecommendMatrixSciPy;
 import pt.ist.socialsoftware.mono2micro.recommendation.domain.Recommendation;
 import pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation;
-import pt.ist.socialsoftware.mono2micro.representation.domain.Representation;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.Similarity;
 import pt.ist.socialsoftware.mono2micro.similarity.domain.SimilarityScipyAccessesAndRepository;
 import pt.ist.socialsoftware.mono2micro.utils.Constants;
@@ -164,7 +161,7 @@ public class AccessesWeights extends Weights {
             String representationType
     ) throws JSONException, IOException {
         Set<Short> entities = new TreeSet<>();
-        Map<String, Integer> e1e2PairCount = new HashMap<>();
+        Map<String, Float> e1e2PairCount = new HashMap<>();
         Map<Short, List<Pair<String, Byte>>> entityFunctionalities = new HashMap<>(); // Map<entityID, List<Pair<functionalityName, accessMode>>>
         fillDataStructures(entities, e1e2PairCount, entityFunctionalities, getTraceIterator(representationType, accessesFile, tracesMaxLimit), profileFunctionalities, traceType);
         fillRawMatrix(rawMatrix, entities, e1e2PairCount, entityFunctionalities, fillFromIndex);
@@ -172,14 +169,13 @@ public class AccessesWeights extends Weights {
 
     public static void fillDataStructures(
             Set<Short> entities,
-            Map<String, Integer> e1e2PairCount,
+            Map<String, Float> e1e2PairCount,
             Map<Short, List<Pair<String, Byte>>> entityFunctionalities,
             TracesIterator iter,
             Set<String> profileFunctionalities,
             Constants.TraceType traceType
     )
             throws JSONException {
-        System.out.println("Creating similarity matrix...");
 
         TraceDto t;
 
@@ -207,16 +203,18 @@ public class AccessesWeights extends Weights {
     }
 
     private static void fillEntityDataStructures(
-            Map<String, Integer> e1e2PairCount,
+            Map<String, Float> e1e2PairCount,
             Map<Short, List<Pair<String, Byte>>> entityFunctionalities,
             List<AccessDto> accessesList,
             String functionalityName
     ) {
-
+        float runningProbability = 1.0f;
         for (int i = 0; i < accessesList.size(); i++) {
             AccessDto access = accessesList.get(i);
             short entityID = access.getEntityID();
             byte mode = access.getMode();
+
+            runningProbability *= access.getProbability();
 
             if (entityFunctionalities.containsKey(entityID)) {
                 boolean containsFunctionality = false;
@@ -251,11 +249,11 @@ public class AccessesWeights extends Weights {
                     String e1e2 = entityID + "->" + nextEntityID;
                     String e2e1 = nextEntityID + "->" + entityID;
 
-                    int count = e1e2PairCount.getOrDefault(e1e2, 0);
-                    e1e2PairCount.put(e1e2, count + 1);
+                    float count = e1e2PairCount.getOrDefault(e1e2, 0f);
+                    e1e2PairCount.put(e1e2, count + runningProbability * nextAccess.getProbability());
 
-                    count = e1e2PairCount.getOrDefault(e2e1, 0);
-                    e1e2PairCount.put(e2e1, count + 1);
+                    count = e1e2PairCount.getOrDefault(e2e1, 0f);
+                    e1e2PairCount.put(e2e1, count + runningProbability * nextAccess.getProbability());
                 }
             }
         }
@@ -264,11 +262,11 @@ public class AccessesWeights extends Weights {
     public static void fillRawMatrix(
             float[][][] rawMatrix,
             Set<Short> entities,
-            Map<String, Integer> e1e2PairCount,
+            Map<String, Float> e1e2PairCount,
             Map<Short, List<Pair<String, Byte>>> entityFunctionalities,
             int fillFromIndex
     ) {
-        int maxNumberOfPairs = getMaxNumberOfPairs(e1e2PairCount);
+        float maxNumberOfPairs = getMaxNumberOfPairs(e1e2PairCount);
 
         int i = 0;
         for (short e1ID : entities) {
@@ -292,7 +290,7 @@ public class AccessesWeights extends Weights {
         }
     }
 
-    private static int getMaxNumberOfPairs(Map<String,Integer> e1e2PairCount) {
+    private static float getMaxNumberOfPairs(Map<String,Float> e1e2PairCount) {
         if (!e1e2PairCount.values().isEmpty())
             return Collections.max(e1e2PairCount.values());
         else
@@ -302,8 +300,8 @@ public class AccessesWeights extends Weights {
     private static float[] calculateSimilarityMatrixWeights(
             short e1ID,
             short e2ID,
-            int maxNumberOfPairs,
-            Map<String, Integer> e1e2PairCount,
+            float maxNumberOfPairs,
+            Map<String, Float> e1e2PairCount,
             Map<Short, List<Pair<String, Byte>>> entityFunctionalities
     ) {
 
@@ -341,7 +339,7 @@ public class AccessesWeights extends Weights {
         float readWeight = e1FunctionalitiesR == 0 ? 0 : inCommonR / e1FunctionalitiesR;
 
         String e1e2 = e1ID + "->" + e2ID;
-        float e1e2Count = e1e2PairCount.getOrDefault(e1e2, 0);
+        float e1e2Count = e1e2PairCount.getOrDefault(e1e2, 0f);
 
         float sequenceWeight;
 

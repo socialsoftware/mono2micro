@@ -1,19 +1,30 @@
 package pt.ist.socialsoftware.mono2micro.utils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.Access;
 
 public class PathData {
-    private List<Access> mostProbablePath;
+    private List<PathDataAccess> mostProbablePath;
     private Float mostProbablePathProbability;
 
-    private List<Access> mostDifferentAccessesPath;
-    private List<Access> mostDifferentAccesses;
+    private List<PathDataAccess> mostDifferentAccessesPath;
+    private List<PathDataAccess> mostDifferentAccesses;
 
-    private List<Access> longestPath;
+    private List<PathDataAccess> longestPath;
 
-    public PathData(List<Access> mostProbablePath, Float mostProbablePathProbability, List<Access> mostDifferentAccessesPath, List<Access> mostDifferentAccesses, List<Access> longestPath) {
+    public PathData(List<Access> mostProbablePath, Float mostProbablePathProbability, List<Access> mostDifferentAccessesPath, List<Access> mostDifferentAccesses, List<Access> longestPath){
+        this.mostProbablePath = mostProbablePath.stream().map(a -> new PathDataAccess(a)).collect(Collectors.toList());
+        this.mostProbablePathProbability = mostProbablePathProbability;
+
+        this.mostDifferentAccessesPath = mostDifferentAccessesPath.stream().map(a -> new PathDataAccess(a)).collect(Collectors.toList());
+        this.mostDifferentAccesses = mostDifferentAccesses.stream().map(a -> new PathDataAccess(a)).collect(Collectors.toList());
+
+        this.longestPath = longestPath.stream().map(a -> new PathDataAccess(a)).collect(Collectors.toList());
+    }
+
+    public PathData(List<PathDataAccess> longestPath, List<PathDataAccess> mostProbablePath, Float mostProbablePathProbability, List<PathDataAccess> mostDifferentAccessesPath, List<PathDataAccess> mostDifferentAccesses) {
         this.mostProbablePath = mostProbablePath;
         this.mostProbablePathProbability = mostProbablePathProbability;
 
@@ -24,11 +35,11 @@ public class PathData {
 
     }
 
-    public List<Access> getMostProbablePath() {
+    public List<PathDataAccess> getMostProbablePath() {
         return mostProbablePath;
     }
 
-    public void setMostProbablePath(List<Access> mostProbablePath) {
+    public void setMostProbablePath(List<PathDataAccess> mostProbablePath) {
         this.mostProbablePath = mostProbablePath;
     }
 
@@ -40,27 +51,27 @@ public class PathData {
         this.mostProbablePathProbability = mostProbablePathProbability;
     }
 
-    public List<Access> getMostDifferentAccessesPath() {
+    public List<PathDataAccess> getMostDifferentAccessesPath() {
         return mostDifferentAccessesPath;
     }
 
-    public void setMostDifferentAccessesPath(List<Access> mostDifferentAccessesPath) {
+    public void setMostDifferentAccessesPath(List<PathDataAccess> mostDifferentAccessesPath) {
         this.mostDifferentAccessesPath = mostDifferentAccessesPath;
     }
 
-    public List<Access> getMostDifferentAccesses() {
+    public List<PathDataAccess> getMostDifferentAccesses() {
         return mostDifferentAccesses;
     }
 
-    public void setMostDifferentAccesses(List<Access> mostDifferentAccesses) {
+    public void setMostDifferentAccesses(List<PathDataAccess> mostDifferentAccesses) {
         this.mostDifferentAccesses = mostDifferentAccesses;
     }
 
-    public List<Access> getLongestPath() {
+    public List<PathDataAccess> getLongestPath() {
         return longestPath;
     }
 
-    public void setLongestPath(List<Access> longestPath) {
+    public void setLongestPath(List<PathDataAccess> longestPath) {
         this.longestPath = longestPath;
     }
 }

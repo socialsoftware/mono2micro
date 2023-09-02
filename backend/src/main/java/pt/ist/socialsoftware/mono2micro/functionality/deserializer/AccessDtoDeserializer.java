@@ -34,6 +34,12 @@ public class AccessDtoDeserializer extends StdDeserializer<AccessDto> {
                 jsonParser.nextToken();
             }
 
+            float probability = 1f;
+            if (jsonParser.getCurrentToken() == JsonToken.VALUE_NUMBER_FLOAT) {
+                probability = jsonParser.getFloatValue();
+                jsonParser.nextToken();
+            }
+
             if (jsonParser.getCurrentToken() != (JsonToken.END_ARRAY)) {
                 throw new IOException("Error deserializing Access");
             }
@@ -42,6 +48,7 @@ public class AccessDtoDeserializer extends StdDeserializer<AccessDto> {
             accessDto.setMode((byte) (mode.equals("R") ? 1 : 2));
             accessDto.setEntityID(entityID);
             accessDto.setOccurrences(occurrences);
+            accessDto.setProbability(probability);
             return accessDto;
         }
         throw new IOException("Error deserializing Access");

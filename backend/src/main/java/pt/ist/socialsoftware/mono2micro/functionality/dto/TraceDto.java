@@ -115,6 +115,7 @@ public class TraceDto {
 				newAccess.setOccurrences(0);
 				newAccess.setEntityID(a.getEntityID());
 				newAccess.setMode(a.getMode());
+				newAccess.setProbability(a.getProbability());
 
 				expandedElements.add(newAccess);
 				i++;

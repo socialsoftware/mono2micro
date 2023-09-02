@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -76,7 +77,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
 
             List<Access> accessList = new ArrayList<>();
             accessList.add(access);
-            resultingPathData = new PathData(new ArrayList<>(accessList), 1f, new ArrayList<>(accessList), new ArrayList<>(accessList), new ArrayList<>(accessList));
+            resultingPathData = new PathData((new ArrayList<>(accessList)), 1f, new ArrayList<>(accessList), new ArrayList<>(accessList), new ArrayList<>(accessList));
 
         } else {
             access.setVisited(true);
@@ -86,36 +87,37 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
             PathData succPathData;
             for (TraceGraphNode successor: access.getNextAccessProbabilities().keySet()) {
                 
-                if (pathDataCache.containsKey(successor)) {
+                if (pathDataCache.containsKey(successor)) { //FIXME: doesn't allow loops to continue until end of trace
                     succPathData = pathDataCache.get(successor);
                 } else {
                     succPathData = computeTraceTypes((Access)successor, pathDataCache, new ArrayList<>(currentPath));
                 }
 
+                float succProbability = access.getNextAccessProbabilities().get(successor);
                 // update prob
                 succPathData.setMostProbablePath(new ArrayList<>(succPathData.getMostProbablePath()));
-                succPathData.getMostProbablePath().add(0, access);
-                succPathData.setMostProbablePathProbability(succPathData.getMostProbablePathProbability() * access.getNextAccessProbabilities().get(successor));
+                succPathData.getMostProbablePath().add(0, new PathDataAccess(access, succProbability));
+                succPathData.setMostProbablePathProbability(succPathData.getMostProbablePathProbability() * succProbability);
 
                 // add current access to list of diff accesses
                 succPathData.setMostDifferentAccesses(new ArrayList<>(succPathData.getMostDifferentAccesses()));
                 succPathData.setMostDifferentAccessesPath(new ArrayList<>(succPathData.getMostDifferentAccessesPath()));
                 boolean alreadyExists = false;
-                for (Access a: succPathData.getMostDifferentAccesses()) {
+                for (Access a: succPathData.getMostDifferentAccesses().stream().map(a -> a.getAccess()).collect(Collectors.toList())) {
                     if (a.getMode() == access.getMode() && a.getEntityAccessedId() == access.getEntityAccessedId()) {
                         alreadyExists = true;
                         break;
                     }
                 }
                 
-                succPathData.getMostDifferentAccessesPath().add(0, access);
+                succPathData.getMostDifferentAccessesPath().add(0, new PathDataAccess(access, succProbability));
                 if (!alreadyExists) {
-                    succPathData.getMostDifferentAccesses().add(access);
+                    succPathData.getMostDifferentAccesses().add(new PathDataAccess(access));
                 }
                 
                 // add current access to trace
                 succPathData.setLongestPath(new ArrayList<>(succPathData.getLongestPath()));
-                succPathData.getLongestPath().add(0, access);
+                succPathData.getLongestPath().add(0, new PathDataAccess(access, succProbability));
 
                 successorsPathData.add(succPathData);
             }
@@ -143,7 +145,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
                 }
 
                 List<Access> mostDifferentAccessesAggregate = new ArrayList<>(currentPathDifferentAccesses);
-                for (Access a : pathData.getMostDifferentAccesses()) {
+                for (Access a : pathData.getMostDifferentAccesses().stream().map(a -> a.getAccess()).collect(Collectors.toList())) {
                     if (!mostDifferentAccessesAggregate.contains(a)) {
                         mostDifferentAccessesAggregate.add(a);
                     }
@@ -163,19 +165,19 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
             }
             
 
-            resultingPathData = new PathData(   new ArrayList<>(successorsPathData.get(highestProbIndex).getMostProbablePath()),
+            resultingPathData = new PathData(   new ArrayList<>(successorsPathData.get(highestLengthIndex).getLongestPath()),
+                                                new ArrayList<>(successorsPathData.get(highestProbIndex).getMostProbablePath()),
                                                 successorsPathData.get(highestProbIndex).getMostProbablePathProbability(),
                                                 new ArrayList<>(successorsPathData.get(biggerDiffAccessListSizeIndex).getMostDifferentAccessesPath()),
-                                                new ArrayList<>(successorsPathData.get(biggerDiffAccessListSizeIndex).getMostDifferentAccesses()),
-                                                new ArrayList<>(successorsPathData.get(highestLengthIndex).getLongestPath())
+                                                new ArrayList<>(successorsPathData.get(biggerDiffAccessListSizeIndex).getMostDifferentAccesses())
                                             );
 
             if (access.getPrevAccessProbabilities().size() > 1) {
-                    pathDataCache.put(access, new PathData(     resultingPathData.getMostProbablePath(),
+                pathDataCache.put(access, new PathData(         resultingPathData.getLongestPath(),
+                                                                resultingPathData.getMostProbablePath(),
                                                                 resultingPathData.getMostProbablePathProbability(),
                                                                 resultingPathData.getMostDifferentAccessesPath(),
-                                                                resultingPathData.getMostDifferentAccesses(),
-                                                                resultingPathData.getLongestPath()
+                                                                resultingPathData.getMostDifferentAccesses()
                                                             ));
             }
 
@@ -187,7 +189,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
     public TraceDto getLongestTrace() throws JSONException {
         initializeFunctionalityPathData(requestedFunctionality);
 
-        return accessListToTraceDto(_functionalityPathData.get(requestedFunctionality).getLongestPath());
+        return PathDataAccessListToTraceDto(_functionalityPathData.get(requestedFunctionality).getLongestPath());
     }
 
     /*public TraceDto getLongestTrace() throws JSONException {
@@ -362,14 +364,17 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         return resultingGraph;
     }
 
-    public TraceDto accessListToTraceDto(List<Access> accessList) {
+    public TraceDto PathDataAccessListToTraceDto(List<PathDataAccess> accessList) {
         List<ReducedTraceElementDto> traceElementList = new ArrayList<>();
 
         AccessDto accessDto;
-        for (Access access : accessList) {
+        Access access;
+        for (PathDataAccess pathDataAccess : accessList) {
+            access = pathDataAccess.getAccess();
+            //TODO: carry over probability on nulls
             if (access.getMode() == null) continue; // skip the first node
 
-            accessDto = accessToAccessDto(access);
+            accessDto = accessToAccessDto(access, pathDataAccess.getProbability());
 
             traceElementList.add(accessDto);
         }
@@ -377,12 +382,12 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         return new TraceDto(0, 0, traceElementList);
     }
 
-    public AccessDto accessToAccessDto(Access access) {
+    public AccessDto accessToAccessDto(Access access, float probability) {
         AccessDto accessDto = new AccessDto();
         accessDto.setEntityID((short)access.getEntityAccessedId());
         accessDto.setMode((byte) (access.getMode().equals("R") ? 1 : 2));
         accessDto.setOccurrences(1);
-
+        accessDto.setProbability(probability);
         return accessDto;
     }
     

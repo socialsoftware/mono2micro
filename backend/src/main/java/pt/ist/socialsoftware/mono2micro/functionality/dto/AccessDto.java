@@ -12,6 +12,7 @@ import java.util.Objects;
 public class AccessDto extends ReducedTraceElementDto {
     private short entityID;
     private byte mode; // "R" -> 1, "W" -> 2
+    private float probability = 1.0f;
 
     public AccessDto() {}
 
@@ -20,6 +21,9 @@ public class AccessDto extends ReducedTraceElementDto {
 
     public byte getMode() { return mode; }
     public void setMode(byte mode) { this.mode = mode; }
+
+    public float getProbability() { return probability; }
+    public void setProbability(float probability) { this.probability = probability; }
 
     @Override
 	public boolean equals(final Object other) {
@@ -34,9 +38,9 @@ public class AccessDto extends ReducedTraceElementDto {
     @Override
     public String toString() {
         if (occurrences < 2)
-            return "[" + entityID + ',' + mode + ']';
+            return "[" + entityID + ',' + mode + ",p=" + probability + ']';
 
-        return "[" + entityID + ',' + mode + ',' + occurrences + ']';
+        return "[" + entityID + ',' + mode + ',' + occurrences + ",p=" + probability + ']';
     }
 
     @Override

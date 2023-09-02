@@ -68,6 +68,12 @@ public class ReducedTraceElementDtoDeserializer extends StdDeserializer<ReducedT
 					jsonParser.nextValue();
 				}
 
+				float probability = 1f;
+				if (jsonParser.getCurrentToken() == JsonToken.VALUE_NUMBER_FLOAT) {
+					probability = jsonParser.getFloatValue();
+					jsonParser.nextToken();
+				}
+
 				if (jsonParser.getCurrentToken() != (JsonToken.END_ARRAY)) {
 					throw new IOException("Error deserializing ReducedTraceElementDto - Missing END_ARRAY token on Access");
 				}
