@@ -1,4 +1,4 @@
-package collectors.JPA.property_scanner;
+package collectors.util.property_scanner;
 
 import collectors.SpoonCollector;
 import spoon.reflect.code.CtContinue;

@@ -1,24 +1,37 @@
 package collectors.FenixFramework;
 
 import collectors.SpoonCollector;
+import collectors.util.property_scanner.PropertyScanner;
 import spoon.reflect.code.*;
 import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.declaration.*;
+import spoon.reflect.path.CtRole;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtScanner;
 import spoon.support.reflect.code.CtInvocationImpl;
 import spoon.support.reflect.code.CtReturnImpl;
+import spoon.support.reflect.code.CtDoImpl;
+import spoon.support.reflect.code.CtForEachImpl;
+import spoon.support.reflect.code.CtForImpl;
+import spoon.support.reflect.code.CtIfImpl;
+import spoon.support.reflect.code.CtInvocationImpl;
+import spoon.support.reflect.code.CtLoopImpl;
+import spoon.support.reflect.code.CtWhileImpl;
 import util.Constants;
 import util.UnkownMethodException;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
+import java.util.Arrays;
 
 public class FenixFrameworkCollector extends SpoonCollector {
+    
+    private List<PropertyScanner> propertyScanners;
 
     public FenixFrameworkCollector(int launcherChoice, String repoName, String projectPath)
             throws IOException {
@@ -38,6 +51,28 @@ public class FenixFrameworkCollector extends SpoonCollector {
                 System.exit(1);
                 break;
         }
+
+        // instantiate property scanners
+        String list = "collectors.util.property_scanner.ReturnPropertyScanner;collectors.util.property_scanner.ContinuePropertyScanner;collectors.util.property_scanner.BreakPropertyScanner;collectors.util.property_scanner.ZeroComparisonPropertyScanner"; //FIXME: test list
+        String[] pScanners = new String[0];
+        PropertyScanner scannerBuffer;
+
+        if(list.length() > 0) pScanners = list.split(";");
+        propertyScanners = new ArrayList<PropertyScanner>();
+
+        for (String scanner : pScanners) {
+            try {
+                scannerBuffer = (PropertyScanner)(Class.forName(scanner).getDeclaredConstructor().newInstance());
+                propertyScanners.add(scannerBuffer);
+
+            } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
+                e.printStackTrace();
+                System.out.println("Invalid Scanner: " + scanner);
+                System.exit(-1);
+            }
+
+        }
+
 
         System.out.println("Generating AST...");
         launcher.buildModel();
@@ -177,6 +212,77 @@ public class FenixFrameworkCollector extends SpoonCollector {
             public <T> void visitCtConstructorCall(CtConstructorCall<T> ctConstructorCall) {
                 super.visitCtConstructorCall(ctConstructorCall);
                 visitCtAbstractInvocation(ctConstructorCall);
+            }
+
+            @Override
+            public void scan(CtRole role, CtElement element) {
+                CtElement elParent = null;
+                if(element != null) {
+                    try {
+                        elParent = element.getParent();
+                    } catch (ParentNotInitializedException e) {
+                        elParent = null;
+                    }
+                }
+
+                List<CtRole> loopRoles = Arrays.asList(
+                        CtRole.EXPRESSION,
+                        CtRole.BODY,
+                        CtRole.FOR_INIT,
+                        CtRole.FOR_UPDATE
+                    );
+                List<CtRole> ifRoles = Arrays.asList(
+                        CtRole.CONDITION,
+                        CtRole.THEN,
+                        CtRole.ELSE
+                    );
+
+                boolean roleOpened = false;
+                if( (elParent instanceof CtIfImpl && ifRoles.contains(role)) ||
+                    (elParent instanceof CtLoopImpl && loopRoles.contains(role))
+                    ) {
+                    openNewContext(role.toString());
+                    roleOpened = true;
+
+                }
+
+                if(element instanceof CtIfImpl) { // IF
+                    openNewContext("if");
+                    super.scan(element);
+                    closeCurrentContext();
+
+                } else if(element instanceof CtLoopImpl) { // LOOP
+                    String loopType = "loop";
+
+                    if(element instanceof CtDoImpl)
+                        loopType = "do_loop";
+                    else if(element instanceof CtWhileImpl)
+                        loopType = "while_loop";
+                    else if(element instanceof CtForImpl)
+                        loopType = "for_loop";
+                    else if(element instanceof CtForEachImpl)
+                        loopType = "foreach_loop";
+
+                    openNewContext(loopType);
+                    super.scan(element);
+                    closeCurrentContext();
+
+                } else if(element instanceof CtInvocationImpl) {
+                    openNewContext("call");
+                    super.scan(element);
+                    closeCurrentContext();
+
+                } else {
+                    super.scan(element);
+                }
+
+                // read heuristic properties
+                for (PropertyScanner scanner : propertyScanners) {
+                    scanner.process(FenixFrameworkCollector.this, element);
+                }
+
+                if(roleOpened) closeCurrentContext();
+
             }
         });
 
