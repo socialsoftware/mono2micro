@@ -64,6 +64,8 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         requestedFunctionality = functionalityName;
     }
 
+    /* Get Trace Types */
+
     public PathData computeTraceTypes() {
         PathData pathData = computeTraceTypes(_traceGraphs.get(requestedFunctionality).getFirstAccess(), _pathDataCache, new ArrayList<>());
         _pathDataCache.clear();
@@ -195,48 +197,6 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         return pathDataAccessListToTraceDto(_functionalityPathData.get(requestedFunctionality).getLongestPath());
     }
 
-    /*public TraceDto getLongestTrace() throws JSONException {
-        System.out.println("Get longest trace");
-        System.out.println(requestedFunctionality);
-        TraceDto longestTrace = getLongestTrace(_traceGraphs.get(requestedFunctionality).getFirstAccess());
-        _traceGraphs.get(requestedFunctionality).resetVisited();
-        return longestTrace;
-    }
-
-    private TraceDto getLongestTrace(Access access) throws JSONException {
-        //System.out.println("lt");
-        if (access.getNextAccessProbabilities().size() == 0 || access.getVisited()) {
-            return accessListToTraceDto(List.of(access));
-        }
-
-        access.setVisited(true);
-
-        List<TraceDto> traces = new ArrayList<>();
-        for (TraceGraphNode next : access.getNextAccessProbabilities().keySet()) {
-            traces.add(getLongestTrace((Access)next));
-        }
-
-        int longestSize = -1;
-        int longestIndex = -1;
-
-        for (int i = 0; i < traces.size(); i++) {
-            int traceSize = traces.get(i).getUncompressedSize();
-            if (longestIndex == -1 || traceSize > longestSize) {
-                longestIndex = i;
-                longestSize = traceSize;
-            }
-        }
-
-        TraceDto longestTrace = traces.get(longestIndex);
-        List<ReducedTraceElementDto> newAccessList = new ArrayList<>();
-        if (access.getMode() != null)
-            newAccessList.add(accessToAccessDto(access));
-        newAccessList.addAll(longestTrace.getAccesses());
-        longestTrace.setElements(newAccessList);
-
-        return longestTrace;
-    }*/
-
     public TraceDto getTraceWithMoreDifferentAccesses() throws JSONException {
         return null;
     }
@@ -280,6 +240,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         return traceDtos;
     }
 
+    /* Process Access Graph */
 
     TraceGraph getFunctionalityTraceGraph(JSONObject object) throws JSONException {
         JSONObject mainTrace = object.getJSONArray("t").getJSONObject(0);
@@ -367,6 +328,83 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         return resultingGraph;
     }
 
+    /* Fill Similarity Measures Structures */
+
+    public void fillEntityDataStructures(
+            Map<String, Float> e1e2PairCount,
+            Map<Short, List<Pair<String, Byte>>> entityFunctionalities
+    ) {
+        fillEntityDataStructures(_traceGraphs.get(requestedFunctionality).getFirstAccess(), new ArrayList<>(), 1f, e1e2PairCount, entityFunctionalities, requestedFunctionality);
+    }
+
+    public static void fillEntityDataStructures(
+            Access access,
+            List<Access> currentPath,
+            Float runningProbability,
+            Map<String, Float> e1e2PairCount,
+            Map<Short, List<Pair<String, Byte>>> entityFunctionalities,
+            String functionalityName
+    ) {
+
+        short entityID = (short)access.getEntityAccessedId();
+
+        // fill entity functionalities
+        if (access.getMode() != null) {
+            byte mode = accessModeStringToByte(access.getMode());
+
+            if (entityFunctionalities.containsKey(entityID)) {
+                boolean containsFunctionality = false;
+
+                for (Pair<String, Byte> functionalityPair : entityFunctionalities.get(entityID)) {
+                    if (functionalityPair.getFirst().equals(functionalityName)) {
+                        containsFunctionality = true;
+
+                        if (functionalityPair.getSecond() != 3 && functionalityPair.getSecond() != mode)
+                            functionalityPair.setSecond((byte) 3); // "RW" -> 3
+
+                        break;
+                    }
+                }
+
+                if (!containsFunctionality) {
+                    entityFunctionalities.get(entityID).add(new Pair<>(functionalityName, mode));
+                }
+
+            } else {
+                List<Pair<String, Byte>> functionalitiesPairs = new ArrayList<>();
+                functionalitiesPairs.add(new Pair<>(functionalityName, mode));
+
+                entityFunctionalities.put(entityID, functionalitiesPairs);
+            }
+        }
+
+        // fill e1e2 pair count
+        for (TraceGraphNode nextNode : access.getNextAccessProbabilities().keySet()) {
+            List<Access> newCurrentPath = new ArrayList<>(currentPath);
+            newCurrentPath.add(access);
+
+            Access nextAccess = (Access)nextNode;
+
+            short nextEntityID = (short)nextAccess.getEntityAccessedId();
+
+            if (access.getMode() != null && nextAccess.getMode() != null && entityID != nextEntityID) {
+                String e1e2 = entityID + "->" + nextEntityID;
+                String e2e1 = nextEntityID + "->" + entityID;
+
+                float count = e1e2PairCount.getOrDefault(e1e2, 0f);
+                e1e2PairCount.put(e1e2, count + runningProbability * access.getNextAccessProbabilities().get(nextNode));
+
+                count = e1e2PairCount.getOrDefault(e2e1, 0f);
+                e1e2PairCount.put(e2e1, count + runningProbability * access.getNextAccessProbabilities().get(nextNode));
+            }
+
+            fillEntityDataStructures(nextAccess, newCurrentPath, runningProbability*access.getNextAccessProbabilities().get(nextNode), e1e2PairCount, entityFunctionalities, functionalityName);
+        }
+
+    }
+
+    /* Utils */
+
     public static TraceDto pathDataAccessListToTraceDto(List<PathDataAccess> accessList) {
         List<ReducedTraceElementDto> traceElementList = new ArrayList<>();
 
@@ -390,10 +428,14 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
     public static AccessDto accessToAccessDto(Access access, float probability) {
         AccessDto accessDto = new AccessDto();
         accessDto.setEntityID((short)access.getEntityAccessedId());
-        accessDto.setMode((byte) (access.getMode().equals("R") ? 1 : 2));
+        accessDto.setMode(accessModeStringToByte(access.getMode()));
         accessDto.setOccurrences(1);
         accessDto.setProbability(probability);
         return accessDto;
+    }
+
+    public static byte accessModeStringToByte(String mode) {
+        return (byte) (mode.equals("R") ? 1 : 2);
     }
     
 }

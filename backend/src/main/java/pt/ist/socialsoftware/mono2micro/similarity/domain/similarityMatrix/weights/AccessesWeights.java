@@ -193,9 +193,13 @@ public class AccessesWeights extends Weights {
 
                     break;
                 default:
-                    List<TraceDto> traceDtos = iter.getAllTraces();
-                    for (TraceDto traceDto : traceDtos)
-                        fillEntityDataStructures(e1e2PairCount, entityFunctionalities, traceDto.expand(2), functionalityName);
+                    if (iter instanceof FunctionalityGraphTracesIterator) {
+                        ((FunctionalityGraphTracesIterator)iter).fillEntityDataStructures(e1e2PairCount, entityFunctionalities);
+                    } else {
+                        List<TraceDto> traceDtos = iter.getAllTraces();
+                        for (TraceDto traceDto : traceDtos)
+                            fillEntityDataStructures(e1e2PairCount, entityFunctionalities, traceDto.expand(2), functionalityName);
+                    }
             }
         }
 
