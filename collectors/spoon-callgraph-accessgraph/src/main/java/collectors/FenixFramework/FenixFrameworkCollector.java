@@ -53,13 +53,16 @@ public class FenixFrameworkCollector extends SpoonCollector {
         }
 
         // instantiate property scanners
-        String list = "collectors.util.property_scanner.ReturnPropertyScanner;collectors.util.property_scanner.ContinuePropertyScanner;collectors.util.property_scanner.BreakPropertyScanner;collectors.util.property_scanner.ZeroComparisonPropertyScanner"; //FIXME: test list
-        String[] pScanners = new String[0];
-        PropertyScanner scannerBuffer;
-
-        if(list.length() > 0) pScanners = list.split(";");
+        String[] pScanners = new String[]{
+            "collectors.util.property_scanner.ReturnPropertyScanner",
+            "collectors.util.property_scanner.ContinuePropertyScanner",
+            "collectors.util.property_scanner.BreakPropertyScanner",
+            "collectors.util.property_scanner.ZeroComparisonPropertyScanner"
+        };
+        
         propertyScanners = new ArrayList<PropertyScanner>();
-
+        
+        PropertyScanner scannerBuffer;
         for (String scanner : pScanners) {
             try {
                 scannerBuffer = (PropertyScanner)(Class.forName(scanner).getDeclaredConstructor().newInstance());
