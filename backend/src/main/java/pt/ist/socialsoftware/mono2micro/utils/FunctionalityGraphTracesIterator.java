@@ -17,7 +17,6 @@ import org.json.JSONObject;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.ReducedTraceElementDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
-import pt.ist.socialsoftware.mono2micro.utils.Constants.TraceType;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.Access;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.Call;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.HeuristicFlags;
@@ -74,22 +73,23 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
 
     public static PathData computeTraceTypes(Access access, Map<Access, PathData> pathDataCache, List<Access> currentPath) {
         PathData resultingPathData;
-        if (access.getNextAccessProbabilities().size() == 0 || currentPath.contains(access)) {
-            access.setVisited(true);
+        if (access.getNextAccessProbabilities().size() == 0) {
 
             List<Access> accessList = new ArrayList<>();
             accessList.add(access);
             resultingPathData = new PathData((new ArrayList<>(accessList)), 1f, new ArrayList<>(accessList), new ArrayList<>(accessList), new ArrayList<>(accessList));
 
         } else {
-            access.setVisited(true);
+            boolean hasBeenTraversed = currentPath.contains(access);
             currentPath.add(access);
 
             List<PathData> successorsPathData = new ArrayList<>();
             PathData succPathData;
             for (TraceGraphNode successor: access.getNextAccessProbabilities().keySet()) {
+                // if the current access has been traversed, only continue to non-traversed successors
+                if (hasBeenTraversed && currentPath.contains(successor)) continue;
                 
-                if (pathDataCache.containsKey(successor)) { //FIXME: doesn't allow loops to continue until end of trace
+                if (pathDataCache.containsKey(successor)) {
                     succPathData = pathDataCache.get(successor);
                 } else {
                     succPathData = computeTraceTypes((Access)successor, pathDataCache, new ArrayList<>(currentPath));
@@ -378,8 +378,13 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
             }
         }
 
+        boolean hasBeenTraversed = currentPath.contains(access);
+
         // fill e1e2 pair count
         for (TraceGraphNode nextNode : access.getNextAccessProbabilities().keySet()) {
+            // if the current access has been traversed, only continue to non-traversed successors
+            if (hasBeenTraversed && currentPath.contains(nextNode)) continue;
+
             List<Access> newCurrentPath = new ArrayList<>(currentPath);
             newCurrentPath.add(access);
 
