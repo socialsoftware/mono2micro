@@ -259,8 +259,47 @@ public class FunctionalityGraphTracesIteratorTests {
 
         FunctionalityGraphTracesIterator.fillEntityDataStructures(processedSubTrace.getFirstAccess(), new ArrayList<>(), 1f, e1e2PairCount, entityFunctionalities, "requestedFunctionality");
 
-        assertEquals(10, e1e2PairCount.size());
+        assertEquals(22, e1e2PairCount.size());
         assertEquals(10, entityFunctionalities.size());        
+
+    }
+
+    @Test
+    public void fillEntityDataStructures_Loop() throws JSONException {
+        JSONObject trace = NodeToGraphTests.initializeBaseTrace(new Object[][][]{
+			new Object[][]{
+				new Object[]{"W", 1}, new Object[]{"W", 2}, new Object[]{"&for_loop", 1}, new Object[]{"W", 8}
+			},
+			new Object[][]{
+				new Object[]{"&expression", 2}, new Object[]{"&body", 3}
+			},
+			new Object[][]{
+				new Object[]{"R", 6}
+			},
+			new Object[][]{
+				new Object[]{"R", 7}
+			}
+			});
+
+        
+        JSONObject mainTrace = trace.getJSONArray("t").getJSONObject(0);
+
+        List<TraceGraphNode> preProcessedTraces = FunctionalityGraphTracesIterator.translateSubTrace(trace, mainTrace);
+
+        TraceGraph processedSubTrace = FunctionalityGraphTracesIterator.processSubTrace(preProcessedTraces);
+
+        PathData pathData = FunctionalityGraphTracesIterator.computeTraceTypes(processedSubTrace.getFirstAccess(), new HashMap<Access, PathData>(), new ArrayList<>());
+
+        Map<String, Float> e1e2PairCount = new HashMap<>();
+        Map<Short, List<Pair<String, Byte>>> entityFunctionalities = new HashMap<>();
+        
+        FunctionalityGraphTracesIterator.fillEntityDataStructures(processedSubTrace.getFirstAccess(), new ArrayList<>(), 1f, e1e2PairCount, entityFunctionalities, "requestedFunctionality");
+        
+
+        assertEquals(8, pathData.getLongestPath().size());
+
+        assertEquals(8, e1e2PairCount.size());
+        assertEquals(5, entityFunctionalities.size());        
 
     }
 }
