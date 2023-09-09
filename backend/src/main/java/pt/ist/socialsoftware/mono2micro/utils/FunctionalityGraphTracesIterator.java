@@ -3,10 +3,12 @@ package pt.ist.socialsoftware.mono2micro.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
@@ -393,19 +395,31 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
             short nextEntityID = (short)nextAccess.getEntityAccessedId();
 
             if (access.getMode() != null && nextAccess.getMode() != null && entityID != nextEntityID) {
-                String e1e2 = entityID + "->" + nextEntityID;
-                String e2e1 = nextEntityID + "->" + entityID;
-
-                float count = e1e2PairCount.getOrDefault(e1e2, 0f);
-                e1e2PairCount.put(e1e2, count + runningProbability * access.getNextAccessProbabilities().get(nextNode));
-
-                count = e1e2PairCount.getOrDefault(e2e1, 0f);
-                e1e2PairCount.put(e2e1, count + runningProbability * access.getNextAccessProbabilities().get(nextNode));
+                connectAccesses(e1e2PairCount, entityID, nextEntityID, runningProbability * access.getNextAccessProbabilities().get(nextNode));
+                
+            } else if (access.getMode() == null && nextAccess.getMode() != null) {
+                List<Access> invertedCurrentPath = new ArrayList<>(currentPath);
+                Collections.reverse(invertedCurrentPath);
+                Optional<Access> lastValidAccess = invertedCurrentPath.stream().filter(a -> a.getMode() != null).findFirst( );
+                
+                if (lastValidAccess.isPresent()) {
+                    connectAccesses(e1e2PairCount, (short)lastValidAccess.get().getEntityAccessedId(), nextEntityID, runningProbability * access.getNextAccessProbabilities().get(nextNode));
+                }
             }
-
             fillEntityDataStructures(nextAccess, newCurrentPath, runningProbability*access.getNextAccessProbabilities().get(nextNode), e1e2PairCount, entityFunctionalities, functionalityName);
         }
 
+    }
+
+    private static void connectAccesses(Map<String, Float> e1e2PairCount, short entityID, short nextEntityID, float probability) {
+        String e1e2 = entityID + "->" + nextEntityID;
+        String e2e1 = nextEntityID + "->" + entityID;
+
+        float count = e1e2PairCount.getOrDefault(e1e2, 0f);
+        e1e2PairCount.put(e1e2, count + probability);
+
+        count = e1e2PairCount.getOrDefault(e2e1, 0f);
+        e1e2PairCount.put(e2e1, count + probability);
     }
 
     /* Utils */
