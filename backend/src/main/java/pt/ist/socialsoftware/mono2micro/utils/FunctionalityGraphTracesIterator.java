@@ -27,6 +27,7 @@ import pt.ist.socialsoftware.mono2micro.utils.traceGraph.Label;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.Loop;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.TraceGraph;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.TraceGraphNode;
+import pt.ist.socialsoftware.mono2micro.utils.traceGraph.TraceGraphNodeComparator;
 
 /**
  * FunctionalityGraphTracesIterator
@@ -75,60 +76,55 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
 
     public static PathData computeTraceTypes(Access access, Map<Access, PathData> pathDataCache, List<Access> currentPath) {
         PathData resultingPathData;
-        if (access.getNextAccessProbabilities().size() == 0) {
+       
+        boolean hasBeenTraversed = currentPath.contains(access);
+        currentPath.add(access);
 
-            List<Access> accessList = new ArrayList<>();
-            accessList.add(access);
-            resultingPathData = new PathData((new ArrayList<>(accessList)), 1f, new ArrayList<>(accessList), new ArrayList<>(accessList), new ArrayList<>(accessList));
-
-        } else {
-            boolean hasBeenTraversed = currentPath.contains(access);
-            currentPath.add(access);
-
-            List<PathData> successorsPathData = new ArrayList<>();
-            PathData succPathData;
-            for (TraceGraphNode successor: access.getNextAccessProbabilities().keySet()) {
-                // if the current access has been traversed, only continue to non-traversed successors
-                if (hasBeenTraversed && currentPath.contains(successor)) continue;
-                
-                if (pathDataCache.containsKey(successor)) {
-                    succPathData = pathDataCache.get(successor);
-                } else {
-                    succPathData = computeTraceTypes((Access)successor, pathDataCache, new ArrayList<>(currentPath));
-                }
-
-                float succProbability = access.getNextAccessProbabilities().get(successor);
-                // update prob
-                succPathData.setMostProbablePath(new ArrayList<>(succPathData.getMostProbablePath()));
-                succPathData.getMostProbablePath().set(0, new PathDataAccess(succPathData.getMostProbablePath().get(0).getAccess(), succProbability));
-                succPathData.getMostProbablePath().add(0, new PathDataAccess(access, 1f));
-                succPathData.setMostProbablePathProbability(succPathData.getMostProbablePathProbability() * succProbability);
-
-                // add current access to list of diff accesses
-                succPathData.setMostDifferentAccesses(new ArrayList<>(succPathData.getMostDifferentAccesses()));
-                succPathData.setMostDifferentAccessesPath(new ArrayList<>(succPathData.getMostDifferentAccessesPath()));
-                boolean alreadyExists = false;
-                for (Access a: succPathData.getMostDifferentAccesses().stream().map(a -> a.getAccess()).collect(Collectors.toList())) {
-                    if (a.getMode() == access.getMode() && a.getEntityAccessedId() == access.getEntityAccessedId()) {
-                        alreadyExists = true;
-                        break;
-                    }
-                }
-                
-                succPathData.getMostDifferentAccessesPath().set(0, new PathDataAccess(succPathData.getMostDifferentAccessesPath().get(0).getAccess(), succProbability));
-                succPathData.getMostDifferentAccessesPath().add(0, new PathDataAccess(access, 1.0f));
-                if (!alreadyExists) {
-                    succPathData.getMostDifferentAccesses().add(new PathDataAccess(access));
-                }
-                
-                // add current access to trace
-                succPathData.setLongestPath(new ArrayList<>(succPathData.getLongestPath()));
-                succPathData.getLongestPath().set(0, new PathDataAccess(succPathData.getLongestPath().get(0).getAccess(), succProbability));
-                succPathData.getLongestPath().add(0, new PathDataAccess(access, 1.0f));
-
-                successorsPathData.add(succPathData);
+        List<PathData> successorsPathData = new ArrayList<>();
+        PathData succPathData;
+        for (TraceGraphNode successor: access.getNextAccessProbabilities().keySet()) {
+            // if the current access has been traversed, only continue to non-traversed successors
+            if (hasBeenTraversed && currentPath.contains(successor)) continue;
+            
+            if (pathDataCache.containsKey(successor)) {
+                succPathData = pathDataCache.get(successor);
+            } else {
+                succPathData = computeTraceTypes((Access)successor, pathDataCache, new ArrayList<>(currentPath));
             }
 
+            float succProbability = access.getNextAccessProbabilities().get(successor);
+            // update prob
+            succPathData.setMostProbablePath(new ArrayList<>(succPathData.getMostProbablePath()));
+            succPathData.getMostProbablePath().set(0, new PathDataAccess(succPathData.getMostProbablePath().get(0).getAccess(), succProbability));
+            succPathData.getMostProbablePath().add(0, new PathDataAccess(access, 1f));
+            succPathData.setMostProbablePathProbability(succPathData.getMostProbablePathProbability() * succProbability);
+
+            // add current access to list of diff accesses
+            succPathData.setMostDifferentAccesses(new ArrayList<>(succPathData.getMostDifferentAccesses()));
+            succPathData.setMostDifferentAccessesPath(new ArrayList<>(succPathData.getMostDifferentAccessesPath()));
+            boolean alreadyExists = false;
+            for (Access a: succPathData.getMostDifferentAccesses().stream().map(a -> a.getAccess()).collect(Collectors.toList())) {
+                if (a.getMode() == access.getMode() && a.getEntityAccessedId() == access.getEntityAccessedId()) {
+                    alreadyExists = true;
+                    break;
+                }
+            }
+            
+            succPathData.getMostDifferentAccessesPath().set(0, new PathDataAccess(succPathData.getMostDifferentAccessesPath().get(0).getAccess(), succProbability));
+            succPathData.getMostDifferentAccessesPath().add(0, new PathDataAccess(access, 1.0f));
+            if (!alreadyExists) {
+                succPathData.getMostDifferentAccesses().add(new PathDataAccess(access));
+            }
+            
+            // add current access to trace
+            succPathData.setLongestPath(new ArrayList<>(succPathData.getLongestPath()));
+            succPathData.getLongestPath().set(0, new PathDataAccess(succPathData.getLongestPath().get(0).getAccess(), succProbability));
+            succPathData.getLongestPath().add(0, new PathDataAccess(access, 1.0f));
+
+            successorsPathData.add(succPathData);
+        }
+
+        if (successorsPathData.size() != 0) {
             // calculate different accesses in currentPath
             List<Access> currentPathDifferentAccesses = new ArrayList<>();
             for (Access a : currentPath) {
@@ -188,6 +184,10 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
                                                             ));
             }
 
+        } else {
+            List<Access> accessList = new ArrayList<>();
+            accessList.add(access);
+            resultingPathData = new PathData((new ArrayList<>(accessList)), 1f, new ArrayList<>(accessList), new ArrayList<>(accessList), new ArrayList<>(accessList));
         }
 
         return resultingPathData;
