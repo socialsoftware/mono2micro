@@ -1,7 +1,6 @@
 package collectors.FenixFramework;
 
 import collectors.SpoonCollector;
-import collectors.util.property_scanner.PropertyScanner;
 import spoon.reflect.code.*;
 import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.declaration.*;
@@ -14,10 +13,10 @@ import spoon.support.reflect.code.CtDoImpl;
 import spoon.support.reflect.code.CtForEachImpl;
 import spoon.support.reflect.code.CtForImpl;
 import spoon.support.reflect.code.CtIfImpl;
-import spoon.support.reflect.code.CtInvocationImpl;
 import spoon.support.reflect.code.CtLoopImpl;
 import spoon.support.reflect.code.CtWhileImpl;
 import util.Constants;
+import util.property_scanner.PropertyScanner;
 import util.UnkownMethodException;
 
 import java.io.IOException;
@@ -54,10 +53,10 @@ public class FenixFrameworkCollector extends SpoonCollector {
 
         // instantiate property scanners
         String[] pScanners = new String[]{
-            "collectors.util.property_scanner.ReturnPropertyScanner",
-            "collectors.util.property_scanner.ContinuePropertyScanner",
-            "collectors.util.property_scanner.BreakPropertyScanner",
-            "collectors.util.property_scanner.ZeroComparisonPropertyScanner"
+            "util.property_scanner.ReturnPropertyScanner",
+            "util.property_scanner.ContinuePropertyScanner",
+            "util.property_scanner.BreakPropertyScanner",
+            "util.property_scanner.ZeroComparisonPropertyScanner"
         };
         
         propertyScanners = new ArrayList<PropertyScanner>();

@@ -1,4 +1,4 @@
-package collectors.util.property_scanner;
+package util.property_scanner;
 
 import collectors.SpoonCollector;
 import spoon.reflect.code.BinaryOperatorKind;
