@@ -9,4 +9,6 @@ public class HeuristicFlags {
     public boolean hasReturn = false;
     public boolean zeroComparison = false;
     public boolean postDominant = false;
+    public boolean objectComparison = false;
+    public boolean laterChangedCVariable = false;
 }

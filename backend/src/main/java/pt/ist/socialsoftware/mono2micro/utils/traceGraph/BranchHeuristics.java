@@ -45,13 +45,20 @@ public class BranchHeuristics {
         List<String> appliableHeuristics = new ArrayList<>();
 
         if (cond != null) {
-            // TODO: POINTER_H
+            // POINTER_H
+            if (cond.objectComparison) {
+                appliableHeuristics.add(POINTER_H);
+            }
 
             // OPCODE_H
             if (cond.zeroComparison) {
                 appliableHeuristics.add(OPCODE_H);
             }
-            // TODO: GUARD_H
+
+            // GUARD_H
+            if (cond.laterChangedCVariable) {
+                appliableHeuristics.add(GUARD_H);
+            }
         }
         
         if (b1 != null && b2 != null) {

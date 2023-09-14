@@ -56,6 +56,14 @@ public class Label extends TraceGraphNode {
             case HeuristicLabelType.ZERO_COMPARISON:
                     heuristicFlags.zeroComparison = true;
                 break;
+
+            case HeuristicLabelType.OBJECT_COMPARISON:
+                heuristicFlags.objectComparison = true;
+                break;
+
+            case HeuristicLabelType.LATER_CHANGED_C_VARIABLE:
+                heuristicFlags.laterChangedCVariable = true;
+                break;
             default:
                 break;
         }
