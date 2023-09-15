@@ -15,6 +15,7 @@ import spoon.reflect.reference.CtTypeParameterReference;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtScanner;
 import spoon.support.SpoonClassNotFoundException;
+import spoon.support.reflect.code.CtConstructorCallImpl;
 import spoon.support.reflect.code.CtDoImpl;
 import spoon.support.reflect.code.CtForEachImpl;
 import spoon.support.reflect.code.CtForImpl;
@@ -509,8 +510,8 @@ public class SpringDataJPACollector extends SpoonCollector {
                     super.scan(element);
                     closeCurrentContext();
                 
-                } else if(element instanceof CtInvocationImpl) {
                     openNewContext("call");
+                } else if(element instanceof CtInvocationImpl || element instanceof CtConstructorCallImpl) {
                     super.scan(element);
                     closeCurrentContext();
 
