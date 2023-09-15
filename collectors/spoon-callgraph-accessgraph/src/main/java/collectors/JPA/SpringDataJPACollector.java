@@ -65,7 +65,8 @@ public class SpringDataJPACollector extends SpoonCollector {
             "util.property_scanner.ContinuePropertyScanner",
             "util.property_scanner.BreakPropertyScanner",
             "util.property_scanner.ZeroComparisonPropertyScanner",
-            "util.property_scanner.ObjectComparisonPropertyScanner"
+            "util.property_scanner.ObjectComparisonPropertyScanner",
+            "util.property_scanner.ChangedConditionVariablesPropertyScanner"
         };
         
         propertyScanners = new ArrayList<PropertyScanner>();

@@ -349,11 +349,19 @@ public abstract class SpoonCollector {
         return entitiesMap.get(simpleName);
     }
 
-    protected Integer getCurrentContextIndex() {
+    public Integer getCurrentContextIndex() {
         return controllerContextStack.get(controllerContextStack.size() - 1);
     }
 
-    protected String getCurrentContextType() {
+    public List<Integer> getContextStack() {
+        return new ArrayList<Integer>(controllerContextStack);
+    }
+
+    public String getContextTypeFromIndex(int index) {
+        return controllerContextType.get(index);
+    }
+
+    public String getCurrentContextType() {
         return controllerContextType.get(getCurrentContextIndex());
     }
 
