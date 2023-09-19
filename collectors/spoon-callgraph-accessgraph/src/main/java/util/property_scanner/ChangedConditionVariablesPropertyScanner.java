@@ -39,12 +39,8 @@ public class ChangedConditionVariablesPropertyScanner extends PropertyScanner{
                     &&
                     conditionVariablesByContext.get(collector.getContextStack().get(collector.getContextStack().size()-2)) != null // second to last element is the parent component (if or loop)
                     ) {
+                        
             // else if assigning value, add tag
-            System.out.println(element);
-            System.out.println(collector);
-            System.out.println(collector.getCurrentContextType());
-            System.out.println(collector.getContextTypeFromIndex(collector.getContextStack().get(collector.getContextStack().size()-2)));
-            System.out.println("---");
             element.getElements(new Filter<CtElement>() {
                 public boolean matches(CtElement element) {
                     return element instanceof CtVariableWrite;

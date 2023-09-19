@@ -391,7 +391,7 @@ public abstract class SpoonCollector {
     }
 
     private void initializeContextArray() {
-        System.out.println("initialize context array");
+        //System.out.println("initialize context array");
         controllerContextCounter = -1;
         controllerContextStack = new ArrayList<Integer>();
         controllerContextType = new HashMap<Integer, String>();
