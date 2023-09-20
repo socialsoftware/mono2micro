@@ -15,18 +15,29 @@ import spoon.reflect.reference.CtVariableReference;
 import spoon.reflect.visitor.Filter;
 import spoon.support.reflect.code.CtIfImpl;
 import spoon.support.reflect.code.CtLoopImpl;
+import util.ContextStackListener;
 
-public class ChangedConditionVariablesPropertyScanner extends PropertyScanner{
-    static HashMap<Integer, List<CtVariableReference<?>>> conditionVariablesByContext;
+public class ChangedConditionVariablesPropertyScanner extends PropertyScanner implements ContextStackListener {
+    static HashMap<Integer, List<CtVariableReference<?>>> conditionVariablesByContext = null;
+    static ChangedConditionVariablesPropertyScanner backgroundInstance = null;
+
+    private boolean addedCollectorListener = false;
 
     public ChangedConditionVariablesPropertyScanner() {
-        conditionVariablesByContext = new HashMap<>();
+        if (backgroundInstance == null)
+            backgroundInstance = this;
 
-        //TODO: subscribe to context deletion to clean cache
+        if (conditionVariablesByContext == null)
+            conditionVariablesByContext = new HashMap<>();
     }
 
     public void process(SpoonCollector collector, CtElement element) {
         if (element == null) return;
+
+        if (!backgroundInstance.addedCollectorListener) {
+            collector.addControllerContextListener(backgroundInstance);
+            backgroundInstance.addedCollectorListener = true;
+        }
 
         // if condition or expression, store variable names && context id
         if (element instanceof CtBinaryOperator && (element.getParent() instanceof CtLoopImpl || element.getParent() instanceof CtIfImpl) && (element.getRoleInParent() == CtRole.EXPRESSION || element.getRoleInParent() == CtRole.CONDITION)) {
@@ -67,5 +78,12 @@ public class ChangedConditionVariablesPropertyScanner extends PropertyScanner{
         }).stream().map(a -> ((CtVariableRead<?>)a).getVariable()).collect(Collectors.toList()));
         
         return result;
+    }
+
+    public void contextAdded(int index) {}
+
+    public void contextClosed(int index) {
+        if (conditionVariablesByContext.containsKey(index))
+            conditionVariablesByContext.remove(index);
     }
 }

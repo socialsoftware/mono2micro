@@ -46,6 +46,7 @@ public abstract class SpoonCollector {
     private Integer controllerContextCounter;
     private List<Integer> controllerContextStack;
     private Map<Integer, String> controllerContextType;
+    private List<ContextStackListener> controllerContextStackObservers;
     protected Map<String, List<CtType>> abstractClassesAndInterfacesImplementorsMap;
 
     protected Factory factory;
@@ -370,6 +371,11 @@ public abstract class SpoonCollector {
         controllerContextCounter++;
         controllerContextStack.add(controllerContextCounter);
         controllerContextType.put(controllerContextCounter, type);
+
+        // update listeners
+        for (ContextStackListener listener : controllerContextStackObservers) {
+            listener.contextClosed(controllerContextCounter);
+        }
     }
 
     protected void openNewContext() {
@@ -384,10 +390,15 @@ public abstract class SpoonCollector {
             controllerContextType.remove(previousContextType, previousContext);
 
             // insert context reference in the new current context
-            if(controllerAccesses.get(previousContext) != null)
+            if(previousContext != -1 && controllerAccesses.get(previousContext) != null)
                 addContextReference(previousContext, previousContextType);
             else
                 controllerContextCounter--;
+            
+            // update listeners
+            for (ContextStackListener listener : controllerContextStackObservers) {
+                listener.contextClosed(previousContext);
+            }
         }
     }
 
@@ -397,5 +408,20 @@ public abstract class SpoonCollector {
         controllerContextStack = new ArrayList<Integer>();
         controllerContextType = new HashMap<Integer, String>();
         openNewContext(); // will bring controllerContextCounter to 0
+    }
+
+    public void addControllerContextListener(ContextStackListener listener) {
+        if (controllerContextStackObservers == null)
+            controllerContextStackObservers = new ArrayList<>();
+
+        if (!controllerContextStackObservers.contains(listener))
+            controllerContextStackObservers.add(listener);
+    }
+
+    public void removeControllerContextListener(ContextStackListener listener) {
+        if (controllerContextStackObservers == null) return;
+        
+        if (controllerContextStackObservers.contains(listener))
+            controllerContextStackObservers.remove(listener);
     }
 }
