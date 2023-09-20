@@ -227,7 +227,7 @@ public abstract class SpoonCollector {
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.writerWithDefaultPrettyPrinter().writeValue(new FileOutputStream(filepath+fileName + ".json"), controllerSequences);
-            mapper.writerWithDefaultPrettyPrinter().writeValue(new FileOutputStream(filepath+fileName + "_linear.json"), getFlattenedControllerSequences(controllerSequences));
+            //mapper.writerWithDefaultPrettyPrinter().writeValue(new FileOutputStream(filepath+fileName + "_linear.json"), getFlattenedControllerSequences(controllerSequences));
             mapper.writerWithDefaultPrettyPrinter().writeValue(new FileOutputStream(filepath+fileName + "_entityToID.json"), entitiesMap);
 
             LinkedHashMap<Integer, String> idToEntityMap = new LinkedHashMap<>();
