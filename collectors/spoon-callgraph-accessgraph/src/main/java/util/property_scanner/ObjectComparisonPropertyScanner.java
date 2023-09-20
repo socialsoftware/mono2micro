@@ -95,6 +95,8 @@ public class ObjectComparisonPropertyScanner extends PropertyScanner {
     }
 
     boolean isPrimitiveType(CtTypeReference<?> objectType) {
+        if (objectType == null) return false;
+
         CtTypeReference<?> supertype = objectType;
         do {
             if (acceptedTypes.contains(supertype)) return true;
