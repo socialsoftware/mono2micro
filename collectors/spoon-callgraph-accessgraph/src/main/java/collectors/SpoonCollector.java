@@ -373,9 +373,10 @@ public abstract class SpoonCollector {
         controllerContextType.put(controllerContextCounter, type);
 
         // update listeners
-        for (ContextStackListener listener : controllerContextStackObservers) {
-            listener.contextClosed(controllerContextCounter);
-        }
+        if (controllerContextStackObservers != null)
+            for (ContextStackListener listener : controllerContextStackObservers) {
+                listener.contextClosed(controllerContextCounter);
+            }
     }
 
     protected void openNewContext() {
@@ -396,9 +397,10 @@ public abstract class SpoonCollector {
                 controllerContextCounter--;
             
             // update listeners
-            for (ContextStackListener listener : controllerContextStackObservers) {
-                listener.contextClosed(previousContext);
-            }
+            if (controllerContextStackObservers != null)
+                for (ContextStackListener listener : controllerContextStackObservers) {
+                    listener.contextClosed(previousContext);
+                }
         }
     }
 
@@ -420,7 +422,7 @@ public abstract class SpoonCollector {
 
     public void removeControllerContextListener(ContextStackListener listener) {
         if (controllerContextStackObservers == null) return;
-        
+
         if (controllerContextStackObservers.contains(listener))
             controllerContextStackObservers.remove(listener);
     }
