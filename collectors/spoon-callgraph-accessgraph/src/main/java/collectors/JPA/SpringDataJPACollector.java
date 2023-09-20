@@ -510,8 +510,8 @@ public class SpringDataJPACollector extends SpoonCollector {
                     super.scan(element);
                     closeCurrentContext();
                 
-                    openNewContext("call");
                 } else if(element instanceof CtInvocationImpl || element instanceof CtConstructorCallImpl) {
+                    openNewContext("call");
                     super.scan(element);
                     closeCurrentContext();
 
