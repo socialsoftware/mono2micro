@@ -50,6 +50,8 @@ public class ChangedConditionVariablesPropertyScanner extends PropertyScanner im
                     ||
                     collector.getCurrentContextType().equals(CtRole.ELSE.toString()))
                     &&
+                    collector.getContextStack().size() >= 2
+                    &&
                     conditionVariablesByContext.get(collector.getContextStack().get(collector.getContextStack().size()-2)) != null // second to last element is the parent component (if or loop)
                     ) {
 
