@@ -251,7 +251,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
 
         TraceGraph processedSubTrace = processSubTrace(preProcessedTraces);
 
-        processedSubTrace.removeEmptyNodes();
+        //processedSubTrace.removeEmptyNodes();
 
         return processedSubTrace;
     }
