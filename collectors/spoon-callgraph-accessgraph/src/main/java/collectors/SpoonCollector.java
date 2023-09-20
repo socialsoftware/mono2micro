@@ -350,6 +350,7 @@ public abstract class SpoonCollector {
     }
 
     public Integer getCurrentContextIndex() {
+        if (controllerContextStack.size() == 0) return -1;
         return controllerContextStack.get(controllerContextStack.size() - 1);
     }
 

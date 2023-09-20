@@ -31,7 +31,9 @@ public class ChangedConditionVariablesPropertyScanner extends PropertyScanner{
         // if condition or expression, store variable names && context id
         if (element instanceof CtBinaryOperator && (element.getParent() instanceof CtLoopImpl || element.getParent() instanceof CtIfImpl) && (element.getRoleInParent() == CtRole.EXPRESSION || element.getRoleInParent() == CtRole.CONDITION)) {
             conditionVariablesByContext.put(collector.getCurrentContextIndex(), getVariableAccesses(collector, element));
-        } else if((collector.getCurrentContextType().equals(CtRole.BODY.toString())
+        } else if(  collector.getCurrentContextIndex() != -1
+                    &&
+                    (collector.getCurrentContextType().equals(CtRole.BODY.toString())
                     ||
                     collector.getCurrentContextType().equals(CtRole.THEN.toString())
                     ||
@@ -39,7 +41,7 @@ public class ChangedConditionVariablesPropertyScanner extends PropertyScanner{
                     &&
                     conditionVariablesByContext.get(collector.getContextStack().get(collector.getContextStack().size()-2)) != null // second to last element is the parent component (if or loop)
                     ) {
-                        
+
             // else if assigning value, add tag
             element.getElements(new Filter<CtElement>() {
                 public boolean matches(CtElement element) {
