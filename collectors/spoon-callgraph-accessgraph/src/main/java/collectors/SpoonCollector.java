@@ -43,6 +43,7 @@ public abstract class SpoonCollector {
 
     protected HashSet<CtClass> controllers;
     private Map<Integer, List<Access>> controllerAccesses;
+    private Integer accessCount;
     private Integer controllerContextCounter;
     private List<Integer> controllerContextStack;
     private Map<Integer, String> controllerContextType;
@@ -191,12 +192,13 @@ public abstract class SpoonCollector {
             System.out.println("Processing Controller: " + controllerFullName + "   " + controllerCount + "/" + controllers.size());
             initializeContextArray();
             controllerAccesses = new HashMap<Integer, List<Access>>();
+            accessCount = 0;
             Stack<SourcePosition> methodStack = new Stack<>();
 
             controllerMethodsCount++;
             methodCallDFS(controllerMethod, null, methodStack);
 
-            if (controllerAccesses.size() > 0) {
+            if (controllerAccesses.size() > 0 && accessCount > 0) {
                 List<Trace> traces = new ArrayList<>();
                 for(Map.Entry<Integer, List<Access>> contextAcesses: controllerAccesses.entrySet()) {
                     traces.add(new Trace(contextAcesses.getKey(), contextAcesses.getValue()));
@@ -327,6 +329,7 @@ public abstract class SpoonCollector {
     }
 
     public void addEntitiesSequenceAccess(String simpleName, String mode) {
+        accessCount++;
         addEntitiesSequenceAccess(new Access(mode, entityToID(simpleName)));
     }
     
