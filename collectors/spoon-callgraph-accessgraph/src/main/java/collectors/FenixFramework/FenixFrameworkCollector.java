@@ -9,6 +9,7 @@ import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtScanner;
 import spoon.support.reflect.code.CtInvocationImpl;
 import spoon.support.reflect.code.CtReturnImpl;
+import spoon.support.reflect.code.CtConstructorCallImpl;
 import spoon.support.reflect.code.CtDoImpl;
 import spoon.support.reflect.code.CtForEachImpl;
 import spoon.support.reflect.code.CtForImpl;
@@ -271,7 +272,7 @@ public class FenixFrameworkCollector extends SpoonCollector {
                     super.scan(element);
                     closeCurrentContext();
 
-                } else if(element instanceof CtInvocationImpl) {
+                } else if(element instanceof CtInvocationImpl || element instanceof CtConstructorCallImpl) {
                     openNewContext("call");
                     super.scan(element);
                     closeCurrentContext();
