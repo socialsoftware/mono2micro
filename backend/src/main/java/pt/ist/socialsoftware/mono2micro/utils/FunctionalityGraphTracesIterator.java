@@ -27,7 +27,6 @@ import pt.ist.socialsoftware.mono2micro.utils.traceGraph.Label;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.Loop;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.TraceGraph;
 import pt.ist.socialsoftware.mono2micro.utils.traceGraph.TraceGraphNode;
-import pt.ist.socialsoftware.mono2micro.utils.traceGraph.TraceGraphNodeComparator;
 
 /**
  * FunctionalityGraphTracesIterator
