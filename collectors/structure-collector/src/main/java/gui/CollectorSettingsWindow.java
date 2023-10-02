@@ -1,10 +1,9 @@
 package gui;
 
-import collectors.SpoonCollector;
+import collectors.CollectorLauncher;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
@@ -15,9 +14,7 @@ public class CollectorSettingsWindow extends JFrame {
     private JTextField projectNameTextField;
     private JTextField projectLocationTextField;
     private int projectFrameworkFieldSelectedOption = Constants.SPRING_DATA_JPA;
-
-    // Unused for now, only one option
-    private int dataToCollect = Constants.STRUCTURAL_DATA_COLLECTION_MASK;
+    private int collectionDataSelectedOption = Constants.DOMAIN_ENTITY_DATA_COLLECTION;
 
     private CollectorSettingsWindow() {
         setTitle("Collector Settings");
@@ -146,9 +143,13 @@ public class CollectorSettingsWindow extends JFrame {
         collectionDataOptionsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         collectionDataOptionsPanel.setBorder(BorderFactory.createEmptyBorder(5, 15, 0, 20));
 
-        JCheckBox collectionStructuralDataCheckBox = new JCheckBox("Structural Data", true);
-        collectionStructuralDataCheckBox.addActionListener(this::onStructuralDataCheckBoxClicked);
-        collectionDataOptionsPanel.add(collectionStructuralDataCheckBox);
+        JRadioButton collectionDomainEntityDataRadioButton = new JRadioButton("Domain Entity Data", true);
+        collectionDomainEntityDataRadioButton.addActionListener(e -> collectionDataSelectedOption = Constants.DOMAIN_ENTITY_DATA_COLLECTION);
+        collectionDomainEntityDataRadioButton.setEnabled(false); // TODO Remove if other collection options are added
+        collectionDataOptionsPanel.add(collectionDomainEntityDataRadioButton);
+
+        ButtonGroup collectionDataOptionsRadioButtons = new ButtonGroup();
+        collectionDataOptionsRadioButtons.add(collectionDomainEntityDataRadioButton);
 
         parentPanel.add(collectionDataOptionsPanel);
     }
@@ -186,19 +187,14 @@ public class CollectorSettingsWindow extends JFrame {
         }
     }
 
-    private void onStructuralDataCheckBoxClicked(ActionEvent e) {
-        dataToCollect = ((JCheckBox) e.getSource()).isSelected() ?
-                dataToCollect | Constants.STRUCTURAL_DATA_COLLECTION_MASK :
-                dataToCollect ^ Constants.STRUCTURAL_DATA_COLLECTION_MASK;
-    }
-
     private void onSubmitButtonClicked() {
         this.dispose();
-        new SpoonCollector(
-                projectNameTextField.getText(),
+        new CollectorLauncher(
                 projectLocationTextField.getText(),
-                projectFrameworkFieldSelectedOption)
-                .collect().serialize();
+                projectNameTextField.getText(),
+                projectFrameworkFieldSelectedOption,
+                collectionDataSelectedOption)
+                .launch();
     }
 
     private JPanel createLineSegment() {

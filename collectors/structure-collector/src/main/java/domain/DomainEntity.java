@@ -33,12 +33,16 @@ public class DomainEntity {
         this.fields.add(field);
     }
 
+    public void addFields(List<Field> fields) {
+        this.fields.addAll(fields);
+    }
+
     public DataType getSuperclass() {
         return this.superclass;
     }
 
     public void setSuperclass(DataType superclass) {
-        if (superclassDataTypeIsThisDataType(superclass) || superclassDataTypeIsPrimitive(superclass)) {
+        if (superclass == null || superclassDataTypeIsThisDataType(superclass) || superclassDataTypeIsPrimitive(superclass)) {
             return; // Source code error
         }
         this.superclass = superclass;

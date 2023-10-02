@@ -1,6 +1,5 @@
-import collectors.SpoonCollector;
+import collectors.CollectorLauncher;
 import gui.CollectorSettingsWindow;
-import gui.Constants;
 
 public class Main {
 
@@ -8,14 +7,14 @@ public class Main {
         if (args.length == 0) { // Launch GUI
             CollectorSettingsWindow.run();
         } else if (args.length == 4) {
-            runCollector(args[0], args[1], Integer.parseInt(args[2]));
+            runCollector(args[0], args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]));
         } else {
             System.err.println("ERROR : Invalid program start arguments");
             System.exit(1);
         }
     }
 
-    public static void runCollector(String projectName, String sourcesPath, int projectFramework) {
-        new SpoonCollector(projectName, sourcesPath, projectFramework).collect().serialize();
+    public static void runCollector(String projectName, String sourcesPath, int projectFramework, int dataCollection) {
+        new CollectorLauncher(sourcesPath, projectName, projectFramework,dataCollection).launch();
     }
 }
