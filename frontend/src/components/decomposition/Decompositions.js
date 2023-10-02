@@ -51,6 +51,38 @@ export const Decompositions = () => {
         });
     }
 
+    function handleExportDecomposition(decompositionName) {
+        const toastId = toast.loading("Exporting " + decompositionName + "...");
+        const service = new APIService();
+        service.exportDecomposition(decompositionName).then(response => {
+            downloadDecompositionData(response);
+            toast.update(toastId, {type: toast.TYPE.SUCCESS, render: "Decomposition exported.", isLoading: false});
+            setTimeout(() => {toast.dismiss(toastId)}, 1000);
+        }).catch((error) => {
+            if (error.response && error.response.status === 404) {
+                toast.update(toastId, {type: toast.TYPE.INFO, render: "Please use the Refactorization Tool first to create the data to export.", isLoading: false})
+            } else {
+                toast.update(toastId, {type: toast.TYPE.ERROR, render: "Error exporting " + decompositionName + ".", isLoading: false});
+            }
+            setTimeout(() => {toast.dismiss(toastId)}, 5000);
+        });
+    }
+
+    function downloadDecompositionData(response) {
+        const url = window.URL.createObjectURL(
+            new Blob([response.data], {type: "application/zip"})
+        );
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'm2m_decomposition_data.zip');
+        document.body.appendChild(link);
+        link.click();
+
+        link.parentNode.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
     function renderBreadCrumbs() {
         return (
             <Breadcrumb>
@@ -113,7 +145,7 @@ export const Decompositions = () => {
             }
 
             <Row className={"d-flex flex-wrap mw-100"} style={{gap: '1rem 1rem'}}>
-                {decompositions.map(decomposition => decomposition.printCard(loadDecompositions, handleDeleteDecomposition))}
+                {decompositions.map(decomposition => decomposition.printCard(loadDecompositions, handleDeleteDecomposition, handleExportDecomposition))}
             </Row>
         </div>
     );

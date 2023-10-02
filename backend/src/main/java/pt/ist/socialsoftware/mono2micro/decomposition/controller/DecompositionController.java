@@ -19,8 +19,11 @@ import pt.ist.socialsoftware.mono2micro.operation.split.SplitOperation;
 import pt.ist.socialsoftware.mono2micro.operation.transfer.TransferOperation;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
+import javax.servlet.http.HttpServletResponse;
+import java.nio.file.NoSuchFileException;
 import java.util.Map;
 import java.util.Optional;
+import java.util.zip.ZipOutputStream;
 
 @RestController
 @RequestMapping(value = "/mono2micro")
@@ -103,6 +106,29 @@ public class DecompositionController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@GetMapping(value = "/decomposition/{decompositionName}/export")
+	public void exportDecomposition(
+			HttpServletResponse response,
+			@PathVariable String decompositionName
+	) {
+		logger.debug("exportDecomposition");
+
+		try {
+			response.setHeader("Content-Disposition", "attachment; filename=m2m_decomposition_data.zip");
+			response.setContentType("application/zip");
+			decompositionService.exportDecomposition(decompositionName, new ZipOutputStream(response.getOutputStream()));
+			response.setStatus(HttpServletResponse.SC_OK);
+			response.flushBuffer();
+
+		} catch (NoSuchFileException e) {
+			e.printStackTrace();
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
 	}
 

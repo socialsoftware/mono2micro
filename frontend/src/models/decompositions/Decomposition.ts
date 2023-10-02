@@ -21,5 +21,9 @@ export default abstract class Decomposition {
         this.representationInformations = decomposition.representationInformations;
     }
 
-    abstract printCard(reloadDecompositions: () => void, handleDeleteDecomposition: (collector: string) => void): JSX.Element;
+    abstract printCard(
+        reloadDecompositions: () => void,
+        handleDeleteDecomposition: (collector: string) => void,
+        handleExportDecomposition: (collector: string) => void
+    ): JSX.Element;
 }
