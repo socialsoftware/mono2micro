@@ -114,7 +114,7 @@ export default class PartitionsDecomposition extends Decomposition {
                                 className="mb-2"
                                 variant={"primary"}
                             >
-                                Export to Context Mapper
+                                Export to CML
                             </Button>
                             <br/>
                         </>
