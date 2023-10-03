@@ -186,6 +186,7 @@ public class SimilarityScipyAccessesAndRepository extends SimilarityScipy {
 
     @Override
     public Set<String> generateMultipleMatrices(GridFsService gridFsService, Recommendation recommendation, Set<Short> elements, int totalNumberOfWeights) throws Exception {
+        System.out.println("generate multiple matrices");
         float[][][] rawMatrix = getEmptyRawMatrix(elements.size(), totalNumberOfWeights);
 
         int fillFromIndex = 0;

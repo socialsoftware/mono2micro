@@ -131,9 +131,13 @@ public class AccessesWeights extends Weights {
 
     @Override
     public void fillMatrix(GridFsService gridFsService, Recommendation recommendation, float[][][] rawMatrix, Set<Short> elements, int fillFromIndex) throws IOException, JSONException {
+        System.out.println("fill matrix");
         RecommendMatrixSciPy r = (RecommendMatrixSciPy) recommendation;
+        System.out.println("get representation");
         AccessesRepresentation accesses = Utils.getCodebaseAccessRepresentation(recommendation.getStrategy().getCodebase());
+        System.out.println("fill raw matrix from acc");
         fillRawMatrixFromAccesses(rawMatrix, fillFromIndex, gridFsService.getFile(accesses.getName()), accesses.getProfile(r.getProfile()), r.getTraceType(), r.getTracesMaxLimit(), accesses.getType());
+        System.out.println("weights out");
     }
 
     public static TracesIterator getTraceIterator(String representationType, InputStream accessesFile, int tracesMaxLimit) throws JSONException, IOException {
@@ -163,7 +167,9 @@ public class AccessesWeights extends Weights {
         Set<Short> entities = new TreeSet<>();
         Map<String, Float> e1e2PairCount = new HashMap<>();
         Map<Short, Map<Pair<String, Byte>, Float>> entityFunctionalities = new HashMap<>(); // Map<entityID, List<Pair<functionalityName, accessMode>>>
+        System.out.println("fill data structures");
         fillDataStructures(entities, e1e2PairCount, entityFunctionalities, getTraceIterator(representationType, accessesFile, tracesMaxLimit), profileFunctionalities, traceType);
+        System.out.println("fill raw matrix");
         fillRawMatrix(rawMatrix, entities, e1e2PairCount, entityFunctionalities, fillFromIndex);
     }
 
@@ -181,7 +187,7 @@ public class AccessesWeights extends Weights {
 
         for (String functionalityName : profileFunctionalities) {
             iter.getFunctionalityWithName(functionalityName);
-
+            System.out.println(functionalityName);
             switch (traceType) {
                 case LONGEST:
                 case MOST_PROBABLE:
@@ -194,15 +200,18 @@ public class AccessesWeights extends Weights {
                     break;
                 default:
                     if (iter instanceof FunctionalityGraphTracesIterator) {
+                        System.out.println("graph trace iterator");
                         ((FunctionalityGraphTracesIterator)iter).fillEntityDataStructures(e1e2PairCount, entityFunctionalities);
                     } else {
+                        System.out.println("trace iterator");
                         List<TraceDto> traceDtos = iter.getAllTraces();
                         for (TraceDto traceDto : traceDtos)
                             fillEntityDataStructures(e1e2PairCount, entityFunctionalities, traceDto.expand(2), functionalityName);
                     }
+                    System.out.println("finished");
             }
         }
-
+        System.out.println("add all");
         entities.addAll(entityFunctionalities.keySet());
     }
 
@@ -212,6 +221,7 @@ public class AccessesWeights extends Weights {
             List<AccessDto> accessesList,
             String functionalityName
     ) {
+        System.out.println("fill data structures");
         float runningProbability = 1.0f;
         for (int i = 0; i < accessesList.size(); i++) {
             AccessDto access = accessesList.get(i);

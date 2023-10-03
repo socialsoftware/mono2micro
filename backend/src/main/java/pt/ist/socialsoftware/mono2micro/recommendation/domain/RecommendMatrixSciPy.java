@@ -171,6 +171,7 @@ public class RecommendMatrixSciPy extends Recommendation {
             try {
                 GridFsService gridFsService = ContextManager.get().getBean(GridFsService.class);
                 SimilarityScipy similarityScipy = SimilarityScipyFactory.getSimilarityScipy(this);
+                System.out.println("generate receommendation");
                 setSimilarityMatricesNames(similarityScipy.generateMultipleMatrices(gridFsService, this, fillElements(gridFsService), getTotalNumberOfWeights()));
                 clusteringAlgorithm.generateMultipleDecompositions(this);
 
