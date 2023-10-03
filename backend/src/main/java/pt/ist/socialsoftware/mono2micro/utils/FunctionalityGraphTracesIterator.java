@@ -258,6 +258,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
     public static List<TraceGraphNode> translateSubTrace(JSONObject totalTrace, JSONObject subTrace) throws JSONException {
         JSONArray totalTraceArray = totalTrace.getJSONArray("t");
         JSONArray subTraceArray = subTrace.getJSONArray("a");
+        Integer subTraceIndex = subTrace.getInt("id");
 
         List<TraceGraphNode> translatedTrace = new ArrayList<>(); 
 
@@ -281,11 +282,11 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
                         
                         break;
                     case "#": // Is a TraceLabelDto
-                        translatedTrace.add(new Label(traceElementJSON));
+                        translatedTrace.add(new Label(traceElementJSON, subTraceIndex));
 
                         break;
                     default: // Is an AccessDto
-                        translatedTrace.add(new Access(traceElementJSON));
+                        translatedTrace.add(new Access(traceElementJSON, subTraceIndex));
 
                         break;
                 }

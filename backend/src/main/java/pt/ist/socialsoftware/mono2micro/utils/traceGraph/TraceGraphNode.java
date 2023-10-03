@@ -1,11 +1,15 @@
 package pt.ist.socialsoftware.mono2micro.utils.traceGraph;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public abstract class TraceGraphNode {
+    int id;
+    static int idCounter = 0;
+
+    private int contextIndex;
+
     Map<TraceGraphNode, Float> nextAccessProbabilities;
     Map<TraceGraphNode, Float> prevAccessProbabilities;
     boolean visited;
@@ -16,6 +20,20 @@ public abstract class TraceGraphNode {
         this.prevAccessProbabilities = new HashMap<TraceGraphNode, Float>();
         this.visited = false;
         this.lockedToNewConnections = false;
+
+        id = idCounter++;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getContextIndex() {
+        return contextIndex;
+    }
+
+    public void setContextIndex(int contextIndex) {
+        this.contextIndex = contextIndex;
     }
 
     public Map<TraceGraphNode, Float> getNextAccessProbabilities() {

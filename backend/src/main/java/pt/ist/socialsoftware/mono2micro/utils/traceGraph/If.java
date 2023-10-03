@@ -14,6 +14,8 @@ public class If extends TraceGraphNode {
     List<TraceGraphNode> elseBody;
 
     public If(JSONObject totalTrace, JSONArray totalTraceArray, JSONArray traceElementJSON) throws JSONException {
+        this.setContextIndex(traceElementJSON.getInt(1));
+
         JSONArray referenceElements = totalTraceArray.getJSONObject(traceElementJSON.getInt(1)).getJSONArray("a");
 
         JSONArray condition = FunctionalityGraphTracesIterator.getRoleInSubTrace("condition", referenceElements);
@@ -63,8 +65,8 @@ public class If extends TraceGraphNode {
 
         Float thenProbability;
 
-        Access startingNode = new Access();
-        Access endingNode = new Access();
+        Access startingNode = new Access(this.getContextIndex());
+        Access endingNode = new Access(this.getContextIndex());
         
         Access baseNode;
         

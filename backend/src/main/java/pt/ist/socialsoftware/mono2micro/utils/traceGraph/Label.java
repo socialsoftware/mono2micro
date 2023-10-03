@@ -8,7 +8,8 @@ import org.json.JSONException;
 public class Label extends TraceGraphNode {
     String content;
 
-    public Label(JSONArray traceElementJSON) throws JSONException{
+    public Label(JSONArray traceElementJSON, int contextIndex) throws JSONException{
+        this.setContextIndex(contextIndex);
         this.setContent(traceElementJSON.getString(0).substring(1));
     }
 

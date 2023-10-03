@@ -10,16 +10,14 @@ public class Access extends TraceGraphNode {
     String mode = null;
     int entityAccessedId;
 
-    public Access() {}
-
-    public Access(String mode, int entityAccessedId) {
-        this.setMode(mode);
-        this.setEntityAccessedId(entityAccessedId);
+    public Access(int contextIndex) {
+        this.setContextIndex(contextIndex);
     }
 
-    public Access(JSONArray traceElementJSON) throws JSONException {
+    public Access(JSONArray traceElementJSON, int contextIndex) throws JSONException {
         this.setMode(traceElementJSON.getString(0));
         this.setEntityAccessedId(traceElementJSON.getInt(1));
+        this.setContextIndex(contextIndex);
     }
 
 

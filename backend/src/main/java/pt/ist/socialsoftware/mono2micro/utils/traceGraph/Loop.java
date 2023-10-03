@@ -13,6 +13,7 @@ public class Loop extends TraceGraphNode {
     List<TraceGraphNode> body;
 
     public Loop(JSONObject totalTrace, JSONArray totalTraceArray, JSONArray traceElementJSON) throws JSONException {
+        this.setContextIndex(traceElementJSON.getInt(1));
         JSONArray referenceElements = totalTraceArray.getJSONObject(traceElementJSON.getInt(1)).getJSONArray("a");
 
         JSONArray expressionGraph = FunctionalityGraphTracesIterator.getRoleInSubTrace("expression", referenceElements);
@@ -46,8 +47,8 @@ public class Loop extends TraceGraphNode {
         HeuristicFlags expressionHeuristicFlags = new HeuristicFlags();
         HeuristicFlags bodyHeuristicFlags = new HeuristicFlags();
 
-        Access startingNode = new Access();
-        Access endingNode = new Access();
+        Access startingNode = new Access(this.getContextIndex());
+        Access endingNode = new Access(this.getContextIndex());
         
         TraceGraph expressionGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getExpression(), lastCallEnd, startingNode, endingNode, expressionHeuristicFlags);
         TraceGraph bodyGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getBody(), lastCallEnd, startingNode, endingNode, bodyHeuristicFlags);

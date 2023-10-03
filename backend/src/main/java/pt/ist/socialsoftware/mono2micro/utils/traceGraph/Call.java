@@ -12,6 +12,7 @@ public class Call extends TraceGraphNode {
     List<TraceGraphNode> body;
 
     public Call(JSONObject totalTrace, JSONArray totalTraceArray, JSONArray traceElementJSON) throws JSONException {
+        this.setContextIndex(traceElementJSON.getInt(1));
         this.setBody(FunctionalityGraphTracesIterator.translateSubTrace(totalTrace, totalTraceArray.getJSONObject(traceElementJSON.getInt(1))));
     }
 
@@ -25,8 +26,8 @@ public class Call extends TraceGraphNode {
 
     public void nodeToAccessGraph(List<Access> processedSubTrace, TraceGraphNode lastCallEnd, TraceGraphNode lastLoopStart, TraceGraphNode lastLoopEnd, HeuristicFlags heuristicFlags) {
 
-        Access startingNode = new Access();
-        Access endingNode = new Access();
+        Access startingNode = new Access(this.getContextIndex());
+        Access endingNode = new Access(this.getContextIndex());
         
         TraceGraph bodyGraph = FunctionalityGraphTracesIterator.processSubTrace(this.getBody(), endingNode, lastLoopStart, lastLoopEnd, new HeuristicFlags());
 
