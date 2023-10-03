@@ -333,7 +333,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
 
     public void fillEntityDataStructures(
             Map<String, Float> e1e2PairCount,
-            Map<Short, List<Pair<String, Byte>>> entityFunctionalities
+            Map<Short, Map<Pair<String, Byte>, Float>> entityFunctionalities
     ) {
         fillEntityDataStructures(_traceGraphs.get(requestedFunctionality).getFirstAccess(), new ArrayList<>(), 1f, e1e2PairCount, entityFunctionalities, requestedFunctionality);
     }
@@ -343,7 +343,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
             List<Access> currentPath,
             Float runningProbability,
             Map<String, Float> e1e2PairCount,
-            Map<Short, List<Pair<String, Byte>>> entityFunctionalities,
+            Map<Short, Map<Pair<String, Byte>, Float>> entityFunctionalities,
             String functionalityName
     ) {
 
@@ -354,11 +354,13 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
             byte mode = accessModeStringToByte(access.getMode());
 
             if (entityFunctionalities.containsKey(entityID)) {
-                boolean containsFunctionality = false;
+                Pair<String, Byte> thisFunctionalityPair = null;
+                float currentAccessingEntityProb = -1;
 
-                for (Pair<String, Byte> functionalityPair : entityFunctionalities.get(entityID)) {
+                for (Pair<String, Byte> functionalityPair : entityFunctionalities.get(entityID).keySet()) {
                     if (functionalityPair.getFirst().equals(functionalityName)) {
-                        containsFunctionality = true;
+                        thisFunctionalityPair = functionalityPair;
+                        currentAccessingEntityProb = entityFunctionalities.get(entityID).get(functionalityPair);
 
                         if (functionalityPair.getSecond() != 3 && functionalityPair.getSecond() != mode)
                             functionalityPair.setSecond((byte) 3); // "RW" -> 3
@@ -367,15 +369,19 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
                     }
                 }
 
-                if (!containsFunctionality) {
-                    entityFunctionalities.get(entityID).add(new Pair<>(functionalityName, mode));
+                if (thisFunctionalityPair == null || currentAccessingEntityProb == -1 || runningProbability > currentAccessingEntityProb) {
+                    if (thisFunctionalityPair == null) {
+                        thisFunctionalityPair = new Pair<>(functionalityName, mode);
+                    }
+    
+                    entityFunctionalities.get(entityID).put(thisFunctionalityPair, runningProbability);
                 }
 
             } else {
-                List<Pair<String, Byte>> functionalitiesPairs = new ArrayList<>();
-                functionalitiesPairs.add(new Pair<>(functionalityName, mode));
+                Map<Pair<String, Byte>, Float> functionalitiesPairMap = new HashMap<>();
+                functionalitiesPairMap.put(new Pair<>(functionalityName, mode), runningProbability);
 
-                entityFunctionalities.put(entityID, functionalitiesPairs);
+                entityFunctionalities.put(entityID, functionalitiesPairMap);
             }
         }
 
@@ -399,7 +405,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
             } else if (access.getMode() == null && nextAccess.getMode() != null) {
                 List<Access> invertedCurrentPath = new ArrayList<>(currentPath);
                 Collections.reverse(invertedCurrentPath);
-                Optional<Access> lastValidAccess = invertedCurrentPath.stream().filter(a -> a.getMode() != null).findFirst( );
+                Optional<Access> lastValidAccess = invertedCurrentPath.stream().filter(a -> a.getMode() != null).findFirst();
                 
                 if (lastValidAccess.isPresent()) {
                     connectAccesses(e1e2PairCount, (short)lastValidAccess.get().getEntityAccessedId(), nextEntityID, runningProbability * access.getNextAccessProbabilities().get(nextNode));

@@ -162,7 +162,7 @@ public class AccessesWeights extends Weights {
     ) throws JSONException, IOException {
         Set<Short> entities = new TreeSet<>();
         Map<String, Float> e1e2PairCount = new HashMap<>();
-        Map<Short, List<Pair<String, Byte>>> entityFunctionalities = new HashMap<>(); // Map<entityID, List<Pair<functionalityName, accessMode>>>
+        Map<Short, Map<Pair<String, Byte>, Float>> entityFunctionalities = new HashMap<>(); // Map<entityID, List<Pair<functionalityName, accessMode>>>
         fillDataStructures(entities, e1e2PairCount, entityFunctionalities, getTraceIterator(representationType, accessesFile, tracesMaxLimit), profileFunctionalities, traceType);
         fillRawMatrix(rawMatrix, entities, e1e2PairCount, entityFunctionalities, fillFromIndex);
     }
@@ -170,7 +170,7 @@ public class AccessesWeights extends Weights {
     public static void fillDataStructures(
             Set<Short> entities,
             Map<String, Float> e1e2PairCount,
-            Map<Short, List<Pair<String, Byte>>> entityFunctionalities,
+            Map<Short, Map<Pair<String, Byte>, Float>> entityFunctionalities,
             TracesIterator iter,
             Set<String> profileFunctionalities,
             Constants.TraceType traceType
@@ -208,7 +208,7 @@ public class AccessesWeights extends Weights {
 
     private static void fillEntityDataStructures(
             Map<String, Float> e1e2PairCount,
-            Map<Short, List<Pair<String, Byte>>> entityFunctionalities,
+            Map<Short, Map<Pair<String, Byte>, Float>> entityFunctionalities,
             List<AccessDto> accessesList,
             String functionalityName
     ) {
@@ -221,11 +221,13 @@ public class AccessesWeights extends Weights {
             runningProbability *= access.getProbability();
 
             if (entityFunctionalities.containsKey(entityID)) {
-                boolean containsFunctionality = false;
+                Pair<String, Byte> thisFunctionalityPair = null;
+                float currentAccessingEntityProb = -1;
 
-                for (Pair<String, Byte> functionalityPair : entityFunctionalities.get(entityID)) {
+                for (Pair<String, Byte> functionalityPair : entityFunctionalities.get(entityID).keySet()) {
                     if (functionalityPair.getFirst().equals(functionalityName)) {
-                        containsFunctionality = true;
+                        thisFunctionalityPair = functionalityPair;
+                        currentAccessingEntityProb = entityFunctionalities.get(entityID).get(functionalityPair);
 
                         if (functionalityPair.getSecond() != 3 && functionalityPair.getSecond() != mode)
                             functionalityPair.setSecond((byte) 3); // "RW" -> 3
@@ -234,15 +236,19 @@ public class AccessesWeights extends Weights {
                     }
                 }
 
-                if (!containsFunctionality) {
-                    entityFunctionalities.get(entityID).add(new Pair<>(functionalityName, mode));
+                if (thisFunctionalityPair == null || currentAccessingEntityProb == -1 || runningProbability > currentAccessingEntityProb) {
+                    if (thisFunctionalityPair == null) {
+                        thisFunctionalityPair = new Pair<>(functionalityName, mode);
+                    }
+    
+                    entityFunctionalities.get(entityID).put(thisFunctionalityPair, runningProbability);
                 }
 
             } else {
-                List<Pair<String, Byte>> functionalitiesPairs = new ArrayList<>();
-                functionalitiesPairs.add(new Pair<>(functionalityName, mode));
+                Map<Pair<String, Byte>, Float> functionalitiesPairMap = new HashMap<>();
+                functionalitiesPairMap.put(new Pair<>(functionalityName, mode), runningProbability);
 
-                entityFunctionalities.put(entityID, functionalitiesPairs);
+                entityFunctionalities.put(entityID, functionalitiesPairMap);
             }
 
             if (i < accessesList.size() - 1) {
@@ -267,7 +273,7 @@ public class AccessesWeights extends Weights {
             float[][][] rawMatrix,
             Set<Short> entities,
             Map<String, Float> e1e2PairCount,
-            Map<Short, List<Pair<String, Byte>>> entityFunctionalities,
+            Map<Short, Map<Pair<String, Byte>, Float>> entityFunctionalities,
             int fillFromIndex
     ) {
         float maxNumberOfPairs = getMaxNumberOfPairs(e1e2PairCount);
@@ -306,7 +312,7 @@ public class AccessesWeights extends Weights {
             short e2ID,
             float maxNumberOfPairs,
             Map<String, Float> e1e2PairCount,
-            Map<Short, List<Pair<String, Byte>>> entityFunctionalities
+            Map<Short, Map<Pair<String, Byte>, Float>> entityFunctionalities
     ) {
 
         float inCommon = 0;
@@ -315,27 +321,30 @@ public class AccessesWeights extends Weights {
         float e1FunctionalitiesW = 0;
         float e1FunctionalitiesR = 0;
 
-        for (Pair<String, Byte> e1Functionalities : entityFunctionalities.get(e1ID)) {
-            for (Pair<String, Byte> e2Functionalities : entityFunctionalities.get(e2ID)) {
+        for (Pair<String, Byte> e1Functionalities : entityFunctionalities.get(e1ID).keySet()) {
+            Float e1Probability = entityFunctionalities.get(e1ID).get(e1Functionalities);
+            for (Pair<String, Byte> e2Functionalities : entityFunctionalities.get(e2ID).keySet()) {
+                Float e2Probability = entityFunctionalities.get(e2ID).get(e2Functionalities);
+                Float e1AndE2Probability = e1Probability * e2Probability;
                 if (e1Functionalities.getFirst().equals(e2Functionalities.getFirst())) {
-                    inCommon++;
+                    inCommon += e1AndE2Probability;
                     // != 1 == contains("W") -> "W" or "RW"
                     if (e1Functionalities.getSecond() != 1 && e2Functionalities.getSecond() != 1)
-                        inCommonW++;
+                        inCommonW += e1AndE2Probability;
 
                     // != 2 == contains("R") -> "R" or "RW"
                     if (e1Functionalities.getSecond() != 2 && e2Functionalities.getSecond() != 2)
-                        inCommonR++;
+                        inCommonR += e1AndE2Probability;
                 }
             }
 
             // != 1 == contains("W") -> "W" or "RW"
             if (e1Functionalities.getSecond() != 1)
-                e1FunctionalitiesW++;
+                e1FunctionalitiesW += e1Probability;
 
             // != 2 == contains("R") -> "R" or "RW"
             if (e1Functionalities.getSecond() != 2)
-                e1FunctionalitiesR++;
+                e1FunctionalitiesR += e1Probability;
         }
 
         float accessWeight = inCommon / entityFunctionalities.get(e1ID).size();
