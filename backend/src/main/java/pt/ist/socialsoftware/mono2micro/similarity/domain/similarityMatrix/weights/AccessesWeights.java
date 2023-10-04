@@ -210,9 +210,32 @@ public class AccessesWeights extends Weights {
                     }
                     System.out.println("finished");
             }
+            String filepath = System.getProperty("user.home") + File.separator + "output" + File.separator;
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            LocalDateTime now = LocalDateTime.now();
+
+            String fileName = dtf.format(now) + " - " + functionalityName;
+            fileName = fileName.replaceAll("\\s|/","_");
+            storeJsonFile(filepath, fileName, entityFunctionalities);
         }
         System.out.println("add all");
         entities.addAll(entityFunctionalities.keySet());
+    }
+
+    private static void storeJsonFile(String filepath, String fileName, Map<Short, Map<Pair<String, Byte>, Float>> entityFunctionalities) {
+        try {
+            File filePath = new File(filepath);
+            if (!filePath.exists()) {
+                filePath.mkdirs();
+            }
+
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.writerWithDefaultPrettyPrinter().writeValue(new FileOutputStream(filepath+fileName + ".json"), entityFunctionalities);
+
+            System.out.println("File '" + fileName + "' created at: " + filepath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void fillEntityDataStructures(
