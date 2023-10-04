@@ -17,8 +17,12 @@ import pt.ist.socialsoftware.mono2micro.utils.Pair;
 import pt.ist.socialsoftware.mono2micro.utils.TracesIterator;
 import pt.ist.socialsoftware.mono2micro.utils.Utils;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static pt.ist.socialsoftware.mono2micro.representation.domain.AccessesRepresentation.ACCESSES;
@@ -210,7 +214,7 @@ public class AccessesWeights extends Weights {
                     }
                     System.out.println("finished");
             }
-            String filepath = System.getProperty("user.home") + File.separator + "output" + File.separator;
+            String filepath = System.getProperty("user.dir") + File.separator + "output" + File.separator;
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
             LocalDateTime now = LocalDateTime.now();
 
