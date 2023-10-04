@@ -2,6 +2,8 @@ package pt.ist.socialsoftware.mono2micro.similarity.domain.similarityMatrix.weig
 
 import org.json.JSONException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import pt.ist.socialsoftware.mono2micro.fileManager.GridFsService;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.AccessDto;
 import pt.ist.socialsoftware.mono2micro.functionality.dto.TraceDto;
