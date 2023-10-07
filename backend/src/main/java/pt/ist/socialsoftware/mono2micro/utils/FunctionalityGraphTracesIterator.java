@@ -3,6 +3,7 @@ package pt.ist.socialsoftware.mono2micro.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,6 +39,8 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
 
     private Map<Access, PathData> _pathDataCache;
     private Map<String, PathData> _functionalityPathData;
+
+    private Map<Access, EntityAccessData> _entityAccessDataCache;
 
     public FunctionalityGraphTracesIterator(InputStream file) throws IOException, JSONException {
         _codebaseAsJSON = new JSONObject(new String(IOUtils.toByteArray(file)));
@@ -337,6 +340,182 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
             Map<Short, Map<Pair<String, Byte>, Float>> entityFunctionalities
     ) {
         fillEntityDataStructures(_traceGraphs.get(requestedFunctionality).getFirstAccess(), new ArrayList<>(), 1f, e1e2PairCount, entityFunctionalities, requestedFunctionality);
+
+        if (_entityAccessDataCache == null) {
+            _entityAccessDataCache = new HashMap<>();
+        } else {
+            _entityAccessDataCache.clear();
+        }
+
+        EntityAccessData result = getEntityAccessData(requestedFunctionality, _traceGraphs.get(requestedFunctionality).getFirstAccess(), _entityAccessDataCache, new ArrayList<>());
+
+        e1e2PairCount = result.getE1e2PairCount();
+        
+        for (Short entityID : result.getEntityFunctionalitiesAccesses().keySet()) {
+            Map<Pair<String, Byte>, Float> entityAccesses = new HashMap<>();
+            for (Pair<String, Byte> accessPair : result.getEntityFunctionalitiesAccesses().get(entityID)) {
+                String pairName = entityID + "_" + accessPair.getFirst();
+                entityAccesses.put(accessPair, Collections.max(result.getEntityFunctionalitiesProbabilities().get(pairName)));
+            }
+            entityFunctionalities.put(entityID, entityAccesses);
+        }
+
+        //fillEntityDataStructures(_traceGraphs.get(requestedFunctionality).getFirstAccess(), new ArrayList<>(), 1f, e1e2PairCount, entityFunctionalities, requestedFunctionality);
+    }
+
+    public static EntityAccessData getEntityAccessData(
+            String functionalityName,
+            Access access,
+            Map<Access, EntityAccessData> entityAccessDataCache,
+            List<Access> currentPath
+    ) {
+        // foreach next
+        //  if next in buffer, load
+        //  else, visit next
+        //  multiply all data by next prob
+        //  add data to current structure
+        EntityAccessData currentNodeData = new EntityAccessData(new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>());
+        Map<Access, Float> nextValidAccesses = new HashMap<>();
+
+        EntityAccessData succData;
+        for (TraceGraphNode successor : access.getNextAccessProbabilities().keySet()) {
+            if (currentPath.contains(access) && currentPath.contains(successor)) continue;
+
+            Float succProbability = access.getNextAccessProbabilities().get(successor);
+            if (entityAccessDataCache.containsKey(successor)) {
+                System.out.println("load from cache");
+                succData = entityAccessDataCache.get(successor);
+            } else {
+                List<Access> newCurrentPath = new ArrayList<>(currentPath);
+                newCurrentPath.add(0, access);
+                succData = getEntityAccessData(functionalityName, (Access)successor, entityAccessDataCache, newCurrentPath);
+            }
+
+            // merge e1e2 pair data
+            for (String pairKey : succData.getE1e2PairCount().keySet()) {
+                float currentProb = 0;
+                if (currentNodeData.getE1e2PairCount().containsKey(pairKey)) {
+                    currentProb = currentNodeData.getE1e2PairCount().get(pairKey);
+                }
+
+                currentNodeData.getE1e2PairCount().put(pairKey, currentProb + succData.getE1e2PairCount().get(pairKey) * succProbability);
+            }
+
+            // merge next valid accesses
+            for (Access validAccess : succData.getNextValidAccesses().keySet()) {
+                nextValidAccesses.put(validAccess, succData.getNextValidAccesses().get(validAccess)*succProbability);
+            }
+
+            // merge entity access types
+            for (Short entityID : succData.getEntityFunctionalitiesAccesses().keySet()) {
+                if (currentNodeData.getEntityFunctionalitiesAccesses().containsKey(entityID)) {
+
+                    for (Pair<String, Byte> functionalityPairSucc : succData.getEntityFunctionalitiesAccesses().get(entityID)) {
+                        boolean containsFunctionality = false;
+                        for (Pair<String, Byte> functionalityPairCurr : currentNodeData.getEntityFunctionalitiesAccesses().get(entityID)) {
+                            if (functionalityPairCurr.getFirst().equals(functionalityName)) {
+                                containsFunctionality = true;
+        
+                                if (functionalityPairCurr.getSecond() != 3 && functionalityPairCurr.getSecond() != functionalityPairSucc.getSecond())
+                                    functionalityPairCurr.setSecond((byte) 3); // "RW" -> 3
+        
+                                break;
+                            }
+                        }
+                        if (!containsFunctionality) {
+                            currentNodeData.getEntityFunctionalitiesAccesses().get(entityID).add(new Pair<>(functionalityName, functionalityPairSucc.getSecond()));
+                        }
+                    }
+
+                } else {
+                    currentNodeData.getEntityFunctionalitiesAccesses().put(entityID, new ArrayList<>(succData.getEntityFunctionalitiesAccesses().get(entityID)));
+                }
+            }
+
+            // merge entity access probability
+            for (String entityFunctionalityPair : succData.getEntityFunctionalitiesProbabilities().keySet()) {
+                List<Float> probabilities = new ArrayList<>(succData.getEntityFunctionalitiesProbabilities().get(entityFunctionalityPair));
+
+                for (int i = 0; i < probabilities.size(); i++) {
+                    probabilities.set(i, probabilities.get(i) * succProbability);
+                }
+
+                if (currentNodeData.getEntityFunctionalitiesProbabilities().containsKey(entityFunctionalityPair)) {
+                    currentNodeData.getEntityFunctionalitiesProbabilities().get(entityFunctionalityPair).addAll(probabilities);
+                } else {
+                    currentNodeData.getEntityFunctionalitiesProbabilities().put(entityFunctionalityPair, probabilities);
+                }
+            }
+        }
+
+        // add current to entity functionalities
+        Short entityID = (short)access.getEntityAccessedId();
+        if (access.getMode() != null) {
+            byte mode = accessModeStringToByte(access.getMode());
+            if (currentNodeData.getEntityFunctionalitiesAccesses().containsKey(entityID)) {
+                boolean containsFunctionality = false;
+    
+                for (Pair<String, Byte> functionalityPair : currentNodeData.getEntityFunctionalitiesAccesses().get(entityID)) {
+                    if (functionalityPair.getFirst().equals(functionalityName)) {
+                        containsFunctionality = true;
+    
+                        if (functionalityPair.getSecond() != 3 && functionalityPair.getSecond() != mode)
+                            functionalityPair.setSecond((byte) 3); // "RW" -> 3
+    
+                        break;
+                    }
+                }
+    
+                if (!containsFunctionality) {
+                    currentNodeData.getEntityFunctionalitiesAccesses().get(entityID).add(new Pair<>(functionalityName, mode));
+                }
+    
+            } else {
+                List<Pair<String, Byte>> functionalitiesPairs = new ArrayList<>();
+                functionalitiesPairs.add(new Pair<>(functionalityName, mode));
+    
+                currentNodeData.getEntityFunctionalitiesAccesses().put(entityID, functionalitiesPairs);
+            }
+
+            String entityFuncPair = entityID.toString() + "_" + functionalityName;
+            if (currentNodeData.getEntityFunctionalitiesProbabilities().containsKey(entityFuncPair)) {
+                currentNodeData.getEntityFunctionalitiesProbabilities().get(entityFuncPair).add(1f);
+            } else {
+                currentNodeData.getEntityFunctionalitiesProbabilities().put(entityFuncPair, Arrays.asList(1f));
+            }
+    
+            // if successors >0, add current to e1e2PairCount
+            if (nextValidAccesses.size() > 0) {
+                for (TraceGraphNode successor : nextValidAccesses.keySet()) {
+                    Access nextAccess = (Access) successor;
+                    int nextEntityID = nextAccess.getEntityAccessedId();
+
+                    if (entityID != nextEntityID) {
+                        String e1e2 = entityID + "->" + nextEntityID;
+                        String e2e1 = nextEntityID + "->" + entityID;
+
+                        float count = currentNodeData.getE1e2PairCount().getOrDefault(e1e2, 0f);
+                        currentNodeData.getE1e2PairCount().put(e1e2, count + nextValidAccesses.get(successor));
+
+                        count = currentNodeData.getE1e2PairCount().getOrDefault(e2e1, 0f);
+                        currentNodeData.getE1e2PairCount().put(e2e1, count + nextValidAccesses.get(successor));
+
+                    }
+                }
+            }
+
+            currentNodeData.getNextValidAccesses().put(access, 1f);
+        } else {
+            currentNodeData.getNextValidAccesses().putAll(nextValidAccesses);
+        }
+
+        // if predecessors >1, save in buffer
+        if (access.getPrevAccessProbabilities().size() > 1 && !entityAccessDataCache.containsKey(access)) {
+            System.out.println("save to cache");
+            entityAccessDataCache.put(access, currentNodeData);
+        }
+
+        return currentNodeData;
     }
 
     public static void fillEntityDataStructures(
