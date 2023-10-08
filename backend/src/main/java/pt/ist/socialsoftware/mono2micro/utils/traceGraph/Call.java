@@ -45,7 +45,7 @@ public class Call extends TraceGraphNode {
         }
 
         processedSubTrace.add(startingNode);
-        processedSubTrace.addAll(bodyGraph.getAllAccesses());
+        if (bodyGraph != null) processedSubTrace.addAll(bodyGraph.getAllAccesses());
         processedSubTrace.add(endingNode);
 
         if (heuristicFlags != null) {
