@@ -13,8 +13,9 @@ public class PathData {
     private List<PathDataAccess> mostDifferentAccesses;
 
     private List<PathDataAccess> longestPath;
+    private int longestPathSize;
 
-    public PathData(List<Access> mostProbablePath, Float mostProbablePathProbability, List<Access> mostDifferentAccessesPath, List<Access> mostDifferentAccesses, List<Access> longestPath){
+    public PathData(List<Access> mostProbablePath, Float mostProbablePathProbability, List<Access> mostDifferentAccessesPath, List<Access> mostDifferentAccesses, List<Access> longestPath, int longestPathSize){
         this.mostProbablePath = mostProbablePath.stream().map(a -> new PathDataAccess(a)).collect(Collectors.toList());
         this.mostProbablePathProbability = mostProbablePathProbability;
 
@@ -22,9 +23,10 @@ public class PathData {
         this.mostDifferentAccesses = mostDifferentAccesses.stream().map(a -> new PathDataAccess(a)).collect(Collectors.toList());
 
         this.longestPath = longestPath.stream().map(a -> new PathDataAccess(a)).collect(Collectors.toList());
+        this.longestPathSize = longestPathSize;
     }
 
-    public PathData(List<PathDataAccess> longestPath, List<PathDataAccess> mostProbablePath, Float mostProbablePathProbability, List<PathDataAccess> mostDifferentAccessesPath, List<PathDataAccess> mostDifferentAccesses) {
+    public PathData(List<PathDataAccess> longestPath, int longestPathSize, List<PathDataAccess> mostProbablePath, Float mostProbablePathProbability, List<PathDataAccess> mostDifferentAccessesPath, List<PathDataAccess> mostDifferentAccesses) {
         this.mostProbablePath = mostProbablePath;
         this.mostProbablePathProbability = mostProbablePathProbability;
 
@@ -32,7 +34,7 @@ public class PathData {
         this.mostDifferentAccesses = mostDifferentAccesses;
 
         this.longestPath = longestPath;
-
+        this.longestPathSize = longestPathSize;
     }
 
     public List<PathDataAccess> getMostProbablePath() {
@@ -73,5 +75,13 @@ public class PathData {
 
     public void setLongestPath(List<PathDataAccess> longestPath) {
         this.longestPath = longestPath;
+    }
+
+    public int getLongestPathSize() {
+        return longestPathSize;
+    }
+
+    public void setLongestPathSize(int longestPathSize) {
+        this.longestPathSize = longestPathSize;
     }
 }
