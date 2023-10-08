@@ -80,7 +80,10 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         PathData resultingPathData;
        
         boolean hasBeenTraversed = currentPath.contains(access);
-        currentPath.add(access);
+
+        if (access.getNextAccessProbabilities().size() > 1 || currentPath.get(currentPath.size()-1).getNextAccessProbabilities().size() > 1) {
+            currentPath.add(access);
+        }
 
         List<PathData> successorsPathData = new ArrayList<>();
         PathData succPathData;
@@ -334,12 +337,21 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
     }
 
     /* Fill Similarity Measures Structures */
+    static float countFill;
+    static int totalPaths;
+    static Map<Integer, Integer> accessCounter;
+    static int totalPathSizes;
 
     public void fillEntityDataStructures(
             Map<String, Float> e1e2PairCount,
             Map<Short, Map<Pair<String, Byte>, Float>> entityFunctionalities
     ) {
-        fillEntityDataStructures(_traceGraphs.get(requestedFunctionality).getFirstAccess(), new ArrayList<>(), 1f, e1e2PairCount, entityFunctionalities, requestedFunctionality);
+        System.out.println("\n\ngraph fill data structures");
+        System.out.println(requestedFunctionality);
+        countFill = 0;
+        totalPaths = 0;
+        totalPathSizes = 0;
+        accessCounter = new HashMap<>();
 
         if (_entityAccessDataCache == null) {
             _entityAccessDataCache = new HashMap<>();
@@ -528,6 +540,48 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
     ) {
 
         short entityID = (short)access.getEntityAccessedId();
+        
+        
+        // System.out.println(functionalityName + " (" + countFill + ") -> " + entityID + ", " + access.getMode());
+        //System.out.println("[" + currentPath.size() + "]" + functionalityName + " (" + access.getContextIndex() + ") -> " + entityID + ", " + access.getMode());
+        /* int currentCountForAccess = 0;
+        if (accessCounter.containsKey(access.getContextIndex())) {
+            currentCountForAccess = accessCounter.get(access.getContextIndex());
+        }
+        currentCountForAccess++;
+        accessCounter.put(access.getContextIndex(), currentCountForAccess); */
+        /* List<Integer> countedThisTime = new ArrayList<>();
+        for (Access a : currentPath) {
+            if (countedThisTime.contains(a.getContextIndex())) continue;
+
+            int currentCountForAccess = 0;
+            if (accessCounter.containsKey(a.getContextIndex())) {
+                currentCountForAccess = accessCounter.get(a.getContextIndex());
+            }
+            currentCountForAccess++;
+            accessCounter.put(a.getContextIndex(), currentCountForAccess); 
+            countedThisTime.add(a.getContextIndex());
+        }*/
+        /* totalPaths++;
+        totalPathSizes += currentPath.size();
+        
+        accessCounter.put(access.getContextIndex(), totalPaths);
+        
+        for (Integer context : accessCounter.keySet()) {
+            System.out.println(context + ": " + accessCounter.get(context));
+        }
+
+        System.out.println("average path size: " + totalPathSizes/totalPaths);
+        if (currentPath.size() > 170) {
+            String section = "section: ";
+            
+            for (int i = 150; i < 170; i++) {
+                section += currentPath.get(i).getContextIndex() + "->";
+            }
+            System.out.println(section);
+        }
+        System.out.println();
+        System.out.println("---------------");*/
 
         // fill entity functionalities
         if (access.getMode() != null) {
@@ -593,6 +647,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
             }
             fillEntityDataStructures(nextAccess, newCurrentPath, runningProbability*access.getNextAccessProbabilities().get(nextNode), e1e2PairCount, entityFunctionalities, functionalityName);
         }
+        // System.out.println("closed node (" + access.getContextIndex() + ")" + ", parent: " + currentPath.get(currentPath.size()-1).getContextIndex());
 
     }
 
