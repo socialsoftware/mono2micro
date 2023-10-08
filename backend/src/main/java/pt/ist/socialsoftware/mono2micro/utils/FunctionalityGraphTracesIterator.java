@@ -177,7 +177,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
                                                 new ArrayList<>(successorsPathData.get(biggerDiffAccessListSizeIndex).getMostDifferentAccesses())
                                             );
 
-            if (access.getPrevAccessProbabilities().size() > 1) {
+            if (access.getPrevAccessProbabilities().size() > 1 && !pathDataCache.containsKey(access)) {
                 pathDataCache.put(access, new PathData(         resultingPathData.getLongestPath(),
                                                                 resultingPathData.getMostProbablePath(),
                                                                 resultingPathData.getMostProbablePathProbability(),
