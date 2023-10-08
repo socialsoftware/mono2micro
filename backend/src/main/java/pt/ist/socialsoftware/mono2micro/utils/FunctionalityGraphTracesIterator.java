@@ -50,12 +50,14 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         // create graph representation
         _traceGraphs = new HashMap<String, TraceGraph>();
 
+        /*
         Iterator<String> functionalities = getFunctionalitiesNames();
         while (functionalities.hasNext()) {
             String functionality = functionalities.next();
 
             _traceGraphs.put(functionality, getFunctionalityTraceGraph(_codebaseAsJSON.getJSONObject(functionality)));
         }
+        */
 
         _pathDataCache = new HashMap<>();
         _functionalityPathData = new HashMap<>();
@@ -67,6 +69,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
 
     public void getFunctionalityWithName(String functionalityName) throws JSONException {
         requestedFunctionality = functionalityName;
+        _traceGraphs.put(requestedFunctionality, getFunctionalityTraceGraph(_codebaseAsJSON.getJSONObject(requestedFunctionality)));
     }
 
     /* Get Trace Types */
@@ -299,6 +302,8 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
         }
         if (traceDtos.size() == 0)
             throw new RuntimeException("Functionality does not contain any trace.");
+
+        _traceGraphs.remove(requestedFunctionality);
 
         return traceDtos;
     }
