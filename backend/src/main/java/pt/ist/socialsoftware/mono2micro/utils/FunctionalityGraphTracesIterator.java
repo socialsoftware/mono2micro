@@ -81,7 +81,7 @@ public class FunctionalityGraphTracesIterator extends TracesIterator {
        
         boolean hasBeenTraversed = currentPath.contains(access);
 
-        if (access.getNextAccessProbabilities().size() > 1 || currentPath.get(currentPath.size()-1).getNextAccessProbabilities().size() > 1) {
+        if (access.getNextAccessProbabilities().size() > 1 || currentPath.size() > 0 && currentPath.get(currentPath.size()-1).getNextAccessProbabilities().size() > 1) {
             currentPath.add(access);
         }
 
